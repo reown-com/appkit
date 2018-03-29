@@ -37,7 +37,7 @@
   cursor: pointer;
   border-radius: 0.25rem;
   /* color: rgba(146, 146, 146, 0.5); */
-  background-image: url('../images/cros../images/s.svg');
+  background-image: url('../images/cross.svg');
   background-repeat: no-repeat;
   background-position: center;
 }

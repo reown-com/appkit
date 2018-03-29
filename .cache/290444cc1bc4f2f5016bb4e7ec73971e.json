@@ -1,0 +1,1 @@
+{"dependencies":[{"name":"./../src/index.js","dynamic":true}],"generated":{"html":"<html>\n  <head>\n    <title>Example</title>\n  </head>\n  <body>\n    <button id=\"walletconnect\">Show walletconnect</button>\n    <script src=\"/fd2d7c614e5582422e23b0c6b1fd3a74.js\">\n  </body>\n</html>\n</script></body></html>"},"hash":"c39469dae2b652ec8479cf84a99f18a1","cacheData":{}}

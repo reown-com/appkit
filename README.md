@@ -3,6 +3,34 @@ A modal window for websites with options to connect to wallets.
 
 ![WalletConnectModal First Pass](https://d3vv6lp55qjaqc.cloudfront.net/items/2O3d1D152V0U2G3W3r2S/modal-first-pass.png)
 
+### Running
+
+Install
+```
+git clone https://github.com/WalletConnect/walletconnect.js.git
+cd walletconnect.js
+npm install
+```
+
+Develop
+```
+npm start
+
+> Server running at http://localhost:4444 
+```
+
+Build
+```
+npm run build
+```
+
+Example
+```
+npm run example
+```
+
+### To do
+
 - [x] Get a rough first design ready
 - [ ] Make it pretty and reponsive
 - [ ] Slide between software and hardware wallets with a smooth animation
