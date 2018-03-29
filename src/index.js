@@ -32,3 +32,14 @@ hardwareRadio.addEventListener('click', function() {
   softwareRadio.classList.remove('selected');
   hardwareRadio.classList.add('selected');
 });
+
+/*
+  MESSAGE RECEIVER
+*/
+window.addEventListener('message', function(e) {
+  var message = e.data;
+  console.log('TEST', e);
+});
+
+
+window.parent.postMessage('TEST POST MESSAGE FROM IFRAME', '*');
