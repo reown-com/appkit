@@ -1,6 +1,6 @@
 <html>
   <head>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="./src/styles/style.css">
   </head>
   <body>
     <button class="trigger">Click here to trigger the modal!</button>
@@ -33,25 +33,7 @@
           </div>
         </div>
     </div>
-    <script>
-    var modal = document.querySelector('.modal');
-var trigger = document.querySelector('.trigger');
-var closeButton = document.querySelector('.close-button');
-
-function toggleModal() {
-  modal.classList.toggle('show-modal');
-}
-
-function windowOnClick(event) {
-  if (event.target === modal) {
-    toggleModal();
-  }
-}
-
-trigger.addEventListener('click', toggleModal);
-closeButton.addEventListener('click', toggleModal);
-window.addEventListener('click', windowOnClick);
-</script>
+    <script src="./src/index.js" />
 <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 </body>
 </html>
