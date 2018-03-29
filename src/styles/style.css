@@ -37,7 +37,7 @@
   cursor: pointer;
   border-radius: 0.25rem;
   /* color: rgba(146, 146, 146, 0.5); */
-  background-image: url('cross.svg');
+  background-image: url('../images/cross.svg');
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -79,7 +79,7 @@
   border-radius: 7.7px;
 }
 .metamask-option {
-  background-image: url('fox.svg');
+  background-image: url('../images/fox.svg');
   background-position: left 25px center;
 
   /* background-position: 0px 0px 0px 30px; */
@@ -98,21 +98,21 @@
 
 .walletconnect-option {
   background-image: -webkit-image-set(
-    url('walletconnect-on-phone.png') 1x,
-    url('walletconnect-on-phone@2x.png') 2x
+    url('../images/walletconnect-on-phone.png') 1x,
+    url('../images/walletconnect-on-phone@2x.png') 2x
   );
   background-position: left 40px top 10px;
   background-repeat: no-repeat;
 }
 
 .ledger-option {
-  background-image: url('ledger.svg');
+  background-image: url('../images/ledger.svg');
   background-position: left -50px top -40px;
   background-repeat: no-repeat;
 }
 
 .trezor-option {
-  background-image: url('trezor.svg');
+  background-image: url('../images/trezor.svg');
   background-position: left 40px top -20px;
   background-repeat: no-repeat;
 }
@@ -158,7 +158,7 @@
 }
 
 .metamask-icon {
-  background-image: url('metamask-icon.svg');
+  background-image: url('../images/metamask-icon.svg');
   width: 30px;
   height: 30px;
   background-repeat: no-repeat;
