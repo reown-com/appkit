@@ -56,17 +56,14 @@
   font-size: 1.2rem;
   text-align: center;
   text-rendering: optimizeLegibility;
-  /* background: red; */
 }
 .instructions {
   width: 24rem;
   margin: 10px auto 0;
   text-align: center;
   font-size: 1rem;
-  /* background-color: green; */
 }
 .option {
-  /* base copy 3: */
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -117,23 +114,31 @@
   background-repeat: no-repeat;
 }
 
+/*
+    BUTTONS
+*/
 .button {
-  /* position: relative; */
   height: 40px;
-  margin: auto 20px;
+  margin: auto 16px;
+  padding: 0 16px;
   display: flex;
-  justify-content: flex-start;
+  flex-direction: row;
+  align-items: center;
   /* box-shadow: 0 1px 3px 0 rgba(2,2,3,.06), 0 2px 6px 0 rgba(2,2,3,.04); */
   box-shadow: 0 4px 6px 0 rgba(50, 50, 93, 0.11), 0 1px 3px 0 rgba(0, 0, 0, 0.08),
     inset 0 0 1px 0 rgba(0, 0, 0, 0.06);
   border-radius: 8px;
-  cursor: pointer;
-}
-.metamask {
-  background: #f6851b;
-  border-radius: 5.6px;
   transition: 0.15s ease;
   will-change: transform;
+  cursor: pointer;
+}
+.button span {
+  color: #FFFFFF;
+}
+
+/* Metamask */
+.metamask {
+  background: #f6851b;
 }
 .metamask:hover {
   transform: translateY(-1px);
@@ -146,29 +151,17 @@
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
   background: #d66800;
 }
-.metamask:active div {
-  opacity: 0.8;
-  transition: 0.15s ease;
-}
-.metamask div {
-  font-size: 1rem;
-  color: #fff;
-  margin: 12px 10px 10px 10px;
-  pointer-events: none;
-}
-
 .metamask-icon {
   background-image: url('../images/metamask-icon.svg');
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px; /* Temporary hack */
+  background-position: center center;
   background-repeat: no-repeat;
 }
-
+/* Walletconnect */
 .walletconnect {
   background: #4099ff;
-  border-radius: 5.6px;
-  transition: 0.15s ease;
-  will-change: transform;
 }
 .walletconnect:hover {
   transform: translateY(-1px);
@@ -181,22 +174,10 @@
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
   background: #2b82e5;
 }
-.walletconnect:active div {
-  opacity: 0.8;
-  transition: 0.15s ease;
-}
-.walletconnect div {
-  font-size: 1rem;
-  color: #fff;
-  margin: 12px 10px 10px 10px;
-  pointer-events: none;
-}
 
+/* Ledger */
 .ledger {
   background: rgb(18, 18, 18);
-  border-radius: 5.6px;
-  transition: 0.15s ease;
-  will-change: transform;
 }
 .ledger:hover {
   transform: translateY(-1px);
@@ -209,22 +190,9 @@
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
   background: rgb(5, 5, 5);
 }
-.ledger:active div {
-  opacity: 0.8;
-  transition: 0.15s ease;
-}
-.ledger div {
-  font-size: 1rem;
-  color: #fff;
-  margin: 12px 10px 10px 10px;
-  pointer-events: none;
-}
 
 .trezor {
   background: rgb(18, 18, 18);
-  border-radius: 5.6px;
-  transition: 0.15s ease;
-  will-change: transform;
 }
 .trezor:hover {
   transform: translateY(-1px);
@@ -237,17 +205,10 @@
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
   background: rgb(5, 5, 5);
 }
-.trezor:active div {
-  opacity: 0.8;
-  transition: 0.15s ease;
-}
-.trezor div {
-  font-size: 1rem;
-  color: #fff;
-  margin: 12px 10px 10px 10px;
-  pointer-events: none;
-}
 
+/*
+    Bottom section
+*/
 .bottom-section {
   display: flex;
   justify-content: space-between;

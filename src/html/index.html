@@ -5,30 +5,46 @@
   <body>
     <div class="modal show-modal">
       <div class="modal-content">
-          <span class="close-button"></span>
-          <div class="dapp-name">Balance Manager</div>
-          <div class="instructions">wants to connect to your wallet</div>
+        <span class="close-button"></span>
+        <!-- HEADER -->
+        <div class="header">
+          <h1 class="dapp-name">Balance Manager</h1>
+          <p class="instructions">wants to connect to your wallet</p>
+        </div>
+        <!-- OPTIONS -->
+        <div class="options">
           <div class="option metamask-option">
-             <div class="button metamask"><div><div class="metamask-icon"></div>Use MetaMask</div></div>
+            <div class="button metamask">
+              <div class="metamask-icon"></div>
+              <span>Use MetaMask</span>
+            </div>
           </div>
           <div class="option walletconnect-option">
-            <div class="button walletconnect"><div>Use WalletConnect</div></div>
+            <div class="button walletconnect">
+              <span>Use WalletConnect</span>
+            </div>
           </div>
           <div class="option ledger-option">
-            <div class="button ledger"><div>Use Ledger</div></div>
+            <div class="button ledger">
+              <span>Use Ledger</span>
+            </div>
           </div>
           <div class="option trezor-option">
-            <div class="button trezor"><div>Use Trezor</div></div>
+            <div class="button trezor">
+              <span>Use Trezor</span>
+            </div>
           </div>
-          <div class="bottom-section">
-            <div class="help">
-              Confused by these options?
-              <a href="http://walletconnect.org">Learn more</a>
-            </div>
-            <div class="other-options">
-              <div class="button selected"><div>Software</div></div>
-              <div class="button unselected"><div>Hardware</div></div>
-            </div>
+        </div>
+        <!-- FOOTER -->
+        <div class="bottom-section">
+          <div class="help">
+            Confused by these options?
+            <a href="http://walletconnect.org">Learn more</a>
+          </div>
+          <div class="other-options">
+            <div class="button selected"><div>Software</div></div>
+            <div class="button unselected"><div>Hardware</div></div>
+          </div>
         </div>
       </div>
   </div>
