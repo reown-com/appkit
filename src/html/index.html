@@ -14,24 +14,35 @@
         <!-- OPTIONS -->
         <div class="options">
           <div class="option metamask-option">
-            <div class="button metamask">
-              <div class="metamask-icon"></div>
-              <span>Use MetaMask</span>
+            <div class="option-wrapper">
+              <div class="button metamask" data-icon="metamask">
+                <span>Use MetaMask</span>
+              </div>
+              <span class="option-description">Chrome, Firefox, Brave</span>
             </div>
           </div>
           <div class="option walletconnect-option">
-            <div class="button walletconnect">
-              <span>Use WalletConnect</span>
+            <div class="option-wrapper">
+              <div class="button walletconnect" data-icon="walletconnect">
+                <span>Use WalletConnect</span>
+              </div>
+              <span class="option-description">Balance, Cipher, Status, Toshi</span>
             </div>
           </div>
           <div class="option ledger-option">
-            <div class="button ledger">
-              <span>Use Ledger</span>
+            <div class="option-wrapper">
+              <div class="button ledger" data-icon="ledger">
+                <span>Use Ledger</span>
+              </div>
+              <span class="option-description">Chrome extension required</span>
             </div>
           </div>
           <div class="option trezor-option">
-            <div class="button trezor">
-              <span>Use Trezor</span>
+            <div class="option-wrapper">
+              <div class="button trezor" data-icon="trezor">
+                <span>Use Trezor</span>
+              </div>
+              <span class="option-description">Chrome extension required</span>
             </div>
           </div>
         </div>
@@ -41,10 +52,10 @@
             Confused by these options?
             <a href="http://walletconnect.org">Learn more</a>
           </div>
-          <div class="other-options">
-            <div class="button selected"><div>Software</div></div>
-            <div class="button unselected"><div>Hardware</div></div>
-          </div>
+          <ul class="other-options">
+            <li class="button selected">Software</li>
+            <li class="button unselected">Hardware</li>
+          </ul>
         </div>
       </div>
   </div>

@@ -1,6 +1,8 @@
+* {
+  box-sizing: border-box; /* Magic */
+}
 .trigger {
   width: 100px;
-  align: center;
   margin: 0 auto;
 }
 .modal {
@@ -23,13 +25,15 @@
   transform: translate(-50%, -50%);
   background: #ebecf1;
   box-shadow: 0 4px 11px 0 rgba(0, 0, 0, 0.15), 0 11px 26px 0 rgba(0, 0, 0, 0.06);
-  border-radius: 7.5px;
+  border-radius: 8px;
   padding: 1rem 1.5rem;
-  width: 28rem;
+  width: 100%;
+  max-width: 35rem;
   border-radius: 0.5rem;
 }
 .close-button {
-  float: right;
+  position: absolute;
+  right: 1.5rem;
   width: 20px;
   height: 20px;
   line-height: 1.5rem;
@@ -51,30 +55,42 @@
   transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
 }
 .dapp-name {
-  width: 24rem;
   margin: 0 auto;
   font-size: 1.2rem;
   text-align: center;
   text-rendering: optimizeLegibility;
 }
 .instructions {
-  width: 24rem;
   margin: 10px auto 0;
   text-align: center;
   font-size: 1rem;
 }
+
+/*
+    OPTIONS
+*/
 .option {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  width: 28rem;
   height: 90px;
-  padding: 0px;
+  padding: 16px;
   margin: 20px auto;
   background: #ffffff;
   box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15), 0 12px 28px 0 rgba(0, 0, 0, 0.06);
-  border-radius: 7.7px;
+  border-radius: 8px;
 }
+.option-wrapper {
+  flex: 0.5;
+  text-align: center;
+}
+.option-description {
+  display: inline-block;
+  color: #9F9F9F;
+  font-size: 0.9rem;
+  margin-top: 8px;
+}
+
 .metamask-option {
   background-image: url('../images/fox.svg');
   background-position: left 25px center;
@@ -118,11 +134,11 @@
     BUTTONS
 */
 .button {
-  height: 40px;
-  margin: auto 16px;
-  padding: 0 16px;
   display: flex;
   flex-direction: row;
+  flex: 1;
+  padding: 0 16px;
+  height: 40px;  
   align-items: center;
   /* box-shadow: 0 1px 3px 0 rgba(2,2,3,.06), 0 2px 6px 0 rgba(2,2,3,.04); */
   box-shadow: 0 4px 6px 0 rgba(50, 50, 93, 0.11), 0 1px 3px 0 rgba(0, 0, 0, 0.08),
@@ -133,7 +149,9 @@
   cursor: pointer;
 }
 .button span {
+  flex: 1;
   color: #FFFFFF;
+  text-align: center;
 }
 
 /* Metamask */
@@ -151,7 +169,8 @@
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
   background: #d66800;
 }
-.metamask-icon {
+.button[data-icon]::before {
+  content: "";
   background-image: url('../images/metamask-icon.svg');
   width: 24px;
   height: 24px;
@@ -231,18 +250,22 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  margin: 0;
   /* background-color: red; */
+}
+.other-options .button {
+  font-size: 0.8rem;
+  padding: 8px 12px;
+  margin: 3px;
+  height: auto;
 }
 
 .selected {
   background: rgba(255, 255, 255, 0.9);
-  border-radius: 5.6px;
-  width: 60px;
-  height: 22px;
-  padding: 3px;
-  margin: 3px;
+  border-radius: 6px;
   transition: 0.15s ease;
   will-change: transform;
+  color: rgb(103, 129, 230);
 }
 .selected:hover {
   transform: translateY(-1px);
@@ -255,55 +278,17 @@
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
   background: rgba(255, 255, 255, 0.8);
 }
-.selected:active div {
-  opacity: 0.8;
-  transition: 0.15s ease;
-}
-.selected div {
-  font-size: 0.8rem;
-  /* font-size: 9px; */
-  /* width: */
-  color: rgba(103, 129, 230);
-  margin: 3px 10px 10px 5px;
-  pointer-events: none;
-}
 
 .unselected {
-  /* background: rgba(255, 255, 255, 0.9); */
-  /* border-radius: 5.6px; */
-  /* width: 60px; */
-  /* height: 22px; */
-  /* padding: 3px; */
-  /* margin: 3px; */
-  margin: 0px 5px 0px 0px !important;
-  height: 22px;
   transition: 0.15s ease;
   will-change: transform;
-  box-shadow: none !important;
+  box-shadow: none;
 }
 .unselected:hover {
   transform: translateY(-1px);
   color: rgba(0, 0, 0, 0.9);
-  /* background: rgba(255, 255, 255, 1); */
-  /* box-shadow: 0 7px 14px 0 rgba(50, 50, 93, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.08), */
-  /* inset 0 0 1px 0 rgba(0, 0, 0, 0.06); */
 }
 .unselected:active {
   transform: translateY(1px);
   color: rgba(0, 0, 0, 0.6);
-  /* box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08); */
-  /* background: rgba(255, 255, 255, 0.8); */
-}
-.unselected:active div {
-  opacity: 0.8;
-  transition: 0.15s ease;
-}
-.unselected div {
-  font-size: 0.8rem;
-  /* font-size: 9px; */
-  /* width: */
-  /* color: rgba(103, 129, 230); */
-  color: rgba(0, 0, 0, 0.4);
-  margin: 3px 0px 0px 5px;
-  pointer-events: none;
 }
