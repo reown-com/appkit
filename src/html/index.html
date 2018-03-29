@@ -13,36 +13,42 @@
         </div>
         <!-- OPTIONS -->
         <div class="options">
-          <div class="option metamask-option">
-            <div class="option-wrapper">
-              <div class="button metamask" data-icon="metamask">
-                <span>Use MetaMask</span>
+          <div class="options-rail" id="options-rail" data-active="software">
+            <div class="option-pane">
+              <div class="option metamask-option">
+                <div class="option-wrapper">
+                  <div class="button metamask" data-icon="metamask">
+                    <span>Use MetaMask</span>
+                  </div>
+                  <span class="option-description">Chrome, Firefox, Brave</span>
+                </div>
               </div>
-              <span class="option-description">Chrome, Firefox, Brave</span>
+              <div class="option walletconnect-option">
+                <div class="option-wrapper">
+                  <div class="button walletconnect" data-icon="walletconnect">
+                    <span>Use WalletConnect</span>
+                  </div>
+                  <span class="option-description">Balance, Cipher, Status, Toshi</span>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="option walletconnect-option">
-            <div class="option-wrapper">
-              <div class="button walletconnect" data-icon="walletconnect">
-                <span>Use WalletConnect</span>
+            <div class="option-pane">
+              <div class="option ledger-option">
+                <div class="option-wrapper">
+                  <div class="button ledger" data-icon="ledger">
+                    <span>Use Ledger</span>
+                  </div>
+                  <span class="option-description">Chrome extension required</span>
+                </div>
               </div>
-              <span class="option-description">Balance, Cipher, Status, Toshi</span>
-            </div>
-          </div>
-          <div class="option ledger-option">
-            <div class="option-wrapper">
-              <div class="button ledger" data-icon="ledger">
-                <span>Use Ledger</span>
+              <div class="option trezor-option">
+                <div class="option-wrapper">
+                  <div class="button trezor" data-icon="trezor">
+                    <span>Use Trezor</span>
+                  </div>
+                  <span class="option-description">Chrome extension required</span>
+                </div>
               </div>
-              <span class="option-description">Chrome extension required</span>
-            </div>
-          </div>
-          <div class="option trezor-option">
-            <div class="option-wrapper">
-              <div class="button trezor" data-icon="trezor">
-                <span>Use Trezor</span>
-              </div>
-              <span class="option-description">Chrome extension required</span>
             </div>
           </div>
         </div>
@@ -53,8 +59,8 @@
             <a href="http://walletconnect.org">Learn more</a>
           </div>
           <ul class="other-options">
-            <li class="button selected">Software</li>
-            <li class="button unselected">Hardware</li>
+            <li id="radio-software" class="button selected">Software</li>
+            <li id="radio-hardware" class="button">Hardware</li>
           </ul>
         </div>
       </div>

@@ -13,3 +13,22 @@ function windowOnClick(event) {
 
 closeButton.addEventListener('click', toggleModal);
 window.addEventListener('click', windowOnClick);
+
+/*
+  OPTIONS TOGGLE
+*/
+const slider = document.getElementById('options-rail');
+const softwareRadio = document.getElementById('radio-software');
+const hardwareRadio = document.getElementById('radio-hardware');
+
+// TODO: Change the buttons to radios and use selected state!
+softwareRadio.addEventListener('click', function() {
+  slider.setAttribute('data-active', "software");
+  softwareRadio.classList.add('selected');
+  hardwareRadio.classList.remove('selected');
+});
+hardwareRadio.addEventListener('click', function() {
+  slider.setAttribute('data-active', "hardware");
+  softwareRadio.classList.remove('selected');
+  hardwareRadio.classList.add('selected');
+});

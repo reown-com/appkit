@@ -69,6 +69,23 @@
 /*
     OPTIONS
 */
+.options {
+  overflow: hidden;
+  margin: auto -1.5rem;
+}
+.options-rail {
+  width: 200%;
+  display: flex;
+  transition: transform 0.3s ease;
+  transform: translateX(-0%);
+}
+.options-rail[data-active="hardware"] {
+  transform: translateX(-50%);
+}
+.option-pane {
+  width: 50%;
+  padding: 0 1.5rem;
+}
 .option {
   display: flex;
   align-items: center;
@@ -94,19 +111,7 @@
 .metamask-option {
   background-image: url('../images/fox.svg');
   background-position: left 25px center;
-
-  /* background-position: 0px 0px 0px 30px; */
-  /* background-clip: padding-box; */
-
-  /* padding-left: 10px; */
-  /* width: 640px;
-  height: 427px; */
   background-repeat: no-repeat;
-  /* position: absolute; */
-  /* top: 0;
-  left: 0; */
-  /* z-index: 1000; */
-  /* background-color: #fff; */
 }
 
 .walletconnect-option {
@@ -278,17 +283,6 @@
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
   background: rgba(255, 255, 255, 0.8);
 }
-
-.unselected {
-  transition: 0.15s ease;
-  will-change: transform;
+.other-options .button:not(.selected) {
   box-shadow: none;
-}
-.unselected:hover {
-  transform: translateY(-1px);
-  color: rgba(0, 0, 0, 0.9);
-}
-.unselected:active {
-  transform: translateY(1px);
-  color: rgba(0, 0, 0, 0.6);
 }
