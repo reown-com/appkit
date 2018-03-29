@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="26px" height="16px" viewBox="0 0 26 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.2 (51160) - http://www.bohemiancoding.com/sketch -->
+    <title>walletconnect-icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard-3" transform="translate(-3412.000000, -746.000000)" fill="#FFFFFF">
+            <g id="Group-14-Copy-7" transform="translate(3401.000000, 739.000000)">
+                <g id="wallet-connect-logo-copy" transform="translate(11.213115, 7.008197)">
+                    <path d="M12.5928365,5.37838353 L17.8158116,10.4005537 L22.7776813,5.37838353 L25.2295082,7.8894686 L17.8158116,15.4180328 L12.5928365,10.3982082 L7.49738199,15.4180328 L0,7.8894686 L2.47469743,5.37838353 L7.49738199,10.4005537 L12.5928365,5.37838353 Z M20.7935927,4.1708734 L18.2231526,6.56173295 C16.8142749,4.2190781 14.9448088,3.04775067 12.6147541,3.04775067 C10.2846994,3.04775067 8.45149651,4.2190781 7.11514537,6.56173295 L4.64863683,4.1708734 C6.53912642,1.39029113 9.19449885,3.93756965e-14 12.6147541,1.77635684e-14 C16.0350093,-3.48431037e-15 18.7612889,1.39029113 20.7935927,4.1708734 Z" id="walletconnect-icon"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
