@@ -13,5 +13,13 @@
   <body>
     <button id="walletconnect"></button>
     <script src="../embed.js"></script>
+    <script>
+      window.onload = function() {
+        var wc = new WalletConnect({
+          client_id: 'foobar'
+        });
+        wc.init();
+      }
+    </script>
   </body>
 </html>

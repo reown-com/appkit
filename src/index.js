@@ -1,34 +1,43 @@
-var modal = document.querySelector('.modal');
-var closeButton = document.querySelector('.close-button');
+import './scripts/slider';
 
-function toggleModal() {
-  modal.classList.toggle('show-modal');
-}
-
-function windowOnClick(event) {
-  if (event.target === modal) {
-    toggleModal();
-  }
-}
-
-closeButton.addEventListener('click', toggleModal);
-window.addEventListener('click', windowOnClick);
+const modal       = document.getElementById('modal');
+const closeButton = document.getElementById('close-button');
 
 /*
-  OPTIONS TOGGLE
+    MODAL CONTROLS
 */
-const slider = document.getElementById('options-rail');
-const softwareRadio = document.getElementById('radio-software');
-const hardwareRadio = document.getElementById('radio-hardware');
+function toggleModal() {
+    modal.classList.toggle('show-modal');
+}
+function showModal() {
+    modal.classList.add('show-modal');
+}
+function closeModal() {
+    modal.classList.remove('show-modal');
 
-// TODO: Change the buttons to radios and use selected state!
-softwareRadio.addEventListener('click', function() {
-  slider.setAttribute('data-active', "software");
-  softwareRadio.classList.add('selected');
-  hardwareRadio.classList.remove('selected');
+    // TODO: Fix erros thrown here
+    modal.addEventListener("transitionend", function() {
+        window.parent.postMessage({ 
+            modalState: 'dismissed' 
+        }, '*');
+    });
+}
+function maskOnClick(event) {
+    if (event.target === modal) closeModal();
+}
+
+closeButton.addEventListener('click', closeModal);
+window.addEventListener('click', maskOnClick);
+
+
+/*
+    MESSAGE RECEIVER
+*/
+window.addEventListener('message', function(e) {
+    if (e.data.showModal) showModal();
 });
-hardwareRadio.addEventListener('click', function() {
-  slider.setAttribute('data-active', "hardware");
-  softwareRadio.classList.remove('selected');
-  hardwareRadio.classList.add('selected');
-});
+
+/*
+    MESSAGE SENDER
+*/
+window.parent.postMessage({ readyState: 'ready' }, '*');

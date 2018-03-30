@@ -3,9 +3,9 @@
     <link rel="stylesheet" type="text/css" href="../styles/style.css">
   </head>
   <body>
-    <div class="modal show-modal">
+    <div id="modal" class="modal">
       <div class="modal-content">
-        <span class="close-button"></span>
+        <span id="close-button" class="close-button"></span>
         <!-- HEADER -->
         <div class="header">
           <h1 class="dapp-name">Balance Manager</h1>
@@ -58,10 +58,16 @@
             Confused by these options?
             <a href="http://walletconnect.org">Learn more</a>
           </div>
-          <ul class="other-options">
-            <li id="radio-software" class="button selected">Software</li>
-            <li id="radio-hardware" class="button">Hardware</li>
-          </ul>
+          <div class="other-options">
+            <span>
+              <input id="radio-software" type="radio" name="options" checked/>
+              <label for="radio-software">Software</label>
+            </span>
+            <span>
+              <input id="radio-hardware" type="radio" name="options" />
+              <label for="radio-hardware">Hardware</label>
+            </span>
+          </div>
         </div>
       </div>
   </div>

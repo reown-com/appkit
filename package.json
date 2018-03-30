@@ -4,9 +4,9 @@
   "description": "A modal window for websites with options to connect to wallets.",
   "main": "embed.js",
   "scripts": {
-    "start": "parcel src/html/index.html -p 4444",
+    "start": "parcel src/html/index.html -p 4444 --open",
     "example": "open ./example/index.html && npm run start",
-    "build": "parcel build index.html"
+    "build": "parcel build src/html/index.html --public-url ./"
   },
   "repository": {
     "type": "git",
