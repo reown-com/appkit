@@ -251,18 +251,45 @@
   font-size: 0.8rem;
 }
 
+/*
+  OTHER OPTIONS
+*/
 .other-options {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   margin: 0;
-  /* background-color: red; */
 }
-.other-options .button {
+.other-options label {
+  display: block;
   font-size: 0.8rem;
   padding: 8px 12px;
   margin: 3px;
   height: auto;
+  cursor: pointer;
+}
+.other-options input {
+  display: none;
+}
+.other-options input:checked ~ label {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 6px;
+  transition: 0.15s ease;
+  will-change: transform;
+  color: rgb(103, 129, 230);
+  box-shadow: 0 4px 6px 0 rgba(50, 50, 93, 0.11), 0 1px 3px 0 rgba(0, 0, 0, 0.08),
+    inset 0 0 1px 0 rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  transition: 0.15s ease;
+}
+.other-options input:checked ~ label:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 7px 14px 0 rgba(50, 50, 93, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.08),
+    inset 0 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+.other-options input:not(:checked) ~ label {
+  box-shadow: none;
 }
 
 .selected {
@@ -273,10 +300,7 @@
   color: rgb(103, 129, 230);
 }
 .selected:hover {
-  transform: translateY(-1px);
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0 7px 14px 0 rgba(50, 50, 93, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.08),
-    inset 0 0 1px 0 rgba(0, 0, 0, 0.06);
+  
 }
 .selected:active {
   transform: translateY(1px);

@@ -20,16 +20,15 @@ class WalletConnect {
         `);
 
         /*
-        Look for the walletconnect button provided by the site
-        and add click listener to the button.
+            Look for the walletconnect button provided by the site
+            and add click listener to the button.
 
-        TODO: Auto-generate a branded button style.
+            TODO: Auto-generate a branded button style.
         */
         let button = document.getElementById('walletconnect');
         button.innerText = 'Pay with WalletConnect';
         button.addEventListener('click', function() {
             document.body.appendChild(container);
-
             /* 
                 Post a message to the modal requesting an the event
             */
@@ -40,8 +39,12 @@ class WalletConnect {
             TEMP MESSAGE STUFF
         */
         window.addEventListener('message', function(e) {
-            console.log('Got a message', e);
-            e.source.window.postMessage('Hi there, nice to meet you', '*');
+            if (e.data.readyState === 'ready') {
+                e.source.window.postMessage({ showModal: true }, '*');
+            }
+            if (e.data.modalState === 'dismissed') {
+                document.body.removeChild(container);
+            }
         });
     }
 }
