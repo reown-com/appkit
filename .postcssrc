@@ -1,5 +1,9 @@
 {
   "plugins": {
-    "postcss-cssnext": {}
+    "postcss-cssnext": {
+      features: {
+        imageSet: false
+      }
+    }
   }
 }
