@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/WalletConnect/walletconnect.js#readme",
   "devDependencies": {
-    "parcel-bundler": "^1.7.0"
+    "parcel-bundler": "^1.7.0",
+    "postcss-cssnext": "^3.1.0"
   }
 }
