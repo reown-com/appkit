@@ -6,7 +6,8 @@
   "scripts": {
     "start": "parcel src/html/index.html -p 4444 --open",
     "example": "open ./example/index.html && npm run start",
-    "build": "parcel build src/html/index.html --public-url ./"
+    "build": "parcel build src/html/index.html --public-url ./",
+    "format-styles": "prettier --write src/styles/**/*.css"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,8 @@
   },
   "homepage": "https://github.com/WalletConnect/walletconnect.js#readme",
   "devDependencies": {
-    "parcel-bundler": "^1.7.0"
+    "parcel-bundler": "^1.7.0",
+    "postcss-cssnext": "^3.1.0",
+    "prettier": "1.12.1"
   }
 }

@@ -1,3 +1,16 @@
+/*
+    VARIABLES
+*/
+:root {
+  --metamask: #f6851b;
+  --metamask-hover: #ff8d23;
+  --metamask-active: #d66800;
+
+  --walletconnect: #4099ff;
+  --walletconnect-hover: #68aeff;
+  --walletconnect-active: #2b82e5;
+}
+
 * {
   box-sizing: border-box; /* Magic */
 }
@@ -24,7 +37,8 @@
   left: 50%;
   transform: translate(-50%, -50%);
   background: #ebecf1;
-  box-shadow: 0 4px 11px 0 rgba(0, 0, 0, 0.15), 0 11px 26px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 11px 0 rgba(0, 0, 0, 0.15),
+    0 11px 26px 0 rgba(0, 0, 0, 0.06);
   border-radius: 8px;
   padding: 1rem 1.5rem;
   width: 100%;
@@ -41,12 +55,13 @@
   cursor: pointer;
   border-radius: 0.25rem;
   /* color: rgba(146, 146, 146, 0.5); */
-  background-image: url('../images/cross.svg');
+  background-image: url("../images/cross.svg");
   background-repeat: no-repeat;
   background-position: center;
-}
-.close-button:hover {
-  background-color: rgba(146, 146, 146, 0.2);
+
+  &:hover {
+    background-color: rgba(146, 146, 146, 0.2);
+  }
 }
 .show-modal {
   opacity: 1;
@@ -78,9 +93,10 @@
   display: flex;
   transition: transform 0.3s ease;
   transform: translateX(-0%);
-}
-.options-rail[data-active="hardware"] {
-  transform: translateX(-50%);
+
+  &[data-active="hardware"] {
+    transform: translateX(-50%);
+  }
 }
 .option-pane {
   width: 50%;
@@ -94,7 +110,8 @@
   padding: 16px;
   margin: 20px auto;
   background: #ffffff;
-  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15), 0 12px 28px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15),
+    0 12px 28px 0 rgba(0, 0, 0, 0.06);
   border-radius: 8px;
 }
 .option-wrapper {
@@ -103,34 +120,34 @@
 }
 .option-description {
   display: inline-block;
-  color: #9F9F9F;
+  color: #9f9f9f;
   font-size: 0.9rem;
   margin-top: 8px;
 }
 
 .metamask-option {
-  background-image: url('../images/fox.svg');
+  background-image: url("../images/fox.svg");
   background-position: left 25px center;
   background-repeat: no-repeat;
 }
 
 .walletconnect-option {
-  background-image: -webkit-image-set(
-    url('../images/walletconnect-on-phone.png') 1x,
-    url('../images/walletconnect-on-phone@2x.png') 2x
+  background-image: image-set(
+    url("../images/walletconnect-on-phone.png") 1x,
+    url("../images/walletconnect-on-phone@2x.png") 2x
   );
   background-position: left 40px top 10px;
   background-repeat: no-repeat;
 }
 
 .ledger-option {
-  background-image: url('../images/ledger.svg');
+  background-image: url("../images/ledger.svg");
   background-position: left -50px top -40px;
   background-repeat: no-repeat;
 }
 
 .trezor-option {
-  background-image: url('../images/trezor.svg');
+  background-image: url("../images/trezor.svg");
   background-position: left 40px top -20px;
   background-repeat: no-repeat;
 }
@@ -143,91 +160,125 @@
   flex-direction: row;
   flex: 1;
   padding: 0 16px;
-  height: 40px;  
+  height: 40px;
   align-items: center;
-  /* box-shadow: 0 1px 3px 0 rgba(2,2,3,.06), 0 2px 6px 0 rgba(2,2,3,.04); */
-  box-shadow: 0 4px 6px 0 rgba(50, 50, 93, 0.11), 0 1px 3px 0 rgba(0, 0, 0, 0.08),
-    inset 0 0 1px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px 0 rgba(50, 50, 93, 0.11),
+    0 1px 3px 0 rgba(0, 0, 0, 0.08), inset 0 0 1px 0 rgba(0, 0, 0, 0.06);
   border-radius: 8px;
   transition: 0.15s ease;
+  transition-property: transform, background;
   will-change: transform;
   cursor: pointer;
-}
-.button span {
-  flex: 1;
-  color: #FFFFFF;
-  text-align: center;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+  &:hover::after {
+    opacity: 1;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+  &:active::after {
+    opacity: 0;
+  }
+
+  &::after {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    opacity: 0;
+    content: "";
+    transition: opacity 0.15s ease;
+    will-change: opacity;
+    border-radius: inherit;
+    box-shadow: 0 7px 14px 0 rgba(50, 50, 93, 0.1),
+      0 3px 6px 0 rgba(0, 0, 0, 0.08), inset 0 0 1px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  &[data-icon]::before {
+    content: "";
+    /*background-image: url('../images/metamask-icon.svg'); Temporary*/
+    width: 24px;
+    height: 24px;
+    margin-right: 8px; /* Temporary hack */
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+
+  & span {
+    flex: 1;
+    color: #ffffff;
+    text-align: center;
+  }
 }
 
 /* Metamask */
 .metamask {
-  background: #f6851b;
+  background: var(--metamask);
+
+  &:hover {
+    background: var(--metamask-hover);
+  }
+
+  &:active {
+    background: var(--metamask-active);
+  }
 }
-.metamask:hover {
-  transform: translateY(-1px);
-  background: #ff8d23;
-  box-shadow: 0 7px 14px 0 rgba(50, 50, 93, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.08),
-    inset 0 0 1px 0 rgba(0, 0, 0, 0.06);
+.button[data-icon].metamask::before {
+  background-image: url("../images/metamask-icon.svg");
 }
-.metamask:active {
-  transform: translateY(1px);
-  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-  background: #d66800;
-}
-.button[data-icon]::before {
-  content: "";
-  background-image: url('../images/metamask-icon.svg');
-  width: 24px;
-  height: 24px;
-  margin-right: 8px; /* Temporary hack */
-  background-position: center center;
-  background-repeat: no-repeat;
-}
+
 /* Walletconnect */
 .walletconnect {
-  background: #4099ff;
+  background: var(--walletconnect);
+
+  &:hover {
+    background: var(--walletconnect-hover);
+  }
+
+  &:active {
+    background: var(--walletconnect-active);
+  }
 }
-.walletconnect:hover {
-  transform: translateY(-1px);
-  background: #68aeff;
-  box-shadow: 0 7px 14px 0 rgba(50, 50, 93, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.08),
-    inset 0 0 1px 0 rgba(0, 0, 0, 0.06);
-}
-.walletconnect:active {
-  transform: translateY(1px);
-  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-  background: #2b82e5;
+.button[data-icon].walletconnect::before {
+  background-image: url("../images/walletconnect-icon.svg");
 }
 
 /* Ledger */
 .ledger {
   background: rgb(18, 18, 18);
+
+  &:hover {
+    background: rgb(48, 48, 48);
+  }
+
+  &:active {
+    background: rgb(5, 5, 5);
+  }
 }
-.ledger:hover {
-  transform: translateY(-1px);
-  background: rgb(48, 48, 48);
-  box-shadow: 0 7px 14px 0 rgba(50, 50, 93, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.08),
-    inset 0 0 1px 0 rgba(0, 0, 0, 0.06);
-}
-.ledger:active {
-  transform: translateY(1px);
-  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-  background: rgb(5, 5, 5);
+.button[data-icon].ledger::before {
+  background-image: url("../images/ledger-icon.svg");
 }
 
+/* Trezor */
 .trezor {
   background: rgb(18, 18, 18);
+
+  &:hover {
+    background: rgb(48, 48, 48);
+  }
+
+  &:active {
+    background: rgb(5, 5, 5);
+  }
 }
-.trezor:hover {
-  transform: translateY(-1px);
-  background: rgb(48, 48, 48);
-  box-shadow: 0 7px 14px 0 rgba(50, 50, 93, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.08),
-    inset 0 0 1px 0 rgba(0, 0, 0, 0.06);
-}
-.trezor:active {
-  transform: translateY(1px);
-  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-  background: rgb(5, 5, 5);
+.button[data-icon].trezor::before {
+  background-image: url("../images/trezor-icon.svg");
 }
 
 /*
@@ -277,16 +328,16 @@
   transition: 0.15s ease;
   will-change: transform;
   color: rgb(103, 129, 230);
-  box-shadow: 0 4px 6px 0 rgba(50, 50, 93, 0.11), 0 1px 3px 0 rgba(0, 0, 0, 0.08),
-    inset 0 0 1px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px 0 rgba(50, 50, 93, 0.11),
+    0 1px 3px 0 rgba(0, 0, 0, 0.08), inset 0 0 1px 0 rgba(0, 0, 0, 0.06);
   border-radius: 8px;
   transition: 0.15s ease;
 }
 .other-options input:checked ~ label:hover {
   transform: translateY(-1px);
   background: rgba(255, 255, 255, 1);
-  box-shadow: 0 7px 14px 0 rgba(50, 50, 93, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.08),
-    inset 0 0 1px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 0 7px 14px 0 rgba(50, 50, 93, 0.1),
+    0 3px 6px 0 rgba(0, 0, 0, 0.08), inset 0 0 1px 0 rgba(0, 0, 0, 0.06);
 }
 .other-options input:not(:checked) ~ label {
   box-shadow: none;
@@ -300,7 +351,6 @@
   color: rgb(103, 129, 230);
 }
 .selected:hover {
-  
 }
 .selected:active {
   transform: translateY(1px);
