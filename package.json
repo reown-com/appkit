@@ -4,7 +4,7 @@
   "description": "A modal window for websites with options to connect to wallets.",
   "main": "embed.js",
   "scripts": {
-    "start": "parcel src/html/index.html -p 4444 --open",
+    "start": "parcel src/html/index.html -p 4444",
     "example": "open ./example/index.html && npm run start",
     "build": "parcel build src/html/index.html --public-url ./",
     "format-styles": "prettier --write src/styles/**/*.css"
