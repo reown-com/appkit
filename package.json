@@ -1,27 +1,65 @@
 {
-  "name": "walletconnect.js",
-  "version": "1.0.0",
-  "description": "A modal window for websites with options to connect to wallets.",
-  "main": "embed.js",
+  "name": "walletconnect-widget",
+  "version": "1.0.0-beta",
+  "description": "A react component to connect to multiple wallets using web3 providers",
   "scripts": {
-    "start": "parcel src/html/index.html -p 4444",
-    "example": "open ./example/index.html && npm run start",
-    "build": "parcel build src/html/index.html --public-url ./",
-    "format-styles": "prettier --write src/styles/**/*.css"
+    "clean": "rm -rf lib",
+    "build": "webpack",
+    "test": "mocha --require ./babel-polyfill.js test/**/*.spec.js",
+    "check": "npm run clean && npm run build && npm run test"
   },
+  "private": true,
+  "keywords": [
+    "walletconnect",
+    "ethereum",
+    "web3",
+    "crypto"
+  ],
+  "author": "WalletConnect <walletconnect.org>",
+  "license": "LGPL-3.0",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WalletConnect/walletconnect.js.git"
+    "url": "git+https://github.com/walletconnect/walletconnect-widget.git"
   },
-  "author": "Richard Burton",
-  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/WalletConnect/walletconnect.js/issues"
+    "url": "https://github.com/walletconnect/walletconnect-widget/issues"
   },
-  "homepage": "https://github.com/WalletConnect/walletconnect.js#readme",
   "devDependencies": {
-    "parcel-bundler": "^1.7.0",
-    "postcss-cssnext": "^3.1.0",
-    "prettier": "1.12.1"
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/node": "^7.0.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-typescript": "^7.1.0",
+    "@babel/register": "^7.0.0",
+    "@types/chai": "^4.1.6",
+    "@types/mocha": "^5.2.5",
+    "@types/qr-image": "^3.2.1",
+    "chai": "^4.1.2",
+    "file-loader": "^3.0.1",
+    "isomorphic-fetch": "^2.2.1",
+    "mocha": "5.2.0",
+    "terser": "^3.14.1",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.1.3",
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.2.1"
+  },
+  "dependencies": {
+    "@types/react": "^16.8.12",
+    "@types/styled-components": "^4.1.12",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "styled-components": "^4.2.0"
   }
 }
