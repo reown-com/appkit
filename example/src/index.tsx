@@ -1,11 +1,25 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import App from './App';
-import './index.css';
-import registerServiceWorker from './registerServiceWorker';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { createGlobalStyle } from "styled-components";
+
+import App from "./App";
+import { globalStyle } from "./styles";
+const GlobalStyle = createGlobalStyle`
+  ${globalStyle}
+`;
+
+declare global {
+  // tslint:disable-next-line
+  interface Window {
+    blockies: any;
+    walletConnector: any;
+  }
+}
 
 ReactDOM.render(
-  <App />,
-  document.getElementById('root') as HTMLElement
+  <>
+    <GlobalStyle />
+    <App />
+  </>,
+  document.getElementById("root")
 );
-registerServiceWorker();
