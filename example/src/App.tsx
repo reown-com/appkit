@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-import WalletConnect from "../../src/index";
+// import WalletConnect from "../../src/index";
 import Column from "./components/Column";
 import Wrapper from "./components/Wrapper";
 import Header from "./components/Header";
@@ -50,14 +50,14 @@ class App extends React.Component<any, any> {
           <SContent>
             <SLanding center>
               <h3>{`Try out WalletConnect`}</h3>
-              <WalletConnect
+              {/* <WalletConnect
                 onConnect={(provider: any) => {
                   console.log("[WalletConnect] onConnect", provider); // tslint:disable-line
                 }}
                 onClose={() => {
                   console.log("[WalletConnect] onClose"); // tslint:disable-line
                 }}
-              />
+              /> */}
             </SLanding>
           </SContent>
         </Column>
