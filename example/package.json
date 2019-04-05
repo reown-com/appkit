@@ -16,10 +16,12 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.11",
-    "@types/node": "^11.13.0",
-    "@types/react": "^16.8.12",
-    "@types/react-dom": "^16.8.3",
-    "typescript": "^3.4.1"
+    "@types/jest": "^23.3.12",
+    "@types/node": "^10.12.18",
+    "@types/prop-types": "^15.5.8",
+    "@types/react": "^16.7.20",
+    "@types/react-dom": "^16.0.11",
+    "@types/styled-components": "^4.1.6",
+    "typescript": "^3.2.2"
   }
 }
