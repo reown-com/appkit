@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-// import WalletConnect from "../../src/index";
+// import Web3Connect from "web3connect";
 import Column from "./components/Column";
 import Wrapper from "./components/Wrapper";
 import Header from "./components/Header";
@@ -49,13 +49,13 @@ class App extends React.Component<any, any> {
           <Header connected={connected} address={address} chainId={chainId} />
           <SContent>
             <SLanding center>
-              <h3>{`Try out WalletConnect`}</h3>
-              {/* <WalletConnect
+              <h3>{`Try out Web3Connect`}</h3>
+              {/* <Web3Connect
                 onConnect={(provider: any) => {
-                  console.log("[WalletConnect] onConnect", provider); // tslint:disable-line
+                  console.log("[Web3Connect] onConnect", provider); // tslint:disable-line
                 }}
                 onClose={() => {
-                  console.log("[WalletConnect] onClose"); // tslint:disable-line
+                  console.log("[Web3Connect] onClose"); // tslint:disable-line
                 }}
               /> */}
             </SLanding>

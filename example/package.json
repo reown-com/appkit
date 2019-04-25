@@ -7,7 +7,8 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts-ts": "3.1.0",
-    "styled-components": "^4.2.0"
+    "styled-components": "4.2.0",
+    "web3connect": "^1.0.0-beta.1"
   },
   "scripts": {
     "start": "react-scripts-ts start",
@@ -20,8 +21,8 @@
     "@types/node": "^10.12.18",
     "@types/prop-types": "^15.5.8",
     "@types/react": "^16.7.20",
-    "@types/react-dom": "^16.0.11",
-    "@types/styled-components": "^4.1.6",
+    "@types/react-dom": "^16.0.12",
+    "@types/styled-components": "4.1.8",
     "typescript": "^3.2.2"
   }
 }
