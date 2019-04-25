@@ -1,5 +1,5 @@
 {
-  "name": "walletconnect-widget",
+  "name": "web3connect",
   "version": "1.0.0-beta",
   "description": "A react component to connect to multiple wallets using web3 providers",
   "scripts": {
@@ -13,6 +13,7 @@
   },
   "private": true,
   "keywords": [
+    "metamask",
     "walletconnect",
     "ethereum",
     "web3",
@@ -31,10 +32,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/walletconnect/walletconnect-widget.git"
+    "url": "git+https://github.com/walletconnect/web3connect.git"
   },
   "bugs": {
-    "url": "https://github.com/walletconnect/walletconnect-widget/issues"
+    "url": "https://github.com/walletconnect/web3connect/issues"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.2",

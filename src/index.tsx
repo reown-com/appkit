@@ -2,9 +2,7 @@ import * as React from "react";
 import * as PropTypes from "prop-types";
 import styled from "styled-components";
 // @ts-ignore
-import WalletConnectLogo from "./assets/walletconnect.svg";
-// @ts-ignore
-import QRCodeIcon from "./assets/qrcode.svg";
+import WalletConnectLogo from "./assets/walletconnect-circle.svg";
 // @ts-ignore
 import Web3DefaultLogo from "./assets/web3-default.svg";
 import Button from "./Button";
@@ -163,13 +161,14 @@ class WalletConnect extends React.Component<
   IWalletConnectProps,
   IWalletConnectState
 > {
-  public lightboxRef?: HTMLDivElement | null;
-
-  public propTypes = {
+  public static propTypes = {
     onConnect: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
     lightboxOpacity: PropTypes.number
   };
+
+  public lightboxRef?: HTMLDivElement | null;
+
   public state: IWalletConnectState = {
     ...INITIAL_STATE,
     injectedWeb3Provider: checkInjectedWeb3Provider()
@@ -234,9 +233,7 @@ class WalletConnect extends React.Component<
     }
     return (
       <React.Fragment>
-        <Button icon={WalletConnectLogo} onClick={this.toggleModal}>
-          {"WalletConnect"}
-        </Button>
+        <Button onClick={this.toggleModal}>{"Connect to Wallet"}</Button>
 
         <SLightbox
           offset={lightboxOffset}
@@ -257,9 +254,9 @@ class WalletConnect extends React.Component<
                 <SWallet>
                   <SWalletContainer>
                     <SWalletIcon>
-                      <img src={QRCodeIcon} alt="Mobile Wallet" />
+                      <img src={WalletConnectLogo} alt="WalletConnect" />
                     </SWalletIcon>
-                    <SWalletTitle>{`Mobile Wallet`}</SWalletTitle>
+                    <SWalletTitle>{`WalletConnect`}</SWalletTitle>
                     <SWalletDescription>{`Scan with your Mobile Wallet to connect`}</SWalletDescription>
                   </SWalletContainer>
                 </SWallet>

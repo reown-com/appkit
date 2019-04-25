@@ -4,3 +4,7 @@ node_modules
 # ignore transpiled files
 dist
 lib
+
+#misc
+.DS_Store
+
