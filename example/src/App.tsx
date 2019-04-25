@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-// import Web3Connect from "web3connect";
+import Web3Connect from "web3connect";
 import Column from "./components/Column";
 import Wrapper from "./components/Wrapper";
 import Header from "./components/Header";
@@ -50,14 +50,14 @@ class App extends React.Component<any, any> {
           <SContent>
             <SLanding center>
               <h3>{`Try out Web3Connect`}</h3>
-              {/* <Web3Connect
+              <Web3Connect
                 onConnect={(provider: any) => {
                   console.log("[Web3Connect] onConnect", provider); // tslint:disable-line
                 }}
                 onClose={() => {
                   console.log("[Web3Connect] onClose"); // tslint:disable-line
                 }}
-              /> */}
+              />
             </SLanding>
           </SContent>
         </Column>
