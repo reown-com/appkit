@@ -1,5 +1,5 @@
 /* global describe it  */
 
-describe("// ------------ walletconnect-widget ----------- //", () => {
+describe("// ------------ web3connect ----------- //", () => {
   it("needs tests", () => {});
 });
