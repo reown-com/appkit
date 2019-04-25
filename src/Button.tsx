@@ -5,7 +5,7 @@ const SButtonContainer = styled.div`
   position: relative;
   width: 100%;
   height: auto;
-  max-width: 244px;
+  max-width: 224px;
   padding: 12px;
   display: flex;
   flex-direction: column;

@@ -1,5 +1,4 @@
 const path = require("path");
-const pkg = require("./package.json");
 
 module.exports = {
   mode: "production",
@@ -10,7 +9,7 @@ module.exports = {
     path: path.resolve(__dirname, "lib"),
     filename: "[name].js",
     libraryTarget: "umd",
-    library: pkg.name,
+    library: "Web3Connect",
     umdNamedDefine: true,
     globalObject: "this"
   },
