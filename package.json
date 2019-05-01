@@ -61,6 +61,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "styled-components": "4.2.0"
+    "styled-components": "4.2.0",
+    "url-loader": "^1.1.2"
   }
 }
