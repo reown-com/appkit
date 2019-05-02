@@ -2,10 +2,13 @@ import * as React from "react";
 import * as PropTypes from "prop-types";
 import styled from "styled-components";
 // @ts-ignore
+import WalletConnectProvider from "@walletconnect/web3-provider";
+// @ts-ignore
 import WalletConnectLogo from "./assets/walletconnect-circle.svg";
 // @ts-ignore
 import Web3DefaultLogo from "./assets/web3-default.svg";
-import Button from "./Button";
+import Button from "./components/Button";
+import QRCodeDisplay from "./components/QRCodeDisplay";
 import {
   getWeb3ProviderInfo,
   checkInjectedWeb3Provider,
@@ -20,13 +23,13 @@ declare global {
   }
 }
 
-interface IWalletConnectStyleProps {
+interface IWeb3ConnectStyleProps {
   show: boolean;
   offset: number;
   opacity?: number;
 }
 
-const SLightbox = styled.div<IWalletConnectStyleProps>`
+const SLightbox = styled.div<IWeb3ConnectStyleProps>`
   transition: opacity 0.1s ease-in-out;
   text-align: center;
   position: absolute;
@@ -70,12 +73,31 @@ const SHitbox = styled.div`
   bottom: 0;
 `;
 
-const SModalCard = styled.div`
+interface IQRCodeWrapperStyleProps {
+  size: number;
+}
+
+const SQRCodeWrapper = styled.div<IQRCodeWrapperStyleProps>`
+  padding: 20px;
+  width: ${({ size }) => `${size}px`};
+  height: ${({ size }) => `${size}px`};
+`;
+
+const SQRCodeDisplay = styled(QRCodeDisplay)`
+  height: 100%;
+`;
+
+interface IModalCardStyleProps {
+  maxWidth?: number;
+}
+
+const SModalCard = styled.div<IModalCardStyleProps>`
   position: relative;
   width: 100%;
-  max-width: 500px;
+  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : "500px")};
   background-color: rgb(255, 255, 255);
   border-radius: 12px;
+  margin: 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -149,25 +171,27 @@ const SSeparator = styled.div`
   border-bottom: 2px solid rgba(195, 195, 195, 0.14);
 `;
 
-interface IWalletConnectProps {
+interface IWeb3ConnectProps {
   onClose: any;
   onConnect: any;
   lightboxOpacity?: number;
 }
 
-interface IWalletConnectState {
+interface IWeb3ConnectState {
   show: boolean;
+  uri: string;
   injectedWeb3Provider: any;
 }
 
-const INITIAL_STATE: IWalletConnectState = {
+const INITIAL_STATE: IWeb3ConnectState = {
   show: false,
+  uri: "",
   injectedWeb3Provider: null
 };
 
-class WalletConnect extends React.Component<
-  IWalletConnectProps,
-  IWalletConnectState
+class Web3Connect extends React.Component<
+  IWeb3ConnectProps,
+  IWeb3ConnectState
 > {
   public static propTypes = {
     onConnect: PropTypes.func.isRequired,
@@ -176,11 +200,21 @@ class WalletConnect extends React.Component<
   };
 
   public lightboxRef?: HTMLDivElement | null;
+  public mainModalCard?: HTMLDivElement | null;
 
-  public state: IWalletConnectState = {
+  public state: IWeb3ConnectState = {
     ...INITIAL_STATE,
     injectedWeb3Provider: checkInjectedWeb3Provider()
   };
+
+  public componentDidUpdate(
+    prevProps: IWeb3ConnectProps,
+    prevState: IWeb3ConnectState
+  ) {
+    if (prevState.uri) {
+      this.setState({ uri: "" });
+    }
+  }
 
   public toggleModal = async () => {
     const d = typeof window !== "undefined" ? document : "";
@@ -224,6 +258,35 @@ class WalletConnect extends React.Component<
     this.onConnect(provider);
   };
 
+  public onConnectToWalletConnectProvider = async () => {
+    if (this.state.uri) {
+      await this.setState({ uri: "" });
+      return;
+    }
+    const bridge = "https://bridge.walletconnect.org";
+    const provider = new WalletConnectProvider({ bridge, qrcode: false });
+
+    if (!provider._walletConnector.connected) {
+      await provider._walletConnector.createSession();
+
+      const uri = provider._walletConnector.uri;
+
+      await this.setState({ uri });
+
+      provider._walletConnector.on("connect", async (error: Error) => {
+        if (error) {
+          throw error;
+        }
+
+        await this.setState({ uri: "" });
+
+        this.onConnect(provider);
+      });
+    } else {
+      this.onConnect(provider);
+    }
+  };
+
   public renderInjectedWeb3Provider = () => {
     let result = null;
     const { injectedWeb3Provider } = this.state;
@@ -253,12 +316,20 @@ class WalletConnect extends React.Component<
   };
 
   public render = () => {
-    const { show, injectedWeb3Provider } = this.state;
+    const { uri, show, injectedWeb3Provider } = this.state;
     const { lightboxOpacity } = this.props;
+
     let lightboxOffset = 0;
     if (this.lightboxRef) {
       const lightboxRect = this.lightboxRef.getBoundingClientRect();
       lightboxOffset = lightboxRect.top > 0 ? lightboxRect.top : 0;
+    }
+    console.log("lightboxOffset", lightboxOffset);
+
+    let qrcodeSize = 382;
+    if (this.mainModalCard) {
+      const mainModalCardRect = this.mainModalCard.getBoundingClientRect();
+      qrcodeSize = mainModalCardRect.height;
     }
     return (
       <React.Fragment>
@@ -272,7 +343,7 @@ class WalletConnect extends React.Component<
         >
           <SModalContainer>
             <SHitbox onClick={this.onClose} />
-            <SModalCard>
+            <SModalCard ref={c => (this.mainModalCard = c)}>
               {!!injectedWeb3Provider && (
                 <React.Fragment>
                   {this.renderInjectedWeb3Provider()}
@@ -280,7 +351,7 @@ class WalletConnect extends React.Component<
                 </React.Fragment>
               )}
               {!(injectedWeb3Provider && isMobile()) && (
-                <SWallet>
+                <SWallet onClick={this.onConnectToWalletConnectProvider}>
                   <SWalletContainer>
                     <SWalletIcon>
                       <img src={WalletConnectLogo} alt="WalletConnect" />
@@ -291,6 +362,13 @@ class WalletConnect extends React.Component<
                 </SWallet>
               )}
             </SModalCard>
+            {uri && (
+              <SModalCard maxWidth={qrcodeSize}>
+                <SQRCodeWrapper size={qrcodeSize}>
+                  <SQRCodeDisplay data={uri} />
+                </SQRCodeWrapper>
+              </SModalCard>
+            )}
           </SModalContainer>
         </SLightbox>
       </React.Fragment>
@@ -298,4 +376,4 @@ class WalletConnect extends React.Component<
   };
 }
 
-export default WalletConnect;
+export default Web3Connect;

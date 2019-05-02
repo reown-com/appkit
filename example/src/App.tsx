@@ -65,6 +65,8 @@ const INITIAL_STATE: IAppState = {
   assets: []
 }
 
+let injectedWeb3Interval: any = null
+
 class App extends React.Component<any, any> {
   public state: IAppState = {
     ...INITIAL_STATE
@@ -75,6 +77,12 @@ class App extends React.Component<any, any> {
     const accounts = await web3Instance.eth.getAccounts()
     const networkId = await web3Instance.eth.net.getId()
     const chainId = getChainIdFromNetworkId(networkId)
+
+    injectedWeb3Interval = setInterval(
+      () => this.checkInjectedWeb3Account(),
+      100
+    )
+
     await this.setState({
       web3Instance,
       connected: true,
@@ -82,6 +90,23 @@ class App extends React.Component<any, any> {
       chainId,
       networkId
     })
+    await this.getAccountAssets()
+  }
+
+  public checkInjectedWeb3Account = async () => {
+    const { web3Instance, address, chainId } = this.state
+    if (!web3Instance) {
+      return
+    }
+    const accounts = await web3Instance.eth.getAccounts()
+    if (accounts[0] !== address) {
+      this.onSessionUpdate(accounts, chainId)
+    }
+  }
+
+  public onSessionUpdate = async (accounts: string[], chainId: number) => {
+    const address = accounts[0]
+    await this.setState({ chainId, accounts, address })
     await this.getAccountAssets()
   }
 
@@ -99,12 +124,22 @@ class App extends React.Component<any, any> {
     }
   }
 
+  public resetApp = () => {
+    clearInterval(injectedWeb3Interval)
+    this.setState({ ...INITIAL_STATE })
+  }
+
   public render = () => {
     const { fetching, connected, address, chainId, assets } = this.state
     return (
       <SLayout>
         <Column maxWidth={1000} spanHeight>
-          <Header connected={connected} address={address} chainId={chainId} />
+          <Header
+            connected={connected}
+            address={address}
+            chainId={chainId}
+            killSession={this.resetApp}
+          />
           <SContent>
             {fetching ? (
               <Column center>
