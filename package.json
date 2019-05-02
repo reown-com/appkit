@@ -1,11 +1,11 @@
 {
   "name": "web3connect",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "A react component to connect to multiple wallets using web3 providers",
   "scripts": {
     "clean:node_modules": "rm -rf node_modules && cd example && rm -rf node_modules",
-    "bootstrap": "npm install && cd example && yarn",
-    "start": "npm run check && cd example && yarn start",
+    "bootstrap": "npm install && cd example && npm install && npm link ../",
+    "start": "npm run check && cd example && npm run start",
     "clean": "rm -rf lib",
     "build": "webpack",
     "test": "mocha --require ./babel-polyfill.js test/**/*.spec.js",
