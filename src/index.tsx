@@ -12,6 +12,14 @@ import {
   isMobile
 } from "./utils";
 
+declare global {
+  // tslint:disable-next-line
+  interface Window {
+    ethereum: any;
+    web3: any;
+  }
+}
+
 interface IWalletConnectStyleProps {
   show: boolean;
   offset: number;
@@ -175,7 +183,6 @@ class WalletConnect extends React.Component<
   };
 
   public toggleModal = async () => {
-    console.log("[WalletConnect] toggleModal"); // tslint:disable-line
     const d = typeof window !== "undefined" ? document : "";
     const body = d ? d.body || d.getElementsByTagName("body")[0] : "";
     if (body) {
@@ -188,11 +195,33 @@ class WalletConnect extends React.Component<
     await this.setState({ show: !this.state.show });
   };
 
-  public onConnect = () => this.props.onConnect(null);
+  public onConnect = async (provider: any) => {
+    await this.toggleModal();
+    this.props.onConnect(provider);
+  };
 
   public onClose = async () => {
     await this.toggleModal();
     this.props.onClose();
+  };
+
+  public onConnectToInjectedWeb3Provider = async () => {
+    let provider = null;
+    if (window.ethereum) {
+      provider = window.ethereum;
+      try {
+        await window.ethereum.enable();
+      } catch (error) {
+        console.error("User Rejected");
+        return;
+      }
+    } else if (window.web3) {
+      provider = window.web3.currentProvider;
+    } else {
+      console.error("No Web3 Provider found");
+      return;
+    }
+    this.onConnect(provider);
   };
 
   public renderInjectedWeb3Provider = () => {
@@ -202,7 +231,7 @@ class WalletConnect extends React.Component<
       const web3ProviderInfo = getWeb3ProviderInfo(injectedWeb3Provider);
       if (web3ProviderInfo) {
         result = (
-          <SWallet>
+          <SWallet onClick={this.onConnectToInjectedWeb3Provider}>
             <SWalletContainer>
               <SWalletIcon isMetaMask={web3ProviderInfo.check === "isMetaMask"}>
                 <img

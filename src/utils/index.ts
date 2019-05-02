@@ -13,14 +13,6 @@ import StatusLogo from "../assets/wallets/status.png";
 // @ts-ignore
 import TokenaryLogo from "../assets/wallets/tokenary.png";
 
-declare global {
-  // tslint:disable-next-line
-  interface Window {
-    ethereum: any;
-    web3: any;
-  }
-}
-
 export const web3ProvidersList = [
   {
     name: "MetaMask",
