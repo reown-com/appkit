@@ -79,8 +79,10 @@ interface IQRCodeWrapperStyleProps {
 
 const SQRCodeWrapper = styled.div<IQRCodeWrapperStyleProps>`
   padding: 20px;
-  width: ${({ size }) => `${size}px`};
-  height: ${({ size }) => `${size}px`};
+  width: 100%;
+  max-width: ${({ size }) => `${size}px`};
+  height: 100%;
+  max-height: ${({ size }) => `${size}px`};
 `;
 
 const SQRCodeDisplay = styled(QRCodeDisplay)`
@@ -89,6 +91,7 @@ const SQRCodeDisplay = styled(QRCodeDisplay)`
 
 interface IModalCardStyleProps {
   maxWidth?: number;
+  hide?: boolean;
 }
 
 const SModalCard = styled.div<IModalCardStyleProps>`
@@ -102,6 +105,9 @@ const SModalCard = styled.div<IModalCardStyleProps>`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  opacity: ${({ hide }) => (!hide ? 1 : 0)};
+  visibility: ${({ hide }) => (!hide ? "visible" : "hidden")};
+  pointer-events: ${({ hide }) => (!hide ? "auto" : "none")};
 `;
 
 const SWalletContainer = styled.div`
@@ -166,6 +172,10 @@ const SWalletDescription = styled.div`
   color: rgb(169, 169, 188);
 `;
 
+const SQRCodeDescription = styled(SWalletDescription)`
+  margin-top: 30px;
+`;
+
 const SSeparator = styled.div`
   width: 100%;
   border-bottom: 2px solid rgba(195, 195, 195, 0.14);
@@ -180,13 +190,19 @@ interface IWeb3ConnectProps {
 interface IWeb3ConnectState {
   show: boolean;
   uri: string;
+  mobile: boolean;
   injectedWeb3Provider: any;
+  lightboxOffset: number;
+  qrcodeSize: number;
 }
 
 const INITIAL_STATE: IWeb3ConnectState = {
   show: false,
   uri: "",
-  injectedWeb3Provider: null
+  mobile: isMobile(),
+  injectedWeb3Provider: null,
+  lightboxOffset: 0,
+  qrcodeSize: 382
 };
 
 class Web3Connect extends React.Component<
@@ -211,8 +227,31 @@ class Web3Connect extends React.Component<
     prevProps: IWeb3ConnectProps,
     prevState: IWeb3ConnectState
   ) {
-    if (prevState.uri) {
+    if (prevState.show && !this.state.show && prevState.uri) {
       this.setState({ uri: "" });
+    }
+    if (this.lightboxRef) {
+      const lightboxRect = this.lightboxRef.getBoundingClientRect();
+      const lightboxOffset = lightboxRect.top > 0 ? lightboxRect.top : 0;
+
+      if (
+        lightboxOffset !== INITIAL_STATE.lightboxOffset &&
+        lightboxOffset !== this.state.lightboxOffset
+      ) {
+        this.setState({ lightboxOffset });
+      }
+    }
+
+    if (this.mainModalCard) {
+      const mainModalCardRect = this.mainModalCard.getBoundingClientRect();
+      const qrcodeSize = mainModalCardRect.height;
+
+      if (
+        qrcodeSize !== INITIAL_STATE.qrcodeSize &&
+        qrcodeSize !== this.state.qrcodeSize
+      ) {
+        this.setState({ qrcodeSize });
+      }
     }
   }
 
@@ -277,7 +316,6 @@ class Web3Connect extends React.Component<
         if (error) {
           throw error;
         }
-
         await this.setState({ uri: "" });
 
         this.onConnect(provider);
@@ -316,21 +354,16 @@ class Web3Connect extends React.Component<
   };
 
   public render = () => {
-    const { uri, show, injectedWeb3Provider } = this.state;
+    const {
+      uri,
+      show,
+      mobile,
+      injectedWeb3Provider,
+      lightboxOffset,
+      qrcodeSize
+    } = this.state;
     const { lightboxOpacity } = this.props;
-
-    let lightboxOffset = 0;
-    if (this.lightboxRef) {
-      const lightboxRect = this.lightboxRef.getBoundingClientRect();
-      lightboxOffset = lightboxRect.top > 0 ? lightboxRect.top : 0;
-    }
-    console.log("lightboxOffset", lightboxOffset);
-
-    let qrcodeSize = 382;
-    if (this.mainModalCard) {
-      const mainModalCardRect = this.mainModalCard.getBoundingClientRect();
-      qrcodeSize = mainModalCardRect.height;
-    }
+    const hideMainModalCard = !show || (!!uri && window.innerWidth <= 860);
     return (
       <React.Fragment>
         <Button onClick={this.toggleModal}>{"Connect to Wallet"}</Button>
@@ -343,28 +376,33 @@ class Web3Connect extends React.Component<
         >
           <SModalContainer>
             <SHitbox onClick={this.onClose} />
-            <SModalCard ref={c => (this.mainModalCard = c)}>
-              {!!injectedWeb3Provider && (
-                <React.Fragment>
-                  {this.renderInjectedWeb3Provider()}
-                  <SSeparator />
-                </React.Fragment>
-              )}
-              {!(injectedWeb3Provider && isMobile()) && (
-                <SWallet onClick={this.onConnectToWalletConnectProvider}>
-                  <SWalletContainer>
-                    <SWalletIcon>
-                      <img src={WalletConnectLogo} alt="WalletConnect" />
-                    </SWalletIcon>
-                    <SWalletTitle>{`WalletConnect`}</SWalletTitle>
-                    <SWalletDescription>{`Scan with your Mobile Wallet to connect`}</SWalletDescription>
-                  </SWalletContainer>
-                </SWallet>
-              )}
-            </SModalCard>
+            {!hideMainModalCard && (
+              <SModalCard ref={c => (this.mainModalCard = c)}>
+                {!!injectedWeb3Provider && (
+                  <React.Fragment>
+                    {this.renderInjectedWeb3Provider()}
+                    <SSeparator />
+                  </React.Fragment>
+                )}
+                {!(injectedWeb3Provider && mobile) && (
+                  <SWallet onClick={this.onConnectToWalletConnectProvider}>
+                    <SWalletContainer>
+                      <SWalletIcon>
+                        <img src={WalletConnectLogo} alt="WalletConnect" />
+                      </SWalletIcon>
+                      <SWalletTitle>{`WalletConnect`}</SWalletTitle>
+                      <SWalletDescription>{`Scan with your Mobile Wallet to connect`}</SWalletDescription>
+                    </SWalletContainer>
+                  </SWallet>
+                )}
+              </SModalCard>
+            )}
             {uri && (
-              <SModalCard maxWidth={qrcodeSize}>
-                <SQRCodeWrapper size={qrcodeSize}>
+              <SModalCard maxWidth={hideMainModalCard ? 500 : qrcodeSize}>
+                {hideMainModalCard && (
+                  <SQRCodeDescription>{`Scan with your Mobile Wallet to connect`}</SQRCodeDescription>
+                )}
+                <SQRCodeWrapper size={hideMainModalCard ? 500 : qrcodeSize}>
                   <SQRCodeDisplay data={uri} />
                 </SQRCodeWrapper>
               </SModalCard>

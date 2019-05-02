@@ -8,8 +8,8 @@ import Header from './components/Header'
 import Loader from './components/Loader'
 import AccountAssets from './components/AccountAssets'
 import { apiGetAccountAssets } from './helpers/api'
-import { getChainIdFromNetworkId } from './helpers/utilities'
 import { IAssetData } from './helpers/types'
+import { convertStringToNumber, convertHexToString } from './helpers/bignumber'
 
 const SLayout = styled.div`
   position: relative;
@@ -65,7 +65,7 @@ const INITIAL_STATE: IAppState = {
   assets: []
 }
 
-let injectedWeb3Interval: any = null
+let accountInterval: any = null
 
 class App extends React.Component<any, any> {
   public state: IAppState = {
@@ -75,25 +75,25 @@ class App extends React.Component<any, any> {
   public onConnect = async (provider: any) => {
     const web3Instance = new Web3(provider)
     const accounts = await web3Instance.eth.getAccounts()
-    const networkId = await web3Instance.eth.net.getId()
-    const chainId = getChainIdFromNetworkId(networkId)
-
-    injectedWeb3Interval = setInterval(
-      () => this.checkInjectedWeb3Account(),
-      100
+    const chainId = convertStringToNumber(
+      convertHexToString(
+        await web3Instance.currentProvider.send('eth_chainId', [])
+      )
     )
+
+    accountInterval = setInterval(() => this.checkCurrentAccount(), 100)
 
     await this.setState({
       web3Instance,
       connected: true,
       address: accounts[0],
-      chainId,
-      networkId
+      chainId
+      // networkId
     })
     await this.getAccountAssets()
   }
 
-  public checkInjectedWeb3Account = async () => {
+  public checkCurrentAccount = async () => {
     const { web3Instance, address, chainId } = this.state
     if (!web3Instance) {
       return
@@ -125,7 +125,7 @@ class App extends React.Component<any, any> {
   }
 
   public resetApp = () => {
-    clearInterval(injectedWeb3Interval)
+    clearInterval(accountInterval)
     this.setState({ ...INITIAL_STATE })
   }
 
@@ -157,7 +157,6 @@ class App extends React.Component<any, any> {
                 <h3>{`Try out Web3Connect`}</h3>
                 <Web3Connect
                   onConnect={(provider: any) => {
-                    console.log('[Web3Connect] onConnect', provider) // tslint:disable-line
                     this.onConnect(provider)
                   }}
                   onClose={() => {

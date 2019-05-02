@@ -113,15 +113,3 @@ export function getChainData(chainId: number): IChainData {
 
   return chainData
 }
-
-export function getChainIdFromNetworkId(networkId: number): number {
-  const chainData = supportedChains.filter(
-    (chain: any) => chain.network_id === networkId
-  )[0]
-
-  if (!chainData) {
-    throw new Error('ChainId missing or not supported')
-  }
-
-  return chainData.chain_id
-}
