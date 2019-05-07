@@ -3,12 +3,13 @@
   "version": "1.0.0-beta.3",
   "description": "A react component to connect to multiple wallets using web3 providers",
   "scripts": {
+    "clean": "rm -rf lib",
+    "clean:example": "rm -rf example/build",
     "clean:node_modules": "rm -rf node_modules && cd example && rm -rf node_modules",
     "bootstrap": "npm install && cd example && npm install && npm link ../",
     "start": "npm run check && cd example && npm run start",
-    "clean": "rm -rf lib",
     "build": "webpack",
-    "build:example": "cd example && npm run build",
+    "build:example": "npm run bootstrap && npm run build && cd example && npm run build",
     "test": "mocha --require ./babel-polyfill.js test/**/*.spec.js",
     "check": "npm run clean && npm run build && npm run test"
   },
