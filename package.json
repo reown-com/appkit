@@ -8,6 +8,7 @@
     "start": "npm run check && cd example && npm run start",
     "clean": "rm -rf lib",
     "build": "webpack",
+    "build:example": "cd example && npm run build",
     "test": "mocha --require ./babel-polyfill.js test/**/*.spec.js",
     "check": "npm run clean && npm run build && npm run test"
   },
