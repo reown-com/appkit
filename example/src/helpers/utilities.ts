@@ -102,14 +102,16 @@ export function isMobile(): boolean {
   return mobile
 }
 
-export function getChainData(chainId: number): IChainData {
+export function getChainData(chainId: number): IChainData | null {
+  let result = null
+
   const chainData = supportedChains.filter(
     (chain: any) => chain.chain_id === chainId
   )[0]
 
-  if (!chainData) {
-    throw new Error('ChainId missing or not supported')
+  if (chainData) {
+    result = chainData
   }
 
-  return chainData
+  return result
 }

@@ -81,13 +81,13 @@ interface IHeaderProps {
 
 const Header = (props: IHeaderProps) => {
   const { connected, address, chainId, killSession } = props
-  const activeChain = chainId ? getChainData(chainId).name : null
+  const chainData = chainId ? getChainData(chainId) : null
   return (
     <SHeader {...props}>
-      {connected && activeChain ? (
+      {connected && chainData ? (
         <SActiveChain>
           <p>{`Connected to`}</p>
-          <p>{activeChain}</p>
+          <p>{chainData.name}</p>
         </SActiveChain>
       ) : (
         <Banner />

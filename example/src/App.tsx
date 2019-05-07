@@ -9,7 +9,8 @@ import Loader from './components/Loader'
 import AccountAssets from './components/AccountAssets'
 import { apiGetAccountAssets } from './helpers/api'
 import { IAssetData } from './helpers/types'
-import { convertStringToNumber, convertHexToString } from './helpers/bignumber'
+import { convertHexToUtf8 } from '@walletconnect/utils'
+import { convertStringToNumber } from './helpers/bignumber'
 
 const SLayout = styled.div`
   position: relative;
@@ -48,7 +49,7 @@ const SBalances = styled(SLanding)`
 interface IAppState {
   fetching: boolean
   address: string
-  web3Instance: Web3 | null
+  web3Instance: any
   connected: boolean
   chainId: number
   networkId: number
@@ -75,11 +76,11 @@ class App extends React.Component<any, any> {
   public onConnect = async (provider: any) => {
     const web3Instance = new Web3(provider)
     const accounts = await web3Instance.eth.getAccounts()
-    const chainId = convertStringToNumber(
-      convertHexToString(
-        await web3Instance.currentProvider.send('eth_chainId', [])
-      )
+    const chainIdRes = await web3Instance.currentProvider.send(
+      'eth_chainId',
+      []
     )
+    const chainId = convertStringToNumber(convertHexToUtf8(chainIdRes))
 
     accountInterval = setInterval(() => this.checkCurrentAccount(), 100)
 
@@ -124,7 +125,16 @@ class App extends React.Component<any, any> {
     }
   }
 
-  public resetApp = () => {
+  public resetApp = async () => {
+    const { web3Instance } = this.state
+    if (
+      web3Instance &&
+      web3Instance.currentProvider &&
+      web3Instance.currentProvider.connection &&
+      web3Instance.currentProvider.connection.isWalletConnect
+    ) {
+      await web3Instance.currentProvider.connection._walletConnector.killSession()
+    }
     clearInterval(accountInterval)
     this.setState({ ...INITIAL_STATE })
   }
