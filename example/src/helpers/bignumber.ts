@@ -45,6 +45,10 @@ export function convertStringToHex(value: string | number): string {
   return new BigNumber(`${value}`).toString(16)
 }
 
+export function convertHexToNumber(hex: string): number {
+  return convertStringToNumber(convertHexToString(hex))
+}
+
 export function greaterThan(
   numberOne: number | string,
   numberTwo: number | string

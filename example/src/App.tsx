@@ -9,8 +9,7 @@ import Loader from './components/Loader'
 import AccountAssets from './components/AccountAssets'
 import { apiGetAccountAssets } from './helpers/api'
 import { IAssetData } from './helpers/types'
-import { convertHexToUtf8 } from '@walletconnect/utils'
-import { convertStringToNumber } from './helpers/bignumber'
+import { queryChainId } from './helpers/utilities'
 
 const SLayout = styled.div`
   position: relative;
@@ -75,12 +74,10 @@ class App extends React.Component<any, any> {
 
   public onConnect = async (provider: any) => {
     const web3Instance = new Web3(provider)
+
     const accounts = await web3Instance.eth.getAccounts()
-    const chainIdRes = await web3Instance.currentProvider.send(
-      'eth_chainId',
-      []
-    )
-    const chainId = convertStringToNumber(convertHexToUtf8(chainIdRes))
+
+    const chainId = await queryChainId(web3Instance)
 
     accountInterval = setInterval(() => this.checkCurrentAccount(), 100)
 
