@@ -26,7 +26,7 @@ module.exports = {
           {
             loader: "url-loader",
             options: {
-              limit: 10000,
+              limit: 65535,
               name: 'static/media/[name].[hash:8].[ext]',
             },
           }
