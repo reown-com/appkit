@@ -1,6 +1,6 @@
 {
   "name": "web3connect",
-  "version": "1.0.0-beta.7",
+  "version": "1.0.0-beta.8",
   "description": "A react component to connect to multiple wallets using web3 providers",
   "scripts": {
     "clean": "rm -rf lib",
@@ -14,13 +14,14 @@
     "check": "npm run clean && npm run build && npm run test"
   },
   "keywords": [
+    "web3connect",
     "metamask",
     "walletconnect",
     "ethereum",
     "web3",
     "crypto"
   ],
-  "author": "WalletConnect <walletconnect.org>",
+  "author": "Web3Connect <web3connect.com>",
   "license": "LGPL-3.0",
   "main": "lib/index.js",
   "directories": {
@@ -33,10 +34,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/walletconnect/web3connect.git"
+    "url": "git+https://github.com/web3connect/web3connect.git"
   },
   "bugs": {
-    "url": "https://github.com/walletconnect/web3connect/issues"
+    "url": "https://github.com/web3connect/web3connect/issues"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.2",
