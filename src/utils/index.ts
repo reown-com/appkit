@@ -1,7 +1,9 @@
 // @ts-ignore
 import MetaMaskLogo from "../assets/metamask.svg";
 // @ts-ignore
-import Trustlogo from "../assets/wallets/trust.png";
+import TrustLogo from "../assets/wallets/trust.png";
+// @ts-ignore
+import DapperLogo from "../assets/wallets/dapper.png";
 // @ts-ignore
 import CoinbaseLogo from "../assets/wallets/coinbase.png";
 // @ts-ignore
@@ -20,8 +22,13 @@ export const web3ProvidersList = [
     check: "isMetaMask"
   },
   {
+    name: "Dapper",
+    logo: DapperLogo,
+    check: "isDapper"
+  },
+  {
     name: "Trust",
-    logo: Trustlogo,
+    logo: TrustLogo,
     check: "isTrust"
   },
   {
