@@ -1,5 +1,7 @@
 # web3connect
 
+[![Discord](https://hook.io/geo1088/discord-badge)](https://discordapp.com/invite/YGnSX9y)
+
 A react component to connect to multiple wallets using web3 providers
 
 ## Preview
