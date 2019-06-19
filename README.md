@@ -50,6 +50,10 @@ The Web3Connect takes 3 props:
 
 - providerOptions: any (optional): An object mapping arbitrary string that adds the required configuration to multiple web3 providers.
 
+  - Portis: requires the id of the dapp and the network.
+
+  - Fortmatic: requires the api key.
+
 - onConnect: function (required): Triggers when a web3 provider has been connected.
 
 - onClose: function (required): Triggers when the lightbox closes.
