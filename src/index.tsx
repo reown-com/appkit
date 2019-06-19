@@ -11,7 +11,7 @@ import WalletConnectLogo from "./assets/walletconnect-circle.svg";
 // @ts-ignore
 import PortisLogo from "./assets/portis.svg";
 // @ts-ignore
-import FormaticLogo from "../assets/fortmatic.svg";
+import FormaticLogo from "./assets/fortmatic.svg";
 // @ts-ignore
 import Web3DefaultLogo from "./assets/web3-default.svg";
 import Button from "./components/Button";
