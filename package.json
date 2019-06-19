@@ -64,6 +64,7 @@
   "dependencies": {
     "@portis/web3": "^2.0.0-beta.30",
     "@walletconnect/web3-provider": "^1.0.0-beta.24",
+    "fortmatic": "^0.7.4",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
