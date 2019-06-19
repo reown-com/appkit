@@ -314,15 +314,15 @@ class Web3Connect extends React.Component<
     this.onConnect(provider);
   };
 
-  public onConnectToFormaticProvider = async () => {
+  public onConnectToFortmaticProvider = async () => {
     const { providerOptions } = this.state;
     if (
       providerOptions &&
-      providerOptions.formatic &&
-      providerOptions.formatic.key
+      providerOptions.fortmatic &&
+      providerOptions.fortmatic.key
     ) {
       try {
-        const key = providerOptions.formatic.key;
+        const key = providerOptions.fortmatic.key;
         const fm = new Fortmatic(key);
         const provider = fm.getProvider();
         this.onConnect(provider);
@@ -331,7 +331,7 @@ class Web3Connect extends React.Component<
         return;
       }
     } else {
-      console.error("Missing Portis Id");
+      console.error("Missing Fortmatic key");
       return;
     }
   };
@@ -428,13 +428,16 @@ class Web3Connect extends React.Component<
       providerOptions
     } = this.state;
     const { lightboxOpacity } = this.props;
-    const displayFormatic =
+    const displayFortmatic =
       providerOptions &&
-      providerOptions.formatic &&
-      providerOptions.formatic.key;
+      providerOptions.fortmatic &&
+      providerOptions.fortmatic.key;
+    console.log(providerOptions);
+    console.log(displayFortmatic);
 
     const displayPortis =
       providerOptions && providerOptions.portis && providerOptions.portis.id;
+    console.log(displayPortis);
     const hideMainModalCard = !show || (!!uri && window.innerWidth <= 860);
     return (
       <React.Fragment>
@@ -458,8 +461,8 @@ class Web3Connect extends React.Component<
                 )}
                 {!(injectedWeb3Provider && mobile) && (
                   <React.Fragment>
-                    {displayFormatic && (
-                      <SWallet onClick={this.onConnectToFormaticProvider}>
+                    {displayFortmatic && (
+                      <SWallet onClick={this.onConnectToFortmaticProvider}>
                         <SWalletContainer>
                           <SWalletIcon noShadow>
                             <img src={FormaticLogo} alt="Formatic" />
