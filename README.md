@@ -6,7 +6,7 @@
 
 web3connect a react commponet that helps developers to add support to multiple providers in their apps with simple configuration.
 
-By defaut Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, Web3 Browsers, etc) and **WalletConnect**, but, you can easily configure it to support **Fortmatic** and **Portis**.
+By defaut Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Fortmatic** and **Portis**.
 
 ## Preview
 
