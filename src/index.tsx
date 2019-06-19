@@ -11,7 +11,7 @@ import WalletConnectLogo from "./assets/walletconnect-circle.svg";
 // @ts-ignore
 import PortisLogo from "./assets/portis.svg";
 // @ts-ignore
-import FormaticLogo from "./assets/fortmatic.svg";
+import FortmaticLogo from "./assets/fortmatic.svg";
 // @ts-ignore
 import Web3DefaultLogo from "./assets/web3-default.svg";
 import Button from "./components/Button";
@@ -324,8 +324,11 @@ class Web3Connect extends React.Component<
       try {
         const key = providerOptions.fortmatic.key;
         const fm = new Fortmatic(key);
-        const provider = fm.getProvider();
-        this.onConnect(provider);
+        const provider = await fm.getProvider();
+        const isLoggedIn = await fm.user.isLoggedIn();
+        if (isLoggedIn) {
+          this.onConnect(provider);
+        }
       } catch (error) {
         console.error(error);
         return;
@@ -463,10 +466,10 @@ class Web3Connect extends React.Component<
                       <SWallet onClick={this.onConnectToFortmaticProvider}>
                         <SWalletContainer>
                           <SWalletIcon noShadow>
-                            <img src={FormaticLogo} alt="Formatic" />
+                            <img src={FortmaticLogo} alt="Fortmatic" />
                           </SWalletIcon>
-                          <SWalletTitle>{`Formatic`}</SWalletTitle>
-                          <SWalletDescription>{`Connect with your Formatic account`}</SWalletDescription>
+                          <SWalletTitle>{`Fortmatic`}</SWalletTitle>
+                          <SWalletDescription>{`Connect with your Fortmatic account`}</SWalletDescription>
                         </SWalletContainer>
                       </SWallet>
                     )}
