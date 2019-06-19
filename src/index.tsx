@@ -1,10 +1,13 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import styled from "styled-components";
+import Portis from "@portis/web3";
 // @ts-ignore
 import WalletConnectProvider from "@walletconnect/web3-provider";
 // @ts-ignore
 import WalletConnectLogo from "./assets/walletconnect-circle.svg";
+// @ts-ignore
+import PortisLogo from "./assets/portis.svg";
 // @ts-ignore
 import Web3DefaultLogo from "./assets/web3-default.svg";
 import Button from "./components/Button";
@@ -138,7 +141,7 @@ const SWallet = styled.div`
 `;
 
 interface IWalletIconStyleProps {
-  isMetaMask?: boolean;
+  noShadow?: boolean;
 }
 
 const SWalletIcon = styled.div<IWalletIconStyleProps>`
@@ -146,15 +149,16 @@ const SWalletIcon = styled.div<IWalletIconStyleProps>`
   height: 45px;
   display: flex;
   border-radius: 50%;
-  overflow: ${({ isMetaMask }) => (isMetaMask ? "visible" : "hidden")};
-  box-shadow: ${({ isMetaMask }) =>
-    isMetaMask
+  overflow: ${({ noShadow }) => (noShadow ? "visible" : "hidden")};
+  box-shadow: ${({ noShadow }) =>
+    noShadow
       ? "none"
       : "0 4px 6px 0 rgba(50, 50, 93, 0.11), 0 1px 3px 0 rgba(0, 0, 0, 0.08), inset 0 0 1px 0 rgba(0, 0, 0, 0.06)"};
   justify-content: center;
   align-items: center;
   & img {
     width: 100%;
+    height: 100%;
   }
 `;
 
@@ -181,10 +185,15 @@ const SSeparator = styled.div`
   border-bottom: 2px solid rgba(195, 195, 195, 0.14);
 `;
 
+interface IProviderOptions {
+  [providerName: string]: any;
+}
+
 interface IWeb3ConnectProps {
   onClose: any;
   onConnect: any;
   lightboxOpacity?: number;
+  providerOptions?: IProviderOptions;
 }
 
 interface IWeb3ConnectState {
@@ -194,6 +203,7 @@ interface IWeb3ConnectState {
   injectedWeb3Provider: any;
   lightboxOffset: number;
   qrcodeSize: number;
+  providerOptions: IProviderOptions;
 }
 
 const INITIAL_STATE: IWeb3ConnectState = {
@@ -202,7 +212,8 @@ const INITIAL_STATE: IWeb3ConnectState = {
   mobile: isMobile(),
   injectedWeb3Provider: null,
   lightboxOffset: 0,
-  qrcodeSize: 382
+  qrcodeSize: 382,
+  providerOptions: {}
 };
 
 class Web3Connect extends React.Component<
@@ -212,7 +223,8 @@ class Web3Connect extends React.Component<
   public static propTypes = {
     onConnect: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
-    lightboxOpacity: PropTypes.number
+    lightboxOpacity: PropTypes.number,
+    providerOptions: PropTypes.object
   };
 
   public lightboxRef?: HTMLDivElement | null;
@@ -220,7 +232,8 @@ class Web3Connect extends React.Component<
 
   public state: IWeb3ConnectState = {
     ...INITIAL_STATE,
-    injectedWeb3Provider: checkInjectedWeb3Provider()
+    injectedWeb3Provider: checkInjectedWeb3Provider(),
+    providerOptions: this.props.providerOptions || {}
   };
 
   public componentDidUpdate(
@@ -297,6 +310,31 @@ class Web3Connect extends React.Component<
     this.onConnect(provider);
   };
 
+  public onConnectToPortisProvider = async () => {
+    const { providerOptions } = this.state;
+    if (
+      providerOptions &&
+      providerOptions.portis &&
+      providerOptions.portis.id
+    ) {
+      try {
+        const id = providerOptions.portis.id;
+        const network = providerOptions.portis.network || "mainnet";
+        const portis = new Portis(id, network);
+        portis.showPortis();
+        portis.onLogin(() => {
+          this.onConnect(portis.provider);
+        });
+      } catch (error) {
+        console.error(error);
+        return;
+      }
+    } else {
+      console.error("Missing Portis Id");
+      return;
+    }
+  };
+
   public onConnectToWalletConnectProvider = async () => {
     if (this.state.uri) {
       await this.setState({ uri: "" });
@@ -334,7 +372,7 @@ class Web3Connect extends React.Component<
         result = (
           <SWallet onClick={this.onConnectToInjectedWeb3Provider}>
             <SWalletContainer>
-              <SWalletIcon isMetaMask={web3ProviderInfo.check === "isMetaMask"}>
+              <SWalletIcon noShadow={web3ProviderInfo.check === "isMetaMask"}>
                 <img
                   src={web3ProviderInfo.logo || Web3DefaultLogo}
                   alt={web3ProviderInfo.name}
@@ -360,9 +398,12 @@ class Web3Connect extends React.Component<
       mobile,
       injectedWeb3Provider,
       lightboxOffset,
-      qrcodeSize
+      qrcodeSize,
+      providerOptions
     } = this.state;
     const { lightboxOpacity } = this.props;
+    const displayPortis =
+      providerOptions && providerOptions.portis && providerOptions.portis.id;
     const hideMainModalCard = !show || (!!uri && window.innerWidth <= 860);
     return (
       <React.Fragment>
@@ -385,15 +426,29 @@ class Web3Connect extends React.Component<
                   </React.Fragment>
                 )}
                 {!(injectedWeb3Provider && mobile) && (
-                  <SWallet onClick={this.onConnectToWalletConnectProvider}>
-                    <SWalletContainer>
-                      <SWalletIcon>
-                        <img src={WalletConnectLogo} alt="WalletConnect" />
-                      </SWalletIcon>
-                      <SWalletTitle>{`WalletConnect`}</SWalletTitle>
-                      <SWalletDescription>{`Scan with your Mobile Wallet to connect`}</SWalletDescription>
-                    </SWalletContainer>
-                  </SWallet>
+                  <React.Fragment>
+                    {displayPortis && (
+                      <SWallet onClick={this.onConnectToPortisProvider}>
+                        <SWalletContainer>
+                          <SWalletIcon noShadow>
+                            <img src={PortisLogo} alt="Portis" />
+                          </SWalletIcon>
+                          <SWalletTitle>{`Portis`}</SWalletTitle>
+                          <SWalletDescription>{`Connect with your Portis account`}</SWalletDescription>
+                        </SWalletContainer>
+                      </SWallet>
+                    )}
+
+                    <SWallet onClick={this.onConnectToWalletConnectProvider}>
+                      <SWalletContainer>
+                        <SWalletIcon>
+                          <img src={WalletConnectLogo} alt="WalletConnect" />
+                        </SWalletIcon>
+                        <SWalletTitle>{`WalletConnect`}</SWalletTitle>
+                        <SWalletDescription>{`Scan with your Mobile Wallet to connect`}</SWalletDescription>
+                      </SWalletContainer>
+                    </SWallet>
+                  </React.Fragment>
                 )}
               </SModalCard>
             )}

@@ -163,6 +163,12 @@ class App extends React.Component<any, any> {
               <SLanding center>
                 <h3>{`Try out Web3Connect`}</h3>
                 <Web3Connect
+                  providerOptions={{
+                    portis: {
+                      id: '60571e59-9dbf-450c-8afe-414dc2dc419c',
+                      network: 'mainnet'
+                    }
+                  }}
                   onConnect={(provider: any) => {
                     this.onConnect(provider)
                   }}
