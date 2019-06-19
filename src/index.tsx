@@ -432,12 +432,10 @@ class Web3Connect extends React.Component<
       providerOptions &&
       providerOptions.fortmatic &&
       providerOptions.fortmatic.key;
-    console.log(providerOptions);
-    console.log(displayFortmatic);
 
     const displayPortis =
       providerOptions && providerOptions.portis && providerOptions.portis.id;
-    console.log(displayPortis);
+
     const hideMainModalCard = !show || (!!uri && window.innerWidth <= 860);
     return (
       <React.Fragment>
