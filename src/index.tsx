@@ -3,11 +3,15 @@ import * as PropTypes from "prop-types";
 import styled from "styled-components";
 import Portis from "@portis/web3";
 // @ts-ignore
+import Fortmatic from "fortmatic";
+// @ts-ignore
 import WalletConnectProvider from "@walletconnect/web3-provider";
 // @ts-ignore
 import WalletConnectLogo from "./assets/walletconnect-circle.svg";
 // @ts-ignore
 import PortisLogo from "./assets/portis.svg";
+// @ts-ignore
+import FormaticLogo from "../assets/fortmatic.svg";
 // @ts-ignore
 import Web3DefaultLogo from "./assets/web3-default.svg";
 import Button from "./components/Button";
@@ -310,6 +314,28 @@ class Web3Connect extends React.Component<
     this.onConnect(provider);
   };
 
+  public onConnectToFormaticProvider = async () => {
+    const { providerOptions } = this.state;
+    if (
+      providerOptions &&
+      providerOptions.formatic &&
+      providerOptions.formatic.key
+    ) {
+      try {
+        const key = providerOptions.formatic.key;
+        const fm = new Fortmatic(key);
+        const provider = fm.getProvider();
+        this.onConnect(provider);
+      } catch (error) {
+        console.error(error);
+        return;
+      }
+    } else {
+      console.error("Missing Portis Id");
+      return;
+    }
+  };
+
   public onConnectToPortisProvider = async () => {
     const { providerOptions } = this.state;
     if (
@@ -402,6 +428,11 @@ class Web3Connect extends React.Component<
       providerOptions
     } = this.state;
     const { lightboxOpacity } = this.props;
+    const displayFormatic =
+      providerOptions &&
+      providerOptions.formatic &&
+      providerOptions.formatic.key;
+
     const displayPortis =
       providerOptions && providerOptions.portis && providerOptions.portis.id;
     const hideMainModalCard = !show || (!!uri && window.innerWidth <= 860);
@@ -427,6 +458,18 @@ class Web3Connect extends React.Component<
                 )}
                 {!(injectedWeb3Provider && mobile) && (
                   <React.Fragment>
+                    {displayFormatic && (
+                      <SWallet onClick={this.onConnectToFormaticProvider}>
+                        <SWalletContainer>
+                          <SWalletIcon noShadow>
+                            <img src={FormaticLogo} alt="Formatic" />
+                          </SWalletIcon>
+                          <SWalletTitle>{`Formatic`}</SWalletTitle>
+                          <SWalletDescription>{`Connect with your Formatic account`}</SWalletDescription>
+                        </SWalletContainer>
+                      </SWallet>
+                    )}
+
                     {displayPortis && (
                       <SWallet onClick={this.onConnectToPortisProvider}>
                         <SWalletContainer>
