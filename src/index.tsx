@@ -251,6 +251,7 @@ class Web3Connect extends React.Component<
         const key = providerOptions.fortmatic.key;
         const fm = new Fortmatic(key);
         const provider = await fm.getProvider();
+        await fm.user.login();
         const isLoggedIn = await fm.user.isLoggedIn();
         if (isLoggedIn) {
           this.onConnect(provider);
