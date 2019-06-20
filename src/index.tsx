@@ -401,7 +401,12 @@ class Web3Connect extends React.Component<
         result = (
           <SWallet onClick={this.onConnectToInjectedWeb3Provider}>
             <SWalletContainer>
-              <SWalletIcon noShadow={web3ProviderInfo.check === "isMetaMask"}>
+              <SWalletIcon
+                noShadow={
+                  web3ProviderInfo.check === "isMetaMask" ||
+                  web3ProviderInfo.check === "isDapper"
+                }
+              >
                 <img
                   src={web3ProviderInfo.logo || Web3DefaultLogo}
                   alt={web3ProviderInfo.name}
