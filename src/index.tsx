@@ -94,17 +94,17 @@ interface IModalCardStyleProps {
 const SModalCard = styled.div<IModalCardStyleProps>`
   position: relative;
   width: 100%;
-  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : "500px")};
   background-color: rgb(255, 255, 255);
   border-radius: 12px;
   margin: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  padding: 0;
   opacity: ${({ hide }) => (!hide ? 1 : 0)};
   visibility: ${({ hide }) => (!hide ? "visible" : "hidden")};
   pointer-events: ${({ hide }) => (!hide ? "auto" : "none")};
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : "800px")};
 `;
 
 const SQRCodeDescription = styled(SDescription)`
