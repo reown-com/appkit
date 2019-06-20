@@ -1,70 +1,13 @@
-// @ts-ignore
-import MetaMaskLogo from "../assets/metamask.svg";
-// @ts-ignore
-import TrustLogo from "../assets/wallets/trust.png";
-// @ts-ignore
-import DapperLogo from "../assets/wallets/dapper.png";
-// @ts-ignore
-import CoinbaseLogo from "../assets/wallets/coinbase.png";
-// @ts-ignore
-import CipherLogo from "../assets/wallets/cipher.png";
-// @ts-ignore
-import imTokenLogo from "../assets/wallets/imtoken.png";
-// @ts-ignore
-import StatusLogo from "../assets/wallets/status.png";
-// @ts-ignore
-import TokenaryLogo from "../assets/wallets/tokenary.png";
+import providers, { fallbackProvider } from "./providers";
+import { IProviderInfo } from "./types";
 
-export const web3ProvidersList = [
-  {
-    name: "MetaMask",
-    logo: MetaMaskLogo,
-    check: "isMetaMask"
-  },
-  {
-    name: "Dapper",
-    logo: DapperLogo,
-    check: "isDapper"
-  },
-  {
-    name: "Trust",
-    logo: TrustLogo,
-    check: "isTrust"
-  },
-  {
-    name: "Coinbase",
-    logo: CoinbaseLogo,
-    check: "isToshi"
-  },
-  {
-    name: "Cipher",
-    logo: CipherLogo,
-    check: "isCipher"
-  },
-  {
-    name: "imToken",
-    logo: imTokenLogo,
-    check: "isImToken"
-  },
-  {
-    name: "Status",
-    logo: StatusLogo,
-    check: "isStatus"
-  },
-  {
-    name: "Tokenary",
-    logo: TokenaryLogo,
-    check: "isTokenary"
-  }
-];
-
-export function checkWeb3Providers() {
+export function checkInjectedProviders() {
   const result = {
-    injectedWeb3Available: window.ethereum || window.web3
+    injectedAvailable: !!window.ethereum || !!window.web3
   };
 
-  if (result.injectedWeb3Available) {
-    web3ProvidersList.forEach(provider => {
+  if (result.injectedAvailable) {
+    providers.forEach(provider => {
       result[provider.check] = window.ethereum
         ? window.ethereum[provider.check] ||
           (window.web3 && window.web3.currentProvider)
@@ -73,36 +16,36 @@ export function checkWeb3Providers() {
         : window.web3 && window.web3.currentProvider
         ? window.web3.currentProvider[provider.check]
         : false;
-      // window.ethereum[provider.check] ||
-      // window.web3.currentProvider[provider.check];
     });
   }
 
   return result;
 }
 
-export function checkInjectedWeb3Provider() {
+export function getInjectProvider(): string | null {
   let result = null;
 
-  const web3Providers = checkWeb3Providers();
+  const injectedProviders = checkInjectedProviders();
 
-  if (web3Providers.injectedWeb3Available) {
-    web3ProvidersList.forEach(provider => {
-      if (web3Providers[provider.check]) {
-        result = provider.name;
+  if (injectedProviders.injectedAvailable) {
+    providers.forEach((providerInfo: IProviderInfo) => {
+      if (injectedProviders[providerInfo.check]) {
+        result = providerInfo.name;
       }
     });
   }
   return result;
 }
 
-export function getWeb3ProviderInfo(name: string) {
-  let result = null;
+export function getProviderInfo(name: string | null): IProviderInfo {
+  let result = fallbackProvider;
 
-  const matches = web3ProvidersList.filter(provider => provider.name === name);
+  if (name) {
+    const matches = providers.filter(provider => provider.name === name);
 
-  if (!!matches && matches.length) {
-    result = matches[0];
+    if (!!matches && matches.length) {
+      result = matches[0];
+    }
   }
 
   return result;
@@ -139,4 +82,22 @@ export function isMobile(): boolean {
   mobile = hasMobileUserAgent();
 
   return mobile;
+}
+
+export function formatProviderDescription(providerInfo: IProviderInfo) {
+  let description = "";
+  switch (providerInfo.type) {
+    case "injected":
+      description = `Connect to your ${providerInfo.name} Wallet`;
+      break;
+    case "web":
+      description = `Connect with your ${providerInfo.name} account`;
+      break;
+    case "qrcode":
+      description = `Scan with ${providerInfo.name} to connect`;
+      break;
+    default:
+      break;
+  }
+  return description;
 }
