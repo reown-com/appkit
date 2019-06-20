@@ -1,6 +1,6 @@
 {
   "name": "web3connect",
-  "version": "1.0.0-beta.8",
+  "version": "1.0.0-beta.9",
   "description": "A react component to connect to multiple wallets using web3 providers",
   "scripts": {
     "clean": "rm -rf lib",
@@ -14,13 +14,14 @@
     "check": "npm run clean && npm run build && npm run test"
   },
   "keywords": [
+    "web3",
+    "crypto",
+    "ethereum",
     "web3connect",
     "metamask",
     "walletconnect",
-    "ethereum",
-    "web3",
-    "crypto",
-    "portis"
+    "portis",
+    "fortmatic"
   ],
   "author": "Web3Connect <web3connect.com>",
   "license": "LGPL-3.0",
