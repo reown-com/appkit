@@ -476,6 +476,7 @@ class Web3Connect extends React.Component<
                           <SWalletTitle>{`Fortmatic`}</SWalletTitle>
                           <SWalletDescription>{`Connect with your Fortmatic account`}</SWalletDescription>
                         </SWalletContainer>
+                        <SSeparator />
                       </SWallet>
                     )}
 
@@ -488,6 +489,7 @@ class Web3Connect extends React.Component<
                           <SWalletTitle>{`Portis`}</SWalletTitle>
                           <SWalletDescription>{`Connect with your Portis account`}</SWalletDescription>
                         </SWalletContainer>
+                        <SSeparator />
                       </SWallet>
                     )}
 
