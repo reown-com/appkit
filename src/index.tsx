@@ -6,21 +6,11 @@ import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 // @ts-ignore
 import WalletConnectProvider from "@walletconnect/web3-provider";
-// @ts-ignore
-import WalletConnectLogo from "./assets/walletconnect-circle.svg";
-// @ts-ignore
-import PortisLogo from "./assets/portis.svg";
-// @ts-ignore
-import FortmaticLogo from "./assets/fortmatic.svg";
-// @ts-ignore
-import Web3DefaultLogo from "./assets/web3-default.svg";
 import Button from "./components/Button";
+import Provider from "./components/Provider";
 import QRCodeDisplay from "./components/QRCodeDisplay";
-import {
-  getWeb3ProviderInfo,
-  checkInjectedWeb3Provider,
-  isMobile
-} from "./utils";
+import { SDescription } from "./components/common";
+import { getInjectProvider, isMobile } from "./utils";
 
 declare global {
   // tslint:disable-next-line
@@ -117,76 +107,8 @@ const SModalCard = styled.div<IModalCardStyleProps>`
   pointer-events: ${({ hide }) => (!hide ? "auto" : "none")};
 `;
 
-const SWalletContainer = styled.div`
-  transition: background-color 0.2s ease-in-out;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: rgb(255, 255, 255);
-  border-radius: 12px;
-  padding: 24px 16px;
-`;
-
-const SWallet = styled.div`
-  width: 100%;
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  cursor: pointer;
-  @media (hover: hover) {
-    &:hover ${SWalletContainer} {
-      background-color: rgba(195, 195, 195, 0.14);
-    }
-  }
-`;
-
-interface IWalletIconStyleProps {
-  noShadow?: boolean;
-}
-
-const SWalletIcon = styled.div<IWalletIconStyleProps>`
-  width: 45px;
-  height: 45px;
-  display: flex;
-  border-radius: 50%;
-  overflow: ${({ noShadow }) => (noShadow ? "visible" : "hidden")};
-  box-shadow: ${({ noShadow }) =>
-    noShadow
-      ? "none"
-      : "0 4px 6px 0 rgba(50, 50, 93, 0.11), 0 1px 3px 0 rgba(0, 0, 0, 0.08), inset 0 0 1px 0 rgba(0, 0, 0, 0.06)"};
-  justify-content: center;
-  align-items: center;
-  & img {
-    width: 100%;
-    height: 100%;
-  }
-`;
-
-const SWalletTitle = styled.div`
-  width: 100%;
-  font-size: 24px;
-  font-weight: 700;
-  margin-top: 0.5em;
-`;
-
-const SWalletDescription = styled.div`
-  width: 100%;
-  font-size: 18px;
-  margin: 0.333em 0;
-  color: rgb(169, 169, 188);
-`;
-
-const SQRCodeDescription = styled(SWalletDescription)`
+const SQRCodeDescription = styled(SDescription)`
   margin-top: 30px;
-`;
-
-const SSeparator = styled.div`
-  width: 100%;
-  border-bottom: 2px solid rgba(195, 195, 195, 0.14);
 `;
 
 interface IProviderOptions {
@@ -204,7 +126,7 @@ interface IWeb3ConnectState {
   show: boolean;
   uri: string;
   mobile: boolean;
-  injectedWeb3Provider: any;
+  injectedProvider: any;
   lightboxOffset: number;
   qrcodeSize: number;
   providerOptions: IProviderOptions;
@@ -214,7 +136,7 @@ const INITIAL_STATE: IWeb3ConnectState = {
   show: false,
   uri: "",
   mobile: isMobile(),
-  injectedWeb3Provider: null,
+  injectedProvider: null,
   lightboxOffset: 0,
   qrcodeSize: 382,
   providerOptions: {}
@@ -236,7 +158,7 @@ class Web3Connect extends React.Component<
 
   public state: IWeb3ConnectState = {
     ...INITIAL_STATE,
-    injectedWeb3Provider: checkInjectedWeb3Provider(),
+    injectedProvider: getInjectProvider(),
     providerOptions: this.props.providerOptions || {}
   };
 
@@ -295,7 +217,7 @@ class Web3Connect extends React.Component<
     this.props.onClose();
   };
 
-  public onConnectToInjectedWeb3Provider = async () => {
+  public onConnectToInjectedProvider = async () => {
     let provider = null;
     if (window.ethereum) {
       provider = window.ethereum;
@@ -392,45 +314,12 @@ class Web3Connect extends React.Component<
     }
   };
 
-  public renderInjectedWeb3Provider = () => {
-    let result = null;
-    const { injectedWeb3Provider } = this.state;
-    if (injectedWeb3Provider) {
-      const web3ProviderInfo = getWeb3ProviderInfo(injectedWeb3Provider);
-      if (web3ProviderInfo) {
-        result = (
-          <SWallet onClick={this.onConnectToInjectedWeb3Provider}>
-            <SWalletContainer>
-              <SWalletIcon
-                noShadow={
-                  web3ProviderInfo.check === "isMetaMask" ||
-                  web3ProviderInfo.check === "isDapper"
-                }
-              >
-                <img
-                  src={web3ProviderInfo.logo || Web3DefaultLogo}
-                  alt={web3ProviderInfo.name}
-                />
-              </SWalletIcon>
-              <SWalletTitle>{web3ProviderInfo.name}</SWalletTitle>
-              <SWalletDescription>{`Connect to your ${
-                web3ProviderInfo.name
-              } Wallet`}</SWalletDescription>
-            </SWalletContainer>
-          </SWallet>
-        );
-      }
-    }
-
-    return result;
-  };
-
   public render = () => {
     const {
       uri,
       show,
       mobile,
-      injectedWeb3Provider,
+      injectedProvider,
       lightboxOffset,
       qrcodeSize,
       providerOptions
@@ -459,49 +348,32 @@ class Web3Connect extends React.Component<
             <SHitbox onClick={this.onClose} />
             {!hideMainModalCard && (
               <SModalCard ref={c => (this.mainModalCard = c)}>
-                {!!injectedWeb3Provider && (
-                  <React.Fragment>
-                    {this.renderInjectedWeb3Provider()}
-                    <SSeparator />
-                  </React.Fragment>
+                {!!injectedProvider && (
+                  <Provider
+                    name={this.state.injectedProvider}
+                    onClick={this.onConnectToInjectedProvider}
+                  />
                 )}
-                {!(injectedWeb3Provider && mobile) && (
+                {!(injectedProvider && mobile) && (
                   <React.Fragment>
-                    {displayFortmatic && (
-                      <SWallet onClick={this.onConnectToFortmaticProvider}>
-                        <SWalletContainer>
-                          <SWalletIcon noShadow>
-                            <img src={FortmaticLogo} alt="Fortmatic" />
-                          </SWalletIcon>
-                          <SWalletTitle>{`Fortmatic`}</SWalletTitle>
-                          <SWalletDescription>{`Connect with your Fortmatic account`}</SWalletDescription>
-                        </SWalletContainer>
-                        <SSeparator />
-                      </SWallet>
-                    )}
-
                     {displayPortis && (
-                      <SWallet onClick={this.onConnectToPortisProvider}>
-                        <SWalletContainer>
-                          <SWalletIcon noShadow>
-                            <img src={PortisLogo} alt="Portis" />
-                          </SWalletIcon>
-                          <SWalletTitle>{`Portis`}</SWalletTitle>
-                          <SWalletDescription>{`Connect with your Portis account`}</SWalletDescription>
-                        </SWalletContainer>
-                        <SSeparator />
-                      </SWallet>
+                      <Provider
+                        name={"Portis"}
+                        onClick={this.onConnectToPortisProvider}
+                      />
                     )}
 
-                    <SWallet onClick={this.onConnectToWalletConnectProvider}>
-                      <SWalletContainer>
-                        <SWalletIcon>
-                          <img src={WalletConnectLogo} alt="WalletConnect" />
-                        </SWalletIcon>
-                        <SWalletTitle>{`WalletConnect`}</SWalletTitle>
-                        <SWalletDescription>{`Scan with your Mobile Wallet to connect`}</SWalletDescription>
-                      </SWalletContainer>
-                    </SWallet>
+                    {displayFortmatic && (
+                      <Provider
+                        name={"Fortmatic"}
+                        onClick={this.onConnectToFortmaticProvider}
+                      />
+                    )}
+
+                    <Provider
+                      name={"WalletConnect"}
+                      onClick={this.onConnectToWalletConnectProvider}
+                    />
                   </React.Fragment>
                 )}
               </SModalCard>
