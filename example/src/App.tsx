@@ -166,11 +166,11 @@ class App extends React.Component<any, any> {
                 <Web3Connect
                   providerOptions={{
                     portis: {
-                      id: '7e4ce7f9-7cd0-42da-a634-44e682aacd73',
+                      id: process.env.REACT_APP_PORTIS_ID,
                       network: 'mainnet'
                     },
                     fortmatic: {
-                      key: 'pk_live_F95FEECB1BE324B5'
+                      key: process.env.REACT_APP_FORTMATIC_KEY
                     }
                   }}
                   onConnect={(provider: any) => {
