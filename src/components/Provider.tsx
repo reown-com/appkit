@@ -13,6 +13,9 @@ const SProviderContainer = styled.div`
   background-color: rgb(255, 255, 255);
   border-radius: 12px;
   padding: 24px 16px;
+  @media screen and (max-width: 768px) {
+    padding: 12px;
+  }
 `;
 
 const SProvider = styled.div`
@@ -23,10 +26,7 @@ const SProvider = styled.div`
   align-items: center;
   flex-direction: column;
   cursor: pointer;
-  border-bottom: 2px solid rgba(195, 195, 195, 0.14);
-  &:last-child {
-    border: none;
-  }
+  border: 1px solid rgba(195, 195, 195, 0.14);
   @media (hover: hover) {
     &:hover ${SProviderContainer} {
       background-color: rgba(195, 195, 195, 0.14);

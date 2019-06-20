@@ -105,6 +105,10 @@ const SModalCard = styled.div<IModalCardStyleProps>`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : "800px")};
+
+  @media screen and (max-width: 768px) {
+    max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : "500px")};
+  }
 `;
 
 const SQRCodeDescription = styled(SDescription)`
@@ -356,6 +360,10 @@ class Web3Connect extends React.Component<
                 )}
                 {!(injectedProvider && mobile) && (
                   <React.Fragment>
+                    <Provider
+                      name={"WalletConnect"}
+                      onClick={this.onConnectToWalletConnectProvider}
+                    />
                     {displayPortis && (
                       <Provider
                         name={"Portis"}
@@ -369,11 +377,6 @@ class Web3Connect extends React.Component<
                         onClick={this.onConnectToFortmaticProvider}
                       />
                     )}
-
-                    <Provider
-                      name={"WalletConnect"}
-                      onClick={this.onConnectToWalletConnectProvider}
-                    />
                   </React.Fragment>
                 )}
               </SModalCard>

@@ -19,8 +19,6 @@ export function checkInjectedProviders() {
     });
   }
 
-  console.log("[checkInjectedProviders] result", result);
-
   return result;
 }
 
@@ -36,8 +34,6 @@ export function getInjectProvider(): string | null {
       }
     });
   }
-  console.log("[getInjectProvider] result", result);
-
   return result;
 }
 
