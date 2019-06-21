@@ -19,9 +19,10 @@ import { noop, getInjectProvider } from "./utils";
 const WEB3_CONNECT_MODAL_ID = "WEB3_CONNECT_MODAL_ID";
 
 interface IWeb3ConnectCoreOptions {
-  connectCb: ConnectCallback;
-  closeCb: NoopFunction;
-  errorCb: ErrorCallback;
+  onConnect: ConnectCallback;
+  onClose: NoopFunction;
+  onError: ErrorCallback;
+  noModal?: boolean;
   lightboxOpacity?: number;
   providerOptions: IProviderOptions;
 }
@@ -32,18 +33,23 @@ class Web3ConnectCore {
   private connectCb: ConnectCallback;
   private closeCb: NoopFunction;
   private errorCb: ErrorCallback;
-  injectedProvider: string | null;
+  private noModal: boolean;
+  private injectedProvider: string | null;
   private lightboxOpacity: number;
   private providerOptions: IProviderOptions;
 
   constructor(opts: IWeb3ConnectCoreOptions) {
-    this.connectCb = opts.connectCb || noop;
-    this.closeCb = opts.closeCb || noop;
-    this.errorCb = opts.errorCb || noop;
+    console.log("[Web3ConnectCore] opts", opts);
+    this.connectCb = opts.onConnect || noop;
+    this.closeCb = opts.onClose || noop;
+    this.errorCb = opts.onError || noop;
+    this.noModal = typeof opts.noModal !== "undefined" ? opts.noModal : false;
     this.injectedProvider = getInjectProvider();
     this.lightboxOpacity = opts.lightboxOpacity || 0.4;
     this.providerOptions = opts.providerOptions || {};
-    this.renderMainModal();
+    if (!this.noModal) {
+      this.renderMainModal();
+    }
   }
 
   public connectToInjected = async () => {
@@ -110,24 +116,31 @@ class Web3ConnectCore {
 
   public connectToWalletConnect = async () => {
     if (this.uri) {
-      this.setState({ uri: "" });
+      if (!this.noModal) {
+        this.setState({ uri: "" });
+      }
       return;
     }
     const bridge = "https://bridge.walletconnect.org";
-    const provider = new WalletConnectProvider({ bridge, qrcode: false });
+    const provider = new WalletConnectProvider({
+      bridge,
+      qrcode: this.noModal
+    });
 
     if (!provider._walletConnector.connected) {
       await provider._walletConnector.createSession();
 
-      const { uri } = provider._walletConnector;
-
-      this.setState({ uri });
+      if (!this.noModal) {
+        this.setState({ uri: provider._walletConnector.uri });
+      }
 
       provider._walletConnector.on("connect", async (error: Error) => {
         if (error) {
           throw error;
         }
-        this.setState({ uri: "" });
+        if (!this.noModal) {
+          this.setState({ uri: "" });
+        }
 
         this.onConnect(provider);
       });
@@ -137,6 +150,9 @@ class Web3ConnectCore {
   };
 
   public toggleModal = async () => {
+    if (this.noModal) {
+      return;
+    }
     const d = typeof window !== "undefined" ? document : "";
     const body = d ? d.body || d.getElementsByTagName("body")[0] : "";
     if (body) {

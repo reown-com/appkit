@@ -2,7 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import Web3 from 'web3'
 // @ts-ignore
-import Web3Connect from 'web3connect'
+import Web3ConnectReact, { Web3Connect } from 'web3connect'
 import Column from './components/Column'
 import Wrapper from './components/Wrapper'
 import Header from './components/Header'
@@ -71,6 +71,10 @@ let accountInterval: any = null
 class App extends React.Component<any, any> {
   public state: IAppState = {
     ...INITIAL_STATE
+  }
+
+  public componentDidMount() {
+    window.Web3Connect = Web3Connect
   }
 
   public onConnect = async (provider: any) => {
@@ -163,7 +167,7 @@ class App extends React.Component<any, any> {
             ) : (
               <SLanding center>
                 <h3>{`Try out Web3Connect`}</h3>
-                <Web3Connect
+                <Web3ConnectReact
                   providerOptions={{
                     portis: {
                       id: process.env.REACT_APP_PORTIS_ID,
@@ -174,10 +178,11 @@ class App extends React.Component<any, any> {
                     }
                   }}
                   onConnect={(provider: any) => {
+                    console.log('[onConnect] provider', provider) // tslint:disable-line
                     this.onConnect(provider)
                   }}
                   onClose={() => {
-                    // do nothing
+                    console.log('[onClose]') // tslint:disable-line
                   }}
                 />
               </SLanding>
