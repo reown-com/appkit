@@ -12,6 +12,7 @@ declare global {
   interface Window {
     ethereum: any;
     web3: any;
+    updateWeb3ConnectMainModal: any;
   }
 }
 
@@ -114,6 +115,7 @@ interface IWeb3ConnectMainModalProps {
   show: boolean;
   uri: string;
   onClose: NoopFunction;
+  resetState: NoopFunction;
   injectedProvider: string | null;
   lightboxOpacity: number;
   providerOptions: IProviderOptions;
@@ -143,10 +145,16 @@ class Web3ConnectMainModal extends React.Component<
   IWeb3ConnectMainModalProps,
   IWeb3ConnectMainModalState
 > {
+  constructor(props: IWeb3ConnectMainModalProps) {
+    super(props);
+    window.updateWeb3ConnectMainModal = (state: IWeb3ConnectMainModalState) =>
+      this.setState(state);
+  }
   public static propTypes = {
     show: PropTypes.bool.isRequired,
     uri: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
+    resetState: PropTypes.func.isRequired,
     injectedProvider: PropTypes.string.isRequired,
     lightboxOpacity: PropTypes.number.isRequired,
     providerOptions: PropTypes.object.isRequired,
@@ -160,15 +168,17 @@ class Web3ConnectMainModal extends React.Component<
   public mainModalCard?: HTMLDivElement | null;
 
   public state: IWeb3ConnectMainModalState = {
-    ...INITIAL_STATE
+    ...INITIAL_STATE,
+    show: this.props.show || INITIAL_STATE.show,
+    uri: this.props.uri || INITIAL_STATE.uri
   };
 
   public componentDidUpdate(
     prevProps: IWeb3ConnectMainModalProps,
     prevState: IWeb3ConnectMainModalState
   ) {
-    if (prevProps.show && !this.props.show && prevProps.uri) {
-      this.setState({ uri: "" });
+    if (prevState.show && !this.state.show && prevState.uri) {
+      this.props.resetState();
     }
     if (this.lightboxRef) {
       const lightboxRect = this.lightboxRef.getBoundingClientRect();
@@ -196,11 +206,9 @@ class Web3ConnectMainModal extends React.Component<
   }
 
   public render = () => {
-    const { mobile, lightboxOffset, qrcodeSize } = this.state;
+    const { show, uri, mobile, lightboxOffset, qrcodeSize } = this.state;
 
     const {
-      show,
-      uri,
       onClose,
       injectedProvider,
       lightboxOpacity,

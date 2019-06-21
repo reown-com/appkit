@@ -177,7 +177,7 @@ class App extends React.Component<any, any> {
                     this.onConnect(provider)
                   }}
                   onClose={() => {
-                    console.log('[Web3Connect] onClose') // tslint:disable-line
+                    // do nothing
                   }}
                 />
               </SLanding>

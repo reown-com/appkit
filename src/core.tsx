@@ -110,7 +110,7 @@ class Web3ConnectCore {
 
   public connectToWalletConnect = async () => {
     if (this.uri) {
-      this.uri = "";
+      this.setState({ uri: "" });
       return;
     }
     const bridge = "https://bridge.walletconnect.org";
@@ -119,13 +119,15 @@ class Web3ConnectCore {
     if (!provider._walletConnector.connected) {
       await provider._walletConnector.createSession();
 
-      this.uri = provider._walletConnector.uri;
+      const { uri } = provider._walletConnector;
+
+      this.setState({ uri });
 
       provider._walletConnector.on("connect", async (error: Error) => {
         if (error) {
           throw error;
         }
-        this.uri = "";
+        this.setState({ uri: "" });
 
         this.onConnect(provider);
       });
@@ -144,7 +146,7 @@ class Web3ConnectCore {
         body.style.position = "fixed";
       }
     }
-    this.show = !this.show;
+    this.setState({ show: !this.show });
   };
 
   private onError = async (error: any) => {
@@ -162,6 +164,20 @@ class Web3ConnectCore {
     this.closeCb();
   };
 
+  private setState = (state: any) => {
+    Object.keys(state).forEach(key => {
+      this[key] = state[key];
+    });
+    window.updateWeb3ConnectMainModal(state);
+  };
+
+  private resetState = () => {
+    this.setState({
+      show: false,
+      uri: ""
+    });
+  };
+
   public renderMainModal() {
     const el = document.createElement("div");
     el.id = WEB3_CONNECT_MODAL_ID;
@@ -171,6 +187,7 @@ class Web3ConnectCore {
         show={this.show}
         uri={this.uri}
         onClose={this.onClose}
+        resetState={this.resetState}
         injectedProvider={this.injectedProvider}
         lightboxOpacity={this.lightboxOpacity}
         providerOptions={this.providerOptions}
