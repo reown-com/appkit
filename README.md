@@ -37,7 +37,7 @@ import Web3Connect from "web3connect";
       key: "FORTMATIC_KEY"
     },
     squarelink: {
-      key: "SQUARELINK_KEY",
+      id: "SQUARELINK_KEY",
       network: "mainnet"
     }
   }}
