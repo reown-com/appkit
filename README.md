@@ -6,7 +6,7 @@
 
 web3connect a react commponet that helps developers to add support to multiple providers in their apps with simple configuration.
 
-By defaut Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Fortmatic** and **Portis**.
+By defaut Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Fortmatic**, **Portis**, and **Squarelink**.
 
 ## Preview
 
@@ -35,6 +35,10 @@ import Web3Connect from "web3connect";
     },
     fortmatic: {
       key: "FORTMATIC_KEY"
+    },
+    squarelink: {
+      key: "SQUARELINK_KEY",
+      network: "mainnet"
     }
   }}
   onConnect={(provider: any) => {
@@ -53,6 +57,8 @@ The Web3Connect takes 3 props:
   - Portis: requires the id of the dapp and the network.
 
   - Fortmatic: requires the api key.
+
+  - Squarelink: requires the id of your dapp and network.
 
 - onConnect: function (required): Triggers when a web3 provider has been connected.
 

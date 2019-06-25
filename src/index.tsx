@@ -5,6 +5,8 @@ import Portis from "@portis/web3";
 // @ts-ignore
 import Fortmatic from "fortmatic";
 // @ts-ignore
+import Squarelink from "squarelink";
+// @ts-ignore
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Button from "./components/Button";
 import Provider from "./components/Provider";
@@ -291,6 +293,30 @@ class Web3Connect extends React.Component<
     }
   };
 
+  public onConnectToSquarelinkProvider = async () => {
+    const { providerOptions } = this.state;
+    if (
+      providerOptions &&
+      providerOptions.squarelink &&
+      providerOptions.squarelink.id
+    ) {
+      try {
+        const id = providerOptions.squarelink.id;
+        const network = providerOptions.squarelink.network || "mainnet";
+        const sqlk = new Squarelink(id, network);
+        sqlk.getProvider().enable(() => {
+          this.onConnect(sqlk.getProvider());
+        });
+      } catch (error) {
+        console.error(error);
+        return;
+      }
+    } else {
+      console.error("Missing Squarelink Client Id");
+      return;
+    }
+  };
+
   public onConnectToWalletConnectProvider = async () => {
     if (this.state.uri) {
       await this.setState({ uri: "" });
@@ -338,6 +364,9 @@ class Web3Connect extends React.Component<
     const displayPortis =
       providerOptions && providerOptions.portis && providerOptions.portis.id;
 
+    const displaySquarelink =
+      providerOptions && providerOptions.squarelink && providerOptions.squarelink.id;
+
     const hideMainModalCard = !show || (!!uri && window.innerWidth <= 860);
     return (
       <React.Fragment>
@@ -376,6 +405,13 @@ class Web3Connect extends React.Component<
                       <Provider
                         name={"Fortmatic"}
                         onClick={this.onConnectToFortmaticProvider}
+                      />
+                    )}
+
+                    {displaySquarelink && (
+                      <Provider
+                        name={"Squarelink"}
+                        onClick={this.onConnectToSquarelinkProvider}
                       />
                     )}
                   </React.Fragment>

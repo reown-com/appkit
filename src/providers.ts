@@ -10,6 +10,8 @@ import PortisLogo from "./assets/portis.svg";
 // @ts-ignore
 import FortmaticLogo from "./assets/fortmatic.svg";
 // @ts-ignore
+import SquarelinkLogo from "./assets/squarelink.svg";
+// @ts-ignore
 import TrustLogo from "./assets/wallets/trust.png";
 // @ts-ignore
 import DapperLogo from "./assets/wallets/dapper.png";
@@ -67,6 +69,15 @@ const providers: IProviderInfo[] = [
     logo: FortmaticLogo,
     type: "web",
     check: "isFortmatic",
+    styled: {
+      noShadow: true
+    }
+  },
+  {
+    name: "Squarelink",
+    logo: SquarelinkLogo,
+    type: "web",
+    check: "isSquarelink",
     styled: {
       noShadow: true
     }

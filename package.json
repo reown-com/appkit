@@ -21,7 +21,8 @@
     "metamask",
     "walletconnect",
     "portis",
-    "fortmatic"
+    "fortmatic",
+    "squarelink"
   ],
   "author": "Web3Connect <web3connect.com>",
   "license": "LGPL-3.0",
@@ -60,7 +61,7 @@
     "ts-loader": "^5.3.3",
     "typescript": "^3.1.3",
     "webpack": "^4.28.3",
-    "webpack-cli": "^3.2.1"
+    "webpack-cli": "^3.3.5"
   },
   "dependencies": {
     "@portis/web3": "^2.0.0-beta.30",
@@ -69,6 +70,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "squarelink": "^0.3.9",
     "styled-components": "4.2.0",
     "url-loader": "^1.1.2"
   }
