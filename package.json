@@ -1,6 +1,6 @@
 {
   "name": "web3connect",
-  "version": "1.0.0-beta.9",
+  "version": "1.0.0-beta.10",
   "description": "A react component to connect to multiple wallets using web3 providers",
   "scripts": {
     "clean": "rm -rf lib",
