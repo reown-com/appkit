@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-import { getProviderInfo, formatProviderDescription } from "../utils";
+import { getProviderInfo, formatProviderDescription } from "../helpers/utils";
 import { SIcon, STitle, SDescription } from "./common";
 
 const SProviderContainer = styled.div`

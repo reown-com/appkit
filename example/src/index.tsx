@@ -14,7 +14,7 @@ declare global {
     blockies: any
     web3: any
     ethereum: any
-    walletConnector: any
+    Web3Connect: any
   }
 }
 
