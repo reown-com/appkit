@@ -304,9 +304,9 @@ class Web3Connect extends React.Component<
         const id = providerOptions.squarelink.id;
         const network = providerOptions.squarelink.network || "mainnet";
         const sqlk = new Squarelink(id, network);
-        sqlk.getProvider().enable(() => {
+        sqlk.getProvider().enable().then(() => {
           this.onConnect(sqlk.getProvider());
-        });
+        }).catch(err => console.log);
       } catch (error) {
         console.error(error);
         return;
