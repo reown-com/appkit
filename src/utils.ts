@@ -20,6 +20,12 @@ export function checkInjectedProviders() {
         fallbackProvider = false;
       }
     });
+    if (result["isMetamask"]) {
+      if (window.web3.currentProvider.isNiftyWallet) {
+        result["isMetamask"] = false;
+        result["isNiftyWallet"] = true;
+      }
+    }
     if (fallbackProvider) {
       result["isWeb3"] = true;
     }

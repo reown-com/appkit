@@ -6,6 +6,8 @@ import WalletConnectLogo from "./assets/walletconnect-circle.svg";
 // @ts-ignore
 import MetaMaskLogo from "./assets/metamask.svg";
 // @ts-ignore
+import NiftyWalletLogo from "./assets/niftyWallet.svg";
+// @ts-ignore
 import PortisLogo from "./assets/portis.svg";
 // @ts-ignore
 import FortmaticLogo from "./assets/fortmatic.svg";
@@ -65,6 +67,15 @@ const providers: IProviderInfo[] = [
     }
   },
   {
+    name: "Nifty Wallet",
+    logo: NiftyWalletLogo,
+    type: "injected",
+    check: "isNiftyWallet",
+    styled: {
+      noShadow: true
+    }
+  },
+  {
     name: "Portis",
     logo: PortisLogo,
     type: "web",
@@ -88,7 +99,7 @@ const providers: IProviderInfo[] = [
     type: "injected",
     check: "isDapper",
     styled: {
-      noShadow: false
+      noShadow: true
     }
   },
   {
