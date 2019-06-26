@@ -122,6 +122,7 @@ interface IModalProps {
   connectToInjected: SimpleFunction;
   connectToFortmatic: SimpleFunction;
   connectToPortis: SimpleFunction;
+  connectToSquarelink: SimpleFunction;
   connectToWalletConnect: SimpleFunction;
 }
 
@@ -158,6 +159,7 @@ class Modal extends React.Component<IModalProps, IModalState> {
     connectToInjected: PropTypes.func.isRequired,
     connectToFortmatic: PropTypes.func.isRequired,
     connectToPortis: PropTypes.func.isRequired,
+    connectToSquarelink: PropTypes.func.isRequired,
     connectToWalletConnect: PropTypes.func.isRequired
   };
 
@@ -210,6 +212,7 @@ class Modal extends React.Component<IModalProps, IModalState> {
       connectToInjected,
       connectToFortmatic,
       connectToPortis,
+      connectToSquarelink,
       connectToWalletConnect
     } = this.props;
 
@@ -219,7 +222,14 @@ class Modal extends React.Component<IModalProps, IModalState> {
       providerOptions.fortmatic.key;
 
     const displayPortis =
-      providerOptions && providerOptions.portis && providerOptions.portis.id;
+      providerOptions &&
+      providerOptions.portis &&
+      providerOptions.portis.id;
+
+    const displaySquarelink =
+      providerOptions &&
+      providerOptions.squarelink &&
+      providerOptions.squarelink.id;
 
     const hideMainModalCard = !show || (!!uri && window.innerWidth <= 860);
     return (
@@ -248,6 +258,10 @@ class Modal extends React.Component<IModalProps, IModalState> {
 
                   {displayFortmatic && (
                     <Provider name={"Fortmatic"} onClick={connectToFortmatic} />
+                  )}
+
+                  {displaySquarelink && (
+                    <Provider name={"Squarelink"} onClick={connectToSquarelink} />
                   )}
                 </React.Fragment>
               )}

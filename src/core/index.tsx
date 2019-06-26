@@ -71,6 +71,17 @@ class Core {
     }
   };
 
+  public connectToSquarelink = async () => {
+    try {
+      const provider = await connectors.ConnectToSquarelink(
+        this.providerOptions.squarelink
+      );
+      this.onConnect(provider);
+    } catch (error) {
+      this.onError(error);
+    }
+  };
+
   public connectToWalletConnect = async () => {
     if (this.uri) {
       this.setState({ uri: "" });
@@ -153,6 +164,7 @@ class Core {
         connectToInjected={this.connectToInjected}
         connectToFortmatic={this.connectToFortmatic}
         connectToPortis={this.connectToPortis}
+        connectToSquarelink={this.connectToSquarelink}
         connectToWalletConnect={this.connectToWalletConnect}
       />,
       document.getElementById(WEB3_CONNECT_MODAL_ID)

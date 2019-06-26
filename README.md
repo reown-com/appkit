@@ -4,9 +4,9 @@ A single Web3 / Ethereum provider solution for all Wallets
 
 ## Introduction
 
-web3connect a react commponet that helps developers to add support to multiple providers in their apps with simple configuration.
+web3connect a react component that helps developers to add support to multiple providers in their apps with simple configuration.
 
-By defaut Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Fortmatic** and **Portis**.
+By defaut Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Fortmatic**, **Portis**, and **Squarelink**.
 
 ## Preview
 
@@ -47,6 +47,10 @@ import Web3Connect from "web3connect";
     },
     fortmatic: {
       key: "FORTMATIC_KEY" // required
+    },
+    squarelink: {
+      id: "SQUARELINK_ID", // required
+      network: "mainnet"
     }
   }}
   onConnect={(provider: any) => {
@@ -72,6 +76,10 @@ const web3Connect = new Web3Connect.Core({
   },
   fortmatic: {
     key: "FORTMATIC_KEY" // required
+  },
+  squarelink: {
+    id: "SQUARELINK_ID", // required
+    network: "mainnet" // optional
   }
 });
 
@@ -97,7 +105,8 @@ import {
   ConnectToInjected,
   ConnectToWalletConnect,
   ConnectToPortis,
-  ConnectToFortmatic
+  ConnectToFortmatic,
+  ConnectToSquarelink,
 } from "web3connect";
 
 // For inject providers in dapp browsers
@@ -115,8 +124,14 @@ const provider = await ConnectToPortis({
 });
 
 // For Fortmatic
-const provider = await ConnectToPortis({
+const provider = await ConnectToFortmatic({
   key: "FORTMATIC_KEY" // required
+});
+
+// For Squarelink
+const provider = await ConnectToSquarelink({
+  id: "SQUARELINK_ID", // required
+  network: "mainnet"  // optional
 });
 ```
 
@@ -134,7 +149,13 @@ const provider = await ConnectToPortis({
     - network: choose initial network name (optional)
 
   - Fortmatic:
+
     - key: the secret key (required)
+
+  - Squarelink:
+
+    - id: the dapp id registered (required)
+    - network: choose initial network name (optional)
 
 ## Collaboration
 
