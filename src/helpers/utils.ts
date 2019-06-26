@@ -5,8 +5,8 @@ export function checkInjectedProviders() {
   const result = {
     injectedAvailable: !!window.ethereum || !!window.web3
   };
-
   if (result.injectedAvailable) {
+    let fallbackProvider = true;
     providers.forEach(provider => {
       result[provider.check] = window.ethereum
         ? window.ethereum[provider.check] ||
@@ -16,7 +16,19 @@ export function checkInjectedProviders() {
         : window.web3 && window.web3.currentProvider
         ? window.web3.currentProvider[provider.check]
         : false;
+      if (result[provider.check] == true) {
+        fallbackProvider = false;
+      }
     });
+    if (result["isMetamask"]) {
+      if (window.web3.currentProvider.isNiftyWallet) {
+        result["isMetamask"] = false;
+        result["isNiftyWallet"] = true;
+      }
+    }
+    if (fallbackProvider) {
+      result["isWeb3"] = true;
+    }
   }
 
   return result;

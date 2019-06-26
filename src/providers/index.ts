@@ -6,6 +6,8 @@ import WalletConnectLogo from "../assets/walletconnect-circle.svg";
 // @ts-ignore
 import MetaMaskLogo from "../assets/metamask.svg";
 // @ts-ignore
+import NiftyWalletLogo from "../assets/niftyWallet.png";
+// @ts-ignore
 import PortisLogo from "../assets/portis.svg";
 // @ts-ignore
 import FortmaticLogo from "../assets/fortmatic.svg";
@@ -23,6 +25,8 @@ import imTokenLogo from "../assets/wallets/imtoken.png";
 import StatusLogo from "../assets/wallets/status.png";
 // @ts-ignore
 import TokenaryLogo from "../assets/wallets/tokenary.png";
+// @ts-ignore
+import OperaLogo from "../assets/wallets/opera.png";
 
 export const fallbackProvider: IProviderInfo = {
   name: "Web3",
@@ -45,10 +49,28 @@ const providers: IProviderInfo[] = [
     }
   },
   {
+    name: "Web3",
+    logo: Web3DefaultLogo,
+    type: "injected",
+    check: "isWeb3",
+    styled: {
+      noShadow: false
+    }
+  },
+  {
     name: "MetaMask",
     logo: MetaMaskLogo,
     type: "injected",
     check: "isMetaMask",
+    styled: {
+      noShadow: true
+    }
+  },
+  {
+    name: "Nifty Wallet",
+    logo: NiftyWalletLogo,
+    type: "injected",
+    check: "isNiftyWallet",
     styled: {
       noShadow: true
     }
@@ -76,6 +98,15 @@ const providers: IProviderInfo[] = [
     logo: DapperLogo,
     type: "injected",
     check: "isDapper",
+    styled: {
+      noShadow: true
+    }
+  },
+  {
+    name: "Opera",
+    logo: OperaLogo,
+    type: "injected",
+    check: "isOpera",
     styled: {
       noShadow: false
     }
