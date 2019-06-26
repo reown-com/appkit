@@ -19,7 +19,6 @@ class Core {
   private show: boolean = false;
   private eventManager: EventManager = new EventManager();
   private injectedProvider: string | null = null;
-  private modal: boolean = true;
   private lightboxOpacity: number = 0.4;
   private providerOptions: IProviderOptions = {};
 
@@ -27,14 +26,11 @@ class Core {
     this.injectedProvider = getInjectProvider();
 
     if (opts) {
-      this.modal = typeof opts.modal === "undefined" || opts.modal !== false;
       this.lightboxOpacity = opts.lightboxOpacity || 0.4;
       this.providerOptions = opts.providerOptions || {};
     }
 
-    if (this.modal) {
-      this.renderModal();
-    }
+    this.renderModal();
   }
 
   public on(event: string, callback: (result: any) => void): void {
@@ -77,9 +73,7 @@ class Core {
 
   public connectToWalletConnect = async () => {
     if (this.uri) {
-      if (this.modal) {
-        this.setState({ uri: "" });
-      }
+      this.setState({ uri: "" });
       return;
     }
     try {
@@ -89,16 +83,12 @@ class Core {
           : {};
       const provider = await connectors.ConnectToWalletConnect({
         bridge: opts.bridge,
-        qrcode: !this.modal,
+        qrcode: false,
         onUri: (uri: string) => {
-          if (this.modal) {
-            this.setState({ uri });
-          }
+          this.setState({ uri });
         }
       });
-      if (this.modal) {
-        this.setState({ uri: "" });
-      }
+      this.setState({ uri: "" });
       this.onConnect(provider);
     } catch (error) {
       this.onError(error);
@@ -106,9 +96,6 @@ class Core {
   };
 
   public toggleModal = async () => {
-    if (!this.modal) {
-      return;
-    }
     const d = typeof window !== "undefined" ? document : "";
     const body = d ? d.body || d.getElementsByTagName("body")[0] : "";
     if (body) {

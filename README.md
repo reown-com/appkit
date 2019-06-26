@@ -124,14 +124,12 @@ const provider = await ConnectToPortis({
 
 - providerOptions (optional): An object mapping arbitrary string that adds the required configuration to multiple web3 providers.
 
-  - WalletConnect
-
+  - WalletConnect:
     - bridge: bridge url (optional)
 
-  - Portis
-
+  - Portis:
     - id: the app id registered (required)
-    - netowork: choose initial network name (optional)
+    - network: choose initial network name (optional)
 
   - Fortmatic:
     - key: the secret key (required)

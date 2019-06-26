@@ -9,7 +9,9 @@ export interface IWalletConnectConnectorOptions {
 
 const ConnectToWalletConnect = (opts: IWalletConnectConnectorOptions) => {
   return new Promise(async (resolve, reject) => {
-    console.log("[ConnectToWalletConnect] opts", opts);
+    if (!opts.qrcode && !opts.onUri) {
+      throw new Error("Must provide onUri callback when qrcode is disabled");
+    }
     const defaultBridge = "https://bridge2.walletconnect.org";
     const provider = new WalletConnectProvider({
       bridge: opts.bridge || defaultBridge,
