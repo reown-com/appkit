@@ -6,9 +6,9 @@ import WalletConnectLogo from "../assets/walletconnect-circle.svg";
 // @ts-ignore
 import MetaMaskLogo from "../assets/metamask.svg";
 // @ts-ignore
-import NiftyWalletLogo from "./assets/niftyWallet.svg";
+import NiftyWalletLogo from "../assets/niftyWallet.svg";
 // @ts-ignore
-import PortisLogo from "./assets/portis.svg";
+import PortisLogo from "../assets/portis.svg";
 // @ts-ignore
 import FortmaticLogo from "../assets/fortmatic.svg";
 // @ts-ignore
@@ -24,9 +24,9 @@ import imTokenLogo from "../assets/wallets/imtoken.png";
 // @ts-ignore
 import StatusLogo from "../assets/wallets/status.png";
 // @ts-ignore
-import TokenaryLogo from "./assets/wallets/tokenary.png";
+import TokenaryLogo from "../assets/wallets/tokenary.png";
 // @ts-ignore
-import OperaLogo from "./assets/wallets/opera.png";
+import OperaLogo from "../assets/wallets/opera.png";
 
 export const fallbackProvider: IProviderInfo = {
   name: "Web3",
