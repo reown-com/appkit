@@ -1,4 +1,4 @@
-import providers, { fallbackProvider } from "./providers";
+import providers, { fallbackProvider } from "../providers";
 import { IProviderInfo } from "./types";
 
 export function checkInjectedProviders() {

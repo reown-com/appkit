@@ -19,7 +19,7 @@ const ConnectToFortmatic = async (opts: IFortmaticConnectorOptions) => {
         throw new Error("Failed to login to Fortmatic");
       }
     } catch (error) {
-      throw new Error(error);
+      throw error;
     }
   } else {
     throw new Error("Missing Fortmatic key");

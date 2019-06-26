@@ -1,9 +1,8 @@
 import * as React from "react";
-import Button from "./components/Button";
-import Core from "./core";
-import connectors from "./connectors";
+import Button from "./Button";
+import Core from "../core";
 
-class Web3ConnectButton extends React.Component<any, any> {
+class ConnectButton extends React.Component<any, any> {
   public core: Core;
 
   constructor(props: any) {
@@ -13,19 +12,18 @@ class Web3ConnectButton extends React.Component<any, any> {
       providerOptions: props.providerOptions
     });
     this.core.on("connect", props.onConnect);
+    this.core.on("disconnect", props.onDisconnect);
     this.core.on("close", props.onClose);
     this.core.on("error", props.onError);
   }
 
   public render = () => {
     return (
-      <Button onClick={this.core.toggleModal}>{"Connect to Wallet"}</Button>
+      <Button onClick={this.core.toggleModal}>
+        {this.props.label || "Connect"}
+      </Button>
     );
   };
 }
 
-export default {
-  Button: Web3ConnectButton,
-  Core,
-  ...connectors
-};
+export default ConnectButton;

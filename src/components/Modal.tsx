@@ -1,28 +1,28 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import styled from "styled-components";
-import Provider from "./components/Provider";
-import QRCodeDisplay from "./components/QRCodeDisplay";
-import { SDescription } from "./components/common";
-import { isMobile } from "./utils";
-import { SimpleFunction, IProviderOptions } from "./types";
+import Provider from "./Provider";
+import QRCodeDisplay from "./QRCodeDisplay";
+import { SDescription } from "./common";
+import { isMobile } from "../helpers/utils";
+import { SimpleFunction, IProviderOptions } from "../helpers/types";
 
 declare global {
   // tslint:disable-next-line
   interface Window {
     ethereum: any;
     web3: any;
-    updateWeb3ConnectMainModal: any;
+    updateWeb3ConnectModal: any;
   }
 }
 
-interface IWeb3ConnectMainModalStyleProps {
+interface IModalStyleProps {
   show: boolean;
   offset: number;
   opacity?: number;
 }
 
-const SLightbox = styled.div<IWeb3ConnectMainModalStyleProps>`
+const SLightbox = styled.div<IModalStyleProps>`
   transition: opacity 0.1s ease-in-out;
   text-align: center;
   position: absolute;
@@ -111,7 +111,7 @@ const SQRCodeDescription = styled(SDescription)`
   margin-top: 30px;
 `;
 
-interface IWeb3ConnectMainModalProps {
+interface IModalProps {
   show: boolean;
   uri: string;
   onClose: SimpleFunction;
@@ -125,7 +125,7 @@ interface IWeb3ConnectMainModalProps {
   connectToWalletConnect: SimpleFunction;
 }
 
-interface IWeb3ConnectMainModalState {
+interface IModalState {
   show: boolean;
   uri: string;
   mobile: boolean;
@@ -133,7 +133,7 @@ interface IWeb3ConnectMainModalState {
   qrcodeSize: number;
 }
 
-const INITIAL_STATE: IWeb3ConnectMainModalState = {
+const INITIAL_STATE: IModalState = {
   show: false,
   uri: "",
   mobile: isMobile(),
@@ -141,13 +141,10 @@ const INITIAL_STATE: IWeb3ConnectMainModalState = {
   qrcodeSize: 382
 };
 
-class Web3ConnectMainModal extends React.Component<
-  IWeb3ConnectMainModalProps,
-  IWeb3ConnectMainModalState
-> {
-  constructor(props: IWeb3ConnectMainModalProps) {
+class Modal extends React.Component<IModalProps, IModalState> {
+  constructor(props: IModalProps) {
     super(props);
-    window.updateWeb3ConnectMainModal = (state: IWeb3ConnectMainModalState) =>
+    window.updateWeb3ConnectModal = (state: IModalState) =>
       this.setState(state);
   }
   public static propTypes = {
@@ -167,16 +164,13 @@ class Web3ConnectMainModal extends React.Component<
   public lightboxRef?: HTMLDivElement | null;
   public mainModalCard?: HTMLDivElement | null;
 
-  public state: IWeb3ConnectMainModalState = {
+  public state: IModalState = {
     ...INITIAL_STATE,
     show: this.props.show || INITIAL_STATE.show,
     uri: this.props.uri || INITIAL_STATE.uri
   };
 
-  public componentDidUpdate(
-    prevProps: IWeb3ConnectMainModalProps,
-    prevState: IWeb3ConnectMainModalState
-  ) {
+  public componentDidUpdate(prevProps: IModalProps, prevState: IModalState) {
     if (prevState.show && !this.state.show && prevState.uri) {
       this.props.resetState();
     }
@@ -275,4 +269,4 @@ class Web3ConnectMainModal extends React.Component<
   };
 }
 
-export default Web3ConnectMainModal;
+export default Modal;

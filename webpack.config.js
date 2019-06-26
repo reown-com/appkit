@@ -3,7 +3,7 @@ const path = require("path");
 module.exports = {
   mode: "production",
   entry: {
-    index: "./src/index.tsx"
+    index: "./src/index.ts"
   },
   output: {
     path: path.resolve(__dirname, "lib"),
@@ -27,8 +27,8 @@ module.exports = {
             loader: "url-loader",
             options: {
               limit: 65535,
-              name: 'static/media/[name].[hash:8].[ext]',
-            },
+              name: "static/media/[name].[hash:8].[ext]"
+            }
           }
         ]
       }

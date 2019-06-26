@@ -1,38 +1,39 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import MainModal from "./MainModal";
-import { IProviderOptions } from "./types";
-
-import { getInjectProvider } from "./utils";
+import Modal from "../components/Modal";
+import { IProviderOptions } from "../helpers/types";
+import { getInjectProvider } from "../helpers/utils";
 import connectors from "./connectors";
 import EventManager from "./events";
 
 const WEB3_CONNECT_MODAL_ID = "WEB3_CONNECT_MODAL_ID";
 
-interface IWeb3ConnectCoreOptions {
+interface ICoreOptions {
   modal?: boolean;
   lightboxOpacity?: number;
   providerOptions: IProviderOptions;
 }
 
-class Web3ConnectCore {
+class Core {
   private uri: string = "";
   private show: boolean = false;
-  private eventManager = new EventManager();
+  private eventManager: EventManager = new EventManager();
+  private injectedProvider: string | null = null;
+  private modal: boolean = true;
+  private lightboxOpacity: number = 0.4;
+  private providerOptions: IProviderOptions = {};
 
-  private modal: boolean;
-  private injectedProvider: string | null;
-  private lightboxOpacity: number;
-  private providerOptions: IProviderOptions;
-
-  constructor(opts: IWeb3ConnectCoreOptions) {
-    this.modal = typeof opts.modal === "undefined" || opts.modal !== false;
+  constructor(opts?: ICoreOptions) {
     this.injectedProvider = getInjectProvider();
-    this.lightboxOpacity = opts.lightboxOpacity || 0.4;
-    this.providerOptions = opts.providerOptions || {};
+
+    if (opts) {
+      this.modal = typeof opts.modal === "undefined" || opts.modal !== false;
+      this.lightboxOpacity = opts.lightboxOpacity || 0.4;
+      this.providerOptions = opts.providerOptions || {};
+    }
 
     if (this.modal) {
-      this.renderMainModal();
+      this.renderModal();
     }
   }
 
@@ -54,7 +55,7 @@ class Web3ConnectCore {
 
   public connectToFortmatic = async () => {
     try {
-      const provider = await connectors.ConnectToPortis(
+      const provider = await connectors.ConnectToFortmatic(
         this.providerOptions.fortmatic
       );
       this.onConnect(provider);
@@ -82,9 +83,13 @@ class Web3ConnectCore {
       return;
     }
     try {
+      const opts =
+        this.providerOptions && this.providerOptions.walletconnect
+          ? this.providerOptions.walletconnect
+          : {};
       const provider = await connectors.ConnectToWalletConnect({
-        bridge: this.providerOptions.walletconnect.bridge,
-        qrcode: this.modal,
+        bridge: opts.bridge,
+        qrcode: !this.modal,
         onUri: (uri: string) => {
           if (this.modal) {
             this.setState({ uri });
@@ -135,7 +140,7 @@ class Web3ConnectCore {
     Object.keys(state).forEach(key => {
       this[key] = state[key];
     });
-    window.updateWeb3ConnectMainModal(state);
+    window.updateWeb3ConnectModal(state);
   };
 
   private resetState = () => {
@@ -145,12 +150,12 @@ class Web3ConnectCore {
     });
   };
 
-  public renderMainModal() {
+  public renderModal() {
     const el = document.createElement("div");
     el.id = WEB3_CONNECT_MODAL_ID;
     document.body.appendChild(el);
     ReactDOM.render(
-      <MainModal
+      <Modal
         show={this.show}
         uri={this.uri}
         onClose={this.onClose}
@@ -168,4 +173,4 @@ class Web3ConnectCore {
   }
 }
 
-export default Web3ConnectCore;
+export default Core;
