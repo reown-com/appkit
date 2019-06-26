@@ -1,5 +1,6 @@
 // @ts-ignore
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import { SimpleFunction } from "src/helpers/types";
 
 export interface IWalletConnectConnectorOptions {
   bridge?: string;
@@ -9,20 +10,24 @@ export interface IWalletConnectConnectorOptions {
 
 const ConnectToWalletConnect = (opts: IWalletConnectConnectorOptions) => {
   return new Promise(async (resolve, reject) => {
-    if (!opts.qrcode && !opts.onUri) {
+    let bridge = "https://bridge.walletconnect.org";
+    let qrcode = true;
+    let onUri: SimpleFunction | null = null;
+    if (opts) {
+      bridge = opts.bridge || bridge;
+      qrcode = typeof opts.qrcode !== "undefined" ? opts.qrcode : qrcode;
+      onUri = opts.onUri || onUri;
+    }
+    if (!qrcode && !onUri) {
       throw new Error("Must provide onUri callback when qrcode is disabled");
     }
-    const defaultBridge = "https://bridge2.walletconnect.org";
-    const provider = new WalletConnectProvider({
-      bridge: opts.bridge || defaultBridge,
-      qrcode: opts.qrcode
-    });
+    const provider = new WalletConnectProvider({ bridge, qrcode });
 
     if (!provider._walletConnector.connected) {
       await provider._walletConnector.createSession();
 
-      if (opts.onUri) {
-        opts.onUri(provider._walletConnector.uri);
+      if (onUri) {
+        onUri(provider._walletConnector.uri);
       }
 
       provider._walletConnector.on("connect", async (error: Error) => {
