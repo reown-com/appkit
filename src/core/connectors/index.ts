@@ -9,5 +9,5 @@ export default {
   ConnectToPortis,
   ConnectToInjected,
   ConnectToFortmatic,
-  ConnectToSquarelink,
+  ConnectToSquarelink
 };

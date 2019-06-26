@@ -106,7 +106,7 @@ import {
   ConnectToWalletConnect,
   ConnectToPortis,
   ConnectToFortmatic,
-  ConnectToSquarelink,
+  ConnectToSquarelink
 } from "web3connect";
 
 // For inject providers in dapp browsers
