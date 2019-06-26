@@ -7,7 +7,7 @@
     "clean:example": "rm -rf example/build",
     "clean:node_modules": "rm -rf node_modules && cd example && rm -rf node_modules",
     "clean:all": "npm run clean && npm run clean:example && npm run clean:node_modules",
-    "bootstrap": "npm install && cd example && npm install && npm run link",
+    "bootstrap": "npm install && cd example && npm run bootstrap",
     "start": "npm run check && cd example && npm run start",
     "build": "webpack",
     "build:example": "npm run bootstrap && npm run build && cd example && npm run build",
