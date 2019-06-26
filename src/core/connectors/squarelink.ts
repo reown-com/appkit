@@ -24,4 +24,4 @@ const ConnectToSquarelink = async (opts: ISquarelinkConnectorOptions) => {
   });
 };
 
-export default ConnectToPortis;
+export default ConnectToSquarelink;

@@ -172,6 +172,10 @@ class App extends React.Component<any, any> {
                     },
                     fortmatic: {
                       key: process.env.REACT_APP_FORTMATIC_KEY
+                    },
+                    squarelink: {
+                      id: process.env.REACT_APP_SQUARELINK_ID,
+                      network: 'mainnet'
                     }
                   }}
                   onConnect={(provider: any) => {
