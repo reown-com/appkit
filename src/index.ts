@@ -5,5 +5,5 @@ import connectors from "./core/connectors";
 export default {
   Button: ConnectButton,
   Core,
-  connectors
+  ...connectors
 };
