@@ -120,7 +120,7 @@ const provider = await ConnectToPortis({
 });
 ```
 
-## Options
+##  Options
 
 - providerOptions (optional): An object mapping arbitrary string that adds the required configuration to multiple web3 providers.
 
