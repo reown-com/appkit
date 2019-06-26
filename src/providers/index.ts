@@ -6,7 +6,7 @@ import WalletConnectLogo from "../assets/walletconnect-circle.svg";
 // @ts-ignore
 import MetaMaskLogo from "../assets/metamask.svg";
 // @ts-ignore
-import NiftyWalletLogo from "../assets/niftyWallet.svg";
+import NiftyWalletLogo from "../assets/niftyWallet.png";
 // @ts-ignore
 import PortisLogo from "../assets/portis.svg";
 // @ts-ignore
