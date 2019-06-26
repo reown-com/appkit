@@ -1,8 +1,11 @@
 import * as React from "react";
 import Button from "./components/Button";
 import Core from "./core";
+import allConnectors from "./connectors";
 
 export const Web3Connect = Core;
+
+export const connectors = allConnectors;
 
 class Web3ConnectReact extends React.Component<any, any> {
   public web3Connect: Core;
