@@ -1,22 +1,15 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import MainModal from "./MainModal";
-import {
-  IProviderOptions,
-  ConnectCallback,
-  ErrorCallback,
-  NoopFunction
-} from "./types";
+import { IProviderOptions } from "./types";
 
-import { noop, getInjectProvider } from "./utils";
+import { getInjectProvider } from "./utils";
 import connectors from "./connectors";
+import EventManager from "./events";
 
 const WEB3_CONNECT_MODAL_ID = "WEB3_CONNECT_MODAL_ID";
 
 interface IWeb3ConnectCoreOptions {
-  onConnect: ConnectCallback;
-  onClose: NoopFunction;
-  onError: ErrorCallback;
   modal?: boolean;
   lightboxOpacity?: number;
   providerOptions: IProviderOptions;
@@ -25,26 +18,29 @@ interface IWeb3ConnectCoreOptions {
 class Web3ConnectCore {
   private uri: string = "";
   private show: boolean = false;
-  private connectCb: ConnectCallback;
-  private closeCb: NoopFunction;
-  private errorCb: ErrorCallback;
+  private eventManager = new EventManager();
+
   private modal: boolean;
   private injectedProvider: string | null;
   private lightboxOpacity: number;
   private providerOptions: IProviderOptions;
 
   constructor(opts: IWeb3ConnectCoreOptions) {
-    console.log("[Web3ConnectCore] opts", opts);
-    this.connectCb = opts.onConnect || noop;
-    this.closeCb = opts.onClose || noop;
-    this.errorCb = opts.onError || noop;
     this.modal = typeof opts.modal === "undefined" || opts.modal !== false;
     this.injectedProvider = getInjectProvider();
     this.lightboxOpacity = opts.lightboxOpacity || 0.4;
     this.providerOptions = opts.providerOptions || {};
+
     if (this.modal) {
       this.renderMainModal();
     }
+  }
+
+  public on(event: string, callback: (result: any) => void): void {
+    this.eventManager.on({
+      event,
+      callback
+    });
   }
 
   public connectToInjected = async () => {
@@ -105,7 +101,7 @@ class Web3ConnectCore {
   };
 
   public toggleModal = async () => {
-    if (this.modal) {
+    if (!this.modal) {
       return;
     }
     const d = typeof window !== "undefined" ? document : "";
@@ -122,17 +118,17 @@ class Web3ConnectCore {
 
   private onError = async (error: any) => {
     await this.toggleModal();
-    this.errorCb(error);
+    this.eventManager.trigger("error", error);
   };
 
   private onConnect = async (provider: any) => {
     await this.toggleModal();
-    this.connectCb(provider);
+    this.eventManager.trigger("connect", provider);
   };
 
   private onClose = async () => {
     await this.toggleModal();
-    this.closeCb();
+    this.eventManager.trigger("close");
   };
 
   private setState = (state: any) => {

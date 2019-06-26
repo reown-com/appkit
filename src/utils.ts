@@ -101,7 +101,3 @@ export function formatProviderDescription(providerInfo: IProviderInfo) {
   }
   return description;
 }
-
-export const noop = () => {
-  // noop
-};

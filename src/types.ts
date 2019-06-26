@@ -12,6 +12,9 @@ export interface IProviderOptions {
   [providerName: string]: any;
 }
 
-export type ConnectCallback = (provider: any) => void;
-export type ErrorCallback = (error: any) => void;
-export type NoopFunction = (input?: any) => void;
+export type SimpleFunction = (input?: any) => void;
+
+export interface IEventCallback {
+  event: string;
+  callback: (result: any) => void;
+}

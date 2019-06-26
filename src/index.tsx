@@ -1,33 +1,31 @@
 import * as React from "react";
 import Button from "./components/Button";
 import Core from "./core";
-import allConnectors from "./connectors";
+import connectors from "./connectors";
 
-export const Web3Connect = Core;
-
-export const connectors = allConnectors;
-
-class Web3ConnectReact extends React.Component<any, any> {
-  public web3Connect: Core;
+class Web3ConnectButton extends React.Component<any, any> {
+  public core: Core;
 
   constructor(props: any) {
     super(props);
-    this.web3Connect = new Core({
-      onConnect: props.onConnect,
-      onClose: props.onClose,
-      onError: props.onError,
+    this.core = new Core({
       lightboxOpacity: props.lightboxOpacity,
       providerOptions: props.providerOptions
     });
+    this.core.on("connect", props.onConnect);
+    this.core.on("close", props.onClose);
+    this.core.on("error", props.onError);
   }
 
   public render = () => {
     return (
-      <Button onClick={this.web3Connect.toggleModal}>
-        {"Connect to Wallet"}
-      </Button>
+      <Button onClick={this.core.toggleModal}>{"Connect to Wallet"}</Button>
     );
   };
 }
 
-export default Web3ConnectReact;
+export default {
+  Button: Web3ConnectButton,
+  Core,
+  ...connectors
+};

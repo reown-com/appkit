@@ -5,7 +5,7 @@ import Provider from "./components/Provider";
 import QRCodeDisplay from "./components/QRCodeDisplay";
 import { SDescription } from "./components/common";
 import { isMobile } from "./utils";
-import { NoopFunction, IProviderOptions } from "./types";
+import { SimpleFunction, IProviderOptions } from "./types";
 
 declare global {
   // tslint:disable-next-line
@@ -114,15 +114,15 @@ const SQRCodeDescription = styled(SDescription)`
 interface IWeb3ConnectMainModalProps {
   show: boolean;
   uri: string;
-  onClose: NoopFunction;
-  resetState: NoopFunction;
+  onClose: SimpleFunction;
+  resetState: SimpleFunction;
   injectedProvider: string | null;
   lightboxOpacity: number;
   providerOptions: IProviderOptions;
-  connectToInjected: NoopFunction;
-  connectToFortmatic: NoopFunction;
-  connectToPortis: NoopFunction;
-  connectToWalletConnect: NoopFunction;
+  connectToInjected: SimpleFunction;
+  connectToFortmatic: SimpleFunction;
+  connectToPortis: SimpleFunction;
+  connectToWalletConnect: SimpleFunction;
 }
 
 interface IWeb3ConnectMainModalState {
