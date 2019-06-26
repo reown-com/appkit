@@ -10,7 +10,7 @@ By defaut Web3Connect Library supports injected providers like (**Metamask**, **
 
 ## Preview
 
-You can test the library on: https://web3connect.netlify.com/
+You can test the library on: https://web3connect.com/
 
 ![preview](./images/preview.gif)
 
@@ -120,7 +120,7 @@ const provider = await ConnectToPortis({
 });
 ```
 
-##  Options
+## Options
 
 - providerOptions (optional): An object mapping arbitrary string that adds the required configuration to multiple web3 providers.
 
