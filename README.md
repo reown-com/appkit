@@ -1,6 +1,6 @@
 # Web3connect
 
-[![Discord](https://hook.io/geo1088/discord-badge)](https://discordapp.com/invite/YGnSX9y)
+A single Web3 / Ethereum provider solution for all Wallets
 
 ## Introduction
 
@@ -125,9 +125,11 @@ const provider = await ConnectToPortis({
 - providerOptions (optional): An object mapping arbitrary string that adds the required configuration to multiple web3 providers.
 
   - WalletConnect:
+
     - bridge: bridge url (optional)
 
   - Portis:
+
     - id: the app id registered (required)
     - network: choose initial network name (optional)
 
