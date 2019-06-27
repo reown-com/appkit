@@ -4,7 +4,7 @@ A single Web3 / Ethereum provider solution for all Wallets
 
 ## Introduction
 
-web3connect a react commponet that helps developers to add support to multiple providers in their apps with simple configuration.
+Web3Connect is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
 
 By defaut Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Fortmatic** and **Portis**.
 
@@ -115,7 +115,7 @@ const provider = await ConnectToPortis({
 });
 
 // For Fortmatic
-const provider = await ConnectToPortis({
+const provider = await ConnectToFortmatic({
   key: "FORTMATIC_KEY" // required
 });
 ```
@@ -134,6 +134,7 @@ const provider = await ConnectToPortis({
     - network: choose initial network name (optional)
 
   - Fortmatic:
+
     - key: the secret key (required)
 
 ## Collaboration
