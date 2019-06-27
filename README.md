@@ -66,12 +66,14 @@ Add Web3Connect Core to your Dapp as follows
 import Web3Connect from "web3connect";
 
 const web3Connect = new Web3Connect.Core({
-  portis: {
-    id: "PORTIS_ID", // required
-    network: "mainnet" // optional
-  },
-  fortmatic: {
-    key: "FORTMATIC_KEY" // required
+  providerOptions: {
+    portis: {
+      id: "PORTIS_ID", // required
+      network: "mainnet" // optional
+    },
+    fortmatic: {
+      key: "FORTMATIC_KEY" // required
+    }
   }
 });
 
