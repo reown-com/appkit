@@ -18,6 +18,10 @@ const SProviderContainer = styled.div`
   }
 `;
 
+const SName = styled(STitle)`
+  color: rgb(12, 12, 13);
+`;
+
 const SProvider = styled.div`
   width: 100%;
   padding: 8px;
@@ -49,7 +53,7 @@ const Provider = (props: IProviderProps) => {
         <SIcon noShadow={providerInfo.styled.noShadow}>
           <img src={providerInfo.logo} alt={providerInfo.name} />
         </SIcon>
-        <STitle>{providerInfo.name}</STitle>
+        <SName>{providerInfo.name}</SName>
         <SDescription>{description}</SDescription>
       </SProviderContainer>
     </SProvider>

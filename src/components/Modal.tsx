@@ -49,12 +49,6 @@ const SLightbox = styled.div<IModalStyleProps>`
 
   & * {
     box-sizing: border-box !important;
-    font-family: "Open Sans", sans-serif;
-    font-style: normal;
-    font-stretch: normal;
-    font-weight: 400;
-    font-size: 16px;
-    color: rgb(12, 12, 13);
   }
 `;
 
