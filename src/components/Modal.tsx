@@ -46,6 +46,71 @@ const SLightbox = styled.div<IModalStyleProps>`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  & * {
+    box-sizing: border-box !important;
+    font-family: "Open Sans", sans-serif;
+    font-style: normal;
+    font-stretch: normal;
+    font-weight: 400;
+    font-size: 16px;
+    background-color: rgb(255, 255, 255);
+    color: rgb(12, 12, 13);
+    overflow-y: auto;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    -webkit-overflow-scrolling: touch;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+  & a,
+  & p,
+  & h1,
+  & h2,
+  & h3,
+  & h4,
+  & h5,
+  & h6 {
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+    margin: 0.7em 0;
+  }
+  & button {
+    border-style: none;
+    line-height: 1em;
+    background-image: none;
+    outline: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+  & a {
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+    text-decoration: none;
+    color: inherit;
+    outline: none;
+  }
+
+  & b,
+  & strong {
+    font-weight: inherit;
+    font-weight: bolder;
+  }
+
+  & ul,
+  & li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  & input {
+    -webkit-appearance: none;
+  }
 `;
 
 const SModalContainer = styled.div`
