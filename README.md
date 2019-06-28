@@ -145,8 +145,6 @@ interface IProviderOptions {
   [providerName: string]: any;
 }
 
-type SimpleFunction = (input?: any) => void;
-
 interface IEventCallback {
   event: string;
   callback: (result: any) => void;
