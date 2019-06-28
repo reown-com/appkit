@@ -39,20 +39,12 @@ export const fallbackProvider: IProviderInfo = {
 };
 
 const providers: IProviderInfo[] = [
+  fallbackProvider,
   {
     name: "WalletConnect",
     logo: WalletConnectLogo,
     type: "qrcode",
     check: "isWalletConnect",
-    styled: {
-      noShadow: false
-    }
-  },
-  {
-    name: "Web3",
-    logo: Web3DefaultLogo,
-    type: "injected",
-    check: "isWeb3",
     styled: {
       noShadow: false
     }

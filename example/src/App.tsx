@@ -11,6 +11,8 @@ import { apiGetAccountAssets } from './helpers/api'
 import { IAssetData } from './helpers/types'
 import { queryChainId } from './helpers/utilities'
 
+// console.log(ConnectToInjected)
+
 const SLayout = styled.div`
   position: relative;
   width: 100%;
@@ -175,7 +177,9 @@ class App extends React.Component<any, any> {
                     }
                   }}
                   onConnect={(provider: any) => {
-                    console.log('[onConnect] provider', provider) // tslint:disable-line
+                    // const { name } = Web3Connect.getProviderInfo(provider)
+                    console.log('[onConnect] name', name) // tslint:disable-line
+                    // console.log('[onConnect] provider', provider) // tslint:disable-line
                     this.onConnect(provider)
                   }}
                   onClose={() => {

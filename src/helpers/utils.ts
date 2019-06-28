@@ -1,7 +1,7 @@
 import providers, { fallbackProvider } from "../providers";
-import { IProviderInfo } from "./types";
+import { IProviderInfo, IInjectedProvidersMap } from "./types";
 
-export function checkInjectedProviders() {
+export function checkInjectedProviders(): IInjectedProvidersMap {
   const result = {
     injectedAvailable: !!window.ethereum || !!window.web3
   };

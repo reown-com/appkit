@@ -95,31 +95,67 @@ web3Connect.toggleModal(); // open modal on button click
 Add individual connectors for each provider to your own UI (no modal provided)
 
 ```js
-import {
-  ConnectToInjected,
-  ConnectToWalletConnect,
-  ConnectToPortis,
-  ConnectToFortmatic
-} from "web3connect";
+import Web3Connect from "web3connect";
 
 // For inject providers in dapp browsers
-const provider = await ConnectToInjected();
+const provider = await Web3Connect.ConnectToInjected();
 
 // For WalletConnect
-const provider = await ConnectToWalletConnect({
+const provider = await Web3Connect.ConnectToWalletConnect({
   bridge: "https://bridge.walletconnect.org" // optional
 });
 
 // For Portis
-const provider = await ConnectToPortis({
+const provider = await Web3Connect.ConnectToPortis({
   id: "PORTIS_ID", // required
   network: "mainnet" // optional
 });
 
 // For Fortmatic
-const provider = await ConnectToFortmatic({
+const provider = await Web3Connect.ConnectToFortmatic({
   key: "FORTMATIC_KEY" // required
 });
+```
+
+## Utils
+
+```typescript
+function checkInjectedProviders(): IInjectedProvidersMap;
+function getInjectProvider(): string | null;
+function getProviderInfoByName(name: string | null): IProviderInfo;
+function getProviderInfo(provider: any): IProviderInfo;
+function isMobile(): boolean;
+function formatProviderDescription(providerInfo: IProviderInfo);
+```
+
+## Types
+
+```typescript
+interface IProviderInfo {
+  name: string;
+  type: string;
+  logo: string;
+  check: string;
+  styled: {
+    [prop: string]: any;
+  };
+}
+
+interface IProviderOptions {
+  [providerName: string]: any;
+}
+
+type SimpleFunction = (input?: any) => void;
+
+interface IEventCallback {
+  event: string;
+  callback: (result: any) => void;
+}
+
+interface IInjectedProvidersMap {
+  injectedAvailable: boolean;
+  [isProviderName: string]: boolean;
+}
 ```
 
 ## Options
