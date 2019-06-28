@@ -1,6 +1,9 @@
 import * as React from "react";
 import styled from "styled-components";
-import { getProviderInfo, formatProviderDescription } from "../helpers/utils";
+import {
+  getProviderInfoByName,
+  formatProviderDescription
+} from "../helpers/utils";
 import { SIcon, STitle, SDescription } from "./common";
 
 const SProviderContainer = styled.div`
@@ -45,7 +48,7 @@ interface IProviderProps {
 
 const Provider = (props: IProviderProps) => {
   const { name, onClick, ...otherProps } = props;
-  const providerInfo = getProviderInfo(name);
+  const providerInfo = getProviderInfoByName(name);
   const description = formatProviderDescription(providerInfo);
   return (
     <SProvider onClick={onClick} {...otherProps}>

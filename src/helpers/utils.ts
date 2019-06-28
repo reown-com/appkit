@@ -49,11 +49,25 @@ export function getInjectProvider(): string | null {
   return result;
 }
 
-export function getProviderInfo(name: string | null): IProviderInfo {
+export function getProviderInfoByName(name: string | null): IProviderInfo {
   let result = fallbackProvider;
 
   if (name) {
     const matches = providers.filter(provider => provider.name === name);
+
+    if (!!matches && matches.length) {
+      result = matches[0];
+    }
+  }
+
+  return result;
+}
+
+export function getProviderInfo(provider: any): IProviderInfo {
+  let result = fallbackProvider;
+
+  if (provider) {
+    const matches = providers.filter(_provider => provider[_provider.check]);
 
     if (!!matches && matches.length) {
       result = matches[0];
