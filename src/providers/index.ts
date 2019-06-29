@@ -12,15 +12,11 @@ import PortisLogo from "../assets/portis.svg";
 // @ts-ignore
 import FortmaticLogo from "../assets/fortmatic.svg";
 // @ts-ignore
-<<<<<<< HEAD
 import SquarelinkLogo from "../assets/squarelink.svg";
 // @ts-ignore
-import TrustLogo from "../assets/wallets/trust.png";
-=======
 import TrustLogo from "../assets/trust.png";
 // @ts-ignore
 import DapperLogo from "../assets/dapper.png";
->>>>>>> upstream/master
 // @ts-ignore
 import CoinbaseLogo from "../assets/coinbase.png";
 // @ts-ignore
