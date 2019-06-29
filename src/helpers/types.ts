@@ -18,3 +18,8 @@ export interface IEventCallback {
   event: string;
   callback: (result: any) => void;
 }
+
+export interface IInjectedProvidersMap {
+  injectedAvailable: boolean;
+  [isProviderName: string]: boolean;
+}

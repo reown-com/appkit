@@ -46,6 +46,10 @@ const SLightbox = styled.div<IModalStyleProps>`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  & * {
+    box-sizing: border-box !important;
+  }
 `;
 
 const SModalContainer = styled.div`

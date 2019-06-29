@@ -1,6 +1,9 @@
 import * as React from "react";
 import styled from "styled-components";
-import { getProviderInfo, formatProviderDescription } from "../helpers/utils";
+import {
+  getProviderInfoByName,
+  formatProviderDescription
+} from "../helpers/utils";
 import { SIcon, STitle, SDescription } from "./common";
 
 const SProviderContainer = styled.div`
@@ -16,6 +19,10 @@ const SProviderContainer = styled.div`
   @media screen and (max-width: 768px) {
     padding: 12px;
   }
+`;
+
+const SName = styled(STitle)`
+  color: rgb(12, 12, 13);
 `;
 
 const SProvider = styled.div`
@@ -41,7 +48,7 @@ interface IProviderProps {
 
 const Provider = (props: IProviderProps) => {
   const { name, onClick, ...otherProps } = props;
-  const providerInfo = getProviderInfo(name);
+  const providerInfo = getProviderInfoByName(name);
   const description = formatProviderDescription(providerInfo);
   return (
     <SProvider onClick={onClick} {...otherProps}>
@@ -49,7 +56,7 @@ const Provider = (props: IProviderProps) => {
         <SIcon noShadow={providerInfo.styled.noShadow}>
           <img src={providerInfo.logo} alt={providerInfo.name} />
         </SIcon>
-        <STitle>{providerInfo.name}</STitle>
+        <SName>{providerInfo.name}</SName>
         <SDescription>{description}</SDescription>
       </SProviderContainer>
     </SProvider>

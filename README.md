@@ -4,7 +4,7 @@ A single Web3 / Ethereum provider solution for all Wallets
 
 ## Introduction
 
-web3connect a react component that helps developers to add support to multiple providers in their apps with simple configuration.
+Web3Connect is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
 
 By defaut Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Fortmatic**, **Portis**, and **Squarelink**.
 
@@ -70,16 +70,18 @@ Add Web3Connect Core to your Dapp as follows
 import Web3Connect from "web3connect";
 
 const web3Connect = new Web3Connect.Core({
-  portis: {
-    id: "PORTIS_ID", // required
-    network: "mainnet" // optional
-  },
-  fortmatic: {
-    key: "FORTMATIC_KEY" // required
-  },
-  squarelink: {
-    id: "SQUARELINK_ID", // required
-    network: "mainnet" // optional
+  providerOptions: {
+    portis: {
+      id: "PORTIS_ID", // required
+      network: "mainnet" // optional
+    },
+    fortmatic: {
+      key: "FORTMATIC_KEY" // required
+    },
+    squarelink: {
+      id: "SQUARELINK_ID", // required
+      network: "mainnet" // optional
+    },
   }
 });
 
@@ -101,38 +103,71 @@ web3Connect.toggleModal(); // open modal on button click
 Add individual connectors for each provider to your own UI (no modal provided)
 
 ```js
-import {
-  ConnectToInjected,
-  ConnectToWalletConnect,
-  ConnectToPortis,
-  ConnectToFortmatic,
-  ConnectToSquarelink
-} from "web3connect";
+import Web3Connect from "web3connect";
 
 // For inject providers in dapp browsers
-const provider = await ConnectToInjected();
+const provider = await Web3Connect.ConnectToInjected();
 
 // For WalletConnect
-const provider = await ConnectToWalletConnect({
+const provider = await Web3Connect.ConnectToWalletConnect({
   bridge: "https://bridge.walletconnect.org" // optional
 });
 
 // For Portis
-const provider = await ConnectToPortis({
+const provider = await Web3Connect.ConnectToPortis({
   id: "PORTIS_ID", // required
   network: "mainnet" // optional
 });
 
 // For Fortmatic
-const provider = await ConnectToFortmatic({
+const provider = await Web3Connect.ConnectToFortmatic({
   key: "FORTMATIC_KEY" // required
 });
 
 // For Squarelink
-const provider = await ConnectToSquarelink({
+const provider = await Web3Connect.ConnectToSquarelink({
   id: "SQUARELINK_ID", // required
   network: "mainnet"  // optional
 });
+```
+
+## Utils
+
+```typescript
+function checkInjectedProviders(): IInjectedProvidersMap;
+function getInjectProvider(): string | null;
+function getProviderInfoByName(name: string | null): IProviderInfo;
+function getProviderInfo(provider: any): IProviderInfo;
+function isMobile(): boolean;
+function formatProviderDescription(providerInfo: IProviderInfo);
+```
+
+## Types
+
+```typescript
+interface IProviderInfo {
+  name: string;
+  type: string;
+  logo: string;
+  check: string;
+  styled: {
+    [prop: string]: any;
+  };
+}
+
+interface IProviderOptions {
+  [providerName: string]: any;
+}
+
+interface IEventCallback {
+  event: string;
+  callback: (result: any) => void;
+}
+
+interface IInjectedProvidersMap {
+  injectedAvailable: boolean;
+  [isProviderName: string]: boolean;
+}
 ```
 
 ## Options

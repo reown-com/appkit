@@ -1,12 +1,12 @@
 import providers, { fallbackProvider } from "../providers";
-import { IProviderInfo } from "./types";
+import { IProviderInfo, IInjectedProvidersMap } from "./types";
 
-export function checkInjectedProviders() {
+export function checkInjectedProviders(): IInjectedProvidersMap {
   const result = {
     injectedAvailable: !!window.ethereum || !!window.web3
   };
-
   if (result.injectedAvailable) {
+    let fallbackProvider = true;
     providers.forEach(provider => {
       result[provider.check] = window.ethereum
         ? window.ethereum[provider.check] ||
@@ -16,7 +16,19 @@ export function checkInjectedProviders() {
         : window.web3 && window.web3.currentProvider
         ? window.web3.currentProvider[provider.check]
         : false;
+      if (result[provider.check] == true) {
+        fallbackProvider = false;
+      }
     });
+    if (result["isMetamask"]) {
+      if (window.web3.currentProvider.isNiftyWallet) {
+        result["isMetamask"] = false;
+        result["isNiftyWallet"] = true;
+      }
+    }
+    if (fallbackProvider) {
+      result["isWeb3"] = true;
+    }
   }
 
   return result;
@@ -37,11 +49,25 @@ export function getInjectProvider(): string | null {
   return result;
 }
 
-export function getProviderInfo(name: string | null): IProviderInfo {
+export function getProviderInfoByName(name: string | null): IProviderInfo {
   let result = fallbackProvider;
 
   if (name) {
     const matches = providers.filter(provider => provider.name === name);
+
+    if (!!matches && matches.length) {
+      result = matches[0];
+    }
+  }
+
+  return result;
+}
+
+export function getProviderInfo(provider: any): IProviderInfo {
+  let result = fallbackProvider;
+
+  if (provider) {
+    const matches = providers.filter(_provider => provider[_provider.check]);
 
     if (!!matches && matches.length) {
       result = matches[0];

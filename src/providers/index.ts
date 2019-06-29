@@ -6,25 +6,33 @@ import WalletConnectLogo from "../assets/walletconnect-circle.svg";
 // @ts-ignore
 import MetaMaskLogo from "../assets/metamask.svg";
 // @ts-ignore
+import NiftyWalletLogo from "../assets/niftyWallet.png";
+// @ts-ignore
 import PortisLogo from "../assets/portis.svg";
 // @ts-ignore
 import FortmaticLogo from "../assets/fortmatic.svg";
 // @ts-ignore
+<<<<<<< HEAD
 import SquarelinkLogo from "../assets/squarelink.svg";
 // @ts-ignore
 import TrustLogo from "../assets/wallets/trust.png";
+=======
+import TrustLogo from "../assets/trust.png";
 // @ts-ignore
-import DapperLogo from "../assets/wallets/dapper.png";
+import DapperLogo from "../assets/dapper.png";
+>>>>>>> upstream/master
 // @ts-ignore
-import CoinbaseLogo from "../assets/wallets/coinbase.png";
+import CoinbaseLogo from "../assets/coinbase.png";
 // @ts-ignore
-import CipherLogo from "../assets/wallets/cipher.png";
+import CipherLogo from "../assets/cipher.png";
 // @ts-ignore
-import imTokenLogo from "../assets/wallets/imtoken.png";
+import imTokenLogo from "../assets/imtoken.png";
 // @ts-ignore
-import StatusLogo from "../assets/wallets/status.png";
+import StatusLogo from "../assets/status.png";
 // @ts-ignore
-import TokenaryLogo from "../assets/wallets/tokenary.png";
+import TokenaryLogo from "../assets/tokenary.png";
+// @ts-ignore
+import OperaLogo from "../assets/opera.png";
 
 export const fallbackProvider: IProviderInfo = {
   name: "Web3",
@@ -37,6 +45,7 @@ export const fallbackProvider: IProviderInfo = {
 };
 
 const providers: IProviderInfo[] = [
+  fallbackProvider,
   {
     name: "WalletConnect",
     logo: WalletConnectLogo,
@@ -51,6 +60,15 @@ const providers: IProviderInfo[] = [
     logo: MetaMaskLogo,
     type: "injected",
     check: "isMetaMask",
+    styled: {
+      noShadow: true
+    }
+  },
+  {
+    name: "Nifty Wallet",
+    logo: NiftyWalletLogo,
+    type: "injected",
+    check: "isNiftyWallet",
     styled: {
       noShadow: true
     }
@@ -78,6 +96,15 @@ const providers: IProviderInfo[] = [
     logo: DapperLogo,
     type: "injected",
     check: "isDapper",
+    styled: {
+      noShadow: true
+    }
+  },
+  {
+    name: "Opera",
+    logo: OperaLogo,
+    type: "injected",
+    check: "isOpera",
     styled: {
       noShadow: false
     }
