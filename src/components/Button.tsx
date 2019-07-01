@@ -49,6 +49,11 @@ const SIcon = styled.div`
 const SButton = styled.button<IButtonStyleProps>`
   transition: all 0.15s ease-in-out;
   position: relative;
+  line-height: 1em;
+  background-image: none;
+  outline: none;
+  overflow: hidden;
+  box-shadow: none;
   border: none;
   border-style: none;
   box-sizing: border-box;

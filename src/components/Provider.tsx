@@ -33,6 +33,7 @@ const SProvider = styled.div`
   align-items: center;
   flex-direction: column;
   cursor: pointer;
+  border-radius: 12px;
   border: 1px solid rgba(195, 195, 195, 0.14);
   @media (hover: hover) {
     &:hover ${SProviderContainer} {

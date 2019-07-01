@@ -14,9 +14,11 @@ interface ICoreOptions {
   providerOptions: IProviderOptions;
 }
 
+const INITIAL_STATE = { uri: "", show: false };
+
 class Core {
-  private uri: string = "";
-  private show: boolean = false;
+  private uri: string = INITIAL_STATE.uri;
+  private show: boolean = INITIAL_STATE.show;
   private eventManager: EventManager = new EventManager();
   private injectedProvider: string | null = null;
   private lightboxOpacity: number = 0.4;
@@ -73,7 +75,7 @@ class Core {
 
   public connectToWalletConnect = async () => {
     if (this.uri) {
-      this.setState({ uri: "" });
+      await this.updateState({ uri: "" });
       return;
     }
     try {
@@ -84,11 +86,9 @@ class Core {
       const provider = await connectors.ConnectToWalletConnect({
         bridge: opts.bridge,
         qrcode: false,
-        onUri: (uri: string) => {
-          this.setState({ uri });
-        }
+        onUri: (uri: string) => this.updateState({ uri })
       });
-      this.setState({ uri: "" });
+      await this.updateState({ uri: "" });
       this.onConnect(provider);
     } catch (error) {
       this.onError(error);
@@ -100,12 +100,12 @@ class Core {
     const body = d ? d.body || d.getElementsByTagName("body")[0] : "";
     if (body) {
       if (this.show) {
-        body.style.position = "";
+        body.style.overflow = "";
       } else {
-        body.style.position = "fixed";
+        body.style.overflow = "hidden";
       }
     }
-    this.setState({ show: !this.show });
+    await this.updateState({ show: !this.show });
   };
 
   private onError = async (error: any) => {
@@ -123,19 +123,14 @@ class Core {
     this.eventManager.trigger("close");
   };
 
-  private setState = (state: any) => {
+  private updateState = async (state: any) => {
     Object.keys(state).forEach(key => {
       this[key] = state[key];
     });
-    window.updateWeb3ConnectModal(state);
+    await window.updateWeb3ConnectModal(state);
   };
 
-  private resetState = () => {
-    this.setState({
-      show: false,
-      uri: ""
-    });
-  };
+  private resetState = () => this.updateState({ ...INITIAL_STATE });
 
   public renderModal() {
     const el = document.createElement("div");
@@ -143,8 +138,6 @@ class Core {
     document.body.appendChild(el);
     ReactDOM.render(
       <Modal
-        show={this.show}
-        uri={this.uri}
         onClose={this.onClose}
         resetState={this.resetState}
         injectedProvider={this.injectedProvider}

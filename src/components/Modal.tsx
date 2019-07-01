@@ -4,7 +4,11 @@ import styled from "styled-components";
 import Provider from "./Provider";
 import QRCodeDisplay from "./QRCodeDisplay";
 import { SDescription } from "./common";
-import { isMobile } from "../helpers/utils";
+import {
+  isMobile,
+  getProviderInfoByName,
+  formatProviderDescription
+} from "../helpers/utils";
 import { SimpleFunction, IProviderOptions } from "../helpers/types";
 
 declare global {
@@ -105,6 +109,7 @@ const SModalCard = styled.div<IModalCardStyleProps>`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : "800px")};
+  min-width: fit-content;
 
   @media screen and (max-width: 768px) {
     max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : "500px")};
@@ -116,8 +121,6 @@ const SQRCodeDescription = styled(SDescription)`
 `;
 
 interface IModalProps {
-  show: boolean;
-  uri: string;
   onClose: SimpleFunction;
   resetState: SimpleFunction;
   injectedProvider: string | null;
@@ -148,12 +151,10 @@ const INITIAL_STATE: IModalState = {
 class Modal extends React.Component<IModalProps, IModalState> {
   constructor(props: IModalProps) {
     super(props);
-    window.updateWeb3ConnectModal = (state: IModalState) =>
+    window.updateWeb3ConnectModal = async (state: IModalState) =>
       this.setState(state);
   }
   public static propTypes = {
-    show: PropTypes.bool.isRequired,
-    uri: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
     resetState: PropTypes.func.isRequired,
     injectedProvider: PropTypes.string.isRequired,
@@ -169,9 +170,7 @@ class Modal extends React.Component<IModalProps, IModalState> {
   public mainModalCard?: HTMLDivElement | null;
 
   public state: IModalState = {
-    ...INITIAL_STATE,
-    show: this.props.show || INITIAL_STATE.show,
-    uri: this.props.uri || INITIAL_STATE.uri
+    ...INITIAL_STATE
   };
 
   public componentDidUpdate(prevProps: IModalProps, prevState: IModalState) {
@@ -260,7 +259,11 @@ class Modal extends React.Component<IModalProps, IModalState> {
           {uri && (
             <SModalCard maxWidth={hideMainModalCard ? 500 : qrcodeSize}>
               {hideMainModalCard && (
-                <SQRCodeDescription>{`Scan with your Mobile Wallet to connect`}</SQRCodeDescription>
+                <SQRCodeDescription>
+                  {formatProviderDescription(
+                    getProviderInfoByName("WalletConnect")
+                  )}
+                </SQRCodeDescription>
               )}
               <SQRCodeWrapper size={hideMainModalCard ? 500 : qrcodeSize}>
                 <SQRCodeDisplay data={uri} />
