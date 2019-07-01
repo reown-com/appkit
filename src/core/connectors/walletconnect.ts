@@ -13,14 +13,17 @@ const ConnectToWalletConnect = (opts: IWalletConnectConnectorOptions) => {
     let bridge = "https://bridge.walletconnect.org";
     let qrcode = true;
     let onUri: SimpleFunction | null = null;
+
     if (opts) {
       bridge = opts.bridge || bridge;
       qrcode = typeof opts.qrcode !== "undefined" ? opts.qrcode : qrcode;
       onUri = opts.onUri || onUri;
     }
+
     if (!qrcode && !onUri) {
       throw new Error("Must provide onUri callback when qrcode is disabled");
     }
+
     const provider = new WalletConnectProvider({ bridge, qrcode });
 
     if (!provider._walletConnector.connected) {
