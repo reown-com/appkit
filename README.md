@@ -172,6 +172,7 @@ interface IInjectedProvidersMap {
   - Fortmatic:
 
     - key: the secret key (required)
+    - network: choose initial network name (optional, you need to provide a test key)
 
 ## Collaboration
 
