@@ -16,7 +16,7 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
         : window.web3 && window.web3.currentProvider
         ? window.web3.currentProvider[provider.check]
         : false;
-      if (result[provider.check] == true) {
+      if (result[provider.check] === true) {
         fallbackProvider = false;
       }
     });
