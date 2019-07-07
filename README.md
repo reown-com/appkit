@@ -113,7 +113,8 @@ const provider = await Web3Connect.ConnectToPortis({
 
 // For Fortmatic
 const provider = await Web3Connect.ConnectToFortmatic({
-  key: "FORTMATIC_KEY" // required
+  key: "FORTMATIC_KEY", // required
+  network: "mainnet" // optional
 });
 ```
 
@@ -172,6 +173,7 @@ interface IInjectedProvidersMap {
   - Fortmatic:
 
     - key: the secret key (required)
+    - network: choose initial network name (optional)
 
 ## Collaboration
 

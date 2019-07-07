@@ -3,13 +3,14 @@ import Fortmatic from "fortmatic";
 
 export interface IFortmaticConnectorOptions {
   key: string;
+  network?: string;
 }
 
 const ConnectToFortmatic = async (opts: IFortmaticConnectorOptions) => {
   if (opts && opts.key) {
     try {
       const key = opts.key;
-      const fm = new Fortmatic(key);
+      const fm = new Fortmatic(key, opts.network);
       const provider = await fm.getProvider();
       await fm.user.login();
       const isLoggedIn = await fm.user.isLoggedIn();
