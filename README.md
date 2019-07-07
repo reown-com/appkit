@@ -46,7 +46,8 @@ import Web3Connect from "web3connect";
       network: "mainnet" // optional
     },
     fortmatic: {
-      key: "FORTMATIC_KEY" // required
+      key: "FORTMATIC_KEY", // required
+      network: "mainnet" // optional
     }
   }}
   onConnect={(provider: any) => {
@@ -72,7 +73,8 @@ const web3Connect = new Web3Connect.Core({
       network: "mainnet" // optional
     },
     fortmatic: {
-      key: "FORTMATIC_KEY" // required
+      key: "FORTMATIC_KEY", // required
+      network: "mainnet" // optional
     }
   }
 });
