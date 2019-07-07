@@ -10,9 +10,10 @@
     "bootstrap": "npm install && cd example && npm run bootstrap",
     "start": "npm run check && cd example && npm run start",
     "build": "webpack",
+    "zip": "node scripts/zip.js",
     "build:example": "npm run bootstrap && npm run build && cd example && npm run build",
     "test": "mocha --require ./babel-polyfill.js test/**/*.spec.js",
-    "check": "npm run clean && npm run build && npm run test"
+    "check": "npm run clean && npm run build && npm run test && npm run dist"
   },
   "keywords": [
     "web3",
@@ -54,6 +55,7 @@
     "@types/react": "^16.7.20",
     "@types/react-dom": "^16.8.4",
     "@types/styled-components": "4.1.8",
+    "archiver": "^3.0.0",
     "chai": "^4.1.2",
     "file-loader": "^3.0.1",
     "isomorphic-fetch": "^2.2.1",
