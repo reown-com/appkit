@@ -1,6 +1,6 @@
 {
   "name": "web3connect",
-  "version": "1.0.0-beta.12",
+  "version": "1.0.0-beta.13",
   "description": "A single Web3 / Ethereum provider solution for all Wallets",
   "keywords": [
     "web3",
@@ -61,6 +61,7 @@
     "@types/react": "^16.7.20",
     "@types/react-dom": "^16.8.4",
     "@types/styled-components": "4.1.8",
+    "archiver": "^3.0.0",
     "chai": "^4.1.2",
     "file-loader": "^3.0.1",
     "husky": "^3.0.0",

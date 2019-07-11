@@ -59,7 +59,7 @@ const providers: IProviderInfo[] = [
     }
   },
   {
-    name: "Nifty Wallet",
+    name: "Nifty",
     logo: NiftyWalletLogo,
     type: "injected",
     check: "isNiftyWallet",
