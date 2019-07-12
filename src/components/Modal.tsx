@@ -236,15 +236,25 @@ class Modal extends React.Component<IModalProps, IModalState> {
           <SHitbox onClick={onClose} />
           {!hideMainModalCard && (
             <SModalCard ref={c => (this.mainModalCard = c)}>
-              {!!injectedProvider && (
-                <Provider name={injectedProvider} onClick={connectToInjected} />
-              )}
-              {!(injectedProvider && mobile) && (
-                <React.Fragment>
+              {!!injectedProvider &&
+                !providerOptions.disableInjectedProvider && (
                   <Provider
-                    name={"WalletConnect"}
-                    onClick={connectToWalletConnect}
+                    name={injectedProvider}
+                    onClick={connectToInjected}
                   />
+                )}
+              {!(
+                injectedProvider &&
+                !providerOptions.disableInjectedProvider &&
+                mobile
+              ) && (
+                <React.Fragment>
+                  {!providerOptions.disableWalletConnect && (
+                    <Provider
+                      name={"WalletConnect"}
+                      onClick={connectToWalletConnect}
+                    />
+                  )}
                   {displayPortis && (
                     <Provider name={"Portis"} onClick={connectToPortis} />
                   )}

@@ -177,6 +177,11 @@ interface IInjectedProvidersMap {
     - key: the secret key (required)
     - network: choose initial network name (optional)
 
+You can disable the injected provider or WalletConnect by adding the following keys:
+
+- disableInjectedProvider: true (optional)
+- disableWalletConnect: true (optional)
+
 ## Collaboration
 
 ### Code contributions are welcome ❤️❤️❤️!
