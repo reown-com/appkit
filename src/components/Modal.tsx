@@ -116,6 +116,11 @@ const SModalCard = styled.div<IModalCardStyleProps>`
   }
 `;
 
+const SQRCodeModalCard = styled(SModalCard)`
+  display: flex;
+  justify-content: center;
+`;
+
 const SQRCodeDescription = styled(SDescription)`
   margin-top: 30px;
 `;
@@ -202,27 +207,83 @@ class Modal extends React.Component<IModalProps, IModalState> {
     }
   }
 
-  public render = () => {
-    const { show, uri, mobile, lightboxOffset, qrcodeSize } = this.state;
+  public getProvidersToDisplay = () => {
+    let providers = ["injected", "walletconnect", "portis", "fortmatic"];
 
     const {
-      onClose,
       injectedProvider,
-      lightboxOpacity,
-      providerOptions,
       connectToInjected,
       connectToFortmatic,
       connectToPortis,
-      connectToWalletConnect
+      connectToWalletConnect,
+      providerOptions
     } = this.props;
 
-    const displayFortmatic =
-      providerOptions &&
-      providerOptions.fortmatic &&
-      providerOptions.fortmatic.key;
+    const displayInjected =
+      injectedProvider && !providerOptions.disableInjectedProvider;
 
-    const displayPortis =
-      providerOptions && providerOptions.portis && providerOptions.portis.id;
+    const onlyInjected = displayInjected && this.state.mobile;
+
+    if (onlyInjected) {
+      providers = ["injected"];
+    } else {
+      const displayWalletConnect = !providerOptions.disableWalletConnect;
+      if (!displayWalletConnect) {
+        providers = providers.filter(provider => provider !== "walletconnect");
+      }
+
+      const displayPortis =
+        providerOptions && providerOptions.portis && providerOptions.portis.id;
+
+      if (!displayPortis) {
+        providers = providers.filter(provider => provider !== "portis");
+      }
+      const displayFortmatic =
+        providerOptions &&
+        providerOptions.fortmatic &&
+        providerOptions.fortmatic.key;
+
+      if (!displayFortmatic) {
+        providers = providers.filter(provider => provider !== "fortmatic");
+      }
+    }
+
+    const providersMap = providers.map(provider => {
+      switch (provider) {
+        case "injected":
+          return {
+            name: injectedProvider,
+            onClick: connectToInjected
+          };
+        case "walletconnect":
+          return {
+            name: "WalletConnect",
+            onClick: connectToWalletConnect
+          };
+        case "portis":
+          return {
+            name: "Portis",
+            onClick: connectToPortis
+          };
+        case "portis":
+          return {
+            name: "Fortmatic",
+            onClick: connectToFortmatic
+          };
+
+        default:
+          return null;
+      }
+    });
+    return providersMap;
+  };
+
+  public render = () => {
+    const { show, uri, lightboxOffset, qrcodeSize } = this.state;
+
+    const { onClose, lightboxOpacity } = this.props;
+
+    const providers = this.getProvidersToDisplay();
 
     const hideMainModalCard = !show || (!!uri && window.innerWidth <= 860);
     return (
@@ -235,39 +296,19 @@ class Modal extends React.Component<IModalProps, IModalState> {
         <SModalContainer>
           <SHitbox onClick={onClose} />
           {!hideMainModalCard && (
-            <SModalCard ref={c => (this.mainModalCard = c)}>
-              {!!injectedProvider &&
-                !providerOptions.disableInjectedProvider && (
-                  <Provider
-                    name={injectedProvider}
-                    onClick={connectToInjected}
-                  />
-                )}
-              {!(
-                injectedProvider &&
-                !providerOptions.disableInjectedProvider &&
-                mobile
-              ) && (
-                <React.Fragment>
-                  {!providerOptions.disableWalletConnect && (
-                    <Provider
-                      name={"WalletConnect"}
-                      onClick={connectToWalletConnect}
-                    />
-                  )}
-                  {displayPortis && (
-                    <Provider name={"Portis"} onClick={connectToPortis} />
-                  )}
-
-                  {displayFortmatic && (
-                    <Provider name={"Fortmatic"} onClick={connectToFortmatic} />
-                  )}
-                </React.Fragment>
+            <SModalCard
+              maxWidth={providers.length < 3 ? 500 : 800}
+              ref={c => (this.mainModalCard = c)}
+            >
+              {providers.map(provider =>
+                provider ? (
+                  <Provider name={provider.name} onClick={provider.onClick} />
+                ) : null
               )}
             </SModalCard>
           )}
           {uri && (
-            <SModalCard maxWidth={hideMainModalCard ? 500 : qrcodeSize}>
+            <SQRCodeModalCard maxWidth={hideMainModalCard ? 500 : qrcodeSize}>
               {hideMainModalCard && (
                 <SQRCodeDescription>
                   {formatProviderDescription(
@@ -278,7 +319,7 @@ class Modal extends React.Component<IModalProps, IModalState> {
               <SQRCodeWrapper size={hideMainModalCard ? 500 : qrcodeSize}>
                 <SQRCodeDisplay data={uri} />
               </SQRCodeWrapper>
-            </SModalCard>
+            </SQRCodeModalCard>
           )}
         </SModalContainer>
       </SLightbox>

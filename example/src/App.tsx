@@ -167,15 +167,15 @@ class App extends React.Component<any, any> {
               <SLanding center>
                 <h3>{`Try out Web3Connect`}</h3>
                 <Web3Connect.Button
-                  providerOptions={{
-                    portis: {
-                      id: process.env.REACT_APP_PORTIS_ID,
-                      network: 'mainnet'
-                    },
-                    fortmatic: {
-                      key: process.env.REACT_APP_FORTMATIC_KEY
-                    }
-                  }}
+                  // providerOptions={{
+                  //   portis: {
+                  //     id: process.env.REACT_APP_PORTIS_ID,
+                  //     network: 'mainnet'
+                  //   },
+                  //   fortmatic: {
+                  //     key: process.env.REACT_APP_FORTMATIC_KEY
+                  //   }
+                  // }}
                   onConnect={(provider: any) => {
                     // const { name } = Web3Connect.getProviderInfo(provider)
                     console.log('[onConnect] name', name) // tslint:disable-line
