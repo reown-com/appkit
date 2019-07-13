@@ -265,7 +265,7 @@ class Modal extends React.Component<IModalProps, IModalState> {
             name: "Portis",
             onClick: connectToPortis
           };
-        case "portis":
+        case "fortmatic":
           return {
             name: "Fortmatic",
             onClick: connectToFortmatic
