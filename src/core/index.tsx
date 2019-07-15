@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import Modal from "../components/Modal";
 import { IProviderOptions } from "../helpers/types";
-import { getInjectProvider } from "../helpers/utils";
+import { getInjectedProviderName } from "../helpers/utils";
 import connectors from "./connectors";
 import EventManager from "./events";
 
@@ -25,7 +25,7 @@ class Core {
   private providerOptions: IProviderOptions = {};
 
   constructor(opts?: ICoreOptions) {
-    this.injectedProvider = getInjectProvider();
+    this.injectedProvider = getInjectedProviderName();
 
     if (opts) {
       this.lightboxOpacity = opts.lightboxOpacity || 0.4;

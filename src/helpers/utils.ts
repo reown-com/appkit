@@ -34,7 +34,7 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
   return result;
 }
 
-export function getInjectProvider(): string | null {
+export function getInjectedProviderName(): string | null {
   let result = null;
 
   const injectedProviders = checkInjectedProviders();
