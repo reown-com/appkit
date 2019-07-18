@@ -1,10 +1,10 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import Modal from "../components/Modal";
-import { IProviderOptions } from "../helpers/types";
-import { getInjectProvider } from "../helpers/utils";
-import connectors from "./connectors";
-import EventManager from "./events";
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import Modal from '../components/Modal';
+import { IProviderOptions } from '../helpers/types';
+import { getInjectProvider } from '../helpers/utils';
+import connectors from './connectors';
+import EventManager from './events';
 
 const WEB3_CONNECT_MODAL_ID = "WEB3_CONNECT_MODAL_ID";
 
@@ -45,6 +45,15 @@ class Core {
   public connectToInjected = async () => {
     try {
       const provider = await connectors.ConnectToInjected();
+      this.onConnect(provider);
+    } catch (error) {
+      this.onError(error);
+    }
+  };
+
+  public connectToIFrame = async () => {
+    try {
+      const provider = await connectors.ConnectToEthvault();
       this.onConnect(provider);
     } catch (error) {
       this.onError(error);
@@ -147,6 +156,7 @@ class Core {
         connectToFortmatic={this.connectToFortmatic}
         connectToPortis={this.connectToPortis}
         connectToWalletConnect={this.connectToWalletConnect}
+        connectToIFrame={this.connectToIFrame}
       />,
       document.getElementById(WEB3_CONNECT_MODAL_ID)
     );

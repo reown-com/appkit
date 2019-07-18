@@ -135,6 +135,7 @@ interface IModalProps {
   connectToFortmatic: SimpleFunction;
   connectToPortis: SimpleFunction;
   connectToWalletConnect: SimpleFunction;
+  connectToIFrame: SimpleFunction;
 }
 
 interface IModalState {
@@ -168,7 +169,8 @@ class Modal extends React.Component<IModalProps, IModalState> {
     connectToInjected: PropTypes.func.isRequired,
     connectToFortmatic: PropTypes.func.isRequired,
     connectToPortis: PropTypes.func.isRequired,
-    connectToWalletConnect: PropTypes.func.isRequired
+    connectToWalletConnect: PropTypes.func.isRequired,
+    connectToIFrame: PropTypes.func.isRequired,
   };
 
   public lightboxRef?: HTMLDivElement | null;
@@ -208,7 +210,7 @@ class Modal extends React.Component<IModalProps, IModalState> {
   }
 
   public getProvidersToDisplay = () => {
-    let providers = ["injected", "walletconnect", "portis", "fortmatic"];
+    let providers = ["injected", "walletconnect", "portis", "fortmatic", "iframe"];
 
     const {
       injectedProvider,
@@ -216,6 +218,7 @@ class Modal extends React.Component<IModalProps, IModalState> {
       connectToFortmatic,
       connectToPortis,
       connectToWalletConnect,
+      connectToIFrame,
       providerOptions
     } = this.props;
 
@@ -246,6 +249,12 @@ class Modal extends React.Component<IModalProps, IModalState> {
       if (!displayFortmatic) {
         providers = providers.filter(provider => provider !== "fortmatic");
       }
+
+      const displayIFrame = window && window.parent && window.parent !== window.self;
+
+      if (!displayIFrame) {
+        providers = providers.filter(provider => provider !== "iframe");
+      }
     }
 
     const providersMap = providers.map(provider => {
@@ -269,6 +278,12 @@ class Modal extends React.Component<IModalProps, IModalState> {
           return {
             name: "Fortmatic",
             onClick: connectToFortmatic
+          };
+
+        case "iframe":
+          return {
+            name: "IFrame",
+            onClick: connectToIFrame
           };
 
         default:

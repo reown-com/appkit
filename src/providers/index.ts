@@ -156,6 +156,15 @@ const providers: IProviderInfo[] = [
     styled: {
       noShadow: false
     }
+  },
+  {
+    name: "IFrame",
+    logo: Web3DefaultLogo,
+    type: "web",
+    check: "isIFrame",
+    styled: {
+      noShadow: false
+    }
   }
 ];
 

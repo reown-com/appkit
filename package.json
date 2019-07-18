@@ -78,6 +78,7 @@
     "webpack-cli": "^3.2.1"
   },
   "dependencies": {
+    "@ethvault/iframe-provider": "^0.1.6",
     "@portis/web3": "^2.0.0-beta.30",
     "@walletconnect/web3-provider": "^1.0.0-beta.25",
     "fortmatic": "^0.8.1",
