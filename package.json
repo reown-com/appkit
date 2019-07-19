@@ -42,7 +42,8 @@
     "test": "mocha --require ./babel-polyfill.js test/**/*.spec.js",
     "lint": "tslint ./src/*.ts ./src/**/*.ts",
     "format": "prettier ./src/*.ts ./src/**/*.ts --write",
-    "check": "npm run clean && npm run lint && npm run format && npm run build && npm run test"
+    "check": "npm run clean && npm run lint && npm run format && npm run build && npm run test",
+    "routine": "npm run clean:all && npm run bootstrap && npm run check"
   },
   "husky": {
     "hooks": {
@@ -79,7 +80,7 @@
   },
   "dependencies": {
     "@portis/web3": "^2.0.0-beta.30",
-    "@walletconnect/web3-provider": "^1.0.0-beta.25",
+    "@walletconnect/web3-provider": "^1.0.0-beta.29",
     "fortmatic": "^0.8.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
