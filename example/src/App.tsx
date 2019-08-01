@@ -132,7 +132,10 @@ class App extends React.Component<any, any> {
       web3Instance.currentProvider.connection &&
       web3Instance.currentProvider.connection.isWalletConnect
     ) {
-      await web3Instance.currentProvider.connection._walletConnector.killSession()
+      await web3Instance.currentProvider.sendAsync({
+        method: 'wc_killSession',
+        params: []
+      })
     }
     clearInterval(accountInterval)
     this.setState({ ...INITIAL_STATE })
