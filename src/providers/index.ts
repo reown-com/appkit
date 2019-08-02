@@ -6,6 +6,8 @@ import WalletConnectLogo from "../assets/walletconnect-circle.svg";
 // @ts-ignore
 import MetaMaskLogo from "../assets/metamask.svg";
 // @ts-ignore
+import SafeLogo from "../assets/safe.svg";
+// @ts-ignore
 import NiftyWalletLogo from "../assets/niftyWallet.png";
 // @ts-ignore
 import PortisLogo from "../assets/portis.svg";
@@ -54,6 +56,15 @@ const providers: IProviderInfo[] = [
     logo: MetaMaskLogo,
     type: "injected",
     check: "isMetaMask",
+    styled: {
+      noShadow: true
+    }
+  },
+  {
+    name: "Safe",
+    logo: SafeLogo,
+    type: "injected",
+    check: "isSafe",
     styled: {
       noShadow: true
     }
