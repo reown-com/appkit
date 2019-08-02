@@ -11,7 +11,9 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
       result[provider.check] = window.ethereum
         ? window.ethereum[provider.check] ||
           (window.web3 && window.web3.currentProvider)
-          ? window.web3.currentProvider[provider.check]
+          ? window.web3
+            ? window.web3.currentProvider[provider.check]
+            : true
           : false
         : window.web3 && window.web3.currentProvider
         ? window.web3.currentProvider[provider.check]

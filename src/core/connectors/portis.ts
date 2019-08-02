@@ -12,7 +12,7 @@ const ConnectToPortis = async (opts: IPortisConnectorOptions) => {
         const id = opts.id;
         const network = opts.network || "mainnet";
         const pt = new Portis(id, network);
-        pt.showPortis();
+        await pt.showPortis();
         pt.onLogin(() => {
           resolve(pt.provider);
         });

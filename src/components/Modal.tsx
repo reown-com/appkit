@@ -227,6 +227,10 @@ class Modal extends React.Component<IModalProps, IModalState> {
     if (onlyInjected) {
       providers = ["injected"];
     } else {
+      if (!displayInjected) {
+        providers = providers.filter(provider => provider !== "injected");
+      }
+
       const displayWalletConnect = !providerOptions.disableWalletConnect;
       if (!displayWalletConnect) {
         providers = providers.filter(provider => provider !== "walletconnect");
