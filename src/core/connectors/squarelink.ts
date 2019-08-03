@@ -13,7 +13,7 @@ const ConnectToSquarelink = async (opts: ISquarelinkConnectorOptions) => {
         const network = opts.network || "mainnet";
         const sqlk = new Squarelink(id, network);
         const provider = sqlk.getProvider();
-        provider.enable(() => {
+        provider.enable().then(() => {
           resolve(sqlk.getProvider());
         });
       } catch (error) {
