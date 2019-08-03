@@ -169,6 +169,10 @@ class App extends React.Component<any, any> {
                 <h3>{`Try out Web3Connect`}</h3>
                 <Web3Connect.Button
                   providerOptions={{
+                    squarelink: {
+                      id: process.env.REACT_APP_SQUARELINK_ID,
+                      network: 'mainnet'
+                    },
                     portis: {
                       id: process.env.REACT_APP_PORTIS_ID,
                       network: 'mainnet'

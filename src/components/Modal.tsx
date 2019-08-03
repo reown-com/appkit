@@ -134,6 +134,7 @@ interface IModalProps {
   connectToInjected: SimpleFunction;
   connectToFortmatic: SimpleFunction;
   connectToPortis: SimpleFunction;
+  connectToSquarelink: SimpleFunction;
   connectToWalletConnect: SimpleFunction;
 }
 
@@ -168,6 +169,7 @@ class Modal extends React.Component<IModalProps, IModalState> {
     connectToInjected: PropTypes.func.isRequired,
     connectToFortmatic: PropTypes.func.isRequired,
     connectToPortis: PropTypes.func.isRequired,
+    connectToSquarelink: PropTypes.func.isRequired,
     connectToWalletConnect: PropTypes.func.isRequired
   };
 
@@ -208,13 +210,14 @@ class Modal extends React.Component<IModalProps, IModalState> {
   }
 
   public getProvidersToDisplay = () => {
-    let providers = ["injected", "walletconnect", "portis", "fortmatic"];
+    let providers = ["injected", "walletconnect", "portis", "squarelink", "fortmatic"];
 
     const {
       injectedProvider,
       connectToInjected,
       connectToFortmatic,
       connectToPortis,
+      connectToSquarelink,
       connectToWalletConnect,
       providerOptions
     } = this.props;
@@ -242,6 +245,16 @@ class Modal extends React.Component<IModalProps, IModalState> {
       if (!displayPortis) {
         providers = providers.filter(provider => provider !== "portis");
       }
+
+      const displaySquarelink =
+        providerOptions &&
+        providerOptions.squarelink &&
+        providerOptions.squarelink.key;
+
+      if (!displaySquarelink) {
+        providers = providers.filter(provider => provider !== "squarelink");
+      }
+
       const displayFortmatic =
         providerOptions &&
         providerOptions.fortmatic &&
@@ -268,6 +281,11 @@ class Modal extends React.Component<IModalProps, IModalState> {
           return {
             name: "Portis",
             onClick: connectToPortis
+          };
+        case "squarelink":
+          return {
+            name: "Squarelink",
+            onClick: connectToSquarelink
           };
         case "fortmatic":
           return {

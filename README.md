@@ -6,7 +6,7 @@ A single Web3 / Ethereum provider solution for all Wallets
 
 Web3Connect is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
 
-By default Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Fortmatic** and **Portis**.
+By default Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Fortmatic**, **Squarelink**, and **Portis**.
 
 ## Preview
 
@@ -41,6 +41,10 @@ import Web3Connect from "web3connect";
 
 <Web3Connect.Button
   providerOptions={{
+    squarelink: {
+      id: "SQUAERLINK_ID", // required
+      network: "mainnet" // optional
+    },
     portis: {
       id: "PORTIS_ID", // required
       network: "mainnet" // optional
@@ -68,6 +72,10 @@ import Web3Connect from "web3connect";
 
 const web3Connect = new Web3Connect.Core({
   providerOptions: {
+    squarelink: {
+      id: "SQUARELINK_ID", // required
+      network: "mainnet" // optional
+    },
     portis: {
       id: "PORTIS_ID", // required
       network: "mainnet" // optional
@@ -105,6 +113,12 @@ const provider = await Web3Connect.ConnectToInjected();
 // For WalletConnect
 const provider = await Web3Connect.ConnectToWalletConnect({
   bridge: "https://bridge.walletconnect.org" // optional
+});
+
+// For Squarelink
+const provider = await Web3Connect.ConnectToSquarelink({
+  key: "SQUARELINK_ID", // required
+  network: "mainnet" // optional
 });
 
 // For Portis
@@ -166,6 +180,11 @@ interface IInjectedProvidersMap {
   - WalletConnect:
 
     - bridge: bridge url (optional)
+
+  - Squarelink:
+
+    - id: the client ID registered to your DApp
+    - network: choose initial network name (optional)
 
   - Portis:
 
