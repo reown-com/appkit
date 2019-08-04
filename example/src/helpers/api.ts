@@ -1,14 +1,14 @@
-import axios, { AxiosInstance } from "axios";
-import { IAssetData, IGasPrices, IParsedTx } from "./types";
+import axios, { AxiosInstance } from 'axios'
+import { IAssetData, IGasPrices, IParsedTx } from './types'
 
 const api: AxiosInstance = axios.create({
-  baseURL: "https://ethereum-api.xyz",
+  baseURL: 'https://ethereum-api.xyz',
   timeout: 30000, // 30 secs
   headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json"
+    Accept: 'application/json',
+    'Content-Type': 'application/json'
   }
-});
+})
 
 export async function apiGetAccountAssets(
   address: string,
@@ -16,9 +16,9 @@ export async function apiGetAccountAssets(
 ): Promise<IAssetData[]> {
   const response = await api.get(
     `/account-assets?address=${address}&chainId=${chainId}`
-  );
-  const { result } = response.data;
-  return result;
+  )
+  const { result } = response.data
+  return result
 }
 
 export async function apiGetAccountTransactions(
@@ -27,9 +27,9 @@ export async function apiGetAccountTransactions(
 ): Promise<IParsedTx[]> {
   const response = await api.get(
     `/account-transactions?address=${address}&chainId=${chainId}`
-  );
-  const { result } = response.data;
-  return result;
+  )
+  const { result } = response.data
+  return result
 }
 
 export const apiGetAccountNonce = async (
@@ -38,13 +38,13 @@ export const apiGetAccountNonce = async (
 ): Promise<string> => {
   const response = await api.get(
     `/account-nonce?address=${address}&chainId=${chainId}`
-  );
-  const { result } = response.data;
-  return result;
-};
+  )
+  const { result } = response.data
+  return result
+}
 
 export const apiGetGasPrices = async (): Promise<IGasPrices> => {
-  const response = await api.get(`/gas-prices`);
-  const { result } = response.data;
-  return result;
-};
+  const response = await api.get(`/gas-prices`)
+  const { result } = response.data
+  return result
+}
