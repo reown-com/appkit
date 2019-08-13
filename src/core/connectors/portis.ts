@@ -1,8 +1,24 @@
 import Portis from "@portis/web3";
 
+export interface INetwork {
+  nodeUrl: string;
+  chainId?: string;
+  gasRelayHubAddress?: string;
+}
+
+export type Scope = 'email';
+
+export interface IOptions {
+  scope?: Scope[];
+  gasRelay?: boolean;
+  registerPageByDefault?: boolean;
+  pocketDevId?: string;
+}
+
 export interface IPortisConnectorOptions {
   id: string;
-  network?: string;
+  network?: string | INetwork;
+  config?: IOptions;
 }
 
 const ConnectToPortis = async (opts: IPortisConnectorOptions) => {
@@ -11,8 +27,10 @@ const ConnectToPortis = async (opts: IPortisConnectorOptions) => {
       try {
         const id = opts.id;
         const network = opts.network || "mainnet";
-        const pt = new Portis(id, network);
+        const config = opts.config;
+        const pt = new Portis(id, network, config);
         await pt.provider.enable();
+        pt.provider._portis = pt;
         resolve(pt.provider);
       } catch (error) {
         return reject(error);
