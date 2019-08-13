@@ -171,6 +171,7 @@ interface IInjectedProvidersMap {
 
     - id: the app id registered (required)
     - network: choose initial network name (optional)
+    - config: additional configuration, like support of Gas Station Network (optional)
 
   - Fortmatic:
 
