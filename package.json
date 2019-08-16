@@ -79,7 +79,7 @@
     "webpack-cli": "^3.2.1"
   },
   "dependencies": {
-    "@portis/web3": "^2.0.0-beta.34",
+    "@portis/web3": "^2.0.0-beta.37",
     "@walletconnect/web3-provider": "^1.0.0-beta.32",
     "fortmatic": "^0.8.1",
     "prop-types": "^15.7.2",
