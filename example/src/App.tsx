@@ -335,11 +335,8 @@ class App extends React.Component<any, any> {
   public resetApp = async () => {
     const { web3 } = this.state
     console.log('web3.currentProvider', web3 && web3.currentProvider) // tslint:disable-line
-    if (web3 && web3.currentProvider && web3.currentProvider.isWalletConnect && web3.currentProvider.isConnected) {
-      await web3.currentProvider.sendAsync({
-        method: 'wc_killSession',
-        params: []
-      })
+    if (web3 && web3.currentProvider && web3.currentProvider.isWalletConnect && web3.currentProvider.wc.connected) {
+      await web3.currentProvider.wc.killSession()
     }
     this.setState({ ...INITIAL_STATE })
   }
