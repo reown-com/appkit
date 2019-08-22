@@ -134,6 +134,7 @@ interface IModalProps {
   connectToInjected: SimpleFunction;
   connectToFortmatic: SimpleFunction;
   connectToPortis: SimpleFunction;
+  connectToSquarelink: SimpleFunction;
   connectToWalletConnect: SimpleFunction;
 }
 
@@ -168,6 +169,7 @@ class Modal extends React.Component<IModalProps, IModalState> {
     connectToInjected: PropTypes.func.isRequired,
     connectToFortmatic: PropTypes.func.isRequired,
     connectToPortis: PropTypes.func.isRequired,
+    connectToSquarelink: PropTypes.func.isRequired,
     connectToWalletConnect: PropTypes.func.isRequired
   };
 
@@ -208,13 +210,14 @@ class Modal extends React.Component<IModalProps, IModalState> {
   }
 
   public getProvidersToDisplay = () => {
-    let providers = ["injected", "walletconnect", "portis", "fortmatic"];
+    let providers = ["injected", "walletconnect", "portis", "fortmatic", "squarelink"];
 
     const {
       injectedProvider,
       connectToInjected,
       connectToFortmatic,
       connectToPortis,
+      connectToSquarelink,
       connectToWalletConnect,
       providerOptions
     } = this.props;
@@ -234,6 +237,13 @@ class Modal extends React.Component<IModalProps, IModalState> {
       const displayWalletConnect = !providerOptions.disableWalletConnect;
       if (!displayWalletConnect) {
         providers = providers.filter(provider => provider !== "walletconnect");
+      }
+
+      const displaySquarelink =
+        providerOptions && providerOptions.squarelink && providerOptions.squarelink.id;
+
+      if (!displaySquarelink) {
+        providers = providers.filter(provider => provider !== "squarelink");
       }
 
       const displayPortis =
@@ -268,6 +278,11 @@ class Modal extends React.Component<IModalProps, IModalState> {
           return {
             name: "Portis",
             onClick: connectToPortis
+          };
+        case "squarelink":
+          return {
+            name: "Squarelink",
+            onClick: connectToSquarelink
           };
         case "fortmatic":
           return {

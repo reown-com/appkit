@@ -5,6 +5,8 @@ node_modules
 dist
 lib
 
+.env
+
 #misc
 .DS_Store
 

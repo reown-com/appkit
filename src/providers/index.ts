@@ -12,6 +12,8 @@ import NiftyWalletLogo from "../assets/niftyWallet.png";
 // @ts-ignore
 import PortisLogo from "../assets/portis.svg";
 // @ts-ignore
+import SquarelinkLogo from "../assets/squarelink.svg";
+// @ts-ignore
 import FortmaticLogo from "../assets/fortmatic.svg";
 // @ts-ignore
 import TrustLogo from "../assets/trust.png";
@@ -74,6 +76,15 @@ const providers: IProviderInfo[] = [
     logo: NiftyWalletLogo,
     type: "injected",
     check: "isNiftyWallet",
+    styled: {
+      noShadow: true
+    }
+  },
+  {
+    name: "Squarelink",
+    logo: SquarelinkLogo,
+    type: "web",
+    check: "isSquarelink",
     styled: {
       noShadow: true
     }
