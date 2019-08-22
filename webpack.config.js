@@ -1,4 +1,5 @@
 const path = require("path");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   mode: "production",
@@ -13,10 +14,20 @@ module.exports = {
     umdNamedDefine: true,
     globalObject: "this"
   },
+  devtool: '',
+  optimization: {
+    minimizer: [new UglifyJsPlugin()],
+  },
+  externals : {
+    '@walletconnect/web3-provider': '@walletconnect/web3-provider',
+    '@portis/web3': '@portis/web3',
+    'fortmatic': 'fortmatic',
+    react: 'react',
+    reactDOM: 'react-dom',
+  },
   resolve: {
     extensions: [".ts", ".tsx", ".js"]
   },
-  devtool: "source-map",
   module: {
     rules: [
       { test: /\.tsx?$/, loader: "ts-loader" },

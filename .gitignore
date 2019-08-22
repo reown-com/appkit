@@ -9,3 +9,7 @@ lib
 .DS_Store
 
 yarn.lock
+
+# IDE
+.idea
+.vscode
