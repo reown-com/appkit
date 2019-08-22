@@ -29,8 +29,7 @@ class EventManager {
             eventCallback.event !== eventObj.event
         );
       }
-    }
-    else {
+    } else {
       this._eventCallbacks = [];
     }
   }
