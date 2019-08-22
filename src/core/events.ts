@@ -13,12 +13,20 @@ class EventManager {
     this._eventCallbacks.push(eventCallback);
   }
 
-  public off(event?: string) {
-    if (event) {
-      this._eventCallbacks.filter(
-        (eventCallback: IEventCallback) => eventCallback.event !== event
+  public off(eventObj?: IEventCallback) {
+    // remove specific event callback
+    if (eventObj && eventObj.callback) {
+      this._eventCallbacks = this._eventCallbacks.filter(
+        (eventCallback: IEventCallback) => eventCallback.event !== eventObj.event && eventCallback.callback !== eventObj.callback
       );
-    } else {
+    } 
+    // No callback to remove, remove entire event
+    else if (eventObj && eventObj.event) {
+      this._eventCallbacks = this._eventCallbacks.filter(
+        (eventCallback: IEventCallback) => eventCallback.event !== eventObj.event
+      );
+    } 
+    else {
       this._eventCallbacks = [];
     }
   }
