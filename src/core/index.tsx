@@ -31,19 +31,27 @@ class Core {
       this.lightboxOpacity = opts.lightboxOpacity || 0.4;
       this.providerOptions = opts.providerOptions || {};
     }
-
+    
     this.renderModal();
   }
 
-  public on(event: string, callback: (result: any) => void): void {
+  public on(event: string, callback: (result: any) => void): () => void {
     this.eventManager.on({
       event,
       callback
     });
+
+    return () => this.eventManager.off({
+      event,
+      callback
+    })
   }
 
-  public off() {
-    this.eventManager.off()
+  public off(event: string, callback?: (result: any) => void): void {
+    this.eventManager.off({
+      event,
+      callback
+    })
   }
 
   public connectToInjected = async () => {

@@ -13,19 +13,23 @@ class EventManager {
     this._eventCallbacks.push(eventCallback);
   }
 
-  public off(eventObj?: IEventCallback) {
+  public off(eventObj?: Partial<IEventCallback>) {
     // remove specific event callback
-    if (eventObj && eventObj.callback) {
-      this._eventCallbacks = this._eventCallbacks.filter(
-        (eventCallback: IEventCallback) => eventCallback.event !== eventObj.event && eventCallback.callback !== eventObj.callback
-      );
-    } 
-    // No callback to remove, remove entire event
-    else if (eventObj && eventObj.event) {
-      this._eventCallbacks = this._eventCallbacks.filter(
-        (eventCallback: IEventCallback) => eventCallback.event !== eventObj.event
-      );
-    } 
+    if (eventObj) {
+      if (eventObj.callback) {
+        this._eventCallbacks = this._eventCallbacks.filter(
+          (eventCallback: IEventCallback) =>
+            eventCallback.event !== eventObj.event ||
+            eventCallback.callback !== eventObj.callback
+        );
+      } // No callback to remove, remove entire event
+      else {
+        this._eventCallbacks = this._eventCallbacks.filter(
+          (eventCallback: IEventCallback) =>
+            eventCallback.event !== eventObj.event
+        );
+      }
+    }
     else {
       this._eventCallbacks = [];
     }
