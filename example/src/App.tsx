@@ -336,7 +336,7 @@ class App extends React.Component<any, any> {
     const { web3 } = this.state
     console.log('web3.currentProvider', web3 && web3.currentProvider) // tslint:disable-line
     if (web3 && web3.currentProvider && web3.currentProvider.isWalletConnect && web3.currentProvider.wc.connected) {
-      await web3.currentProvider.wc.killSession()
+      await web3.currentProvider.send('wc_killSession', [])
     }
     this.setState({ ...INITIAL_STATE })
   }
@@ -352,7 +352,7 @@ class App extends React.Component<any, any> {
       pendingRequest,
       result
     } = this.state
-
+    
     return (
       <SLayout>
         <Column maxWidth={1000} spanHeight>
