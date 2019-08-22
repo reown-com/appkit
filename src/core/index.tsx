@@ -42,6 +42,10 @@ class Core {
     });
   }
 
+  public off() {
+    this.eventManager.off()
+  }
+
   public connectToInjected = async () => {
     try {
       const provider = await connectors.ConnectToInjected();
@@ -83,12 +87,17 @@ class Core {
         this.providerOptions && this.providerOptions.walletconnect
           ? this.providerOptions.walletconnect
           : {};
-      const provider = await connectors.ConnectToWalletConnect({
+      const provider: any = await connectors.ConnectToWalletConnect({
         bridge: opts.bridge,
         qrcode: false,
         onUri: (uri: string) => this.updateState({ uri })
       });
       await this.updateState({ uri: "" });
+      // Listen for Disconnect event
+      provider.wc.on("disconnect", async () => {
+        return this.onDisconnect()
+      });
+
       this.onConnect(provider);
     } catch (error) {
       this.onError(error);
@@ -107,6 +116,10 @@ class Core {
     }
     await this.updateState({ show: !this.show });
   };
+
+  private onDisconnect = async () => {
+    this.eventManager.trigger("disconnect")
+  }
 
   private onError = async (error: any) => {
     await this.toggleModal();
