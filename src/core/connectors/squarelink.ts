@@ -16,6 +16,8 @@ export interface ISquarelinkConnectorOptions {
   config?: IOptions;
 }
 
+
+
 const ConnectToSquarelink = async (opts: ISquarelinkConnectorOptions) => {
   return new Promise(async (resolve, reject) => {
     if (opts && opts.id) {
@@ -25,11 +27,9 @@ const ConnectToSquarelink = async (opts: ISquarelinkConnectorOptions) => {
         const config = opts.config;
         const sqlk = new Squarelink(id, network, config);
         const provider = sqlk.getProvider();
-        provider.enable().then(() => {
-          resolve(sqlk.getProvider());
-        });
+        await provider.enable();
+        resolve(sqlk.getProvider());
       } catch (error) {
-        console.log(error);
         return reject(error);
       }
     } else {
