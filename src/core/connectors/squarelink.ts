@@ -28,9 +28,9 @@ const ConnectToSquarelink = async (opts: ISquarelinkConnectorOptions) => {
         const sqlk = new Squarelink(id, network, config);
         const provider = sqlk.getProvider();
         await provider.enable();
-        resolve(sqlk.getProvider());
+        return resolve(sqlk.getProvider());
       } catch (error) {
-        return reject(error);
+        return reject(new Error("Failed to login to Squarelink"));
       }
     } else {
       return reject(new Error("Missing Squarelink Id"));
