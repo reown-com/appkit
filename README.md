@@ -79,12 +79,12 @@ const web3Connect = new Web3Connect.Core({
   }
 });
 
-// subscibe to connect
+// subscribe to connect
 web3Connect.on("connect", (provider: any) => {
   const web3 = new Web3(provider); // add provider to web3
 });
 
-// subscibe to close
+// subscribe to close
 web3Connect.on("close", () => {
   console.log("Web3Connect Modal Closed"); // modal has closed
 });
