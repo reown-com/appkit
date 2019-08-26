@@ -13,6 +13,7 @@ const ConnectToWalletConnect = (opts: IWalletConnectConnectorOptions) => {
     let bridge = "https://bridge.walletconnect.org";
     let qrcode = true;
     let onUri: SimpleFunction | null = null;
+    const infuraId = "774b1e4252de48c3997d66ac5f5078d8";
 
     if (opts) {
       bridge = opts.bridge || bridge;
@@ -21,28 +22,14 @@ const ConnectToWalletConnect = (opts: IWalletConnectConnectorOptions) => {
     }
 
     if (!qrcode && !onUri) {
-      throw new Error("Must provide onUri callback when qrcode is disabled");
+      reject(new Error("Must provide onUri callback when qrcode is disabled"));
     }
 
-    const provider = new WalletConnectProvider({ bridge, qrcode });
+    const provider = new WalletConnectProvider({ bridge, qrcode, infuraId });
 
-    if (!provider.wc.connected) {
-      await provider.wc.createSession();
+    await provider.enable();
 
-      if (onUri) {
-        onUri(provider.wc.uri);
-      }
-
-      provider.wc.on("connect", async (error: Error) => {
-        if (error) {
-          return reject(error);
-        }
-
-        return resolve(provider);
-      });
-    } else {
-      return resolve(provider);
-    }
+    resolve(provider);
   });
 };
 
