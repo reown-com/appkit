@@ -5,11 +5,10 @@ import Provider from "./Provider";
 import QRCodeDisplay from "./QRCodeDisplay";
 import { SDescription } from "./common";
 import {
-  isMobile,
   getProviderInfoByName,
   formatProviderDescription
 } from "../helpers/utils";
-import { SimpleFunction, IProviderOptions } from "../helpers/types";
+import { SimpleFunction, IProviderCallback } from "../helpers/types";
 
 declare global {
   // tslint:disable-next-line
@@ -126,22 +125,15 @@ const SQRCodeDescription = styled(SDescription)`
 `;
 
 interface IModalProps {
+  providers: IProviderCallback[];
   onClose: SimpleFunction;
   resetState: SimpleFunction;
-  injectedProvider: string | null;
   lightboxOpacity: number;
-  providerOptions: IProviderOptions;
-  connectToInjected: SimpleFunction;
-  connectToFortmatic: SimpleFunction;
-  connectToPortis: SimpleFunction;
-  connectToSquarelink: SimpleFunction;
-  connectToWalletConnect: SimpleFunction;
 }
 
 interface IModalState {
   show: boolean;
   uri: string;
-  mobile: boolean;
   lightboxOffset: number;
   qrcodeSize: number;
 }
@@ -149,7 +141,6 @@ interface IModalState {
 const INITIAL_STATE: IModalState = {
   show: false,
   uri: "",
-  mobile: isMobile(),
   lightboxOffset: 0,
   qrcodeSize: 382
 };
@@ -161,16 +152,10 @@ class Modal extends React.Component<IModalProps, IModalState> {
       this.setState(state);
   }
   public static propTypes = {
+    providers: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
     resetState: PropTypes.func.isRequired,
-    injectedProvider: PropTypes.string.isRequired,
-    lightboxOpacity: PropTypes.number.isRequired,
-    providerOptions: PropTypes.object.isRequired,
-    connectToInjected: PropTypes.func.isRequired,
-    connectToFortmatic: PropTypes.func.isRequired,
-    connectToPortis: PropTypes.func.isRequired,
-    connectToSquarelink: PropTypes.func.isRequired,
-    connectToWalletConnect: PropTypes.func.isRequired
+    lightboxOpacity: PropTypes.number.isRequired
   };
 
   public lightboxRef?: HTMLDivElement | null;
@@ -209,100 +194,10 @@ class Modal extends React.Component<IModalProps, IModalState> {
     }
   }
 
-  public getProvidersToDisplay = () => {
-    let providers = ["injected", "walletconnect", "portis", "fortmatic", "squarelink"];
-
-    const {
-      injectedProvider,
-      connectToInjected,
-      connectToFortmatic,
-      connectToPortis,
-      connectToSquarelink,
-      connectToWalletConnect,
-      providerOptions
-    } = this.props;
-
-    const displayInjected =
-      injectedProvider && !providerOptions.disableInjectedProvider;
-
-    const onlyInjected = displayInjected && this.state.mobile;
-
-    if (onlyInjected) {
-      providers = ["injected"];
-    } else {
-      if (!displayInjected) {
-        providers = providers.filter(provider => provider !== "injected");
-      }
-
-      const displayWalletConnect = !providerOptions.disableWalletConnect;
-      if (!displayWalletConnect) {
-        providers = providers.filter(provider => provider !== "walletconnect");
-      }
-
-      const displaySquarelink =
-        providerOptions && providerOptions.squarelink && providerOptions.squarelink.id;
-
-      if (!displaySquarelink) {
-        providers = providers.filter(provider => provider !== "squarelink");
-      }
-
-      const displayPortis =
-        providerOptions && providerOptions.portis && providerOptions.portis.id;
-
-      if (!displayPortis) {
-        providers = providers.filter(provider => provider !== "portis");
-      }
-      const displayFortmatic =
-        providerOptions &&
-        providerOptions.fortmatic &&
-        providerOptions.fortmatic.key;
-
-      if (!displayFortmatic) {
-        providers = providers.filter(provider => provider !== "fortmatic");
-      }
-    }
-
-    const providersMap = providers.map(provider => {
-      switch (provider) {
-        case "injected":
-          return {
-            name: injectedProvider,
-            onClick: connectToInjected
-          };
-        case "walletconnect":
-          return {
-            name: "WalletConnect",
-            onClick: connectToWalletConnect
-          };
-        case "portis":
-          return {
-            name: "Portis",
-            onClick: connectToPortis
-          };
-        case "squarelink":
-          return {
-            name: "Squarelink",
-            onClick: connectToSquarelink
-          };
-        case "fortmatic":
-          return {
-            name: "Fortmatic",
-            onClick: connectToFortmatic
-          };
-
-        default:
-          return null;
-      }
-    });
-    return providersMap;
-  };
-
   public render = () => {
     const { show, uri, lightboxOffset, qrcodeSize } = this.state;
 
-    const { onClose, lightboxOpacity } = this.props;
-
-    const providers = this.getProvidersToDisplay();
+    const { onClose, lightboxOpacity, providers } = this.props;
 
     const hideMainModalCard = !show || (!!uri && window.innerWidth <= 860);
     return (
