@@ -1,4 +1,5 @@
 const path = require("path");
+const externalReact = require('webpack-external-react');
 
 module.exports = {
   mode: "production",
@@ -13,11 +14,19 @@ module.exports = {
     umdNamedDefine: true,
     globalObject: "this"
   },
+  externals : {
+    ...externalReact.externals,
+    'fortmatic': 'fortmatic',
+    'squarelink': 'squarelink',
+    '@portis/web3': '@portis/web3',
+    'styled-components': 'styled-components',
+    '@walletconnect/web3-provider': '@walletconnect/web3-provider',
+  },
   resolve: {
     extensions: [".ts", ".tsx", ".js"]
   },
-  devtool: "source-map",
   module: {
+    noParse: externalReact.noParse,
     rules: [
       { test: /\.tsx?$/, loader: "ts-loader" },
       {
