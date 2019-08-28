@@ -16,21 +16,21 @@ import SquarelinkLogo from "../assets/squarelink.svg";
 // @ts-ignore
 import FortmaticLogo from "../assets/fortmatic.svg";
 // @ts-ignore
-import TrustLogo from "../assets/trust.png";
+import TrustLogo from "../assets/trust.svg";
 // @ts-ignore
 import DapperLogo from "../assets/dapper.png";
 // @ts-ignore
-import CoinbaseLogo from "../assets/coinbase.png";
+import CoinbaseLogo from "../assets/coinbase.svg";
 // @ts-ignore
-import CipherLogo from "../assets/cipher.png";
+import CipherLogo from "../assets/cipher.svg";
 // @ts-ignore
-import imTokenLogo from "../assets/imtoken.png";
+import imTokenLogo from "../assets/imtoken.svg";
 // @ts-ignore
-import StatusLogo from "../assets/status.png";
+import StatusLogo from "../assets/status.svg";
 // @ts-ignore
 import TokenaryLogo from "../assets/tokenary.png";
 // @ts-ignore
-import OperaLogo from "../assets/opera.png";
+import OperaLogo from "../assets/opera.svg";
 
 export const fallbackProvider: IProviderInfo = {
   name: "Web3",

@@ -14,13 +14,17 @@ module.exports = {
     umdNamedDefine: true,
     globalObject: "this"
   },
-  externals : {
-    ...externalReact.externals,
-    'fortmatic': 'fortmatic',
-    'squarelink': 'squarelink',
-    '@portis/web3': '@portis/web3',
-    'styled-components': 'styled-components',
-    '@walletconnect/web3-provider': '@walletconnect/web3-provider',
+  optimization: {
+    splitChunks: {
+        cacheGroups: {
+            vendor: {
+                name: 'vendors',
+                chunks: 'all',
+                test: /node_modules/,
+                enforce: true
+            }
+        }
+    }
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js"]
