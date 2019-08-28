@@ -51,8 +51,6 @@ class Core {
     type: string,
     connector: (opts: any) => Promise<any>
   ) => {
-    console.log("[connect]", "type", type);
-    console.log("[connect]", "connector", connector);
     try {
       let opts = undefined;
       if (type !== "injected") {
@@ -72,7 +70,6 @@ class Core {
   };
 
   public toggleModal = async () => {
-    console.log("[toggleModal]", "this.providers", this.providers);
     if (
       this.providers &&
       this.providers.length === 1 &&
@@ -96,7 +93,6 @@ class Core {
 
   public getProviders = () => {
     const mobile = isMobile();
-    console.log("[getProviders]", "mobile", mobile);
 
     let providers = [
       "injected",
@@ -192,8 +188,6 @@ class Core {
           };
       }
     });
-
-    console.log("[getProviders]", "providersMap", providersMap);
 
     return providersMap;
   };

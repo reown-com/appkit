@@ -44,8 +44,6 @@ const ConnectToWalletConnect = (opts: IWalletConnectConnectorOptions) => {
       chainId
     });
 
-    console.log("ConnectToWalletConnect", "provider", provider);
-
     await provider.enable();
 
     resolve(provider);
