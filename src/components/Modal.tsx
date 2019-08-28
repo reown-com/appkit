@@ -29,7 +29,7 @@ interface IModalStyleProps {
 const SLightbox = styled.div<IModalStyleProps>`
   transition: opacity 0.1s ease-in-out;
   text-align: center;
-  position: absolute;
+  position: fixed;
   width: 100vw;
   height: 100vh;
   margin-left: -50vw;
