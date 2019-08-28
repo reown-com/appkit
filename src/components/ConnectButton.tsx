@@ -8,6 +8,7 @@ class ConnectButton extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
     this.core = new Core({
+      network: props.network,
       lightboxOpacity: props.lightboxOpacity,
       providerOptions: props.providerOptions
     });
@@ -18,6 +19,7 @@ class ConnectButton extends React.Component<any, any> {
   }
 
   public render = () => {
+    console.log("this.core.toggleModal", this.core.toggleModal);
     return (
       <Button onClick={this.core.toggleModal}>
         {this.props.label || "Connect"}

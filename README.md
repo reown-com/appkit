@@ -16,7 +16,7 @@ You can test the library on: https://web3connect.com/
 
 ## Usage
 
-Install Web3Connect NPM package
+1. Install Web3Connect NPM package
 
 ```bash
 npm install --save web3connect
@@ -26,7 +26,17 @@ npm install --save web3connect
 yarn add web3connect
 ```
 
-Then you can integrate it three different ways:
+2. Install Provider packages
+
+```bash
+npm install --save @walletconnect/web3-provider @portis/web3 fortmatic squarelink
+
+# OR
+
+yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink
+```
+
+3. Then you can integrate it three different ways:
 
 - [React Button](#React-Button)
 - [Core Module](#Core-Module)

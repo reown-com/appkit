@@ -2,12 +2,6 @@ import * as React from "react";
 import * as PropTypes from "prop-types";
 import styled from "styled-components";
 import Provider from "./Provider";
-import QRCodeDisplay from "./QRCodeDisplay";
-import { SDescription } from "./common";
-import {
-  getProviderInfoByName,
-  formatProviderDescription
-} from "../helpers/utils";
 import { SimpleFunction, IProviderCallback } from "../helpers/types";
 
 declare global {
@@ -73,22 +67,6 @@ const SHitbox = styled.div`
   bottom: 0;
 `;
 
-interface IQRCodeWrapperStyleProps {
-  size: number;
-}
-
-const SQRCodeWrapper = styled.div<IQRCodeWrapperStyleProps>`
-  padding: 20px;
-  width: 100%;
-  max-width: ${({ size }) => `${size}px`};
-  height: 100%;
-  max-height: ${({ size }) => `${size}px`};
-`;
-
-const SQRCodeDisplay = styled(QRCodeDisplay)`
-  height: 100%;
-`;
-
 interface IModalCardStyleProps {
   maxWidth?: number;
   hide?: boolean;
@@ -115,15 +93,6 @@ const SModalCard = styled.div<IModalCardStyleProps>`
   }
 `;
 
-const SQRCodeModalCard = styled(SModalCard)`
-  display: flex;
-  justify-content: center;
-`;
-
-const SQRCodeDescription = styled(SDescription)`
-  margin-top: 30px;
-`;
-
 interface IModalProps {
   providers: IProviderCallback[];
   onClose: SimpleFunction;
@@ -133,16 +102,12 @@ interface IModalProps {
 
 interface IModalState {
   show: boolean;
-  uri: string;
   lightboxOffset: number;
-  qrcodeSize: number;
 }
 
 const INITIAL_STATE: IModalState = {
   show: false,
-  uri: "",
-  lightboxOffset: 0,
-  qrcodeSize: 382
+  lightboxOffset: 0
 };
 
 class Modal extends React.Component<IModalProps, IModalState> {
@@ -166,7 +131,7 @@ class Modal extends React.Component<IModalProps, IModalState> {
   };
 
   public componentDidUpdate(prevProps: IModalProps, prevState: IModalState) {
-    if (prevState.show && !this.state.show && prevState.uri) {
+    if (prevState.show && !this.state.show) {
       this.props.resetState();
     }
     if (this.lightboxRef) {
@@ -180,26 +145,13 @@ class Modal extends React.Component<IModalProps, IModalState> {
         this.setState({ lightboxOffset });
       }
     }
-
-    if (this.mainModalCard) {
-      const mainModalCardRect = this.mainModalCard.getBoundingClientRect();
-      const qrcodeSize = mainModalCardRect.height;
-
-      if (
-        qrcodeSize !== INITIAL_STATE.qrcodeSize &&
-        qrcodeSize !== this.state.qrcodeSize
-      ) {
-        this.setState({ qrcodeSize });
-      }
-    }
   }
 
   public render = () => {
-    const { show, uri, lightboxOffset, qrcodeSize } = this.state;
+    const { show, lightboxOffset } = this.state;
 
     const { onClose, lightboxOpacity, providers } = this.props;
 
-    const hideMainModalCard = !show || (!!uri && window.innerWidth <= 860);
     return (
       <SLightbox
         offset={lightboxOffset}
@@ -209,7 +161,7 @@ class Modal extends React.Component<IModalProps, IModalState> {
       >
         <SModalContainer>
           <SHitbox onClick={onClose} />
-          {!hideMainModalCard && (
+          {!show && (
             <SModalCard
               maxWidth={providers.length < 3 ? 500 : 800}
               ref={c => (this.mainModalCard = c)}
@@ -220,20 +172,6 @@ class Modal extends React.Component<IModalProps, IModalState> {
                 ) : null
               )}
             </SModalCard>
-          )}
-          {uri && (
-            <SQRCodeModalCard maxWidth={hideMainModalCard ? 500 : qrcodeSize}>
-              {hideMainModalCard && (
-                <SQRCodeDescription>
-                  {formatProviderDescription(
-                    getProviderInfoByName("WalletConnect")
-                  )}
-                </SQRCodeDescription>
-              )}
-              <SQRCodeWrapper size={hideMainModalCard ? 500 : qrcodeSize}>
-                <SQRCodeDisplay data={uri} />
-              </SQRCodeWrapper>
-            </SQRCodeModalCard>
           )}
         </SModalContainer>
       </SLightbox>

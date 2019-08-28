@@ -15,10 +15,9 @@ interface ICoreOptions {
   providerOptions?: IProviderOptions;
 }
 
-const INITIAL_STATE = { uri: "", show: false };
+const INITIAL_STATE = { show: false };
 
 class Core {
-  private uri: string = INITIAL_STATE.uri;
   private show: boolean = INITIAL_STATE.show;
   private eventManager: EventManager = new EventManager();
   private injectedProvider: string | null = null;
@@ -48,83 +47,24 @@ class Core {
     });
   }
 
-  public connectToInjected = async () => {
+  public connectTo = async (
+    type: string,
+    connector: (opts: any) => Promise<any>
+  ) => {
+    console.log("[connect]", "type", type);
+    console.log("[connect]", "connector", connector);
     try {
-      const provider = await connectors.ConnectToInjected();
-      await this.onConnect(provider);
-    } catch (error) {
-      await this.onError(error);
-    }
-  };
-
-  public connectToFortmatic = async () => {
-    try {
-      const providerOptions =
-        this.providerOptions && this.providerOptions.fortmatic
-          ? this.providerOptions.fortmatic
-          : {};
-      const opts = this.network
-        ? { network: this.network, ...providerOptions }
-        : providerOptions;
-      const provider = await connectors.ConnectToFortmatic(opts);
-      await this.onConnect(provider);
-    } catch (error) {
-      await this.onError(error);
-    }
-  };
-
-  public connectToSquarelink = async () => {
-    try {
-      const providerOptions =
-        this.providerOptions && this.providerOptions.squarelink
-          ? this.providerOptions.squarelink
-          : {};
-      const opts = this.network
-        ? { network: this.network, ...providerOptions }
-        : providerOptions;
-      const provider = await connectors.ConnectToSquarelink(opts);
-      await this.onConnect(provider);
-    } catch (error) {
-      await this.onError(error);
-    }
-  };
-
-  public connectToPortis = async () => {
-    try {
-      const providerOptions =
-        this.providerOptions && this.providerOptions.walletconnect
-          ? this.providerOptions.portis
-          : {};
-      const opts = this.network
-        ? { network: this.network, ...providerOptions }
-        : providerOptions;
-      const provider = await connectors.ConnectToPortis(opts);
-      await this.onConnect(provider);
-    } catch (error) {
-      await this.onError(error);
-    }
-  };
-
-  public connectToWalletConnect = async () => {
-    if (this.uri) {
-      await this.updateState({ uri: "" });
-      return;
-    }
-    try {
-      const providerOptions =
-        this.providerOptions && this.providerOptions.walletconnect
-          ? this.providerOptions.walletconnect
-          : {};
-      const opts = this.network
-        ? { network: this.network, ...providerOptions }
-        : providerOptions;
-      const provider = await connectors.ConnectToWalletConnect({
-        infuraId: opts.infuraId,
-        bridge: opts.bridge,
-        qrcode: false,
-        onUri: (uri: string) => this.updateState({ uri })
-      });
-      await this.updateState({ uri: "" });
+      let opts = undefined;
+      if (type !== "injected") {
+        const providerOptions =
+          this.providerOptions && this.providerOptions[type]
+            ? this.providerOptions[type]
+            : {};
+        opts = this.network
+          ? { network: this.network, ...providerOptions }
+          : providerOptions;
+      }
+      const provider = await connector(opts);
       await this.onConnect(provider);
     } catch (error) {
       await this.onError(error);
@@ -132,6 +72,7 @@ class Core {
   };
 
   public toggleModal = async () => {
+    console.log("[toggleModal]", "this.providers", this.providers);
     if (
       this.providers &&
       this.providers.length === 1 &&
@@ -155,6 +96,7 @@ class Core {
 
   public getProviders = () => {
     const mobile = isMobile();
+    console.log("[getProviders]", "mobile", mobile);
 
     let providers = [
       "injected",
@@ -164,15 +106,7 @@ class Core {
       "squarelink"
     ];
 
-    const {
-      injectedProvider,
-      providerOptions,
-      connectToInjected,
-      connectToFortmatic,
-      connectToPortis,
-      connectToSquarelink,
-      connectToWalletConnect
-    } = this;
+    const { injectedProvider, providerOptions } = this;
 
     const displayInjected =
       injectedProvider && !providerOptions.disableInjectedProvider;
@@ -224,27 +158,31 @@ class Core {
         case "injected":
           return {
             name: injectedProvider,
-            onClick: connectToInjected
+            onClick: () =>
+              this.connectTo("injected", connectors.ConnectToInjected)
           };
         case "walletconnect":
           return {
             name: "WalletConnect",
-            onClick: connectToWalletConnect
+            onClick: () =>
+              this.connectTo("walletconnect", connectors.ConnectToWalletConnect)
           };
         case "portis":
           return {
             name: "Portis",
-            onClick: connectToPortis
+            onClick: () => this.connectTo("portis", connectors.ConnectToPortis)
           };
         case "squarelink":
           return {
             name: "Squarelink",
-            onClick: connectToSquarelink
+            onClick: () =>
+              this.connectTo("squarelink", connectors.ConnectToSquarelink)
           };
         case "fortmatic":
           return {
             name: "Fortmatic",
-            onClick: connectToFortmatic
+            onClick: () =>
+              this.connectTo("fortmatic", connectors.ConnectToFortmatic)
           };
 
         default:
@@ -254,21 +192,30 @@ class Core {
           };
       }
     });
+
+    console.log("[getProviders]", "providersMap", providersMap);
+
     return providersMap;
   };
 
   private onError = async (error: any) => {
-    await this.toggleModal();
+    if (this.show) {
+      await this.toggleModal();
+    }
     this.eventManager.trigger("error", error);
   };
 
   private onConnect = async (provider: any) => {
-    await this.toggleModal();
+    if (this.show) {
+      await this.toggleModal();
+    }
     this.eventManager.trigger("connect", provider);
   };
 
   private onClose = async () => {
-    await this.toggleModal();
+    if (this.show) {
+      await this.toggleModal();
+    }
     this.eventManager.trigger("close");
   };
 
