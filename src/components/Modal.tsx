@@ -13,13 +13,13 @@ declare global {
   }
 }
 
-interface IModalStyleProps {
+interface ILightboxStyleProps {
   show: boolean;
   offset: number;
   opacity?: number;
 }
 
-const SLightbox = styled.div<IModalStyleProps>`
+const SLightbox = styled.div<ILightboxStyleProps>`
   transition: opacity 0.1s ease-in-out;
   text-align: center;
   position: absolute;
@@ -49,7 +49,11 @@ const SLightbox = styled.div<IModalStyleProps>`
   }
 `;
 
-const SModalContainer = styled.div`
+interface IModalContainerStyleProps {
+  show: boolean;
+}
+
+const SModalContainer = styled.div<IModalContainerStyleProps>`
   position: relative;
   width: 100%;
   height: 100%;
@@ -57,6 +61,9 @@ const SModalContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: ${({ show }) => (show ? 1 : 0)};
+  visibility: ${({ show }) => (show ? "visible" : "hidden")};
+  pointer-events: ${({ show }) => (show ? "auto" : "none")};
 `;
 
 const SHitbox = styled.div`
@@ -68,8 +75,8 @@ const SHitbox = styled.div`
 `;
 
 interface IModalCardStyleProps {
+  show: boolean;
   maxWidth?: number;
-  hide?: boolean;
 }
 
 const SModalCard = styled.div<IModalCardStyleProps>`
@@ -79,9 +86,9 @@ const SModalCard = styled.div<IModalCardStyleProps>`
   border-radius: 12px;
   margin: 10px;
   padding: 0;
-  opacity: ${({ hide }) => (!hide ? 1 : 0)};
-  visibility: ${({ hide }) => (!hide ? "visible" : "hidden")};
-  pointer-events: ${({ hide }) => (!hide ? "auto" : "none")};
+  opacity: ${({ show }) => (show ? 1 : 0)};
+  visibility: ${({ show }) => (show ? "visible" : "hidden")};
+  pointer-events: ${({ show }) => (show ? "auto" : "none")};
 
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -113,8 +120,9 @@ const INITIAL_STATE: IModalState = {
 class Modal extends React.Component<IModalProps, IModalState> {
   constructor(props: IModalProps) {
     super(props);
-    window.updateWeb3ConnectModal = async (state: IModalState) =>
+    window.updateWeb3ConnectModal = async (state: IModalState) => {
       this.setState(state);
+    };
   }
   public static propTypes = {
     providers: PropTypes.object.isRequired,
@@ -159,20 +167,19 @@ class Modal extends React.Component<IModalProps, IModalState> {
         ref={c => (this.lightboxRef = c)}
         show={show}
       >
-        <SModalContainer>
+        <SModalContainer show={show}>
           <SHitbox onClick={onClose} />
-          {!show && (
-            <SModalCard
-              maxWidth={providers.length < 3 ? 500 : 800}
-              ref={c => (this.mainModalCard = c)}
-            >
-              {providers.map(provider =>
-                provider ? (
-                  <Provider name={provider.name} onClick={provider.onClick} />
-                ) : null
-              )}
-            </SModalCard>
-          )}
+          <SModalCard
+            show={show}
+            maxWidth={providers.length < 3 ? 500 : 800}
+            ref={c => (this.mainModalCard = c)}
+          >
+            {providers.map(provider =>
+              !!provider ? (
+                <Provider name={provider.name} onClick={provider.onClick} />
+              ) : null
+            )}
+          </SModalCard>
         </SModalContainer>
       </SLightbox>
     );
