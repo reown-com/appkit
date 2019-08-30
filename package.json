@@ -81,12 +81,12 @@
   },
   "dependencies": {
     "@portis/web3": "^2.0.0-beta.39",
-    "@walletconnect/web3-provider": "^1.0.0-beta.34",
+    "@walletconnect/web3-provider": "^1.0.0-beta.35",
     "fortmatic": "^0.8.2",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "squarelink": "^0.5.3",
+    "squarelink": "^1.0.4",
     "styled-components": "4.2.0",
     "url-loader": "^1.1.2"
   }

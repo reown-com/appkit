@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@portis/web3": "^2.0.0-beta.40",
-    "@walletconnect/web3-provider": "^1.0.0-beta.34",
+    "@walletconnect/web3-provider": "^1.0.0-beta.35",
     "axios": "^0.18.0",
     "bignumber.js": "^8.1.1",
     "ethereumjs-util": "^6.1.0",
@@ -13,10 +13,10 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts-ts": "^4.0.8",
-    "squarelink": "^1.0.2",
+    "squarelink": "^1.0.4",
     "styled-components": "4.2.0",
     "web3": "^1.2.0",
-    "web3connect": "^1.0.0-beta.16"
+    "web3connect": "^1.0.0-beta.19"
   },
   "scripts": {
     "bootstrap": "npm install && npm run link",
