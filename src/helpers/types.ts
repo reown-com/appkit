@@ -23,3 +23,8 @@ export interface IInjectedProvidersMap {
   injectedAvailable: boolean;
   [isProviderName: string]: boolean;
 }
+
+export interface IProviderCallback {
+  name: string | null;
+  onClick: () => Promise<void>;
+}

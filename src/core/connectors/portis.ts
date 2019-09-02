@@ -6,7 +6,7 @@ export interface INetwork {
   gasRelayHubAddress?: string;
 }
 
-export type Scope = 'email';
+export type Scope = "email";
 
 export interface IOptions {
   scope?: Scope[];

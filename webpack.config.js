@@ -13,6 +13,12 @@ module.exports = {
     umdNamedDefine: true,
     globalObject: "this"
   },
+  externals: {
+    fortmatic: "fortmatic",
+    squarelink: "squarelink",
+    "@portis/web3": "@portis/web3",
+    "@walletconnect/web3-provider": "@walletconnect/web3-provider"
+  },
   resolve: {
     extensions: [".ts", ".tsx", ".js"]
   },

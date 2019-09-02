@@ -2,6 +2,7 @@
   "extends": ["tslint-config-standard", "tslint-config-prettier"],
   "rules": {
     "no-empty": false,
-    "no-extra-boolean-cast": false
+    "no-extra-boolean-cast": false,
+    "strict-type-predicates": false
   }
 }
