@@ -335,17 +335,13 @@ class App extends React.Component<any, any> {
   public resetApp = async () => {
     const { web3 } = this.state
     console.log('web3.currentProvider', web3.currentProvider) // tslint:disable-line
-    if (web3 && web3.currentProvider && web3.currentProvider.isWalletConnect) {
-      await web3.currentProvider.sendAsync({
-        method: 'wc_killSession',
-        params: []
-      })
+    if (web3 && web3.currentProvider && web3.currentProvider.close) {
+      await web3.currentProvider.close()
     }
     this.setState({ ...INITIAL_STATE })
   }
 
   public render = () => {
-
     const {
       assets,
       address,
@@ -398,18 +394,20 @@ class App extends React.Component<any, any> {
               <SLanding center>
                 <h3>{`Test Web3Connect`}</h3>
                 <Web3Connect.Button
+                  network="mainnet"
                   providerOptions={{
-                    squarelink: {
-                      id: process.env.REACT_APP_SQUARELINK_ID,
-                      network: 'mainnet'
+                    walletconnect: {
+                      infuraId: process.env.REACT_APP_INFURA_ID,
                     },
                     portis: {
                       id: process.env.REACT_APP_PORTIS_ID,
-                      network: 'mainnet'
                     },
                     fortmatic: {
                       key: process.env.REACT_APP_FORTMATIC_KEY
-                    }
+                    },
+                    squarelink: {
+                      id: process.env.REACT_APP_SQUARELINK_ID,
+                    },
                   }}
                   onConnect={(provider: any) => {
                     this.onConnect(provider)

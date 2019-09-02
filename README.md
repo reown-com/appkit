@@ -16,7 +16,7 @@ You can test the library on: https://web3connect.com/
 
 ## Usage
 
-Install Web3Connect NPM package
+1. Install Web3Connect NPM package
 
 ```bash
 npm install --save web3connect
@@ -26,7 +26,17 @@ npm install --save web3connect
 yarn add web3connect
 ```
 
-Then you can integrate it three different ways:
+2. Install Provider packages
+
+```bash
+npm install --save @walletconnect/web3-provider @portis/web3 fortmatic squarelink
+
+# OR
+
+yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink
+```
+
+3. Then you can integrate it three different ways:
 
 - [React Button](#React-Button)
 - [Core Module](#Core-Module)
@@ -40,18 +50,19 @@ Add Web3Connect Button to your React App as follows
 import Web3Connect from "web3connect";
 
 <Web3Connect.Button
+  network="mainnet" // optional
   providerOptions={{
+    walletconnect: {
+      infuraId: "INFURA_ID" // required
+    },
     portis: {
-      id: "PORTIS_ID", // required
-      network: "mainnet" // optional
+      id: "PORTIS_ID" // required
     },
     squarelink: {
-      id: "SQUARELINK_ID", // required
-      network: "mainnet"
+      id: "SQUARELINK_ID" // required
     },
     fortmatic: {
-      key: "FORTMATIC_KEY", // required
-      network: "mainnet" // optional
+      key: "FORTMATIC_KEY" // required
     }
   }}
   onConnect={(provider: any) => {
@@ -71,18 +82,19 @@ Add Web3Connect Core to your Dapp as follows
 import Web3Connect from "web3connect";
 
 const web3Connect = new Web3Connect.Core({
+  network: "mainnet", // optional
   providerOptions: {
+    walletconnect: {
+      infuraId: "INFURA_ID" // required
+    },
     portis: {
-      id: "PORTIS_ID", // required
-      network: "mainnet" // optional
+      id: "PORTIS_ID" // required
     },
     squarelink: {
-      id: "SQUARELINK_ID", // required
-      network: "mainnet"
+      id: "SQUARELINK_ID" // required
     },
     fortmatic: {
-      key: "FORTMATIC_KEY", // required
-      network: "mainnet" // optional
+      key: "FORTMATIC_KEY" // required
     }
   }
 });
@@ -112,6 +124,7 @@ const provider = await Web3Connect.ConnectToInjected();
 
 // For WalletConnect
 const provider = await Web3Connect.ConnectToWalletConnect({
+  infuraId: "INFURA_ID", // required
   bridge: "https://bridge.walletconnect.org" // optional
 });
 
@@ -179,9 +192,11 @@ interface IInjectedProvidersMap {
 
   - WalletConnect:
 
+    - infuraId: the infura app ID registered (required)
     - bridge: bridge url (optional)
 
   - Squarelink:
+
     - id: the client ID registered (required)
     - network: choose initial network name (optional)
     - config: additional configuration, like `scope` to use supplemental methods (optional)
@@ -197,10 +212,9 @@ interface IInjectedProvidersMap {
     - key: the secret key (required)
     - network: choose initial network name (optional)
 
-You can disable the injected provider or WalletConnect by adding the following keys:
+You can disable the injected provider by adding the following keys:
 
 - disableInjectedProvider: true (optional)
-- disableWalletConnect: true (optional)
 
 ## Collaboration
 
