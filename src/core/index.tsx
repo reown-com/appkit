@@ -2,9 +2,14 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import Modal from "../components/Modal";
 import { IProviderOptions, IProviderCallback } from "../helpers/types";
-import { isMobile, getInjectedProviderName } from "../helpers/utils";
+import {
+  isMobile,
+  getInjectedProviderName,
+  getProviderPackage
+} from "../helpers/utils";
 import connectors from "./connectors";
 import EventManager from "./events";
+import { providerPackages } from "../providers";
 
 const WEB3_CONNECT_MODAL_ID = "WEB3_CONNECT_MODAL_ID";
 
@@ -91,6 +96,29 @@ class Core {
     await this.updateState({ show: !this.show });
   };
 
+  public shouldDisplayProvider(name: string) {
+    const { providerOptions } = this;
+    const providerPackage = providerPackages[name];
+
+    if (providerOptions) {
+      const providerPackageOptions = providerOptions[providerPackage.option];
+      if (providerPackageOptions) {
+        const required = providerPackage.required;
+        const matches = required.filter(
+          (key: string) => key in providerPackageOptions
+        );
+        if (required.length === matches.length) {
+          const isAvailable = getProviderPackage(providerPackage.name);
+          if (isAvailable) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
   public getProviders = () => {
     const mobile = isMobile();
 
@@ -116,35 +144,19 @@ class Core {
         providers = providers.filter(provider => provider !== "injected");
       }
 
-      const displayWalletConnect =
-        providerOptions &&
-        providerOptions.walletconnect &&
-        providerOptions.walletconnect.infuraId;
-      if (!displayWalletConnect) {
+      if (!this.shouldDisplayProvider("walletconnect")) {
         providers = providers.filter(provider => provider !== "walletconnect");
       }
 
-      const displaySquarelink =
-        providerOptions &&
-        providerOptions.squarelink &&
-        providerOptions.squarelink.id;
-
-      if (!displaySquarelink) {
+      if (!this.shouldDisplayProvider("squarelink")) {
         providers = providers.filter(provider => provider !== "squarelink");
       }
 
-      const displayPortis =
-        providerOptions && providerOptions.portis && providerOptions.portis.id;
-
-      if (!displayPortis) {
+      if (!this.shouldDisplayProvider("portis")) {
         providers = providers.filter(provider => provider !== "portis");
       }
-      const displayFortmatic =
-        providerOptions &&
-        providerOptions.fortmatic &&
-        providerOptions.fortmatic.key;
 
-      if (!displayFortmatic) {
+      if (!this.shouldDisplayProvider("fortmatic")) {
         providers = providers.filter(provider => provider !== "fortmatic");
       }
     }

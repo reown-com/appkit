@@ -1,5 +1,5 @@
-// @ts-ignore
-import Fortmatic from "fortmatic";
+import { getProviderPackage } from "../../helpers/utils";
+import { providerPackages } from "../../providers";
 
 export interface IFortmaticConnectorOptions {
   key: string;
@@ -7,6 +7,7 @@ export interface IFortmaticConnectorOptions {
 }
 
 const ConnectToFortmatic = async (opts: IFortmaticConnectorOptions) => {
+  const Fortmatic = getProviderPackage(providerPackages.fortmatic.name);
   if (opts && opts.key) {
     try {
       const key = opts.key;

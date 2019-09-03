@@ -152,16 +152,16 @@ const provider = await Web3Connect.ConnectToFortmatic({
 ```typescript
 function checkInjectedProviders(): IInjectedProvidersMap;
 function getInjectedProviderName(): string | null;
-function getProviderInfoByName(name: string | null): IProviderInfo;
-function getProviderInfo(provider: any): IProviderInfo;
+function getProviderMetadataByName(name: string | null): IProviderMetadata;
+function getProviderMetadata(provider: any): IProviderMetadata;
 function isMobile(): boolean;
-function formatProviderDescription(providerInfo: IProviderInfo);
+function formatProviderDescription(ProviderMetadata: IProviderMetadata);
 ```
 
 ## Types
 
 ```typescript
-interface IProviderInfo {
+interface IProviderMetadata {
   name: string;
   type: string;
   logo: string;

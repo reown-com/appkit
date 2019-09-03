@@ -1,4 +1,5 @@
-import Portis from "@portis/web3";
+import { getProviderPackage } from "../../helpers/utils";
+import { providerPackages } from "../../providers";
 
 export interface INetwork {
   nodeUrl: string;
@@ -22,6 +23,7 @@ export interface IPortisConnectorOptions {
 }
 
 const ConnectToPortis = async (opts: IPortisConnectorOptions) => {
+  const Portis = getProviderPackage(providerPackages.portis.name);
   return new Promise(async (resolve, reject) => {
     if (opts && opts.id) {
       try {

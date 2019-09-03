@@ -1,5 +1,5 @@
-// @ts-ignore
-import WalletConnectProvider from "@walletconnect/web3-provider";
+import { getProviderPackage } from "../../helpers/utils";
+import { providerPackages } from "../../providers";
 
 export interface IWalletConnectConnectorOptions {
   infuraId: string;
@@ -24,6 +24,9 @@ function getChainId(network: string) {
 }
 
 const ConnectToWalletConnect = (opts: IWalletConnectConnectorOptions) => {
+  const WalletConnectProvider = getProviderPackage(
+    providerPackages.walletconnect.name
+  );
   return new Promise(async (resolve, reject) => {
     let bridge = "https://bridge.walletconnect.org";
     let qrcode = true;
