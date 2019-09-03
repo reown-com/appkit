@@ -88,6 +88,7 @@
     "react-dom": "^16.8.6",
     "squarelink": "^1.0.4",
     "styled-components": "4.2.0",
-    "url-loader": "^1.1.2"
+    "url-loader": "^1.1.2",
+    "walletlink": "1.0.0"
   }
 }

@@ -7,7 +7,7 @@ import { SimpleFunction, IProviderCallback } from "../helpers/types";
 declare global {
   // tslint:disable-next-line
   interface Window {
-    ethereum: any;
+    // ethereum: any;
     web3: any;
     updateWeb3ConnectModal: any;
   }

@@ -99,7 +99,8 @@ class Core {
       "walletconnect",
       "portis",
       "fortmatic",
-      "squarelink"
+      "squarelink",
+      "walletlink"
     ];
 
     const { injectedProvider, providerOptions } = this;
@@ -122,6 +123,14 @@ class Core {
         providerOptions.walletconnect.infuraId;
       if (!displayWalletConnect) {
         providers = providers.filter(provider => provider !== "walletconnect");
+      }
+
+      const displayWalletLink =
+        providerOptions &&
+        providerOptions.walletlink &&
+        providerOptions.walletlink.networkUrl;
+      if (!displayWalletLink) {
+        providers = providers.filter(provider => provider !== "walletlink");
       }
 
       const displaySquarelink =
@@ -162,6 +171,12 @@ class Core {
             name: "WalletConnect",
             onClick: () =>
               this.connectTo("walletconnect", connectors.ConnectToWalletConnect)
+          };
+        case "walletlink":
+          return {
+            name: "WalletLink",
+            onClick: () =>
+              this.connectTo("walletlink", connectors.ConnectToWalletLink)
           };
         case "portis":
           return {

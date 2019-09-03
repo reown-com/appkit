@@ -4,6 +4,8 @@ import Web3DefaultLogo from "../assets/web3-default.svg";
 // @ts-ignore
 import WalletConnectLogo from "../assets/walletconnect-circle.svg";
 // @ts-ignore
+import WalletLinkLogo from "../assets/walletlink.svg";
+// @ts-ignore
 import MetaMaskLogo from "../assets/metamask.svg";
 // @ts-ignore
 import SafeLogo from "../assets/safe.svg";
@@ -51,6 +53,15 @@ const providers: IProviderInfo[] = [
     check: "isWalletConnect",
     styled: {
       noShadow: false
+    }
+  },
+  {
+    name: "WalletLink",
+    logo: WalletLinkLogo,
+    type: "web",
+    check: "isWalletlink",
+    styled: {
+      noShadow: true
     }
   },
   {
