@@ -1,7 +1,7 @@
 import providers, { fallbackProvider } from "../providers";
 import { IProviderInfo, IInjectedProvidersMap } from "./types";
 
-export function getProviderPackage(name: string) {
+export function importProviderPackage(name: string) {
   const ProviderPackage = require(name);
   if (!ProviderPackage) {
     throw new Error(`Package ${name} is not available`);

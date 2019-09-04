@@ -1,4 +1,4 @@
-import { getProviderPackage } from "../../helpers/utils";
+import { importProviderPackage } from "../../helpers/utils";
 import { providerPackages } from "../../providers";
 
 export interface INetwork {
@@ -17,7 +17,7 @@ export interface ISquarelinkConnectorOptions {
 }
 
 const ConnectToSquarelink = async (opts: ISquarelinkConnectorOptions) => {
-  const Squarelink = getProviderPackage(providerPackages.squarelink.name);
+  const Squarelink = importProviderPackage(providerPackages.squarelink.name);
   return new Promise(async (resolve, reject) => {
     if (opts && opts.id) {
       try {

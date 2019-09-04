@@ -5,7 +5,7 @@ import { IProviderOptions, IProviderCallback } from "../helpers/types";
 import {
   isMobile,
   getInjectedProviderName,
-  getProviderPackage
+  importProviderPackage
 } from "../helpers/utils";
 import connectors from "./connectors";
 import EventManager from "./events";
@@ -108,7 +108,7 @@ class Core {
           (key: string) => key in providerPackageOptions
         );
         if (required.length === matches.length) {
-          const isAvailable = getProviderPackage(providerPackage.name);
+          const isAvailable = importProviderPackage(providerPackage.name);
           if (isAvailable) {
             return true;
           }

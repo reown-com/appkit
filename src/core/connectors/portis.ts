@@ -1,4 +1,4 @@
-import { getProviderPackage } from "../../helpers/utils";
+import { importProviderPackage } from "../../helpers/utils";
 import { providerPackages } from "../../providers";
 
 export interface INetwork {
@@ -23,7 +23,7 @@ export interface IPortisConnectorOptions {
 }
 
 const ConnectToPortis = async (opts: IPortisConnectorOptions) => {
-  const Portis = getProviderPackage(providerPackages.portis.name);
+  const Portis = importProviderPackage(providerPackages.portis.name);
   return new Promise(async (resolve, reject) => {
     if (opts && opts.id) {
       try {

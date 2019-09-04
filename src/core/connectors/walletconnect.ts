@@ -1,4 +1,4 @@
-import { getProviderPackage } from "../../helpers/utils";
+import { importProviderPackage } from "../../helpers/utils";
 import { providerPackages } from "../../providers";
 
 export interface IWalletConnectConnectorOptions {
@@ -24,7 +24,7 @@ function getChainId(network: string) {
 }
 
 const ConnectToWalletConnect = (opts: IWalletConnectConnectorOptions) => {
-  const WalletConnectProvider = getProviderPackage(
+  const WalletConnectProvider = importProviderPackage(
     providerPackages.walletconnect.name
   );
   return new Promise(async (resolve, reject) => {
