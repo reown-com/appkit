@@ -63,6 +63,8 @@ import Web3Connect from "web3connect";
     },
     fortmatic: {
       key: "FORTMATIC_KEY" // required
+    },
+    torus: {
     }
   }}
   onConnect={(provider: any) => {

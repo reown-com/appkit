@@ -192,8 +192,7 @@ class Core {
             name: "Torus via Google",
             onClick: () =>
               this.connectTo("torus", connectors.ConnectToTorus)
-          };
-
+        };
         default:
           return {
             name: "",
