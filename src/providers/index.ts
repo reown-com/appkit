@@ -189,7 +189,7 @@ const providers: IProviderInfo[] = [
     styled: {
       noShadow: true
     }
-  },
+  }
 ];
 
 export default providers;
