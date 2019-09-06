@@ -99,7 +99,8 @@ class Core {
       "walletconnect",
       "portis",
       "fortmatic",
-      "squarelink"
+      "squarelink",
+      "torus"
     ];
 
     const { injectedProvider, providerOptions } = this;
@@ -147,6 +148,12 @@ class Core {
       if (!displayFortmatic) {
         providers = providers.filter(provider => provider !== "fortmatic");
       }
+
+      const displayTorus =
+        providerOptions && providerOptions.torus
+      if (!displayTorus) {
+        providers = providers.filter(provider => provider !== "torus");
+      }
     }
 
     const providersMap = providers.map(provider => {
@@ -179,6 +186,12 @@ class Core {
             name: "Fortmatic",
             onClick: () =>
               this.connectTo("fortmatic", connectors.ConnectToFortmatic)
+          };
+        case "torus":
+          return {
+            name: "Torus",
+            onClick: () =>
+              this.connectTo("torus", connectors.ConnectToTorus)
           };
 
         default:

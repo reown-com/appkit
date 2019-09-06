@@ -31,6 +31,8 @@ import StatusLogo from "../assets/status.svg";
 import TokenaryLogo from "../assets/tokenary.png";
 // @ts-ignore
 import OperaLogo from "../assets/opera.svg";
+// @ts-ignore
+import TorusLogo from "../assets/torus.svg";
 
 export const fallbackProvider: IProviderInfo = {
   name: "Web3",
@@ -178,7 +180,16 @@ const providers: IProviderInfo[] = [
     styled: {
       noShadow: false
     }
-  }
+  },
+  {
+    name: "Torus",
+    logo: TorusLogo,
+    type: "web",
+    check: "isTorus",
+    styled: {
+      noShadow: true
+    }
+  },
 ];
 
 export default providers;
