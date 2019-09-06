@@ -97,6 +97,8 @@ const web3Connect = new Web3Connect.Core({
     },
     fortmatic: {
       key: "FORTMATIC_KEY" // required
+    },
+    torus: {
     }
   }
 });
@@ -147,6 +149,9 @@ const provider = await Web3Connect.ConnectToFortmatic({
   key: "FORTMATIC_KEY", // required
   network: "mainnet" // optional
 });
+
+// For Torus
+const provider = await Web3Connect.ConnectToTorus();
 ```
 
 ## Utils
