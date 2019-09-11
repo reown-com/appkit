@@ -399,6 +399,9 @@ class App extends React.Component<any, any> {
                     walletconnect: {
                       infuraId: process.env.REACT_APP_INFURA_ID,
                     },
+                    torus : {
+
+                    },
                     portis: {
                       id: process.env.REACT_APP_PORTIS_ID,
                     },

@@ -97,10 +97,10 @@ class Core {
     let providers = [
       "injected",
       "walletconnect",
+      "torus",
       "portis",
       "fortmatic",
-      "squarelink",
-      "torus"
+      "squarelink"
     ];
 
     const { injectedProvider, providerOptions } = this;
