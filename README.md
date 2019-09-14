@@ -48,21 +48,37 @@ Add Web3Connect Button to your React App as follows
 
 ```js
 import Web3Connect from "web3connect";
+import WalletConnectProvider from "@walletconnect/web3-provider";
+import Portis from "@portis/web3";
+import Fortmatic from "fortmatic";
+import Squarelink from "squarelink";
 
 <Web3Connect.Button
   network="mainnet" // optional
   providerOptions={{
     walletconnect: {
-      infuraId: "INFURA_ID" // required
+      package: WalletConnectProvider, // required
+      options: {
+        infuraId: "INFURA_ID" // required
+      }
     },
     portis: {
-      id: "PORTIS_ID" // required
-    },
-    squarelink: {
-      id: "SQUARELINK_ID" // required
+      package: Portis, // required
+      options: {
+        id: "PORTIS_ID" // required
+      }
     },
     fortmatic: {
-      key: "FORTMATIC_KEY" // required
+      package: Fortmatic, // required
+      options: {
+        key: "FORTMATIC_KEY" // required
+      }
+    },
+    squarelink: {
+      package: Squarelink, // required
+      options: {
+        id: "SQUARELINK_ID" // required
+      }
     }
   }}
   onConnect={(provider: any) => {
@@ -80,21 +96,37 @@ Add Web3Connect Core to your Dapp as follows
 
 ```js
 import Web3Connect from "web3connect";
+import WalletConnectProvider from "@walletconnect/web3-provider";
+import Portis from "@portis/web3";
+import Fortmatic from "fortmatic";
+import Squarelink from "squarelink";
 
 const web3Connect = new Web3Connect.Core({
   network: "mainnet", // optional
   providerOptions: {
     walletconnect: {
-      infuraId: "INFURA_ID" // required
+      package: WalletConnectProvider, // required
+      options: {
+        infuraId: "INFURA_ID" // required
+      }
     },
     portis: {
-      id: "PORTIS_ID" // required
-    },
-    squarelink: {
-      id: "SQUARELINK_ID" // required
+      package: Portis, // required
+      options: {
+        id: "PORTIS_ID" // required
+      }
     },
     fortmatic: {
-      key: "FORTMATIC_KEY" // required
+      package: Fortmatic, // required
+      options: {
+        key: "FORTMATIC_KEY" // required
+      }
+    },
+    squarelink: {
+      package: Squarelink, // required
+      options: {
+        id: "SQUARELINK_ID" // required
+      }
     }
   }
 });
@@ -118,31 +150,38 @@ Add individual connectors for each provider to your own UI (no modal provided)
 
 ```js
 import Web3Connect from "web3connect";
+import WalletConnectProvider from "@walletconnect/web3-provider";
+import Portis from "@portis/web3";
+import Fortmatic from "fortmatic";
+import Squarelink from "squarelink";
 
 // For inject providers in dapp browsers
 const provider = await Web3Connect.ConnectToInjected();
 
 // For WalletConnect
-const provider = await Web3Connect.ConnectToWalletConnect({
-  infuraId: "INFURA_ID", // required
-  bridge: "https://bridge.walletconnect.org" // optional
-});
-
-// For Squarelink
-const provider = await Web3Connect.ConnectToSquarelink({
-  id: "SQUARELINK_ID", // required
-  network: "mainnet" // optional
-});
+const provider = await Web3Connect.ConnectToWalletConnect(
+  WalletConnectProvider,
+  {
+    infuraId: "INFURA_ID", // required
+    bridge: "https://bridge.walletconnect.org" // optional
+  }
+);
 
 // For Portis
-const provider = await Web3Connect.ConnectToPortis({
+const provider = await Web3Connect.ConnectToPortis(Portis, {
   id: "PORTIS_ID", // required
   network: "mainnet" // optional
 });
 
 // For Fortmatic
-const provider = await Web3Connect.ConnectToFortmatic({
+const provider = await Web3Connect.ConnectToFortmatic(Fortmatic, {
   key: "FORTMATIC_KEY", // required
+  network: "mainnet" // optional
+});
+
+// For Squarelink
+const provider = await Web3Connect.ConnectToSquarelink(Squarelink, {
+  id: "SQUARELINK_ID", // required
   network: "mainnet" // optional
 });
 ```
@@ -172,17 +211,20 @@ interface IProviderInfo {
 }
 
 interface IProviderOptions {
-  [providerName: string]: any;
-}
-
-interface IEventCallback {
-  event: string;
-  callback: (result: any) => void;
+  [providerName: string]: {
+    package: any;
+    options: any;
+  };
 }
 
 interface IInjectedProvidersMap {
   injectedAvailable: boolean;
   [isProviderName: string]: boolean;
+}
+
+interface IProviderCallback {
+  name: string | null;
+  onClick: () => Promise<void>;
 }
 ```
 
@@ -190,29 +232,37 @@ interface IInjectedProvidersMap {
 
 - providerOptions (optional): An object mapping arbitrary string that adds the required configuration to multiple web3 providers.
 
-  - WalletConnect:
+  - walletconnect:
 
-    - infuraId: the infura app ID registered (required)
-    - bridge: bridge url (optional)
+    - package: dependency injection to enable provider
+    - options:
+      - infuraId: the infura app ID registered (required)
+      - bridge: bridge url (optional)
 
-  - Squarelink:
+  - portis:
 
-    - id: the client ID registered (required)
-    - network: choose initial network name (optional)
-    - config: additional configuration, like `scope` to use supplemental methods (optional)
+    - package: dependency injection to enable provider
+    - options:
+      - id: the app id registered (required)
+      - network: choose initial network name (optional)
+      - config: additional configuration, like support of Gas Station Network (optional)
 
-  - Portis:
+  - fortmatic:
 
-    - id: the app id registered (required)
-    - network: choose initial network name (optional)
-    - config: additional configuration, like support of Gas Station Network (optional)
+    - package: dependency injection to enable provider
+    - options:
+      - key: the secret key (required)
+      - network: choose initial network name (optional)
 
-  - Fortmatic:
+  - squarelink:
 
-    - key: the secret key (required)
-    - network: choose initial network name (optional)
+    - package: dependency injection to enable provider
+    - options:
+      - id: the client ID registered (required)
+      - network: choose initial network name (optional)
+      - config: additional configuration, like `scope` to use supplemental methods (optional)
 
-You can disable the injected provider by adding the following keys:
+You can disable the injected provider by adding the following flag:
 
 - disableInjectedProvider: true (optional)
 

@@ -2,6 +2,11 @@ import * as React from 'react'
 import styled from 'styled-components'
 import Web3 from 'web3'
 import Web3Connect from 'web3connect'
+// @ts-ignore
+import WalletConnectProvider from '@walletconnect/web3-provider'
+import Portis from '@portis/web3'
+// @ts-ignore
+import Fortmatic from 'fortmatic'
 import { convertUtf8ToHex } from '@walletconnect/utils'
 import Button from './components/Button'
 import Column from './components/Column'
@@ -397,17 +402,23 @@ class App extends React.Component<any, any> {
                   network="mainnet"
                   providerOptions={{
                     walletconnect: {
-                      infuraId: process.env.REACT_APP_INFURA_ID,
+                      package: WalletConnectProvider,
+                      options: {
+                        infuraId: process.env.REACT_APP_INFURA_ID
+                      }
                     },
                     portis: {
-                      id: process.env.REACT_APP_PORTIS_ID,
+                      package: Portis,
+                      options: {
+                        id: process.env.REACT_APP_PORTIS_ID
+                      }
                     },
                     fortmatic: {
-                      key: process.env.REACT_APP_FORTMATIC_KEY
-                    },
-                    squarelink: {
-                      id: process.env.REACT_APP_SQUARELINK_ID,
-                    },
+                      package: Fortmatic,
+                      options: {
+                        key: process.env.REACT_APP_FORTMATIC_KEY
+                      }
+                    }
                   }}
                   onConnect={(provider: any) => {
                     this.onConnect(provider)

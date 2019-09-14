@@ -1,13 +1,12 @@
-import { importProviderPackage } from "../../helpers/utils";
-import { providerPackages } from "../../providers";
-
 export interface IFortmaticConnectorOptions {
   key: string;
   network?: string;
 }
 
-const ConnectToFortmatic = async (opts: IFortmaticConnectorOptions) => {
-  const Fortmatic = importProviderPackage(providerPackages.fortmatic.name);
+const ConnectToFortmatic = async (
+  Fortmatic: any,
+  opts: IFortmaticConnectorOptions
+) => {
   if (opts && opts.key) {
     try {
       const key = opts.key;

@@ -79,12 +79,6 @@
     "webpack": "^4.28.3",
     "webpack-cli": "^3.2.1"
   },
-  "peerDependencies": {
-    "@portis/web3": "^2.0.0-beta.40",
-    "@walletconnect/web3-provider": "^1.0.0-beta.35",
-    "fortmatic": "^0.8.2",
-    "squarelink": "^1.0.4"
-  },
   "dependencies": {
     "prop-types": "^15.7.2",
     "react": "^16.8.6",

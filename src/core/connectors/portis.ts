@@ -1,6 +1,3 @@
-import { importProviderPackage } from "../../helpers/utils";
-import { providerPackages } from "../../providers";
-
 export interface INetwork {
   nodeUrl: string;
   chainId?: string;
@@ -22,8 +19,7 @@ export interface IPortisConnectorOptions {
   config?: IOptions;
 }
 
-const ConnectToPortis = async (opts: IPortisConnectorOptions) => {
-  const Portis = importProviderPackage(providerPackages.portis.name);
+const ConnectToPortis = async (Portis: any, opts: IPortisConnectorOptions) => {
   return new Promise(async (resolve, reject) => {
     if (opts && opts.id) {
       try {

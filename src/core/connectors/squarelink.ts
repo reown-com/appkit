@@ -1,6 +1,3 @@
-import { importProviderPackage } from "../../helpers/utils";
-import { providerPackages } from "../../providers";
-
 export interface INetwork {
   nodeUrl: string;
   chainId?: string;
@@ -16,8 +13,10 @@ export interface ISquarelinkConnectorOptions {
   config?: IOptions;
 }
 
-const ConnectToSquarelink = async (opts: ISquarelinkConnectorOptions) => {
-  const Squarelink = importProviderPackage(providerPackages.squarelink.name);
+const ConnectToSquarelink = async (
+  Squarelink: any,
+  opts: ISquarelinkConnectorOptions
+) => {
   return new Promise(async (resolve, reject) => {
     if (opts && opts.id) {
       try {

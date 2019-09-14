@@ -2,11 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import Modal from "../components/Modal";
 import { IProviderOptions, IProviderCallback } from "../helpers/types";
-import {
-  isMobile,
-  getInjectedProviderName,
-  importProviderPackage
-} from "../helpers/utils";
+import { isMobile, getInjectedProviderName } from "../helpers/utils";
 import connectors from "./connectors";
 import EventManager from "./events";
 import { providerPackages } from "../providers";
@@ -52,22 +48,36 @@ class Core {
     });
   }
 
+  public connectToInjected = async () => {
+    try {
+      const provider = await connectors.ConnectToInjected();
+      await this.onConnect(provider);
+    } catch (error) {
+      await this.onError(error);
+    }
+  };
+
   public connectTo = async (
-    type: string,
-    connector: (opts: any) => Promise<any>
+    name: string,
+    connector: (providerPackage: any, opts: any) => Promise<any>
   ) => {
     try {
-      let opts = undefined;
-      if (type !== "injected") {
-        const providerOptions =
-          this.providerOptions && this.providerOptions[type]
-            ? this.providerOptions[type]
-            : {};
-        opts = this.network
-          ? { network: this.network, ...providerOptions }
-          : providerOptions;
-      }
-      const provider = await connector(opts);
+      const providerPackage =
+        this.providerOptions &&
+        this.providerOptions[name] &&
+        this.providerOptions[name].package
+          ? this.providerOptions[name].package
+          : {};
+      const providerOptions =
+        this.providerOptions &&
+        this.providerOptions[name] &&
+        this.providerOptions[name].options
+          ? this.providerOptions[name].options
+          : {};
+      const opts = this.network
+        ? { network: this.network, ...providerOptions }
+        : providerOptions;
+      const provider = await connector(providerPackage, opts);
       await this.onConnect(provider);
     } catch (error) {
       await this.onError(error);
@@ -98,18 +108,29 @@ class Core {
 
   public shouldDisplayProvider(name: string) {
     const { providerOptions } = this;
+    console.log("[shouldDisplayProvider]", "name", name);
     const providerPackage = providerPackages[name];
+
+    console.log("[shouldDisplayProvider]", "providerPackage", providerPackage);
 
     if (providerOptions) {
       const providerPackageOptions = providerOptions[providerPackage.option];
+      console.log(
+        "[shouldDisplayProvider]",
+        "providerPackageOptions",
+        providerPackageOptions
+      );
       if (providerPackageOptions) {
         const required = providerPackage.required;
+        console.log("[shouldDisplayProvider]", "required", required);
         const matches = required.filter(
-          (key: string) => key in providerPackageOptions
+          (key: string) => key in providerPackageOptions.options
         );
+        console.log("[shouldDisplayProvider]", "matches", matches);
         if (required.length === matches.length) {
-          const isAvailable = importProviderPackage(providerPackage.name);
-          if (isAvailable) {
+          const isProvided = providerPackageOptions.package;
+          console.log("[shouldDisplayProvider]", "isProvided", isProvided);
+          if (isProvided) {
             return true;
           }
         }
@@ -122,6 +143,8 @@ class Core {
   public getProviders = () => {
     const mobile = isMobile();
 
+    console.log("[getProviders]", "mobile", mobile);
+
     let providers = [
       "injected",
       "walletconnect",
@@ -130,12 +153,16 @@ class Core {
       "squarelink"
     ];
 
+    console.log("[getProviders]", "providers", "BEFORE", providers);
+
     const { injectedProvider, providerOptions } = this;
 
     const displayInjected =
       injectedProvider && !providerOptions.disableInjectedProvider;
 
     const onlyInjected = displayInjected && mobile;
+
+    console.log("[getProviders]", "onlyInjected", onlyInjected);
 
     if (onlyInjected) {
       providers = ["injected"];
@@ -148,10 +175,6 @@ class Core {
         providers = providers.filter(provider => provider !== "walletconnect");
       }
 
-      if (!this.shouldDisplayProvider("squarelink")) {
-        providers = providers.filter(provider => provider !== "squarelink");
-      }
-
       if (!this.shouldDisplayProvider("portis")) {
         providers = providers.filter(provider => provider !== "portis");
       }
@@ -159,15 +182,20 @@ class Core {
       if (!this.shouldDisplayProvider("fortmatic")) {
         providers = providers.filter(provider => provider !== "fortmatic");
       }
+
+      if (!this.shouldDisplayProvider("squarelink")) {
+        providers = providers.filter(provider => provider !== "squarelink");
+      }
     }
+
+    console.log("[getProviders]", "providers", "AFTER", providers);
 
     const providersMap = providers.map(provider => {
       switch (provider) {
         case "injected":
           return {
             name: injectedProvider,
-            onClick: () =>
-              this.connectTo("injected", connectors.ConnectToInjected)
+            onClick: this.connectToInjected
           };
         case "walletconnect":
           return {
@@ -180,26 +208,30 @@ class Core {
             name: "Portis",
             onClick: () => this.connectTo("portis", connectors.ConnectToPortis)
           };
-        case "squarelink":
-          return {
-            name: "Squarelink",
-            onClick: () =>
-              this.connectTo("squarelink", connectors.ConnectToSquarelink)
-          };
         case "fortmatic":
           return {
             name: "Fortmatic",
             onClick: () =>
               this.connectTo("fortmatic", connectors.ConnectToFortmatic)
           };
+        case "squarelink":
+          return {
+            name: "Squarelink",
+            onClick: () =>
+              this.connectTo("squarelink", connectors.ConnectToSquarelink)
+          };
 
         default:
           return {
             name: "",
-            onClick: async () => {}
+            onClick: async () => {
+              // empty
+            }
           };
       }
     });
+
+    console.log("[getProviders]", "providersMap", providersMap);
 
     return providersMap;
   };

@@ -1,14 +1,6 @@
 import providers, { fallbackProvider } from "../providers";
 import { IProviderInfo, IInjectedProvidersMap } from "./types";
 
-export function importProviderPackage(name: string) {
-  const ProviderPackage = require(name);
-  if (!ProviderPackage) {
-    throw new Error(`Package ${name} is not available`);
-  }
-  return ProviderPackage;
-}
-
 export function checkInjectedProviders(): IInjectedProvidersMap {
   const result = {
     injectedAvailable: !!window.ethereum || !!window.web3
