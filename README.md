@@ -194,7 +194,7 @@ function getInjectedProviderName(): string | null;
 function getProviderInfoByName(name: string | null): IProviderInfo;
 function getProviderInfo(provider: any): IProviderInfo;
 function isMobile(): boolean;
-function formatProviderDescription(ProviderInfo: IProviderInfo);
+function formatProviderDescription(providerInfo: IProviderInfo);
 ```
 
 ## Types
