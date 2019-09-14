@@ -19,7 +19,7 @@ export interface IPortisConnectorOptions {
   config?: IOptions;
 }
 
-const ConnectToPortis = async (Portis: any, opts: IPortisConnectorOptions) => {
+const ConnectToPortis = (Portis: any, opts: IPortisConnectorOptions) => {
   return new Promise(async (resolve, reject) => {
     if (opts && opts.id) {
       try {

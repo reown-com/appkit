@@ -13,7 +13,7 @@ export interface ISquarelinkConnectorOptions {
   config?: IOptions;
 }
 
-const ConnectToSquarelink = async (
+const ConnectToSquarelink = (
   Squarelink: any,
   opts: ISquarelinkConnectorOptions
 ) => {
