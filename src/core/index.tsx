@@ -108,28 +108,17 @@ class Core {
 
   public shouldDisplayProvider(name: string) {
     const { providerOptions } = this;
-    console.log("[shouldDisplayProvider]", "name", name);
     const providerPackage = providerPackages[name];
-
-    console.log("[shouldDisplayProvider]", "providerPackage", providerPackage);
 
     if (providerOptions) {
       const providerPackageOptions = providerOptions[providerPackage.option];
-      console.log(
-        "[shouldDisplayProvider]",
-        "providerPackageOptions",
-        providerPackageOptions
-      );
       if (providerPackageOptions) {
         const required = providerPackage.required;
-        console.log("[shouldDisplayProvider]", "required", required);
         const matches = required.filter(
           (key: string) => key in providerPackageOptions.options
         );
-        console.log("[shouldDisplayProvider]", "matches", matches);
         if (required.length === matches.length) {
           const isProvided = providerPackageOptions.package;
-          console.log("[shouldDisplayProvider]", "isProvided", isProvided);
           if (isProvided) {
             return true;
           }
@@ -143,8 +132,6 @@ class Core {
   public getProviders = () => {
     const mobile = isMobile();
 
-    console.log("[getProviders]", "mobile", mobile);
-
     let providers = [
       "injected",
       "walletconnect",
@@ -153,16 +140,12 @@ class Core {
       "squarelink"
     ];
 
-    console.log("[getProviders]", "providers", "BEFORE", providers);
-
     const { injectedProvider, providerOptions } = this;
 
     const displayInjected =
       injectedProvider && !providerOptions.disableInjectedProvider;
 
     const onlyInjected = displayInjected && mobile;
-
-    console.log("[getProviders]", "onlyInjected", onlyInjected);
 
     if (onlyInjected) {
       providers = ["injected"];
@@ -187,8 +170,6 @@ class Core {
         providers = providers.filter(provider => provider !== "squarelink");
       }
     }
-
-    console.log("[getProviders]", "providers", "AFTER", providers);
 
     const providersMap = providers.map(provider => {
       switch (provider) {
@@ -230,8 +211,6 @@ class Core {
           };
       }
     });
-
-    console.log("[getProviders]", "providersMap", providersMap);
 
     return providersMap;
   };
