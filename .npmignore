@@ -15,7 +15,10 @@ yarn.lock
 # project files
 src
 test
-examples
+dist
+images
+scripts
+example
 CHANGELOG.md
 .travis.yml
 .editorconfig
@@ -23,3 +26,8 @@ CHANGELOG.md
 .eslintrc
 .babelrc
 .gitignore
+babel-polyfill.js
+webpack.config.js
+tsconfig.json
+tslint.json
+

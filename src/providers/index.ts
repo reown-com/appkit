@@ -32,6 +32,29 @@ import TokenaryLogo from "../assets/tokenary.png";
 // @ts-ignore
 import OperaLogo from "../assets/opera.svg";
 
+export const providerPackages = {
+  fortmatic: {
+    name: "fortmatic",
+    option: "fortmatic",
+    required: ["key"]
+  },
+  squarelink: {
+    name: "squarelink",
+    option: "squarelink",
+    required: ["id"]
+  },
+  portis: {
+    name: "@portis/web3",
+    option: "portis",
+    required: ["id"]
+  },
+  walletconnect: {
+    name: "@walletconnect/web3-provider",
+    option: "walletconnect",
+    required: ["infuraId"]
+  }
+};
+
 export const fallbackProvider: IProviderInfo = {
   name: "Web3",
   logo: Web3DefaultLogo,

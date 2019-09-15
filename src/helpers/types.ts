@@ -9,7 +9,10 @@ export interface IProviderInfo {
 }
 
 export interface IProviderOptions {
-  [providerName: string]: any;
+  [providerName: string]: {
+    package: any;
+    options: any;
+  };
 }
 
 export type SimpleFunction = (input?: any) => void;

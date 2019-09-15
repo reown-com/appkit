@@ -1,12 +1,12 @@
-// @ts-ignore
-import Fortmatic from "fortmatic";
-
 export interface IFortmaticConnectorOptions {
   key: string;
   network?: string;
 }
 
-const ConnectToFortmatic = async (opts: IFortmaticConnectorOptions) => {
+const ConnectToFortmatic = async (
+  Fortmatic: any,
+  opts: IFortmaticConnectorOptions
+) => {
   if (opts && opts.key) {
     try {
       const key = opts.key;

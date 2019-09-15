@@ -1,6 +1,3 @@
-// @ts-ignore
-import Squarelink from "squarelink";
-
 export interface INetwork {
   nodeUrl: string;
   chainId?: string;
@@ -16,7 +13,10 @@ export interface ISquarelinkConnectorOptions {
   config?: IOptions;
 }
 
-const ConnectToSquarelink = async (opts: ISquarelinkConnectorOptions) => {
+const ConnectToSquarelink = (
+  Squarelink: any,
+  opts: ISquarelinkConnectorOptions
+) => {
   return new Promise(async (resolve, reject) => {
     if (opts && opts.id) {
       try {

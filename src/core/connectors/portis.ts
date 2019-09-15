@@ -1,5 +1,3 @@
-import Portis from "@portis/web3";
-
 export interface INetwork {
   nodeUrl: string;
   chainId?: string;
@@ -21,7 +19,7 @@ export interface IPortisConnectorOptions {
   config?: IOptions;
 }
 
-const ConnectToPortis = async (opts: IPortisConnectorOptions) => {
+const ConnectToPortis = (Portis: any, opts: IPortisConnectorOptions) => {
   return new Promise(async (resolve, reject) => {
     if (opts && opts.id) {
       try {

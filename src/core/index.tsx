@@ -5,6 +5,7 @@ import { IProviderOptions, IProviderCallback } from "../helpers/types";
 import { isMobile, getInjectedProviderName } from "../helpers/utils";
 import connectors from "./connectors";
 import EventManager from "./events";
+import { providerPackages } from "../providers";
 
 const WEB3_CONNECT_MODAL_ID = "WEB3_CONNECT_MODAL_ID";
 
@@ -47,22 +48,36 @@ class Core {
     });
   }
 
+  public connectToInjected = async () => {
+    try {
+      const provider = await connectors.ConnectToInjected();
+      await this.onConnect(provider);
+    } catch (error) {
+      await this.onError(error);
+    }
+  };
+
   public connectTo = async (
-    type: string,
-    connector: (opts: any) => Promise<any>
+    name: string,
+    connector: (providerPackage: any, opts: any) => Promise<any>
   ) => {
     try {
-      let opts = undefined;
-      if (type !== "injected") {
-        const providerOptions =
-          this.providerOptions && this.providerOptions[type]
-            ? this.providerOptions[type]
-            : {};
-        opts = this.network
-          ? { network: this.network, ...providerOptions }
-          : providerOptions;
-      }
-      const provider = await connector(opts);
+      const providerPackage =
+        this.providerOptions &&
+        this.providerOptions[name] &&
+        this.providerOptions[name].package
+          ? this.providerOptions[name].package
+          : {};
+      const providerOptions =
+        this.providerOptions &&
+        this.providerOptions[name] &&
+        this.providerOptions[name].options
+          ? this.providerOptions[name].options
+          : {};
+      const opts = this.network
+        ? { network: this.network, ...providerOptions }
+        : providerOptions;
+      const provider = await connector(providerPackage, opts);
       await this.onConnect(provider);
     } catch (error) {
       await this.onError(error);
@@ -91,6 +106,29 @@ class Core {
     await this.updateState({ show: !this.show });
   };
 
+  public shouldDisplayProvider(name: string) {
+    const { providerOptions } = this;
+    const providerPackage = providerPackages[name];
+
+    if (providerOptions) {
+      const providerPackageOptions = providerOptions[providerPackage.option];
+      if (providerPackageOptions) {
+        const required = providerPackage.required;
+        const matches = required.filter(
+          (key: string) => key in providerPackageOptions.options
+        );
+        if (required.length === matches.length) {
+          const isProvided = providerPackageOptions.package;
+          if (isProvided) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
   public getProviders = () => {
     const mobile = isMobile();
 
@@ -116,36 +154,20 @@ class Core {
         providers = providers.filter(provider => provider !== "injected");
       }
 
-      const displayWalletConnect =
-        providerOptions &&
-        providerOptions.walletconnect &&
-        providerOptions.walletconnect.infuraId;
-      if (!displayWalletConnect) {
+      if (!this.shouldDisplayProvider("walletconnect")) {
         providers = providers.filter(provider => provider !== "walletconnect");
       }
 
-      const displaySquarelink =
-        providerOptions &&
-        providerOptions.squarelink &&
-        providerOptions.squarelink.id;
-
-      if (!displaySquarelink) {
-        providers = providers.filter(provider => provider !== "squarelink");
-      }
-
-      const displayPortis =
-        providerOptions && providerOptions.portis && providerOptions.portis.id;
-
-      if (!displayPortis) {
+      if (!this.shouldDisplayProvider("portis")) {
         providers = providers.filter(provider => provider !== "portis");
       }
-      const displayFortmatic =
-        providerOptions &&
-        providerOptions.fortmatic &&
-        providerOptions.fortmatic.key;
 
-      if (!displayFortmatic) {
+      if (!this.shouldDisplayProvider("fortmatic")) {
         providers = providers.filter(provider => provider !== "fortmatic");
+      }
+
+      if (!this.shouldDisplayProvider("squarelink")) {
+        providers = providers.filter(provider => provider !== "squarelink");
       }
     }
 
@@ -154,8 +176,7 @@ class Core {
         case "injected":
           return {
             name: injectedProvider,
-            onClick: () =>
-              this.connectTo("injected", connectors.ConnectToInjected)
+            onClick: this.connectToInjected
           };
         case "walletconnect":
           return {
@@ -168,23 +189,25 @@ class Core {
             name: "Portis",
             onClick: () => this.connectTo("portis", connectors.ConnectToPortis)
           };
-        case "squarelink":
-          return {
-            name: "Squarelink",
-            onClick: () =>
-              this.connectTo("squarelink", connectors.ConnectToSquarelink)
-          };
         case "fortmatic":
           return {
             name: "Fortmatic",
             onClick: () =>
               this.connectTo("fortmatic", connectors.ConnectToFortmatic)
           };
+        case "squarelink":
+          return {
+            name: "Squarelink",
+            onClick: () =>
+              this.connectTo("squarelink", connectors.ConnectToSquarelink)
+          };
 
         default:
           return {
             name: "",
-            onClick: async () => {}
+            onClick: async () => {
+              // empty
+            }
           };
       }
     });
