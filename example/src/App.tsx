@@ -399,7 +399,7 @@ class App extends React.Component<any, any> {
               <SLanding center>
                 <h3>{`Test Web3Connect`}</h3>
                 <Web3Connect.Button
-                  network="mainnet"
+                  network="rinkeby"
                   providerOptions={{
                     walletconnect: {
                       package: WalletConnectProvider,
@@ -418,7 +418,8 @@ class App extends React.Component<any, any> {
                       options: {
                         key: process.env.REACT_APP_FORTMATIC_KEY
                       }
-                    }
+                    },
+                    squarelik: {}
                   }}
                   onConnect={(provider: any) => {
                     this.onConnect(provider)

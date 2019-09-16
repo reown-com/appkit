@@ -117,10 +117,17 @@ class Core {
         const isProvided = providerPackageOptions.package;
         if (isProvided) {
           const required = providerPackage.required;
-          const matches = required.filter(
-            (key: string) => key in providerPackageOptions.options
-          );
-          if (required.length === matches.length) {
+          const providedOptions = providerPackageOptions.options;
+          if (required.length) {
+            if (providedOptions.length) {
+              const matches = required.filter(
+                (key: string) => key in providedOptions
+              );
+              if (required.length === matches.length) {
+                return true;
+              }
+            }
+          } else {
             return true;
           }
         }
