@@ -11,7 +11,8 @@
     "walletconnect",
     "squarelink",
     "portis",
-    "fortmatic"
+    "fortmatic",
+    "authereum"
   ],
   "author": "Web3Connect <web3connect.com>",
   "license": "LGPL-3.0",

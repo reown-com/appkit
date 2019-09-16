@@ -7,6 +7,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 import Portis from '@portis/web3'
 // @ts-ignore
 import Fortmatic from 'fortmatic'
+import Authereum from 'authereum'
 import { convertUtf8ToHex } from '@walletconnect/utils'
 import Button from './components/Button'
 import Column from './components/Column'
@@ -418,6 +419,10 @@ class App extends React.Component<any, any> {
                       options: {
                         key: process.env.REACT_APP_FORTMATIC_KEY
                       }
+                    },
+                    authereum: {
+                      package: Authereum,
+                      options: {}
                     }
                   }}
                   onConnect={(provider: any) => {

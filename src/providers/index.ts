@@ -31,6 +31,8 @@ import StatusLogo from "../assets/status.svg";
 import TokenaryLogo from "../assets/tokenary.png";
 // @ts-ignore
 import OperaLogo from "../assets/opera.svg";
+// @ts-ignore
+import AuthereumLogo from "../assets/authereum.svg";
 
 export const providerPackages = {
   fortmatic: {
@@ -47,6 +49,11 @@ export const providerPackages = {
     name: "@portis/web3",
     option: "portis",
     required: ["id"]
+  },
+  authereum: {
+    name: "authereum",
+    option: "authereum",
+    required: []
   },
   walletconnect: {
     name: "@walletconnect/web3-provider",
@@ -200,6 +207,15 @@ const providers: IProviderInfo[] = [
     check: "isTokenary",
     styled: {
       noShadow: false
+    }
+  },
+  {
+    name: "Authereum",
+    logo: AuthereumLogo,
+    type: "web",
+    check: "isAuthereum",
+    styled: {
+      noShadow: true
     }
   }
 ];

@@ -137,7 +137,8 @@ class Core {
       "walletconnect",
       "portis",
       "fortmatic",
-      "squarelink"
+      "squarelink",
+      "authereum"
     ];
 
     const { injectedProvider, providerOptions } = this;
@@ -168,6 +169,10 @@ class Core {
 
       if (!this.shouldDisplayProvider("squarelink")) {
         providers = providers.filter(provider => provider !== "squarelink");
+      }
+
+      if (!this.shouldDisplayProvider("authereum")) {
+        providers = providers.filter(provider => provider !== "authereum");
       }
     }
 
@@ -200,6 +205,12 @@ class Core {
             name: "Squarelink",
             onClick: () =>
               this.connectTo("squarelink", connectors.ConnectToSquarelink)
+          };
+        case "authereum":
+          return {
+            name: "Authereum",
+            onClick: () =>
+              this.connectTo("authereum", connectors.ConnectToAuthereum)
           };
 
         default:

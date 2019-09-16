@@ -6,7 +6,7 @@ A single Web3 / Ethereum provider solution for all Wallets
 
 Web3Connect is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
 
-By default Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Fortmatic**, **Squarelink**, and **Portis**.
+By default Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Fortmatic**, **Squarelink**, **Portis**, and **Authereum**.
 
 ## Preview
 
@@ -29,11 +29,11 @@ yarn add web3connect
 2. Install Provider packages
 
 ```bash
-npm install --save @walletconnect/web3-provider @portis/web3 fortmatic squarelink
+npm install --save @walletconnect/web3-provider @portis/web3 fortmatic squarelink authereum
 
 # OR
 
-yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink
+yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink authereum
 ```
 
 3. Then you can integrate it three different ways:
@@ -52,6 +52,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Squarelink from "squarelink";
+import Authereum from "authereum";
 
 <Web3Connect.Button
   network="mainnet" // optional
@@ -79,6 +80,10 @@ import Squarelink from "squarelink";
       options: {
         id: "SQUARELINK_ID" // required
       }
+    },
+    authereum: {
+      package: Authereum, // required
+      options: {}
     }
   }}
   onConnect={(provider: any) => {
@@ -100,6 +105,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Squarelink from "squarelink";
+import Authereum from "authereum";
 
 const web3Connect = new Web3Connect.Core({
   network: "mainnet", // optional
@@ -127,6 +133,10 @@ const web3Connect = new Web3Connect.Core({
       options: {
         id: "SQUARELINK_ID" // required
       }
+    },
+    authereum: {
+      package: Authereum, // required
+      options: {}
     }
   }
 });
@@ -154,6 +164,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Squarelink from "squarelink";
+import Authereum from "authereum";
 
 // For inject providers in dapp browsers
 const provider = await Web3Connect.ConnectToInjected();
@@ -182,6 +193,11 @@ const provider = await Web3Connect.ConnectToFortmatic(Fortmatic, {
 // For Squarelink
 const provider = await Web3Connect.ConnectToSquarelink(Squarelink, {
   id: "SQUARELINK_ID", // required
+  network: "mainnet" // optional
+});
+
+// For Authereum
+const provider = await Web3Connect.ConnectToAuthereum(Authereum, {
   network: "mainnet" // optional
 });
 ```
@@ -261,6 +277,12 @@ interface IProviderCallback {
       - id: the client ID registered (required)
       - network: choose initial network name (optional)
       - config: additional configuration, like `scope` to use supplemental methods (optional)
+
+  - authereum:
+
+    - package: dependency injection to enable provider
+    - options:
+      - network: choose initial network name (optional)
 
 You can disable the injected provider by adding the following flag:
 
