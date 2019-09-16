@@ -399,7 +399,7 @@ class App extends React.Component<any, any> {
               <SLanding center>
                 <h3>{`Test Web3Connect`}</h3>
                 <Web3Connect.Button
-                  network="rinkeby"
+                  network="mainnet"
                   providerOptions={{
                     walletconnect: {
                       package: WalletConnectProvider,
