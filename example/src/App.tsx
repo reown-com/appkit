@@ -2,6 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import Web3 from 'web3'
 import Web3Connect from 'web3connect'
+import validContractSignature from 'is-valid-signature'
 // @ts-ignore
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import Portis from '@portis/web3'
@@ -265,8 +266,18 @@ class App extends React.Component<any, any> {
       const result = await web3.eth.sign(hash, address)
 
       // verify signature
-      const signer = recoverPublicKey(result, hash)
-      const verified = signer.toLowerCase() === address.toLowerCase()
+      let signer = null
+      let verified = false
+      const bytecode = await web3.eth.getCode(address)
+      const isContract = bytecode !== '0x'
+
+      if (isContract) {
+        signer = ''
+        verified = await validContractSignature(web3, address, hash, result)
+      } else {
+        signer = recoverPublicKey(result, hash)
+        verified = signer.toLowerCase() === address.toLowerCase()
+      }
 
       // format displayed result
       const formattedResult = {
@@ -313,8 +324,18 @@ class App extends React.Component<any, any> {
       const result = await web3.eth.personal.sign(hexMsg, address)
 
       // verify signature
-      const signer = recoverPersonalSignature(result, message)
-      const verified = signer.toLowerCase() === address.toLowerCase()
+      let signer = null
+      let verified = false
+      const bytecode = await web3.eth.getCode(address)
+      const isContract = bytecode !== '0x'
+
+      if (isContract) {
+        signer = ''
+        verified = await validContractSignature(web3, address, message, result)
+      } else {
+        signer = recoverPersonalSignature(result, message)
+        verified = signer.toLowerCase() === address.toLowerCase()
+      }
 
       // format displayed result
       const formattedResult = {

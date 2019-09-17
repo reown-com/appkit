@@ -9,6 +9,7 @@
     "bignumber.js": "^8.1.1",
     "ethereumjs-util": "^6.1.0",
     "fortmatic": "^0.8.2",
+    "is-valid-signature": "0.0.8",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
