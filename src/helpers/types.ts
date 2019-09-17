@@ -9,7 +9,10 @@ export interface IProviderInfo {
 }
 
 export interface IProviderOptions {
-  [providerName: string]: any;
+  [providerName: string]: {
+    package: any;
+    options: any;
+  };
 }
 
 export type SimpleFunction = (input?: any) => void;
@@ -22,4 +25,9 @@ export interface IEventCallback {
 export interface IInjectedProvidersMap {
   injectedAvailable: boolean;
   [isProviderName: string]: boolean;
+}
+
+export interface IProviderCallback {
+  name: string | null;
+  onClick: () => Promise<void>;
 }

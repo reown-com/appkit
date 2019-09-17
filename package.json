@@ -1,6 +1,6 @@
 {
   "name": "web3connect",
-  "version": "1.0.0-beta.19",
+  "version": "1.0.0-beta.22",
   "description": "A single Web3 / Ethereum provider solution for all Wallets",
   "keywords": [
     "web3",
@@ -9,6 +9,7 @@
     "web3connect",
     "metamask",
     "walletconnect",
+    "squarelink",
     "portis",
     "fortmatic"
   ],
@@ -79,9 +80,6 @@
     "webpack-cli": "^3.2.1"
   },
   "dependencies": {
-    "@portis/web3": "^2.0.0-beta.37",
-    "@walletconnect/web3-provider": "^1.0.0-beta.32",
-    "fortmatic": "^0.8.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",

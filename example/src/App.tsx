@@ -2,6 +2,11 @@ import * as React from 'react'
 import styled from 'styled-components'
 import Web3 from 'web3'
 import Web3Connect from 'web3connect'
+// @ts-ignore
+import WalletConnectProvider from '@walletconnect/web3-provider'
+import Portis from '@portis/web3'
+// @ts-ignore
+import Fortmatic from 'fortmatic'
 import { convertUtf8ToHex } from '@walletconnect/utils'
 import Button from './components/Button'
 import Column from './components/Column'
@@ -334,9 +339,9 @@ class App extends React.Component<any, any> {
 
   public resetApp = async () => {
     const { web3 } = this.state
-    console.log('web3.currentProvider', web3 && web3.currentProvider) // tslint:disable-line
-    if (web3 && web3.currentProvider && web3.currentProvider.isWalletConnect && web3.currentProvider.wc.connected) {
-      await web3.currentProvider.send('wc_killSession', [])
+    console.log('web3.currentProvider', web3.currentProvider) // tslint:disable-line
+    if (web3 && web3.currentProvider && web3.currentProvider.close) {
+      await web3.currentProvider.close()
     }
     this.setState({ ...INITIAL_STATE })
   }
@@ -394,13 +399,25 @@ class App extends React.Component<any, any> {
               <SLanding center>
                 <h3>{`Test Web3Connect`}</h3>
                 <Web3Connect.Button
+                  network="mainnet"
                   providerOptions={{
+                    walletconnect: {
+                      package: WalletConnectProvider,
+                      options: {
+                        infuraId: process.env.REACT_APP_INFURA_ID
+                      }
+                    },
                     portis: {
-                      id: process.env.REACT_APP_PORTIS_ID,
-                      network: 'mainnet'
+                      package: Portis,
+                      options: {
+                        id: process.env.REACT_APP_PORTIS_ID
+                      }
                     },
                     fortmatic: {
-                      key: process.env.REACT_APP_FORTMATIC_KEY
+                      package: Fortmatic,
+                      options: {
+                        key: process.env.REACT_APP_FORTMATIC_KEY
+                      }
                     }
                   }}
                   onConnect={(provider: any) => {

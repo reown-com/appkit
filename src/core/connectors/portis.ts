@@ -1,12 +1,10 @@
-import Portis from "@portis/web3";
-
 export interface INetwork {
   nodeUrl: string;
   chainId?: string;
   gasRelayHubAddress?: string;
 }
 
-export type Scope = 'email';
+export type Scope = "email";
 
 export interface IOptions {
   scope?: Scope[];
@@ -21,7 +19,7 @@ export interface IPortisConnectorOptions {
   config?: IOptions;
 }
 
-const ConnectToPortis = async (opts: IPortisConnectorOptions) => {
+const ConnectToPortis = (Portis: any, opts: IPortisConnectorOptions) => {
   return new Promise(async (resolve, reject) => {
     if (opts && opts.id) {
       try {

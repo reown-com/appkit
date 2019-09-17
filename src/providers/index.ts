@@ -12,23 +12,48 @@ import NiftyWalletLogo from "../assets/niftyWallet.png";
 // @ts-ignore
 import PortisLogo from "../assets/portis.svg";
 // @ts-ignore
+import SquarelinkLogo from "../assets/squarelink.svg";
+// @ts-ignore
 import FortmaticLogo from "../assets/fortmatic.svg";
 // @ts-ignore
-import TrustLogo from "../assets/trust.png";
+import TrustLogo from "../assets/trust.svg";
 // @ts-ignore
 import DapperLogo from "../assets/dapper.png";
 // @ts-ignore
-import CoinbaseLogo from "../assets/coinbase.png";
+import CoinbaseLogo from "../assets/coinbase.svg";
 // @ts-ignore
-import CipherLogo from "../assets/cipher.png";
+import CipherLogo from "../assets/cipher.svg";
 // @ts-ignore
-import imTokenLogo from "../assets/imtoken.png";
+import imTokenLogo from "../assets/imtoken.svg";
 // @ts-ignore
-import StatusLogo from "../assets/status.png";
+import StatusLogo from "../assets/status.svg";
 // @ts-ignore
 import TokenaryLogo from "../assets/tokenary.png";
 // @ts-ignore
-import OperaLogo from "../assets/opera.png";
+import OperaLogo from "../assets/opera.svg";
+
+export const providerPackages = {
+  fortmatic: {
+    name: "fortmatic",
+    option: "fortmatic",
+    required: ["key"]
+  },
+  squarelink: {
+    name: "squarelink",
+    option: "squarelink",
+    required: ["id"]
+  },
+  portis: {
+    name: "@portis/web3",
+    option: "portis",
+    required: ["id"]
+  },
+  walletconnect: {
+    name: "@walletconnect/web3-provider",
+    option: "walletconnect",
+    required: ["infuraId"]
+  }
+};
 
 export const fallbackProvider: IProviderInfo = {
   name: "Web3",
@@ -74,6 +99,15 @@ const providers: IProviderInfo[] = [
     logo: NiftyWalletLogo,
     type: "injected",
     check: "isNiftyWallet",
+    styled: {
+      noShadow: true
+    }
+  },
+  {
+    name: "Squarelink",
+    logo: SquarelinkLogo,
+    type: "web",
+    check: "isSquarelink",
     styled: {
       noShadow: true
     }

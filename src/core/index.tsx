@@ -1,37 +1,43 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import Modal from "../components/Modal";
-import { IProviderOptions } from "../helpers/types";
-import { getInjectedProviderName } from "../helpers/utils";
+import { IProviderOptions, IProviderCallback } from "../helpers/types";
+import { isMobile, getInjectedProviderName } from "../helpers/utils";
 import connectors from "./connectors";
 import EventManager from "./events";
+import { providerPackages } from "../providers";
 
 const WEB3_CONNECT_MODAL_ID = "WEB3_CONNECT_MODAL_ID";
 
 interface ICoreOptions {
   modal?: boolean;
+  network?: string;
   lightboxOpacity?: number;
-  providerOptions: IProviderOptions;
+  providerOptions?: IProviderOptions;
 }
 
-const INITIAL_STATE = { uri: "", show: false };
+const INITIAL_STATE = { show: false };
 
 class Core {
-  private uri: string = INITIAL_STATE.uri;
   private show: boolean = INITIAL_STATE.show;
   private eventManager: EventManager = new EventManager();
   private injectedProvider: string | null = null;
+  private network: string = "";
   private lightboxOpacity: number = 0.4;
   private providerOptions: IProviderOptions = {};
+  private providers: IProviderCallback[];
 
   constructor(opts?: ICoreOptions) {
     this.injectedProvider = getInjectedProviderName();
 
     if (opts) {
+      this.network = opts.network || "";
       this.lightboxOpacity = opts.lightboxOpacity || 0.4;
       this.providerOptions = opts.providerOptions || {};
     }
-    
+
+    this.providers = this.getProviders();
+
     this.renderModal();
   }
 
@@ -57,62 +63,55 @@ class Core {
   public connectToInjected = async () => {
     try {
       const provider = await connectors.ConnectToInjected();
-      this.onConnect(provider);
+      await this.onConnect(provider);
     } catch (error) {
-      this.onError(error);
+      await this.onError(error);
     }
   };
 
-  public connectToFortmatic = async () => {
+  public connectTo = async (
+    name: string,
+    connector: (providerPackage: any, opts: any) => Promise<any>
+  ) => {
     try {
-      const provider = await connectors.ConnectToFortmatic(
-        this.providerOptions.fortmatic
-      );
-      this.onConnect(provider);
-    } catch (error) {
-      this.onError(error);
-    }
-  };
-
-  public connectToPortis = async () => {
-    try {
-      const provider = await connectors.ConnectToPortis(
-        this.providerOptions.portis
-      );
-      this.onConnect(provider);
-    } catch (error) {
-      this.onError(error);
-    }
-  };
-
-  public connectToWalletConnect = async () => {
-    if (this.uri) {
-      await this.updateState({ uri: "" });
-      return;
-    }
-    try {
-      const opts =
-        this.providerOptions && this.providerOptions.walletconnect
-          ? this.providerOptions.walletconnect
+      const providerPackage =
+        this.providerOptions &&
+        this.providerOptions[name] &&
+        this.providerOptions[name].package
+          ? this.providerOptions[name].package
           : {};
-      const provider: any = await connectors.ConnectToWalletConnect({
-        bridge: opts.bridge,
-        qrcode: false,
-        onUri: (uri: string) => this.updateState({ uri })
-      });
-      await this.updateState({ uri: "" });
-      // Listen for Disconnect event
-      provider.wc.on("disconnect", async () => {
-        return this.onDisconnect()
-      });
-
-      this.onConnect(provider);
+      const providerOptions =
+        this.providerOptions &&
+        this.providerOptions[name] &&
+        this.providerOptions[name].options
+          ? this.providerOptions[name].options
+          : {};
+      const opts = this.network
+        ? { network: this.network, ...providerOptions }
+        : providerOptions;
+      const provider = await connector(providerPackage, opts);
+      if (provider.isWalletConnect) {
+        // Listen for Disconnect event
+        provider.wc.on("disconnect", async () => {
+          return this.onDisconnect()
+        });
+      }
+      await this.onConnect(provider);
     } catch (error) {
-      this.onError(error);
+      await this.onError(error);
     }
   };
 
   public toggleModal = async () => {
+    if (
+      this.providers &&
+      this.providers.length === 1 &&
+      this.providers[0].name
+    ) {
+      await this.providers[0].onClick();
+      return;
+    }
+
     const d = typeof window !== "undefined" ? document : "";
     const body = d ? d.body || d.getElementsByTagName("body")[0] : "";
     if (body) {
@@ -129,18 +128,133 @@ class Core {
     this.eventManager.trigger("disconnect")
   }
 
+  public shouldDisplayProvider(name: string) {
+    const { providerOptions } = this;
+    const providerPackage = providerPackages[name];
+
+    if (providerOptions) {
+      const providerPackageOptions = providerOptions[providerPackage.option];
+      if (providerPackageOptions) {
+        const required = providerPackage.required;
+        const matches = required.filter(
+          (key: string) => key in providerPackageOptions.options
+        );
+        if (required.length === matches.length) {
+          const isProvided = providerPackageOptions.package;
+          if (isProvided) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  public getProviders = () => {
+    const mobile = isMobile();
+
+    let providers = [
+      "injected",
+      "walletconnect",
+      "portis",
+      "fortmatic",
+      "squarelink"
+    ];
+
+    const { injectedProvider, providerOptions } = this;
+
+    const displayInjected =
+      injectedProvider && !providerOptions.disableInjectedProvider;
+
+    const onlyInjected = displayInjected && mobile;
+
+    if (onlyInjected) {
+      providers = ["injected"];
+    } else {
+      if (!displayInjected) {
+        providers = providers.filter(provider => provider !== "injected");
+      }
+
+      if (!this.shouldDisplayProvider("walletconnect")) {
+        providers = providers.filter(provider => provider !== "walletconnect");
+      }
+
+      if (!this.shouldDisplayProvider("portis")) {
+        providers = providers.filter(provider => provider !== "portis");
+      }
+
+      if (!this.shouldDisplayProvider("fortmatic")) {
+        providers = providers.filter(provider => provider !== "fortmatic");
+      }
+
+      if (!this.shouldDisplayProvider("squarelink")) {
+        providers = providers.filter(provider => provider !== "squarelink");
+      }
+    }
+
+    const providersMap = providers.map(provider => {
+      switch (provider) {
+        case "injected":
+          return {
+            name: injectedProvider,
+            onClick: this.connectToInjected
+          };
+        case "walletconnect":
+          return {
+            name: "WalletConnect",
+            onClick: () =>
+              this.connectTo("walletconnect", connectors.ConnectToWalletConnect)
+          };
+        case "portis":
+          return {
+            name: "Portis",
+            onClick: () => this.connectTo("portis", connectors.ConnectToPortis)
+          };
+        case "fortmatic":
+          return {
+            name: "Fortmatic",
+            onClick: () =>
+              this.connectTo("fortmatic", connectors.ConnectToFortmatic)
+          };
+        case "squarelink":
+          return {
+            name: "Squarelink",
+            onClick: () =>
+              this.connectTo("squarelink", connectors.ConnectToSquarelink)
+          };
+
+        default:
+          return {
+            name: "",
+            onClick: async () => {
+              // empty
+            }
+          };
+      }
+    });
+
+    return providersMap;
+  };
+
   private onError = async (error: any) => {
-    await this.toggleModal();
+    if (this.show) {
+      await this.toggleModal();
+    }
     this.eventManager.trigger("error", error);
   };
 
   private onConnect = async (provider: any) => {
-    await this.toggleModal();
+    if (this.show) {
+      await this.toggleModal();
+    }
     this.eventManager.trigger("connect", provider);
   };
 
   private onClose = async () => {
-    await this.toggleModal();
+    if (this.show) {
+      await this.toggleModal();
+    }
     this.eventManager.trigger("close");
   };
 
@@ -157,17 +271,13 @@ class Core {
     const el = document.createElement("div");
     el.id = WEB3_CONNECT_MODAL_ID;
     document.body.appendChild(el);
+
     ReactDOM.render(
       <Modal
+        providers={this.providers}
         onClose={this.onClose}
         resetState={this.resetState}
-        injectedProvider={this.injectedProvider}
         lightboxOpacity={this.lightboxOpacity}
-        providerOptions={this.providerOptions}
-        connectToInjected={this.connectToInjected}
-        connectToFortmatic={this.connectToFortmatic}
-        connectToPortis={this.connectToPortis}
-        connectToWalletConnect={this.connectToWalletConnect}
       />,
       document.getElementById(WEB3_CONNECT_MODAL_ID)
     );
