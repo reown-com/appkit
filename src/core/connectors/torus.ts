@@ -34,7 +34,7 @@ const ConnectToTorus = async (Torus: any, opts: ITorusConnectorOptions) => {
         let buttonPosition = 'bottom-left'
         let buildEnv = 'production'
         let enableLogging = true
-        let showTorusButton = true
+        let showTorusButton = false
         let  network : NetworkInterface = {host: 'mainnet'}
 
         // parsing to Torus interfaces
