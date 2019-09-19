@@ -1,6 +1,6 @@
 {
   "name": "web3connect",
-  "version": "1.0.0-beta.21",
+  "version": "1.0.0-beta.23",
   "description": "A single Web3 / Ethereum provider solution for all Wallets",
   "keywords": [
     "web3",
@@ -81,14 +81,9 @@
     "webpack": "4.19.1"
   },
   "dependencies": {
-    "@portis/web3": "^2.0.0-beta.40",
-    "@toruslabs/torus-embed": "0.0.28",
-    "@walletconnect/web3-provider": "^1.0.0-beta.35",
-    "fortmatic": "^0.8.2",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "squarelink": "^1.0.4",
     "styled-components": "4.2.0",
     "tslib": "^1.10.0",
     "url-loader": "^1.1.2"
