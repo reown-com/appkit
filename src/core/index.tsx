@@ -202,7 +202,7 @@ class Core {
           };
         case "torus":
           return {
-            name: "Google via Torus",
+            name: "Google",
             onClick: () =>
               this.connectTo("torus", connectors.ConnectToTorus)
         };
