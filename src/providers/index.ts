@@ -205,7 +205,7 @@ const providers: IProviderInfo[] = [
     }
   },
   {
-    name: "Torus via Google",
+    name: "Google via Torus",
     logo: TorusLogo,
     type: "web",
     check: "isTorus",
