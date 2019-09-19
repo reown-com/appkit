@@ -68,12 +68,16 @@ import Squarelink from "squarelink";
         id: "PORTIS_ID" // required
       }
     },
-    fortmatic: {
-<<<<<<< HEAD
-      key: "FORTMATIC_KEY" // required
-    },
     torus: {
-=======
+      package: Torus, // required
+      options: {
+        enableLogging: false, // optional
+        buttonPosition: "bottom-left", // optional
+        buildEnv: "production", // optional
+        showTorusButton: true // optional
+      }
+    },
+    fortmatic: {
       package: Fortmatic, // required
       options: {
         key: "FORTMATIC_KEY" // required
@@ -84,7 +88,6 @@ import Squarelink from "squarelink";
       options: {
         id: "SQUARELINK_ID" // required
       }
->>>>>>> master
     }
   }}
   onConnect={(provider: any) => {
@@ -122,12 +125,16 @@ const web3Connect = new Web3Connect.Core({
         id: "PORTIS_ID" // required
       }
     },
-    fortmatic: {
-<<<<<<< HEAD
-      key: "FORTMATIC_KEY" // required
-    },
     torus: {
-=======
+      package: Torus, // required
+      options: {
+        enableLogging: false, // optional
+        buttonPosition: "bottom-left", // optional
+        buildEnv: "production", // optional
+        showTorusButton: true // optional
+      }
+    },
+    fortmatic: {
       package: Fortmatic, // required
       options: {
         key: "FORTMATIC_KEY" // required
@@ -138,7 +145,6 @@ const web3Connect = new Web3Connect.Core({
       options: {
         id: "SQUARELINK_ID" // required
       }
->>>>>>> master
     }
   }
 });
@@ -191,16 +197,14 @@ const provider = await Web3Connect.ConnectToFortmatic(Fortmatic, {
   network: "mainnet" // optional
 });
 
-<<<<<<< HEAD
 // For Torus
 const provider = await Web3Connect.ConnectToTorus();
-=======
+
 // For Squarelink
 const provider = await Web3Connect.ConnectToSquarelink(Squarelink, {
   id: "SQUARELINK_ID", // required
   network: "mainnet" // optional
 });
->>>>>>> master
 ```
 
 ## Utils

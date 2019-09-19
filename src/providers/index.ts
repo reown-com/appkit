@@ -32,7 +32,7 @@ import TokenaryLogo from "../assets/tokenary.png";
 // @ts-ignore
 import OperaLogo from "../assets/opera.svg";
 // @ts-ignore
-import TorusLogo from "../assets/torus.svg";
+import TorusLogo from "../assets/torus.png";
 
 export const providerPackages = {
   fortmatic: {
