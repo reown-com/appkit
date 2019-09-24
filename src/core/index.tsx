@@ -135,6 +135,7 @@ class Core {
     let providers = [
       "injected",
       "walletconnect",
+      "torus",
       "portis",
       "fortmatic",
       "squarelink"
@@ -165,7 +166,11 @@ class Core {
       if (!this.shouldDisplayProvider("fortmatic")) {
         providers = providers.filter(provider => provider !== "fortmatic");
       }
-
+      const displayTorus =
+        providerOptions && providerOptions.torus
+      if (!displayTorus) {
+        providers = providers.filter(provider => provider !== "torus");
+      }
       if (!this.shouldDisplayProvider("squarelink")) {
         providers = providers.filter(provider => provider !== "squarelink");
       }
@@ -195,6 +200,12 @@ class Core {
             onClick: () =>
               this.connectTo("fortmatic", connectors.ConnectToFortmatic)
           };
+        case "torus":
+          return {
+            name: "Google",
+            onClick: () =>
+              this.connectTo("torus", connectors.ConnectToTorus)
+        };
         case "squarelink":
           return {
             name: "Squarelink",

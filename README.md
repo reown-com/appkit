@@ -68,6 +68,15 @@ import Squarelink from "squarelink";
         id: "PORTIS_ID" // required
       }
     },
+    torus: {
+      package: Torus, // required
+      options: {
+        enableLogging: false, // optional
+        buttonPosition: "bottom-left", // optional
+        buildEnv: "production", // optional
+        showTorusButton: true // optional
+      }
+    },
     fortmatic: {
       package: Fortmatic, // required
       options: {
@@ -114,6 +123,15 @@ const web3Connect = new Web3Connect.Core({
       package: Portis, // required
       options: {
         id: "PORTIS_ID" // required
+      }
+    },
+    torus: {
+      package: Torus, // required
+      options: {
+        enableLogging: false, // optional
+        buttonPosition: "bottom-left", // optional
+        buildEnv: "production", // optional
+        showTorusButton: true // optional
       }
     },
     fortmatic: {
@@ -178,6 +196,9 @@ const provider = await Web3Connect.ConnectToFortmatic(Fortmatic, {
   key: "FORTMATIC_KEY", // required
   network: "mainnet" // optional
 });
+
+// For Torus
+const provider = await Web3Connect.ConnectToTorus();
 
 // For Squarelink
 const provider = await Web3Connect.ConnectToSquarelink(Squarelink, {

@@ -5,6 +5,7 @@ import Web3Connect from 'web3connect'
 // @ts-ignore
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import Portis from '@portis/web3'
+import Torus from '@toruslabs/torus-embed'
 // @ts-ignore
 import Fortmatic from 'fortmatic'
 import { convertUtf8ToHex } from '@walletconnect/utils'
@@ -406,6 +407,9 @@ class App extends React.Component<any, any> {
                       options: {
                         infuraId: process.env.REACT_APP_INFURA_ID
                       }
+                    },
+                    torus : {
+                      package: Torus
                     },
                     portis: {
                       package: Portis,

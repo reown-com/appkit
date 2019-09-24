@@ -1,6 +1,6 @@
 {
   "name": "web3connect",
-  "version": "1.0.0-beta.22",
+  "version": "1.0.0-beta.23",
   "description": "A single Web3 / Ethereum provider solution for all Wallets",
   "keywords": [
     "web3",
@@ -11,7 +11,8 @@
     "walletconnect",
     "squarelink",
     "portis",
-    "fortmatic"
+    "fortmatic",
+    "torus"
   ],
   "author": "Web3Connect <web3connect.com>",
   "license": "LGPL-3.0",
@@ -76,14 +77,15 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-config-standard": "^8.0.1",
     "typescript": "^3.1.3",
-    "webpack": "^4.28.3",
-    "webpack-cli": "^3.2.1"
+    "webpack-cli": "^3.2.1",
+    "webpack": "4.19.1"
   },
   "dependencies": {
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "styled-components": "4.2.0",
+    "tslib": "^1.10.0",
     "url-loader": "^1.1.2"
   }
 }
