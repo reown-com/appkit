@@ -32,7 +32,7 @@ export async function apiGetAccountTransactions(
   return result
 }
 
-export const apiGetAccountNonce = async (
+export const apiGetAccountNonce = async(
   address: string,
   chainId: number
 ): Promise<string> => {
@@ -43,8 +43,20 @@ export const apiGetAccountNonce = async (
   return result
 }
 
-export const apiGetGasPrices = async (): Promise<IGasPrices> => {
-  const response = await api.get(`/gas-prices`)
+export const apiGetGasLimit = async(
+  contractAddress: string,
+  data: string,
+  chainId: number
+): Promise<number> => {
+  const response = await api.get(
+    `/gas-limit?contractAddress=${contractAddress}&data=${data}&chainId=${chainId}`
+  )
+  const { result } = response.data
+  return result
+}
+
+export const apiGetGasPrices = async(): Promise<IGasPrices> => {
+  const response = await api.get('/gas-prices')
   const { result } = response.data
   return result
 }

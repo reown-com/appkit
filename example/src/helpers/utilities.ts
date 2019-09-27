@@ -1,7 +1,7 @@
 import * as ethUtil from 'ethereumjs-util'
 import { IChainData } from './types'
 import supportedChains from './chains'
-import { apiGetGasPrices, apiGetAccountNonce } from './api'
+import { apiGetGasPrices, apiGetAccountNonce, apiGetGasLimit } from './api'
 import { convertAmountToRawNumber, convertStringToHex } from './bignumber'
 
 export function capitalize(string: string): string {
@@ -169,6 +169,13 @@ export async function formatTestTransaction(address: string, chainId: number) {
   const _nonce = await apiGetAccountNonce(address, chainId)
   const nonce = sanitizeHex(convertStringToHex(_nonce))
 
+  // value
+  const _value = 0
+  const value = sanitizeHex(convertStringToHex(_value))
+
+  // data
+  const data = '0x'
+
   // gasPrice
   const gasPrices = await apiGetGasPrices()
   const _gasPrice = gasPrices.slow.price
@@ -177,15 +184,14 @@ export async function formatTestTransaction(address: string, chainId: number) {
   )
 
   // gasLimit
-  const _gasLimit = 21000
+  let _gasLimit = 21000
+  try {
+    _gasLimit = await apiGetGasLimit(to, data, chainId)
+  } catch (error) {
+    // ignore error
+    _gasLimit = 21000
+  }
   const gasLimit = sanitizeHex(convertStringToHex(_gasLimit))
-
-  // value
-  const _value = 0
-  const value = sanitizeHex(convertStringToHex(_value))
-
-  // data
-  const data = '0x'
 
   // test transaction
   const tx = {
