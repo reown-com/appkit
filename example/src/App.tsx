@@ -418,8 +418,7 @@ class App extends React.Component<any, any> {
                       options: {
                         key: process.env.REACT_APP_FORTMATIC_KEY
                       }
-                    },
-                    squarelik: {}
+                    }
                   }}
                   onConnect={(provider: any) => {
                     this.onConnect(provider)
