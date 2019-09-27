@@ -97,6 +97,7 @@ const SModalCard = styled.div<IModalCardStyleProps>`
 
   @media screen and (max-width: 768px) {
     max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : "500px")};
+    grid-template-columns: 1fr;
   }
 `;
 
