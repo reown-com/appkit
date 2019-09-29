@@ -6,7 +6,7 @@ A single Web3 / Ethereum provider solution for all Wallets
 
 Web3Connect is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
 
-By default Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Fortmatic**, **Squarelink**, and **Portis**.
+By default Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Fortmatic**, **Squarelink**, **Portis** and **Arkane**.
 
 ## Preview
 
@@ -29,11 +29,11 @@ yarn add web3connect
 2. Install Provider packages
 
 ```bash
-npm install --save @walletconnect/web3-provider @portis/web3 fortmatic squarelink
+npm install --save @walletconnect/web3-provider @portis/web3 fortmatic squarelink @arkane-network/web3-arkane-provider
 
 # OR
 
-yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink
+yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink @arkane-network/web3-arkane-provider
 ```
 
 3. Then you can integrate it three different ways:
@@ -52,6 +52,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Squarelink from "squarelink";
+import Arkane from '@arkane-network/web3-arkane-provider';
 
 <Web3Connect.Button
   network="mainnet" // optional
@@ -88,6 +89,12 @@ import Squarelink from "squarelink";
       options: {
         id: "SQUARELINK_ID" // required
       }
+    },
+    arkane: {
+      package: Arkane, // required
+      options: {
+        clientId: 'ARKANE_CLIENT_ID' // required, replace
+      }
     }
   }}
   onConnect={(provider: any) => {
@@ -109,6 +116,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Squarelink from "squarelink";
+import Arkane from '@arkane-network/web3-arkane-provider';
 
 const web3Connect = new Web3Connect.Core({
   network: "mainnet", // optional
@@ -144,6 +152,12 @@ const web3Connect = new Web3Connect.Core({
       package: Squarelink, // required
       options: {
         id: "SQUARELINK_ID" // required
+      }
+    },
+    arkane: {
+      package: Arkane, // required
+      options: {
+        clientId: 'ARKANE_CLIENT_ID' // required, replace
       }
     }
   }
@@ -195,6 +209,12 @@ const provider = await Web3Connect.ConnectToPortis(Portis, {
 const provider = await Web3Connect.ConnectToFortmatic(Fortmatic, {
   key: "FORTMATIC_KEY", // required
   network: "mainnet" // optional
+});
+
+// For Arkane
+const provider = await Web3Connect.ConnectToArkane(Arkane, {
+  key: "ARKANE_CLIENT_ID", // required
+  environment: "staging" // optional
 });
 
 // For Torus
@@ -274,6 +294,14 @@ interface IProviderCallback {
     - options:
       - key: the secret key (required)
       - network: choose initial network name (optional)
+  
+  - arkane:
+  
+      - package: dependency injection to enable provider
+      - options:
+        - clientId: the client id used by the application (required)
+        - nodeUrl: choose initial network name (optional)
+        - environment: the environment to connect to (optional). Production by default, use 'staging' for testing
 
   - squarelink:
 

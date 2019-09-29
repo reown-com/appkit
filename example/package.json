@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@arkane-network/web3-arkane-provider": "0.2.5",
     "@portis/web3": "^2.0.0-beta.40",
     "@toruslabs/torus-embed": "^0.1.0",
     "@walletconnect/web3-provider": "^1.0.0-beta.35",
