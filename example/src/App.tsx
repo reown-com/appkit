@@ -7,7 +7,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 import Portis from '@portis/web3'
 // @ts-ignore
 // import Squarelink from 'squarelink'
-import Torus from '@toruslabs/torus-embed'
+// import Torus from '@toruslabs/torus-embed'
 // @ts-ignore
 import Fortmatic from 'fortmatic'
 import { convertUtf8ToHex } from '@walletconnect/utils'
@@ -421,16 +421,16 @@ class App extends React.Component<any, any> {
                       options: {
                         key: process.env.REACT_APP_FORTMATIC_KEY
                       }
-                    },
+                    }
                     // squarelink: {
                     //   package: Squarelink,
                     //   options: {
                     //     id: process.env.REACT_APP_SQUARELINK_ID
                     //   }
                     // },
-                    torus: {
-                      package: Torus
-                    }
+                    // torus: {
+                    //   package: Torus
+                    // }
                   }}
                   onConnect={(provider: any) => {
                     this.onConnect(provider)
