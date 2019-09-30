@@ -117,9 +117,9 @@ class Core {
         const isProvided = providerPackageOptions.package;
         if (isProvided) {
           const required = providerPackage.required;
-          const providedOptions = providerPackageOptions.options;
           if (required.length) {
-            if (providedOptions.length) {
+            const providedOptions = providerPackageOptions.options;
+            if (providedOptions && Object.keys(providedOptions).length) {
               const matches = required.filter(
                 (key: string) => key in providedOptions
               );
@@ -133,7 +133,6 @@ class Core {
         }
       }
     }
-
     return false;
   }
 
