@@ -29,11 +29,11 @@ yarn add web3connect
 2. Install Provider packages
 
 ```bash
-npm install --save @walletconnect/web3-provider @portis/web3 fortmatic squarelink
+npm install --save @walletconnect/web3-provider @portis/web3 fortmatic squarelink @toruslabs/torus-embed
 
 # OR
 
-yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink
+yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink @toruslabs/torus-embed
 ```
 
 3. Then you can integrate it three different ways:
@@ -52,6 +52,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Squarelink from "squarelink";
+import Torus from "@toruslabs/torus-embed";
 
 <Web3Connect.Button
   network="mainnet" // optional
@@ -109,6 +110,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Squarelink from "squarelink";
+import Torus from "@toruslabs/torus-embed";
 
 const web3Connect = new Web3Connect.Core({
   network: "mainnet", // optional
