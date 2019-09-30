@@ -1,4 +1,4 @@
-# Web3connect
+# Web3Connect
 
 A single Web3 / Ethereum provider solution for all Wallets
 
