@@ -17,12 +17,15 @@ const SProviderContainer = styled.div`
   border-radius: 12px;
   padding: 24px 16px;
   @media screen and (max-width: 768px) {
-    padding: 12px;
+    padding: 1vw;
   }
 `;
 
 const SName = styled(STitle)`
   color: rgb(12, 12, 13);
+  @media screen and (max-width: 768px) {
+    font-size: 5vw;
+  }
 `;
 
 const SProvider = styled.div`
