@@ -6,7 +6,7 @@ import Web3Connect from 'web3connect'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import Portis from '@portis/web3'
 // @ts-ignore
-import Squarelink from 'squarelink'
+// import Squarelink from 'squarelink'
 import Torus from '@toruslabs/torus-embed'
 // @ts-ignore
 import Fortmatic from 'fortmatic'
@@ -422,12 +422,12 @@ class App extends React.Component<any, any> {
                         key: process.env.REACT_APP_FORTMATIC_KEY
                       }
                     },
-                    squarelink: {
-                      package: Squarelink,
-                      options: {
-                        id: process.env.REACT_APP_SQUARELINK_ID
-                      }
-                    },
+                    // squarelink: {
+                    //   package: Squarelink,
+                    //   options: {
+                    //     id: process.env.REACT_APP_SQUARELINK_ID
+                    //   }
+                    // },
                     torus: {
                       package: Torus
                     }
