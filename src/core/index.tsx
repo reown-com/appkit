@@ -112,20 +112,27 @@ class Core {
 
     if (providerOptions) {
       const providerPackageOptions = providerOptions[providerPackage.option];
+
       if (providerPackageOptions) {
-        const required = providerPackage.required;
-        const matches = required.filter(
-          (key: string) => key in providerPackageOptions.options
-        );
-        if (required.length === matches.length) {
-          const isProvided = providerPackageOptions.package;
-          if (isProvided) {
+        const isProvided = providerPackageOptions.package;
+        if (isProvided) {
+          const required = providerPackage.required;
+          if (required.length) {
+            const providedOptions = providerPackageOptions.options;
+            if (providedOptions && Object.keys(providedOptions).length) {
+              const matches = required.filter(
+                (key: string) => key in providedOptions
+              );
+              if (required.length === matches.length) {
+                return true;
+              }
+            }
+          } else {
             return true;
           }
         }
       }
     }
-
     return false;
   }
 
@@ -135,11 +142,11 @@ class Core {
     let providers = [
       "injected",
       "walletconnect",
-      "arkane",
-      "torus",
       "portis",
       "fortmatic",
-      "squarelink"
+      "squarelink",
+      "torus",
+      "arkane"
     ];
 
     const { injectedProvider, providerOptions } = this;
@@ -167,18 +174,17 @@ class Core {
       if (!this.shouldDisplayProvider("fortmatic")) {
         providers = providers.filter(provider => provider !== "fortmatic");
       }
-      const displayTorus =
-        providerOptions && providerOptions.torus
-      if (!displayTorus) {
+
+      if (!this.shouldDisplayProvider("squarelink")) {
+        providers = providers.filter(provider => provider !== "squarelink");
+      }
+
+      if (!this.shouldDisplayProvider("torus")) {
         providers = providers.filter(provider => provider !== "torus");
       }
 
       if (!this.shouldDisplayProvider("arkane")) {
-        providers = providers.filter(provider => provider !== "arkane");
-      }
-
-      if (!this.shouldDisplayProvider("squarelink")) {
-        providers = providers.filter(provider => provider !== "squarelink");
+         providers = providers.filter(provider => provider !== "arkane");
       }
     }
 
@@ -206,12 +212,6 @@ class Core {
             onClick: () =>
               this.connectTo("fortmatic", connectors.ConnectToFortmatic)
           };
-        case "torus":
-          return {
-            name: "Google",
-            onClick: () =>
-              this.connectTo("torus", connectors.ConnectToTorus)
-        };
         case "squarelink":
           return {
             name: "Squarelink",
@@ -224,6 +224,12 @@ class Core {
             onClick: () =>
                 this.connectTo("arkane", connectors.ConnectToArkane)
           };
+        case "torus":
+          return {
+            name: "Google",
+            onClick: () => this.connectTo("torus", connectors.ConnectToTorus)
+          };
+
         default:
           return {
             name: "",

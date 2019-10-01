@@ -1,4 +1,4 @@
-# Web3connect
+# Web3Connect
 
 A single Web3 / Ethereum provider solution for all Wallets
 
@@ -6,7 +6,7 @@ A single Web3 / Ethereum provider solution for all Wallets
 
 Web3Connect is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
 
-By default Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Fortmatic**, **Squarelink**, **Portis** and **Arkane**.
+By default Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Portis**, **Fortmatic**, **Squarelink**, **Torus** and **Arkane**.
 
 ## Preview
 
@@ -29,11 +29,11 @@ yarn add web3connect
 2. Install Provider packages
 
 ```bash
-npm install --save @walletconnect/web3-provider @portis/web3 fortmatic squarelink @arkane-network/web3-arkane-provider
+npm install --save @walletconnect/web3-provider @portis/web3 fortmatic squarelink @toruslabs/torus-embed  @arkane-network/web3-arkane-provider
 
 # OR
 
-yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink @arkane-network/web3-arkane-provider
+yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink @toruslabs/torus-embed @arkane-network/web3-arkane-provider
 ```
 
 3. Then you can integrate it three different ways:
@@ -52,6 +52,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Squarelink from "squarelink";
+import Torus from "@toruslabs/torus-embed";
 import Arkane from '@arkane-network/web3-arkane-provider';
 
 <Web3Connect.Button
@@ -69,15 +70,6 @@ import Arkane from '@arkane-network/web3-arkane-provider';
         id: "PORTIS_ID" // required
       }
     },
-    torus: {
-      package: Torus, // required
-      options: {
-        enableLogging: false, // optional
-        buttonPosition: "bottom-left", // optional
-        buildEnv: "production", // optional
-        showTorusButton: true // optional
-      }
-    },
     fortmatic: {
       package: Fortmatic, // required
       options: {
@@ -88,6 +80,15 @@ import Arkane from '@arkane-network/web3-arkane-provider';
       package: Squarelink, // required
       options: {
         id: "SQUARELINK_ID" // required
+      }
+    },
+    torus: {
+      package: Torus, // required
+      options: {
+        enableLogging: false, // optional
+        buttonPosition: "bottom-left", // optional
+        buildEnv: "production", // optional
+        showTorusButton: true // optional
       }
     },
     arkane: {
@@ -116,6 +117,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Squarelink from "squarelink";
+import Torus from "@toruslabs/torus-embed";
 import Arkane from '@arkane-network/web3-arkane-provider';
 
 const web3Connect = new Web3Connect.Core({
@@ -133,15 +135,6 @@ const web3Connect = new Web3Connect.Core({
         id: "PORTIS_ID" // required
       }
     },
-    torus: {
-      package: Torus, // required
-      options: {
-        enableLogging: false, // optional
-        buttonPosition: "bottom-left", // optional
-        buildEnv: "production", // optional
-        showTorusButton: true // optional
-      }
-    },
     fortmatic: {
       package: Fortmatic, // required
       options: {
@@ -152,6 +145,15 @@ const web3Connect = new Web3Connect.Core({
       package: Squarelink, // required
       options: {
         id: "SQUARELINK_ID" // required
+      }
+    },
+    torus: {
+      package: Torus, // required
+      options: {
+        enableLogging: false, // optional
+        buttonPosition: "bottom-left", // optional
+        buildEnv: "production", // optional
+        showTorusButton: true // optional
       }
     },
     arkane: {
@@ -186,6 +188,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Squarelink from "squarelink";
+import Torus from "@toruslabs/torus-embed";
 
 // For inject providers in dapp browsers
 const provider = await Web3Connect.ConnectToInjected();
@@ -211,19 +214,24 @@ const provider = await Web3Connect.ConnectToFortmatic(Fortmatic, {
   network: "mainnet" // optional
 });
 
-// For Arkane
-const provider = await Web3Connect.ConnectToArkane(Arkane, {
-  key: "ARKANE_CLIENT_ID", // required
-  environment: "staging" // optional
-});
-
-// For Torus
-const provider = await Web3Connect.ConnectToTorus();
-
 // For Squarelink
 const provider = await Web3Connect.ConnectToSquarelink(Squarelink, {
   id: "SQUARELINK_ID", // required
   network: "mainnet" // optional
+});
+
+// For Torus
+const provider = await Web3Connect.ConnectToTorus(Torus, {
+  enableLogging: false, // optional
+  buttonPosition: "bottom-left", // optional
+  buildEnv: "production", // optional
+  showTorusButton: true // optional
+});
+
+// For Arkane
+const provider = await Web3Connect.ConnectToArkane(Arkane, {
+  key: "ARKANE_CLIENT_ID", // required
+  environment: "staging" // optional
 });
 ```
 
@@ -310,6 +318,15 @@ interface IProviderCallback {
       - id: the client ID registered (required)
       - network: choose initial network name (optional)
       - config: additional configuration, like `scope` to use supplemental methods (optional)
+
+  - torus:
+
+  - package: dependency injection to enable provider
+  - options:
+    - enableLogging: enable logging for debugging (optional),
+    - buttonPosition: set button position (optional),
+    - buildEnv: set build environment (optional),
+    - showTorusButton: enable displaying torus button
 
 You can disable the injected provider by adding the following flag:
 

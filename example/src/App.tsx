@@ -5,7 +5,9 @@ import Web3Connect from 'web3connect'
 // @ts-ignore
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import Portis from '@portis/web3'
-import Torus from '@toruslabs/torus-embed'
+// @ts-ignore
+// import Squarelink from 'squarelink'
+// import Torus from '@toruslabs/torus-embed'
 // @ts-ignore
 import Fortmatic from 'fortmatic'
 import Arkane from '@arkane-network/web3-arkane-provider'
@@ -409,9 +411,6 @@ class App extends React.Component<any, any> {
                         infuraId: process.env.REACT_APP_INFURA_ID
                       }
                     },
-                    torus : {
-                      package: Torus
-                    },
                     portis: {
                       package: Portis,
                       options: {
@@ -431,6 +430,15 @@ class App extends React.Component<any, any> {
                         environment: 'staging'
                       }
                     }
+                    // squarelink: {
+                    //   package: Squarelink,
+                    //   options: {
+                    //     id: process.env.REACT_APP_SQUARELINK_ID
+                    //   }
+                    // },
+                    // torus: {
+                    //   package: Torus
+                    // }
                   }}
                   onConnect={(provider: any) => {
                     this.onConnect(provider)

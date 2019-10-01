@@ -37,6 +37,16 @@ import OperaLogo from "../assets/opera.svg";
 import TorusLogo from "../assets/torus.png";
 
 export const providerPackages = {
+  walletconnect: {
+    name: "@walletconnect/web3-provider",
+    option: "walletconnect",
+    required: ["infuraId"]
+  },
+  portis: {
+    name: "@portis/web3",
+    option: "portis",
+    required: ["id"]
+  },
   fortmatic: {
     name: "fortmatic",
     option: "fortmatic",
@@ -47,15 +57,10 @@ export const providerPackages = {
     option: "squarelink",
     required: ["id"]
   },
-  portis: {
-    name: "@portis/web3",
-    option: "portis",
-    required: ["id"]
-  },
-  walletconnect: {
-    name: "@walletconnect/web3-provider",
-    option: "walletconnect",
-    required: ["infuraId"]
+  torus: {
+    name: "@toruslabs/torus-embed",
+    option: "torus",
+    required: []
   },
   arkane: {
     name: "@arkane-network/web3-arkane-provider",
