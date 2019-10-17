@@ -321,12 +321,12 @@ interface IProviderCallback {
 
   - torus:
 
-  - package: dependency injection to enable provider
-  - options:
-    - enableLogging: enable logging for debugging (optional),
-    - buttonPosition: set button position (optional),
-    - buildEnv: set build environment (optional),
-    - showTorusButton: enable displaying torus button
+    - package: dependency injection to enable provider
+    - options:
+      - enableLogging: enable logging for debugging (optional),
+      - buttonPosition: set button position (optional),
+      - buildEnv: set build environment (optional),
+      - showTorusButton: enable displaying torus button
 
 You can disable the injected provider by adding the following flag:
 
