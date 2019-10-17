@@ -6,7 +6,7 @@ A single Web3 / Ethereum provider solution for all Wallets
 
 Web3Connect is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
 
-By default Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Portis**, **Fortmatic**, **Squarelink** and **Torus**.
+By default Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Portis**, **Fortmatic**, **Squarelink**, **Torus** and **Arkane**.
 
 ## Preview
 
@@ -29,11 +29,11 @@ yarn add web3connect
 2. Install Provider packages
 
 ```bash
-npm install --save @walletconnect/web3-provider @portis/web3 fortmatic squarelink @toruslabs/torus-embed
+npm install --save @walletconnect/web3-provider @portis/web3 fortmatic squarelink @toruslabs/torus-embed  @arkane-network/web3-arkane-provider
 
 # OR
 
-yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink @toruslabs/torus-embed
+yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink @toruslabs/torus-embed @arkane-network/web3-arkane-provider
 ```
 
 3. Then you can integrate it three different ways:
@@ -53,6 +53,7 @@ import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Squarelink from "squarelink";
 import Torus from "@toruslabs/torus-embed";
+import Arkane from '@arkane-network/web3-arkane-provider';
 
 <Web3Connect.Button
   network="mainnet" // optional
@@ -89,6 +90,12 @@ import Torus from "@toruslabs/torus-embed";
         buildEnv: "production", // optional
         showTorusButton: true // optional
       }
+    },
+    arkane: {
+      package: Arkane, // required
+      options: {
+        clientId: 'ARKANE_CLIENT_ID' // required, replace
+      }
     }
   }}
   onConnect={(provider: any) => {
@@ -111,6 +118,7 @@ import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Squarelink from "squarelink";
 import Torus from "@toruslabs/torus-embed";
+import Arkane from '@arkane-network/web3-arkane-provider';
 
 const web3Connect = new Web3Connect.Core({
   network: "mainnet", // optional
@@ -146,6 +154,12 @@ const web3Connect = new Web3Connect.Core({
         buttonPosition: "bottom-left", // optional
         buildEnv: "production", // optional
         showTorusButton: true // optional
+      }
+    },
+    arkane: {
+      package: Arkane, // required
+      options: {
+        clientId: 'ARKANE_CLIENT_ID' // required, replace
       }
     }
   }
@@ -212,6 +226,12 @@ const provider = await Web3Connect.ConnectToTorus(Torus, {
   buttonPosition: "bottom-left", // optional
   buildEnv: "production", // optional
   showTorusButton: true // optional
+});
+
+// For Arkane
+const provider = await Web3Connect.ConnectToArkane(Arkane, {
+  key: "ARKANE_CLIENT_ID", // required
+  environment: "staging" // optional
 });
 ```
 
@@ -282,6 +302,14 @@ interface IProviderCallback {
     - options:
       - key: the secret key (required)
       - network: choose initial network name (optional)
+  
+  - arkane:
+  
+      - package: dependency injection to enable provider
+      - options:
+        - clientId: the client id used by the application (required)
+        - nodeUrl: choose initial network name (optional)
+        - environment: the environment to connect to (optional). Production by default, use 'staging' for testing
 
   - squarelink:
 

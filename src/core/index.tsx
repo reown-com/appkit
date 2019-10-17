@@ -145,7 +145,8 @@ class Core {
       "portis",
       "fortmatic",
       "squarelink",
-      "torus"
+      "torus",
+      "arkane"
     ];
 
     const { injectedProvider, providerOptions } = this;
@@ -181,6 +182,10 @@ class Core {
       if (!this.shouldDisplayProvider("torus")) {
         providers = providers.filter(provider => provider !== "torus");
       }
+
+      if (!this.shouldDisplayProvider("arkane")) {
+         providers = providers.filter(provider => provider !== "arkane");
+      }
     }
 
     const providersMap = providers.map(provider => {
@@ -212,6 +217,12 @@ class Core {
             name: "Squarelink",
             onClick: () =>
               this.connectTo("squarelink", connectors.ConnectToSquarelink)
+          };
+        case "arkane":
+          return {
+            name: "Arkane",
+            onClick: () =>
+                this.connectTo("arkane", connectors.ConnectToArkane)
           };
         case "torus":
           return {

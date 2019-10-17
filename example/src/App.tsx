@@ -10,6 +10,7 @@ import Portis from '@portis/web3'
 // import Torus from '@toruslabs/torus-embed'
 // @ts-ignore
 import Fortmatic from 'fortmatic'
+import Arkane from '@arkane-network/web3-arkane-provider'
 import { convertUtf8ToHex } from '@walletconnect/utils'
 import Button from './components/Button'
 import Column from './components/Column'
@@ -420,6 +421,13 @@ class App extends React.Component<any, any> {
                       package: Fortmatic,
                       options: {
                         key: process.env.REACT_APP_FORTMATIC_KEY
+                      }
+                    },
+                    arkane: {
+                      package: Arkane,
+                      options: {
+                        clientId: process.env.REACT_APP_ARKANE_CLIENT_ID,
+                        environment: 'staging'
                       }
                     }
                     // squarelink: {

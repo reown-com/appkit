@@ -16,6 +16,8 @@ import SquarelinkLogo from "../assets/squarelink.svg";
 // @ts-ignore
 import FortmaticLogo from "../assets/fortmatic.svg";
 // @ts-ignore
+import ArkaneLogo from "../assets/arkane.svg";
+// @ts-ignore
 import TrustLogo from "../assets/trust.svg";
 // @ts-ignore
 import DapperLogo from "../assets/dapper.png";
@@ -59,6 +61,11 @@ export const providerPackages = {
     name: "@toruslabs/torus-embed",
     option: "torus",
     required: []
+  },
+  arkane: {
+    name: "@arkane-network/web3-arkane-provider",
+    option: "arkane",
+    required: ["clientId"]
   }
 };
 
@@ -133,6 +140,15 @@ const providers: IProviderInfo[] = [
     logo: FortmaticLogo,
     type: "web",
     check: "isFortmatic",
+    styled: {
+      noShadow: true
+    }
+  },
+  {
+    name: "Arkane",
+    logo: ArkaneLogo,
+    type: "web",
+    check: "isArkane",
     styled: {
       noShadow: true
     }
