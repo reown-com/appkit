@@ -146,7 +146,8 @@ class Core {
       "fortmatic",
       "squarelink",
       "torus",
-      "arkane"
+      "arkane",
+      "authereum"
     ];
 
     const { injectedProvider, providerOptions } = this;
@@ -184,7 +185,11 @@ class Core {
       }
 
       if (!this.shouldDisplayProvider("arkane")) {
-         providers = providers.filter(provider => provider !== "arkane");
+        providers = providers.filter(provider => provider !== "arkane");
+      }
+
+      if (!this.shouldDisplayProvider("authereum")) {
+        providers = providers.filter(provider => provider !== "authereum");
       }
     }
 
@@ -221,13 +226,18 @@ class Core {
         case "arkane":
           return {
             name: "Arkane",
-            onClick: () =>
-                this.connectTo("arkane", connectors.ConnectToArkane)
+            onClick: () => this.connectTo("arkane", connectors.ConnectToArkane)
           };
         case "torus":
           return {
             name: "Google",
             onClick: () => this.connectTo("torus", connectors.ConnectToTorus)
+          };
+        case "authereum":
+          return {
+            name: "Authereum",
+            onClick: () =>
+              this.connectTo("authereum", connectors.ConnectToAuthereum)
           };
 
         default:
