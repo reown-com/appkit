@@ -35,6 +35,8 @@ import TokenaryLogo from "../assets/tokenary.png";
 import OperaLogo from "../assets/opera.svg";
 // @ts-ignore
 import TorusLogo from "../assets/torus.png";
+// @ts-ignore
+import AuthereumLogo from "../assets/authereum.svg";
 
 export const providerPackages = {
   walletconnect: {
@@ -66,6 +68,11 @@ export const providerPackages = {
     name: "@arkane-network/web3-arkane-provider",
     option: "arkane",
     required: ["clientId"]
+  },
+  authereum: {
+    name: "authereum",
+    option: "authereum",
+    required: []
   }
 };
 
@@ -230,6 +237,15 @@ const providers: IProviderInfo[] = [
     logo: TorusLogo,
     type: "web",
     check: "isTorus",
+    styled: {
+      noShadow: false
+    }
+  },
+  {
+    name: "Authereum",
+    logo: AuthereumLogo,
+    type: "web",
+    check: "isAuthereum",
     styled: {
       noShadow: true
     }
