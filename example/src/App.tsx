@@ -363,7 +363,7 @@ class App extends React.Component<any, any> {
       pendingRequest,
       result
     } = this.state;
-
+    
     return (
       <SLayout>
         <Column maxWidth={1000} spanHeight>
@@ -452,6 +452,7 @@ class App extends React.Component<any, any> {
                   onClose={() => {
                     // empty
                   }}
+                  onDisconnect={() => this.resetApp()}
                   onError={(error: Error) => {
                     console.error(error); // tslint:disable-line
                   }}

@@ -41,11 +41,23 @@ class Core {
     this.renderModal();
   }
 
-  public on(event: string, callback: (result: any) => void): void {
+  public on(event: string, callback: (result: any) => void): () => void {
     this.eventManager.on({
       event,
       callback
     });
+
+    return () => this.eventManager.off({
+      event,
+      callback
+    })
+  }
+
+  public off(event: string, callback?: (result: any) => void): void {
+    this.eventManager.off({
+      event,
+      callback
+    })
   }
 
   public connectToInjected = async () => {
@@ -78,6 +90,12 @@ class Core {
         ? { network: this.network, ...providerOptions }
         : providerOptions;
       const provider = await connector(providerPackage, opts);
+      if (provider.isWalletConnect) {
+        // Listen for Disconnect event
+        provider.wc.on("disconnect", async () => {
+          return this.onDisconnect()
+        });
+      }
       await this.onConnect(provider);
     } catch (error) {
       await this.onError(error);
@@ -105,6 +123,10 @@ class Core {
     }
     await this.updateState({ show: !this.show });
   };
+
+  private onDisconnect = async () => {
+    this.eventManager.trigger("disconnect")
+  }
 
   public shouldDisplayProvider(name: string) {
     const { providerOptions } = this;
