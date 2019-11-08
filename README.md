@@ -89,7 +89,10 @@ import Authereum from "authereum";
         enableLogging: false, // optional
         buttonPosition: "bottom-left", // optional
         buildEnv: "production", // optional
-        showTorusButton: true // optional
+        showTorusButton: true, // optional
+        enabledVerifiers: { // optional
+          google: false // optional
+        }
       }
     },
     arkane: {
@@ -159,7 +162,10 @@ const web3Connect = new Web3Connect.Core({
         enableLogging: false, // optional
         buttonPosition: "bottom-left", // optional
         buildEnv: "production", // optional
-        showTorusButton: true // optional
+        showTorusButton: true, // optional
+        enabledVerifiers: { // optional
+          google: false // optional
+        }
       }
     },
     arkane: {
@@ -342,6 +348,7 @@ interface IProviderCallback {
         - buttonPosition: set button position (optional),
         - buildEnv: set build environment (optional),
         - showTorusButton: enable displaying torus button
+        - enabledVerifiers: disable certain verifiers by passing false against them
 
 - authereum:
 

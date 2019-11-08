@@ -5,7 +5,7 @@
   "dependencies": {
     "@arkane-network/web3-arkane-provider": "0.2.5",
     "@portis/web3": "^2.0.0-beta.40",
-    "@toruslabs/torus-embed": "^0.1.0",
+    "@toruslabs/torus-embed": "^0.2.6",
     "@walletconnect/web3-provider": "^1.0.0-beta.35",
     "authereum": "0.0.4-beta.33",
     "axios": "^0.18.0",
