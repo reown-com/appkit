@@ -1,4 +1,4 @@
-# Web3connect
+# Web3Connect
 
 A single Web3 / Ethereum provider solution for all Wallets
 
@@ -6,7 +6,7 @@ A single Web3 / Ethereum provider solution for all Wallets
 
 Web3Connect is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
 
-By default Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Fortmatic**, **Squarelink**, and **Portis**.
+By default Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Portis**, **Fortmatic**, **Squarelink**, **Torus**, **Authereum** and **Arkane**.
 
 ## Preview
 
@@ -29,11 +29,11 @@ yarn add web3connect
 2. Install Provider packages
 
 ```bash
-npm install --save @walletconnect/web3-provider @portis/web3 fortmatic squarelink
+npm install --save @walletconnect/web3-provider @portis/web3 fortmatic squarelink @toruslabs/torus-embed  @arkane-network/web3-arkane-provider authereum
 
 # OR
 
-yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink
+yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink @toruslabs/torus-embed @arkane-network/web3-arkane-provider authereum
 ```
 
 3. Then you can integrate it three different ways:
@@ -52,6 +52,9 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Squarelink from "squarelink";
+import Torus from "@toruslabs/torus-embed";
+import Arkane from "@arkane-network/web3-arkane-provider";
+import Authereum from "authereum";
 
 <Web3Connect.Button
   network="mainnet" // optional
@@ -79,6 +82,28 @@ import Squarelink from "squarelink";
       options: {
         id: "SQUARELINK_ID" // required
       }
+    },
+    torus: {
+      package: Torus, // required
+      options: {
+        enableLogging: false, // optional
+        buttonPosition: "bottom-left", // optional
+        buildEnv: "production", // optional
+        showTorusButton: true, // optional
+        enabledVerifiers: { // optional
+          google: false // optional
+        }
+      }
+    },
+    arkane: {
+      package: Arkane, // required
+      options: {
+        clientId: "ARKANE_CLIENT_ID" // required, replace
+      }
+    },
+    authereum: {
+      package: Authereum, // required
+      options: {}
     }
   }}
   onConnect={(provider: any) => {
@@ -100,6 +125,9 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Squarelink from "squarelink";
+import Torus from "@toruslabs/torus-embed";
+import Arkane from "@arkane-network/web3-arkane-provider";
+import Authereum from "authereum";
 
 const web3Connect = new Web3Connect.Core({
   network: "mainnet", // optional
@@ -127,6 +155,28 @@ const web3Connect = new Web3Connect.Core({
       options: {
         id: "SQUARELINK_ID" // required
       }
+    },
+    torus: {
+      package: Torus, // required
+      options: {
+        enableLogging: false, // optional
+        buttonPosition: "bottom-left", // optional
+        buildEnv: "production", // optional
+        showTorusButton: true, // optional
+        enabledVerifiers: { // optional
+          google: false // optional
+        }
+      }
+    },
+    arkane: {
+      package: Arkane, // required
+      options: {
+        clientId: "ARKANE_CLIENT_ID" // required, replace
+      }
+    },
+    authereum: {
+      package: Authereum, // required
+      options: {}
     }
   }
 });
@@ -154,6 +204,8 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Squarelink from "squarelink";
+import Torus from "@toruslabs/torus-embed";
+import Authereum from "authereum";
 
 // For inject providers in dapp browsers
 const provider = await Web3Connect.ConnectToInjected();
@@ -182,6 +234,24 @@ const provider = await Web3Connect.ConnectToFortmatic(Fortmatic, {
 // For Squarelink
 const provider = await Web3Connect.ConnectToSquarelink(Squarelink, {
   id: "SQUARELINK_ID", // required
+  network: "mainnet" // optional
+});
+
+// For Torus
+const provider = await Web3Connect.ConnectToTorus(Torus, {
+  enableLogging: false, // optional
+  buttonPosition: "bottom-left", // optional
+  buildEnv: "production", // optional
+  showTorusButton: true // optional
+});
+
+// For Arkane
+const provider = await Web3Connect.ConnectToArkane(Arkane, {
+  key: "ARKANE_CLIENT_ID", // required
+  environment: "staging" // optional
+
+// For Authereum
+const provider = await Web3Connect.ConnectToAuthereum(Authereum, {
   network: "mainnet" // optional
 });
 ```
@@ -254,6 +324,14 @@ interface IProviderCallback {
       - key: the secret key (required)
       - network: choose initial network name (optional)
 
+  - arkane:
+
+    - package: dependency injection to enable provider
+    - options:
+      - clientId: the client id used by the application (required)
+      - nodeUrl: choose initial network name (optional)
+      - environment: the environment to connect to (optional). Production by default, use 'staging' for testing
+
   - squarelink:
 
     - package: dependency injection to enable provider
@@ -261,6 +339,22 @@ interface IProviderCallback {
       - id: the client ID registered (required)
       - network: choose initial network name (optional)
       - config: additional configuration, like `scope` to use supplemental methods (optional)
+
+- torus:
+
+      - package: dependency injection to enable provider
+      - options:
+        - enableLogging: enable logging for debugging (optional),
+        - buttonPosition: set button position (optional),
+        - buildEnv: set build environment (optional),
+        - showTorusButton: enable displaying torus button
+        - enabledVerifiers: disable certain verifiers by passing false against them
+
+- authereum:
+
+      - package: dependency injection to enable provider
+      - options:
+        - network: choose initial network name (optional)
 
 You can disable the injected provider by adding the following flag:
 

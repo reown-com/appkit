@@ -134,20 +134,27 @@ class Core {
 
     if (providerOptions) {
       const providerPackageOptions = providerOptions[providerPackage.option];
+
       if (providerPackageOptions) {
-        const required = providerPackage.required;
-        const matches = required.filter(
-          (key: string) => key in providerPackageOptions.options
-        );
-        if (required.length === matches.length) {
-          const isProvided = providerPackageOptions.package;
-          if (isProvided) {
+        const isProvided = providerPackageOptions.package;
+        if (isProvided) {
+          const required = providerPackage.required;
+          if (required.length) {
+            const providedOptions = providerPackageOptions.options;
+            if (providedOptions && Object.keys(providedOptions).length) {
+              const matches = required.filter(
+                (key: string) => key in providedOptions
+              );
+              if (required.length === matches.length) {
+                return true;
+              }
+            }
+          } else {
             return true;
           }
         }
       }
     }
-
     return false;
   }
 
@@ -159,7 +166,10 @@ class Core {
       "walletconnect",
       "portis",
       "fortmatic",
-      "squarelink"
+      "squarelink",
+      "torus",
+      "arkane",
+      "authereum"
     ];
 
     const { injectedProvider, providerOptions } = this;
@@ -190,6 +200,18 @@ class Core {
 
       if (!this.shouldDisplayProvider("squarelink")) {
         providers = providers.filter(provider => provider !== "squarelink");
+      }
+
+      if (!this.shouldDisplayProvider("torus")) {
+        providers = providers.filter(provider => provider !== "torus");
+      }
+
+      if (!this.shouldDisplayProvider("arkane")) {
+        providers = providers.filter(provider => provider !== "arkane");
+      }
+
+      if (!this.shouldDisplayProvider("authereum")) {
+        providers = providers.filter(provider => provider !== "authereum");
       }
     }
 
@@ -222,6 +244,22 @@ class Core {
             name: "Squarelink",
             onClick: () =>
               this.connectTo("squarelink", connectors.ConnectToSquarelink)
+          };
+        case "arkane":
+          return {
+            name: "Arkane",
+            onClick: () => this.connectTo("arkane", connectors.ConnectToArkane)
+          };
+        case "torus":
+          return {
+            name: "Google",
+            onClick: () => this.connectTo("torus", connectors.ConnectToTorus)
+          };
+        case "authereum":
+          return {
+            name: "Authereum",
+            onClick: () =>
+              this.connectTo("authereum", connectors.ConnectToAuthereum)
           };
 
         default:

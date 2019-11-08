@@ -16,6 +16,8 @@ import SquarelinkLogo from "../assets/squarelink.svg";
 // @ts-ignore
 import FortmaticLogo from "../assets/fortmatic.svg";
 // @ts-ignore
+import ArkaneLogo from "../assets/arkane.svg";
+// @ts-ignore
 import TrustLogo from "../assets/trust.svg";
 // @ts-ignore
 import DapperLogo from "../assets/dapper.png";
@@ -31,8 +33,22 @@ import StatusLogo from "../assets/status.svg";
 import TokenaryLogo from "../assets/tokenary.png";
 // @ts-ignore
 import OperaLogo from "../assets/opera.svg";
+// @ts-ignore
+import TorusLogo from "../assets/torus.png";
+// @ts-ignore
+import AuthereumLogo from "../assets/authereum.svg";
 
 export const providerPackages = {
+  walletconnect: {
+    name: "@walletconnect/web3-provider",
+    option: "walletconnect",
+    required: ["infuraId"]
+  },
+  portis: {
+    name: "@portis/web3",
+    option: "portis",
+    required: ["id"]
+  },
   fortmatic: {
     name: "fortmatic",
     option: "fortmatic",
@@ -43,15 +59,20 @@ export const providerPackages = {
     option: "squarelink",
     required: ["id"]
   },
-  portis: {
-    name: "@portis/web3",
-    option: "portis",
-    required: ["id"]
+  torus: {
+    name: "@toruslabs/torus-embed",
+    option: "torus",
+    required: []
   },
-  walletconnect: {
-    name: "@walletconnect/web3-provider",
-    option: "walletconnect",
-    required: ["infuraId"]
+  arkane: {
+    name: "@arkane-network/web3-arkane-provider",
+    option: "arkane",
+    required: ["clientId"]
+  },
+  authereum: {
+    name: "authereum",
+    option: "authereum",
+    required: []
   }
 };
 
@@ -131,6 +152,15 @@ const providers: IProviderInfo[] = [
     }
   },
   {
+    name: "Arkane",
+    logo: ArkaneLogo,
+    type: "web",
+    check: "isArkane",
+    styled: {
+      noShadow: true
+    }
+  },
+  {
     name: "Dapper",
     logo: DapperLogo,
     type: "injected",
@@ -200,6 +230,24 @@ const providers: IProviderInfo[] = [
     check: "isTokenary",
     styled: {
       noShadow: false
+    }
+  },
+  {
+    name: "Google",
+    logo: TorusLogo,
+    type: "web",
+    check: "isTorus",
+    styled: {
+      noShadow: false
+    }
+  },
+  {
+    name: "Authereum",
+    logo: AuthereumLogo,
+    type: "web",
+    check: "isAuthereum",
+    styled: {
+      noShadow: true
     }
   }
 ];

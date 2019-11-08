@@ -119,7 +119,11 @@ export function formatProviderDescription(providerInfo: IProviderInfo) {
       description = `Connect to your ${providerInfo.name} Wallet`;
       break;
     case "web":
-      description = `Connect with your ${providerInfo.name} account`;
+      if (providerInfo.name === "Google") {
+        description = `Connect with your Google account via Torus`;
+      } else {
+        description = `Connect with your ${providerInfo.name} account`;
+      }
       break;
     case "qrcode":
       description = `Scan with ${providerInfo.name} to connect`;

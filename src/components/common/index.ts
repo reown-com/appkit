@@ -20,6 +20,11 @@ export const SIcon = styled.div<IIconStyleProps>`
     width: 100%;
     height: 100%;
   }
+
+  @media screen and (max-width: 768px) {
+    width: 8.5vw;
+    height: 8.5vw;
+  }
 `;
 
 export const STitle = styled.div`
@@ -34,4 +39,7 @@ export const SDescription = styled.div`
   font-size: 18px;
   margin: 0.333em 0;
   color: rgb(169, 169, 188);
+  @media screen and (max-width: 768px) {
+    font-size: 4vw;
+  }
 `;
