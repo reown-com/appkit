@@ -12,12 +12,21 @@ interface NetworkInterface {
   networkName?: string;
 }
 
+interface VerifierStatus {
+  google?: boolean;
+  facebook?: boolean;
+  reddit?: boolean;
+  twitch?: boolean;
+  discord?: boolean;
+}
+
 
 export interface IOptions {
   enableLogging?: boolean;
   buttonPosition?: string;
   buildEnv?: string;
   showTorusButton?: boolean;
+  enabledVerifiers?: VerifierStatus
 }
 
 export interface ITorusConnectorOptions {
@@ -35,6 +44,7 @@ const ConnectToTorus = async (Torus: any, opts: ITorusConnectorOptions) => {
         let buildEnv = 'production'
         let enableLogging = true
         let showTorusButton = false
+        let enabledVerifiers = {}
         let  network : NetworkInterface = {host: 'mainnet'}
 
         // parsing to Torus interfaces
@@ -53,6 +63,7 @@ const ConnectToTorus = async (Torus: any, opts: ITorusConnectorOptions) => {
            buildEnv = opts.config.buildEnv || buildEnv
            enableLogging = opts.config.enableLogging || enableLogging
            showTorusButton = opts.config.showTorusButton || showTorusButton
+           enabledVerifiers = opts.config.enabledVerifiers || enabledVerifiers
         }
 
         const torus = new Torus({
@@ -67,7 +78,8 @@ const ConnectToTorus = async (Torus: any, opts: ITorusConnectorOptions) => {
           //   networkName: 'kovan' // optional
           // },
           network: network,
-          showTorusButton: showTorusButton
+          showTorusButton: showTorusButton,
+          enabledVerifiers: enabledVerifiers
         });
         await torus.login(); // await torus.ethereum.enable()
         resolve(torus.provider);

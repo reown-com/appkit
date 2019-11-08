@@ -7,7 +7,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Portis from "@portis/web3";
 // @ts-ignore
 // import Squarelink from 'squarelink'
-// import Torus from '@toruslabs/torus-embed'
+import Torus from '@toruslabs/torus-embed'
 // @ts-ignore
 import Fortmatic from "fortmatic";
 import Arkane from "@arkane-network/web3-arkane-provider";
@@ -435,16 +435,16 @@ class App extends React.Component<any, any> {
                     authereum: {
                       package: Authereum,
                       options: {}
-                    }
+                    },
                     // squarelink: {
                     //   package: Squarelink,
                     //   options: {
                     //     id: process.env.REACT_APP_SQUARELINK_ID
                     //   }
                     // },
-                    // torus: {
-                    //   package: Torus
-                    // }
+                    torus: {
+                      package: Torus
+                    }
                   }}
                   onConnect={(provider: any) => {
                     this.onConnect(provider);
