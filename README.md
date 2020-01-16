@@ -98,48 +98,6 @@ web3Connect.on("close", () => {
 web3Connect.toggleModal(); // open modal on button click
 ```
 
-## Utils
-
-```typescript
-function checkInjectedProviders(): IInjectedProvidersMap;
-function getInjectedProviderName(): string | null;
-function getProviderInfoByName(name: string | null): IProviderInfo;
-function getProviderInfo(provider: any): IProviderInfo;
-function isMobile(): boolean;
-function formatProviderDescription(providerInfo: IProviderInfo);
-```
-
-## Types
-
-```typescript
-interface IProviderInfo {
-  name: string;
-  type: string;
-  logo: string;
-  check: string;
-  styled: {
-    [prop: string]: any;
-  };
-}
-
-interface IProviderOptions {
-  [providerName: string]: {
-    package: any;
-    options: any;
-  };
-}
-
-interface IInjectedProvidersMap {
-  injectedAvailable: boolean;
-  [isProviderName: string]: boolean;
-}
-
-interface IProviderCallback {
-  name: string | null;
-  onClick: () => Promise<void>;
-}
-```
-
 ## Provider Options
 
 These are all the providers available with Web3Connect and how to configure their provider options
@@ -252,6 +210,48 @@ const providerOptions = {
     options: {}
   }
 };
+```
+
+## Utils
+
+```typescript
+function checkInjectedProviders(): IInjectedProvidersMap;
+function getInjectedProviderName(): string | null;
+function getProviderInfoByName(name: string | null): IProviderInfo;
+function getProviderInfo(provider: any): IProviderInfo;
+function isMobile(): boolean;
+function formatProviderDescription(providerInfo: IProviderInfo);
+```
+
+## Types
+
+```typescript
+interface IProviderInfo {
+  name: string;
+  type: string;
+  logo: string;
+  check: string;
+  styled: {
+    [prop: string]: any;
+  };
+}
+
+interface IProviderOptions {
+  [providerName: string]: {
+    package: any;
+    options: any;
+  };
+}
+
+interface IInjectedProvidersMap {
+  injectedAvailable: boolean;
+  [isProviderName: string]: boolean;
+}
+
+interface IProviderCallback {
+  name: string | null;
+  onClick: () => Promise<void>;
+}
 ```
 
 ## Collaboration
