@@ -7,6 +7,7 @@ const ConnectToAuthereum = (Authereum: any, opts: IAuthereumConnectorOptions) =>
     try {
       const authereum = new Authereum(opts.network);
       const provider = authereum.getProvider();
+      provider.authereum = authereum
       await provider.enable();
       resolve(provider);
     } catch (error) {

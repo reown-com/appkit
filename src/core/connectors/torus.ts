@@ -82,7 +82,9 @@ const ConnectToTorus = async (Torus: any, opts: ITorusConnectorOptions) => {
           enabledVerifiers: enabledVerifiers
         });
         await torus.login(); // await torus.ethereum.enable()
-        resolve(torus.provider);
+        const provider = torus.provider;
+        provider.torus = torus
+        resolve(provider);
       } catch (err) {
         reject(err)
       }

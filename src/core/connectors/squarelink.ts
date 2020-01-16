@@ -25,6 +25,7 @@ const ConnectToSquarelink = (
         const config = opts.config;
         const sqlk = new Squarelink(id, network, config);
         const provider = await sqlk.getProvider();
+        provider.sqlk = sqlk
         await provider.enable();
         return resolve(provider);
       } catch (error) {
