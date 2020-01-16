@@ -6,11 +6,17 @@ import { isMobile, getInjectedProviderName } from "../helpers/utils";
 import connectors from "./connectors";
 import EventManager from "./events";
 import { providerPackages } from "../providers";
-
-const WEB3_CONNECT_MODAL_ID = "WEB3_CONNECT_MODAL_ID";
+import { setLocal, removeLocal, getLocal } from "../helpers/local";
+import {
+  WEB3_CONNECT_MODAL_ID,
+  PREFERRED_PROVIDER_KEY,
+  CONNECT_EVENT,
+  DISCONNECT_EVENT,
+  CLOSE_EVENT
+} from "../helpers/constants";
 
 interface ICoreOptions {
-  modal?: boolean;
+  disablePreferredProvider?: boolean;
   network?: string;
   lightboxOpacity?: number;
   providerOptions?: IProviderOptions;
@@ -22,24 +28,30 @@ class Core {
   private show: boolean = INITIAL_STATE.show;
   private eventManager: EventManager = new EventManager();
   private injectedProvider: string | null = null;
+  private disablePreferredProvider: boolean = false;
   private network: string = "";
   private lightboxOpacity: number = 0.4;
   private providerOptions: IProviderOptions = {};
   private providers: IProviderCallback[];
+  private preferredProvider: string | undefined;
 
   constructor(opts?: ICoreOptions) {
     this.injectedProvider = getInjectedProviderName();
 
     if (opts) {
+      this.disablePreferredProvider = opts.disablePreferredProvider || false;
       this.network = opts.network || "";
       this.lightboxOpacity = opts.lightboxOpacity || 0.4;
       this.providerOptions = opts.providerOptions || {};
     }
 
+    this.preferredProvider = getLocal(PREFERRED_PROVIDER_KEY) || undefined;
     this.providers = this.getProviders();
 
     this.renderModal();
   }
+
+  // --------------- PUBLIC METHODS --------------- //
 
   public on(event: string, callback: (result: any) => void): () => void {
     this.eventManager.on({
@@ -47,23 +59,34 @@ class Core {
       callback
     });
 
-    return () => this.eventManager.off({
-      event,
-      callback
-    })
+    return () =>
+      this.eventManager.off({
+        event,
+        callback
+      });
   }
 
   public off(event: string, callback?: (result: any) => void): void {
     this.eventManager.off({
       event,
       callback
-    })
+    });
+  }
+
+  public setPreferredProvider(name: string) {
+    this.preferredProvider = name;
+    setLocal(PREFERRED_PROVIDER_KEY, name);
+  }
+
+  public clearPreferredProvider() {
+    this.preferredProvider = undefined;
+    removeLocal(PREFERRED_PROVIDER_KEY);
   }
 
   public connectToInjected = async () => {
     try {
       const provider = await connectors.ConnectToInjected();
-      await this.onConnect(provider);
+      await this.onConnect(provider, "injected");
     } catch (error) {
       await this.onError(error);
     }
@@ -92,17 +115,22 @@ class Core {
       const provider = await connector(providerPackage, opts);
       if (provider.isWalletConnect) {
         // Listen for Disconnect event
-        provider.wc.on("disconnect", async () => {
-          return this.onDisconnect()
+        provider.wc.on(DISCONNECT_EVENT, async () => {
+          return this.onDisconnect();
         });
       }
-      await this.onConnect(provider);
+      await this.onConnect(provider, name);
     } catch (error) {
       await this.onError(error);
     }
   };
 
   public toggleModal = async () => {
+    if (this.preferredProvider) {
+      const provider = this.getProvider(this.preferredProvider);
+      await provider.onClick();
+      return;
+    }
     if (
       this.providers &&
       this.providers.length === 1 &&
@@ -124,11 +152,25 @@ class Core {
     await this.updateState({ show: !this.show });
   };
 
-  private onDisconnect = async () => {
-    this.eventManager.trigger("disconnect")
+  public renderModal() {
+    const el = document.createElement("div");
+    el.id = WEB3_CONNECT_MODAL_ID;
+    document.body.appendChild(el);
+
+    ReactDOM.render(
+      <Modal
+        providers={this.providers}
+        onClose={this.onClose}
+        resetState={this.resetState}
+        lightboxOpacity={this.lightboxOpacity}
+      />,
+      document.getElementById(WEB3_CONNECT_MODAL_ID)
+    );
   }
 
-  public shouldDisplayProvider(name: string) {
+  // --------------- PRIVATE METHODS --------------- //
+
+  private shouldDisplayProvider(name: string) {
     const { providerOptions } = this;
     const providerPackage = providerPackages[name];
 
@@ -158,7 +200,7 @@ class Core {
     return false;
   }
 
-  public getProviders = () => {
+  private getProviders = () => {
     const mobile = isMobile();
 
     let providers = [
@@ -275,6 +317,12 @@ class Core {
     return providersMap;
   };
 
+  private getProvider = (name: string) => {
+    const providers = this.getProviders();
+    const provider = providers.filter(x => x.name === name)[0];
+    return provider;
+  };
+
   private onError = async (error: any) => {
     if (this.show) {
       await this.toggleModal();
@@ -282,18 +330,25 @@ class Core {
     this.eventManager.trigger("error", error);
   };
 
-  private onConnect = async (provider: any) => {
+  private onConnect = async (provider: any, name: string) => {
     if (this.show) {
       await this.toggleModal();
     }
-    this.eventManager.trigger("connect", provider);
+    if (this.disablePreferredProvider) {
+      this.setPreferredProvider(name);
+    }
+    this.eventManager.trigger(CONNECT_EVENT, provider);
+  };
+
+  private onDisconnect = async () => {
+    this.eventManager.trigger(DISCONNECT_EVENT);
   };
 
   private onClose = async () => {
     if (this.show) {
       await this.toggleModal();
     }
-    this.eventManager.trigger("close");
+    this.eventManager.trigger(CLOSE_EVENT);
   };
 
   private updateState = async (state: any) => {
@@ -304,22 +359,6 @@ class Core {
   };
 
   private resetState = () => this.updateState({ ...INITIAL_STATE });
-
-  public renderModal() {
-    const el = document.createElement("div");
-    el.id = WEB3_CONNECT_MODAL_ID;
-    document.body.appendChild(el);
-
-    ReactDOM.render(
-      <Modal
-        providers={this.providers}
-        onClose={this.onClose}
-        resetState={this.resetState}
-        lightboxOpacity={this.lightboxOpacity}
-      />,
-      document.getElementById(WEB3_CONNECT_MODAL_ID)
-    );
-  }
 }
 
 export default Core;
