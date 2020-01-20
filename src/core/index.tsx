@@ -6,17 +6,14 @@ import { isMobile, getInjectedProviderName } from "../helpers/utils";
 import connectors from "./connectors";
 import EventManager from "./events";
 import { providerPackages } from "../providers";
-import { setLocal, removeLocal, getLocal } from "../helpers/local";
 import {
   WEB3_CONNECT_MODAL_ID,
-  PREFERRED_PROVIDER_KEY,
   CONNECT_EVENT,
   DISCONNECT_EVENT,
   CLOSE_EVENT
 } from "../helpers/constants";
 
 interface ICoreOptions {
-  cachePreferredProvider?: boolean;
   network?: string;
   lightboxOpacity?: number;
   providerOptions?: IProviderOptions;
@@ -28,24 +25,20 @@ class Core {
   private show: boolean = INITIAL_STATE.show;
   private eventManager: EventManager = new EventManager();
   private injectedProvider: string | null = null;
-  private cachePreferredProvider: boolean = false;
   private network: string = "";
   private lightboxOpacity: number = 0.4;
   private providerOptions: IProviderOptions = {};
   private providers: IProviderCallback[];
-  private preferredProvider: string | undefined;
 
   constructor(opts?: ICoreOptions) {
     this.injectedProvider = getInjectedProviderName();
 
     if (opts) {
-      this.cachePreferredProvider = typeof opts.cachePreferredProvider !== "undefined" ? opts.cachePreferredProvider : false
       this.network = opts.network || "";
       this.lightboxOpacity = opts.lightboxOpacity || 0.4;
       this.providerOptions = opts.providerOptions || {};
     }
 
-    this.preferredProvider = getLocal(PREFERRED_PROVIDER_KEY) || undefined;
     this.providers = this.getProviders();
 
     this.renderModal();
@@ -71,16 +64,6 @@ class Core {
       event,
       callback
     });
-  }
-
-  public setPreferredProvider(name: string) {
-    this.preferredProvider = name;
-    setLocal(PREFERRED_PROVIDER_KEY, name);
-  }
-
-  public clearPreferredProvider() {
-    this.preferredProvider = undefined;
-    removeLocal(PREFERRED_PROVIDER_KEY);
   }
 
   public connectToInjected = async () => {
@@ -126,11 +109,6 @@ class Core {
   };
 
   public toggleModal = async () => {
-    if (this.preferredProvider) {
-      const provider = this.getProvider(this.preferredProvider);
-      await provider.onClick();
-      return;
-    }
     if (
       this.providers &&
       this.providers.length === 1 &&
@@ -333,9 +311,6 @@ class Core {
   private onConnect = async (provider: any, name: string) => {
     if (this.show) {
       await this.toggleModal();
-    }
-    if (this.cachePreferredProvider) {
-      this.setPreferredProvider(name);
     }
     this.eventManager.trigger(CONNECT_EVENT, provider);
   };
