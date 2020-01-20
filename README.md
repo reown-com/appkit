@@ -260,6 +260,10 @@ You can enable the following optional flags:
 
 - disableInjectedProvider: disable displaying injected provider as an option (default: false)
 
+## Adding a new provider
+
+Do you want to add your provider to Web3Connect? All logic for supported providers lives inside the `src/providers` directory. To add a new follow the following steps [here](ADDING_PROVIDERS.md)
+
 ## Collaboration
 
 ### Code contributions are welcome ❤️❤️❤️!
