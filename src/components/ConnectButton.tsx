@@ -8,7 +8,6 @@ class ConnectButton extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
     this.core = new Core({
-      disablePreferredProvider: props.disablePreferredProvider,
       network: props.network,
       lightboxOpacity: props.lightboxOpacity,
       providerOptions: props.providerOptions

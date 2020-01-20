@@ -41,4 +41,3 @@ export const updateLocal = (key: string, data: any) => {
   const mergedData = { ...localData, ...data };
   setLocal(key, mergedData);
 };
-
