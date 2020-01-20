@@ -258,8 +258,8 @@ interface IProviderCallback {
 
 You can enable the following optional flags:
 
-- disableInjectedProvider: disable displaying injected provider as an option
-- disablePreferredProvider: disable caching preffered provider in localStorage
+- disableInjectedProvider: disable displaying injected provider as an option (default: false)
+- cachePreferredProvider: enable caching preffered provider in localStorage (default: false)
 
 ## Collaboration
 

@@ -16,7 +16,7 @@ import {
 } from "../helpers/constants";
 
 interface ICoreOptions {
-  disablePreferredProvider?: boolean;
+  cachePreferredProvider?: boolean;
   network?: string;
   lightboxOpacity?: number;
   providerOptions?: IProviderOptions;
@@ -28,7 +28,7 @@ class Core {
   private show: boolean = INITIAL_STATE.show;
   private eventManager: EventManager = new EventManager();
   private injectedProvider: string | null = null;
-  private disablePreferredProvider: boolean = false;
+  private cachePreferredProvider: boolean = false;
   private network: string = "";
   private lightboxOpacity: number = 0.4;
   private providerOptions: IProviderOptions = {};
@@ -39,7 +39,7 @@ class Core {
     this.injectedProvider = getInjectedProviderName();
 
     if (opts) {
-      this.disablePreferredProvider = opts.disablePreferredProvider || false;
+      this.cachePreferredProvider = typeof opts.cachePreferredProvider !== "undefined" ? opts.cachePreferredProvider : false
       this.network = opts.network || "";
       this.lightboxOpacity = opts.lightboxOpacity || 0.4;
       this.providerOptions = opts.providerOptions || {};
@@ -334,7 +334,7 @@ class Core {
     if (this.show) {
       await this.toggleModal();
     }
-    if (this.disablePreferredProvider) {
+    if (this.cachePreferredProvider) {
       this.setPreferredProvider(name);
     }
     this.eventManager.trigger(CONNECT_EVENT, provider);
