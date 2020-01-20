@@ -1,5 +1,5 @@
 import { IProviderInfo, IProviderMappingEntry } from "../helpers/types";
-import connectors from "../core/connectors";
+import connectors from "./connectors";
 import { INJECTED_PROVIDER_ID } from "../helpers/constants";
 import { FALLBACK_INJECTED, injected } from "./injected";
 
