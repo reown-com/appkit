@@ -4,19 +4,19 @@ import { INJECTED_PROVIDER_ID } from "../helpers/constants";
 import { FALLBACK_INJECTED, injected } from "./injected";
 
 // @ts-ignore
-import WalletConnectLogo from "../assets/walletconnect-circle.svg";
+import WalletConnectLogo from "./logos/walletconnect-circle.svg";
 // @ts-ignore
-import PortisLogo from "../assets/portis.svg";
+import PortisLogo from "./logos/portis.svg";
 // @ts-ignore
-import SquarelinkLogo from "../assets/squarelink.svg";
+import SquarelinkLogo from "./logos/squarelink.svg";
 // @ts-ignore
-import FortmaticLogo from "../assets/fortmatic.svg";
+import FortmaticLogo from "./logos/fortmatic.svg";
 // @ts-ignore
-import ArkaneLogo from "../assets/arkane.svg";
+import ArkaneLogo from "./logos/arkane.svg";
 // @ts-ignore
-import TorusLogo from "../assets/torus.png";
+import TorusLogo from "./logos/torus.png";
 // @ts-ignore
-import AuthereumLogo from "../assets/authereum.svg";
+import AuthereumLogo from "./logos/authereum.svg";
 
 export const FALLBACK = FALLBACK_INJECTED;
 

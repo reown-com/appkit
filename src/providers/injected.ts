@@ -1,29 +1,29 @@
 import { IProviderInfo } from "../helpers/types";
 
 // @ts-ignore
-import Web3DefaultLogo from "../assets/web3-default.svg";
+import Web3DefaultLogo from "./logos/web3-default.svg";
 // @ts-ignore
-import MetaMaskLogo from "../assets/metamask.svg";
+import MetaMaskLogo from "./logos/metamask.svg";
 // @ts-ignore
-import SafeLogo from "../assets/safe.svg";
+import SafeLogo from "./logos/safe.svg";
 // @ts-ignore
-import NiftyWalletLogo from "../assets/niftyWallet.png";
+import NiftyWalletLogo from "./logos/niftyWallet.png";
 // @ts-ignore
-import TrustLogo from "../assets/trust.svg";
+import TrustLogo from "./logos/trust.svg";
 // @ts-ignore
-import DapperLogo from "../assets/dapper.png";
+import DapperLogo from "./logos/dapper.png";
 // @ts-ignore
-import CoinbaseLogo from "../assets/coinbase.svg";
+import CoinbaseLogo from "./logos/coinbase.svg";
 // @ts-ignore
-import CipherLogo from "../assets/cipher.svg";
+import CipherLogo from "./logos/cipher.svg";
 // @ts-ignore
-import imTokenLogo from "../assets/imtoken.svg";
+import imTokenLogo from "./logos/imtoken.svg";
 // @ts-ignore
-import StatusLogo from "../assets/status.svg";
+import StatusLogo from "./logos/status.svg";
 // @ts-ignore
-import TokenaryLogo from "../assets/tokenary.png";
+import TokenaryLogo from "./logos/tokenary.png";
 // @ts-ignore
-import OperaLogo from "../assets/opera.svg";
+import OperaLogo from "./logos/opera.svg";
 
 export const FALLBACK_INJECTED: IProviderInfo = {
   id: "injected",
