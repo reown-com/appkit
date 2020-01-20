@@ -295,12 +295,6 @@ class Core {
     return providersMap;
   };
 
-  private getProvider = (name: string) => {
-    const providers = this.getProviders();
-    const provider = providers.filter(x => x.name === name)[0];
-    return provider;
-  };
-
   private onError = async (error: any) => {
     if (this.show) {
       await this.toggleModal();
