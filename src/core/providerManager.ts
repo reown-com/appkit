@@ -38,29 +38,25 @@ class ProviderManager {
   }
 
   public shouldDisplayProvider(id: string) {
-    const { providerOptions } = this;
     const provider = this.getProviderMappingEntry(id);
     if (provider) {
-      if (providerOptions) {
-        const providerPackageOptions = providerOptions[id];
-
-        if (providerPackageOptions) {
-          const isProvided = providerPackageOptions.package;
-          if (isProvided) {
-            const required = provider.package.required;
-            if (required.length) {
-              const providedOptions = providerPackageOptions.options;
-              if (providedOptions && Object.keys(providedOptions).length) {
-                const matches = required.filter(
-                  (key: string) => key in providedOptions
-                );
-                if (required.length === matches.length) {
-                  return true;
-                }
+      const providerPackageOptions = this.providerOptions[id];
+      if (providerPackageOptions) {
+        const isProvided = !!providerPackageOptions.package;
+        if (isProvided) {
+          const required = provider.package.required;
+          if (required.length) {
+            const providedOptions = providerPackageOptions.options;
+            if (providedOptions && Object.keys(providedOptions).length) {
+              const matches = required.filter(
+                (key: string) => key in providedOptions
+              );
+              if (required.length === matches.length) {
+                return true;
               }
-            } else {
-              return true;
             }
+          } else {
+            return true;
           }
         }
       }
@@ -88,8 +84,11 @@ class ProviderManager {
       }
 
       defaultProviderList.forEach((id: string) => {
-        if (this.shouldDisplayProvider(id)) {
-          providerList.push(id);
+        if (id !== INJECTED_PROVIDER_ID) {
+          const result = this.shouldDisplayProvider(id);
+          if (result) {
+            providerList.push(id);
+          }
         }
       });
     }
@@ -138,10 +137,10 @@ class ProviderManager {
   ) => {
     try {
       const providerPackage = this.getProviderOption(id, "package");
-      const providerOptions = this.getProviderOption(id, "field");
+      const providerOptions = this.getProviderOption(id, "options");
       const opts = { network: this.network || undefined, ...providerOptions };
       const provider = await connector(providerPackage, opts);
-      this.eventManager.trigger(CONNECT_EVENT, { provider, id });
+      this.eventManager.trigger(CONNECT_EVENT, provider);
     } catch (error) {
       this.eventManager.trigger(ERROR_EVENT);
     }

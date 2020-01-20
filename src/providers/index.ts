@@ -134,7 +134,7 @@ export const providerMapping: IProviderMappingEntry[] = [
     id: INJECTED_PROVIDER_ID,
     name: "",
     connector: connectors.injected,
-    package: WALLETCONNECT_PROVIDER.package
+    package: FALLBACK_INJECTED.package
   },
   {
     id: WALLETCONNECT_PROVIDER.id,
@@ -146,36 +146,36 @@ export const providerMapping: IProviderMappingEntry[] = [
     id: PORTIS_PROVIDER.id,
     name: PORTIS_PROVIDER.name,
     connector: connectors.portis,
-    package: WALLETCONNECT_PROVIDER.package
+    package: PORTIS_PROVIDER.package
   },
   {
     id: FORTMATIC_PROVIDER.id,
     name: FORTMATIC_PROVIDER.name,
     connector: connectors.fortmatic,
-    package: WALLETCONNECT_PROVIDER.package
+    package: FORTMATIC_PROVIDER.package
   },
   {
     id: SQUARELINK_PROVIDER.id,
     name: SQUARELINK_PROVIDER.name,
     connector: connectors.squarelink,
-    package: WALLETCONNECT_PROVIDER.package
+    package: SQUARELINK_PROVIDER.package
   },
   {
     id: TORUS_PROVIDER.id,
     name: TORUS_PROVIDER.name,
     connector: connectors.torus,
-    package: WALLETCONNECT_PROVIDER.package
+    package: TORUS_PROVIDER.package
   },
   {
     id: ARKANE_PROVIDER.id,
     name: ARKANE_PROVIDER.name,
     connector: connectors.arkane,
-    package: WALLETCONNECT_PROVIDER.package
+    package: ARKANE_PROVIDER.package
   },
   {
     id: AUTHEREUM_PROVIDER.id,
     name: AUTHEREUM_PROVIDER.name,
     connector: connectors.authereum,
-    package: WALLETCONNECT_PROVIDER.package
+    package: AUTHEREUM_PROVIDER.package
   }
 ];
