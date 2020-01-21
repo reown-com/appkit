@@ -36,7 +36,7 @@ npm install --save @walletconnect/web3-provider @portis/web3 fortmatic squarelin
 yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink @toruslabs/torus-embed @arkane-network/web3-arkane-provider authereum
 ```
 
-3. Then you can integrate it three different ways:
+3. Then you can integrate it two different ways:
 
 - [React Button](#React-Button)
 - [Core Module](#Core-Module)
