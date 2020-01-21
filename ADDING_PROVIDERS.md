@@ -1,6 +1,6 @@
 # Adding a new provider
 
-Do you want to add your provider to Web3Connect? All logic for supported providers lives inside the `src/providers` directory. To add a new follow the following steps:
+Do you want to add your provider to Web3Connect? All logic for supported providers lives inside the `src/providers` directory. To add a new follow the next steps:
 
 Let's call this example provider Firebox
 
@@ -8,7 +8,7 @@ Let's call this example provider Firebox
 
 Create a new connector file inside `src/providers/connectors` directory. The file should be named after your provider name's in lowercase (eg. firebox.ts)
 
-This file should export as a default a callback function which must have two parameters: your provider package and a options object. It should
+This file should export as a default a callback function which must have two parameters: your provider package and a options object.
 
 ```typescript
 // src/providers/connectors/firebox.ts
@@ -29,14 +29,14 @@ const ConnectToFirebox = async (
 };
 ```
 
-Make sure your return your provider only after enabling it. Any provider-specific UI/UX should also be handled inside enable.
+Make sure you return your provider only after enabling it. Any provider-specific UI/UX should also be handled inside enable.
 
 ## 2) Add your connector to the index.ts
 
 On the same directory (`src/providers/connectors`) there is an `index.ts` file where we expose all connectors, you should add yours as follows:
 
 ```typescript
-// src/providers/connectors/firebox.ts
+// src/providers/connectors/index.ts
 
 import firebox from "./firebox";
 
