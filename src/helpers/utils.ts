@@ -1,4 +1,4 @@
-import providers, { fallbackProvider } from "../providers";
+import { providers, FALLBACK } from "../providers";
 import { IProviderInfo, IInjectedProvidersMap } from "./types";
 
 export function checkInjectedProviders(): IInjectedProvidersMap {
@@ -52,7 +52,7 @@ export function getInjectedProviderName(): string | null {
 }
 
 export function getProviderInfoByName(name: string | null): IProviderInfo {
-  let result = fallbackProvider;
+  let result = FALLBACK;
 
   if (name) {
     const matches = providers.filter(provider => provider.name === name);
@@ -66,7 +66,7 @@ export function getProviderInfoByName(name: string | null): IProviderInfo {
 }
 
 export function getProviderInfo(provider: any): IProviderInfo {
-  let result = fallbackProvider;
+  let result = FALLBACK;
 
   if (provider) {
     const matches = providers.filter(_provider => provider[_provider.check]);

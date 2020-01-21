@@ -1,15 +1,19 @@
 export interface IProviderInfo {
+  id: string;
   name: string;
   type: string;
   logo: string;
   check: string;
-  styled: {
-    [prop: string]: any;
-  };
+  package: IProviderPackageOptions;
+  styled: IProviderStyledOptions;
+}
+
+export interface IProviderStyledOptions {
+  [prop: string]: any;
 }
 
 export interface IProviderOptions {
-  [providerName: string]: {
+  [id: string]: {
     package: any;
     options: any;
   };
@@ -30,4 +34,15 @@ export interface IInjectedProvidersMap {
 export interface IProviderCallback {
   name: string | null;
   onClick: () => Promise<void>;
+}
+
+export interface IProviderMappingEntry {
+  id: string;
+  name: string;
+  connector: any;
+  package: IProviderPackageOptions;
+}
+
+export interface IProviderPackageOptions {
+  required: string[];
 }

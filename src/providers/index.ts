@@ -1,255 +1,181 @@
-import { IProviderInfo } from "../helpers/types";
-// @ts-ignore
-import Web3DefaultLogo from "../assets/web3-default.svg";
-// @ts-ignore
-import WalletConnectLogo from "../assets/walletconnect-circle.svg";
-// @ts-ignore
-import MetaMaskLogo from "../assets/metamask.svg";
-// @ts-ignore
-import SafeLogo from "../assets/safe.svg";
-// @ts-ignore
-import NiftyWalletLogo from "../assets/niftyWallet.png";
-// @ts-ignore
-import PortisLogo from "../assets/portis.svg";
-// @ts-ignore
-import SquarelinkLogo from "../assets/squarelink.svg";
-// @ts-ignore
-import FortmaticLogo from "../assets/fortmatic.svg";
-// @ts-ignore
-import ArkaneLogo from "../assets/arkane.svg";
-// @ts-ignore
-import TrustLogo from "../assets/trust.svg";
-// @ts-ignore
-import DapperLogo from "../assets/dapper.png";
-// @ts-ignore
-import CoinbaseLogo from "../assets/coinbase.svg";
-// @ts-ignore
-import CipherLogo from "../assets/cipher.svg";
-// @ts-ignore
-import imTokenLogo from "../assets/imtoken.svg";
-// @ts-ignore
-import StatusLogo from "../assets/status.svg";
-// @ts-ignore
-import TokenaryLogo from "../assets/tokenary.png";
-// @ts-ignore
-import OperaLogo from "../assets/opera.svg";
-// @ts-ignore
-import TorusLogo from "../assets/torus.png";
-// @ts-ignore
-import AuthereumLogo from "../assets/authereum.svg";
+import { IProviderInfo, IProviderMappingEntry } from "../helpers/types";
+import connectors from "./connectors";
+import { INJECTED_PROVIDER_ID } from "../helpers/constants";
+import { FALLBACK_INJECTED, injected } from "./injected";
 
-export const providerPackages = {
-  walletconnect: {
-    name: "@walletconnect/web3-provider",
-    option: "walletconnect",
-    required: ["infuraId"]
-  },
-  portis: {
-    name: "@portis/web3",
-    option: "portis",
-    required: ["id"]
-  },
-  fortmatic: {
-    name: "fortmatic",
-    option: "fortmatic",
-    required: ["key"]
-  },
-  squarelink: {
-    name: "squarelink",
-    option: "squarelink",
-    required: ["id"]
-  },
-  torus: {
-    name: "@toruslabs/torus-embed",
-    option: "torus",
-    required: []
-  },
-  arkane: {
-    name: "@arkane-network/web3-arkane-provider",
-    option: "arkane",
-    required: ["clientId"]
-  },
-  authereum: {
-    name: "authereum",
-    option: "authereum",
-    required: []
-  }
-};
+// @ts-ignore
+import WalletConnectLogo from "./logos/walletconnect-circle.svg";
+// @ts-ignore
+import PortisLogo from "./logos/portis.svg";
+// @ts-ignore
+import SquarelinkLogo from "./logos/squarelink.svg";
+// @ts-ignore
+import FortmaticLogo from "./logos/fortmatic.svg";
+// @ts-ignore
+import ArkaneLogo from "./logos/arkane.svg";
+// @ts-ignore
+import TorusLogo from "./logos/torus.png";
+// @ts-ignore
+import AuthereumLogo from "./logos/authereum.svg";
 
-export const fallbackProvider: IProviderInfo = {
-  name: "Web3",
-  logo: Web3DefaultLogo,
-  type: "injected",
-  check: "isWeb3",
+export const FALLBACK = FALLBACK_INJECTED;
+
+export const WALLETCONNECT_PROVIDER: IProviderInfo = {
+  id: "walletconnect",
+  name: "WalletConnect",
+  logo: WalletConnectLogo,
+  type: "qrcode",
+  check: "isWalletConnect",
   styled: {
     noShadow: false
+  },
+  package: {
+    required: ["infuraId"]
   }
 };
 
-const providers: IProviderInfo[] = [
-  fallbackProvider,
-  {
-    name: "WalletConnect",
-    logo: WalletConnectLogo,
-    type: "qrcode",
-    check: "isWalletConnect",
-    styled: {
-      noShadow: false
-    }
+export const PORTIS_PROVIDER: IProviderInfo = {
+  id: "portis",
+  name: "Portis",
+  logo: PortisLogo,
+  type: "web",
+  check: "isPortis",
+  styled: {
+    noShadow: true
   },
-  {
-    name: "MetaMask",
-    logo: MetaMaskLogo,
-    type: "injected",
-    check: "isMetaMask",
-    styled: {
-      noShadow: true
-    }
-  },
-  {
-    name: "Safe",
-    logo: SafeLogo,
-    type: "injected",
-    check: "isSafe",
-    styled: {
-      noShadow: true
-    }
-  },
-  {
-    name: "Nifty",
-    logo: NiftyWalletLogo,
-    type: "injected",
-    check: "isNiftyWallet",
-    styled: {
-      noShadow: true
-    }
-  },
-  {
-    name: "Squarelink",
-    logo: SquarelinkLogo,
-    type: "web",
-    check: "isSquarelink",
-    styled: {
-      noShadow: true
-    }
-  },
-  {
-    name: "Portis",
-    logo: PortisLogo,
-    type: "web",
-    check: "isPortis",
-    styled: {
-      noShadow: true
-    }
-  },
-  {
-    name: "Fortmatic",
-    logo: FortmaticLogo,
-    type: "web",
-    check: "isFortmatic",
-    styled: {
-      noShadow: true
-    }
-  },
-  {
-    name: "Arkane",
-    logo: ArkaneLogo,
-    type: "web",
-    check: "isArkane",
-    styled: {
-      noShadow: true
-    }
-  },
-  {
-    name: "Dapper",
-    logo: DapperLogo,
-    type: "injected",
-    check: "isDapper",
-    styled: {
-      noShadow: true
-    }
-  },
-  {
-    name: "Opera",
-    logo: OperaLogo,
-    type: "injected",
-    check: "isOpera",
-    styled: {
-      noShadow: false
-    }
-  },
-  {
-    name: "Trust",
-    logo: TrustLogo,
-    type: "injected",
-    check: "isTrust",
-    styled: {
-      noShadow: false
-    }
-  },
-  {
-    name: "Coinbase",
-    logo: CoinbaseLogo,
-    type: "injected",
-    check: "isToshi",
-    styled: {
-      noShadow: false
-    }
-  },
-  {
-    name: "Cipher",
-    logo: CipherLogo,
-    type: "injected",
-    check: "isCipher",
-    styled: {
-      noShadow: false
-    }
-  },
-  {
-    name: "imToken",
-    logo: imTokenLogo,
-    type: "injected",
-    check: "isImToken",
-    styled: {
-      noShadow: false
-    }
-  },
-  {
-    name: "Status",
-    logo: StatusLogo,
-    type: "injected",
-    check: "isStatus",
-    styled: {
-      noShadow: false
-    }
-  },
-  {
-    name: "Tokenary",
-    logo: TokenaryLogo,
-    type: "injected",
-    check: "isTokenary",
-    styled: {
-      noShadow: false
-    }
-  },
-  {
-    name: "Google",
-    logo: TorusLogo,
-    type: "web",
-    check: "isTorus",
-    styled: {
-      noShadow: false
-    }
-  },
-  {
-    name: "Authereum",
-    logo: AuthereumLogo,
-    type: "web",
-    check: "isAuthereum",
-    styled: {
-      noShadow: true
-    }
+  package: {
+    required: ["id"]
   }
+};
+
+export const FORTMATIC_PROVIDER: IProviderInfo = {
+  id: "fortmatic",
+  name: "Fortmatic",
+  logo: FortmaticLogo,
+  type: "web",
+  check: "isFortmatic",
+  styled: {
+    noShadow: true
+  },
+  package: {
+    required: ["key"]
+  }
+};
+
+export const SQUARELINK_PROVIDER: IProviderInfo = {
+  id: "squarelink",
+  name: "Squarelink",
+  logo: SquarelinkLogo,
+  type: "web",
+  check: "isSquarelink",
+  styled: {
+    noShadow: true
+  },
+  package: {
+    required: ["id"]
+  }
+};
+
+export const TORUS_PROVIDER: IProviderInfo = {
+  id: "torus",
+  name: "Google",
+  logo: TorusLogo,
+  type: "web",
+  check: "isTorus",
+  styled: {
+    noShadow: false
+  },
+  package: {
+    required: []
+  }
+};
+
+export const ARKANE_PROVIDER: IProviderInfo = {
+  id: "arkane",
+  name: "Arkane",
+  logo: ArkaneLogo,
+  type: "web",
+  check: "isArkane",
+  styled: {
+    noShadow: true
+  },
+  package: {
+    required: ["clientId"]
+  }
+};
+
+export const AUTHEREUM_PROVIDER: IProviderInfo = {
+  id: "authereum",
+  name: "Authereum",
+  logo: AuthereumLogo,
+  type: "web",
+  check: "isAuthereum",
+  styled: {
+    noShadow: true
+  },
+  package: {
+    required: []
+  }
+};
+
+export const providers: IProviderInfo[] = [
+  ...injected,
+  WALLETCONNECT_PROVIDER,
+  SQUARELINK_PROVIDER,
+  PORTIS_PROVIDER,
+  FORTMATIC_PROVIDER,
+  ARKANE_PROVIDER,
+  TORUS_PROVIDER,
+  AUTHEREUM_PROVIDER
 ];
 
-export default providers;
+export const providerMapping: IProviderMappingEntry[] = [
+  {
+    id: INJECTED_PROVIDER_ID,
+    name: "",
+    connector: connectors.injected,
+    package: FALLBACK_INJECTED.package
+  },
+  {
+    id: WALLETCONNECT_PROVIDER.id,
+    name: WALLETCONNECT_PROVIDER.name,
+    connector: connectors.walletconnect,
+    package: WALLETCONNECT_PROVIDER.package
+  },
+  {
+    id: PORTIS_PROVIDER.id,
+    name: PORTIS_PROVIDER.name,
+    connector: connectors.portis,
+    package: PORTIS_PROVIDER.package
+  },
+  {
+    id: FORTMATIC_PROVIDER.id,
+    name: FORTMATIC_PROVIDER.name,
+    connector: connectors.fortmatic,
+    package: FORTMATIC_PROVIDER.package
+  },
+  {
+    id: SQUARELINK_PROVIDER.id,
+    name: SQUARELINK_PROVIDER.name,
+    connector: connectors.squarelink,
+    package: SQUARELINK_PROVIDER.package
+  },
+  {
+    id: TORUS_PROVIDER.id,
+    name: TORUS_PROVIDER.name,
+    connector: connectors.torus,
+    package: TORUS_PROVIDER.package
+  },
+  {
+    id: ARKANE_PROVIDER.id,
+    name: ARKANE_PROVIDER.name,
+    connector: connectors.arkane,
+    package: ARKANE_PROVIDER.package
+  },
+  {
+    id: AUTHEREUM_PROVIDER.id,
+    name: AUTHEREUM_PROVIDER.name,
+    connector: connectors.authereum,
+    package: AUTHEREUM_PROVIDER.package
+  }
+];

@@ -40,7 +40,6 @@ yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink @torusla
 
 - [React Button](#React-Button)
 - [Core Module](#Core-Module)
-- [Individual Connectors](#Individual-Connectors)
 
 ### React Button
 
@@ -48,64 +47,12 @@ Add Web3Connect Button to your React App as follows
 
 ```js
 import Web3Connect from "web3connect";
-import WalletConnectProvider from "@walletconnect/web3-provider";
-import Portis from "@portis/web3";
-import Fortmatic from "fortmatic";
-import Squarelink from "squarelink";
-import Torus from "@toruslabs/torus-embed";
-import Arkane from "@arkane-network/web3-arkane-provider";
-import Authereum from "authereum";
+
+const providerOptions = { /* See Provider Options Section */ }
 
 <Web3Connect.Button
   network="mainnet" // optional
-  providerOptions={{
-    walletconnect: {
-      package: WalletConnectProvider, // required
-      options: {
-        infuraId: "INFURA_ID" // required
-      }
-    },
-    portis: {
-      package: Portis, // required
-      options: {
-        id: "PORTIS_ID" // required
-      }
-    },
-    fortmatic: {
-      package: Fortmatic, // required
-      options: {
-        key: "FORTMATIC_KEY" // required
-      }
-    },
-    squarelink: {
-      package: Squarelink, // required
-      options: {
-        id: "SQUARELINK_ID" // required
-      }
-    },
-    torus: {
-      package: Torus, // required
-      options: {
-        enableLogging: false, // optional
-        buttonPosition: "bottom-left", // optional
-        buildEnv: "production", // optional
-        showTorusButton: true, // optional
-        enabledVerifiers: { // optional
-          google: false // optional
-        }
-      }
-    },
-    arkane: {
-      package: Arkane, // required
-      options: {
-        clientId: "ARKANE_CLIENT_ID" // required, replace
-      }
-    },
-    authereum: {
-      package: Authereum, // required
-      options: {}
-    }
-  }}
+  providerOptions={providerOptions}
   onConnect={(provider: any) => {
     const web3 = new Web3(provider); // add provider to web3
   }}
@@ -129,56 +76,13 @@ import Torus from "@toruslabs/torus-embed";
 import Arkane from "@arkane-network/web3-arkane-provider";
 import Authereum from "authereum";
 
+const providerOptions = {
+  /* See Provider Options Section */
+};
+
 const web3Connect = new Web3Connect.Core({
   network: "mainnet", // optional
-  providerOptions: {
-    walletconnect: {
-      package: WalletConnectProvider, // required
-      options: {
-        infuraId: "INFURA_ID" // required
-      }
-    },
-    portis: {
-      package: Portis, // required
-      options: {
-        id: "PORTIS_ID" // required
-      }
-    },
-    fortmatic: {
-      package: Fortmatic, // required
-      options: {
-        key: "FORTMATIC_KEY" // required
-      }
-    },
-    squarelink: {
-      package: Squarelink, // required
-      options: {
-        id: "SQUARELINK_ID" // required
-      }
-    },
-    torus: {
-      package: Torus, // required
-      options: {
-        enableLogging: false, // optional
-        buttonPosition: "bottom-left", // optional
-        buildEnv: "production", // optional
-        showTorusButton: true, // optional
-        enabledVerifiers: { // optional
-          google: false // optional
-        }
-      }
-    },
-    arkane: {
-      package: Arkane, // required
-      options: {
-        clientId: "ARKANE_CLIENT_ID" // required, replace
-      }
-    },
-    authereum: {
-      package: Authereum, // required
-      options: {}
-    }
-  }
+  providerOptions: providerOptions
 });
 
 // subscribe to connect
@@ -194,66 +98,118 @@ web3Connect.on("close", () => {
 web3Connect.toggleModal(); // open modal on button click
 ```
 
-### Individual Connectors
+## Provider Options
 
-Add individual connectors for each provider to your own UI (no modal provided)
+These are all the providers available with Web3Connect and how to configure their provider options
 
-```js
-import Web3Connect from "web3connect";
+### WalletConnect
+
+```typescript
 import WalletConnectProvider from "@walletconnect/web3-provider";
+
+const providerOptions = {
+  walletconnect: {
+    package: WalletConnectProvider, // required
+    options: {
+      infuraId: "INFURA_ID" // required
+    }
+  }
+};
+```
+
+### Portis
+
+```typescript
 import Portis from "@portis/web3";
+
+const providerOptions = {
+  portis: {
+    package: Portis, // required
+    options: {
+      id: "PORTIS_ID" // required
+    }
+  }
+};
+```
+
+### Fortmatic
+
+```typescript
 import Fortmatic from "fortmatic";
+
+const providerOptions = {
+  fortmatic: {
+    package: Fortmatic, // required
+    options: {
+      key: "FORTMATIC_KEY" // required
+    }
+  }
+};
+```
+
+### Squarelink
+
+```typescript
 import Squarelink from "squarelink";
+
+const providerOptions = {
+  squarelink: {
+    package: Squarelink, // required
+    options: {
+      id: "SQUARELINK_ID" // required
+    }
+  }
+};
+```
+
+### Torus
+
+```typescript
 import Torus from "@toruslabs/torus-embed";
+
+const providerOptions = {
+  torus: {
+    package: Torus, // required
+    options: {
+      enableLogging: false, // optional
+      buttonPosition: "bottom-left", // optional
+      buildEnv: "production", // optional
+      showTorusButton: true, // optional
+      enabledVerifiers: {
+        // optional
+        google: false // optional
+      }
+    }
+  }
+};
+```
+
+### Arkane
+
+```typescript
+import Arkane from "@arkane-network/web3-arkane-provider";
+
+const providerOptions = {
+  arkane: {
+    package: Arkane, // required
+    options: {
+      clientId: "ARKANE_CLIENT_ID" // required, replace
+    }
+  }
+};
+```
+
+### Authereum
+
+```typescript
 import Authereum from "authereum";
 
-// For inject providers in dapp browsers
-const provider = await Web3Connect.ConnectToInjected();
-
-// For WalletConnect
-const provider = await Web3Connect.ConnectToWalletConnect(
-  WalletConnectProvider,
-  {
-    infuraId: "INFURA_ID", // required
-    bridge: "https://bridge.walletconnect.org" // optional
+const providerOptions = {
+  authereum: {
+    package: Authereum, // required
+    options: {}
   }
-);
-
-// For Portis
-const provider = await Web3Connect.ConnectToPortis(Portis, {
-  id: "PORTIS_ID", // required
-  network: "mainnet" // optional
-});
-
-// For Fortmatic
-const provider = await Web3Connect.ConnectToFortmatic(Fortmatic, {
-  key: "FORTMATIC_KEY", // required
-  network: "mainnet" // optional
-});
-
-// For Squarelink
-const provider = await Web3Connect.ConnectToSquarelink(Squarelink, {
-  id: "SQUARELINK_ID", // required
-  network: "mainnet" // optional
-});
-
-// For Torus
-const provider = await Web3Connect.ConnectToTorus(Torus, {
-  enableLogging: false, // optional
-  buttonPosition: "bottom-left", // optional
-  buildEnv: "production", // optional
-  showTorusButton: true // optional
-});
-
-// For Arkane
-const provider = await Web3Connect.ConnectToArkane(Arkane, {
-  key: "ARKANE_CLIENT_ID", // required
-  environment: "staging" // optional
-
-// For Authereum
-const provider = await Web3Connect.ConnectToAuthereum(Authereum, {
-  network: "mainnet" // optional
-});
+};
 ```
 
 ## Utils
@@ -298,67 +254,15 @@ interface IProviderCallback {
 }
 ```
 
-## Options
+## Optional Flags
 
-- providerOptions (optional): An object mapping arbitrary string that adds the required configuration to multiple web3 providers.
+You can enable the following optional flags:
 
-  - walletconnect:
+- disableInjectedProvider: disable displaying injected provider as an option (default: false)
 
-    - package: dependency injection to enable provider
-    - options:
-      - infuraId: the infura app ID registered (required)
-      - bridge: bridge url (optional)
+## Adding a new provider
 
-  - portis:
-
-    - package: dependency injection to enable provider
-    - options:
-      - id: the app id registered (required)
-      - network: choose initial network name (optional)
-      - config: additional configuration, like support of Gas Station Network (optional)
-
-  - fortmatic:
-
-    - package: dependency injection to enable provider
-    - options:
-      - key: the secret key (required)
-      - network: choose initial network name (optional)
-
-  - arkane:
-
-    - package: dependency injection to enable provider
-    - options:
-      - clientId: the client id used by the application (required)
-      - nodeUrl: choose initial network name (optional)
-      - environment: the environment to connect to (optional). Production by default, use 'staging' for testing
-
-  - squarelink:
-
-    - package: dependency injection to enable provider
-    - options:
-      - id: the client ID registered (required)
-      - network: choose initial network name (optional)
-      - config: additional configuration, like `scope` to use supplemental methods (optional)
-
-- torus:
-
-      - package: dependency injection to enable provider
-      - options:
-        - enableLogging: enable logging for debugging (optional),
-        - buttonPosition: set button position (optional),
-        - buildEnv: set build environment (optional),
-        - showTorusButton: enable displaying torus button
-        - enabledVerifiers: disable certain verifiers by passing false against them
-
-- authereum:
-
-      - package: dependency injection to enable provider
-      - options:
-        - network: choose initial network name (optional)
-
-You can disable the injected provider by adding the following flag:
-
-- disableInjectedProvider: true (optional)
+Do you want to add your provider to Web3Connect? All logic for supported providers lives inside the `src/providers` directory. To add a new follow the following steps [here](ADDING_PROVIDERS.md)
 
 ## Collaboration
 

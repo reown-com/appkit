@@ -13,7 +13,6 @@ class ConnectButton extends React.Component<any, any> {
       providerOptions: props.providerOptions
     });
     this.core.on("connect", props.onConnect);
-    this.core.on("disconnect", props.onDisconnect);
     this.core.on("close", props.onClose);
     this.core.on("error", props.onError);
   }
