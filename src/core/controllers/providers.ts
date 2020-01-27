@@ -1,40 +1,54 @@
-import { IProviderOptions, IProviderMappingEntry } from "../helpers/types";
-import { isMobile, getInjectedProviderName } from "../helpers/utils";
-import { providerMapping } from "../providers";
-import EventManager from "./events";
+import {
+  ICacheProviderOptions,
+  IProviderControllerOptions,
+  IProviderOptions,
+  IProviderMappingEntry
+} from "../../helpers/types";
+import { isMobile, getInjectedProviderName } from "../../helpers/utils";
+import { providerMapping } from "../../providers";
+import EventController from "./events";
 import {
   CONNECT_EVENT,
   ERROR_EVENT,
-  INJECTED_PROVIDER_ID
-} from "../helpers/constants";
+  INJECTED_PROVIDER_ID,
+  CACHED_PROVIDER_KEY,
+  ONLOAD
+} from "../../helpers/constants";
+import { getLocal, setLocal, removeLocal } from "../../helpers/local";
 
-interface IProviderManagerOptions {
-  providerOptions: IProviderOptions;
-  network: string;
-}
+class ProviderController {
+  public cachedProvider: string = "";
+  public shouldCacheProvider: boolean | ICacheProviderOptions = false;
 
-class ProviderManager {
-  private eventManager: EventManager = new EventManager();
+  private eventController: EventController = new EventController();
   private injectedProvider: string | null = null;
   private providerMapping: IProviderMappingEntry[] = [];
   private providerOptions: IProviderOptions;
   private network: string = "";
 
-  constructor(opts: IProviderManagerOptions) {
+  constructor(opts: IProviderControllerOptions) {
+    this.cachedProvider = getLocal(CACHED_PROVIDER_KEY) || "";
+
+    this.shouldCacheProvider = opts.cacheProvider;
     this.providerOptions = opts.providerOptions;
     this.network = opts.network;
 
-    this.generateProviderMapping();
+    this.init(); // tslint:disable-line:no-floating-promises
   }
 
-  public generateProviderMapping() {
+  public async init() {
     this.injectedProvider = getInjectedProviderName();
+
     this.providerMapping = providerMapping.map(entry => {
       if (entry.id === INJECTED_PROVIDER_ID) {
         entry.name = this.injectedProvider || "";
       }
       return entry;
     });
+
+    if (this.shouldCacheProvider === ONLOAD && this.cachedProvider) {
+      await this.connectToCachedProvider();
+    }
   }
 
   public shouldDisplayProvider(id: string) {
@@ -131,40 +145,56 @@ class ProviderManager {
       : {};
   }
 
+  public clearCachedProvider() {
+    this.cachedProvider = "";
+    removeLocal(CACHED_PROVIDER_KEY);
+  }
+
   public connectTo = async (
     id: string,
     connector: (providerPackage: any, opts: any) => Promise<any>
   ) => {
+    if (this.shouldCacheProvider) {
+      this.cachedProvider = id;
+      setLocal(CACHED_PROVIDER_KEY, id);
+    }
     try {
       const providerPackage = this.getProviderOption(id, "package");
       const providerOptions = this.getProviderOption(id, "options");
       const opts = { network: this.network || undefined, ...providerOptions };
       const provider = await connector(providerPackage, opts);
-      this.eventManager.trigger(CONNECT_EVENT, provider);
+      this.eventController.trigger(CONNECT_EVENT, provider);
     } catch (error) {
-      this.eventManager.trigger(ERROR_EVENT);
+      this.eventController.trigger(ERROR_EVENT);
     }
   };
 
+  public async connectToCachedProvider() {
+    const provider = this.getProviderMappingEntry(this.cachedProvider);
+    if (provider) {
+      await this.connectTo(provider.id, provider.connector);
+    }
+  }
+
   public on(event: string, callback: (result: any) => void): () => void {
-    this.eventManager.on({
+    this.eventController.on({
       event,
       callback
     });
 
     return () =>
-      this.eventManager.off({
+      this.eventController.off({
         event,
         callback
       });
   }
 
   public off(event: string, callback?: (result: any) => void): void {
-    this.eventManager.off({
+    this.eventController.off({
       event,
       callback
     });
   }
 }
 
-export default ProviderManager;
+export default ProviderController;

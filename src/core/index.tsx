@@ -1,79 +1,103 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import Modal from "../components/Modal";
-import { IProviderOptions, IProviderCallback } from "../helpers/types";
+import {
+  ICoreOptions,
+  IProviderCallback,
+  ICacheProviderOptions
+} from "../helpers/types";
 
-import EventManager from "./events";
-import ProviderManager from "./providerManager";
+import EventController from "./controllers/events";
+import ProviderController from "./controllers/providers";
 import {
   WEB3_CONNECT_MODAL_ID,
   CONNECT_EVENT,
   ERROR_EVENT,
-  CLOSE_EVENT
+  CLOSE_EVENT,
+  ONCLICK
 } from "../helpers/constants";
-
-interface ICoreOptions {
-  network: string;
-  lightboxOpacity: number;
-  providerOptions: IProviderOptions;
-}
 
 const INITIAL_STATE = { show: false };
 
+const defaultOpts = {
+  lightboxOpacity: 0.4,
+  cacheProvider: false,
+  providerOptions: {},
+  network: ""
+};
+
 class Core {
   private show: boolean = INITIAL_STATE.show;
-  private eventManager: EventManager = new EventManager();
+  private eventController: EventController = new EventController();
   private lightboxOpacity: number;
-  private providerManager: ProviderManager;
+  private providerController: ProviderController;
   private providers: IProviderCallback[];
 
   constructor(opts?: Partial<ICoreOptions>) {
     const options: ICoreOptions = {
-      lightboxOpacity: 0.4,
-      providerOptions: {},
-      network: "",
+      ...defaultOpts,
       ...opts
     };
 
     this.lightboxOpacity = options.lightboxOpacity;
 
-    this.providerManager = new ProviderManager({
+    this.providerController = new ProviderController({
+      cacheProvider: options.cacheProvider,
       providerOptions: options.providerOptions,
       network: options.network
     });
 
-    this.providerManager.on(CONNECT_EVENT, provider =>
+    this.providerController.on(CONNECT_EVENT, provider =>
       this.onConnect(provider)
     );
-    this.providerManager.on(ERROR_EVENT, error => this.onError(error));
+    this.providerController.on(ERROR_EVENT, error => this.onError(error));
 
-    this.providers = this.providerManager.getProviders();
+    this.providers = this.providerController.getProviders();
     this.renderModal();
+  }
+
+  get cachedProvider(): string {
+    return this.providerController.cachedProvider;
+  }
+
+  get shouldCacheProvider(): boolean | ICacheProviderOptions {
+    return this.providerController.shouldCacheProvider;
   }
 
   // --------------- PUBLIC METHODS --------------- //
 
+  public clearCachedProvider(): void {
+    this.providerController.clearCachedProvider();
+  }
+
   public on(event: string, callback: (result: any) => void): () => void {
-    this.eventManager.on({
+    this.eventController.on({
       event,
       callback
     });
 
     return () =>
-      this.eventManager.off({
+      this.eventController.off({
         event,
         callback
       });
   }
 
   public off(event: string, callback?: (result: any) => void): void {
-    this.eventManager.off({
+    this.eventController.off({
       event,
       callback
     });
   }
 
   public toggleModal = async () => {
+    if (
+      (this.shouldCacheProvider === ONCLICK ||
+        this.shouldCacheProvider === true) &&
+      this.cachedProvider
+    ) {
+      await this.providerController.connectToCachedProvider();
+    }
     if (
       this.providers &&
       this.providers.length === 1 &&
@@ -117,21 +141,21 @@ class Core {
     if (this.show) {
       await this.toggleModal();
     }
-    this.eventManager.trigger(ERROR_EVENT, error);
+    this.eventController.trigger(ERROR_EVENT, error);
   };
 
   private onConnect = async (provider: any) => {
     if (this.show) {
       await this.toggleModal();
     }
-    this.eventManager.trigger(CONNECT_EVENT, provider);
+    this.eventController.trigger(CONNECT_EVENT, provider);
   };
 
   private onClose = async () => {
     if (this.show) {
       await this.toggleModal();
     }
-    this.eventManager.trigger(CLOSE_EVENT);
+    this.eventController.trigger(CLOSE_EVENT);
   };
 
   private updateState = async (state: any) => {

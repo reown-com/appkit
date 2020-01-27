@@ -8,9 +8,10 @@ class ConnectButton extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
     this.core = new Core({
-      network: props.network,
       lightboxOpacity: props.lightboxOpacity,
-      providerOptions: props.providerOptions
+      cacheProvider: props.cacheProvider,
+      providerOptions: props.providerOptions,
+      network: props.network
     });
     this.core.on("connect", props.onConnect);
     this.core.on("close", props.onClose);

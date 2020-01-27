@@ -68,13 +68,6 @@ Add Web3Connect Core to your Dapp as follows
 
 ```js
 import Web3Connect from "web3connect";
-import WalletConnectProvider from "@walletconnect/web3-provider";
-import Portis from "@portis/web3";
-import Fortmatic from "fortmatic";
-import Squarelink from "squarelink";
-import Torus from "@toruslabs/torus-embed";
-import Arkane from "@arkane-network/web3-arkane-provider";
-import Authereum from "authereum";
 
 const providerOptions = {
   /* See Provider Options Section */
@@ -256,9 +249,49 @@ interface IProviderCallback {
 
 ## Optional Flags
 
-You can enable the following optional flags:
+### Disable Injected Provider
 
-- disableInjectedProvider: disable displaying injected provider as an option (default: false)
+By default is set to `false` and Web3Connect always displays InjectedProvider as an option to the user if available. However you can disable it as an optional flag if you desire:
+
+#### React Button
+
+```javascript
+<Web3Connect.Button disableInjectedProvider />
+```
+
+#### Core Module
+
+```javascript
+const web3Connect = new Web3Connect.Core({ disableInjectedProvider: true });
+```
+
+### Cache Provider
+
+By default is set to `false` and Web3Connect will always require the user to choose a provider option before triggering the onConnect event. However you can enable caching the last chosen provider. Example:
+
+#### React Button
+
+```javascript
+<Web3Connect.Button cacheProvider />
+```
+
+#### Core Module
+
+```javascript
+const web3Connect = new Web3Connect.Core({ cacheProvider: true });
+```
+
+There are four options for this flag: `false`, `true`, `onclick` and `onload`. Here are the expected behaviors for each one of them:
+
+- If `false`, it will always display the modal to choose a provider.
+- If `true` or `onclick`, it will connect to the last chosen provider on `toggleModal` or button click
+- If `onload`, it will connect to the last chosen provider on page load where Web3Connect is instantiated
+
+If you wish to reset the cached provider you can call the following method:
+
+```typescript
+web3Connect.clearCachedProvider();
+```
 
 ## Adding a new provider
 
@@ -271,3 +304,7 @@ Do you want to add your provider to Web3Connect? All logic for supported provide
 If you wish to support a new provider submit a issue to the repo or fork this repo and create a pull request.
 
 You can join to our discord to further discuss https://discordapp.com/invite/YGnSX9y
+
+```
+
+```
