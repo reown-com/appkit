@@ -28,13 +28,7 @@ yarn add web3connect
 
 2. Install Provider packages
 
-```bash
-npm install --save @walletconnect/web3-provider @portis/web3 fortmatic squarelink @toruslabs/torus-embed  @arkane-network/web3-arkane-provider authereum
-
-# OR
-
-yarn add @walletconnect/web3-provider @portis/web3 fortmatic squarelink @toruslabs/torus-embed @arkane-network/web3-arkane-provider authereum
-```
+See Providers Options Section for each provider
 
 3. Then you can integrate it two different ways:
 
@@ -68,13 +62,6 @@ Add Web3Connect Core to your Dapp as follows
 
 ```js
 import Web3Connect from "web3connect";
-import WalletConnectProvider from "@walletconnect/web3-provider";
-import Portis from "@portis/web3";
-import Fortmatic from "fortmatic";
-import Squarelink from "squarelink";
-import Torus from "@toruslabs/torus-embed";
-import Arkane from "@arkane-network/web3-arkane-provider";
-import Authereum from "authereum";
 
 const providerOptions = {
   /* See Provider Options Section */
@@ -104,6 +91,18 @@ These are all the providers available with Web3Connect and how to configure thei
 
 ### WalletConnect
 
+1. Install Provider Package
+
+```bash
+npm install --save @walletconnect/web3-provider
+
+# OR
+
+yarn add @walletconnect/web3-provider
+```
+
+2. Set Provider Options
+
 ```typescript
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
@@ -118,6 +117,18 @@ const providerOptions = {
 ```
 
 ### Portis
+
+1. Install Provider Package
+
+```bash
+npm install --save @portis/web3
+
+# OR
+
+yarn add @portis/web3
+```
+
+2. Set Provider Options
 
 ```typescript
 import Portis from "@portis/web3";
@@ -134,6 +145,18 @@ const providerOptions = {
 
 ### Fortmatic
 
+1. Install Provider Package
+
+```bash
+npm install --save fortmatic
+
+# OR
+
+yarn add fortmatic
+```
+
+2. Set Provider Options
+
 ```typescript
 import Fortmatic from "fortmatic";
 
@@ -149,6 +172,18 @@ const providerOptions = {
 
 ### Squarelink
 
+1. Install Provider Package
+
+```bash
+npm install --save squarelink
+
+# OR
+
+yarn add squarelink
+```
+
+2. Set Provider Options
+
 ```typescript
 import Squarelink from "squarelink";
 
@@ -163,6 +198,18 @@ const providerOptions = {
 ```
 
 ### Torus
+
+1. Install Provider Package
+
+```bash
+npm install --save @toruslabs/torus-embed
+
+# OR
+
+yarn add @toruslabs/torus-embed
+```
+
+2. Set Provider Options
 
 ```typescript
 import Torus from "@toruslabs/torus-embed";
@@ -186,6 +233,18 @@ const providerOptions = {
 
 ### Arkane
 
+1. Install Provider Package
+
+```bash
+npm install --save @arkane-network/web3-arkane-provide
+
+# OR
+
+yarn add @arkane-network/web3-arkane-provide
+```
+
+2. Set Provider Options
+
 ```typescript
 import Arkane from "@arkane-network/web3-arkane-provider";
 
@@ -200,6 +259,18 @@ const providerOptions = {
 ```
 
 ### Authereum
+
+1. Install Provider Package
+
+```bash
+npm install --save authereum
+
+# OR
+
+yarn add authereum
+```
+
+2. Set Provider Options
 
 ```typescript
 import Authereum from "authereum";
