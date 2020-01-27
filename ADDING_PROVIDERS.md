@@ -101,10 +101,22 @@ Finally you should update the main README file so other developers can use your 
 ```typescript
 ### Firebox
 
+1. Install Provider Package
+
+npm install --save firebox-web3-provider
+
+# OR
+
+yarn add firebox-web3-provider
+
+
+2. Set Provider Options
+
+```typescript
 import FireboxProvider from "firebox-web3-provider";
 
 const providerOptions = {
-  firebox: {
+  fortmatic: {
     package: FireboxProvider, // required
     options: {
       apiKey: "FIREBOX_API_KEY" // required
