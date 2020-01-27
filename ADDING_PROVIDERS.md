@@ -112,11 +112,10 @@ yarn add firebox-web3-provider
 
 2. Set Provider Options
 
-```typescript
 import FireboxProvider from "firebox-web3-provider";
 
 const providerOptions = {
-  fortmatic: {
+  firebox: {
     package: FireboxProvider, // required
     options: {
       apiKey: "FIREBOX_API_KEY" // required
