@@ -1,26 +1,26 @@
-import { IProviderOptions, IProviderMappingEntry } from "../helpers/types";
-import { isMobile, getInjectedProviderName } from "../helpers/utils";
-import { providerMapping } from "../providers";
-import EventManager from "./events";
+import { IProviderOptions, IProviderMappingEntry } from "../../helpers/types";
+import { isMobile, getInjectedProviderName } from "../../helpers/utils";
+import { providerMapping } from "../../providers";
+import EventController from "./events";
 import {
   CONNECT_EVENT,
   ERROR_EVENT,
   INJECTED_PROVIDER_ID
-} from "../helpers/constants";
+} from "../../helpers/constants";
 
-interface IProviderManagerOptions {
+interface IProviderControllerOptions {
   providerOptions: IProviderOptions;
   network: string;
 }
 
-class ProviderManager {
-  private eventManager: EventManager = new EventManager();
+class ProviderController {
+  private eventController: EventController = new EventController();
   private injectedProvider: string | null = null;
   private providerMapping: IProviderMappingEntry[] = [];
   private providerOptions: IProviderOptions;
   private network: string = "";
 
-  constructor(opts: IProviderManagerOptions) {
+  constructor(opts: IProviderControllerOptions) {
     this.providerOptions = opts.providerOptions;
     this.network = opts.network;
 
@@ -140,31 +140,31 @@ class ProviderManager {
       const providerOptions = this.getProviderOption(id, "options");
       const opts = { network: this.network || undefined, ...providerOptions };
       const provider = await connector(providerPackage, opts);
-      this.eventManager.trigger(CONNECT_EVENT, provider);
+      this.eventController.trigger(CONNECT_EVENT, provider);
     } catch (error) {
-      this.eventManager.trigger(ERROR_EVENT);
+      this.eventController.trigger(ERROR_EVENT);
     }
   };
 
   public on(event: string, callback: (result: any) => void): () => void {
-    this.eventManager.on({
+    this.eventController.on({
       event,
       callback
     });
 
     return () =>
-      this.eventManager.off({
+      this.eventController.off({
         event,
         callback
       });
   }
 
   public off(event: string, callback?: (result: any) => void): void {
-    this.eventManager.off({
+    this.eventController.off({
       event,
       callback
     });
   }
 }
 
-export default ProviderManager;
+export default ProviderController;
