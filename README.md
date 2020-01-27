@@ -382,7 +382,3 @@ Do you want to add your provider to Web3Connect? All logic for supported provide
 If you wish to support a new provider submit a issue to the repo or fork this repo and create a pull request.
 
 You can join to our discord to further discuss https://discordapp.com/invite/YGnSX9y
-
-```
-
-```
