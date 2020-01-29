@@ -17,6 +17,8 @@ import ArkaneLogo from "./logos/arkane.svg";
 import TorusLogo from "./logos/torus.png";
 // @ts-ignore
 import AuthereumLogo from "./logos/authereum.svg";
+// @ts-ignore
+import BurnerWalletLogo from "./logos/burnerwallet.png";
 
 export const FALLBACK = FALLBACK_INJECTED;
 
@@ -118,6 +120,20 @@ export const AUTHEREUM_PROVIDER: IProviderInfo = {
   }
 };
 
+export const BURNERCONNECT_PROVIDER: IProviderInfo = {
+  id: "burnerconnect",
+  name: "Burner Connect",
+  logo: BurnerWalletLogo,
+  type: "web",
+  check: "isBurnerProvider",
+  styled: {
+    noShadow: false
+  },
+  package: {
+    required: []
+  }
+};
+
 export const providers: IProviderInfo[] = [
   ...injected,
   WALLETCONNECT_PROVIDER,
@@ -126,7 +142,8 @@ export const providers: IProviderInfo[] = [
   FORTMATIC_PROVIDER,
   ARKANE_PROVIDER,
   TORUS_PROVIDER,
-  AUTHEREUM_PROVIDER
+  AUTHEREUM_PROVIDER,
+  BURNERCONNECT_PROVIDER
 ];
 
 export const providerMapping: IProviderMappingEntry[] = [
@@ -177,5 +194,11 @@ export const providerMapping: IProviderMappingEntry[] = [
     name: AUTHEREUM_PROVIDER.name,
     connector: connectors.authereum,
     package: AUTHEREUM_PROVIDER.package
+  },
+  {
+    id: BURNERCONNECT_PROVIDER.id,
+    name: BURNERCONNECT_PROVIDER.name,
+    connector: connectors.burnerconnect,
+    package: BURNERCONNECT_PROVIDER.package
   }
 ];
