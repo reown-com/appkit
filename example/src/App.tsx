@@ -8,6 +8,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 import Portis from '@portis/web3'
 // @ts-ignore
 import Fortmatic from 'fortmatic'
+import BurnerConnectProvider from '@burner-wallet/burner-connect-provider';
 
 // @ts-ignore
 // import Squarelink from 'squarelink'
@@ -51,7 +52,13 @@ const providerOptions = {
     options: {
       key: process.env.REACT_APP_FORTMATIC_KEY
     }
-  }
+  },
+  burnerconnect: {
+    package: BurnerConnectProvider,
+    options: {
+      defaultNetwork: '100',
+    },
+  },
   // arkane: {
   //   package: Arkane,
   //   options: {
