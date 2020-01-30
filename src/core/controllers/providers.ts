@@ -46,7 +46,11 @@ class ProviderController {
       return entry;
     });
 
-    if (this.shouldCacheProvider === ONLOAD && this.cachedProvider) {
+    if (
+      typeof this.shouldCacheProvider === "string" &&
+      this.shouldCacheProvider === ONLOAD &&
+      this.cachedProvider
+    ) {
       await this.connectToCachedProvider();
     }
   }

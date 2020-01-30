@@ -92,11 +92,13 @@ class Core {
 
   public toggleModal = async () => {
     if (
-      (this.shouldCacheProvider === ONCLICK ||
+      ((typeof this.shouldCacheProvider === "string" &&
+        this.shouldCacheProvider === ONCLICK) ||
         this.shouldCacheProvider === true) &&
       this.cachedProvider
     ) {
       await this.providerController.connectToCachedProvider();
+      return;
     }
     if (
       this.providers &&
@@ -106,17 +108,7 @@ class Core {
       await this.providers[0].onClick();
       return;
     }
-
-    const d = typeof window !== "undefined" ? document : "";
-    const body = d ? d.body || d.getElementsByTagName("body")[0] : "";
-    if (body) {
-      if (this.show) {
-        body.style.overflow = "";
-      } else {
-        body.style.overflow = "hidden";
-      }
-    }
-    await this.updateState({ show: !this.show });
+    await this._toggleModal();
   };
 
   public renderModal() {
@@ -137,23 +129,36 @@ class Core {
 
   // --------------- PRIVATE METHODS --------------- //
 
+  private _toggleModal = async () => {
+    const d = typeof window !== "undefined" ? document : "";
+    const body = d ? d.body || d.getElementsByTagName("body")[0] : "";
+    if (body) {
+      if (this.show) {
+        body.style.overflow = "";
+      } else {
+        body.style.overflow = "hidden";
+      }
+    }
+    await this.updateState({ show: !this.show });
+  };
+
   private onError = async (error: any) => {
     if (this.show) {
-      await this.toggleModal();
+      await this._toggleModal();
     }
     this.eventController.trigger(ERROR_EVENT, error);
   };
 
   private onConnect = async (provider: any) => {
     if (this.show) {
-      await this.toggleModal();
+      await this._toggleModal();
     }
     this.eventController.trigger(CONNECT_EVENT, provider);
   };
 
   private onClose = async () => {
     if (this.show) {
-      await this.toggleModal();
+      await this._toggleModal();
     }
     this.eventController.trigger(CLOSE_EVENT);
   };

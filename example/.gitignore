@@ -23,3 +23,5 @@ yarn-error.log*
 .env
 
 yarn.lock
+
+report.*
