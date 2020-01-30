@@ -6,6 +6,7 @@ import torus from "./torus";
 import squarelink from "./squarelink";
 import arkane from "./arkane";
 import authereum from "./authereum";
+import burnerconnect from "./burnerconnect";
 
 export default {
   injected,
@@ -15,5 +16,6 @@ export default {
   fortmatic,
   squarelink,
   arkane,
-  authereum
+  authereum,
+  burnerconnect,
 };
