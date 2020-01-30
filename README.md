@@ -14,6 +14,22 @@ You can test the library on: https://web3connect.com/
 
 ![preview](./images/preview.gif)
 
+## Projects using `web3connect`
+
+_Open a PR to add your project to the list!_
+
+- [DAO Stack](https://alchemy.daostack.io/)
+- [Gnosis Safe](https://gnosis-safe.io/)
+- [3Box Hub](https://3box.io/hub/)
+- [KnownOrigin](https://knownorigin.io/)
+- [Clovers Network](https://clovers.network/)
+- [Linkdrop](https://dashboard.linkdrop.io/)
+- [Dapparatus](https://github.com/austintgriffith/dapparatus/)
+
+## Related Efforts
+
+- [web3-react](https://github.com/NoahZinsmeister/web3-react/)
+
 ## Usage
 
 1. Install Web3Connect NPM package
