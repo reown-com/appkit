@@ -23,6 +23,7 @@ _Open a PR to add your project to the list!_
 - [3Box Hub](https://3box.io/hub/)
 - [KnownOrigin](https://knownorigin.io/)
 - [Clovers Network](https://clovers.network/)
+- [Affogato](https://affogato.co/)
 - [Linkdrop](https://dashboard.linkdrop.io/)
 - [Dapparatus](https://github.com/austintgriffith/dapparatus/)
 
