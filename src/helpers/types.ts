@@ -1,11 +1,13 @@
-import { ONLOAD, ONCLICK } from "./constants";
+// import { ONLOAD, ONCLICK } from "./constants";
 
-const CacheProviderOptions = {
-  [ONLOAD]: ONLOAD,
-  [ONCLICK]: ONCLICK
-};
+// const CacheProviderOptions = {
+//   [ONLOAD]: ONLOAD,
+//   [ONCLICK]: ONCLICK
+// };
 
-export type ICacheProviderOptions = keyof typeof CacheProviderOptions;
+// export type ICacheProviderOptions = keyof typeof CacheProviderOptions;
+// TODO: Add onclick and onload options
+export type ICacheProviderOptions = boolean;
 
 export interface ICoreOptions extends IProviderControllerOptions {
   lightboxOpacity: number;

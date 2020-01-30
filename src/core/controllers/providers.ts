@@ -11,8 +11,7 @@ import {
   CONNECT_EVENT,
   ERROR_EVENT,
   INJECTED_PROVIDER_ID,
-  CACHED_PROVIDER_KEY,
-  ONLOAD
+  CACHED_PROVIDER_KEY
 } from "../../helpers/constants";
 import { getLocal, setLocal, removeLocal } from "../../helpers/local";
 
@@ -33,10 +32,6 @@ class ProviderController {
     this.providerOptions = opts.providerOptions;
     this.network = opts.network;
 
-    this.init(); // tslint:disable-line:no-floating-promises
-  }
-
-  public async init() {
     this.injectedProvider = getInjectedProviderName();
 
     this.providerMapping = providerMapping.map(entry => {
@@ -45,14 +40,6 @@ class ProviderController {
       }
       return entry;
     });
-
-    if (
-      typeof this.shouldCacheProvider === "string" &&
-      this.shouldCacheProvider === ONLOAD &&
-      this.cachedProvider
-    ) {
-      await this.connectToCachedProvider();
-    }
   }
 
   public shouldDisplayProvider(id: string) {

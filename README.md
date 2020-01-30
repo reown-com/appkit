@@ -340,12 +340,6 @@ By default is set to `false` and Web3Connect will always require the user to cho
 const web3Connect = new Web3Connect.Core({ cacheProvider: true });
 ```
 
-There are four options for this flag: `false`, `true`, `onclick` and `onload`. Here are the expected behaviors for each one of them:
-
-- If `false`, it will always display the modal to choose a provider.
-- If `true` or `onclick`, it will connect to the last chosen provider on `toggleModal` or button click
-- If `onload`, it will connect to the last chosen provider on page load where Web3Connect is instantiated
-
 If you wish to reset the cached provider you can call the following method:
 
 ```typescript

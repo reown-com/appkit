@@ -13,8 +13,7 @@ import {
   WEB3_CONNECT_MODAL_ID,
   CONNECT_EVENT,
   ERROR_EVENT,
-  CLOSE_EVENT,
-  ONCLICK
+  CLOSE_EVENT
 } from "../helpers/constants";
 
 const INITIAL_STATE = { show: false };
@@ -91,12 +90,7 @@ class Core {
   }
 
   public toggleModal = async () => {
-    if (
-      ((typeof this.shouldCacheProvider === "string" &&
-        this.shouldCacheProvider === ONCLICK) ||
-        this.shouldCacheProvider === true) &&
-      this.cachedProvider
-    ) {
+    if (this.shouldCacheProvider === true && this.cachedProvider) {
       await this.providerController.connectToCachedProvider();
       return;
     }
