@@ -49,11 +49,6 @@
     "check": "npm run clean && npm run lint && npm run format && npm run build && npm run test",
     "routine": "npm run clean:all && npm run bootstrap && npm run check"
   },
-  "husky": {
-    "hooks": {
-      "pre-push": "npm run check"
-    }
-  },
   "devDependencies": {
     "@babel/cli": "^7.1.2",
     "@babel/core": "^7.1.2",

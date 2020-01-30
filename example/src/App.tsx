@@ -8,13 +8,9 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 import Portis from '@portis/web3'
 // @ts-ignore
 import Fortmatic from 'fortmatic'
-import BurnerConnectProvider from '@burner-wallet/burner-connect-provider';
+import BurnerConnectProvider from '@burner-wallet/burner-connect-provider'
 
-// @ts-ignore
-// import Squarelink from 'squarelink'
-// import Torus from '@toruslabs/torus-embed'
-// import Arkane from "@arkane-network/web3-arkane-provider";
-// import Authereum from "authereum";
+import Authereum from 'authereum'
 
 import { convertUtf8ToHex } from '@walletconnect/utils'
 import Button from './components/Button'
@@ -24,12 +20,14 @@ import Modal from './components/Modal'
 import Header from './components/Header'
 import Loader from './components/Loader'
 import AccountAssets from './components/AccountAssets'
+import ConnectButton from './components/ConnectButton'
 import { apiGetAccountAssets } from './helpers/api'
 import {
   hashPersonalMessage,
   recoverPublicKey,
   recoverPersonalSignature,
-  formatTestTransaction
+  formatTestTransaction,
+  getChainData
 } from './helpers/utilities'
 import { IAssetData } from './helpers/types'
 import { fonts } from './styles'
@@ -56,29 +54,13 @@ const providerOptions = {
   burnerconnect: {
     package: BurnerConnectProvider,
     options: {
-      defaultNetwork: '100',
-    },
+      defaultNetwork: '100'
+    }
   },
-  // arkane: {
-  //   package: Arkane,
-  //   options: {
-  //     clientId: process.env.REACT_APP_ARKANE_CLIENT_ID,
-  //     environment: "staging"
-  //   }
-  // },
-  // authereum: {
-  //   package: Authereum,
-  //   options: {}
-  // },
-  // squarelink: {
-  //   package: Squarelink,
-  //   options: {
-  //     id: process.env.REACT_APP_SQUARELINK_ID
-  //   }
-  // },
-  // torus: {
-  //   package: Torus
-  // }
+  authereum: {
+    package: Authereum,
+    options: {}
+  }
 }
 
 const SLayout = styled.div`
@@ -212,8 +194,22 @@ function initWeb3(provider: any) {
 }
 
 class App extends React.Component<any, any> {
-  public state: IAppState = {
-    ...INITIAL_STATE
+  // @ts-ignore
+  public core: Web3Connect.Core
+  public state: IAppState
+
+  constructor(props: any) {
+    super(props)
+    this.state = {
+      ...INITIAL_STATE
+    }
+
+    this.core = new Web3Connect.Core({
+      cacheProvider: true,
+      providerOptions,
+      network: this.getNetwork()
+    })
+    this.core.on('connect', this.onConnect)
   }
 
   public onConnect = async (provider: any) => {
@@ -259,6 +255,8 @@ class App extends React.Component<any, any> {
       await this.getAccountAssets()
     })
   }
+
+  public getNetwork = () => getChainData(this.state.chainId).network
 
   public getAccountAssets = async () => {
     const { address, chainId } = this.state
@@ -428,6 +426,7 @@ class App extends React.Component<any, any> {
       console.log('web3.currentProvider', web3.currentProvider) // tslint:disable-line
       await web3.currentProvider.close()
     }
+    await this.core.clearCachedProvider()
     this.setState({ ...INITIAL_STATE })
   }
 
@@ -442,7 +441,6 @@ class App extends React.Component<any, any> {
       pendingRequest,
       result
     } = this.state
-
     return (
       <SLayout>
         <Column maxWidth={1000} spanHeight>
@@ -483,19 +481,7 @@ class App extends React.Component<any, any> {
             ) : (
               <SLanding center>
                 <h3>{`Test Web3Connect`}</h3>
-                <Web3Connect.Button
-                  network="mainnet"
-                  providerOptions={providerOptions}
-                  onConnect={(provider: any) => {
-                    this.onConnect(provider)
-                  }}
-                  onClose={() => {
-                    // empty
-                  }}
-                  onError={(error: Error) => {
-                    console.error(error) // tslint:disable-line
-                  }}
-                />
+                <ConnectButton onClick={this.core.toggleModal} />
               </SLanding>
             )}
           </SContent>

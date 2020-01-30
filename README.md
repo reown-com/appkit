@@ -30,35 +30,7 @@ yarn add web3connect
 
 See Providers Options Section for each provider
 
-3. Then you can integrate it two different ways:
-
-- [React Button](#React-Button)
-- [Core Module](#Core-Module)
-
-### React Button
-
-Add Web3Connect Button to your React App as follows
-
-```js
-import Web3Connect from "web3connect";
-
-const providerOptions = { /* See Provider Options Section */ }
-
-<Web3Connect.Button
-  network="mainnet" // optional
-  providerOptions={providerOptions}
-  onConnect={(provider: any) => {
-    const web3 = new Web3(provider); // add provider to web3
-  }}
-  onClose={() => {
-    console.log("Web3Connect Modal Closed"); // modal has closed
-  }}
-/>;
-```
-
-### Core Module
-
-Add Web3Connect Core to your Dapp as follows
+3. Then you can add Web3Connect to your Dapp as follows
 
 ```js
 import Web3Connect from "web3connect";
@@ -352,9 +324,27 @@ interface IProviderCallback {
 
 ## Optional Flags
 
-You can enable the following optional flags:
+### Disable Injected Provider
 
-- disableInjectedProvider: disable displaying injected provider as an option (default: false)
+By default is set to `false` and Web3Connect always displays InjectedProvider as an option to the user if available. However you can disable it as an optional flag if you desire:
+
+```javascript
+const web3Connect = new Web3Connect.Core({ disableInjectedProvider: true });
+```
+
+### Cache Provider
+
+By default is set to `false` and Web3Connect will always require the user to choose a provider option before triggering the onConnect event. However you can enable caching the last chosen provider. Example:
+
+```javascript
+const web3Connect = new Web3Connect.Core({ cacheProvider: true });
+```
+
+If you wish to reset the cached provider you can call the following method:
+
+```typescript
+web3Connect.clearCachedProvider();
+```
 
 ## Adding a new provider
 

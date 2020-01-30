@@ -1,7 +1,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import Modal from "../components/Modal";
-import { IProviderOptions, IProviderCallback } from "../helpers/types";
+import {
+  ICoreOptions,
+  IProviderCallback,
+  ICacheProviderOptions
+} from "../helpers/types";
 
 import EventController from "./controllers/events";
 import ProviderController from "./controllers/providers";
@@ -12,13 +16,14 @@ import {
   CLOSE_EVENT
 } from "../helpers/constants";
 
-interface ICoreOptions {
-  network: string;
-  lightboxOpacity: number;
-  providerOptions: IProviderOptions;
-}
-
 const INITIAL_STATE = { show: false };
+
+const defaultOpts = {
+  lightboxOpacity: 0.4,
+  cacheProvider: false,
+  providerOptions: {},
+  network: ""
+};
 
 class Core {
   private show: boolean = INITIAL_STATE.show;
@@ -29,15 +34,14 @@ class Core {
 
   constructor(opts?: Partial<ICoreOptions>) {
     const options: ICoreOptions = {
-      lightboxOpacity: 0.4,
-      providerOptions: {},
-      network: "",
+      ...defaultOpts,
       ...opts
     };
 
     this.lightboxOpacity = options.lightboxOpacity;
 
     this.providerController = new ProviderController({
+      cacheProvider: options.cacheProvider,
       providerOptions: options.providerOptions,
       network: options.network
     });
@@ -51,7 +55,19 @@ class Core {
     this.renderModal();
   }
 
+  get cachedProvider(): string {
+    return this.providerController.cachedProvider;
+  }
+
+  get shouldCacheProvider(): boolean | ICacheProviderOptions {
+    return this.providerController.shouldCacheProvider;
+  }
+
   // --------------- PUBLIC METHODS --------------- //
+
+  public clearCachedProvider(): void {
+    this.providerController.clearCachedProvider();
+  }
 
   public on(event: string, callback: (result: any) => void): () => void {
     this.eventController.on({
@@ -74,6 +90,10 @@ class Core {
   }
 
   public toggleModal = async () => {
+    if (this.shouldCacheProvider === true && this.cachedProvider) {
+      await this.providerController.connectToCachedProvider();
+      return;
+    }
     if (
       this.providers &&
       this.providers.length === 1 &&
@@ -82,17 +102,7 @@ class Core {
       await this.providers[0].onClick();
       return;
     }
-
-    const d = typeof window !== "undefined" ? document : "";
-    const body = d ? d.body || d.getElementsByTagName("body")[0] : "";
-    if (body) {
-      if (this.show) {
-        body.style.overflow = "";
-      } else {
-        body.style.overflow = "hidden";
-      }
-    }
-    await this.updateState({ show: !this.show });
+    await this._toggleModal();
   };
 
   public renderModal() {
@@ -113,23 +123,36 @@ class Core {
 
   // --------------- PRIVATE METHODS --------------- //
 
+  private _toggleModal = async () => {
+    const d = typeof window !== "undefined" ? document : "";
+    const body = d ? d.body || d.getElementsByTagName("body")[0] : "";
+    if (body) {
+      if (this.show) {
+        body.style.overflow = "";
+      } else {
+        body.style.overflow = "hidden";
+      }
+    }
+    await this.updateState({ show: !this.show });
+  };
+
   private onError = async (error: any) => {
     if (this.show) {
-      await this.toggleModal();
+      await this._toggleModal();
     }
     this.eventController.trigger(ERROR_EVENT, error);
   };
 
   private onConnect = async (provider: any) => {
     if (this.show) {
-      await this.toggleModal();
+      await this._toggleModal();
     }
     this.eventController.trigger(CONNECT_EVENT, provider);
   };
 
   private onClose = async () => {
     if (this.show) {
-      await this.toggleModal();
+      await this._toggleModal();
     }
     this.eventController.trigger(CLOSE_EVENT);
   };

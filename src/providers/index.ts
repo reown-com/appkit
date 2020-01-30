@@ -127,7 +127,7 @@ export const BURNERCONNECT_PROVIDER: IProviderInfo = {
   type: "web",
   check: "isBurnerProvider",
   styled: {
-    noShadow: false
+    noShadow: true
   },
   package: {
     required: []
