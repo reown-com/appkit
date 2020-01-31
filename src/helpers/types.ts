@@ -19,6 +19,11 @@ export interface IProviderControllerOptions {
   network: string;
 }
 
+export interface IInjectedProvidersMap {
+  injectedAvailable: boolean;
+  [isProviderName: string]: boolean;
+}
+
 export interface IProviderInfo {
   id: string;
   name: string;
@@ -27,6 +32,10 @@ export interface IProviderInfo {
   check: string;
   package: IProviderPackageOptions;
   styled: IProviderStyledOptions;
+}
+
+export interface IProviderPackageOptions {
+  required: string[];
 }
 
 export interface IProviderStyledOptions {
@@ -40,23 +49,6 @@ export interface IProviderOptions {
   };
 }
 
-export type SimpleFunction = (input?: any) => void;
-
-export interface IEventCallback {
-  event: string;
-  callback: (result: any) => void;
-}
-
-export interface IInjectedProvidersMap {
-  injectedAvailable: boolean;
-  [isProviderName: string]: boolean;
-}
-
-export interface IProviderCallback {
-  name: string | null;
-  onClick: () => Promise<void>;
-}
-
 export interface IProviderMappingEntry {
   id: string;
   name: string;
@@ -64,6 +56,14 @@ export interface IProviderMappingEntry {
   package: IProviderPackageOptions;
 }
 
-export interface IProviderPackageOptions {
-  required: string[];
+export interface IProviderCallback {
+  name: string | null;
+  onClick: () => Promise<void>;
+}
+
+export type SimpleFunction = (input?: any) => void;
+
+export interface IEventCallback {
+  event: string;
+  callback: (result: any) => void;
 }

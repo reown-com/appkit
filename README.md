@@ -50,6 +50,7 @@ See Providers Options Section for each provider
 3. Then you can add Web3Connect to your Dapp as follows
 
 ```js
+import Web3 from "web3";
 import Web3Connect from "web3connect";
 
 const providerOptions = {
@@ -58,20 +59,13 @@ const providerOptions = {
 
 const web3Connect = new Web3Connect.Core({
   network: "mainnet", // optional
-  providerOptions: providerOptions
+  cacheProvider: true, // optional
+  providerOptions // required
 });
 
-// subscribe to connect
-web3Connect.on("connect", (provider: any) => {
-  const web3 = new Web3(provider); // add provider to web3
-});
+const provider = await web3Connect.connect();
 
-// subscribe to close
-web3Connect.on("close", () => {
-  console.log("Web3Connect Modal Closed"); // modal has closed
-});
-
-web3Connect.toggleModal(); // open modal on button click
+const web = new Web3(provider);
 ```
 
 ## Provider Options
@@ -305,37 +299,46 @@ function getInjectedProviderName(): string | null;
 function getProviderInfoByName(name: string | null): IProviderInfo;
 function getProviderInfo(provider: any): IProviderInfo;
 function isMobile(): boolean;
-function formatProviderDescription(providerInfo: IProviderInfo);
 ```
 
 ## Types
 
 ```typescript
-interface IProviderInfo {
-  name: string;
-  type: string;
-  logo: string;
-  check: string;
-  styled: {
-    [prop: string]: any;
-  };
-}
-
-interface IProviderOptions {
-  [providerName: string]: {
-    package: any;
-    options: any;
-  };
-}
-
 interface IInjectedProvidersMap {
   injectedAvailable: boolean;
   [isProviderName: string]: boolean;
 }
 
-interface IProviderCallback {
-  name: string | null;
-  onClick: () => Promise<void>;
+interface IProviderInfo {
+  id: string;
+  name: string;
+  type: string;
+  logo: string;
+  check: string;
+  package: IProviderPackageOptions;
+  styled: IProviderStyledOptions;
+}
+
+interface IProviderPackageOptions {
+  required: string[];
+}
+
+interface IProviderStyledOptions {
+  [prop: string]: any;
+}
+
+interface IProviderOptions {
+  [id: string]: {
+    package: any;
+    options: any;
+  };
+}
+
+interface IProviderMappingEntry {
+  id: string;
+  name: string;
+  connector: any;
+  package: IProviderPackageOptions;
 }
 ```
 

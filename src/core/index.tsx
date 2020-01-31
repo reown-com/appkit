@@ -105,6 +105,11 @@ class Core {
     await this._toggleModal();
   };
 
+  public connect = () =>  new Promise(async (resolve, reject) => {
+    await this.toggleModal()
+    this.on('connect', (provider) => resolve(provider))
+  })
+
   public renderModal() {
     const el = document.createElement("div");
     el.id = WEB3_CONNECT_MODAL_ID;
