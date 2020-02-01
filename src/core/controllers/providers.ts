@@ -1,5 +1,4 @@
 import {
-  ICacheProviderOptions,
   IProviderControllerOptions,
   IProviderOptions,
   IProviderMappingEntry
@@ -17,7 +16,7 @@ import { getLocal, setLocal, removeLocal } from "../../helpers/local";
 
 class ProviderController {
   public cachedProvider: string = "";
-  public shouldCacheProvider: boolean | ICacheProviderOptions = false;
+  public shouldCacheProvider: boolean = false;
 
   private eventController: EventController = new EventController();
   private injectedProvider: string | null = null;
@@ -156,7 +155,7 @@ class ProviderController {
       const opts = { network: this.network || undefined, ...providerOptions };
       const provider = await connector(providerPackage, opts);
       this.eventController.trigger(CONNECT_EVENT, provider);
-      if (this.shouldCacheProvider) {
+      if (this.shouldCacheProvider && this.cachedProvider !== id) {
         this.setCachedProvider(id);
       }
     } catch (error) {

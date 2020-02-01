@@ -379,6 +379,14 @@ If you wish to reset the cached provider you can call the following method:
 web3Connect.clearCachedProvider();
 ```
 
+If you wish to connect to the cachedProvider you can simply do the following:
+
+```typescript
+if (web3Connect.cachedProvider) {
+  await web3Connect.connect();
+}
+```
+
 ## Adding a new provider
 
 Do you want to add your provider to Web3Connect? All logic for supported providers lives inside the `src/providers` directory. To add a new follow the following steps [here](ADDING_PROVIDERS.md)

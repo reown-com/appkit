@@ -201,12 +201,17 @@ class App extends React.Component<any, any> {
     this.state = {
       ...INITIAL_STATE
     }
-
     this.web3Connect = new Web3Connect.Core({
       network: this.getNetwork(),
       cacheProvider: true,
       providerOptions
     })
+  }
+
+  public componentDidMount() {
+    if (this.web3Connect.cachedProvider) {
+      this.onConnect()
+    }
   }
 
   public onConnect = async () => {
@@ -422,7 +427,6 @@ class App extends React.Component<any, any> {
   public resetApp = async () => {
     const { web3 } = this.state
     if (web3 && web3.currentProvider && web3.currentProvider.close) {
-      console.log('web3.currentProvider', web3.currentProvider) // tslint:disable-line
       await web3.currentProvider.close()
     }
     await this.web3Connect.clearCachedProvider()

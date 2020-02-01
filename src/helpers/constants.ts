@@ -9,11 +9,6 @@ export const CONNECT_EVENT = "connect";
 export const ERROR_EVENT = "error";
 export const CLOSE_EVENT = "close";
 
-// CacheProvider Options
-
-export const ONLOAD = "onload";
-export const ONCLICK = "onclick";
-
 // CSS ClassNames
 
 export const MODAL_LIGHTBOX_CLASSNAME = "web3connect-modal-lightbox";

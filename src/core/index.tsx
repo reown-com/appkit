@@ -1,11 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import Modal from "../components/Modal";
-import {
-  ICoreOptions,
-  IProviderCallback,
-  ICacheProviderOptions
-} from "../helpers/types";
+import { ICoreOptions, IProviderCallback } from "../helpers/types";
 
 import EventController from "./controllers/events";
 import ProviderController from "./controllers/providers";
@@ -59,10 +55,6 @@ class Core {
     return this.providerController.cachedProvider;
   }
 
-  get shouldCacheProvider(): boolean | ICacheProviderOptions {
-    return this.providerController.shouldCacheProvider;
-  }
-
   // --------------- PUBLIC METHODS --------------- //
 
   public clearCachedProvider(): void {
@@ -94,7 +86,7 @@ class Core {
   }
 
   public toggleModal = async () => {
-    if (this.shouldCacheProvider === true && this.cachedProvider) {
+    if (this.cachedProvider) {
       await this.providerController.connectToCachedProvider();
       return;
     }
@@ -111,8 +103,8 @@ class Core {
 
   public connect = () =>
     new Promise(async (resolve, reject) => {
+      this.on(CONNECT_EVENT, provider => resolve(provider));
       await this.toggleModal();
-      this.on("connect", provider => resolve(provider));
     });
 
   public renderModal() {
