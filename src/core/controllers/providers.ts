@@ -141,13 +141,17 @@ class ProviderController {
     removeLocal(CACHED_PROVIDER_KEY);
   }
 
+  public setCachedProvider(id: string) {
+    this.cachedProvider = id;
+    setLocal(CACHED_PROVIDER_KEY, id);
+  }
+
   public connectTo = async (
     id: string,
     connector: (providerPackage: any, opts: any) => Promise<any>
   ) => {
     if (this.shouldCacheProvider) {
-      this.cachedProvider = id;
-      setLocal(CACHED_PROVIDER_KEY, id);
+      this.setCachedProvider(id);
     }
     try {
       const providerPackage = this.getProviderOption(id, "package");

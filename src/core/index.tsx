@@ -69,6 +69,10 @@ class Core {
     this.providerController.clearCachedProvider();
   }
 
+  public setCachedProvider(id: string): void {
+    this.providerController.setCachedProvider(id);
+  }
+
   public on(event: string, callback: (result: any) => void): () => void {
     this.eventController.on({
       event,
@@ -105,10 +109,11 @@ class Core {
     await this._toggleModal();
   };
 
-  public connect = () =>  new Promise(async (resolve, reject) => {
-    await this.toggleModal()
-    this.on('connect', (provider) => resolve(provider))
-  })
+  public connect = () =>
+    new Promise(async (resolve, reject) => {
+      await this.toggleModal();
+      this.on("connect", provider => resolve(provider));
+    });
 
   public renderModal() {
     const el = document.createElement("div");
