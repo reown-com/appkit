@@ -46,7 +46,8 @@
     "test": "mocha --require ./babel-polyfill.js test/**/*.spec.js",
     "lint": "tslint ./src/*.ts ./src/**/*.ts",
     "format": "prettier ./src/*.ts ./src/**/*.ts --write",
-    "check": "npm run clean && npm run lint && npm run format && npm run build && npm run test",
+    "zip": "node ./scripts/zip.js",
+    "check": "npm run clean && npm run lint && npm run format && npm run build && npm run test && npm run zip",
     "routine": "npm run clean:all && npm run bootstrap && npm run check"
   },
   "devDependencies": {
