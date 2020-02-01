@@ -21,6 +21,7 @@ interface IButtonStyleProps {
 interface IButtonProps extends IButtonStyleProps {
   children: React.ReactNode;
   onClick?: any;
+  className?: string;
 }
 
 const SHoverLayer = styled.div`

@@ -1,6 +1,7 @@
 import * as React from "react";
 import Button from "./Button";
 import Core from "../core";
+import { CONNECT_BUTTON_CLASSNAME } from "../helpers/constants";
 
 class ConnectButton extends React.Component<any, any> {
   public core: Core;
@@ -20,7 +21,10 @@ class ConnectButton extends React.Component<any, any> {
 
   public render = () => {
     return (
-      <Button onClick={this.core.toggleModal}>
+      <Button
+        className={CONNECT_BUTTON_CLASSNAME}
+        onClick={this.core.toggleModal}
+      >
         {this.props.label || "Connect"}
       </Button>
     );

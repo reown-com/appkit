@@ -5,6 +5,13 @@ import {
   formatProviderDescription
 } from "../helpers/utils";
 import { SIcon, STitle, SDescription } from "./common";
+import {
+  PROVIDER_WRAPPER_CLASSNAME,
+  PROVIDER_CONTAINER_CLASSNAME,
+  PROVIDER_ICON_CLASSNAME,
+  PROVIDER_NAME_CLASSNAME,
+  PROVIDER_DESCRIPTION_CLASSNAME
+} from "../helpers/constants";
 
 const SProviderContainer = styled.div`
   transition: background-color 0.2s ease-in-out;
@@ -28,7 +35,7 @@ const SName = styled(STitle)`
   }
 `;
 
-const SProvider = styled.div`
+const SProviderWrapper = styled.div`
   width: 100%;
   padding: 8px;
   display: flex;
@@ -55,15 +62,24 @@ const Provider = (props: IProviderProps) => {
   const providerInfo = getProviderInfoByName(name);
   const description = formatProviderDescription(providerInfo);
   return (
-    <SProvider onClick={onClick} {...otherProps}>
-      <SProviderContainer>
-        <SIcon noShadow={providerInfo.styled.noShadow}>
+    <SProviderWrapper
+      className={PROVIDER_WRAPPER_CLASSNAME}
+      onClick={onClick}
+      {...otherProps}
+    >
+      <SProviderContainer className={PROVIDER_CONTAINER_CLASSNAME}>
+        <SIcon
+          className={PROVIDER_ICON_CLASSNAME}
+          noShadow={providerInfo.styled.noShadow}
+        >
           <img src={providerInfo.logo} alt={providerInfo.name} />
         </SIcon>
-        <SName>{providerInfo.name}</SName>
-        <SDescription>{description}</SDescription>
+        <SName className={PROVIDER_NAME_CLASSNAME}>{providerInfo.name}</SName>
+        <SDescription className={PROVIDER_DESCRIPTION_CLASSNAME}>
+          {description}
+        </SDescription>
       </SProviderContainer>
-    </SProvider>
+    </SProviderWrapper>
   );
 };
 

@@ -3,6 +3,12 @@ import * as PropTypes from "prop-types";
 import styled from "styled-components";
 import Provider from "./Provider";
 import { SimpleFunction, IProviderCallback } from "../helpers/types";
+import {
+  MODAL_LIGHTBOX_CLASSNAME,
+  MODAL_CONTAINER_CLASSNAME,
+  MODAL_HITBOX_CLASSNAME,
+  MODAL_CARD_CLASSNAME
+} from "../helpers/constants";
 
 declare global {
   // tslint:disable-next-line
@@ -163,14 +169,16 @@ class Modal extends React.Component<IModalProps, IModalState> {
 
     return (
       <SLightbox
+        className={MODAL_LIGHTBOX_CLASSNAME}
         offset={lightboxOffset}
         opacity={lightboxOpacity}
         ref={c => (this.lightboxRef = c)}
         show={show}
       >
-        <SModalContainer show={show}>
-          <SHitbox onClick={onClose} />
+        <SModalContainer className={MODAL_CONTAINER_CLASSNAME} show={show}>
+          <SHitbox className={MODAL_HITBOX_CLASSNAME} onClick={onClose} />
           <SModalCard
+            className={MODAL_CARD_CLASSNAME}
             show={show}
             maxWidth={providers.length < 3 ? 500 : 800}
             ref={c => (this.mainModalCard = c)}
