@@ -53,9 +53,7 @@ const providerOptions = {
   },
   burnerconnect: {
     package: BurnerConnectProvider,
-    options: {
-      defaultNetwork: '100'
-    }
+    options: {}
   },
   authereum: {
     package: Authereum,
