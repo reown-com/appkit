@@ -195,7 +195,7 @@ function initWeb3(provider: any) {
 
 class App extends React.Component<any, any> {
   // @ts-ignore
-  public core: Web3Connect.Core
+  public web3Connect: Web3Connect.Core
   public state: IAppState
 
   constructor(props: any) {
@@ -204,15 +204,16 @@ class App extends React.Component<any, any> {
       ...INITIAL_STATE
     }
 
-    this.core = new Web3Connect.Core({
+    this.web3Connect = new Web3Connect.Core({
+      network: this.getNetwork(),
       cacheProvider: true,
-      providerOptions,
-      network: this.getNetwork()
+      providerOptions
     })
-    this.core.on('connect', this.onConnect)
   }
 
-  public onConnect = async (provider: any) => {
+  public onConnect = async () => {
+    const provider = await this.web3Connect.connect()
+
     await this.subscribeProvider(provider)
 
     const web3: any = initWeb3(provider)
@@ -426,7 +427,7 @@ class App extends React.Component<any, any> {
       console.log('web3.currentProvider', web3.currentProvider) // tslint:disable-line
       await web3.currentProvider.close()
     }
-    await this.core.clearCachedProvider()
+    await this.web3Connect.clearCachedProvider()
     this.setState({ ...INITIAL_STATE })
   }
 
@@ -481,7 +482,7 @@ class App extends React.Component<any, any> {
             ) : (
               <SLanding center>
                 <h3>{`Test Web3Connect`}</h3>
-                <ConnectButton onClick={this.core.toggleModal} />
+                <ConnectButton onClick={this.onConnect} />
               </SLanding>
             )}
           </SContent>
