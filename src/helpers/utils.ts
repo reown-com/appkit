@@ -28,6 +28,12 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
         result["isNiftyWallet"] = true;
       }
     }
+    if (result["isCipher"]) {
+      if (window.web3.currentProvider.isToshi) {
+        result["isCipher"] = false;
+        result["isToshi"] = true;
+      }
+    }
     if (fallbackProvider) {
       result["isWeb3"] = true;
     }
