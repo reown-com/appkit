@@ -307,6 +307,7 @@ const providerOptions = {
 
 ```typescript
 function checkInjectedProviders(): IInjectedProvidersMap;
+function verifyInjectedProvider(check: string): boolean;
 function getInjectedProviderName(): string | null;
 function getProviderInfoByName(name: string | null): IProviderInfo;
 function getProviderInfo(provider: any): IProviderInfo;

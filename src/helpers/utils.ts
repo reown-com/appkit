@@ -8,28 +8,21 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
   if (result.injectedAvailable) {
     let fallbackProvider = true;
     providers.forEach(provider => {
-      result[provider.check] = window.ethereum
-        ? window.ethereum[provider.check] ||
-          (window.web3 && window.web3.currentProvider)
-          ? window.web3
-            ? window.web3.currentProvider[provider.check]
-            : true
-          : false
-        : window.web3 && window.web3.currentProvider
-        ? window.web3.currentProvider[provider.check]
-        : false;
+      result[provider.check] = verifyInjectedProvider(provider.check);
       if (result[provider.check] === true) {
         fallbackProvider = false;
       }
     });
+    // Nitfy Wallet fix
     if (result["isMetamask"]) {
-      if (window.web3.currentProvider.isNiftyWallet) {
+      if (verifyInjectedProvider("isNiftyWallet")) {
         result["isMetamask"] = false;
         result["isNiftyWallet"] = true;
       }
     }
+    // Coinbase Wallet fix
     if (result["isCipher"]) {
-      if (window.web3.currentProvider.isToshi) {
+      if (verifyInjectedProvider("isToshi")) {
         result["isCipher"] = false;
         result["isToshi"] = true;
       }
@@ -40,6 +33,18 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
   }
 
   return result;
+}
+
+export function verifyInjectedProvider(check: string): boolean {
+  return window.ethereum
+    ? window.ethereum[check] || (window.web3 && window.web3.currentProvider)
+      ? window.web3
+        ? window.web3.currentProvider[check]
+        : true
+      : false
+    : window.web3 && window.web3.currentProvider
+    ? window.web3.currentProvider[check]
+    : false;
 }
 
 export function getInjectedProviderName(): string | null {
