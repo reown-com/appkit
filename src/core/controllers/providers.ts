@@ -150,15 +150,15 @@ class ProviderController {
     id: string,
     connector: (providerPackage: any, opts: any) => Promise<any>
   ) => {
-    if (this.shouldCacheProvider) {
-      this.setCachedProvider(id);
-    }
     try {
       const providerPackage = this.getProviderOption(id, "package");
       const providerOptions = this.getProviderOption(id, "options");
       const opts = { network: this.network || undefined, ...providerOptions };
       const provider = await connector(providerPackage, opts);
       this.eventController.trigger(CONNECT_EVENT, provider);
+      if (this.shouldCacheProvider) {
+        this.setCachedProvider(id);
+      }
     } catch (error) {
       this.eventController.trigger(ERROR_EVENT);
     }
