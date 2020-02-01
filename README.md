@@ -99,6 +99,8 @@ const providerOptions = {
 };
 ```
 
+**Note:** A WalletConnect instance is available on the provider as `provider.wc`
+
 ### Portis
 
 1. Install Provider Package
@@ -125,6 +127,8 @@ const providerOptions = {
   }
 };
 ```
+
+**Note:** A Portis instance is available on the provider as `provider._portis`
 
 ### Fortmatic
 
@@ -153,6 +157,8 @@ const providerOptions = {
 };
 ```
 
+**Note:** A Fortmatic instance is available on the provider as `provider.fm`
+
 ### Squarelink
 
 1. Install Provider Package
@@ -179,6 +185,8 @@ const providerOptions = {
   }
 };
 ```
+
+**Note:** A Squarelink instance is available on the provider as `provider.sqlk`
 
 ### Torus
 
@@ -213,6 +221,8 @@ const providerOptions = {
   }
 };
 ```
+
+**Note:** A Torus instance is available on the provider as `provider.torus`
 
 ### Arkane
 
@@ -265,6 +275,8 @@ const providerOptions = {
   }
 };
 ```
+
+**Note:** An Authereum instance is available on the provider as `provider.authereum`
 
 ### BurnerConnect
 
