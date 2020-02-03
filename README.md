@@ -26,6 +26,7 @@ _Open a PR to add your project to the list!_
 - [Affogato](https://affogato.co/)
 - [Linkdrop](https://dashboard.linkdrop.io/)
 - [Dapparatus](https://github.com/austintgriffith/dapparatus/)
+- [Totle Swap](https://swap.totle.com/)
 
 ## Related Efforts
 
