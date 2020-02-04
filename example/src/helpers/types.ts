@@ -14,6 +14,7 @@ export interface IChainData {
   chain_id: number
   network_id: number
   rpc_url: string
+  native_currency: IAssetData
 }
 
 export interface ITxData {
