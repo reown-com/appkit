@@ -1,5 +1,6 @@
+import { chainList } from "./chains";
 import { providers, FALLBACK } from "../providers";
-import { IProviderInfo, IInjectedProvidersMap } from "./types";
+import { IProviderInfo, IInjectedProvidersMap, ChainData } from "./types";
 
 export function checkInjectedProviders(): IInjectedProvidersMap {
   const result = {
@@ -143,4 +144,13 @@ export function formatProviderDescription(providerInfo: IProviderInfo): string {
       break;
   }
   return description;
+}
+
+export function getChainId(network: string): number {
+  const chains: ChainData[] = Object.values(chainList);
+  const matches = chains.filter(chain => chain.network === network);
+  if (matches && matches.length) {
+    return matches[0].chainId;
+  }
+  return 0;
 }
