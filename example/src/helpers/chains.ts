@@ -8,7 +8,7 @@ const supportedChains: IChainData[] = [
     network: 'mainnet',
     chain_id: 1,
     network_id: 1,
-    rpc_url: 'https://mainnet.infura.io/v3/INFURA_ID',
+    rpc_url: 'https://mainnet.infura.io/v3/%API_KEY%',
     native_currency: {
       symbol: 'ETH',
       name: 'Ethereum',
@@ -24,7 +24,7 @@ const supportedChains: IChainData[] = [
     network: 'ropsten',
     chain_id: 3,
     network_id: 3,
-    rpc_url: 'https://ropsten.infura.io/v3/INFURA_ID',
+    rpc_url: 'https://ropsten.infura.io/v3/%API_KEY%',
     native_currency: {
       symbol: 'ETH',
       name: 'Ethereum',
@@ -40,7 +40,7 @@ const supportedChains: IChainData[] = [
     network: 'rinkeby',
     chain_id: 4,
     network_id: 4,
-    rpc_url: 'https://rinkeby.infura.io/v3/INFURA_ID',
+    rpc_url: 'https://rinkeby.infura.io/v3/%API_KEY%',
     native_currency: {
       symbol: 'ETH',
       name: 'Ethereum',
@@ -56,7 +56,7 @@ const supportedChains: IChainData[] = [
     network: 'goerli',
     chain_id: 5,
     network_id: 5,
-    rpc_url: 'https://goerli.infura.io/v3/INFURA_ID',
+    rpc_url: 'https://goerli.infura.io/v3/%API_KEY%',
     native_currency: {
       symbol: 'ETH',
       name: 'Ethereum',
@@ -88,7 +88,7 @@ const supportedChains: IChainData[] = [
     network: 'kovan',
     chain_id: 42,
     network_id: 42,
-    rpc_url: 'https://kovan.infura.io/v3/INFURA_ID',
+    rpc_url: 'https://kovan.infura.io/v3/%API_KEY%',
     native_currency: {
       symbol: 'ETH',
       name: 'Ethereum',
