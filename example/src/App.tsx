@@ -9,8 +9,8 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 import Portis from '@portis/web3'
 // @ts-ignore
 import Fortmatic from 'fortmatic'
-// import LedgerProvider from '@web3connect/ledger-provider'
-// import TrezorProvider from '@web3connect/trezor-provider'
+import LedgerProvider from '@web3connect/ledger-provider'
+import TrezorProvider from '@web3connect/trezor-provider'
 
 import Button from './components/Button'
 import Column from './components/Column'
@@ -235,7 +235,7 @@ class App extends React.Component<any, any> {
   public getNetwork = () => getChainData(this.state.chainId).network
 
   public getProviderOptions = () => {
-    // const rpcUrl = getChainData(this.state.chainId).rpc_url
+    const rpcUrl = getChainData(this.state.chainId).rpc_url
     const providerOptions = {
       walletconnect: {
         package: WalletConnectProvider,
@@ -254,21 +254,21 @@ class App extends React.Component<any, any> {
         options: {
           key: process.env.REACT_APP_FORTMATIC_KEY
         }
+      },
+      ledger: {
+        package: LedgerProvider,
+        options: {
+          rpcUrl
+        }
+      },
+      trezor: {
+        package: TrezorProvider,
+        options: {
+          rpcUrl,
+          manifestEmail: 'example@web3connect.com',
+          manifestAppUrl: 'https://web3connect.com'
+        }
       }
-      // ledger: {
-      //   package: LedgerProvider,
-      //   options: {
-      //     rpcUrl
-      //   }
-      // },
-      // trezor: {
-      //   package: TrezorProvider,
-      //   options: {
-      //     rpcUrl,
-      //     manifestEmail: 'example@web3connect.com',
-      //     manifestAppUrl: 'https://web3connect.com'
-      //   }
-      // }
     }
     return providerOptions
   }
