@@ -303,6 +303,62 @@ const providerOptions = {
 };
 ```
 
+### Ledger
+
+1. Install Provider Package
+
+```bash
+npm install --save @web3connect/ledger-provider
+
+# OR
+
+yarn add @web3connect/ledger-provider
+```
+
+2. Set Provider Options
+
+```typescript
+import LedgerProvider from "@web3connect/ledger-provider";
+
+const providerOptions = {
+  ledger: {
+    package: LedgerProvider, // required
+    options: {
+      rpcUrl: "INSERT_RPC_URL" // required
+    }
+  }
+};
+```
+
+### Trezor
+
+1. Install Provider Package
+
+```bash
+npm install --save @web3connect/trezor-provider
+
+# OR
+
+yarn add @web3connect/trezor-provider
+```
+
+2. Set Provider Options
+
+```typescript
+import TrezorProvider from "@web3connect/trezor-provider";
+
+const providerOptions = {
+  trezor: {
+    package: TrezorProvider, // required
+    options: {
+      rpcUrl: "INSERT_RPC_URL", // required
+      manifestEmail: "INSERT_MANIFEST_EMAIL", // required
+      manifestAppUrl: "INSERT_MANIFEST_APP_URL" // required
+    }
+  }
+};
+```
+
 ## Utils
 
 ```typescript

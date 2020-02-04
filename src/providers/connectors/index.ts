@@ -7,6 +7,8 @@ import squarelink from "./squarelink";
 import arkane from "./arkane";
 import authereum from "./authereum";
 import burnerconnect from "./burnerconnect";
+import ledger from "./ledger";
+import trezor from "./trezor";
 
 export default {
   injected,
@@ -18,4 +20,6 @@ export default {
   arkane,
   authereum,
   burnerconnect,
+  ledger,
+  trezor
 };

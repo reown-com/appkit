@@ -19,6 +19,10 @@ import TorusLogo from "./logos/torus.png";
 import AuthereumLogo from "./logos/authereum.svg";
 // @ts-ignore
 import BurnerWalletLogo from "./logos/burnerwallet.png";
+// @ts-ignore
+import LedgerLogo from "./logos/ledger.jpg";
+// @ts-ignore
+import TrezorLogo from "./logos/trezor.jpg";
 
 export const FALLBACK = FALLBACK_INJECTED;
 
@@ -134,6 +138,34 @@ export const BURNERCONNECT_PROVIDER: IProviderInfo = {
   }
 };
 
+export const LEDGER_PROVIDER: IProviderInfo = {
+  id: "ledger",
+  name: "Ledger",
+  logo: LedgerLogo,
+  type: "hardware",
+  check: "isLedger",
+  styled: {
+    noShadow: false
+  },
+  package: {
+    required: ["rpcUrl"]
+  }
+};
+
+export const TREZOR_PROVIDER: IProviderInfo = {
+  id: "trezor",
+  name: "Trezor",
+  logo: TrezorLogo,
+  type: "hardware",
+  check: "isTrezor",
+  styled: {
+    noShadow: false
+  },
+  package: {
+    required: ["rpcUrl", "manifestEmail", "manifestAppUrl"]
+  }
+};
+
 export const providers: IProviderInfo[] = [
   ...injected,
   WALLETCONNECT_PROVIDER,
@@ -143,7 +175,9 @@ export const providers: IProviderInfo[] = [
   ARKANE_PROVIDER,
   TORUS_PROVIDER,
   AUTHEREUM_PROVIDER,
-  BURNERCONNECT_PROVIDER
+  BURNERCONNECT_PROVIDER,
+  LEDGER_PROVIDER,
+  TREZOR_PROVIDER
 ];
 
 export const providerMapping: IProviderMappingEntry[] = [
@@ -200,5 +234,17 @@ export const providerMapping: IProviderMappingEntry[] = [
     name: BURNERCONNECT_PROVIDER.name,
     connector: connectors.burnerconnect,
     package: BURNERCONNECT_PROVIDER.package
+  },
+  {
+    id: LEDGER_PROVIDER.id,
+    name: LEDGER_PROVIDER.name,
+    connector: connectors.ledger,
+    package: LEDGER_PROVIDER.package
+  },
+  {
+    id: TREZOR_PROVIDER.id,
+    name: TREZOR_PROVIDER.name,
+    connector: connectors.trezor,
+    package: TREZOR_PROVIDER.package
   }
 ];
