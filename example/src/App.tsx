@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import Web3 from 'web3'
+import { convertUtf8ToHex } from '@walletconnect/utils'
 
 import Web3Connect from 'web3connect'
 // @ts-ignore
@@ -8,11 +9,9 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 import Portis from '@portis/web3'
 // @ts-ignore
 import Fortmatic from 'fortmatic'
-import BurnerConnectProvider from '@burner-wallet/burner-connect-provider'
+// import LedgerProvider from '@web3connect/ledger-provider'
+// import TrezorProvider from '@web3connect/trezor-provider'
 
-import Authereum from 'authereum'
-
-import { convertUtf8ToHex } from '@walletconnect/utils'
 import Button from './components/Button'
 import Column from './components/Column'
 import Wrapper from './components/Wrapper'
@@ -21,6 +20,7 @@ import Header from './components/Header'
 import Loader from './components/Loader'
 import AccountAssets from './components/AccountAssets'
 import ConnectButton from './components/ConnectButton'
+
 import { apiGetAccountAssets } from './helpers/api'
 import {
   hashPersonalMessage,
@@ -30,36 +30,8 @@ import {
   getChainData
 } from './helpers/utilities'
 import { IAssetData } from './helpers/types'
-import { fonts } from './styles'
 
-const providerOptions = {
-  walletconnect: {
-    package: WalletConnectProvider,
-    options: {
-      infuraId: process.env.REACT_APP_INFURA_ID
-    }
-  },
-  portis: {
-    package: Portis,
-    options: {
-      id: process.env.REACT_APP_PORTIS_ID
-    }
-  },
-  fortmatic: {
-    package: Fortmatic,
-    options: {
-      key: process.env.REACT_APP_FORTMATIC_KEY
-    }
-  },
-  burnerconnect: {
-    package: BurnerConnectProvider,
-    options: {}
-  },
-  authereum: {
-    package: Authereum,
-    options: {}
-  }
-}
+import { fonts } from './styles'
 
 const SLayout = styled.div`
   position: relative;
@@ -204,7 +176,7 @@ class App extends React.Component<any, any> {
     this.web3Connect = new Web3Connect.Core({
       network: this.getNetwork(),
       cacheProvider: true,
-      providerOptions
+      providerOptions: this.getProviderOptions()
     })
   }
 
@@ -261,6 +233,45 @@ class App extends React.Component<any, any> {
   }
 
   public getNetwork = () => getChainData(this.state.chainId).network
+
+  public getProviderOptions = () => {
+    // const rpcUrl = getChainData(this.state.chainId).rpc_url
+    const providerOptions = {
+      walletconnect: {
+        package: WalletConnectProvider,
+        options: {
+          infuraId: process.env.REACT_APP_INFURA_ID
+        }
+      },
+      portis: {
+        package: Portis,
+        options: {
+          id: process.env.REACT_APP_PORTIS_ID
+        }
+      },
+      fortmatic: {
+        package: Fortmatic,
+        options: {
+          key: process.env.REACT_APP_FORTMATIC_KEY
+        }
+      }
+      // ledger: {
+      //   package: LedgerProvider,
+      //   options: {
+      //     rpcUrl
+      //   }
+      // },
+      // trezor: {
+      //   package: TrezorProvider,
+      //   options: {
+      //     rpcUrl,
+      //     manifestEmail: 'example@web3connect.com',
+      //     manifestAppUrl: 'https://web3connect.com'
+      //   }
+      // }
+    }
+    return providerOptions
+  }
 
   public getAccountAssets = async () => {
     const { address, chainId } = this.state
