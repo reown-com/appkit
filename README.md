@@ -46,7 +46,9 @@ yarn add web3connect
 
 2. Install Provider packages
 
-See Providers Options Section for each provider
+```js
+ /* See Provider Options Section */
+```
 
 3. Then you can add Web3Connect to your Dapp as follows
 
