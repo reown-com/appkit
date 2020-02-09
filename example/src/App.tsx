@@ -8,9 +8,6 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 import Portis from '@portis/web3'
 // @ts-ignore
 import Fortmatic from 'fortmatic'
-import BurnerConnectProvider from '@burner-wallet/burner-connect-provider'
-
-import Authereum from 'authereum'
 
 import { convertUtf8ToHex } from '@walletconnect/utils'
 import Button from './components/Button'
@@ -50,14 +47,6 @@ const providerOptions = {
     options: {
       key: process.env.REACT_APP_FORTMATIC_KEY
     }
-  },
-  burnerconnect: {
-    package: BurnerConnectProvider,
-    options: {}
-  },
-  authereum: {
-    package: Authereum,
-    options: {}
   }
 }
 
