@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@portis/web3": "^2.0.0-beta.54",
-    "@walletconnect/web3-provider": "^1.0.0-beta.46",
+    "@walletconnect/web3-provider": "^1.0.0-beta.47",
     "@web3connect/ledger-provider": "^1.1.0",
     "@web3connect/trezor-provider": "^1.1.0",
     "axios": "^0.18.0",
@@ -35,7 +35,7 @@
     "@types/react": "^16.7.20",
     "@types/react-dom": "^16.0.12",
     "@types/styled-components": "4.1.8",
-    "@types/web3": "^1.0.19",
+    "@types/web3": "^1.2.2",
     "typescript": "^3.2.2"
   },
   "browserslist": [

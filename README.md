@@ -26,6 +26,7 @@ _Open a PR to add your project to the list!_
 - [Affogato](https://affogato.co/)
 - [Linkdrop](https://dashboard.linkdrop.io/)
 - [Dapparatus](https://github.com/austintgriffith/dapparatus/)
+- [Totle Swap](https://swap.totle.com/)
 
 ## Related Efforts
 
@@ -45,7 +46,9 @@ yarn add web3connect
 
 2. Install Provider packages
 
-See Providers Options Section for each provider
+```js
+ /* See Provider Options Section */
+```
 
 3. Then you can add Web3Connect to your Dapp as follows
 
@@ -189,6 +192,8 @@ const providerOptions = {
 **Note:** A Squarelink instance is available on the provider as `provider.sqlk`
 
 ### Torus
+
+For more info please refer to Torus [documentation](https://docs.tor.us)
 
 1. Install Provider Package
 

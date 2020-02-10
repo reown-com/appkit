@@ -1,6 +1,12 @@
+interface Wallet {
+  origin: string;
+  name: string;
+}
+
 export interface IBurnerConnectorOptions {
   hubUrl?: string;
   defaultNetwork?: string;
+  defaultWallets?: Wallet[],
 }
 
 const ConnectToBurnerConnect = async (
