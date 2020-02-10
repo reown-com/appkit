@@ -8,6 +8,8 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 import Portis from '@portis/web3'
 // @ts-ignore
 import Fortmatic from 'fortmatic'
+import Torus from '@toruslabs/torus-embed'
+import Authereum from 'authereum'
 
 import { convertUtf8ToHex } from '@walletconnect/utils'
 import Button from './components/Button'
@@ -47,6 +49,14 @@ const providerOptions = {
     options: {
       key: process.env.REACT_APP_FORTMATIC_KEY
     }
+  },
+  torus: {
+    package: Torus,
+    options: {}
+  },
+  authereum: {
+    package: Authereum,
+    options: {}
   }
 }
 
