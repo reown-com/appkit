@@ -9,7 +9,7 @@ import Portis from '@portis/web3'
 // @ts-ignore
 import Fortmatic from 'fortmatic'
 import BurnerConnectProvider from '@burner-wallet/burner-connect-provider'
-
+import Torus from '@toruslabs/torus-embed'
 import Authereum from 'authereum'
 
 import { convertUtf8ToHex } from '@walletconnect/utils'
@@ -50,6 +50,10 @@ const providerOptions = {
     options: {
       key: process.env.REACT_APP_FORTMATIC_KEY
     }
+  },
+  torus: {
+    package: Torus,
+    options: {}
   },
   burnerconnect: {
     package: BurnerConnectProvider,
