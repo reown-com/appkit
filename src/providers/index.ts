@@ -85,7 +85,7 @@ export const TORUS_PROVIDER: IProviderInfo = {
   type: "web",
   check: "isTorus",
   styled: {
-    noShadow: false
+    noShadow: true
   },
   package: {
     required: []
