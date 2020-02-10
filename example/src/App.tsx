@@ -16,6 +16,7 @@ import Wrapper from './components/Wrapper'
 import Modal from './components/Modal'
 import Header from './components/Header'
 import Loader from './components/Loader'
+import ModalResult from './components/ModalResult'
 import AccountAssets from './components/AccountAssets'
 import ConnectButton from './components/ConnectButton'
 import { apiGetAccountAssets } from './helpers/api'
@@ -24,8 +25,7 @@ import {
   recoverPublicKey,
   recoverPersonalSignature,
   formatTestTransaction,
-  getChainData,
-  isObject
+  getChainData
 } from './helpers/utilities'
 import { IAssetData, IBoxProfile } from './helpers/types'
 import { fonts } from './styles'
@@ -104,32 +104,6 @@ const SBalances = styled(SLanding)`
   }
 `
 
-interface IResultTableStyleProps {
-  displayObject?: boolean
-}
-
-const STable = styled(SContainer)<IResultTableStyleProps>`
-  flex-direction: column;
-  min-height: ${({ displayObject }) => (displayObject ? 'auto' : '200px')};
-  text-align: left;
-`
-
-const SRow = styled.div<IResultTableStyleProps>`
-  width: 100%;
-  display: ${({ displayObject }) => (displayObject ? 'block' : 'flex')};
-  margin: 6px 0;
-`
-
-const SKey = styled.div<IResultTableStyleProps>`
-  width: ${({ displayObject }) => (displayObject ? '100%' : '30%')};
-  font-weight: 700;
-`
-
-const SValue = styled.div<IResultTableStyleProps>`
-  width: ${({ displayObject }) => (displayObject ? '100%' : '70%')};
-  font-family: monospace;
-`
-
 const STestButtonContainer = styled.div`
   width: 100%;
   display: flex;
@@ -146,34 +120,6 @@ const STestButton = styled(Button)`
   max-width: 175px;
   margin: 12px;
 `
-
-function ModalResult(props: any) {
-  if (!props.children) {
-    return null
-  }
-  const result = props.children
-  return (
-    <STable displayObject={props.displayObject}>
-      {Object.keys(result).map(key => {
-        const displayObject = isObject(result[key])
-        return (
-          <SRow displayObject={displayObject} key={key}>
-            <SKey displayObject={displayObject}>{key}</SKey>
-            <SValue displayObject={displayObject}>
-              {displayObject ? (
-                <ModalResult displayObject={displayObject}>
-                  {result[key]}
-                </ModalResult>
-              ) : (
-                result[key].toString()
-              )}
-            </SValue>
-          </SRow>
-        )
-      })}
-    </STable>
-  )
-}
 
 interface IAppState {
   fetching: boolean
