@@ -193,6 +193,8 @@ const providerOptions = {
 
 ### Torus
 
+For more info please refer to Torus [documentation](https://docs.tor.us)
+
 1. Install Provider Package
 
 ```bash
