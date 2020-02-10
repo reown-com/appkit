@@ -8,8 +8,10 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 import Portis from '@portis/web3'
 // @ts-ignore
 import Fortmatic from 'fortmatic'
-import Torus from '@toruslabs/torus-embed'
 import Authereum from 'authereum'
+// TODO: page won't load because of an error with @types/web3
+// tslint:disable-next-line:no-var-requires
+const Torus = require('@toruslabs/torus-embed')
 
 import { convertUtf8ToHex } from '@walletconnect/utils'
 import Button from './components/Button'
