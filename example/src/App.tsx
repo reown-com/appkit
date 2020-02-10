@@ -24,10 +24,14 @@ import {
   recoverPublicKey,
   recoverPersonalSignature,
   formatTestTransaction,
-  getChainData
+  getChainData,
+  isObject
 } from './helpers/utilities'
-import { IAssetData } from './helpers/types'
+import { IAssetData, IBoxProfile } from './helpers/types'
 import { fonts } from './styles'
+import { openBox, getProfile } from './helpers/box'
+import { FUNCTION_BALANCE_OF, FUNCTION_TRANSFER } from './constants'
+import { callBalanceOf, callTransfer } from './helpers/web3'
 
 const providerOptions = {
   walletconnect: {
@@ -100,24 +104,29 @@ const SBalances = styled(SLanding)`
   }
 `
 
-const STable = styled(SContainer)`
+interface IResultTableStyleProps {
+  displayObject?: boolean
+}
+
+const STable = styled(SContainer)<IResultTableStyleProps>`
   flex-direction: column;
+  min-height: ${({ displayObject }) => (displayObject ? 'auto' : '200px')};
   text-align: left;
 `
 
-const SRow = styled.div`
+const SRow = styled.div<IResultTableStyleProps>`
   width: 100%;
-  display: flex;
+  display: ${({ displayObject }) => (displayObject ? 'block' : 'flex')};
   margin: 6px 0;
 `
 
-const SKey = styled.div`
-  width: 30%;
+const SKey = styled.div<IResultTableStyleProps>`
+  width: ${({ displayObject }) => (displayObject ? '100%' : '30%')};
   font-weight: 700;
 `
 
-const SValue = styled.div`
-  width: 70%;
+const SValue = styled.div<IResultTableStyleProps>`
+  width: ${({ displayObject }) => (displayObject ? '100%' : '70%')};
   font-family: monospace;
 `
 
@@ -138,10 +147,39 @@ const STestButton = styled(Button)`
   margin: 12px;
 `
 
+function ModalResult(props: any) {
+  if (!props.children) {
+    return null
+  }
+  const result = props.children
+  return (
+    <STable displayObject={props.displayObject}>
+      {Object.keys(result).map(key => {
+        const displayObject = isObject(result[key])
+        return (
+          <SRow displayObject={displayObject} key={key}>
+            <SKey displayObject={displayObject}>{key}</SKey>
+            <SValue displayObject={displayObject}>
+              {displayObject ? (
+                <ModalResult displayObject={displayObject}>
+                  {result[key]}
+                </ModalResult>
+              ) : (
+                result[key].toString()
+              )}
+            </SValue>
+          </SRow>
+        )
+      })}
+    </STable>
+  )
+}
+
 interface IAppState {
   fetching: boolean
   address: string
   web3: any
+  provider: any
   connected: boolean
   chainId: number
   networkId: number
@@ -155,6 +193,7 @@ const INITIAL_STATE: IAppState = {
   fetching: false,
   address: '',
   web3: null,
+  provider: null,
   connected: false,
   chainId: 1,
   networkId: 1,
@@ -220,6 +259,7 @@ class App extends React.Component<any, any> {
 
     await this.setState({
       web3,
+      provider,
       connected: true,
       address,
       chainId,
@@ -413,6 +453,115 @@ class App extends React.Component<any, any> {
     }
   }
 
+  public testContractCall = async (functionSig: string) => {
+    let contractCall = null
+    switch (functionSig) {
+      case FUNCTION_BALANCE_OF:
+        contractCall = callBalanceOf
+        break
+      case FUNCTION_TRANSFER:
+        contractCall = callTransfer
+        break
+
+      default:
+        break
+    }
+
+    if (!contractCall) {
+      throw new Error(
+        `No matching contract calls for functionSig=${functionSig}`
+      )
+    }
+
+    const { web3, address, chainId } = this.state
+    try {
+      // open modal
+      this.toggleModal()
+
+      // toggle pending request indicator
+      this.setState({ pendingRequest: true })
+
+      // send transaction
+      const result = await contractCall(address, chainId, web3)
+
+      // format displayed result
+      const formattedResult = {
+        method: functionSig,
+        result
+      }
+
+      // display result
+      this.setState({
+        web3,
+        pendingRequest: false,
+        result: formattedResult || null
+      })
+    } catch (error) {
+      console.error(error) // tslint:disable-line
+      this.setState({ web3, pendingRequest: false, result: null })
+    }
+  }
+
+  public testOpenBox = async () => {
+    function getBoxProfile(
+      address: string,
+      provider: any
+    ): Promise<IBoxProfile> {
+      return new Promise(async (resolve, reject) => {
+        try {
+          await openBox(address, provider, async () => {
+            const profile = await getProfile(address)
+            resolve(profile)
+          })
+        } catch (error) {
+          reject(error)
+        }
+      })
+    }
+
+    const { address, provider } = this.state
+
+    try {
+      // open modal
+      this.toggleModal()
+
+      // toggle pending request indicator
+      this.setState({ pendingRequest: true })
+
+      // send transaction
+      const profile = await getBoxProfile(address, provider)
+
+      let result = null
+      if (profile) {
+        console.log('profile', profile) // tslint:disable-line
+        result = {
+          name: profile.name,
+          description: profile.description,
+          job: profile.job,
+          employer: profile.employer,
+          location: profile.location,
+          website: profile.website,
+          github: profile.github
+        }
+      }
+
+      // format displayed result
+      const formattedResult = {
+        method: 'box_open',
+        result
+      }
+
+      // display result
+      this.setState({
+        pendingRequest: false,
+        result: formattedResult || null
+      })
+    } catch (error) {
+      console.error(error) // tslint:disable-line
+      this.setState({ pendingRequest: false, result: null })
+    }
+  }
+
   public resetApp = async () => {
     const { web3 } = this.state
     if (web3 && web3.currentProvider && web3.currentProvider.close) {
@@ -465,6 +614,23 @@ class App extends React.Component<any, any> {
                     <STestButton left onClick={this.testSignPersonalMessage}>
                       {'personal_sign'}
                     </STestButton>
+                    <STestButton
+                      left
+                      onClick={() => this.testContractCall(FUNCTION_BALANCE_OF)}
+                    >
+                      {FUNCTION_BALANCE_OF}
+                    </STestButton>
+
+                    <STestButton
+                      left
+                      onClick={() => this.testContractCall(FUNCTION_TRANSFER)}
+                    >
+                      {FUNCTION_TRANSFER}
+                    </STestButton>
+
+                    <STestButton left onClick={this.testOpenBox}>
+                      {'box_open'}
+                    </STestButton>
                   </STestButtonContainer>
                 </Column>
                 <h3>Balances</h3>
@@ -492,14 +658,7 @@ class App extends React.Component<any, any> {
           ) : result ? (
             <SModalContainer>
               <SModalTitle>{'Call Request Approved'}</SModalTitle>
-              <STable>
-                {Object.keys(result).map(key => (
-                  <SRow key={key}>
-                    <SKey>{key}</SKey>
-                    <SValue>{result[key].toString()}</SValue>
-                  </SRow>
-                ))}
-              </STable>
+              <ModalResult>{result}</ModalResult>
             </SModalContainer>
           ) : (
             <SModalContainer>
