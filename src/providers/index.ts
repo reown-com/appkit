@@ -80,12 +80,12 @@ export const SQUARELINK_PROVIDER: IProviderInfo = {
 
 export const TORUS_PROVIDER: IProviderInfo = {
   id: "torus",
-  name: "Google",
+  name: "Torus",
   logo: TorusLogo,
   type: "web",
   check: "isTorus",
   styled: {
-    noShadow: false
+    noShadow: true
   },
   package: {
     required: []
