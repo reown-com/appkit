@@ -100,6 +100,8 @@ const SModalCard = styled.div<IModalCardStyleProps>`
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : "800px")};
   min-width: fit-content;
+  max-height: 100%;
+  overflow: auto;
 
   @media screen and (max-width: 768px) {
     max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : "500px")};

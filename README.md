@@ -47,7 +47,7 @@ yarn add web3connect
 2. Install Provider packages
 
 ```js
- /* See Provider Options Section */
+/* See Provider Options Section */
 ```
 
 3. Then you can add Web3Connect to your Dapp as follows
@@ -358,6 +358,29 @@ interface IProviderMappingEntry {
   connector: any;
   package: IProviderPackageOptions;
 }
+```
+
+## Connect to specific provider
+
+In case you want to connect a specific provider, you can use the method `connectTo` and use the specific id. Example:
+
+```js
+import Web3 from "web3";
+import Web3Connect from "web3connect";
+
+const providerOptions = {
+  /* See Provider Options Section */
+};
+
+const web3Connect = new Web3Connect.Core({
+  network: "mainnet", // optional
+  cacheProvider: true, // optional
+  providerOptions // required
+});
+
+const provider = await web3Connect.connectTo("walletconnect");
+
+const web = new Web3(provider);
 ```
 
 ## Optional Flags
