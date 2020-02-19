@@ -489,7 +489,6 @@ class App extends React.Component<any, any> {
 
       let result = null
       if (profile) {
-        console.log('profile', profile) // tslint:disable-line
         result = {
           name: profile.name,
           description: profile.description,
