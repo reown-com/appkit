@@ -32,7 +32,14 @@ import {
 import { IAssetData, IBoxProfile } from './helpers/types'
 import { fonts } from './styles'
 import { openBox, getProfile } from './helpers/box'
-import { FUNCTION_BALANCE_OF, FUNCTION_TRANSFER } from './constants'
+import {
+  ETH_SEND_TRANSACTION,
+  ETH_SIGN,
+  PERSONAL_SIGN,
+  BOX_GET_PROFILE,
+  DAI_BALANCE_OF,
+  DAI_TRANSFER
+} from './constants'
 import { callBalanceOf, callTransfer } from './helpers/web3'
 
 const providerOptions = {
@@ -294,7 +301,7 @@ class App extends React.Component<any, any> {
 
       // format displayed result
       const formattedResult = {
-        method: 'eth_sendTransaction',
+        action: ETH_SEND_TRANSACTION,
         txHash: result,
         from: address,
         to: address,
@@ -342,7 +349,7 @@ class App extends React.Component<any, any> {
 
       // format displayed result
       const formattedResult = {
-        method: 'eth_sign',
+        action: ETH_SIGN,
         address,
         signer,
         verified,
@@ -390,7 +397,7 @@ class App extends React.Component<any, any> {
 
       // format displayed result
       const formattedResult = {
-        method: 'personal_sign',
+        action: PERSONAL_SIGN,
         address,
         signer,
         verified,
@@ -412,10 +419,10 @@ class App extends React.Component<any, any> {
   public testContractCall = async (functionSig: string) => {
     let contractCall = null
     switch (functionSig) {
-      case FUNCTION_BALANCE_OF:
+      case DAI_BALANCE_OF:
         contractCall = callBalanceOf
         break
-      case FUNCTION_TRANSFER:
+      case DAI_TRANSFER:
         contractCall = callTransfer
         break
 
@@ -442,7 +449,7 @@ class App extends React.Component<any, any> {
 
       // format displayed result
       const formattedResult = {
-        method: functionSig,
+        action: functionSig,
         result
       }
 
@@ -502,7 +509,7 @@ class App extends React.Component<any, any> {
 
       // format displayed result
       const formattedResult = {
-        method: 'box_open',
+        action: BOX_GET_PROFILE,
         result
       }
 
@@ -559,32 +566,32 @@ class App extends React.Component<any, any> {
                 <Column center>
                   <STestButtonContainer>
                     <STestButton left onClick={this.testSendTransaction}>
-                      {'eth_sendTransaction'}
+                      {ETH_SEND_TRANSACTION}
                     </STestButton>
 
                     <STestButton left onClick={this.testSignMessage}>
-                      {'eth_sign'}
+                      {ETH_SIGN}
                     </STestButton>
 
                     <STestButton left onClick={this.testSignPersonalMessage}>
-                      {'personal_sign'}
+                      {PERSONAL_SIGN}
                     </STestButton>
                     <STestButton
                       left
-                      onClick={() => this.testContractCall(FUNCTION_BALANCE_OF)}
+                      onClick={() => this.testContractCall(DAI_BALANCE_OF)}
                     >
-                      {FUNCTION_BALANCE_OF}
+                      {DAI_BALANCE_OF}
                     </STestButton>
 
                     <STestButton
                       left
-                      onClick={() => this.testContractCall(FUNCTION_TRANSFER)}
+                      onClick={() => this.testContractCall(DAI_TRANSFER)}
                     >
-                      {FUNCTION_TRANSFER}
+                      {DAI_TRANSFER}
                     </STestButton>
 
                     <STestButton left onClick={this.testOpenBox}>
-                      {'box_open'}
+                      {BOX_GET_PROFILE}
                     </STestButton>
                   </STestButtonContainer>
                 </Column>
