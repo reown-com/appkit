@@ -15,6 +15,9 @@ declare global {
     web3: any
     ethereum: any
     Web3Connect: any
+    Box: any
+    box: any
+    space: any
   }
 }
 
