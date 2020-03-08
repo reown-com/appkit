@@ -1,10 +1,9 @@
-name: Build Web3Connect
+name: Build Web3Modal
 
 on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:

@@ -17,7 +17,7 @@
     "react-scripts-ts": "^4.0.8",
     "styled-components": "4.2.0",
     "web3": "^1.2.6",
-    "web3connect": "^1.0.0-beta.29"
+    "web3modal": "^1.0.0-beta.29"
   },
   "scripts": {
     "bootstrap": "npm install && npm run link",

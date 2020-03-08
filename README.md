@@ -1,20 +1,20 @@
-# Web3Connect
+# Web3Modal
 
 A single Web3 / Ethereum provider solution for all Wallets
 
 ## Introduction
 
-Web3Connect is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
+Web3Modal is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
 
-By default Web3Connect Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Portis**, **Fortmatic**, **Squarelink**, **Torus**, **Authereum** and **Arkane**.
+By default Web3Modal Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Portis**, **Fortmatic**, **Squarelink**, **Torus**, **Authereum** and **Arkane**.
 
 ## Preview
 
-You can test the library on: https://web3connect.com/
+You can test the library on: https://web3modal.com/
 
 ![preview](./images/preview.gif)
 
-## Projects using `web3connect`
+## Projects using `web3modal`
 
 _Open a PR to add your project to the list!_
 
@@ -34,14 +34,14 @@ _Open a PR to add your project to the list!_
 
 ## Usage
 
-1. Install Web3Connect NPM package
+1. Install Web3Modal NPM package
 
 ```bash
-npm install --save web3connect
+npm install --save web3modal
 
 # OR
 
-yarn add web3connect
+yarn add web3modal
 ```
 
 2. Install Provider packages
@@ -50,30 +50,30 @@ yarn add web3connect
 /* See Provider Options Section */
 ```
 
-3. Then you can add Web3Connect to your Dapp as follows
+3. Then you can add Web3Modal to your Dapp as follows
 
 ```js
 import Web3 from "web3";
-import Web3Connect from "web3connect";
+import Web3Modal from "web3modal";
 
 const providerOptions = {
   /* See Provider Options Section */
 };
 
-const web3Connect = new Web3Connect.Core({
+const web3Modal = new Web3Modal({
   network: "mainnet", // optional
   cacheProvider: true, // optional
   providerOptions // required
 });
 
-const provider = await web3Connect.connect();
+const provider = await web3Modal.connect();
 
 const web = new Web3(provider);
 ```
 
 ## Provider Options
 
-These are all the providers available with Web3Connect and how to configure their provider options
+These are all the providers available with Web3Modal and how to configure their provider options
 
 ### WalletConnect
 
@@ -366,19 +366,19 @@ In case you want to connect a specific provider, you can use the method `connect
 
 ```js
 import Web3 from "web3";
-import Web3Connect from "web3connect";
+import Web3Modal from "web3modal";
 
 const providerOptions = {
   /* See Provider Options Section */
 };
 
-const web3Connect = new Web3Connect.Core({
+const web3Modal = new Web3Modal({
   network: "mainnet", // optional
   cacheProvider: true, // optional
   providerOptions // required
 });
 
-const provider = await web3Connect.connectTo("walletconnect");
+const provider = await web3Modal.connectTo("walletconnect");
 
 const web = new Web3(provider);
 ```
@@ -387,37 +387,37 @@ const web = new Web3(provider);
 
 ### Disable Injected Provider
 
-By default is set to `false` and Web3Connect always displays InjectedProvider as an option to the user if available. However you can disable it as an optional flag if you desire:
+By default is set to `false` and Web3Modal always displays InjectedProvider as an option to the user if available. However you can disable it as an optional flag if you desire:
 
 ```javascript
-const web3Connect = new Web3Connect.Core({ disableInjectedProvider: true });
+const web3Modal = new Web3Modal({ disableInjectedProvider: true });
 ```
 
 ### Cache Provider
 
-By default is set to `false` and Web3Connect will always require the user to choose a provider option before triggering the onConnect event. However you can enable caching the last chosen provider. Example:
+By default is set to `false` and Web3Modal will always require the user to choose a provider option before triggering the onConnect event. However you can enable caching the last chosen provider. Example:
 
 ```javascript
-const web3Connect = new Web3Connect.Core({ cacheProvider: true });
+const web3Modal = new Web3Modal({ cacheProvider: true });
 ```
 
 If you wish to reset the cached provider you can call the following method:
 
 ```typescript
-web3Connect.clearCachedProvider();
+web3Modal.clearCachedProvider();
 ```
 
 If you wish to connect to the cachedProvider you can simply do the following:
 
 ```typescript
-if (web3Connect.cachedProvider) {
-  await web3Connect.connect();
+if (web3Modal.cachedProvider) {
+  await web3Modal.connect();
 }
 ```
 
 ## Adding a new provider
 
-Do you want to add your provider to Web3Connect? All logic for supported providers lives inside the `src/providers` directory. To add a new follow the following steps [here](ADDING_PROVIDERS.md)
+Do you want to add your provider to Web3Modal? All logic for supported providers lives inside the `src/providers` directory. To add a new follow the following steps [here](ADDING_PROVIDERS.md)
 
 ## Collaboration
 

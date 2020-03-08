@@ -9,7 +9,7 @@ module.exports = {
     path: path.resolve(__dirname, "lib"),
     filename: "[name].js",
     libraryTarget: "umd",
-    library: "Web3Connect",
+    library: "Web3Modal",
     umdNamedDefine: true,
     globalObject: "this"
   },
