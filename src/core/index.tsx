@@ -49,6 +49,10 @@ class Core {
 
     this.providers = this.providerController.getProviders();
     this.renderModal();
+
+    console.warn(
+      "DEPRECATION WARNING! Web3Connect will be rebranded and deprecated in favor of Web3Modal. Please visit https://github.com/Web3Modal/web3modal for migration instructions."
+    );
   }
 
   get cachedProvider(): string {
