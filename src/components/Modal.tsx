@@ -15,7 +15,7 @@ declare global {
   interface Window {
     ethereum: any;
     web3: any;
-    updateWeb3ConnectModal: any;
+    updateWeb3Modal: any;
   }
 }
 
@@ -129,7 +129,7 @@ const INITIAL_STATE: IModalState = {
 class Modal extends React.Component<IModalProps, IModalState> {
   constructor(props: IModalProps) {
     super(props);
-    window.updateWeb3ConnectModal = async (state: IModalState) => {
+    window.updateWeb3Modal = async (state: IModalState) => {
       this.setState(state);
     };
   }
