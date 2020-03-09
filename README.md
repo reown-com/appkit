@@ -417,7 +417,11 @@ if (web3Modal.cachedProvider) {
 
 ## Adding a new provider
 
-Do you want to add your provider to Web3Modal? All logic for supported providers lives inside the `src/providers` directory. To add a new follow the following steps [here](ADDING_PROVIDERS.md)
+Do you want to add your provider to Web3Modal? All logic for supported providers lives inside the `src/providers` directory. To add a new follow the following steps [here](docs/ADDING_PROVIDERS.md)
+
+## Migrating from Web3Connect
+
+If you were using Web3Connect before you can check the migration instructions for how to use Web3Modal and handle breaking changes [here](docs/MIGRATION_INSTRUCTIONS.md)
 
 ## Collaboration
 
