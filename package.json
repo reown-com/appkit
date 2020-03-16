@@ -48,7 +48,8 @@
     "format": "prettier ./src/*.ts ./src/**/*.ts --write",
     "zip": "node ./scripts/zip.js",
     "check": "npm run clean && npm run lint && npm run format && npm run build && npm run test && npm run zip",
-    "routine": "npm run clean:all && npm run bootstrap && npm run check"
+    "routine": "npm run clean:all && npm run bootstrap && npm run check",
+    "prepack": "npm run build"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.2",
