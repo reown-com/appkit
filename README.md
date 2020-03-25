@@ -71,6 +71,32 @@ const provider = await web3Modal.connect();
 const web = new Web3(provider);
 ```
 
+## Using with standalone JavaScript 
+
+You can use the modal from the old fashioned web page JavaScript as well.
+
+[First get a Web3modal bundled JavaScript from Releases](https://github.com/Web3Modal/web3modal/releases).
+
+After including the bundle in your HTML, you can use it on your web page:
+
+```js
+//  You have to refer to default since it was bundled for ESModules
+// but after that the documentation will be the same
+
+const Web3Modal = window.Web3Modal.default
+const providerOptions = {
+  /* See Provider Options Section */
+};
+
+const web3Modal = new Web3Modal({
+  network: "mainnet", // optional
+  cacheProvider: true, // optional
+  providerOptions // required
+});
+
+const provider = await web3Modal.connect();
+```
+
 ## Provider Options
 
 These are all the providers available with Web3Modal and how to configure their provider options
