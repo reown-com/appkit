@@ -79,8 +79,6 @@
     "webpack-cli": "^3.2.1"
   },
   "dependencies": {
-    "@toruslabs/torus-embed": "^1.1.1",
-    "authereum": "0.0.4-beta.93",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",

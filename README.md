@@ -214,13 +214,18 @@ const providerOptions = {
   torus: {
     package: Torus, // required
     options: {
-      enableLogging: false, // optional
-      buttonPosition: "bottom-left", // optional
-      buildEnv: "production", // optional
-      showTorusButton: true, // optional
-      enabledVerifiers: {
-        // optional
-        google: false // optional
+      config: {
+        enableLogging: false, // optional
+        buttonPosition: "bottom-left", // optional
+        buildEnv: "production", // optional
+        showTorusButton: true, // optional
+        enabledVerifiers: {
+          // optional
+          google: false // optional
+        }
+      },
+      network: {
+        host: "rinkeby"
       }
     }
   }

@@ -69,7 +69,9 @@ export function getProviderInfoByName(name: string | null): IProviderInfo {
     const matches = providers.filter(provider => provider.name === name);
 
     if (!!matches && matches.length) {
-      result = matches[0];
+      // Usually providers might match with metamask for compatibility reasons by setting isMetamask=true
+      // Metamask is listed as first provider in the list. So, we should return the last matched one as result
+      result = matches[matches.length - 1];
     }
   }
 
@@ -83,7 +85,9 @@ export function getProviderInfo(provider: any): IProviderInfo {
     const matches = providers.filter(_provider => provider[_provider.check]);
 
     if (!!matches && matches.length) {
-      result = matches[0];
+      // Usually providers might match with metamask for compatibility reasons by setting isMetamask=true
+      // Metamask is listed as first provider in the list. So, we should return the last matched one as result
+      result = matches[matches.length - 1];
     }
   }
 

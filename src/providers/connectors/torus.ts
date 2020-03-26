@@ -1,11 +1,4 @@
 
-
-export interface INetwork {
-  nodeUrl: string;
-  chainId?: string;
-  networkName?: string;
-}
-
 interface NetworkInterface {
   host: 'mainnet' | 'rinkeby' | 'ropsten' | 'kovan' | 'goerli' | 'localhost' | 'matic' | string,
   chainId?: number;
@@ -33,7 +26,7 @@ export interface IOptions {
 }
 
 export interface ITorusConnectorOptions {
-  network?: string | INetwork;
+  network?: NetworkInterface;
   config?: IOptions;
   loginParams?: LoginParams;
 }
@@ -53,16 +46,8 @@ const ConnectToTorus = async (Torus: any, opts: ITorusConnectorOptions) => {
       let defaultVerifier = undefined
 
       // parsing to Torus interfaces
-      if (opts.network) {
-        if (typeof (opts.network) == 'string') {
-          network.host = opts.network
-        } else {
-          network.host = opts.network.nodeUrl
-          let chainId: string = opts.network.chainId || ''
-          network.chainId = parseInt(chainId, 10)
-          network.networkName = opts.network.networkName
-        }
-      }
+      network = opts.network || network
+
       if (opts.config) {
         buttonPosition = opts.config.buttonPosition || buttonPosition
         buildEnv = opts.config.buildEnv || buildEnv
