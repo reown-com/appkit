@@ -1,12 +1,12 @@
 {
-  "name": "web3connect",
-  "version": "1.0.0-beta.30",
+  "name": "web3modal",
+  "version": "1.1.0",
   "description": "A single Web3 / Ethereum provider solution for all Wallets",
   "keywords": [
     "web3",
     "crypto",
     "ethereum",
-    "web3connect",
+    "web3modal",
     "metamask",
     "walletconnect",
     "squarelink",
@@ -16,7 +16,7 @@
     "torus",
     "authereum"
   ],
-  "author": "Web3Connect <web3connect.com>",
+  "author": "Web3Modal <web3modal.com>",
   "license": "LGPL-3.0",
   "main": "lib/index.js",
   "directories": {
@@ -29,10 +29,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/web3connect/web3connect.git"
+    "url": "git+https://github.com/web3modal/web3modal.git"
   },
   "bugs": {
-    "url": "https://github.com/web3connect/web3connect/issues"
+    "url": "https://github.com/web3modal/web3modal/issues"
   },
   "scripts": {
     "clean": "rm -rf lib",
@@ -79,7 +79,7 @@
     "webpack-cli": "^3.2.1"
   },
   "dependencies": {
-    "@toruslabs/torus-embed": "^0.2.14",
+    "@toruslabs/torus-embed": "^1.1.1",
     "authereum": "0.0.4-beta.93",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",

@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@portis/web3": "^2.0.0-beta.54",
+    "@toruslabs/torus-embed": "^1.1.1",
     "@walletconnect/web3-provider": "^1.0.0-beta.47",
-    "@web3connect/ledger-provider": "^1.1.0",
-    "@web3connect/trezor-provider": "^1.1.0",
+    "@web3modal/ledger-provider": "^1.0.0",
+    "@web3modal/trezor-provider": "^1.0.0",
     "axios": "^0.18.0",
     "bignumber.js": "^8.1.1",
     "ethereumjs-util": "^6.1.0",
@@ -17,7 +17,7 @@
     "react-scripts-ts": "^4.0.8",
     "styled-components": "4.2.0",
     "web3": "^1.2.6",
-    "web3connect": "^1.0.0-beta.29"
+    "web3modal": "^1.1.0"
   },
   "scripts": {
     "bootstrap": "npm install && npm run link",

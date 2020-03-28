@@ -119,7 +119,9 @@ class ProviderController {
 
   public getProviderMappingEntry(id: string) {
     const matches = this.providerMapping
-      .filter(entry => (entry.id === id ? entry : undefined))
+      .filter(entry =>
+        entry.id.toLowerCase() === id.toLowerCase() ? entry : undefined
+      )
       .filter(x => !!x);
     if (matches && matches.length) {
       return matches[0];

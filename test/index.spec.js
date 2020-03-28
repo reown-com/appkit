@@ -1,5 +1,5 @@
 /* global describe it  */
 
-describe("// ------------ web3connect ----------- //", () => {
+describe("// ------------ web3modal ----------- //", () => {
   it("needs tests", () => {});
 });

@@ -1,6 +1,6 @@
 # Adding a new provider
 
-Do you want to add your provider to Web3Connect? All logic for supported providers lives inside the `src/providers` directory. To add a new follow the next steps:
+Do you want to add your provider to Web3Modal? All logic for supported providers lives inside the `src/providers` directory. To add a new follow the next steps:
 
 Let's call this example provider Firebox
 
@@ -94,9 +94,9 @@ export const providerMapping: IProviderMappingEntry[] = [
 ];
 ```
 
-## 6) Update the Web3Connect README file
+## 6) Update the Web3Modal README file
 
-Finally you should update the main README file so other developers can use your provider with Web3Connect easily. Inside the section of **Provider Options** you should add an example of how to configure Web3Connect to display your provider using the provider-specific options.
+Finally you should update the main README file so other developers can use your provider with Web3Modal easily. Inside the section of **Provider Options** you should add an example of how to configure Web3Modal to display your provider using the provider-specific options.
 
 ```typescript
 ### Firebox

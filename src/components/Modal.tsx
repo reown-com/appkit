@@ -15,7 +15,7 @@ declare global {
   interface Window {
     ethereum: any;
     web3: any;
-    updateWeb3ConnectModal: any;
+    updateWeb3Modal: any;
   }
 }
 
@@ -100,6 +100,8 @@ const SModalCard = styled.div<IModalCardStyleProps>`
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : "800px")};
   min-width: fit-content;
+  max-height: 100%;
+  overflow: auto;
 
   @media screen and (max-width: 768px) {
     max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : "500px")};
@@ -127,7 +129,7 @@ const INITIAL_STATE: IModalState = {
 class Modal extends React.Component<IModalProps, IModalState> {
   constructor(props: IModalProps) {
     super(props);
-    window.updateWeb3ConnectModal = async (state: IModalState) => {
+    window.updateWeb3Modal = async (state: IModalState) => {
       this.setState(state);
     };
   }

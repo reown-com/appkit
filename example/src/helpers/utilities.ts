@@ -200,3 +200,7 @@ export async function formatTestTransaction(address: string, chainId: number) {
 
   return tx
 }
+
+export function isObject(obj: any): boolean {
+  return typeof obj === 'object' && !!Object.keys(obj).length
+}

@@ -107,6 +107,20 @@ class Core {
       await this.toggleModal();
     });
 
+  public connectTo = (id: string) =>
+    new Promise(async (resolve, reject) => {
+      this.on(CONNECT_EVENT, provider => resolve(provider));
+      const provider = this.providerController.getProviderMappingEntry(id);
+      if (!provider) {
+        return reject(
+          new Error(
+            `Cannot connect to provider (${id}), check provider options`
+          )
+        );
+      }
+      await this.providerController.connectTo(provider.id, provider.connector);
+    });
+
   public renderModal() {
     const el = document.createElement("div");
     el.id = WEB3_CONNECT_MODAL_ID;
@@ -163,7 +177,7 @@ class Core {
     Object.keys(state).forEach(key => {
       this[key] = state[key];
     });
-    await window.updateWeb3ConnectModal(state);
+    await window.updateWeb3Modal(state);
   };
 
   private resetState = () => this.updateState({ ...INITIAL_STATE });
