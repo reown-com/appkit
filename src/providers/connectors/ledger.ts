@@ -1,8 +1,7 @@
-import { getChainId } from "../../helpers/utils";
+import { IAbstractConnectorOptions, getChainId } from "../../helpers";
 
-export interface ILedgerConnectorOptions {
+export interface ILedgerConnectorOptions extends IAbstractConnectorOptions {
   rpcUrl: string;
-  network: string;
 }
 
 export interface ILedgerProviderOptions {

@@ -1,4 +1,6 @@
-export interface ITrezorConnectorOptions {
+import { IAbstractConnectorOptions } from "../../helpers";
+
+export interface ITrezorConnectorOptions extends IAbstractConnectorOptions {
   manifestEmail: string;
   manifestAppUrl: string;
   rpcUrl: string;
