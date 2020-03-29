@@ -66,6 +66,7 @@ export function getProviderInfoByName(
   name: string | null,
   lastMatch = false
 ): IProviderInfo {
+  if (!name) return FALLBACK;
   return filterMatches<IProviderInfo>(
     providers,
     x => x.name === name,
@@ -149,13 +150,11 @@ export function filterMatches<T>(
   lastMatch = false
 ): T {
   let result = fallback;
-  if (name) {
-    const matches = array.filter(condition);
+  const matches = array.filter(condition);
 
-    if (!!matches && matches.length) {
-      let index = lastMatch ? matches.length - 1 : 0;
-      result = matches[index];
-    }
+  if (!!matches && matches.length) {
+    let index = lastMatch ? matches.length - 1 : 0;
+    result = matches[index];
   }
 
   return result;
