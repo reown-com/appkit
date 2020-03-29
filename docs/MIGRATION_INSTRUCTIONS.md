@@ -9,7 +9,7 @@ The React Button was removed from the API and the Core Module was moved to be ex
 **BEFORE**
 
 ```javascript
-import Web3Connect from "web3modal";
+import Web3Connect from "web3connect";
 
 const web3Connect = new Web3Connect.Core({ ...options });
 ```
