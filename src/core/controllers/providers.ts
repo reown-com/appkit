@@ -5,7 +5,7 @@ import {
 } from "../../helpers/types";
 import { isMobile, getInjectedProviderName } from "../../helpers/utils";
 import { providerMapping } from "../../providers";
-import EventController from "./events";
+import { EventController } from "./events";
 import {
   CONNECT_EVENT,
   ERROR_EVENT,
@@ -14,7 +14,7 @@ import {
 } from "../../helpers/constants";
 import { getLocal, setLocal, removeLocal } from "../../helpers/local";
 
-class ProviderController {
+export class ProviderController {
   public cachedProvider: string = "";
   public shouldCacheProvider: boolean = false;
 
@@ -192,5 +192,3 @@ class ProviderController {
     });
   }
 }
-
-export default ProviderController;

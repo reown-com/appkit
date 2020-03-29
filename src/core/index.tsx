@@ -3,8 +3,7 @@ import * as ReactDOM from "react-dom";
 import Modal from "../components/Modal";
 import { ICoreOptions, IProviderCallback } from "../helpers/types";
 
-import EventController from "./controllers/events";
-import ProviderController from "./controllers/providers";
+import { EventController, ProviderController } from "./controllers";
 import {
   WEB3_CONNECT_MODAL_ID,
   CONNECT_EVENT,
