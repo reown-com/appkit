@@ -1,25 +1,10 @@
-import { IAbstractConnectorOptions } from "../../helpers";
+import { IAbstractConnectorOptions, getChainId } from "../../helpers";
 
 export interface IWalletConnectConnectorOptions
   extends IAbstractConnectorOptions {
   infuraId: string;
   bridge?: string;
   qrcode?: boolean;
-}
-
-function getChainId(network: string) {
-  const infuraChainIds = {
-    mainnet: 1,
-    ropsten: 3,
-    rinkeby: 4,
-    goerli: 5,
-    kovan: 42
-  };
-  const chainId = infuraChainIds[network];
-  if (!chainId) {
-    throw new Error(`Invalid or unknown chainId for network=${network}`);
-  }
-  return chainId;
 }
 
 const ConnectToWalletConnect = (

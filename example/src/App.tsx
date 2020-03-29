@@ -42,35 +42,6 @@ import {
 } from "./constants";
 import { callBalanceOf, callTransfer } from "./helpers/web3";
 
-const providerOptions = {
-  walletconnect: {
-    package: WalletConnectProvider,
-    options: {
-      infuraId: process.env.REACT_APP_INFURA_ID
-    }
-  },
-  portis: {
-    package: Portis,
-    options: {
-      id: process.env.REACT_APP_PORTIS_ID
-    }
-  },
-  fortmatic: {
-    package: Fortmatic,
-    options: {
-      key: process.env.REACT_APP_FORTMATIC_KEY
-    }
-  },
-  torus: {
-    package: Torus,
-    options: {}
-  },
-  authereum: {
-    package: Authereum,
-    options: {}
-  }
-};
-
 const SLayout = styled.div`
   position: relative;
   width: 100%;
@@ -195,7 +166,7 @@ class App extends React.Component<any, any> {
     this.web3Modal = new Web3Modal({
       network: this.getNetwork(),
       cacheProvider: true,
-      providerOptions
+      providerOptions: this.getProviderOptions()
     });
   }
 
@@ -253,6 +224,38 @@ class App extends React.Component<any, any> {
   };
 
   public getNetwork = () => getChainData(this.state.chainId).network;
+
+  public getProviderOptions = () => {
+    const providerOptions = {
+      walletconnect: {
+        package: WalletConnectProvider,
+        options: {
+          infuraId: process.env.REACT_APP_INFURA_ID
+        }
+      },
+      portis: {
+        package: Portis,
+        options: {
+          id: process.env.REACT_APP_PORTIS_ID
+        }
+      },
+      fortmatic: {
+        package: Fortmatic,
+        options: {
+          key: process.env.REACT_APP_FORTMATIC_KEY
+        }
+      },
+      torus: {
+        package: Torus,
+        options: {}
+      },
+      authereum: {
+        package: Authereum,
+        options: {}
+      }
+    };
+    return providerOptions;
+  };
 
   public getAccountAssets = async () => {
     const { address, chainId } = this.state;

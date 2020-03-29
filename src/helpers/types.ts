@@ -60,3 +60,14 @@ export interface IEventCallback {
   event: string;
   callback: (result: any) => void;
 }
+
+export type ChainData = {
+  chainId: number;
+  chain: string;
+  network: string;
+  networkId: number;
+};
+
+export type ChainDataList = {
+  [chainId: number]: ChainData;
+};
