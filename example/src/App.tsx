@@ -233,11 +233,9 @@ class App extends React.Component<any, any> {
           infuraId: process.env.REACT_APP_INFURA_ID
         }
       },
-      portis: {
-        package: Portis,
-        options: {
-          id: process.env.REACT_APP_PORTIS_ID
-        }
+      torus: {
+        package: Torus,
+        options: {}
       },
       fortmatic: {
         package: Fortmatic,
@@ -245,9 +243,11 @@ class App extends React.Component<any, any> {
           key: process.env.REACT_APP_FORTMATIC_KEY
         }
       },
-      torus: {
-        package: Torus,
-        options: {}
+      portis: {
+        package: Portis,
+        options: {
+          id: process.env.REACT_APP_PORTIS_ID
+        }
       },
       authereum: {
         package: Authereum,
