@@ -1,6 +1,12 @@
 import { providers, FALLBACK } from "../providers";
-import { IProviderInfo, IInjectedProvidersMap, ChainData } from "./types";
+import {
+  IProviderInfo,
+  IInjectedProvidersMap,
+  ChainData,
+  ThemeColors
+} from "./types";
 import { chainList } from "./chains";
+import themes from "../themes";
 
 export function checkInjectedProviders(): IInjectedProvidersMap {
   const result = {
@@ -170,4 +176,8 @@ export function getChainId(network: string): number {
     return matches[0].chainId;
   }
   return 0;
+}
+
+export function getThemeColors(theme: string | ThemeColors) {
+  return typeof theme === "string" ? themes[theme].colors : theme;
 }

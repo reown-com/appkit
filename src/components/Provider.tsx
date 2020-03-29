@@ -11,12 +11,13 @@ import {
   PROVIDER_NAME_CLASSNAME,
   PROVIDER_DESCRIPTION_CLASSNAME
 } from "../helpers/constants";
+import { ThemeColors } from "../helpers";
 
 interface IIconStyleProps {
   noShadow?: boolean;
 }
 
-export const SIcon = styled.div<IIconStyleProps>`
+const SIcon = styled.div<IIconStyleProps>`
   width: 45px;
   height: 45px;
   display: flex;
@@ -39,31 +40,39 @@ export const SIcon = styled.div<IIconStyleProps>`
   }
 `;
 
-export const STitle = styled.div`
+interface IStyedThemeColorOptions {
+  themeColors: ThemeColors;
+}
+
+const SName = styled.div<IStyedThemeColorOptions>`
   width: 100%;
   font-size: 24px;
   font-weight: 700;
   margin-top: 0.5em;
+  color: ${({ themeColors }) => themeColors.main};
+  @media screen and (max-width: 768px) {
+    font-size: 5vw;
+  }
 `;
 
-export const SDescription = styled.div`
+const SDescription = styled.div<IStyedThemeColorOptions>`
   width: 100%;
   font-size: 18px;
   margin: 0.333em 0;
-  color: rgb(169, 169, 188);
+  color: ${({ themeColors }) => themeColors.secondary};
   @media screen and (max-width: 768px) {
     font-size: 4vw;
   }
 `;
 
-const SProviderContainer = styled.div`
+const SProviderContainer = styled.div<IStyedThemeColorOptions>`
   transition: background-color 0.2s ease-in-out;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgb(255, 255, 255);
+  background-color: ${({ themeColors }) => themeColors.background};
   border-radius: 12px;
   padding: 24px 16px;
   @media screen and (max-width: 768px) {
@@ -71,14 +80,7 @@ const SProviderContainer = styled.div`
   }
 `;
 
-const SName = styled(STitle)`
-  color: rgb(12, 12, 13);
-  @media screen and (max-width: 768px) {
-    font-size: 5vw;
-  }
-`;
-
-const SProviderWrapper = styled.div`
+const SProviderWrapper = styled.div<IStyedThemeColorOptions>`
   width: 100%;
   padding: 8px;
   display: flex;
@@ -87,38 +89,48 @@ const SProviderWrapper = styled.div`
   flex-direction: column;
   cursor: pointer;
   border-radius: 0;
-  border: 1px solid rgba(195, 195, 195, 0.14);
+  border: ${({ themeColors }) => `1px solid ${themeColors.border}`};
   @media (hover: hover) {
     &:hover ${SProviderContainer} {
-      background-color: rgba(195, 195, 195, 0.14);
+      background-color: ${({ themeColors }) => themeColors.hover};
     }
   }
 `;
 
 interface IProviderProps {
   name: string | null;
+  themeColors: ThemeColors;
   onClick: () => void;
 }
 
 const Provider = (props: IProviderProps) => {
-  const { name, onClick, ...otherProps } = props;
+  const { name, themeColors, onClick, ...otherProps } = props;
   const providerInfo = getProviderInfoByName(name);
   const description = formatProviderDescription(providerInfo);
   return (
     <SProviderWrapper
+      themeColors={themeColors}
       className={PROVIDER_WRAPPER_CLASSNAME}
       onClick={onClick}
       {...otherProps}
     >
-      <SProviderContainer className={PROVIDER_CONTAINER_CLASSNAME}>
+      <SProviderContainer
+        themeColors={themeColors}
+        className={PROVIDER_CONTAINER_CLASSNAME}
+      >
         <SIcon
           className={PROVIDER_ICON_CLASSNAME}
           noShadow={providerInfo.styled.noShadow}
         >
           <img src={providerInfo.logo} alt={providerInfo.name} />
         </SIcon>
-        <SName className={PROVIDER_NAME_CLASSNAME}>{providerInfo.name}</SName>
-        <SDescription className={PROVIDER_DESCRIPTION_CLASSNAME}>
+        <SName themeColors={themeColors} className={PROVIDER_NAME_CLASSNAME}>
+          {providerInfo.name}
+        </SName>
+        <SDescription
+          themeColors={themeColors}
+          className={PROVIDER_DESCRIPTION_CLASSNAME}
+        >
           {description}
         </SDescription>
       </SProviderContainer>
