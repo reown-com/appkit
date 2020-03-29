@@ -75,7 +75,7 @@ class Core {
     this.providerController.setCachedProvider(id);
   }
 
-  public async setTheme(theme: string | ThemeColors) {
+  public async updateTheme(theme: string | ThemeColors) {
     this.themeColors = getThemeColors(theme);
     await this.updateState({ themeColors: this.themeColors });
   }
