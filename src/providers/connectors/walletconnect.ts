@@ -1,8 +1,10 @@
-export interface IWalletConnectConnectorOptions {
+import { IAbstractConnectorOptions } from "../../helpers";
+
+export interface IWalletConnectConnectorOptions
+  extends IAbstractConnectorOptions {
   infuraId: string;
   bridge?: string;
   qrcode?: boolean;
-  network?: string;
 }
 
 function getChainId(network: string) {

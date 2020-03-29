@@ -1,3 +1,5 @@
+import { IAbstractConnectorOptions } from "../../helpers";
+
 export interface INetwork {
   nodeUrl: string;
   chainId?: string;
@@ -13,9 +15,8 @@ export interface IOptions {
   pocketDevId?: string;
 }
 
-export interface IPortisConnectorOptions {
+export interface IPortisConnectorOptions extends IAbstractConnectorOptions {
   id: string;
-  network?: string | INetwork;
   config?: IOptions;
 }
 

@@ -1,13 +1,16 @@
-export interface IAuthereumConnectorOptions {
-  network?: string;
-}
+import { IAbstractConnectorOptions } from "../../helpers";
 
-const ConnectToAuthereum = (Authereum: any, opts: IAuthereumConnectorOptions) => {
+export interface IAuthereumConnectorOptions extends IAbstractConnectorOptions {}
+
+const ConnectToAuthereum = (
+  Authereum: any,
+  opts: IAuthereumConnectorOptions
+) => {
   return new Promise(async (resolve, reject) => {
     try {
       const authereum = new Authereum(opts.network);
       const provider = authereum.getProvider();
-      provider.authereum = authereum
+      provider.authereum = authereum;
       await provider.enable();
       resolve(provider);
     } catch (error) {

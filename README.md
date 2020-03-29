@@ -71,7 +71,7 @@ const provider = await web3Modal.connect();
 const web = new Web3(provider);
 ```
 
-## Using with standalone JavaScript 
+## Using with standalone JavaScript
 
 You can use the modal from the old fashioned web page JavaScript as well.
 
@@ -83,7 +83,7 @@ After including the bundle in your HTML, you can use it on your web page:
 //  You have to refer to default since it was bundled for ESModules
 // but after that the documentation will be the same
 
-const Web3Modal = window.Web3Modal.default
+const Web3Modal = window.Web3Modal.default;
 const providerOptions = {
   /* See Provider Options Section */
 };
@@ -240,13 +240,15 @@ const providerOptions = {
   torus: {
     package: Torus, // required
     options: {
-      enableLogging: false, // optional
-      buttonPosition: "bottom-left", // optional
-      buildEnv: "production", // optional
-      showTorusButton: true, // optional
-      enabledVerifiers: {
-        // optional
-        google: false // optional
+      config: {
+        enableLogging: false, // optional
+        buttonPosition: "bottom-left", // optional
+        buildEnv: "production", // optional
+        showTorusButton: true, // optional
+        enabledVerifiers: {
+          // optional
+          google: false // optional
+        }
       }
     }
   }
