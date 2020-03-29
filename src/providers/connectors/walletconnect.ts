@@ -1,4 +1,4 @@
-import { getChainId, IAbstractConnectorOptions } from "../../helpers";
+import { IAbstractConnectorOptions, getChainId } from "../../helpers";
 
 export interface IWalletConnectConnectorOptions
   extends IAbstractConnectorOptions {

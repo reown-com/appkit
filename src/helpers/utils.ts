@@ -1,6 +1,6 @@
-import { chainList } from "./chains";
 import { providers, FALLBACK } from "../providers";
 import { IProviderInfo, IInjectedProvidersMap, ChainData } from "./types";
+import { chainList } from "./chains";
 
 export function checkInjectedProviders(): IInjectedProvidersMap {
   const result = {
