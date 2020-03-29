@@ -1,17 +1,17 @@
 import * as React from "react";
 import styled from "styled-components";
 import Web3 from "web3";
+import { convertUtf8ToHex } from "@walletconnect/utils";
 
 import Web3Modal from "web3modal";
 // @ts-ignore
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import Portis from "@portis/web3";
 // @ts-ignore
 import Fortmatic from "fortmatic";
 import Torus from "@toruslabs/torus-embed";
+import Portis from "@portis/web3";
 import Authereum from "authereum";
 
-import { convertUtf8ToHex } from "@walletconnect/utils";
 import Button from "./components/Button";
 import Column from "./components/Column";
 import Wrapper from "./components/Wrapper";
