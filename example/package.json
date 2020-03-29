@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@toruslabs/torus-embed": "^1.1.1",
+    "@toruslabs/torus-embed": "^1.2.4",
     "@walletconnect/web3-provider": "^1.0.0-beta.47",
     "@web3modal/ledger-provider": "^1.0.0",
     "@web3modal/trezor-provider": "^1.0.0",
