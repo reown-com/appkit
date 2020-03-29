@@ -8,6 +8,7 @@ const GlobalStyle = createGlobalStyle`
   ${globalStyle}
 `;
 
+// @ts-ignore
 declare global {
   // tslint:disable-next-line
   interface Window {

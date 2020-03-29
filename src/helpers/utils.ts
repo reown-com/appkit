@@ -14,6 +14,7 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
         fallbackProvider = false;
       }
     });
+
     // Nitfy Wallet fix
     if (result["isMetamask"]) {
       if (verifyInjectedProvider("isNiftyWallet")) {
@@ -21,6 +22,7 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
         result["isNiftyWallet"] = true;
       }
     }
+
     // Coinbase Wallet fix
     if (result["isCipher"]) {
       if (verifyInjectedProvider("isToshi")) {

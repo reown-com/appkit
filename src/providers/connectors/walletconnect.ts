@@ -21,7 +21,8 @@ const ConnectToWalletConnect = (
       bridge = opts.bridge || bridge;
       qrcode = typeof opts.qrcode !== "undefined" ? opts.qrcode : qrcode;
       infuraId = opts.infuraId || "";
-      chainId = opts.network ? getChainId(opts.network) : 1;
+      chainId =
+        opts.network && getChainId(opts.network) ? getChainId(opts.network) : 1;
     }
 
     const provider = new WalletConnectProvider({
