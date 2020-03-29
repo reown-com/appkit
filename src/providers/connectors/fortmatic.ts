@@ -1,6 +1,7 @@
-export interface IFortmaticConnectorOptions {
+import { IAbstractConnectorOptions } from "../../helpers";
+
+export interface IFortmaticConnectorOptions extends IAbstractConnectorOptions {
   key: string;
-  network?: string;
 }
 
 const ConnectToFortmatic = async (
@@ -12,7 +13,7 @@ const ConnectToFortmatic = async (
       const key = opts.key;
       const fm = new Fortmatic(key, opts.network);
       const provider = await fm.getProvider();
-      provider.fm = fm
+      provider.fm = fm;
       await fm.user.login();
       const isLoggedIn = await fm.user.isLoggedIn();
       if (isLoggedIn) {

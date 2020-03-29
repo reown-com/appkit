@@ -12,8 +12,9 @@ This file should export as a default a callback function which must have two par
 
 ```typescript
 // src/providers/connectors/firebox.ts
+import { IAbstractConnectorOptions } from "../../helpers";
 
-interface IFireboxOptions {
+interface IFireboxOptions extends IAbstractConnectorOptions {
   apiKey: string;
 }
 

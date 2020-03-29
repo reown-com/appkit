@@ -1,10 +1,10 @@
-import { getChainId } from "../../helpers/utils";
+import { getChainId, IAbstractConnectorOptions } from "../../helpers";
 
-export interface IWalletConnectConnectorOptions {
+export interface IWalletConnectConnectorOptions
+  extends IAbstractConnectorOptions {
   infuraId: string;
   bridge?: string;
   qrcode?: boolean;
-  network?: string;
 }
 
 const ConnectToWalletConnect = (

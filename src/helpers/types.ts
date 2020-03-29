@@ -8,6 +8,10 @@ export interface IProviderControllerOptions {
   network: string;
 }
 
+export interface IAbstractConnectorOptions {
+  network: string;
+}
+
 export interface IInjectedProvidersMap {
   injectedAvailable: boolean;
   [isProviderName: string]: boolean;
