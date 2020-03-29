@@ -11,14 +11,17 @@ import {
   ERROR_EVENT,
   CLOSE_EVENT
 } from "../helpers/constants";
-import lightTheme from "../themes/light";
-import { getThemeColors } from "../helpers";
+import themes from "../themes";
+
+function getThemeColors(theme: string | ThemeColors): ThemeColors {
+  return typeof theme === "string" ? themes[theme].colors : theme;
+}
 
 const INITIAL_STATE = { show: false };
 
 const defaultOpts = {
   lightboxOpacity: 0.4,
-  theme: lightTheme.name,
+  theme: themes.default.name,
   cacheProvider: false,
   providerOptions: {},
   network: ""
@@ -39,7 +42,9 @@ class Core {
     };
 
     this.lightboxOpacity = options.lightboxOpacity;
+    console.log("options.theme", options.theme);
     this.themeColors = getThemeColors(options.theme);
+    console.log("this.themeColors", this.themeColors);
 
     this.providerController = new ProviderController({
       cacheProvider: options.cacheProvider,

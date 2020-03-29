@@ -164,6 +164,7 @@ class App extends React.Component<any, any> {
       ...INITIAL_STATE
     };
     this.web3Modal = new Web3Modal({
+      theme: "dark",
       network: this.getNetwork(),
       cacheProvider: true,
       providerOptions: this.getProviderOptions()

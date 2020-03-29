@@ -93,7 +93,7 @@ interface IModalCardStyleProps {
 const SModalCard = styled.div<IModalCardStyleProps>`
   position: relative;
   width: 100%;
-  background-color: ${({ theme }) => theme.colors.background};
+  background-color: ${({ themeColors }) => themeColors.background};
   border-radius: 12px;
   margin: 10px;
   padding: 0;
