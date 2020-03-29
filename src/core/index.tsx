@@ -11,9 +11,8 @@ import {
   ERROR_EVENT,
   CLOSE_EVENT
 } from "../helpers/constants";
-import themes from "../themes";
-import lightTheme from "src/themes/light";
-import { getThemeColors } from "src/helpers";
+import lightTheme from "../themes/light";
+import { getThemeColors } from "../helpers";
 
 const INITIAL_STATE = { show: false };
 
