@@ -62,32 +62,29 @@ export function getInjectedProviderName(): string | null {
   return result;
 }
 
-export function getProviderInfoByName(name: string | null): IProviderInfo {
-  let result = FALLBACK;
-
-  if (name) {
-    const matches = providers.filter(provider => provider.name === name);
-
-    if (!!matches && matches.length) {
-      result = matches[0];
-    }
-  }
-
-  return result;
+export function getProviderInfoByName(
+  name: string | null,
+  lastMatch = false
+): IProviderInfo {
+  return filterMatches<IProviderInfo>(
+    providers,
+    x => x.name === name,
+    FALLBACK,
+    lastMatch
+  );
 }
 
-export function getProviderInfo(provider: any): IProviderInfo {
-  let result = FALLBACK;
-
-  if (provider) {
-    const matches = providers.filter(_provider => provider[_provider.check]);
-
-    if (!!matches && matches.length) {
-      result = matches[0];
-    }
-  }
-
-  return result;
+export function getProviderInfo(
+  provider: any,
+  lastMatch = false
+): IProviderInfo {
+  if (!provider) return FALLBACK;
+  return filterMatches<IProviderInfo>(
+    providers,
+    x => provider[x.check],
+    FALLBACK,
+    lastMatch
+  );
 }
 
 export function isMobile(): boolean {
@@ -143,4 +140,23 @@ export function formatProviderDescription(providerInfo: IProviderInfo): string {
       break;
   }
   return description;
+}
+
+export function filterMatches<T>(
+  array: T[],
+  condition: (x: T) => boolean,
+  fallback: T,
+  lastMatch = false
+): T {
+  let result = fallback;
+  if (name) {
+    const matches = array.filter(condition);
+
+    if (!!matches && matches.length) {
+      let index = lastMatch ? matches.length - 1 : 0;
+      result = matches[index];
+    }
+  }
+
+  return result;
 }
