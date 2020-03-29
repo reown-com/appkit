@@ -1,5 +1,6 @@
 export interface ICoreOptions extends IProviderControllerOptions {
   lightboxOpacity: number;
+  theme: string | ThemeColors;
 }
 
 export interface IProviderControllerOptions {
@@ -70,4 +71,21 @@ export type ChainData = {
 
 export type ChainDataList = {
   [chainId: number]: ChainData;
+};
+
+export type ThemeColors = {
+  background: string;
+  main: string;
+  secondary: string;
+  border: string;
+  hover: string;
+};
+
+export interface IThemeConfig {
+  name: string;
+  colors: ThemeColors;
+}
+
+export type ThemesList = {
+  [name: string]: IThemeConfig;
 };

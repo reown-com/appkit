@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import Modal from "../components/Modal";
-import { ICoreOptions, IProviderCallback } from "../helpers/types";
+import { ICoreOptions, IProviderCallback, ThemeColors } from "../helpers/types";
 
 import EventController from "./controllers/events";
 import ProviderController from "./controllers/providers";
@@ -11,11 +11,17 @@ import {
   ERROR_EVENT,
   CLOSE_EVENT
 } from "../helpers/constants";
+import themes from "../themes";
+
+function getThemeColors(theme: string | ThemeColors): ThemeColors {
+  return typeof theme === "string" ? themes[theme].colors : theme;
+}
 
 const INITIAL_STATE = { show: false };
 
 const defaultOpts = {
   lightboxOpacity: 0.4,
+  theme: themes.default.name,
   cacheProvider: false,
   providerOptions: {},
   network: ""
@@ -23,6 +29,7 @@ const defaultOpts = {
 
 class Core {
   private show: boolean = INITIAL_STATE.show;
+  private themeColors: ThemeColors;
   private eventController: EventController = new EventController();
   private lightboxOpacity: number;
   private providerController: ProviderController;
@@ -35,6 +42,9 @@ class Core {
     };
 
     this.lightboxOpacity = options.lightboxOpacity;
+    console.log("options.theme", options.theme);
+    this.themeColors = getThemeColors(options.theme);
+    console.log("this.themeColors", this.themeColors);
 
     this.providerController = new ProviderController({
       cacheProvider: options.cacheProvider,
@@ -63,6 +73,11 @@ class Core {
 
   public setCachedProvider(id: string): void {
     this.providerController.setCachedProvider(id);
+  }
+
+  public async updateTheme(theme: string | ThemeColors) {
+    this.themeColors = getThemeColors(theme);
+    await this.updateState({ themeColors: this.themeColors });
   }
 
   public on(event: string, callback: (result: any) => void): () => void {
@@ -128,6 +143,7 @@ class Core {
 
     ReactDOM.render(
       <Modal
+        themeColors={this.themeColors}
         providers={this.providers}
         onClose={this.onClose}
         resetState={this.resetState}
