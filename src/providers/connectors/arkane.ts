@@ -16,7 +16,6 @@ const ConnectToArkane = (Arkane: any, opts: IArkaneConnectorOptions) => {
           environment: opts.environment,
           signMethod: "POPUP"
         };
-        console.log(Arkane);
         const provider = await (window as any).Arkane.createArkaneProviderEngine(
           options
         );

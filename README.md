@@ -342,11 +342,8 @@ const providerOptions = {
 function checkInjectedProviders(): IInjectedProvidersMap;
 function verifyInjectedProvider(check: string): boolean;
 function getInjectedProviderName(): string | null;
-function getProviderInfoByName(
-  name: string | null,
-  lastMatch?: boolean
-): IProviderInfo;
-function getProviderInfo(provider: any, lastMatch?: boolean): IProviderInfo;
+function getProviderInfoByName(name: string | null): IProviderInfo;
+function getProviderInfo(provider: any): IProviderInfo;
 function isMobile(): boolean;
 ```
 

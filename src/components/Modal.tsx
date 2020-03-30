@@ -1,18 +1,17 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import styled from "styled-components";
+
 import Provider from "./Provider";
-import {
-  SimpleFunction,
-  IProviderCallback,
-  ThemeColors
-} from "../helpers/types";
 import {
   MODAL_LIGHTBOX_CLASSNAME,
   MODAL_CONTAINER_CLASSNAME,
   MODAL_HITBOX_CLASSNAME,
-  MODAL_CARD_CLASSNAME
-} from "../helpers/constants";
+  MODAL_CARD_CLASSNAME,
+  SimpleFunction,
+  IProviderCallback,
+  ThemeColors
+} from "../helpers";
 
 declare global {
   // tslint:disable-next-line

@@ -1,20 +1,19 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import Modal from "../components/Modal";
-import { ICoreOptions, IProviderCallback, ThemeColors } from "../helpers/types";
 
-import { EventController, ProviderController } from "./controllers";
 import {
+  ICoreOptions,
+  IProviderCallback,
+  ThemeColors,
   WEB3_CONNECT_MODAL_ID,
   CONNECT_EVENT,
   ERROR_EVENT,
-  CLOSE_EVENT
-} from "../helpers/constants";
+  CLOSE_EVENT,
+  getThemeColors
+} from "../helpers";
+import { EventController, ProviderController } from "./controllers";
+import Modal from "../components/Modal";
 import themes from "../themes";
-
-function getThemeColors(theme: string | ThemeColors): ThemeColors {
-  return typeof theme === "string" ? themes[theme].colors : theme;
-}
 
 const INITIAL_STATE = { show: false };
 
@@ -41,9 +40,7 @@ class Core {
     };
 
     this.lightboxOpacity = options.lightboxOpacity;
-    console.log("options.theme", options.theme);
     this.themeColors = getThemeColors(options.theme);
-    console.log("this.themeColors", this.themeColors);
 
     this.providerController = new ProviderController({
       cacheProvider: options.cacheProvider,

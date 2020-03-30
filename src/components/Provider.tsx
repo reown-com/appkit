@@ -1,17 +1,16 @@
 import * as React from "react";
 import styled from "styled-components";
+
 import {
-  getProviderInfoByName,
-  formatProviderDescription
-} from "../helpers/utils";
-import {
+  ThemeColors,
   PROVIDER_WRAPPER_CLASSNAME,
   PROVIDER_CONTAINER_CLASSNAME,
   PROVIDER_ICON_CLASSNAME,
   PROVIDER_NAME_CLASSNAME,
-  PROVIDER_DESCRIPTION_CLASSNAME
-} from "../helpers/constants";
-import { ThemeColors } from "../helpers";
+  PROVIDER_DESCRIPTION_CLASSNAME,
+  getProviderInfoByName,
+  formatProviderDescription
+} from "../helpers";
 
 interface IIconStyleProps {
   noShadow?: boolean;

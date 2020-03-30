@@ -1,4 +1,4 @@
-import { IProviderInfo } from "../helpers/types";
+import { IProviderInfo } from "../helpers";
 
 // @ts-ignore
 import Web3DefaultLogo from "./logos/web3-default.svg";

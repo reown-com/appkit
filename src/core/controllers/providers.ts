@@ -1,18 +1,19 @@
+import { providerMapping } from "../../providers";
 import {
+  isMobile,
+  getInjectedProviderName,
   IProviderControllerOptions,
   IProviderOptions,
-  IProviderMappingEntry
-} from "../../helpers/types";
-import { isMobile, getInjectedProviderName } from "../../helpers/utils";
-import { providerMapping } from "../../providers";
-import { EventController } from "./events";
-import {
+  IProviderMappingEntry,
   CONNECT_EVENT,
   ERROR_EVENT,
   INJECTED_PROVIDER_ID,
-  CACHED_PROVIDER_KEY
-} from "../../helpers/constants";
-import { getLocal, setLocal, removeLocal } from "../../helpers/local";
+  CACHED_PROVIDER_KEY,
+  getLocal,
+  setLocal,
+  removeLocal
+} from "../../helpers";
+import { EventController } from "./events";
 
 export class ProviderController {
   public cachedProvider: string = "";
