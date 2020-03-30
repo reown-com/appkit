@@ -9,17 +9,18 @@ import {
   CONNECT_EVENT,
   ERROR_EVENT,
   CLOSE_EVENT,
-  getThemeColors
+  getThemeColors,
+  SimpleFunction
 } from "../helpers";
-import { EventController, ProviderController } from "./controllers";
+import { themesList } from "../themes";
 import Modal from "../components/Modal";
-import themes from "../themes";
+import { EventController, ProviderController } from "./controllers";
 
 const INITIAL_STATE = { show: false };
 
 const defaultOpts = {
   lightboxOpacity: 0.4,
-  theme: themes.default.name,
+  theme: themesList.default.name,
   cacheProvider: false,
   providerOptions: {},
   network: ""
@@ -63,62 +64,13 @@ class Core {
 
   // --------------- PUBLIC METHODS --------------- //
 
-  public clearCachedProvider(): void {
-    this.providerController.clearCachedProvider();
-  }
-
-  public setCachedProvider(id: string): void {
-    this.providerController.setCachedProvider(id);
-  }
-
-  public async updateTheme(theme: string | ThemeColors) {
-    this.themeColors = getThemeColors(theme);
-    await this.updateState({ themeColors: this.themeColors });
-  }
-
-  public on(event: string, callback: (result: any) => void): () => void {
-    this.eventController.on({
-      event,
-      callback
-    });
-
-    return () =>
-      this.eventController.off({
-        event,
-        callback
-      });
-  }
-
-  public off(event: string, callback?: (result: any) => void): void {
-    this.eventController.off({
-      event,
-      callback
-    });
-  }
-
-  public toggleModal = async () => {
-    if (this.cachedProvider) {
-      await this.providerController.connectToCachedProvider();
-      return;
-    }
-    if (
-      this.providers &&
-      this.providers.length === 1 &&
-      this.providers[0].name
-    ) {
-      await this.providers[0].onClick();
-      return;
-    }
-    await this._toggleModal();
-  };
-
-  public connect = () =>
+  public connect = (): Promise<any> =>
     new Promise(async (resolve, reject) => {
       this.on(CONNECT_EVENT, provider => resolve(provider));
       await this.toggleModal();
     });
 
-  public connectTo = (id: string) =>
+  public connectTo = (id: string): Promise<any> =>
     new Promise(async (resolve, reject) => {
       this.on(CONNECT_EVENT, provider => resolve(provider));
       const provider = this.providerController.getProviderMappingEntry(id);
@@ -132,7 +84,58 @@ class Core {
       await this.providerController.connectTo(provider.id, provider.connector);
     });
 
-  public renderModal() {
+  public async toggleModal(): Promise<void> {
+    if (this.cachedProvider) {
+      await this.providerController.connectToCachedProvider();
+      return;
+    }
+    if (
+      this.providers &&
+      this.providers.length === 1 &&
+      this.providers[0].name
+    ) {
+      await this.providers[0].onClick();
+      return;
+    }
+    await this._toggleModal();
+  }
+
+  public on(event: string, callback: SimpleFunction): SimpleFunction {
+    this.eventController.on({
+      event,
+      callback
+    });
+
+    return () =>
+      this.eventController.off({
+        event,
+        callback
+      });
+  }
+
+  public off(event: string, callback?: SimpleFunction): void {
+    this.eventController.off({
+      event,
+      callback
+    });
+  }
+
+  public clearCachedProvider(): void {
+    this.providerController.clearCachedProvider();
+  }
+
+  public setCachedProvider(id: string): void {
+    this.providerController.setCachedProvider(id);
+  }
+
+  public async updateTheme(theme: string | ThemeColors): Promise<void> {
+    this.themeColors = getThemeColors(theme);
+    await this.updateState({ themeColors: this.themeColors });
+  }
+
+  // --------------- PRIVATE METHODS --------------- //
+
+  private renderModal() {
     const el = document.createElement("div");
     el.id = WEB3_CONNECT_MODAL_ID;
     document.body.appendChild(el);
@@ -148,8 +151,6 @@ class Core {
       document.getElementById(WEB3_CONNECT_MODAL_ID)
     );
   }
-
-  // --------------- PRIVATE METHODS --------------- //
 
   private _toggleModal = async () => {
     const d = typeof window !== "undefined" ? document : "";

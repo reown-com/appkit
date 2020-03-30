@@ -1,5 +1,5 @@
 import { providers, FALLBACK } from "../providers";
-import themes from "../themes";
+import { themesList } from "../themes";
 import { chainList } from "./chains";
 import {
   IProviderInfo,
@@ -169,5 +169,5 @@ export function getChainId(network: string): number {
 }
 
 export function getThemeColors(theme: string | ThemeColors): ThemeColors {
-  return typeof theme === "string" ? themes[theme].colors : theme;
+  return typeof theme === "string" ? themesList[theme].colors : theme;
 }

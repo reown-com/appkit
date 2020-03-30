@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Web3 from "web3";
 import { convertUtf8ToHex } from "@walletconnect/utils";
 
-import Web3Modal, { getProviderInfo } from "web3modal";
+import Web3Modal from "web3modal";
 // @ts-ignore
 import WalletConnectProvider from "@walletconnect/web3-provider";
 // @ts-ignore
@@ -182,8 +182,6 @@ class App extends React.Component<any, any> {
     await this.subscribeProvider(provider);
 
     const web3: any = initWeb3(provider);
-
-    console.log("[onConnect]", getProviderInfo(provider)); // tslint:disable-line
 
     const accounts = await web3.eth.getAccounts();
 

@@ -336,6 +336,22 @@ const providerOptions = {
 };
 ```
 
+## API
+
+```typescript
+class Web3Modal {
+  cachedProvider: string;
+  function connect(): Promise<any>;
+  function connectTo(id: string): Promise<any>;
+  function toggleModal(): Promise<void>;
+  function on(event: string, callback: SimpleFunction): SimpleFunction;
+  function off(event: string, callback?: SimpleFunction): void;
+  function clearCachedProvider(): void;
+  function setCachedProvider(): void;
+  function updateTheme(theme: string | ThemeColors): Promise<void>;
+}
+```
+
 ## Utils
 
 ```typescript
@@ -345,6 +361,9 @@ function getInjectedProviderName(): string | null;
 function getProviderInfoByName(name: string | null): IProviderInfo;
 function getProviderInfo(provider: any): IProviderInfo;
 function isMobile(): boolean;
+function formatProviderDescription(providerInfo: IProviderInfo): string;
+function getChainId(network: string): number;
+function getThemeColors(theme: string | ThemeColors): ThemeColors;
 ```
 
 ## Types
@@ -386,6 +405,14 @@ interface IProviderMappingEntry {
   connector: any;
   package: IProviderPackageOptions;
 }
+
+type ThemeColors = {
+  background: string;
+  main: string;
+  secondary: string;
+  border: string;
+  hover: string;
+};
 ```
 
 ## Custom Themes
