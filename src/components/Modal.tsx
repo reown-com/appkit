@@ -2,7 +2,7 @@ import * as React from "react";
 import * as PropTypes from "prop-types";
 import styled from "styled-components";
 
-import Provider from "./Provider";
+import { Provider } from "./Provider";
 import {
   MODAL_LIGHTBOX_CLASSNAME,
   MODAL_CONTAINER_CLASSNAME,
@@ -131,7 +131,7 @@ const INITIAL_STATE: IModalState = {
   lightboxOffset: 0
 };
 
-class Modal extends React.Component<IModalProps, IModalState> {
+export class Modal extends React.Component<IModalProps, IModalState> {
   constructor(props: IModalProps) {
     super(props);
     window.updateWeb3Modal = async (state: IModalState) => {
@@ -206,5 +206,3 @@ class Modal extends React.Component<IModalProps, IModalState> {
     );
   };
 }
-
-export default Modal;

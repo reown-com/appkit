@@ -47,7 +47,8 @@
     "lint": "tslint ./src/*.ts ./src/**/*.ts",
     "format": "prettier ./src/*.ts ./src/**/*.ts --write",
     "zip": "node ./scripts/zip.js",
-    "check": "npm run clean && npm run lint && npm run format && npm run build && npm run test && npm run zip",
+    "move": "node ./scripts/move.js",
+    "check": "npm run clean && npm run lint && npm run format && npm run build && npm run test && npm run move",
     "routine": "npm run clean:all && npm run bootstrap && npm run check"
   },
   "devDependencies": {

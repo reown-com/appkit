@@ -13,8 +13,8 @@ import {
   SimpleFunction
 } from "../helpers";
 import { themesList } from "../themes";
-import Modal from "../components/Modal";
-import { EventController, ProviderController } from "./controllers";
+import { Modal } from "../components/";
+import { EventController, ProviderController } from "../controllers";
 
 const INITIAL_STATE = { show: false };
 
@@ -26,7 +26,7 @@ const defaultOpts = {
   network: ""
 };
 
-class Core {
+export class Core {
   private show: boolean = INITIAL_STATE.show;
   private themeColors: ThemeColors;
   private eventController: EventController = new EventController();
@@ -195,5 +195,3 @@ class Core {
 
   private resetState = () => this.updateState({ ...INITIAL_STATE });
 }
-
-export default Core;

@@ -102,7 +102,7 @@ interface IProviderProps {
   onClick: () => void;
 }
 
-const Provider = (props: IProviderProps) => {
+export function Provider(props: IProviderProps) {
   const { name, themeColors, onClick, ...otherProps } = props;
   const providerInfo = getProviderInfoByName(name);
   const description = formatProviderDescription(providerInfo);
@@ -135,6 +135,4 @@ const Provider = (props: IProviderProps) => {
       </SProviderContainer>
     </SProviderWrapper>
   );
-};
-
-export default Provider;
+}
