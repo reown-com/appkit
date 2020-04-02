@@ -17,12 +17,11 @@
     "react-dom": "^16.8.6",
     "react-scripts-ts": "^4.0.8",
     "styled-components": "4.2.0",
-    "web3": "^1.2.6"
+    "web3": "^1.2.6",
+    "web3modal": "file:.."
   },
   "scripts": {
-    "bootstrap": "npm install && npm run link",
-    "link": "npm link ../",
-    "start": "npm run link && react-scripts-ts start",
+    "start": "react-scripts-ts start",
     "build": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject"
