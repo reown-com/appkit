@@ -151,6 +151,5 @@ export const providers: IProviderInfo[] = [
 ];
 
 export const providerMapping: IProviderMappingEntry[] = parseProviderMapping(
-  providers,
   connectors
 );

@@ -181,7 +181,6 @@ export function getThemeColors(theme: string | ThemeColors): ThemeColors {
 }
 
 export function parseProviderMapping(
-  providers: IProviderInfo[],
   connectors: IConnectorsMap
 ): IProviderMappingEntry[] {
   return Object.keys(connectors).map((id: string) => {
