@@ -12,6 +12,7 @@ This file should export as a default a callback function which must have two par
 
 ```typescript
 // src/providers/connectors/firebox.ts
+
 import { IAbstractConnectorOptions } from "../../helpers";
 
 interface IFireboxOptions extends IAbstractConnectorOptions {
@@ -77,25 +78,7 @@ export const FIREBOX_PROVIDER: IProviderInfo = {
 
 More detail on how the IProviderInfo interface works is still undocumentated but the most important parts to pay attention are the required array for your provider options, the id should be lowercase and the logo should be imported as demonstrated.
 
-## 5) List your provider in the mapping
-
-On the bottom of the same file as the step before (`src/providers/index.ts`), you should also add your provider to the mapping using references to your provider info and add your connector as well as follows:
-
-```typescript
-// src/providers/index.ts
-
-export const providerMapping: IProviderMappingEntry[] = [
-  // other providers
-  {
-    id: FIREBOX_PROVIDER.id,
-    name: FIREBOX_PROVIDER.name,
-    connector: connectors.firebox,
-    package: FIREBOX_PROVIDER.package
-  }
-];
-```
-
-## 6) Update the Web3Modal README file
+## 5) Update the Web3Modal README file
 
 Finally you should update the main README file so other developers can use your provider with Web3Modal easily. Inside the section of **Provider Options** you should add an example of how to configure Web3Modal to display your provider using the provider-specific options.
 

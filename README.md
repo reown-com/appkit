@@ -358,6 +358,7 @@ class Web3Modal {
 function checkInjectedProviders(): IInjectedProvidersMap;
 function verifyInjectedProvider(check: string): boolean;
 function getInjectedProviderName(): string | null;
+function getProviderInfoById(id: string | null): IProviderInfo;
 function getProviderInfoByName(name: string | null): IProviderInfo;
 function getProviderInfo(provider: any): IProviderInfo;
 function isMobile(): boolean;

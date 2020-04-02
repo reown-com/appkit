@@ -1,8 +1,9 @@
 import {
-  INJECTED_PROVIDER_ID,
   IProviderInfo,
-  IProviderMappingEntry
+  IProviderMappingEntry,
+  parseProviderMapping
 } from "../helpers";
+
 import connectors from "./connectors";
 import { FALLBACK_INJECTED, injected } from "./injected";
 
@@ -149,59 +150,7 @@ export const providers: IProviderInfo[] = [
   BURNERCONNECT_PROVIDER
 ];
 
-export const providerMapping: IProviderMappingEntry[] = [
-  {
-    id: INJECTED_PROVIDER_ID,
-    name: "",
-    connector: connectors.injected,
-    package: FALLBACK_INJECTED.package
-  },
-  {
-    id: WALLETCONNECT_PROVIDER.id,
-    name: WALLETCONNECT_PROVIDER.name,
-    connector: connectors.walletconnect,
-    package: WALLETCONNECT_PROVIDER.package
-  },
-  {
-    id: PORTIS_PROVIDER.id,
-    name: PORTIS_PROVIDER.name,
-    connector: connectors.portis,
-    package: PORTIS_PROVIDER.package
-  },
-  {
-    id: FORTMATIC_PROVIDER.id,
-    name: FORTMATIC_PROVIDER.name,
-    connector: connectors.fortmatic,
-    package: FORTMATIC_PROVIDER.package
-  },
-  {
-    id: SQUARELINK_PROVIDER.id,
-    name: SQUARELINK_PROVIDER.name,
-    connector: connectors.squarelink,
-    package: SQUARELINK_PROVIDER.package
-  },
-  {
-    id: TORUS_PROVIDER.id,
-    name: TORUS_PROVIDER.name,
-    connector: connectors.torus,
-    package: TORUS_PROVIDER.package
-  },
-  {
-    id: ARKANE_PROVIDER.id,
-    name: ARKANE_PROVIDER.name,
-    connector: connectors.arkane,
-    package: ARKANE_PROVIDER.package
-  },
-  {
-    id: AUTHEREUM_PROVIDER.id,
-    name: AUTHEREUM_PROVIDER.name,
-    connector: connectors.authereum,
-    package: AUTHEREUM_PROVIDER.package
-  },
-  {
-    id: BURNERCONNECT_PROVIDER.id,
-    name: BURNERCONNECT_PROVIDER.name,
-    connector: connectors.burnerconnect,
-    package: BURNERCONNECT_PROVIDER.package
-  }
-];
+export const providerMapping: IProviderMappingEntry[] = parseProviderMapping(
+  providers,
+  connectors
+);

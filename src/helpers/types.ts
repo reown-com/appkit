@@ -89,3 +89,7 @@ export interface IThemeConfig {
 export type ThemesList = {
   [name: string]: IThemeConfig;
 };
+
+export interface IConnectorsMap {
+  [id: string]: (provider?: any, opts?: any) => Promise<any>;
+}

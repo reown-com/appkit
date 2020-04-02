@@ -1,3 +1,5 @@
+import { IConnectorsMap } from "../../helpers";
+
 import injected from "./injected";
 import walletconnect from "./walletconnect";
 import portis from "./portis";
@@ -8,7 +10,7 @@ import arkane from "./arkane";
 import authereum from "./authereum";
 import burnerconnect from "./burnerconnect";
 
-export default {
+const connectors: IConnectorsMap = {
   injected,
   walletconnect,
   portis,
@@ -17,5 +19,7 @@ export default {
   squarelink,
   arkane,
   authereum,
-  burnerconnect,
+  burnerconnect
 };
+
+export default connectors;
