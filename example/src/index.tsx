@@ -12,7 +12,6 @@ const GlobalStyle = createGlobalStyle`
 declare global {
   // tslint:disable-next-line
   interface Window {
-    blockies: any;
     web3: any;
     ethereum: any;
     Web3Modal: any;

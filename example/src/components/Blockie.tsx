@@ -1,4 +1,5 @@
 import * as React from 'react'
+import * as blockies from 'blockies-ts'
 import styled from 'styled-components'
 
 interface IBlockieStyleProps {
@@ -24,7 +25,7 @@ const SBlockieWrapper = styled.div<IBlockieStyleProps>`
 
 const Blockie = (props: IBlockieProps) => {
   const seed = props.address.toLowerCase() || ''
-  const imgUrl = window.blockies
+  const imgUrl = blockies
     .create({
       seed
     })

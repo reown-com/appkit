@@ -9,6 +9,7 @@
     "authereum": "^0.0.4-beta.68",
     "axios": "^0.18.0",
     "bignumber.js": "^8.1.1",
+    "blockies-ts": "^1.0.0",
     "ethereumjs-util": "^6.1.0",
     "fortmatic": "^0.8.2",
     "prop-types": "^15.7.2",
