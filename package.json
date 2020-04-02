@@ -19,6 +19,8 @@
   "author": "Web3Modal <web3modal.com>",
   "license": "LGPL-3.0",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "unpkg": "lib/index.js",
   "directories": {
     "lib": "lib",
     "test": "test"
@@ -27,6 +29,7 @@
     "lib",
     "src"
   ],
+  "homepage": "https://github.com/web3modal/web3modal",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/web3modal/web3modal.git"
