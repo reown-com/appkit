@@ -17,7 +17,7 @@ import FortmaticLogo from "./logos/fortmatic.svg";
 // @ts-ignore
 import ArkaneLogo from "./logos/arkane.svg";
 // @ts-ignore
-import TorusLogo from "./logos/torus.png";
+import TorusLogo from "./logos/torus.svg";
 // @ts-ignore
 import AuthereumLogo from "./logos/authereum.svg";
 // @ts-ignore
