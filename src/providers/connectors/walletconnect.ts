@@ -1,23 +1,10 @@
-export interface IWalletConnectConnectorOptions {
+import { IAbstractConnectorOptions, getChainId } from "../../helpers";
+
+export interface IWalletConnectConnectorOptions
+  extends IAbstractConnectorOptions {
   infuraId: string;
   bridge?: string;
   qrcode?: boolean;
-  network?: string;
-}
-
-function getChainId(network: string) {
-  const infuraChainIds = {
-    mainnet: 1,
-    ropsten: 3,
-    rinkeby: 4,
-    goerli: 5,
-    kovan: 42
-  };
-  const chainId = infuraChainIds[network];
-  if (!chainId) {
-    throw new Error(`Invalid or unknown chainId for network=${network}`);
-  }
-  return chainId;
 }
 
 const ConnectToWalletConnect = (
@@ -34,7 +21,8 @@ const ConnectToWalletConnect = (
       bridge = opts.bridge || bridge;
       qrcode = typeof opts.qrcode !== "undefined" ? opts.qrcode : qrcode;
       infuraId = opts.infuraId || "";
-      chainId = opts.network ? getChainId(opts.network) : 1;
+      chainId =
+        opts.network && getChainId(opts.network) ? getChainId(opts.network) : 1;
     }
 
     const provider = new WalletConnectProvider({

@@ -1,15 +1,11 @@
-export interface INetwork {
-  nodeUrl: string;
-  chainId?: string;
-}
+import { IAbstractConnectorOptions } from "../../helpers";
 
 export interface IOptions {
   scope?: string[];
 }
 
-export interface ISquarelinkConnectorOptions {
+export interface ISquarelinkConnectorOptions extends IAbstractConnectorOptions {
   id: string;
-  network?: string | INetwork;
   config?: IOptions;
 }
 
@@ -25,7 +21,7 @@ const ConnectToSquarelink = (
         const config = opts.config;
         const sqlk = new Squarelink(id, network, config);
         const provider = await sqlk.getProvider();
-        provider.sqlk = sqlk
+        provider.sqlk = sqlk;
         await provider.enable();
         return resolve(provider);
       } catch (error) {

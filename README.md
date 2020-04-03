@@ -71,6 +71,32 @@ const provider = await web3Modal.connect();
 const web = new Web3(provider);
 ```
 
+## Using with standalone JavaScript
+
+You can use the modal from the old fashioned web page JavaScript as well.
+
+[First get a Web3modal bundled JavaScript from Releases](https://github.com/Web3Modal/web3modal/releases).
+
+After including the bundle in your HTML, you can use it on your web page:
+
+```js
+//  You have to refer to default since it was bundled for ESModules
+// but after that the documentation will be the same
+
+const Web3Modal = window.Web3Modal.default;
+const providerOptions = {
+  /* See Provider Options Section */
+};
+
+const web3Modal = new Web3Modal({
+  network: "mainnet", // optional
+  cacheProvider: true, // optional
+  providerOptions // required
+});
+
+const provider = await web3Modal.connect();
+```
+
 ## Provider Options
 
 These are all the providers available with Web3Modal and how to configure their provider options
@@ -223,9 +249,6 @@ const providerOptions = {
           // optional
           google: false // optional
         }
-      },
-      network: {
-        host: "rinkeby"
       }
     }
   }
@@ -313,6 +336,22 @@ const providerOptions = {
 };
 ```
 
+## API
+
+```typescript
+class Web3Modal {
+  cachedProvider: string;
+  function connect(): Promise<any>;
+  function connectTo(id: string): Promise<any>;
+  function toggleModal(): Promise<void>;
+  function on(event: string, callback: SimpleFunction): SimpleFunction;
+  function off(event: string, callback?: SimpleFunction): void;
+  function clearCachedProvider(): void;
+  function setCachedProvider(): void;
+  function updateTheme(theme: string | ThemeColors): Promise<void>;
+}
+```
+
 ## Utils
 
 ```typescript
@@ -322,6 +361,9 @@ function getInjectedProviderName(): string | null;
 function getProviderInfoByName(name: string | null): IProviderInfo;
 function getProviderInfo(provider: any): IProviderInfo;
 function isMobile(): boolean;
+function formatProviderDescription(providerInfo: IProviderInfo): string;
+function getChainId(network: string): number;
+function getThemeColors(theme: string | ThemeColors): ThemeColors;
 ```
 
 ## Types
@@ -363,6 +405,56 @@ interface IProviderMappingEntry {
   connector: any;
   package: IProviderPackageOptions;
 }
+
+type ThemeColors = {
+  background: string;
+  main: string;
+  secondary: string;
+  border: string;
+  hover: string;
+};
+```
+
+## Custom Themes
+
+The theme enabled by default is `light` but dark theme is also available by setting the option `theme` to `dark`, as follows:
+
+```typescript
+const web3Modal = new Web3Modal({
+  ...otherOptions,
+  theme: "dark"
+});
+```
+
+Completely custom themes are also available by passing an object instead with the following parameters with valid css colors values:
+
+```typescript
+const web3Modal = new Web3Modal({
+  ...otherOptions,
+  theme: {
+    background: "rgb(39, 49, 56)",
+    main: "rgb(199, 199, 199)",
+    secondary: "rgb(136, 136, 136)",
+    border: "rgba(195, 195, 195, 0.14)",
+    hover: "rgb(16, 26, 32)"
+  }
+});
+```
+
+Addtionally you can also update the modal theme after instantiated by calling the following method:
+
+```typescript
+await web3Modal.updateTheme("dark");
+
+// OR
+
+await web3Modal.updateTheme({
+  background: "rgb(39, 49, 56)",
+  main: "rgb(199, 199, 199)",
+  secondary: "rgb(136, 136, 136)",
+  border: "rgba(195, 195, 195, 0.14)",
+  hover: "rgb(16, 26, 32)"
+});
 ```
 
 ## Connect to specific provider

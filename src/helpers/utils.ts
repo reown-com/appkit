@@ -1,5 +1,12 @@
 import { providers, FALLBACK } from "../providers";
-import { IProviderInfo, IInjectedProvidersMap } from "./types";
+import { themesList } from "../themes";
+import { chainList } from "./chains";
+import {
+  IProviderInfo,
+  IInjectedProvidersMap,
+  ChainData,
+  ThemeColors
+} from "./types";
 
 export function checkInjectedProviders(): IInjectedProvidersMap {
   const result = {
@@ -13,6 +20,7 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
         fallbackProvider = false;
       }
     });
+
     // Nitfy Wallet fix
     if (result["isMetamask"]) {
       if (verifyInjectedProvider("isNiftyWallet")) {
@@ -20,6 +28,7 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
         result["isNiftyWallet"] = true;
       }
     }
+
     // Coinbase Wallet fix
     if (result["isCipher"]) {
       if (verifyInjectedProvider("isToshi")) {
@@ -63,35 +72,21 @@ export function getInjectedProviderName(): string | null {
 }
 
 export function getProviderInfoByName(name: string | null): IProviderInfo {
-  let result = FALLBACK;
-
-  if (name) {
-    const matches = providers.filter(provider => provider.name === name);
-
-    if (!!matches && matches.length) {
-      // Usually providers might match with metamask for compatibility reasons by setting isMetamask=true
-      // Metamask is listed as first provider in the list. So, we should return the last matched one as result
-      result = matches[matches.length - 1];
-    }
-  }
-
-  return result;
+  if (!name) return FALLBACK;
+  return filterMatches<IProviderInfo>(
+    providers,
+    x => x.name === name,
+    FALLBACK
+  );
 }
 
 export function getProviderInfo(provider: any): IProviderInfo {
-  let result = FALLBACK;
-
-  if (provider) {
-    const matches = providers.filter(_provider => provider[_provider.check]);
-
-    if (!!matches && matches.length) {
-      // Usually providers might match with metamask for compatibility reasons by setting isMetamask=true
-      // Metamask is listed as first provider in the list. So, we should return the last matched one as result
-      result = matches[matches.length - 1];
-    }
-  }
-
-  return result;
+  if (!provider) return FALLBACK;
+  return filterMatches<IProviderInfo>(
+    providers,
+    x => provider[x.check],
+    FALLBACK
+  );
 }
 
 export function isMobile(): boolean {
@@ -147,4 +142,32 @@ export function formatProviderDescription(providerInfo: IProviderInfo): string {
       break;
   }
   return description;
+}
+
+export function filterMatches<T>(
+  array: T[],
+  condition: (x: T) => boolean,
+  fallback: T
+): T {
+  let result = fallback;
+  const matches = array.filter(condition);
+
+  if (!!matches && matches.length) {
+    result = matches[0];
+  }
+
+  return result;
+}
+
+export function getChainId(network: string): number {
+  const chains: ChainData[] = Object.values(chainList);
+  const matches = chains.filter(chain => chain.network === network);
+  if (matches && matches.length) {
+    return matches[0].chainId;
+  }
+  return 0;
+}
+
+export function getThemeColors(theme: string | ThemeColors): ThemeColors {
+  return typeof theme === "string" ? themesList[theme].colors : theme;
 }

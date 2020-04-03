@@ -1,10 +1,15 @@
 export interface ICoreOptions extends IProviderControllerOptions {
   lightboxOpacity: number;
+  theme: string | ThemeColors;
 }
 
 export interface IProviderControllerOptions {
   cacheProvider: boolean;
   providerOptions: IProviderOptions;
+  network: string;
+}
+
+export interface IAbstractConnectorOptions {
   network: string;
 }
 
@@ -56,3 +61,31 @@ export interface IEventCallback {
   event: string;
   callback: (result: any) => void;
 }
+
+export type ChainData = {
+  chainId: number;
+  chain: string;
+  network: string;
+  networkId: number;
+};
+
+export type ChainDataList = {
+  [chainId: number]: ChainData;
+};
+
+export type ThemeColors = {
+  background: string;
+  main: string;
+  secondary: string;
+  border: string;
+  hover: string;
+};
+
+export interface IThemeConfig {
+  name: string;
+  colors: ThemeColors;
+}
+
+export type ThemesList = {
+  [name: string]: IThemeConfig;
+};

@@ -1,17 +1,17 @@
 import * as React from "react";
 import styled from "styled-components";
 import Web3 from "web3";
+import { convertUtf8ToHex } from "@walletconnect/utils";
 
 import Web3Modal from "web3modal";
 // @ts-ignore
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import Portis from "@portis/web3";
 // @ts-ignore
 import Fortmatic from "fortmatic";
 import Torus from "@toruslabs/torus-embed";
+import Portis from "@portis/web3";
 import Authereum from "authereum";
 
-import { convertUtf8ToHex } from "@walletconnect/utils";
 import Button from "./components/Button";
 import Column from "./components/Column";
 import Wrapper from "./components/Wrapper";
@@ -41,35 +41,6 @@ import {
   DAI_TRANSFER
 } from "./constants";
 import { callBalanceOf, callTransfer } from "./helpers/web3";
-
-const providerOptions = {
-  walletconnect: {
-    package: WalletConnectProvider,
-    options: {
-      infuraId: process.env.REACT_APP_INFURA_ID
-    }
-  },
-  portis: {
-    package: Portis,
-    options: {
-      id: process.env.REACT_APP_PORTIS_ID
-    }
-  },
-  fortmatic: {
-    package: Fortmatic,
-    options: {
-      key: process.env.REACT_APP_FORTMATIC_KEY
-    }
-  },
-  torus: {
-    package: Torus,
-    options: {}
-  },
-  authereum: {
-    package: Authereum,
-    options: {}
-  }
-};
 
 const SLayout = styled.div`
   position: relative;
@@ -195,7 +166,7 @@ class App extends React.Component<any, any> {
     this.web3Modal = new Web3Modal({
       network: this.getNetwork(),
       cacheProvider: true,
-      providerOptions
+      providerOptions: this.getProviderOptions()
     });
   }
 
@@ -253,6 +224,38 @@ class App extends React.Component<any, any> {
   };
 
   public getNetwork = () => getChainData(this.state.chainId).network;
+
+  public getProviderOptions = () => {
+    const providerOptions = {
+      walletconnect: {
+        package: WalletConnectProvider,
+        options: {
+          infuraId: process.env.REACT_APP_INFURA_ID
+        }
+      },
+      torus: {
+        package: Torus,
+        options: {}
+      },
+      fortmatic: {
+        package: Fortmatic,
+        options: {
+          key: process.env.REACT_APP_FORTMATIC_KEY
+        }
+      },
+      portis: {
+        package: Portis,
+        options: {
+          id: process.env.REACT_APP_PORTIS_ID
+        }
+      },
+      authereum: {
+        package: Authereum,
+        options: {}
+      }
+    };
+    return providerOptions;
+  };
 
   public getAccountAssets = async () => {
     const { address, chainId } = this.state;
