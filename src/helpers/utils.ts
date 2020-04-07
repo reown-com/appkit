@@ -47,7 +47,7 @@ export function verifyInjectedProvider(check: string): boolean {
     : false;
 }
 
-export function getInjectedProviderName(): string | null {
+export function getInjectedProvider(): IProviderInfo | null {
   let result = null;
 
   const injectedProviders = checkInjectedProviders();
@@ -55,15 +55,25 @@ export function getInjectedProviderName(): string | null {
   if (injectedProviders.injectedAvailable) {
     delete injectedProviders.injectedAvailable;
     const checks = Object.keys(injectedProviders);
-    const match = filterProviderChecks(checks);
-    result = getProviderInfoByCheck(match).name;
+    result = getProviderInfoFromChecksArray(checks);
   }
   return result;
+}
+
+export function getInjectedProviderName(): string | null {
+  const injectedProvider = getInjectedProvider();
+  return injectedProvider ? injectedProvider.name : null;
 }
 
 export function getProviderInfo(provider: any): IProviderInfo {
   if (!provider) return FALLBACK;
   const checks = providers.filter(x => provider[x.check]).map(x => x.check);
+  return getProviderInfoFromChecksArray(checks);
+}
+
+export function getProviderInfoFromChecksArray(
+  checks: string[]
+): IProviderInfo {
   const match = filterProviderChecks(checks);
   return getProviderInfoByCheck(match);
 }
