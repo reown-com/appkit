@@ -1,9 +1,7 @@
 import { providers, FALLBACK } from "../providers";
 import {
   METAMASK_INJECTED,
-  NIFTY_INJECTED,
   CIPHER_INJECTED,
-  COINBASE_INJECTED,
   FALLBACK_INJECTED
 } from "../providers/injected";
 import {
@@ -22,27 +20,12 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
   if (result.injectedAvailable) {
     let fallbackProvider = true;
     providers.forEach(provider => {
-      result[provider.check] = verifyInjectedProvider(provider.check);
-      if (result[provider.check] === true) {
+      const isAvailable = verifyInjectedProvider(provider.check);
+      if (isAvailable) {
+        result[provider.check] = true;
         fallbackProvider = false;
       }
     });
-
-    // Nitfy Wallet fix
-    if (result[METAMASK_INJECTED.check]) {
-      if (verifyInjectedProvider(NIFTY_INJECTED.check)) {
-        result[METAMASK_INJECTED.check] = false;
-        result[NIFTY_INJECTED.check] = true;
-      }
-    }
-
-    // Coinbase Wallet fix
-    if (result[CIPHER_INJECTED.check]) {
-      if (verifyInjectedProvider(COINBASE_INJECTED.check)) {
-        result[CIPHER_INJECTED.check] = false;
-        result[COINBASE_INJECTED.check] = true;
-      }
-    }
 
     if (fallbackProvider) {
       result[FALLBACK_INJECTED.check] = true;
@@ -70,30 +53,19 @@ export function getInjectedProviderName(): string | null {
   const injectedProviders = checkInjectedProviders();
 
   if (injectedProviders.injectedAvailable) {
-    providers.forEach((providerInfo: IProviderInfo) => {
-      if (injectedProviders[providerInfo.check]) {
-        result = providerInfo.name;
-      }
-    });
+    delete injectedProviders.injectedAvailable;
+    const checks = Object.keys(injectedProviders);
+    const match = filterProviderChecks(checks);
+    result = getProviderInfoByCheck(match).name;
   }
   return result;
 }
 
 export function getProviderInfo(provider: any): IProviderInfo {
   if (!provider) return FALLBACK;
-  const matches = providers.filter(x => provider[x.check]);
-  if (!!matches && matches.length) {
-    if (matches.length > 1) {
-      if (
-        matches[0].check === METAMASK_INJECTED.check ||
-        matches[0].check === CIPHER_INJECTED.check
-      ) {
-        return matches[1];
-      }
-    }
-    return matches[0];
-  }
-  return FALLBACK;
+  const checks = providers.filter(x => provider[x.check]).map(x => x.check);
+  const match = filterProviderChecks(checks);
+  return getProviderInfoByCheck(match);
 }
 
 export function getProviderInfoByName(name: string | null): IProviderInfo {
@@ -101,6 +73,15 @@ export function getProviderInfoByName(name: string | null): IProviderInfo {
   return filterMatches<IProviderInfo>(
     providers,
     x => x.name === name,
+    FALLBACK
+  );
+}
+
+export function getProviderInfoByCheck(check: string | null): IProviderInfo {
+  if (!check) return FALLBACK;
+  return filterMatches<IProviderInfo>(
+    providers,
+    x => x.check === check,
     FALLBACK
   );
 }
@@ -169,6 +150,21 @@ export function filterMatches<T>(
   }
 
   return result;
+}
+
+export function filterProviderChecks(checks: string[]): string {
+  if (!!checks && checks.length) {
+    if (checks.length > 1) {
+      if (
+        checks[0] === METAMASK_INJECTED.check ||
+        checks[0] === CIPHER_INJECTED.check
+      ) {
+        return checks[1];
+      }
+    }
+    return checks[0];
+  }
+  return FALLBACK.check;
 }
 
 export function getChainId(network: string): number {
