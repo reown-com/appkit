@@ -1,4 +1,11 @@
-import { ChainDataList } from "./types";
+import { ChainDataList, ChainData } from "./types";
+
+export const EMPTY_CHAIN_DATA: ChainData = {
+  chainId: 0,
+  chain: "",
+  network: "",
+  networkId: 0
+};
 
 export const chainList: ChainDataList = {
   1: {

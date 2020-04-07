@@ -1,12 +1,19 @@
 import { providers, FALLBACK } from "../providers";
-import { themesList } from "../themes";
-import { chainList } from "./chains";
+import {
+  METAMASK_INJECTED,
+  NIFTY_INJECTED,
+  CIPHER_INJECTED,
+  COINBASE_INJECTED,
+  FALLBACK_INJECTED
+} from "../providers/injected";
 import {
   IProviderInfo,
   IInjectedProvidersMap,
   ChainData,
   ThemeColors
 } from "./types";
+import { themesList } from "../themes";
+import { chainList, EMPTY_CHAIN_DATA } from "./chains";
 
 export function checkInjectedProviders(): IInjectedProvidersMap {
   const result = {
@@ -22,22 +29,23 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
     });
 
     // Nitfy Wallet fix
-    if (result["isMetamask"]) {
-      if (verifyInjectedProvider("isNiftyWallet")) {
-        result["isMetamask"] = false;
-        result["isNiftyWallet"] = true;
+    if (result[METAMASK_INJECTED.check]) {
+      if (verifyInjectedProvider(NIFTY_INJECTED.check)) {
+        result[METAMASK_INJECTED.check] = false;
+        result[NIFTY_INJECTED.check] = true;
       }
     }
 
     // Coinbase Wallet fix
-    if (result["isCipher"]) {
-      if (verifyInjectedProvider("isToshi")) {
-        result["isCipher"] = false;
-        result["isToshi"] = true;
+    if (result[CIPHER_INJECTED.check]) {
+      if (verifyInjectedProvider(COINBASE_INJECTED.check)) {
+        result[CIPHER_INJECTED.check] = false;
+        result[COINBASE_INJECTED.check] = true;
       }
     }
+
     if (fallbackProvider) {
-      result["isWeb3"] = true;
+      result[FALLBACK_INJECTED.check] = true;
     }
   }
 
@@ -71,20 +79,28 @@ export function getInjectedProviderName(): string | null {
   return result;
 }
 
+export function getProviderInfo(provider: any): IProviderInfo {
+  if (!provider) return FALLBACK;
+  const matches = providers.filter(x => provider[x.check]);
+  if (!!matches && matches.length) {
+    if (matches.length > 1) {
+      if (
+        matches[0].check === METAMASK_INJECTED.check ||
+        matches[0].check === CIPHER_INJECTED.check
+      ) {
+        return matches[1];
+      }
+    }
+    return matches[0];
+  }
+  return FALLBACK;
+}
+
 export function getProviderInfoByName(name: string | null): IProviderInfo {
   if (!name) return FALLBACK;
   return filterMatches<IProviderInfo>(
     providers,
     x => x.name === name,
-    FALLBACK
-  );
-}
-
-export function getProviderInfo(provider: any): IProviderInfo {
-  if (!provider) return FALLBACK;
-  return filterMatches<IProviderInfo>(
-    providers,
-    x => provider[x.check],
     FALLBACK
   );
 }
@@ -129,11 +145,7 @@ export function formatProviderDescription(providerInfo: IProviderInfo): string {
       description = `Connect to your ${providerInfo.name} Wallet`;
       break;
     case "web":
-      if (providerInfo.name === "Google") {
-        description = `Connect with your Google account via Torus`;
-      } else {
-        description = `Connect with your ${providerInfo.name} account`;
-      }
+      description = `Connect with your ${providerInfo.name} account`;
       break;
     case "qrcode":
       description = `Scan with ${providerInfo.name} to connect`;
@@ -161,11 +173,12 @@ export function filterMatches<T>(
 
 export function getChainId(network: string): number {
   const chains: ChainData[] = Object.values(chainList);
-  const matches = chains.filter(chain => chain.network === network);
-  if (matches && matches.length) {
-    return matches[0].chainId;
-  }
-  return 0;
+  const { chainId } = filterMatches<ChainData>(
+    chains,
+    x => x.network === network,
+    EMPTY_CHAIN_DATA
+  );
+  return chainId;
 }
 
 export function getThemeColors(theme: string | ThemeColors): ThemeColors {
