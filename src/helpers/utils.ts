@@ -214,7 +214,7 @@ export function getThemeColors(theme: string | ThemeColors): ThemeColors {
 }
 
 export function findMatchingRequiredOptions(
-  requiredOptions: (RequiredOption)[],
+  requiredOptions: RequiredOption[],
   providedOptions: { [key: string]: any }
 ): RequiredOption[] {
   const matches = requiredOptions.filter(requiredOption => {

@@ -14,6 +14,8 @@ import TorusLogo from "../logos/torus.svg";
 import AuthereumLogo from "../logos/authereum.svg";
 // @ts-ignore
 import BurnerWalletLogo from "../logos/burnerwallet.png";
+// @ts-ignore
+import UniLoginLogo from "../logos/unilogin.svg";
 
 import { IProviderInfo } from "../../helpers";
 
@@ -97,3 +99,12 @@ export const BURNERCONNECT: IProviderInfo = {
   type: "web",
   check: "isBurnerProvider"
 };
+
+
+export const UNILOGIN: IProviderInfo = {
+  id: "unilogin",
+  name: "UniLogin",
+  logo: UniLoginLogo,
+  check: "isUniLogin",
+  type: "web",
+}
