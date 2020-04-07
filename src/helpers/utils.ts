@@ -1,6 +1,17 @@
 import { providers, FALLBACK } from "../providers";
-import { IProviderInfo, IInjectedProvidersMap, ChainData } from "./types";
-import { chainList } from "./chains";
+import {
+  METAMASK_INJECTED,
+  CIPHER_INJECTED,
+  FALLBACK_INJECTED
+} from "../providers/injected";
+import {
+  IProviderInfo,
+  IInjectedProvidersMap,
+  ChainData,
+  ThemeColors
+} from "./types";
+import { themesList } from "../themes";
+import { chainList, EMPTY_CHAIN_DATA } from "./chains";
 
 export function checkInjectedProviders(): IInjectedProvidersMap {
   const result = {
@@ -9,29 +20,15 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
   if (result.injectedAvailable) {
     let fallbackProvider = true;
     providers.forEach(provider => {
-      result[provider.check] = verifyInjectedProvider(provider.check);
-      if (result[provider.check] === true) {
+      const isAvailable = verifyInjectedProvider(provider.check);
+      if (isAvailable) {
+        result[provider.check] = true;
         fallbackProvider = false;
       }
     });
 
-    // Nitfy Wallet fix
-    if (result["isMetamask"]) {
-      if (verifyInjectedProvider("isNiftyWallet")) {
-        result["isMetamask"] = false;
-        result["isNiftyWallet"] = true;
-      }
-    }
-
-    // Coinbase Wallet fix
-    if (result["isCipher"]) {
-      if (verifyInjectedProvider("isToshi")) {
-        result["isCipher"] = false;
-        result["isToshi"] = true;
-      }
-    }
     if (fallbackProvider) {
-      result["isWeb3"] = true;
+      result[FALLBACK_INJECTED.check] = true;
     }
   }
 
@@ -50,44 +47,52 @@ export function verifyInjectedProvider(check: string): boolean {
     : false;
 }
 
-export function getInjectedProviderName(): string | null {
+export function getInjectedProvider(): IProviderInfo | null {
   let result = null;
 
   const injectedProviders = checkInjectedProviders();
 
   if (injectedProviders.injectedAvailable) {
-    providers.forEach((providerInfo: IProviderInfo) => {
-      if (injectedProviders[providerInfo.check]) {
-        result = providerInfo.name;
-      }
-    });
+    delete injectedProviders.injectedAvailable;
+    const checks = Object.keys(injectedProviders);
+    result = getProviderInfoFromChecksArray(checks);
   }
   return result;
 }
 
-export function getProviderInfoByName(
-  name: string | null,
-  lastMatch = false
+export function getInjectedProviderName(): string | null {
+  const injectedProvider = getInjectedProvider();
+  return injectedProvider ? injectedProvider.name : null;
+}
+
+export function getProviderInfo(provider: any): IProviderInfo {
+  if (!provider) return FALLBACK;
+  const checks = providers.filter(x => provider[x.check]).map(x => x.check);
+  return getProviderInfoFromChecksArray(checks);
+}
+
+export function getProviderInfoFromChecksArray(
+  checks: string[]
 ): IProviderInfo {
+  const match = filterProviderChecks(checks);
+  return getProviderInfoByCheck(match);
+}
+
+export function getProviderInfoByName(name: string | null): IProviderInfo {
   if (!name) return FALLBACK;
   return filterMatches<IProviderInfo>(
     providers,
     x => x.name === name,
-    FALLBACK,
-    lastMatch
+    FALLBACK
   );
 }
 
-export function getProviderInfo(
-  provider: any,
-  lastMatch = false
-): IProviderInfo {
-  if (!provider) return FALLBACK;
+export function getProviderInfoByCheck(check: string | null): IProviderInfo {
+  if (!check) return FALLBACK;
   return filterMatches<IProviderInfo>(
     providers,
-    x => provider[x.check],
-    FALLBACK,
-    lastMatch
+    x => x.check === check,
+    FALLBACK
   );
 }
 
@@ -131,11 +136,7 @@ export function formatProviderDescription(providerInfo: IProviderInfo): string {
       description = `Connect to your ${providerInfo.name} Wallet`;
       break;
     case "web":
-      if (providerInfo.name === "Google") {
-        description = `Connect with your Google account via Torus`;
-      } else {
-        description = `Connect with your ${providerInfo.name} account`;
-      }
+      description = `Connect with your ${providerInfo.name} account`;
       break;
     case "qrcode":
       description = `Scan with ${providerInfo.name} to connect`;
@@ -152,25 +153,43 @@ export function formatProviderDescription(providerInfo: IProviderInfo): string {
 export function filterMatches<T>(
   array: T[],
   condition: (x: T) => boolean,
-  fallback: T,
-  lastMatch = false
+  fallback: T
 ): T {
   let result = fallback;
   const matches = array.filter(condition);
 
   if (!!matches && matches.length) {
-    let index = lastMatch ? matches.length - 1 : 0;
-    result = matches[index];
+    result = matches[0];
   }
 
   return result;
 }
 
+export function filterProviderChecks(checks: string[]): string {
+  if (!!checks && checks.length) {
+    if (checks.length > 1) {
+      if (
+        checks[0] === METAMASK_INJECTED.check ||
+        checks[0] === CIPHER_INJECTED.check
+      ) {
+        return checks[1];
+      }
+    }
+    return checks[0];
+  }
+  return FALLBACK.check;
+}
+
 export function getChainId(network: string): number {
   const chains: ChainData[] = Object.values(chainList);
-  const matches = chains.filter(chain => chain.network === network);
-  if (matches && matches.length) {
-    return matches[0].chainId;
-  }
-  return 0;
+  const { chainId } = filterMatches<ChainData>(
+    chains,
+    x => x.network === network,
+    EMPTY_CHAIN_DATA
+  );
+  return chainId;
+}
+
+export function getThemeColors(theme: string | ThemeColors): ThemeColors {
+  return typeof theme === "string" ? themesList[theme].colors : theme;
 }

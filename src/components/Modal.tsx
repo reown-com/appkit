@@ -1,14 +1,17 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import styled from "styled-components";
+
 import Provider from "./Provider";
-import { SimpleFunction, IProviderCallback } from "../helpers/types";
 import {
   MODAL_LIGHTBOX_CLASSNAME,
   MODAL_CONTAINER_CLASSNAME,
   MODAL_HITBOX_CLASSNAME,
-  MODAL_CARD_CLASSNAME
-} from "../helpers/constants";
+  MODAL_CARD_CLASSNAME,
+  SimpleFunction,
+  IProviderCallback,
+  ThemeColors
+} from "../helpers";
 
 declare global {
   // tslint:disable-next-line
@@ -82,13 +85,14 @@ const SHitbox = styled.div`
 
 interface IModalCardStyleProps {
   show: boolean;
+  themeColors: ThemeColors;
   maxWidth?: number;
 }
 
 const SModalCard = styled.div<IModalCardStyleProps>`
   position: relative;
   width: 100%;
-  background-color: rgb(255, 255, 255);
+  background-color: ${({ themeColors }) => themeColors.background};
   border-radius: 12px;
   margin: 10px;
   padding: 0;
@@ -110,6 +114,7 @@ const SModalCard = styled.div<IModalCardStyleProps>`
 `;
 
 interface IModalProps {
+  themeColors: ThemeColors;
   providers: IProviderCallback[];
   onClose: SimpleFunction;
   resetState: SimpleFunction;
@@ -167,7 +172,7 @@ class Modal extends React.Component<IModalProps, IModalState> {
   public render = () => {
     const { show, lightboxOffset } = this.state;
 
-    const { onClose, lightboxOpacity, providers } = this.props;
+    const { onClose, lightboxOpacity, providers, themeColors } = this.props;
 
     return (
       <SLightbox
@@ -182,12 +187,17 @@ class Modal extends React.Component<IModalProps, IModalState> {
           <SModalCard
             className={MODAL_CARD_CLASSNAME}
             show={show}
+            themeColors={themeColors}
             maxWidth={providers.length < 3 ? 500 : 800}
             ref={c => (this.mainModalCard = c)}
           >
             {providers.map(provider =>
               !!provider ? (
-                <Provider name={provider.name} onClick={provider.onClick} />
+                <Provider
+                  name={provider.name}
+                  themeColors={themeColors}
+                  onClick={provider.onClick}
+                />
               ) : null
             )}
           </SModalCard>

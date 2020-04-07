@@ -203,6 +203,9 @@ class App extends React.Component<any, any> {
   };
 
   public subscribeProvider = async (provider: any) => {
+    if (!provider.on) {
+      return;
+    }
     provider.on("close", () => this.resetApp());
     provider.on("accountsChanged", async (accounts: string[]) => {
       await this.setState({ address: accounts[0] });

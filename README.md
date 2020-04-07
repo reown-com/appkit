@@ -392,15 +392,34 @@ const providerOptions = {
 };
 ```
 
+## API
+
+```typescript
+class Web3Modal {
+  cachedProvider: string;
+  function connect(): Promise<any>;
+  function connectTo(id: string): Promise<any>;
+  function toggleModal(): Promise<void>;
+  function on(event: string, callback: SimpleFunction): SimpleFunction;
+  function off(event: string, callback?: SimpleFunction): void;
+  function clearCachedProvider(): void;
+  function setCachedProvider(): void;
+  function updateTheme(theme: string | ThemeColors): Promise<void>;
+}
+```
+
 ## Utils
 
 ```typescript
 function checkInjectedProviders(): IInjectedProvidersMap;
 function verifyInjectedProvider(check: string): boolean;
 function getInjectedProviderName(): string | null;
-function getProviderInfoByName(name: string | null,lastMatch?: boolean): IProviderInfo;
-function getProviderInfo(provider: any, lastMatch?: boolean): IProviderInfo;
+function getProviderInfoByName(name: string | null): IProviderInfo;
+function getProviderInfo(provider: any): IProviderInfo;
 function isMobile(): boolean;
+function formatProviderDescription(providerInfo: IProviderInfo): string;
+function getChainId(network: string): number;
+function getThemeColors(theme: string | ThemeColors): ThemeColors;
 ```
 
 ## Types
@@ -442,6 +461,56 @@ interface IProviderMappingEntry {
   connector: any;
   package: IProviderPackageOptions;
 }
+
+type ThemeColors = {
+  background: string;
+  main: string;
+  secondary: string;
+  border: string;
+  hover: string;
+};
+```
+
+## Custom Themes
+
+The theme enabled by default is `light` but dark theme is also available by setting the option `theme` to `dark`, as follows:
+
+```typescript
+const web3Modal = new Web3Modal({
+  ...otherOptions,
+  theme: "dark"
+});
+```
+
+Completely custom themes are also available by passing an object instead with the following parameters with valid css colors values:
+
+```typescript
+const web3Modal = new Web3Modal({
+  ...otherOptions,
+  theme: {
+    background: "rgb(39, 49, 56)",
+    main: "rgb(199, 199, 199)",
+    secondary: "rgb(136, 136, 136)",
+    border: "rgba(195, 195, 195, 0.14)",
+    hover: "rgb(16, 26, 32)"
+  }
+});
+```
+
+Addtionally you can also update the modal theme after instantiated by calling the following method:
+
+```typescript
+await web3Modal.updateTheme("dark");
+
+// OR
+
+await web3Modal.updateTheme({
+  background: "rgb(39, 49, 56)",
+  main: "rgb(199, 199, 199)",
+  secondary: "rgb(136, 136, 136)",
+  border: "rgba(195, 195, 195, 0.14)",
+  hover: "rgb(16, 26, 32)"
+});
 ```
 
 ## Connect to specific provider

@@ -1,8 +1,8 @@
-import { IEventCallback } from "../../helpers/types";
+import { IEventCallback } from "../../helpers";
 
 // -- EventController --------------------------------------------------------- //
 
-class EventController {
+export class EventController {
   private _eventCallbacks: IEventCallback[];
 
   constructor() {
@@ -46,5 +46,3 @@ class EventController {
     }
   }
 }
-
-export default EventController;

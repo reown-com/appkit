@@ -1,6 +1,9 @@
-import { IProviderInfo, IProviderMappingEntry } from "../helpers/types";
+import {
+  INJECTED_PROVIDER_ID,
+  IProviderInfo,
+  IProviderMappingEntry
+} from "../helpers";
 import connectors from "./connectors";
-import { INJECTED_PROVIDER_ID } from "../helpers/constants";
 import { FALLBACK_INJECTED, injected } from "./injected";
 
 // @ts-ignore
@@ -14,7 +17,7 @@ import FortmaticLogo from "./logos/fortmatic.svg";
 // @ts-ignore
 import ArkaneLogo from "./logos/arkane.svg";
 // @ts-ignore
-import TorusLogo from "./logos/torus.png";
+import TorusLogo from "./logos/torus.svg";
 // @ts-ignore
 import AuthereumLogo from "./logos/authereum.svg";
 // @ts-ignore
