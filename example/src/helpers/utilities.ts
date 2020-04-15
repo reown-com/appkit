@@ -133,7 +133,7 @@ export function getChainData(chainId: number): IChainData {
 }
 
 export function hashPersonalMessage(msg: string): string {
-  const buffer = ethUtil.toBuffer(msg);
+  const buffer = Buffer.from(msg);
   const result = ethUtil.hashPersonalMessage(buffer);
   const hash = ethUtil.bufferToHex(result);
   return hash;
@@ -141,7 +141,7 @@ export function hashPersonalMessage(msg: string): string {
 
 export function recoverPublicKey(sig: string, hash: string): string {
   const sigParams = ethUtil.fromRpcSig(sig);
-  const hashBuffer = ethUtil.toBuffer(hash);
+  const hashBuffer = Buffer.from(hash.replace("0x", ""), "hex");
   const result = ethUtil.ecrecover(
     hashBuffer,
     sigParams.v,
