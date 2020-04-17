@@ -1,11 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 
-import {
-  ThemeColors,
-  getProviderInfoByName,
-  getProviderDescription
-} from "../helpers";
+import { ThemeColors } from "../helpers";
 import {
   PROVIDER_WRAPPER_CLASSNAME,
   PROVIDER_CONTAINER_CLASSNAME,
@@ -92,15 +88,22 @@ const SProviderWrapper = styled.div<IStyedThemeColorOptions>`
 `;
 
 interface IProviderProps {
-  name: string | null;
+  name: string;
+  logo: string;
+  description: string;
   themeColors: ThemeColors;
   onClick: () => void;
 }
 
 export function Provider(props: IProviderProps) {
-  const { name, themeColors, onClick, ...otherProps } = props;
-  const providerInfo = getProviderInfoByName(name);
-  const description = getProviderDescription(providerInfo);
+  const {
+    name,
+    logo,
+    description,
+    themeColors,
+    onClick,
+    ...otherProps
+  } = props;
   return (
     <SProviderWrapper
       themeColors={themeColors}
@@ -113,10 +116,10 @@ export function Provider(props: IProviderProps) {
         className={PROVIDER_CONTAINER_CLASSNAME}
       >
         <SIcon className={PROVIDER_ICON_CLASSNAME}>
-          <img src={providerInfo.logo} alt={providerInfo.name} />
+          <img src={logo} alt={name} />
         </SIcon>
         <SName themeColors={themeColors} className={PROVIDER_NAME_CLASSNAME}>
-          {providerInfo.name}
+          {name}
         </SName>
         <SDescription
           themeColors={themeColors}

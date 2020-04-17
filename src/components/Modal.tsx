@@ -9,7 +9,7 @@ import {
   MODAL_HITBOX_CLASSNAME,
   MODAL_CARD_CLASSNAME
 } from "../constants";
-import { SimpleFunction, IProviderCallback, ThemeColors } from "../helpers";
+import { SimpleFunction, IProviderUserOptions, ThemeColors } from "../helpers";
 
 declare global {
   // tslint:disable-next-line
@@ -113,7 +113,7 @@ const SModalCard = styled.div<IModalCardStyleProps>`
 
 interface IModalProps {
   themeColors: ThemeColors;
-  providers: IProviderCallback[];
+  userOptions: IProviderUserOptions[];
   onClose: SimpleFunction;
   resetState: SimpleFunction;
   lightboxOpacity: number;
@@ -137,7 +137,7 @@ export class Modal extends React.Component<IModalProps, IModalState> {
     };
   }
   public static propTypes = {
-    providers: PropTypes.object.isRequired,
+    userOptions: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
     resetState: PropTypes.func.isRequired,
     lightboxOpacity: PropTypes.number.isRequired
@@ -170,7 +170,7 @@ export class Modal extends React.Component<IModalProps, IModalState> {
   public render = () => {
     const { show, lightboxOffset } = this.state;
 
-    const { onClose, lightboxOpacity, providers, themeColors } = this.props;
+    const { onClose, lightboxOpacity, userOptions, themeColors } = this.props;
 
     return (
       <SLightbox
@@ -186,13 +186,15 @@ export class Modal extends React.Component<IModalProps, IModalState> {
             className={MODAL_CARD_CLASSNAME}
             show={show}
             themeColors={themeColors}
-            maxWidth={providers.length < 3 ? 500 : 800}
+            maxWidth={userOptions.length < 3 ? 500 : 800}
             ref={c => (this.mainModalCard = c)}
           >
-            {providers.map(provider =>
+            {userOptions.map(provider =>
               !!provider ? (
                 <Provider
                   name={provider.name}
+                  logo={provider.logo}
+                  description={provider.description}
                   themeColors={themeColors}
                   onClick={provider.onClick}
                 />

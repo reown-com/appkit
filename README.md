@@ -387,9 +387,7 @@ interface IProviderOptions {
   };
 }
 
-interface IProviderMappingEntry {
-  id: string;
-  name: string;
+interface IProviderInfoWithConnector extends IProviderInfo {
   connector: any;
   package: IProviderPackageOptions;
 }

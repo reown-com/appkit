@@ -43,15 +43,15 @@ export interface IProviderOptions {
   };
 }
 
-export interface IProviderMappingEntry {
-  id: string;
-  name: string;
+export interface IProviderInfoWithConnector extends IProviderInfo {
   connector: any;
   package?: IProviderPackageOptions;
 }
 
-export interface IProviderCallback {
-  name: string | null;
+export interface IProviderUserOptions {
+  name: string;
+  logo: string;
+  description: string;
   onClick: () => Promise<void>;
 }
 

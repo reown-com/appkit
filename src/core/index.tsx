@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 
 import {
   ICoreOptions,
-  IProviderCallback,
+  IProviderUserOptions,
   ThemeColors,
   getThemeColors,
   SimpleFunction
@@ -34,7 +34,7 @@ export class Core {
   private eventController: EventController = new EventController();
   private lightboxOpacity: number;
   private providerController: ProviderController;
-  private providers: IProviderCallback[];
+  private userOptions: IProviderUserOptions[];
 
   constructor(opts?: Partial<ICoreOptions>) {
     const options: ICoreOptions = {
@@ -56,7 +56,7 @@ export class Core {
     );
     this.providerController.on(ERROR_EVENT, error => this.onError(error));
 
-    this.providers = this.providerController.getProviders();
+    this.userOptions = this.providerController.getUserOptions();
     this.renderModal();
   }
 
@@ -75,7 +75,7 @@ export class Core {
   public connectTo = (id: string): Promise<any> =>
     new Promise(async (resolve, reject) => {
       this.on(CONNECT_EVENT, provider => resolve(provider));
-      const provider = this.providerController.getProviderMappingEntry(id);
+      const provider = this.providerController.getProvider(id);
       if (!provider) {
         return reject(
           new Error(
@@ -92,11 +92,11 @@ export class Core {
       return;
     }
     if (
-      this.providers &&
-      this.providers.length === 1 &&
-      this.providers[0].name
+      this.userOptions &&
+      this.userOptions.length === 1 &&
+      this.userOptions[0].name
     ) {
-      await this.providers[0].onClick();
+      await this.userOptions[0].onClick();
       return;
     }
     await this._toggleModal();
@@ -145,7 +145,7 @@ export class Core {
     ReactDOM.render(
       <Modal
         themeColors={this.themeColors}
-        providers={this.providers}
+        userOptions={this.userOptions}
         onClose={this.onClose}
         resetState={this.resetState}
         lightboxOpacity={this.lightboxOpacity}

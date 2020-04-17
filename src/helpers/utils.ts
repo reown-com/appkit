@@ -121,6 +121,9 @@ export function isMobile(): boolean {
 }
 
 export function getProviderDescription(providerInfo: IProviderInfo): string {
+  if (providerInfo.description) {
+    return providerInfo.description;
+  }
   let description = "";
   switch (providerInfo.type) {
     case "injected":

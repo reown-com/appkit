@@ -10,11 +10,12 @@ import {
   getInjectedProviderName,
   IProviderControllerOptions,
   IProviderOptions,
-  IProviderMappingEntry,
+  IProviderInfoWithConnector,
   getLocal,
   setLocal,
   removeLocal,
-  getProviderInfoById
+  getProviderInfoById,
+  getProviderDescription
 } from "../helpers";
 import { EventController } from "./events";
 
@@ -24,7 +25,7 @@ export class ProviderController {
 
   private eventController: EventController = new EventController();
   private injectedProvider: string | null = null;
-  private providerMapping: IProviderMappingEntry[] = [];
+  private providers: IProviderInfoWithConnector[] = [];
   private providerOptions: IProviderOptions;
   private network: string = "";
 
@@ -37,13 +38,14 @@ export class ProviderController {
 
     this.injectedProvider = getInjectedProviderName();
 
-    this.providerMapping = Object.keys(connectors).map((id: string) => {
+    this.providers = Object.keys(connectors).map((id: string) => {
       const providerInfo = getProviderInfoById(id);
       const name =
         id !== INJECTED_PROVIDER_ID
           ? providerInfo.name
           : this.injectedProvider || "";
       return {
+        ...providerInfo,
         id,
         name,
         connector: connectors[id],
@@ -53,7 +55,7 @@ export class ProviderController {
   }
 
   public shouldDisplayProvider(id: string) {
-    const provider = this.getProviderMappingEntry(id);
+    const provider = this.getProvider(id);
     if (provider) {
       const providerPackageOptions = this.providerOptions[id];
       if (providerPackageOptions) {
@@ -81,10 +83,10 @@ export class ProviderController {
     return false;
   }
 
-  public getProviders = () => {
+  public getUserOptions = () => {
     const mobile = isMobile();
 
-    const defaultProviderList = this.providerMapping.map(({ id }) => id);
+    const defaultProviderList = this.providers.map(({ id }) => id);
 
     const displayInjected =
       this.injectedProvider && !this.providerOptions.disableInjectedProvider;
@@ -110,28 +112,32 @@ export class ProviderController {
       });
     }
 
-    const providersMap = providerList.map((id: string) => {
-      let provider = this.getProviderMappingEntry(id);
+    const userOptions = providerList.map((id: string) => {
+      let provider = this.getProvider(id);
       if (typeof provider !== "undefined") {
-        const { id, name, connector } = provider;
+        const { id, name, logo, connector } = provider;
         return {
-          name: name,
+          name,
+          logo,
+          description: getProviderDescription(provider),
           onClick: () => this.connectTo(id, connector)
         };
       }
       return {
         name: "",
+        logo: "",
+        description: "",
         onClick: async () => {
           // empty
         }
       };
     });
 
-    return providersMap;
+    return userOptions;
   };
 
-  public getProviderMappingEntry(id: string) {
-    const matches = this.providerMapping
+  public getProvider(id: string) {
+    const matches = this.providers
       .filter(entry =>
         entry.id.toLowerCase() === id.toLowerCase() ? entry : undefined
       )
@@ -179,7 +185,7 @@ export class ProviderController {
   };
 
   public async connectToCachedProvider() {
-    const provider = this.getProviderMappingEntry(this.cachedProvider);
+    const provider = this.getProvider(this.cachedProvider);
     if (provider) {
       await this.connectTo(provider.id, provider.connector);
     }
