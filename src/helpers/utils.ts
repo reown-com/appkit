@@ -1,12 +1,17 @@
 import { providers, FALLBACK } from "../providers";
 import { themesList } from "../themes";
-import { chainList } from "./chains";
+import { chainList, EMPTY_CHAIN_DATA } from "./chains";
 import {
   IProviderInfo,
   IInjectedProvidersMap,
   ChainData,
   ThemeColors
 } from "./types";
+import {
+  METAMASK_INJECTED,
+  CIPHER_INJECTED,
+  FALLBACK_INJECTED
+} from "../providers/injected";
 
 export function checkInjectedProviders(): IInjectedProvidersMap {
   const result = {
@@ -15,29 +20,15 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
   if (result.injectedAvailable) {
     let fallbackProvider = true;
     providers.forEach(provider => {
-      result[provider.check] = verifyInjectedProvider(provider.check);
-      if (result[provider.check] === true) {
+      const isAvailable = verifyInjectedProvider(provider.check);
+      if (isAvailable) {
+        result[provider.check] = true;
         fallbackProvider = false;
       }
     });
 
-    // Nitfy Wallet fix
-    if (result["isMetamask"]) {
-      if (verifyInjectedProvider("isNiftyWallet")) {
-        result["isMetamask"] = false;
-        result["isNiftyWallet"] = true;
-      }
-    }
-
-    // Coinbase Wallet fix
-    if (result["isCipher"]) {
-      if (verifyInjectedProvider("isToshi")) {
-        result["isCipher"] = false;
-        result["isToshi"] = true;
-      }
-    }
     if (fallbackProvider) {
-      result["isWeb3"] = true;
+      result[FALLBACK_INJECTED.check] = true;
     }
   }
 
@@ -56,24 +47,35 @@ export function verifyInjectedProvider(check: string): boolean {
     : false;
 }
 
-export function getInjectedProviderName(): string | null {
+export function getInjectedProvider(): IProviderInfo | null {
   let result = null;
 
   const injectedProviders = checkInjectedProviders();
 
   if (injectedProviders.injectedAvailable) {
-    providers.forEach((providerInfo: IProviderInfo) => {
-      if (injectedProviders[providerInfo.check]) {
-        result = providerInfo.name;
-      }
-    });
+    delete injectedProviders.injectedAvailable;
+    const checks = Object.keys(injectedProviders);
+    result = getProviderInfoFromChecksArray(checks);
   }
   return result;
 }
 
-export function getProviderInfoById(id: string | null): IProviderInfo {
-  if (!id) return FALLBACK;
-  return filterMatches<IProviderInfo>(providers, x => x.id === id, FALLBACK);
+export function getInjectedProviderName(): string | null {
+  const injectedProvider = getInjectedProvider();
+  return injectedProvider ? injectedProvider.name : null;
+}
+
+export function getProviderInfo(provider: any): IProviderInfo {
+  if (!provider) return FALLBACK;
+  const checks = providers.filter(x => provider[x.check]).map(x => x.check);
+  return getProviderInfoFromChecksArray(checks);
+}
+
+export function getProviderInfoFromChecksArray(
+  checks: string[]
+): IProviderInfo {
+  const match = filterProviderChecks(checks);
+  return getProviderInfoByCheck(match);
 }
 
 export function getProviderInfoByName(name: string | null): IProviderInfo {
@@ -85,11 +87,16 @@ export function getProviderInfoByName(name: string | null): IProviderInfo {
   );
 }
 
-export function getProviderInfo(provider: any): IProviderInfo {
-  if (!provider) return FALLBACK;
+export function getProviderInfoById(id: string | null): IProviderInfo {
+  if (!id) return FALLBACK;
+  return filterMatches<IProviderInfo>(providers, x => x.id === id, FALLBACK);
+}
+
+export function getProviderInfoByCheck(check: string | null): IProviderInfo {
+  if (!check) return FALLBACK;
   return filterMatches<IProviderInfo>(
     providers,
-    x => provider[x.check],
+    x => x.check === check,
     FALLBACK
   );
 }
@@ -160,13 +167,29 @@ export function filterMatches<T>(
   return result;
 }
 
+export function filterProviderChecks(checks: string[]): string {
+  if (!!checks && checks.length) {
+    if (checks.length > 1) {
+      if (
+        checks[0] === METAMASK_INJECTED.check ||
+        checks[0] === CIPHER_INJECTED.check
+      ) {
+        return checks[1];
+      }
+    }
+    return checks[0];
+  }
+  return FALLBACK.check;
+}
+
 export function getChainId(network: string): number {
   const chains: ChainData[] = Object.values(chainList);
-  const matches = chains.filter(chain => chain.network === network);
-  if (matches && matches.length) {
-    return matches[0].chainId;
-  }
-  return 0;
+  const { chainId } = filterMatches<ChainData>(
+    chains,
+    x => x.network === network,
+    EMPTY_CHAIN_DATA
+  );
+  return chainId;
 }
 
 export function getThemeColors(theme: string | ThemeColors): ThemeColors {
