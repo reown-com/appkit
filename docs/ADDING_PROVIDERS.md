@@ -61,7 +61,7 @@ On the providers directory (`src/providers/`) there is an index file where you c
 
 import FireboxLogo from "./logos/firebox.png";
 
-export const FIREBOX_PROVIDER: IProviderInfo = {
+export const FIREBOX: IProviderInfo = {
   id: "firebox",
   name: "Firebox",
   logo: FireboxLogo,

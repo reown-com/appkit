@@ -1,4 +1,4 @@
-import { connectors } from "../providers";
+import * as list from "../providers";
 import {
   CONNECT_EVENT,
   ERROR_EVENT,
@@ -7,7 +7,6 @@ import {
 } from "../constants";
 import {
   isMobile,
-  getInjectedProviderName,
   IProviderControllerOptions,
   IProviderOptions,
   IProviderInfoWithConnector,
@@ -15,7 +14,10 @@ import {
   setLocal,
   removeLocal,
   getProviderInfoById,
-  getProviderDescription
+  getProviderDescription,
+  IProviderInfo,
+  getInjectedProviderName,
+  getProviderInfoByName
 } from "../helpers";
 import { EventController } from "./events";
 
@@ -24,7 +26,7 @@ export class ProviderController {
   public shouldCacheProvider: boolean = false;
 
   private eventController: EventController = new EventController();
-  private injectedProvider: string | null = null;
+  private injectedProviderName: string | null = null;
   private providers: IProviderInfoWithConnector[] = [];
   private providerOptions: IProviderOptions;
   private network: string = "";
@@ -36,19 +38,18 @@ export class ProviderController {
     this.providerOptions = opts.providerOptions;
     this.network = opts.network;
 
-    this.injectedProvider = getInjectedProviderName();
+    this.injectedProviderName = getInjectedProviderName();
 
-    this.providers = Object.keys(connectors).map((id: string) => {
-      const providerInfo = getProviderInfoById(id);
-      const name =
-        id !== INJECTED_PROVIDER_ID
-          ? providerInfo.name
-          : this.injectedProvider || "";
+    this.providers = Object.keys(list.connectors).map((id: string) => {
+      let providerInfo: IProviderInfo;
+      if (id === INJECTED_PROVIDER_ID) {
+        providerInfo = getProviderInfoByName(this.injectedProviderName);
+      } else {
+        providerInfo = getProviderInfoById(id);
+      }
       return {
         ...providerInfo,
-        id,
-        name,
-        connector: connectors[id],
+        connector: list.connectors[id],
         package: providerInfo.package
       };
     });
@@ -89,7 +90,8 @@ export class ProviderController {
     const defaultProviderList = this.providers.map(({ id }) => id);
 
     const displayInjected =
-      this.injectedProvider && !this.providerOptions.disableInjectedProvider;
+      this.injectedProviderName &&
+      !this.providerOptions.disableInjectedProvider;
 
     const onlyInjected = displayInjected && mobile;
 

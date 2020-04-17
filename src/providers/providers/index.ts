@@ -19,7 +19,7 @@ import { IProviderInfo } from "../../helpers";
 
 export { FALLBACK } from "../injected";
 
-export const WALLETCONNECT_PROVIDER: IProviderInfo = {
+export const WALLETCONNECT: IProviderInfo = {
   id: "walletconnect",
   name: "WalletConnect",
   logo: WalletConnectLogo,
@@ -30,7 +30,7 @@ export const WALLETCONNECT_PROVIDER: IProviderInfo = {
   }
 };
 
-export const PORTIS_PROVIDER: IProviderInfo = {
+export const PORTIS: IProviderInfo = {
   id: "portis",
   name: "Portis",
   logo: PortisLogo,
@@ -41,7 +41,7 @@ export const PORTIS_PROVIDER: IProviderInfo = {
   }
 };
 
-export const FORTMATIC_PROVIDER: IProviderInfo = {
+export const FORTMATIC: IProviderInfo = {
   id: "fortmatic",
   name: "Fortmatic",
   logo: FortmaticLogo,
@@ -52,7 +52,7 @@ export const FORTMATIC_PROVIDER: IProviderInfo = {
   }
 };
 
-export const SQUARELINK_PROVIDER: IProviderInfo = {
+export const SQUARELINK: IProviderInfo = {
   id: "squarelink",
   name: "Squarelink",
   logo: SquarelinkLogo,
@@ -63,7 +63,7 @@ export const SQUARELINK_PROVIDER: IProviderInfo = {
   }
 };
 
-export const TORUS_PROVIDER: IProviderInfo = {
+export const TORUS: IProviderInfo = {
   id: "torus",
   name: "Torus",
   logo: TorusLogo,
@@ -71,7 +71,7 @@ export const TORUS_PROVIDER: IProviderInfo = {
   check: "isTorus"
 };
 
-export const ARKANE_PROVIDER: IProviderInfo = {
+export const ARKANE: IProviderInfo = {
   id: "arkane",
   name: "Arkane",
   logo: ArkaneLogo,
@@ -82,7 +82,7 @@ export const ARKANE_PROVIDER: IProviderInfo = {
   }
 };
 
-export const AUTHEREUM_PROVIDER: IProviderInfo = {
+export const AUTHEREUM: IProviderInfo = {
   id: "authereum",
   name: "Authereum",
   logo: AuthereumLogo,
@@ -90,7 +90,7 @@ export const AUTHEREUM_PROVIDER: IProviderInfo = {
   check: "isAuthereum"
 };
 
-export const BURNERCONNECT_PROVIDER: IProviderInfo = {
+export const BURNERCONNECT: IProviderInfo = {
   id: "burnerconnect",
   name: "Burner Connect",
   logo: BurnerWalletLogo,
