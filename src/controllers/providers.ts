@@ -57,8 +57,10 @@ export class ProviderController {
       if (providerPackageOptions) {
         const isProvided = !!providerPackageOptions.package;
         if (isProvided) {
-          const required = provider.package.required;
-          if (required.length) {
+          const required = provider.package
+            ? provider.package.required
+            : undefined;
+          if (required && required.length) {
             const providedOptions = providerPackageOptions.options;
             if (providedOptions && Object.keys(providedOptions).length) {
               const matches = required.filter(

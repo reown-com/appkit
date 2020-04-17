@@ -24,12 +24,12 @@ export interface IProviderInfo {
   type: string;
   logo: string;
   check: string;
-  package: IProviderPackageOptions;
-  styled: IProviderStyledOptions;
+  package?: IProviderPackageOptions;
+  description?: string;
 }
 
 export interface IProviderPackageOptions {
-  required: string[];
+  required?: string[];
 }
 
 export interface IProviderStyledOptions {
@@ -47,7 +47,7 @@ export interface IProviderMappingEntry {
   id: string;
   name: string;
   connector: any;
-  package: IProviderPackageOptions;
+  package?: IProviderPackageOptions;
 }
 
 export interface IProviderCallback {

@@ -30,13 +30,7 @@ export const FALLBACK_INJECTED: IProviderInfo = {
   name: "Web3",
   logo: Web3DefaultLogo,
   type: "injected",
-  check: "isWeb3",
-  styled: {
-    noShadow: false
-  },
-  package: {
-    required: []
-  }
+  check: "isWeb3"
 };
 
 export const METAMASK_INJECTED: IProviderInfo = {
@@ -44,13 +38,7 @@ export const METAMASK_INJECTED: IProviderInfo = {
   name: "MetaMask",
   logo: MetaMaskLogo,
   type: "injected",
-  check: "isMetaMask",
-  styled: {
-    noShadow: true
-  },
-  package: {
-    required: []
-  }
+  check: "isMetaMask"
 };
 
 export const SAFE_INJECTED: IProviderInfo = {
@@ -58,13 +46,7 @@ export const SAFE_INJECTED: IProviderInfo = {
   name: "Safe",
   logo: SafeLogo,
   type: "injected",
-  check: "isSafe",
-  styled: {
-    noShadow: true
-  },
-  package: {
-    required: []
-  }
+  check: "isSafe"
 };
 
 export const NIFTY_INJECTED: IProviderInfo = {
@@ -72,13 +54,7 @@ export const NIFTY_INJECTED: IProviderInfo = {
   name: "Nifty",
   logo: NiftyWalletLogo,
   type: "injected",
-  check: "isNiftyWallet",
-  styled: {
-    noShadow: true
-  },
-  package: {
-    required: []
-  }
+  check: "isNiftyWallet"
 };
 
 export const DAPPER_INJECTED: IProviderInfo = {
@@ -86,13 +62,7 @@ export const DAPPER_INJECTED: IProviderInfo = {
   name: "Dapper",
   logo: DapperLogo,
   type: "injected",
-  check: "isDapper",
-  styled: {
-    noShadow: true
-  },
-  package: {
-    required: []
-  }
+  check: "isDapper"
 };
 
 export const OPERA_INJECTED: IProviderInfo = {
@@ -100,13 +70,7 @@ export const OPERA_INJECTED: IProviderInfo = {
   name: "Opera",
   logo: OperaLogo,
   type: "injected",
-  check: "isOpera",
-  styled: {
-    noShadow: false
-  },
-  package: {
-    required: []
-  }
+  check: "isOpera"
 };
 
 export const TRUST_INJECTED: IProviderInfo = {
@@ -114,13 +78,7 @@ export const TRUST_INJECTED: IProviderInfo = {
   name: "Trust",
   logo: TrustLogo,
   type: "injected",
-  check: "isTrust",
-  styled: {
-    noShadow: false
-  },
-  package: {
-    required: []
-  }
+  check: "isTrust"
 };
 
 export const COINBASE_INJECTED: IProviderInfo = {
@@ -128,13 +86,7 @@ export const COINBASE_INJECTED: IProviderInfo = {
   name: "Coinbase",
   logo: CoinbaseLogo,
   type: "injected",
-  check: "isToshi",
-  styled: {
-    noShadow: false
-  },
-  package: {
-    required: []
-  }
+  check: "isToshi"
 };
 
 export const CIPHER_INJECTED: IProviderInfo = {
@@ -142,13 +94,7 @@ export const CIPHER_INJECTED: IProviderInfo = {
   name: "Cipher",
   logo: CipherLogo,
   type: "injected",
-  check: "isCipher",
-  styled: {
-    noShadow: false
-  },
-  package: {
-    required: []
-  }
+  check: "isCipher"
 };
 
 export const IMTOKEN_INJECTED: IProviderInfo = {
@@ -156,13 +102,7 @@ export const IMTOKEN_INJECTED: IProviderInfo = {
   name: "imToken",
   logo: imTokenLogo,
   type: "injected",
-  check: "isImToken",
-  styled: {
-    noShadow: false
-  },
-  package: {
-    required: []
-  }
+  check: "isImToken"
 };
 
 export const STATUS_INJECTED: IProviderInfo = {
@@ -170,13 +110,7 @@ export const STATUS_INJECTED: IProviderInfo = {
   name: "Status",
   logo: StatusLogo,
   type: "injected",
-  check: "isStatus",
-  styled: {
-    noShadow: false
-  },
-  package: {
-    required: []
-  }
+  check: "isStatus"
 };
 
 export const TOKENARY_INJECTED: IProviderInfo = {
@@ -184,13 +118,7 @@ export const TOKENARY_INJECTED: IProviderInfo = {
   name: "Tokenary",
   logo: TokenaryLogo,
   type: "injected",
-  check: "isTokenary",
-  styled: {
-    noShadow: false
-  },
-  package: {
-    required: []
-  }
+  check: "isTokenary"
 };
 
 export const injected: IProviderInfo[] = [

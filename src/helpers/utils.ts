@@ -134,7 +134,7 @@ export function isMobile(): boolean {
   return mobile;
 }
 
-export function formatProviderDescription(providerInfo: IProviderInfo): string {
+export function getProviderDescription(providerInfo: IProviderInfo): string {
   let description = "";
   switch (providerInfo.type) {
     case "injected":

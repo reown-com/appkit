@@ -240,19 +240,7 @@ import Torus from "@toruslabs/torus-embed";
 
 const providerOptions = {
   torus: {
-    package: Torus, // required
-    options: {
-      config: {
-        enableLogging: false, // optional
-        buttonPosition: "bottom-left", // optional
-        buildEnv: "production", // optional
-        showTorusButton: true, // optional
-        enabledVerifiers: {
-          // optional
-          google: false // optional
-        }
-      }
-    }
+    package: Torus // required
   }
 };
 ```
@@ -280,7 +268,7 @@ const providerOptions = {
   arkane: {
     package: Arkane, // required
     options: {
-      clientId: "ARKANE_CLIENT_ID" // required, replace
+      clientId: "ARKANE_CLIENT_ID" // required
     }
   }
 };
@@ -305,8 +293,7 @@ import Authereum from "authereum";
 
 const providerOptions = {
   authereum: {
-    package: Authereum, // required
-    options: {}
+    package: Authereum // required
   }
 };
 ```
@@ -332,8 +319,7 @@ import BurnerConnectProvider from "@burner-wallet/burner-connect-provider";
 
 const providerOptions = {
   burnerconnect: {
-    package: BurnerConnectProvider, // required
-    options: {}
+    package: BurnerConnectProvider // required
   }
 };
 ```
@@ -364,7 +350,7 @@ function getProviderInfoById(id: string | null): IProviderInfo;
 function getProviderInfoByName(name: string | null): IProviderInfo;
 function getProviderInfo(provider: any): IProviderInfo;
 function isMobile(): boolean;
-function formatProviderDescription(providerInfo: IProviderInfo): string;
+function getProviderDescription(providerInfo: IProviderInfo): string;
 function getChainId(network: string): number;
 function getThemeColors(theme: string | ThemeColors): ThemeColors;
 ```
@@ -384,7 +370,6 @@ interface IProviderInfo {
   logo: string;
   check: string;
   package: IProviderPackageOptions;
-  styled: IProviderStyledOptions;
 }
 
 interface IProviderPackageOptions {
@@ -398,7 +383,7 @@ interface IProviderStyledOptions {
 interface IProviderOptions {
   [id: string]: {
     package: any;
-    options: any;
+    options?: any;
   };
 }
 

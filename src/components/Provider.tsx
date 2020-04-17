@@ -9,23 +9,16 @@ import {
   PROVIDER_NAME_CLASSNAME,
   PROVIDER_DESCRIPTION_CLASSNAME,
   getProviderInfoByName,
-  formatProviderDescription
+  getProviderDescription
 } from "../helpers";
 
-interface IIconStyleProps {
-  noShadow?: boolean;
-}
-
-const SIcon = styled.div<IIconStyleProps>`
+const SIcon = styled.div`
   width: 45px;
   height: 45px;
   display: flex;
   border-radius: 50%;
-  overflow: ${({ noShadow }) => (noShadow ? "visible" : "hidden")};
-  box-shadow: ${({ noShadow }) =>
-    noShadow
-      ? "none"
-      : "0 4px 6px 0 rgba(50, 50, 93, 0.11), 0 1px 3px 0 rgba(0, 0, 0, 0.08), inset 0 0 1px 0 rgba(0, 0, 0, 0.06)"};
+  overflow: visible;
+  box-shadow: none;
   justify-content: center;
   align-items: center;
   & img {
@@ -105,7 +98,7 @@ interface IProviderProps {
 export function Provider(props: IProviderProps) {
   const { name, themeColors, onClick, ...otherProps } = props;
   const providerInfo = getProviderInfoByName(name);
-  const description = formatProviderDescription(providerInfo);
+  const description = getProviderDescription(providerInfo);
   return (
     <SProviderWrapper
       themeColors={themeColors}
@@ -117,10 +110,7 @@ export function Provider(props: IProviderProps) {
         themeColors={themeColors}
         className={PROVIDER_CONTAINER_CLASSNAME}
       >
-        <SIcon
-          className={PROVIDER_ICON_CLASSNAME}
-          noShadow={providerInfo.styled.noShadow}
-        >
+        <SIcon className={PROVIDER_ICON_CLASSNAME}>
           <img src={providerInfo.logo} alt={providerInfo.name} />
         </SIcon>
         <SName themeColors={themeColors} className={PROVIDER_NAME_CLASSNAME}>

@@ -67,9 +67,6 @@ export const FIREBOX_PROVIDER: IProviderInfo = {
   logo: FireboxLogo,
   type: "web",
   check: "isFirebox",
-  styled: {
-    noShadow: false
-  },
   package: {
     required: ["apiKey"]
   }

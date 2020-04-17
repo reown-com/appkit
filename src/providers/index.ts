@@ -27,9 +27,6 @@ export const WALLETCONNECT_PROVIDER: IProviderInfo = {
   logo: WalletConnectLogo,
   type: "qrcode",
   check: "isWalletConnect",
-  styled: {
-    noShadow: false
-  },
   package: {
     required: ["infuraId"]
   }
@@ -41,9 +38,6 @@ export const PORTIS_PROVIDER: IProviderInfo = {
   logo: PortisLogo,
   type: "web",
   check: "isPortis",
-  styled: {
-    noShadow: true
-  },
   package: {
     required: ["id"]
   }
@@ -55,9 +49,6 @@ export const FORTMATIC_PROVIDER: IProviderInfo = {
   logo: FortmaticLogo,
   type: "web",
   check: "isFortmatic",
-  styled: {
-    noShadow: true
-  },
   package: {
     required: ["key"]
   }
@@ -69,9 +60,6 @@ export const SQUARELINK_PROVIDER: IProviderInfo = {
   logo: SquarelinkLogo,
   type: "web",
   check: "isSquarelink",
-  styled: {
-    noShadow: true
-  },
   package: {
     required: ["id"]
   }
@@ -82,13 +70,7 @@ export const TORUS_PROVIDER: IProviderInfo = {
   name: "Torus",
   logo: TorusLogo,
   type: "web",
-  check: "isTorus",
-  styled: {
-    noShadow: true
-  },
-  package: {
-    required: []
-  }
+  check: "isTorus"
 };
 
 export const ARKANE_PROVIDER: IProviderInfo = {
@@ -97,9 +79,6 @@ export const ARKANE_PROVIDER: IProviderInfo = {
   logo: ArkaneLogo,
   type: "web",
   check: "isArkane",
-  styled: {
-    noShadow: true
-  },
   package: {
     required: ["clientId"]
   }
@@ -110,13 +89,7 @@ export const AUTHEREUM_PROVIDER: IProviderInfo = {
   name: "Authereum",
   logo: AuthereumLogo,
   type: "web",
-  check: "isAuthereum",
-  styled: {
-    noShadow: true
-  },
-  package: {
-    required: []
-  }
+  check: "isAuthereum"
 };
 
 export const BURNERCONNECT_PROVIDER: IProviderInfo = {
@@ -124,13 +97,7 @@ export const BURNERCONNECT_PROVIDER: IProviderInfo = {
   name: "Burner Connect",
   logo: BurnerWalletLogo,
   type: "web",
-  check: "isBurnerProvider",
-  styled: {
-    noShadow: true
-  },
-  package: {
-    required: []
-  }
+  check: "isBurnerProvider"
 };
 
 export const providers: IProviderInfo[] = [
