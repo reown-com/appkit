@@ -1,5 +1,3 @@
-import { IConnectorsMap } from "../../helpers";
-
 import injected from "./injected";
 import walletconnect from "./walletconnect";
 import portis from "./portis";
@@ -10,7 +8,7 @@ import arkane from "./arkane";
 import authereum from "./authereum";
 import burnerconnect from "./burnerconnect";
 
-export const connectors: IConnectorsMap = {
+export {
   injected,
   walletconnect,
   portis,

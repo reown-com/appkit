@@ -7,11 +7,9 @@ import {
   MODAL_LIGHTBOX_CLASSNAME,
   MODAL_CONTAINER_CLASSNAME,
   MODAL_HITBOX_CLASSNAME,
-  MODAL_CARD_CLASSNAME,
-  SimpleFunction,
-  IProviderCallback,
-  ThemeColors
-} from "../helpers";
+  MODAL_CARD_CLASSNAME
+} from "../constants";
+import { SimpleFunction, IProviderCallback, ThemeColors } from "../helpers";
 
 declare global {
   // tslint:disable-next-line

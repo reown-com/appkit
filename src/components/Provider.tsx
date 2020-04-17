@@ -3,14 +3,16 @@ import styled from "styled-components";
 
 import {
   ThemeColors,
+  getProviderInfoByName,
+  getProviderDescription
+} from "../helpers";
+import {
   PROVIDER_WRAPPER_CLASSNAME,
   PROVIDER_CONTAINER_CLASSNAME,
   PROVIDER_ICON_CLASSNAME,
   PROVIDER_NAME_CLASSNAME,
-  PROVIDER_DESCRIPTION_CLASSNAME,
-  getProviderInfoByName,
-  getProviderDescription
-} from "../helpers";
+  PROVIDER_DESCRIPTION_CLASSNAME
+} from "../constants";
 
 const SIcon = styled.div`
   width: 45px;

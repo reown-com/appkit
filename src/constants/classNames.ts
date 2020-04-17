@@ -1,16 +1,3 @@
-// localStorage keys and ids
-export const WEB3_CONNECT_MODAL_ID = "WEB3_CONNECT_MODAL_ID";
-export const INJECTED_PROVIDER_ID = "injected";
-export const CACHED_PROVIDER_KEY = "WEB3_CONNECT_CACHED_PROVIDER";
-
-// Core events
-
-export const CONNECT_EVENT = "connect";
-export const ERROR_EVENT = "error";
-export const CLOSE_EVENT = "close";
-
-// CSS ClassNames
-
 export const MODAL_LIGHTBOX_CLASSNAME = "web3modal-modal-lightbox";
 export const MODAL_CONTAINER_CLASSNAME = "web3modal-modal-container";
 export const MODAL_HITBOX_CLASSNAME = "web3modal-modal-hitbox";

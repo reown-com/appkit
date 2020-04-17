@@ -1,11 +1,6 @@
-import { chainList, EMPTY_CHAIN_DATA } from "./chains";
+import { CHAIN_DATA_LIST, EMPTY_CHAIN_DATA } from "../constants";
 import { themesList } from "../themes";
-import { providers, FALLBACK } from "../providers";
-import {
-  METAMASK_INJECTED,
-  CIPHER_INJECTED,
-  FALLBACK_INJECTED
-} from "../providers/injected";
+import { providers, injected } from "../providers";
 import {
   IProviderInfo,
   IInjectedProvidersMap,
@@ -19,7 +14,7 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
   };
   if (result.injectedAvailable) {
     let fallbackProvider = true;
-    providers.forEach(provider => {
+    Object.values(providers).forEach(provider => {
       const isAvailable = verifyInjectedProvider(provider.check);
       if (isAvailable) {
         result[provider.check] = true;
@@ -28,7 +23,7 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
     });
 
     if (fallbackProvider) {
-      result[FALLBACK_INJECTED.check] = true;
+      result[injected.FALLBACK.check] = true;
     }
   }
 
@@ -66,8 +61,10 @@ export function getInjectedProviderName(): string | null {
 }
 
 export function getProviderInfo(provider: any): IProviderInfo {
-  if (!provider) return FALLBACK;
-  const checks = providers.filter(x => provider[x.check]).map(x => x.check);
+  if (!provider) return providers.FALLBACK;
+  const checks = Object.values(providers)
+    .filter(x => provider[x.check])
+    .map(x => x.check);
   return getProviderInfoFromChecksArray(checks);
 }
 
@@ -75,30 +72,19 @@ export function getProviderInfoFromChecksArray(
   checks: string[]
 ): IProviderInfo {
   const match = filterProviderChecks(checks);
-  return getProviderInfoByCheck(match);
+  return filterProviders("check", match);
 }
 
 export function getProviderInfoByName(name: string | null): IProviderInfo {
-  if (!name) return FALLBACK;
-  return filterMatches<IProviderInfo>(
-    providers,
-    x => x.name === name,
-    FALLBACK
-  );
+  return filterProviders("name", name);
 }
 
 export function getProviderInfoById(id: string | null): IProviderInfo {
-  if (!id) return FALLBACK;
-  return filterMatches<IProviderInfo>(providers, x => x.id === id, FALLBACK);
+  return filterProviders("id", id);
 }
 
 export function getProviderInfoByCheck(check: string | null): IProviderInfo {
-  if (!check) return FALLBACK;
-  return filterMatches<IProviderInfo>(
-    providers,
-    x => x.check === check,
-    FALLBACK
-  );
+  return filterProviders("check", check);
 }
 
 export function isMobile(): boolean {
@@ -167,23 +153,32 @@ export function filterMatches<T>(
   return result;
 }
 
+export function filterProviders(param: string, value: string | null) {
+  if (!value) return providers.FALLBACK;
+  return filterMatches<IProviderInfo>(
+    Object.values(providers),
+    x => x[param] === value,
+    providers.FALLBACK
+  );
+}
+
 export function filterProviderChecks(checks: string[]): string {
   if (!!checks && checks.length) {
     if (checks.length > 1) {
       if (
-        checks[0] === METAMASK_INJECTED.check ||
-        checks[0] === CIPHER_INJECTED.check
+        checks[0] === injected.METAMASK.check ||
+        checks[0] === injected.CIPHER.check
       ) {
         return checks[1];
       }
     }
     return checks[0];
   }
-  return FALLBACK.check;
+  return providers.FALLBACK.check;
 }
 
 export function getChainId(network: string): number {
-  const chains: ChainData[] = Object.values(chainList);
+  const chains: ChainData[] = Object.values(CHAIN_DATA_LIST);
   const { chainId } = filterMatches<ChainData>(
     chains,
     x => x.network === network,

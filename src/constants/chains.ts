@@ -1,4 +1,4 @@
-import { ChainDataList, ChainData } from "./types";
+import { ChainDataList, ChainData } from "../helpers";
 
 export const EMPTY_CHAIN_DATA: ChainData = {
   chainId: 0,
@@ -7,7 +7,7 @@ export const EMPTY_CHAIN_DATA: ChainData = {
   networkId: 0
 };
 
-export const chainList: ChainDataList = {
+export const CHAIN_DATA_LIST: ChainDataList = {
   1: {
     chainId: 1,
     chain: "ETH",

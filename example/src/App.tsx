@@ -237,7 +237,8 @@ class App extends React.Component<any, any> {
         }
       },
       torus: {
-        package: Torus
+        package: Torus,
+        options: {}
       },
       fortmatic: {
         package: Fortmatic,
@@ -252,7 +253,8 @@ class App extends React.Component<any, any> {
         }
       },
       authereum: {
-        package: Authereum
+        package: Authereum,
+        options: {}
       }
     };
     return providerOptions;

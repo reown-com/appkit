@@ -5,15 +5,17 @@ import {
   ICoreOptions,
   IProviderCallback,
   ThemeColors,
-  WEB3_CONNECT_MODAL_ID,
-  CONNECT_EVENT,
-  ERROR_EVENT,
-  CLOSE_EVENT,
   getThemeColors,
   SimpleFunction
 } from "../helpers";
+import {
+  WEB3_CONNECT_MODAL_ID,
+  CONNECT_EVENT,
+  ERROR_EVENT,
+  CLOSE_EVENT
+} from "../constants";
 import { themesList } from "../themes";
-import { Modal } from "../components/";
+import { Modal } from "../components";
 import { EventController, ProviderController } from "../controllers";
 
 const INITIAL_STATE = { show: false };

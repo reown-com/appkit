@@ -1,14 +1,16 @@
 import { connectors } from "../providers";
 import {
+  CONNECT_EVENT,
+  ERROR_EVENT,
+  INJECTED_PROVIDER_ID,
+  CACHED_PROVIDER_KEY
+} from "../constants";
+import {
   isMobile,
   getInjectedProviderName,
   IProviderControllerOptions,
   IProviderOptions,
   IProviderMappingEntry,
-  CONNECT_EVENT,
-  ERROR_EVENT,
-  INJECTED_PROVIDER_ID,
-  CACHED_PROVIDER_KEY,
   getLocal,
   setLocal,
   removeLocal,
