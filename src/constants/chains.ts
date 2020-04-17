@@ -1,11 +1,4 @@
-import { ChainDataList, ChainData } from "../helpers";
-
-export const EMPTY_CHAIN_DATA: ChainData = {
-  chainId: 0,
-  chain: "",
-  network: "",
-  networkId: 0
-};
+import { ChainDataList } from "../helpers";
 
 export const CHAIN_DATA_LIST: ChainDataList = {
   1: {

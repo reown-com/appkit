@@ -17,7 +17,9 @@ import {
   getProviderDescription,
   IProviderInfo,
   getInjectedProviderName,
-  getProviderInfoByName
+  getProviderInfoByName,
+  filterMatches,
+  IProviderUserOptions
 } from "../helpers";
 import { EventController } from "./events";
 
@@ -57,7 +59,7 @@ export class ProviderController {
 
   public shouldDisplayProvider(id: string) {
     const provider = this.getProvider(id);
-    if (provider) {
+    if (typeof provider !== "undefined") {
       const providerPackageOptions = this.providerOptions[id];
       if (providerPackageOptions) {
         const isProvided = !!providerPackageOptions.package;
@@ -92,7 +94,6 @@ export class ProviderController {
     const displayInjected =
       this.injectedProviderName &&
       !this.providerOptions.disableInjectedProvider;
-
     const onlyInjected = displayInjected && mobile;
 
     const providerList = [];
@@ -114,40 +115,30 @@ export class ProviderController {
       });
     }
 
-    const userOptions = providerList.map((id: string) => {
+    const userOptions: IProviderUserOptions[] = [];
+
+    providerList.forEach((id: string) => {
       let provider = this.getProvider(id);
       if (typeof provider !== "undefined") {
         const { id, name, logo, connector } = provider;
-        return {
+        userOptions.push({
           name,
           logo,
           description: getProviderDescription(provider),
           onClick: () => this.connectTo(id, connector)
-        };
+        });
       }
-      return {
-        name: "",
-        logo: "",
-        description: "",
-        onClick: async () => {
-          // empty
-        }
-      };
     });
 
     return userOptions;
   };
 
   public getProvider(id: string) {
-    const matches = this.providers
-      .filter(entry =>
-        entry.id.toLowerCase() === id.toLowerCase() ? entry : undefined
-      )
-      .filter(x => !!x);
-    if (matches && matches.length) {
-      return matches[0];
-    }
-    return undefined;
+    return filterMatches<IProviderInfoWithConnector>(
+      this.providers,
+      x => x.id === id,
+      undefined
+    );
   }
 
   public getProviderOption(id: string, field: string) {
@@ -188,7 +179,7 @@ export class ProviderController {
 
   public async connectToCachedProvider() {
     const provider = this.getProvider(this.cachedProvider);
-    if (provider) {
+    if (typeof provider !== "undefined") {
       await this.connectTo(provider.id, provider.connector);
     }
   }

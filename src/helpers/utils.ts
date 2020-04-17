@@ -1,4 +1,4 @@
-import { CHAIN_DATA_LIST, EMPTY_CHAIN_DATA } from "../constants";
+import { CHAIN_DATA_LIST } from "../constants";
 import { themesList } from "../themes";
 import { providers, injected } from "../providers";
 import {
@@ -144,8 +144,8 @@ export function getProviderDescription(providerInfo: IProviderInfo): string {
 export function filterMatches<T>(
   array: T[],
   condition: (x: T) => boolean,
-  fallback: T
-): T {
+  fallback: T | undefined
+): T | undefined {
   let result = fallback;
   const matches = array.filter(condition);
 
@@ -158,10 +158,12 @@ export function filterMatches<T>(
 
 export function filterProviders(param: string, value: string | null) {
   if (!value) return providers.FALLBACK;
-  return filterMatches<IProviderInfo>(
-    Object.values(providers),
-    x => x[param] === value,
-    providers.FALLBACK
+  return (
+    filterMatches<IProviderInfo>(
+      Object.values(providers),
+      x => x[param] === value,
+      providers.FALLBACK
+    ) || providers.FALLBACK
   );
 }
 
@@ -182,12 +184,15 @@ export function filterProviderChecks(checks: string[]): string {
 
 export function getChainId(network: string): number {
   const chains: ChainData[] = Object.values(CHAIN_DATA_LIST);
-  const { chainId } = filterMatches<ChainData>(
+  const match = filterMatches<ChainData>(
     chains,
     x => x.network === network,
-    EMPTY_CHAIN_DATA
+    undefined
   );
-  return chainId;
+  if (!match) {
+    throw new Error(`No chainId found match ${network}`);
+  }
+  return match.chainId;
 }
 
 export function getThemeColors(theme: string | ThemeColors): ThemeColors {
