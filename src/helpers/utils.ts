@@ -1,17 +1,17 @@
-import { providers, FALLBACK } from "../providers";
-import { themesList } from "../themes";
 import { chainList, EMPTY_CHAIN_DATA } from "./chains";
+import { themesList } from "../themes";
+import { providers, FALLBACK } from "../providers";
+import {
+  METAMASK_INJECTED,
+  CIPHER_INJECTED,
+  FALLBACK_INJECTED
+} from "../providers/injected";
 import {
   IProviderInfo,
   IInjectedProvidersMap,
   ChainData,
   ThemeColors
 } from "./types";
-import {
-  METAMASK_INJECTED,
-  CIPHER_INJECTED,
-  FALLBACK_INJECTED
-} from "../providers/injected";
 
 export function checkInjectedProviders(): IInjectedProvidersMap {
   const result = {

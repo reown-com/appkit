@@ -71,7 +71,7 @@ const provider = await web3Modal.connect();
 const web = new Web3(provider);
 ```
 
-## Using with standalone JavaScript
+## Using in vanilla JavaScript
 
 You can use the modal from the old fashioned web page JavaScript as well.
 
@@ -96,6 +96,8 @@ const web3Modal = new Web3Modal({
 
 const provider = await web3Modal.connect();
 ```
+
+[See the full vanilla JavaScript example application](https://github.com/Web3Modal/web3modal-vanilla-js-example).
 
 ## Provider Options
 
