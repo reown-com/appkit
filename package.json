@@ -20,6 +20,8 @@
   "license": "LGPL-3.0",
   "main": "dist/index.js",
   "unpkg": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
   "directories": {
     "dist": "dist",
     "test": "test"

@@ -1,10 +1,5 @@
-import {
-  IProviderInfo,
-  IProviderMappingEntry,
-  parseProviderMapping
-} from "../helpers";
+import { IProviderInfo } from "../helpers";
 
-import connectors from "./connectors";
 import { FALLBACK_INJECTED, injected } from "./injected";
 
 // @ts-ignore
@@ -150,6 +145,4 @@ export const providers: IProviderInfo[] = [
   BURNERCONNECT_PROVIDER
 ];
 
-export const providerMapping: IProviderMappingEntry[] = parseProviderMapping(
-  connectors
-);
+export * from "./connectors";

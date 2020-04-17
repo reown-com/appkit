@@ -1,4 +1,4 @@
-import { providerMapping } from "../providers";
+import { connectors } from "../providers";
 import {
   isMobile,
   getInjectedProviderName,
@@ -11,7 +11,8 @@ import {
   CACHED_PROVIDER_KEY,
   getLocal,
   setLocal,
-  removeLocal
+  removeLocal,
+  getProviderInfoById
 } from "../helpers";
 import { EventController } from "./events";
 
@@ -34,11 +35,18 @@ export class ProviderController {
 
     this.injectedProvider = getInjectedProviderName();
 
-    this.providerMapping = providerMapping.map(entry => {
-      if (entry.id === INJECTED_PROVIDER_ID) {
-        entry.name = this.injectedProvider || "";
-      }
-      return entry;
+    this.providerMapping = Object.keys(connectors).map((id: string) => {
+      const providerInfo = getProviderInfoById(id);
+      const name =
+        id !== INJECTED_PROVIDER_ID
+          ? providerInfo.name
+          : this.injectedProvider || "";
+      return {
+        id,
+        name,
+        connector: connectors[id],
+        package: providerInfo.package
+      };
     });
   }
 

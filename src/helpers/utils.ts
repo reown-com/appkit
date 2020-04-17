@@ -5,11 +5,8 @@ import {
   IProviderInfo,
   IInjectedProvidersMap,
   ChainData,
-  ThemeColors,
-  IConnectorsMap,
-  IProviderMappingEntry
+  ThemeColors
 } from "./types";
-import { INJECTED_PROVIDER_ID } from "./constants";
 
 export function checkInjectedProviders(): IInjectedProvidersMap {
   const result = {
@@ -174,19 +171,4 @@ export function getChainId(network: string): number {
 
 export function getThemeColors(theme: string | ThemeColors): ThemeColors {
   return typeof theme === "string" ? themesList[theme].colors : theme;
-}
-
-export function parseProviderMapping(
-  connectors: IConnectorsMap
-): IProviderMappingEntry[] {
-  return Object.keys(connectors).map((id: string) => {
-    const providerInfo = getProviderInfoById(id);
-    const name = id !== INJECTED_PROVIDER_ID ? providerInfo.name : "";
-    return {
-      id,
-      name,
-      connector: connectors[id],
-      package: providerInfo.package
-    };
-  });
 }

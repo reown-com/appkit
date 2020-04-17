@@ -10,7 +10,7 @@ import arkane from "./arkane";
 import authereum from "./authereum";
 import burnerconnect from "./burnerconnect";
 
-const connectors: IConnectorsMap = {
+export const connectors: IConnectorsMap = {
   injected,
   walletconnect,
   portis,
@@ -21,5 +21,3 @@ const connectors: IConnectorsMap = {
   authereum,
   burnerconnect
 };
-
-export default connectors;
