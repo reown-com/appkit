@@ -329,15 +329,53 @@ const providerOptions = {
 ```typescript
 class Web3Modal {
   cachedProvider: string;
-  function connect(): Promise<any>;
-  function connectTo(id: string): Promise<any>;
-  function toggleModal(): Promise<void>;
-  function on(event: string, callback: SimpleFunction): SimpleFunction;
-  function off(event: string, callback?: SimpleFunction): void;
-  function clearCachedProvider(): void;
-  function setCachedProvider(): void;
-  function updateTheme(theme: string | ThemeColors): Promise<void>;
+  connect(): Promise<any>;
+  connectTo(id: string): Promise<any>;
+  toggleModal(): Promise<void>;
+  on(event: string, callback: SimpleFunction): SimpleFunction;
+  off(event: string, callback?: SimpleFunction): void;
+  clearCachedProvider(): void;
+  setCachedProvider(): void;
+  updateTheme(theme: string | ThemeColors): Promise<void>;
 }
+```
+
+## Utis
+
+```typescript
+function getInjectedProvider(): IProviderInfo | null;
+function getInjectedProviderName(): string | null;
+
+function getProviderInfo(provider: any): IProviderInfo;
+function getProviderInfoByName(name: string | null): IProviderInfo;
+function getProviderInfoById(id: string | null): IProviderInfo;
+function getProviderInfoByCheck(check: string | null): IProviderInfo;
+```
+
+## Types
+
+```typescript
+interface IProviderInfo {
+  id: string;
+  type: string;
+  check: string;
+  name: string;
+  logo: string;
+  description?: string;
+  package?: {
+    required?: string[];
+  };
+}
+
+type ThemeColors = {
+  background: string;
+  main: string;
+  secondary: string;
+  border: string;
+  hover: string;
+};
+
+type SimpleFunction = (input?: any) => void;
 ```
 
 ## Custom Themes
@@ -380,6 +418,83 @@ await web3Modal.updateTheme({
   border: "rgba(195, 195, 195, 0.14)",
   hover: "rgb(16, 26, 32)"
 });
+```
+
+## Custom Display
+
+It's possible to customize the display of each provider to change the name, description and logo. These options are available as part of the provider options as following
+
+```typescript
+const providerOptions = {
+  // Example with injected providers
+  injected: {
+    display: {
+      logo: "data:image/gif;base64,INSERT_BASE64_STRING",
+      name: "Injected",
+      description: "Connect with the provider in your Browser"
+    },
+    package: null
+  },
+  // Example with WalletConnect provider
+  walletconnect: {
+    display: {
+      logo: "data:image/gif;base64,INSERT_BASE64_STRING",
+      name: "Mobile",
+      description: "Scan qrcode with your mobile wallet"
+    },
+    package: WalletConnectProvider,
+    options: {
+      infuraId: "INFURA_ID" // required
+    }
+  }
+};
+```
+
+You can change only one of the display options, you are not required to fill all 3 options, example:
+
+```typescript
+const providerOptions = {
+  walletconnect: {
+    display: {
+      name: "Mobile"
+    },
+    package: WalletConnectProvider,
+    options: {
+      infuraId: "INFURA_ID" // required
+    }
+  }
+};
+```
+
+## Custom Provider
+
+If you would like to include a provider that isn't supported yet on Web3Modal, we would recommend you submit a PR following the simple five steps in our ["Adding Providers" instructions](docs/ADDING_PROVIDERS.md)
+
+If still need to add a custom provider to your Web3Modal integration, you can add it to the provider options with a key prefixed with `custom-` and you will need to include the display options and connector handler as follows
+
+```typescript
+import ExampleProvider from "example-provider";
+
+const providerOptions = {
+  "custom-example": {
+    display: {
+      logo: "data:image/gif;base64,INSERT_BASE64_STRING",
+      name: "Example Provider",
+      description: "Connect to your example provider account"
+    }
+    package: ExampleProvider,
+    options: {
+      apiKey: "EXAMPLE_PROVIDER_API_KEY"
+    },
+    connector: async (ProviderPackage, options) => {
+        const provider = new ProviderPackage(options);
+
+        await provider.enable()
+
+        return provider;
+    }
+  }
+}
 ```
 
 ## Connect to specific provider
