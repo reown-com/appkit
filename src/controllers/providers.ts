@@ -9,17 +9,16 @@ import {
   isMobile,
   IProviderControllerOptions,
   IProviderOptions,
-  IProviderInfoWithConnector,
+  IProviderDisplayWithConnector,
   getLocal,
   setLocal,
   removeLocal,
   getProviderInfoById,
   getProviderDescription,
   IProviderInfo,
-  getInjectedProviderName,
-  getProviderInfoByName,
   filterMatches,
-  IProviderUserOptions
+  IProviderUserOptions,
+  getInjectedProvider
 } from "../helpers";
 import { EventController } from "./events";
 
@@ -28,8 +27,8 @@ export class ProviderController {
   public shouldCacheProvider: boolean = false;
 
   private eventController: EventController = new EventController();
-  private injectedProviderName: string | null = null;
-  private providers: IProviderInfoWithConnector[] = [];
+  private injectedProvider: IProviderInfo | null = null;
+  private providers: IProviderDisplayWithConnector[] = [];
   private providerOptions: IProviderOptions;
   private network: string = "";
 
@@ -40,14 +39,25 @@ export class ProviderController {
     this.providerOptions = opts.providerOptions;
     this.network = opts.network;
 
-    this.injectedProviderName = getInjectedProviderName();
+    this.injectedProvider = getInjectedProvider();
+    console.log("this.injectedProvider", this.injectedProvider);
 
     this.providers = Object.keys(list.connectors).map((id: string) => {
       let providerInfo: IProviderInfo;
       if (id === INJECTED_PROVIDER_ID) {
-        providerInfo = getProviderInfoByName(this.injectedProviderName);
+        providerInfo = this.injectedProvider || list.providers.FALLBACK;
       } else {
         providerInfo = getProviderInfoById(id);
+      }
+      // parse custom display options
+      if (this.providerOptions[id]) {
+        const options = this.providerOptions[id];
+        if (typeof options.display !== "undefined") {
+          providerInfo = {
+            ...providerInfo,
+            ...this.providerOptions[id].display
+          };
+        }
       }
       return {
         ...providerInfo,
@@ -55,6 +65,25 @@ export class ProviderController {
         package: providerInfo.package
       };
     });
+    // parse custom providers
+    Object.keys(this.providerOptions)
+      .filter(key => key.startsWith("custom-"))
+      .map(id => {
+        if (id && this.providerOptions[id]) {
+          const options = this.providerOptions[id];
+          if (
+            typeof options.display !== "undefined" &&
+            typeof options.connector !== "undefined"
+          ) {
+            this.providers.push({
+              ...list.providers.FALLBACK,
+              id,
+              ...options.display,
+              connector: options.connector
+            });
+          }
+        }
+      });
   }
 
   public shouldDisplayProvider(id: string) {
@@ -92,8 +121,7 @@ export class ProviderController {
     const defaultProviderList = this.providers.map(({ id }) => id);
 
     const displayInjected =
-      this.injectedProviderName &&
-      !this.providerOptions.disableInjectedProvider;
+      !!this.injectedProvider && !this.providerOptions.disableInjectedProvider;
     const onlyInjected = displayInjected && mobile;
 
     const providerList = [];
@@ -134,7 +162,7 @@ export class ProviderController {
   };
 
   public getProvider(id: string) {
-    return filterMatches<IProviderInfoWithConnector>(
+    return filterMatches<IProviderDisplayWithConnector>(
       this.providers,
       x => x.id === id,
       undefined

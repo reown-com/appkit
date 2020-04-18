@@ -340,67 +340,6 @@ class Web3Modal {
 }
 ```
 
-## Utils
-
-```typescript
-function checkInjectedProviders(): IInjectedProvidersMap;
-function verifyInjectedProvider(check: string): boolean;
-function getInjectedProviderName(): string | null;
-function getProviderInfoById(id: string | null): IProviderInfo;
-function getProviderInfoByName(name: string | null): IProviderInfo;
-function getProviderInfo(provider: any): IProviderInfo;
-function isMobile(): boolean;
-function getProviderDescription(providerInfo: IProviderInfo): string;
-function getChainId(network: string): number;
-function getThemeColors(theme: string | ThemeColors): ThemeColors;
-```
-
-## Types
-
-```typescript
-interface IInjectedProvidersMap {
-  injectedAvailable: boolean;
-  [isProviderName: string]: boolean;
-}
-
-interface IProviderInfo {
-  id: string;
-  name: string;
-  type: string;
-  logo: string;
-  check: string;
-  package: IProviderPackageOptions;
-}
-
-interface IProviderPackageOptions {
-  required: string[];
-}
-
-interface IProviderStyledOptions {
-  [prop: string]: any;
-}
-
-interface IProviderOptions {
-  [id: string]: {
-    package: any;
-    options?: any;
-  };
-}
-
-interface IProviderInfoWithConnector extends IProviderInfo {
-  connector: any;
-  package: IProviderPackageOptions;
-}
-
-type ThemeColors = {
-  background: string;
-  main: string;
-  secondary: string;
-  border: string;
-  hover: string;
-};
-```
-
 ## Custom Themes
 
 The theme enabled by default is `light` but dark theme is also available by setting the option `theme` to `dark`, as follows:

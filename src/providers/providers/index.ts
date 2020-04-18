@@ -17,7 +17,7 @@ import BurnerWalletLogo from "../logos/burnerwallet.png";
 
 import { IProviderInfo } from "../../helpers";
 
-export { FALLBACK } from "../injected";
+export * from "../injected";
 
 export const WALLETCONNECT: IProviderInfo = {
   id: "walletconnect",

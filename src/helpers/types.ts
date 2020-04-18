@@ -18,32 +18,34 @@ export interface IInjectedProvidersMap {
   [isProviderName: string]: boolean;
 }
 
-export interface IProviderInfo {
-  id: string;
+export interface IProviderDisplay {
   name: string;
-  type: string;
   logo: string;
+  description?: string;
+}
+
+export interface IProviderInfo extends IProviderDisplay {
+  id: string;
+  type: string;
   check: string;
   package?: IProviderPackageOptions;
-  description?: string;
 }
 
 export interface IProviderPackageOptions {
   required?: string[];
 }
 
-export interface IProviderStyledOptions {
-  [prop: string]: any;
-}
-
 export interface IProviderOptions {
   [id: string]: {
     package: any;
-    options: any;
+    options?: any;
+    connector?: Connector;
+    display?: Partial<IProviderDisplay>;
   };
 }
 
-export interface IProviderInfoWithConnector extends IProviderInfo {
+export interface IProviderDisplayWithConnector extends IProviderDisplay {
+  id: string;
   connector: any;
   package?: IProviderPackageOptions;
 }
@@ -90,6 +92,8 @@ export type ThemesList = {
   [name: string]: IThemeConfig;
 };
 
+export type Connector = (provider?: any, opts?: any) => Promise<any>;
+
 export interface IConnectorsMap {
-  [id: string]: (provider?: any, opts?: any) => Promise<any>;
+  [id: string]: Connector;
 }

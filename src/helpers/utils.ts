@@ -14,7 +14,7 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
   };
   if (result.injectedAvailable) {
     let fallbackProvider = true;
-    Object.values(providers).forEach(provider => {
+    Object.values(injected).forEach(provider => {
       const isAvailable = verifyInjectedProvider(provider.check);
       if (isAvailable) {
         result[provider.check] = true;
@@ -71,8 +71,8 @@ export function getProviderInfo(provider: any): IProviderInfo {
 export function getProviderInfoFromChecksArray(
   checks: string[]
 ): IProviderInfo {
-  const match = filterProviderChecks(checks);
-  return filterProviders("check", match);
+  const check = filterProviderChecks(checks);
+  return filterProviders("check", check);
 }
 
 export function getProviderInfoByName(name: string | null): IProviderInfo {
@@ -120,7 +120,9 @@ export function isMobile(): boolean {
   return mobile;
 }
 
-export function getProviderDescription(providerInfo: IProviderInfo): string {
+export function getProviderDescription(
+  providerInfo: Partial<IProviderInfo>
+): string {
   if (providerInfo.description) {
     return providerInfo.description;
   }
@@ -156,15 +158,17 @@ export function filterMatches<T>(
   return result;
 }
 
-export function filterProviders(param: string, value: string | null) {
+export function filterProviders(
+  param: string,
+  value: string | null
+): IProviderInfo {
   if (!value) return providers.FALLBACK;
-  return (
-    filterMatches<IProviderInfo>(
-      Object.values(providers),
-      x => x[param] === value,
-      providers.FALLBACK
-    ) || providers.FALLBACK
+  const match = filterMatches<IProviderInfo>(
+    Object.values(providers),
+    x => x[param] === value,
+    providers.FALLBACK
   );
+  return match || providers.FALLBACK;
 }
 
 export function filterProviderChecks(checks: string[]): string {
