@@ -68,7 +68,7 @@ const web3Modal = new Web3Modal({
 
 const provider = await web3Modal.connect();
 
-const web = new Web3(provider);
+const web3 = new Web3(provider);
 ```
 
 ## Using in vanilla JavaScript
