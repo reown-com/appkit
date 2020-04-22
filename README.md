@@ -28,6 +28,23 @@ _Open a PR to add your project to the list!_
 - [Dapparatus](https://github.com/austintgriffith/dapparatus/)
 - [Totle Swap](https://swap.totle.com/)
 
+## About Ethereum wallets
+
+There are five categories of Ethereum wallets that can interact with dApps. Web3modal aims to support all of these different user flows.
+
+- Browser built-in (Opera, Brave, ...)
+- Browser extension (MetaMask, ...)
+- Mobile app wallets (Trust, Walleth, Pillar, ...)
+- Account-based web wallets (Fortmatic, 3box, ...)
+- Hardware wallets (Ledger, Trezor, ...)
+
+Then there is a larger category of wallets that cannot integrate with dApps include generic wallet apps that lack the functionality to integrate with smart contracts. Web3Modal cannot support these wallets.
+
+- Many generic wallet apps that hold multiple coins (Xapo, ...)
+- All cryptocurrecy exchanges (Binance, ...)
+- Custodial wallet services like BitGo
+
+
 ## Related Efforts
 
 - [web3-react](https://github.com/NoahZinsmeister/web3-react/)
