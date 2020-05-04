@@ -1,6 +1,6 @@
 import { IAbstractConnectorOptions } from "../../helpers";
 
-interface NetworkInterface {
+interface NetworkParams {
   host:
     | "mainnet"
     | "rinkeby"
@@ -37,6 +37,7 @@ export interface IOptions {
 export interface ITorusConnectorOptions extends IAbstractConnectorOptions {
   config?: IOptions;
   loginParams?: LoginParams;
+  networkParams?: NetworkParams;
 }
 
 // Supports Torus package versions 0.2.*
@@ -49,11 +50,12 @@ const ConnectToTorus = async (Torus: any, opts: ITorusConnectorOptions) => {
       let enableLogging = true;
       let showTorusButton = false;
       let enabledVerifiers = {};
-      let network: NetworkInterface = { host: "mainnet" };
+      let network: NetworkParams = { host: "mainnet" };
       let defaultVerifier = undefined;
 
       // parsing to Torus interfaces
-      network = opts.network ? { host: opts.network } : network;
+      network =
+        opts.networkParams || opts.network ? { host: opts.network } : network;
 
       if (opts.config) {
         buttonPosition = opts.config.buttonPosition || buttonPosition;
