@@ -18,7 +18,8 @@ import {
   IProviderInfo,
   filterMatches,
   IProviderUserOptions,
-  getInjectedProvider
+  getInjectedProvider,
+  assertRequiredOptions
 } from "../helpers";
 import { EventController } from "./events";
 
@@ -93,18 +94,13 @@ export class ProviderController {
       if (providerPackageOptions) {
         const isProvided = !!providerPackageOptions.package;
         if (isProvided) {
-          const required = provider.package
+          const requiredOptions = provider.package
             ? provider.package.required
             : undefined;
-          if (required && required.length) {
+          if (requiredOptions && requiredOptions.length) {
             const providedOptions = providerPackageOptions.options;
             if (providedOptions && Object.keys(providedOptions).length) {
-              const matches = required.filter(
-                (key: string) => key in providedOptions
-              );
-              if (required.length === matches.length) {
-                return true;
-              }
+              return assertRequiredOptions(requiredOptions, providedOptions);
             }
           } else {
             return true;

@@ -5,7 +5,8 @@ import {
   IProviderInfo,
   IInjectedProvidersMap,
   ChainData,
-  ThemeColors
+  ThemeColors,
+  RequiredOption
 } from "./types";
 
 export function checkInjectedProviders(): IInjectedProvidersMap {
@@ -201,4 +202,22 @@ export function getChainId(network: string): number {
 
 export function getThemeColors(theme: string | ThemeColors): ThemeColors {
   return typeof theme === "string" ? themesList[theme].colors : theme;
+}
+
+export function assertRequiredOptions(
+  requiredOptions: (RequiredOption)[],
+  providedOptions: { [key: string]: any }
+): boolean {
+  function filterMatchingRequired(requiredOption: RequiredOption): boolean {
+    if (typeof requiredOption === "string") {
+      return requiredOption in providedOptions;
+    } else {
+      return filterMatchingRequired(requiredOption);
+    }
+  }
+  const matches = requiredOptions.filter(filterMatchingRequired);
+  if (requiredOptions.length === matches.length) {
+    return true;
+  }
+  return false;
 }
