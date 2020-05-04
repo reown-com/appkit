@@ -69,12 +69,14 @@ export class Core {
   public connect = (): Promise<any> =>
     new Promise(async (resolve, reject) => {
       this.on(CONNECT_EVENT, provider => resolve(provider));
+      this.on(ERROR_EVENT, error => reject(error));
       await this.toggleModal();
     });
 
   public connectTo = (id: string): Promise<any> =>
     new Promise(async (resolve, reject) => {
       this.on(CONNECT_EVENT, provider => resolve(provider));
+      this.on(ERROR_EVENT, error => reject(error));
       const provider = this.providerController.getProvider(id);
       if (!provider) {
         return reject(
