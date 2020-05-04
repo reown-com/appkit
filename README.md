@@ -240,7 +240,17 @@ import Torus from "@toruslabs/torus-embed";
 
 const providerOptions = {
   torus: {
-    package: Torus // required
+    package: Torus, // required
+    options: {
+      networkParams: {
+        host: "https://localhost:8545", // optional
+        chainId: 1337, // optional
+        networkId: 1337 // optional
+      },
+      config: {
+        buildEnv: "development" // optional
+      }
+    }
   }
 };
 ```
@@ -319,7 +329,10 @@ import BurnerConnectProvider from "@burner-wallet/burner-connect-provider";
 
 const providerOptions = {
   burnerconnect: {
-    package: BurnerConnectProvider // required
+    package: BurnerConnectProvider, // required
+    options: {
+      defaultNetwork: "100"
+    }
   }
 };
 ```
@@ -560,10 +573,14 @@ Do you want to add your provider to Web3Modal? All logic for supported providers
 
 If you were using Web3Connect before you can check the migration instructions for how to use Web3Modal and handle breaking changes [here](docs/MIGRATION_INSTRUCTIONS.md)
 
-## Collaboration
+## Contributions
 
-### Code contributions are welcome ❤️❤️❤️!
+**Code contributions are welcome ❤️❤️❤️!**
 
 If you wish to support a new provider submit a issue to the repo or fork this repo and create a pull request.
 
 You can join to our discord to further discuss https://discordapp.com/invite/YGnSX9y
+
+## License
+
+MIT
