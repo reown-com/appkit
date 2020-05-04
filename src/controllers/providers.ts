@@ -19,7 +19,7 @@ import {
   filterMatches,
   IProviderUserOptions,
   getInjectedProvider,
-  assertRequiredOptions
+  findMatchingRequiredOptions
 } from "../helpers";
 import { EventController } from "./events";
 
@@ -41,7 +41,6 @@ export class ProviderController {
     this.network = opts.network;
 
     this.injectedProvider = getInjectedProvider();
-    console.log("this.injectedProvider", this.injectedProvider);
 
     this.providers = Object.keys(list.connectors).map((id: string) => {
       let providerInfo: IProviderInfo;
@@ -100,7 +99,13 @@ export class ProviderController {
           if (requiredOptions && requiredOptions.length) {
             const providedOptions = providerPackageOptions.options;
             if (providedOptions && Object.keys(providedOptions).length) {
-              return assertRequiredOptions(requiredOptions, providedOptions);
+              const matches = findMatchingRequiredOptions(
+                requiredOptions,
+                providedOptions
+              );
+              if (requiredOptions.length === matches.length) {
+                return true;
+              }
             }
           } else {
             return true;
@@ -165,11 +170,11 @@ export class ProviderController {
     );
   }
 
-  public getProviderOption(id: string, field: string) {
+  public getProviderOption(id: string, key: string) {
     return this.providerOptions &&
       this.providerOptions[id] &&
-      this.providerOptions[id][field]
-      ? this.providerOptions[id][field]
+      this.providerOptions[id][key]
+      ? this.providerOptions[id][key]
       : {};
   }
 

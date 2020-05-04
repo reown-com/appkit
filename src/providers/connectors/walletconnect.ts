@@ -2,7 +2,8 @@ import { IAbstractConnectorOptions, getChainId } from "../../helpers";
 
 export interface IWalletConnectConnectorOptions
   extends IAbstractConnectorOptions {
-  infuraId: string;
+  infuraId?: string;
+  rpc?: { [chainId: number]: string };
   bridge?: string;
   qrcode?: boolean;
 }
@@ -15,12 +16,14 @@ const ConnectToWalletConnect = (
     let bridge = "https://bridge.walletconnect.org";
     let qrcode = true;
     let infuraId = "";
+    let rpc = undefined;
     let chainId = 1;
 
     if (opts) {
       bridge = opts.bridge || bridge;
       qrcode = typeof opts.qrcode !== "undefined" ? opts.qrcode : qrcode;
       infuraId = opts.infuraId || "";
+      rpc = opts.rpc || undefined;
       chainId =
         opts.network && getChainId(opts.network) ? getChainId(opts.network) : 1;
     }
@@ -29,6 +32,7 @@ const ConnectToWalletConnect = (
       bridge,
       qrcode,
       infuraId,
+      rpc,
       chainId
     });
 

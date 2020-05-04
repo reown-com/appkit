@@ -204,20 +204,19 @@ export function getThemeColors(theme: string | ThemeColors): ThemeColors {
   return typeof theme === "string" ? themesList[theme].colors : theme;
 }
 
-export function assertRequiredOptions(
+export function findMatchingRequiredOptions(
   requiredOptions: (RequiredOption)[],
   providedOptions: { [key: string]: any }
-): boolean {
-  function filterMatchingRequired(requiredOption: RequiredOption): boolean {
+): RequiredOption[] {
+  const matches = requiredOptions.filter(requiredOption => {
     if (typeof requiredOption === "string") {
       return requiredOption in providedOptions;
-    } else {
-      return filterMatchingRequired(requiredOption);
     }
-  }
-  const matches = requiredOptions.filter(filterMatchingRequired);
-  if (requiredOptions.length === matches.length) {
-    return true;
-  }
-  return false;
+    const matches = findMatchingRequiredOptions(
+      requiredOption,
+      providedOptions
+    );
+    return matches && matches.length;
+  });
+  return matches;
 }
