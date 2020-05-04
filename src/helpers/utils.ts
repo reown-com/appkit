@@ -1,3 +1,5 @@
+import * as env from "detect-browser";
+
 import { CHAIN_DATA_LIST } from "../constants";
 import { themesList } from "../themes";
 import { providers, injected } from "../providers";
@@ -22,6 +24,13 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
         fallbackProvider = false;
       }
     });
+
+    const browser = env.detect();
+
+    if (browser && browser.name === "opera") {
+      result[injected.OPERA.check] = true;
+      fallbackProvider = false;
+    }
 
     if (fallbackProvider) {
       result[injected.FALLBACK.check] = true;
