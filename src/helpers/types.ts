@@ -4,6 +4,7 @@ export interface ICoreOptions extends IProviderControllerOptions {
 }
 
 export interface IProviderControllerOptions {
+  disableInjectedProvider: boolean;
   cacheProvider: boolean;
   providerOptions: IProviderOptions;
   network: string;

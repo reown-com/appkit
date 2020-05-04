@@ -20,10 +20,11 @@ import { EventController, ProviderController } from "../controllers";
 
 const INITIAL_STATE = { show: false };
 
-const defaultOpts = {
+const defaultOpts: ICoreOptions = {
   lightboxOpacity: 0.4,
   theme: themesList.default.name,
   cacheProvider: false,
+  disableInjectedProvider: false,
   providerOptions: {},
   network: ""
 };
@@ -46,6 +47,7 @@ export class Core {
     this.themeColors = getThemeColors(options.theme);
 
     this.providerController = new ProviderController({
+      disableInjectedProvider: options.disableInjectedProvider,
       cacheProvider: options.cacheProvider,
       providerOptions: options.providerOptions,
       network: options.network
