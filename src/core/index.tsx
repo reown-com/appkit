@@ -72,7 +72,7 @@ export class Core {
     new Promise(async (resolve, reject) => {
       this.on(CONNECT_EVENT, provider => resolve(provider));
       this.on(ERROR_EVENT, error => reject(error));
-      this.on(CLOSE_EVENT, () => reject('Modal closed by user));
+      this.on(CLOSE_EVENT, () => reject("Modal closed by user"));
       await this.toggleModal();
     });
 
@@ -80,7 +80,7 @@ export class Core {
     new Promise(async (resolve, reject) => {
       this.on(CONNECT_EVENT, provider => resolve(provider));
       this.on(ERROR_EVENT, error => reject(error));
-      this.on(CLOSE_EVENT, () => reject('Modal closed by user));
+      this.on(CLOSE_EVENT, () => reject("Modal closed by user"));
       const provider = this.providerController.getProvider(id);
       if (!provider) {
         return reject(
