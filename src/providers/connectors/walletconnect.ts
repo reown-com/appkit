@@ -35,10 +35,12 @@ const ConnectToWalletConnect = (
       rpc,
       chainId
     });
-
-    await provider.enable();
-
-    resolve(provider);
+    try {
+      await provider.enable();
+      resolve(provider);
+    } catch (e) {
+      reject(e);
+    }
   });
 };
 
