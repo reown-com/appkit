@@ -55,7 +55,9 @@ const ConnectToTorus = async (Torus: any, opts: ITorusConnectorOptions) => {
 
       // parsing to Torus interfaces
       network =
-        opts.networkParams || opts.network ? { host: opts.network } : network;
+        opts.networkParams || opts.network
+          ? { host: opts.network, ...opts.networkParams }
+          : network;
 
       if (opts.config) {
         buttonPosition = opts.config.buttonPosition || buttonPosition;
