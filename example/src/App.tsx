@@ -11,6 +11,8 @@ import Fortmatic from "fortmatic";
 import Torus from "@toruslabs/torus-embed";
 import Portis from "@portis/web3";
 import Authereum from "authereum";
+// @ts-ignore
+import MewConnect from "@myetherwallet/mewconnect-web-client";
 
 import Button from "./components/Button";
 import Column from "./components/Column";
@@ -230,6 +232,9 @@ class App extends React.Component<any, any> {
 
   public getProviderOptions = () => {
     const providerOptions = {
+      mewconnect: {
+        package: MewConnect
+      },
       walletconnect: {
         package: WalletConnectProvider,
         options: {

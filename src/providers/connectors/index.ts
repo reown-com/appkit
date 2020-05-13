@@ -7,6 +7,7 @@ import squarelink from "./squarelink";
 import arkane from "./arkane";
 import authereum from "./authereum";
 import burnerconnect from "./burnerconnect";
+import mewconnect from "./mewconnect"
 
 export {
   injected,
@@ -17,5 +18,6 @@ export {
   squarelink,
   arkane,
   authereum,
-  burnerconnect
+  burnerconnect,
+  mewconnect
 };

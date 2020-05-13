@@ -97,3 +97,14 @@ export const BURNERCONNECT: IProviderInfo = {
   type: "web",
   check: "isBurnerProvider"
 };
+
+export const MEWCONNECT: IProviderInfo = {
+  id: "mewconnect",
+  name: "MEWconnect",
+  logo: WalletConnectLogo,
+  type: "qrcode",
+  check: "isMEWconnect",
+  package: {
+    required: [["infuraId", "rpc"]]
+  }
+};
