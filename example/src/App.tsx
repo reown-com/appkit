@@ -11,6 +11,7 @@ import Fortmatic from "fortmatic";
 import Torus from "@toruslabs/torus-embed";
 import Portis from "@portis/web3";
 import Authereum from "authereum";
+import DcentProvider from "dcent-provider";
 
 import Button from "./components/Button";
 import Column from "./components/Column";
@@ -229,6 +230,7 @@ class App extends React.Component<any, any> {
   public getNetwork = () => getChainData(this.state.chainId).network;
 
   public getProviderOptions = () => {
+    const rpcUrl = getChainData(this.state.chainId).rpc_url
     const providerOptions = {
       walletconnect: {
         package: WalletConnectProvider,
@@ -253,6 +255,12 @@ class App extends React.Component<any, any> {
       },
       authereum: {
         package: Authereum
+      },
+      dcentwallet: {
+        package: DcentProvider,
+        options: {
+          rpcUrl,
+        }
       }
     };
     return providerOptions;

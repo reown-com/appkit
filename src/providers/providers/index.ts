@@ -14,6 +14,8 @@ import TorusLogo from "../logos/torus.svg";
 import AuthereumLogo from "../logos/authereum.svg";
 // @ts-ignore
 import BurnerWalletLogo from "../logos/burnerwallet.png";
+// @ts-ignore
+import DcentWalletLogo from "../logos/dcentwallet.png";
 
 import { IProviderInfo } from "../../helpers";
 
@@ -96,4 +98,15 @@ export const BURNERCONNECT: IProviderInfo = {
   logo: BurnerWalletLogo,
   type: "web",
   check: "isBurnerProvider"
+};
+
+export const DCENT_PROVIDER: IProviderInfo = {
+  id: "dcentwallet",
+  name: "DcentWallet",
+  logo: DcentWalletLogo,
+  type: "hardware",
+  check: "isDcentWallet",
+  package: {
+    required: ["rpcUrl"]
+  }
 };
