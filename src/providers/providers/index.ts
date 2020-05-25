@@ -102,7 +102,7 @@ export const BURNERCONNECT: IProviderInfo = {
 
 export const DCENT_PROVIDER: IProviderInfo = {
   id: "dcentwallet",
-  name: "DcentWallet",
+  name: "D'CENT",
   logo: DcentWalletLogo,
   type: "hardware",
   check: "isDcentWallet",
