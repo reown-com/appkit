@@ -11,6 +11,8 @@ import Fortmatic from "fortmatic";
 import Torus from "@toruslabs/torus-embed";
 import Portis from "@portis/web3";
 import Authereum from "authereum";
+// @ts-ignore
+import MewConnect from "@myetherwallet/mewconnect-web-client";
 
 import Button from "./components/Button";
 import Column from "./components/Column";
@@ -21,6 +23,7 @@ import Loader from "./components/Loader";
 import ModalResult from "./components/ModalResult";
 import AccountAssets from "./components/AccountAssets";
 import ConnectButton from "./components/ConnectButton";
+
 import { apiGetAccountAssets } from "./helpers/api";
 import {
   hashPersonalMessage,
@@ -163,6 +166,7 @@ class App extends React.Component<any, any> {
     this.state = {
       ...INITIAL_STATE
     };
+
     this.web3Modal = new Web3Modal({
       network: this.getNetwork(),
       cacheProvider: true,
@@ -230,6 +234,12 @@ class App extends React.Component<any, any> {
 
   public getProviderOptions = () => {
     const providerOptions = {
+      mewconnect: {
+        package: MewConnect,
+        options: {
+          infuraId: process.env.REACT_APP_INFURA_ID
+        }
+      },
       walletconnect: {
         package: WalletConnectProvider,
         options: {
