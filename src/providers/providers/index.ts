@@ -15,7 +15,10 @@ import AuthereumLogo from "../logos/authereum.svg";
 // @ts-ignore
 import BurnerWalletLogo from "../logos/burnerwallet.png";
 // @ts-ignore
+import MEWwallet from "../logos/mewwallet.png"
+// @ts-ignore
 import DcentWalletLogo from "../logos/dcentwallet.png";
+
 
 import { IProviderInfo } from "../../helpers";
 
@@ -98,6 +101,17 @@ export const BURNERCONNECT: IProviderInfo = {
   logo: BurnerWalletLogo,
   type: "web",
   check: "isBurnerProvider"
+};
+
+export const MEWCONNECT: IProviderInfo = {
+  id: "mewconnect",
+  name: "MEW wallet",
+  logo: MEWwallet,
+  type: "qrcode",
+  check: "isMEWconnect",
+  package: {
+    required: [["infuraId", "rpc"]]
+  }
 };
 
 export const DCENT_PROVIDER: IProviderInfo = {
