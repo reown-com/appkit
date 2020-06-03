@@ -8,6 +8,8 @@ import arkane from "./arkane";
 import authereum from "./authereum";
 import burnerconnect from "./burnerconnect";
 import unilogin from "./unilogin";
+import mewconnect from "./mewconnect"
+import dcentwallet from "./dcentwallet";
 
 export {
   injected,
@@ -20,4 +22,6 @@ export {
   authereum,
   burnerconnect,
   unilogin,
+  mewconnect,
+  dcentwallet
 };

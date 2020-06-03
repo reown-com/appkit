@@ -16,6 +16,10 @@ import AuthereumLogo from "../logos/authereum.svg";
 import BurnerWalletLogo from "../logos/burnerwallet.png";
 // @ts-ignore
 import UniLoginLogo from "../logos/unilogin.svg";
+// @ts-ignore
+import MEWwallet from "../logos/mewwallet.png"
+// @ts-ignore
+import DcentWalletLogo from "../logos/dcentwallet.png";
 
 import { IProviderInfo } from "../../helpers";
 
@@ -100,11 +104,32 @@ export const BURNERCONNECT: IProviderInfo = {
   check: "isBurnerProvider"
 };
 
-
 export const UNILOGIN: IProviderInfo = {
   id: "unilogin",
   name: "UniLogin",
   logo: UniLoginLogo,
   check: "isUniLogin",
   type: "web",
-}
+};
+
+export const MEWCONNECT: IProviderInfo = {
+  id: "mewconnect",
+  name: "MEW wallet",
+  logo: MEWwallet,
+  type: "qrcode",
+  check: "isMEWconnect",
+  package: {
+    required: [["infuraId", "rpc"]]
+  }
+};
+
+export const DCENT_PROVIDER: IProviderInfo = {
+  id: "dcentwallet",
+  name: "D'CENT",
+  logo: DcentWalletLogo,
+  type: "hardware",
+  check: "isDcentWallet",
+  package: {
+    required: ["rpcUrl"]
+  }
+};

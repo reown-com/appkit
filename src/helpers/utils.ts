@@ -147,6 +147,9 @@ export function getProviderDescription(
     case "qrcode":
       description = `Scan with ${providerInfo.name} to connect`;
       break;
+    case "hardware":
+      description = `Connect to your ${providerInfo.name} Hardware Wallet`;
+      break;
     default:
       break;
   }
