@@ -7,6 +7,7 @@ import squarelink from "./squarelink";
 import arkane from "./arkane";
 import authereum from "./authereum";
 import burnerconnect from "./burnerconnect";
+import unilogin from "./unilogin";
 import mewconnect from "./mewconnect"
 import dcentwallet from "./dcentwallet";
 
@@ -20,6 +21,7 @@ export {
   arkane,
   authereum,
   burnerconnect,
+  unilogin,
   mewconnect,
   dcentwallet
 };

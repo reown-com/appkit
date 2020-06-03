@@ -11,9 +11,12 @@ import Fortmatic from "fortmatic";
 import Torus from "@toruslabs/torus-embed";
 import Portis from "@portis/web3";
 import Authereum from "authereum";
-import DcentProvider from "dcent-provider";
+// @ts-ignore
+import UniLogin from '@unilogin/provider'
 // @ts-ignore
 import MewConnect from "@myetherwallet/mewconnect-web-client";
+// @ts-ignore
+import DcentProvider from "dcent-provider";
 
 import Button from "./components/Button";
 import Column from "./components/Column";
@@ -264,7 +267,10 @@ class App extends React.Component<any, any> {
         }
       },
       authereum: {
-        package: Authereum
+        package: Authereum,
+      }, 
+      unilogin: {
+        package: UniLogin,
       },
       dcentwallet: {
         package: DcentProvider,
