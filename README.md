@@ -6,7 +6,7 @@ A single Web3 / Ethereum provider solution for all Wallets
 
 Web3Modal is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
 
-By default Web3Modal Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Portis**, **Fortmatic**, **Squarelink**, **Torus**, **Authereum** and **Arkane**.
+By default Web3Modal Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Portis**, **Fortmatic**, **Squarelink**, **Torus**, **Authereum**, **D'CENT Wallet** and **Arkane**.
 
 ## Preview
 
@@ -364,6 +364,30 @@ const providerOptions = {
 };
 ```
 
+### D'CENT Wallet
+
+
+1. Install Provider Package
+
+```bash
+npm install --save dcent-provider
+# OR
+yarn add dcent-provider
+```
+
+2. Set Provider Options
+
+```typescript
+import DcentProvider from "dcent-provider";
+const providerOptions = {
+  dcentwallet: {
+    package: DcentProvider, // required
+    options: {
+      rpcUrl: "INSERT_RPC_URL", // required
+    }
+  }
+};
+```
 
 ## API
 
