@@ -9,14 +9,8 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 // @ts-ignore
 import Fortmatic from "fortmatic";
 import Torus from "@toruslabs/torus-embed";
-import Portis from "@portis/web3";
 import Authereum from "authereum";
-// @ts-ignore
-import UniLogin from '@unilogin/provider'
-// @ts-ignore
-import MewConnect from "@myetherwallet/mewconnect-web-client";
-// @ts-ignore
-import DcentProvider from "dcent-provider";
+import UniLogin from "@unilogin/provider";
 
 import Button from "./components/Button";
 import Column from "./components/Column";
@@ -237,14 +231,7 @@ class App extends React.Component<any, any> {
   public getNetwork = () => getChainData(this.state.chainId).network;
 
   public getProviderOptions = () => {
-    const rpcUrl = getChainData(this.state.chainId).rpc_url
     const providerOptions = {
-      mewconnect: {
-        package: MewConnect,
-        options: {
-          infuraId: process.env.REACT_APP_INFURA_ID
-        }
-      },
       walletconnect: {
         package: WalletConnectProvider,
         options: {
@@ -260,23 +247,11 @@ class App extends React.Component<any, any> {
           key: process.env.REACT_APP_FORTMATIC_KEY
         }
       },
-      portis: {
-        package: Portis,
-        options: {
-          id: process.env.REACT_APP_PORTIS_ID
-        }
-      },
       authereum: {
-        package: Authereum,
-      }, 
-      unilogin: {
-        package: UniLogin,
+        package: Authereum
       },
-      dcentwallet: {
-        package: DcentProvider,
-        options: {
-          rpcUrl,
-        }
+      unilogin: {
+        package: UniLogin
       }
     };
     return providerOptions;

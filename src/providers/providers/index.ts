@@ -17,7 +17,7 @@ import BurnerWalletLogo from "../logos/burnerwallet.png";
 // @ts-ignore
 import UniLoginLogo from "../logos/unilogin.svg";
 // @ts-ignore
-import MEWwallet from "../logos/mewwallet.png"
+import MEWwallet from "../logos/mewwallet.png";
 // @ts-ignore
 import DcentWalletLogo from "../logos/dcentwallet.png";
 
@@ -109,7 +109,7 @@ export const UNILOGIN: IProviderInfo = {
   name: "UniLogin",
   logo: UniLoginLogo,
   check: "isUniLogin",
-  type: "web",
+  type: "web"
 };
 
 export const MEWCONNECT: IProviderInfo = {
@@ -123,7 +123,7 @@ export const MEWCONNECT: IProviderInfo = {
   }
 };
 
-export const DCENT_PROVIDER: IProviderInfo = {
+export const DCENT: IProviderInfo = {
   id: "dcentwallet",
   name: "D'CENT",
   logo: DcentWalletLogo,

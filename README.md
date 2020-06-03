@@ -132,35 +132,6 @@ const providerOptions = {
 
 **Note:** A WalletConnect instance is available on the provider as `provider.wc`
 
-### Portis
-
-1. Install Provider Package
-
-```bash
-npm install --save @portis/web3
-
-# OR
-
-yarn add @portis/web3
-```
-
-2. Set Provider Options
-
-```typescript
-import Portis from "@portis/web3";
-
-const providerOptions = {
-  portis: {
-    package: Portis, // required
-    options: {
-      id: "PORTIS_ID" // required
-    }
-  }
-};
-```
-
-**Note:** A Portis instance is available on the provider as `provider._portis`
-
 ### Fortmatic
 
 1. Install Provider Package
@@ -189,35 +160,6 @@ const providerOptions = {
 ```
 
 **Note:** A Fortmatic instance is available on the provider as `provider.fm`
-
-### Squarelink
-
-1. Install Provider Package
-
-```bash
-npm install --save squarelink
-
-# OR
-
-yarn add squarelink
-```
-
-2. Set Provider Options
-
-```typescript
-import Squarelink from "squarelink";
-
-const providerOptions = {
-  squarelink: {
-    package: Squarelink, // required
-    options: {
-      id: "SQUARELINK_ID" // required
-    }
-  }
-};
-```
-
-**Note:** A Squarelink instance is available on the provider as `provider.sqlk`
 
 ### Torus
 
@@ -257,33 +199,6 @@ const providerOptions = {
 
 **Note:** A Torus instance is available on the provider as `provider.torus`
 
-### Arkane
-
-1. Install Provider Package
-
-```bash
-npm install --save @arkane-network/web3-arkane-provide
-
-# OR
-
-yarn add @arkane-network/web3-arkane-provide
-```
-
-2. Set Provider Options
-
-```typescript
-import Arkane from "@arkane-network/web3-arkane-provider";
-
-const providerOptions = {
-  arkane: {
-    package: Arkane, // required
-    options: {
-      clientId: "ARKANE_CLIENT_ID" // required
-    }
-  }
-};
-```
-
 ### Authereum
 
 1. Install Provider Package
@@ -310,6 +225,30 @@ const providerOptions = {
 
 **Note:** An Authereum instance is available on the provider as `provider.authereum`
 
+### UniLogin
+
+1. Install Provider Package
+
+```bash
+npm install --save @unilogin/provider
+
+# OR
+
+yarn add @unilogin/provider
+```
+
+2. Set Provider Options
+
+```typescript
+import UniLogin from "@unilogin/provider";
+
+const providerOptions = {
+  unilogin: {
+    package: UniLogin // required
+  }
+};
+```
+
 ### BurnerConnect
 
 1. Install Provider Package
@@ -332,6 +271,91 @@ const providerOptions = {
     package: BurnerConnectProvider, // required
     options: {
       defaultNetwork: "100"
+    }
+  }
+};
+```
+
+### Portis
+
+1. Install Provider Package
+
+```bash
+npm install --save @portis/web3
+
+# OR
+
+yarn add @portis/web3
+```
+
+2. Set Provider Options
+
+```typescript
+import Portis from "@portis/web3";
+
+const providerOptions = {
+  portis: {
+    package: Portis, // required
+    options: {
+      id: "PORTIS_ID" // required
+    }
+  }
+};
+```
+
+**Note:** A Portis instance is available on the provider as `provider._portis`
+
+### Squarelink
+
+1. Install Provider Package
+
+```bash
+npm install --save squarelink
+
+# OR
+
+yarn add squarelink
+```
+
+2. Set Provider Options
+
+```typescript
+import Squarelink from "squarelink";
+
+const providerOptions = {
+  squarelink: {
+    package: Squarelink, // required
+    options: {
+      id: "SQUARELINK_ID" // required
+    }
+  }
+};
+```
+
+**Note:** A Squarelink instance is available on the provider as `provider.sqlk`
+
+### Arkane
+
+1. Install Provider Package
+
+```bash
+npm install --save @arkane-network/web3-arkane-provide
+
+# OR
+
+yarn add @arkane-network/web3-arkane-provide
+```
+
+2. Set Provider Options
+
+```typescript
+import Arkane from "@arkane-network/web3-arkane-provider";
+
+const providerOptions = {
+  arkane: {
+    package: Arkane, // required
+    options: {
+      clientId: "ARKANE_CLIENT_ID" // required
     }
   }
 };
@@ -366,7 +390,6 @@ const providerOptions = {
 
 ### D'CENT Wallet
 
-
 1. Install Provider Package
 
 ```bash
@@ -383,7 +406,7 @@ const providerOptions = {
   dcentwallet: {
     package: DcentProvider, // required
     options: {
-      rpcUrl: "INSERT_RPC_URL", // required
+      rpcUrl: "INSERT_RPC_URL" // required
     }
   }
 };
