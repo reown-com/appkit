@@ -20,6 +20,8 @@ import UniLoginLogo from "../logos/unilogin.svg";
 import MEWwallet from "../logos/mewwallet.png";
 // @ts-ignore
 import DcentWalletLogo from "../logos/dcentwallet.png";
+// @ts-ignore
+import BitskiLogo from "../logos/bitski.svg";
 
 import { IProviderInfo } from "../../helpers";
 
@@ -131,5 +133,16 @@ export const DCENT: IProviderInfo = {
   check: "isDcentWallet",
   package: {
     required: ["rpcUrl"]
+  }
+};
+
+export const BITSKI: IProviderInfo = {
+  id: "bitski",
+  name: "Bitski",
+  logo: BitskiLogo,
+  type: "web",
+  check: "isBitski",
+  package: {
+    required: ["clientId", "callbackUrl"]
   }
 };
