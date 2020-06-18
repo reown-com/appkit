@@ -232,3 +232,11 @@ export function findMatchingRequiredOptions(
   });
   return matches;
 }
+
+export async function testProviderIsEnabled(provider: any) {
+  const res = await provider.send({ method: "eth_accounts" });
+  if (!res || !res.result || !res.result.length) {
+    return false;
+  }
+  return true;
+}

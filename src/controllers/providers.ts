@@ -19,7 +19,8 @@ import {
   filterMatches,
   IProviderUserOptions,
   getInjectedProvider,
-  findMatchingRequiredOptions
+  findMatchingRequiredOptions,
+  testProviderIsEnabled
 } from "../helpers";
 import { EventController } from "./events";
 
@@ -211,7 +212,12 @@ export class ProviderController {
   public async connectToCachedProvider() {
     const provider = this.getProvider(this.cachedProvider);
     if (typeof provider !== "undefined") {
-      await this.connectTo(provider.id, provider.connector);
+      if (await testProviderIsEnabled(provider)) {
+        await this.connectTo(provider.id, provider.connector);
+      } else {
+        this.clearCachedProvider();
+        throw new Error("Cached Provider is not enabled!");
+      }
     }
   }
 

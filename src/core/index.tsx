@@ -94,8 +94,12 @@ export class Core {
 
   public async toggleModal(): Promise<void> {
     if (this.cachedProvider) {
-      await this.providerController.connectToCachedProvider();
-      return;
+      try {
+        await this.providerController.connectToCachedProvider();
+        return;
+      } catch (e) {
+        // do nothing
+      }
     }
     if (
       this.userOptions &&
