@@ -6,7 +6,7 @@ export interface IArkaneConnectorOptions extends IAbstractConnectorOptions {
   environment?: string;
 }
 
-const ConnectToArkane = (Arkane: any, opts: IArkaneConnectorOptions) => {
+export const getProvider = (Arkane: any, opts: IArkaneConnectorOptions) => {
   return new Promise(async (resolve, reject) => {
     if (opts && opts.clientId) {
       try {
@@ -30,4 +30,9 @@ const ConnectToArkane = (Arkane: any, opts: IArkaneConnectorOptions) => {
   });
 };
 
-export default ConnectToArkane;
+export const enableProvider = async (
+  Arkane: any,
+  opts: IArkaneConnectorOptions
+) => {
+  return getProvider(Arkane, opts);
+};

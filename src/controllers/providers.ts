@@ -20,7 +20,8 @@ import {
   IProviderUserOptions,
   getInjectedProvider,
   findMatchingRequiredOptions,
-  testProviderIsEnabled
+  testProviderIsEnabled,
+  Connector
 } from "../helpers";
 import { EventController } from "./events";
 
@@ -191,15 +192,12 @@ export class ProviderController {
     setLocal(CACHED_PROVIDER_KEY, id);
   }
 
-  public connectTo = async (
-    id: string,
-    connector: (providerPackage: any, opts: any) => Promise<any>
-  ) => {
+  public connectTo = async (id: string, connector: Connector) => {
     try {
       const providerPackage = this.getProviderOption(id, "package");
       const providerOptions = this.getProviderOption(id, "options");
       const opts = { network: this.network || undefined, ...providerOptions };
-      const provider = await connector(providerPackage, opts);
+      const provider = await connector.enableProvider(providerPackage, opts);
       this.eventController.trigger(CONNECT_EVENT, provider);
       if (this.shouldCacheProvider && this.cachedProvider !== id) {
         this.setCachedProvider(id);
@@ -212,7 +210,13 @@ export class ProviderController {
   public async connectToCachedProvider() {
     const provider = this.getProvider(this.cachedProvider);
     if (typeof provider !== "undefined") {
-      if (await testProviderIsEnabled(provider)) {
+      const providerPackage = this.getProviderOption(provider.id, "package");
+      const providerOptions = this.getProviderOption(provider.id, "options");
+      const opts = { network: this.network || undefined, ...providerOptions };
+      const isEnabled = await testProviderIsEnabled(
+        await provider.connector.getProvider(providerPackage, opts)
+      );
+      if (isEnabled) {
         await this.connectTo(provider.id, provider.connector);
       } else {
         this.clearCachedProvider();

@@ -600,12 +600,15 @@ const providerOptions = {
     options: {
       apiKey: "EXAMPLE_PROVIDER_API_KEY"
     },
-    connector: async (ProviderPackage, options) => {
+    connector: {
+      getProvider: async (ProviderPackage, options) => {
+        return new ProviderPackage(options);
+      },
+      enableProvider: async (ProviderPackage, options) => {
         const provider = new ProviderPackage(options);
-
         await provider.enable()
-
         return provider;
+      },
     }
   }
 }

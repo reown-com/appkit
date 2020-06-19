@@ -233,8 +233,45 @@ export function findMatchingRequiredOptions(
   return matches;
 }
 
+export async function providerSend(provider: any, payload: any): Promise<any> {
+  if (provider.request) {
+    return provider.request(payload);
+  } else if (provider.send) {
+    if (provider.send.length === 2) {
+      return new Promise((resolve, reject) => {
+        provider.send(payload, (err: Error, res: any) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(res);
+        });
+      });
+    } else {
+      return provider.send(payload);
+    }
+  } else if (provider.sendAsync) {
+    return new Promise((resolve, reject) => {
+      provider.sendAsync(payload, (err: Error, res: any) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(res);
+      });
+    });
+  } else {
+    throw new Error("Provider send/request interface missing");
+  }
+}
+
 export async function testProviderIsEnabled(provider: any) {
-  const res = await provider.send({ method: "eth_accounts" });
+  let res: any;
+  try {
+    res = await providerSend(provider, { method: "eth_accounts" });
+  } catch (e) {
+    return false;
+  }
   if (!res || !res.result || !res.result.length) {
     return false;
   }

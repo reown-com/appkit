@@ -5,15 +5,19 @@ export interface IDcentConnectorOptions extends IAbstractConnectorOptions {
   chainId: number;
 }
 
-const ConnectToDcentWallet = async (
+export const getProvider = async (
   DcentProvider: any,
   opts: IDcentConnectorOptions
 ) => {
   const provider = new DcentProvider(opts);
-
-  await provider.enable();
-
   return provider;
 };
 
-export default ConnectToDcentWallet;
+export const enableProvider = async (
+  DcentProvider: any,
+  opts: IDcentConnectorOptions
+) => {
+  const provider = await getProvider(DcentProvider, opts);
+  await provider.enable();
+  return provider;
+};

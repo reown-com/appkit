@@ -8,40 +8,39 @@ export interface IWalletConnectConnectorOptions
   qrcode?: boolean;
 }
 
-const ConnectToWalletConnect = (
+export const getProvider = async (
   WalletConnectProvider: any,
   opts: IWalletConnectConnectorOptions
 ) => {
-  return new Promise(async (resolve, reject) => {
-    let bridge = "https://bridge.walletconnect.org";
-    let qrcode = true;
-    let infuraId = "";
-    let rpc = undefined;
-    let chainId = 1;
-    console.log('wallet connect'); // todo remove dev item
-    if (opts) {
-      bridge = opts.bridge || bridge;
-      qrcode = typeof opts.qrcode !== "undefined" ? opts.qrcode : qrcode;
-      infuraId = opts.infuraId || "";
-      rpc = opts.rpc || undefined;
-      chainId =
-        opts.network && getChainId(opts.network) ? getChainId(opts.network) : 1;
-    }
+  let bridge = "https://bridge.walletconnect.org";
+  let qrcode = true;
+  let infuraId = "";
+  let rpc = undefined;
+  let chainId = 1;
+  if (opts) {
+    bridge = opts.bridge || bridge;
+    qrcode = typeof opts.qrcode !== "undefined" ? opts.qrcode : qrcode;
+    infuraId = opts.infuraId || "";
+    rpc = opts.rpc || undefined;
+    chainId =
+      opts.network && getChainId(opts.network) ? getChainId(opts.network) : 1;
+  }
 
-    const provider = new WalletConnectProvider({
-      bridge,
-      qrcode,
-      infuraId,
-      rpc,
-      chainId
-    });
-    try {
-      await provider.enable();
-      resolve(provider);
-    } catch (e) {
-      reject(e);
-    }
+  const provider = new WalletConnectProvider({
+    bridge,
+    qrcode,
+    infuraId,
+    rpc,
+    chainId
   });
+  return provider;
 };
 
-export default ConnectToWalletConnect;
+export const enableProvider = async (
+  WalletConnectProvider: any,
+  opts: IWalletConnectConnectorOptions
+) => {
+  const provider = await getProvider(WalletConnectProvider, opts);
+  await provider.enable();
+  return provider;
+};

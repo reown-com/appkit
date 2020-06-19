@@ -1,20 +1,21 @@
 import { IAbstractConnectorOptions } from "../../helpers";
 
-export interface IUniloginConnectorOptions extends IAbstractConnectorOptions {
-}
+export interface IUniloginConnectorOptions extends IAbstractConnectorOptions {}
 
-const ConnectToUniLogin = async (
+export const getProvider = async (
   UniLogin: any,
-  options: IUniloginConnectorOptions
+  opts: IUniloginConnectorOptions
 ) => {
-    try {
-      const uniloginProvider = new UniLogin.create(options.network || 'mainnet');
-      await uniloginProvider.enable();
-      uniloginProvider.on = () => {}
-      return uniloginProvider;
-    } catch (error) {
-      return error;
-    }
+  const provider = new UniLogin.create(opts.network || "mainnet");
+  provider.on = () => {};
+  return provider;
 };
 
-export default ConnectToUniLogin;
+export const enableProvider = async (
+  UniLogin: any,
+  opts: IUniloginConnectorOptions
+) => {
+  const provider = await getProvider(UniLogin, opts);
+  await provider.enable();
+  return provider;
+};

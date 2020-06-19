@@ -11,16 +11,20 @@ export interface IBurnerConnectorOptions extends IAbstractConnectorOptions {
   defaultWallets?: Wallet[];
 }
 
-const ConnectToBurnerConnect = async (
+export const getProvider = async (
   BurnerConnectProvider: any,
   opts: IBurnerConnectorOptions
 ) => {
   opts.defaultNetwork = opts.defaultNetwork || opts.network;
   const provider = new BurnerConnectProvider(opts);
-
-  await provider.enable();
-
   return provider;
 };
 
-export default ConnectToBurnerConnect;
+export const enableProvider = async (
+  BurnerConnectProvider: any,
+  opts: IBurnerConnectorOptions
+) => {
+  const provider = await getProvider(BurnerConnectProvider, opts);
+  await provider.enable();
+  return provider;
+};

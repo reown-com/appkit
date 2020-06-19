@@ -19,14 +19,14 @@ interface IFireboxOptions extends IAbstractConnectorOptions {
   apiKey: string;
 }
 
-const ConnectToFirebox = async (
-  FireboxProvider: any,
-  opts: IFireboxOptions
-) => {
+const getProvider = async (FireboxProvider: any, opts: IFireboxOptions) => {
   const provider = new FireboxProvider(opts.apiKey);
+  return provider;
+};
 
+const enableProvider = async (FireboxProvider: any, opts: IFireboxOptions) => {
+  const provider = await getProvider(FireboxProvider, opts);
   await provider.enable();
-
   return provider;
 };
 ```

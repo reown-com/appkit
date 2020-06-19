@@ -20,24 +20,28 @@ export interface IPortisConnectorOptions extends IAbstractConnectorOptions {
   config?: IOptions;
 }
 
-const ConnectToPortis = (Portis: any, opts: IPortisConnectorOptions) => {
-  return new Promise(async (resolve, reject) => {
-    if (opts && opts.id) {
-      try {
-        const id = opts.id;
-        const network = opts.network || "mainnet";
-        const config = opts.config;
-        const pt = new Portis(id, network, config);
-        await pt.provider.enable();
-        pt.provider._portis = pt;
-        resolve(pt.provider);
-      } catch (error) {
-        return reject(error);
-      }
-    } else {
-      return reject(new Error("Missing Portis Id"));
-    }
-  });
+export const getProvider = async (
+  Portis: any,
+  opts: IPortisConnectorOptions
+) => {
+  if (opts && opts.id) {
+    const id = opts.id;
+    const network = opts.network || "mainnet";
+    const config = opts.config;
+    const pt = new Portis(id, network, config);
+    const provider = pt.provider;
+    provider._portis = pt;
+    return provider;
+  } else {
+    throw new Error("Missing Portis Id");
+  }
 };
 
-export default ConnectToPortis;
+export const enableProvider = async (
+  Portis: any,
+  opts: IPortisConnectorOptions
+) => {
+  const provider = await getProvider(Portis, opts);
+  await provider.enable();
+  return provider;
+};

@@ -49,7 +49,7 @@ export interface IProviderOptions {
 
 export interface IProviderDisplayWithConnector extends IProviderDisplay {
   id: string;
-  connector: any;
+  connector: Connector;
   package?: IProviderPackageOptions;
 }
 
@@ -95,7 +95,12 @@ export type ThemesList = {
   [name: string]: IThemeConfig;
 };
 
-export type Connector = (provider?: any, opts?: any) => Promise<any>;
+export type ConnectorFunction = (provider?: any, opts?: any) => Promise<any>;
+
+export interface Connector {
+  getProvider: ConnectorFunction;
+  enableProvider: ConnectorFunction;
+}
 
 export interface IConnectorsMap {
   [id: string]: Connector;
