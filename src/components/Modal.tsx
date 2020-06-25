@@ -37,13 +37,7 @@ const SLightbox = styled.div<ILightboxStyleProps>`
   left: 50%;
   z-index: 2;
   will-change: opacity;
-  background-color: ${({ opacity }) => {
-    let alpha = 0.4;
-    if (typeof opacity === "number") {
-      alpha = opacity;
-    }
-    return `rgba(0, 0, 0, ${alpha})`;
-  }};
+  background-color: rgba(0, 0, 0, 0.4);
   opacity: ${({ show }) => (show ? 1 : 0)};
   visibility: ${({ show }) => (show ? "visible" : "hidden")};
   pointer-events: ${({ show }) => (show ? "auto" : "none")};
@@ -116,7 +110,6 @@ interface IModalProps {
   userOptions: IProviderUserOptions[];
   onClose: SimpleFunction;
   resetState: SimpleFunction;
-  lightboxOpacity: number;
 }
 
 interface IModalState {
@@ -139,8 +132,7 @@ export class Modal extends React.Component<IModalProps, IModalState> {
   public static propTypes = {
     userOptions: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
-    resetState: PropTypes.func.isRequired,
-    lightboxOpacity: PropTypes.number.isRequired
+    resetState: PropTypes.func.isRequired
   };
 
   public lightboxRef?: HTMLDivElement | null;
@@ -170,13 +162,12 @@ export class Modal extends React.Component<IModalProps, IModalState> {
   public render = () => {
     const { show, lightboxOffset } = this.state;
 
-    const { onClose, lightboxOpacity, userOptions, themeColors } = this.props;
+    const { onClose, userOptions, themeColors } = this.props;
 
     return (
       <SLightbox
         className={MODAL_LIGHTBOX_CLASSNAME}
         offset={lightboxOffset}
-        opacity={lightboxOpacity}
         ref={c => (this.lightboxRef = c)}
         show={show}
       >

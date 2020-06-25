@@ -1,5 +1,4 @@
 export interface ICoreOptions extends IProviderControllerOptions {
-  lightboxOpacity: number;
   theme: string | ThemeColors;
 }
 
