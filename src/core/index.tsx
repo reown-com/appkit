@@ -21,7 +21,6 @@ import { EventController, ProviderController } from "../controllers";
 const INITIAL_STATE = { show: false };
 
 const defaultOpts: ICoreOptions = {
-  lightboxOpacity: 0.4,
   theme: themesList.default.name,
   cacheProvider: false,
   disableInjectedProvider: false,
@@ -33,7 +32,6 @@ export class Core {
   private show: boolean = INITIAL_STATE.show;
   private themeColors: ThemeColors;
   private eventController: EventController = new EventController();
-  private lightboxOpacity: number;
   private providerController: ProviderController;
   private userOptions: IProviderUserOptions[];
 
@@ -43,7 +41,6 @@ export class Core {
       ...opts
     };
 
-    this.lightboxOpacity = options.lightboxOpacity;
     this.themeColors = getThemeColors(options.theme);
 
     this.providerController = new ProviderController({
@@ -154,7 +151,6 @@ export class Core {
         userOptions={this.userOptions}
         onClose={this.onClose}
         resetState={this.resetState}
-        lightboxOpacity={this.lightboxOpacity}
       />,
       document.getElementById(WEB3_CONNECT_MODAL_ID)
     );
