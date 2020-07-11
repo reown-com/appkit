@@ -62,7 +62,7 @@
     "@babel/register": "^7.0.0",
     "@types/react": "^16.7.20",
     "@types/react-dom": "^16.8.4",
-    "@types/styled-components": "4.1.8",
+    "@types/styled-components": "^5.1.1",
     "@types/web3": "^1.2.2",
     "chai": "^4.1.2",
     "file-loader": "^3.0.1",
@@ -85,7 +85,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "styled-components": "4.2.0",
+    "styled-components": "^5.1.1",
     "tslib": "^1.10.0"
   }
 }
