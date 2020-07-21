@@ -1,9 +1,24 @@
-export interface IWalletConnectConnectorOptions {
-  infuraId: string;
+export interface IWalletConnectConnectorBaseOptions {
   bridge?: string;
   qrcode?: boolean;
   network?: string;
+  chainId?: number;
 }
+
+interface IWalletConnectOptionsInfura extends IWalletConnectConnectorBaseOptions {
+  infuraId: string;
+}
+
+interface IRPCMap {
+  [chainId: number]: string;
+}
+
+interface IWalletConnectOptionsRPC extends IWalletConnectConnectorBaseOptions {
+  infuraId?: null;
+  rpc: IRPCMap;
+}
+
+export type IWalletConnectConnectorOptions = IWalletConnectOptionsInfura | IWalletConnectOptionsRPC;
 
 function getChainId(network: string) {
   const infuraChainIds = {
@@ -29,18 +44,21 @@ const ConnectToWalletConnect = (
     let qrcode = true;
     let infuraId = "";
     let chainId = 1;
+    let rpc = {};
 
     if (opts) {
       bridge = opts.bridge || bridge;
       qrcode = typeof opts.qrcode !== "undefined" ? opts.qrcode : qrcode;
-      infuraId = opts.infuraId || "";
-      chainId = opts.network ? getChainId(opts.network) : 1;
+      infuraId = (opts as IWalletConnectOptionsInfura).infuraId || "";
+      chainId = opts.network ? getChainId(opts.network) : opts.chainId || 1;
+      rpc = (opts as IWalletConnectOptionsRPC).rpc || {};
     }
 
     const provider = new WalletConnectProvider({
       bridge,
       qrcode,
       infuraId,
+      rpc,
       chainId
     });
 
