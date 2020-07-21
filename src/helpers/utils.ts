@@ -199,7 +199,11 @@ export function filterProviderChecks(checks: string[]): string {
   return providers.FALLBACK.check;
 }
 
-export function getChainId(network: string): number {
+export function getChainId(network: string | number): number {
+  if (typeof network === "number") {
+    return network;
+  }
+
   const chains: ChainData[] = Object.values(CHAIN_DATA_LIST);
   const match = filterMatches<ChainData>(
     chains,

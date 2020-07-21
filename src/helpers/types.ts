@@ -11,7 +11,7 @@ export interface IProviderControllerOptions {
 }
 
 export interface IAbstractConnectorOptions {
-  network: string;
+  network: string | number;
 }
 
 export interface IInjectedProvidersMap {
