@@ -10,7 +10,7 @@ export const CHAIN_DATA_LIST: ChainDataList = {
   2: {
     chainId: 2,
     chain: "EXP",
-    network: "mainnet",
+    network: "expanse",
     networkId: 1
   },
   3: {
@@ -40,43 +40,43 @@ export const CHAIN_DATA_LIST: ChainDataList = {
   8: {
     chainId: 8,
     chain: "UBQ",
-    network: "mainnet",
+    network: "ubiq",
     networkId: 88
   },
   9: {
     chainId: 9,
     chain: "UBQ",
-    network: "mainnet",
+    network: "ubiq-testnet",
     networkId: 2
   },
   11: {
     chainId: 11,
     chain: "META",
-    network: "mainnet",
+    network: "metadium",
     networkId: 11
   },
   12: {
     chainId: 12,
     chain: "META",
-    network: "testnet",
+    network: "metadium-testnet",
     networkId: 12
   },
   18: {
     chainId: 18,
     chain: "TST",
-    network: "testnet",
+    network: "thundercore-testnet",
     networkId: 18
   },
   30: {
     chainId: 30,
     chain: "RSK",
-    network: "mainnet",
+    network: "rsk",
     networkId: 30
   },
   31: {
     chainId: 31,
     chain: "RSK",
-    network: "testnet",
+    network: "rsk-testnet",
     networkId: 31
   },
   42: {
@@ -88,73 +88,73 @@ export const CHAIN_DATA_LIST: ChainDataList = {
   60: {
     chainId: 60,
     chain: "GO",
-    network: "mainnet",
+    network: "gochain",
     networkId: 60
   },
   61: {
     chainId: 61,
     chain: "ETC",
-    network: "mainnet",
+    network: "etc",
     networkId: 1
   },
   62: {
     chainId: 62,
     chain: "ETC",
-    network: "testnet",
+    network: "etc-morden",
     networkId: 2
   },
   63: {
     chainId: 63,
     chain: "ETC",
-    network: "testnet",
+    network: "etc-testnet",
     networkId: 7
   },
   64: {
     chainId: 64,
     chain: "ELLA",
-    network: "mainnet",
+    network: "ellaism",
     networkId: 64
   },
   76: {
     chainId: 76,
     chain: "MIX",
-    network: "mainnet",
+    network: "mix",
     networkId: 76
   },
   77: {
     chainId: 77,
     chain: "POA",
-    network: "sokol",
+    network: "poa-sokol",
     networkId: 77
   },
   88: {
     chainId: 88,
     chain: "TOMO",
-    network: "mainnet",
+    network: "tomochain",
     networkId: 88
   },
   99: {
     chainId: 99,
     chain: "POA",
-    network: "core",
+    network: "poa-core",
     networkId: 99
   },
   100: {
     chainId: 100,
     chain: "XDAI",
-    network: "mainnet",
+    network: "xdai",
     networkId: 100
   },
   101: {
     chainId: 101,
     chain: "ETI",
-    network: "mainnet",
+    network: "etherinc",
     networkId: 1
   },
   108: {
     chainId: 108,
     chain: "TT",
-    network: "mainnet",
+    network: "thundercore",
     networkId: 108
   },
   162: {
@@ -166,7 +166,7 @@ export const CHAIN_DATA_LIST: ChainDataList = {
   163: {
     chainId: 163,
     chain: "PHT",
-    network: "mainnet",
+    network: "lightstreams",
     networkId: 163
   },
   211: {
@@ -178,25 +178,25 @@ export const CHAIN_DATA_LIST: ChainDataList = {
   269: {
     chainId: 269,
     chain: "HPB",
-    network: "mainnet",
+    network: "hpb",
     networkId: 100
   },
   385: {
     chainId: 385,
     chain: "CRO",
-    network: "mainnet",
+    network: "lisinski",
     networkId: 385
   },
   820: {
     chainId: 820,
     chain: "CLO",
-    network: "mainnet",
+    network: "callisto",
     networkId: 1
   },
   821: {
     chainId: 821,
     chain: "CLO",
-    network: "testnet",
+    network: "callisto-testnet",
     networkId: 2
   }
 };
