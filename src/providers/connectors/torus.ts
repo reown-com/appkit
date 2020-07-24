@@ -117,7 +117,7 @@ interface LoginConfig {
 }
 
 export interface IOptions {
-  buttonPosition?: string;
+  buttonPosition?: 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left';
   modalZIndex?: number;
   apiKey?: string;
   buildEnv?: "production" | "development" | "staging" | "testing" | "lrc";
