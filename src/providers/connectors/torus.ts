@@ -117,12 +117,14 @@ interface LoginConfig {
 }
 
 export interface IOptions {
-  enableLogging?: boolean;
   buttonPosition?: string;
+  modalZIndex?: number;
+  apiKey?: string;
   buildEnv?: "production" | "development" | "staging" | "testing" | "lrc";
-  showTorusButton?: boolean;
+  enableLogging?: boolean;
   enabledVerifiers?: VerifierStatus;
   loginConfig?: LoginConfig;
+  showTorusButton?: boolean;
   integrity?: IntegrityParams;
   whiteLabel?: WhiteLabelParams;
 }
@@ -139,6 +141,8 @@ const ConnectToTorus = async (Torus: any, opts: ITorusConnectorOptions) => {
     try {
       // defaults
       let buttonPosition = "bottom-left";
+      let apiKey = "torus-default";
+      let modalZIndex = 99999;
       let network: NetworkParams = { host: "mainnet" };
       let defaultVerifier = undefined;
 
@@ -149,7 +153,9 @@ const ConnectToTorus = async (Torus: any, opts: ITorusConnectorOptions) => {
           : network;
 
       const torus = new Torus({
-        buttonPosition: opts.config?.buttonPosition || buttonPosition
+        buttonPosition: opts.config?.buttonPosition || buttonPosition,
+        apiKey: opts.config?.apiKey || apiKey,
+        modalZIndex: opts.config?.modalZIndex || modalZIndex
       });
       await torus.init({
         showTorusButton: false,
