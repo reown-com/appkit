@@ -10,7 +10,6 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Fortmatic from "fortmatic";
 import Torus from "@toruslabs/torus-embed";
 import Authereum from "authereum";
-import UniLogin from "@unilogin/provider";
 import { Bitski } from "bitski";
 
 import Button from "./components/Button";
@@ -87,6 +86,7 @@ const SModalParagraph = styled.p`
   margin-top: 30px;
 `;
 
+// @ts-ignore
 const SBalances = styled(SLanding)`
   height: 100%;
   & h3 {
@@ -251,14 +251,11 @@ class App extends React.Component<any, any> {
       authereum: {
         package: Authereum
       },
-      unilogin: {
-        package: UniLogin
-      },
       bitski: {
         package: Bitski,
         options: {
           clientId: process.env.REACT_APP_BITSKI_CLIENT_ID,
-          callbackUrl: window.location.href + 'bitski-callback.html',
+          callbackUrl: window.location.href + "bitski-callback.html"
         }
       }
     };

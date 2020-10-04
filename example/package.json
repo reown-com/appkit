@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@toruslabs/torus-embed": "^1.8.1",
-    "@unilogin/provider": "^0.5.21",
     "@walletconnect/web3-provider": "^1.0.3",
     "authereum": "^0.0.4-beta.68",
     "axios": "^0.18.0",
