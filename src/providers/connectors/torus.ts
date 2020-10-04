@@ -1,15 +1,17 @@
 import { IAbstractConnectorOptions } from "../../helpers";
 
+type ETHEREUM_NETWORK_TYPE =
+  | "ropsten"
+  | "rinkeby"
+  | "kovan"
+  | "mainnet"
+  | "goerli"
+  | "localhost"
+  | "matic"
+  | "mumbai";
+
 interface NetworkParams {
-  host:
-    | "mainnet"
-    | "rinkeby"
-    | "ropsten"
-    | "kovan"
-    | "goerli"
-    | "localhost"
-    | "matic"
-    | string;
+  host: ETHEREUM_NETWORK_TYPE | string;
   chainId?: number;
   networkName?: string;
 }
@@ -23,15 +25,108 @@ interface VerifierStatus {
 }
 
 interface LoginParams {
-  verifier?: "google" | "facebook" | "twitch" | "reddit" | "discord";
+  verifier?: "google" | "facebook" | "twitch" | "reddit" | "discord" | string;
+}
+
+type LOGIN_TYPE =
+  | "google"
+  | "facebook"
+  | "reddit"
+  | "discord"
+  | "twitch"
+  | "apple"
+  | "github"
+  | "linkedin"
+  | "twitter"
+  | "weibo"
+  | "line"
+  | "jwt"
+  | "email-password"
+  | "passwordless";
+
+interface BaseLoginOptions {
+  display?: "page" | "popup" | "touch" | "wap";
+  prompt?: "none" | "login" | "consent" | "select_account";
+  max_age?: string | number;
+  ui_locales?: string;
+  id_token_hint?: string;
+  login_hint?: string;
+  acr_values?: string;
+  scope?: string;
+  audience?: string;
+  connection?: string;
+  [key: string]: unknown;
+}
+
+interface JwtParameters extends BaseLoginOptions {
+  domain: string;
+  client_id?: string;
+  redirect_uri?: string;
+  leeway?: number;
+  verifierIdField?: string;
+  isVerifierIdCaseSensitive?: boolean;
+}
+
+interface IntegrityParams {
+  check: boolean;
+  hash?: string;
+  version?: string;
+}
+
+interface WhiteLabelParams {
+  theme: ThemeParams;
+  defaultLanguage?: string;
+  logoDark: string;
+  logoLight: string;
+  topupHide?: boolean;
+  featuredBillboardHide?: boolean;
+  disclaimerHide?: boolean;
+  tncLink?: LocaleLinks<string>;
+  privacyPolicy?: LocaleLinks<string>;
+  contactLink?: LocaleLinks<string>;
+  customTranslations?: LocaleLinks<any>;
+}
+
+interface LocaleLinks<T> {
+  en?: T;
+  ja?: T;
+  ko?: T;
+  de?: T;
+  zh?: T;
+}
+
+interface ThemeParams {
+  isDark: boolean;
+  colors: any;
+}
+
+interface LoginConfigItem {
+  name?: string;
+  typeOfLogin: LOGIN_TYPE;
+  description?: string;
+  clientId?: string;
+  logoHover?: string;
+  logoLight?: string;
+  logoDark?: string;
+  showOnModal?: boolean;
+  jwtParameters?: JwtParameters;
+}
+
+interface LoginConfig {
+  [verifier: string]: LoginConfigItem;
 }
 
 export interface IOptions {
+  buttonPosition?: "top-left" | "top-right" | "bottom-right" | "bottom-left";
+  modalZIndex?: number;
+  apiKey?: string;
+  buildEnv?: "production" | "development" | "staging" | "testing" | "lrc";
   enableLogging?: boolean;
-  buttonPosition?: string;
-  buildEnv?: string;
-  showTorusButton?: boolean;
   enabledVerifiers?: VerifierStatus;
+  loginConfig?: LoginConfig;
+  showTorusButton?: boolean;
+  integrity?: IntegrityParams;
+  whiteLabel?: WhiteLabelParams;
 }
 
 export interface ITorusConnectorOptions extends IAbstractConnectorOptions {
@@ -46,10 +141,8 @@ const ConnectToTorus = async (Torus: any, opts: ITorusConnectorOptions) => {
     try {
       // defaults
       let buttonPosition = "bottom-left";
-      let buildEnv = "production";
-      let enableLogging = true;
-      let showTorusButton = false;
-      let enabledVerifiers = {};
+      let apiKey = "torus-default";
+      let modalZIndex = 99999;
       let network: NetworkParams = { host: "mainnet" };
       let defaultVerifier = undefined;
 
@@ -59,23 +152,15 @@ const ConnectToTorus = async (Torus: any, opts: ITorusConnectorOptions) => {
           ? { host: opts.network, ...opts.networkParams }
           : network;
 
-      if (opts.config) {
-        buttonPosition = opts.config.buttonPosition || buttonPosition;
-        buildEnv = opts.config.buildEnv || buildEnv;
-        enableLogging = opts.config.enableLogging || enableLogging;
-        showTorusButton = opts.config.showTorusButton || showTorusButton;
-        enabledVerifiers = opts.config.enabledVerifiers || enabledVerifiers;
-      }
-
       const torus = new Torus({
-        buttonPosition: buttonPosition
+        buttonPosition: opts.config?.buttonPosition || buttonPosition,
+        apiKey: opts.config?.apiKey || apiKey,
+        modalZIndex: opts.config?.modalZIndex || modalZIndex
       });
       await torus.init({
-        buildEnv: buildEnv,
-        enableLogging: enableLogging,
-        network: network,
-        showTorusButton: showTorusButton,
-        enabledVerifiers: enabledVerifiers
+        showTorusButton: false,
+        ...opts.config,
+        network
       });
 
       if (opts.loginParams) {
