@@ -27,6 +27,7 @@ _Open a PR to add your project to the list!_
 - [Linkdrop](https://dashboard.linkdrop.io/)
 - [Dapparatus](https://github.com/austintgriffith/dapparatus/)
 - [Totle Swap](https://swap.totle.com/)
+- [Win Or Lose](https://www.winorlose.live/)
 
 ## Related Efforts
 
@@ -155,6 +156,8 @@ const providerOptions = {
   }
 };
 ```
+
+[See the full list of options for WalletConnect Web3 provider](https://docs.walletconnect.org/quick-start/dapps/web3-provider).
 
 **Note:** A WalletConnect instance is available on the provider as `provider.wc`
 
@@ -433,6 +436,31 @@ const providerOptions = {
     package: DcentProvider, // required
     options: {
       rpcUrl: "INSERT_RPC_URL" // required
+    }
+  }
+};
+```
+
+### Bitski
+
+1. Install Provider Package
+
+```bash
+npm install --save bitski
+# OR
+yarn add bitski
+```
+
+2. Set Provider Options
+
+```typescript
+import { Bitski } from "bitski";
+const providerOptions = {
+  bitski: {
+    package: Bitski, // required
+    options: {
+      clientId: "BITSKI_CLIENT_ID" // required, 
+      callbackUrl: "BITSKI_CALLBACK_URL" // required
     }
   }
 };
