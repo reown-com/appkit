@@ -11,6 +11,7 @@ import Fortmatic from "fortmatic";
 import Torus from "@toruslabs/torus-embed";
 import Authereum from "authereum";
 import UniLogin from "@unilogin/provider";
+import { Bitski } from "bitski";
 
 import Button from "./components/Button";
 import Column from "./components/Column";
@@ -252,6 +253,13 @@ class App extends React.Component<any, any> {
       },
       unilogin: {
         package: UniLogin
+      },
+      bitski: {
+        package: Bitski,
+        options: {
+          clientId: process.env.REACT_APP_BITSKI_CLIENT_ID,
+          callbackUrl: window.location.href + 'bitski-callback.html',
+        }
       }
     };
     return providerOptions;
