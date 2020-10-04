@@ -176,6 +176,22 @@ const supportedChains: IChainData[] = [
       contractAddress: "",
       balance: ""
     }
+  },
+  {
+    name: "Binance Smart Chain",
+    short_name: "bsc",
+    chain: "smartchain",
+    network: "mainnet",
+    chain_id: 56,
+    network_id: 56,
+    rpc_url: "https://bsc-dataseed1.defibit.io/",
+    native_currency: {
+      symbol: "BNB",
+      name: "BNB",
+      decimals: "18",
+      contractAddress: "",
+      balance: ""
+    }
   }
 ];
 
