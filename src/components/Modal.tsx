@@ -35,7 +35,7 @@ const SLightbox = styled.div<ILightboxStyleProps>`
   margin-left: -50vw;
   top: ${({ offset }) => (offset ? `-${offset}px` : 0)};
   left: 50%;
-  z-index: 2;
+  z-index: 9999;
   will-change: opacity;
   background-color: ${({ opacity }) => {
     let alpha = 0.4;
