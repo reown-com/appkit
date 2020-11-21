@@ -1,9 +1,9 @@
 const ConnectToInjected = async () => {
   let provider = null;
-  if (window.ethereum) {
+  if (typeof window.ethereum !== 'undefined') {
     provider = window.ethereum;
     try {
-      await window.ethereum.enable();
+      await provider.request({ method: 'eth_requestAccounts' })
     } catch (error) {
       throw new Error("User Rejected");
     }
