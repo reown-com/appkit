@@ -75,9 +75,9 @@ export const FIREBOX: IProviderInfo = {
 
 More detail on how the IProviderInfo interface works is still undocumentated but the most important parts to pay attention are the required array for your provider options, the id should be lowercase and the logo should be imported as demonstrated.
 
-## 5) Update the Web3Modal README file
+## 5) Add your Provider options to docs
 
-Finally you should update the main README file so other developers can use your provider with Web3Modal easily. Inside the section of **Provider Options** you should add an example of how to configure Web3Modal to display your provider using the provider-specific options.
+Create a markdown file with an example of how to configure Web3Modal to display your provider using the provider-specific options. This should be inside the directory `docs/providers` and the file nae should match the provider id.
 
 ```typescript
 ### Firebox
@@ -103,4 +103,10 @@ const providerOptions = {
     }
   }
 };
+```
+
+Finally you should update the main README file so other developers can use your provider with Web3Modal easily. Inside the section of **Provider Options** you should include your provider to the list with a mapping to the documentation file
+
+```md
+- [Firebox](./docs/providers/firebox.md)
 ```
