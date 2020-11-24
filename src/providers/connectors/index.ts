@@ -11,6 +11,7 @@ import unilogin from "./unilogin";
 import mewconnect from "./mewconnect"
 import dcentwallet from "./dcentwallet";
 import bitski from "./bitski";
+import frame from "./frame";
 
 export {
   injected,
@@ -25,5 +26,6 @@ export {
   unilogin,
   mewconnect,
   dcentwallet,
-  bitski
+  bitski,
+  frame
 };

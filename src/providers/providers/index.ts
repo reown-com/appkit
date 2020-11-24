@@ -22,6 +22,8 @@ import MEWwallet from "../logos/mewwallet.png";
 import DcentWalletLogo from "../logos/dcentwallet.png";
 // @ts-ignore
 import BitskiLogo from "../logos/bitski.svg";
+// @ts-ignore
+import FrameLogo from "../logos/frame.svg";
 
 import { IProviderInfo } from "../../helpers";
 
@@ -145,4 +147,12 @@ export const BITSKI: IProviderInfo = {
   package: {
     required: ["clientId", "callbackUrl"]
   }
+};
+
+export const FRAME: IProviderInfo = {
+  id: "frame",
+  name: "Frame",
+  logo: FrameLogo,
+  type: "web",
+  check: "isFrameNative"
 };

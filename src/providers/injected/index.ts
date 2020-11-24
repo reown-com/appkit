@@ -24,6 +24,8 @@ import StatusLogo from "../logos/status.svg";
 import TokenaryLogo from "../logos/tokenary.png";
 // @ts-ignore
 import OperaLogo from "../logos/opera.svg";
+// @ts-ignore
+import FrameLogo from "../logos/frame.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -119,4 +121,12 @@ export const TOKENARY: IProviderInfo = {
   logo: TokenaryLogo,
   type: "injected",
   check: "isTokenary"
+};
+
+export const FRAMEINJECTED: IProviderInfo = {
+  id: "injected",
+  name: "Frame",
+  logo: FrameLogo,
+  type: "injected",
+  check: "isFrame"
 };

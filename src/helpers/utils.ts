@@ -42,14 +42,10 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
 
 export function verifyInjectedProvider(check: string): boolean {
   return window.ethereum
-    ? window.ethereum[check] || (window.web3 && window.web3.currentProvider)
-      ? window.web3
-        ? window.web3.currentProvider[check]
-        : true
-      : false
-    : window.web3 && window.web3.currentProvider
-    ? window.web3.currentProvider[check]
-    : false;
+    ? window.ethereum[check]
+    : window.web3 &&
+        window.web3.currentProvider &&
+        window.web3.currentProvider[check];
 }
 
 export function getInjectedProvider(): IProviderInfo | null {
