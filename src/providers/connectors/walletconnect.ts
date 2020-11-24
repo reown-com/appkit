@@ -26,6 +26,7 @@ const ConnectToWalletConnect = (
       rpc = opts.rpc || undefined;
       chainId =
         opts.network && getChainId(opts.network) ? getChainId(opts.network) : 1;
+      qrcodeModalOptions = opts.qrcodeModalOptions || undefined;
     }
 
     const provider = new WalletConnectProvider({
