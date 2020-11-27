@@ -10,6 +10,7 @@ import {
   MODAL_CARD_CLASSNAME
 } from "../constants";
 import { SimpleFunction, IProviderUserOptions, ThemeColors } from "../helpers";
+import { METAMASK } from '../providers/injected';
 
 declare global {
   // tslint:disable-next-line
@@ -172,6 +173,8 @@ export class Modal extends React.Component<IModalProps, IModalState> {
 
     const { onClose, lightboxOpacity, userOptions, themeColors } = this.props;
 
+    const isMetamask = !!window.ethereum || !!window.web3;
+
     return (
       <SLightbox
         className={MODAL_LIGHTBOX_CLASSNAME}
@@ -189,6 +192,17 @@ export class Modal extends React.Component<IModalProps, IModalState> {
             maxWidth={userOptions.length < 3 ? 500 : 800}
             ref={c => (this.mainModalCard = c)}
           >
+            {!isMetamask && (
+              <a href="https://metamask.io/" target="_blank">
+                <Provider
+                  name="Get Metamask"
+                  logo={METAMASK.logo}
+                  description={""}
+                  themeColors={themeColors}
+                  onClick={() => {}}
+                />
+              </a>
+            )}
             {userOptions.map(provider =>
               !!provider ? (
                 <Provider
