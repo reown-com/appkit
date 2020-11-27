@@ -1,0 +1,1 @@
+{"version":3,"file":"unilogin.d.ts","sourceRoot":"","sources":["../../../src/providers/connectors/unilogin.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,yBAAyB,EAAE,MAAM,eAAe,CAAC;AAE1D,MAAM,WAAW,yBAA0B,SAAQ,yBAAyB;CAC3E;AAED,QAAA,MAAM,iBAAiB,aACX,GAAG,WACJ,yBAAyB,iBAUnC,CAAC;AAEF,eAAe,iBAAiB,CAAC"}

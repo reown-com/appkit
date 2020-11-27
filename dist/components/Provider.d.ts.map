@@ -1,0 +1,1 @@
+{"version":3,"file":"Provider.d.ts","sourceRoot":"","sources":["../../src/components/Provider.tsx"],"names":[],"mappings":";AAGA,OAAO,EAAE,WAAW,EAAE,MAAM,YAAY,CAAC;AAsFzC,UAAU,cAAc;IACtB,IAAI,EAAE,MAAM,CAAC;IACb,IAAI,EAAE,MAAM,CAAC;IACb,WAAW,EAAE,MAAM,CAAC;IACpB,WAAW,EAAE,WAAW,CAAC;IACzB,OAAO,EAAE,MAAM,IAAI,CAAC;CACrB;AAED,wBAAgB,QAAQ,CAAC,KAAK,EAAE,cAAc,eAmC7C"}
