@@ -7,6 +7,8 @@ import MetaMaskLogo from "../logos/metamask.svg";
 // @ts-ignore
 import SafeLogo from "../logos/safe.svg";
 // @ts-ignore
+import LiqualityWalletLogo from "../logos/liqualityWallet.svg";
+// @ts-ignore
 import NiftyWalletLogo from "../logos/niftyWallet.png";
 // @ts-ignore
 import TrustLogo from "../logos/trust.svg";
@@ -57,6 +59,14 @@ export const NIFTY: IProviderInfo = {
   logo: NiftyWalletLogo,
   type: "injected",
   check: "isNiftyWallet"
+};
+
+export const LIQUALITY: IProviderInfo = {
+  id: "injected",
+  name: "Liquality",
+  logo: LiqualityWalletLogo,
+  type: "injected",
+  check: "isLiquality"
 };
 
 export const DAPPER: IProviderInfo = {
