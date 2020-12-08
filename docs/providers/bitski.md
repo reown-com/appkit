@@ -16,7 +16,7 @@ const providerOptions = {
   bitski: {
     package: Bitski, // required
     options: {
-      clientId: "BITSKI_CLIENT_ID" // required,
+      clientId: "BITSKI_CLIENT_ID", // required
       callbackUrl: "BITSKI_CALLBACK_URL" // required
     }
   }
