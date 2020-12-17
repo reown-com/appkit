@@ -1,0 +1,12 @@
+{
+  "packages": [
+    "./packages/core",
+    "./packages/angular/projects/web3modal"
+  ],
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "version": "0.0.1",
+  "publishConfig": {
+    "access": "public"
+  }
+}

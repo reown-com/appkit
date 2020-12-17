@@ -1,6 +1,7 @@
 {
-  "name": "web3modal",
-  "version": "1.9.2",
+  "name": "root",
+  "private": true,
+  "version": "0.0.1",
   "description": "A single Web3 / Ethereum provider solution for all Wallets",
   "keywords": [
     "web3",
@@ -39,19 +40,9 @@
     "url": "https://github.com/web3modal/web3modal/issues"
   },
   "scripts": {
-    "clean": "rm -rf dist",
-    "clean:example": "rm -rf example/build",
-    "clean:node_modules": "rm -rf node_modules && cd example && rm -rf node_modules",
-    "clean:all": "npm run clean && npm run clean:example && npm run clean:node_modules",
-    "bootstrap": "npm install && cd example && npm install",
-    "start": "npm run check && cd example && npm run start",
-    "build": "webpack",
-    "build:example": "npm run bootstrap && npm run build && cd example && npm run build",
-    "test": "mocha --require ./babel-polyfill.js test/**/*.spec.js",
-    "lint": "tslint ./src/*.ts ./src/**/*.ts",
-    "format": "prettier ./src/*.ts ./src/**/*.ts --write",
-    "check": "npm run clean && npm run lint && npm run format && npm run build && npm run test",
-    "routine": "npm run clean:all && npm run bootstrap && npm run check"
+    "install": "lerna link",
+    "postinstall": "lerna bootstrap",
+    "lerna:publish": "lerna publish"
   },
   "devDependencies": {
     "@babel/cli": "^7.11.6",
@@ -79,7 +70,8 @@
     "typescript": "^3.1.3",
     "url-loader": "^1.1.2",
     "webpack": "^4.44.2",
-    "webpack-cli": "^3.2.1"
+    "webpack-cli": "^3.2.1",
+    "lerna": "^3.18.4"
   },
   "dependencies": {
     "detect-browser": "^5.1.0",
@@ -88,5 +80,11 @@
     "react-dom": "^16.8.6",
     "styled-components": "^5.1.1",
     "tslib": "^1.10.0"
+  },
+  "workspaces": {
+    "packages": [
+      "./packages/core",
+      "./packages/angular/projects/web3modal"
+    ]
   }
 }

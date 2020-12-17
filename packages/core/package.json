@@ -1,0 +1,25 @@
+{
+  "name": "@web3modal/core",
+  "version": "0.0.1",
+  "description": "Web3modal's provider layer abstraction for simple implementation of web3 wallet connections",
+  "homepage": "https://github.com/dOrgTech/Web3Modal-ts",
+  "author": "dOrg",
+  "license": "MIT",
+  "scripts": {
+    "copy:logos": "copyfiles -u 3 ./src/providers/logos/** ./dist/providers/logos",
+    "build": "rm -rf dist && tsc && npm run copy:logos",
+    "package:release": "rm -rf ./package && mkdir ./package && cp -r ./dist/ ./package/dist && cp README.md package.json ./package",
+    "release": "npm run build && npm run package:release && npm publish ./package --access public"
+  },
+  "main": "dist/index.js",
+  "devDependencies": {
+    "@types/node": "^14.11.8",
+    "copyfiles": "^2.4.0",
+    "isomorphic-fetch": "^2.2.1",
+    "typescript": "^3.1.3"
+  },
+  "dependencies": {
+    "detect-browser": "^5.1.0",
+    "tslib": "^1.10.0"
+  }
+}

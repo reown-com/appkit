@@ -1,0 +1,2 @@
+export const INJECTED_PROVIDER_ID = 'injected';
+export const CACHED_PROVIDER_KEY = 'WEB3_CONNECT_CACHED_PROVIDER';
