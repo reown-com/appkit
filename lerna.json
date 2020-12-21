@@ -1,7 +1,6 @@
 {
   "packages": [
-    "./packages/core",
-    "./packages/angular/projects/web3modal"
+    "./packages/*"
   ],
   "npmClient": "yarn",
   "useWorkspaces": true,

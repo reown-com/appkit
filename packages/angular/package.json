@@ -1,5 +1,6 @@
 {
-  "name": "@web3modal/web3modal",
+  "name": "@web3modal/angular",
+  "files": ["./dist/web3modal"],
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",
@@ -46,6 +47,7 @@
     "karma-jasmine-html-reporter": "^1.5.0",
     "ng-packagr": "^10.1.0",
     "protractor": "~7.0.0",
+    "copyfiles": "2.3.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~4.0.2"

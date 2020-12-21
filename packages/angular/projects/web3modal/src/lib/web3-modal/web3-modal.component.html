@@ -1,0 +1,42 @@
+<m-modal [open]="open" (closed)="close()">
+  <div class="m-web3Modal">
+    <div class="m-web3Modal__header">
+      <h3 class="m-web3ModalHeader__title">
+        {{ title }}
+      </h3>
+      <div class="m-web3ModalHeader__description">
+        <p class="m-web3ModalHeader__text">
+          {{ description }}
+        </p>
+        <p
+          class="m-web3ModalHeader__text--gray m-web3ModalHeader__text"
+        >
+          {{ descriptionGray }}
+        </p>
+      </div>
+    </div>
+    <div class="m-web3Modal__body">
+      <div class="m-web3ModalBody__provider">
+        <div
+          class="m-web3ModalProvider__body"
+          *ngFor="let provider of providers"
+          (click)="provider.onClick()"
+        >
+          <div class="m-web3ModalProviderBody__icon">
+            <img [src]="provider.logo" [alt]="provider.logo" />
+          </div>
+          <div class="m-web3ModalProviderBody__name">
+            {{ provider.name }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="m-web3Modal__footer">
+      <div class="m-web3ModalFooter__description">
+        <p class="m-web3ModalFooter__text" (click)="close()">
+          {{ dismissText }}
+        </p>
+      </div>
+    </div>
+  </div>  
+</m-modal>

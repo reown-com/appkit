@@ -1,0 +1,121 @@
+.m-web3Modal {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: auto;
+  box-sizing: border-box;
+  background-color: #ffffff;
+
+  @media screen and (max-width: 540px) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 0;
+    margin: 0;
+  }
+}
+
+.m-web3Modal__header {
+  padding: 40px 50px 0;
+}
+
+.m-web3ModalHeader__title {
+  font-size: 30px;
+  font-weight: 800;
+  margin: 0;
+  color: #4f4f50;
+}
+
+.m-web3ModalHeader__text {
+  margin: 0;
+  font-weight: 600;
+  line-height: 22px;
+  font-size: 16px;
+  color: #4f4f50;
+}
+
+.m-web3ModalHeader__description {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 70px;
+}
+
+.m-web3ModalHeader__text--gray {
+  margin: 0;
+  color:  #7d7d82;
+}
+
+.m-web3Modal__footer {
+  height: 100px;
+  margin-top: -40px;
+  display: flex;
+  padding: 0 50px;
+  flex-direction: column;
+  justify-content: center;
+
+  @media screen and (max-width: 768px) {
+    margin-top: -20px;
+  }
+}
+
+.m-web3ModalFooter__text {
+  text-align: center;
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0;
+  cursor: pointer;
+  color: #7d7d82;
+}
+
+.m-web3Modal__body {
+  padding: 20px 50px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.m-web3ModalBody__provider {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  @media screen and (max-width: 540px) {
+    justify-content: center;
+  }
+}
+
+.m-web3ModalProvider__body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  cursor: pointer;
+  width: 194px;
+  height: 165px;
+  margin-bottom: 20px;
+
+  background-color: #ffffff;
+  border: 1px solid #dce2e4;
+}
+
+.m-web3ModalProviderBody__name {
+  margin-top: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  color: #4f4f50;
+}
+
+.m-web3ModalProviderBody__icon {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  border-radius: 50%;
+  overflow: visible;
+  box-shadow: none;
+  justify-content: center;
+  align-items: center;
+  & img {
+    width: 100%;
+    height: 100%;
+  }
+}

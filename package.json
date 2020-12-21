@@ -42,7 +42,9 @@
   "scripts": {
     "install": "lerna link",
     "postinstall": "lerna bootstrap",
-    "lerna:publish": "lerna publish"
+    "lerna:publish": "lerna publish",
+    "start:test-app": "lerna exec --scope @web3modal/angular yarn start",
+    "build:library": "lerna exec --scope @web3modal/angular yarn build:prod"
   },
   "devDependencies": {
     "@babel/cli": "^7.11.6",
@@ -83,8 +85,7 @@
   },
   "workspaces": {
     "packages": [
-      "./packages/core",
-      "./packages/angular/projects/web3modal"
+      "./packages/*"
     ]
   }
 }
