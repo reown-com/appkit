@@ -17,12 +17,6 @@
     "lib": [
       "es2017",
       "dom"
-    ],
-    "paths": {
-      "web3modal": [
-        "dist/web3modal/web3modal",
-        "dist/web3modal"
-      ]
-    }
+    ]
   }
 }

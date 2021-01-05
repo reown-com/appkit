@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Web3ModalService } from '@web3modal/angular/dist/web3modal';
+import { Web3ModalService } from '@web3modal/angular';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Torus from '@toruslabs/torus-embed'
 import Portis from '@portis/web3'

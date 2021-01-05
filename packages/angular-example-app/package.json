@@ -1,13 +1,12 @@
 {
-  "name": "@web3modal/angular",
-  "files": ["./dist/web3modal"],
+  "name": "@web3modal/angular-example-app",
   "version": "0.0.1",
+  "private": "true",
   "scripts": {
-    "ng": "ng",
     "start": "ng serve",
+    "postinstall": "ngcc --tsconfig=tsconfig.json",
     "build": "ng build",
     "build:prod": "ng build --prod",
-    "ngcc": "ngcc dist/web3modal",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -32,12 +31,13 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1001.7",
-    "@angular/cli": "~10.1.4",
+    "@angular/cli": "^10.1.7",
     "@angular/compiler-cli": "~10.1.4",
-    "@types/node": "^12.11.1",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
+    "@types/node": "^12.11.1",
     "codelyzer": "^6.0.0",
+    "copyfiles": "2.3.0",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~5.0.0",
@@ -45,9 +45,8 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
-    "ng-packagr": "^10.1.0",
+    "ng-packagr": "^9.1.5",
     "protractor": "~7.0.0",
-    "copyfiles": "2.3.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~4.0.2"
@@ -61,6 +60,7 @@
     "tls": false,
     "crypto": false,
     "keccak": false,
-    "os": false
+    "os": false,
+    "global": true
   }
 }

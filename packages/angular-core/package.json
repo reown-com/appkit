@@ -34,5 +34,11 @@
   "dependencies": {
     "tslib": "^2.0.0",
     "@web3modal/core": "^0.0.1"
-  }
+  },
+  "scripts": {
+    "build": "ng build --prod",
+    "prepublishOnly": "node --eval \"console.error('ERROR: Trying to publish a package that has been compiled by NGCC. This is not allowed.\\nPlease delete and rebuild the package, without compiling with NGCC, before attempting to publish.\\nNote that NGCC may have been run by importing this package into another project that is being built with Ivy enabled.\\n')\" && exit 1"
+  },
+  "main": "dist/esm5/web3modal-angular.js",
+  "types": "dist/web3modal-angular.d.ts"
 }
