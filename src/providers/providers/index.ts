@@ -3,8 +3,6 @@ import WalletConnectLogo from "../logos/walletconnect-circle.svg";
 // @ts-ignore
 import PortisLogo from "../logos/portis.svg";
 // @ts-ignore
-import SquarelinkLogo from "../logos/squarelink.svg";
-// @ts-ignore
 import FortmaticLogo from "../logos/fortmatic.svg";
 // @ts-ignore
 import ArkaneLogo from "../logos/arkane.svg";
@@ -57,17 +55,6 @@ export const FORTMATIC: IProviderInfo = {
   check: "isFortmatic",
   package: {
     required: ["key"]
-  }
-};
-
-export const SQUARELINK: IProviderInfo = {
-  id: "squarelink",
-  name: "Squarelink",
-  logo: SquarelinkLogo,
-  type: "web",
-  check: "isSquarelink",
-  package: {
-    required: ["id"]
   }
 };
 
