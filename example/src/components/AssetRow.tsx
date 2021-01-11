@@ -1,42 +1,42 @@
-import * as React from 'react'
-import styled from 'styled-components'
-import Icon from './Icon'
-import ERC20Icon from './ERC20Icon'
-import eth from '../assets/eth.svg'
-import xdai from '../assets/xdai.png'
+import * as React from "react";
+import styled from "styled-components";
+import Icon from "./Icon";
+import ERC20Icon from "./ERC20Icon";
+import eth from "../assets/eth.svg";
+import xdai from "../assets/xdai.png";
 import {
   handleSignificantDecimals,
-  convertAmountFromRawNumber
-} from '../helpers/bignumber'
+  convertAmountFromRawNumber,
+} from "../helpers/bignumber";
 
 const SAssetRow = styled.div`
   width: 100%;
   padding: 20px;
   display: flex;
   justify-content: space-between;
-`
+`;
 const SAssetRowLeft = styled.div`
   display: flex;
-`
+`;
 const SAssetName = styled.div`
   display: flex;
   margin-left: 10px;
-`
+`;
 const SAssetRowRight = styled.div`
   display: flex;
-`
+`;
 const SAssetBalance = styled.div`
   display: flex;
-`
+`;
 
 const AssetRow = (props: any) => {
-  const { asset } = props
+  const { asset } = props;
   const nativeCurrencyIcon =
-    asset.symbol && asset.symbol.toLowerCase() === 'eth'
+    asset.symbol && asset.symbol.toLowerCase() === "eth"
       ? eth
-      : asset.symbol && asset.symbol.toLowerCase() === 'xdai'
+      : asset.symbol && asset.symbol.toLowerCase() === "xdai"
       ? xdai
-      : null
+      : null;
   return (
     <SAssetRow {...props}>
       <SAssetRowLeft>
@@ -56,7 +56,7 @@ const AssetRow = (props: any) => {
         </SAssetBalance>
       </SAssetRowRight>
     </SAssetRow>
-  )
-}
+  );
+};
 
-export default AssetRow
+export default AssetRow;

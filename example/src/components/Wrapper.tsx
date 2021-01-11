@@ -1,6 +1,6 @@
-import * as React from 'react'
-import * as PropTypes from 'prop-types'
-import styled, { keyframes } from 'styled-components'
+import * as React from "react";
+import * as PropTypes from "prop-types";
+import styled, { keyframes } from "styled-components";
 
 const fadeIn = keyframes`
   0% {
@@ -9,10 +9,10 @@ const fadeIn = keyframes`
   100% {
     opacity: 1;
   }
-`
+`;
 
 interface IWrapperStyleProps {
-  center: boolean
+  center: boolean;
 }
 
 const SWrapper = styled.div<IWrapperStyleProps>`
@@ -23,28 +23,28 @@ const SWrapper = styled.div<IWrapperStyleProps>`
   flex-wrap: wrap;
   justify-content: center;
   align-items: ${({ center }) => (center ? `center` : `flex-start`)};
-`
+`;
 
 interface IWrapperProps extends IWrapperStyleProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 const Wrapper = (props: IWrapperProps) => {
-  const { children, center } = props
+  const { children, center } = props;
   return (
-    <SWrapper center={center} {...props}>
+    <SWrapper {...props} center={center}>
       {children}
     </SWrapper>
-  )
-}
+  );
+};
 
 Wrapper.propTypes = {
   children: PropTypes.node.isRequired,
-  center: PropTypes.bool
-}
+  center: PropTypes.bool,
+};
 
 Wrapper.defaultProps = {
-  center: false
-}
+  center: false,
+};
 
-export default Wrapper
+export default Wrapper;

@@ -1,7 +1,7 @@
-import * as React from 'react'
-import * as PropTypes from 'prop-types'
-import styled, { keyframes } from 'styled-components'
-import { colors } from '../styles'
+import * as React from "react";
+import * as PropTypes from "prop-types";
+import styled, { keyframes } from "styled-components";
+import { colors } from "../styles";
 
 const load = keyframes`
   0% {
@@ -19,14 +19,14 @@ const load = keyframes`
   100% {
     transform: scale(1.0);
   }
-`
+`;
 
 interface ILoaderStyleProps {
-  size: number
+  size: number;
 }
 
 interface ILoaderProps extends ILoaderStyleProps {
-  color: string
+  color: string;
 }
 
 const SLoader = styled.svg<ILoaderStyleProps>`
@@ -34,11 +34,11 @@ const SLoader = styled.svg<ILoaderStyleProps>`
   height: ${({ size }) => `${size}px`};
   animation: ${load} 1s infinite cubic-bezier(0.25, 0, 0.75, 1);
   transform: translateZ(0);
-`
+`;
 
 const Loader = (props: ILoaderProps) => {
-  const { size, color } = props
-  const rgb = `rgb(${colors[color]})`
+  const { size, color } = props;
+  const rgb = `rgb(${colors[color]})`;
   return (
     <SLoader viewBox="0 0 186 187" size={size}>
       <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
@@ -59,17 +59,17 @@ const Loader = (props: ILoaderProps) => {
         />
       </g>
     </SLoader>
-  )
-}
+  );
+};
 
 Loader.propTypes = {
   size: PropTypes.number,
-  color: PropTypes.string
-}
+  color: PropTypes.string,
+};
 
 Loader.defaultProps = {
   size: 40,
-  color: 'lightBlue'
-}
+  color: "lightBlue",
+};
 
-export default Loader
+export default Loader;
