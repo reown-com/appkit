@@ -15,8 +15,6 @@ import AuthereumLogo from "../logos/authereum.svg";
 // @ts-ignore
 import BurnerWalletLogo from "../logos/burnerwallet.png";
 // @ts-ignore
-import UniLoginLogo from "../logos/unilogin.svg";
-// @ts-ignore
 import MEWwallet from "../logos/mewwallet.png";
 // @ts-ignore
 import DcentWalletLogo from "../logos/dcentwallet.png";
@@ -106,14 +104,6 @@ export const BURNERCONNECT: IProviderInfo = {
   logo: BurnerWalletLogo,
   type: "web",
   check: "isBurnerProvider"
-};
-
-export const UNILOGIN: IProviderInfo = {
-  id: "unilogin",
-  name: "UniLogin",
-  logo: UniLoginLogo,
-  check: "isUniLogin",
-  type: "web"
 };
 
 export const MEWCONNECT: IProviderInfo = {
