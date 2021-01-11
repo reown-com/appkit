@@ -217,4 +217,16 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "mumbai",
     networkId: 80001
   }
+  246529: {
+    chainId: 246529,
+    chain: "ARTIS sigma1",
+    network: "artis-s1",
+    networkId: 246529
+  }
+  246785: {
+    chainId: 246785,
+    chain: "ARTIS tau1",
+    network: "artis-t1",
+    networkId: 246785
+  }
 };
