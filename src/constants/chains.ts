@@ -204,6 +204,18 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     chain: "CLO",
     network: "callisto-testnet",
     networkId: 2
+  },
+  137: {
+    chainId: 137,
+    chain: "MATIC",
+    network: "matic",
+    networkId: 137
+  },
+  80001: {
+    chainId: 80001,
+    chain: "MUMBAI",
+    network: "mumbai",
+    networkId: 80001
   }
   246529: {
     chainId: 246529,
