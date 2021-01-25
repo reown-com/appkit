@@ -159,7 +159,7 @@ class Web3Modal {
 }
 ```
 
-## Utis
+## Utils
 
 ```typescript
 function getInjectedProvider(): IProviderInfo | null;
