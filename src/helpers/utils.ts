@@ -13,7 +13,7 @@ import {
 
 export function checkInjectedProviders(): IInjectedProvidersMap {
   const result = {
-    injectedAvailable: !!window.ethereum || !!window.web3
+    injectedAvailable: !!window.ethereum
   };
   if (result.injectedAvailable) {
     let fallbackProvider = true;
@@ -41,11 +41,7 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
 }
 
 export function verifyInjectedProvider(check: string): boolean {
-  return window.ethereum
-    ? window.ethereum[check]
-    : window.web3 &&
-        window.web3.currentProvider &&
-        window.web3.currentProvider[check];
+  return window.ethereum && window.ethereum[check]
 }
 
 export function getInjectedProvider(): IProviderInfo | null {
