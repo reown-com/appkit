@@ -89,7 +89,7 @@ export class Core {
           )
         );
       }
-      await this.providerController.connectTo(provider.id, provider.connector);
+      await this.providerController.connectTo(provider.id, provider.connector, provider.packageFactory);
     });
 
   public async toggleModal(): Promise<void> {

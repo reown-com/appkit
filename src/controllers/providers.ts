@@ -60,11 +60,20 @@ export class ProviderController {
             ...this.providerOptions[id].display
           };
         }
+
+        providerInfo.packageFactory = this.providerOptions[id].packageFactory;
       }
+
+      const bundledPackage = providerInfo.package;
+
+      if (!providerInfo.packageFactory && bundledPackage) {
+        providerInfo.packageFactory = () => Promise.resolve(bundledPackage);
+      }
+
       return {
         ...providerInfo,
-        connector: list.connectors[id],
-        package: providerInfo.package
+        bundledPackage,
+        connector: list.connectors[id]
       };
     });
     // parse custom providers
@@ -93,7 +102,9 @@ export class ProviderController {
     if (typeof provider !== "undefined") {
       const providerPackageOptions = this.providerOptions[id];
       if (providerPackageOptions) {
-        const isProvided = !!providerPackageOptions.package;
+        const isProvided =
+          !!providerPackageOptions.package ||
+          !!providerPackageOptions.packageFactory;
         if (isProvided) {
           const requiredOptions = provider.package
             ? provider.package.required
@@ -151,12 +162,12 @@ export class ProviderController {
     providerList.forEach((id: string) => {
       let provider = this.getProvider(id);
       if (typeof provider !== "undefined") {
-        const { id, name, logo, connector } = provider;
+        const { id, name, logo, connector, packageFactory } = provider;
         userOptions.push({
           name,
           logo,
           description: getProviderDescription(provider),
-          onClick: () => this.connectTo(id, connector)
+          onClick: () => this.connectTo(id, connector, packageFactory)
         });
       }
     });
@@ -192,10 +203,13 @@ export class ProviderController {
 
   public connectTo = async (
     id: string,
-    connector: (providerPackage: any, opts: any) => Promise<any>
+    connector: (providerPackage: any, opts: any) => Promise<any>,
+    packageFactory?: () => Promise<any>
   ) => {
     try {
-      const providerPackage = this.getProviderOption(id, "package");
+      const providerPackage = packageFactory
+      ? await packageFactory()
+      : this.getProviderOption(id, "package");
       const providerOptions = this.getProviderOption(id, "options");
       const opts = { network: this.network || undefined, ...providerOptions };
       const provider = await connector(providerPackage, opts);
@@ -211,7 +225,11 @@ export class ProviderController {
   public async connectToCachedProvider() {
     const provider = this.getProvider(this.cachedProvider);
     if (typeof provider !== "undefined") {
-      await this.connectTo(provider.id, provider.connector);
+      await this.connectTo(
+        provider.id,
+        provider.connector,
+        provider.packageFactory
+      );
     }
   }
 

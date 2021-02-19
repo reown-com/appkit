@@ -143,6 +143,28 @@ These are all the providers available with Web3Modal and how to configure their 
 - [BurnerConnect](./docs/providers/burnerconnect.md)
 - [MEWConnect](./docs/providers/mewconnect.md)
 
+Additionally, to improve your initial page speed, you can load providers dynamically, by passing a
+`packageFactory` async function. This way, the web3modal will call your function when the user clicks
+an option and then use the result as the `package` for your provider.
+With this technique, you can setup your bundler to codesplit the imports and use those versions within
+web3modal.
+
+- Notice: if you use a `packageFactory`, your provider will always display! Regardless of whether its
+  configured properly or not!
+
+  ```typescript
+
+  const providerOptions = {
+    walletconnect: {
+      package: async () => (await import('@walletconnect/web3-provider')).default,
+      options: {
+        infuraId: "INFURA_ID" // required
+      }
+    }
+  }
+
+  ```
+
 ## API
 
 ```typescript
@@ -159,7 +181,7 @@ class Web3Modal {
 }
 ```
 
-## Utis
+## Utils
 
 ```typescript
 function getInjectedProvider(): IProviderInfo | null;
@@ -184,6 +206,9 @@ interface IProviderInfo {
   package?: {
     required?: string[];
   };
+  packageFactory?: () => Promise<{
+    required?: string[];
+  }>;
 }
 
 type ThemeColors = {
@@ -262,6 +287,18 @@ const providerOptions = {
       description: "Scan qrcode with your mobile wallet"
     },
     package: WalletConnectProvider,
+    options: {
+      infuraId: "INFURA_ID" // required
+    }
+  },
+  // Example with async package fetching
+  walletconnect: {
+    display: {
+      logo: "data:image/gif;base64,INSERT_BASE64_STRING",
+      name: "Mobile",
+      description: "Scan qrcode with your mobile wallet"
+    },
+    package: async () => (await import('@walletconnect/web3-provider')).default,
     options: {
       infuraId: "INFURA_ID" // required
     }

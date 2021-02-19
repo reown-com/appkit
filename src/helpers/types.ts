@@ -30,6 +30,7 @@ export interface IProviderInfo extends IProviderDisplay {
   type: string;
   check: string;
   package?: IProviderPackageOptions;
+  packageFactory?: () => Promise<IProviderPackageOptions>;
 }
 
 export type RequiredOption = string | string[];
@@ -40,7 +41,8 @@ export interface IProviderPackageOptions {
 
 export interface IProviderOptions {
   [id: string]: {
-    package: any;
+    package?: any;
+    packageFactory?: () => Promise<any>;
     options?: any;
     connector?: Connector;
     display?: Partial<IProviderDisplay>;
@@ -51,6 +53,7 @@ export interface IProviderDisplayWithConnector extends IProviderDisplay {
   id: string;
   connector: any;
   package?: IProviderPackageOptions;
+  packageFactory?: () => Promise<IProviderPackageOptions>;
 }
 
 export interface IProviderUserOptions {
