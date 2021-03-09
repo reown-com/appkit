@@ -1,0 +1,7 @@
+import "mocha";
+import * as chai from "chai";
+describe("@web3modal/utils", () => {
+  it("needs tests", () => {
+    // needs tests
+  });
+});
