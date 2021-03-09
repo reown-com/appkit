@@ -1,3 +1,0 @@
-# example
-
-Example React App
