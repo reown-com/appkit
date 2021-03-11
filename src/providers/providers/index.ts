@@ -20,6 +20,8 @@ import DcentWalletLogo from "../logos/dcentwallet.png";
 import BitskiLogo from "../logos/bitski.svg";
 // @ts-ignore
 import FrameLogo from "../logos/frame.svg";
+// @ts-ignore
+import WalletLinkLogo from "../logos/walletlink.svg";
 
 import { IProviderInfo } from "../../helpers";
 
@@ -132,4 +134,15 @@ export const FRAME: IProviderInfo = {
   logo: FrameLogo,
   type: "web",
   check: "isFrameNative"
+};
+
+export const WALLETLINK: IProviderInfo = {
+  id: "walletlink",
+  name: "WalletLink",
+  logo: WalletLinkLogo,
+  type: "qrcode",
+  check: "isWalletLink",
+  package: {
+    required: [["infuraId", "rpc", "appName"]]
+  }
 };
