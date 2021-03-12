@@ -65,7 +65,7 @@
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-app-polyfill": "^2.0.0",
-    "react-dev-utils": "^11.0.1",
+    "react-dev-utils": "^11.0.4",
     "react-dom": "^17.0.1",
     "react-refresh": "^0.8.3",
     "resolve": "1.18.1",
