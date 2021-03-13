@@ -12,3 +12,6 @@ lib
 
 yarn.lock
 .eslintcache
+
+#graphs
+dependency-graph*
