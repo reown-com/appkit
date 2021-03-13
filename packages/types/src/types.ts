@@ -14,14 +14,16 @@ export interface IAbstractConnectorOptions {
   network: string;
 }
 
+export type IRPC = { [chainId: number]: string };
+
 export interface IInjectedProvidersMap {
-  injectedAvailable: boolean;
   [isProviderName: string]: boolean;
+  injectedAvailable: boolean;
 }
 
 export interface IProviderDisplay {
   name: string;
-  logo: string;
+  logo?: string;
   description?: string;
 }
 
@@ -30,6 +32,10 @@ export interface IProviderInfo extends IProviderDisplay {
   type: string;
   check: string;
   package?: IProviderPackageOptions;
+}
+
+export interface IProviders {
+  [providerName: string]: IProviderInfo;
 }
 
 export type RequiredOption = string | string[];
@@ -55,9 +61,9 @@ export interface IProviderDisplayWithConnector extends IProviderDisplay {
 
 export interface IProviderUserOptions {
   name: string;
-  logo: string;
   description: string;
   onClick: () => Promise<void>;
+  logo?: string;
 }
 
 export type SimpleFunction = (input?: any) => void;

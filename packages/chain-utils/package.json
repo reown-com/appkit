@@ -1,9 +1,9 @@
 {
-  "name": "@web3modal/utils",
-  "description": "Utilities for Web3Modal",
+  "name": "@web3modal/chain-utils",
+  "description": "Chain Information Handler for Web3Modal",
   "version": "1.0.0",
   "author": "Web3Modal <github.com/web3modal>",
-  "homepage": "https://github.com/web3modal/web3modal/packages/utils",
+  "homepage": "https://github.com/web3modal/web3modal/packages/chain-utils",
   "license": "MIT",
   "main": "dist/cjs/index.js",
   "types": "dist/cjs/index.d.ts",
@@ -43,11 +43,8 @@
     "lint": "eslint -c '../../.eslintrc' --fix './src/**/*.ts'"
   },
   "dependencies": {
-    "detect-browser": "^5.1.0",
-    "@web3modal/chain-utils": "^1.0.0",
-    "@web3modal/providers": "^1.0.0",
-    "@web3modal/themes": "^1.0.0",
-    "@web3modal/types": "^1.0.0"
+    "@web3modal/types": "^1.0.0",
+    "@web3modal/constants": "^1.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
@@ -61,7 +58,6 @@
     "@types/jest": "^22.2.3",
     "@types/mocha": "^8.2.0",
     "@types/node": "^14.14.2",
-    "@types/web3": "^1.2.2",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
     "@typescript-eslint/parser": "^2.24.0",
     "chai": "^4.2.0",
@@ -78,9 +74,7 @@
     "mocha": "^8.1.3",
     "npm-run-all": "^4.1.5",
     "prettier": "^1.19.1",
-    "ts-loader": "^5.3.3",
     "typescript": "^3.7.5",
-    "url-loader": "^1.1.2",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
   }

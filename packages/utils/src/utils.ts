@@ -1,16 +1,16 @@
 import * as env from "detect-browser";
 
-import { CHAIN_DATA_LIST } from "./constants";
-import { themesList } from "./themes";
-import { providers, injected } from "./providers";
+import { themesList } from "@web3modal/themes";
+import { providers, injected } from "@web3modal/providers";
+import { filterMatches } from "@web3modal/chain-utils";
 import {
   IProviderInfo,
   IInjectedProvidersMap,
-  ChainData,
   ThemeColors,
   RequiredOption
 } from "@web3modal/types";
 
+// TODO: Find a way to avoid having to do this (?)
 declare global {
   interface Window {
     ethereum: any;
@@ -25,7 +25,7 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
   };
   if (result.injectedAvailable) {
     let fallbackProvider = true;
-    Object.values(injected).forEach(provider => {
+    Object.values(injected).forEach((provider: IProviderInfo) => {
       const isAvailable = verifyInjectedProvider(provider.check);
       if (isAvailable) {
         result[provider.check] = true;
@@ -160,21 +160,6 @@ export function getProviderDescription(
   return description;
 }
 
-export function filterMatches<T>(
-  array: T[],
-  condition: (x: T) => boolean,
-  fallback: T | undefined
-): T | undefined {
-  let result = fallback;
-  const matches = array.filter(condition);
-
-  if (!!matches && matches.length) {
-    result = matches[0];
-  }
-
-  return result;
-}
-
 export function filterProviders(
   param: string,
   value: string | null
@@ -201,19 +186,6 @@ export function filterProviderChecks(checks: string[]): string {
     return checks[0];
   }
   return providers.FALLBACK.check;
-}
-
-export function getChainId(network: string): number {
-  const chains: ChainData[] = Object.values(CHAIN_DATA_LIST);
-  const match = filterMatches<ChainData>(
-    chains,
-    x => x.network === network,
-    undefined
-  );
-  if (!match) {
-    throw new Error(`No chainId found match ${network}`);
-  }
-  return match.chainId;
 }
 
 export function getThemeColors(theme: string | ThemeColors): ThemeColors {
