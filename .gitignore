@@ -13,5 +13,8 @@ lib
 yarn.lock
 .eslintcache
 
+#lerna
+lerna-debug.log
+
 #graphs
 dependency-graph*
