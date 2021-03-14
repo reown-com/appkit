@@ -5,12 +5,8 @@
   "author": "Web3Modal <github.com/web3modal>",
   "homepage": "https://github.com/web3modal/web3modal/packages/types",
   "license": "MIT",
-  "main": "dist/cjs/index.js",
-  "types": "dist/cjs/index.d.ts",
-  "unpkg": "dist/umd/index.min.js",
-  "files": [
-    "dist"
-  ],
+  "main": "",
+  "types": "index",
   "keywords": [
     "web3",
     "crypto",
@@ -32,34 +28,9 @@
   "bugs": {
     "url": "https://github.com/Web3Modal/web3modal/issues"
   },
-  "scripts": {
-    "clean": "rm -rf dist",
-    "build:pre": "run-s clean",
-    "build:cjs": "npx tsc -p tsconfig.cjs.json",
-    "build:umd": "webpack",
-    "build": "run-s build:pre build:cjs build:umd",
-    "test": "env TS_NODE_PROJECT=\"tsconfig.cjs.json\" mocha --exit -r ts-node/register ./test/**/*.test.ts",
-    "watch": "tsc -p tsconfig.json --watch",
-    "lint": "eslint -c '../../.eslintrc' --fix './src/**/*.ts'"
-  },
+  "scripts": {},
   "dependencies": {},
   "devDependencies": {
-    "@babel/cli": "^7.12.1",
-    "@babel/core": "^7.12.3",
-    "@babel/node": "^7.12.1",
-    "@babel/polyfill": "^7.12.1",
-    "@babel/preset-env": "^7.12.1",
-    "@babel/preset-typescript": "^7.12.1",
-    "@babel/register": "^7.12.1",
-    "@types/chai": "^4.2.14",
-    "@types/jest": "^22.2.3",
-    "@types/mocha": "^8.2.0",
-    "@types/node": "^14.14.2",
-    "@typescript-eslint/eslint-plugin": "^2.24.0",
-    "@typescript-eslint/parser": "^2.24.0",
-    "chai": "^4.2.0",
-    "core-js": "^3.6.5",
-    "eslint": "^5.16.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.20.1",
@@ -67,12 +38,6 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.19.0",
-    "eslint-plugin-standard": "^4.0.1",
-    "mocha": "^8.1.3",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^1.19.1",
-    "typescript": "^3.7.5",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "eslint-plugin-standard": "^4.0.1"
   }
 }

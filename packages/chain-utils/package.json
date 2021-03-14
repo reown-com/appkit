@@ -43,7 +43,6 @@
     "lint": "eslint -c '../../.eslintrc' --fix './src/**/*.ts'"
   },
   "dependencies": {
-    "@web3modal/types": "^1.0.0",
     "@web3modal/constants": "^1.0.0"
   },
   "devDependencies": {
@@ -60,6 +59,7 @@
     "@types/node": "^14.14.2",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
     "@typescript-eslint/parser": "^2.24.0",
+    "@web3modal/types": "^1.0.0",
     "chai": "^4.2.0",
     "core-js": "^3.6.5",
     "eslint": "^5.16.0",
