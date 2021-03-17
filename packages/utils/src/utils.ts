@@ -2,7 +2,6 @@ import * as env from "detect-browser";
 
 import { themesList } from "@web3modal/themes";
 import { providers, injected } from "@web3modal/providers";
-import { filterMatches } from "@web3modal/chain-utils";
 import {
   IProviderInfo,
   IInjectedProvidersMap,
@@ -10,7 +9,6 @@ import {
   RequiredOption
 } from "@web3modal/types";
 
-// TODO: Find a way to avoid having to do this (?)
 declare global {
   interface Window {
     ethereum: any;
@@ -158,6 +156,19 @@ export function getProviderDescription(
       break;
   }
   return description;
+}
+
+export function filterMatches<T>(
+  array: T[],
+  condition: (x: T) => boolean,
+  fallback: T | undefined
+): T | undefined {
+  let result = fallback;
+  const matches = array.filter(condition);
+  if (!!matches && matches.length) {
+    result = matches[0];
+  }
+  return result;
 }
 
 export function filterProviders(

@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "detect-browser": "^5.1.0",
-    "@web3modal/chain-utils": "^1.0.0",
+    "@web3modal/chains": "^1.0.0",
     "@web3modal/providers": "^1.0.0",
     "@web3modal/themes": "^1.0.0"
   },

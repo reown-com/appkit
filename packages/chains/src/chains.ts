@@ -1,4 +1,13 @@
-import { ChainDataList } from "@web3modal/types";
+import { ChainData, ChainDataList } from "@web3modal/types";
+
+export function getChainId(network: string): number {
+  const chains: ChainData[] = Object.values(CHAIN_DATA_LIST);
+  const match = chains.find(chain => chain.network === network);
+  if (!match) {
+    throw new Error(`No chainId found match ${network}`);
+  }
+  return match.chainId;
+}
 
 export const CHAIN_DATA_LIST: ChainDataList = {
   1: {

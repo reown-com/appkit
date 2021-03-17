@@ -1,5 +1,5 @@
 import { IAbstractConnectorOptions, IRPC } from "@web3modal/types";
-import { getChainId } from "@web3modal/chain-utils";
+import { getChainId } from "@web3modal/chains";
 
 export interface IMewConnectConnectorOptions extends IAbstractConnectorOptions {
   infuraId?: string;

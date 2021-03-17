@@ -1,9 +1,9 @@
 {
-  "name": "@web3modal/chain-utils",
+  "name": "@web3modal/chains",
   "description": "Chain Information Handler for Web3Modal",
   "version": "1.0.0",
   "author": "Web3Modal <github.com/web3modal>",
-  "homepage": "https://github.com/web3modal/web3modal/packages/chain-utils",
+  "homepage": "https://github.com/web3modal/web3modal/packages/chain",
   "license": "MIT",
   "main": "dist/cjs/index.js",
   "types": "dist/cjs/index.d.ts",
