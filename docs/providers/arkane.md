@@ -3,7 +3,7 @@
 1. Install Provider Package
 
 ```bash
-npm install --save @arkane-network/web3-arkane-provide
+npm install --save @arkane-network/web3-arkane-provider
 
 # OR
 
