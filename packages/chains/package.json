@@ -42,9 +42,7 @@
     "watch": "tsc -p tsconfig.json --watch",
     "lint": "eslint -c '../../.eslintrc' --fix './src/**/*.ts'"
   },
-  "dependencies": {
-    "@web3modal/constants": "^1.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.12.1",
     "@babel/core": "^7.12.3",

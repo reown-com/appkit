@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["injected.d.ts", "providers.d.ts", "./src/**/*"],
+  "include": ["./src/**/*"],
   "compilerOptions": {
     "outDir": "./dist"
   }

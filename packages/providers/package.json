@@ -42,7 +42,9 @@
     "watch": "tsc -p tsconfig.json --watch",
     "lint": "eslint -c '../../.eslintrc' --fix './src/**/*.ts'"
   },
-  "dependencies": {},
+  "dependencies": {
+    "detect-browser": "^5.1.0"
+  },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
     "@babel/core": "^7.12.3",
