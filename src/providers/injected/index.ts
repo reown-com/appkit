@@ -28,6 +28,8 @@ import OperaLogo from "../logos/opera.svg";
 import FrameLogo from "../logos/frame.svg";
 // @ts-ignore
 import LiqualityLogo from "../logos/liquality.png";
+// @ts-ignore
+import MathWalletLogo from "../logos/mathwallet.png";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -139,4 +141,12 @@ export const LIQUALITY: IProviderInfo = {
   logo: LiqualityLogo,
   type: "injected",
   check: "isLiquality"
+};
+
+export const MATHWALLET: IProviderInfo = {
+  id: "injected",
+  name: "Math Wallet",
+  logo: MathWalletLogo,
+  type: "injected",
+  check: "isMathWallet"
 };
