@@ -34,7 +34,7 @@ const ConnectToWalletLink = (
 
     try {
       const provider = walletLink.makeWeb3Provider(rpc, chainId);
-      await provider.enable();
+      await provider.send('eth_requestAccounts');
       resolve(provider);
     } catch (e) {
       reject(e);
