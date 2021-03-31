@@ -228,5 +228,17 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     chain: "ARTIS tau1",
     network: "artis-t1",
     networkId: 246785
+  },
+  1007: {
+    chainId: 1007,
+    chain: "NewChain TestNet",
+    network: "newchain-testnet",
+    networkId: 1007
+  },
+  1012: {
+    chainId: 1012,
+    chain: "NewChain MainNet",
+    network: "newchain-mainnet",
+    networkId: 1012
   }
 };
