@@ -229,7 +229,7 @@ export function findMatchingRequiredOptions(
   return matches;
 }
 
-export function isLocalStorageAvailable(): boolean {
+export function isLocalStorageAvailable() {
   var test = "test";
   try {
     localStorage.setItem(test, test);
