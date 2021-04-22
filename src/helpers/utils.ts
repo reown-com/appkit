@@ -230,7 +230,7 @@ export function findMatchingRequiredOptions(
 }
 
 export function isLocalStorageAvailable() {
-  var test = "test";
+  let test = "test";
   try {
     localStorage.setItem(test, test);
     localStorage.removeItem(test);
