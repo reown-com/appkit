@@ -11,6 +11,7 @@ import Fortmatic from "fortmatic";
 import Torus from "@toruslabs/torus-embed";
 import Authereum from "authereum";
 import { Bitski } from "bitski";
+import WalletLink from "walletlink"
 
 import Button from "./components/Button";
 import Column from "./components/Column";
@@ -256,6 +257,13 @@ class App extends React.Component<any, any> {
         options: {
           clientId: process.env.REACT_APP_BITSKI_CLIENT_ID,
           callbackUrl: window.location.href + "bitski-callback.html"
+        }
+      },
+      walletlink: {
+        package: WalletLink,
+        options: {
+          appName: "Example Dapp",
+          jsonRpcUrl: `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_ID}`
         }
       }
     };
