@@ -73,6 +73,29 @@ const provider = await web3Modal.connect();
 const web3 = new Web3(provider);
 ```
 
+## Using with [ethers.js](https://github.com/ethers-io/ethers.js/)
+
+```
+import { ethers } from "ethers";
+import Web3Modal from "web3modal";
+
+const providerOptions = {
+  /* See Provider Options Section */
+};
+
+const web3Modal = new Web3Modal({
+  network: "mainnet", // optional
+  cacheProvider: true, // optional
+  providerOptions // required
+});
+
+const provider = await web3Modal.connect();
+
+const ethersProvider = new ethers.providers.Web3Provider(provider);
+const signer = ethersProvider.getSigner();
+```
+
+
 ## Using in vanilla JavaScript
 
 You can use the modal from the old fashioned web page JavaScript as well.
