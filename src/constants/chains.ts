@@ -229,6 +229,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "avalanche-fuji-testnet",
     networkId: 43113
   },
+  43114: {
+    chainId: 43114,
+    chain: "AVAX",
+    network: "avalanche-fuji-mainnet",
+    networkId: 43114
+  },
   246529: {
     chainId: 246529,
     chain: "ARTIS sigma1",
