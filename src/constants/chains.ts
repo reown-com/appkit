@@ -139,6 +139,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "tomochain",
     networkId: 88
   },
+  97: {
+    chainId: 97,
+    chain: "BSC",
+    network: "binance-testnet",
+    networkId: 97
+  },
   99: {
     chainId: 99,
     chain: "POA",
@@ -210,6 +216,18 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     chain: "MATIC",
     network: "matic",
     networkId: 137
+  },
+  43113: {
+    chainId: 43113,
+    chain: "AVAX",
+    network: "avalanche-fuji-testnet",
+    networkId: 43113
+  },
+  43114: {
+    chainId: 43114,
+    chain: "AVAX",
+    network: "avalanche-fuji-mainnet",
+    networkId: 43114
   },
   80001: {
     chainId: 80001,
