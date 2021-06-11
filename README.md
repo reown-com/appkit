@@ -300,7 +300,7 @@ const providerOptions = {
       logo: "data:image/gif;base64,INSERT_BASE64_STRING",
       name: "Example Provider",
       description: "Connect to your example provider account"
-    }
+    },
     package: ExampleProvider,
     options: {
       apiKey: "EXAMPLE_PROVIDER_API_KEY"
@@ -308,7 +308,7 @@ const providerOptions = {
     connector: async (ProviderPackage, options) => {
         const provider = new ProviderPackage(options);
 
-        await provider.enable()
+        await provider.enable();
 
         return provider;
     }
