@@ -143,6 +143,24 @@ These are all the providers available with Web3Modal and how to configure their 
 - [BurnerConnect](./docs/providers/burnerconnect.md)
 - [MEWConnect](./docs/providers/mewconnect.md)
 
+### Importing providers dynamically
+
+For the options above you will be asked to provide a `package`. You may optionally import
+those packages dynamically so that you only import the ones the user actually uses. You 
+just need to provide a function that returns a dynamic import of the package, and set 
+`packageFactory` to true, e.g:
+
+```
+  providerOptions: {
+    walletconnect: {
+      package: () => import('@walletconnect/web3-provider'),
+      packageFactory: true,
+      options: {
+        infuraId: INFURA_ID
+      }
+    }
+```
+
 ## API
 
 ```typescript
