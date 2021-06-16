@@ -195,8 +195,17 @@ export class ProviderController {
     connector: (providerPackage: any, opts: any) => Promise<any>
   ) => {
     try {
-      const providerPackage = this.getProviderOption(id, "package");
+      let providerPackage = this.getProviderOption(id, "package");
       const providerOptions = this.getProviderOption(id, "options");
+      const packageFactory = this.getProviderOption(id, "packageFactory");
+
+      if(packageFactory === true) {
+        providerPackage = await providerPackage();
+        if(providerPackage.default) {
+          providerPackage = providerPackage.default;
+        }
+      }
+
       const opts = { network: this.network || undefined, ...providerOptions };
       const provider = await connector(providerPackage, opts);
       this.eventController.trigger(CONNECT_EVENT, provider);

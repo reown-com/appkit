@@ -12,3 +12,5 @@ lib
 
 yarn.lock
 .eslintcache
+
+.idea
