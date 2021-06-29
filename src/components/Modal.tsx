@@ -15,6 +15,7 @@ declare global {
   // tslint:disable-next-line
   interface Window {
     ethereum: any;
+    BinanceChain: any;
     web3: any;
     updateWeb3Modal: any;
   }
