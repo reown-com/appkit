@@ -1,0 +1,1 @@
+{"version":3,"file":"arkane.d.ts","sourceRoot":"","sources":["../../../src/providers/connectors/arkane.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,yBAAyB,EAAE,MAAM,eAAe,CAAC;AAE1D,MAAM,WAAW,uBAAwB,SAAQ,yBAAyB;IACxE,QAAQ,EAAE,MAAM,CAAC;IACjB,OAAO,CAAC,EAAE,MAAM,CAAC;IACjB,WAAW,CAAC,EAAE,MAAM,CAAC;CACtB;AAED,QAAA,MAAM,eAAe,WAAY,GAAG,QAAQ,uBAAuB,qBAsBlE,CAAC;AAEF,eAAe,eAAe,CAAC"}

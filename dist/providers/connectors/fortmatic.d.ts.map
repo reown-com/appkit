@@ -1,0 +1,1 @@
+{"version":3,"file":"fortmatic.d.ts","sourceRoot":"","sources":["../../../src/providers/connectors/fortmatic.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,yBAAyB,EAAE,MAAM,eAAe,CAAC;AAE1D,MAAM,WAAW,0BAA2B,SAAQ,yBAAyB;IAC3E,GAAG,EAAE,MAAM,CAAC;CACb;AAED,QAAA,MAAM,kBAAkB,cACX,GAAG,QACR,0BAA0B,iBAqBjC,CAAC;AAEF,eAAe,kBAAkB,CAAC"}
