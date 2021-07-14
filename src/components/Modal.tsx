@@ -1,6 +1,10 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import styled from "styled-components";
+import Spacer from "./Spacer";
+import { GrClose } from 'react-icons/gr';
+// @ts-ignore
+import FlurryIconOnly from '../assets/flurry_icon_only.png';
 
 import { Provider } from "./Provider";
 import {
@@ -89,27 +93,57 @@ interface IModalCardStyleProps {
 
 const SModalCard = styled.div<IModalCardStyleProps>`
   position: relative;
-  width: 100%;
-  background-color: ${({ themeColors }) => themeColors.background};
-  border-radius: 12px;
-  margin: 10px;
-  padding: 0;
   opacity: ${({ show }) => (show ? 1 : 0)};
   visibility: ${({ show }) => (show ? "visible" : "hidden")};
   pointer-events: ${({ show }) => (show ? "auto" : "none")};
 
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : "800px")};
-  min-width: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 380px;
+  border-radius: 15px;
+  background-color: white;
+  margin: 3rem auto;
+  padding:1.2rem 1rem;
   max-height: 100%;
   overflow: auto;
-
-  @media screen and (max-width: 768px) {
-    max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : "500px")};
-    grid-template-columns: 1fr;
-  }
 `;
+
+
+export const SCloseBtn = styled(GrClose)`
+    align-self: flex-end;
+    opacity: 0.3;
+    margin-right: 0.5rem;
+    cursor:pointer;
+    &:hover {
+        opacity: 1;
+    }
+`;
+
+export const SLogo = styled.img`
+    max-width: 70px;
+    height: auto;
+`;
+
+export const STitle = styled.h5`
+    font-weight: normal;
+    font-size: 0.9rem;
+    text-align: center;
+`;
+
+
+export const SProvidersContainer = styled.div`
+    width: 100%;
+`;
+
+export const STestnetMessage = styled.div`
+    font-size: 0.9rem;
+    width: fit-content;
+    padding: .5rem 1rem;
+    color: #000000;
+    text-align: center;
+`;
+
 
 interface IModalProps {
   themeColors: ThemeColors;
@@ -189,17 +223,27 @@ export class Modal extends React.Component<IModalProps, IModalState> {
             maxWidth={userOptions.length < 3 ? 500 : 800}
             ref={c => (this.mainModalCard = c)}
           >
-            {userOptions.map(provider =>
-              !!provider ? (
-                <Provider
-                  name={provider.name}
-                  logo={provider.logo}
-                  description={provider.description}
-                  themeColors={themeColors}
-                  onClick={provider.onClick}
-                />
-              ) : null
-            )}
+            <SCloseBtn onClick={onClose} />
+            <Spacer axis="vertical" size={20}/>
+            <SLogo src={FlurryIconOnly} alt="Flurry logo"/>
+            <Spacer axis="vertical" size={15}/>
+            <STitle><b>Connect a wallet</b><br/> and start using Flurry</STitle>
+            <Spacer axis="vertical" size={20}/>
+            <SProvidersContainer >
+              {userOptions.map(provider =>
+                !!provider ? (
+                  <>
+                    <Provider
+                      name={provider.name}
+                      logo={provider.logo}
+                      onClick={provider.onClick}
+                    />
+                    <Spacer axis="vertical" size={20}/>
+                  </>
+                ) : null
+              )}
+            </SProvidersContainer>
+            <STestnetMessage>This pre-release of Flurry will only work on <b>Ropsten</b> or <b>Kovan</b> tesnet</STestnetMessage>
           </SModalCard>
         </SModalContainer>
       </SLightbox>
