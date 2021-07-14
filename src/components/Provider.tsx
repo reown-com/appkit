@@ -14,7 +14,7 @@ const SName = styled.h6`
 `;
 
 
-export const SRightChevron = styled(FaChevronRight)`
+const SRightChevron = styled(FaChevronRight)`
     justify-self: flex-end;
     color:#2552ff;
 `;

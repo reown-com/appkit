@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import styled from "styled-components";
-import Spacer from "./Spacer";
 import { GrClose } from 'react-icons/gr';
 // @ts-ignore
 import FlurryIconOnly from '../assets/flurry_icon_only.png';
@@ -14,6 +13,27 @@ import {
   MODAL_CARD_CLASSNAME
 } from "../constants";
 import { SimpleFunction, IProviderUserOptions, ThemeColors } from "../helpers";
+
+interface SpacerProps { 
+    axis?: 'horizontal' | 'vertical';
+    size: number ;
+};
+
+function getHeight({ axis, size }: SpacerProps) {
+  return axis === 'horizontal' ? 1 : size;
+}
+
+function getWidth({ axis, size }: SpacerProps) {
+  return axis === 'vertical' ? 1 : size;
+}
+
+const Spacer = styled.span`
+  display: block;
+  width: ${getWidth}px;
+  min-width: ${getWidth}px;
+  height: ${getHeight}px;
+  min-height: ${getHeight}px;
+`;
 
 declare global {
   // tslint:disable-next-line
@@ -110,7 +130,7 @@ const SModalCard = styled.div<IModalCardStyleProps>`
 `;
 
 
-export const SCloseBtn = styled(GrClose)`
+const SCloseBtn = styled(GrClose)`
     align-self: flex-end;
     opacity: 0.3;
     margin-right: 0.5rem;
@@ -120,23 +140,23 @@ export const SCloseBtn = styled(GrClose)`
     }
 `;
 
-export const SLogo = styled.img`
+const SLogo = styled.img`
     max-width: 70px;
     height: auto;
 `;
 
-export const STitle = styled.h5`
+const STitle = styled.h5`
     font-weight: normal;
     font-size: 0.9rem;
     text-align: center;
 `;
 
 
-export const SProvidersContainer = styled.div`
+const SProvidersContainer = styled.div`
     width: 100%;
 `;
 
-export const STestnetMessage = styled.div`
+const STestnetMessage = styled.div`
     font-size: 0.9rem;
     width: fit-content;
     padding: .5rem 1rem;
