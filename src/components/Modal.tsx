@@ -2,6 +2,7 @@ import * as React from "react";
 import * as PropTypes from "prop-types";
 import styled from "styled-components";
 import { GrClose } from 'react-icons/gr';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 // @ts-ignore
 import FlurryIconOnly from '../assets/flurry_icon_only.png';
 
@@ -164,6 +165,17 @@ const STestnetMessage = styled.div`
     text-align: center;
 `;
 
+const SShowMoreBtn = styled.button`
+  cursor:pointer;
+  outline: none;
+  border: none;
+  background-color: transparent;
+  opacity: 0.6; 
+  & svg {
+    vertical-align: bottom;
+  }
+`;
+
 
 interface IModalProps {
   themeColors: ThemeColors;
@@ -176,12 +188,16 @@ interface IModalProps {
 interface IModalState {
   show: boolean;
   lightboxOffset: number;
+  showAllProviders: boolean;
 }
 
 const INITIAL_STATE: IModalState = {
   show: false,
-  lightboxOffset: 0
+  lightboxOffset: 0,
+  showAllProviders: false,
 };
+
+const MAX_PROVIDER_COUNT = 3;
 
 export class Modal extends React.Component<IModalProps, IModalState> {
   constructor(props: IModalProps) {
@@ -250,8 +266,13 @@ export class Modal extends React.Component<IModalProps, IModalState> {
             <STitle><b>Connect a wallet</b><br/> and start using Flurry</STitle>
             <Spacer axis="vertical" size={20}/>
             <SProvidersContainer >
-              {userOptions.map(provider =>
-                !!provider ? (
+              {userOptions.map((provider, index) =>
+              {
+                if(!this.state.showAllProviders && index > MAX_PROVIDER_COUNT-1){
+                  return null;
+                }
+
+                return !!provider ? (
                   <>
                     <Provider
                       name={provider.name}
@@ -260,9 +281,12 @@ export class Modal extends React.Component<IModalProps, IModalState> {
                     />
                     <Spacer axis="vertical" size={20}/>
                   </>
-                ) : null
+                ) : null;
+              }
               )}
             </SProvidersContainer>
+            <SShowMoreBtn onClick={() => this.setState({showAllProviders: !this.state.showAllProviders})}>{!this.state.showAllProviders ? <>Show more wallets <FaChevronDown size={12} /></> : <>Show less wallets <FaChevronUp size={12}/></>}</SShowMoreBtn>
+            <Spacer axis="vertical" size={20}/>
             <STestnetMessage>This pre-release of Flurry will only work on <b>Ropsten</b> or <b>Kovan</b> tesnet</STestnetMessage>
           </SModalCard>
         </SModalContainer>
