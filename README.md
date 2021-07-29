@@ -28,6 +28,7 @@ _Open a PR to add your project to the list!_
 - [Dapparatus](https://github.com/austintgriffith/dapparatus/)
 - [Totle Swap](https://swap.totle.com/)
 - [Win Or Lose](https://www.winorlose.live/)
+- [Forever in Ether](https://ineth.net/)
 - etc
 
 ## Related Efforts
