@@ -1,4 +1,5 @@
 import injected from "./injected";
+import boltx from "./boltx";
 import walletconnect from "./walletconnect";
 import portis from "./portis";
 import fortmatic from "./fortmatic";
@@ -14,6 +15,7 @@ import frame from "./frame";
 export {
   injected,
   walletconnect,
+  boltx,
   portis,
   torus,
   fortmatic,
