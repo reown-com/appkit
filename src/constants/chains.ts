@@ -223,12 +223,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "matic",
     networkId: 137
   },
-  42161: : {
+  42161: {
     chainId: 42161,
     chain: "ETH",
     network: "arbitrum",
     networkId: 42161
-  }
+  },
   80001: {
     chainId: 80001,
     chain: "MUMBAI",
