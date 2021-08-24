@@ -14,7 +14,8 @@
     "arkane",
     "torus",
     "authereum",
-    "frame"
+    "frame",
+    "walletlink"
   ],
   "author": "Web3Modal <web3modal.com>",
   "license": "MIT",
