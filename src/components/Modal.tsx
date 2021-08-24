@@ -287,7 +287,6 @@ export class Modal extends React.Component<IModalProps, IModalState> {
             </SProvidersContainer>
             {userOptions.length > MAX_PROVIDER_COUNT && <SShowMoreBtn onClick={() => this.setState({showAllProviders: !this.state.showAllProviders})}>{!this.state.showAllProviders ? <>Show more wallets <FaChevronDown size={12} /></> : <>Show less wallets <FaChevronUp size={12}/></>}</SShowMoreBtn>}
             <Spacer axis="vertical" size={20}/>
-            <STestnetMessage>This pre-release of Flurry will only work on <b>Ropsten</b> or <b>Kovan</b> tesnet</STestnetMessage>
           </SModalCard>
         </SModalContainer>
       </SLightbox>
