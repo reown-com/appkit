@@ -157,14 +157,6 @@ const SProvidersContainer = styled.div`
     width: 100%;
 `;
 
-const STestnetMessage = styled.div`
-    font-size: 0.9rem;
-    width: fit-content;
-    padding: .5rem 1rem;
-    color: #000000;
-    text-align: center;
-`;
-
 const SShowMoreBtn = styled.button`
   cursor:pointer;
   outline: none;
