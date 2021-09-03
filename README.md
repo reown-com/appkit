@@ -89,10 +89,10 @@ const web3Modal = new Web3Modal({
   providerOptions // required
 });
 
-const provider = await web3Modal.connect();
+const instance = await web3Modal.connect();
 
-const ethersProvider = new ethers.providers.Web3Provider(provider);
-const signer = ethersProvider.getSigner();
+const provider = new ethers.providers.Web3Provider(instance);
+const signer = provider.getSigner();
 ```
 
 
