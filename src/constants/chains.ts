@@ -229,6 +229,24 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "arbitrum",
     networkId: 42161
   },
+  42220: {
+    chainId: 42220,
+    chain: "CELO",
+    network: "celo",
+    networkId: 42220
+  },
+  44787: {
+    chainId: 44787,
+    chain: "CELO",
+    network: "celo-alfajores",
+    networkId: 44787
+  },
+  62320: {
+    chainId: 62320,
+    chain: "CELO",
+    network: "celo-baklava",
+    networkId: 62320
+  },
   80001: {
     chainId: 80001,
     chain: "MUMBAI",

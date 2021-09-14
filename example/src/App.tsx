@@ -184,6 +184,7 @@ class App extends React.Component<any, any> {
 
     await this.subscribeProvider(provider);
 
+    await provider.enable()
     const web3: any = initWeb3(provider);
 
     const accounts = await web3.eth.getAccounts();
