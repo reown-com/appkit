@@ -49,6 +49,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "ubiq-testnet",
     networkId: 2
   },
+  10: {
+    chainId: 10,
+    chain: "ETH",
+    network: "optimism",
+    networkId: 10
+  },
   11: {
     chainId: 11,
     chain: "META",
@@ -120,6 +126,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     chain: "ELLA",
     network: "ellaism",
     networkId: 64
+  },
+  69: {
+    chainId: 69,
+    chain: "ETH",
+    network: "optimism-kovan",
+    networkId: 69
   },
   76: {
     chainId: 76,
@@ -204,5 +216,41 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     chain: "CLO",
     network: "callisto-testnet",
     networkId: 2
+  },
+  137: {
+    chainId: 137,
+    chain: "MATIC",
+    network: "matic",
+    networkId: 137
+  },
+  42161: {
+    chainId: 42161,
+    chain: "ETH",
+    network: "arbitrum",
+    networkId: 42161
+  },
+  80001: {
+    chainId: 80001,
+    chain: "MUMBAI",
+    network: "mumbai",
+    networkId: 80001
+  },
+  246529: {
+    chainId: 246529,
+    chain: "ARTIS sigma1",
+    network: "artis-s1",
+    networkId: 246529
+  },
+  246785: {
+    chainId: 246785,
+    chain: "ARTIS tau1",
+    network: "artis-t1",
+    networkId: 246785
+  },
+  421611: {
+    chainId: 421611,
+    chain: "ETH",
+    network: "arbitrum-rinkeby",
+    networkId: 421611
   }
 };

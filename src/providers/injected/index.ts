@@ -26,6 +26,8 @@ import TokenaryLogo from "../logos/tokenary.png";
 import OperaLogo from "../logos/opera.svg";
 // @ts-ignore
 import FrameLogo from "../logos/frame.svg";
+// @ts-ignore
+import LiqualityLogo from "../logos/liquality.png";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -129,4 +131,12 @@ export const FRAMEINJECTED: IProviderInfo = {
   logo: FrameLogo,
   type: "injected",
   check: "isFrame"
+};
+
+export const LIQUALITY: IProviderInfo = {
+  id: "injected",
+  name: "Liquality",
+  logo: LiqualityLogo,
+  type: "injected",
+  check: "isLiquality"
 };

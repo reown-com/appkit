@@ -3,8 +3,6 @@ import WalletConnectLogo from "../logos/walletconnect-circle.svg";
 // @ts-ignore
 import PortisLogo from "../logos/portis.svg";
 // @ts-ignore
-import SquarelinkLogo from "../logos/squarelink.svg";
-// @ts-ignore
 import FortmaticLogo from "../logos/fortmatic.svg";
 // @ts-ignore
 import ArkaneLogo from "../logos/arkane.svg";
@@ -14,8 +12,6 @@ import TorusLogo from "../logos/torus.svg";
 import AuthereumLogo from "../logos/authereum.svg";
 // @ts-ignore
 import BurnerWalletLogo from "../logos/burnerwallet.png";
-// @ts-ignore
-import UniLoginLogo from "../logos/unilogin.svg";
 // @ts-ignore
 import MEWwallet from "../logos/mewwallet.png";
 // @ts-ignore
@@ -62,17 +58,6 @@ export const FORTMATIC: IProviderInfo = {
   }
 };
 
-export const SQUARELINK: IProviderInfo = {
-  id: "squarelink",
-  name: "Squarelink",
-  logo: SquarelinkLogo,
-  type: "web",
-  check: "isSquarelink",
-  package: {
-    required: ["id"]
-  }
-};
-
 export const TORUS: IProviderInfo = {
   id: "torus",
   name: "Torus",
@@ -106,14 +91,6 @@ export const BURNERCONNECT: IProviderInfo = {
   logo: BurnerWalletLogo,
   type: "web",
   check: "isBurnerProvider"
-};
-
-export const UNILOGIN: IProviderInfo = {
-  id: "unilogin",
-  name: "UniLogin",
-  logo: UniLoginLogo,
-  check: "isUniLogin",
-  type: "web"
 };
 
 export const MEWCONNECT: IProviderInfo = {
