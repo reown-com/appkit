@@ -3,7 +3,7 @@ import walletconnect from "./walletconnect";
 import portis from "./portis";
 import fortmatic from "./fortmatic";
 import torus from "./torus";
-import arkane from "./arkane";
+import venly from "./venly";
 import authereum from "./authereum";
 import burnerconnect from "./burnerconnect";
 import mewconnect from "./mewconnect";
@@ -17,7 +17,7 @@ export {
   portis,
   torus,
   fortmatic,
-  arkane,
+  venly,
   authereum,
   burnerconnect,
   mewconnect,
