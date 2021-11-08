@@ -68,7 +68,7 @@ export const TORUS: IProviderInfo = {
 
 export const VENLY: IProviderInfo = {
   id: "venly",
-  name: "Vanly",
+  name: "Venly",
   logo: VenlyLogo,
   type: "web",
   check: "isVenly",
