@@ -1,6 +1,6 @@
 {
-  "name": "web3modal",
-  "version": "1.9.4",
+  "name": "@flurry/web3modal",
+  "version": "1.0.0",
   "description": "A single Web3 / Ethereum provider solution for all Wallets",
   "keywords": [
     "web3",
@@ -30,13 +30,13 @@
   "files": [
     "dist"
   ],
-  "homepage": "https://github.com/web3modal/web3modal",
+  "homepage": "https://github.com/FlurryFinance/web3modal",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/web3modal/web3modal.git"
+    "url": "git+https://github.com/FlurryFinance/web3modal.git"
   },
   "bugs": {
-    "url": "https://github.com/web3modal/web3modal/issues"
+    "url": "https://github.com/FlurryFinance/web3modal/issues"
   },
   "scripts": {
     "clean": "rm -rf dist",
