@@ -25,4 +25,6 @@ const providerOptions = {
 };
 ```
 
+Check out Portis [quick start](https://docs.portis.io/#/quick-start) for more detail on options
+
 **Note:** A Portis instance is available on the provider as `provider._portis`
