@@ -1,6 +1,6 @@
 {
-  "name": "@flurry/web3modal",
-  "version": "1.0.2",
+  "name": "@fluryfinance/web3modal",
+  "version": "1.0.0",
   "description": "A single Web3 / Ethereum provider solution for all Wallets",
   "keywords": [
     "web3",
@@ -25,6 +25,8 @@
   "typings": "dist/index.d.ts",
   "directories": {
     "dist": "dist",
+    "doc": "docs",
+    "example": "example",
     "test": "test"
   },
   "files": [
