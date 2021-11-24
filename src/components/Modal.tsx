@@ -1,10 +1,10 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import styled from "styled-components";
-import { GrClose } from 'react-icons/gr';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { GrClose } from "react-icons/gr";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 // @ts-ignore
-import FlurryIconOnly from '../assets/flurry_icon_only.png';
+import FlurryIconOnly from "../assets/flurry_icon_only.png";
 
 import { Provider } from "./Provider";
 import {
@@ -15,17 +15,17 @@ import {
 } from "../constants";
 import { SimpleFunction, IProviderUserOptions, ThemeColors } from "../helpers";
 
-interface SpacerProps { 
-    axis?: 'horizontal' | 'vertical';
-    size: number ;
-};
+interface SpacerProps {
+  axis?: "horizontal" | "vertical";
+  size: number;
+}
 
 function getHeight({ axis, size }: SpacerProps) {
-  return axis === 'horizontal' ? 1 : size;
+  return axis === "horizontal" ? 1 : size;
 }
 
 function getWidth({ axis, size }: SpacerProps) {
-  return axis === 'vertical' ? 1 : size;
+  return axis === "vertical" ? 1 : size;
 }
 
 const Spacer = styled.span`
@@ -42,6 +42,7 @@ declare global {
     ethereum: any;
     web3: any;
     updateWeb3Modal: any;
+    binanceSmartChain: any;
   }
 }
 
@@ -125,49 +126,46 @@ const SModalCard = styled.div<IModalCardStyleProps>`
   border-radius: 15px;
   background-color: white;
   margin: 3rem auto;
-  padding:1.2rem 1rem;
+  padding: 1.2rem 1rem;
   max-height: 100%;
   overflow: auto;
 `;
 
-
 const SCloseBtn = styled(GrClose)`
-    align-self: flex-end;
-    opacity: 0.3;
-    margin-right: 0.5rem;
-    cursor:pointer;
-    &:hover {
-        opacity: 1;
-    }
+  align-self: flex-end;
+  opacity: 0.3;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  &:hover {
+    opacity: 1;
+  }
 `;
 
 const SLogo = styled.img`
-    max-width: 70px;
-    height: auto;
+  max-width: 70px;
+  height: auto;
 `;
 
 const STitle = styled.h5`
-    font-weight: normal;
-    font-size: 0.9rem;
-    text-align: center;
+  font-weight: normal;
+  font-size: 0.9rem;
+  text-align: center;
 `;
 
-
 const SProvidersContainer = styled.div`
-    width: 100%;
+  width: 100%;
 `;
 
 const SShowMoreBtn = styled.button`
-  cursor:pointer;
+  cursor: pointer;
   outline: none;
   border: none;
   background-color: transparent;
-  opacity: 0.6; 
+  opacity: 0.6;
   & svg {
     vertical-align: bottom;
   }
 `;
-
 
 interface IModalProps {
   themeColors: ThemeColors;
@@ -186,7 +184,7 @@ interface IModalState {
 const INITIAL_STATE: IModalState = {
   show: false,
   lightboxOffset: 0,
-  showAllProviders: false,
+  showAllProviders: false
 };
 
 const MAX_PROVIDER_COUNT = 3;
@@ -252,18 +250,23 @@ export class Modal extends React.Component<IModalProps, IModalState> {
             ref={c => (this.mainModalCard = c)}
           >
             <SCloseBtn onClick={onClose} />
-            <Spacer axis="vertical" size={20}/>
-            <SLogo src={FlurryIconOnly} alt="Flurry logo"/>
-            <Spacer axis="vertical" size={15}/>
-            <STitle><b>Connect a wallet</b><br/> and start using Flurry</STitle>
-            <Spacer axis="vertical" size={20}/>
-            <SProvidersContainer >
-              {userOptions.map((provider, index) =>
-              {
-                if(!this.state.showAllProviders && index > MAX_PROVIDER_COUNT-1){
+            <Spacer axis="vertical" size={20} />
+            <SLogo src={FlurryIconOnly} alt="Flurry logo" />
+            <Spacer axis="vertical" size={15} />
+            <STitle>
+              <b>Connect a wallet</b>
+              <br /> and start using Flurry
+            </STitle>
+            <Spacer axis="vertical" size={20} />
+            <SProvidersContainer>
+              {userOptions.map((provider, index) => {
+                if (
+                  !this.state.showAllProviders &&
+                  index > MAX_PROVIDER_COUNT - 1
+                ) {
                   return null;
                 }
-
+                console.log("provider", provider);
                 return !!provider ? (
                   <>
                     <Provider
@@ -271,14 +274,31 @@ export class Modal extends React.Component<IModalProps, IModalState> {
                       logo={provider.logo}
                       onClick={provider.onClick}
                     />
-                    <Spacer axis="vertical" size={20}/>
+                    <Spacer axis="vertical" size={20} />
                   </>
                 ) : null;
-              }
-              )}
+              })}
             </SProvidersContainer>
-            {userOptions.length > MAX_PROVIDER_COUNT && <SShowMoreBtn onClick={() => this.setState({showAllProviders: !this.state.showAllProviders})}>{!this.state.showAllProviders ? <>Show more wallets <FaChevronDown size={12} /></> : <>Show less wallets <FaChevronUp size={12}/></>}</SShowMoreBtn>}
-            <Spacer axis="vertical" size={20}/>
+            {userOptions.length > MAX_PROVIDER_COUNT && (
+              <SShowMoreBtn
+                onClick={() =>
+                  this.setState({
+                    showAllProviders: !this.state.showAllProviders
+                  })
+                }
+              >
+                {!this.state.showAllProviders ? (
+                  <>
+                    Show more wallets <FaChevronDown size={12} />
+                  </>
+                ) : (
+                  <>
+                    Show less wallets <FaChevronUp size={12} />
+                  </>
+                )}
+              </SShowMoreBtn>
+            )}
+            <Spacer axis="vertical" size={20} />
           </SModalCard>
         </SModalContainer>
       </SLightbox>

@@ -11,7 +11,7 @@ import Fortmatic from "fortmatic";
 import Torus from "@toruslabs/torus-embed";
 import Authereum from "authereum";
 import { Bitski } from "bitski";
-import WalletLink from "walletlink"
+import WalletLink from "walletlink";
 
 import Button from "./components/Button";
 import Column from "./components/Column";
@@ -243,6 +243,7 @@ class App extends React.Component<any, any> {
       torus: {
         package: Torus
       },
+
       fortmatic: {
         package: Fortmatic,
         options: {

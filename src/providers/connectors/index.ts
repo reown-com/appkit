@@ -11,9 +11,11 @@ import dcentwallet from "./dcentwallet";
 import bitski from "./bitski";
 import frame from "./frame";
 import walletlink from "./walletlink";
+import coin98 from "./coin98";
 
 export {
   injected,
+  coin98,
   walletconnect,
   portis,
   torus,

@@ -22,6 +22,8 @@ import BitskiLogo from "../logos/bitski.svg";
 import FrameLogo from "../logos/frame.svg";
 // @ts-ignore
 import CoinbaseLogo from "../logos/coinbase.svg";
+// @ts-ignore
+import Coin98Logo from "../logos/coin98.png";
 
 import { IProviderInfo } from "../../helpers";
 
@@ -37,6 +39,14 @@ export const WALLETCONNECT: IProviderInfo = {
     required: [["infuraId", "rpc"]]
   }
 };
+
+// export const COIN98: IProviderInfo = {
+//   id: "coin98",
+//   name: "Coin98",
+//   logo: Coin98Logo,
+//   type: "injected",
+//   check: "isCoin98"
+// };
 
 export const PORTIS: IProviderInfo = {
   id: "portis",

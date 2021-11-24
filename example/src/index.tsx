@@ -19,6 +19,7 @@ declare global {
     box: any;
     space: any;
     [name: string]: any;
+    binanceSmartChain: any;
   }
 }
 

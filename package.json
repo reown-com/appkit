@@ -41,9 +41,9 @@
     "url": "https://github.com/FlurryFinance/web3modal/issues"
   },
   "scripts": {
-    "clean": "rm -rf dist",
-    "clean:example": "rm -rf example/build",
-    "clean:node_modules": "rm -rf node_modules && cd example && rm -rf node_modules",
+    "clean": "rimraf dist",
+    "clean:example": "rimraf example/build",
+    "clean:node_modules": "rimraf node_modules && cd example && rimraf node_modules",
     "clean:all": "npm run clean && npm run clean:example && npm run clean:node_modules",
     "bootstrap": "npm install && cd example && npm install",
     "start": "npm run check && cd example && npm run start",
@@ -76,6 +76,7 @@
     "isomorphic-fetch": "^2.2.1",
     "mocha": "5.2.0",
     "prettier": "^1.18.2",
+    "rimraf": "^3.0.2",
     "terser": "^3.14.1",
     "ts-loader": "^5.3.3",
     "tslint": "^5.18.0",

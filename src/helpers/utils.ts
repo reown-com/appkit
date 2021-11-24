@@ -17,14 +17,15 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
   };
   if (result.injectedAvailable) {
     let fallbackProvider = true;
-    Object.values(injected).forEach(provider => {
-      const isAvailable = verifyInjectedProvider(provider.check);
-      if (isAvailable) {
-        result[provider.check] = true;
-        fallbackProvider = false;
-      }
-    });
-
+    Object.values(injected)
+      .filter(i => !i.isVip)
+      .forEach(provider => {
+        const isAvailable = verifyInjectedProvider(provider.check);
+        if (isAvailable) {
+          result[provider.check] = true;
+          fallbackProvider = false;
+        }
+      });
     const browser = env.detect();
 
     if (browser && browser.name === "opera") {
@@ -36,7 +37,6 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
       result[injected.FALLBACK.check] = true;
     }
   }
-
   return result;
 }
 
@@ -46,6 +46,10 @@ export function verifyInjectedProvider(check: string): boolean {
     : window.web3 &&
         window.web3.currentProvider &&
         window.web3.currentProvider[check];
+}
+
+export function getVipInjectedProviders(): IProviderInfo[] {
+  return Object.values(injected).filter(i => i.isVip);
 }
 
 export function getInjectedProvider(): IProviderInfo | null {
@@ -58,6 +62,7 @@ export function getInjectedProvider(): IProviderInfo | null {
     const checks = Object.keys(injectedProviders);
     result = getProviderInfoFromChecksArray(checks);
   }
+
   return result;
 }
 
@@ -78,6 +83,7 @@ export function getProviderInfoFromChecksArray(
   checks: string[]
 ): IProviderInfo {
   const check = filterProviderChecks(checks);
+
   return filterProviders("check", check);
 }
 

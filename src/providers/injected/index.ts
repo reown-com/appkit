@@ -28,6 +28,8 @@ import OperaLogo from "../logos/opera.svg";
 import FrameLogo from "../logos/frame.svg";
 // @ts-ignore
 import LiqualityLogo from "../logos/liquality.png";
+// @ts-ignore
+import Coin98Logo from "../logos/coin98.png";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -43,6 +45,15 @@ export const METAMASK: IProviderInfo = {
   logo: MetaMaskLogo,
   type: "injected",
   check: "isMetaMask"
+};
+
+export const COIN98: IProviderInfo = {
+  id: "coin98",
+  name: "Coin 98",
+  logo: Coin98Logo,
+  type: "injected",
+  check: "isCoin98",
+  isVip: true
 };
 
 export const SAFE: IProviderInfo = {
