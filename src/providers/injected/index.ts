@@ -53,7 +53,8 @@ export const COIN98: IProviderInfo = {
   logo: Coin98Logo,
   type: "injected",
   check: "isCoin98",
-  isVip: true
+  isVip: true,
+  url: "https://docs.coin98.com/products/coin98-wallet"
 };
 
 export const SAFE: IProviderInfo = {

@@ -3,7 +3,8 @@ import {
   CONNECT_EVENT,
   ERROR_EVENT,
   INJECTED_PROVIDER_ID,
-  CACHED_PROVIDER_KEY
+  CACHED_PROVIDER_KEY,
+  MESSAGE_EVENT
 } from "../constants";
 import {
   isMobile,
@@ -93,11 +94,7 @@ export class ProviderController {
   }
 
   public shouldDisplayProvider(id: string) {
-    // wow this if hell
     const provider = this.getProvider(id);
-    // if (id === COIN98_ID) {
-    //   return true;
-    // }
     if (typeof provider !== "undefined") {
       const providerPackageOptions = this.providerOptions[id];
       if (providerPackageOptions) {
@@ -221,7 +218,12 @@ export class ProviderController {
         this.setCachedProvider(id);
       }
     } catch (error) {
-      this.eventController.trigger(ERROR_EVENT);
+      if (this.vipInjectedProviders.map(({ id }) => id).includes(id)) {
+        const provider = this.vipInjectedProviders.filter(({ id }) => id)[0];
+        this.eventController.trigger(MESSAGE_EVENT, provider);
+      } else {
+        this.eventController.trigger(ERROR_EVENT);
+      }
     }
   };
 

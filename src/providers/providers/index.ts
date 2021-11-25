@@ -40,14 +40,6 @@ export const WALLETCONNECT: IProviderInfo = {
   }
 };
 
-// export const COIN98: IProviderInfo = {
-//   id: "coin98",
-//   name: "Coin98",
-//   logo: Coin98Logo,
-//   type: "injected",
-//   check: "isCoin98"
-// };
-
 export const PORTIS: IProviderInfo = {
   id: "portis",
   name: "Portis",

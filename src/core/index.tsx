@@ -12,7 +12,8 @@ import {
   WEB3_CONNECT_MODAL_ID,
   CONNECT_EVENT,
   ERROR_EVENT,
-  CLOSE_EVENT
+  CLOSE_EVENT,
+  MESSAGE_EVENT
 } from "../constants";
 import { themesList } from "../themes";
 import { Modal } from "../components";
@@ -58,6 +59,13 @@ export class Core {
     );
     this.providerController.on(ERROR_EVENT, error => this.onError(error));
 
+    this.providerController.on(MESSAGE_EVENT, provider =>
+      this.updateState({
+        showMessage: true,
+        messageProviderId: provider.id,
+        messageProviderUrl: provider.url
+      })
+    );
     this.userOptions = this.providerController.getUserOptions();
     this.renderModal();
   }

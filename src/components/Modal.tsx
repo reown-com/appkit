@@ -107,6 +107,10 @@ const SHitbox = styled.div`
   bottom: 0;
 `;
 
+const SMessage = styled.p`
+  font-size: 10px;
+`;
+
 interface IModalCardStyleProps {
   show: boolean;
   themeColors: ThemeColors;
@@ -179,12 +183,18 @@ interface IModalState {
   show: boolean;
   lightboxOffset: number;
   showAllProviders: boolean;
+  showMessage: boolean;
+  messageProviderId: string;
+  messageProviderUrl: string;
 }
 
 const INITIAL_STATE: IModalState = {
   show: false,
   lightboxOffset: 0,
-  showAllProviders: false
+  showAllProviders: false,
+  showMessage: false,
+  messageProviderId: "",
+  messageProviderUrl: ""
 };
 
 const MAX_PROVIDER_COUNT = 3;
@@ -228,7 +238,13 @@ export class Modal extends React.Component<IModalProps, IModalState> {
   }
 
   public render = () => {
-    const { show, lightboxOffset } = this.state;
+    const {
+      show,
+      lightboxOffset,
+      showMessage,
+      messageProviderId,
+      messageProviderUrl
+    } = this.state;
 
     const { onClose, lightboxOpacity, userOptions, themeColors } = this.props;
 
@@ -257,6 +273,16 @@ export class Modal extends React.Component<IModalProps, IModalState> {
               <b>Connect a wallet</b>
               <br /> and start using Flurry
             </STitle>
+            {showMessage && messageProviderId && messageProviderUrl && (
+              <SMessage>
+                <span>{`Seems like you do not have a ${messageProviderId} wallet. `}</span>
+                <a
+                  href={messageProviderUrl}
+                  target="_blank"
+                >{`install ${messageProviderId} `}</a>
+                <span>{"and try again!"}</span>
+              </SMessage>
+            )}
             <Spacer axis="vertical" size={20} />
             <SProvidersContainer>
               {userOptions.map((provider, index) => {
@@ -266,7 +292,7 @@ export class Modal extends React.Component<IModalProps, IModalState> {
                 ) {
                   return null;
                 }
-                console.log("provider", provider);
+
                 return !!provider ? (
                   <>
                     <Provider
