@@ -49,12 +49,12 @@ export const METAMASK: IProviderInfo = {
 
 export const COIN98: IProviderInfo = {
   id: "coin98",
-  name: "Coin 98",
+  name: "Coin98",
   logo: Coin98Logo,
   type: "injected",
   check: "isCoin98",
   isVip: true,
-  url: "https://docs.coin98.com/products/coin98-wallet"
+  url: "https://coin98.com/wallet"
 };
 
 export const SAFE: IProviderInfo = {

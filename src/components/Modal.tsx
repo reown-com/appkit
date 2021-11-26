@@ -109,6 +109,13 @@ const SHitbox = styled.div`
 
 const SMessage = styled.p`
   font-size: 10px;
+  padding: 0px 1.5rem;
+  color: #222dc3;
+  margin: 1rem 0 0 0;
+  a {
+    text-decoration: underline;
+    font-weight: bold;
+  }
 `;
 
 interface IModalCardStyleProps {
@@ -275,12 +282,12 @@ export class Modal extends React.Component<IModalProps, IModalState> {
             </STitle>
             {showMessage && messageProviderId && messageProviderUrl && (
               <SMessage>
-                <span>{`Seems like you do not have a ${messageProviderId} wallet. `}</span>
+                <span>{`Seems like you do not have a ${messageProviderId} wallet.`}</span><br />
                 <a
                   href={messageProviderUrl}
                   target="_blank"
-                >{`install ${messageProviderId} `}</a>
-                <span>{"and try again!"}</span>
+                >{`Install ${messageProviderId}`}</a>
+                <span>{" and try again!"}</span>
               </SMessage>
             )}
             <Spacer axis="vertical" size={20} />

@@ -55,14 +55,19 @@ export class Core {
     });
 
     this.providerController.on(CONNECT_EVENT, provider =>
-      this.onConnect(provider)
+      {
+        this.updateState({
+          showMessage: false,
+        });
+        this.onConnect(provider);
+      }
     );
     this.providerController.on(ERROR_EVENT, error => this.onError(error));
 
     this.providerController.on(MESSAGE_EVENT, provider =>
       this.updateState({
         showMessage: true,
-        messageProviderId: provider.id,
+        messageProviderId: provider.name,
         messageProviderUrl: provider.url
       })
     );

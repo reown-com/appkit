@@ -1,7 +1,7 @@
 // coin98 only support ethereum and BSC but not web3
 const ConnectToCoin98 = async () => {
   let provider = null;
-  if (window.ethereum || window.ethereum?.isCoin98) {
+  if (window.ethereum && window.ethereum?.isCoin98) {
     provider = window.ethereum;
 
     try {
@@ -9,7 +9,7 @@ const ConnectToCoin98 = async () => {
     } catch (error) {
       throw new Error("User Rejected");
     }
-  } else if (window.binanceSmartChain || window.binanceSmartChain?.isCoin98) {
+  } else if (window.binanceSmartChain && window.binanceSmartChain?.isCoin98) {
     provider = window.binanceSmartChain;
 
     try {
