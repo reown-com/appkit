@@ -14,7 +14,8 @@
     "arkane",
     "torus",
     "authereum",
-    "frame"
+    "frame",
+    "walletlink"
   ],
   "author": "Web3Modal <web3modal.com>",
   "license": "MIT",
@@ -88,6 +89,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "styled-components": "^5.1.1",
-    "tslib": "^1.10.0"
+    "tslib": "^1.10.0",
+    "walletlink": "^2.2.8"
   }
 }
