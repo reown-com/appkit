@@ -193,6 +193,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "freight",
     networkId: 0
   },
+  250: {
+    chainId: 250,
+    chain: "FTM",
+    network: "fantom",
+    networkId: 250
+  },
   269: {
     chainId: 269,
     chain: "HPB",
