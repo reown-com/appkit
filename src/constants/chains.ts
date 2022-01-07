@@ -49,6 +49,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "ubiq-testnet",
     networkId: 2
   },
+  10: {
+    chainId: 10,
+    chain: "ETH",
+    network: "optimism",
+    networkId: 10
+  },
   11: {
     chainId: 11,
     chain: "META",
@@ -66,6 +72,18 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     chain: "TST",
     network: "thundercore-testnet",
     networkId: 18
+  },
+  22: {
+    chainId: 22,
+    chain: "LYX",
+    network: "lukso-l14-testnet",
+    networkId: 22
+  },
+  23: {
+    chainId: 23,
+    chain: "LYX",
+    network: "lukso-l15-testnet",
+    networkId: 23
   },
   30: {
     chainId: 30,
@@ -120,6 +138,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     chain: "ELLA",
     network: "ellaism",
     networkId: 64
+  },
+  69: {
+    chainId: 69,
+    chain: "ETH",
+    network: "optimism-kovan",
+    networkId: 69
   },
   76: {
     chainId: 76,
@@ -187,6 +211,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "freight",
     networkId: 0
   },
+  250: {
+    chainId: 250,
+    chain: "FTM",
+    network: "fantom",
+    networkId: 250
+  },
   269: {
     chainId: 269,
     chain: "HPB",
@@ -217,6 +247,30 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "matic",
     networkId: 137
   },
+  42161: {
+    chainId: 42161,
+    chain: "ETH",
+    network: "arbitrum",
+    networkId: 42161
+  },
+  42220: {
+    chainId: 42220,
+    chain: "CELO",
+    network: "celo",
+    networkId: 42220
+  },
+  44787: {
+    chainId: 44787,
+    chain: "CELO",
+    network: "celo-alfajores",
+    networkId: 44787
+  },
+  62320: {
+    chainId: 62320,
+    chain: "CELO",
+    network: "celo-baklava",
+    networkId: 62320
+  },
   80001: {
     chainId: 80001,
     chain: "MUMBAI",
@@ -246,5 +300,11 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     chain: "ARTIS tau1",
     network: "artis-t1",
     networkId: 246785
+  },
+  421611: {
+    chainId: 421611,
+    chain: "ETH",
+    network: "arbitrum-rinkeby",
+    networkId: 421611
   }
 };

@@ -15,11 +15,18 @@ yarn add fortmatic
 ```typescript
 import Fortmatic from "fortmatic";
 
+// Example for Polygon/Matic:
+const customNetworkOptions = {
+    rpcUrl: 'https://rpc-mainnet.maticvigil.com',
+    chainId: 137
+}
+
 const providerOptions = {
   fortmatic: {
     package: Fortmatic, // required
     options: {
-      key: "FORTMATIC_KEY" // required
+      key: "FORTMATIC_KEY" // required,
+      network: customNetworkOptions // if we don't pass it, it will default to localhost:8454
     }
   }
 };
