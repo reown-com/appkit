@@ -164,10 +164,10 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     networkId: 88
   },
   97: {
-  chainId: 97,
-  chain: "BSC",
-  network: "binance-testnet",
-  networkId: 97
+    chainId: 97,
+    chain: "BSC",
+    network: "binance-testnet",
+    networkId: 97
   },
   99: {
     chainId: 99,
@@ -276,6 +276,18 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     chain: "MUMBAI",
     network: "mumbai",
     networkId: 80001
+  },
+  43113: {
+    chainId: 43113,
+    chain: "AVAX",
+    network: "avalanche-fuji-testnet",
+    networkId: 43113
+  },
+  43114: {
+    chainId: 43114,
+    chain: "AVAX",
+    network: "avalanche-fuji-mainnet",
+    networkId: 43114
   },
   246529: {
     chainId: 246529,
