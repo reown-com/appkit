@@ -20,7 +20,7 @@ const ConnectToWalletConnect = (
     let rpc = undefined;
     let chainId = 1;
     let qrcodeModalOptions = undefined;
-    console.log("wallet connect"); // todo remove dev item
+
     if (opts) {
       bridge = opts.bridge || bridge;
       qrcode = typeof opts.qrcode !== "undefined" ? opts.qrcode : qrcode;
