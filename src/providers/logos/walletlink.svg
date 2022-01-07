@@ -1,31 +1,25 @@
-<svg width="383" height="383" viewBox="0 0 383 383" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0)">
-<g filter="url(#filter0_dd)">
-<path d="M0.998047 0.572266L382.78 0.572266V382.354H0.998047L0.998047 0.572266Z" fill="url(#paint0_linear)"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M59.1074 191.572C59.1074 264.966 118.605 324.463 191.998 324.463C265.392 324.463 324.889 264.966 324.889 191.572C324.889 118.179 265.392 58.6816 191.998 58.6816C118.605 58.6816 59.1074 118.179 59.1074 191.572ZM158.037 148.752C153.144 148.752 149.178 152.718 149.178 157.611V225.533C149.178 230.426 153.144 234.393 158.037 234.393H225.959C230.852 234.393 234.818 230.426 234.818 225.533V157.611C234.818 152.718 230.852 148.752 225.959 148.752H158.037Z" fill="white"/>
-</g>
-</g>
-<defs>
-<filter id="filter0_dd" x="-23.002" y="-7.42773" width="429.782" height="429.782" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
-<feOffset dy="16"/>
-<feGaussianBlur stdDeviation="12"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0"/>
-<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
-<feOffset/>
-<feGaussianBlur stdDeviation="4"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0"/>
-<feBlend mode="normal" in2="effect1_dropShadow" result="effect2_dropShadow"/>
-<feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow" result="shape"/>
-</filter>
-<linearGradient id="paint0_linear" x1="191.889" y1="0.572266" x2="191.889" y2="382.354" gradientUnits="userSpaceOnUse">
-<stop stop-color="#2E66F8"/>
-<stop offset="1" stop-color="#124ADB"/>
-</linearGradient>
-<clipPath id="clip0">
-<rect width="381.782" height="381.782" fill="white" transform="translate(0.998047 0.572266)"/>
-</clipPath>
-</defs>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="383px" height="383px" viewBox="0 0 383 383" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
+    <title>walletlink</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="383" height="383" rx="64"></rect>
+        <linearGradient x1="49.9999938%" y1="0%" x2="49.9999938%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#2E66F8" offset="0%"></stop>
+            <stop stop-color="#124ADB" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="walletlink">
+            <g id="Path">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <rect stroke="#979797" x="0.5" y="0.5" width="382" height="382" rx="64"></rect>
+                <polygon fill="url(#linearGradient-3)" fill-rule="nonzero" mask="url(#mask-2)" points="0 0 383 0 383 384 0 384"></polygon>
+            </g>
+            <path d="M60.1074,191.572 C60.1074,264.966 119.605,324.463 192.998,324.463 C266.392,324.463 325.889,264.966 325.889,191.572 C325.889,118.179 266.392,58.6816 192.998,58.6816 C119.605,58.6816 60.1074,118.179 60.1074,191.572 Z M159.037,148.752 C154.144,148.752 150.178,152.718 150.178,157.611 L150.178,225.533 C150.178,230.426 154.144,234.393 159.037,234.393 L226.959,234.393 C231.852,234.393 235.818,230.426 235.818,225.533 L235.818,157.611 C235.818,152.718 231.852,148.752 226.959,148.752 L159.037,148.752 Z" id="Shape" fill="#FFFFFF"></path>
+        </g>
+    </g>
 </svg>

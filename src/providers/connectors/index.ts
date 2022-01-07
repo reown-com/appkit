@@ -11,7 +11,7 @@ import dcentwallet from "./dcentwallet";
 import bitski from "./bitski";
 import frame from "./frame";
 import binancechainwallet from "./binancechainwallet";
-import walletLink from "./walletLink";
+import walletlink from "./walletlink";
 
 export {
   injected,
@@ -27,5 +27,5 @@ export {
   bitski,
   frame,
   binancechainwallet,
-  walletLink
+  walletlink
 };

@@ -8,6 +8,7 @@ import Web3Modal from "web3modal";
 import WalletConnect from "@walletconnect/web3-provider";
 // @ts-ignore
 import Torus from "@toruslabs/torus-embed";
+// @ts-ignore
 import WalletLink from "walletlink";
 
 import Button from "./components/Button";
@@ -28,14 +29,12 @@ import {
   formatTestTransaction,
   getChainData
 } from "./helpers/utilities";
-import { IAssetData, IBoxProfile } from "./helpers/types";
+import { IAssetData } from "./helpers/types";
 import { fonts } from "./styles";
-import { openBox, getProfile } from "./helpers/box";
 import {
   ETH_SEND_TRANSACTION,
   ETH_SIGN,
   PERSONAL_SIGN,
-  BOX_GET_PROFILE,
   DAI_BALANCE_OF,
   DAI_TRANSFER
 } from "./constants";
@@ -232,6 +231,7 @@ class App extends React.Component<any, any> {
 
   public getProviderOptions = () => {
     const infuraId = process.env.REACT_APP_INFURA_ID;
+    console.log("infuraId", infuraId);
     const providerOptions = {
       walletconnect: {
         package: WalletConnect,
@@ -465,65 +465,6 @@ class App extends React.Component<any, any> {
     }
   };
 
-  public testOpenBox = async () => {
-    function getBoxProfile(
-      address: string,
-      provider: any
-    ): Promise<IBoxProfile> {
-      return new Promise(async (resolve, reject) => {
-        try {
-          await openBox(address, provider, async () => {
-            const profile = await getProfile(address);
-            resolve(profile);
-          });
-        } catch (error) {
-          reject(error);
-        }
-      });
-    }
-
-    const { address, provider } = this.state;
-
-    try {
-      // open modal
-      this.toggleModal();
-
-      // toggle pending request indicator
-      this.setState({ pendingRequest: true });
-
-      // send transaction
-      const profile = await getBoxProfile(address, provider);
-
-      let result = null;
-      if (profile) {
-        result = {
-          name: profile.name,
-          description: profile.description,
-          job: profile.job,
-          employer: profile.employer,
-          location: profile.location,
-          website: profile.website,
-          github: profile.github
-        };
-      }
-
-      // format displayed result
-      const formattedResult = {
-        action: BOX_GET_PROFILE,
-        result
-      };
-
-      // display result
-      this.setState({
-        pendingRequest: false,
-        result: formattedResult || null
-      });
-    } catch (error) {
-      console.error(error); // tslint:disable-line
-      this.setState({ pendingRequest: false, result: null });
-    }
-  };
-
   public resetApp = async () => {
     const { web3 } = this.state;
     if (web3 && web3.currentProvider && web3.currentProvider.close) {
@@ -588,10 +529,6 @@ class App extends React.Component<any, any> {
                       onClick={() => this.testContractCall(DAI_TRANSFER)}
                     >
                       {DAI_TRANSFER}
-                    </STestButton>
-
-                    <STestButton left onClick={this.testOpenBox}>
-                      {BOX_GET_PROFILE}
                     </STestButton>
                   </STestButtonContainer>
                 </Column>

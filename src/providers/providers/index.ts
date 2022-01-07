@@ -153,6 +153,6 @@ export const WALLETLINK: IProviderInfo = {
   type: "qrcode",
   check: "isWalletLink",
   package: {
-    required: [["infuraId", "rpc", "appName"]]
+    required: [["infuraId"]]
   }
 };
