@@ -9,6 +9,8 @@ const ConnectToInjected = async () => {
     }
   } else if (window.web3) {
     provider = window.web3.currentProvider;
+  } else if (window.celo) {
+    provider = window.celo;
   } else {
     throw new Error("No Web3 Provider found");
   }
