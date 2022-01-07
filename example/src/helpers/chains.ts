@@ -192,6 +192,54 @@ const supportedChains: IChainData[] = [
       contractAddress: "",
       balance: ""
     }
+  },
+  {
+    name: "Celo Mainnet",
+    short_name: "celo",
+    chain: "celo",
+    network: "mainnet",
+    chain_id: 42220,
+    network_id: 42220,
+    rpc_url: "https://forno.celo.org",
+    native_currency: {
+      symbol: "CELO",
+      name: "CELO",
+      decimals: "18",
+      contractAddress: "",
+      balance: ""
+    }
+  },
+  {
+    name: "Celo Alfajores Testnet",
+    short_name: "celo",
+    chain: "celo",
+    network: "alfajores",
+    chain_id: 44787,
+    network_id: 44787,
+    rpc_url: "https://alfajores-forno.celo-testnet.org",
+    native_currency: {
+      symbol: "CELO",
+      name: "CELO",
+      decimals: "18",
+      contractAddress: "",
+      balance: ""
+    }
+  },
+  {
+    name: "Celo Baklava Testnet",
+    short_name: "celo",
+    chain: "celo",
+    network: "baklava",
+    chain_id: 62320,
+    network_id: 62320,
+    rpc_url: "https://baklava-forno.celo-testnet.org",
+    native_currency: {
+      symbol: "CELO",
+      name: "CELO",
+      decimals: "18",
+      contractAddress: "",
+      balance: ""
+    }
   }
 ];
 
