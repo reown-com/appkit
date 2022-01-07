@@ -30,6 +30,8 @@ import FrameLogo from "../logos/frame.svg";
 import LiqualityLogo from "../logos/liquality.png";
 // @ts-ignore
 import XDEFILogo from "../logos/xdefi.svg";
+// @ts-ignore
+import CeloExtensionWalletLogo from "../logos/celoExtensionWallet.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -149,4 +151,12 @@ export const LIQUALITY: IProviderInfo = {
   logo: LiqualityLogo,
   type: "injected",
   check: "isLiquality"
+};
+
+export const CELOINJECTED: IProviderInfo = {
+  id: "injected",
+  name: "Celo extension wallet",
+  logo: CeloExtensionWalletLogo,
+  type: "injected",
+  check: "isCelo"
 };
