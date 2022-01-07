@@ -29,6 +29,7 @@ _Open a PR to add your project to the list!_
 - [Totle Swap](https://swap.totle.com/)
 - [Win Or Lose](https://www.winorlose.live/)
 - [Civilization](https://app.civfund.org/)
+- [OlympusDAO](https://app.olympusdao.finance/)
 - etc
 
 ## Related Efforts
