@@ -73,6 +73,18 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "thundercore-testnet",
     networkId: 18
   },
+  22: {
+    chainId: 22,
+    chain: "LYX",
+    network: "lukso-l14-testnet",
+    networkId: 22
+  },
+  23: {
+    chainId: 23,
+    chain: "LYX",
+    network: "lukso-l15-testnet",
+    networkId: 23
+  },
   30: {
     chainId: 30,
     chain: "RSK",
