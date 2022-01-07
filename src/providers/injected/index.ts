@@ -28,6 +28,8 @@ import OperaLogo from "../logos/opera.svg";
 import FrameLogo from "../logos/frame.svg";
 // @ts-ignore
 import LiqualityLogo from "../logos/liquality.png";
+// @ts-ignore
+import XDEFILogo from "../logos/xdefi.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -43,6 +45,14 @@ export const METAMASK: IProviderInfo = {
   logo: MetaMaskLogo,
   type: "injected",
   check: "isMetaMask"
+};
+
+export const XDEFI: IProviderInfo = {
+  id: "injected",
+  name: "XDEFI",
+  logo: XDEFILogo,
+  type: "injected",
+  check: "__XDEFI"
 };
 
 export const SAFE: IProviderInfo = {
