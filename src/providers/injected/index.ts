@@ -31,7 +31,7 @@ import LiqualityLogo from "../logos/liquality.png";
 // @ts-ignore
 import MathWalletLogo from "../logos/mathwallet.png";
 // @ts-ignore
-import RWalletLogo from "../logos/rWallet.svg";
+import RWalletLogo from "../logos/rwallet.svg";
 // @ts-ignore
 import BitpieLogo from "../logos/bitpie.svg";
 // @ts-ignore
