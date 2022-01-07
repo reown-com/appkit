@@ -138,7 +138,7 @@ export const FRAME: IProviderInfo = {
 
 export const WALLETLINK: IProviderInfo = {
   id: "walletlink",
-  name: "WalletLink",
+  name: "Coinbase Wallet",
   logo: WalletLinkLogo,
   type: "qrcode",
   check: "isWalletLink",
