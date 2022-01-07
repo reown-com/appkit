@@ -29,6 +29,8 @@ import FrameLogo from "../logos/frame.svg";
 // @ts-ignore
 import LiqualityLogo from "../logos/liquality.png";
 // @ts-ignore
+import MathWalletLogo from "../logos/mathwallet.png";
+// @ts-ignore
 import RWalletLogo from "../logos/rWallet.svg";
 // @ts-ignore
 import BitpieLogo from "../logos/bitpie.svg";
@@ -147,6 +149,14 @@ export const LIQUALITY: IProviderInfo = {
   logo: LiqualityLogo,
   type: "injected",
   check: "isLiquality"
+};
+
+export const MATHWALLET: IProviderInfo = {
+  id: "injected",
+  name: "Math Wallet",
+  logo: MathWalletLogo,
+  type: "injected",
+  check: "isMathWallet"
 };
 
 export const RWALLET: IProviderInfo = {
