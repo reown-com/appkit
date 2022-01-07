@@ -12,9 +12,11 @@
     "portis",
     "fortmatic",
     "arkane",
+    "venly",
     "torus",
     "authereum",
-    "frame"
+    "frame",
+    "walletlink"
   ],
   "author": "Web3Modal <web3modal.com>",
   "license": "MIT",
@@ -38,6 +40,7 @@
     "url": "https://github.com/web3modal/web3modal/issues"
   },
   "scripts": {
+    "prepare": "npm run clean && npm run build",
     "clean": "rm -rf dist",
     "clean:example": "rm -rf example/build",
     "clean:node_modules": "rm -rf node_modules && cd example && rm -rf node_modules",
