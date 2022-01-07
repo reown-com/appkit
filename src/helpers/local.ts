@@ -1,9 +1,8 @@
+import { isLocalStorageAvailable } from "./utils";
+
 export let local: Storage;
 
-if (
-  typeof window !== "undefined" &&
-  typeof window.localStorage !== "undefined"
-) {
+if (isLocalStorageAvailable()) {
   local = window.localStorage;
 }
 
