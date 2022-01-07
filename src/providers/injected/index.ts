@@ -30,6 +30,8 @@ import FrameLogo from "../logos/frame.svg";
 import LiqualityLogo from "../logos/liquality.png";
 // @ts-ignore
 import BitpieLogo from "../logos/bitpie.svg";
+// @ts-ignore
+import XDEFILogo from "../logos/xdefi.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -141,6 +143,14 @@ export const LIQUALITY: IProviderInfo = {
   logo: LiqualityLogo,
   type: "injected",
   check: "isLiquality"
+};
+
+export const XDEFI: IProviderInfo = {
+  id: "injected",
+  name: "XDEFI",
+  logo: XDEFILogo,
+  type: "injected",
+  check: "__XDEFI"
 };
 
 export const BITPIE: IProviderInfo = {
