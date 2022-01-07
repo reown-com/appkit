@@ -5,7 +5,7 @@ import PortisLogo from "../logos/portis.svg";
 // @ts-ignore
 import FortmaticLogo from "../logos/fortmatic.svg";
 // @ts-ignore
-import ArkaneLogo from "../logos/arkane.svg";
+import VenlyLogo from "../logos/venly.svg";
 // @ts-ignore
 import TorusLogo from "../logos/torus.svg";
 // @ts-ignore
@@ -68,12 +68,12 @@ export const TORUS: IProviderInfo = {
   check: "isTorus"
 };
 
-export const ARKANE: IProviderInfo = {
-  id: "arkane",
-  name: "Arkane",
-  logo: ArkaneLogo,
+export const VENLY: IProviderInfo = {
+  id: "venly",
+  name: "Venly",
+  logo: VenlyLogo,
   type: "web",
-  check: "isArkane",
+  check: "isVenly",
   package: {
     required: ["clientId"]
   }
