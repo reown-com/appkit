@@ -12,7 +12,7 @@ By default Web3Modal Library supports injected providers like (**Metamask**, **D
 
 You can test the library on: https://web3modal.com/
 
-![preview](./images/preview.gif)
+![preview](./images/preview.png)
 
 ## Projects using `web3modal`
 
@@ -98,7 +98,6 @@ const instance = await web3Modal.connect();
 const provider = new ethers.providers.Web3Provider(instance);
 const signer = provider.getSigner();
 ```
-
 
 ## Using in vanilla JavaScript
 
@@ -335,14 +334,14 @@ const providerOptions = {
       apiKey: "EXAMPLE_PROVIDER_API_KEY"
     },
     connector: async (ProviderPackage, options) => {
-        const provider = new ProviderPackage(options);
+      const provider = new ProviderPackage(options);
 
-        await provider.enable();
+      await provider.enable();
 
-        return provider;
+      return provider;
     }
   }
-}
+};
 ```
 
 ## Connect to specific provider
