@@ -16,6 +16,7 @@ declare global {
   interface Window {
     ethereum: any;
     web3: any;
+    celo: any;
     updateWeb3Modal: any;
   }
 }
@@ -30,8 +31,8 @@ const SLightbox = styled.div<ILightboxStyleProps>`
   transition: opacity 0.1s ease-in-out;
   text-align: center;
   position: fixed;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   margin-left: -50vw;
   top: ${({ offset }) => (offset ? `-${offset}px` : 0)};
   left: 50%;
