@@ -146,6 +146,7 @@ These are all the providers available with Web3Modal and how to configure their 
 - [DCent](./docs/providers/dcent.md)
 - [BurnerConnect](./docs/providers/burnerconnect.md)
 - [MEWConnect](./docs/providers/mewconnect.md)
+- [Binance Chain Wallet](./docs/providers/binancechainwallet.md)
 - [WalletLink](./docs/providers/walletlink.md)
 
 ## API

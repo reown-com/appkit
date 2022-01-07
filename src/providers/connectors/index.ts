@@ -10,6 +10,7 @@ import mewconnect from "./mewconnect";
 import dcentwallet from "./dcentwallet";
 import bitski from "./bitski";
 import frame from "./frame";
+import binancechainwallet from "./binancechainwallet";
 import walletLink from "./walletLink";
 
 export {
@@ -25,5 +26,6 @@ export {
   dcentwallet,
   bitski,
   frame,
+  binancechainwallet,
   walletLink
 };
