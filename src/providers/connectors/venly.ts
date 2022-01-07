@@ -1,33 +1,33 @@
 import { IAbstractConnectorOptions } from "../../helpers";
 
-export interface IArkaneConnectorOptions extends IAbstractConnectorOptions {
+export interface IVenlyConnectorOptions extends IAbstractConnectorOptions {
   clientId: string;
-  nodeUrl?: string;
+  secretType?: string;
   environment?: string;
 }
 
-const ConnectToArkane = (Arkane: any, opts: IArkaneConnectorOptions) => {
+const ConnectToVenly = (Venly: any, opts: IVenlyConnectorOptions) => {
   return new Promise(async (resolve, reject) => {
     if (opts && opts.clientId) {
       try {
         const options = {
           clientId: opts.clientId,
-          rpcUrl: opts.nodeUrl,
+          secretType: opts.secretType || 'ETHEREUM',
           environment: opts.environment,
           signMethod: "POPUP"
         };
-        const provider = await (window as any).Arkane.createArkaneProviderEngine(
+        const provider = await (window as any).Venly.createProviderEngine(
           options
         );
         return resolve(provider);
       } catch (error) {
         console.error(error);
-        return reject(new Error("Failed to login to Arkane 2"));
+        return reject(new Error("Failed to login to Venly"));
       }
     } else {
-      return reject(new Error("Please provide an Arkane client id"));
+      return reject(new Error("Please provide an Venly client id"));
     }
   });
 };
 
-export default ConnectToArkane;
+export default ConnectToVenly;
