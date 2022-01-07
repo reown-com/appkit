@@ -2,15 +2,12 @@ import * as React from "react";
 import styled from "styled-components";
 import Web3 from "web3";
 import { convertUtf8ToHex } from "@walletconnect/utils";
-
+// @ts-ignore
 import Web3Modal from "web3modal";
 // @ts-ignore
-import WalletConnectProvider from "@walletconnect/web3-provider";
+import WalletConnect from "@walletconnect/web3-provider";
 // @ts-ignore
-import Fortmatic from "fortmatic";
 import Torus from "@toruslabs/torus-embed";
-import Authereum from "authereum";
-import { Bitski } from "bitski";
 import WalletLink from "walletlink";
 
 import Button from "./components/Button";
@@ -185,7 +182,7 @@ class App extends React.Component<any, any> {
 
     await this.subscribeProvider(provider);
 
-    await provider.enable()
+    await provider.enable();
     const web3: any = initWeb3(provider);
 
     const accounts = await web3.eth.getAccounts();
@@ -237,29 +234,13 @@ class App extends React.Component<any, any> {
     const infuraId = process.env.REACT_APP_INFURA_ID;
     const providerOptions = {
       walletconnect: {
-        package: WalletConnectProvider,
+        package: WalletConnect,
         options: {
           infuraId
         }
       },
       torus: {
         package: Torus
-      },
-      fortmatic: {
-        package: Fortmatic,
-        options: {
-          key: process.env.REACT_APP_FORTMATIC_KEY
-        }
-      },
-      authereum: {
-        package: Authereum
-      },
-      bitski: {
-        package: Bitski,
-        options: {
-          clientId: process.env.REACT_APP_BITSKI_CLIENT_ID,
-          callbackUrl: window.location.href + "bitski-callback.html"
-        }
       },
       walletlink: {
         package: WalletLink,
