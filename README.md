@@ -6,7 +6,7 @@ A single Web3 / Ethereum provider solution for all Wallets
 
 Web3Modal is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
 
-By default Web3Modal Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, **Frame**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Portis**, **Fortmatic**, **Squarelink**, **Torus**, **Authereum**, **D'CENT Wallet** and **Arkane**.
+By default Web3Modal Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, **Frame**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Portis**, **Fortmatic**, **Squarelink**, **Torus**, **Authereum**, **D'CENT Wallet** and **Venly**.
 
 ## Preview
 
@@ -28,6 +28,8 @@ _Open a PR to add your project to the list!_
 - [Dapparatus](https://github.com/austintgriffith/dapparatus/)
 - [Totle Swap](https://swap.totle.com/)
 - [Win Or Lose](https://www.winorlose.live/)
+- [Civilization](https://app.civfund.org/)
+- [OlympusDAO](https://app.olympusdao.finance/)
 - etc
 
 ## Related Efforts
@@ -138,10 +140,11 @@ These are all the providers available with Web3Modal and how to configure their 
 - [Authereum](./docs/providers/authereum.md)
 - [Frame](./docs/providers/frame.md)
 - [Bitski](./docs/providers/bitski.md)
-- [Arkane](./docs/providers/arkane.md)
+- [Venly](./docs/providers/venly.md)
 - [DCent](./docs/providers/dcent.md)
 - [BurnerConnect](./docs/providers/burnerconnect.md)
 - [MEWConnect](./docs/providers/mewconnect.md)
+- [WalletLink](./docs/providers/walletlink.md)
 
 ## API
 

@@ -11,6 +11,7 @@ import Fortmatic from "fortmatic";
 import Torus from "@toruslabs/torus-embed";
 import Authereum from "authereum";
 import { Bitski } from "bitski";
+import WalletLink from "walletlink";
 
 import Button from "./components/Button";
 import Column from "./components/Column";
@@ -232,11 +233,12 @@ class App extends React.Component<any, any> {
   public getNetwork = () => getChainData(this.state.chainId).network;
 
   public getProviderOptions = () => {
+    const infuraId = process.env.REACT_APP_INFURA_ID;
     const providerOptions = {
       walletconnect: {
         package: WalletConnectProvider,
         options: {
-          infuraId: process.env.REACT_APP_INFURA_ID
+          infuraId
         }
       },
       torus: {
@@ -256,6 +258,13 @@ class App extends React.Component<any, any> {
         options: {
           clientId: process.env.REACT_APP_BITSKI_CLIENT_ID,
           callbackUrl: window.location.href + "bitski-callback.html"
+        }
+      },
+      walletlink: {
+        package: WalletLink,
+        options: {
+          appName: "Web3Modal Example App",
+          infuraId
         }
       }
     };
