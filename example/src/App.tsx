@@ -2,15 +2,14 @@ import * as React from "react";
 import styled from "styled-components";
 import Web3 from "web3";
 import { convertUtf8ToHex } from "@walletconnect/utils";
-
+// @ts-ignore
 import Web3Modal from "web3modal";
 // @ts-ignore
-import WalletConnectProvider from "@walletconnect/web3-provider";
+import WalletConnect from "@walletconnect/web3-provider";
 // @ts-ignore
-import Fortmatic from "fortmatic";
 import Torus from "@toruslabs/torus-embed";
-import Authereum from "authereum";
-import { Bitski } from "bitski";
+// @ts-ignore
+import WalletLink from "walletlink";
 
 import Button from "./components/Button";
 import Column from "./components/Column";
@@ -30,14 +29,12 @@ import {
   formatTestTransaction,
   getChainData
 } from "./helpers/utilities";
-import { IAssetData, IBoxProfile } from "./helpers/types";
+import { IAssetData } from "./helpers/types";
 import { fonts } from "./styles";
-import { openBox, getProfile } from "./helpers/box";
 import {
   ETH_SEND_TRANSACTION,
   ETH_SIGN,
   PERSONAL_SIGN,
-  BOX_GET_PROFILE,
   DAI_BALANCE_OF,
   DAI_TRANSFER
 } from "./constants";
@@ -184,6 +181,7 @@ class App extends React.Component<any, any> {
 
     await this.subscribeProvider(provider);
 
+    await provider.enable();
     const web3: any = initWeb3(provider);
 
     const accounts = await web3.eth.getAccounts();
@@ -232,30 +230,23 @@ class App extends React.Component<any, any> {
   public getNetwork = () => getChainData(this.state.chainId).network;
 
   public getProviderOptions = () => {
+    const infuraId = process.env.REACT_APP_INFURA_ID;
+    console.log("infuraId", infuraId);
     const providerOptions = {
       walletconnect: {
-        package: WalletConnectProvider,
+        package: WalletConnect,
         options: {
-          infuraId: process.env.REACT_APP_INFURA_ID
+          infuraId
         }
       },
       torus: {
         package: Torus
       },
-      fortmatic: {
-        package: Fortmatic,
+      walletlink: {
+        package: WalletLink,
         options: {
-          key: process.env.REACT_APP_FORTMATIC_KEY
-        }
-      },
-      authereum: {
-        package: Authereum
-      },
-      bitski: {
-        package: Bitski,
-        options: {
-          clientId: process.env.REACT_APP_BITSKI_CLIENT_ID,
-          callbackUrl: window.location.href + "bitski-callback.html"
+          appName: "Web3Modal Example App",
+          infuraId
         }
       }
     };
@@ -474,65 +465,6 @@ class App extends React.Component<any, any> {
     }
   };
 
-  public testOpenBox = async () => {
-    function getBoxProfile(
-      address: string,
-      provider: any
-    ): Promise<IBoxProfile> {
-      return new Promise(async (resolve, reject) => {
-        try {
-          await openBox(address, provider, async () => {
-            const profile = await getProfile(address);
-            resolve(profile);
-          });
-        } catch (error) {
-          reject(error);
-        }
-      });
-    }
-
-    const { address, provider } = this.state;
-
-    try {
-      // open modal
-      this.toggleModal();
-
-      // toggle pending request indicator
-      this.setState({ pendingRequest: true });
-
-      // send transaction
-      const profile = await getBoxProfile(address, provider);
-
-      let result = null;
-      if (profile) {
-        result = {
-          name: profile.name,
-          description: profile.description,
-          job: profile.job,
-          employer: profile.employer,
-          location: profile.location,
-          website: profile.website,
-          github: profile.github
-        };
-      }
-
-      // format displayed result
-      const formattedResult = {
-        action: BOX_GET_PROFILE,
-        result
-      };
-
-      // display result
-      this.setState({
-        pendingRequest: false,
-        result: formattedResult || null
-      });
-    } catch (error) {
-      console.error(error); // tslint:disable-line
-      this.setState({ pendingRequest: false, result: null });
-    }
-  };
-
   public resetApp = async () => {
     const { web3 } = this.state;
     if (web3 && web3.currentProvider && web3.currentProvider.close) {
@@ -597,10 +529,6 @@ class App extends React.Component<any, any> {
                       onClick={() => this.testContractCall(DAI_TRANSFER)}
                     >
                       {DAI_TRANSFER}
-                    </STestButton>
-
-                    <STestButton left onClick={this.testOpenBox}>
-                      {BOX_GET_PROFILE}
                     </STestButton>
                   </STestButtonContainer>
                 </Column>

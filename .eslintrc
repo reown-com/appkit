@@ -1,6 +1,7 @@
 {
   "parser": "babel-eslint",
   "extends": "eslint:recommended",
+  "quotes": "double",
   "rules": {
     "space-before-function-paren": ["error", "never"],
     "semi": ["error", "never"],

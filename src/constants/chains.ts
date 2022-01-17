@@ -73,6 +73,18 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "thundercore-testnet",
     networkId: 18
   },
+  22: {
+    chainId: 22,
+    chain: "LYX",
+    network: "lukso-l14-testnet",
+    networkId: 22
+  },
+  23: {
+    chainId: 23,
+    chain: "LYX",
+    network: "lukso-l15-testnet",
+    networkId: 23
+  },
   30: {
     chainId: 30,
     chain: "RSK",
@@ -151,6 +163,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "tomochain",
     networkId: 88
   },
+  97: {
+    chainId: 97,
+    chain: "BSC",
+    network: "binance-testnet",
+    networkId: 97
+  },
   99: {
     chainId: 99,
     chain: "POA",
@@ -193,6 +211,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "freight",
     networkId: 0
   },
+  250: {
+    chainId: 250,
+    chain: "FTM",
+    network: "fantom",
+    networkId: 250
+  },
   269: {
     chainId: 269,
     chain: "HPB",
@@ -229,11 +253,41 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "arbitrum",
     networkId: 42161
   },
+  42220: {
+    chainId: 42220,
+    chain: "CELO",
+    network: "celo",
+    networkId: 42220
+  },
+  44787: {
+    chainId: 44787,
+    chain: "CELO",
+    network: "celo-alfajores",
+    networkId: 44787
+  },
+  62320: {
+    chainId: 62320,
+    chain: "CELO",
+    network: "celo-baklava",
+    networkId: 62320
+  },
   80001: {
     chainId: 80001,
     chain: "MUMBAI",
     network: "mumbai",
     networkId: 80001
+  },
+  43113: {
+    chainId: 43113,
+    chain: "AVAX",
+    network: "avalanche-fuji-testnet",
+    networkId: 43113
+  },
+  43114: {
+    chainId: 43114,
+    chain: "AVAX",
+    network: "avalanche-fuji-mainnet",
+    networkId: 43114
   },
   246529: {
     chainId: 246529,
@@ -246,6 +300,18 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     chain: "ARTIS tau1",
     network: "artis-t1",
     networkId: 246785
+  },
+  1007: {
+    chainId: 1007,
+    chain: "NewChain TestNet",
+    network: "newchain-testnet",
+    networkId: 1007
+  },
+  1012: {
+    chainId: 1012,
+    chain: "NewChain MainNet",
+    network: "newchain-mainnet",
+    networkId: 1012
   },
   421611: {
     chainId: 421611,
