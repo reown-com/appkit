@@ -38,6 +38,8 @@ import BitpieLogo from "../logos/bitpie.svg";
 import XDEFILogo from "../logos/xdefi.svg";
 // @ts-ignore
 import CeloExtensionWalletLogo from "../logos/celoExtensionWallet.svg";
+// @ts-ignore
+import TallyLogo from "../logos/tally.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -189,4 +191,12 @@ export const CELOINJECTED: IProviderInfo = {
   logo: CeloExtensionWalletLogo,
   type: "injected",
   check: "isCelo"
+};
+
+export const TALLYINJECTED: IProviderInfo = {
+  id: "injected",
+  name: "Tally",
+  logo: TallyLogo,
+  type: "injected",
+  check: "isTally"
 };
