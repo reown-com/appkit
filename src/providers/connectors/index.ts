@@ -12,6 +12,7 @@ import bitski from "./bitski";
 import frame from "./frame";
 import binancechainwallet from "./binancechainwallet";
 import walletlink from "./walletlink";
+import sequence from "./sequence";
 
 export {
   injected,
@@ -27,5 +28,6 @@ export {
   bitski,
   frame,
   binancechainwallet,
-  walletlink
+  walletlink,
+  sequence
 };
