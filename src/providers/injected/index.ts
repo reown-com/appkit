@@ -5,7 +5,7 @@ import Web3DefaultLogo from "../logos/web3-default.svg";
 // @ts-ignore
 import MetaMaskLogo from "../logos/metamask.svg";
 // @ts-ignore
-import BitKeepLogo from "../logos/bitkeeplogo.png";
+import BitKeepLogo from "../logos/bitkeep.png";
 // @ts-ignore
 import SafeLogo from "../logos/safe.svg";
 // @ts-ignore
