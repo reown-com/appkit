@@ -5,6 +5,8 @@ import Web3DefaultLogo from "../logos/web3-default.svg";
 // @ts-ignore
 import MetaMaskLogo from "../logos/metamask.svg";
 // @ts-ignore
+import BitKeepLogo from "../logos/bitkeeplogo.svg";
+// @ts-ignore
 import SafeLogo from "../logos/safe.svg";
 // @ts-ignore
 import NiftyWalletLogo from "../logos/niftyWallet.png";
@@ -51,6 +53,14 @@ export const METAMASK: IProviderInfo = {
   id: "injected",
   name: "MetaMask",
   logo: MetaMaskLogo,
+  type: "injected",
+  check: "isMetaMask"
+};
+
+export const BITKEEP: IProviderInfo = {
+  id: "injected",
+  name: "Bitkeep",
+  logo: BitKeepLogo,
   type: "injected",
   check: "isMetaMask"
 };
