@@ -89,8 +89,8 @@
   "dependencies": {
     "detect-browser": "^5.1.0",
     "prop-types": "^15.7.2",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": ">= 16.8.0",
+    "react-dom": ">= 16.8.0",
     "styled-components": "^5.3.3",
     "tslib": "^1.10.0"
   }
