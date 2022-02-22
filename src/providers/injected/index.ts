@@ -62,7 +62,7 @@ export const BITKEEP: IProviderInfo = {
   name: "Bitkeep",
   logo: BitKeepLogo,
   type: "injected",
-  check: "isMetaMask"
+  check: "isBitKeep"
 };
 
 export const SAFE: IProviderInfo = {
