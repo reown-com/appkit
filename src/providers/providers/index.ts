@@ -1,6 +1,8 @@
 // @ts-ignore
 import WalletConnectLogo from "../logos/walletconnect-circle.svg";
 // @ts-ignore
+import MetaMaskLogo from "../logos/metamask.svg";
+// @ts-ignore
 import PortisLogo from "../logos/portis.svg";
 // @ts-ignore
 import FortmaticLogo from "../logos/fortmatic.svg";
@@ -38,6 +40,15 @@ export const WALLETCONNECT: IProviderInfo = {
   package: {
     required: [["infuraId", "rpc"]]
   }
+};
+
+// "METAMASK" already defined in 'injected' list, so using something else
+export const METAMASKWALLET: IProviderInfo = {
+  id: "metamask",
+  name: "MetaMask",
+  logo: MetaMaskLogo,
+  type: "injected",
+  check: "isMetaMask"
 };
 
 export const PORTIS: IProviderInfo = {

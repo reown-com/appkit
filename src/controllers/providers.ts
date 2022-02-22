@@ -127,7 +127,7 @@ export class ProviderController {
       !!this.injectedProvider && !this.disableInjectedProvider;
     const onlyInjected = displayInjected && mobile;
 
-    const providerList = [];
+    const providerList: string[] = [];
 
     if (onlyInjected) {
       providerList.push(INJECTED_PROVIDER_ID);
@@ -139,7 +139,9 @@ export class ProviderController {
       defaultProviderList.forEach((id: string) => {
         if (id !== INJECTED_PROVIDER_ID) {
           const result = this.shouldDisplayProvider(id);
-          if (result) {
+          // only push if it hasn't already been added
+          // which may happen if an entry is in both 'provider' and 'injected' lists
+          if (result && !providerList.includes(id)) {
             providerList.push(id);
           }
         }

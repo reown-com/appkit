@@ -157,6 +157,7 @@ provider.on("disconnect", (error: { code: number; message: string }) => {
 
 These are all the providers available with Web3Modal and how to configure their provider options:
 
+- [Metamask](./docs/providers/metamask.md)
 - [WalletConnect](./docs/providers/walletconnect.md)
 - [Fortmatic](./docs/providers/fortmatic.md)
 - [Torus](./docs/providers/torus.md)

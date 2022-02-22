@@ -1,4 +1,5 @@
 import injected from "./injected";
+import metamask from "./metamask";
 import walletconnect from "./walletconnect";
 import portis from "./portis";
 import fortmatic from "./fortmatic";
@@ -15,6 +16,7 @@ import walletlink from "./walletlink";
 
 export {
   injected,
+  metamask,
   walletconnect,
   portis,
   torus,
