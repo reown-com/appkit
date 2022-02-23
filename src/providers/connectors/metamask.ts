@@ -2,7 +2,7 @@ const ConnectToMetaMaskWallet = async () => {
   if ((typeof window.ethereum === 'undefined') || !window.ethereum.isMetaMask) {
     // TODO: integrate https://github.com/MetaMask/metamask-onboarding
     // open new window
-    window.open("https://metamask.app.link/dapp/web3modal", "_blank");
+    window.open("https://metamask.io/?utm_source=web3modal&utm_medium=codelib&utm_campaign=dappname", "_blank");
     return;
   }
 

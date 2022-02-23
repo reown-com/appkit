@@ -239,6 +239,9 @@ class App extends React.Component<any, any> {
           infuraId
         }
       },
+      metamask: {
+        package: true
+      },
       torus: {
         package: Torus
       },
