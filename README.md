@@ -79,7 +79,7 @@ const web3 = new Web3(provider);
 
 ## Using with [ethers.js](https://github.com/ethers-io/ethers.js/)
 
-```
+```typescript
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 
