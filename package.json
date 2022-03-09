@@ -16,7 +16,7 @@
     "torus",
     "authereum",
     "frame",
-    "walletlink"
+    "coinbasewallet"
   ],
   "author": "Web3Modal <web3modal.com>",
   "license": "MIT",

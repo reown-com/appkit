@@ -9,7 +9,7 @@ import WalletConnect from "@walletconnect/web3-provider";
 // @ts-ignore
 import Torus from "@toruslabs/torus-embed";
 // @ts-ignore
-import WalletLink from "walletlink";
+import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 
 import Button from "./components/Button";
 import Column from "./components/Column";
@@ -243,7 +243,7 @@ class App extends React.Component<any, any> {
         package: Torus
       },
       walletlink: {
-        package: WalletLink,
+        package: CoinbaseWalletSDK,
         options: {
           appName: "Web3Modal Example App",
           infuraId
