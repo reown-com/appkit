@@ -242,7 +242,7 @@ class App extends React.Component<any, any> {
       torus: {
         package: Torus
       },
-      walletlink: {
+      coinbasewallet: {
         package: CoinbaseWalletSDK,
         options: {
           appName: "Web3Modal Example App",

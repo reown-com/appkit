@@ -158,6 +158,7 @@ provider.on("disconnect", (error: { code: number; message: string }) => {
 These are all the providers available with Web3Modal and how to configure their provider options:
 
 - [WalletConnect](./docs/providers/walletconnect.md)
+- [Coinbase Wallet](./docs/providers/coinbasewallet.md)
 - [Fortmatic](./docs/providers/fortmatic.md)
 - [Torus](./docs/providers/torus.md)
 - [Portis](./docs/providers/portis.md)
@@ -169,7 +170,6 @@ These are all the providers available with Web3Modal and how to configure their 
 - [BurnerConnect](./docs/providers/burnerconnect.md)
 - [MEWConnect](./docs/providers/mewconnect.md)
 - [Binance Chain Wallet](./docs/providers/binancechainwallet.md)
-- [CoinbaseWallet](./docs/providers/walletlink.md)
 
 ## API
 

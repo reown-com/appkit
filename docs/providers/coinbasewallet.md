@@ -1,4 +1,5 @@
-# Coinbase Wallet SDK
+# Coinbase Wallet
+_(formerly WalletLink)_
 
 1. Install Provider Package
 
@@ -14,24 +15,19 @@ yarn add @coinbase/wallet-sdk
 
 ```typescript
 import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
-import WalletConnect from "@walletconnect/web3-provider";
 
 const providerOptions = {
-  walletlink: {
+  coinbasewallet: {
     package: CoinbaseWalletSDK, // Required
     options: {
       appName: "My Awesome App", // Required
       infuraId: "INFURA_ID", // Required
+      rpc: "", // Optional if `infuraId` is provided; otherwise it's required
+      chainId: 1, // Optional. It defaults to 1 if not provided
       darkMode: false // Optional. Use dark theme, defaults to false
     }
-  },
-  walletconnect: {
-   package: WalletConnect, 
-   options: {
-      infuraId: "INFURA_ID",
-   }
   }
 };
 ```
 
-[For more information on CoinbaseWallet Web3 provider](https://docs.cloud.coinbase.com/wallet-sdk/docs).
+[For more information on Coinbase Wallet Web3 provider](https://docs.cloud.coinbase.com/wallet-sdk/docs).
