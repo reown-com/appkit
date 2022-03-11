@@ -15,6 +15,7 @@ import coinbasewallet, { walletlink } from "./coinbasewallet";
 
 export {
   injected,
+  coinbasewallet,
   walletconnect,
   portis,
   torus,
@@ -27,6 +28,5 @@ export {
   bitski,
   frame,
   binancechainwallet,
-  coinbasewallet,
   walletlink
 };
