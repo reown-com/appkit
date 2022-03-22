@@ -32,6 +32,7 @@ _Open a PR to add your project to the list!_
 - [Forever in Ether](https://ineth.net/)
 - [Civilization](https://app.civfund.org/)
 - [OlympusDAO](https://app.olympusdao.finance/)
+- [The Unit](https://app.theunit.one/)
 - etc
 
 ## Related Efforts
