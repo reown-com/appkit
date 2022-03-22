@@ -1,4 +1,5 @@
 import injected from "./injected";
+import boltx from "./boltx";
 import walletconnect from "./walletconnect";
 import portis from "./portis";
 import fortmatic from "./fortmatic";
@@ -16,6 +17,7 @@ import walletlink from "./walletlink";
 export {
   injected,
   walletconnect,
+  boltx,
   portis,
   torus,
   fortmatic,
