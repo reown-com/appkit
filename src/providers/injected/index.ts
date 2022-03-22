@@ -29,6 +29,8 @@ import FrameLogo from "../logos/frame.svg";
 // @ts-ignore
 import LiqualityLogo from "../logos/liquality.png";
 // @ts-ignore
+import BoltXLogo from "../logos/boltx.svg";
+// @ts-ignore
 import MathWalletLogo from "../logos/mathwallet.png";
 // @ts-ignore
 import RWalletLogo from "../logos/rwallet.svg";
@@ -149,6 +151,14 @@ export const LIQUALITY: IProviderInfo = {
   logo: LiqualityLogo,
   type: "injected",
   check: "isLiquality"
+};
+
+export const BOLTX: IProviderInfo = {
+  id: "boltx",
+  name: "Bolt-X",
+  logo: BoltXLogo,
+  type: "injected",
+  check: "isBoltX",
 };
 
 export const MATHWALLET: IProviderInfo = {
