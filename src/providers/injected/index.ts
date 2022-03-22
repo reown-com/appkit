@@ -29,6 +29,8 @@ import FrameLogo from "../logos/frame.svg";
 // @ts-ignore
 import LiqualityLogo from "../logos/liquality.png";
 // @ts-ignore
+import BoltXLogo from "../logos/boltx.svg";
+// @ts-ignore
 import MathWalletLogo from "../logos/mathwallet.png";
 // @ts-ignore
 import RWalletLogo from "../logos/rwallet.svg";
@@ -40,7 +42,10 @@ import XDEFILogo from "../logos/xdefi.svg";
 import CeloExtensionWalletLogo from "../logos/celoExtensionWallet.svg";
 // @ts-ignore
 import BlockWalletLogo from "../logos/blockwallet.svg";
-
+// @ts-ignore
+import TallyLogo from "../logos/tally.svg";
+// @ts-ignore
+import PortalLogo from "../logos/portal.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -154,6 +159,14 @@ export const LIQUALITY: IProviderInfo = {
   check: "isLiquality"
 };
 
+export const BOLTX: IProviderInfo = {
+  id: "boltx",
+  name: "Bolt-X",
+  logo: BoltXLogo,
+  type: "injected",
+  check: "isBoltX"
+};
+
 export const MATHWALLET: IProviderInfo = {
   id: "injected",
   name: "Math Wallet",
@@ -194,10 +207,26 @@ export const CELOINJECTED: IProviderInfo = {
   check: "isCelo"
 };
 
-export const blockwallet: IProviderInfo = {
+export const BLOCKWALLET: IProviderInfo = {
   id: "injected",
   name: "BlockWallet",
   logo: BlockWalletLogo,
   type: "injected",
   check: "isBlockWallet"
+};
+
+export const TALLYINJECTED: IProviderInfo = {
+  id: "injected",
+  name: "Tally",
+  logo: TallyLogo,
+  type: "injected",
+  check: "isTally"
+};
+
+export const PORTAL: IProviderInfo = {
+  id: "injected",
+  name: "Ripio Portal",
+  logo: PortalLogo,
+  type: "injected",
+  check: "isPortal"
 };
