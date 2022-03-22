@@ -1,5 +1,6 @@
 import injected from "./injected";
 import metamask from "./metamask";
+import boltx from "./boltx";
 import walletconnect from "./walletconnect";
 import portis from "./portis";
 import fortmatic from "./fortmatic";
@@ -18,6 +19,7 @@ export {
   injected,
   metamask,
   walletconnect,
+  boltx,
   portis,
   torus,
   fortmatic,
