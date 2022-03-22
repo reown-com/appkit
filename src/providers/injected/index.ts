@@ -38,6 +38,9 @@ import BitpieLogo from "../logos/bitpie.svg";
 import XDEFILogo from "../logos/xdefi.svg";
 // @ts-ignore
 import CeloExtensionWalletLogo from "../logos/celoExtensionWallet.svg";
+// @ts-ignore
+import BlockWalletLogo from "../logos/blockwallet.svg";
+
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -189,4 +192,12 @@ export const CELOINJECTED: IProviderInfo = {
   logo: CeloExtensionWalletLogo,
   type: "injected",
   check: "isCelo"
+};
+
+export const blockwallet: IProviderInfo = {
+  id: "injected",
+  name: "BlockWallet",
+  logo: BlockWalletLogo,
+  type: "injected",
+  check: "isBlockWallet"
 };
