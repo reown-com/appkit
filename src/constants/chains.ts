@@ -85,6 +85,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "lukso-l15-testnet",
     networkId: 23
   },
+  25: {
+    chainId: 25,
+    chain: "CRO",
+    network: "cronos",
+    networkId: 25
+  },
   30: {
     chainId: 30,
     chain: "RSK",
@@ -318,5 +324,11 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     chain: "ETH",
     network: "arbitrum-rinkeby",
     networkId: 421611
+  },
+  1666600000: {
+    chainId: 1666600000,
+    chain: "ONE",
+    network: "harmony-shard1",
+    networkId: 1666600000
   }
 };
