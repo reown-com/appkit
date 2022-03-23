@@ -12,7 +12,8 @@ import {
   WEB3_CONNECT_MODAL_ID,
   CONNECT_EVENT,
   ERROR_EVENT,
-  CLOSE_EVENT
+  CLOSE_EVENT,
+  ON_PROVIDER_SELECT
 } from "../constants";
 import { themesList } from "../themes";
 import { Modal } from "../components";
@@ -57,6 +58,8 @@ export class Core {
       this.onConnect(provider)
     );
     this.providerController.on(ERROR_EVENT, error => this.onError(error));
+
+    this.providerController.on(ON_PROVIDER_SELECT, this.onProviderSelect);
 
     this.userOptions = this.providerController.getUserOptions();
     this.renderModal();
@@ -178,6 +181,10 @@ export class Core {
       await this._toggleModal();
     }
     this.eventController.trigger(ERROR_EVENT, error);
+  };
+
+  private onProviderSelect = (providerId: string) => {
+    this.eventController.trigger(ON_PROVIDER_SELECT, providerId);
   };
 
   private onConnect = async (provider: any) => {
