@@ -19,7 +19,8 @@ import {
   filterMatches,
   IProviderUserOptions,
   getInjectedProvider,
-  findMatchingRequiredOptions
+  findMatchingRequiredOptions,
+  fromCheckToId
 } from "../helpers";
 import { EventController } from "./events";
 
@@ -127,7 +128,7 @@ export class ProviderController {
       !!this.injectedProvider && !this.disableInjectedProvider;
     const onlyInjected = displayInjected && mobile;
 
-    const providerList: string[] = [];
+    let providerList: string[] = [];
 
     if (onlyInjected) {
       providerList.push(INJECTED_PROVIDER_ID);
@@ -142,10 +143,16 @@ export class ProviderController {
           // only push if it hasn't already been added
           // which may happen if an entry is in both 'provider' and 'injected' lists
           if (result && !providerList.includes(id)) {
-            providerList.push(id);
+            if (this.injectedProvider?.check) providerList.push(id);
           }
         }
       });
+      if (this.injectedProvider && displayInjected) {
+        const injectedProviderId = fromCheckToId(this.injectedProvider.check);
+        if (providerList.includes(injectedProviderId)) {
+          providerList = providerList.filter(id => id !== injectedProviderId);
+        }
+      }
     }
 
     const userOptions: IProviderUserOptions[] = [];

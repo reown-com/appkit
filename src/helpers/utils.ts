@@ -239,3 +239,12 @@ export function isLocalStorageAvailable() {
     return false;
   }
 }
+
+export function fromCheckToId(check: string) {
+  if (check.startsWith("is")) {
+    check.replace("is", "");
+  } else if (check.startsWith("__")) {
+    check.replace("__", "");
+  }
+  return check.toLowerCase();
+}
