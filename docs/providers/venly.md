@@ -13,7 +13,7 @@ yarn add @venly/web3-provider
 2. Set Provider Options
 
 ```typescript
-import Venly from "@venly/web3-provider";
+import { Venly } from "@venly/web3-provider";
 
 const providerOptions = {
   venly: {
