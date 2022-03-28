@@ -33,6 +33,7 @@ _Open a PR to add your project to the list!_
 - [Civilization](https://app.civfund.org/)
 - [OlympusDAO](https://app.olympusdao.finance/)
 - [The Unit](https://app.theunit.one/)
+- [BalconyDAO](https://balconydao.com/)
 - etc
 
 ## Related Efforts
