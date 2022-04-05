@@ -34,6 +34,7 @@ _Open a PR to add your project to the list!_
 - [OlympusDAO](https://app.olympusdao.finance/)
 - [The Unit](https://app.theunit.one/)
 - [Sign-in with Ethereum](https://login.xyz/)
+- [AngularWeb3Boilerplate](https://github.com/AntonioCardenas/AngularWeb3Boilerplate)
 - etc
 
 ## Related Efforts
