@@ -35,6 +35,7 @@ _Open a PR to add your project to the list!_
 - [The Unit](https://app.theunit.one/)
 - [Sign-in with Ethereum](https://login.xyz/)
 - [AngularWeb3Boilerplate](https://github.com/AntonioCardenas/AngularWeb3Boilerplate)
+- [BalconyDAO](https://balconydao.com/)
 - etc
 
 ## Related Efforts
