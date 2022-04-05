@@ -54,6 +54,7 @@ export interface IProviderDisplayWithConnector extends IProviderDisplay {
 }
 
 export interface IProviderUserOptions {
+  id: string;
   name: string;
   logo: string;
   description: string;

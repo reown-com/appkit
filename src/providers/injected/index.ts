@@ -46,6 +46,8 @@ import BlockWalletLogo from "../logos/blockwallet.svg";
 import TallyLogo from "../logos/tally.svg";
 // @ts-ignore
 import PortalLogo from "../logos/portal.svg";
+// @ts-ignore
+import SequenceLogo from "../logos/sequence.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -108,7 +110,7 @@ export const COINBASE: IProviderInfo = {
   name: "Coinbase",
   logo: CoinbaseLogo,
   type: "injected",
-  check: "isToshi"
+  check: "isCoinbaseWallet"
 };
 
 export const CIPHER: IProviderInfo = {
@@ -229,4 +231,12 @@ export const PORTAL: IProviderInfo = {
   logo: PortalLogo,
   type: "injected",
   check: "isPortal"
+};
+
+export const SEQUENCEINJECTED: IProviderInfo = {
+  id: "injected",
+  name: "Sequence",
+  logo: SequenceLogo,
+  type: "injected",
+  check: "isSequence"
 };
