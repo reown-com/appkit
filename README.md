@@ -6,7 +6,7 @@ A single Web3 / Ethereum provider solution for all Wallets
 
 Web3Modal is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
 
-By default Web3Modal Library supports injected providers like (**Metamask**, **Dapper**, **Gnosis Safe**, **Frame**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Portis**, **Fortmatic**, **Squarelink**, **Torus**, **Authereum**, **D'CENT Wallet** and **Venly**.
+By default Web3Modal Library supports injected providers like (**Metamask**, **Tally**, **Dapper**, **Gnosis Safe**, **Frame**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Portis**, **Fortmatic**, **Squarelink**, **Torus**, **Authereum**, **D'CENT Wallet** and **Venly**.
 
 ## Preview
 
@@ -32,6 +32,7 @@ _Open a PR to add your project to the list!_
 - [Forever in Ether](https://ineth.net/)
 - [Civilization](https://app.civfund.org/)
 - [OlympusDAO](https://app.olympusdao.finance/)
+- [The Unit](https://app.theunit.one/)
 - etc
 
 ## Related Efforts
@@ -97,6 +98,37 @@ const instance = await web3Modal.connect();
 
 const provider = new ethers.providers.Web3Provider(instance);
 const signer = provider.getSigner();
+```
+
+## Using with [Vite](https://github.com/vitejs/vite)
+
+```js
+//vite.config.js
+import nodePolyfills from 'rollup-plugin-polyfill-node';
+const production = process.env.NODE_ENV === 'production';
+
+export default {
+
+  plugins: [
+    // ↓ Needed for development mode
+    !production && nodePolyfills({
+        include: ['node_modules/**/*.js', new RegExp('node_modules/.vite/.*js')]
+      })
+  ],
+
+  build: {
+    rollupOptions: {
+      plugins: [
+        // ↓ Needed for build
+        nodePolyfills()
+      ]
+    },
+    // ↓ Needed for build if using WalletConnect and other providers
+    commonjsOptions: {
+      transformMixedEsModules: true
+    }
+  }
+}
 ```
 
 ## Using in vanilla JavaScript
@@ -170,6 +202,7 @@ These are all the providers available with Web3Modal and how to configure their 
 - [MEWConnect](./docs/providers/mewconnect.md)
 - [Binance Chain Wallet](./docs/providers/binancechainwallet.md)
 - [WalletLink](./docs/providers/walletlink.md)
+- [Sequence](./docs/providers/sequence.md)
 
 ## API
 
