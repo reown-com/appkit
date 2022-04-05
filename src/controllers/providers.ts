@@ -2,6 +2,7 @@ import * as list from "../providers";
 import {
   CONNECT_EVENT,
   ERROR_EVENT,
+  SELECT_EVENT,
   INJECTED_PROVIDER_ID,
   CACHED_PROVIDER_KEY
 } from "../constants";
@@ -46,7 +47,7 @@ export class ProviderController {
 
     this.providers = Object.keys(list.connectors).map((id: string) => {
       let providerInfo: IProviderInfo;
-      if (id === INJECTED_PROVIDER_ID) {
+      if (id === INJECTED_PROVIDER_ID && this.injectedProvider === null) {
         providerInfo = this.injectedProvider || list.providers.FALLBACK;
       } else {
         providerInfo = getProviderInfoById(id);
@@ -196,6 +197,7 @@ export class ProviderController {
     connector: (providerPackage: any, opts: any) => Promise<any>
   ) => {
     try {
+      this.eventController.trigger(SELECT_EVENT, id);
       const providerPackage = this.getProviderOption(id, "package");
       const providerOptions = this.getProviderOption(id, "options");
       const opts = { network: this.network || undefined, ...providerOptions };
