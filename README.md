@@ -33,6 +33,8 @@ _Open a PR to add your project to the list!_
 - [Civilization](https://app.civfund.org/)
 - [OlympusDAO](https://app.olympusdao.finance/)
 - [The Unit](https://app.theunit.one/)
+- [Sign-in with Ethereum](https://login.xyz/)
+- [AngularWeb3Boilerplate](https://github.com/AntonioCardenas/AngularWeb3Boilerplate)
 - etc
 
 ## Related Efforts
@@ -100,6 +102,37 @@ const provider = new ethers.providers.Web3Provider(instance);
 const signer = provider.getSigner();
 ```
 
+## Using with [Vite](https://github.com/vitejs/vite)
+
+```js
+//vite.config.js
+import nodePolyfills from 'rollup-plugin-polyfill-node';
+const production = process.env.NODE_ENV === 'production';
+
+export default {
+
+  plugins: [
+    // ↓ Needed for development mode
+    !production && nodePolyfills({
+        include: ['node_modules/**/*.js', new RegExp('node_modules/.vite/.*js')]
+      })
+  ],
+
+  build: {
+    rollupOptions: {
+      plugins: [
+        // ↓ Needed for build
+        nodePolyfills()
+      ]
+    },
+    // ↓ Needed for build if using WalletConnect and other providers
+    commonjsOptions: {
+      transformMixedEsModules: true
+    }
+  }
+}
+```
+
 ## Using in vanilla JavaScript
 
 You can use the modal from the old fashioned web page JavaScript as well.
@@ -159,6 +192,7 @@ provider.on("disconnect", (error: { code: number; message: string }) => {
 These are all the providers available with Web3Modal and how to configure their provider options:
 
 - [WalletConnect](./docs/providers/walletconnect.md)
+- [Coinbase Wallet](./docs/providers/coinbasewallet.md)
 - [Fortmatic](./docs/providers/fortmatic.md)
 - [Torus](./docs/providers/torus.md)
 - [Portis](./docs/providers/portis.md)
@@ -170,7 +204,7 @@ These are all the providers available with Web3Modal and how to configure their 
 - [BurnerConnect](./docs/providers/burnerconnect.md)
 - [MEWConnect](./docs/providers/mewconnect.md)
 - [Binance Chain Wallet](./docs/providers/binancechainwallet.md)
-- [WalletLink](./docs/providers/walletlink.md)
+- [Sequence](./docs/providers/sequence.md)
 
 ## API
 
