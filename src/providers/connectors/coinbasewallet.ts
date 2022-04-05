@@ -1,6 +1,7 @@
 import { IAbstractConnectorOptions } from "../../helpers";
 
-export interface IWalletLinkConnectorOptions extends IAbstractConnectorOptions {
+export interface ICoinbaseWalletSdkConnectorOptions
+  extends IAbstractConnectorOptions {
   infuraId?: string;
   rpc?: { [chainId: number]: string };
   chainId?: number;
@@ -9,9 +10,9 @@ export interface IWalletLinkConnectorOptions extends IAbstractConnectorOptions {
   darkMode?: boolean;
 }
 
-const ConnectToWalletLink = (
-  WalletLink: any,
-  opts: IWalletLinkConnectorOptions
+const ConnectToCoinbaseWalletSdk = (
+  CoinbaseWalletSdk: any,
+  opts: ICoinbaseWalletSdkConnectorOptions
 ) => {
   return new Promise(async (resolve, reject) => {
     const options = opts || {};
@@ -26,15 +27,15 @@ const ConnectToWalletLink = (
       rpc = `https://mainnet.infura.io/v3/${infuraId}`;
     }
 
-    const walletLink = new WalletLink({
+    const coinbaseWalletSdk = new CoinbaseWalletSdk({
       appName,
       appLogoUrl,
       darkMode
     });
 
     try {
-      const provider = walletLink.makeWeb3Provider(rpc, chainId);
-      await provider.send('eth_requestAccounts');
+      const provider = coinbaseWalletSdk.makeWeb3Provider(rpc, chainId);
+      await provider.send("eth_requestAccounts");
       resolve(provider);
     } catch (e) {
       reject(e);
@@ -42,4 +43,8 @@ const ConnectToWalletLink = (
   });
 };
 
-export default ConnectToWalletLink;
+/**
+ * @deprecated WalletLink is deprecated in favor of CoinbaseWalletSdk
+ */
+export const walletlink = ConnectToCoinbaseWalletSdk;
+export default ConnectToCoinbaseWalletSdk;

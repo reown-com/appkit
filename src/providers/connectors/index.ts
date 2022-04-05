@@ -12,11 +12,12 @@ import dcentwallet from "./dcentwallet";
 import bitski from "./bitski";
 import frame from "./frame";
 import binancechainwallet from "./binancechainwallet";
-import walletlink from "./walletlink";
+import coinbasewallet, { walletlink } from "./coinbasewallet";
 import sequence from "./sequence";
 
 export {
   injected,
+  coinbasewallet,
   walletconnect,
   boltx,
   portis,
