@@ -8,6 +8,7 @@
     "ethereum",
     "web3modal",
     "metamask",
+    "tally",
     "walletconnect",
     "portis",
     "fortmatic",
@@ -16,7 +17,8 @@
     "torus",
     "authereum",
     "frame",
-    "walletlink"
+    "coinbasewallet",
+    "sequence"
   ],
   "author": "Web3Modal <web3modal.com>",
   "license": "MIT",
