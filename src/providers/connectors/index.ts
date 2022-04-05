@@ -1,4 +1,5 @@
 import injected from "./injected";
+import boltx from "./boltx";
 import walletconnect from "./walletconnect";
 import portis from "./portis";
 import fortmatic from "./fortmatic";
@@ -12,10 +13,12 @@ import bitski from "./bitski";
 import frame from "./frame";
 import binancechainwallet from "./binancechainwallet";
 import walletlink from "./walletlink";
+import sequence from "./sequence";
 
 export {
   injected,
   walletconnect,
+  boltx,
   portis,
   torus,
   fortmatic,
@@ -27,5 +30,6 @@ export {
   bitski,
   frame,
   binancechainwallet,
-  walletlink
+  walletlink,
+  sequence
 };
