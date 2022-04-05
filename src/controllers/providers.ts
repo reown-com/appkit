@@ -2,6 +2,7 @@ import * as list from "../providers";
 import {
   CONNECT_EVENT,
   ERROR_EVENT,
+  SELECT_EVENT,
   INJECTED_PROVIDER_ID,
   CACHED_PROVIDER_KEY
 } from "../constants";
@@ -153,6 +154,7 @@ export class ProviderController {
       if (typeof provider !== "undefined") {
         const { id, name, logo, connector } = provider;
         userOptions.push({
+          id,
           name,
           logo,
           description: getProviderDescription(provider),
@@ -195,6 +197,7 @@ export class ProviderController {
     connector: (providerPackage: any, opts: any) => Promise<any>
   ) => {
     try {
+      this.eventController.trigger(SELECT_EVENT, id);
       const providerPackage = this.getProviderOption(id, "package");
       const providerOptions = this.getProviderOption(id, "options");
       const opts = { network: this.network || undefined, ...providerOptions };

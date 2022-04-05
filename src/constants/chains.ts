@@ -259,6 +259,18 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "matic",
     networkId: 137
   },
+  1284: {
+    chainId: 1284,
+    chain: "GLMR",
+    network: "moonbeam",
+    networkId: 1284
+  },
+  1285: {
+    chainId: 1285,
+    chain: "MOVR",
+    network: "moonriver",
+    networkId: 1285
+  },
   42161: {
     chainId: 42161,
     chain: "ETH",
