@@ -154,6 +154,7 @@ export class ProviderController {
       if (typeof provider !== "undefined") {
         const { id, name, logo, connector } = provider;
         userOptions.push({
+          id,
           name,
           logo,
           description: getProviderDescription(provider),

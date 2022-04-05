@@ -131,6 +131,10 @@ export class Core {
     });
   }
 
+  public getUserOptions(): IProviderUserOptions[] {
+    return this.userOptions
+  }
+
   public clearCachedProvider(): void {
     this.providerController.clearCachedProvider();
   }
