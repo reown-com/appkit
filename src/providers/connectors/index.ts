@@ -17,7 +17,6 @@ import sequence from "./sequence";
 
 export {
   injected,
-  coinbasewallet,
   walletconnect,
   boltx,
   portis,
@@ -31,6 +30,7 @@ export {
   bitski,
   frame,
   binancechainwallet,
+  coinbasewallet,
   walletlink,
   sequence
 };

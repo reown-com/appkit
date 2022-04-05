@@ -7,9 +7,9 @@ import Web3Modal from "web3modal";
 // @ts-ignore
 import WalletConnect from "@walletconnect/web3-provider";
 // @ts-ignore
-import Torus from "@toruslabs/torus-embed";
-// @ts-ignore
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
+// @ts-ignore
+import Torus from "@toruslabs/torus-embed";
 
 import Button from "./components/Button";
 import Column from "./components/Column";
@@ -231,7 +231,6 @@ class App extends React.Component<any, any> {
 
   public getProviderOptions = () => {
     const infuraId = process.env.REACT_APP_INFURA_ID;
-    console.log("infuraId", infuraId);
     const providerOptions = {
       walletconnect: {
         package: WalletConnect,
