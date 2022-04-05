@@ -13,7 +13,7 @@ import {
   CONNECT_EVENT,
   ERROR_EVENT,
   CLOSE_EVENT,
-  ON_PROVIDER_SELECT
+  SELECT_EVENT
 } from "../constants";
 import { themesList } from "../themes";
 import { Modal } from "../components";
@@ -59,7 +59,7 @@ export class Core {
     );
     this.providerController.on(ERROR_EVENT, error => this.onError(error));
 
-    this.providerController.on(ON_PROVIDER_SELECT, this.onProviderSelect);
+    this.providerController.on(SELECT_EVENT, this.onProviderSelect);
 
     this.userOptions = this.providerController.getUserOptions();
     this.renderModal();
@@ -184,7 +184,7 @@ export class Core {
   };
 
   private onProviderSelect = (providerId: string) => {
-    this.eventController.trigger(ON_PROVIDER_SELECT, providerId);
+    this.eventController.trigger(SELECT_EVENT, providerId);
   };
 
   private onConnect = async (provider: any) => {
