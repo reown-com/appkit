@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="383px" height="383px" viewBox="0 0 383 383" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 54.1 (76490) - https://sketchapp.com -->
-    <title>walletlink</title>
+    <title>Coinbase Wallet SDK</title>
     <desc>Created with Sketch.</desc>
     <defs>
         <rect id="path-1" x="0" y="0" width="383" height="383" rx="64"></rect>
@@ -11,7 +11,7 @@
         </linearGradient>
     </defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="walletlink">
+        <g id="coinbasewallet">
             <g id="Path">
                 <mask id="mask-2" fill="white">
                     <use xlink:href="#path-1"></use>

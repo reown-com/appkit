@@ -23,7 +23,11 @@ import FrameLogo from "../logos/frame.svg";
 // @ts-ignore
 import BinanceChainWalletLogo from "../logos/binancechainwallet.svg";
 // @ts-ignore
+import CoinbaseWalletLogo from "../logos/coinbasewallet.svg";
+// @ts-ignore
 import WalletLinkLogo from "../logos/walletlink.svg";
+// @ts-ignore
+import SequenceLogo from "../logos/sequence.svg";
 
 import { IProviderInfo } from "../../helpers";
 
@@ -146,13 +150,35 @@ export const BINANCECHAINWALLET: IProviderInfo = {
   check: "isBinanceChainWallet"
 };
 
+/**
+ * @deprecated Use CoinbaseWalletSdk
+ */
 export const WALLETLINK: IProviderInfo = {
   id: "walletlink",
   name: "Coinbase Wallet",
-  logo: WalletLinkLogo,
+  logo: CoinbaseWalletLogo,
   type: "qrcode",
   check: "isWalletLink",
   package: {
     required: [["appName", "infuraId", "rpc"]]
   }
+};
+
+export const COINBASEWALLET: IProviderInfo = {
+  id: "coinbasewallet",
+  name: "Coinbase",
+  logo: CoinbaseWalletLogo,
+  type: "injected",
+  check: "isCoinbaseWallet",
+  package: {
+    required: [["appName", "infuraId", "rpc"]]
+  }
+};
+
+export const SEQUENCE: IProviderInfo = {
+  id: "sequence",
+  name: "Sequence",
+  logo: SequenceLogo,
+  type: "web",
+  check: "isSequenceWeb"
 };
