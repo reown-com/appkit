@@ -24,6 +24,10 @@ import FrameLogo from "../logos/frame.svg";
 import BinanceChainWalletLogo from "../logos/binancechainwallet.svg";
 // @ts-ignore
 import CoinbaseWalletLogo from "../logos/coinbasewallet.svg";
+// @ts-ignore
+import WalletLinkLogo from "../logos/walletlink.svg";
+// @ts-ignore
+import SequenceLogo from "../logos/sequence.svg";
 
 import { IProviderInfo } from "../../helpers";
 
@@ -169,4 +173,12 @@ export const COINBASEWALLET: IProviderInfo = {
   package: {
     required: [["appName", "infuraId", "rpc"]]
   }
+};
+
+export const SEQUENCE: IProviderInfo = {
+  id: "sequence",
+  name: "Sequence",
+  logo: SequenceLogo,
+  type: "web",
+  check: "isSequenceWeb"
 };
