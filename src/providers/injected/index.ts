@@ -48,6 +48,8 @@ import TallyLogo from "../logos/tally.svg";
 import PortalLogo from "../logos/portal.svg";
 // @ts-ignore
 import SequenceLogo from "../logos/sequence.svg";
+// @ts-ignore
+import RabbyLogo from "../logos/rabby.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -240,3 +242,11 @@ export const SEQUENCEINJECTED: IProviderInfo = {
   type: "injected",
   check: "isSequence"
 };
+
+export const Rabby: IProviderInfo = {
+  id: "injected",
+  name: "Rabby",
+  logo: RabbyLogo,
+  type: "injected",
+  check: "isRabby"
+}
