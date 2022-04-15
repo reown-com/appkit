@@ -169,7 +169,7 @@ export const COINBASEWALLET: IProviderInfo = {
   name: "Coinbase",
   logo: CoinbaseWalletLogo,
   type: "injected",
-  check: "isCoinbaseWallet",
+  check: "isWalletLink",
   package: {
     required: [["appName", "infuraId", "rpc"]]
   }
