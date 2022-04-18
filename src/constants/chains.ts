@@ -348,5 +348,11 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     chain: "ONE",
     network: "harmony-shard1",
     networkId: 1666600000
+  },
+  1313161554: {
+    chainId: 1313161554,
+    chain: "AETH",
+    network: "aurora",
+    networkId: 1313161554
   }
 };
