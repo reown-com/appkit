@@ -36,6 +36,7 @@ _Open a PR to add your project to the list!_
 - [Sign-in with Ethereum](https://login.xyz/)
 - [AngularWeb3Boilerplate](https://github.com/AntonioCardenas/AngularWeb3Boilerplate)
 - [BalconyDAO](https://balconydao.com/)
+- [LearnWeb3 DAO](https://learnweb3.io/)
 - etc
 
 ## Related Efforts
