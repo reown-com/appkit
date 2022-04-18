@@ -25,7 +25,7 @@ const providerOptions = {
   fortmatic: {
     package: Fortmatic, // required
     options: {
-      key: "FORTMATIC_KEY" // required,
+      key: "FORTMATIC_KEY", // required
       network: customNetworkOptions // if we don't pass it, it will default to localhost:8454
     }
   }
