@@ -111,7 +111,7 @@ export const TRUST: IProviderInfo = {
 
 export const COINBASE: IProviderInfo = {
   id: "injected",
-  name: "Coinbase",
+  name: "Coinbase Wallet",
   logo: CoinbaseLogo,
   type: "injected",
   check: "isCoinbaseWallet"
