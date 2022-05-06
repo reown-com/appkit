@@ -52,6 +52,8 @@ import SequenceLogo from "../logos/sequence.svg";
 import BraveLogo from "../logos/brave.svg";
 // @ts-ignore
 import RabbyLogo from "../logos/rabby.svg";
+// @ts-ignore
+import ClvLogo from "../logos/clv.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -259,4 +261,12 @@ export const BRAVE: IProviderInfo = {
   logo: BraveLogo,
   type: "injected",
   check: 'isBraveWallet'
+};
+
+export const CLV: IProviderInfo = {
+  id: "injected",
+  name: "CLV",
+  logo: ClvLogo,
+  type: "injected",
+  check: 'isCloverWallet'
 };
