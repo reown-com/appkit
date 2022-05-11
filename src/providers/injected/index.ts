@@ -94,7 +94,7 @@ export const DAPPER: IProviderInfo = {
 };
 
 export const OPERA: IProviderInfo = {
-  id: "injected",
+  id: "opera",
   name: "Opera",
   logo: OperaLogo,
   type: "injected",
