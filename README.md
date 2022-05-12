@@ -206,6 +206,7 @@ These are all the providers available with Web3Modal and how to configure their 
 - [BurnerConnect](./docs/providers/burnerconnect.md)
 - [MEWConnect](./docs/providers/mewconnect.md)
 - [Binance Chain Wallet](./docs/providers/binancechainwallet.md)
+  [Opera Wallet](./docs/providers/opera.md)
 - [Sequence](./docs/providers/sequence.md)
 
 ## API
