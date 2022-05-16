@@ -310,7 +310,7 @@ export const CHAIN_DATA_LIST: ChainDataList = {
   43114: {
     chainId: 43114,
     chain: "AVAX",
-    network: "avalanche-fuji-mainnet",
+    network: "avalanche-mainnet",
     networkId: 43114
   },
   246529: {
