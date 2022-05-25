@@ -233,10 +233,6 @@ class App extends React.Component<any, any> {
     const infuraId = process.env.REACT_APP_INFURA_ID;
     const providerOptions = {
       starzwallet: {
-        display: {  // Optional display object
-          name: "99Starz",
-          description: "Connect to your 99Starz Wallet"
-        },
         package: true
       },
       walletconnect: {
