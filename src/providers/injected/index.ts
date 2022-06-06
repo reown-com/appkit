@@ -77,6 +77,14 @@ export const SAFE: IProviderInfo = {
   check: "isSafe"
 };
 
+export const XDCPAY: IProviderInfo = {
+  id: "injected",
+  name: "XDCPay",
+  logo: SafeLogo,
+  type: "injected",
+  check: "isXDCPayWallet"
+};
+
 export const NIFTY: IProviderInfo = {
   id: "injected",
   name: "Nifty",
