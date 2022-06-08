@@ -5,7 +5,7 @@ const ConnectToInjected = async () => {
     try {
       await provider.request({ method: 'eth_requestAccounts' })
     } catch (error) {
-      throw new Error("User Rejected");
+      console.log(error);
     }
   } else if (window.web3) {
     provider = window.web3.currentProvider;
