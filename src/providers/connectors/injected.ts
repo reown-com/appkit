@@ -2,7 +2,7 @@ const ConnectToInjected = async () => {
   let provider = null;
   if (typeof window.ethereum !== 'undefined') {
     provider = window.ethereum;
-    if (provider.currentProvider.isMetaMask) {
+    if (provider.isMetaMask) {
       try {
         await provider.request({ method: 'eth_requestAccounts' })
       } catch (error) {
