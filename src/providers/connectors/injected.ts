@@ -1,14 +1,14 @@
 const ConnectToInjected = async () => {
   let provider = null;
-  if (typeof window.ethereum !== 'undefined') {
-    provider = window.ethereum;
-    // try {
-    //   await provider.request({ method: 'eth_requestAccounts' })
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  } else if (window.web3) {
+  if (window.web3) {
     provider = window.web3.currentProvider;
+  } else if (typeof window.ethereum !== 'undefined') {
+    provider = window.ethereum;
+    try {
+      await provider.request({ method: 'eth_requestAccounts' })
+    } catch (error) {
+      console.log(error);
+    }
   } else if (window.celo) {
     provider = window.celo;
   } else {
