@@ -103,6 +103,7 @@ const instance = await web3Modal.connect();
 const provider = new ethers.providers.Web3Provider(instance);
 const signer = provider.getSigner();
 ```
+Here's a live example on [Codesandbox.io](https://codesandbox.io/s/j43b10)
 
 ## Using with [Vite](https://github.com/vitejs/vite)
 

@@ -241,6 +241,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "lisinski",
     networkId: 385
   },
+  534: {
+    chainId: 534,
+    chain: "CNDL",
+    network: "candle",
+    networkId: 534
+  },
   820: {
     chainId: 820,
     chain: "CLO",
@@ -310,7 +316,7 @@ export const CHAIN_DATA_LIST: ChainDataList = {
   43114: {
     chainId: 43114,
     chain: "AVAX",
-    network: "avalanche-fuji-mainnet",
+    network: "avalanche-mainnet",
     networkId: 43114
   },
   246529: {

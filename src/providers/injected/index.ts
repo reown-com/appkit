@@ -53,7 +53,10 @@ import BraveLogo from "../logos/brave.svg";
 // @ts-ignore
 import RabbyLogo from "../logos/rabby.svg";
 // @ts-ignore
+import BitkeepLogo from "../logos/bitkeepwallet.png";
+// @ts-ignore
 import ClvLogo from "../logos/clv.svg";
+
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -269,4 +272,12 @@ export const CLV: IProviderInfo = {
   logo: ClvLogo,
   type: "injected",
   check: "isCloverWallet"
+};
+
+export const BITKEEPWALLET: IProviderInfo = {
+  id: "injected",
+  name: "Bitkeep Wallet",
+  logo: BitkeepLogo,
+  type: "injected",
+  check: "isBitKeep"
 };
