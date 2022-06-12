@@ -241,6 +241,12 @@ class App extends React.Component<any, any> {
       torus: {
         package: Torus
       },
+      binancechainwallet: {
+        package: true
+      },
+      opera: {
+        package: true
+      },
       coinbasewallet: {
         package: CoinbaseWalletSDK,
         options: {
