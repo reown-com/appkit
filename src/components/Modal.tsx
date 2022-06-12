@@ -19,6 +19,8 @@ declare global {
     web3: any;
     celo: any;
     updateWeb3Modal: any;
+    clover: any;
+    opera: any;
   }
 }
 
