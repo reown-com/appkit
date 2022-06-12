@@ -6,7 +6,7 @@ A single Web3 / Ethereum provider solution for all Wallets
 
 Web3Modal is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
 
-By default Web3Modal Library supports injected providers like (**Metamask**, **Tally**, **Dapper**, **Gnosis Safe**, **Frame**, Web3 Browsers, etc) and **WalletConnect**, You can also easily configure the library to support **Portis**, **Fortmatic**, **Squarelink**, **Torus**, **Authereum**, **D'CENT Wallet** and **Venly**.
+By default Web3Modal Library supports injected providers like ( **Metamask**,**Brave Wallet**, **Dapper**, **Frame**, **Gnosis Safe**, **Tally**, Web3 Browsers, etc) and **WalletConnect**. You can also easily configure the library to support **Coinbase Wallet**, **Torus**, **Portis**, **Fortmatic** and many more.
 
 ## Preview
 
@@ -103,20 +103,21 @@ const instance = await web3Modal.connect();
 const provider = new ethers.providers.Web3Provider(instance);
 const signer = provider.getSigner();
 ```
+Here's a live example on [Codesandbox.io](https://codesandbox.io/s/j43b10)
 
 ## Using with [Vite](https://github.com/vitejs/vite)
 
 ```js
 //vite.config.js
-import nodePolyfills from 'rollup-plugin-polyfill-node';
-const production = process.env.NODE_ENV === 'production';
+import nodePolyfills from "rollup-plugin-polyfill-node";
+const production = process.env.NODE_ENV === "production";
 
 export default {
-
   plugins: [
     // ↓ Needed for development mode
-    !production && nodePolyfills({
-        include: ['node_modules/**/*.js', new RegExp('node_modules/.vite/.*js')]
+    !production &&
+      nodePolyfills({
+        include: ["node_modules/**/*.js", new RegExp("node_modules/.vite/.*js")]
       })
   ],
 
@@ -132,7 +133,7 @@ export default {
       transformMixedEsModules: true
     }
   }
-}
+};
 ```
 
 ## Using in vanilla JavaScript
@@ -206,7 +207,9 @@ These are all the providers available with Web3Modal and how to configure their 
 - [BurnerConnect](./docs/providers/burnerconnect.md)
 - [MEWConnect](./docs/providers/mewconnect.md)
 - [Binance Chain Wallet](./docs/providers/binancechainwallet.md)
+  [Opera Wallet](./docs/providers/opera.md)
 - [Sequence](./docs/providers/sequence.md)
+- [CLV Wallet](./docs/providers/clvwallet.md)
 
 ## API
 
