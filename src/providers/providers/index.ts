@@ -166,7 +166,7 @@ export const WALLETLINK: IProviderInfo = {
 
 export const COINBASEWALLET: IProviderInfo = {
   id: "coinbasewallet",
-  name: "Coinbase Wallet",
+  name: "Coinbase",
   logo: CoinbaseWalletLogo,
   type: "injected",
   check: "isWalletLink",

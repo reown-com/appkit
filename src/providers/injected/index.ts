@@ -113,7 +113,7 @@ export const TRUST: IProviderInfo = {
 
 export const COINBASE: IProviderInfo = {
   id: "injected",
-  name: "Coinbase Wallet",
+  name: "Coinbase",
   logo: CoinbaseLogo,
   type: "injected",
   check: "isCoinbaseWallet"
@@ -260,7 +260,7 @@ export const BRAVE: IProviderInfo = {
   name: "Brave",
   logo: BraveLogo,
   type: "injected",
-  check: 'isBraveWallet'
+  check: "isBraveWallet"
 };
 
 export const CLV: IProviderInfo = {
@@ -268,5 +268,5 @@ export const CLV: IProviderInfo = {
   name: "CLV",
   logo: ClvLogo,
   type: "injected",
-  check: 'isCloverWallet'
+  check: "isCloverWallet"
 };
