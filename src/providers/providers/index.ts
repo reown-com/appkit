@@ -19,6 +19,8 @@ import DcentWalletLogo from "../logos/dcentwallet.png";
 // @ts-ignore
 import BitskiLogo from "../logos/bitski.svg";
 // @ts-ignore
+import OperaLogo from "../logos/opera.svg";
+// @ts-ignore
 import FrameLogo from "../logos/frame.svg";
 // @ts-ignore
 import BinanceChainWalletLogo from "../logos/binancechainwallet.svg";
@@ -181,4 +183,12 @@ export const SEQUENCE: IProviderInfo = {
   logo: SequenceLogo,
   type: "web",
   check: "isSequenceWeb"
+};
+
+export const OPERA: IProviderInfo = {
+  id: "opera",
+  name: "Opera",
+  logo: OperaLogo,
+  type: "injected",
+  check: "isOpera"
 };
