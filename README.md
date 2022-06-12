@@ -207,6 +207,7 @@ These are all the providers available with Web3Modal and how to configure their 
 - [MEWConnect](./docs/providers/mewconnect.md)
 - [Binance Chain Wallet](./docs/providers/binancechainwallet.md)
 - [Sequence](./docs/providers/sequence.md)
+- [CLV Wallet](./docs/providers/clvwallet.md)
 
 ## API
 
