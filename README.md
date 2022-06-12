@@ -6,7 +6,7 @@ A single Web3 / Ethereum provider solution for all Wallets
 
 Web3Modal is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
 
-By default Web3Modal Library supports injected providers like (**Brave Wallet**, **Dapper**, **Frame**, **Gnosis Safe**, **Metamask**, **Tally**, Web3 Browsers, etc) and **WalletConnect**. You can also easily configure the library to support **Portis**, **Fortmatic**, **Squarelink**, **Torus**, **Authereum**, **D'CENT Wallet** and **Venly**.
+By default Web3Modal Library supports injected providers like ( **Metamask**,**Brave Wallet**, **Dapper**, **Frame**, **Gnosis Safe**, **Tally**, Web3 Browsers, etc) and **WalletConnect**. You can also easily configure the library to support **Coinbase Wallet**, **Torus**, **Portis**, **Fortmatic** and many more.
 
 ## Preview
 
@@ -108,15 +108,15 @@ const signer = provider.getSigner();
 
 ```js
 //vite.config.js
-import nodePolyfills from 'rollup-plugin-polyfill-node';
-const production = process.env.NODE_ENV === 'production';
+import nodePolyfills from "rollup-plugin-polyfill-node";
+const production = process.env.NODE_ENV === "production";
 
 export default {
-
   plugins: [
     // ↓ Needed for development mode
-    !production && nodePolyfills({
-        include: ['node_modules/**/*.js', new RegExp('node_modules/.vite/.*js')]
+    !production &&
+      nodePolyfills({
+        include: ["node_modules/**/*.js", new RegExp("node_modules/.vite/.*js")]
       })
   ],
 
@@ -132,7 +132,7 @@ export default {
       transformMixedEsModules: true
     }
   }
-}
+};
 ```
 
 ## Using in vanilla JavaScript
