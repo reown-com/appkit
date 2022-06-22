@@ -56,6 +56,8 @@ import RabbyLogo from "../logos/rabby.svg";
 import BitkeepLogo from "../logos/bitkeepwallet.png";
 // @ts-ignore
 import ClvLogo from "../logos/clv.svg";
+// @ts-ignore
+import CoreLogo from "../logos/core.svg";
 
 
 export const FALLBACK: IProviderInfo = {
@@ -64,6 +66,14 @@ export const FALLBACK: IProviderInfo = {
   logo: Web3DefaultLogo,
   type: "injected",
   check: "isWeb3"
+};
+
+export const CORE: IProviderInfo = {
+  id: "injected",
+  name: "Core",
+  logo: CoreLogo,
+  type: "injected",
+  check: "isAvalanche"
 };
 
 export const METAMASK: IProviderInfo = {
