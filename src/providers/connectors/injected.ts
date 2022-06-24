@@ -2,12 +2,10 @@ const ConnectToInjected = async () => {
   let provider = null;
   if (typeof window.ethereum !== 'undefined') {
     provider = window.ethereum;
-    if (provider.isMetaMask) {
-      try {
-        await provider.request({ method: 'eth_requestAccounts' })
-      } catch (error) {
-        console.log(error);
-      }
+    try {
+      await provider.request({ method: 'eth_requestAccounts' })
+    } catch (error) {
+      throw new Error("User Rejected");
     }
   } else if (window.web3) {
     provider = window.web3.currentProvider;
