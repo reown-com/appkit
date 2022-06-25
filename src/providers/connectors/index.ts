@@ -16,7 +16,7 @@ import coinbasewallet, { walletlink } from "./coinbasewallet";
 import sequence from "./sequence";
 import clvwallet from "./clvwallet"
 import opera from "./opera";
-
+import web3auth from "./web3auth"
 
 export {
   injected,
@@ -37,5 +37,6 @@ export {
   walletlink,
   sequence,
   clvwallet,
-  opera
+  opera,
+  web3auth
 };
