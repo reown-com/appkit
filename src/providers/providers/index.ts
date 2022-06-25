@@ -30,6 +30,8 @@ import CoinbaseWalletLogo from "../logos/coinbasewallet.svg";
 import WalletLinkLogo from "../logos/walletlink.svg";
 // @ts-ignore
 import SequenceLogo from "../logos/sequence.svg";
+// @ts-ignore
+import BitkeepLogo from "../logos/bitkeepwallet.png";
 
 import { IProviderInfo } from "../../helpers";
 
@@ -191,4 +193,12 @@ export const OPERA: IProviderInfo = {
   logo: OperaLogo,
   type: "injected",
   check: "isOpera"
+};
+
+export const BITKEEPWALLET: IProviderInfo = {
+  id: "bitkeep",
+  name: "Bitkeep Wallet",
+  logo: BitkeepLogo,
+  type: "injected",
+  check: "isBitKeep"
 };
