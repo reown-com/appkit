@@ -5,6 +5,6 @@
     "space-before-function-paren": ["error", "never"],
     "semi": ["error", "never"],
     "no-underscore-dangle": 0,
-    "quotes": ["error", "single"]
+    "quotes": ["error", "double"]
   }
 }
