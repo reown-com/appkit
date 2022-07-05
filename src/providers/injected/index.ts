@@ -58,7 +58,8 @@ import BitkeepLogo from "../logos/bitkeepwallet.png";
 import ClvLogo from "../logos/clv.svg";
 // @ts-ignore
 import TokenPocketLogo from "../logos/tokenpocket.svg";
-
+// @ts-ignore
+import CoreLogo from "../logos/core.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -282,6 +283,14 @@ export const BITKEEPWALLET: IProviderInfo = {
   logo: BitkeepLogo,
   type: "injected",
   check: "isBitKeep"
+};
+
+export const CORE: IProviderInfo = {
+  id: "injected",
+  name: "Core",
+  logo: CoreLogo,
+  type: "injected",
+  check: "isAvalanche"
 };
 
 export const TOKENPOCKET: IProviderInfo = {
