@@ -14,11 +14,11 @@ import frame from "./frame";
 import binancechainwallet from "./binancechainwallet";
 import coinbasewallet, { walletlink } from "./coinbasewallet";
 import sequence from "./sequence";
-import clvwallet from "./clvwallet"
+import clvwallet from "./clvwallet";
 import opera from "./opera";
-import bitkeep from "./bitkeep"
+import web3auth from "./web3auth";
+import bitkeep from "./bitkeep";
 import starzwallet from "./starzwallet";
-
 
 export {
   injected,
@@ -41,5 +41,6 @@ export {
   clvwallet,
   opera,
   bitkeep,
-  starzwallet
+  starzwallet,
+  web3auth
 };

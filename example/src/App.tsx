@@ -7,6 +7,8 @@ import Web3Modal from "web3modal";
 // @ts-ignore
 import WalletConnect from "@walletconnect/web3-provider";
 // @ts-ignore
+import { Web3Auth } from "@web3auth/web3auth"
+// @ts-ignore
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 // @ts-ignore
 import Torus from "@toruslabs/torus-embed";
@@ -247,13 +249,19 @@ class App extends React.Component<any, any> {
       binancechainwallet: {
         package: true
       },
-      opera: {
-        package: true
-      },
+      // opera: {
+      //   package: true
+      // },
       coinbasewallet: {
         package: CoinbaseWalletSDK,
         options: {
           appName: "Web3Modal Example App",
+          infuraId
+        }
+      },
+      web3auth: {
+        package : Web3Auth,
+        options: {
           infuraId
         }
       },

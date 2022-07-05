@@ -29,6 +29,8 @@ import CoinbaseWalletLogo from "../logos/coinbasewallet.svg";
 // @ts-ignore
 import WalletLinkLogo from "../logos/walletlink.svg";
 // @ts-ignore
+import Web3AuthLogo from "../logos/web3auth.svg";
+// @ts-ignore
 import SequenceLogo from "../logos/sequence.svg";
 // @ts-ignore
 import BitkeepLogo from "../logos/bitkeepwallet.png";
@@ -196,6 +198,14 @@ export const OPERA: IProviderInfo = {
   logo: OperaLogo,
   type: "injected",
   check: "isOpera"
+};
+
+export const WEB3AUTH: IProviderInfo = {
+  id: "web3auth",
+  name: "Web3Auth",
+  logo: Web3AuthLogo,
+  type: "injected",
+  check: "isWeb3Auth"
 };
 
 export const BITKEEPWALLET: IProviderInfo = {
