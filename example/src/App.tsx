@@ -232,6 +232,9 @@ class App extends React.Component<any, any> {
   public getProviderOptions = () => {
     const infuraId = process.env.REACT_APP_INFURA_ID;
     const providerOptions = {
+      starzwallet: {
+        package: true
+      },
       walletconnect: {
         package: WalletConnect,
         options: {

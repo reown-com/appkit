@@ -17,6 +17,7 @@ import sequence from "./sequence";
 import clvwallet from "./clvwallet"
 import opera from "./opera";
 import bitkeep from "./bitkeep"
+import starzwallet from "./starzwallet";
 
 
 export {
@@ -39,5 +40,6 @@ export {
   sequence,
   clvwallet,
   opera,
-  bitkeep
+  bitkeep,
+  starzwallet
 };
