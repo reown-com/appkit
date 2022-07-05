@@ -46,6 +46,20 @@ import BlockWalletLogo from "../logos/blockwallet.svg";
 import TallyLogo from "../logos/tally.svg";
 // @ts-ignore
 import PortalLogo from "../logos/portal.svg";
+// @ts-ignore
+import SequenceLogo from "../logos/sequence.svg";
+// @ts-ignore
+import BraveLogo from "../logos/brave.svg";
+// @ts-ignore
+import RabbyLogo from "../logos/rabby.svg";
+// @ts-ignore
+import BitkeepLogo from "../logos/bitkeepwallet.png";
+// @ts-ignore
+import ClvLogo from "../logos/clv.svg";
+// @ts-ignore
+import TokenPocketLogo from "../logos/tokenpocket.svg";
+// @ts-ignore
+import CoreLogo from "../logos/core.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -108,7 +122,7 @@ export const COINBASE: IProviderInfo = {
   name: "Coinbase",
   logo: CoinbaseLogo,
   type: "injected",
-  check: "isToshi"
+  check: "isCoinbaseWallet"
 };
 
 export const CIPHER: IProviderInfo = {
@@ -229,4 +243,60 @@ export const PORTAL: IProviderInfo = {
   logo: PortalLogo,
   type: "injected",
   check: "isPortal"
+};
+
+export const SEQUENCEINJECTED: IProviderInfo = {
+  id: "injected",
+  name: "Sequence",
+  logo: SequenceLogo,
+  type: "injected",
+  check: "isSequence"
+};
+
+export const RABBY: IProviderInfo = {
+  id: "injected",
+  name: "Rabby",
+  logo: RabbyLogo,
+  type: "injected",
+  check: "isRabby"
+};
+
+export const BRAVE: IProviderInfo = {
+  id: "injected",
+  name: "Brave",
+  logo: BraveLogo,
+  type: "injected",
+  check: "isBraveWallet"
+};
+
+export const CLV: IProviderInfo = {
+  id: "injected",
+  name: "CLV",
+  logo: ClvLogo,
+  type: "injected",
+  check: "isCloverWallet"
+};
+
+export const BITKEEPWALLET: IProviderInfo = {
+  id: "injected",
+  name: "Bitkeep Wallet",
+  logo: BitkeepLogo,
+  type: "injected",
+  check: "isBitKeep"
+};
+
+export const CORE: IProviderInfo = {
+  id: "injected",
+  name: "Core",
+  logo: CoreLogo,
+  type: "injected",
+  check: "isAvalanche"
+};
+
+export const TOKENPOCKET: IProviderInfo = {
+  id: "injected",
+  name: "TokenPocket Wallet",
+  logo: TokenPocketLogo,
+  type: "injected",
+  check: "isTokenPocket"
 };

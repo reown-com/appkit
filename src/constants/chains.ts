@@ -211,6 +211,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "lightstreams",
     networkId: 163
   },
+  180: {
+    chainId: 180,
+    chain: "AME",
+    network: "ame",
+    networkId: 180
+  },
   211: {
     chainId: 211,
     chain: "FTN",
@@ -241,6 +247,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "lisinski",
     networkId: 385
   },
+  534: {
+    chainId: 534,
+    chain: "CNDL",
+    network: "candle",
+    networkId: 534
+  },
   820: {
     chainId: 820,
     chain: "CLO",
@@ -258,6 +270,18 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     chain: "MATIC",
     network: "matic",
     networkId: 137
+  },
+  1284: {
+    chainId: 1284,
+    chain: "GLMR",
+    network: "moonbeam",
+    networkId: 1284
+  },
+  1285: {
+    chainId: 1285,
+    chain: "MOVR",
+    network: "moonriver",
+    networkId: 1285
   },
   42161: {
     chainId: 42161,
@@ -298,7 +322,7 @@ export const CHAIN_DATA_LIST: ChainDataList = {
   43114: {
     chainId: 43114,
     chain: "AVAX",
-    network: "avalanche-fuji-mainnet",
+    network: "avalanche-mainnet",
     networkId: 43114
   },
   246529: {
@@ -330,5 +354,17 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     chain: "ETH",
     network: "arbitrum-rinkeby",
     networkId: 421611
+  },
+  1666600000: {
+    chainId: 1666600000,
+    chain: "ONE",
+    network: "harmony-shard1",
+    networkId: 1666600000
+  },
+  1313161554: {
+    chainId: 1313161554,
+    chain: "AETH",
+    network: "aurora",
+    networkId: 1313161554
   }
 };

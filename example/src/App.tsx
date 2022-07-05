@@ -7,9 +7,11 @@ import Web3Modal from "web3modal";
 // @ts-ignore
 import WalletConnect from "@walletconnect/web3-provider";
 // @ts-ignore
-import Torus from "@toruslabs/torus-embed";
+import { Web3Auth } from "@web3auth/web3auth"
 // @ts-ignore
-import WalletLink from "walletlink";
+import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
+// @ts-ignore
+import Torus from "@toruslabs/torus-embed";
 
 import Button from "./components/Button";
 import Column from "./components/Column";
@@ -231,8 +233,10 @@ class App extends React.Component<any, any> {
 
   public getProviderOptions = () => {
     const infuraId = process.env.REACT_APP_INFURA_ID;
-    console.log("infuraId", infuraId);
     const providerOptions = {
+      starzwallet: {
+        package: true
+      },
       walletconnect: {
         package: WalletConnect,
         options: {
@@ -245,12 +249,27 @@ class App extends React.Component<any, any> {
       torus: {
         package: Torus
       },
-      walletlink: {
-        package: WalletLink,
+      binancechainwallet: {
+        package: true
+      },
+      // opera: {
+      //   package: true
+      // },
+      coinbasewallet: {
+        package: CoinbaseWalletSDK,
         options: {
           appName: "Web3Modal Example App",
           infuraId
         }
+      },
+      web3auth: {
+        package : Web3Auth,
+        options: {
+          infuraId
+        }
+      },
+      bitkeep: {
+        package: true
       }
     };
     return providerOptions;

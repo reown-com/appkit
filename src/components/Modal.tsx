@@ -14,11 +14,15 @@ import { SimpleFunction, IProviderUserOptions, ThemeColors } from "../helpers";
 declare global {
   // tslint:disable-next-line
   interface Window {
+    updateWeb3Modal: any;
     ethereum: any;
     BinanceChain: any;
     web3: any;
     celo: any;
-    updateWeb3Modal: any;
+    clover: any;
+    opera: any;
+    bitkeep: any;
+    starzwallet: any;
   }
 }
 

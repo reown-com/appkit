@@ -77,7 +77,7 @@ More detail on how the IProviderInfo interface works is still undocumentated but
 
 ## 5) Add your Provider options to docs
 
-Create a markdown file with an example of how to configure Web3Modal to display your provider using the provider-specific options. This should be inside the directory `docs/providers` and the file nae should match the provider id.
+Create a markdown file with an example of how to configure Web3Modal to display your provider using the provider-specific options. This should be inside the directory `docs/providers` and the file name should match the provider id.
 
 ```typescript
 ### Firebox

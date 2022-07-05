@@ -13,7 +13,13 @@ import dcentwallet from "./dcentwallet";
 import bitski from "./bitski";
 import frame from "./frame";
 import binancechainwallet from "./binancechainwallet";
-import walletlink from "./walletlink";
+import coinbasewallet, { walletlink } from "./coinbasewallet";
+import sequence from "./sequence";
+import clvwallet from "./clvwallet";
+import opera from "./opera";
+import web3auth from "./web3auth";
+import bitkeep from "./bitkeep";
+import starzwallet from "./starzwallet";
 
 export {
   injected,
@@ -31,5 +37,12 @@ export {
   bitski,
   frame,
   binancechainwallet,
-  walletlink
+  coinbasewallet,
+  walletlink,
+  sequence,
+  clvwallet,
+  opera,
+  bitkeep,
+  starzwallet,
+  web3auth
 };
