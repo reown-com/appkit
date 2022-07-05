@@ -56,6 +56,8 @@ import RabbyLogo from "../logos/rabby.svg";
 import BitkeepLogo from "../logos/bitkeepwallet.png";
 // @ts-ignore
 import ClvLogo from "../logos/clv.svg";
+// @ts-ignore
+import TokenPocketLogo from "../logos/tokenpocket.svg";
 
 
 export const FALLBACK: IProviderInfo = {
@@ -280,4 +282,12 @@ export const BITKEEPWALLET: IProviderInfo = {
   logo: BitkeepLogo,
   type: "injected",
   check: "isBitKeep"
+};
+
+export const TOKENPOCKET: IProviderInfo = {
+  id: "injected",
+  name: "TokenPocket Wallet",
+  logo: TokenPocketLogo,
+  type: "injected",
+  check: "isTokenPocket"
 };
