@@ -16,6 +16,7 @@ import coinbasewallet, { walletlink } from "./coinbasewallet";
 import sequence from "./sequence";
 import clvwallet from "./clvwallet"
 import opera from "./opera";
+import bitkeep from "./bitkeep"
 
 
 export {
@@ -37,5 +38,6 @@ export {
   walletlink,
   sequence,
   clvwallet,
-  opera
+  opera,
+  bitkeep
 };
