@@ -18,7 +18,8 @@
     "authereum",
     "frame",
     "coinbasewallet",
-    "sequence"
+    "sequence",
+    "web3auth"
   ],
   "author": "Web3Modal <web3modal.com>",
   "license": "MIT",
