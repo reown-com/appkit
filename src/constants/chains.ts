@@ -211,6 +211,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "lightstreams",
     networkId: 163
   },
+  180: {
+    chainId: 180,
+    chain: "AME",
+    network: "ame",
+    networkId: 180
+  },
   211: {
     chainId: 211,
     chain: "FTN",
@@ -240,6 +246,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     chain: "CRO",
     network: "lisinski",
     networkId: 385
+  },
+  534: {
+    chainId: 534,
+    chain: "CNDL",
+    network: "candle",
+    networkId: 534
   },
   820: {
     chainId: 820,
@@ -310,7 +322,7 @@ export const CHAIN_DATA_LIST: ChainDataList = {
   43114: {
     chainId: 43114,
     chain: "AVAX",
-    network: "avalanche-fuji-mainnet",
+    network: "avalanche-mainnet",
     networkId: 43114
   },
   246529: {
