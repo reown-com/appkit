@@ -211,6 +211,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "lightstreams",
     networkId: 163
   },
+  180: {
+    chainId: 180,
+    chain: "AME",
+    network: "ame",
+    networkId: 180
+  },
   211: {
     chainId: 211,
     chain: "FTN",

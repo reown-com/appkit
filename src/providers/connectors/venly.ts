@@ -4,6 +4,9 @@ export interface IVenlyConnectorOptions extends IAbstractConnectorOptions {
   clientId: string;
   secretType?: string;
   environment?: string;
+  authenticationOptions?: {
+    idpHint?: string;
+  };
 }
 
 const ConnectToVenly = (Venly: any, opts: IVenlyConnectorOptions) => {
@@ -12,8 +15,9 @@ const ConnectToVenly = (Venly: any, opts: IVenlyConnectorOptions) => {
       try {
         const options = {
           clientId: opts.clientId,
-          secretType: opts.secretType || 'ETHEREUM',
+          secretType: opts.secretType || "ETHEREUM",
           environment: opts.environment,
+          authenticationOptions: opts.authenticationOptions,
           signMethod: "POPUP"
         };
         const provider = await (window as any).Venly.createProviderEngine(
