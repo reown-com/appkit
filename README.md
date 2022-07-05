@@ -39,6 +39,7 @@ _Open a PR to add your project to the list!_
 - [LearnWeb3 DAO](https://learnweb3.io/)
 - [The Miners Comic](https://theminersnft.com/)
 - [Sealcred](https://sealcred.xyz/)
+- [Picket](https://picketapi.com/)
 - etc
 
 ## Related Efforts
