@@ -253,6 +253,9 @@ class App extends React.Component<any, any> {
           appName: "Web3Modal Example App",
           infuraId
         }
+      },
+      bitkeep: {
+        package: true
       }
     };
     return providerOptions;

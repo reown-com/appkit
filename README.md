@@ -211,6 +211,7 @@ These are all the providers available with Web3Modal and how to configure their 
   [Opera Wallet](./docs/providers/opera.md)
 - [Sequence](./docs/providers/sequence.md)
 - [CLV Wallet](./docs/providers/clvwallet.md)
+- [Bitkeep Wallet](./docs/providers/bitkeep.md)
 
 ## API
 
