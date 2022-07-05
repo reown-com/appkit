@@ -21,6 +21,7 @@ declare global {
     updateWeb3Modal: any;
     clover: any;
     opera: any;
+    bitkeep: any;
   }
 }
 
