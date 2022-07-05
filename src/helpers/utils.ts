@@ -54,6 +54,7 @@ export function getInjectedProvider(): IProviderInfo | null {
   const injectedProviders = checkInjectedProviders();
 
   if (injectedProviders.injectedAvailable) {
+    // @ts-ignore
     delete injectedProviders.injectedAvailable;
     const checks = Object.keys(injectedProviders);
     result = getProviderInfoFromChecksArray(checks);
@@ -241,10 +242,26 @@ export function isLocalStorageAvailable() {
 }
 
 export function fromCheckToId(check: string) {
-  if (check.startsWith("is")) {
-    check.replace("is", "");
-  } else if (check.startsWith("__")) {
-    check.replace("__", "");
+  let result = check.toLowerCase();
+  // standard way
+  if (result.startsWith("is")) {
+    result = result.replace("is", "");
   }
-  return check.toLowerCase();
+  // exception for xdefi
+  if (result.startsWith("__")) {
+    result = result.replace("__", "");
+  }
+  // exception for burnerconnect
+  if (result === "burnerprovider") {
+    result = "burnerconnect";
+  }
+  // exception for frame
+  if (result === "framenative") {
+    result = "frame";
+  }
+  // exception for coinbasewallet
+  if (result === "walletlink") {
+    result = "coinbasewallet";
+  }
+  return check;
 }
