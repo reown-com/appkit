@@ -211,6 +211,7 @@ These are all the providers available with Web3Modal and how to configure their 
 - [Sequence](./docs/providers/sequence.md)
 - [CLV Wallet](./docs/providers/clvwallet.md)
 - [Web3Auth](./docs/providers/web3auth.md)
+- [Bitkeep Wallet](./docs/providers/bitkeep.md)
 
 ## API
 

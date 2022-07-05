@@ -261,6 +261,9 @@ class App extends React.Component<any, any> {
         options: {
           infuraId
         }
+      },
+      bitkeep: {
+        package: true
       }
     };
     return providerOptions;

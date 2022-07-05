@@ -32,6 +32,8 @@ import WalletLinkLogo from "../logos/walletlink.svg";
 import Web3AuthLogo from "../logos/web3auth.svg";
 // @ts-ignore
 import SequenceLogo from "../logos/sequence.svg";
+// @ts-ignore
+import BitkeepLogo from "../logos/bitkeepwallet.png";
 
 import { IProviderInfo } from "../../helpers";
 
@@ -195,11 +197,18 @@ export const OPERA: IProviderInfo = {
   check: "isOpera"
 };
 
-
 export const WEB3AUTH: IProviderInfo = {
   id: "web3auth",
   name: "Web3Auth",
   logo: Web3AuthLogo,
   type: "injected",
   check: "isWeb3Auth"
+};
+
+export const BITKEEPWALLET: IProviderInfo = {
+  id: "bitkeep",
+  name: "Bitkeep Wallet",
+  logo: BitkeepLogo,
+  type: "injected",
+  check: "isBitKeep"
 };

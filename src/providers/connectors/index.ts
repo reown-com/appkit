@@ -17,6 +17,7 @@ import sequence from "./sequence";
 import clvwallet from "./clvwallet"
 import opera from "./opera";
 import web3auth from "./web3auth"
+import bitkeep from "./bitkeep"
 
 export {
   injected,
@@ -38,5 +39,6 @@ export {
   sequence,
   clvwallet,
   opera,
-  web3auth
+  web3auth,
+  bitkeep
 };
