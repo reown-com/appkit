@@ -60,6 +60,8 @@ import ClvLogo from "../logos/clv.svg";
 import TokenPocketLogo from "../logos/tokenpocket.svg";
 // @ts-ignore
 import CoreLogo from "../logos/core.svg";
+// @ts-ignore
+import WormholesWalletLogo from "../logos/wormholeswallet.png";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -299,4 +301,12 @@ export const TOKENPOCKET: IProviderInfo = {
   logo: TokenPocketLogo,
   type: "injected",
   check: "isTokenPocket"
+};
+
+export const WORMHOLESWALLET: IProviderInfo = {
+  id: "injected",
+  name: "WormholesWallet",
+  logo: WormholesWalletLogo,
+  type: "injected",
+  check: "isWormholesWallet"
 };

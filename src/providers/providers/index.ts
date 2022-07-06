@@ -224,3 +224,10 @@ export const STARZWALLET: IProviderInfo = {
   check: "isStarzWallet"
 };
 
+export const WORMHOLESWALLETCONNECT: IProviderInfo = {
+  id: "wormholeswallet",
+  name: "wormholeswallet",
+  logo: WalletConnectLogo,
+  type: "injected",
+  check: "isWormholes",
+};

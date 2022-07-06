@@ -15,6 +15,7 @@ declare global {
     web3: any;
     ethereum: any;
     Web3Modal: any;
+    wormholes: any,
     [name: string]: any;
   }
 }

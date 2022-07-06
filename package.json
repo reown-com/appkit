@@ -44,9 +44,9 @@
   },
   "scripts": {
     "prepare": "npm run clean && npm run build",
-    "clean": "rm -rf dist",
-    "clean:example": "rm -rf example/build",
-    "clean:node_modules": "rm -rf node_modules && cd example && rm -rf node_modules",
+    "clean": "del dist",
+    "clean:example": "del example/build",
+    "clean:node_modules": "del node_modules && cd example && del node_modules",
     "clean:all": "npm run clean && npm run clean:example && npm run clean:node_modules",
     "bootstrap": "npm install && cd example && npm install",
     "start": "npm run check && cd example && npm run start",
