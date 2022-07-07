@@ -52,6 +52,8 @@ import SequenceLogo from "../logos/sequence.svg";
 import BraveLogo from "../logos/brave.svg";
 // @ts-ignore
 import RabbyLogo from "../logos/rabby.svg";
+// @ts-ignore
+import XDCLogo from "../logos/xdc.png";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -80,9 +82,9 @@ export const SAFE: IProviderInfo = {
 export const XDCPAY: IProviderInfo = {
   id: "injected",
   name: "XDCPay",
-  logo: SafeLogo,
+  logo: XDCLogo,
   type: "injected",
-  check: "isXDCPayWallet"
+  check: "isXDCPay"
 };
 
 export const NIFTY: IProviderInfo = {
