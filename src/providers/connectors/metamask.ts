@@ -1,16 +1,22 @@
+import { getInjectedProviderId } from "../../helpers";
+
 const ConnectToMetaMaskWallet = async () => {
-  if ((typeof window.ethereum === 'undefined') || !window.ethereum.isMetaMask) {
+  const injectedProviderId = getInjectedProviderId();
+  if (typeof window.ethereum === "undefined" || injectedProviderId) {
     // TODO: integrate https://github.com/MetaMask/metamask-onboarding
     // open new window
-    window.open("https://metamask.io/?utm_source=web3modal&utm_medium=codelib&utm_campaign=dappname", "_blank");
+    window.open(
+      "https://metamask.io/?utm_source=web3modal&utm_medium=codelib&utm_campaign=dappname",
+      "_blank"
+    );
     return;
   }
 
   let provider = null;
-  if (typeof window.ethereum !== 'undefined') {
+  if (typeof window.ethereum !== "undefined") {
     provider = window.ethereum;
     try {
-      await provider.request({ method: 'eth_requestAccounts' })
+      await provider.request({ method: "eth_requestAccounts" });
     } catch (error) {
       throw new Error("User Rejected");
     }

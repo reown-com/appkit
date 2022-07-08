@@ -67,6 +67,11 @@ export function getInjectedProviderName(): string | null {
   return injectedProvider ? injectedProvider.name : null;
 }
 
+export function getInjectedProviderId(): string | null {
+  const injectedProvider = getInjectedProvider();
+  return injectedProvider ? fromCheckToId(injectedProvider.check) : null;
+}
+
 export function getProviderInfo(provider: any): IProviderInfo {
   if (!provider) return providers.FALLBACK;
   const checks = Object.values(providers)

@@ -51,19 +51,9 @@ export class ProviderController {
 
     Object.keys(list.connectors).forEach((id: string) => {
       let providerInfo: IProviderInfo;
-      if (id === INJECTED_PROVIDER_ID) {
+      if (id === INJECTED_PROVIDER_ID && this.injectedProvider !== null) {
         providerInfo = this.injectedProvider || list.providers.FALLBACK;
         console.log("providerInfo", providerInfo);
-        const injectedProviderId = fromCheckToId(providerInfo.check);
-        console.log(
-          "Object.keys(this.providerOptions)",
-          Object.keys(this.providerOptions)
-        );
-        console.log("injectedProviderId", injectedProviderId);
-        console.log(
-          "should ignore if injected exists",
-          Object.keys(this.providerOptions).includes(injectedProviderId)
-        );
       } else {
         providerInfo = getProviderInfoById(id);
       }
@@ -77,14 +67,13 @@ export class ProviderController {
           };
         }
       }
-      console.log("id ========================>", id);
-      // console.log("Object.keys(list.connectors)", Object.keys(list.connectors));
       providers.push({
         ...providerInfo,
         connector: list.connectors[id],
         package: providerInfo.package
       });
     });
+    console.log("providers", providers);
     this.providers = providers;
     // parse custom providers
     Object.keys(this.providerOptions)
@@ -178,12 +167,23 @@ export class ProviderController {
 
     const userOptions: IProviderUserOptions[] = [];
 
+    console.log("providerList", providerList);
+
     providerList.forEach((id: string) => {
       let provider = this.getProvider(id);
       if (typeof provider !== "undefined") {
+        console.log(
+          "Object.keys(this.providerOptions)",
+          Object.keys(this.providerOptions)
+        );
+        console.log("injectedProviderId", injectedProviderId);
+        console.log(
+          "should ignore if injected exists",
+          Object.keys(this.providerOptions).includes(injectedProviderId)
+        );
         if (
-          provider.id === INJECTED_PROVIDER_ID &&
-          providerList.includes(injectedProviderId)
+          provider.id !== INJECTED_PROVIDER_ID &&
+          provider.id === injectedProviderId
         ) {
           // given that a provider option id matches the same injected provider
           // we will not include the detected injected provider to prevent duplicates
@@ -200,6 +200,8 @@ export class ProviderController {
         });
       }
     });
+
+    console.log("userOptions", userOptions);
 
     return userOptions;
   };
