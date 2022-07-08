@@ -45,6 +45,7 @@ export class ProviderController {
     this.network = opts.network;
 
     this.injectedProvider = getInjectedProvider();
+    console.log("this.injectedProvider", this.injectedProvider);
 
     const providers: IProviderDisplayWithConnector[] = [];
 
@@ -52,6 +53,7 @@ export class ProviderController {
       let providerInfo: IProviderInfo;
       if (id === INJECTED_PROVIDER_ID) {
         providerInfo = this.injectedProvider || list.providers.FALLBACK;
+        console.log("providerInfo", providerInfo);
         const injectedProviderId = fromCheckToId(providerInfo.check);
         console.log(
           "Object.keys(this.providerOptions)",
@@ -59,14 +61,9 @@ export class ProviderController {
         );
         console.log("injectedProviderId", injectedProviderId);
         console.log(
-          "Object.keys(this.providerOptions).includes(injectedProviderId)",
+          "should ignore if injected exists",
           Object.keys(this.providerOptions).includes(injectedProviderId)
         );
-        if (Object.keys(this.providerOptions).includes(injectedProviderId)) {
-          // given that a provider option id matches the same injected provider
-          // we will not include the detected injected provider to prevent duplicates
-          return;
-        }
       } else {
         providerInfo = getProviderInfoById(id);
       }
@@ -80,6 +77,8 @@ export class ProviderController {
           };
         }
       }
+      console.log("id ========================>", id);
+      // console.log("Object.keys(list.connectors)", Object.keys(list.connectors));
       providers.push({
         ...providerInfo,
         connector: list.connectors[id],
@@ -140,7 +139,9 @@ export class ProviderController {
 
   public getUserOptions = () => {
     const mobile = isMobile();
-
+    const injectedProviderId = this.injectedProvider
+      ? fromCheckToId(this.injectedProvider.check)
+      : "";
     const defaultProviderList = this.providers.map(({ id }) => id);
     const displayInjected =
       !!this.injectedProvider && !this.disableInjectedProvider;
@@ -168,7 +169,6 @@ export class ProviderController {
         }
       });
       if (this.injectedProvider && displayInjected) {
-        const injectedProviderId = fromCheckToId(this.injectedProvider.check);
         console.log("injectedProviderId", injectedProviderId);
         if (providerList.includes(injectedProviderId)) {
           providerList = providerList.filter(id => id !== injectedProviderId);
@@ -181,6 +181,15 @@ export class ProviderController {
     providerList.forEach((id: string) => {
       let provider = this.getProvider(id);
       if (typeof provider !== "undefined") {
+        if (
+          provider.id === INJECTED_PROVIDER_ID &&
+          providerList.includes(injectedProviderId)
+        ) {
+          // given that a provider option id matches the same injected provider
+          // we will not include the detected injected provider to prevent duplicates
+          return;
+        }
+        // otherwise then continue parsing the filtered provider list
         const { id, name, logo, connector } = provider;
         userOptions.push({
           id,
