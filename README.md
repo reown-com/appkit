@@ -215,6 +215,7 @@ These are all the providers available with Web3Modal and how to configure their 
 - [Web3Auth](./docs/providers/web3auth.md)
 - [Bitkeep Wallet](./docs/providers/bitkeep.md)
 - [99Starz Wallet](./docs/providers/starzwallet.md)
+- [Wormholes wallet](./docs/providers/wormholeswallet.md)
 
 ## API
 
