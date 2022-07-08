@@ -263,5 +263,5 @@ export function fromCheckToId(check: string) {
   if (result === "walletlink") {
     result = "coinbasewallet";
   }
-  return check;
+  return result;
 }

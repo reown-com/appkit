@@ -46,10 +46,27 @@ export class ProviderController {
 
     this.injectedProvider = getInjectedProvider();
 
-    this.providers = Object.keys(list.connectors).map((id: string) => {
+    const providers: IProviderDisplayWithConnector[] = [];
+
+    Object.keys(list.connectors).forEach((id: string) => {
       let providerInfo: IProviderInfo;
       if (id === INJECTED_PROVIDER_ID) {
         providerInfo = this.injectedProvider || list.providers.FALLBACK;
+        const injectedProviderId = fromCheckToId(providerInfo.check);
+        console.log(
+          "Object.keys(this.providerOptions)",
+          Object.keys(this.providerOptions)
+        );
+        console.log("injectedProviderId", injectedProviderId);
+        console.log(
+          "Object.keys(this.providerOptions).includes(injectedProviderId)",
+          Object.keys(this.providerOptions).includes(injectedProviderId)
+        );
+        if (Object.keys(this.providerOptions).includes(injectedProviderId)) {
+          // given that a provider option id matches the same injected provider
+          // we will not include the detected injected provider to prevent duplicates
+          return;
+        }
       } else {
         providerInfo = getProviderInfoById(id);
       }
@@ -63,12 +80,13 @@ export class ProviderController {
           };
         }
       }
-      return {
+      providers.push({
         ...providerInfo,
         connector: list.connectors[id],
         package: providerInfo.package
-      };
+      });
     });
+    this.providers = providers;
     // parse custom providers
     Object.keys(this.providerOptions)
       .filter(key => key.startsWith("custom-"))
@@ -124,13 +142,14 @@ export class ProviderController {
     const mobile = isMobile();
 
     const defaultProviderList = this.providers.map(({ id }) => id);
-
     const displayInjected =
       !!this.injectedProvider && !this.disableInjectedProvider;
     const onlyInjected = displayInjected && mobile;
 
     let providerList: string[] = [];
-
+    console.log("providerList", providerList);
+    console.log("onlyInjected", onlyInjected);
+    console.log("displayInjected", displayInjected);
     if (onlyInjected) {
       providerList.push(INJECTED_PROVIDER_ID);
     } else {
@@ -150,6 +169,7 @@ export class ProviderController {
       });
       if (this.injectedProvider && displayInjected) {
         const injectedProviderId = fromCheckToId(this.injectedProvider.check);
+        console.log("injectedProviderId", injectedProviderId);
         if (providerList.includes(injectedProviderId)) {
           providerList = providerList.filter(id => id !== injectedProviderId);
         }
