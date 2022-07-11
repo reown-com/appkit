@@ -20,7 +20,6 @@ declare global {
     web3: any;
     celo: any;
     clover: any;
-    opera: any;
     bitkeep: any;
     starzwallet: any;
   }

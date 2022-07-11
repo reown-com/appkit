@@ -15,7 +15,6 @@ import binancechainwallet from "./binancechainwallet";
 import coinbasewallet, { walletlink } from "./coinbasewallet";
 import sequence from "./sequence";
 import clvwallet from "./clvwallet";
-import opera from "./opera";
 import web3auth from "./web3auth";
 import bitkeep from "./bitkeep";
 import starzwallet from "./starzwallet";
@@ -39,7 +38,6 @@ export {
   walletlink,
   sequence,
   clvwallet,
-  opera,
   bitkeep,
   starzwallet,
   web3auth

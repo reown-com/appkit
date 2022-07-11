@@ -19,8 +19,6 @@ import DcentWalletLogo from "../logos/dcentwallet.png";
 // @ts-ignore
 import BitskiLogo from "../logos/bitski.svg";
 // @ts-ignore
-import OperaLogo from "../logos/opera.svg";
-// @ts-ignore
 import FrameLogo from "../logos/frame.svg";
 // @ts-ignore
 import BinanceChainWalletLogo from "../logos/binancechainwallet.svg";
@@ -36,7 +34,6 @@ import SequenceLogo from "../logos/sequence.svg";
 import BitkeepLogo from "../logos/bitkeepwallet.png";
 // @ts-ignore
 import StarzWalletLogo from "../logos/starzwallet.svg";
-
 
 import { IProviderInfo } from "../../helpers";
 
@@ -192,14 +189,6 @@ export const SEQUENCE: IProviderInfo = {
   check: "isSequenceWeb"
 };
 
-export const OPERA: IProviderInfo = {
-  id: "opera",
-  name: "Opera",
-  logo: OperaLogo,
-  type: "injected",
-  check: "isOpera"
-};
-
 export const WEB3AUTH: IProviderInfo = {
   id: "web3auth",
   name: "Web3Auth",
@@ -223,4 +212,3 @@ export const STARZWALLET: IProviderInfo = {
   type: "injected",
   check: "isStarzWallet"
 };
-
