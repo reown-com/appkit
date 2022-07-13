@@ -60,6 +60,8 @@ import ClvLogo from "../logos/clv.svg";
 import TokenPocketLogo from "../logos/tokenpocket.svg";
 // @ts-ignore
 import CoreLogo from "../logos/core.svg";
+// @ts-ignore
+import GameStopLogo from "../logos/gamestopwallet.svg.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -299,4 +301,12 @@ export const TOKENPOCKET: IProviderInfo = {
   logo: TokenPocketLogo,
   type: "injected",
   check: "isTokenPocket"
+};
+
+export const GAMESTOP: IProviderInfo = {
+  id: "injected",
+  name: "GameStop Wallet",
+  logo: GameStopLogo,
+  type: "injected",
+  check: "isGamestop"
 };
