@@ -39,6 +39,7 @@ _Open a PR to add your project to the list!_
 - [LearnWeb3 DAO](https://learnweb3.io/)
 - [The Miners Comic](https://theminersnft.com/)
 - [Sealcred](https://sealcred.xyz/)
+- [Dark Earth](https://darkearth.gg/)
 - etc
 
 ## Related Efforts
@@ -209,7 +210,7 @@ These are all the providers available with Web3Modal and how to configure their 
 - [BurnerConnect](./docs/providers/burnerconnect.md)
 - [MEWConnect](./docs/providers/mewconnect.md)
 - [Binance Chain Wallet](./docs/providers/binancechainwallet.md)
-  [Opera Wallet](./docs/providers/opera.md)
+- [Opera Wallet](./docs/providers/opera.md)
 - [Sequence](./docs/providers/sequence.md)
 - [CLV Wallet](./docs/providers/clvwallet.md)
 - [Web3Auth](./docs/providers/web3auth.md)
