@@ -349,6 +349,12 @@ export const CHAIN_DATA_LIST: ChainDataList = {
     network: "newchain-mainnet",
     networkId: 1012
   },
+  2001: {
+    chainId: 2001,
+    chain: "Milkomeda Cardano (C1)",
+    network: "milkomeda-mainnet",
+    networkId: 2001
+  },
   421611: {
     chainId: 421611,
     chain: "ETH",
