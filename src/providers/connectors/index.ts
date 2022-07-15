@@ -1,4 +1,5 @@
 import injected from "./injected";
+import infinitywallet from "./infinitywallet";
 import boltx from "./boltx";
 import walletconnect from "./walletconnect";
 import portis from "./portis";
@@ -23,6 +24,7 @@ import starzwallet from "./starzwallet";
 export {
   injected,
   walletconnect,
+  infinitywallet,
   boltx,
   portis,
   torus,

@@ -1,6 +1,8 @@
 // @ts-ignore
 import WalletConnectLogo from "../logos/walletconnect-circle.svg";
 // @ts-ignore
+import InfinityWalletLogo from "../logos/infinitywallet.svg";
+// @ts-ignore
 import PortisLogo from "../logos/portis.svg";
 // @ts-ignore
 import FortmaticLogo from "../logos/fortmatic.svg";
@@ -51,6 +53,14 @@ export const WALLETCONNECT: IProviderInfo = {
   package: {
     required: [["infuraId", "rpc"]]
   }
+};
+
+export const INFINITYWALLET: IProviderInfo = {
+  id: "infinitywallet",
+  name: "Infinity Wallet",
+  logo: InfinityWalletLogo,
+  type: "connectWallet",
+  check: "isInfinitywallet"
 };
 
 export const PORTIS: IProviderInfo = {
@@ -223,4 +233,3 @@ export const STARZWALLET: IProviderInfo = {
   type: "injected",
   check: "isStarzWallet"
 };
-

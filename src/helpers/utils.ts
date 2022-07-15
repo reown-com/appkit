@@ -146,6 +146,9 @@ export function getProviderDescription(
     case "hardware":
       description = `Connect to your ${providerInfo.name} Hardware Wallet`;
       break;
+    case "connectWallet":
+      description = `Connect to your ${providerInfo.name}`;
+      break;
     default:
       break;
   }

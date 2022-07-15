@@ -10,6 +10,8 @@ import WalletConnect from "@walletconnect/web3-provider";
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 // @ts-ignore
 import { Web3Auth } from "@web3auth/web3auth";
+// @ts-ignore
+import * as InfinityWalletConnect from '@infinitywallet/infinity-connector';
 
 import Button from "./components/Button";
 import Column from "./components/Column";
@@ -237,6 +239,9 @@ class App extends React.Component<any, any> {
         options: {
           infuraId
         }
+      },
+      infinitywallet: {
+        package: InfinityWalletConnect
       },
       coinbasewallet: {
         package: CoinbaseWalletSDK,
