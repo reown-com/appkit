@@ -53,7 +53,7 @@ import BraveLogo from "../logos/brave.svg";
 // @ts-ignore
 import RabbyLogo from "../logos/rabby.svg";
 // @ts-ignore
-import XDCLogo from "../logos/xdc.png";
+import XDCLogo from "../logos/xdc.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
