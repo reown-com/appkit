@@ -6,7 +6,7 @@ A single Web3 / Ethereum provider solution for all Wallets
 
 Web3Modal is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
 
-By default Web3Modal Library supports injected providers like ( **Metamask**,**Brave Wallet**, **Dapper**, **Frame**, **Gnosis Safe**, **Tally**, Web3 Browsers, etc) and **WalletConnect**. You can also easily configure the library to support **Coinbase Wallet**, **Torus**, **Portis**, **Fortmatic** and many more.
+By default Web3Modal Library supports injected providers like ( **Metamask**,**Brave Wallet**, **Dapper**, **Frame**, **Gnosis Safe**, **Tally**, Web3 Browsers, etc) and **WalletConnect**. You can also easily configure the library to support **Coinbase Wallet**, **Infinity Wallet**, **Torus**, **Portis**, **Fortmatic** and many more.
 
 ## Preview
 
@@ -198,6 +198,7 @@ These are all the providers available with Web3Modal and how to configure their 
 
 - [WalletConnect](./docs/providers/walletconnect.md)
 - [Coinbase Wallet](./docs/providers/coinbasewallet.md)
+- [Infinity Wallet](./docs/providers/infinitywallet.md)
 - [Fortmatic](./docs/providers/fortmatic.md)
 - [Torus](./docs/providers/torus.md)
 - [Portis](./docs/providers/portis.md)
