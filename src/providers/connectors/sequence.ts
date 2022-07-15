@@ -31,7 +31,7 @@ const ConnectToSequence = async (
       walletConfig = { networkRpcUrl: opts?.networkRpcUrl }
     }
 
-    wallet = sequence.initWallet(opts?.defaultNetwork || 'mainnet', walletConfig);
+    wallet = await sequence.initWallet(opts?.defaultNetwork || 'mainnet', walletConfig);
   }
 
   if (!wallet.isConnected()) {
