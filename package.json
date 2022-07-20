@@ -78,7 +78,7 @@
     "isomorphic-fetch": "^2.2.1",
     "mocha": "5.2.0",
     "prettier": "^1.18.2",
-    "terser": "^3.14.1",
+    "terser": "^4.8.1",
     "ts-loader": "^5.3.3",
     "tslib": "^2.3.1",
     "tslint": "^5.18.0",
