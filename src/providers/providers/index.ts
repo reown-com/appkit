@@ -36,7 +36,8 @@ import SequenceLogo from "../logos/sequence.svg";
 import BitkeepLogo from "../logos/bitkeepwallet.png";
 // @ts-ignore
 import StarzWalletLogo from "../logos/starzwallet.svg";
-
+// @ts-ignore
+import ClvLogo from "../logos/clv.svg";
 
 import { IProviderInfo } from "../../helpers";
 
@@ -157,6 +158,14 @@ export const BINANCECHAINWALLET: IProviderInfo = {
   logo: BinanceChainWalletLogo,
   type: "injected",
   check: "isBinanceChainWallet"
+};
+
+export const CLVWALLET: IProviderInfo = {
+  id: "clvwallet",
+  name: "CLV Wallet",
+  logo: ClvLogo,
+  type: "injected",
+  check: "isClover"
 };
 
 /**
