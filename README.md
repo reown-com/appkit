@@ -39,6 +39,7 @@ _Open a PR to add your project to the list!_
 - [LearnWeb3 DAO](https://learnweb3.io/)
 - [The Miners Comic](https://theminersnft.com/)
 - [Sealcred](https://sealcred.xyz/)
+- [NovaBloq - No Code plugin](https://novabloq.com/plugin/1658484099787x926229598026113800)
 - etc
 
 ## Related Efforts
