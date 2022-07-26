@@ -61,7 +61,7 @@ import TokenPocketLogo from "../logos/tokenpocket.svg";
 // @ts-ignore
 import CoreLogo from "../logos/core.svg";
 // @ts-ignore
-import GameStopLogo from "../logos/gamestopwallet.svg.svg";
+import GameStopLogo from "../logos/gamestopwallet.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
