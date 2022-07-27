@@ -1,0 +1,104 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "ignorePatterns": ["*.d.ts", "*.config.js"],
+  "parserOptions": {
+    "project": ["tsconfig.json"]
+  },
+  "plugins": ["@typescript-eslint"],
+  "extends": ["eslint:all", "plugin:@typescript-eslint/all", "prettier"],
+  "rules": {
+    "sort-imports": "off",
+    "one-var": "off",
+    "sort-keys": "off",
+    "id-length": "off",
+    "no-ternary": "off",
+    "max-lines-per-function": "off",
+    "max-statements": "off",
+    "no-undefined": "off",
+    "new-cap": "off",
+    "max-params": "off",
+    "complexity": "off",
+    "max-depth": "off",
+    "no-undef-init": "off",
+    "curly": "error",
+    "max-lines": "off",
+    "require-atomic-updates": "off",
+    "arrow-body-style": "off",
+    "func-style": ["error", "declaration"],
+    "newline-before-return": "error",
+    "camelcase": ["error", { "properties": "never" }],
+
+    "@typescript-eslint/no-throw-literal": "off",
+    "@typescript-eslint/await-thenable": "error",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/prefer-readonly-parameter-types": "off",
+    "@typescript-eslint/no-type-alias": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "@typescript-eslint/no-magic-numbers": "off",
+    "@typescript-eslint/typedef": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/no-require-imports": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/lines-between-class-members": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/unbound-method": "off",
+    "@typescript-eslint/no-unnecessary-condition": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/no-invalid-this": "off",
+    "@typescript-eslint/no-unnecessary-boolean-literal-compare": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "@typescript-eslint/restrict-plus-operands": "off",
+    "@typescript-eslint/no-redundant-type-constituents": "off",
+    "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "no-type-imports" }],
+    "@typescript-eslint/consistent-type-exports": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "h" }
+    ],
+    "@typescript-eslint/no-confusing-void-expression": ["error", { "ignoreArrowShorthand": true }],
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/explicit-member-accessibility": "off",
+    "@typescript-eslint/member-ordering": "off",
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "property",
+        "types": ["function"],
+        "format": ["PascalCase", "camelCase"]
+      },
+      {
+        "selector": "interface",
+        "format": ["PascalCase"],
+        "custom": {
+          "regex": "^I[A-Z]",
+          "match": true
+        }
+      },
+      {
+        "selector": "typeAlias",
+        "format": ["PascalCase"],
+        "custom": {
+          "regex": "^T[A-Z]",
+          "match": true
+        }
+      },
+      {
+        "selector": "enum",
+        "format": ["PascalCase"],
+        "custom": {
+          "regex": "^E[A-Z]",
+          "match": true
+        }
+      }
+    ]
+  }
+}
