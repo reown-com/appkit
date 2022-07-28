@@ -18,7 +18,8 @@
     "allowSyntheticDefaultImports": true,
     "noFallthroughCasesInSwitch": true,
     "isolatedModules": true,
-    "allowUnreachableCode": false
+    "allowUnreachableCode": false,
+    "declaration": true
   },
   "exclude": ["node_modules"]
 }

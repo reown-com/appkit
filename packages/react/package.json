@@ -1,13 +1,24 @@
 {
   "name": "@web3modal/react",
   "version": "1.0.0",
-  "private": true,
-  "scripts": {},
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
+  "unpkg": "dist/index.umd.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:types": "tsc",
+    "build:source": "rollup --config rollup.config.js",
+    "build": "npm run build:source; npm run build:types"
+  },
   "dependencies": {
     "@web3modal/core": "1.0.0"
   },
   "peerDependencies": {
-    "react": "18.x"
+    "react": ">=17.x",
+    "react-dom": ">=17.x"
   },
   "devDependencies": {
     "@types/react": "18.0.15",

@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev"
+    "dev": "next dev",
+    "build": "echo 'not implemented'"
   },
   "dependencies": {
     "@web3modal/react": "1.0.0",

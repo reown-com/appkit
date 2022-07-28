@@ -1,8 +1,18 @@
 {
   "name": "@web3modal/core",
   "version": "1.0.0",
-  "private": true,
-  "scripts": {},
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
+  "unpkg": "dist/index.umd.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:types": "tsc",
+    "build:source": "rollup --config rollup.config.js",
+    "build": "npm run build:source; npm run build:types"
+  },
   "dependencies": {
     "lit": "2.2.8"
   }

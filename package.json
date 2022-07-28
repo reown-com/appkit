@@ -2,7 +2,9 @@
   "name": "web3modal",
   "version": "1.0.0",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "build": "npm run build --workspaces"
+  },
   "workspaces": [
     "packages/*",
     "examples/*"
@@ -13,6 +15,8 @@
     "eslint": "8.20.0",
     "eslint-config-prettier": "8.5.0",
     "prettier": "2.7.1",
-    "typescript": "4.7.4"
+    "typescript": "4.7.4",
+    "rollup": "2.77.2",
+    "rollup-plugin-esbuild": "4.9.1"
   }
 }
