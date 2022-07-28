@@ -2,9 +2,7 @@
   "name": "web3modal",
   "version": "1.0.0",
   "private": true,
-  "scripts": {
-    "build": "npm run build --workspaces=web3modal-core"
-  },
+  "scripts": {},
   "workspaces": [
     "packages/*"
   ],
