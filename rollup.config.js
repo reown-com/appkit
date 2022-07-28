@@ -1,18 +1,15 @@
 import esbuild from 'rollup-plugin-esbuild'
 
-const input = './index.ts'
-const plugins = [
-  esbuild({
-    minify: true,
-    tsconfig: './tsconfig.json'
-  })
-]
-
 export default function createConfig(packageName, packageDependencies) {
   return [
     {
-      input,
-      plugins,
+      input: './index.ts',
+      plugins: [
+        esbuild({
+          minify: true,
+          tsconfig: './tsconfig.json'
+        })
+      ],
       external: packageDependencies,
       output: [
         {

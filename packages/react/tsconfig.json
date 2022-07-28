@@ -3,7 +3,6 @@
   "include": ["src", "index.ts"],
   "compilerOptions": {
     "jsx": "preserve",
-    "rootDir": ".",
     "outDir": "./dist/types",
     "emitDeclarationOnly": true
   }
