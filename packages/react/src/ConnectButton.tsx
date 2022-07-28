@@ -1,15 +1,10 @@
-import '@web3modal/core/src/connect-button'
-import type { DetailedHTMLProps, HTMLAttributes } from 'react'
+import type { ConnectButtonWC } from '@web3modal/core'
 
 /**
  * Component
  */
-export default function ConnectButton() {
-  return (
-    <>
-      <connect-button label="sss" />
-    </>
-  )
+export default function ConnectButton(props: Partial<ConnectButtonWC>) {
+  return <connect-button {...props} />
 }
 
 /**
@@ -18,10 +13,7 @@ export default function ConnectButton() {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      'connect-button': DetailedHTMLProps<
-        HTMLAttributes<HTMLElementTagNameMap['connect-button']>,
-        HTMLElementTagNameMap['connect-button']
-      >
+      'connect-button': Partial<ConnectButtonWC>
     }
   }
 }

@@ -6,7 +6,7 @@ import styles from './styles'
  * Component
  */
 @customElement('connect-button')
-export class ConnectButton extends LitElement {
+export class ConnectButtonWC extends LitElement {
   public static styles = styles
 
   @property({ type: String })
@@ -22,6 +22,6 @@ export class ConnectButton extends LitElement {
  */
 declare global {
   interface HTMLElementTagNameMap {
-    'connect-button': ConnectButton
+    'connect-button': ConnectButtonWC
   }
 }
