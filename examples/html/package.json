@@ -1,0 +1,12 @@
+{
+  "name": "html-example",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "copy-bundle": "cp ../../packages/core/dist/index.umd.js public/index.umd.js",
+    "dev": "npm run copy-bundle; http-server public"
+  },
+  "devDependencies": {
+    "http-server": "14.1.1"
+  }
+}
