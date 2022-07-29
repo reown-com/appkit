@@ -1,1 +1,0 @@
-self.__REACT_LOADABLE_MANIFEST={"../../../../packages/react/dist/index.js -> @web3modal/core":{"id":"../../../../packages/react/dist/index.js -> @web3modal/core","files":["static/chunks/packages_core_dist_index_js.js"]}}
