@@ -1,11 +1,14 @@
-import '@web3modal/core'
 import { ConnectButtonWC } from '@web3modal/core'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 /**
  * Component
  */
 export default function ConnectButton(props: Partial<ConnectButtonWC>) {
+  useEffect(() => {
+    import('@web3modal/core')
+  }, [])
+
   return <connect-button {...props} />
 }
 
