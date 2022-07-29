@@ -2,6 +2,7 @@
   "name": "@web3modal/react",
   "version": "1.0.0",
   "main": "dist/index.js",
+  "unpkg": "dist/index.umd.js",
   "type": "module",
   "types": "dist/types/index.d.ts",
   "files": [
