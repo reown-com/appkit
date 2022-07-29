@@ -1,17 +1,17 @@
 {
   "name": "@web3modal/react",
   "version": "1.0.0",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.es.js",
-  "unpkg": "dist/index.umd.js",
+  "main": "dist/index.js",
+  "type": "module",
   "types": "dist/types/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
+    "build:clean": "rm -rf dist",
     "build:types": "tsc",
     "build:source": "rollup --config rollup.config.js",
-    "build": "npm run build:source; npm run build:types"
+    "build": "npm run build:clean; npm run build:source; npm run build:types"
   },
   "dependencies": {
     "@web3modal/core": "1.0.0"

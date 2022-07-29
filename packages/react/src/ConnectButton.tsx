@@ -1,4 +1,6 @@
+import '@web3modal/core'
 import { ConnectButtonWC } from '@web3modal/core'
+import React from 'react'
 
 /**
  * Component

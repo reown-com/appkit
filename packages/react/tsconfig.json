@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "include": ["src", "index.ts"],
   "compilerOptions": {
-    "jsx": "preserve",
+    "jsx": "react",
     "outDir": "./dist/types",
     "emitDeclarationOnly": true
   }

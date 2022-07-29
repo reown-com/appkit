@@ -7,33 +7,18 @@ export default function createConfig(packageName, packageDependencies) {
       plugins: [
         esbuild({
           minify: true,
-          tsconfig: './tsconfig.json'
+          tsconfig: './tsconfig.json',
+          platform: 'browser',
+          treeShaking: true
         })
       ],
-      external: packageDependencies,
-      output: [
-        {
-          file: './dist/index.cjs.js',
-          format: 'cjs',
-          exports: 'named',
-          name: packageName,
-          sourcemap: true
-        },
-        {
-          file: './dist/index.es.js',
-          format: 'es',
-          exports: 'named',
-          name: packageName,
-          sourcemap: true
-        },
-        {
-          file: './dist/index.umd.js',
-          format: 'umd',
-          exports: 'named',
-          name: packageName,
-          sourcemap: true
-        }
-      ]
+      output: {
+        file: './dist/index.js',
+        format: 'es',
+        exports: 'named',
+        name: packageName,
+        sourcemap: true
+      }
     }
   ]
 }
