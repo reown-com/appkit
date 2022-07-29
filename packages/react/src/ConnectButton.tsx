@@ -4,7 +4,7 @@ import React from 'react'
 /**
  * Component
  */
-export default function ConnectButton(props: Partial<ConnectButtonWC>) {
+export function ConnectButton(props: Partial<ConnectButtonWC>) {
   return <connect-button {...props} />
 }
 

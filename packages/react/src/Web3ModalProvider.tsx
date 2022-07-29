@@ -10,7 +10,7 @@ interface Props {
 /**
  * Component
  */
-export default function Web3ModalProvider({ children }: Props) {
+export function Web3ModalProvider({ children }: Props) {
   useEffect(() => {
     import('@web3modal/core')
   }, [])

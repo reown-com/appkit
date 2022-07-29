@@ -1,2 +1,2 @@
-export { default as ConnectButton } from './src/ConnectButton'
-export { default as Web3ModalProvider } from './src/Web3ModalProvider'
+export { ConnectButton } from './src/ConnectButton'
+export { Web3ModalProvider } from './src/Web3ModalProvider'
