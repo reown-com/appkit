@@ -7,14 +7,15 @@
   },
   "workspaces": [
     "packages/*",
-    "examples/*"
+    "examples/*",
+    "chains/*"
   ],
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.31.0",
     "@typescript-eslint/parser": "5.31.0",
     "@rollup/plugin-node-resolve": "13.3.0",
     "@rollup/plugin-commonjs": "22.0.1",
-    "eslint": "8.20.0",
+    "eslint": "8.21.0",
     "eslint-config-prettier": "8.5.0",
     "prettier": "2.7.1",
     "typescript": "4.7.4",

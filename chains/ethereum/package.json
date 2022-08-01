@@ -1,0 +1,20 @@
+{
+  "name": "@web3modal/ethereum",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "unpkg": "dist/index.umd.js",
+  "type": "module",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build:types": "tsc",
+    "build:source": "rollup --config rollup.config.js",
+    "build": "npm run build:clean; npm run build:source; npm run build:types"
+  },
+  "dependencies": {
+    "@wagmi/core": "0.5.0"
+  }
+}

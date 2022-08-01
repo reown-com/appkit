@@ -26,12 +26,7 @@ export default function createConfig(packageName) {
       input: './index.ts',
       plugins: [nodeResolve({ browser: true }), commonjs(), esbuild(esbuildConfig)],
       output: [
-        {
-          file: './dist/index.umd.js',
-          format: 'umd',
-          inlineDynamicImports: true,
-          ...sharedOutput
-        }
+        { file: './dist/index.umd.js', format: 'umd', inlineDynamicImports: true, ...sharedOutput }
       ]
     }
   ]

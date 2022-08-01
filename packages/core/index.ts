@@ -1,1 +1,1 @@
-export * from './src/connect-button'
+export * from './src/components/connect-button'
