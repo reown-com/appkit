@@ -4,7 +4,7 @@ import React from 'react'
 /**
  * Component
  */
-export function ConnectButton(props: Partial<ConnectButtonWC>) {
+export function ConnectButton(props: JSX.IntrinsicElements['connect-button']) {
   return <connect-button {...props} />
 }
 
@@ -14,7 +14,7 @@ export function ConnectButton(props: Partial<ConnectButtonWC>) {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      'connect-button': Partial<ConnectButtonWC>
+      'connect-button': Pick<ConnectButtonWC, 'icon' | 'label'>
     }
   }
 }
