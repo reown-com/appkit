@@ -14,7 +14,7 @@ export function ConnectButton(props: JSX.IntrinsicElements['connect-button']) {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      'connect-button': Pick<ConnectButtonWC, 'icon' | 'label'>
+      'connect-button': Pick<ConnectButtonWC, 'label'>
     }
   }
 }

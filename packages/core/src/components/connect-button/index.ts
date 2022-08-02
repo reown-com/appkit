@@ -1,5 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import globalCss from '../../theme/globalCss'
 import styles from './styles'
 
 /**
@@ -7,14 +8,13 @@ import styles from './styles'
  */
 @customElement('connect-button')
 export class ConnectButtonWC extends LitElement {
-  public static styles = styles
+  public static styles = [globalCss, styles]
 
   @property({ type: String })
   public label?: string = 'Connect Wallet'
-  public icon?: boolean = true
 
-  public render() {
-    return html`<button>${this.icon}${this.label}</button>`
+  protected render() {
+    return html`<button>${this.label}</button>`
   }
 }
 

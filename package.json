@@ -7,8 +7,8 @@
   },
   "workspaces": [
     "packages/*",
-    "examples/*",
-    "chains/*"
+    "chains/*",
+    "examples/*"
   ],
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.32.0",

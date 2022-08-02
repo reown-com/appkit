@@ -1,4 +1,4 @@
-function color(alpha = 1) {
+export default function color(alpha = 1) {
   return {
     light: {
       foreground: {
@@ -41,5 +41,3 @@ function color(alpha = 1) {
     }
   }
 }
-
-export default color
