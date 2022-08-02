@@ -4,7 +4,8 @@ export default function fonts(family?: string) {
   return {
     fontFamily: unsafeCSS(
       `font-family: ${
-        family ?? `"SF Pro", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`
+        family ??
+        `-apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif;`
       };`
     )
   }
