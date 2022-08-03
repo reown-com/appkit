@@ -26,7 +26,8 @@
     "**/.DS_Store": true,
     "**/.git": true,
     "**/node_modules": true,
-    "**/www": true
+    "**/out": true,
+    "**/dist": true
   },
   "javascript.updateImportsOnFileMove.enabled": "always",
   "typescript.suggest.autoImports": false,
