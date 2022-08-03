@@ -1,13 +1,13 @@
-import { css, unsafeCSS as t } from 'lit'
+import { css, unsafeCSS } from 'lit'
 import color from '../../theme/colors'
 
-const bgLight = t(color().light.foreground.accent)
-const bgDark = t(color().dark.foreground.accent)
-const bgLightDisabled = t(color().light.background[3])
-const bgDarkDisabled = t(color().dark.background[3])
-const fontColor = t(color().light.foreground.inverse)
-const fontColorLightDisabled = t(color().light.foreground[3])
-const fontColorDarkDisabled = t(color().dark.foreground[3])
+const bgLight = unsafeCSS(color().light.foreground.accent)
+const bgDark = unsafeCSS(color().dark.foreground.accent)
+const bgLightDisabled = unsafeCSS(color().light.background[3])
+const bgDarkDisabled = unsafeCSS(color().dark.background[3])
+const fontColor = unsafeCSS(color().light.foreground.inverse)
+const fontColorLightDisabled = unsafeCSS(color().light.foreground[3])
+const fontColorDarkDisabled = unsafeCSS(color().dark.foreground[3])
 
 export default css`
   button {

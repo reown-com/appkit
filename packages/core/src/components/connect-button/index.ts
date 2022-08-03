@@ -9,16 +9,16 @@ import styles from './styles'
  * Component
  */
 @customElement('connect-button')
-export class ConnectButtonWC extends LitElement {
+export class ConnectButtonW3M extends LitElement {
   public static styles = [global, fonts(), styles]
 
-  @property({ type: String })
+  @property()
   public label?: string = 'Connect Wallet'
-  @property({ type: Boolean })
-  public icon?: boolean = true
+  @property()
+  public icon?: 'no' | 'yes' = 'yes'
 
   private iconTemplate() {
-    return this.icon ? walletConnectIcon : null
+    return this.icon === 'yes' ? walletConnectIcon : null
   }
 
   protected render() {
@@ -36,6 +36,6 @@ export class ConnectButtonWC extends LitElement {
  */
 declare global {
   interface HTMLElementTagNameMap {
-    'connect-button': ConnectButtonWC
+    'connect-button': ConnectButtonW3M
   }
 }
