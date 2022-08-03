@@ -8,5 +8,7 @@ export default css`
     padding: 0;
     box-sizing: border-box;
     font-style: normal;
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: antialiased;
   }
 `
