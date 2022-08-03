@@ -10,8 +10,7 @@ import styles from './styles'
 export class SpinnerW3M extends LitElement {
   public static styles = styles
 
-  @property()
-  public size?: number = 25
+  @property() public size?: number = 25
 
   protected render() {
     return html`

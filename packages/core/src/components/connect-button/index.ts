@@ -12,10 +12,8 @@ import styles from './styles'
 export class ConnectButtonW3M extends LitElement {
   public static styles = [global, fonts(), styles]
 
-  @property()
-  public label?: string = 'Connect Wallet'
-  @property()
-  public icon?: 'no' | 'yes' = 'yes'
+  @property() public label?: string = 'Connect Wallet'
+  @property() public icon?: 'no' | 'yes' = 'yes'
 
   private iconTemplate() {
     return this.icon === 'yes' ? walletConnectIcon : null
