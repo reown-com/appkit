@@ -5,8 +5,8 @@ import styles from './styles'
 /**
  * Component
  */
-@customElement('loading-spinner')
-export class LoadingSpinnerW3M extends LitElement {
+@customElement('w3m-spinner')
+export class W3mSpinner extends LitElement {
   public static styles = styles
 
   @property() public size?: number = 24
@@ -26,6 +26,6 @@ export class LoadingSpinnerW3M extends LitElement {
  */
 declare global {
   interface HTMLElementTagNameMap {
-    'loading-spinner': LoadingSpinnerW3M
+    'w3m-spinner': W3mSpinner
   }
 }

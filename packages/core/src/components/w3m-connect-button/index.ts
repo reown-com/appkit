@@ -5,14 +5,14 @@ import walletConnectIcon from '../../icons/walletConnectIcon'
 import colors from '../../theme/colors'
 import fonts from '../../theme/fonts'
 import global from '../../theme/global'
-import '../loading-spinner'
+import '../w3m-spinner'
 import styles from './styles'
 
 /**
  * Component
  */
-@customElement('connect-button')
-export class ConnectButtonW3M extends LitElement {
+@customElement('w3m-connect-button')
+export class W3mConnectButton extends LitElement {
   public static styles = [global, fonts(), styles]
 
   @property() public label?: string = 'Connect Wallet'
@@ -32,7 +32,7 @@ export class ConnectButtonW3M extends LitElement {
     return html`
       <button class=${classMap(this.classes)} .disabled=${this.loading}>
         ${this.loading
-          ? html`<loading-spinner color=${colors().dark.foreground.accent}></loading-spinner>`
+          ? html`<w3m-spinner color=${colors().dark.foreground.accent}></loading-spinner>`
           : html`${this.iconTemplate()} <span>${this.label}</span>`}
       </button>
     `
@@ -44,6 +44,6 @@ export class ConnectButtonW3M extends LitElement {
  */
 declare global {
   interface HTMLElementTagNameMap {
-    'connect-button': ConnectButtonW3M
+    'w3m-connect-button': W3mConnectButton
   }
 }

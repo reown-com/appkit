@@ -1,11 +1,11 @@
-import { ConnectButtonW3M } from '@web3modal/core'
+import { W3mConnectButton } from '@web3modal/core'
 import React from 'react'
 
 /**
  * Component
  */
-export function ConnectButton(props: JSX.IntrinsicElements['connect-button']) {
-  return <connect-button {...props} />
+export function ConnectButton(props: JSX.IntrinsicElements['w3m-connect-button']) {
+  return <w3m-connect-button {...props} />
 }
 
 /**
@@ -14,7 +14,7 @@ export function ConnectButton(props: JSX.IntrinsicElements['connect-button']) {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      'connect-button': Pick<ConnectButtonW3M, 'label'>
+      'w3m-connect-button': Pick<W3mConnectButton, 'label'>
     }
   }
 }
