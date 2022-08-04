@@ -4,7 +4,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "echo 'not required'",
     "dev": "node server.js"
   },
   "devDependencies": {
