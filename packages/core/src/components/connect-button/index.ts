@@ -32,7 +32,7 @@ export class ConnectButtonW3M extends LitElement {
     return html`
       <button class=${classMap(this.classes)} .disabled=${this.loading}>
         ${this.loading
-          ? html`<loading-spinner color=${colors().dark.foreground.accent} />`
+          ? html`<loading-spinner color=${colors().dark.foreground.accent}></loading-spinner>`
           : html`${this.iconTemplate()} <span>${this.label}</span>`}
       </button>
     `
