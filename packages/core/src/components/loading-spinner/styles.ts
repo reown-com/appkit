@@ -24,6 +24,9 @@ export default css`
 
   svg {
     animation: rotate 2s linear infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   svg circle {

@@ -5,6 +5,8 @@ const bgLight = unsafeCSS(color().light.foreground.accent)
 const bgDark = unsafeCSS(color().dark.foreground.accent)
 const bgLightDisabled = unsafeCSS(color().light.background[3])
 const bgDarkDisabled = unsafeCSS(color().dark.background[3])
+const bgLightLoading = unsafeCSS(color().light.background.accent)
+const bgDarkLoading = unsafeCSS(color().dark.background.accent)
 const fontColor = unsafeCSS(color().light.foreground.inverse)
 const fontColorLightDisabled = unsafeCSS(color().light.foreground[3])
 const fontColorDarkDisabled = unsafeCSS(color().dark.foreground[3])
@@ -16,12 +18,15 @@ export default css`
     padding: 0 15px 2px;
     height: 40px;
     border-radius: 10px;
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     color: ${fontColor};
+  }
+
+  .w3m-button-loading {
+    padding: 0 15px;
   }
 
   button:disabled {
@@ -45,6 +50,7 @@ export default css`
 
   @media (prefers-color-scheme: dark) {
     button {
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
       background-color: ${bgDark};
     }
 
@@ -64,10 +70,15 @@ export default css`
     button:disabled svg path {
       fill: ${fontColorDarkDisabled};
     }
+
+    .w3m-button-loading:disabled {
+      background-color: ${bgDarkLoading};
+    }
   }
 
   @media (prefers-color-scheme: light) {
     button {
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
       background-color: ${bgLight};
     }
 
@@ -86,6 +97,10 @@ export default css`
 
     button:disabled svg path {
       fill: ${fontColorLightDisabled};
+    }
+
+    .w3m-button-loading:disabled {
+      background-color: ${bgLightLoading};
     }
   }
 `
