@@ -13,4 +13,4 @@ app.get('/index.umd.js', (_req, res) => {
 })
 
 app.listen(8080)
-console.log(`👏 Server started on port 8080`)
+console.log(`👏 Server started on  http://localhost:8080`)

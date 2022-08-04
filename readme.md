@@ -9,4 +9,4 @@ Following are suggested extensions to enable syntax highlighting and formating i
 
 1. Run `npm run dev` within `packages/core` to bundle in watch mode
 2. Run `npm run dev` within `examples/html` to start local preview
-3. Changes in `packages/core` are re-built automatically, so just refresh html example page to reflect
+3. Changes in `packages/core` are re-built automatically, so just refresh html example page to reflect them
