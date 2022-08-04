@@ -2,11 +2,12 @@
   "name": "html-example",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "build": "cp ../../packages/core/dist/index.umd.js public/index.umd.js",
-    "dev": "npm run build; http-server public"
+    "build": "echo 'not required'",
+    "dev": "node server.js"
   },
   "devDependencies": {
-    "http-server": "14.1.1"
+    "express": "4.18.1"
   }
 }

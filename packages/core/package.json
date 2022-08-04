@@ -12,9 +12,11 @@
     "build:clean": "rm -rf dist",
     "build:types": "tsc",
     "build:source": "rollup --config rollup.config.js",
-    "build": "npm run build:clean; npm run build:source; npm run build:types"
+    "build": "npm run build:clean; npm run build:source; npm run build:types",
+    "dev": "rollup --config rollup.config.js --watch"
   },
   "dependencies": {
-    "lit": "2.2.8"
+    "lit": "2.2.8",
+    "valtio": "1.6.3"
   }
 }
