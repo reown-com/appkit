@@ -4,47 +4,34 @@
  * Whatamesh by @jordienr & @ndom91
  * https://whatamesh.vercel.app
  *
- * Source was modified to support shadow dom and has many removals
+ * Codebase was adopted for web3modal
  */
 
 export default class Whatamesh {
+  angle = 0
+  t = 1253106
+  last = 0
+  minWidth = 1000
+  height = 650
+  amp = 250
+  seed = 5
+  freqX = 14e-5
+  freqY = 29e-5
+  freqDelta = 1e-5
+  activeColors = [1, 1, 1, 1]
+  isMetaKey = false
+
   constructor(...t) {
-    e(this, 'el', void 0),
-      e(this, 'angle', 0),
-      e(this, 'shaderFiles', void 0),
-      e(this, 'vertexShader', void 0),
-      e(this, 'sectionColors', void 0),
-      e(this, 'computedCanvasStyle', void 0),
-      e(this, 'conf', void 0),
-      e(this, 'uniforms', void 0),
-      e(this, 't', 1253106),
-      e(this, 'last', 0),
-      e(this, 'width', void 0),
-      e(this, 'minWidth', 1000),
-      e(this, 'height', 550),
-      e(this, 'xSegCount', void 0),
-      e(this, 'ySegCount', void 0),
-      e(this, 'mesh', void 0),
-      e(this, 'material', void 0),
-      e(this, 'geometry', void 0),
-      e(this, 'minigl', void 0),
-      e(this, 'amp', 300),
-      e(this, 'seed', 9),
-      e(this, 'freqX', 14e-5),
-      e(this, 'freqY', 29e-5),
-      e(this, 'freqDelta', 1e-5),
-      e(this, 'activeColors', [1, 1, 1, 1]),
-      e(this, 'isMetaKey', !1),
-      e(this, 'resize', () => {
-        ;(this.width = window.innerWidth),
-          this.minigl.setSize(this.width, this.height),
-          this.minigl.setOrthographicCamera(),
-          (this.xSegCount = Math.ceil(this.width * this.conf.density[0])),
-          (this.ySegCount = Math.ceil(this.height * this.conf.density[1])),
-          this.mesh.geometry.setTopology(this.xSegCount, this.ySegCount),
-          this.mesh.geometry.setSize(this.width, this.height),
-          (this.mesh.material.uniforms.u_shadow_power.value = this.width < 550 ? 5 : 6)
-      }),
+    e(this, 'resize', () => {
+      ;(this.width = window.innerWidth),
+        this.minigl.setSize(this.width, this.height),
+        this.minigl.setOrthographicCamera(),
+        (this.xSegCount = Math.ceil(this.width * this.conf.density[0])),
+        (this.ySegCount = Math.ceil(this.height * this.conf.density[1])),
+        this.mesh.geometry.setTopology(this.xSegCount, this.ySegCount),
+        this.mesh.geometry.setSize(this.width, this.height),
+        (this.mesh.material.uniforms.u_shadow_power.value = this.width < 550 ? 5 : 6)
+    }),
       e(this, 'animate', e => {
         if (!this.shouldSkipFrame(e)) {
           if (((this.t += Math.min(e - this.last, 1e3 / 15)), (this.last = e), false)) {
@@ -292,7 +279,7 @@ class MiniGl {
               function getUniformVariableDeclarations(uniforms, type) {
                 return Object.entries(uniforms)
                   .map(([uniform, value]) => value.getDeclaration(uniform, type))
-                  .join('\n')
+                  .join('')
               }
               ;(material.uniforms = uniforms), (material.uniformInstances = [])
 
