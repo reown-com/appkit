@@ -10,11 +10,7 @@
 export default class Whatamesh {
   constructor(...t) {
     e(this, 'el', void 0),
-      e(this, 'cssVarRetries', 0),
-      e(this, 'maxCssVarRetries', 200),
       e(this, 'angle', 0),
-      e(this, 'isLoadedClass', !1),
-      e(this, 'isIntersecting', !1),
       e(this, 'shaderFiles', void 0),
       e(this, 'vertexShader', void 0),
       e(this, 'sectionColors', void 0),
@@ -24,22 +20,21 @@ export default class Whatamesh {
       e(this, 't', 1253106),
       e(this, 'last', 0),
       e(this, 'width', void 0),
-      e(this, 'minWidth', 1111),
-      e(this, 'height', 600),
+      e(this, 'minWidth', 1000),
+      e(this, 'height', 550),
       e(this, 'xSegCount', void 0),
       e(this, 'ySegCount', void 0),
       e(this, 'mesh', void 0),
       e(this, 'material', void 0),
       e(this, 'geometry', void 0),
       e(this, 'minigl', void 0),
-      e(this, 'amp', 320),
-      e(this, 'seed', 5),
+      e(this, 'amp', 300),
+      e(this, 'seed', 9),
       e(this, 'freqX', 14e-5),
       e(this, 'freqY', 29e-5),
       e(this, 'freqDelta', 1e-5),
       e(this, 'activeColors', [1, 1, 1, 1]),
       e(this, 'isMetaKey', !1),
-      e(this, 'isGradientLegendVisible', !1),
       e(this, 'resize', () => {
         ;(this.width = window.innerWidth),
           this.minigl.setSize(this.width, this.height),
@@ -48,7 +43,7 @@ export default class Whatamesh {
           (this.ySegCount = Math.ceil(this.height * this.conf.density[1])),
           this.mesh.geometry.setTopology(this.xSegCount, this.ySegCount),
           this.mesh.geometry.setSize(this.width, this.height),
-          (this.mesh.material.uniforms.u_shadow_power.value = this.width < 600 ? 5 : 6)
+          (this.mesh.material.uniforms.u_shadow_power.value = this.width < 550 ? 5 : 6)
       }),
       e(this, 'animate', e => {
         if (!this.shouldSkipFrame(e)) {
@@ -59,21 +54,7 @@ export default class Whatamesh {
           ;(this.mesh.material.uniforms.u_time.value = this.t), this.minigl.render()
         }
         if (0 !== this.last && this.isStatic) return this.minigl.render()
-        this.conf.playing && requestAnimationFrame(this.animate)
-      }),
-      e(this, 'addIsLoadedClass', () => {
-        !this.isLoadedClass &&
-          ((this.isLoadedClass = !0),
-          this.el.classList.add('isLoaded'),
-          setTimeout(() => {
-            this.el.parentElement.classList.add('isLoaded')
-          }, 3e3))
-      }),
-      e(this, 'pause', () => {
-        this.conf.playing = false
-      }),
-      e(this, 'play', () => {
-        requestAnimationFrame(this.animate), (this.conf.playing = true)
+        requestAnimationFrame(this.animate)
       })
   }
   initGradient(selector) {
@@ -93,12 +74,7 @@ export default class Whatamesh {
         'varying vec3 v_color;void main(){vec3 color=v_color;if(u_darken_top==1.0){vec2 st=gl_FragCoord.xy/resolution.xy;color.g-=pow(st.y+sin(-12.0)*st.x,u_shadow_power)*0.4;}gl_FragColor=vec4(color,1.0);}'
     }),
       (this.conf = {
-        presetName: '',
-        wireframe: false,
-        density: [0.06, 0.16],
-        zoom: 1,
-        rotation: 0,
-        playing: true
+        density: [0.06, 0.16]
       }),
       ((this.minigl = new MiniGl(this.el, null, null, !0)),
       requestAnimationFrame(() => {
@@ -220,20 +196,13 @@ export default class Whatamesh {
       (this.mesh = new this.minigl.Mesh(this.geometry, this.material))
   }
   shouldSkipFrame(e) {
-    return !!window.document.hidden || !this.conf.playing || parseInt(e, 10) % 2 == 0 || void 0
+    return !!window.document.hidden || parseInt(e, 10) % 2 == 0 || void 0
   }
   updateFrequency(e) {
     ;(this.freqX += e), (this.freqY += e)
   }
   toggleColor(index) {
     this.activeColors[index] = 0 === this.activeColors[index] ? 1 : 0
-  }
-  showGradientLegend() {
-    this.width > this.minWidth &&
-      ((this.isGradientLegendVisible = !0), document.body.classList.add('isGradientLegendVisible'))
-  }
-  hideGradientLegend() {
-    ;(this.isGradientLegendVisible = !1), document.body.classList.remove('isGradientLegendVisible')
   }
   init() {
     this.initGradientColors(),
@@ -247,12 +216,9 @@ export default class Whatamesh {
       this.computedCanvasStyle &&
       -1 !== this.computedCanvasStyle.getPropertyValue('--gradient-color-1').indexOf('#')
     )
-      this.init(), this.addIsLoadedClass()
+      this.init()
     else {
-      if (((this.cssVarRetries += 1), this.cssVarRetries > this.maxCssVarRetries)) {
-        return (this.sectionColors = [16711680, 16711680, 16711935, 65280, 255]), void this.init()
-      }
-      requestAnimationFrame(() => this.waitForCssVars())
+      void this.init()
     }
   }
   initGradientColors() {
@@ -519,7 +485,6 @@ class MiniGl {
               const mesh = this
               ;(mesh.geometry = geometry),
                 (mesh.material = material),
-                (mesh.wireframe = !1),
                 (mesh.attributeInstances = []),
                 Object.entries(mesh.geometry.attributes).forEach(([e, attribute]) => {
                   mesh.attributeInstances.push({
@@ -536,7 +501,7 @@ class MiniGl {
                 ),
                 this.attributeInstances.forEach(({ attribute: e, location: t }) => e.use(t)),
                 context.drawElements(
-                  this.wireframe ? context.LINES : context.TRIANGLES,
+                  context.TRIANGLES,
                   this.geometry.attributes.index.values.length,
                   context.UNSIGNED_SHORT,
                   0
