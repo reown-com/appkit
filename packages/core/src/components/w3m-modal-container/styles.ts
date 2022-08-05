@@ -24,10 +24,10 @@ export default css`
     pointer-events: none;
     width: 100%;
     height: 100%;
-    --gradient-color-1: #ef008f;
-    --gradient-color-2: #6ec3f4;
-    --gradient-color-3: #7038ff;
-    --gradient-color-4: #ffba27;
+    --gradient-color-1: #cad8f2;
+    --gradient-color-2: #be3620;
+    --gradient-color-3: #a6208c;
+    --gradient-color-4: #06968f;
   }
 
   .w3m-modal-content {
@@ -43,6 +43,6 @@ export default css`
     pointer-events: none;
     position: absolute;
     mix-blend-mode: multiply;
-    opacity: 0.5;
+    opacity: 0.45;
   }
 `
