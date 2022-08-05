@@ -38,6 +38,83 @@ export default function color(alpha = 1) {
         thin: 'rgba(0, 0, 0, 0.1)',
         thick: 'rgba(0, 0, 0, 0.4)'
       }
+    },
+
+    magenta: {
+      light: {
+        foreground: `rgba(198, 83, 128, ${alpha})`,
+        background: `rgba(244, 221, 230, ${alpha})`
+      },
+      dark: {
+        foreground: `rgba(203, 77, 140, ${alpha})`,
+        background: `rgba(57, 35, 43, ${alpha})`
+      }
+    },
+
+    blue: {
+      light: {
+        foreground: `rgba(61, 92, 245, ${alpha})`,
+        background: `rgba(232, 235, 252, ${alpha})`
+      },
+      dark: {
+        foreground: `rgba(81, 109, 251, ${alpha})`,
+        background: `rgba(28, 33, 59, ${alpha})`
+      }
+    },
+
+    orange: {
+      light: {
+        foreground: `rgba(234, 140, 46, ${alpha})`,
+        background: `rgba(244, 236, 221, ${alpha})`
+      },
+      dark: {
+        foreground: `rgba(255, 166, 76, ${alpha})`,
+        background: `rgba(57, 50, 34, ${alpha})`
+      }
+    },
+
+    green: {
+      light: {
+        foreground: `rgba(38, 181, 98, ${alpha})`,
+        background: `rgba(218, 246, 218, ${alpha})`
+      },
+      dark: {
+        foreground: `rgba(38, 217, 98, ${alpha})`,
+        background: `rgba(35, 52, 40, ${alpha})`
+      }
+    },
+
+    purple: {
+      light: {
+        foreground: `rgba(121, 76, 255, ${alpha})`,
+        background: `rgba(225, 218, 246, ${alpha})`
+      },
+      dark: {
+        foreground: `rgba(144, 110, 247, ${alpha})`,
+        background: `rgba(36, 31, 51, ${alpha})`
+      }
+    },
+
+    teal: {
+      light: {
+        foreground: `rgba(43, 182, 182, ${alpha})`,
+        background: `rgba(217, 242, 238, ${alpha})`
+      },
+      dark: {
+        foreground: `rgba(54, 226, 226, ${alpha})`,
+        background: `rgba(29, 48, 52, ${alpha})`
+      }
+    },
+
+    blackWhite: {
+      light: {
+        foreground: `rgba(20, 20, 20, ${alpha})`,
+        background: `rgba(255, 255, 255, ${alpha})`
+      },
+      dark: {
+        foreground: `rgba(255, 255, 255, ${alpha})`,
+        background: `rgba(20, 20, 20, ${alpha})`
+      }
     }
   }
 }
