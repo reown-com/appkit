@@ -21,11 +21,28 @@ export default css`
   .w3m-modal-media {
     position: absolute;
     display: block;
+    pointer-events: none;
     width: 100%;
     height: 100%;
+    --gradient-color-1: #ef008f;
+    --gradient-color-2: #6ec3f4;
+    --gradient-color-3: #7038ff;
+    --gradient-color-4: #ffba27;
   }
 
   .w3m-modal-content {
     background-color: white;
+    width: 400px;
+    height: 300px;
+  }
+
+  #w3m-transparent-noise {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    position: absolute;
+    mix-blend-mode: multiply;
+    opacity: 0.5;
   }
 `
