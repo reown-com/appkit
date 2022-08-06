@@ -35,8 +35,8 @@ export default function color(alpha = 1) {
         3: `rgba(59,64,64,${alpha})`
       },
       overlay: {
-        thin: 'rgba(0,0,0,0.1)',
-        thick: 'rgba(0,0,0,0.4)'
+        thin: 'rgba(255,255,255,0.1)',
+        thick: 'rgba(255,255,255,0.4)'
       }
     },
 

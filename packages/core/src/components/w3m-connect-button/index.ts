@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import walletConnectIcon from '../../icons/walletConnectIcon'
+import walletConnectIcon from '../../images/walletConnectIcon'
 import colors from '../../theme/colors'
 import fonts from '../../theme/fonts'
 import global from '../../theme/global'
