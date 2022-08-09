@@ -38,7 +38,11 @@ _Open a PR to add your project to the list!_
 - [BalconyDAO](https://balconydao.com/)
 - [LearnWeb3 DAO](https://learnweb3.io/)
 - [The Miners Comic](https://theminersnft.com/)
+<<<<<<< Updated upstream
 - [Sealcred](https://sealcred.xyz/)
+=======
+- [Angel Force of Africa](https://angelforceofafrica.com/)
+>>>>>>> Stashed changes
 - etc
 
 ## Related Efforts
