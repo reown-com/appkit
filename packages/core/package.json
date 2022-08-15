@@ -16,7 +16,7 @@
     "dev": "rollup --config rollup.config.js --watch"
   },
   "dependencies": {
-    "lit": "2.2.8",
+    "lit": "2.3.0",
     "valtio": "1.6.3"
   },
   "devDependencies": {

@@ -7,13 +7,13 @@
   },
   "dependencies": {
     "@web3modal/react": "1.0.0",
-    "next": "12.2.4",
+    "next": "12.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@types/node": "18.6.4",
-    "@types/react": "18.0.15",
+    "@types/node": "18.7.3",
+    "@types/react": "18.0.17",
     "@types/react-dom": "18.0.6"
   }
 }
