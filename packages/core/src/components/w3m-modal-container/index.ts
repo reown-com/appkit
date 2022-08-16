@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { subscribe } from 'valtio'
+import { subscribe } from 'valtio/vanilla'
 import ModalCtrl from '../../controllers/ModalCtrl'
 import global from '../../theme/global'
 import '../w3m-modal-backcard'
