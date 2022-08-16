@@ -13,14 +13,14 @@ export class W3mModalBackcard extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
     const gradient = new Whatamesh()
-    const canvas = this.renderRoot.querySelector('#w3m-gradient-canvas')
+    const canvas = this.renderRoot.querySelector('.w3m-gradient-canvas')
     gradient.initGradient(canvas)
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <canvas class="w3m-modal-media" id="w3m-gradient-canvas"></canvas>
+      <canvas class="w3m-gradient-canvas"></canvas>
       ${transparentNoise}
       <div class="w3m-modal-highlight"></div>
       <div class="w3m-modal-toolbar">${walletConnectLogo}</div>

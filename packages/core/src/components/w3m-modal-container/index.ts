@@ -4,6 +4,7 @@ import { classMap } from 'lit/directives/class-map.js'
 import { subscribe } from 'valtio/vanilla'
 import ModalCtrl from '../../controllers/ModalCtrl'
 import global from '../../theme/global'
+import { MODAL_FADE_IN, MODAL_FADE_OUT } from '../../theme/keyframes'
 import '../w3m-modal-backcard'
 import styles from './styles'
 
@@ -22,8 +23,8 @@ export class W3mModalContainer extends LitElement {
   public constructor() {
     super()
     this.unsubscribe = subscribe(ModalCtrl.state, () => {
-      this.open = ModalCtrl.state.open
-      this.classes['w3m-modal-open'] = this.open
+      if (ModalCtrl.state.open) this.onOpenModalEvent()
+      if (!ModalCtrl.state.open) this.onCloseModalEvent()
     })
   }
 
@@ -34,10 +35,24 @@ export class W3mModalContainer extends LitElement {
   // -- private ------------------------------------------------------ //
   private readonly unsubscribe?: () => void = undefined
 
+  private get overlayEl() {
+    return this.renderRoot.querySelector('.w3m-modal-overlay')
+  }
+
   private onCloseModal(event: PointerEvent) {
-    if (event.target === event.currentTarget) {
-      ModalCtrl.closeModal()
-    }
+    if (event.target === event.currentTarget) ModalCtrl.closeModal()
+  }
+
+  private onOpenModalEvent() {
+    this.open = true
+    this.classes['w3m-modal-open'] = true
+    this.overlayEl?.animate(MODAL_FADE_IN.keys, MODAL_FADE_IN.opts)
+  }
+
+  private async onCloseModalEvent() {
+    await this.overlayEl?.animate(MODAL_FADE_OUT.keys, MODAL_FADE_OUT.opts).finished
+    this.classes['w3m-modal-open'] = false
+    this.open = false
   }
 
   // -- render ------------------------------------------------------- //

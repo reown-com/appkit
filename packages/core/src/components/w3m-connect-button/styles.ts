@@ -1,5 +1,5 @@
 import { css, unsafeCSS } from 'lit'
-import color from '../../theme/colors'
+import color from '../../theme/color'
 
 const bgLight = unsafeCSS(color().light.foreground.accent)
 const bgDark = unsafeCSS(color().dark.foreground.accent)

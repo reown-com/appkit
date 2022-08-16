@@ -1,11 +1,11 @@
 import { css, unsafeCSS } from 'lit'
-import color from '../../theme/colors'
+import color from '../../theme/color'
 
 const contentShadowLight = unsafeCSS(color().light.overlay.thin)
 const contentShadowDark = unsafeCSS(color().dark.overlay.thin)
 
 export default css`
-  .w3m-modal-media,
+  .w3m-gradient-canvas,
   .w3m-modal-highlight,
   #w3m-transparent-noise {
     inset: 0;
@@ -18,7 +18,7 @@ export default css`
     transform: translate3d(-5px, -5px, 0);
   }
 
-  .w3m-modal-media {
+  .w3m-gradient-canvas {
     backface-visibility: none;
     --gradient-color-1: #cad8f2;
     --gradient-color-2: #be3620;

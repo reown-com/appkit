@@ -21,7 +21,7 @@
     "complexity": "off",
     "max-depth": "off",
     "no-undef-init": "off",
-    "curly": "error",
+    "curly": ["error", "multi"],
     "max-lines": "off",
     "require-atomic-updates": "off",
     "arrow-body-style": "off",
@@ -44,6 +44,7 @@
     "@typescript-eslint/no-type-alias": "off",
     "@typescript-eslint/strict-boolean-expressions": "off",
     "@typescript-eslint/unbound-method": "off",
+    "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/await-thenable": "error",
     "@typescript-eslint/no-unused-vars": [
       "error",

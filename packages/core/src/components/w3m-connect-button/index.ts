@@ -1,9 +1,10 @@
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
+import { subscribe } from 'valtio/vanilla'
 import ModalCtrl from '../../controllers/ModalCtrl'
 import walletConnectIcon from '../../images/walletConnectIcon'
-import colors from '../../theme/colors'
+import colors from '../../theme/color'
 import fonts from '../../theme/fonts'
 import global from '../../theme/global'
 import '../w3m-spinner'
@@ -15,15 +16,30 @@ export class W3mConnectButton extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() public loading = false
-  @property() public label?: string = 'Connect Wallet'
-  @property() public icon?: boolean = true
-  @property() private readonly classes = {
+  @state() private readonly classes = {
     'w3m-button-loading': Boolean(this.loading),
     'w3m-font': true,
     'w3m-font-medium-normal': true
   }
+  @property() public label?: string = 'Connect Wallet'
+  @property() public icon?: boolean = true
+
+  // -- lifecycle ---------------------------------------------------- //
+  public constructor() {
+    super()
+    this.unsubscribe = subscribe(ModalCtrl.state, () => {
+      if (ModalCtrl.state.open) this.loading = true
+      if (!ModalCtrl.state.open) this.loading = false
+    })
+  }
+
+  public disconnectedCallback() {
+    this.unsubscribe?.()
+  }
 
   // -- private ------------------------------------------------------ //
+  private readonly unsubscribe?: () => void = undefined
+
   private iconTemplate() {
     return this.icon ? walletConnectIcon : null
   }
