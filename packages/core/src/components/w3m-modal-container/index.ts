@@ -1,10 +1,10 @@
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
+import { animate } from 'motion'
 import { subscribe } from 'valtio/vanilla'
 import ModalCtrl from '../../controllers/ModalCtrl'
 import global from '../../theme/global'
-import { MODAL_FADE_IN, MODAL_FADE_OUT } from '../../theme/keyframes'
 import '../w3m-modal-backcard'
 import styles from './styles'
 
@@ -36,7 +36,10 @@ export class W3mModalContainer extends LitElement {
   private readonly unsubscribe?: () => void = undefined
 
   private get overlayEl() {
-    return this.renderRoot.querySelector('.w3m-modal-overlay')
+    const el = this.renderRoot.querySelector('.w3m-modal-overlay')
+    if (!el) throw new Error('.w3m-modal-overlay not found')
+
+    return el
   }
 
   private onCloseModal(event: PointerEvent) {
@@ -46,11 +49,11 @@ export class W3mModalContainer extends LitElement {
   private onOpenModalEvent() {
     this.open = true
     this.classes['w3m-modal-open'] = true
-    this.overlayEl?.animate(MODAL_FADE_IN.keys, MODAL_FADE_IN.opts)
+    animate(this.overlayEl, { opacity: 1 })
   }
 
   private async onCloseModalEvent() {
-    await this.overlayEl?.animate(MODAL_FADE_OUT.keys, MODAL_FADE_OUT.opts).finished
+    await animate(this.overlayEl, { opacity: 0 }).finished
     this.classes['w3m-modal-open'] = false
     this.open = false
   }
