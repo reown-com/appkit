@@ -1,22 +1,16 @@
 import { proxy } from 'valtio'
 
-/**
- * Types
- */
+// -- types -------------------------------------------------------- //
 interface State {
   open: boolean
 }
 
-/**
- * Initial State
- */
+// -- initial state ------------------------------------------------ //
 const state = proxy<State>({
   open: false
 })
 
-/**
- *
- */
+// -- controller --------------------------------------------------- //
 export default {
   state,
 
