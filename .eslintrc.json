@@ -28,6 +28,7 @@
     "func-style": ["error", "declaration"],
     "newline-before-return": "error",
     "camelcase": ["error", { "properties": "never" }],
+    "class-methods-use-this": "off",
 
     "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
@@ -42,6 +43,7 @@
     "@typescript-eslint/lines-between-class-members": "off",
     "@typescript-eslint/no-type-alias": "off",
     "@typescript-eslint/strict-boolean-expressions": "off",
+    "@typescript-eslint/unbound-method": "off",
     "@typescript-eslint/await-thenable": "error",
     "@typescript-eslint/no-unused-vars": [
       "error",

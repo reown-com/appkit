@@ -18,6 +18,13 @@ export default css`
     justify-content: center;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .w3m-modal-open {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .w3m-modal-container {

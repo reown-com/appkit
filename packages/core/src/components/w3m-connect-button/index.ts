@@ -1,6 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
+import ModalCtrl from '../../controllers/ModalCtrl'
 import walletConnectIcon from '../../images/walletConnectIcon'
 import colors from '../../theme/colors'
 import fonts from '../../theme/fonts'
@@ -30,7 +31,11 @@ export class W3mConnectButton extends LitElement {
 
   protected render() {
     return html`
-      <button class=${classMap(this.classes)} .disabled=${this.loading}>
+      <button
+        class=${classMap(this.classes)}
+        .disabled=${this.loading}
+        @click=${ModalCtrl.openModal}
+      >
         ${this.loading
           ? html`<w3m-spinner color=${colors().dark.foreground.accent}></loading-spinner>`
           : html`${this.iconTemplate()} <span>${this.label}</span>`}

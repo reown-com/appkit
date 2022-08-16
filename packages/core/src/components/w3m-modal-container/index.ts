@@ -1,5 +1,8 @@
 import { html, LitElement } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { customElement, property, state } from 'lit/decorators.js'
+import { classMap } from 'lit/directives/class-map.js'
+import { subscribe } from 'valtio'
+import ModalCtrl from '../../controllers/ModalCtrl'
 import transparentNoise from '../../images/transparentNoise'
 import walletConnectLogo from '../../images/walletConnectLogo'
 import Whatamesh from '../../libs/Whatamesh'
@@ -12,19 +15,44 @@ import styles from './styles'
 @customElement('w3m-modal-container')
 export class W3mModalContainer extends LitElement {
   public static styles = [global, styles]
+  private readonly unsubscribe: (() => void) | null = null
 
-  public firstUpdated() {
+  @state() private open = false
+  @property() private readonly classes = {
+    'w3m-modal-overlay': true,
+    'w3m-modal-open': false
+  }
+
+  public constructor() {
+    super()
+    this.unsubscribe = subscribe(ModalCtrl.state, () => {
+      this.open = ModalCtrl.state.open
+      this.classes['w3m-modal-open'] = this.open
+      if (this.open) {
+        this.onOpenModal()
+      }
+    })
+  }
+
+  public disconnectedCallback() {
+    this.unsubscribe?.()
+  }
+
+  private onOpenModal() {
     const gradient = new Whatamesh()
     const canvas = this.renderRoot.querySelector('#w3m-gradient-canvas')
     gradient.initGradient(canvas)
   }
 
-  // eslint-disable-next-line @typescript-eslint/prefer-readonly
-  @state() private open = true
+  private onCloseModal(event: PointerEvent) {
+    if (event.target === event.currentTarget) {
+      ModalCtrl.closeModal()
+    }
+  }
 
   protected render() {
     return html`
-      <div class="w3m-modal-overlay">
+      <div class=${classMap(this.classes)} @click=${this.onCloseModal}>
         ${this.open
           ? html`
               <div class="w3m-modal-container">

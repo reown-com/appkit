@@ -4,14 +4,14 @@ import { proxy } from 'valtio'
  * Types
  */
 interface State {
-  connectModalOpen: boolean
+  open: boolean
 }
 
 /**
  * Initial State
  */
 const state = proxy<State>({
-  connectModalOpen: false
+  open: false
 })
 
 /**
@@ -20,11 +20,11 @@ const state = proxy<State>({
 export default {
   state,
 
-  openConnectModal() {
-    state.connectModalOpen = true
+  openModal() {
+    state.open = true
   },
 
-  closeConnectModal() {
-    state.connectModalOpen = false
+  closeModal() {
+    state.open = false
   }
 }

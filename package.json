@@ -11,8 +11,8 @@
     "examples/*"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "5.33.0",
-    "@typescript-eslint/parser": "5.33.0",
+    "@typescript-eslint/eslint-plugin": "5.33.1",
+    "@typescript-eslint/parser": "5.33.1",
     "@rollup/plugin-node-resolve": "13.3.0",
     "@rollup/plugin-commonjs": "22.0.2",
     "eslint": "8.22.0",
