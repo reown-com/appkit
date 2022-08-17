@@ -1,5 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import ModalCtrl from '../../controllers/ModalCtrl'
+import closeIcon from '../../images/closeIcon'
 import transparentNoise from '../../images/transparentNoise'
 import walletConnectLogo from '../../images/walletConnectLogo'
 import Whatamesh from '../../libs/Whatamesh'
@@ -13,8 +15,15 @@ export class W3mModalBackcard extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
     const gradient = new Whatamesh()
-    const canvas = this.renderRoot.querySelector('.w3m-gradient-canvas')
-    gradient.initGradient(canvas)
+    gradient.initGradient(this.canvasEl)
+  }
+
+  // -- private ------------------------------------------------------ //
+  private get canvasEl() {
+    const el = this.renderRoot.querySelector('.w3m-gradient-canvas')
+    if (!el) throw new Error('.w3m-gradient-canvas not found')
+
+    return el
   }
 
   // -- render ------------------------------------------------------- //
@@ -23,7 +32,10 @@ export class W3mModalBackcard extends LitElement {
       <canvas class="w3m-gradient-canvas"></canvas>
       ${transparentNoise}
       <div class="w3m-modal-highlight"></div>
-      <div class="w3m-modal-toolbar">${walletConnectLogo}</div>
+      <div class="w3m-modal-toolbar">
+        ${walletConnectLogo}
+        <button class="w3m-modal-close-btn" @click=${ModalCtrl.closeModal}>${closeIcon}</button>
+      </div>
     `
   }
 }

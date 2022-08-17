@@ -3,6 +3,8 @@ import color from '../../theme/color'
 
 const contentShadowLight = unsafeCSS(color().light.overlay.thin)
 const contentShadowDark = unsafeCSS(color().dark.overlay.thin)
+const closeBtnBgDark = unsafeCSS(color().dark.background[1])
+const closeBtnBgLight = unsafeCSS(color().light.background[1])
 
 export default css`
   .w3m-gradient-canvas,
@@ -14,7 +16,7 @@ export default css`
     pointer-events: none;
     width: 100%;
     height: 100%;
-    border-radius: 10px;
+    border-radius: 8px 8px 30px 8px;
     transform: translate3d(-5px, -5px, 0);
   }
 
@@ -47,15 +49,42 @@ export default css`
     object-fit: contain;
   }
 
+  .w3m-modal-close-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .w3m-modal-close-btn svg {
+    width: 12px;
+    height: 12px;
+    display: block;
+  }
+
   @media (prefers-color-scheme: dark) {
     .w3m-modal-highlight {
       border: 1px solid ${contentShadowDark};
+    }
+
+    .w3m-modal-close-btn {
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+      background-color: ${closeBtnBgDark};
     }
   }
 
   @media (prefers-color-scheme: light) {
     .w3m-modal-highlight {
       border: 1px solid ${contentShadowLight};
+    }
+
+    .w3m-modal-close-btn {
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+      background-color: ${closeBtnBgLight};
     }
   }
 `
