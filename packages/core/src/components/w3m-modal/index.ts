@@ -8,8 +8,8 @@ import global from '../../theme/global'
 import '../w3m-modal-backcard'
 import styles from './styles'
 
-@customElement('w3m-modal-container')
-export class W3mModalContainer extends LitElement {
+@customElement('w3m-modal')
+export class W3mModal extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -77,6 +77,6 @@ export class W3mModalContainer extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-modal-container': W3mModalContainer
+    'w3m-modal': W3mModal
   }
 }
