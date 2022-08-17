@@ -5,6 +5,7 @@ import { animate } from 'motion'
 import { subscribe } from 'valtio/vanilla'
 import ModalCtrl from '../../controllers/ModalCtrl'
 import global from '../../theme/global'
+import { getShadowRootElement } from '../../utils/Helpers'
 import '../w3m-modal-backcard'
 import '../w3m-modal-router'
 import styles from './styles'
@@ -37,10 +38,11 @@ export class W3mModal extends LitElement {
   private readonly unsubscribe?: () => void = undefined
 
   private get overlayEl() {
-    const el = this.renderRoot.querySelector('.w3m-modal-overlay')
-    if (!el) throw new Error('.w3m-modal-overlay not found')
+    return getShadowRootElement(this, '.w3m-modal-overlay')
+  }
 
-    return el
+  private get containerEl() {
+    return getShadowRootElement(this, '.w3m-modal-container')
   }
 
   private onCloseModal(event: PointerEvent) {
@@ -50,11 +52,15 @@ export class W3mModal extends LitElement {
   private onOpenModalEvent() {
     this.open = true
     this.classes['w3m-modal-open'] = true
-    animate(this.overlayEl, { opacity: 1 })
+    animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2 })
+    animate(this.containerEl, { scale: [0.98, 1] }, { duration: 0.2 })
   }
 
   private async onCloseModalEvent() {
-    await animate(this.overlayEl, { opacity: 0 }).finished
+    await Promise.all([
+      animate(this.containerEl, { scale: [1, 0.98] }, { duration: 0.2 }).finished,
+      animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
+    ])
     this.classes['w3m-modal-open'] = false
     this.open = false
   }
@@ -62,17 +68,22 @@ export class W3mModal extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <div class=${classMap(this.classes)} @click=${this.onCloseModal}>
-        ${this.open
-          ? html`
-              <div class="w3m-modal-container">
+      <div
+        class=${classMap(this.classes)}
+        @click=${this.onCloseModal}
+        role="alertdialog"
+        aria-modal="true"
+      >
+        <div class="w3m-modal-container">
+          ${this.open
+            ? html`
                 <w3m-modal-backcard></w3m-modal-backcard>
                 <div class="w3m-modal-content">
                   <w3m-modal-router></w3m-modal-router>
                 </div>
-              </div>
-            `
-          : null}
+              `
+            : null}
+        </div>
       </div>
     `
   }

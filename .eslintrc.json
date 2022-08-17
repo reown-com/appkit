@@ -1,7 +1,7 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "ignorePatterns": ["*.d.ts", "*.config.js", "*.umd.js", "server.js", "libs"],
+  "ignorePatterns": ["*.d.ts", "*.config.js", "*.umd.js", "server.js", "Whatamesh.ts"],
   "parserOptions": {
     "project": ["tsconfig.json"]
   },

@@ -1,7 +1,7 @@
 import { proxy } from 'valtio/vanilla'
 
 // -- types -------------------------------------------------------- //
-export type RouterView = 'ConnectWallet'
+export type RouterView = 'ConnectWallet' | 'SelectNetwork'
 
 interface State {
   history: RouterView[]

@@ -4,8 +4,9 @@ import ModalCtrl from '../../controllers/ModalCtrl'
 import closeIcon from '../../images/closeIcon'
 import transparentNoise from '../../images/transparentNoise'
 import walletConnectLogo from '../../images/walletConnectLogo'
-import Whatamesh from '../../libs/Whatamesh'
 import global from '../../theme/global'
+import { getShadowRootElement } from '../../utils/Helpers'
+import Whatamesh from '../../utils/Whatamesh'
 import styles from './styles'
 
 @customElement('w3m-modal-backcard')
@@ -20,10 +21,7 @@ export class W3mModalBackcard extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private get canvasEl() {
-    const el = this.renderRoot.querySelector('.w3m-gradient-canvas')
-    if (!el) throw new Error('.w3m-gradient-canvas not found')
-
-    return el
+    return getShadowRootElement(this, '.w3m-gradient-canvas')
   }
 
   // -- render ------------------------------------------------------- //
