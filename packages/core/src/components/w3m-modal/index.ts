@@ -6,6 +6,7 @@ import { subscribe } from 'valtio/vanilla'
 import ModalCtrl from '../../controllers/ModalCtrl'
 import global from '../../theme/global'
 import '../w3m-modal-backcard'
+import '../w3m-modal-router'
 import styles from './styles'
 
 @customElement('w3m-modal')
@@ -66,7 +67,9 @@ export class W3mModal extends LitElement {
           ? html`
               <div class="w3m-modal-container">
                 <w3m-modal-backcard></w3m-modal-backcard>
-                <div class="w3m-modal-content">Content</div>
+                <div class="w3m-modal-content">
+                  <w3m-modal-router></w3m-modal-router>
+                </div>
               </div>
             `
           : null}

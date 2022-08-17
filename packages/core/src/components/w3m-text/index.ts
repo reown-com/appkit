@@ -4,7 +4,6 @@ import { classMap } from 'lit/directives/class-map.js'
 import fonts from '../../theme/fonts'
 import global from '../../theme/global'
 import '../w3m-spinner'
-import styles from './styles'
 
 type Variant =
   | 'large-bold'
@@ -18,7 +17,7 @@ type Variant =
 
 @customElement('w3m-text')
 export class W3mText extends LitElement {
-  public static styles = [global, fonts(), styles]
+  public static styles = [global, fonts()]
 
   // -- state & properties ------------------------------------------- //
   @property() public variant: Variant = 'medium-normal'

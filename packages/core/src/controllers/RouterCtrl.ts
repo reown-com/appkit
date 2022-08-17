@@ -1,11 +1,11 @@
 import { proxy } from 'valtio/vanilla'
 
 // -- types -------------------------------------------------------- //
-type View = 'ConnectWallet'
+export type RouterView = 'ConnectWallet'
 
 interface State {
-  history: View[]
-  view: View
+  history: RouterView[]
+  view: RouterView
 }
 
 // -- initial state ------------------------------------------------ //
