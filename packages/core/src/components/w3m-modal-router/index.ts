@@ -27,8 +27,8 @@ export class W3mModalRouter extends LitElement {
   // -- private ------------------------------------------------------ //
   private readonly unsubscribe?: () => void = undefined
 
-  private get containerEl() {
-    return getShadowRootElement(this, '.w3m-router-container')
+  private get routerEl() {
+    return getShadowRootElement(this, '.w3m-modal-router')
   }
 
   private viewTemplate() {
@@ -43,22 +43,14 @@ export class W3mModalRouter extends LitElement {
   }
 
   private async onChangeRoute() {
-    await animate(
-      this.containerEl,
-      { opacity: [1, 0], transform: ['scale(1), scale(2)'] },
-      { duration: 0.2 }
-    ).finished
+    await animate(this.routerEl, { opacity: [1, 0], scale: [1, 1.02] }, { duration: 0.2 }).finished
     this.view = RouterCtrl.state.view
-    animate(
-      this.containerEl,
-      { opacity: [0, 1], transform: ['scale(0.8), scale(1)'] },
-      { duration: 0.2 }
-    )
+    animate(this.routerEl, { opacity: [0, 1], scale: [0.98, 1] }, { duration: 0.2 })
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    return html` <div class="w3m-router-container">${this.viewTemplate()}</div>`
+    return html` <div class="w3m-modal-router">${this.viewTemplate()}</div>`
   }
 }
 
