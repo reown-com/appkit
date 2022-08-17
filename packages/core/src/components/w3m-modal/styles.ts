@@ -28,12 +28,13 @@ export default css`
 
   .w3m-modal-container {
     position: relative;
-    width: 400px;
+    width: 100%;
+    max-width: 400px;
     max-height: 90vh;
   }
 
   .w3m-modal-content {
-    width: 400px;
+    width: 100%;
     height: 80vh;
     position: relative;
     transform: translate3d(5px, 5px, 0);

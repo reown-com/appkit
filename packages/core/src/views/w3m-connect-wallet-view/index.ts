@@ -8,7 +8,11 @@ export class W3mConnectWalletView extends LitElement {
   protected render() {
     return html`
       <div>
-        Connect Wallet View
+        Connect Wallet View <br />
+        Connect Wallet View <br />
+        Connect Wallet View <br />
+        Connect Wallet View <br />
+        Connect Wallet View <br />
         <button @click=${() => RouterCtrl.replace('SelectNetwork')}>Go To Select Network</button>
       </div>
     `
