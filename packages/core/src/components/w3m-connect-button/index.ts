@@ -5,21 +5,19 @@ import { subscribe } from 'valtio/vanilla'
 import ModalCtrl from '../../controllers/ModalCtrl'
 import walletConnectIcon from '../../images/walletConnectIcon'
 import colors from '../../theme/color'
-import fonts from '../../theme/fonts'
 import global from '../../theme/global'
 import '../w3m-spinner'
+import '../w3m-text'
 import styles from './styles'
 
 @customElement('w3m-connect-button')
 export class W3mConnectButton extends LitElement {
-  public static styles = [global, fonts(), styles]
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() public loading = false
   @state() private readonly classes = {
-    'w3m-button-loading': Boolean(this.loading),
-    'w3m-font': true,
-    'w3m-font-medium-normal': true
+    'w3m-button-loading': this.loading
   }
   @property() public label?: string = 'Connect Wallet'
   @property() public icon?: boolean = true
@@ -54,7 +52,7 @@ export class W3mConnectButton extends LitElement {
       >
         ${this.loading
           ? html`<w3m-spinner color=${colors().dark.foreground.accent}></loading-spinner>`
-          : html`${this.iconTemplate()} <span>${this.label}</span>`}
+          : html`${this.iconTemplate()} <w3m-text variant="medium-normal">${this.label}</w3m-text>`}
       </button>
     `
   }
