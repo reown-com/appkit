@@ -15,7 +15,7 @@ export default css`
   button {
     border: none;
     transition: 0.2s filter ease-in-out;
-    padding: 0 15px 2px;
+    padding: 0 15px 1px;
     height: 40px;
     border-radius: 10px;
     cursor: pointer;
@@ -31,13 +31,13 @@ export default css`
 
   button:disabled {
     cursor: not-allowed;
+    padding-bottom: 0;
   }
 
   svg {
     width: 28px;
     height: 20px;
-    margin-right: 3px;
-    margin-left: -5px;
+    margin: -1px 3px 0 -5px;
   }
 
   svg path {
