@@ -1,11 +1,9 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import ModalCtrl from '../../controllers/ModalCtrl'
-import closeIcon from '../../images/closeIcon'
-import transparentNoise from '../../images/transparentNoise'
-import walletConnectLogo from '../../images/walletConnectLogo'
-import global from '../../theme/global'
 import { getShadowRootElement } from '../../utils/Helpers'
+import { CLOSE_ICON, NOISE_TEXTURE, WALLET_CONNECT_LOGO } from '../../utils/Svgs'
+import { global } from '../../utils/Theme'
 import Whatamesh from '../../utils/Whatamesh'
 import styles from './styles'
 
@@ -28,11 +26,11 @@ export class W3mModalBackcard extends LitElement {
   protected render() {
     return html`
       <canvas class="w3m-gradient-canvas"></canvas>
-      ${transparentNoise}
+      ${NOISE_TEXTURE}
       <div class="w3m-modal-highlight"></div>
       <div class="w3m-modal-toolbar">
-        ${walletConnectLogo}
-        <button class="w3m-modal-close-btn" @click=${ModalCtrl.closeModal}>${closeIcon}</button>
+        ${WALLET_CONNECT_LOGO}
+        <button class="w3m-modal-close-btn" @click=${ModalCtrl.closeModal}>${CLOSE_ICON}</button>
       </div>
     `
   }

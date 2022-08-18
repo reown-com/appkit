@@ -1,5 +1,5 @@
 import { css, unsafeCSS } from 'lit'
-import color from '../../theme/color'
+import { color } from '../../utils/Theme'
 
 const contentShadowLight = unsafeCSS(color().light.overlay.thin)
 const contentShadowDark = unsafeCSS(color().dark.overlay.thin)

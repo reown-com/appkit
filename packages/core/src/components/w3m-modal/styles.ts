@@ -1,5 +1,5 @@
 import { css, unsafeCSS } from 'lit'
-import color from '../../theme/color'
+import { color } from '../../utils/Theme'
 
 const contentShadowLight = unsafeCSS(color().light.overlay.thin)
 const contentShadowDark = unsafeCSS(color().dark.overlay.thin)
@@ -35,7 +35,6 @@ export default css`
 
   .w3m-modal-content {
     width: 100%;
-    height: 80vh;
     position: relative;
     transform: translate3d(5px, 5px, 0);
     border-radius: 40px;

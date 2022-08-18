@@ -15,6 +15,6 @@
     "build": "npm run build:clean; npm run build:source; npm run build:types"
   },
   "dependencies": {
-    "@wagmi/core": "0.5.3"
+    "@wagmi/core": "0.5.4"
   }
 }
