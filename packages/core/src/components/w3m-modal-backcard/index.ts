@@ -13,8 +13,8 @@ export class W3mModalBackcard extends LitElement {
 
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
-    const gradient = new Whatamesh()
-    gradient.initGradient(this.canvasEl)
+    const whatamesh = new Whatamesh()
+    whatamesh.initGradient(this.canvasEl)
   }
 
   // -- private ------------------------------------------------------ //

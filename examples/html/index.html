@@ -17,5 +17,14 @@
   <body>
     <w3m-connect-button></w3m-connect-button>
     <w3m-modal></w3m-modal>
+    <script type="module">
+      Web3Modal.configure({
+        options: {
+          projectId: '123',
+          theme: 'dark'
+        }
+      })
+      console.log(Web3Modal.config)
+    </script>
   </body>
 </html>
