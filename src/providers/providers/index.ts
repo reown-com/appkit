@@ -36,6 +36,8 @@ import SequenceLogo from "../logos/sequence.svg";
 import BitkeepLogo from "../logos/bitkeepwallet.png";
 // @ts-ignore
 import StarzWalletLogo from "../logos/starzwallet.svg";
+// @ts-ignore 
+import KaikasLogo from "../logos/kaikas.png";
 
 
 import { IProviderInfo } from "../../helpers";
@@ -224,3 +226,10 @@ export const STARZWALLET: IProviderInfo = {
   check: "isStarzWallet"
 };
 
+export const KAIKAS: IProviderInfo = {
+  id: "kaikas",
+  name: "Kaikas",
+  logo: KaikasLogo,
+  type: "injected",
+  check: "isKaikas"
+};
