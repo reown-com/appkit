@@ -8,7 +8,7 @@ app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, '/index.html'))
 })
 
-app.get('/index.umd.js', (_req, res) => {
+app.get('/packages/core/index.umd.js', (_req, res) => {
   res.sendFile(path.join(__dirname, '../../packages/core/dist/index.umd.js'))
 })
 
