@@ -6,9 +6,12 @@ const Web3Modal = {
   config: ConfigCtrl.state
 }
 
-window.Web3Modal = Web3Modal
-
 export default Web3Modal
+
+/**
+ * Expose global api for vanilla js
+ */
+window.Web3Modal = Web3Modal
 
 declare global {
   interface Window {

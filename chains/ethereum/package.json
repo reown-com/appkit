@@ -12,9 +12,13 @@
     "build:clean": "rm -rf dist",
     "build:types": "tsc",
     "build:source": "rollup --config rollup.config.js",
-    "build": "npm run build:clean; npm run build:source; npm run build:types"
+    "build": "npm run build:clean; npm run build:source; npm run build:types",
+    "dev": "rollup --config rollup.config.js --watch"
   },
-  "dependencies": {
+  "devDependencies": {
     "@wagmi/core": "0.5.4"
+  },
+  "peerDependencies": {
+    "@wagmi/core": ">=0.5.x"
   }
 }
