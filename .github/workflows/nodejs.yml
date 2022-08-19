@@ -1,14 +1,17 @@
 name: Build Web3Modal
 
-on: [push]
+on:
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    if: github.event.action == 'opened' || github.event.action == 'synchronize'
     strategy:
       matrix:
-        node-version: [10.x]
+        node-version: [16.x]
 
     steps:
       - uses: actions/checkout@v1
