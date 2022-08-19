@@ -1,6 +1,6 @@
+import { ModalCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import ModalCtrl from '../../controllers/ModalCtrl'
 import { getShadowRootElement } from '../../utils/Helpers'
 import { CLOSE_ICON, NOISE_TEXTURE, WALLET_CONNECT_LOGO } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'

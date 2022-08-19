@@ -1,4 +1,4 @@
-import { W3mConnectButton } from '@web3modal/core'
+import { W3mConnectButton } from '@web3modal/ui'
 import React from 'react'
 
 /**

@@ -1,4 +1,4 @@
-import { proxy } from 'valtio/vanilla'
+import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 
 // -- types -------------------------------------------------------- //
 interface State {
@@ -11,8 +11,12 @@ const state = proxy<State>({
 })
 
 // -- controller --------------------------------------------------- //
-export default {
+export const ModalCtrl = {
   state,
+
+  subscribe(callback: (newState: State) => void) {
+    return valtioSub(state, () => callback(state))
+  },
 
   openModal() {
     state.open = true

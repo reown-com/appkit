@@ -1,3 +1,5 @@
-export * from './src/api'
-export * from './src/components/w3m-connect-button'
-export * from './src/components/w3m-modal'
+export { Web3Modal } from './src/api'
+export { ConfigCtrl } from './src/controllers/ConfigCtrl'
+export { ModalCtrl } from './src/controllers/ModalCtrl'
+export { RouterCtrl } from './src/controllers/RouterCtrl'
+export type { RouterViewType } from './src/controllers/RouterCtrl'

@@ -11,8 +11,12 @@ interface Props {
  * Component
  */
 export function Web3ModalProvider({ children }: Props) {
+  async function onConfigure() {
+    await import('@web3modal/ui')
+  }
+
   useEffect(() => {
-    import('@web3modal/core')
+    onConfigure()
   }, [])
 
   return <>{children}</>

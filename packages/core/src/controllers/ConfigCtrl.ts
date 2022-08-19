@@ -1,4 +1,4 @@
-import { proxy } from 'valtio/vanilla'
+import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 
 // -- types -------------------------------------------------------- //
 export interface State {
@@ -19,8 +19,12 @@ const state = proxy<State>({
 })
 
 // -- controller --------------------------------------------------- //
-export default {
+export const ConfigCtrl = {
   state,
+
+  subscribe(callback: (newState: State) => void) {
+    return valtioSub(state, () => callback(state))
+  },
 
   setConfig(config: Omit<State, 'configured'>) {
     Object.assign(state, config)

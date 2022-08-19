@@ -1,8 +1,7 @@
+import { ModalCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { subscribe } from 'valtio/vanilla'
-import ModalCtrl from '../../controllers/ModalCtrl'
 import { WALLET_CONNECT_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
 import '../w3m-spinner'
@@ -24,9 +23,9 @@ export class W3mConnectButton extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.unsubscribe = subscribe(ModalCtrl.state, () => {
-      if (ModalCtrl.state.open) this.loading = true
-      if (!ModalCtrl.state.open) this.loading = false
+    this.unsubscribe = ModalCtrl.subscribe(modalState => {
+      if (modalState.open) this.loading = true
+      if (!modalState.open) this.loading = false
     })
   }
 

@@ -1,6 +1,6 @@
+import { RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import RouterCtrl from '../../controllers/RouterCtrl'
 
 @customElement('w3m-connect-wallet-view')
 export class W3mConnectWalletView extends LitElement {

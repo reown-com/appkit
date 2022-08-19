@@ -1,12 +1,10 @@
-import ConfigCtrl from './controllers/ConfigCtrl'
+import { ConfigCtrl } from './controllers/ConfigCtrl'
 
-const Web3Modal = {
+export const Web3Modal = {
   configure: ConfigCtrl.setConfig,
 
   config: ConfigCtrl.state
 }
-
-export default Web3Modal
 
 /**
  * Expose global api for vanilla js

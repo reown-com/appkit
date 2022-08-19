@@ -1,9 +1,8 @@
+import { ModalCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { animate } from 'motion'
-import { subscribe } from 'valtio/vanilla'
-import ModalCtrl from '../../controllers/ModalCtrl'
 import { getShadowRootElement } from '../../utils/Helpers'
 import { global } from '../../utils/Theme'
 import '../w3m-modal-backcard'
@@ -24,9 +23,9 @@ export class W3mModal extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.unsubscribe = subscribe(ModalCtrl.state, () => {
-      if (ModalCtrl.state.open) this.onOpenModalEvent()
-      if (!ModalCtrl.state.open) this.onCloseModalEvent()
+    this.unsubscribe = ModalCtrl.subscribe(modalState => {
+      if (modalState.open) this.onOpenModalEvent()
+      if (!modalState.open) this.onCloseModalEvent()
     })
   }
 

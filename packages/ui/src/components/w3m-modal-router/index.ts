@@ -1,8 +1,7 @@
+import { RouterCtrl, RouterViewType } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
-import { subscribe } from 'valtio/vanilla'
-import RouterCtrl, { RouterView } from '../../controllers/RouterCtrl'
 import { getShadowRootElement } from '../../utils/Helpers'
 import { global } from '../../utils/Theme'
 import '../../views/w3m-connect-wallet-view'
@@ -14,14 +13,14 @@ export class W3mModalRouter extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
-  @state() public view: RouterView = RouterCtrl.state.view
-  @state() public prevView: RouterView = RouterCtrl.state.view
+  @state() public view: RouterViewType = RouterCtrl.state.view
+  @state() public prevView: RouterViewType = RouterCtrl.state.view
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.unsubscribe = subscribe(RouterCtrl.state, () => {
-      if (this.view !== RouterCtrl.state.view) this.onChangeRoute()
+    this.unsubscribe = RouterCtrl.subscribe(routerState => {
+      if (this.view !== routerState.view) this.onChangeRoute()
     })
   }
 

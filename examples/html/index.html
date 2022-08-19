@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Web3Modal Example</title>
     <script type="module" src="/packages/core/index.umd.js"></script>
+    <script type="module" src="/packages/ui/index.umd.js"></script>
     <script type="module" src="/chains/ethereum/index.umd.js"></script>
 
     <style>
@@ -20,13 +21,11 @@
     <w3m-modal></w3m-modal>
 
     <script type="module">
-      const wagmiConfig = Web3Modal.ethereum.wagmi.configureChains()
       Web3Modal.configure({
         options: {
           projectId: '123',
           theme: 'dark'
-        },
-        ethereum: wagmiConfig
+        }
       })
     </script>
   </body>
