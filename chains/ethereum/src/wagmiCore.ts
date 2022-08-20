@@ -4,8 +4,8 @@ import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { publicProvider } from '@wagmi/core/providers/public'
 
-const Web3ModalEthereum = {
-  wagmi,
+const WagmiCore = {
+  ...wagmi,
   connectors: {
     injected: wagmi.InjectedConnector,
     coinbase: CoinbaseWalletConnector,
@@ -15,17 +15,15 @@ const Web3ModalEthereum = {
   providers: { publicProvider }
 }
 
-export default Web3ModalEthereum
+export default WagmiCore
 
 /**
  * Expose global api for vanilla js
  */
-window.Web3Modal.ethereum = Web3ModalEthereum
+window.WagmiCore = WagmiCore
 
 declare global {
   interface Window {
-    Web3Modal: {
-      ethereum: typeof Web3ModalEthereum
-    }
+    WagmiCore: typeof WagmiCore
   }
 }
