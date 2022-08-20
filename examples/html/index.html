@@ -21,6 +21,21 @@
     <w3m-modal></w3m-modal>
 
     <script type="module">
+      const { wagmi, providers, connectors } = Web3Modal.ethereum
+      const { chains, provider, webSocketProvider } = wagmi.configureChains(
+        [wagmi.chain.mainnet],
+        [providers.publicProvider()]
+      )
+
+      const client = wagmi.createClient({
+        autoConnect: true,
+        connectors: [new connectors.metamask({ chains })],
+        provider,
+        webSocketProvider
+      })
+
+      console.log(client)
+
       Web3Modal.configure({
         options: {
           projectId: '123',
