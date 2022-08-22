@@ -7,9 +7,8 @@
 ## Development workflow
 
 1. Install deps across all packages by running `npm install` from the root
-2. Run `npm run dev` within `packages/core` to bundle in watch mode
-3. Run `npm run dev` within `examples/html` to start local preview on localhost:8080
-4. Changes in `packages/core` are re-built automatically, so just refresh html example page to reflect them
+2. Run `npm run dev:html` to start html example and watch for core / ui / ethereum changes
+3. Run `npm run dev:react` to start react example and watch for core / ui / ethereum changes
 
 ## Suggested VSCode extensions
 

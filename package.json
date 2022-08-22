@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "npm run build --workspaces --if-present"
+    "build": "npm run build --ws --if-present",
+    "dev": "npm run dev --w=@web3modal/core & npm run dev --w=@web3modal/ui & npm run dev --w=@web3modal/ethereum",
+    "dev:html": "npm run dev & npm run dev --w=html-example",
+    "dev:react": "npm run dev & npm run dev --w=react-example"
   },
   "workspaces": [
     "packages/*",
