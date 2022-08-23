@@ -10,7 +10,7 @@ const CIRCLE_SIZE_MODIFIER = 2.5
 type CoordinateMapping = [number, number[]]
 
 @customElement('w3m-qrcode')
-export default class QRCode extends LitElement {
+export default class W3mQrCode extends LitElement {
   public static styles = [global, styles]
   @property() public uri: string = 'uri'
   @property() public logo: string = 'uri'
@@ -18,10 +18,6 @@ export default class QRCode extends LitElement {
   @property() public logoSize: number = 50
   @property() public logoMargin: number = 10
   @property() public logoBackground: string = 'black'
-
-  public constructor() {
-    super()
-  }
 
   private generateMatrix(
     value: string,
@@ -239,6 +235,6 @@ export default class QRCode extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-qrcode': QRCode
+    'w3m-qrcode': W3mQrCode
   }
 }
