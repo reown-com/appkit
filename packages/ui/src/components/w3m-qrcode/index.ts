@@ -67,6 +67,7 @@ export default class QRCode extends LitElement {
     const clearArenaSize = Math.floor((this.logoSize + 25) / cellSize)
     const matrixMiddleStart = matrix.length / 2 - clearArenaSize / 2
     const matrixMiddleEnd = matrix.length / 2 + clearArenaSize / 2 - 1
+    let circles: [number, number][] = []
     matrix.forEach((row: QRCodeUtil.QRCode[], i: number) => {
       row.forEach((_: any, j: number) => {
         if (matrix[i][j]) {
@@ -85,21 +86,75 @@ export default class QRCode extends LitElement {
                 j < matrixMiddleEnd
               )
             ) {
-              dots.push(
-                svg`
-                  <circle
-                    cx=${i * cellSize + cellSize / 2}
-                    cy=${j * cellSize + cellSize / 2}
-                    fill="black"
-                    r=${cellSize / 3} 
-                  />
-                `
-              )
+              let cx = i * cellSize + cellSize / 2
+              let cy = j * cellSize + cellSize / 2
+              circles.push([cx, cy])
             }
           }
         }
       })
     })
+
+    // cx to multiple cys
+    let circlesToConnect: Record<number, number[]> = {}
+
+    const CONNECTING_ERROR_MARGIN = 0.01
+
+    circles.forEach(([cx, cy]) => {
+      if (!circlesToConnect[cx]) {
+        circlesToConnect[cx] = [cy]
+      } else {
+        // circlesToConnect[cx].some(otherCy => {
+        //   const diff = cy - otherCy < 0 ? otherCy - cy : cy - otherCy
+        //   console.log({ diff })
+        //   if (diff <= cellSize + CONNECTING_ERROR_MARGIN) {
+        //     circlesToConnect[cx].push(cy)
+        //   }
+        // })
+        circlesToConnect[cx].push(cy)
+      }
+
+      dots.push(
+        svg`
+          <circle
+            cx=${cx}
+            cy=${cy}
+            fill="black"
+            r=${cellSize / 3} 
+          />
+        `
+      )
+    })
+
+    Object.entries(circlesToConnect)
+      .filter(([_, cys]) => cys.length > 1)
+      .map(([cx, cys]) => {
+        const newCys = cys.filter(cy =>
+          cys.some(otherCy => {
+            if (cy === otherCy) return false
+            const diff = cy - otherCy < 0 ? otherCy - cy : cy - otherCy
+            if (diff <= cellSize + CONNECTING_ERROR_MARGIN) {
+              return true
+            }
+            return false
+          })
+        )
+        return [Number(cx), newCys] as [number, number[]]
+      })
+      .forEach(([cx, cys]) => {
+        cys.forEach(cy => {
+          dots.push(
+            svg`
+            <circle
+              cx=${cx}
+              cy=${cy}
+              fill="red"
+              r=${cellSize / 3} 
+            />
+          `
+          )
+        })
+      })
 
     return dots
   }
