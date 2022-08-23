@@ -1,4 +1,4 @@
-import { ConfigType } from '@web3modal/core'
+import { ConfigCtrl } from '@web3modal/core'
 import { css } from 'lit'
 
 export const global = css`
@@ -80,16 +80,16 @@ export const fonts = css`
   }
 `
 
-export function colorPresets(a: number) {
+export function accentColors(a: number) {
   return {
     default: {
       light: {
-        foreground: `rgba(198,83,128,${a})`,
-        background: `rgba(244,221,230,${a})`
+        foreground: `rgba(51,150,255,${a})`,
+        background: `rgba(232,242,252,${a})`
       },
       dark: {
-        foreground: `rgba(203,77,140,${a})`,
-        background: `rgba(57,35,43,${a})`
+        foreground: `rgba(71,161,255,${a})`,
+        background: `rgba(21,38,55,${a})`
       }
     },
 
@@ -172,27 +172,19 @@ export function colorPresets(a: number) {
   }
 }
 
-interface ColorArgs {
-  alpha?: number
-  accentColor?: ConfigType['accentColor']
-}
-export function color(args?: ColorArgs) {
-  const a = args?.alpha ?? 1
-
+export function themeColors(alpha: number) {
   return {
     light: {
       foreground: {
-        accent: `rgba(51,150,255,${a})`,
-        inverse: `rgba(255,255,255,${a})`,
-        1: `rgba(20,20,20,${a})`,
-        2: `rgba(121,134,134,${a})`,
-        3: `rgba(158,169,169,${a})`
+        inverse: `rgba(255,255,255,${alpha})`,
+        1: `rgba(20,20,20,${alpha})`,
+        2: `rgba(121,134,134,${alpha})`,
+        3: `rgba(158,169,169,${alpha})`
       },
       background: {
-        accent: `rgba(232,242,252,${a})`,
-        1: `rgba(255,255,255,${a})`,
-        2: `rgba(241,243,243,${a})`,
-        3: `rgba(228,231,231,${a})`
+        1: `rgba(255,255,255,${alpha})`,
+        2: `rgba(241,243,243,${alpha})`,
+        3: `rgba(228,231,231,${alpha})`
       },
       overlay: {
         thin: 'rgba(0,0,0,0.1)',
@@ -202,22 +194,39 @@ export function color(args?: ColorArgs) {
 
     dark: {
       foreground: {
-        accent: `rgba(71,161,255,${a})`,
-        inverse: `rgba(255,255,255,${a})`,
-        1: `rgba(228,231,231,${a})`,
-        2: `rgba(148,158,158,${a})`,
-        3: `rgba(110,119,119,${a})`
+        inverse: `rgba(255,255,255,${alpha})`,
+        1: `rgba(228,231,231,${alpha})`,
+        2: `rgba(148,158,158,${alpha})`,
+        3: `rgba(110,119,119,${alpha})`
       },
       background: {
-        accent: `rgba(21,38,55,${a})`,
-        1: `rgba(20,20,20,${a})`,
-        2: `rgba(39,42,42,${a})`,
-        3: `rgba(59,64,64,${a})`
+        1: `rgba(20,20,20,${alpha})`,
+        2: `rgba(39,42,42,${alpha})`,
+        3: `rgba(59,64,64,${alpha})`
       },
       overlay: {
         thin: 'rgba(255,255,255,0.1)',
         thick: 'rgba(255,255,255,0.4)'
       }
     }
+  }
+}
+
+export function color(alpha = 1) {
+  const accentPreset = ConfigCtrl.state.accentColor ?? 'default'
+  const themePreset = ConfigCtrl.state.theme ?? 'dark'
+  const accent = accentColors(alpha)[accentPreset][themePreset]
+  const theme = themeColors(alpha)[themePreset]
+
+  return {
+    foreground: {
+      accent: accent.foreground,
+      ...theme.foreground
+    },
+    background: {
+      accent: accent.background,
+      ...theme.background
+    },
+    overlay: { ...theme.overlay }
   }
 }

@@ -23,18 +23,18 @@ export class W3mConnectButton extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.unsubscribe = ModalCtrl.subscribe(modalState => {
+    this.modalUnsub = ModalCtrl.subscribe(modalState => {
       if (modalState.open) this.loading = true
       if (!modalState.open) this.loading = false
     })
   }
 
   public disconnectedCallback() {
-    this.unsubscribe?.()
+    this.modalUnsub?.()
   }
 
   // -- private ------------------------------------------------------ //
-  private readonly unsubscribe?: () => void = undefined
+  private readonly modalUnsub?: () => void = undefined
 
   private iconTemplate() {
     return this.icon ? WALLET_CONNECT_ICON : null
@@ -49,7 +49,7 @@ export class W3mConnectButton extends LitElement {
         @click=${ModalCtrl.openModal}
       >
         ${this.loading
-          ? html`<w3m-spinner color=${color().dark.foreground.accent}></loading-spinner>`
+          ? html`<w3m-spinner color=${color().foreground.accent}></loading-spinner>`
           : html`${this.iconTemplate()} <w3m-text variant="medium-normal">${this.label}</w3m-text>`}
       </button>
     `

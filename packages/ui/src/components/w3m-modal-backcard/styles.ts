@@ -1,10 +1,8 @@
 import { css, unsafeCSS } from 'lit'
 import { color } from '../../utils/Theme'
 
-const contentShadowLight = unsafeCSS(color().light.overlay.thin)
-const contentShadowDark = unsafeCSS(color().dark.overlay.thin)
-const closeBtnBgDark = unsafeCSS(color().dark.background[1])
-const closeBtnBgLight = unsafeCSS(color().light.background[1])
+const contentShadow = unsafeCSS(color().overlay.thin)
+const closeBtn = unsafeCSS(color().background[1])
 
 export default css`
   .w3m-gradient-canvas,
@@ -18,6 +16,10 @@ export default css`
     height: 100%;
     border-radius: 8px 8px 30px 8px;
     transform: translate3d(-5px, -5px, 0);
+  }
+
+  .w3m-modal-highlight {
+    border: 1px solid ${contentShadow};
   }
 
   .w3m-gradient-canvas {
@@ -58,6 +60,7 @@ export default css`
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    background-color: ${closeBtn};
   }
 
   .w3m-modal-close-btn svg {
@@ -67,24 +70,14 @@ export default css`
   }
 
   @media (prefers-color-scheme: dark) {
-    .w3m-modal-highlight {
-      border: 1px solid ${contentShadowDark};
-    }
-
     .w3m-modal-close-btn {
       box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
-      background-color: ${closeBtnBgDark};
     }
   }
 
   @media (prefers-color-scheme: light) {
-    .w3m-modal-highlight {
-      border: 1px solid ${contentShadowLight};
-    }
-
     .w3m-modal-close-btn {
       box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
-      background-color: ${closeBtnBgLight};
     }
   }
 `

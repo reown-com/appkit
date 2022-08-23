@@ -1,15 +1,11 @@
 import { css, unsafeCSS } from 'lit'
 import { color } from '../../utils/Theme'
 
-const bgLight = unsafeCSS(color().light.foreground.accent)
-const bgDark = unsafeCSS(color().dark.foreground.accent)
-const bgLightDisabled = unsafeCSS(color().light.background[3])
-const bgDarkDisabled = unsafeCSS(color().dark.background[3])
-const bgLightLoading = unsafeCSS(color().light.background.accent)
-const bgDarkLoading = unsafeCSS(color().dark.background.accent)
-const fontColor = unsafeCSS(color().light.foreground.inverse)
-const fontColorLightDisabled = unsafeCSS(color().light.foreground[3])
-const fontColorDarkDisabled = unsafeCSS(color().dark.foreground[3])
+const bg = unsafeCSS(color().foreground.accent)
+const bgDisabled = unsafeCSS(color().background[3])
+const bgLoading = unsafeCSS(color().background.accent)
+const fontColor = unsafeCSS(color().foreground.inverse)
+const fontColorDisabled = unsafeCSS(color().foreground[3])
 
 export default css`
   button {
@@ -23,15 +19,22 @@ export default css`
     justify-content: center;
     align-items: center;
     color: ${fontColor};
+    background-color: ${bg};
   }
 
   .w3m-button-loading {
     padding: 0 15px;
   }
 
+  .w3m-button-loading:disabled {
+    background-color: ${bgLoading};
+  }
+
   button:disabled {
     cursor: not-allowed;
     padding-bottom: 0;
+    background-color: ${bgDisabled};
+    color: ${fontColorDisabled};
   }
 
   svg {
@@ -48,10 +51,13 @@ export default css`
     padding-top: 1px;
   }
 
+  button:disabled svg path {
+    fill: ${fontColorDisabled};
+  }
+
   @media (prefers-color-scheme: dark) {
     button {
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-      background-color: ${bgDark};
     }
 
     button:hover {
@@ -61,25 +67,11 @@ export default css`
     button:active {
       filter: brightness(120%);
     }
-
-    button:disabled {
-      background-color: ${bgDarkDisabled};
-      color: ${fontColorDarkDisabled};
-    }
-
-    button:disabled svg path {
-      fill: ${fontColorDarkDisabled};
-    }
-
-    .w3m-button-loading:disabled {
-      background-color: ${bgDarkLoading};
-    }
   }
 
   @media (prefers-color-scheme: light) {
     button {
       box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
-      background-color: ${bgLight};
     }
 
     button:hover {
@@ -88,19 +80,6 @@ export default css`
 
     button:active {
       filter: brightness(80%);
-    }
-
-    button:disabled {
-      background-color: ${bgLightDisabled};
-      color: ${fontColorLightDisabled};
-    }
-
-    button:disabled svg path {
-      fill: ${fontColorLightDisabled};
-    }
-
-    .w3m-button-loading:disabled {
-      background-color: ${bgLightLoading};
     }
   }
 `
