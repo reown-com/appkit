@@ -1,12 +1,7 @@
-import { css, unsafeCSS } from 'lit'
+import { css, html } from 'lit'
 import { color } from '../../utils/Theme'
 
-const bg = unsafeCSS(color().foreground.accent)
-const bgDisabled = unsafeCSS(color().background[3])
-const bgLoading = unsafeCSS(color().background.accent)
-const fontColor = unsafeCSS(color().foreground.inverse)
-const fontColorDisabled = unsafeCSS(color().foreground[3])
-
+// -- static styles ------------------------------------------------ //
 export default css`
   button {
     border: none;
@@ -18,23 +13,29 @@ export default css`
     display: flex;
     justify-content: center;
     align-items: center;
-    color: ${fontColor};
-    background-color: ${bg};
+    position: relative;
+    overflow: hidden;
   }
 
-  .w3m-button-loading {
-    padding: 0 15px;
+  button::before {
+    content: '';
+    inset: 0;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
   }
 
-  .w3m-button-loading:disabled {
-    background-color: ${bgLoading};
+  button:hover::before {
+    opacity: 1;
   }
 
   button:disabled {
     cursor: not-allowed;
     padding-bottom: 0;
-    background-color: ${bgDisabled};
-    color: ${fontColorDisabled};
+  }
+
+  .w3m-button-loading {
+    padding: 0 15px;
   }
 
   svg {
@@ -43,43 +44,43 @@ export default css`
     margin: -1px 3px 0 -5px;
   }
 
-  svg path {
-    fill: ${fontColor};
-  }
-
-  span {
-    padding-top: 1px;
-  }
-
-  button:disabled svg path {
-    fill: ${fontColorDisabled};
-  }
-
-  @media (prefers-color-scheme: dark) {
-    button {
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-    }
-
-    button:hover {
-      filter: brightness(110%);
-    }
-
-    button:active {
-      filter: brightness(120%);
-    }
-  }
-
-  @media (prefers-color-scheme: light) {
-    button {
-      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
-    }
-
-    button:hover {
-      filter: brightness(90%);
-    }
-
-    button:active {
-      filter: brightness(80%);
-    }
+  svg,
+  w3m-text {
+    position: relative;
+    z-index: 1;
   }
 `
+
+// -- dynamic styles ----------------------------------------------- //
+export function dynamicStyles() {
+  const { foreground, background, overlay } = color()
+
+  return html` <style>
+    button {
+      color: ${foreground.inverse};
+      background-color: ${foreground.accent};
+      box-shadow: inset 0 0 0 1px ${overlay.thin};
+    }
+
+    button::before {
+      background-color: ${overlay.thin};
+    }
+
+    .w3m-button-loading:disabled {
+      background-color: ${background.accent};
+    }
+
+    button:disabled {
+      background-color: ${background[3]};
+      color: ${foreground[3]};
+    }
+
+    svg path {
+      fill: ${foreground.inverse};
+    }
+
+    button:disabled svg path {
+      fill: ${foreground[3]};
+    }
+  </style>`
+}
