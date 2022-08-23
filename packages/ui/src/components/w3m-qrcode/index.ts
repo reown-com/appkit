@@ -7,6 +7,8 @@ import { global } from '../../utils/Theme'
 const CONNECTING_ERROR_MARGIN = 0.1
 const CIRCLE_SIZE_MODIFIER = 2.5
 
+type CoordinateMapping = [number, number[]]
+
 @customElement('w3m-qrcode')
 export default class QRCode extends LitElement {
   public static styles = [global, styles]
@@ -130,7 +132,7 @@ export default class QRCode extends LitElement {
             return !this.dotsCloseToEachOther(cy, otherCy, cellSize)
           })
         )
-        return [Number(cx), newCys] as [number, number[]]
+        return [Number(cx), newCys] as CoordinateMapping
       })
       .forEach(([cx, cys]) => {
         cys.forEach(cy => {
@@ -158,7 +160,7 @@ export default class QRCode extends LitElement {
             return this.dotsCloseToEachOther(cy, otherCy, cellSize)
           })
         )
-        return [Number(cx), newCys] as [number, number[]]
+        return [Number(cx), newCys] as CoordinateMapping
       })
       // Get the coordinates of the first and last dot of a line
       .map(([cx, cys]) => {
