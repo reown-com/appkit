@@ -4,6 +4,8 @@ import QRCodeUtil from 'qrcode'
 import styles from './styles'
 import { global } from '../../utils/Theme'
 
+const CONNECTING_ERROR_MARGIN = 0.1
+
 @customElement('w3m-qrcode')
 export default class QRCode extends LitElement {
   public static styles = [global, styles]
@@ -32,6 +34,12 @@ export default class QRCode extends LitElement {
         (index % sqrt === 0 ? rows.push([key]) : rows[rows.length - 1].push(key)) && rows,
       []
     )
+  }
+
+  private dotsCloseToEachOther(cy: number, otherCy: number, cellSize: number) {
+    if (cy === otherCy) return false
+    const diff = cy - otherCy < 0 ? otherCy - cy : cy - otherCy
+    return diff <= cellSize + CONNECTING_ERROR_MARGIN
   }
 
   private generateDots() {
@@ -98,19 +106,10 @@ export default class QRCode extends LitElement {
     // cx to multiple cys
     let circlesToConnect: Record<number, number[]> = {}
 
-    const CONNECTING_ERROR_MARGIN = 0.01
-
     circles.forEach(([cx, cy]) => {
       if (!circlesToConnect[cx]) {
         circlesToConnect[cx] = [cy]
       } else {
-        // circlesToConnect[cx].some(otherCy => {
-        //   const diff = cy - otherCy < 0 ? otherCy - cy : cy - otherCy
-        //   console.log({ diff })
-        //   if (diff <= cellSize + CONNECTING_ERROR_MARGIN) {
-        //     circlesToConnect[cx].push(cy)
-        //   }
-        // })
         circlesToConnect[cx].push(cy)
       }
 
@@ -131,28 +130,46 @@ export default class QRCode extends LitElement {
       .map(([cx, cys]) => {
         const newCys = cys.filter(cy =>
           cys.some(otherCy => {
-            if (cy === otherCy) return false
-            const diff = cy - otherCy < 0 ? otherCy - cy : cy - otherCy
-            if (diff <= cellSize + CONNECTING_ERROR_MARGIN) {
-              return true
-            }
-            return false
+            return this.dotsCloseToEachOther(cy, otherCy, cellSize)
           })
         )
         return [Number(cx), newCys] as [number, number[]]
       })
-      .forEach(([cx, cys]) => {
-        cys.forEach(cy => {
-          dots.push(
-            svg`
-            <circle
-              cx=${cx}
-              cy=${cy}
-              fill="red"
-              r=${cellSize / 3} 
-            />
-          `
-          )
+      .filter(([_, cys]) => cys.length > 0)
+      .map(([cx, cys]) => {
+        cys.sort((a, b) => (a < b ? -1 : 1))
+        let groups: number[][] = []
+
+        for (const cy of cys) {
+          const group = groups.find(group => {
+            return group.some(otherCy => this.dotsCloseToEachOther(cy, otherCy, cellSize))
+          })
+          if (group) {
+            group.push(cy)
+          } else {
+            groups.push([cy])
+          }
+        }
+
+        return [cx, groups.map(group => [group[0], group[group.length - 1]])] as [
+          number,
+          number[][]
+        ]
+      })
+      .forEach(([cx, groups]) => {
+        groups.forEach(group => {
+          group.forEach(cy => {
+            dots.push(
+              svg`
+                <circle
+                  cx=${cx}
+                  cy=${cy}
+                  fill="red"
+                  r=${cellSize / 3} 
+                />
+              `
+            )
+          })
         })
       })
 
