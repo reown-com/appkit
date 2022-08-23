@@ -19,6 +19,13 @@
   <body>
     <w3m-connect-button></w3m-connect-button>
     <w3m-modal></w3m-modal>
+    <div style="margin-top: 2em">
+      <w3m-qrcode
+        logoBackground="#141414"
+        logo="https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Icon/Black/Icon.png"
+        uri="https://www.google.com"
+      ></w3m-qrcode>
+    </div>
 
     <script type="module">
       const { providers, connectors, chain } = WagmiCore
