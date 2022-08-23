@@ -77,7 +77,7 @@ export class W3mModal extends LitElement {
           ${this.open
             ? html`
                 <w3m-modal-backcard></w3m-modal-backcard>
-                <div class="w3m-modal-content">
+                <div class="w3m-modal-card">
                   <w3m-modal-router></w3m-modal-router>
                 </div>
               `

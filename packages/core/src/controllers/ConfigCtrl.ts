@@ -1,12 +1,21 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 
 // -- types -------------------------------------------------------- //
-export interface Config {
+export interface ConfigType {
   projectId: string
   theme?: 'dark' | 'light'
+  accentColor?:
+    | 'blackWhite'
+    | 'blue'
+    | 'default'
+    | 'green'
+    | 'magenta'
+    | 'orange'
+    | 'purple'
+    | 'teal'
 }
 
-export interface State extends Config {
+export interface State extends ConfigType {
   configured: boolean
 }
 
@@ -14,7 +23,8 @@ export interface State extends Config {
 const state = proxy<State>({
   configured: false,
   projectId: '',
-  theme: matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  theme: matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+  accentColor: 'default'
 })
 
 // -- controller --------------------------------------------------- //
@@ -25,7 +35,7 @@ export const ConfigCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  setConfig(config: Config) {
+  setConfig(config: ConfigType) {
     Object.assign(state, config)
     state.configured = true
   }

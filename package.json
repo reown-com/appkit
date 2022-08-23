@@ -9,8 +9,10 @@
     "dev:react": "npm run dev --w=react-example"
   },
   "workspaces": [
-    "packages/*",
+    "packages/core",
     "chains/*",
+    "packages/ui",
+    "packages/react",
     "examples/*"
   ],
   "devDependencies": {

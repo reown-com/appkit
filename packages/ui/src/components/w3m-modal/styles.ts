@@ -1,12 +1,12 @@
 import { css, unsafeCSS } from 'lit'
 import { color } from '../../utils/Theme'
 
-const contentShadowLight = unsafeCSS(color().light.overlay.thin)
-const contentShadowDark = unsafeCSS(color().dark.overlay.thin)
-const contentBgLight = unsafeCSS(color().light.background[1])
-const contentBgDark = unsafeCSS(color().dark.background[1])
-const contentColorLight = unsafeCSS(color().light.foreground[1])
-const contentColorDark = unsafeCSS(color().dark.foreground[1])
+const cardShadowLight = unsafeCSS(color().light.overlay.thin)
+const cardShadowDark = unsafeCSS(color().dark.overlay.thin)
+const cardBgLight = unsafeCSS(color().light.background[1])
+const cardBgDark = unsafeCSS(color().dark.background[1])
+const cardColorLight = unsafeCSS(color().light.foreground[1])
+const cardColorDark = unsafeCSS(color().dark.foreground[1])
 
 export default css`
   .w3m-modal-overlay {
@@ -33,27 +33,26 @@ export default css`
     max-height: 90vh;
   }
 
-  .w3m-modal-content {
+  .w3m-modal-card {
     width: 100%;
     position: relative;
     transform: translate3d(5px, 5px, 0);
     border-radius: 40px;
-    padding: 20px;
   }
-
+  
   @media (prefers-color-scheme: dark) {
-    .w3m-modal-content {
-      color: ${contentColorDark};
-      background-color: ${contentBgDark}
-      box-shadow: 0 0 0 1px ${contentShadowDark};
+    .w3m-modal-card {
+      color: ${cardColorDark};
+      background-color: ${cardBgDark}
+      box-shadow: 0 0 0 1px ${cardShadowDark};
     }
   }
 
   @media (prefers-color-scheme: light) {
-    .w3m-modal-content {
-      color: ${contentColorLight};
-      background-color: ${contentBgLight}
-      box-shadow: 0 0 0 1px ${contentShadowLight};
+    .w3m-modal-card {
+      color: ${cardColorLight};
+      background-color: ${cardBgLight}
+      box-shadow: 0 0 0 1px ${cardShadowLight};
     }
   }
 `
