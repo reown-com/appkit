@@ -5,6 +5,7 @@ import styles from './styles'
 import { global } from '../../utils/Theme'
 
 const CONNECTING_ERROR_MARGIN = 0.1
+const CIRCLE_SIZE_MODIFIER = 2.5
 
 @customElement('w3m-qrcode')
 export default class QRCode extends LitElement {
@@ -42,9 +43,10 @@ export default class QRCode extends LitElement {
     return diff <= cellSize + CONNECTING_ERROR_MARGIN
   }
 
+  // Generating the 3 dots in the corner
   private generateDots() {
     const dots: TemplateResult[] = []
-    const matrix = this.generateMatrix(this.uri, 'quartile')
+    const matrix = this.generateMatrix(this.uri, 'Q')
     const cellSize = this.size / matrix.length
     let qrList = [
       { x: 0, y: 0 },
@@ -55,15 +57,17 @@ export default class QRCode extends LitElement {
     qrList.forEach(({ x, y }) => {
       const x1 = (matrix.length - 7) * cellSize * x
       const y1 = (matrix.length - 7) * cellSize * y
+      const borderRadius = 0.25
       for (let i = 0; i < 3; i++) {
+        const dotSize = cellSize * (7 - i * 2)
         dots.push(
           svg`
             <rect
               fill=${i % 2 !== 0 ? 'white' : 'black'}
-              height=${cellSize * (7 - i * 2)}
-              rx=${(i - 2) * -5 + (i === 0 ? 2 : 0)} 
-              ry=${(i - 2) * -5 + (i === 0 ? 2 : 0)}
-              width=${cellSize * (7 - i * 2)}
+              height=${dotSize}
+              rx=${dotSize * borderRadius}
+              ry=${dotSize * borderRadius}
+              width=${dotSize}
               x=${x1 + cellSize * i}
               y=${y1 + cellSize * i}
             />
@@ -76,6 +80,8 @@ export default class QRCode extends LitElement {
     const matrixMiddleStart = matrix.length / 2 - clearArenaSize / 2
     const matrixMiddleEnd = matrix.length / 2 + clearArenaSize / 2 - 1
     let circles: [number, number][] = []
+
+    // Getting coordinates for each of the QR code dots
     matrix.forEach((row: QRCodeUtil.QRCode[], i: number) => {
       row.forEach((_: any, j: number) => {
         if (matrix[i][j]) {
@@ -106,27 +112,46 @@ export default class QRCode extends LitElement {
     // cx to multiple cys
     let circlesToConnect: Record<number, number[]> = {}
 
+    // Mapping all dots cicles on the same x axis
     circles.forEach(([cx, cy]) => {
       if (!circlesToConnect[cx]) {
         circlesToConnect[cx] = [cy]
       } else {
         circlesToConnect[cx].push(cy)
       }
-
-      dots.push(
-        svg`
-          <circle
-            cx=${cx}
-            cy=${cy}
-            fill="black"
-            r=${cellSize / 3} 
-          />
-        `
-      )
     })
 
+    // Drawing lonely dots
     Object.entries(circlesToConnect)
+      // Only get dots that have neighbors
+      .map(([cx, cys]) => {
+        const newCys = cys.filter(cy =>
+          cys.every(otherCy => {
+            return !this.dotsCloseToEachOther(cy, otherCy, cellSize)
+          })
+        )
+        return [Number(cx), newCys] as [number, number[]]
+      })
+      .forEach(([cx, cys]) => {
+        cys.forEach(cy => {
+          dots.push(
+            svg`
+              <circle
+                cx=${cx}
+                cy=${cy}
+                fill="black"
+                r=${cellSize / CIRCLE_SIZE_MODIFIER}
+              />
+            `
+          )
+        })
+      })
+
+    // Drawing lines for dots that are close to each other
+    Object.entries(circlesToConnect)
+      // Only get dots that have more than one dot on the x axis
       .filter(([_, cys]) => cys.length > 1)
+      // Removing dots with no neighbors
       .map(([cx, cys]) => {
         const newCys = cys.filter(cy =>
           cys.some(otherCy => {
@@ -135,7 +160,7 @@ export default class QRCode extends LitElement {
         )
         return [Number(cx), newCys] as [number, number[]]
       })
-      .filter(([_, cys]) => cys.length > 0)
+      // Get the coordinates of the first and last dot of a line
       .map(([cx, cys]) => {
         cys.sort((a, b) => (a < b ? -1 : 1))
         let groups: number[][] = []
@@ -157,19 +182,21 @@ export default class QRCode extends LitElement {
         ]
       })
       .forEach(([cx, groups]) => {
-        groups.forEach(group => {
-          group.forEach(cy => {
-            dots.push(
-              svg`
-                <circle
-                  cx=${cx}
-                  cy=${cy}
+        groups.forEach(([y1, y2]) => {
+          dots.push(
+            svg`
+                <line
+                  x1=${cx}
+                  x2=${cx}
+                  y1=${y1}
+                  y2=${y2}
+                  style="stroke:rgb(0,0,0);stroke-width:${
+                    cellSize / (CIRCLE_SIZE_MODIFIER / 2)
+                  };stroke-linecap:round"
                   fill="red"
-                  r=${cellSize / 3} 
                 />
               `
-            )
-          })
+          )
         })
       })
 
