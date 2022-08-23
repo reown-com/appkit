@@ -21,27 +21,29 @@
     <w3m-modal></w3m-modal>
 
     <script type="module">
-      const { providers, connectors, chain } = WagmiCore
-      const { chains, provider, webSocketProvider } = WagmiCore.configureChains(
-        [chain.mainnet],
-        [providers.publicProvider()]
+      const { getWalletConnectProvider, getDefaultConnectors, createEthereumClient } =
+        Web3ModalEthereum
+
+      // Configure chains
+      const { chains, provider, webSocketProvider } = Wagmi.configureChains(
+        [Wagmi.chain.mainnet],
+        [getWalletConnectProvider('123')]
       )
 
-      const client = WagmiCore.createClient({
-        autoConnect: true,
-        connectors: [new connectors.injected({ chains })],
+      // Create wagmi client
+      const client = Wagmi.createClient({
+        connectors: [getDefaultConnectors({ chains, appName: 'Html Example' })],
         provider,
         webSocketProvider
       })
 
-      console.log(client)
-      console.log(client.connectors)
+      // Create web3modal ethereum client
+      const ethereumClient = createEthereumClient(client)
 
       Web3Modal.configure({
-        options: {
-          projectId: '123',
-          theme: 'dark'
-        }
+        projectId: '123',
+        theme: 'dark',
+        ethereumClient
       })
     </script>
   </body>

@@ -2,9 +2,12 @@ import * as wagmi from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
+import { alchemyProvider } from '@wagmi/core/providers/alchemy'
+import { infuraProvider } from '@wagmi/core/providers/infura'
+import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import { publicProvider } from '@wagmi/core/providers/public'
 
-const WagmiCore = {
+const Wagmi = {
   ...wagmi,
   connectors: {
     injected: wagmi.InjectedConnector,
@@ -12,18 +15,18 @@ const WagmiCore = {
     walletConnect: WalletConnectConnector,
     metamask: MetaMaskConnector
   },
-  providers: { publicProvider }
+  providers: { jsonRpcProvider, alchemyProvider, infuraProvider, publicProvider }
 }
 
-export default WagmiCore
+export default Wagmi
 
 /**
  * Expose global api for vanilla js
  */
-window.WagmiCore = WagmiCore
+window.Wagmi = Wagmi
 
 declare global {
   interface Window {
-    WagmiCore: typeof WagmiCore
+    Wagmi: typeof Wagmi
   }
 }

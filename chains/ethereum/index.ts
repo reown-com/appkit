@@ -1,1 +1,2 @@
-export * from './src/wagmiCore'
+export * from './src/api'
+export * from './src/wagmi'

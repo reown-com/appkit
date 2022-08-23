@@ -5,8 +5,8 @@
   "scripts": {
     "build": "npm run build --ws --if-present",
     "dev": "npm run dev --w=@web3modal/core & npm run dev --w=@web3modal/ui & npm run dev --w=@web3modal/ethereum",
-    "dev:html": "npm run dev & npm run dev --w=html-example",
-    "dev:react": "npm run dev & npm run dev --w=react-example"
+    "dev:html": "npm run dev --w=html-example",
+    "dev:react": "npm run dev --w=react-example"
   },
   "workspaces": [
     "packages/*",
@@ -14,8 +14,8 @@
     "examples/*"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "5.33.1",
-    "@typescript-eslint/parser": "5.33.1",
+    "@typescript-eslint/eslint-plugin": "5.34.0",
+    "@typescript-eslint/parser": "5.34.0",
     "@rollup/plugin-node-resolve": "13.3.0",
     "@rollup/plugin-commonjs": "22.0.2",
     "eslint": "8.22.0",

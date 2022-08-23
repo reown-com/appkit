@@ -17,5 +17,13 @@
   },
   "dependencies": {
     "valtio": "1.6.4"
+  },
+  "peerDependencies": {
+    "@web3modal/ethereum": "*"
+  },
+  "peerDependenciesMeta": {
+    "@web3modal/ethereum": {
+      "optional": true
+    }
   }
 }

@@ -19,6 +19,7 @@
     "@wagmi/core": "0.5.4"
   },
   "peerDependencies": {
-    "@wagmi/core": ">=0.5.x"
+    "@wagmi/core": ">=0.5.x",
+    "@web3modal/core": "*"
   }
 }

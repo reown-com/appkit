@@ -7,8 +7,9 @@
 ## Development workflow
 
 1. Install deps across all packages by running `npm install` from the root
-2. Run `npm run dev:html` to start html example and watch for core / ui / ethereum changes
-3. Run `npm run dev:react` to start react example and watch for core / ui / ethereum changes
+2. Run `npm run dev` to build and watch for changes in ui, core and ethereum packages
+3. Run `npm run dev:html` to start html example
+4. Run `npm run dev:react` to start react example
 
 ## Suggested VSCode extensions
 
