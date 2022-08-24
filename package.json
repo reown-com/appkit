@@ -6,13 +6,14 @@
     "build": "npm run build --ws --if-present",
     "dev": "npm run dev --w=@web3modal/core & npm run dev --w=@web3modal/ui & npm run dev --w=@web3modal/ethereum",
     "dev:html": "npm run dev --w=html-example",
-    "dev:react": "npm run dev --w=react-example"
+    "dev:react": "npm run dev --w=react-example",
+    "lint": "eslint .",
+    "prettier": "prettier --check .",
+    "typecheck": "npm run typecheck --ws --if-present"
   },
   "workspaces": [
-    "packages/core",
     "chains/*",
-    "packages/ui",
-    "packages/react",
+    "packages/*",
     "examples/*"
   ],
   "devDependencies": {

@@ -3,7 +3,6 @@
   "include": ["src", "index.ts"],
   "compilerOptions": {
     "jsx": "react",
-    "outDir": "./dist/types",
-    "emitDeclarationOnly": true
+    "outDir": "./dist/types"
   }
 }

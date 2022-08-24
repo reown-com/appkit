@@ -32,7 +32,8 @@ export function getMatrix(
 }
 
 export function getDots(uri: string, size: number, logoSize: number, theme: 'dark' | 'light') {
-  const dotColor = theme === 'light' ? 'rgb(0,0,0)' : 'rgb(255,255,255)'
+  const dotColor = theme === 'light' ? '#141414' : '#fff'
+  const edgeColor = theme === 'light' ? '#fff' : '#141414'
   const dots: TemplateResult[] = []
   const matrix = getMatrix(uri, 'Q')
   const cellSize = size / matrix.length
@@ -45,13 +46,13 @@ export function getDots(uri: string, size: number, logoSize: number, theme: 'dar
   qrList.forEach(({ x, y }) => {
     const x1 = (matrix.length - QRCODE_MATRIX_MARGIN) * cellSize * x
     const y1 = (matrix.length - QRCODE_MATRIX_MARGIN) * cellSize * y
-    const borderRadius = 0.3
+    const borderRadius = 0.32
     for (let i = 0; i < qrList.length; i += 1) {
       const dotSize = cellSize * (QRCODE_MATRIX_MARGIN - i * 2)
       dots.push(
         svg`
           <rect
-            fill=${i % 2 === 0 ? dotColor : 'red'}
+            fill=${i % 2 === 0 ? dotColor : edgeColor}
             height=${dotSize}
             rx=${dotSize * borderRadius}
             ry=${dotSize * borderRadius}
