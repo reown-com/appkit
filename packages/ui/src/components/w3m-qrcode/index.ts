@@ -1,6 +1,5 @@
-import { LitElement, html, svg, TemplateResult } from 'lit'
+import { LitElement, html, svg } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import QRCodeUtil from 'qrcode'
 import styles from './styles'
 import { global } from '../../utils/Theme'
 import { generateDots } from '../../utils/QrCodeGeneration'
