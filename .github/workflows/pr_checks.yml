@@ -23,14 +23,6 @@ jobs:
         run: npm ci
       - name: build
         run: npm run build
-      - uses: actions/upload-artifact@v3
-        with:
-          name: build-artifacts
-          path: |
-            packages/core/dist
-            packages/react/dist
-            packages/ui/dist
-            chains/chains/ethereum
 
   code_style:
     runs-on: ubuntu-latest
