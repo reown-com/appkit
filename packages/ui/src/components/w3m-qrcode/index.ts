@@ -1,3 +1,4 @@
+import { ConfigCtrl } from '@web3modal/core'
 import { html, LitElement, svg } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { getDots } from '../../utils/QrCode'
@@ -17,9 +18,11 @@ export default class W3mQrCode extends LitElement {
   // -- private ------------------------------------------------------ //
 
   private svgTemplate() {
+    const theme = ConfigCtrl.state.theme ?? 'light'
+
     return svg`
       <svg height=${this.size} width=${this.size}>
-        ${getDots(this.uri, this.size, this.size / 4)}
+        ${getDots(this.uri, this.size, this.size / 4, theme)}
       </svg>
     `
   }

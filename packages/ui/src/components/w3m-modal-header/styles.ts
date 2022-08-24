@@ -5,6 +5,6 @@ export default css`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 18px 0;
+    margin: 18px 0 0;
   }
 `
