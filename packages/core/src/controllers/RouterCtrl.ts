@@ -1,7 +1,7 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 
 // -- types -------------------------------------------------------- //
-export type RouterViewType = 'ConnectWallet' | 'SelectNetwork'
+export type RouterViewType = 'ConnectWallet' | 'QrCode' | 'SelectNetwork'
 
 interface State {
   history: RouterViewType[]

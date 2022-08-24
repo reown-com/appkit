@@ -8,10 +8,8 @@ export class W3mConnectWalletView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <div>
-        <w3m-modal-header title="Connect your wallet"></w3m-modal-header>
-        <button @click=${() => RouterCtrl.replace('SelectNetwork')}>Go To Select Network</button>
-      </div>
+      <w3m-modal-header title="Connect your wallet"></w3m-modal-header>
+      <button @click=${() => RouterCtrl.replace('QrCode')}>Go To Select Network</button>
     `
   }
 }
