@@ -13,7 +13,7 @@ const { chains, provider, webSocketProvider } = configureChains(
 
 // Create wagmi client
 const wagmiClient = createClient({
-  connectors: Web3ModalEthereum.getDefaultConnectors({ chains, appName: 'web3Modal react' }),
+  connectors: Web3ModalEthereum.getDefaultConnectors({ chains, appName: 'web3Modal' }),
   provider,
   webSocketProvider
 })
