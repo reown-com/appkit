@@ -1,4 +1,4 @@
-import { LitElement } from 'lit'
+import type { LitElement } from 'lit'
 
 export function getShadowRootElement(root: LitElement, selector: string) {
   const el = root.renderRoot.querySelector(selector)
