@@ -6,18 +6,22 @@
     "build": "npm run build --ws --if-present",
     "dev": "npm run dev --w=@web3modal/core & npm run dev --w=@web3modal/ui & npm run dev --w=@web3modal/ethereum",
     "dev:html": "npm run dev --w=html-example",
-    "dev:react": "npm run dev --w=react-example"
+    "dev:react": "npm run dev --w=react-example",
+    "lint": "eslint .",
+    "prettier": "prettier --check .",
+    "typecheck": "npm run typecheck --ws --if-present"
   },
   "workspaces": [
-    "packages/*",
     "chains/*",
+    "packages/*",
     "examples/*"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "5.34.0",
-    "@typescript-eslint/parser": "5.34.0",
+    "@typescript-eslint/eslint-plugin": "5.35.1",
+    "@typescript-eslint/parser": "5.35.1",
     "@rollup/plugin-node-resolve": "13.3.0",
     "@rollup/plugin-commonjs": "22.0.2",
+    "@rollup/plugin-json": "4.1.0",
     "eslint": "8.22.0",
     "eslint-config-prettier": "8.5.0",
     "prettier": "2.7.1",

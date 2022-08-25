@@ -8,7 +8,6 @@
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "incremental": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "moduleResolution": "Node",
@@ -21,5 +20,5 @@
     "allowUnreachableCode": false,
     "declaration": true
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }

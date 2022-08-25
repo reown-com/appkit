@@ -1,5 +1,6 @@
-export { Web3Modal } from './src/api'
+export { Web3ModalCore } from './src/api'
 export { ConfigCtrl } from './src/controllers/ConfigCtrl'
 export { ModalCtrl } from './src/controllers/ModalCtrl'
 export { RouterCtrl } from './src/controllers/RouterCtrl'
-export type { RouterViewType } from './src/controllers/RouterCtrl'
+export type { ConfigOptions } from './types/configTypes'
+export type { RouterView } from './types/routerTypes'

@@ -1,4 +1,5 @@
 import commonjs from '@rollup/plugin-commonjs'
+import json from '@rollup/plugin-json'
 import nodeResolve from '@rollup/plugin-node-resolve'
 import esbuild from 'rollup-plugin-esbuild'
 import minifyHtmlLiterals from 'rollup-plugin-minify-html-literals'
@@ -14,18 +15,27 @@ export default function createConfig(packageName) {
     minify: true,
     tsconfig: './tsconfig.json',
     platform: 'browser',
-    treeShaking: true
+    treeShaking: true,
+    loaders: {
+      '.json': 'json'
+    }
   })
 
   return [
     {
       input: './index.ts',
-      plugins: [minifyHtmlLiterals(), esbuildPlugin],
+      plugins: [esbuildPlugin, minifyHtmlLiterals()],
       output: [{ file: './dist/index.js', format: 'es', ...sharedOutput }]
     },
     {
       input: './index.ts',
-      plugins: [minifyHtmlLiterals(), nodeResolve({ browser: true }), commonjs(), esbuildPlugin],
+      plugins: [
+        nodeResolve({ browser: true, preferBuiltins: true }),
+        json(),
+        commonjs(),
+        esbuildPlugin,
+        minifyHtmlLiterals()
+      ],
       output: [
         { file: './dist/index.umd.js', format: 'umd', inlineDynamicImports: true, ...sharedOutput }
       ]

@@ -10,9 +10,10 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build:types": "tsc",
-    "build:source": "rollup --config rollup.config.js",
-    "build": "npm run build:clean; npm run build:source; npm run build:types"
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:source": "rollup --silent --config rollup.config.js",
+    "build": "npm run build:clean; npm run build:source; npm run build:types",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@web3modal/ui": "1.0.0",

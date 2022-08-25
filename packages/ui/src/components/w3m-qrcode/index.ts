@@ -1,46 +1,38 @@
-import { LitElement, html, svg } from 'lit'
+import { ConfigCtrl } from '@web3modal/core'
+import { html, LitElement, svg } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import styles from './styles'
+import { getDots } from '../../utils/QrCode'
+import { WALLET_CONNECT_ICON_GRADIENT } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import { generateDots } from '../../utils/QrCodeGeneration'
+import styles from './styles'
 
 @customElement('w3m-qrcode')
 export default class W3mQrCode extends LitElement {
   public static styles = [global, styles]
-  @property() public uri: string = 'uri'
-  @property() public logo: string = 'uri'
-  @property() public size: number = 200
-  @property() public logoSize: number = 50
-  @property() public logoMargin: number = 10
-  @property() public logoBackground: string = 'black'
 
-  protected render() {
-    const logoPosition = this.size / 2 - this.logoSize / 2
-    const logoWrapperSize = this.logoSize + this.logoMargin * 2
-    const innerSvg = svg`
-        <defs>
-          <clipPath id="clip-wrapper">
-            <rect height=${logoWrapperSize} width=${logoWrapperSize} />
-          </clipPath>
-          <clipPath id="clip-logo">
-            <rect height=${this.logoSize} width=${this.logoSize} />
-          </clipPath>
-        </defs>
-        <rect fill="transparent" height=${this.size} width=${this.size} />
+  // -- state & properties ------------------------------------------- //
+  @property() public uri = ''
+  @property() public size = 0
+  @property() public logo? = ''
+
+  // -- private ------------------------------------------------------ //
+
+  private svgTemplate() {
+    const theme = ConfigCtrl.state.theme ?? 'light'
+
+    return svg`
+      <svg height=${this.size} width=${this.size}>
+        ${getDots(this.uri, this.size, this.size / 4, theme)}
+      </svg>
     `
+  }
+
+  // -- render ------------------------------------------------------- //
+  protected render() {
     return html`
-      <div class="w3m-qrcode" style="width: ${this.size}; height: ${this.size}">
-        <div class="w3m-logo-image" style="top: ${logoPosition}px; width: ${this.size}">
-          <img
-            style="background: ${this.logoBackground}"
-            src=${this.logo}
-            width=${this.logoSize}
-            height=${this.logoSize}
-          />
-        </div>
-        <svg height=${this.size} width=${this.size} style="all: revert">
-          ${innerSvg}${generateDots(this.uri, this.size, this.logoSize)}
-        </svg>
+      <div class="w3m-qrcode-container">
+        ${this.logo ? html`<img src=${this.logo} />` : WALLET_CONNECT_ICON_GRADIENT}
+        ${this.svgTemplate()}
       </div>
     `
   }

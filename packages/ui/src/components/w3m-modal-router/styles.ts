@@ -4,4 +4,9 @@ export default css`
   .w3m-modal-router {
     overflow: hidden;
   }
+
+  .w3m-modal-router-content {
+    display: flex;
+    flex-direction: column;
+  }
 `

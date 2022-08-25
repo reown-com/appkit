@@ -10,15 +10,16 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build:types": "tsc",
-    "build:source": "rollup --config rollup.config.js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:source": "rollup --silent --config rollup.config.js",
     "build": "npm run build:clean; npm run build:source; npm run build:types",
-    "dev": "rollup --config rollup.config.js --watch"
+    "dev": "rollup --config rollup.config.js --watch",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@web3modal/core": "1.0.0",
     "lit": "2.3.1",
-    "motion": "10.14.0",
+    "motion": "10.14.1",
     "qrcode": "1.5.1"
   },
   "devDependencies": {

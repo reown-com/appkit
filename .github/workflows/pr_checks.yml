@@ -1,0 +1,47 @@
+name: Pull request checks
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.event.action == 'opened' || github.event.action == 'synchronize'
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: setup-node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+      - name: install
+        run: npm ci
+      - name: build
+        run: npm run build
+
+  code_style:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        style-command:
+          - lint
+          - prettier
+          - typecheck
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: setup-node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+      - name: install
+        run: npm ci
+      - name: check
+        run: npm run ${{ matrix.style-command }}

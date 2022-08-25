@@ -1,10 +1,12 @@
-import { RouterCtrl, RouterViewType } from '@web3modal/core'
+import type { RouterView } from '@web3modal/core'
+import { RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
 import { getShadowRootElement } from '../../utils/Helpers'
 import { global } from '../../utils/Theme'
 import '../../views/w3m-connect-wallet-view'
+import '../../views/w3m-qrcode-view'
 import '../../views/w3m-select-network-view'
 import styles from './styles'
 
@@ -13,8 +15,8 @@ export class W3mModalRouter extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
-  @state() public view: RouterViewType = RouterCtrl.state.view
-  @state() public prevView: RouterViewType = RouterCtrl.state.view
+  @state() public view: RouterView = RouterCtrl.state.view
+  @state() public prevView: RouterView = RouterCtrl.state.view
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -29,7 +31,7 @@ export class W3mModalRouter extends LitElement {
       const newHeight = `${conetnt.borderBoxSize[0].blockSize}px`
       if (this.oldHeight !== '0px') {
         animate(this.routerEl, { height: [this.oldHeight, newHeight] }, { duration: 0.175 })
-        animate(this.routerEl, { opacity: [0, 1], scale: [0.98, 1] }, { duration: 0.2 })
+        animate(this.routerEl, { opacity: [0, 1], scale: [0.96, 1] }, { duration: 0.2 })
       }
       this.oldHeight = newHeight
     })
@@ -60,6 +62,8 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-connect-wallet-view></w3m-connect-wallet-view>`
       case 'SelectNetwork':
         return html`<w3m-select-network-view></w3m-select-network-view>`
+      case 'QrCode':
+        return html`<w3m-qrcode-view></w3m-qrcode-view>`
       default:
         return html`<div>Not Found</div>`
     }
