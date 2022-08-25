@@ -1,4 +1,5 @@
-import { RouterCtrl, RouterViewType } from '@web3modal/core'
+import type { RouterView } from '@web3modal/core'
+import { RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
@@ -14,8 +15,8 @@ export class W3mModalRouter extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
-  @state() public view: RouterViewType = RouterCtrl.state.view
-  @state() public prevView: RouterViewType = RouterCtrl.state.view
+  @state() public view: RouterView = RouterCtrl.state.view
+  @state() public prevView: RouterView = RouterCtrl.state.view
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {

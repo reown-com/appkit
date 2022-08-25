@@ -1,6 +1,6 @@
 import { Web3ModalEthereum } from '@web3modal/ethereum'
 import { Web3ModalProvider } from '@web3modal/react'
-import { AppProps } from 'next/app'
+import type { AppProps } from 'next/app'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 
 const WC_PROJECT_ID = 'd28ea8bc8db643d07038d99ddce49e4a'

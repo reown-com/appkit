@@ -1,5 +1,7 @@
-import { ConfigType, Web3Modal } from '@web3modal/core'
-import React, { ReactNode, useEffect } from 'react'
+import type { ConfigOptions } from '@web3modal/core'
+import { Web3ModalCore } from '@web3modal/core'
+import type { ReactNode } from 'react'
+import React, { useEffect } from 'react'
 import { Web3Modal as Modal } from './Web3Modal'
 
 /**
@@ -7,7 +9,7 @@ import { Web3Modal as Modal } from './Web3Modal'
  */
 interface Props {
   children: ReactNode | ReactNode[]
-  config: ConfigType
+  config: ConfigOptions
 }
 
 /**
@@ -15,7 +17,7 @@ interface Props {
  */
 export function Web3ModalProvider({ children, config }: Props) {
   async function onConfigure() {
-    Web3Modal.configure(config)
+    Web3ModalCore.configure(config)
     await import('@web3modal/ui')
   }
 

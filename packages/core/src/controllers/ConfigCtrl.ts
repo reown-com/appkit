@@ -1,23 +1,8 @@
-import { Web3ModalEthereum } from '@web3modal/ethereum'
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
+import type { ConfigOptions } from '../../types/configTypes'
 
 // -- types -------------------------------------------------------- //
-export interface ConfigType {
-  projectId: string
-  theme?: 'dark' | 'light'
-  accentColor?:
-    | 'blackWhite'
-    | 'blue'
-    | 'default'
-    | 'green'
-    | 'magenta'
-    | 'orange'
-    | 'purple'
-    | 'teal'
-  ethereumClient?: typeof Web3ModalEthereum.client
-}
-
-export interface State extends ConfigType {
+export interface State extends ConfigOptions {
   configured: boolean
 }
 
@@ -38,7 +23,7 @@ export const ConfigCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  setConfig(config: ConfigType) {
+  setConfig(config: ConfigOptions) {
     Object.assign(state, config)
     state.configured = true
   }

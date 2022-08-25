@@ -1,11 +1,15 @@
-import { Chain, createClient, InjectedConnector } from '@wagmi/core'
+import { InjectedConnector } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
-
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
+import type {
+  EthereumClient,
+  GetDefaultConnectorsOpts,
+  GetWalletConnectProviderOpts
+} from '../types/apiTypes'
 
 export const Web3ModalEthereum = {
-  client: undefined as unknown as WagmiClient,
+  client: undefined as unknown as EthereumClient,
 
   getWalletConnectProvider({ projectId }: GetWalletConnectProviderOpts) {
     return jsonRpcProvider({
@@ -24,30 +28,8 @@ export const Web3ModalEthereum = {
   },
 
   createClient(wagmiClient: unknown) {
-    this.client = wagmiClient as WagmiClient
+    this.client = wagmiClient as EthereumClient
 
     return this.client
-  }
-}
-
-/**
- * Expose global api for vanilla js
- */
-if (typeof window !== 'undefined') window.Web3ModalEthereum = Web3ModalEthereum
-
-type WagmiClient = ReturnType<typeof createClient>
-
-interface GetDefaultConnectorsOpts {
-  appName: string
-  chains: Chain[]
-}
-
-interface GetWalletConnectProviderOpts {
-  projectId: string
-}
-
-declare global {
-  interface Window {
-    Web3ModalEthereum: typeof Web3ModalEthereum
   }
 }
