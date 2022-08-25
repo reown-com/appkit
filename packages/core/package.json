@@ -19,6 +19,9 @@
   "dependencies": {
     "valtio": "1.6.4"
   },
+  "devDependencies": {
+    "@web3modal/ethereum": "1.0.0"
+  },
   "peerDependencies": {
     "@web3modal/ethereum": "*"
   },

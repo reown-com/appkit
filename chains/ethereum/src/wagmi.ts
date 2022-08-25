@@ -18,8 +18,6 @@ const Wagmi = {
   providers: { jsonRpcProvider, alchemyProvider, infuraProvider, publicProvider }
 }
 
-export default Wagmi
-
 /**
  * Expose global api for vanilla js
  */

@@ -10,7 +10,7 @@ export class W3mQrCodeView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <w3m-modal-header title="WalletConnect"></w3m-modal-header>
+      <w3m-modal-header title="Mobile Wallets"></w3m-modal-header>
       <w3m-modal-content>
         <w3m-qrcode
           size=${this.offsetWidth - 36}

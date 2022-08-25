@@ -1,9 +1,12 @@
-import { Chain, InjectedConnector } from '@wagmi/core'
+import { Chain, createClient, InjectedConnector } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
+
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 
-const Web3ModalEthereum = {
+export const Web3ModalEthereum = {
+  client: undefined as unknown as WagmiClient,
+
   getWalletConnectProvider({ projectId }: GetWalletConnectProviderOpts) {
     return jsonRpcProvider({
       rpc: chain => ({
@@ -18,15 +21,21 @@ const Web3ModalEthereum = {
       new InjectedConnector({ chains, options: { shimDisconnect: true } }),
       new CoinbaseWalletConnector({ chains, options: { appName } })
     ]
+  },
+
+  createClient(wagmiClient: unknown) {
+    this.client = wagmiClient as WagmiClient
+
+    return this.client
   }
 }
-
-export default Web3ModalEthereum
 
 /**
  * Expose global api for vanilla js
  */
 window.Web3ModalEthereum = Web3ModalEthereum
+
+type WagmiClient = ReturnType<typeof createClient>
 
 interface GetDefaultConnectorsOpts {
   appName: string
