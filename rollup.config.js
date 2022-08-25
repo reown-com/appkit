@@ -30,7 +30,7 @@ export default function createConfig(packageName) {
     {
       input: './index.ts',
       plugins: [
-        nodeResolve({ browser: true }),
+        nodeResolve({ browser: true, preferBuiltins: true }),
         json(),
         commonjs(),
         esbuildPlugin,

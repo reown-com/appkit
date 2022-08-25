@@ -14,7 +14,7 @@ export interface ConfigType {
     | 'orange'
     | 'purple'
     | 'teal'
-  ethreumClient?: typeof Web3ModalEthereum.client
+  ethereumClient?: typeof Web3ModalEthereum.client
 }
 
 export interface State extends ConfigType {
@@ -25,9 +25,9 @@ export interface State extends ConfigType {
 const state = proxy<State>({
   configured: false,
   projectId: '',
-  theme: matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+  theme: 'light',
   accentColor: 'default',
-  ethreumClient: undefined
+  ethereumClient: undefined
 })
 
 // -- controller --------------------------------------------------- //

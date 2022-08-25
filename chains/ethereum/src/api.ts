@@ -33,7 +33,7 @@ export const Web3ModalEthereum = {
 /**
  * Expose global api for vanilla js
  */
-window.Web3ModalEthereum = Web3ModalEthereum
+if (typeof window !== 'undefined') window.Web3ModalEthereum = Web3ModalEthereum
 
 type WagmiClient = ReturnType<typeof createClient>
 

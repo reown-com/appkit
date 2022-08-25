@@ -9,7 +9,7 @@ export const Web3Modal = {
 /**
  * Expose global api for vanilla js
  */
-window.Web3Modal = Web3Modal
+if (typeof window !== 'undefined') window.Web3Modal = Web3Modal
 
 declare global {
   interface Window {

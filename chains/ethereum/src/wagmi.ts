@@ -21,7 +21,7 @@ const Wagmi = {
 /**
  * Expose global api for vanilla js
  */
-window.Wagmi = Wagmi
+if (typeof window !== 'undefined') window.Wagmi = Wagmi
 
 declare global {
   interface Window {
