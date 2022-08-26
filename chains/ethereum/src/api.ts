@@ -1,5 +1,6 @@
 import { InjectedConnector } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
+import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import type {
@@ -23,7 +24,8 @@ export const Web3ModalEthereum = {
     return [
       new WalletConnectConnector({ chains, options: { qrcode: false } }),
       new InjectedConnector({ chains, options: { shimDisconnect: true } }),
-      new CoinbaseWalletConnector({ chains, options: { appName } })
+      new CoinbaseWalletConnector({ chains, options: { appName } }),
+      new MetaMaskConnector({ chains })
     ]
   },
 
