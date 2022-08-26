@@ -19,7 +19,7 @@ export class W3mConnectButton extends LitElement {
     'w3m-button-loading': this.loading
   }
   @property() public label?: string = 'Connect Wallet'
-  @property() public icon?: boolean = true
+  @property({ type: Boolean }) public icon?: boolean = true
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -57,7 +57,7 @@ export class W3mConnectButton extends LitElement {
         @click=${ModalCtrl.openModal}
       >
         ${this.loading
-          ? html`<w3m-spinner color=${color().foreground.accent}></loading-spinner>`
+          ? html`<w3m-spinner color=${color().foreground.accent}></w3m-spinner>`
           : html`${this.iconTemplate()} <w3m-text variant="medium-normal">${this.label}</w3m-text>`}
       </button>
     `

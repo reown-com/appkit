@@ -7,7 +7,7 @@ export class W3mSpinner extends LitElement {
   public static styles = styles
 
   // -- state & properties ------------------------------------------- //
-  @property() public size?: number = 24
+  @property({ type: Number }) public size?: number = 24
   @property() public color?: string = '#ffffff'
 
   // -- render ------------------------------------------------------- //
