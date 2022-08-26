@@ -23,7 +23,7 @@ export class W3mConnectWalletView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { walletConnect } = this.getConnectors()
+    const { walletConnect, injected } = this.getConnectors()
 
     async function onWalletConnectUri() {
       let timeout = 0
@@ -40,19 +40,31 @@ export class W3mConnectWalletView extends LitElement {
             clearInterval(interval)
             reject(new Error('Timout'))
           }
-          timeout += 100
-        }, 100)
+          timeout += 10
+        }, 10)
       })
     }
 
     async function onWalletConnect() {
       await Promise.all([walletConnect.connect(), onWalletConnectUri()])
-      console.log('COnnected!')
+      console.log('Connected Injcted!')
+    }
+
+    async function onInjected() {
+      console.log(injected)
+      const data = await injected.connect()
+      console.log('Connected Ijected', data)
+    }
+
+    async function onDisconect() {
+      // Todo
     }
 
     return html`
       <w3m-modal-header title="Connect your wallet"></w3m-modal-header>
       <button @click=${onWalletConnect}>WalletConnect</button>
+      <button @click=${onInjected}>Injected</button>
+      <button @click=${onDisconect}>Injected</button>
       <button @click=${() => RouterCtrl.replace('QrCode')}>Go To Select Network</button>
     `
   }
