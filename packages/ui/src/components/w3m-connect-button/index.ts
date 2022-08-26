@@ -7,7 +7,7 @@ import { color, global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import '../w3m-spinner'
 import '../w3m-text'
-import styles from './styles'
+import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-connect-button')
 export class W3mConnectButton extends ThemedElement {
@@ -31,6 +31,7 @@ export class W3mConnectButton extends ThemedElement {
   }
 
   public disconnectedCallback() {
+    super.disconnectedCallback()
     this.modalUnsub?.()
   }
 
@@ -44,7 +45,7 @@ export class W3mConnectButton extends ThemedElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      ${this.dynamicStyles()}
+      ${dynamicStyles()}
 
       <button
         class=${classMap(this.classes)}
