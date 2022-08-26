@@ -7,7 +7,7 @@ export default class ThemedElement extends LitElement {
   private readonly configUnsub?: () => void = undefined
   @state() public configured = false
 
-  private dynamicStyles() {
+  protected dynamicStyles() {
     const { foreground, background, overlay } = color()
 
     return html` <style>

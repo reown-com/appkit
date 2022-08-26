@@ -194,7 +194,7 @@ export function themeColors(alpha: number) {
 
     dark: {
       foreground: {
-        inverse: `rgba(255,255,255,${alpha})`,
+        inverse: `rgba(0,0,0,${alpha})`,
         1: `rgba(228,231,231,${alpha})`,
         2: `rgba(148,158,158,${alpha})`,
         3: `rgba(110,119,119,${alpha})`
