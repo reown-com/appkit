@@ -1,4 +1,4 @@
-import { ConfigCtrl, ModalCtrl } from '@web3modal/core'
+import { ModalCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
