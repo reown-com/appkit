@@ -7,8 +7,8 @@ type AccentColorType = typeof ConfigCtrl['state']['accentColor']
 
 export default class ThemedElement extends LitElement {
   private readonly configUnsub?: () => void = undefined
-  @state() private theme: ThemeType = 'light'
-  @state() private accentColor: AccentColorType = 'default'
+  @state() protected theme: ThemeType = 'light'
+  @state() protected accentColor: AccentColorType = 'default'
 
   public disconnectedCallback() {
     this.configUnsub?.()
