@@ -25,10 +25,29 @@ export class W3mConnectWalletView extends LitElement {
   protected render() {
     const { walletConnect } = this.getConnectors()
 
+    async function onWalletConnectUri() {
+      let timeout = 0
+
+      return new Promise<void>((resolve, reject) => {
+        const interval = setInterval(async () => {
+          const { connector } = await walletConnect.getProvider()
+          if (connector.key) {
+            clearInterval(interval)
+            console.log(connector.uri)
+            // TODO here something
+            resolve()
+          } else if (timeout >= 5000) {
+            clearInterval(interval)
+            reject(new Error('Timout'))
+          }
+          timeout += 100
+        }, 100)
+      })
+    }
+
     async function onWalletConnect() {
-      const provider = await walletConnect.getProvider()
-      provider.connector.on('display_uri', data => console.log(data))
-      await walletConnect.connect()
+      await Promise.all([walletConnect.connect(), onWalletConnectUri()])
+      console.log('COnnected!')
     }
 
     return html`

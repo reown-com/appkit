@@ -1,4 +1,5 @@
-import { InjectedConnector } from '@wagmi/core'
+import type { Connector } from '@wagmi/core'
+import { connect as wagmiConnect, InjectedConnector } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
@@ -9,9 +10,9 @@ import type {
   GetWalletConnectProviderOpts
 } from '../types/apiTypes'
 
-export const Web3ModalEthereum = {
-  client: undefined as unknown as EthereumClient,
+let client = undefined as EthereumClient | undefined
 
+export const Web3ModalEthereum = {
   getWalletConnectProvider({ projectId }: GetWalletConnectProviderOpts) {
     return jsonRpcProvider({
       rpc: chain => ({
@@ -29,9 +30,13 @@ export const Web3ModalEthereum = {
     ]
   },
 
-  createClient(wagmiClient: unknown) {
-    this.client = wagmiClient as EthereumClient
+  async connect(connector: Connector) {
+    return wagmiConnect({ connector })
+  },
 
-    return this.client
+  createClient(wagmiClient: EthereumClient) {
+    client = wagmiClient
+
+    return client
   }
 }

@@ -24,17 +24,17 @@ export default function createConfig(packageName) {
   return [
     {
       input: './index.ts',
-      plugins: [esbuildPlugin, minifyHtmlLiterals()],
+      plugins: [minifyHtmlLiterals(), esbuildPlugin],
       output: [{ file: './dist/index.js', format: 'es', ...sharedOutput }]
     },
     {
       input: './index.ts',
       plugins: [
+        minifyHtmlLiterals(),
         nodeResolve({ browser: true, preferBuiltins: true }),
         json(),
         commonjs(),
-        esbuildPlugin,
-        minifyHtmlLiterals()
+        esbuildPlugin
       ],
       output: [
         { file: './dist/index.umd.js', format: 'umd', inlineDynamicImports: true, ...sharedOutput }

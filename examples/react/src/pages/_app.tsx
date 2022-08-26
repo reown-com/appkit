@@ -1,4 +1,5 @@
 import { Web3ModalEthereum } from '@web3modal/ethereum'
+import type { ConfigOptions } from '@web3modal/react'
 import { Web3ModalProvider } from '@web3modal/react'
 import type { AppProps } from 'next/app'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
@@ -18,19 +19,18 @@ const wagmiClient = createClient({
   webSocketProvider
 })
 
-// Create web3modal ethereum client for wagmi
-const ethereumClient = Web3ModalEthereum.createClient(wagmiClient)
+// Configure web3modal
+const modalConfig: ConfigOptions = {
+  projectId: WC_PROJECT_ID,
+  theme: 'dark',
+  accentColor: 'orange',
+  // @ts-expect-error TODO Ilja Resolve
+  ethereumClient: wagmiClient
+}
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Web3ModalProvider
-      config={{
-        projectId: WC_PROJECT_ID,
-        theme: 'dark',
-        accentColor: 'orange',
-        ethereumClient
-      }}
-    >
+    <Web3ModalProvider config={modalConfig}>
       <WagmiConfig client={wagmiClient}>
         <Component {...pageProps} />
       </WagmiConfig>
