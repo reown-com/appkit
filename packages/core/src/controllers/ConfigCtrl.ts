@@ -10,7 +10,10 @@ export interface State extends ConfigOptions {
 const state = proxy<State>({
   configured: false,
   projectId: '',
-  theme: 'light',
+  theme:
+    typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light',
   accentColor: 'default',
   ethereumClient: undefined
 })
