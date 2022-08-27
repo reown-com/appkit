@@ -19,6 +19,13 @@ function getWalletConnectConnector() {
   return walletConnect
 }
 
+function getInjectedConnector() {
+  const injected = client?.connectors.find(item => item.id === 'injected')
+  if (!injected) throw new Error('Missing Injected connector')
+
+  return injected
+}
+
 // -- public ------------------------------------------------------- //
 export const Web3ModalEthereum = {
   getWalletConnectProvider({ projectId }: GetWalletConnectProviderOpts) {
@@ -44,22 +51,34 @@ export const Web3ModalEthereum = {
     return this
   },
 
-  async getWalletConnectUri() {
-    const walletConnect = getWalletConnectConnector()
-    const provider = await walletConnect.getProvider()
-
-    return provider.connector.uri
-  },
-
-  async connectWalletConnect() {
+  async connectWalletConnect({ onDisplayUri }: { onDisplayUri: (uri: string) => void }) {
     const walletConnect = getWalletConnectConnector()
 
-    return walletConnect.connect()
+    async function onProviderReady() {
+      return new Promise<void>(resolve => {
+        const interval = setInterval(async () => {
+          const { connector } = await walletConnect.getProvider()
+          if (connector.key) {
+            clearInterval(interval)
+            onDisplayUri(connector.uri)
+            resolve()
+          }
+        }, 50)
+      })
+    }
+
+    return Promise.all([walletConnect.connect(), onProviderReady()])
   },
 
   async disconnectWalletConnect() {
     const walletConnect = getWalletConnectConnector()
 
     return walletConnect.disconnect()
+  },
+
+  async connectInject() {
+    const injected = getInjectedConnector()
+
+    return injected.connect()
   }
 }

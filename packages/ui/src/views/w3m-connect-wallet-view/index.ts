@@ -9,6 +9,10 @@ export class W3mConnectWalletView extends LitElement {
     RouterCtrl.push('WcQrCode')
   }
 
+  public constructor() {
+    super()
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`

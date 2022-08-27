@@ -13,15 +13,19 @@ export class W3mWcQrCodeView extends LitElement {
 
   public constructor() {
     super()
+
     this.onConnectCallback()
+  }
+
+  private setUri(uri: string) {
+    this.uri = uri
   }
 
   private async onConnectCallback() {
     try {
-      this.uri = await ClientCtrl.state.ethereum?.getWalletConnectUri()
-      const data = await ClientCtrl.state.ethereum?.connectWalletConnect()
-      console.log(data)
-      await ClientCtrl.state.ethereum?.disconnectWalletConnect()
+      await ClientCtrl.state.ethereum?.connectWalletConnect({
+        onDisplayUri: this.setUri
+      })
     } catch {
       throw new Error('Denied connection')
     }
