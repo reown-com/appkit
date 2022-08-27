@@ -10,7 +10,3 @@ export interface GetDefaultConnectorsOpts {
 export interface GetWalletConnectProviderOpts {
   projectId: string
 }
-
-export interface ConnectWalletConnectOpts {
-  onDisplayUri: (uri: string) => void
-}

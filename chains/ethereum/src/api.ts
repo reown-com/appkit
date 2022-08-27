@@ -4,7 +4,6 @@ import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import type {
-  ConnectWalletConnectOpts,
   EthereumClient,
   GetDefaultConnectorsOpts,
   GetWalletConnectProviderOpts
@@ -42,25 +41,25 @@ export const Web3ModalEthereum = {
   createClient(wagmiClient: EthereumClient) {
     client = wagmiClient
 
-    return client
+    return this
   },
 
-  async connectWalletConnect({ onDisplayUri }: ConnectWalletConnectOpts) {
+  async getWalletConnectUri() {
+    const walletConnect = getWalletConnectConnector()
+    const provider = await walletConnect.getProvider()
+
+    return provider.connector.uri
+  },
+
+  async connectWalletConnect() {
     const walletConnect = getWalletConnectConnector()
 
-    async function onProviderReady() {
-      return new Promise<void>(resolve => {
-        const interval = setInterval(async () => {
-          const { connector } = await walletConnect.getProvider()
-          if (connector.key) {
-            clearInterval(interval)
-            onDisplayUri(connector.uri)
-            resolve()
-          }
-        }, 50)
-      })
-    }
+    return walletConnect.connect()
+  },
 
-    return Promise.all([walletConnect.connect(), onProviderReady()])
+  async disconnectWalletConnect() {
+    const walletConnect = getWalletConnectConnector()
+
+    return walletConnect.disconnect()
   }
 }
