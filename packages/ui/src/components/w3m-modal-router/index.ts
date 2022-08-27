@@ -6,8 +6,8 @@ import { animate } from 'motion'
 import { getShadowRootElement } from '../../utils/Helpers'
 import { global } from '../../utils/Theme'
 import '../../views/w3m-connect-wallet-view'
-import '../../views/w3m-qrcode-view'
 import '../../views/w3m-select-network-view'
+import '../../views/w3m-wc-qrcode-view'
 import styles from './styles'
 
 @customElement('w3m-modal-router')
@@ -62,8 +62,8 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-connect-wallet-view></w3m-connect-wallet-view>`
       case 'SelectNetwork':
         return html`<w3m-select-network-view></w3m-select-network-view>`
-      case 'QrCode':
-        return html`<w3m-qrcode-view></w3m-qrcode-view>`
+      case 'WcQrCode':
+        return html`<w3m-wc-qrcode-view></w3m-wc-qrcode-view>`
       default:
         return html`<div>Not Found</div>`
     }

@@ -1,5 +1,3 @@
-import type { EthereumClient } from '@web3modal/ethereum'
-
 export interface ConfigOptions {
   projectId: string
   theme?: 'dark' | 'light'
@@ -12,5 +10,4 @@ export interface ConfigOptions {
     | 'orange'
     | 'purple'
     | 'teal'
-  ethereumClient?: EthereumClient
 }

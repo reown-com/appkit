@@ -1,17 +1,26 @@
-import type { Connector } from '@wagmi/core'
-import { connect as wagmiConnect, InjectedConnector } from '@wagmi/core'
+import { InjectedConnector } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import type {
+  ConnectWalletConnectOpts,
   EthereumClient,
   GetDefaultConnectorsOpts,
   GetWalletConnectProviderOpts
 } from '../types/apiTypes'
 
+// -- private ------------------------------------------------------ //
 let client = undefined as EthereumClient | undefined
 
+function getWalletConnectConnector() {
+  const walletConnect = client?.connectors.find(item => item.id === 'walletConnect')
+  if (!walletConnect) throw new Error('Missing WalletConnect connector')
+
+  return walletConnect
+}
+
+// -- public ------------------------------------------------------- //
 export const Web3ModalEthereum = {
   getWalletConnectProvider({ projectId }: GetWalletConnectProviderOpts) {
     return jsonRpcProvider({
@@ -30,13 +39,28 @@ export const Web3ModalEthereum = {
     ]
   },
 
-  async connect(connector: Connector) {
-    return wagmiConnect({ connector })
-  },
-
   createClient(wagmiClient: EthereumClient) {
     client = wagmiClient
 
     return client
+  },
+
+  async connectWalletConnect({ onDisplayUri }: ConnectWalletConnectOpts) {
+    const walletConnect = getWalletConnectConnector()
+
+    async function onProviderReady() {
+      return new Promise<void>(resolve => {
+        const interval = setInterval(async () => {
+          const { connector } = await walletConnect.getProvider()
+          if (connector.key) {
+            clearInterval(interval)
+            onDisplayUri(connector.uri)
+            resolve()
+          }
+        }, 50)
+      })
+    }
+
+    return Promise.all([walletConnect.connect(), onProviderReady()])
   }
 }

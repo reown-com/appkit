@@ -1,71 +1,17 @@
-import { ConfigCtrl, RouterCtrl } from '@web3modal/core'
+import { RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-modal-header'
 
 @customElement('w3m-connect-wallet-view')
 export class W3mConnectWalletView extends LitElement {
-  // -- private ------------------------------------------------------ //
-  private getConnectors() {
-    const connectors = ConfigCtrl.state.ethereumClient?.connectors
-    if (!connectors) throw new Error('At least 1 connector is required')
-    const walletConnect = connectors.find(item => item.id === 'walletConnect')
-    const coinbase = connectors.find(item => item.id === 'coinbaseWallet')
-    const metamask = connectors.find(item => item.id === 'metaMask')
-    const injected = connectors.find(item => item.id === 'injected')
-    if (!walletConnect) throw new Error('Missing WalletConnect connector')
-    else if (!coinbase) throw new Error('Missing Coinbase Wallet connector')
-    else if (!metamask) throw new Error('Missing Metamask connector')
-    else if (!injected) throw new Error('Missing Injected connector')
-
-    return { walletConnect, coinbase, metamask, injected }
-  }
-
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { walletConnect, injected } = this.getConnectors()
-
-    async function onWalletConnectUri() {
-      let timeout = 0
-
-      return new Promise<void>((resolve, reject) => {
-        const interval = setInterval(async () => {
-          const { connector } = await walletConnect.getProvider()
-          if (connector.key) {
-            clearInterval(interval)
-            console.log(connector.uri)
-            // TODO here something
-            resolve()
-          } else if (timeout >= 5000) {
-            clearInterval(interval)
-            reject(new Error('Timout'))
-          }
-          timeout += 10
-        }, 10)
-      })
-    }
-
-    async function onWalletConnect() {
-      await Promise.all([walletConnect.connect(), onWalletConnectUri()])
-      console.log('Connected Injcted!')
-    }
-
-    async function onInjected() {
-      console.log(injected)
-      const data = await injected.connect()
-      console.log('Connected Ijected', data)
-    }
-
-    async function onDisconect() {
-      // Todo
-    }
-
     return html`
       <w3m-modal-header title="Connect your wallet"></w3m-modal-header>
-      <button @click=${onWalletConnect}>WalletConnect</button>
-      <button @click=${onInjected}>Injected</button>
-      <button @click=${onDisconect}>Injected</button>
-      <button @click=${() => RouterCtrl.replace('QrCode')}>Go To Select Network</button>
+      <button @click=${() => RouterCtrl.push('WcQrCode')}>WalletConnect</button>
+      <button @click=${() => null}>Injected</button>
+      <button @click=${() => RouterCtrl.replace('WcQrCode')}>Go To Select Network</button>
     `
   }
 }

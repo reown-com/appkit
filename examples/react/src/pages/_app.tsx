@@ -23,14 +23,12 @@ const wagmiClient = createClient({
 const modalConfig: ConfigOptions = {
   projectId: WC_PROJECT_ID,
   theme: 'dark',
-  accentColor: 'orange',
-  // @ts-expect-error TODO Ilja Resolve
-  ethereumClient: wagmiClient
+  accentColor: 'orange'
 }
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Web3ModalProvider config={modalConfig}>
+    <Web3ModalProvider config={modalConfig} ethereumClient={wagmiClient}>
       <WagmiConfig client={wagmiClient}>
         <Component {...pageProps} />
       </WagmiConfig>

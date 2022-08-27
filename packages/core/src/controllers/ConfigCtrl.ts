@@ -15,8 +15,7 @@ const state = proxy<State>({
   configured: false,
   projectId: '',
   theme: isDarkMode() ? 'dark' : 'light',
-  accentColor: 'default',
-  ethereumClient: undefined
+  accentColor: 'default'
 })
 
 // -- controller --------------------------------------------------- //
@@ -27,12 +26,7 @@ export const ConfigCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  async setConfig(config: ConfigOptions) {
-    const { ethereumClient } = config
-    if (ethereumClient) {
-      const { Web3ModalEthereum } = await import('@web3modal/ethereum')
-      config.ethereumClient = Web3ModalEthereum.createClient(ethereumClient)
-    }
+  setConfig(config: ConfigOptions) {
     Object.assign(state, config)
     state.configured = true
   }

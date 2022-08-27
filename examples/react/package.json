@@ -1,13 +1,13 @@
 {
   "name": "react-example",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev"
   },
   "dependencies": {
-    "@web3modal/react": "1.0.0",
-    "@web3modal/ethereum": "1.0.0",
+    "@web3modal/react": "2.0.0",
+    "@web3modal/ethereum": "2.0.0",
     "next": "12.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
