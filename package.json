@@ -1,6 +1,6 @@
 {
   "name": "@klaytn/web3modal",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A single Web3 / Ethereum provider solution for all Wallets",
   "keywords": [
     "web3",
@@ -19,7 +19,8 @@
     "frame",
     "coinbasewallet",
     "sequence",
-    "web3auth"
+    "web3auth",
+    "kaikas",
   ],
   "author": "Web3Modal <web3modal.com>",
   "license": "MIT",
@@ -34,13 +35,13 @@
   "files": [
     "dist"
   ],
-  "homepage": "https://github.com/web3modal/web3modal",
+  "homepage": "https://github.com/klaytn/klaytn-web3modal",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/web3modal/web3modal.git"
+    "url": "git+https://github.com/klaytn/klaytn-web3modal.git"
   },
   "bugs": {
-    "url": "https://github.com/web3modal/web3modal/issues"
+    "url": "https://github.com/klaytn/klaytn-web3modal/issues"
   },
   "scripts": {
     "prepare": "npm run clean && npm run build",
