@@ -13,17 +13,24 @@ import type {
 let client = undefined as EthereumClient | undefined
 
 function getWalletConnectConnector() {
-  const walletConnect = client?.connectors.find(item => item.id === 'walletConnect')
-  if (!walletConnect) throw new Error('Missing WalletConnect connector')
+  const connector = client?.connectors.find(item => item.id === 'walletConnect')
+  if (!connector) throw new Error('Missing WalletConnect connector')
 
-  return walletConnect
+  return connector
+}
+
+function getCoinbaseConnector() {
+  const connector = client?.connectors.find(item => item.id === 'coinbaseWallet')
+  if (!connector) throw new Error('Missing Coinbase Wallet connector')
+
+  return connector
 }
 
 function getInjectedConnector() {
-  const injected = client?.connectors.find(item => item.id === 'injected')
-  if (!injected) throw new Error('Missing Injected connector')
+  const connector = client?.connectors.find(item => item.id === 'injected')
+  if (!connector) throw new Error('Missing Injected connector')
 
-  return injected
+  return connector
 }
 
 // -- public ------------------------------------------------------- //
@@ -40,46 +47,73 @@ export const Web3ModalEthereum = {
     return [
       new WalletConnectConnector({ chains, options: { qrcode: false } }),
       new InjectedConnector({ chains, options: { shimDisconnect: true } }),
-      new CoinbaseWalletConnector({ chains, options: { appName } }),
+      new CoinbaseWalletConnector({ chains, options: { appName, headlessMode: true } }),
       new MetaMaskConnector({ chains })
     ]
   },
 
   createClient(wagmiClient: EthereumClient) {
     client = wagmiClient
-    // Warm up WalletConnect connector
+    // Preheat connectors
     const walletConnect = getWalletConnectConnector()
+    const coinbase = getCoinbaseConnector()
     walletConnect.connect()
+    coinbase.connect()
 
     return this
   },
 
+  // -- connectors ------------------------------------------------- //
   async connectWalletConnect(onUri: (uri: string) => void) {
-    const walletConnect = getWalletConnectConnector()
+    const connector = getWalletConnectConnector()
 
     async function getProviderUri() {
       return new Promise<void>(resolve => {
-        walletConnect.once('message', async ({ type }) => {
+        connector.once('message', async ({ type }) => {
           if (type === 'connecting') {
-            const { connector } = await walletConnect.getProvider()
-            if (connector.key) {
-              onUri(connector.uri)
-              resolve()
-            }
+            const provider = await connector.getProvider()
+            onUri(provider.connector.uri)
+            resolve()
           }
         })
       })
     }
 
-    const [data] = await Promise.all([walletConnect.connect(), getProviderUri()])
+    const [data] = await Promise.all([connector.connect(), getProviderUri()])
 
     return data
   },
 
   async disconnectWalletConnect() {
-    const walletConnect = getWalletConnectConnector()
+    const connector = getWalletConnectConnector()
 
-    return walletConnect.disconnect()
+    return connector.disconnect()
+  },
+
+  async connectCoinbase(onUri: (uri: string) => void) {
+    const connector = getCoinbaseConnector()
+
+    async function getProviderUri() {
+      return new Promise<void>(resolve => {
+        connector.once('message', async ({ type }) => {
+          if (type === 'connecting') {
+            const provider = await connector.getProvider()
+            onUri(provider.qrUrl)
+            resolve()
+          }
+        })
+      })
+    }
+
+    const [data] = await Promise.all([connector.connect(), getProviderUri()])
+
+    return data
+  },
+
+  async disconnectCoinbase() {
+    const connector = getCoinbaseConnector()
+
+    return connector.disconnect()
   },
 
   async connectInject() {

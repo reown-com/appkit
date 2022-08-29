@@ -9,6 +9,10 @@ export class W3mConnectWalletView extends LitElement {
     RouterCtrl.push('WcQrCode')
   }
 
+  private onCoinbaseWallet() {
+    RouterCtrl.push('CoinbaseQrCode')
+  }
+
   public constructor() {
     super()
   }
@@ -18,6 +22,7 @@ export class W3mConnectWalletView extends LitElement {
     return html`
       <w3m-modal-header title="Connect your wallet"></w3m-modal-header>
       <button @click=${this.onWalletConnect}>WalletConnect</button>
+      <button @click=${this.onCoinbaseWallet}>Coinbase Wallet</button>
       <button @click=${() => null}>Injected</button>
       <button @click=${() => RouterCtrl.replace('SelectNetwork')}>Go To Select Network</button>
     `
