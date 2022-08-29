@@ -10,12 +10,12 @@ const WC_PROJECT_ID = 'd28ea8bc8db643d07038d99ddce49e4a'
 // Configure chains and providers (rpc's)
 const { chains, provider, webSocketProvider } = configureChains(
   [chain.mainnet],
-  [Web3ModalEthereum.getWalletConnectProvider({ projectId: WC_PROJECT_ID })]
+  [Web3ModalEthereum.walletConnectRpc({ projectId: WC_PROJECT_ID })]
 )
 
 // Create wagmi client
 const wagmiClient = createClient({
-  connectors: Web3ModalEthereum.getDefaultConnectors({ chains, appName: 'web3Modal' }),
+  connectors: Web3ModalEthereum.defaultConnectors({ chains, appName: 'web3Modal' }),
   provider,
   webSocketProvider
 })

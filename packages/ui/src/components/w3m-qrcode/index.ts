@@ -16,7 +16,6 @@ export default class W3mQrCode extends LitElement {
   @property() public logo? = ''
 
   // -- private ------------------------------------------------------ //
-
   private svgTemplate() {
     const theme = ConfigCtrl.state.theme ?? 'light'
 

@@ -5,16 +5,13 @@ import '../../components/w3m-modal-header'
 
 @customElement('w3m-connect-wallet-view')
 export class W3mConnectWalletView extends LitElement {
+  // -- private ------------------------------------------------------ //
   private onWalletConnect() {
     RouterCtrl.push('WcQrCode')
   }
 
   private onCoinbaseWallet() {
     RouterCtrl.push('CoinbaseQrCode')
-  }
-
-  public constructor() {
-    super()
   }
 
   // -- render ------------------------------------------------------- //

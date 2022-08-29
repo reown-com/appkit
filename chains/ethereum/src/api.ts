@@ -10,24 +10,24 @@ import type {
 } from '../types/apiTypes'
 
 // -- private ------------------------------------------------------ //
-let client = undefined as EthereumClient | undefined
+let ethereumClient = undefined as EthereumClient | undefined
 
 function getWalletConnectConnector() {
-  const connector = client?.connectors.find(item => item.id === 'walletConnect')
+  const connector = ethereumClient?.connectors.find(item => item.id === 'walletConnect')
   if (!connector) throw new Error('Missing WalletConnect connector')
 
   return connector
 }
 
 function getCoinbaseConnector() {
-  const connector = client?.connectors.find(item => item.id === 'coinbaseWallet')
+  const connector = ethereumClient?.connectors.find(item => item.id === 'coinbaseWallet')
   if (!connector) throw new Error('Missing Coinbase Wallet connector')
 
   return connector
 }
 
 function getInjectedConnector() {
-  const connector = client?.connectors.find(item => item.id === 'injected')
+  const connector = ethereumClient?.connectors.find(item => item.id === 'injected')
   if (!connector) throw new Error('Missing Injected connector')
 
   return connector
@@ -35,7 +35,7 @@ function getInjectedConnector() {
 
 // -- public ------------------------------------------------------- //
 export const Web3ModalEthereum = {
-  getWalletConnectProvider({ projectId }: GetWalletConnectProviderOpts) {
+  walletConnectRpc({ projectId }: GetWalletConnectProviderOpts) {
     return jsonRpcProvider({
       rpc: chain => ({
         http: `https://rpc.walletconnect.com/v1/?chainId=eip155:${chain.id}&projectId=${projectId}`
@@ -43,7 +43,7 @@ export const Web3ModalEthereum = {
     })
   },
 
-  getDefaultConnectors({ appName, chains }: GetDefaultConnectorsOpts) {
+  defaultConnectors({ appName, chains }: GetDefaultConnectorsOpts) {
     return [
       new WalletConnectConnector({ chains, options: { qrcode: false } }),
       new InjectedConnector({ chains, options: { shimDisconnect: true } }),
@@ -53,7 +53,7 @@ export const Web3ModalEthereum = {
   },
 
   createClient(wagmiClient: EthereumClient) {
-    client = wagmiClient
+    ethereumClient = wagmiClient
     // Preheat connectors
     const walletConnect = getWalletConnectConnector()
     const coinbase = getCoinbaseConnector()
@@ -64,6 +64,10 @@ export const Web3ModalEthereum = {
   },
 
   // -- connectors ------------------------------------------------- //
+  disconnect() {
+    ethereumClient?.connector?.disconnect()
+  },
+
   async connectWalletConnect(onUri: (uri: string) => void) {
     const connector = getWalletConnectConnector()
 
@@ -84,12 +88,6 @@ export const Web3ModalEthereum = {
     return data
   },
 
-  async disconnectWalletConnect() {
-    const connector = getWalletConnectConnector()
-
-    return connector.disconnect()
-  },
-
   async connectCoinbase(onUri: (uri: string) => void) {
     const connector = getCoinbaseConnector()
 
@@ -108,12 +106,6 @@ export const Web3ModalEthereum = {
     const [data] = await Promise.all([connector.connect(), getProviderUri()])
 
     return data
-  },
-
-  async disconnectCoinbase() {
-    const connector = getCoinbaseConnector()
-
-    return connector.disconnect()
   },
 
   async connectInject() {

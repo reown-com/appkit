@@ -15,18 +15,21 @@ const HORIZONTAL_PADDING = 36
 export class W3mWcQrCodeView extends LitElement {
   public static styles = [global, styles]
 
+  // -- state & properties ------------------------------------------- //
   @state() private uri = ''
 
+  // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
     this.getConnectionUri()
   }
 
+  // -- private ------------------------------------------------------ //
   private async getConnectionUri() {
     try {
       const data = await ClientCtrl.ethereum().connectWalletConnect(uri => (this.uri = uri))
       console.log(data)
-      await ClientCtrl.ethereum().disconnectWalletConnect()
+      ClientCtrl.ethereum().disconnect()
     } catch {
       throw new Error('Denied connection')
     }
