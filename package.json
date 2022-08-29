@@ -20,7 +20,7 @@
     "coinbasewallet",
     "sequence",
     "web3auth",
-    "kaikas",
+    "kaikas"
   ],
   "author": "Web3Modal <web3modal.com>",
   "license": "MIT",
