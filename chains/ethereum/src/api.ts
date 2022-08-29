@@ -47,27 +47,33 @@ export const Web3ModalEthereum = {
 
   createClient(wagmiClient: EthereumClient) {
     client = wagmiClient
+    // Warm up WalletConnect connector
+    const walletConnect = getWalletConnectConnector()
+    walletConnect.connect()
 
     return this
   },
 
-  async connectWalletConnect({ onDisplayUri }: { onDisplayUri: (uri: string) => void }) {
+  async connectWalletConnect(onUri: (uri: string) => void) {
     const walletConnect = getWalletConnectConnector()
 
-    async function onProviderReady() {
+    async function getProviderUri() {
       return new Promise<void>(resolve => {
-        const interval = setInterval(async () => {
-          const { connector } = await walletConnect.getProvider()
-          if (connector.key) {
-            clearInterval(interval)
-            onDisplayUri(connector.uri)
-            resolve()
+        walletConnect.once('message', async ({ type }) => {
+          if (type === 'connecting') {
+            const { connector } = await walletConnect.getProvider()
+            if (connector.key) {
+              onUri(connector.uri)
+              resolve()
+            }
           }
-        }, 50)
+        })
       })
     }
 
-    return Promise.all([walletConnect.connect(), onProviderReady()])
+    const [data] = await Promise.all([walletConnect.connect(), getProviderUri()])
+
+    return data
   },
 
   async disconnectWalletConnect() {

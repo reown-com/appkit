@@ -13,7 +13,11 @@ const state = proxy<State>({
 
 // -- controller --------------------------------------------------- //
 export const ClientCtrl = {
-  state,
+  ethereum() {
+    if (!state.ethereum) throw new Error('Ethereum client was not provided')
+
+    return state.ethereum
+  },
 
   async setEthereumClient(ethereumClient: EthereumClient) {
     const { Web3ModalEthereum } = await import('@web3modal/ethereum')

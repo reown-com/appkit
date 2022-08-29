@@ -6,8 +6,8 @@ import { animate } from 'motion'
 import { getShadowRootElement } from '../../utils/Helpers'
 import { global } from '../../utils/Theme'
 import '../../views/w3m-connect-wallet-view'
+import '../../views/w3m-qrcode-view'
 import '../../views/w3m-select-network-view'
-import '../../views/w3m-wc-qrcode-view'
 import styles from './styles'
 
 @customElement('w3m-modal-router')
