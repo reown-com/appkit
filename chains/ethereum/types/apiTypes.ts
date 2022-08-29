@@ -1,6 +1,7 @@
-import type { Chain, createClient } from '@wagmi/core'
+import type { Chain, Client } from '@wagmi/core'
 
-export type EthereumClient = ReturnType<typeof createClient>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type EthereumClient = Client<any, any>
 
 export interface GetDefaultConnectorsOpts {
   appName: string
