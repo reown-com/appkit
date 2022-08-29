@@ -2,8 +2,10 @@ import { ClientCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-modal-content'
+import '../../components/w3m-modal-footer'
 import '../../components/w3m-modal-header'
 import '../../components/w3m-qrcode'
+import '../../components/w3m-text'
 import { global } from '../../utils/Theme'
 import styles from './styles'
 
@@ -42,7 +44,13 @@ export class W3mWcQrCodeView extends LitElement {
             : null}
         </div>
       </w3m-modal-content>
-      <button @click=${() => RouterCtrl.replace('ConnectWallet')}>Go To ConnectWallet</button>
+      <w3m-modal-footer>
+        <w3m-text variant="large-bold">Scan with your phone</w3m-text>
+        <w3m-text variant="medium-thin" align="center" color="secondary" class="w3m-info-text">
+          Open your camera app or mobile wallet and scan the code to connect
+        </w3m-text>
+        <button @click=${() => RouterCtrl.replace('ConnectWallet')}>Go To ConnectWallet</button>
+      </w3m-modal-footer>
     `
   }
 }

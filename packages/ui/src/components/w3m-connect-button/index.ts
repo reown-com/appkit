@@ -54,7 +54,8 @@ export class W3mConnectButton extends ThemedElement {
       >
         ${this.loading
           ? html`<w3m-spinner color=${color().foreground.accent}></w3m-spinner>`
-          : html`${this.iconTemplate()} <w3m-text variant="medium-normal">${this.label}</w3m-text>`}
+          : html`${this.iconTemplate()}
+              <w3m-text variant="medium-normal" color="inverse">${this.label}</w3m-text>`}
       </button>
     `
   }

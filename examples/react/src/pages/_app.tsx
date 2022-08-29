@@ -3,6 +3,7 @@ import type { ConfigOptions } from '@web3modal/react'
 import { Web3ModalProvider } from '@web3modal/react'
 import type { AppProps } from 'next/app'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
+import '../styles.css'
 
 const WC_PROJECT_ID = 'd28ea8bc8db643d07038d99ddce49e4a'
 
@@ -23,7 +24,7 @@ const wagmiClient = createClient({
 const modalConfig: ConfigOptions = {
   projectId: WC_PROJECT_ID,
   theme: 'dark',
-  accentColor: 'orange'
+  accentColor: 'green'
 }
 
 export default function App({ Component, pageProps }: AppProps) {

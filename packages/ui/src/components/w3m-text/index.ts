@@ -1,8 +1,10 @@
-import { html, LitElement } from 'lit'
+import { html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { fonts, global } from '../../utils/Theme'
+import { global } from '../../utils/Theme'
+import ThemedElement from '../../utils/ThemedElement'
 import '../w3m-spinner'
+import styles, { dynamicStyles } from './styles'
 
 type Variant =
   | 'large-bold'
@@ -14,12 +16,18 @@ type Variant =
   | 'xsmall-normal'
   | 'xxsmall-bold'
 
+type Align = 'center' | 'left' | 'right'
+
+type Color = 'inverse' | 'primary' | 'secondary'
+
 @customElement('w3m-text')
-export class W3mText extends LitElement {
-  public static styles = [global, fonts]
+export class W3mText extends ThemedElement {
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
-  @property() public variant: Variant = 'medium-normal'
+  @property() public variant?: Variant = 'medium-normal'
+  @property() public align?: Align = 'left'
+  @property() public color?: Color = 'primary'
 
   // -- render ------------------------------------------------------- //
   protected render() {
@@ -32,10 +40,17 @@ export class W3mText extends LitElement {
       'w3m-font-small-bold': this.variant === 'small-bold',
       'w3m-font-small-thin': this.variant === 'small-thin',
       'w3m-font-xsmall-normal': this.variant === 'xsmall-normal',
-      'w3m-font-xxsmall-bold': this.variant === 'xxsmall-bold'
+      'w3m-font-xxsmall-bold': this.variant === 'xxsmall-bold',
+      'w3m-font-left': this.align === 'left',
+      'w3m-font-center': this.align === 'center',
+      'w3m-font-right': this.align === 'right',
+      'w3m-color-primary': this.color === 'primary',
+      'w3m-color-secondary': this.color === 'secondary',
+      'w3m-color-inverse': this.color === 'inverse'
     }
 
     return html`
+      ${dynamicStyles()}
       <span class=${classMap(classes)}>
         <slot></slot>
       </span>

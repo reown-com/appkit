@@ -1,14 +1,15 @@
 import { ModalCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { getShadowRootElement } from '../../utils/Helpers'
 import { CLOSE_ICON, NOISE_TEXTURE, WALLET_CONNECT_LOGO } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
+import ThemedElement from '../../utils/ThemedElement'
 import Whatamesh from '../../utils/Whatamesh'
-import styles from './styles'
+import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-modal-backcard')
-export class W3mModalBackcard extends LitElement {
+export class W3mModalBackcard extends ThemedElement {
   public static styles = [global, styles]
 
   // -- lifecycle ---------------------------------------------------- //
@@ -25,6 +26,7 @@ export class W3mModalBackcard extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
+      ${dynamicStyles()}
       <canvas class="w3m-gradient-canvas"></canvas>
       ${NOISE_TEXTURE}
       <div class="w3m-modal-highlight"></div>
