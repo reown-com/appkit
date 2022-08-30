@@ -53,9 +53,8 @@ export class W3mWcQrCodeView extends LitElement {
         <w3m-text variant="medium-thin" align="center" color="secondary" class="w3m-info-text">
           Open your camera app or mobile wallet and scan the code to connect
         </w3m-text>
-        <w3m-button @click=${() => RouterCtrl.replace('ConnectWallet')}>Go Home</w3m-button>
-        <w3m-button variant="ghost" @click=${() => RouterCtrl.replace('ConnectWallet')}
-          >Go Home
+        <w3m-button variant="ghost" .onClick=${() => RouterCtrl.replace('ConnectWallet')}>
+          Copy to Clipboard
         </w3m-button>
       </w3m-modal-footer>
     `

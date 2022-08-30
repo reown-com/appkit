@@ -27,6 +27,7 @@ export class W3mModalBackcard extends ThemedElement {
   protected render() {
     return html`
       ${dynamicStyles()}
+
       <canvas class="w3m-gradient-canvas"></canvas>
       ${NOISE_TEXTURE}
       <div class="w3m-modal-highlight"></div>

@@ -4,30 +4,17 @@ import { color } from '../../utils/Theme'
 // -- static styles ------------------------------------------------ //
 export default css`
   .w3m-button {
-    display: flex;
     border-radius: 28px;
-    justify-content: center;
-    align-items: center;
     height: 28px;
     padding: 0 10px;
-    border: none;
-    cursor: pointer;
-    position: relative;
   }
 
   .w3m-button::after {
-    content: '';
-    position: absolute;
-    inset: 0;
     border-radius: 28px;
-    background-color: transparent;
-    transition: background-color, 0.2s ease-in-out;
   }
 
-  svg,
-  w3m-text {
-    position: relative;
-    z-index: 1;
+  .w3m-button:disabled::after {
+    background-color: transparent;
   }
 `
 
@@ -54,6 +41,10 @@ export function dynamicStyles() {
 
     .w3m-button-ghost:hover::after {
       background-color: ${overlay.thin};
+    }
+
+    .w3m-button:disabled {
+      background-color: ${background[3]};
     }
   </style>`
 }

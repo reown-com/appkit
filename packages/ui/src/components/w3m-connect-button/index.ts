@@ -15,11 +15,8 @@ export class W3mConnectButton extends ThemedElement {
 
   // -- state & properties ------------------------------------------- //
   @state() public loading = false
-  @state() private readonly classes = {
-    'w3m-button-loading': this.loading
-  }
-  @property() public label?: string = 'Connect Wallet'
-  @property({ type: Boolean }) public icon?: boolean = true
+  @property() public label? = 'Connect Wallet'
+  @property() public icon? = true
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -44,14 +41,14 @@ export class W3mConnectButton extends ThemedElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
+    const classes = {
+      'w3m-button-loading': this.loading
+    }
+
     return html`
       ${dynamicStyles()}
 
-      <button
-        class=${classMap(this.classes)}
-        .disabled=${this.loading}
-        @click=${ModalCtrl.openModal}
-      >
+      <button class=${classMap(classes)} .disabled=${this.loading} @click=${ModalCtrl.openModal}>
         ${this.loading
           ? html`<w3m-spinner color=${color().foreground.accent}></w3m-spinner>`
           : html`${this.iconTemplate()}

@@ -52,6 +52,7 @@ export class W3mText extends ThemedElement {
 
     return html`
       ${dynamicStyles()}
+
       <span class=${classMap(classes)}>
         <slot></slot>
       </span>

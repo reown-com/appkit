@@ -12,6 +12,7 @@ export class W3mModalFooter extends ThemedElement {
   protected render() {
     return html`
       ${dynamicStyles()}
+
       <div class="w3m-modal-footer">
         <slot></slot>
       </div>

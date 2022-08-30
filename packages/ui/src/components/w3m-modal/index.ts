@@ -15,7 +15,7 @@ export class W3mModal extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false
-  @property({ type: Object }) private readonly classes = {
+  @property() private readonly classes = {
     'w3m-modal-overlay': true,
     'w3m-modal-open': false
   }

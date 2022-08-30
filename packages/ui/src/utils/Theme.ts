@@ -12,6 +12,33 @@ export const global = css`
     text-rendering: optimizeSpeed;
     -webkit-font-smoothing: antialiased;
   }
+
+  button {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border: none;
+  }
+
+  button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: transparent;
+    transition: background-color, 0.2s ease-in-out;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  button svg,
+  button w3m-text {
+    position: relative;
+    z-index: 1;
+  }
 `
 
 export function accentColors(a: number) {
