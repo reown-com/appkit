@@ -14,7 +14,8 @@ export default css`
     position: absolute;
     left: 0;
     background-color: transparent;
-    padding-right: 10px;
+    padding: 13px 17px;
+    margin-left: -17px;
     transition: opacity 0.2s ease-in-out;
   }
 

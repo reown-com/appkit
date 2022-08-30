@@ -48,7 +48,7 @@ export function dynamicStyles() {
     }
 
     button:hover::after {
-      background-color: ${overlay.thick};
+      background-color: ${overlay.thin};
     }
 
     .w3m-button-loading:disabled {

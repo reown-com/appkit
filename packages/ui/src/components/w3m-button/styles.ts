@@ -39,11 +39,7 @@ export function dynamicStyles() {
       box-shadow: inset 0 0 0 1px ${overlay.thin};
     }
 
-    .w3m-button-fill:hover::after {
-      background-color: ${overlay.thick};
-    }
-
-    .w3m-button-ghost:hover::after {
+    .w3m-button:hover::after {
       background-color: ${overlay.thin};
     }
 
