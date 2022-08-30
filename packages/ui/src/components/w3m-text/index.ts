@@ -11,14 +11,14 @@ type Variant =
   | 'medium-bold'
   | 'medium-normal'
   | 'medium-thin'
-  | 'small-bold'
+  | 'small-normal'
   | 'small-thin'
   | 'xsmall-normal'
   | 'xxsmall-bold'
 
 type Align = 'center' | 'left' | 'right'
 
-type Color = 'inverse' | 'primary' | 'secondary'
+type Color = 'accent' | 'inverse' | 'primary' | 'secondary'
 
 @customElement('w3m-text')
 export class W3mText extends ThemedElement {
@@ -37,7 +37,7 @@ export class W3mText extends ThemedElement {
       'w3m-font-medium-bold': this.variant === 'medium-bold',
       'w3m-font-medium-normal': this.variant === 'medium-normal',
       'w3m-font-medium-thin': this.variant === 'medium-thin',
-      'w3m-font-small-bold': this.variant === 'small-bold',
+      'w3m-font-small-normal': this.variant === 'small-normal',
       'w3m-font-small-thin': this.variant === 'small-thin',
       'w3m-font-xsmall-normal': this.variant === 'xsmall-normal',
       'w3m-font-xxsmall-bold': this.variant === 'xxsmall-bold',
@@ -46,7 +46,8 @@ export class W3mText extends ThemedElement {
       'w3m-font-right': this.align === 'right',
       'w3m-color-primary': this.color === 'primary',
       'w3m-color-secondary': this.color === 'secondary',
-      'w3m-color-inverse': this.color === 'inverse'
+      'w3m-color-inverse': this.color === 'inverse',
+      'w3m-color-accnt': this.color === 'accent'
     }
 
     return html`

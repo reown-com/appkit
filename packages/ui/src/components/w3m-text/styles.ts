@@ -31,8 +31,8 @@ export default css`
     letter-spacing: -0.03em;
   }
 
-  .w3m-font-small-bold {
-    font-weight: 500;
+  .w3m-font-small-normal {
+    font-weight: 600;
     font-size: 14px;
     line-height: 16px;
     letter-spacing: -0.03em;
@@ -93,6 +93,10 @@ export function dynamicStyles() {
 
     .w3m-color-inverse {
       color: ${foreground.inverse};
+    }
+
+    .w3m-color-accnt {
+      color: ${foreground.accent};
     }
   </style>`
 }

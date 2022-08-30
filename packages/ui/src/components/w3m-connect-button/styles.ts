@@ -21,8 +21,9 @@ export default css`
     content: '';
     inset: 0;
     position: absolute;
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
+    background-color: transparent;
+    border-radius: 10px;
+    transition: background-color 0.2s ease-in-out;
   }
 
   button:hover::before {
@@ -59,11 +60,14 @@ export function dynamicStyles() {
     button {
       color: ${foreground.inverse};
       background-color: ${foreground.accent};
-      box-shadow: inset 0 0 0 1px ${overlay.thin};
     }
 
     button::before {
-      background-color: ${overlay.thin};
+      box-shadow: inset 0 0 0 1px ${overlay.thin};
+    }
+
+    button:hover::before {
+      background-color: ${overlay.thick};
     }
 
     .w3m-button-loading:disabled {
