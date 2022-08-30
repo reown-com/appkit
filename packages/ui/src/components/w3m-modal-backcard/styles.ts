@@ -1,8 +1,5 @@
-import { css, unsafeCSS } from 'lit'
+import { css, html } from 'lit'
 import { color } from '../../utils/Theme'
-
-const contentShadow = unsafeCSS(color().overlay.thin)
-const closeBtn = unsafeCSS(color().background[1])
 
 export default css`
   .w3m-gradient-canvas,
@@ -16,10 +13,6 @@ export default css`
     height: 100%;
     border-radius: 8px 8px 30px 8px;
     transform: translate3d(-5px, -5px, 0);
-  }
-
-  .w3m-modal-highlight {
-    border: 1px solid ${contentShadow};
   }
 
   .w3m-gradient-canvas {
@@ -60,7 +53,7 @@ export default css`
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    background-color: ${closeBtn};
+    transition: background-color, 0.2s ease-in-out;
   }
 
   .w3m-modal-close-btn svg {
@@ -81,3 +74,25 @@ export default css`
     }
   }
 `
+
+export function dynamicStyles() {
+  const { overlay, background, foreground } = color()
+
+  return html`<style>
+    .w3m-modal-highlight {
+      border: 1px solid ${overlay.thin};
+    }
+
+    .w3m-modal-close-btn {
+      background-color: ${background[1]};
+    }
+
+    .w3m-modal-close-btn:hover {
+      background-color: ${background[2]};
+    }
+
+    .w3m-modal-close-btn path {
+      fill: ${foreground[1]};
+    }
+  </style>`
+}

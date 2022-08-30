@@ -38,5 +38,6 @@ export default css`
     box-shadow: 0 0 0 1px ${cardShadow};
     background-color: ${cardBg};
     color: ${cardColor};
+    overflow: hidden;
   }
 `

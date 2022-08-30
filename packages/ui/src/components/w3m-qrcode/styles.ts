@@ -4,7 +4,10 @@ export default css`
   .w3m-qrcode-container {
     position: relative;
     user-select: none;
-    display: inline-block;
+    display: block;
+    overflow: hidden;
+    width: 100%;
+    aspect-ratio: 1/1;
   }
 
   .w3m-qrcode-container svg:first-child,

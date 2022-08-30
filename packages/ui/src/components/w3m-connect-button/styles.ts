@@ -4,33 +4,21 @@ import { color } from '../../utils/Theme'
 // -- static styles ------------------------------------------------ //
 export default css`
   button {
-    border: none;
-    transition: 0.2s filter ease-in-out;
     padding: 0 15px 1px;
     height: 40px;
     border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
   }
 
-  button::before {
+  button::after {
     content: '';
     inset: 0;
     position: absolute;
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
-  }
-
-  button:hover::before {
-    opacity: 1;
+    background-color: transparent;
+    border-radius: 10px;
+    transition: background-color 0.2s ease-in-out;
   }
 
   button:disabled {
-    cursor: not-allowed;
     padding-bottom: 0;
   }
 
@@ -43,12 +31,6 @@ export default css`
     height: 20px;
     margin: -1px 3px 0 -5px;
   }
-
-  svg,
-  w3m-text {
-    position: relative;
-    z-index: 1;
-  }
 `
 
 // -- dynamic styles ----------------------------------------------- //
@@ -59,11 +41,14 @@ export function dynamicStyles() {
     button {
       color: ${foreground.inverse};
       background-color: ${foreground.accent};
+    }
+
+    button::after {
       box-shadow: inset 0 0 0 1px ${overlay.thin};
     }
 
-    button::before {
-      background-color: ${overlay.thin};
+    button:hover::after {
+      background-color: ${overlay.thick};
     }
 
     .w3m-button-loading:disabled {

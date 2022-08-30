@@ -12,11 +12,10 @@ export default class W3mQrCode extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public uri = ''
-  @property() public size = 0
+  @property({ type: Number }) public size = 0
   @property() public logo? = ''
 
   // -- private ------------------------------------------------------ //
-
   private svgTemplate() {
     const theme = ConfigCtrl.state.theme ?? 'light'
 

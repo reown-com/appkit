@@ -1,4 +1,5 @@
 export { Web3ModalCore } from './src/api'
+export { ClientCtrl } from './src/controllers/ClientCtrl'
 export { ConfigCtrl } from './src/controllers/ConfigCtrl'
 export { ModalCtrl } from './src/controllers/ModalCtrl'
 export { RouterCtrl } from './src/controllers/RouterCtrl'

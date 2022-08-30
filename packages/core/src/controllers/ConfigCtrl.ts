@@ -7,15 +7,15 @@ export interface State extends ConfigOptions {
 }
 
 // -- initial state ------------------------------------------------ //
+function isDarkMode() {
+  return typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: dark)').matches
+}
+
 const state = proxy<State>({
   configured: false,
   projectId: '',
-  theme:
-    typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light',
-  accentColor: 'default',
-  ethereumClient: undefined
+  theme: isDarkMode() ? 'dark' : 'light',
+  accentColor: 'default'
 })
 
 // -- controller --------------------------------------------------- //

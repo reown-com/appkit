@@ -1,1 +1,1 @@
-export type RouterView = 'ConnectWallet' | 'QrCode' | 'SelectNetwork'
+export type RouterView = 'CoinbaseQrCode' | 'ConnectWallet' | 'SelectNetwork' | 'WcQrCode'
