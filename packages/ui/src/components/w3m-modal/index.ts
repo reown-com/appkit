@@ -1,24 +1,21 @@
 import { ModalCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
-import { customElement, property, state } from 'lit/decorators.js'
+import { html } from 'lit'
+import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { animate } from 'motion'
 import { getShadowRootElement } from '../../utils/Helpers'
 import { global } from '../../utils/Theme'
+import ThemedElement from '../../utils/ThemedElement'
 import '../w3m-modal-backcard'
 import '../w3m-modal-router'
-import styles from './styles'
+import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-modal')
-export class W3mModal extends LitElement {
+export class W3mModal extends ThemedElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false
-  @property() private readonly classes = {
-    'w3m-modal-overlay': true,
-    'w3m-modal-open': false
-  }
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -30,6 +27,7 @@ export class W3mModal extends LitElement {
   }
 
   public disconnectedCallback() {
+    super.disconnectedCallback()
     this.unsubscribe?.()
   }
 
@@ -50,7 +48,6 @@ export class W3mModal extends LitElement {
 
   private onOpenModalEvent() {
     this.open = true
-    this.classes['w3m-modal-open'] = true
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2 })
     animate(this.containerEl, { scale: [0.98, 1] }, { duration: 0.2 })
   }
@@ -60,15 +57,21 @@ export class W3mModal extends LitElement {
       animate(this.containerEl, { scale: [1, 0.98] }, { duration: 0.2 }).finished,
       animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
     ])
-    this.classes['w3m-modal-open'] = false
     this.open = false
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
+    const classes = {
+      'w3m-modal-overlay': true,
+      'w3m-modal-open': this.open
+    }
+
     return html`
+      ${dynamicStyles()}
+
       <div
-        class=${classMap(this.classes)}
+        class=${classMap(classes)}
         @click=${this.onCloseModal}
         role="alertdialog"
         aria-modal="true"

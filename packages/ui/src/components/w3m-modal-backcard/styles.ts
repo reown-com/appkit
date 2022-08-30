@@ -61,18 +61,6 @@ export default css`
     height: 12px;
     display: block;
   }
-
-  @media (prefers-color-scheme: dark) {
-    .w3m-modal-close-btn {
-      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
-    }
-  }
-
-  @media (prefers-color-scheme: light) {
-    .w3m-modal-close-btn {
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
-    }
-  }
 `
 
 export function dynamicStyles() {
@@ -93,6 +81,10 @@ export function dynamicStyles() {
 
     .w3m-modal-close-btn path {
       fill: ${foreground[1]};
+    }
+
+    .w3m-modal-close-btn {
+      box-shadow: 0 0 0 1px ${overlay.thin};
     }
   </style>`
 }

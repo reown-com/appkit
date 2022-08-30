@@ -1,9 +1,5 @@
-import { css, unsafeCSS } from 'lit'
+import { css, html } from 'lit'
 import { color } from '../../utils/Theme'
-
-const cardShadow = unsafeCSS(color().overlay.thin)
-const cardBg = unsafeCSS(color().background[1])
-const cardColor = unsafeCSS(color().foreground[1])
 
 export default css`
   .w3m-modal-overlay {
@@ -35,9 +31,19 @@ export default css`
     position: relative;
     transform: translate3d(5px, 5px, 0);
     border-radius: 40px;
-    box-shadow: 0 0 0 1px ${cardShadow};
-    background-color: ${cardBg};
-    color: ${cardColor};
+
     overflow: hidden;
   }
 `
+
+export function dynamicStyles() {
+  const { overlay, background, foreground } = color()
+
+  return html`<style>
+    .w3m-modal-card {
+      box-shadow: 0 0 0 1px ${overlay.thin};
+      background-color: ${background[1]};
+      color: ${foreground[1]};
+    }
+  </style>`
+}
