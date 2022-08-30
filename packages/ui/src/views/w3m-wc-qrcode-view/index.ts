@@ -7,6 +7,7 @@ import '../../components/w3m-modal-footer'
 import '../../components/w3m-modal-header'
 import '../../components/w3m-qrcode'
 import '../../components/w3m-text'
+import { COPY_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import styles from './styles'
 
@@ -53,7 +54,11 @@ export class W3mWcQrCodeView extends LitElement {
         <w3m-text variant="medium-thin" align="center" color="secondary" class="w3m-info-text">
           Open your camera app or mobile wallet and scan the code to connect
         </w3m-text>
-        <w3m-button variant="ghost" .onClick=${() => RouterCtrl.replace('ConnectWallet')}>
+        <w3m-button
+          variant="ghost"
+          .icon=${COPY_ICON}
+          .onClick=${() => RouterCtrl.replace('ConnectWallet')}
+        >
           Copy to Clipboard
         </w3m-button>
       </w3m-modal-footer>

@@ -16,6 +16,10 @@ export default css`
   .w3m-button:disabled::after {
     background-color: transparent;
   }
+
+  .w3m-button svg {
+    margin-right: 5px;
+  }
 `
 
 // -- dynamic styles ----------------------------------------------- //
@@ -45,6 +49,14 @@ export function dynamicStyles() {
 
     .w3m-button:disabled {
       background-color: ${background[3]};
+    }
+
+    .w3m-button-fill path {
+      fill: ${foreground.inverse};
+    }
+
+    .w3m-button-ghost path {
+      fill: ${foreground.accent};
     }
   </style>`
 }

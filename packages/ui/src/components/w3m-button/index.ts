@@ -1,3 +1,4 @@
+import type { TemplateResult } from 'lit'
 import { html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -16,6 +17,7 @@ export class W3mButton extends ThemedElement {
   // -- state & properties ------------------------------------------- //
   @property() public variant?: Variant = 'fill'
   @property() public disabled? = false
+  @property() public icon?: TemplateResult<2> = undefined
   @property() public onClick: () => void = () => null
 
   // -- render ------------------------------------------------------- //
@@ -35,6 +37,7 @@ export class W3mButton extends ThemedElement {
       ${dynamicStyles()}
 
       <button class=${classMap(classes)} ?disabled=${this.disabled} @click=${this.onClick}>
+        ${this.icon}
         <w3m-text variant="small-normal" color=${textColor}>
           <slot></slot>
         </w3m-text>
