@@ -17,15 +17,15 @@
     "examples/*"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "5.35.1",
-    "@typescript-eslint/parser": "5.35.1",
+    "@typescript-eslint/eslint-plugin": "5.36.0",
+    "@typescript-eslint/parser": "5.36.0",
     "@rollup/plugin-node-resolve": "13.3.0",
     "@rollup/plugin-commonjs": "22.0.2",
     "@rollup/plugin-json": "4.1.0",
     "eslint": "8.23.0",
     "eslint-config-prettier": "8.5.0",
     "prettier": "2.7.1",
-    "typescript": "4.7.4",
+    "typescript": "4.8.2",
     "rollup": "2.78.1",
     "rollup-plugin-esbuild": "4.10.1",
     "rollup-plugin-minify-html-literals": "1.2.6"

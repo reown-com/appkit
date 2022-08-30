@@ -1,8 +1,8 @@
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
-import nodeResolve from '@rollup/plugin-node-resolve'
+import resolve from '@rollup/plugin-node-resolve'
 import esbuild from 'rollup-plugin-esbuild'
-import minifyHtmlLiterals from 'rollup-plugin-minify-html-literals'
+import minifyHtml from 'rollup-plugin-minify-html-literals'
 
 export default function createConfig(packageName) {
   const sharedOutput = {
@@ -24,14 +24,14 @@ export default function createConfig(packageName) {
   return [
     {
       input: './index.ts',
-      plugins: [minifyHtmlLiterals(), esbuildPlugin],
+      plugins: [minifyHtml(), esbuildPlugin],
       output: [{ file: './dist/index.js', format: 'es', ...sharedOutput }]
     },
     {
       input: './index.ts',
       plugins: [
-        minifyHtmlLiterals(),
-        nodeResolve({ browser: true, preferBuiltins: true }),
+        minifyHtml(),
+        resolve({ browser: true, preferBuiltins: true }),
         json(),
         commonjs(),
         esbuildPlugin
