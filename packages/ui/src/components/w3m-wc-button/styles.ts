@@ -37,7 +37,9 @@ export default css`
   }
 
   .w3m-wc-button-carousel {
-    display: flex;
+    display: grid;
+    grid-gap: 10px;
+    padding: 0 10px;
     width: 100%;
     height: 100%;
     justify-content: space-between;
