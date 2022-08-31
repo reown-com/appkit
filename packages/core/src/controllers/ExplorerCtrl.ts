@@ -7,17 +7,13 @@ interface State {
   search: Record<string, string>
   page: Record<string, number>
   wallets: ListingResponse
-  dapps: ListingResponse
-  all: ListingResponse
 }
 
 const state = proxy<State>({
   loading: false,
   search: {},
   page: {},
-  wallets: { listings: {}, count: 0 },
-  dapps: { listings: {}, count: 0 },
-  all: { listings: {}, count: 0 }
+  wallets: { listings: {}, count: 0 }
 })
 
 const BASE_URL = 'https://registry-staging.walletconnect.com/v3'
@@ -58,20 +54,6 @@ export const ExplorerCtrl = {
   async getWallets(params: PageParams) {
     const fetched = await fetchEndpoint('wallets', params)
     state.wallets = fetched
-
-    return fetched
-  },
-
-  async getDapps(params: PageParams) {
-    const fetched = await fetchEndpoint('dapps', params)
-    state.dapps = fetched
-
-    return fetched
-  },
-
-  async getAll(params: PageParams) {
-    const fetched = await fetchEndpoint('all', params)
-    state.all = fetched
 
     return fetched
   }
