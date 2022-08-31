@@ -1,5 +1,3 @@
-export type GenericParams = Record<string, number | string>
-
 export interface PageParams {
   page?: number
   search?: string
