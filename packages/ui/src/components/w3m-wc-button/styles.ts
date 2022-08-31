@@ -32,11 +32,11 @@ export default css`
 
   .w3m-wc-button-logo svg:first-child {
     position: absolute;
-    height: 100%;
-    aspect-ratio: 1.45 / 1;
+    transform: scale(2.4);
   }
 
-  .w3m-wc-button-logo svg:last-child {
+  .w3m-wc-button-logo svg:last-child,
+  .w3m-wc-button-logo svg:first-child {
     width: 69.4px;
     height: 48px;
   }
