@@ -50,14 +50,20 @@ export class W3mModal extends ThemedElement {
     this.open = true
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay: 0.1 })
     animate(this.containerEl, { scale: [0.98, 1] }, { duration: 0.2, delay: 0.1 })
+    document.addEventListener('keydown', this.onKeyDown)
   }
 
   private async onCloseModalEvent() {
+    document.removeEventListener('keydown', this.onKeyDown)
     await Promise.all([
       animate(this.containerEl, { scale: [1, 0.98] }, { duration: 0.2 }).finished,
       animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
     ])
     this.open = false
+  }
+
+  private onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Escape') ModalCtrl.closeModal()
   }
 
   // -- render ------------------------------------------------------- //
