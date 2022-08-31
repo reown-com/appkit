@@ -1,4 +1,4 @@
-import { ModalCtrl } from '@web3modal/core'
+import { ExplorerCtrl, ModalCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -39,6 +39,16 @@ export class W3mConnectButton extends ThemedElement {
     return this.icon ? WALLET_CONNECT_ICON : null
   }
 
+  private async onOpen() {
+    try {
+      this.loading = true
+      await ExplorerCtrl.getWallets({ page: 1, entries: 10, version: 1 })
+      ModalCtrl.openModal()
+    } catch {
+      this.loading = false
+    }
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     const classes = {
@@ -48,7 +58,7 @@ export class W3mConnectButton extends ThemedElement {
     return html`
       ${dynamicStyles()}
 
-      <button class=${classMap(classes)} .disabled=${this.loading} @click=${ModalCtrl.openModal}>
+      <button class=${classMap(classes)} .disabled=${this.loading} @click=${this.onOpen}>
         ${this.loading
           ? html`<w3m-spinner color=${color().foreground.accent}></w3m-spinner>`
           : html`${this.iconTemplate()}

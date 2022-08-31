@@ -48,8 +48,8 @@ export class W3mModal extends ThemedElement {
 
   private onOpenModalEvent() {
     this.open = true
-    animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2 })
-    animate(this.containerEl, { scale: [0.98, 1] }, { duration: 0.2 })
+    animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay: 0.1 })
+    animate(this.containerEl, { scale: [0.98, 1] }, { duration: 0.2, delay: 0.1 })
   }
 
   private async onCloseModalEvent() {

@@ -5,7 +5,7 @@ import type { AppProps } from 'next/app'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import '../styles.css'
 
-const WC_PROJECT_ID = 'd28ea8bc8db643d07038d99ddce49e4a'
+const WC_PROJECT_ID = '6a8d17fb-6d30-4450-9ed8-3cbb2771483a'
 
 // Configure chains and providers (rpc's)
 const { chains, provider, webSocketProvider } = configureChains(
