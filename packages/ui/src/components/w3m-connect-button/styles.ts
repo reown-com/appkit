@@ -44,7 +44,7 @@ export function dynamicStyles() {
     }
 
     button::after {
-      box-shadow: inset 0 0 0 1px ${overlay.thin};
+      border: 1px solid ${overlay.thin};
     }
 
     button:hover::after {

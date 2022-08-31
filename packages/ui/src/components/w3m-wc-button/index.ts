@@ -25,6 +25,7 @@ export class W3mWcButton extends ThemedElement {
           <div class="w3m-wc-button-logo">
             ${WALLET_CONNECT_ICON_SHADE} ${WALLET_CONNECT_ICON_GRADIENT}
           </div>
+
           <div class="w3m-wc-button-carousel">
             ${wallets.map(
               ({ image_url }) =>

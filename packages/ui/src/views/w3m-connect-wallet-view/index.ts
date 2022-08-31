@@ -25,10 +25,7 @@ export class W3mConnectWalletView extends LitElement {
       <w3m-modal-header title="Connect your wallet"></w3m-modal-header>
       <w3m-modal-content>
         <div class="w3m-view-row">
-          <div class="w3m-view-cars">
-            <w3m-wc-button .onClick=${this.onWalletConnect}></w3m-wc-button>
-          </div>
-
+          <w3m-wc-button .onClick=${this.onWalletConnect}></w3m-wc-button>
           <button @click=${this.onCoinbaseWallet}>Coinbase Wallet</button>
         </div>
 

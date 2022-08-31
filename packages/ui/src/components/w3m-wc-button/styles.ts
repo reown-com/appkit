@@ -7,19 +7,17 @@ export default css`
     border-radius: 18px;
   }
 
+  .w3m-wc-button::after {
+    position: absolute;
+    border-radius: 18px;
+    inset: 0;
+  }
+
   .w3m-wc-button-container {
     position: relative;
-    width: 100%;
     height: 60px;
     border-radius: 18px;
     overflow: hidden;
-  }
-
-  .w3m-wc-button-container::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 18px;
   }
 
   .w3m-wc-button-logo {
@@ -74,6 +72,13 @@ export default css`
     object-fit: cover;
     object-position: center;
   }
+
+  .w3m-wc-button-carousel::after,
+  .w3m-wc-button-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
 `
 
 export function dynamicStyles() {
@@ -82,7 +87,10 @@ export function dynamicStyles() {
   return html`<style>
     .w3m-wc-button {
       background-color: ${background.accent};
-      box-shadow: inset 0 0 0 1px ${overlay.thin};
+    }
+
+    .w3m-wc-button::after {
+      border: 1px solid ${overlay.thin};
     }
 
     .w3m-wc-button-logo svg:first-child path {
@@ -91,9 +99,10 @@ export function dynamicStyles() {
     }
 
     .w3m-wc-button-carousel-item::after {
-      box-shadow: inset 0 0 0 1px ${overlay.thin};
+      border: 1px solid ${overlay.thin};
     }
 
+    .w3m-wc-button-carousel::after,
     .w3m-wc-button-container::after {
       box-shadow: inset 15px 0 15px ${background.accent}, inset -15px 0 15px ${background.accent};
     }

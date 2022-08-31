@@ -36,7 +36,7 @@ export function dynamicStyles() {
     }
 
     .w3m-button::after {
-      box-shadow: inset 0 0 0 1px ${overlay.thin};
+      border: 1px solid ${overlay.thin};
     }
 
     .w3m-button:hover::after {
