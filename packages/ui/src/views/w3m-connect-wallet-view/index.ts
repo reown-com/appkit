@@ -22,15 +22,23 @@ export class W3mConnectWalletView extends LitElement {
     RouterCtrl.push('CoinbaseConnector')
   }
 
+  private onMetaMaskWallet() {
+    RouterCtrl.push('MetaMaskConnector')
+  }
+
+  private onInjectedWallet() {
+    RouterCtrl.push('InjectedConnector')
+  }
+
   private metaMaskTemplate() {
     return html`
-      <w3m-wallet-button name="MetaMask" .onClick=${this.onCoinbaseWallet}></w3m-wallet-button>
+      <w3m-wallet-button name="MetaMask" .onClick=${this.onMetaMaskWallet}></w3m-wallet-button>
     `
   }
 
   private injectedTemplate(name: string) {
     return html`
-      <w3m-wallet-button name=${name} .onClick=${this.onCoinbaseWallet}></w3m-wallet-button>
+      <w3m-wallet-button name=${name} .onClick=${this.onInjectedWallet}></w3m-wallet-button>
     `
   }
 

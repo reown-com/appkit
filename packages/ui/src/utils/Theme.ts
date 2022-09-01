@@ -39,6 +39,10 @@ export const global = css`
     position: relative;
     z-index: 1;
   }
+
+  img {
+    display: block;
+  }
 `
 
 export function accentColors(a: number) {
