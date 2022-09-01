@@ -58,7 +58,7 @@ export const Web3ModalEthereum = {
 
   // -- connectors ------------------------------------------------- //
   disconnect() {
-    ethereumClient?.connector?.disconnect()
+    ethereumClient?.connectors.forEach(async connector => connector.disconnect())
   },
 
   async connectWalletConnect(onUri: (uri: string) => void) {
