@@ -17,8 +17,12 @@ export default css`
     background-color: transparent;
   }
 
-  .w3m-button svg {
+  .w3m-button-icon-left svg {
     margin-right: 5px;
+  }
+
+  .w3m-button-icon-right svg {
+    margin-left: 5px;
   }
 `
 

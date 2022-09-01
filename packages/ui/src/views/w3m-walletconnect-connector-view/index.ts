@@ -55,7 +55,7 @@ export class W3mWalletConnectConnectorView extends LitElement {
         </w3m-text>
         <w3m-button
           variant="ghost"
-          .icon=${COPY_ICON}
+          .iconLeft=${COPY_ICON}
           .onClick=${() => RouterCtrl.replace('ConnectWallet')}
         >
           Copy to Clipboard

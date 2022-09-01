@@ -17,7 +17,8 @@ export class W3mButton extends ThemedElement {
   // -- state & properties ------------------------------------------- //
   @property() public variant?: Variant = 'fill'
   @property() public disabled? = false
-  @property() public icon?: TemplateResult<2> = undefined
+  @property() public iconLeft?: TemplateResult<2> = undefined
+  @property() public iconRight?: TemplateResult<2> = undefined
   @property() public onClick: () => void = () => null
 
   // -- render ------------------------------------------------------- //
@@ -25,7 +26,9 @@ export class W3mButton extends ThemedElement {
     const classes = {
       'w3m-button': true,
       'w3m-button-fill': this.variant === 'fill',
-      'w3m-button-ghost': this.variant === 'ghost'
+      'w3m-button-ghost': this.variant === 'ghost',
+      'w3m-button-icon-left': this.iconLeft !== undefined,
+      'w3m-button-icon-right': this.iconRight !== undefined
     }
 
     const textColor = getConditionalValue(
@@ -37,10 +40,11 @@ export class W3mButton extends ThemedElement {
       ${dynamicStyles()}
 
       <button class=${classMap(classes)} ?disabled=${this.disabled} @click=${this.onClick}>
-        ${this.icon}
+        ${this.iconLeft}
         <w3m-text variant="small-normal" color=${textColor}>
           <slot></slot>
         </w3m-text>
+        ${this.iconRight}
       </button>
     `
   }
