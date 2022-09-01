@@ -2,7 +2,7 @@ import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { RouterView } from '../../types/routerTypes'
 
 // -- types -------------------------------------------------------- //
-interface State {
+export interface State {
   history: RouterView[]
   view: RouterView
 }

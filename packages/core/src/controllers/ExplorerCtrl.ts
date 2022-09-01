@@ -3,7 +3,7 @@ import type { ListingResponse, PageParams } from '../../types/explorerTypes'
 import { fetchWallets } from '../utils/ExplorerApi'
 
 // -- types -------------------------------------------------------- //
-interface State {
+export interface State {
   search: string
   page: number
   wallets: ListingResponse

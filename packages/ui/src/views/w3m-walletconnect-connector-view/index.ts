@@ -29,11 +29,8 @@ export class W3mWalletConnectConnectorView extends LitElement {
   // -- private ------------------------------------------------------ //
   private async getConnectionUri() {
     try {
-      const data = await ClientCtrl.ethereum().connectWalletConnect(uri => (this.uri = uri))
-      console.log(data)
-      setTimeout(() => {
-        ClientCtrl.ethereum().disconnect()
-      }, 2000)
+      await ClientCtrl.ethereum().connectWalletConnect(uri => (this.uri = uri))
+      ClientCtrl.ethereum().disconnect()
     } catch {
       throw new Error('Denied connection')
     }
