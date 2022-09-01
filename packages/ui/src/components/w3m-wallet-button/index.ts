@@ -24,7 +24,7 @@ export class W3mWalletButton extends ThemedElement {
           <img loading="lazy" decoding="async" src=${this.imgUrl} alt=${this.label} />
         </button>
 
-        <w3m-text variant="xsmall-normal">${this.label}</w3m-text>
+        <w3m-text variant="xsmall-normal" align="center">${this.label}</w3m-text>
       </div>
     `
   }

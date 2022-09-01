@@ -25,9 +25,17 @@ export default css`
   }
 
   .w3m-wallet-button-wrap {
+    width: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  w3m-text {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `
 

@@ -1,5 +1,5 @@
 import { ClientCtrl, RouterCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { html, LitElement, TemplateResult } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-footer'
@@ -21,9 +21,48 @@ export class W3mConnectWalletView extends LitElement {
     RouterCtrl.push('CoinbaseConnector')
   }
 
+  private metaMaskTemplate() {
+    return html`
+      <w3m-wallet-button
+        label="MetaMask"
+        .onClick=${this.onCoinbaseWallet}
+        imgUrl="https://cdn.iconscout.com/icon/free/png-256/metamask-2728406-2261817.png"
+      ></w3m-wallet-button>
+    `
+  }
+
+  private injectedTemplate(name: string) {
+    return html`
+      <w3m-wallet-button
+        label=${name}
+        .onClick=${this.onCoinbaseWallet}
+        imgUrl="https://cdn.iconscout.com/icon/free/png-256/metamask-2728406-2261817.png"
+      ></w3m-wallet-button>
+    `
+  }
+
+  private dynamicSlots() {
+    const injected = ClientCtrl.ethereum().getInjectedConnector()
+    const metamask = ClientCtrl.ethereum().getMetaMaskConnector()
+    let slot1: TemplateResult<1> | null = null
+    let slot2: TemplateResult<1> | null = null
+    if (injected.ready && !metamask.ready) {
+      slot1 = this.injectedTemplate(injected.name)
+      slot2 = this.metaMaskTemplate()
+    } else if (metamask.ready && injected.ready) {
+      slot1 = this.metaMaskTemplate()
+      slot2 = this.injectedTemplate(injected.name)
+    } else {
+      slot1 = this.metaMaskTemplate()
+      slot2 = this.metaMaskTemplate()
+    }
+
+    return { slot1, slot2 }
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
-    console.log(ClientCtrl.ethereum().getInjectedConnector())
+    const { slot1, slot2 } = this.dynamicSlots()
 
     return html`
       <w3m-modal-header title="Connect your wallet"></w3m-modal-header>
@@ -38,23 +77,14 @@ export class W3mConnectWalletView extends LitElement {
         </div>
 
         <div class="w3m-view-row">
+          ${slot1} ${slot2}
           <w3m-wallet-button
-            label="MetaMask"
+            label="Ledger"
             .onClick=${this.onCoinbaseWallet}
             imgUrl="https://cdn.iconscout.com/icon/free/png-256/metamask-2728406-2261817.png"
           ></w3m-wallet-button>
           <w3m-wallet-button
-            label="MetaMask"
-            .onClick=${this.onCoinbaseWallet}
-            imgUrl="https://cdn.iconscout.com/icon/free/png-256/metamask-2728406-2261817.png"
-          ></w3m-wallet-button>
-          <w3m-wallet-button
-            label="MetaMask"
-            .onClick=${this.onCoinbaseWallet}
-            imgUrl="https://cdn.iconscout.com/icon/free/png-256/metamask-2728406-2261817.png"
-          ></w3m-wallet-button>
-          <w3m-wallet-button
-            label="MetaMask"
+            label="View All"
             .onClick=${this.onCoinbaseWallet}
             imgUrl="https://cdn.iconscout.com/icon/free/png-256/metamask-2728406-2261817.png"
           ></w3m-wallet-button>

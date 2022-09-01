@@ -101,6 +101,19 @@ export const Web3ModalEthereum = {
     return data
   },
 
+  getMetaMaskConnector() {
+    const connector = ethereumClient?.connectors.find(item => item.id === 'metaMask')
+    if (!connector) throw new Error('Missing MetaMask connector')
+
+    return connector
+  },
+
+  async connectMetaMask() {
+    const connector = this.getMetaMaskConnector()
+
+    return connector.connect()
+  },
+
   getInjectedConnector() {
     const connector = ethereumClient?.connectors.find(item => item.id === 'injected')
     if (!connector) throw new Error('Missing Injected connector')
@@ -109,8 +122,8 @@ export const Web3ModalEthereum = {
   },
 
   async connectInject() {
-    const injected = this.getInjectedConnector()
+    const connector = this.getInjectedConnector()
 
-    return injected.connect()
+    return connector.connect()
   }
 }
