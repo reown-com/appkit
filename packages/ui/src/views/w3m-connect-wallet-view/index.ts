@@ -3,6 +3,7 @@ import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-header'
+import '../../components/w3m-wallet-button'
 import '../../components/w3m-wc-button'
 import { global } from '../../utils/Theme'
 import styles from './styles'
@@ -26,11 +27,14 @@ export class W3mConnectWalletView extends LitElement {
       <w3m-modal-content>
         <div class="w3m-view-row">
           <w3m-wc-button .onClick=${this.onWalletConnect}></w3m-wc-button>
-          <button @click=${this.onCoinbaseWallet}>Coinbase Wallet</button>
+          <w3m-wallet-button
+            label="Coinbase"
+            .onClick=${this.onCoinbaseWallet}
+            imgUrl="https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0"
+          ></w3m-wallet-button>
         </div>
 
         <button @click=${() => null}>Injected</button>
-        <button @click=${() => RouterCtrl.replace('SelectNetwork')}>Go To Select Network</button>
       </w3m-modal-content>
     `
   }

@@ -5,6 +5,7 @@ export default css`
   .w3m-wc-button {
     width: 100%;
     border-radius: 18px;
+    margin-bottom: 5px;
   }
 
   .w3m-wc-button::after {
@@ -78,6 +79,12 @@ export default css`
     content: '';
     position: absolute;
     inset: 0;
+  }
+
+  .w3m-wc-button-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 `
 
