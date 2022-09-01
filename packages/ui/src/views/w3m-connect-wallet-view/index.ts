@@ -1,5 +1,6 @@
 import { ClientCtrl, RouterCtrl } from '@web3modal/core'
-import { html, LitElement, TemplateResult } from 'lit'
+import type { TemplateResult } from 'lit'
+import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-footer'
@@ -41,12 +42,12 @@ export class W3mConnectWalletView extends LitElement {
     if (injected.ready && !metamask.ready) {
       slot1 = this.injectedTemplate(injected.name)
       slot2 = this.metaMaskTemplate()
-    } else if (metamask.ready && injected.ready) {
+    } else if (metamask.ready && injected.ready && injected.name !== 'MetaMask') {
       slot1 = this.metaMaskTemplate()
       slot2 = this.injectedTemplate(injected.name)
     } else {
       slot1 = this.metaMaskTemplate()
-      slot2 = this.metaMaskTemplate()
+      slot2 = this.injectedTemplate('Brave Wallet')
     }
 
     return { slot1, slot2 }
