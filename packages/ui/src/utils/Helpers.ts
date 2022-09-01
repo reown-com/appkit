@@ -22,7 +22,7 @@ export function getConditionalValue<T extends string>(
   throw new Error('Invalid useConditionalClass arguments')
 }
 
-export function getWalletIcon(name: string, size: 'lg' | 'md' = 'md') {
+export function getWalletIcon(name: string, size: 'lg' | 'md' | 'sm' = 'md') {
   const cdn = 'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA'
   const fallback = '09a83110-5fc3-45e1-65ab-8f7df2d6a400'
   const presets: Record<string, string | undefined> = {

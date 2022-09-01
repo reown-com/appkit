@@ -1,17 +1,16 @@
 import type { TemplateResult } from 'lit'
-import { html } from 'lit'
+import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { getConditionalValue } from '../../utils/Helpers'
 import { global } from '../../utils/Theme'
-import ThemedElement from '../../utils/ThemedElement'
 import '../w3m-text'
 import styles, { dynamicStyles } from './styles'
 
 type Variant = 'fill' | 'ghost'
 
 @customElement('w3m-button')
-export class W3mButton extends ThemedElement {
+export class W3mButton extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //

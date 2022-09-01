@@ -1,8 +1,7 @@
-import { html } from 'lit'
+import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { global } from '../../utils/Theme'
-import ThemedElement from '../../utils/ThemedElement'
 import '../w3m-spinner'
 import styles, { dynamicStyles } from './styles'
 
@@ -21,7 +20,7 @@ type Align = 'center' | 'left' | 'right'
 type Color = 'accent' | 'inverse' | 'primary' | 'secondary'
 
 @customElement('w3m-text')
-export class W3mText extends ThemedElement {
+export class W3mText extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //

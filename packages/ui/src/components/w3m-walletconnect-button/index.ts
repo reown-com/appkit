@@ -1,14 +1,13 @@
 import { ExplorerCtrl } from '@web3modal/core'
-import { html } from 'lit'
+import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { WALLET_CONNECT_ICON_GRADIENT, WALLET_CONNECT_ICON_SHADE } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import ThemedElement from '../../utils/ThemedElement'
 import '../w3m-text'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-walletconnect-button')
-export class W3mWalletConnectButton extends ThemedElement {
+export class W3mWalletConnectButton extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
