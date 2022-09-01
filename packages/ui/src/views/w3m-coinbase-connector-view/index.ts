@@ -9,8 +9,8 @@ import styles from './styles'
 
 const HORIZONTAL_PADDING = 36
 
-@customElement('w3m-coinbase-qrcode-view')
-export class W3mCoinbaseQrCodeView extends LitElement {
+@customElement('w3m-coinbase-connector-view')
+export class W3mCoinbaseConnectorView extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -51,6 +51,6 @@ export class W3mCoinbaseQrCodeView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-coinbase-qrcode-view': W3mCoinbaseQrCodeView
+    'w3m-coinbase-connector-view': W3mCoinbaseConnectorView
   }
 }

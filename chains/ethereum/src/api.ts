@@ -26,13 +26,6 @@ function getCoinbaseConnector() {
   return connector
 }
 
-function getInjectedConnector() {
-  const connector = ethereumClient?.connectors.find(item => item.id === 'injected')
-  if (!connector) throw new Error('Missing Injected connector')
-
-  return connector
-}
-
 // -- public ------------------------------------------------------- //
 export const Web3ModalEthereum = {
   walletConnectRpc({ projectId }: GetWalletConnectProviderOpts) {
@@ -108,8 +101,15 @@ export const Web3ModalEthereum = {
     return data
   },
 
+  getInjectedConnector() {
+    const connector = ethereumClient?.connectors.find(item => item.id === 'injected')
+    if (!connector) throw new Error('Missing Injected connector')
+
+    return connector
+  },
+
   async connectInject() {
-    const injected = getInjectedConnector()
+    const injected = this.getInjectedConnector()
 
     return injected.connect()
   }

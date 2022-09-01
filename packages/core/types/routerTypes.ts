@@ -1,1 +1,7 @@
-export type RouterView = 'CoinbaseQrCode' | 'ConnectWallet' | 'SelectNetwork' | 'WcQrCode'
+export type RouterView =
+  | 'CoinbaseConnector'
+  | 'ConnectWallet'
+  | 'InjectedConnector'
+  | 'MetaMaskConnector'
+  | 'SelectNetwork'
+  | 'WalletConnectConnector'

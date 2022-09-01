@@ -2,7 +2,7 @@ export interface PageParams {
   page?: number
   search?: string
   entries?: number
-  version?: string
+  version?: number
 }
 
 export interface ImageUrl {

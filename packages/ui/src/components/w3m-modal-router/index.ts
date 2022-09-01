@@ -5,10 +5,10 @@ import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
 import { getShadowRootElement } from '../../utils/Helpers'
 import { global } from '../../utils/Theme'
-import '../../views/w3m-coinbase-qrcode-view'
+import '../../views/w3m-coinbase-connector-view'
 import '../../views/w3m-connect-wallet-view'
 import '../../views/w3m-select-network-view'
-import '../../views/w3m-wc-qrcode-view'
+import '../../views/w3m-walletconnect-connector-view'
 import styles from './styles'
 
 @customElement('w3m-modal-router')
@@ -63,10 +63,10 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-connect-wallet-view></w3m-connect-wallet-view>`
       case 'SelectNetwork':
         return html`<w3m-select-network-view></w3m-select-network-view>`
-      case 'WcQrCode':
-        return html`<w3m-wc-qrcode-view></w3m-wc-qrcode-view>`
-      case 'CoinbaseQrCode':
-        return html`<w3m-coinbase-qrcode-view></w3m-coinbase-qrcode-view>`
+      case 'WalletConnectConnector':
+        return html`<w3m-walletconnect-connector-view></w3m-walletconnect-connector-view>`
+      case 'CoinbaseConnector':
+        return html`<w3m-coinbase-connector-view></w3m-coinbase-connector-view>`
       default:
         return html`<div>Not Found</div>`
     }

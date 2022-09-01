@@ -13,8 +13,8 @@ import styles from './styles'
 
 const HORIZONTAL_PADDING = 36
 
-@customElement('w3m-wc-qrcode-view')
-export class W3mWcQrCodeView extends LitElement {
+@customElement('w3m-walletconnect-connector-view')
+export class W3mWalletConnectConnectorView extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -67,6 +67,6 @@ export class W3mWcQrCodeView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-wc-qrcode-view': W3mWcQrCodeView
+    'w3m-walletconnect-conector-view': W3mWalletConnectConnectorView
   }
 }
