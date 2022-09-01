@@ -10,7 +10,7 @@ export default css`
   }
 
   .w3m-button::after {
-    border-radius: 28px;
+    border-radius: inherit;
   }
 
   .w3m-button:disabled::after {

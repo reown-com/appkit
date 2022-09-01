@@ -25,6 +25,6 @@ export default css`
   }
 
   w3m-wallet-image {
-    border-radius: 18px;
+    border-radius: inherit;
   }
 `

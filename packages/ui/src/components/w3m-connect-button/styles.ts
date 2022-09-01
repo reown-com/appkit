@@ -14,7 +14,7 @@ export default css`
     inset: 0;
     position: absolute;
     background-color: transparent;
-    border-radius: 10px;
+    border-radius: inherit;
     transition: background-color 0.2s ease-in-out;
   }
 

@@ -10,14 +10,14 @@ export default css`
 
   .w3m-wc-button::after {
     position: absolute;
-    border-radius: 18px;
+    border-radius: inherit;
     inset: 0;
   }
 
   .w3m-wc-button-container {
     position: relative;
     height: 60px;
-    border-radius: 18px;
+    border-radius: inherit;
     overflow: hidden;
   }
 
@@ -64,7 +64,7 @@ export default css`
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 10px;
+    border-radius: inherit;
   }
 
   .w3m-wc-button-carousel-item img {
