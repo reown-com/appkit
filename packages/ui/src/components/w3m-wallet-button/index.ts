@@ -1,6 +1,7 @@
 import { html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/w3m-text'
+import { getWalletIcon } from '../../utils/Helpers'
 import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import styles, { dynamicStyles } from './styles'
@@ -11,8 +12,7 @@ export class W3mWalletButton extends ThemedElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public onClick: () => void = () => null
-  @property() public label = ''
-  @property() public imgUrl = ''
+  @property() public name = ''
 
   // -- render ------------------------------------------------------- //
   protected render() {
@@ -21,10 +21,10 @@ export class W3mWalletButton extends ThemedElement {
 
       <div class="w3m-wallet-button-wrap">
         <button class="w3m-wallet-button" @click=${this.onClick}>
-          <img loading="lazy" decoding="async" src=${this.imgUrl} alt=${this.label} />
+          <img loading="lazy" decoding="async" src=${getWalletIcon(this.name)} alt=${this.name} />
         </button>
 
-        <w3m-text variant="xsmall-normal" align="center">${this.label}</w3m-text>
+        <w3m-text variant="xsmall-normal" align="center">${this.name}</w3m-text>
       </div>
     `
   }

@@ -23,21 +23,13 @@ export class W3mConnectWalletView extends LitElement {
 
   private metaMaskTemplate() {
     return html`
-      <w3m-wallet-button
-        label="MetaMask"
-        .onClick=${this.onCoinbaseWallet}
-        imgUrl="https://cdn.iconscout.com/icon/free/png-256/metamask-2728406-2261817.png"
-      ></w3m-wallet-button>
+      <w3m-wallet-button name="MetaMask" .onClick=${this.onCoinbaseWallet}></w3m-wallet-button>
     `
   }
 
   private injectedTemplate(name: string) {
     return html`
-      <w3m-wallet-button
-        label=${name}
-        .onClick=${this.onCoinbaseWallet}
-        imgUrl="https://cdn.iconscout.com/icon/free/png-256/metamask-2728406-2261817.png"
-      ></w3m-wallet-button>
+      <w3m-wallet-button name=${name} .onClick=${this.onCoinbaseWallet}></w3m-wallet-button>
     `
   }
 
@@ -69,25 +61,13 @@ export class W3mConnectWalletView extends LitElement {
       <w3m-modal-content>
         <div class="w3m-view-row">
           <w3m-walletconnect-button .onClick=${this.onWalletConnect}></w3m-walletconnect-button>
-          <w3m-wallet-button
-            label="Coinbase"
-            .onClick=${this.onCoinbaseWallet}
-            imgUrl="https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0"
-          ></w3m-wallet-button>
+          <w3m-wallet-button name="Coinbase" .onClick=${this.onCoinbaseWallet}></w3m-wallet-button>
         </div>
 
         <div class="w3m-view-row">
           ${slot1} ${slot2}
-          <w3m-wallet-button
-            label="Ledger"
-            .onClick=${this.onCoinbaseWallet}
-            imgUrl="https://cdn.iconscout.com/icon/free/png-256/metamask-2728406-2261817.png"
-          ></w3m-wallet-button>
-          <w3m-wallet-button
-            label="View All"
-            .onClick=${this.onCoinbaseWallet}
-            imgUrl="https://cdn.iconscout.com/icon/free/png-256/metamask-2728406-2261817.png"
-          ></w3m-wallet-button>
+          <w3m-wallet-button name="Ledger" .onClick=${this.onCoinbaseWallet}></w3m-wallet-button>
+          <w3m-wallet-button name="View All" .onClick=${this.onCoinbaseWallet}></w3m-wallet-button>
         </div>
       </w3m-modal-content>
       <w3m-modal-footer>Hello</w3m-modal-footer>
