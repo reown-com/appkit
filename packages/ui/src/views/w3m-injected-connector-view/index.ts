@@ -20,7 +20,8 @@ export class W3mInjectedConnectorView extends LitElement {
   @state() private connecting = true
   @state() private error = false
 
-  public firstUpdated() {
+  public constructor() {
+    super()
     this.onConnect()
   }
 

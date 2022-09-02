@@ -8,7 +8,7 @@ import '../../components/w3m-modal-header'
 import '../../components/w3m-qrcode'
 import '../../components/w3m-text'
 import { getWalletIcon } from '../../utils/Helpers'
-import { COPY_ICON } from '../../utils/Svgs'
+import { DESKTOP_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import styles from './styles'
 
@@ -60,7 +60,7 @@ export class W3mCoinbaseConnectorView extends LitElement {
         </w3m-text>
         <w3m-button
           variant="ghost"
-          .iconLeft=${COPY_ICON}
+          .iconLeft=${DESKTOP_ICON}
           .onClick=${() => RouterCtrl.replace('ConnectWallet')}
         >
           Open in Coinbase Desktop
