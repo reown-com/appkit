@@ -15,7 +15,7 @@ export class W3mModalBackcard extends LitElement {
 
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
-    whatamesh.initGradient(this.canvasEl)
+    whatamesh.play(this.canvasEl)
   }
 
   public disconnectedCallback() {

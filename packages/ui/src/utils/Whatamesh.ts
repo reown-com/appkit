@@ -11,10 +11,10 @@ export default class Whatamesh {
   angle = 0
   t = 1253106
   last = 0
-  minWidth = 1000
+  minWidth = 650
   height = 650
-  amp = 250
-  seed = 5
+  amp = 300
+  seed = 15
   freqX = 14e-5
   freqY = 29e-5
   freqDelta = 1e-5
@@ -35,7 +35,6 @@ export default class Whatamesh {
     }),
       e(this, 'animate', e => {
         if (this.playing) {
-          console.log('animating')
           if (!this.shouldSkipFrame(e)) {
             if (((this.t += Math.min(e - this.last, 1e3 / 15)), (this.last = e), false)) {
               let e = 160
@@ -48,10 +47,9 @@ export default class Whatamesh {
         }
       })
   }
-  initGradient(selector) {
+  play(selector) {
     this.el = selector
     this.connect()
-    return this
   }
   stop() {
     this.playing = false
