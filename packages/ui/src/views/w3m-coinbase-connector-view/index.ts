@@ -1,4 +1,4 @@
-import { ClientCtrl } from '@web3modal/core'
+import { ClientCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-modal-content'
@@ -44,9 +44,7 @@ export class W3mCoinbaseConnectorView extends LitElement {
             : null}
         </div>
       </w3m-modal-content>
-      <button @click=${() => Web3ModalCore.router.replace('ConnectWallet')}>
-        Go To ConnectWallet
-      </button>
+      <button @click=${() => RouterCtrl.replace('ConnectWallet')}>Go To ConnectWallet</button>
     `
   }
 }

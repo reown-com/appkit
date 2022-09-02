@@ -20,6 +20,7 @@ export default class Whatamesh {
   freqDelta = 1e-5
   activeColors = [1, 1, 1, 1]
   isMetaKey = false
+  playing = false
 
   constructor(...t) {
     e(this, 'resize', () => {
@@ -33,21 +34,27 @@ export default class Whatamesh {
         (this.mesh.material.uniforms.u_shadow_power.value = this.width < 550 ? 5 : 6)
     }),
       e(this, 'animate', e => {
-        if (!this.shouldSkipFrame(e)) {
-          if (((this.t += Math.min(e - this.last, 1e3 / 15)), (this.last = e), false)) {
-            let e = 160
-            this.isMetaKey && (e = -160), (this.t += e)
+        if (this.playing) {
+          console.log('animating')
+          if (!this.shouldSkipFrame(e)) {
+            if (((this.t += Math.min(e - this.last, 1e3 / 15)), (this.last = e), false)) {
+              let e = 160
+              this.isMetaKey && (e = -160), (this.t += e)
+            }
+            ;(this.mesh.material.uniforms.u_time.value = this.t), this.minigl.render()
           }
-          ;(this.mesh.material.uniforms.u_time.value = this.t), this.minigl.render()
+          if (0 !== this.last && this.isStatic) return this.minigl.render()
+          requestAnimationFrame(this.animate)
         }
-        if (0 !== this.last && this.isStatic) return this.minigl.render()
-        requestAnimationFrame(this.animate)
       })
   }
   initGradient(selector) {
     this.el = selector
     this.connect()
     return this
+  }
+  stop() {
+    this.playing = false
   }
   async connect() {
     ;(this.shaderFiles = {
@@ -192,11 +199,11 @@ export default class Whatamesh {
     this.activeColors[index] = 0 === this.activeColors[index] ? 1 : 0
   }
   init() {
-    this.initGradientColors(),
-      this.initMesh(),
-      this.resize(),
-      requestAnimationFrame(this.animate),
-      window.addEventListener('resize', this.resize)
+    this.playing = true
+    this.initGradientColors()
+    this.initMesh()
+    this.resize()
+    requestAnimationFrame(this.animate)
   }
   waitForCssVars() {
     if (

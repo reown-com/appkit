@@ -7,14 +7,19 @@ import { global } from '../../utils/Theme'
 import Whatamesh from '../../utils/Whatamesh'
 import styles, { dynamicStyles } from './styles'
 
+const whatamesh = new Whatamesh()
+
 @customElement('w3m-modal-backcard')
 export class W3mModalBackcard extends LitElement {
   public static styles = [global, styles]
 
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
-    const whatamesh = new Whatamesh()
     whatamesh.initGradient(this.canvasEl)
+  }
+
+  public disconnectedCallback() {
+    whatamesh.stop()
   }
 
   // -- private ------------------------------------------------------ //

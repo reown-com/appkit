@@ -13,6 +13,7 @@ export default css`
     background-color: rgba(0, 0, 0, 0.5);
     opacity: 0;
     pointer-events: none;
+    will-change: opacity;
   }
 
   .w3m-modal-open {
@@ -24,6 +25,7 @@ export default css`
     width: 100%;
     max-width: 400px;
     max-height: 90vh;
+    will-change: transform;
   }
 
   .w3m-modal-card {
