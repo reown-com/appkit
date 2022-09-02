@@ -207,6 +207,7 @@ export function color(alpha = 1) {
       accent: accent.background,
       ...theme.background
     },
-    overlay: { ...theme.overlay }
+    overlay: { ...theme.overlay },
+    error: `rgba(242, 90, 103, ${alpha})`
   }
 }

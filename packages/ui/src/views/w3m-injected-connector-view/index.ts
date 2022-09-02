@@ -1,50 +1,71 @@
-import { ClientCtrl, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
+import { classMap } from 'lit/directives/class-map.js'
+import '../../components/w3m-button'
 import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-header'
 import '../../components/w3m-qrcode'
-import { global } from '../../utils/Theme'
+import '../../components/w3m-spinner'
+import '../../components/w3m-text'
+import '../../components/w3m-wallet-image'
+import { RETRY_ICON } from '../../utils/Svgs'
+import { color, global } from '../../utils/Theme'
 import styles from './styles'
-
-const HORIZONTAL_PADDING = 36
 
 @customElement('w3m-injected-connector-view')
 export class W3mInjectedConnectorView extends LitElement {
   public static styles = [global, styles]
 
-  // -- state & properties ------------------------------------------- //
-  @state() private uri = ''
+  @state() private connecting = true
+  @state() private error = false
 
-  // -- lifecycle ---------------------------------------------------- //
-  public constructor() {
-    super()
-    this.getConnectionUri()
+  public firstUpdated() {
+    this.onConnect()
   }
 
-  // -- private ------------------------------------------------------ //
-  private async getConnectionUri() {
+  private async onConnect() {
     try {
-      await ClientCtrl.ethereum().connectCoinbase(uri => (this.uri = uri))
-      ClientCtrl.ethereum().disconnect()
-    } catch {
-      throw new Error('Denied connection')
+      this.error = false
+      this.connecting = true
+      await ClientCtrl.ethereum().connectInjected()
+    } catch (error: unknown) {
+      this.error = true
+      this.connecting = false
     }
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
+    const connector = ClientCtrl.ethereum().getInjectedConnector()
+    const classes = {
+      'w3m-injected-wrapper': true,
+      'w3m-injected-error': this.error
+    }
+
     return html`
-      <w3m-modal-header title="Coinbase"></w3m-modal-header>
+      <w3m-modal-header title=${connector.name}></w3m-modal-header>
       <w3m-modal-content>
-        <div class="w3m-qr-container">
-          ${this.uri
-            ? html`<w3m-qrcode size=${this.offsetWidth - HORIZONTAL_PADDING} uri=${this.uri}>
-              </w3m-qrcode>`
-            : null}
+        <div class=${classMap(classes)}>
+          <w3m-wallet-image name=${connector.name} size="lg"></w3m-wallet-image>
+          <div class="w3m-connecting-title">
+            ${this.connecting
+              ? html`<w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>`
+              : null}
+            <w3m-text variant="large-bold" color=${this.error ? 'error' : 'secondary'}>
+              ${this.error ? 'Connection declined' : `Continue in ${connector.name}...`}
+            </w3m-text>
+          </div>
+
+          <w3m-button
+            .onClick=${this.onConnect.bind(this)}
+            .disabled=${!this.error}
+            .iconRight=${RETRY_ICON}
+          >
+            Try Again
+          </w3m-button>
         </div>
       </w3m-modal-content>
-      <button @click=${() => RouterCtrl.replace('ConnectWallet')}>Go To ConnectWallet</button>
     `
   }
 }

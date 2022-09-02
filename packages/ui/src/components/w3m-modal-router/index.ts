@@ -7,6 +7,7 @@ import { getShadowRootElement } from '../../utils/Helpers'
 import { global } from '../../utils/Theme'
 import '../../views/w3m-coinbase-connector-view'
 import '../../views/w3m-connect-wallet-view'
+import '../../views/w3m-injected-connector-view'
 import '../../views/w3m-select-network-view'
 import '../../views/w3m-walletconnect-connector-view'
 import styles from './styles'
@@ -31,16 +32,8 @@ export class W3mModalRouter extends LitElement {
     this.resizeObserver = new ResizeObserver(([conetnt]) => {
       const newHeight = `${conetnt.borderBoxSize[0].blockSize}px`
       if (this.oldHeight !== '0px') {
-        animate(
-          this.routerEl,
-          { height: [this.oldHeight, newHeight] },
-          { duration: 0.2, delay: 0.05 }
-        )
-        animate(
-          this.routerEl,
-          { opacity: [0, 1], scale: [0.96, 1] },
-          { duration: 0.22, delay: 0.05 }
-        )
+        animate(this.routerEl, { height: [this.oldHeight, newHeight] }, { duration: 0.15 })
+        animate(this.routerEl, { opacity: [0, 1], scale: [0.99, 1] }, { duration: 0.2, delay: 0.1 })
       }
       this.oldHeight = newHeight
     })
@@ -75,6 +68,8 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-walletconnect-connector-view></w3m-walletconnect-connector-view>`
       case 'CoinbaseConnector':
         return html`<w3m-coinbase-connector-view></w3m-coinbase-connector-view>`
+      case 'InjectedConnector':
+        return html`<w3m-injected-connector-view></w3m-injected-connector-view>`
       default:
         return html`<div>Not Found</div>`
     }

@@ -34,11 +34,3 @@ export function getWalletIcon(name: string, size: 'lg' | 'md' | 'sm' = 'md') {
 
   return `${cdn}/${presets[name] ?? fallback}/${size}`
 }
-
-export function getWalletName(name: string) {
-  const presets: Record<string, string | undefined> = {
-    'Brave Wallet': 'Brave'
-  }
-
-  return presets[name] ?? name
-}

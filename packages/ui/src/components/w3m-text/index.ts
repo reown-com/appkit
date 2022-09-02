@@ -17,7 +17,7 @@ type Variant =
 
 type Align = 'center' | 'left' | 'right'
 
-type Color = 'accent' | 'inverse' | 'primary' | 'secondary'
+type Color = 'accent' | 'error' | 'inverse' | 'primary' | 'secondary'
 
 @customElement('w3m-text')
 export class W3mText extends LitElement {
@@ -46,7 +46,8 @@ export class W3mText extends LitElement {
       'w3m-color-primary': this.color === 'primary',
       'w3m-color-secondary': this.color === 'secondary',
       'w3m-color-inverse': this.color === 'inverse',
-      'w3m-color-accnt': this.color === 'accent'
+      'w3m-color-accnt': this.color === 'accent',
+      'w3m-color-error': this.color === 'error'
     }
 
     return html`

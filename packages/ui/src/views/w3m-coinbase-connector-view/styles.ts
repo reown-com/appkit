@@ -5,4 +5,9 @@ export default css`
     width: 100%;
     aspect-ratio: 1 / 1;
   }
+
+  .w3m-info-text {
+    margin: 10px 0 22px;
+    max-width: 320px;
+  }
 `

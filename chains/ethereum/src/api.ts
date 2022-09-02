@@ -121,9 +121,10 @@ export const Web3ModalEthereum = {
     return connector
   },
 
-  async connectInject() {
+  async connectInjected() {
     const connector = this.getInjectedConnector()
+    const data = await connector.connect()
 
-    return connector.connect()
+    return data
   }
 }

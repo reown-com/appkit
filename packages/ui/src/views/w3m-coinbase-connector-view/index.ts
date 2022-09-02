@@ -1,10 +1,14 @@
 import { ClientCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
+import '../../components/w3m-button'
 import '../../components/w3m-modal-content'
+import '../../components/w3m-modal-footer'
 import '../../components/w3m-modal-header'
 import '../../components/w3m-qrcode'
+import '../../components/w3m-text'
 import { getWalletIcon } from '../../utils/Helpers'
+import { COPY_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import styles from './styles'
 
@@ -49,7 +53,19 @@ export class W3mCoinbaseConnectorView extends LitElement {
             : null}
         </div>
       </w3m-modal-content>
-      <button @click=${() => RouterCtrl.replace('ConnectWallet')}>Go To ConnectWallet</button>
+      <w3m-modal-footer>
+        <w3m-text variant="large-bold">Scan with Coinbase Wallet</w3m-text>
+        <w3m-text variant="medium-thin" align="center" color="secondary" class="w3m-info-text">
+          Open Coinbase Wallet on your phone and scan the code to connect
+        </w3m-text>
+        <w3m-button
+          variant="ghost"
+          .iconLeft=${COPY_ICON}
+          .onClick=${() => RouterCtrl.replace('ConnectWallet')}
+        >
+          Open in Coinbase Desktop
+        </w3m-button>
+      </w3m-modal-footer>
     `
   }
 }

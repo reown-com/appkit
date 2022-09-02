@@ -1,7 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/w3m-text'
-import { getWalletName } from '../../utils/Helpers'
 import { global } from '../../utils/Theme'
 import '../w3m-wallet-image'
 import styles from './styles'
@@ -22,7 +21,7 @@ export class W3mWalletButton extends LitElement {
           <w3m-wallet-image name=${this.name}></w3m-wallet-image>
         </button>
 
-        <w3m-text variant="xsmall-normal">${getWalletName(this.name)}</w3m-text>
+        <w3m-text variant="xsmall-normal">${this.name}</w3m-text>
       </div>
     `
   }
