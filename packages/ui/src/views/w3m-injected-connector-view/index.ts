@@ -4,14 +4,13 @@ import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-header'
 import '../../components/w3m-qrcode'
-import { getWalletIcon } from '../../utils/Helpers'
 import { global } from '../../utils/Theme'
 import styles from './styles'
 
 const HORIZONTAL_PADDING = 36
 
-@customElement('w3m-coinbase-connector-view')
-export class W3mCoinbaseConnectorView extends LitElement {
+@customElement('w3m-injected-connector-view')
+export class W3mInjectedConnectorView extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -40,11 +39,7 @@ export class W3mCoinbaseConnectorView extends LitElement {
       <w3m-modal-content>
         <div class="w3m-qr-container">
           ${this.uri
-            ? html`<w3m-qrcode
-                size=${this.offsetWidth - HORIZONTAL_PADDING}
-                uri=${this.uri}
-                logoSrc=${getWalletIcon('Coinbase', 'lg')}
-              >
+            ? html`<w3m-qrcode size=${this.offsetWidth - HORIZONTAL_PADDING} uri=${this.uri}>
               </w3m-qrcode>`
             : null}
         </div>
@@ -56,6 +51,6 @@ export class W3mCoinbaseConnectorView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-coinbase-connector-view': W3mCoinbaseConnectorView
+    'w3m-injected-connector-view': W3mInjectedConnectorView
   }
 }

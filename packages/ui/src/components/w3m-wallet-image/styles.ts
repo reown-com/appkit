@@ -6,8 +6,8 @@ export default css`
     overflow: hidden;
     position: relative;
     border-radius: inherit;
-    width: inherit;
-    height: inherit;
+    width: 100%;
+    height: 100%;
   }
 
   .w3m-wallet-image::after {
