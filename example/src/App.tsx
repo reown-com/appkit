@@ -64,7 +64,7 @@ const SContainer = styled.div`
 `;
 
 const SLanding = styled(Column)`
-  height: 600px;
+  height: 100%;
 `;
 
 const SModalContainer = styled.div`

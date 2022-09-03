@@ -15,7 +15,7 @@ interface IColumnProps extends IColumnStyleProps {
 const SColumn = styled.div<IColumnStyleProps>`
   position: relative;
   width: 100%;
-  height: ${({ spanHeight }) => (spanHeight ? "100%" : "auto")};
+  height: ${({ spanHeight }) => (spanHeight ? "100vh" : "auto")};
   max-width: ${({ maxWidth }) => `${maxWidth}px`};
   margin: 0 auto;
   display: flex;
