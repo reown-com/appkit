@@ -27,8 +27,6 @@ import BinanceChainWalletLogo from "../logos/binancechainwallet.svg";
 // @ts-ignore
 import CoinbaseWalletLogo from "../logos/coinbasewallet.svg";
 // @ts-ignore
-import WalletLinkLogo from "../logos/walletlink.svg";
-// @ts-ignore
 import Web3AuthLogo from "../logos/web3auth.svg";
 // @ts-ignore
 import SequenceLogo from "../logos/sequence.svg";
