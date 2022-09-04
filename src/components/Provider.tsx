@@ -34,12 +34,36 @@ interface IStyedThemeColorOptions {
   themeColors: ThemeColors;
 }
 
-const SName = styled.div<IStyedThemeColorOptions>`
+const SName = styled.button<IStyedThemeColorOptions>`
   width: 100%;
   font-size: 24px;
   font-weight: 700;
+  overflow: hidden;
+  background-color: transparent;
+  border: none;
+  outline: none;
   margin-top: 0.5em;
   color: ${({ themeColors }) => themeColors.main};
+
+  @media (hover: hover) {
+    &:hover, &:focus {
+      &::before {
+        background-color: ${({themeColors}) => themeColors.hover};
+      }
+    }
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    cursor: pointer;
+    background-color: transparent;
+  }
+
   @media screen and (max-width: 768px) {
     font-size: 5vw;
   }
@@ -71,20 +95,15 @@ const SProviderContainer = styled.div<IStyedThemeColorOptions>`
 `;
 
 const SProviderWrapper = styled.div<IStyedThemeColorOptions>`
+  position: relative;
   width: 100%;
   padding: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  cursor: pointer;
   border-radius: 0;
   border: ${({ themeColors }) => `1px solid ${themeColors.border}`};
-  @media (hover: hover) {
-    &:hover ${SProviderContainer} {
-      background-color: ${({ themeColors }) => themeColors.hover};
-    }
-  }
 `;
 
 interface IProviderProps {
@@ -108,7 +127,6 @@ export function Provider(props: IProviderProps) {
     <SProviderWrapper
       themeColors={themeColors}
       className={PROVIDER_WRAPPER_CLASSNAME}
-      onClick={onClick}
       {...otherProps}
     >
       <SProviderContainer
@@ -118,7 +136,7 @@ export function Provider(props: IProviderProps) {
         <SIcon className={PROVIDER_ICON_CLASSNAME}>
           <img src={logo} alt={name} />
         </SIcon>
-        <SName themeColors={themeColors} className={PROVIDER_NAME_CLASSNAME}>
+        <SName onClick={onClick} themeColors={themeColors} className={PROVIDER_NAME_CLASSNAME}>
           {name}
         </SName>
         <SDescription

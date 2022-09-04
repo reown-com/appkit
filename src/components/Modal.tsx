@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 import styled from "styled-components";
+import ReactFocusLock from "react-focus-lock";
 
 import { Provider } from "./Provider";
 import {
@@ -156,6 +157,14 @@ export class Modal extends React.Component<IModalProps, IModalState> {
     ...INITIAL_STATE
   };
 
+  public componentWillMount() {
+    window.addEventListener('keydown', this.handleKeyDown);
+  }
+
+  public componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+  }
+
   public componentDidUpdate(prevProps: IModalProps, prevState: IModalState) {
     if (prevState.show && !this.state.show) {
       this.props.resetState();
@@ -173,6 +182,12 @@ export class Modal extends React.Component<IModalProps, IModalState> {
     }
   }
 
+  handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      this.props.onClose();
+    }
+  };
+
   public render = () => {
     const { show, lightboxOffset } = this.state;
 
@@ -188,25 +203,27 @@ export class Modal extends React.Component<IModalProps, IModalState> {
       >
         <SModalContainer className={MODAL_CONTAINER_CLASSNAME} show={show}>
           <SHitbox className={MODAL_HITBOX_CLASSNAME} onClick={onClose} />
-          <SModalCard
-            className={MODAL_CARD_CLASSNAME}
-            show={show}
-            themeColors={themeColors}
-            maxWidth={userOptions.length < 3 ? 500 : 800}
-            ref={c => (this.mainModalCard = c)}
-          >
-            {userOptions.map(provider =>
-              !!provider ? (
-                <Provider
-                  name={provider.name}
-                  logo={provider.logo}
-                  description={provider.description}
-                  themeColors={themeColors}
-                  onClick={provider.onClick}
-                />
-              ) : null
-            )}
-          </SModalCard>
+            <ReactFocusLock>
+              <SModalCard
+                className={MODAL_CARD_CLASSNAME}
+                show={show}
+                themeColors={themeColors}
+                maxWidth={userOptions.length < 3 ? 500 : 800}
+                ref={c => (this.mainModalCard = c)}
+              >
+                {userOptions.map(provider =>
+                  !!provider ? (
+                    <Provider
+                      name={provider.name}
+                      logo={provider.logo}
+                      description={provider.description}
+                      themeColors={themeColors}
+                      onClick={provider.onClick}
+                    />
+                  ) : null
+                )}
+              </SModalCard>
+          </ReactFocusLock>
         </SModalContainer>
       </SLightbox>
     );

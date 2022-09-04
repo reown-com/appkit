@@ -107,20 +107,18 @@ export const globalStyle = `
   	-webkit-text-size-adjust: 100%;
     -webkit-overflow-scrolling: touch;
     -ms-text-size-adjust: 100%;
-    -webkit-text-size-adjust: 100%;  
+    -webkit-text-size-adjust: 100%;
   }
 
   button {
     border-style: none;
     line-height: 1em;
     background-image: none;
-    outline: 0;
     -webkit-box-shadow: none;
             box-shadow: none;
   }
 
   [tabindex] {
-    outline: none;
     width: 100%;
     height: 100%;
   }
@@ -153,10 +151,9 @@ export const globalStyle = `
 
   a {
     background-color: transparent;
-    -webkit-text-decoration-skip: objects;  
+    -webkit-text-decoration-skip: objects;
     text-decoration: none;
     color: inherit;
-    outline: none;
   }
 
   b,
