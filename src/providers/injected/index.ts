@@ -79,6 +79,14 @@ export const METAMASK: IProviderInfo = {
   check: "isMetaMask"
 };
 
+export const BITIZEN: IProviderInfo = {
+  id: "injected",
+  name: "Bitizen Wallet",
+  logo: 'https://bitizen.org/sdk/assets/logo.png',
+  type: "injected",
+  check: "isBitizen"
+};
+
 export const SAFE: IProviderInfo = {
   id: "injected",
   name: "Safe",

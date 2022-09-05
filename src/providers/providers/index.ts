@@ -53,6 +53,17 @@ export const WALLETCONNECT: IProviderInfo = {
   }
 };
 
+export const BITIZEN: IProviderInfo = {
+  id: "bitizen",
+  name: "Bitizen Wallet",
+  logo: 'https://bitizen.org/sdk/assets/logo.png',
+  type: "qrcode",
+  check: "isBitizen",
+  package: {
+    required: [["infuraId", "rpc"]]
+  }
+};
+
 export const PORTIS: IProviderInfo = {
   id: "portis",
   name: "Portis",

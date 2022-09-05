@@ -10,6 +10,7 @@ import WalletConnect from "@walletconnect/web3-provider";
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 // @ts-ignore
 import { Web3Auth } from "@web3auth/web3auth";
+import BitizenConnect from "@bitizenwallet/connector-web3-provider";
 
 import Button from "./components/Button";
 import Column from "./components/Column";
@@ -231,11 +232,13 @@ class App extends React.Component<any, any> {
 
   public getProviderOptions = () => {
     const infuraId = process.env.REACT_APP_INFURA_ID;
+    const rpc = process.env.REACT_APP_RPC;
     const providerOptions = {
       walletconnect: {
         package: WalletConnect,
         options: {
-          infuraId
+          infuraId,
+          rpc
         }
       },
       coinbasewallet: {
@@ -249,6 +252,13 @@ class App extends React.Component<any, any> {
         package: Web3Auth,
         options: {
           infuraId
+        }
+      },
+      bitizen: {
+        package: BitizenConnect,
+        options: {
+          infuraId,
+          rpc
         }
       }
     };

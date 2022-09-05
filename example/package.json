@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/core": "7.12.3",
+    "@bitizenwallet/connector-web3-provider": "^1.8.6",
     "@coinbase/wallet-sdk": "^3.0.4",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.2",
     "@svgr/webpack": "5.4.0",
