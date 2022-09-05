@@ -33,8 +33,6 @@ import Web3AuthLogo from "../logos/web3auth.svg";
 // @ts-ignore
 import SequenceLogo from "../logos/sequence.svg";
 // @ts-ignore
-import BitkeepLogo from "../logos/bitkeepwallet.png";
-// @ts-ignore
 import StarzWalletLogo from "../logos/starzwallet.svg";
 
 
@@ -208,13 +206,6 @@ export const WEB3AUTH: IProviderInfo = {
   check: "isWeb3Auth"
 };
 
-export const BITKEEPWALLET: IProviderInfo = {
-  id: "bitkeep",
-  name: "Bitkeep Wallet",
-  logo: BitkeepLogo,
-  type: "injected",
-  check: "isBitKeep"
-};
 
 export const STARZWALLET: IProviderInfo = {
   id: "starzwallet",
