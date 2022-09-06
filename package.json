@@ -95,6 +95,8 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "styled-components": "^5.3.3",
+    "tallyho-detect-provider": "^1.0.2",
+    "tallyho-onboarding": "^1.0.2",
     "tslib": "^1.10.0"
   }
 }
