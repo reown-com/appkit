@@ -41,7 +41,9 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
 }
 
 export function verifyInjectedProvider(check: string): boolean {
-  return window.ethereum
+  return (check === "isTally") 
+  ? window.tally 
+  : window.ethereum
     ? window.ethereum[check]
     : window.web3 &&
         window.web3.currentProvider &&
@@ -186,7 +188,7 @@ export function filterProviderChecks(checks: string[]): string {
       if (
         checks[0] === injected.METAMASK.check ||
         checks[0] === injected.CIPHER.check ||
-        checks[1] === injected.TALLYHOINJECTED.check && checks[0] === injected.FALLBACK.check
+        (checks[0] === injected.FALLBACK.check && checks[1] === injected.TALLYHOINJECTED.check)
       ) {
         return checks[1];
       }

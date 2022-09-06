@@ -23,6 +23,7 @@ declare global {
     opera: any;
     bitkeep: any;
     starzwallet: any;
+    tally: any;
   }
 }
 

@@ -1,6 +1,8 @@
 const ConnectToInjected = async () => {
   let provider = null;
-  if (typeof window.ethereum !== 'undefined') {
+  if (window.tally) {
+    provider = window.tally;
+  } else if  (typeof window.ethereum !== 'undefined') {
     provider = window.ethereum;
     try {
       await provider.request({ method: 'eth_requestAccounts' })
