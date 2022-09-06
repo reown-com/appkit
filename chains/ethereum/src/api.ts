@@ -16,20 +16,6 @@ const NAMESPACE = 'eip155'
 // -- private ------------------------------------------------------ //
 let ethereumClient = undefined as EthereumClient | undefined
 
-function getWalletConnectConnector() {
-  const connector = ethereumClient?.connectors.find(item => item.id === 'walletConnect')
-  if (!connector) throw new Error('Missing WalletConnect connector')
-
-  return connector
-}
-
-function getCoinbaseConnector() {
-  const connector = ethereumClient?.connectors.find(item => item.id === 'coinbaseWallet')
-  if (!connector) throw new Error('Missing Coinbase Wallet connector')
-
-  return connector
-}
-
 // -- public ------------------------------------------------------- //
 export const Web3ModalEthereum = {
   walletConnectRpc({ projectId }: GetWalletConnectProviderOpts) {
@@ -55,11 +41,11 @@ export const Web3ModalEthereum = {
     const chain = ethereumClient.data?.chain
 
     // Populate connected data
-    if (account && chain) AccountCtrl.connectAccount(account, `${NAMESPACE}:${chain.id}`)
+    if (account && chain) AccountCtrl.setAccount(account, `${NAMESPACE}:${chain.id}`)
 
     // Preheat connectors
-    const walletConnect = getWalletConnectConnector()
-    const coinbase = getCoinbaseConnector()
+    const walletConnect = this.getConnectorById('walletConnect')
+    const coinbase = this.getConnectorById('coinbaseWallet')
     walletConnect.connect()
     coinbase.connect()
 
@@ -67,13 +53,20 @@ export const Web3ModalEthereum = {
   },
 
   // -- connectors ------------------------------------------------- //
+  getConnectorById(id: 'coinbaseWallet' | 'injected' | 'metaMask' | 'walletConnect') {
+    const connector = ethereumClient?.connectors.find(item => item.id === id)
+    if (!connector) throw new Error(`Missing ${id} connector`)
+
+    return connector
+  },
+
   disconnect() {
     ethereumClient?.connectors.forEach(async connector => connector.disconnect())
-    AccountCtrl.disconnectAccount()
+    AccountCtrl.resetAccount()
   },
 
   async connectWalletConnect(onUri: (uri: string) => void) {
-    const connector = getWalletConnectConnector()
+    const connector = this.getConnectorById('walletConnect')
 
     async function getProviderUri() {
       return new Promise<void>(resolve => {
@@ -88,13 +81,13 @@ export const Web3ModalEthereum = {
     }
 
     const [data] = await Promise.all([connector.connect(), getProviderUri()])
-    AccountCtrl.connectAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
+    AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
     return data
   },
 
   async connectCoinbase(onUri: (uri: string) => void) {
-    const connector = getCoinbaseConnector()
+    const connector = this.getConnectorById('coinbaseWallet')
 
     async function getProviderUri() {
       return new Promise<void>(resolve => {
@@ -109,33 +102,23 @@ export const Web3ModalEthereum = {
     }
 
     const [data] = await Promise.all([connector.connect(), getProviderUri()])
+    AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
     return data
   },
 
-  getMetaMaskConnector() {
-    const connector = ethereumClient?.connectors.find(item => item.id === 'metaMask')
-    if (!connector) throw new Error('Missing MetaMask connector')
-
-    return connector
-  },
-
   async connectMetaMask() {
-    const connector = this.getMetaMaskConnector()
+    const connector = this.getConnectorById('metaMask')
+    const data = await connector.connect()
+    AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
-    return connector.connect()
-  },
-
-  getInjectedConnector() {
-    const connector = ethereumClient?.connectors.find(item => item.id === 'injected')
-    if (!connector) throw new Error('Missing Injected connector')
-
-    return connector
+    return data
   },
 
   async connectInjected() {
-    const connector = this.getInjectedConnector()
+    const connector = this.getConnectorById('injected')
     const data = await connector.connect()
+    AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
     return data
   }

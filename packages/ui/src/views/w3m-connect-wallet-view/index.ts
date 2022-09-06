@@ -43,8 +43,8 @@ export class W3mConnectWalletView extends LitElement {
   }
 
   private dynamicSlots() {
-    const injected = ClientCtrl.ethereum().getInjectedConnector()
-    const metamask = ClientCtrl.ethereum().getMetaMaskConnector()
+    const injected = ClientCtrl.ethereum().getConnectorById('injected')
+    const metamask = ClientCtrl.ethereum().getConnectorById('metaMask')
     let slot1: TemplateResult<1> | null = null
     let slot2: TemplateResult<1> | null = null
     if (injected.ready && !metamask.ready) {

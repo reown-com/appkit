@@ -1,4 +1,4 @@
-import { ClientCtrl } from '@web3modal/core'
+import { ClientCtrl, ModalCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -25,13 +25,16 @@ export class W3mInjectedConnectorView extends LitElement {
     this.onConnect()
   }
 
+  private readonly connector = ClientCtrl.ethereum().getConnectorById('injected')
+
   private async onConnect() {
     try {
-      const { ready } = ClientCtrl.ethereum().getInjectedConnector()
+      const { ready } = this.connector
       if (ready) {
         this.error = false
         this.connecting = true
         await ClientCtrl.ethereum().connectInjected()
+        ModalCtrl.closeModal()
       }
     } catch (error: unknown) {
       this.error = true
@@ -41,7 +44,7 @@ export class W3mInjectedConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { name } = ClientCtrl.ethereum().getInjectedConnector()
+    const { name } = this.connector
     const classes = {
       'w3m-injected-wrapper': true,
       'w3m-injected-error': this.error

@@ -18,13 +18,13 @@ export const AccountCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  connectAccount(address: Account['address'], chainId: Account['chainId']) {
+  setAccount(address: Account['address'], chainId: Account['chainId']) {
     state.address = address
     state.chainId = chainId
     state.connected = true
   },
 
-  disconnectAccount() {
+  resetAccount() {
     Object.assign(state, initialState)
   }
 }

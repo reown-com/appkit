@@ -1,4 +1,4 @@
-import { ClientCtrl, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, ModalCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-button'
@@ -31,6 +31,7 @@ export class W3mCoinbaseConnectorView extends LitElement {
   private async getConnectionUri() {
     try {
       await ClientCtrl.ethereum().connectCoinbase(uri => (this.uri = uri))
+      ModalCtrl.closeModal()
     } catch {
       throw new Error('Denied connection')
     }
