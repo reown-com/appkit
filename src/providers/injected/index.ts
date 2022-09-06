@@ -231,8 +231,8 @@ export const BLOCKWALLET: IProviderInfo = {
   check: "isBlockWallet"
 };
 
-export const TALLYHOINJECTED: IProviderInfo = {
-  id: "injected",
+export const TALLYHOWALLET: IProviderInfo = {
+  id: "tallyhowallet",
   name: "Tally Ho",
   logo: TallyHoLogo,
   type: "injected",

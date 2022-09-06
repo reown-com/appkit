@@ -11,7 +11,7 @@ const ConnectToTallyHo: any = async () => {
           throw new Error('No TallyHo Provider found, redirecting to onboarding');
         }
     } catch (error) {
-        console.log("User Rejected:"  + error);
+        throw new Error("User Rejected:"  + error);
     }
     return provider;
   };

@@ -179,6 +179,7 @@ export function filterProviders(
     x => x[param] === value,
     providers.FALLBACK
   );
+  if(param == "check" && value == "isTally" && match?.id == "tallyhowallet") { match.id = 'injected'};
   return match || providers.FALLBACK;
 }
 
@@ -188,7 +189,7 @@ export function filterProviderChecks(checks: string[]): string {
       if (
         checks[0] === injected.METAMASK.check ||
         checks[0] === injected.CIPHER.check ||
-        (checks[0] === injected.FALLBACK.check && checks[1] === injected.TALLYHOINJECTED.check)
+        (checks[0] === injected.FALLBACK.check && checks[1] === injected.TALLYHOWALLET.check)
       ) {
         return checks[1];
       }
