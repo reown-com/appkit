@@ -6,7 +6,7 @@ export function useAccount() {
   const [account, setAccount] = useState<Account>({ connected: false, chainId: '', address: '' })
 
   useEffect(() => {
-    const unsubscribe = AccountCtrl.subscribe(newAccount => setAccount(newAccount))
+    const unsubscribe = AccountCtrl.subscribe(newAccount => setAccount({ ...newAccount }))
 
     return () => unsubscribe()
   }, [])

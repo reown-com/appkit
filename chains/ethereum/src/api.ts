@@ -1,4 +1,4 @@
-import { InjectedConnector } from '@wagmi/core'
+import { connect, disconnect, InjectedConnector } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
@@ -60,8 +60,8 @@ export const Web3ModalEthereum = {
     return connector
   },
 
-  disconnect() {
-    ethereumClient?.connectors.forEach(async connector => connector.disconnect())
+  async disconnect() {
+    await disconnect()
     AccountCtrl.resetAccount()
   },
 
@@ -80,7 +80,7 @@ export const Web3ModalEthereum = {
       })
     }
 
-    const [data] = await Promise.all([connector.connect(), getProviderUri()])
+    const [data] = await Promise.all([connect({ connector, chainId: 1 }), getProviderUri()])
     AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
     return data
@@ -101,7 +101,7 @@ export const Web3ModalEthereum = {
       })
     }
 
-    const [data] = await Promise.all([connector.connect(), getProviderUri()])
+    const [data] = await Promise.all([connect({ connector, chainId: 1 }), getProviderUri()])
     AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
     return data
@@ -109,7 +109,7 @@ export const Web3ModalEthereum = {
 
   async connectMetaMask() {
     const connector = this.getConnectorById('metaMask')
-    const data = await connector.connect()
+    const data = await connect({ connector, chainId: 1 })
     AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
     return data
@@ -117,7 +117,7 @@ export const Web3ModalEthereum = {
 
   async connectInjected() {
     const connector = this.getConnectorById('injected')
-    const data = await connector.connect()
+    const data = await connect({ connector, chainId: 1 })
     AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
     return data
