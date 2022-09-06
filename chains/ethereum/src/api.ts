@@ -4,17 +4,12 @@ import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
-import { AccountCtrl } from '@web3modal/core'
 import type {
   EthereumClient,
   GetDefaultConnectorsOpts,
   GetWalletConnectProviderOpts
 } from '../types/apiTypes'
-
-// -- constants ---------------------------------------------------- //
-const NAMESPACE = 'eip155'
-
-let ethereumClient = undefined as EthereumClient | undefined
+import { ethereumClient, initClient, NAMESPACE } from './utilities'
 
 export const Web3ModalEthereum = {
   // -- config ------------------------------------------------------- //
@@ -36,12 +31,7 @@ export const Web3ModalEthereum = {
   },
 
   createClient(wagmiClient: EthereumClient) {
-    ethereumClient = wagmiClient
-    const account = ethereumClient.data?.account
-    const chain = ethereumClient.data?.chain
-
-    // Populate connected data
-    if (account && chain) AccountCtrl.setAccount(account, `${NAMESPACE}:${chain.id}`)
+    initClient(wagmiClient)
 
     // Preheat connectors
     const walletConnect = this.getConnectorById('walletConnect')
@@ -53,7 +43,7 @@ export const Web3ModalEthereum = {
   },
 
   // -- chains ----------------------------------------------------- //
-  getDefaultChainId(connector: Connector) {
+  getDefaultConnectorChainId(connector: Connector) {
     const chainId = connector.chains[0].id
 
     return chainId
@@ -68,13 +58,12 @@ export const Web3ModalEthereum = {
   },
 
   async disconnect() {
-    await disconnect()
-    AccountCtrl.resetAccount()
+    return disconnect()
   },
 
   async connectWalletConnect(onUri: (uri: string) => void) {
     const connector = this.getConnectorById('walletConnect')
-    const chainId = this.getDefaultChainId(connector)
+    const chainId = this.getDefaultConnectorChainId(connector)
 
     async function getProviderUri() {
       return new Promise<void>(resolve => {
@@ -89,14 +78,13 @@ export const Web3ModalEthereum = {
     }
 
     const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
-    AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
     return data
   },
 
   async connectCoinbase(onUri: (uri: string) => void) {
     const connector = this.getConnectorById('coinbaseWallet')
-    const chainId = this.getDefaultChainId(connector)
+    const chainId = this.getDefaultConnectorChainId(connector)
 
     async function getProviderUri() {
       return new Promise<void>(resolve => {
@@ -111,25 +99,22 @@ export const Web3ModalEthereum = {
     }
 
     const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
-    AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
     return data
   },
 
   async connectMetaMask() {
     const connector = this.getConnectorById('metaMask')
-    const chainId = this.getDefaultChainId(connector)
+    const chainId = this.getDefaultConnectorChainId(connector)
     const data = await connect({ connector, chainId })
-    AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
     return data
   },
 
   async connectInjected() {
     const connector = this.getConnectorById('injected')
-    const chainId = this.getDefaultChainId(connector)
+    const chainId = this.getDefaultConnectorChainId(connector)
     const data = await connect({ connector, chainId })
-    AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
     return data
   }
