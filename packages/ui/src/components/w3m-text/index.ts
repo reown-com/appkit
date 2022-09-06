@@ -25,7 +25,7 @@ export class W3mText extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public variant?: Variant = 'medium-normal'
-  @property() public textAlign?: Align = 'left'
+  @property() public align?: Align = 'left'
   @property() public color?: Color = 'primary'
 
   // -- render ------------------------------------------------------- //
@@ -40,9 +40,9 @@ export class W3mText extends LitElement {
       'w3m-font-small-thin': this.variant === 'small-thin',
       'w3m-font-xsmall-normal': this.variant === 'xsmall-normal',
       'w3m-font-xxsmall-bold': this.variant === 'xxsmall-bold',
-      'w3m-font-left': this.textAlign === 'left',
-      'w3m-font-center': this.textAlign === 'center',
-      'w3m-font-right': this.textAlign === 'right',
+      'w3m-font-left': this.align === 'left',
+      'w3m-font-center': this.align === 'center',
+      'w3m-font-right': this.align === 'right',
       'w3m-color-primary': this.color === 'primary',
       'w3m-color-secondary': this.color === 'secondary',
       'w3m-color-inverse': this.color === 'inverse',

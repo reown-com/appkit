@@ -77,7 +77,7 @@ export class W3mMetamaskConnectorView extends LitElement {
     return html`
       <div class="w3m-install-title">
         <w3m-text variant="large-bold">Install MetaMask</w3m-text>
-        <w3m-text color="secondary" textAlign="center" variant="medium-thin">
+        <w3m-text color="secondary" align="center" variant="medium-thin">
           To connect MetaMask wallet, install the browser extension.
         </w3m-text>
       </div>
