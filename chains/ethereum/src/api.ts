@@ -13,15 +13,14 @@ import type {
 // -- constants ---------------------------------------------------- //
 const NAMESPACE = 'eip155'
 
-// -- private ------------------------------------------------------ //
 let ethereumClient = undefined as EthereumClient | undefined
 
-// -- public ------------------------------------------------------- //
 export const Web3ModalEthereum = {
+  // -- config ------------------------------------------------------- //
   walletConnectRpc({ projectId }: GetWalletConnectProviderOpts) {
     return jsonRpcProvider({
       rpc: chain => ({
-        http: `https://rpc.walletconnect.com/v1/?chainId=eip155:${chain.id}&projectId=${projectId}`
+        http: `https://rpc.walletconnect.com/v1/?chainId=${NAMESPACE}:${chain.id}&projectId=${projectId}`
       })
     })
   },
@@ -52,6 +51,14 @@ export const Web3ModalEthereum = {
     return this
   },
 
+  // -- chains ----------------------------------------------------- //
+  getDefaultChainId() {
+    const chainId = ethereumClient?.chains?.[0].id
+    if (!chainId) throw new Error('There are no chains to select from')
+
+    return chainId
+  },
+
   // -- connectors ------------------------------------------------- //
   getConnectorById(id: 'coinbaseWallet' | 'injected' | 'metaMask' | 'walletConnect') {
     const connector = ethereumClient?.connectors.find(item => item.id === id)
@@ -67,6 +74,7 @@ export const Web3ModalEthereum = {
 
   async connectWalletConnect(onUri: (uri: string) => void) {
     const connector = this.getConnectorById('walletConnect')
+    const chainId = this.getDefaultChainId()
 
     async function getProviderUri() {
       return new Promise<void>(resolve => {
@@ -80,7 +88,7 @@ export const Web3ModalEthereum = {
       })
     }
 
-    const [data] = await Promise.all([connect({ connector, chainId: 1 }), getProviderUri()])
+    const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
     AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
     return data
@@ -88,6 +96,7 @@ export const Web3ModalEthereum = {
 
   async connectCoinbase(onUri: (uri: string) => void) {
     const connector = this.getConnectorById('coinbaseWallet')
+    const chainId = this.getDefaultChainId()
 
     async function getProviderUri() {
       return new Promise<void>(resolve => {
@@ -101,7 +110,7 @@ export const Web3ModalEthereum = {
       })
     }
 
-    const [data] = await Promise.all([connect({ connector, chainId: 1 }), getProviderUri()])
+    const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
     AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
     return data
@@ -109,7 +118,8 @@ export const Web3ModalEthereum = {
 
   async connectMetaMask() {
     const connector = this.getConnectorById('metaMask')
-    const data = await connect({ connector, chainId: 1 })
+    const chainId = this.getDefaultChainId()
+    const data = await connect({ connector, chainId })
     AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
     return data
@@ -117,7 +127,8 @@ export const Web3ModalEthereum = {
 
   async connectInjected() {
     const connector = this.getConnectorById('injected')
-    const data = await connect({ connector, chainId: 1 })
+    const chainId = this.getDefaultChainId()
+    const data = await connect({ connector, chainId })
     AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
     return data
