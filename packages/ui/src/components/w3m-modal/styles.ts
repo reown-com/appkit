@@ -10,7 +10,7 @@ export default css`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.3);
     opacity: 0;
     pointer-events: none;
     will-change: opacity;
