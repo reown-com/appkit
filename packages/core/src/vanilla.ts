@@ -1,3 +1,4 @@
+import { AccountCtrl } from './controllers/AccountCtrl'
 import { ClientCtrl } from './controllers/ClientCtrl'
 import { ConfigCtrl } from './controllers/ConfigCtrl'
 import { ExplorerCtrl } from './controllers/ExplorerCtrl'
@@ -9,7 +10,8 @@ const Web3ModalCore = {
   ConfigCtrl,
   ExplorerCtrl,
   ModalCtrl,
-  RouterCtrl
+  RouterCtrl,
+  AccountCtrl
 }
 
 if (typeof window !== 'undefined') window.Web3ModalCore = Web3ModalCore

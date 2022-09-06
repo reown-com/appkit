@@ -31,7 +31,6 @@ export class W3mCoinbaseConnectorView extends LitElement {
   private async getConnectionUri() {
     try {
       await ClientCtrl.ethereum().connectCoinbase(uri => (this.uri = uri))
-      ClientCtrl.ethereum().disconnect()
     } catch {
       throw new Error('Denied connection')
     }

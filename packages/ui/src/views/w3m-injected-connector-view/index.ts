@@ -27,9 +27,12 @@ export class W3mInjectedConnectorView extends LitElement {
 
   private async onConnect() {
     try {
-      this.error = false
-      this.connecting = true
-      await ClientCtrl.ethereum().connectInjected()
+      const { ready } = ClientCtrl.ethereum().getInjectedConnector()
+      if (ready) {
+        this.error = false
+        this.connecting = true
+        await ClientCtrl.ethereum().connectInjected()
+      }
     } catch (error: unknown) {
       this.error = true
       this.connecting = false
@@ -38,23 +41,23 @@ export class W3mInjectedConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const connector = ClientCtrl.ethereum().getInjectedConnector()
+    const { name } = ClientCtrl.ethereum().getInjectedConnector()
     const classes = {
       'w3m-injected-wrapper': true,
       'w3m-injected-error': this.error
     }
 
     return html`
-      <w3m-modal-header title=${connector.name}></w3m-modal-header>
+      <w3m-modal-header title=${name}></w3m-modal-header>
       <w3m-modal-content>
         <div class=${classMap(classes)}>
-          <w3m-wallet-image name=${connector.name} size="lg"></w3m-wallet-image>
+          <w3m-wallet-image name=${name} size="lg"></w3m-wallet-image>
           <div class="w3m-connecting-title">
             ${this.connecting
               ? html`<w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>`
               : null}
             <w3m-text variant="large-bold" color=${this.error ? 'error' : 'secondary'}>
-              ${this.error ? 'Connection declined' : `Continue in ${connector.name}...`}
+              ${this.error ? 'Connection declined' : `Continue in ${name}...`}
             </w3m-text>
           </div>
 

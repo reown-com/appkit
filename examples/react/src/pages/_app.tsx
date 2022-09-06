@@ -15,6 +15,7 @@ const { chains, provider } = configureChains(
 
 // Create wagmi client
 const wagmiClient = createClient({
+  autoConnect: true,
   connectors: Web3ModalEthereum.defaultConnectors({ chains, appName: 'web3Modal' }),
   provider
 })

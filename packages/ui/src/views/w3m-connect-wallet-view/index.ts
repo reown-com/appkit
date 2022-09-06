@@ -32,7 +32,7 @@ export class W3mConnectWalletView extends LitElement {
 
   private metaMaskTemplate() {
     return html`
-      <w3m-wallet-button name="MetaMask" .onClick=${this.onInjectedWallet}></w3m-wallet-button>
+      <w3m-wallet-button name="MetaMask" .onClick=${this.onMetaMaskWallet}></w3m-wallet-button>
     `
   }
 

@@ -3,11 +3,15 @@ import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
+import { AccountCtrl } from '@web3modal/core'
 import type {
   EthereumClient,
   GetDefaultConnectorsOpts,
   GetWalletConnectProviderOpts
 } from '../types/apiTypes'
+
+// -- constants ---------------------------------------------------- //
+const NAMESPACE = 'eip155'
 
 // -- private ------------------------------------------------------ //
 let ethereumClient = undefined as EthereumClient | undefined
@@ -47,6 +51,12 @@ export const Web3ModalEthereum = {
 
   createClient(wagmiClient: EthereumClient) {
     ethereumClient = wagmiClient
+    const account = ethereumClient.data?.account
+    const chain = ethereumClient.data?.chain
+
+    // Populate connected data
+    if (account && chain) AccountCtrl.connectAccount(account, `${NAMESPACE}:${chain.id}`)
+
     // Preheat connectors
     const walletConnect = getWalletConnectConnector()
     const coinbase = getCoinbaseConnector()
@@ -59,6 +69,7 @@ export const Web3ModalEthereum = {
   // -- connectors ------------------------------------------------- //
   disconnect() {
     ethereumClient?.connectors.forEach(async connector => connector.disconnect())
+    AccountCtrl.disconnectAccount()
   },
 
   async connectWalletConnect(onUri: (uri: string) => void) {
@@ -77,6 +88,7 @@ export const Web3ModalEthereum = {
     }
 
     const [data] = await Promise.all([connector.connect(), getProviderUri()])
+    AccountCtrl.connectAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
     return data
   },
