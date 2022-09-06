@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.js",
   "type": "module",
-  "types": "dist/types/index.d.ts",
+  "types": "dist/_types/index.d.ts",
   "files": [
     "dist"
   ],

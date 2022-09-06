@@ -8,6 +8,7 @@ import { global } from '../../utils/Theme'
 import '../../views/w3m-coinbase-connector-view'
 import '../../views/w3m-connect-wallet-view'
 import '../../views/w3m-injected-connector-view'
+import '../../views/w3m-metamask-connector-view'
 import '../../views/w3m-select-network-view'
 import '../../views/w3m-walletconnect-connector-view'
 import styles from './styles'
@@ -70,6 +71,8 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-coinbase-connector-view></w3m-coinbase-connector-view>`
       case 'InjectedConnector':
         return html`<w3m-injected-connector-view></w3m-injected-connector-view>`
+      case 'MetaMaskConnector':
+        return html`<w3m-metamask-connector-view></w3m-metamask-connector-view>`
       default:
         return html`<div>Not Found</div>`
     }
