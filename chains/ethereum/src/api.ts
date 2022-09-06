@@ -1,3 +1,4 @@
+import type { Connector } from '@wagmi/core'
 import { connect, disconnect, InjectedConnector } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
@@ -52,9 +53,8 @@ export const Web3ModalEthereum = {
   },
 
   // -- chains ----------------------------------------------------- //
-  getDefaultChainId() {
-    const chainId = ethereumClient?.chains?.[0].id
-    if (!chainId) throw new Error('There are no chains to select from')
+  getDefaultChainId(connector: Connector) {
+    const chainId = connector.chains[0].id
 
     return chainId
   },
@@ -74,7 +74,7 @@ export const Web3ModalEthereum = {
 
   async connectWalletConnect(onUri: (uri: string) => void) {
     const connector = this.getConnectorById('walletConnect')
-    const chainId = this.getDefaultChainId()
+    const chainId = this.getDefaultChainId(connector)
 
     async function getProviderUri() {
       return new Promise<void>(resolve => {
@@ -96,7 +96,7 @@ export const Web3ModalEthereum = {
 
   async connectCoinbase(onUri: (uri: string) => void) {
     const connector = this.getConnectorById('coinbaseWallet')
-    const chainId = this.getDefaultChainId()
+    const chainId = this.getDefaultChainId(connector)
 
     async function getProviderUri() {
       return new Promise<void>(resolve => {
@@ -118,7 +118,7 @@ export const Web3ModalEthereum = {
 
   async connectMetaMask() {
     const connector = this.getConnectorById('metaMask')
-    const chainId = this.getDefaultChainId()
+    const chainId = this.getDefaultChainId(connector)
     const data = await connect({ connector, chainId })
     AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
@@ -127,7 +127,7 @@ export const Web3ModalEthereum = {
 
   async connectInjected() {
     const connector = this.getConnectorById('injected')
-    const chainId = this.getDefaultChainId()
+    const chainId = this.getDefaultChainId(connector)
     const data = await connect({ connector, chainId })
     AccountCtrl.setAccount(data.account, `${NAMESPACE}:${data.chain.id}`)
 
