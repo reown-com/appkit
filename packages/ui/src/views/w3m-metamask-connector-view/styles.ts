@@ -17,6 +17,27 @@ export default css`
     margin-bottom: 16px;
   }
 
+  .w3m-install-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .w3m-install-title w3m-text:last-child {
+    margin-top: 10px;
+    max-width: 240px;
+  }
+
+  .w3m-install-actions {
+    display: flex;
+    margin-top: 20px;
+  }
+
+  .w3m-install-actions w3m-button {
+    margin: 5px;
+  }
+
   w3m-spinner {
     margin-right: 10px;
   }
@@ -28,7 +49,7 @@ export default css`
     margin-bottom: 20px;
   }
 
-  w3m-button {
+  .w3m-connecting-title w3m-button {
     opacity: 0;
   }
 

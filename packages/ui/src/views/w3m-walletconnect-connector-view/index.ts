@@ -50,7 +50,7 @@ export class W3mWalletConnectConnectorView extends LitElement {
       </w3m-modal-content>
       <w3m-modal-footer>
         <w3m-text variant="large-bold">Scan with your phone</w3m-text>
-        <w3m-text variant="medium-thin" align="center" color="secondary" class="w3m-info-text">
+        <w3m-text variant="medium-thin" textAlign="center" color="secondary" class="w3m-info-text">
           Open your camera app or mobile wallet and scan the code to connect
         </w3m-text>
         <w3m-button

@@ -1,4 +1,4 @@
-import { ClientCtrl, ModalCtrl } from '@web3modal/core'
+import { ClientCtrl, ModalCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -20,12 +20,15 @@ export class W3mMetamaskConnectorView extends LitElement {
   @state() private connecting = true
   @state() private error = false
 
+  // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
     this.onConnect()
   }
 
+  // -- private ------------------------------------------------------ //
   private readonly connector = ClientCtrl.ethereum().getConnectorById('metaMask')
+  private readonly metamaskUrl = 'https://metamask.io/download/'
 
   private async onConnect() {
     try {
@@ -42,8 +45,56 @@ export class W3mMetamaskConnectorView extends LitElement {
     }
   }
 
+  private onInstall() {
+    window.open(this.metamaskUrl, '_blank')
+  }
+
+  private onMobile() {
+    RouterCtrl.push('WalletConnectConnector')
+  }
+
+  private readyTemplate() {
+    return html`
+      <div class="w3m-connecting-title">
+        ${this.connecting
+          ? html`<w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>`
+          : null}
+        <w3m-text variant="large-bold" color=${this.error ? 'error' : 'secondary'}>
+          ${this.error ? 'Connection declined' : 'Continue in MetaMask...'}
+        </w3m-text>
+      </div>
+      <w3m-button
+        .onClick=${this.onConnect.bind(this)}
+        .disabled=${!this.error}
+        .iconRight=${RETRY_ICON}
+      >
+        Try Again
+      </w3m-button>
+    `
+  }
+
+  private notReadyTemplate() {
+    return html`
+      <div class="w3m-install-title">
+        <w3m-text variant="large-bold">Install MetaMask</w3m-text>
+        <w3m-text color="secondary" textAlign="center" variant="medium-thin">
+          To connect MetaMask wallet, install the browser extension.
+        </w3m-text>
+      </div>
+      <div class="w3m-install-actions">
+        <w3m-button .onClick=${this.onInstall.bind(this)} .iconRight=${RETRY_ICON}>
+          Install Extension
+        </w3m-button>
+        <w3m-button .onClick=${this.onMobile} .iconRight=${RETRY_ICON} variant="ghost">
+          MetaMask Mobile
+        </w3m-button>
+      </div>
+    `
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
+    const { ready } = this.connector
     const classes = {
       'w3m-injected-wrapper': true,
       'w3m-injected-error': this.error
@@ -54,22 +105,7 @@ export class W3mMetamaskConnectorView extends LitElement {
       <w3m-modal-content>
         <div class=${classMap(classes)}>
           <w3m-wallet-image name="MetaMask" size="lg"></w3m-wallet-image>
-          <div class="w3m-connecting-title">
-            ${this.connecting
-              ? html`<w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>`
-              : null}
-            <w3m-text variant="large-bold" color=${this.error ? 'error' : 'secondary'}>
-              ${this.error ? 'Connection declined' : 'Continue in MetaMask...'}
-            </w3m-text>
-          </div>
-
-          <w3m-button
-            .onClick=${this.onConnect.bind(this)}
-            .disabled=${!this.error}
-            .iconRight=${RETRY_ICON}
-          >
-            Try Again
-          </w3m-button>
+          ${ready ? this.readyTemplate() : this.notReadyTemplate()}
         </div>
       </w3m-modal-content>
     `
