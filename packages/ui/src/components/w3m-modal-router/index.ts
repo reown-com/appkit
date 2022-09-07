@@ -7,6 +7,7 @@ import { getShadowRootElement } from '../../utils/Helpers'
 import { global } from '../../utils/Theme'
 import '../../views/w3m-coinbase-connector-view'
 import '../../views/w3m-connect-wallet-view'
+import '../../views/w3m-get-wallet-view'
 import '../../views/w3m-injected-connector-view'
 import '../../views/w3m-metamask-connector-view'
 import '../../views/w3m-select-network-view'
@@ -73,6 +74,8 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-injected-connector-view></w3m-injected-connector-view>`
       case 'MetaMaskConnector':
         return html`<w3m-metamask-connector-view></w3m-metamask-connector-view>`
+      case 'GetWallet':
+        return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
       default:
         return html`<div>Not Found</div>`
     }

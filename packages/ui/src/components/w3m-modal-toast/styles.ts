@@ -16,6 +16,7 @@ export default css`
     z-index: 2;
     left: 50%;
     transform: translateX(-50%);
+    pointer-events: none;
   }
 
   .w3m-modal-toast svg {

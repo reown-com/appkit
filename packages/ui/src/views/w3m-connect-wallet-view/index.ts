@@ -34,6 +34,10 @@ export class W3mConnectWalletView extends LitElement {
     RouterCtrl.push('InjectedConnector')
   }
 
+  private onGetWallet() {
+    RouterCtrl.push('GetWallet')
+  }
+
   private metaMaskTemplate() {
     return html`
       <w3m-wallet-button name="MetaMask" .onClick=${this.onMetaMaskWallet}></w3m-wallet-button>
@@ -95,7 +99,9 @@ export class W3mConnectWalletView extends LitElement {
       </w3m-modal-content>
       <w3m-modal-footer>
         <div class="w3m-footer-actions">
-          <w3m-button .iconLeft=${WALLET_ICON}>Get a Wallet</w3m-button>
+          <w3m-button .iconLeft=${WALLET_ICON} .onClick=${this.onGetWallet}
+            >Get a Wallet</w3m-button
+          >
           <w3m-button .iconLeft=${HELP_ICON} variant="ghost">Learn More</w3m-button>
         </div>
       </w3m-modal-footer>

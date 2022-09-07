@@ -269,6 +269,26 @@ export const ARROW_DOWN_ICON = svg`
   </svg>
 `
 
+export const ARROW_UP_RIGHT_ICON = svg`
+  <svg width="15" height="14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M4.5 1.75A.75.75 0 0 1 5.25 1H12a1.5 1.5 0 0 1 1.5 1.5v6.75a.75.75 0 0 1-1.5 0V4.164a.25.25 0 0 0-.427-.176L4.061 11.5A.75.75 0 0 1 3 10.44l7.513-7.513a.25.25 0 0 0-.177-.427H5.25a.75.75 0 0 1-.75-.75Z"
+      fill="#fff"
+    />
+  </svg>
+`
+
+export const ARROW_RIGHT_ICON = svg`
+  <svg width="6" height="14" viewBox="0 0 6 14">
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M2.181 1.099a.75.75 0 0 1 1.024.279l2.433 4.258a2.75 2.75 0 0 1 0 2.729l-2.433 4.257a.75.75 0 1 1-1.303-.744L4.335 7.62a1.25 1.25 0 0 0 0-1.24L1.902 2.122a.75.75 0 0 1 .28-1.023Z"
+      fill="#fff"
+    />
+  </svg>
+`
+
 export const QRCODE_ICON = svg`
   <svg width="25" height="24" viewBox="0 0 25 24">
     <path
