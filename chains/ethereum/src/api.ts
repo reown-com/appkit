@@ -1,5 +1,5 @@
 import type { Connector } from '@wagmi/core'
-import { connect, disconnect, InjectedConnector } from '@wagmi/core'
+import { connect, disconnect, InjectedConnector, switchNetwork } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
@@ -117,5 +117,17 @@ export const Web3ModalEthereum = {
     const data = await connect({ connector, chainId })
 
     return data
+  },
+
+  // -- actions ----------------------------------------------------- //
+  async switchChain(chainId: string) {
+    if (typeof chainId === 'string' && chainId.includes(':')) {
+      const id = Number(chainId.split(':')[1])
+      const chain = await switchNetwork({ chainId: id })
+
+      return chain
+    }
+
+    throw new Error('Invalid chainId, should be formated as namespace:id')
   }
 }

@@ -9,7 +9,7 @@ export let ethereumClient = undefined as EthereumClient | undefined
 
 function onConnectorChange(event: ConnectorData) {
   if (event.account) AccountCtrl.setAddress(event.account)
-  if (event.chain) AccountCtrl.setChainId(`${NAMESPACE}:${event.chain.id}`)
+  if (event.chain) AccountCtrl.setChain(`${NAMESPACE}:${event.chain.id}`, !event.chain.unsupported)
 }
 
 function onConnectorMessage(event: { type: string; data?: unknown }) {
@@ -34,6 +34,7 @@ function onClientConnected() {
     AccountCtrl.setAccount({
       address: account,
       chainId: `${NAMESPACE}:${chain.id}`,
+      chainSupported: !chain.unsupported,
       connector: connector.id
     })
   }
