@@ -34,10 +34,6 @@ export default css`
     margin-top: 20px;
   }
 
-  .w3m-install-actions w3m-button {
-    margin: 5px;
-  }
-
   w3m-spinner {
     margin-right: 10px;
   }
@@ -49,11 +45,16 @@ export default css`
     margin-bottom: 20px;
   }
 
-  .w3m-connecting-title w3m-button {
+  w3m-button {
     opacity: 0;
   }
 
   .w3m-injected-error w3m-button {
+    opacity: 1;
+  }
+
+  .w3m-install-actions w3m-button {
+    margin: 5px;
     opacity: 1;
   }
 `

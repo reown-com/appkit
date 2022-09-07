@@ -13,10 +13,12 @@ function onConnectorChange(event: ConnectorData) {
 }
 
 function onConnectorMessage(event: { type: string; data?: unknown }) {
+  // eslint-disable-next-line no-console
   console.log(event)
 }
 
 function onConnectorError(event: Error) {
+  // eslint-disable-next-line no-console
   console.log(event)
 }
 
