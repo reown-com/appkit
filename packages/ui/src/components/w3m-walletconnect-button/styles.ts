@@ -2,6 +2,15 @@ import { css, html } from 'lit'
 import { color } from '../../utils/Theme'
 
 export default css`
+  @keyframes scroll {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    100% {
+      transform: translate3d(-350px, 0, 0);
+    }
+  }
+
   .w3m-wc-button {
     width: 100%;
     border-radius: 18px;
@@ -48,14 +57,14 @@ export default css`
     align-content: center;
     height: 100%;
     grid-gap: 10px;
-    padding: 0 10px;
+    padding: 0 15px;
   }
 
   .w3m-wc-button-carousel-item {
+    animation: scroll 30s linear infinite;
     width: 40px;
     height: 40px;
     border-radius: 10px;
-    background-color: orange;
     overflow: hidden;
     position: relative;
   }

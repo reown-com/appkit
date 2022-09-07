@@ -18,6 +18,8 @@ export class W3mConnectWalletView extends LitElement {
   public static styles = [global, styles]
 
   // -- private ------------------------------------------------------ //
+  private readonly learnUrl = 'https://ethereum.org/en/wallets/'
+
   private onWalletConnect() {
     RouterCtrl.push('WalletConnectConnector')
   }
@@ -36,6 +38,10 @@ export class W3mConnectWalletView extends LitElement {
 
   private onGetWallet() {
     RouterCtrl.push('GetWallet')
+  }
+
+  private onLearnMore() {
+    window.open(this.learnUrl, '_blank')
   }
 
   private metaMaskTemplate() {
@@ -102,7 +108,13 @@ export class W3mConnectWalletView extends LitElement {
           <w3m-button .iconLeft=${WALLET_ICON} .onClick=${this.onGetWallet}
             >Get a Wallet</w3m-button
           >
-          <w3m-button .iconLeft=${HELP_ICON} variant="ghost">Learn More</w3m-button>
+          <w3m-button
+            .iconLeft=${HELP_ICON}
+            variant="ghost"
+            .onClick=${this.onLearnMore.bind(this)}
+          >
+            Learn More
+          </w3m-button>
         </div>
       </w3m-modal-footer>
     `

@@ -16,6 +16,7 @@ export class W3mWalletConnectButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const wallets = Object.values(ExplorerCtrl.state.wallets.listings)
+    const scrollWallets = [...wallets, ...wallets]
 
     return html`
       ${dynamicStyles()}
@@ -28,7 +29,7 @@ export class W3mWalletConnectButton extends LitElement {
             </div>
 
             <div class="w3m-wc-button-carousel">
-              ${wallets.map(
+              ${scrollWallets.map(
                 ({ image_url }) =>
                   html`<div class="w3m-wc-button-carousel-item">
                     <img src=${image_url.md} loading="lazy" decoding="async" />
