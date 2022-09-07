@@ -7,9 +7,9 @@ import '../../components/w3m-modal-footer'
 import '../../components/w3m-modal-header'
 import '../../components/w3m-qrcode'
 import '../../components/w3m-text'
-import { COPY_ICON } from '../../utils/Svgs'
+import { COPY_ICON, QRCODE_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import styles from './styles'
+import styles, { dynamicStyles } from './styles'
 
 const HORIZONTAL_PADDING = 36
 
@@ -39,6 +39,8 @@ export class W3mWalletConnectConnectorView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
+      ${dynamicStyles()}
+
       <w3m-modal-header title="Mobile Wallets"></w3m-modal-header>
       <w3m-modal-content>
         <div class="w3m-qr-container">
@@ -49,7 +51,10 @@ export class W3mWalletConnectConnectorView extends LitElement {
         </div>
       </w3m-modal-content>
       <w3m-modal-footer>
-        <w3m-text variant="large-bold">Scan with your phone</w3m-text>
+        <div class="w3m-title">
+          ${QRCODE_ICON}
+          <w3m-text variant="large-bold">Scan with your phone</w3m-text>
+        </div>
         <w3m-text variant="medium-thin" align="center" color="secondary" class="w3m-info-text">
           Open your camera app or mobile wallet and scan the code to connect
         </w3m-text>

@@ -1,4 +1,5 @@
-import { css } from 'lit'
+import { css, html } from 'lit'
+import { color } from '../../utils/Theme'
 
 export default css`
   .w3m-qr-container {
@@ -10,4 +11,23 @@ export default css`
     margin: 10px 0 22px;
     max-width: 320px;
   }
+
+  .w3m-title {
+    display: flex;
+    align-items: center;
+  }
+
+  .w3m-title svg {
+    margin-right: 8px;
+  }
 `
+
+export function dynamicStyles() {
+  const { foreground } = color()
+
+  return html`<style>
+    .w3m-title path {
+      fill: ${foreground[1]};
+    }
+  </style>`
+}

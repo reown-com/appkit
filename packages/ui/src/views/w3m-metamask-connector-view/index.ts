@@ -9,7 +9,7 @@ import '../../components/w3m-qrcode'
 import '../../components/w3m-spinner'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-image'
-import { RETRY_ICON } from '../../utils/Svgs'
+import { ARROW_DOWN_ICON, MOBILE_ICON, RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
 import styles from './styles'
 
@@ -82,10 +82,10 @@ export class W3mMetamaskConnectorView extends LitElement {
         </w3m-text>
       </div>
       <div class="w3m-install-actions">
-        <w3m-button .onClick=${this.onInstall.bind(this)} .iconRight=${RETRY_ICON}>
+        <w3m-button .onClick=${this.onInstall.bind(this)} .iconLeft=${ARROW_DOWN_ICON}>
           Install Extension
         </w3m-button>
-        <w3m-button .onClick=${this.onMobile} .iconRight=${RETRY_ICON} variant="ghost">
+        <w3m-button .onClick=${this.onMobile} .iconLeft=${MOBILE_ICON} variant="ghost">
           MetaMask Mobile
         </w3m-button>
       </div>
