@@ -6,11 +6,12 @@ import '../../components/w3m-button'
 import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-footer'
 import '../../components/w3m-modal-header'
+import '../../components/w3m-text'
 import '../../components/w3m-wallet-button'
 import '../../components/w3m-walletconnect-button'
-import { HELP_ICON, WALLET_ICON } from '../../utils/Svgs'
+import { DESKTOP_ICON, HELP_ICON, MOBILE_ICON, WALLET_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import styles from './styles'
+import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-connect-wallet-view')
 export class W3mConnectWalletView extends LitElement {
@@ -69,13 +70,23 @@ export class W3mConnectWalletView extends LitElement {
     const { slot1, slot2 } = this.dynamicSlots()
 
     return html`
+      ${dynamicStyles()}
+
       <w3m-modal-header title="Connect your wallet"></w3m-modal-header>
       <w3m-modal-content>
+        <div class="w3m-title">
+          ${MOBILE_ICON}
+          <w3m-text variant="small-normal" color="secondary">Mobile</w3m-text>
+        </div>
         <div class="w3m-view-row">
           <w3m-walletconnect-button .onClick=${this.onWalletConnect}></w3m-walletconnect-button>
           <w3m-wallet-button name="Coinbase" .onClick=${this.onCoinbaseWallet}></w3m-wallet-button>
         </div>
 
+        <div class="w3m-title w3m-title-desktop">
+          ${DESKTOP_ICON}
+          <w3m-text variant="small-normal" color="secondary">Desktop</w3m-text>
+        </div>
         <div class="w3m-view-row">
           ${slot1} ${slot2}
           <w3m-wallet-button name="Ledger" .onClick=${this.onCoinbaseWallet}></w3m-wallet-button>
