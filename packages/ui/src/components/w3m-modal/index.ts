@@ -8,6 +8,7 @@ import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import '../w3m-modal-backcard'
 import '../w3m-modal-router'
+import '../w3m-modal-toast'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-modal')
@@ -89,6 +90,7 @@ export class W3mModal extends ThemedElement {
                 <w3m-modal-backcard></w3m-modal-backcard>
                 <div class="w3m-modal-card">
                   <w3m-modal-router></w3m-modal-router>
+                  <w3m-modal-toast></w3m-modal-toast>
                 </div>
               `
             : null}

@@ -33,7 +33,6 @@ export default css`
     position: relative;
     transform: translate3d(5px, 5px, 0);
     border-radius: 40px;
-
     overflow: hidden;
   }
 `

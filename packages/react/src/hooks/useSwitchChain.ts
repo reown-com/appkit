@@ -8,6 +8,7 @@ export function useSwitchChain() {
   async function switchChain(chainId: string) {
     try {
       setIsLoading(true)
+      setError(null)
       const chain = await ClientCtrl.ethereum().switchChain(chainId)
 
       return chain

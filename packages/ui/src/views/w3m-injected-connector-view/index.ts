@@ -17,14 +17,17 @@ import styles from './styles'
 export class W3mInjectedConnectorView extends LitElement {
   public static styles = [global, styles]
 
+  // -- state & properties ------------------------------------------- //
   @state() private connecting = true
   @state() private error = false
 
+  // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
     this.onConnect()
   }
 
+  // -- private ------------------------------------------------------ //
   private readonly connector = ClientCtrl.ethereum().getConnectorById('injected')
 
   private async onConnect() {

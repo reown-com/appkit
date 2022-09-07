@@ -17,6 +17,7 @@ import styles from './styles'
 export class W3mMetamaskConnectorView extends LitElement {
   public static styles = [global, styles]
 
+  // -- state & properties ------------------------------------------- //
   @state() private connecting = true
   @state() private error = false
 

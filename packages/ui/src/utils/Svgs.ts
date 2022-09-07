@@ -311,3 +311,14 @@ export const HELP_ICON = svg`
     />
   </svg>
 `
+
+export const CHECKMARK_ICON = svg`
+  <svg width="13" height="12" viewBox="0 0 13 12">
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M12.155.132a.75.75 0 0 1 .232 1.035L5.821 11.535a1 1 0 0 1-1.626.09L.665 7.21a.75.75 0 1 1 1.17-.937L4.71 9.867a.25.25 0 0 0 .406-.023L11.12.364a.75.75 0 0 1 1.035-.232Z"
+      fill="#fff"
+    />
+  </svg>
+`

@@ -1,4 +1,4 @@
-import { ClientCtrl, ModalCtrl, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, ModalCtrl, ModalToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-button'
@@ -36,6 +36,11 @@ export class W3mWalletConnectConnectorView extends LitElement {
     }
   }
 
+  private async onCopy() {
+    await navigator.clipboard.writeText(this.uri)
+    ModalToastCtrl.openToast('WalletConnect link copied')
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
@@ -58,11 +63,7 @@ export class W3mWalletConnectConnectorView extends LitElement {
         <w3m-text variant="medium-thin" align="center" color="secondary" class="w3m-info-text">
           Open your camera app or mobile wallet and scan the code to connect
         </w3m-text>
-        <w3m-button
-          variant="ghost"
-          .iconLeft=${COPY_ICON}
-          .onClick=${() => RouterCtrl.replace('ConnectWallet')}
-        >
+        <w3m-button variant="ghost" .iconLeft=${COPY_ICON} .onClick=${this.onCopy.bind(this)}>
           Copy to Clipboard
         </w3m-button>
       </w3m-modal-footer>
