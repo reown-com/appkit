@@ -2,17 +2,20 @@ import { ClientCtrl, RouterCtrl } from '@web3modal/core'
 import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import '../../components/w3m-button'
 import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-footer'
 import '../../components/w3m-modal-header'
 import '../../components/w3m-wallet-button'
 import '../../components/w3m-walletconnect-button'
+import { HELP_ICON, WALLET_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import styles from './styles'
 
 @customElement('w3m-connect-wallet-view')
 export class W3mConnectWalletView extends LitElement {
   public static styles = [global, styles]
+
   // -- private ------------------------------------------------------ //
   private onWalletConnect() {
     RouterCtrl.push('WalletConnectConnector')
@@ -79,7 +82,12 @@ export class W3mConnectWalletView extends LitElement {
           <w3m-wallet-button name="View All" .onClick=${this.onCoinbaseWallet}></w3m-wallet-button>
         </div>
       </w3m-modal-content>
-      <w3m-modal-footer>Hello</w3m-modal-footer>
+      <w3m-modal-footer>
+        <div class="w3m-footer-actions">
+          <w3m-button .iconLeft=${WALLET_ICON}>Get a Wallet</w3m-button>
+          <w3m-button .iconLeft=${HELP_ICON} variant="ghost">Learn More</w3m-button>
+        </div>
+      </w3m-modal-footer>
     `
   }
 }
