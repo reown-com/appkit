@@ -42,6 +42,8 @@ function onClientConnected() {
 
 function onClientDisconnected() {
   ethereumClient?.connector?.removeAllListeners()
+  // TODO remove all provider methods via off
+  ethereumClient?.provider?.off('block')
   AccountCtrl.resetAccount()
 }
 

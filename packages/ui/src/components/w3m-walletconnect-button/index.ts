@@ -31,9 +31,11 @@ export class W3mWalletConnectButton extends LitElement {
             <div class="w3m-wc-button-carousel">
               ${scrollWallets.map(
                 ({ image_url }) =>
-                  html`<div class="w3m-wc-button-carousel-item">
-                    <img src=${image_url.md} loading="lazy" decoding="async" />
-                  </div>`
+                  html`
+                    <div class="w3m-wc-button-carousel-item">
+                      <img src=${image_url.md} loading="lazy" decoding="async" />
+                    </div>
+                  `
               )}
             </div>
           </div>

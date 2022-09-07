@@ -2,7 +2,7 @@ import { css, html } from 'lit'
 import { color } from '../../utils/Theme'
 
 export default css`
-  @keyframes scroll {
+  @keyframes ticker {
     0% {
       transform: translate3d(0, 0, 0);
     }
@@ -28,6 +28,7 @@ export default css`
     height: 60px;
     border-radius: inherit;
     overflow: hidden;
+    transform: translate3d(0, 0, 0);
   }
 
   .w3m-wc-button-logo {
@@ -61,12 +62,14 @@ export default css`
   }
 
   .w3m-wc-button-carousel-item {
-    animation: scroll 30s linear infinite;
+    animation: ticker 30s linear infinite;
+    will-change: transform;
     width: 40px;
     height: 40px;
     border-radius: 10px;
     overflow: hidden;
     position: relative;
+    z-index: 0;
   }
 
   .w3m-wc-button-carousel-item::after {
@@ -83,44 +86,49 @@ export default css`
     object-position: center;
   }
 
+  .w3m-wc-button-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   .w3m-wc-button-carousel::after,
   .w3m-wc-button-container::after {
     content: '';
     position: absolute;
     inset: 0;
   }
-
-  .w3m-wc-button-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
 `
 
 export function dynamicStyles() {
   const { background, overlay } = color()
 
-  return html`<style>
-    .w3m-wc-button {
-      background-color: ${background.accent};
-    }
+  return html`
+    <style>
+      .w3m-wc-button {
+        background-color: ${background.accent};
+      }
 
-    .w3m-wc-button::after {
-      border: 1px solid ${overlay.thin};
-    }
+      .w3m-wc-button::after {
+        border: 1px solid ${overlay.thin};
+      }
 
-    .w3m-wc-button-logo svg:first-child path {
-      fill: ${background.accent};
-      stroke: ${background.accent};
-    }
+      .w3m-wc-button-logo svg:first-child path {
+        fill: ${background.accent};
+        stroke: ${background.accent};
+      }
 
-    .w3m-wc-button-carousel-item::after {
-      border: 1px solid ${overlay.thin};
-    }
+      .w3m-wc-button-carousel-item::after {
+        border: 1px solid ${overlay.thin};
+      }
 
-    .w3m-wc-button-carousel::after,
-    .w3m-wc-button-container::after {
-      box-shadow: inset 15px 0 15px ${background.accent}, inset -15px 0 15px ${background.accent};
-    }
-  </style>`
+      .w3m-wc-button-carousel::after {
+        box-shadow: inset 15px 0 10px 5px ${background.accent};
+      }
+
+      .w3m-wc-button-container::after {
+        box-shadow: inset -15px 0 10px 5px ${background.accent};
+      }
+    </style>
+  `
 }
