@@ -4,8 +4,8 @@ export default function HomePage() {
   const { chainId, connected, address, connector, chainSupported } = useAccount()
   const { isLoading, switchChain } = useSwitchChain()
 
-  function onSwithChainDemo() {
-    switchChain(chainId === 'eip155:1' ? 'eip155:43114' : 'eip155:1')
+  function onSwithChainDemo(chain: string) {
+    switchChain(chain)
   }
 
   return connected ? (
@@ -26,9 +26,11 @@ export default function HomePage() {
         </li>
       </ul>
 
-      <button onClick={onSwithChainDemo} disabled={isLoading}>
-        Switch to {chainId === 'eip155:1' ? 'Avalanche' : 'Ethereum'}
-      </button>
+      <select onChange={({ target }) => onSwithChainDemo(target.value)} disabled={isLoading}>
+        <option value="eip155:1">Ethereum</option>
+        <option value="eip155:42161">Arbitrum</option>
+        <option value="eip155:43114">Avalanche</option>
+      </select>
     </>
   ) : (
     <ConnectButton />
