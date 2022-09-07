@@ -5,7 +5,8 @@ import type { Account } from '../../types/accountTypes'
 const initialState = {
   connected: false,
   address: '',
-  chainId: ''
+  chainId: '',
+  connector: ''
 }
 
 const state = proxy<Account>(initialState)
@@ -18,10 +19,17 @@ export const AccountCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  setAccount(address: Account['address'], chainId: Account['chainId']) {
-    state.address = address
-    state.chainId = chainId
+  setAccount(account: Omit<Account, 'connected'>) {
+    Object.assign(state, account)
     state.connected = true
+  },
+
+  setAddress(address: Account['address']) {
+    state.address = address
+  },
+
+  setChainId(chainId: Account['chainId']) {
+    state.chainId = chainId
   },
 
   resetAccount() {
