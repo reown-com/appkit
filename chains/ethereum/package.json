@@ -17,7 +17,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@wagmi/core": "0.5.4"
+    "@wagmi/core": "0.5.5"
   },
   "peerDependencies": {
     "@wagmi/core": ">=0.5.x",

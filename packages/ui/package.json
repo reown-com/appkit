@@ -19,7 +19,7 @@
   "dependencies": {
     "@web3modal/core": "2.0.0",
     "lit": "2.3.1",
-    "motion": "10.14.1",
+    "motion": "10.14.2",
     "qrcode": "1.5.1"
   },
   "devDependencies": {
