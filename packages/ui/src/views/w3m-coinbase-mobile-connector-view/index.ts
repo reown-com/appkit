@@ -1,4 +1,4 @@
-import { ClientCtrl, ModalCtrl, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, ModalCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-button'
@@ -8,7 +8,7 @@ import '../../components/w3m-modal-header'
 import '../../components/w3m-qrcode'
 import '../../components/w3m-text'
 import { getWalletIcon } from '../../utils/Helpers'
-import { DESKTOP_ICON, QRCODE_ICON } from '../../utils/Svgs'
+import { ARROW_DOWN_ICON, QRCODE_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import styles, { dynamicStyles } from './styles'
 
@@ -28,6 +28,8 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
   }
 
   // -- private ------------------------------------------------------ //
+  private readonly coinbaseWalletUrl = 'https://www.coinbase.com/wallet'
+
   private async getConnectionUri() {
     try {
       await ClientCtrl.ethereum().connectCoinbaseMobile(uri => (this.uri = uri))
@@ -37,19 +39,25 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
     }
   }
 
+  private onInstall() {
+    window.open(this.coinbaseWalletUrl, '_blank')
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
+    const name = 'Coinbase Wallet'
+
     return html`
       ${dynamicStyles()}
 
-      <w3m-modal-header title="Coinbase"></w3m-modal-header>
+      <w3m-modal-header title=${name}></w3m-modal-header>
       <w3m-modal-content>
         <div class="w3m-qr-container">
           ${this.uri
             ? html`<w3m-qrcode
                 size=${this.offsetWidth - HORIZONTAL_PADDING}
                 uri=${this.uri}
-                logoSrc=${getWalletIcon('Coinbase', 'lg')}
+                logoSrc=${getWalletIcon(name, 'lg')}
               >
               </w3m-qrcode>`
             : null}
@@ -65,10 +73,10 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
         </w3m-text>
         <w3m-button
           variant="ghost"
-          .iconLeft=${DESKTOP_ICON}
-          .onClick=${() => RouterCtrl.replace('ConnectWallet')}
+          .iconLeft=${ARROW_DOWN_ICON}
+          .onClick=${this.onInstall.bind(this)}
         >
-          Open in Coinbase Desktop
+          Install Extension
         </w3m-button>
       </w3m-modal-footer>
     `

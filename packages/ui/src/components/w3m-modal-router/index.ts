@@ -5,6 +5,7 @@ import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
 import { getShadowRootElement } from '../../utils/Helpers'
 import { global } from '../../utils/Theme'
+import '../../views/w3m-coinbase-extension-connector-view'
 import '../../views/w3m-coinbase-mobile-connector-view'
 import '../../views/w3m-connect-wallet-view'
 import '../../views/w3m-get-wallet-view'
@@ -75,6 +76,8 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-walletconnect-connector-view></w3m-walletconnect-connector-view>`
       case 'CoinbaseMobileConnector':
         return html`<w3m-coinbase-mobile-connector-view></w3m-coinbase-mobile-connector-view>`
+      case 'CoinbaseExtensionConnector':
+        return html`<w3m-coinbase-extension-connector-view></w3m-coinbase-extension-connector-view>`
       case 'InjectedConnector':
         return html`<w3m-injected-connector-view></w3m-injected-connector-view>`
       case 'MetaMaskConnector':

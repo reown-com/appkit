@@ -127,6 +127,14 @@ export const Web3ModalEthereum = {
     return data
   },
 
+  async connectCoinbaseExtension() {
+    const connector = this.getConnectorById('coinbaseWallet')
+    const chainId = this.getDefaultConnectorChainId(connector)
+    const data = await connect({ connector, chainId })
+
+    return data
+  },
+
   async connectMetaMask() {
     const connector = this.getConnectorById('metaMask')
     const chainId = this.getDefaultConnectorChainId(connector)

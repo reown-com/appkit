@@ -9,6 +9,7 @@ import '../../components/w3m-modal-header'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-button'
 import '../../components/w3m-walletconnect-button'
+import { getDefaultWalletNames, isCoinbaseExtension } from '../../utils/Helpers'
 import { DESKTOP_ICON, HELP_ICON, MOBILE_ICON, WALLET_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import styles, { dynamicStyles } from './styles'
@@ -25,7 +26,7 @@ export class W3mConnectWalletView extends LitElement {
   }
 
   private onCoinbaseWallet() {
-    if (window.coinbaseWalletExtension) RouterCtrl.push('CoinbaseExtensionConnector')
+    if (isCoinbaseExtension()) RouterCtrl.push('CoinbaseExtensionConnector')
     else RouterCtrl.push('CoinbaseMobileConnector')
   }
 
@@ -62,14 +63,15 @@ export class W3mConnectWalletView extends LitElement {
   }
 
   private dynamicSlots() {
+    const defaultNames = getDefaultWalletNames()
     const injected = ClientCtrl.ethereum().getConnectorById('injected')
     const metamask = ClientCtrl.ethereum().getConnectorById('metaMask')
     let slot1: TemplateResult<1> | null = null
     let slot2: TemplateResult<1> | null = null
-    if (injected.ready && !metamask.ready) {
+    if (injected.ready && !defaultNames.includes(injected.name)) {
       slot1 = this.injectedTemplate(injected.name)
       slot2 = this.metaMaskTemplate()
-    } else if (metamask.ready && injected.ready && injected.name !== 'MetaMask') {
+    } else if (metamask.ready && !defaultNames.includes(injected.name)) {
       slot1 = this.metaMaskTemplate()
       slot2 = this.injectedTemplate(injected.name)
     } else {
@@ -95,7 +97,10 @@ export class W3mConnectWalletView extends LitElement {
         </div>
         <div class="w3m-view-row">
           <w3m-walletconnect-button .onClick=${this.onWalletConnect}></w3m-walletconnect-button>
-          <w3m-wallet-button name="Coinbase" .onClick=${this.onCoinbaseWallet}></w3m-wallet-button>
+          <w3m-wallet-button
+            name="Coinbase Wallet"
+            .onClick=${this.onCoinbaseWallet}
+          ></w3m-wallet-button>
         </div>
 
         <div class="w3m-title w3m-title-desktop">
