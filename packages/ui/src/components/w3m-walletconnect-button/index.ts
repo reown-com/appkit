@@ -21,28 +21,26 @@ export class W3mWalletConnectButton extends LitElement {
     return html`
       ${dynamicStyles()}
 
-      <div class="w3m-wc-button-wrap">
-        <button class="w3m-wc-button" @click=${this.onClick}>
-          <div class="w3m-wc-button-container">
-            <div class="w3m-wc-button-logo">
-              ${WALLET_CONNECT_ICON_SHADE} ${WALLET_CONNECT_ICON_GRADIENT}
-            </div>
+      <button class="w3m-wc-button" @click=${this.onClick}>
+        <div class="w3m-wc-button-logo">
+          ${WALLET_CONNECT_ICON_SHADE} ${WALLET_CONNECT_ICON_GRADIENT}
+        </div>
 
-            <div class="w3m-wc-button-carousel">
-              ${scrollWallets.map(
-                ({ image_url }) =>
-                  html`
-                    <div class="w3m-wc-button-carousel-item">
-                      <img src=${image_url.md} loading="lazy" decoding="async" />
-                    </div>
-                  `
-              )}
-            </div>
+        <div class="w3m-carousel-container">
+          <div class="w3m-wc-button-carousel">
+            ${scrollWallets.map(
+              ({ image_url }) =>
+                html`
+                  <div class="w3m-wc-button-carousel-item">
+                    <img src=${image_url.md} loading="lazy" decoding="async" />
+                  </div>
+                `
+            )}
           </div>
-        </button>
+        </div>
+      </button>
 
-        <w3m-text variant="xsmall-normal">WalletConnect</w3m-text>
-      </div>
+      <w3m-text variant="xsmall-normal">WalletConnect</w3m-text>
     `
   }
 }

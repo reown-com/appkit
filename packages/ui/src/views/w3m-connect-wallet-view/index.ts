@@ -93,7 +93,7 @@ export class W3mConnectWalletView extends LitElement {
       <w3m-modal-content>
         <div class="w3m-title">
           ${MOBILE_ICON}
-          <w3m-text variant="small-normal" color="secondary">Mobile</w3m-text>
+          <w3m-text variant="small-normal" color="tertiary">Mobile</w3m-text>
         </div>
         <div class="w3m-view-row">
           <w3m-walletconnect-button .onClick=${this.onWalletConnect}></w3m-walletconnect-button>
@@ -105,7 +105,7 @@ export class W3mConnectWalletView extends LitElement {
 
         <div class="w3m-title w3m-title-desktop">
           ${DESKTOP_ICON}
-          <w3m-text variant="small-normal" color="secondary">Desktop</w3m-text>
+          <w3m-text variant="small-normal" color="tertiary">Desktop</w3m-text>
         </div>
         <div class="w3m-view-row">
           ${slot1} ${slot2}

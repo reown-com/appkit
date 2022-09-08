@@ -91,6 +91,10 @@ export function dynamicStyles() {
       color: ${foreground[2]};
     }
 
+    .w3m-color-tertiary {
+      color: ${foreground[3]};
+    }
+
     .w3m-color-inverse {
       color: ${foreground.inverse};
     }

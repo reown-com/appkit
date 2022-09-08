@@ -4,31 +4,35 @@ import { color } from '../../utils/Theme'
 export default css`
   @keyframes ticker {
     0% {
-      transform: translate3d(0, 0, 0);
+      transform: translateX(0);
     }
     100% {
-      transform: translate3d(-350px, 0, 0);
+      transform: translateX(-500px);
     }
+  }
+
+  :host(:hover) .w3m-wc-button-logo {
+    transform: translateY(-2px);
+    filter: brightness(110%);
   }
 
   .w3m-wc-button {
-    width: 100%;
     border-radius: 18px;
     margin-bottom: 5px;
-  }
-
-  .w3m-wc-button::after {
-    position: absolute;
-    border-radius: inherit;
-    inset: 0;
-  }
-
-  .w3m-wc-button-container {
-    position: relative;
+    width: 100%;
     height: 60px;
-    border-radius: inherit;
     overflow: hidden;
-    transform: translate3d(0, 0, 0);
+  }
+
+  .w3m-carousel-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    margin: 0 5px;
   }
 
   .w3m-wc-button-logo {
@@ -39,6 +43,8 @@ export default css`
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s ease-in-out;
+    z-index: 1;
   }
 
   .w3m-wc-button-logo svg:first-child {
@@ -53,23 +59,17 @@ export default css`
   }
 
   .w3m-wc-button-carousel {
-    display: grid;
-    grid-auto-flow: column;
-    align-content: center;
-    height: 100%;
-    grid-gap: 10px;
-    padding: 0 15px;
+    display: flex;
   }
 
   .w3m-wc-button-carousel-item {
-    animation: ticker 30s linear infinite;
-    will-change: transform;
+    animation: ticker 20s linear infinite;
     width: 40px;
     height: 40px;
     border-radius: 10px;
+    margin: 0 5px;
     overflow: hidden;
     position: relative;
-    z-index: 0;
   }
 
   .w3m-wc-button-carousel-item::after {
@@ -86,17 +86,13 @@ export default css`
     object-position: center;
   }
 
-  .w3m-wc-button-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .w3m-wc-button-carousel::after,
-  .w3m-wc-button-container::after {
+  .w3m-wc-button::after,
+  .w3m-wc-button::before {
     content: '';
     position: absolute;
     inset: 0;
+    z-index: 1;
+    border-radius: 18px;
   }
 `
 
@@ -107,9 +103,6 @@ export function dynamicStyles() {
     <style>
       .w3m-wc-button {
         background-color: ${background.accent};
-      }
-
-      .w3m-wc-button::after {
         border: 1px solid ${overlay.thin};
       }
 
@@ -122,12 +115,12 @@ export function dynamicStyles() {
         border: 1px solid ${overlay.thin};
       }
 
-      .w3m-wc-button-carousel::after {
-        box-shadow: inset 15px 0 10px 5px ${background.accent};
+      .w3m-wc-button::after {
+        box-shadow: inset 20px 0 10px 0 ${background.accent};
       }
 
-      .w3m-wc-button-container::after {
-        box-shadow: inset -15px 0 10px 5px ${background.accent};
+      .w3m-wc-button::before {
+        box-shadow: inset -20px 0 10px 0 ${background.accent};
       }
     </style>
   `

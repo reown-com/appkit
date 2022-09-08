@@ -12,7 +12,7 @@ export default css`
     width: 100%;
     height: 100%;
     border-radius: 8px 8px 30px 8px;
-    transform: translate3d(-5px, -5px, 0);
+    transform: translateY(-5px) translateX(-5px);
   }
 
   .w3m-gradient-canvas {

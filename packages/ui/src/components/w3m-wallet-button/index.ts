@@ -17,13 +17,12 @@ export class W3mWalletButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <div class="w3m-wallet-button-wrap">
-        <button class="w3m-wallet-button" @click=${this.onClick}>
+      <button class="w3m-wallet-button" @click=${this.onClick}>
+        <div class="w3m-wallet-button-wrap">
           <w3m-wallet-image name=${this.name}></w3m-wallet-image>
-        </button>
-
-        <w3m-text variant="xsmall-normal">${getWalletFirstName(this.name)}</w3m-text>
-      </div>
+          <w3m-text variant="xsmall-normal">${getWalletFirstName(this.name)}</w3m-text>
+        </div>
+      </button>
     `
   }
 }
