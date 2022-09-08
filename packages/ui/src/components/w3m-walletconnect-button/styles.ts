@@ -16,12 +16,21 @@ export default css`
     filter: brightness(110%);
   }
 
-  .w3m-wc-button {
+  button {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: transparent;
+  }
+
+  .w3m-button-container {
     border-radius: 18px;
     margin-bottom: 5px;
     width: 100%;
     height: 60px;
     overflow: hidden;
+    position: relative;
+    display: flex;
   }
 
   .w3m-carousel-container {
@@ -86,8 +95,8 @@ export default css`
     object-position: center;
   }
 
-  .w3m-wc-button::after,
-  .w3m-wc-button::before {
+  .w3m-button-container::after,
+  .w3m-button-container::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -101,7 +110,7 @@ export function dynamicStyles() {
 
   return html`
     <style>
-      .w3m-wc-button {
+      .w3m-button-container {
         background-color: ${background.accent};
         border: 1px solid ${overlay.thin};
       }
@@ -115,11 +124,11 @@ export function dynamicStyles() {
         border: 1px solid ${overlay.thin};
       }
 
-      .w3m-wc-button::after {
+      .w3m-button-container::after {
         box-shadow: inset 20px 0 10px 0 ${background.accent};
       }
 
-      .w3m-wc-button::before {
+      .w3m-button-container::before {
         box-shadow: inset -20px 0 10px 0 ${background.accent};
       }
     </style>
