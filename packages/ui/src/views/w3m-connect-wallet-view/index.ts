@@ -28,6 +28,10 @@ export class W3mConnectWalletView extends LitElement {
     RouterCtrl.push('CoinbaseConnector')
   }
 
+  private onLedgerWallet() {
+    RouterCtrl.push('LedgerDesktopConnector')
+  }
+
   private onMetaMaskWallet() {
     RouterCtrl.push('MetaMaskConnector')
   }
@@ -99,15 +103,15 @@ export class W3mConnectWalletView extends LitElement {
         </div>
         <div class="w3m-view-row">
           ${slot1} ${slot2}
-          <w3m-wallet-button name="Ledger" .onClick=${this.onCoinbaseWallet}></w3m-wallet-button>
+          <w3m-wallet-button name="Ledger" .onClick=${this.onLedgerWallet}></w3m-wallet-button>
           <w3m-wallet-button name="View All" .onClick=${this.onCoinbaseWallet}></w3m-wallet-button>
         </div>
       </w3m-modal-content>
       <w3m-modal-footer>
         <div class="w3m-footer-actions">
-          <w3m-button .iconLeft=${WALLET_ICON} .onClick=${this.onGetWallet}
-            >Get a Wallet</w3m-button
-          >
+          <w3m-button .iconLeft=${WALLET_ICON} .onClick=${this.onGetWallet}>
+            Get a Wallet
+          </w3m-button>
           <w3m-button
             .iconLeft=${HELP_ICON}
             variant="ghost"

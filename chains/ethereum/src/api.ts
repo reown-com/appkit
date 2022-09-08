@@ -82,6 +82,28 @@ export const Web3ModalEthereum = {
     return data
   },
 
+  async connectLedgerDesktop(onUri: (uri: string) => void) {
+    const connector = this.getConnectorById('walletConnect')
+    const chainId = this.getDefaultConnectorChainId(connector)
+
+    async function getProviderUri() {
+      return new Promise<void>(resolve => {
+        connector.once('message', async ({ type }) => {
+          if (type === 'connecting') {
+            const provider = await connector.getProvider()
+            const wcUri: string = provider.connector.uri
+            onUri(`ledgerlive://wc?uri=${encodeURIComponent(wcUri)}`)
+            resolve()
+          }
+        })
+      })
+    }
+
+    const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
+
+    return data
+  },
+
   async connectCoinbase(onUri: (uri: string) => void) {
     const connector = this.getConnectorById('coinbaseWallet')
     const chainId = this.getDefaultConnectorChainId(connector)

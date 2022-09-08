@@ -9,6 +9,7 @@ import '../../views/w3m-coinbase-connector-view'
 import '../../views/w3m-connect-wallet-view'
 import '../../views/w3m-get-wallet-view'
 import '../../views/w3m-injected-connector-view'
+import '../../views/w3m-ledger-desktop-connector-view'
 import '../../views/w3m-metamask-connector-view'
 import '../../views/w3m-select-network-view'
 import '../../views/w3m-walletconnect-connector-view'
@@ -80,6 +81,8 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-metamask-connector-view></w3m-metamask-connector-view>`
       case 'GetWallet':
         return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
+      case 'LedgerDesktopConnector':
+        return html`<w3m-ledger-desktop-connector-view></w3m-ledger-desktop-connector-view>`
       default:
         return html`<div>Not Found</div>`
     }

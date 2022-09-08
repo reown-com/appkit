@@ -3,6 +3,7 @@ export type RouterView =
   | 'ConnectWallet'
   | 'GetWallet'
   | 'InjectedConnector'
+  | 'LedgerDesktopConnector'
   | 'MetaMaskConnector'
   | 'SelectNetwork'
   | 'WalletConnectConnector'
