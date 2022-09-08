@@ -11,8 +11,7 @@ export default class Whatamesh {
   angle = 0
   t = 1253106
   last = 0
-  minWidth = 650
-  height = 650
+  height = 500
   amp = 300
   seed = 15
   freqX = 14e-5
