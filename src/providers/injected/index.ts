@@ -53,8 +53,6 @@ import BraveLogo from "../logos/brave.svg";
 // @ts-ignore
 import RabbyLogo from "../logos/rabby.svg";
 // @ts-ignore
-import BitkeepLogo from "../logos/bitkeepwallet.png";
-// @ts-ignore
 import ClvLogo from "../logos/clv.svg";
 // @ts-ignore
 import TokenPocketLogo from "../logos/tokenpocket.svg";
@@ -279,13 +277,7 @@ export const CLV: IProviderInfo = {
   check: "isCloverWallet"
 };
 
-export const BITKEEPWALLET: IProviderInfo = {
-  id: "injected",
-  name: "Bitkeep Wallet",
-  logo: BitkeepLogo,
-  type: "injected",
-  check: "isBitKeep"
-};
+
 
 export const CORE: IProviderInfo = {
   id: "injected",

@@ -180,7 +180,7 @@ class App extends React.Component<any, any> {
     const provider = await this.web3Modal.connect();
 
     await this.subscribeProvider(provider);
-
+  
     await provider.enable();
     const web3: any = initWeb3(provider);
 
@@ -213,6 +213,7 @@ class App extends React.Component<any, any> {
       await this.getAccountAssets();
     });
     provider.on("chainChanged", async (chainId: number) => {
+   
       const { web3 } = this.state;
       const networkId = await web3.eth.net.getId();
       await this.setState({ chainId, networkId });
@@ -244,6 +245,9 @@ class App extends React.Component<any, any> {
           appName: "Web3Modal Example App",
           infuraId
         }
+      },
+      bitkeep:{
+        package:{}
       },
       web3auth: {
         package: Web3Auth,
