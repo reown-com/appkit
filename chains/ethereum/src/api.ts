@@ -35,9 +35,11 @@ export const Web3ModalEthereum = {
 
     // Preheat connectors
     const walletConnect = this.getConnectorById('walletConnect')
-    const coinbase = this.getConnectorById('coinbaseWallet')
     walletConnect.connect()
-    coinbase.connect()
+    if (!window.coinbaseWalletExtension) {
+      const coinbase = this.getConnectorById('coinbaseWallet')
+      coinbase.connect()
+    }
 
     return this
   },
@@ -104,7 +106,7 @@ export const Web3ModalEthereum = {
     return data
   },
 
-  async connectCoinbase(onUri: (uri: string) => void) {
+  async connectCoinbaseMobile(onUri: (uri: string) => void) {
     const connector = this.getConnectorById('coinbaseWallet')
     const chainId = this.getDefaultConnectorChainId(connector)
 

@@ -27,4 +27,14 @@ export default css`
     height: 25%;
     margin-bottom: 20px;
   }
+
+  .w3m-install-actions {
+    display: flex;
+    margin-top: 20px;
+  }
+
+  .w3m-install-actions w3m-button {
+    margin: 5px;
+    opacity: 1;
+  }
 `

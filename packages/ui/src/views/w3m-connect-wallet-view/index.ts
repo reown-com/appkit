@@ -25,7 +25,8 @@ export class W3mConnectWalletView extends LitElement {
   }
 
   private onCoinbaseWallet() {
-    RouterCtrl.push('CoinbaseConnector')
+    if (window.coinbaseWalletExtension) RouterCtrl.push('CoinbaseExtensionConnector')
+    else RouterCtrl.push('CoinbaseMobileConnector')
   }
 
   private onLedgerWallet() {
@@ -103,7 +104,7 @@ export class W3mConnectWalletView extends LitElement {
         </div>
         <div class="w3m-view-row">
           ${slot1} ${slot2}
-          <w3m-wallet-button name="Ledger" .onClick=${this.onLedgerWallet}></w3m-wallet-button>
+          <w3m-wallet-button name="Ledger Live" .onClick=${this.onLedgerWallet}></w3m-wallet-button>
           <w3m-wallet-button name="View All" .onClick=${this.onCoinbaseWallet}></w3m-wallet-button>
         </div>
       </w3m-modal-content>

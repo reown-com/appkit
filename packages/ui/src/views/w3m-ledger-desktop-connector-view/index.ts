@@ -1,4 +1,4 @@
-import { ClientCtrl, ModalCtrl } from '@web3modal/core'
+import { ClientCtrl, ModalCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-button'
@@ -8,7 +8,7 @@ import '../../components/w3m-qrcode'
 import '../../components/w3m-spinner'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-image'
-import { RETRY_ICON } from '../../utils/Svgs'
+import { MOBILE_ICON, RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
 import styles from './styles'
 
@@ -23,15 +23,18 @@ export class W3mLedgerDesktopConnectorView extends LitElement {
   }
 
   // -- private ------------------------------------------------------ //
-
   private async onConnect() {
     await ClientCtrl.ethereum().connectLedgerDesktop(uri => window.open(uri, '_self'))
     ModalCtrl.closeModal()
   }
 
+  private onMobile() {
+    RouterCtrl.push('WalletConnectConnector')
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
-    const name = 'Ledger'
+    const name = 'Ledger Live'
 
     return html`
       <w3m-modal-header title=${name}></w3m-modal-header>
@@ -44,9 +47,14 @@ export class W3mLedgerDesktopConnectorView extends LitElement {
               ${`Continue in ${name}...`}
             </w3m-text>
           </div>
-          <w3m-button .onClick=${this.onConnect.bind(this)} .iconRight=${RETRY_ICON}>
-            Retry
-          </w3m-button>
+          <div class="w3m-install-actions">
+            <w3m-button .onClick=${this.onConnect.bind(this)} .iconRight=${RETRY_ICON}>
+              Retry
+            </w3m-button>
+            <w3m-button .onClick=${this.onMobile} .iconLeft=${MOBILE_ICON} variant="ghost">
+              Ledger Live Mobile
+            </w3m-button>
+          </div>
         </div>
       </w3m-modal-content>
     `

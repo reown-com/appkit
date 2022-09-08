@@ -14,8 +14,8 @@ import styles, { dynamicStyles } from './styles'
 
 const HORIZONTAL_PADDING = 36
 
-@customElement('w3m-coinbase-connector-view')
-export class W3mCoinbaseConnectorView extends LitElement {
+@customElement('w3m-coinbase-mobile-connector-view')
+export class W3mCoinbaseMobileConnectorView extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -30,7 +30,7 @@ export class W3mCoinbaseConnectorView extends LitElement {
   // -- private ------------------------------------------------------ //
   private async getConnectionUri() {
     try {
-      await ClientCtrl.ethereum().connectCoinbase(uri => (this.uri = uri))
+      await ClientCtrl.ethereum().connectCoinbaseMobile(uri => (this.uri = uri))
       ModalCtrl.closeModal()
     } catch {
       throw new Error('Denied connection')
@@ -77,6 +77,6 @@ export class W3mCoinbaseConnectorView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-coinbase-connector-view': W3mCoinbaseConnectorView
+    'w3m-coinbase-mobile-connector-view': W3mCoinbaseMobileConnectorView
   }
 }
