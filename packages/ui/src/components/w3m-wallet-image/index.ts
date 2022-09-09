@@ -1,8 +1,8 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/w3m-text'
-import { getWalletIcon } from '../../utils/UiHelpers'
 import { global } from '../../utils/Theme'
+import { getWalletIcon } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-wallet-image')

@@ -1,4 +1,5 @@
-import { css } from 'lit'
+import { ConfigCtrl } from '@web3modal/core'
+import { css, html } from 'lit'
 
 export default css`
   .w3m-wallet-button-wrap {
@@ -16,7 +17,6 @@ export default css`
 
   .w3m-wallet-button:hover w3m-wallet-image {
     transform: translateY(-2px);
-    filter: brightness(110%);
   }
 
   w3m-text {
@@ -35,3 +35,15 @@ export default css`
     margin-bottom: 5px;
   }
 `
+
+export function dynamicStyles() {
+  const isDark = ConfigCtrl.state.theme === 'dark'
+
+  return html`
+    <style>
+      .w3m-wallet-button:hover w3m-wallet-image {
+        filter: brightness(${isDark ? '110%' : '104%'});
+      }
+    </style>
+  `
+}
