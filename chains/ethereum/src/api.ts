@@ -155,7 +155,7 @@ export const Web3ModalEthereum = {
   async switchChain(chainId: string) {
     const chain = await switchNetwork({ chainId: getChainIdReference(chainId) })
 
-    return chain
+    return `eip155:${chain.id}`
   },
 
   async signTypedData({ value, domain, types }: SignTypedDataOpts) {
