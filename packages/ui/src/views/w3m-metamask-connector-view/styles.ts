@@ -6,7 +6,7 @@ export default css`
     align-items: center;
     justify-content: center;
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1 / 1.25;
     flex-direction: column;
   }
 
@@ -48,7 +48,7 @@ export default css`
   w3m-wallet-image {
     border-radius: 22px;
     width: 25%;
-    height: 25%;
+    aspect-ratio: 1 / 1;
     margin-bottom: 20px;
   }
 

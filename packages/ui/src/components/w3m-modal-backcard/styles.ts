@@ -28,7 +28,6 @@ export default css`
   }
 
   .w3m-gradient-canvas {
-    backface-visibility: none;
     --gradient-color-1: #cad8f2;
     --gradient-color-2: #be3620;
     --gradient-color-3: #a6208c;

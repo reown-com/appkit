@@ -3,8 +3,7 @@ import { css } from 'lit'
 export default css`
   .w3m-modal-router {
     overflow: hidden;
-    will-change: height;
-    transform: translate3d(0, 0, 0);
+    will-change: transform;
   }
 
   .w3m-modal-router-content {
