@@ -1,49 +1,22 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { GenericParams, ListingResponse, PageParams } from '../../types/explorerTypes'
-import { ConfigCtrl } from './ConfigCtrl'
+import type { ListingResponse, PageParams } from '../../types/explorerTypes'
+import { fetchWallets } from '../utils/ExplorerApi'
 
-interface State {
-  loading: boolean
-  search: Record<string, string>
-  page: Record<string, number>
+// -- types -------------------------------------------------------- //
+export interface State {
+  search: string
+  page: number
   wallets: ListingResponse
 }
 
+// -- initial state ------------------------------------------------ //
 const state = proxy<State>({
-  loading: false,
-  search: {},
-  page: {},
+  search: '',
+  page: 0,
   wallets: { listings: {}, count: 0 }
 })
 
-const BASE_URL = 'https://registry-staging.walletconnect.com/v3'
-
-function formatParams(params: GenericParams) {
-  const stringStringRecord: Record<string, string> = Object.fromEntries(
-    Object.entries(params).map(([k, v]) => [k, v.toString()])
-  )
-
-  return new URLSearchParams(stringStringRecord).toString()
-}
-
-function formatUrl(endpoint: string, params: GenericParams) {
-  return `${BASE_URL}/${endpoint}?${formatParams(params)}`
-}
-
-async function fetchEndpoint<TReturn = ListingResponse>(
-  endpoint: string,
-  params: PageParams
-): Promise<TReturn> {
-  state.page[endpoint] = params.page ?? 0
-  state.search[endpoint] = params.search ?? ''
-
-  const fetched = await fetch(
-    formatUrl(endpoint, { ...params, projectId: ConfigCtrl.state.projectId })
-  )
-
-  return fetched.json()
-}
-
+// -- controller --------------------------------------------------- //
 export const ExplorerCtrl = {
   state,
 
@@ -52,9 +25,12 @@ export const ExplorerCtrl = {
   },
 
   async getWallets(params: PageParams) {
-    const fetched = await fetchEndpoint('wallets', params)
-    state.wallets = fetched
+    const wallets = await fetchWallets(params)
+    state.wallets = wallets
+    const { page, search } = params
+    if (typeof page !== 'undefined' && state.page !== page) state.page = page
+    if (typeof search !== 'undefined' && state.search !== search) state.search = search
 
-    return fetched
+    return wallets
   }
 }

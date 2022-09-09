@@ -1,7 +1,7 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 
 // -- types -------------------------------------------------------- //
-interface State {
+export interface State {
   open: boolean
 }
 

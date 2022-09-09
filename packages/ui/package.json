@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.js",
   "type": "module",
-  "types": "dist/types/index.d.ts",
+  "types": "dist/_types/index.d.ts",
   "files": [
     "dist"
   ],
@@ -12,14 +12,14 @@
     "build:clean": "rm -rf dist",
     "build:types": "tsc --emitDeclarationOnly",
     "build:source": "rollup --silent --config rollup.config.js",
-    "build": "npm run build:clean; npm run build:source; npm run build:types",
+    "build": "npm run build:clean; npm run build:types; npm run build:source",
     "dev": "rollup --config rollup.config.js --watch",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@web3modal/core": "2.0.0",
     "lit": "2.3.1",
-    "motion": "10.14.1",
+    "motion": "10.14.2",
     "qrcode": "1.5.1"
   },
   "devDependencies": {

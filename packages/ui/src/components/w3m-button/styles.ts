@@ -10,15 +10,19 @@ export default css`
   }
 
   .w3m-button::after {
-    border-radius: 28px;
+    border-radius: inherit;
   }
 
   .w3m-button:disabled::after {
     background-color: transparent;
   }
 
-  .w3m-button svg {
+  .w3m-button-icon-left svg {
     margin-right: 5px;
+  }
+
+  .w3m-button-icon-right svg {
+    margin-left: 5px;
   }
 `
 
@@ -36,14 +40,10 @@ export function dynamicStyles() {
     }
 
     .w3m-button::after {
-      box-shadow: inset 0 0 0 1px ${overlay.thin};
+      border: 1px solid ${overlay.thin};
     }
 
-    .w3m-button-fill:hover::after {
-      background-color: ${overlay.thick};
-    }
-
-    .w3m-button-ghost:hover::after {
+    .w3m-button:hover::after {
       background-color: ${overlay.thin};
     }
 

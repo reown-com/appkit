@@ -80,7 +80,7 @@ export default css`
 `
 
 export function dynamicStyles() {
-  const { foreground } = color()
+  const { foreground, error } = color()
 
   return html`<style>
     .w3m-color-primary {
@@ -91,12 +91,20 @@ export function dynamicStyles() {
       color: ${foreground[2]};
     }
 
+    .w3m-color-tertiary {
+      color: ${foreground[3]};
+    }
+
     .w3m-color-inverse {
       color: ${foreground.inverse};
     }
 
     .w3m-color-accnt {
       color: ${foreground.accent};
+    }
+
+    .w3m-color-error {
+      color: ${error};
     }
   </style>`
 }

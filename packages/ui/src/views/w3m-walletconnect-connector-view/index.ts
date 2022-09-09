@@ -1,4 +1,4 @@
-import { ClientCtrl, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, ModalCtrl, ModalToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-button'
@@ -7,14 +7,14 @@ import '../../components/w3m-modal-footer'
 import '../../components/w3m-modal-header'
 import '../../components/w3m-qrcode'
 import '../../components/w3m-text'
-import { COPY_ICON } from '../../utils/Svgs'
+import { COPY_ICON, QRCODE_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import styles from './styles'
+import styles, { dynamicStyles } from './styles'
 
 const HORIZONTAL_PADDING = 36
 
-@customElement('w3m-wc-qrcode-view')
-export class W3mWcQrCodeView extends LitElement {
+@customElement('w3m-walletconnect-connector-view')
+export class W3mWalletConnectConnectorView extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -30,15 +30,22 @@ export class W3mWcQrCodeView extends LitElement {
   private async getConnectionUri() {
     try {
       await ClientCtrl.ethereum().connectWalletConnect(uri => (this.uri = uri))
-      ClientCtrl.ethereum().disconnect()
+      ModalCtrl.closeModal()
     } catch {
       throw new Error('Denied connection')
     }
   }
 
+  private async onCopy() {
+    await navigator.clipboard.writeText(this.uri)
+    ModalToastCtrl.openToast('WalletConnect link copied')
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
+      ${dynamicStyles()}
+
       <w3m-modal-header title="Mobile Wallets"></w3m-modal-header>
       <w3m-modal-content>
         <div class="w3m-qr-container">
@@ -49,15 +56,14 @@ export class W3mWcQrCodeView extends LitElement {
         </div>
       </w3m-modal-content>
       <w3m-modal-footer>
-        <w3m-text variant="large-bold">Scan with your phone</w3m-text>
+        <div class="w3m-title">
+          ${QRCODE_ICON}
+          <w3m-text variant="large-bold">Scan with your phone</w3m-text>
+        </div>
         <w3m-text variant="medium-thin" align="center" color="secondary" class="w3m-info-text">
           Open your camera app or mobile wallet and scan the code to connect
         </w3m-text>
-        <w3m-button
-          variant="ghost"
-          .icon=${COPY_ICON}
-          .onClick=${() => RouterCtrl.replace('ConnectWallet')}
-        >
+        <w3m-button variant="ghost" .iconLeft=${COPY_ICON} .onClick=${this.onCopy.bind(this)}>
           Copy to Clipboard
         </w3m-button>
       </w3m-modal-footer>
@@ -67,6 +73,6 @@ export class W3mWcQrCodeView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-wc-qrcode-view': W3mWcQrCodeView
+    'w3m-walletconnect-conector-view': W3mWalletConnectConnectorView
   }
 }

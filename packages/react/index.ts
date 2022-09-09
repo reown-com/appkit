@@ -1,3 +1,6 @@
 export type { ConfigOptions } from '@web3modal/core'
-export { ConnectButton } from './src/ConnectButton'
-export { Web3ModalProvider } from './src/Web3ModalProvider'
+export { AccountButton } from './src/components/AccountButton'
+export { ConnectButton } from './src/components/ConnectButton'
+export { Web3ModalProvider } from './src/components/Web3ModalProvider'
+export { useAccount } from './src/hooks/useAccount'
+export { useSwitchChain } from './src/hooks/useSwitchChain'

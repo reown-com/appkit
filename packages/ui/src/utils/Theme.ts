@@ -1,45 +1,5 @@
 import { ConfigCtrl } from '@web3modal/core'
-import { css } from 'lit'
-
-export const global = css`
-  *,
-  *::after,
-  *::before {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-style: normal;
-    text-rendering: optimizeSpeed;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  button {
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    border: none;
-  }
-
-  button::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-color: transparent;
-    transition: background-color, 0.2s ease-in-out;
-  }
-
-  button:disabled {
-    cursor: not-allowed;
-  }
-
-  button svg,
-  button w3m-text {
-    position: relative;
-    z-index: 1;
-  }
-`
+import { css, unsafeCSS } from 'lit'
 
 export function accentColors(a: number) {
   return {
@@ -164,7 +124,7 @@ export function themeColors(alpha: number) {
       },
       overlay: {
         thin: 'rgba(0,0,0,0.1)',
-        thick: 'rgba(0,0,0,0.4)'
+        thick: 'rgba(0,0,0,0.3)'
       }
     },
 
@@ -181,7 +141,7 @@ export function themeColors(alpha: number) {
       },
       overlay: {
         thin: 'rgba(255,255,255,0.1)',
-        thick: 'rgba(255,255,255,0.4)'
+        thick: 'rgba(255,255,255,0.3)'
       }
     }
   }
@@ -203,6 +163,58 @@ export function color(alpha = 1) {
       accent: accent.background,
       ...theme.background
     },
-    overlay: { ...theme.overlay }
+    overlay: { ...theme.overlay },
+    error: `rgba(242, 90, 103, ${alpha})`
   }
 }
+
+export const global = css`
+  *,
+  *::after,
+  *::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-style: normal;
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    backface-visibility: hidden;
+  }
+
+  button {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border: none;
+  }
+
+  button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: transparent;
+    transition: background-color, 0.2s ease-in-out;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  button svg,
+  button w3m-text {
+    position: relative;
+    z-index: 1;
+  }
+
+  img {
+    display: block;
+  }
+
+  ::selection {
+    color: ${unsafeCSS(color().foreground.inverse)};
+    background: ${unsafeCSS(color().foreground.accent)};
+  }
+`

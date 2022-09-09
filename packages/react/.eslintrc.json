@@ -1,0 +1,13 @@
+{
+  "plugins": ["react", "react-hooks"],
+  "extends": ["plugin:react/all", "plugin:react-hooks/recommended", "../../.eslintrc.json"],
+  "rules": {
+    "consistent-return": "off",
+
+    "@typescript-eslint/no-confusing-void-expression": "off",
+
+    "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
+    "react/jsx-props-no-spreading": "off",
+    "react/require-default-props": "off"
+  }
+}

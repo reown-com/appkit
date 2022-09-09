@@ -1,11 +1,10 @@
-import { html } from 'lit'
+import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { global } from '../../utils/Theme'
-import ThemedElement from '../../utils/ThemedElement'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-modal-footer')
-export class W3mModalFooter extends ThemedElement {
+export class W3mModalFooter extends LitElement {
   public static styles = [global, styles]
 
   // -- render ------------------------------------------------------- //

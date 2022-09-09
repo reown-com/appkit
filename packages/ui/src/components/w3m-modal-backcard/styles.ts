@@ -12,7 +12,7 @@ export default css`
     width: 100%;
     height: 100%;
     border-radius: 8px 8px 30px 8px;
-    transform: translate3d(-5px, -5px, 0);
+    transform: translateY(-5px) translateX(-5px);
   }
 
   .w3m-gradient-canvas {
@@ -61,18 +61,6 @@ export default css`
     height: 12px;
     display: block;
   }
-
-  @media (prefers-color-scheme: dark) {
-    .w3m-modal-close-btn {
-      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
-    }
-  }
-
-  @media (prefers-color-scheme: light) {
-    .w3m-modal-close-btn {
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
-    }
-  }
 `
 
 export function dynamicStyles() {
@@ -93,6 +81,10 @@ export function dynamicStyles() {
 
     .w3m-modal-close-btn path {
       fill: ${foreground[1]};
+    }
+
+    .w3m-modal-close-btn {
+      box-shadow: 0 0 0 1px ${overlay.thin};
     }
   </style>`
 }

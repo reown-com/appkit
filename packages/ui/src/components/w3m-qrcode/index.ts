@@ -4,6 +4,7 @@ import { customElement, property } from 'lit/decorators.js'
 import { getDots } from '../../utils/QrCode'
 import { WALLET_CONNECT_ICON_GRADIENT } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
+import '../w3m-wallet-image'
 import styles from './styles'
 
 @customElement('w3m-qrcode')
@@ -13,7 +14,7 @@ export default class W3mQrCode extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property() public uri = ''
   @property({ type: Number }) public size = 0
-  @property() public logo? = ''
+  @property() public logoSrc? = ''
 
   // -- private ------------------------------------------------------ //
   private svgTemplate() {
@@ -30,7 +31,9 @@ export default class W3mQrCode extends LitElement {
   protected render() {
     return html`
       <div class="w3m-qrcode-container">
-        ${this.logo ? html`<img src=${this.logo} />` : WALLET_CONNECT_ICON_GRADIENT}
+        ${this.logoSrc
+          ? html`<w3m-wallet-image src=${this.logoSrc}></w3m-wallet-image>`
+          : WALLET_CONNECT_ICON_GRADIENT}
         ${this.svgTemplate()}
       </div>
     `

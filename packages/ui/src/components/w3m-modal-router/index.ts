@@ -3,12 +3,17 @@ import { RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
-import { getShadowRootElement } from '../../utils/Helpers'
+import { getShadowRootElement } from '../../utils/UiHelpers'
 import { global } from '../../utils/Theme'
-import '../../views/w3m-coinbase-qrcode-view'
+import '../../views/w3m-coinbase-extension-connector-view'
+import '../../views/w3m-coinbase-mobile-connector-view'
 import '../../views/w3m-connect-wallet-view'
+import '../../views/w3m-get-wallet-view'
+import '../../views/w3m-injected-connector-view'
+import '../../views/w3m-ledger-desktop-connector-view'
+import '../../views/w3m-metamask-connector-view'
 import '../../views/w3m-select-network-view'
-import '../../views/w3m-wc-qrcode-view'
+import '../../views/w3m-walletconnect-connector-view'
 import styles from './styles'
 
 @customElement('w3m-modal-router')
@@ -31,8 +36,12 @@ export class W3mModalRouter extends LitElement {
     this.resizeObserver = new ResizeObserver(([conetnt]) => {
       const newHeight = `${conetnt.borderBoxSize[0].blockSize}px`
       if (this.oldHeight !== '0px') {
-        animate(this.routerEl, { height: [this.oldHeight, newHeight] }, { duration: 0.175 })
-        animate(this.routerEl, { opacity: [0, 1], scale: [0.96, 1] }, { duration: 0.2 })
+        animate(this.routerEl, { height: [this.oldHeight, newHeight] }, { duration: 0.15 })
+        animate(
+          this.routerEl,
+          { opacity: [0, 1], scale: [0.99, 1] },
+          { duration: 0.15, delay: 0.1 }
+        )
       }
       this.oldHeight = newHeight
     })
@@ -63,10 +72,20 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-connect-wallet-view></w3m-connect-wallet-view>`
       case 'SelectNetwork':
         return html`<w3m-select-network-view></w3m-select-network-view>`
-      case 'WcQrCode':
-        return html`<w3m-wc-qrcode-view></w3m-wc-qrcode-view>`
-      case 'CoinbaseQrCode':
-        return html`<w3m-coinbase-qrcode-view></w3m-coinbase-qrcode-view>`
+      case 'WalletConnectConnector':
+        return html`<w3m-walletconnect-connector-view></w3m-walletconnect-connector-view>`
+      case 'CoinbaseMobileConnector':
+        return html`<w3m-coinbase-mobile-connector-view></w3m-coinbase-mobile-connector-view>`
+      case 'CoinbaseExtensionConnector':
+        return html`<w3m-coinbase-extension-connector-view></w3m-coinbase-extension-connector-view>`
+      case 'InjectedConnector':
+        return html`<w3m-injected-connector-view></w3m-injected-connector-view>`
+      case 'MetaMaskConnector':
+        return html`<w3m-metamask-connector-view></w3m-metamask-connector-view>`
+      case 'GetWallet':
+        return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
+      case 'LedgerDesktopConnector':
+        return html`<w3m-ledger-desktop-connector-view></w3m-ledger-desktop-connector-view>`
       default:
         return html`<div>Not Found</div>`
     }

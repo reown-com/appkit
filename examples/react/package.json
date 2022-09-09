@@ -3,19 +3,20 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev"
+    "dev": "next dev",
+    "build": "next build && next export"
   },
   "dependencies": {
     "@web3modal/react": "2.0.0",
     "@web3modal/ethereum": "2.0.0",
-    "next": "12.2.5",
+    "next": "12.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "wagmi": "0.6.4"
+    "@wagmi/core": "0.5.5"
   },
   "devDependencies": {
-    "@types/node": "18.7.14",
-    "@types/react": "18.0.17",
+    "@types/node": "18.7.16",
+    "@types/react": "18.0.18",
     "@types/react-dom": "18.0.6"
   }
 }

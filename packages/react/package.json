@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.js",
   "type": "module",
-  "types": "dist/types/index.d.ts",
+  "types": "dist/_types/index.d.ts",
   "files": [
     "dist"
   ],
@@ -12,7 +12,7 @@
     "build:clean": "rm -rf dist",
     "build:types": "tsc --emitDeclarationOnly",
     "build:source": "rollup --silent --config rollup.config.js",
-    "build": "npm run build:clean; npm run build:source; npm run build:types",
+    "build": "npm run build:clean; npm run build:types; npm run build:source",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -24,8 +24,10 @@
     "react-dom": ">=17.x"
   },
   "devDependencies": {
-    "@types/react": "18.0.17",
+    "@types/react": "18.0.18",
     "@types/react-dom": "18.0.6",
-    "@web3modal/ethereum": "2.0.0"
+    "@web3modal/ethereum": "2.0.0",
+    "eslint-plugin-react": "7.31.8",
+    "eslint-plugin-react-hooks": "4.6.0"
   }
 }

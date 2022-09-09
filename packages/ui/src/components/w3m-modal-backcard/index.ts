@@ -1,21 +1,25 @@
 import { ModalCtrl } from '@web3modal/core'
-import { html } from 'lit'
+import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { getShadowRootElement } from '../../utils/Helpers'
+import { getShadowRootElement } from '../../utils/UiHelpers'
 import { CLOSE_ICON, NOISE_TEXTURE, WALLET_CONNECT_LOGO } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import ThemedElement from '../../utils/ThemedElement'
 import Whatamesh from '../../utils/Whatamesh'
 import styles, { dynamicStyles } from './styles'
 
+const whatamesh = new Whatamesh()
+
 @customElement('w3m-modal-backcard')
-export class W3mModalBackcard extends ThemedElement {
+export class W3mModalBackcard extends LitElement {
   public static styles = [global, styles]
 
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
-    const whatamesh = new Whatamesh()
-    whatamesh.initGradient(this.canvasEl)
+    whatamesh.play(this.canvasEl)
+  }
+
+  public disconnectedCallback() {
+    whatamesh.stop()
   }
 
   // -- private ------------------------------------------------------ //

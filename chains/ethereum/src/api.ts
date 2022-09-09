@@ -1,4 +1,5 @@
-import { InjectedConnector } from '@wagmi/core'
+import type { Connector } from '@wagmi/core'
+import { connect, disconnect, InjectedConnector, switchNetwork } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
@@ -8,37 +9,14 @@ import type {
   GetDefaultConnectorsOpts,
   GetWalletConnectProviderOpts
 } from '../types/apiTypes'
+import { ethereumClient, initClient, NAMESPACE } from './utilities'
 
-// -- private ------------------------------------------------------ //
-let ethereumClient = undefined as EthereumClient | undefined
-
-function getWalletConnectConnector() {
-  const connector = ethereumClient?.connectors.find(item => item.id === 'walletConnect')
-  if (!connector) throw new Error('Missing WalletConnect connector')
-
-  return connector
-}
-
-function getCoinbaseConnector() {
-  const connector = ethereumClient?.connectors.find(item => item.id === 'coinbaseWallet')
-  if (!connector) throw new Error('Missing Coinbase Wallet connector')
-
-  return connector
-}
-
-function getInjectedConnector() {
-  const connector = ethereumClient?.connectors.find(item => item.id === 'injected')
-  if (!connector) throw new Error('Missing Injected connector')
-
-  return connector
-}
-
-// -- public ------------------------------------------------------- //
 export const Web3ModalEthereum = {
+  // -- config ------------------------------------------------------- //
   walletConnectRpc({ projectId }: GetWalletConnectProviderOpts) {
     return jsonRpcProvider({
       rpc: chain => ({
-        http: `https://rpc.walletconnect.com/v1/?chainId=eip155:${chain.id}&projectId=${projectId}`
+        http: `https://rpc.walletconnect.com/v1/?chainId=${NAMESPACE}:${chain.id}&projectId=${projectId}`
       })
     })
   },
@@ -53,23 +31,37 @@ export const Web3ModalEthereum = {
   },
 
   createClient(wagmiClient: EthereumClient) {
-    ethereumClient = wagmiClient
-    // Preheat connectors
-    const walletConnect = getWalletConnectConnector()
-    const coinbase = getCoinbaseConnector()
+    initClient(wagmiClient)
+
+    // Preheat wc connector
+    const walletConnect = this.getConnectorById('walletConnect')
     walletConnect.connect()
-    coinbase.connect()
 
     return this
   },
 
+  // -- chains ----------------------------------------------------- //
+  getDefaultConnectorChainId(connector: Connector) {
+    const chainId = connector.chains[0].id
+
+    return chainId
+  },
+
   // -- connectors ------------------------------------------------- //
-  disconnect() {
-    ethereumClient?.connector?.disconnect()
+  getConnectorById(id: 'coinbaseWallet' | 'injected' | 'metaMask' | 'walletConnect') {
+    const connector = ethereumClient?.connectors.find(item => item.id === id)
+    if (!connector) throw new Error(`Missing ${id} connector`)
+
+    return connector
+  },
+
+  async disconnect() {
+    return disconnect()
   },
 
   async connectWalletConnect(onUri: (uri: string) => void) {
-    const connector = getWalletConnectConnector()
+    const connector = this.getConnectorById('walletConnect')
+    const chainId = this.getDefaultConnectorChainId(connector)
 
     async function getProviderUri() {
       return new Promise<void>(resolve => {
@@ -83,13 +75,36 @@ export const Web3ModalEthereum = {
       })
     }
 
-    const [data] = await Promise.all([connector.connect(), getProviderUri()])
+    const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
 
     return data
   },
 
-  async connectCoinbase(onUri: (uri: string) => void) {
-    const connector = getCoinbaseConnector()
+  async connectLedgerDesktop(onUri: (uri: string) => void) {
+    const connector = this.getConnectorById('walletConnect')
+    const chainId = this.getDefaultConnectorChainId(connector)
+
+    async function getProviderUri() {
+      return new Promise<void>(resolve => {
+        connector.once('message', async ({ type }) => {
+          if (type === 'connecting') {
+            const provider = await connector.getProvider()
+            const wcUri: string = provider.connector.uri
+            onUri(`ledgerlive://wc?uri=${encodeURIComponent(wcUri)}`)
+            resolve()
+          }
+        })
+      })
+    }
+
+    const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
+
+    return data
+  },
+
+  async connectCoinbaseMobile(onUri: (uri: string) => void) {
+    const connector = this.getConnectorById('coinbaseWallet')
+    const chainId = this.getDefaultConnectorChainId(connector)
 
     async function getProviderUri() {
       return new Promise<void>(resolve => {
@@ -103,14 +118,44 @@ export const Web3ModalEthereum = {
       })
     }
 
-    const [data] = await Promise.all([connector.connect(), getProviderUri()])
+    const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
 
     return data
   },
 
-  async connectInject() {
-    const injected = getInjectedConnector()
+  async connectCoinbaseExtension() {
+    const connector = this.getConnectorById('coinbaseWallet')
+    const chainId = this.getDefaultConnectorChainId(connector)
+    const data = await connect({ connector, chainId })
 
-    return injected.connect()
+    return data
+  },
+
+  async connectMetaMask() {
+    const connector = this.getConnectorById('metaMask')
+    const chainId = this.getDefaultConnectorChainId(connector)
+    const data = await connect({ connector, chainId })
+
+    return data
+  },
+
+  async connectInjected() {
+    const connector = this.getConnectorById('injected')
+    const chainId = this.getDefaultConnectorChainId(connector)
+    const data = await connect({ connector, chainId })
+
+    return data
+  },
+
+  // -- actions ----------------------------------------------------- //
+  async switchChain(chainId: string) {
+    if (typeof chainId === 'string' && chainId.includes(':')) {
+      const id = Number(chainId.split(':')[1])
+      const chain = await switchNetwork({ chainId: id })
+
+      return chain
+    }
+
+    throw new Error('Invalid chainId, should be formated as namespace:id')
   }
 }
