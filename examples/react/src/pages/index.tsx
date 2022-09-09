@@ -1,8 +1,8 @@
-import { AccountButton, ConnectButton, useAccount, useSwitchChain } from '@web3modal/react'
+import { AccountButton, ConnectButton, useAccount, useSwitchNetwork } from '@web3modal/react'
 
 export default function HomePage() {
   const { chainId, connected, address, connector, chainSupported } = useAccount()
-  const { isLoading, switchChain } = useSwitchChain()
+  const { isLoading, switchChain } = useSwitchNetwork()
 
   function onSwithChainDemo(chain: string) {
     switchChain(chain)
