@@ -1,4 +1,5 @@
-import type { Connector } from '@wagmi/core'
+import { Connector, fetchSigner, getNetwork, signTypedData } from '@wagmi/core'
+import { fetchBalance } from '@wagmi/core'
 import { connect, disconnect, InjectedConnector, switchNetwork } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
@@ -6,10 +7,12 @@ import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import type {
   EthereumClient,
+  GetBalanceOpts,
   GetDefaultConnectorsOpts,
-  GetWalletConnectProviderOpts
+  GetWalletConnectProviderOpts,
+  SignTypedDataOpts
 } from '../types/apiTypes'
-import { ethereumClient, initClient, NAMESPACE } from './utilities'
+import { ethereumClient, getChainIdReference, initClient, NAMESPACE } from './utilities'
 
 export const Web3ModalEthereum = {
   // -- config ------------------------------------------------------- //
@@ -149,13 +152,35 @@ export const Web3ModalEthereum = {
 
   // -- actions ----------------------------------------------------- //
   async switchChain(chainId: string) {
-    if (typeof chainId === 'string' && chainId.includes(':')) {
-      const id = Number(chainId.split(':')[1])
-      const chain = await switchNetwork({ chainId: id })
+    const chain = await switchNetwork({ chainId: getChainIdReference(chainId) })
 
-      return chain
-    }
+    return chain
+  },
 
-    throw new Error('Invalid chainId, should be formated as namespace:id')
+  async signTypedData({ value, domain, types }: SignTypedDataOpts) {
+    await signTypedData({ value, domain, types })
+  },
+
+  // -- fetch ------------------------------------------------------- //
+  async fetchBalance({ address, chainId, formatUnits }: GetBalanceOpts) {
+    const balance = await fetchBalance({
+      addressOrName: address,
+      chainId: getChainIdReference(chainId),
+      formatUnits
+    })
+
+    return balance.formatted
+  },
+
+  async fetchSigner() {
+    const signer = await fetchSigner()
+
+    return signer
+  },
+
+  async getNetwork() {
+    const network = await Promise.resolve(getNetwork())
+
+    return network
   }
 }

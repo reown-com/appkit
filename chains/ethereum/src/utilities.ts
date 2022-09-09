@@ -57,3 +57,13 @@ export function initClient(wagmiClient: EthereumClient) {
   ethereumClient = wagmiClient
   ethereumClient.subscribe(onClientChange)
 }
+
+export function getChainIdReference(chainId: string): number {
+  if (typeof chainId === 'string' && chainId.includes(':')) {
+    const id = Number(chainId.split(':')[1])
+
+    return id
+  }
+
+  throw new Error('Invalid chainId, should be formated as namespace:id')
+}
