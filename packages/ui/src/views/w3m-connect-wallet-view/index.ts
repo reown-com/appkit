@@ -1,4 +1,4 @@
-import { ClientCtrl, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, CoreHelpers, RouterCtrl } from '@web3modal/core'
 import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
@@ -9,7 +9,7 @@ import '../../components/w3m-modal-header'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-button'
 import '../../components/w3m-walletconnect-button'
-import { getDefaultWalletNames, isCoinbaseExtension } from '../../utils/Helpers'
+import { getDefaultWalletNames } from '../../utils/UiHelpers'
 import { DESKTOP_ICON, HELP_ICON, MOBILE_ICON, WALLET_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import styles, { dynamicStyles } from './styles'
@@ -26,7 +26,7 @@ export class W3mConnectWalletView extends LitElement {
   }
 
   private onCoinbaseWallet() {
-    if (isCoinbaseExtension()) RouterCtrl.push('CoinbaseExtensionConnector')
+    if (CoreHelpers.isCoinbaseExtension()) RouterCtrl.push('CoinbaseExtensionConnector')
     else RouterCtrl.push('CoinbaseMobileConnector')
   }
 

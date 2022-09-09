@@ -33,13 +33,9 @@ export const Web3ModalEthereum = {
   createClient(wagmiClient: EthereumClient) {
     initClient(wagmiClient)
 
-    // Preheat connectors
+    // Preheat wc connector
     const walletConnect = this.getConnectorById('walletConnect')
     walletConnect.connect()
-    if (!window.coinbaseWalletExtension) {
-      const coinbase = this.getConnectorById('coinbaseWallet')
-      coinbase.connect()
-    }
 
     return this
   },

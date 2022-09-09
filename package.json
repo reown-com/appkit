@@ -19,13 +19,13 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.36.2",
     "@typescript-eslint/parser": "5.36.2",
-    "@rollup/plugin-node-resolve": "14.0.0",
+    "@rollup/plugin-node-resolve": "14.0.1",
     "@rollup/plugin-commonjs": "22.0.2",
     "@rollup/plugin-json": "4.1.0",
     "eslint": "8.23.0",
     "eslint-config-prettier": "8.5.0",
     "prettier": "2.7.1",
-    "typescript": "4.8.2",
+    "typescript": "4.8.3",
     "rollup": "2.79.0",
     "rollup-plugin-esbuild": "4.10.1",
     "rollup-plugin-minify-html-literals": "1.2.6"

@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/w3m-text'
-import { getWalletFirstName } from '../../utils/Helpers'
+import { getWalletFirstName } from '../../utils/UiHelpers'
 import { global } from '../../utils/Theme'
 import '../w3m-wallet-image'
 import styles from './styles'

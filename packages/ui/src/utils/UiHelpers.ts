@@ -42,7 +42,3 @@ export function getWalletFirstName(fullName: string) {
 export function getDefaultWalletNames() {
   return ['MetaMask', 'Coinbase Wallet']
 }
-
-export function isCoinbaseExtension() {
-  return window.coinbaseWalletExtension
-}
