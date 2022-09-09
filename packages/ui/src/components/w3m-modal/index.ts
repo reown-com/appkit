@@ -1,11 +1,11 @@
-import { ModalCtrl, RouterCtrl } from '@web3modal/core'
+import { CoreHelpers, ExplorerCtrl, ModalCtrl, RouterCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { animate } from 'motion'
 import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
-import { getShadowRootElement } from '../../utils/UiHelpers'
+import { getShadowRootElement, isMobileAnimation } from '../../utils/UiHelpers'
 import '../w3m-modal-backcard'
 import '../w3m-modal-router'
 import '../w3m-modal-toast'
@@ -17,6 +17,7 @@ export class W3mModal extends ThemedElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false
+  @state() private initialized = false
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -34,6 +35,7 @@ export class W3mModal extends ThemedElement {
 
   // -- private ------------------------------------------------------ //
   private readonly unsubscribe?: () => void = undefined
+  private firstOpen = true
 
   private get overlayEl() {
     return getShadowRootElement(this, '.w3m-modal-overlay')
@@ -47,22 +49,25 @@ export class W3mModal extends ThemedElement {
     if (event.target === event.currentTarget) ModalCtrl.closeModal()
   }
 
-  private onOpenModalEvent() {
-    const isMobileAnim = window.innerWidth <= 450
+  private async onOpenModalEvent() {
+    this.initialized = true
+    await Promise.all([
+      CoreHelpers.wait(this.firstOpen ? 300 : 0),
+      ExplorerCtrl.getWallets({ page: 1, entries: 10, version: 1 })
+    ])
     this.open = true
-    animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay: 0.1 })
-    animate(this.containerEl, isMobileAnim ? { y: [15, 0] } : { scale: [0.98, 1] }, {
-      duration: 0.2,
-      delay: 0.1
+    animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2 })
+    animate(this.containerEl, isMobileAnimation() ? { y: [15, 0] } : { scale: [0.98, 1] }, {
+      duration: 0.2
     })
     document.addEventListener('keydown', this.onKeyDown)
+    this.firstOpen = false
   }
 
   private async onCloseModalEvent() {
-    const isMobileAnim = window.innerWidth <= 450
     document.removeEventListener('keydown', this.onKeyDown)
     await Promise.all([
-      animate(this.containerEl, isMobileAnim ? { y: [0, 15] } : { scale: [1, 0.98] }, {
+      animate(this.containerEl, isMobileAnimation() ? { y: [0, 15] } : { scale: [1, 0.98] }, {
         duration: 0.2
       }).finished,
       animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
@@ -70,7 +75,6 @@ export class W3mModal extends ThemedElement {
     this.open = false
     RouterCtrl.replace('ConnectWallet')
   }
-
   private onKeyDown(event: KeyboardEvent) {
     if (event.key === 'Escape') ModalCtrl.closeModal()
   }
@@ -92,11 +96,11 @@ export class W3mModal extends ThemedElement {
         aria-modal="true"
       >
         <div class="w3m-modal-container">
-          ${this.open
+          ${this.initialized
             ? html`
                 <w3m-modal-backcard></w3m-modal-backcard>
                 <div class="w3m-modal-card">
-                  <w3m-modal-router></w3m-modal-router>
+                  ${this.open ? html`<w3m-modal-router></w3m-modal-router>` : null}
                   <w3m-modal-toast></w3m-modal-toast>
                 </div>
               `

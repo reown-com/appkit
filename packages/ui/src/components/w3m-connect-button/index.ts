@@ -1,4 +1,4 @@
-import { ExplorerCtrl, ModalCtrl } from '@web3modal/core'
+import { ModalCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -39,10 +39,9 @@ export class W3mConnectButton extends ThemedElement {
     return this.icon ? WALLET_CONNECT_ICON : null
   }
 
-  private async onOpen() {
+  private onOpen() {
     try {
       this.loading = true
-      await ExplorerCtrl.getWallets({ page: 1, entries: 10, version: 1 })
       ModalCtrl.openModal()
     } catch {
       this.loading = false

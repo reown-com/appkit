@@ -36,8 +36,12 @@ export class W3mModalRouter extends LitElement {
     this.resizeObserver = new ResizeObserver(([conetnt]) => {
       const newHeight = `${conetnt.borderBoxSize[0].blockSize}px`
       if (this.oldHeight !== '0px') {
-        animate(this.routerEl, { height: [this.oldHeight, newHeight] }, { duration: 0.18 })
-        animate(this.routerEl, { opacity: [0, 1], scale: [0.99, 1] }, { duration: 0.2, delay: 0.1 })
+        animate(this.routerEl, { height: [this.oldHeight, newHeight] }, { duration: 0.2 })
+        animate(
+          this.routerEl,
+          { opacity: [0, 1], scale: [0.99, 1] },
+          { duration: 0.37, delay: 0.03 }
+        )
       }
       this.oldHeight = newHeight
     })

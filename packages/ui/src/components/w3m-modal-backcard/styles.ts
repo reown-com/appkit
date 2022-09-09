@@ -21,6 +21,9 @@ export default css`
     #w3m-transparent-noise {
       transform: translateY(-5px) translateX(0);
       border-radius: 8px 8px 0 0;
+      height: 100px;
+      top: 0;
+      left: 0;
     }
   }
 

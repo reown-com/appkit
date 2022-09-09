@@ -42,3 +42,7 @@ export function getWalletFirstName(fullName: string) {
 export function getDefaultWalletNames() {
   return ['MetaMask', 'Coinbase Wallet']
 }
+
+export function isMobileAnimation() {
+  return window.innerWidth <= 450
+}
