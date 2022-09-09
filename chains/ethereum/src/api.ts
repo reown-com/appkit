@@ -1,4 +1,5 @@
-import { Connector, fetchSigner, getNetwork, signTypedData } from '@wagmi/core'
+import type { Connector } from '@wagmi/core'
+import { fetchSigner, getNetwork, signTypedData } from '@wagmi/core'
 import { fetchBalance } from '@wagmi/core'
 import { connect, disconnect, InjectedConnector, switchNetwork } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
