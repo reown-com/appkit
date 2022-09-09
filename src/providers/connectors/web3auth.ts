@@ -5,7 +5,10 @@ import { IAbstractConnectorOptions } from "../../helpers";
 export interface IWeb3AuthConnectorOptions extends IAbstractConnectorOptions {
     chainId?: number
     clientId?: string
-    infuraId?: string
+    rpcTarget?: string
+    theme?: string
+    loginMethodsOrder?: string[]
+    appLogo?: string
 }
 
 const connectToweb3auth = async(Web3Auth: any, opts: IWeb3AuthConnectorOptions) => {
@@ -16,16 +19,23 @@ const connectToweb3auth = async(Web3Auth: any, opts: IWeb3AuthConnectorOptions) 
             const options = opts || {};
             const chainID = options.chainId || "0x1"
             const clientID = options.clientId || "localhostid"
-            const infuraID = options.infuraId
+            const rpcTarget = options.rpcTarget || "https://rpc.ankr.com/eth"
+            const theme = options.theme || "light"
+            const loginMethodsOrder = options.loginMethodsOrder || []
+            const appLogo = options.loginMethodsOrder || ""
             
             const web3auth = new Web3Auth({
+                clientId: clientID,
                 chainConfig: {
                     chainNamespace: "eip155",
                     chainId : chainID,
-                    rpcTarget: `https://mainnet.infura.io/v3/${infuraID}`,
-
+                    rpcTarget: rpcTarget
                 },
-                clientId: clientID
+                uiConfig: {
+                    theme: theme,
+                    loginMethodsOrder: loginMethodsOrder,
+                    appLogo: appLogo,
+                  },
             });
 
             console.log(web3auth)

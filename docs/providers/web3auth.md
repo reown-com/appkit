@@ -19,7 +19,12 @@ const providerOptions = {
   web3auth: {
     package: Web3Auth, // required
     options: {
-      infuraId: "INFURA_ID" // required
+      chainId: "CHAIN ID",
+      clientId: "WEB3AUTH_CLIENT_ID",
+      rpcTarget: "RPC Endpoint",
+      theme: "light", // "dark"
+      loginMethodsOrder?: ["facebook", "google"],
+      appLogo: "logo url"
     }
   }
 };
