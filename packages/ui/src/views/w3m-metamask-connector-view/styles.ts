@@ -34,6 +34,13 @@ export default css`
     margin-top: 20px;
   }
 
+  @media (max-width: 355px) {
+    .w3m-install-actions {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
   w3m-spinner {
     margin-right: 10px;
   }

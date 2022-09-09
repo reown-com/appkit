@@ -3,8 +3,8 @@ import { RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
-import { getShadowRootElement } from '../../utils/UiHelpers'
 import { global } from '../../utils/Theme'
+import { getShadowRootElement } from '../../utils/UiHelpers'
 import '../../views/w3m-coinbase-extension-connector-view'
 import '../../views/w3m-coinbase-mobile-connector-view'
 import '../../views/w3m-connect-wallet-view'
@@ -36,12 +36,8 @@ export class W3mModalRouter extends LitElement {
     this.resizeObserver = new ResizeObserver(([conetnt]) => {
       const newHeight = `${conetnt.borderBoxSize[0].blockSize}px`
       if (this.oldHeight !== '0px') {
-        animate(this.routerEl, { height: [this.oldHeight, newHeight] }, { duration: 0.15 })
-        animate(
-          this.routerEl,
-          { opacity: [0, 1], scale: [0.99, 1] },
-          { duration: 0.15, delay: 0.1 }
-        )
+        animate(this.routerEl, { height: [this.oldHeight, newHeight] }, { duration: 0.18 })
+        animate(this.routerEl, { opacity: [0, 1], scale: [0.99, 1] }, { duration: 0.2, delay: 0.1 })
       }
       this.oldHeight = newHeight
     })

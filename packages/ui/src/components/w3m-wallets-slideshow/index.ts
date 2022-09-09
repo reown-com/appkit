@@ -1,6 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-text'
+import { DEFI_IMG, ETH_IMG, NFT_IMG } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import styles from './styles'
 
@@ -11,10 +12,13 @@ export class W3mWalletsSlideshow extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <w3m-text variant="large-bold">Scan with your phone</w3m-text>
-      <w3m-text variant="medium-thin" align="center" color="secondary" class="w3m-info-text">
-        Open Coinbase Wallet on your phone and scan the code to connect
-      </w3m-text>
+      <div class="w3m-slideshow-container">
+        <div class="w3m-images">${DEFI_IMG} ${NFT_IMG} ${ETH_IMG}</div>
+        <w3m-text variant="large-bold">A home for your digital assets</w3m-text>
+        <w3m-text variant="medium-thin" align="center" color="secondary" class="w3m-info-text">
+          A wallet lets you store, send and receive digital assets like cryptocurrencies and NFTs
+        </w3m-text>
+      </div>
     `
   }
 }

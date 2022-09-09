@@ -23,7 +23,7 @@ const wagmiClient = createClient({
 // Configure web3modal
 const modalConfig: ConfigOptions = {
   projectId: WC_PROJECT_ID,
-  theme: 'light',
+  theme: 'dark',
   accentColor: 'orange'
 }
 

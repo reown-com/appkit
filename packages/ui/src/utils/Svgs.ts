@@ -344,7 +344,7 @@ export const CHECKMARK_ICON = svg`
 `
 
 export const ETH_IMG = svg`
-  <svg width="60" height="60" viewBox="0 0 60 60">
+  <svg width="60" height="60" fill="none" viewBox="0 0 60 60">
     <g clip-path="url(#j)">
       <rect width="60" height="60" rx="30" fill="#987DE8" />
       <path
@@ -386,7 +386,7 @@ export const ETH_IMG = svg`
 `
 
 export const NFT_IMG = svg`
-  <svg width="60" height="60" viewBox="0 0 60 60">
+  <svg width="60" height="60" fill="none" viewBox="0 0 60 60">
     <g clip-path="url(#k)">
       <rect width="60" height="60" rx="3" fill="#C653C6" />
       <path
@@ -410,7 +410,7 @@ export const NFT_IMG = svg`
 `
 
 export const DEFI_IMG = svg`
-  <svg width="60" height="60" viewBox="0 0 60 60">
+  <svg width="60" height="60" fill="none" viewBox="0 0 60 60">
     <g clip-path="url(#l)">
       <path
         d="M0 25.01C0 15.76 0 11.133 1.97 7.678a15 15 0 0 1 5.598-5.597C11.023.11 15.648.11 24.9.11h10.2c9.251 0 13.877 0 17.332 1.97a15 15 0 0 1 5.597 5.597C60 11.133 60 15.758 60 25.01v10.2c0 9.252 0 13.877-1.97 17.332a15 15 0 0 1-5.598 5.598c-3.455 1.97-8.08 1.97-17.332 1.97H24.9c-9.251 0-13.877 0-17.332-1.97a14.999 14.999 0 0 1-5.597-5.598C0 49.087 0 44.462 0 35.21v-10.2Z"

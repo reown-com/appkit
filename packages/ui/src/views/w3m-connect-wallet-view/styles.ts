@@ -5,7 +5,7 @@ export default css`
   .w3m-view-row {
     display: grid;
     grid-auto-flow: column;
-    grid-gap: 40px;
+    grid-gap: calc((100% - 240px) / 3);
     width: 100%;
     justify-content: space-between;
   }

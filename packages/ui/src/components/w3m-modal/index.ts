@@ -3,9 +3,9 @@ import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { animate } from 'motion'
-import { getShadowRootElement } from '../../utils/UiHelpers'
 import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
+import { getShadowRootElement } from '../../utils/UiHelpers'
 import '../w3m-modal-backcard'
 import '../w3m-modal-router'
 import '../w3m-modal-toast'
@@ -48,16 +48,23 @@ export class W3mModal extends ThemedElement {
   }
 
   private onOpenModalEvent() {
+    const isMobileAnim = window.innerWidth <= 450
     this.open = true
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay: 0.1 })
-    animate(this.containerEl, { scale: [0.98, 1] }, { duration: 0.2, delay: 0.1 })
+    animate(this.containerEl, isMobileAnim ? { y: [15, 0] } : { scale: [0.98, 1] }, {
+      duration: 0.2,
+      delay: 0.1
+    })
     document.addEventListener('keydown', this.onKeyDown)
   }
 
   private async onCloseModalEvent() {
+    const isMobileAnim = window.innerWidth <= 450
     document.removeEventListener('keydown', this.onKeyDown)
     await Promise.all([
-      animate(this.containerEl, { scale: [1, 0.98] }, { duration: 0.2 }).finished,
+      animate(this.containerEl, isMobileAnim ? { y: [0, 15] } : { scale: [1, 0.98] }, {
+        duration: 0.2
+      }).finished,
       animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
     ])
     this.open = false

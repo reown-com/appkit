@@ -9,6 +9,7 @@ import '../../components/w3m-modal-header'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-button'
 import '../../components/w3m-walletconnect-button'
+import '../../components/w3m-wallets-slideshow'
 import { DESKTOP_ICON, HELP_ICON, MOBILE_ICON, WALLET_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { getDefaultWalletNames } from '../../utils/UiHelpers'
@@ -114,6 +115,7 @@ export class W3mConnectWalletView extends LitElement {
         </div>
       </w3m-modal-content>
       <w3m-modal-footer>
+        <w3m-wallets-slideshow></w3m-wallets-slideshow>
         <div class="w3m-footer-actions">
           <w3m-button .iconLeft=${WALLET_ICON} .onClick=${this.onGetWallet}>
             Get a Wallet

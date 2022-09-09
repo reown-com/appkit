@@ -15,6 +15,15 @@ export default css`
     transform: translateY(-5px) translateX(-5px);
   }
 
+  @media (max-width: 450px) {
+    .w3m-gradient-canvas,
+    .w3m-modal-highlight,
+    #w3m-transparent-noise {
+      transform: translateY(-5px) translateX(0);
+      border-radius: 8px 8px 0 0;
+    }
+  }
+
   .w3m-gradient-canvas {
     backface-visibility: none;
     --gradient-color-1: #cad8f2;
