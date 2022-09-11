@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.json",
   "include": ["index.ts", "src", "types"],
   "compilerOptions": {
-    "experimentalDecorators": true,
     "outDir": "./dist/_types",
     "declaration": true
   }

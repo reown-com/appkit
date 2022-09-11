@@ -16,7 +16,8 @@
     "allowSyntheticDefaultImports": true,
     "noFallthroughCasesInSwitch": true,
     "isolatedModules": true,
-    "allowUnreachableCode": false
+    "allowUnreachableCode": false,
+    "experimentalDecorators": true
   },
   "exclude": ["node_modules", "dist"]
 }
