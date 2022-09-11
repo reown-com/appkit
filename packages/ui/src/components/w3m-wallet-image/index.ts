@@ -12,7 +12,6 @@ export class W3mWalletButton extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property() public name = ''
   @property() public src?: string = undefined
-  @property() public size: 'lg' | 'md' | 'sm' = 'md'
 
   // -- render ------------------------------------------------------- //
   protected render() {
@@ -20,11 +19,7 @@ export class W3mWalletButton extends LitElement {
       ${dynamicStyles()}
 
       <div class="w3m-wallet-image">
-        <img
-          loading="lazy"
-          src=${this.src ?? getWalletIcon(this.name, this.size)}
-          alt=${this.name}
-        />
+        <img loading="lazy" src=${this.src ?? getWalletIcon(this.name)} alt=${this.name} />
       </div>
     `
   }

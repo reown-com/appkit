@@ -22,7 +22,7 @@ export function getConditionalValue<T extends string>(
   throw new Error('Invalid useConditionalClass arguments')
 }
 
-export function getWalletIcon(name: string, size: 'lg' | 'md' | 'sm' = 'md') {
+export function getWalletIcon(name: string) {
   const cdn = 'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA'
   const fallback = '09a83110-5fc3-45e1-65ab-8f7df2d6a400'
   const presets: Record<string, string | undefined> = {
@@ -32,7 +32,7 @@ export function getWalletIcon(name: string, size: 'lg' | 'md' | 'sm' = 'md') {
     'Ledger Live': '39890ad8-5b2e-4df6-5db4-2ff5cf4bb300'
   }
 
-  return `${cdn}/${presets[name] ?? fallback}/${size}`
+  return `${cdn}/${presets[name] ?? fallback}/lg`
 }
 
 export function getWalletFirstName(fullName: string) {
@@ -40,9 +40,22 @@ export function getWalletFirstName(fullName: string) {
 }
 
 export function getDefaultWalletNames() {
-  return ['MetaMask', 'Coinbase Wallet']
+  return ['MetaMask', 'Coinbase Wallet', 'Ledger Live', 'Brave Wallet']
+}
+
+export function defaultWalletImages() {
+  return getDefaultWalletNames().map(name => getWalletIcon(name))
 }
 
 export function isMobileAnimation() {
   return window.innerWidth <= 450
+}
+
+export async function preloadImage(src: string) {
+  return new Promise((resolve, reject) => {
+    const image = new Image()
+    image.onload = resolve
+    image.onerror = reject
+    image.src = src
+  })
 }

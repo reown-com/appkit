@@ -5,7 +5,12 @@ import { classMap } from 'lit/directives/class-map.js'
 import { animate } from 'motion'
 import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
-import { getShadowRootElement, isMobileAnimation } from '../../utils/UiHelpers'
+import {
+  defaultWalletImages,
+  getShadowRootElement,
+  isMobileAnimation,
+  preloadImage
+} from '../../utils/UiHelpers'
 import '../w3m-modal-backcard'
 import '../w3m-modal-router'
 import '../w3m-modal-toast'
@@ -51,9 +56,15 @@ export class W3mModal extends ThemedElement {
 
   private async onOpenModalEvent() {
     this.initialized = true
+    await ExplorerCtrl.getWallets({ page: 1, entries: 10, version: 1 })
+    const wallets = Object.values(ExplorerCtrl.state.wallets.listings).map(
+      ({ image_url }) => image_url.lg
+    )
+    const defaultWallets = defaultWalletImages()
     await Promise.all([
       CoreHelpers.wait(this.firstOpen ? 300 : 0),
-      ExplorerCtrl.getWallets({ page: 1, entries: 10, version: 1 })
+      ...wallets.map(async url => preloadImage(url)),
+      ...defaultWallets.map(async url => preloadImage(url))
     ])
     this.open = true
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2 })
