@@ -67,9 +67,10 @@ export class W3mModal extends ThemedElement {
       ...defaultWallets.map(async url => preloadImage(url))
     ])
     this.open = true
-    animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2 })
+    animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay: 0.1 })
     animate(this.containerEl, isMobileAnimation() ? { y: [15, 0] } : { scale: [0.98, 1] }, {
-      duration: 0.2
+      duration: 0.2,
+      delay: 0.1
     })
     document.addEventListener('keydown', this.onKeyDown)
     this.firstOpen = false
