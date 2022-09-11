@@ -22,7 +22,6 @@ export class W3mWalletButton extends LitElement {
       <div class="w3m-wallet-image">
         <img
           loading="lazy"
-          decoding="async"
           src=${this.src ?? getWalletIcon(this.name, this.size)}
           alt=${this.name}
         />
