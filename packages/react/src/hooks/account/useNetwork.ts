@@ -1,8 +1,8 @@
 import { ClientCtrl } from '@web3modal/core'
-import { useAsyncHookBuilder } from '../utils/useAsyncHookBuilder'
+import { useSyncHookBuilder } from '../../utils/useSyncHookBuilder'
 
 export function useNetwork() {
-  const { data: network, ...fetchResult } = useAsyncHookBuilder(async () =>
+  const { data: network, ...fetchResult } = useSyncHookBuilder(() =>
     ClientCtrl.ethereum().getNetwork()
   )
 
