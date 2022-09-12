@@ -1,4 +1,4 @@
-import { ClientCtrl, ModalCtrl, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, ConnectModalCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-button'
@@ -25,7 +25,7 @@ export class W3mLedgerDesktopConnectorView extends LitElement {
   // -- private ------------------------------------------------------ //
   private async onConnect() {
     await ClientCtrl.ethereum().connectLedgerDesktop(uri => window.open(uri, '_self'))
-    ModalCtrl.closeModal()
+    ConnectModalCtrl.closeModal()
   }
 
   private onMobile() {

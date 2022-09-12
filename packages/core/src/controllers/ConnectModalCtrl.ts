@@ -11,7 +11,7 @@ const state = proxy<State>({
 })
 
 // -- controller --------------------------------------------------- //
-export const ModalCtrl = {
+export const ConnectModalCtrl = {
   state,
 
   subscribe(callback: (newState: State) => void) {

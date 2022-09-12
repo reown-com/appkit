@@ -1,4 +1,4 @@
-import { CoreHelpers, ExplorerCtrl, ModalCtrl, RouterCtrl } from '@web3modal/core'
+import { ConnectModalCtrl, CoreHelpers, ExplorerCtrl, RouterCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -27,7 +27,7 @@ export class W3mModal extends ThemedElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.unsubscribe = ModalCtrl.subscribe(modalState => {
+    this.unsubscribe = ConnectModalCtrl.subscribe(modalState => {
       if (modalState.open) this.onOpenModalEvent()
       if (!modalState.open) this.onCloseModalEvent()
     })
@@ -51,7 +51,7 @@ export class W3mModal extends ThemedElement {
   }
 
   private onCloseModal(event: PointerEvent) {
-    if (event.target === event.currentTarget) ModalCtrl.closeModal()
+    if (event.target === event.currentTarget) ConnectModalCtrl.closeModal()
   }
 
   private async onOpenModalEvent() {
@@ -88,7 +88,7 @@ export class W3mModal extends ThemedElement {
     RouterCtrl.replace('ConnectWallet')
   }
   private onKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Escape') ModalCtrl.closeModal()
+    if (event.key === 'Escape') ConnectModalCtrl.closeModal()
   }
 
   // -- render ------------------------------------------------------- //
