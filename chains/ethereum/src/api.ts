@@ -5,9 +5,12 @@ import {
   prepareWriteContract,
   readContract,
   watchReadContract,
-  writeContract
+  writeContract,
+  fetchSigner,
+  fetchBalance,
+  getNetwork,
+  signTypedData
 } from '@wagmi/core'
-import { fetchSigner, fetchBalance, getNetwork, signTypedData } from '@wagmi/core'
 import { connect, disconnect, InjectedConnector, switchNetwork } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
