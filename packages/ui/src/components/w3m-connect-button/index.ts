@@ -1,4 +1,4 @@
-import { ExplorerCtrl, ModalCtrl } from '@web3modal/core'
+import { ConnectModalCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -21,7 +21,7 @@ export class W3mConnectButton extends ThemedElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.modalUnsub = ModalCtrl.subscribe(modalState => {
+    this.modalUnsub = ConnectModalCtrl.subscribe(modalState => {
       if (modalState.open) this.loading = true
       if (!modalState.open) this.loading = false
     })
@@ -39,11 +39,10 @@ export class W3mConnectButton extends ThemedElement {
     return this.icon ? WALLET_CONNECT_ICON : null
   }
 
-  private async onOpen() {
+  private onOpen() {
     try {
       this.loading = true
-      await ExplorerCtrl.getWallets({ page: 1, entries: 10, version: 1 })
-      ModalCtrl.openModal()
+      ConnectModalCtrl.openModal()
     } catch {
       this.loading = false
     }

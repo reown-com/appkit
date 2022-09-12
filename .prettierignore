@@ -3,3 +3,5 @@ dist
 .next
 .github
 .vscode
+_next
+out

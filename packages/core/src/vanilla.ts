@@ -1,15 +1,15 @@
 import { AccountCtrl } from './controllers/AccountCtrl'
 import { ClientCtrl } from './controllers/ClientCtrl'
 import { ConfigCtrl } from './controllers/ConfigCtrl'
+import { ConnectModalCtrl } from './controllers/ConnectModalCtrl'
 import { ExplorerCtrl } from './controllers/ExplorerCtrl'
-import { ModalCtrl } from './controllers/ModalCtrl'
 import { RouterCtrl } from './controllers/RouterCtrl'
 
 const Web3ModalCore = {
   ClientCtrl,
   ConfigCtrl,
   ExplorerCtrl,
-  ModalCtrl,
+  ConnectModalCtrl,
   RouterCtrl,
   AccountCtrl
 }

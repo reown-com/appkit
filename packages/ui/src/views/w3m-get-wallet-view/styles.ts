@@ -13,11 +13,11 @@ export default css`
   }
 
   .w3m-wallet-content {
-    width: 100%;
     margin: 0 -18px 0 15px;
     padding-right: 18px;
     height: 80px;
     display: flex;
+    flex: 1;
     align-items: center;
     justify-content: space-between;
   }
@@ -28,8 +28,8 @@ export default css`
 
   w3m-wallet-image {
     display: block;
-    max-width: 48px;
-    max-height: 48px;
+    width: 48px;
+    height: 48px;
     border-radius: 14px;
   }
 `

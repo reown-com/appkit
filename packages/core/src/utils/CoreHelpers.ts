@@ -9,5 +9,11 @@ export const CoreHelpers = {
       navigator.userAgent.match(/iPhone/u) ??
       false
     )
+  },
+
+  async wait(miliseconds: number) {
+    return new Promise(resolve => {
+      setTimeout(resolve, miliseconds)
+    })
   }
 }

@@ -1,9 +1,9 @@
-import { ModalCtrl } from '@web3modal/core'
+import { ConnectModalCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { getShadowRootElement } from '../../utils/UiHelpers'
 import { CLOSE_ICON, NOISE_TEXTURE, WALLET_CONNECT_LOGO } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
+import { getShadowRootElement } from '../../utils/UiHelpers'
 import Whatamesh from '../../utils/Whatamesh'
 import styles, { dynamicStyles } from './styles'
 
@@ -37,7 +37,9 @@ export class W3mModalBackcard extends LitElement {
       <div class="w3m-modal-highlight"></div>
       <div class="w3m-modal-toolbar">
         ${WALLET_CONNECT_LOGO}
-        <button class="w3m-modal-close-btn" @click=${ModalCtrl.closeModal}>${CLOSE_ICON}</button>
+        <button class="w3m-modal-close-btn" @click=${ConnectModalCtrl.closeModal}>
+          ${CLOSE_ICON}
+        </button>
       </div>
     `
   }

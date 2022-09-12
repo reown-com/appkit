@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@types/node": "18.7.16",
-    "@types/react": "18.0.18",
+    "@types/react": "18.0.19",
     "@types/react-dom": "18.0.6"
   }
 }

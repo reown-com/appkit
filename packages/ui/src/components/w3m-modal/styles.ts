@@ -21,9 +21,8 @@ export default css`
 
   .w3m-modal-container {
     position: relative;
-    width: 100%;
     max-width: 400px;
-    max-height: 90vh;
+    width: 100%;
   }
 
   .w3m-modal-card {
@@ -32,6 +31,17 @@ export default css`
     transform: translateX(5px) translateY(5px);
     border-radius: 40px;
     overflow: hidden;
+  }
+
+  @media (max-width: 450px) {
+    .w3m-modal-card {
+      transform: translateX(0) translateY(5px);
+      border-radius: 40px 40px 0 0;
+    }
+
+    .w3m-modal-overlay {
+      align-items: flex-end;
+    }
   }
 `
 

@@ -3,7 +3,8 @@
   "compilerOptions": {
     "jsx": "preserve",
     "noEmit": true,
-    "incremental": true
+    "incremental": true,
+    "module": "esnext"
   },
   "include": ["next-env.d.ts", "src"]
 }

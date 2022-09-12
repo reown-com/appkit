@@ -6,7 +6,7 @@ export default css`
     align-items: center;
     justify-content: center;
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1 / 1.25;
     flex-direction: column;
   }
 
@@ -34,6 +34,13 @@ export default css`
     margin-top: 20px;
   }
 
+  @media (max-width: 355px) {
+    .w3m-install-actions {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
   w3m-spinner {
     margin-right: 10px;
   }
@@ -41,7 +48,7 @@ export default css`
   w3m-wallet-image {
     border-radius: 22px;
     width: 25%;
-    height: 25%;
+    aspect-ratio: 1 / 1;
     margin-bottom: 20px;
   }
 

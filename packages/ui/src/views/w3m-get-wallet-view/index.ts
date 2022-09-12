@@ -6,6 +6,7 @@ import '../../components/w3m-text'
 import '../../components/w3m-wallet-image'
 import { ARROW_RIGHT_ICON, ARROW_UP_RIGHT_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
+import { getDefaultWalletNames } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-get-wallet-view')
@@ -25,7 +26,10 @@ export class W3mGetWalletView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const wallets = Object.values(ExplorerCtrl.state.wallets.listings).slice(0, 4)
+    const defaultNames = getDefaultWalletNames()
+    const wallets = Object.values(ExplorerCtrl.state.wallets.listings)
+      .filter(wallet => !defaultNames.includes(wallet.name))
+      .slice(0, 4)
 
     return html`
       ${dynamicStyles()}

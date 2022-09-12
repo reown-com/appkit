@@ -9,9 +9,10 @@ import '../../components/w3m-modal-header'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-button'
 import '../../components/w3m-walletconnect-button'
-import { getDefaultWalletNames } from '../../utils/UiHelpers'
+import '../../components/w3m-wallets-slideshow'
 import { DESKTOP_ICON, HELP_ICON, MOBILE_ICON, WALLET_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
+import { getDefaultWalletNames } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-connect-wallet-view')
@@ -110,10 +111,11 @@ export class W3mConnectWalletView extends LitElement {
         <div class="w3m-view-row">
           ${slot1} ${slot2}
           <w3m-wallet-button name="Ledger Live" .onClick=${this.onLedgerWallet}></w3m-wallet-button>
-          <w3m-wallet-button name="View All" .onClick=${this.onCoinbaseWallet}></w3m-wallet-button>
+          <w3m-wallet-button label="View All" .onClick=${this.onCoinbaseWallet}></w3m-wallet-button>
         </div>
       </w3m-modal-content>
       <w3m-modal-footer>
+        <w3m-wallets-slideshow></w3m-wallets-slideshow>
         <div class="w3m-footer-actions">
           <w3m-button .iconLeft=${WALLET_ICON} .onClick=${this.onGetWallet}>
             Get a Wallet

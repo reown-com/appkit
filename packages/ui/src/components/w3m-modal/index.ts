@@ -1,11 +1,16 @@
-import { ModalCtrl, RouterCtrl } from '@web3modal/core'
+import { ConnectModalCtrl, CoreHelpers, ExplorerCtrl, RouterCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { animate } from 'motion'
-import { getShadowRootElement } from '../../utils/UiHelpers'
 import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
+import {
+  defaultWalletImages,
+  getShadowRootElement,
+  isMobileAnimation,
+  preloadImage
+} from '../../utils/UiHelpers'
 import '../w3m-modal-backcard'
 import '../w3m-modal-router'
 import '../w3m-modal-toast'
@@ -17,11 +22,12 @@ export class W3mModal extends ThemedElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false
+  @state() private initialized = false
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.unsubscribe = ModalCtrl.subscribe(modalState => {
+    this.unsubscribe = ConnectModalCtrl.subscribe(modalState => {
       if (modalState.open) this.onOpenModalEvent()
       if (!modalState.open) this.onCloseModalEvent()
     })
@@ -34,6 +40,7 @@ export class W3mModal extends ThemedElement {
 
   // -- private ------------------------------------------------------ //
   private readonly unsubscribe?: () => void = undefined
+  private firstOpen = true
 
   private get overlayEl() {
     return getShadowRootElement(this, '.w3m-modal-overlay')
@@ -44,28 +51,44 @@ export class W3mModal extends ThemedElement {
   }
 
   private onCloseModal(event: PointerEvent) {
-    if (event.target === event.currentTarget) ModalCtrl.closeModal()
+    if (event.target === event.currentTarget) ConnectModalCtrl.closeModal()
   }
 
-  private onOpenModalEvent() {
+  private async onOpenModalEvent() {
+    this.initialized = true
+    await ExplorerCtrl.getWallets({ page: 1, entries: 10, version: 1 })
+    const wallets = Object.values(ExplorerCtrl.state.wallets.listings).map(
+      ({ image_url }) => image_url.lg
+    )
+    const defaultWallets = defaultWalletImages()
+    await Promise.all([
+      CoreHelpers.wait(this.firstOpen ? 300 : 0),
+      ...wallets.map(async url => preloadImage(url)),
+      ...defaultWallets.map(async url => preloadImage(url))
+    ])
     this.open = true
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay: 0.1 })
-    animate(this.containerEl, { scale: [0.98, 1] }, { duration: 0.2, delay: 0.1 })
+    animate(this.containerEl, isMobileAnimation() ? { y: [15, 0] } : { scale: [0.98, 1] }, {
+      duration: 0.3,
+      delay: 0.1
+    })
     document.addEventListener('keydown', this.onKeyDown)
+    this.firstOpen = false
   }
 
   private async onCloseModalEvent() {
     document.removeEventListener('keydown', this.onKeyDown)
     await Promise.all([
-      animate(this.containerEl, { scale: [1, 0.98] }, { duration: 0.2 }).finished,
+      animate(this.containerEl, isMobileAnimation() ? { y: [0, 15] } : { scale: [1, 0.98] }, {
+        duration: 0.2
+      }).finished,
       animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
     ])
     this.open = false
     RouterCtrl.replace('ConnectWallet')
   }
-
   private onKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Escape') ModalCtrl.closeModal()
+    if (event.key === 'Escape') ConnectModalCtrl.closeModal()
   }
 
   // -- render ------------------------------------------------------- //
@@ -85,11 +108,11 @@ export class W3mModal extends ThemedElement {
         aria-modal="true"
       >
         <div class="w3m-modal-container">
-          ${this.open
+          ${this.initialized
             ? html`
                 <w3m-modal-backcard></w3m-modal-backcard>
                 <div class="w3m-modal-card">
-                  <w3m-modal-router></w3m-modal-router>
+                  ${this.open ? html`<w3m-modal-router></w3m-modal-router>` : null}
                   <w3m-modal-toast></w3m-modal-toast>
                 </div>
               `

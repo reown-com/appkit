@@ -1,4 +1,4 @@
-import { ClientCtrl, ModalCtrl, ModalToastCtrl } from '@web3modal/core'
+import { ClientCtrl, ConnectModalCtrl, ModalToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-button'
@@ -30,7 +30,7 @@ export class W3mWalletConnectConnectorView extends LitElement {
   private async getConnectionUri() {
     try {
       await ClientCtrl.ethereum().connectWalletConnect(uri => (this.uri = uri))
-      ModalCtrl.closeModal()
+      ConnectModalCtrl.closeModal()
     } catch {
       throw new Error('Denied connection')
     }
