@@ -2,7 +2,7 @@ import type { ListingResponse, PageParams } from '../../types/explorerTypes'
 import { ConfigCtrl } from '../controllers/ConfigCtrl'
 
 // -- helpers ------------------------------------------------------ //
-const WALLETS_URL = 'https://explorer-api.walletconnect.com/v3/wallets'
+export const EXPLORER_URL = 'https://explorer-api.walletconnect.com/v3'
 
 function formatParams(params: PageParams) {
   const stringParams = Object.fromEntries(Object.entries(params).map(([k, v]) => [k, v.toString()]))
@@ -13,7 +13,7 @@ function formatParams(params: PageParams) {
 function formatUrl(params: PageParams) {
   const { projectId } = ConfigCtrl.state
 
-  return `${WALLETS_URL}?projectId=${projectId}&${formatParams(params)}`
+  return `${EXPLORER_URL}/wallets?projectId=${projectId}&${formatParams(params)}`
 }
 
 // -- utilities ---------------------------------------------------- //
