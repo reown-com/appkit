@@ -51,9 +51,7 @@ export interface Listing {
   metadata: Metadata
 }
 
-export type ListingRecords = Record<string, Listing>
-
 export interface ListingResponse {
-  listings: ListingRecords
+  listings: Listing[]
   count: number
 }

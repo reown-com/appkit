@@ -15,7 +15,7 @@ export class W3mWalletConnectButton extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const wallets = Object.values(ExplorerCtrl.state.wallets.listings)
+    const wallets = ExplorerCtrl.state.wallets.listings
     const scrollWallets = [...wallets, ...wallets]
 
     return html`

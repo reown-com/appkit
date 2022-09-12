@@ -57,9 +57,7 @@ export class W3mModal extends ThemedElement {
   private async onOpenModalEvent() {
     this.initialized = true
     await ExplorerCtrl.getWallets({ page: 1, entries: 10, version: 1 })
-    const wallets = Object.values(ExplorerCtrl.state.wallets.listings).map(
-      ({ image_url }) => image_url.lg
-    )
+    const wallets = ExplorerCtrl.state.wallets.listings.map(({ image_url }) => `${image_url.lg}`)
     const defaultWallets = defaultWalletImages()
     await Promise.all([
       CoreHelpers.wait(this.firstOpen ? 300 : 0),

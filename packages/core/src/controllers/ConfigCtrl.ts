@@ -27,6 +27,10 @@ export const ConfigCtrl = {
   },
 
   setConfig(config: ConfigOptions) {
+    if (!config.projectId)
+      throw new Error(
+        'Web3Modal requires projectId that can be obtained at cloud.walletconnect.com'
+      )
     Object.assign(state, config)
     state.configured = true
   }
