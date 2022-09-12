@@ -2,7 +2,7 @@ import type { ListingResponse, PageParams } from '../../types/explorerTypes'
 import { ConfigCtrl } from '../controllers/ConfigCtrl'
 
 // -- helpers ------------------------------------------------------ //
-const WALLETS_URL = 'https://explorer-api.walletconnect.com/v1/wallets'
+const WALLETS_URL = 'https://explorer-api.walletconnect.com/v3/wallets'
 
 function formatParams(params: PageParams) {
   const stringParams = Object.fromEntries(Object.entries(params).map(([k, v]) => [k, v.toString()]))
