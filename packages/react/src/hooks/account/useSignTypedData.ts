@@ -1,6 +1,6 @@
 import { ClientCtrl } from '@web3modal/core'
 import type { SignTypedDataOpts } from '@web3modal/ethereum'
-import { useAsyncHookBuilder } from '../utils/useAsyncHookBuilder'
+import { useAsyncHookBuilder } from '../../utils/useAsyncHookBuilder'
 
 export function useSignTypedData() {
   const {
