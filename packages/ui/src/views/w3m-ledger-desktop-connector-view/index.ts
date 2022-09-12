@@ -48,10 +48,10 @@ export class W3mLedgerDesktopConnectorView extends LitElement {
             </w3m-text>
           </div>
           <div class="w3m-install-actions">
-            <w3m-button .onClick=${this.onConnect.bind(this)} .iconRight=${RETRY_ICON}>
+            <w3m-button .onClick=${this.onConnect.bind(this)} ?iconRight=${RETRY_ICON}>
               Retry
             </w3m-button>
-            <w3m-button .onClick=${this.onMobile} .iconLeft=${MOBILE_ICON} variant="ghost">
+            <w3m-button .onClick=${this.onMobile} ?iconLeft=${MOBILE_ICON} variant="ghost">
               Ledger Live Mobile
             </w3m-button>
           </div>

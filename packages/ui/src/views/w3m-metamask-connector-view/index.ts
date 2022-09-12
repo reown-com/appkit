@@ -67,7 +67,7 @@ export class W3mMetamaskConnectorView extends LitElement {
       <w3m-button
         .onClick=${this.onConnect.bind(this)}
         .disabled=${!this.error}
-        .iconRight=${RETRY_ICON}
+        ?iconRight=${RETRY_ICON}
       >
         Try Again
       </w3m-button>
@@ -83,10 +83,10 @@ export class W3mMetamaskConnectorView extends LitElement {
         </w3m-text>
       </div>
       <div class="w3m-install-actions">
-        <w3m-button .onClick=${this.onInstall.bind(this)} .iconLeft=${ARROW_DOWN_ICON}>
+        <w3m-button .onClick=${this.onInstall.bind(this)} ?iconLeft=${ARROW_DOWN_ICON}>
           Install Extension
         </w3m-button>
-        <w3m-button .onClick=${this.onMobile} .iconLeft=${MOBILE_ICON} variant="ghost">
+        <w3m-button .onClick=${this.onMobile} ?iconLeft=${MOBILE_ICON} variant="ghost">
           MetaMask Mobile
         </w3m-button>
       </div>

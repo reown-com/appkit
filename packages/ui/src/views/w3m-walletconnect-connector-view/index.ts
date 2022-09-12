@@ -63,7 +63,7 @@ export class W3mWalletConnectConnectorView extends LitElement {
         <w3m-text variant="medium-thin" align="center" color="secondary" class="w3m-info-text">
           Open your camera app or mobile wallet and scan the code to connect
         </w3m-text>
-        <w3m-button variant="ghost" .iconLeft=${COPY_ICON} .onClick=${this.onCopy.bind(this)}>
+        <w3m-button variant="ghost" ?iconLeft=${COPY_ICON} .onClick=${this.onCopy.bind(this)}>
           Copy to Clipboard
         </w3m-button>
       </w3m-modal-footer>
