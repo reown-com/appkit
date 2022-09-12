@@ -73,7 +73,7 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
         </w3m-text>
         <w3m-button
           variant="ghost"
-          .iconLeft=${ARROW_DOWN_ICON}
+          ?iconLeft=${ARROW_DOWN_ICON}
           .onClick=${this.onInstall.bind(this)}
         >
           Install Extension
