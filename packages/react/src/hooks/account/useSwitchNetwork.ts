@@ -1,5 +1,5 @@
 import { ClientCtrl } from '@web3modal/core'
-import { useAsyncHookBuilder } from '../utils/useAsyncHookBuilder'
+import { useAsyncHookBuilder } from '../../utils/useAsyncHookBuilder'
 
 export function useSwitchNetwork() {
   const { data, refetch, ...fetchResult } = useAsyncHookBuilder(async (chainId: string) =>
