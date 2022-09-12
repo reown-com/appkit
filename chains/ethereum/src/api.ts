@@ -1,6 +1,13 @@
-import type { Connector } from '@wagmi/core'
-import { fetchSigner, getNetwork, signTypedData } from '@wagmi/core'
-import { fetchBalance } from '@wagmi/core'
+import {
+  Connector,
+  fetchToken,
+  getContract,
+  prepareWriteContract,
+  readContract,
+  watchReadContract,
+  writeContract
+} from '@wagmi/core'
+import { fetchSigner, fetchBalance, getNetwork, signTypedData } from '@wagmi/core'
 import { connect, disconnect, InjectedConnector, switchNetwork } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
@@ -9,9 +16,15 @@ import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import type {
   EthereumClient,
   GetBalanceOpts,
+  GetContractOpts,
   GetDefaultConnectorsOpts,
+  GetTokenOpts,
   GetWalletConnectProviderOpts,
-  SignTypedDataOpts
+  PrepareWriteContractOpts,
+  ReadContractOpts,
+  SignTypedDataOpts,
+  WatchReadContractOpts,
+  WriteContractOpts
 } from '../types/apiTypes'
 import { ethereumClient, getChainIdReference, initClient, NAMESPACE } from './utilities'
 
@@ -179,9 +192,63 @@ export const Web3ModalEthereum = {
     return signer
   },
 
-  async getNetwork() {
-    const network = await Promise.resolve(getNetwork())
+  getNetwork() {
+    const network = getNetwork()
 
     return network
+  },
+
+  getContract({ addressOrName, contractInterface, signerOrProvider }: GetContractOpts) {
+    const contract = getContract({ addressOrName, contractInterface, signerOrProvider })
+
+    return contract
+  },
+
+  async getToken({ address, chainId, formatUnits }: GetTokenOpts) {
+    const token = await fetchToken({ address, chainId: getChainIdReference(chainId), formatUnits })
+
+    return token
+  },
+
+  async readContract(opts: ReadContractOpts) {
+    const { chainId, ...readContractOpts } = opts
+    const read = await readContract({
+      chainId: getChainIdReference(chainId),
+      ...readContractOpts
+    })
+
+    return read
+  },
+
+  async writeContract(opts: WriteContractOpts) {
+    const { chainId, ...writeContractOpts } = opts
+    const write = await writeContract({
+      chainId: getChainIdReference(chainId),
+      mode: 'prepared',
+      ...writeContractOpts
+    })
+
+    return write
+  },
+
+  async prepareWriteContract(opts: PrepareWriteContractOpts) {
+    const { chainId, ...prepareWriteContractOpts } = opts
+    const preperation = await prepareWriteContract({
+      chainId: getChainIdReference(chainId),
+      ...prepareWriteContractOpts
+    })
+
+    return preperation
+  },
+
+  watchReadContract(opts: WatchReadContractOpts) {
+    const { chainId, callback, ...watchReadContractOpts } = opts
+    watchReadContract(
+      {
+        chainId: getChainIdReference(chainId),
+        ...watchReadContractOpts
+      },
+      callback
+    )
   }
 }
