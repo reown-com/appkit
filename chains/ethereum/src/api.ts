@@ -1,5 +1,5 @@
+import type { Connector } from '@wagmi/core'
 import {
-  Connector,
   fetchToken,
   getContract,
   prepareWriteContract,
