@@ -31,6 +31,10 @@ export default css`
     height: 20px;
     margin: -1px 3px 0 -5px;
   }
+
+  w3m-spinner {
+    margin: 0 10px 0 0;
+  }
 `
 
 // -- dynamic styles ----------------------------------------------- //
