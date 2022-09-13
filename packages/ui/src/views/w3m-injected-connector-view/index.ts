@@ -70,7 +70,7 @@ export class W3mInjectedConnectorView extends LitElement {
           <w3m-button
             .onClick=${this.onConnect.bind(this)}
             .disabled=${!this.error}
-            ?iconRight=${RETRY_ICON}
+            .iconRight=${RETRY_ICON}
           >
             Try Again
           </w3m-button>

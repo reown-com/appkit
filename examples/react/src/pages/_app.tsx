@@ -5,7 +5,7 @@ import { Web3ModalProvider } from '@web3modal/react'
 import type { AppProps } from 'next/app'
 import '../styles.css'
 
-const WC_PROJECT_ID = '6a8d17fb-6d30-4450-9ed8-3cbb2771483a'
+const WC_PROJECT_ID = 'd28ea8bc8db643d07038d99ddce49e4a'
 
 // Configure chains and providers (rpc's)
 const { chains, provider } = configureChains(

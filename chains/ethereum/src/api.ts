@@ -1,28 +1,28 @@
+import type { Connector } from '@wagmi/core'
 import {
-  fetchToken,
-  getContract,
-  prepareWriteContract,
-  readContract,
-  watchReadContract,
-  writeContract,
-  fetchSigner,
-  fetchBalance,
-  getNetwork,
-  signTypedData,
-  fetchEnsAddress,
-  fetchEnsAvatar,
   connect,
   disconnect,
-  InjectedConnector,
-  switchNetwork,
+  fetchBalance,
+  fetchEnsAddress,
+  fetchEnsAvatar,
   fetchEnsName,
   fetchEnsResolver,
+  fetchSigner,
+  fetchToken,
   fetchTransaction,
+  getContract,
+  getNetwork,
+  InjectedConnector,
   prepareSendTransaction,
+  prepareWriteContract,
+  readContract,
   sendTransaction,
-  waitForTransaction
+  signTypedData,
+  switchNetwork,
+  waitForTransaction,
+  watchReadContract,
+  writeContract
 } from '@wagmi/core'
-import type { Connector } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
@@ -118,7 +118,7 @@ export const Web3ModalEthereum = {
     return data
   },
 
-  async connectLedgerDesktop(onUri: (uri: string) => void) {
+  async connectLinking(onUri: (uri: string) => void) {
     const connector = this.getConnectorById('walletConnect')
     const chainId = this.getDefaultConnectorChainId(connector)
 
@@ -128,7 +128,7 @@ export const Web3ModalEthereum = {
           if (type === 'connecting') {
             const provider = await connector.getProvider()
             const wcUri: string = provider.connector.uri
-            onUri(`ledgerlive://wc?uri=${encodeURIComponent(wcUri)}`)
+            onUri(encodeURIComponent(wcUri))
             resolve()
           }
         })
@@ -140,7 +140,7 @@ export const Web3ModalEthereum = {
     return data
   },
 
-  async connectCoinbaseMobile(onUri: (uri: string) => void) {
+  async connectCoinbaseMobile(onUri?: (uri: string) => void) {
     const connector = this.getConnectorById('coinbaseWallet')
     const chainId = this.getDefaultConnectorChainId(connector)
 
@@ -149,7 +149,7 @@ export const Web3ModalEthereum = {
         connector.once('message', async ({ type }) => {
           if (type === 'connecting') {
             const provider = await connector.getProvider()
-            onUri(provider.qrUrl)
+            onUri?.(provider.qrUrl)
             resolve()
           }
         })

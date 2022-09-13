@@ -1,4 +1,4 @@
-import { ClientCtrl, ConnectModalCtrl, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, ConnectModalCtrl, CoreHelpers, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-button'
@@ -24,7 +24,9 @@ export class W3mLedgerDesktopConnectorView extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private async onConnect() {
-    await ClientCtrl.ethereum().connectLedgerDesktop(uri => window.open(uri, '_self'))
+    await ClientCtrl.ethereum().connectLinking(uri =>
+      window.open(CoreHelpers.formatNativeUrl('ledgerlive', uri), '_self')
+    )
     ConnectModalCtrl.closeModal()
   }
 
@@ -48,10 +50,10 @@ export class W3mLedgerDesktopConnectorView extends LitElement {
             </w3m-text>
           </div>
           <div class="w3m-install-actions">
-            <w3m-button .onClick=${this.onConnect.bind(this)} ?iconRight=${RETRY_ICON}>
+            <w3m-button .onClick=${this.onConnect.bind(this)} .iconRight=${RETRY_ICON}>
               Retry
             </w3m-button>
-            <w3m-button .onClick=${this.onMobile} ?iconLeft=${MOBILE_ICON} variant="ghost">
+            <w3m-button .onClick=${this.onMobile} .iconLeft=${MOBILE_ICON} variant="ghost">
               Ledger Live Mobile
             </w3m-button>
           </div>

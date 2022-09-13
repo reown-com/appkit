@@ -1,3 +1,4 @@
+import { CoreHelpers, getExplorerApi } from '@web3modal/core'
 import type { LitElement } from 'lit'
 
 export function getShadowRootElement(root: LitElement, selector: string) {
@@ -23,7 +24,8 @@ export function getConditionalValue<T extends string>(
 }
 
 export function getWalletIcon(name: string) {
-  const cdn = 'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA'
+  const { projectId, url } = getExplorerApi()
+  const cdn = `${url}/v2/logo/lg`
   const fallback = '09a83110-5fc3-45e1-65ab-8f7df2d6a400'
   const presets: Record<string, string | undefined> = {
     'Brave Wallet': '125e828e-9936-4451-a8f2-949c119b7400',
@@ -32,7 +34,7 @@ export function getWalletIcon(name: string) {
     'Ledger Live': '39890ad8-5b2e-4df6-5db4-2ff5cf4bb300'
   }
 
-  return `${cdn}/${presets[name] ?? fallback}/lg`
+  return `${cdn}/${presets[name] ?? fallback}?projectId=${projectId}`
 }
 
 export function getWalletFirstName(fullName: string) {
@@ -40,7 +42,9 @@ export function getWalletFirstName(fullName: string) {
 }
 
 export function getDefaultWalletNames() {
-  return ['MetaMask', 'Coinbase Wallet', 'Ledger Live', 'Brave Wallet']
+  return CoreHelpers.isMobile()
+    ? ['Coinbase Wallet']
+    : ['MetaMask', 'Coinbase Wallet', 'Ledger Live', 'Brave Wallet']
 }
 
 export function defaultWalletImages() {

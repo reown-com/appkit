@@ -13,7 +13,7 @@ export interface State {
 const state = proxy<State>({
   search: '',
   page: 0,
-  wallets: { listings: {}, count: 0 }
+  wallets: { listings: [], count: 0 }
 })
 
 // -- controller --------------------------------------------------- //
@@ -25,12 +25,12 @@ export const ExplorerCtrl = {
   },
 
   async getWallets(params: PageParams) {
-    const wallets = await fetchWallets(params)
-    state.wallets = wallets
+    const { listings, count } = await fetchWallets(params)
+    state.wallets = { listings: Object.values(listings), count }
     const { page, search } = params
     if (typeof page !== 'undefined' && state.page !== page) state.page = page
     if (typeof search !== 'undefined' && state.search !== search) state.search = search
 
-    return wallets
+    return { listings, count }
   }
 }

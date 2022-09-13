@@ -2,11 +2,11 @@ import { ConnectModalCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
+import '../../components/w3m-spinner'
+import '../../components/w3m-text'
 import { WALLET_CONNECT_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
-import '../w3m-spinner'
-import '../w3m-text'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-connect-button')
@@ -59,9 +59,14 @@ export class W3mConnectButton extends ThemedElement {
 
       <button class=${classMap(classes)} .disabled=${this.loading} @click=${this.onOpen}>
         ${this.loading
-          ? html`<w3m-spinner color=${color().foreground.accent}></w3m-spinner>`
-          : html`${this.iconTemplate()}
-              <w3m-text variant="medium-normal" color="inverse">${this.label}</w3m-text>`}
+          ? html`
+              <w3m-spinner color=${color().foreground.accent}></w3m-spinner>
+              <w3m-text variant="medium-normal" color="accent">Connecting...</w3m-text>
+            `
+          : html`
+              ${this.iconTemplate()}
+              <w3m-text variant="medium-normal" color="inverse">${this.label}</w3m-text>
+            `}
       </button>
     `
   }
