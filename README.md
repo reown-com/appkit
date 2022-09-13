@@ -6,11 +6,11 @@ A single Web3 / Ethereum provider solution for all Wallets
 
 Web3Modal is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
 
-By default Web3Modal Library supports injected providers like ( **Metamask**,**Brave Wallet**, **Dapper**, **Frame**, **Gnosis Safe**, **Tally**, Web3 Browsers, etc) and **WalletConnect**. You can also easily configure the library to support **Coinbase Wallet**, **Torus**, **Portis**, **Fortmatic** and many more.
+By default Web3Modal Library supports injected providers like ( **Metamask**, **Opera Wallet**, **Brave Wallet**, **Dapper**, **Frame**, **Gnosis Safe**, **Tally**, Web3 Browsers, etc) and **WalletConnect**. You can also easily configure the library to support **Coinbase Wallet**, **Torus**, **Portis**, **Fortmatic** and many more.
 
 ## Preview
 
-You can test the library on: https://web3modal.com/
+You can test the library on: <https://web3modal.com/>
 
 ![preview](./images/preview.png)
 
@@ -105,6 +105,7 @@ const instance = await web3Modal.connect();
 const provider = new ethers.providers.Web3Provider(instance);
 const signer = provider.getSigner();
 ```
+
 Here's a live example on [Codesandbox.io](https://codesandbox.io/s/j43b10)
 
 ## Using with [Vite](https://github.com/vitejs/vite)
@@ -208,8 +209,8 @@ These are all the providers available with Web3Modal and how to configure their 
 - [DCent](./docs/providers/dcent.md)
 - [BurnerConnect](./docs/providers/burnerconnect.md)
 - [MEWConnect](./docs/providers/mewconnect.md)
+- [Opera Wallet](./docs/providers/opera.md)
 - [Binance Chain Wallet](./docs/providers/binancechainwallet.md)
-  [Opera Wallet](./docs/providers/opera.md)
 - [Sequence](./docs/providers/sequence.md)
 - [CLV Wallet](./docs/providers/clvwallet.md)
 - [Web3Auth](./docs/providers/web3auth.md)
@@ -458,7 +459,7 @@ If you were using Web3Connect before you can check the migration instructions fo
 
 If you wish to support a new provider submit a issue to the repo or fork this repo and create a pull request.
 
-You can join to our discord to further discuss https://discordapp.com/invite/YGnSX9y
+You can join to our discord to further discuss <https://discordapp.com/invite/YGnSX9y>
 
 ## License
 
