@@ -67,3 +67,10 @@ export function getChainIdReference(chainId: string): number {
 
   throw new Error('Invalid chainId, should be formated as namespace:id')
 }
+
+export function formatOpts<T>(opts: T & { chainId: string }): T & { chainId: number } {
+  return {
+    ...opts,
+    chainId: getChainIdReference(opts.chainId)
+  }
+}

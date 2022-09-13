@@ -9,5 +9,8 @@ export type {
   ContractOpts,
   WatchReadContractOpts,
   WriteContractOpts,
-  PrepareWriteContractOpts
+  PrepareWriteContractOpts,
+  FetchEnsNameOpts,
+  FetchEnsAvatarOpts,
+  FetchEnsAddressOpts
 } from './types/apiTypes'

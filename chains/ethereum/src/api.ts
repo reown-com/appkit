@@ -3,6 +3,10 @@ import {
   connect,
   disconnect,
   fetchBalance,
+  fetchEnsAddress,
+  fetchEnsAvatar,
+  fetchEnsName,
+  fetchEnsResolver,
   fetchSigner,
   fetchToken,
   getContract,
@@ -21,6 +25,9 @@ import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import type {
   EthereumClient,
+  FetchEnsAddressOpts,
+  FetchEnsAvatarOpts,
+  FetchEnsNameOpts,
   GetBalanceOpts,
   GetContractOpts,
   GetDefaultConnectorsOpts,
@@ -32,7 +39,7 @@ import type {
   WatchReadContractOpts,
   WriteContractOpts
 } from '../types/apiTypes'
-import { ethereumClient, getChainIdReference, initClient, NAMESPACE } from './utilities'
+import { ethereumClient, formatOpts, getChainIdReference, initClient, NAMESPACE } from './utilities'
 
 export const Web3ModalEthereum = {
   // -- config ------------------------------------------------------- //
@@ -182,12 +189,8 @@ export const Web3ModalEthereum = {
   },
 
   // -- fetch ------------------------------------------------------- //
-  async fetchBalance({ address, chainId, formatUnits }: GetBalanceOpts) {
-    const balance = await fetchBalance({
-      addressOrName: address,
-      chainId: getChainIdReference(chainId),
-      formatUnits
-    })
+  async fetchBalance(opts: GetBalanceOpts) {
+    const balance = await fetchBalance(formatOpts(opts))
 
     return balance.formatted
   },
@@ -217,44 +220,54 @@ export const Web3ModalEthereum = {
   },
 
   async readContract(opts: ReadContractOpts) {
-    const { chainId, ...readContractOpts } = opts
-    const read = await readContract({
-      chainId: getChainIdReference(chainId),
-      ...readContractOpts
-    })
+    const read = await readContract(formatOpts(opts))
 
     return read
   },
 
   async writeContract(opts: WriteContractOpts) {
-    const { chainId, ...writeContractOpts } = opts
-    const write = await writeContract({
-      chainId: getChainIdReference(chainId),
-      mode: 'prepared',
-      ...writeContractOpts
-    })
+    const write = await writeContract(
+      formatOpts({
+        mode: 'prepared',
+        ...opts
+      })
+    )
 
     return write
   },
 
   async prepareWriteContract(opts: PrepareWriteContractOpts) {
-    const { chainId, ...prepareWriteContractOpts } = opts
-    const preperation = await prepareWriteContract({
-      chainId: getChainIdReference(chainId),
-      ...prepareWriteContractOpts
-    })
+    const preperation = await prepareWriteContract(formatOpts(opts))
 
     return preperation
   },
 
   watchReadContract(opts: WatchReadContractOpts) {
-    const { chainId, callback, ...watchReadContractOpts } = opts
-    watchReadContract(
-      {
-        chainId: getChainIdReference(chainId),
-        ...watchReadContractOpts
-      },
-      callback
-    )
+    const { callback, ...remainingOpts } = opts
+    watchReadContract(formatOpts(remainingOpts), callback)
+  },
+
+  async fetchEnsAddress(opts: FetchEnsAddressOpts) {
+    const address = await fetchEnsAddress(formatOpts(opts))
+
+    return address?.toString()
+  },
+
+  async fetchEnsAvatar(opts: FetchEnsAvatarOpts) {
+    const avatar = await fetchEnsAvatar(formatOpts(opts))
+
+    return avatar?.toString()
+  },
+
+  async fetchEnsName(opts: FetchEnsNameOpts) {
+    const name = await fetchEnsName(formatOpts(opts))
+
+    return name?.toString()
+  },
+
+  async fetchEnsResolver(opts: FetchEnsAddressOpts) {
+    const resolver = await fetchEnsResolver(formatOpts(opts))
+
+    return resolver
   }
 }
