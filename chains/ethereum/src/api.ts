@@ -125,7 +125,7 @@ export const Web3ModalEthereum = {
     return data
   },
 
-  async connectCoinbaseMobile(onUri: (uri: string) => void) {
+  async connectCoinbaseMobile(onUri?: (uri: string) => void) {
     const connector = this.getConnectorById('coinbaseWallet')
     const chainId = this.getDefaultConnectorChainId(connector)
 
@@ -134,7 +134,7 @@ export const Web3ModalEthereum = {
         connector.once('message', async ({ type }) => {
           if (type === 'connecting') {
             const provider = await connector.getProvider()
-            onUri(provider.qrUrl)
+            onUri?.(provider.qrUrl)
             resolve()
           }
         })

@@ -25,7 +25,7 @@ export class W3mLedgerDesktopConnectorView extends LitElement {
   // -- private ------------------------------------------------------ //
   private async onConnect() {
     await ClientCtrl.ethereum().connectLinking(uri =>
-      window.open(CoreHelpers.formatDeepLinkUrl('ledgerlive', uri), '_self')
+      window.open(CoreHelpers.formatNativeUrl('ledgerlive', uri), '_self')
     )
     ConnectModalCtrl.closeModal()
   }

@@ -1,9 +1,9 @@
 import { ExplorerCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import '../../components/w3m-text'
 import { WALLET_CONNECT_ICON_GRADIENT, WALLET_CONNECT_ICON_SHADE } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import '../../components/w3m-text'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-walletconnect-button')
@@ -33,7 +33,7 @@ export class W3mWalletConnectButton extends LitElement {
                 ({ image_url }) =>
                   html`
                     <div class="w3m-wc-button-carousel-item">
-                      <img src=${image_url.lg} loading="lazy" />
+                      <img src=${image_url.lg} />
                     </div>
                   `
               )}

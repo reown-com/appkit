@@ -1,4 +1,4 @@
-import { ExplorerCtrl } from '@web3modal/core'
+import { ClientCtrl, ConnectModalCtrl, CoreHelpers, ExplorerCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-wallet-button'
@@ -8,6 +8,25 @@ import styles from './styles'
 @customElement('w3m-mobile-wallet-selection')
 export class W3mMobileWalletSelection extends LitElement {
   public static styles = [global, styles]
+
+  // -- private ------------------------------------------------------ //
+  private async onConnect(links: { native: string; universal?: string }) {
+    const { native, universal } = links
+    await ClientCtrl.ethereum().connectLinking(uri =>
+      window.open(
+        universal
+          ? CoreHelpers.formatUniversalUrl(universal, uri)
+          : CoreHelpers.formatNativeUrl(native, uri),
+        '_self'
+      )
+    )
+    ConnectModalCtrl.closeModal()
+  }
+
+  private async onCoinbaseWallet() {
+    await ClientCtrl.ethereum().connectCoinbaseMobile()
+    ConnectModalCtrl.closeModal()
+  }
 
   // -- render ------------------------------------------------------- //
   protected render() {
@@ -21,10 +40,14 @@ export class W3mMobileWalletSelection extends LitElement {
               class="w3m-coinbase-button"
               src=${listing.image_url.lg}
               name=${listing.name}
-              .onClick=${() => console.log(listing.name)}
+              .onClick=${async () => this.onConnect(listing.mobile)}
             ></w3m-wallet-button>
           `
         )}
+        <w3m-wallet-button
+          name="Coinbase Wallet"
+          .onClick=${this.onCoinbaseWallet}
+        ></w3m-wallet-button>
       </div>
     `
   }

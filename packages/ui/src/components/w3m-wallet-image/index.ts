@@ -19,7 +19,7 @@ export class W3mWalletButton extends LitElement {
       ${dynamicStyles()}
 
       <div class="w3m-wallet-image">
-        <img loading="lazy" src=${this.src ?? getWalletIcon(this.name)} alt=${this.name} />
+        <img src=${this.src ?? getWalletIcon(this.name)} alt=${this.name} />
       </div>
     `
   }
