@@ -3,10 +3,14 @@ import type {
   Client,
   FetchBalanceArgs,
   FetchTokenArgs,
+  FetchTransactionArgs,
   GetContractArgs,
+  PrepareSendTransactionArgs,
   PrepareWriteContractConfig,
   ReadContractConfig,
+  SendTransactionArgs,
   SignTypedDataArgs,
+  WaitForTransactionArgs,
   WatchReadContractResult,
   WriteContractArgs
 } from '@wagmi/core'
@@ -84,4 +88,31 @@ export interface FetchEnsNameOpts {
 export interface FetchEnsAvatarOpts {
   chainId: string
   addressOrName: string
+}
+
+export interface FetchTransactionOpts {
+  chainId: string
+  hash: FetchTransactionArgs['hash']
+}
+
+export interface PrepareSendTransactionOpts {
+  chainId: string
+  request: PrepareSendTransactionArgs['request']
+  signerOrProvider: PrepareSendTransactionArgs['signerOrProvider']
+}
+
+export interface SendTransactionOpts {
+  chainId: string
+  request: SendTransactionArgs['request'] & {
+    to: `0x${string}`
+    gasLimit: Exclude<SendTransactionArgs['request']['gasLimit'], undefined>
+  }
+}
+
+export interface WaitForTransactionOpts {
+  chainId: string
+  confirmation?: number
+  hash?: string
+  timeout?: number
+  wait?: WaitForTransactionArgs['wait']
 }

@@ -12,5 +12,9 @@ export type {
   PrepareWriteContractOpts,
   FetchEnsNameOpts,
   FetchEnsAvatarOpts,
-  FetchEnsAddressOpts
+  FetchEnsAddressOpts,
+  SendTransactionOpts,
+  FetchTransactionOpts,
+  WaitForTransactionOpts,
+  PrepareSendTransactionOpts
 } from './types/apiTypes'
