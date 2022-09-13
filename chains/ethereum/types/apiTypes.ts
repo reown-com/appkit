@@ -76,6 +76,11 @@ export interface FetchEnsAddressOpts {
   name: string
 }
 
+export interface FetchEnsNameOpts {
+  chainId: string
+  address: string
+}
+
 export interface FetchEnsAvatarOpts {
   chainId: string
   addressOrName: string

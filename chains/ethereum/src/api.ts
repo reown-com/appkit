@@ -14,7 +14,9 @@ import {
   connect,
   disconnect,
   InjectedConnector,
-  switchNetwork
+  switchNetwork,
+  fetchEnsName,
+  fetchEnsResolver
 } from '@wagmi/core'
 import type { Connector } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
@@ -25,6 +27,7 @@ import type {
   EthereumClient,
   FetchEnsAddressOpts,
   FetchEnsAvatarOpts,
+  FetchEnsNameOpts,
   GetBalanceOpts,
   GetContractOpts,
   GetDefaultConnectorsOpts,
@@ -254,5 +257,17 @@ export const Web3ModalEthereum = {
     const avatar = await fetchEnsAvatar(formatOpts(opts))
 
     return avatar?.toString()
+  },
+
+  async fetchEnsName(opts: FetchEnsNameOpts) {
+    const name = await fetchEnsName(formatOpts(opts))
+
+    return name?.toString()
+  },
+
+  async fetchEnsResolver(opts: FetchEnsAddressOpts) {
+    const resolver = await fetchEnsResolver(formatOpts(opts))
+
+    return resolver
   }
 }
