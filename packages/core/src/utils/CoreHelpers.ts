@@ -4,10 +4,10 @@ export const CoreHelpers = {
   },
 
   isMobile() {
-    return (
+    return Boolean(
       (window.matchMedia('(pointer:coarse)').matches || navigator.userAgent.match(/Android/u)) ??
-      navigator.userAgent.match(/iPhone/u) ??
-      false
+        navigator.userAgent.match(/iPhone/u) ??
+        false
     )
   },
 

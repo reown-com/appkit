@@ -1,4 +1,4 @@
-import { getExplorerApi } from '@web3modal/core'
+import { CoreHelpers, getExplorerApi } from '@web3modal/core'
 import type { LitElement } from 'lit'
 
 export function getShadowRootElement(root: LitElement, selector: string) {
@@ -42,7 +42,9 @@ export function getWalletFirstName(fullName: string) {
 }
 
 export function getDefaultWalletNames() {
-  return ['MetaMask', 'Coinbase Wallet', 'Ledger Live', 'Brave Wallet']
+  return CoreHelpers.isMobile()
+    ? ['Coinbase Wallet']
+    : ['MetaMask', 'Coinbase Wallet', 'Ledger Live', 'Brave Wallet']
 }
 
 export function defaultWalletImages() {

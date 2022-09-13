@@ -3,7 +3,7 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { WALLET_CONNECT_ICON_GRADIENT, WALLET_CONNECT_ICON_SHADE } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import '../w3m-text'
+import '../../components/w3m-text'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-walletconnect-button')

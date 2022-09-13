@@ -5,8 +5,8 @@ import { classMap } from 'lit/directives/class-map.js'
 import { WALLET_CONNECT_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
-import '../w3m-spinner'
-import '../w3m-text'
+import '../../components/w3m-spinner'
+import '../../components/w3m-text'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-connect-button')
