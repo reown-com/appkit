@@ -9,13 +9,17 @@ import {
   fetchEnsResolver,
   fetchSigner,
   fetchToken,
+  fetchTransaction,
   getContract,
   getNetwork,
   InjectedConnector,
+  prepareSendTransaction,
   prepareWriteContract,
   readContract,
+  sendTransaction,
   signTypedData,
   switchNetwork,
+  waitForTransaction,
   watchReadContract,
   writeContract
 } from '@wagmi/core'
@@ -28,14 +32,18 @@ import type {
   FetchEnsAddressOpts,
   FetchEnsAvatarOpts,
   FetchEnsNameOpts,
+  FetchTransactionOpts,
   GetBalanceOpts,
   GetContractOpts,
   GetDefaultConnectorsOpts,
   GetTokenOpts,
   GetWalletConnectProviderOpts,
+  PrepareSendTransactionOpts,
   PrepareWriteContractOpts,
   ReadContractOpts,
+  SendTransactionOpts,
   SignTypedDataOpts,
+  WaitForTransactionOpts,
   WatchReadContractOpts,
   WriteContractOpts
 } from '../types/apiTypes'
@@ -207,6 +215,8 @@ export const Web3ModalEthereum = {
     return network
   },
 
+  // ----------- contract ----------------------------- //
+
   getContract({ addressOrName, contractInterface, signerOrProvider }: GetContractOpts) {
     const contract = getContract({ addressOrName, contractInterface, signerOrProvider })
 
@@ -247,6 +257,8 @@ export const Web3ModalEthereum = {
     watchReadContract(formatOpts(remainingOpts), callback)
   },
 
+  // ----------- ens ----------------------------- //
+
   async fetchEnsAddress(opts: FetchEnsAddressOpts) {
     const address = await fetchEnsAddress(formatOpts(opts))
 
@@ -269,5 +281,34 @@ export const Web3ModalEthereum = {
     const resolver = await fetchEnsResolver(formatOpts(opts))
 
     return resolver
+  },
+
+  // ----------- transaction ---------------------- //
+
+  async fetchTransaction(opts: FetchTransactionOpts) {
+    const transaction = await fetchTransaction(formatOpts(opts))
+
+    return transaction
+  },
+
+  async prepareSendTransaction(opts: PrepareSendTransactionOpts) {
+    const preparation = prepareSendTransaction(formatOpts(opts))
+
+    return preparation
+  },
+
+  async sendTransaction(opts: SendTransactionOpts) {
+    const result = await sendTransaction({
+      ...formatOpts(opts),
+      mode: 'prepared'
+    })
+
+    return result
+  },
+
+  async waitForTransaction(opts: WaitForTransactionOpts) {
+    const receipt = await waitForTransaction(formatOpts(opts))
+
+    return receipt
   }
 }
