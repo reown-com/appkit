@@ -15,7 +15,6 @@ export interface IAbstractConnectorOptions {
 }
 
 export interface IInjectedProvidersMap {
-  injectedAvailable: boolean;
   [isProviderName: string]: boolean;
 }
 

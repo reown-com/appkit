@@ -11,7 +11,11 @@ import {
   RequiredOption
 } from "./types";
 
-export function checkInjectedProviders(): IInjectedProvidersMap {
+const browser = env.detect();
+
+export function checkInjectedProviders(): IInjectedProvidersMap & {
+  injectedAvailable?: boolean;
+} {
   const result = {
     injectedAvailable: !!window.ethereum || !!window.web3
   };
@@ -25,9 +29,7 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
       }
     });
 
-    const browser = env.detect();
-
-    if (browser && browser.name === "opera") {
+    if (isOperaWallet()) {
       result[injected.OPERA.check] = true;
       fallbackProvider = false;
     }
@@ -238,4 +240,12 @@ export function isLocalStorageAvailable() {
   } catch (e) {
     return false;
   }
+}
+
+export function isOperaBrowser() {
+  return browser && browser?.name === "opera";
+}
+
+export function isOperaWallet() {
+  return isOperaBrowser() && window.ethereum?.isOpera;
 }

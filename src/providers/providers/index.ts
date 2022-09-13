@@ -192,14 +192,6 @@ export const SEQUENCE: IProviderInfo = {
   check: "isSequenceWeb"
 };
 
-export const OPERA: IProviderInfo = {
-  id: "opera",
-  name: "Opera",
-  logo: OperaLogo,
-  type: "injected",
-  check: "isOpera"
-};
-
 export const WEB3AUTH: IProviderInfo = {
   id: "web3auth",
   name: "Web3Auth",
