@@ -3,9 +3,7 @@ import { color } from '../../utils/Theme'
 
 export default css`
   .w3m-view-row {
-    display: grid;
-    grid-auto-flow: column;
-    grid-gap: calc((100% - 240px) / 3);
+    display: flex;
     width: 100%;
     justify-content: space-between;
   }
@@ -13,6 +11,7 @@ export default css`
   w3m-walletconnect-button {
     width: 100%;
     overflow: hidden;
+    margin-right: calc((100% - 240px) / 3);
   }
 
   .w3m-title {

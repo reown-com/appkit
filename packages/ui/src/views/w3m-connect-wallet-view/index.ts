@@ -1,4 +1,4 @@
-import { RouterCtrl } from '@web3modal/core'
+import { CoreHelpers, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-button'
@@ -6,6 +6,7 @@ import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-footer'
 import '../../components/w3m-modal-header'
 import '../../partials/w3m-desktop-wallet-selection'
+import '../../partials/w3m-mobile-wallet-selection'
 import '../../partials/w3m-wallets-slideshow'
 import { HELP_ICON, WALLET_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
@@ -31,7 +32,9 @@ export class W3mConnectWalletView extends LitElement {
     return html`
       <w3m-modal-header title="Connect your wallet"></w3m-modal-header>
       <w3m-modal-content>
-        <w3m-desktop-wallet-selection></w3m-desktop-wallet-selection>
+        ${CoreHelpers.isMobile()
+          ? html`<w3m-mobile-wallet-selection></w3m-mobile-wallet-selection>`
+          : html`<w3m-desktop-wallet-selection></w3m-desktop-wallet-selection>`}
       </w3m-modal-content>
       <w3m-modal-footer>
         <w3m-wallets-slideshow></w3m-wallets-slideshow>

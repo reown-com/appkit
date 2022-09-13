@@ -11,6 +11,12 @@ export const CoreHelpers = {
     )
   },
 
+  formatDeepLinkUrl(appUrl: string, encodedWcUrl: string) {
+    appUrl.replace('/', '').replace(':', '')
+
+    return `${appUrl}://wc?uri=${encodedWcUrl}`
+  },
+
   async wait(miliseconds: number) {
     return new Promise(resolve => {
       setTimeout(resolve, miliseconds)
