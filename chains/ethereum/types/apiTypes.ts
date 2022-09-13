@@ -24,7 +24,7 @@ export interface GetWalletConnectProviderOpts {
 }
 
 export interface GetBalanceOpts {
-  address: string
+  addressOrName: string
   chainId: string
   formatUnits: FetchBalanceArgs['formatUnits']
 }
@@ -69,4 +69,19 @@ export interface GetTokenOpts {
   address: string
   chainId: string
   formatUnits: FetchTokenArgs['formatUnits']
+}
+
+export interface FetchEnsAddressOpts {
+  chainId: string
+  name: string
+}
+
+export interface FetchEnsNameOpts {
+  chainId: string
+  address: string
+}
+
+export interface FetchEnsAvatarOpts {
+  chainId: string
+  addressOrName: string
 }
