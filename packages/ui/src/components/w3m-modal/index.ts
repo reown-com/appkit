@@ -56,14 +56,17 @@ export class W3mModal extends ThemedElement {
 
   private async onOpenModalEvent() {
     this.initialized = true
-    await ExplorerCtrl.getWallets({ page: 1, entries: 10, version: 1 })
-    const wallets = ExplorerCtrl.state.wallets.listings.map(({ image_url }) => `${image_url.lg}`)
-    const defaultWallets = defaultWalletImages()
-    await Promise.all([
-      CoreHelpers.wait(this.firstOpen ? 300 : 0),
-      ...wallets.map(async url => preloadImage(url)),
-      ...defaultWallets.map(async url => preloadImage(url))
-    ])
+    if (this.firstOpen) {
+      await ExplorerCtrl.getWallets({ page: 1, entries: 10, version: 1 })
+      const wallets = ExplorerCtrl.state.wallets.listings.map(({ image_url }) => image_url.lg)
+      const defaultWallets = defaultWalletImages()
+      await Promise.all([
+        CoreHelpers.wait(300),
+        ...wallets.map(async url => preloadImage(url)),
+        ...defaultWallets.map(async url => preloadImage(url))
+      ])
+      this.firstOpen = false
+    }
     this.open = true
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay: 0.1 })
     animate(this.containerEl, isMobileAnimation() ? { y: [15, 0] } : { scale: [0.98, 1] }, {
@@ -71,7 +74,6 @@ export class W3mModal extends ThemedElement {
       delay: 0.1
     })
     document.addEventListener('keydown', this.onKeyDown)
-    this.firstOpen = false
   }
 
   private async onCloseModalEvent() {
@@ -85,6 +87,7 @@ export class W3mModal extends ThemedElement {
     this.open = false
     RouterCtrl.replace('ConnectWallet')
   }
+
   private onKeyDown(event: KeyboardEvent) {
     if (event.key === 'Escape') ConnectModalCtrl.closeModal()
   }
