@@ -98,14 +98,14 @@ export interface FetchTransactionOpts {
 export interface PrepareSendTransactionOpts {
   chainId: string
   request: PrepareSendTransactionArgs['request']
-  signerOrProvider: PrepareSendTransactionArgs['signerOrProvider']
+  signerOrProvider?: PrepareSendTransactionArgs['signerOrProvider']
 }
 
 export interface SendTransactionOpts {
   chainId: string
   request: SendTransactionArgs['request'] & {
     to: `0x${string}`
-    gasLimit: Exclude<SendTransactionArgs['request']['gasLimit'], undefined>
+    gasLimit?: Exclude<SendTransactionArgs['request']['gasLimit'], undefined>
   }
 }
 
