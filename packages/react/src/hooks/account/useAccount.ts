@@ -6,6 +6,7 @@ export function useAccount() {
   const [account, setAccount] = useState<Account>(initialAccountlState)
 
   useEffect(() => {
+    setAccount(AccountCtrl.state)
     const unsubscribe = AccountCtrl.subscribe(newAccount => setAccount({ ...newAccount }))
 
     return () => unsubscribe()

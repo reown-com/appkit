@@ -32,7 +32,7 @@ const value = {
 }
 
 export default function AccountSection() {
-  const { isLoading, sign, signature } = useSignTypedData()
+  const { isLoading, sign } = useSignTypedData()
 
   function onSignTypedData() {
     sign({ domain, value, types })
