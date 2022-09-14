@@ -1,4 +1,4 @@
-import type { Connector } from '@wagmi/core'
+import { Connector, signMessage } from '@wagmi/core'
 import {
   connect,
   disconnect,
@@ -193,7 +193,15 @@ export const Web3ModalEthereum = {
   },
 
   async signTypedData({ value, domain, types }: SignTypedDataOpts) {
-    await signTypedData({ value, domain, types })
+    const signature = await signTypedData({ value, domain, types })
+
+    return signature
+  },
+
+  async signMessage(message: string) {
+    const signature = await signMessage({ message })
+
+    return signature
   },
 
   // -- fetch ------------------------------------------------------- //
