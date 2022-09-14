@@ -12,8 +12,7 @@
     "@web3modal/react": "2.0.0",
     "next": "12.3.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "wagmi": "^0.6.6"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
     "@types/node": "18.7.18",

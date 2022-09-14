@@ -1,5 +1,5 @@
 import { chain, configureChains, createClient } from '@wagmi/core'
-import { publicProvider } from 'wagmi/providers/public'
+import { publicProvider } from '@wagmi/core/providers/public'
 import { Web3ModalEthereum } from '@web3modal/ethereum'
 import type { ConfigOptions } from '@web3modal/react'
 import { Web3ModalProvider } from '@web3modal/react'
