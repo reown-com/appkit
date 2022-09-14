@@ -9,7 +9,7 @@ import '../styles.css'
 const WC_PROJECT_ID = 'd28ea8bc8db643d07038d99ddce49e4a'
 
 // Configure chains and providers (rpc's)
-const { chains, provider } = configureChains([chain.goerli], [publicProvider()])
+const { chains, provider } = configureChains([chain.mainnet], [publicProvider()])
 
 // Create wagmi client
 const wagmiClient = createClient({

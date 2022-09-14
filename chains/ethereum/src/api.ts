@@ -42,7 +42,6 @@ import type {
   PrepareSendTransactionOpts,
   PrepareWriteContractOpts,
   ReadContractOpts,
-  SendTransactionOpts,
   SignTypedDataOpts,
   WaitForTransactionOpts,
   WatchReadContractOpts,
