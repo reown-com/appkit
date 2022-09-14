@@ -1,6 +1,7 @@
-import { Connector, signMessage } from '@wagmi/core'
+import type { Connector } from '@wagmi/core'
 import {
   connect,
+  signMessage,
   disconnect,
   fetchBalance,
   fetchEnsAddress,
@@ -300,15 +301,16 @@ export const Web3ModalEthereum = {
   },
 
   async prepareSendTransaction(opts: PrepareSendTransactionOpts) {
-    const preparation = prepareSendTransaction(formatOpts(opts))
+    const preparation = await prepareSendTransaction(formatOpts(opts))
 
     return preparation
   },
 
-  async sendTransaction(opts: SendTransactionOpts) {
+  async sendTransaction(opts: PrepareSendTransactionOpts) {
+    const prep = await prepareSendTransaction(formatOpts(opts))
     const result = await sendTransaction({
-      ...formatOpts(opts),
-      mode: 'prepared'
+      mode: 'prepared',
+      request: prep.request
     })
 
     return result

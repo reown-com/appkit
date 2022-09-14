@@ -1,7 +1,9 @@
-import { AccountButton, useAccount } from '@web3modal/react'
+import { AccountButton, useAccount, useBalance } from '@web3modal/react'
 
 export default function AccountSection() {
   const { chainId, address, connector, chainSupported } = useAccount()
+
+  const { balance } = useBalance({ chainId, addressOrName: address, formatUnits: 'wei' })
 
   return (
     <section>
@@ -19,6 +21,10 @@ export default function AccountSection() {
         </li>
         <li>
           Connector: <span>{connector}</span>
+        </li>
+
+        <li>
+          Balance: <span>{balance}</span>
         </li>
       </ul>
     </section>

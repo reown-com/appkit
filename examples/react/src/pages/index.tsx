@@ -1,7 +1,10 @@
 import { ConnectButton, useAccount } from '@web3modal/react'
 import AccountSection from '../sections/AccountSection'
+import BalanceSection from '../sections/BalanceSection'
+import SignMessageSection from '../sections/SignMessageSection'
 import SignTypedDataSection from '../sections/SignTypedDataSection'
 import SwitchChainSection from '../sections/SwitchChainSection'
+import { TransactionSection } from '../sections/TransactionSection'
 
 export default function HomePage() {
   const { connected } = useAccount()
@@ -11,6 +14,9 @@ export default function HomePage() {
       <AccountSection />
       <SwitchChainSection />
       <SignTypedDataSection />
+      <SignMessageSection />
+      <BalanceSection />
+      <TransactionSection />
     </>
   ) : (
     <ConnectButton />

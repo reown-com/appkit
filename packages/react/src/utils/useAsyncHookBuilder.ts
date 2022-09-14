@@ -7,15 +7,21 @@ export function useAsyncHookBuilder<TArgs, TResult>(
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<unknown>(null)
   const [data, setData] = useState<TResult | null>(null)
+  const [fetchedInitial, setFetchedInitial] = useState<boolean>(false)
 
   const refetch = useCallback(
     async (opts: TArgs) => {
+      console.log('refetch')
       try {
         setIsLoading(true)
+        console.log('Before fetch')
         const fetchedData = await fetcher(opts)
+        console.log({ fetchedData })
         setData(fetchedData)
       } catch (err: unknown) {
-        return setError(err)
+        console.log({ err })
+
+        setError(err)
       } finally {
         setIsLoading(false)
       }
@@ -24,8 +30,14 @@ export function useAsyncHookBuilder<TArgs, TResult>(
   )
 
   useEffect(() => {
-    if (initialOpts) refetch(initialOpts)
-  }, [initialOpts, refetch])
+    if (initialOpts && !fetchedInitial) {
+      refetch(initialOpts).then(() => {
+        console.log('all done')
+        setFetchedInitial(true)
+      })
+      console.log('fetching initial')
+    }
+  }, [initialOpts, refetch, setFetchedInitial, fetchedInitial])
 
   return {
     data,

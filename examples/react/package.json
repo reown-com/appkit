@@ -7,12 +7,13 @@
     "build": "next build && next export"
   },
   "dependencies": {
-    "@web3modal/react": "2.0.0",
+    "@wagmi/core": "0.5.6",
     "@web3modal/ethereum": "2.0.0",
+    "@web3modal/react": "2.0.0",
     "next": "12.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "@wagmi/core": "0.5.6"
+    "wagmi": "^0.6.6"
   },
   "devDependencies": {
     "@types/node": "18.7.18",
