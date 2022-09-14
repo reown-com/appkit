@@ -7,8 +7,6 @@ export default function EnsSection() {
   const { address, refetch: fetchAddress } = useFetchEnsAddress()
   const [ensDomain, setEnsDomain] = useState('')
 
-  console.log({ chainId, address, avatar })
-
   const onFetch = useCallback(
     (domain: string) => {
       fetchAddress({
