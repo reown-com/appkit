@@ -1,36 +1,16 @@
-import { AccountButton, ConnectButton, useAccount, useSwitchNetwork } from '@web3modal/react'
+import { ConnectButton, useAccount } from '@web3modal/react'
+import AccountSection from '../sections/AccountSection'
+import SignTypedDataSection from '../sections/SignTypedDataSection'
+import SwitchChainSection from '../sections/SwitchChainSection'
 
 export default function HomePage() {
-  const { chainId, connected, address, connector, chainSupported } = useAccount()
-  const { isLoading, switchChain } = useSwitchNetwork()
-
-  function onSwithChainDemo(chain: string) {
-    switchChain(chain)
-  }
+  const { connected } = useAccount()
 
   return connected ? (
     <>
-      <AccountButton />
-      <ul>
-        <li>
-          ChainID: <span>{chainId}</span>
-        </li>
-        <li>
-          Chain Supported: <span>{chainSupported ? 'Yes' : 'No'}</span>
-        </li>
-        <li>
-          Address: <span>{address}</span>
-        </li>
-        <li>
-          Connector: <span>{connector}</span>
-        </li>
-      </ul>
-
-      <select onChange={({ target }) => onSwithChainDemo(target.value)} disabled={isLoading}>
-        <option value="eip155:1">Ethereum</option>
-        <option value="eip155:42161">Arbitrum</option>
-        <option value="eip155:43114">Avalanche</option>
-      </select>
+      <AccountSection />
+      <SwitchChainSection />
+      <SignTypedDataSection />
     </>
   ) : (
     <ConnectButton />
