@@ -31,6 +31,18 @@ export default css`
     height: 20px;
     margin: -1px 3px 0 -5px;
   }
+
+  .w3m-act-button-container {
+    width: 500px;
+    display: flex;
+    background-color: #152637;
+    border-radius: 10px;
+    padding: 0 15px 1px;
+  }
+
+  .w3m-act-balance-container {
+    padding: 8px 4px 4px 8px;
+  }
 `
 
 // -- dynamic styles ----------------------------------------------- //
