@@ -1,6 +1,7 @@
 import type { Connector } from '@wagmi/core'
 import {
   connect,
+  signMessage,
   disconnect,
   fetchBalance,
   fetchEnsAddress,
@@ -41,7 +42,6 @@ import type {
   PrepareSendTransactionOpts,
   PrepareWriteContractOpts,
   ReadContractOpts,
-  SendTransactionOpts,
   SignTypedDataOpts,
   WaitForTransactionOpts,
   WatchReadContractOpts,
@@ -193,7 +193,15 @@ export const Web3ModalEthereum = {
   },
 
   async signTypedData({ value, domain, types }: SignTypedDataOpts) {
-    await signTypedData({ value, domain, types })
+    const signature = await signTypedData({ value, domain, types })
+
+    return signature
+  },
+
+  async signMessage(message: string) {
+    const signature = await signMessage({ message })
+
+    return signature
   },
 
   // -- fetch ------------------------------------------------------- //
@@ -292,15 +300,16 @@ export const Web3ModalEthereum = {
   },
 
   async prepareSendTransaction(opts: PrepareSendTransactionOpts) {
-    const preparation = prepareSendTransaction(formatOpts(opts))
+    const preparation = await prepareSendTransaction(formatOpts(opts))
 
     return preparation
   },
 
-  async sendTransaction(opts: SendTransactionOpts) {
+  async sendTransaction(opts: PrepareSendTransactionOpts) {
+    const prep = await prepareSendTransaction(formatOpts(opts))
     const result = await sendTransaction({
-      ...formatOpts(opts),
-      mode: 'prepared'
+      mode: 'prepared',
+      request: prep.request
     })
 
     return result
