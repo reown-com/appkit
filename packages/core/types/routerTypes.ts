@@ -1,4 +1,5 @@
 export type RouterView =
+  | 'Account'
   | 'CoinbaseExtensionConnector'
   | 'CoinbaseMobileConnector'
   | 'ConnectWallet'
@@ -8,4 +9,3 @@ export type RouterView =
   | 'MetaMaskConnector'
   | 'SelectNetwork'
   | 'WalletConnectConnector'
-  | 'Account'
