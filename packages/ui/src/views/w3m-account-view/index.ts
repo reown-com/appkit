@@ -1,13 +1,13 @@
-import { AccountCtrl, ClientCtrl } from '@web3modal/core'
+import { AccountCtrl, ClientCtrl, ConnectModalCtrl } from '@web3modal/core'
 import type { GetBalanceOpts } from '@web3modal/ethereum'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-button'
 import '../../components/w3m-modal-footer'
 import '../../components/w3m-text'
-import { ETH_IMG_ACCOUNT } from '../../utils/Svgs'
+import { CLIPBOARD, DISCONNECT, ETH_NETWORK, ZORB } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import styles from './styles'
+import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
@@ -33,9 +33,10 @@ export class W3mAccountView extends LitElement {
     }
   }
 
-  // private disconnect() {
-  //   ClientCtrl.ethereum.disconnect
-  // }
+  private disconnect() {
+    ClientCtrl.ethereum.disconnect
+    ConnectModalCtrl.closeModal()
+  }
 
   private async getBalance() {
     try {
@@ -54,11 +55,12 @@ export class W3mAccountView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
+      ${dynamicStyles()}
       <div>
         <div class="w3m-flex-wrapper">
-          <div class="w3m-address-ens-container">
+          <div class="w3m-space-between-container">
             <div style="display:flex; flex-direction:column;">
-              <w3m-ens-image>${ETH_IMG_ACCOUNT}</w3m-ens-image>
+              <w3m-ens-image>${ZORB}</w3m-ens-image>
               <w3m-text variant="large-bold" color="primary">
                 ${`${this.address.substring(0, 5)}...${this.address.slice(-5)}`}
               </w3m-text>
@@ -67,9 +69,7 @@ export class W3mAccountView extends LitElement {
           </div>
         </div>
 
-        <div
-          style="background-color: #000000; width: 100%; height: 1px; padding: 24px 0px 24px "
-        ></div>
+        <div style="background-color: grey; width: 100%; height: 1px"></div>
 
         <div class="w3m-space-between-container">
           <w3m-text variant="medium-normal" color="secondary">Balance</w3m-text>
@@ -77,10 +77,21 @@ export class W3mAccountView extends LitElement {
         </div>
 
         <w3m-modal-footer>
-          <div class="w3m-space-between-container">
-            <w3m-button variant="ghost"> Disconnect </w3m-button>
-            <w3m-button variant="ghost"> Disconnect </w3m-button>
-            <w3m-button variant="ghost"> Disconnect </w3m-button>
+          <div class="w3m-footer-action-container">
+            <button class="w3m-footer-actions">
+              <div>${ETH_NETWORK}</div>
+              <w3m-text variant="small-normal" color="secondary">Ethereum</w3m-text>
+            </button>
+
+            <button class="w3m-footer-actions">
+              <div>${CLIPBOARD}</div>
+              <w3m-text variant="small-normal" color="secondary">Copy Address</w3m-text>
+            </button>
+
+            <button class="w3m-footer-actions">
+              <div>${DISCONNECT}</div>
+              <w3m-text variant="small-normal" color="secondary">Disconnect</w3m-text>
+            </button>
           </div>
         </w3m-modal-footer>
       </div>
