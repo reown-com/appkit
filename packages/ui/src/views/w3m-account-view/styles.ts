@@ -1,10 +1,10 @@
-import { css, html } from 'lit'
-import { color } from '../../utils/Theme'
+import { css } from 'lit'
 
 export default css`
   button {
-    width: 100%;
+    padding: 0;
     border: none;
+    background: none;
   }
 
   .w3m-flex-wrapper {
@@ -62,39 +62,3 @@ export default css`
     align-items: center;
   }
 `
-
-// -- dynamic styles ----------------------------------------------- //
-export function dynamicStyles() {
-  const { foreground, background, overlay } = color()
-
-  return html` <style>
-    button {
-      background-color: 'transparent';
-    }
-
-    button::after {
-      border: 1px solid ${overlay.thin};
-    }
-
-    button:hover::after {
-      background-color: ${overlay.thin};
-    }
-
-    .w3m-button-loading:disabled {
-      background-color: ${background.accent};
-    }
-
-    button:disabled {
-      background-color: ${background[3]};
-      color: ${foreground[3]};
-    }
-
-    svg path {
-      fill: ${foreground.inverse};
-    }
-
-    button:disabled svg path {
-      fill: ${foreground[3]};
-    }
-  </style>`
-}

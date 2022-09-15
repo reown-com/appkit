@@ -5,9 +5,9 @@ import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-button'
 import '../../components/w3m-modal-footer'
 import '../../components/w3m-text'
-import { CLIPBOARD, DISCONNECT, ETH_NETWORK, ZORB } from '../../utils/Svgs'
+import { CLIPBOARD, DISCONNECT, ZORB } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles'
 
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
@@ -33,9 +33,13 @@ export class W3mAccountView extends LitElement {
     }
   }
 
-  private disconnect() {
-    ClientCtrl.ethereum.disconnect
+  private async copyClipboard() {
+    await navigator.clipboard.writeText(this.address)
+  }
+
+  private onDisconnect() {
     ConnectModalCtrl.closeModal()
+    ClientCtrl.ethereum().disconnect()
   }
 
   private async getBalance() {
@@ -55,7 +59,6 @@ export class W3mAccountView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      ${dynamicStyles()}
       <div>
         <div class="w3m-flex-wrapper">
           <div class="w3m-space-between-container">
@@ -78,17 +81,12 @@ export class W3mAccountView extends LitElement {
 
         <w3m-modal-footer>
           <div class="w3m-footer-action-container">
-            <button class="w3m-footer-actions">
-              <div>${ETH_NETWORK}</div>
-              <w3m-text variant="small-normal" color="secondary">Ethereum</w3m-text>
-            </button>
-
-            <button class="w3m-footer-actions">
+            <button class="w3m-footer-actions" @click=${this.copyClipboard}>
               <div>${CLIPBOARD}</div>
               <w3m-text variant="small-normal" color="secondary">Copy Address</w3m-text>
             </button>
 
-            <button class="w3m-footer-actions">
+            <button class="w3m-footer-actions" @click=${this.onDisconnect}>
               <div>${DISCONNECT}</div>
               <w3m-text variant="small-normal" color="secondary">Disconnect</w3m-text>
             </button>
