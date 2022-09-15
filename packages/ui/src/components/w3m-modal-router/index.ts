@@ -86,8 +86,6 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
       case 'LedgerDesktopConnector':
         return html`<w3m-ledger-desktop-connector-view></w3m-ledger-desktop-connector-view>`
-      case 'Account':
-        return html`<w3m-account-view></w3m-account-view>`
       default:
         return html`<div>Not Found</div>`
     }

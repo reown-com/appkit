@@ -44,7 +44,7 @@ export default css`
   .w3m-act-balance-container {
     display: flex;
     justify-content: center;
-    margin-right: 2px;
+    margin-right: 8px;
   }
 `
 
@@ -86,6 +86,7 @@ export function dynamicStyles() {
     .w3m-act-button-container {
       color: ${foreground.inverse};
       background-color: ${background.accent};
+      border: 1px solid ${overlay.thin};
     }
   </style>`
 }
