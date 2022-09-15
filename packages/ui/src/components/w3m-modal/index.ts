@@ -85,7 +85,6 @@ export class W3mModal extends ThemedElement {
       animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
     ])
     this.open = false
-    // RouterCtrl.replace('ConnectWallet')
   }
 
   private onKeyDown(event: KeyboardEvent) {
