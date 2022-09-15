@@ -1,4 +1,4 @@
-import { ConnectModalCtrl, CoreHelpers, ExplorerCtrl } from '@web3modal/core'
+import { ConnectModalCtrl, CoreHelpers, ExplorerCtrl, RouterCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -16,8 +16,8 @@ import '../w3m-modal-router'
 import '../w3m-modal-toast'
 import styles, { dynamicStyles } from './styles'
 
-@customElement('w3m-modal')
-export class W3mModal extends ThemedElement {
+@customElement('w3m-account-modal')
+export class W3mAccountModal extends ThemedElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -85,7 +85,7 @@ export class W3mModal extends ThemedElement {
       animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
     ])
     this.open = false
-    // RouterCtrl.replace('ConnectWallet')
+    RouterCtrl.replace('ConnectWallet')
   }
 
   private onKeyDown(event: KeyboardEvent) {
@@ -113,7 +113,11 @@ export class W3mModal extends ThemedElement {
             ? html`
                 <w3m-modal-backcard></w3m-modal-backcard>
                 <div class="w3m-modal-card">
-                  ${this.open ? html`<w3m-modal-router></w3m-modal-router>` : null}
+                  ${this.open
+                    ? html`<w3m-modal-router>
+                        <h1>Account Card</h1>
+                      </w3m-modal-router>`
+                    : null}
                   <w3m-modal-toast></w3m-modal-toast>
                 </div>
               `
@@ -126,6 +130,6 @@ export class W3mModal extends ThemedElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-modal': W3mModal
+    'w3m-account-modal': W3mAccountModal
   }
 }

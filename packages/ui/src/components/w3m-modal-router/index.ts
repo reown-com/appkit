@@ -5,6 +5,7 @@ import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
 import { global } from '../../utils/Theme'
 import { getShadowRootElement } from '../../utils/UiHelpers'
+import '../../views/w3m-account-view'
 import '../../views/w3m-coinbase-extension-connector-view'
 import '../../views/w3m-coinbase-mobile-connector-view'
 import '../../views/w3m-connect-wallet-view'
@@ -86,6 +87,8 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
       case 'LedgerDesktopConnector':
         return html`<w3m-ledger-desktop-connector-view></w3m-ledger-desktop-connector-view>`
+      case 'Account':
+        return html`<w3m-account-view></w3m-account-view>`
       default:
         return html`<div>Not Found</div>`
     }
