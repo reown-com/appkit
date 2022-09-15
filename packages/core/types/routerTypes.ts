@@ -8,4 +8,3 @@ export type RouterView =
   | 'MetaMaskConnector'
   | 'SelectNetwork'
   | 'WalletConnectConnector'
-  | 'Account'
