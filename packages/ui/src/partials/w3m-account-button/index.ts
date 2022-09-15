@@ -1,4 +1,4 @@
-import { AccountCtrl, ClientCtrl, ConnectModalCtrl } from '@web3modal/core'
+import { AccountCtrl, ClientCtrl } from '@web3modal/core'
 import type { GetBalanceOpts } from '@web3modal/ethereum'
 import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
@@ -28,8 +28,6 @@ export class W3mAccountButton extends ThemedElement {
   private getAccounts() {
     try {
       this.address = AccountCtrl.state.address
-      // eslint-disable-next-line
-      console.log('chaiNID', AccountCtrl.state.chainId)
     } catch (e) {
       throw new Error('No Account Details connection')
     }
@@ -43,17 +41,14 @@ export class W3mAccountButton extends ThemedElement {
         formatUnits: 'ether'
       }
       const balance = await ClientCtrl.ethereum().fetchBalance(opts)
-      // eslint-disable-next-line
-      console.log('balance', balance)
+      this.balance = balance
     } catch (e) {
-      // eslint-disable-next-line
-      console.log('error', e)
       throw new Error('No Balance Details')
     }
   }
 
   private onOpen() {
-    ConnectModalCtrl.openModal()
+    ClientCtrl.ethereum().disconnect()
   }
 
   // -- render ------------------------------------------------------- //
@@ -64,7 +59,7 @@ export class W3mAccountButton extends ThemedElement {
       <div class="w3m-act-button-container">
         <div class="w3m-act-balance-container">
           <div class="w3m-images">${ETH_IMG_ACCOUNT}</div>
-          <w3m-text variant="medium-normal" color="primary">${this.balance}</w3m-text>
+          <w3m-text variant="medium-normal" color="primary">${this.balance} ETH</w3m-text>
         </div>
         <button @click=${this.onOpen}>
           <w3m-text variant="medium-normal" color="primary"
