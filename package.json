@@ -9,7 +9,13 @@
     "dev:react": "npm run dev --w=react-example",
     "lint": "eslint .",
     "prettier": "prettier --check .",
-    "typecheck": "npm run typecheck --ws --if-present"
+    "typecheck": "npm run typecheck --ws --if-present",
+    "new-version": "lerna version --no-git-tag-version --exact",
+    "pre-publish": "npm run new-version; npm run reset",
+    "npm-publish:rc": "lerna exec -- npm publish --access public --tag rc",
+    "npm-publish:latest": "lerna exec -- npm publish --access public --tag latest",
+    "npm-publish:next": "lerna exec -- npm publish --access public --tag next",
+    "npm-publish:canary": "lerna exec -- npm publish --access public --tag canary"
   },
   "workspaces": [
     "chains/*",
@@ -28,6 +34,7 @@
     "typescript": "4.8.3",
     "rollup": "2.79.0",
     "rollup-plugin-esbuild": "4.10.1",
-    "rollup-plugin-minify-html-literals": "1.2.6"
+    "rollup-plugin-minify-html-literals": "1.2.6",
+    "lerna": "5.5.1"
   }
 }
