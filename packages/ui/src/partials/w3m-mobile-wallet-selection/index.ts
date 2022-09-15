@@ -30,17 +30,17 @@ export class W3mMobileWalletSelection extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { previewWallets } = ExplorerCtrl.state
+    const { listings } = ExplorerCtrl.state.wallets
 
     return html`
       <div class="w3m-view-row">
-        ${previewWallets.map(
-          wallet => html`
+        ${listings.map(
+          listing => html`
             <w3m-wallet-button
               class="w3m-coinbase-button"
-              src=${wallet.image_url.lg}
-              name=${wallet.name}
-              .onClick=${async () => this.onConnect(wallet.mobile)}
+              src=${listing.image_url.lg}
+              name=${listing.name}
+              .onClick=${async () => this.onConnect(listing.mobile)}
             ></w3m-wallet-button>
           `
         )}

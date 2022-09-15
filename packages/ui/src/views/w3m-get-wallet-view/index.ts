@@ -27,7 +27,7 @@ export class W3mGetWalletView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const defaultNames = getDefaultWalletNames()
-    const wallets = ExplorerCtrl.state.previewWallets
+    const wallets = ExplorerCtrl.state.wallets.listings
       .filter(wallet => !defaultNames.includes(wallet.name))
       .slice(0, 4)
 
