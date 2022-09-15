@@ -451,3 +451,16 @@ export const DEFI_IMG = svg`
     </defs>
   </svg>
 `
+
+export const ETH_IMG_ACCOUNT = svg`
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="12" fill="#E4E7E7"/>
+    <circle cx="12" cy="12" r="11.5" stroke="white" stroke-opacity="0.1"/>
+    <path d="M11.9984 3.5V15.2393L17.3652 12.1557L11.9984 3.5Z" fill="#585F5F"/>
+    <path d="M11.9984 3.5L6.63159 12.1557L11.9984 15.2393V9.78462V3.5Z" fill="#9EA9A9"/>
+    <path d="M11.9984 16.227V20.4962L17.3684 13.145L11.9984 16.227Z" fill="#585F5F"/>
+    <path d="M11.9984 20.4962V16.227L6.63159 13.145L11.9984 20.4962Z" fill="#9EA9A9"/>
+    <path d="M11.9984 15.2393L17.3651 12.1558L11.9984 9.78467V15.2393Z" fill="#272A2A"/>
+    <path d="M6.63159 12.1558L11.9983 15.2393V9.78467L6.63159 12.1558Z" fill="#798686"/>
+  </svg>
+`

@@ -33,8 +33,8 @@ export class W3mModalRouter extends LitElement {
   }
 
   public firstUpdated() {
-    this.resizeObserver = new ResizeObserver(([conetnt]) => {
-      const newHeight = `${conetnt.borderBoxSize[0].blockSize}px`
+    this.resizeObserver = new ResizeObserver(([content]) => {
+      const newHeight = `${content.borderBoxSize[0].blockSize}px`
       if (this.oldHeight !== '0px') {
         animate(this.routerEl, { height: [this.oldHeight, newHeight] }, { duration: 0.2 })
         animate(
@@ -86,6 +86,8 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
       case 'LedgerDesktopConnector':
         return html`<w3m-ledger-desktop-connector-view></w3m-ledger-desktop-connector-view>`
+      case 'Account':
+        return html`<w3m-account-view></w3m-account-view>`
       default:
         return html`<div>Not Found</div>`
     }

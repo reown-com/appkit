@@ -1,4 +1,4 @@
-import { AccountModal, ConnectButton, useAccount } from '@web3modal/react'
+import { ConnectButton, useAccount } from '@web3modal/react'
 // Import { AccountModal, ConnectButton, useAccount } from '@web3modal/react'
 import AccountSection from '../sections/AccountSection'
 import SignTypedDataSection from '../sections/SignTypedDataSection'
@@ -10,10 +10,7 @@ export default function HomePage() {
   return connected ? (
     <>
       <AccountSection />
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        {/* <div> */}
-        <AccountModal />
-      </div>
+      {/* <AccountModal /> */}
       <SwitchChainSection />
       <SignTypedDataSection />
     </>

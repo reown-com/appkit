@@ -5,8 +5,8 @@ import { color } from '../../utils/Theme'
 export default css`
   button {
     padding: 0 15px 1px;
-    height: 40px;
-    border-radius: 10px;
+    height: 32px;
+    border-radius: 16px;
   }
 
   button::after {
@@ -33,15 +33,18 @@ export default css`
   }
 
   .w3m-act-button-container {
-    width: 500px;
+    width: 250px;
     display: flex;
-    background-color: #152637;
+    justify-content: center;
+    align-items: center;
     border-radius: 10px;
-    padding: 0 15px 1px;
+    padding: 8px 1px 8px 1px;
   }
 
   .w3m-act-balance-container {
-    padding: 8px 4px 4px 8px;
+    display: flex;
+    justify-content: center;
+    margin-right: 2px;
   }
 `
 
@@ -78,6 +81,11 @@ export function dynamicStyles() {
 
     button:disabled svg path {
       fill: ${foreground[3]};
+    }
+
+    .w3m-act-button-container {
+      color: ${foreground.inverse};
+      background-color: ${background.accent};
     }
   </style>`
 }
