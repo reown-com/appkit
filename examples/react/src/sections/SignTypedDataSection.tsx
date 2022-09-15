@@ -32,7 +32,7 @@ const value = {
 }
 
 export default function AccountSection() {
-  const { isLoading, sign } = useSignTypedData()
+  const { isLoading, sign, signature } = useSignTypedData()
 
   function onSignTypedData() {
     sign({ domain, value, types })
@@ -44,6 +44,7 @@ export default function AccountSection() {
       <button type="button" disabled={isLoading} onClick={onSignTypedData}>
         Sign Typed Data
       </button>
+      {signature ? <p>{signature}</p> : null}
     </section>
   )
 }

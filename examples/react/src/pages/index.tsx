@@ -1,8 +1,12 @@
 import { ConnectButton, useAccount } from '@web3modal/react'
 // Import { AccountModal, ConnectButton, useAccount } from '@web3modal/react'
 import AccountSection from '../sections/AccountSection'
+import BalanceSection from '../sections/BalanceSection'
+import EnsSection from '../sections/EnsSection'
+import SignMessageSection from '../sections/SignMessageSection'
 import SignTypedDataSection from '../sections/SignTypedDataSection'
 import SwitchChainSection from '../sections/SwitchChainSection'
+import { TransactionSection } from '../sections/TransactionSection'
 
 export default function HomePage() {
   const { connected } = useAccount()
@@ -13,6 +17,10 @@ export default function HomePage() {
       {/* <AccountModal /> */}
       <SwitchChainSection />
       <SignTypedDataSection />
+      <SignMessageSection />
+      <BalanceSection />
+      <TransactionSection />
+      <EnsSection />
     </>
   ) : (
     <ConnectButton />
