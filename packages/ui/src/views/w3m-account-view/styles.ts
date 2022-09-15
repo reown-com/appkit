@@ -11,7 +11,19 @@ export default css`
     border-radius: 22px;
     width: 25%;
     aspect-ratio: 1 / 1;
-    margin-bottom: 20px;
+  }
+
+  w3m-ens-address-container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .w3m-address-ens-container {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    padding: 24px 0px 24px;
   }
 
   .w3m-space-between-container {
