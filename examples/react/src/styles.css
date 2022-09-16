@@ -1,0 +1,23 @@
+body {
+  background-color: black;
+  color: #fff;
+}
+
+li span {
+  color: goldenrod;
+}
+
+section {
+  border: 1px solid slateblue;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+  overflow: scroll;
+}
+
+section h1 {
+  margin: 0;
+  margin-bottom: 15px;
+  font-family: sans-serif;
+  color: slateblue;
+}

@@ -1,0 +1,12 @@
+{
+  "name": "html-example",
+  "version": "2.0.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "devDependencies": {
+    "express": "4.18.1"
+  }
+}

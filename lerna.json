@@ -1,0 +1,9 @@
+{
+  "npmClient": "npm",
+  "packages": [
+    "chains/*",
+    "packages/*"
+  ],
+  "useWorkspaces": true,
+  "version": "2.0.0-alpha.1"
+}
