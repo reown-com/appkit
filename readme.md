@@ -4,6 +4,9 @@
 
 Your on-ramp to web3 multichain.
 
+- ⚠️ v2 is in early alpha and we are continuously adding more features, examples and documentation.
+- 🔗 Preview at https://web3modal.pages.dev
+
 <p align="center">
 <img src="./header.jpeg" alt="" border="0">
 </p>
