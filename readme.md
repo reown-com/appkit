@@ -78,5 +78,5 @@ Please see our [react hooks folder](https://github.com/WalletConnect/web3modal/t
 
 As of now we support following config options to help you customise look and feel of your modal. We will be adding more options soon.
 
-**theme** - `'dark' | 'light'` <br>
-**accentColor** - `'blackWhite' | 'blue' | 'default' | 'green' | 'magenta' | 'orange' | 'purple' | 'teal'`
+- theme - `'dark' | 'light'`
+- accentColor - `'blackWhite' | 'blue' | 'default' | 'green' | 'magenta' | 'orange' | 'purple' | 'teal'`
