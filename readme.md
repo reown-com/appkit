@@ -1,8 +1,8 @@
-> Looking for v1.x readme? It is availabl on [V1 Branch](https://github.com/WalletConnect/web3modal/tree/V1)
+> Looking for v1.x readme? It is available on [V1 Branch](https://github.com/WalletConnect/web3modal/tree/V1)
 
 # Web3Modal-v2
 
-Your on ramp to web3 multichain.
+Your on-ramp to web3 multichain.
 
 ## Introduction
 
@@ -18,7 +18,7 @@ By default Web3Modal library supports providers like:
 
 ## Quick Start
 
-During alpha release cycle we are focusing on providing best experience for connecting your react dapps with ethereum (evm) compatible chains, however expect support for more frameworks like Vue and chains like Solana to follow soon.
+During the alpha release cycle, we focused on providing the best experience for connecting your react dapps with Ethereum (evm) compatible chains.   Expect support for more frameworks like Vue and chains like Solana to follow soon.
 
 ### 1. Install web3modal and wagmi packages
 
@@ -26,7 +26,7 @@ During alpha release cycle we are focusing on providing best experience for conn
 npm install @web3modal/react @web3modal/ethereum @wagmi/core
 ```
 
-### 2. Configure wagmi and web3modal clients at the root of your app (you can also refference our [react example app](https://github.com/WalletConnect/web3modal/tree/V2/examples/react))
+### 2. Configure wagmi and web3modal clients at the root of your app (you can also reference our [react example app](https://github.com/WalletConnect/web3modal/tree/V2/examples/react))
 
 ```tsx
 import { chain, configureChains, createClient } from '@wagmi/core'
@@ -76,7 +76,7 @@ Please see our [react hooks folder](https://github.com/WalletConnect/web3modal/t
 
 ### 5. Customise your modal
 
-As of now we support following config options to help you customise look and feel of your modal. We will be adding more options soon.
+As of now, we support the following config options to help you customise the look and feel of your modal. We will add more options soon.
 
 - theme - `'dark' | 'light'`
 - accentColor - `'blackWhite' | 'blue' | 'default' | 'green' | 'magenta' | 'orange' | 'purple' | 'teal'`
