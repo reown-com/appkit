@@ -1,6 +1,6 @@
 > Looking for v1.x readme? It is available on [V1 Branch](https://github.com/WalletConnect/web3modal/tree/V1)
 
-# Web3Modal-v2
+# Web3Modal
 
 Your on-ramp to web3 multichain.
 
@@ -76,7 +76,9 @@ Please see our [react hooks folder](https://github.com/WalletConnect/web3modal/t
 
 ### 5. Customise your modal
 
-As of now, we support the following config options to help you customise the look and feel of your modal. We will add more options soon.
+As of now, we support the following config options to help you customise the look and feel of your modal. 
 
 - theme - `'dark' | 'light'`
 - accentColor - `'blackWhite' | 'blue' | 'default' | 'green' | 'magenta' | 'orange' | 'purple' | 'teal'`
+
+More options coming soon!
