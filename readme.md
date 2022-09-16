@@ -7,6 +7,10 @@ Your on-ramp to web3 multichain.
 - ⚠️ v2 is in early alpha and we are continuously adding more features, examples and documentation.
 - 🔗 Preview at https://web3modal.pages.dev
 
+<p align="center">
+<img src="./header.jpeg" alt="" border="0">
+</p>
+
 ## Introduction
 
 Web3Modal is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration. This library leverages WalletConnect V2 client ([repo](https://github.com/WalletConnect/walletconnect-monorepo/), [docs](https://docs.walletconnect.com/2.0/introduction/sign/)) and [Wagmi](https://wagmi.sh/).
@@ -21,7 +25,7 @@ By default Web3Modal library supports providers like:
 
 ## Quick Start
 
-During the alpha release cycle, we focused on providing the best experience for connecting your react dapps with Ethereum (evm) compatible chains.   Expect support for more frameworks like Vue and chains like Solana to follow soon.
+During the alpha release cycle, we focused on providing the best experience for connecting your react dapps with Ethereum (evm) compatible chains. Expect support for more frameworks like Vue and chains like Solana to follow soon.
 
 ### 1. Install web3modal and wagmi packages
 
@@ -79,7 +83,7 @@ Please see our [react hooks folder](https://github.com/WalletConnect/web3modal/t
 
 ### 5. Customise your modal
 
-As of now, we support the following config options to help you customise the look and feel of your modal. 
+As of now, we support the following config options to help you customise the look and feel of your modal.
 
 - theme - `'dark' | 'light'`
 - accentColor - `'blackWhite' | 'blue' | 'default' | 'green' | 'magenta' | 'orange' | 'purple' | 'teal'`
