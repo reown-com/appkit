@@ -30,7 +30,19 @@ During the alpha release cycle, we focused on providing the best experience for 
 npm install @web3modal/react @web3modal/ethereum @wagmi/core
 ```
 
-### 2. Configure wagmi and web3modal clients at the root of your app (you can also reference our [react example app](https://github.com/WalletConnect/web3modal/tree/V2/examples/react))
+### 2. Setup Local Environemnt
+
+Set up your local environment variables by copying the example into your own `.env.local` file:
+
+```bash
+cp .env.local.example .env.local
+```
+
+Your `.env.local` now contains the following environment variables:
+
+- `NEXT_PUBLIC_PROJECT_ID` (placeholder) - You can generate your own ProjectId at https://cloud.walletconnect.com
+
+### 3. Configure wagmi and web3modal clients at the root of your app (you can also reference our [react example app](https://github.com/WalletConnect/web3modal/tree/V2/examples/react))
 
 ```tsx
 import { chain, configureChains, createClient } from '@wagmi/core'
@@ -38,9 +50,6 @@ import { publicProvider } from '@wagmi/core/providers/public'
 import { Web3ModalEthereum } from '@web3modal/ethereum'
 import type { ConfigOptions } from '@web3modal/react'
 import { Web3ModalProvider } from '@web3modal/react'
-
-// Get Your projectId at https://cloud.walletconnect.com
-const WC_PROJECT_ID = 'YOUR_PROJECT_ID'
 
 // Configure chains and providers (rpc's)
 const { chains, provider } = configureChains([chain.mainnet], [publicProvider()])

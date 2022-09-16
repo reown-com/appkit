@@ -6,9 +6,6 @@ import { Web3ModalProvider } from '@web3modal/react'
 import type { AppProps } from 'next/app'
 import '../styles.css'
 
-// Get projectID at https://cloud.walletconnect.com
-const WC_PROJECT_ID = 'YOUR_PROJECT_ID'
-
 // Configure chains and providers (rpc's)
 const { chains, provider } = configureChains([chain.mainnet], [publicProvider()])
 
@@ -21,7 +18,7 @@ const wagmiClient = createClient({
 
 // Configure web3modal
 const modalConfig: ConfigOptions = {
-  projectId: WC_PROJECT_ID,
+  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
   theme: 'dark',
   accentColor: 'orange'
 }
