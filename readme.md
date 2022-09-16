@@ -1,18 +1,82 @@
-## Package overview
+> Looking for v1.x readme? It is availabl on [V1 Branch](https://github.com/WalletConnect/web3modal/tree/V1)
 
-- `packages/core` - Contains core logic and web-component ui
-- `packages/react` - Exposes core package as react components and hooks
-- `chains/ethereum` - Handles EIP155 chain logic
+# Web3Modal-v2
 
-## Development workflow
+Your on ramp to web3 multichain.
 
-1. Install deps across all packages by running `npm install` from the root
-2. Run `npm run dev` to build and watch for changes in ui, core and ethereum packages
-3. Run `npm run dev:html` to start html example (⚠️ wip)
-4. Run `npm run dev:react` to start react example
+## Introduction
 
-## Suggested VSCode extensions
+Web3Modal is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration. This library leverages WalletConnect V2 client ([repo](https://github.com/WalletConnect/walletconnect-monorepo/), [docs](https://docs.walletconnect.com/2.0/introduction/sign/)) and [Wagmi](https://wagmi.sh/).
 
-Following are suggested extensions to enable syntax highlighting, formating and checks inside lit's `html` and `css` template string literals.
+By default Web3Modal library supports providers like:
 
-- [lit-plugin](https://marketplace.visualstudio.com/items?itemName=runem.lit-plugin)
+- **Metamask**
+- **Injected**
+- **WalletConnect**
+- **Coinbase Wallet**
+- and many more to be added
+
+## Quick Start
+
+During alpha release cycle we are focusing on providing best experience for connecting your react dapps with ethereum (evm) compatible chains, however expect support for more frameworks like Vue and chains like Solana to follow soon.
+
+### 1. Install web3modal and wagmi packages
+
+```
+npm install @web3modal/react @web3modal/ethereum @wagmi/core
+```
+
+### 2. Configure wagmi and web3modal clients at the root of your app (you can also refference our [react example app](https://github.com/WalletConnect/web3modal/tree/V2/examples/react))
+
+```tsx
+import { chain, configureChains, createClient } from '@wagmi/core'
+import { publicProvider } from '@wagmi/core/providers/public'
+import { Web3ModalEthereum } from '@web3modal/ethereum'
+import type { ConfigOptions } from '@web3modal/react'
+import { Web3ModalProvider } from '@web3modal/react'
+
+// Get Your projectId at https://cloud.walletconnect.com
+const WC_PROJECT_ID = 'YOUR_PROJECT_ID'
+
+// Configure chains and providers (rpc's)
+const { chains, provider } = configureChains([chain.mainnet], [publicProvider()])
+
+// Create wagmi client
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors: Web3ModalEthereum.defaultConnectors({ chains, appName: 'web3Modal' }),
+  provider
+})
+
+// Configure web3modal
+const modalConfig: ConfigOptions = {
+  projectId: WC_PROJECT_ID,
+  theme: 'dark',
+  accentColor: 'orange'
+}
+
+export default function App() {
+  return (
+    <Web3ModalProvider config={modalConfig} ethereumClient={wagmiClient}>
+      {/* Rest of your app */}
+    </Web3ModalProvider>
+  )
+}
+```
+
+### 3. Import ConnectButton component or use `useConnectModal` hook to open the modal
+
+```ts
+import { ConnectButton, useConnectModal } from '@web3modal/react'
+```
+
+### 4. Use selection of web3modal / wagmi hooks to opperate your dap
+
+Please see our [react hooks folder](https://github.com/WalletConnect/web3modal/tree/V2/packages/react/src/hooks) for available options while we are working on fully documenting web3modal.
+
+### 5. Customise your modal
+
+As of now we support following config options to help you customise look and feel of your modal. We will be adding more options soon.
+
+**theme** - `'dark' | 'light'`
+**accentColor** - `'blackWhite' | 'blue' | 'default' | 'green' | 'magenta' | 'orange' | 'purple' | 'teal'`
