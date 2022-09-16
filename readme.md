@@ -70,7 +70,7 @@ export default function App() {
 import { ConnectButton, useConnectModal } from '@web3modal/react'
 ```
 
-### 4. Use selection of web3modal / wagmi hooks to opperate your dap
+### 4. Use selection of web3modal / wagmi hooks to opperate your dapp
 
 Please see our [react hooks folder](https://github.com/WalletConnect/web3modal/tree/V2/packages/react/src/hooks) for available options while we are working on fully documenting web3modal.
 
