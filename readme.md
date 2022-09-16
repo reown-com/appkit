@@ -8,7 +8,7 @@ Your on-ramp to web3 multichain.
 - 🔗 Preview at https://web3modal.pages.dev
 
 <p align="center">
-<img src="./header.jpeg" alt="" border="0">
+<img src="./.github/assets/header.jpeg" alt="" border="0">
 </p>
 
 ## Introduction

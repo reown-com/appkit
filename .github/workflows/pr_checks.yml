@@ -3,7 +3,7 @@ name: Pull request checks
 on:
   pull_request:
     branches:
-      - main
+      - V2
 
 jobs:
   build:
