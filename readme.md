@@ -4,6 +4,9 @@
 
 Your on ramp to web3 multichain.
 
+- ⚠️ v2 is in early alpha and we are continuously adding more features, examples and documentation.
+- 🔗 Preview at https://web3modal.pages.dev
+
 ## Introduction
 
 Web3Modal is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration. This library leverages WalletConnect V2 client ([repo](https://github.com/WalletConnect/walletconnect-monorepo/), [docs](https://docs.walletconnect.com/2.0/introduction/sign/)) and [Wagmi](https://wagmi.sh/).
