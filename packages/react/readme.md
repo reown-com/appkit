@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-Make sure to read our [main readme](./../../readme.md) first to find out details about projectId and modal customisation options. web3Modal hooks are based on and provide very similar interface to [wagmi hooks](https://wagmi.sh/docs/hooks/useAccount) so feel free to reference their documentation as well. Internally we just made few changes to how we handle state and added CAIP chain format to allow for easier multichain management in the future i.e. in web3modal ethereum mainnet is represented as `eip155:1`, where as in wagmi it is `1`.
+Make sure to read our [main readme](./../../readme.md) first to find out details about projectId and modal customisation options. web3Modal hooks are based on and provide very similar interface to [wagmi hooks](https://wagmi.sh/docs/hooks/useAccount) so feel free to reference their documentation as well. Internally we just made few changes to how we handle state and added [CAIP-10](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-10.md) chain format to allow for easier multichain management in the future i.e. in web3modal ethereum mainnet is represented as `eip155:1`, where as in wagmi it is `1`.
 
 ### 1. Install dependencies
 
