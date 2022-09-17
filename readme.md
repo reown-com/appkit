@@ -7,7 +7,7 @@ Your on-ramp to web3 multichain.
 ⚠️ v2 is in early alpha and we are continuously adding more features, examples and documentation.
 
 <p align="center">
-  <img src="./.github/assets/header.jpeg" alt="" border="0">
+  <img src="./.github/assets/header.png" alt="" border="0">
 </p>
 
 ## Introduction
@@ -40,9 +40,13 @@ Head over to [cloud.walletconnect.com](https://cloud.walletconnect.com/) to sign
 
 ### 5. Customise your modal!
 
-As of now, we support the following config options to help you customise the look and feel of your modal.
+Web3Modal exposes some config options that allow you to personalise it and make it fit in better with your dapp's ui. As of now supported config options are specified below, but more are on the way!
 
-- theme - `'dark' | 'light'`
-- accentColor - `'blackWhite' | 'blue' | 'default' | 'green' | 'magenta' | 'orange' | 'purple' | 'teal'`
+<p align="center" style="margin-top: 20px">
+  <img src="./.github/assets/custom.png" alt="" border="0">
+</p>
 
-More options coming soon!
+| Option      | Values                                                                |
+| ----------- | --------------------------------------------------------------------- |
+| theme       | `dark`, `light`                                                       |
+| accentColor | `blackWhite`, `blue`, `default`, `green`, `magenta`, `orange`, `teal` |

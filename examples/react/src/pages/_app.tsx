@@ -24,7 +24,7 @@ const wagmiClient = createClient({
 const modalConfig: ConfigOptions = {
   projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
   theme: 'dark',
-  accentColor: 'orange'
+  accentColor: 'default'
 }
 
 export default function App({ Component, pageProps }: AppProps) {
