@@ -75,16 +75,6 @@ Please refer to [hooks folder](./src/hooks/) for more detailed info abut usage a
 Hook to open, close and check state of the connect modal
 
 ```tsx
-import {} from '@web3modal/ethereum'
-
-const { isOpen, open, close } = useConnectModal()
-```
-
-### useConnectModal
-
-Hook to open, close and check state of the connect modal
-
-```tsx
 import { useConnectModal } from '@web3modal/ethereum'
 
 const { isOpen, open, close } = useConnectModal()
