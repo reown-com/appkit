@@ -209,12 +209,15 @@ Hook to read from contract
 import { useContractRead } from '@web3modal/ethereum'
 
 interface Options {
-  /* TODO */
+  addressOrName: string
+  functionName: string
+  contractInterface: ReadContractConfig['contractInterface']
+  args: unknown
+  chainId: string
+  overrides: ReadContractConfig['overrides']
 }
 
-const {
-  /* TODO */
-} = useContractRead(options)
+const { refetch, isLoading, error, read } = useContractRead(options)
 ```
 
 ### useContractWrite
@@ -225,12 +228,16 @@ Hook to write to contract
 import { useContractWrite } from '@web3modal/ethereum'
 
 interface Options {
-  /* TODO */
+  addressOrName: string
+  functionName: string
+  contractInterface: ReadContractConfig['contractInterface']
+  args: unknown
+  chainId: string
+  overrides: ReadContractConfig['overrides']
+  request: Exclude<WriteContractArgs['request'], undefined>
 }
 
-const {
-  /* TODO */
-} = useContractWrite(options)
+const { data, refetch, isLoading, error } = useContractWrite(options)
 ```
 
 ### usePrepareContractWrite
@@ -241,12 +248,16 @@ Hook to prepare for contract write
 import { usePrepareContractWrite } from '@web3modal/ethereum'
 
 interface Options {
-  /* TODO */
+  addressOrName: string
+  functionName: string
+  contractInterface: ReadContractConfig['contractInterface']
+  args: unknown
+  chainId: string
+  overrides: ReadContractConfig['overrides']
+  request: Exclude<WriteContractArgs['request'], undefined>
 }
 
-const {
-  /* TODO */
-} = usePrepareContractWrite(options)
+const { write, refetch, isLoading, error } = usePrepareContractWrite(options)
 ```
 
 ### useToken
@@ -257,12 +268,12 @@ Hook to get token data
 import { useToken } from '@web3modal/ethereum'
 
 interface Options {
-  /* TODO */
+  address: string
+  chainId: string
+  formatUnits: FetchTokenArgs['formatUnits']
 }
 
-const {
-  /* TODO */
-} = useToken(options)
+const { refetch, isLoading, error, token } = useToken(options)
 ```
 
 ### useWatchReadContract
@@ -379,7 +390,11 @@ Hook to send transaction
 import { useSendTransaction } from '@web3modal/ethereum'
 
 interface Options {
-  /* TODO */
+  chainId: string
+  request: SendTransactionArgs['request'] & {
+    to: `0x${string}`
+    gasLimit?: Exclude<SendTransactionArgs['request']['gasLimit'], undefined>
+  }
 }
 
 const { refetch, isLoading, error, transaction } = useSendTransaction(options)
