@@ -200,3 +200,205 @@ interface Options {
 
 const { refetch, error, contract } = useContractEvent(options)
 ```
+
+### useContractRead
+
+Hook to read from contract
+
+```tsx
+import { useContractRead } from '@web3modal/ethereum'
+
+interface Options {
+  /* TODO */
+}
+
+const {
+  /* TODO */
+} = useContractRead(options)
+```
+
+### useContractWrite
+
+Hook to write to contract
+
+```tsx
+import { useContractWrite } from '@web3modal/ethereum'
+
+interface Options {
+  /* TODO */
+}
+
+const {
+  /* TODO */
+} = useContractWrite(options)
+```
+
+### usePrepareContractWrite
+
+Hook to prepare for contract write
+
+```tsx
+import { usePrepareContractWrite } from '@web3modal/ethereum'
+
+interface Options {
+  /* TODO */
+}
+
+const {
+  /* TODO */
+} = usePrepareContractWrite(options)
+```
+
+### useToken
+
+Hook to get token data
+
+```tsx
+import { useToken } from '@web3modal/ethereum'
+
+interface Options {
+  /* TODO */
+}
+
+const {
+  /* TODO */
+} = useToken(options)
+```
+
+### useWatchReadContract
+
+Hook to read and watch contract
+
+```tsx
+import { useWatchReadContract } from '@web3modal/ethereum'
+
+interface Options {
+  callback: WatchReadContractResult
+  listenToBlock: boolean
+}
+
+useWatchReadContract(options)
+```
+
+### useFetchEnsAddress
+
+Hook to fetch public address from ens adress
+
+```tsx
+import { useFetchEnsAddress } from '@web3modal/ethereum'
+
+interface Options {
+  chainId: string
+  name: string
+}
+
+const { refetch, isLoading, error, address } = useFetchEnsAddress(options)
+```
+
+### useFetchEnsAvatar
+
+Hook to fetch ens avatar
+
+```tsx
+import { useFetchEnsAvatar } from '@web3modal/ethereum'
+
+interface Options {
+  chainId: string
+  addressOrName: string
+}
+
+const { refetch, isLoading, error, avatar } = useFetchEnsAvatar(options)
+```
+
+### useFetchEnsName
+
+Hook to fetch ens name for public address
+
+```tsx
+import { useFetchEnsName } from '@web3modal/ethereum'
+
+interface Options {
+  chainId: string
+  address: string
+}
+
+const { refetch, isLoading, error, name } = useFetchEnsName(options)
+```
+
+### useFetchEnsResolver
+
+Hook to get contract address for ens name resolver
+
+```tsx
+import { useFetchEnsResolver } from '@web3modal/ethereum'
+
+interface Options {
+  chainId: string
+  name: string
+}
+
+const { refetch, isLoading, error, address } = useFetchEnsResolver(options)
+```
+
+### useFetchTransaction
+
+Hook to fetch a transaction
+
+```tsx
+import { useFetchTransaction } from '@web3modal/ethereum'
+
+interface Options {
+  chainId: string
+  hash: FetchTransactionArgs['hash']
+}
+
+const { refetch, isLoading, error, transaction } = useFetchTransaction(options)
+```
+
+### usePrepareSendTransaction
+
+Hook to prepare send transaction request
+
+```tsx
+import { usePrepareSendTransaction } from '@web3modal/ethereum'
+
+interface Options {
+  chainId: string
+  request: PrepareSendTransactionArgs['request']
+  signerOrProvider?: PrepareSendTransactionArgs['signerOrProvider']
+}
+
+const { refetch, isLoading, error, transaction } = usePrepareSendTransaction(options)
+```
+
+### useSendTransaction
+
+Hook to send transaction
+
+```tsx
+import { useSendTransaction } from '@web3modal/ethereum'
+
+interface Options {
+  /* TODO */
+}
+
+const { refetch, isLoading, error, transaction } = useSendTransaction(options)
+```
+
+### useWaitForTransaction
+
+Hook to send transaction
+
+```tsx
+import { useWaitForTransaction } from '@web3modal/ethereum'
+
+interface Options {
+  chainId: string
+  confirmation?: number
+  hash?: string
+  timeout?: number
+  wait?: WaitForTransactionArgs['wait']
+}
+
+const { refetch, isLoading, error, transaction } = useWaitForTransaction(options)
+```
