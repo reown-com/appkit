@@ -6,3 +6,4 @@ node_modules/
 .next
 out
 lerna-debug.log
+.env.local

@@ -69,17 +69,21 @@ export class W3mModal extends ThemedElement {
     }
     this.open = true
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay: 0.1 })
-    animate(this.containerEl, isMobileAnimation() ? { y: [15, 0] } : { scale: [0.98, 1] }, {
-      duration: 0.3,
-      delay: 0.1
-    })
+    animate(
+      this.containerEl,
+      isMobileAnimation() ? { y: ['100vh', 0] } : { scale: [0.98, 1], y: [10, 0] },
+      {
+        duration: 0.3,
+        delay: 0.1
+      }
+    )
     document.addEventListener('keydown', this.onKeyDown)
   }
 
   private async onCloseModalEvent() {
     document.removeEventListener('keydown', this.onKeyDown)
     await Promise.all([
-      animate(this.containerEl, isMobileAnimation() ? { y: [0, 15] } : { scale: [1, 0.98] }, {
+      animate(this.containerEl, isMobileAnimation() ? { y: [0, '100vh'] } : { scale: [1, 0.98] }, {
         duration: 0.2
       }).finished,
       animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished

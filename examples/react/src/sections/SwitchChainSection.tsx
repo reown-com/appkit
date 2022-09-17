@@ -13,7 +13,6 @@ export default function AccountSection() {
       <select onChange={({ target }) => onSwithChainDemo(target.value)} disabled={isLoading}>
         <option value="eip155:1">Ethereum</option>
         <option value="eip155:42161">Arbitrum</option>
-        <option value="eip155:43114">Avalanche</option>
       </select>
     </section>
   )
