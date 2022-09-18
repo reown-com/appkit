@@ -1,4 +1,4 @@
-import { ConnectModalCtrl, CoreHelpers, ExplorerCtrl, RouterCtrl } from '@web3modal/core'
+import { ConnectModalCtrl, CoreHelpers, ExplorerCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'

@@ -1,13 +1,13 @@
 import { AccountCtrl, ClientCtrl, ConnectModalCtrl } from '@web3modal/core'
-import type { GetBalanceOpts } from '@web3modal/ethereum'
+import type { FetchEnsAvatarOpts, GetBalanceOpts } from '@web3modal/ethereum'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-button'
 import '../../components/w3m-modal-footer'
 import '../../components/w3m-text'
-import { CLIPBOARD, DISCONNECT, ZORB } from '../../utils/Svgs'
+import { CLIPBOARD, CONNECTED_INDICATOR, DISCONNECT, ETH_LOGO } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import styles from './styles'
+import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
@@ -16,12 +16,14 @@ export class W3mAccountView extends LitElement {
   // -- state & properties ------------------------------------------- //
   @state() private address = ''
   @state() private balance = ''
+  @state() private ens = ''
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
     this.getAccounts()
     this.getBalance()
+    this.getENSAvatar()
   }
 
   // -- private ------------------------------------------------------ //
@@ -56,27 +58,60 @@ export class W3mAccountView extends LitElement {
     }
   }
 
+  private async getENSAvatar() {
+    try {
+      const opts: FetchEnsAvatarOpts = {
+        // Change Back to AccountCtrl.state.address
+        addressOrName: AccountCtrl.state.address,
+        chainId: AccountCtrl.state.chainId
+      }
+      const ens = await ClientCtrl.ethereum().fetchEnsAvatar(opts)
+      if (ens) this.ens = ens
+    } catch (e) {
+      throw new Error('No Balance Details')
+    }
+  }
+
+  private ensAvatar() {
+    return html`<img src="${this.ens}" alt="ens-avatar" class="w3m-ens-avatar" />`
+  }
+
+  // private noENSAvatar() {
+  //   return html`<div class="w3m-ens-avatar">${ZORB}</div>`
+  // }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
+      ${dynamicStyles()}
+
       <div>
         <div class="w3m-flex-wrapper">
           <div class="w3m-space-between-container">
             <div style="display:flex; flex-direction:column;">
-              <w3m-ens-image>${ZORB}</w3m-ens-image>
+            ${this.ens ? this.ensAvatar() : null}
               <w3m-text variant="large-bold" color="primary">
                 ${`${this.address.substring(0, 5)}...${this.address.slice(-5)}`}
               </w3m-text>
             </div>
-            <w3m-button variant="ghost"> Connected </w3m-button>
+            <div class="w3m-connected-container">
+              <div>${CONNECTED_INDICATOR}</div>
+              <w3m-text variant="small-normal" color="secondary">Connected</w3m-text>
+            </div>
+            </div>
           </div>
         </div>
 
-        <div style="background-color: grey; width: 100%; height: 1px"></div>
+        <div class="w3m-account-divider"></div>
 
-        <div class="w3m-space-between-container">
-          <w3m-text variant="medium-normal" color="secondary">Balance</w3m-text>
-          <w3m-text variant="medium-normal" color="primary">${this.balance} ETH</w3m-text>
+        <div class="w3m-balance-container">
+          <div class="w3m-token-bal-container">
+            <w3m-text variant="medium-normal" color="secondary">Balance</w3m-text>
+          </div>
+          <div class="w3m-token-bal-container">
+            <div class="w3m-eth-logo-container">${ETH_LOGO}</div>
+            <w3m-text variant="medium-normal" color="primary">${this.balance} ETH</w3m-text>
+          </div>
         </div>
 
         <w3m-modal-footer>

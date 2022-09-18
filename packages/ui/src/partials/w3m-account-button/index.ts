@@ -4,7 +4,7 @@ import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-text'
 
-import { ETH_IMG_ACCOUNT } from '../../utils/Svgs'
+import { ETH_LOGO } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import styles, { dynamicStyles } from './styles'
@@ -50,7 +50,6 @@ export class W3mAccountButton extends ThemedElement {
   private onOpen() {
     RouterCtrl.replace('Account')
     ConnectModalCtrl.openModal()
-    // ClientCtrl.ethereum().disconnect()
   }
 
   // -- render ------------------------------------------------------- //
@@ -58,17 +57,17 @@ export class W3mAccountButton extends ThemedElement {
   protected render() {
     return html`
       ${dynamicStyles()}
-      <div class="w3m-act-button-container">
+      <button class="w3m-act-button-container" @click=${this.onOpen}>
         <div class="w3m-act-balance-container">
-          <div class="w3m-images">${ETH_IMG_ACCOUNT}</div>
+          <div class="w3m-eth-logo-container">${ETH_LOGO}</div>
           <w3m-text variant="medium-normal" color="primary">${this.balance} ETH</w3m-text>
         </div>
-        <button @click=${this.onOpen}>
+        <div class="w3m-address-container">
           <w3m-text variant="medium-normal" color="primary"
             >${`${this.address.substring(0, 5)}...${this.address.slice(-5)}`}</w3m-text
           >
-        </button>
-      </div>
+        </div>
+      </buttom>
     `
   }
 }
