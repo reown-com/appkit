@@ -7,10 +7,11 @@ import type { AppProps } from 'next/app'
 import '../styles.css'
 
 // Get projectID at https://cloud.walletconnect.com
-const WC_PROJECT_ID = 'YOUR_PROJECT_ID'
+if (!process.env.NEXT_PUBLIC_PROJECT_ID)
+  throw new Error('You need to provide NEXT_PUBLIC_PROJECT_ID env variable')
 
 // Configure chains and providers (rpc's)
-const { chains, provider } = configureChains([chain.mainnet], [publicProvider()])
+const { chains, provider } = configureChains([chain.mainnet, chain.arbitrum], [publicProvider()])
 
 // Create wagmi client
 const wagmiClient = createClient({
@@ -21,9 +22,9 @@ const wagmiClient = createClient({
 
 // Configure web3modal
 const modalConfig: ConfigOptions = {
-  projectId: WC_PROJECT_ID,
+  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
   theme: 'dark',
-  accentColor: 'orange'
+  accentColor: 'default'
 }
 
 export default function App({ Component, pageProps }: AppProps) {

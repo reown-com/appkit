@@ -4,11 +4,10 @@
 
 Your on-ramp to web3 multichain.
 
-- ⚠️ v2 is in early alpha and we are continuously adding more features, examples and documentation.
-- 🔗 Preview at https://web3modal.pages.dev
+⚠️ v2 is in early alpha and we are continuously adding more features, examples and documentation.
 
 <p align="center">
-<img src="./header.jpeg" alt="" border="0">
+  <img src="./.github/assets/header.png" alt="" border="0">
 </p>
 
 ## Introduction
@@ -21,71 +20,33 @@ By default Web3Modal library supports providers like:
 - **Injected**
 - **WalletConnect**
 - **Coinbase Wallet**
+- **Ledger**
 - and many more to be added
 
 ## Quick Start
 
-During the alpha release cycle, we focused on providing the best experience for connecting your react dapps with Ethereum (evm) compatible chains. Expect support for more frameworks like Vue and chains like Solana to follow soon.
+Getting started with web3modal is as easy as installing few packages, one for your prefared front-end framework i.e. `@web3modal/react` and chain ecosystem you are working with i.e `@web3modal/ethereum`. We will be expanding support to more choices very soon.
 
-### 1. Install web3modal and wagmi packages
+### 1. Obtain your WalletConnect projectId
 
-```
-npm install @web3modal/react @web3modal/ethereum @wagmi/core
-```
+Head over to [cloud.walletconnect.com](https://cloud.walletconnect.com/) to sign up and generate your projectId, which will be required to allow interactions with our explorer api and v2 protocol sdk's in the future.
 
-### 2. Configure wagmi and web3modal clients at the root of your app (you can also reference our [react example app](https://github.com/WalletConnect/web3modal/tree/V2/examples/react))
+### 2. Follow instructions and examples for your favourite framework
 
-```tsx
-import { chain, configureChains, createClient } from '@wagmi/core'
-import { publicProvider } from '@wagmi/core/providers/public'
-import { Web3ModalEthereum } from '@web3modal/ethereum'
-import type { ConfigOptions } from '@web3modal/react'
-import { Web3ModalProvider } from '@web3modal/react'
+- [React Docs](./packages/react/) / [React Example](./examples/react/)
+- Vue Docs / Vue Example (coming soon)
+- Angular Docs / Angular Example (coming soon)
+- Vanilla JS Docs / Vanila JS Example (coming soon)
 
-// Get Your projectId at https://cloud.walletconnect.com
-const WC_PROJECT_ID = 'YOUR_PROJECT_ID'
+### 5. Customise your modal!
 
-// Configure chains and providers (rpc's)
-const { chains, provider } = configureChains([chain.mainnet], [publicProvider()])
+Web3Modal exposes some config options that allow you to personalise it and make it fit in better with your dapp's ui. As of now supported config options are specified below, but more are on the way!
 
-// Create wagmi client
-const wagmiClient = createClient({
-  autoConnect: true,
-  connectors: Web3ModalEthereum.defaultConnectors({ chains, appName: 'web3Modal' }),
-  provider
-})
+<p align="center" style="margin-top: 20px">
+  <img src="./.github/assets/custom.png" alt="" border="0">
+</p>
 
-// Configure web3modal
-const modalConfig: ConfigOptions = {
-  projectId: WC_PROJECT_ID,
-  theme: 'dark',
-  accentColor: 'orange'
-}
-
-export default function App() {
-  return (
-    <Web3ModalProvider config={modalConfig} ethereumClient={wagmiClient}>
-      {/* Rest of your app */}
-    </Web3ModalProvider>
-  )
-}
-```
-
-### 3. Import ConnectButton component or use `useConnectModal` hook to open the modal
-
-```ts
-import { ConnectButton, useConnectModal } from '@web3modal/react'
-```
-
-### 4. Use selection of web3modal / wagmi hooks to opperate your dapp
-
-Please see our [react hooks folder](https://github.com/WalletConnect/web3modal/tree/V2/packages/react/src/hooks) for available options while we are working on fully documenting web3modal.
-
-### 5. Customise your modal
-
-As of now, we support the following config options to help you customise the look and feel of your modal.
-
-- theme - `'dark' | 'light'`
-- accentColor - `'blackWhite' | 'blue' | 'default' | 'green' | 'magenta' | 'orange' | 'purple' | 'teal'`
-
-More options coming soon!
+| Option      | Values                                                                |
+| ----------- | --------------------------------------------------------------------- |
+| theme       | `dark`, `light`                                                       |
+| accentColor | `blackWhite`, `blue`, `default`, `green`, `magenta`, `orange`, `teal` |

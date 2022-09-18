@@ -1,8 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-export function useSyncHookBuilder<TArgs, TResult>(fetcher: (opts: TArgs) => TResult) {
+export function useSyncHookBuilder<TArgs, TResult>(
+  fetcher: (opts: TArgs) => TResult,
+  initialOpts?: TArgs
+) {
   const [error, setError] = useState<unknown>(null)
   const [data, setData] = useState<TResult | null>(null)
+  const [fetchedInitial, setFetchedInitial] = useState<boolean>(false)
 
   function refetch(opts: TArgs) {
     try {
@@ -12,6 +16,13 @@ export function useSyncHookBuilder<TArgs, TResult>(fetcher: (opts: TArgs) => TRe
       return setError(err)
     }
   }
+
+  useEffect(() => {
+    if (fetchedInitial || !initialOpts) return
+    const fetchedData = fetcher(initialOpts)
+    setData(fetchedData)
+    setFetchedInitial(true)
+  }, [fetchedInitial, initialOpts, setData, setFetchedInitial, fetcher])
 
   return {
     data,

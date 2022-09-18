@@ -1,12 +1,15 @@
 import { ClientCtrl } from '@web3modal/core'
 import { useAsyncHookBuilder } from '../../utils/useAsyncHookBuilder'
 
-export function useSignMessage() {
+export function useSignMessage(initialMessage?: string) {
   const {
     data: signature,
     refetch: sign,
     ...fetchResult
-  } = useAsyncHookBuilder(async (opts: string) => ClientCtrl.ethereum().signMessage(opts))
+  } = useAsyncHookBuilder(
+    async (message: string) => ClientCtrl.ethereum().signMessage(message),
+    initialMessage
+  )
 
   return {
     signature,
