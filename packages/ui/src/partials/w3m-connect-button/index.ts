@@ -1,4 +1,4 @@
-import { ConnectModalCtrl } from '@web3modal/core'
+import { ConnectModalCtrl, RouterCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -42,6 +42,7 @@ export class W3mConnectButton extends ThemedElement {
   private onOpen() {
     try {
       this.loading = true
+      RouterCtrl.replace('ConnectWallet')
       ConnectModalCtrl.openModal()
     } catch {
       this.loading = false

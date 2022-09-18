@@ -1,16 +1,75 @@
-import { ClientCtrl } from '@web3modal/core'
+import { AccountCtrl, ClientCtrl, ConnectModalCtrl, RouterCtrl } from '@web3modal/core'
+import type { GetBalanceOpts } from '@web3modal/ethereum'
 import { html } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, state } from 'lit/decorators.js'
+import '../../components/w3m-text'
+
+import { ETH_IMG_ACCOUNT } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
+import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-account-button')
 export class W3mAccountButton extends ThemedElement {
-  public static styles = [global]
+  public static styles = [global, styles]
+
+  // -- state & properties ------------------------------------------- //
+  @state() private address = ''
+  @state() private balance = ''
+
+  // -- lifecycle ---------------------------------------------------- //
+  public constructor() {
+    super()
+    this.getAccounts()
+    this.getBalance()
+  }
+
+  // -- private ------------------------------------------------------ //
+  private getAccounts() {
+    try {
+      this.address = AccountCtrl.state.address
+    } catch (e) {
+      throw new Error('No Account Details connection')
+    }
+  }
+
+  private async getBalance() {
+    try {
+      const opts: GetBalanceOpts = {
+        addressOrName: AccountCtrl.state.address,
+        chainId: AccountCtrl.state.chainId,
+        formatUnits: 'ether'
+      }
+      const balance = await ClientCtrl.ethereum().fetchBalance(opts)
+      this.balance = balance
+    } catch (e) {
+      throw new Error('No Balance Details')
+    }
+  }
+
+  private onOpen() {
+    RouterCtrl.replace('Account')
+    ConnectModalCtrl.openModal()
+    // ClientCtrl.ethereum().disconnect()
+  }
 
   // -- render ------------------------------------------------------- //
+
   protected render() {
-    return html` <button @click=${ClientCtrl.ethereum().disconnect}>Disconnect</button> `
+    return html`
+      ${dynamicStyles()}
+      <div class="w3m-act-button-container">
+        <div class="w3m-act-balance-container">
+          <div class="w3m-images">${ETH_IMG_ACCOUNT}</div>
+          <w3m-text variant="medium-normal" color="primary">${this.balance} ETH</w3m-text>
+        </div>
+        <button @click=${this.onOpen}>
+          <w3m-text variant="medium-normal" color="primary"
+            >${`${this.address.substring(0, 5)}...${this.address.slice(-5)}`}</w3m-text
+          >
+        </button>
+      </div>
+    `
   }
 }
 

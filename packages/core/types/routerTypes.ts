@@ -1,4 +1,5 @@
 export type RouterView =
+  | 'Account'
   | 'CoinbaseExtensionConnector'
   | 'CoinbaseMobileConnector'
   | 'ConnectWallet'
