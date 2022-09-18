@@ -5,6 +5,7 @@ import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-button'
 import '../../components/w3m-modal-footer'
 import '../../components/w3m-text'
+import '../../components/w3m-zorb-image'
 import { CLIPBOARD, CONNECTED_INDICATOR, DISCONNECT, ETH_LOGO } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import styles, { dynamicStyles } from './styles'
@@ -76,9 +77,9 @@ export class W3mAccountView extends LitElement {
     return html`<img src="${this.ens}" alt="ens-avatar" class="w3m-ens-avatar" />`
   }
 
-  // private noENSAvatar() {
-  //   return html`<div class="w3m-ens-avatar">${ZORB}</div>`
-  // }
+  private noENSAvatar() {
+    return html` <w3m-zorb-image address=${this.address} size="60px"> </w3m-zorb-image> `
+  }
 
   // -- render ------------------------------------------------------- //
   protected render() {
@@ -89,7 +90,7 @@ export class W3mAccountView extends LitElement {
         <div class="w3m-flex-wrapper">
           <div class="w3m-space-between-container">
             <div style="display:flex; flex-direction:column;">
-            ${this.ens ? this.ensAvatar() : null}
+            ${this.ens ? this.ensAvatar() : this.noENSAvatar()}
               <w3m-text variant="large-bold" color="primary">
                 ${`${this.address.substring(0, 5)}...${this.address.slice(-5)}`}
               </w3m-text>

@@ -63,3 +63,19 @@ export async function preloadImage(src: string) {
     image.src = src
   })
 }
+
+export function useScript(url: string) {
+  const script = document.createElement('script')
+
+  script.src = url
+  script.async = true
+
+  document.body.appendChild(script)
+
+  return () => {
+    document.body.removeChild(script)
+  }
+}
+
+export const ZorbPackageScript =
+  'https://unpkg.com/@zoralabs/zorb@^0.0/dist/zorb-web-component.umd.js'
