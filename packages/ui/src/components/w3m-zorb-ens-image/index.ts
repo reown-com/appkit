@@ -3,9 +3,12 @@ import type { FetchEnsAvatarOpts } from '@web3modal/ethereum'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { useScript, ZorbPackageScript } from '../../utils/UiHelpers'
+import styles from './styles'
 
 @customElement('w3m-zorb-ens-image')
 export class W3mZorbImage extends LitElement {
+  public static styles = [styles]
+
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
@@ -33,11 +36,17 @@ export class W3mZorbImage extends LitElement {
   }
 
   private ensAvatar() {
-    return html`<img src="${this.ens}" alt="ens-avatar" class="w3m-ens-avatar" />`
+    return html`<img
+      src="${this.ens}"
+      alt="ens-avatar"
+      class="${this.size === 'sm' ? 'w3m-ens-small-image ' : 'w3m-ens-large-image '}"
+    />`
   }
 
   private zorbAvatar() {
-    return html` <zora-zorb address=${this.address} size=${this.size}></zora-zorb> `
+    return html`
+      <zora-zorb address=${this.address} size=${this.size === 'sm' ? '24px' : '60px'}></zora-zorb>
+    `
   }
 
   // -- render ------------------------------------------------------- //

@@ -1,5 +1,5 @@
 import { AccountCtrl, ClientCtrl, ConnectModalCtrl, RouterCtrl } from '@web3modal/core'
-import type { GetBalanceOpts } from '@web3modal/ethereum'
+import type { FetchEnsAvatarOpts, GetBalanceOpts } from '@web3modal/ethereum'
 import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-text'
@@ -18,12 +18,14 @@ export class W3mAccountButton extends ThemedElement {
   // -- state & properties ------------------------------------------- //
   @state() private address = ''
   @state() private balance = ''
+  @state() private ens = ''
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
     this.getAccounts()
     this.getBalance()
+    this.getENSAvatar()
     useScript(ZorbPackageScript)
   }
 
@@ -51,6 +53,19 @@ export class W3mAccountButton extends ThemedElement {
     }
   }
 
+  private async getENSAvatar() {
+    try {
+      const opts: FetchEnsAvatarOpts = {
+        addressOrName: AccountCtrl.state.address,
+        chainId: AccountCtrl.state.chainId
+      }
+      const ens = await ClientCtrl.ethereum().fetchEnsAvatar(opts)
+      if (ens) this.ens = ens
+    } catch (e) {
+      throw new Error('No Balance Details')
+    }
+  }
+
   private onOpen() {
     RouterCtrl.replace('Account')
     ConnectModalCtrl.openModal()
@@ -69,8 +84,10 @@ export class W3mAccountButton extends ThemedElement {
           )} ETH</w3m-text>
         </div>
         <div class="w3m-address-container">
-          <div style="padding: 4px 4px 0px 0px">
-            <w3m-zorb-ens-image address=${this.address} size="24px"> </w3m-zorb-ens-image>
+          <div class="w3m-ens-zorb-container">
+            <w3m-zorb-ens-image address=${this.address} size="sm" ens=${
+      this.ens
+    }> </w3m-zorb-ens-image>
           </div>
           <w3m-text variant="medium-normal" color="primary">${formatAddress(
             this.address

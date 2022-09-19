@@ -63,14 +63,15 @@ export default css`
 
   .w3m-eth-logo-container svg {
     position: relative;
-    left: 6px;
+    top: 1px;
+    left: 5px;
     height: 24px;
     width: 24px;
     display: block;
   }
 
   .w3m-chevron-container {
-    height: 12px;
+    height: 16px;
     width: 4px;
     display: block;
     padding-right: 4px;
@@ -78,9 +79,15 @@ export default css`
 
   .w3m-chevron-container svg {
     position: relative;
-    left: 8px;
-    height: 12px;
+    top: 2px;
+    left: 10px;
+    height: 16px;
     width: 4px;
+  }
+
+  .w3m-ens-zorb-container {
+    padding: 4px 4px 0px;
+    margin-left: -10px;
   }
 `
 
