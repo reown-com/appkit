@@ -5,9 +5,10 @@ import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-button'
 import '../../components/w3m-modal-footer'
 import '../../components/w3m-text'
-import '../../components/w3m-zorb-image'
+import '../../components/w3m-zorb-ens-image'
 import { CLIPBOARD, CONNECTED_INDICATOR, DISCONNECT, ETH_LOGO } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
+import { formatAddress, roundBalance } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-account-view')
@@ -62,7 +63,6 @@ export class W3mAccountView extends LitElement {
   private async getENSAvatar() {
     try {
       const opts: FetchEnsAvatarOpts = {
-        // Change Back to AccountCtrl.state.address
         addressOrName: AccountCtrl.state.address,
         chainId: AccountCtrl.state.chainId
       }
@@ -71,14 +71,6 @@ export class W3mAccountView extends LitElement {
     } catch (e) {
       throw new Error('No Balance Details')
     }
-  }
-
-  private ensAvatar() {
-    return html`<img src="${this.ens}" alt="ens-avatar" class="w3m-ens-avatar" />`
-  }
-
-  private noENSAvatar() {
-    return html` <w3m-zorb-image address=${this.address} size="60px"> </w3m-zorb-image> `
   }
 
   // -- render ------------------------------------------------------- //
@@ -90,9 +82,9 @@ export class W3mAccountView extends LitElement {
         <div class="w3m-flex-wrapper">
           <div class="w3m-space-between-container">
             <div style="display:flex; flex-direction:column;">
-            ${this.ens ? this.ensAvatar() : this.noENSAvatar()}
+            <w3m-zorb-ens-image ens=${this.ens} address=${this.address} size="60px">
               <w3m-text variant="large-bold" color="primary">
-                ${`${this.address.substring(0, 5)}...${this.address.slice(-5)}`}
+              ${formatAddress(this.address)}              
               </w3m-text>
             </div>
             <div class="w3m-connected-container">
@@ -111,7 +103,9 @@ export class W3mAccountView extends LitElement {
           </div>
           <div class="w3m-token-bal-container">
             <div class="w3m-eth-logo-container">${ETH_LOGO}</div>
-            <w3m-text variant="medium-normal" color="primary">${this.balance} ETH</w3m-text>
+            <w3m-text variant="medium-normal" color="primary">${roundBalance(
+              this.balance
+            )} ETH</w3m-text>
           </div>
         </div>
 

@@ -63,10 +63,24 @@ export default css`
 
   .w3m-eth-logo-container svg {
     position: relative;
-    left: 4px;
+    left: 6px;
     height: 24px;
     width: 24px;
     display: block;
+  }
+
+  .w3m-chevron-container {
+    height: 12px;
+    width: 4px;
+    display: block;
+    padding-right: 4px;
+  }
+
+  .w3m-chevron-container svg {
+    position: relative;
+    left: 8px;
+    height: 12px;
+    width: 4px;
   }
 `
 
@@ -114,6 +128,7 @@ export function dynamicStyles() {
     .w3m-address-container {
       color: ${foreground.inverse};
       background-color: ${foreground.accent};
+      border: 1px solid ${overlay.thin};
     }
 
     .w3m-eth-logo-container {

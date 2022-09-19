@@ -79,3 +79,11 @@ export function useScript(url: string) {
 
 export const ZorbPackageScript =
   'https://unpkg.com/@zoralabs/zorb@^0.0/dist/zorb-web-component.umd.js'
+
+export function roundBalance(address: string) {
+  return parseFloat(address).toFixed(2)
+}
+
+export function formatAddress(address: string) {
+  return `${address.substring(0, 5)}...${address.slice(-5)}`
+}
