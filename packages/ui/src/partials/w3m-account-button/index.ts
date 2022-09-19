@@ -26,7 +26,6 @@ export class W3mAccountButton extends ThemedElement {
     this.getAccounts()
     this.getBalance()
     this.getENSAvatar()
-    useScript(ZorbPackageScript)
   }
 
   // -- private ------------------------------------------------------ //
