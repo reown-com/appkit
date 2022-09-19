@@ -8,7 +8,7 @@ import '../../components/w3m-zorb-ens-image'
 import { CHEVRON, ETH_LOGO } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
-import { formatAddress, roundBalance, useScript, ZorbPackageScript } from '../../utils/UiHelpers'
+import { formatAddress, roundBalance } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-account-button')
