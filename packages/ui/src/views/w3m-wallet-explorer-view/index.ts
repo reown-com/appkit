@@ -14,6 +14,7 @@ import '../../components/w3m-modal-header'
 import '../../components/w3m-spinner'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-button'
+import { SEARCH_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import {
   debounce,
@@ -68,7 +69,7 @@ export class W3mWalletExplorerView extends LitElement {
 
   /*
    * Can not reference `this.fetchWallets` here as `this` would break inside
-   * the debounce callback
+   * the debounce callback. So, a smaller callback function is used.
    */
   private readonly searchDebounced = debounce(async (search: string) => {
     const { page } = ExplorerCtrl.state
@@ -94,6 +95,7 @@ export class W3mWalletExplorerView extends LitElement {
 
   private searchTemplate() {
     return html`<span class="w3m-explorer-search">
+      ${SEARCH_ICON}
       <input @input="${this.onSearch}" id="explorer-search" type="search" />
     </span>`
   }

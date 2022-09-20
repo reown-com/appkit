@@ -29,6 +29,8 @@ export default css`
     margin-bottom: 1px;
     height: 1.5em;
     display: flex;
+    align-items: center;
+    gap: 0.5em;
   }
 
   .w3m-explorer-search input {
@@ -94,7 +96,7 @@ export function dynamicStyles() {
       .w3m-explorer-search:active,
       .w3m-explorer-search:focus-within {
         border: solid 1px ${foreground.accent};
-        background: ${background[3]};
+        background: ${background[1]};
       }
 
       .w3m-explorer-search input:focus {
