@@ -5,7 +5,7 @@ import {
   ExplorerCtrl,
   ModalToastCtrl
 } from '@web3modal/core'
-import type { ListingResponse } from '@web3modal/core/dist/_types/types/explorerTypes'
+import type { ListingResponse } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
