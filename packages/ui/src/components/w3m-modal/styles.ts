@@ -32,6 +32,7 @@ export default css`
     transform: translateX(5px) translateY(5px);
     border-radius: 40px;
     overflow: hidden;
+    box-shadow: 0px 6px 14px -6px rgba(10, 16, 31, 0.12), 0px 10px 32px -4px rgba(10, 16, 31, 0.1);
   }
 
   @media (max-width: ${MOBILE_BREAKPOINT}px) {

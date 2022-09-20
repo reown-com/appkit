@@ -2,7 +2,7 @@ import { ConnectModalCtrl, CoreHelpers, ExplorerCtrl, RouterCtrl } from '@web3mo
 import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { animate } from 'motion'
+import { animate, spring } from 'motion'
 import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import {
@@ -69,14 +69,11 @@ export class W3mModal extends ThemedElement {
     }
     this.open = true
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay: 0.1 })
-    animate(
-      this.containerEl,
-      isMobileAnimation() ? { y: ['100vh', 0] } : { scale: [0.98, 1], y: [10, 0] },
-      {
-        duration: 0.3,
-        delay: 0.1
-      }
-    )
+    animate(this.containerEl, isMobileAnimation() ? { y: ['100vh', 0] } : { scale: [0.98, 1] }, {
+      scale: { easing: spring({ velocity: 0.4 }) },
+      y: { easing: spring({ mass: 0.5 }) },
+      delay: 0.1
+    })
     document.addEventListener('keydown', this.onKeyDown)
   }
 
@@ -84,7 +81,8 @@ export class W3mModal extends ThemedElement {
     document.removeEventListener('keydown', this.onKeyDown)
     await Promise.all([
       animate(this.containerEl, isMobileAnimation() ? { y: [0, '100vh'] } : { scale: [1, 0.98] }, {
-        duration: 0.2
+        scale: { easing: spring({ velocity: 0 }) },
+        y: { easing: spring({ mass: 0.5 }) }
       }).finished,
       animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
     ])
