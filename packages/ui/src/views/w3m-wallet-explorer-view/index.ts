@@ -14,7 +14,7 @@ import '../../components/w3m-spinner'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-button'
 import { global } from '../../utils/Theme'
-import { getShadowRootElement, preloadImage } from '../../utils/UiHelpers'
+import { getErrorMessage, getShadowRootElement, preloadImage } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-wallet-explorer-view')
@@ -65,9 +65,8 @@ export class W3mWalletExplorerView extends LitElement {
         })
         const images = newListings.map(({ image_url }) => image_url.lg)
         await Promise.all([...images.map(async url => preloadImage(url)), CoreHelpers.wait(300)])
-      } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Unknown Error'
-        ModalToastCtrl.openToast(message)
+      } catch (err) {
+        ModalToastCtrl.openToast(getErrorMessage(err), 'error')
       } finally {
         this.loading = false
         this.firstFetch = false

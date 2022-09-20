@@ -63,3 +63,7 @@ export async function preloadImage(src: string) {
     image.src = src
   })
 }
+
+export function getErrorMessage(err: unknown) {
+  return err instanceof Error ? err.message : 'Unknown Error'
+}

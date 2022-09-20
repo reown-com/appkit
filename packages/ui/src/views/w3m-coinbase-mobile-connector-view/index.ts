@@ -1,4 +1,4 @@
-import { ClientCtrl, ConnectModalCtrl, CoreHelpers } from '@web3modal/core'
+import { ClientCtrl, ConnectModalCtrl, CoreHelpers, ModalToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-button'
@@ -9,7 +9,7 @@ import '../../components/w3m-qrcode'
 import '../../components/w3m-text'
 import { ARROW_DOWN_ICON, QRCODE_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import { getWalletIcon } from '../../utils/UiHelpers'
+import { getErrorMessage, getWalletIcon } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 const HORIZONTAL_PADDING = 36
@@ -34,8 +34,8 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
     try {
       await ClientCtrl.ethereum().connectCoinbaseMobile(uri => (this.uri = uri))
       ConnectModalCtrl.closeModal()
-    } catch {
-      throw new Error('Denied connection')
+    } catch (err) {
+      ModalToastCtrl.openToast(getErrorMessage(err), 'error')
     }
   }
 

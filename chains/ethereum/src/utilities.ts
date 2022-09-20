@@ -5,7 +5,11 @@ import type { EthereumClient } from '../types/apiTypes'
 
 export const NAMESPACE = 'eip155'
 
-export let ethereumClient = undefined as EthereumClient | undefined
+let ethereumClient = undefined as EthereumClient | undefined
+
+export function getClient() {
+  return ethereumClient
+}
 
 function onConnectorChange(event: ConnectorData) {
   if (event.account) AccountCtrl.setAddress(event.account)
@@ -23,10 +27,10 @@ function onConnectorError(event: Error) {
 }
 
 function onClientConnected() {
-  const account = ethereumClient?.data?.account
-  const chain = ethereumClient?.data?.chain
-  const connector = ethereumClient?.connector
-  const provider = ethereumClient?.provider
+  const account = getClient()?.data?.account
+  const chain = getClient()?.data?.chain
+  const connector = getClient()?.connector
+  const provider = getClient()?.provider
   if (account && chain && connector && provider) {
     connector.on('change', onConnectorChange)
     connector.on('message', onConnectorMessage)
@@ -41,7 +45,7 @@ function onClientConnected() {
 }
 
 function onClientDisconnected() {
-  ethereumClient?.connector?.removeAllListeners()
+  getClient()?.connector?.removeAllListeners()
   AccountCtrl.resetAccount()
 }
 
@@ -55,7 +59,7 @@ function onClientChange(state: State, prevState: State) {
 
 export function initClient(wagmiClient: EthereumClient) {
   ethereumClient = wagmiClient
-  ethereumClient.subscribe(onClientChange)
+  getClient()?.subscribe(onClientChange)
 }
 
 export function getChainIdReference(chainId: string): number {

@@ -48,7 +48,7 @@ import type {
   WatchReadContractOpts,
   WriteContractOpts
 } from '../types/apiTypes'
-import { ethereumClient, formatOpts, getChainIdReference, initClient, NAMESPACE } from './utilities'
+import { formatOpts, getChainIdReference, getClient, initClient, NAMESPACE } from './utilities'
 
 export const Web3ModalEthereum = {
   // -- config ------------------------------------------------------- //
@@ -72,10 +72,6 @@ export const Web3ModalEthereum = {
   createClient(wagmiClient: EthereumClient) {
     initClient(wagmiClient)
 
-    // Preheat wc connector
-    const walletConnect = this.getConnectorById('walletConnect')
-    walletConnect.connect()
-
     return this
   },
 
@@ -88,7 +84,7 @@ export const Web3ModalEthereum = {
 
   // -- connectors ------------------------------------------------- //
   getConnectorById(id: 'coinbaseWallet' | 'injected' | 'metaMask' | 'walletConnect') {
-    const connector = ethereumClient?.connectors.find(item => item.id === id)
+    const connector = getClient()?.connectors.find(item => item.id === id)
     if (!connector) throw new Error(`Missing ${id} connector`)
 
     return connector
