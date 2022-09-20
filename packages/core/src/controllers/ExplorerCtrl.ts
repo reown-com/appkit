@@ -8,6 +8,7 @@ export interface State {
   page: number
   wallets: ListingResponse
   previewWallets: Listing[]
+  isLoading: boolean
 }
 
 // -- initial state ------------------------------------------------ //
@@ -15,6 +16,7 @@ const state = proxy<State>({
   search: '',
   page: 1,
   wallets: { listings: [], total: 0 },
+  isLoading: false,
   previewWallets: []
 })
 
@@ -33,16 +35,30 @@ export const ExplorerCtrl = {
     return state.previewWallets
   },
 
-  async getPaginatedWallets(params: PageParams) {
-    const { listings: listingsObj, total } = await fetchWallets(params)
-    const listings = Object.values(listingsObj)
+  async getPaginatedWallets(params: PageParams, appendResults = true) {
+    const { page, search } = params
+
+    if (typeof page !== 'undefined' && state.page !== page) state.page = page
+    if (typeof search !== 'undefined' && state.search !== search) {
+      state.search = search
+      state.page = 1
+    }
+
+    this.state.isLoading = true
+    const { listings: listingsObj, total } = await fetchWallets({
+      ...params,
+      page: this.state.page
+    })
+
+    const listings = appendResults
+      ? [...state.wallets.listings, ...Object.values(listingsObj)]
+      : Object.values(listingsObj)
     state.wallets = {
-      listings: [...state.wallets.listings, ...listings],
+      listings,
       total
     }
-    const { page, search } = params
-    if (typeof page !== 'undefined' && state.page !== page) state.page = page
-    if (typeof search !== 'undefined' && state.search !== search) state.search = search
+
+    this.state.isLoading = false
 
     return { listings, total }
   }
