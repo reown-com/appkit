@@ -10,17 +10,20 @@ export default css`
     position: relative;
   }
 
-  .w3m-back-btn {
-    position: absolute;
-    left: 0;
+  .w3m-modal-header button {
     background-color: transparent;
     padding: 13px 17px;
-    margin-left: -17px;
     transition: opacity 0.2s ease-in-out;
   }
 
-  .w3m-back-btn:hover {
-    opacity: 0.6;
+  .w3m-modal-header button:hover {
+    opacity: 0.5;
+  }
+
+  .w3m-back-btn {
+    position: absolute;
+    left: 0;
+    margin-left: -17px;
   }
 `
 

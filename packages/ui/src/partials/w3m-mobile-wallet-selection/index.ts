@@ -36,7 +36,6 @@ export class W3mMobileWalletSelection extends LitElement {
         ${listings.map(
           listing => html`
             <w3m-wallet-button
-              class="w3m-coinbase-button"
               src=${listing.image_url.lg}
               name=${listing.name}
               .onClick=${async () => this.onConnect(listing.mobile, listing.name)}
