@@ -69,7 +69,7 @@ export class W3mModal extends ThemedElement {
     }
     this.open = true
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay: 0.1 })
-    animate(this.containerEl, isMobileAnimation() ? { y: ['100vh', 0] } : { scale: [0.98, 1] }, {
+    animate(this.containerEl, isMobileAnimation() ? { y: ['50vh', 0] } : { scale: [0.98, 1] }, {
       scale: { easing: spring({ velocity: 0.4 }) },
       y: { easing: spring({ mass: 0.5 }) },
       delay: 0.1
@@ -80,7 +80,7 @@ export class W3mModal extends ThemedElement {
   private async onCloseModalEvent() {
     document.removeEventListener('keydown', this.onKeyDown)
     await Promise.all([
-      animate(this.containerEl, isMobileAnimation() ? { y: [0, '100vh'] } : { scale: [1, 0.98] }, {
+      animate(this.containerEl, isMobileAnimation() ? { y: [0, '50vh'] } : { scale: [1, 0.98] }, {
         scale: { easing: spring({ velocity: 0 }) },
         y: { easing: spring({ mass: 0.5 }) }
       }).finished,
