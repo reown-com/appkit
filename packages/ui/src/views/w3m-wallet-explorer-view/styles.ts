@@ -23,6 +23,7 @@ export default css`
 
   .w3m-explorer-search {
     border-radius: 16px;
+    transition: all 0.2s ease-in-out;
     height: 100%;
     width: 75%;
     padding-left: 0.5em;
@@ -33,17 +34,17 @@ export default css`
     gap: 0.5em;
   }
 
+  .w3m-explorer-search svg {
+    transform: scale(1.25);
+  }
+
   .w3m-explorer-search input {
     background: none;
     width: 100%;
-    padding: 0.25em 0;
+    padding: 0.25em;
     outline: none;
     border: none;
-  }
-
-  .w3m-first-fetch {
-    justify-content: center;
-    align-items: center;
+    font-size: 1.25em;
   }
 
   .w3m-first-fetch::after,
@@ -99,8 +100,11 @@ export function dynamicStyles() {
         background: ${background[1]};
       }
 
-      .w3m-explorer-search input:focus {
-        color: ${foreground[1]};
+      .w3m-explorer-search svg {
+      }
+
+      .w3m-explorer-search input {
+        color: ${foreground[2]};
       }
 
       w3m-modal-content::after {

@@ -31,7 +31,7 @@ export class W3mWalletExplorerView extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
-  @state() private firstFetch = !ExplorerCtrl.state.wallets.listings.length
+  @state() private firstFetch = true
   @state() private search = ''
   @state() private endReached = false
   @state() private listingResponse: ListingResponse = { listings: [], total: 0 }
@@ -42,7 +42,7 @@ export class W3mWalletExplorerView extends LitElement {
   public firstUpdated() {
     this.createPaginationObserver()
     this.unsubscribeWallets = ExplorerCtrl.subscribe(explorerState => {
-      this.listingResponse = explorerState.wallets
+      if (!explorerState.isLoading) this.listingResponse = explorerState.wallets
       this.isLoading = explorerState.isLoading
       this.search = explorerState.search
     })
@@ -96,8 +96,16 @@ export class W3mWalletExplorerView extends LitElement {
   private searchTemplate() {
     return html`<span class="w3m-explorer-search">
       ${SEARCH_ICON}
-      <input @input="${this.onSearch}" id="explorer-search" type="search" />
+      <input placeholder="Search" @input="${this.onSearch}" id="explorer-search" type="search" />
     </span>`
+  }
+
+  private loadingTemplate() {
+    return html`
+      <div class="w3m-centered-block">
+        <w3m-spinner></w3m-spinner>
+      </div>
+    `
   }
 
   private async fetchWallets() {
@@ -108,13 +116,16 @@ export class W3mWalletExplorerView extends LitElement {
 
     if (this.firstFetch || (total > PAGE_ENTRIES && listings.length < total))
       try {
-        const { listings: newListings, total: newTotal } = await ExplorerCtrl.getPaginatedWallets({
-          page: this.firstFetch ? 1 : page + 1,
-          entries: PAGE_ENTRIES,
-          search: this.search,
-          version: 1,
-          device: CoreHelpers.isMobile() ? 'mobile' : 'desktop'
-        })
+        const { listings: newListings, total: newTotal } = await ExplorerCtrl.getPaginatedWallets(
+          {
+            page: this.firstFetch ? 1 : page + 1,
+            entries: PAGE_ENTRIES,
+            search: this.search,
+            version: 1,
+            device: CoreHelpers.isMobile() ? 'mobile' : 'desktop'
+          },
+          !this.firstFetch
+        )
 
         if (newTotal <= PAGE_ENTRIES) this.endReached = true
         const images = newListings.map(({ image_url }) => image_url.lg)
@@ -152,15 +163,12 @@ export class W3mWalletExplorerView extends LitElement {
       ${dynamicStyles()}
 
       <w3m-modal-header>${this.searchTemplate()}</w3m-modal-header>
+
       <w3m-modal-content class=${classMap(classes)}>
-        ${this.isLoading
-          ? html`
-              <div class="w3m-centered-block">
-                <w3m-spinner></w3m-spinner>
-              </div>
-            `
+        ${this.isLoading && this.endReached && !this.firstFetch
+          ? this.loadingTemplate()
           : html`
-              ${listings.length > 0
+              ${listings.length > 0 && !this.isLoading
                 ? html`
                     <div class="w3m-content">
                       ${listings.map(
@@ -184,7 +192,6 @@ export class W3mWalletExplorerView extends LitElement {
                     </div>
                   `}
             `}
-
         <div class="w3m-spinner-block">
           <w3m-spinner></w3m-spinner>
         </div>
