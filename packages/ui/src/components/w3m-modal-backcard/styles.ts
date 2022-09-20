@@ -1,5 +1,6 @@
 import { css, html } from 'lit'
 import { color } from '../../utils/Theme'
+import { MOBILE_BREAKPOINT } from '../../utils/UiHelpers'
 
 export default css`
   .w3m-gradient-canvas,
@@ -15,7 +16,7 @@ export default css`
     transform: translateY(-5px) translateX(-5px);
   }
 
-  @media (max-width: 450px) {
+  @media (max-width: ${MOBILE_BREAKPOINT}px) {
     .w3m-gradient-canvas,
     .w3m-modal-highlight,
     #w3m-transparent-noise {

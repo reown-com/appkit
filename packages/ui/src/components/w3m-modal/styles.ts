@@ -1,5 +1,6 @@
 import { css, html } from 'lit'
 import { color } from '../../utils/Theme'
+import { MOBILE_BREAKPOINT } from '../../utils/UiHelpers'
 
 export default css`
   .w3m-modal-overlay {
@@ -33,7 +34,26 @@ export default css`
     overflow: hidden;
   }
 
-  @media (max-width: 450px) {
+  @media (max-width: ${MOBILE_BREAKPOINT}px) {
+    .w3m-modal-container {
+      max-width: 440px;
+    }
+
+    .w3m-modal-card {
+      transform: translateX(0) translateY(5px);
+      border-radius: 40px 40px 0 0;
+    }
+
+    .w3m-modal-overlay {
+      align-items: flex-end;
+    }
+  }
+
+  @media (max-width: ${MOBILE_BREAKPOINT}px) {
+    .w3m-modal-container {
+      max-width: 440px;
+    }
+
     .w3m-modal-card {
       transform: translateX(0) translateY(5px);
       border-radius: 40px 40px 0 0;

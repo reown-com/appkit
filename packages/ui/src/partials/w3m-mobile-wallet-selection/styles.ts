@@ -17,7 +17,7 @@ export default css`
 
   w3m-wallet-button,
   w3m-view-all-wallets-button {
-    padding: 0 calc((100% - 250px) / 11);
+    padding: 0 calc((100% - 255px) / 11);
   }
 
   w3m-wallet-button:first-child {
