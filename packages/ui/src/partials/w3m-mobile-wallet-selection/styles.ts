@@ -17,6 +17,7 @@ export default css`
 
   w3m-wallet-button,
   w3m-view-all-wallets-button {
+    /* Formula to ensure that 5th wallet always indicates possibility of scroll on mobile */
     padding: 0 calc((100% - 255px) / 11);
   }
 
