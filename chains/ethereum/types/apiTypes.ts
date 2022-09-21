@@ -114,10 +114,9 @@ export interface WaitForTransactionOpts {
   wait?: WaitForTransactionArgs['wait']
 }
 
-export interface WagmiOptions {
+export interface EthereumOptions {
+  appName: string
   autoConnect?: boolean
   chains?: Chain[]
   providers?: ChainProviderFn[]
 }
-
-export type EthereumOptions = WagmiOptions | boolean

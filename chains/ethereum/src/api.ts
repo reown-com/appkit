@@ -1,36 +1,15 @@
 import type { Connector } from '@wagmi/core'
 import * as WagmiCore from '@wagmi/core'
-import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
-import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
-import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
-import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import { CoreHelpers } from '@web3modal/core'
 import type * as ApiTypes from '../types/apiTypes'
-import { formatOpts, getChainIdReference, NAMESPACE } from './utilities'
-import { getClient, initializeClient } from './wagmi'
+import { formatOpts, getChainIdReference } from './utils/helpers'
+import { getClient, initializeClient } from './utils/wagmiHelpers'
 
 export const Web3ModalEthereum = {
   // -- config ------------------------------------------------------- //
-  walletConnectRpc({ projectId }: ApiTypes.GetWalletConnectProviderOpts) {
-    return jsonRpcProvider({
-      rpc: chain => ({
-        http: `https://rpc.walletconnect.com/v1/?chainId=${NAMESPACE}:${chain.id}&projectId=${projectId}`
-      })
-    })
-  },
-
-  defaultConnectors({ appName, chains }: ApiTypes.GetDefaultConnectorsOpts) {
-    return [
-      new WalletConnectConnector({ chains, options: { qrcode: false } }),
-      new WagmiCore.InjectedConnector({ chains, options: { shimDisconnect: true } }),
-      new CoinbaseWalletConnector({ chains, options: { appName, headlessMode: true } }),
-      new MetaMaskConnector({ chains })
-    ]
-  },
 
   createClient(options: ApiTypes.EthereumOptions) {
-    if (typeof options === 'boolean') initializeClient()
-    else initializeClient(options)
+    initializeClient(options)
 
     return this
   },

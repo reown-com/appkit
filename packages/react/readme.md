@@ -27,7 +27,9 @@ const modalConfig: ConfigOptions = {
   projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
   theme: 'dark',
   accentColor: 'default',
-  ethereum: true
+  ethereum: {
+    appName: 'web3Modal'
+  }
 }
 
 export default function App({ Component, pageProps }: AppProps) {

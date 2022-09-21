@@ -4,9 +4,9 @@ import type { State } from '@wagmi/core/dist/declarations/src/client'
 import { publicProvider } from '@wagmi/core/providers/public'
 import { AccountCtrl } from '@web3modal/core'
 import { Buffer } from 'buffer'
-import type { WagmiOptions } from '../types/apiTypes'
-import { Web3ModalEthereum } from './api'
-import { NAMESPACE } from './utilities'
+import type { EthereumOptions } from '../../types/apiTypes'
+import { NAMESPACE } from './helpers'
+import { defaultConnectors } from './wagmiTools'
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 if (!window?.Buffer) window.Buffer = Buffer
@@ -64,16 +64,16 @@ function onClientChange(state: State, prevState: State) {
   }
 }
 
-export function initializeClient(options?: WagmiOptions) {
-  const configChains = options?.chains ?? [wagmiChain.mainnet]
-  const configProviders = options?.providers ?? [publicProvider()]
-  const configAutoConnect = options?.autoConnect ?? true
+export function initializeClient(options: EthereumOptions) {
+  const configChains = options.chains ?? [wagmiChain.mainnet]
+  const configProviders = options.providers ?? [publicProvider()]
+  const configAutoConnect = options.autoConnect ?? true
 
   const { chains, provider } = configureChains(configChains, configProviders)
 
   const wagmiClient = createClient({
     autoConnect: configAutoConnect,
-    connectors: Web3ModalEthereum.defaultConnectors({ chains, appName: 'web3Modal' }),
+    connectors: defaultConnectors({ chains, appName: options.appName }),
     provider
   })
 
