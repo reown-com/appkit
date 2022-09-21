@@ -50,12 +50,12 @@ export class W3mWalletExplorerView extends LitElement {
       else
         this.preloadImagesFromListings(explorerState.wallets.listings).then(() => {
           this.listingResponse = explorerState.wallets
+
+          const { total, listings } = explorerState.wallets
+
           if (
-            explorerState.wallets.total <= PAGE_ENTRIES ||
-            !(
-              explorerState.wallets.total > PAGE_ENTRIES &&
-              explorerState.wallets.listings.length < explorerState.wallets.total
-            ) ||
+            total <= PAGE_ENTRIES ||
+            !(total > PAGE_ENTRIES && listings.length < explorerState.wallets.total) ||
             this.isLoadingFiltered
           )
             this.endReached = true
