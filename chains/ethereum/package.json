@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ethereum",
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.0-alpha.3",
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.js",
   "type": "module",
@@ -18,14 +18,11 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "3.5.2",
-    "@walletconnect/ethereum-provider": "1.8.0"
-  },
-  "devDependencies": {
-    "@wagmi/core": "0.5.6"
-  },
-  "peerDependencies": {
-    "@wagmi/core": ">=0.5.x",
-    "@web3modal/core": "*"
+    "@wagmi/core": "0.5.6",
+    "@walletconnect/ethereum-provider": "1.8.0",
+    "@web3modal/core": "2.0.0-alpha.3",
+    "buffer": "6.0.3",
+    "ethers": "5.7.1"
   },
   "keywords": [
     "web3",

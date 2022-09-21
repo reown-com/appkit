@@ -1,6 +1,6 @@
 import type {
   Chain,
-  Client,
+  ChainProviderFn,
   FetchBalanceArgs,
   FetchTokenArgs,
   FetchTransactionArgs,
@@ -14,9 +14,6 @@ import type {
   WatchReadContractResult,
   WriteContractArgs
 } from '@wagmi/core'
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type EthereumClient = Client<any, any>
 
 export interface GetDefaultConnectorsOpts {
   appName: string
@@ -115,4 +112,11 @@ export interface WaitForTransactionOpts {
   hash?: string
   timeout?: number
   wait?: WaitForTransactionArgs['wait']
+}
+
+export interface EthereumOptions {
+  appName: string
+  autoConnect?: boolean
+  chains?: Chain[]
+  providers?: ChainProviderFn[]
 }

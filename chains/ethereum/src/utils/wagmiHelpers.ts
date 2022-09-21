@@ -1,14 +1,21 @@
-import type { ConnectorData } from '@wagmi/core'
+import type { Client, ConnectorData } from '@wagmi/core'
+import { chain as wagmiChain, configureChains, createClient } from '@wagmi/core'
 import type { State } from '@wagmi/core/dist/declarations/src/client'
+import { publicProvider } from '@wagmi/core/providers/public'
 import { AccountCtrl } from '@web3modal/core'
-import type { EthereumClient } from '../types/apiTypes'
+import { Buffer } from 'buffer'
+import type { EthereumOptions } from '../../types/apiTypes'
+import { NAMESPACE } from './helpers'
+import { defaultConnectors } from './wagmiTools'
 
-export const NAMESPACE = 'eip155'
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+if (typeof window !== 'undefined' && !window.Buffer) window.Buffer = Buffer
 
-let ethereumClient = undefined as EthereumClient | undefined
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let client = undefined as Client<any, any> | undefined
 
 export function getClient() {
-  return ethereumClient
+  return client
 }
 
 function onConnectorChange(event: ConnectorData) {
@@ -57,24 +64,19 @@ function onClientChange(state: State, prevState: State) {
   }
 }
 
-export function initClient(wagmiClient: EthereumClient) {
-  ethereumClient = wagmiClient
+export function initializeClient(options: EthereumOptions) {
+  const configChains = options.chains ?? [wagmiChain.mainnet]
+  const configProviders = options.providers ?? [publicProvider()]
+  const configAutoConnect = options.autoConnect ?? true
+
+  const { chains, provider } = configureChains(configChains, configProviders)
+
+  const wagmiClient = createClient({
+    autoConnect: configAutoConnect,
+    connectors: defaultConnectors({ chains, appName: options.appName }),
+    provider
+  })
+
+  client = wagmiClient
   getClient()?.subscribe(onClientChange)
-}
-
-export function getChainIdReference(chainId: string): number {
-  if (typeof chainId === 'string' && chainId.includes(':')) {
-    const id = Number(chainId.split(':')[1])
-
-    return id
-  }
-
-  throw new Error('Invalid chainId, should be formated as namespace:id')
-}
-
-export function formatOpts<T>(opts: T & { chainId: string }): T & { chainId: number } {
-  return {
-    ...opts,
-    chainId: getChainIdReference(opts.chainId)
-  }
 }
