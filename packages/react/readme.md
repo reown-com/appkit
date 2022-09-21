@@ -17,25 +17,18 @@ See [@web3modal/ethereum](../../chains/ethereum/readme.md) readme for all availa
 ```tsx
 import type { ConfigOptions } from '@web3modal/react'
 import { Web3ModalProvider } from '@web3modal/react'
-import type { AppProps } from 'next/app'
-import '../styles.css'
 
-// Configure web3modal with default options
-const modalConfig: ConfigOptions = {
+const config: ConfigOptions = {
   projectId: '<YOUR_PROJECT_ID>',
   theme: 'dark',
   accentColor: 'default',
-  ethereum: {å
+  ethereum: {
     appName: 'web3Modal'
   }
 }
 
-export default function App({ Component, pageProps }: AppProps) {
-  return (
-    <Web3ModalProvider config={modalConfig}>
-      <Component {...pageProps} />
-    </Web3ModalProvider>
-  )
+export default function App() {
+  return <Web3ModalProvider config={config}>{/* Rest of your app */}</Web3ModalProvider>
 }
 ```
 
