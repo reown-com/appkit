@@ -88,6 +88,7 @@ export function roundBalance(address: string) {
 
 export function formatAddress(address: string) {
   return `${address.substring(0, 5)}...${address.slice(-5)}`
+}
 
 export function getErrorMessage(err: unknown) {
   return err instanceof Error ? err.message : 'Unknown Error'
