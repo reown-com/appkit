@@ -19,16 +19,22 @@
     "@web3modal/core": "2.0.0-alpha.3",
     "@web3modal/ui": "2.0.0-alpha.3"
   },
-  "peerDependencies": {
-    "react": ">= 17",
-    "react-dom": ">= 17"
-  },
   "devDependencies": {
     "@types/react": "18.0.20",
     "@types/react-dom": "18.0.6",
     "@web3modal/ethereum": "2.0.0-alpha.3",
     "eslint-plugin-react": "7.31.8",
-    "eslint-plugin-react-hooks": "4.6.0"
+    "eslint-plugin-react-hooks": "4.6.0",
+    "react": "18.2.0"
+  },
+  "peerDependencies": {
+    "react": ">=17",
+    "@web3modal/ethereum": "2.0.0-alpha.3"
+  },
+  "peerDependenciesMeta": {
+    "@web3modal/ethereum": {
+      "optional": true
+    }
   },
   "keywords": [
     "web3",
