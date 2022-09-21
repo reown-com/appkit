@@ -20,8 +20,8 @@
     "@web3modal/ui": "2.0.0-alpha.2"
   },
   "peerDependencies": {
-    "react": ">=17.x",
-    "react-dom": ">=17.x"
+    "react": ">= 17",
+    "react-dom": ">= 17"
   },
   "devDependencies": {
     "@types/react": "18.0.20",

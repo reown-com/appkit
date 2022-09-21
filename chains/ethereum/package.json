@@ -24,10 +24,10 @@
     "@wagmi/core": "0.5.6"
   },
   "peerDependencies": {
-    "@wagmi/core": ">=0.5.x",
+    "@wagmi/core": ">= 0.5",
     "@web3modal/core": "*",
-    "ethers": ">=5.x",
-    "buffer": ">=6.x"
+    "ethers": ">= 5",
+    "buffer": ">= 6"
   },
   "keywords": [
     "web3",
