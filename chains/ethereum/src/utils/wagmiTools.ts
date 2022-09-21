@@ -7,7 +7,14 @@ import { infuraProvider } from '@wagmi/core/providers/infura'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import { publicProvider } from '@wagmi/core/providers/public'
 import type { GetDefaultConnectorsOpts, GetWalletConnectProviderOpts } from '../../types/apiTypes'
-import { avalanche, binanceSmartChain, fantom } from './chains'
+import {
+  avalanche,
+  avalancheFuji,
+  binanceSmartChain,
+  binanceSmartChainTestnet,
+  fantom,
+  fantomTestnet
+} from './chains'
 import { NAMESPACE } from './helpers'
 
 // -- providers ------------------------------------------------------- //
@@ -29,7 +36,15 @@ export const providers = {
 
 // -- chains ---------------------------------------------------------- //
 
-export const chains = { ...chain, avalanche, fantom, binanceSmartChain }
+export const chains = {
+  ...chain,
+  avalanche,
+  fantom,
+  binanceSmartChain,
+  avalancheFuji,
+  fantomTestnet,
+  binanceSmartChainTestnet
+}
 
 // -- connectors ------------------------------------------------------ //
 export function defaultConnectors({ appName, chains: connectorChains }: GetDefaultConnectorsOpts) {
