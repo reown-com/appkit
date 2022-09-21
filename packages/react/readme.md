@@ -20,16 +20,12 @@ import { Web3ModalProvider } from '@web3modal/react'
 import type { AppProps } from 'next/app'
 import '../styles.css'
 
-// Get projectID at https://cloud.walletconnect.com
-if (!process.env.NEXT_PUBLIC_PROJECT_ID)
-  throw new Error('You need to provide NEXT_PUBLIC_PROJECT_ID env variable')
-
 // Configure web3modal with default options
 const modalConfig: ConfigOptions = {
-  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+  projectId: '<YOUR_PROJECT_ID>',
   theme: 'dark',
   accentColor: 'default',
-  ethereum: {
+  ethereum: {å
     appName: 'web3Modal'
   }
 }
