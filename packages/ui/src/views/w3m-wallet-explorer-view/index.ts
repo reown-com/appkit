@@ -1,3 +1,4 @@
+import type { Listing } from '@web3modal/core'
 import {
   ClientCtrl,
   ConnectModalCtrl,
@@ -37,13 +38,30 @@ export class W3mWalletExplorerView extends LitElement {
   @state() private listingResponse: ListingResponse = { listings: [], total: 0 }
   @state() private unsubscribeWallets: (() => void) | undefined = undefined
   @state() private isLoading = false
+  @state() private endlessLoadingVisible = false
 
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
     this.createPaginationObserver()
     this.unsubscribeWallets = ExplorerCtrl.subscribe(explorerState => {
-      if (!explorerState.isLoading) this.listingResponse = explorerState.wallets
-      this.isLoading = explorerState.isLoading
+      if (explorerState.isLoading !== this.isLoading)
+        if (explorerState.isLoading) this.isLoading = true
+        else
+          this.preloadImagesFromListings(explorerState.wallets.listings).then(() => {
+            this.listingResponse = explorerState.wallets
+            if (
+              (explorerState.wallets.total <= PAGE_ENTRIES ||
+                !(
+                  explorerState.wallets.total > PAGE_ENTRIES &&
+                  explorerState.wallets.listings.length < explorerState.wallets.total
+                )) &&
+              !this.endReached
+            )
+              this.endReached = true
+            this.isLoading = false
+            this.firstFetch = false
+          })
+
       this.search = explorerState.search
     })
   }
@@ -62,7 +80,10 @@ export class W3mWalletExplorerView extends LitElement {
 
   private createPaginationObserver() {
     this.intersectionObserver = new IntersectionObserver(([element]) => {
-      if (element.isIntersecting) this.fetchWallets()
+      if (element.isIntersecting) {
+        this.endlessLoadingVisible = true
+        this.fetchWalletsEndless()
+      } else if (this.endlessLoadingVisible) this.endlessLoadingVisible = false
     })
     this.intersectionObserver.observe(this.loaderEl)
   }
@@ -74,7 +95,7 @@ export class W3mWalletExplorerView extends LitElement {
   private readonly searchDebounced = debounce(async (search: string) => {
     const { page } = ExplorerCtrl.state
 
-    const { total: newTotal } = await ExplorerCtrl.getPaginatedWallets(
+    await ExplorerCtrl.getPaginatedWallets(
       {
         page,
         entries: PAGE_ENTRIES,
@@ -84,7 +105,6 @@ export class W3mWalletExplorerView extends LitElement {
       },
       false
     )
-    if (newTotal <= PAGE_ENTRIES) this.endReached = true
   }, 500)
 
   private onSearch(ev: Event) {
@@ -96,7 +116,7 @@ export class W3mWalletExplorerView extends LitElement {
   private searchTemplate() {
     return html`<span class="w3m-explorer-search">
       ${SEARCH_ICON}
-      <input placeholder="Search" @input="${this.onSearch}" id="explorer-search" type="search" />
+      <input placeholder="Search" @input="${this.onSearch}" id="explorer-search" type="text" />
     </span>`
   }
 
@@ -108,7 +128,7 @@ export class W3mWalletExplorerView extends LitElement {
     `
   }
 
-  private async fetchWallets() {
+  private async fetchWalletsEndless() {
     const { listings, total } = this.listingResponse
     const { page } = ExplorerCtrl.state
 
@@ -116,7 +136,7 @@ export class W3mWalletExplorerView extends LitElement {
 
     if (this.firstFetch || (total > PAGE_ENTRIES && listings.length < total))
       try {
-        const { listings: newListings, total: newTotal } = await ExplorerCtrl.getPaginatedWallets(
+        await ExplorerCtrl.getPaginatedWallets(
           {
             page: this.firstFetch ? 1 : page + 1,
             entries: PAGE_ENTRIES,
@@ -126,16 +146,14 @@ export class W3mWalletExplorerView extends LitElement {
           },
           !this.firstFetch
         )
-
-        if (newTotal <= PAGE_ENTRIES) this.endReached = true
-        const images = newListings.map(({ image_url }) => image_url.lg)
-        await Promise.all([...images.map(async url => preloadImage(url)), CoreHelpers.wait(300)])
       } catch (err) {
         ModalToastCtrl.openToast(getErrorMessage(err), 'error')
-      } finally {
-        this.firstFetch = false
       }
-    else this.endReached = true
+  }
+
+  private async preloadImagesFromListings(newListings: Listing[]) {
+    const images = newListings.map(({ image_url }) => image_url.lg)
+    await Promise.all([...images.map(async url => preloadImage(url)), CoreHelpers.wait(300)])
   }
 
   private async onConnect(links: { native: string; universal?: string }, name: string) {
@@ -159,16 +177,23 @@ export class W3mWalletExplorerView extends LitElement {
       'w3m-end-reached': this.endReached
     }
 
+    console.log({
+      first: this.firstFetch,
+      listingLength: listings.length,
+      loading: this.isLoading,
+      endVis: this.endlessLoadingVisible
+    })
+
     return html`
       ${dynamicStyles()}
 
       <w3m-modal-header>${this.searchTemplate()}</w3m-modal-header>
 
       <w3m-modal-content class=${classMap(classes)}>
-        ${this.isLoading && this.endReached && !this.firstFetch
+        ${this.isLoading && !this.endlessLoadingVisible && !this.firstFetch
           ? this.loadingTemplate()
           : html`
-              ${listings.length > 0 && !this.isLoading
+              ${listings.length > 0
                 ? html`
                     <div class="w3m-content">
                       ${listings.map(
@@ -187,9 +212,13 @@ export class W3mWalletExplorerView extends LitElement {
                     </div>
                   `
                 : html`
-                    <div class="w3m-centered-block">
-                      <w3m-text align="center" color="secondary">No Results Found</w3m-text>
-                    </div>
+                    ${this.firstFetch
+                      ? null
+                      : html`
+                          <div class="w3m-centered-block">
+                            <w3m-text align="center" color="secondary">No results found</w3m-text>
+                          </div>
+                        `}
                   `}
             `}
         <div class="w3m-spinner-block">

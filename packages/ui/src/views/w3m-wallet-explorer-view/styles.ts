@@ -31,20 +31,26 @@ export default css`
     height: 1.5em;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5em;
   }
 
   .w3m-explorer-search svg {
-    transform: scale(1.25);
+    transform: scale(1);
   }
 
   .w3m-explorer-search input {
     background: none;
-    width: 100%;
-    padding: 0.25em;
+    width: 5em;
+    line-height: 20px;
+    margin-top: 1px;
     outline: none;
     border: none;
-    font-size: 1.25em;
+    font-size: 16px;
+  }
+
+  .w3m-explorer-search input:focus {
+    width: 100%;
   }
 
   .w3m-first-fetch::after,
@@ -68,6 +74,10 @@ export default css`
     align-items: center;
     height: 100px;
     overflow: hidden;
+  }
+
+  .w3m-centered-block {
+    height: 100%;
   }
 
   .w3m-end-reached .w3m-spinner-block {
@@ -101,6 +111,8 @@ export function dynamicStyles() {
       }
 
       .w3m-explorer-search svg {
+        height: 20px;
+        width: 20px;
       }
 
       .w3m-explorer-search input {
