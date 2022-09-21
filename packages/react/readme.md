@@ -7,7 +7,7 @@ Make sure to read our [main readme](./../../readme.md) first to find out details
 ### 1. Install dependencies
 
 ```
-npm install @web3modal/react @web3modal/ethereum
+npm install @web3modal/react @web3modal/ethereum ethers
 ```
 
 ### 2. Configure wagmi and web3modal clients at the root of your app
