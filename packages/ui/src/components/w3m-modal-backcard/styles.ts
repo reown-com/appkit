@@ -1,5 +1,6 @@
 import { css, html } from 'lit'
 import { color } from '../../utils/Theme'
+import { MOBILE_BREAKPOINT } from '../../utils/UiHelpers'
 
 export default css`
   .w3m-gradient-canvas,
@@ -15,7 +16,7 @@ export default css`
     transform: translateY(-5px) translateX(-5px);
   }
 
-  @media (max-width: 450px) {
+  @media (max-width: ${MOBILE_BREAKPOINT}px) {
     .w3m-gradient-canvas,
     .w3m-modal-highlight,
     #w3m-transparent-noise {
@@ -32,6 +33,8 @@ export default css`
     --gradient-color-2: #be3620;
     --gradient-color-3: #a6208c;
     --gradient-color-4: #06968f;
+
+    box-shadow: 0px 8px 28px -6px rgba(10, 16, 31, 0.12), 0px 18px 88px -4px rgba(10, 16, 31, 0.14);
   }
 
   #w3m-transparent-noise {

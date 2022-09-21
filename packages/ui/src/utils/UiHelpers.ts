@@ -1,6 +1,8 @@
 import { CoreHelpers, getExplorerApi } from '@web3modal/core'
 import type { LitElement } from 'lit'
 
+export const MOBILE_BREAKPOINT = 600
+
 export function getShadowRootElement(root: LitElement, selector: string) {
   const el = root.renderRoot.querySelector(selector)
   if (!el) throw new Error(`${selector} not found`)
@@ -52,7 +54,7 @@ export function defaultWalletImages() {
 }
 
 export function isMobileAnimation() {
-  return window.innerWidth <= 450
+  return window.innerWidth <= MOBILE_BREAKPOINT
 }
 
 export async function preloadImage(src: string) {
@@ -62,4 +64,8 @@ export async function preloadImage(src: string) {
     image.onerror = reject
     image.src = src
   })
+}
+
+export function getErrorMessage(err: unknown) {
+  return err instanceof Error ? err.message : 'Unknown Error'
 }

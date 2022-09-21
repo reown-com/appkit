@@ -83,6 +83,10 @@ export function dynamicStyles() {
   const { foreground, error } = color()
 
   return html`<style>
+    :host(*) {
+      color: ${foreground[1]};
+    }
+
     .w3m-color-primary {
       color: ${foreground[1]};
     }

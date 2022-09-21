@@ -9,6 +9,7 @@ import '../../components/w3m-qrcode'
 import '../../components/w3m-text'
 import { COPY_ICON, QRCODE_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
+import { getErrorMessage } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 const HORIZONTAL_PADDING = 36
@@ -31,14 +32,14 @@ export class W3mWalletConnectConnectorView extends LitElement {
     try {
       await ClientCtrl.ethereum().connectWalletConnect(uri => (this.uri = uri))
       ConnectModalCtrl.closeModal()
-    } catch {
-      throw new Error('Denied connection')
+    } catch (err) {
+      ModalToastCtrl.openToast(getErrorMessage(err), 'error')
     }
   }
 
   private async onCopy() {
     await navigator.clipboard.writeText(this.uri)
-    ModalToastCtrl.openToast('WalletConnect link copied')
+    ModalToastCtrl.openToast('WalletConnect link copied', 'success')
   }
 
   // -- render ------------------------------------------------------- //
