@@ -35,10 +35,6 @@ export default css`
     gap: 0.5em;
   }
 
-  .w3m-explorer-search svg {
-    transform: scale(1);
-  }
-
   .w3m-explorer-search input {
     background: none;
     width: 5em;

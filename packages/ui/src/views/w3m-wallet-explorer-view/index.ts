@@ -37,30 +37,34 @@ export class W3mWalletExplorerView extends LitElement {
   @state() private endReached = false
   @state() private listingResponse: ListingResponse = { listings: [], total: 0 }
   @state() private unsubscribeWallets: (() => void) | undefined = undefined
-  @state() private isLoading = false
-  @state() private endlessLoadingVisible = false
+  @state() private isLoadingEndless = false
+  @state() private isLoadingFiltered = false
 
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
     this.createPaginationObserver()
     this.unsubscribeWallets = ExplorerCtrl.subscribe(explorerState => {
-      if (explorerState.isLoading !== this.isLoading)
-        if (explorerState.isLoading) this.isLoading = true
-        else
-          this.preloadImagesFromListings(explorerState.wallets.listings).then(() => {
-            this.listingResponse = explorerState.wallets
-            if (
-              (explorerState.wallets.total <= PAGE_ENTRIES ||
-                !(
-                  explorerState.wallets.total > PAGE_ENTRIES &&
-                  explorerState.wallets.listings.length < explorerState.wallets.total
-                )) &&
-              !this.endReached
-            )
-              this.endReached = true
-            this.isLoading = false
-            this.firstFetch = false
-          })
+      if (explorerState.isLoading)
+        if (explorerState.search === this.search) this.isLoadingEndless = true
+        else this.isLoadingFiltered = true
+      else
+        this.preloadImagesFromListings(explorerState.wallets.listings).then(() => {
+          this.listingResponse = explorerState.wallets
+          if (
+            explorerState.wallets.total <= PAGE_ENTRIES ||
+            !(
+              explorerState.wallets.total > PAGE_ENTRIES &&
+              explorerState.wallets.listings.length < explorerState.wallets.total
+            ) ||
+            this.isLoadingFiltered
+          )
+            this.endReached = true
+          else this.endReached = false
+
+          this.isLoadingEndless = false
+          this.isLoadingFiltered = false
+          this.firstFetch = false
+        })
 
       this.search = explorerState.search
     })
@@ -80,10 +84,7 @@ export class W3mWalletExplorerView extends LitElement {
 
   private createPaginationObserver() {
     this.intersectionObserver = new IntersectionObserver(([element]) => {
-      if (element.isIntersecting) {
-        this.endlessLoadingVisible = true
-        this.fetchWalletsEndless()
-      } else if (this.endlessLoadingVisible) this.endlessLoadingVisible = false
+      if (element.isIntersecting) this.fetchWalletsEndless()
     })
     this.intersectionObserver.observe(this.loaderEl)
   }
@@ -109,7 +110,6 @@ export class W3mWalletExplorerView extends LitElement {
 
   private onSearch(ev: Event) {
     const search = (ev.currentTarget as HTMLInputElement).value
-    this.search = search
     this.searchDebounced(search)
   }
 
@@ -132,7 +132,7 @@ export class W3mWalletExplorerView extends LitElement {
     const { listings, total } = this.listingResponse
     const { page } = ExplorerCtrl.state
 
-    if (this.isLoading) return
+    if (this.isLoadingEndless || this.isLoadingFiltered) return
 
     if (this.firstFetch || (total > PAGE_ENTRIES && listings.length < total))
       try {
@@ -172,17 +172,10 @@ export class W3mWalletExplorerView extends LitElement {
   protected render() {
     const { listings } = this.listingResponse
     const classes = {
-      'w3m-loading': this.isLoading,
+      'w3m-loading': this.isLoadingEndless,
       'w3m-first-fetch': this.firstFetch,
       'w3m-end-reached': this.endReached
     }
-
-    console.log({
-      first: this.firstFetch,
-      listingLength: listings.length,
-      loading: this.isLoading,
-      endVis: this.endlessLoadingVisible
-    })
 
     return html`
       ${dynamicStyles()}
@@ -190,7 +183,7 @@ export class W3mWalletExplorerView extends LitElement {
       <w3m-modal-header>${this.searchTemplate()}</w3m-modal-header>
 
       <w3m-modal-content class=${classMap(classes)}>
-        ${this.isLoading && !this.endlessLoadingVisible && !this.firstFetch
+        ${this.isLoadingFiltered && !this.isLoadingEndless && !this.firstFetch
           ? this.loadingTemplate()
           : html`
               ${listings.length > 0
