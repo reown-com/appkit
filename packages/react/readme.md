@@ -13,56 +13,29 @@ npm install @web3modal/react @web3modal/ethereum @wagmi/core
 ### 2. Configure wagmi and web3modal clients at the root of your app
 
 ```tsx
-import { chain, configureChains, createClient } from '@wagmi/core'
-import { publicProvider } from '@wagmi/core/providers/public'
-import { Web3ModalEthereum } from '@web3modal/ethereum'
 import type { ConfigOptions } from '@web3modal/react'
 import { Web3ModalProvider } from '@web3modal/react'
+import type { AppProps } from 'next/app'
+import '../styles.css'
 
-// Get Your projectId at https://cloud.walletconnect.com
-const WC_PROJECT_ID = 'YOUR_PROJECT_ID'
+// Get projectID at https://cloud.walletconnect.com
+if (!process.env.NEXT_PUBLIC_PROJECT_ID)
+  throw new Error('You need to provide NEXT_PUBLIC_PROJECT_ID env variable')
 
-// Configure chains and providers (rpc's)
-const { chains, provider } = configureChains([chain.mainnet], [publicProvider()])
-
-// Create wagmi client
-const wagmiClient = createClient({
-  autoConnect: true,
-  connectors: Web3ModalEthereum.defaultConnectors({ chains, appName: 'web3Modal' }),
-  provider
-})
-
-// Configure web3modal
+// Configure web3modal with default options
 const modalConfig: ConfigOptions = {
-  projectId: WC_PROJECT_ID,
+  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
   theme: 'dark',
-  accentColor: 'orange'
+  accentColor: 'default',
+  ethereum: true
 }
 
-export default function App() {
+export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Web3ModalProvider config={modalConfig} ethereumClient={wagmiClient}>
-      {/* Rest of your app */}
+    <Web3ModalProvider config={modalConfig}>
+      <Component {...pageProps} />
     </Web3ModalProvider>
   )
-}
-```
-
-### 3. Import ConnectButton component or use `useConnectModal` hook to open the modal
-
-```tsx
-import { ConnectButton, useConnectModal } from '@web3modal/react'
-
-export function HomePage() {
-  return <ConnectButton />
-}
-
-// or
-
-export function HomePage() {
-  const { isOpen, open, close } = useConnectModal()
-
-  return <button onClick={open}>My Button</button>
 }
 ```
 

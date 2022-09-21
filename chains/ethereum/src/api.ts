@@ -6,7 +6,8 @@ import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import { CoreHelpers } from '@web3modal/core'
 import type * as ApiTypes from '../types/apiTypes'
-import { formatOpts, getChainIdReference, getClient, initClient, NAMESPACE } from './utilities'
+import { formatOpts, getChainIdReference, NAMESPACE } from './utilities'
+import { getClient, initializeClient } from './wagmi'
 
 export const Web3ModalEthereum = {
   // -- config ------------------------------------------------------- //
@@ -27,8 +28,9 @@ export const Web3ModalEthereum = {
     ]
   },
 
-  createClient(wagmiClient: ApiTypes.EthereumClient) {
-    initClient(wagmiClient)
+  createClient(options: ApiTypes.EthereumOptions) {
+    if (typeof options === 'boolean') initializeClient()
+    else initializeClient(options)
 
     return this
   },

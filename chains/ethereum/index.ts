@@ -1,20 +1,20 @@
 export { Web3ModalEthereum } from './src/api'
 export type {
-  EthereumClient,
+  ContractOpts,
+  EthereumOptions,
+  FetchEnsAddressOpts,
+  FetchEnsAvatarOpts,
+  FetchEnsNameOpts,
+  FetchTransactionOpts,
   GetBalanceOpts,
-  SignTypedDataOpts,
   GetContractOpts,
   GetTokenOpts,
-  ReadContractOpts,
-  ContractOpts,
-  WatchReadContractOpts,
-  WriteContractOpts,
+  PrepareSendTransactionOpts,
   PrepareWriteContractOpts,
-  FetchEnsNameOpts,
-  FetchEnsAvatarOpts,
-  FetchEnsAddressOpts,
+  ReadContractOpts,
   SendTransactionOpts,
-  FetchTransactionOpts,
+  SignTypedDataOpts,
   WaitForTransactionOpts,
-  PrepareSendTransactionOpts
+  WatchReadContractOpts,
+  WriteContractOpts
 } from './types/apiTypes'

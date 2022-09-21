@@ -26,7 +26,8 @@
   "peerDependencies": {
     "@wagmi/core": ">=0.5.x",
     "@web3modal/core": "*",
-    "ethers": ">=5.x"
+    "ethers": ">=5.x",
+    "buffer": ">=6.x"
   },
   "keywords": [
     "web3",

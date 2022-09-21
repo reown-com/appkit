@@ -1,4 +1,4 @@
-import type { EthereumClient, Web3ModalEthereum } from '@web3modal/ethereum'
+import type { EthereumOptions, Web3ModalEthereum } from '@web3modal/ethereum'
 import { proxy } from 'valtio/vanilla'
 
 // -- types -------------------------------------------------------- //
@@ -19,8 +19,8 @@ export const ClientCtrl = {
     return state.ethereum
   },
 
-  async setEthereumClient(ethereumClient: EthereumClient) {
+  async setEthereumClient(options: EthereumOptions) {
     const { Web3ModalEthereum } = await import('@web3modal/ethereum')
-    state.ethereum = Web3ModalEthereum.createClient(ethereumClient)
+    state.ethereum = Web3ModalEthereum.createClient(options)
   }
 }
