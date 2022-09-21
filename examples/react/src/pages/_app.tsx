@@ -1,3 +1,4 @@
+import { chains, providers } from '@web3modal/ethereum'
 import type { ConfigOptions } from '@web3modal/react'
 import { Web3ModalProvider } from '@web3modal/react'
 import type { AppProps } from 'next/app'
@@ -13,7 +14,10 @@ const modalConfig: ConfigOptions = {
   theme: 'dark',
   accentColor: 'default',
   ethereum: {
-    appName: 'web3Modal'
+    appName: 'web3Modal',
+    autoConnect: true,
+    chains: [chains.mainnet],
+    providers: [providers.walletConnectProvider({ projectId: process.env.NEXT_PUBLIC_PROJECT_ID })]
   }
 }
 

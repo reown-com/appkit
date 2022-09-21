@@ -23,7 +23,7 @@
     "@web3modal/ethereum": "2.0.0-alpha.2"
   },
   "peerDependencies": {
-    "@web3modal/ethereum": "*"
+    "@web3modal/ethereum": "2.0.0-alpha.2"
   },
   "peerDependenciesMeta": {
     "@web3modal/ethereum": {

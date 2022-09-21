@@ -17,9 +17,9 @@ interface Props {
  */
 export function Web3ModalProvider({ children, config }: Props) {
   const onConfigure = useCallback(async () => {
-    import('@web3modal/ui')
     ConfigCtrl.setConfig(config)
     if (config.ethereum) await ClientCtrl.setEthereumClient(config.ethereum)
+    await import('@web3modal/ui')
   }, [config])
 
   useEffect(() => {

@@ -2,15 +2,17 @@
 
 ## Getting Started
 
-Make sure to read our [main readme](./../../readme.md) first to find out details about projectId and modal customisation options. web3Modal hooks are based on and provide very similar interface to [wagmi hooks](https://wagmi.sh/docs/hooks/useAccount) so feel free to reference their documentation as well. Internally we just made few changes to how we handle state and added [CAIP-10](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-10.md) chain format to allow for easier multichain management in the future i.e. in web3modal ethereum mainnet is represented as `eip155:1`, where as in wagmi it is `1`.
+Make sure to read our [main readme](./../../readme.md) first to find out details about projectId, chain specific packages and modal customisation options.
 
 ### 1. Install dependencies
 
 ```
-npm install @web3modal/react @web3modal/ethereum @wagmi/core
+npm install @web3modal/react @web3modal/ethereum
 ```
 
 ### 2. Configure wagmi and web3modal clients at the root of your app
+
+See [@web3modal/ethereum](../../chains/ethereum/readme.md) readme for all available `ethereum` options. NextJS example is also awailable in [examples/react](../../examples/react) folder.
 
 ```tsx
 import type { ConfigOptions } from '@web3modal/react'

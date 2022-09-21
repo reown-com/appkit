@@ -9,7 +9,7 @@ import { NAMESPACE } from './helpers'
 import { defaultConnectors } from './wagmiTools'
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-if (!window?.Buffer) window.Buffer = Buffer
+if (typeof window !== 'undefined' && !window.Buffer) window.Buffer = Buffer
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let client = undefined as Client<any, any> | undefined
