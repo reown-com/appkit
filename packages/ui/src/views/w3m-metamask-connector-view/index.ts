@@ -40,7 +40,7 @@ export class W3mMetamaskConnectorView extends LitElement {
         await ClientCtrl.ethereum().connectMetaMask()
         ConnectModalCtrl.closeModal()
       }
-    } catch (error: unknown) {
+    } catch (err) {
       this.error = true
       this.connecting = false
     }

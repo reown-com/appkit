@@ -8,6 +8,7 @@ export default css`
     padding: 2px 0;
     display: flex;
     justify-content: space-between;
+    position: relative;
   }
 
   .w3m-view-row::-webkit-scrollbar {
@@ -16,7 +17,8 @@ export default css`
 
   w3m-wallet-button,
   w3m-view-all-wallets-button {
-    padding: 0 10px;
+    /* Formula to ensure that 5th wallet always indicates possibility of scroll on mobile */
+    padding: 0 calc((100% - 255px) / 11);
   }
 
   w3m-wallet-button:first-child {

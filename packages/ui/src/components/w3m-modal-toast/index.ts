@@ -1,7 +1,8 @@
 import { ModalToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { CHECKMARK_ICON } from '../../utils/Svgs'
+import { classMap } from 'lit/directives/class-map.js'
+import { CHECKMARK_ICON, CROSS_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import '../w3m-text'
 import styles, { dynamicStyles } from './styles'
@@ -38,14 +39,20 @@ export class W3mModalToast extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { message } = ModalToastCtrl.state
+    const { message, variant } = ModalToastCtrl.state
+    const classes = {
+      'w3m-modal-toast': true,
+      'w3m-success': variant === 'success',
+      'w3m-error': variant === 'error'
+    }
 
     return this.open
       ? html`
           ${dynamicStyles()}
 
-          <div class="w3m-modal-toast">
-            ${CHECKMARK_ICON}
+          <div class=${classMap(classes)}>
+            ${variant === 'success' ? CHECKMARK_ICON : null}
+            ${variant === 'error' ? CROSS_ICON : null}
             <w3m-text variant="small-normal">${message}</w3m-text>
           </div>
         `

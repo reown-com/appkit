@@ -25,15 +25,19 @@ export default css`
 `
 
 export function dynamicStyles() {
-  const { background, foreground } = color()
+  const { background, foreground, error } = color()
 
   return html`<style>
     .w3m-modal-toast {
       background-color: ${background[1]};
     }
 
-    .w3m-modal-toast path {
+    .w3m-success path {
       fill: ${foreground.accent};
+    }
+
+    .w3m-error path {
+      fill: ${error};
     }
   </style>`
 }
