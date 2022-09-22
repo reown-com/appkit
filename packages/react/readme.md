@@ -12,7 +12,7 @@ npm install @web3modal/react @web3modal/ethereum ethers
 
 ### 2. Configure wagmi and web3modal clients at the root of your app
 
-See [@web3modal/ethereum](../../chains/ethereum/readme.md) readme for all available `ethereum` options. NextJS example is also awailable in [examples/react](../../examples/react) folder.
+See [@web3modal/ethereum](../../chains/ethereum/readme.md) readme for all available `ethereum` options. NextJS example is also available in [examples/react](../../examples/react) folder.
 
 ```tsx
 import type { ConfigOptions } from '@web3modal/react'
