@@ -118,7 +118,7 @@ export class W3mWalletExplorerView extends LitElement {
 
   private onSearchChange(event: Event) {
     const { value } = event.target as HTMLInputElement
-    if (value.length >= 3) this.searchDebaunce(value)
+    if (value.length >= 3) this.searchDebounce(value)
     else if (this.search) {
       this.search = undefined
       this.endReached = this.isLastPage()
