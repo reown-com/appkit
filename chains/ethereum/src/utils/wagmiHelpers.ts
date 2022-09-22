@@ -84,8 +84,8 @@ async function onClientConnected() {
     connector.on('change', onConnectorChange)
     connector.on('message', onConnectorMessage)
     connector.on('error', onConnectorError)
-    const balance = await getBalance(account)
-    const ensAvatar = await getENSAvatar(account)
+
+    const [balance, ensAvatar] = await Promise.all([getBalance(account), getENSAvatar(account)])
 
     AccountCtrl.setAccount({
       address: account,
