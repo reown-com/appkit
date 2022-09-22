@@ -1,10 +1,15 @@
-import type { Client, ConnectorData } from '@wagmi/core'
-import { chain as wagmiChain, configureChains, createClient } from '@wagmi/core'
+import {
+  chain as wagmiChain,
+  Client,
+  configureChains,
+  ConnectorData,
+  createClient
+} from '@wagmi/core'
 import type { State } from '@wagmi/core/dist/declarations/src/client'
 import { publicProvider } from '@wagmi/core/providers/public'
-import { AccountCtrl } from '@web3modal/core'
+import { AccountCtrl, ClientCtrl } from '@web3modal/core'
 import { Buffer } from 'buffer'
-import type { EthereumOptions } from '../../types/apiTypes'
+import type { EthereumOptions, GetBalanceOpts } from '../../types/apiTypes'
 import { NAMESPACE } from './helpers'
 import { defaultConnectors } from './wagmiTools'
 
@@ -18,8 +23,24 @@ export function getClient() {
   return client
 }
 
-function onConnectorChange(event: ConnectorData) {
-  if (event.account) AccountCtrl.setAddress(event.account)
+async function getBalance(account: string) {
+  const opts: GetBalanceOpts = {
+    addressOrName: account,
+    chainId: `${NAMESPACE}:${AccountCtrl.state.chainId}`,
+    formatUnits: 'ether'
+  }
+
+  const balance = await ClientCtrl.ethereum().fetchBalance(opts)
+  AccountCtrl.setBalance(balance)
+
+  return balance
+}
+
+async function onConnectorChange(event: ConnectorData) {
+  if (event.account) {
+    AccountCtrl.setAddress(event.account)
+    await getBalance(event.account)
+  }
   if (event.chain) AccountCtrl.setChain(`${NAMESPACE}:${event.chain.id}`, !event.chain.unsupported)
 }
 
@@ -33,7 +54,7 @@ function onConnectorError(event: Error) {
   console.log(event)
 }
 
-function onClientConnected() {
+async function onClientConnected() {
   const account = getClient()?.data?.account
   const chain = getClient()?.data?.chain
   const connector = getClient()?.connector
@@ -43,11 +64,13 @@ function onClientConnected() {
     connector.on('change', onConnectorChange)
     connector.on('message', onConnectorMessage)
     connector.on('error', onConnectorError)
+    const balance = await getBalance(account)
     AccountCtrl.setAccount({
       address: account,
       chainId: `${NAMESPACE}:${chain.id}`,
       chainSupported: !chain.unsupported,
-      connector: connector.id
+      connector: connector.id,
+      balance
     })
   }
 }

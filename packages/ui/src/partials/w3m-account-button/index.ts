@@ -1,5 +1,4 @@
-import { AccountCtrl, ClientCtrl, ConnectModalCtrl, RouterCtrl } from '@web3modal/core'
-import type { FetchEnsAvatarOpts, GetBalanceOpts } from '@web3modal/ethereum'
+import { AccountCtrl, ConnectModalCtrl, RouterCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-text'
@@ -18,7 +17,7 @@ export class W3mAccountButton extends ThemedElement {
   // -- state & properties ------------------------------------------- //
   @state() private address = ''
   @state() private balance = ''
-  @state() private ens = ''
+  // @state() private readonly ens = ''
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -26,8 +25,7 @@ export class W3mAccountButton extends ThemedElement {
 
     this.subscribeAccountChanges()
 
-    this.getBalance()
-    this.getENSAvatar()
+    // This.getENSAvatar()
   }
 
   // -- private ------------------------------------------------------ //
@@ -36,41 +34,14 @@ export class W3mAccountButton extends ThemedElement {
 
   private subscribeAccountChanges() {
     this.address = AccountCtrl.state.address
-    this.unsubscribe = AccountCtrl.subscribe(newAccount => {
-      if (newAccount.address) AccountCtrl.setAddress(newAccount.address)
-      if (newAccount.chainId) AccountCtrl.setChain(newAccount.chainId, newAccount.chainSupported)
+    this.balance = AccountCtrl.state.balance
+
+    this.unsubscribe = AccountCtrl.subscribe(() => {
       this.address = AccountCtrl.state.address
+      this.balance = AccountCtrl.state.balance
     })
 
     return () => this.unsubscribe
-  }
-
-  // Move to AccountCtrl?
-  private async getBalance() {
-    try {
-      const opts: GetBalanceOpts = {
-        addressOrName: AccountCtrl.state.address,
-        chainId: AccountCtrl.state.chainId,
-        formatUnits: 'ether'
-      }
-      const balance = await ClientCtrl.ethereum().fetchBalance(opts)
-      this.balance = balance
-    } catch (e) {
-      throw new Error('No Balance Details')
-    }
-  }
-
-  private async getENSAvatar() {
-    try {
-      const opts: FetchEnsAvatarOpts = {
-        addressOrName: AccountCtrl.state.address,
-        chainId: AccountCtrl.state.chainId
-      }
-      const ens = await ClientCtrl.ethereum().fetchEnsAvatar(opts)
-      if (ens) this.ens = ens
-    } catch (e) {
-      throw new Error('No Balance Details')
-    }
   }
 
   private onOpen() {
@@ -92,9 +63,6 @@ export class W3mAccountButton extends ThemedElement {
         </div>
         <div class="w3m-address-container">
           <div class="w3m-ens-zorb-container">
-            <w3m-zorb-ens-image address=${this.address} size="24" ens=${
-      this.ens
-    }> </w3m-zorb-ens-image>
           </div>
           <w3m-text variant="medium-normal" color="primary">${formatAddress(
             this.address

@@ -7,7 +7,8 @@ export const initialAccountlState = {
   chainSupported: false,
   address: '',
   chainId: '',
-  connector: ''
+  connector: '',
+  balance: ''
 }
 
 const state = proxy<Account>(initialAccountlState)
@@ -32,6 +33,10 @@ export const AccountCtrl = {
   setChain(chainId: Account['chainId'], chainSupported: Account['chainSupported']) {
     state.chainId = chainId
     state.chainSupported = chainSupported
+  },
+
+  setBalance(balance: Account['balance']) {
+    state.balance = balance
   },
 
   resetAccount() {

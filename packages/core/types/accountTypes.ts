@@ -4,4 +4,5 @@ export interface Account {
   address: string
   chainId: string
   connector: string
+  balance: string
 }
