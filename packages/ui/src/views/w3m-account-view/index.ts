@@ -85,7 +85,7 @@ export class W3mAccountView extends LitElement {
         <div class="w3m-flex-wrapper">
           <div class="w3m-space-between-container">
             <div style="display:flex; flex-direction:column;">
-            <w3m-zorb-ens-image ens=${this.ens} address=${this.address} size="lg">
+            <w3m-zorb-ens-image ens=${this.ens} address=${this.address} size="60">
             </w3m-zorb-ens-image>
               <w3m-text variant="large-bold" color="primary">
               ${formatAddress(this.address)}              

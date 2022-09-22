@@ -66,22 +66,6 @@ export async function preloadImage(src: string) {
   })
 }
 
-export function useScript(url: string) {
-  const script = document.createElement('script')
-
-  script.src = url
-  script.async = true
-
-  document.body.appendChild(script)
-
-  return () => {
-    document.body.removeChild(script)
-  }
-}
-
-export const ZorbPackageScript =
-  'https://unpkg.com/@zoralabs/zorb@^0.0/dist/zorb-web-component.umd.js'
-
 export function roundBalance(address: string) {
   return parseFloat(address).toFixed(2)
 }

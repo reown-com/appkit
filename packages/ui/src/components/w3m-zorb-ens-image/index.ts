@@ -1,8 +1,9 @@
 import { AccountCtrl, ClientCtrl } from '@web3modal/core'
 import type { FetchEnsAvatarOpts } from '@web3modal/ethereum'
+// import '@zoralabs/zorb'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { useScript, ZorbPackageScript } from '../../utils/UiHelpers'
+import { zorbImageSVG } from '../../utils/Zorb'
 import styles from './styles'
 
 @customElement('w3m-zorb-ens-image')
@@ -13,7 +14,6 @@ export class W3mZorbImage extends LitElement {
   public constructor() {
     super()
     this.getENSAvatar()
-    useScript(ZorbPackageScript)
   }
 
   // -- state & properties ------------------------------------------- //
@@ -44,14 +44,14 @@ export class W3mZorbImage extends LitElement {
   }
 
   private zorbAvatar() {
-    return html`
-      <zora-zorb address=${this.address} size=${this.size === 'sm' ? '24px' : '60px'}></zora-zorb>
-    `
+    const renderedZorb = zorbImageSVG(this.address, this.size)
+
+    return html`<div>${renderedZorb}</div> `
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    return html` <div>${this.ens ? this.ensAvatar() : this.zorbAvatar()}</div> `
+    return html`${this.ens ? this.ensAvatar() : this.zorbAvatar()}`
   }
 }
 
