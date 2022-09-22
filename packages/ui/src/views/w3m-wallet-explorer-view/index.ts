@@ -108,7 +108,7 @@ export class W3mWalletExplorerView extends LitElement {
     else await this.onConnect(listing.desktop, listing.name)
   }
 
-  private readonly searchDebaunce = debounce((value: string) => {
+  private readonly searchDebounce = debounce((value: string) => {
     this.firstFetch = true
     this.endReached = false
     this.search = value
