@@ -1,15 +1,10 @@
-import {
-  chain as wagmiChain,
-  Client,
-  configureChains,
-  ConnectorData,
-  createClient
-} from '@wagmi/core'
+import type { Client, ConnectorData } from '@wagmi/core'
+import { chain as wagmiChain, configureChains, createClient } from '@wagmi/core'
 import type { State } from '@wagmi/core/dist/declarations/src/client'
 import { publicProvider } from '@wagmi/core/providers/public'
 import { AccountCtrl, ClientCtrl } from '@web3modal/core'
 import { Buffer } from 'buffer'
-import type { EthereumOptions, GetBalanceOpts } from '../../types/apiTypes'
+import type { EthereumOptions, FetchEnsAvatarOpts, GetBalanceOpts } from '../../types/apiTypes'
 import { NAMESPACE } from './helpers'
 import { defaultConnectors } from './wagmiTools'
 
@@ -31,9 +26,28 @@ async function getBalance(account: string) {
   }
 
   const balance = await ClientCtrl.ethereum().fetchBalance(opts)
-  AccountCtrl.setBalance(balance)
+  AccountCtrl.setBalance(balance) // Todo: Check / Might be setting state twice..?
 
   return balance
+}
+
+async function getENSAvatar(account: string) {
+  try {
+    const opts: FetchEnsAvatarOpts = {
+      chainId: `${NAMESPACE}:${AccountCtrl.state.chainId}`,
+      addressOrName: account
+    }
+    const ensAvatar = await ClientCtrl.ethereum().fetchEnsAvatar(opts)
+    if (ensAvatar !== undefined) {
+      AccountCtrl.setEnsAvatar(ensAvatar)
+
+      return ensAvatar
+    }
+
+    return ''
+  } catch (error) {
+    console.log('error', error)
+  }
 }
 
 async function onConnectorChange(event: ConnectorData) {
@@ -65,12 +79,15 @@ async function onClientConnected() {
     connector.on('message', onConnectorMessage)
     connector.on('error', onConnectorError)
     const balance = await getBalance(account)
+    const ensAvatar = await getENSAvatar('0x227612e69B1d06250E7035C1c12840561EBF3c56') // Making one more re-render
+
     AccountCtrl.setAccount({
       address: account,
       chainId: `${NAMESPACE}:${chain.id}`,
       chainSupported: !chain.unsupported,
       connector: connector.id,
-      balance
+      balance,
+      ensAvatar
     })
   }
 }

@@ -5,4 +5,5 @@ export interface Account {
   chainId: string
   connector: string
   balance: string
+  ensAvatar: string | undefined
 }

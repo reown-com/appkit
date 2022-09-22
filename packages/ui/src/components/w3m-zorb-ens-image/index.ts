@@ -1,5 +1,4 @@
-import { AccountCtrl, ClientCtrl } from '@web3modal/core'
-import type { FetchEnsAvatarOpts } from '@web3modal/ethereum'
+import { AccountCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { zorbImageSVG } from '../../utils/Zorb'
@@ -12,7 +11,6 @@ export class W3mZorbImage extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.getENSAvatar()
   }
 
   // -- state & properties ------------------------------------------- //
@@ -21,24 +19,12 @@ export class W3mZorbImage extends LitElement {
   @property() public ens = ''
 
   // -- private ----------------------------------------------------- //
-  private async getENSAvatar() {
-    try {
-      const opts: FetchEnsAvatarOpts = {
-        addressOrName: this.address,
-        chainId: AccountCtrl.state.chainId
-      }
-      const ens = await ClientCtrl.ethereum().fetchEnsAvatar(opts)
-      if (ens) this.ens = ens
-    } catch (e) {
-      throw new Error('No Balance Details')
-    }
-  }
 
   private ensAvatar() {
     return html`<img
       src="${this.ens}"
       alt="ens-avatar"
-      class="${this.size === 'sm' ? 'w3m-ens-small-image ' : 'w3m-ens-large-image '}"
+      class="${this.size === '24' ? 'w3m-ens-small-image ' : 'w3m-ens-large-image '}"
     />`
   }
 

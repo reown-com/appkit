@@ -17,15 +17,12 @@ export class W3mAccountButton extends ThemedElement {
   // -- state & properties ------------------------------------------- //
   @state() private address = ''
   @state() private balance = ''
-  // @state() private readonly ens = ''
+  @state() private ensAvatar = ''
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-
     this.subscribeAccountChanges()
-
-    // This.getENSAvatar()
   }
 
   // -- private ------------------------------------------------------ //
@@ -35,6 +32,8 @@ export class W3mAccountButton extends ThemedElement {
   private subscribeAccountChanges() {
     this.address = AccountCtrl.state.address
     this.balance = AccountCtrl.state.balance
+    this.ensAvatar = AccountCtrl.state.ensAvatar
+    console.log('ensAvatar', this.ensAvatar)
 
     this.unsubscribe = AccountCtrl.subscribe(() => {
       this.address = AccountCtrl.state.address
@@ -63,6 +62,9 @@ export class W3mAccountButton extends ThemedElement {
         </div>
         <div class="w3m-address-container">
           <div class="w3m-ens-zorb-container">
+            <w3m-zorb-ens-image address=${this.address} ens=${
+      this.ensAvatar
+    } size="24"></w3m-zorb-ens-image>
           </div>
           <w3m-text variant="medium-normal" color="primary">${formatAddress(
             this.address
