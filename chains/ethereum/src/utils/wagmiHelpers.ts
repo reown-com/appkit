@@ -26,7 +26,9 @@ async function getBalance(account: string) {
   }
 
   const balance = await ClientCtrl.ethereum().fetchBalance(opts)
-  AccountCtrl.setBalance(balance) // Todo: Check / Might be setting state twice..?
+  // eslint-disable-next-line line-comment-position, no-inline-comments, no-warning-comments
+  // Todo: Check / Might be setting state twice..?
+  AccountCtrl.setBalance(balance)
 
   return balance
 }
@@ -57,6 +59,7 @@ async function onConnectorChange(event: ConnectorData) {
   if (event.account) {
     AccountCtrl.setAddress(event.account)
     await getBalance(event.account)
+    await getENSAvatar(event.account)
   }
   if (event.chain) AccountCtrl.setChain(`${NAMESPACE}:${event.chain.id}`, !event.chain.unsupported)
 }
