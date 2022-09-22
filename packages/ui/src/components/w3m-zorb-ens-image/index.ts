@@ -1,6 +1,5 @@
 import { AccountCtrl, ClientCtrl } from '@web3modal/core'
 import type { FetchEnsAvatarOpts } from '@web3modal/ethereum'
-// import '@zoralabs/zorb'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { zorbImageSVG } from '../../utils/Zorb'
