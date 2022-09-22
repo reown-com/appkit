@@ -70,7 +70,7 @@ export function getErrorMessage(err: unknown) {
   return err instanceof Error ? err.message : 'Unknown Error'
 }
 
-/* eslint-disable-next-line */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function debounce(func: (...args: any[]) => unknown, timeout = 500) {
   let timer: NodeJS.Timeout | undefined = undefined
 

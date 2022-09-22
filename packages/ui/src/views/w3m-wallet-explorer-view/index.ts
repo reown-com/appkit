@@ -168,6 +168,11 @@ export class W3mWalletExplorerView extends LitElement {
     ConnectModalCtrl.closeModal()
   }
 
+  private async onConnectPlatform(listing: Listing) {
+    if (CoreHelpers.isMobile()) await this.onConnect(listing.mobile, listing.name)
+    else await this.onConnect(listing.desktop, listing.name)
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     const { listings } = this.listingResponse
@@ -194,10 +199,7 @@ export class W3mWalletExplorerView extends LitElement {
                           <w3m-wallet-button
                             src=${listing.image_url.lg}
                             name=${listing.name}
-                            .onClick=${async () =>
-                              CoreHelpers.isMobile()
-                                ? this.onConnect(listing.mobile, listing.name)
-                                : this.onConnect(listing.desktop, listing.name)}
+                            .onClick=${async () => this.onConnectPlatform(listing)}
                           >
                           </w3m-wallet-button>
                         `

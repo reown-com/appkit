@@ -12,8 +12,8 @@ export function getExplorerApi() {
 function formatParams(params: PageParams) {
   const stringParams = Object.fromEntries(
     Object.entries(params)
-      .filter(([_, v]) => typeof v !== 'undefined' && v !== null && v !== '')
-      .map(([k, v]) => [k, v.toString()])
+      .filter(([_, value]) => typeof value !== 'undefined' && value !== null && value !== '')
+      .map(([key, value]) => [key, value.toString()])
   )
 
   return new URLSearchParams(stringParams).toString()

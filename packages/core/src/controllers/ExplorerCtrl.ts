@@ -44,10 +44,10 @@ export const ExplorerCtrl = {
       state.page = 1
     }
 
-    this.state.isLoading = true
+    state.isLoading = true
     const { listings: listingsObj, total } = await fetchWallets({
       ...params,
-      page: this.state.page
+      page: state.page
     })
 
     const listings = appendResults
@@ -58,7 +58,7 @@ export const ExplorerCtrl = {
       total
     }
 
-    this.state.isLoading = false
+    state.isLoading = false
 
     return { listings, total }
   }
