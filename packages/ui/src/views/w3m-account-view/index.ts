@@ -1,5 +1,4 @@
 import { AccountCtrl, ClientCtrl, ConnectModalCtrl } from '@web3modal/core'
-import type { FetchEnsAvatarOpts, GetBalanceOpts } from '@web3modal/ethereum'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-button'
@@ -18,23 +17,32 @@ export class W3mAccountView extends LitElement {
   // -- state & properties ------------------------------------------- //
   @state() private address = ''
   @state() private balance = ''
-  @state() private ens = ''
+  @state() private ensAvatar = ''
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.getAccounts()
-    this.getBalance()
-    this.getENSAvatar()
+    this.subscribeAccountChanges()
+    // this.getAccounts()
+    // this.getBalance()
+    // this.getENSAvatar()
   }
 
   // -- private ------------------------------------------------------ //
-  private getAccounts() {
-    try {
+  private unsubscribe?: () => void = undefined
+
+  private subscribeAccountChanges() {
+    this.address = AccountCtrl.state.address
+    this.balance = AccountCtrl.state.balance
+    this.ensAvatar = AccountCtrl.state.ensAvatar
+
+    this.unsubscribe = AccountCtrl.subscribe(() => {
       this.address = AccountCtrl.state.address
-    } catch (e) {
-      throw new Error('No Account Details connection')
-    }
+      this.ensAvatar = AccountCtrl.state.ensAvatar
+      this.balance = AccountCtrl.state.balance
+    })
+
+    return () => this.unsubscribe
   }
 
   private async copyClipboard() {
@@ -44,33 +52,6 @@ export class W3mAccountView extends LitElement {
   private onDisconnect() {
     ConnectModalCtrl.closeModal()
     ClientCtrl.ethereum().disconnect()
-  }
-
-  private async getBalance() {
-    try {
-      const opts: GetBalanceOpts = {
-        addressOrName: AccountCtrl.state.address,
-        chainId: AccountCtrl.state.chainId,
-        formatUnits: 'ether'
-      }
-      const balance = await ClientCtrl.ethereum().fetchBalance(opts)
-      this.balance = balance
-    } catch (e) {
-      throw new Error('No Balance Details')
-    }
-  }
-
-  private async getENSAvatar() {
-    try {
-      const opts: FetchEnsAvatarOpts = {
-        addressOrName: AccountCtrl.state.address,
-        chainId: AccountCtrl.state.chainId
-      }
-      const ens = await ClientCtrl.ethereum().fetchEnsAvatar(opts)
-      if (ens) this.ens = ens
-    } catch (e) {
-      throw new Error('No Balance Details')
-    }
   }
 
   // -- render ------------------------------------------------------- //
@@ -85,7 +66,7 @@ export class W3mAccountView extends LitElement {
         <div class="w3m-flex-wrapper">
           <div class="w3m-space-between-container">
             <div style="display:flex; flex-direction:column;">
-            <w3m-zorb-ens-image ens=${this.ens} address=${this.address} size="60">
+            <w3m-zorb-ens-image ens=${this.ensAvatar} address=${this.address} size="60">
             </w3m-zorb-ens-image>
               <w3m-text variant="large-bold" color="primary">
               ${formatAddress(this.address)}              

@@ -46,7 +46,10 @@ async function getENSAvatar(account: string) {
 
     return ''
   } catch (error) {
-    console.log('error', error)
+    // eslint-disable-next-line no-console
+    console.log('getENSAvatar error', error)
+
+    return ''
   }
 }
 
@@ -79,7 +82,7 @@ async function onClientConnected() {
     connector.on('message', onConnectorMessage)
     connector.on('error', onConnectorError)
     const balance = await getBalance(account)
-    const ensAvatar = await getENSAvatar('0x227612e69B1d06250E7035C1c12840561EBF3c56') // Making one more re-render
+    const ensAvatar = await getENSAvatar(account)
 
     AccountCtrl.setAccount({
       address: account,

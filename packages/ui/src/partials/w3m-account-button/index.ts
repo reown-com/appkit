@@ -33,10 +33,10 @@ export class W3mAccountButton extends ThemedElement {
     this.address = AccountCtrl.state.address
     this.balance = AccountCtrl.state.balance
     this.ensAvatar = AccountCtrl.state.ensAvatar
-    console.log('ensAvatar', this.ensAvatar)
 
     this.unsubscribe = AccountCtrl.subscribe(() => {
       this.address = AccountCtrl.state.address
+      this.ensAvatar = AccountCtrl.state.ensAvatar
       this.balance = AccountCtrl.state.balance
     })
 
