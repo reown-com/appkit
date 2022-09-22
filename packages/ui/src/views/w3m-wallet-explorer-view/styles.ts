@@ -36,11 +36,6 @@ export default css`
     gap: 0.5em;
   }
 
-  .w3m-first-fetch::after,
-  .w3m-first-fetch::before {
-    opacity: 0;
-  }
-
   w3m-modal-content::-webkit-scrollbar {
     display: none;
   }
@@ -50,8 +45,7 @@ export default css`
     grid-template-columns: repeat(4, auto);
   }
 
-  .w3m-spinner-block,
-  .w3m-centered-block {
+  .w3m-spinner-block {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -59,7 +53,7 @@ export default css`
     overflow: hidden;
   }
 
-  .w3m-centered-block {
+  .w3m-loading .w3m-spinner-block {
     height: 100%;
   }
 

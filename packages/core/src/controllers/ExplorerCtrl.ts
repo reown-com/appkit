@@ -4,19 +4,15 @@ import { fetchWallets } from '../utils/ExplorerApi'
 
 // -- types -------------------------------------------------------- //
 export interface State {
-  search: string
-  page: number
-  wallets: ListingResponse
+  wallets: ListingResponse & { page: number }
+  search: ListingResponse & { page: number }
   previewWallets: Listing[]
-  isLoading: boolean
 }
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<State>({
-  search: '',
-  page: 1,
-  wallets: { listings: [], total: 0 },
-  isLoading: false,
+  wallets: { listings: [], total: 0, page: 1 },
+  search: { listings: [], total: 0, page: 1 },
   previewWallets: []
 })
 
@@ -35,31 +31,21 @@ export const ExplorerCtrl = {
     return state.previewWallets
   },
 
-  async getPaginatedWallets(params: PageParams, appendResults = true) {
+  async getPaginatedWallets(params: PageParams) {
     const { page, search } = params
-
-    if (typeof page !== 'undefined' && state.page !== page) state.page = page
-    if (typeof search !== 'undefined' && state.search !== search) {
-      state.search = search
-      state.page = 1
+    const { listings: listingsObj, total } = await fetchWallets(params)
+    const listings = Object.values(listingsObj)
+    const type = search ? 'search' : 'wallets'
+    state[type] = {
+      listings: [...state[type].listings, ...listings],
+      total,
+      page: page ?? 1
     }
-
-    state.isLoading = true
-    const { listings: listingsObj, total } = await fetchWallets({
-      ...params,
-      page: state.page
-    })
-
-    const listings = appendResults
-      ? [...state.wallets.listings, ...Object.values(listingsObj)]
-      : Object.values(listingsObj)
-    state.wallets = {
-      listings,
-      total
-    }
-
-    state.isLoading = false
 
     return { listings, total }
+  },
+
+  resetSearch() {
+    state.search = { listings: [], total: 0, page: 1 }
   }
 }
