@@ -23,9 +23,6 @@ export class W3mAccountView extends LitElement {
   public constructor() {
     super()
     this.subscribeAccountChanges()
-    // this.getAccounts()
-    // this.getBalance()
-    // this.getENSAvatar()
   }
 
   // -- private ------------------------------------------------------ //
