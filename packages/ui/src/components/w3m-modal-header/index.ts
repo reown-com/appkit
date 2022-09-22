@@ -13,7 +13,7 @@ export class W3mModalHeader extends ThemedElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
-  @property() public title = 'No Title'
+  @property() public title = ''
 
   // -- private ------------------------------------------------------ //
   private backBtntemplate() {
@@ -24,13 +24,14 @@ export class W3mModalHeader extends ThemedElement {
   protected render() {
     const backBtn = RouterCtrl.state.history.length > 1
 
+    const content = this.title
+      ? html`<w3m-text variant="large-bold">${this.title}</w3m-text>`
+      : html`<slot></slot>`
+
     return html`
       ${dynamicStyles()}
 
-      <div class="w3m-modal-header">
-        ${backBtn ? this.backBtntemplate() : null}
-        <w3m-text variant="large-bold">${this.title}</w3m-text>
-      </div>
+      <div class="w3m-modal-header">${backBtn ? this.backBtntemplate() : null} ${content}</div>
     `
   }
 }

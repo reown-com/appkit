@@ -6,7 +6,7 @@ import { alchemyProvider } from '@wagmi/core/providers/alchemy'
 import { infuraProvider } from '@wagmi/core/providers/infura'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import { publicProvider } from '@wagmi/core/providers/public'
-import { Web3ModalEthereum } from './api'
+import { Web3ModalEthereum } from '../api'
 
 const Wagmi = {
   ...wagmi,

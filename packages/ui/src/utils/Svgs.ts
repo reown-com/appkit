@@ -519,3 +519,9 @@ export const CONNECTED_INDICATOR = svg`
   </defs>
 </svg>
 `
+
+export const SEARCH_ICON = svg`
+  <svg width="20" height="21">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M12.432 13.992c-.354-.353-.91-.382-1.35-.146a5.5 5.5 0 1 1 2.265-2.265c-.237.441-.208.997.145 1.35l3.296 3.296a.75.75 0 1 1-1.06 1.061l-3.296-3.296Zm.06-5a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z" fill="#949E9E"/>
+  </svg>
+`

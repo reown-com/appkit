@@ -18,9 +18,11 @@
     "npm-publish:canary": "lerna exec -- npm publish --no-private --access public --tag canary"
   },
   "workspaces": [
-    "chains/*",
-    "packages/*",
-    "examples/*"
+    "chains/ethereum",
+    "packages/core",
+    "packages/ui",
+    "packages/react",
+    "examples/react"
   ],
   "devDependencies": {
     "@rollup/plugin-commonjs": "22.0.2",
@@ -30,7 +32,7 @@
     "@typescript-eslint/parser": "5.38.0",
     "eslint": "8.23.1",
     "eslint-config-prettier": "8.5.0",
-    "lerna": "5.5.1",
+    "lerna": "5.5.2",
     "prettier": "2.7.1",
     "rollup": "2.79.0",
     "rollup-plugin-esbuild": "4.10.1",

@@ -1,16 +1,15 @@
 {
   "name": "react-example",
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.0-alpha.4",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export"
+    "build": "next build; next export"
   },
   "dependencies": {
-    "@wagmi/core": "0.5.6",
-    "@web3modal/ethereum": "2.0.0-alpha.2",
-    "@web3modal/react": "2.0.0-alpha.2",
-    "next": "12.3.1",
+    "@web3modal/ethereum": "2.0.0-alpha.4",
+    "@web3modal/react": "2.0.0-alpha.4",
+    "next": "12.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },

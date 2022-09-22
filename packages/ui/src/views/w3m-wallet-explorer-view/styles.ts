@@ -21,9 +21,32 @@ export default css`
     opacity: 1;
   }
 
-  .w3m-first-fetch {
-    justify-content: center;
+  .w3m-explorer-search {
+    border-radius: 16px;
+    transition: all 0.2s ease-in-out;
+    height: 100%;
+    width: 75%;
+    padding-left: 0.5em;
+    margin-bottom: 1px;
+    height: 1.5em;
+    display: flex;
     align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+  }
+
+  .w3m-explorer-search input {
+    background: none;
+    width: 5em;
+    line-height: 20px;
+    margin-top: 1px;
+    outline: none;
+    border: none;
+    font-size: 16px;
+  }
+
+  .w3m-explorer-search input:focus {
+    width: 100%;
   }
 
   .w3m-first-fetch::after,
@@ -40,12 +63,17 @@ export default css`
     grid-template-columns: repeat(4, auto);
   }
 
-  .w3m-spinner-block {
+  .w3m-spinner-block,
+  .w3m-centered-block {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100px;
     overflow: hidden;
+  }
+
+  .w3m-centered-block {
+    height: 100%;
   }
 
   .w3m-end-reached .w3m-spinner-block {
@@ -59,13 +87,32 @@ export default css`
 `
 
 export function dynamicStyles() {
-  const { background } = color()
+  const { background, foreground } = color()
 
   return html`
     <style>
       w3m-modal-content::before {
         box-shadow: 0 -1px 0 0 ${background[1]};
         background: linear-gradient(${background[1]}, transparent);
+      }
+
+      .w3m-explorer-search {
+        background: ${background[2]};
+      }
+
+      .w3m-explorer-search:active,
+      .w3m-explorer-search:focus-within {
+        border: solid 1px ${foreground.accent};
+        background: ${background[1]};
+      }
+
+      .w3m-explorer-search svg {
+        height: 20px;
+        width: 20px;
+      }
+
+      .w3m-explorer-search input {
+        color: ${foreground[2]};
       }
 
       w3m-modal-content::after {

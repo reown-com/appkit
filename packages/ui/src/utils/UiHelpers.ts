@@ -77,3 +77,18 @@ export function formatAddress(address: string) {
 export function getErrorMessage(err: unknown) {
   return err instanceof Error ? err.message : 'Unknown Error'
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function debounce(func: (...args: any[]) => unknown, timeout = 500) {
+  let timer: NodeJS.Timeout | undefined = undefined
+
+  return (...args: unknown[]) => {
+    function next() {
+      func(...args)
+    }
+
+    if (timer) clearTimeout(timer)
+
+    timer = setTimeout(next, timeout)
+  }
+}
