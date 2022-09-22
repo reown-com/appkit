@@ -1,4 +1,4 @@
-import type { Listing } from '@web3modal/core'
+import type { Listing, ListingResponse } from '@web3modal/core'
 import {
   ClientCtrl,
   ConnectModalCtrl,
@@ -6,16 +6,15 @@ import {
   ExplorerCtrl,
   ModalToastCtrl
 } from '@web3modal/core'
-import type { ListingResponse } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-header'
+import '../../components/w3m-search-input'
 import '../../components/w3m-spinner'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-button'
-import { SEARCH_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import {
   debounce,
@@ -108,16 +107,9 @@ export class W3mWalletExplorerView extends LitElement {
     )
   }, 500)
 
-  private onSearch(ev: Event) {
-    const search = (ev.currentTarget as HTMLInputElement).value
-    this.searchDebounced(search)
-  }
-
-  private searchTemplate() {
-    return html`<span class="w3m-explorer-search">
-      ${SEARCH_ICON}
-      <input placeholder="Search" @input="${this.onSearch}" id="explorer-search" type="text" />
-    </span>`
+  private onSearch(event: Event) {
+    const { value } = event.target as HTMLInputElement
+    this.searchDebounced(value)
   }
 
   private loadingTemplate() {
@@ -185,7 +177,9 @@ export class W3mWalletExplorerView extends LitElement {
     return html`
       ${dynamicStyles()}
 
-      <w3m-modal-header>${this.searchTemplate()}</w3m-modal-header>
+      <w3m-modal-header>
+        <w3m-search-input .onChange=${this.onSearch.bind(this)}></w3m-search-input>
+      </w3m-modal-header>
 
       <w3m-modal-content class=${classMap(classes)}>
         ${this.isLoadingFiltered && !this.isLoadingEndless && !this.firstFetch

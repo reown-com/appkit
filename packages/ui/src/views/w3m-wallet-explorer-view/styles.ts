@@ -8,6 +8,7 @@ export default css`
     overflow: scroll;
     scrollbar-width: none;
     position: relative;
+    margin-top: 9px;
   }
 
   w3m-modal-content::before,
@@ -33,20 +34,6 @@ export default css`
     align-items: center;
     justify-content: center;
     gap: 0.5em;
-  }
-
-  .w3m-explorer-search input {
-    background: none;
-    width: 5em;
-    line-height: 20px;
-    margin-top: 1px;
-    outline: none;
-    border: none;
-    font-size: 16px;
-  }
-
-  .w3m-explorer-search input:focus {
-    width: 100%;
   }
 
   .w3m-first-fetch::after,
@@ -109,10 +96,6 @@ export function dynamicStyles() {
       .w3m-explorer-search svg {
         height: 20px;
         width: 20px;
-      }
-
-      .w3m-explorer-search input {
-        color: ${foreground[2]};
       }
 
       w3m-modal-content::after {
