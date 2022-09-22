@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export"
+    "build": "next build; next export"
   },
   "dependencies": {
     "@web3modal/ethereum": "2.0.0-alpha.4",
     "@web3modal/react": "2.0.0-alpha.4",
-    "next": "12.3.1",
+    "next": "12.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
