@@ -43,7 +43,7 @@ export class W3mZorbImage extends LitElement {
   }
 
   private zorbAvatar() {
-    const renderedZorb = zorbImageSVG(this.address, this.size)
+    const renderedZorb = zorbImageSVG(AccountCtrl.state.address, this.size)
 
     return html`<div>${renderedZorb}</div> `
   }

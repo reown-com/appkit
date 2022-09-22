@@ -23,18 +23,26 @@ export class W3mAccountButton extends ThemedElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.getAccounts()
+
+    this.subscribeAccountChanges()
+
     this.getBalance()
     this.getENSAvatar()
   }
 
   // -- private ------------------------------------------------------ //
-  private getAccounts() {
-    try {
+
+  private unsubscribe?: () => void = undefined
+
+  private subscribeAccountChanges() {
+    this.address = AccountCtrl.state.address
+    this.unsubscribe = AccountCtrl.subscribe(newAccount => {
+      if (newAccount.address) AccountCtrl.setAddress(newAccount.address)
+      if (newAccount.chainId) AccountCtrl.setChain(newAccount.chainId, newAccount.chainSupported)
       this.address = AccountCtrl.state.address
-    } catch (e) {
-      throw new Error('No Account Details connection')
-    }
+    })
+
+    return () => this.unsubscribe
   }
 
   // Move to AccountCtrl?

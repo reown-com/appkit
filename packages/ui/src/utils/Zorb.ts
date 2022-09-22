@@ -171,6 +171,8 @@ export const gradientForAddress = (address: string) => {
 }
 
 export const zorbImageSVG = (address: string, size: string) => {
+  if (!address) return null
+
   const gradientInfo = gradientForAddress(address)
 
   return svg`

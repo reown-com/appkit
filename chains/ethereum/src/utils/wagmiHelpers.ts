@@ -38,6 +38,7 @@ function onClientConnected() {
   const chain = getClient()?.data?.chain
   const connector = getClient()?.connector
   const provider = getClient()?.provider
+
   if (account && chain && connector && provider) {
     connector.on('change', onConnectorChange)
     connector.on('message', onConnectorMessage)
