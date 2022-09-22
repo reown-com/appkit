@@ -14,7 +14,7 @@ We highly recomend reading through [wagmi](https://wagmi.sh/) if you want to und
 | appName     | String containing your app name                                                    | YES      |                  |
 | autoConnect | Boolean indicating whether user should be re-connected when they re-visit your app | NO       | `true`           |
 | chains      | Array of [chains](./src/utils/wagmiTools.ts) supported from your app               | NO       | `mainnet`        |
-| chains      | Array of [providers](./src/utils/wagmiTools.ts) supported from your app            | NO       | `publicProvider` |
+| providers      | Array of [providers](./src/utils/wagmiTools.ts) supported from your app            | NO       | `publicProvider` |
 
 ## Imports
 
