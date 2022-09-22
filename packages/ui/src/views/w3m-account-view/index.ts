@@ -6,7 +6,7 @@ import '../../components/w3m-button'
 import '../../components/w3m-modal-footer'
 import '../../components/w3m-text'
 import '../../components/w3m-zorb-ens-image'
-import { CLIPBOARD, CONNECTED_INDICATOR, DISCONNECT, ETH_LOGO } from '../../utils/Svgs'
+import { CLIPBOARD_BLUE, CONNECTED_INDICATOR, DISCONNECT, ETH_LOGO } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { formatAddress, roundBalance } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
@@ -74,6 +74,9 @@ export class W3mAccountView extends LitElement {
   }
 
   // -- render ------------------------------------------------------- //
+  // eslint-disable-next-line no-warning-comments
+  // ToDo: Optimize CLIPBOARD_BLUE and DISCONNECT ICON with blueBackground
+
   protected render() {
     return html`
       ${dynamicStyles()}
@@ -113,7 +116,7 @@ export class W3mAccountView extends LitElement {
         <w3m-modal-footer>
           <div class="w3m-footer-action-container">
             <button class="w3m-footer-actions" @click=${this.copyClipboard}>
-              <div>${CLIPBOARD}</div>
+              <div>${CLIPBOARD_BLUE}</div>
               <w3m-text variant="small-normal" color="secondary">Copy Address</w3m-text>
             </button>
 

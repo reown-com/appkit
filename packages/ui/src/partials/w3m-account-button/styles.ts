@@ -71,18 +71,16 @@ export default css`
   }
 
   .w3m-chevron-container {
-    height: 16px;
-    width: 4px;
+    transform: rotate(180deg);
+    height: 18px;
+    width: 6px;
     display: block;
     padding-right: 4px;
   }
 
   .w3m-chevron-container svg {
-    position: relative;
-    top: 2px;
-    left: 10px;
-    height: 16px;
-    width: 4px;
+    height: 18px;
+    width: 6px;
   }
 
   .w3m-ens-zorb-container {
@@ -140,6 +138,10 @@ export function dynamicStyles() {
 
     .w3m-eth-logo-container {
       background-color: ${foreground[1]};
+    }
+
+    .w3m-chevron-container path {
+      fill: ${foreground.inverse};
     }
   </style>`
 }

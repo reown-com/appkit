@@ -1,7 +1,7 @@
 import { RouterCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { BACK_ICON } from '../../utils/Svgs'
+import { CHEVRON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import '../w3m-spinner'
@@ -17,7 +17,7 @@ export class W3mModalHeader extends ThemedElement {
 
   // -- private ------------------------------------------------------ //
   private backBtntemplate() {
-    return html`<button class="w3m-back-btn" @click=${RouterCtrl.goBack}>${BACK_ICON}</button>`
+    return html`<button class="w3m-back-btn" @click=${RouterCtrl.goBack}>${CHEVRON}</button>`
   }
 
   // -- render ------------------------------------------------------- //
