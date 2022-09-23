@@ -1,5 +1,5 @@
 import type { Client, ConnectorData } from '@wagmi/core'
-import { chain as wagmiChain, configureChains, createClient } from '@wagmi/core'
+import { chain as wagmiChain, configureChains, createClient, watchAccount } from '@wagmi/core'
 import type { State } from '@wagmi/core/dist/declarations/src/client'
 import { publicProvider } from '@wagmi/core/providers/public'
 import { AccountCtrl } from '@web3modal/core'
@@ -17,8 +17,16 @@ export function getClient() {
   return client
 }
 
+export function initializeWatchers() {
+  watchAccount(({ address, connector }) =>
+    AccountCtrl.setAccount({
+      address,
+      connector
+    })
+  )
+}
+
 function onConnectorChange(event: ConnectorData) {
-  if (event.account) AccountCtrl.setAddress(event.account)
   if (event.chain) {
     /* TODO: Set this in NetworkCtrl*/
   }
@@ -41,10 +49,6 @@ function onClientConnected() {
     connector.on('change', onConnectorChange)
     connector.on('message', onConnectorMessage)
     connector.on('error', onConnectorError)
-    AccountCtrl.setAccount({
-      address: account,
-      connector
-    })
   }
 }
 
@@ -76,4 +80,6 @@ export function initializeClient(options: EthereumOptions) {
 
   client = wagmiClient
   getClient()?.subscribe(onClientChange)
+
+  initializeWatchers()
 }
