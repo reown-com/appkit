@@ -1,10 +1,6 @@
 import { ClientCtrl } from '@web3modal/core'
+import type { GetContractArgs } from '@web3modal/ethereum'
 
-// -- utilities ---------------------------------------------------- //
-const { getContract } = ClientCtrl.ethereum()
-type Options = Parameters<typeof getContract>[0]
-
-// -- hook --------------------------------------------------------- //
-export function useContract(options: Options) {
-  return getContract(options)
+export function useContract(...args: GetContractArgs) {
+  return ClientCtrl.ethereum().getContract(...args)
 }

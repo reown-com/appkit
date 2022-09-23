@@ -1,11 +1,12 @@
 import { ClientCtrl } from '@web3modal/core'
+import type { SignMessageArgs } from '@web3modal/ethereum'
 import { useAsyncHookBuilder } from '../../utils/useAsyncHookBuilder'
 
-const { signMessage: clientSignMessage } = ClientCtrl.ethereum()
-type Options = Parameters<typeof clientSignMessage>[0]
-
-export function useSignMessage(options: Options) {
-  const { callAction: signMessage, ...result } = useAsyncHookBuilder(clientSignMessage, options)
+export function useSignMessage(...args: SignMessageArgs) {
+  const { callAction: signMessage, ...result } = useAsyncHookBuilder(
+    ClientCtrl.ethereum().signMessage,
+    ...args
+  )
 
   return {
     signMessage,

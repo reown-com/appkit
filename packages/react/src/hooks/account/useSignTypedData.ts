@@ -1,13 +1,12 @@
 import { ClientCtrl } from '@web3modal/core'
+import type { SignTypedDataArgs } from '@web3modal/ethereum'
 import { useAsyncHookBuilder } from '../../utils/useAsyncHookBuilder'
 
-// -- utilities ---------------------------------------------------- //
-const { signTypedData: clientSignTypedData } = ClientCtrl.ethereum()
-type Options = Parameters<typeof clientSignTypedData>[0]
-
-// -- hook --------------------------------------------------------- //
-export function useSignTypedData(options: Options) {
-  const { callAction: signTypedData, ...result } = useAsyncHookBuilder(clientSignTypedData, options)
+export function useSignTypedData(...args: SignTypedDataArgs) {
+  const { callAction: signTypedData, ...result } = useAsyncHookBuilder(
+    ClientCtrl.ethereum().signTypedData,
+    ...args
+  )
 
   return {
     signTypedData,
