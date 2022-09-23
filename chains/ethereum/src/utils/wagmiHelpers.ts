@@ -5,7 +5,6 @@ import { publicProvider } from '@wagmi/core/providers/public'
 import { AccountCtrl } from '@web3modal/core'
 import { Buffer } from 'buffer'
 import type { EthereumOptions } from '../../types/apiTypes'
-import { NAMESPACE } from './constants'
 import { defaultConnectors } from './wagmiTools'
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -20,17 +19,17 @@ export function getClient() {
 
 function onConnectorChange(event: ConnectorData) {
   if (event.account) AccountCtrl.setAddress(event.account)
-  if (event.chain) AccountCtrl.setChain(`${NAMESPACE}:${event.chain.id}`, !event.chain.unsupported)
+  if (event.chain) {
+    /* TODO: Set this in NetworkCtrl*/
+  }
 }
 
 function onConnectorMessage(event: { type: string; data?: unknown }) {
-  // eslint-disable-next-line no-console
-  console.log(event)
+  // TODO: Set this in ConnectorCtrl
 }
 
 function onConnectorError(event: Error) {
-  // eslint-disable-next-line no-console
-  console.log(event)
+  // TODO: Handle this in ConnectorCtrl
 }
 
 function onClientConnected() {
@@ -44,9 +43,7 @@ function onClientConnected() {
     connector.on('error', onConnectorError)
     AccountCtrl.setAccount({
       address: account,
-      chainId: `${NAMESPACE}:${chain.id}`,
-      chainSupported: !chain.unsupported,
-      connector: connector.id
+      connector
     })
   }
 }

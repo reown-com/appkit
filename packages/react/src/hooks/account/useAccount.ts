@@ -1,12 +1,11 @@
 import type { Account } from '@web3modal/core'
-import { AccountCtrl, initialAccountlState } from '@web3modal/core'
+import { AccountCtrl } from '@web3modal/core'
 import { useEffect, useState } from 'react'
 
 export function useAccount() {
-  const [account, setAccount] = useState<Account>(initialAccountlState)
+  const [account, setAccount] = useState<Account>(AccountCtrl.state)
 
   useEffect(() => {
-    setAccount(AccountCtrl.state)
     const unsubscribe = AccountCtrl.subscribe(newAccount => setAccount({ ...newAccount }))
 
     return () => unsubscribe()

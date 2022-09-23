@@ -1,7 +1,7 @@
+import type { Connector } from '@web3modal/ethereum'
+
 export interface Account {
-  connected: boolean
-  chainSupported: boolean
-  address: string
-  chainId: string
-  connector: string
+  address?: string
+  isConnected: boolean
+  connector?: Connector
 }

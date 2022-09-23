@@ -1,4 +1,4 @@
-export { AccountCtrl, initialAccountlState } from './src/controllers/AccountCtrl'
+export { AccountCtrl } from './src/controllers/AccountCtrl'
 export { ClientCtrl } from './src/controllers/ClientCtrl'
 export { ConfigCtrl } from './src/controllers/ConfigCtrl'
 export { ConnectModalCtrl } from './src/controllers/ConnectModalCtrl'

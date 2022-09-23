@@ -2,12 +2,10 @@ import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { Account } from '../../types/accountTypes'
 
 // -- initial state ------------------------------------------------ //
-export const initialAccountlState = {
-  connected: false,
-  chainSupported: false,
-  chainId: '',
-  address: '',
-  connector: ''
+const initialAccountlState = {
+  isConnected: false,
+  address: undefined,
+  conector: undefined
 }
 
 const state = proxy<Account>(initialAccountlState)
@@ -20,18 +18,17 @@ export const AccountCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  setAccount(account: Omit<Account, 'connected'>) {
+  setAccount(account: Omit<Account, 'isConnected'>) {
     Object.assign(state, account)
-    state.connected = true
+    state.isConnected = true
   },
 
   setAddress(address: Account['address']) {
     state.address = address
   },
 
-  setChain(chainId: Account['chainId'], chainSupported: Account['chainSupported']) {
-    state.chainId = chainId
-    state.chainSupported = chainSupported
+  setConnector(connector: Account['connector']) {
+    state.connector = connector
   },
 
   resetAccount() {
