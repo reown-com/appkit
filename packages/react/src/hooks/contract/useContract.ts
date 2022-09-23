@@ -1,15 +1,10 @@
 import { ClientCtrl } from '@web3modal/core'
-import type { GetContractOpts } from '@web3modal/ethereum'
-import { useSyncHookBuilder } from '../../utils/useSyncHookBuilder'
 
-export function useContract(initialOpts?: GetContractOpts) {
-  const { data: contract, ...fetchResult } = useSyncHookBuilder(
-    (opts: GetContractOpts) => ClientCtrl.ethereum().getContract(opts),
-    initialOpts
-  )
+// -- utilities ---------------------------------------------------- //
+const { getContract } = ClientCtrl.ethereum()
+type Options = Parameters<typeof getContract>[0]
 
-  return {
-    contract,
-    ...fetchResult
-  }
+// -- hook --------------------------------------------------------- //
+export function useContract(options: Options) {
+  return getContract(options)
 }

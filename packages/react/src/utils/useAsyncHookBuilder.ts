@@ -1,40 +1,45 @@
 import { useCallback, useEffect, useState } from 'react'
 
 export function useAsyncHookBuilder<TArgs, TResult>(
-  fetcher: (opts: TArgs) => Promise<TResult>,
-  initialOpts?: TArgs
+  action: (options: TArgs) => Promise<TResult>,
+  initialOptions: TArgs
 ) {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [error, setError] = useState<unknown>(null)
   const [data, setData] = useState<TResult | null>(null)
-  const [fetchedInitial, setFetchedInitial] = useState<boolean>(false)
+  const [error, setError] = useState<unknown>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isError, setIsError] = useState<boolean>(false)
+  const [isSuccess, setIsSuccess] = useState<boolean>(false)
 
-  const refetch = useCallback(
-    async (opts: TArgs) => {
+  const callAction = useCallback(
+    async (options: TArgs) => {
       try {
         setIsLoading(true)
-        const fetchedData = await fetcher(opts)
+        const fetchedData = await action(options)
         setData(fetchedData)
+        setIsError(false)
+        setError(null)
+        setIsSuccess(true)
       } catch (err: unknown) {
         setError(err)
+        setIsError(true)
+        setIsSuccess(false)
       } finally {
         setIsLoading(false)
       }
     },
-    [fetcher, setError, setIsLoading, setData]
+    [action]
   )
 
   useEffect(() => {
-    if (initialOpts && !fetchedInitial)
-      refetch(initialOpts).then(() => {
-        setFetchedInitial(true)
-      })
-  }, [initialOpts, refetch, setFetchedInitial, fetchedInitial])
+    callAction(initialOptions)
+  }, [])
 
   return {
     data,
-    refetch,
+    error,
+    callAction,
     isLoading,
-    error
+    isSuccess,
+    isError
   }
 }

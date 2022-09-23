@@ -5,8 +5,8 @@ import type { Account } from '../../types/accountTypes'
 export const initialAccountlState = {
   connected: false,
   chainSupported: false,
-  address: '',
   chainId: '',
+  address: '',
   connector: ''
 }
 

@@ -1,15 +1,16 @@
 import { ClientCtrl } from '@web3modal/core'
-import type { GetBalanceOpts } from '@web3modal/ethereum'
 import { useAsyncHookBuilder } from '../../utils/useAsyncHookBuilder'
 
-export function useBalance(initialOpts?: GetBalanceOpts) {
-  const { data: balance, ...fetchResult } = useAsyncHookBuilder(
-    async (opts: GetBalanceOpts) => ClientCtrl.ethereum().fetchBalance(opts),
-    initialOpts
-  )
+// -- utilities ---------------------------------------------------- //
+const { fetchBalance } = ClientCtrl.ethereum()
+type Options = Parameters<typeof fetchBalance>[0]
+
+// -- hook --------------------------------------------------------- //
+export function useBalance(options: Options) {
+  const { callAction: refetch, ...result } = useAsyncHookBuilder(fetchBalance, options)
 
   return {
-    balance,
-    ...fetchResult
+    ...result,
+    refetch
   }
 }

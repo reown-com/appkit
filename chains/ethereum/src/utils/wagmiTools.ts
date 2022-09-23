@@ -15,7 +15,7 @@ import {
   fantom,
   fantomTestnet
 } from './chains'
-import { NAMESPACE } from './helpers'
+import { NAMESPACE } from './constants'
 
 // -- providers ------------------------------------------------------- //
 function walletConnectProvider({ projectId }: GetWalletConnectProviderOpts) {

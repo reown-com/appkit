@@ -5,7 +5,7 @@ import { publicProvider } from '@wagmi/core/providers/public'
 import { AccountCtrl } from '@web3modal/core'
 import { Buffer } from 'buffer'
 import type { EthereumOptions } from '../../types/apiTypes'
-import { NAMESPACE } from './helpers'
+import { NAMESPACE } from './constants'
 import { defaultConnectors } from './wagmiTools'
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

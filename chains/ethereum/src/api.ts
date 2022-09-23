@@ -1,27 +1,25 @@
 import type { Connector } from '@wagmi/core'
 import * as WagmiCore from '@wagmi/core'
 import { CoreHelpers } from '@web3modal/core'
-import type * as ApiTypes from '../types/apiTypes'
-import { formatOpts, getChainIdReference } from './utils/helpers'
+import type { EthereumOptions } from '../types/apiTypes'
 import { getClient, initializeClient } from './utils/wagmiHelpers'
 
 export const Web3ModalEthereum = {
   // -- config ------------------------------------------------------- //
-
-  createClient(options: ApiTypes.EthereumOptions) {
+  createClient(options: EthereumOptions) {
     initializeClient(options)
 
     return this
   },
 
-  // -- chains ----------------------------------------------------- //
+  // -- chains ------------------------------------------------------- //
   getDefaultConnectorChainId(connector: Connector) {
     const chainId = connector.chains[0].id
 
     return chainId
   },
 
-  // -- connectors ------------------------------------------------- //
+  // -- connectors --------------------------------------------------- //
   getConnectorById(id: 'coinbaseWallet' | 'injected' | 'metaMask' | 'walletConnect') {
     const connector = getClient()?.connectors.find(item => item.id === id)
     if (!connector) throw new Error(`Missing ${id} connector`)
@@ -122,143 +120,51 @@ export const Web3ModalEthereum = {
     return data
   },
 
-  // -- actions ----------------------------------------------------- //
-  async switchChain(chainId: string) {
-    const chain = await WagmiCore.switchNetwork({ chainId: getChainIdReference(chainId) })
+  // -- actions ------------------------------------------------------ //
+  switchNetwork: WagmiCore.switchNetwork,
 
-    return `eip155:${chain.id}`
-  },
+  signTypedData: WagmiCore.signTypedData,
 
-  async signTypedData({ value, domain, types }: ApiTypes.SignTypedDataOpts) {
-    const signature = await WagmiCore.signTypedData({ value, domain, types })
+  signMessage: WagmiCore.signMessage,
 
-    return signature
-  },
+  // -- fetch -------------------------------------------------------- //
+  fetchBalance: WagmiCore.fetchBalance,
 
-  async signMessage(message: string) {
-    const signature = await WagmiCore.signMessage({ message })
+  fetchSigner: WagmiCore.fetchSigner,
 
-    return signature
-  },
+  getNetwork: WagmiCore.getNetwork,
 
-  // -- fetch ------------------------------------------------------- //
-  async fetchBalance(opts: ApiTypes.GetBalanceOpts) {
-    const balance = await WagmiCore.fetchBalance(formatOpts(opts))
+  // -- contract ----------------------------------------------------- //
+  getContract: WagmiCore.getContract,
 
-    return balance.formatted
-  },
+  fetchToken: WagmiCore.fetchToken,
 
-  async fetchSigner() {
-    const signer = await WagmiCore.fetchSigner()
+  readContract: WagmiCore.readContract,
 
-    return signer
-  },
+  writeContract: WagmiCore.writeContract,
 
-  getNetwork() {
-    const network = WagmiCore.getNetwork()
+  prepareWriteContract: WagmiCore.prepareWriteContract,
 
-    return network
-  },
+  watchReadContract: WagmiCore.watchReadContract,
 
-  // ----------- contract ----------------------------- //
+  // -- ens ---------------------------------------------------------- //
+  fetchEnsAddress: WagmiCore.fetchEnsAddress,
 
-  getContract({ addressOrName, contractInterface, signerOrProvider }: ApiTypes.GetContractOpts) {
-    const contract = WagmiCore.getContract({ addressOrName, contractInterface, signerOrProvider })
+  fetchEnsAvatar: WagmiCore.fetchEnsAvatar,
 
-    return contract
-  },
+  fetchEnsName: WagmiCore.fetchEnsName,
 
-  async getToken({ address, chainId, formatUnits }: ApiTypes.GetTokenOpts) {
-    const token = await WagmiCore.fetchToken({
-      address,
-      chainId: getChainIdReference(chainId),
-      formatUnits
-    })
+  fetchEnsResolver: WagmiCore.fetchEnsResolver,
 
-    return token
-  },
+  // -- transaction -------------------------------------------------- //
+  fetchTransaction: WagmiCore.fetchTransaction,
 
-  async readContract(opts: ApiTypes.ReadContractOpts) {
-    const read = await WagmiCore.readContract(formatOpts(opts))
+  prepareSendTransaction: WagmiCore.prepareSendTransaction,
 
-    return read
-  },
+  sendTransaction: WagmiCore.sendTransaction,
 
-  async writeContract(opts: ApiTypes.WriteContractOpts) {
-    const write = await WagmiCore.writeContract(
-      formatOpts({
-        mode: 'prepared',
-        ...opts
-      })
-    )
+  waitForTransaction: WagmiCore.waitForTransaction,
 
-    return write
-  },
-
-  async prepareWriteContract(opts: ApiTypes.PrepareWriteContractOpts) {
-    const preperation = await WagmiCore.prepareWriteContract(formatOpts(opts))
-
-    return preperation
-  },
-
-  watchReadContract(opts: ApiTypes.WatchReadContractOpts) {
-    const { callback, ...remainingOpts } = opts
-    WagmiCore.watchReadContract(formatOpts(remainingOpts), callback)
-  },
-
-  // ----------- ens ----------------------------- //
-
-  async fetchEnsAddress(opts: ApiTypes.FetchEnsAddressOpts) {
-    const address = await WagmiCore.fetchEnsAddress(formatOpts(opts))
-
-    return address?.toString()
-  },
-
-  async fetchEnsAvatar(opts: ApiTypes.FetchEnsAvatarOpts) {
-    const avatar = await WagmiCore.fetchEnsAvatar(formatOpts(opts))
-
-    return avatar?.toString()
-  },
-
-  async fetchEnsName(opts: ApiTypes.FetchEnsNameOpts) {
-    const name = await WagmiCore.fetchEnsName(formatOpts(opts))
-
-    return name?.toString()
-  },
-
-  async fetchEnsResolver(opts: ApiTypes.FetchEnsAddressOpts) {
-    const resolver = await WagmiCore.fetchEnsResolver(formatOpts(opts))
-
-    return resolver
-  },
-
-  // ----------- transaction ---------------------- //
-
-  async fetchTransaction(opts: ApiTypes.FetchTransactionOpts) {
-    const transaction = await WagmiCore.fetchTransaction(formatOpts(opts))
-
-    return transaction
-  },
-
-  async prepareSendTransaction(opts: ApiTypes.PrepareSendTransactionOpts) {
-    const preparation = await WagmiCore.prepareSendTransaction(formatOpts(opts))
-
-    return preparation
-  },
-
-  async sendTransaction(opts: ApiTypes.PrepareSendTransactionOpts) {
-    const prep = await WagmiCore.prepareSendTransaction(formatOpts(opts))
-    const result = await WagmiCore.sendTransaction({
-      mode: 'prepared',
-      request: prep.request
-    })
-
-    return result
-  },
-
-  async waitForTransaction(opts: ApiTypes.WaitForTransactionOpts) {
-    const receipt = await WagmiCore.waitForTransaction(formatOpts(opts))
-
-    return receipt
-  }
+  // -- provider -------------------------------------------------- //
+  getProvider: WagmiCore.getProvider
 }

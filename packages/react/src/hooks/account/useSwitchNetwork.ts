@@ -1,14 +1,16 @@
 import { ClientCtrl } from '@web3modal/core'
 import { useAsyncHookBuilder } from '../../utils/useAsyncHookBuilder'
 
-export function useSwitchNetwork() {
-  const { data, refetch, ...fetchResult } = useAsyncHookBuilder(async (chainId: string) =>
-    ClientCtrl.ethereum().switchChain(chainId)
-  )
+// -- utilities ---------------------------------------------------- //
+const { switchNetwork: clientSwitchNetwork } = ClientCtrl.ethereum()
+type Options = Parameters<typeof clientSwitchNetwork>[0]
+
+// -- hook --------------------------------------------------------- //
+export function useSwitchNetwork(options: Options) {
+  const { callAction: switchNetwork, ...result } = useAsyncHookBuilder(clientSwitchNetwork, options)
 
   return {
-    chainId: data,
-    switchChain: refetch,
-    ...fetchResult
+    switchNetwork,
+    ...result
   }
 }

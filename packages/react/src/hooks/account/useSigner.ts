@@ -1,10 +1,12 @@
 import { ClientCtrl } from '@web3modal/core'
 import { useAsyncHookBuilder } from '../../utils/useAsyncHookBuilder'
 
-export function useSigner() {
-  const { data: signer, ...fetchResult } = useAsyncHookBuilder(async () =>
-    ClientCtrl.ethereum().fetchSigner()
-  )
+// -- utilities ---------------------------------------------------- //
+const { fetchSigner } = ClientCtrl.ethereum()
 
-  return { signer, ...fetchResult }
+// -- hook --------------------------------------------------------- //
+export function useSigner() {
+  const { ...result } = useAsyncHookBuilder(fetchSigner, undefined)
+
+  return { ...result }
 }
