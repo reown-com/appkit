@@ -8,6 +8,7 @@ export default css`
     overflow: scroll;
     scrollbar-width: none;
     position: relative;
+    margin-top: 9px;
   }
 
   w3m-modal-content::before,
@@ -35,25 +36,6 @@ export default css`
     gap: 0.5em;
   }
 
-  .w3m-explorer-search input {
-    background: none;
-    width: 5em;
-    line-height: 20px;
-    margin-top: 1px;
-    outline: none;
-    border: none;
-    font-size: 16px;
-  }
-
-  .w3m-explorer-search input:focus {
-    width: 100%;
-  }
-
-  .w3m-first-fetch::after,
-  .w3m-first-fetch::before {
-    opacity: 0;
-  }
-
   w3m-modal-content::-webkit-scrollbar {
     display: none;
   }
@@ -63,8 +45,7 @@ export default css`
     grid-template-columns: repeat(4, auto);
   }
 
-  .w3m-spinner-block,
-  .w3m-centered-block {
+  .w3m-placeholder-block {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -72,13 +53,18 @@ export default css`
     overflow: hidden;
   }
 
-  .w3m-centered-block {
+  .w3m-loading .w3m-placeholder-block {
     height: 100%;
   }
 
-  .w3m-end-reached .w3m-spinner-block {
+  .w3m-end-reached .w3m-placeholder-block {
     height: 18px;
     opacity: 0;
+  }
+
+  .w3m-empty .w3m-placeholder-block {
+    opacity: 1;
+    height: 100%;
   }
 
   w3m-wallet-button {
@@ -109,10 +95,6 @@ export function dynamicStyles() {
       .w3m-explorer-search svg {
         height: 20px;
         width: 20px;
-      }
-
-      .w3m-explorer-search input {
-        color: ${foreground[2]};
       }
 
       w3m-modal-content::after {

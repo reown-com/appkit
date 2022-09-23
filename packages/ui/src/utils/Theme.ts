@@ -209,6 +209,12 @@ export const global = css`
     z-index: 1;
   }
 
+  input {
+    border: none;
+    outline: none;
+    appearance: none;
+  }
+
   img {
     display: block;
   }

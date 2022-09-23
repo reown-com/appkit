@@ -4,7 +4,7 @@ import { MOBILE_BREAKPOINT } from '../../utils/UiHelpers'
 
 export default css`
   .w3m-modal-overlay {
-    inset: 0;
+    inset: 0px;
     position: fixed;
     z-index: 10001;
     overflow: hidden;
