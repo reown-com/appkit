@@ -112,14 +112,14 @@ import { useSignTypedData } from '@web3modal/ethereum'
 const { isLoading, error, signature, sign } = useSignTypedData()
 ```
 
-### useSwitchNetork (⚠️ experimental)
+### useSwitchNetwork (⚠️ experimental)
 
 Hook to switch between supported networks
 
 ```tsx
-import { useSwitchNetork } from '@web3modal/ethereum'
+import { useSwitchNetwork } from '@web3modal/ethereum'
 
-const { isLoading, error, chainId, switchChain } = useSwitchNetork()
+const { isLoading, error, chainId, switchChain } = useSwitchNetwork()
 ```
 
 ### useContract
@@ -249,7 +249,7 @@ useWatchReadContract(options)
 
 ### useFetchEnsAddress
 
-Hook to fetch public address from ens adress
+Hook to fetch public address from ens address
 
 ```tsx
 import { useFetchEnsAddress } from '@web3modal/ethereum'
