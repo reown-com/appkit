@@ -3,7 +3,7 @@ import type { SwitchNetworkArgs } from '@web3modal/ethereum'
 import { useAsyncHookBuilder } from '../../utils/useAsyncHookBuilder'
 
 export function useSwitchNetwork(...args: SwitchNetworkArgs) {
-  const { callAction: switchNetwork, ...result } = useAsyncHookBuilder(
+  const { onAction: switchNetwork, ...result } = useAsyncHookBuilder(
     ClientCtrl.ethereum().switchNetwork,
     ...args
   )

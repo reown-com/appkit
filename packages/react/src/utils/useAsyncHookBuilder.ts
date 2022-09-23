@@ -1,28 +1,24 @@
 import { useCallback, useEffect, useState } from 'react'
 
 export function useAsyncHookBuilder<TArgs, TResult>(
-  action: (options: TArgs) => Promise<TResult>,
-  initialOptions: TArgs
+  action: (args: TArgs) => Promise<TResult>,
+  initialArgs: TArgs
 ) {
-  const [data, setData] = useState<TResult | null>(null)
-  const [error, setError] = useState<unknown>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [isError, setIsError] = useState<boolean>(false)
-  const [isSuccess, setIsSuccess] = useState<boolean>(false)
+  const [data, setData] = useState<TResult | undefined>(undefined)
+  const [error, setError] = useState<Error | undefined>(undefined)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const callAction = useCallback(
-    async (options: TArgs) => {
+  const onAction = useCallback(
+    async (args: TArgs) => {
       try {
         setIsLoading(true)
-        const fetchedData = await action(options)
-        setData(fetchedData)
-        setIsError(false)
-        setError(null)
-        setIsSuccess(true)
+        const actionData = await action(args)
+        setData(actionData)
+        setError(undefined)
       } catch (err: unknown) {
-        setError(err)
-        setIsError(true)
-        setIsSuccess(false)
+        if (err instanceof Error) setError(err)
+        else setError(new Error('Unknown error'))
+        setData(undefined)
       } finally {
         setIsLoading(false)
       }
@@ -31,15 +27,13 @@ export function useAsyncHookBuilder<TArgs, TResult>(
   )
 
   useEffect(() => {
-    callAction(initialOptions)
+    onAction(initialArgs)
   }, [])
 
   return {
     data,
     error,
-    callAction,
-    isLoading,
-    isSuccess,
-    isError
+    onAction,
+    isLoading
   }
 }
