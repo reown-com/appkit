@@ -45,7 +45,7 @@ export default css`
     grid-template-columns: repeat(4, auto);
   }
 
-  .w3m-spinner-block {
+  .w3m-placeholder-block {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -53,13 +53,18 @@ export default css`
     overflow: hidden;
   }
 
-  .w3m-loading .w3m-spinner-block {
+  .w3m-loading .w3m-placeholder-block {
     height: 100%;
   }
 
-  .w3m-end-reached .w3m-spinner-block {
+  .w3m-end-reached .w3m-placeholder-block {
     height: 18px;
     opacity: 0;
+  }
+
+  .w3m-empty .w3m-placeholder-block {
+    opacity: 1;
+    height: 100%;
   }
 
   w3m-wallet-button {

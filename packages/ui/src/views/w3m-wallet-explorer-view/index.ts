@@ -46,8 +46,8 @@ export class W3mWalletExplorerView extends LitElement {
   }
 
   // -- private ------------------------------------------------------ //
-  private get loaderEl() {
-    return getShadowRootElement(this, '.w3m-spinner-block')
+  private get placeholderEl() {
+    return getShadowRootElement(this, '.w3m-placeholder-block')
   }
 
   private intersectionObserver: IntersectionObserver | undefined = undefined
@@ -56,7 +56,7 @@ export class W3mWalletExplorerView extends LitElement {
     this.intersectionObserver = new IntersectionObserver(([element]) => {
       if (element.isIntersecting && !(this.search && this.firstFetch)) this.fetchWallets()
     })
-    this.intersectionObserver.observe(this.loaderEl)
+    this.intersectionObserver.observe(this.placeholderEl)
   }
 
   private isLastPage() {
@@ -130,9 +130,11 @@ export class W3mWalletExplorerView extends LitElement {
   protected render() {
     const { wallets, search } = ExplorerCtrl.state
     const { listings } = this.search ? search : wallets
+    const isEmpty = !this.loading && !listings.length
     const classes = {
       'w3m-loading': this.loading && !listings.length,
-      'w3m-end-reached': this.endReached
+      'w3m-end-reached': this.endReached,
+      'w3m-empty': isEmpty
     }
 
     return html`
@@ -155,8 +157,10 @@ export class W3mWalletExplorerView extends LitElement {
             `
           )}
         </div>
-        <div class="w3m-spinner-block">
-          <w3m-spinner></w3m-spinner>
+        <div class="w3m-placeholder-block">
+          ${isEmpty
+            ? html`<w3m-text variant="large-bold" color="secondary">No results found</w3m-text>`
+            : html`<w3m-spinner></w3m-spinner>`}
         </div>
       </w3m-modal-content>
     `
