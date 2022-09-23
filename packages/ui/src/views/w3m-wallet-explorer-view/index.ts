@@ -109,21 +109,22 @@ export class W3mWalletExplorerView extends LitElement {
   }
 
   private readonly searchDebounce = debounce((value: string) => {
-    this.firstFetch = true
-    this.endReached = false
-    this.search = value
-    ExplorerCtrl.resetSearch()
-    this.fetchWallets()
-  })
-
-  private onSearchChange(event: Event) {
-    const { value } = event.target as HTMLInputElement
-    if (value.length >= 3) this.searchDebounce(value)
-    else if (this.search) {
+    if (value.length >= 3) {
+      this.firstFetch = true
+      this.endReached = false
+      this.search = value
+      ExplorerCtrl.resetSearch()
+      this.fetchWallets()
+    } else if (this.search) {
       this.search = undefined
       this.endReached = this.isLastPage()
       ExplorerCtrl.resetSearch()
     }
+  })
+
+  private onSearchChange(event: Event) {
+    const { value } = event.target as HTMLInputElement
+    this.searchDebounce(value)
   }
 
   // -- render ------------------------------------------------------- //
