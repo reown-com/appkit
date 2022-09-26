@@ -17,7 +17,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@coinbase/wallet-sdk": "3.5.2",
+    "@coinbase/wallet-sdk": "3.5.3",
     "@wagmi/core": "0.5.7",
     "@walletconnect/ethereum-provider": "1.8.0",
     "@web3modal/core": "2.0.0-alpha.4",
