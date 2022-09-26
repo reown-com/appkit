@@ -19,6 +19,7 @@ section {
   padding: 20px;
   margin: 20px 0;
   overflow: scroll;
+  max-width: 90vw;
 }
 
 section h1 {
