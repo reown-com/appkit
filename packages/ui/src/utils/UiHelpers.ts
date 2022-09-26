@@ -66,12 +66,16 @@ export async function preloadImage(src: string) {
   })
 }
 
-export function roundBalance(address: string) {
-  return parseFloat(address).toFixed(2)
+export function roundBalance(balance: string) {
+  if (balance === '0.0') return parseFloat(balance).toFixed(2)
+
+  return parseFloat(balance).toFixed(3)
 }
 
-export function formatAddress(address: string) {
-  return `${address.substring(0, 5)}...${address.slice(-5)}`
+export function formatAddress(address: string, addressSize?: number) {
+  return `${address.substring(0, addressSize ?? 4)}...${address.slice(
+    addressSize ? -Math.abs(addressSize) : -4
+  )}`
 }
 
 export function getErrorMessage(err: unknown) {

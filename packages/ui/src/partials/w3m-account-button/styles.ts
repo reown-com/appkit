@@ -116,10 +116,6 @@ export function dynamicStyles() {
       color: ${foreground[3]};
     }
 
-    // svg path {
-    //   fill: ${foreground.inverse};
-    // }
-
     button:disabled svg path {
       fill: ${foreground[3]};
     }

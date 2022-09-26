@@ -1,13 +1,14 @@
 import { AccountCtrl, ConnectModalCtrl, RouterCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
+import '../../components/w3m-address'
+import '../../components/w3m-balance'
 import '../../components/w3m-text'
 import '../../components/w3m-zorb-ens-image'
 
 import { CHEVRON, ETH_LOGO } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
-import { formatAddress, roundBalance } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-account-button')
@@ -39,13 +40,16 @@ export class W3mAccountButton extends ThemedElement {
       this.ensAvatar = AccountCtrl.state.ensAvatar
       this.balance = AccountCtrl.state.balance
     })
-
-    return () => this.unsubscribe
   }
 
   private onOpen() {
     RouterCtrl.replace('Account')
     ConnectModalCtrl.openModal()
+  }
+
+  public disconnectedCallback() {
+    super.disconnectedCallback()
+    this.unsubscribe?.()
   }
 
   // -- render ------------------------------------------------------- //
@@ -55,10 +59,11 @@ export class W3mAccountButton extends ThemedElement {
       ${dynamicStyles()}
       <button class="w3m-act-button-container" @click=${this.onOpen}>
         <div class="w3m-act-balance-container">
-          <div class="w3m-eth-logo-container">${ETH_LOGO}</div>
-          <w3m-text variant="medium-normal" color="primary">${roundBalance(
-            this.balance
-          )} ETH</w3m-text>
+          <w3m-balance 
+            variant="medium-normal" 
+            .icon =${ETH_LOGO} 
+            balance=${this.balance}>
+          </w3m-balance>
         </div>
         <div class="w3m-address-container">
           <div class="w3m-ens-zorb-container">
@@ -66,9 +71,7 @@ export class W3mAccountButton extends ThemedElement {
       this.ensAvatar
     } size="24"></w3m-zorb-ens-image>
           </div>
-          <w3m-text variant="medium-normal" color="primary">${formatAddress(
-            this.address
-          )}</w3m-text>
+          <w3m-address variant="medium-normal" address=${this.address}></w3m-address>
           <div class="w3m-chevron-container">${CHEVRON}</div>
         </div>
       </buttom>

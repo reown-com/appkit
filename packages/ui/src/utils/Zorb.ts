@@ -1,24 +1,24 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable func-names */
 /* eslint-disable func-style */
+import { arrayify } from 'ethers/lib/utils'
+import { svg } from 'lit'
 
-/**
- * Zorbs by @jordienr & @ndom91
- * https://github.com/ourzora/zorb/tree/main/packages/zorb-web-component
- *
- * Codebase was adadpted for web3modal
+/*
+ * Zorbs by Zora.
+ * Adapted from: https://github.com/ourzora/zorb/blob/main/packages/zorb-web-component/src
+ * https://github.com/ensdomains/ens-app-v3/blob/dev/src/utils/gradient.ts
  */
 
-import { arrayify } from '@ethersproject/bytes'
-import { svg } from 'lit'
-import type { ColorInput } from 'tinycolor2'
-import tinycolor from 'tinycolor2'
+interface HSL {
+  h: number
+  s: number
+  l: number
+}
 
 const linear = (p: number) => p
 
 const cubicInOut = (p: number) => {
-  const m = p - 1,
-    t = p * 2
+  const m = p - 1
+  const t = p * 2
   if (t < 1) return p * t * t
 
   return 1 + m * m * m * 4
@@ -51,21 +51,21 @@ export const lerpHueFn = (optionNum: number, direction: number) => {
   const multiplier = direction ? 1 : -1
   switch (option) {
     case 0: {
-      return function (hue: number, pct: number) {
+      return (hue: number, pct: number) => {
         const endHue = hue + multiplier * 10
 
         return clampHue(linear(1.0 - pct) * hue + linear(pct) * endHue)
       }
     }
     case 1: {
-      return function (hue: number, pct: number) {
+      return (hue: number, pct: number) => {
         const endHue = hue + multiplier * 30
 
         return clampHue(linear(1.0 - pct) * hue + linear(pct) * endHue)
       }
     }
     case 2: {
-      return function (hue: number, pct: number) {
+      return (hue: number, pct: number) => {
         const endHue = hue + multiplier * 50
         const lerpPercent = cubicInOut(pct)
 
@@ -74,7 +74,7 @@ export const lerpHueFn = (optionNum: number, direction: number) => {
     }
     case 3:
     default: {
-      return function (hue: number, pct: number) {
+      return (hue: number, pct: number) => {
         const endHue = hue + multiplier * 60 * bscale(optionNum, 1.0) + 30
         const lerpPercent = cubicInOut(pct)
 
@@ -87,7 +87,7 @@ export const lerpHueFn = (optionNum: number, direction: number) => {
 const lerpLightnessFn = (optionNum: number) => {
   switch (optionNum) {
     case 0: {
-      return function (start: number, end: number, pct: number) {
+      return (start: number, end: number, pct: number) => {
         const lerpPercent = quintIn(pct)
 
         return (1.0 - lerpPercent) * start + lerpPercent * end
@@ -95,7 +95,7 @@ const lerpLightnessFn = (optionNum: number) => {
     }
     case 1:
     default: {
-      return function (start: number, end: number, pct: number) {
+      return (start: number, end: number, pct: number) => {
         const lerpPercent = cubicIn(pct)
 
         return (1.0 - lerpPercent) * start + lerpPercent * end
@@ -107,7 +107,7 @@ const lerpLightnessFn = (optionNum: number) => {
 const lerpSaturationFn = (optionNum: number) => {
   switch (optionNum) {
     case 0: {
-      return function (start: number, end: number, pct: number) {
+      return (start: number, end: number, pct: number) => {
         const lerpPercent = quintIn(pct)
 
         return (1.0 - lerpPercent) * start + lerpPercent * end
@@ -115,7 +115,7 @@ const lerpSaturationFn = (optionNum: number) => {
     }
     case 1:
     default: {
-      return function (start: number, end: number, pct: number) {
+      return (start: number, end: number, pct: number) => {
         const lerpPercent = linear(pct)
 
         return (1.0 - lerpPercent) * start + lerpPercent * end
@@ -124,8 +124,10 @@ const lerpSaturationFn = (optionNum: number) => {
   }
 }
 
-export const gradientForAddress = (address: string) => {
-  const bytes = arrayify(address).reverse()
+export const gradientForBytes = (address: string) => {
+  const bytes = arrayify(
+    address === '' ? '0x0000000000000000000000000000000000000000' : address
+  ).reverse()
   const hueShiftFn = lerpHueFn(bytes[3], bytes[6] % 2)
   const startHue = bscale(bytes[12], 360)
   const startLightness = bScaleRange(bytes[2], 32, 69.5)
@@ -135,7 +137,7 @@ export const gradientForAddress = (address: string) => {
 
   const lightnessShiftFn = lerpLightnessFn(bytes[5] % 2)
   const saturationShiftFn = lerpSaturationFn(bytes[3] % 2)
-  const inputs: ColorInput[] = [
+  const inputs: HSL[] = [
     {
       h: hueShiftFn(startHue, 0),
       s: saturationShiftFn(startSaturation, endSaturation, 1),
@@ -163,47 +165,29 @@ export const gradientForAddress = (address: string) => {
     }
   ]
 
-  // Return inputs;
-
-  return inputs
-    .map((c: ColorInput) => tinycolor(c))
-    .map((tc: tinycolor.Instance) => tc.toHslString())
+  return inputs.map(
+    (input: HSL) => `hsl(${Math.round(input.h)}, ${Math.round(input.s)}%, ${Math.round(input.l)}%)`
+  )
 }
 
 export const zorbImageSVG = (address: string, size: string) => {
-  if (!address) return null
-
-  const gradientInfo = gradientForAddress(address)
+  const gradientInfo = gradientForBytes(address)
 
   return svg`
-    <svg width="${size}" height="${size}" viewBox="0 0 110 110">
-    <defs>
-      <radialGradient
-        id="gzr"
-        gradientTransform="translate(66.4578 24.3575) scale(75.2908)"
-        gradientUnits="userSpaceOnUse"
-        r="1"
-        cx="0"
-        cy="0%"
-        >
-        <stop offset="15.62%" stop-color="${gradientInfo[0]}" />
-        <stop offset="39.58%" stop-color="${gradientInfo[1]}" />
-        <stop offset="72.92%" stop-color="${gradientInfo[2]}" />
-        <stop offset="90.63%" stop-color="${gradientInfo[3]}" />
-        <stop offset="100%" stop-color="${gradientInfo[4]}" />
-      </radialGradient>
+  <svg width="${size}" height="${size}" viewBox="0 0 110 110">
+  <defs>
+      <linearGradient id="gzr" x1="106.975" y1="136.156" x2="-12.9815" y2="13.5347" gradientUnits="userSpaceOnUse">
+        gradientTransform="translate(131.638 129.835) rotate(-141.194) scale(185.582)">
+        <stop offset="0.1562" stop-color="${gradientInfo[0]}" />
+        <stop offset="0.3958" stop-color="${gradientInfo[1]}" />
+        <stop offset="0.7292" stop-color="${gradientInfo[2]}" />
+        <stop offset="0.9063" stop-color="${gradientInfo[3]}" />
+        <stop offset="1" stop-color="${gradientInfo[4]}" />
+      </linearGradient>
     </defs>
-    <g transform="translate(5,5)">
-      <path
-        d="M100 50C100 22.3858 77.6142 0 50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C77.6142 100 100 77.6142 100 50Z"
-        fill="url(#gzr)"
-      /><path
-        stroke="rgba(0,0,0,0.075)"
-        fill="transparent"
-        stroke-width="1"
-        d="M50,0.5c27.3,0,49.5,22.2,49.5,49.5S77.3,99.5,50,99.5S0.5,77.3,0.5,50S22.7,0.5,50,0.5z"
-      />
-    </g>
+    <path
+      d="M110 55C110 24.6244 85.3756 0 55 0C24.6244 0 0 24.6244 0 55C0 85.3756 24.6244 110 55 110C85.3756 110 110 85.3756 110 55Z"
+      fill="url(#gzr)" />
   </svg>
     `
 }

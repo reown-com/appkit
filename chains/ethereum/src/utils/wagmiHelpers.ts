@@ -2,9 +2,9 @@ import type { Client, ConnectorData } from '@wagmi/core'
 import { chain as wagmiChain, configureChains, createClient } from '@wagmi/core'
 import type { State } from '@wagmi/core/dist/declarations/src/client'
 import { publicProvider } from '@wagmi/core/providers/public'
-import { AccountCtrl, ClientCtrl } from '@web3modal/core'
+import { AccountCtrl, ClientCtrl, ModalToastCtrl } from '@web3modal/core'
 import { Buffer } from 'buffer'
-import type { EthereumOptions, FetchEnsAvatarOpts, GetBalanceOpts } from '../../types/apiTypes'
+import type { EthereumOptions } from '../../types/apiTypes'
 import { NAMESPACE } from './helpers'
 import { defaultConnectors } from './wagmiTools'
 
@@ -18,24 +18,32 @@ export function getClient() {
   return client
 }
 
+export function getErrorMessage(err: unknown) {
+  return err instanceof Error ? err.message : 'Unknown Error'
+}
+
 async function getBalance(account: string) {
-  const opts: GetBalanceOpts = {
-    addressOrName: account,
-    chainId: `${NAMESPACE}:${AccountCtrl.state.chainId}`,
-    formatUnits: 'ether'
+  try {
+    const opts = {
+      addressOrName: account,
+      chainId: `${NAMESPACE}:${AccountCtrl.state.chainId}`,
+      formatUnits: 'ether'
+    }
+
+    const balance = await ClientCtrl.ethereum().fetchBalance(opts)
+    AccountCtrl.setBalance(balance)
+
+    return balance
+  } catch (error) {
+    ModalToastCtrl.openToast(getErrorMessage(error), 'error')
+
+    return ''
   }
-
-  const balance = await ClientCtrl.ethereum().fetchBalance(opts)
-  // eslint-disable-next-line line-comment-position, no-inline-comments, no-warning-comments
-  // Todo: Check / Might be setting state twice..?
-  AccountCtrl.setBalance(balance)
-
-  return balance
 }
 
 async function getENSAvatar(account: string) {
   try {
-    const opts: FetchEnsAvatarOpts = {
+    const opts = {
       chainId: `${NAMESPACE}:${AccountCtrl.state.chainId}`,
       addressOrName: account
     }
@@ -48,8 +56,7 @@ async function getENSAvatar(account: string) {
 
     return ''
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log('getENSAvatar error', error)
+    ModalToastCtrl.openToast(getErrorMessage(error), 'error')
 
     return ''
   }
@@ -58,8 +65,7 @@ async function getENSAvatar(account: string) {
 async function onConnectorChange(event: ConnectorData) {
   if (event.account) {
     AccountCtrl.setAddress(event.account)
-    await getBalance(event.account)
-    await getENSAvatar(event.account)
+    await Promise.all([getBalance(event.account), getENSAvatar(event.account)])
   }
   if (event.chain) AccountCtrl.setChain(`${NAMESPACE}:${event.chain.id}`, !event.chain.unsupported)
 }

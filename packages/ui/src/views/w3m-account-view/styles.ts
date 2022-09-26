@@ -57,9 +57,11 @@ export default css`
 
   .w3m-footer-action-container {
     display: flex;
+    flex-direction: row;
     flex: 1;
     width: 100%;
-    justify-content: spread-between;
+    justify-content: space-between;
+    padding: 0px 32px 0px 32px;
   }
 
   .w3m-footer-actions {
@@ -68,11 +70,6 @@ export default css`
     flex: 1;
     justify-content: center;
     align-items: center;
-  }
-
-  .w3m-account-divider {
-    width: 100%;
-    height: 1px;
   }
 
   .w3m-connected-container {
@@ -116,10 +113,6 @@ export function dynamicStyles() {
   const { foreground, background, overlay } = color()
 
   return html` <style>
-    .w3m-account-divider {
-      background-color: ${background[2]};
-    }
-
     .w3m-connected-container {
       background-color: ${background[2]};
       border: 1px solid ${overlay.thin};
@@ -127,6 +120,10 @@ export function dynamicStyles() {
 
     .w3m-eth-logo-container {
       background-color: ${foreground[1]};
+    }
+
+    .w3m-flex-wrapper {
+      border-bottom: 1px solid ${background[2]};
     }
   </style>`
 }
