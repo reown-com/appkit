@@ -1,5 +1,6 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { Account } from '../../../types/accountTypes'
+import { ClientCtrl } from './ClientCtrl'
 
 // -- initial state ------------------------------------------------ //
 const initialState = {
@@ -18,20 +19,15 @@ export const AccountCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  setAccount(account: Omit<Account, 'isConnected'>) {
-    Object.assign(state, account)
-    state.isConnected = true
+  watch() {
+    return ClientCtrl.ethereum().watchAccount(account => Object.assign(state, account))
   },
 
-  setAddress(address: Account['address']) {
-    state.address = address
+  fetch() {
+    Object.assign(state, ClientCtrl.ethereum().getAccount())
   },
 
-  setConnector(connector: Account['connector']) {
-    state.connector = connector
-  },
-
-  resetAccount() {
+  reset() {
     Object.assign(state, initialState)
   }
 }

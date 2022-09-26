@@ -43,3 +43,5 @@ export type WaitForTransactionArgs = Parameters<typeof Web3ModalEthereum.waitFor
 export type WatchReadContractArgs = Parameters<typeof Web3ModalEthereum.watchReadContract>
 
 export type WriteContractArgs = Parameters<typeof Web3ModalEthereum.writeContract>
+
+export type WathBlockNumberArgs = Parameters<typeof Web3ModalEthereum.watchBlockNumber>
