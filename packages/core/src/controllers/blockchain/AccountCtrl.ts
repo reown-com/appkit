@@ -23,7 +23,7 @@ export const AccountCtrl = {
     return ClientCtrl.ethereum().watchAccount(account => Object.assign(state, account))
   },
 
-  fetch() {
+  get() {
     Object.assign(state, ClientCtrl.ethereum().getAccount())
   },
 

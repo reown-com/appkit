@@ -1,4 +1,4 @@
-export { useAccount } from './useAccount'
+export { useAccount } from '../data/useAccount'
 export { useBalance } from './useBalance'
 export { useDisconnect } from './useDisconnect'
 export { useNetwork } from './useNetwork'

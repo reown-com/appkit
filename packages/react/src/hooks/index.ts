@@ -1,5 +1,6 @@
 export * from './account'
 export * from './contract'
+export { useAccount } from './data/useAccount'
 export * from './ens'
 export * from './modal'
 export * from './providers'
