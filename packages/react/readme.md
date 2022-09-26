@@ -41,7 +41,7 @@ Please refer to [hooks folder](./src/hooks/) for more detailed info abut usage a
 Hook to open, close and check state of the connect modal
 
 ```tsx
-import { useConnectModal } from '@web3modal/ethereum'
+import { useConnectModal } from '@web3modal/react'
 
 const { isOpen, open, close } = useConnectModal()
 ```
@@ -51,7 +51,7 @@ const { isOpen, open, close } = useConnectModal()
 Hook to get account data
 
 ```tsx
-import { useAccount } from '@web3modal/ethereum'
+import { useAccount } from '@web3modal/react'
 
 const { chainSupported, address, chainId, connector } = useAccount()
 ```
@@ -61,7 +61,7 @@ const { chainSupported, address, chainId, connector } = useAccount()
 Hook to get account data
 
 ```tsx
-import { useBalance } from '@web3modal/ethereum'
+import { useBalance } from '@web3modal/react'
 
 interface Options {
   addressOrName: string
@@ -77,7 +77,7 @@ const { refetch, isLoading, error, balance } = useBalance(options)
 Hook to get network data
 
 ```tsx
-import { useNetwork } from '@web3modal/ethereum'
+import { useNetwork } from '@web3modal/react'
 
 const { chain, chains } = useNetwork()
 ```
@@ -87,7 +87,7 @@ const { chain, chains } = useNetwork()
 Hook to get ethers signer
 
 ```tsx
-import { useSigner } from '@web3modal/ethereum'
+import { useSigner } from '@web3modal/react'
 
 const { refetch, isLoading, error, signer } = useSigner()
 ```
@@ -97,7 +97,7 @@ const { refetch, isLoading, error, signer } = useSigner()
 Hook to crate and handle sign message request
 
 ```tsx
-import { useSignMessage } from '@web3modal/ethereum'
+import { useSignMessage } from '@web3modal/react'
 
 const { isLoading, error, signature, sign } = useSignMessage()
 ```
@@ -107,19 +107,19 @@ const { isLoading, error, signature, sign } = useSignMessage()
 Hook to crate and handle sign typed data request
 
 ```tsx
-import { useSignTypedData } from '@web3modal/ethereum'
+import { useSignTypedData } from '@web3modal/react'
 
 const { isLoading, error, signature, sign } = useSignTypedData()
 ```
 
-### useSwitchNetork (⚠️ experimental)
+### useSwitchNetwork (⚠️ experimental)
 
 Hook to switch between supported networks
 
 ```tsx
-import { useSwitchNetork } from '@web3modal/ethereum'
+import { useSwitchNetwork } from '@web3modal/react'
 
-const { isLoading, error, chainId, switchChain } = useSwitchNetork()
+const { isLoading, error, chainId, switchChain } = useSwitchNetwork()
 ```
 
 ### useContract
@@ -127,7 +127,7 @@ const { isLoading, error, chainId, switchChain } = useSwitchNetork()
 Hook to get contract details
 
 ```tsx
-import { useContract } from '@web3modal/ethereum'
+import { useContract } from '@web3modal/react'
 
 interface Options {
   addressOrName: string
@@ -143,7 +143,7 @@ const { refetch, error, contract } = useContract(options)
 Hook to subscribe / receive contract events
 
 ```tsx
-import { useContractEvent } from '@web3modal/ethereum'
+import { useContractEvent } from '@web3modal/react'
 
 interface Options {
   addressOrName: string
@@ -162,7 +162,7 @@ const { refetch, error, contract } = useContractEvent(options)
 Hook to read from contract
 
 ```tsx
-import { useContractRead } from '@web3modal/ethereum'
+import { useContractRead } from '@web3modal/react'
 
 interface Options {
   addressOrName: string
@@ -181,7 +181,7 @@ const { refetch, isLoading, error, read } = useContractRead(options)
 Hook to write to contract
 
 ```tsx
-import { useContractWrite } from '@web3modal/ethereum'
+import { useContractWrite } from '@web3modal/react'
 
 interface Options {
   addressOrName: string
@@ -201,7 +201,7 @@ const { data, refetch, isLoading, error } = useContractWrite(options)
 Hook to prepare for contract write
 
 ```tsx
-import { usePrepareContractWrite } from '@web3modal/ethereum'
+import { usePrepareContractWrite } from '@web3modal/react'
 
 interface Options {
   addressOrName: string
@@ -221,7 +221,7 @@ const { write, refetch, isLoading, error } = usePrepareContractWrite(options)
 Hook to get token data
 
 ```tsx
-import { useToken } from '@web3modal/ethereum'
+import { useToken } from '@web3modal/react'
 
 interface Options {
   address: string
@@ -237,7 +237,7 @@ const { refetch, isLoading, error, token } = useToken(options)
 Hook to read and watch contract
 
 ```tsx
-import { useWatchReadContract } from '@web3modal/ethereum'
+import { useWatchReadContract } from '@web3modal/react'
 
 interface Options {
   callback: WatchReadContractResult
@@ -249,10 +249,10 @@ useWatchReadContract(options)
 
 ### useFetchEnsAddress
 
-Hook to fetch public address from ens adress
+Hook to fetch public address from ens address
 
 ```tsx
-import { useFetchEnsAddress } from '@web3modal/ethereum'
+import { useFetchEnsAddress } from '@web3modal/react'
 
 interface Options {
   chainId: string
@@ -267,7 +267,7 @@ const { refetch, isLoading, error, address } = useFetchEnsAddress(options)
 Hook to fetch ens avatar
 
 ```tsx
-import { useFetchEnsAvatar } from '@web3modal/ethereum'
+import { useFetchEnsAvatar } from '@web3modal/react'
 
 interface Options {
   chainId: string
@@ -282,7 +282,7 @@ const { refetch, isLoading, error, avatar } = useFetchEnsAvatar(options)
 Hook to fetch ens name for public address
 
 ```tsx
-import { useFetchEnsName } from '@web3modal/ethereum'
+import { useFetchEnsName } from '@web3modal/react'
 
 interface Options {
   chainId: string
@@ -297,7 +297,7 @@ const { refetch, isLoading, error, name } = useFetchEnsName(options)
 Hook to get contract address for ens name resolver
 
 ```tsx
-import { useFetchEnsResolver } from '@web3modal/ethereum'
+import { useFetchEnsResolver } from '@web3modal/react'
 
 interface Options {
   chainId: string
@@ -312,7 +312,7 @@ const { refetch, isLoading, error, address } = useFetchEnsResolver(options)
 Hook to fetch a transaction
 
 ```tsx
-import { useFetchTransaction } from '@web3modal/ethereum'
+import { useFetchTransaction } from '@web3modal/react'
 
 interface Options {
   chainId: string
@@ -327,7 +327,7 @@ const { refetch, isLoading, error, transaction } = useFetchTransaction(options)
 Hook to prepare send transaction request
 
 ```tsx
-import { usePrepareSendTransaction } from '@web3modal/ethereum'
+import { usePrepareSendTransaction } from '@web3modal/react'
 
 interface Options {
   chainId: string
@@ -343,7 +343,7 @@ const { refetch, isLoading, error, transaction } = usePrepareSendTransaction(opt
 Hook to send transaction
 
 ```tsx
-import { useSendTransaction } from '@web3modal/ethereum'
+import { useSendTransaction } from '@web3modal/react'
 
 interface Options {
   chainId: string
@@ -361,7 +361,7 @@ const { refetch, isLoading, error, transaction } = useSendTransaction(options)
 Hook to send transaction
 
 ```tsx
-import { useWaitForTransaction } from '@web3modal/ethereum'
+import { useWaitForTransaction } from '@web3modal/react'
 
 interface Options {
   chainId: string

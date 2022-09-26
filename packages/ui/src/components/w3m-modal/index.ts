@@ -50,12 +50,19 @@ export class W3mModal extends ThemedElement {
     return getShadowRootElement(this, '.w3m-modal-container')
   }
 
+  private toggleBodyScroll(enabled: boolean) {
+    const [body] = document.getElementsByTagName('body')
+    if (enabled) body.style.overflow = 'auto'
+    else body.style.overflow = 'hidden'
+  }
+
   private onCloseModal(event: PointerEvent) {
     if (event.target === event.currentTarget) ConnectModalCtrl.closeModal()
   }
 
   private async onOpenModalEvent() {
     this.initialized = true
+    this.toggleBodyScroll(false)
     if (this.firstOpen) {
       await ExplorerCtrl.getPreviewWallets()
       const wallets = ExplorerCtrl.state.previewWallets.map(({ image_url }) => image_url.lg)
@@ -78,6 +85,7 @@ export class W3mModal extends ThemedElement {
   }
 
   private async onCloseModalEvent() {
+    this.toggleBodyScroll(true)
     document.removeEventListener('keydown', this.onKeyDown)
     await Promise.all([
       animate(this.containerEl, isMobileAnimation() ? { y: [0, '50vh'] } : { scale: [1, 0.98] }, {
