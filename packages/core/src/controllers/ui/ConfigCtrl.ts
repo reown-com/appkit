@@ -1,5 +1,5 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { ConfigOptions } from '../../types/configTypes'
+import type { ConfigOptions } from '../../../types/configTypes'
 
 // -- types -------------------------------------------------------- //
 export interface State extends ConfigOptions {

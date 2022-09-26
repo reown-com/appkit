@@ -1,5 +1,5 @@
 import type { ListingResponse, PageParams } from '../../types/explorerTypes'
-import { ConfigCtrl } from '../controllers/ConfigCtrl'
+import { ConfigCtrl } from '../controllers/ui/ConfigCtrl'
 
 // -- helpers ------------------------------------------------------ //
 export function getExplorerApi() {

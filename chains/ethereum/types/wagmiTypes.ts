@@ -1,6 +1,8 @@
 import type { Web3ModalEthereum } from '../src/api'
 
-export type FetchBalanceArgs = Parameters<typeof Web3ModalEthereum.fetchBalance>
+export type { Chain, ChainProviderFn, Connector } from '@wagmi/core'
+
+export type FetchBalanceArgs = Parameters<typeof Web3ModalEthereum.fetchBalance>[0]
 
 export type FetchEnsAddressArgs = Parameters<typeof Web3ModalEthereum.fetchEnsAddress>
 

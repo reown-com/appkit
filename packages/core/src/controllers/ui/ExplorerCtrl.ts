@@ -1,6 +1,6 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { Listing, ListingResponse, PageParams } from '../../types/explorerTypes'
-import { fetchWallets } from '../utils/ExplorerApi'
+import type { Listing, ListingResponse, PageParams } from '../../../types/explorerTypes'
+import { fetchWallets } from '../../utils/ExplorerApi'
 
 // -- types -------------------------------------------------------- //
 export interface State {

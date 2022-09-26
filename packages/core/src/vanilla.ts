@@ -1,9 +1,9 @@
-import { AccountCtrl } from './controllers/AccountCtrl'
-import { ClientCtrl } from './controllers/ClientCtrl'
-import { ConfigCtrl } from './controllers/ConfigCtrl'
-import { ConnectModalCtrl } from './controllers/ConnectModalCtrl'
-import { ExplorerCtrl } from './controllers/ExplorerCtrl'
-import { RouterCtrl } from './controllers/RouterCtrl'
+import { AccountCtrl } from './controllers/blockchain/AccountCtrl'
+import { ClientCtrl } from './controllers/blockchain/ClientCtrl'
+import { ConfigCtrl } from './controllers/ui/ConfigCtrl'
+import { ConnectModalCtrl } from './controllers/ui/ConnectModalCtrl'
+import { ExplorerCtrl } from './controllers/ui/ExplorerCtrl'
+import { RouterCtrl } from './controllers/ui/RouterCtrl'
 
 const Web3ModalCore = {
   ClientCtrl,
