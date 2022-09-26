@@ -8,20 +8,25 @@ export default css`
     background: none;
   }
 
+  .w3m-col-container {
+    display: flex;
+    flex-direction: column;
+  }
+
   .w3m-flex-wrapper {
     display: flex;
     justify-content: center;
     width: 100%;
   }
 
-  w3m-ens-image {
+  .w3m-ens-image {
     border-radius: 22px;
     width: 25%;
     aspect-ratio: 1 / 1;
     margin-bottom: 4px;
   }
 
-  w3m-ens-address-container {
+  .w3m-ens-address-container {
     display: flex;
     flex: 1;
     flex-direction: column;

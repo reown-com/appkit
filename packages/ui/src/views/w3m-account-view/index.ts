@@ -1,6 +1,7 @@
 import { AccountCtrl, ClientCtrl, ConnectModalCtrl, ModalToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
+import '../../components/w3m-address'
 import '../../components/w3m-button'
 import '../../components/w3m-hexagon-button'
 import '../../components/w3m-modal-footer'
@@ -63,9 +64,12 @@ export class W3mAccountView extends LitElement {
 
         <div class="w3m-flex-wrapper">
           <div class="w3m-space-between-container">
-            <div style="display:flex; flex-direction:column;">
-            <w3m-zorb-ens-image ens=${this.ensAvatar} address=${this.address} size="60">
-            </w3m-zorb-ens-image>
+            <div class="w3m-col-container">
+              <w3m-zorb-ens-image 
+                ens=${this.ensAvatar} 
+                address=${this.address} 
+                size="60">
+              </w3m-zorb-ens-image>
               <w3m-address variant="large-bold" address=${this.address}></w3m-address>
             </div>
             <div class="w3m-connected-container">
@@ -80,30 +84,25 @@ export class W3mAccountView extends LitElement {
           <div class="w3m-token-bal-container">
             <w3m-text variant="medium-normal" color="secondary">Balance</w3m-text>
           </div>
-
           <w3m-balance 
             variant="medium-normal"
             .icon=${ETH_LOGO} 
             balance=${this.balance}>
           </w3m-balance>
-
         </div>
 
         <w3m-modal-footer>
           <div class="w3m-footer-action-container">
-          
             <w3m-round-button 
               .onClick=${this.copyClipboard} 
               .icon=${COPY_ICON} 
               text="Copy Address">
             </w3m-round-button>
-
             <w3m-round-button 
               .onClick=${this.onDisconnect} 
               .icon=${DISCONNECT} 
               text="Disconnect">
             </w3m-round-button>
-
           </div>
         </w3m-modal-footer>
 

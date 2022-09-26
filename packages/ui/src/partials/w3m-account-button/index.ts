@@ -67,9 +67,11 @@ export class W3mAccountButton extends ThemedElement {
         </div>
         <div class="w3m-address-container">
           <div class="w3m-ens-zorb-container">
-            <w3m-zorb-ens-image address=${this.address} ens=${
-      this.ensAvatar
-    } size="24"></w3m-zorb-ens-image>
+            <w3m-zorb-ens-image 
+              address=${this.address} 
+              ens=${this.ensAvatar} 
+              size="24">
+            </w3m-zorb-ens-image>
           </div>
           <w3m-address variant="medium-normal" address=${this.address}></w3m-address>
           <div class="w3m-chevron-container">${CHEVRON}</div>
