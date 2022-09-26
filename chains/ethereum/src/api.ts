@@ -125,12 +125,18 @@ export const Web3ModalEthereum = {
 
   watchAccount: WagmiCore.watchAccount,
 
+  // -- network ------------------------------------------------------ //
+  getNetwork: WagmiCore.getNetwork,
+
+  watchNetwork: WagmiCore.watchNetwork,
+
+  switchNetwork: WagmiCore.switchNetwork,
+
   /**
    * Old stuff
    */
 
   // -- actions ------------------------------------------------------ //
-  switchNetwork: WagmiCore.switchNetwork,
 
   signTypedData: WagmiCore.signTypedData,
 
@@ -140,8 +146,6 @@ export const Web3ModalEthereum = {
   fetchBalance: WagmiCore.fetchBalance,
 
   fetchSigner: WagmiCore.fetchSigner,
-
-  getNetwork: WagmiCore.getNetwork,
 
   // -- contract ----------------------------------------------------- //
   getContract: WagmiCore.getContract,

@@ -1,5 +1,6 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { Network } from '../../../types/networkTypes'
+import { ClientCtrl } from './ClientCtrl'
 
 // -- initial state ------------------------------------------------ //
 const initialState = {
@@ -17,11 +18,19 @@ export const NetworkCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  setNetwork(network: Network) {
-    Object.assign(state, network)
+  watch() {
+    return ClientCtrl.ethereum().watchNetwork(network => Object.assign(state, network))
   },
 
-  resetNetwork() {
+  get() {
+    Object.assign(state, ClientCtrl.ethereum().getNetwork())
+  },
+
+  switch() {
+    return ClientCtrl.ethereum().switchNetwork
+  },
+
+  reset() {
     Object.assign(state, initialState)
   }
 }

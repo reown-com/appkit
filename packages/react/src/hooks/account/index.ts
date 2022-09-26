@@ -1,7 +1,7 @@
 export { useAccount } from '../data/useAccount'
 export { useBalance } from './useBalance'
 export { useDisconnect } from './useDisconnect'
-export { useNetwork } from './useNetwork'
+export { useNetwork } from '../data/useNetwork'
 export { useSigner } from './useSigner'
 export { useSignMessage } from './useSignMessage'
 export { useSignTypedData } from './useSignTypedData'

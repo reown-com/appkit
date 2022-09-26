@@ -1,18 +1,18 @@
-import { AccountCtrl } from '@web3modal/core'
+import { NetworkCtrl } from '@web3modal/core'
 import { useEffect, useState } from 'react'
 import { useClientInitialized } from './useClientInitialized'
 
-export function useAccount() {
-  const [data, setData] = useState(AccountCtrl.state)
+export function useNetwork() {
+  const [data, setData] = useState(NetworkCtrl.state)
   const initialized = useClientInitialized()
 
   useEffect(() => {
     let unWatch: (() => void) | undefined = undefined
     let unSubscribe: (() => void) | undefined = undefined
     if (initialized) {
-      unSubscribe = AccountCtrl.subscribe(newData => setData({ ...newData }))
-      unWatch = AccountCtrl.watch()
-      AccountCtrl.get()
+      unSubscribe = NetworkCtrl.subscribe(newData => setData({ ...newData }))
+      unWatch = NetworkCtrl.watch()
+      NetworkCtrl.get()
     }
 
     return () => {

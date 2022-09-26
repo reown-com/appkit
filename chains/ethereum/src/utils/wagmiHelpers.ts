@@ -2,7 +2,6 @@ import type * as WagmiTypes from '@wagmi/core'
 import * as WagmiCore from '@wagmi/core'
 import type { State } from '@wagmi/core/dist/declarations/src/client'
 import { publicProvider } from '@wagmi/core/providers/public'
-import { NetworkCtrl } from '@web3modal/core'
 import { Buffer } from 'buffer'
 import type { EthereumOptions } from '../../types/apiTypes'
 import { defaultConnectors } from './wagmiTools'
@@ -15,10 +14,6 @@ let client = undefined as WagmiTypes.Client<any, any> | undefined
 
 export function getClient() {
   return client
-}
-
-export function initializeWatchers() {
-  WagmiCore.watchNetwork(network => NetworkCtrl.setNetwork(network))
 }
 
 function onConnectorChange(event: WagmiTypes.ConnectorData) {
@@ -36,10 +31,9 @@ function onConnectorError(event: Error) {
 }
 
 function onClientConnected() {
-  const chain = getClient()?.data?.chain
   const connector = getClient()?.connector
   const provider = getClient()?.provider
-  if (chain && connector && provider) {
+  if (connector && provider) {
     connector.on('change', onConnectorChange)
     connector.on('message', onConnectorMessage)
     connector.on('error', onConnectorError)
@@ -48,7 +42,6 @@ function onClientConnected() {
 
 function onClientDisconnected() {
   getClient()?.connector?.removeAllListeners()
-  NetworkCtrl.resetNetwork()
 }
 
 function onClientChange(state: State, prevState: State) {
@@ -78,6 +71,4 @@ export function initializeClient(options: EthereumOptions) {
 
   client = wagmiClient
   getClient()?.subscribe(onClientChange)
-
-  initializeWatchers()
 }

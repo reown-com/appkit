@@ -1,6 +1,6 @@
 import { AccountButton, useAccount } from '@web3modal/react'
 
-export default function AccountSection() {
+export default function UseAccountSection() {
   const { address, connector, isConnected } = useAccount()
 
   return (

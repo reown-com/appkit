@@ -1,12 +1,14 @@
 import { ConnectButton, useAccount } from '@web3modal/react'
-import AccountSection from '../sections/AccountSection'
+import UseAccountSection from '../sections/UseAccountSection'
+import UseNetworkSection from '../sections/UseNetworkSection'
 
 export default function HomePage() {
   const { isConnected } = useAccount()
 
   return isConnected ? (
     <>
-      <AccountSection />
+      <UseAccountSection />
+      <UseNetworkSection />
       {/* <SwitchChainSection />
       <SignTypedDataSection />
       <SignMessageSection />
