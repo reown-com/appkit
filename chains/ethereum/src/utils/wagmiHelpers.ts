@@ -27,7 +27,7 @@ async function getBalance(account: string) {
     const opts = {
       addressOrName: account,
       chainId: `${NAMESPACE}:${AccountCtrl.state.chainId}`,
-      formatUnits: 'ether'
+      formatUnits: 'ether' as const
     }
 
     const balance = await ClientCtrl.ethereum().fetchBalance(opts)
