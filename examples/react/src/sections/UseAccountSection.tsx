@@ -5,11 +5,11 @@ export default function UseAccountSection() {
 
   return (
     <section>
-      <h1>Account</h1>
+      <h1>useAccount</h1>
       <AccountButton />
       <ul>
         <li>
-          Connected: <span>{isConnected}</span>
+          Connected: <span>{isConnected ? 'Yes' : 'No'}</span>
         </li>
         <li>
           Connector: <span>{connector?.id}</span>

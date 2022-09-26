@@ -5,7 +5,7 @@ export default function UseAccountSection() {
 
   return (
     <section>
-      <h1>Network</h1>
+      <h1>useNetwork</h1>
 
       <ul>
         <li>

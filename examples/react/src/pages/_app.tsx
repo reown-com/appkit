@@ -16,7 +16,7 @@ const modalConfig: ConfigOptions = {
   ethereum: {
     appName: 'web3Modal',
     autoConnect: true,
-    chains: [chains.mainnet],
+    chains: [chains.mainnet, chains.avalanche],
     providers: [providers.walletConnectProvider({ projectId: process.env.NEXT_PUBLIC_PROJECT_ID })]
   }
 }
