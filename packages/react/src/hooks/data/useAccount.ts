@@ -1,6 +1,6 @@
 import { AccountCtrl } from '@web3modal/core'
 import { useEffect, useState } from 'react'
-import { useClientInitialized } from './useClientInitialized'
+import { useClientInitialized } from '../../utils/useClientInitialized'
 
 export function useAccount() {
   const [account, setAccount] = useState(AccountCtrl.state)
@@ -8,11 +8,14 @@ export function useAccount() {
 
   useEffect(() => {
     let unwatch: (() => void) | undefined = undefined
-    const unsubscribe = AccountCtrl.subscribe(newAccount => setAccount({ ...newAccount }))
-    if (initialized) unwatch = AccountCtrl.watch()
+    let unsubscribe: (() => void) | undefined = undefined
+    if (initialized) {
+      unsubscribe = AccountCtrl.subscribe(newAccount => setAccount({ ...newAccount }))
+      unwatch = AccountCtrl.watch()
+    }
 
     return () => {
-      unsubscribe()
+      unsubscribe?.()
       unwatch?.()
     }
   }, [initialized])
