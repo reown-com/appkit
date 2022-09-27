@@ -21,12 +21,14 @@ export function useWatchableAsyncData<S, A>(
   const [error, setError] = useState<Error | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(false)
   const initialized = useClientInitialized()
+  const watch = options?.watch ?? false
+  const args = options?.args ?? undefined
 
   const onAction = useCallback(
-    async (args?: A) => {
+    async (argums?: A) => {
       try {
         setIsLoading(true)
-        await controller.fetch(args)
+        await controller.fetch(argums)
         setError(undefined)
       } catch (err: unknown) {
         if (err instanceof Error) setError(err)
@@ -43,15 +45,15 @@ export function useWatchableAsyncData<S, A>(
     let unSubscribe: (() => void) | undefined = undefined
     if (initialized) {
       unSubscribe = controller.subscribe(newData => setData({ ...newData }))
-      onAction(options?.args)
-      if (options?.watch) unWatch = controller.watch()
+      onAction(args)
+      if (watch) unWatch = controller.watch()
     }
 
     return () => {
       unSubscribe?.()
       unWatch?.()
     }
-  }, [initialized, controller, options, onAction])
+  }, [initialized, controller, watch, args, onAction])
 
   return {
     data,

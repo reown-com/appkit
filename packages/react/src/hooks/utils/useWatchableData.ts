@@ -8,7 +8,11 @@ interface DataController<S> {
   subscribe: (callback: (newData: S) => void) => () => void
 }
 
-export function useWatchableData<S>(controller: DataController<S>, watch?: boolean) {
+interface Options {
+  watch?: boolean
+}
+
+export function useWatchableData<S>(controller: DataController<S>, options?: Options) {
   const [data, setData] = useState(controller.state)
   const initialized = useClientInitialized()
 
@@ -18,14 +22,14 @@ export function useWatchableData<S>(controller: DataController<S>, watch?: boole
     if (initialized) {
       unSubscribe = controller.subscribe(newData => setData({ ...newData }))
       controller.get()
-      if (watch) unWatch = controller.watch()
+      if (options?.watch) unWatch = controller.watch()
     }
 
     return () => {
       unSubscribe?.()
       unWatch?.()
     }
-  }, [initialized, controller, watch])
+  }, [initialized, controller, options])
 
   return data
 }

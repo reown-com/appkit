@@ -9,6 +9,9 @@ export default function UseNetworkSection() {
 
       <ul>
         <li>
+          Chain ID: <span>{chain?.id}</span>
+        </li>
+        <li>
           Selected Chain: <span>{chain?.name}</span>
         </li>
         <li>
