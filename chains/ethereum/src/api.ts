@@ -132,6 +132,20 @@ export const Web3ModalEthereum = {
 
   switchNetwork: WagmiCore.switchNetwork,
 
+  // -- block -------------------------------------------------------- //
+  fetchBlockNumber: WagmiCore.fetchBlockNumber,
+
+  watchBlockNumber: WagmiCore.watchBlockNumber,
+
+  // -- provider ----------------------------------------------------- //
+  getProvider: WagmiCore.getProvider,
+
+  watchProvider: WagmiCore.watchProvider,
+
+  getWebSocketProvider: WagmiCore.getWebSocketProvider,
+
+  watchWebSocketProvider: WagmiCore.watchWebSocketProvider,
+
   /**
    * Old stuff
    */
@@ -176,13 +190,5 @@ export const Web3ModalEthereum = {
 
   sendTransaction: WagmiCore.sendTransaction,
 
-  waitForTransaction: WagmiCore.waitForTransaction,
-
-  // -- provider -------------------------------------------------- //
-  getProvider: WagmiCore.getProvider,
-
-  // -- network --------------------------------------------------- //
-  fetchBlockNumber: WagmiCore.fetchBlockNumber,
-
-  watchBlockNumber: WagmiCore.watchBlockNumber
+  waitForTransaction: WagmiCore.waitForTransaction
 }

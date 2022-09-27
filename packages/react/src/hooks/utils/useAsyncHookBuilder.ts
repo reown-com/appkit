@@ -18,7 +18,6 @@ export function useAsyncHookBuilder<TArgs, TResult>(
       } catch (err: unknown) {
         if (err instanceof Error) setError(err)
         else setError(new Error('Unknown error'))
-        setData(undefined)
       } finally {
         setIsLoading(false)
       }

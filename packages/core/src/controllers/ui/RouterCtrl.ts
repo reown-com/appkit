@@ -1,5 +1,5 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { RouterView } from '../../types/routerTypes'
+import type { RouterView } from '../../../types/routerTypes'
 
 // -- types -------------------------------------------------------- //
 export interface State {

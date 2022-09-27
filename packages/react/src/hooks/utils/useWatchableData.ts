@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useClientInitialized } from '../hooks/data/useClientInitialized'
+import { useClientInitialized } from '../data/useClientInitialized'
 
 interface DataController<S> {
   state: S
