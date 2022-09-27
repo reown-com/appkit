@@ -20,7 +20,9 @@ export const AccountCtrl = {
   },
 
   watch() {
-    return ClientCtrl.ethereum().watchAccount(account => Object.assign(state, account))
+    const unwatch = ClientCtrl.ethereum().watchAccount(account => Object.assign(state, account))
+
+    return unwatch
   },
 
   get() {

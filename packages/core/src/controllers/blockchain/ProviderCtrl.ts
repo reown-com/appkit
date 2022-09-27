@@ -13,7 +13,11 @@ export const ProviderCtrl = {
   },
 
   watch() {
-    return ClientCtrl.ethereum().watchProvider({}, provider => Object.assign(state, provider))
+    const unwatch = ClientCtrl.ethereum().watchProvider({}, provider =>
+      Object.assign(state, provider)
+    )
+
+    return unwatch
   },
 
   get() {

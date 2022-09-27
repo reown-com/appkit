@@ -19,7 +19,9 @@ export const NetworkCtrl = {
   },
 
   watch() {
-    return ClientCtrl.ethereum().watchNetwork(network => Object.assign(state, network))
+    const unwatch = ClientCtrl.ethereum().watchNetwork(network => Object.assign(state, network))
+
+    return unwatch
   },
 
   get() {

@@ -1,6 +1,6 @@
 import { chains, providers } from '@web3modal/ethereum'
 import type { ConfigOptions } from '@web3modal/react'
-import { Web3ModalProvider } from '@web3modal/react'
+import { Web3Modal } from '@web3modal/react'
 import type { AppProps } from 'next/app'
 import '../styles.css'
 
@@ -23,8 +23,9 @@ const modalConfig: ConfigOptions = {
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Web3ModalProvider config={modalConfig}>
+    <>
       <Component {...pageProps} />
-    </Web3ModalProvider>
+      <Web3Modal config={modalConfig} />
+    </>
   )
 }

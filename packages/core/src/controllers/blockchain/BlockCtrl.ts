@@ -22,10 +22,12 @@ export const BlockCtrl = {
   },
 
   watch() {
-    return ClientCtrl.ethereum().watchBlockNumber(
+    const unwatch = ClientCtrl.ethereum().watchBlockNumber(
       { listen: true },
       blockNumber => (state.blockNumber = blockNumber)
     )
+
+    return unwatch
   },
 
   async fetch() {

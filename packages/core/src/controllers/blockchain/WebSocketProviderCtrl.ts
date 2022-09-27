@@ -13,9 +13,11 @@ export const WebSocketProviderCtrl = {
   },
 
   watch() {
-    return ClientCtrl.ethereum().watchWebSocketProvider({}, provider =>
+    const unwatch = ClientCtrl.ethereum().watchWebSocketProvider({}, provider =>
       Object.assign(state, provider)
     )
+
+    return unwatch
   },
 
   get() {
