@@ -15,6 +15,7 @@ interface Options {
 export function useWatchableData<S>(controller: DataController<S>, options?: Options) {
   const [data, setData] = useState(controller.state)
   const initialized = useClientInitialized()
+  const watch = options?.watch ?? false
 
   useEffect(() => {
     let unWatch: (() => void) | undefined = undefined
@@ -22,14 +23,14 @@ export function useWatchableData<S>(controller: DataController<S>, options?: Opt
     if (initialized) {
       unSubscribe = controller.subscribe(newData => setData({ ...newData }))
       controller.get()
-      if (options?.watch) unWatch = controller.watch()
+      if (watch) unWatch = controller.watch()
     }
 
     return () => {
       unSubscribe?.()
       unWatch?.()
     }
-  }, [initialized, controller, options])
+  }, [initialized, controller, watch])
 
   return data
 }

@@ -18,7 +18,7 @@ export const WebSocketProviderCtrl = {
     )
   },
 
-  get(chainId?: number) {
-    Object.assign(state, ClientCtrl.ethereum().getWebSocketProvider({ chainId }))
+  get() {
+    Object.assign(state, ClientCtrl.ethereum().getWebSocketProvider({}))
   }
 }

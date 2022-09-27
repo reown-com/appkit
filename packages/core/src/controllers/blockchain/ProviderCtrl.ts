@@ -12,13 +12,11 @@ export const ProviderCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  watch(chainId?: number) {
-    return ClientCtrl.ethereum().watchProvider({ chainId }, provider =>
-      Object.assign(state, provider)
-    )
+  watch() {
+    return ClientCtrl.ethereum().watchProvider({}, provider => Object.assign(state, provider))
   },
 
-  get(chainId?: number) {
-    Object.assign(state, ClientCtrl.ethereum().getProvider({ chainId }))
+  get() {
+    Object.assign(state, ClientCtrl.ethereum().getProvider({}))
   }
 }
