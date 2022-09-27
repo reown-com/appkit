@@ -9,6 +9,7 @@ export default css`
     height: 60px;
     margin-bottom: 10px;
   }
+
   .w3m-ens-small-image {
     overflow: hidden;
     position: relative;
