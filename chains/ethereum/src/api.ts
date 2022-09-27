@@ -1,5 +1,19 @@
 import type { Connector } from '@wagmi/core'
-import * as WagmiCore from '@wagmi/core'
+import {
+  connect,
+  disconnect,
+  fetchBlockNumber,
+  getAccount,
+  getNetwork,
+  getProvider,
+  getWebSocketProvider,
+  switchNetwork,
+  watchAccount,
+  watchBlockNumber,
+  watchNetwork,
+  watchProvider,
+  watchWebSocketProvider
+} from '@wagmi/core'
 import { CoreHelpers } from '@web3modal/core'
 import type { EthereumOptions } from '../types/apiTypes'
 import { getClient, initializeClient } from './utils/wagmiHelpers'
@@ -28,7 +42,7 @@ export const Web3ModalEthereum = {
   },
 
   async disconnect() {
-    await WagmiCore.disconnect()
+    await disconnect()
     CoreHelpers.removeWalletConnectDeepLink()
   },
 
@@ -48,7 +62,7 @@ export const Web3ModalEthereum = {
       })
     }
 
-    const [data] = await Promise.all([WagmiCore.connect({ connector, chainId }), getProviderUri()])
+    const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
 
     return data
   },
@@ -70,7 +84,7 @@ export const Web3ModalEthereum = {
       })
     }
 
-    const [data] = await Promise.all([WagmiCore.connect({ connector, chainId }), getProviderUri()])
+    const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
 
     return data
   },
@@ -91,7 +105,7 @@ export const Web3ModalEthereum = {
       })
     }
 
-    const [data] = await Promise.all([WagmiCore.connect({ connector, chainId }), getProviderUri()])
+    const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
 
     return data
   },
@@ -99,7 +113,7 @@ export const Web3ModalEthereum = {
   async connectCoinbaseExtension() {
     const connector = this.getConnectorById('coinbaseWallet')
     const chainId = this.getDefaultConnectorChainId(connector)
-    const data = await WagmiCore.connect({ connector, chainId })
+    const data = await connect({ connector, chainId })
 
     return data
   },
@@ -107,7 +121,7 @@ export const Web3ModalEthereum = {
   async connectMetaMask() {
     const connector = this.getConnectorById('metaMask')
     const chainId = this.getDefaultConnectorChainId(connector)
-    const data = await WagmiCore.connect({ connector, chainId })
+    const data = await connect({ connector, chainId })
 
     return data
   },
@@ -115,80 +129,34 @@ export const Web3ModalEthereum = {
   async connectInjected() {
     const connector = this.getConnectorById('injected')
     const chainId = this.getDefaultConnectorChainId(connector)
-    const data = await WagmiCore.connect({ connector, chainId })
+    const data = await connect({ connector, chainId })
 
     return data
   },
 
   // -- accounts ----------------------------------------------------- //
-  getAccount: WagmiCore.getAccount,
+  getAccount,
 
-  watchAccount: WagmiCore.watchAccount,
+  watchAccount,
 
   // -- network ------------------------------------------------------ //
-  getNetwork: WagmiCore.getNetwork,
+  getNetwork,
 
-  watchNetwork: WagmiCore.watchNetwork,
+  watchNetwork,
 
-  switchNetwork: WagmiCore.switchNetwork,
+  switchNetwork,
 
   // -- block -------------------------------------------------------- //
-  fetchBlockNumber: WagmiCore.fetchBlockNumber,
+  fetchBlockNumber,
 
-  watchBlockNumber: WagmiCore.watchBlockNumber,
+  watchBlockNumber,
 
   // -- provider ----------------------------------------------------- //
-  getProvider: WagmiCore.getProvider,
+  getProvider,
 
-  watchProvider: WagmiCore.watchProvider,
+  watchProvider,
 
-  getWebSocketProvider: WagmiCore.getWebSocketProvider,
+  getWebSocketProvider,
 
-  watchWebSocketProvider: WagmiCore.watchWebSocketProvider,
-
-  /**
-   * Old stuff
-   */
-
-  // -- actions ------------------------------------------------------ //
-
-  signTypedData: WagmiCore.signTypedData,
-
-  signMessage: WagmiCore.signMessage,
-
-  // -- fetch -------------------------------------------------------- //
-  fetchBalance: WagmiCore.fetchBalance,
-
-  fetchSigner: WagmiCore.fetchSigner,
-
-  // -- contract ----------------------------------------------------- //
-  getContract: WagmiCore.getContract,
-
-  fetchToken: WagmiCore.fetchToken,
-
-  readContract: WagmiCore.readContract,
-
-  writeContract: WagmiCore.writeContract,
-
-  prepareWriteContract: WagmiCore.prepareWriteContract,
-
-  watchReadContract: WagmiCore.watchReadContract,
-
-  // -- ens ---------------------------------------------------------- //
-  fetchEnsAddress: WagmiCore.fetchEnsAddress,
-
-  fetchEnsAvatar: WagmiCore.fetchEnsAvatar,
-
-  fetchEnsName: WagmiCore.fetchEnsName,
-
-  fetchEnsResolver: WagmiCore.fetchEnsResolver,
-
-  // -- transaction -------------------------------------------------- //
-  fetchTransaction: WagmiCore.fetchTransaction,
-
-  prepareSendTransaction: WagmiCore.prepareSendTransaction,
-
-  sendTransaction: WagmiCore.sendTransaction,
-
-  waitForTransaction: WagmiCore.waitForTransaction
+  watchWebSocketProvider
 }
