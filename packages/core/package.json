@@ -20,7 +20,8 @@
     "valtio": "1.7.0"
   },
   "devDependencies": {
-    "@web3modal/ethereum": "2.0.0-alpha.4"
+    "@web3modal/ethereum": "2.0.0-alpha.4",
+    "@wagmi/core": "0.0.0-20220928064342"
   },
   "peerDependencies": {
     "@web3modal/ethereum": "2.0.0-alpha.2"

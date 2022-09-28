@@ -18,10 +18,13 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "3.5.3",
-    "@wagmi/core": "0.5.7",
+    "@wagmi/core": "0.0.0-20220928064342",
     "@walletconnect/ethereum-provider": "1.8.0",
     "@web3modal/core": "2.0.0-alpha.4",
     "buffer": "6.0.3"
+  },
+  "devDependencies": {
+    "ethers": "5.7.1"
   },
   "peerDependencies": {
     "ethers": ">=5.7"
