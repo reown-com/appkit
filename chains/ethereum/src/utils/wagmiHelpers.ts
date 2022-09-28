@@ -1,5 +1,5 @@
 import type * as WagmiTypes from '@wagmi/core'
-import * as WagmiCore from '@wagmi/core'
+import { chain, configureChains, createClient } from '@wagmi/core'
 import { publicProvider } from '@wagmi/core/providers/public'
 import { Buffer } from 'buffer'
 import type { EthereumOptions } from '../../types/apiTypes'
@@ -16,16 +16,13 @@ export function getClient() {
 }
 
 export function initializeClient(options: EthereumOptions) {
-  const configChains = options.chains ?? [WagmiCore.chain.mainnet]
+  const configChains = options.chains ?? [chain.mainnet]
   const configProviders = options.providers ?? [publicProvider()]
   const configAutoConnect = options.autoConnect ?? true
 
-  const { chains, provider, webSocketProvider } = WagmiCore.configureChains(
-    configChains,
-    configProviders
-  )
+  const { chains, provider, webSocketProvider } = configureChains(configChains, configProviders)
 
-  const wagmiClient = WagmiCore.createClient({
+  const wagmiClient = createClient({
     autoConnect: configAutoConnect,
     connectors: defaultConnectors({ chains, appName: options.appName }),
     provider,
