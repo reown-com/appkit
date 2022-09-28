@@ -1,23 +1,17 @@
-import { Web3ModalEthereum } from '@web3modal/ethereum'
-import { useCallback, useEffect } from 'react'
-import { useClientInitialized } from './useClientInitialized'
+import { BlockCtrl } from '@web3modal/core'
+import { useWatchableAsyncData } from '../utils/useWatchableAsyncData'
 
-export function useBlockNumber() {
-  const initialized = useClientInitialized()
+interface Options {
+  watch?: boolean
+  chainId?: number
+}
 
-  const listener = useCallback((data: number) => {
-    console.log(data)
-  }, [])
+export function useBlockNumber(options?: Options) {
+  const { data, onAction, ...rest } = useWatchableAsyncData(BlockCtrl, { watch: options?.watch })
 
-  useEffect(() => {
-    const unsubscrbe = initialized
-      ? Web3ModalEthereum.watchBlockNumber({ listen: true }, listener)
-      : undefined
-    console.log('SUBSCRIBE', unsubscrbe)
-
-    return () => {
-      console.log('UN-SUBSCRIBE', unsubscrbe)
-      unsubscrbe?.()
-    }
-  }, [listener, initialized])
+  return {
+    data: data.blockNumber,
+    refetch: onAction,
+    ...rest
+  }
 }

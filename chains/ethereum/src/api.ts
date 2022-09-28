@@ -14,7 +14,6 @@ import {
   watchProvider,
   watchWebSocketProvider
 } from '@wagmi/core'
-import { CoreHelpers } from '@web3modal/core'
 import type { EthereumOptions } from '../types/apiTypes'
 import { getClient, initializeClient } from './utils/wagmiHelpers'
 
@@ -39,11 +38,6 @@ export const Web3ModalEthereum = {
     if (!connector) throw new Error(`Missing ${id} connector`)
 
     return connector
-  },
-
-  async disconnect() {
-    await disconnect()
-    CoreHelpers.removeWalletConnectDeepLink()
   },
 
   async connectWalletConnect(onUri: (uri: string) => void) {
@@ -138,6 +132,8 @@ export const Web3ModalEthereum = {
   getAccount,
 
   watchAccount,
+
+  disconnect,
 
   // -- network ------------------------------------------------------ //
   getNetwork,

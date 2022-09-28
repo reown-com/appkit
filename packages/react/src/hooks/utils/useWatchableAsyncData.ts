@@ -38,10 +38,9 @@ export function useWatchableAsyncData<S, A>(controller: DataController<S, A>, op
     const unsubscribe = initialized
       ? controller.subscribe(newData => setData({ ...newData }))
       : undefined
-    const unwatch = initialized ? controller.watch() : undefined
+    const unwatch = initialized && watch ? controller.watch() : undefined
 
     return () => {
-      // TODO(ilja) - check why this doesn't unsubscribe
       unsubscribe?.()
       unwatch?.()
     }
