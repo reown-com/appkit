@@ -1,8 +1,8 @@
 import { WebSocketProviderCtrl } from '@web3modal/core'
-import { useWatchableData } from '../utils/useWatchableData'
+import { useStatefullController } from '../utils/useStatefullController'
 
 export function useWebSocketProvider() {
-  const data = useWatchableData(WebSocketProviderCtrl, { watch: true })
+  const data = useStatefullController(WebSocketProviderCtrl)
 
   return data
 }

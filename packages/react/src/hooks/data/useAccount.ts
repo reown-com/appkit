@@ -1,8 +1,8 @@
 import { AccountCtrl } from '@web3modal/core'
-import { useWatchableData } from '../utils/useWatchableData'
+import { useStatefullController } from '../utils/useStatefullController'
 
 export function useAccount() {
-  const data = useWatchableData(AccountCtrl, { watch: true })
+  const data = useStatefullController(AccountCtrl)
 
   return data
 }

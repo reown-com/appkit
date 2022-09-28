@@ -1,8 +1,8 @@
 import { NetworkCtrl } from '@web3modal/core'
-import { useWatchableData } from '../utils/useWatchableData'
+import { useStatefullController } from '../utils/useStatefullController'
 
 export function useNetwork() {
-  const data = useWatchableData(NetworkCtrl, { watch: true })
+  const data = useStatefullController(NetworkCtrl)
 
   return data
 }

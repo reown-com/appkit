@@ -1,8 +1,8 @@
 import { ProviderCtrl } from '@web3modal/core'
-import { useWatchableData } from '../utils/useWatchableData'
+import { useStatefullController } from '../utils/useStatefullController'
 
 export function useProvider() {
-  const data = useWatchableData(ProviderCtrl, { watch: true })
+  const data = useStatefullController(ProviderCtrl)
 
   return data
 }
