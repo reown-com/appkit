@@ -1,6 +1,6 @@
 import type { Chain } from '@web3modal/ethereum'
 
-export interface Network {
+export interface NetworkCtrlState {
   chain?: Chain & { unsuported?: boolean }
   chains: Chain[]
 }

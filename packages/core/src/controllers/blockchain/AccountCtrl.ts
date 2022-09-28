@@ -1,5 +1,5 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { Account } from '../../../types/accountTypes'
+import type { AccountCtrlState } from '../../../types/accountTypes'
 import { ClientCtrl } from './ClientCtrl'
 
 // -- initial state ------------------------------------------------ //
@@ -9,13 +9,13 @@ const initialState = {
   conector: undefined
 }
 
-const state = proxy<Account>(initialState)
+const state = proxy<AccountCtrlState>(initialState)
 
 // -- controller --------------------------------------------------- //
 export const AccountCtrl = {
   state,
 
-  subscribe(callback: (newState: Account) => void) {
+  subscribe(callback: (newState: AccountCtrlState) => void) {
     return valtioSub(state, () => callback(state))
   },
 

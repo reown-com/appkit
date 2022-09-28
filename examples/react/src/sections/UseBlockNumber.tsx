@@ -1,7 +1,7 @@
 import { useBlockNumber } from '@web3modal/react'
 
 export default function UseBlockNumber() {
-  const { data, error, isLoading, refetch } = useBlockNumber({ watch: true })
+  const { data, error, isLoading, refetch } = useBlockNumber({ watch: true, chainId: 1 })
 
   return (
     <section>

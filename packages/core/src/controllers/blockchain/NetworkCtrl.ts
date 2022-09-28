@@ -1,5 +1,5 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { Network } from '../../../types/networkTypes'
+import type { NetworkCtrlState } from '../../../types/networkTypes'
 import { ClientCtrl } from './ClientCtrl'
 
 // -- initial state ------------------------------------------------ //
@@ -8,13 +8,13 @@ const initialState = {
   chains: []
 }
 
-const state = proxy<Network>(initialState)
+const state = proxy<NetworkCtrlState>(initialState)
 
 // -- controller --------------------------------------------------- //
 export const NetworkCtrl = {
   state,
 
-  subscribe(callback: (newState: Network) => void) {
+  subscribe(callback: (newState: NetworkCtrlState) => void) {
     return valtioSub(state, () => callback(state))
   },
 

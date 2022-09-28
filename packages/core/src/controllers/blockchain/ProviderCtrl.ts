@@ -1,14 +1,14 @@
-import type { Provider } from '@web3modal/ethereum'
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
+import type { ProviderCtrlState } from '../../../types/providerTypes'
 import { ClientCtrl } from './ClientCtrl'
 
-const state = proxy<Provider>({} as Provider)
+const state = proxy<ProviderCtrlState>({} as ProviderCtrlState)
 
 // -- controller --------------------------------------------------- //
 export const ProviderCtrl = {
   state,
 
-  subscribe(callback: (newState: Provider) => void) {
+  subscribe(callback: (newState: ProviderCtrlState) => void) {
     return valtioSub(state, () => callback(state))
   },
 

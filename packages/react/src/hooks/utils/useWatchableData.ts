@@ -18,19 +18,19 @@ export function useWatchableData<S>(controller: DataController<S>, options?: Opt
   const watch = options?.watch ?? false
 
   useEffect(() => {
-    let unWatch: (() => void) | undefined = undefined
-    let unSubscribe: (() => void) | undefined = undefined
+    let unwatch: (() => void) | undefined = undefined
+    let unsubscribe: (() => void) | undefined = undefined
     if (initialized) {
-      unSubscribe = controller.subscribe(newData => setData({ ...newData }))
+      unsubscribe = controller.subscribe(newData => setData({ ...newData }))
       controller.get()
-      if (watch) unWatch = controller.watch()
+      if (watch) unwatch = controller.watch()
     }
 
     return () => {
-      unSubscribe?.()
-      unWatch?.()
+      unsubscribe?.()
+      unwatch?.()
     }
-  }, [initialized, controller, watch])
+  }, [initialized, watch, controller])
 
   return data
 }

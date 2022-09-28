@@ -1,37 +1,33 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
+import type { BlockCtrlFetchArgs, BlockCtrlState } from '../../../types/blockTypes'
 import { ClientCtrl } from './ClientCtrl'
-
-// -- types -------------------------------------------------------- //
-export interface State {
-  blockNumber: number
-}
 
 // -- initial state ------------------------------------------------ //
 const initialState = {
   blockNumber: 0
 }
 
-const state = proxy<State>(initialState)
+const state = proxy<BlockCtrlState>(initialState)
 
 // -- controller --------------------------------------------------- //
 export const BlockCtrl = {
   state,
 
-  subscribe(callback: (newState: State) => void) {
+  subscribe(callback: (newState: BlockCtrlState) => void) {
     return valtioSub(state, () => callback(state))
   },
 
-  watch() {
+  watch(args?: BlockCtrlFetchArgs) {
     const unwatch = ClientCtrl.ethereum().watchBlockNumber(
-      { listen: true },
+      { listen: true, ...args },
       blockNumber => (state.blockNumber = blockNumber)
     )
 
     return unwatch
   },
 
-  async fetch() {
-    const blockNumber = await ClientCtrl.ethereum().fetchBlockNumber()
+  async fetch(args?: BlockCtrlFetchArgs) {
+    const blockNumber = await ClientCtrl.ethereum().fetchBlockNumber(args)
     state.blockNumber = blockNumber
   },
 

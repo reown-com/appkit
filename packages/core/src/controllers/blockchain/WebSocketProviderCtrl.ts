@@ -1,14 +1,14 @@
-import type { WebSocketProvider } from '@web3modal/ethereum'
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
+import type { WebSocketProviderCtrlState } from '../../../types/providerTypes'
 import { ClientCtrl } from './ClientCtrl'
 
-const state = proxy<WebSocketProvider>({} as WebSocketProvider)
+const state = proxy<WebSocketProviderCtrlState>({} as WebSocketProviderCtrlState)
 
 // -- controller --------------------------------------------------- //
 export const WebSocketProviderCtrl = {
   state,
 
-  subscribe(callback: (newState: WebSocketProvider) => void) {
+  subscribe(callback: (newState: WebSocketProviderCtrlState) => void) {
     return valtioSub(state, () => callback(state))
   },
 

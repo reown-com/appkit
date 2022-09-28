@@ -1,14 +1,8 @@
-import type { EthereumOptions, Web3ModalEthereum } from '@web3modal/ethereum'
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-
-// -- types -------------------------------------------------------- //
-export interface State {
-  initialized: boolean
-  ethereum?: typeof Web3ModalEthereum
-}
+import type { ClientCtrlSetEthereumClientArgs, ClientCtrlState } from '../../../types/clientTypes'
 
 // -- initial state ------------------------------------------------ //
-const state = proxy<State>({
+const state = proxy<ClientCtrlState>({
   initialized: false,
   ethereum: undefined
 })
@@ -17,7 +11,7 @@ const state = proxy<State>({
 export const ClientCtrl = {
   state,
 
-  subscribe(callback: (newState: State) => void) {
+  subscribe(callback: (newState: ClientCtrlState) => void) {
     return valtioSub(state, () => callback(state))
   },
 
@@ -27,9 +21,9 @@ export const ClientCtrl = {
     return state.ethereum
   },
 
-  async setEthereumClient(options: EthereumOptions) {
+  async setEthereumClient(args: ClientCtrlSetEthereumClientArgs) {
     const { Web3ModalEthereum } = await import('@web3modal/ethereum')
-    state.ethereum = Web3ModalEthereum.createClient(options)
+    state.ethereum = Web3ModalEthereum.createClient(args)
     state.initialized = true
   }
 }
