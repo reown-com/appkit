@@ -63,7 +63,7 @@ import CoreLogo from "../logos/core.svg";
 // @ts-ignore
 import GameStopLogo from "../logos/gamestopwallet.svg";
 // @ts-ignore
-import ABCWallet from "../logos/abcwallet.svg";
+import ABCWalletLogo from "../logos/abcwallet.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -316,7 +316,7 @@ export const GAMESTOP: IProviderInfo = {
 export const ABCWALLET: IProviderInfo = {
   id: "injected",
   name: "ABC Wallet",
-  logo: GameStopLogo,
+  logo: ABCWalletLogo,
   type: "injected",
   check: "isABC"
 };
