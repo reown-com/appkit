@@ -1,20 +1,17 @@
-import { CoreHelpers } from '@web3modal/core'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useClientInitialized } from '../data/useClientInitialized'
 
 // -- types ----------------------------------------------------- //
 interface Controller<S, O> {
   state: S
-  fetch: (args?: ActionOptions<O>) => Promise<void>
-  watch: (args?: ActionOptions<O>) => () => void
+  fetch: (args?: O) => Promise<void>
+  watch: (args?: O) => () => void
   subscribe: (callback: (newData: S) => void) => () => void
 }
 
 interface Options {
   watch?: boolean
 }
-
-type ActionOptions<O> = Omit<O, 'watch'>
 
 // -- hook ------------------------------------------------------ //
 export function useStatefullAsyncController<S, O extends Options>(
@@ -24,14 +21,12 @@ export function useStatefullAsyncController<S, O extends Options>(
   const [data, setData] = useState(controller.state)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(false)
-  const { watch, ...rest } = options ?? { watch: false }
-  const optRef = useRef(CoreHelpers.isEmptyObject(rest) ? undefined : (rest as ActionOptions<O>))
   const initialized = useClientInitialized()
 
   const onFetch = useCallback(async () => {
     try {
       setIsLoading(true)
-      await controller.fetch(optRef.current)
+      await controller.fetch(options)
       setError(undefined)
     } catch (err: unknown) {
       if (err instanceof Error) setError(err)
@@ -39,7 +34,7 @@ export function useStatefullAsyncController<S, O extends Options>(
     } finally {
       setIsLoading(false)
     }
-  }, [controller])
+  }, [controller, options])
 
   useEffect(() => {
     let unwatch: (() => void) | undefined = undefined
@@ -47,14 +42,14 @@ export function useStatefullAsyncController<S, O extends Options>(
     if (initialized) {
       unsubscribe = controller.subscribe(newData => setData({ ...newData }))
       onFetch()
-      if (watch) unwatch = controller.watch(optRef.current)
+      if (options?.watch) unwatch = controller.watch(options)
     }
 
     return () => {
       unsubscribe?.()
       unwatch?.()
     }
-  }, [initialized, watch, onFetch, controller])
+  }, [initialized, options, onFetch, controller])
 
   return {
     data,

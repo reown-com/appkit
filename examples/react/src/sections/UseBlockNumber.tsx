@@ -1,7 +1,7 @@
 import { useBlockNumber } from '@web3modal/react'
 
 export default function UseBlockNumber() {
-  const { data, error, isLoading, refetch } = useBlockNumber({ watch: true, chainId: 1 })
+  const { data, error, isLoading, refetch } = useBlockNumber({ watch: true })
 
   return (
     <section>
@@ -14,7 +14,7 @@ export default function UseBlockNumber() {
         <li>
           Error: <span>{error ? error.message : 'No Error'}</span>
         </li>
-        <button onClick={async () => refetch()}>Refetch</button>
+        <button onClick={refetch}>Refetch</button>
       </ul>
     </section>
   )
