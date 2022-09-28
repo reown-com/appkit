@@ -17,6 +17,8 @@ import MEWwallet from "../logos/mewwallet.png";
 // @ts-ignore
 import DcentWalletLogo from "../logos/dcentwallet.png";
 // @ts-ignore
+import LedgerLogo from "../logos/ledger.png";
+// @ts-ignore
 import BitskiLogo from "../logos/bitski.svg";
 // @ts-ignore
 import OperaLogo from "../logos/opera.svg";
@@ -130,6 +132,14 @@ export const DCENT: IProviderInfo = {
   package: {
     required: ["rpcUrl"]
   }
+};
+
+export const LEDGER: IProviderInfo = {
+  id: "ledger",
+  name: "Ledger",
+  logo: LedgerLogo,
+  type: "hardware",
+  check: "isLedgerConnect"
 };
 
 export const BITSKI: IProviderInfo = {

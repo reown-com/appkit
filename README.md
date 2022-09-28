@@ -198,6 +198,7 @@ These are all the providers available with Web3Modal and how to configure their 
 
 - [WalletConnect](./docs/providers/walletconnect.md)
 - [Coinbase Wallet](./docs/providers/coinbasewallet.md)
+- [Ledger](./docs/providers/ledger.md)
 - [Fortmatic](./docs/providers/fortmatic.md)
 - [Torus](./docs/providers/torus.md)
 - [Portis](./docs/providers/portis.md)
