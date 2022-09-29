@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useBlockNumber } from '../data/useBlockNumber'
 import { useClientInitialized } from '../data/useClientInitialized'
 
 // -- types ----------------------------------------------------- //
 interface Controller<R, O> {
   fetch: (args: O) => Promise<R>
+  watch: (args: O, callback: (data: R) => void) => () => void
 }
 
 interface Options {
@@ -18,7 +18,7 @@ export interface RefetchArgs {
 }
 
 // -- hook ------------------------------------------------------ //
-export function useStaticAsyncController<R, O extends Options>(
+export function useStaticAsyncWatchableController<R, O extends Options>(
   controller: Controller<R, O>,
   options: O
 ) {
@@ -34,11 +34,6 @@ export function useStaticAsyncController<R, O extends Options>(
   const [isLoading, setIsLoading] = useState(true)
 
   const initialized = useClientInitialized()
-  const { data: blockNumber } = useBlockNumber({
-    watch,
-    enabled: enabled && watch,
-    chainId: options.chainId
-  })
   const ready = initialized && enabled
 
   const onFetch = useCallback(
@@ -64,15 +59,24 @@ export function useStaticAsyncController<R, O extends Options>(
   }, [ready, initial, watch, onFetch])
 
   useEffect(() => {
-    if (!initial && watch && ready && Boolean(blockNumber)) onFetch({ skipLoading: true })
-  }, [blockNumber, initial, watch, ready, onFetch])
+    let unwatch: (() => void) | undefined = undefined
+    if (!initial && watch && ready)
+      unwatch = controller.watch(options, newData => {
+        setData(newData)
+        setIsLoading(false)
+      })
+
+    return () => {
+      unwatch?.()
+    }
+  }, [initial, watch, ready, options, controller])
 
   useEffect(() => {
     if (!enabled) setIsLoading(false)
   }, [enabled])
 
   useEffect(() => {
-    if (chainId && prevChainId && !initial && chainId !== prevChainId && !watch) onFetch()
+    if (chainId && prevChainId && !initial && !watch && chainId !== prevChainId) onFetch()
     setPrevChainId(chainId)
   }, [chainId, prevChainId, initial, ready, watch, onFetch])
 

@@ -16,11 +16,12 @@ export type BalanceCtrlReturnValue = ValueType<ReturnType<typeof Web3ModalEthere
 export type BalanceCtrlFetchArgs = Parameters<typeof Web3ModalEthereum.fetchBalance>[0]
 
 // -- BlockCtrl -------------------------------------------- //
-export interface BlockCtrlState {
-  blockNumber: number
-}
+export type BlockCtrlWatchOptions = Omit<
+  Parameters<typeof Web3ModalEthereum.watchBlockNumber>[0],
+  'listen'
+>
 
-export type BlockCtrlFetchArgs = Parameters<typeof Web3ModalEthereum.fetchBlockNumber>[0]
+export type BlockCtrlWatchCallback = Parameters<typeof Web3ModalEthereum.watchBlockNumber>[1]
 
 // -- ClientCtrl ------------------------------------------- //
 export interface ClientCtrlState {

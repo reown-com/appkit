@@ -15,7 +15,7 @@ export default function UseBlockNumber() {
           Error: <span>{error ? error.message : 'No Error'}</span>
         </li>
       </ul>
-      <button onClick={refetch}>Refetch</button>
+      <button onClick={async () => refetch()}>Refetch</button>
     </section>
   )
 }

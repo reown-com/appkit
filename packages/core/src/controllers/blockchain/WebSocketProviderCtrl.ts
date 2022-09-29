@@ -12,8 +12,8 @@ export const WebSocketProviderCtrl = {
     return unwatch
   },
 
-  get() {
-    const data = ClientCtrl.ethereum().getWebSocketProvider({})
+  get(options?: WebSocketProviderCtrlWatchOptions) {
+    const data = ClientCtrl.ethereum().getWebSocketProvider(options)
 
     return data
   }

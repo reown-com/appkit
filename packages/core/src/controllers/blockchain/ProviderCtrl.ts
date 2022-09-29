@@ -12,8 +12,8 @@ export const ProviderCtrl = {
     return unwatch
   },
 
-  get() {
-    const data = ClientCtrl.ethereum().getProvider({})
+  get(options?: ProviderCtrlWatchOptions) {
+    const data = ClientCtrl.ethereum().getProvider(options)
 
     return data
   }

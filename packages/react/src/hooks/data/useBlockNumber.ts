@@ -1,19 +1,22 @@
-import type { BlockCtrlFetchArgs } from '@web3modal/core'
 import { BlockCtrl } from '@web3modal/core'
 import { useChainAgnosticOptions } from '../utils/useChainAgnosticOptions'
-import { useStatefullAsyncController } from '../utils/useStatefullAsyncController'
+import { useStaticAsyncWatchableController } from '../utils/useStaticAsyncWatchableController'
 
-type Options = BlockCtrlFetchArgs & {
+interface Options {
   watch?: boolean
   enabled?: boolean
+  chainId?: number
 }
 
 export function useBlockNumber(options?: Options) {
   const chainAgnosticOptions = useChainAgnosticOptions(options ?? {})
-  const { data, onFetch, ...rest } = useStatefullAsyncController(BlockCtrl, chainAgnosticOptions)
+  const { data, onFetch, ...rest } = useStaticAsyncWatchableController(
+    BlockCtrl,
+    chainAgnosticOptions
+  )
 
   return {
-    data: data.blockNumber,
+    data,
     refetch: onFetch,
     ...rest
   }
