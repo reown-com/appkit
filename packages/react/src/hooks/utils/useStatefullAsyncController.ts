@@ -49,7 +49,7 @@ export function useStatefullAsyncController<S, O extends Options>(
       unsubscribe?.()
       unwatch?.()
     }
-  }, [initialized, options, onFetch, controller])
+  }, [initialized, options, controller, onFetch])
 
   return {
     data,

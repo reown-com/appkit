@@ -55,6 +55,13 @@ export function defaultConnectors({ appName, chains: connectorChains }: GetDefau
       chains: connectorChains,
       options: { appName, headlessMode: true }
     }),
-    new MetaMaskConnector({ chains: connectorChains })
+    new MetaMaskConnector({
+      chains: connectorChains,
+      options: {
+        shimDisconnect: true,
+        shimChainChangedDisconnect: false,
+        UNSTABLE_shimOnConnectSelectAccount: true
+      }
+    })
   ]
 }
