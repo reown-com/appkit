@@ -9,7 +9,7 @@ type Options = BlockCtrlFetchArgs & {
 }
 
 export function useBlockNumber(options?: Options) {
-  const chainAgnosticOptions = useChainAgnosticOptions(options)
+  const chainAgnosticOptions = useChainAgnosticOptions(options ?? {})
   const { data, onFetch, ...rest } = useStatefullAsyncController(BlockCtrl, chainAgnosticOptions)
 
   return {

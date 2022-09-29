@@ -30,9 +30,5 @@ export const NetworkCtrl = {
 
   switch() {
     return ClientCtrl.ethereum().switchNetwork
-  },
-
-  reset() {
-    Object.assign(state, initialState)
   }
 }

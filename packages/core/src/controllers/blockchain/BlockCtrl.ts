@@ -29,9 +29,5 @@ export const BlockCtrl = {
   async fetch(args?: BlockCtrlFetchArgs) {
     const blockNumber = await ClientCtrl.ethereum().fetchBlockNumber(args)
     state.blockNumber = blockNumber
-  },
-
-  reset() {
-    Object.assign(state, initialState)
   }
 }

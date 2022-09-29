@@ -5,15 +5,13 @@ type Options<O> = O & {
   chainId?: number
 }
 
-export function useChainAgnosticOptions<O>(options?: Options<O>) {
+export function useChainAgnosticOptions<O>(options: Options<O>) {
   const [chainOptions, setChainOptions] = useState(options)
-  const chainId = useOptionalChainId(options?.chainId)
+  const chainId = useOptionalChainId(options.chainId)
 
   useEffect(() => {
-    // @ts-expect-error chainId exists
     setChainOptions(prev => ({ ...prev, chainId }))
   }, [chainId])
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return chainOptions!
+  return chainOptions
 }

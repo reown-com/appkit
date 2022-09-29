@@ -4,16 +4,16 @@ export default function UseProvider() {
   const provider = useProvider()
   const websocketProvider = useWebsocketProvider()
 
-  // eslint-disable-next-line no-console
-  console.log('useProvider', provider)
-  // eslint-disable-next-line no-console
-  console.log('websocketProvider', websocketProvider)
+  console.log(provider)
 
   return (
     <section>
       <h1>useProvider</h1>
 
-      <p>Check console for provider object log</p>
+      <ul>
+        <li>Provider: {provider ? 'Yes' : `'No'`}</li>
+        <li>WebsocketProvider: {websocketProvider ? 'Yes' : 'No'}</li>
+      </ul>
     </section>
   )
 }

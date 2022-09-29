@@ -69,7 +69,7 @@ export function useStaticAsyncController<R, O extends Options>(
 
   useEffect(() => {
     if (!enabled) setIsLoading(false)
-  }, [enabled, watch])
+  }, [enabled])
 
   useEffect(() => {
     if (chainId && prevChainId && !initial && chainId !== prevChainId) onFetch()

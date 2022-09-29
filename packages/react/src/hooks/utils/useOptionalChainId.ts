@@ -3,5 +3,5 @@ import { useNetwork } from '../data/useNetwork'
 export function useOptionalChainId(chainId?: number) {
   const { chain } = useNetwork()
 
-  return chainId ?? chain?.id
+  return chainId ?? chain?.id ?? 0
 }

@@ -1,26 +1,20 @@
-import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { ProviderCtrlState } from '../../../types/blockchainCtrlTypes'
+import type {
+  ProviderCtrlWatchCallback,
+  ProviderCtrlWatchOptions
+} from '../../../types/blockchainCtrlTypes'
 import { ClientCtrl } from './ClientCtrl'
-
-const state = proxy<ProviderCtrlState>({} as ProviderCtrlState)
 
 // -- controller --------------------------------------------------- //
 export const ProviderCtrl = {
-  state,
-
-  subscribe(callback: (newState: ProviderCtrlState) => void) {
-    return valtioSub(state, () => callback(state))
-  },
-
-  watch() {
-    const unwatch = ClientCtrl.ethereum().watchProvider({}, provider =>
-      Object.assign(state, provider)
-    )
+  watch(options: ProviderCtrlWatchOptions, callback: ProviderCtrlWatchCallback) {
+    const unwatch = ClientCtrl.ethereum().watchProvider(options, callback)
 
     return unwatch
   },
 
   get() {
-    Object.assign(state, ClientCtrl.ethereum().getProvider({}))
+    const data = ClientCtrl.ethereum().getProvider({})
+
+    return data
   }
 }

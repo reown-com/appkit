@@ -1,8 +1,14 @@
 import { WebSocketProviderCtrl } from '@web3modal/core'
-import { useStatefullController } from '../utils/useStatefullController'
+import { useChainAgnosticOptions } from '../utils/useChainAgnosticOptions'
+import { useStaticWatchableController } from '../utils/useStaticWatchableController'
 
-export function useWebsocketProvider() {
-  const data = useStatefullController(WebSocketProviderCtrl)
+interface Options {
+  chainId?: number
+}
+
+export function useWebsocketProvider(options?: Options) {
+  const chainAgnosticOptions = useChainAgnosticOptions(options ?? {})
+  const data = useStaticWatchableController(WebSocketProviderCtrl, chainAgnosticOptions)
 
   return data
 }

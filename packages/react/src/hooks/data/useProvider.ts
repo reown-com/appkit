@@ -1,8 +1,14 @@
 import { ProviderCtrl } from '@web3modal/core'
-import { useStatefullController } from '../utils/useStatefullController'
+import { useChainAgnosticOptions } from '../utils/useChainAgnosticOptions'
+import { useStaticWatchableController } from '../utils/useStaticWatchableController'
 
-export function useProvider() {
-  const data = useStatefullController(ProviderCtrl)
+interface Options {
+  chainId?: number
+}
+
+export function useProvider(options?: Options) {
+  const chainAgnosticOptions = useChainAgnosticOptions(options ?? {})
+  const data = useStaticWatchableController(ProviderCtrl, chainAgnosticOptions)
 
   return data
 }

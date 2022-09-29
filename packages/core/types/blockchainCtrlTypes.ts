@@ -1,11 +1,4 @@
-import type {
-  Chain,
-  Connector,
-  EthereumOptions,
-  Provider,
-  Web3ModalEthereum,
-  WebSocketProvider
-} from '@web3modal/ethereum'
+import type { Chain, Connector, EthereumOptions, Web3ModalEthereum } from '@web3modal/ethereum'
 
 // -- utils ------------------------------------------------ //
 export type ValueType<T> = T extends Promise<infer U> ? U : T
@@ -44,7 +37,15 @@ export interface NetworkCtrlState {
 }
 
 // -- ProviderCtrl ----------------------------------------- //
-export type ProviderCtrlState = Provider
+export type ProviderCtrlWatchOptions = Parameters<typeof Web3ModalEthereum.watchProvider>[0]
+
+export type ProviderCtrlWatchCallback = Parameters<typeof Web3ModalEthereum.watchProvider>[1]
 
 // -- WebSocketProviderCtrl -------------------------------- //
-export type WebSocketProviderCtrlState = WebSocketProvider
+export type WebSocketProviderCtrlWatchOptions = Parameters<
+  typeof Web3ModalEthereum.watchWebSocketProvider
+>[0]
+
+export type WebSocketProviderCtrlWatchCallback = Parameters<
+  typeof Web3ModalEthereum.watchWebSocketProvider
+>[1]
