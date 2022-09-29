@@ -8,9 +8,6 @@ import UseProvider from '../sections/UseProvider'
 export default function HomePage() {
   const { isConnected } = useAccount()
 
-  // eslint-disable-next-line no-console
-  console.log('Render')
-
   return isConnected ? (
     <>
       <UseAccount />

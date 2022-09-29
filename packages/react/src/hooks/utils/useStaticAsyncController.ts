@@ -22,12 +22,17 @@ export function useStaticAsyncController<R, O extends Options>(
   controller: Controller<R, O>,
   options: O
 ) {
+  const enabled = typeof options.enabled === 'undefined' ? true : options.enabled
+  const watch = options.watch ?? false
+  const { chainId } = options
+
+  const [initial, setInitial] = useState(true)
+  const [prevChainId, setPrevChainId] = useState(chainId)
+
   const [data, setData] = useState<R | undefined>(undefined)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(true)
-  const [initial, setInitial] = useState(true)
-  const enabled = typeof options.enabled === 'undefined' ? true : options.enabled
-  const watch = options.watch ?? false
+
   const initialized = useClientInitialized()
   const { data: blockNumber } = useBlockNumber({
     watch,
@@ -65,6 +70,11 @@ export function useStaticAsyncController<R, O extends Options>(
   useEffect(() => {
     if (!enabled) setIsLoading(false)
   }, [enabled, watch])
+
+  useEffect(() => {
+    if (chainId && prevChainId && !initial && chainId !== prevChainId) onFetch()
+    setPrevChainId(chainId)
+  }, [chainId, prevChainId, initial, ready, watch, onFetch])
 
   return {
     data,

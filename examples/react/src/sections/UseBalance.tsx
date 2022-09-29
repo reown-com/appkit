@@ -4,8 +4,7 @@ export default function UseBalance() {
   const { address } = useAccount()
   const { data, error, isLoading, refetch } = useBalance({
     addressOrName: address ?? '',
-    enabled: Boolean(address),
-    watch: true
+    enabled: Boolean(address)
   })
 
   return (
