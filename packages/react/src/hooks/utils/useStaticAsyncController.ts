@@ -39,7 +39,7 @@ export function useStaticAsyncController<R, O extends Options>(
   const onFetch = useCallback(
     async (args?: RefetchArgs) => {
       try {
-        if (args?.skipLoading) setIsLoading(true)
+        if (!args?.skipLoading) setIsLoading(true)
         const newData = await controller.fetch(options)
         setData(newData)
         setError(undefined)
