@@ -14,5 +14,6 @@ export function useChainAgnosticOptions<O>(options?: Options<O>) {
     setChainOptions(prev => ({ ...prev, chainId }))
   }, [chainId])
 
-  return chainOptions
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return chainOptions!
 }

@@ -1,5 +1,5 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { BlockCtrlFetchArgs, BlockCtrlState } from '../../../types/blockTypes'
+import type { BlockCtrlFetchArgs, BlockCtrlState } from '../../../types/blockchainCtrlTypes'
 import { ClientCtrl } from './ClientCtrl'
 
 // -- initial state ------------------------------------------------ //

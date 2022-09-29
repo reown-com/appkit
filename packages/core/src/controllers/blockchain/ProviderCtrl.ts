@@ -1,5 +1,5 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { ProviderCtrlState } from '../../../types/providerTypes'
+import type { ProviderCtrlState } from '../../../types/blockchainCtrlTypes'
 import { ClientCtrl } from './ClientCtrl'
 
 const state = proxy<ProviderCtrlState>({} as ProviderCtrlState)

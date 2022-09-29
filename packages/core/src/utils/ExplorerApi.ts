@@ -1,4 +1,4 @@
-import type { ListingResponse, PageParams } from '../../types/explorerTypes'
+import type { ListingResponse, PageParams } from '../../types/uiCtrlTypes'
 import { ConfigCtrl } from '../controllers/ui/ConfigCtrl'
 
 // -- helpers ------------------------------------------------------ //

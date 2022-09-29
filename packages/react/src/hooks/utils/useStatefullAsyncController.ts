@@ -11,6 +11,7 @@ interface Controller<S, O> {
 
 interface Options {
   watch?: boolean
+  enabled?: boolean
 }
 
 // -- hook ------------------------------------------------------ //
@@ -20,8 +21,11 @@ export function useStatefullAsyncController<S, O extends Options>(
 ) {
   const [data, setData] = useState(controller.state)
   const [error, setError] = useState<Error | undefined>(undefined)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const initialized = useClientInitialized()
+  const watch = options?.watch ?? false
+  const enabled = typeof options?.enabled === 'undefined' ? true : options.enabled
+  const ready = initialized && enabled
 
   const onFetch = useCallback(async () => {
     try {
@@ -39,17 +43,21 @@ export function useStatefullAsyncController<S, O extends Options>(
   useEffect(() => {
     let unwatch: (() => void) | undefined = undefined
     let unsubscribe: (() => void) | undefined = undefined
-    if (initialized) {
+    if (ready) {
       unsubscribe = controller.subscribe(newData => setData({ ...newData }))
-      onFetch()
-      if (options?.watch) unwatch = controller.watch(options)
+      if (watch) unwatch = controller.watch(options)
+      else onFetch()
     }
 
     return () => {
       unsubscribe?.()
       unwatch?.()
     }
-  }, [initialized, options, controller, onFetch])
+  }, [watch, ready, options, controller, onFetch])
+
+  useEffect(() => {
+    if (!enabled || watch) setIsLoading(false)
+  }, [enabled, watch])
 
   return {
     data,

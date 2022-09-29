@@ -2,6 +2,7 @@ import type { Connector } from '@wagmi/core'
 import {
   connect,
   disconnect,
+  fetchBalance,
   fetchBlockNumber,
   getAccount,
   getNetwork,
@@ -154,5 +155,8 @@ export const Web3ModalEthereum = {
 
   getWebSocketProvider,
 
-  watchWebSocketProvider
+  watchWebSocketProvider,
+
+  // -- balance ------------------------------------------------------ //
+  fetchBalance
 }

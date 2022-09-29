@@ -1,5 +1,8 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { ClientCtrlSetEthereumClientArgs, ClientCtrlState } from '../../../types/clientTypes'
+import type {
+  ClientCtrlSetEthereumClientArgs,
+  ClientCtrlState
+} from '../../../types/blockchainCtrlTypes'
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<ClientCtrlState>({

@@ -1,5 +1,5 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { WebSocketProviderCtrlState } from '../../../types/providerTypes'
+import type { WebSocketProviderCtrlState } from '../../../types/blockchainCtrlTypes'
 import { ClientCtrl } from './ClientCtrl'
 
 const state = proxy<WebSocketProviderCtrlState>({} as WebSocketProviderCtrlState)

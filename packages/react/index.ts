@@ -5,6 +5,7 @@ export { ConnectButton } from './src/components/ConnectButton'
 export { Web3Modal } from './src/components/Web3Modal'
 // -- hooks ------------------------------------------------------ /
 export { useAccount } from './src/hooks/data/useAccount'
+export { useBalance } from './src/hooks/data/useBalance'
 export { useBlockNumber } from './src/hooks/data/useBlockNumber'
 export { useNetwork } from './src/hooks/data/useNetwork'
 export { useProvider } from './src/hooks/data/useProvider'

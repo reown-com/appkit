@@ -1,4 +1,5 @@
 export { AccountCtrl } from './src/controllers/blockchain/AccountCtrl'
+export { BalanceCtrl } from './src/controllers/blockchain/BalanceCtrl'
 export { BlockCtrl } from './src/controllers/blockchain/BlockCtrl'
 export { ClientCtrl } from './src/controllers/blockchain/ClientCtrl'
 export { NetworkCtrl } from './src/controllers/blockchain/NetworkCtrl'
@@ -11,7 +12,9 @@ export { ModalToastCtrl } from './src/controllers/ui/ModalToastCtrl'
 export { RouterCtrl } from './src/controllers/ui/RouterCtrl'
 export { CoreHelpers } from './src/utils/CoreHelpers'
 export { getExplorerApi } from './src/utils/ExplorerApi'
-export type { BlockCtrlFetchArgs } from './types/blockTypes'
-export type { ConfigOptions } from './types/configTypes'
-export type { Listing, ListingResponse } from './types/explorerTypes'
-export type { RouterView } from './types/routerTypes'
+export type {
+  BalanceCtrlFetchArgs,
+  BalanceCtrlReturnValue,
+  BlockCtrlFetchArgs
+} from './types/blockchainCtrlTypes'
+export type { ConfigOptions, Listing, ListingResponse, RouterView } from './types/uiCtrlTypes'

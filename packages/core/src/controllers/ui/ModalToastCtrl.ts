@@ -1,14 +1,8 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-
-// -- types -------------------------------------------------------- //
-export interface State {
-  open: boolean
-  message: string
-  variant: 'error' | 'success'
-}
+import type { ModalToastCtrlState } from '../../../types/uiCtrlTypes'
 
 // -- initial state ------------------------------------------------ //
-const state = proxy<State>({
+const state = proxy<ModalToastCtrlState>({
   open: false,
   message: '',
   variant: 'success'
@@ -18,11 +12,11 @@ const state = proxy<State>({
 export const ModalToastCtrl = {
   state,
 
-  subscribe(callback: (newState: State) => void) {
+  subscribe(callback: (newState: ModalToastCtrlState) => void) {
     return valtioSub(state, () => callback(state))
   },
 
-  openToast(message: State['message'], variant: State['variant']) {
+  openToast(message: ModalToastCtrlState['message'], variant: ModalToastCtrlState['variant']) {
     state.open = true
     state.message = message
     state.variant = variant

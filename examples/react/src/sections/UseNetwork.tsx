@@ -1,6 +1,6 @@
 import { useNetwork } from '@web3modal/react'
 
-export default function UseNetworkSection() {
+export default function UseNetwork() {
   const { chain, chains } = useNetwork()
 
   return (

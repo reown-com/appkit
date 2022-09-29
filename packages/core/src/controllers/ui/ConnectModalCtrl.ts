@@ -1,12 +1,8 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-
-// -- types -------------------------------------------------------- //
-export interface State {
-  open: boolean
-}
+import type { ConnectModalCtrlState } from '../../../types/uiCtrlTypes'
 
 // -- initial state ------------------------------------------------ //
-const state = proxy<State>({
+const state = proxy<ConnectModalCtrlState>({
   open: false
 })
 
@@ -14,7 +10,7 @@ const state = proxy<State>({
 export const ConnectModalCtrl = {
   state,
 
-  subscribe(callback: (newState: State) => void) {
+  subscribe(callback: (newState: ConnectModalCtrlState) => void) {
     return valtioSub(state, () => callback(state))
   },
 

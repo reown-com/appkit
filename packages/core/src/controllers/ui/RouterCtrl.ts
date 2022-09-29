@@ -1,14 +1,8 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { RouterView } from '../../../types/routerTypes'
-
-// -- types -------------------------------------------------------- //
-export interface State {
-  history: RouterView[]
-  view: RouterView
-}
+import type { RouterCtrlState } from '../../../types/uiCtrlTypes'
 
 // -- initial state ------------------------------------------------ //
-const state = proxy<State>({
+const state = proxy<RouterCtrlState>({
   history: ['ConnectWallet'],
   view: 'ConnectWallet'
 })
@@ -17,16 +11,16 @@ const state = proxy<State>({
 export const RouterCtrl = {
   state,
 
-  subscribe(callback: (newState: State) => void) {
+  subscribe(callback: (newState: RouterCtrlState) => void) {
     return valtioSub(state, () => callback(state))
   },
 
-  push(view: State['view']) {
+  push(view: RouterCtrlState['view']) {
     state.view = view
     state.history.push(view)
   },
 
-  replace(view: State['view']) {
+  replace(view: RouterCtrlState['view']) {
     state.view = view
     state.history = [view]
   },

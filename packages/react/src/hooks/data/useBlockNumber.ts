@@ -5,6 +5,7 @@ import { useStatefullAsyncController } from '../utils/useStatefullAsyncControlle
 
 type Options = BlockCtrlFetchArgs & {
   watch?: boolean
+  enabled?: boolean
 }
 
 export function useBlockNumber(options?: Options) {

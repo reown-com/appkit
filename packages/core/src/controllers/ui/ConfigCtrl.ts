@@ -1,17 +1,12 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { ConfigOptions } from '../../../types/configTypes'
-
-// -- types -------------------------------------------------------- //
-export interface State extends ConfigOptions {
-  configured: boolean
-}
+import type { ConfigCtrlState, ConfigOptions } from '../../../types/uiCtrlTypes'
 
 // -- initial state ------------------------------------------------ //
 function isDarkMode() {
   return typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: dark)').matches
 }
 
-const state = proxy<State>({
+const state = proxy<ConfigCtrlState>({
   configured: false,
   projectId: '',
   theme: isDarkMode() ? 'dark' : 'light',
@@ -22,7 +17,7 @@ const state = proxy<State>({
 export const ConfigCtrl = {
   state,
 
-  subscribe(callback: (newState: State) => void) {
+  subscribe(callback: (newState: ConfigCtrlState) => void) {
     return valtioSub(state, () => callback(state))
   },
 

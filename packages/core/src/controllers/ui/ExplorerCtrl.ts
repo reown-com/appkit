@@ -1,16 +1,9 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { Listing, ListingResponse, PageParams } from '../../../types/explorerTypes'
+import type { ExplorerCtrlState, PageParams } from '../../../types/uiCtrlTypes'
 import { fetchWallets } from '../../utils/ExplorerApi'
 
-// -- types -------------------------------------------------------- //
-export interface State {
-  wallets: ListingResponse & { page: number }
-  search: ListingResponse & { page: number }
-  previewWallets: Listing[]
-}
-
 // -- initial state ------------------------------------------------ //
-const state = proxy<State>({
+const state = proxy<ExplorerCtrlState>({
   wallets: { listings: [], total: 0, page: 1 },
   search: { listings: [], total: 0, page: 1 },
   previewWallets: []
@@ -20,7 +13,7 @@ const state = proxy<State>({
 export const ExplorerCtrl = {
   state,
 
-  subscribe(callback: (newState: State) => void) {
+  subscribe(callback: (newState: ExplorerCtrlState) => void) {
     return valtioSub(state, () => callback(state))
   },
 

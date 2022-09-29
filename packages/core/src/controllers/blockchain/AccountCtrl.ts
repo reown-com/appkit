@@ -1,5 +1,5 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { AccountCtrlState } from '../../../types/accountTypes'
+import type { AccountCtrlState } from '../../../types/blockchainCtrlTypes'
 import { ClientCtrl } from './ClientCtrl'
 
 // -- initial state ------------------------------------------------ //
