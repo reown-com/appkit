@@ -1,60 +1,19 @@
-import { useCallback, useEffect, useState } from 'react'
-import { useClientInitialized } from '../data/useClientInitialized'
-import { useAddressChange } from './useAddressChange'
-import { useChainIdChange } from './useChainIdChange'
+import { useEffect } from 'react'
+import type { Controller, Options } from './useBaseAsyncController'
+import { useBaseAsyncController } from './useBaseAsyncController'
 
 // -- types ----------------------------------------------------- //
-interface Controller<R, O> {
-  fetch: (args: O) => Promise<R>
+interface WatchController<R, O> extends Controller<R, O> {
   watch: (args: O, callback: (data: R) => void) => () => void
-}
-
-interface Options {
-  watch?: boolean
-  enabled?: boolean
-  chainId?: number
-  addressOrName?: string
-}
-
-export interface RefetchArgs {
-  skipLoading?: boolean
 }
 
 // -- hook ------------------------------------------------------ //
 export function useStaticAsyncWatchableController<R, O extends Options>(
-  controller: Controller<R, O>,
+  controller: WatchController<R, O>,
   options: O
 ) {
-  const enabled = typeof options.enabled === 'undefined' ? true : options.enabled
-  const { chainId, addressOrName, watch } = options
-  const [initial, setInitial] = useState(true)
-  const [data, setData] = useState<R | undefined>(undefined)
-  const [error, setError] = useState<Error | undefined>(undefined)
-  const [isLoading, setIsLoading] = useState(true)
-  const initialized = useClientInitialized()
-  const ready = initialized && enabled
-
-  const onFetch = useCallback(
-    async (args?: RefetchArgs) => {
-      try {
-        if (!args?.skipLoading) setIsLoading(true)
-        const newData = await controller.fetch(options)
-        setData(newData)
-        setError(undefined)
-      } catch (err: unknown) {
-        if (err instanceof Error) setError(err)
-        else setError(new Error('Unknown error'))
-      } finally {
-        setIsLoading(false)
-      }
-    },
-    [controller, options]
-  )
-
-  useEffect(() => {
-    if (initial && !watch && ready) onFetch()
-    setInitial(false)
-  }, [ready, initial, watch, onFetch])
+  const { data, error, isLoading, initial, watch, ready, onFetch, setData, setIsLoading } =
+    useBaseAsyncController(controller, options)
 
   useEffect(() => {
     let unwatch: (() => void) | undefined = undefined
@@ -67,19 +26,7 @@ export function useStaticAsyncWatchableController<R, O extends Options>(
     return () => {
       unwatch?.()
     }
-  }, [initial, watch, ready, options, controller])
-
-  useEffect(() => {
-    if (!enabled) setIsLoading(false)
-  }, [enabled])
-
-  useChainIdChange(() => {
-    if (!initial && !watch) onFetch()
-  }, chainId)
-
-  useAddressChange(() => {
-    if (!initial && !watch) onFetch()
-  }, addressOrName)
+  }, [initial, watch, ready, options, controller, setData, setIsLoading])
 
   return {
     data,
