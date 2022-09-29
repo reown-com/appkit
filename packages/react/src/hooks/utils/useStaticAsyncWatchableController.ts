@@ -25,14 +25,11 @@ export function useStaticAsyncWatchableController<R, O extends Options>(
   const enabled = typeof options.enabled === 'undefined' ? true : options.enabled
   const watch = options.watch ?? false
   const { chainId } = options
-
   const [initial, setInitial] = useState(true)
   const [prevChainId, setPrevChainId] = useState(chainId)
-
   const [data, setData] = useState<R | undefined>(undefined)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(true)
-
   const initialized = useClientInitialized()
   const ready = initialized && enabled
 
