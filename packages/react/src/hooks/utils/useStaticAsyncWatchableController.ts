@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useClientInitialized } from '../data/useClientInitialized'
+import { useAddressChange } from './useAddressChange'
+import { useChainIdChange } from './useChainIdChange'
 
 // -- types ----------------------------------------------------- //
 interface Controller<R, O> {
@@ -11,6 +13,7 @@ interface Options {
   watch?: boolean
   enabled?: boolean
   chainId?: number
+  addressOrName?: string
 }
 
 export interface RefetchArgs {
@@ -23,10 +26,8 @@ export function useStaticAsyncWatchableController<R, O extends Options>(
   options: O
 ) {
   const enabled = typeof options.enabled === 'undefined' ? true : options.enabled
-  const watch = options.watch ?? false
-  const { chainId } = options
+  const { chainId, addressOrName, watch } = options
   const [initial, setInitial] = useState(true)
-  const [prevChainId, setPrevChainId] = useState(chainId)
   const [data, setData] = useState<R | undefined>(undefined)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(true)
@@ -72,10 +73,13 @@ export function useStaticAsyncWatchableController<R, O extends Options>(
     if (!enabled) setIsLoading(false)
   }, [enabled])
 
-  useEffect(() => {
-    if (chainId && prevChainId && !initial && !watch && chainId !== prevChainId) onFetch()
-    setPrevChainId(chainId)
-  }, [chainId, prevChainId, initial, ready, watch, onFetch])
+  useChainIdChange(() => {
+    if (!initial && !watch) onFetch()
+  }, chainId)
+
+  useAddressChange(() => {
+    if (!initial && !watch) onFetch()
+  }, addressOrName)
 
   return {
     data,

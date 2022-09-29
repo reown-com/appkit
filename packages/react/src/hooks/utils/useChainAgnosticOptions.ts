@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { useOptionalChainId } from './useOptionalChainId'
 
 type Options<O> = O & {
@@ -6,12 +5,7 @@ type Options<O> = O & {
 }
 
 export function useChainAgnosticOptions<O>(options: Options<O>) {
-  const [chainOptions, setChainOptions] = useState(options)
   const chainId = useOptionalChainId(options.chainId)
 
-  useEffect(() => {
-    setChainOptions(prev => ({ ...prev, chainId }))
-  }, [chainId])
-
-  return chainOptions
+  return { ...options, chainId }
 }

@@ -9,7 +9,7 @@ export default function UseBalance() {
 
   return (
     <section>
-      <h1>useAccount</h1>
+      <h1>useBalance</h1>
 
       <ul>
         <li>
