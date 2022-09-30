@@ -6,6 +6,8 @@ import UseDisconnect from '../sections/UseDisconnect'
 import UseNetwork from '../sections/UseNetwork'
 import UseProvider from '../sections/UseProvider'
 import UseSigner from '../sections/UseSigner'
+import UseSignMessage from '../sections/UseSignMessage'
+import UseSignTypedData from '../sections/UseSignTypedData'
 
 export default function HomePage() {
   const { isConnected } = useAccount()
@@ -19,6 +21,8 @@ export default function HomePage() {
       <UseBalance />
       <UseProvider />
       <UseSigner />
+      <UseSignMessage />
+      <UseSignTypedData />
     </>
   ) : (
     <ConnectButton />

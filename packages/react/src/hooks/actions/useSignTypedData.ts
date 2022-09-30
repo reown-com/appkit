@@ -6,7 +6,7 @@ export function useSignTypedData(args: SignerCtrlSignTypedDataArgs) {
   const { onAction, ...rest } = useAsyncAction(SignerCtrl.signTypedData, args)
 
   return {
-    signMessage: onAction,
+    signTypedData: onAction,
     ...rest
   }
 }
