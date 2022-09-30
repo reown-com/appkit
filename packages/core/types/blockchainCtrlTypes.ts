@@ -11,9 +11,11 @@ export interface AccountCtrlState {
 }
 
 // -- BalanceCtrl ------------------------------------------ //
-export type BalanceCtrlReturnValue = ValueType<ReturnType<typeof Web3ModalEthereum.fetchBalance>>
-
 export type BalanceCtrlFetchArgs = Parameters<typeof Web3ModalEthereum.fetchBalance>[0]
+
+export type BalanceCtrlFetchReturnValue = ValueType<
+  ReturnType<typeof Web3ModalEthereum.fetchBalance>
+>
 
 // -- BlockCtrl -------------------------------------------- //
 export type BlockCtrlWatchOptions = Omit<
@@ -59,3 +61,8 @@ export type SignerCtrlWatchCallback = Parameters<typeof Web3ModalEthereum.watchS
 export type SignerCtrlSignMessageArgs = Parameters<typeof Web3ModalEthereum.signMessage>[0]
 
 export type SignerCtrlSignTypedDataArgs = Parameters<typeof Web3ModalEthereum.signTypedData>[0]
+
+// -- FeeCtrl ---------------------------------------------- //
+export type FeeCtrlFetchArgs = Parameters<typeof Web3ModalEthereum.fetchFeeData>[0]
+
+export type FeeCtrlFetchReturnValue = ValueType<ReturnType<typeof Web3ModalEthereum.fetchFeeData>>

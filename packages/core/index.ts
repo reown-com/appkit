@@ -2,6 +2,7 @@ export { AccountCtrl } from './src/controllers/blockchain/AccountCtrl'
 export { BalanceCtrl } from './src/controllers/blockchain/BalanceCtrl'
 export { BlockCtrl } from './src/controllers/blockchain/BlockCtrl'
 export { ClientCtrl } from './src/controllers/blockchain/ClientCtrl'
+export { FeeCtrl } from './src/controllers/blockchain/FeeCtrl'
 export { NetworkCtrl } from './src/controllers/blockchain/NetworkCtrl'
 export { ProviderCtrl } from './src/controllers/blockchain/ProviderCtrl'
 export { SignerCtrl } from './src/controllers/blockchain/SignerCtrl'
@@ -15,7 +16,9 @@ export { CoreHelpers } from './src/utils/CoreHelpers'
 export { getExplorerApi } from './src/utils/ExplorerApi'
 export type {
   BalanceCtrlFetchArgs,
-  BalanceCtrlReturnValue,
+  BalanceCtrlFetchReturnValue,
+  FeeCtrlFetchArgs,
+  FeeCtrlFetchReturnValue,
   SignerCtrlSignMessageArgs,
   SignerCtrlSignTypedDataArgs
 } from './types/blockchainCtrlTypes'

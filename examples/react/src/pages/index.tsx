@@ -3,6 +3,7 @@ import UseAccount from '../sections/UseAccount'
 import UseBalance from '../sections/UseBalance'
 import UseBlockNumber from '../sections/UseBlockNumber'
 import UseDisconnect from '../sections/UseDisconnect'
+import UseFeeData from '../sections/UseFeeData'
 import UseNetwork from '../sections/UseNetwork'
 import UseProvider from '../sections/UseProvider'
 import UseSigner from '../sections/UseSigner'
@@ -18,6 +19,7 @@ export default function HomePage() {
       <UseDisconnect />
       <UseNetwork />
       <UseBlockNumber />
+      <UseFeeData />
       <UseBalance />
       <UseProvider />
       <UseSigner />
