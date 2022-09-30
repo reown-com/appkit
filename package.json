@@ -91,6 +91,8 @@
   },
   "dependencies": {
     "detect-browser": "^5.1.0",
+    "@metamask/post-message-stream": "^6.0.0",
+    "@metamask/providers": "^9.1.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",

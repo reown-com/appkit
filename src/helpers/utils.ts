@@ -1,5 +1,8 @@
 import * as env from "detect-browser";
 
+const {WindowPostMessageStream} = require('@metamask/post-message-stream');
+const { initializeProvider } = require('@metamask/providers');
+
 import { CHAIN_DATA_LIST } from "../constants";
 import { themesList } from "../themes";
 import { providers, injected } from "../providers";
@@ -15,7 +18,31 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
   const result = {
     injectedAvailable: !!window.ethereum || !!window.web3
   };
+
+  if (!result.injectedAvailable) {
+  const browser = env.detect();
+      if (browser && browser.name === "firefox") {
+        // Due to https://github.com/MetaMask/metamask-extension/issues/3133
+        // setup background connection
+        const metamaskStream = new WindowPostMessageStream({
+          name: 'metamask-inpage',
+          target: 'metamask-contentscript'
+        });
+
+        // this will initialize the provider and set it as window.ethereum
+        initializeProvider({
+          connectionStream: metamaskStream,
+          shouldShimWeb3: true
+        });
+      }
+  }
+
+  // Check if we managed to initialise Metamask for the Firefox case above
+  result.injectedAvailable = !!window.ethereum || !!window.web3
+
   if (result.injectedAvailable) {
+      const browser = env.detect();
+
     let fallbackProvider = true;
     Object.values(injected).forEach(provider => {
       const isAvailable = verifyInjectedProvider(provider.check);
@@ -24,8 +51,6 @@ export function checkInjectedProviders(): IInjectedProvidersMap {
         fallbackProvider = false;
       }
     });
-
-    const browser = env.detect();
 
     if (browser && browser.name === "opera") {
       result[injected.OPERA.check] = true;
