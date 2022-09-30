@@ -17,12 +17,31 @@ import {
 } from './chains'
 import { NAMESPACE } from './constants'
 
+// -- utilities ------------------------------------------------------- //
+const customChains = [
+  avalanche,
+  avalancheFuji,
+  binanceSmartChain,
+  binanceSmartChainTestnet,
+  fantom,
+  fantomTestnet
+]
+
 // -- providers ------------------------------------------------------- //
 function walletConnectProvider({ projectId }: GetWalletConnectProviderOpts) {
   return jsonRpcProvider({
-    rpc: rpcChain => ({
-      http: `https://rpc.walletconnect.com/v1/?chainId=${NAMESPACE}:${rpcChain.id}&projectId=${projectId}`
-    })
+    rpc: rpcChain => {
+      const customChain = customChains.find(c => c.id === rpcChain.id)
+
+      if (customChain)
+        return {
+          http: customChain.rpcUrls.default
+        }
+
+      return {
+        http: `https://rpc.walletconnect.com/v1/?chainId=${NAMESPACE}:${rpcChain.id}&projectId=${projectId}`
+      }
+    }
   })
 }
 
