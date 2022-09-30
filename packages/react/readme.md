@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-Make sure to read our [main readme](./../../readme.md) first to find out details about projectId, chain specific packages and modal customisation options.
+Make sure to read our [main readme](./../../readme.md) first to find out details about projectId, chain specific packages and modal customisation options. Please ensure you are updated to the latest React / Next.js version.
 
 ### 1. Install dependencies
 
