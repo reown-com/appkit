@@ -10,10 +10,10 @@ export default function UseProvider() {
 
       <ul>
         <li>
-          Provider: <span>{provider ? 'Yes' : `'No'`}</span>
+          Provider Ready: <span>{provider ? 'Yes' : 'No'}</span>
         </li>
         <li>
-          WebsocketProvider: <span>{websocketProvider ? 'Yes' : 'No'}</span>
+          WebsocketProvider Ready: <span>{websocketProvider ? 'Yes' : 'No'}</span>
         </li>
       </ul>
     </section>

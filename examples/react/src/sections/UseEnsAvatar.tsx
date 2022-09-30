@@ -1,6 +1,6 @@
 import { useEnsAvatar } from '@web3modal/react'
 
-export default function UseEnsAddress() {
+export default function UseEnsAvatar() {
   const name = 'vitalik.eth'
   const { data, isLoading, error, refetch } = useEnsAvatar({ addressOrName: name })
 

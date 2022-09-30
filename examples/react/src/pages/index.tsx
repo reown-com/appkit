@@ -5,6 +5,8 @@ import UseBlockNumber from '../sections/UseBlockNumber'
 import UseDisconnect from '../sections/UseDisconnect'
 import UseEnsAddress from '../sections/UseEnsAddress'
 import UseEnsAvatar from '../sections/UseEnsAvatar'
+import UseEnsName from '../sections/UseEnsName'
+import UseEnsResolver from '../sections/UseEnsResolver'
 import UseFeeData from '../sections/UseFeeData'
 import UseNetwork from '../sections/UseNetwork'
 import UseProvider from '../sections/UseProvider'
@@ -29,6 +31,8 @@ export default function HomePage() {
       <UseSignTypedData />
       <UseEnsAddress />
       <UseEnsAvatar />
+      <UseEnsName />
+      <UseEnsResolver />
     </>
   ) : (
     <ConnectButton />

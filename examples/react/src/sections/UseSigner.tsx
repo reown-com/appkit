@@ -10,7 +10,7 @@ export default function UseSigner() {
       <ul>
         <li>
           {/* eslint-disable */}
-          Signer: <span>{isLoading ? 'Loading...' : data?._isSigner ? 'Yes' : 'No'}</span>
+          Signer Ready: <span>{isLoading ? 'Loading...' : data?._isSigner ? 'Yes' : 'No'}</span>
         </li>
         <li>
           Error: <span>{error ? error.message : 'No Error'}</span>
