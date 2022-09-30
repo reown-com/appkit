@@ -3,7 +3,7 @@ import { SignerCtrl } from '@web3modal/core'
 import { useAsyncAction } from '../utils/useAsyncAction'
 
 export function useSignMessage(args: SignerCtrlSignMessageArgs) {
-  const { onAction, ...rest } = useAsyncAction(SignerCtrl.signMessage, args)
+  const { onAction, ...rest } = useAsyncAction(SignerCtrl.signMessage, { ...args, enabled: false })
 
   return {
     signMessage: onAction,

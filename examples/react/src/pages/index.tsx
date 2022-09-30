@@ -3,6 +3,7 @@ import UseAccount from '../sections/UseAccount'
 import UseBalance from '../sections/UseBalance'
 import UseBlockNumber from '../sections/UseBlockNumber'
 import UseDisconnect from '../sections/UseDisconnect'
+import UseEnsAddress from '../sections/UseEnsAddress'
 import UseFeeData from '../sections/UseFeeData'
 import UseNetwork from '../sections/UseNetwork'
 import UseProvider from '../sections/UseProvider'
@@ -25,6 +26,7 @@ export default function HomePage() {
       <UseSigner />
       <UseSignMessage />
       <UseSignTypedData />
+      <UseEnsAddress />
     </>
   ) : (
     <ConnectButton />
