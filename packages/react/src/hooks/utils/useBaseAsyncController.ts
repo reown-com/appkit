@@ -13,6 +13,7 @@ export interface Options {
   enabled?: boolean
   chainId?: number
   addressOrName?: string
+  forceInitialFetch?: boolean
 }
 
 export interface RefetchArgs {
@@ -25,7 +26,7 @@ export function useBaseAsyncController<R, O extends Options>(
   options: O
 ) {
   const enabled = typeof options.enabled === 'undefined' ? true : options.enabled
-  const { chainId, addressOrName, watch } = options
+  const { chainId, addressOrName, watch, forceInitialFetch } = options
   const [initial, setInitial] = useState(true)
   const [data, setData] = useState<R | undefined>(undefined)
   const [error, setError] = useState<Error | undefined>(undefined)
@@ -51,9 +52,9 @@ export function useBaseAsyncController<R, O extends Options>(
   )
 
   useEffect(() => {
-    if (initial && !watch && ready) onFetch()
+    if (initial && (!watch || forceInitialFetch) && ready) onFetch()
     setInitial(false)
-  }, [ready, initial, watch, onFetch])
+  }, [ready, initial, watch, forceInitialFetch, onFetch])
 
   useEffect(() => {
     if (!enabled) setIsLoading(false)

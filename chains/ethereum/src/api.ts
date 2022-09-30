@@ -4,6 +4,7 @@ import {
   disconnect,
   fetchBalance,
   fetchBlockNumber,
+  fetchSigner,
   getAccount,
   getNetwork,
   getProvider,
@@ -13,6 +14,7 @@ import {
   watchBlockNumber,
   watchNetwork,
   watchProvider,
+  watchSigner,
   watchWebSocketProvider
 } from '@wagmi/core'
 import type { EthereumOptions } from '../types/apiTypes'
@@ -158,5 +160,10 @@ export const Web3ModalEthereum = {
   watchWebSocketProvider,
 
   // -- balance ------------------------------------------------------ //
-  fetchBalance
+  fetchBalance,
+
+  // -- signer ------------------------------------------------------- //
+  fetchSigner,
+
+  watchSigner
 }

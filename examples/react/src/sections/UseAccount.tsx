@@ -1,4 +1,4 @@
-import { AccountButton, useAccount } from '@web3modal/react'
+import { useAccount } from '@web3modal/react'
 
 export default function UseAccount() {
   const { address, connector, isConnected } = useAccount()
@@ -6,7 +6,6 @@ export default function UseAccount() {
   return (
     <section>
       <h1>useAccount</h1>
-      <AccountButton />
       <ul>
         <li>
           Connected: <span>{isConnected ? 'Yes' : 'No'}</span>

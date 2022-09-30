@@ -50,3 +50,8 @@ export type WebSocketProviderCtrlWatchOptions = Parameters<
 export type WebSocketProviderCtrlWatchCallback = Parameters<
   typeof Web3ModalEthereum.watchWebSocketProvider
 >[1]
+
+// -- SignerProviderCtrl ----------------------------------- //
+export type SignerCtrlWatchOptions = Parameters<typeof Web3ModalEthereum.watchSigner>[0]
+
+export type SignerCtrlWatchCallback = Parameters<typeof Web3ModalEthereum.watchSigner>[1]
