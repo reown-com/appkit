@@ -66,3 +66,12 @@ export type SignerCtrlSignTypedDataArgs = Parameters<typeof Web3ModalEthereum.si
 export type FeeCtrlFetchArgs = Parameters<typeof Web3ModalEthereum.fetchFeeData>[0]
 
 export type FeeCtrlFetchReturnValue = ValueType<ReturnType<typeof Web3ModalEthereum.fetchFeeData>>
+
+// -- EnsCtrl ---------------------------------------------- //
+export type EnsCtrlFetchEnsAddressArgs = Parameters<typeof Web3ModalEthereum.fetchEnsAddress>[0]
+
+export type EnsCtrlFetchEnsAvatarArgs = Parameters<typeof Web3ModalEthereum.fetchEnsAvatar>[0]
+
+export type EnsCtrlFetchEnsNameArgs = Parameters<typeof Web3ModalEthereum.fetchEnsName>[0]
+
+export type EnsCtrlFetchEnsResolverArgs = Parameters<typeof Web3ModalEthereum.fetchEnsResolver>[0]

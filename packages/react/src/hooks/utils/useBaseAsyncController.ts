@@ -1,18 +1,16 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useClientInitialized } from '../data/useClientInitialized'
-import { useAddressChange } from './useAddressChange'
-import { useChainIdChange } from './useChainIdChange'
+import { useOptionsChange } from './useOptionsChange'
 
 // -- types ----------------------------------------------------- //
-export interface Controller<R, O> {
-  fetch: (args: O) => Promise<R>
+export interface Controller<TReturn, TOptions> {
+  fetch: (args: TOptions) => Promise<TReturn>
 }
 
 export interface Options {
   watch?: boolean
   enabled?: boolean
   chainId?: number
-  addressOrName?: string
   forceInitialFetch?: boolean
 }
 
@@ -21,14 +19,14 @@ export interface RefetchArgs {
 }
 
 // -- hook ------------------------------------------------------ //
-export function useBaseAsyncController<R, O extends Options>(
-  controller: Controller<R, O>,
-  options: O
+export function useBaseAsyncController<TReturn, TOptions extends Options>(
+  controller: Controller<TReturn, TOptions>,
+  options: TOptions
 ) {
   const enabled = typeof options.enabled === 'undefined' ? true : options.enabled
-  const { chainId, addressOrName, watch, forceInitialFetch } = options
+  const { chainId, watch, forceInitialFetch } = options
   const [initial, setInitial] = useState(true)
-  const [data, setData] = useState<R | undefined>(undefined)
+  const [data, setData] = useState<TReturn | undefined>(undefined)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(true)
   const initialized = useClientInitialized()
@@ -60,13 +58,9 @@ export function useBaseAsyncController<R, O extends Options>(
     if (!enabled) setIsLoading(false)
   }, [enabled])
 
-  useChainIdChange(() => {
+  useOptionsChange(() => {
     if (!initial && !watch) onFetch()
-  }, chainId)
-
-  useAddressChange(() => {
-    if (!initial && !watch) onFetch()
-  }, addressOrName)
+  }, options)
 
   return {
     data,

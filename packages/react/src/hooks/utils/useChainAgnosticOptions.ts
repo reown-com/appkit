@@ -1,10 +1,10 @@
 import { useOptionalChainId } from './useOptionalChainId'
 
-type Options<O> = O & {
+type Options<TOptions> = TOptions & {
   chainId?: number
 }
 
-export function useChainAgnosticOptions<O>(options?: Options<O>) {
+export function useChainAgnosticOptions<TOptions>(options?: Options<TOptions>) {
   const chainId = useOptionalChainId(options?.chainId)
 
   return { ...options, chainId }

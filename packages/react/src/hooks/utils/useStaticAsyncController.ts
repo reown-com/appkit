@@ -3,11 +3,11 @@ import { useBlockNumber } from '../data/useBlockNumber'
 import type { Controller, Options } from './useBaseAsyncController'
 import { useBaseAsyncController } from './useBaseAsyncController'
 
-const FOUR_SECONDS = 4000
+const THREE_SECONDS = 3000
 
-export function useStaticAsyncController<R, O extends Options>(
-  controller: Controller<R, O>,
-  options: O
+export function useStaticAsyncController<TReturn, TOptions extends Options>(
+  controller: Controller<TReturn, TOptions>,
+  options: TOptions
 ) {
   const [lastTime, setLastTime] = useState(0)
   const { data, error, isLoading, watch, enabled, chainId, initial, ready, onFetch } =
@@ -16,7 +16,7 @@ export function useStaticAsyncController<R, O extends Options>(
 
   useEffect(() => {
     const timeNow = Date.now()
-    if (!initial && watch && ready && Boolean(blockNumber) && timeNow > lastTime + FOUR_SECONDS) {
+    if (!initial && watch && ready && Boolean(blockNumber) && timeNow > lastTime + THREE_SECONDS) {
       onFetch({ skipLoading: true })
       setLastTime(timeNow)
     }

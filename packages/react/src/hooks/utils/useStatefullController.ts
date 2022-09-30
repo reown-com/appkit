@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react'
 import { useClientInitialized } from '../data/useClientInitialized'
 
 // -- types ----------------------------------------------------- //
-interface Controller<S> {
-  state: S
+interface Controller<TState> {
+  state: TState
   get: () => void
   watch: () => () => void
-  subscribe: (callback: (newData: S) => void) => () => void
+  subscribe: (callback: (newData: TState) => void) => () => void
 }
 
 // -- hook ------------------------------------------------------ //
-export function useStatefullController<S>(controller: Controller<S>) {
+export function useStatefullController<TState>(controller: Controller<TState>) {
   const [data, setData] = useState(controller.state)
   const initialized = useClientInitialized()
 

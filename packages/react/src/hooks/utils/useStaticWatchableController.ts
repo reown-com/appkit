@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from 'react'
 import { useClientInitialized } from '../data/useClientInitialized'
 
 // -- types ----------------------------------------------------- //
-interface Controller<R, O> {
-  get: (args: O) => R
-  watch: (args: O, callback: (data: R) => void) => () => void
+interface Controller<TReturn, TOptions> {
+  get: (options: TOptions) => TReturn
+  watch: (options: TOptions, callback: (data: TReturn) => void) => () => void
 }
 
 interface Options {
@@ -12,11 +12,11 @@ interface Options {
 }
 
 // -- hook ------------------------------------------------------ //
-export function useStaticWatchableController<R, O extends Options>(
-  controller: Controller<R, O>,
-  options: O
+export function useStaticWatchableController<TReturn, TOptions extends Options>(
+  controller: Controller<TReturn, TOptions>,
+  options: TOptions
 ) {
-  const [data, setData] = useState<R | undefined>(undefined)
+  const [data, setData] = useState<TReturn | undefined>(undefined)
   const initialized = useClientInitialized()
 
   const onGet = useCallback(() => {

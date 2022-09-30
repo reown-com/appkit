@@ -4,6 +4,10 @@ import {
   disconnect,
   fetchBalance,
   fetchBlockNumber,
+  fetchEnsAddress,
+  fetchEnsAvatar,
+  fetchEnsName,
+  fetchEnsResolver,
   fetchFeeData,
   fetchSigner,
   getAccount,
@@ -175,5 +179,14 @@ export const Web3ModalEthereum = {
   signTypedData,
 
   // -- fees ---------------------------------------------------------- //
-  fetchFeeData
+  fetchFeeData,
+
+  // -- ens ----------------------------------------------------------- //
+  fetchEnsAddress,
+
+  fetchEnsAvatar,
+
+  fetchEnsName,
+
+  fetchEnsResolver
 }

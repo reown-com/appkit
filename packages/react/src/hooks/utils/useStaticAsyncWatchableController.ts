@@ -3,14 +3,14 @@ import type { Controller, Options } from './useBaseAsyncController'
 import { useBaseAsyncController } from './useBaseAsyncController'
 
 // -- types ----------------------------------------------------- //
-interface WatchController<R, O> extends Controller<R, O> {
-  watch: (args: O, callback: (data: R) => void) => () => void
+interface WatchController<TReturn, TOptions> extends Controller<TReturn, TOptions> {
+  watch: (args: TOptions, callback: (data: TReturn) => void) => () => void
 }
 
 // -- hook ------------------------------------------------------ //
-export function useStaticAsyncWatchableController<R, O extends Options>(
-  controller: WatchController<R, O>,
-  options: O
+export function useStaticAsyncWatchableController<TReturn, TOptions extends Options>(
+  controller: WatchController<TReturn, TOptions>,
+  options: TOptions
 ) {
   const { data, error, isLoading, initial, watch, ready, onFetch, setData, setIsLoading } =
     useBaseAsyncController(controller, options)
