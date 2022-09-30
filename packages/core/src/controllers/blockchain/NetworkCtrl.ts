@@ -1,5 +1,8 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { NetworkCtrlState } from '../../../types/blockchainCtrlTypes'
+import type {
+  NetworkCtrlState,
+  NetworkCtrlSwitchNetworkArgs
+} from '../../../types/blockchainCtrlTypes'
 import { ClientCtrl } from './ClientCtrl'
 
 // -- initial state ------------------------------------------------ //
@@ -28,7 +31,9 @@ export const NetworkCtrl = {
     Object.assign(state, ClientCtrl.ethereum().getNetwork())
   },
 
-  switch() {
-    return ClientCtrl.ethereum().switchNetwork
+  async switchNetwork(args: NetworkCtrlSwitchNetworkArgs) {
+    const data = await ClientCtrl.ethereum().switchNetwork(args)
+
+    return data
   }
 }

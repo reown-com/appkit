@@ -13,6 +13,7 @@ import UseProvider from '../sections/UseProvider'
 import UseSigner from '../sections/UseSigner'
 import UseSignMessage from '../sections/UseSignMessage'
 import UseSignTypedData from '../sections/UseSignTypedData'
+import UseSwitchNetwork from '../sections/UseSwitchNetwork'
 
 export default function HomePage() {
   const { isConnected } = useAccount()
@@ -22,6 +23,7 @@ export default function HomePage() {
       <UseAccount />
       <UseDisconnect />
       <UseNetwork />
+      <UseSwitchNetwork />
       <UseBlockNumber />
       <UseFeeData />
       <UseBalance />

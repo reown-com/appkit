@@ -39,6 +39,8 @@ export interface NetworkCtrlState {
   chains: Chain[]
 }
 
+export type NetworkCtrlSwitchNetworkArgs = Parameters<typeof Web3ModalEthereum.switchNetwork>[0]
+
 // -- ProviderCtrl ----------------------------------------- //
 export type ProviderCtrlWatchOptions = Parameters<typeof Web3ModalEthereum.watchProvider>[0]
 

@@ -24,6 +24,7 @@ export type {
   EnsCtrlFetchEnsResolverArgs,
   FeeCtrlFetchArgs,
   FeeCtrlFetchReturnValue,
+  NetworkCtrlSwitchNetworkArgs,
   SignerCtrlSignMessageArgs,
   SignerCtrlSignTypedDataArgs
 } from './types/blockchainCtrlTypes'
