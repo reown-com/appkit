@@ -17,7 +17,7 @@ export default function UseSwitchNetwork() {
         </li>
       </ul>
 
-      <select onChange={({ target }) => switchNetwork({ chainId: Number(target.value) })}>
+      <select onChange={async ({ target }) => switchNetwork({ chainId: Number(target.value) })}>
         {chains.map(c => (
           <option key={c.id} value={c.id}>
             {c.name}
