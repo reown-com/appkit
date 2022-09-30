@@ -14,10 +14,6 @@ export interface Options {
   forceInitialFetch?: boolean
 }
 
-export interface RefetchArgs {
-  skipLoading?: boolean
-}
-
 // -- hook ------------------------------------------------------ //
 export function useBaseAsyncController<TReturn, TOptions extends Options>(
   controller: Controller<TReturn, TOptions>,
@@ -28,14 +24,16 @@ export function useBaseAsyncController<TReturn, TOptions extends Options>(
   const [initial, setInitial] = useState(true)
   const [data, setData] = useState<TReturn | undefined>(undefined)
   const [error, setError] = useState<Error | undefined>(undefined)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(enabled)
+  const [isFirstFetch, setIsFirstFetch] = useState(true)
   const initialized = useClientInitialized()
   const ready = initialized && enabled
 
-  const onFetch = useCallback(
-    async (args?: RefetchArgs) => {
+  const onFetch = useCallback(async () => {
+    if (!isLoading || isFirstFetch) {
+      setIsFirstFetch(false)
+      setIsLoading(true)
       try {
-        if (!args?.skipLoading) setIsLoading(true)
         const newData = await controller.fetch(options)
         setData(newData)
         setError(undefined)
@@ -45,19 +43,16 @@ export function useBaseAsyncController<TReturn, TOptions extends Options>(
       } finally {
         setIsLoading(false)
       }
-    },
-    [controller, options]
-  )
+    }
+  }, [controller, options, isFirstFetch, isLoading])
 
+  // Perform initial fetch if not watching, forceInitialFetch if watch needs to be triggered
   useEffect(() => {
     if (initial && (!watch || forceInitialFetch) && ready) onFetch()
     setInitial(false)
   }, [ready, initial, watch, forceInitialFetch, onFetch])
 
-  useEffect(() => {
-    if (!enabled) setIsLoading(false)
-  }, [enabled])
-
+  // Re-fetch when input options change, unless we are watching
   useOptionsChange(() => {
     if (!initial && !watch) onFetch()
   }, options)

@@ -9,16 +9,18 @@ export function useStaticAsyncController<TReturn, TOptions extends Options>(
   controller: Controller<TReturn, TOptions>,
   options: TOptions
 ) {
-  const [lastTime, setLastTime] = useState(0)
   const { data, error, isLoading, watch, enabled, chainId, initial, ready, onFetch } =
     useBaseAsyncController(controller, options)
+  const [lastTime, setLastTime] = useState(0)
   const { data: blockNumber } = useBlockNumber({ watch, enabled: enabled && watch, chainId })
 
   useEffect(() => {
     const timeNow = Date.now()
-    if (!initial && watch && ready && Boolean(blockNumber) && timeNow > lastTime + THREE_SECONDS) {
-      onFetch({ skipLoading: true })
+    const isBlockNumber = Boolean(blockNumber)
+    const isTimeAllowed = timeNow > lastTime + THREE_SECONDS
+    if (!initial && watch && ready && isBlockNumber && isTimeAllowed) {
       setLastTime(timeNow)
+      onFetch()
     }
   }, [blockNumber, initial, watch, ready, lastTime, setLastTime, onFetch])
 
