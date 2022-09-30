@@ -13,5 +13,10 @@ export { ModalToastCtrl } from './src/controllers/ui/ModalToastCtrl'
 export { RouterCtrl } from './src/controllers/ui/RouterCtrl'
 export { CoreHelpers } from './src/utils/CoreHelpers'
 export { getExplorerApi } from './src/utils/ExplorerApi'
-export type { BalanceCtrlFetchArgs, BalanceCtrlReturnValue } from './types/blockchainCtrlTypes'
+export type {
+  BalanceCtrlFetchArgs,
+  BalanceCtrlReturnValue,
+  SignerCtrlSignMessageArgs,
+  SignerCtrlSignTypedDataArgs
+} from './types/blockchainCtrlTypes'
 export type { ConfigOptions, Listing, ListingResponse, RouterView } from './types/uiCtrlTypes'

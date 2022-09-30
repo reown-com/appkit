@@ -9,6 +9,8 @@ import {
   getNetwork,
   getProvider,
   getWebSocketProvider,
+  signMessage,
+  signTypedData,
   switchNetwork,
   watchAccount,
   watchBlockNumber,
@@ -165,5 +167,9 @@ export const Web3ModalEthereum = {
   // -- signer ------------------------------------------------------- //
   fetchSigner,
 
-  watchSigner
+  watchSigner,
+
+  signMessage,
+
+  signTypedData
 }

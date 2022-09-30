@@ -4,6 +4,8 @@ export { AccountButton } from './src/components/AccountButton'
 export { ConnectButton } from './src/components/ConnectButton'
 export { Web3Modal } from './src/components/Web3Modal'
 export { useDisconnect } from './src/hooks/actions/useDisconnect'
+export { useSignMessage } from './src/hooks/actions/useSignMessage'
+export { useSignTypedData } from './src/hooks/actions/useSignTypedData'
 // -- hooks ------------------------------------------------------ /
 export { useAccount } from './src/hooks/data/useAccount'
 export { useBalance } from './src/hooks/data/useBalance'
