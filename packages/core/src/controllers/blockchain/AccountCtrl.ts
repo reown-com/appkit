@@ -27,5 +27,9 @@ export const AccountCtrl = {
 
   get() {
     Object.assign(state, ClientCtrl.ethereum().getAccount())
+  },
+
+  disconnect() {
+    ClientCtrl.ethereum().disconnect()
   }
 }

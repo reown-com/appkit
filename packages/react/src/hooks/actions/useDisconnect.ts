@@ -1,5 +1,5 @@
-import { ClientCtrl } from '@web3modal/core'
+import { AccountCtrl } from '@web3modal/core'
 
 export function useDisconnect() {
-  return ClientCtrl.ethereum().disconnect
+  return AccountCtrl.disconnect
 }
