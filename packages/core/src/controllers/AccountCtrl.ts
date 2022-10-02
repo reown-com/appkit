@@ -2,7 +2,7 @@ import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { Account } from '../../types/accountTypes'
 
 // -- initial state ------------------------------------------------ //
-export const initialAccountlState = {
+export const initialAccountState = {
   connected: false,
   chainSupported: false,
   address: '',
@@ -10,7 +10,7 @@ export const initialAccountlState = {
   connector: ''
 }
 
-const state = proxy<Account>(initialAccountlState)
+const state = proxy<Account>(initialAccountState)
 
 // -- controller --------------------------------------------------- //
 export const AccountCtrl = {
@@ -35,6 +35,6 @@ export const AccountCtrl = {
   },
 
   resetAccount() {
-    Object.assign(state, initialAccountlState)
+    Object.assign(state, initialAccountState)
   }
 }

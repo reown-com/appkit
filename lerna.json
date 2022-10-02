@@ -4,7 +4,8 @@
     "chains/ethereum",
     "packages/core",
     "packages/ui",
-    "packages/react"
+    "packages/react",
+    "packages/solid"
   ],
   "useWorkspaces": true,
   "version": "2.0.0-alpha.4"
