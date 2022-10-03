@@ -11,13 +11,16 @@ import {
   fetchFeeData,
   fetchSigner,
   fetchToken,
+  fetchTransaction,
   getAccount,
   getNetwork,
   getProvider,
   getWebSocketProvider,
+  sendTransaction,
   signMessage,
   signTypedData,
   switchNetwork,
+  waitForTransaction,
   watchAccount,
   watchBlockNumber,
   watchNetwork,
@@ -192,5 +195,12 @@ export const Web3ModalEthereum = {
   fetchEnsResolver,
 
   // -- token --------------------------------------------------------- //
-  fetchToken
+  fetchToken,
+
+  // -- transactions  ------------------------------------------------- //
+  fetchTransaction,
+
+  sendTransaction,
+
+  waitForTransaction
 }

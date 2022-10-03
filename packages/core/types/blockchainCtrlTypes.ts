@@ -80,3 +80,10 @@ export type EnsCtrlFetchEnsResolverArgs = Parameters<typeof Web3ModalEthereum.fe
 
 // -- TokenCtrl -------------------------------------------- //
 export type TokenCtrlFetchArgs = Parameters<typeof Web3ModalEthereum.fetchToken>[0]
+
+// -- TransactionCtrl -------------------------------------- //
+export type TransactionCtrlFetchArgs = Parameters<typeof Web3ModalEthereum.fetchTransaction>[0]
+
+export type TransactionCtrlSendArgs = Parameters<typeof Web3ModalEthereum.sendTransaction>[0]
+
+export type TransactionCtrlWaitArgs = Parameters<typeof Web3ModalEthereum.waitForTransaction>[0]

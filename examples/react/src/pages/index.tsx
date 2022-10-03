@@ -15,6 +15,7 @@ import UseSignMessage from '../sections/UseSignMessage'
 import UseSignTypedData from '../sections/UseSignTypedData'
 import UseSwitchNetwork from '../sections/UseSwitchNetwork'
 import UseToken from '../sections/UseToken'
+import UseTransaction from '../sections/UseTransaction'
 
 export default function HomePage() {
   const { isConnected } = useAccount()
@@ -37,6 +38,7 @@ export default function HomePage() {
       <UseEnsName />
       <UseEnsResolver />
       <UseToken />
+      <UseTransaction />
     </>
   ) : (
     <ConnectButton />
