@@ -7,6 +7,8 @@ export interface Controller<TReturn, TOptions> {
   fetch: (args: TOptions) => Promise<TReturn>
 }
 
+export type Fetch<TReturn, TOptions> = (args: TOptions) => Promise<TReturn>
+
 export interface Options {
   watch?: boolean
   enabled?: boolean

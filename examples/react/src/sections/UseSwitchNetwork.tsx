@@ -17,13 +17,15 @@ export default function UseSwitchNetwork() {
         </li>
       </ul>
 
-      <select onChange={async ({ target }) => switchNetwork({ chainId: Number(target.value) })}>
+      <ul>
         {chains.map(c => (
-          <option key={c.id} value={c.id}>
-            {c.name}
-          </option>
+          <li key={c.id}>
+            <button onClick={async () => switchNetwork({ chainId: c.id })}>
+              Switch to {c.name}
+            </button>
+          </li>
         ))}
-      </select>
+      </ul>
     </section>
   )
 }

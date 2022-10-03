@@ -9,7 +9,7 @@ type Options = FeeCtrlFetchArgs & {
 }
 
 export function useFeeData(options?: Options) {
-  const chainAgnosticOptions = useChainAgnosticOptions(options)
+  const chainAgnosticOptions = useChainAgnosticOptions(options ?? {})
   const { onFetch, ...rest } = useStaticAsyncController<FeeCtrlFetchReturnValue, Options>(
     FeeCtrl,
     chainAgnosticOptions

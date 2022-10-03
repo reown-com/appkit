@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useClientInitialized } from '../data/useClientInitialized'
 import { useOptionsChange } from './useOptionsChange'
 
@@ -13,7 +13,6 @@ export function useAsyncAction<TArgs, TResult>(
   const enabled = typeof args.enabled === 'undefined' ? true : args.enabled
   const [isLoading, setIsLoading] = useState(enabled)
   const [isFirstFetch, setIsFirstFetch] = useState(true)
-  const [initial, setInitial] = useState(true)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [data, setData] = useState<TResult | undefined>(undefined)
   const initialized = useClientInitialized()
@@ -39,15 +38,9 @@ export function useAsyncAction<TArgs, TResult>(
     [action, args, isLoading, isFirstFetch]
   )
 
-  // Perform initial fetch
-  useEffect(() => {
-    if (initial && ready) onAction()
-    setInitial(false)
-  }, [onAction, ready, initial])
-
   // Re-fetch when input options change
   useOptionsChange(() => {
-    if (!initial && ready) onAction()
+    if (ready) onAction()
   }, args)
 
   return {
