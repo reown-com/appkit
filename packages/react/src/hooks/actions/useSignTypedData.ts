@@ -9,7 +9,7 @@ export function useSignTypedData(args: SignerCtrlSignTypedDataArgs) {
   })
 
   return {
-    signTypedData: onAction,
-    ...rest
+    ...rest,
+    signTypedData: onAction
   }
 }

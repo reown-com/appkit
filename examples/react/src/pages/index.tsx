@@ -9,6 +9,7 @@ import UseEnsName from '../sections/UseEnsName'
 import UseEnsResolver from '../sections/UseEnsResolver'
 import UseFeeData from '../sections/UseFeeData'
 import UseNetwork from '../sections/UseNetwork'
+import UsePrepareSendWaitTransaction from '../sections/UseSendTransaction'
 import UseProvider from '../sections/UseProvider'
 import UseSigner from '../sections/UseSigner'
 import UseSignMessage from '../sections/UseSignMessage'
@@ -39,6 +40,7 @@ export default function HomePage() {
       <UseEnsResolver />
       <UseToken />
       <UseTransaction />
+      <UsePrepareSendWaitTransaction />
     </>
   ) : (
     <ConnectButton />

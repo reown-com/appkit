@@ -12,7 +12,7 @@ export function useEnsResolver(args: Arguments) {
   const { onAction, ...rest } = useAsyncAction(EnsCtrl.fetchEnsResolver, chainAgnosticArgs)
 
   return {
-    refetch: onAction,
-    ...rest
+    ...rest,
+    refetch: onAction
   }
 }

@@ -12,7 +12,7 @@ export function useToken(args: Arguments) {
   const { onAction, ...rest } = useAsyncAction(TokenCtrl.fetch, chainAgnosticArgs)
 
   return {
-    refetch: onAction,
-    ...rest
+    ...rest,
+    refetch: onAction
   }
 }

@@ -12,7 +12,7 @@ export function useEnsAddress(args: Arguments) {
   const { onAction, ...rest } = useAsyncAction(EnsCtrl.fetchEnsAddress, chainAgnosticArgs)
 
   return {
-    refetch: onAction,
-    ...rest
+    ...rest,
+    refetch: onAction
   }
 }

@@ -42,3 +42,8 @@ section h1 {
 button {
   padding: 5px 5px;
 }
+
+a {
+  color: lightskyblue;
+  margin: 0 10px;
+}

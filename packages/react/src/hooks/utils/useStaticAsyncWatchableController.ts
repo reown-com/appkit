@@ -12,12 +12,12 @@ export function useStaticAsyncWatchableController<TReturn, TOptions extends Opti
   controller: WatchController<TReturn, TOptions>,
   options: TOptions
 ) {
-  const { data, error, isLoading, initial, watch, ready, onFetch, setData, setIsLoading } =
+  const { data, error, isLoading, isFirstFetch, watch, ready, onFetch, setData, setIsLoading } =
     useBaseAsyncController(controller, options)
 
   useEffect(() => {
     let unwatch: (() => void) | undefined = undefined
-    if (!initial && watch && ready)
+    if (!isFirstFetch && watch && ready)
       unwatch = controller.watch(options, newData => {
         setData(newData)
         setIsLoading(false)
@@ -26,7 +26,7 @@ export function useStaticAsyncWatchableController<TReturn, TOptions extends Opti
     return () => {
       unwatch?.()
     }
-  }, [initial, watch, ready, options, controller, setData, setIsLoading])
+  }, [isFirstFetch, watch, ready, options, controller, setData, setIsLoading])
 
   return {
     data,

@@ -12,7 +12,7 @@ export function useTransaction(args: Arguments) {
   const { onAction, ...rest } = useAsyncAction(TransactionCtrl.fetch, chainAgnosticArgs)
 
   return {
-    refetch: onAction,
-    ...rest
+    ...rest,
+    refetch: onAction
   }
 }

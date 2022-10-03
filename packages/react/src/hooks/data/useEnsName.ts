@@ -12,7 +12,7 @@ export function useEnsName(args: Arguments) {
   const { onAction, ...rest } = useAsyncAction(EnsCtrl.fetchEnsName, chainAgnosticArgs)
 
   return {
-    refetch: onAction,
-    ...rest
+    ...rest,
+    refetch: onAction
   }
 }

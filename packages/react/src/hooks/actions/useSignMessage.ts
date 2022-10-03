@@ -6,7 +6,7 @@ export function useSignMessage(args: SignerCtrlSignMessageArgs) {
   const { onAction, ...rest } = useAsyncAction(SignerCtrl.signMessage, { ...args, enabled: false })
 
   return {
-    signMessage: onAction,
-    ...rest
+    ...rest,
+    signMessage: onAction
   }
 }

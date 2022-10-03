@@ -12,14 +12,10 @@ export function useSigner(options?: Options) {
     watch: true,
     forceInitialFetch: true
   })
-  const { data, onFetch, ...rest } = useStaticAsyncWatchableController(
-    SignerCtrl,
-    chainAgnosticOptions
-  )
+  const { onFetch, ...rest } = useStaticAsyncWatchableController(SignerCtrl, chainAgnosticOptions)
 
   return {
-    data,
-    refetch: onFetch,
-    ...rest
+    ...rest,
+    refetch: onFetch
   }
 }

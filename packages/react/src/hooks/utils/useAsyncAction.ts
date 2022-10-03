@@ -20,11 +20,13 @@ export function useAsyncAction<TArgs, TResult>(
 
   const onAction = useCallback(
     async (newArgs?: TArgs) => {
+      let newData: TResult | undefined = undefined
+
       if (!isLoading || isFirstFetch) {
         setIsFirstFetch(false)
         setIsLoading(true)
         try {
-          const newData = await action(newArgs ?? args)
+          newData = await action(newArgs ?? args)
           setData(newData)
           setError(undefined)
         } catch (err: unknown) {
@@ -35,11 +37,13 @@ export function useAsyncAction<TArgs, TResult>(
           setIsLoading(false)
         }
       }
+
+      return newData
     },
     [action, args, isLoading, isFirstFetch]
   )
 
-  // Re-fetch when input options change
+  // Initial fetch and re-fetch when inputs change
   useOptionsChange(() => {
     if (ready) onAction()
   }, args)

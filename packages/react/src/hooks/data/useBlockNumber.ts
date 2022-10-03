@@ -10,14 +10,10 @@ interface Options {
 
 export function useBlockNumber(options?: Options) {
   const chainAgnosticOptions = useChainAgnosticOptions(options ?? {})
-  const { data, onFetch, ...rest } = useStaticAsyncWatchableController(
-    BlockCtrl,
-    chainAgnosticOptions
-  )
+  const { onFetch, ...rest } = useStaticAsyncWatchableController(BlockCtrl, chainAgnosticOptions)
 
   return {
-    data,
-    refetch: onFetch,
-    ...rest
+    ...rest,
+    refetch: onFetch
   }
 }

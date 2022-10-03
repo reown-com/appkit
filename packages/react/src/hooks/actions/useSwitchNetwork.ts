@@ -11,7 +11,7 @@ export function useSwitchNetwork(args?: NetworkCtrlSwitchNetworkArgs) {
   })
 
   return {
-    switchNetwork: onAction,
-    ...rest
+    ...rest,
+    switchNetwork: onAction
   }
 }

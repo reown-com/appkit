@@ -11,7 +11,7 @@ export function useSendTransaction(args: TransactionCtrlSendArgs) {
   })
 
   return {
-    sendTransaction: onAction,
-    ...rest
+    ...rest,
+    sendTransaction: onAction
   }
 }

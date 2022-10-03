@@ -31,7 +31,6 @@ export type {
   SignerCtrlSignTypedDataArgs,
   TokenCtrlFetchArgs,
   TransactionCtrlFetchArgs,
-  TransactionCtrlPrepareArgs,
   TransactionCtrlSendArgs,
   TransactionCtrlWaitArgs
 } from './types/blockchainCtrlTypes'

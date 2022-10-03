@@ -16,7 +16,7 @@ export function useBalance(options: Options) {
   )
 
   return {
-    refetch: onFetch,
-    ...rest
+    ...rest,
+    refetch: onFetch
   }
 }

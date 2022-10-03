@@ -1,6 +1,5 @@
 import type {
   TransactionCtrlFetchArgs,
-  TransactionCtrlPrepareArgs,
   TransactionCtrlSendArgs,
   TransactionCtrlWaitArgs
 } from '../../../types/blockchainCtrlTypes'
@@ -14,14 +13,9 @@ export const TransactionCtrl = {
     return data
   },
 
-  async prepare(args: TransactionCtrlPrepareArgs) {
-    const data = await ClientCtrl.ethereum().prepareSendTransaction(args)
-
-    return data
-  },
-
   async send(args: TransactionCtrlSendArgs) {
-    const data = await ClientCtrl.ethereum().sendTransaction(args)
+    const config = await ClientCtrl.ethereum().prepareSendTransaction(args)
+    const data = await ClientCtrl.ethereum().sendTransaction(config)
 
     return data
   },

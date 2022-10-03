@@ -12,7 +12,7 @@ export function useEnsAvatar(args: Arguments) {
   const { onAction, ...rest } = useAsyncAction(EnsCtrl.fetchEnsAvatar, chainAgnosticArgs)
 
   return {
-    refetch: onAction,
-    ...rest
+    ...rest,
+    refetch: onAction
   }
 }
