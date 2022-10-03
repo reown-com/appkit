@@ -84,6 +84,10 @@ export type TokenCtrlFetchArgs = Parameters<typeof Web3ModalEthereum.fetchToken>
 // -- TransactionCtrl -------------------------------------- //
 export type TransactionCtrlFetchArgs = Parameters<typeof Web3ModalEthereum.fetchTransaction>[0]
 
+export type TransactionCtrlPrepareArgs = Parameters<
+  typeof Web3ModalEthereum.prepareSendTransaction
+>[0]
+
 export type TransactionCtrlSendArgs = Parameters<typeof Web3ModalEthereum.sendTransaction>[0]
 
 export type TransactionCtrlWaitArgs = Parameters<typeof Web3ModalEthereum.waitForTransaction>[0]

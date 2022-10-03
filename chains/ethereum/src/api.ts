@@ -16,6 +16,7 @@ import {
   getNetwork,
   getProvider,
   getWebSocketProvider,
+  prepareSendTransaction,
   sendTransaction,
   signMessage,
   signTypedData,
@@ -199,6 +200,8 @@ export const Web3ModalEthereum = {
 
   // -- transactions  ------------------------------------------------- //
   fetchTransaction,
+
+  prepareSendTransaction,
 
   sendTransaction,
 
