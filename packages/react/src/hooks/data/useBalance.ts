@@ -1,7 +1,7 @@
-import type { BalanceCtrlFetchArgs, BalanceCtrlFetchReturnValue } from '@web3modal/core'
+import type { BalanceCtrlFetchArgs } from '@web3modal/core'
 import { BalanceCtrl } from '@web3modal/core'
+import { useAsyncController } from '../utils/useAsyncController'
 import { useChainAgnosticOptions } from '../utils/useChainAgnosticOptions'
-import { useStaticAsyncController } from '../utils/useStaticAsyncController'
 
 type Options = BalanceCtrlFetchArgs & {
   watch?: boolean
@@ -10,10 +10,11 @@ type Options = BalanceCtrlFetchArgs & {
 
 export function useBalance(options: Options) {
   const chainAgnosticOptions = useChainAgnosticOptions(options)
-  const { onFetch, ...rest } = useStaticAsyncController<BalanceCtrlFetchReturnValue, Options>(
-    BalanceCtrl,
-    chainAgnosticOptions as Options
-  )
+  const { onFetch, ...rest } = useAsyncController({
+    fetchFn: BalanceCtrl.fetch,
+    watchFn: BalanceCtrl.watch,
+    args: chainAgnosticOptions
+  })
 
   return {
     ...rest,

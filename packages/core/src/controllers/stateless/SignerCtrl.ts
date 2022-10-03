@@ -13,7 +13,7 @@ export const SignerCtrl = {
     return unwatch
   },
 
-  async fetch(options?: SignerCtrlWatchOptions) {
+  async fetch(options: SignerCtrlWatchOptions) {
     const data = await ClientCtrl.ethereum().fetchSigner(options)
 
     return data

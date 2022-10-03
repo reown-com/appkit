@@ -1,17 +1,17 @@
 import type { NetworkCtrlSwitchNetworkArgs } from '@web3modal/core'
 import { NetworkCtrl } from '@web3modal/core'
-import { useAsyncAction } from '../utils/useAsyncAction'
+import { useAsyncController } from '../utils/useAsyncController'
 import { useChainAgnosticOptions } from '../utils/useChainAgnosticOptions'
 
 export function useSwitchNetwork(args?: NetworkCtrlSwitchNetworkArgs) {
   const chainAgnosticArgs = useChainAgnosticOptions(args ?? {})
-  const { onAction, ...rest } = useAsyncAction(NetworkCtrl.switchNetwork, {
-    ...chainAgnosticArgs,
-    enabled: false
+  const { onFetch, ...rest } = useAsyncController({
+    fetchFn: NetworkCtrl.switchNetwork,
+    args: { ...chainAgnosticArgs, enabled: false }
   })
 
   return {
     ...rest,
-    switchNetwork: onAction
+    switchNetwork: onFetch
   }
 }

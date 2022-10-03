@@ -1,6 +1,6 @@
 import { WebSocketProviderCtrl } from '@web3modal/core'
 import { useChainAgnosticOptions } from '../utils/useChainAgnosticOptions'
-import { useStaticWatchableController } from '../utils/useStaticWatchableController'
+import { useController } from '../utils/useController'
 
 interface Options {
   chainId?: number
@@ -8,7 +8,11 @@ interface Options {
 
 export function useWebsocketProvider(options?: Options) {
   const chainAgnosticOptions = useChainAgnosticOptions(options ?? {})
-  const data = useStaticWatchableController(WebSocketProviderCtrl, chainAgnosticOptions)
+  const { data } = useController({
+    getFn: WebSocketProviderCtrl.get,
+    watchFn: WebSocketProviderCtrl.watch,
+    args: chainAgnosticOptions
+  })
 
   return data
 }

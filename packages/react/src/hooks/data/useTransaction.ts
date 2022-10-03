@@ -1,6 +1,6 @@
 import type { TransactionCtrlFetchArgs } from '@web3modal/core'
 import { TransactionCtrl } from '@web3modal/core'
-import { useAsyncAction } from '../utils/useAsyncAction'
+import { useAsyncController } from '../utils/useAsyncController'
 import { useChainAgnosticOptions } from '../utils/useChainAgnosticOptions'
 
 type Arguments = TransactionCtrlFetchArgs & {
@@ -9,10 +9,13 @@ type Arguments = TransactionCtrlFetchArgs & {
 
 export function useTransaction(args: Arguments) {
   const chainAgnosticArgs = useChainAgnosticOptions(args)
-  const { onAction, ...rest } = useAsyncAction(TransactionCtrl.fetch, chainAgnosticArgs)
+  const { onFetch, ...rest } = useAsyncController({
+    fetchFn: TransactionCtrl.fetch,
+    args: chainAgnosticArgs
+  })
 
   return {
     ...rest,
-    refetch: onAction
+    refetch: onFetch
   }
 }

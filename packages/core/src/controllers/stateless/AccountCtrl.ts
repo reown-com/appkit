@@ -2,7 +2,7 @@ import type { AccountCtrlWatchCallback } from '../../../types/statelessCtrlTypes
 import { ClientCtrl } from '../statefull/ClientCtrl'
 
 export const AccountCtrl = {
-  watch(callback: AccountCtrlWatchCallback) {
+  watch(_options: undefined, callback: AccountCtrlWatchCallback) {
     const unwatch = ClientCtrl.ethereum().watchAccount(callback)
 
     return unwatch

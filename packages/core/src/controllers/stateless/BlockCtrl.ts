@@ -11,7 +11,7 @@ export const BlockCtrl = {
     return unwatch
   },
 
-  async fetch(options?: BlockCtrlWatchOptions) {
+  async fetch(options: BlockCtrlWatchOptions) {
     const data = await ClientCtrl.ethereum().fetchBlockNumber(options)
 
     return data

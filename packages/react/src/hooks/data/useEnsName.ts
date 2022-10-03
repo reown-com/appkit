@@ -1,6 +1,6 @@
 import type { EnsCtrlFetchEnsNameArgs } from '@web3modal/core'
 import { EnsCtrl } from '@web3modal/core'
-import { useAsyncAction } from '../utils/useAsyncAction'
+import { useAsyncController } from '../utils/useAsyncController'
 import { useChainAgnosticOptions } from '../utils/useChainAgnosticOptions'
 
 type Arguments = EnsCtrlFetchEnsNameArgs & {
@@ -9,10 +9,13 @@ type Arguments = EnsCtrlFetchEnsNameArgs & {
 
 export function useEnsName(args: Arguments) {
   const chainAgnosticArgs = useChainAgnosticOptions(args)
-  const { onAction, ...rest } = useAsyncAction(EnsCtrl.fetchEnsName, chainAgnosticArgs)
+  const { onFetch, ...rest } = useAsyncController({
+    fetchFn: EnsCtrl.fetchEnsName,
+    args: chainAgnosticArgs
+  })
 
   return {
     ...rest,
-    refetch: onAction
+    refetch: onFetch
   }
 }

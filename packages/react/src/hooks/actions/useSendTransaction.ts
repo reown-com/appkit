@@ -1,17 +1,20 @@
 import type { TransactionCtrlSendArgs } from '@web3modal/core'
 import { TransactionCtrl } from '@web3modal/core'
-import { useAsyncAction } from '../utils/useAsyncAction'
+import { useAsyncController } from '../utils/useAsyncController'
 import { useChainAgnosticOptions } from '../utils/useChainAgnosticOptions'
 
 export function useSendTransaction(args: TransactionCtrlSendArgs) {
   const chainAgnosticArgs = useChainAgnosticOptions(args)
-  const { onAction, ...rest } = useAsyncAction(TransactionCtrl.send, {
-    ...chainAgnosticArgs,
-    enabled: false
+  const { onFetch, ...rest } = useAsyncController({
+    fetchFn: TransactionCtrl.send,
+    args: {
+      ...chainAgnosticArgs,
+      enabled: false
+    }
   })
 
   return {
     ...rest,
-    sendTransaction: onAction
+    sendTransaction: onFetch
   }
 }

@@ -1,6 +1,6 @@
 import { SignerCtrl } from '@web3modal/core'
+import { useAsyncController } from '../utils/useAsyncController'
 import { useChainAgnosticOptions } from '../utils/useChainAgnosticOptions'
-import { useStaticAsyncWatchableController } from '../utils/useStaticAsyncWatchableController'
 
 interface Options {
   chainId?: number
@@ -9,10 +9,13 @@ interface Options {
 export function useSigner(options?: Options) {
   const chainAgnosticOptions = useChainAgnosticOptions({
     ...options,
-    watch: true,
-    forceInitialFetch: true
+    watch: true
   })
-  const { onFetch, ...rest } = useStaticAsyncWatchableController(SignerCtrl, chainAgnosticOptions)
+  const { onFetch, ...rest } = useAsyncController({
+    fetchFn: SignerCtrl.fetch,
+    watchFn: SignerCtrl.watch,
+    args: chainAgnosticOptions
+  })
 
   return {
     ...rest,

@@ -1,6 +1,6 @@
 import type { TransactionCtrlWaitArgs } from '@web3modal/core'
 import { TransactionCtrl } from '@web3modal/core'
-import { useAsyncAction } from '../utils/useAsyncAction'
+import { useAsyncController } from '../utils/useAsyncController'
 import { useChainAgnosticOptions } from '../utils/useChainAgnosticOptions'
 
 type Arguments = TransactionCtrlWaitArgs & {
@@ -9,14 +9,15 @@ type Arguments = TransactionCtrlWaitArgs & {
 
 export function useWaitForTransaction(args: Arguments) {
   const chainAgnosticArgs = useChainAgnosticOptions(args)
-  const { onAction, data, isLoading, ...rest } = useAsyncAction(TransactionCtrl.wait, {
-    ...chainAgnosticArgs
+  const { onFetch, data, isLoading, ...rest } = useAsyncController({
+    fetchFn: TransactionCtrl.wait,
+    args: chainAgnosticArgs
   })
 
   return {
     ...rest,
     receipt: data,
     isWaiting: isLoading,
-    refetch: onAction
+    refetch: onFetch
   }
 }

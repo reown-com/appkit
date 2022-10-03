@@ -1,9 +1,12 @@
-import type { NetworkCtrlGetReturnValue } from '@web3modal/core'
 import { NetworkCtrl } from '@web3modal/core'
-import { useStatefullController } from '../utils/useStatefullController'
+import { useController } from '../utils/useController'
 
 export function useNetwork() {
-  const { data } = useStatefullController<NetworkCtrlGetReturnValue>(NetworkCtrl)
+  const { data } = useController({
+    getFn: NetworkCtrl.get,
+    watchFn: NetworkCtrl.watch,
+    args: undefined
+  })
 
   return { ...data }
 }
