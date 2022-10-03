@@ -2,10 +2,9 @@ import type {
   TransactionCtrlFetchArgs,
   TransactionCtrlSendArgs,
   TransactionCtrlWaitArgs
-} from '../../../types/blockchainCtrlTypes'
-import { ClientCtrl } from './ClientCtrl'
+} from '../../../types/statelessCtrlTypes'
+import { ClientCtrl } from '../statefull/ClientCtrl'
 
-// -- controller --------------------------------------------------- //
 export const TransactionCtrl = {
   async fetch(args: TransactionCtrlFetchArgs) {
     const data = await ClientCtrl.ethereum().fetchTransaction(args)

@@ -15,7 +15,7 @@ export default function UseNetwork() {
           Selected Chain: <span>{chain?.name}</span>
         </li>
         <li>
-          Configured Chains: <span>{chains.map(c => c.name).join(', ')}</span>
+          Configured Chains: <span>{chains?.map(c => c.name).join(', ')}</span>
         </li>
       </ul>
     </section>

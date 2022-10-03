@@ -18,7 +18,7 @@ export default function UseSwitchNetwork() {
       </ul>
 
       <ul>
-        {chains.map(c => (
+        {chains?.map(c => (
           <li key={c.id}>
             <button onClick={async () => switchNetwork({ chainId: c.id })}>
               Switch to {c.name}

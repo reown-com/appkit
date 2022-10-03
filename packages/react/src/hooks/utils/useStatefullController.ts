@@ -2,32 +2,28 @@ import { useEffect, useState } from 'react'
 import { useClientInitialized } from '../data/useClientInitialized'
 
 // -- types ----------------------------------------------------- //
-interface Controller<TState> {
-  state: TState
-  get: () => void
-  watch: () => () => void
-  subscribe: (callback: (newData: TState) => void) => () => void
+interface Controller<TReturn> {
+  get: () => TReturn
+  watch: (callback: (watchData: TReturn) => void) => () => void
 }
 
 // -- hook ------------------------------------------------------ //
-export function useStatefullController<TState>(controller: Controller<TState>) {
-  const [data, setData] = useState(controller.state)
+export function useStatefullController<TReturn>(controller: Controller<TReturn>) {
+  const [data, setData] = useState<TReturn | undefined>(undefined)
   const initialized = useClientInitialized()
 
   useEffect(() => {
     let unwatch: (() => void) | undefined = undefined
-    let unsubscribe: (() => void) | undefined = undefined
     if (initialized) {
-      unsubscribe = controller.subscribe(newData => setData({ ...newData }))
-      controller.get()
-      unwatch = controller.watch()
+      const getData = controller.get()
+      setData({ ...getData })
+      unwatch = controller.watch(watchData => setData({ ...watchData }))
     }
 
     return () => {
-      unsubscribe?.()
       unwatch?.()
     }
   }, [initialized, controller])
 
-  return data
+  return { data }
 }

@@ -1,23 +1,24 @@
-export { AccountCtrl } from './src/controllers/blockchain/AccountCtrl'
-export { BalanceCtrl } from './src/controllers/blockchain/BalanceCtrl'
-export { BlockCtrl } from './src/controllers/blockchain/BlockCtrl'
-export { ClientCtrl } from './src/controllers/blockchain/ClientCtrl'
-export { EnsCtrl } from './src/controllers/blockchain/EnsCtrl'
-export { FeeCtrl } from './src/controllers/blockchain/FeeCtrl'
-export { NetworkCtrl } from './src/controllers/blockchain/NetworkCtrl'
-export { ProviderCtrl } from './src/controllers/blockchain/ProviderCtrl'
-export { SignerCtrl } from './src/controllers/blockchain/SignerCtrl'
-export { TokenCtrl } from './src/controllers/blockchain/TokenCtrl'
-export { TransactionCtrl } from './src/controllers/blockchain/TransactionCtrl'
-export { WebSocketProviderCtrl } from './src/controllers/blockchain/WebSocketProviderCtrl'
-export { ConfigCtrl } from './src/controllers/ui/ConfigCtrl'
-export { ConnectModalCtrl } from './src/controllers/ui/ConnectModalCtrl'
-export { ExplorerCtrl } from './src/controllers/ui/ExplorerCtrl'
-export { ModalToastCtrl } from './src/controllers/ui/ModalToastCtrl'
-export { RouterCtrl } from './src/controllers/ui/RouterCtrl'
+export { AccountCtrl } from './src/controllers/stateless/AccountCtrl'
+export { BalanceCtrl } from './src/controllers/stateless/BalanceCtrl'
+export { BlockCtrl } from './src/controllers/stateless/BlockCtrl'
+export { ClientCtrl } from './src/controllers/statefull/ClientCtrl'
+export { EnsCtrl } from './src/controllers/stateless/EnsCtrl'
+export { FeeCtrl } from './src/controllers/stateless/FeeCtrl'
+export { NetworkCtrl } from './src/controllers/stateless/NetworkCtrl'
+export { ProviderCtrl } from './src/controllers/stateless/ProviderCtrl'
+export { SignerCtrl } from './src/controllers/stateless/SignerCtrl'
+export { TokenCtrl } from './src/controllers/stateless/TokenCtrl'
+export { TransactionCtrl } from './src/controllers/stateless/TransactionCtrl'
+export { WebSocketProviderCtrl } from './src/controllers/stateless/WebSocketProviderCtrl'
+export { ConfigCtrl } from './src/controllers/statefull/ConfigCtrl'
+export { ConnectModalCtrl } from './src/controllers/statefull/ConnectModalCtrl'
+export { ExplorerCtrl } from './src/controllers/statefull/ExplorerCtrl'
+export { ModalToastCtrl } from './src/controllers/statefull/ModalToastCtrl'
+export { RouterCtrl } from './src/controllers/statefull/RouterCtrl'
 export { CoreHelpers } from './src/utils/CoreHelpers'
 export { getExplorerApi } from './src/utils/ExplorerApi'
 export type {
+  AccountCtrlGetReturnValue,
   BalanceCtrlFetchArgs,
   BalanceCtrlFetchReturnValue,
   EnsCtrlFetchEnsAddressArgs,
@@ -26,6 +27,7 @@ export type {
   EnsCtrlFetchEnsResolverArgs,
   FeeCtrlFetchArgs,
   FeeCtrlFetchReturnValue,
+  NetworkCtrlGetReturnValue,
   NetworkCtrlSwitchNetworkArgs,
   SignerCtrlSignMessageArgs,
   SignerCtrlSignTypedDataArgs,
@@ -33,5 +35,10 @@ export type {
   TransactionCtrlFetchArgs,
   TransactionCtrlSendArgs,
   TransactionCtrlWaitArgs
-} from './types/blockchainCtrlTypes'
-export type { ConfigOptions, Listing, ListingResponse, RouterView } from './types/uiCtrlTypes'
+} from './types/statelessCtrlTypes'
+export type {
+  ConfigOptions,
+  Listing,
+  ListingResponse,
+  RouterView
+} from './types/statefullCtrlTypes'

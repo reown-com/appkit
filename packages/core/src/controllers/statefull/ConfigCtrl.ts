@@ -1,5 +1,5 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { ConfigCtrlState, ConfigOptions } from '../../../types/uiCtrlTypes'
+import type { ConfigCtrlState, ConfigOptions } from '../../../types/statefullCtrlTypes'
 
 // -- initial state ------------------------------------------------ //
 function isDarkMode() {

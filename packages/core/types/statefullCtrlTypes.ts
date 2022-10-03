@@ -1,4 +1,4 @@
-import type { EthereumOptions } from '@web3modal/ethereum'
+import type { EthereumOptions, Web3ModalEthereum } from '@web3modal/ethereum'
 
 // -- ConfigCtrl ------------------------------------------- //
 export interface ConfigOptions {
@@ -108,3 +108,11 @@ export interface RouterCtrlState {
   history: RouterView[]
   view: RouterView
 }
+
+// -- ClientCtrl ------------------------------------------- //
+export interface ClientCtrlState {
+  initialized: boolean
+  ethereum?: typeof Web3ModalEthereum
+}
+
+export type ClientCtrlSetEthereumClientArgs = EthereumOptions

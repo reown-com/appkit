@@ -1,10 +1,9 @@
 import type {
   WebSocketProviderCtrlWatchCallback,
   WebSocketProviderCtrlWatchOptions
-} from '../../../types/blockchainCtrlTypes'
-import { ClientCtrl } from './ClientCtrl'
+} from '../../../types/statelessCtrlTypes'
+import { ClientCtrl } from '../statefull/ClientCtrl'
 
-// -- controller --------------------------------------------------- //
 export const WebSocketProviderCtrl = {
   watch(options: WebSocketProviderCtrlWatchOptions, callback: WebSocketProviderCtrlWatchCallback) {
     const unwatch = ClientCtrl.ethereum().watchWebSocketProvider(options, callback)

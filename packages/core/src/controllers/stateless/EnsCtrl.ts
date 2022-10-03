@@ -3,10 +3,9 @@ import type {
   EnsCtrlFetchEnsAvatarArgs,
   EnsCtrlFetchEnsNameArgs,
   EnsCtrlFetchEnsResolverArgs
-} from '../../../types/blockchainCtrlTypes'
-import { ClientCtrl } from './ClientCtrl'
+} from '../../../types/statelessCtrlTypes'
+import { ClientCtrl } from '../statefull/ClientCtrl'
 
-// -- controller --------------------------------------------------- //
 export const EnsCtrl = {
   async fetchEnsAddress(args: EnsCtrlFetchEnsAddressArgs) {
     const data = await ClientCtrl.ethereum().fetchEnsAddress(args)

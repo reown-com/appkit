@@ -1,5 +1,5 @@
-import type { ListingResponse, PageParams } from '../../types/uiCtrlTypes'
-import { ConfigCtrl } from '../controllers/ui/ConfigCtrl'
+import type { ListingResponse, PageParams } from '../../types/statefullCtrlTypes'
+import { ConfigCtrl } from '../controllers/statefull/ConfigCtrl'
 
 // -- helpers ------------------------------------------------------ //
 export function getExplorerApi() {

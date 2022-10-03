@@ -1,10 +1,9 @@
 import type {
   ProviderCtrlWatchCallback,
   ProviderCtrlWatchOptions
-} from '../../../types/blockchainCtrlTypes'
-import { ClientCtrl } from './ClientCtrl'
+} from '../../../types/statelessCtrlTypes'
+import { ClientCtrl } from '../statefull/ClientCtrl'
 
-// -- controller --------------------------------------------------- //
 export const ProviderCtrl = {
   watch(options: ProviderCtrlWatchOptions, callback: ProviderCtrlWatchCallback) {
     const unwatch = ClientCtrl.ethereum().watchProvider(options, callback)

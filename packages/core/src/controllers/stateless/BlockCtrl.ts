@@ -1,10 +1,9 @@
 import type {
   BlockCtrlWatchCallback,
   BlockCtrlWatchOptions
-} from '../../../types/blockchainCtrlTypes'
-import { ClientCtrl } from './ClientCtrl'
+} from '../../../types/statelessCtrlTypes'
+import { ClientCtrl } from '../statefull/ClientCtrl'
 
-// -- controller --------------------------------------------------- //
 export const BlockCtrl = {
   watch(options: BlockCtrlWatchOptions, callback: BlockCtrlWatchCallback) {
     const unwatch = ClientCtrl.ethereum().watchBlockNumber({ ...options, listen: true }, callback)
