@@ -7,6 +7,7 @@ export { FeeCtrl } from './src/controllers/blockchain/FeeCtrl'
 export { NetworkCtrl } from './src/controllers/blockchain/NetworkCtrl'
 export { ProviderCtrl } from './src/controllers/blockchain/ProviderCtrl'
 export { SignerCtrl } from './src/controllers/blockchain/SignerCtrl'
+export { TokenCtrl } from './src/controllers/blockchain/TokenCtrl'
 export { WebSocketProviderCtrl } from './src/controllers/blockchain/WebSocketProviderCtrl'
 export { ConfigCtrl } from './src/controllers/ui/ConfigCtrl'
 export { ConnectModalCtrl } from './src/controllers/ui/ConnectModalCtrl'
@@ -26,6 +27,7 @@ export type {
   FeeCtrlFetchReturnValue,
   NetworkCtrlSwitchNetworkArgs,
   SignerCtrlSignMessageArgs,
-  SignerCtrlSignTypedDataArgs
+  SignerCtrlSignTypedDataArgs,
+  TokenCtrlFetchArgs
 } from './types/blockchainCtrlTypes'
 export type { ConfigOptions, Listing, ListingResponse, RouterView } from './types/uiCtrlTypes'

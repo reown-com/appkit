@@ -14,6 +14,7 @@ import UseSigner from '../sections/UseSigner'
 import UseSignMessage from '../sections/UseSignMessage'
 import UseSignTypedData from '../sections/UseSignTypedData'
 import UseSwitchNetwork from '../sections/UseSwitchNetwork'
+import UseToken from '../sections/UseToken'
 
 export default function HomePage() {
   const { isConnected } = useAccount()
@@ -35,6 +36,7 @@ export default function HomePage() {
       <UseEnsAvatar />
       <UseEnsName />
       <UseEnsResolver />
+      <UseToken />
     </>
   ) : (
     <ConnectButton />

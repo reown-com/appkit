@@ -77,3 +77,6 @@ export type EnsCtrlFetchEnsAvatarArgs = Parameters<typeof Web3ModalEthereum.fetc
 export type EnsCtrlFetchEnsNameArgs = Parameters<typeof Web3ModalEthereum.fetchEnsName>[0]
 
 export type EnsCtrlFetchEnsResolverArgs = Parameters<typeof Web3ModalEthereum.fetchEnsResolver>[0]
+
+// -- TokenCtrl -------------------------------------------- //
+export type TokenCtrlFetchArgs = Parameters<typeof Web3ModalEthereum.fetchToken>[0]

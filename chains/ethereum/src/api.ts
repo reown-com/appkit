@@ -10,6 +10,7 @@ import {
   fetchEnsResolver,
   fetchFeeData,
   fetchSigner,
+  fetchToken,
   getAccount,
   getNetwork,
   getProvider,
@@ -188,5 +189,8 @@ export const Web3ModalEthereum = {
 
   fetchEnsName,
 
-  fetchEnsResolver
+  fetchEnsResolver,
+
+  // -- token --------------------------------------------------------- //
+  fetchToken
 }
