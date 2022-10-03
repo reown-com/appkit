@@ -9,7 +9,7 @@ export function useStaticAsyncController<TReturn, TOptions extends Options>(
   controller: Controller<TReturn, TOptions>,
   options: TOptions
 ) {
-  const { data, error, isLoading, watch, enabled, chainId, isFirstFetch, ready, onFetch } =
+  const { data, error, isLoading, watch, enabled, chainId, initial, ready, onFetch } =
     useBaseAsyncController(controller, options)
   const [lastTime, setLastTime] = useState(0)
   const { data: blockNumber } = useBlockNumber({ watch, enabled: enabled && watch, chainId })
@@ -18,11 +18,11 @@ export function useStaticAsyncController<TReturn, TOptions extends Options>(
     const timeNow = Date.now()
     const isBlockNumber = Boolean(blockNumber)
     const isTimeAllowed = timeNow > lastTime + THREE_SECONDS
-    if (!isFirstFetch && watch && ready && isBlockNumber && isTimeAllowed) {
+    if (!initial && watch && ready && isBlockNumber && isTimeAllowed) {
       setLastTime(timeNow)
       onFetch()
     }
-  }, [blockNumber, isFirstFetch, watch, ready, lastTime, setLastTime, onFetch])
+  }, [blockNumber, initial, watch, ready, lastTime, setLastTime, onFetch])
 
   return {
     data,

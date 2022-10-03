@@ -24,8 +24,11 @@ import {
   waitForTransaction,
   watchAccount,
   watchBlockNumber,
+  watchContractEvent,
   watchNetwork,
   watchProvider,
+  watchReadContract,
+  watchReadContracts,
   watchSigner,
   watchWebSocketProvider
 } from '@wagmi/core'
@@ -205,5 +208,12 @@ export const Web3ModalEthereum = {
 
   sendTransaction,
 
-  waitForTransaction
+  waitForTransaction,
+
+  // -- contracts  ---------------------------------------------------- //
+  watchContractEvent,
+
+  watchReadContract,
+
+  watchReadContracts
 }

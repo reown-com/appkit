@@ -27,6 +27,7 @@ export function useBaseAsyncController<TReturn, TOptions extends Options>(
   const [error, setError] = useState<Error | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(enabled)
   const [isFirstFetch, setIsFirstFetch] = useState(true)
+  const [initial, setInitial] = useState(true)
   const initialized = useClientInitialized()
   const ready = initialized && enabled
 
@@ -54,12 +55,13 @@ export function useBaseAsyncController<TReturn, TOptions extends Options>(
 
   // Perform initial fetch if not watching, forceInitialFetch if watch needs to be triggered
   useEffect(() => {
-    if (isFirstFetch && (!watch || forceInitialFetch) && ready) onFetch()
-  }, [ready, isFirstFetch, watch, forceInitialFetch, onFetch])
+    if (initial && (!watch || forceInitialFetch) && ready) onFetch()
+    setInitial(false)
+  }, [ready, initial, watch, forceInitialFetch, onFetch])
 
   // Re-fetch when input options change, unless we are watching
   useOptionsChange(() => {
-    if (!isFirstFetch && !watch) onFetch()
+    if (!initial && !watch) onFetch()
   }, options)
 
   return {
@@ -70,7 +72,7 @@ export function useBaseAsyncController<TReturn, TOptions extends Options>(
     watch,
     chainId,
     enabled,
-    isFirstFetch,
+    initial,
     onFetch,
     setData,
     setIsLoading
