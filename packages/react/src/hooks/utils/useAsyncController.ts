@@ -27,12 +27,6 @@ export function useAsyncController<TArgs, TReturn>({
   const initialized = useClientInitialized()
   const ready = initialized && isEnabled
 
-  const onError = useCallback((err: unknown) => {
-    if (err instanceof Error) setError(err)
-    else setError(new Error('Unknown error'))
-    setData(undefined)
-  }, [])
-
   const onFetch = useCallback(
     async (newArgs?: TArgs) => {
       let newData: TReturn | undefined = undefined
@@ -45,7 +39,9 @@ export function useAsyncController<TArgs, TReturn>({
           setData(newData)
           setError(undefined)
         } catch (err: unknown) {
-          onError(err)
+          if (err instanceof Error) setError(err)
+          else setError(new Error('Unknown error'))
+          setData(undefined)
         } finally {
           setIsLoading(false)
         }
@@ -53,22 +49,31 @@ export function useAsyncController<TArgs, TReturn>({
 
       return newData
     },
-    [fetchFn, onError, args, isLoading, isFirstFetch]
+    [fetchFn, args, isLoading, isFirstFetch]
   )
 
   useEffect(() => {
     let unwatch: (() => void) | undefined = undefined
-    if (watch && ready && watchFn) unwatch = watchFn(args, newData => setData(newData))
+    if (watch && !isFirstFetch && watchFn) unwatch = watchFn(args, newData => setData(newData))
 
     return () => {
       unwatch?.()
     }
-  }, [watch, ready, args, watchFn])
+  }, [watch, isFirstFetch, args, watchFn])
 
-  // Initial fetch and re-fetch when inputs change
   useOptionsChange(() => {
-    if (ready && (!watch || !isFirstFetch)) onFetch()
+    if (!watch && !isFirstFetch) {
+      console.log('options changed fetch')
+      onFetch()
+    }
   }, args)
+
+  useEffect(() => {
+    if (ready && isFirstFetch) {
+      console.log('ready fetch')
+      onFetch()
+    }
+  }, [ready, isFirstFetch, onFetch])
 
   return {
     data,
