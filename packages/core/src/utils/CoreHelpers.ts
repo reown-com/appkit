@@ -12,6 +12,14 @@ export const CoreHelpers = {
     )
   },
 
+  isEmptyObject(value: unknown) {
+    return (
+      Object.getPrototypeOf(value) === Object.prototype &&
+      Object.getOwnPropertyNames(value).length === 0 &&
+      Object.getOwnPropertySymbols(value).length === 0
+    )
+  },
+
   formatNativeUrl(appUrl: string, encodedWcUrl: string, name: string) {
     const plainAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
     this.setWalletConnectDeepLink(plainAppUrl, name)

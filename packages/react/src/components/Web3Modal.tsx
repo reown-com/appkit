@@ -1,20 +1,28 @@
-import type { W3mModal } from '@web3modal/ui'
-import React from 'react'
+import type { ConfigOptions } from '@web3modal/core'
+import { ClientCtrl, ConfigCtrl } from '@web3modal/core'
+import React, { useCallback, useEffect } from 'react'
+import { Modal } from './Modal'
+
+/**
+ * Props
+ */
+interface Props {
+  config: ConfigOptions
+}
 
 /**
  * Component
  */
-export function Web3Modal(props: JSX.IntrinsicElements['w3m-modal']) {
-  return <w3m-modal {...props} />
-}
+export function Web3Modal({ config }: Props) {
+  const onConfigure = useCallback(async () => {
+    ConfigCtrl.setConfig(config)
+    if (config.ethereum) await ClientCtrl.setEthereumClient(config.ethereum)
+    await import('@web3modal/ui')
+  }, [config])
 
-/**
- * Types
- */
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'w3m-modal': Partial<W3mModal>
-    }
-  }
+  useEffect(() => {
+    onConfigure()
+  }, [onConfigure])
+
+  return <Modal />
 }

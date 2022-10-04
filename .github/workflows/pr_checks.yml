@@ -16,13 +16,13 @@ jobs:
       - name: setup-node
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          node-version: 18.x
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
       - name: install
-        run: npm ci
+        run: yarn install --frozen-lockfile
       - name: build
-        run: npm run build
+        run: yarn build
         env:
          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
@@ -40,10 +40,10 @@ jobs:
       - name: setup-node
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          node-version: 18.x
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
       - name: install
-        run: npm ci
+        run: yarn install --frozen-lockfile
       - name: check
-        run: npm run ${{ matrix.style-command }}
+        run: yarn ${{ matrix.style-command }}

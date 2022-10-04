@@ -1,6 +1,6 @@
 import { chains, providers } from '@web3modal/ethereum'
 import type { ConfigOptions } from '@web3modal/react'
-import { Web3ModalProvider } from '@web3modal/react'
+import { Web3Modal } from '@web3modal/react'
 import type { AppProps } from 'next/app'
 import '../styles.css'
 
@@ -16,15 +16,23 @@ const modalConfig: ConfigOptions = {
   ethereum: {
     appName: 'web3Modal',
     autoConnect: true,
-    chains: [chains.polygonMumbai],
+    chains: [
+      chains.mainnet,
+      chains.rinkeby,
+      chains.avalanche,
+      chains.avalancheFuji,
+      chains.polygon,
+      chains.polygonMumbai
+    ],
     providers: [providers.walletConnectProvider({ projectId: process.env.NEXT_PUBLIC_PROJECT_ID })]
   }
 }
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Web3ModalProvider config={modalConfig}>
+    <>
       <Component {...pageProps} />
-    </Web3ModalProvider>
+      <Web3Modal config={modalConfig} />
+    </>
   )
 }

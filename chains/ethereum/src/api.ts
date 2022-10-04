@@ -1,37 +1,64 @@
 import type { Connector } from '@wagmi/core'
-import * as WagmiCore from '@wagmi/core'
-import { CoreHelpers } from '@web3modal/core'
-import type * as ApiTypes from '../types/apiTypes'
-import { formatOpts, getChainIdReference } from './utils/helpers'
+import {
+  connect,
+  disconnect,
+  fetchBalance,
+  fetchBlockNumber,
+  fetchEnsAddress,
+  fetchEnsAvatar,
+  fetchEnsName,
+  fetchEnsResolver,
+  fetchFeeData,
+  fetchSigner,
+  fetchToken,
+  fetchTransaction,
+  getAccount,
+  getContract,
+  getNetwork,
+  getProvider,
+  getWebSocketProvider,
+  prepareSendTransaction,
+  prepareWriteContract,
+  readContract,
+  sendTransaction,
+  signMessage,
+  signTypedData,
+  switchNetwork,
+  waitForTransaction,
+  watchAccount,
+  watchBlockNumber,
+  watchContractEvent,
+  watchNetwork,
+  watchProvider,
+  watchReadContract,
+  watchSigner,
+  watchWebSocketProvider,
+  writeContract
+} from '@wagmi/core'
+import type { EthereumOptions } from '../types/apiTypes'
 import { getClient, initializeClient } from './utils/wagmiHelpers'
 
 export const Web3ModalEthereum = {
   // -- config ------------------------------------------------------- //
-
-  createClient(options: ApiTypes.EthereumOptions) {
+  createClient(options: EthereumOptions) {
     initializeClient(options)
 
     return this
   },
 
-  // -- chains ----------------------------------------------------- //
+  // -- chains ------------------------------------------------------- //
   getDefaultConnectorChainId(connector: Connector) {
     const chainId = connector.chains[0].id
 
     return chainId
   },
 
-  // -- connectors ------------------------------------------------- //
+  // -- connectors --------------------------------------------------- //
   getConnectorById(id: 'coinbaseWallet' | 'injected' | 'metaMask' | 'walletConnect') {
     const connector = getClient()?.connectors.find(item => item.id === id)
     if (!connector) throw new Error(`Missing ${id} connector`)
 
     return connector
-  },
-
-  async disconnect() {
-    await WagmiCore.disconnect()
-    CoreHelpers.removeWalletConnectDeepLink()
   },
 
   async connectWalletConnect(onUri: (uri: string) => void) {
@@ -50,7 +77,7 @@ export const Web3ModalEthereum = {
       })
     }
 
-    const [data] = await Promise.all([WagmiCore.connect({ connector, chainId }), getProviderUri()])
+    const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
 
     return data
   },
@@ -72,7 +99,7 @@ export const Web3ModalEthereum = {
       })
     }
 
-    const [data] = await Promise.all([WagmiCore.connect({ connector, chainId }), getProviderUri()])
+    const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
 
     return data
   },
@@ -93,7 +120,7 @@ export const Web3ModalEthereum = {
       })
     }
 
-    const [data] = await Promise.all([WagmiCore.connect({ connector, chainId }), getProviderUri()])
+    const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
 
     return data
   },
@@ -101,7 +128,7 @@ export const Web3ModalEthereum = {
   async connectCoinbaseExtension() {
     const connector = this.getConnectorById('coinbaseWallet')
     const chainId = this.getDefaultConnectorChainId(connector)
-    const data = await WagmiCore.connect({ connector, chainId })
+    const data = await connect({ connector, chainId })
 
     return data
   },
@@ -109,7 +136,7 @@ export const Web3ModalEthereum = {
   async connectMetaMask() {
     const connector = this.getConnectorById('metaMask')
     const chainId = this.getDefaultConnectorChainId(connector)
-    const data = await WagmiCore.connect({ connector, chainId })
+    const data = await connect({ connector, chainId })
 
     return data
   },
@@ -117,148 +144,85 @@ export const Web3ModalEthereum = {
   async connectInjected() {
     const connector = this.getConnectorById('injected')
     const chainId = this.getDefaultConnectorChainId(connector)
-    const data = await WagmiCore.connect({ connector, chainId })
+    const data = await connect({ connector, chainId })
 
     return data
   },
 
-  // -- actions ----------------------------------------------------- //
-  async switchChain(chainId: string) {
-    const chain = await WagmiCore.switchNetwork({ chainId: getChainIdReference(chainId) })
+  // -- accounts ----------------------------------------------------- //
+  getAccount,
 
-    return `eip155:${chain.id}`
-  },
+  watchAccount,
 
-  async signTypedData({ value, domain, types }: ApiTypes.SignTypedDataOpts) {
-    const signature = await WagmiCore.signTypedData({ value, domain, types })
+  disconnect,
 
-    return signature
-  },
+  // -- network ------------------------------------------------------ //
+  getNetwork,
 
-  async signMessage(message: string) {
-    const signature = await WagmiCore.signMessage({ message })
+  watchNetwork,
 
-    return signature
-  },
+  switchNetwork,
 
-  // -- fetch ------------------------------------------------------- //
-  async fetchBalance(opts: ApiTypes.GetBalanceOpts) {
-    const balance = await WagmiCore.fetchBalance(formatOpts(opts))
+  // -- block -------------------------------------------------------- //
+  fetchBlockNumber,
 
-    return balance.formatted
-  },
+  watchBlockNumber,
 
-  async fetchSigner() {
-    const signer = await WagmiCore.fetchSigner()
+  // -- provider ----------------------------------------------------- //
+  getProvider,
 
-    return signer
-  },
+  watchProvider,
 
-  getNetwork() {
-    const network = WagmiCore.getNetwork()
+  getWebSocketProvider,
 
-    return network
-  },
+  watchWebSocketProvider,
 
-  // ----------- contract ----------------------------- //
+  // -- balance ------------------------------------------------------ //
+  fetchBalance,
 
-  getContract({ addressOrName, contractInterface, signerOrProvider }: ApiTypes.GetContractOpts) {
-    const contract = WagmiCore.getContract({ addressOrName, contractInterface, signerOrProvider })
+  // -- signer ------------------------------------------------------- //
+  fetchSigner,
 
-    return contract
-  },
+  watchSigner,
 
-  async getToken({ address, chainId, formatUnits }: ApiTypes.GetTokenOpts) {
-    const token = await WagmiCore.fetchToken({
-      address,
-      chainId: getChainIdReference(chainId),
-      formatUnits
-    })
+  signMessage,
 
-    return token
-  },
+  signTypedData,
 
-  async readContract(opts: ApiTypes.ReadContractOpts) {
-    const read = await WagmiCore.readContract(formatOpts(opts))
+  // -- fees ---------------------------------------------------------- //
+  fetchFeeData,
 
-    return read
-  },
+  // -- ens ----------------------------------------------------------- //
+  fetchEnsAddress,
 
-  async writeContract(opts: ApiTypes.WriteContractOpts) {
-    const write = await WagmiCore.writeContract(
-      formatOpts({
-        mode: 'prepared',
-        ...opts
-      })
-    )
+  fetchEnsAvatar,
 
-    return write
-  },
+  fetchEnsName,
 
-  async prepareWriteContract(opts: ApiTypes.PrepareWriteContractOpts) {
-    const preperation = await WagmiCore.prepareWriteContract(formatOpts(opts))
+  fetchEnsResolver,
 
-    return preperation
-  },
+  // -- token --------------------------------------------------------- //
+  fetchToken,
 
-  watchReadContract(opts: ApiTypes.WatchReadContractOpts) {
-    const { callback, ...remainingOpts } = opts
-    WagmiCore.watchReadContract(formatOpts(remainingOpts), callback)
-  },
+  // -- transactions  ------------------------------------------------- //
+  fetchTransaction,
 
-  // ----------- ens ----------------------------- //
+  prepareSendTransaction,
 
-  async fetchEnsAddress(opts: ApiTypes.FetchEnsAddressOpts) {
-    const address = await WagmiCore.fetchEnsAddress(formatOpts(opts))
+  sendTransaction,
 
-    return address?.toString()
-  },
+  waitForTransaction,
 
-  async fetchEnsAvatar(opts: ApiTypes.FetchEnsAvatarOpts) {
-    const avatar = await WagmiCore.fetchEnsAvatar(formatOpts(opts))
+  // -- contracts  ---------------------------------------------------- //
+  getContract,
 
-    return avatar?.toString()
-  },
+  readContract,
 
-  async fetchEnsName(opts: ApiTypes.FetchEnsNameOpts) {
-    const name = await WagmiCore.fetchEnsName(formatOpts(opts))
+  prepareWriteContract,
 
-    return name?.toString()
-  },
+  writeContract,
 
-  async fetchEnsResolver(opts: ApiTypes.FetchEnsAddressOpts) {
-    const resolver = await WagmiCore.fetchEnsResolver(formatOpts(opts))
+  watchContractEvent,
 
-    return resolver
-  },
-
-  // ----------- transaction ---------------------- //
-
-  async fetchTransaction(opts: ApiTypes.FetchTransactionOpts) {
-    const transaction = await WagmiCore.fetchTransaction(formatOpts(opts))
-
-    return transaction
-  },
-
-  async prepareSendTransaction(opts: ApiTypes.PrepareSendTransactionOpts) {
-    const preparation = await WagmiCore.prepareSendTransaction(formatOpts(opts))
-
-    return preparation
-  },
-
-  async sendTransaction(opts: ApiTypes.PrepareSendTransactionOpts) {
-    const prep = await WagmiCore.prepareSendTransaction(formatOpts(opts))
-    const result = await WagmiCore.sendTransaction({
-      mode: 'prepared',
-      request: prep.request
-    })
-
-    return result
-  },
-
-  async waitForTransaction(opts: ApiTypes.WaitForTransactionOpts) {
-    const receipt = await WagmiCore.waitForTransaction(formatOpts(opts))
-
-    return receipt
-  }
+  watchReadContract
 }

@@ -16,7 +16,7 @@ Getting started with web3modal is as easy as installing few packages, one for yo
 
 ### 1. Obtain your WalletConnect projectId
 
-Head over to [cloud.walletconnect.com](https://cloud.walletconnect.com/) to sign up and generate your projectId, which will be required to allow interactions with our explorer api and v2 protocol sdk's in the future.
+Head over to [cloud.walletconnect.com](https://cloud.walletconnect.com/) to sign up and generate your `projectId`, which will be required to allow interactions with our explorer api, optional WalletConnect rpc provider and more v2 protocol features in the future.
 
 ### 2. Follow instructions and examples for your favourite framework
 
