@@ -7,6 +7,17 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  padding: 5px 0;
 }
 
 li span {
@@ -19,6 +30,7 @@ section {
   padding: 20px;
   margin: 20px 0;
   overflow: scroll;
+  width: 80vw;
 }
 
 section h1 {
@@ -26,4 +38,13 @@ section h1 {
   margin-bottom: 15px;
   font-family: sans-serif;
   color: slateblue;
+}
+
+button {
+  padding: 5px 5px;
+}
+
+a {
+  color: lightskyblue;
+  margin: 0 10px;
 }

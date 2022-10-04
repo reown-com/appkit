@@ -1,5 +1,5 @@
 {
-  "npmClient": "npm",
+  "npmClient": "yarn",
   "packages": [
     "chains/ethereum",
     "packages/core",

@@ -1,1 +1,0 @@
-export { useConnectModal } from './useConnectModal'
