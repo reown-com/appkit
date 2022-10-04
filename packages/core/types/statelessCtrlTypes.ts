@@ -77,3 +77,5 @@ export type ContractCtrlReadArgs = Parameters<EthApi['readContract']>[0]
 export type ContractCtrlWatchReadArgs = Parameters<EthApi['watchReadContract']>
 
 export type ContractCtrlWriteArgs = Parameters<EthApi['prepareWriteContract']>[0]
+
+export type ContractCtrlWatchEventArgs = Parameters<EthApi['watchContractEvent']>

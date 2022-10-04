@@ -1,6 +1,7 @@
 import type {
   ContractCtrlGetArgs,
   ContractCtrlReadArgs,
+  ContractCtrlWatchEventArgs,
   ContractCtrlWatchReadArgs,
   ContractCtrlWriteArgs
 } from '../../../types/statelessCtrlTypes'
@@ -31,6 +32,17 @@ export const ContractCtrl = {
       { ...options, listenToBlock: true },
       callback
     )
+
+    return unwatch
+  },
+
+  watchEven(
+    contract: ContractCtrlWatchEventArgs[0],
+    eventName: ContractCtrlWatchEventArgs[1],
+    callback: ContractCtrlWatchEventArgs[2],
+    options: ContractCtrlWatchEventArgs[3]
+  ) {
+    const unwatch = ClientCtrl.ethereum().watchContractEvent(contract, eventName, callback, options)
 
     return unwatch
   }

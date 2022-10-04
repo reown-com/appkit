@@ -30,6 +30,7 @@ export type {
   BalanceCtrlFetchReturnValue,
   ContractCtrlGetArgs,
   ContractCtrlReadArgs,
+  ContractCtrlWatchEventArgs,
   ContractCtrlWriteArgs,
   EnsCtrlFetchEnsAddressArgs,
   EnsCtrlFetchEnsAvatarArgs,

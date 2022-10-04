@@ -20,7 +20,7 @@ export default function UseContractWrite() {
       <p>
         This example uses
         <a
-          href="https://testnet.snowtrace.io/address/0x1648C14DbB6ccdd5846969cE23DeEC4C66a03335#code"
+          href="https://etherscan.io/address/0xecb504d39723b0be0e3a9aa33d646642d1051ee1#code"
           target="_blank"
           rel="noopener noreferer"
         >

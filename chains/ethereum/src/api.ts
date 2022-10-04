@@ -20,7 +20,6 @@ import {
   prepareSendTransaction,
   prepareWriteContract,
   readContract,
-  readContracts,
   sendTransaction,
   signMessage,
   signTypedData,
@@ -32,7 +31,6 @@ import {
   watchNetwork,
   watchProvider,
   watchReadContract,
-  watchReadContracts,
   watchSigner,
   watchWebSocketProvider,
   writeContract
@@ -220,15 +218,11 @@ export const Web3ModalEthereum = {
 
   readContract,
 
-  readContracts,
-
   prepareWriteContract,
 
   writeContract,
 
   watchContractEvent,
 
-  watchReadContract,
-
-  watchReadContracts
+  watchReadContract
 }

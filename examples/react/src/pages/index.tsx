@@ -3,6 +3,7 @@ import UseAccount from '../sections/UseAccount'
 import UseBalance from '../sections/UseBalance'
 import UseBlockNumber from '../sections/UseBlockNumber'
 import UseContract from '../sections/UseContract'
+import UseContractEvent from '../sections/UseContractEvent'
 import UseContractRead from '../sections/UseContractRead'
 import UseContractWrite from '../sections/UseContractWrite'
 import UseDisconnect from '../sections/UseDisconnect'
@@ -47,6 +48,7 @@ export default function HomePage() {
       <UseContract />
       <UseContractRead />
       <UseContractWrite />
+      <UseContractEvent />
     </>
   ) : (
     <ConnectButton />
