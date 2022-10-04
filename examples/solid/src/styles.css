@@ -1,0 +1,29 @@
+body {
+  background-color: #000;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+li span {
+  color: goldenrod;
+}
+
+section {
+  border: 1px solid slateblue;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+  overflow: scroll;
+}
+
+section h1 {
+  margin: 0;
+  margin-bottom: 15px;
+  font-family: sans-serif;
+  color: slateblue;
+}

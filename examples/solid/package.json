@@ -1,0 +1,20 @@
+{
+  "name": "solid-example",
+  "version": "2.0.0-alpha.4",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build; next export"
+  },
+  "dependencies": {
+    "@web3modal/ethereum": "2.0.0-alpha.4",
+    "@web3modal/solid": "../../packages/solid",
+    "next": "12.2.5"
+  },
+  "devDependencies": {
+    "@types/node": "18.7.18",
+    "dotenv": "^16.0.3",
+    "solid-js": "^1.5.7",
+    "solid-jsx": "^0.9.1"
+  }
+}

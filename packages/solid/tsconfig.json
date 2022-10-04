@@ -5,7 +5,8 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "types": ["solid-js"],
-    "outDir": "./dist/_types",
+    "outDir": "./dist",
+    "sourceMap": true,
     "declaration": true
   }
 }

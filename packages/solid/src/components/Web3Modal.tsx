@@ -17,3 +17,10 @@ declare global {
     }
   }
 }
+declare module 'solid-js' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'w3m-modal': Partial<W3mModal>
+    }
+  }
+}

@@ -3,6 +3,7 @@ import json from '@rollup/plugin-json'
 import resolve from '@rollup/plugin-node-resolve'
 import esbuild from 'rollup-plugin-esbuild'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
+import withSolid from 'rollup-preset-solid'
 
 export default function createConfig(packageName) {
   const sharedOutput = {
@@ -34,6 +35,7 @@ export default function createConfig(packageName) {
         resolve({ browser: true, preferBuiltins: true }),
         json(),
         commonjs(),
+        withSolid(),
         esbuildPlugin
       ],
       output: [

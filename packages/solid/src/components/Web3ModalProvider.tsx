@@ -1,6 +1,6 @@
 import type { ConfigOptions } from '@web3modal/core'
 import { ClientCtrl, ConfigCtrl } from '@web3modal/core'
-import type { ReactNode } from 'react'
+import type { JSX } from 'solid-js'
 import { createEffect } from 'solid-js'
 import { Web3Modal as Modal } from './Web3Modal'
 
@@ -8,7 +8,7 @@ import { Web3Modal as Modal } from './Web3Modal'
  * Props
  */
 interface Props {
-  children: ReactNode | ReactNode[]
+  children: JSX.Element | JSX.Element[]
   config: ConfigOptions
 }
 

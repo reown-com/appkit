@@ -14,6 +14,7 @@ export function useAsyncHookBuilder<TArgs, TResult>(
       setIsLoading(true)
       const fetchedData = await fetcher(opts)
       setData(() => fetchedData)
+      setError(() => '')
     } catch (err: unknown) {
       setError(err)
     } finally {

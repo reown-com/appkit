@@ -1,6 +1,6 @@
 import { chains, providers } from '@web3modal/ethereum'
-import type { ConfigOptions } from '@web3modal/react'
-import { Web3ModalProvider } from '@web3modal/react'
+import type { ConfigOptions } from '@web3modal/solid'
+import { Web3ModalProvider } from '@web3modal/solid'
 import type { AppProps } from 'next/app'
 import '../styles.css'
 

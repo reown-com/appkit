@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "types": ["solid-js"],
+    "noEmit": true,
+    "incremental": true,
+    "module": "esnext"
+  },
+  "include": ["next-env.d.ts", "src"]
+}

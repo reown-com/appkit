@@ -12,8 +12,9 @@ export function useSyncHookBuilder<TArgs, TResult>(
     try {
       const fetchedData = fetcher(opts)
       setData(() => fetchedData)
+      setError(() => '')
     } catch (err: unknown) {
-      return setError(err)
+      setError(() => err)
     }
   }
 
