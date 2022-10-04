@@ -1,7 +1,8 @@
 import type {
   ContractCtrlGetArgs,
   ContractCtrlReadArgs,
-  ContractCtrlWatchReadArgs
+  ContractCtrlWatchReadArgs,
+  ContractCtrlWriteArgs
 } from '../../../types/statelessCtrlTypes'
 import { ClientCtrl } from '../statefull/ClientCtrl'
 
@@ -14,6 +15,13 @@ export const ContractCtrl = {
 
   async read(args: ContractCtrlReadArgs) {
     const data = await ClientCtrl.ethereum().readContract(args)
+
+    return data
+  },
+
+  async write(args: ContractCtrlWriteArgs) {
+    const config = await ClientCtrl.ethereum().prepareWriteContract(args)
+    const data = await ClientCtrl.ethereum().writeContract(config)
 
     return data
   },

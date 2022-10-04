@@ -1,10 +1,10 @@
 import { useContract } from '@web3modal/react'
-import ensRegistryAbi from '../data/ensRegistryAbi.json'
+import wagmigotchiAbi from '../data/wagmigotchiAbi.json'
 
 export default function UseContract() {
   const contract = useContract({
-    addressOrName: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
-    contractInterface: ensRegistryAbi
+    addressOrName: '0xeCB504D39723b0be0e3a9Aa33D646642D1051EE1',
+    contractInterface: wagmigotchiAbi
   })
 
   return (
@@ -14,11 +14,11 @@ export default function UseContract() {
       <p>
         This example uses
         <a
-          href="https://etherscan.io/address/0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e#code"
+          href="https://testnet.snowtrace.io/address/0x1648C14DbB6ccdd5846969cE23DeEC4C66a03335#code"
           target="_blank"
           rel="noopener noreferer"
         >
-          ENS Registry Contract
+          WagmiGotchi Contract
         </a>
         on Ethereum
       </p>

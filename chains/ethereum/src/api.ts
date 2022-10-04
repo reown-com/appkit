@@ -18,6 +18,7 @@ import {
   getProvider,
   getWebSocketProvider,
   prepareSendTransaction,
+  prepareWriteContract,
   readContract,
   readContracts,
   sendTransaction,
@@ -220,6 +221,8 @@ export const Web3ModalEthereum = {
   readContract,
 
   readContracts,
+
+  prepareWriteContract,
 
   writeContract,
 

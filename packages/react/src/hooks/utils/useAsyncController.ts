@@ -20,7 +20,7 @@ export function useAsyncController<TArgs, TReturn>({
 }: Options<TArgs, TReturn>) {
   const { enabled, watch } = args
   const isEnabled = typeof enabled === 'undefined' ? true : enabled
-  const [isLoading, setIsLoading] = useState(enabled)
+  const [isLoading, setIsLoading] = useState(isEnabled)
   const [isFirstFetch, setIsFirstFetch] = useState(true)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [data, setData] = useState<TReturn | undefined>(undefined)

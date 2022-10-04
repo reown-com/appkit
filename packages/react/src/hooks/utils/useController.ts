@@ -12,6 +12,8 @@ interface Options<TArgs, TReturn> {
 export function useController<TArgs, TReturn>({ getFn, watchFn, args }: Options<TArgs, TReturn>) {
   const [data, setData] = useState<TReturn | undefined>(undefined)
   const initialized = useClientInitialized()
+
+  // We can't use raw args here as that will cause infinite-loop
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const memoArgs = useMemo(() => args, [JSON.stringify(args)])
 

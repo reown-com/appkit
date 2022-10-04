@@ -4,6 +4,7 @@ import UseBalance from '../sections/UseBalance'
 import UseBlockNumber from '../sections/UseBlockNumber'
 import UseContract from '../sections/UseContract'
 import UseContractRead from '../sections/UseContractRead'
+import UseContractWrite from '../sections/UseContractWrite'
 import UseDisconnect from '../sections/UseDisconnect'
 import UseEnsAddress from '../sections/UseEnsAddress'
 import UseEnsAvatar from '../sections/UseEnsAvatar'
@@ -45,6 +46,7 @@ export default function HomePage() {
       <UsePrepareSendWaitTransaction />
       <UseContract />
       <UseContractRead />
+      <UseContractWrite />
     </>
   ) : (
     <ConnectButton />
