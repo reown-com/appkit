@@ -18,6 +18,8 @@ import {
   getProvider,
   getWebSocketProvider,
   prepareSendTransaction,
+  readContract,
+  readContracts,
   sendTransaction,
   signMessage,
   signTypedData,
@@ -31,7 +33,8 @@ import {
   watchReadContract,
   watchReadContracts,
   watchSigner,
-  watchWebSocketProvider
+  watchWebSocketProvider,
+  writeContract
 } from '@wagmi/core'
 import type { EthereumOptions } from '../types/apiTypes'
 import { getClient, initializeClient } from './utils/wagmiHelpers'
@@ -213,6 +216,12 @@ export const Web3ModalEthereum = {
 
   // -- contracts  ---------------------------------------------------- //
   getContract,
+
+  readContract,
+
+  readContracts,
+
+  writeContract,
 
   watchContractEvent,
 

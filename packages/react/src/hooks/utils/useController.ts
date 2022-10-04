@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useClientInitialized } from '../data/useClientInitialized'
 
 // -- types ----------------------------------------------------- //
@@ -12,19 +12,21 @@ interface Options<TArgs, TReturn> {
 export function useController<TArgs, TReturn>({ getFn, watchFn, args }: Options<TArgs, TReturn>) {
   const [data, setData] = useState<TReturn | undefined>(undefined)
   const initialized = useClientInitialized()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const memoArgs = useMemo(() => args, [JSON.stringify(args)])
 
   useEffect(() => {
     let unwatch: (() => void) | undefined = undefined
     if (initialized) {
-      const getData = getFn(args)
+      const getData = getFn(memoArgs)
       setData(getData)
-      unwatch = watchFn?.(args, watchData => setData(watchData))
+      if (watchFn) unwatch = watchFn(memoArgs, watchData => setData(watchData))
     }
 
     return () => {
       unwatch?.()
     }
-  }, [initialized, getFn, watchFn, args])
+  }, [initialized, getFn, watchFn, memoArgs])
 
   return { data }
 }

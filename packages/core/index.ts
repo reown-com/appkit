@@ -29,6 +29,7 @@ export type {
   BalanceCtrlFetchArgs,
   BalanceCtrlFetchReturnValue,
   ContractCtrlGetArgs,
+  ContractCtrlReadArgs,
   EnsCtrlFetchEnsAddressArgs,
   EnsCtrlFetchEnsAvatarArgs,
   EnsCtrlFetchEnsNameArgs,

@@ -27,6 +27,12 @@ export function useAsyncController<TArgs, TReturn>({
   const initialized = useClientInitialized()
   const ready = initialized && isEnabled
 
+  const onError = useCallback((err: unknown) => {
+    if (err instanceof Error) setError(err)
+    else setError(new Error('Unknown error'))
+    setData(undefined)
+  }, [])
+
   const onFetch = useCallback(
     async (newArgs?: TArgs) => {
       let newData: TReturn | undefined = undefined
@@ -39,9 +45,7 @@ export function useAsyncController<TArgs, TReturn>({
           setData(newData)
           setError(undefined)
         } catch (err: unknown) {
-          if (err instanceof Error) setError(err)
-          else setError(new Error('Unknown error'))
-          setData(undefined)
+          onError(err)
         } finally {
           setIsLoading(false)
         }
@@ -49,7 +53,7 @@ export function useAsyncController<TArgs, TReturn>({
 
       return newData
     },
-    [fetchFn, args, isLoading, isFirstFetch]
+    [fetchFn, onError, args, isLoading, isFirstFetch]
   )
 
   useEffect(() => {
