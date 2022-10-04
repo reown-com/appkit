@@ -13,7 +13,7 @@ export function useController<TArgs, TReturn>({ getFn, watchFn, args }: Options<
   const [data, setData] = useState<TReturn | undefined>(undefined)
   const initialized = useClientInitialized()
 
-  // We can't use raw args here as that will cause infinite-loop
+  // We can't use raw args here as that will cause infinite-loop inside useEffect
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const memoArgs = useMemo(() => args, [JSON.stringify(args)])
 
@@ -28,7 +28,7 @@ export function useController<TArgs, TReturn>({ getFn, watchFn, args }: Options<
     return () => {
       unwatch?.()
     }
-  }, [initialized, getFn, watchFn, memoArgs])
+  }, [initialized, memoArgs, getFn, watchFn])
 
   return { data }
 }

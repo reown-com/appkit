@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useClientInitialized } from '../data/useClientInitialized'
 import { useOptionsChange } from './useOptionsChange'
 
+// -- types ----------------------------------------------------- //
 type Arguments<TArgs> = TArgs & {
   enabled?: boolean
   watch?: boolean
@@ -13,6 +14,7 @@ interface Options<TArgs, TReturn> {
   args: Arguments<TArgs>
 }
 
+// -- hook ------------------------------------------------------ //
 export function useAsyncController<TArgs, TReturn>({
   fetchFn,
   watchFn,
@@ -52,6 +54,12 @@ export function useAsyncController<TArgs, TReturn>({
     [fetchFn, args, isLoading, isFirstFetch]
   )
 
+  // Initial fetch
+  useEffect(() => {
+    if (ready && isFirstFetch) onFetch()
+  }, [ready, isFirstFetch, onFetch])
+
+  // Set up watcher after initial fetch if it is enabled
   useEffect(() => {
     let unwatch: (() => void) | undefined = undefined
     if (watch && !isFirstFetch && watchFn) unwatch = watchFn(args, newData => setData(newData))
@@ -61,19 +69,10 @@ export function useAsyncController<TArgs, TReturn>({
     }
   }, [watch, isFirstFetch, args, watchFn])
 
+  // Re-fetch when input args change
   useOptionsChange(() => {
-    if (!watch && !isFirstFetch) {
-      console.log('options changed fetch')
-      onFetch()
-    }
+    if (!watch && !isFirstFetch) onFetch()
   }, args)
-
-  useEffect(() => {
-    if (ready && isFirstFetch) {
-      console.log('ready fetch')
-      onFetch()
-    }
-  }, [ready, isFirstFetch, onFetch])
 
   return {
     data,
