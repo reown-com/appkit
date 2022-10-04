@@ -2,6 +2,7 @@ import { ConnectButton, useAccount } from '@web3modal/react'
 import UseAccount from '../sections/UseAccount'
 import UseBalance from '../sections/UseBalance'
 import UseBlockNumber from '../sections/UseBlockNumber'
+import UseContract from '../sections/UseContract'
 import UseDisconnect from '../sections/UseDisconnect'
 import UseEnsAddress from '../sections/UseEnsAddress'
 import UseEnsAvatar from '../sections/UseEnsAvatar'
@@ -41,6 +42,7 @@ export default function HomePage() {
       <UseToken />
       <UseTransaction />
       <UsePrepareSendWaitTransaction />
+      <UseContract />
     </>
   ) : (
     <ConnectButton />

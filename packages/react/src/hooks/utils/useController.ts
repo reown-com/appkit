@@ -4,7 +4,7 @@ import { useClientInitialized } from '../data/useClientInitialized'
 // -- types ----------------------------------------------------- //
 interface Options<TArgs, TReturn> {
   getFn: (args: TArgs) => TReturn
-  watchFn: (options: TArgs, callback: (watchData: TReturn) => void) => () => void
+  watchFn?: (options: TArgs, callback: (watchData: TReturn) => void) => () => void
   args: TArgs
 }
 
@@ -18,7 +18,7 @@ export function useController<TArgs, TReturn>({ getFn, watchFn, args }: Options<
     if (initialized) {
       const getData = getFn(args)
       setData(getData)
-      unwatch = watchFn(args, watchData => setData(watchData))
+      unwatch = watchFn?.(args, watchData => setData(watchData))
     }
 
     return () => {

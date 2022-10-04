@@ -13,6 +13,7 @@ import {
   fetchToken,
   fetchTransaction,
   getAccount,
+  getContract,
   getNetwork,
   getProvider,
   getWebSocketProvider,
@@ -211,6 +212,8 @@ export const Web3ModalEthereum = {
   waitForTransaction,
 
   // -- contracts  ---------------------------------------------------- //
+  getContract,
+
   watchContractEvent,
 
   watchReadContract,
