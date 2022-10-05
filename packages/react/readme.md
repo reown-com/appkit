@@ -118,7 +118,7 @@ interface Return {
 
 ### useBalance
 
-Hook to get balance data for a given address / ens name. Defaults to selected chain token i.e. `ETH` / `MATIC` / `AVAX`
+Hook for fetching balance information for Ethereum or ERC-20 tokens.
 
 ```ts
 import { useBalance } from '@web3modal/ethereum'
@@ -152,7 +152,7 @@ interface Options {
 
 ### useBlockNumber
 
-Hook to get current block number
+Hook for fetching the current block number.
 
 ```ts
 import { useBlockNumber } from '@web3modal/ethereum'
@@ -173,5 +173,30 @@ interface Options {
   watch?: boolean
   enabled?: boolean
   chainId?: number
+}
+```
+
+### useContract
+
+Hook for declaratively creating an ethers [Contract](https://docs.ethers.io/v5/api/contract/contract/) instance.
+
+```ts
+import { useContract } from '@web3modal/ethereum'
+import ensRegistryABI from './yourAbi/ensRegistryABI.json'
+
+// Usage
+const contract = useContract({
+  addressOrName: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+  contractInterface: ensRegistryABI
+})
+
+// Returns
+ethers.Contract | undefined
+
+// Options
+interface Options {
+  addressOrName: string
+  contractInterface: ContractInterface
+  signerOrProvider?: Provider | Signer
 }
 ```
