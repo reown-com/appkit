@@ -292,3 +292,32 @@ interface Options {
   enabled?: boolean
 }
 ```
+
+### useEnsAvatar ([Example](../../examples/react/src/sections/UseEnsAvatar.tsx))
+
+Hook for fetching avatar for ENS name.
+
+```ts
+import { useEnsAvatar } from '@web3modal/ethereum'
+import wagmigotchiABI from './yourAbi/wagmigotchiABI.json'
+
+// Usage
+const { data, error, isLoading, refetch } = useEnsAvatar({
+  addressOrName: 'vitalik.eth'
+})
+
+// Returns
+interface Return {
+  data?: string
+  error?: Error
+  isLoading: boolean
+  refetch: (options?: Options) => Promise<Return['data']>
+}
+
+// Options
+interface Options {
+  addressOrName: string
+  chainId?: number
+  enabled?: boolean
+}
+```
