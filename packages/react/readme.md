@@ -512,3 +512,43 @@ interface Options {
   chainId?: number
 }
 ```
+
+---
+
+### useToken ([Example](../../examples/react/src/sections/UseToken.tsx))
+
+Hook for fetching ERC-20 token information.
+
+```ts
+import { useToken } from '@web3modal/ethereum'
+
+// Usage
+const { data, error, isLoading, refetch } = useToken({
+  address: '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72'
+})
+
+// Returns
+interface Return {
+  data?: {
+    address: string
+    decimals: number
+    name: string
+    symbol: string
+    totalSupply: {
+      formatted: string
+      value: BigNumber
+    }
+  }
+  error?: Error
+  isLoading: boolean
+  refetch: (options?: Options) => Promise<Return['data']>
+}
+
+// Options
+interface Options {
+  address: string
+  chainId?: number
+  enabled?: boolean
+  formatUnits?: number | 'wei' | 'kwei' | 'mwei' | 'gwei' | 'szabo' | 'finney' | 'ether'
+}
+```
