@@ -94,6 +94,8 @@ interface Options {
 }
 ```
 
+---
+
 ### useAccount ([Example](../../examples/react/src/sections/UseAccount.tsx))
 
 Hook to get account data
@@ -115,6 +117,8 @@ interface Return {
   status?: 'connecting' | 'reconnecting' | 'connected' | 'disconnected'
 }
 ```
+
+---
 
 ### useBalance ([Example](../../examples/react/src/sections/UseBalance.tsx))
 
@@ -150,6 +154,8 @@ interface Options {
 }
 ```
 
+---
+
 ### useBlockNumber ([Example](../../examples/react/src/sections/UseBlockNumber.tsx))
 
 Hook for fetching the current block number.
@@ -176,6 +182,8 @@ interface Options {
 }
 ```
 
+---
+
 ### useContract ([Example](../../examples/react/src/sections/UseContract.tsx))
 
 Hook for declaratively creating an ethers [Contract](https://docs.ethers.io/v5/api/contract/contract/) instance.
@@ -200,6 +208,8 @@ interface Options {
   signerOrProvider?: Provider | Signer
 }
 ```
+
+---
 
 ### useContractEvent ([Example](../../examples/react/src/sections/UseContractEvent.tsx))
 
@@ -227,6 +237,8 @@ interface Options {
   once?: boolean
 }
 ```
+
+---
 
 ### useContractRead ([Example](../../examples/react/src/sections/UseContractRead.tsx))
 
@@ -264,6 +276,8 @@ interface Options {
 }
 ```
 
+---
+
 ### useEnsAddress ([Example](../../examples/react/src/sections/UseEnsAddress.tsx))
 
 Hook for fetching address for ENS name.
@@ -292,6 +306,8 @@ interface Options {
   enabled?: boolean
 }
 ```
+
+---
 
 ### useEnsAvatar ([Example](../../examples/react/src/sections/UseEnsAvatar.tsx))
 
