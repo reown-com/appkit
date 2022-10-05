@@ -395,3 +395,43 @@ interface Options {
   enabled?: boolean
 }
 ```
+
+---
+
+### useFeeData ([Example](../../examples/react/src/sections/UseFeeData.tsx))
+
+Hook for fetching network fee information.
+
+```ts
+import { useFeeData } from '@web3modal/ethereum'
+
+// Usage
+const { data, error, isLoading, refetch } = useFeeData({
+  name: 'vitalik.eth'
+})
+
+// Returns
+interface Return {
+  data?: {
+    gasPrice: BigNumber
+    maxFeePerGas: BigNumber
+    maxPriorityFeePerGas: BigNumber
+    formatted: {
+      gasPrice: string
+      maxFeePerGas: string
+      maxPriorityFeePerGas: string
+    }
+  }
+  error?: Error
+  isLoading: boolean
+  refetch: (options?: Options) => Promise<Return['data']>
+}
+
+// Options
+interface Options {
+  formatUnits?: number | 'wei' | 'kwei' | 'mwei' | 'gwei' | 'szabo' | 'finney' | 'ether'
+  chainId?: number
+  watch?: boolean
+  enabled?: boolean
+}
+```
