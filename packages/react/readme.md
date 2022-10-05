@@ -454,3 +454,35 @@ interface Return {
   chains?: Chain[]
 }
 ```
+
+---
+
+### useProvider ([Example](../../examples/react/src/sections/UseProvider.tsx))
+
+Hook for accessing Client's ethers [Provider](https://docs.ethers.io/v5/api/providers/).
+
+```ts
+import { useProvider } from '@web3modal/ethereum'
+
+// Usage
+const provider = useProvider()
+
+// Returns
+ethers.Provider?
+```
+
+---
+
+### useWebsocketProvider ([Example](../../examples/react/src/sections/UseProvider.tsx))
+
+Hook for accessing the Client's ethers [WebSocket Provider](https://docs.ethers.io/v5/api/providers/other/#WebSocketProvider).
+
+```ts
+import { useWebsocketProvider } from '@web3modal/ethereum'
+
+// Usage
+const websocketProvider = useWebsocketProvider()
+
+// Returns
+ethers.WebSocketProvider?
+```
