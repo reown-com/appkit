@@ -709,6 +709,8 @@ interface Options {
 }
 ```
 
+---
+
 ### useSignMessage ([Example](../../examples/react/src/sections/UseSignMessage.tsx))
 
 Hook for signing messages with connected account.
@@ -733,5 +735,50 @@ interface Return {
 // Options
 interface Options {
   message: string | Bytes
+}
+```
+
+---
+
+### useSignTypedData ([Example](../../examples/react/src/sections/UseSignTypedData.tsx))
+
+Hook for signing messages with connected account.
+
+```ts
+import { useSignTypedData } from '@web3modal/ethereum'
+
+// Usage
+const { data, error, isLoading, signTypedData } = useSignTypedData({
+  domain,
+  types,
+  value
+})
+signTypedData()
+
+// Returns
+interface Return {
+  data?: string
+  error?: Error
+  isLoading: boolean
+  signTypedData: (options?: Options) => Promise<Return['data']>
+}
+
+// Options
+interface Options {
+  domain: {
+    name?: string
+    version?: string
+    chainId?: string | number | bigint
+    verifyingContract?: string
+    salt?: BytesLike
+  }
+  types: Record<
+    string,
+    Array<{
+      name: string
+      type: string
+    }>
+  >
+  value: Record<string, any>
 }
 ```
