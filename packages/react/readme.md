@@ -582,3 +582,35 @@ interface Options {
   enabled?: boolean
 }
 ```
+
+---
+
+### useWaitForTransaction ([Example](../../examples/react/src/sections/UseWaitForTransaction.tsx))
+
+Hook for declaratively waiting until transaction is processed. Pairs well with `useContractWrite` and `useSendTransaction`.
+
+```ts
+import { useWaitForTransaction } from '@web3modal/ethereum'
+
+// Usage
+const { data, error, isLoading, refetch } = useWaitForTransaction({
+  hash: '0xe75fb554e433e03763a1560646ee22dcb74e5274b34c5ad644e7c0f619a7e1d0'
+})
+
+// Returns
+interface Return {
+  data?: TransactionResponse
+  error?: Error
+  isLoading: boolean
+  refetch: (options?: Options) => Promise<Return['data']>
+}
+
+// Options
+interface Options {
+  confirmations?: number
+  hash?: string
+  timeout?: number
+  chainId?: number
+  enabled?: boolean
+}
+```
