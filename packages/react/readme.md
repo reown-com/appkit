@@ -782,3 +782,32 @@ interface Options {
   value: Record<string, any>
 }
 ```
+
+---
+
+### useSwitchNetwork ([Example](../../examples/react/src/sections/UseSwitchNetwork.tsx))
+
+Hook for switching networks with a connector.
+
+```ts
+import { useSwitchNetwork } from '@web3modal/ethereum'
+
+// Usage
+const { data, error, isLoading, switchNetwork } = useSwitchNetwork({
+  chainId: 1
+})
+switchNetwork()
+
+// Returns
+interface Return {
+  data?: Chain
+  error?: Error
+  isLoading: boolean
+  switchNetwork: (options?: Options) => Promise<Return['data']>
+}
+
+// Options
+interface Options {
+  chainId?: number
+}
+```
