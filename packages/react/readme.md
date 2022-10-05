@@ -263,3 +263,32 @@ interface Options {
   watch?: boolean
 }
 ```
+
+### useEnsAddress ([Example](../../examples/react/src/sections/UseEnsAddress.tsx))
+
+Hook for fetching address for ENS name.
+
+```ts
+import { useEnsAddress } from '@web3modal/ethereum'
+import wagmigotchiABI from './yourAbi/wagmigotchiABI.json'
+
+// Usage
+const { data, error, isLoading, refetch } = useEnsAddress({
+  name: 'vitalik.eth'
+})
+
+// Returns
+interface Return {
+  data?: string
+  error?: Error
+  isLoading: boolean
+  refetch: (options?: Options) => Promise<Return['data']>
+}
+
+// Options
+interface Options {
+  name: string
+  chainId?: number
+  enabled?: boolean
+}
+```
