@@ -284,7 +284,6 @@ Hook for fetching address for ENS name.
 
 ```ts
 import { useEnsAddress } from '@web3modal/ethereum'
-import wagmigotchiABI from './yourAbi/wagmigotchiABI.json'
 
 // Usage
 const { data, error, isLoading, refetch } = useEnsAddress({
@@ -315,7 +314,6 @@ Hook for fetching avatar for ENS name.
 
 ```ts
 import { useEnsAvatar } from '@web3modal/ethereum'
-import wagmigotchiABI from './yourAbi/wagmigotchiABI.json'
 
 // Usage
 const { data, error, isLoading, refetch } = useEnsAvatar({
@@ -345,11 +343,10 @@ interface Options {
 Hook for fetching ENS name for address.
 
 ```ts
-import { useEnsAvatar } from '@web3modal/ethereum'
-import wagmigotchiABI from './yourAbi/wagmigotchiABI.json'
+import { useEnsName } from '@web3modal/ethereum'
 
 // Usage
-const { data, error, isLoading, refetch } = useEnsAvatar({
+const { data, error, isLoading, refetch } = useEnsName({
   address: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
 })
 
@@ -364,6 +361,36 @@ interface Return {
 // Options
 interface Options {
   address: string
+  chainId?: number
+  enabled?: boolean
+}
+```
+
+---
+
+### useEnsResolver ([Example](../../examples/react/src/sections/UseEnsResolver.tsx))
+
+Hook for fetching the resolver for ENS name.
+
+```ts
+import { useEnsResolver } from '@web3modal/ethereum'
+
+// Usage
+const { data, error, isLoading, refetch } = useEnsResolver({
+  name: 'vitalik.eth'
+})
+
+// Returns
+interface Return {
+  data?: string
+  error?: Error
+  isLoading: boolean
+  refetch: (options?: Options) => Promise<Return['data']>
+}
+
+// Options
+interface Options {
+  name: string
   chainId?: number
   enabled?: boolean
 }
