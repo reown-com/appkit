@@ -708,3 +708,30 @@ interface Options {
   signer?: Signer
 }
 ```
+
+### useSignMessage ([Example](../../examples/react/src/sections/UseSignMessage.tsx))
+
+Hook for signing messages with connected account.
+
+```ts
+import { useSignMessage } from '@web3modal/ethereum'
+
+// Usage
+const { data, error, isLoading, signMessage } = useSendTransaction({
+  message: 'WalletConnect web3modal message'
+})
+signMessage()
+
+// Returns
+interface Return {
+  data?: string
+  error?: Error
+  isLoading: boolean
+  signMessage: (options?: Options) => Promise<Return['data']>
+}
+
+// Options
+interface Options {
+  message: string | Bytes
+}
+```
