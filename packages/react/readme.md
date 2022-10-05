@@ -34,7 +34,7 @@ export default function App() {
       <Web3Modal config={config} />
     </>
   )
-
+}
 ```
 
 ### 3. Add <ConnectButton> component or useConnectModal hook to open the modal
