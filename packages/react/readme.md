@@ -614,3 +614,41 @@ interface Options {
   enabled?: boolean
 }
 ```
+
+## Action Hooks
+
+Hooks that expose action / write opperations.
+
+### useContractWrite ([Example](../../examples/react/src/sections/UseContractWrite.tsx))
+
+Hook for calling an ethers Contract [write](https://docs.ethers.io/v5/api/contract/contract/#Contract--write) method. Perpares transaction under the hood i.e. estimates gas price.
+
+```ts
+import { useContractWrite } from '@web3modal/ethereum'
+import wagmigotchiABI from './yourAbi/wagmigotchiABI.json'
+
+// Usage
+const { data, error, isLoading, write } = useContractWrite({
+  addressOrName: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1',
+  contractInterface: wagmigotchiABI,
+  functionName: 'feed'
+})
+write()
+
+// Returns
+interface Return {
+  data?: TransactionResponse
+  error?: Error
+  isLoading: boolean
+  write: (options?: Options) => Promise<Return['data']>
+}
+
+// Options
+interface Options {
+  functionName: string
+  chainId?: number | undefined
+  args?: any
+  overrides?: CallOverrides
+  signer?: Signer
+}
+```
