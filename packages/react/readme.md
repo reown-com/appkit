@@ -619,6 +619,8 @@ interface Options {
 
 Hooks that expose action / write opperations.
 
+---
+
 ### useContractWrite ([Example](../../examples/react/src/sections/UseContractWrite.tsx))
 
 Hook for calling an ethers Contract [write](https://docs.ethers.io/v5/api/contract/contract/#Contract--write) method. Perpares transaction under the hood i.e. estimates gas price.
@@ -651,4 +653,21 @@ interface Options {
   overrides?: CallOverrides
   signer?: Signer
 }
+```
+
+---
+
+### useDisconnect
+
+Hook for disconnecting the connected account.
+
+```ts
+import { useDisconnect } from '@web3modal/ethereum'
+
+// Usage
+const disconnect = useDisconnect()
+disconnect()
+
+// Returns
+() => void
 ```
