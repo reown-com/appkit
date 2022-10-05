@@ -671,3 +671,40 @@ disconnect()
 // Returns
 () => void
 ```
+
+---
+
+### useSendTransaction ([Example](../../examples/react/src/sections/UseSendTransaction.tsx))
+
+Hook for sending a transaction. Perpares transaction under the hood i.e. estimates gas price.
+
+```ts
+import { useSendTransaction } from '@web3modal/ethereum'
+import { BigNumber } from 'ethers'
+
+// Usage
+const { data, error, isLoading, sendTransaction } = useSendTransaction({
+  request: {
+    to: 'vitalik.eth',
+    value: BigNumber.from('10000000000000000')
+  }
+})
+sendTransaction()
+
+// Returns
+interface Return {
+  data?: TransactionResponse
+  error?: Error
+  isLoading: boolean
+  sendTransaction: (options?: Options) => Promise<Return['data']>
+}
+
+// Options
+interface Options {
+  request: TransactionRequest & {
+    to: string
+  }
+  chainId?: number
+  signer?: Signer
+}
+```
