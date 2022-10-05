@@ -435,3 +435,22 @@ interface Options {
   enabled?: boolean
 }
 ```
+
+---
+
+### useNetwork ([Example](../../examples/react/src/sections/UseNetwork.tsx))
+
+Hook for accessing network data, such as current connected chain and connector chains.
+
+```ts
+import { useNetwork } from '@web3modal/ethereum'
+
+// Usage
+const { chain, chains } = useNetwork()
+
+// Returns
+interface Return {
+  chain?: Chain & { unsupported?: boolean }
+  chains?: Chain[]
+}
+```
