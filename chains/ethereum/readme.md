@@ -2,10 +2,8 @@
 
 ## Getting Started
 
-Our ethereum/evm package is based on [@wagmi/core](https://wagmi.sh/). However in order to support multiple frameworks and chains in the future, we had to make some changes to how we handle internal store, chain id's etc. Due to this _make sure that you use imports from @web3modal packages_.
-Web3Modal uses [CAIP-10](https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-10.md) chain format instead of common integer one. This means that when working with our libraries you need to provide chainId's like this `eip155:1` (ethereum mainnet) instead of `1`. All `@web3modal/ethereum` compatable chains will start with `eip155:`. You can see list of chain id's at https://chainlist.org
-
-We highly recomend reading through [wagmi](https://wagmi.sh/) if you want to understand how this package works under the hood.
+If you have ever used or read documentation of [@wagmi/core](https://wagmi.sh/), you should feel very comfortable with `@web3modal/ethereum` package.
+This package should be used in tandem with `@web3modal/react`, other framework packages or in vanilla js projects.
 
 ## Configuration
 

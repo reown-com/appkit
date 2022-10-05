@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ethereum",
-  "version": "2.0.0-alpha.4",
+  "version": "2.0.0-alpha.5",
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.js",
   "type": "module",
