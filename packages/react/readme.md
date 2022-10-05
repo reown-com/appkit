@@ -57,11 +57,11 @@ export default function YourAppContent() {
 
 ## Modal Hooks
 
-Hooks to manage web3modal
+Hooks to manage web3modal.
 
 ### useConnectModal
 
-Hook to check state of the modal, open or close it
+Hook to check state of the modal, open or close it.
 
 ```ts
 import { useConnectModal } from '@web3modal/ethereum'
@@ -79,7 +79,7 @@ interface Return {
 
 ## Data Hooks
 
-Hooks that return blockchain, account or network data. By default these automatically retrieve data for currently active network (chainId) one time when they are mounted. You can tweak this behaviour with following shared options (where available)
+Hooks that return blockchain, account or network data. By default these automatically retrieve data for currently active network (chainId) one time when they are mounted. You can tweak this behaviour with following shared options (where available).
 
 ```ts
 interface Options {
@@ -98,7 +98,7 @@ interface Options {
 
 ### useAccount ([Example](../../examples/react/src/sections/UseAccount.tsx))
 
-Hook to get account data
+Hook to get account data.
 
 ```ts
 import { useAccount } from '@web3modal/ethereum'
@@ -550,5 +550,35 @@ interface Options {
   chainId?: number
   enabled?: boolean
   formatUnits?: number | 'wei' | 'kwei' | 'mwei' | 'gwei' | 'szabo' | 'finney' | 'ether'
+}
+```
+
+---
+
+### useTransaction ([Example](../../examples/react/src/sections/UseTransaction.tsx))
+
+Hook for fetching transaction by hash.
+
+```ts
+import { useTransaction } from '@web3modal/ethereum'
+
+// Usage
+const { data, error, isLoading, refetch } = useTransaction({
+  hash: '0xe75fb554e433e03763a1560646ee22dcb74e5274b34c5ad644e7c0f619a7e1d0'
+})
+
+// Returns
+interface Return {
+  data?: TransactionResponse
+  error?: Error
+  isLoading: boolean
+  refetch: (options?: Options) => Promise<Return['data']>
+}
+
+// Options
+interface Options {
+  hash: string
+  chainId?: number
+  enabled?: boolean
 }
 ```
