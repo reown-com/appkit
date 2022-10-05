@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-Make sure to read our [main readme](./../../readme.md) first to find out details about projectId, chain specific packages and modal customisation options. Please ensure you are updated to the latest React / Next.js or similar version, as web3modal libraries target `es2020`.
+Make sure to read our [main readme](./../../readme.md) first to find out details about projectId, chain specific packages and modal customisation options. Please ensure you are updated to the latest React / Next.js or similar version, as web3modal libraries target `es2020`. Web3Modal hooks are based on [wagmi](https://wagmi.sh/), so it is good idea to read through their documentation as well. Do note, you have to import and use these hooks from `@web3modal` packages.
 
 ### 1. Install dependencies
 
@@ -225,5 +225,41 @@ interface Options {
   listener: (event?: any) => void
   chainId? number
   once?: boolean
+}
+```
+
+### useContractRead ([Example](../../examples/react/src/sections/UseContractRead.tsx))
+
+Hook for calling an ethers Contract [read-only](https://docs.ethers.io/v5/api/contract/contract/#Contract--readonly) method.
+
+```ts
+import { useContractRead } from '@web3modal/ethereum'
+import wagmigotchiABI from './yourAbi/wagmigotchiABI.json'
+
+// Usage
+const { data, error, isLoading, refetch } = useContractRead({
+  addressOrName: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1',
+  contractInterface: wagmigotchiABI,
+  functionName: 'getHunger'
+})
+
+// Returns
+interface Return {
+  data?: Result
+  error?: Error
+  isLoading: boolean
+  refetch: (options?: Options) => Promise<Return['data']>
+}
+
+// Options
+interface Options {
+  addressOrName: string
+  contractInterface: ContractInterface
+  functionName: string
+  args?: any
+  overrides?: CallOverrides
+  chainId?: number
+  enabled?: boolean
+  watch?: boolean
 }
 ```
