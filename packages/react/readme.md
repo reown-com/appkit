@@ -486,3 +486,29 @@ const websocketProvider = useWebsocketProvider()
 // Returns
 ethers.WebSocketProvider?
 ```
+
+---
+
+### useSigner ([Example](../../examples/react/src/sections/UseSigner.tsx))
+
+Hook for accessing ethers [Signer](https://docs.ethers.io/v5/api/signer/) object for connected account.
+
+```ts
+import { useSigner } from '@web3modal/ethereum'
+
+// Usage
+const { data, error, isLoading } = useSigner()
+
+// Returns
+interface Return {
+  data?: ethers.providers.JsonRpcSigner
+  error?: Error
+  isLoading: boolean
+  refetch: (options?: Options) => Promise<Return['data']>
+}
+
+// Options
+interface Options {
+  chainId?: number
+}
+```
