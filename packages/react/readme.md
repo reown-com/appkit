@@ -337,3 +337,34 @@ interface Options {
   enabled?: boolean
 }
 ```
+
+---
+
+### useEnsName ([Example](../../examples/react/src/sections/UseEnsName.tsx))
+
+Hook for fetching ENS name for address.
+
+```ts
+import { useEnsAvatar } from '@web3modal/ethereum'
+import wagmigotchiABI from './yourAbi/wagmigotchiABI.json'
+
+// Usage
+const { data, error, isLoading, refetch } = useEnsAvatar({
+  address: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
+})
+
+// Returns
+interface Return {
+  data?: string
+  error?: Error
+  isLoading: boolean
+  refetch: (options?: Options) => Promise<Return['data']>
+}
+
+// Options
+interface Options {
+  address: string
+  chainId?: number
+  enabled?: boolean
+}
+```
