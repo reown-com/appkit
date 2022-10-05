@@ -94,9 +94,9 @@ interface Options {
 }
 ```
 
-### useAccount
+### useAccount ([Example](../../examples/react/src/sections/UseAccount.tsx))
 
-Hook to get account data - [Example](../../examples/react/src/sections/UseAccount.tsx)
+Hook to get account data
 
 ```ts
 import { useAccount } from '@web3modal/ethereum'
@@ -116,7 +116,7 @@ interface Return {
 }
 ```
 
-### useBalance
+### useBalance ([Example](../../examples/react/src/sections/UseBalance.tsx))
 
 Hook for fetching balance information for Ethereum or ERC-20 tokens.
 
@@ -150,7 +150,7 @@ interface Options {
 }
 ```
 
-### useBlockNumber
+### useBlockNumber ([Example](../../examples/react/src/sections/UseBlockNumber.tsx))
 
 Hook for fetching the current block number.
 
@@ -176,7 +176,7 @@ interface Options {
 }
 ```
 
-### useContract
+### useContract ([Example](../../examples/react/src/sections/UseContract.tsx))
 
 Hook for declaratively creating an ethers [Contract](https://docs.ethers.io/v5/api/contract/contract/) instance.
 
@@ -198,5 +198,32 @@ interface Options {
   addressOrName: string
   contractInterface: ContractInterface
   signerOrProvider?: Provider | Signer
+}
+```
+
+### useContractEvent ([Example](../../examples/react/src/sections/UseContractEvent.tsx))
+
+Hook for subscribing to ethers Contract [events](https://docs.ethers.io/v5/api/contract/contract/#Contract--events).
+
+```ts
+import { useContractEvent } from '@web3modal/ethereum'
+import ensRegistryABI from './yourAbi/ensRegistryABI.json'
+
+// Usage
+useContractEvent({
+  addressOrName: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+  contractInterface: ensRegistryABI,
+  eventName: 'NewOwner',
+  listener: event => console.log(event)
+})
+
+// Options
+interface Options {
+  addressOrName: string
+  contractInterface: ContractInterface
+  eventName: string
+  listener: (event?: any) => void
+  chainId? number
+  once?: boolean
 }
 ```
