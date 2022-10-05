@@ -124,7 +124,7 @@ Hook to get balance data for a given address / ens name. Defaults to selected ch
 import { useBalance } from '@web3modal/ethereum'
 
 // Usage
-const { data, error, isLoading, refetch } = useBalance()
+const { data, error, isLoading, refetch } = useBalance({ formatUnits: 'ether' })
 
 // Returns
 interface Return {
@@ -136,7 +136,7 @@ interface Return {
   }
   error?: Error
   isLoading: boolean
-  refetch: (options: Options) => Promise<Return['data']>
+  refetch: (options?: Options) => Promise<Return['data']>
 }
 
 // Options
@@ -147,5 +147,31 @@ interface Options {
   chainId?: number
   formatUnits?: number | 'wei' | 'kwei' | 'mwei' | 'gwei' | 'szabo' | 'finney' | 'ether'
   token?: string
+}
+```
+
+### useBlockNumber
+
+Hook to get current block number
+
+```ts
+import { useBlockNumber } from '@web3modal/ethereum'
+
+// Usage
+const { data, error, isLoading, refetch } = useBlockNumber({ watch: true })
+
+// Returns
+interface Return {
+  data?: number
+  error?: Error
+  isLoading: boolean
+  refetch: (options?: Options) => Promise<Return['data']>
+}
+
+// Options
+interface Options {
+  watch?: boolean
+  enabled?: boolean
+  chainId?: number
 }
 ```
