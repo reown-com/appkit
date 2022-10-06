@@ -13,7 +13,8 @@ export function useBalance(options: Options) {
   const { onFetch, ...rest } = useAsyncController({
     fetchFn: BalanceCtrl.fetch,
     watchFn: BalanceCtrl.watch,
-    args: chainAgnosticOptions
+    args: chainAgnosticOptions,
+    hasRequiredArgs: Boolean(chainAgnosticOptions.addressOrName)
   })
 
   return {

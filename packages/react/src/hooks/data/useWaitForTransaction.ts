@@ -11,7 +11,8 @@ export function useWaitForTransaction(args: Arguments) {
   const chainAgnosticArgs = useChainAgnosticOptions(args)
   const { onFetch, data, isLoading, ...rest } = useAsyncController({
     fetchFn: TransactionCtrl.wait,
-    args: chainAgnosticArgs
+    args: chainAgnosticArgs,
+    hasRequiredArgs: Boolean(chainAgnosticArgs.hash)
   })
 
   return {

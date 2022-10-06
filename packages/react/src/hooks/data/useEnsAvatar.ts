@@ -11,7 +11,8 @@ export function useEnsAvatar(args: Arguments) {
   const chainAgnosticArgs = useChainAgnosticOptions(args)
   const { onFetch, ...rest } = useAsyncController({
     fetchFn: EnsCtrl.fetchEnsAvatar,
-    args: chainAgnosticArgs
+    args: chainAgnosticArgs,
+    hasRequiredArgs: Boolean(chainAgnosticArgs.addressOrName)
   })
 
   return {

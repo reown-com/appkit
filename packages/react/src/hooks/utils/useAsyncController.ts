@@ -12,22 +12,25 @@ interface Options<TArgs, TReturn> {
   fetchFn: (args: TArgs) => Promise<TReturn>
   watchFn?: (args: TArgs, callback: (watchData: TReturn) => void) => () => void
   args: Arguments<TArgs>
+  hasRequiredArgs?: boolean
 }
 
 // -- hook ------------------------------------------------------ //
 export function useAsyncController<TArgs, TReturn>({
   fetchFn,
   watchFn,
-  args
+  args,
+  hasRequiredArgs
 }: Options<TArgs, TReturn>) {
   const { enabled, watch } = args
   const isEnabled = typeof enabled === 'undefined' ? true : enabled
-  const [isLoading, setIsLoading] = useState(isEnabled)
+  const isRequiredArgs = typeof hasRequiredArgs === 'undefined' ? true : hasRequiredArgs
+  const [isLoading, setIsLoading] = useState(isEnabled && isRequiredArgs)
   const [isFirstFetch, setIsFirstFetch] = useState(true)
   const [error, setError] = useState<Error | undefined>(undefined)
   const [data, setData] = useState<TReturn | undefined>(undefined)
   const initialized = useClientInitialized()
-  const ready = initialized && isEnabled
+  const ready = initialized && isEnabled && isRequiredArgs
 
   const onFetch = useCallback(
     async (newArgs?: TArgs) => {
