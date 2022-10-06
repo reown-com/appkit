@@ -1,3 +1,4 @@
+import { CoreHelpers } from '@web3modal/core'
 import { useCallback, useEffect, useState } from 'react'
 import { useClientInitialized } from '../data/useClientInitialized'
 import { useOptionsChange } from './useOptionsChange'
@@ -43,13 +44,15 @@ export function useAsyncController<TArgs, TReturn>({
         setIsLoading(true)
         try {
           newData = await fetchFn(newArgs ?? args)
-          setData(newData ?? undefined)
-          setError(undefined)
+          if (!CoreHelpers.isNull(newData)) {
+            setData(newData)
+            setError(undefined)
+            setIsLoading(false)
+          }
         } catch (err: unknown) {
           if (err instanceof Error) setError(err)
           else setError(new Error('Unknown error'))
           setData(undefined)
-        } finally {
           setIsLoading(false)
         }
       }
@@ -68,7 +71,7 @@ export function useAsyncController<TArgs, TReturn>({
   useEffect(() => {
     let unwatch: (() => void) | undefined = undefined
     if (watch && !isFirstFetch && watchFn)
-      unwatch = watchFn(args, newData => setData(newData ?? undefined))
+      unwatch = watchFn(args, newData => setData(CoreHelpers.isNull(newData) ? undefined : newData))
 
     return () => {
       unwatch?.()
