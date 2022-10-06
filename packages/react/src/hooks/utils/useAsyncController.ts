@@ -9,8 +9,8 @@ type Arguments<TArgs> = TArgs & {
 }
 
 interface Options<TArgs, TReturn> {
-  fetchFn: (args: TArgs) => Promise<TReturn>
-  watchFn?: (args: TArgs, callback: (watchData: TReturn) => void) => () => void
+  fetchFn: (args: TArgs) => Promise<TReturn | null>
+  watchFn?: (args: TArgs, callback: (watchData: TReturn | null) => void) => () => void
   args: Arguments<TArgs>
   hasRequiredArgs?: boolean
 }
@@ -34,14 +34,14 @@ export function useAsyncController<TArgs, TReturn>({
 
   const onFetch = useCallback(
     async (newArgs?: TArgs) => {
-      let newData: TReturn | undefined = undefined
+      let newData: TReturn | null | undefined = undefined
 
       if (!isLoading || isFirstFetch) {
         setIsFirstFetch(false)
         setIsLoading(true)
         try {
           newData = await fetchFn(newArgs ?? args)
-          setData(newData)
+          setData(newData ?? undefined)
           setError(undefined)
         } catch (err: unknown) {
           if (err instanceof Error) setError(err)
@@ -65,7 +65,8 @@ export function useAsyncController<TArgs, TReturn>({
   // Set up watcher after initial fetch if it is enabled
   useEffect(() => {
     let unwatch: (() => void) | undefined = undefined
-    if (watch && !isFirstFetch && watchFn) unwatch = watchFn(args, newData => setData(newData))
+    if (watch && !isFirstFetch && watchFn)
+      unwatch = watchFn(args, newData => setData(newData ?? undefined))
 
     return () => {
       unwatch?.()

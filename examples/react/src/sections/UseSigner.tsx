@@ -1,7 +1,20 @@
 import { useSigner } from '@web3modal/react'
+import { useCallback, useEffect } from 'react'
 
 export default function UseSigner() {
   const { data, error, isLoading, refetch } = useSigner()
+
+  const onGetNetwork = useCallback(async () => {
+    const network = await data?.provider?.getNetwork()
+    // eslint-disable-next-line no-console
+    console.log('network', network)
+  }, [data])
+
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log(data)
+    if (data) onGetNetwork()
+  }, [data])
 
   return (
     <section>
