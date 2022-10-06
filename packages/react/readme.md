@@ -43,7 +43,7 @@ export default function App() {
 import { ConnectButton, useConnectModal } from '@web3modal/react'
 
 export default function YourAppContent() {
-  const { isOpen, open, close } = use
+  const { isOpen, open, close } = useConnectModal()
 
   return (
     <>
