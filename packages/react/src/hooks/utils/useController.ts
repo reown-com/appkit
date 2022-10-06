@@ -3,11 +3,11 @@ import { useEffect, useMemo, useState } from 'react'
 import { useClientInitialized } from '../data/useClientInitialized'
 
 // -- types ----------------------------------------------------- //
-type NullishReturn<TReturn> = TReturn | null
+type Nullable<TReturn> = TReturn | null
 
 interface Options<TArgs, TReturn> {
-  getFn: (args: TArgs) => NullishReturn<TReturn>
-  watchFn?: (options: TArgs, callback: (watchData: NullishReturn<TReturn>) => void) => () => void
+  getFn: (args: TArgs) => Nullable<TReturn>
+  watchFn?: (options: TArgs, callback: (watchData: Nullable<TReturn>) => void) => () => void
   args: TArgs
 }
 

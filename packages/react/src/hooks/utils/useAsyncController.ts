@@ -4,7 +4,7 @@ import { useClientInitialized } from '../data/useClientInitialized'
 import { useOptionsChange } from './useOptionsChange'
 
 // -- types ----------------------------------------------------- //
-type NullishReturn<TReturn> = TReturn | null
+type Nullable<TReturn> = TReturn | null
 
 type Arguments<TArgs> = TArgs & {
   enabled?: boolean
@@ -12,8 +12,8 @@ type Arguments<TArgs> = TArgs & {
 }
 
 interface Options<TArgs, TReturn> {
-  fetchFn: (args: TArgs) => Promise<NullishReturn<TReturn>>
-  watchFn?: (args: TArgs, callback: (watchData: NullishReturn<TReturn>) => void) => () => void
+  fetchFn: (args: TArgs) => Promise<Nullable<TReturn>>
+  watchFn?: (args: TArgs, callback: (watchData: Nullable<TReturn>) => void) => () => void
   args: Arguments<TArgs>
   hasRequiredArgs?: boolean
 }
@@ -37,7 +37,7 @@ export function useAsyncController<TArgs, TReturn>({
 
   const onFetch = useCallback(
     async (newArgs?: TArgs) => {
-      let newData: NullishReturn<TReturn> | undefined = undefined
+      let newData: Nullable<TReturn> | undefined = undefined
 
       if (!isLoading || isFirstFetch) {
         setIsFirstFetch(false)
