@@ -12,13 +12,13 @@ jobs:
     if: github.event.action == 'opened' || github.event.action == 'synchronize'
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.0.1
       - name: setup-node
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
           cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache-dependency-path: 'yarn.lock'
       - name: install
         run: yarn install --frozen-lockfile
       - name: build
@@ -36,13 +36,13 @@ jobs:
           - typecheck
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.0.1
       - name: setup-node
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
           cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache-dependency-path: 'yarn.lock'
       - name: install
         run: yarn install --frozen-lockfile
       - name: check

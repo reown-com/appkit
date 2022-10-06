@@ -1,20 +1,19 @@
 import type {
   SignerCtrlSignMessageArgs,
   SignerCtrlSignTypedDataArgs,
-  SignerCtrlWatchCallback,
-  SignerCtrlWatchOptions
+  SignerCtrlWatchCallback
 } from '../../../types/statelessCtrlTypes'
 import { ClientCtrl } from '../statefull/ClientCtrl'
 
 export const SignerCtrl = {
-  watch(options: SignerCtrlWatchOptions, callback: SignerCtrlWatchCallback) {
-    const unwatch = ClientCtrl.ethereum().watchSigner(options, callback)
+  watch(_options: undefined, callback: SignerCtrlWatchCallback) {
+    const unwatch = ClientCtrl.ethereum().watchSigner(callback)
 
     return unwatch
   },
 
-  async fetch(options: SignerCtrlWatchOptions) {
-    const data = await ClientCtrl.ethereum().fetchSigner(options)
+  async fetch() {
+    const data = await ClientCtrl.ethereum().fetchSigner()
 
     return data
   },

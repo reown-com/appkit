@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/react",
-  "version": "2.0.0-alpha.5",
+  "version": "2.0.0-alpha.6",
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.js",
   "type": "module",
@@ -16,8 +16,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/core": "2.0.0-alpha.5",
-    "@web3modal/ui": "2.0.0-alpha.5"
+    "@web3modal/core": "2.0.0-alpha.6",
+    "@web3modal/ui": "2.0.0-alpha.6"
   },
   "devDependencies": {
     "@types/react": "18.0.21",

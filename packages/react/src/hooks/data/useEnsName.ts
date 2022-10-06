@@ -11,7 +11,8 @@ export function useEnsName(args: Arguments) {
   const chainAgnosticArgs = useChainAgnosticOptions(args)
   const { onFetch, ...rest } = useAsyncController({
     fetchFn: EnsCtrl.fetchEnsName,
-    args: chainAgnosticArgs
+    args: chainAgnosticArgs,
+    hasRequiredArgs: Boolean(chainAgnosticArgs.address)
   })
 
   return {

@@ -1,13 +1,21 @@
-import type { AccountCtrlGetReturnValue } from '@web3modal/core'
 import { AccountCtrl } from '@web3modal/core'
 import { useController } from '../utils/useController'
 
-export function useAccount(): Partial<AccountCtrlGetReturnValue> {
+export function useAccount() {
   const { data } = useController({
     getFn: AccountCtrl.get,
     watchFn: AccountCtrl.watch,
     args: undefined
   })
+  const account = {
+    address: data?.address ?? '',
+    connector: data?.connector,
+    isConnected: data?.isConnected,
+    isReconnecting: data?.isReconnecting,
+    isConnecting: data?.isConnecting,
+    isDisconnected: data?.isConnected,
+    status: data?.status
+  }
 
-  return { ...data }
+  return account
 }

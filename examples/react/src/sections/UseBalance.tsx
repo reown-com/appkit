@@ -3,8 +3,7 @@ import { useAccount, useBalance } from '@web3modal/react'
 export default function UseBalance() {
   const { address } = useAccount()
   const { data, error, isLoading, refetch } = useBalance({
-    addressOrName: address ?? '',
-    enabled: Boolean(address)
+    addressOrName: address
   })
 
   return (

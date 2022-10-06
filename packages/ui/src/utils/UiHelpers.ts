@@ -84,3 +84,36 @@ export function debounce(func: (...args: any[]) => unknown, timeout = 500) {
     timer = setTimeout(next, timeout)
   }
 }
+
+/**
+ * Compares similarity between 2 strings and returns value from 0 to 1
+ * https://github.com/aceakash/string-similarity/blob/master/src/index.js
+ */
+export function compareTwoStrings(first: string, second: string) {
+  const parsedFirst = first.replace(/\s+/u, '')
+  const parsedSecond = second.replace(/\s+/u, '')
+
+  if (parsedFirst === parsedSecond) return 1
+  if (parsedFirst.length < 2 || parsedSecond.length < 2) return 0
+
+  const firstBigrams = new Map<string, number>()
+  for (let i = 0; i < parsedFirst.length - 1; i += 1) {
+    const bigram = parsedFirst.substring(i, i + 2)
+    const storedBigram = firstBigrams.get(bigram)
+    const count = typeof storedBigram === 'number' ? storedBigram + 1 : 1
+    firstBigrams.set(bigram, count)
+  }
+
+  let intersectionSize = 0
+  for (let i = 0; i < parsedSecond.length - 1; i += 1) {
+    const bigram = parsedSecond.substring(i, i + 2)
+    const storedBigram = firstBigrams.get(bigram)
+    const count = typeof storedBigram === 'number' ? storedBigram : 0
+    if (count > 0) {
+      firstBigrams.set(bigram, count - 1)
+      intersectionSize += 1
+    }
+  }
+
+  return (2.0 * intersectionSize) / (first.length + second.length - 2)
+}

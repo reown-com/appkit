@@ -1,20 +1,20 @@
 {
   "name": "react-example",
-  "version": "2.0.0-alpha.5",
+  "version": "2.0.0-alpha.6",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build; next export"
   },
   "dependencies": {
-    "@web3modal/ethereum": "2.0.0-alpha.5",
-    "@web3modal/react": "2.0.0-alpha.5",
+    "@web3modal/ethereum": "2.0.0-alpha.6",
+    "@web3modal/react": "2.0.0-alpha.6",
     "next": "12.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@types/node": "18.8.1",
+    "@types/node": "18.8.2",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6"
   }

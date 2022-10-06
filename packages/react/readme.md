@@ -108,7 +108,7 @@ const { address, isConnected } = useAccount()
 
 // Returns
 interface Return {
-  address?: string
+  address: string | ''
   connector?: Connector
   isConnecting?: boolean
   isReconnecting?: boolean
@@ -128,7 +128,7 @@ Hook for fetching balance information for Ethereum or ERC-20 tokens.
 import { useBalance } from '@web3modal/ethereum'
 
 // Usage
-const { data, error, isLoading, refetch } = useBalance({ formatUnits: 'ether' })
+const { data, error, isLoading, refetch } = useBalance({ addressOrName: 'vitalik.eth' })
 
 // Returns
 interface Return {
@@ -145,9 +145,9 @@ interface Return {
 
 // Options
 interface Options {
+  addressOrName: string
   watch?: boolean
   enabled?: boolean
-  addressOrName: string
   chainId?: number
   formatUnits?: number | 'wei' | 'kwei' | 'mwei' | 'gwei' | 'szabo' | 'finney' | 'ether'
   token?: string
@@ -406,9 +406,7 @@ Hook for fetching network fee information.
 import { useFeeData } from '@web3modal/ethereum'
 
 // Usage
-const { data, error, isLoading, refetch } = useFeeData({
-  name: 'vitalik.eth'
-})
+const { data, error, isLoading, refetch } = useFeeData({ formatUnits: 'gwei' })
 
 // Returns
 interface Return {
@@ -505,11 +503,6 @@ interface Return {
   error?: Error
   isLoading: boolean
   refetch: (options?: Options) => Promise<Return['data']>
-}
-
-// Options
-interface Options {
-  chainId?: number
 }
 ```
 

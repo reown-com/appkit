@@ -11,7 +11,8 @@ export function useEnsResolver(args: Arguments) {
   const chainAgnosticArgs = useChainAgnosticOptions(args)
   const { onFetch, ...rest } = useAsyncController({
     fetchFn: EnsCtrl.fetchEnsResolver,
-    args: chainAgnosticArgs
+    args: chainAgnosticArgs,
+    hasRequiredArgs: Boolean(chainAgnosticArgs.name)
   })
 
   return {
