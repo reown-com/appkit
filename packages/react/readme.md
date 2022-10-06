@@ -506,11 +506,6 @@ interface Return {
   isLoading: boolean
   refetch: (options?: Options) => Promise<Return['data']>
 }
-
-// Options
-interface Options {
-  chainId?: number
-}
 ```
 
 ---

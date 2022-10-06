@@ -1832,10 +1832,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.7.23.tgz#75c580983846181ebe5f4abc40fe9dfb2d65665f"
   integrity sha512-DWNcCHolDq0ZKGizjx2DZjR/PqsYwAcYUJmfMWqtVU2MBMG5Mo+xFZrhGId5r/O5HOuMPyQEcM6KUBp5lBZZBg==
 
-"@types/node@18.8.1":
-  version "18.8.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.8.1.tgz#33e6759935f7a82821b72fb936e66f6b99a36173"
-  integrity sha512-vuYaNuEIbOYLTLUAJh50ezEbvxrD43iby+lpUA2aa148Nh5kX/AVO/9m1Ahmbux2iU5uxJTNF9g2Y+31uml7RQ==
+"@types/node@18.8.2":
+  version "18.8.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.8.2.tgz#17d42c6322d917764dd3d2d3a10d7884925de067"
+  integrity sha512-cRMwIgdDN43GO4xMWAfJAecYn8wV4JbsOGHNfNUIDiuYkUYAR5ec4Rj7IO2SAhFPEfpPtLtUTbbny/TCT7aDwA==
 
 "@types/node@^12.12.54":
   version "12.20.55"
@@ -2010,10 +2010,10 @@
     "@typescript-eslint/types" "5.39.0"
     eslint-visitor-keys "^3.3.0"
 
-"@wagmi/core@0.0.0-20220928064342":
-  version "0.0.0-20220928064342"
-  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.0.0-20220928064342.tgz#6268a1069cd98a1416ab939d3131a69ebd52d47b"
-  integrity sha512-hoJbc/iqqkzWicLCs50oB/qw7hVz116b2Wy3yROFh03CWRb30/B9aWogZpVZUHGUaytyqOS612Uvw8SEmTQhtw==
+"@wagmi/core@0.5.8":
+  version "0.5.8"
+  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.5.8.tgz#9e375c0dd31c3b22973d000694e1c2b06c05dbbc"
+  integrity sha512-1mABf1bXyn3AOHyQkios4FTGqoARa8y1tf7GMH6t1c7q0nAMSbpXoTDdjEidUHy8qhWoG0y3Ez4PjCi8WQnmMg==
   dependencies:
     eventemitter3 "^4.0.7"
     zustand "^4.0.0"
@@ -5277,21 +5277,28 @@ lit-element@^3.2.0:
     "@lit/reactive-element" "^1.3.0"
     lit-html "^2.2.0"
 
-lit-html@^2.2.0, lit-html@^2.3.0:
+lit-html@^2.2.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-2.3.1.tgz#56f15104ea75c0a702904893e3409d0e89e2a2b9"
   integrity sha512-FyKH6LTW6aBdkfNhNSHyZTnLgJSTe5hMk7HFtc/+DcN1w74C215q8B+Cfxc2OuIEpBNcEKxgF64qL8as30FDHA==
   dependencies:
     "@types/trusted-types" "^2.0.2"
 
-lit@2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/lit/-/lit-2.3.1.tgz#2cf1c2042da1e44c7a7cc72dff2d72303fd26f48"
-  integrity sha512-TejktDR4mqG3qB32Y8Lm5Lye3c8SUehqz7qRsxe1PqGYL6me2Ef+jeQAEqh20BnnGncv4Yxy2njEIT0kzK1WCw==
+lit-html@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-2.4.0.tgz#b510430f39a56ec959167ed1187241a4e3ab1574"
+  integrity sha512-G6qXu4JNUpY6aaF2VMfaszhO9hlWw0hOTRFDmuMheg/nDYGB+2RztUSOyrzALAbr8Nh0Y7qjhYkReh3rPnplVg==
+  dependencies:
+    "@types/trusted-types" "^2.0.2"
+
+lit@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/lit/-/lit-2.4.0.tgz#e33a0f463e17408f6e7f71464e6a266e60a5bb77"
+  integrity sha512-fdgzxEtLrZFQU/BqTtxFQCLwlZd9bdat+ltzSFjvWkZrs7eBmeX0L5MHUMb3kYIkuS8Xlfnii/iI5klirF8/Xg==
   dependencies:
     "@lit/reactive-element" "^1.4.0"
     lit-element "^3.2.0"
-    lit-html "^2.3.0"
+    lit-html "^2.4.0"
 
 load-json-file@^4.0.0:
   version "4.0.0"
