@@ -4,6 +4,7 @@ import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-view-all-wallets-button'
 import '../../components/w3m-wallet-button'
 import { global } from '../../utils/Theme'
+import { compareTwoStrings } from '../../utils/UiHelpers'
 import styles from './styles'
 
 @customElement('w3m-mobile-wallet-selection')
@@ -11,14 +12,22 @@ export class W3mMobileWalletSelection extends LitElement {
   public static styles = [global, styles]
 
   // -- private ------------------------------------------------------ //
+  private readonly connector = ClientCtrl.ethereum().getConnectorById('injected')
+
   private async onConnect(links: { native: string; universal?: string }, name: string) {
-    const { native, universal } = links
-    await ClientCtrl.ethereum().connectLinking(uri => {
-      const href = universal
-        ? CoreHelpers.formatUniversalUrl(universal, uri, name)
-        : CoreHelpers.formatNativeUrl(native, uri, name)
-      CoreHelpers.openHref(href)
-    })
+    const { ready } = this.connector
+    const isNameSimilar = compareTwoStrings(name, this.connector.name) >= 0.5
+
+    if (ready && isNameSimilar) await ClientCtrl.ethereum().connectInjected()
+    else {
+      const { native, universal } = links
+      await ClientCtrl.ethereum().connectLinking(uri => {
+        const href = universal
+          ? CoreHelpers.formatUniversalUrl(universal, uri, name)
+          : CoreHelpers.formatNativeUrl(native, uri, name)
+        CoreHelpers.openHref(href)
+      })
+    }
     ConnectModalCtrl.closeModal()
   }
 
