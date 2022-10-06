@@ -12,7 +12,7 @@ jobs:
     if: github.event.action == 'opened' || github.event.action == 'synchronize'
     steps:
       - name: checkout
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3.0.1
       - name: setup-node
         uses: actions/setup-node@v3
         with:
@@ -36,7 +36,7 @@ jobs:
           - typecheck
     steps:
       - name: checkout
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3.0.1
       - name: setup-node
         uses: actions/setup-node@v3
         with:
