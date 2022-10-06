@@ -36,8 +36,10 @@ import SequenceLogo from "../logos/sequence.svg";
 import BitkeepLogo from "../logos/bitkeepwallet.png";
 // @ts-ignore
 import StarzWalletLogo from "../logos/starzwallet.svg";
-// @ts-ignore 
+// @ts-ignore
 import KaikasLogo from "../logos/kaikas.png";
+// @ts-ignore
+import KlipLogo from "../logos/klip.png";
 
 
 import { IProviderInfo } from "../../helpers";
@@ -232,4 +234,15 @@ export const KAIKAS: IProviderInfo = {
   logo: KaikasLogo,
   type: "injected",
   check: "isKaikas"
+};
+
+export const KLIP: IProviderInfo = {
+  id: "klip",
+  name: "Klip",
+  logo: KlipLogo,
+  type: "qrcode",
+  check: "isKlip",
+  package: {
+    required: ["bappName", "rpcUrl"]
+  }
 };

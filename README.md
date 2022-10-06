@@ -216,6 +216,7 @@ These are all the providers available with Web3Modal and how to configure their 
 - [Bitkeep Wallet](./docs/providers/bitkeep.md)
 - [99Starz Wallet](./docs/providers/starzwallet.md)
 - [Kaikas](./docs/providers/kaikas.md)
+- [Klip](./docs/providers/klip.md)
 
 ## API
 

@@ -20,6 +20,7 @@ import web3auth from "./web3auth";
 import bitkeep from "./bitkeep";
 import starzwallet from "./starzwallet";
 import kaikas from "./kaikas";
+import klip from "./klip";
 
 export {
   injected,
@@ -44,5 +45,6 @@ export {
   bitkeep,
   starzwallet,
   web3auth,
-  kaikas
+  kaikas,
+  klip
 };
