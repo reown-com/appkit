@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/core",
-  "version": "2.0.0-alpha.5",
+  "version": "2.0.0-alpha.6",
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.js",
   "type": "module",
@@ -20,10 +20,10 @@
     "valtio": "1.7.0"
   },
   "devDependencies": {
-    "@web3modal/ethereum": "2.0.0-alpha.5"
+    "@web3modal/ethereum": "2.0.0-alpha.6"
   },
   "peerDependencies": {
-    "@web3modal/ethereum": "2.0.0-alpha.5"
+    "@web3modal/ethereum": "2.0.0-alpha.6"
   },
   "peerDependenciesMeta": {
     "@web3modal/ethereum": {
