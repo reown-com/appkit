@@ -13,10 +13,10 @@ const Web3ModalEthereum = {
   providers
 }
 
-if (typeof window !== 'undefined') window.Web3ModalEth = Web3ModalEthereum
+if (typeof window !== 'undefined') window.Web3ModalEthereum = Web3ModalEthereum
 
 declare global {
   interface Window {
-    Web3ModalEth: typeof Web3ModalEthereum
+    Web3ModalEthereum: typeof Web3ModalEthereum
   }
 }
