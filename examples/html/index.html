@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTML Example</title>
+    <script
+      type="module"
+      src="https://unpkg.com/@web3modal/core@2.0.0-0d395b6/dist/index.umd.js"
+    ></script>
+    <script
+      type="module"
+      src="https://unpkg.com/@web3modal/ui@2.0.0-0d395b6/dist/index.umd.js"
+    ></script>
+  </head>
+  <body>
+    <w3m-connect-button></w3m-connect-button>
+    <w3m-modal></w3m-modal>
+
+    <script type="module">
+      console.log(window.Web3ModalCore)
+    </script>
+  </body>
+</html>
