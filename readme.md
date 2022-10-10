@@ -42,3 +42,7 @@ Web3Modal exposes some config options that allow you to personalise it and make 
 | ----------- | --------------------------------------------------------------------- |
 | theme       | `dark`, `light`                                                       |
 | accentColor | `blackWhite`, `blue`, `default`, `green`, `magenta`, `orange`, `teal` |
+
+## Contributing
+
+If you want to contribute to the development of Web3Modal, please follow the instructions in [Development](docs/development.md).
