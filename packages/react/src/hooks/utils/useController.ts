@@ -1,10 +1,13 @@
+import { CoreHelpers } from '@web3modal/core'
 import { useEffect, useMemo, useState } from 'react'
 import { useClientInitialized } from '../data/useClientInitialized'
 
 // -- types ----------------------------------------------------- //
+type Nullable<TReturn> = TReturn | null
+
 interface Options<TArgs, TReturn> {
-  getFn: (args: TArgs) => TReturn
-  watchFn?: (options: TArgs, callback: (watchData: TReturn) => void) => () => void
+  getFn: (args: TArgs) => Nullable<TReturn>
+  watchFn?: (options: TArgs, callback: (watchData: Nullable<TReturn>) => void) => () => void
   args: TArgs
 }
 
@@ -21,8 +24,11 @@ export function useController<TArgs, TReturn>({ getFn, watchFn, args }: Options<
     let unwatch: (() => void) | undefined = undefined
     if (initialized) {
       const getData = getFn(memoArgs)
-      setData(getData)
-      if (watchFn) unwatch = watchFn(memoArgs, watchData => setData(watchData))
+      setData(CoreHelpers.isNull(getData) ? undefined : getData)
+      if (watchFn)
+        unwatch = watchFn(memoArgs, watchData =>
+          setData(CoreHelpers.isNull(watchData) ? undefined : watchData)
+        )
     }
 
     return () => {

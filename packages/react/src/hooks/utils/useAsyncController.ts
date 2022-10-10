@@ -1,16 +1,19 @@
+import { CoreHelpers } from '@web3modal/core'
 import { useCallback, useEffect, useState } from 'react'
 import { useClientInitialized } from '../data/useClientInitialized'
 import { useOptionsChange } from './useOptionsChange'
 
 // -- types ----------------------------------------------------- //
+type Nullable<TReturn> = TReturn | null
+
 type Arguments<TArgs> = TArgs & {
   enabled?: boolean
   watch?: boolean
 }
 
 interface Options<TArgs, TReturn> {
-  fetchFn: (args: TArgs) => Promise<TReturn>
-  watchFn?: (args: TArgs, callback: (watchData: TReturn) => void) => () => void
+  fetchFn: (args: TArgs) => Promise<Nullable<TReturn>>
+  watchFn?: (args: TArgs, callback: (watchData: Nullable<TReturn>) => void) => () => void
   args: Arguments<TArgs>
   hasRequiredArgs?: boolean
 }
@@ -34,20 +37,22 @@ export function useAsyncController<TArgs, TReturn>({
 
   const onFetch = useCallback(
     async (newArgs?: TArgs) => {
-      let newData: TReturn | undefined = undefined
+      let newData: Nullable<TReturn> | undefined = undefined
 
       if (!isLoading || isFirstFetch) {
         setIsFirstFetch(false)
         setIsLoading(true)
         try {
           newData = await fetchFn(newArgs ?? args)
-          setData(newData)
-          setError(undefined)
+          if (!CoreHelpers.isNull(newData)) {
+            setData(newData)
+            setError(undefined)
+            setIsLoading(false)
+          }
         } catch (err: unknown) {
           if (err instanceof Error) setError(err)
           else setError(new Error('Unknown error'))
           setData(undefined)
-        } finally {
           setIsLoading(false)
         }
       }
@@ -65,7 +70,8 @@ export function useAsyncController<TArgs, TReturn>({
   // Set up watcher after initial fetch if it is enabled
   useEffect(() => {
     let unwatch: (() => void) | undefined = undefined
-    if (watch && !isFirstFetch && watchFn) unwatch = watchFn(args, newData => setData(newData))
+    if (watch && !isFirstFetch && watchFn)
+      unwatch = watchFn(args, newData => setData(CoreHelpers.isNull(newData) ? undefined : newData))
 
     return () => {
       unwatch?.()

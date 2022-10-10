@@ -51,5 +51,9 @@ export const CoreHelpers = {
 
   removeWalletConnectDeepLink() {
     localStorage.removeItem(WALLETCONNECT_DEEPLINK_CHOICE)
+  },
+
+  isNull<T>(value: T | null): value is null {
+    return value === null
   }
 }
