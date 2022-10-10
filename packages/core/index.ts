@@ -47,20 +47,3 @@ export type {
   TransactionCtrlSendArgs,
   TransactionCtrlWaitArgs
 } from './types/statelessCtrlTypes'
-
-// -- vanilla ----------------------------------------------- //
-import { ConfigCtrl } from './src/controllers/statefull/ConfigCtrl'
-import { ConnectModalCtrl } from './src/controllers/statefull/ConnectModalCtrl'
-
-const Web3ModalCore = {
-  config: ConfigCtrl,
-  connectModal: ConnectModalCtrl
-}
-
-if (typeof window !== 'undefined') window.Web3ModalCore = Web3ModalCore
-
-declare global {
-  interface Window {
-    Web3ModalCore: typeof Web3ModalCore
-  }
-}
