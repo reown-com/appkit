@@ -17,7 +17,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "valtio": "1.7.0"
+    "valtio": "1.7.2"
   },
   "devDependencies": {
     "@web3modal/ethereum": "2.0.0-alpha.7"
