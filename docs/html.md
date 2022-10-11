@@ -91,6 +91,14 @@ interface Options {
   chains?: Chain[]
   providers?: ChainProviderFn[]
 }
+
+// subscribe
+const unsubscribe = ClientCtrl.subscribe(state => {})
+unsubscribe()
+
+interface State {
+  initialized: boolean
+}
 ```
 
 ---
@@ -109,7 +117,32 @@ ModalCtrl.open()
 ModalCtrl.close()
 
 // subscribe
-ModalCtrl.subscribe(state => {})
+const unsubscribe = ModalCtrl.subscribe(state => {})
+unsubscribe()
+
+interface State {
+  open: boolean
+}
+```
+
+---
+
+### AccountCtrl
+
+Controllers to get, watch or disconnect an account
+
+```ts
+import { AccountCtrl } from '@web3modal/core'
+
+// get
+ModalCtrl.get()
+
+// close
+ModalCtrl.close()
+
+// subscribe
+const unsubscribe = ModalCtrl.subscribe(state => {})
+unsubscribe()
 
 interface State {
   open: boolean
