@@ -2,51 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HTML Example</title>
-    <script
-      type="module"
-      src="https://unpkg.com/@web3modal/core@2.0.0-a6b2d63/dist/index.umd.js"
-    ></script>
-    <script
-      type="module"
-      src="https://unpkg.com/@web3modal/ui@2.0.0-a6b2d63/dist/index.umd.js"
-    ></script>
-    <script
-      type="module"
-      src="https://unpkg.com/@web3modal/ethereum@2.0.0-a6b2d63/dist/index.umd.js"
-    ></script>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <w3m-connect-button></w3m-connect-button>
-    <w3m-modal></w3m-modal>
+    <div id="app">
+      <div id="disconnected">
+        <w3m-connect-button></w3m-connect-button>
+      </div>
 
-    <script type="module">
-      console.log(window.Web3ModalCore)
-      console.log(window.Web3ModalEthereum)
+      <div id="connected">
+        <button id="disconnect-btn">Disconnect</button>
+      </div>
 
-      // Create ethereum client
-      const ethereumClient = window.Web3ModalEthereum.createClient({
-        appName: 'web3Modal',
-        autoConnect: true,
-        chains: [Web3ModalEthereum.chains.mainnet],
-        providers: [
-          Web3ModalEthereum.providers.walletConnectProvider({
-            projectId: '8e6b5ffdcbc9794bf9f4a1952578365b'
-          })
-        ]
-      })
-
-      // Set ethereum client in core
-      window.Web3ModalCore.client.setVanillaEthereumClient(ethereumClient)
-
-      // Configure core
-      window.Web3ModalCore.config.setConfig({
-        projectId: '8e6b5ffdcbc9794bf9f4a1952578365b',
-        theme: 'dark',
-        accentColor: 'default'
-      })
-    </script>
+      <w3m-modal></w3m-modal>
+    </div>
+    <script type="module" src="src/main.js"></script>
   </body>
 </html>

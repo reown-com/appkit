@@ -5,7 +5,7 @@ import type {
 import { ClientCtrl } from '../statefull/ClientCtrl'
 
 export const ProviderCtrl = {
-  watch(options: ProviderCtrlWatchOptions, callback: ProviderCtrlWatchCallback) {
+  watch(callback: ProviderCtrlWatchCallback, options: ProviderCtrlWatchOptions) {
     const unwatch = ClientCtrl.ethereum().watchProvider(options, callback)
 
     return unwatch

@@ -6,6 +6,7 @@
     "build": "npm run build --ws --if-present",
     "dev": "npm run dev --w=@web3modal/core & npm run dev --w=@web3modal/ui & npm run dev --w=@web3modal/ethereum",
     "dev:react": "npm run dev --w=react-example",
+    "dev:html": "npm run dev --w=html-example",
     "lint": "eslint .",
     "prettier": "prettier --check .",
     "typecheck": "npm run typecheck --ws --if-present",
@@ -21,7 +22,8 @@
     "packages/core",
     "packages/ui",
     "packages/react",
-    "examples/react"
+    "examples/react",
+    "examples/html"
   ],
   "devDependencies": {
     "@rollup/plugin-commonjs": "23.0.0",

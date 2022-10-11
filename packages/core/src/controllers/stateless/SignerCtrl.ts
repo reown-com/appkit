@@ -6,7 +6,7 @@ import type {
 import { ClientCtrl } from '../statefull/ClientCtrl'
 
 export const SignerCtrl = {
-  watch(_options: undefined, callback: SignerCtrlWatchCallback) {
+  watch(callback: SignerCtrlWatchCallback, _options: undefined) {
     const unwatch = ClientCtrl.ethereum().watchSigner(callback)
 
     return unwatch

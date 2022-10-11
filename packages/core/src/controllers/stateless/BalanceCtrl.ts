@@ -5,7 +5,7 @@ import type {
 import { ClientCtrl } from '../statefull/ClientCtrl'
 
 export const BalanceCtrl = {
-  watch(args: BalanceCtrlFetchArgs, callback: (data: BalanceCtrlFetchReturnValue) => void) {
+  watch(callback: (data: BalanceCtrlFetchReturnValue) => void, args: BalanceCtrlFetchArgs) {
     const unwatch = ClientCtrl.ethereum().watchBlockNumber({ ...args, listen: true }, async () => {
       const data = await BalanceCtrl.fetch(args)
       callback(data)

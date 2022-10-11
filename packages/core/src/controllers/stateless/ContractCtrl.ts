@@ -27,7 +27,7 @@ export const ContractCtrl = {
     return data
   },
 
-  watchRead(options: ContractCtrlWatchReadArgs[0], callback: ContractCtrlWatchReadArgs[1]) {
+  watchRead(callback: ContractCtrlWatchReadArgs[1], options: ContractCtrlWatchReadArgs[0]) {
     const unwatch = ClientCtrl.ethereum().watchReadContract(
       { ...options, listenToBlock: true },
       callback
@@ -36,7 +36,7 @@ export const ContractCtrl = {
     return unwatch
   },
 
-  watchEven(
+  watchEvent(
     contract: ContractCtrlWatchEventArgs[0],
     eventName: ContractCtrlWatchEventArgs[1],
     callback: ContractCtrlWatchEventArgs[2],

@@ -7,7 +7,7 @@ type Nullable<TReturn> = TReturn | null
 
 interface Options<TArgs, TReturn> {
   getFn: (args: TArgs) => Nullable<TReturn>
-  watchFn?: (options: TArgs, callback: (watchData: Nullable<TReturn>) => void) => () => void
+  watchFn?: (callback: (watchData: Nullable<TReturn>) => void, options: TArgs) => () => void
   args: TArgs
 }
 
@@ -26,8 +26,9 @@ export function useController<TArgs, TReturn>({ getFn, watchFn, args }: Options<
       const getData = getFn(memoArgs)
       setData(CoreHelpers.isNull(getData) ? undefined : getData)
       if (watchFn)
-        unwatch = watchFn(memoArgs, watchData =>
-          setData(CoreHelpers.isNull(watchData) ? undefined : watchData)
+        unwatch = watchFn(
+          watchData => setData(CoreHelpers.isNull(watchData) ? undefined : watchData),
+          memoArgs
         )
     }
 

@@ -47,46 +47,4 @@ export type {
   TransactionCtrlSendArgs,
   TransactionCtrlWaitArgs
 } from './types/statelessCtrlTypes'
-
-// -- vanilla ----------------------------------------------- //
-import { ClientCtrl } from './src/controllers/statefull/ClientCtrl'
-import { ConfigCtrl } from './src/controllers/statefull/ConfigCtrl'
-import { ConnectModalCtrl } from './src/controllers/statefull/ConnectModalCtrl'
-import { AccountCtrl } from './src/controllers/stateless/AccountCtrl'
-import { BalanceCtrl } from './src/controllers/stateless/BalanceCtrl'
-import { BlockCtrl } from './src/controllers/stateless/BlockCtrl'
-import { ContractCtrl } from './src/controllers/stateless/ContractCtrl'
-import { EnsCtrl } from './src/controllers/stateless/EnsCtrl'
-import { FeeCtrl } from './src/controllers/stateless/FeeCtrl'
-import { NetworkCtrl } from './src/controllers/stateless/NetworkCtrl'
-import { ProviderCtrl } from './src/controllers/stateless/ProviderCtrl'
-import { SignerCtrl } from './src/controllers/stateless/SignerCtrl'
-import { TokenCtrl } from './src/controllers/stateless/TokenCtrl'
-import { TransactionCtrl } from './src/controllers/stateless/TransactionCtrl'
-import { WebSocketProviderCtrl } from './src/controllers/stateless/WebSocketProviderCtrl'
-
-const Web3ModalCore = {
-  client: ClientCtrl,
-  config: ConfigCtrl,
-  connectModal: ConnectModalCtrl,
-  account: AccountCtrl,
-  balance: BalanceCtrl,
-  block: BlockCtrl,
-  contract: ContractCtrl,
-  ens: EnsCtrl,
-  fees: FeeCtrl,
-  network: NetworkCtrl,
-  provider: ProviderCtrl,
-  signer: SignerCtrl,
-  token: TokenCtrl,
-  transaction: TransactionCtrl,
-  websocketProvder: WebSocketProviderCtrl
-}
-
-if (typeof window !== 'undefined') window.Web3ModalCore = Web3ModalCore
-
-declare global {
-  interface Window {
-    Web3ModalCore: typeof Web3ModalCore
-  }
-}
+import './src/utils/PolyfillUtil'

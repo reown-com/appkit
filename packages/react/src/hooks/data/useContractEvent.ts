@@ -18,7 +18,7 @@ export function useContractEvent(args: Arguments) {
   useEffect(() => {
     let unwatch: (() => void) | undefined = undefined
     if (initialized)
-      unwatch = ContractCtrl.watchEven(contractArgs, eventName, listener, { chainId, once })
+      unwatch = ContractCtrl.watchEvent(contractArgs, eventName, listener, { chainId, once })
 
     return () => {
       unwatch?.()

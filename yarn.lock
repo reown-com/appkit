@@ -3644,7 +3644,7 @@ esbuild-windows-arm64@0.15.10:
   resolved "https://registry.yarnpkg.com/esbuild-windows-arm64/-/esbuild-windows-arm64-0.15.10.tgz#5a6fcf2fa49e895949bf5495cf088ab1b43ae879"
   integrity sha512-S+th4F+F8VLsHLR0zrUcG+Et4hx0RKgK1eyHc08kztmLOES8BWwMiaGdoW9hiXuzznXQ0I/Fg904MNbr11Nktw==
 
-esbuild@0.15.10:
+esbuild@0.15.10, esbuild@^0.15.6:
   version "0.15.10"
   resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.15.10.tgz#85c2f8446e9b1fe04fae68daceacba033eedbd42"
   integrity sha512-N7wBhfJ/E5fzn/SpNgX+oW2RLRjwaL8Y0ezqNqhjD6w0H2p0rDuEz2FKZqpqLnO8DCaWumKe8dsC/ljvVSSxng==
@@ -6464,6 +6464,15 @@ postcss@8.4.14:
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
+postcss@^8.4.16:
+  version "8.4.17"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.17.tgz#f87863ec7cd353f81f7ab2dec5d67d861bbb1be5"
+  integrity sha512-UNxNOLQydcOFi41yHNMcKRZ39NeXlr8AxGuZJsdub8vIb12fHzcq37DTU/QtbI6WLxNg2gF9Z+8qtRwTj1UI1Q==
+  dependencies:
+    nanoid "^3.3.4"
+    picocolors "^1.0.0"
+    source-map-js "^1.0.2"
+
 preact@10.4.1:
   version "10.4.1"
   resolved "https://registry.yarnpkg.com/preact/-/preact-10.4.1.tgz#9b3ba020547673a231c6cf16f0fbaef0e8863431"
@@ -6905,6 +6914,13 @@ rollup@2.79.1:
   version "2.79.1"
   resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.79.1.tgz#bedee8faef7c9f93a2647ac0108748f497f081c7"
   integrity sha512-uKxbd0IhMZOhjAiD5oAFp7BqvkA4Dv47qpOCtaNvng4HBwdbWtdOh8f5nZNuk2rp51PMGk3bzfWu5oayNEuYnw==
+  optionalDependencies:
+    fsevents "~2.3.2"
+
+rollup@~2.78.0:
+  version "2.78.1"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.78.1.tgz#52fe3934d9c83cb4f7c4cb5fb75d88591be8648f"
+  integrity sha512-VeeCgtGi4P+o9hIg+xz4qQpRl6R401LWEXBmxYKOV4zlF82lyhgh2hTZnheFUbANE8l2A41F458iwj2vEYaXJg==
   optionalDependencies:
     fsevents "~2.3.2"
 
@@ -7682,6 +7698,18 @@ valtio@1.7.2:
   dependencies:
     proxy-compare "2.3.0"
     use-sync-external-store "1.2.0"
+
+vite@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-3.1.0.tgz#3138b279072941d57e76bcf7f66f272fc6a17fe2"
+  integrity sha512-YBg3dUicDpDWFCGttmvMbVyS9ydjntwEjwXRj2KBFwSB8SxmGcudo1yb8FW5+M/G86aS8x828ujnzUVdsLjs9g==
+  dependencies:
+    esbuild "^0.15.6"
+    postcss "^8.4.16"
+    resolve "^1.22.1"
+    rollup "~2.78.0"
+  optionalDependencies:
+    fsevents "~2.3.2"
 
 walk-up-path@^1.0.0:
   version "1.0.0"
