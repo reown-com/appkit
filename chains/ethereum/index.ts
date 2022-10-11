@@ -4,11 +4,13 @@ export { chains, providers } from './src/utils/wagmiTools'
 export * from './types/apiTypes'
 
 // -- vanilla ----------------------------------------------- //
+import { Web3ModalEthereum as Web3ModalEthereumApi } from './src/api'
 import { chains, providers } from './src/utils/wagmiTools'
 
 const Web3ModalEthereum = {
   chains,
-  providers
+  providers,
+  ...Web3ModalEthereumApi
 }
 
 if (typeof window !== 'undefined') window.Web3ModalEthereum = Web3ModalEthereum

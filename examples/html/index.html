@@ -7,11 +7,15 @@
     <title>HTML Example</title>
     <script
       type="module"
-      src="https://unpkg.com/@web3modal/core@2.0.0-b53abea/dist/index.umd.js"
+      src="https://unpkg.com/@web3modal/core@2.0.0-a6b2d63/dist/index.umd.js"
     ></script>
     <script
       type="module"
-      src="https://unpkg.com/@web3modal/ui@2.0.0-b53abea/dist/index.umd.js"
+      src="https://unpkg.com/@web3modal/ui@2.0.0-a6b2d63/dist/index.umd.js"
+    ></script>
+    <script
+      type="module"
+      src="https://unpkg.com/@web3modal/ethereum@2.0.0-a6b2d63/dist/index.umd.js"
     ></script>
   </head>
   <body>
@@ -19,20 +23,29 @@
     <w3m-modal></w3m-modal>
 
     <script type="module">
-      window.Web3ModalCore.setConfig({
+      console.log(window.Web3ModalCore)
+      console.log(window.Web3ModalEthereum)
+
+      // Create ethereum client
+      const ethereumClient = window.Web3ModalEthereum.createClient({
+        appName: 'web3Modal',
+        autoConnect: true,
+        chains: [Web3ModalEthereum.chains.mainnet],
+        providers: [
+          Web3ModalEthereum.providers.walletConnectProvider({
+            projectId: '8e6b5ffdcbc9794bf9f4a1952578365b'
+          })
+        ]
+      })
+
+      // Set ethereum client in core
+      window.Web3ModalCore.client.setVanillaEthereumClient(ethereumClient)
+
+      // Configure core
+      window.Web3ModalCore.config.setConfig({
         projectId: '8e6b5ffdcbc9794bf9f4a1952578365b',
         theme: 'dark',
-        accentColor: 'default',
-        ethereum: {
-          appName: 'web3Modal',
-          autoConnect: true,
-          chains: [
-            /* TODO */
-          ],
-          providers: [
-            /* TODO */
-          ]
-        }
+        accentColor: 'default'
       })
     </script>
   </body>

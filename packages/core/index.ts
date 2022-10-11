@@ -49,6 +49,7 @@ export type {
 } from './types/statelessCtrlTypes'
 
 // -- vanilla ----------------------------------------------- //
+import { ClientCtrl } from './src/controllers/statefull/ClientCtrl'
 import { ConfigCtrl } from './src/controllers/statefull/ConfigCtrl'
 import { ConnectModalCtrl } from './src/controllers/statefull/ConnectModalCtrl'
 import { AccountCtrl } from './src/controllers/stateless/AccountCtrl'
@@ -65,6 +66,7 @@ import { TransactionCtrl } from './src/controllers/stateless/TransactionCtrl'
 import { WebSocketProviderCtrl } from './src/controllers/stateless/WebSocketProviderCtrl'
 
 const Web3ModalCore = {
+  client: ClientCtrl,
   config: ConfigCtrl,
   connectModal: ConnectModalCtrl,
   account: AccountCtrl,
