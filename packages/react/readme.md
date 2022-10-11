@@ -712,7 +712,7 @@ Hook for signing messages with connected account.
 import { useSignMessage } from '@web3modal/ethereum'
 
 // Usage
-const { data, error, isLoading, signMessage } = useSendTransaction({
+const { data, error, isLoading, signMessage } = useSignMessage({
   message: 'WalletConnect web3modal message'
 })
 signMessage()
