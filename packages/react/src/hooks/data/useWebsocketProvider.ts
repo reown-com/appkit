@@ -8,11 +8,11 @@ interface Options {
 
 export function useWebsocketProvider(options?: Options) {
   const chainAgnosticOptions = useChainAgnosticOptions(options ?? {})
-  const { data } = useController({
+  const { data, isReady } = useController({
     getFn: WebSocketProviderCtrl.get,
     watchFn: WebSocketProviderCtrl.watch,
     args: chainAgnosticOptions
   })
 
-  return data
+  return { websocketProvider: data, isReady }
 }

@@ -1,7 +1,7 @@
 import { useNetwork } from '../data/useNetwork'
 
 export function useOptionalChainId(chainId?: number) {
-  const { chain } = useNetwork()
+  const { network } = useNetwork()
 
-  return chainId ?? chain?.id ?? 0
+  return chainId ?? network?.chain?.id ?? 0
 }

@@ -104,17 +104,20 @@ Hook to get account data.
 import { useAccount } from '@web3modal/ethereum'
 
 // Usage
-const { address, isConnected } = useAccount()
+const { account, isReady } = useAccount()
 
 // Returns
 interface Return {
-  address: string | ''
-  connector?: Connector
-  isConnecting?: boolean
-  isReconnecting?: boolean
-  isConnected?: boolean
-  isDisconnected?: boolean
-  status?: 'connecting' | 'reconnecting' | 'connected' | 'disconnected'
+  account: {
+    address: string | ''
+    connector?: Connector
+    isConnecting?: boolean
+    isReconnecting?: boolean
+    isConnected?: boolean
+    isDisconnected?: boolean
+    status?: 'connecting' | 'reconnecting' | 'connected' | 'disconnected'
+  }
+  isReady: boolean
 }
 ```
 
@@ -193,7 +196,7 @@ import { useContract } from '@web3modal/ethereum'
 import ensRegistryABI from './yourAbi/ensRegistryABI.json'
 
 // Usage
-const contract = useContract({
+const { contract, isReady } = useContract({
   addressOrName: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
   contractInterface: ensRegistryABI
 })
@@ -203,9 +206,12 @@ ethers.Contract | undefined
 
 // Options
 interface Options {
-  addressOrName: string
-  contractInterface: ContractInterface
-  signerOrProvider?: Provider | Signer
+  contract?: {
+    addressOrName: string
+    contractInterface: ContractInterface
+    signerOrProvider?: Provider | Signer
+  }
+  isReady: boolean
 }
 ```
 
@@ -444,12 +450,15 @@ Hook for accessing network data, such as current connected chain and connector c
 import { useNetwork } from '@web3modal/ethereum'
 
 // Usage
-const { chain, chains } = useNetwork()
+const { network, isReady } = useNetwork()
 
 // Returns
 interface Return {
-  chain?: Chain & { unsupported?: boolean }
-  chains?: Chain[]
+  network?: {
+    chain?: Chain & { unsupported?: boolean }
+    chains?: Chain[]
+  }
+  isReady: boolean
 }
 ```
 
@@ -463,10 +472,13 @@ Hook for accessing Client's ethers [Provider](https://docs.ethers.io/v5/api/prov
 import { useProvider } from '@web3modal/ethereum'
 
 // Usage
-const provider = useProvider()
+const { provider, isReady } = useProvider()
 
 // Returns
-ethers.Provider?
+interface Return {
+  provider?: ethers.Provider
+  isReady: boolean
+}
 ```
 
 ---
@@ -479,10 +491,13 @@ Hook for accessing the Client's ethers [WebSocket Provider](https://docs.ethers.
 import { useWebsocketProvider } from '@web3modal/ethereum'
 
 // Usage
-const websocketProvider = useWebsocketProvider()
+const { websocketProvider, isReady } = useWebsocketProvider()
 
 // Returns
-ethers.WebSocketProvider?
+interface Return {
+  websocketProvider?: ethers.WebSocketProvider
+  isReady: boolean
+}
 ```
 
 ---

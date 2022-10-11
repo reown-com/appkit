@@ -1,8 +1,8 @@
 import { useProvider, useWebsocketProvider } from '@web3modal/react'
 
 export default function UseProvider() {
-  const provider = useProvider()
-  const websocketProvider = useWebsocketProvider()
+  const { provider } = useProvider()
+  const { websocketProvider } = useWebsocketProvider()
 
   return (
     <section>

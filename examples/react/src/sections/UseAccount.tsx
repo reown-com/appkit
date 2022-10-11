@@ -1,20 +1,20 @@
 import { useAccount } from '@web3modal/react'
 
 export default function UseAccount() {
-  const { address, connector, isConnected } = useAccount()
+  const { account } = useAccount()
 
   return (
     <section>
       <h1>useAccount</h1>
       <ul>
         <li>
-          Connected: <span>{isConnected ? 'Yes' : 'No'}</span>
+          Connected: <span>{account?.isConnected ? 'Yes' : 'No'}</span>
         </li>
         <li>
-          Connector: <span>{connector?.id}</span>
+          Connector: <span>{account?.connector?.id}</span>
         </li>
         <li>
-          Address: <span>{address}</span>
+          Address: <span>{account?.address}</span>
         </li>
       </ul>
     </section>

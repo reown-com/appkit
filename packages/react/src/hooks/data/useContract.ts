@@ -5,7 +5,7 @@ import { useController } from '../utils/useController'
 
 export function useContract(args: ContractCtrlGetArgs) {
   const chainAgnosticArgs = useChainAgnosticOptions(args)
-  const { data } = useController({ getFn: ContractCtrl.get, args: chainAgnosticArgs })
+  const { data, isReady } = useController({ getFn: ContractCtrl.get, args: chainAgnosticArgs })
 
-  return data
+  return { contract: data, isReady }
 }
