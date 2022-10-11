@@ -1,4 +1,4 @@
-import { ClientCtrl, ConnectModalCtrl, CoreHelpers, ExplorerCtrl } from '@web3modal/core'
+import { ClientCtrl, CoreHelpers, ExplorerCtrl, ModalCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-view-all-wallets-button'
@@ -28,12 +28,12 @@ export class W3mMobileWalletSelection extends LitElement {
         CoreHelpers.openHref(href)
       })
     }
-    ConnectModalCtrl.closeModal()
+    ModalCtrl.close()
   }
 
   private async onCoinbaseWallet() {
     await ClientCtrl.ethereum().connectCoinbaseMobile()
-    ConnectModalCtrl.closeModal()
+    ModalCtrl.close()
   }
 
   // -- render ------------------------------------------------------- //

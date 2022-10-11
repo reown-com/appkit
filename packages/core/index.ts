@@ -1,7 +1,7 @@
 export { ClientCtrl } from './src/controllers/statefull/ClientCtrl'
 export { ConfigCtrl } from './src/controllers/statefull/ConfigCtrl'
-export { ConnectModalCtrl } from './src/controllers/statefull/ConnectModalCtrl'
 export { ExplorerCtrl } from './src/controllers/statefull/ExplorerCtrl'
+export { ModalCtrl } from './src/controllers/statefull/ModalCtrl'
 export { ModalToastCtrl } from './src/controllers/statefull/ModalToastCtrl'
 export { RouterCtrl } from './src/controllers/statefull/RouterCtrl'
 export { AccountCtrl } from './src/controllers/stateless/AccountCtrl'

@@ -1,4 +1,4 @@
-import { ClientCtrl, ConnectModalCtrl, CoreHelpers, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, CoreHelpers, ModalCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -38,7 +38,7 @@ export class W3mMetamaskConnectorView extends LitElement {
         this.error = false
         this.connecting = true
         await ClientCtrl.ethereum().connectMetaMask()
-        ConnectModalCtrl.closeModal()
+        ModalCtrl.close()
       }
     } catch (err) {
       this.error = true

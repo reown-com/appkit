@@ -1,11 +1,5 @@
 import type { Listing } from '@web3modal/core'
-import {
-  ClientCtrl,
-  ConnectModalCtrl,
-  CoreHelpers,
-  ExplorerCtrl,
-  ModalToastCtrl
-} from '@web3modal/core'
+import { ClientCtrl, CoreHelpers, ExplorerCtrl, ModalCtrl, ModalToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -100,7 +94,7 @@ export class W3mWalletExplorerView extends LitElement {
           : CoreHelpers.formatNativeUrl(native, uri, name)
       )
     )
-    ConnectModalCtrl.closeModal()
+    ModalCtrl.close()
   }
 
   private async onConnectPlatform(listing: Listing) {

@@ -94,3 +94,26 @@ interface Options {
 ```
 
 ---
+
+### ModalCtrl
+
+Controllers to open, close and subscribe to modal state.
+
+```ts
+import { ModalCtrl } from '@web3modal/core'
+
+// open
+ModalCtrl.open()
+
+// close
+ModalCtrl.close()
+
+// subscribe
+ModalCtrl.subscribe(state => {})
+
+interface State {
+  open: boolean
+}
+```
+
+---

@@ -20,8 +20,8 @@ export interface ConfigCtrlState extends ConfigOptions {
   configured: boolean
 }
 
-// -- ConnectModalCtrl --------------------------------------- //
-export interface ConnectModalCtrlState {
+// -- ModalCtrl --------------------------------------- //
+export interface ModalCtrlState {
   open: boolean
 }
 
