@@ -51,13 +51,13 @@ ClientCtrl.setEthereumClient({
 </body>
 ```
 
-## Modal Controllers
+## Controllers
 
-Controllers to get, watch or perform actions on data
+Controllers to manage web3modal and read / write data from the blockchain
 
 ### ConfigCtrl
 
-Controllers to set up web3modal configuration.
+Controller to set up web3modal configuration.
 
 ```ts
 import { ConfigCtrl } from '@web3modal/core'
@@ -77,7 +77,7 @@ interface Options {
 
 ### ClientCtrl
 
-Controllers to set up chain specific clients.
+Controller to set up chain specific clients.
 
 ```ts
 import { ClientCtrl } from '@web3modal/core'
@@ -85,8 +85,8 @@ import { ClientCtrl } from '@web3modal/core'
 // functions
 ClientCtrl.setEthereumClient(options)
 
-const unsubscribe = ClientCtrl.subscribe(state => {})
-unsubscribe()
+const unwatch = ClientCtrl.subscribe(state => {})
+unwatch()
 
 // types
 interface Options {
@@ -105,7 +105,7 @@ interface State {
 
 ### ModalCtrl
 
-Controllers to open, close and subscribe to modal state.
+Controller to open, close and subscribe to modal state.
 
 ```ts
 import { ModalCtrl } from '@web3modal/core'
@@ -115,8 +115,8 @@ ModalCtrl.open()
 
 ModalCtrl.close()
 
-const unsubscribe = ModalCtrl.subscribe(state => {})
-unsubscribe()
+const unwatch = ModalCtrl.subscribe(state => {})
+unwatch()
 
 // types
 interface State {
@@ -128,7 +128,7 @@ interface State {
 
 ### AccountCtrl
 
-Controllers to get, watch or disconnect an account
+Controller to get, watch or disconnect an account
 
 ```ts
 import { AccountCtrl } from '@web3modal/core'
@@ -156,7 +156,7 @@ interface Account {
 
 ### BalanceCtrl
 
-Controllers to fetch and watch account balance
+Controller to fetch and watch account balance
 
 ```ts
 import { BalanceCtrl } from '@web3modal/core'
@@ -182,6 +182,89 @@ interface Options {
   formatUnits?: number | 'wei' | 'kwei' | 'mwei' | 'gwei' | 'szabo' | 'finney' | 'ether'
   token?: string
 }
+```
+
+---
+
+### BlockCtrl
+
+Controller to fetch and watch block number
+
+```ts
+import { BlockCtrl } from '@web3modal/core'
+
+// functions
+const block = await BlockCtrl.fetch(options)
+
+BlockCtrl.watch(block => {}, options)
+
+// types
+type Block = number
+
+interface Options {
+  chainId?: number
+}
+```
+
+---
+
+### ContractCtrl
+
+Controller to create contract instance and read, write, listen to it's events
+
+```ts
+import { ContractCtrl } from '@web3modal/core'
+
+// functions
+const contract = ContractCtrl.get(config)
+
+const read = await ContractCtrl.read(readConfig)
+
+const write = await ContractCtrl.write(writeConfig)
+
+const unwatch = ContractCtrl.watchRead(read => {}, readConfig)
+unwatch()
+
+const unwatch = ContractCtrl.watchEvent((...event) => {}, eventConfig)
+unwatch()
+
+// types
+interface Config {
+  address: string
+  abi: Narrow<TAbi>
+  signerOrProvider?: Provider | Signer | undefined
+}
+
+interface ReadConfig {
+  address: string
+  abi: ContractInterface
+  functionName: string
+  args?: any[]
+  overrides?: CallOverrides
+  chainId?: number
+}
+
+interface WriteConfig {
+  functionName: string
+  chainId?: number | undefined
+  args?: any[]
+  overrides?: CallOverrides
+  signer?: Signer
+}
+
+interface EventConfig {
+  address: string
+  abi: ContractInterface
+  eventName: string
+  chainId?: number
+  once?: boolean
+}
+
+type Read = Result
+
+type Contract = ethers.Contract
+
+type Write = TransactionResponse
 ```
 
 ---

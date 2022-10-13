@@ -3,7 +3,6 @@ import type { Web3ModalEthereum } from '@web3modal/ethereum'
 // -- utils ------------------------------------------------ //
 type EthApi = typeof Web3ModalEthereum
 type ResolvePromiseReturn<T> = T extends Promise<infer U> ? U : T
-type GenericType<T> = T extends (param: infer Param) => void ? Param : never
 
 // -- AccountCtrl ------------------------------------------ //
 export type AccountCtrlWatchCallback = Parameters<EthApi['watchAccount']>[0]
@@ -80,5 +79,3 @@ export type ContractCtrlWatchReadArgs = Parameters<EthApi['watchReadContract']>
 export type ContractCtrlWriteArgs = Parameters<EthApi['prepareWriteContract']>[0]
 
 export type ContractCtrlWatchEventArgs = Parameters<EthApi['watchContractEvent']>
-
-export type ContractCtrlGetGenerics = GenericType<EthApi['getContract']>

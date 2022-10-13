@@ -238,8 +238,8 @@ interface Options {
   address: string
   abi: ContractInterface
   eventName: string
-  listener: (...event?: unknown[]) => void
-  chainId? number
+  listener: (...event: unknown[]) => void
+  chainId?: number
   once?: boolean
 }
 ```
