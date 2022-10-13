@@ -514,7 +514,7 @@ Hook for accessing ethers [Signer](https://docs.ethers.io/v5/api/signer/) object
 import { useSigner } from '@web3modal/ethereum'
 
 // Usage
-const { data, error, isLoading } = useSigner()
+const { data, error, isLoading } = useSigner(options)
 
 // Returns
 interface Return {
@@ -522,6 +522,10 @@ interface Return {
   error?: Error
   isLoading: boolean
   refetch: (options?: Options) => Promise<Return['data']>
+}
+
+interface Options {
+  chainId?: number
 }
 ```
 

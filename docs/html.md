@@ -426,3 +426,54 @@ type Provider = ethers.WebsocketProvider
 ```
 
 ---
+
+### SignerCtrl
+
+Controller for accessing ethers [Signer](https://docs.ethers.io/v5/api/signer/) object for connected account.
+
+```ts
+import { SignerCtrl } from '@web3modal/core'
+
+// functions
+const signer = await SignerCtrl.fetch(options)
+
+const signMessage = await SignerCtrl.signMessage(signMessageArguments)
+
+const signTypedData = await SignerCtrl.signTypedData(signTypedData)
+
+const unwatch = SignerCtrl.watch(signer => {}, options)
+unwatch()
+
+// types
+interface Options {
+  chainId?: number
+}
+
+interface SignMessageArguments {
+  message: string | Bytes
+}
+
+type SignMessage = string
+
+interface SignTypedDataArguments {
+  domain: {
+    name?: string
+    version?: string
+    chainId?: string | number | bigint
+    verifyingContract?: string
+    salt?: BytesLike
+  }
+  types: Record<
+    string,
+    Array<{
+      name: string
+      type: string
+    }>
+  >
+  value: Record<string, any>
+}
+
+type SignTypedData = string
+```
+
+---

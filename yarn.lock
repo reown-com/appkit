@@ -2028,10 +2028,10 @@
     "@typescript-eslint/types" "5.39.0"
     eslint-visitor-keys "^3.3.0"
 
-"@wagmi/core@abitype":
-  version "0.0.0-abitype-20221013014806"
-  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.0.0-abitype-20221013014806.tgz#ec56a9376d847556f7c3b9fd0288a5efb1e7a9d6"
-  integrity sha512-BJja0CO4h/wPWGylG18AY0m6td7yfMbKZLWUNgfkKVodlKXHGP4Xi+gL0zcLu76rGvdO3dcO45ktGnF/lmPQDw==
+"@wagmi/core@0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.6.1.tgz#497b59cf0f10c3762259e05762cce2391e8b9c33"
+  integrity sha512-LLXGqIgNPMtPOJ+grWCFeca2VsLFEJGq4NzfxBb0H2pwJnRo5MMmULVUnfR7BPVqUNHNVePt9A3kspGLdc/XEA==
   dependencies:
     eventemitter3 "^4.0.7"
     zustand "^4.1.1"
