@@ -480,7 +480,7 @@ type SignTypedData = string
 
 ### TokenCtrl
 
-Hook for fetching ERC-20 token information.
+Controller for fetching ERC-20 token information.
 
 ```ts
 import { TokenCtrl } from '@web3modal/core'
@@ -505,6 +505,46 @@ interface Token {
     value: BigNumber
   }
 }
+```
+
+---
+
+### TransactionCtrl
+
+Controller for Hook for fetching / sending transactions.
+
+```ts
+import { TransactionCtrl } from '@web3modal/core'
+
+// functions
+const transaction = await TransactionCtrl.fetch(fetchOptions)
+
+const transaction = await TransactionCtrl.send(sendOptions)
+
+const transaction = await TransactionCtrl.wait(waitOptions)
+
+// types
+interface FetchOptions {
+  hash: string
+  chainId?: number
+}
+
+interface SendOptions {
+  request: TransactionRequest & {
+    to: string
+  }
+  chainId?: number
+  signer?: Signer
+}
+
+interface WaitOptions {
+  confirmations?: number
+  hash?: string
+  timeout?: number
+  chainId?: number
+}
+
+type Transaction = TransactionResponse
 ```
 
 ---
