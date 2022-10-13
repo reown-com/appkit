@@ -403,3 +403,26 @@ type Provider = ethers.Provider
 ```
 
 ---
+
+### WebsocketProviderCtrl
+
+Controller for accessing the Client's ethers [WebSocket Provider](https://docs.ethers.io/v5/api/providers/other/#WebSocketProvider).
+
+```ts
+import { WebsocketProviderCtrl } from '@web3modal/core'
+
+// functions
+const provider = WebsocketProviderCtrl.get(options)
+
+const unwatch = WebsocketProviderCtrl.watch(provider => {}, options)
+unwatch()
+
+// types
+interface Options {
+  chainId?: number
+}
+
+type Provider = ethers.WebsocketProvider
+```
+
+---
