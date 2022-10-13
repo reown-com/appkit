@@ -472,12 +472,16 @@ Hook for accessing Client's ethers [Provider](https://docs.ethers.io/v5/api/prov
 import { useProvider } from '@web3modal/ethereum'
 
 // Usage
-const { provider, isReady } = useProvider()
+const { provider, isReady } = useProvider(options)
 
 // Returns
 interface Return {
   provider?: ethers.Provider
   isReady: boolean
+}
+
+interface Options {
+  chainId?: number
 }
 ```
 

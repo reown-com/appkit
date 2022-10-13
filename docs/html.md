@@ -128,7 +128,7 @@ interface State {
 
 ### AccountCtrl
 
-Controller to get, watch or disconnect an account
+Controller to get account data.
 
 ```ts
 import { AccountCtrl } from '@web3modal/core'
@@ -156,7 +156,7 @@ interface Account {
 
 ### BalanceCtrl
 
-Controller to fetch and watch account balance
+Controller for fetching balance information for Ethereum or ERC-20 tokens.
 
 ```ts
 import { BalanceCtrl } from '@web3modal/core'
@@ -188,7 +188,7 @@ interface Options {
 
 ### BlockCtrl
 
-Controller to fetch and watch block number
+Controller for fetching the current block number.
 
 ```ts
 import { BlockCtrl } from '@web3modal/core'
@@ -210,7 +210,7 @@ interface Options {
 
 ### ContractCtrl
 
-Controller to create contract instance and read, write, listen to it's events
+Controller for creating and working with ethers [Contract](https://docs.ethers.io/v5/api/contract/contract/) instance.
 
 ```ts
 import { ContractCtrl } from '@web3modal/core'
@@ -271,7 +271,7 @@ interface EventConfig {
 
 ### EnsCtrl
 
-Controller to work with ethereum name services
+Controller for fetching ENS data.
 
 ```ts
 import { EnsCtrl } from '@web3modal/core'
@@ -322,7 +322,7 @@ type EnsResolver = string
 
 ### FeeCtrl
 
-Controller to fetch and watch chain fee data
+Controller for fetching network fee information.
 
 ```ts
 import { FeeCtrl } from '@web3modal/core'
@@ -355,7 +355,7 @@ interface Fees {
 
 ### NetworkCtrl
 
-Controller to get, watch and change network data
+Controller for accessing network data, such as current connected chain and connector chains. Also switching to a different network.
 
 ```ts
 import { NetworkCtrl } from '@web3modal/core'
@@ -377,6 +377,29 @@ interface Network {
 interface Options {
   chainId: number
 }
+```
+
+---
+
+### ProviderCtrl
+
+Controller for accessing Client's ethers [Provider](https://docs.ethers.io/v5/api/providers/).
+
+```ts
+import { ProviderCtrl } from '@web3modal/core'
+
+// functions
+const provider = ProviderCtrl.get(options)
+
+const unwatch = ProviderCtrl.watch(provider => {}, options)
+unwatch()
+
+// types
+interface Options {
+  chainId?: number
+}
+
+type Provider = ethers.Provider
 ```
 
 ---
