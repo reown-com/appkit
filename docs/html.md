@@ -271,7 +271,7 @@ interface EventConfig {
 
 ### EnsCtrl
 
-Controller to create contract instance and read, write, listen to it's events
+Controller to work with ethereum name services
 
 ```ts
 import { EnsCtrl } from '@web3modal/core'
@@ -316,6 +316,39 @@ interface ResolverArgs {
 }
 
 type EnsResolver = string
+```
+
+---
+
+### FeeCtrl
+
+Controller to fetch and watch chain fee data
+
+```ts
+import { FeeCtrl } from '@web3modal/core'
+
+// functions
+const fees = await FeeCtrl.fetch(options)
+
+const unwatch = FeeCtrl.watch(fees => {}, options)
+unwatch()
+
+// types
+interface Options {
+  formatUnits?: number | 'wei' | 'kwei' | 'mwei' | 'gwei' | 'szabo' | 'finney' | 'ether'
+  chainId?: number
+}
+
+interface Fees {
+  gasPrice: BigNumber
+  maxFeePerGas: BigNumber
+  maxPriorityFeePerGas: BigNumber
+  formatted: {
+    gasPrice: string
+    maxFeePerGas: string
+    maxPriorityFeePerGas: string
+  }
+}
 ```
 
 ---
