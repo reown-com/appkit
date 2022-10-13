@@ -7,10 +7,10 @@ export default function UseContractEvent() {
   const [eventData, setEventData] = useState<unknown>(undefined)
 
   const config = {
-    addressOrName: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
-    contractInterface: ensRegistryABI,
+    address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+    abi: ensRegistryABI,
     eventName: 'NewOwner',
-    listener: (event: unknown) => setEventData(event),
+    listener: (...event) => setEventData(event),
     chainId: chains.mainnet.id
   }
 

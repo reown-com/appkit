@@ -1,5 +1,6 @@
 import type {
   ContractCtrlGetArgs,
+  ContractCtrlGetGenerics,
   ContractCtrlReadArgs,
   ContractCtrlWatchEventArgs,
   ContractCtrlWatchReadArgs,
@@ -8,8 +9,8 @@ import type {
 import { ClientCtrl } from '../statefull/ClientCtrl'
 
 export const ContractCtrl = {
-  get(args: ContractCtrlGetArgs) {
-    const data = ClientCtrl.ethereum().getContract(args)
+  get<T extends ContractCtrlGetGenerics>(args: ContractCtrlGetArgs) {
+    const data = ClientCtrl.ethereum().getContract<T>(args)
 
     return data
   },
@@ -36,13 +37,8 @@ export const ContractCtrl = {
     return unwatch
   },
 
-  watchEvent(
-    contract: ContractCtrlWatchEventArgs[0],
-    eventName: ContractCtrlWatchEventArgs[1],
-    callback: ContractCtrlWatchEventArgs[2],
-    options: ContractCtrlWatchEventArgs[3]
-  ) {
-    const unwatch = ClientCtrl.ethereum().watchContractEvent(contract, eventName, callback, options)
+  watchEvent(callback: ContractCtrlWatchEventArgs[1], contract: ContractCtrlWatchEventArgs[0]) {
+    const unwatch = ClientCtrl.ethereum().watchContractEvent(contract, callback)
 
     return unwatch
   }

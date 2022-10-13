@@ -8,13 +8,13 @@ export default function UseAccount() {
       <h1>useAccount</h1>
       <ul>
         <li>
-          Connected: <span>{account?.isConnected ? 'Yes' : 'No'}</span>
+          Connected: <span>{account.isConnected ? 'Yes' : 'No'}</span>
         </li>
         <li>
-          Connector: <span>{account?.connector?.id}</span>
+          Connector: <span>{account.connector?.id}</span>
         </li>
         <li>
-          Address: <span>{account?.address}</span>
+          Address: <span>{account.address}</span>
         </li>
       </ul>
     </section>

@@ -1,27 +1,28 @@
 import type { ContractCtrlWatchEventArgs } from '@web3modal/core'
 import { ContractCtrl } from '@web3modal/core'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useClientInitialized } from '../data/useClientInitialized'
 import { useChainAgnosticOptions } from '../utils/useChainAgnosticOptions'
 
-type Arguments = ContractCtrlWatchEventArgs[0] &
-  ContractCtrlWatchEventArgs[3] & {
-    eventName: ContractCtrlWatchEventArgs[1]
-    listener: ContractCtrlWatchEventArgs[2]
-  }
+type Arguments = ContractCtrlWatchEventArgs[0] & {
+  listener: ContractCtrlWatchEventArgs[1]
+}
 
 export function useContractEvent(args: Arguments) {
-  const { chainId: argChainId, once, listener, eventName, ...contractArgs } = args
-  const { chainId } = useChainAgnosticOptions({ chainId: argChainId })
+  const { listener } = args
+  const chainAgnosticArgs = useChainAgnosticOptions(args)
   const initialized = useClientInitialized()
+
+  // We can't use raw args here as that will cause infinite-loop inside useEffect
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const memoArgs = useMemo(() => chainAgnosticArgs, [JSON.stringify(chainAgnosticArgs)])
 
   useEffect(() => {
     let unwatch: (() => void) | undefined = undefined
-    if (initialized)
-      unwatch = ContractCtrl.watchEvent(contractArgs, eventName, listener, { chainId, once })
+    if (initialized) unwatch = ContractCtrl.watchEvent(listener, memoArgs)
 
     return () => {
       unwatch?.()
     }
-  }, [initialized, eventName, chainId, once, contractArgs, listener])
+  }, [initialized, memoArgs, listener])
 }

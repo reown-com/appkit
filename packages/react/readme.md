@@ -197,8 +197,8 @@ import ensRegistryABI from './yourAbi/ensRegistryABI.json'
 
 // Usage
 const { contract, isReady } = useContract({
-  addressOrName: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
-  contractInterface: ensRegistryABI
+  address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+  abi: ensRegistryABI
 })
 
 // Returns
@@ -207,8 +207,8 @@ ethers.Contract | undefined
 // Options
 interface Options {
   contract?: {
-    addressOrName: string
-    contractInterface: ContractInterface
+    address: string
+    abi: ContractInterface
     signerOrProvider?: Provider | Signer
   }
   isReady: boolean

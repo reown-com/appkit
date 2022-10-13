@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
+
 import type { ContractCtrlGetArgs } from '@web3modal/core'
 import { ContractCtrl } from '@web3modal/core'
 import { useChainAgnosticOptions } from '../utils/useChainAgnosticOptions'

@@ -23,9 +23,9 @@ import UseToken from '../sections/UseToken'
 import UseTransaction from '../sections/UseTransaction'
 
 export default function HomePage() {
-  const { isConnected } = useAccount()
+  const { account } = useAccount()
 
-  return isConnected ? (
+  return account.isConnected ? (
     <>
       <UseAccount />
       <UseDisconnect />
