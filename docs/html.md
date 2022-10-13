@@ -26,21 +26,20 @@ import { ClientCtrl, ConfigCtrl } from '@web3modal/core'
 import { chains, providers } from '@web3modal/ethereum'
 import '@web3modal/ui'
 
-const clientConfig = {
+// Configure web3modal
+ConfigCtrl.setConfig({
   projectId: '<YOUR_PROJECT_ID>',
   theme: 'dark',
   accentColor: 'default'
-}
+})
 
-const ethereumConfig = {
+// Configure ethereum client
+ClientCtrl.setEthereumClient({
   appName: 'web3Modal',
   autoConnect: true,
   chains: [chains.mainnet],
   providers: [providers.walletConnectProvider({ projectId: '<YOUR_PROJECT_ID>' })]
-}
-
-ConfigCtrl.setConfig(clientConfig)
-ClientCtrl.setEthereumClient(ethereumConfig)
+})
 ```
 
 ### 3. Add <w3m-connect-button> (optional) and <w3m-modal> webcomponents to your html
@@ -63,9 +62,10 @@ Controllers to set up web3modal configuration.
 ```ts
 import { ConfigCtrl } from '@web3modal/core'
 
-// setConfig
+// functions
 ConfigCtrl.setConfig(options)
 
+// types
 interface Options {
   projectId: string
   theme: 'dark' | 'light'
@@ -82,19 +82,19 @@ Controllers to set up chain specific clients.
 ```ts
 import { ClientCtrl } from '@web3modal/core'
 
-// setEthereumClient
+// functions
 ClientCtrl.setEthereumClient(options)
 
+const unsubscribe = ClientCtrl.subscribe(state => {})
+unsubscribe()
+
+// types
 interface Options {
   appName: string
   autoConnect?: boolean
   chains?: Chain[]
   providers?: ChainProviderFn[]
 }
-
-// subscribe
-const unsubscribe = ClientCtrl.subscribe(state => {})
-unsubscribe()
 
 interface State {
   initialized: boolean
@@ -110,16 +110,15 @@ Controllers to open, close and subscribe to modal state.
 ```ts
 import { ModalCtrl } from '@web3modal/core'
 
-// open
+// functions
 ModalCtrl.open()
 
-// close
 ModalCtrl.close()
 
-// subscribe
 const unsubscribe = ModalCtrl.subscribe(state => {})
 unsubscribe()
 
+// types
 interface State {
   open: boolean
 }
@@ -134,18 +133,54 @@ Controllers to get, watch or disconnect an account
 ```ts
 import { AccountCtrl } from '@web3modal/core'
 
-// get
-ModalCtrl.get()
+// functions
+const account = AccountCtrl.get()
 
-// close
-ModalCtrl.close()
+AccountCtrl.watch(account => {})
 
-// subscribe
-const unsubscribe = ModalCtrl.subscribe(state => {})
-unsubscribe()
+AccountCtrl.disconnect()
 
-interface State {
-  open: boolean
+// types
+interface Account {
+  address: string | ''
+  connector?: Connector
+  isConnecting?: boolean
+  isReconnecting?: boolean
+  isConnected?: boolean
+  isDisconnected?: boolean
+  status?: 'connecting' | 'reconnecting' | 'connected' | 'disconnected'
+}
+```
+
+---
+
+### BalanceCtrl
+
+Controllers to fetch and watch account balance
+
+```ts
+import { BalanceCtrl } from '@web3modal/core'
+
+// functions
+const balance = await BalanceCtrl.fetch(options)
+
+BalanceCtrl.watch(options, balance => {})
+
+// types
+interface Balance {
+  decimals: number
+  formatted: string
+  symbol: string
+  value: BigNumber
+}
+
+interface Options {
+  addressOrName: string
+  watch?: boolean
+  enabled?: boolean
+  chainId?: number
+  formatUnits?: number | 'wei' | 'kwei' | 'mwei' | 'gwei' | 'szabo' | 'finney' | 'ether'
+  token?: string
 }
 ```
 
