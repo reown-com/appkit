@@ -235,6 +235,8 @@ interface Config {
   signerOrProvider?: Provider | Signer | undefined
 }
 
+type Contract = ethers.Contract
+
 interface ReadConfig {
   address: string
   abi: ContractInterface
@@ -244,6 +246,8 @@ interface ReadConfig {
   chainId?: number
 }
 
+type Read = Result
+
 interface WriteConfig {
   functionName: string
   chainId?: number | undefined
@@ -252,6 +256,8 @@ interface WriteConfig {
   signer?: Signer
 }
 
+type Write = TransactionResponse
+
 interface EventConfig {
   address: string
   abi: ContractInterface
@@ -259,12 +265,57 @@ interface EventConfig {
   chainId?: number
   once?: boolean
 }
+```
 
-type Read = Result
+---
 
-type Contract = ethers.Contract
+### EnsCtrl
 
-type Write = TransactionResponse
+Controller to create contract instance and read, write, listen to it's events
+
+```ts
+import { EnsCtrl } from '@web3modal/core'
+
+// functions
+const ensAddress = await ContractCtrl.fetchEnsAddress(addressArgs)
+
+const ensAvatar = await ContractCtrl.fetchEnsAvatar(avatarArgs)
+
+const ensName = await ContractCtrl.fetchEnsName(nameArgs)
+
+const ensResolver = await ContractCtrl.fetchEnsResolver(resolverArgs)
+
+// types
+interface AddressArgs {
+  name: string
+  chainId?: number
+}
+
+type EnsAddress = string
+
+interface AvatarArgs {
+  addressOrName: string
+  chainId?: number
+}
+
+type EnsAvatar = string
+
+interface NameArgs {
+  address: string
+  chainId?: number
+}
+
+type EnsName = string
+
+interface ResolverArgs {
+  address: string
+  abi: ContractInterface
+  eventName: string
+  chainId?: number
+  once?: boolean
+}
+
+type EnsResolver = string
 ```
 
 ---
