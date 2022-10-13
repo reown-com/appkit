@@ -1,8 +1,8 @@
-# @web3modal/react
+# Web3Modal react usage
 
 ## Getting Started
 
-Make sure to read our [main readme](./../../readme.md) first to find out details about projectId, chain specific packages and modal customisation options. Please ensure you are updated to the latest React / Next.js or similar version, as web3modal libraries target `es2020`. Web3Modal hooks are based on [wagmi](https://wagmi.sh/), so it is good idea to read through their documentation as well. Do note, you have to import and use these hooks from `@web3modal` packages.
+Make sure to read our [main readme](./../readme.md) first to find out details about projectId, chain specific packages and modal customisation options. Please ensure you are updated to the latest React / Next.js or similar version, as web3modal libraries target `es2020`. Web3Modal hooks are based on [wagmi](https://wagmi.sh/), so it is good idea to read through their documentation as well. Do note, you have to import and use these hooks from `@web3modal` packages.
 
 ### 1. Install dependencies
 
@@ -12,7 +12,7 @@ npm install @web3modal/react @web3modal/ethereum ethers
 
 ### 2. Configure web3modal at the root of your app
 
-See [@web3modal/ethereum](../../chains/ethereum/readme.md) readme for all available `ethereum` options. NextJS example is also available in [examples/react](../../examples/react) folder.
+See [@web3modal/ethereum](../chains/ethereum/readme.md) readme for all available `ethereum` options. NextJS example is also available in [examples/react](../examples/react) folder.
 
 ```tsx
 import type { ConfigOptions } from '@web3modal/react'
@@ -96,7 +96,7 @@ interface Options {
 
 ---
 
-### useAccount ([Example](../../examples/react/src/sections/UseAccount.tsx))
+### useAccount ([Example](../examples/react/src/sections/UseAccount.tsx))
 
 Hook to get account data.
 
@@ -123,7 +123,7 @@ interface Return {
 
 ---
 
-### useBalance ([Example](../../examples/react/src/sections/UseBalance.tsx))
+### useBalance ([Example](../examples/react/src/sections/UseBalance.tsx))
 
 Hook for fetching balance information for Ethereum or ERC-20 tokens.
 
@@ -159,7 +159,7 @@ interface Options {
 
 ---
 
-### useBlockNumber ([Example](../../examples/react/src/sections/UseBlockNumber.tsx))
+### useBlockNumber ([Example](../examples/react/src/sections/UseBlockNumber.tsx))
 
 Hook for fetching the current block number.
 
@@ -187,7 +187,7 @@ interface Options {
 
 ---
 
-### useContract ([Example](../../examples/react/src/sections/UseContract.tsx))
+### useContract ([Example](../examples/react/src/sections/UseContract.tsx))
 
 Hook for declaratively creating an ethers [Contract](https://docs.ethers.io/v5/api/contract/contract/) instance.
 
@@ -217,7 +217,7 @@ interface Options {
 
 ---
 
-### useContractEvent ([Example](../../examples/react/src/sections/UseContractEvent.tsx))
+### useContractEvent ([Example](../examples/react/src/sections/UseContractEvent.tsx))
 
 Hook for subscribing to ethers Contract [events](https://docs.ethers.io/v5/api/contract/contract/#Contract--events).
 
@@ -246,7 +246,7 @@ interface Options {
 
 ---
 
-### useContractRead ([Example](../../examples/react/src/sections/UseContractRead.tsx))
+### useContractRead ([Example](../examples/react/src/sections/UseContractRead.tsx))
 
 Hook for calling an ethers Contract [read-only](https://docs.ethers.io/v5/api/contract/contract/#Contract--readonly) method.
 
@@ -284,7 +284,7 @@ interface Options {
 
 ---
 
-### useEnsAddress ([Example](../../examples/react/src/sections/UseEnsAddress.tsx))
+### useEnsAddress ([Example](../examples/react/src/sections/UseEnsAddress.tsx))
 
 Hook for fetching address for ENS name.
 
@@ -314,7 +314,7 @@ interface Options {
 
 ---
 
-### useEnsAvatar ([Example](../../examples/react/src/sections/UseEnsAvatar.tsx))
+### useEnsAvatar ([Example](../examples/react/src/sections/UseEnsAvatar.tsx))
 
 Hook for fetching avatar for ENS name.
 
@@ -344,7 +344,7 @@ interface Options {
 
 ---
 
-### useEnsName ([Example](../../examples/react/src/sections/UseEnsName.tsx))
+### useEnsName ([Example](../examples/react/src/sections/UseEnsName.tsx))
 
 Hook for fetching ENS name for address.
 
@@ -374,7 +374,7 @@ interface Options {
 
 ---
 
-### useEnsResolver ([Example](../../examples/react/src/sections/UseEnsResolver.tsx))
+### useEnsResolver ([Example](../examples/react/src/sections/UseEnsResolver.tsx))
 
 Hook for fetching the resolver for ENS name.
 
@@ -404,7 +404,7 @@ interface Options {
 
 ---
 
-### useFeeData ([Example](../../examples/react/src/sections/UseFeeData.tsx))
+### useFeeData ([Example](../examples/react/src/sections/UseFeeData.tsx))
 
 Hook for fetching network fee information.
 
@@ -442,7 +442,7 @@ interface Options {
 
 ---
 
-### useNetwork ([Example](../../examples/react/src/sections/UseNetwork.tsx))
+### useNetwork ([Example](../examples/react/src/sections/UseNetwork.tsx))
 
 Hook for accessing network data, such as current connected chain and connector chains.
 
@@ -464,7 +464,7 @@ interface Return {
 
 ---
 
-### useProvider ([Example](../../examples/react/src/sections/UseProvider.tsx))
+### useProvider ([Example](../examples/react/src/sections/UseProvider.tsx))
 
 Hook for accessing Client's ethers [Provider](https://docs.ethers.io/v5/api/providers/).
 
@@ -487,7 +487,7 @@ interface Options {
 
 ---
 
-### useWebsocketProvider ([Example](../../examples/react/src/sections/UseProvider.tsx))
+### useWebsocketProvider ([Example](../examples/react/src/sections/UseProvider.tsx))
 
 Hook for accessing the Client's ethers [WebSocket Provider](https://docs.ethers.io/v5/api/providers/other/#WebSocketProvider).
 
@@ -506,7 +506,7 @@ interface Return {
 
 ---
 
-### useSigner ([Example](../../examples/react/src/sections/UseSigner.tsx))
+### useSigner ([Example](../examples/react/src/sections/UseSigner.tsx))
 
 Hook for accessing ethers [Signer](https://docs.ethers.io/v5/api/signer/) object for connected account.
 
@@ -531,7 +531,7 @@ interface Options {
 
 ---
 
-### useToken ([Example](../../examples/react/src/sections/UseToken.tsx))
+### useToken ([Example](../examples/react/src/sections/UseToken.tsx))
 
 Hook for fetching ERC-20 token information.
 
@@ -571,7 +571,7 @@ interface Options {
 
 ---
 
-### useTransaction ([Example](../../examples/react/src/sections/UseTransaction.tsx))
+### useTransaction ([Example](../examples/react/src/sections/UseTransaction.tsx))
 
 Hook for fetching transaction by hash.
 
@@ -601,7 +601,7 @@ interface Options {
 
 ---
 
-### useWaitForTransaction ([Example](../../examples/react/src/sections/UseWaitForTransaction.tsx))
+### useWaitForTransaction ([Example](../examples/react/src/sections/UseWaitForTransaction.tsx))
 
 Hook for declaratively waiting until transaction is processed. Pairs well with `useContractWrite` and `useSendTransaction`.
 
@@ -637,7 +637,7 @@ Hooks that expose action / write opperations.
 
 ---
 
-### useContractWrite ([Example](../../examples/react/src/sections/UseContractWrite.tsx))
+### useContractWrite ([Example](../examples/react/src/sections/UseContractWrite.tsx))
 
 Hook for calling an ethers Contract [write](https://docs.ethers.io/v5/api/contract/contract/#Contract--write) method. Perpares transaction under the hood i.e. estimates gas price.
 
@@ -690,7 +690,7 @@ disconnect()
 
 ---
 
-### useSendTransaction ([Example](../../examples/react/src/sections/UseSendTransaction.tsx))
+### useSendTransaction ([Example](../examples/react/src/sections/UseSendTransaction.tsx))
 
 Hook for sending a transaction. Perpares transaction under the hood i.e. estimates gas price.
 
@@ -727,7 +727,7 @@ interface Options {
 
 ---
 
-### useSignMessage ([Example](../../examples/react/src/sections/UseSignMessage.tsx))
+### useSignMessage ([Example](../examples/react/src/sections/UseSignMessage.tsx))
 
 Hook for signing messages with connected account.
 
@@ -756,7 +756,7 @@ interface Options {
 
 ---
 
-### useSignTypedData ([Example](../../examples/react/src/sections/UseSignTypedData.tsx))
+### useSignTypedData ([Example](../examples/react/src/sections/UseSignTypedData.tsx))
 
 Hook for signing messages with connected account.
 
@@ -801,7 +801,7 @@ interface Options {
 
 ---
 
-### useSwitchNetwork ([Example](../../examples/react/src/sections/UseSwitchNetwork.tsx))
+### useSwitchNetwork ([Example](../examples/react/src/sections/UseSwitchNetwork.tsx))
 
 Hook for switching networks with a connector.
 

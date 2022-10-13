@@ -20,7 +20,7 @@ Head over to [cloud.walletconnect.com](https://cloud.walletconnect.com/) to sign
 
 ### 2. Follow instructions and examples for your favourite framework
 
-- [React Docs](./packages/react/) / [React Example](./examples/react/)
+- [React Docs](./docs/react.md) / [React Example](./examples/react/)
 - [Vanilla JS Docs](./docs/html.md) / [Vanila JS Example](./examples/html/)
 - Vue Docs / Vue Example (coming soon)
 - Angular Docs / Angular Example (coming soon)

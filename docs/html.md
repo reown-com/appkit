@@ -1,4 +1,4 @@
-# Running in vanilla html / javascript
+# Web3Modal js/html usage
 
 ## Getting Started
 
