@@ -477,3 +477,34 @@ type SignTypedData = string
 ```
 
 ---
+
+### TokenCtrl
+
+Hook for fetching ERC-20 token information.
+
+```ts
+import { TokenCtrl } from '@web3modal/core'
+
+// functions
+const token = await TokenCtrl.fetch(options)
+
+// types
+interface Options {
+  address: string
+  chainId?: number
+  formatUnits?: number | 'wei' | 'kwei' | 'mwei' | 'gwei' | 'szabo' | 'finney' | 'ether'
+}
+
+interface Token {
+  address: string
+  decimals: number
+  name: string
+  symbol: string
+  totalSupply: {
+    formatted: string
+    value: BigNumber
+  }
+}
+```
+
+---
