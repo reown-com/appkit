@@ -352,3 +352,31 @@ interface Fees {
 ```
 
 ---
+
+### NetworkCtrl
+
+Controller to get, watch and change network data
+
+```ts
+import { NetworkCtrl } from '@web3modal/core'
+
+// functions
+const network = NetworkCtrl.get()
+
+const unwatch = NetworkCtrl.watch(network => {})
+unwatch()
+
+NetworkCtrl.switchNetwork(options)
+
+// types
+interface Network {
+  chain?: Chain & { unsupported?: boolean }
+  chains?: Chain[]
+}
+
+interface Options {
+  chainId: number
+}
+```
+
+---
