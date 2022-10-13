@@ -1,7 +1,7 @@
 {
   "name": "html-example",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0-alpha.8",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,9 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@web3modal/ui": "2.0.0-04f7806",
-    "@web3modal/core": "2.0.0-04f7806",
-    "@web3modal/ethereum": "2.0.0-04f7806"
+    "@web3modal/core": "2.0.0-alpha.8",
+    "@web3modal/ethereum": "2.0.0-alpha.8",
+    "@web3modal/ui": "2.0.0-alpha.8"
   },
   "devDependencies": {
     "vite": "3.1.0"
