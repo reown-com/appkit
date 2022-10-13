@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { AccountCtrl, BlockCtrl, ClientCtrl, FeeCtrl } from '@web3modal/core'
 import { connectedContainer, disconnectedContainer } from './elements'
 
