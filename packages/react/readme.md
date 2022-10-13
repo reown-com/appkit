@@ -227,18 +227,18 @@ import ensRegistryABI from './yourAbi/ensRegistryABI.json'
 
 // Usage
 useContractEvent({
-  addressOrName: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
-  contractInterface: ensRegistryABI,
+  address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+  abi: ensRegistryABI,
   eventName: 'NewOwner',
-  listener: event => console.log(event)
+  listener: (...event) => console.log(event)
 })
 
 // Options
 interface Options {
-  addressOrName: string
-  contractInterface: ContractInterface
+  address: string
+  abi: ContractInterface
   eventName: string
-  listener: (event?: any) => void
+  listener: (...event?: unknown[]) => void
   chainId? number
   once?: boolean
 }
@@ -256,8 +256,8 @@ import wagmigotchiABI from './yourAbi/wagmigotchiABI.json'
 
 // Usage
 const { data, error, isLoading, refetch } = useContractRead({
-  addressOrName: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1',
-  contractInterface: wagmigotchiABI,
+  address: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1',
+  abi: wagmigotchiABI,
   functionName: 'getHunger'
 })
 
@@ -271,10 +271,10 @@ interface Return {
 
 // Options
 interface Options {
-  addressOrName: string
-  contractInterface: ContractInterface
+  address: string
+  abi: ContractInterface
   functionName: string
-  args?: any
+  args?: any[]
   overrides?: CallOverrides
   chainId?: number
   enabled?: boolean
@@ -639,8 +639,8 @@ import wagmigotchiABI from './yourAbi/wagmigotchiABI.json'
 
 // Usage
 const { data, error, isLoading, write } = useContractWrite({
-  addressOrName: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1',
-  contractInterface: wagmigotchiABI,
+  address: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1',
+  abi: wagmigotchiABI,
   functionName: 'feed'
 })
 write()
@@ -657,7 +657,7 @@ interface Return {
 interface Options {
   functionName: string
   chainId?: number | undefined
-  args?: any
+  args?: any[]
   overrides?: CallOverrides
   signer?: Signer
 }

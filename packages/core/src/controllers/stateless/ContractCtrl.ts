@@ -1,6 +1,5 @@
 import type {
   ContractCtrlGetArgs,
-  ContractCtrlGetGenerics,
   ContractCtrlReadArgs,
   ContractCtrlWatchEventArgs,
   ContractCtrlWatchReadArgs,
@@ -9,8 +8,8 @@ import type {
 import { ClientCtrl } from '../statefull/ClientCtrl'
 
 export const ContractCtrl = {
-  get<T extends ContractCtrlGetGenerics>(args: ContractCtrlGetArgs) {
-    const data = ClientCtrl.ethereum().getContract<T>(args)
+  get(args: ContractCtrlGetArgs) {
+    const data = ClientCtrl.ethereum().getContract(args)
 
     return data
   },
