@@ -21,9 +21,9 @@ Head over to [cloud.walletconnect.com](https://cloud.walletconnect.com/) to sign
 ### 2. Follow instructions and examples for your favourite framework
 
 - [React Docs](./packages/react/) / [React Example](./examples/react/)
+- [Vanilla JS Docs](./docs/html.md) / [Vanila JS Example](./examples/html/)
 - Vue Docs / Vue Example (coming soon)
 - Angular Docs / Angular Example (coming soon)
-- Vanilla JS Docs / Vanila JS Example (coming soon)
 
 ### 3. Familiarise yourself with each chain package that you intend to use
 
