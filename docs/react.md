@@ -15,10 +15,9 @@ npm install @web3modal/react @web3modal/ethereum ethers
 See [@web3modal/ethereum](../chains/ethereum/readme.md) readme for all available `ethereum` options. NextJS example is also available in [examples/react](../examples/react) folder.
 
 ```tsx
-import type { ConfigOptions } from '@web3modal/react'
 import { Web3Modal } from '@web3modal/react'
 
-const config: ConfigOptions = {
+const config = {
   projectId: '<YOUR_PROJECT_ID>',
   theme: 'dark',
   accentColor: 'default',

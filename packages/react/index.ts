@@ -1,4 +1,3 @@
-export type { ConfigOptions } from '@web3modal/core'
 export { AccountButton } from './src/components/AccountButton'
 export { ConnectButton } from './src/components/ConnectButton'
 export { Web3Modal } from './src/components/Web3Modal'
