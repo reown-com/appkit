@@ -22,7 +22,7 @@
   "devDependencies": {
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
-    "eslint-plugin-react": "7.31.9",
+    "eslint-plugin-react": "7.31.10",
     "eslint-plugin-react-hooks": "4.6.0",
     "react": "18.2.0",
     "react-dom": "18.2.0"

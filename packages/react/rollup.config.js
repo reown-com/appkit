@@ -1,4 +1,3 @@
-import createConfig from '../../rollup.config'
-import { name } from './package.json'
+import createConfig from '../../rollup.config.js'
 
-export default createConfig(name)
+export default createConfig('@web3modal/react')
