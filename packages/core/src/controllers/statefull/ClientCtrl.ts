@@ -3,6 +3,7 @@ import type {
   ClientCtrlSetEthereumClientArgs,
   ClientCtrlState
 } from '../../../types/statefullCtrlTypes'
+import { ConfigCtrl } from './ConfigCtrl'
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<ClientCtrlState>({
@@ -27,7 +28,7 @@ export const ClientCtrl = {
   async setEthereumClient(args: ClientCtrlSetEthereumClientArgs) {
     if (!state.initialized) {
       const { Web3ModalEthereum } = await import('@web3modal/ethereum')
-      state.ethereum = Web3ModalEthereum.createClient(args)
+      state.ethereum = Web3ModalEthereum.createClient(ConfigCtrl.state.projectId, args)
       state.initialized = true
     }
   }
