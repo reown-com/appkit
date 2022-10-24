@@ -9,7 +9,8 @@ export function useSendTransaction(args: TransactionCtrlSendArgs) {
     fetchFn: TransactionCtrl.send,
     args: {
       ...chainAgnosticArgs,
-      enabled: false
+      enabled: false,
+      watch: false
     }
   })
 

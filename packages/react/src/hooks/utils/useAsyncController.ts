@@ -86,7 +86,7 @@ export function useAsyncController<TArgs, TReturn>({
 
   // Re-fetch when input args change
   useOptionsChange(() => {
-    if (!watch && !isFirstFetch) onFetch()
+    if (!watch && !isFirstFetch && ready) onFetch()
   }, args)
 
   return {
