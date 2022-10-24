@@ -29,7 +29,7 @@ cp .env.local.example .env.local
 # 3. Replace the NEXT_PUBLIC_PROJECT_ID placeholder inside `.env.local` with your own projectId
 ```
 
-Bild packages in dev:
+Build packages in dev:
 
 ```bash
 yarn dev
