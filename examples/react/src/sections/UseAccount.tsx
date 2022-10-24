@@ -1,12 +1,15 @@
 import { useAccount } from '@web3modal/react'
 
 export default function UseAccount() {
-  const { account } = useAccount()
+  const { account, isReady } = useAccount()
 
   return (
     <section>
       <h1>useAccount</h1>
       <ul>
+        <li>
+          Ready: <span>{isReady}</span>
+        </li>
         <li>
           Connected: <span>{account.isConnected ? 'Yes' : 'No'}</span>
         </li>
