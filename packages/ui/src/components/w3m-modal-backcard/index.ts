@@ -1,4 +1,4 @@
-import { ConnectModalCtrl } from '@web3modal/core'
+import { ModalCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { CROSS_ICON, NOISE_TEXTURE, WALLET_CONNECT_LOGO } from '../../utils/Svgs'
@@ -37,9 +37,7 @@ export class W3mModalBackcard extends LitElement {
       <div class="w3m-modal-highlight"></div>
       <div class="w3m-modal-toolbar">
         ${WALLET_CONNECT_LOGO}
-        <button class="w3m-modal-close-btn" @click=${ConnectModalCtrl.closeModal}>
-          ${CROSS_ICON}
-        </button>
+        <button class="w3m-modal-close-btn" @click=${ModalCtrl.close}>${CROSS_ICON}</button>
       </div>
     `
   }

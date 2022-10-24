@@ -5,7 +5,7 @@ import { useAsyncController } from '../utils/useAsyncController'
 export function useSignMessage(args: SignerCtrlSignMessageArgs) {
   const { onFetch, ...rest } = useAsyncController({
     fetchFn: SignerCtrl.signMessage,
-    args: { ...args, enabled: false }
+    args: { ...args, enabled: false, watch: false }
   })
 
   return {

@@ -5,7 +5,7 @@ import { useAsyncController } from '../utils/useAsyncController'
 export function useSignTypedData(args: SignerCtrlSignTypedDataArgs) {
   const { onFetch, ...rest } = useAsyncController({
     fetchFn: SignerCtrl.signTypedData,
-    args: { ...args, enabled: false }
+    args: { ...args, enabled: false, watch: false }
   })
 
   return {

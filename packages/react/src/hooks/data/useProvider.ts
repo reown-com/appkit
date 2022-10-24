@@ -1,6 +1,6 @@
 import { ProviderCtrl } from '@web3modal/core'
-import { useController } from '../utils/useController'
 import { useChainAgnosticOptions } from '../utils/useChainAgnosticOptions'
+import { useController } from '../utils/useController'
 
 interface Options {
   chainId?: number
@@ -8,11 +8,11 @@ interface Options {
 
 export function useProvider(options?: Options) {
   const chainAgnosticOptions = useChainAgnosticOptions(options ?? {})
-  const { data } = useController({
+  const { data, isReady } = useController({
     getFn: ProviderCtrl.get,
     watchFn: ProviderCtrl.watch,
     args: chainAgnosticOptions
   })
 
-  return data
+  return { provider: data, isReady }
 }

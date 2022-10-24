@@ -29,10 +29,17 @@ cp .env.local.example .env.local
 # 3. Replace the NEXT_PUBLIC_PROJECT_ID placeholder inside `.env.local` with your own projectId
 ```
 
-Run the app:
+Build packages in dev:
 
 ```bash
 yarn dev
+```
+
+Run the examples:
+
+```bash
+yarn dev:react
+yarn dev:html
 ```
 
 ### Reflecting local package changes

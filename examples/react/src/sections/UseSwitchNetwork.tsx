@@ -1,7 +1,7 @@
 import { useNetwork, useSwitchNetwork } from '@web3modal/react'
 
 export default function UseSwitchNetwork() {
-  const { chains, chain } = useNetwork()
+  const { network } = useNetwork()
   const { error, isLoading, switchNetwork } = useSwitchNetwork()
 
   return (
@@ -10,7 +10,7 @@ export default function UseSwitchNetwork() {
 
       <ul>
         <li>
-          Selected Chain: <span>{isLoading ? 'Loading...' : chain?.name}</span>
+          Selected Chain: <span>{isLoading ? 'Loading...' : network?.chain?.name}</span>
         </li>
         <li>
           Error: <span>{error ? error.message : 'No Error'}</span>
@@ -18,7 +18,7 @@ export default function UseSwitchNetwork() {
       </ul>
 
       <ul>
-        {chains?.map(c => (
+        {network?.chains.map(c => (
           <li key={c.id}>
             <button onClick={async () => switchNetwork({ chainId: c.id })}>
               Switch to {c.name}

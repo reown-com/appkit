@@ -5,7 +5,7 @@ import type {
 import { ClientCtrl } from '../statefull/ClientCtrl'
 
 export const BlockCtrl = {
-  watch(options: BlockCtrlWatchOptions, callback: BlockCtrlWatchCallback) {
+  watch(callback: BlockCtrlWatchCallback, options: BlockCtrlWatchOptions) {
     const unwatch = ClientCtrl.ethereum().watchBlockNumber({ ...options, listen: true }, callback)
 
     return unwatch

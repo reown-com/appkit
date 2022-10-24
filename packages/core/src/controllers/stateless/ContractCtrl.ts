@@ -22,12 +22,13 @@ export const ContractCtrl = {
 
   async write(args: ContractCtrlWriteArgs) {
     const config = await ClientCtrl.ethereum().prepareWriteContract(args)
+    // @ts-expect-error TODO(ilja) fix alongside abi type inheritance
     const data = await ClientCtrl.ethereum().writeContract(config)
 
     return data
   },
 
-  watchRead(options: ContractCtrlWatchReadArgs[0], callback: ContractCtrlWatchReadArgs[1]) {
+  watchRead(callback: ContractCtrlWatchReadArgs[1], options: ContractCtrlWatchReadArgs[0]) {
     const unwatch = ClientCtrl.ethereum().watchReadContract(
       { ...options, listenToBlock: true },
       callback
@@ -36,13 +37,8 @@ export const ContractCtrl = {
     return unwatch
   },
 
-  watchEven(
-    contract: ContractCtrlWatchEventArgs[0],
-    eventName: ContractCtrlWatchEventArgs[1],
-    callback: ContractCtrlWatchEventArgs[2],
-    options: ContractCtrlWatchEventArgs[3]
-  ) {
-    const unwatch = ClientCtrl.ethereum().watchContractEvent(contract, eventName, callback, options)
+  watchEvent(callback: ContractCtrlWatchEventArgs[1], contract: ContractCtrlWatchEventArgs[0]) {
+    const unwatch = ClientCtrl.ethereum().watchContractEvent(contract, callback)
 
     return unwatch
   }

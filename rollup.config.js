@@ -3,6 +3,7 @@ import json from '@rollup/plugin-json'
 import resolve from '@rollup/plugin-node-resolve'
 import esbuild from 'rollup-plugin-esbuild'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
+import nodePolyfills from 'rollup-plugin-polyfill-node'
 
 export default function createConfig(packageName) {
   const sharedOutput = {
@@ -31,6 +32,7 @@ export default function createConfig(packageName) {
       input: './index.ts',
       plugins: [
         minifyHtml(),
+        nodePolyfills(),
         resolve({ browser: true, preferBuiltins: true }),
         json(),
         commonjs(),

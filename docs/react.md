@@ -1,8 +1,8 @@
-# @web3modal/react
+# Web3Modal react usage
 
 ## Getting Started
 
-Make sure to read our [main readme](./../../readme.md) first to find out details about projectId, chain specific packages and modal customisation options. Please ensure you are updated to the latest React / Next.js or similar version, as web3modal libraries target `es2020`. Web3Modal hooks are based on [wagmi](https://wagmi.sh/), so it is good idea to read through their documentation as well. Do note, you have to import and use these hooks from `@web3modal` packages.
+Make sure to read our [main readme](./../readme.md) first to find out details about projectId, chain specific packages and modal customisation options. Please ensure you are updated to the latest React / Next.js or similar version, as web3modal libraries target `es2020`. Web3Modal hooks are based on [wagmi](https://wagmi.sh/), so it is good idea to read through their documentation as well. Do note, you have to import and use these hooks from `@web3modal` packages.
 
 ### 1. Install dependencies
 
@@ -12,13 +12,12 @@ npm install @web3modal/react @web3modal/ethereum ethers
 
 ### 2. Configure web3modal at the root of your app
 
-See [@web3modal/ethereum](../../chains/ethereum/readme.md) readme for all available `ethereum` options. NextJS example is also available in [examples/react](../../examples/react) folder.
+See [@web3modal/ethereum](../chains/ethereum/readme.md) readme for all available `ethereum` options. NextJS example is also available in [examples/react](../examples/react) folder.
 
 ```tsx
-import type { ConfigOptions } from '@web3modal/react'
 import { Web3Modal } from '@web3modal/react'
 
-const config: ConfigOptions = {
+const config = {
   projectId: '<YOUR_PROJECT_ID>',
   theme: 'dark',
   accentColor: 'default',
@@ -64,7 +63,7 @@ Hooks to manage web3modal.
 Hook to check state of the modal, open or close it.
 
 ```ts
-import { useConnectModal } from '@web3modal/ethereum'
+import { useConnectModal } from '@web3modal/react'
 
 // Usage
 const { isOpen, open, close } = useConnectModal()
@@ -96,36 +95,39 @@ interface Options {
 
 ---
 
-### useAccount ([Example](../../examples/react/src/sections/UseAccount.tsx))
+### useAccount ([Example](../examples/react/src/sections/UseAccount.tsx))
 
 Hook to get account data.
 
 ```ts
-import { useAccount } from '@web3modal/ethereum'
+import { useAccount } from '@web3modal/react'
 
 // Usage
-const { address, isConnected } = useAccount()
+const { account, isReady } = useAccount()
 
 // Returns
 interface Return {
-  address: string | ''
-  connector?: Connector
-  isConnecting?: boolean
-  isReconnecting?: boolean
-  isConnected?: boolean
-  isDisconnected?: boolean
-  status?: 'connecting' | 'reconnecting' | 'connected' | 'disconnected'
+  account: {
+    address: string | ''
+    connector?: Connector
+    isConnecting?: boolean
+    isReconnecting?: boolean
+    isConnected?: boolean
+    isDisconnected?: boolean
+    status?: 'connecting' | 'reconnecting' | 'connected' | 'disconnected'
+  }
+  isReady: boolean
 }
 ```
 
 ---
 
-### useBalance ([Example](../../examples/react/src/sections/UseBalance.tsx))
+### useBalance ([Example](../examples/react/src/sections/UseBalance.tsx))
 
 Hook for fetching balance information for Ethereum or ERC-20 tokens.
 
 ```ts
-import { useBalance } from '@web3modal/ethereum'
+import { useBalance } from '@web3modal/react'
 
 // Usage
 const { data, error, isLoading, refetch } = useBalance({ addressOrName: 'vitalik.eth' })
@@ -156,12 +158,12 @@ interface Options {
 
 ---
 
-### useBlockNumber ([Example](../../examples/react/src/sections/UseBlockNumber.tsx))
+### useBlockNumber ([Example](../examples/react/src/sections/UseBlockNumber.tsx))
 
 Hook for fetching the current block number.
 
 ```ts
-import { useBlockNumber } from '@web3modal/ethereum'
+import { useBlockNumber } from '@web3modal/react'
 
 // Usage
 const { data, error, isLoading, refetch } = useBlockNumber({ watch: true })
@@ -184,18 +186,18 @@ interface Options {
 
 ---
 
-### useContract ([Example](../../examples/react/src/sections/UseContract.tsx))
+### useContract ([Example](../examples/react/src/sections/UseContract.tsx))
 
 Hook for declaratively creating an ethers [Contract](https://docs.ethers.io/v5/api/contract/contract/) instance.
 
 ```ts
-import { useContract } from '@web3modal/ethereum'
+import { useContract } from '@web3modal/react'
 import ensRegistryABI from './yourAbi/ensRegistryABI.json'
 
 // Usage
-const contract = useContract({
-  addressOrName: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
-  contractInterface: ensRegistryABI
+const { contract, isReady } = useContract({
+  address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+  abi: ensRegistryABI
 })
 
 // Returns
@@ -203,55 +205,58 @@ ethers.Contract | undefined
 
 // Options
 interface Options {
-  addressOrName: string
-  contractInterface: ContractInterface
-  signerOrProvider?: Provider | Signer
+  contract?: {
+    address: string
+    abi: ContractInterface
+    signerOrProvider?: Provider | Signer
+  }
+  isReady: boolean
 }
 ```
 
 ---
 
-### useContractEvent ([Example](../../examples/react/src/sections/UseContractEvent.tsx))
+### useContractEvent ([Example](../examples/react/src/sections/UseContractEvent.tsx))
 
 Hook for subscribing to ethers Contract [events](https://docs.ethers.io/v5/api/contract/contract/#Contract--events).
 
 ```ts
-import { useContractEvent } from '@web3modal/ethereum'
+import { useContractEvent } from '@web3modal/react'
 import ensRegistryABI from './yourAbi/ensRegistryABI.json'
 
 // Usage
 useContractEvent({
-  addressOrName: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
-  contractInterface: ensRegistryABI,
+  address: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+  abi: ensRegistryABI,
   eventName: 'NewOwner',
-  listener: event => console.log(event)
+  listener: (...event) => console.log(event)
 })
 
 // Options
 interface Options {
-  addressOrName: string
-  contractInterface: ContractInterface
+  address: string
+  abi: ContractInterface
   eventName: string
-  listener: (event?: any) => void
-  chainId? number
+  listener: (...event: unknown[]) => void
+  chainId?: number
   once?: boolean
 }
 ```
 
 ---
 
-### useContractRead ([Example](../../examples/react/src/sections/UseContractRead.tsx))
+### useContractRead ([Example](../examples/react/src/sections/UseContractRead.tsx))
 
 Hook for calling an ethers Contract [read-only](https://docs.ethers.io/v5/api/contract/contract/#Contract--readonly) method.
 
 ```ts
-import { useContractRead } from '@web3modal/ethereum'
+import { useContractRead } from '@web3modal/react'
 import wagmigotchiABI from './yourAbi/wagmigotchiABI.json'
 
 // Usage
 const { data, error, isLoading, refetch } = useContractRead({
-  addressOrName: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1',
-  contractInterface: wagmigotchiABI,
+  address: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1',
+  abi: wagmigotchiABI,
   functionName: 'getHunger'
 })
 
@@ -265,10 +270,10 @@ interface Return {
 
 // Options
 interface Options {
-  addressOrName: string
-  contractInterface: ContractInterface
+  address: string
+  abi: ContractInterface
   functionName: string
-  args?: any
+  args?: any[]
   overrides?: CallOverrides
   chainId?: number
   enabled?: boolean
@@ -278,12 +283,12 @@ interface Options {
 
 ---
 
-### useEnsAddress ([Example](../../examples/react/src/sections/UseEnsAddress.tsx))
+### useEnsAddress ([Example](../examples/react/src/sections/UseEnsAddress.tsx))
 
 Hook for fetching address for ENS name.
 
 ```ts
-import { useEnsAddress } from '@web3modal/ethereum'
+import { useEnsAddress } from '@web3modal/react'
 
 // Usage
 const { data, error, isLoading, refetch } = useEnsAddress({
@@ -308,12 +313,12 @@ interface Options {
 
 ---
 
-### useEnsAvatar ([Example](../../examples/react/src/sections/UseEnsAvatar.tsx))
+### useEnsAvatar ([Example](../examples/react/src/sections/UseEnsAvatar.tsx))
 
 Hook for fetching avatar for ENS name.
 
 ```ts
-import { useEnsAvatar } from '@web3modal/ethereum'
+import { useEnsAvatar } from '@web3modal/react'
 
 // Usage
 const { data, error, isLoading, refetch } = useEnsAvatar({
@@ -338,12 +343,12 @@ interface Options {
 
 ---
 
-### useEnsName ([Example](../../examples/react/src/sections/UseEnsName.tsx))
+### useEnsName ([Example](../examples/react/src/sections/UseEnsName.tsx))
 
 Hook for fetching ENS name for address.
 
 ```ts
-import { useEnsName } from '@web3modal/ethereum'
+import { useEnsName } from '@web3modal/react'
 
 // Usage
 const { data, error, isLoading, refetch } = useEnsName({
@@ -368,12 +373,12 @@ interface Options {
 
 ---
 
-### useEnsResolver ([Example](../../examples/react/src/sections/UseEnsResolver.tsx))
+### useEnsResolver ([Example](../examples/react/src/sections/UseEnsResolver.tsx))
 
 Hook for fetching the resolver for ENS name.
 
 ```ts
-import { useEnsResolver } from '@web3modal/ethereum'
+import { useEnsResolver } from '@web3modal/react'
 
 // Usage
 const { data, error, isLoading, refetch } = useEnsResolver({
@@ -398,12 +403,12 @@ interface Options {
 
 ---
 
-### useFeeData ([Example](../../examples/react/src/sections/UseFeeData.tsx))
+### useFeeData ([Example](../examples/react/src/sections/UseFeeData.tsx))
 
 Hook for fetching network fee information.
 
 ```ts
-import { useFeeData } from '@web3modal/ethereum'
+import { useFeeData } from '@web3modal/react'
 
 // Usage
 const { data, error, isLoading, refetch } = useFeeData({ formatUnits: 'gwei' })
@@ -436,66 +441,79 @@ interface Options {
 
 ---
 
-### useNetwork ([Example](../../examples/react/src/sections/UseNetwork.tsx))
+### useNetwork ([Example](../examples/react/src/sections/UseNetwork.tsx))
 
 Hook for accessing network data, such as current connected chain and connector chains.
 
 ```ts
-import { useNetwork } from '@web3modal/ethereum'
+import { useNetwork } from '@web3modal/react'
 
 // Usage
-const { chain, chains } = useNetwork()
+const { network, isReady } = useNetwork()
 
 // Returns
 interface Return {
-  chain?: Chain & { unsupported?: boolean }
-  chains?: Chain[]
+  network?: {
+    chain?: Chain & { unsupported?: boolean }
+    chains?: Chain[]
+  }
+  isReady: boolean
 }
 ```
 
 ---
 
-### useProvider ([Example](../../examples/react/src/sections/UseProvider.tsx))
+### useProvider ([Example](../examples/react/src/sections/UseProvider.tsx))
 
 Hook for accessing Client's ethers [Provider](https://docs.ethers.io/v5/api/providers/).
 
 ```ts
-import { useProvider } from '@web3modal/ethereum'
+import { useProvider } from '@web3modal/react'
 
 // Usage
-const provider = useProvider()
+const { provider, isReady } = useProvider(options)
 
 // Returns
-ethers.Provider?
+interface Return {
+  provider?: ethers.Provider
+  isReady: boolean
+}
+
+interface Options {
+  chainId?: number
+}
 ```
 
 ---
 
-### useWebsocketProvider ([Example](../../examples/react/src/sections/UseProvider.tsx))
+### useWebsocketProvider ([Example](../examples/react/src/sections/UseProvider.tsx))
 
 Hook for accessing the Client's ethers [WebSocket Provider](https://docs.ethers.io/v5/api/providers/other/#WebSocketProvider).
 
 ```ts
-import { useWebsocketProvider } from '@web3modal/ethereum'
+import { useWebsocketProvider } from '@web3modal/react'
 
 // Usage
-const websocketProvider = useWebsocketProvider()
+const { websocketProvider, isReady } = useWebsocketProvider()
 
 // Returns
-ethers.WebSocketProvider?
+interface Return {
+  websocketProvider?: ethers.WebSocketProvider
+  isReady: boolean
+}
 ```
 
 ---
 
-### useSigner ([Example](../../examples/react/src/sections/UseSigner.tsx))
+### useSigner ([Example](../examples/react/src/sections/UseSigner.tsx))
 
 Hook for accessing ethers [Signer](https://docs.ethers.io/v5/api/signer/) object for connected account.
 
 ```ts
-import { useSigner } from '@web3modal/ethereum'
+import { useSigner } from '@web3modal/react'
 
 // Usage
-const { data, error, isLoading } = useSigner()
+const { data, error, isLoading } = useSigner(options)
 
 // Returns
 interface Return {
@@ -504,16 +522,20 @@ interface Return {
   isLoading: boolean
   refetch: (options?: Options) => Promise<Return['data']>
 }
+
+interface Options {
+  chainId?: number
+}
 ```
 
 ---
 
-### useToken ([Example](../../examples/react/src/sections/UseToken.tsx))
+### useToken ([Example](../examples/react/src/sections/UseToken.tsx))
 
 Hook for fetching ERC-20 token information.
 
 ```ts
-import { useToken } from '@web3modal/ethereum'
+import { useToken } from '@web3modal/react'
 
 // Usage
 const { data, error, isLoading, refetch } = useToken({
@@ -548,12 +570,12 @@ interface Options {
 
 ---
 
-### useTransaction ([Example](../../examples/react/src/sections/UseTransaction.tsx))
+### useTransaction ([Example](../examples/react/src/sections/UseTransaction.tsx))
 
 Hook for fetching transaction by hash.
 
 ```ts
-import { useTransaction } from '@web3modal/ethereum'
+import { useTransaction } from '@web3modal/react'
 
 // Usage
 const { data, error, isLoading, refetch } = useTransaction({
@@ -578,12 +600,12 @@ interface Options {
 
 ---
 
-### useWaitForTransaction ([Example](../../examples/react/src/sections/UseWaitForTransaction.tsx))
+### useWaitForTransaction ([Example](../examples/react/src/sections/UseWaitForTransaction.tsx))
 
 Hook for declaratively waiting until transaction is processed. Pairs well with `useContractWrite` and `useSendTransaction`.
 
 ```ts
-import { useWaitForTransaction } from '@web3modal/ethereum'
+import { useWaitForTransaction } from '@web3modal/react'
 
 // Usage
 const { data, error, isLoading, refetch } = useWaitForTransaction({
@@ -614,18 +636,18 @@ Hooks that expose action / write opperations.
 
 ---
 
-### useContractWrite ([Example](../../examples/react/src/sections/UseContractWrite.tsx))
+### useContractWrite ([Example](../examples/react/src/sections/UseContractWrite.tsx))
 
 Hook for calling an ethers Contract [write](https://docs.ethers.io/v5/api/contract/contract/#Contract--write) method. Perpares transaction under the hood i.e. estimates gas price.
 
 ```ts
-import { useContractWrite } from '@web3modal/ethereum'
+import { useContractWrite } from '@web3modal/react'
 import wagmigotchiABI from './yourAbi/wagmigotchiABI.json'
 
 // Usage
 const { data, error, isLoading, write } = useContractWrite({
-  addressOrName: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1',
-  contractInterface: wagmigotchiABI,
+  address: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1',
+  abi: wagmigotchiABI,
   functionName: 'feed'
 })
 write()
@@ -642,7 +664,7 @@ interface Return {
 interface Options {
   functionName: string
   chainId?: number | undefined
-  args?: any
+  args?: any[]
   overrides?: CallOverrides
   signer?: Signer
 }
@@ -655,7 +677,7 @@ interface Options {
 Hook for disconnecting the connected account.
 
 ```ts
-import { useDisconnect } from '@web3modal/ethereum'
+import { useDisconnect } from '@web3modal/react'
 
 // Usage
 const disconnect = useDisconnect()
@@ -667,12 +689,12 @@ disconnect()
 
 ---
 
-### useSendTransaction ([Example](../../examples/react/src/sections/UseSendTransaction.tsx))
+### useSendTransaction ([Example](../examples/react/src/sections/UseSendTransaction.tsx))
 
 Hook for sending a transaction. Perpares transaction under the hood i.e. estimates gas price.
 
 ```ts
-import { useSendTransaction } from '@web3modal/ethereum'
+import { useSendTransaction } from '@web3modal/react'
 import { BigNumber } from 'ethers'
 
 // Usage
@@ -704,12 +726,12 @@ interface Options {
 
 ---
 
-### useSignMessage ([Example](../../examples/react/src/sections/UseSignMessage.tsx))
+### useSignMessage ([Example](../examples/react/src/sections/UseSignMessage.tsx))
 
 Hook for signing messages with connected account.
 
 ```ts
-import { useSignMessage } from '@web3modal/ethereum'
+import { useSignMessage } from '@web3modal/react'
 
 // Usage
 const { data, error, isLoading, signMessage } = useSignMessage({
@@ -733,12 +755,12 @@ interface Options {
 
 ---
 
-### useSignTypedData ([Example](../../examples/react/src/sections/UseSignTypedData.tsx))
+### useSignTypedData ([Example](../examples/react/src/sections/UseSignTypedData.tsx))
 
 Hook for signing messages with connected account.
 
 ```ts
-import { useSignTypedData } from '@web3modal/ethereum'
+import { useSignTypedData } from '@web3modal/react'
 
 // Usage
 const { data, error, isLoading, signTypedData } = useSignTypedData({
@@ -778,12 +800,12 @@ interface Options {
 
 ---
 
-### useSwitchNetwork ([Example](../../examples/react/src/sections/UseSwitchNetwork.tsx))
+### useSwitchNetwork ([Example](../examples/react/src/sections/UseSwitchNetwork.tsx))
 
 Hook for switching networks with a connector.
 
 ```ts
-import { useSwitchNetwork } from '@web3modal/ethereum'
+import { useSwitchNetwork } from '@web3modal/react'
 
 // Usage
 const { data, error, isLoading, switchNetwork } = useSwitchNetwork({

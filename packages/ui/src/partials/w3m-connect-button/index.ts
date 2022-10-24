@@ -1,4 +1,4 @@
-import { ConnectModalCtrl } from '@web3modal/core'
+import { ModalCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -21,7 +21,7 @@ export class W3mConnectButton extends ThemedElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.modalUnsub = ConnectModalCtrl.subscribe(modalState => {
+    this.modalUnsub = ModalCtrl.subscribe(modalState => {
       if (modalState.open) this.loading = true
       if (!modalState.open) this.loading = false
     })
@@ -42,7 +42,7 @@ export class W3mConnectButton extends ThemedElement {
   private onOpen() {
     try {
       this.loading = true
-      ConnectModalCtrl.openModal()
+      ModalCtrl.open()
     } catch {
       this.loading = false
     }

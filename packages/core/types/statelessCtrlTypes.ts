@@ -37,7 +37,9 @@ export type WebSocketProviderCtrlWatchOptions = Parameters<EthApi['watchWebSocke
 export type WebSocketProviderCtrlWatchCallback = Parameters<EthApi['watchWebSocketProvider']>[1]
 
 // -- SignerProviderCtrl ----------------------------------- //
-export type SignerCtrlWatchCallback = Parameters<EthApi['watchSigner']>[0]
+export type SignerCtrlWatchOptions = Parameters<EthApi['watchSigner']>[0]
+
+export type SignerCtrlWatchCallback = Parameters<EthApi['watchSigner']>[1]
 
 export type SignerCtrlSignMessageArgs = Parameters<EthApi['signMessage']>[0]
 

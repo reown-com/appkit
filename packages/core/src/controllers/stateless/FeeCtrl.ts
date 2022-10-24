@@ -2,7 +2,7 @@ import type { FeeCtrlFetchArgs, FeeCtrlFetchReturnValue } from '../../../types/s
 import { ClientCtrl } from '../statefull/ClientCtrl'
 
 export const FeeCtrl = {
-  watch(args: FeeCtrlFetchArgs, callback: (data: FeeCtrlFetchReturnValue) => void) {
+  watch(callback: (data: FeeCtrlFetchReturnValue) => void, args: FeeCtrlFetchArgs) {
     const unwatch = ClientCtrl.ethereum().watchBlockNumber({ ...args, listen: true }, async () => {
       const data = await FeeCtrl.fetch(args)
       callback(data)

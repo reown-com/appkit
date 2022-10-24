@@ -1,12 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import type * as WagmiTypes from '@wagmi/core'
 import { chain, configureChains, createClient } from '@wagmi/core'
-import { publicProvider } from '@wagmi/core/providers/public'
-import { Buffer } from 'buffer'
 import type { EthereumOptions } from '../../types/apiTypes'
-import { defaultConnectors } from './wagmiTools'
-
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-if (typeof window !== 'undefined' && !window.Buffer) window.Buffer = Buffer
+import { defaultConnectors, providers } from './wagmiTools'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let client = undefined as WagmiTypes.Client<any, any> | undefined
@@ -15,9 +11,9 @@ export function getClient() {
   return client
 }
 
-export function initializeClient(options: EthereumOptions) {
+export function initializeClient(projectId: string, options: EthereumOptions) {
   const configChains = options.chains ?? [chain.mainnet]
-  const configProviders = options.providers ?? [publicProvider()]
+  const configProviders = options.providers ?? [providers.walletConnectProvider({ projectId })]
   const configAutoConnect = options.autoConnect ?? true
 
   const { chains, provider, webSocketProvider } = configureChains(configChains, configProviders)

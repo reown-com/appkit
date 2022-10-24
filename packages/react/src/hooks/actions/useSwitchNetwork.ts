@@ -7,7 +7,7 @@ export function useSwitchNetwork(args?: NetworkCtrlSwitchNetworkArgs) {
   const chainAgnosticArgs = useChainAgnosticOptions(args ?? {})
   const { onFetch, ...rest } = useAsyncController({
     fetchFn: NetworkCtrl.switchNetwork,
-    args: { ...chainAgnosticArgs, enabled: false }
+    args: { ...chainAgnosticArgs, enabled: false, watch: false }
   })
 
   return {

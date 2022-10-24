@@ -11,7 +11,7 @@ export function useTransaction(args: Arguments) {
   const chainAgnosticArgs = useChainAgnosticOptions(args)
   const { onFetch, ...rest } = useAsyncController({
     fetchFn: TransactionCtrl.fetch,
-    args: chainAgnosticArgs
+    args: { ...chainAgnosticArgs, watch: false }
   })
 
   return {

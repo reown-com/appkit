@@ -5,7 +5,7 @@ import type {
 import { ClientCtrl } from '../statefull/ClientCtrl'
 
 export const NetworkCtrl = {
-  watch(_options: undefined, callback: NetworkCtrlWatchCallback) {
+  watch(callback: NetworkCtrlWatchCallback) {
     const unwatch = ClientCtrl.ethereum().watchNetwork(callback)
 
     return unwatch

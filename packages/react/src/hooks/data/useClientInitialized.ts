@@ -7,7 +7,9 @@ export function useClientInitialized() {
   useEffect(() => {
     const unsubscribe = ClientCtrl.subscribe(newClient => setInitialized(newClient.initialized))
 
-    return () => unsubscribe()
+    return () => {
+      unsubscribe()
+    }
   }, [])
 
   return initialized

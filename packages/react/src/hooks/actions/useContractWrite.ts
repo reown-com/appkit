@@ -9,7 +9,8 @@ export function useContractWrite(args: ContractCtrlWriteArgs) {
     fetchFn: ContractCtrl.write,
     args: {
       ...chainAgnosticArgs,
-      enabled: false
+      enabled: false,
+      watch: false
     }
   })
 

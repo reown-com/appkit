@@ -11,7 +11,7 @@ export function useToken(args: Arguments) {
   const chainAgnosticArgs = useChainAgnosticOptions(args)
   const { onFetch, ...rest } = useAsyncController({
     fetchFn: TokenCtrl.fetch,
-    args: chainAgnosticArgs
+    args: { ...chainAgnosticArgs, watch: false }
   })
 
   return {

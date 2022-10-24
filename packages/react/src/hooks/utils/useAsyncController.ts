@@ -13,7 +13,7 @@ type Arguments<TArgs> = TArgs & {
 
 interface Options<TArgs, TReturn> {
   fetchFn: (args: TArgs) => Promise<Nullable<TReturn>>
-  watchFn?: (args: TArgs, callback: (watchData: Nullable<TReturn>) => void) => () => void
+  watchFn?: (callback: (watchData: Nullable<TReturn>) => void, args: TArgs) => () => void
   args: Arguments<TArgs>
   hasRequiredArgs?: boolean
 }
@@ -71,7 +71,13 @@ export function useAsyncController<TArgs, TReturn>({
   useEffect(() => {
     let unwatch: (() => void) | undefined = undefined
     if (watch && !isFirstFetch && watchFn)
-      unwatch = watchFn(args, newData => setData(CoreHelpers.isNull(newData) ? undefined : newData))
+      unwatch = watchFn(newData => {
+        if (CoreHelpers.isNull(newData)) setData(undefined)
+        else {
+          setData(newData)
+          setIsLoading(false)
+        }
+      }, args)
 
     return () => {
       unwatch?.()
@@ -80,7 +86,7 @@ export function useAsyncController<TArgs, TReturn>({
 
   // Re-fetch when input args change
   useOptionsChange(() => {
-    if (!watch && !isFirstFetch) onFetch()
+    if (!watch && !isFirstFetch && ready) onFetch()
   }, args)
 
   return {
