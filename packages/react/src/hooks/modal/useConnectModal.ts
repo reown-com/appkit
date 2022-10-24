@@ -7,7 +7,9 @@ export function useConnectModal() {
   useEffect(() => {
     const unsubscribe = ModalCtrl.subscribe(newModal => setModal({ ...newModal }))
 
-    return () => unsubscribe()
+    return () => {
+      unsubscribe()
+    }
   }, [])
 
   return {
