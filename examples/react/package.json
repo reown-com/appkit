@@ -16,6 +16,7 @@
   "devDependencies": {
     "@types/node": "18.11.4",
     "@types/react": "18.0.21",
-    "@types/react-dom": "18.0.6"
+    "@types/react-dom": "18.0.6",
+    "next-transpile-modules": "9.1.0"
   }
 }
