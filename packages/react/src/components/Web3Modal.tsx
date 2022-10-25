@@ -16,6 +16,7 @@ interface Props {
 export function Web3Modal({ config }: Props) {
   const onConfigure = useCallback(async () => {
     ConfigCtrl.setConfig(config)
+    await ClientCtrl.setSolanaClient({ projectId: config.projectId })
     if (config.ethereum) await ClientCtrl.setEthereumClient(config.ethereum)
     await import('@web3modal/ui')
   }, [config])

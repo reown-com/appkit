@@ -1,4 +1,5 @@
 import type { EthereumOptions, Web3ModalEthereum } from '@web3modal/ethereum'
+import type { Web3ModalSolana } from '@web3modal/solana'
 
 // -- ConfigCtrl ------------------------------------------- //
 export interface ConfigOptions {
@@ -38,6 +39,7 @@ export interface PageParams {
   entries?: number
   version?: number
   device?: 'desktop' | 'mobile'
+  chains?: string
   order?: 'asc' | 'desc'
 }
 
@@ -113,6 +115,7 @@ export interface RouterCtrlState {
 export interface ClientCtrlState {
   initialized: boolean
   ethereum?: typeof Web3ModalEthereum
+  solana?: typeof Web3ModalSolana
 }
 
 export type ClientCtrlSetEthereumClientArgs = EthereumOptions

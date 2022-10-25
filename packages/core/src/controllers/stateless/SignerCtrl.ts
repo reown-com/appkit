@@ -19,9 +19,15 @@ export const SignerCtrl = {
   },
 
   async signMessage(args: SignerCtrlSignMessageArgs) {
-    const data = await ClientCtrl.ethereum().signMessage(args)
-
-    return data
+    switch (ClientCtrl.getActiveClient()) {
+      case 'ethereum':
+        return ClientCtrl.ethereum().signMessage(args)
+      case 'solana':
+        if (typeof args.message === 'string') return ClientCtrl.solana().signMessage(args.message)
+        throw new Error('Solana client can not sign raw bytes')
+      default:
+        throw new Error('No active client configured')
+    }
   },
 
   async signTypedData(args: SignerCtrlSignTypedDataArgs) {

@@ -2,6 +2,7 @@
   "npmClient": "yarn",
   "packages": [
     "chains/ethereum",
+    "chains/solana",
     "packages/core",
     "packages/ui",
     "packages/react"

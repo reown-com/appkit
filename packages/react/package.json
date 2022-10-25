@@ -13,12 +13,10 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:source": "rollup --silent --config rollup.config.js",
     "build": "npm run build:clean; npm run build:types; npm run build:source",
+    "dev": "rollup --config rollup.config.js --watch",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "@web3modal/core": "2.0.0-alpha.7",
-    "@web3modal/ui": "2.0.0-alpha.7"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",

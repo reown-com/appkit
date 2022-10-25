@@ -1,6 +1,7 @@
 {
-  "name": "@web3modal/ui",
+  "name": "@web3modal/solana",
   "version": "2.0.0-alpha.7",
+  "description": "Solana connector for web3modal",
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.js",
   "type": "module",
@@ -16,35 +17,16 @@
     "dev": "rollup --config rollup.config.js --watch",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "lit": "2.4.0",
-    "motion": "10.14.2",
-    "qrcode": "1.5.1"
-  },
-  "devDependencies": {
-    "@types/qrcode": "1.5.0",
-    "eslint-plugin-lit": "1.6.1",
-    "eslint-plugin-wc": "1.3.2"
-  },
   "keywords": [
     "web3",
     "crypto",
-    "ethereum",
+    "solana",
     "web3modal",
     "walletconnect",
-    "web3auth",
-    "lit",
-    "webcomponents",
-    "ui"
+    "web3auth"
   ],
-  "author": "WalletConnect <walletconnect.com>",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/web3modal/web3modal",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/web3modal/web3modal.git"
-  },
-  "bugs": {
-    "url": "https://github.com/web3modal/web3modal/issues"
+  "dependencies": {
+    "@walletconnect/solib": "^0.1.4"
   }
 }

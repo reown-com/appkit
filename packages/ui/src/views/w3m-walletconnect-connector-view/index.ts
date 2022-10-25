@@ -29,9 +29,22 @@ export class W3mWalletConnectConnectorView extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private async getConnectionUri() {
+    console.log('Getting connection')
     try {
-      await ClientCtrl.ethereum().connectWalletConnect(uri => (this.uri = uri))
-      ConnectModalCtrl.closeModal()
+      switch (ClientCtrl.getActiveClient()) {
+        case 'ethereum':
+          await ClientCtrl.ethereum().connectWalletConnect(uri => (this.uri = uri))
+          ConnectModalCtrl.closeModal()
+          break
+        case 'solana':
+          await ClientCtrl.solana().connectWalletConnect(
+            uri => (this.uri = uri),
+            ConnectModalCtrl.closeModal
+          )
+          break
+        default:
+          throw new Error('No active Client')
+      }
     } catch (err) {
       ModalToastCtrl.openToast(getErrorMessage(err), 'error')
     }

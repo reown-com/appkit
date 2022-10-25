@@ -78,7 +78,8 @@ export class W3mWalletExplorerView extends LitElement {
           entries: PAGE_ENTRIES,
           version: 1,
           device: CoreHelpers.isMobile() ? 'mobile' : 'desktop',
-          search: this.search
+          search: this.search,
+          chains: 'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ'
         })
         const images = newListings.map(({ image_url }) => image_url.lg)
         await Promise.all([...images.map(async url => preloadImage(url)), CoreHelpers.wait(300)])

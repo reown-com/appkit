@@ -1,17 +1,42 @@
 import type { AccountCtrlWatchCallback } from '../../../types/statelessCtrlTypes'
 import { ClientCtrl } from '../statefull/ClientCtrl'
 
+function addressCallback(address: string | undefined, callback: AccountCtrlWatchCallback) {
+  if (address)
+    callback({
+      address,
+      isConnected: true
+    })
+  else callback({ address: undefined, isConnected: false })
+}
+
 export const AccountCtrl = {
   watch(_options: undefined, callback: AccountCtrlWatchCallback) {
-    const unwatch = ClientCtrl.ethereum().watchAccount(callback)
+    switch (ClientCtrl.getActiveClient()) {
+      case 'ethereum':
+        return ClientCtrl.ethereum().watchAccount(({ address }) =>
+          addressCallback(address, callback)
+        )
+      case 'solana':
+        console.log('Here watch', ClientCtrl.solana().getAccount())
 
-    return unwatch
+        return ClientCtrl.solana().watchAddress(address => addressCallback(address, callback))
+      default:
+        throw new Error('No provider that supports that getting account')
+    }
   },
 
   get() {
-    const data = ClientCtrl.ethereum().getAccount()
+    switch (ClientCtrl.getActiveClient()) {
+      case 'ethereum':
+        return ClientCtrl.ethereum().getAccount()
+      case 'solana':
+        console.log('Here get', ClientCtrl.solana().getAccount())
 
-    return data
+        return ClientCtrl.solana().getAccount()
+      default:
+        throw new Error('No provider that supports that getting account')
+    }
   },
 
   disconnect() {

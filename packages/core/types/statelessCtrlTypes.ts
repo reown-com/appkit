@@ -1,11 +1,20 @@
 import type { Web3ModalEthereum } from '@web3modal/ethereum'
+import type { Web3ModalSolana } from '@web3modal/solana'
 
 // -- utils ------------------------------------------------ //
 type EthApi = typeof Web3ModalEthereum
+type SolApi = typeof Web3ModalSolana
 type ResolvePromiseReturn<T> = T extends Promise<infer U> ? U : T
 
 // -- AccountCtrl ------------------------------------------ //
-export type AccountCtrlWatchCallback = Parameters<EthApi['watchAccount']>[0]
+export type AccountCtrlWatchCallback = (
+  accountData:
+    | {
+        address: string
+        isConnected: true
+      }
+    | { address: undefined; isConnected: false }
+) => void
 
 export type AccountCtrlGetReturnValue = ReturnType<EthApi['getAccount']>
 
@@ -63,8 +72,9 @@ export type TokenCtrlFetchArgs = Parameters<EthApi['fetchToken']>[0]
 // -- TransactionCtrl -------------------------------------- //
 export type TransactionCtrlFetchArgs = Parameters<EthApi['fetchTransaction']>[0]
 
-export type TransactionCtrlSendArgs = Parameters<EthApi['prepareSendTransaction']>[0]
-
+export type TransactionCtrlSendArgs =
+  | Parameters<EthApi['prepareSendTransaction']>[0]
+  | Parameters<SolApi['signAndSendTransaction']>[1]
 export type TransactionCtrlWaitArgs = Parameters<EthApi['waitForTransaction']>[0]
 
 // -- ContractCtrl ----------------------------------------- //

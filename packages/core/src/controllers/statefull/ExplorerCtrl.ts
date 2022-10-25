@@ -17,8 +17,13 @@ export const ExplorerCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  async getPreviewWallets() {
-    const { listings } = await fetchWallets({ page: 1, entries: 10, version: 1 })
+  async getPreviewWallets(chains?: string[]) {
+    const { listings } = await fetchWallets({
+      page: 1,
+      entries: 10,
+      version: 1,
+      chains: chains?.join(',')
+    })
     state.previewWallets = Object.values(listings)
 
     return state.previewWallets

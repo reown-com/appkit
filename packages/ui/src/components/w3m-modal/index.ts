@@ -64,7 +64,7 @@ export class W3mModal extends ThemedElement {
     this.initialized = true
     this.toggleBodyScroll(false)
     if (this.firstOpen) {
-      await ExplorerCtrl.getPreviewWallets()
+      await ExplorerCtrl.getPreviewWallets(['solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ'])
       const wallets = ExplorerCtrl.state.previewWallets.map(({ image_url }) => image_url.lg)
       const defaultWallets = defaultWalletImages()
       await Promise.all([

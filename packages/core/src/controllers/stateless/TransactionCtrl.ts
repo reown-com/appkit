@@ -13,10 +13,20 @@ export const TransactionCtrl = {
   },
 
   async send(args: TransactionCtrlSendArgs) {
-    const config = await ClientCtrl.ethereum().prepareSendTransaction(args)
-    const data = await ClientCtrl.ethereum().sendTransaction(config)
-
-    return data
+    switch (ClientCtrl.getActiveClient()) {
+      case 'ethereum':
+        if ('request' in args)
+          return ClientCtrl.ethereum().sendTransaction(
+            await ClientCtrl.ethereum().prepareSendTransaction(args)
+          )
+        throw new Error('Args did not match Ethereum Parameters')
+      case 'solana':
+        if ('amountInLamports' in args)
+          return ClientCtrl.solana().signAndSendTransaction('transfer', args)
+        throw new Error('Args did not match Solana Parameters')
+      default:
+        throw new Error('No provider available to send transaction')
+    }
   },
 
   async wait(args: TransactionCtrlWaitArgs) {

@@ -6,17 +6,26 @@ import { ClientCtrl } from '../statefull/ClientCtrl'
 
 export const BalanceCtrl = {
   watch(args: BalanceCtrlFetchArgs, callback: (data: BalanceCtrlFetchReturnValue) => void) {
-    const unwatch = ClientCtrl.ethereum().watchBlockNumber({ ...args, listen: true }, async () => {
-      const data = await BalanceCtrl.fetch(args)
-      callback(data)
-    })
+    switch (ClientCtrl.getActiveClient()) {
+      case 'ethereum':
+        return ClientCtrl.ethereum().watchBlockNumber({ ...args, listen: true }, async () => {
+          const data = (await BalanceCtrl.fetch(args)) as BalanceCtrlFetchReturnValue
+          callback(data)
+        })
 
-    return unwatch
+      default:
+        throw new Error('No active client that supports watching')
+    }
   },
 
   async fetch(args: BalanceCtrlFetchArgs) {
-    const data = await ClientCtrl.ethereum().fetchBalance(args)
-
-    return data
+    switch (ClientCtrl.getActiveClient()) {
+      case 'ethereum':
+        return ClientCtrl.ethereum().fetchBalance(args)
+      case 'solana':
+        return ClientCtrl.solana().getBalance(args.addressOrName)
+      default:
+        throw new Error('No active client that supports fetching balance')
+    }
   }
 }
