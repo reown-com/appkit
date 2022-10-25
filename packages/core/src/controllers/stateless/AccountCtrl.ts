@@ -1,5 +1,6 @@
 import type { AccountCtrlWatchCallback } from '../../../types/statelessCtrlTypes'
 import { ClientCtrl } from '../statefull/ClientCtrl'
+import { OptionsCtrl } from '../statefull/OptionsCtrl'
 
 export const AccountCtrl = {
   watch(callback: AccountCtrlWatchCallback) {
@@ -16,5 +17,6 @@ export const AccountCtrl = {
 
   disconnect() {
     ClientCtrl.ethereum().disconnect()
+    OptionsCtrl.setSelectedChainId(undefined)
   }
 }
