@@ -1,4 +1,3 @@
-import { RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 
@@ -7,8 +6,8 @@ export class W3mSelectNetworkView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      Select Network View
-      <button @click=${() => RouterCtrl.replace('ConnectWallet')}>Go To ConnectWallet</button>
+      <w3m-modal-header title="Select Network"></w3m-modal-header>
+      <w3m-modal-content>Yes</w3m-modal-content>
     `
   }
 }

@@ -10,7 +10,7 @@ const state = proxy<OptionsCtrlState>({
 export const OptionsCtrl = {
   state,
 
-  setSelectedChainId(selectedChainId: number) {
+  setSelectedChainId(selectedChainId: OptionsCtrlState['selectedChainId']) {
     state.selectedChainId = selectedChainId
   }
 }
