@@ -1,4 +1,4 @@
-import { ClientCtrl, ModalCtrl } from '@web3modal/core'
+import { ClientCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -36,7 +36,7 @@ export class W3mInjectedConnectorView extends LitElement {
       if (ready) {
         this.error = false
         this.connecting = true
-        await ClientCtrl.ethereum().connectInjected()
+        await ClientCtrl.ethereum().connectInjected(OptionsCtrl.state.selectedChainId)
         ModalCtrl.close()
       }
     } catch (error: unknown) {

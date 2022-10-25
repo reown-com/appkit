@@ -25,6 +25,11 @@ export interface ModalCtrlState {
   open: boolean
 }
 
+// -- OptionsCtrl --------------------------------------- //
+export interface OptionsCtrlState {
+  selectedChainId?: number
+}
+
 // -- ExplorerCtrl ------------------------------------------- //
 export interface ExplorerCtrlState {
   wallets: ListingResponse & { page: number }

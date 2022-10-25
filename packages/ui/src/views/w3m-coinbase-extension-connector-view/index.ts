@@ -1,4 +1,4 @@
-import { ClientCtrl, ModalCtrl } from '@web3modal/core'
+import { ClientCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -32,7 +32,7 @@ export class W3mCoinbaseExtensionConnectorView extends LitElement {
     try {
       this.error = false
       this.connecting = true
-      await ClientCtrl.ethereum().connectCoinbaseExtension()
+      await ClientCtrl.ethereum().connectCoinbaseExtension(OptionsCtrl.state.selectedChainId)
       ModalCtrl.close()
     } catch (error: unknown) {
       this.error = true

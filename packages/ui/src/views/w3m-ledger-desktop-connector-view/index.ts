@@ -1,4 +1,4 @@
-import { ClientCtrl, CoreHelpers, ModalCtrl, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, CoreHelpers, ModalCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-button'
@@ -24,8 +24,9 @@ export class W3mLedgerDesktopConnectorView extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private async onConnect() {
-    await ClientCtrl.ethereum().connectLinking(uri =>
-      CoreHelpers.openHref(CoreHelpers.formatNativeUrl('ledgerlive', uri, 'Ledger Live'))
+    await ClientCtrl.ethereum().connectLinking(
+      uri => CoreHelpers.openHref(CoreHelpers.formatNativeUrl('ledgerlive', uri, 'Ledger Live')),
+      OptionsCtrl.state.selectedChainId
     )
     ModalCtrl.close()
   }
