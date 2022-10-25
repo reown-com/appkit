@@ -2,15 +2,17 @@ import {
   connect,
   watchAddress,
   signMessage,
+  getTransaction,
   signTransaction,
   signAndSendTransaction,
   init,
   getBalance,
-  mainnetBetaProjectSerum,
   PhantomConnector,
   switchConnector,
   WalletConnectConnector,
-  getAddress
+  getAddress,
+  watchTransaction,
+  mainnetBetaProjectSerum
 } from '@walletconnect/solib'
 
 export interface ClientClientArgs {
@@ -44,11 +46,12 @@ export const Web3ModalSolana = {
     init(
       () => ({
         chosenCluster: mainnetBetaProjectSerum,
-        connectorName: PhantomConnector.connectorName(),
+        connectorName: WalletConnectConnector.connectorName,
         connectors: [
           new PhantomConnector(),
           new WalletConnectConnector({
             relayerRegion: 'wss://relay.walletconnect.com',
+            autoconnect: true,
             metadata: {
               description: 'Test solana desc',
               name: 'Solana example',
@@ -72,5 +75,15 @@ export const Web3ModalSolana = {
 
   signTransaction,
 
-  signAndSendTransaction
+  signAndSendTransaction,
+
+  getTransaction,
+
+  async waitForTransaction(transactionSignature: string) {
+    return new Promise(resolve => {
+      watchTransaction(transactionSignature, () => {
+        getTransaction(transactionSignature).then(resolve)
+      })
+    })
+  }
 }

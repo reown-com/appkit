@@ -1,16 +1,10 @@
-import { chains } from '@web3modal/ethereum'
 import { useSendTransaction, useWaitForTransaction } from '@web3modal/react'
-import { BigNumber } from 'ethers'
-
-const { id: chainId } = chains.avalancheFuji
 
 export default function UseSendTransaction() {
   const transaction = {
-    request: {
-      to: '0x000000000000000000000000000000000000dead',
-      value: BigNumber.from('10000000000000000')
-    },
-    chainId
+    to: '5fx8f8Fd6nD4gdXojFhgP58NiHtV6nPVeA85KjhnYdGC',
+    amountInLamports: 200000,
+    feePayer: 'from'
   }
 
   const { data, error, isLoading, sendTransaction } = useSendTransaction(transaction)
@@ -19,13 +13,7 @@ export default function UseSendTransaction() {
   return (
     <section>
       <h1>useSendTransaction / useWaitForTransaction</h1>
-      <p>
-        Note: This example uses avalance fuji testnet, you will need some testnet avax from the
-        faucet
-        <a href="https://faucet.avax.network/" target="_blank" rel="noopener noreferer">
-          https://faucet.avax.network/
-        </a>
-      </p>
+      <p>Note: This example uses solana mainnet </p>
       <ul>
         <li>
           Request: <span>{JSON.stringify(transaction)}</span>
