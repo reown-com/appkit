@@ -1,4 +1,4 @@
-import { ExplorerCtrl, ModalCtrl, RouterCtrl } from '@web3modal/core'
+import { ExplorerCtrl, ModalCtrl, NetworkCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -7,6 +7,7 @@ import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import {
   defaultWalletImages,
+  getChainIcon,
   getShadowRootElement,
   isMobileAnimation,
   preloadImage
@@ -66,9 +67,12 @@ export class W3mModal extends ThemedElement {
       await ExplorerCtrl.getPreviewWallets()
       const walletImgs = ExplorerCtrl.state.previewWallets.map(({ image_url }) => image_url.lg)
       const defaultWalletImgs = defaultWalletImages()
+      const { chains } = NetworkCtrl.get()
+      const chainsImgs = chains.map(chain => getChainIcon(chain.id))
       await Promise.all([
         ...walletImgs.map(async url => preloadImage(url)),
-        ...defaultWalletImgs.map(async url => preloadImage(url))
+        ...defaultWalletImgs.map(async url => preloadImage(url)),
+        ...chainsImgs.map(async url => preloadImage(url))
       ])
     }
   }
@@ -99,7 +103,6 @@ export class W3mModal extends ThemedElement {
       animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
     ])
     this.open = false
-    RouterCtrl.replace('ConnectWallet')
   }
 
   private onKeyDown(event: KeyboardEvent) {
