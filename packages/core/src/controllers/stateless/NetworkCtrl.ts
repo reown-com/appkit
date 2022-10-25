@@ -7,7 +7,10 @@ import { OptionsCtrl } from '../statefull/OptionsCtrl'
 
 export const NetworkCtrl = {
   watch(callback: NetworkCtrlWatchCallback) {
-    const unwatch = ClientCtrl.ethereum().watchNetwork(callback)
+    const unwatch = ClientCtrl.ethereum().watchNetwork(data => {
+      OptionsCtrl.setSelectedChainId(data.chain?.id)
+      callback(data)
+    })
 
     return unwatch
   },
