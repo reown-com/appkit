@@ -8,5 +8,7 @@ export function useNetwork() {
     args: undefined
   })
 
+  if (!data) throw new Error('Failed to retrieve network')
+
   return { ...data }
 }

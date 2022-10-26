@@ -18,8 +18,6 @@ export const AccountCtrl = {
           addressCallback(address, callback)
         )
       case 'solana':
-        console.log('Here watch', ClientCtrl.solana().getAccount())
-
         return ClientCtrl.solana().watchAddress(address => addressCallback(address, callback))
       default:
         throw new Error('No provider that supports that getting account')

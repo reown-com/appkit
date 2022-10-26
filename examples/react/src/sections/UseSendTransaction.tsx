@@ -1,7 +1,7 @@
 import { useSendTransaction, useWaitForTransaction } from '@web3modal/react'
 
 export default function UseSendTransaction() {
-  const transaction = {
+  const transaction: { to: string; amountInLamports: number; feePayer: 'from' } = {
     to: '5fx8f8Fd6nD4gdXojFhgP58NiHtV6nPVeA85KjhnYdGC',
     amountInLamports: 200000,
     feePayer: 'from'

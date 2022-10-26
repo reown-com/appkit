@@ -4,7 +4,7 @@ import { useAsyncController } from '../utils/useAsyncController'
 import { useChainAgnosticOptions } from '../utils/useChainAgnosticOptions'
 
 export function useSwitchNetwork(args?: NetworkCtrlSwitchNetworkArgs) {
-  const chainAgnosticArgs = useChainAgnosticOptions(args ?? {})
+  const chainAgnosticArgs = useChainAgnosticOptions(args && 'chainId' in args ? args : {})
   const { onFetch, ...rest } = useAsyncController({
     fetchFn: NetworkCtrl.switchNetwork,
     args: { ...chainAgnosticArgs, enabled: false }

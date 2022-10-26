@@ -1,7 +1,7 @@
 import { useNetwork } from '@web3modal/react'
 
 export default function UseNetwork() {
-  const { cluster } = useNetwork()
+  const data = useNetwork()
 
   return (
     <section>
@@ -9,7 +9,11 @@ export default function UseNetwork() {
 
       <ul>
         <li>
-          Chain data: <span>{JSON.stringify(cluster)}</span>
+          {'cluster' in data && (
+            <span>
+              Chain data: <span>{JSON.stringify(data.cluster)}</span>
+            </span>
+          )}
         </li>
       </ul>
     </section>

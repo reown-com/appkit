@@ -9,12 +9,8 @@ export function useAccount() {
   })
   const account = {
     address: data?.address ?? '',
-    connector: data?.connector,
     isConnected: data?.isConnected,
-    isReconnecting: data?.isReconnecting,
-    isConnecting: data?.isConnecting,
-    isDisconnected: data?.isConnected,
-    status: data?.status
+    isDisconnected: !data?.isConnected
   }
 
   return account

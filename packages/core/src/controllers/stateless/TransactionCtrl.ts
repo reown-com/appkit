@@ -27,9 +27,9 @@ export const TransactionCtrl = {
         throw new Error('Args did not match Ethereum Parameters')
       case 'solana':
         if ('amountInLamports' in args) {
-          console.log({ args })
-
-          return ClientCtrl.solana().signAndSendTransaction('transfer', args)
+          return {
+            hash: (await ClientCtrl.solana().signAndSendTransaction('transfer', args)) || undefined
+          }
         }
 
         throw new Error('Args did not match Solana Parameters')
