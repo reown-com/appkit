@@ -29,11 +29,19 @@ export type BlockCtrlWatchOptions = Omit<Parameters<EthApi['watchBlockNumber']>[
 export type BlockCtrlWatchCallback = Parameters<EthApi['watchBlockNumber']>[1]
 
 // -- NetworkCtrl ------------------------------------------ //
-export type NetworkCtrlWatchCallback = Parameters<EthApi['watchNetwork']>[0]
+export type NetworkCtrlWatchCallback =
+  | Parameters<EthApi['watchNetwork']>[0]
+  | Parameters<SolApi['watchNetwork']>[0]
+
+export type NetworkCtrlWatchCallbackEth = Parameters<EthApi['watchNetwork']>[0]
+
+export type NetworkCtrlWatchCallbackSol = Parameters<SolApi['watchNetwork']>[0]
 
 export type NetworkCtrlGetReturnValue = ReturnType<EthApi['getNetwork']>
 
-export type NetworkCtrlSwitchNetworkArgs = Parameters<EthApi['switchNetwork']>[0]
+export type NetworkCtrlSwitchNetworkArgs =
+  | Parameters<EthApi['switchNetwork']>[0]
+  | Parameters<SolApi['switchNetwork']>[0]
 
 // -- ProviderCtrl ----------------------------------------- //
 export type ProviderCtrlWatchOptions = Parameters<EthApi['watchProvider']>[0]
@@ -54,6 +62,8 @@ export type SignerCtrlSignTypedDataArgs = Parameters<EthApi['signTypedData']>[0]
 
 // -- FeeCtrl ---------------------------------------------- //
 export type FeeCtrlFetchArgs = Parameters<EthApi['fetchFeeData']>[0]
+
+export type FeeCtrlFetchFeeForMessage = Parameters<SolApi['getFeeForMessage']>[1]
 
 export type FeeCtrlFetchReturnValue = ResolvePromiseReturn<ReturnType<EthApi['fetchFeeData']>>
 

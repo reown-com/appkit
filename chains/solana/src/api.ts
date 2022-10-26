@@ -2,10 +2,15 @@ import {
   connect,
   watchAddress,
   signMessage,
+  switchNetwork,
   getTransaction,
   signTransaction,
   signAndSendTransaction,
   init,
+  fetchName,
+  getFeeForMessage,
+  getNetwork,
+  watchNetwork,
   getBalance,
   PhantomConnector,
   switchConnector,
@@ -69,6 +74,14 @@ export const Web3ModalSolana = {
 
   watchAddress,
 
+  switchConnector,
+
+  switchNetwork,
+
+  getNetwork,
+
+  watchNetwork,
+
   getBalance,
 
   signMessage,
@@ -78,6 +91,14 @@ export const Web3ModalSolana = {
   signAndSendTransaction,
 
   getTransaction,
+
+  fetchName,
+
+  getFeeForMessage,
+
+  getAvailableNetworks() {
+    return [mainnetBetaProjectSerum]
+  },
 
   async waitForTransaction(transactionSignature: string) {
     return new Promise(resolve => {

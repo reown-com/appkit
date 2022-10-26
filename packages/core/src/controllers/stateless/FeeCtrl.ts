@@ -1,4 +1,8 @@
-import type { FeeCtrlFetchArgs, FeeCtrlFetchReturnValue } from '../../../types/statelessCtrlTypes'
+import type {
+  FeeCtrlFetchArgs,
+  FeeCtrlFetchFeeForMessage,
+  FeeCtrlFetchReturnValue
+} from '../../../types/statelessCtrlTypes'
 import { ClientCtrl } from '../statefull/ClientCtrl'
 
 export const FeeCtrl = {
@@ -9,6 +13,11 @@ export const FeeCtrl = {
     })
 
     return unwatch
+  },
+
+  async fetchFeeForMessage<Type extends 'transfer'>(type: Type, args: FeeCtrlFetchFeeForMessage) {
+    if ('to' in args) return ClientCtrl.solana().getFeeForMessage<Type>(type, args)
+    throw new Error('Need transfer args for fetchFeeForMessage')
   },
 
   async fetch(args: FeeCtrlFetchArgs) {

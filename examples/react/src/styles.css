@@ -48,3 +48,12 @@ a {
   color: lightskyblue;
   margin: 0 10px;
 }
+
+.main {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.main * {
+  flex-shrink: 0;
+}

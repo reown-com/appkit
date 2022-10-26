@@ -1,8 +1,10 @@
 import { useNetwork, useSwitchNetwork } from '@web3modal/react'
 
 export default function UseSwitchNetwork() {
-  const { chains, chain } = useNetwork()
+  const data = useNetwork()
   const { error, isLoading, switchNetwork } = useSwitchNetwork()
+
+  console.log({ data })
 
   return (
     <section>
@@ -10,21 +12,18 @@ export default function UseSwitchNetwork() {
 
       <ul>
         <li>
-          Selected Chain: <span>{isLoading ? 'Loading...' : chain?.name}</span>
+          ChainData: <span>{isLoading ? 'Loading...' : JSON.stringify(data?.cluster)}</span>
         </li>
         <li>
           Error: <span>{error ? error.message : 'No Error'}</span>
         </li>
-      </ul>
-
-      <ul>
-        {chains?.map(c => (
-          <li key={c.id}>
-            <button onClick={async () => switchNetwork({ chainId: c.id })}>
-              Switch to {c.name}
-            </button>
-          </li>
-        ))}
+        <li>
+          {data.clusters?.map((clusterInfo: any) => {
+            return (
+              <button onClick={async () => switchNetwork(clusterInfo)}>{clusterInfo.name}</button>
+            )
+          })}
+        </li>
       </ul>
     </section>
   )

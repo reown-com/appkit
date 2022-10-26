@@ -9,6 +9,7 @@ export { BalanceCtrl } from './src/controllers/stateless/BalanceCtrl'
 export { BlockCtrl } from './src/controllers/stateless/BlockCtrl'
 export { ContractCtrl } from './src/controllers/stateless/ContractCtrl'
 export { EnsCtrl } from './src/controllers/stateless/EnsCtrl'
+export { SnsCtrl } from './src/controllers/stateless/SnsCtrl'
 export { FeeCtrl } from './src/controllers/stateless/FeeCtrl'
 export { NetworkCtrl } from './src/controllers/stateless/NetworkCtrl'
 export { ProviderCtrl } from './src/controllers/stateless/ProviderCtrl'
@@ -37,6 +38,7 @@ export type {
   EnsCtrlFetchEnsNameArgs,
   EnsCtrlFetchEnsResolverArgs,
   FeeCtrlFetchArgs,
+  FeeCtrlFetchFeeForMessage,
   FeeCtrlFetchReturnValue,
   NetworkCtrlGetReturnValue,
   NetworkCtrlSwitchNetworkArgs,
