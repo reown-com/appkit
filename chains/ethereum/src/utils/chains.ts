@@ -110,3 +110,44 @@ export const fantomTestnet: Chain = {
   },
   testnet: true
 }
+
+
+// -- KCC ---------------------------------------------------------- //
+export const kcc: Chain = {
+  id: 321,
+  name: "KCC Mainnet",
+  network: "KCC",
+  nativeCurrency: {
+    name: "KuCoin Shares",
+    symbol: "KCS",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: "https://rpc-mainnet.kcc.network",
+  },
+  blockExplorers: {
+    default: {
+      name: "KCC explorer",
+      url: "https://explorer.kcc.io/en",
+    },
+  },
+  testnet: false,
+}
+
+export const kccTestnet: Chain = {
+  id: 322,
+  name: 'KCC Testnet',
+  network: 'kccTestnet',
+  nativeCurrency: {
+    name: "KuCoin Shares",
+    symbol: "KCS",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: 'https://rpc-testnet.kcc.network'
+  },
+  blockExplorers: {
+    default: { name: 'KCC Scan Testnet', url: 'https://scan-testnet.kcc.network' }
+  },
+  testnet: true
+}
