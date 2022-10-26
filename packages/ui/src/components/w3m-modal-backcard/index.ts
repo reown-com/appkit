@@ -22,7 +22,7 @@ export class W3mModalBackcard extends LitElement {
     setTimeout(() => {
       whatamesh.play(this.canvasEl)
       this.open = true
-    }, 600)
+    }, 1000)
   }
 
   public disconnectedCallback() {
