@@ -2,7 +2,7 @@
 
 ### 📚 [Documentation website](https://web3modal.com/)
 
-### 🖥️ [Interactive Example](https://web3modal.pages.dev/)
+### 🖥️ [Interactive example](https://web3modal.pages.dev/)
 
 # Web3Modal
 
