@@ -8,7 +8,6 @@ export function useNetwork() {
     args: undefined
   })
 
-  if (!data) throw new Error('Failed to retrieve network')
-
-  return { ...data }
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return { ...data! }
 }
