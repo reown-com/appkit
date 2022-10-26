@@ -17,11 +17,12 @@ const modalConfig = {
     autoConnect: true,
     chains: [
       chains.mainnet,
-      chains.rinkeby,
       chains.avalanche,
-      chains.avalancheFuji,
       chains.polygon,
-      chains.polygonMumbai
+      chains.binanceSmartChain,
+      chains.fantom,
+      chains.arbitrum,
+      chains.optimism
     ],
     providers: [providers.walletConnectProvider({ projectId: process.env.NEXT_PUBLIC_PROJECT_ID })]
   }

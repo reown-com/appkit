@@ -3,6 +3,8 @@ import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-header'
+import '../../components/w3m-network-button'
+import { getChainIcon } from '../../utils/UiHelpers'
 
 @customElement('w3m-select-network-view')
 export class W3mSelectNetworkView extends LitElement {
@@ -20,7 +22,16 @@ export class W3mSelectNetworkView extends LitElement {
       <w3m-modal-header title="Select Network"></w3m-modal-header>
       <w3m-modal-content>
         ${chains.map(
-          chain => html`<button @click=${() => this.onSelectChain(chain.id)}>${chain.name}</button>`
+          ({ name, id }) =>
+            html`
+              <w3m-network-button
+                name=${name}
+                src=${getChainIcon(id)}
+                .onClick=${() => this.onSelectChain(id)}
+              >
+                ${name}
+              </w3m-network-button>
+            `
         )}
       </w3m-modal-content>
     `

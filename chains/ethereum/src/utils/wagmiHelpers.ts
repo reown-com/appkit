@@ -24,6 +24,8 @@ export function initializeClient(projectId: string, options: EthereumOptions) {
     provider,
     webSocketProvider
   })
+  // @ts-expect-error TODO(ilja) - remove this once wagmi issue is resolved
+  wagmiClient.setState({ ...wagmiClient.store.getState(), chains })
 
   client = wagmiClient
 }

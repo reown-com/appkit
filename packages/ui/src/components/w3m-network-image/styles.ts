@@ -8,19 +8,19 @@ export default css`
     height: 59px;
   }
 
-  .w3m-network-image svg {
+  .w3m-network-image svg,
+  .w3m-network-image img {
     width: 100%;
     height: 100%;
     position: absolute;
+    left: 0;
+    top: 0;
   }
 
   .w3m-network-image img {
-    clip-path: url(#polygon);
-    width: 100%;
-    height: 100%;
+    clip-path: url(#network-polygon);
     object-fit: cover;
     object-position: center;
-    position: absolute;
   }
 `
 

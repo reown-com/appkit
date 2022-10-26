@@ -19,8 +19,8 @@ export class W3mNetworkImage extends LitElement {
       ${dynamicStyles()}
 
       <div class="w3m-network-image">
-        ${NETWORK_POLYGON}
         <img src=${this.src} alt=${this.name} />
+        ${NETWORK_POLYGON}
       </div>
     `
   }
