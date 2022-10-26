@@ -1,6 +1,7 @@
 import { ModalCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, state } from 'lit/decorators.js'
+import { classMap } from 'lit/directives/class-map.js'
 import { CROSS_ICON, NOISE_TEXTURE, WALLET_CONNECT_LOGO } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { getShadowRootElement } from '../../utils/UiHelpers'
@@ -13,9 +14,15 @@ const whatamesh = new Whatamesh()
 export class W3mModalBackcard extends LitElement {
   public static styles = [global, styles]
 
+  // -- state & properties ------------------------------------------- //
+  @state() private open = false
+
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
-    whatamesh.play(this.canvasEl)
+    setTimeout(() => {
+      whatamesh.play(this.canvasEl)
+      this.open = true
+    }, 600)
   }
 
   public disconnectedCallback() {
@@ -29,10 +36,16 @@ export class W3mModalBackcard extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
+    const classes = {
+      'w3m-gradient-canvas': true,
+      'w3m-gradient-canvas-visible': this.open
+    }
+
     return html`
       ${dynamicStyles()}
 
-      <canvas class="w3m-gradient-canvas"></canvas>
+      <div class="w3m-gradient-placeholder"></div>
+      <canvas class=${classMap(classes)}></canvas>
       ${NOISE_TEXTURE}
       <div class="w3m-modal-highlight"></div>
       <div class="w3m-modal-toolbar">

@@ -19,8 +19,8 @@ export class W3mNetworkButton extends LitElement {
     return html`
       ${dynamicStyles()}
 
-      <button class="w3m-wallet-button" @click=${this.onClick}>
-        <div class="w3m-wallet-button-wrap">
+      <button class="w3m-network-button" @click=${this.onClick}>
+        <div class="w3m-network-button-wrap">
           <w3m-network-image name=${this.name} .src=${this.src}></w3m-network-image>
           <w3m-text variant="xsmall-normal"> ${this.name} </w3m-text>
         </div>

@@ -8,7 +8,7 @@ export default css`
     overflow: scroll;
     scrollbar-width: none;
     position: relative;
-    margin-top: 9px;
+    margin-top: 1px;
   }
 
   w3m-modal-content::before,

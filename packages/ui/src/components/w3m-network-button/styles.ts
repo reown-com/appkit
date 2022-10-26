@@ -1,22 +1,23 @@
 import { ConfigCtrl } from '@web3modal/core'
 import { css, html } from 'lit'
+import { color } from '../../utils/Theme'
 
 export default css`
-  .w3m-wallet-button-wrap {
-    width: 60px;
+  .w3m-network-button {
+    background-color: transparent;
+    padding: 5px;
+    border-radius: 12px;
+    transition: all 0.2s ease-in-out;
+    margin: 10px 0;
+  }
+
+  .w3m-network-button-wrap {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-
-  .w3m-wallet-button {
-    background-color: transparent;
-    width: 100%;
-    height: 100%;
-  }
-
-  .w3m-wallet-button:hover w3m-wallet-image {
-    transform: translateY(-2px);
+    justify-content: center;
+    width: 80px;
+    height: 80px;
   }
 
   w3m-text {
@@ -25,24 +26,23 @@ export default css`
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
-  }
-
-  w3m-wallet-image {
-    height: 60px;
-    width: 60px;
-    transition: all 0.2s ease-in-out;
-    border-radius: 18px;
-    margin-bottom: 5px;
+    margin-top: 5px;
   }
 `
 
 export function dynamicStyles() {
   const isDark = ConfigCtrl.state.theme === 'dark'
+  const { background, overlay } = color()
 
   return html`
     <style>
       .w3m-wallet-button:hover w3m-wallet-image {
         filter: brightness(${isDark ? '110%' : '104%'});
+      }
+
+      .w3m-network-button:hover {
+        background-color: ${background.accent};
+        box-shadow: inset 0 0 0 1px ${overlay.thin};
       }
     </style>
   `

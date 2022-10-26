@@ -39,7 +39,7 @@ export function dynamicStyles() {
 
   return html`<style>
     .w3m-wallet-content {
-      border-bottom: 1px solid ${background[3]};
+      border-bottom: 1px solid ${background[2]};
     }
 
     .w3m-walle-item:last-child .w3m-wallet-content {
