@@ -55,5 +55,5 @@ a {
 }
 
 .main * {
-  flex-shrink: 0;
+  width: 25vw;
 }
