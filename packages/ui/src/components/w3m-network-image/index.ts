@@ -1,24 +1,26 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import '../../components/w3m-text'
+import { NETWORK_POLYGON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import { getWalletIcon } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
-@customElement('w3m-wallet-image')
-export class W3mWalletImage extends LitElement {
+@customElement('w3m-network-image')
+export class W3mNetworkImage extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public name = ''
-  @property() public src?: string = undefined
+  @property() public src = ''
 
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
       ${dynamicStyles()}
 
-      <div class="w3m-wallet-image">
-        <img src=${this.src ?? getWalletIcon(this.name)} alt=${this.name} />
+      <div class="w3m-network-image">
+        ${NETWORK_POLYGON}
+        <img src=${this.src} alt=${this.name} />
       </div>
     `
   }
@@ -26,6 +28,6 @@ export class W3mWalletImage extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-wallet-image': W3mWalletImage
+    'w3m-network-image': W3mNetworkImage
   }
 }

@@ -43,48 +43,48 @@ export function getWalletIcon(name: string) {
 export function getChainIcon(chainId: number) {
   const { projectId, url } = getExplorerApi()
   const cdn = `${url}/v2/logo/lg`
-  const fallback = 'ec6b76f3-cf2d-4c3b-56e3-f93b1133e400'
+  const fallback = '58d8f4c8-cf51-4a82-5ce5-56d8a4d24400'
   const presets: Record<string, string | undefined> = {
     // Arbitrum
-    42161: 'f590e3dc-b0f1-471c-19be-03fb34e2c200',
+    42161: '600a9a04-c1b9-42ca-6785-9b4b6ff85200',
     // Arbitrum Goerli
-    421613: 'f590e3dc-b0f1-471c-19be-03fb34e2c200',
+    421613: '600a9a04-c1b9-42ca-6785-9b4b6ff85200',
     // Arbitrum Rinkeby
-    421611: 'f590e3dc-b0f1-471c-19be-03fb34e2c200',
+    421611: '600a9a04-c1b9-42ca-6785-9b4b6ff85200',
     // Avalanche
-    43114: fallback,
+    43114: '30c46e53-e989-45fb-4549-be3bd4eb3b00',
     // Avalanche Fuji
-    43113: fallback,
+    43113: '30c46e53-e989-45fb-4549-be3bd4eb3b00',
     // Binance Smart Chain
-    56: fallback,
+    56: '93564157-2e8e-4ce7-81df-b264dbee9b00',
     // Binance Smart Testnet
-    97: fallback,
+    97: '93564157-2e8e-4ce7-81df-b264dbee9b00',
     // Fantom
-    250: fallback,
+    250: '06b26297-fe0c-4733-5d6b-ffa5498aac00',
     // Fantom Testnet
-    4002: fallback,
+    4002: '06b26297-fe0c-4733-5d6b-ffa5498aac00',
     // Ethereum Goerli Testnet
-    5: 'ec6b76f3-cf2d-4c3b-56e3-f93b1133e400',
+    5: '58d8f4c8-cf51-4a82-5ce5-56d8a4d24400',
     // Ethereum Kovan Testnet
-    42: 'ec6b76f3-cf2d-4c3b-56e3-f93b1133e400',
+    42: '58d8f4c8-cf51-4a82-5ce5-56d8a4d24400',
     // Ethereum Rinkeby Testnet
-    4: 'ec6b76f3-cf2d-4c3b-56e3-f93b1133e400',
+    4: '58d8f4c8-cf51-4a82-5ce5-56d8a4d24400',
     // Ethereum Ropsten Testnet
-    3: 'ec6b76f3-cf2d-4c3b-56e3-f93b1133e400',
+    3: '58d8f4c8-cf51-4a82-5ce5-56d8a4d24400',
     // Ethereum Sepolia Testnet
-    11155111: 'ec6b76f3-cf2d-4c3b-56e3-f93b1133e400',
+    11155111: '58d8f4c8-cf51-4a82-5ce5-56d8a4d24400',
     // Ethereum
-    1: 'ec6b76f3-cf2d-4c3b-56e3-f93b1133e400',
+    1: '58d8f4c8-cf51-4a82-5ce5-56d8a4d24400',
     // Optimism
-    10: '63888573-0c6d-4f93-0ab6-8f6387a34700',
+    10: 'ab9c186a-c52f-464b-2906-ca59d760a400',
     // Optimism Goerli Testnet
-    420: '63888573-0c6d-4f93-0ab6-8f6387a34700',
+    420: 'ab9c186a-c52f-464b-2906-ca59d760a400',
     // Optimism Kovan Testnet
-    69: '63888573-0c6d-4f93-0ab6-8f6387a34700',
+    69: 'ab9c186a-c52f-464b-2906-ca59d760a400',
     // Polygon
-    137: 'c32c5f19-d04d-46b1-12da-fad0cb463400',
+    137: '41d04d42-da3b-4453-8506-668cc0727900',
     // Polygon Mumbai Testnet
-    80001: 'c32c5f19-d04d-46b1-12da-fad0cb463400'
+    80001: '41d04d42-da3b-4453-8506-668cc0727900'
   }
 
   return `${cdn}/${presets[chainId] ?? fallback}?projectId=${projectId}`
