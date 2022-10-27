@@ -21,16 +21,6 @@ export default css`
   button:disabled {
     padding-bottom: 0;
   }
-
-  .w3m-button-loading {
-    padding: 0 15px;
-  }
-
-  svg {
-    width: 28px;
-    height: 20px;
-    margin: -1px 3px 0 -5px;
-  }
 `
 
 // -- dynamic styles ----------------------------------------------- //
@@ -51,21 +41,9 @@ export function dynamicStyles() {
       background-color: ${overlay.thin};
     }
 
-    .w3m-button-loading:disabled {
-      background-color: ${background.accent};
-    }
-
     button:disabled {
       background-color: ${background[3]};
       color: ${foreground[3]};
-    }
-
-    svg path {
-      fill: ${foreground.inverse};
-    }
-
-    button:disabled svg path {
-      fill: ${foreground[3]};
     }
   </style>`
 }

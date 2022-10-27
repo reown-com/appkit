@@ -1,4 +1,4 @@
-import { ConnectButton, useAccount } from '@web3modal/react'
+import { useAccount, Web3Button } from '@web3modal/react'
 import UseAccount from '../sections/UseAccount'
 import UseBalance from '../sections/UseBalance'
 import UseBlockNumber from '../sections/UseBlockNumber'
@@ -25,32 +25,35 @@ import UseTransaction from '../sections/UseTransaction'
 export default function HomePage() {
   const { account } = useAccount()
 
-  return account.isConnected ? (
+  return (
     <>
-      <UseAccount />
-      <UseDisconnect />
-      <UseNetwork />
-      <UseSwitchNetwork />
-      <UseBlockNumber />
-      <UseFeeData />
-      <UseBalance />
-      <UseProvider />
-      <UseSigner />
-      <UseSignMessage />
-      <UseSignTypedData />
-      <UseEnsAddress />
-      <UseEnsAvatar />
-      <UseEnsName />
-      <UseEnsResolver />
-      <UseToken />
-      <UseTransaction />
-      <UsePrepareSendWaitTransaction />
-      <UseContract />
-      <UseContractRead />
-      <UseContractWrite />
-      <UseContractEvent />
+      <Web3Button />
+      {account.isConnected && (
+        <>
+          <UseAccount />
+          <UseDisconnect />
+          <UseNetwork />
+          <UseSwitchNetwork />
+          <UseBlockNumber />
+          <UseFeeData />
+          <UseBalance />
+          <UseProvider />
+          <UseSigner />
+          <UseSignMessage />
+          <UseSignTypedData />
+          <UseEnsAddress />
+          <UseEnsAvatar />
+          <UseEnsName />
+          <UseEnsResolver />
+          <UseToken />
+          <UseTransaction />
+          <UsePrepareSendWaitTransaction />
+          <UseContract />
+          <UseContractRead />
+          <UseContractWrite />
+          <UseContractEvent />
+        </>
+      )}
     </>
-  ) : (
-    <ConnectButton />
   )
 }

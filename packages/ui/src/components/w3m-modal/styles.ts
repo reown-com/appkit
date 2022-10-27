@@ -29,10 +29,9 @@ export default css`
   .w3m-modal-card {
     width: 100%;
     position: relative;
-    transform: translateX(5px) translateY(5px);
-    border-radius: 40px;
+    transform: translateY(5px);
+    border-radius: 30px;
     overflow: hidden;
-    box-shadow: 0px 6px 14px -6px rgba(10, 16, 31, 0.12), 0px 10px 32px -4px rgba(10, 16, 31, 0.1);
   }
 
   @media (max-width: ${MOBILE_BREAKPOINT}px) {
@@ -41,7 +40,6 @@ export default css`
     }
 
     .w3m-modal-card {
-      transform: translateX(0) translateY(5px);
       border-radius: 40px 40px 0 0;
     }
 
@@ -56,7 +54,7 @@ export default css`
     }
 
     .w3m-modal-card {
-      transform: translateX(0) translateY(5px);
+      transform: translateY(5px);
       border-radius: 40px 40px 0 0;
     }
 
@@ -71,7 +69,8 @@ export function dynamicStyles() {
 
   return html`<style>
     .w3m-modal-card {
-      box-shadow: 0 0 0 1px ${overlay.thin};
+      box-shadow: 0px 6px 14px -6px rgba(10, 16, 31, 0.12), 0px 10px 32px -4px rgba(10, 16, 31, 0.1),
+        0 0 0 1px ${overlay.thin};
       background-color: ${background[1]};
       color: ${foreground[1]};
     }

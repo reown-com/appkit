@@ -1,4 +1,4 @@
-import { ClientCtrl, CoreHelpers, ExplorerCtrl, ModalCtrl } from '@web3modal/core'
+import { ClientCtrl, CoreHelpers, ExplorerCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-view-all-wallets-button'
@@ -18,7 +18,8 @@ export class W3mMobileWalletSelection extends LitElement {
     const { ready } = this.connector
     const isNameSimilar = compareTwoStrings(name, this.connector.name) >= 0.5
 
-    if (ready && isNameSimilar) await ClientCtrl.ethereum().connectInjected()
+    if (ready && isNameSimilar)
+      await ClientCtrl.ethereum().connectInjected(OptionsCtrl.state.selectedChainId)
     else {
       const { native, universal } = links
       await ClientCtrl.ethereum().connectLinking(uri => {
@@ -26,13 +27,13 @@ export class W3mMobileWalletSelection extends LitElement {
           ? CoreHelpers.formatUniversalUrl(universal, uri, name)
           : CoreHelpers.formatNativeUrl(native, uri, name)
         CoreHelpers.openHref(href)
-      })
+      }, OptionsCtrl.state.selectedChainId)
     }
     ModalCtrl.close()
   }
 
   private async onCoinbaseWallet() {
-    await ClientCtrl.ethereum().connectCoinbaseMobile()
+    await ClientCtrl.ethereum().connectCoinbaseMobile(() => null, OptionsCtrl.state.selectedChainId)
     ModalCtrl.close()
   }
 

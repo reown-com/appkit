@@ -1,4 +1,4 @@
-import { ClientCtrl, ModalCtrl, ModalToastCtrl } from '@web3modal/core'
+import { ClientCtrl, ModalCtrl, ModalToastCtrl, OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-button'
@@ -30,7 +30,10 @@ export class W3mWalletConnectConnectorView extends LitElement {
   // -- private ------------------------------------------------------ //
   private async getConnectionUri() {
     try {
-      await ClientCtrl.ethereum().connectWalletConnect(uri => (this.uri = uri))
+      await ClientCtrl.ethereum().connectWalletConnect(
+        uri => (this.uri = uri),
+        OptionsCtrl.state.selectedChainId
+      )
       ModalCtrl.close()
     } catch (err) {
       ModalToastCtrl.openToast(getErrorMessage(err), 'error')

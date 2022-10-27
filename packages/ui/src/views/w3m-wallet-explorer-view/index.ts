@@ -1,5 +1,12 @@
 import type { Listing } from '@web3modal/core'
-import { ClientCtrl, CoreHelpers, ExplorerCtrl, ModalCtrl, ModalToastCtrl } from '@web3modal/core'
+import {
+  ClientCtrl,
+  CoreHelpers,
+  ExplorerCtrl,
+  ModalCtrl,
+  ModalToastCtrl,
+  OptionsCtrl
+} from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -87,12 +94,14 @@ export class W3mWalletExplorerView extends LitElement {
 
   private async onConnect(links: { native: string; universal?: string }, name: string) {
     const { native, universal } = links
-    await ClientCtrl.ethereum().connectLinking(uri =>
-      CoreHelpers.openHref(
-        universal
-          ? CoreHelpers.formatUniversalUrl(universal, uri, name)
-          : CoreHelpers.formatNativeUrl(native, uri, name)
-      )
+    await ClientCtrl.ethereum().connectLinking(
+      uri =>
+        CoreHelpers.openHref(
+          universal
+            ? CoreHelpers.formatUniversalUrl(universal, uri, name)
+            : CoreHelpers.formatNativeUrl(native, uri, name)
+        ),
+      OptionsCtrl.state.selectedChainId
     )
     ModalCtrl.close()
   }

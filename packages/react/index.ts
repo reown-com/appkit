@@ -1,5 +1,6 @@
 export { AccountButton } from './src/components/AccountButton'
 export { ConnectButton } from './src/components/ConnectButton'
+export { Web3Button } from './src/components/Web3Button'
 export { Web3Modal } from './src/components/Web3Modal'
 export { useContractWrite } from './src/hooks/actions/useContractWrite'
 export { useDisconnect } from './src/hooks/actions/useDisconnect'

@@ -61,9 +61,9 @@ export const Web3ModalEthereum = {
     return connector
   },
 
-  async connectWalletConnect(onUri: (uri: string) => void) {
+  async connectWalletConnect(onUri: (uri: string) => void, selectedChainId?: number) {
     const connector = this.getConnectorById('walletConnect')
-    const chainId = this.getDefaultConnectorChainId(connector)
+    const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
 
     async function getProviderUri() {
       return new Promise<void>(resolve => {
@@ -82,9 +82,9 @@ export const Web3ModalEthereum = {
     return data
   },
 
-  async connectLinking(onUri: (uri: string) => void) {
+  async connectLinking(onUri: (uri: string) => void, selectedChainId?: number) {
     const connector = this.getConnectorById('walletConnect')
-    const chainId = this.getDefaultConnectorChainId(connector)
+    const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
 
     async function getProviderUri() {
       return new Promise<void>(resolve => {
@@ -104,9 +104,9 @@ export const Web3ModalEthereum = {
     return data
   },
 
-  async connectCoinbaseMobile(onUri?: (uri: string) => void) {
+  async connectCoinbaseMobile(onUri?: (uri: string) => void, selectedChainId?: number) {
     const connector = this.getConnectorById('coinbaseWallet')
-    const chainId = this.getDefaultConnectorChainId(connector)
+    const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
 
     async function getProviderUri() {
       return new Promise<void>(resolve => {
@@ -125,25 +125,25 @@ export const Web3ModalEthereum = {
     return data
   },
 
-  async connectCoinbaseExtension() {
+  async connectCoinbaseExtension(selectedChainId?: number) {
     const connector = this.getConnectorById('coinbaseWallet')
-    const chainId = this.getDefaultConnectorChainId(connector)
+    const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
     const data = await connect({ connector, chainId })
 
     return data
   },
 
-  async connectMetaMask() {
+  async connectMetaMask(selectedChainId?: number) {
     const connector = this.getConnectorById('metaMask')
-    const chainId = this.getDefaultConnectorChainId(connector)
+    const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
     const data = await connect({ connector, chainId })
 
     return data
   },
 
-  async connectInjected() {
+  async connectInjected(selectedChainId?: number) {
     const connector = this.getConnectorById('injected')
-    const chainId = this.getDefaultConnectorChainId(connector)
+    const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
     const data = await connect({ connector, chainId })
 
     return data

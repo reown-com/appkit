@@ -1,4 +1,4 @@
-import { CoreHelpers, ExplorerCtrl, ModalCtrl, RouterCtrl } from '@web3modal/core'
+import { ExplorerCtrl, ModalCtrl, NetworkCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -7,6 +7,7 @@ import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import {
   defaultWalletImages,
+  getChainIcon,
   getShadowRootElement,
   isMobileAnimation,
   preloadImage
@@ -31,6 +32,7 @@ export class W3mModal extends ThemedElement {
       if (modalState.open) this.onOpenModalEvent()
       if (!modalState.open) this.onCloseModalEvent()
     })
+    this.preloadData()
   }
 
   public disconnectedCallback() {
@@ -60,28 +62,34 @@ export class W3mModal extends ThemedElement {
     if (event.target === event.currentTarget) ModalCtrl.close()
   }
 
-  private async onOpenModalEvent() {
-    this.initialized = true
-    this.toggleBodyScroll(false)
+  private async preloadData() {
     if (this.firstOpen) {
       await ExplorerCtrl.getPreviewWallets()
-      const wallets = ExplorerCtrl.state.previewWallets.map(({ image_url }) => image_url.lg)
-      const defaultWallets = defaultWalletImages()
+      const walletImgs = ExplorerCtrl.state.previewWallets.map(({ image_url }) => image_url.lg)
+      const defaultWalletImgs = defaultWalletImages()
+      const { chains } = NetworkCtrl.get()
+      const chainsImgs = chains.map(chain => getChainIcon(chain.id))
       await Promise.all([
-        CoreHelpers.wait(300),
-        ...wallets.map(async url => preloadImage(url)),
-        ...defaultWallets.map(async url => preloadImage(url))
+        ...walletImgs.map(async url => preloadImage(url)),
+        ...defaultWalletImgs.map(async url => preloadImage(url)),
+        ...chainsImgs.map(async url => preloadImage(url))
       ])
-      this.firstOpen = false
     }
-    this.open = true
-    animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay: 0.1 })
+  }
+
+  private onOpenModalEvent() {
+    this.toggleBodyScroll(false)
+    const delay = 0.3
+    animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay })
     animate(this.containerEl, isMobileAnimation() ? { y: ['50vh', 0] } : { scale: [0.98, 1] }, {
       scale: { easing: spring({ velocity: 0.4 }) },
       y: { easing: spring({ mass: 0.5 }) },
-      delay: 0.1
+      delay
     })
     document.addEventListener('keydown', this.onKeyDown)
+    this.firstOpen = false
+    this.open = true
+    this.initialized = true
   }
 
   private async onCloseModalEvent() {
@@ -95,7 +103,6 @@ export class W3mModal extends ThemedElement {
       animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
     ])
     this.open = false
-    RouterCtrl.replace('ConnectWallet')
   }
 
   private onKeyDown(event: KeyboardEvent) {

@@ -3,10 +3,14 @@ import type {
   NetworkCtrlWatchCallback
 } from '../../../types/statelessCtrlTypes'
 import { ClientCtrl } from '../statefull/ClientCtrl'
+import { OptionsCtrl } from '../statefull/OptionsCtrl'
 
 export const NetworkCtrl = {
   watch(callback: NetworkCtrlWatchCallback) {
-    const unwatch = ClientCtrl.ethereum().watchNetwork(callback)
+    const unwatch = ClientCtrl.ethereum().watchNetwork(data => {
+      OptionsCtrl.setSelectedChainId(data.chain?.id)
+      callback(data)
+    })
 
     return unwatch
   },
@@ -19,6 +23,7 @@ export const NetworkCtrl = {
 
   async switchNetwork(args: NetworkCtrlSwitchNetworkArgs) {
     const data = await ClientCtrl.ethereum().switchNetwork(args)
+    OptionsCtrl.setSelectedChainId(args.chainId)
 
     return data
   }

@@ -6,7 +6,7 @@ export default css`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 18px 18px 0;
+    padding: 18px;
     position: relative;
   }
 
@@ -23,14 +23,17 @@ export default css`
   .w3m-back-btn {
     position: absolute;
     left: 0;
-    margin-left: -17px;
   }
 `
 
 export function dynamicStyles() {
-  const { foreground } = color()
+  const { foreground, background } = color()
 
   return html`<style>
+    .w3m-modal-header {
+      border-bottom: 1px solid ${background[2]};
+    }
+
     .w3m-back-btn path {
       fill: ${foreground.accent};
     }

@@ -1,5 +1,9 @@
 > Looking for v1.x readme? It is available on [V1 Branch](https://github.com/WalletConnect/web3modal/tree/V1)
 
+### 📚 [Documentation website](https://web3modal.com/)
+
+### 🖥️ [Interactive example](https://web3modal-dev.pages.dev/)
+
 # Web3Modal
 
 Your on-ramp to web3 multichain. Web3Modal is a versatile library that makes it super easy to connect users with your Dapp and start interacting with the blockchain.

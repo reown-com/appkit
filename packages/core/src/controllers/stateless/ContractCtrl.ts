@@ -22,7 +22,7 @@ export const ContractCtrl = {
 
   async write(args: ContractCtrlWriteArgs) {
     const config = await ClientCtrl.ethereum().prepareWriteContract(args)
-    // @ts-expect-error TODO(ilja) fix alongside abi type inheritance
+    // @ts-expect-error TODO(ilja) - Fix when implementing abi type inheritance
     const data = await ClientCtrl.ethereum().writeContract(config)
 
     return data
