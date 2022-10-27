@@ -35,7 +35,9 @@ export class W3mMobileWalletSelection extends LitElement {
         case 'solana':
           await ClientCtrl.solana().connectLinking(
             uri => {
-              const href = CoreHelpers.formatNativeUrl(native, uri, name)
+              const href = universal
+                ? CoreHelpers.formatUniversalUrl(universal, uri, name)
+                : CoreHelpers.formatNativeUrl(native, uri, name)
               console.log({ href })
               CoreHelpers.openHref(href)
             },
