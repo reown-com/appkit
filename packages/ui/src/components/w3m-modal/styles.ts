@@ -29,7 +29,7 @@ export default css`
   .w3m-modal-card {
     width: 100%;
     position: relative;
-    transform: translateX(0) translateY(5px);
+    transform: translateY(5px);
     border-radius: 30px;
     overflow: hidden;
   }
@@ -54,7 +54,7 @@ export default css`
     }
 
     .w3m-modal-card {
-      transform: translateX(0) translateY(5px);
+      transform: translateY(5px);
       border-radius: 40px 40px 0 0;
     }
 

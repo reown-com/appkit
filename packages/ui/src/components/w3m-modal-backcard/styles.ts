@@ -13,7 +13,7 @@ export default css`
     width: 100%;
     height: 100px;
     border-radius: 8px 8px 0 0;
-    transform: translateY(-5px) translateX(0);
+    transform: translateY(-5px);
     top: 0;
     left: 0;
   }
