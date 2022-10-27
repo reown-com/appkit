@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import type * as WagmiTypes from '@wagmi/core'
-import { chain, configureChains, createClient } from '@wagmi/core'
+import { chain, configureChains, createClient, getAccount } from '@wagmi/core'
 import type { EthereumOptions } from '../../types/apiTypes'
 import { defaultConnectors, providers } from './wagmiTools'
 
@@ -24,8 +24,10 @@ export function initializeClient(projectId: string, options: EthereumOptions) {
     provider,
     webSocketProvider
   })
-  // @ts-expect-error TODO(ilja) - remove this once wagmi issue is resolved
-  wagmiClient.setState({ ...wagmiClient.store.getState(), chains })
+
+  if (!getAccount().isConnected)
+    // @ts-expect-error TODO(ilja) - remove this once wagmi issue is resolved
+    wagmiClient.setState({ ...wagmiClient.store.getState(), chains })
 
   client = wagmiClient
 }
