@@ -4,6 +4,10 @@
   "compilerOptions": {
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
+    "target": "ES2020",
+    "lib": ["DOM", "DOM.Iterable", "ES2021"],
+    "module": "ES2020",
+    "moduleResolution": "node",
     "types": ["solid-js"],
     "outDir": "./dist",
     "declaration": true

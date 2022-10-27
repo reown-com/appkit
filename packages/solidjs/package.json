@@ -1,5 +1,5 @@
 {
-  "name": "@web3modal/core",
+  "name": "@web3modal/solidjs",
   "version": "2.0.0-alpha.4",
   "main": "dist/index.js",
   "unpkg": "dist/index.umd.js",
@@ -13,22 +13,16 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:source": "rollup --silent --config rollup.config.js",
     "build": "npm run build:clean; npm run build:types; npm run build:source",
-    "dev": "rollup --config rollup.config.js --watch",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "valtio": "1.7.0"
+    "@web3modal/core": "../core",
+    "@web3modal/ui": "../ui"
   },
   "devDependencies": {
-    "@web3modal/ethereum": "./chains/ethereum"
-  },
-  "peerDependencies": {
-    "@web3modal/ethereum": "2.0.0-alpha.2"
-  },
-  "peerDependenciesMeta": {
-    "@web3modal/ethereum": {
-      "optional": true
-    }
+    "eslint-plugin-solid": "^0.7.3",
+    "rollup-preset-solid": "^1.4.0",
+    "solid-js": "^1.5.7"
   },
   "keywords": [
     "web3",
@@ -36,7 +30,8 @@
     "ethereum",
     "web3modal",
     "walletconnect",
-    "web3auth"
+    "web3auth",
+    "react"
   ],
   "author": "WalletConnect <walletconnect.com>",
   "license": "Apache-2.0",

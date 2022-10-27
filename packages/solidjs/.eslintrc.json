@@ -1,0 +1,9 @@
+{
+  "plugins": ["solid"],
+  "extends": ["eslint:recommended", "plugin:solid/typescript", "../../.eslintrc.json"],
+  "rules": {
+    "consistent-return": "off",
+
+    "@typescript-eslint/no-confusing-void-expression": "off"
+  }
+}
