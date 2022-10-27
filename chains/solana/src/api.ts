@@ -39,6 +39,12 @@ export const Web3ModalSolana = {
     else throw new Error('Could not connect with WalletConnect')
   },
 
+  async connectLinking(onUri: (uri: string) => void, onConnect: (address: string) => void) {
+    await this.connectWalletConnect(uri => {
+      onUri(uri)
+    }, onConnect)
+  },
+
   getAccount() {
     return {
       address: getAddress(),

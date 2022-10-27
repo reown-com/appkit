@@ -21,14 +21,31 @@ export class W3mMobileWalletSelection extends LitElement {
     if (ready && isNameSimilar) await ClientCtrl.ethereum().connectInjected()
     else {
       const { native, universal } = links
-      await ClientCtrl.ethereum().connectLinking(uri => {
-        const href = universal
-          ? CoreHelpers.formatUniversalUrl(universal, uri, name)
-          : CoreHelpers.formatNativeUrl(native, uri, name)
-        CoreHelpers.openHref(href)
-      })
+
+      switch (ClientCtrl.getActiveClient()) {
+        case 'ethereum':
+          await ClientCtrl.ethereum().connectLinking(uri => {
+            const href = universal
+              ? CoreHelpers.formatUniversalUrl(universal, uri, name)
+              : CoreHelpers.formatNativeUrl(native, uri, name)
+            CoreHelpers.openHref(href)
+          })
+          ConnectModalCtrl.closeModal()
+          break
+        case 'solana':
+          await ClientCtrl.solana().connectLinking(uri => {
+            const href = universal
+              ? CoreHelpers.formatUniversalUrl(universal, uri, name)
+              : CoreHelpers.formatNativeUrl(native, uri, name)
+            console.log({ href })
+            CoreHelpers.openHref(href)
+          })
+          ConnectModalCtrl.closeModal()
+          break
+        default:
+          throw new Error('No provider supporting mobile linking')
+      }
     }
-    ConnectModalCtrl.closeModal()
   }
 
   private async onCoinbaseWallet() {
