@@ -36,17 +36,17 @@ export default function App() {
 }
 ```
 
-### 3. Add <ConnectButton> component or useConnectModal hook to open the modal
+### 3. Add <Web3Button> component or useConnectModal hook to open the modal
 
 ```tsx
-import { ConnectButton, useConnectModal } from '@web3modal/react'
+import { Web3Button, useConnectModal } from '@web3modal/react'
 
 export default function YourAppContent() {
   const { isOpen, open, close } = useConnectModal()
 
   return (
     <>
-      <ConnectButton />
+      <Web3Button />
       {/* or */}
       <button onClick={open}>Open Modal</button>
     </>
