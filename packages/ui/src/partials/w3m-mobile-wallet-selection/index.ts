@@ -33,14 +33,16 @@ export class W3mMobileWalletSelection extends LitElement {
           ConnectModalCtrl.closeModal()
           break
         case 'solana':
-          await ClientCtrl.solana().connectLinking(uri => {
-            const href = universal
-              ? CoreHelpers.formatUniversalUrl(universal, uri, name)
-              : CoreHelpers.formatNativeUrl(native, uri, name)
-            console.log({ href })
-            CoreHelpers.openHref(href)
-          })
-          ConnectModalCtrl.closeModal()
+          await ClientCtrl.solana().connectLinking(
+            uri => {
+              const href = CoreHelpers.formatNativeUrl(native, uri, name)
+              console.log({ href })
+              CoreHelpers.openHref(href)
+            },
+            () => {
+              ConnectModalCtrl.closeModal()
+            }
+          )
           break
         default:
           throw new Error('No provider supporting mobile linking')
