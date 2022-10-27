@@ -41,7 +41,7 @@ export const Web3ModalSolana = {
 
   async connectLinking(onUri: (uri: string) => void, onConnect: (address: string) => void) {
     await this.connectWalletConnect(uri => {
-      onUri(uri)
+      onUri(encodeURIComponent(uri))
     }, onConnect)
   },
 
