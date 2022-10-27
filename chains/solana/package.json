@@ -27,6 +27,6 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@walletconnect/solib": "^0.1.9"
+    "@walletconnect/solib": "^0.1.10"
   }
 }

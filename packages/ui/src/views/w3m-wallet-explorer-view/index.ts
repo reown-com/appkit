@@ -76,7 +76,7 @@ export class W3mWalletExplorerView extends LitElement {
         const { listings: newListings } = await ExplorerCtrl.getPaginatedWallets({
           page: this.firstFetch ? 1 : page + 1,
           entries: PAGE_ENTRIES,
-          version: 1,
+          version: 2,
           device: CoreHelpers.isMobile() ? 'mobile' : 'desktop',
           search: this.search,
           chains: 'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ'
@@ -94,14 +94,17 @@ export class W3mWalletExplorerView extends LitElement {
 
   private async onConnect(links: { native: string; universal?: string }, name: string) {
     const { native, universal } = links
-    await ClientCtrl.ethereum().connectLinking(uri =>
-      CoreHelpers.openHref(
-        universal
+    await ClientCtrl.solana().connectLinking(
+      uri => {
+        const href = universal
           ? CoreHelpers.formatUniversalUrl(universal, uri, name)
           : CoreHelpers.formatNativeUrl(native, uri, name)
-      )
+        CoreHelpers.openHref(href)
+      },
+      () => {
+        ConnectModalCtrl.closeModal()
+      }
     )
-    ConnectModalCtrl.closeModal()
   }
 
   private async onConnectPlatform(listing: Listing) {

@@ -21,7 +21,7 @@ export const ExplorerCtrl = {
     const { listings } = await fetchWallets({
       page: 1,
       entries: 10,
-      version: 1,
+      version: 2,
       chains: chains?.join(',')
     })
     state.previewWallets = Object.values(listings)
@@ -31,7 +31,7 @@ export const ExplorerCtrl = {
 
   async getPaginatedWallets(params: PageParams) {
     const { page, search } = params
-    const { listings: listingsObj, total } = await fetchWallets(params)
+    const { listings: listingsObj, total } = await fetchWallets({ ...params, version: 2 })
     const listings = Object.values(listingsObj)
     const type = search ? 'search' : 'wallets'
     state[type] = {

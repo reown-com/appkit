@@ -22,33 +22,19 @@ export class W3mMobileWalletSelection extends LitElement {
     else {
       const { native, universal } = links
 
-      switch (ClientCtrl.getActiveClient()) {
-        case 'ethereum':
-          await ClientCtrl.ethereum().connectLinking(uri => {
-            const href = universal
-              ? CoreHelpers.formatUniversalUrl(universal, uri, name)
-              : CoreHelpers.formatNativeUrl(native, uri, name)
-            CoreHelpers.openHref(href)
-          })
+      await ClientCtrl.solana().connectLinking(
+        uri => {
+          console.log({ universal, native })
+          const href = universal
+            ? CoreHelpers.formatUniversalUrl(universal, uri, name)
+            : CoreHelpers.formatNativeUrl(native, uri, name)
+          console.log(href)
+          CoreHelpers.openHref(href)
+        },
+        () => {
           ConnectModalCtrl.closeModal()
-          break
-        case 'solana':
-          await ClientCtrl.solana().connectLinking(
-            uri => {
-              const href = universal
-                ? CoreHelpers.formatUniversalUrl(universal, uri, name)
-                : CoreHelpers.formatNativeUrl(native, uri, name)
-              console.log({ href })
-              CoreHelpers.openHref(href)
-            },
-            () => {
-              ConnectModalCtrl.closeModal()
-            }
-          )
-          break
-        default:
-          throw new Error('No provider supporting mobile linking')
-      }
+        }
+      )
     }
   }
 
