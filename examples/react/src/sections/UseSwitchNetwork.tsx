@@ -19,7 +19,12 @@ export default function UseSwitchNetwork() {
           <li>
             {data.clusters.map(clusterInfo => {
               return (
-                <button onClick={async () => switchNetwork(clusterInfo)}>{clusterInfo.name}</button>
+                <button
+                  key={`${clusterInfo.endpoint}${clusterInfo.id}`}
+                  onClick={async () => switchNetwork(clusterInfo)}
+                >
+                  {clusterInfo.name}
+                </button>
               )
             })}
           </li>

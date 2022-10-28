@@ -38,6 +38,13 @@ export const AccountCtrl = {
   },
 
   disconnect() {
-    ClientCtrl.ethereum().disconnect()
+    switch (ClientCtrl.getActiveClient()) {
+      case 'ethereum':
+        return ClientCtrl.ethereum().disconnect()
+      case 'solana':
+        return ClientCtrl.solana().disconnect()
+      default:
+        throw new Error('No provider that supports that getting account')
+    }
   }
 }

@@ -1,11 +1,13 @@
 import {
   connect,
   watchAddress,
+  disconnect,
   signMessage,
   switchNetwork,
   getTransaction,
   signTransaction,
   signAndSendTransaction,
+  getConnectorIsAvailable,
   init,
   fetchName,
   getFeeForMessage,
@@ -17,7 +19,8 @@ import {
   WalletConnectConnector,
   getAddress,
   watchTransaction,
-  mainnetBetaProjectSerum
+  mainnetBetaProjectSerum,
+  InjectedConnector
 } from '@walletconnect/solib'
 
 export interface ClientClientArgs {
@@ -25,12 +28,25 @@ export interface ClientClientArgs {
 }
 
 export const Web3ModalSolana = {
+  disconnect,
+
+  async connectInjectedConnect(): Promise<string | null> {
+    switchConnector(InjectedConnector.connectorName('window.solana'))
+
+    return connect()
+  },
+
+  async connectPhantom(): Promise<string | null> {
+    switchConnector(PhantomConnector.connectorName())
+
+    return connect()
+  },
+
   async connectWalletConnect(onUri: (uri: string) => void, onConnect: (address: string) => void) {
     switchConnector(WalletConnectConnector.connectorName)
 
     watchAddress(address => {
-      if (address) onConnect(address)
-      else throw new Error('Could not connect with WalletConnect')
+      onConnect(address ?? '')
     })
 
     const uri = await connect()
@@ -60,6 +76,7 @@ export const Web3ModalSolana = {
         connectorName: WalletConnectConnector.connectorName,
         connectors: [
           new PhantomConnector(),
+          new InjectedConnector('window.solana'),
           new WalletConnectConnector({
             relayerRegion: 'wss://relay.walletconnect.com',
             autoconnect: true,
@@ -101,6 +118,8 @@ export const Web3ModalSolana = {
   fetchName,
 
   getFeeForMessage,
+
+  getConnectorIsAvailable,
 
   getAvailableNetworks() {
     return [mainnetBetaProjectSerum]

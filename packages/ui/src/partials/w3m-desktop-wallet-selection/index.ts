@@ -29,18 +29,16 @@ export class W3mDesktopWalletSelection extends LitElement {
     RouterCtrl.push('LedgerDesktopConnector')
   }
 
-  private onMetaMaskWallet() {
-    RouterCtrl.push('MetaMaskConnector')
+  private onPhantom() {
+    RouterCtrl.push('PhantomConnector')
   }
 
   private onInjectedWallet() {
     RouterCtrl.push('InjectedConnector')
   }
 
-  private metaMaskTemplate() {
-    return html`
-      <w3m-wallet-button name="MetaMask" .onClick=${this.onMetaMaskWallet}></w3m-wallet-button>
-    `
+  private phantomTemplate() {
+    return html` <w3m-wallet-button name="Phantom" .onClick=${this.onPhantom}></w3m-wallet-button> `
   }
 
   private injectedTemplate(name: string) {
@@ -57,12 +55,12 @@ export class W3mDesktopWalletSelection extends LitElement {
     let slot2: TemplateResult<1> | null = null
     if (injected.ready && !defaultNames.includes(injected.name)) {
       slot1 = this.injectedTemplate(injected.name)
-      slot2 = this.metaMaskTemplate()
+      slot2 = this.phantomTemplate()
     } else if (metamask.ready && !defaultNames.includes(injected.name)) {
-      slot1 = this.metaMaskTemplate()
+      slot1 = this.phantomTemplate()
       slot2 = this.injectedTemplate(injected.name)
     } else {
-      slot1 = this.metaMaskTemplate()
+      slot1 = this.phantomTemplate()
       slot2 = this.injectedTemplate('Brave Wallet')
     }
 

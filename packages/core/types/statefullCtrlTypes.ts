@@ -102,6 +102,7 @@ export type RouterView =
   | 'InjectedConnector'
   | 'LedgerDesktopConnector'
   | 'MetaMaskConnector'
+  | 'PhantonConnector'
   | 'SelectNetwork'
   | 'WalletConnectConnector'
   | 'WalletExplorer'

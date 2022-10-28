@@ -1,4 +1,5 @@
 import { ConnectButton, useAccount } from '@web3modal/react'
+import UseDisconnect from '../sections/UseDisconnect'
 import UseAccount from '../sections/UseAccount'
 import UseBalance from '../sections/UseBalance'
 import UseFeeForMessage from '../sections/UseFeeForMessage'
@@ -14,6 +15,7 @@ export default function HomePage() {
 
   return isConnected ? (
     <div className="main">
+      <UseDisconnect />
       <UseAccount />
       <UseBalance />
       <UseTransaction />
