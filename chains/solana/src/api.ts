@@ -32,7 +32,7 @@ export interface ClientClientArgs {
 export const Web3ModalSolana = {
   disconnect,
 
-  async connectInjectedConnect(): Promise<string | null> {
+  async connectInjected(): Promise<string | null> {
     switchConnector(InjectedConnector.connectorName('window.solana'))
 
     return connect()

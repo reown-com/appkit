@@ -36,7 +36,7 @@ export class W3mInjectedConnectorView extends LitElement {
       if (ready) {
         this.error = false
         this.connecting = true
-        await ClientCtrl.solana().connectInjectedConnect()
+        await ClientCtrl.solana().connectInjected()
         ConnectModalCtrl.closeModal()
       }
     } catch (error: unknown) {
