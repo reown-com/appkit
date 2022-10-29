@@ -2453,10 +2453,10 @@
     "@walletconnect/utils" "^1.8.0"
     ws "7.5.3"
 
-"@walletconnect/solib@^0.1.14":
-  version "0.1.14"
-  resolved "https://registry.yarnpkg.com/@walletconnect/solib/-/solib-0.1.14.tgz#34a8761db22b3e18731ebab0499d2e757a062991"
-  integrity sha512-LfyQnvV9WCoQJjWnOj6viEqczCDBmRAKPDJ5ISMZKDfME0fk12aa/08eZ5WKKzherbeE82ClcJjhYD8L+Z+xpA==
+"@walletconnect/solib@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@walletconnect/solib/-/solib-0.2.0.tgz#ead119fe1bee896ec8763db2a580ee4d23bc8444"
+  integrity sha512-03mFzYc2p6dAROERHaG6KhkhzMFLQsymGa8SdgTHDCALnd2LMQWpfSwml4ijr7qh+50esnql8a6Tuw9qxcsvKQ==
   dependencies:
     "@ethersproject/sha2" "5.7.0"
     "@solana/web3.js" "1.63.0"

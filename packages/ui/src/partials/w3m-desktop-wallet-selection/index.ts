@@ -33,6 +33,10 @@ export class W3mDesktopWalletSelection extends LitElement {
     RouterCtrl.push('PhantomConnector')
   }
 
+  private onSolflare() {
+    RouterCtrl.push('SolflareConnector')
+  }
+
   private onInjectedWallet() {
     RouterCtrl.push('InjectedConnector')
   }
@@ -92,7 +96,7 @@ export class W3mDesktopWalletSelection extends LitElement {
       </div>
       <div class="w3m-view-row">
         ${slot1} ${slot2}
-        <w3m-wallet-button name="Ledger Live" .onClick=${this.onLedgerWallet}></w3m-wallet-button>
+        <w3m-wallet-button name="Solflare" .onClick=${this.onSolflare}></w3m-wallet-button>
         <w3m-view-all-wallets-button></w3m-view-all-wallets-button>
       </div>
     `

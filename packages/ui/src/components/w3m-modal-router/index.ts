@@ -13,6 +13,7 @@ import '../../views/w3m-injected-connector-view'
 import '../../views/w3m-ledger-desktop-connector-view'
 import '../../views/w3m-metamask-connector-view'
 import '../../views/w3m-phantom-connector-view'
+import '../../views/w3m-solflare-connector-view'
 import '../../views/w3m-select-network-view'
 import '../../views/w3m-wallet-explorer-view'
 import '../../views/w3m-walletconnect-connector-view'
@@ -86,6 +87,8 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-metamask-connector-view></w3m-metamask-connector-view>`
       case 'PhantomConnector':
         return html`<w3m-phantom-connector-view></w3m-phantom-connector-view>`
+      case 'SolflareConnector':
+        return html`<w3m-solflare-connector-view></w3m-solflare-connector-view>`
       case 'GetWallet':
         return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
       case 'LedgerDesktopConnector':

@@ -32,8 +32,8 @@ export interface ClientClientArgs {
 export const Web3ModalSolana = {
   disconnect,
 
-  async connectInjected(): Promise<string | null> {
-    switchConnector(InjectedConnector.connectorName('window.solana'))
+  async connectInjected(name = 'window.solana'): Promise<string | null> {
+    switchConnector(InjectedConnector.connectorName(name))
 
     return connect()
   },
@@ -78,6 +78,7 @@ export const Web3ModalSolana = {
         connectorName: WalletConnectConnector.connectorName,
         connectors: [
           new PhantomConnector(),
+          new InjectedConnector('window.solflare'),
           new InjectedConnector('window.solana'),
           new WalletConnectConnector({
             relayerRegion: 'wss://relay.walletconnect.com',
