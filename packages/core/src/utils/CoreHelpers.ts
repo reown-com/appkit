@@ -32,7 +32,7 @@ export const CoreHelpers = {
     if (appUrl.endsWith('/')) plainAppUrl = appUrl.slice(0, -1)
     this.setWalletConnectDeepLink(plainAppUrl, name)
 
-    return `${plainAppUrl}//wc?uri=${encodedWcUrl}`
+    return `${plainAppUrl}/wc?uri=${encodedWcUrl}`
   },
 
   async wait(miliseconds: number) {

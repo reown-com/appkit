@@ -24,6 +24,7 @@ export interface ConfigCtrlState extends ConfigOptions {
 // -- ConnectModalCtrl --------------------------------------- //
 export interface ConnectModalCtrlState {
   open: boolean
+  uri?: string
 }
 
 // -- ExplorerCtrl ------------------------------------------- //

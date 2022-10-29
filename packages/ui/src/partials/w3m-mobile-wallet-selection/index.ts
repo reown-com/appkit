@@ -13,19 +13,6 @@ export class W3mMobileWalletSelection extends LitElement {
   public static styles = [global, styles]
 
   // -- private ------------------------------------------------------ //
-  private readonly connector = ClientCtrl.ethereum().getConnectorById('injected')
-
-  private async getWcUri() {
-    return new Promise<string>(resolve => {
-      ClientCtrl.solana().connectLinking(
-        uri => resolve(uri),
-        () => {
-          ConnectModalCtrl.closeModal()
-        }
-      )
-    })
-  }
-
   private async onCoinbaseWallet() {
     await ClientCtrl.ethereum().connectCoinbaseMobile()
     ConnectModalCtrl.closeModal()
@@ -45,25 +32,25 @@ export class W3mMobileWalletSelection extends LitElement {
   protected render() {
     const listings = ExplorerCtrl.state.previewWallets
 
-    const listingButtons = this.getWcUri().then(uri => {
-      return html`
-        ${listings.map(
-          listing => html`
-            <w3m-wallet-button
-              src=${listing.image_url.lg}
-              name=${listing.name}
-              .onClick=${() => CoreHelpers.openHref(this.getListingUrl(listing, uri))}
-            >
-            </w3m-wallet-button>
-          `
-        )}
-        <w3m-wallet-button
-          name="Coinbase Wallet"
-          .onClick=${this.onCoinbaseWallet}
-        ></w3m-wallet-button>
-        <w3m-view-all-wallets-button></w3m-view-all-wallets-button>
-      `
-    })
+    const listingButtons = html`
+      ${listings.map(
+        listing => html`
+          <w3m-wallet-button
+            src=${listing.image_url.lg}
+            name=${listing.name}
+            url="${this.getListingUrl(listing, ConnectModalCtrl.state.uri)}}"
+            .onClick=${() =>
+              CoreHelpers.openHref(this.getListingUrl(listing, ConnectModalCtrl.state.uri))}
+          >
+          </w3m-wallet-button>
+        `
+      )}
+      <w3m-wallet-button
+        name="Coinbase Wallet"
+        .onClick=${this.onCoinbaseWallet}
+      ></w3m-wallet-button>
+      <w3m-view-all-wallets-button></w3m-view-all-wallets-button>
+    `
 
     return html` <div class="w3m-view-row">${until(listingButtons, '')}</div> `
   }

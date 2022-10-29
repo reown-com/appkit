@@ -1,4 +1,4 @@
-import { ConnectModalCtrl } from '@web3modal/core'
+import { ClientCtrl, ConnectModalCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -42,7 +42,14 @@ export class W3mConnectButton extends ThemedElement {
   private onOpen() {
     try {
       this.loading = true
-      ConnectModalCtrl.openModal()
+      ClientCtrl.solana().connectLinking(
+        uri => {
+          ConnectModalCtrl.openModal(uri)
+        },
+        () => {
+          ConnectModalCtrl.closeModal()
+        }
+      )
     } catch {
       this.loading = false
     }

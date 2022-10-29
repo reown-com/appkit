@@ -1,12 +1,6 @@
 import { until } from 'lit/directives/until.js'
 import type { Listing } from '@web3modal/core'
-import {
-  ClientCtrl,
-  ConnectModalCtrl,
-  CoreHelpers,
-  ExplorerCtrl,
-  ModalToastCtrl
-} from '@web3modal/core'
+import { ConnectModalCtrl, CoreHelpers, ExplorerCtrl, ModalToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -93,17 +87,6 @@ export class W3mWalletExplorerView extends LitElement {
       }
   }
 
-  private async getWcUri() {
-    return new Promise<string>(resolve => {
-      ClientCtrl.solana().connectLinking(
-        uri => resolve(uri),
-        () => {
-          ConnectModalCtrl.closeModal()
-        }
-      )
-    })
-  }
-
   private getListingUrl(listing: Listing, uri: string) {
     const { native, universal } = CoreHelpers.isMobile() ? listing.mobile : listing.desktop
 
@@ -144,18 +127,18 @@ export class W3mWalletExplorerView extends LitElement {
       'w3m-empty': isEmpty
     }
 
-    const listingButtons = this.getWcUri().then(uri => {
-      return listings.map(
-        listing => html`
-          <w3m-wallet-button
-            src=${listing.image_url.lg}
-            name=${listing.name}
-            .onClick=${() => CoreHelpers.openHref(this.getListingUrl(listing, uri))}
-          >
-          </w3m-wallet-button>
-        `
-      )
-    })
+    const listingButtons = listings.map(
+      listing => html`
+        <w3m-wallet-button
+          src=${listing.image_url.lg}
+          name=${listing.name}
+          .onClick=${() =>
+            CoreHelpers.openHref(this.getListingUrl(listing, ConnectModalCtrl.state.uri))}
+          url=${this.getListingUrl(listing, ConnectModalCtrl.state.uri)}
+        >
+        </w3m-wallet-button>
+      `
+    )
 
     return html`
       ${dynamicStyles()}
