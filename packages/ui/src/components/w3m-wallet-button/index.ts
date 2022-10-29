@@ -15,9 +15,24 @@ export class W3mWalletButton extends LitElement {
   @property() public name = ''
   @property() public label?: string = undefined
   @property() public src?: string = undefined
+  @property() public url?: string = undefined
 
   // -- render ------------------------------------------------------- //
   protected render() {
+    if (this.url)
+      return html`
+        ${dynamicStyles()}
+
+        <a target="_parent" rel="noopener noreferrer" class="w3m-wallet-button" href=${this.url}>
+          <div class="w3m-wallet-button-wrap">
+            <w3m-wallet-image name=${this.name} .src=${this.src}></w3m-wallet-image>
+            <w3m-text variant="xsmall-normal">
+              ${this.label ?? getWalletFirstName(this.name)}
+            </w3m-text>
+          </div>
+        </a>
+      `
+
     return html`
       ${dynamicStyles()}
 

@@ -34,7 +34,7 @@ export function getWalletIcon(name: string) {
     MetaMask: '619537c0-2ff3-4c78-9ed8-a05e7567f300',
     'Coinbase Wallet': 'f8068a7f-83d7-4190-1f94-78154a12c600',
     'Ledger Live': '39890ad8-5b2e-4df6-5db4-2ff5cf4bb300',
-    Phantom: 'e374ef60-2d78-4feb-5353-7e783502d000',
+    Phantom: '1408de57-833f-409c-80aa-5d2bee403f00',
     Exodus: '4c16cad4-cac9-4643-6726-c696efaf5200'
   }
 

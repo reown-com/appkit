@@ -84,7 +84,8 @@ export const Web3ModalSolana = {
               description: 'Test solana desc',
               name: 'Solana example',
               icons: [],
-              url: 'https://walletconnect.com'
+              url:
+                typeof window === 'undefined' ? 'https://walletconnect.com' : window.location.origin
             }
           })
         ]

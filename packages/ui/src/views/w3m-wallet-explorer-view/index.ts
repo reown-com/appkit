@@ -1,3 +1,4 @@
+import { until } from 'lit/directives/until.js'
 import type { Listing } from '@web3modal/core'
 import {
   ClientCtrl,
@@ -92,24 +93,25 @@ export class W3mWalletExplorerView extends LitElement {
       }
   }
 
-  private async onConnect(links: { native: string; universal?: string }, name: string) {
-    const { native, universal } = links
-    await ClientCtrl.solana().connectLinking(
-      uri => {
-        const href = universal
-          ? CoreHelpers.formatUniversalUrl(universal, uri, name)
-          : CoreHelpers.formatNativeUrl(native, uri, name)
-        CoreHelpers.openHref(href)
-      },
-      () => {
-        ConnectModalCtrl.closeModal()
-      }
-    )
+  private async getWcUri() {
+    return new Promise<string>(resolve => {
+      ClientCtrl.solana().connectLinking(
+        uri => resolve(uri),
+        () => {
+          ConnectModalCtrl.closeModal()
+        }
+      )
+    })
   }
 
-  private async onConnectPlatform(listing: Listing) {
-    if (CoreHelpers.isMobile()) await this.onConnect(listing.mobile, listing.name)
-    else await this.onConnect(listing.desktop, listing.name)
+  private getListingUrl(listing: Listing, uri: string) {
+    const { native, universal } = CoreHelpers.isMobile() ? listing.mobile : listing.desktop
+
+    const href = universal
+      ? CoreHelpers.formatUniversalUrl(universal, uri, listing.name)
+      : CoreHelpers.formatNativeUrl(native, uri, listing.name)
+
+    return href
   }
 
   private readonly searchDebounce = debounce((value: string) => {
@@ -142,6 +144,19 @@ export class W3mWalletExplorerView extends LitElement {
       'w3m-empty': isEmpty
     }
 
+    const listingButtons = this.getWcUri().then(uri => {
+      return listings.map(
+        listing => html`
+          <w3m-wallet-button
+            src=${listing.image_url.lg}
+            name=${listing.name}
+            .onClick=${() => CoreHelpers.openHref(this.getListingUrl(listing, uri))}
+          >
+          </w3m-wallet-button>
+        `
+      )
+    })
+
     return html`
       ${dynamicStyles()}
 
@@ -150,18 +165,7 @@ export class W3mWalletExplorerView extends LitElement {
       </w3m-modal-header>
 
       <w3m-modal-content class=${classMap(classes)}>
-        <div class="w3m-content">
-          ${listings.map(
-            listing => html`
-              <w3m-wallet-button
-                src=${listing.image_url.lg}
-                name=${listing.name}
-                .onClick=${async () => this.onConnectPlatform(listing)}
-              >
-              </w3m-wallet-button>
-            `
-          )}
-        </div>
+        <div class="w3m-content">${until(listingButtons, '')}</div>
         <div class="w3m-placeholder-block">
           ${isEmpty
             ? html`<w3m-text variant="large-bold" color="secondary">No results found</w3m-text>`

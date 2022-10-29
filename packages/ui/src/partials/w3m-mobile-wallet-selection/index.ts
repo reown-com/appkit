@@ -1,10 +1,11 @@
+import { until } from 'lit/directives/until.js'
+import type { Listing } from '@web3modal/core'
 import { ClientCtrl, ConnectModalCtrl, CoreHelpers, ExplorerCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-view-all-wallets-button'
 import '../../components/w3m-wallet-button'
 import { global } from '../../utils/Theme'
-import { compareTwoStrings } from '../../utils/UiHelpers'
 import styles from './styles'
 
 @customElement('w3m-mobile-wallet-selection')
@@ -14,28 +15,15 @@ export class W3mMobileWalletSelection extends LitElement {
   // -- private ------------------------------------------------------ //
   private readonly connector = ClientCtrl.ethereum().getConnectorById('injected')
 
-  private async onConnect(links: { native: string; universal?: string }, name: string) {
-    const { ready } = this.connector
-    const isNameSimilar = compareTwoStrings(name, this.connector.name) >= 0.5
-
-    if (ready && isNameSimilar) await ClientCtrl.ethereum().connectInjected()
-    else {
-      const { native, universal } = links
-
-      await ClientCtrl.solana().connectLinking(
-        uri => {
-          console.log({ universal, native })
-          const href = universal
-            ? CoreHelpers.formatUniversalUrl(universal, uri, name)
-            : CoreHelpers.formatNativeUrl(native, uri, name)
-          console.log(href)
-          CoreHelpers.openHref(href)
-        },
+  private async getWcUri() {
+    return new Promise<string>(resolve => {
+      ClientCtrl.solana().connectLinking(
+        uri => resolve(uri),
         () => {
           ConnectModalCtrl.closeModal()
         }
       )
-    }
+    })
   }
 
   private async onCoinbaseWallet() {
@@ -43,19 +31,30 @@ export class W3mMobileWalletSelection extends LitElement {
     ConnectModalCtrl.closeModal()
   }
 
+  private getListingUrl(listing: Listing, uri: string) {
+    const { native, universal } = CoreHelpers.isMobile() ? listing.mobile : listing.desktop
+
+    const href = universal
+      ? CoreHelpers.formatUniversalUrl(universal, uri, listing.name)
+      : CoreHelpers.formatNativeUrl(native, uri, listing.name)
+
+    return href
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     const listings = ExplorerCtrl.state.previewWallets
 
-    return html`
-      <div class="w3m-view-row">
+    const listingButtons = this.getWcUri().then(uri => {
+      return html`
         ${listings.map(
           listing => html`
             <w3m-wallet-button
               src=${listing.image_url.lg}
               name=${listing.name}
-              .onClick=${async () => this.onConnect(listing.mobile, listing.name)}
-            ></w3m-wallet-button>
+              .onClick=${() => CoreHelpers.openHref(this.getListingUrl(listing, uri))}
+            >
+            </w3m-wallet-button>
           `
         )}
         <w3m-wallet-button
@@ -63,8 +62,10 @@ export class W3mMobileWalletSelection extends LitElement {
           .onClick=${this.onCoinbaseWallet}
         ></w3m-wallet-button>
         <w3m-view-all-wallets-button></w3m-view-all-wallets-button>
-      </div>
-    `
+      `
+    })
+
+    return html` <div class="w3m-view-row">${until(listingButtons, '')}</div> `
   }
 }
 

@@ -13,6 +13,7 @@ export default css`
     background-color: transparent;
     width: 100%;
     height: 100%;
+    text-decoration: none;
   }
 
   .w3m-wallet-button:hover w3m-wallet-image {
