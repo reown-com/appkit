@@ -1,6 +1,8 @@
 import type { EthereumOptions, Web3ModalEthereum } from '@web3modal/ethereum'
 import type { Web3ModalSolana } from '@web3modal/solana'
 
+export type SolApi = typeof Web3ModalSolana
+
 // -- ConfigCtrl ------------------------------------------- //
 export interface ConfigOptions {
   projectId: string
@@ -121,3 +123,4 @@ export interface ClientCtrlState {
 }
 
 export type ClientCtrlSetEthereumClientArgs = EthereumOptions
+export type ClientCtrlSetSolanaClientArgs = Parameters<SolApi['createClient']>

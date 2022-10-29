@@ -38,7 +38,6 @@ export class W3mMobileWalletSelection extends LitElement {
           <w3m-wallet-button
             src=${listing.image_url.lg}
             name=${listing.name}
-            url="${this.getListingUrl(listing, ConnectModalCtrl.state.uri)}}"
             .onClick=${() =>
               CoreHelpers.openHref(this.getListingUrl(listing, ConnectModalCtrl.state.uri))}
           >

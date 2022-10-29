@@ -2,6 +2,7 @@ import type { Web3ModalSolana } from '@web3modal/solana'
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type {
   ClientCtrlSetEthereumClientArgs,
+  ClientCtrlSetSolanaClientArgs,
   ClientCtrlState
 } from '../../../types/statefullCtrlTypes'
 
@@ -32,7 +33,7 @@ export const ClientCtrl = {
     state.initialized = true
   },
 
-  async setSolanaClient(args: { projectId: string }) {
+  async setSolanaClient(args: ClientCtrlSetSolanaClientArgs) {
     const { Web3ModalSolana } = await import('@web3modal/solana')
     state.solana = Web3ModalSolana.createClient(args)
     state.initialized = true

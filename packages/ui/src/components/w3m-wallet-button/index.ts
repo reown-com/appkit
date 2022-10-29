@@ -23,7 +23,7 @@ export class W3mWalletButton extends LitElement {
       return html`
         ${dynamicStyles()}
 
-        <a rel="noreferrer" target="_self" class="w3m-wallet-button" href=${this.url}>
+        <a rel="noreferrer noopener" target="_self" class="w3m-wallet-button" href=${this.url}>
           <div class="w3m-wallet-button-wrap">
             <w3m-wallet-image name=${this.name} .src=${this.src}></w3m-wallet-image>
             <w3m-text variant="xsmall-normal">

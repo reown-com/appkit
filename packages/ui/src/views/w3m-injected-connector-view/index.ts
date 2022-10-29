@@ -36,7 +36,7 @@ export class W3mInjectedConnectorView extends LitElement {
       if (ready) {
         this.error = false
         this.connecting = true
-        await ClientCtrl.ethereum().connectInjected()
+        await ClientCtrl.solana().connectInjectedConnect()
         ConnectModalCtrl.closeModal()
       }
     } catch (error: unknown) {

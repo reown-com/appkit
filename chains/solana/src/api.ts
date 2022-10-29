@@ -1,3 +1,4 @@
+import type { WalletConnectAppMetadata } from '@walletconnect/solib'
 import {
   connect,
   watchAddress,
@@ -25,6 +26,7 @@ import {
 
 export interface ClientClientArgs {
   projectId: string
+  metadata: WalletConnectAppMetadata
 }
 
 export const Web3ModalSolana = {
@@ -80,13 +82,7 @@ export const Web3ModalSolana = {
           new WalletConnectConnector({
             relayerRegion: 'wss://relay.walletconnect.com',
             autoconnect: true,
-            metadata: {
-              description: 'Test solana desc',
-              name: 'Solana example',
-              icons: [],
-              url:
-                typeof window === 'undefined' ? 'https://walletconnect.com' : window.location.origin
-            }
+            metadata: args.metadata
           })
         ]
       }),
