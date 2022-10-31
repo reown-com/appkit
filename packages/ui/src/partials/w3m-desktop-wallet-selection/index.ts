@@ -7,7 +7,7 @@ import '../../components/w3m-text'
 import '../../components/w3m-view-all-wallets-button'
 import '../../components/w3m-wallet-button'
 import '../../partials/w3m-walletconnect-qr'
-import { DESKTOP_ICON, MOBILE_ICON } from '../../utils/Svgs'
+import { DESKTOP_ICON, MOBILE_ICON, SCAN_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import styles, { dynamicStyles } from './styles'
 
@@ -68,7 +68,7 @@ export class W3mDesktopWalletSelection extends LitElement {
           </div>
 
           <div class="w3m-subtitle">
-            ${MOBILE_ICON}
+            ${SCAN_ICON}
             <w3m-text variant="small-normal" color="tertiary">Scan with your wallet</w3m-text>
           </div>
         </div>

@@ -12,12 +12,16 @@ export default css`
   .w3m-desktop-title {
     display: flex;
     align-items: center;
-    margin-bottom: 18px;
     margin-top: -8px;
   }
 
   .w3m-mobile-title {
     justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  .w3m-desktop-title {
+    margin-bottom: 10px;
   }
 
   .w3m-subtitle {
