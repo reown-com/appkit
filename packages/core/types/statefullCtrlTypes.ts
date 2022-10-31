@@ -1,4 +1,4 @@
-import type { EthereumOptions, Web3ModalEthereum } from '@web3modal/ethereum'
+import type { Chain, EthereumOptions, Web3ModalEthereum } from '@web3modal/ethereum'
 
 // -- ConfigCtrl ------------------------------------------- //
 export interface ConfigOptions {
@@ -28,6 +28,7 @@ export interface ModalCtrlState {
 // -- OptionsCtrl --------------------------------------- //
 export interface OptionsCtrlState {
   selectedChainId?: number
+  chains?: Chain[]
 }
 
 // -- ExplorerCtrl ------------------------------------------- //

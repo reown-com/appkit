@@ -23,7 +23,6 @@ export const NetworkCtrl = {
 
   async switchNetwork(args: NetworkCtrlSwitchNetworkArgs) {
     const data = await ClientCtrl.ethereum().switchNetwork(args)
-    OptionsCtrl.setSelectedChainId(args.chainId)
 
     return data
   }
