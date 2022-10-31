@@ -16,8 +16,8 @@ export default css`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 80px;
-    height: 80px;
+    width: 78px;
+    height: 78px;
   }
 
   w3m-text {
