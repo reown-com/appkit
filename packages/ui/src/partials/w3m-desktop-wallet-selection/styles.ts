@@ -11,7 +11,6 @@ export default css`
   w3m-walletconnect-button {
     width: 100%;
     overflow: hidden;
-    margin-right: calc((100% - 240px) / 3);
   }
 
   .w3m-title {

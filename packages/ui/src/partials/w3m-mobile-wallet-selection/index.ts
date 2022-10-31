@@ -44,10 +44,6 @@ export class W3mMobileWalletSelection extends LitElement {
           </w3m-wallet-button>
         `
       )}
-      <w3m-wallet-button
-        name="Coinbase Wallet"
-        .onClick=${this.onCoinbaseWallet}
-      ></w3m-wallet-button>
       <w3m-view-all-wallets-button></w3m-view-all-wallets-button>
     `
 

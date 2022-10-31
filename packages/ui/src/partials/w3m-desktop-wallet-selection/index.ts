@@ -84,10 +84,6 @@ export class W3mDesktopWalletSelection extends LitElement {
       </div>
       <div class="w3m-view-row">
         <w3m-walletconnect-button .onClick=${this.onWalletConnect}></w3m-walletconnect-button>
-        <w3m-wallet-button
-          name="Coinbase Wallet"
-          .onClick=${this.onCoinbaseWallet}
-        ></w3m-wallet-button>
       </div>
 
       <div class="w3m-title w3m-title-desktop">
