@@ -3,7 +3,7 @@ import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-qrcode'
 import { global } from '../../utils/Theme'
-import { getErrorMessage } from '../../utils/UiHelpers'
+import { getErrorMessage, getShadowRootElement } from '../../utils/UiHelpers'
 import styles from './styles'
 
 @customElement('w3m-walletconnect-qr')
@@ -12,6 +12,7 @@ export class W3mWalletConnectQr extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private uri = ''
+  @state() private size = 0
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -20,6 +21,9 @@ export class W3mWalletConnectQr extends LitElement {
   }
 
   // -- private ------------------------------------------------------ //
+  private get overlayEl(): HTMLDivElement {
+    return getShadowRootElement(this, '.w3m-qr-container') as HTMLDivElement
+  }
 
   private async getConnectionUri() {
     try {
@@ -38,7 +42,7 @@ export class W3mWalletConnectQr extends LitElement {
     return html`
       <div class="w3m-qr-container">
         ${this.uri
-          ? html`<w3m-qrcode size=${this.offsetWidth} uri=${this.uri}> </w3m-qrcode>`
+          ? html`<w3m-qrcode size=${this.overlayEl.offsetWidth} uri=${this.uri}> </w3m-qrcode>`
           : null}
       </div>
     `
