@@ -3,7 +3,7 @@ import { color } from '../../utils/Theme'
 
 export default css`
   .w3m-modal-footer {
-    padding: 15px 18px;
+    padding: 18px;
     display: flex;
     flex-direction: column;
     align-items: inherit;

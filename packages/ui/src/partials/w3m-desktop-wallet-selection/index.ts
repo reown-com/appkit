@@ -61,15 +61,22 @@ export class W3mDesktopWalletSelection extends LitElement {
       ${dynamicStyles()}
 
       <w3m-modal-content>
-        <div class="w3m-title">
-          ${MOBILE_ICON}
-          <w3m-text variant="small-normal" color="accent">Mobile</w3m-text>
+        <div class="w3m-mobile-title">
+          <div class="w3m-subtitle">
+            ${MOBILE_ICON}
+            <w3m-text variant="small-normal" color="accent">Mobile</w3m-text>
+          </div>
+
+          <div class="w3m-subtitle">
+            ${MOBILE_ICON}
+            <w3m-text variant="small-normal" color="tertiary">Scan with your wallet</w3m-text>
+          </div>
         </div>
         <w3m-walletconnect-qr></w3m-walletconnect-qr>
       </w3m-modal-content>
 
       <w3m-modal-footer>
-        <div class="w3m-title w3m-title-desktop">
+        <div class="w3m-desktop-title">
           ${DESKTOP_ICON}
           <w3m-text variant="small-normal" color="accent">Desktop</w3m-text>
         </div>

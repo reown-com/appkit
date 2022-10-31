@@ -8,14 +8,25 @@ export default css`
     justify-content: space-between;
   }
 
-  .w3m-title {
+  .w3m-mobile-title,
+  .w3m-desktop-title {
     display: flex;
     align-items: center;
-    padding-bottom: 6px;
-    margin-bottom: 5px;
+    margin-bottom: 18px;
+    margin-top: -8px;
   }
 
-  .w3m-title svg {
+  .w3m-mobile-title {
+    justify-content: space-between;
+  }
+
+  .w3m-subtitle {
+    display: flex;
+    align-items: center;
+  }
+
+  .w3m-mobile-title svg,
+  .w3m-desktop-title svg {
     margin-right: 6px;
   }
 `
@@ -24,8 +35,13 @@ export function dynamicStyles() {
   const { foreground } = color()
 
   return html`<style>
-    .w3m-title path {
+    .w3m-mobile-title path,
+    .w3m-desktop-title path {
       fill: ${foreground.accent};
+    }
+
+    .w3m-subtitle:last-child path {
+      fill: ${foreground[3]};
     }
   </style>`
 }
