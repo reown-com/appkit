@@ -21,8 +21,8 @@
     "@web3modal/ui": "2.0.0-beta.1"
   },
   "devDependencies": {
-    "@types/react": "18.0.23",
-    "@types/react-dom": "18.0.7",
+    "@types/react": "18.0.24",
+    "@types/react-dom": "18.0.8",
     "eslint-plugin-react": "7.31.10",
     "eslint-plugin-react-hooks": "4.6.0",
     "react": "18.2.0",
