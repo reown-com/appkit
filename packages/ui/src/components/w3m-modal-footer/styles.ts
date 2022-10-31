@@ -6,6 +6,8 @@ export default css`
     padding: 15px 18px;
     display: flex;
     flex-direction: column;
+    align-items: inherit;
+    justify-content: inherit;
   }
 `
 

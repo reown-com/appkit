@@ -8,12 +8,6 @@ export default css`
     justify-content: space-between;
   }
 
-  w3m-walletconnect-button {
-    width: 100%;
-    overflow: hidden;
-    margin-right: calc((100% - 240px) / 3);
-  }
-
   .w3m-title {
     display: flex;
     align-items: center;

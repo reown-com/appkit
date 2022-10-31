@@ -2,6 +2,11 @@ import { css, html } from 'lit'
 import { color } from '../../utils/Theme'
 
 export default css`
+  w3m-modal-footer {
+    justify-content: center;
+    align-items: center;
+  }
+
   .w3m-qr-container {
     width: 100%;
     aspect-ratio: 1 / 1;

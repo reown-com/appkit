@@ -12,7 +12,6 @@ export class W3mWalletConnectQr extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private uri = ''
-  @state() private size = 0
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
