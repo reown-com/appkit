@@ -1,6 +1,7 @@
 import { ClientCtrl, CoreHelpers, ExplorerCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import '../../components/w3m-modal-content'
 import '../../components/w3m-view-all-wallets-button'
 import '../../components/w3m-wallet-button'
 import { global } from '../../utils/Theme'
@@ -40,24 +41,40 @@ export class W3mMobileWalletSelection extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const listings = ExplorerCtrl.state.previewWallets
+    const row1 = listings.slice(0, 4)
+    const row2 = listings.slice(4, 6)
 
     return html`
-      <div class="w3m-view-row">
-        ${listings.map(
-          listing => html`
-            <w3m-wallet-button
-              src=${listing.image_url.lg}
-              name=${listing.name}
-              .onClick=${async () => this.onConnect(listing.mobile, listing.name)}
-            ></w3m-wallet-button>
-          `
-        )}
-        <w3m-wallet-button
-          name="Coinbase Wallet"
-          .onClick=${this.onCoinbaseWallet}
-        ></w3m-wallet-button>
-        <w3m-view-all-wallets-button></w3m-view-all-wallets-button>
-      </div>
+      <w3m-modal-content>
+        <div class="w3m-view-row">
+          ${row1.map(
+            listing => html`
+              <w3m-wallet-button
+                src=${listing.image_url.lg}
+                name=${listing.name}
+                .onClick=${async () => this.onConnect(listing.mobile, listing.name)}
+              ></w3m-wallet-button>
+            `
+          )}
+        </div>
+
+        <div class="w3m-view-row">
+          ${row2.map(
+            listing => html`
+              <w3m-wallet-button
+                src=${listing.image_url.lg}
+                name=${listing.name}
+                .onClick=${async () => this.onConnect(listing.mobile, listing.name)}
+              ></w3m-wallet-button>
+            `
+          )}
+          <w3m-wallet-button
+            name="Coinbase Wallet"
+            .onClick=${this.onCoinbaseWallet}
+          ></w3m-wallet-button>
+          <w3m-view-all-wallets-button></w3m-view-all-wallets-button>
+        </div>
+      </w3m-modal-content>
     `
   }
 }
