@@ -7,7 +7,8 @@ export default css`
     inset: 0px;
     position: fixed;
     z-index: 10001;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,7 +23,7 @@ export default css`
 
   .w3m-modal-container {
     position: relative;
-    max-width: 400px;
+    max-width: 360px;
     width: 100%;
   }
 

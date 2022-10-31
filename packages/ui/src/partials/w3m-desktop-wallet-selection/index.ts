@@ -2,10 +2,13 @@ import { ClientCtrl, CoreHelpers, RouterCtrl } from '@web3modal/core'
 import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import '../../components/w3m-modal-content'
+import '../../components/w3m-modal-footer'
 import '../../components/w3m-text'
 import '../../components/w3m-view-all-wallets-button'
 import '../../components/w3m-wallet-button'
 import '../../partials/w3m-walletconnect-button'
+import '../../partials/w3m-walletconnect-qr'
 import { DESKTOP_ICON, MOBILE_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { getDefaultWalletNames } from '../../utils/UiHelpers'
@@ -76,27 +79,25 @@ export class W3mDesktopWalletSelection extends LitElement {
     return html`
       ${dynamicStyles()}
 
-      <div class="w3m-title">
-        ${MOBILE_ICON}
-        <w3m-text variant="small-normal" color="tertiary">Mobile</w3m-text>
-      </div>
-      <div class="w3m-view-row">
-        <w3m-walletconnect-button .onClick=${this.onWalletConnect}></w3m-walletconnect-button>
-        <w3m-wallet-button
-          name="Coinbase Wallet"
-          .onClick=${this.onCoinbaseWallet}
-        ></w3m-wallet-button>
-      </div>
+      <w3m-modal-content>
+        <div class="w3m-title">
+          ${MOBILE_ICON}
+          <w3m-text variant="small-normal" color="accent">Mobile</w3m-text>
+        </div>
+        <w3m-walletconnect-qr></w3m-walletconnect-qr>
+      </w3m-modal-content>
 
-      <div class="w3m-title w3m-title-desktop">
-        ${DESKTOP_ICON}
-        <w3m-text variant="small-normal" color="tertiary">Desktop</w3m-text>
-      </div>
-      <div class="w3m-view-row">
-        ${slot1} ${slot2}
-        <w3m-wallet-button name="Ledger Live" .onClick=${this.onLedgerWallet}></w3m-wallet-button>
-        <w3m-view-all-wallets-button></w3m-view-all-wallets-button>
-      </div>
+      <w3m-modal-footer>
+        <div class="w3m-title w3m-title-desktop">
+          ${DESKTOP_ICON}
+          <w3m-text variant="small-normal" color="accent">Desktop</w3m-text>
+        </div>
+        <div class="w3m-view-row">
+          ${slot1} ${slot2}
+          <w3m-wallet-button name="Ledger Live" .onClick=${this.onLedgerWallet}></w3m-wallet-button>
+          <w3m-view-all-wallets-button></w3m-view-all-wallets-button>
+        </div>
+      </w3m-modal-footer>
     `
   }
 }

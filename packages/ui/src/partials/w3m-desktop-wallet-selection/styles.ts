@@ -17,12 +17,8 @@ export default css`
   .w3m-title {
     display: flex;
     align-items: center;
-    padding: 6px 0;
+    padding-bottom: 6px;
     margin-bottom: 5px;
-  }
-
-  .w3m-title-desktop {
-    margin-top: 15px;
   }
 
   .w3m-title svg {
@@ -35,7 +31,7 @@ export function dynamicStyles() {
 
   return html`<style>
     .w3m-title path {
-      fill: ${foreground[3]};
+      fill: ${foreground.accent};
     }
   </style>`
 }

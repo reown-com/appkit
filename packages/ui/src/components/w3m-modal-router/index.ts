@@ -14,7 +14,7 @@ import '../../views/w3m-ledger-desktop-connector-view'
 import '../../views/w3m-metamask-connector-view'
 import '../../views/w3m-select-network-view'
 import '../../views/w3m-wallet-explorer-view'
-import '../../views/w3m-walletconnect-connector-view'
+import '../../partials/w3m-walletconnect-qr'
 import styles from './styles'
 
 @customElement('w3m-modal-router')
