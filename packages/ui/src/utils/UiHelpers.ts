@@ -35,7 +35,8 @@ export function getWalletIcon(name: string) {
     'Coinbase Wallet': 'f8068a7f-83d7-4190-1f94-78154a12c600',
     'Ledger Live': '39890ad8-5b2e-4df6-5db4-2ff5cf4bb300',
     Phantom: '1408de57-833f-409c-80aa-5d2bee403f00',
-    Exodus: '4c16cad4-cac9-4643-6726-c696efaf5200'
+    Exodus: '4c16cad4-cac9-4643-6726-c696efaf5200',
+    Solflare: '3b0436f6-9553-4d29-be5e-4c2a0c581100'
   }
 
   return `${cdn}/${presets[name] ?? fallback}?projectId=${projectId}`
