@@ -1,6 +1,6 @@
 import { until } from 'lit/directives/until.js'
 import type { Listing } from '@web3modal/core'
-import { ClientCtrl, ConnectModalCtrl, CoreHelpers, ExplorerCtrl } from '@web3modal/core'
+import { ConnectModalCtrl, CoreHelpers, ExplorerCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-view-all-wallets-button'
@@ -13,11 +13,6 @@ export class W3mMobileWalletSelection extends LitElement {
   public static styles = [global, styles]
 
   // -- private ------------------------------------------------------ //
-  private async onCoinbaseWallet() {
-    await ClientCtrl.ethereum().connectCoinbaseMobile()
-    ConnectModalCtrl.closeModal()
-  }
-
   private getListingUrl(listing: Listing, uri: string) {
     const { native, universal } = CoreHelpers.isMobile() ? listing.mobile : listing.desktop
 
@@ -39,7 +34,7 @@ export class W3mMobileWalletSelection extends LitElement {
             src=${listing.image_url.lg}
             name=${listing.name}
             .onClick=${() =>
-              CoreHelpers.openHref(this.getListingUrl(listing, ConnectModalCtrl.state.uri))}
+              CoreHelpers.openHref(this.getListingUrl(listing, ConnectModalCtrl.state.uri ?? ''))}
           >
           </w3m-wallet-button>
         `

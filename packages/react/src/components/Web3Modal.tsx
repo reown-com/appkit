@@ -16,7 +16,15 @@ interface Props {
 export function Web3Modal({ config }: Props) {
   const onConfigure = useCallback(async () => {
     ConfigCtrl.setConfig(config)
-    await ClientCtrl.setSolanaClient({ projectId: config.projectId })
+    await ClientCtrl.setSolanaClient({
+      projectId: config.projectId,
+      metadata: {
+        icons: ['https://avatars.githubusercontent.com/u/37784886'],
+        description: 'Demo Solib integration app',
+        name: 'Solib Demo',
+        url: window.location.origin
+      }
+    })
     if (config.ethereum) await ClientCtrl.setEthereumClient(config.ethereum)
     await import('@web3modal/ui')
   }, [config])

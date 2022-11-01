@@ -1,4 +1,4 @@
-import { ClientCtrl, CoreHelpers, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, RouterCtrl } from '@web3modal/core'
 import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
@@ -18,15 +18,6 @@ export class W3mDesktopWalletSelection extends LitElement {
   // -- private ------------------------------------------------------ //
   private onWalletConnect() {
     RouterCtrl.push('WalletConnectConnector')
-  }
-
-  private onCoinbaseWallet() {
-    if (CoreHelpers.isCoinbaseExtension()) RouterCtrl.push('CoinbaseExtensionConnector')
-    else RouterCtrl.push('CoinbaseMobileConnector')
-  }
-
-  private onLedgerWallet() {
-    RouterCtrl.push('LedgerDesktopConnector')
   }
 
   private onPhantom() {

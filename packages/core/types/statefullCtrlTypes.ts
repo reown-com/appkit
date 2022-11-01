@@ -124,4 +124,4 @@ export interface ClientCtrlState {
 }
 
 export type ClientCtrlSetEthereumClientArgs = EthereumOptions
-export type ClientCtrlSetSolanaClientArgs = Parameters<SolApi['createClient']>
+export type ClientCtrlSetSolanaClientArgs = Parameters<SolApi['createClient']>[0]
