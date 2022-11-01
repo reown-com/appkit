@@ -1,9 +1,18 @@
-import { ClientCtrl, CoreHelpers, ExplorerCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
+import {
+  ClientCtrl,
+  CoreHelpers,
+  ExplorerCtrl,
+  ModalCtrl,
+  OptionsCtrl,
+  RouterCtrl
+} from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-modal-content'
+import '../../components/w3m-modal-header'
 import '../../components/w3m-view-all-wallets-button'
 import '../../components/w3m-wallet-button'
+import { QRCODE_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { compareTwoStrings } from '../../utils/UiHelpers'
 import styles from './styles'
@@ -38,6 +47,10 @@ export class W3mMobileWalletSelection extends LitElement {
     ModalCtrl.close()
   }
 
+  private onGoToQrcode() {
+    RouterCtrl.push('Qrcode')
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     const listings = ExplorerCtrl.state.previewWallets
@@ -45,6 +58,12 @@ export class W3mMobileWalletSelection extends LitElement {
     const row2 = listings.slice(4, 6)
 
     return html`
+      <w3m-modal-header
+        title="Connect your wallet"
+        .onAction=${this.onGoToQrcode}
+        .actionIcon=${QRCODE_ICON}
+      ></w3m-modal-header>
+
       <w3m-modal-content>
         <div class="w3m-view-row">
           ${row1.map(

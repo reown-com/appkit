@@ -3,6 +3,7 @@ import { RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
+import '../../partials/w3m-walletconnect-qr'
 import { global } from '../../utils/Theme'
 import { getShadowRootElement } from '../../utils/UiHelpers'
 import '../../views/w3m-coinbase-extension-connector-view'
@@ -12,9 +13,9 @@ import '../../views/w3m-get-wallet-view'
 import '../../views/w3m-injected-connector-view'
 import '../../views/w3m-ledger-desktop-connector-view'
 import '../../views/w3m-metamask-connector-view'
+import '../../views/w3m-qrcode-view'
 import '../../views/w3m-select-network-view'
 import '../../views/w3m-wallet-explorer-view'
-import '../../partials/w3m-walletconnect-qr'
 import styles from './styles'
 
 @customElement('w3m-modal-router')
@@ -89,6 +90,8 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-ledger-desktop-connector-view></w3m-ledger-desktop-connector-view>`
       case 'WalletExplorer':
         return html`<w3m-wallet-explorer-view></w3m-wallet-explorer-view>`
+      case 'Qrcode':
+        return html`<w3m-qrcode-view></w3m-qrcode-view>`
       default:
         return html`<div>Not Found</div>`
     }
