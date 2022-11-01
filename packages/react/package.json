@@ -2,7 +2,6 @@
   "name": "@web3modal/react",
   "version": "2.0.0-beta.1",
   "main": "dist/index.js",
-  "unpkg": "dist/index.umd.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
@@ -12,7 +11,7 @@
     "build:clean": "rm -rf dist",
     "build:types": "tsc --emitDeclarationOnly",
     "build:source": "rollup --silent --config rollup.config.js",
-    "build": "npm run build:clean; npm run build:types; npm run build:source",
+    "build": "npm run build:clean; npm run build:types & npm run build:source",
     "dev": "rollup --config rollup.config.js --watch",
     "typecheck": "tsc --noEmit"
   },

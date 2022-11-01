@@ -1,9 +1,5 @@
-import commonjs from '@rollup/plugin-commonjs'
-import json from '@rollup/plugin-json'
-import resolve from '@rollup/plugin-node-resolve'
 import esbuild from 'rollup-plugin-esbuild'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
-import nodePolyfills from 'rollup-plugin-polyfill-node'
 
 export default function createConfig(packageName) {
   const sharedOutput = {
@@ -25,22 +21,8 @@ export default function createConfig(packageName) {
   return [
     {
       input: './index.ts',
-      plugins: [minifyHtml(), esbuildPlugin],
+      plugins: [minifyHtml.default(), esbuildPlugin],
       output: [{ file: './dist/index.js', format: 'es', ...sharedOutput }]
-    },
-    {
-      input: './index.ts',
-      plugins: [
-        minifyHtml(),
-        nodePolyfills(),
-        resolve({ browser: true, preferBuiltins: true }),
-        json(),
-        commonjs(),
-        esbuildPlugin
-      ],
-      output: [
-        { file: './dist/index.umd.js', format: 'umd', inlineDynamicImports: true, ...sharedOutput }
-      ]
     }
   ]
 }
