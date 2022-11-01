@@ -24,6 +24,11 @@ export default css`
     position: absolute;
     left: 0;
   }
+
+  .w3m-action-btn {
+    position: absolute;
+    right: 0;
+  }
 `
 
 export function dynamicStyles() {
@@ -34,7 +39,8 @@ export function dynamicStyles() {
       border-bottom: 1px solid ${background[2]};
     }
 
-    .w3m-back-btn path {
+    .w3m-back-btn path,
+    .w3m-action-btn path {
       fill: ${foreground.accent};
     }
   </style>`

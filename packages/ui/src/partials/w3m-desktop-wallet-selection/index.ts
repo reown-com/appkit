@@ -1,13 +1,14 @@
-import { ClientCtrl, CoreHelpers, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, CoreHelpers, RouterCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-footer'
+import '../../components/w3m-modal-header'
 import '../../components/w3m-text'
 import '../../components/w3m-view-all-wallets-button'
 import '../../components/w3m-wallet-button'
 import '../../partials/w3m-walletconnect-qr'
-import { DESKTOP_ICON, MOBILE_ICON, SCAN_ICON } from '../../utils/Svgs'
+import { COPY_ICON, DESKTOP_ICON, MOBILE_ICON, SCAN_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import styles, { dynamicStyles } from './styles'
 
@@ -55,10 +56,21 @@ export class W3mDesktopWalletSelection extends LitElement {
     return this.metaMaskTemplate()
   }
 
+  private async onCopyUri() {
+    await navigator.clipboard.writeText('Hello World')
+    ToastCtrl.openToast('WalletConnect link copied', 'success')
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
       ${dynamicStyles()}
+
+      <w3m-modal-header
+        title="Connect your wallet"
+        .onAction=${this.onCopyUri}
+        .actionIcon=${COPY_ICON}
+      ></w3m-modal-header>
 
       <w3m-modal-content>
         <div class="w3m-mobile-title">

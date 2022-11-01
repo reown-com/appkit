@@ -90,8 +90,8 @@ export interface ListingResponse {
   total: number
 }
 
-// -- ModalToastCtrl ------------------------------------------ //
-export interface ModalToastCtrlState {
+// -- ToastCtrl ------------------------------------------ //
+export interface ToastCtrlState {
   open: boolean
   message: string
   variant: 'error' | 'success'

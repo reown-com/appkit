@@ -1,4 +1,4 @@
-import { ClientCtrl, ModalCtrl, ModalToastCtrl, OptionsCtrl } from '@web3modal/core'
+import { ClientCtrl, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-qrcode'
@@ -32,7 +32,7 @@ export class W3mWalletConnectQr extends LitElement {
       )
       ModalCtrl.close()
     } catch (err) {
-      ModalToastCtrl.openToast(getErrorMessage(err), 'error')
+      ToastCtrl.openToast(getErrorMessage(err), 'error')
     }
   }
 

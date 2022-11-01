@@ -4,8 +4,8 @@ import {
   CoreHelpers,
   ExplorerCtrl,
   ModalCtrl,
-  ModalToastCtrl,
-  OptionsCtrl
+  OptionsCtrl,
+  ToastCtrl
 } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
@@ -85,7 +85,7 @@ export class W3mWalletExplorerView extends LitElement {
         await Promise.all([...images.map(async url => preloadImage(url)), CoreHelpers.wait(300)])
         this.endReached = this.isLastPage()
       } catch (err) {
-        ModalToastCtrl.openToast(getErrorMessage(err), 'error')
+        ToastCtrl.openToast(getErrorMessage(err), 'error')
       } finally {
         this.loading = false
         this.firstFetch = false
