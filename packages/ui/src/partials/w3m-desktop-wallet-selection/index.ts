@@ -57,7 +57,8 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private async onCopyUri() {
-    await navigator.clipboard.writeText('Hello World')
+    const uri = await ClientCtrl.ethereum().getActiveWalletConnectUri()
+    await navigator.clipboard.writeText(uri)
     ToastCtrl.openToast('WalletConnect link copied', 'success')
   }
 
