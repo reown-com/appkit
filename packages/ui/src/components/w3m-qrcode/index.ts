@@ -2,10 +2,10 @@ import { ConfigCtrl } from '@web3modal/core'
 import { html, LitElement, svg } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { getDots } from '../../utils/QrCode'
-import { WALLET_CONNECT_ICON_GRADIENT } from '../../utils/Svgs'
+import { WALLET_CONNECT_ICON_COLORED } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import '../w3m-wallet-image'
-import styles from './styles'
+import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-qrcode')
 export default class W3mQrCode extends LitElement {
@@ -30,10 +30,11 @@ export default class W3mQrCode extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
+      ${dynamicStyles()}
       <div class="w3m-qrcode-container">
         ${this.logoSrc
           ? html`<w3m-wallet-image src=${this.logoSrc}></w3m-wallet-image>`
-          : WALLET_CONNECT_ICON_GRADIENT}
+          : WALLET_CONNECT_ICON_COLORED}
         ${this.svgTemplate()}
       </div>
     `
