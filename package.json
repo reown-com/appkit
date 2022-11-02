@@ -7,6 +7,7 @@
     "build": "npm run build --ws --if-present",
     "dev": "npm run dev --w=@web3modal/core & npm run dev --w=@web3modal/ui & npm run dev --w=@web3modal/ethereum & npm run dev --w=@web3modal/react",
     "dev:react": "npm run dev --w=react-example",
+    "dev:react-standalone": "npm run dev -w=react-standalone-example",
     "dev:html": "npm run dev --w=html-example",
     "lint": "eslint .",
     "prettier": "prettier --check .",
@@ -24,6 +25,7 @@
     "packages/ui",
     "packages/react",
     "examples/react",
+    "examples/react-standalone",
     "examples/html"
   ],
   "devDependencies": {

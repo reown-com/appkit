@@ -1,4 +1,4 @@
-import { ExplorerCtrl, ModalCtrl, NetworkCtrl } from '@web3modal/core'
+import { ConfigCtrl, CoreHelpers, ExplorerCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -28,20 +28,24 @@ export class W3mModal extends ThemedElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.unsubscribe = ModalCtrl.subscribe(modalState => {
+    this.unsubscribeModal = ModalCtrl.subscribe(modalState => {
       if (modalState.open) this.onOpenModalEvent()
       if (!modalState.open) this.onCloseModalEvent()
     })
-    this.preloadData()
+    this.unsubscribeConfig = ConfigCtrl.subscribe(configState => {
+      if (configState.configured) this.preloadData()
+    })
   }
 
   public disconnectedCallback() {
     super.disconnectedCallback()
-    this.unsubscribe?.()
+    this.unsubscribeModal?.()
+    this.unsubscribeConfig?.()
   }
 
   // -- private ------------------------------------------------------ //
-  private readonly unsubscribe?: () => void = undefined
+  private readonly unsubscribeModal?: () => void = undefined
+  private readonly unsubscribeConfig?: () => void = undefined
   private firstOpen = true
 
   private get overlayEl() {
@@ -64,11 +68,17 @@ export class W3mModal extends ThemedElement {
 
   private async preloadData() {
     if (this.firstOpen) {
-      await ExplorerCtrl.getPreviewWallets()
+      const chainsFilter = OptionsCtrl.state.standaloneChains?.join(',')
+      await ExplorerCtrl.getPreviewWallets({
+        page: 1,
+        entries: 10,
+        chains: chainsFilter,
+        device: CoreHelpers.isMobile() ? 'mobile' : 'desktop'
+      })
       const walletImgs = ExplorerCtrl.state.previewWallets.map(({ image_url }) => image_url.lg)
       const defaultWalletImgs = defaultWalletImages()
-      const { chains } = NetworkCtrl.get()
-      const chainsImgs = chains.map(chain => getChainIcon(chain.id))
+      const { chains } = OptionsCtrl.state
+      const chainsImgs = chains?.map(chain => getChainIcon(chain.id)) ?? []
       await Promise.all([
         ...walletImgs.map(async url => preloadImage(url)),
         ...defaultWalletImgs.map(async url => preloadImage(url)),

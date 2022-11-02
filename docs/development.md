@@ -12,6 +12,7 @@ yarn
 
 - `yarn dev` - Build and watch all packages for changes.
 - `yarn dev:react` - Run react example (has to be ran together with `yarn dev` in a separate terminal tab).
+- `yarn dev:react-standalone` - Run react standalone example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn dev:html` - Run plain html/js example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn build` - Build all packages + examples.
 - `yarn lint` - Run the linter.

@@ -26,11 +26,15 @@ export class W3mWalletConnectQr extends LitElement {
 
   private async getConnectionUri() {
     try {
-      await ClientCtrl.ethereum().connectWalletConnect(
-        uri => (this.uri = uri),
-        OptionsCtrl.state.selectedChainId
-      )
-      ModalCtrl.close()
+      const { wcUri } = ModalCtrl.state
+      if (wcUri) setTimeout(() => (this.uri = wcUri), 0)
+      else {
+        await ClientCtrl.ethereum().connectWalletConnect(
+          uri => (this.uri = uri),
+          OptionsCtrl.state.selectedChainId
+        )
+        ModalCtrl.close()
+      }
     } catch (err) {
       ToastCtrl.openToast(getErrorMessage(err), 'error')
     }

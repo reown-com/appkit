@@ -74,12 +74,13 @@ export class W3mWalletExplorerView extends LitElement {
     if (!this.endReached && (this.firstFetch || (total > PAGE_ENTRIES && listings.length < total)))
       try {
         this.loading = true
+        const chains = OptionsCtrl.state.standaloneChains?.join(',')
         const { listings: newListings } = await ExplorerCtrl.getPaginatedWallets({
           page: this.firstFetch ? 1 : page + 1,
           entries: PAGE_ENTRIES,
-          version: 1,
           device: CoreHelpers.isMobile() ? 'mobile' : 'desktop',
-          search: this.search
+          search: this.search,
+          chains
         })
         const images = newListings.map(({ image_url }) => image_url.lg)
         await Promise.all([...images.map(async url => preloadImage(url)), CoreHelpers.wait(300)])

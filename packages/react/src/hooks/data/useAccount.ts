@@ -13,7 +13,7 @@ export function useAccount() {
     isConnected: data?.isConnected,
     isReconnecting: data?.isReconnecting,
     isConnecting: data?.isConnecting,
-    isDisconnected: data?.isConnected,
+    isDisconnected: data?.isDisconnected,
     status: data?.status
   }
 

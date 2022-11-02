@@ -17,8 +17,8 @@ export const ExplorerCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  async getPreviewWallets() {
-    const { listings } = await fetchWallets({ page: 1, entries: 10, version: 1 })
+  async getPreviewWallets(params: PageParams) {
+    const { listings } = await fetchWallets(params)
     state.previewWallets = Object.values(listings)
 
     return state.previewWallets

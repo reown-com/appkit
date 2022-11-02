@@ -1,4 +1,4 @@
-import { ClientCtrl, CoreHelpers, RouterCtrl, ToastCtrl } from '@web3modal/core'
+import { ClientCtrl, CoreHelpers, ModalCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-modal-content'
@@ -57,13 +57,20 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private async onCopyUri() {
-    const uri = await ClientCtrl.ethereum().getActiveWalletConnectUri()
-    await navigator.clipboard.writeText(uri)
+    const { wcUri } = ModalCtrl.state
+    if (wcUri) await navigator.clipboard.writeText(wcUri)
+    else {
+      const uri = await ClientCtrl.ethereum().getActiveWalletConnectUri()
+      await navigator.clipboard.writeText(uri)
+    }
+
     ToastCtrl.openToast('WalletConnect link copied', 'success')
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
+    const { wcUri } = ModalCtrl.state
+
     return html`
       ${dynamicStyles()}
 
@@ -93,15 +100,26 @@ export class W3mDesktopWalletSelection extends LitElement {
           ${DESKTOP_ICON}
           <w3m-text variant="small-normal" color="accent">Desktop</w3m-text>
         </div>
-        <div class="w3m-view-row">
-          ${this.dynamicSlot()}
-          <w3m-wallet-button
-            name="Coinbase Wallet"
-            .onClick=${this.onCoinbaseWallet}
-          ></w3m-wallet-button>
-          <w3m-wallet-button name="Ledger Live" .onClick=${this.onLedgerWallet}></w3m-wallet-button>
-          <w3m-view-all-wallets-button></w3m-view-all-wallets-button>
-        </div>
+        ${wcUri
+          ? html`
+              <div class="w3m-view-row">
+                <w3m-view-all-wallets-button></w3m-view-all-wallets-button>
+              </div>
+            `
+          : html`
+              <div class="w3m-view-row">
+                ${this.dynamicSlot()}
+                <w3m-wallet-button
+                  name="Coinbase Wallet"
+                  .onClick=${this.onCoinbaseWallet}
+                ></w3m-wallet-button>
+                <w3m-wallet-button
+                  name="Ledger Live"
+                  .onClick=${this.onLedgerWallet}
+                ></w3m-wallet-button>
+                <w3m-view-all-wallets-button></w3m-view-all-wallets-button>
+              </div>
+            `}
       </w3m-modal-footer>
     `
   }

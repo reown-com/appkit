@@ -14,6 +14,7 @@ export interface ConfigOptions {
     | 'purple'
     | 'teal'
   ethereum?: EthereumOptions
+  standaloneChains?: string[]
 }
 
 export interface ConfigCtrlState extends ConfigOptions {
@@ -23,12 +24,14 @@ export interface ConfigCtrlState extends ConfigOptions {
 // -- ModalCtrl --------------------------------------- //
 export interface ModalCtrlState {
   open: boolean
+  wcUri?: string
 }
 
 // -- OptionsCtrl --------------------------------------- //
 export interface OptionsCtrlState {
   selectedChainId?: number
   chains?: Chain[]
+  standaloneChains?: string[]
 }
 
 // -- ExplorerCtrl ------------------------------------------- //
@@ -45,6 +48,7 @@ export interface PageParams {
   version?: number
   device?: 'desktop' | 'mobile'
   order?: 'asc' | 'desc'
+  chains?: string
 }
 
 export interface PlatformInfo {

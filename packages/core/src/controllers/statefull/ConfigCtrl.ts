@@ -1,5 +1,6 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ConfigCtrlState, ConfigOptions } from '../../../types/statefullCtrlTypes'
+import { OptionsCtrl } from './OptionsCtrl'
 
 // -- initial state ------------------------------------------------ //
 function isDarkMode() {
@@ -10,7 +11,8 @@ const state = proxy<ConfigCtrlState>({
   configured: false,
   projectId: '',
   theme: isDarkMode() ? 'dark' : 'light',
-  accentColor: 'default'
+  accentColor: 'default',
+  standaloneChains: undefined
 })
 
 // -- controller --------------------------------------------------- //
@@ -26,6 +28,7 @@ export const ConfigCtrl = {
       throw new Error(
         'Web3Modal requires projectId that can be obtained at cloud.walletconnect.com'
       )
+    if (config.standaloneChains) OptionsCtrl.setStandaloneChains(config.standaloneChains)
     Object.assign(state, config)
     state.configured = true
   }

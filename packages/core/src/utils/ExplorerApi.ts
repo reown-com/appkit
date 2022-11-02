@@ -1,14 +1,6 @@
 import type { ListingResponse, PageParams } from '../../types/statefullCtrlTypes'
 import { ConfigCtrl } from '../controllers/statefull/ConfigCtrl'
 
-// -- helpers ------------------------------------------------------ //
-export function getExplorerApi() {
-  return {
-    url: 'https://explorer-api.walletconnect.com',
-    projectId: ConfigCtrl.state.projectId
-  }
-}
-
 function formatParams(params: PageParams) {
   const stringParams = Object.fromEntries(
     Object.entries(params)
@@ -19,15 +11,17 @@ function formatParams(params: PageParams) {
   return new URLSearchParams(stringParams).toString()
 }
 
-function formatUrl(params: PageParams) {
-  const { url, projectId } = getExplorerApi()
-
-  return `${url}/v3/wallets?projectId=${projectId}&${formatParams(params)}`
+export function getExplorerApi() {
+  return {
+    url: 'https://explorer-api.walletconnect.com',
+    projectId: ConfigCtrl.state.projectId
+  }
 }
 
-// -- utilities ---------------------------------------------------- //
 export async function fetchWallets(params: PageParams): Promise<ListingResponse> {
-  const fetched = await fetch(formatUrl(params))
+  const { url, projectId } = getExplorerApi()
+  const fetcUrl = `${url}/v3/wallets?projectId=${projectId}&${formatParams(params)}`
+  const fetched = await fetch(fetcUrl)
 
   return fetched.json()
 }
