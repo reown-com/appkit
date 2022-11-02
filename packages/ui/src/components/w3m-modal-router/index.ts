@@ -9,9 +9,9 @@ import { getShadowRootElement } from '../../utils/UiHelpers'
 import '../../views/w3m-coinbase-extension-connector-view'
 import '../../views/w3m-coinbase-mobile-connector-view'
 import '../../views/w3m-connect-wallet-view'
+import '../../views/w3m-desktop-connector-view'
 import '../../views/w3m-get-wallet-view'
 import '../../views/w3m-injected-connector-view'
-import '../../views/w3m-ledger-desktop-connector-view'
 import '../../views/w3m-metamask-connector-view'
 import '../../views/w3m-qrcode-view'
 import '../../views/w3m-select-network-view'
@@ -86,8 +86,8 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-metamask-connector-view></w3m-metamask-connector-view>`
       case 'GetWallet':
         return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
-      case 'LedgerDesktopConnector':
-        return html`<w3m-ledger-desktop-connector-view></w3m-ledger-desktop-connector-view>`
+      case 'DesktopConnector':
+        return html`<w3m-desktop-connector-view></w3m-desktop-connector-view>`
       case 'WalletExplorer':
         return html`<w3m-wallet-explorer-view></w3m-wallet-explorer-view>`
       case 'Qrcode':

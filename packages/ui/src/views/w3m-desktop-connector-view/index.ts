@@ -12,8 +12,8 @@ import { MOBILE_ICON, RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
 import styles from './styles'
 
-@customElement('w3m-ledger-desktop-connector-view')
-export class W3mLedgerDesktopConnectorView extends LitElement {
+@customElement('w3m-desktop-connector-view')
+export class W3mDesktopConnectorView extends LitElement {
   public static styles = [global, styles]
 
   // -- lifecycle ---------------------------------------------------- //
@@ -24,11 +24,15 @@ export class W3mLedgerDesktopConnectorView extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private async onConnect() {
-    await ClientCtrl.ethereum().connectLinking(
-      uri => CoreHelpers.openHref(CoreHelpers.formatNativeUrl('ledgerlive', uri, 'Ledger Live')),
-      OptionsCtrl.state.selectedChainId
-    )
-    ModalCtrl.close()
+    const { wcUri } = ModalCtrl.state
+    if (wcUri) CoreHelpers.openHref(CoreHelpers.formatNativeUrl('ledgerlive', wcUri, 'Ledger Live'))
+    else {
+      await ClientCtrl.ethereum().connectLinking(
+        uri => CoreHelpers.openHref(CoreHelpers.formatNativeUrl('ledgerlive', uri, 'Ledger Live')),
+        OptionsCtrl.state.selectedChainId
+      )
+      ModalCtrl.close()
+    }
   }
 
   private onMobile() {
@@ -66,6 +70,6 @@ export class W3mLedgerDesktopConnectorView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-ledger-desktop-connector-view': W3mLedgerDesktopConnectorView
+    'w3m-desktop-connector-view': W3mDesktopConnectorView
   }
 }

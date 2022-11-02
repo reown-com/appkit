@@ -106,9 +106,9 @@ export type RouterView =
   | 'CoinbaseExtensionConnector'
   | 'CoinbaseMobileConnector'
   | 'ConnectWallet'
+  | 'DesktopConnector'
   | 'GetWallet'
   | 'InjectedConnector'
-  | 'LedgerDesktopConnector'
   | 'MetaMaskConnector'
   | 'Qrcode'
   | 'SelectNetwork'
@@ -118,6 +118,14 @@ export type RouterView =
 export interface RouterCtrlState {
   history: RouterView[]
   view: RouterView
+  data?: {
+    DesktopConnector: {
+      name: string
+      icon: string
+      deeplink: string
+      universal: string
+    }
+  }
 }
 
 // -- ClientCtrl ------------------------------------------- //

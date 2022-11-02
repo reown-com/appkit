@@ -30,7 +30,7 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private onLedgerWallet() {
-    RouterCtrl.push('LedgerDesktopConnector')
+    RouterCtrl.push('DesktopConnector')
   }
 
   private onMetaMaskWallet() {
