@@ -26,7 +26,7 @@ ConfigCtrl.setConfig({
   projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
   theme: 'dark' as const,
   accentColor: 'default' as const,
-  standaloneChains: ['solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ']
+  standaloneChains: namespaces.eip155.chains
 })
 
 // 4. Manage manual connection

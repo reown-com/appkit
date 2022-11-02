@@ -1,4 +1,11 @@
-import { ClientCtrl, CoreHelpers, ModalCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
+import {
+  ClientCtrl,
+  CoreHelpers,
+  ExplorerCtrl,
+  ModalCtrl,
+  RouterCtrl,
+  ToastCtrl
+} from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-modal-content'
@@ -70,6 +77,9 @@ export class W3mDesktopWalletSelection extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { wcUri } = ModalCtrl.state
+    const { previewWallets } = ExplorerCtrl.state
+    const isViewAll = previewWallets.length > 4
+    const previewChunk = isViewAll ? previewWallets.slice(0, 3) : previewWallets
 
     return html`
       ${dynamicStyles()}
@@ -103,7 +113,18 @@ export class W3mDesktopWalletSelection extends LitElement {
         ${wcUri
           ? html`
               <div class="w3m-view-row">
-                <w3m-view-all-wallets-button></w3m-view-all-wallets-button>
+                ${previewChunk.map(
+                  wallet => html`
+                    <w3m-wallet-button
+                      src=${wallet.image_url.lg}
+                      name=${wallet.name}
+                      .onClick=${this.onLedgerWallet}
+                    ></w3m-wallet-button>
+                  `
+                )}
+                ${isViewAll
+                  ? html`<w3m-view-all-wallets-button></w3m-view-all-wallets-button>`
+                  : null}
               </div>
             `
           : html`
