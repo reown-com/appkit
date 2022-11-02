@@ -52,6 +52,8 @@ import SequenceLogo from "../logos/sequence.svg";
 import BraveLogo from "../logos/brave.svg";
 // @ts-ignore
 import RabbyLogo from "../logos/rabby.svg";
+// @ts-ignore
+import MadWalletLogo from "../logos/madwallet.png";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -259,4 +261,13 @@ export const BRAVE: IProviderInfo = {
   logo: BraveLogo,
   type: "injected",
   check: 'isBraveWallet'
+};
+
+export const MADWALLET: IProviderInfo = {
+  id: "madwallet",
+  name: "MadWallet",
+  logo: MadWalletLogo,
+  type: "injected",
+  check: "isMadWallet",
+  description: "Connect to your Madwallet"
 };
