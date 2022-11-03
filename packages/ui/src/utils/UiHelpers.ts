@@ -1,4 +1,11 @@
-import { ClientCtrl, CoreHelpers, getExplorerApi, ModalCtrl, OptionsCtrl } from '@web3modal/core'
+import {
+  ClientCtrl,
+  CoreHelpers,
+  getExplorerApi,
+  ModalCtrl,
+  OptionsCtrl,
+  ToastCtrl
+} from '@web3modal/core'
 import type { LitElement } from 'lit'
 
 export const MOBILE_BREAKPOINT = 600
@@ -195,4 +202,14 @@ export async function handleMobileLinking(
       }, selectedChainId)
     ModalCtrl.close()
   }
+}
+
+export async function handleUriCopy() {
+  const { standaloneUri } = OptionsCtrl.state
+  if (standaloneUri) await navigator.clipboard.writeText(standaloneUri)
+  else {
+    const uri = await ClientCtrl.ethereum().getActiveWalletConnectUri()
+    await navigator.clipboard.writeText(uri)
+  }
+  ToastCtrl.openToast('WalletConnect link copied', 'success')
 }

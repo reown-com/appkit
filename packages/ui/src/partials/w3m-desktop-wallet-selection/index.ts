@@ -1,11 +1,4 @@
-import {
-  ClientCtrl,
-  CoreHelpers,
-  ExplorerCtrl,
-  OptionsCtrl,
-  RouterCtrl,
-  ToastCtrl
-} from '@web3modal/core'
+import { ClientCtrl, CoreHelpers, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-modal-content'
@@ -17,6 +10,7 @@ import '../../components/w3m-wallet-button'
 import '../../partials/w3m-walletconnect-qr'
 import { COPY_ICON, DESKTOP_ICON, MOBILE_ICON, SCAN_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
+import { handleUriCopy } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-desktop-wallet-selection')
@@ -65,17 +59,6 @@ export class W3mDesktopWalletSelection extends LitElement {
     return this.metaMaskTemplate()
   }
 
-  private async onCopyUri() {
-    const { standaloneUri } = OptionsCtrl.state
-    if (standaloneUri) await navigator.clipboard.writeText(standaloneUri)
-    else {
-      const uri = await ClientCtrl.ethereum().getActiveWalletConnectUri()
-      await navigator.clipboard.writeText(uri)
-    }
-
-    ToastCtrl.openToast('WalletConnect link copied', 'success')
-  }
-
   // -- render ------------------------------------------------------- //
   protected render() {
     const { standaloneUri } = OptionsCtrl.state
@@ -88,7 +71,7 @@ export class W3mDesktopWalletSelection extends LitElement {
 
       <w3m-modal-header
         title="Connect your wallet"
-        .onAction=${this.onCopyUri}
+        .onAction=${handleUriCopy}
         .actionIcon=${COPY_ICON}
       ></w3m-modal-header>
 
@@ -143,6 +126,7 @@ export class W3mDesktopWalletSelection extends LitElement {
                   name="Coinbase Wallet"
                   .onClick=${this.onCoinbaseWallet}
                 ></w3m-wallet-button>
+
                 <w3m-wallet-button
                   name="Ledger Live"
                   .onClick=${() =>
