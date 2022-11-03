@@ -121,9 +121,9 @@ export interface RouterCtrlState {
   data?: {
     DesktopConnector: {
       name: string
-      icon: string
-      deeplink: string
-      universal: string
+      deeplink?: string
+      universal?: string
+      icon?: string
     }
   }
 }

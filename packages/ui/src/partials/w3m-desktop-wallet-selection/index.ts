@@ -30,7 +30,12 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private onLedgerWallet() {
-    RouterCtrl.push('DesktopConnector')
+    RouterCtrl.push('DesktopConnector', {
+      DesktopConnector: {
+        name: 'Ledger Live',
+        deeplink: 'ledgerlive'
+      }
+    })
   }
 
   private onMetaMaskWallet() {

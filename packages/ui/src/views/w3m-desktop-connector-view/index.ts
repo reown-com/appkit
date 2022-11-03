@@ -41,7 +41,10 @@ export class W3mDesktopConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const name = 'Ledger Live'
+    const routerData = RouterCtrl.state.data?.DesktopConnector
+    if (!routerData) throw new Error('Missing wallet data')
+
+    const { name } = routerData
 
     return html`
       <w3m-modal-header title=${name}></w3m-modal-header>
@@ -59,7 +62,7 @@ export class W3mDesktopConnectorView extends LitElement {
               Retry
             </w3m-button>
             <w3m-button .onClick=${this.onMobile} .iconLeft=${MOBILE_ICON} variant="ghost">
-              Ledger Live Mobile
+              Connect With Mobile
             </w3m-button>
           </div>
         </div>

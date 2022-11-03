@@ -13,7 +13,7 @@
     "prettier": "prettier --check .",
     "typecheck": "npm run typecheck --ws --if-present",
     "new-version": "lerna version --no-git-tag-version --exact",
-    "pre-publish": "npm run lint; npm run typecheck; npm run prettier; npm run build; npm run new-version;",
+    "pre-publish": "npm run lint; npm run typecheck; npm run prettier; npm run build; npm run new-version",
     "npm-publish:rc": "lerna exec -- npm publish --no-private --access public --tag rc",
     "npm-publish:latest": "lerna exec -- npm publish --no-private --access public --tag latest",
     "npm-publish:next": "lerna exec -- npm publish --no-private --access public --tag next",
@@ -31,7 +31,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.42.0",
     "@typescript-eslint/parser": "5.42.0",
-    "esbuild": "0.15.12",
+    "esbuild": "0.15.13",
     "eslint": "8.26.0",
     "eslint-config-prettier": "8.5.0",
     "lerna": "6.0.1",

@@ -4,7 +4,8 @@ import type { RouterCtrlState } from '../../../types/statefullCtrlTypes'
 // -- initial state ------------------------------------------------ //
 const state = proxy<RouterCtrlState>({
   history: ['ConnectWallet'],
-  view: 'ConnectWallet'
+  view: 'ConnectWallet',
+  data: undefined
 })
 
 // -- controller --------------------------------------------------- //
@@ -15,8 +16,9 @@ export const RouterCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  push(view: RouterCtrlState['view']) {
+  push(view: RouterCtrlState['view'], data?: RouterCtrlState['data']) {
     state.view = view
+    state.data = data
     state.history.push(view)
   },
 
