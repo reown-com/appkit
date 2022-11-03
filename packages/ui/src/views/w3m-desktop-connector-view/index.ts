@@ -23,17 +23,23 @@ export class W3mDesktopConnectorView extends LitElement {
   }
 
   // -- private ------------------------------------------------------ //
+  private getRouterData() {
+    const data = RouterCtrl.state.data?.DesktopConnector
+    if (!data) throw new Error('Missing router data')
+
+    return data
+  }
+
   private onOpenHref(uri: string) {
-    const { deeplink, universal, name } = this.getRouterData()
-    let href = ''
-    if (deeplink) href = CoreHelpers.formatNativeUrl(deeplink, uri, name)
-    else if (universal) href = CoreHelpers.formatNativeUrl(universal, uri, name)
-    if (href) CoreHelpers.openHref(href)
+    const { deeplink, name } = this.getRouterData()
+    if (deeplink) {
+      const href = CoreHelpers.formatNativeUrl(deeplink, uri, name)
+      if (href) CoreHelpers.openHref(href)
+    }
   }
 
   private async onConnect() {
     const { wcUri } = ModalCtrl.state
-
     if (wcUri) this.onOpenHref(wcUri)
     else {
       await ClientCtrl.ethereum().connectLinking(
@@ -42,13 +48,6 @@ export class W3mDesktopConnectorView extends LitElement {
       )
       ModalCtrl.close()
     }
-  }
-
-  private getRouterData() {
-    const routerData = RouterCtrl.state.data?.DesktopConnector
-    if (!routerData) throw new Error('Missing wallet data')
-
-    return routerData
   }
 
   private onMobile() {
@@ -65,6 +64,7 @@ export class W3mDesktopConnectorView extends LitElement {
 
     return html`
       <w3m-modal-header title=${name}></w3m-modal-header>
+
       <w3m-modal-content>
         <div class="w3m-wrapper">
           ${icon
@@ -77,6 +77,7 @@ export class W3mDesktopConnectorView extends LitElement {
               ${`Continue in ${name}...`}
             </w3m-text>
           </div>
+
           <div class="w3m-install-actions">
             <w3m-button .onClick=${this.onConnect.bind(this)} .iconRight=${RETRY_ICON}>
               Retry
@@ -89,7 +90,7 @@ export class W3mDesktopConnectorView extends LitElement {
                     .onClick=${() => this.onInstall(universal)}
                     .iconLeft=${ARROW_DOWN_ICON}
                   >
-                    Install Extension
+                    Install Wallet
                   </w3m-button>
                 `
               : html`
