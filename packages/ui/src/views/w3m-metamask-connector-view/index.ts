@@ -51,7 +51,7 @@ export class W3mMetamaskConnectorView extends LitElement {
   }
 
   private onMobile() {
-    RouterCtrl.push('WalletConnectConnector')
+    RouterCtrl.push('Qrcode')
   }
 
   private readyTemplate() {

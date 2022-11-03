@@ -25,31 +25,37 @@ export class W3mDesktopConnectorView extends LitElement {
   // -- private ------------------------------------------------------ //
   private async onConnect() {
     const { wcUri } = ModalCtrl.state
-    if (wcUri) CoreHelpers.openHref(CoreHelpers.formatNativeUrl('ledgerlive', wcUri, 'Ledger Live'))
+    const { deeplink, name } = this.getRouterData()
+
+    if (wcUri) CoreHelpers.openHref(CoreHelpers.formatNativeUrl('ledgerlive', wcUri, name))
     else {
       await ClientCtrl.ethereum().connectLinking(
-        uri => CoreHelpers.openHref(CoreHelpers.formatNativeUrl('ledgerlive', uri, 'Ledger Live')),
+        uri => CoreHelpers.openHref(CoreHelpers.formatNativeUrl('ledgerlive', uri, name)),
         OptionsCtrl.state.selectedChainId
       )
       ModalCtrl.close()
     }
   }
 
+  private getRouterData() {
+    const routerData = RouterCtrl.state.data?.DesktopConnector
+    if (!routerData) throw new Error('Missing wallet data')
+
+    return routerData
+  }
+
   private onMobile() {
-    RouterCtrl.push('WalletConnectConnector')
+    RouterCtrl.push('Qrcode')
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const routerData = RouterCtrl.state.data?.DesktopConnector
-    if (!routerData) throw new Error('Missing wallet data')
-
-    const { name } = routerData
+    const { name } = this.getRouterData()
 
     return html`
       <w3m-modal-header title=${name}></w3m-modal-header>
       <w3m-modal-content>
-        <div class="w3m-ledger-wrapper">
+        <div class="w3m-wrapper">
           <w3m-wallet-image name=${name} size="lg"></w3m-wallet-image>
           <div class="w3m-connecting-title">
             <w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>

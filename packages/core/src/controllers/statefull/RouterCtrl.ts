@@ -18,7 +18,7 @@ export const RouterCtrl = {
 
   push(view: RouterCtrlState['view'], data?: RouterCtrlState['data']) {
     state.view = view
-    state.data = data
+    if (data) state.data = data
     state.history.push(view)
   },
 

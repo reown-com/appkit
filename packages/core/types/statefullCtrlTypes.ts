@@ -112,7 +112,6 @@ export type RouterView =
   | 'MetaMaskConnector'
   | 'Qrcode'
   | 'SelectNetwork'
-  | 'WalletConnectConnector'
   | 'WalletExplorer'
 
 export interface RouterCtrlState {
