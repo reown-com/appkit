@@ -8,7 +8,7 @@ import '../../components/w3m-qrcode'
 import '../../components/w3m-spinner'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-image'
-import { MOBILE_ICON, RETRY_ICON } from '../../utils/Svgs'
+import { ARROW_DOWN_ICON, MOBILE_ICON, RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
 import styles from './styles'
 
@@ -23,14 +23,21 @@ export class W3mDesktopConnectorView extends LitElement {
   }
 
   // -- private ------------------------------------------------------ //
+  private onOpenHref(uri: string) {
+    const { deeplink, universal, name } = this.getRouterData()
+    let href = ''
+    if (deeplink) href = CoreHelpers.formatNativeUrl(deeplink, uri, name)
+    else if (universal) href = CoreHelpers.formatNativeUrl(universal, uri, name)
+    if (href) CoreHelpers.openHref(href)
+  }
+
   private async onConnect() {
     const { wcUri } = ModalCtrl.state
-    const { deeplink, name } = this.getRouterData()
 
-    if (wcUri) CoreHelpers.openHref(CoreHelpers.formatNativeUrl('ledgerlive', wcUri, name))
+    if (wcUri) this.onOpenHref(wcUri)
     else {
       await ClientCtrl.ethereum().connectLinking(
-        uri => CoreHelpers.openHref(CoreHelpers.formatNativeUrl('ledgerlive', uri, name)),
+        uri => this.onOpenHref(uri),
         OptionsCtrl.state.selectedChainId
       )
       ModalCtrl.close()
@@ -48,15 +55,22 @@ export class W3mDesktopConnectorView extends LitElement {
     RouterCtrl.push('Qrcode')
   }
 
+  private onInstall(link: string) {
+    CoreHelpers.openHref(link, '_blank')
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { name } = this.getRouterData()
+    const { name, icon, universal } = this.getRouterData()
 
     return html`
       <w3m-modal-header title=${name}></w3m-modal-header>
       <w3m-modal-content>
         <div class="w3m-wrapper">
-          <w3m-wallet-image name=${name} size="lg"></w3m-wallet-image>
+          ${icon
+            ? html`<w3m-wallet-image src=${icon} size="lg"></w3m-wallet-image>`
+            : html`<w3m-wallet-image name=${name} size="lg"></w3m-wallet-image>`}
+
           <div class="w3m-connecting-title">
             <w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>
             <w3m-text variant="large-bold" color="secondary">
@@ -67,9 +81,22 @@ export class W3mDesktopConnectorView extends LitElement {
             <w3m-button .onClick=${this.onConnect.bind(this)} .iconRight=${RETRY_ICON}>
               Retry
             </w3m-button>
-            <w3m-button .onClick=${this.onMobile} .iconLeft=${MOBILE_ICON} variant="ghost">
-              Connect With Mobile
-            </w3m-button>
+
+            ${universal
+              ? html`
+                  <w3m-button
+                    variant="ghost"
+                    .onClick=${() => this.onInstall(universal)}
+                    .iconLeft=${ARROW_DOWN_ICON}
+                  >
+                    Install Extension
+                  </w3m-button>
+                `
+              : html`
+                  <w3m-button .onClick=${this.onMobile} .iconLeft=${MOBILE_ICON} variant="ghost">
+                    Connect With Mobile
+                  </w3m-button>
+                `}
           </div>
         </div>
       </w3m-modal-content>

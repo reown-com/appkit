@@ -33,7 +33,8 @@ export class W3mDesktopWalletSelection extends LitElement {
     RouterCtrl.push('DesktopConnector', {
       DesktopConnector: {
         name: 'Ledger Live',
-        deeplink: 'ledgerlive'
+        deeplink: 'ledgerlive',
+        universal: 'https://www.ledger.com/ledger-live'
       }
     })
   }
