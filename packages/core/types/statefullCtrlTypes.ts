@@ -24,7 +24,6 @@ export interface ConfigCtrlState extends ConfigOptions {
 // -- ModalCtrl --------------------------------------- //
 export interface ModalCtrlState {
   open: boolean
-  wcUri?: string
 }
 
 // -- OptionsCtrl --------------------------------------- //
@@ -32,6 +31,7 @@ export interface OptionsCtrlState {
   selectedChainId?: number
   chains?: Chain[]
   standaloneChains?: string[]
+  standaloneUri?: string
 }
 
 // -- ExplorerCtrl ------------------------------------------- //

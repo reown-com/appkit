@@ -5,8 +5,7 @@ import { RouterCtrl } from './RouterCtrl'
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<ModalCtrlState>({
-  open: false,
-  wcUri: undefined
+  open: false
 })
 
 // -- controller --------------------------------------------------- //
@@ -17,11 +16,11 @@ export const ModalCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  open(wcUri?: ModalCtrlState['wcUri']) {
+  open(wcUri?: string) {
     const { chains } = OptionsCtrl.state
     if (chains?.length ? chains.length > 1 : false) RouterCtrl.replace('SelectNetwork')
     else RouterCtrl.replace('ConnectWallet')
-    state.wcUri = wcUri
+    OptionsCtrl.setStandaloneUri(wcUri)
     state.open = true
   },
 

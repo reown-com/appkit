@@ -1,13 +1,5 @@
 import type { Listing } from '@web3modal/core'
-import {
-  ClientCtrl,
-  CoreHelpers,
-  ExplorerCtrl,
-  ModalCtrl,
-  OptionsCtrl,
-  RouterCtrl,
-  ToastCtrl
-} from '@web3modal/core'
+import { CoreHelpers, ExplorerCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -22,6 +14,7 @@ import {
   debounce,
   getErrorMessage,
   getShadowRootElement,
+  handleMobileLinking,
   preloadImage
 } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
@@ -94,22 +87,8 @@ export class W3mWalletExplorerView extends LitElement {
       }
   }
 
-  private async onConnect(links: { native: string; universal?: string }, name: string) {
-    const { native, universal } = links
-    await ClientCtrl.ethereum().connectLinking(
-      uri =>
-        CoreHelpers.openHref(
-          universal
-            ? CoreHelpers.formatUniversalUrl(universal, uri, name)
-            : CoreHelpers.formatNativeUrl(native, uri, name)
-        ),
-      OptionsCtrl.state.selectedChainId
-    )
-    ModalCtrl.close()
-  }
-
   private async onConnectPlatform(listing: Listing) {
-    if (CoreHelpers.isMobile()) await this.onConnect(listing.mobile, listing.name)
+    if (CoreHelpers.isMobile()) await handleMobileLinking(listing.mobile, listing.name)
     else
       RouterCtrl.push('DesktopConnector', {
         DesktopConnector: {

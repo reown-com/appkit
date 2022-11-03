@@ -2,7 +2,7 @@ import {
   ClientCtrl,
   CoreHelpers,
   ExplorerCtrl,
-  ModalCtrl,
+  OptionsCtrl,
   RouterCtrl,
   ToastCtrl
 } from '@web3modal/core'
@@ -29,13 +29,9 @@ export class W3mDesktopWalletSelection extends LitElement {
     else RouterCtrl.push('CoinbaseMobileConnector')
   }
 
-  private onLedgerWallet() {
+  private onDesktopWallet(name: string, deeplink?: string, universal?: string, icon?: string) {
     RouterCtrl.push('DesktopConnector', {
-      DesktopConnector: {
-        name: 'Ledger Live',
-        deeplink: 'ledgerlive',
-        universal: 'https://www.ledger.com/ledger-live'
-      }
+      DesktopConnector: { name, deeplink, universal, icon }
     })
   }
 
@@ -70,8 +66,8 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private async onCopyUri() {
-    const { wcUri } = ModalCtrl.state
-    if (wcUri) await navigator.clipboard.writeText(wcUri)
+    const { standaloneUri } = OptionsCtrl.state
+    if (standaloneUri) await navigator.clipboard.writeText(standaloneUri)
     else {
       const uri = await ClientCtrl.ethereum().getActiveWalletConnectUri()
       await navigator.clipboard.writeText(uri)
@@ -82,7 +78,7 @@ export class W3mDesktopWalletSelection extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { wcUri } = ModalCtrl.state
+    const { standaloneUri } = OptionsCtrl.state
     const { previewWallets } = ExplorerCtrl.state
     const isViewAll = previewWallets.length > 4
     const previewChunk = isViewAll ? previewWallets.slice(0, 3) : previewWallets
@@ -116,7 +112,8 @@ export class W3mDesktopWalletSelection extends LitElement {
           ${DESKTOP_ICON}
           <w3m-text variant="small-normal" color="accent">Desktop</w3m-text>
         </div>
-        ${wcUri
+
+        ${standaloneUri
           ? html`
               <div class="w3m-view-row">
                 ${previewChunk.map(
@@ -124,7 +121,13 @@ export class W3mDesktopWalletSelection extends LitElement {
                     <w3m-wallet-button
                       src=${wallet.image_url.lg}
                       name=${wallet.name}
-                      .onClick=${this.onLedgerWallet}
+                      .onClick=${() =>
+                        this.onDesktopWallet(
+                          wallet.name,
+                          wallet.desktop.native,
+                          wallet.desktop.universal || wallet.homepage,
+                          wallet.image_url.lg
+                        )}
                     ></w3m-wallet-button>
                   `
                 )}
@@ -142,7 +145,12 @@ export class W3mDesktopWalletSelection extends LitElement {
                 ></w3m-wallet-button>
                 <w3m-wallet-button
                   name="Ledger Live"
-                  .onClick=${this.onLedgerWallet}
+                  .onClick=${() =>
+                    this.onDesktopWallet(
+                      'Ledger Live',
+                      'ledgerlive',
+                      'https://www.ledger.com/ledger-live'
+                    )}
                 ></w3m-wallet-button>
                 <w3m-view-all-wallets-button></w3m-view-all-wallets-button>
               </div>

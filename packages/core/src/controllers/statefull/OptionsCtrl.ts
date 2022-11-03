@@ -5,7 +5,8 @@ import type { OptionsCtrlState } from '../../../types/statefullCtrlTypes'
 const state = proxy<OptionsCtrlState>({
   selectedChainId: undefined,
   chains: undefined,
-  standaloneChains: undefined
+  standaloneChains: undefined,
+  standaloneUri: undefined
 })
 
 // -- controller --------------------------------------------------- //
@@ -18,6 +19,10 @@ export const OptionsCtrl = {
 
   setStandaloneChains(standaloneChains: OptionsCtrlState['standaloneChains']) {
     state.standaloneChains = standaloneChains
+  },
+
+  setStandaloneUri(standaloneUri: OptionsCtrlState['standaloneUri']) {
+    state.standaloneUri = standaloneUri
   },
 
   setSelectedChainId(selectedChainId: OptionsCtrlState['selectedChainId']) {

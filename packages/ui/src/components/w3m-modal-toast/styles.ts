@@ -19,7 +19,6 @@ export default css`
     backdrop-filter: blur(20px) saturate(1.8);
     -webkit-backdrop-filter: blur(20px) saturate(1.8);
     border-radius: 36px;
-    background-color: rgba(39, 42, 42, 0.66);
   }
 
   .w3m-modal-toast svg {
@@ -33,6 +32,7 @@ export function dynamicStyles() {
   return html`<style>
     .w3m-modal-toast {
       border: 1px solid ${overlay.thin};
+      background-color: ${overlay.thin};
     }
 
     .w3m-success path {

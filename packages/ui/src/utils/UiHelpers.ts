@@ -1,4 +1,4 @@
-import { CoreHelpers, getExplorerApi } from '@web3modal/core'
+import { ClientCtrl, CoreHelpers, getExplorerApi, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import type { LitElement } from 'lit'
 
 export const MOBILE_BREAKPOINT = 600
@@ -167,4 +167,32 @@ export function compareTwoStrings(first: string, second: string) {
   }
 
   return (2.0 * intersectionSize) / (first.length + second.length - 2)
+}
+
+export async function handleMobileLinking(
+  links: { native: string; universal?: string },
+  name: string
+) {
+  const { standaloneUri, selectedChainId } = OptionsCtrl.state
+  const { native, universal } = links
+
+  function onRedirect(uri: string) {
+    const href = universal
+      ? CoreHelpers.formatUniversalUrl(universal, uri, name)
+      : CoreHelpers.formatNativeUrl(native, uri, name)
+    CoreHelpers.openHref(href)
+  }
+
+  if (standaloneUri) onRedirect(standaloneUri)
+  else {
+    const connector = ClientCtrl.ethereum().getConnectorById('injected')
+    const isNameSimilar = compareTwoStrings(name, connector.name) >= 0.5
+    if (connector.ready && isNameSimilar)
+      await ClientCtrl.ethereum().connectInjected(selectedChainId)
+    else
+      await ClientCtrl.ethereum().connectLinking(uri => {
+        onRedirect(uri)
+      }, selectedChainId)
+    ModalCtrl.close()
+  }
 }

@@ -24,8 +24,8 @@ async function configureSignClient() {
 // 3. Configure web3modal
 ConfigCtrl.setConfig({
   projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
-  theme: 'dark' as const,
-  accentColor: 'default' as const,
+  theme: 'light' as const,
+  accentColor: 'orange' as const,
   standaloneChains: namespaces.eip155.chains
 })
 

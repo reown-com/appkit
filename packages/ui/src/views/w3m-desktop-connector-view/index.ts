@@ -8,7 +8,7 @@ import '../../components/w3m-qrcode'
 import '../../components/w3m-spinner'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-image'
-import { ARROW_DOWN_ICON, MOBILE_ICON, RETRY_ICON } from '../../utils/Svgs'
+import { ARROW_UP_RIGHT_ICON, MOBILE_ICON, RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
 import styles from './styles'
 
@@ -39,8 +39,8 @@ export class W3mDesktopConnectorView extends LitElement {
   }
 
   private async onConnect() {
-    const { wcUri } = ModalCtrl.state
-    if (wcUri) this.onOpenHref(wcUri)
+    const { standaloneUri } = OptionsCtrl.state
+    if (standaloneUri) this.onOpenHref(standaloneUri)
     else {
       await ClientCtrl.ethereum().connectLinking(
         uri => this.onOpenHref(uri),
@@ -88,14 +88,14 @@ export class W3mDesktopConnectorView extends LitElement {
                   <w3m-button
                     variant="ghost"
                     .onClick=${() => this.onInstall(universal)}
-                    .iconLeft=${ARROW_DOWN_ICON}
+                    .iconLeft=${ARROW_UP_RIGHT_ICON}
                   >
-                    Install Wallet
+                    Go to Wallet
                   </w3m-button>
                 `
               : html`
                   <w3m-button .onClick=${this.onMobile} .iconLeft=${MOBILE_ICON} variant="ghost">
-                    Connect With Mobile
+                    Connect with Mobile
                   </w3m-button>
                 `}
           </div>
