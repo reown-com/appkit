@@ -10,6 +10,7 @@ import '../../components/w3m-text'
 import '../../components/w3m-wallet-image'
 import { ARROW_UP_RIGHT_ICON, MOBILE_ICON, RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
+import { getOptimisticName } from '../../utils/UiHelpers'
 import styles from './styles'
 
 @customElement('w3m-desktop-connector-view')
@@ -61,20 +62,21 @@ export class W3mDesktopConnectorView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { name, icon, universal } = this.getRouterData()
+    const optimisticName = getOptimisticName(name)
 
     return html`
-      <w3m-modal-header title=${name}></w3m-modal-header>
+      <w3m-modal-header title=${optimisticName}></w3m-modal-header>
 
       <w3m-modal-content>
         <div class="w3m-wrapper">
           ${icon
             ? html`<w3m-wallet-image src=${icon} size="lg"></w3m-wallet-image>`
-            : html`<w3m-wallet-image name=${name} size="lg"></w3m-wallet-image>`}
+            : html`<w3m-wallet-image name=${optimisticName} size="lg"></w3m-wallet-image>`}
 
           <div class="w3m-connecting-title">
             <w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>
             <w3m-text variant="large-bold" color="secondary">
-              ${`Continue in ${name}...`}
+              ${`Continue in ${optimisticName}...`}
             </w3m-text>
           </div>
 

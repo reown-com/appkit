@@ -11,6 +11,7 @@ import '../../components/w3m-text'
 import '../../components/w3m-wallet-image'
 import { RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
+import { getOptimisticName } from '../../utils/UiHelpers'
 import styles from './styles'
 
 @customElement('w3m-injected-connector-view')
@@ -47,23 +48,23 @@ export class W3mInjectedConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { name } = this.connector
+    const optimisticName = getOptimisticName(this.connector.name)
     const classes = {
       'w3m-injected-wrapper': true,
       'w3m-injected-error': this.error
     }
 
     return html`
-      <w3m-modal-header title=${name}></w3m-modal-header>
+      <w3m-modal-header title=${optimisticName}></w3m-modal-header>
       <w3m-modal-content>
         <div class=${classMap(classes)}>
-          <w3m-wallet-image name=${name} size="lg"></w3m-wallet-image>
+          <w3m-wallet-image name=${optimisticName} size="lg"></w3m-wallet-image>
           <div class="w3m-connecting-title">
             ${this.connecting
               ? html`<w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>`
               : null}
             <w3m-text variant="large-bold" color=${this.error ? 'error' : 'secondary'}>
-              ${this.error ? 'Connection declined' : `Continue in ${name}...`}
+              ${this.error ? 'Connection declined' : `Continue in ${optimisticName}...`}
             </w3m-text>
           </div>
 

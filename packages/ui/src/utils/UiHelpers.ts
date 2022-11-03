@@ -32,19 +32,88 @@ export function getConditionalValue<T extends string>(
   throw new Error('Invalid useConditionalClass arguments')
 }
 
+/**
+ * Compares similarity between 2 strings and returns value from 0 to 1
+ * https://github.com/aceakash/string-similarity/blob/master/src/index.js
+ */
+export function compareTwoStrings(first: string, second: string) {
+  const parsedFirst = first.replace(/\s+/u, '')
+  const parsedSecond = second.replace(/\s+/u, '')
+
+  if (parsedFirst === parsedSecond) return 1
+  if (parsedFirst.length < 2 || parsedSecond.length < 2) return 0
+
+  const firstBigrams = new Map<string, number>()
+  for (let i = 0; i < parsedFirst.length - 1; i += 1) {
+    const bigram = parsedFirst.substring(i, i + 2)
+    const storedBigram = firstBigrams.get(bigram)
+    const count = typeof storedBigram === 'number' ? storedBigram + 1 : 1
+    firstBigrams.set(bigram, count)
+  }
+
+  let intersectionSize = 0
+  for (let i = 0; i < parsedSecond.length - 1; i += 1) {
+    const bigram = parsedSecond.substring(i, i + 2)
+    const storedBigram = firstBigrams.get(bigram)
+    const count = typeof storedBigram === 'number' ? storedBigram : 0
+    if (count > 0) {
+      firstBigrams.set(bigram, count - 1)
+      intersectionSize += 1
+    }
+  }
+
+  return (2.0 * intersectionSize) / (first.length + second.length - 2)
+}
+
+export function getOptimisticName(name: string) {
+  if (name.toUpperCase() !== 'INJECTED') return name
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { ethereum }: { ethereum?: any } = window
+  if (!ethereum) return 'Unknown'
+  if (ethereum.isFrame) return 'Frame'
+  if (ethereum.isPortal) return 'Ripio Portal'
+  if (ethereum.isTally) return 'Tally'
+  if (ethereum.isTrust || ethereum.isTrustWallet) return 'Trust'
+  if (ethereum.isCoinbaseExtension) return 'Coinbase'
+  if (ethereum.isAvalanche) return 'Core'
+  if (ethereum.isBitKeep) return 'BitKeep'
+  if (ethereum.isBraveWallet) return 'Brave'
+  if (ethereum.isExodus) return 'Exodus'
+  if (ethereum.isMathWallet) return 'MathWallet'
+  if (ethereum.isOpera) return 'Opera'
+  if (ethereum.isTokenPocket) return 'TokenPocket'
+  if (ethereum.isTokenary) return 'Tokenary'
+  if (ethereum.isMetaMask) return 'MetaMask'
+
+  return 'Injected'
+}
+
 export function getWalletIcon(name: string) {
   const { projectId, url } = getExplorerApi()
   const cdn = `${url}/v2/logo/lg`
   const fallback = '09a83110-5fc3-45e1-65ab-8f7df2d6a400'
+
   const presets: Record<string, string | undefined> = {
-    'Brave Wallet': '125e828e-9936-4451-a8f2-949c119b7400',
+    Brave: '125e828e-9936-4451-a8f2-949c119b7400',
     MetaMask: '619537c0-2ff3-4c78-9ed8-a05e7567f300',
-    'Coinbase Wallet': 'f8068a7f-83d7-4190-1f94-78154a12c600',
-    'Ledger Live': '39890ad8-5b2e-4df6-5db4-2ff5cf4bb300',
-    Exodus: '4c16cad4-cac9-4643-6726-c696efaf5200'
+    Coinbase: 'f8068a7f-83d7-4190-1f94-78154a12c600',
+    Ledger: '39890ad8-5b2e-4df6-5db4-2ff5cf4bb300',
+    Exodus: '4c16cad4-cac9-4643-6726-c696efaf5200',
+    Trust: '0528ee7e-16d1-4089-21e3-bbfb41933100',
+    Core: '35f9c46e-cc57-4aa7-315d-e6ccb2a1d600',
+    BitKeep: '3f7075d0-4ab7-4db5-404d-3e4c05e6fe00',
+    MathWallet: '26a8f588-3231-4411-60ce-5bb6b805a700',
+    Opera: '877fa1a4-304d-4d45-ca8e-f76d1a556f00',
+    TokenPocket: 'f3119826-4ef5-4d31-4789-d4ae5c18e400',
+    Tokenary: '5e481041-dc3c-4a81-373a-76bbde91b800',
+    '1inch': 'dce1ee99-403f-44a9-9f94-20de30616500'
   }
 
-  return `${cdn}/${presets[name] ?? fallback}?projectId=${projectId}`
+  const optimisticName = getOptimisticName(name)
+  const preset = Object.keys(presets).find(key => compareTwoStrings(key, optimisticName) >= 0.5)
+  const imageId = preset ? presets[preset] : undefined
+
+  return `${cdn}/${imageId ?? fallback}?projectId=${projectId}`
 }
 
 export function getChainIcon(chainId: number) {
@@ -98,13 +167,15 @@ export function getChainIcon(chainId: number) {
 }
 
 export function getWalletFirstName(fullName: string) {
-  return fullName.split(' ')[0] ?? fullName
+  const optimisticName = getOptimisticName(fullName)
+
+  return optimisticName.split(' ')[0] ?? optimisticName
 }
 
 export function getDefaultWalletNames() {
   return CoreHelpers.isMobile()
     ? ['Coinbase Wallet']
-    : ['MetaMask', 'Coinbase Wallet', 'Ledger Live', 'Brave Wallet']
+    : ['MetaMask', 'Coinbase Wallet', 'Ledger Live']
 }
 
 export function defaultWalletImages() {
@@ -141,39 +212,6 @@ export function debounce(func: (...args: any[]) => unknown, timeout = 500) {
 
     timer = setTimeout(next, timeout)
   }
-}
-
-/**
- * Compares similarity between 2 strings and returns value from 0 to 1
- * https://github.com/aceakash/string-similarity/blob/master/src/index.js
- */
-export function compareTwoStrings(first: string, second: string) {
-  const parsedFirst = first.replace(/\s+/u, '')
-  const parsedSecond = second.replace(/\s+/u, '')
-
-  if (parsedFirst === parsedSecond) return 1
-  if (parsedFirst.length < 2 || parsedSecond.length < 2) return 0
-
-  const firstBigrams = new Map<string, number>()
-  for (let i = 0; i < parsedFirst.length - 1; i += 1) {
-    const bigram = parsedFirst.substring(i, i + 2)
-    const storedBigram = firstBigrams.get(bigram)
-    const count = typeof storedBigram === 'number' ? storedBigram + 1 : 1
-    firstBigrams.set(bigram, count)
-  }
-
-  let intersectionSize = 0
-  for (let i = 0; i < parsedSecond.length - 1; i += 1) {
-    const bigram = parsedSecond.substring(i, i + 2)
-    const storedBigram = firstBigrams.get(bigram)
-    const count = typeof storedBigram === 'number' ? storedBigram : 0
-    if (count > 0) {
-      firstBigrams.set(bigram, count - 1)
-      intersectionSize += 1
-    }
-  }
-
-  return (2.0 * intersectionSize) / (first.length + second.length - 2)
 }
 
 export async function handleMobileLinking(
