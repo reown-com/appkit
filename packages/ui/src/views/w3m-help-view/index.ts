@@ -19,7 +19,7 @@ import {
   WALLET_ICON
 } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import styles from './styles'
+import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-help-view')
 export class W3mHelpView extends LitElement {
@@ -39,6 +39,8 @@ export class W3mHelpView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
+      ${dynamicStyles()}
+
       <w3m-modal-header title="What is a wallet?"></w3m-modal-header>
       <w3m-modal-content>
         <div class="w3m-info-container">

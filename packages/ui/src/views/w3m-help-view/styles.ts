@@ -1,4 +1,5 @@
-import { css } from 'lit'
+import { css, html } from 'lit'
+import { color } from '../../utils/Theme'
 
 export default css`
   .w3m-footer-actions {
@@ -32,3 +33,13 @@ export default css`
     height: 55px;
   }
 `
+
+export function dynamicStyles() {
+  const { overlay } = color()
+
+  return html`<style>
+    .help-img-highlight {
+      stroke: ${overlay.thin};
+    }
+  </style>`
+}
