@@ -69,9 +69,9 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
       <w3m-modal-footer>
         <div class="w3m-title">
           ${QRCODE_ICON}
-          <w3m-text variant="large-bold">Scan with your phone</w3m-text>
+          <w3m-text variant="medium-normal">Scan with your phone</w3m-text>
         </div>
-        <w3m-text variant="medium-thin" align="center" color="secondary" class="w3m-info-text">
+        <w3m-text variant="small-thin" align="center" color="secondary" class="w3m-info-text">
           Open Coinbase Wallet on your phone and scan the code to connect
         </w3m-text>
         <w3m-button

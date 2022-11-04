@@ -13,7 +13,7 @@ export default css`
   }
 
   .w3m-info-text {
-    margin: 10px 0 22px;
+    margin: 5px 0 15px;
     max-width: 320px;
   }
 
@@ -23,6 +23,7 @@ export default css`
   }
 
   .w3m-title svg {
+    width: 20px;
     margin-right: 8px;
   }
 `
