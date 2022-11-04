@@ -1,8 +1,8 @@
-import { ModalCtrl } from '@web3modal/core'
+import { ModalCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { CROSS_ICON, NOISE_TEXTURE, WALLET_CONNECT_LOGO } from '../../utils/Svgs'
+import { CROSS_ICON, HELP_ICON, NOISE_TEXTURE, WALLET_CONNECT_LOGO } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { getShadowRootElement } from '../../utils/UiHelpers'
 import Whatamesh from '../../utils/Whatamesh'
@@ -34,6 +34,10 @@ export class W3mModalBackcard extends LitElement {
     return getShadowRootElement(this, '.w3m-gradient-canvas')
   }
 
+  private onHelp() {
+    RouterCtrl.push('Help')
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     const classes = {
@@ -50,7 +54,10 @@ export class W3mModalBackcard extends LitElement {
       <div class="w3m-modal-highlight"></div>
       <div class="w3m-modal-toolbar">
         ${WALLET_CONNECT_LOGO}
-        <button class="w3m-modal-close-btn" @click=${ModalCtrl.close}>${CROSS_ICON}</button>
+        <div class="w3m-actions">
+          <button class="w3m-modal-action-btn" @click=${this.onHelp}>${HELP_ICON}</button>
+          <button class="w3m-modal-action-btn" @click=${ModalCtrl.close}>${CROSS_ICON}</button>
+        </div>
       </div>
     `
   }

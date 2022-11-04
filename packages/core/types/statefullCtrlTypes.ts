@@ -108,6 +108,7 @@ export type RouterView =
   | 'ConnectWallet'
   | 'DesktopConnector'
   | 'GetWallet'
+  | 'Help'
   | 'InjectedConnector'
   | 'MetaMaskConnector'
   | 'Qrcode'

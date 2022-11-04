@@ -11,6 +11,7 @@ import '../../views/w3m-coinbase-mobile-connector-view'
 import '../../views/w3m-connect-wallet-view'
 import '../../views/w3m-desktop-connector-view'
 import '../../views/w3m-get-wallet-view'
+import '../../views/w3m-help-view'
 import '../../views/w3m-injected-connector-view'
 import '../../views/w3m-metamask-connector-view'
 import '../../views/w3m-qrcode-view'
@@ -90,6 +91,8 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-wallet-explorer-view></w3m-wallet-explorer-view>`
       case 'Qrcode':
         return html`<w3m-qrcode-view></w3m-qrcode-view>`
+      case 'Help':
+        return html`<w3m-help-view></w3m-help-view>`
       default:
         return html`<div>Not Found</div>`
     }
