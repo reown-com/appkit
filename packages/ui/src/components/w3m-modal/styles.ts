@@ -7,8 +7,7 @@ export default css`
     inset: 0px;
     position: fixed;
     z-index: 10001;
-    overflow-x: hidden;
-    overflow-y: scroll;
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
