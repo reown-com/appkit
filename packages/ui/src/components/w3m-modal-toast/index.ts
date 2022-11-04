@@ -1,4 +1,4 @@
-import { ModalToastCtrl } from '@web3modal/core'
+import { ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -16,10 +16,10 @@ export class W3mModalToast extends LitElement {
 
   public constructor() {
     super()
-    this.unsubscribe = ModalToastCtrl.subscribe(newState => {
+    this.unsubscribe = ToastCtrl.subscribe(newState => {
       if (newState.open) {
         this.open = true
-        this.timeout = setTimeout(() => ModalToastCtrl.closeToast(), 1200)
+        this.timeout = setTimeout(() => ToastCtrl.closeToast(), 1200)
       } else {
         this.open = false
         clearTimeout(this.timeout)
@@ -30,7 +30,7 @@ export class W3mModalToast extends LitElement {
   public disconnectedCallback() {
     this.unsubscribe?.()
     clearTimeout(this.timeout)
-    ModalToastCtrl.closeToast()
+    ToastCtrl.closeToast()
   }
 
   // -- private ------------------------------------------------------ //
@@ -39,7 +39,7 @@ export class W3mModalToast extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { message, variant } = ModalToastCtrl.state
+    const { message, variant } = ToastCtrl.state
     const classes = {
       'w3m-modal-toast': true,
       'w3m-success': variant === 'success',

@@ -22,7 +22,7 @@ export default css`
 
   .w3m-modal-container {
     position: relative;
-    max-width: 400px;
+    max-width: 360px;
     width: 100%;
   }
 

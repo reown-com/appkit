@@ -9,7 +9,6 @@ import '../../components/w3m-text'
 import '../../components/w3m-wallet-image'
 import { ARROW_RIGHT_ICON, ARROW_UP_RIGHT_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import { getDefaultWalletNames } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-get-wallet-view')
@@ -29,10 +28,7 @@ export class W3mGetWalletView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const defaultNames = getDefaultWalletNames()
-    const wallets = ExplorerCtrl.state.previewWallets
-      .filter(wallet => !defaultNames.includes(wallet.name))
-      .slice(0, 4)
+    const wallets = ExplorerCtrl.state.recomendedWallets
 
     return html`
       ${dynamicStyles()}
@@ -42,11 +38,15 @@ export class W3mGetWalletView extends LitElement {
         ${wallets.map(
           ({ name, image_url, homepage }) =>
             html`
-              <div class="w3m-walle-item">
+              <div class="w3m-wallet-item">
                 <w3m-wallet-image name=${name} src=${image_url.lg}></w3m-wallet-image>
                 <div class="w3m-wallet-content">
-                  <w3m-text variant="large-bold">${name}</w3m-text>
-                  <w3m-button .iconRight=${ARROW_RIGHT_ICON} .onClick=${() => this.onGet(homepage)}>
+                  <w3m-text variant="medium-normal">${name}</w3m-text>
+                  <w3m-button
+                    .iconRight=${ARROW_RIGHT_ICON}
+                    variant="ghost"
+                    .onClick=${() => this.onGet(homepage)}
+                  >
                     Get
                   </w3m-button>
                 </div>
@@ -55,17 +55,15 @@ export class W3mGetWalletView extends LitElement {
         )}
       </w3m-modal-content>
       <w3m-modal-footer>
-        <w3m-text variant="large-bold">Not what you're looking for?</w3m-text>
-        <w3m-text variant="medium-thin" align="center" color="secondary" class="w3m-info-text">
-          With hundreds of wallets out there, there's something for everyone
-        </w3m-text>
-        <w3m-button
-          .onClick=${this.onExplore.bind(this)}
-          variant="ghost"
-          .iconRight=${ARROW_UP_RIGHT_ICON}
-        >
-          Explore Wallets
-        </w3m-button>
+        <div class="w3m-footer-actions">
+          <w3m-text variant="medium-normal">Not what you're looking for?</w3m-text>
+          <w3m-text variant="small-thin" align="center" color="secondary" class="w3m-info-text">
+            With hundreds of wallets out there, there's something for everyone
+          </w3m-text>
+          <w3m-button .onClick=${this.onExplore.bind(this)} .iconRight=${ARROW_UP_RIGHT_ICON}>
+            Explore Wallets
+          </w3m-button>
+        </div>
       </w3m-modal-footer>
     `
   }

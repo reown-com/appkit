@@ -1,8 +1,7 @@
 {
   "name": "@web3modal/core",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "main": "dist/index.js",
-  "unpkg": "dist/index.umd.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
@@ -12,19 +11,19 @@
     "build:clean": "rm -rf dist",
     "build:types": "tsc --emitDeclarationOnly",
     "build:source": "rollup --silent --config rollup.config.js",
-    "build": "npm run build:clean; npm run build:types; npm run build:source",
+    "build": "npm run build:clean; npm run build:types & npm run build:source",
     "dev": "rollup --config rollup.config.js --watch",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "buffer": "6.0.3",
-    "valtio": "1.7.4"
+    "valtio": "1.7.5"
   },
   "devDependencies": {
-    "@web3modal/ethereum": "2.0.0-beta.1"
+    "@web3modal/ethereum": "2.0.0-beta.2"
   },
   "peerDependencies": {
-    "@web3modal/ethereum": "2.0.0-beta.1"
+    "@web3modal/ethereum": "2.0.0-beta.2"
   },
   "peerDependenciesMeta": {
     "@web3modal/ethereum": {

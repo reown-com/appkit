@@ -8,24 +8,29 @@ export default css`
     justify-content: space-between;
   }
 
-  w3m-walletconnect-button {
-    width: 100%;
-    overflow: hidden;
-    margin-right: calc((100% - 240px) / 3);
-  }
-
-  .w3m-title {
+  .w3m-mobile-title,
+  .w3m-desktop-title {
     display: flex;
     align-items: center;
-    padding: 6px 0;
-    margin-bottom: 5px;
+    margin-top: -8px;
   }
 
-  .w3m-title-desktop {
-    margin-top: 15px;
+  .w3m-mobile-title {
+    justify-content: space-between;
+    margin-bottom: 18px;
   }
 
-  .w3m-title svg {
+  .w3m-desktop-title {
+    margin-bottom: 10px;
+  }
+
+  .w3m-subtitle {
+    display: flex;
+    align-items: center;
+  }
+
+  .w3m-mobile-title svg,
+  .w3m-desktop-title svg {
     margin-right: 6px;
   }
 `
@@ -34,7 +39,12 @@ export function dynamicStyles() {
   const { foreground } = color()
 
   return html`<style>
-    .w3m-title path {
+    .w3m-mobile-title path,
+    .w3m-desktop-title path {
+      fill: ${foreground.accent};
+    }
+
+    .w3m-subtitle:last-child path {
       fill: ${foreground[3]};
     }
   </style>`

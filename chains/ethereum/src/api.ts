@@ -149,6 +149,13 @@ export const Web3ModalEthereum = {
     return data
   },
 
+  async getActiveWalletConnectUri() {
+    const connector = this.getConnectorById('walletConnect')
+    const provider = await connector.getProvider()
+
+    return provider.connector.uri
+  },
+
   // -- accounts ----------------------------------------------------- //
   getAccount,
 

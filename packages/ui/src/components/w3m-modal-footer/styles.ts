@@ -5,9 +5,9 @@ export default css`
   .w3m-modal-footer {
     padding: 18px;
     display: flex;
-    align-items: center;
-    justify-content: center;
     flex-direction: column;
+    align-items: inherit;
+    justify-content: inherit;
   }
 `
 
@@ -16,8 +16,7 @@ export function dynamicStyles() {
 
   return html`<style>
     .w3m-modal-footer {
-      border-top: 1px solid ${background[3]};
-      background-color: ${background[2]};
+      border-top: 1px solid ${background[2]};
     }
   </style>`
 }

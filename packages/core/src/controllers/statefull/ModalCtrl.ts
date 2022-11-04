@@ -1,6 +1,6 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ModalCtrlState } from '../../../types/statefullCtrlTypes'
-import { NetworkCtrl } from '../stateless/NetworkCtrl'
+import { OptionsCtrl } from './OptionsCtrl'
 import { RouterCtrl } from './RouterCtrl'
 
 // -- initial state ------------------------------------------------ //
@@ -16,11 +16,11 @@ export const ModalCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  open() {
-    const { chains } = NetworkCtrl.get()
-    if (chains.length > 1) RouterCtrl.replace('SelectNetwork')
+  open(wcUri?: string) {
+    const { chains } = OptionsCtrl.state
+    if (chains?.length ? chains.length > 1 : false) RouterCtrl.replace('SelectNetwork')
     else RouterCtrl.replace('ConnectWallet')
-
+    OptionsCtrl.setStandaloneUri(wcUri)
     state.open = true
   },
 

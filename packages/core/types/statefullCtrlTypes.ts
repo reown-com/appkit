@@ -1,4 +1,4 @@
-import type { EthereumOptions, Web3ModalEthereum } from '@web3modal/ethereum'
+import type { Chain, EthereumOptions, Web3ModalEthereum } from '@web3modal/ethereum'
 
 // -- ConfigCtrl ------------------------------------------- //
 export interface ConfigOptions {
@@ -14,6 +14,7 @@ export interface ConfigOptions {
     | 'purple'
     | 'teal'
   ethereum?: EthereumOptions
+  standaloneChains?: string[]
 }
 
 export interface ConfigCtrlState extends ConfigOptions {
@@ -28,6 +29,9 @@ export interface ModalCtrlState {
 // -- OptionsCtrl --------------------------------------- //
 export interface OptionsCtrlState {
   selectedChainId?: number
+  chains?: Chain[]
+  standaloneChains?: string[]
+  standaloneUri?: string
 }
 
 // -- ExplorerCtrl ------------------------------------------- //
@@ -35,6 +39,7 @@ export interface ExplorerCtrlState {
   wallets: ListingResponse & { page: number }
   search: ListingResponse & { page: number }
   previewWallets: Listing[]
+  recomendedWallets: Listing[]
 }
 
 export interface PageParams {
@@ -44,6 +49,7 @@ export interface PageParams {
   version?: number
   device?: 'desktop' | 'mobile'
   order?: 'asc' | 'desc'
+  chains?: string
 }
 
 export interface PlatformInfo {
@@ -89,8 +95,8 @@ export interface ListingResponse {
   total: number
 }
 
-// -- ModalToastCtrl ------------------------------------------ //
-export interface ModalToastCtrlState {
+// -- ToastCtrl ------------------------------------------ //
+export interface ToastCtrlState {
   open: boolean
   message: string
   variant: 'error' | 'success'
@@ -101,17 +107,26 @@ export type RouterView =
   | 'CoinbaseExtensionConnector'
   | 'CoinbaseMobileConnector'
   | 'ConnectWallet'
+  | 'DesktopConnector'
   | 'GetWallet'
+  | 'Help'
   | 'InjectedConnector'
-  | 'LedgerDesktopConnector'
   | 'MetaMaskConnector'
+  | 'Qrcode'
   | 'SelectNetwork'
-  | 'WalletConnectConnector'
   | 'WalletExplorer'
 
 export interface RouterCtrlState {
   history: RouterView[]
   view: RouterView
+  data?: {
+    DesktopConnector: {
+      name: string
+      deeplink?: string
+      universal?: string
+      icon?: string
+    }
+  }
 }
 
 // -- ClientCtrl ------------------------------------------- //

@@ -3,7 +3,6 @@ import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-text'
 import { global } from '../../utils/Theme'
-import { getDefaultWalletNames } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-view-all-wallets-button')
@@ -17,11 +16,7 @@ export class W3mViewAllWalletsButton extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const defaultNames = getDefaultWalletNames()
-    const wallets = ExplorerCtrl.state.previewWallets
-      .filter(wallet => !defaultNames.includes(wallet.name))
-      .reverse()
-      .slice(0, 4)
+    const wallets = ExplorerCtrl.state.previewWallets.reverse().slice(0, 4)
 
     return html`
       ${dynamicStyles()}

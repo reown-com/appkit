@@ -1,8 +1,7 @@
 {
   "name": "@web3modal/ui",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "main": "dist/index.js",
-  "unpkg": "dist/index.umd.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
@@ -12,14 +11,14 @@
     "build:clean": "rm -rf dist",
     "build:types": "tsc --emitDeclarationOnly",
     "build:source": "rollup --silent --config rollup.config.js",
-    "build": "npm run build:clean; npm run build:types; npm run build:source",
+    "build": "npm run build:clean; npm run build:types & npm run build:source",
     "dev": "rollup --config rollup.config.js --watch",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/core": "2.0.0-beta.1",
-    "lit": "2.4.0",
-    "motion": "10.14.2",
+    "@web3modal/core": "2.0.0-beta.2",
+    "lit": "2.4.1",
+    "motion": "10.14.3",
     "qrcode": "1.5.1"
   },
   "devDependencies": {

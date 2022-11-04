@@ -4,7 +4,10 @@ import { OptionsCtrl } from '../statefull/OptionsCtrl'
 
 export const AccountCtrl = {
   watch(callback: AccountCtrlWatchCallback) {
-    const unwatch = ClientCtrl.ethereum().watchAccount(callback)
+    const unwatch = ClientCtrl.ethereum().watchAccount(account => {
+      callback(account)
+      if (account.isDisconnected) OptionsCtrl.setSelectedChainId(undefined)
+    })
 
     return unwatch
   },
@@ -17,6 +20,5 @@ export const AccountCtrl = {
 
   disconnect() {
     ClientCtrl.ethereum().disconnect()
-    OptionsCtrl.setSelectedChainId(undefined)
   }
 }

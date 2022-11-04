@@ -1,4 +1,11 @@
-import { ExplorerCtrl, ModalCtrl, NetworkCtrl } from '@web3modal/core'
+import {
+  ConfigCtrl,
+  CoreHelpers,
+  ExplorerCtrl,
+  ModalCtrl,
+  OptionsCtrl,
+  ToastCtrl
+} from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -24,25 +31,31 @@ export class W3mModal extends ThemedElement {
   // -- state & properties ------------------------------------------- //
   @state() private open = false
   @state() private initialized = false
+  @state() private preload = true
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.unsubscribe = ModalCtrl.subscribe(modalState => {
+    this.unsubscribeModal = ModalCtrl.subscribe(modalState => {
       if (modalState.open) this.onOpenModalEvent()
       if (!modalState.open) this.onCloseModalEvent()
     })
-    this.preloadData()
+    if (ConfigCtrl.state.configured) this.preloadData()
+    else
+      this.unsubscribeConfig = ConfigCtrl.subscribe(configState => {
+        if (configState.configured) this.preloadData()
+      })
   }
 
   public disconnectedCallback() {
     super.disconnectedCallback()
-    this.unsubscribe?.()
+    this.unsubscribeModal?.()
+    this.unsubscribeConfig?.()
   }
 
   // -- private ------------------------------------------------------ //
-  private readonly unsubscribe?: () => void = undefined
-  private firstOpen = true
+  private readonly unsubscribeModal?: () => void = undefined
+  private readonly unsubscribeConfig?: () => void = undefined
 
   private get overlayEl() {
     return getShadowRootElement(this, '.w3m-modal-overlay')
@@ -63,17 +76,35 @@ export class W3mModal extends ThemedElement {
   }
 
   private async preloadData() {
-    if (this.firstOpen) {
-      await ExplorerCtrl.getPreviewWallets()
-      const walletImgs = ExplorerCtrl.state.previewWallets.map(({ image_url }) => image_url.lg)
-      const defaultWalletImgs = defaultWalletImages()
-      const { chains } = NetworkCtrl.get()
-      const chainsImgs = chains.map(chain => getChainIcon(chain.id))
-      await Promise.all([
-        ...walletImgs.map(async url => preloadImage(url)),
-        ...defaultWalletImgs.map(async url => preloadImage(url)),
-        ...chainsImgs.map(async url => preloadImage(url))
-      ])
+    try {
+      if (this.preload) {
+        const chainsFilter = OptionsCtrl.state.standaloneChains?.join(',')
+        await Promise.all([
+          ExplorerCtrl.getPreviewWallets({
+            page: 1,
+            entries: 10,
+            chains: chainsFilter,
+            device: CoreHelpers.isMobile() ? 'mobile' : 'desktop'
+          }),
+          ExplorerCtrl.getRecomendedWallets()
+        ])
+        const walletImgs = [
+          ...ExplorerCtrl.state.previewWallets,
+          ...ExplorerCtrl.state.recomendedWallets
+        ].map(({ image_url }) => image_url.lg)
+        const defaultWalletImgs = defaultWalletImages()
+        const { chains } = OptionsCtrl.state
+        const chainsImgs = chains?.map(chain => getChainIcon(chain.id)) ?? []
+        await Promise.all([
+          ...walletImgs.map(async url => preloadImage(url)),
+          ...defaultWalletImgs.map(async url => preloadImage(url)),
+          ...chainsImgs.map(async url => preloadImage(url))
+        ])
+      }
+    } catch {
+      ToastCtrl.openToast('Failed preloading', 'error')
+    } finally {
+      this.preload = false
     }
   }
 
@@ -87,7 +118,6 @@ export class W3mModal extends ThemedElement {
       delay
     })
     document.addEventListener('keydown', this.onKeyDown)
-    this.firstOpen = false
     this.open = true
     this.initialized = true
   }

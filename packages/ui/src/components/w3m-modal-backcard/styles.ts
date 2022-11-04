@@ -53,7 +53,7 @@ export default css`
     object-fit: contain;
   }
 
-  .w3m-modal-close-btn {
+  .w3m-modal-action-btn {
     width: 28px;
     height: 28px;
     border-radius: 50%;
@@ -65,10 +65,17 @@ export default css`
     transition: background-color, 0.2s ease-in-out;
   }
 
-  .w3m-modal-close-btn svg {
-    width: 12px;
-    height: 12px;
+  .w3m-modal-action-btn svg {
     display: block;
+    object-position: center;
+  }
+
+  .w3m-actions {
+    display: flex;
+  }
+
+  .w3m-actions button:first-child {
+    margin-right: 16px;
   }
 `
 
@@ -84,20 +91,25 @@ export function dynamicStyles() {
       border: 1px solid ${overlay.thin};
     }
 
-    .w3m-modal-close-btn {
+    .w3m-modal-action-btn {
       background-color: ${background[1]};
     }
 
-    .w3m-modal-close-btn:hover {
+    .w3m-modal-action-btn:hover {
       background-color: ${background[2]};
     }
 
-    .w3m-modal-close-btn path {
+    .w3m-modal-action-btn path {
       fill: ${foreground[1]};
     }
 
-    .w3m-modal-close-btn {
-      box-shadow: 0 0 0 1px ${overlay.thin};
+    .w3m-modal-action-btn {
+      box-shadow: 0 0 0 1px ${overlay.thin}, 0px 2px 4px -2px rgba(0, 0, 0, 0.12),
+        0px 4px 4px -2px rgba(0, 0, 0, 0.08);
+    }
+
+    .w3m-help-active button:first-child {
+      background-color: ${foreground.accent};
     }
   </style>`
 }

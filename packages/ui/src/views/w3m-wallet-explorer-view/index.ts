@@ -1,12 +1,5 @@
 import type { Listing } from '@web3modal/core'
-import {
-  ClientCtrl,
-  CoreHelpers,
-  ExplorerCtrl,
-  ModalCtrl,
-  ModalToastCtrl,
-  OptionsCtrl
-} from '@web3modal/core'
+import { CoreHelpers, ExplorerCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -21,6 +14,7 @@ import {
   debounce,
   getErrorMessage,
   getShadowRootElement,
+  handleMobileLinking,
   preloadImage
 } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
@@ -74,41 +68,36 @@ export class W3mWalletExplorerView extends LitElement {
     if (!this.endReached && (this.firstFetch || (total > PAGE_ENTRIES && listings.length < total)))
       try {
         this.loading = true
+        const chains = OptionsCtrl.state.standaloneChains?.join(',')
         const { listings: newListings } = await ExplorerCtrl.getPaginatedWallets({
           page: this.firstFetch ? 1 : page + 1,
           entries: PAGE_ENTRIES,
-          version: 1,
           device: CoreHelpers.isMobile() ? 'mobile' : 'desktop',
-          search: this.search
+          search: this.search,
+          chains
         })
         const images = newListings.map(({ image_url }) => image_url.lg)
         await Promise.all([...images.map(async url => preloadImage(url)), CoreHelpers.wait(300)])
         this.endReached = this.isLastPage()
       } catch (err) {
-        ModalToastCtrl.openToast(getErrorMessage(err), 'error')
+        ToastCtrl.openToast(getErrorMessage(err), 'error')
       } finally {
         this.loading = false
         this.firstFetch = false
       }
   }
 
-  private async onConnect(links: { native: string; universal?: string }, name: string) {
-    const { native, universal } = links
-    await ClientCtrl.ethereum().connectLinking(
-      uri =>
-        CoreHelpers.openHref(
-          universal
-            ? CoreHelpers.formatUniversalUrl(universal, uri, name)
-            : CoreHelpers.formatNativeUrl(native, uri, name)
-        ),
-      OptionsCtrl.state.selectedChainId
-    )
-    ModalCtrl.close()
-  }
-
   private async onConnectPlatform(listing: Listing) {
-    if (CoreHelpers.isMobile()) await this.onConnect(listing.mobile, listing.name)
-    else await this.onConnect(listing.desktop, listing.name)
+    if (CoreHelpers.isMobile()) await handleMobileLinking(listing.mobile, listing.name)
+    else
+      RouterCtrl.push('DesktopConnector', {
+        DesktopConnector: {
+          name: listing.name,
+          icon: listing.image_url.lg,
+          universal: listing.desktop.universal || listing.homepage,
+          deeplink: listing.desktop.native
+        }
+      })
   }
 
   private readonly searchDebounce = debounce((value: string) => {

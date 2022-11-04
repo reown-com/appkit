@@ -6,7 +6,8 @@ import { fetchWallets } from '../../utils/ExplorerApi'
 const state = proxy<ExplorerCtrlState>({
   wallets: { listings: [], total: 0, page: 1 },
   search: { listings: [], total: 0, page: 1 },
-  previewWallets: []
+  previewWallets: [],
+  recomendedWallets: []
 })
 
 // -- controller --------------------------------------------------- //
@@ -17,11 +18,16 @@ export const ExplorerCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  async getPreviewWallets() {
-    const { listings } = await fetchWallets({ page: 1, entries: 10, version: 1 })
+  async getPreviewWallets(params: PageParams) {
+    const { listings } = await fetchWallets(params)
     state.previewWallets = Object.values(listings)
 
     return state.previewWallets
+  },
+
+  async getRecomendedWallets() {
+    const { listings } = await fetchWallets({ page: 1, entries: 6 })
+    state.recomendedWallets = Object.values(listings)
   },
 
   async getPaginatedWallets(params: PageParams) {

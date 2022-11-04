@@ -1,7 +1,7 @@
 import { css } from 'lit'
 
 export default css`
-  .w3m-ledger-wrapper {
+  .w3m-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;

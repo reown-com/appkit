@@ -3,18 +3,20 @@ import { RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
+import '../../partials/w3m-walletconnect-qr'
 import { global } from '../../utils/Theme'
 import { getShadowRootElement } from '../../utils/UiHelpers'
 import '../../views/w3m-coinbase-extension-connector-view'
 import '../../views/w3m-coinbase-mobile-connector-view'
 import '../../views/w3m-connect-wallet-view'
+import '../../views/w3m-desktop-connector-view'
 import '../../views/w3m-get-wallet-view'
+import '../../views/w3m-help-view'
 import '../../views/w3m-injected-connector-view'
-import '../../views/w3m-ledger-desktop-connector-view'
 import '../../views/w3m-metamask-connector-view'
+import '../../views/w3m-qrcode-view'
 import '../../views/w3m-select-network-view'
 import '../../views/w3m-wallet-explorer-view'
-import '../../views/w3m-walletconnect-connector-view'
 import styles from './styles'
 
 @customElement('w3m-modal-router')
@@ -73,8 +75,6 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-connect-wallet-view></w3m-connect-wallet-view>`
       case 'SelectNetwork':
         return html`<w3m-select-network-view></w3m-select-network-view>`
-      case 'WalletConnectConnector':
-        return html`<w3m-walletconnect-connector-view></w3m-walletconnect-connector-view>`
       case 'CoinbaseMobileConnector':
         return html`<w3m-coinbase-mobile-connector-view></w3m-coinbase-mobile-connector-view>`
       case 'CoinbaseExtensionConnector':
@@ -85,10 +85,14 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-metamask-connector-view></w3m-metamask-connector-view>`
       case 'GetWallet':
         return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
-      case 'LedgerDesktopConnector':
-        return html`<w3m-ledger-desktop-connector-view></w3m-ledger-desktop-connector-view>`
+      case 'DesktopConnector':
+        return html`<w3m-desktop-connector-view></w3m-desktop-connector-view>`
       case 'WalletExplorer':
         return html`<w3m-wallet-explorer-view></w3m-wallet-explorer-view>`
+      case 'Qrcode':
+        return html`<w3m-qrcode-view></w3m-qrcode-view>`
+      case 'Help':
+        return html`<w3m-help-view></w3m-help-view>`
       default:
         return html`<div>Not Found</div>`
     }

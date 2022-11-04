@@ -1,22 +1,22 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { ModalToastCtrlState } from '../../../types/statefullCtrlTypes'
+import type { ToastCtrlState } from '../../../types/statefullCtrlTypes'
 
 // -- initial state ------------------------------------------------ //
-const state = proxy<ModalToastCtrlState>({
+const state = proxy<ToastCtrlState>({
   open: false,
   message: '',
   variant: 'success'
 })
 
 // -- controller --------------------------------------------------- //
-export const ModalToastCtrl = {
+export const ToastCtrl = {
   state,
 
-  subscribe(callback: (newState: ModalToastCtrlState) => void) {
+  subscribe(callback: (newState: ToastCtrlState) => void) {
     return valtioSub(state, () => callback(state))
   },
 
-  openToast(message: ModalToastCtrlState['message'], variant: ModalToastCtrlState['variant']) {
+  openToast(message: ToastCtrlState['message'], variant: ToastCtrlState['variant']) {
     state.open = true
     state.message = message
     state.variant = variant
