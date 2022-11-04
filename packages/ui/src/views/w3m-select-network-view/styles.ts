@@ -2,9 +2,9 @@ import { css } from 'lit'
 
 export default css`
   .w3m-container {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     margin: -15px;
-    justify-content: space-evenly;
+    justify-items: center;
   }
 `
