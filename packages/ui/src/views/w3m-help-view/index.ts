@@ -8,9 +8,12 @@ import '../../components/w3m-modal-header'
 import {
   ARROW_UP_RIGHT_ICON,
   HELP_CHART_IMG,
+  HELP_COMPAS_IMG,
+  HELP_DAO_IMG,
   HELP_ETH_IMG,
   HELP_KEY_IMG,
   HELP_LOCK_IMG,
+  HELP_NOUN_IMG,
   HELP_PAINTING_IMG,
   HELP_USER_IMG,
   WALLET_ICON
@@ -55,7 +58,7 @@ export class W3mHelpView extends LitElement {
         </div>
 
         <div class="w3m-info-container">
-          <div class="w3m-images">${HELP_CHART_IMG} ${HELP_PAINTING_IMG} ${HELP_ETH_IMG}</div>
+          <div class="w3m-images">${HELP_COMPAS_IMG} ${HELP_NOUN_IMG} ${HELP_DAO_IMG}</div>
           <w3m-text variant="medium-normal">Your gateway to a new web</w3m-text>
           <w3m-text variant="small-thin" align="center" color="secondary" class="w3m-info-text">
             With your wallet, you can explore and interact with DeFi, NFTs, DAOs, and much more.
