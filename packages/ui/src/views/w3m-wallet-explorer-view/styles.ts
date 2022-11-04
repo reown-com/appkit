@@ -42,7 +42,8 @@ export default css`
 
   .w3m-content {
     display: grid;
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    justify-items: stretch;
   }
 
   .w3m-placeholder-block {
