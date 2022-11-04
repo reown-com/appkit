@@ -72,7 +72,11 @@ export class W3mHelpView extends LitElement {
           <w3m-button .onClick=${this.onGet.bind(this)} .iconLeft=${WALLET_ICON}>
             Get a Wallet
           </w3m-button>
-          <w3m-button .onClick=${this.onLearnMore.bind(this)} .iconRight=${ARROW_UP_RIGHT_ICON}>
+          <w3m-button
+            .onClick=${this.onLearnMore.bind(this)}
+            variant="ghost"
+            .iconRight=${ARROW_UP_RIGHT_ICON}
+          >
             Learn More
           </w3m-button>
         </div>
