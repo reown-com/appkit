@@ -27,12 +27,18 @@ export default css`
 `
 
 export function dynamicStyles() {
-  const { foreground, error, overlay } = color()
+  const { foreground, error, background, overlay } = color()
 
   return html`<style>
     .w3m-modal-toast {
       border: 1px solid ${overlay.thin};
       background-color: ${overlay.thin};
+    }
+
+    @-moz-document url-prefix() {
+      .w3m-modal-toast {
+        background-color: ${background.accent};
+      }
     }
 
     .w3m-success path {
