@@ -38,7 +38,7 @@ export class W3mGetWalletView extends LitElement {
         ${wallets.map(
           ({ name, image_url, homepage }) =>
             html`
-              <div class="w3m-walle-item">
+              <div class="w3m-wallet-item">
                 <w3m-wallet-image name=${name} src=${image_url.lg}></w3m-wallet-image>
                 <div class="w3m-wallet-content">
                   <w3m-text variant="medium-normal">${name}</w3m-text>

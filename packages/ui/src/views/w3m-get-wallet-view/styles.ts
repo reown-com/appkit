@@ -7,22 +7,22 @@ export default css`
     max-width: 320px;
   }
 
-  .w3m-walle-item {
+  .w3m-wallet-item {
     margin: 0 -18px 0 0;
     padding-right: 18px;
     display: flex;
     align-items: center;
   }
 
-  .w3m-walle-item:last-child .w3m-wallet-content {
+  .w3m-wallet-item:last-child .w3m-wallet-content {
     border-bottom: none;
   }
 
-  .w3m-walle-item:last-child {
+  .w3m-wallet-item:last-child {
     margin-bottom: -18px;
   }
 
-  .w3m-walle-item:first-child {
+  .w3m-wallet-item:first-child {
     margin-top: -18px;
   }
 
@@ -53,7 +53,7 @@ export function dynamicStyles() {
   const { background } = color()
 
   return html`<style>
-    .w3m-walle-item {
+    .w3m-wallet-item {
       border-bottom: 1px solid ${background[2]};
     }
   </style>`
