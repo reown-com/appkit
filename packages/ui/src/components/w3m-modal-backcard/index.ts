@@ -16,6 +16,7 @@ export class W3mModalBackcard extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false
+  @state() private isHelp = false
 
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
@@ -25,11 +26,22 @@ export class W3mModalBackcard extends LitElement {
     }, 1000)
   }
 
+  public constructor() {
+    super()
+    this.unsubscribeRouter = RouterCtrl.subscribe(routerState => {
+      this.isHelp = routerState.view === 'Help'
+    })
+  }
+
   public disconnectedCallback() {
+    super.disconnectedCallback()
+    this.unsubscribeRouter?.()
     whatamesh.stop()
   }
 
   // -- private ------------------------------------------------------ //
+  private readonly unsubscribeRouter?: () => void = undefined
+
   private get canvasEl() {
     return getShadowRootElement(this, '.w3m-gradient-canvas')
   }
@@ -45,6 +57,11 @@ export class W3mModalBackcard extends LitElement {
       'w3m-gradient-canvas-visible': this.open
     }
 
+    const actionsClasses = {
+      'w3m-actions': true,
+      'w3m-help-active': this.isHelp
+    }
+
     return html`
       ${dynamicStyles()}
 
@@ -54,7 +71,7 @@ export class W3mModalBackcard extends LitElement {
       <div class="w3m-modal-highlight"></div>
       <div class="w3m-modal-toolbar">
         ${WALLET_CONNECT_LOGO}
-        <div class="w3m-actions">
+        <div class=${classMap(actionsClasses)}>
           <button class="w3m-modal-action-btn" @click=${this.onHelp}>${HELP_ICON}</button>
           <button class="w3m-modal-action-btn" @click=${ModalCtrl.close}>${CROSS_ICON}</button>
         </div>

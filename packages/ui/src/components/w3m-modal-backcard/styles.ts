@@ -104,7 +104,12 @@ export function dynamicStyles() {
     }
 
     .w3m-modal-action-btn {
-      box-shadow: 0 0 0 1px ${overlay.thin};
+      box-shadow: 0 0 0 1px ${overlay.thin}, 0px 2px 4px -2px rgba(0, 0, 0, 0.12),
+        0px 4px 4px -2px rgba(0, 0, 0, 0.08);
+    }
+
+    .w3m-help-active button:first-child {
+      background-color: ${foreground.accent};
     }
   </style>`
 }
