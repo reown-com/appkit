@@ -43,7 +43,7 @@ export class W3mModal extends ThemedElement {
     if (ConfigCtrl.state.configured) this.preloadData()
     else
       this.unsubscribeConfig = ConfigCtrl.subscribe(configState => {
-        if (configState.configured && this.preload) this.preloadData()
+        if (configState.configured) this.preloadData()
       })
   }
 
@@ -79,13 +79,19 @@ export class W3mModal extends ThemedElement {
     try {
       if (this.preload) {
         const chainsFilter = OptionsCtrl.state.standaloneChains?.join(',')
-        await ExplorerCtrl.getPreviewWallets({
-          page: 1,
-          entries: 10,
-          chains: chainsFilter,
-          device: CoreHelpers.isMobile() ? 'mobile' : 'desktop'
-        })
-        const walletImgs = ExplorerCtrl.state.previewWallets.map(({ image_url }) => image_url.lg)
+        await Promise.all([
+          ExplorerCtrl.getPreviewWallets({
+            page: 1,
+            entries: 10,
+            chains: chainsFilter,
+            device: CoreHelpers.isMobile() ? 'mobile' : 'desktop'
+          }),
+          ExplorerCtrl.getRecomendedWallets()
+        ])
+        const walletImgs = [
+          ...ExplorerCtrl.state.previewWallets,
+          ...ExplorerCtrl.state.recomendedWallets
+        ].map(({ image_url }) => image_url.lg)
         const defaultWalletImgs = defaultWalletImages()
         const { chains } = OptionsCtrl.state
         const chainsImgs = chains?.map(chain => getChainIcon(chain.id)) ?? []

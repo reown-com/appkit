@@ -8,7 +8,7 @@ export default css`
   }
 
   .w3m-walle-item {
-    margin: 0 -18px 0 15px;
+    margin: 0 -18px 0 0;
     padding-right: 18px;
     display: flex;
     align-items: center;

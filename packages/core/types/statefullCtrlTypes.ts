@@ -39,6 +39,7 @@ export interface ExplorerCtrlState {
   wallets: ListingResponse & { page: number }
   search: ListingResponse & { page: number }
   previewWallets: Listing[]
+  recomendedWallets: Listing[]
 }
 
 export interface PageParams {
