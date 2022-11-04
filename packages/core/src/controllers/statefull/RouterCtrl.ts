@@ -17,9 +17,11 @@ export const RouterCtrl = {
   },
 
   push(view: RouterCtrlState['view'], data?: RouterCtrlState['data']) {
-    state.view = view
-    if (data) state.data = data
-    state.history.push(view)
+    if (view !== state.view) {
+      state.view = view
+      if (data) state.data = data
+      state.history.push(view)
+    }
   },
 
   replace(view: RouterCtrlState['view']) {
