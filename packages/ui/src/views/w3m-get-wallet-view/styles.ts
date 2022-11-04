@@ -14,12 +14,9 @@ export default css`
     align-items: center;
   }
 
-  .w3m-wallet-item:last-child .w3m-wallet-content {
-    border-bottom: none;
-  }
-
   .w3m-wallet-item:last-child {
     margin-bottom: -18px;
+    border-bottom: none;
   }
 
   .w3m-wallet-item:first-child {
