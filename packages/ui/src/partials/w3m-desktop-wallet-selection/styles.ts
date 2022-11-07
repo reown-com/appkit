@@ -1,39 +1,9 @@
-import { css, html } from 'lit'
+import { html } from 'lit'
 import { color } from '../../utils/Theme'
+import scssStyles from './styles.scss'
+import { scss } from '../../style/utils'
 
-export default css`
-  .w3m-view-row {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .w3m-mobile-title,
-  .w3m-desktop-title {
-    display: flex;
-    align-items: center;
-    margin-top: -8px;
-  }
-
-  .w3m-mobile-title {
-    justify-content: space-between;
-    margin-bottom: 18px;
-  }
-
-  .w3m-desktop-title {
-    margin-bottom: 10px;
-  }
-
-  .w3m-subtitle {
-    display: flex;
-    align-items: center;
-  }
-
-  .w3m-mobile-title svg,
-  .w3m-desktop-title svg {
-    margin-right: 6px;
-  }
-`
+export default scss`${scssStyles}`
 
 export function dynamicStyles() {
   const { foreground } = color()

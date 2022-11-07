@@ -1,30 +1,9 @@
-import { css, html } from 'lit'
+import { html } from 'lit'
 import { color } from '../../utils/Theme'
+import scssStyles from './styles.scss'
+import { scss } from '../../style/utils'
 
-export default css`
-  .w3m-network-button {
-    background-color: transparent;
-    padding: 5px;
-    border-radius: 12px;
-    transition: all 0.2s ease-in-out;
-    margin: 10px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 88px;
-    height: 88px;
-  }
-
-  w3m-text {
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: center;
-    margin-top: 5px;
-  }
-`
+export default scss`${scssStyles}`
 
 export function dynamicStyles() {
   const { background, overlay } = color()

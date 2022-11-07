@@ -1,8 +1,4 @@
-import { css } from 'lit'
+import scssStyles from './styles.scss'
+import { scss } from '../../style/utils'
 
-export default css`
-  .w3m-modal-content {
-    padding: 18px;
-    width: 100%;
-  }
-`
+export default scss`${scssStyles}`

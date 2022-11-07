@@ -1,13 +1,4 @@
-import { css } from 'lit'
+import scssStyles from './styles.scss'
+import { scss } from '../../style/utils'
 
-export default css`
-  .w3m-view-row {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .w3m-view-row:first-child {
-    margin-bottom: 18px;
-  }
-`
+export default scss`${scssStyles}`

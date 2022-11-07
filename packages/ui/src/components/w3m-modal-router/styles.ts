@@ -1,13 +1,4 @@
-import { css } from 'lit'
+import scssStyles from './styles.scss'
+import { scss } from '../../style/utils'
 
-export default css`
-  .w3m-modal-router {
-    overflow: hidden;
-    will-change: transform;
-  }
-
-  .w3m-modal-router-content {
-    display: flex;
-    flex-direction: column;
-  }
-`
+export default scss`${scssStyles}`

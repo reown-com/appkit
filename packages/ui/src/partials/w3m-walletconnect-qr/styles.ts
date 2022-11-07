@@ -1,8 +1,4 @@
-import { css } from 'lit'
+import scssStyles from './styles.scss'
+import { scss } from '../../style/utils'
 
-export default css`
-  .w3m-qr-container {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-  }
-`
+export default scss`${scssStyles}`

@@ -31,14 +31,17 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.42.1",
     "@typescript-eslint/parser": "5.42.1",
+    "autoprefixer": "^10.4.13",
     "esbuild": "0.15.13",
     "eslint": "8.27.0",
     "eslint-config-prettier": "8.5.0",
     "lerna": "6.0.3",
+    "postcss": "^8.4.18",
     "prettier": "2.7.1",
     "rollup": "3.2.5",
     "rollup-plugin-esbuild": "4.10.2",
     "rollup-plugin-minify-html-literals": "1.2.6",
+    "rollup-plugin-scss": "^3.0.0",
     "typescript": "4.8.4"
   }
 }

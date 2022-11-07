@@ -1,38 +1,9 @@
-import { css, html } from 'lit'
+import { html } from 'lit'
 import { color } from '../../utils/Theme'
+import scssStyles from './styles.scss'
+import { scss } from '../../style/utils'
 
-export default css`
-  .w3m-footer-actions {
-    display: flex;
-    justify-content: center;
-  }
-
-  .w3m-footer-actions w3m-button {
-    margin: 0 5px;
-  }
-
-  .w3m-info-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 30px;
-  }
-
-  .w3m-info-container:last-child {
-    margin-bottom: 0;
-  }
-
-  .w3m-info-text {
-    margin-top: 5px;
-  }
-
-  .w3m-images svg {
-    margin: 0 2px 5px;
-    width: 55px;
-    height: 55px;
-  }
-`
+export default scss`${scssStyles}`
 
 export function dynamicStyles() {
   const { overlay } = color()

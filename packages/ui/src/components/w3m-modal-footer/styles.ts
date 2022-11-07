@@ -1,15 +1,9 @@
-import { css, html } from 'lit'
+import { html } from 'lit'
 import { color } from '../../utils/Theme'
+import scssStyles from './styles.scss'
+import { scss } from '../../style/utils'
 
-export default css`
-  .w3m-modal-footer {
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-    align-items: inherit;
-    justify-content: inherit;
-  }
-`
+export default scss`${scssStyles}`
 
 export function dynamicStyles() {
   const { background } = color()

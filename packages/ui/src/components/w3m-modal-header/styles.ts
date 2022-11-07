@@ -1,35 +1,9 @@
-import { css, html } from 'lit'
+import { html } from 'lit'
 import { color } from '../../utils/Theme'
+import scssStyles from './styles.scss'
+import { scss } from '../../style/utils'
 
-export default css`
-  .w3m-modal-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 18px;
-    position: relative;
-  }
-
-  .w3m-modal-header button {
-    background-color: transparent;
-    padding: 13px 17px;
-    transition: opacity 0.2s ease-in-out;
-  }
-
-  .w3m-modal-header button:hover {
-    opacity: 0.5;
-  }
-
-  .w3m-back-btn {
-    position: absolute;
-    left: 0;
-  }
-
-  .w3m-action-btn {
-    position: absolute;
-    right: 0;
-  }
-`
+export default scss`${scssStyles}`
 
 export function dynamicStyles() {
   const { foreground, background } = color()

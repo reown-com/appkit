@@ -1,83 +1,9 @@
-import { css, html } from 'lit'
+import { html } from 'lit'
 import { color } from '../../utils/Theme'
+import scssStyles from './styles.scss'
+import { scss } from '../../style/utils'
 
-export default css`
-  .w3m-gradient-canvas,
-  .w3m-modal-highlight,
-  .w3m-gradient-placeholder,
-  #w3m-transparent-noise {
-    inset: 0;
-    position: absolute;
-    display: block;
-    pointer-events: none;
-    width: 100%;
-    height: 100px;
-    border-radius: 8px 8px 0 0;
-    transform: translateY(-5px);
-    top: 0;
-    left: 0;
-  }
-
-  .w3m-gradient-canvas {
-    --gradient-color-1: #cad8f2;
-    --gradient-color-2: #be3620;
-    --gradient-color-3: #a6208c;
-    --gradient-color-4: #06968f;
-    opacity: 0;
-    transition: opacity 2s ease-in-out;
-    box-shadow: 0px 8px 28px -6px rgba(10, 16, 31, 0.12), 0px 18px 88px -4px rgba(10, 16, 31, 0.14);
-  }
-
-  .w3m-gradient-canvas-visible {
-    opacity: 1;
-  }
-
-  #w3m-transparent-noise {
-    mix-blend-mode: multiply;
-    opacity: 0.35;
-  }
-
-  .w3m-modal-toolbar {
-    height: 28px;
-    display: flex;
-    position: relative;
-    margin: 5px 15px 5px 5px;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .w3m-modal-toolbar svg,
-  .w3m-modal-toolbar img {
-    height: 28px;
-    object-position: left center;
-    object-fit: contain;
-  }
-
-  .w3m-modal-action-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color, 0.2s ease-in-out;
-  }
-
-  .w3m-modal-action-btn svg {
-    display: block;
-    object-position: center;
-  }
-
-  .w3m-actions {
-    display: flex;
-  }
-
-  .w3m-actions button:first-child {
-    margin-right: 16px;
-  }
-`
+export default scss`${scssStyles}`
 
 export function dynamicStyles() {
   const { overlay, background, foreground } = color()

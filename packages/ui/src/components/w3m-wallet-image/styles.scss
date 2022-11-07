@@ -1,0 +1,19 @@
+.w3m-wallet-image {
+  overflow: hidden;
+  position: relative;
+  border-radius: inherit;
+  width: 100%;
+  height: 100%;
+}
+.w3m-wallet-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.w3m-wallet-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}

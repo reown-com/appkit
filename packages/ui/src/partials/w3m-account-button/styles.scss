@@ -1,0 +1,16 @@
+button {
+  padding: 0 15px 1px;
+  height: 40px;
+  border-radius: 10px;
+}
+button::after {
+  content: '';
+  inset: 0;
+  position: absolute;
+  background-color: transparent;
+  border-radius: inherit;
+  transition: background-color 0.2s ease-in-out;
+}
+button:disabled {
+  padding-bottom: 0;
+}

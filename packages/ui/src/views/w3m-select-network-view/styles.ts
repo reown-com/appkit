@@ -1,10 +1,4 @@
-import { css } from 'lit'
+import scssStyles from './styles.scss'
+import { scss } from '../../style/utils'
 
-export default css`
-  .w3m-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    margin: -15px;
-    justify-items: center;
-  }
-`
+export default scss`${scssStyles}`

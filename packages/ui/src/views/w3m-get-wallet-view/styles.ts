@@ -1,50 +1,9 @@
-import { css, html } from 'lit'
+import { html } from 'lit'
 import { color } from '../../utils/Theme'
+import scssStyles from './styles.scss'
+import { scss } from '../../style/utils'
 
-export default css`
-  .w3m-info-text {
-    margin: 5px 0 15px;
-    max-width: 320px;
-  }
-
-  .w3m-wallet-item {
-    margin: 0 -18px 0 0;
-    padding-right: 18px;
-    display: flex;
-    align-items: center;
-  }
-
-  .w3m-wallet-item:last-child {
-    margin-bottom: -18px;
-    border-bottom: none;
-  }
-
-  .w3m-wallet-item:first-child {
-    margin-top: -18px;
-  }
-
-  .w3m-wallet-content {
-    margin-left: 18px;
-    height: 60px;
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .w3m-footer-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  w3m-wallet-image {
-    display: block;
-    width: 40px;
-    height: 40px;
-    border-radius: 14px;
-  }
-`
+export default scss`${scssStyles}`
 
 export function dynamicStyles() {
   const { background } = color()

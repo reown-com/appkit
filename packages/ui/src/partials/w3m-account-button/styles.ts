@@ -1,27 +1,9 @@
-import { css, html } from 'lit'
+import { html } from 'lit'
 import { color } from '../../utils/Theme'
+import scssStyles from './styles.scss'
+import { scss } from '../../style/utils'
 
-// -- static styles ------------------------------------------------ //
-export default css`
-  button {
-    padding: 0 15px 1px;
-    height: 40px;
-    border-radius: 10px;
-  }
-
-  button::after {
-    content: '';
-    inset: 0;
-    position: absolute;
-    background-color: transparent;
-    border-radius: inherit;
-    transition: background-color 0.2s ease-in-out;
-  }
-
-  button:disabled {
-    padding-bottom: 0;
-  }
-`
+export default scss`${scssStyles}`
 
 // -- dynamic styles ----------------------------------------------- //
 export function dynamicStyles() {

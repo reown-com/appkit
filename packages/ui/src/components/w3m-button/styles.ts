@@ -1,29 +1,13 @@
-import { css, html } from 'lit'
+import { html } from 'lit'
+import { scss } from '../../style/utils'
 import { color } from '../../utils/Theme'
+import scssStyles from './styles.scss'
+
+console.log(scssStyles)
 
 // -- static styles ------------------------------------------------ //
-export default css`
-  .w3m-button {
-    border-radius: 28px;
-    height: 28px;
-    padding: 0 10px;
-  }
-
-  .w3m-button::after {
-    border-radius: inherit;
-  }
-
-  .w3m-button:disabled::after {
-    background-color: transparent;
-  }
-
-  .w3m-button-icon-left svg {
-    margin-right: 5px;
-  }
-
-  .w3m-button-icon-right svg {
-    margin-left: 5px;
-  }
+export default scss`
+  ${scssStyles}
 `
 
 // -- dynamic styles ----------------------------------------------- //

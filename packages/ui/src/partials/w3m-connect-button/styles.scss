@@ -1,0 +1,29 @@
+button {
+  padding: 0 15px 1px;
+  height: 40px;
+  border-radius: 10px;
+}
+button::after {
+  content: '';
+  inset: 0;
+  position: absolute;
+  background-color: transparent;
+  border-radius: inherit;
+  transition: background-color 0.2s ease-in-out;
+}
+button:disabled {
+  padding-bottom: 0;
+}
+.w3m-button-loading {
+  padding: 0 15px;
+}
+
+svg {
+  width: 28px;
+  height: 20px;
+  margin: -1px 3px 0 -5px;
+}
+
+w3m-spinner {
+  margin: 0 10px 0 0;
+}
