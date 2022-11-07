@@ -19,6 +19,9 @@
     "npm-publish:next": "lerna exec -- npm publish --no-private --access public --tag next",
     "npm-publish:canary": "lerna exec -- npm publish --no-private --access public --tag canary"
   },
+	"browserslist": [
+		"defaults"
+	],
   "workspaces": [
     "chains/ethereum",
     "packages/core",
