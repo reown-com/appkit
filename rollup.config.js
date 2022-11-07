@@ -27,10 +27,11 @@ export default function createConfig(packageName) {
       plugins: [
         minifyHtml.default(),
         esbuildPlugin,
-        scss({ output: false,
+        scss({
+          output: false,
           processor: () => postcss([autoprefixer()]),
           failOnError: true,
-          outputStyle: process.env.NODE_ENV === 'production'? 'compressed' : undefined
+          outputStyle: process.env.NODE_ENV === 'production' ? 'compressed' : undefined
         })
       ],
       output: [{ file: './dist/index.js', format: 'es', ...sharedOutput }]
