@@ -3,8 +3,6 @@ import { scss } from '../../style/utils'
 import { color } from '../../utils/Theme'
 import scssStyles from './styles.scss'
 
-console.log(scssStyles)
-
 // -- static styles ------------------------------------------------ //
 export default scss`
   ${scssStyles}

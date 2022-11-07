@@ -19,6 +19,5 @@
     "allowUnreachableCode": false,
     "experimentalDecorators": true
   },
-  "include": ["./packages/ui/scssDeclaration.d.ts"],
   "exclude": ["node_modules", "dist"]
 }
