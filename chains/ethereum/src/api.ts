@@ -41,9 +41,13 @@ import { getClient, initializeClient } from './utils/wagmiHelpers'
 export const Web3ModalEthereum = {
   // -- config ------------------------------------------------------- //
   createClient(projectId: string, options: EthereumOptions) {
-    initializeClient(projectId, options)
+    const { configChains, configProviders } = initializeClient(projectId, options)
 
-    return this
+    return {
+      client: this,
+      configChains,
+      configProviders
+    }
   },
 
   // -- chains ------------------------------------------------------- //

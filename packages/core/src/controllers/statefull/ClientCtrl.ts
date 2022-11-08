@@ -29,8 +29,12 @@ export const ClientCtrl = {
   async setEthereumClient(args: ClientCtrlSetEthereumClientArgs) {
     if (!state.initialized) {
       const { Web3ModalEthereum } = await import('@web3modal/ethereum')
-      state.ethereum = Web3ModalEthereum.createClient(ConfigCtrl.state.projectId, args)
-      OptionsCtrl.setChains(args.chains)
+      const { client, configChains } = Web3ModalEthereum.createClient(
+        ConfigCtrl.state.projectId,
+        args
+      )
+      state.ethereum = client
+      OptionsCtrl.setChains(configChains)
       state.initialized = true
     }
   }

@@ -26,4 +26,9 @@ export function initializeClient(projectId: string, options: EthereumOptions) {
   })
 
   client = wagmiClient
+
+  return {
+    configChains,
+    configProviders
+  }
 }
