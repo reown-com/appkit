@@ -10,7 +10,7 @@ import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { animate, spring } from 'motion'
-import { global } from '../../utils/Theme'
+import { global, color } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import {
   defaultWalletImages,
@@ -22,11 +22,13 @@ import {
 import '../w3m-modal-backcard'
 import '../w3m-modal-router'
 import '../w3m-modal-toast'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.scss'
+import { dynamicStyles } from './styles'
+import { scss } from '../../style/utils'
 
 @customElement('w3m-modal')
 export class W3mModal extends ThemedElement {
-  public static styles = [global, styles]
+  public static styles = [global, scss`${styles}`]
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false
@@ -51,6 +53,19 @@ export class W3mModal extends ThemedElement {
     super.disconnectedCallback()
     this.unsubscribeModal?.()
     this.unsubscribeConfig?.()
+  }
+
+  protected dynamicStyles() {
+    const { overlay, background, foreground } = color()
+
+    return html`<style>
+      .w3m-modal-card {
+        box-shadow: 0px 6px 14px -6px rgba(10, 16, 31, 0.12),
+          0px 10px 32px -4px rgba(10, 16, 31, 0.1), 0 0 0 1px ${overlay.thin};
+        background-color: ${background[1]};
+        color: ${foreground[1]};
+      }
+    </style>`
   }
 
   // -- private ------------------------------------------------------ //
@@ -147,7 +162,7 @@ export class W3mModal extends ThemedElement {
     }
 
     return html`
-      ${dynamicStyles()}
+      ${this.dynamicStyles()}
 
       <div
         class=${classMap(classes)}

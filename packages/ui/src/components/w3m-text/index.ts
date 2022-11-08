@@ -1,9 +1,10 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { global } from '../../utils/Theme'
+import { scss } from '../../style/utils'
+import { global, color } from '../../utils/Theme'
 import '../w3m-spinner'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.scss'
 
 type Variant =
   | 'large-bold'
@@ -21,12 +22,46 @@ type Color = 'accent' | 'error' | 'inverse' | 'primary' | 'secondary' | 'tertiar
 
 @customElement('w3m-text')
 export class W3mText extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [global, scss`${styles}`]
 
   // -- state & properties ------------------------------------------- //
   @property() public variant?: Variant = 'medium-normal'
   @property() public align?: Align = 'left'
   @property() public color?: Color = 'primary'
+
+  protected dynamicStyles() {
+    const { foreground, error } = color()
+
+    return html`<style>
+      :host(*) {
+        color: ${foreground[1]};
+      }
+
+      .w3m-color-primary {
+        color: ${foreground[1]};
+      }
+
+      .w3m-color-secondary {
+        color: ${foreground[2]};
+      }
+
+      .w3m-color-tertiary {
+        color: ${foreground[3]};
+      }
+
+      .w3m-color-inverse {
+        color: ${foreground.inverse};
+      }
+
+      .w3m-color-accnt {
+        color: ${foreground.accent};
+      }
+
+      .w3m-color-error {
+        color: ${error};
+      }
+    </style>`
+  }
 
   // -- render ------------------------------------------------------- //
   protected render() {
@@ -52,7 +87,7 @@ export class W3mText extends LitElement {
     }
 
     return html`
-      ${dynamicStyles()}
+      ${this.dynamicStyles()}
 
       <span class=${classMap(classes)}>
         <slot></slot>

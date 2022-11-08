@@ -1,20 +1,35 @@
 import { ConfigCtrl } from '@web3modal/core'
 import { html, LitElement, svg } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { scss } from '../../style/utils'
 import { getDots } from '../../utils/QrCode'
 import { WALLET_CONNECT_ICON_COLORED } from '../../utils/Svgs'
-import { global } from '../../utils/Theme'
+import { global, color } from '../../utils/Theme'
 import '../w3m-wallet-image'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.scss'
 
 @customElement('w3m-qrcode')
 export default class W3mQrCode extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [global, scss`${styles}`]
 
   // -- state & properties ------------------------------------------- //
   @property() public uri = ''
   @property({ type: Number }) public size = 0
   @property() public logoSrc? = ''
+
+  protected dynamicStyles() {
+    const { overlay, foreground } = color()
+
+    return html`<style>
+      .w3m-qrcode-container svg:first-child path:first-child {
+        fill: ${foreground.accent};
+      }
+
+      .w3m-qrcode-container svg:first-child path:last-child {
+        stroke: ${overlay.thin};
+      }
+    </style>`
+  }
 
   // -- private ------------------------------------------------------ //
   private svgTemplate() {
@@ -30,7 +45,7 @@ export default class W3mQrCode extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      ${dynamicStyles()}
+      ${this.dynamicStyles()}
       <div class="w3m-qrcode-container">
         ${this.logoSrc
           ? html`<w3m-wallet-image src=${this.logoSrc}></w3m-wallet-image>`

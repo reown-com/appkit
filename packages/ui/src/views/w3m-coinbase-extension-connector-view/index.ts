@@ -9,13 +9,14 @@ import '../../components/w3m-qrcode'
 import '../../components/w3m-spinner'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-image'
+import { scss } from '../../style/utils'
 import { RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
-import styles from './styles'
+import styles from './styles.scss'
 
 @customElement('w3m-coinbase-extension-connector-view')
 export class W3mCoinbaseExtensionConnectorView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [global, scss`${styles}`]
 
   // -- state & properties ------------------------------------------- //
   @state() private connecting = true

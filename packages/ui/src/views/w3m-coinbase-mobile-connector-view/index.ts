@@ -7,16 +7,17 @@ import '../../components/w3m-modal-footer'
 import '../../components/w3m-modal-header'
 import '../../components/w3m-qrcode'
 import '../../components/w3m-text'
+import { scss } from '../../style/utils'
 import { ARROW_DOWN_ICON, QRCODE_ICON } from '../../utils/Svgs'
-import { global } from '../../utils/Theme'
+import { global, color } from '../../utils/Theme'
 import { getErrorMessage, getWalletIcon } from '../../utils/UiHelpers'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.scss'
 
 const HORIZONTAL_PADDING = 36
 
 @customElement('w3m-coinbase-mobile-connector-view')
 export class W3mCoinbaseMobileConnectorView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [global, scss`${styles}`]
 
   // -- state & properties ------------------------------------------- //
   @state() private uri = ''
@@ -25,6 +26,16 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
   public constructor() {
     super()
     this.getConnectionUri()
+  }
+
+  protected dynamicStyles() {
+    const { foreground } = color()
+
+    return html`<style>
+      .w3m-title path {
+        fill: ${foreground[1]};
+      }
+    </style>`
   }
 
   // -- private ------------------------------------------------------ //
@@ -51,7 +62,7 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
     const name = 'Coinbase Wallet'
 
     return html`
-      ${dynamicStyles()}
+      ${this.dynamicStyles()}
 
       <w3m-modal-header title=${name}></w3m-modal-header>
       <w3m-modal-content>

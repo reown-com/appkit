@@ -4,6 +4,7 @@ import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
 import '../../partials/w3m-walletconnect-qr'
+import { scss } from '../../style/utils'
 import { global } from '../../utils/Theme'
 import { getShadowRootElement } from '../../utils/UiHelpers'
 import '../../views/w3m-coinbase-extension-connector-view'
@@ -17,11 +18,11 @@ import '../../views/w3m-metamask-connector-view'
 import '../../views/w3m-qrcode-view'
 import '../../views/w3m-select-network-view'
 import '../../views/w3m-wallet-explorer-view'
-import styles from './styles'
+import styles from './styles.scss'
 
 @customElement('w3m-modal-router')
 export class W3mModalRouter extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [global, scss`${styles}`]
 
   // -- state & properties ------------------------------------------- //
   @state() public view: RouterView = RouterCtrl.state.view

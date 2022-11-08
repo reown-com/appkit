@@ -1,11 +1,12 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { scss } from '../../style/utils'
 import { color } from '../../utils/Theme'
-import styles from './styles'
+import styles from './styles.scss'
 
 @customElement('w3m-spinner')
 export class W3mSpinner extends LitElement {
-  public static styles = styles
+  public static styles = scss`${styles}`
 
   // -- state & properties ------------------------------------------- //
   @property({ type: Number }) public size?: number = 24

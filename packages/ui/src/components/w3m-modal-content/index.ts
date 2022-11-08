@@ -1,11 +1,12 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import { scss } from '../../style/utils'
 import { global } from '../../utils/Theme'
-import styles from './styles'
+import styles from './styles.scss'
 
 @customElement('w3m-modal-content')
 export class W3mModalContent extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [global, scss`${styles}`]
 
   // -- render ------------------------------------------------------- //
   protected render() {

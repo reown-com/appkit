@@ -5,14 +5,15 @@ import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-header'
 import '../../components/w3m-view-all-wallets-button'
 import '../../components/w3m-wallet-button'
+import { scss } from '../../style/utils'
 import { QRCODE_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { handleMobileLinking } from '../../utils/UiHelpers'
-import styles from './styles'
+import styles from './styles.scss'
 
 @customElement('w3m-mobile-wallet-selection')
 export class W3mMobileWalletSelection extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [global, scss`${styles}`]
 
   // -- private ------------------------------------------------------ //
   private async onCoinbaseWallet() {

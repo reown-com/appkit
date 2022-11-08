@@ -8,19 +8,35 @@ import '../../components/w3m-text'
 import '../../components/w3m-view-all-wallets-button'
 import '../../components/w3m-wallet-button'
 import '../../partials/w3m-walletconnect-qr'
+import { scss } from '../../style/utils'
 import { COPY_ICON, DESKTOP_ICON, MOBILE_ICON, SCAN_ICON } from '../../utils/Svgs'
-import { global } from '../../utils/Theme'
+import { global, color } from '../../utils/Theme'
 import { handleUriCopy } from '../../utils/UiHelpers'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.scss'
 
 @customElement('w3m-desktop-wallet-selection')
 export class W3mDesktopWalletSelection extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [global, scss`${styles}`]
 
   // -- private ------------------------------------------------------ //
   private onCoinbaseWallet() {
     if (CoreHelpers.isCoinbaseExtension()) RouterCtrl.push('CoinbaseExtensionConnector')
     else RouterCtrl.push('CoinbaseMobileConnector')
+  }
+
+  private dynamicStyles() {
+    const { foreground } = color()
+
+    return html`<style>
+      .w3m-mobile-title path,
+      .w3m-desktop-title path {
+        fill: ${foreground.accent};
+      }
+
+      .w3m-subtitle:last-child path {
+        fill: ${foreground[3]};
+      }
+    </style>`
   }
 
   private onDesktopWallet(name: string, deeplink?: string, universal?: string, icon?: string) {
@@ -67,7 +83,7 @@ export class W3mDesktopWalletSelection extends LitElement {
     const previewChunk = isViewAll ? previewWallets.slice(0, 3) : previewWallets
 
     return html`
-      ${dynamicStyles()}
+      ${this.dynamicStyles()}
 
       <w3m-modal-header
         title="Connect your wallet"

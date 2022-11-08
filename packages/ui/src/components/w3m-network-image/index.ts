@@ -1,22 +1,33 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/w3m-text'
+import { scss } from '../../style/utils'
 import { NETWORK_POLYGON } from '../../utils/Svgs'
-import { global } from '../../utils/Theme'
-import styles, { dynamicStyles } from './styles'
+import { global, color } from '../../utils/Theme'
+import styles from './styles.scss'
 
 @customElement('w3m-network-image')
 export class W3mNetworkImage extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [global, scss`${styles}`]
 
   // -- state & properties ------------------------------------------- //
   @property() public name = ''
   @property() public src = ''
 
+  protected dynamicStyles() {
+    const { overlay } = color()
+
+    return html` <style>
+      .network-polygon-stroke {
+        stroke: ${overlay.thin};
+      }
+    </style>`
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      ${dynamicStyles()}
+      ${this.dynamicStyles()}
 
       <div class="w3m-network-image">
         <img src=${this.src} alt=${this.name} />

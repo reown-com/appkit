@@ -5,6 +5,7 @@ import '../../components/w3m-button'
 import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-footer'
 import '../../components/w3m-modal-header'
+import { scss } from '../../style/utils'
 import {
   ARROW_UP_RIGHT_ICON,
   HELP_CHART_IMG,
@@ -18,12 +19,12 @@ import {
   HELP_USER_IMG,
   WALLET_ICON
 } from '../../utils/Svgs'
-import { global } from '../../utils/Theme'
-import styles, { dynamicStyles } from './styles'
+import { global, color } from '../../utils/Theme'
+import styles from './styles.scss'
 
 @customElement('w3m-help-view')
 export class W3mHelpView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [global, scss`${styles}`]
 
   // -- private ------------------------------------------------------ //
   private readonly learnUrl = 'https://ethereum.org/en/wallets/'
@@ -36,10 +37,20 @@ export class W3mHelpView extends LitElement {
     CoreHelpers.openHref(this.learnUrl, '_blank')
   }
 
+  protected dynamicStyles() {
+    const { overlay } = color()
+
+    return html`<style>
+      .help-img-highlight {
+        stroke: ${overlay.thin};
+      }
+    </style>`
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      ${dynamicStyles()}
+      ${this.dynamicStyles()}
 
       <w3m-modal-header title="What is a wallet?"></w3m-modal-header>
       <w3m-modal-content>

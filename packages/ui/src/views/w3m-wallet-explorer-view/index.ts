@@ -9,7 +9,8 @@ import '../../components/w3m-search-input'
 import '../../components/w3m-spinner'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-button'
-import { global } from '../../utils/Theme'
+import { scss } from '../../style/utils'
+import { global, color } from '../../utils/Theme'
 import {
   debounce,
   getErrorMessage,
@@ -17,13 +18,13 @@ import {
   handleMobileLinking,
   preloadImage
 } from '../../utils/UiHelpers'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.scss'
 
 const PAGE_ENTRIES = 40
 
 @customElement('w3m-wallet-explorer-view')
 export class W3mWalletExplorerView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [global, scss`${styles}`]
 
   // -- state & properties ------------------------------------------- //
   @state() private loading = !ExplorerCtrl.state.wallets.listings.length
@@ -38,6 +39,40 @@ export class W3mWalletExplorerView extends LitElement {
 
   public disconnectedCallback() {
     this.intersectionObserver?.disconnect()
+  }
+
+  protected dynamicStyles() {
+    const { background, foreground } = color()
+
+    return html`
+      <style>
+        w3m-modal-content::before {
+          box-shadow: 0 -1px 0 0 ${background[1]};
+          background: linear-gradient(${background[1]}, transparent);
+        }
+
+        .w3m-explorer-search {
+          background: ${background[2]};
+        }
+
+        .w3m-explorer-search:active,
+        .w3m-explorer-search:focus-within {
+          border: solid 1px ${foreground.accent};
+          background: ${background[1]};
+        }
+
+        .w3m-explorer-search svg {
+          height: 20px;
+          width: 20px;
+        }
+
+        w3m-modal-content::after {
+          box-shadow: 0 1px 0 0 ${background[1]};
+          background: linear-gradient(transparent, ${background[1]});
+          top: calc(100% - 18px);
+        }
+      </style>
+    `
   }
 
   // -- private ------------------------------------------------------ //
@@ -131,7 +166,7 @@ export class W3mWalletExplorerView extends LitElement {
     }
 
     return html`
-      ${dynamicStyles()}
+      ${this.dynamicStyles()}
 
       <w3m-modal-header>
         <w3m-search-input .onChange=${this.onSearchChange.bind(this)}></w3m-search-input>

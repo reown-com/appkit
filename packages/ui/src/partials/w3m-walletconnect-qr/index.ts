@@ -2,13 +2,14 @@ import { ClientCtrl, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-qrcode'
+import { scss } from '../../style/utils'
 import { global } from '../../utils/Theme'
 import { getErrorMessage, getShadowRootElement } from '../../utils/UiHelpers'
-import styles from './styles'
+import styles from './styles.scss'
 
 @customElement('w3m-walletconnect-qr')
 export class W3mWalletConnectQr extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [global, scss`${styles}`]
 
   // -- state & properties ------------------------------------------- //
   @state() private uri = ''

@@ -9,14 +9,15 @@ import '../../components/w3m-qrcode'
 import '../../components/w3m-spinner'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-image'
+import { scss } from '../../style/utils'
 import { RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
 import { getOptimisticName } from '../../utils/UiHelpers'
-import styles from './styles'
+import styles from './styles.scss'
 
 @customElement('w3m-injected-connector-view')
 export class W3mInjectedConnectorView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [global, scss`${styles}`]
 
   // -- state & properties ------------------------------------------- //
   @state() private connecting = true

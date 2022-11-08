@@ -1,16 +1,27 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { global } from '../../utils/Theme'
-import styles, { dynamicStyles } from './styles'
+import { scss } from '../../style/utils'
+import { global, color } from '../../utils/Theme'
+import styles from './styles.scss'
 
 @customElement('w3m-modal-footer')
 export class W3mModalFooter extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [global, scss`${styles}`]
+
+  protected dynamicStyles() {
+    const { background } = color()
+
+    return html`<style>
+      .w3m-modal-footer {
+        border-top: 1px solid ${background[2]};
+      }
+    </style>`
+  }
 
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      ${dynamicStyles()}
+      ${this.dynamicStyles()}
 
       <div class="w3m-modal-footer">
         <slot></slot>
