@@ -86,28 +86,6 @@ export const Web3ModalEthereum = {
     return data
   },
 
-  async connectLinking(onUri: (uri: string) => void, selectedChainId?: number) {
-    const connector = this.getConnectorById('walletConnect')
-    const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
-
-    async function getProviderUri() {
-      return new Promise<void>(resolve => {
-        connector.once('message', async ({ type }) => {
-          if (type === 'connecting') {
-            const provider = await connector.getProvider()
-            const wcUri: string = provider.connector.uri
-            onUri(encodeURIComponent(wcUri))
-            resolve()
-          }
-        })
-      })
-    }
-
-    const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
-
-    return data
-  },
-
   async connectCoinbaseMobile(onUri?: (uri: string) => void, selectedChainId?: number) {
     const connector = this.getConnectorById('coinbaseWallet')
     const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)

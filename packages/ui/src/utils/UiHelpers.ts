@@ -235,7 +235,7 @@ export async function handleMobileLinking(
     if (connector.ready && isNameSimilar)
       await ClientCtrl.ethereum().connectInjected(selectedChainId)
     else
-      await ClientCtrl.ethereum().connectLinking(uri => {
+      await ClientCtrl.ethereum().connectWalletConnect(uri => {
         onRedirect(uri)
       }, selectedChainId)
     ModalCtrl.close()

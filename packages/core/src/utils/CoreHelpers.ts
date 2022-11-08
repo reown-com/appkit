@@ -20,17 +20,19 @@ export const CoreHelpers = {
     )
   },
 
-  formatNativeUrl(appUrl: string, encodedWcUrl: string, name: string) {
+  formatNativeUrl(appUrl: string, wcUri: string, name: string) {
     const plainAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
     this.setWalletConnectDeepLink(plainAppUrl, name)
+    const encodedWcUrl = encodeURIComponent(wcUri)
 
     return `${plainAppUrl}://wc?uri=${encodedWcUrl}`
   },
 
-  formatUniversalUrl(appUrl: string, encodedWcUrl: string, name: string) {
+  formatUniversalUrl(appUrl: string, wcUri: string, name: string) {
     let plainAppUrl = appUrl
     if (appUrl.endsWith('/')) plainAppUrl = appUrl.slice(0, -1)
     this.setWalletConnectDeepLink(plainAppUrl, name)
+    const encodedWcUrl = encodeURIComponent(wcUri)
 
     return `${plainAppUrl}/wc?uri=${encodedWcUrl}`
   },
