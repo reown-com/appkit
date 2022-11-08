@@ -26,7 +26,7 @@ export default function createConfig(packageName) {
         minifyHtml.default(),
         esbuildPlugin,
         litcss({
-          include: ["*/**/*.css"],
+          include: ['*/**/*.css'],
           uglify: true
         })
       ],

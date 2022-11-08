@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { global, color } from '../../utils/Theme'
+import { global } from '../../utils/Theme'
 import '../w3m-network-image'
 import '../w3m-text'
 import styles from './styles.css'

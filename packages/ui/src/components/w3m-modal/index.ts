@@ -10,7 +10,7 @@ import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { animate, spring } from 'motion'
-import { global, color } from '../../utils/Theme'
+import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import {
   defaultWalletImages,
@@ -51,12 +51,6 @@ export class W3mModal extends ThemedElement {
     super.disconnectedCallback()
     this.unsubscribeModal?.()
     this.unsubscribeConfig?.()
-  }
-
-  protected dynamicStyles() {
-    const { overlay, background, foreground } = color()
-
-    return html`<style></style>`
   }
 
   // -- private ------------------------------------------------------ //
@@ -153,8 +147,6 @@ export class W3mModal extends ThemedElement {
     }
 
     return html`
-      ${this.dynamicStyles()}
-
       <div
         class=${classMap(classes)}
         @click=${this.onCloseModal}

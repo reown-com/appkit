@@ -1,4 +1,3 @@
-import { ConfigCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { global } from '../../utils/Theme'
