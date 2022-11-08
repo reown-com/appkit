@@ -4,7 +4,7 @@ import { scss } from '../../style/utils'
 import { SEARCH_ICON } from '../../utils/Svgs'
 import { global, color } from '../../utils/Theme'
 import '../w3m-text'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-search-input')
 export class W3mSearchInput extends LitElement {

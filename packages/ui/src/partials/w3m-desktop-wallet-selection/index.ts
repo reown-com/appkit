@@ -12,7 +12,7 @@ import { scss } from '../../style/utils'
 import { COPY_ICON, DESKTOP_ICON, MOBILE_ICON, SCAN_ICON } from '../../utils/Svgs'
 import { global, color } from '../../utils/Theme'
 import { handleUriCopy } from '../../utils/UiHelpers'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-desktop-wallet-selection')
 export class W3mDesktopWalletSelection extends LitElement {

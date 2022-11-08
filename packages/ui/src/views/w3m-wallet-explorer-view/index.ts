@@ -18,7 +18,7 @@ import {
   handleMobileLinking,
   preloadImage
 } from '../../utils/UiHelpers'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 const PAGE_ENTRIES = 40
 

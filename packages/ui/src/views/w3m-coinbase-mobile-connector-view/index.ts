@@ -11,7 +11,7 @@ import { scss } from '../../style/utils'
 import { ARROW_DOWN_ICON, QRCODE_ICON } from '../../utils/Svgs'
 import { global, color } from '../../utils/Theme'
 import { getErrorMessage, getWalletIcon } from '../../utils/UiHelpers'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 const HORIZONTAL_PADDING = 36
 

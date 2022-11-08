@@ -8,7 +8,7 @@ import { scss } from '../../style/utils'
 import { WALLET_CONNECT_ICON } from '../../utils/Svgs'
 import { global, color } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-connect-button')
 export class W3mConnectButton extends ThemedElement {

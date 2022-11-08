@@ -7,7 +7,7 @@ import { CROSS_ICON, HELP_ICON, NOISE_TEXTURE, WALLET_CONNECT_LOGO } from '../..
 import { global, color } from '../../utils/Theme'
 import { getShadowRootElement } from '../../utils/UiHelpers'
 import Whatamesh from '../../utils/Whatamesh'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 const whatamesh = new Whatamesh()
 

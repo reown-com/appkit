@@ -1,8 +1,6 @@
 import esbuild from 'rollup-plugin-esbuild'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
-import scss from 'rollup-plugin-scss'
-import autoprefixer from 'autoprefixer'
-import postcss from 'postcss'
+import litcss from 'rollup-plugin-lit-css'
 
 export default function createConfig(packageName) {
   const sharedOutput = {
@@ -27,11 +25,9 @@ export default function createConfig(packageName) {
       plugins: [
         minifyHtml.default(),
         esbuildPlugin,
-        scss({
-          output: false,
-          processor: () => postcss([autoprefixer()]),
-          failOnError: true,
-          outputStyle: process.env.NODE_ENV === 'production' ? 'compressed' : undefined
+        litcss({
+          include: ["*/**/*.css"],
+          uglify: true
         })
       ],
       output: [{ file: './dist/index.js', format: 'es', ...sharedOutput }]

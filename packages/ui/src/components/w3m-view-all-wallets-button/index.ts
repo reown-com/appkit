@@ -4,7 +4,7 @@ import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-text'
 import { scss } from '../../style/utils'
 import { global, color } from '../../utils/Theme'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-view-all-wallets-button')
 export class W3mViewAllWalletsButton extends LitElement {

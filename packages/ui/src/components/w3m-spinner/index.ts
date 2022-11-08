@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { scss } from '../../style/utils'
 import { color } from '../../utils/Theme'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-spinner')
 export class W3mSpinner extends LitElement {

@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { scss } from '../../style/utils'
 import { global, color } from '../../utils/Theme'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-modal-footer')
 export class W3mModalFooter extends LitElement {

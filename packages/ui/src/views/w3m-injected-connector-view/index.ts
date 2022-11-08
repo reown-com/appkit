@@ -13,7 +13,7 @@ import { scss } from '../../style/utils'
 import { RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
 import { getOptimisticName } from '../../utils/UiHelpers'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-injected-connector-view')
 export class W3mInjectedConnectorView extends LitElement {

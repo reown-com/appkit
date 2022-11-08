@@ -4,7 +4,7 @@ import '../../components/w3m-text'
 import { scss } from '../../style/utils'
 import { NETWORK_POLYGON } from '../../utils/Svgs'
 import { global, color } from '../../utils/Theme'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-network-image')
 export class W3mNetworkImage extends LitElement {

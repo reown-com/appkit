@@ -6,7 +6,7 @@ import { global } from '../../utils/Theme'
 import { getWalletFirstName } from '../../utils/UiHelpers'
 import '../w3m-text'
 import '../w3m-wallet-image'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-wallet-button')
 export class W3mWalletButton extends LitElement {

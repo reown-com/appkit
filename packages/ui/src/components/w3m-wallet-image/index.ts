@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import { scss } from '../../style/utils'
 import { global, color } from '../../utils/Theme'
 import { getWalletIcon } from '../../utils/UiHelpers'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-wallet-image')
 export class W3mWalletImage extends LitElement {

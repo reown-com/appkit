@@ -5,7 +5,7 @@ import '../../components/w3m-text'
 import { scss } from '../../style/utils'
 import { global, color } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-account-button')
 export class W3mAccountButton extends ThemedElement {

@@ -6,7 +6,7 @@ import { scss } from '../../style/utils'
 import { CHECKMARK_ICON, CROSS_ICON } from '../../utils/Svgs'
 import { global, color } from '../../utils/Theme'
 import '../w3m-text'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-modal-toast')
 export class W3mModalToast extends LitElement {

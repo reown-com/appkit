@@ -4,7 +4,7 @@ import { scss } from '../../style/utils'
 import { global, color } from '../../utils/Theme'
 import '../w3m-network-image'
 import '../w3m-text'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-network-button')
 export class W3mNetworkButton extends LitElement {

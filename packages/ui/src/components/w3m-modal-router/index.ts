@@ -18,7 +18,7 @@ import '../../views/w3m-metamask-connector-view'
 import '../../views/w3m-qrcode-view'
 import '../../views/w3m-select-network-view'
 import '../../views/w3m-wallet-explorer-view'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-modal-router')
 export class W3mModalRouter extends LitElement {

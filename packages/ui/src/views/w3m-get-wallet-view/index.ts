@@ -10,7 +10,7 @@ import '../../components/w3m-wallet-image'
 import { scss } from '../../style/utils'
 import { ARROW_RIGHT_ICON, ARROW_UP_RIGHT_ICON } from '../../utils/Svgs'
 import { global, color } from '../../utils/Theme'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-get-wallet-view')
 export class W3mGetWalletView extends LitElement {

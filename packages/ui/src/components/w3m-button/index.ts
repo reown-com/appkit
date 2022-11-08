@@ -5,7 +5,7 @@ import { classMap } from 'lit/directives/class-map.js'
 import { getConditionalValue } from '../../utils/UiHelpers'
 import { global, color } from '../../utils/Theme'
 import '../w3m-text'
-import styles from './styles.scss'
+import styles from './styles.css'
 import { scss } from '../../style/utils'
 
 type Variant = 'fill' | 'ghost'

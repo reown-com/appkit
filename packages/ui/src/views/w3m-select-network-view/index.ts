@@ -7,7 +7,7 @@ import '../../components/w3m-network-button'
 import { scss } from '../../style/utils'
 import { global } from '../../utils/Theme'
 import { getChainIcon } from '../../utils/UiHelpers'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-select-network-view')
 export class W3mSelectNetworkView extends LitElement {

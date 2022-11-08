@@ -6,7 +6,7 @@ import { getDots } from '../../utils/QrCode'
 import { WALLET_CONNECT_ICON_COLORED } from '../../utils/Svgs'
 import { global, color } from '../../utils/Theme'
 import '../w3m-wallet-image'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-qrcode')
 export default class W3mQrCode extends LitElement {

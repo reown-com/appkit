@@ -12,7 +12,7 @@ import { scss } from '../../style/utils'
 import { ARROW_UP_RIGHT_ICON, MOBILE_ICON, RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
 import { getOptimisticName } from '../../utils/UiHelpers'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-desktop-connector-view')
 export class W3mDesktopConnectorView extends LitElement {

@@ -8,7 +8,7 @@ import { global, color } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import '../w3m-spinner'
 import '../w3m-text'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-modal-header')
 export class W3mModalHeader extends ThemedElement {

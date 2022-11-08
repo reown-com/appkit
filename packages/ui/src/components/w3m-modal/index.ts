@@ -22,7 +22,7 @@ import {
 import '../w3m-modal-backcard'
 import '../w3m-modal-router'
 import '../w3m-modal-toast'
-import styles from './styles.scss'
+import styles from './styles.css'
 import { scss } from '../../style/utils'
 
 @customElement('w3m-modal')

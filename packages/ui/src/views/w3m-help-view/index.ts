@@ -20,7 +20,7 @@ import {
   WALLET_ICON
 } from '../../utils/Svgs'
 import { global, color } from '../../utils/Theme'
-import styles from './styles.scss'
+import styles from './styles.css'
 
 @customElement('w3m-help-view')
 export class W3mHelpView extends LitElement {
