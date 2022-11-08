@@ -16,11 +16,12 @@ export const ModalCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  open(wcUri?: string) {
+  open(options?: { uri: string; standaloneChains?: string[] }) {
     const { chains } = OptionsCtrl.state
     if (chains?.length ? chains.length > 1 : false) RouterCtrl.replace('SelectNetwork')
     else RouterCtrl.replace('ConnectWallet')
-    OptionsCtrl.setStandaloneUri(wcUri)
+    if (typeof options?.uri === 'string') OptionsCtrl.setStandaloneUri(options.uri)
+    if (options?.standaloneChains?.length) OptionsCtrl.setStandaloneChains(options.standaloneChains)
     state.open = true
   },
 

@@ -25,8 +25,7 @@ async function configureSignClient() {
 ConfigCtrl.setConfig({
   projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
   theme: 'light' as const,
-  accentColor: 'orange' as const,
-  standaloneChains: namespaces.eip155.chains
+  accentColor: 'orange' as const
 })
 
 // 4. Manage manual connection
@@ -37,7 +36,7 @@ export default function HomePage() {
     if (signClient) {
       const { uri, approval } = await signClient.connect({ requiredNamespaces: namespaces })
       if (uri) {
-        ModalCtrl.open(uri)
+        ModalCtrl.open({ uri, standaloneChains: namespaces.eip155.chains })
         await approval()
         ModalCtrl.close()
       }

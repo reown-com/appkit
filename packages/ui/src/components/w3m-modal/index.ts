@@ -76,9 +76,10 @@ export class W3mModal extends ThemedElement {
   }
 
   private async preloadData() {
-    try {
-      if (this.preload) {
-        const chainsFilter = OptionsCtrl.state.standaloneChains?.join(',')
+    const { standaloneChains, chains } = OptionsCtrl.state
+    if (this.preload && (standaloneChains?.length || chains?.length))
+      try {
+        const chainsFilter = standaloneChains?.join(',')
         await Promise.all([
           ExplorerCtrl.getPreviewWallets({
             page: 1,
@@ -93,22 +94,21 @@ export class W3mModal extends ThemedElement {
           ...ExplorerCtrl.state.recomendedWallets
         ].map(({ image_url }) => image_url.lg)
         const defaultWalletImgs = defaultWalletImages()
-        const { chains } = OptionsCtrl.state
         const chainsImgs = chains?.map(chain => getChainIcon(chain.id)) ?? []
         await Promise.all([
           ...walletImgs.map(async url => preloadImage(url)),
           ...defaultWalletImgs.map(async url => preloadImage(url)),
           ...chainsImgs.map(async url => preloadImage(url))
         ])
+      } catch {
+        ToastCtrl.openToast('Failed preloading', 'error')
+      } finally {
+        this.preload = false
       }
-    } catch {
-      ToastCtrl.openToast('Failed preloading', 'error')
-    } finally {
-      this.preload = false
-    }
   }
 
-  private onOpenModalEvent() {
+  private async onOpenModalEvent() {
+    await this.preloadData()
     this.toggleBodyScroll(false)
     const delay = 0.3
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay })
