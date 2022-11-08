@@ -17,7 +17,7 @@ import styles from './styles.css'
 
 @customElement('w3m-injected-connector-view')
 export class W3mInjectedConnectorView extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private connecting = true

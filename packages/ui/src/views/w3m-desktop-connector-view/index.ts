@@ -16,7 +16,7 @@ import styles from './styles.css'
 
 @customElement('w3m-desktop-connector-view')
 export class W3mDesktopConnectorView extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {

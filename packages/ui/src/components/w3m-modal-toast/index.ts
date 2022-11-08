@@ -10,7 +10,7 @@ import styles from './styles.css'
 
 @customElement('w3m-modal-toast')
 export class W3mModalToast extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() public open = false

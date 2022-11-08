@@ -16,7 +16,7 @@ import styles from './styles.css'
 
 @customElement('w3m-desktop-wallet-selection')
 export class W3mDesktopWalletSelection extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- private ------------------------------------------------------ //
   private onCoinbaseWallet() {

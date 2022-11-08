@@ -6,7 +6,7 @@ import styles from './styles.css'
 
 @customElement('w3m-modal-content')
 export class W3mModalContent extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- render ------------------------------------------------------- //
   protected render() {

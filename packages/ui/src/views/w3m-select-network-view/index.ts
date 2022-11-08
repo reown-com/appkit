@@ -11,7 +11,7 @@ import styles from './styles.css'
 
 @customElement('w3m-select-network-view')
 export class W3mSelectNetworkView extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- private ------------------------------------------------------ //
   private onSelectChain(chainId: number) {

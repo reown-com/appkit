@@ -22,7 +22,7 @@ import styles from './styles.css'
 
 @customElement('w3m-modal-router')
 export class W3mModalRouter extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() public view: RouterView = RouterCtrl.state.view

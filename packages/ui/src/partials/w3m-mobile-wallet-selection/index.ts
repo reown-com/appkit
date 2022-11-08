@@ -13,7 +13,7 @@ import styles from './styles.css'
 
 @customElement('w3m-mobile-wallet-selection')
 export class W3mMobileWalletSelection extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- private ------------------------------------------------------ //
   private async onCoinbaseWallet() {

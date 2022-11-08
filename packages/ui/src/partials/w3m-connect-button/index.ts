@@ -12,7 +12,7 @@ import styles from './styles.css'
 
 @customElement('w3m-connect-button')
 export class W3mConnectButton extends ThemedElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() public loading = false

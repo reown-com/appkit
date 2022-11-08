@@ -8,7 +8,7 @@ import styles from './styles.css'
 
 @customElement('w3m-view-all-wallets-button')
 export class W3mViewAllWalletsButton extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- render ------------------------------------------------------- //
   private onClick() {

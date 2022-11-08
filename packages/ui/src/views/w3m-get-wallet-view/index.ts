@@ -14,7 +14,7 @@ import styles from './styles.css'
 
 @customElement('w3m-get-wallet-view')
 export class W3mGetWalletView extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- private ------------------------------------------------------ //
   private readonly explorerUrl = 'https://explorer.walletconnect.com/'

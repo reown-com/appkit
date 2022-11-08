@@ -24,7 +24,7 @@ const PAGE_ENTRIES = 40
 
 @customElement('w3m-wallet-explorer-view')
 export class W3mWalletExplorerView extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private loading = !ExplorerCtrl.state.wallets.listings.length

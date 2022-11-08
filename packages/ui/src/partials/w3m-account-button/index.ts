@@ -9,7 +9,7 @@ import styles from './styles.css'
 
 @customElement('w3m-account-button')
 export class W3mAccountButton extends ThemedElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   protected dynamicStyles() {
     const { foreground, background, overlay } = color()

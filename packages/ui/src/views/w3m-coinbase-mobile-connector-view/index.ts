@@ -17,7 +17,7 @@ const HORIZONTAL_PADDING = 36
 
 @customElement('w3m-coinbase-mobile-connector-view')
 export class W3mCoinbaseMobileConnectorView extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private uri = ''

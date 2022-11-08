@@ -24,7 +24,7 @@ import styles from './styles.css'
 
 @customElement('w3m-help-view')
 export class W3mHelpView extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- private ------------------------------------------------------ //
   private readonly learnUrl = 'https://ethereum.org/en/wallets/'

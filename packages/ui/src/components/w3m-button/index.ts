@@ -12,7 +12,7 @@ type Variant = 'fill' | 'ghost'
 
 @customElement('w3m-button')
 export class W3mButton extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public variant?: Variant = 'fill'

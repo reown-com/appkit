@@ -9,7 +9,7 @@ import styles from './styles.css'
 
 @customElement('w3m-walletconnect-qr')
 export class W3mWalletConnectQr extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private uri = ''

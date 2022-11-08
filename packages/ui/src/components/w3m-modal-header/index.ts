@@ -12,7 +12,7 @@ import styles from './styles.css'
 
 @customElement('w3m-modal-header')
 export class W3mModalHeader extends ThemedElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   protected dynamicStyles() {
     const { foreground, background } = color()

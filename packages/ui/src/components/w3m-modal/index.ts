@@ -27,7 +27,7 @@ import { scss } from '../../style/utils'
 
 @customElement('w3m-modal')
 export class W3mModal extends ThemedElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false

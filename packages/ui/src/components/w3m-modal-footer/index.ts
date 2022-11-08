@@ -6,7 +6,7 @@ import styles from './styles.css'
 
 @customElement('w3m-modal-footer')
 export class W3mModalFooter extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   protected dynamicStyles() {
     const { background } = color()

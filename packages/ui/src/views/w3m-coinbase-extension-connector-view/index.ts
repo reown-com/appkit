@@ -16,7 +16,7 @@ import styles from './styles.css'
 
 @customElement('w3m-coinbase-extension-connector-view')
 export class W3mCoinbaseExtensionConnectorView extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private connecting = true

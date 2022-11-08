@@ -13,7 +13,7 @@ const whatamesh = new Whatamesh()
 
 @customElement('w3m-modal-backcard')
 export class W3mModalBackcard extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false

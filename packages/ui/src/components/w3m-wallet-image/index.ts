@@ -7,7 +7,7 @@ import styles from './styles.css'
 
 @customElement('w3m-wallet-image')
 export class W3mWalletImage extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public name = ''

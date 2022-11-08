@@ -10,7 +10,7 @@ import styles from './styles.css'
 
 @customElement('w3m-wallet-button')
 export class W3mWalletButton extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public onClick: () => void = () => null

@@ -8,7 +8,7 @@ import styles from './styles.css'
 
 @customElement('w3m-search-input')
 export class W3mSearchInput extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   @property() public onChange = () => null
 

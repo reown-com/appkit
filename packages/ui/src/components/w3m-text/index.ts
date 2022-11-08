@@ -22,7 +22,7 @@ type Color = 'accent' | 'error' | 'inverse' | 'primary' | 'secondary' | 'tertiar
 
 @customElement('w3m-text')
 export class W3mText extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public variant?: Variant = 'medium-normal'

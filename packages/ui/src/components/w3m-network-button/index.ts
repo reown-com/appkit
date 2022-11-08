@@ -8,7 +8,7 @@ import styles from './styles.css'
 
 @customElement('w3m-network-button')
 export class W3mNetworkButton extends LitElement {
-  public static styles = [global, scss`${styles}`]
+  public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public onClick: () => void = () => null
