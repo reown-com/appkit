@@ -1,3 +1,4 @@
+import { ConfigCtrl } from '@web3modal/core'
 import { useAccount, useConnectModal, Web3Button } from '@web3modal/react'
 import UseAccount from '../sections/UseAccount'
 import UseBalance from '../sections/UseBalance'
@@ -22,12 +23,32 @@ import UseSwitchNetwork from '../sections/UseSwitchNetwork'
 import UseToken from '../sections/UseToken'
 import UseTransaction from '../sections/UseTransaction'
 
+function pickRandomColor() {
+  const colors: typeof ConfigCtrl.state.accentColor[] = [
+    'default',
+    'blackWhite',
+    'teal',
+    'purple',
+    'orange',
+    'green',
+    'blue',
+    'magenta'
+  ]
+
+  const colorIdx = Math.floor(Math.random() * (colors.length - 1))
+
+  ConfigCtrl.state.accentColor = colors[colorIdx]
+}
+
 export default function HomePage() {
   const { account } = useAccount()
   const { open } = useConnectModal()
 
   return (
     <>
+      <button style={{ marginBottom: '3em' }} onClick={pickRandomColor}>
+        Change theme
+      </button>
       <Web3Button />
       <p>or</p>
       <button onClick={() => open()}>Custom Button</button>
