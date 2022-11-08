@@ -23,7 +23,6 @@ import '../w3m-modal-backcard'
 import '../w3m-modal-router'
 import '../w3m-modal-toast'
 import styles from './styles.scss'
-import { dynamicStyles } from './styles'
 import { scss } from '../../style/utils'
 
 @customElement('w3m-modal')

@@ -2,6 +2,7 @@ import { ModalCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
+import { scss } from '../../style/utils'
 import { CROSS_ICON, HELP_ICON, NOISE_TEXTURE, WALLET_CONNECT_LOGO } from '../../utils/Svgs'
 import { global, color } from '../../utils/Theme'
 import { getShadowRootElement } from '../../utils/UiHelpers'
@@ -12,7 +13,7 @@ const whatamesh = new Whatamesh()
 
 @customElement('w3m-modal-backcard')
 export class W3mModalBackcard extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [global, scss`${styles}`]
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false
