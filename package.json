@@ -29,15 +29,15 @@
     "examples/html"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "5.42.0",
-    "@typescript-eslint/parser": "5.42.0",
+    "@typescript-eslint/eslint-plugin": "5.42.1",
+    "@typescript-eslint/parser": "5.42.1",
     "esbuild": "0.15.13",
-    "eslint": "8.26.0",
+    "eslint": "8.27.0",
     "eslint-config-prettier": "8.5.0",
-    "lerna": "6.0.1",
+    "lerna": "6.0.3",
     "prettier": "2.7.1",
     "rollup": "3.2.5",
-    "rollup-plugin-esbuild": "4.10.1",
+    "rollup-plugin-esbuild": "4.10.2",
     "rollup-plugin-minify-html-literals": "1.2.6",
     "typescript": "4.8.4"
   }

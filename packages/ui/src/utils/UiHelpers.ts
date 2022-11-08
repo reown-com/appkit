@@ -249,5 +249,5 @@ export async function handleUriCopy() {
     const uri = await ClientCtrl.ethereum().getActiveWalletConnectUri()
     await navigator.clipboard.writeText(uri)
   }
-  ToastCtrl.openToast('WalletConnect link copied', 'success')
+  ToastCtrl.openToast('Link copied', 'success')
 }

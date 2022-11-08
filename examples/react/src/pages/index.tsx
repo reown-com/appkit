@@ -1,4 +1,4 @@
-import { useAccount, Web3Button } from '@web3modal/react'
+import { useAccount, useConnectModal, Web3Button } from '@web3modal/react'
 import UseAccount from '../sections/UseAccount'
 import UseBalance from '../sections/UseBalance'
 import UseBlockNumber from '../sections/UseBlockNumber'
@@ -24,10 +24,13 @@ import UseTransaction from '../sections/UseTransaction'
 
 export default function HomePage() {
   const { account } = useAccount()
+  const { open } = useConnectModal()
 
   return (
     <>
       <Web3Button />
+      <p>or</p>
+      <button onClick={() => open()}>Custom Button</button>
       {account.isConnected && (
         <>
           <UseAccount />
