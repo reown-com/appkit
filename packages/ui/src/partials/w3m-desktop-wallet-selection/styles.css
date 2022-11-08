@@ -24,3 +24,11 @@
 .w3m-desktop-title svg {
   margin-right: 6px;
 }
+.w3m-mobile-title path,
+.w3m-desktop-title path {
+  fill: var(--foreground__accent);
+}
+
+.w3m-subtitle:last-child path {
+  fill: var(--foreground__3);
+}

@@ -3,10 +3,9 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { getConditionalValue } from '../../utils/UiHelpers'
-import { global, color } from '../../utils/Theme'
+import { global } from '../../utils/Theme'
 import '../w3m-text'
 import styles from './styles.css'
-import { scss } from '../../style/utils'
 
 type Variant = 'fill' | 'ghost'
 
@@ -20,40 +19,6 @@ export class W3mButton extends LitElement {
   @property() public iconLeft?: TemplateResult<2> = undefined
   @property() public iconRight?: TemplateResult<2> = undefined
   @property() public onClick: () => void = () => null
-
-  protected dynamicStyles() {
-    const { foreground, background, overlay } = color()
-
-    return html`<style>
-      .w3m-button-fill {
-        background-color: ${foreground.accent};
-      }
-
-      .w3m-button-ghost {
-        background-color: ${background.accent};
-      }
-
-      .w3m-button::after {
-        border: 1px solid ${overlay.thin};
-      }
-
-      .w3m-button:hover::after {
-        background-color: ${overlay.thin};
-      }
-
-      .w3m-button:disabled {
-        background-color: ${background[3]};
-      }
-
-      .w3m-button-fill path {
-        fill: ${foreground.inverse};
-      }
-
-      .w3m-button-ghost path {
-        fill: ${foreground.accent};
-      }
-    </style>`
-  }
 
   // -- render ------------------------------------------------------- //
   protected render() {
@@ -71,8 +36,6 @@ export class W3mButton extends LitElement {
     )
 
     return html`
-      ${this.dynamicStyles()}
-
       <button class=${classMap(classes)} ?disabled=${this.disabled} @click=${this.onClick}>
         ${this.iconLeft}
         <w3m-text variant="small-normal" color=${textColor}>

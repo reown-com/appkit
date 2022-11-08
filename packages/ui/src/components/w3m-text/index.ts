@@ -1,8 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { scss } from '../../style/utils'
-import { global, color } from '../../utils/Theme'
+import { global } from '../../utils/Theme'
 import '../w3m-spinner'
 import styles from './styles.css'
 
@@ -30,37 +29,7 @@ export class W3mText extends LitElement {
   @property() public color?: Color = 'primary'
 
   protected dynamicStyles() {
-    const { foreground, error } = color()
-
-    return html`<style>
-      :host(*) {
-        color: ${foreground[1]};
-      }
-
-      .w3m-color-primary {
-        color: ${foreground[1]};
-      }
-
-      .w3m-color-secondary {
-        color: ${foreground[2]};
-      }
-
-      .w3m-color-tertiary {
-        color: ${foreground[3]};
-      }
-
-      .w3m-color-inverse {
-        color: ${foreground.inverse};
-      }
-
-      .w3m-color-accnt {
-        color: ${foreground.accent};
-      }
-
-      .w3m-color-error {
-        color: ${error};
-      }
-    </style>`
+    return html`<style></style>`
   }
 
   // -- render ------------------------------------------------------- //

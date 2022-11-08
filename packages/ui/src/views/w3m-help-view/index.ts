@@ -5,7 +5,6 @@ import '../../components/w3m-button'
 import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-footer'
 import '../../components/w3m-modal-header'
-import { scss } from '../../style/utils'
 import {
   ARROW_UP_RIGHT_ICON,
   HELP_CHART_IMG,
@@ -19,7 +18,7 @@ import {
   HELP_USER_IMG,
   WALLET_ICON
 } from '../../utils/Svgs'
-import { global, color } from '../../utils/Theme'
+import { global } from '../../utils/Theme'
 import styles from './styles.css'
 
 @customElement('w3m-help-view')
@@ -38,13 +37,7 @@ export class W3mHelpView extends LitElement {
   }
 
   protected dynamicStyles() {
-    const { overlay } = color()
-
-    return html`<style>
-      .help-img-highlight {
-        stroke: ${overlay.thin};
-      }
-    </style>`
+    return html`<style></style>`
   }
 
   // -- render ------------------------------------------------------- //

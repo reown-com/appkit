@@ -50,3 +50,21 @@ input:focus-within + .w3m-placeholder w3m-text,
 input:not(:placeholder-shown) + .w3m-placeholder w3m-text {
   opacity: 0;
 }
+
+input {
+  background-color: var(--background__3);
+  box-shadow: inset 0 0 0 1px var(--overlay__thin);
+}
+
+input:focus-within,
+input:not(:placeholder-shown) {
+  color: var(--foreground__1);
+}
+
+input:focus-within {
+  box-shadow: inset 0 0 0 1px var(--foreground__accent);
+}
+
+path {
+  fill: var(--foreground__2);
+}

@@ -224,3 +224,30 @@ export const global = css`
     background: ${unsafeCSS(color().foreground.accent)};
   }
 `
+
+function setColors() {
+  const root: HTMLElement | null = document.querySelector(':root')
+  if (!root) return
+  root.style.setProperty('--background__1', color().background[1])
+  root.style.setProperty('--background__2', color().background[2])
+  root.style.setProperty('--background__3', color().background[3])
+  root.style.setProperty('--background__accent', color().background.accent)
+  root.style.setProperty('--foreground__1', color().foreground[1])
+  root.style.setProperty('--foreground__2', color().foreground[2])
+  root.style.setProperty('--foreground__3', color().foreground[3])
+  root.style.setProperty('--foreground__accent', color().foreground.accent)
+  root.style.setProperty('--foreground__inverse', color().foreground.inverse)
+  root.style.setProperty('--overlay__thin', color().overlay.thin)
+  root.style.setProperty('--overlay__thick', color().overlay.thick)
+  root.style.setProperty('--error', color().error)
+  root.style.setProperty('--brightness', `${ConfigCtrl.state.theme === 'dark' ? '110%' : '104%'}`)
+}
+
+export function subscribeTheme() {
+  setColors()
+  const unsub = ConfigCtrl.subscribe(() => {
+    setColors()
+  })
+
+  return unsub
+}

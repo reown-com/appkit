@@ -19,3 +19,22 @@
 .w3m-modal-toast svg {
   margin-right: 5px;
 }
+
+.w3m-modal-toast {
+  border: 1px solid var(--overlay__thin);
+  background-color: var(--overlay__thin);
+}
+
+@-moz-document url-prefix() {
+  .w3m-modal-toast {
+    background-color: var(--background__accent);
+  }
+}
+
+.w3m-success path {
+  fill: var(--foreground__accent);
+}
+
+.w3m-error path {
+  fill: var(--error);
+}

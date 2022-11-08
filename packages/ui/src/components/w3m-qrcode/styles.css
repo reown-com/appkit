@@ -24,3 +24,11 @@ w3m-wallet-image {
 .w3m-qrcode-container svg:first-child {
   transform: translateY(-50%) translateX(-50%) scale(0.9);
 }
+
+.w3m-qrcode-container svg:first-child path:first-child {
+  fill: var(--foreground__accent);
+}
+
+.w3m-qrcode-container svg:first-child path:last-child {
+  stroke: var(--overlay__thin);
+}

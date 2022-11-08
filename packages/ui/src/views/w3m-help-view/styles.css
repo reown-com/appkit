@@ -23,3 +23,7 @@
   width: 55px;
   height: 55px;
 }
+
+.help-img-highlight {
+  stroke: var(--overlay__thin);
+}

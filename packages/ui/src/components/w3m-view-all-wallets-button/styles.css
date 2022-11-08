@@ -33,3 +33,15 @@ w3m-text {
   width: 100%;
   text-align: center;
 }
+.w3m-icons {
+  background-color: var(--background__accent);
+  box-shadow: inset 0 0 0 1px var(--overlay__thin);
+}
+
+.w3m-button:hover .w3m-icons {
+  filter: brightness(var(--brightness));
+}
+
+.w3m-icons img {
+  border: 1px solid var(--overlay__thin);
+}

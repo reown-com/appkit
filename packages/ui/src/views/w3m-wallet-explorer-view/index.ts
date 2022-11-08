@@ -9,8 +9,7 @@ import '../../components/w3m-search-input'
 import '../../components/w3m-spinner'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-button'
-import { scss } from '../../style/utils'
-import { global, color } from '../../utils/Theme'
+import { global } from '../../utils/Theme'
 import {
   debounce,
   getErrorMessage,
@@ -42,37 +41,7 @@ export class W3mWalletExplorerView extends LitElement {
   }
 
   protected dynamicStyles() {
-    const { background, foreground } = color()
-
-    return html`
-      <style>
-        w3m-modal-content::before {
-          box-shadow: 0 -1px 0 0 ${background[1]};
-          background: linear-gradient(${background[1]}, transparent);
-        }
-
-        .w3m-explorer-search {
-          background: ${background[2]};
-        }
-
-        .w3m-explorer-search:active,
-        .w3m-explorer-search:focus-within {
-          border: solid 1px ${foreground.accent};
-          background: ${background[1]};
-        }
-
-        .w3m-explorer-search svg {
-          height: 20px;
-          width: 20px;
-        }
-
-        w3m-modal-content::after {
-          box-shadow: 0 1px 0 0 ${background[1]};
-          background: linear-gradient(transparent, ${background[1]});
-          top: calc(100% - 18px);
-        }
-      </style>
-    `
+    return html` <style></style> `
   }
 
   // -- private ------------------------------------------------------ //

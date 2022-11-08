@@ -50,3 +50,10 @@
     align-items: flex-end;
   }
 }
+
+.w3m-modal-card {
+  box-shadow: 0px 6px 14px -6px rgba(10, 16, 31, 0.12), 0px 10px 32px -4px rgba(10, 16, 31, 0.1),
+    0 0 0 1px var(--overlay__thin);
+  background-color: var(--background__1);
+  color: var(--foreground__1);
+}

@@ -5,3 +5,7 @@
   align-items: inherit;
   justify-content: inherit;
 }
+
+.w3m-modal-footer {
+  border-top: 1px solid var(--background__2);
+}

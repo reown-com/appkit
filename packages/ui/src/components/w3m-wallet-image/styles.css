@@ -17,3 +17,7 @@
   object-fit: cover;
   object-position: center;
 }
+
+.w3m-wallet-image::after {
+  border: 1px solid var(--overlay__thin);
+}

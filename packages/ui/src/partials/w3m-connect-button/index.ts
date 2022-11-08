@@ -4,9 +4,8 @@ import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import '../../components/w3m-spinner'
 import '../../components/w3m-text'
-import { scss } from '../../style/utils'
 import { WALLET_CONNECT_ICON } from '../../utils/Svgs'
-import { global, color } from '../../utils/Theme'
+import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import styles from './styles.css'
 
@@ -33,42 +32,6 @@ export class W3mConnectButton extends ThemedElement {
     this.modalUnsub?.()
   }
 
-  protected dynamicStyles() {
-    const { foreground, background, overlay } = color()
-
-    return html` <style>
-      button {
-        color: ${foreground.inverse};
-        background-color: ${foreground.accent};
-      }
-
-      button::after {
-        border: 1px solid ${overlay.thin};
-      }
-
-      button:hover::after {
-        background-color: ${overlay.thin};
-      }
-
-      .w3m-button-loading:disabled {
-        background-color: ${background.accent};
-      }
-
-      button:disabled {
-        background-color: ${background[3]};
-        color: ${foreground[3]};
-      }
-
-      svg path {
-        fill: ${foreground.inverse};
-      }
-
-      button:disabled svg path {
-        fill: ${foreground[3]};
-      }
-    </style>`
-  }
-
   // -- private ------------------------------------------------------ //
   private readonly modalUnsub?: () => void = undefined
 
@@ -92,8 +55,6 @@ export class W3mConnectButton extends ThemedElement {
     }
 
     return html`
-      ${this.dynamicStyles()}
-
       <button class=${classMap(classes)} .disabled=${this.loading} @click=${this.onOpen}>
         ${this.loading
           ? html`

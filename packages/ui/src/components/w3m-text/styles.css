@@ -62,3 +62,30 @@
 .w3m-font-right {
   text-align: right;
 }
+:host(*) {
+  color: var(--foreground__1);
+}
+
+.w3m-color-primary {
+  color: var(--foreground__1);
+}
+
+.w3m-color-secondary {
+  color: var(--foreground__2);
+}
+
+.w3m-color-tertiary {
+  color: var(--foreground__3);
+}
+
+.w3m-color-inverse {
+  color: var(--foreground__inverse);
+}
+
+.w3m-color-accnt {
+  color: var(--foreground__accent);
+}
+
+.w3m-color-error {
+  color: var(--error);
+}

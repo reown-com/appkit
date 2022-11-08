@@ -19,3 +19,7 @@ w3m-text {
   text-align: center;
   margin-top: 5px;
 }
+.w3m-network-button:hover {
+  background-color: var(--background__accent);
+  box-shadow: inset 0 0 0 1px var(--overlay__thin);
+}

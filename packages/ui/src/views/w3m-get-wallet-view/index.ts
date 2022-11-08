@@ -7,9 +7,8 @@ import '../../components/w3m-modal-footer'
 import '../../components/w3m-modal-header'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-image'
-import { scss } from '../../style/utils'
 import { ARROW_RIGHT_ICON, ARROW_UP_RIGHT_ICON } from '../../utils/Svgs'
-import { global, color } from '../../utils/Theme'
+import { global } from '../../utils/Theme'
 import styles from './styles.css'
 
 @customElement('w3m-get-wallet-view')
@@ -27,23 +26,11 @@ export class W3mGetWalletView extends LitElement {
     CoreHelpers.openHref(this.explorerUrl, '_blank')
   }
 
-  protected dynamicStyles() {
-    const { background } = color()
-
-    return html`<style>
-      .w3m-wallet-item {
-        border-bottom: 1px solid ${background[2]};
-      }
-    </style>`
-  }
-
   // -- render ------------------------------------------------------- //
   protected render() {
     const wallets = ExplorerCtrl.state.recomendedWallets
 
     return html`
-      ${this.dynamicStyles()}
-
       <w3m-modal-header title="Get a wallet"></w3m-modal-header>
       <w3m-modal-content>
         ${wallets.map(

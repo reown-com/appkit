@@ -23,7 +23,6 @@ import '../w3m-modal-backcard'
 import '../w3m-modal-router'
 import '../w3m-modal-toast'
 import styles from './styles.css'
-import { scss } from '../../style/utils'
 
 @customElement('w3m-modal')
 export class W3mModal extends ThemedElement {
@@ -57,14 +56,7 @@ export class W3mModal extends ThemedElement {
   protected dynamicStyles() {
     const { overlay, background, foreground } = color()
 
-    return html`<style>
-      .w3m-modal-card {
-        box-shadow: 0px 6px 14px -6px rgba(10, 16, 31, 0.12),
-          0px 10px 32px -4px rgba(10, 16, 31, 0.1), 0 0 0 1px ${overlay.thin};
-        background-color: ${background[1]};
-        color: ${foreground[1]};
-      }
-    </style>`
+    return html`<style></style>`
   }
 
   // -- private ------------------------------------------------------ //

@@ -1,7 +1,6 @@
 import { ConfigCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { scss } from '../../style/utils'
 import { global } from '../../utils/Theme'
 import { getWalletFirstName } from '../../utils/UiHelpers'
 import '../w3m-text'
@@ -18,23 +17,9 @@ export class W3mWalletButton extends LitElement {
   @property() public label?: string = undefined
   @property() public src?: string = undefined
 
-  protected dynamicStyles() {
-    const isDark = ConfigCtrl.state.theme === 'dark'
-
-    return html`
-      <style>
-        .w3m-wallet-button:hover w3m-wallet-image {
-          filter: brightness(${isDark ? '110%' : '104%'});
-        }
-      </style>
-    `
-  }
-
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      ${this.dynamicStyles()}
-
       <button class="w3m-wallet-button" @click=${this.onClick}>
         <div class="w3m-wallet-button-wrap">
           <w3m-wallet-image name=${this.name} .src=${this.src}></w3m-wallet-image>

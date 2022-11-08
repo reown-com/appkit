@@ -2,9 +2,8 @@ import { ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { scss } from '../../style/utils'
 import { CHECKMARK_ICON, CROSS_ICON } from '../../utils/Svgs'
-import { global, color } from '../../utils/Theme'
+import { global } from '../../utils/Theme'
 import '../w3m-text'
 import styles from './styles.css'
 
@@ -29,28 +28,7 @@ export class W3mModalToast extends LitElement {
   }
 
   protected dynamicStyles() {
-    const { foreground, error, background, overlay } = color()
-
-    return html`<style>
-      .w3m-modal-toast {
-        border: 1px solid ${overlay.thin};
-        background-color: ${overlay.thin};
-      }
-
-      @-moz-document url-prefix() {
-        .w3m-modal-toast {
-          background-color: ${background.accent};
-        }
-      }
-
-      .w3m-success path {
-        fill: ${foreground.accent};
-      }
-
-      .w3m-error path {
-        fill: ${error};
-      }
-    </style>`
+    return html`<style></style>`
   }
 
   public disconnectedCallback() {

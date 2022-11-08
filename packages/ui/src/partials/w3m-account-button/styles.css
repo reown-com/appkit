@@ -14,3 +14,21 @@ button::after {
 button:disabled {
   padding-bottom: 0;
 }
+
+button {
+  color: var(--foreground__inverse);
+  background-color: var(--foreground__accent);
+}
+
+button::after {
+  border: 1px solid var(--overlay__thin);
+}
+
+button:hover::after {
+  background-color: var(--overlay__thin);
+}
+
+button:disabled {
+  background-color: var(--background__3) j;
+  color: var(--foreground__3);
+}

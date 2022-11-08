@@ -21,3 +21,12 @@
   position: absolute;
   right: 0;
 }
+
+.w3m-modal-header {
+  border-bottom: 1px solid var(--background__2);
+}
+
+.w3m-back-btn path,
+.w3m-action-btn path {
+  fill: var(--foreground__accent);
+}

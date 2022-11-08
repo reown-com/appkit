@@ -34,3 +34,6 @@ w3m-wallet-image {
   height: 40px;
   border-radius: 14px;
 }
+.w3m-wallet-item {
+  border-bottom: 1px solid var(--background__2);
+}

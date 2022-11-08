@@ -26,3 +26,7 @@ w3m-wallet-image {
   border-radius: 18px;
   margin-bottom: 5px;
 }
+
+.w3m-wallet-button:hover w3m-wallet-image {
+  filter: brightness(var(--brightness));
+}
