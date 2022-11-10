@@ -9,7 +9,7 @@ export default function UseContract() {
   const { provider } = useProvider({ chainId })
   // Const { data: signer, isLoading } = useSigner()
 
-  const [hungerData, setHungerData] = useState(null)
+  const [hungerData, setHungerData] = useState()
 
   // WagmiGothchi Contract (Mainnet) / Goerli USDC Contract (Goerli)
   const goerliHref =
