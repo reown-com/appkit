@@ -22,7 +22,9 @@ const modalConfig = {
       chains.binanceSmartChain,
       chains.fantom,
       chains.arbitrum,
-      chains.optimism
+      chains.optimism,
+      chains.goerli,
+      chains.polygonMumbai
     ],
     providers: [providers.walletConnectProvider({ projectId: process.env.NEXT_PUBLIC_PROJECT_ID })]
   }
