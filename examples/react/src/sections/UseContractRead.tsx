@@ -8,6 +8,8 @@ export default function UseContractRead() {
     functionName: 'getHunger',
     chainId: 'any'
   }
+
+  // @ts-expect-error - If being chain agnostic, chainId is not required
   const { data, error, isLoading, refetch } = useContractRead(config)
 
   return (
