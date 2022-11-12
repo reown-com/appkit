@@ -23,7 +23,7 @@ See [@web3modal/ethereum](../../chains/ethereum/readme.md) readme for all availa
 
 ```tsx
 import { ClientCtrl, ConfigCtrl } from '@web3modal/core'
-import { chains, providers } from '@web3modal/ethereum'
+import { modalChains, providers } from '@web3modal/ethereum'
 import '@web3modal/ui'
 
 // Configure web3modal

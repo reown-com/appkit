@@ -1,10 +1,5 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type {
-  ClientCtrlSetEthereumClientArgs,
-  ClientCtrlState
-} from '../../../types/statefullCtrlTypes'
-import { ConfigCtrl } from './ConfigCtrl'
-import { OptionsCtrl } from './OptionsCtrl'
+import type { ClientCtrlState } from '../../../types/statefullCtrlTypes'
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<ClientCtrlState>({
@@ -26,15 +21,10 @@ export const ClientCtrl = {
     return state.ethereum
   },
 
-  async setEthereumClient(args: ClientCtrlSetEthereumClientArgs) {
-    if (!state.initialized) {
-      const { Web3ModalEthereum } = await import('@web3modal/ethereum')
-      const { client, configChains } = Web3ModalEthereum.createClient(
-        ConfigCtrl.state.projectId,
-        args
-      )
-      state.ethereum = client
-      OptionsCtrl.setChains(configChains)
+  setEthereumClient(ethereumClient: ClientCtrlState['ethereum']) {
+    if (!state.initialized && ethereumClient) {
+      state.ethereum = ethereumClient
+      // OptionsCtrl.setChains(ethereumClient)
       state.initialized = true
     }
   }

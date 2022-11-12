@@ -1,10 +1,14 @@
-import { useAccount, useBalance } from '@web3modal/react'
+import { useAccount, useBalance } from 'wagmi'
 
 export default function UseBalance() {
-  const { account } = useAccount()
+  const { address } = useAccount()
   const { data, error, isLoading, refetch } = useBalance({
-    addressOrName: account.address
+    addressOrName: address
   })
+
+  async function onRefetch() {
+    await refetch()
+  }
 
   return (
     <section>
@@ -18,7 +22,7 @@ export default function UseBalance() {
           Error: <span>{error ? error.message : 'No Error'}</span>
         </li>
       </ul>
-      <button onClick={async () => refetch()}>Refetch</button>
+      <button onClick={onRefetch}>Refetch</button>
     </section>
   )
 }

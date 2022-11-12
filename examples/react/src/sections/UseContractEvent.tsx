@@ -1,4 +1,4 @@
-import { chains } from '@web3modal/ethereum'
+import { modalChains } from '@web3modal/ethereum'
 import { useContractEvent } from '@web3modal/react'
 import { useState } from 'react'
 import ensRegistryABI from '../data/ensRegistryABI.json'
@@ -11,7 +11,7 @@ export default function UseContractEvent() {
     abi: ensRegistryABI,
     eventName: 'NewOwner',
     listener: (...event: unknown[]) => setEventData(event),
-    chainId: chains.mainnet.id
+    chainId: modalChains.mainnet.id
   }
 
   useContractEvent(config)

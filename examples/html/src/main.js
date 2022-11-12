@@ -1,5 +1,5 @@
 import { ClientCtrl, ConfigCtrl } from '@web3modal/core'
-import { chains, providers } from '@web3modal/ethereum'
+import { modalChains, modalProviders } from '@web3modal/ethereum'
 import '@web3modal/ui'
 import './actions.js'
 import './events.js'
@@ -16,8 +16,8 @@ const clientConfig = {
 const ethereumConfig = {
   appName: 'web3Modal',
   autoConnect: true,
-  chains: [chains.mainnet],
-  providers: [providers.walletConnectProvider({ projectId: PROJECT_ID })]
+  chains: [modalChains.mainnet],
+  providers: [modalProviders.walletConnectProvider({ projectId: PROJECT_ID })]
 }
 
 // Set up core and ethereum clients

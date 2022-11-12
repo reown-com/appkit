@@ -1,23 +1,20 @@
-import { useAccount } from '@web3modal/react'
+import { useAccount } from 'wagmi'
 
 export default function UseAccount() {
-  const { account, isReady } = useAccount()
+  const { isConnected, connector, address } = useAccount()
 
   return (
     <section>
       <h1>useAccount</h1>
       <ul>
         <li>
-          Ready: <span>{isReady}</span>
+          Connected: <span>{isConnected ? 'Yes' : 'No'}</span>
         </li>
         <li>
-          Connected: <span>{account.isConnected ? 'Yes' : 'No'}</span>
+          Connector: <span>{connector?.id}</span>
         </li>
         <li>
-          Connector: <span>{account.connector?.id}</span>
-        </li>
-        <li>
-          Address: <span>{account.address}</span>
+          Address: <span>{address}</span>
         </li>
       </ul>
     </section>

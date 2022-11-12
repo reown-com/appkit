@@ -1,4 +1,4 @@
-import type { Chain, EthereumOptions, Web3ModalEthereum } from '@web3modal/ethereum'
+import type { Chain, Web3ModalEthereum } from '@web3modal/ethereum'
 
 // -- ConfigCtrl ------------------------------------------- //
 export interface ConfigOptions {
@@ -13,7 +13,6 @@ export interface ConfigOptions {
     | 'orange'
     | 'purple'
     | 'teal'
-  ethereum?: EthereumOptions
   standaloneChains?: string[]
 }
 
@@ -134,5 +133,3 @@ export interface ClientCtrlState {
   initialized: boolean
   ethereum?: typeof Web3ModalEthereum
 }
-
-export type ClientCtrlSetEthereumClientArgs = EthereumOptions

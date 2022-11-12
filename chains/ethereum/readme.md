@@ -17,5 +17,5 @@ This package should be used in tandem with `@web3modal/react`, other framework p
 ## Imports
 
 ```ts
-import { chains, providers } from '@web3modal/ethereum'
+import { modalChains, providers } from '@web3modal/ethereum'
 ```

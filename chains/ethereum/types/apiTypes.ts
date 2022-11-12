@@ -1,17 +1,10 @@
-import type { Chain, ChainProviderFn } from '@wagmi/core'
+import type { Chain } from '@wagmi/core'
 
-export interface GetDefaultConnectorsOpts {
+export interface ModalConnectorsOpts {
   appName: string
   chains: Chain[]
 }
 
-export interface GetWalletConnectProviderOpts {
+export interface WalletConnectProviderOpts {
   projectId: string
-}
-
-export interface EthereumOptions {
-  appName: string
-  autoConnect?: boolean
-  chains?: Chain[]
-  providers?: ChainProviderFn[]
 }

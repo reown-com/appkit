@@ -1,4 +1,4 @@
-import type { Connector } from '@wagmi/core'
+import type { Client, Connector } from '@wagmi/core'
 import {
   connect,
   disconnect,
@@ -35,19 +35,17 @@ import {
   watchWebSocketProvider,
   writeContract
 } from '@wagmi/core'
-import type { EthereumOptions } from '../types/apiTypes'
-import { getClient, initializeClient } from './utils/wagmiHelpers'
 
 export const Web3ModalEthereum = {
-  // -- config ------------------------------------------------------- //
-  createClient(projectId: string, options: EthereumOptions) {
-    const { configChains, configProviders } = initializeClient(projectId, options)
+  // -- tools -------------------------------------------------------- //
+  wagmi: {} as Client,
 
-    return {
-      client: this,
-      configChains,
-      configProviders
-    }
+  // -- config ------------------------------------------------------- //
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  create(wagmi: any) {
+    this.wagmi = wagmi
+
+    return this
   },
 
   // -- chains ------------------------------------------------------- //
@@ -59,7 +57,7 @@ export const Web3ModalEthereum = {
 
   // -- connectors --------------------------------------------------- //
   getConnectorById(id: 'coinbaseWallet' | 'injected' | 'metaMask' | 'walletConnect') {
-    const connector = getClient()?.connectors.find(item => item.id === id)
+    const connector = this.wagmi.connectors.find(item => item.id === id)
     if (!connector) throw new Error(`Missing ${id} connector`)
 
     return connector
@@ -67,6 +65,7 @@ export const Web3ModalEthereum = {
 
   async connectWalletConnect(onUri: (uri: string) => void, selectedChainId?: number) {
     const connector = this.getConnectorById('walletConnect')
+
     const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
 
     async function getProviderUri() {
