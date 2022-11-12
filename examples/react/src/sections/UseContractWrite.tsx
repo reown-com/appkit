@@ -1,5 +1,4 @@
-import { modalChains } from '@web3modal/ethereum'
-import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
+import { chain, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
 import wagmigotchiABI from '../data/wagmigotchiAbi.json'
 
 export default function UseContractWrite() {
@@ -7,7 +6,7 @@ export default function UseContractWrite() {
     address: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1',
     abi: wagmigotchiABI,
     functionName: 'feed',
-    chainId: modalChains.mainnet.id
+    chainId: chain.mainnet.id
   })
   // @ts-expect-error Types are fine
   const { data, error, isLoading, write } = useContractWrite(config)

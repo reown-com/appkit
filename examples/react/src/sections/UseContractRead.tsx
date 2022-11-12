@@ -1,5 +1,4 @@
-import { modalChains } from '@web3modal/ethereum'
-import { useContractRead } from 'wagmi'
+import { chain, useContractRead } from 'wagmi'
 import wagmigotchiAbi from '../data/wagmigotchiAbi.json'
 
 export default function UseContractRead() {
@@ -7,7 +6,7 @@ export default function UseContractRead() {
     address: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1',
     abi: wagmigotchiAbi,
     functionName: 'getHunger',
-    chainId: modalChains.mainnet.id
+    chainId: chain.mainnet.id
   }
   const { data, error, isLoading, refetch } = useContractRead(config)
 
