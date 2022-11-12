@@ -9,7 +9,7 @@
   "dependencies": {
     "@web3modal/ethereum": "2.0.0-beta.3",
     "@web3modal/react": "2.0.0-beta.3",
-    "next": "13.0.2",
+    "next": "13.0.3",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
