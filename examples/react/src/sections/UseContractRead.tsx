@@ -1,5 +1,5 @@
 import { modalChains } from '@web3modal/ethereum'
-import { useContractRead } from '@web3modal/react'
+import { useContractRead } from 'wagmi'
 import wagmigotchiAbi from '../data/wagmigotchiAbi.json'
 
 export default function UseContractRead() {
@@ -10,6 +10,10 @@ export default function UseContractRead() {
     chainId: modalChains.mainnet.id
   }
   const { data, error, isLoading, refetch } = useContractRead(config)
+
+  function onRefetch() {
+    refetch()
+  }
 
   return (
     <section>
@@ -38,7 +42,7 @@ export default function UseContractRead() {
           Error: <span>{error ? error.message : 'No Error'}</span>
         </li>
       </ul>
-      <button onClick={async () => refetch()}>Refetch data</button>
+      <button onClick={onRefetch}>Refetch data</button>
     </section>
   )
 }

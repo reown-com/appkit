@@ -1,6 +1,6 @@
 import { modalChains } from '@web3modal/ethereum'
-import { useContractEvent } from '@web3modal/react'
 import { useState } from 'react'
+import { useContractEvent } from 'wagmi'
 import ensRegistryABI from '../data/ensRegistryABI.json'
 
 export default function UseContractEvent() {

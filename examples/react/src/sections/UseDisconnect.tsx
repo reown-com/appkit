@@ -1,12 +1,16 @@
-import { useDisconnect } from '@web3modal/react'
+import { useDisconnect } from 'wagmi'
 
 export default function UseAccount() {
-  const disconnect = useDisconnect()
+  const { disconnect } = useDisconnect()
+
+  function onDisconnect() {
+    disconnect()
+  }
 
   return (
     <section>
       <h1>useDisconnect</h1>
-      <button onClick={disconnect}>Disconnect</button>
+      <button onClick={onDisconnect}>Disconnect</button>
     </section>
   )
 }

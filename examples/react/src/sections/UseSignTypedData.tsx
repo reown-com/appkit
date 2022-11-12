@@ -1,4 +1,4 @@
-import { useSignTypedData } from '@web3modal/react'
+import { useSignTypedData } from 'wagmi'
 
 export default function UseSignTypedData() {
   const { data, error, isLoading, signTypedData } = useSignTypedData({
@@ -32,6 +32,10 @@ export default function UseSignTypedData() {
     }
   })
 
+  function onSignTypedData() {
+    signTypedData()
+  }
+
   return (
     <section>
       <h1>useSignTypedData</h1>
@@ -47,7 +51,7 @@ export default function UseSignTypedData() {
           Error: <span>{error ? error.message : 'No Error'}</span>
         </li>
       </ul>
-      <button onClick={async () => signTypedData()}>Sign Typed Data</button>
+      <button onClick={onSignTypedData}>Sign Typed Data</button>
     </section>
   )
 }

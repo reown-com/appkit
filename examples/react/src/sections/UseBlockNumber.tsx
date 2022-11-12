@@ -1,7 +1,11 @@
-import { useBlockNumber } from '@web3modal/react'
+import { useBlockNumber } from 'wagmi'
 
 export default function UseBlockNumber() {
   const { data, error, isLoading, refetch } = useBlockNumber({ watch: true })
+
+  async function onRefetch() {
+    await refetch()
+  }
 
   return (
     <section>
@@ -15,7 +19,7 @@ export default function UseBlockNumber() {
           Error: <span>{error ? error.message : 'No Error'}</span>
         </li>
       </ul>
-      <button onClick={async () => refetch()}>Refetch</button>
+      <button onClick={onRefetch}>Refetch</button>
     </section>
   )
 }

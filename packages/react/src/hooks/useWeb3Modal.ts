@@ -1,7 +1,7 @@
 import { ModalCtrl } from '@web3modal/core'
 import { useEffect, useState } from 'react'
 
-export function useConnectModal() {
+export function useWeb3Modal() {
   const [modal, setModal] = useState(ModalCtrl.state)
 
   useEffect(() => {

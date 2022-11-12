@@ -1,8 +1,12 @@
-import { useEnsResolver } from '@web3modal/react'
+import { useEnsResolver } from 'wagmi'
 
 export default function UseEnsName() {
   const name = 'vitalik.eth'
   const { data, isLoading, error, refetch } = useEnsResolver({ name })
+
+  async function onRefetch() {
+    await refetch()
+  }
 
   return (
     <section>
@@ -19,7 +23,7 @@ export default function UseEnsName() {
           Error: <span>{error ? error.message : 'No Error'}</span>
         </li>
       </ul>
-      <button onClick={async () => refetch()}>Refetch Name</button>
+      <button onClick={onRefetch}>Refetch Name</button>
     </section>
   )
 }

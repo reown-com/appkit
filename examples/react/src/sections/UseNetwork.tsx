@@ -1,7 +1,7 @@
-import { useNetwork } from '@web3modal/react'
+import { useNetwork } from 'wagmi'
 
 export default function UseNetwork() {
-  const { network } = useNetwork()
+  const { chains, chain } = useNetwork()
 
   return (
     <section>
@@ -9,13 +9,13 @@ export default function UseNetwork() {
 
       <ul>
         <li>
-          Chain ID: <span>{network?.chain?.id}</span>
+          Chain ID: <span>{chain?.id}</span>
         </li>
         <li>
-          Selected Chain: <span>{network?.chain?.name}</span>
+          Selected Chain: <span>{chain?.name}</span>
         </li>
         <li>
-          Configured Chains: <span>{network?.chains.map(c => c.name).join(', ')}</span>
+          Configured Chains: <span>{chains.map(c => c.name).join(', ')}</span>
         </li>
       </ul>
     </section>

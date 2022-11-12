@@ -1,8 +1,8 @@
-import { useContract } from '@web3modal/react'
+import { useContract } from 'wagmi'
 import wagmigotchiAbi from '../data/wagmigotchiAbi.json'
 
 export default function UseContract() {
-  const { contract } = useContract({
+  const contract = useContract({
     address: '0xeCB504D39723b0be0e3a9Aa33D646642D1051EE1',
     abi: wagmigotchiAbi
   })

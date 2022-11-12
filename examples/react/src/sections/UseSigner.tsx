@@ -1,4 +1,4 @@
-import { useSigner } from '@web3modal/react'
+import { useSigner } from 'wagmi'
 
 export default function UseSigner() {
   const { data, error, isLoading, refetch } = useSigner()

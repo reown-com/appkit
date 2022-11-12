@@ -1,7 +1,11 @@
-import { useFeeData } from '@web3modal/react'
+import { useFeeData } from 'wagmi'
 
 export default function UseFeeData() {
   const { data, error, isLoading, refetch } = useFeeData({ watch: true })
+
+  async function onRefetch() {
+    await refetch()
+  }
 
   return (
     <section>
@@ -15,7 +19,7 @@ export default function UseFeeData() {
           Error: <span>{error ? error.message : 'No Error'}</span>
         </li>
       </ul>
-      <button onClick={async () => refetch()}>Refetch</button>
+      <button onClick={onRefetch}>Refetch</button>
     </section>
   )
 }

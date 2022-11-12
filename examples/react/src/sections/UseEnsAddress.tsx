@@ -1,8 +1,12 @@
-import { useEnsAddress } from '@web3modal/react'
+import { useEnsAddress } from 'wagmi'
 
 export default function UseEnsAddress() {
   const name = 'vitalik.eth'
   const { data, isLoading, error, refetch } = useEnsAddress({ name })
+
+  async function onRefetch() {
+    await refetch()
+  }
 
   return (
     <section>
@@ -18,7 +22,7 @@ export default function UseEnsAddress() {
           Error: <span>{error ? error.message : 'No Error'}</span>
         </li>
       </ul>
-      <button onClick={async () => refetch()}>Refetch Address</button>
+      <button onClick={onRefetch}>Refetch Address</button>
     </section>
   )
 }

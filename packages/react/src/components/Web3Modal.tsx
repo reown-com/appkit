@@ -7,20 +7,19 @@ import { Modal } from './Modal'
 /**
  * Props
  */
-interface Props {
-  config: ConfigOptions
+interface Props extends ConfigOptions {
   ethereumClient?: typeof Web3ModalEthereum
 }
 
 /**
  * Component
  */
-export function Web3Modal({ config, ethereumClient }: Props) {
+export function Web3Modal({ ethereumClient, ...config }: Props) {
   const onConfigure = useCallback(async () => {
     ConfigCtrl.setConfig(config)
     if (ethereumClient) ClientCtrl.setEthereumClient(ethereumClient)
     await import('@web3modal/ui')
-  }, [config, ethereumClient])
+  }, [ethereumClient, config])
 
   useEffect(() => {
     onConfigure()

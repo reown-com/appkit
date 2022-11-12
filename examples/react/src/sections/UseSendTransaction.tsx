@@ -1,5 +1,5 @@
-import { useSendTransaction, useWaitForTransaction } from '@web3modal/react'
 import { BigNumber } from 'ethers'
+import { usePrepareSendTransaction, useSendTransaction, useWaitForTransaction } from 'wagmi'
 
 export default function UseSendTransaction() {
   const transaction = {
@@ -9,8 +9,13 @@ export default function UseSendTransaction() {
     }
   }
 
-  const { data, error, isLoading, sendTransaction } = useSendTransaction(transaction)
-  const { receipt, isWaiting } = useWaitForTransaction({ hash: data?.hash })
+  const { config } = usePrepareSendTransaction(transaction)
+  const { data, error, isLoading, sendTransaction } = useSendTransaction(config)
+  const { data: waitData, isLoading: waitLoading } = useWaitForTransaction({ hash: data?.hash })
+
+  function onSend() {
+    sendTransaction?.()
+  }
 
   return (
     <section>
@@ -24,13 +29,13 @@ export default function UseSendTransaction() {
           Send Data: <span>{isLoading ? 'Loading...' : JSON.stringify(data)}</span>
         </li>
         <li>
-          Receipt Data: <span>{isWaiting ? 'Waiting...' : JSON.stringify(receipt)}</span>
+          Receipt Data: <span>{waitLoading ? 'Waiting...' : JSON.stringify(waitData)}</span>
         </li>
         <li>
           Error: <span>{error ? error.message : 'No Error'}</span>
         </li>
       </ul>
-      <button onClick={async () => sendTransaction()}>Send Transaction</button>
+      <button onClick={onSend}>Send Transaction</button>
     </section>
   )
 }
