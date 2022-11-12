@@ -1,4 +1,4 @@
-import type { Client, Connector } from '@wagmi/core'
+import type { Chain, Client, Connector } from '@wagmi/core'
 import {
   connect,
   disconnect,
@@ -40,10 +40,13 @@ export const Web3ModalEthereum = {
   // -- tools -------------------------------------------------------- //
   wagmi: {} as Client,
 
+  chains: [] as Chain[],
+
   // -- config ------------------------------------------------------- //
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  create(wagmi: any) {
+  create(wagmi: any, chains: Chain[]) {
     this.wagmi = wagmi
+    this.chains = chains
 
     return this
   },

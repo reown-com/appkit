@@ -1,5 +1,6 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ClientCtrlState } from '../../../types/statefullCtrlTypes'
+import { OptionsCtrl } from './OptionsCtrl'
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<ClientCtrlState>({
@@ -24,7 +25,7 @@ export const ClientCtrl = {
   setEthereumClient(ethereumClient: ClientCtrlState['ethereum']) {
     if (!state.initialized && ethereumClient) {
       state.ethereum = ethereumClient
-      // OptionsCtrl.setChains(ethereumClient)
+      OptionsCtrl.setChains(ethereumClient.chains)
       state.initialized = true
     }
   }

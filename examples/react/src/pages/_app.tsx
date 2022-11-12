@@ -15,10 +15,17 @@ if (!process.env.NEXT_PUBLIC_PROJECT_ID)
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 
-const { chains, provider } = configureChains(
-  [modalChains.mainnet, modalChains.polygon],
-  [modalProviders.walletConnectProvider({ projectId })]
-)
+const chains = [
+  modalChains.mainnet,
+  modalChains.polygon,
+  modalChains.avalanche,
+  modalChains.fantom,
+  modalChains.optimism,
+  modalChains.arbitrum,
+  modalChains.binanceSmartChain
+]
+
+const { provider } = configureChains(chains, [modalProviders.walletConnectProvider({ projectId })])
 
 const wagmiClient = createClient({
   autoConnect: true,
@@ -26,7 +33,7 @@ const wagmiClient = createClient({
   provider
 })
 
-const ethereumClient = Web3ModalEthereum.create(wagmiClient)
+const ethereumClient = Web3ModalEthereum.create(wagmiClient, chains)
 
 export default function App({ Component, pageProps }: AppProps) {
   return (

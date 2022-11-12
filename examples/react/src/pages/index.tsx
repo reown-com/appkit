@@ -24,14 +24,19 @@ import UseToken from '../sections/UseToken'
 import UseTransaction from '../sections/UseTransaction'
 
 export default function HomePage() {
-  const { isConnected } = useAccount()
+  const { isConnected, isDisconnected } = useAccount()
   const { open } = useWeb3Modal()
 
   return (
     <>
       <Web3Button />
-      <p>or</p>
-      <button onClick={() => open()}>Custom Button</button>
+      {isDisconnected ? (
+        <>
+          <p>or</p>
+          <button onClick={() => open()}>Custom Button</button>
+        </>
+      ) : null}
+
       {isConnected && (
         <>
           <UseAccount />
