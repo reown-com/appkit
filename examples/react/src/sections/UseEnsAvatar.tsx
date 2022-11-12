@@ -1,8 +1,10 @@
 import { useEnsAvatar } from 'wagmi'
 
 export default function UseEnsAvatar() {
-  const name = 'vitalik.eth'
-  const { data, isLoading, error, refetch } = useEnsAvatar({ addressOrName: name })
+  const address = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+  const { data, isLoading, error, refetch } = useEnsAvatar({
+    address: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+  })
 
   async function onRefetch() {
     await refetch()
@@ -13,7 +15,7 @@ export default function UseEnsAvatar() {
       <h1>useEnsAvatar</h1>
       <ul>
         <li>
-          Name: <span>{name}</span>
+          Name: <span>{address}</span>
         </li>
         <li>
           Avatar: <span>{isLoading ? 'Loading...' : data}</span>
@@ -22,7 +24,7 @@ export default function UseEnsAvatar() {
           Error: <span>{error ? error.message : 'No Error'}</span>
         </li>
       </ul>
-      <button onClick={onRefetch}>Refetch Address</button>
+      <button onClick={onRefetch}>Refetch Avatar</button>
     </section>
   )
 }

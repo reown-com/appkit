@@ -3,7 +3,7 @@ import { useAccount, useBalance } from 'wagmi'
 export default function UseBalance() {
   const { address } = useAccount()
   const { data, error, isLoading, refetch } = useBalance({
-    addressOrName: address
+    address
   })
 
   async function onRefetch() {
