@@ -1,5 +1,5 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { ModalCtrlState } from '../../types/statefullCtrlTypes'
+import type { ModalCtrlState } from '../types/controllerTypes'
 import { OptionsCtrl } from './OptionsCtrl'
 import { RouterCtrl } from './RouterCtrl'
 

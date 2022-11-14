@@ -1,5 +1,5 @@
-import type { ListingResponse, PageParams } from '../../types/statefullCtrlTypes'
 import { ConfigCtrl } from '../controllers/ConfigCtrl'
+import type { ListingResponse, PageParams } from '../types/controllerTypes'
 
 function formatParams(params: PageParams) {
   const stringParams = Object.fromEntries(

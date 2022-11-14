@@ -5,12 +5,12 @@ export { ModalCtrl } from './src/controllers/ModalCtrl'
 export { OptionsCtrl } from './src/controllers/OptionsCtrl'
 export { RouterCtrl } from './src/controllers/RouterCtrl'
 export { ToastCtrl } from './src/controllers/ToastCtrl'
-export { CoreHelpers } from './src/utils/CoreHelpers'
-export { getExplorerApi } from './src/utils/ExplorerApi'
 export type {
   ConfigOptions,
   Listing,
   ListingResponse,
   RouterView
-} from './types/statefullCtrlTypes'
+} from './src/types/controllerTypes'
+export { CoreHelpers } from './src/utils/CoreHelpers'
+export { getExplorerApi } from './src/utils/ExplorerApi'
 import './src/utils/PolyfillUtil'
