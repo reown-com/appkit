@@ -68,14 +68,3 @@ export type TransactionCtrlFetchArgs = Parameters<EthApi['fetchTransaction']>[0]
 export type TransactionCtrlSendArgs = Parameters<EthApi['prepareSendTransaction']>[0]
 
 export type TransactionCtrlWaitArgs = Parameters<EthApi['waitForTransaction']>[0]
-
-// -- ContractCtrl ----------------------------------------- //
-export type ContractCtrlGetArgs = Parameters<EthApi['getContract']>[0]
-
-export type ContractCtrlReadArgs = Parameters<EthApi['readContract']>[0]
-
-export type ContractCtrlWatchReadArgs = Parameters<EthApi['watchReadContract']>
-
-export type ContractCtrlWriteArgs = Parameters<EthApi['prepareWriteContract']>[0]
-
-export type ContractCtrlWatchEventArgs = Parameters<EthApi['watchContractEvent']>

@@ -8,7 +8,6 @@ export { ToastCtrl } from './src/controllers/statefull/ToastCtrl'
 export { AccountCtrl } from './src/controllers/stateless/AccountCtrl'
 export { BalanceCtrl } from './src/controllers/stateless/BalanceCtrl'
 export { BlockCtrl } from './src/controllers/stateless/BlockCtrl'
-export { ContractCtrl } from './src/controllers/stateless/ContractCtrl'
 export { EnsCtrl } from './src/controllers/stateless/EnsCtrl'
 export { FeeCtrl } from './src/controllers/stateless/FeeCtrl'
 export { NetworkCtrl } from './src/controllers/stateless/NetworkCtrl'
@@ -29,10 +28,6 @@ export type {
   AccountCtrlGetReturnValue,
   BalanceCtrlFetchArgs,
   BalanceCtrlFetchReturnValue,
-  ContractCtrlGetArgs,
-  ContractCtrlReadArgs,
-  ContractCtrlWatchEventArgs,
-  ContractCtrlWriteArgs,
   EnsCtrlFetchEnsAddressArgs,
   EnsCtrlFetchEnsAvatarArgs,
   EnsCtrlFetchEnsNameArgs,

@@ -8,7 +8,6 @@ export default function UseContractWrite() {
     functionName: 'feed',
     chainId: chain.mainnet.id
   })
-  // @ts-expect-error Types are fine
   const { data, error, isLoading, write } = useContractWrite(config)
   const { data: waitData, isLoading: waitLoading } = useWaitForTransaction({ hash: data?.hash })
 
