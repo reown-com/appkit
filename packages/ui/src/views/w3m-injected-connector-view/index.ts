@@ -29,7 +29,7 @@ export class W3mInjectedConnectorView extends LitElement {
   }
 
   // -- private ------------------------------------------------------ //
-  private readonly connector = ClientCtrl.getConnectorById('injected')
+  private readonly connector = ClientCtrl.client().getConnectorById('injected')
 
   private async onConnect() {
     try {
@@ -37,7 +37,7 @@ export class W3mInjectedConnectorView extends LitElement {
       if (ready) {
         this.error = false
         this.connecting = true
-        await ClientCtrl.connectExtension('injected', OptionsCtrl.state.selectedChainId)
+        await ClientCtrl.client().connectExtension('injected', OptionsCtrl.state.selectedChainId)
         ModalCtrl.close()
       }
     } catch (error: unknown) {

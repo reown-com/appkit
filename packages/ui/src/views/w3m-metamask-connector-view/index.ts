@@ -28,7 +28,7 @@ export class W3mMetamaskConnectorView extends LitElement {
   }
 
   // -- private ------------------------------------------------------ //
-  private readonly connector = ClientCtrl.getConnectorById('metaMask')
+  private readonly connector = ClientCtrl.client().getConnectorById('metaMask')
   private readonly metamaskUrl = 'https://metamask.io/download/'
 
   private async onConnect() {
@@ -37,7 +37,7 @@ export class W3mMetamaskConnectorView extends LitElement {
       if (ready) {
         this.error = false
         this.connecting = true
-        await ClientCtrl.connectExtension('metaMask', OptionsCtrl.state.selectedChainId)
+        await ClientCtrl.client().connectExtension('metaMask', OptionsCtrl.state.selectedChainId)
         ModalCtrl.close()
       }
     } catch (err) {

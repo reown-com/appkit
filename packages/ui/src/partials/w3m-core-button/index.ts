@@ -15,8 +15,8 @@ export class W3mCoreButton extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.isConnected = ClientCtrl.getAccount().isConnected
-    this.accountUnsub = ClientCtrl.watchAccount(accountState => {
+    this.isConnected = ClientCtrl.client().getAccount().isConnected
+    this.accountUnsub = ClientCtrl.client().watchAccount(accountState => {
       this.isConnected = accountState.isConnected
     })
   }

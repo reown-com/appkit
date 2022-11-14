@@ -43,7 +43,7 @@ export class W3mDesktopConnectorView extends LitElement {
     const { standaloneUri } = OptionsCtrl.state
     if (standaloneUri) this.onOpenHref(standaloneUri)
     else {
-      await ClientCtrl.connectWalletConnect(
+      await ClientCtrl.client().connectWalletConnect(
         uri => this.onOpenHref(uri),
         OptionsCtrl.state.selectedChainId
       )

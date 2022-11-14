@@ -25,4 +25,4 @@ ConfigCtrl.setConfig({
   theme: 'dark',
   accentColor: 'default'
 })
-ClientCtrl.setEthereumClient(ethereumClient, chains)
+ClientCtrl.client().setEthereumClient(ethereumClient, chains)

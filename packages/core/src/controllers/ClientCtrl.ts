@@ -8,17 +8,8 @@ const state = proxy<ClientCtrlState>({
   ethereumClient: undefined
 })
 
-// -- helpers ------------------------------------------------------ //
-function client() {
-  if (state.ethereumClient) return state.ethereumClient
-
-  throw new Error('ClientCtrl has no client set')
-}
-
-// -- controller --------------------------------------------------- //
+// -- controller -- As function to enable correct ssr handling
 export const ClientCtrl = {
-  state,
-
   setEthereumClient(ethereumClient: ClientCtrlState['ethereumClient']) {
     if (!state.initialized && ethereumClient) {
       state.ethereumClient = ethereumClient
@@ -27,21 +18,9 @@ export const ClientCtrl = {
     }
   },
 
-  // -- connector actions
-  getConnectorById: client().getConnectorById,
+  client() {
+    if (state.ethereumClient) return state.ethereumClient
 
-  connectCoinbaseMobile: client().connectCoinbaseMobile,
-
-  connectWalletConnect: client().connectWalletConnect,
-
-  connectExtension: client().connectExtension,
-
-  getActiveWalletConnectUri: client().getActiveWalletConnectUri,
-
-  // -- account actions
-  disconnect: client().disconnect,
-
-  getAccount: client().getAccount,
-
-  watchAccount: client().watchAccount
+    throw new Error('ClientCtrl has no client set')
+  }
 }
