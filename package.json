@@ -19,7 +19,8 @@
     "frame",
     "coinbasewallet",
     "sequence",
-    "web3auth"
+    "web3auth",
+    "ledger"
   ],
   "author": "Web3Modal <web3modal.com>",
   "license": "MIT",

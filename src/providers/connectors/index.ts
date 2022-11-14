@@ -19,6 +19,7 @@ import opera from "./opera";
 import web3auth from "./web3auth";
 import bitkeep from "./bitkeep";
 import starzwallet from "./starzwallet";
+import ledger from "./ledger";
 
 export {
   injected,
@@ -42,5 +43,6 @@ export {
   opera,
   bitkeep,
   starzwallet,
-  web3auth
+  web3auth,
+  ledger
 };
