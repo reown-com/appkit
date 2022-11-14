@@ -1,5 +1,5 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { ToastCtrlState } from '../../../types/statefullCtrlTypes'
+import type { ToastCtrlState } from '../../types/statefullCtrlTypes'
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<ToastCtrlState>({

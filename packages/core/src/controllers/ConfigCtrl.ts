@@ -1,5 +1,5 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { ConfigCtrlState, ConfigOptions } from '../../../types/statefullCtrlTypes'
+import type { ConfigCtrlState, ConfigOptions } from '../../types/statefullCtrlTypes'
 import { OptionsCtrl } from './OptionsCtrl'
 
 // -- initial state ------------------------------------------------ //

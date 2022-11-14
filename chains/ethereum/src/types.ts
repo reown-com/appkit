@@ -8,3 +8,5 @@ export interface ModalConnectorsOpts {
 export interface WalletConnectProviderOpts {
   projectId: string
 }
+
+export type ConnectorId = 'coinbaseWallet' | 'injected' | 'metaMask' | 'walletConnect'

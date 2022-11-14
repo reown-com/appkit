@@ -1,4 +1,4 @@
-import type { Chain, Web3ModalEthereum } from '@web3modal/ethereum'
+import type { EthereumClient } from '@web3modal/ethereum'
 
 // -- ConfigCtrl ------------------------------------------- //
 export interface ConfigOptions {
@@ -28,7 +28,7 @@ export interface ModalCtrlState {
 // -- OptionsCtrl --------------------------------------- //
 export interface OptionsCtrlState {
   selectedChainId?: number
-  chains?: Chain[]
+  chains?: EthereumClient['chains']
   standaloneChains?: string[]
   standaloneUri?: string
 }
@@ -131,5 +131,5 @@ export interface RouterCtrlState {
 // -- ClientCtrl ------------------------------------------- //
 export interface ClientCtrlState {
   initialized: boolean
-  ethereum?: typeof Web3ModalEthereum
+  ethereumClient?: EthereumClient
 }

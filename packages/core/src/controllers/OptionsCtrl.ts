@@ -1,5 +1,5 @@
 import { proxy } from 'valtio/vanilla'
-import type { OptionsCtrlState } from '../../../types/statefullCtrlTypes'
+import type { OptionsCtrlState } from '../../types/statefullCtrlTypes'
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<OptionsCtrlState>({

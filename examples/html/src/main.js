@@ -1,6 +1,6 @@
 import { chain, configureChains, createClient } from '@wagmi/core'
 import { ClientCtrl, ConfigCtrl } from '@web3modal/core'
-import { modalConnectors, walletConnectProvider, Web3ModalEthereum } from '@web3modal/ethereum'
+import { EthereumClient, modalConnectors, walletConnectProvider } from '@web3modal/ethereum'
 import '@web3modal/ui'
 import './actions.js'
 import './events.js'
@@ -17,7 +17,7 @@ const wagmiClient = createClient({
   provider
 })
 
-const ethereumClient = Web3ModalEthereum.create(wagmiClient, chains)
+const ethereumClient = new EthereumClient(wagmiClient, chains)
 
 // Set up core and ethereum clients
 ConfigCtrl.setConfig({

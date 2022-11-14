@@ -32,7 +32,7 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
 
   private async getConnectionUri() {
     try {
-      await ClientCtrl.ethereum().connectCoinbaseMobile(
+      await ClientCtrl.connectCoinbaseMobile(
         uri => (this.uri = uri),
         OptionsCtrl.state.selectedChainId
       )

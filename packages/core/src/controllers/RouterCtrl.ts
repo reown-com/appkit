@@ -1,5 +1,5 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { RouterCtrlState } from '../../../types/statefullCtrlTypes'
+import type { RouterCtrlState } from '../../types/statefullCtrlTypes'
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<RouterCtrlState>({

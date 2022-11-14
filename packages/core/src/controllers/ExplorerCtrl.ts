@@ -1,6 +1,6 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { ExplorerCtrlState, PageParams } from '../../../types/statefullCtrlTypes'
-import { fetchWallets } from '../../utils/ExplorerApi'
+import type { ExplorerCtrlState, PageParams } from '../../types/statefullCtrlTypes'
+import { fetchWallets } from '../utils/ExplorerApi'
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<ExplorerCtrlState>({

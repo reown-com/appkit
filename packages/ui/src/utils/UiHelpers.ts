@@ -230,12 +230,12 @@ export async function handleMobileLinking(
 
   if (standaloneUri) onRedirect(standaloneUri)
   else {
-    const connector = ClientCtrl.ethereum().getConnectorById('injected')
+    const connector = ClientCtrl.getConnectorById('injected')
     const isNameSimilar = compareTwoStrings(name, connector.name) >= 0.5
     if (connector.ready && isNameSimilar)
-      await ClientCtrl.ethereum().connectInjected(selectedChainId)
+      await ClientCtrl.connectExtension('injected', selectedChainId)
     else
-      await ClientCtrl.ethereum().connectWalletConnect(uri => {
+      await ClientCtrl.connectWalletConnect(uri => {
         onRedirect(uri)
       }, selectedChainId)
     ModalCtrl.close()
@@ -246,7 +246,7 @@ export async function handleUriCopy() {
   const { standaloneUri } = OptionsCtrl.state
   if (standaloneUri) await navigator.clipboard.writeText(standaloneUri)
   else {
-    const uri = await ClientCtrl.ethereum().getActiveWalletConnectUri()
+    const uri = await ClientCtrl.getActiveWalletConnectUri()
     await navigator.clipboard.writeText(uri)
   }
   ToastCtrl.openToast('Link copied', 'success')

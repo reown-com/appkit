@@ -3,7 +3,7 @@ import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
-import type { ModalConnectorsOpts, WalletConnectProviderOpts } from '../types/apiTypes'
+import type { ModalConnectorsOpts, WalletConnectProviderOpts } from './types'
 
 // -- constants ------------------------------------------------------- //
 const NAMESPACE = 'eip155'

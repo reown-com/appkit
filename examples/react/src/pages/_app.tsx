@@ -1,4 +1,4 @@
-import { modalConnectors, walletConnectProvider, Web3ModalEthereum } from '@web3modal/ethereum'
+import { EthereumClient, modalConnectors, walletConnectProvider } from '@web3modal/ethereum'
 import { Web3Modal } from '@web3modal/react'
 import type { AppProps } from 'next/app'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
@@ -19,7 +19,7 @@ const wagmiClient = createClient({
   provider
 })
 
-const ethereumClient = Web3ModalEthereum.create(wagmiClient, chains)
+const ethereumClient = new EthereumClient(wagmiClient, chains)
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
