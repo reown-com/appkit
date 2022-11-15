@@ -1,4 +1,2 @@
-export type { Chain, ChainProviderFn, Connector, Provider, WebSocketProvider } from '@wagmi/core'
-export { Web3ModalEthereum } from './src/api'
-export { chains, providers } from './src/utils/wagmiTools'
-export * from './types/apiTypes'
+export { EthereumClient } from './src/client'
+export { modalConnectors, walletConnectProvider } from './src/utils'

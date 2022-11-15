@@ -15,7 +15,7 @@ export class W3mAccountButton extends ThemedElement {
     return html`
       ${dynamicStyles()}
 
-      <button @click=${ClientCtrl.ethereum().disconnect}>
+      <button @click=${ClientCtrl.client().disconnect}>
         <w3m-text variant="medium-normal" color="inverse">Disconnect</w3m-text>
       </button>
     `

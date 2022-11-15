@@ -1,4 +1,4 @@
-import { AccountCtrl } from '@web3modal/core'
+import { ClientCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -8,14 +8,15 @@ import '../w3m-connect-button'
 @customElement('w3m-core-button')
 export class W3mCoreButton extends LitElement {
   // -- state & properties ------------------------------------------- //
-  @state() public isConnected = AccountCtrl.get().isConnected
+  @state() public isConnected = false
   @property() public label? = 'Connect Wallet'
   @property() public icon? = true
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.accountUnsub = AccountCtrl.watch(accountState => {
+    this.isConnected = ClientCtrl.client().getAccount().isConnected
+    this.accountUnsub = ClientCtrl.client().watchAccount(accountState => {
       this.isConnected = accountState.isConnected
     })
   }

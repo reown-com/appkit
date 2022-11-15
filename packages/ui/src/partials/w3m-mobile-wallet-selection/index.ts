@@ -16,7 +16,7 @@ export class W3mMobileWalletSelection extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private async onCoinbaseWallet() {
-    await ClientCtrl.ethereum().connectCoinbaseMobile(() => null, OptionsCtrl.state.selectedChainId)
+    await ClientCtrl.client().connectCoinbaseMobile(() => null, OptionsCtrl.state.selectedChainId)
     ModalCtrl.close()
   }
 

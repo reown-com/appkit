@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/core",
-  "version": "2.0.0-beta.3",
+  "version": "2.0.0-beta.4",
   "main": "dist/index.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -20,15 +20,7 @@
     "valtio": "1.7.5"
   },
   "devDependencies": {
-    "@web3modal/ethereum": "2.0.0-beta.3"
-  },
-  "peerDependencies": {
-    "@web3modal/ethereum": "2.0.0-beta.3"
-  },
-  "peerDependenciesMeta": {
-    "@web3modal/ethereum": {
-      "optional": true
-    }
+    "@web3modal/ethereum": "2.0.0-beta.4"
   },
   "keywords": [
     "web3",

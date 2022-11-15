@@ -50,8 +50,8 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private dynamicSlot() {
-    const injected = ClientCtrl.ethereum().getConnectorById('injected')
-    const metamask = ClientCtrl.ethereum().getConnectorById('metaMask')
+    const injected = ClientCtrl.client().getConnectorById('injected')
+    const metamask = ClientCtrl.client().getConnectorById('metaMask')
 
     if (injected.ready && injected.name !== metamask.name)
       return this.injectedTemplate(injected.name)
