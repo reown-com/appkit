@@ -25,6 +25,13 @@ export class EthereumClient {
     return connector
   }
 
+  public async getActiveWalletConnectUri() {
+    const connector = this.getConnectorById('walletConnect')
+    const provider = await connector.getProvider()
+
+    return provider.connector.uri
+  }
+
   public async connectWalletConnect(onUri: (uri: string) => void, selectedChainId?: number) {
     const connector = this.getConnectorById('walletConnect')
     const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
@@ -73,13 +80,6 @@ export class EthereumClient {
     const data = await connect({ connector, chainId })
 
     return data
-  }
-
-  public async getActiveWalletConnectUri() {
-    const connector = this.getConnectorById('walletConnect')
-    const provider = await connector.getProvider()
-
-    return provider.connector.uri
   }
 
   // -- public wagmi
