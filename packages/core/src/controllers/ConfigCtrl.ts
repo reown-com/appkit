@@ -24,6 +24,11 @@ export const ConfigCtrl = {
   },
 
   setConfig(config: ConfigOptions) {
+    if (!config.projectId)
+      throw new Error(
+        'Web3Modal requires projectId that can be obtained at cloud.walletconnect.com'
+      )
+
     if (config.standaloneChains?.length) OptionsCtrl.setStandaloneChains(config.standaloneChains)
     Object.assign(state, config)
     state.configured = true
