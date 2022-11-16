@@ -3,8 +3,7 @@
   "version": "2.0.0-beta.4",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build && next export"
+    "dev": "next dev"
   },
   "dependencies": {
     "@walletconnect/sign-client": "2.1.3",
