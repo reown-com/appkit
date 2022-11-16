@@ -18,16 +18,13 @@ export function walletConnectProvider({ projectId }: WalletConnectProviderOpts) 
 }
 
 // -- connectors ------------------------------------------------------ //
-export function modalConnectors({ appName, chains: connectorChains }: ModalConnectorsOpts) {
+export function modalConnectors({ appName, chains }: ModalConnectorsOpts) {
   return [
-    new WalletConnectConnector({ chains: connectorChains, options: { qrcode: false } }),
-    new InjectedConnector({ chains: connectorChains, options: { shimDisconnect: true } }),
-    new CoinbaseWalletConnector({
-      chains: connectorChains,
-      options: { appName, headlessMode: true }
-    }),
+    new WalletConnectConnector({ chains, options: { qrcode: false } }),
+    new InjectedConnector({ chains, options: { shimDisconnect: true } }),
+    new CoinbaseWalletConnector({ chains, options: { appName, headlessMode: true } }),
     new MetaMaskConnector({
-      chains: connectorChains,
+      chains,
       options: {
         shimDisconnect: true,
         shimChainChangedDisconnect: false,
