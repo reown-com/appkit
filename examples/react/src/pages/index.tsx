@@ -8,8 +8,13 @@ export default function HomePage() {
   return (
     <>
       <Web3Button />
-      <p>--- or ---</p>
-      {!isConnected && <button onClick={() => open()}>Custom Button</button>}
+
+      {!isConnected && (
+        <>
+          <p>--- or ---</p>
+          <button onClick={() => open()}>Custom Button</button>
+        </>
+      )}
     </>
   )
 }
