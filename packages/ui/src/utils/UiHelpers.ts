@@ -90,10 +90,32 @@ export function getOptimisticName(name: string) {
   return 'Injected'
 }
 
+export function getOptimisticId(id: string) {
+  if (id.toUpperCase() !== 'INJECTED') return id
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { ethereum }: { ethereum?: any } = window
+  if (!ethereum) return 'unknown'
+  if (ethereum.isFrame) return 'frame'
+  if (ethereum.isPortal) return 'ripoPortal'
+  if (ethereum.isTally) return 'tally'
+  if (ethereum.isTrust || ethereum.isTrustWallet) return 'trust'
+  if (ethereum.isCoinbaseExtension) return 'coinbaseWallet'
+  if (ethereum.isAvalanche) return 'core'
+  if (ethereum.isBitKeep) return 'bitkeep'
+  if (ethereum.isBraveWallet) return 'brave'
+  if (ethereum.isExodus) return 'exodus'
+  if (ethereum.isMathWallet) return 'mathWallet'
+  if (ethereum.isOpera) return 'opera'
+  if (ethereum.isTokenPocket) return 'tokenPocket'
+  if (ethereum.isTokenary) return 'tokenary'
+  if (ethereum.isMetaMask) return 'metaMask'
+
+  return 'injected'
+}
+
 export function getWalletIcon(id: string) {
   const { fallback, presets } = getCloudWalletImages()
-  const preset = Object.keys(presets).find(key => compareTwoStrings(key, id) >= 0.5)
-  const imageId = preset ? presets[preset] : undefined
+  const imageId = presets[id]
   const { projectId, walletImages } = ConfigCtrl.state
 
   return projectId ? ExplorerCtrl.getImageUrl(imageId ?? fallback) : walletImages?.[id] ?? ''

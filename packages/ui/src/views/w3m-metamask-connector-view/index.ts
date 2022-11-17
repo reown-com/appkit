@@ -105,7 +105,7 @@ export class W3mMetamaskConnectorView extends LitElement {
       <w3m-modal-header title="MetaMask"></w3m-modal-header>
       <w3m-modal-content>
         <div class=${classMap(classes)}>
-          <w3m-wallet-image id="metaMask" size="lg"></w3m-wallet-image>
+          <w3m-wallet-image walletId="metaMask" size="lg"></w3m-wallet-image>
           ${ready ? this.readyTemplate() : this.notReadyTemplate()}
         </div>
       </w3m-modal-content>

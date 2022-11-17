@@ -13,7 +13,7 @@ export class W3mWalletButton extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property() public onClick: () => void = () => null
   @property() public name = ''
-  @property() public id = ''
+  @property() public walletId = ''
   @property() public label?: string = undefined
   @property() public src?: string = undefined
 
@@ -24,7 +24,7 @@ export class W3mWalletButton extends LitElement {
 
       <button class="w3m-wallet-button" @click=${this.onClick}>
         <div class="w3m-wallet-button-wrap">
-          <w3m-wallet-image id=${this.id} .src=${this.src}></w3m-wallet-image>
+          <w3m-wallet-image walletId=${this.walletId} .src=${this.src}></w3m-wallet-image>
           <w3m-text variant="xsmall-normal">
             ${this.label ?? getWalletFirstName(this.name)}
           </w3m-text>
