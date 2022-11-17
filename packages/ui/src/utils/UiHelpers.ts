@@ -102,9 +102,11 @@ export function getWalletIcon(name: string) {
 
 export function getChainIcon(chainId: number) {
   const { fallback, presets } = getCloudChainImages()
-  const { projectId } = ConfigCtrl.state
+  const { projectId, chainImages } = ConfigCtrl.state
 
-  return projectId ? ExplorerCtrl.getImageUrl(presets[chainId] ?? fallback) : ''
+  return projectId
+    ? ExplorerCtrl.getImageUrl(presets[chainId] ?? fallback)
+    : chainImages?.[chainId] ?? ''
 }
 
 export function getWalletFirstName(fullName: string) {
