@@ -8,9 +8,9 @@ import '../../components/w3m-qrcode'
 import '../../components/w3m-spinner'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-image'
+import { getOptimisticNamePreset } from '../../utils/Presets'
 import { ARROW_UP_RIGHT_ICON, MOBILE_ICON, RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
-import { getOptimisticName } from '../../utils/UiHelpers'
 import styles from './styles'
 
 @customElement('w3m-desktop-connector-view')
@@ -62,7 +62,7 @@ export class W3mDesktopConnectorView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { name, icon, universal } = this.getRouterData()
-    const optimisticName = getOptimisticName(name)
+    const optimisticName = getOptimisticNamePreset(name)
 
     return html`
       <w3m-modal-header title=${optimisticName}></w3m-modal-header>
@@ -71,7 +71,7 @@ export class W3mDesktopConnectorView extends LitElement {
         <div class="w3m-wrapper">
           ${icon
             ? html`<w3m-wallet-image src=${icon} size="lg"></w3m-wallet-image>`
-            : html`<w3m-wallet-image name=${optimisticName} size="lg"></w3m-wallet-image>`}
+            : html`<w3m-wallet-image size="lg"></w3m-wallet-image>`}
 
           <div class="w3m-connecting-title">
             <w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>

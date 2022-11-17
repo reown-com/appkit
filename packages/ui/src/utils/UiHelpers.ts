@@ -8,7 +8,11 @@ import {
   ToastCtrl
 } from '@web3modal/core'
 import type { LitElement } from 'lit'
-import { getCloudChainImages, getCloudWalletImages } from './Images'
+import {
+  getChainPresetExplorerImage,
+  getOptimisticNamePreset,
+  getWalletPresetExplorerImage
+} from './Presets'
 
 export const MOBILE_BREAKPOINT = 600
 
@@ -67,54 +71,8 @@ export function compareTwoStrings(first: string, second: string) {
   return (2.0 * intersectionSize) / (first.length + second.length - 2)
 }
 
-export function getOptimisticName(name: string) {
-  if (name.toUpperCase() !== 'INJECTED') return name
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { ethereum }: { ethereum?: any } = window
-  if (!ethereum) return 'Unknown'
-  if (ethereum.isFrame) return 'Frame'
-  if (ethereum.isPortal) return 'Ripio Portal'
-  if (ethereum.isTally) return 'Tally'
-  if (ethereum.isTrust || ethereum.isTrustWallet) return 'Trust'
-  if (ethereum.isCoinbaseExtension) return 'Coinbase'
-  if (ethereum.isAvalanche) return 'Core'
-  if (ethereum.isBitKeep) return 'BitKeep'
-  if (ethereum.isBraveWallet) return 'Brave'
-  if (ethereum.isExodus) return 'Exodus'
-  if (ethereum.isMathWallet) return 'MathWallet'
-  if (ethereum.isOpera) return 'Opera'
-  if (ethereum.isTokenPocket) return 'TokenPocket'
-  if (ethereum.isTokenary) return 'Tokenary'
-  if (ethereum.isMetaMask) return 'MetaMask'
-
-  return 'Injected'
-}
-
-export function getOptimisticId(id: string) {
-  if (id.toUpperCase() !== 'INJECTED') return id
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { ethereum }: { ethereum?: any } = window
-  if (!ethereum) return 'unknown'
-  if (ethereum.isFrame) return 'frame'
-  if (ethereum.isPortal) return 'ripoPortal'
-  if (ethereum.isTally) return 'tally'
-  if (ethereum.isTrust || ethereum.isTrustWallet) return 'trust'
-  if (ethereum.isCoinbaseExtension) return 'coinbaseWallet'
-  if (ethereum.isAvalanche) return 'core'
-  if (ethereum.isBitKeep) return 'bitkeep'
-  if (ethereum.isBraveWallet) return 'brave'
-  if (ethereum.isExodus) return 'exodus'
-  if (ethereum.isMathWallet) return 'mathWallet'
-  if (ethereum.isOpera) return 'opera'
-  if (ethereum.isTokenPocket) return 'tokenPocket'
-  if (ethereum.isTokenary) return 'tokenary'
-  if (ethereum.isMetaMask) return 'metaMask'
-
-  return 'injected'
-}
-
 export function getWalletIcon(id: string) {
-  const { fallback, presets } = getCloudWalletImages()
+  const { fallback, presets } = getWalletPresetExplorerImage()
   const imageId = presets[id]
   const { projectId, walletImages } = ConfigCtrl.state
 
@@ -122,7 +80,7 @@ export function getWalletIcon(id: string) {
 }
 
 export function getChainIcon(chainId: number) {
-  const { fallback, presets } = getCloudChainImages()
+  const { fallback, presets } = getChainPresetExplorerImage()
   const { projectId, chainImages } = ConfigCtrl.state
 
   return projectId
@@ -131,7 +89,7 @@ export function getChainIcon(chainId: number) {
 }
 
 export function getWalletFirstName(fullName: string) {
-  const optimisticName = getOptimisticName(fullName)
+  const optimisticName = getOptimisticNamePreset(fullName)
 
   return optimisticName.split(' ')[0] ?? optimisticName
 }

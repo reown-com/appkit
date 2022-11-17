@@ -1,7 +1,8 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { getOptimisticWalletIdPreset } from '../../utils/Presets'
 import { global } from '../../utils/Theme'
-import { getOptimisticId, getWalletIcon } from '../../utils/UiHelpers'
+import { getWalletIcon } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-wallet-image')
@@ -15,7 +16,7 @@ export class W3mWalletImage extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const walletId = this.walletId ?? 'injected'
-    const optimisticId = getOptimisticId(walletId)
+    const optimisticId = getOptimisticWalletIdPreset(walletId)
 
     return html`
       ${dynamicStyles()}
