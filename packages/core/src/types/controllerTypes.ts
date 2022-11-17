@@ -1,22 +1,9 @@
 import type { EthereumClient } from '@web3modal/ethereum'
+import type { Settings } from './settingsTypes'
 
 // -- ConfigCtrl ------------------------------------------- //
-export interface ConfigOptions {
-  projectId: string
-  theme?: 'dark' | 'light'
-  accentColor?:
-    | 'blackWhite'
-    | 'blue'
-    | 'default'
-    | 'green'
-    | 'magenta'
-    | 'orange'
-    | 'purple'
-    | 'teal'
-  standaloneChains?: string[]
-}
 
-export interface ConfigCtrlState extends ConfigOptions {
+export interface ConfigCtrlState extends Settings {
   configured: boolean
 }
 

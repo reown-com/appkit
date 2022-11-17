@@ -32,6 +32,12 @@ export class EthereumClient {
     return provider.connector.uri
   }
 
+  public getConnectorWallets() {
+    const connectors = this.wagmi.connectors.filter(connector => connector.id !== 'walletConnect')
+
+    return connectors
+  }
+
   public async connectWalletConnect(onUri: (uri: string) => void, selectedChainId?: number) {
     const connector = this.getConnectorById('walletConnect')
     const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
@@ -82,7 +88,13 @@ export class EthereumClient {
     return data
   }
 
-  // -- public wagmi
+  public async connectConnector(connector: Connector, selectedChainId?: number) {
+    const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
+    const data = await connect({ connector, chainId })
+
+    return data
+  }
+
   public disconnect = disconnect
 
   public getAccount = getAccount

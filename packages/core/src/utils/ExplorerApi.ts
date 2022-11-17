@@ -1,7 +1,8 @@
-import { ConfigCtrl } from '../controllers/ConfigCtrl'
 import type { ListingResponse, PageParams } from '../types/controllerTypes'
 
-function formatParams(params: PageParams) {
+export const EXPLORER_API = 'https://explorer-api.walletconnect.com'
+
+export function formatParams(params: PageParams) {
   const stringParams = Object.fromEntries(
     Object.entries(params)
       .filter(([_, value]) => typeof value !== 'undefined' && value !== null && value !== '')
@@ -11,17 +12,17 @@ function formatParams(params: PageParams) {
   return new URLSearchParams(stringParams).toString()
 }
 
-export function getExplorerApi() {
-  return {
-    url: 'https://explorer-api.walletconnect.com',
-    projectId: ConfigCtrl.state.projectId
-  }
-}
-
-export async function fetchWallets(params: PageParams): Promise<ListingResponse> {
-  const { url, projectId } = getExplorerApi()
-  const fetcUrl = `${url}/v3/wallets?projectId=${projectId}&${formatParams(params)}`
+export async function fetchWallets(
+  projectId: string,
+  params: PageParams
+): Promise<ListingResponse> {
+  const urlParams = formatParams(params)
+  const fetcUrl = `${EXPLORER_API}/v3/wallets?projectId=${projectId}&${urlParams}`
   const fetched = await fetch(fetcUrl)
 
   return fetched.json()
+}
+
+export function formatImageUrl(projectId: string, imageId: string) {
+  return `${EXPLORER_API}/v2/logo/lg/${imageId}?projectId=${projectId}`
 }
