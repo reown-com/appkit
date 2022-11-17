@@ -30,12 +30,15 @@ export default function App({ Component, pageProps }: AppProps) {
       </WagmiConfig>
 
       <Web3Modal
-        // projectId={projectId}
+        projectId={projectId}
         theme="dark"
         accentColor="default"
         ethereumClient={ethereumClient}
         chainImages={{
           1: `https://explorer-api.walletconnect.com/v2/logo/lg/600a9a04-c1b9-42ca-6785-9b4b6ff85200?projectId=${projectId}`
+        }}
+        walletImages={{
+          metamask: `https://explorer-api.walletconnect.com/v2/logo/lg/619537c0-2ff3-4c78-9ed8-a05e7567f300?projectId=${projectId}`
         }}
       />
     </>

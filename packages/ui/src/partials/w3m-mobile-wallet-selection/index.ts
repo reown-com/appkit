@@ -45,6 +45,7 @@ export class W3mMobileWalletSelection extends LitElement {
               <w3m-wallet-button
                 src=${listing.image_url.lg}
                 name=${listing.name}
+                id=${listing.id}
                 .onClick=${async () => handleMobileLinking(listing.mobile, listing.name)}
               ></w3m-wallet-button>
             `
@@ -57,6 +58,7 @@ export class W3mMobileWalletSelection extends LitElement {
               <w3m-wallet-button
                 src=${listing.image_url.lg}
                 name=${listing.name}
+                id=${listing.id}
                 .onClick=${async () => handleMobileLinking(listing.mobile, listing.name)}
               ></w3m-wallet-button>
             `
@@ -66,6 +68,7 @@ export class W3mMobileWalletSelection extends LitElement {
             : html`
                 <w3m-wallet-button
                   name="Coinbase Wallet"
+                  id="coinbaseWallet"
                   .onClick=${this.onCoinbaseWallet}
                 ></w3m-wallet-button>
               `}

@@ -39,13 +39,21 @@ export class W3mDesktopWalletSelection extends LitElement {
 
   private metaMaskTemplate() {
     return html`
-      <w3m-wallet-button name="MetaMask" .onClick=${this.onMetaMaskWallet}></w3m-wallet-button>
+      <w3m-wallet-button
+        name="MetaMask"
+        id="metaMask"
+        .onClick=${this.onMetaMaskWallet}
+      ></w3m-wallet-button>
     `
   }
 
-  private injectedTemplate(name: string) {
+  private injectedTemplate(name: string, id: string) {
     return html`
-      <w3m-wallet-button name=${name} .onClick=${this.onInjectedWallet}></w3m-wallet-button>
+      <w3m-wallet-button
+        name=${name}
+        id=${id}
+        .onClick=${this.onInjectedWallet}
+      ></w3m-wallet-button>
     `
   }
 
@@ -54,7 +62,7 @@ export class W3mDesktopWalletSelection extends LitElement {
     const metamask = ClientCtrl.client().getConnectorById('metaMask')
 
     if (injected.ready && injected.name !== metamask.name)
-      return this.injectedTemplate(injected.name)
+      return this.injectedTemplate(injected.name, injected.id)
 
     return this.metaMaskTemplate()
   }
@@ -104,6 +112,7 @@ export class W3mDesktopWalletSelection extends LitElement {
                     <w3m-wallet-button
                       src=${wallet.image_url.lg}
                       name=${wallet.name}
+                      id=${wallet.id}
                       .onClick=${() =>
                         this.onDesktopWallet(
                           wallet.name,
@@ -124,11 +133,13 @@ export class W3mDesktopWalletSelection extends LitElement {
                 ${this.dynamicSlot()}
                 <w3m-wallet-button
                   name="Coinbase Wallet"
+                  id="coinbaseWallet"
                   .onClick=${this.onCoinbaseWallet}
                 ></w3m-wallet-button>
 
                 <w3m-wallet-button
                   name="Ledger Live"
+                  id="ledger"
                   .onClick=${() =>
                     this.onDesktopWallet(
                       'Ledger Live',

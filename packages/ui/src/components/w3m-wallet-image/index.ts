@@ -9,7 +9,7 @@ export class W3mWalletImage extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
-  @property() public name = ''
+  @property() public id = ''
   @property() public src?: string = undefined
 
   // -- render ------------------------------------------------------- //
@@ -18,7 +18,7 @@ export class W3mWalletImage extends LitElement {
       ${dynamicStyles()}
 
       <div class="w3m-wallet-image">
-        <img src=${this.src ?? getWalletIcon(this.name)} alt=${this.name} />
+        <img src=${this.src ?? getWalletIcon(this.id)} alt=${this.id} />
       </div>
     `
   }

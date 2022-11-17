@@ -90,14 +90,13 @@ export function getOptimisticName(name: string) {
   return 'Injected'
 }
 
-export function getWalletIcon(name: string) {
+export function getWalletIcon(id: string) {
   const { fallback, presets } = getCloudWalletImages()
-  const optimisticName = getOptimisticName(name)
-  const preset = Object.keys(presets).find(key => compareTwoStrings(key, optimisticName) >= 0.5)
+  const preset = Object.keys(presets).find(key => compareTwoStrings(key, id) >= 0.5)
   const imageId = preset ? presets[preset] : undefined
-  const { projectId } = ConfigCtrl.state
+  const { projectId, walletImages } = ConfigCtrl.state
 
-  return projectId ? ExplorerCtrl.getImageUrl(imageId ?? fallback) : ''
+  return projectId ? ExplorerCtrl.getImageUrl(imageId ?? fallback) : walletImages?.[id] ?? ''
 }
 
 export function getChainIcon(chainId: number) {

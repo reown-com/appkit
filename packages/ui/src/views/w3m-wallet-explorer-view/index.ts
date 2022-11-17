@@ -144,6 +144,7 @@ export class W3mWalletExplorerView extends LitElement {
               <w3m-wallet-button
                 src=${listing.image_url.lg}
                 name=${listing.name}
+                id=${listing.id}
                 .onClick=${async () => this.onConnectPlatform(listing)}
               >
               </w3m-wallet-button>

@@ -36,10 +36,10 @@ export class W3mGetWalletView extends LitElement {
       <w3m-modal-header title="Get a wallet"></w3m-modal-header>
       <w3m-modal-content>
         ${wallets.map(
-          ({ name, image_url, homepage }) =>
+          ({ name, image_url, id, homepage }) =>
             html`
               <div class="w3m-wallet-item">
-                <w3m-wallet-image name=${name} src=${image_url.lg}></w3m-wallet-image>
+                <w3m-wallet-image id=${id} src=${image_url.lg}></w3m-wallet-image>
                 <div class="w3m-wallet-content">
                   <w3m-text variant="medium-normal">${name}</w3m-text>
                   <w3m-button

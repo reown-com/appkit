@@ -55,7 +55,7 @@ export class W3mCoinbaseExtensionConnectorView extends LitElement {
       <w3m-modal-header title=${name}></w3m-modal-header>
       <w3m-modal-content>
         <div class=${classMap(classes)}>
-          <w3m-wallet-image name=${name} size="lg"></w3m-wallet-image>
+          <w3m-wallet-image id="coinbaseWallet" size="lg"></w3m-wallet-image>
           <div class="w3m-connecting-title">
             ${this.connecting
               ? html`<w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>`
