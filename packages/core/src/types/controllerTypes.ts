@@ -2,6 +2,7 @@ import type { EthereumClient } from '@web3modal/ethereum'
 
 interface MobileWallet {
   id: string
+  name: string
   links: {
     universal: string
     deep?: string
@@ -10,6 +11,7 @@ interface MobileWallet {
 
 interface DesktopWallet {
   id: string
+  name: string
   links: {
     deep: string
     universal: string

@@ -113,16 +113,6 @@ export function getWalletFirstName(fullName: string) {
   return optimisticName.split(' ')[0] ?? optimisticName
 }
 
-export function getDefaultWalletNames() {
-  return CoreHelpers.isMobile()
-    ? ['Coinbase Wallet']
-    : ['MetaMask', 'Coinbase Wallet', 'Ledger Live']
-}
-
-export function defaultWalletImages() {
-  return getDefaultWalletNames().map(name => getWalletIcon(name))
-}
-
 export function isMobileAnimation() {
   return window.innerWidth <= MOBILE_BREAKPOINT
 }

@@ -13,7 +13,6 @@ import { animate, spring } from 'motion'
 import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import {
-  defaultWalletImages,
   getChainIcon,
   getShadowRootElement,
   isMobileAnimation,
@@ -88,11 +87,9 @@ export class W3mModal extends ThemedElement {
           ...ExplorerCtrl.state.previewWallets,
           ...ExplorerCtrl.state.recomendedWallets
         ].map(({ image_url }) => image_url.lg)
-        const defaultWalletImgs = defaultWalletImages()
         const chainsImgs = chains?.map(chain => getChainIcon(chain.id)) ?? []
         await Promise.all([
           ...walletImgs.map(async url => preloadImage(url)),
-          ...defaultWalletImgs.map(async url => preloadImage(url)),
           ...chainsImgs.map(async url => preloadImage(url))
         ])
       } catch {
