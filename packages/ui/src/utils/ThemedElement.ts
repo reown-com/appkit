@@ -1,12 +1,12 @@
-import type { Settings } from '@web3modal/core'
+import type { ConfigCtrlState } from '@web3modal/core'
 import { ConfigCtrl } from '@web3modal/core'
 import { LitElement } from 'lit'
 import { state } from 'lit/decorators.js'
 
 export default class ThemedElement extends LitElement {
   // -- state & properties ------------------------------------------- //
-  @state() protected theme: Settings['theme'] = 'light'
-  @state() protected accentColor: Settings['accentColor'] = 'default'
+  @state() protected theme: ConfigCtrlState['theme'] = 'light'
+  @state() protected accentColor: ConfigCtrlState['accentColor'] = 'default'
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {

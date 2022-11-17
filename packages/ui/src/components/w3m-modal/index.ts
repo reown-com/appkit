@@ -40,22 +40,16 @@ export class W3mModal extends ThemedElement {
       if (modalState.open) this.onOpenModalEvent()
       if (!modalState.open) this.onCloseModalEvent()
     })
-    if (ConfigCtrl.state.configured) this.preloadData()
-    else
-      this.unsubscribeConfig = ConfigCtrl.subscribe(configState => {
-        if (configState.configured) this.preloadData()
-      })
+    if (ConfigCtrl.state.projectId) this.preloadData()
   }
 
   public disconnectedCallback() {
     super.disconnectedCallback()
     this.unsubscribeModal?.()
-    this.unsubscribeConfig?.()
   }
 
   // -- private ------------------------------------------------------ //
   private readonly unsubscribeModal?: () => void = undefined
-  private readonly unsubscribeConfig?: () => void = undefined
 
   private get overlayEl() {
     return getShadowRootElement(this, '.w3m-modal-overlay')

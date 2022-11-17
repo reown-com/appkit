@@ -1,4 +1,4 @@
-import type { Settings } from '@web3modal/core'
+import type { ConfigCtrlState } from '@web3modal/core'
 import { ClientCtrl, ConfigCtrl } from '@web3modal/core'
 import type { EthereumClient } from '@web3modal/ethereum'
 import React, { useCallback, useEffect } from 'react'
@@ -7,7 +7,7 @@ import { Modal } from './Modal'
 /**
  * Props
  */
-interface Props extends Settings {
+interface Props extends ConfigCtrlState {
   ethereumClient?: EthereumClient
 }
 
