@@ -30,7 +30,6 @@ export class W3mModal extends ThemedElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false
-  @state() private initialized = false
   @state() private preload = true
 
   // -- lifecycle ---------------------------------------------------- //
@@ -40,7 +39,7 @@ export class W3mModal extends ThemedElement {
       if (modalState.open) this.onOpenModalEvent()
       if (!modalState.open) this.onCloseModalEvent()
     })
-    if (ConfigCtrl.state.projectId) this.preloadData()
+    if (ConfigCtrl.state.projectId) this.preloadExplorerWallets()
   }
 
   public disconnectedCallback() {
@@ -69,7 +68,7 @@ export class W3mModal extends ThemedElement {
     if (event.target === event.currentTarget) ModalCtrl.close()
   }
 
-  private async preloadData() {
+  private async preloadExplorerWallets() {
     const { standaloneChains, chains } = OptionsCtrl.state
     if (this.preload && (standaloneChains?.length || chains?.length))
       try {
@@ -102,7 +101,7 @@ export class W3mModal extends ThemedElement {
   }
 
   private async onOpenModalEvent() {
-    await this.preloadData()
+    await this.preloadExplorerWallets()
     this.toggleBodyScroll(false)
     const delay = 0.3
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay })
@@ -113,7 +112,6 @@ export class W3mModal extends ThemedElement {
     })
     document.addEventListener('keydown', this.onKeyDown)
     this.open = true
-    this.initialized = true
   }
 
   private async onCloseModalEvent() {
@@ -150,11 +148,11 @@ export class W3mModal extends ThemedElement {
         aria-modal="true"
       >
         <div class="w3m-modal-container">
-          ${this.initialized
+          ${this.open
             ? html`
                 <w3m-modal-backcard></w3m-modal-backcard>
                 <div class="w3m-modal-card">
-                  ${this.open ? html`<w3m-modal-router></w3m-modal-router>` : null}
+                  <w3m-modal-router></w3m-modal-router>
                   <w3m-modal-toast></w3m-modal-toast>
                 </div>
               `
