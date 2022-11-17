@@ -1,5 +1,6 @@
 import {
   ClientCtrl,
+  ConfigCtrl,
   CoreHelpers,
   ExplorerCtrl,
   ModalCtrl,
@@ -94,14 +95,16 @@ export function getWalletIcon(name: string) {
   const optimisticName = getOptimisticName(name)
   const preset = Object.keys(presets).find(key => compareTwoStrings(key, optimisticName) >= 0.5)
   const imageId = preset ? presets[preset] : undefined
+  const { projectId } = ConfigCtrl.state
 
-  return ExplorerCtrl.getImageUrl(imageId ?? fallback)
+  return projectId ? ExplorerCtrl.getImageUrl(imageId ?? fallback) : ''
 }
 
 export function getChainIcon(chainId: number) {
   const { fallback, presets } = getCloudChainImages()
+  const { projectId } = ConfigCtrl.state
 
-  return ExplorerCtrl.getImageUrl(presets[chainId] ?? fallback)
+  return projectId ? ExplorerCtrl.getImageUrl(presets[chainId] ?? fallback) : ''
 }
 
 export function getWalletFirstName(fullName: string) {

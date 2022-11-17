@@ -39,7 +39,7 @@ export class W3mModal extends ThemedElement {
       if (modalState.open) this.onOpenModalEvent()
       if (!modalState.open) this.onCloseModalEvent()
     })
-    if (ConfigCtrl.state.projectId) this.preloadExplorerWallets()
+    this.preloadExplorerWallets()
   }
 
   public disconnectedCallback() {
@@ -70,8 +70,10 @@ export class W3mModal extends ThemedElement {
 
   private async preloadExplorerWallets() {
     const { standaloneChains, chains } = OptionsCtrl.state
-    if (this.preload && (standaloneChains?.length || chains?.length))
+    const isProjectId = ConfigCtrl.state.projectId
+    if (isProjectId && this.preload && (standaloneChains?.length || chains?.length))
       try {
+        this.preload = false
         const chainsFilter = standaloneChains?.join(',')
         await Promise.all([
           ExplorerCtrl.getPreviewWallets({
@@ -95,8 +97,6 @@ export class W3mModal extends ThemedElement {
         ])
       } catch {
         ToastCtrl.openToast('Failed preloading', 'error')
-      } finally {
-        this.preload = false
       }
   }
 
