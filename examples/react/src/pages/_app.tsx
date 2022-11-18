@@ -35,6 +35,7 @@ export default function App({ Component, pageProps }: AppProps) {
         accentColor="default"
         ethereumClient={ethereumClient}
         chainImages={{
+          137: `https://explorer-api.walletconnect.com/v2/logo/lg/600a9a04-c1b9-42ca-6785-9b4b6ff85200?projectId=${projectId}`,
           1: `https://explorer-api.walletconnect.com/v2/logo/lg/600a9a04-c1b9-42ca-6785-9b4b6ff85200?projectId=${projectId}`
         }}
         walletImages={{
