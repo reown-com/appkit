@@ -22,7 +22,7 @@ export class W3mWalletImage extends LitElement {
       ${dynamicStyles()}
 
       <div class="w3m-wallet-image">
-        <img src=${this.src ?? getWalletIcon(optimisticId)} alt=${this.id} />
+        <img src=${this.src ? this.src : getWalletIcon(optimisticId)} alt=${this.id} />
       </div>
     `
   }

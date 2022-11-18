@@ -62,19 +62,20 @@ export function getOptimisticNamePreset(name: string) {
   if (name.toUpperCase() !== 'INJECTED') return name
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { ethereum }: { ethereum?: any } = window
-  if (!ethereum) return 'Unknown'
+  // Default to metamask and reccomend to install it
+  if (!ethereum) return 'MetaMask'
+  if (ethereum.isTrust || ethereum.isTrustWallet) return 'Trust'
+  if (ethereum.isBraveWallet) return 'Brave'
+  if (ethereum.isExodus) return 'Exodus'
+  if (ethereum.isTokenPocket) return 'TokenPocket'
   if (ethereum.isFrame) return 'Frame'
   if (ethereum.isPortal) return 'Ripio Portal'
   if (ethereum.isTally) return 'Tally'
-  if (ethereum.isTrust || ethereum.isTrustWallet) return 'Trust'
   if (ethereum.isCoinbaseExtension) return 'Coinbase'
   if (ethereum.isAvalanche) return 'Core'
   if (ethereum.isBitKeep) return 'BitKeep'
-  if (ethereum.isBraveWallet) return 'Brave'
-  if (ethereum.isExodus) return 'Exodus'
   if (ethereum.isMathWallet) return 'MathWallet'
   if (ethereum.isOpera) return 'Opera'
-  if (ethereum.isTokenPocket) return 'TokenPocket'
   if (ethereum.isTokenary) return 'Tokenary'
   if (ethereum.isMetaMask) return 'MetaMask'
 
@@ -85,19 +86,20 @@ export function getOptimisticWalletIdPreset(id: string) {
   if (id.toUpperCase() !== 'INJECTED') return id
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { ethereum }: { ethereum?: any } = window
-  if (!ethereum) return 'unknown'
+  // Default to metamask and reccomend to install it
+  if (!ethereum) return 'metaMask'
+  if (ethereum.isTrust || ethereum.isTrustWallet) return 'trust'
+  if (ethereum.isExodus) return 'exodus'
+  if (ethereum.isBraveWallet) return 'brave'
+  if (ethereum.isTokenPocket) return 'tokenPocket'
   if (ethereum.isFrame) return 'frame'
   if (ethereum.isPortal) return 'ripoPortal'
   if (ethereum.isTally) return 'tally'
-  if (ethereum.isTrust || ethereum.isTrustWallet) return 'trust'
   if (ethereum.isCoinbaseExtension) return 'coinbaseWallet'
   if (ethereum.isAvalanche) return 'core'
   if (ethereum.isBitKeep) return 'bitkeep'
-  if (ethereum.isBraveWallet) return 'brave'
-  if (ethereum.isExodus) return 'exodus'
   if (ethereum.isMathWallet) return 'mathWallet'
   if (ethereum.isOpera) return 'opera'
-  if (ethereum.isTokenPocket) return 'tokenPocket'
   if (ethereum.isTokenary) return 'tokenary'
   if (ethereum.isMetaMask) return 'metaMask'
 

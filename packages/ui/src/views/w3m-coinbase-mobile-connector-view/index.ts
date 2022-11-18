@@ -9,7 +9,7 @@ import '../../components/w3m-qrcode'
 import '../../components/w3m-text'
 import { ARROW_DOWN_ICON, QRCODE_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import { getErrorMessage, getWalletIcon } from '../../utils/UiHelpers'
+import { getErrorMessage } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 const HORIZONTAL_PADDING = 36
@@ -57,12 +57,14 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
       <w3m-modal-content>
         <div class="w3m-qr-container">
           ${this.uri
-            ? html`<w3m-qrcode
-                size=${this.offsetWidth - HORIZONTAL_PADDING}
-                uri=${this.uri}
-                logoSrc=${getWalletIcon(name)}
-              >
-              </w3m-qrcode>`
+            ? html`
+                <w3m-qrcode
+                  size=${this.offsetWidth - HORIZONTAL_PADDING}
+                  uri=${this.uri}
+                  walletId="coinbaseWallet"
+                >
+                </w3m-qrcode>
+              `
             : null}
         </div>
       </w3m-modal-content>

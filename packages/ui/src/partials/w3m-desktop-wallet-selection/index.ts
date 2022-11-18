@@ -40,6 +40,16 @@ export class W3mDesktopWalletSelection extends LitElement {
     RouterCtrl.push('InjectedConnector')
   }
 
+  private onMetaMask() {
+    RouterCtrl.push('MetaMaskConnector')
+  }
+
+  private onConnectorWallet(id: string) {
+    if (id === 'coinbaseWallet') this.onCoinbaseWallet()
+    else if (id === 'metaMask' || !window.ethereum) this.onMetaMask()
+    else if (id === 'injected') this.onInjectedWallet()
+  }
+
   private desktopWalletsTemplate() {
     const { desktopWallets } = ConfigCtrl.state
 
@@ -83,7 +93,7 @@ export class W3mDesktopWalletSelection extends LitElement {
         <w3m-wallet-button
           name=${wallet.name}
           walletId=${wallet.id}
-          .onClick=${this.onCoinbaseWallet}
+          .onClick=${() => this.onConnectorWallet(wallet.id)}
         ></w3m-wallet-button>
       `
     )
@@ -97,7 +107,6 @@ export class W3mDesktopWalletSelection extends LitElement {
     const connectorTemplate = this.connectorWalletsTemplate()
 
     const linkingWallets = desktopTemplate ?? previewTemplate
-    console.log(linkingWallets)
     const combinedWallets = [...connectorTemplate, ...linkingWallets]
     const displayWallets = standaloneUri ? linkingWallets : combinedWallets
     const isViewAll = displayWallets.length > 4

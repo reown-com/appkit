@@ -22,13 +22,5 @@ export function modalConnectors({ appName, chains }: ModalConnectorsOpts) {
     new WalletConnectConnector({ chains, options: { qrcode: false } }),
     new InjectedConnector({ chains, options: { shimDisconnect: true } }),
     new CoinbaseWalletConnector({ chains, options: { appName, headlessMode: true } })
-    // new MetaMaskConnector({
-    //   chains,
-    //   options: {
-    //     shimDisconnect: true,
-    //     shimChainChangedDisconnect: false,
-    //     UNSTABLE_shimOnConnectSelectAccount: true
-    //   }
-    // })
   ]
 }

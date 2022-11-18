@@ -28,7 +28,7 @@ export class W3mMetamaskConnectorView extends LitElement {
   }
 
   // -- private ------------------------------------------------------ //
-  private readonly connector = ClientCtrl.client().getConnectorById('metaMask')
+  private readonly connector = ClientCtrl.client().getConnectorById('injected')
   private readonly metamaskUrl = 'https://metamask.io/download/'
 
   private async onConnect() {
