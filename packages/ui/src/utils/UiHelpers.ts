@@ -76,16 +76,17 @@ export function getWalletIcon(id: string) {
   const imageId = presets[id]
   const { projectId, walletImages } = ConfigCtrl.state
 
-  return projectId ? ExplorerCtrl.getImageUrl(imageId ?? fallback) : walletImages?.[id] ?? ''
+  return walletImages?.[id] ?? (projectId ? ExplorerCtrl.getImageUrl(imageId ?? fallback) : '')
 }
 
 export function getChainIcon(chainId: number) {
   const { fallback, presets } = getChainPresetExplorerImage()
   const { projectId, chainImages } = ConfigCtrl.state
 
-  return projectId
-    ? ExplorerCtrl.getImageUrl(presets[chainId] ?? fallback)
-    : chainImages?.[chainId] ?? ''
+  return (
+    chainImages?.[chainId] ??
+    (projectId ? ExplorerCtrl.getImageUrl(presets[chainId] ?? fallback) : '')
+  )
 }
 
 export function getWalletFirstName(fullName: string) {
