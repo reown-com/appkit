@@ -48,6 +48,10 @@ export class W3mDesktopWalletSelection extends LitElement {
     if (id === 'coinbaseWallet') this.onCoinbaseWallet()
     else if (id === 'metaMask' || !window.ethereum) this.onMetaMask()
     else if (id === 'injected') this.onInjectedWallet()
+    else {
+      const { standaloneUri } = OptionsCtrl.state
+      ClientCtrl.client().connectConnectorById(id, standaloneUri)
+    }
   }
 
   private desktopWalletsTemplate() {

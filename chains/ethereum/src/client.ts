@@ -20,7 +20,7 @@ export class EthereumClient {
   }
 
   // -- public web3modal
-  public getConnectorById(id: ConnectorId) {
+  public getConnectorById(id: ConnectorId | string) {
     const connector = this.wagmi.connectors.find(item => item.id === id)
     if (!connector) throw new Error(`Missing ${id} connector`)
 
@@ -90,7 +90,8 @@ export class EthereumClient {
     return data
   }
 
-  public async connectConnector(connector: Connector, selectedChainId?: number) {
+  public async connectConnectorById(id: string, selectedChainId?: number) {
+    const connector = this.getConnectorById(id)
     const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
     const data = await connect({ connector, chainId })
 
