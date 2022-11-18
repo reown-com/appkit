@@ -25,7 +25,7 @@ export class W3mViewAllWalletsButton extends LitElement {
         <div class="w3m-icons">
           ${wallets.map(wallet => html`<img src=${wallet.image_url.lg} />`)}
         </div>
-        <w3m-text variant="xsmall-normal">View All</w3m-text>
+        <w3m-text variant="xsmall-normal">View More</w3m-text>
       </button>
     `
   }

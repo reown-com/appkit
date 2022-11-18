@@ -21,8 +21,9 @@ export default css`
     font-size: 16px;
     letter-spacing: -0.03em;
     padding: 0 10px 0 34px;
-    transition: 0.15s all ease-in-out;
+    transition: 0.2s all ease-in-out;
     color: transparent;
+    position: absolute;
   }
 
   input::placeholder {
@@ -37,13 +38,14 @@ export default css`
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    transition: 0.15s all ease-in-out;
+    transition: 0.2s all ease-in-out;
     pointer-events: none;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
-    position: absolute;
+    width: fit-content;
+    position: relative;
   }
 
   input:focus-within + .w3m-placeholder,
@@ -54,7 +56,7 @@ export default css`
 
   w3m-text {
     opacity: 1;
-    transition: 0.15s opacity ease-in-out;
+    transition: 0.2s opacity ease-in-out;
   }
 
   input:focus-within + .w3m-placeholder w3m-text,
