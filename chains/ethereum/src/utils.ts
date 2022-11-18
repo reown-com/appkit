@@ -1,6 +1,5 @@
 import { InjectedConnector } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
-import { MetaMaskConnector } from '@wagmi/core/connectors/metaMask'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import type { ModalConnectorsOpts, WalletConnectProviderOpts } from './types'
@@ -22,14 +21,14 @@ export function modalConnectors({ appName, chains }: ModalConnectorsOpts) {
   return [
     new WalletConnectConnector({ chains, options: { qrcode: false } }),
     new InjectedConnector({ chains, options: { shimDisconnect: true } }),
-    new CoinbaseWalletConnector({ chains, options: { appName, headlessMode: true } }),
-    new MetaMaskConnector({
-      chains,
-      options: {
-        shimDisconnect: true,
-        shimChainChangedDisconnect: false,
-        UNSTABLE_shimOnConnectSelectAccount: true
-      }
-    })
+    new CoinbaseWalletConnector({ chains, options: { appName, headlessMode: true } })
+    // new MetaMaskConnector({
+    //   chains,
+    //   options: {
+    //     shimDisconnect: true,
+    //     shimChainChangedDisconnect: false,
+    //     UNSTABLE_shimOnConnectSelectAccount: true
+    //   }
+    // })
   ]
 }

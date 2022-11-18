@@ -8,6 +8,8 @@ export class EthereumClient {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public constructor(wagmi: any, chains: Chain[]) {
+    const walletConnect = wagmi.connectors.find((c: Connector) => c.id === 'walletConnect')
+    if (!walletConnect) throw new Error('WalletConnectConnector is required')
     this.wagmi = wagmi
     this.chains = chains
   }

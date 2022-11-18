@@ -16,7 +16,7 @@ export class W3mViewAllWalletsButton extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const wallets = ExplorerCtrl.state.previewWallets.reverse().slice(0, 4)
+    const wallets = [...ExplorerCtrl.state.previewWallets].reverse().slice(0, 4)
 
     return html`
       ${dynamicStyles()}
