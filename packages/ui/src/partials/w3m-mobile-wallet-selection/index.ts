@@ -71,7 +71,7 @@ export class W3mMobileWalletSelection extends LitElement {
     const connectorWallets = ClientCtrl.client().getConnectorWallets()
 
     if (!window.ethereum) {
-      connectorWallets.filter(connector => connector.id !== 'injected')
+      connectorWallets.filter(connector => !['injected', 'metaMask'].includes(connector.id))
     }
 
     return connectorWallets.map(
