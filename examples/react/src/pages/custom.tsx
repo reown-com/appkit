@@ -44,7 +44,7 @@ export default function CustomPage() {
         ]}
         // Custom Wallet Images
         walletImages={{
-          metaMask: 'images/wallet_metamask.webp',
+          metaMask: '/images/wallet_metamask.webp',
           brave: '/images/wallet_brave.webp',
           ledger: '/images/wallet_ledger.webp',
           coinbaseWallet: '/images/wallet_coinbase.webp',
