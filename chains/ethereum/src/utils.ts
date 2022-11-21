@@ -5,7 +5,7 @@ import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import type { ModalConnectorsOpts, WalletConnectProviderOpts } from './types'
 
 // -- constants ------------------------------------------------------- //
-const NAMESPACE = 'eip155'
+export const NAMESPACE = 'eip155'
 
 // -- providers ------------------------------------------------------- //
 export function walletConnectProvider({ projectId }: WalletConnectProviderOpts) {

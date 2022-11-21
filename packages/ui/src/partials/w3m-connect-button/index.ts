@@ -22,8 +22,12 @@ export class W3mConnectButton extends ThemedElement {
   public constructor() {
     super()
     this.modalUnsub = ModalCtrl.subscribe(modalState => {
-      if (modalState.open) this.loading = true
-      if (!modalState.open) this.loading = false
+      if (modalState.open) {
+        this.loading = true
+      }
+      if (!modalState.open) {
+        this.loading = false
+      }
     })
   }
 

@@ -5,8 +5,10 @@ import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import '../styles.css'
 
 // 1. Get projectID at https://cloud.walletconnect.com
-if (!process.env.NEXT_PUBLIC_PROJECT_ID)
+if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
   throw new Error('You need to provide NEXT_PUBLIC_PROJECT_ID env variable')
+}
+
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 
 // 2. Configure wagmi client
@@ -34,15 +36,6 @@ export default function App({ Component, pageProps }: AppProps) {
         theme="dark"
         accentColor="default"
         ethereumClient={ethereumClient}
-        chainImages={{
-          137: `https://explorer-api.walletconnect.com/v2/logo/lg/600a9a04-c1b9-42ca-6785-9b4b6ff85200?projectId=${projectId}`,
-          1: `https://explorer-api.walletconnect.com/v2/logo/lg/600a9a04-c1b9-42ca-6785-9b4b6ff85200?projectId=${projectId}`
-        }}
-        walletImages={{
-          metaMask: `https://explorer-api.walletconnect.com/v2/logo/lg/619537c0-2ff3-4c78-9ed8-a05e7567f300?projectId=${projectId}`,
-          coinbaseWallet: `https://explorer-api.walletconnect.com/v2/logo/lg/f8068a7f-83d7-4190-1f94-78154a12c600?projectId=${projectId}`,
-          brave: `https://explorer-api.walletconnect.com/v2/logo/lg/125e828e-9936-4451-a8f2-949c119b7400?projectId=${projectId}`
-        }}
       />
     </>
   )

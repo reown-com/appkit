@@ -37,7 +37,7 @@ export class W3mInjectedConnectorView extends LitElement {
       if (ready) {
         this.error = false
         this.connecting = true
-        await ClientCtrl.client().connectExtension('injected', OptionsCtrl.state.selectedChainId)
+        await ClientCtrl.client().connectConnector('injected', OptionsCtrl.state.selectedChainId)
         ModalCtrl.close()
       }
     } catch (error: unknown) {

@@ -31,7 +31,9 @@ export class W3mModalRouter extends LitElement {
   public constructor() {
     super()
     this.unsubscribe = RouterCtrl.subscribe(routerState => {
-      if (this.view !== routerState.view) this.onChangeRoute()
+      if (this.view !== routerState.view) {
+        this.onChangeRoute()
+      }
     })
   }
 

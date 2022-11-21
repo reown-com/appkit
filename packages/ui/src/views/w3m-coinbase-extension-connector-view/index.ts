@@ -32,7 +32,7 @@ export class W3mCoinbaseExtensionConnectorView extends LitElement {
     try {
       this.error = false
       this.connecting = true
-      await ClientCtrl.client().connectExtension(
+      await ClientCtrl.client().connectConnector(
         'coinbaseWallet',
         OptionsCtrl.state.selectedChainId
       )

@@ -5,8 +5,9 @@ import type { W3mModal } from '@web3modal/ui'
 import { useEffect, useState } from 'react'
 
 // 1. Get projectID at https://cloud.walletconnect.com
-if (!process.env.NEXT_PUBLIC_PROJECT_ID)
+if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
   throw new Error('You need to provide NEXT_PUBLIC_PROJECT_ID env variable')
+}
 
 // 2. Configure sign client
 let signClient: SignClient | undefined = undefined

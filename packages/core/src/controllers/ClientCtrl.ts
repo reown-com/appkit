@@ -19,7 +19,9 @@ export const ClientCtrl = {
   },
 
   client() {
-    if (state.ethereumClient) return state.ethereumClient
+    if (state.ethereumClient) {
+      return state.ethereumClient
+    }
 
     throw new Error('ClientCtrl has no client set')
   }

@@ -27,7 +27,9 @@ export const ConfigCtrl = {
   },
 
   setConfig(config: ConfigCtrlState) {
-    if (config.standaloneChains?.length) OptionsCtrl.setStandaloneChains(config.standaloneChains)
+    if (config.standaloneChains?.length) {
+      OptionsCtrl.setStandaloneChains(config.standaloneChains)
+    }
     Object.assign(state, config)
   }
 }

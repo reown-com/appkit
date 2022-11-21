@@ -26,7 +26,9 @@ export class W3mDesktopConnectorView extends LitElement {
   // -- private ------------------------------------------------------ //
   private getRouterData() {
     const data = RouterCtrl.state.data?.DesktopConnector
-    if (!data) throw new Error('Missing router data')
+    if (!data) {
+      throw new Error('Missing router data')
+    }
 
     return data
   }
@@ -35,14 +37,17 @@ export class W3mDesktopConnectorView extends LitElement {
     const { deeplink, name } = this.getRouterData()
     if (deeplink) {
       const href = CoreHelpers.formatNativeUrl(deeplink, uri, name)
-      if (href) CoreHelpers.openHref(href)
+      if (href) {
+        CoreHelpers.openHref(href)
+      }
     }
   }
 
   private async onConnect() {
     const { standaloneUri } = OptionsCtrl.state
-    if (standaloneUri) this.onOpenHref(standaloneUri)
-    else {
+    if (standaloneUri) {
+      this.onOpenHref(standaloneUri)
+    } else {
       await ClientCtrl.client().connectWalletConnect(
         uri => this.onOpenHref(uri),
         OptionsCtrl.state.selectedChainId

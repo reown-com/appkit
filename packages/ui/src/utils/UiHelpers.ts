@@ -18,7 +18,9 @@ export const MOBILE_BREAKPOINT = 600
 
 export function getShadowRootElement(root: LitElement, selector: string) {
   const el = root.renderRoot.querySelector(selector)
-  if (!el) throw new Error(`${selector} not found`)
+  if (!el) {
+    throw new Error(`${selector} not found`)
+  }
 
   return el
 }
@@ -27,48 +29,18 @@ export function getConditionalValue<T extends string>(
   value: T | T[],
   condition: boolean[] | boolean
 ) {
-  if (typeof value === 'string' && typeof condition === 'boolean' && condition) return value
-  else if (Array.isArray(value) && Array.isArray(condition)) {
+  if (typeof value === 'string' && typeof condition === 'boolean' && condition) {
+    return value
+  } else if (Array.isArray(value) && Array.isArray(condition)) {
     const index = condition.findIndex(c => c)
-    if (index < 0) throw new Error('No matching value')
+    if (index < 0) {
+      throw new Error('No matching value')
+    }
 
     return value[index]
   }
 
   throw new Error('Invalid useConditionalClass arguments')
-}
-
-/**
- * Compares similarity between 2 strings and returns value from 0 to 1
- * https://github.com/aceakash/string-similarity/blob/master/src/index.js
- */
-export function compareTwoStrings(first: string, second: string) {
-  const parsedFirst = first.replace(/\s+/u, '')
-  const parsedSecond = second.replace(/\s+/u, '')
-
-  if (parsedFirst === parsedSecond) return 1
-  if (parsedFirst.length < 2 || parsedSecond.length < 2) return 0
-
-  const firstBigrams = new Map<string, number>()
-  for (let i = 0; i < parsedFirst.length - 1; i += 1) {
-    const bigram = parsedFirst.substring(i, i + 2)
-    const storedBigram = firstBigrams.get(bigram)
-    const count = typeof storedBigram === 'number' ? storedBigram + 1 : 1
-    firstBigrams.set(bigram, count)
-  }
-
-  let intersectionSize = 0
-  for (let i = 0; i < parsedSecond.length - 1; i += 1) {
-    const bigram = parsedSecond.substring(i, i + 2)
-    const storedBigram = firstBigrams.get(bigram)
-    const count = typeof storedBigram === 'number' ? storedBigram : 0
-    if (count > 0) {
-      firstBigrams.set(bigram, count - 1)
-      intersectionSize += 1
-    }
-  }
-
-  return (2.0 * intersectionSize) / (first.length + second.length - 2)
 }
 
 export function getWalletIcon(id: string) {
@@ -120,45 +92,45 @@ export function debounce(func: (...args: any[]) => unknown, timeout = 500) {
     function next() {
       func(...args)
     }
-
-    if (timer) clearTimeout(timer)
-
+    if (timer) {
+      clearTimeout(timer)
+    }
     timer = setTimeout(next, timeout)
   }
 }
 
 export async function handleMobileLinking(
-  links: { native: string; universal?: string },
+  links: { deep?: string; universal?: string },
   name: string
 ) {
   const { standaloneUri, selectedChainId } = OptionsCtrl.state
-  const { native, universal } = links
+  const { deep, universal } = links
 
   function onRedirect(uri: string) {
-    const href = universal
-      ? CoreHelpers.formatUniversalUrl(universal, uri, name)
-      : CoreHelpers.formatNativeUrl(native, uri, name)
+    let href = ''
+    if (universal) {
+      href = CoreHelpers.formatUniversalUrl(universal, uri, name)
+    } else if (deep) {
+      CoreHelpers.formatNativeUrl(deep, uri, name)
+    }
     CoreHelpers.openHref(href)
   }
 
-  if (standaloneUri) onRedirect(standaloneUri)
-  else {
-    const connector = ClientCtrl.client().getConnectorById('injected')
-    const isNameSimilar = compareTwoStrings(name, connector.name) >= 0.5
-    if (connector.ready && isNameSimilar)
-      await ClientCtrl.client().connectExtension('injected', selectedChainId)
-    else
-      await ClientCtrl.client().connectWalletConnect(uri => {
-        onRedirect(uri)
-      }, selectedChainId)
+  if (standaloneUri) {
+    onRedirect(standaloneUri)
+  } else {
+    await ClientCtrl.client().connectWalletConnect(uri => {
+      onRedirect(uri)
+    }, selectedChainId)
     ModalCtrl.close()
   }
 }
 
 export async function handleUriCopy() {
   const { standaloneUri } = OptionsCtrl.state
-  if (standaloneUri) await navigator.clipboard.writeText(standaloneUri)
-  else {
+  if (standaloneUri) {
+    await navigator.clipboard.writeText(standaloneUri)
+  } else {
     const uri = await ClientCtrl.client().getActiveWalletConnectUri()
     await navigator.clipboard.writeText(uri)
   }

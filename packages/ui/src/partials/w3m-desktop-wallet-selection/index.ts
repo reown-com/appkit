@@ -26,8 +26,11 @@ export class W3mDesktopWalletSelection extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private onCoinbaseWallet() {
-    if (CoreHelpers.isCoinbaseExtension()) RouterCtrl.push('CoinbaseExtensionConnector')
-    else RouterCtrl.push('CoinbaseMobileConnector')
+    if (CoreHelpers.isCoinbaseExtension()) {
+      RouterCtrl.push('CoinbaseExtensionConnector')
+    } else {
+      RouterCtrl.push('CoinbaseMobileConnector')
+    }
   }
 
   private onDesktopWallet(name: string, deeplink?: string, universal?: string, icon?: string) {
@@ -45,12 +48,15 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private onConnectorWallet(id: string) {
-    if (id === 'coinbaseWallet') this.onCoinbaseWallet()
-    else if (id === 'metaMask' || !window.ethereum) this.onMetaMask()
-    else if (id === 'injected') this.onInjectedWallet()
-    else {
-      const { standaloneUri } = OptionsCtrl.state
-      ClientCtrl.client().connectConnectorById(id, standaloneUri)
+    if (id === 'coinbaseWallet') {
+      this.onCoinbaseWallet()
+    } else if (id === 'metaMask' || !window.ethereum) {
+      this.onMetaMask()
+    } else if (id === 'injected') {
+      this.onInjectedWallet()
+    } else {
+      const { selectedChainId } = OptionsCtrl.state
+      ClientCtrl.client().connectConnector(id, selectedChainId)
     }
   }
 

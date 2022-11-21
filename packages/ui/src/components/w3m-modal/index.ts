@@ -35,8 +35,12 @@ export class W3mModal extends ThemedElement {
   public constructor() {
     super()
     this.unsubscribeModal = ModalCtrl.subscribe(modalState => {
-      if (modalState.open) this.onOpenModalEvent()
-      if (!modalState.open) this.onCloseModalEvent()
+      if (modalState.open) {
+        this.onOpenModalEvent()
+      }
+      if (!modalState.open) {
+        this.onCloseModalEvent()
+      }
     })
     this.preloadExplorerWallets()
   }
@@ -59,18 +63,23 @@ export class W3mModal extends ThemedElement {
 
   private toggleBodyScroll(enabled: boolean) {
     const [body] = document.getElementsByTagName('body')
-    if (enabled) body.style.overflow = 'auto'
-    else body.style.overflow = 'hidden'
+    if (enabled) {
+      body.style.overflow = 'auto'
+    } else {
+      body.style.overflow = 'hidden'
+    }
   }
 
   private onCloseModal(event: PointerEvent) {
-    if (event.target === event.currentTarget) ModalCtrl.close()
+    if (event.target === event.currentTarget) {
+      ModalCtrl.close()
+    }
   }
 
   private async preloadExplorerWallets() {
     const { standaloneChains, chains } = OptionsCtrl.state
     const isProjectId = ConfigCtrl.state.projectId
-    if (isProjectId && this.preload && (standaloneChains?.length || chains?.length))
+    if (isProjectId && this.preload && (standaloneChains?.length || chains?.length)) {
       try {
         this.preload = false
         const chainsFilter = standaloneChains?.join(',')
@@ -95,6 +104,7 @@ export class W3mModal extends ThemedElement {
       } catch {
         ToastCtrl.openToast('Failed preloading', 'error')
       }
+    }
   }
 
   private async onOpenModalEvent() {
@@ -125,7 +135,9 @@ export class W3mModal extends ThemedElement {
   }
 
   private onKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Escape') ModalCtrl.close()
+    if (event.key === 'Escape') {
+      ModalCtrl.close()
+    }
   }
 
   // -- render ------------------------------------------------------- //

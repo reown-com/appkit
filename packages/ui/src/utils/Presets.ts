@@ -1,3 +1,4 @@
+/* eslint-disable curly */
 export function getWalletPresetExplorerImage() {
   const fallback = '09a83110-5fc3-45e1-65ab-8f7df2d6a400'
   const presets = {
@@ -59,10 +60,12 @@ export function getChainPresetExplorerImage() {
 }
 
 export function getOptimisticNamePreset(name: string) {
-  if (name.toUpperCase() !== 'INJECTED') return name
+  if (name.toUpperCase() !== 'INJECTED') {
+    return name
+  }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { ethereum }: { ethereum?: any } = window
-  // Default to metamask and reccomend to install it
+  // Default to metamask and reccomend it as default install
   if (!ethereum) return 'MetaMask'
   if (ethereum.isTrust || ethereum.isTrustWallet) return 'Trust'
   if (ethereum.isBraveWallet) return 'Brave'
@@ -77,6 +80,9 @@ export function getOptimisticNamePreset(name: string) {
   if (ethereum.isMathWallet) return 'MathWallet'
   if (ethereum.isOpera) return 'Opera'
   if (ethereum.isTokenary) return 'Tokenary'
+  if (ethereum.isOneInchIOSWallet || ethereum.isOneInchAndroidWallet) return '1inch Wallet'
+  if (ethereum.isKuCoinWallet) return 'KuCoin Wallet'
+  // Have to push metamask check lower, as most other wallets add this
   if (ethereum.isMetaMask) return 'MetaMask'
 
   return 'Injected'
@@ -86,11 +92,11 @@ export function getOptimisticWalletIdPreset(id: string) {
   if (id.toUpperCase() !== 'INJECTED') return id
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { ethereum }: { ethereum?: any } = window
-  // Default to metamask and reccomend to install it
+  // Default to metamask and reccomend it as default install
   if (!ethereum) return 'metaMask'
   if (ethereum.isTrust || ethereum.isTrustWallet) return 'trust'
-  if (ethereum.isExodus) return 'exodus'
   if (ethereum.isBraveWallet) return 'brave'
+  if (ethereum.isExodus) return 'exodus'
   if (ethereum.isTokenPocket) return 'tokenPocket'
   if (ethereum.isFrame) return 'frame'
   if (ethereum.isPortal) return 'ripoPortal'
@@ -101,6 +107,9 @@ export function getOptimisticWalletIdPreset(id: string) {
   if (ethereum.isMathWallet) return 'mathWallet'
   if (ethereum.isOpera) return 'opera'
   if (ethereum.isTokenary) return 'tokenary'
+  if (ethereum.isOneInchIOSWallet || ethereum.isOneInchAndroidWallet) return '1inchWallet'
+  if (ethereum.isKuCoinWallet) return 'kuCoinWallet'
+  // Have to push metamask check lower, as most other wallets add this
   if (ethereum.isMetaMask) return 'metaMask'
 
   return 'injected'

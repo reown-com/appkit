@@ -18,10 +18,17 @@ export const ModalCtrl = {
 
   open(options?: { uri: string; standaloneChains?: string[] }) {
     const { chains } = OptionsCtrl.state
-    if (chains?.length ? chains.length > 1 : false) RouterCtrl.replace('SelectNetwork')
-    else RouterCtrl.replace('ConnectWallet')
-    if (typeof options?.uri === 'string') OptionsCtrl.setStandaloneUri(options.uri)
-    if (options?.standaloneChains?.length) OptionsCtrl.setStandaloneChains(options.standaloneChains)
+    if (chains?.length ? chains.length > 1 : false) {
+      RouterCtrl.replace('SelectNetwork')
+    } else {
+      RouterCtrl.replace('ConnectWallet')
+    }
+    if (typeof options?.uri === 'string') {
+      OptionsCtrl.setStandaloneUri(options.uri)
+    }
+    if (options?.standaloneChains?.length) {
+      OptionsCtrl.setStandaloneChains(options.standaloneChains)
+    }
     state.open = true
   },
 

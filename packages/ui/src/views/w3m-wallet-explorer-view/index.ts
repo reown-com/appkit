@@ -49,7 +49,9 @@ export class W3mWalletExplorerView extends LitElement {
 
   private createPaginationObserver() {
     this.intersectionObserver = new IntersectionObserver(([element]) => {
-      if (element.isIntersecting && !(this.search && this.firstFetch)) this.fetchWallets()
+      if (element.isIntersecting && !(this.search && this.firstFetch)) {
+        this.fetchWallets()
+      }
     })
     this.intersectionObserver.observe(this.placeholderEl)
   }
@@ -65,7 +67,10 @@ export class W3mWalletExplorerView extends LitElement {
     const { wallets, search } = ExplorerCtrl.state
     const { listings, total, page } = this.search ? search : wallets
 
-    if (!this.endReached && (this.firstFetch || (total > PAGE_ENTRIES && listings.length < total)))
+    if (
+      !this.endReached &&
+      (this.firstFetch || (total > PAGE_ENTRIES && listings.length < total))
+    ) {
       try {
         this.loading = true
         const chains = OptionsCtrl.state.standaloneChains?.join(',')
@@ -85,11 +90,14 @@ export class W3mWalletExplorerView extends LitElement {
         this.loading = false
         this.firstFetch = false
       }
+    }
   }
 
   private async onConnectPlatform(listing: Listing) {
-    if (CoreHelpers.isMobile()) await handleMobileLinking(listing.mobile, listing.name)
-    else
+    if (CoreHelpers.isMobile()) {
+      const { native, universal } = listing.mobile
+      await handleMobileLinking({ deep: native, universal }, listing.name)
+    } else {
       RouterCtrl.push('DesktopConnector', {
         DesktopConnector: {
           name: listing.name,
@@ -98,6 +106,7 @@ export class W3mWalletExplorerView extends LitElement {
           deeplink: listing.desktop.native
         }
       })
+    }
   }
 
   private readonly searchDebounce = debounce((value: string) => {

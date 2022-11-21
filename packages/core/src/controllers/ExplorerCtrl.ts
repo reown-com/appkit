@@ -14,7 +14,9 @@ const state = proxy<ExplorerCtrlState>({
 // -- helpers ------------------------------------------------------ //
 function getProjectId() {
   const { projectId } = ConfigCtrl.state
-  if (!projectId) throw new Error('projectId is required to work with explorer api')
+  if (!projectId) {
+    throw new Error('projectId is required to work with explorer api')
+  }
 
   return projectId
 }
