@@ -142,6 +142,7 @@ export interface RouterCtrlState {
       deeplink?: string
       universal?: string
       icon?: string
+      walletId?: string
     }
   }
 }

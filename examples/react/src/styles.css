@@ -13,3 +13,7 @@ body {
   align-items: center;
   min-height: 100vh;
 }
+
+button {
+  margin: 20px;
+}

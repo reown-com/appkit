@@ -33,10 +33,8 @@ export class W3mDesktopWalletSelection extends LitElement {
     }
   }
 
-  private onDesktopWallet(name: string, deeplink?: string, universal?: string, icon?: string) {
-    RouterCtrl.push('DesktopConnector', {
-      DesktopConnector: { name, deeplink, universal, icon }
-    })
+  private onDesktopWallet(data: typeof RouterCtrl.state.data) {
+    RouterCtrl.push('DesktopConnector', data)
   }
 
   private onInjectedWallet() {
@@ -64,12 +62,19 @@ export class W3mDesktopWalletSelection extends LitElement {
     const { desktopWallets } = ConfigCtrl.state
 
     return desktopWallets?.map(
-      wallet => html`
+      ({ id, name, links }) => html`
         <w3m-wallet-button
-          walletId=${wallet.id}
-          name=${wallet.name}
+          walletId=${id}
+          name=${name}
           .onClick=${() =>
-            this.onDesktopWallet(wallet.name, wallet.links.deep, wallet.links.universal)}
+            this.onDesktopWallet({
+              DesktopConnector: {
+                name,
+                walletId: id,
+                universal: links.universal,
+                deeplink: links.deep
+              }
+            })}
         ></w3m-wallet-button>
       `
     )
@@ -79,17 +84,19 @@ export class W3mDesktopWalletSelection extends LitElement {
     const { previewWallets } = ExplorerCtrl.state
 
     return previewWallets.map(
-      wallet => html`
+      ({ name, desktop, homepage, image_url }) => html`
         <w3m-wallet-button
-          src=${wallet.image_url.lg}
-          name=${wallet.name}
+          src=${image_url.lg}
+          name=${name}
           .onClick=${() =>
-            this.onDesktopWallet(
-              wallet.name,
-              wallet.desktop.native,
-              wallet.desktop.universal || wallet.homepage,
-              wallet.image_url.lg
-            )}
+            this.onDesktopWallet({
+              DesktopConnector: {
+                name,
+                deeplink: desktop.native,
+                universal: desktop.universal || homepage,
+                icon: image_url.lg
+              }
+            })}
         ></w3m-wallet-button>
       `
     )

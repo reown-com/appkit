@@ -1,6 +1,7 @@
 import { ClientCtrl, CoreHelpers, ModalCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import '../../components/w3m-button'
 import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-header'
@@ -66,7 +67,7 @@ export class W3mDesktopConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { name, icon, universal } = this.getRouterData()
+    const { name, icon, universal, walletId } = this.getRouterData()
     const optimisticName = getOptimisticNamePreset(name)
 
     return html`
@@ -76,7 +77,7 @@ export class W3mDesktopConnectorView extends LitElement {
         <div class="w3m-wrapper">
           ${icon
             ? html`<w3m-wallet-image src=${icon} size="lg"></w3m-wallet-image>`
-            : html`<w3m-wallet-image size="lg"></w3m-wallet-image>`}
+            : html`<w3m-wallet-image size="lg" walletid=${ifDefined(walletId)}></w3m-wallet-image>`}
 
           <div class="w3m-connecting-title">
             <w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>
