@@ -24,7 +24,18 @@ export default function CustomPage() {
           42161: '/images/chain_arbitrum.webp'
         }}
         // Custom Linking Mobile Wallets
-        mobileWallets={[]}
+        mobileWallets={[
+          {
+            id: 'trust',
+            name: 'Trust Wallet',
+            links: { deep: 'trust://', universal: 'https://link.trustwallet.com' }
+          },
+          {
+            id: 'rainbow',
+            name: 'Rainbow',
+            links: { deep: 'rainbow://', universal: 'https://rainbow.me' }
+          }
+        ]}
         // Custom Linking Desktop Wallets
         desktopWallets={[
           {
@@ -36,6 +47,11 @@ export default function CustomPage() {
             id: 'zerion',
             name: 'Zerion',
             links: { deep: 'zerion://', universal: '' }
+          },
+          {
+            id: 'tokenary',
+            name: 'Tokenary',
+            links: { deep: 'tokenary://', universal: 'https://tokenary.io' }
           }
         ]}
         // Custom Wallet Images
@@ -44,7 +60,10 @@ export default function CustomPage() {
           brave: '/images/wallet_brave.webp',
           ledger: '/images/wallet_ledger.webp',
           coinbaseWallet: '/images/wallet_coinbase.webp',
-          zerion: '/images/wallet_zerion.webp'
+          zerion: '/images/wallet_zerion.webp',
+          tokenary: '/images/wallet_tokenary.webp',
+          trust: '/images/wallet_trust.webp',
+          rainbow: '/images/wallet_rainbow.webp'
         }}
       />
     </>
