@@ -113,7 +113,6 @@ export class W3mDesktopWalletSelection extends LitElement {
     const desktopTemplate = this.desktopWalletsTemplate()
     const previewTemplate = this.previewWalletsTemplate()
     const connectorTemplate = this.connectorWalletsTemplate()
-
     const linkingWallets = desktopTemplate ?? previewTemplate
     const combinedWallets = [...connectorTemplate, ...linkingWallets]
     const displayWallets = standaloneUri ? linkingWallets : combinedWallets

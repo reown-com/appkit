@@ -27,6 +27,16 @@ export default function CustomPage() {
             id: 'rainbow',
             name: 'Rainbow',
             links: { native: 'rainbow://', universal: 'https://rainbow.me' }
+          },
+          {
+            id: 'zerion',
+            name: 'Zerion',
+            links: { native: 'zerion://', universal: 'https://wallet.zerion.io' }
+          },
+          {
+            id: 'tokenary',
+            name: 'Tokenary',
+            links: { native: 'tokenary://', universal: 'https://tokenary.io' }
           }
         ]}
         // Custom Linking Desktop Wallets
