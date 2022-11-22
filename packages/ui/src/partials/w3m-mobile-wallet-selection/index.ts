@@ -12,6 +12,7 @@ import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-header'
 import '../../components/w3m-view-all-wallets-button'
 import '../../components/w3m-wallet-button'
+import { getOptimisticNamePreset } from '../../utils/Presets'
 import { QRCODE_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { handleMobileLinking } from '../../utils/UiHelpers'
@@ -43,8 +44,8 @@ export class W3mMobileWalletSelection extends LitElement {
     return mobileWallets?.map(
       ({ id, name, links: { universal, native } }) => html`
         <w3m-wallet-button
-          walletId=${id}
           name=${name}
+          walletId=${id}
           .onClick=${async () => handleMobileLinking({ native, universal }, name)}
         ></w3m-wallet-button>
       `
@@ -57,8 +58,8 @@ export class W3mMobileWalletSelection extends LitElement {
     return previewWallets.map(
       ({ image_url, name, mobile: { native, universal } }) => html`
         <w3m-wallet-button
-          src=${image_url.lg}
           name=${name}
+          src=${image_url.lg}
           .onClick=${async () => handleMobileLinking({ native, universal }, name)}
         ></w3m-wallet-button>
       `
@@ -86,15 +87,22 @@ export class W3mMobileWalletSelection extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { standaloneUri } = OptionsCtrl.state
-    const desktopTemplate = this.mobileWalletsTemplate()
-    const previewTemplate = this.previewWalletsTemplate()
     const connectorTemplate = this.connectorWalletsTemplate()
+    const mobileTemplate = this.mobileWalletsTemplate()
+    const previewTemplate = this.previewWalletsTemplate()
 
-    const linkingWallets = desktopTemplate ?? previewTemplate
+    const linkingWallets = mobileTemplate ?? previewTemplate
     const combinedWallets = [...connectorTemplate, ...linkingWallets]
     const displayWallets = standaloneUri ? linkingWallets : combinedWallets
     const isViewAll = displayWallets.length > 8
     const wallets = isViewAll ? displayWallets.slice(0, 7) : displayWallets
+
+    if (window.ethereum) {
+      const { name } = ClientCtrl.client().getConnectorById('injected')
+      const optimisticName = getOptimisticNamePreset(name)
+      wallets.filter(template => !template.values.includes(optimisticName))
+    }
+
     const row1 = wallets.slice(0, 4)
     const row2 = wallets.slice(4, 8)
     const isMobileWallets = Boolean(wallets.length)
