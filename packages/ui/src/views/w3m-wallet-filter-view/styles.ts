@@ -22,20 +22,6 @@ export default css`
     opacity: 1;
   }
 
-  .w3m-explorer-search {
-    border-radius: 16px;
-    transition: all 0.2s ease-in-out;
-    height: 100%;
-    width: 75%;
-    padding-left: 0.5em;
-    margin-bottom: 1px;
-    height: 1.5em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5em;
-  }
-
   w3m-modal-content::-webkit-scrollbar {
     display: none;
   }
@@ -46,56 +32,19 @@ export default css`
     justify-items: stretch;
   }
 
-  .w3m-placeholder-block {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100px;
-    overflow: hidden;
-  }
-
-  .w3m-loading .w3m-placeholder-block {
-    height: 100%;
-  }
-
-  .w3m-end-reached .w3m-placeholder-block {
-    height: 18px;
-    opacity: 0;
-  }
-
-  .w3m-empty .w3m-placeholder-block {
-    opacity: 1;
-    height: 100%;
-  }
-
   w3m-wallet-button {
     margin: calc((100% - 60px) / 3) 0;
   }
 `
 
 export function dynamicStyles() {
-  const { background, foreground } = color()
+  const { background } = color()
 
   return html`
     <style>
       w3m-modal-content::before {
         box-shadow: 0 -1px 0 0 ${background[1]};
         background: linear-gradient(${background[1]}, transparent);
-      }
-
-      .w3m-explorer-search {
-        background: ${background[2]};
-      }
-
-      .w3m-explorer-search:active,
-      .w3m-explorer-search:focus-within {
-        border: solid 1px ${foreground.accent};
-        background: ${background[1]};
-      }
-
-      .w3m-explorer-search svg {
-        height: 20px;
-        width: 20px;
       }
 
       w3m-modal-content::after {
