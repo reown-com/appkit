@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@wagmi/core": "0.7.4",
+    "@wagmi/core": "0.7.5",
     "@web3modal/core": "2.0.0-beta.5",
     "@web3modal/ethereum": "2.0.0-beta.5",
     "@web3modal/ui": "2.0.0-beta.5",

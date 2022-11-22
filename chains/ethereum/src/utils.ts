@@ -10,8 +10,8 @@ export const NAMESPACE = 'eip155'
 // -- providers ------------------------------------------------------- //
 export function walletConnectProvider({ projectId }: WalletConnectProviderOpts) {
   return jsonRpcProvider({
-    rpc: rpcChain => ({
-      http: `https://rpc.walletconnect.com/v1/?chainId=${NAMESPACE}:${rpcChain.id}&projectId=${projectId}`
+    rpc: chain => ({
+      http: `https://rpc.walletconnect.com/v1/?chainId=${NAMESPACE}:${chain.id}&projectId=${projectId}`
     })
   })
 }
