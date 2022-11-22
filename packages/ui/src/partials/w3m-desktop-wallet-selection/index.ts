@@ -1,3 +1,4 @@
+import type { DesktopConnectorData } from '@web3modal/core'
 import {
   ClientCtrl,
   ConfigCtrl,
@@ -33,8 +34,8 @@ export class W3mDesktopWalletSelection extends LitElement {
     }
   }
 
-  private onDesktopWallet(data: typeof RouterCtrl.state.data) {
-    RouterCtrl.push('DesktopConnector', data)
+  private onDesktopWallet(data: DesktopConnectorData) {
+    RouterCtrl.push('DesktopConnector', { DesktopConnector: data })
   }
 
   private onInjectedWallet() {
@@ -62,19 +63,11 @@ export class W3mDesktopWalletSelection extends LitElement {
     const { desktopWallets } = ConfigCtrl.state
 
     return desktopWallets?.map(
-      ({ id, name, links }) => html`
+      ({ id, name, links: { universal, native } }) => html`
         <w3m-wallet-button
           walletId=${id}
           name=${name}
-          .onClick=${() =>
-            this.onDesktopWallet({
-              DesktopConnector: {
-                name,
-                walletId: id,
-                universal: links.universal,
-                deeplink: links.deep
-              }
-            })}
+          .onClick=${() => this.onDesktopWallet({ name, walletId: id, universal, native })}
         ></w3m-wallet-button>
       `
     )
@@ -84,18 +77,16 @@ export class W3mDesktopWalletSelection extends LitElement {
     const { previewWallets } = ExplorerCtrl.state
 
     return previewWallets.map(
-      ({ name, desktop, homepage, image_url }) => html`
+      ({ name, desktop: { universal, native }, homepage, image_url }) => html`
         <w3m-wallet-button
           src=${image_url.lg}
           name=${name}
           .onClick=${() =>
             this.onDesktopWallet({
-              DesktopConnector: {
-                name,
-                deeplink: desktop.native,
-                universal: desktop.universal || homepage,
-                icon: image_url.lg
-              }
+              name,
+              native,
+              universal: universal || homepage,
+              icon: image_url.lg
             })}
         ></w3m-wallet-button>
       `

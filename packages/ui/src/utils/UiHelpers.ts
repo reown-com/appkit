@@ -100,18 +100,18 @@ export function debounce(func: (...args: any[]) => unknown, timeout = 500) {
 }
 
 export async function handleMobileLinking(
-  links: { deep?: string; universal?: string },
+  links: { native?: string; universal?: string },
   name: string
 ) {
   const { standaloneUri, selectedChainId } = OptionsCtrl.state
-  const { deep, universal } = links
+  const { native, universal } = links
 
   function onRedirect(uri: string) {
     let href = ''
     if (universal) {
       href = CoreHelpers.formatUniversalUrl(universal, uri, name)
-    } else if (deep) {
-      CoreHelpers.formatNativeUrl(deep, uri, name)
+    } else if (native) {
+      CoreHelpers.formatNativeUrl(native, uri, name)
     }
     CoreHelpers.openHref(href)
   }

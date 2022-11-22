@@ -21,12 +21,12 @@ export default function CustomPage() {
           {
             id: 'trust',
             name: 'Trust Wallet',
-            links: { deep: 'trust://', universal: 'https://link.trustwallet.com' }
+            links: { native: 'trust://', universal: 'https://link.trustwallet.com' }
           },
           {
             id: 'rainbow',
             name: 'Rainbow',
-            links: { deep: 'rainbow://', universal: 'https://rainbow.me' }
+            links: { native: 'rainbow://', universal: 'https://rainbow.me' }
           }
         ]}
         // Custom Linking Desktop Wallets
@@ -34,17 +34,17 @@ export default function CustomPage() {
           {
             id: 'ledger',
             name: 'Ledger',
-            links: { deep: 'ledgerlive://', universal: 'https://www.ledger.com' }
+            links: { native: 'ledgerlive://', universal: 'https://www.ledger.com' }
           },
           {
             id: 'zerion',
             name: 'Zerion',
-            links: { deep: 'zerion://', universal: 'https://wallet.zerion.io' }
+            links: { native: 'zerion://', universal: 'https://wallet.zerion.io' }
           },
           {
             id: 'tokenary',
             name: 'Tokenary',
-            links: { deep: 'tokenary://', universal: 'https://tokenary.io' }
+            links: { native: 'tokenary://', universal: 'https://tokenary.io' }
           }
         ]}
         // Custom Wallet Images

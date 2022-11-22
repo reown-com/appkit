@@ -5,7 +5,7 @@ export interface MobileWallet {
   name: string
   links: {
     universal: string
-    deep?: string
+    native?: string
   }
 }
 
@@ -13,7 +13,7 @@ export interface DesktopWallet {
   id: string
   name: string
   links: {
-    deep: string
+    native: string
     universal: string
   }
 }
@@ -139,17 +139,19 @@ export type RouterView =
   | 'WalletExplorer'
   | 'WalletFilter'
 
+export interface DesktopConnectorData {
+  name: string
+  native?: string
+  universal?: string
+  icon?: string
+  walletId?: string
+}
+
 export interface RouterCtrlState {
   history: RouterView[]
   view: RouterView
   data?: {
-    DesktopConnector: {
-      name: string
-      deeplink?: string
-      universal?: string
-      icon?: string
-      walletId?: string
-    }
+    DesktopConnector: DesktopConnectorData
   }
 }
 

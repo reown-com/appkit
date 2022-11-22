@@ -5,7 +5,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import '../../components/w3m-button'
 import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-header'
-import '../../components/w3m-qrcode'
 import '../../components/w3m-spinner'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-image'
@@ -35,9 +34,9 @@ export class W3mDesktopConnectorView extends LitElement {
   }
 
   private onOpenHref(uri: string) {
-    const { deeplink, name } = this.getRouterData()
-    if (deeplink) {
-      const href = CoreHelpers.formatNativeUrl(deeplink, uri, name)
+    const { native, name } = this.getRouterData()
+    if (native) {
+      const href = CoreHelpers.formatNativeUrl(native, uri, name)
       if (href) {
         CoreHelpers.openHref(href)
       }

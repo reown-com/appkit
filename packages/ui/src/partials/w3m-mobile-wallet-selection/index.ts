@@ -46,7 +46,7 @@ export class W3mMobileWalletSelection extends LitElement {
           walletId=${id}
           name=${name}
           .onClick=${async () =>
-            handleMobileLinking({ deep: links.deep, universal: links.universal }, name)}
+            handleMobileLinking({ native: links.native, universal: links.universal }, name)}
         ></w3m-wallet-button>
       `
     )
@@ -61,7 +61,7 @@ export class W3mMobileWalletSelection extends LitElement {
           src=${image_url.lg}
           name=${name}
           .onClick=${async () =>
-            handleMobileLinking({ deep: mobile.native, universal: mobile.universal }, name)}
+            handleMobileLinking({ native: mobile.native, universal: mobile.universal }, name)}
         ></w3m-wallet-button>
       `
     )

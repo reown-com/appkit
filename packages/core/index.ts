@@ -7,6 +7,7 @@ export { RouterCtrl } from './src/controllers/RouterCtrl'
 export { ToastCtrl } from './src/controllers/ToastCtrl'
 export type {
   ConfigCtrlState,
+  DesktopConnectorData,
   Listing,
   ListingResponse,
   RouterView
