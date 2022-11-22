@@ -31,7 +31,7 @@ export default css`
     height: 60px;
     width: 60px;
     transition: all 0.2s ease-in-out;
-    border-radius: 18px;
+    border-radius: 15px;
     margin-bottom: 5px;
   }
 `

@@ -15,7 +15,7 @@ export default css`
     display: flex;
     flex-wrap: wrap;
     padding: 7px;
-    border-radius: 18px;
+    border-radius: 15px;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 5px;
