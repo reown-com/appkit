@@ -3,6 +3,7 @@ import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-text'
 import { getOptimisticWalletIdPreset } from '../../utils/Presets'
+import { WALLET_PLACEHOLDER } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { getCustomWallets, getWalletIcon } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
@@ -40,8 +41,9 @@ export class W3mViewAllWalletsButton extends LitElement {
           ${isCustomWallets
             ? reCustomWallets.map(wallet => {
                 const optimisticId = getOptimisticWalletIdPreset(wallet.id)
+                const src = getWalletIcon(optimisticId)
 
-                return html`<img src=${getWalletIcon(optimisticId)} />`
+                return src ? html`<img src=${src} />` : WALLET_PLACEHOLDER
               })
             : null}
         </div>

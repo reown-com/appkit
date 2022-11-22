@@ -10,6 +10,12 @@ export default css`
     height: 100%;
   }
 
+  svg {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
   .w3m-wallet-image::after {
     content: '';
     position: absolute;
@@ -26,11 +32,19 @@ export default css`
 `
 
 export function dynamicStyles() {
-  const { overlay } = color()
+  const { overlay, background } = color()
 
   return html` <style>
     .w3m-wallet-image::after {
       border: 1px solid ${overlay.thin};
+    }
+
+    #wallet-placeholder-fill {
+      fill: ${background[3]};
+    }
+
+    #wallet-placeholder-dash {
+      stroke: ${overlay.thin};
     }
   </style>`
 }

@@ -54,7 +54,6 @@ export default function CustomPage() {
           ledger: '/images/wallet_ledger.webp',
           coinbaseWallet: '/images/wallet_coinbase.webp',
           zerion: '/images/wallet_zerion.webp',
-          tokenary: '/images/wallet_tokenary.webp',
           trust: '/images/wallet_trust.webp',
           rainbow: '/images/wallet_rainbow.webp'
         }}

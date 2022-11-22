@@ -34,8 +34,15 @@ export default css`
     border-radius: 8px;
   }
 
+  .w3m-icons svg {
+    width: 21px;
+    height: 21px;
+  }
+
   .w3m-icons img:nth-child(1),
-  .w3m-icons img:nth-child(2) {
+  .w3m-icons img:nth-child(2),
+  .w3m-icons svg:nth-child(1),
+  .w3m-icons svg:nth-child(2) {
     margin-bottom: 4px;
   }
 
@@ -62,6 +69,14 @@ export function dynamicStyles() {
 
       .w3m-icons img {
         border: 1px solid ${overlay.thin};
+      }
+
+      #wallet-placeholder-fill {
+        fill: ${background[3]};
+      }
+
+      #wallet-placeholder-dash {
+        stroke: ${overlay.thin};
       }
     </style>
   `
