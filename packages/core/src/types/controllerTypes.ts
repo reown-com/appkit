@@ -132,6 +132,7 @@ export type RouterView =
   | 'Qrcode'
   | 'SelectNetwork'
   | 'WalletExplorer'
+  | 'WalletFilter'
 
 export interface RouterCtrlState {
   history: RouterView[]

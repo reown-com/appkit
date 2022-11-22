@@ -17,6 +17,7 @@ import '../../views/w3m-metamask-connector-view'
 import '../../views/w3m-qrcode-view'
 import '../../views/w3m-select-network-view'
 import '../../views/w3m-wallet-explorer-view'
+import '../../views/w3m-wallet-filter-view'
 import styles from './styles'
 
 @customElement('w3m-modal-router')
@@ -95,6 +96,8 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-qrcode-view></w3m-qrcode-view>`
       case 'Help':
         return html`<w3m-help-view></w3m-help-view>`
+      case 'WalletFilter':
+        return html`<w3m-wallet-filter-view></w3m-wallet-filter-view>`
       default:
         return html`<div>Not Found</div>`
     }
