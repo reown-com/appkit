@@ -41,12 +41,11 @@ export class W3mMobileWalletSelection extends LitElement {
     const { mobileWallets } = ConfigCtrl.state
 
     return mobileWallets?.map(
-      ({ id, name, links }) => html`
+      ({ id, name, links: { universal, native } }) => html`
         <w3m-wallet-button
           walletId=${id}
           name=${name}
-          .onClick=${async () =>
-            handleMobileLinking({ native: links.native, universal: links.universal }, name)}
+          .onClick=${async () => handleMobileLinking({ native, universal }, name)}
         ></w3m-wallet-button>
       `
     )
@@ -56,12 +55,11 @@ export class W3mMobileWalletSelection extends LitElement {
     const { previewWallets } = ExplorerCtrl.state
 
     return previewWallets.map(
-      ({ image_url, name, mobile }) => html`
+      ({ image_url, name, mobile: { native, universal } }) => html`
         <w3m-wallet-button
           src=${image_url.lg}
           name=${name}
-          .onClick=${async () =>
-            handleMobileLinking({ native: mobile.native, universal: mobile.universal }, name)}
+          .onClick=${async () => handleMobileLinking({ native, universal }, name)}
         ></w3m-wallet-button>
       `
     )
@@ -75,11 +73,11 @@ export class W3mMobileWalletSelection extends LitElement {
     }
 
     return connectorWallets.map(
-      wallet => html`
+      ({ name, id }) => html`
         <w3m-wallet-button
-          name=${wallet.name}
-          walletId=${wallet.id}
-          .onClick=${async () => this.onConnectorWallet(wallet.id)}
+          name=${name}
+          walletId=${id}
+          .onClick=${async () => this.onConnectorWallet(id)}
         ></w3m-wallet-button>
       `
     )
