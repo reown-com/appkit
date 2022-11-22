@@ -136,3 +136,9 @@ export async function handleUriCopy() {
   }
   ToastCtrl.openToast('Link copied', 'success')
 }
+
+export function getCustomWallets() {
+  const { desktopWallets, mobileWallets } = ConfigCtrl.state
+
+  return (CoreHelpers.isMobile() ? mobileWallets : desktopWallets) ?? []
+}

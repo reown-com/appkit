@@ -1,6 +1,6 @@
 import type { EthereumClient } from '@web3modal/ethereum'
 
-interface MobileWallet {
+export interface MobileWallet {
   id: string
   name: string
   links: {
@@ -9,7 +9,7 @@ interface MobileWallet {
   }
 }
 
-interface DesktopWallet {
+export interface DesktopWallet {
   id: string
   name: string
   links: {

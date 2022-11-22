@@ -1,4 +1,4 @@
-import { ConfigCtrl, CoreHelpers, RouterCtrl } from '@web3modal/core'
+import { CoreHelpers, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import '../../components/w3m-modal-content'
@@ -6,7 +6,7 @@ import '../../components/w3m-modal-header'
 import '../../components/w3m-search-input'
 import '../../components/w3m-wallet-button'
 import { global } from '../../utils/Theme'
-import { handleMobileLinking } from '../../utils/UiHelpers'
+import { getCustomWallets, handleMobileLinking } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 interface PlatformData {
@@ -41,8 +41,7 @@ export class W3mWalletFilterView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { desktopWallets, mobileWallets } = ConfigCtrl.state
-    const wallets = desktopWallets ?? mobileWallets ?? []
+    const wallets = getCustomWallets()
     const filtered = this.search.length
       ? wallets.filter(wallet => wallet.name.toUpperCase().includes(this.search.toUpperCase()))
       : wallets

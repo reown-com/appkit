@@ -9,6 +9,7 @@ import '../../components/w3m-text'
 import '../../components/w3m-wallet-image'
 import { ARROW_RIGHT_ICON, ARROW_UP_RIGHT_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
+import { getCustomWallets } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-get-wallet-view')
@@ -28,31 +29,56 @@ export class W3mGetWalletView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const wallets = ExplorerCtrl.state.recomendedWallets
+    const { recomendedWallets } = ExplorerCtrl.state
+    const customWallets = getCustomWallets().slice(0, 6)
+    const isRecomendedWallets = recomendedWallets.length
+    const isCustomWallets = customWallets.length
 
     return html`
       ${dynamicStyles()}
 
       <w3m-modal-header title="Get a wallet"></w3m-modal-header>
       <w3m-modal-content>
-        ${wallets.map(
-          ({ name, image_url, id, homepage }) =>
-            html`
-              <div class="w3m-wallet-item">
-                <w3m-wallet-image walletId=${id} src=${image_url.lg}></w3m-wallet-image>
-                <div class="w3m-wallet-content">
-                  <w3m-text variant="medium-normal">${name}</w3m-text>
-                  <w3m-button
-                    .iconRight=${ARROW_RIGHT_ICON}
-                    variant="ghost"
-                    .onClick=${() => this.onGet(homepage)}
-                  >
-                    Get
-                  </w3m-button>
-                </div>
-              </div>
-            `
-        )}
+        ${isRecomendedWallets
+          ? recomendedWallets.map(
+              ({ name, image_url, homepage }) =>
+                html`
+                  <div class="w3m-wallet-item">
+                    <w3m-wallet-image src=${image_url.lg}></w3m-wallet-image>
+                    <div class="w3m-wallet-content">
+                      <w3m-text variant="medium-normal">${name}</w3m-text>
+                      <w3m-button
+                        .iconRight=${ARROW_RIGHT_ICON}
+                        variant="ghost"
+                        .onClick=${() => this.onGet(homepage)}
+                      >
+                        Get
+                      </w3m-button>
+                    </div>
+                  </div>
+                `
+            )
+          : null}
+        ${isCustomWallets
+          ? customWallets.map(
+              ({ name, id, links }) =>
+                html`
+                  <div class="w3m-wallet-item">
+                    <w3m-wallet-image walletId=${id}></w3m-wallet-image>
+                    <div class="w3m-wallet-content">
+                      <w3m-text variant="medium-normal">${name}</w3m-text>
+                      <w3m-button
+                        .iconRight=${ARROW_RIGHT_ICON}
+                        variant="ghost"
+                        .onClick=${() => this.onGet(links.universal)}
+                      >
+                        Get
+                      </w3m-button>
+                    </div>
+                  </div>
+                `
+            )
+          : null}
       </w3m-modal-content>
       <w3m-modal-footer>
         <div class="w3m-footer-actions">
