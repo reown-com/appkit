@@ -49,6 +49,9 @@ export interface OptionsCtrlState {
   chains?: EthereumClient['chains']
   standaloneChains?: string[]
   standaloneUri?: string
+  isStandalone: boolean
+  isCustomDesktop: boolean
+  isCustomMobile: boolean
 }
 
 // -- ExplorerCtrl ------------------------------------------- //

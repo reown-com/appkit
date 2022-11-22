@@ -29,6 +29,13 @@ export const ConfigCtrl = {
   setConfig(config: ConfigCtrlState) {
     if (config.standaloneChains?.length) {
       OptionsCtrl.setStandaloneChains(config.standaloneChains)
+      OptionsCtrl.setIsStandalone(true)
+    }
+    if (config.mobileWallets?.length) {
+      OptionsCtrl.setIsCustomMobile(true)
+    }
+    if (config.desktopWallets?.length) {
+      OptionsCtrl.setIsCustomDesktop(true)
     }
     Object.assign(state, config)
   }
