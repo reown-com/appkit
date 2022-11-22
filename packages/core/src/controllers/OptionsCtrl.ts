@@ -9,7 +9,8 @@ const state = proxy<OptionsCtrlState>({
   standaloneUri: undefined,
   isStandalone: false,
   isCustomDesktop: false,
-  isCustomMobile: false
+  isCustomMobile: false,
+  isExplorer: false
 })
 
 // -- controller --------------------------------------------------- //
@@ -42,5 +43,9 @@ export const OptionsCtrl = {
 
   setIsCustomMobile(isCustomMobile: OptionsCtrlState['isCustomMobile']) {
     state.isCustomMobile = isCustomMobile
+  },
+
+  setIsExplorer(isExplorer: OptionsCtrlState['isExplorer']) {
+    state.isExplorer = isExplorer
   }
 }

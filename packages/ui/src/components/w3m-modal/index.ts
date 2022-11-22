@@ -1,11 +1,4 @@
-import {
-  ConfigCtrl,
-  CoreHelpers,
-  ExplorerCtrl,
-  ModalCtrl,
-  OptionsCtrl,
-  ToastCtrl
-} from '@web3modal/core'
+import { CoreHelpers, ExplorerCtrl, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -38,8 +31,7 @@ export class W3mModal extends ThemedElement {
     this.unsubscribeModal = ModalCtrl.subscribe(modalState => {
       if (modalState.open) {
         this.onOpenModalEvent()
-      }
-      if (!modalState.open) {
+      } else {
         this.onCloseModalEvent()
       }
     })
@@ -78,33 +70,30 @@ export class W3mModal extends ThemedElement {
   }
 
   private async preloadExplorerData() {
-    const { standaloneChains, chains } = OptionsCtrl.state
-    const { projectId } = ConfigCtrl.state
+    const { standaloneChains, chains, isExplorer } = OptionsCtrl.state
+    if (isExplorer) {
+      const chainsFilter = standaloneChains?.join(',')
+      await Promise.all([
+        ExplorerCtrl.getPreviewWallets({
+          page: 1,
+          entries: 10,
+          chains: chainsFilter,
+          device: CoreHelpers.isMobile() ? 'mobile' : 'desktop'
+        }),
+        ExplorerCtrl.getRecomendedWallets()
+      ])
+      const { previewWallets, recomendedWallets } = ExplorerCtrl.state
+      const chainsImgs = chains?.map(chain => getChainIcon(chain.id)) ?? []
+      const walletImgs = [...previewWallets, ...recomendedWallets].map(
+        wallet => wallet.image_url.lg
+      )
+      await this.preloadExplorerImages([...chainsImgs, ...walletImgs])
+    }
+  }
 
-    if (projectId && (standaloneChains?.length || chains?.length)) {
-      try {
-        const chainsFilter = standaloneChains?.join(',')
-        await Promise.all([
-          ExplorerCtrl.getPreviewWallets({
-            page: 1,
-            entries: 10,
-            chains: chainsFilter,
-            device: CoreHelpers.isMobile() ? 'mobile' : 'desktop'
-          }),
-          ExplorerCtrl.getRecomendedWallets()
-        ])
-        const walletImgs = [
-          ...ExplorerCtrl.state.previewWallets,
-          ...ExplorerCtrl.state.recomendedWallets
-        ].map(({ image_url }) => image_url.lg)
-        const chainsImgs = chains?.map(chain => getChainIcon(chain.id)) ?? []
-        await Promise.all([
-          ...walletImgs.map(async url => preloadImage(url)),
-          ...chainsImgs.map(async url => preloadImage(url))
-        ])
-      } catch {
-        ToastCtrl.openToast('Failed preloading', 'error')
-      }
+  private async preloadExplorerImages(images: string[]) {
+    if (images.length) {
+      await Promise.all(images.map(async url => preloadImage(url)))
     }
   }
 
@@ -116,9 +105,13 @@ export class W3mModal extends ThemedElement {
   }
 
   private async preloadModalData() {
-    if (this.preload) {
-      this.preload = false
-      await Promise.all([this.preloadExplorerData(), this.preloadCustomImages()])
+    try {
+      if (this.preload) {
+        this.preload = false
+        await Promise.all([this.preloadExplorerData(), this.preloadCustomImages()])
+      }
+    } catch {
+      ToastCtrl.openToast('Failed preloading', 'error')
     }
   }
 

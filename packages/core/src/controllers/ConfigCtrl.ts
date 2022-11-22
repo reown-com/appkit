@@ -27,16 +27,12 @@ export const ConfigCtrl = {
   },
 
   setConfig(config: ConfigCtrlState) {
-    if (config.standaloneChains?.length) {
-      OptionsCtrl.setStandaloneChains(config.standaloneChains)
-      OptionsCtrl.setIsStandalone(true)
-    }
-    if (config.mobileWallets?.length) {
-      OptionsCtrl.setIsCustomMobile(true)
-    }
-    if (config.desktopWallets?.length) {
-      OptionsCtrl.setIsCustomDesktop(true)
-    }
+    OptionsCtrl.setStandaloneChains(config.standaloneChains)
+    OptionsCtrl.setIsStandalone(Boolean(config.standaloneChains?.length))
+    OptionsCtrl.setIsCustomMobile(Boolean(config.mobileWallets?.length))
+    OptionsCtrl.setIsCustomDesktop(Boolean(config.desktopWallets?.length))
+    OptionsCtrl.setIsExplorer(Boolean(config.projectId?.length))
+
     Object.assign(state, config)
   }
 }

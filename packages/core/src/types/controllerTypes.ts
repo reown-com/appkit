@@ -52,6 +52,7 @@ export interface OptionsCtrlState {
   isStandalone: boolean
   isCustomDesktop: boolean
   isCustomMobile: boolean
+  isExplorer: boolean
 }
 
 // -- ExplorerCtrl ------------------------------------------- //
