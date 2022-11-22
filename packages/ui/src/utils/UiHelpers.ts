@@ -51,7 +51,7 @@ export function getWalletIcon(id: string) {
   return walletImages?.[id] ?? (projectId ? ExplorerCtrl.getImageUrl(imageId ?? fallback) : '')
 }
 
-export function getChainIcon(chainId: number) {
+export function getChainIcon(chainId: number | string) {
   const { fallback, presets } = getChainPresetExplorerImage()
   const { projectId, chainImages } = ConfigCtrl.state
 

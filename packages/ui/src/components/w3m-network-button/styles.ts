@@ -24,6 +24,12 @@ export default css`
     text-align: center;
     margin-top: 5px;
   }
+
+  svg {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  }
 `
 
 export function dynamicStyles() {
@@ -34,6 +40,14 @@ export function dynamicStyles() {
       .w3m-network-button:hover {
         background-color: ${background.accent};
         box-shadow: inset 0 0 0 1px ${overlay.thin};
+      }
+
+      #network-placeholder-fill {
+        fill: ${background[3]};
+      }
+
+      #network-placeholder-dash {
+        stroke: ${overlay.thin};
       }
     </style>
   `

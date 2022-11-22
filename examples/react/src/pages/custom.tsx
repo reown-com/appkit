@@ -60,7 +60,6 @@ export default function CustomPage() {
         }}
         // Custom Chain Images
         chainImages={{
-          1: '/images/chain_ethereum.webp',
           137: '/images/chain_polygon.webp',
           10: '/images/chain_optimism.webp',
           42161: '/images/chain_arbitrum.webp'
