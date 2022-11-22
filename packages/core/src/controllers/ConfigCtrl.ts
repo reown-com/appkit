@@ -10,6 +10,7 @@ function isDarkMode() {
 const state = proxy<ConfigCtrlState>({
   theme: isDarkMode() ? 'dark' : 'light',
   accentColor: 'default',
+  enableNetworkView: true,
   projectId: undefined,
   standaloneChains: undefined,
   mobileWallets: undefined,
