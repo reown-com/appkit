@@ -26,7 +26,7 @@ export default css`
   w3m-wallet-image {
     width: 25%;
     height: 25%;
-    border-radius: 22px;
+    border-radius: 15px;
   }
 
   .w3m-qrcode-container svg:first-child {

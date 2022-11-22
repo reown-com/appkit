@@ -22,7 +22,7 @@ export default css`
   }
 
   w3m-wallet-image {
-    border-radius: 22px;
+    border-radius: 15px;
     width: 25%;
     aspect-ratio: 1 / 1;
     margin-bottom: 20px;
