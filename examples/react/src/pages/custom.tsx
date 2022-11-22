@@ -34,12 +34,17 @@ export default function CustomPage() {
           {
             id: 'ledger',
             name: 'Ledger',
-            links: { deep: 'ledgerlive://', universal: 'https://wallet.zerion.io' }
+            links: { deep: 'ledgerlive://', universal: 'https://www.ledger.com' }
           },
           {
             id: 'zerion',
             name: 'Zerion',
-            links: { deep: 'zerion://', universal: '' }
+            links: { deep: 'zerion://', universal: 'https://wallet.zerion.io' }
+          },
+          {
+            id: 'tokenary',
+            name: 'Tokenary',
+            links: { deep: 'tokenary://', universal: 'https://tokenary.io' }
           }
         ]}
         // Custom Wallet Images
