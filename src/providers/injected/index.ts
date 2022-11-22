@@ -1,66 +1,35 @@
 import { IProviderInfo } from "../../helpers";
 
-// @ts-ignore
 import Web3DefaultLogo from "../logos/web3-default.svg";
-// @ts-ignore
 import MetaMaskLogo from "../logos/metamask.svg";
-// @ts-ignore
 import SafeLogo from "../logos/safe.svg";
-// @ts-ignore
 import NiftyWalletLogo from "../logos/niftyWallet.png";
-// @ts-ignore
 import TrustLogo from "../logos/trust.svg";
-// @ts-ignore
 import DapperLogo from "../logos/dapper.png";
-// @ts-ignore
 import CoinbaseLogo from "../logos/coinbase.svg";
-// @ts-ignore
 import CipherLogo from "../logos/cipher.svg";
-// @ts-ignore
 import imTokenLogo from "../logos/imtoken.svg";
-// @ts-ignore
 import StatusLogo from "../logos/status.svg";
-// @ts-ignore
 import TokenaryLogo from "../logos/tokenary.png";
-// @ts-ignore
 import OperaLogo from "../logos/opera.svg";
-// @ts-ignore
 import FrameLogo from "../logos/frame.svg";
-// @ts-ignore
 import LiqualityLogo from "../logos/liquality.png";
-// @ts-ignore
 import BoltXLogo from "../logos/boltx.svg";
-// @ts-ignore
 import MathWalletLogo from "../logos/mathwallet.png";
-// @ts-ignore
 import RWalletLogo from "../logos/rwallet.svg";
-// @ts-ignore
 import BitpieLogo from "../logos/bitpie.svg";
-// @ts-ignore
 import XDEFILogo from "../logos/xdefi.svg";
-// @ts-ignore
 import CeloExtensionWalletLogo from "../logos/celoExtensionWallet.svg";
-// @ts-ignore
 import BlockWalletLogo from "../logos/blockwallet.svg";
-// @ts-ignore
 import TallyLogo from "../logos/tally.svg";
-// @ts-ignore
 import PortalLogo from "../logos/portal.svg";
-// @ts-ignore
 import SequenceLogo from "../logos/sequence.svg";
-// @ts-ignore
 import BraveLogo from "../logos/brave.svg";
-// @ts-ignore
 import RabbyLogo from "../logos/rabby.svg";
-// @ts-ignore
 import BitkeepLogo from "../logos/bitkeepwallet.png";
-// @ts-ignore
 import ClvLogo from "../logos/clv.svg";
-// @ts-ignore
 import TokenPocketLogo from "../logos/tokenpocket.svg";
-// @ts-ignore
 import CoreLogo from "../logos/core.svg";
-// @ts-ignore
 import GameStopLogo from "../logos/gamestopwallet.svg";
 
 export const FALLBACK: IProviderInfo = {
@@ -68,7 +37,7 @@ export const FALLBACK: IProviderInfo = {
   name: "Web3",
   logo: Web3DefaultLogo,
   type: "injected",
-  check: "isWeb3"
+  check: "isWeb3",
 };
 
 export const METAMASK: IProviderInfo = {
@@ -76,7 +45,7 @@ export const METAMASK: IProviderInfo = {
   name: "MetaMask",
   logo: MetaMaskLogo,
   type: "injected",
-  check: "isMetaMask"
+  check: "isMetaMask",
 };
 
 export const SAFE: IProviderInfo = {
@@ -84,7 +53,7 @@ export const SAFE: IProviderInfo = {
   name: "Safe",
   logo: SafeLogo,
   type: "injected",
-  check: "isSafe"
+  check: "isSafe",
 };
 
 export const NIFTY: IProviderInfo = {
@@ -92,7 +61,7 @@ export const NIFTY: IProviderInfo = {
   name: "Nifty",
   logo: NiftyWalletLogo,
   type: "injected",
-  check: "isNiftyWallet"
+  check: "isNiftyWallet",
 };
 
 export const DAPPER: IProviderInfo = {
@@ -100,7 +69,7 @@ export const DAPPER: IProviderInfo = {
   name: "Dapper",
   logo: DapperLogo,
   type: "injected",
-  check: "isDapper"
+  check: "isDapper",
 };
 
 export const OPERA: IProviderInfo = {
@@ -108,7 +77,7 @@ export const OPERA: IProviderInfo = {
   name: "Opera",
   logo: OperaLogo,
   type: "injected",
-  check: "isOpera"
+  check: "isOpera",
 };
 
 export const TRUST: IProviderInfo = {
@@ -116,7 +85,7 @@ export const TRUST: IProviderInfo = {
   name: "Trust",
   logo: TrustLogo,
   type: "injected",
-  check: "isTrust"
+  check: "isTrust",
 };
 
 export const COINBASE: IProviderInfo = {
@@ -124,7 +93,7 @@ export const COINBASE: IProviderInfo = {
   name: "Coinbase",
   logo: CoinbaseLogo,
   type: "injected",
-  check: "isCoinbaseWallet"
+  check: "isCoinbaseWallet",
 };
 
 export const CIPHER: IProviderInfo = {
@@ -132,7 +101,7 @@ export const CIPHER: IProviderInfo = {
   name: "Cipher",
   logo: CipherLogo,
   type: "injected",
-  check: "isCipher"
+  check: "isCipher",
 };
 
 export const IMTOKEN: IProviderInfo = {
@@ -140,7 +109,7 @@ export const IMTOKEN: IProviderInfo = {
   name: "imToken",
   logo: imTokenLogo,
   type: "injected",
-  check: "isImToken"
+  check: "isImToken",
 };
 
 export const STATUS: IProviderInfo = {
@@ -148,7 +117,7 @@ export const STATUS: IProviderInfo = {
   name: "Status",
   logo: StatusLogo,
   type: "injected",
-  check: "isStatus"
+  check: "isStatus",
 };
 
 export const TOKENARY: IProviderInfo = {
@@ -156,7 +125,7 @@ export const TOKENARY: IProviderInfo = {
   name: "Tokenary",
   logo: TokenaryLogo,
   type: "injected",
-  check: "isTokenary"
+  check: "isTokenary",
 };
 
 export const FRAMEINJECTED: IProviderInfo = {
@@ -164,7 +133,7 @@ export const FRAMEINJECTED: IProviderInfo = {
   name: "Frame",
   logo: FrameLogo,
   type: "injected",
-  check: "isFrame"
+  check: "isFrame",
 };
 
 export const LIQUALITY: IProviderInfo = {
@@ -172,7 +141,7 @@ export const LIQUALITY: IProviderInfo = {
   name: "Liquality",
   logo: LiqualityLogo,
   type: "injected",
-  check: "isLiquality"
+  check: "isLiquality",
 };
 
 export const BOLTX: IProviderInfo = {
@@ -180,7 +149,7 @@ export const BOLTX: IProviderInfo = {
   name: "Bolt-X",
   logo: BoltXLogo,
   type: "injected",
-  check: "isBoltX"
+  check: "isBoltX",
 };
 
 export const MATHWALLET: IProviderInfo = {
@@ -188,7 +157,7 @@ export const MATHWALLET: IProviderInfo = {
   name: "Math Wallet",
   logo: MathWalletLogo,
   type: "injected",
-  check: "isMathWallet"
+  check: "isMathWallet",
 };
 
 export const RWALLET: IProviderInfo = {
@@ -196,7 +165,7 @@ export const RWALLET: IProviderInfo = {
   name: "rWallet",
   logo: RWalletLogo,
   type: "injected",
-  check: "isRWallet"
+  check: "isRWallet",
 };
 
 export const XDEFI: IProviderInfo = {
@@ -204,7 +173,7 @@ export const XDEFI: IProviderInfo = {
   name: "XDEFI",
   logo: XDEFILogo,
   type: "injected",
-  check: "__XDEFI"
+  check: "__XDEFI",
 };
 
 export const BITPIE: IProviderInfo = {
@@ -212,7 +181,7 @@ export const BITPIE: IProviderInfo = {
   name: "Bitpie",
   logo: BitpieLogo,
   type: "injected",
-  check: "isBitpie"
+  check: "isBitpie",
 };
 
 export const CELOINJECTED: IProviderInfo = {
@@ -220,7 +189,7 @@ export const CELOINJECTED: IProviderInfo = {
   name: "Celo extension wallet",
   logo: CeloExtensionWalletLogo,
   type: "injected",
-  check: "isCelo"
+  check: "isCelo",
 };
 
 export const BLOCKWALLET: IProviderInfo = {
@@ -228,7 +197,7 @@ export const BLOCKWALLET: IProviderInfo = {
   name: "BlockWallet",
   logo: BlockWalletLogo,
   type: "injected",
-  check: "isBlockWallet"
+  check: "isBlockWallet",
 };
 
 export const TALLYINJECTED: IProviderInfo = {
@@ -236,7 +205,7 @@ export const TALLYINJECTED: IProviderInfo = {
   name: "Tally",
   logo: TallyLogo,
   type: "injected",
-  check: "isTally"
+  check: "isTally",
 };
 
 export const PORTAL: IProviderInfo = {
@@ -244,7 +213,7 @@ export const PORTAL: IProviderInfo = {
   name: "Ripio Portal",
   logo: PortalLogo,
   type: "injected",
-  check: "isPortal"
+  check: "isPortal",
 };
 
 export const SEQUENCEINJECTED: IProviderInfo = {
@@ -252,7 +221,7 @@ export const SEQUENCEINJECTED: IProviderInfo = {
   name: "Sequence",
   logo: SequenceLogo,
   type: "injected",
-  check: "isSequence"
+  check: "isSequence",
 };
 
 export const RABBY: IProviderInfo = {
@@ -260,7 +229,7 @@ export const RABBY: IProviderInfo = {
   name: "Rabby",
   logo: RabbyLogo,
   type: "injected",
-  check: "isRabby"
+  check: "isRabby",
 };
 
 export const BRAVE: IProviderInfo = {
@@ -268,7 +237,7 @@ export const BRAVE: IProviderInfo = {
   name: "Brave",
   logo: BraveLogo,
   type: "injected",
-  check: "isBraveWallet"
+  check: "isBraveWallet",
 };
 
 export const CLV: IProviderInfo = {
@@ -276,7 +245,7 @@ export const CLV: IProviderInfo = {
   name: "CLV",
   logo: ClvLogo,
   type: "injected",
-  check: "isCloverWallet"
+  check: "isCloverWallet",
 };
 
 export const BITKEEPWALLET: IProviderInfo = {
@@ -284,7 +253,7 @@ export const BITKEEPWALLET: IProviderInfo = {
   name: "Bitkeep Wallet",
   logo: BitkeepLogo,
   type: "injected",
-  check: "isBitKeep"
+  check: "isBitKeep",
 };
 
 export const CORE: IProviderInfo = {
@@ -292,7 +261,7 @@ export const CORE: IProviderInfo = {
   name: "Core",
   logo: CoreLogo,
   type: "injected",
-  check: "isAvalanche"
+  check: "isAvalanche",
 };
 
 export const TOKENPOCKET: IProviderInfo = {
@@ -300,7 +269,7 @@ export const TOKENPOCKET: IProviderInfo = {
   name: "TokenPocket Wallet",
   logo: TokenPocketLogo,
   type: "injected",
-  check: "isTokenPocket"
+  check: "isTokenPocket",
 };
 
 export const GAMESTOP: IProviderInfo = {
@@ -308,5 +277,5 @@ export const GAMESTOP: IProviderInfo = {
   name: "GameStop Wallet",
   logo: GameStopLogo,
   type: "injected",
-  check: "isGamestop"
+  check: "isGamestop",
 };
