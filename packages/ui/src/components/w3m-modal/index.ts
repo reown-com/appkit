@@ -14,6 +14,7 @@ import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import {
   getChainIcon,
+  getCustomImageUrls,
   getShadowRootElement,
   isMobileAnimation,
   preloadImage
@@ -42,7 +43,7 @@ export class W3mModal extends ThemedElement {
         this.onCloseModalEvent()
       }
     })
-    this.preloadExplorerWallets()
+    this.preloadModalData()
   }
 
   public disconnectedCallback() {
@@ -76,12 +77,12 @@ export class W3mModal extends ThemedElement {
     }
   }
 
-  private async preloadExplorerWallets() {
+  private async preloadExplorerData() {
     const { standaloneChains, chains } = OptionsCtrl.state
-    const isProjectId = ConfigCtrl.state.projectId
-    if (isProjectId && this.preload && (standaloneChains?.length || chains?.length)) {
+    const { projectId } = ConfigCtrl.state
+
+    if (projectId && (standaloneChains?.length || chains?.length)) {
       try {
-        this.preload = false
         const chainsFilter = standaloneChains?.join(',')
         await Promise.all([
           ExplorerCtrl.getPreviewWallets({
@@ -107,8 +108,22 @@ export class W3mModal extends ThemedElement {
     }
   }
 
+  private async preloadCustomImages() {
+    const images = getCustomImageUrls()
+    if (images.length) {
+      await Promise.all(images.map(async url => preloadImage(url)))
+    }
+  }
+
+  private async preloadModalData() {
+    if (this.preload) {
+      this.preload = false
+      await Promise.all([this.preloadExplorerData(), this.preloadCustomImages()])
+    }
+  }
+
   private async onOpenModalEvent() {
-    await this.preloadExplorerWallets()
+    await this.preloadModalData()
     this.toggleBodyScroll(false)
     const delay = 0.3
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay })

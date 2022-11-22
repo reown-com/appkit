@@ -142,3 +142,11 @@ export function getCustomWallets() {
 
   return (CoreHelpers.isMobile() ? mobileWallets : desktopWallets) ?? []
 }
+
+export function getCustomImageUrls() {
+  const { chainImages, walletImages } = ConfigCtrl.state
+  const chainUrls = Object.values(chainImages ?? {})
+  const walletUrls = Object.values(walletImages ?? {})
+
+  return Object.values([...chainUrls, ...walletUrls])
+}
