@@ -31,6 +31,7 @@ import ClvLogo from "../logos/clv.svg";
 import TokenPocketLogo from "../logos/tokenpocket.svg";
 import CoreLogo from "../logos/core.svg";
 import GameStopLogo from "../logos/gamestopwallet.svg";
+import TalismanLogo from "../logos/talisman.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -278,4 +279,12 @@ export const GAMESTOP: IProviderInfo = {
   logo: GameStopLogo,
   type: "injected",
   check: "isGamestop",
+};
+
+export const TALISMAN: IProviderInfo = {
+  id: "injected",
+  name: "Talisman",
+  logo: TalismanLogo,
+  type: "injected",
+  check: "isTalisman",
 };
