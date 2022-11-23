@@ -94,6 +94,12 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private connectorWalletsTemplate() {
+    const { isStandalone } = OptionsCtrl.state
+
+    if (isStandalone) {
+      return []
+    }
+
     const connectorWallets = ClientCtrl.client().getConnectorWallets()
 
     return connectorWallets.map(

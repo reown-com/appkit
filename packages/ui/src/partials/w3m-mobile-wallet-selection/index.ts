@@ -85,6 +85,12 @@ export class W3mMobileWalletSelection extends LitElement {
   }
 
   private connectorWalletsTemplate() {
+    const { isStandalone } = OptionsCtrl.state
+
+    if (isStandalone) {
+      return []
+    }
+
     const connectorWallets = ClientCtrl.client().getConnectorWallets()
 
     if (!window.ethereum) {

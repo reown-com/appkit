@@ -13,6 +13,7 @@ const state = proxy<ConfigCtrlState>({
   enableNetworkView: true,
   projectId: undefined,
   standaloneChains: undefined,
+  enableStandaloneMode: undefined,
   mobileWallets: undefined,
   desktopWallets: undefined,
   walletImages: undefined,
@@ -29,7 +30,9 @@ export const ConfigCtrl = {
 
   setConfig(config: ConfigCtrlState) {
     OptionsCtrl.setStandaloneChains(config.standaloneChains)
-    OptionsCtrl.setIsStandalone(Boolean(config.standaloneChains?.length))
+    OptionsCtrl.setIsStandalone(
+      Boolean(config.standaloneChains?.length) || Boolean(config.enableStandaloneMode)
+    )
     OptionsCtrl.setIsCustomMobile(Boolean(config.mobileWallets?.length))
     OptionsCtrl.setIsCustomDesktop(Boolean(config.desktopWallets?.length))
     OptionsCtrl.setIsExplorer(Boolean(config.projectId?.length))

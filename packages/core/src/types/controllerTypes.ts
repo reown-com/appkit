@@ -37,6 +37,7 @@ export interface ConfigCtrlState {
   walletImages?: Record<string, string>
   chainImages?: Record<string, string>
   enableNetworkView?: boolean
+  enableStandaloneMode?: boolean
 }
 
 // -- ModalCtrl --------------------------------------- //
