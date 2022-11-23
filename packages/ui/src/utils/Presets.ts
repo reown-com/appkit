@@ -15,7 +15,8 @@ export function getWalletPresetExplorerImage() {
     opera: '877fa1a4-304d-4d45-ca8e-f76d1a556f00',
     tokenPocket: 'f3119826-4ef5-4d31-4789-d4ae5c18e400',
     tokenary: '5e481041-dc3c-4a81-373a-76bbde91b800',
-    '1inch': 'dce1ee99-403f-44a9-9f94-20de30616500'
+    '1inch': 'dce1ee99-403f-44a9-9f94-20de30616500',
+    phantom: '62471a22-33cb-4e65-5b54-c3d9ea24b900'
   } as Record<string, string | undefined>
 
   return { fallback, presets }
@@ -68,6 +69,7 @@ export function getOptimisticNamePreset(name: string) {
   // Default to metamask and reccomend it as default install
   if (!ethereum) return 'MetaMask'
   if (ethereum.isTrust || ethereum.isTrustWallet) return 'Trust'
+  if (ethereum.isPhantom) return 'Phantom'
   if (ethereum.isBraveWallet) return 'Brave'
   if (ethereum.isExodus) return 'Exodus'
   if (ethereum.isTokenPocket) return 'TokenPocket'
@@ -95,6 +97,7 @@ export function getOptimisticWalletIdPreset(id: string) {
   // Default to metamask and reccomend it as default install
   if (!ethereum) return 'metaMask'
   if (ethereum.isTrust || ethereum.isTrustWallet) return 'trust'
+  if (ethereum.isPhantom) return 'phantom'
   if (ethereum.isBraveWallet) return 'brave'
   if (ethereum.isExodus) return 'exodus'
   if (ethereum.isTokenPocket) return 'tokenPocket'
