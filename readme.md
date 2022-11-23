@@ -15,6 +15,6 @@ Your on-ramp to web3 multichain. Web3Modal is a versatile library that makes it 
 ## Getting Started
 
 - [React Docs](https://docs.walletconnect.com/2.0/introduction/web3modal/react/installation) / [React Example](./examples/react/)
-- Vanilla JS Docs (coming soon) / [Vanila JS Example](./examples/html/)
+- [Vanilla JS Docs](https://docs.walletconnect.com/2.0/web3modal/html-js/installation) / [Vanila JS Example](./examples/html/)
 - Vue Docs / Vue Example (coming soon)
 - Angular Docs / Angular Example (coming soon)
