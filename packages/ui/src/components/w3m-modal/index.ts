@@ -7,6 +7,7 @@ import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import {
   getChainIcon,
+  getConnectorImageUrls,
   getCustomImageUrls,
   getShadowRootElement,
   isMobileAnimation,
@@ -104,11 +105,22 @@ export class W3mModal extends ThemedElement {
     }
   }
 
+  private async preloadConnectorImages() {
+    const images = getConnectorImageUrls()
+    if (images.length) {
+      await Promise.all(images.map(async url => preloadImage(url)))
+    }
+  }
+
   private async preloadModalData() {
     try {
       if (this.preload) {
         this.preload = false
-        await Promise.all([this.preloadExplorerData(), this.preloadCustomImages()])
+        await Promise.all([
+          this.preloadExplorerData(),
+          this.preloadCustomImages(),
+          this.preloadConnectorImages()
+        ])
       }
     } catch {
       ToastCtrl.openToast('Failed preloading', 'error')

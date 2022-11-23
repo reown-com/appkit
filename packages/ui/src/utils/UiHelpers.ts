@@ -11,6 +11,7 @@ import type { LitElement } from 'lit'
 import {
   getChainPresetExplorerImage,
   getOptimisticNamePreset,
+  getOptimisticWalletIdPreset,
   getWalletPresetExplorerImage
 } from './Presets'
 
@@ -149,4 +150,12 @@ export function getCustomImageUrls() {
   const walletUrls = Object.values(walletImages ?? {})
 
   return Object.values([...chainUrls, ...walletUrls])
+}
+
+export function getConnectorImageUrls() {
+  const connectors = ClientCtrl.client().getConnectorWallets()
+  const ids = connectors.map(({ id }) => getOptimisticWalletIdPreset(id))
+  const images = ids.map(id => getWalletIcon(id))
+
+  return images
 }
