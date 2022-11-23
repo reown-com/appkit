@@ -30,7 +30,9 @@ export const CoreHelpers = {
 
   formatUniversalUrl(appUrl: string, wcUri: string, name: string) {
     let plainAppUrl = appUrl
-    if (appUrl.endsWith('/')) plainAppUrl = appUrl.slice(0, -1)
+    if (appUrl.endsWith('/')) {
+      plainAppUrl = appUrl.slice(0, -1)
+    }
     this.setWalletConnectDeepLink(plainAppUrl, name)
     const encodedWcUrl = encodeURIComponent(wcUri)
 

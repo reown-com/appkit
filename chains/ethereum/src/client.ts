@@ -8,6 +8,10 @@ export class EthereumClient {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public constructor(wagmi: any, chains: Chain[]) {
+    const walletConnect = wagmi.connectors.find((c: Connector) => c.id === 'walletConnect')
+    if (!walletConnect) {
+      throw new Error('WalletConnectConnector is required')
+    }
     this.wagmi = wagmi
     this.chains = chains
   }
@@ -18,9 +22,11 @@ export class EthereumClient {
   }
 
   // -- public web3modal
-  public getConnectorById(id: ConnectorId) {
+  public getConnectorById(id: ConnectorId | string) {
     const connector = this.wagmi.connectors.find(item => item.id === id)
-    if (!connector) throw new Error(`Missing ${id} connector`)
+    if (!connector) {
+      throw new Error(`Connector for id ${id} was not found`)
+    }
 
     return connector
   }
@@ -30,6 +36,12 @@ export class EthereumClient {
     const provider = await connector.getProvider()
 
     return provider.connector.uri
+  }
+
+  public getConnectorWallets() {
+    const connectors = this.wagmi.connectors.filter(connector => connector.id !== 'walletConnect')
+
+    return connectors
   }
 
   public async connectWalletConnect(onUri: (uri: string) => void, selectedChainId?: number) {
@@ -74,7 +86,7 @@ export class EthereumClient {
     return data
   }
 
-  public async connectExtension(connectorId: ConnectorId, selectedChainId?: number) {
+  public async connectConnector(connectorId: ConnectorId | string, selectedChainId?: number) {
     const connector = this.getConnectorById(connectorId)
     const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
     const data = await connect({ connector, chainId })
@@ -82,7 +94,6 @@ export class EthereumClient {
     return data
   }
 
-  // -- public wagmi
   public disconnect = disconnect
 
   public getAccount = getAccount

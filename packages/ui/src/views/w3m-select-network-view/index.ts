@@ -5,7 +5,6 @@ import '../../components/w3m-modal-content'
 import '../../components/w3m-modal-header'
 import '../../components/w3m-network-button'
 import { global } from '../../utils/Theme'
-import { getChainIcon } from '../../utils/UiHelpers'
 import styles from './styles'
 
 @customElement('w3m-select-network-view')
@@ -31,7 +30,7 @@ export class W3mSelectNetworkView extends LitElement {
               html`
                 <w3m-network-button
                   name=${name}
-                  src=${getChainIcon(id)}
+                  chainId=${id}
                   .onClick=${() => this.onSelectChain(id)}
                 >
                   ${name}

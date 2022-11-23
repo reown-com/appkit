@@ -42,7 +42,7 @@ export default css`
     display: block;
     width: 40px;
     height: 40px;
-    border-radius: 14px;
+    border-radius: 15px;
   }
 `
 

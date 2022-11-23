@@ -1,11 +1,4 @@
-import {
-  ConfigCtrl,
-  CoreHelpers,
-  ExplorerCtrl,
-  ModalCtrl,
-  OptionsCtrl,
-  ToastCtrl
-} from '@web3modal/core'
+import { CoreHelpers, ExplorerCtrl, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -13,8 +6,9 @@ import { animate, spring } from 'motion'
 import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import {
-  defaultWalletImages,
   getChainIcon,
+  getConnectorImageUrls,
+  getCustomImageUrls,
   getShadowRootElement,
   isMobileAnimation,
   preloadImage
@@ -30,32 +24,28 @@ export class W3mModal extends ThemedElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false
-  @state() private initialized = false
   @state() private preload = true
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
     this.unsubscribeModal = ModalCtrl.subscribe(modalState => {
-      if (modalState.open) this.onOpenModalEvent()
-      if (!modalState.open) this.onCloseModalEvent()
+      if (modalState.open) {
+        this.onOpenModalEvent()
+      } else {
+        this.onCloseModalEvent()
+      }
     })
-    if (ConfigCtrl.state.configured) this.preloadData()
-    else
-      this.unsubscribeConfig = ConfigCtrl.subscribe(configState => {
-        if (configState.configured) this.preloadData()
-      })
+    this.preloadModalData()
   }
 
   public disconnectedCallback() {
     super.disconnectedCallback()
     this.unsubscribeModal?.()
-    this.unsubscribeConfig?.()
   }
 
   // -- private ------------------------------------------------------ //
   private readonly unsubscribeModal?: () => void = undefined
-  private readonly unsubscribeConfig?: () => void = undefined
 
   private get overlayEl() {
     return getShadowRootElement(this, '.w3m-modal-overlay')
@@ -67,48 +57,78 @@ export class W3mModal extends ThemedElement {
 
   private toggleBodyScroll(enabled: boolean) {
     const [body] = document.getElementsByTagName('body')
-    if (enabled) body.style.overflow = 'auto'
-    else body.style.overflow = 'hidden'
+    if (enabled) {
+      body.style.overflow = 'auto'
+    } else {
+      body.style.overflow = 'hidden'
+    }
   }
 
   private onCloseModal(event: PointerEvent) {
-    if (event.target === event.currentTarget) ModalCtrl.close()
+    if (event.target === event.currentTarget) {
+      ModalCtrl.close()
+    }
   }
 
-  private async preloadData() {
-    const { standaloneChains, chains } = OptionsCtrl.state
-    if (this.preload && (standaloneChains?.length || chains?.length))
-      try {
-        const chainsFilter = standaloneChains?.join(',')
-        await Promise.all([
-          ExplorerCtrl.getPreviewWallets({
-            page: 1,
-            entries: 10,
-            chains: chainsFilter,
-            device: CoreHelpers.isMobile() ? 'mobile' : 'desktop'
-          }),
-          ExplorerCtrl.getRecomendedWallets()
-        ])
-        const walletImgs = [
-          ...ExplorerCtrl.state.previewWallets,
-          ...ExplorerCtrl.state.recomendedWallets
-        ].map(({ image_url }) => image_url.lg)
-        const defaultWalletImgs = defaultWalletImages()
-        const chainsImgs = chains?.map(chain => getChainIcon(chain.id)) ?? []
-        await Promise.all([
-          ...walletImgs.map(async url => preloadImage(url)),
-          ...defaultWalletImgs.map(async url => preloadImage(url)),
-          ...chainsImgs.map(async url => preloadImage(url))
-        ])
-      } catch {
-        ToastCtrl.openToast('Failed preloading', 'error')
-      } finally {
+  private async preloadExplorerData() {
+    const { standaloneChains, chains, isExplorer } = OptionsCtrl.state
+    if (isExplorer) {
+      const chainsFilter = standaloneChains?.join(',')
+      await Promise.all([
+        ExplorerCtrl.getPreviewWallets({
+          page: 1,
+          entries: 10,
+          chains: chainsFilter,
+          device: CoreHelpers.isMobile() ? 'mobile' : 'desktop'
+        }),
+        ExplorerCtrl.getRecomendedWallets()
+      ])
+      const { previewWallets, recomendedWallets } = ExplorerCtrl.state
+      const chainsImgs = chains?.map(chain => getChainIcon(chain.id)) ?? []
+      const walletImgs = [...previewWallets, ...recomendedWallets].map(
+        wallet => wallet.image_url.lg
+      )
+      await this.preloadExplorerImages([...chainsImgs, ...walletImgs])
+    }
+  }
+
+  private async preloadExplorerImages(images: string[]) {
+    if (images.length) {
+      await Promise.all(images.map(async url => preloadImage(url)))
+    }
+  }
+
+  private async preloadCustomImages() {
+    const images = getCustomImageUrls()
+    if (images.length) {
+      await Promise.all(images.map(async url => preloadImage(url)))
+    }
+  }
+
+  private async preloadConnectorImages() {
+    const images = getConnectorImageUrls()
+    if (images.length) {
+      await Promise.all(images.map(async url => preloadImage(url)))
+    }
+  }
+
+  private async preloadModalData() {
+    try {
+      if (this.preload) {
         this.preload = false
+        await Promise.all([
+          this.preloadExplorerData(),
+          this.preloadCustomImages(),
+          this.preloadConnectorImages()
+        ])
       }
+    } catch {
+      ToastCtrl.openToast('Failed preloading', 'error')
+    }
   }
 
   private async onOpenModalEvent() {
-    await this.preloadData()
+    await this.preloadModalData()
     this.toggleBodyScroll(false)
     const delay = 0.3
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay })
@@ -119,7 +139,6 @@ export class W3mModal extends ThemedElement {
     })
     document.addEventListener('keydown', this.onKeyDown)
     this.open = true
-    this.initialized = true
   }
 
   private async onCloseModalEvent() {
@@ -136,7 +155,9 @@ export class W3mModal extends ThemedElement {
   }
 
   private onKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Escape') ModalCtrl.close()
+    if (event.key === 'Escape') {
+      ModalCtrl.close()
+    }
   }
 
   // -- render ------------------------------------------------------- //
@@ -156,11 +177,11 @@ export class W3mModal extends ThemedElement {
         aria-modal="true"
       >
         <div class="w3m-modal-container">
-          ${this.initialized
+          ${this.open
             ? html`
                 <w3m-modal-backcard></w3m-modal-backcard>
                 <div class="w3m-modal-card">
-                  ${this.open ? html`<w3m-modal-router></w3m-modal-router>` : null}
+                  <w3m-modal-router></w3m-modal-router>
                   <w3m-modal-toast></w3m-modal-toast>
                 </div>
               `

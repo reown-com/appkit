@@ -9,9 +9,9 @@ import '../../components/w3m-qrcode'
 import '../../components/w3m-spinner'
 import '../../components/w3m-text'
 import '../../components/w3m-wallet-image'
+import { getOptimisticNamePreset, getOptimisticWalletIdPreset } from '../../utils/Presets'
 import { RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
-import { getOptimisticName } from '../../utils/UiHelpers'
 import styles from './styles'
 
 @customElement('w3m-injected-connector-view')
@@ -37,7 +37,7 @@ export class W3mInjectedConnectorView extends LitElement {
       if (ready) {
         this.error = false
         this.connecting = true
-        await ClientCtrl.client().connectExtension('injected', OptionsCtrl.state.selectedChainId)
+        await ClientCtrl.client().connectConnector('injected', OptionsCtrl.state.selectedChainId)
         ModalCtrl.close()
       }
     } catch (error: unknown) {
@@ -48,7 +48,8 @@ export class W3mInjectedConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const optimisticName = getOptimisticName(this.connector.name)
+    const optimisticName = getOptimisticNamePreset(this.connector.name)
+    const optimisticWalletId = getOptimisticWalletIdPreset(this.connector.id)
     const classes = {
       'w3m-injected-wrapper': true,
       'w3m-injected-error': this.error
@@ -58,7 +59,7 @@ export class W3mInjectedConnectorView extends LitElement {
       <w3m-modal-header title=${optimisticName}></w3m-modal-header>
       <w3m-modal-content>
         <div class=${classMap(classes)}>
-          <w3m-wallet-image name=${optimisticName} size="lg"></w3m-wallet-image>
+          <w3m-wallet-image walletId=${optimisticWalletId} size="lg"></w3m-wallet-image>
           <div class="w3m-connecting-title">
             ${this.connecting
               ? html`<w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>`

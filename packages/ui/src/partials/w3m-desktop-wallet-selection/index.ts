@@ -1,4 +1,12 @@
-import { ClientCtrl, CoreHelpers, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
+import type { DesktopConnectorData } from '@web3modal/core'
+import {
+  ClientCtrl,
+  ConfigCtrl,
+  CoreHelpers,
+  ExplorerCtrl,
+  OptionsCtrl,
+  RouterCtrl
+} from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-modal-content'
@@ -19,52 +27,104 @@ export class W3mDesktopWalletSelection extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private onCoinbaseWallet() {
-    if (CoreHelpers.isCoinbaseExtension()) RouterCtrl.push('CoinbaseExtensionConnector')
-    else RouterCtrl.push('CoinbaseMobileConnector')
+    if (CoreHelpers.isCoinbaseExtension()) {
+      RouterCtrl.push('CoinbaseExtensionConnector')
+    } else {
+      RouterCtrl.push('CoinbaseMobileConnector')
+    }
   }
 
-  private onDesktopWallet(name: string, deeplink?: string, universal?: string, icon?: string) {
-    RouterCtrl.push('DesktopConnector', {
-      DesktopConnector: { name, deeplink, universal, icon }
-    })
-  }
-
-  private onMetaMaskWallet() {
-    RouterCtrl.push('MetaMaskConnector')
+  private onDesktopWallet(data: DesktopConnectorData) {
+    RouterCtrl.push('DesktopConnector', { DesktopConnector: data })
   }
 
   private onInjectedWallet() {
     RouterCtrl.push('InjectedConnector')
   }
 
-  private metaMaskTemplate() {
-    return html`
-      <w3m-wallet-button name="MetaMask" .onClick=${this.onMetaMaskWallet}></w3m-wallet-button>
-    `
+  private onMetaMask() {
+    RouterCtrl.push('MetaMaskConnector')
   }
 
-  private injectedTemplate(name: string) {
-    return html`
-      <w3m-wallet-button name=${name} .onClick=${this.onInjectedWallet}></w3m-wallet-button>
-    `
+  private onConnectorWallet(id: string) {
+    if (id === 'coinbaseWallet') {
+      this.onCoinbaseWallet()
+    } else if (id === 'metaMask' || !window.ethereum) {
+      this.onMetaMask()
+    } else if (id === 'injected') {
+      this.onInjectedWallet()
+    } else {
+      const { selectedChainId } = OptionsCtrl.state
+      ClientCtrl.client().connectConnector(id, selectedChainId)
+    }
   }
 
-  private dynamicSlot() {
-    const injected = ClientCtrl.client().getConnectorById('injected')
-    const metamask = ClientCtrl.client().getConnectorById('metaMask')
+  private desktopWalletsTemplate() {
+    const { desktopWallets } = ConfigCtrl.state
 
-    if (injected.ready && injected.name !== metamask.name)
-      return this.injectedTemplate(injected.name)
+    return desktopWallets?.map(
+      ({ id, name, links: { universal, native } }) => html`
+        <w3m-wallet-button
+          walletId=${id}
+          name=${name}
+          .onClick=${() => this.onDesktopWallet({ name, walletId: id, universal, native })}
+        ></w3m-wallet-button>
+      `
+    )
+  }
 
-    return this.metaMaskTemplate()
+  private previewWalletsTemplate() {
+    const { previewWallets } = ExplorerCtrl.state
+
+    return previewWallets.map(
+      ({ name, desktop: { universal, native }, homepage, image_url }) => html`
+        <w3m-wallet-button
+          src=${image_url.lg}
+          name=${name}
+          .onClick=${() =>
+            this.onDesktopWallet({
+              name,
+              native,
+              universal: universal || homepage,
+              icon: image_url.lg
+            })}
+        ></w3m-wallet-button>
+      `
+    )
+  }
+
+  private connectorWalletsTemplate() {
+    const { isStandalone } = OptionsCtrl.state
+
+    if (isStandalone) {
+      return []
+    }
+
+    const connectorWallets = ClientCtrl.client().getConnectorWallets()
+
+    return connectorWallets.map(
+      wallet => html`
+        <w3m-wallet-button
+          name=${wallet.name}
+          walletId=${wallet.id}
+          .onClick=${() => this.onConnectorWallet(wallet.id)}
+        ></w3m-wallet-button>
+      `
+    )
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
     const { standaloneUri } = OptionsCtrl.state
-    const { previewWallets } = ExplorerCtrl.state
-    const isViewAll = previewWallets.length > 4
-    const previewChunk = isViewAll ? previewWallets.slice(0, 3) : previewWallets
+    const desktopTemplate = this.desktopWalletsTemplate()
+    const previewTemplate = this.previewWalletsTemplate()
+    const connectorTemplate = this.connectorWalletsTemplate()
+    const linkingWallets = desktopTemplate ?? previewTemplate
+    const combinedWallets = [...connectorTemplate, ...linkingWallets]
+    const displayWallets = standaloneUri ? linkingWallets : combinedWallets
+    const isViewAll = displayWallets.length > 4
+    const wallets = isViewAll ? displayWallets.slice(0, 3) : displayWallets
+    const isDesktopWallets = Boolean(wallets.length)
 
     return html`
       ${dynamicStyles()}
@@ -90,56 +150,23 @@ export class W3mDesktopWalletSelection extends LitElement {
         <w3m-walletconnect-qr></w3m-walletconnect-qr>
       </w3m-modal-content>
 
-      <w3m-modal-footer>
-        <div class="w3m-desktop-title">
-          ${DESKTOP_ICON}
-          <w3m-text variant="small-normal" color="accent">Desktop</w3m-text>
-        </div>
+      ${isDesktopWallets
+        ? html`
+            <w3m-modal-footer>
+              <div class="w3m-desktop-title">
+                ${DESKTOP_ICON}
+                <w3m-text variant="small-normal" color="accent">Desktop</w3m-text>
+              </div>
 
-        ${standaloneUri
-          ? html`
               <div class="w3m-view-row">
-                ${previewChunk.map(
-                  wallet => html`
-                    <w3m-wallet-button
-                      src=${wallet.image_url.lg}
-                      name=${wallet.name}
-                      .onClick=${() =>
-                        this.onDesktopWallet(
-                          wallet.name,
-                          wallet.desktop.native,
-                          wallet.desktop.universal || wallet.homepage,
-                          wallet.image_url.lg
-                        )}
-                    ></w3m-wallet-button>
-                  `
-                )}
+                ${wallets}
                 ${isViewAll
                   ? html`<w3m-view-all-wallets-button></w3m-view-all-wallets-button>`
                   : null}
               </div>
-            `
-          : html`
-              <div class="w3m-view-row">
-                ${this.dynamicSlot()}
-                <w3m-wallet-button
-                  name="Coinbase Wallet"
-                  .onClick=${this.onCoinbaseWallet}
-                ></w3m-wallet-button>
-
-                <w3m-wallet-button
-                  name="Ledger Live"
-                  .onClick=${() =>
-                    this.onDesktopWallet(
-                      'Ledger Live',
-                      'ledgerlive',
-                      'https://www.ledger.com/ledger-live'
-                    )}
-                ></w3m-wallet-button>
-                <w3m-view-all-wallets-button></w3m-view-all-wallets-button>
-              </div>
-            `}
-      </w3m-modal-footer>
+            </w3m-modal-footer>
+          `
+        : null}
     `
   }
 }

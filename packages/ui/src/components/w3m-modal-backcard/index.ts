@@ -20,7 +20,7 @@ export class W3mModalBackcard extends LitElement {
 
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
-    setTimeout(() => {
+    this.playTimeout = setTimeout(() => {
       whatamesh.play(this.canvasEl)
       this.open = true
     }, 1000)
@@ -36,11 +36,13 @@ export class W3mModalBackcard extends LitElement {
   public disconnectedCallback() {
     super.disconnectedCallback()
     this.unsubscribeRouter?.()
+    clearTimeout(this.playTimeout)
     whatamesh.stop()
   }
 
   // -- private ------------------------------------------------------ //
   private readonly unsubscribeRouter?: () => void = undefined
+  private playTimeout?: NodeJS.Timeout = undefined
 
   private get canvasEl() {
     return getShadowRootElement(this, '.w3m-gradient-canvas')

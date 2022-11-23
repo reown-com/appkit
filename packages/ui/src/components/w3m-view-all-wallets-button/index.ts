@@ -2,7 +2,10 @@ import { ExplorerCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import '../../components/w3m-text'
+import { getOptimisticWalletIdPreset } from '../../utils/Presets'
+import { WALLET_PLACEHOLDER } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
+import { getCustomWallets, getWalletIcon } from '../../utils/UiHelpers'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-view-all-wallets-button')
@@ -10,22 +13,41 @@ export class W3mViewAllWalletsButton extends LitElement {
   public static styles = [global, styles]
 
   // -- render ------------------------------------------------------- //
-  private onClick() {
-    RouterCtrl.push('WalletExplorer')
+  private onClick(isPreviewWallets: boolean, isCustomWallets: boolean) {
+    if (isPreviewWallets) {
+      RouterCtrl.push('WalletExplorer')
+    } else if (isCustomWallets) {
+      RouterCtrl.push('WalletFilter')
+    }
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const wallets = ExplorerCtrl.state.previewWallets.reverse().slice(0, 4)
+    const { previewWallets } = ExplorerCtrl.state
+    const customWallets = getCustomWallets()
+    const rePreviewWallets = [...previewWallets].reverse().slice(0, 4)
+    const reCustomWallets = [...customWallets].reverse().slice(0, 4)
+    const isPreviewWallets = Boolean(rePreviewWallets.length)
+    const isCustomWallets = Boolean(reCustomWallets.length)
 
     return html`
       ${dynamicStyles()}
 
-      <button class="w3m-button" @click=${this.onClick}>
+      <button class="w3m-button" @click=${() => this.onClick(isPreviewWallets, isCustomWallets)}>
         <div class="w3m-icons">
-          ${wallets.map(wallet => html`<img src=${wallet.image_url.lg} />`)}
+          ${isPreviewWallets
+            ? rePreviewWallets.map(wallet => html`<img src=${wallet.image_url.lg} />`)
+            : null}
+          ${isCustomWallets
+            ? reCustomWallets.map(wallet => {
+                const optimisticId = getOptimisticWalletIdPreset(wallet.id)
+                const src = getWalletIcon(optimisticId)
+
+                return src ? html`<img src=${src} />` : WALLET_PLACEHOLDER
+              })
+            : null}
         </div>
-        <w3m-text variant="xsmall-normal">View All</w3m-text>
+        <w3m-text variant="xsmall-normal">View More</w3m-text>
       </button>
     `
   }

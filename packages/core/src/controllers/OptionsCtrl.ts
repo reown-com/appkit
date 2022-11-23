@@ -6,7 +6,11 @@ const state = proxy<OptionsCtrlState>({
   selectedChainId: undefined,
   chains: undefined,
   standaloneChains: undefined,
-  standaloneUri: undefined
+  standaloneUri: undefined,
+  isStandalone: false,
+  isCustomDesktop: false,
+  isCustomMobile: false,
+  isExplorer: false
 })
 
 // -- controller --------------------------------------------------- //
@@ -27,5 +31,21 @@ export const OptionsCtrl = {
 
   setSelectedChainId(selectedChainId: OptionsCtrlState['selectedChainId']) {
     state.selectedChainId = selectedChainId
+  },
+
+  setIsStandalone(isStandalone: OptionsCtrlState['isStandalone']) {
+    state.isStandalone = isStandalone
+  },
+
+  setIsCustomDesktop(isCustomDesktop: OptionsCtrlState['isCustomDesktop']) {
+    state.isCustomDesktop = isCustomDesktop
+  },
+
+  setIsCustomMobile(isCustomMobile: OptionsCtrlState['isCustomMobile']) {
+    state.isCustomMobile = isCustomMobile
+  },
+
+  setIsExplorer(isExplorer: OptionsCtrlState['isExplorer']) {
+    state.isExplorer = isExplorer
   }
 }

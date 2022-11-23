@@ -6,11 +6,11 @@ export { OptionsCtrl } from './src/controllers/OptionsCtrl'
 export { RouterCtrl } from './src/controllers/RouterCtrl'
 export { ToastCtrl } from './src/controllers/ToastCtrl'
 export type {
-  ConfigOptions,
+  ConfigCtrlState,
+  DesktopConnectorData,
   Listing,
   ListingResponse,
   RouterView
 } from './src/types/controllerTypes'
 export { CoreHelpers } from './src/utils/CoreHelpers'
-export { getExplorerApi } from './src/utils/ExplorerApi'
 import './src/utils/PolyfillUtil'

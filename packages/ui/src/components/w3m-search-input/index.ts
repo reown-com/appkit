@@ -1,3 +1,4 @@
+import { CoreHelpers } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { SEARCH_ICON } from '../../utils/Svgs'
@@ -13,13 +14,15 @@ export class W3mSearchInput extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
+    const placeholder = CoreHelpers.isMobile() ? 'Search mobile wallets' : 'Search desktop wallets'
+
     return html`
       ${dynamicStyles()}
 
-      <input type="text" @input=${this.onChange} placeholder="Search" />
+      <input type="text" @input=${this.onChange} placeholder=${placeholder} />
       <div class="w3m-placeholder">
         ${SEARCH_ICON}
-        <w3m-text color="secondary" variant="medium-thin">Search</w3m-text>
+        <w3m-text color="secondary" variant="medium-thin">${placeholder}</w3m-text>
       </div>
     `
   }

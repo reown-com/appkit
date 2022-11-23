@@ -1,4 +1,4 @@
-import type { ConfigOptions } from '@web3modal/core'
+import type { ConfigCtrlState } from '@web3modal/core'
 import { ClientCtrl, ConfigCtrl } from '@web3modal/core'
 import type { EthereumClient } from '@web3modal/ethereum'
 import React, { useCallback, useEffect } from 'react'
@@ -7,7 +7,7 @@ import { Modal } from './Modal'
 /**
  * Props
  */
-interface Props extends ConfigOptions {
+interface Props extends ConfigCtrlState {
   ethereumClient?: EthereumClient
 }
 
@@ -17,7 +17,9 @@ interface Props extends ConfigOptions {
 export function Web3Modal({ ethereumClient, ...config }: Props) {
   const onConfigure = useCallback(async () => {
     ConfigCtrl.setConfig(config)
-    if (ethereumClient) ClientCtrl.setEthereumClient(ethereumClient)
+    if (ethereumClient) {
+      ClientCtrl.setEthereumClient(ethereumClient)
+    }
     await import('@web3modal/ui')
   }, [ethereumClient, config])
 

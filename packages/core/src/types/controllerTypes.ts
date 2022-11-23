@@ -1,8 +1,26 @@
 import type { EthereumClient } from '@web3modal/ethereum'
 
+export interface MobileWallet {
+  id: string
+  name: string
+  links: {
+    universal: string
+    native?: string
+  }
+}
+
+export interface DesktopWallet {
+  id: string
+  name: string
+  links: {
+    native: string
+    universal: string
+  }
+}
+
 // -- ConfigCtrl ------------------------------------------- //
-export interface ConfigOptions {
-  projectId: string
+export interface ConfigCtrlState {
+  projectId?: string
   theme?: 'dark' | 'light'
   accentColor?:
     | 'blackWhite'
@@ -14,10 +32,12 @@ export interface ConfigOptions {
     | 'purple'
     | 'teal'
   standaloneChains?: string[]
-}
-
-export interface ConfigCtrlState extends ConfigOptions {
-  configured: boolean
+  mobileWallets?: MobileWallet[]
+  desktopWallets?: DesktopWallet[]
+  walletImages?: Record<string, string>
+  chainImages?: Record<string, string>
+  enableNetworkView?: boolean
+  enableStandaloneMode?: boolean
 }
 
 // -- ModalCtrl --------------------------------------- //
@@ -31,6 +51,10 @@ export interface OptionsCtrlState {
   chains?: EthereumClient['chains']
   standaloneChains?: string[]
   standaloneUri?: string
+  isStandalone: boolean
+  isCustomDesktop: boolean
+  isCustomMobile: boolean
+  isExplorer: boolean
 }
 
 // -- ExplorerCtrl ------------------------------------------- //
@@ -114,17 +138,21 @@ export type RouterView =
   | 'Qrcode'
   | 'SelectNetwork'
   | 'WalletExplorer'
+  | 'WalletFilter'
+
+export interface DesktopConnectorData {
+  name: string
+  native?: string
+  universal?: string
+  icon?: string
+  walletId?: string
+}
 
 export interface RouterCtrlState {
   history: RouterView[]
   view: RouterView
   data?: {
-    DesktopConnector: {
-      name: string
-      deeplink?: string
-      universal?: string
-      icon?: string
-    }
+    DesktopConnector: DesktopConnectorData
   }
 }
 

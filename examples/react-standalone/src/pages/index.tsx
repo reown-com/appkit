@@ -1,12 +1,12 @@
 import SignClient from '@walletconnect/sign-client'
 import { ConfigCtrl, ModalCtrl } from '@web3modal/core'
-import '@web3modal/ui'
 import type { W3mModal } from '@web3modal/ui'
 import { useEffect, useState } from 'react'
 
 // 1. Get projectID at https://cloud.walletconnect.com
-if (!process.env.NEXT_PUBLIC_PROJECT_ID)
+if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
   throw new Error('You need to provide NEXT_PUBLIC_PROJECT_ID env variable')
+}
 
 // 2. Configure sign client
 let signClient: SignClient | undefined = undefined
@@ -24,6 +24,7 @@ async function configureSignClient() {
 // 3. Configure web3modal
 ConfigCtrl.setConfig({
   projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+  enableStandaloneMode: true,
   theme: 'light' as const,
   accentColor: 'orange' as const
 })
@@ -50,6 +51,10 @@ export default function HomePage() {
 
   useEffect(() => {
     onInitialize()
+  }, [])
+
+  useEffect(() => {
+    import('@web3modal/ui')
   }, [])
 
   return (

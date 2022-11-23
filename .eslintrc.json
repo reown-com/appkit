@@ -33,7 +33,7 @@
     "complexity": "off",
     "max-depth": "off",
     "no-undef-init": "off",
-    "curly": ["error", "multi"],
+    "curly": "error",
     "max-lines": "off",
     "require-atomic-updates": "off",
     "arrow-body-style": "off",

@@ -10,7 +10,6 @@ export class W3mNetworkImage extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
-  @property() public name = ''
   @property() public src = ''
 
   // -- render ------------------------------------------------------- //
@@ -19,7 +18,7 @@ export class W3mNetworkImage extends LitElement {
       ${dynamicStyles()}
 
       <div class="w3m-network-image">
-        <img src=${this.src} alt=${this.name} />
+        <img src=${this.src} />
         ${NETWORK_POLYGON}
       </div>
     `

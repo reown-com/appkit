@@ -1,6 +1,8 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { NETWORK_PLACEHOLDER } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
+import { getChainIcon } from '../../utils/UiHelpers'
 import '../w3m-network-image'
 import '../w3m-text'
 import styles, { dynamicStyles } from './styles'
@@ -12,15 +14,17 @@ export class W3mNetworkButton extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property() public onClick: () => void = () => null
   @property() public name = ''
-  @property() public src = ''
+  @property() public chainId = ''
 
   // -- render ------------------------------------------------------- //
   protected render() {
+    const src = getChainIcon(this.chainId)
+
     return html`
       ${dynamicStyles()}
 
       <button class="w3m-network-button" @click=${this.onClick}>
-        <w3m-network-image name=${this.name} .src=${this.src}></w3m-network-image>
+        ${src ? html`<w3m-network-image src=${src}></w3m-network-image>` : NETWORK_PLACEHOLDER}
         <w3m-text variant="xsmall-normal"> ${this.name} </w3m-text>
       </button>
     `

@@ -26,11 +26,7 @@ ConfigCtrl.setConfig({
 ClientCtrl.setEthereumClient(ethereumClient, chains)
 
 // 5. Import ui package after all configuration has been completed
-async function loadUi() {
-  await import('@web3modal/ui')
-}
-
-loadUi()
+import('@web3modal/ui')
 
 /**
  * 6. Use ModalCtrl and wagmiClient in your app i.e.

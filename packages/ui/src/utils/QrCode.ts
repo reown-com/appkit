@@ -9,7 +9,9 @@ const CIRCLE_SIZE_MODIFIER = 2.5
 const QRCODE_MATRIX_MARGIN = 7
 
 function isAdjecentDots(cy: number, otherCy: number, cellSize: number) {
-  if (cy === otherCy) return false
+  if (cy === otherCy) {
+    return false
+  }
   const diff = cy - otherCy < 0 ? otherCy - cy : cy - otherCy
 
   return diff <= cellSize + CONNECTING_ERROR_MARGIN
@@ -74,14 +76,14 @@ export function getDots(uri: string, size: number, logoSize: number, theme: 'dar
   // Getting coordinates for each of the QR code dots
   matrix.forEach((row: QRCodeUtil.QRCode[], i: number) => {
     row.forEach((_, j: number) => {
-      if (matrix[i][j])
+      if (matrix[i][j]) {
         if (
           !(
             (i < QRCODE_MATRIX_MARGIN && j < QRCODE_MATRIX_MARGIN) ||
             (i > matrix.length - (QRCODE_MATRIX_MARGIN + 1) && j < QRCODE_MATRIX_MARGIN) ||
             (i < QRCODE_MATRIX_MARGIN && j > matrix.length - (QRCODE_MATRIX_MARGIN + 1))
           )
-        )
+        ) {
           if (
             !(
               i > matrixMiddleStart &&
@@ -94,6 +96,8 @@ export function getDots(uri: string, size: number, logoSize: number, theme: 'dar
             const cy = j * cellSize + cellSize / 2
             circles.push([cx, cy])
           }
+        }
+      }
     })
   })
 
@@ -103,8 +107,11 @@ export function getDots(uri: string, size: number, logoSize: number, theme: 'dar
   // Mapping all dots cicles on the same x axis
   circles.forEach(([cx, cy]) => {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (circlesToConnect[cx]) circlesToConnect[cx].push(cy)
-    else circlesToConnect[cx] = [cy]
+    if (circlesToConnect[cx]) {
+      circlesToConnect[cx].push(cy)
+    } else {
+      circlesToConnect[cx] = [cy]
+    }
   })
 
   // Drawing lonely dots
@@ -142,8 +149,11 @@ export function getDots(uri: string, size: number, logoSize: number, theme: 'dar
         const group = groups.find(item =>
           item.some(otherCy => isAdjecentDots(cy, otherCy, cellSize))
         )
-        if (group) group.push(cy)
-        else groups.push([cy])
+        if (group) {
+          group.push(cy)
+        } else {
+          groups.push([cy])
+        }
       }
 
       return [cx, groups.map(item => [item[0], item[item.length - 1]])] as [number, number[][]]

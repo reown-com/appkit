@@ -1,6 +1,7 @@
-import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
+import { proxy } from 'valtio/vanilla'
 import type { ExplorerCtrlState, PageParams } from '../types/controllerTypes'
-import { fetchWallets } from '../utils/ExplorerApi'
+import { fetchWallets, formatImageUrl } from '../utils/ExplorerApi'
+import { ConfigCtrl } from './ConfigCtrl'
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<ExplorerCtrlState>({
@@ -10,29 +11,35 @@ const state = proxy<ExplorerCtrlState>({
   recomendedWallets: []
 })
 
+// -- helpers ------------------------------------------------------ //
+function getProjectId() {
+  const { projectId } = ConfigCtrl.state
+  if (!projectId) {
+    throw new Error('projectId is required to work with explorer api')
+  }
+
+  return projectId
+}
+
 // -- controller --------------------------------------------------- //
 export const ExplorerCtrl = {
   state,
 
-  subscribe(callback: (newState: ExplorerCtrlState) => void) {
-    return valtioSub(state, () => callback(state))
-  },
-
   async getPreviewWallets(params: PageParams) {
-    const { listings } = await fetchWallets(params)
+    const { listings } = await fetchWallets(getProjectId(), params)
     state.previewWallets = Object.values(listings)
 
     return state.previewWallets
   },
 
   async getRecomendedWallets() {
-    const { listings } = await fetchWallets({ page: 1, entries: 6 })
+    const { listings } = await fetchWallets(getProjectId(), { page: 1, entries: 6 })
     state.recomendedWallets = Object.values(listings)
   },
 
   async getPaginatedWallets(params: PageParams) {
     const { page, search } = params
-    const { listings: listingsObj, total } = await fetchWallets(params)
+    const { listings: listingsObj, total } = await fetchWallets(getProjectId(), params)
     const listings = Object.values(listingsObj)
     const type = search ? 'search' : 'wallets'
     state[type] = {
@@ -42,6 +49,10 @@ export const ExplorerCtrl = {
     }
 
     return { listings, total }
+  },
+
+  getImageUrl(imageId: string) {
+    return formatImageUrl(getProjectId(), imageId)
   },
 
   resetSearch() {

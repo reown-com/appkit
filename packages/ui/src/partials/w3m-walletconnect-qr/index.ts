@@ -27,8 +27,9 @@ export class W3mWalletConnectQr extends LitElement {
   private async getConnectionUri() {
     try {
       const { standaloneUri } = OptionsCtrl.state
-      if (standaloneUri) setTimeout(() => (this.uri = standaloneUri), 0)
-      else {
+      if (standaloneUri) {
+        setTimeout(() => (this.uri = standaloneUri), 0)
+      } else {
         await ClientCtrl.client().connectWalletConnect(
           uri => (this.uri = uri),
           OptionsCtrl.state.selectedChainId

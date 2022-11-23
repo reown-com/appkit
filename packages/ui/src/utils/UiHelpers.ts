@@ -1,19 +1,27 @@
 import {
   ClientCtrl,
+  ConfigCtrl,
   CoreHelpers,
-  getExplorerApi,
+  ExplorerCtrl,
   ModalCtrl,
   OptionsCtrl,
   ToastCtrl
 } from '@web3modal/core'
 import type { LitElement } from 'lit'
-import { getCloudChainImages, getCloudWalletImages } from './Images'
+import {
+  getChainPresetExplorerImage,
+  getOptimisticNamePreset,
+  getOptimisticWalletIdPreset,
+  getWalletPresetExplorerImage
+} from './Presets'
 
 export const MOBILE_BREAKPOINT = 600
 
 export function getShadowRootElement(root: LitElement, selector: string) {
   const el = root.renderRoot.querySelector(selector)
-  if (!el) throw new Error(`${selector} not found`)
+  if (!el) {
+    throw new Error(`${selector} not found`)
+  }
 
   return el
 }
@@ -22,10 +30,13 @@ export function getConditionalValue<T extends string>(
   value: T | T[],
   condition: boolean[] | boolean
 ) {
-  if (typeof value === 'string' && typeof condition === 'boolean' && condition) return value
-  else if (Array.isArray(value) && Array.isArray(condition)) {
+  if (typeof value === 'string' && typeof condition === 'boolean' && condition) {
+    return value
+  } else if (Array.isArray(value) && Array.isArray(condition)) {
     const index = condition.findIndex(c => c)
-    if (index < 0) throw new Error('No matching value')
+    if (index < 0) {
+      throw new Error('No matching value')
+    }
 
     return value[index]
   }
@@ -33,95 +44,28 @@ export function getConditionalValue<T extends string>(
   throw new Error('Invalid useConditionalClass arguments')
 }
 
-/**
- * Compares similarity between 2 strings and returns value from 0 to 1
- * https://github.com/aceakash/string-similarity/blob/master/src/index.js
- */
-export function compareTwoStrings(first: string, second: string) {
-  const parsedFirst = first.replace(/\s+/u, '')
-  const parsedSecond = second.replace(/\s+/u, '')
+export function getWalletIcon(id: string) {
+  const { fallback, presets } = getWalletPresetExplorerImage()
+  const imageId = presets[id]
+  const { projectId, walletImages } = ConfigCtrl.state
 
-  if (parsedFirst === parsedSecond) return 1
-  if (parsedFirst.length < 2 || parsedSecond.length < 2) return 0
-
-  const firstBigrams = new Map<string, number>()
-  for (let i = 0; i < parsedFirst.length - 1; i += 1) {
-    const bigram = parsedFirst.substring(i, i + 2)
-    const storedBigram = firstBigrams.get(bigram)
-    const count = typeof storedBigram === 'number' ? storedBigram + 1 : 1
-    firstBigrams.set(bigram, count)
-  }
-
-  let intersectionSize = 0
-  for (let i = 0; i < parsedSecond.length - 1; i += 1) {
-    const bigram = parsedSecond.substring(i, i + 2)
-    const storedBigram = firstBigrams.get(bigram)
-    const count = typeof storedBigram === 'number' ? storedBigram : 0
-    if (count > 0) {
-      firstBigrams.set(bigram, count - 1)
-      intersectionSize += 1
-    }
-  }
-
-  return (2.0 * intersectionSize) / (first.length + second.length - 2)
+  return walletImages?.[id] ?? (projectId ? ExplorerCtrl.getImageUrl(imageId ?? fallback) : '')
 }
 
-export function getOptimisticName(name: string) {
-  if (name.toUpperCase() !== 'INJECTED') return name
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { ethereum }: { ethereum?: any } = window
-  if (!ethereum) return 'Unknown'
-  if (ethereum.isFrame) return 'Frame'
-  if (ethereum.isPortal) return 'Ripio Portal'
-  if (ethereum.isTally) return 'Tally'
-  if (ethereum.isTrust || ethereum.isTrustWallet) return 'Trust'
-  if (ethereum.isCoinbaseExtension) return 'Coinbase'
-  if (ethereum.isAvalanche) return 'Core'
-  if (ethereum.isBitKeep) return 'BitKeep'
-  if (ethereum.isBraveWallet) return 'Brave'
-  if (ethereum.isExodus) return 'Exodus'
-  if (ethereum.isMathWallet) return 'MathWallet'
-  if (ethereum.isOpera) return 'Opera'
-  if (ethereum.isTokenPocket) return 'TokenPocket'
-  if (ethereum.isTokenary) return 'Tokenary'
-  if (ethereum.isMetaMask) return 'MetaMask'
+export function getChainIcon(chainId: number | string) {
+  const { fallback, presets } = getChainPresetExplorerImage()
+  const { projectId, chainImages } = ConfigCtrl.state
 
-  return 'Injected'
-}
-
-export function getWalletIcon(name: string) {
-  const { projectId, url } = getExplorerApi()
-  const cdn = `${url}/v2/logo/lg`
-  const { fallback, presets } = getCloudWalletImages()
-  const optimisticName = getOptimisticName(name)
-  const preset = Object.keys(presets).find(key => compareTwoStrings(key, optimisticName) >= 0.5)
-  const imageId = preset ? presets[preset] : undefined
-
-  return `${cdn}/${imageId ?? fallback}?projectId=${projectId}`
-}
-
-export function getChainIcon(chainId: number) {
-  const { projectId, url } = getExplorerApi()
-  const cdn = `${url}/v2/logo/lg`
-  const { fallback, presets } = getCloudChainImages()
-
-  return `${cdn}/${presets[chainId] ?? fallback}?projectId=${projectId}`
+  return (
+    chainImages?.[chainId] ??
+    (projectId ? ExplorerCtrl.getImageUrl(presets[chainId] ?? fallback) : '')
+  )
 }
 
 export function getWalletFirstName(fullName: string) {
-  const optimisticName = getOptimisticName(fullName)
+  const optimisticName = getOptimisticNamePreset(fullName)
 
   return optimisticName.split(' ')[0] ?? optimisticName
-}
-
-export function getDefaultWalletNames() {
-  return CoreHelpers.isMobile()
-    ? ['Coinbase Wallet']
-    : ['MetaMask', 'Coinbase Wallet', 'Ledger Live']
-}
-
-export function defaultWalletImages() {
-  return getDefaultWalletNames().map(name => getWalletIcon(name))
 }
 
 export function isMobileAnimation() {
@@ -149,47 +93,69 @@ export function debounce(func: (...args: any[]) => unknown, timeout = 500) {
     function next() {
       func(...args)
     }
-
-    if (timer) clearTimeout(timer)
-
+    if (timer) {
+      clearTimeout(timer)
+    }
     timer = setTimeout(next, timeout)
   }
 }
 
 export async function handleMobileLinking(
-  links: { native: string; universal?: string },
+  links: { native?: string; universal?: string },
   name: string
 ) {
   const { standaloneUri, selectedChainId } = OptionsCtrl.state
   const { native, universal } = links
 
   function onRedirect(uri: string) {
-    const href = universal
-      ? CoreHelpers.formatUniversalUrl(universal, uri, name)
-      : CoreHelpers.formatNativeUrl(native, uri, name)
+    let href = ''
+    if (universal) {
+      href = CoreHelpers.formatUniversalUrl(universal, uri, name)
+    } else if (native) {
+      CoreHelpers.formatNativeUrl(native, uri, name)
+    }
     CoreHelpers.openHref(href)
   }
 
-  if (standaloneUri) onRedirect(standaloneUri)
-  else {
-    const connector = ClientCtrl.client().getConnectorById('injected')
-    const isNameSimilar = compareTwoStrings(name, connector.name) >= 0.5
-    if (connector.ready && isNameSimilar)
-      await ClientCtrl.client().connectExtension('injected', selectedChainId)
-    else
-      await ClientCtrl.client().connectWalletConnect(uri => {
-        onRedirect(uri)
-      }, selectedChainId)
+  if (standaloneUri) {
+    onRedirect(standaloneUri)
+  } else {
+    await ClientCtrl.client().connectWalletConnect(uri => {
+      onRedirect(uri)
+    }, selectedChainId)
     ModalCtrl.close()
   }
 }
 
 export async function handleUriCopy() {
   const { standaloneUri } = OptionsCtrl.state
-  if (standaloneUri) await navigator.clipboard.writeText(standaloneUri)
-  else {
+  if (standaloneUri) {
+    await navigator.clipboard.writeText(standaloneUri)
+  } else {
     const uri = await ClientCtrl.client().getActiveWalletConnectUri()
     await navigator.clipboard.writeText(uri)
   }
   ToastCtrl.openToast('Link copied', 'success')
+}
+
+export function getCustomWallets() {
+  const { desktopWallets, mobileWallets } = ConfigCtrl.state
+
+  return (CoreHelpers.isMobile() ? mobileWallets : desktopWallets) ?? []
+}
+
+export function getCustomImageUrls() {
+  const { chainImages, walletImages } = ConfigCtrl.state
+  const chainUrls = Object.values(chainImages ?? {})
+  const walletUrls = Object.values(walletImages ?? {})
+
+  return Object.values([...chainUrls, ...walletUrls])
+}
+
+export function getConnectorImageUrls() {
+  const connectors = ClientCtrl.client().getConnectorWallets()
+  const ids = connectors.map(({ id }) => getOptimisticWalletIdPreset(id))
+  const images = ids.map(id => getWalletIcon(id))
+
+  return images
 }

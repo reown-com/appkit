@@ -1,5 +1,5 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
-import type { ConfigCtrlState, ConfigOptions } from '../types/controllerTypes'
+import type { ConfigCtrlState } from '../types/controllerTypes'
 import { OptionsCtrl } from './OptionsCtrl'
 
 // -- initial state ------------------------------------------------ //
@@ -8,11 +8,16 @@ function isDarkMode() {
 }
 
 const state = proxy<ConfigCtrlState>({
-  configured: false,
-  projectId: '',
   theme: isDarkMode() ? 'dark' : 'light',
   accentColor: 'default',
-  standaloneChains: undefined
+  enableNetworkView: true,
+  projectId: undefined,
+  standaloneChains: undefined,
+  enableStandaloneMode: undefined,
+  mobileWallets: undefined,
+  desktopWallets: undefined,
+  walletImages: undefined,
+  chainImages: undefined
 })
 
 // -- controller --------------------------------------------------- //
@@ -23,14 +28,15 @@ export const ConfigCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  setConfig(config: ConfigOptions) {
-    if (!config.projectId)
-      throw new Error(
-        'Web3Modal requires projectId that can be obtained at cloud.walletconnect.com'
-      )
+  setConfig(config: ConfigCtrlState) {
+    OptionsCtrl.setStandaloneChains(config.standaloneChains)
+    OptionsCtrl.setIsStandalone(
+      Boolean(config.standaloneChains?.length) || Boolean(config.enableStandaloneMode)
+    )
+    OptionsCtrl.setIsCustomMobile(Boolean(config.mobileWallets?.length))
+    OptionsCtrl.setIsCustomDesktop(Boolean(config.desktopWallets?.length))
+    OptionsCtrl.setIsExplorer(Boolean(config.projectId?.length))
 
-    if (config.standaloneChains?.length) OptionsCtrl.setStandaloneChains(config.standaloneChains)
     Object.assign(state, config)
-    state.configured = true
   }
 }
