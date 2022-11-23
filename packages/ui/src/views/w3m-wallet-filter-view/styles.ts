@@ -4,7 +4,7 @@ import { color } from '../../utils/Theme'
 export default css`
   w3m-modal-content {
     display: flex;
-    height: 70vh;
+    max-height: 55vh;
     overflow: scroll;
     scrollbar-width: none;
     position: relative;

@@ -35,7 +35,7 @@
     "eslint": "8.28.0",
     "eslint-config-prettier": "8.5.0",
     "lerna": "6.0.3",
-    "prettier": "2.7.1",
+    "prettier": "2.8.0",
     "rollup": "3.4.0",
     "rollup-plugin-esbuild": "5.0.0",
     "rollup-plugin-minify-html-literals": "1.2.6",
