@@ -94,12 +94,12 @@ export class W3mMobileWalletSelection extends LitElement {
 
     if (!window.ethereum) {
       const injectedIdx = wallets.findIndex(({ name }) => name === 'injected')
-      if (injectedIdx) {
+      if (injectedIdx > -1) {
         wallets.splice(injectedIdx, 1)
       }
       const metaMaskdIdx = wallets.findIndex(({ name }) => name === 'metaMask')
-      if (metaMaskdIdx) {
-        wallets.splice(metaMaskdIdx)
+      if (metaMaskdIdx > -1) {
+        wallets.splice(metaMaskdIdx, 1)
       }
     }
 
