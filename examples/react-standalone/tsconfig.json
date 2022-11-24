@@ -6,5 +6,5 @@
     "incremental": true,
     "module": "esnext"
   },
-  "include": ["next-env.d.ts", "src"]
+  "include": ["next-env.d.ts", "src", "index.d.ts"]
 }
