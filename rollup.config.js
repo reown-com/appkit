@@ -1,4 +1,5 @@
 import esbuild from 'rollup-plugin-esbuild'
+import litCss from 'rollup-plugin-lit-css'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
 
 export default function createConfig(packageName) {
@@ -18,10 +19,15 @@ export default function createConfig(packageName) {
     }
   })
 
+  const litCssPlugin = litCss({
+    include: ['packages/ui/**/*.css'],
+    uglify: true
+  })
+
   return [
     {
       input: './index.ts',
-      plugins: [minifyHtml.default(), esbuildPlugin],
+      plugins: [minifyHtml.default(), litCssPlugin, esbuildPlugin],
       output: [{ file: './dist/index.js', format: 'es', ...sharedOutput }]
     }
   ]

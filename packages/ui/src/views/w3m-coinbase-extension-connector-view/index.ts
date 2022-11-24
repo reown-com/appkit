@@ -11,7 +11,7 @@ import '../../components/w3m-text'
 import '../../components/w3m-wallet-image'
 import { RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
-import styles from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-coinbase-extension-connector-view')
 export class W3mCoinbaseExtensionConnectorView extends LitElement {

@@ -16,7 +16,7 @@ import { getOptimisticNamePreset } from '../../utils/Presets'
 import { QRCODE_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { handleMobileLinking } from '../../utils/UiHelpers'
-import styles from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-mobile-wallet-selection')
 export class W3mMobileWalletSelection extends LitElement {

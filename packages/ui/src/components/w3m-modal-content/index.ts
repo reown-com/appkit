@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { global } from '../../utils/Theme'
-import styles from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-modal-content')
 export class W3mModalContent extends LitElement {
