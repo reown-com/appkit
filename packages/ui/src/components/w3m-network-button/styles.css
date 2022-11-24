@@ -1,0 +1,41 @@
+.w3m-network-button {
+  background-color: transparent;
+  padding: 5px;
+  border-radius: 12px;
+  transition: all 0.2s ease-in-out;
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+}
+
+w3m-text {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  margin-top: 5px;
+}
+
+svg {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.w3m-network-button:hover {
+  background-color: var(--color-bg-accent);
+  box-shadow: inset 0 0 0 1px var(--color-ovr-thin);
+}
+
+#network-placeholder-fill {
+  fill: var(--color-bg-3);
+}
+
+#network-placeholder-dash {
+  stroke: var(--color-ovr-thin);
+}

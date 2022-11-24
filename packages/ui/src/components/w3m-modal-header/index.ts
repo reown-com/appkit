@@ -4,7 +4,7 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { BACK_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-modal-header')
 export class W3mModalHeader extends LitElement {
@@ -33,8 +33,6 @@ export class W3mModalHeader extends LitElement {
       : html`<slot></slot>`
 
     return html`
-      ${dynamicStyles()}
-
       <div class="w3m-modal-header">
         ${backBtn ? this.backBtnTemplate() : null} ${content}
         ${this.onAction ? this.actionBtnTemplate() : null}

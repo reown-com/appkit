@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import { NETWORK_PLACEHOLDER } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { getChainIcon } from '../../utils/UiHelpers'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-network-button')
 export class W3mNetworkButton extends LitElement {
@@ -19,8 +19,6 @@ export class W3mNetworkButton extends LitElement {
     const src = getChainIcon(this.chainId)
 
     return html`
-      ${dynamicStyles()}
-
       <button class="w3m-network-button" @click=${this.onClick}>
         ${src ? html`<w3m-network-image src=${src}></w3m-network-image>` : NETWORK_PLACEHOLDER}
         <w3m-text variant="xsmall-normal"> ${this.name} </w3m-text>
