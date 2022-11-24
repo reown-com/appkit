@@ -28,6 +28,6 @@
 }
 
 .w3m-back-btn path,
-  .w3m-action-btn path {
-    fill: var(--color-fg-accent);
-  }
+.w3m-action-btn path {
+  fill: var(--color-fg-accent);
+}
