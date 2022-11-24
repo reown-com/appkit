@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["index.ts", "src", "index.d.ts"],
+  "include": ["index.ts", "src", "../../global.d.ts"],
   "compilerOptions": {
     "outDir": "./dist/_types",
     "declaration": true
