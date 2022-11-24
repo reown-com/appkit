@@ -103,7 +103,7 @@ export class W3mMobileWalletSelection extends LitElement {
       }
     }
 
-    return connectorWallets.map(
+    return wallets.map(
       ({ name, id }) => html`
         <w3m-wallet-button
           name=${name}
