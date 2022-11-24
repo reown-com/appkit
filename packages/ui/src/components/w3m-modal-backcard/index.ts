@@ -6,7 +6,7 @@ import { CROSS_ICON, HELP_ICON, NOISE_TEXTURE, WALLET_CONNECT_LOGO } from '../..
 import { global } from '../../utils/Theme'
 import { getShadowRootElement } from '../../utils/UiHelpers'
 import Whatamesh from '../../utils/Whatamesh'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 const whatamesh = new Whatamesh()
 
@@ -34,7 +34,6 @@ export class W3mModalBackcard extends LitElement {
   }
 
   public disconnectedCallback() {
-    super.disconnectedCallback()
     this.unsubscribeRouter?.()
     clearTimeout(this.playTimeout)
     whatamesh.stop()
@@ -65,8 +64,6 @@ export class W3mModalBackcard extends LitElement {
     }
 
     return html`
-      ${dynamicStyles()}
-
       <div class="w3m-gradient-placeholder"></div>
       <canvas class=${classMap(classes)}></canvas>
       ${NOISE_TEXTURE}

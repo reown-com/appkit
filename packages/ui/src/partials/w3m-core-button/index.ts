@@ -20,7 +20,6 @@ export class W3mCoreButton extends LitElement {
   }
 
   public disconnectedCallback() {
-    super.disconnectedCallback()
     this.accountUnsub?.()
   }
 

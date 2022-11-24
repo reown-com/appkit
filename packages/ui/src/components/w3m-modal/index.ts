@@ -1,10 +1,9 @@
 import { CoreHelpers, ExplorerCtrl, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
-import { html } from 'lit'
+import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { animate, spring } from 'motion'
 import { global } from '../../utils/Theme'
-import ThemedElement from '../../utils/ThemedElement'
 import {
   getChainIcon,
   getConnectorImageUrls,
@@ -13,10 +12,10 @@ import {
   isMobileAnimation,
   preloadImage
 } from '../../utils/UiHelpers'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-modal')
-export class W3mModal extends ThemedElement {
+export class W3mModal extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -37,7 +36,6 @@ export class W3mModal extends ThemedElement {
   }
 
   public disconnectedCallback() {
-    super.disconnectedCallback()
     this.unsubscribeModal?.()
   }
 
@@ -165,8 +163,6 @@ export class W3mModal extends ThemedElement {
     }
 
     return html`
-      ${dynamicStyles()}
-
       <div
         class=${classMap(classes)}
         @click=${this.onCloseModal}

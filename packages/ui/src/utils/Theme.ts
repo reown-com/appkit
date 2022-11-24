@@ -224,3 +224,25 @@ export const global = css`
     background: ${unsafeCSS(color().foreground.accent)};
   }
 `
+
+export function setTheme() {
+  const root: HTMLElement | null = document.querySelector(':root')
+
+  if (root) {
+    const variables = {
+      '--color-fg-accent': color().foreground.accent,
+      '--color-fg-inverse': color().foreground.inverse,
+      '--color-fg-1': color().foreground[1],
+      '--color-fg-2': color().foreground[2],
+      '--color-fg-3': color().foreground[3],
+      '--color-bg-accent': color().background.accent,
+      '--color-bg-1': color().background[1],
+      '--color-bg-2': color().background[2],
+      '--color-bg-3': color().background[3],
+      '--color-ovr-thin': color().overlay.thin,
+      '--color-ovr-thick': color().overlay.thick,
+      '--color-err': color().error
+    }
+    Object.entries(variables).forEach(([key, val]) => root.style.setProperty(key, val))
+  }
+}

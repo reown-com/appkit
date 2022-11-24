@@ -1,0 +1,46 @@
+.w3m-button {
+  border-radius: 28px;
+  height: 28px;
+  padding: 0 10px;
+}
+
+.w3m-button::after {
+  border-radius: inherit;
+  border: var(--color-ovr-thin);
+}
+
+.w3m-button:disabled::after {
+  background-color: transparent;
+}
+
+.w3m-button-icon-left svg {
+  margin-right: 5px;
+}
+
+.w3m-button-icon-right svg {
+  margin-left: 5px;
+}
+
+.w3m-button-fill {
+  background-color: var(--color-fg-accent);
+}
+
+.w3m-button-fill path {
+  fill: var(--color-fg-inverse);
+}
+
+.w3m-button-ghost {
+  background-color: var(--color-bg-accent);
+}
+
+.w3m-button-ghost path {
+  fill: var(--color-fg-accent);
+}
+
+.w3m-button:hover::after {
+  background-color: var(--color-ovr-thin);
+}
+
+.w3m-button:disabled {
+  background-color: var(--color-bg-3);
+}

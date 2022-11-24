@@ -1,14 +1,13 @@
 import { RouterCtrl } from '@web3modal/core'
 import type { TemplateResult } from 'lit'
-import { html } from 'lit'
+import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { BACK_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import ThemedElement from '../../utils/ThemedElement'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-modal-header')
-export class W3mModalHeader extends ThemedElement {
+export class W3mModalHeader extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //

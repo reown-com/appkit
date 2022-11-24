@@ -1,14 +1,13 @@
 import { ModalCtrl } from '@web3modal/core'
-import { html } from 'lit'
+import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { WALLET_CONNECT_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import ThemedElement from '../../utils/ThemedElement'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-connect-button')
-export class W3mConnectButton extends ThemedElement {
+export class W3mConnectButton extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -30,7 +29,6 @@ export class W3mConnectButton extends ThemedElement {
   }
 
   public disconnectedCallback() {
-    super.disconnectedCallback()
     this.modalUnsub?.()
   }
 

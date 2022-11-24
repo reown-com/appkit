@@ -1,12 +1,11 @@
 import { ClientCtrl } from '@web3modal/core'
-import { html } from 'lit'
+import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { global } from '../../utils/Theme'
-import ThemedElement from '../../utils/ThemedElement'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-account-button')
-export class W3mAccountButton extends ThemedElement {
+export class W3mAccountButton extends LitElement {
   public static styles = [global, styles]
 
   // -- render ------------------------------------------------------- //
