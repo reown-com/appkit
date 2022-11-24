@@ -27,7 +27,7 @@ export default function createConfig(packageName) {
   return [
     {
       input: './index.ts',
-      plugins: [minifyHtml.default(), esbuildPlugin, litCssPlugin],
+      plugins: [litCssPlugin, minifyHtml.default(), esbuildPlugin],
       output: [{ file: './dist/index.js', format: 'es', ...sharedOutput }]
     }
   ]
