@@ -5,7 +5,7 @@ import { getOptimisticWalletIdPreset } from '../../utils/Presets'
 import { WALLET_PLACEHOLDER } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { getCustomWallets, getWalletIcon } from '../../utils/UiHelpers'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-view-all-wallets-button')
 export class W3mViewAllWalletsButton extends LitElement {
@@ -30,8 +30,6 @@ export class W3mViewAllWalletsButton extends LitElement {
     const isCustomWallets = Boolean(reCustomWallets.length)
 
     return html`
-      ${dynamicStyles()}
-
       <button class="w3m-button" @click=${() => this.onClick(isPreviewWallets, isCustomWallets)}>
         <div class="w3m-icons">
           ${isPreviewWallets

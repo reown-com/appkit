@@ -5,7 +5,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { getDots } from '../../utils/QrCode'
 import { WALLET_CONNECT_ICON_COLORED } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-qrcode')
 export default class W3mQrCode extends LitElement {
@@ -31,7 +31,6 @@ export default class W3mQrCode extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      ${dynamicStyles()}
       <div class="w3m-qrcode-container">
         ${this.walletId || this.logoSrc
           ? html`

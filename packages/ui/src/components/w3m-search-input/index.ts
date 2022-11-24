@@ -3,7 +3,7 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { SEARCH_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-search-input')
 export class W3mSearchInput extends LitElement {
@@ -16,8 +16,6 @@ export class W3mSearchInput extends LitElement {
     const placeholder = CoreHelpers.isMobile() ? 'Search mobile wallets' : 'Search desktop wallets'
 
     return html`
-      ${dynamicStyles()}
-
       <input type="text" @input=${this.onChange} placeholder=${placeholder} />
       <div class="w3m-placeholder">
         ${SEARCH_ICON}

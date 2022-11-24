@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { global } from '../../utils/Theme'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 type Variant =
   | 'large-bold'
@@ -51,8 +51,6 @@ export class W3mText extends LitElement {
     }
 
     return html`
-      ${dynamicStyles()}
-
       <span class=${classMap(classes)}>
         <slot></slot>
       </span>
