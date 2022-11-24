@@ -1,7 +1,6 @@
 import { ClientCtrl } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import '../../components/w3m-text'
 import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
 import styles, { dynamicStyles } from './styles'

@@ -1,7 +1,6 @@
 import { ExplorerCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import '../../components/w3m-text'
 import { getOptimisticWalletIdPreset } from '../../utils/Presets'
 import { WALLET_PLACEHOLDER } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'

@@ -1,10 +1,6 @@
 import { CoreHelpers, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import '../../components/w3m-button'
-import '../../components/w3m-modal-content'
-import '../../components/w3m-modal-footer'
-import '../../components/w3m-modal-header'
 import {
   ARROW_UP_RIGHT_ICON,
   HELP_CHART_IMG,

@@ -1,8 +1,6 @@
 import { CoreHelpers } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import '../../partials/w3m-desktop-wallet-selection'
-import '../../partials/w3m-mobile-wallet-selection'
 import { global } from '../../utils/Theme'
 
 @customElement('w3m-connect-wallet-view')

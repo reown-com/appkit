@@ -1,6 +1,5 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../../components/w3m-text'
 import { NETWORK_POLYGON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import styles, { dynamicStyles } from './styles'

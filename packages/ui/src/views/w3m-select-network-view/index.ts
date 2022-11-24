@@ -1,11 +1,8 @@
 import { OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import '../../components/w3m-modal-content'
-import '../../components/w3m-modal-header'
-import '../../components/w3m-network-button'
 import { global } from '../../utils/Theme'
-import styles from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-select-network-view')
 export class W3mSelectNetworkView extends LitElement {

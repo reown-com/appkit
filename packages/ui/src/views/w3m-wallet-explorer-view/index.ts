@@ -3,12 +3,6 @@ import { CoreHelpers, ExplorerCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import '../../components/w3m-modal-content'
-import '../../components/w3m-modal-header'
-import '../../components/w3m-search-input'
-import '../../components/w3m-spinner'
-import '../../components/w3m-text'
-import '../../components/w3m-wallet-button'
 import { global } from '../../utils/Theme'
 import {
   debounce,

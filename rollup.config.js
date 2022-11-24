@@ -20,14 +20,14 @@ export default function createConfig(packageName) {
   })
 
   const litCssPlugin = litCss({
-    include: ['packages/ui/**/*.css'],
+    include: ['**/*.css'],
     uglify: true
   })
 
   return [
     {
       input: './index.ts',
-      plugins: [minifyHtml.default(), litCssPlugin, esbuildPlugin],
+      plugins: [litCssPlugin, minifyHtml.default(), esbuildPlugin],
       output: [{ file: './dist/index.js', format: 'es', ...sharedOutput }]
     }
   ]

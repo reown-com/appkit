@@ -5,8 +5,6 @@ import { customElement, property } from 'lit/decorators.js'
 import { BACK_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import ThemedElement from '../../utils/ThemedElement'
-import '../w3m-spinner'
-import '../w3m-text'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-modal-header')

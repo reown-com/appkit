@@ -5,7 +5,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { getDots } from '../../utils/QrCode'
 import { WALLET_CONNECT_ICON_COLORED } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import '../w3m-wallet-image'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-qrcode')

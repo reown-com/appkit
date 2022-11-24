@@ -2,8 +2,6 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { global } from '../../utils/Theme'
 import { getWalletFirstName } from '../../utils/UiHelpers'
-import '../w3m-text'
-import '../w3m-wallet-image'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-wallet-button')

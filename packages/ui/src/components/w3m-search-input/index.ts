@@ -3,7 +3,6 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { SEARCH_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import '../w3m-text'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-search-input')

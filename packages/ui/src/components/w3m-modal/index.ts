@@ -13,9 +13,6 @@ import {
   isMobileAnimation,
   preloadImage
 } from '../../utils/UiHelpers'
-import '../w3m-modal-backcard'
-import '../w3m-modal-router'
-import '../w3m-modal-toast'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-modal')

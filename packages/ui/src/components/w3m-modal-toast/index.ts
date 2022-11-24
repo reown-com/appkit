@@ -4,7 +4,6 @@ import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { CHECKMARK_ICON, CROSS_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import '../w3m-text'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-modal-toast')

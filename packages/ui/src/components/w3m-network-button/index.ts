@@ -3,8 +3,6 @@ import { customElement, property } from 'lit/decorators.js'
 import { NETWORK_PLACEHOLDER } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { getChainIcon } from '../../utils/UiHelpers'
-import '../w3m-network-image'
-import '../w3m-text'
 import styles, { dynamicStyles } from './styles'
 
 @customElement('w3m-network-button')
