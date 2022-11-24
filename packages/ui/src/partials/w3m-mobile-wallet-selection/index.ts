@@ -41,7 +41,9 @@ export class W3mMobileWalletSelection extends LitElement {
     if (window.ethereum) {
       const injectedName = getOptimisticNamePreset('injected')
       const idx = wallets.findIndex(({ name }) => getOptimisticNamePreset(name) === injectedName)
-      wallets.splice(idx, 1)
+      if (idx >= 0) {
+        wallets.splice(idx, 1)
+      }
     }
 
     if (wallets.length) {
@@ -88,9 +90,17 @@ export class W3mMobileWalletSelection extends LitElement {
     }
 
     const connectorWallets = ClientCtrl.client().getConnectorWallets()
+    const wallets = [...connectorWallets]
 
     if (!window.ethereum) {
-      connectorWallets.filter(connector => !['injected', 'metaMask'].includes(connector.id))
+      const injectedIdx = wallets.findIndex(({ name }) => name === 'injected')
+      if (injectedIdx) {
+        wallets.splice(injectedIdx, 1)
+      }
+      const metaMaskdIdx = wallets.findIndex(({ name }) => name === 'metaMask')
+      if (metaMaskdIdx) {
+        wallets.splice(metaMaskdIdx)
+      }
     }
 
     return connectorWallets.map(
