@@ -1,6 +1,6 @@
 {
   "name": "react-standalone-example",
-  "version": "2.0.0-d873f5c",
+  "version": "2.0.0-beta.7",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "@walletconnect/sign-client": "2.1.3",
-    "@web3modal/core": "2.0.0-d873f5c",
-    "@web3modal/ui": "2.0.0-d873f5c",
+    "@web3modal/core": "2.0.0-beta.7",
+    "@web3modal/ui": "2.0.0-beta.7",
     "next": "13.0.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
