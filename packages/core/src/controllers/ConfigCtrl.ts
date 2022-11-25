@@ -1,5 +1,6 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ConfigCtrlState } from '../types/controllerTypes'
+import { CoreHelpers } from '../utils/CoreHelpers'
 import { OptionsCtrl } from './OptionsCtrl'
 
 // -- initial state ------------------------------------------------ //
@@ -11,7 +12,7 @@ const state = proxy<ConfigCtrlState>({
   projectId: undefined,
   themeMode: isDarkMode() ? 'dark' : 'light',
   themeColor: 'default',
-  themeBackground: 'gradient',
+  themeBackground: CoreHelpers.isMobile() ? 'themeColor' : 'gradient',
   mobileWallets: undefined,
   desktopWallets: undefined,
   walletImages: undefined,

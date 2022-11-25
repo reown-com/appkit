@@ -73,9 +73,10 @@ export class W3mModalBackcard extends LitElement {
         ? html`
             <div class="w3m-gradient-placeholder"></div>
             <canvas class=${classMap(classes)}></canvas>
+            ${NOISE_TEXTURE}
           `
         : null}
-      ${NOISE_TEXTURE}
+
       <div class="w3m-modal-highlight"></div>
       <div class="w3m-modal-toolbar">
         ${WALLET_CONNECT_LOGO}
