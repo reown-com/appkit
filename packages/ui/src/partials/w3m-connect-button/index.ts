@@ -1,16 +1,13 @@
 import { ModalCtrl } from '@web3modal/core'
-import { html } from 'lit'
+import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import '../../components/w3m-spinner'
-import '../../components/w3m-text'
 import { WALLET_CONNECT_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import ThemedElement from '../../utils/ThemedElement'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-connect-button')
-export class W3mConnectButton extends ThemedElement {
+export class W3mConnectButton extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -32,7 +29,6 @@ export class W3mConnectButton extends ThemedElement {
   }
 
   public disconnectedCallback() {
-    super.disconnectedCallback()
     this.modalUnsub?.()
   }
 
@@ -59,8 +55,6 @@ export class W3mConnectButton extends ThemedElement {
     }
 
     return html`
-      ${dynamicStyles()}
-
       <button class=${classMap(classes)} .disabled=${this.loading} @click=${this.onOpen}>
         ${this.loading
           ? html`

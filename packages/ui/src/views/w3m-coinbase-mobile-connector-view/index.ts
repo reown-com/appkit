@@ -1,16 +1,10 @@
 import { ClientCtrl, CoreHelpers, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import '../../components/w3m-button'
-import '../../components/w3m-modal-content'
-import '../../components/w3m-modal-footer'
-import '../../components/w3m-modal-header'
-import '../../components/w3m-qrcode'
-import '../../components/w3m-text'
 import { ARROW_DOWN_ICON, QRCODE_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { getErrorMessage } from '../../utils/UiHelpers'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 const HORIZONTAL_PADDING = 36
 
@@ -51,8 +45,6 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
     const name = 'Coinbase Wallet'
 
     return html`
-      ${dynamicStyles()}
-
       <w3m-modal-header title=${name}></w3m-modal-header>
       <w3m-modal-content>
         <div class="w3m-qr-container">

@@ -1,4 +1,4 @@
-import { ModalCtrl, RouterCtrl } from '@web3modal/core'
+import { ConfigCtrl, ModalCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -6,7 +6,7 @@ import { CROSS_ICON, HELP_ICON, NOISE_TEXTURE, WALLET_CONNECT_LOGO } from '../..
 import { global } from '../../utils/Theme'
 import { getShadowRootElement } from '../../utils/UiHelpers'
 import Whatamesh from '../../utils/Whatamesh'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 const whatamesh = new Whatamesh()
 
@@ -20,10 +20,13 @@ export class W3mModalBackcard extends LitElement {
 
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
-    this.playTimeout = setTimeout(() => {
-      whatamesh.play(this.canvasEl)
-      this.open = true
-    }, 1000)
+    const { themeBackground } = ConfigCtrl.state
+    if (themeBackground === 'gradient') {
+      this.playTimeout = setTimeout(() => {
+        whatamesh.play(this.canvasEl)
+        this.open = true
+      }, 1000)
+    }
   }
 
   public constructor() {
@@ -34,7 +37,6 @@ export class W3mModalBackcard extends LitElement {
   }
 
   public disconnectedCallback() {
-    super.disconnectedCallback()
     this.unsubscribeRouter?.()
     clearTimeout(this.playTimeout)
     whatamesh.stop()
@@ -54,6 +56,7 @@ export class W3mModalBackcard extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
+    const { themeBackground } = ConfigCtrl.state
     const classes = {
       'w3m-gradient-canvas': true,
       'w3m-gradient-canvas-visible': this.open
@@ -65,11 +68,15 @@ export class W3mModalBackcard extends LitElement {
     }
 
     return html`
-      ${dynamicStyles()}
+      ${themeBackground === 'themeColor' ? html`<div class="w3m-color-placeholder"></div>` : null}
+      ${themeBackground === 'gradient'
+        ? html`
+            <div class="w3m-gradient-placeholder"></div>
+            <canvas class=${classMap(classes)}></canvas>
+            ${NOISE_TEXTURE}
+          `
+        : null}
 
-      <div class="w3m-gradient-placeholder"></div>
-      <canvas class=${classMap(classes)}></canvas>
-      ${NOISE_TEXTURE}
       <div class="w3m-modal-highlight"></div>
       <div class="w3m-modal-toolbar">
         ${WALLET_CONNECT_LOGO}

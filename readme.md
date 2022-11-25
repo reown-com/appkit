@@ -4,6 +4,8 @@
 
 ### 🖥️ [Minimal Example](https://web3modal-dev.pages.dev/)
 
+### 🔗 [Website](https://web3modal.com)
+
 # Web3Modal
 
 Your on-ramp to web3 multichain. Web3Modal is a versatile library that makes it super easy to connect users with your Dapp and start interacting with the blockchain.
@@ -18,3 +20,7 @@ Your on-ramp to web3 multichain. Web3Modal is a versatile library that makes it 
 - [Vanilla JS Docs](https://docs.walletconnect.com/2.0/web3modal/html-js/installation) / [Vanila JS Example](./examples/html/)
 - Vue Docs / Vue Example (coming soon)
 - Angular Docs / Angular Example (coming soon)
+
+## Development
+
+Please follow [developer docs](./.github/docs/development.md) to set up web3modal locally.

@@ -2,8 +2,6 @@ import { ClientCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import '../w3m-account-button'
-import '../w3m-connect-button'
 
 @customElement('w3m-core-button')
 export class W3mCoreButton extends LitElement {
@@ -22,7 +20,6 @@ export class W3mCoreButton extends LitElement {
   }
 
   public disconnectedCallback() {
-    super.disconnectedCallback()
     this.accountUnsub?.()
   }
 

@@ -1,9 +1,8 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../../components/w3m-text'
 import { NETWORK_POLYGON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-network-image')
 export class W3mNetworkImage extends LitElement {
@@ -15,8 +14,6 @@ export class W3mNetworkImage extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      ${dynamicStyles()}
-
       <div class="w3m-network-image">
         <img src=${this.src} />
         ${NETWORK_POLYGON}

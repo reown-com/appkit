@@ -1,5 +1,6 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ConfigCtrlState } from '../types/controllerTypes'
+import { CoreHelpers } from '../utils/CoreHelpers'
 import { OptionsCtrl } from './OptionsCtrl'
 
 // -- initial state ------------------------------------------------ //
@@ -8,16 +9,17 @@ function isDarkMode() {
 }
 
 const state = proxy<ConfigCtrlState>({
-  theme: isDarkMode() ? 'dark' : 'light',
-  accentColor: 'default',
-  enableNetworkView: true,
   projectId: undefined,
-  standaloneChains: undefined,
-  enableStandaloneMode: undefined,
+  themeMode: isDarkMode() ? 'dark' : 'light',
+  themeColor: 'default',
+  themeBackground: CoreHelpers.isMobile() ? 'themeColor' : 'gradient',
   mobileWallets: undefined,
   desktopWallets: undefined,
   walletImages: undefined,
-  chainImages: undefined
+  chainImages: undefined,
+  standaloneChains: undefined,
+  enableStandaloneMode: false,
+  enableNetworkView: true
 })
 
 // -- controller --------------------------------------------------- //
@@ -38,5 +40,9 @@ export const ConfigCtrl = {
     OptionsCtrl.setIsExplorer(Boolean(config.projectId?.length))
 
     Object.assign(state, config)
+  },
+
+  setThemeConfig(theme: Pick<ConfigCtrlState, 'themeBackground' | 'themeColor' | 'themeMode'>) {
+    Object.assign(state, theme)
   }
 }

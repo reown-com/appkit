@@ -25,8 +25,8 @@ async function configureSignClient() {
 ConfigCtrl.setConfig({
   projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
   enableStandaloneMode: true,
-  theme: 'light' as const,
-  accentColor: 'orange' as const
+  themeMode: 'light' as const,
+  themeColor: 'orange' as const
 })
 
 // 4. Manage manual connection

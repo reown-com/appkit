@@ -2,16 +2,9 @@ import { ClientCtrl, CoreHelpers, ModalCtrl, OptionsCtrl, RouterCtrl } from '@we
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import '../../components/w3m-button'
-import '../../components/w3m-modal-content'
-import '../../components/w3m-modal-header'
-import '../../components/w3m-qrcode'
-import '../../components/w3m-spinner'
-import '../../components/w3m-text'
-import '../../components/w3m-wallet-image'
 import { ARROW_DOWN_ICON, MOBILE_ICON, RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
-import styles from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-metamask-connector-view')
 export class W3mMetamaskConnectorView extends LitElement {

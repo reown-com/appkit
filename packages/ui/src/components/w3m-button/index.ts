@@ -2,10 +2,9 @@ import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { getConditionalValue } from '../../utils/UiHelpers'
 import { global } from '../../utils/Theme'
-import '../w3m-text'
-import styles, { dynamicStyles } from './styles'
+import { getConditionalValue } from '../../utils/UiHelpers'
+import styles from './styles.css'
 
 type Variant = 'fill' | 'ghost'
 
@@ -36,8 +35,6 @@ export class W3mButton extends LitElement {
     )
 
     return html`
-      ${dynamicStyles()}
-
       <button class=${classMap(classes)} ?disabled=${this.disabled} @click=${this.onClick}>
         ${this.iconLeft}
         <w3m-text variant="small-normal" color=${textColor}>

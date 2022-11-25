@@ -2,16 +2,10 @@ import { ClientCtrl, CoreHelpers, ModalCtrl, OptionsCtrl, RouterCtrl } from '@we
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import '../../components/w3m-button'
-import '../../components/w3m-modal-content'
-import '../../components/w3m-modal-header'
-import '../../components/w3m-spinner'
-import '../../components/w3m-text'
-import '../../components/w3m-wallet-image'
 import { getOptimisticNamePreset } from '../../utils/Presets'
 import { ARROW_UP_RIGHT_ICON, MOBILE_ICON, RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
-import styles from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-desktop-connector-view')
 export class W3mDesktopConnectorView extends LitElement {

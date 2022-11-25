@@ -3,12 +3,6 @@ import { CoreHelpers, ExplorerCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import '../../components/w3m-modal-content'
-import '../../components/w3m-modal-header'
-import '../../components/w3m-search-input'
-import '../../components/w3m-spinner'
-import '../../components/w3m-text'
-import '../../components/w3m-wallet-button'
 import { global } from '../../utils/Theme'
 import {
   debounce,
@@ -17,7 +11,7 @@ import {
   handleMobileLinking,
   preloadImage
 } from '../../utils/UiHelpers'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 const PAGE_ENTRIES = 40
 
@@ -140,8 +134,6 @@ export class W3mWalletExplorerView extends LitElement {
     }
 
     return html`
-      ${dynamicStyles()}
-
       <w3m-modal-header>
         <w3m-search-input .onChange=${this.onSearchChange.bind(this)}></w3m-search-input>
       </w3m-modal-header>

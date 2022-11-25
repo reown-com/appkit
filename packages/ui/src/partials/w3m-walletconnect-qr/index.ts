@@ -1,10 +1,9 @@
 import { ClientCtrl, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import '../../components/w3m-qrcode'
 import { global } from '../../utils/Theme'
 import { getErrorMessage, getShadowRootElement } from '../../utils/UiHelpers'
-import styles from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-walletconnect-qr')
 export class W3mWalletConnectQr extends LitElement {

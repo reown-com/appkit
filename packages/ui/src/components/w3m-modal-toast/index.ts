@@ -4,8 +4,7 @@ import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { CHECKMARK_ICON, CROSS_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import '../w3m-text'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-modal-toast')
 export class W3mModalToast extends LitElement {
@@ -48,8 +47,6 @@ export class W3mModalToast extends LitElement {
 
     return this.open
       ? html`
-          ${dynamicStyles()}
-
           <div class=${classMap(classes)}>
             ${variant === 'success' ? CHECKMARK_ICON : null}
             ${variant === 'error' ? CROSS_ICON : null}

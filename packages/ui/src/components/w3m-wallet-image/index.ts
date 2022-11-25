@@ -4,7 +4,7 @@ import { getOptimisticWalletIdPreset } from '../../utils/Presets'
 import { WALLET_PLACEHOLDER } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { getWalletIcon } from '../../utils/UiHelpers'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-wallet-image')
 export class W3mWalletImage extends LitElement {
@@ -21,7 +21,6 @@ export class W3mWalletImage extends LitElement {
     const src = this.src ? this.src : getWalletIcon(optimisticId)
 
     return html`
-      ${dynamicStyles()}
       ${src.length
         ? html`
             <div class="w3m-wallet-image">

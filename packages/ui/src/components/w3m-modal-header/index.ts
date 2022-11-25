@@ -1,16 +1,13 @@
 import { RouterCtrl } from '@web3modal/core'
 import type { TemplateResult } from 'lit'
-import { html } from 'lit'
+import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { BACK_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import ThemedElement from '../../utils/ThemedElement'
-import '../w3m-spinner'
-import '../w3m-text'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-modal-header')
-export class W3mModalHeader extends ThemedElement {
+export class W3mModalHeader extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -36,8 +33,6 @@ export class W3mModalHeader extends ThemedElement {
       : html`<slot></slot>`
 
     return html`
-      ${dynamicStyles()}
-
       <div class="w3m-modal-header">
         ${backBtn ? this.backBtnTemplate() : null} ${content}
         ${this.onAction ? this.actionBtnTemplate() : null}

@@ -8,15 +8,11 @@ import {
 } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import '../../components/w3m-modal-content'
-import '../../components/w3m-modal-header'
-import '../../components/w3m-view-all-wallets-button'
-import '../../components/w3m-wallet-button'
 import { getOptimisticNamePreset } from '../../utils/Presets'
 import { QRCODE_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { handleMobileLinking } from '../../utils/UiHelpers'
-import styles from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-mobile-wallet-selection')
 export class W3mMobileWalletSelection extends LitElement {
@@ -45,7 +41,9 @@ export class W3mMobileWalletSelection extends LitElement {
     if (window.ethereum) {
       const injectedName = getOptimisticNamePreset('injected')
       const idx = wallets.findIndex(({ name }) => getOptimisticNamePreset(name) === injectedName)
-      wallets.splice(idx, 1)
+      if (idx > -1) {
+        wallets.splice(idx, 1)
+      }
     }
 
     if (wallets.length) {
@@ -92,12 +90,20 @@ export class W3mMobileWalletSelection extends LitElement {
     }
 
     const connectorWallets = ClientCtrl.client().getConnectorWallets()
+    const wallets = [...connectorWallets]
 
     if (!window.ethereum) {
-      connectorWallets.filter(connector => !['injected', 'metaMask'].includes(connector.id))
+      const injectedIdx = wallets.findIndex(({ id }) => id === 'injected')
+      if (injectedIdx > -1) {
+        wallets.splice(injectedIdx, 1)
+      }
+      const metaMaskdIdx = wallets.findIndex(({ id }) => id === 'metaMask')
+      if (metaMaskdIdx > -1) {
+        wallets.splice(metaMaskdIdx, 1)
+      }
     }
 
-    return connectorWallets.map(
+    return wallets.map(
       ({ name, id }) => html`
         <w3m-wallet-button
           name=${name}

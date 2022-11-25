@@ -1,10 +1,16 @@
-import { CoreHelpers, ExplorerCtrl, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
-import { html } from 'lit'
+import {
+  ConfigCtrl,
+  CoreHelpers,
+  ExplorerCtrl,
+  ModalCtrl,
+  OptionsCtrl,
+  ToastCtrl
+} from '@web3modal/core'
+import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { animate, spring } from 'motion'
-import { global } from '../../utils/Theme'
-import ThemedElement from '../../utils/ThemedElement'
+import { global, setTheme } from '../../utils/Theme'
 import {
   getChainIcon,
   getConnectorImageUrls,
@@ -13,13 +19,10 @@ import {
   isMobileAnimation,
   preloadImage
 } from '../../utils/UiHelpers'
-import '../w3m-modal-backcard'
-import '../w3m-modal-router'
-import '../w3m-modal-toast'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-modal')
-export class W3mModal extends ThemedElement {
+export class W3mModal extends LitElement {
   public static styles = [global, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -29,6 +32,8 @@ export class W3mModal extends ThemedElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
+    setTheme()
+    this.unsubscribeConfig = ConfigCtrl.subscribe(setTheme)
     this.unsubscribeModal = ModalCtrl.subscribe(modalState => {
       if (modalState.open) {
         this.onOpenModalEvent()
@@ -40,12 +45,13 @@ export class W3mModal extends ThemedElement {
   }
 
   public disconnectedCallback() {
-    super.disconnectedCallback()
     this.unsubscribeModal?.()
+    this.unsubscribeConfig?.()
   }
 
   // -- private ------------------------------------------------------ //
   private readonly unsubscribeModal?: () => void = undefined
+  private readonly unsubscribeConfig?: () => void = undefined
 
   private get overlayEl() {
     return getShadowRootElement(this, '.w3m-modal-overlay')
@@ -61,12 +67,6 @@ export class W3mModal extends ThemedElement {
       body.style.overflow = 'auto'
     } else {
       body.style.overflow = 'hidden'
-    }
-  }
-
-  private onCloseModal(event: PointerEvent) {
-    if (event.target === event.currentTarget) {
-      ModalCtrl.close()
     }
   }
 
@@ -127,6 +127,12 @@ export class W3mModal extends ThemedElement {
     }
   }
 
+  private onCloseModal(event: PointerEvent) {
+    if (event.target === event.currentTarget) {
+      ModalCtrl.close()
+    }
+  }
+
   private async onOpenModalEvent() {
     await this.preloadModalData()
     this.toggleBodyScroll(false)
@@ -168,9 +174,8 @@ export class W3mModal extends ThemedElement {
     }
 
     return html`
-      ${dynamicStyles()}
-
       <div
+        id="w3m-modal"
         class=${classMap(classes)}
         @click=${this.onCloseModal}
         role="alertdialog"

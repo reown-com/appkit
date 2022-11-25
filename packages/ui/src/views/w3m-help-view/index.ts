@@ -1,10 +1,6 @@
 import { CoreHelpers, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import '../../components/w3m-button'
-import '../../components/w3m-modal-content'
-import '../../components/w3m-modal-footer'
-import '../../components/w3m-modal-header'
 import {
   ARROW_UP_RIGHT_ICON,
   HELP_CHART_IMG,
@@ -19,7 +15,7 @@ import {
   WALLET_ICON
 } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-help-view')
 export class W3mHelpView extends LitElement {
@@ -39,8 +35,6 @@ export class W3mHelpView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      ${dynamicStyles()}
-
       <w3m-modal-header title="What is a wallet?"></w3m-modal-header>
       <w3m-modal-content>
         <div class="w3m-info-container">

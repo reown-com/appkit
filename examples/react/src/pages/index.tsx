@@ -1,5 +1,6 @@
 import { useWeb3Modal, Web3Button } from '@web3modal/react'
 import { useAccount } from 'wagmi'
+import ThemeControls from '../components/ThemeControls'
 
 export default function HomePage() {
   const { isConnected } = useAccount()
@@ -7,11 +8,15 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Use predefined button */}
-      <Web3Button />
+      <div className="container">
+        {/* Use predefined button */}
+        <Web3Button />
 
-      {/* Use custom button */}
-      {!isConnected && <button onClick={() => open()}>Or Use Custom Button</button>}
+        {/* Alternatively Use custom button */}
+        {!isConnected && <button onClick={() => open()}>Custom</button>}
+      </div>
+
+      <ThemeControls />
     </>
   )
 }

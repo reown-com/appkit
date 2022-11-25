@@ -2,13 +2,9 @@ import type { DesktopConnectorData } from '@web3modal/core'
 import { CoreHelpers, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import '../../components/w3m-modal-content'
-import '../../components/w3m-modal-header'
-import '../../components/w3m-search-input'
-import '../../components/w3m-wallet-button'
 import { global } from '../../utils/Theme'
 import { getCustomWallets, handleMobileLinking } from '../../utils/UiHelpers'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-wallet-filter-view')
 export class W3mWalletFilterView extends LitElement {
@@ -41,8 +37,6 @@ export class W3mWalletFilterView extends LitElement {
       : wallets
 
     return html`
-      ${dynamicStyles()}
-
       <w3m-modal-header>
         <w3m-search-input .onChange=${this.onSearchChange.bind(this)}></w3m-search-input>
       </w3m-modal-header>

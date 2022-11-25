@@ -1,6 +1,6 @@
 body {
-  background-color: #000;
-  color: white;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: rgba(255, 255, 255, 0.9);
   margin: 0;
   padding: 0;
   font-family: Arial, Helvetica, sans-serif;
@@ -15,5 +15,35 @@ body {
 }
 
 button {
-  margin: 20px;
+  margin: 0 10px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: 0.2s all ease-in-out;
+}
+
+button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+select {
+  margin: 10px;
+  padding: 5px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 1);
+  color: black;
+  border: 1px solid rgba(0, 0, 0, 1);
+  cursor: pointer;
+  transition: 0.2s all ease-in-out;
+}
+
+h2 {
+  margin-top: 100px;
+}
+
+.container {
+  display: flex;
 }

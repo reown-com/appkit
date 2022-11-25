@@ -21,8 +21,8 @@ export interface DesktopWallet {
 // -- ConfigCtrl ------------------------------------------- //
 export interface ConfigCtrlState {
   projectId?: string
-  theme?: 'dark' | 'light'
-  accentColor?:
+  themeMode?: 'dark' | 'light'
+  themeColor?:
     | 'blackWhite'
     | 'blue'
     | 'default'
@@ -31,6 +31,7 @@ export interface ConfigCtrlState {
     | 'orange'
     | 'purple'
     | 'teal'
+  themeBackground?: 'gradient' | 'themeColor'
   standaloneChains?: string[]
   mobileWallets?: MobileWallet[]
   desktopWallets?: DesktopWallet[]

@@ -2,9 +2,7 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { global } from '../../utils/Theme'
 import { getWalletFirstName } from '../../utils/UiHelpers'
-import '../w3m-text'
-import '../w3m-wallet-image'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-wallet-button')
 export class W3mWalletButton extends LitElement {
@@ -20,8 +18,6 @@ export class W3mWalletButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      ${dynamicStyles()}
-
       <button class="w3m-wallet-button" @click=${this.onClick}>
         <div class="w3m-wallet-button-wrap">
           <w3m-wallet-image walletId=${this.walletId} .src=${this.src}></w3m-wallet-image>
