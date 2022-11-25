@@ -20,8 +20,8 @@ const ethereumClient = new EthereumClient(wagmiClient, chains)
 // 4. Configure modal and pass ethereum client to it
 ConfigCtrl.setConfig({
   projectId,
-  theme: 'dark',
-  accentColor: 'default'
+  themeMode: 'dark',
+  themeColor: 'default'
 })
 ClientCtrl.setEthereumClient(ethereumClient, chains)
 

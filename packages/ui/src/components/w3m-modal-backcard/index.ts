@@ -20,8 +20,8 @@ export class W3mModalBackcard extends LitElement {
 
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
-    const { background } = ConfigCtrl.state
-    if (background === 'gradient') {
+    const { themeBackground } = ConfigCtrl.state
+    if (themeBackground === 'gradient') {
       this.playTimeout = setTimeout(() => {
         whatamesh.play(this.canvasEl)
         this.open = true
@@ -56,7 +56,7 @@ export class W3mModalBackcard extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { background } = ConfigCtrl.state
+    const { themeBackground } = ConfigCtrl.state
     const classes = {
       'w3m-gradient-canvas': true,
       'w3m-gradient-canvas-visible': this.open
@@ -68,8 +68,8 @@ export class W3mModalBackcard extends LitElement {
     }
 
     return html`
-      ${background === 'accentColor' ? html`<div class="w3m-color-placeholder"></div>` : null}
-      ${background === 'gradient'
+      ${themeBackground === 'themeColor' ? html`<div class="w3m-color-placeholder"></div>` : null}
+      ${themeBackground === 'gradient'
         ? html`
             <div class="w3m-gradient-placeholder"></div>
             <canvas class=${classMap(classes)}></canvas>

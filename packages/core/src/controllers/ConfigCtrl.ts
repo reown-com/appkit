@@ -8,9 +8,9 @@ function isDarkMode() {
 }
 
 const state = proxy<ConfigCtrlState>({
-  theme: isDarkMode() ? 'dark' : 'light',
-  accentColor: 'default',
-  background: 'gradient',
+  themeMode: isDarkMode() ? 'dark' : 'light',
+  themeColor: 'default',
+  themeBackground: 'gradient',
   projectId: undefined,
   standaloneChains: undefined,
   mobileWallets: undefined,
@@ -41,7 +41,7 @@ export const ConfigCtrl = {
     Object.assign(state, config)
   },
 
-  setThemeConfig(theme: Pick<ConfigCtrlState, 'accentColor' | 'theme'>) {
-    Object.assign(this.state, theme)
+  setThemeConfig(theme: Pick<ConfigCtrlState, 'themeBackground' | 'themeColor' | 'themeMode'>) {
+    Object.assign(state, theme)
   }
 }

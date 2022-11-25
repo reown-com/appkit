@@ -1,7 +1,7 @@
 import { ConfigCtrl } from '@web3modal/core'
 import { css, unsafeCSS } from 'lit'
 
-export function accentColors() {
+export function themeColors() {
   return {
     default: {
       light: {
@@ -109,7 +109,7 @@ export function accentColors() {
   }
 }
 
-export function themeColors() {
+export function themeModeColors() {
   return {
     light: {
       foreground: {
@@ -161,11 +161,11 @@ export function gradientColors() {
 }
 
 export function color() {
-  const accentPreset = ConfigCtrl.state.accentColor ?? 'default'
-  const themePreset = ConfigCtrl.state.theme ?? 'dark'
-  const accent = accentColors()[accentPreset][themePreset]
-  const theme = themeColors()[themePreset]
-  const gradient = gradientColors()[accentPreset]
+  const themeColor = ConfigCtrl.state.themeColor ?? 'default'
+  const themeMode = ConfigCtrl.state.themeMode ?? 'dark'
+  const accent = themeColors()[themeColor][themeMode]
+  const theme = themeModeColors()[themeMode]
+  const gradient = gradientColors()[themeColor]
 
   return {
     foreground: {

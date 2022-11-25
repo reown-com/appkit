@@ -19,11 +19,11 @@ export default class W3mQrCode extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private svgTemplate() {
-    const theme = ConfigCtrl.state.theme ?? 'light'
+    const themeMode = ConfigCtrl.state.themeMode ?? 'light'
 
     return svg`
       <svg height=${this.size} width=${this.size}>
-        ${getDots(this.uri, this.size, this.size / 4, theme)}
+        ${getDots(this.uri, this.size, this.size / 4, themeMode)}
       </svg>
     `
   }
