@@ -102,5 +102,9 @@
 }
 
 .w3m-help-active button:first-child {
-  background-color: var(--color-fg-accent);
+  background-color: var(--color-fg-1);
+}
+
+.w3m-help-active button:first-child path {
+  fill: var(--color-bg-1);
 }

@@ -36,7 +36,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
       {/* Demo purposes only, if custom path is set, we initialize different Web3Modal instance */}
       {pathname === '/custom' ? null : (
-        <Web3Modal accentColor="teal" projectId={projectId} ethereumClient={ethereumClient} />
+        <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
       )}
     </>
   )
