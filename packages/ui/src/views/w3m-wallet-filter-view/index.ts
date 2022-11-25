@@ -4,7 +4,7 @@ import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { global } from '../../utils/Theme'
 import { getCustomWallets, handleMobileLinking } from '../../utils/UiHelpers'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-wallet-filter-view')
 export class W3mWalletFilterView extends LitElement {
@@ -37,8 +37,6 @@ export class W3mWalletFilterView extends LitElement {
       : wallets
 
     return html`
-      ${dynamicStyles()}
-
       <w3m-modal-header>
         <w3m-search-input .onChange=${this.onSearchChange.bind(this)}></w3m-search-input>
       </w3m-modal-header>

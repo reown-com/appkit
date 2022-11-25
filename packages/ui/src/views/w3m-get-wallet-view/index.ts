@@ -4,7 +4,7 @@ import { customElement } from 'lit/decorators.js'
 import { ARROW_RIGHT_ICON, ARROW_UP_RIGHT_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { getCustomWallets } from '../../utils/UiHelpers'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-get-wallet-view')
 export class W3mGetWalletView extends LitElement {
@@ -29,8 +29,6 @@ export class W3mGetWalletView extends LitElement {
     const isCustomWallets = customWallets.length
 
     return html`
-      ${dynamicStyles()}
-
       <w3m-modal-header title="Get a wallet"></w3m-modal-header>
       <w3m-modal-content>
         ${isRecomendedWallets

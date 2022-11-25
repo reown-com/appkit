@@ -11,7 +11,7 @@ import {
   handleMobileLinking,
   preloadImage
 } from '../../utils/UiHelpers'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 const PAGE_ENTRIES = 40
 
@@ -134,8 +134,6 @@ export class W3mWalletExplorerView extends LitElement {
     }
 
     return html`
-      ${dynamicStyles()}
-
       <w3m-modal-header>
         <w3m-search-input .onChange=${this.onSearchChange.bind(this)}></w3m-search-input>
       </w3m-modal-header>

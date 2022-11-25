@@ -4,7 +4,7 @@ import { customElement, state } from 'lit/decorators.js'
 import { ARROW_DOWN_ICON, QRCODE_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { getErrorMessage } from '../../utils/UiHelpers'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 const HORIZONTAL_PADDING = 36
 
@@ -45,8 +45,6 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
     const name = 'Coinbase Wallet'
 
     return html`
-      ${dynamicStyles()}
-
       <w3m-modal-header title=${name}></w3m-modal-header>
       <w3m-modal-content>
         <div class="w3m-qr-container">
