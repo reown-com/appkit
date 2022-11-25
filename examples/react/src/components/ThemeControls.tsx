@@ -2,17 +2,33 @@
 import { useWeb3ModalTheme } from '@web3modal/react'
 
 export default function ThemeControls() {
-  const { theme, setTheme } = useWeb3ModalTheme()
+  const { setTheme } = useWeb3ModalTheme()
+
+  function setColor(event: any) {
+    if (event?.target?.value?.length) {
+      setTheme({ themeColor: event.target.value })
+    }
+  }
+
+  function setMode(event: any) {
+    if (event?.target?.value?.length) {
+      setTheme({ themeMode: event.target.value })
+    }
+  }
+
+  function setBackground(event: any) {
+    if (event?.target?.value?.length) {
+      setTheme({ themeBackground: event.target.value })
+    }
+  }
 
   return (
     <>
       <h2>Theming</h2>
 
       <div className="container">
-        <select
-          value={theme.themeColor}
-          onChange={({ target }) => setTheme({ themeColor: target.value as any })}
-        >
+        <select onChange={setColor}>
+          <option value="">--Select theme color--</option>
           <option value="default">default</option>
           <option value="blackWhite">blackWhite</option>
           <option value="blue">blue</option>
@@ -23,18 +39,14 @@ export default function ThemeControls() {
           <option value="teal">teal</option>
         </select>
 
-        <select
-          value={theme.themeMode}
-          onChange={({ target }) => setTheme({ themeMode: target.value as any })}
-        >
+        <select onChange={setMode}>
+          <option value="">--Select theme mode--</option>
           <option value="light">light</option>
           <option value="dark">dark</option>
         </select>
 
-        <select
-          value={theme.themeBackground}
-          onChange={({ target }) => setTheme({ themeBackground: target.value as any })}
-        >
+        <select onChange={setBackground}>
+          <option value="">--Select theme background--</option>
           <option value="gradient">gradient</option>
           <option value="themeColor">themeColor</option>
         </select>
