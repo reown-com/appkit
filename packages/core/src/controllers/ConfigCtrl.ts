@@ -10,14 +10,15 @@ function isDarkMode() {
 const state = proxy<ConfigCtrlState>({
   theme: isDarkMode() ? 'dark' : 'light',
   accentColor: 'default',
-  enableNetworkView: true,
+  background: 'gradient',
   projectId: undefined,
   standaloneChains: undefined,
-  enableStandaloneMode: undefined,
   mobileWallets: undefined,
   desktopWallets: undefined,
   walletImages: undefined,
-  chainImages: undefined
+  chainImages: undefined,
+  enableStandaloneMode: false,
+  enableNetworkView: true
 })
 
 // -- controller --------------------------------------------------- //
@@ -38,5 +39,9 @@ export const ConfigCtrl = {
     OptionsCtrl.setIsExplorer(Boolean(config.projectId?.length))
 
     Object.assign(state, config)
+  },
+
+  setThemeConfig(theme: Pick<ConfigCtrlState, 'accentColor' | 'theme'>) {
+    Object.assign(this.state, theme)
   }
 }

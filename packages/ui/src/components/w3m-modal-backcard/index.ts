@@ -1,4 +1,4 @@
-import { ModalCtrl, RouterCtrl } from '@web3modal/core'
+import { ConfigCtrl, ModalCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -20,10 +20,13 @@ export class W3mModalBackcard extends LitElement {
 
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
-    this.playTimeout = setTimeout(() => {
-      whatamesh.play(this.canvasEl)
-      this.open = true
-    }, 1000)
+    const { background } = ConfigCtrl.state
+    if (background === 'gradient') {
+      this.playTimeout = setTimeout(() => {
+        whatamesh.play(this.canvasEl)
+        this.open = true
+      }, 1000)
+    }
   }
 
   public constructor() {
@@ -53,6 +56,7 @@ export class W3mModalBackcard extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
+    const { background } = ConfigCtrl.state
     const classes = {
       'w3m-gradient-canvas': true,
       'w3m-gradient-canvas-visible': this.open
@@ -64,8 +68,13 @@ export class W3mModalBackcard extends LitElement {
     }
 
     return html`
-      <div class="w3m-gradient-placeholder"></div>
-      <canvas class=${classMap(classes)}></canvas>
+      ${background === 'accentColor' ? html`<div class="w3m-color-placeholder"></div>` : null}
+      ${background === 'gradient'
+        ? html`
+            <div class="w3m-gradient-placeholder"></div>
+            <canvas class=${classMap(classes)}></canvas>
+          `
+        : null}
       ${NOISE_TEXTURE}
       <div class="w3m-modal-highlight"></div>
       <div class="w3m-modal-toolbar">

@@ -147,11 +147,25 @@ export function themeColors() {
   }
 }
 
+export function gradientColors() {
+  return {
+    default: { 1: '#B6B9C9', 2: '#C653C6', 3: '#794DFF', 4: '#2EB8B8' },
+    blue: { 1: '#E8EBFD', 2: '#C653C6', 3: '#2DD2C5', 4: '#3D5CF5' },
+    magenta: { 1: '#F4DDE6', 2: '#E0D452', 3: '#F09475', 4: '#D1618D' },
+    orange: { 1: '#F4ECDD', 2: '#B4EB47', 3: '#3075E8', 4: '#EB9947' },
+    green: { 1: '#DAF6DA', 2: '#E06B92', 3: '#99E54D', 4: '#26B562' },
+    purple: { 1: '#E1DAF6', 2: '#EB9947', 3: '#E06B92', 4: '#794DFF' },
+    teal: { 1: '#D9F2EE', 2: '#F09475', 3: '#794DFF', 4: '#2EB8B8' },
+    blackWhite: { 1: '#E3E8E8', 2: '#98AEAE', 3: '#516767', 4: '#242E2E' }
+  }
+}
+
 export function color() {
   const accentPreset = ConfigCtrl.state.accentColor ?? 'default'
   const themePreset = ConfigCtrl.state.theme ?? 'dark'
   const accent = accentColors()[accentPreset][themePreset]
   const theme = themeColors()[themePreset]
+  const gradient = gradientColors()[accentPreset]
 
   return {
     foreground: {
@@ -163,6 +177,7 @@ export function color() {
       accent: accent.background,
       ...theme.background
     },
+    gradient,
     overlay: { ...theme.overlay },
     error: `rgb(242, 90, 103)`
   }
@@ -241,7 +256,11 @@ export function setTheme() {
       '--color-bg-3': color().background[3],
       '--color-ovr-thin': color().overlay.thin,
       '--color-ovr-thick': color().overlay.thick,
-      '--color-err': color().error
+      '--color-err': color().error,
+      '--gradient-1': color().gradient[1],
+      '--gradient-2': color().gradient[2],
+      '--gradient-3': color().gradient[3],
+      '--gradient-4': color().gradient[4]
     }
     Object.entries(variables).forEach(([key, val]) => root.style.setProperty(key, val))
   }

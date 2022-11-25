@@ -1,7 +1,8 @@
 .w3m-gradient-canvas,
 .w3m-modal-highlight,
 .w3m-gradient-placeholder,
-#w3m-transparent-noise {
+#w3m-transparent-noise,
+.w3m-color-placeholder {
   inset: 0;
   position: absolute;
   display: block;
@@ -10,12 +11,19 @@
   height: 100px;
   border-radius: 8px 8px 0 0;
   transform: translateY(-5px);
-  top: 0;
-  left: 0;
 }
 
 .w3m-gradient-placeholder {
-  background: linear-gradient(#cad8f2, #be3620, #a6208c, #06968f);
+  background: linear-gradient(
+    var(--gradient-1),
+    var(--gradient-2),
+    var(--gradient-3),
+    var(--gradient-4)
+  );
+}
+
+.w3m-color-placeholder {
+  background-color: var(--color-fg-accent);
 }
 
 .w3m-modal-highlight {
@@ -23,10 +31,6 @@
 }
 
 .w3m-gradient-canvas {
-  --gradient-color-1: #cad8f2;
-  --gradient-color-2: #be3620;
-  --gradient-color-3: #a6208c;
-  --gradient-color-4: #06968f;
   opacity: 0;
   transition: opacity 2s ease-in-out;
   box-shadow: 0px 8px 28px -6px rgba(10, 16, 31, 0.12), 0px 18px 88px -4px rgba(10, 16, 31, 0.14);
@@ -55,6 +59,10 @@
   height: 28px;
   object-position: left center;
   object-fit: contain;
+}
+
+#w3m-wc-logo path {
+  fill: var(--color-fg-inverse);
 }
 
 .w3m-modal-action-btn {

@@ -1,9 +1,16 @@
-import { CoreHelpers, ExplorerCtrl, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
+import {
+  ConfigCtrl,
+  CoreHelpers,
+  ExplorerCtrl,
+  ModalCtrl,
+  OptionsCtrl,
+  ToastCtrl
+} from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { animate, spring } from 'motion'
-import { global } from '../../utils/Theme'
+import { global, setTheme } from '../../utils/Theme'
 import {
   getChainIcon,
   getConnectorImageUrls,
@@ -25,6 +32,8 @@ export class W3mModal extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
+    setTheme()
+    this.unsubscribeConfig = ConfigCtrl.subscribe(setTheme)
     this.unsubscribeModal = ModalCtrl.subscribe(modalState => {
       if (modalState.open) {
         this.onOpenModalEvent()
@@ -37,10 +46,12 @@ export class W3mModal extends LitElement {
 
   public disconnectedCallback() {
     this.unsubscribeModal?.()
+    this.unsubscribeConfig?.()
   }
 
   // -- private ------------------------------------------------------ //
   private readonly unsubscribeModal?: () => void = undefined
+  private readonly unsubscribeConfig?: () => void = undefined
 
   private get overlayEl() {
     return getShadowRootElement(this, '.w3m-modal-overlay')
@@ -164,6 +175,7 @@ export class W3mModal extends LitElement {
 
     return html`
       <div
+        id="w3m-modal"
         class=${classMap(classes)}
         @click=${this.onCloseModal}
         role="alertdialog"
