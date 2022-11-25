@@ -70,12 +70,6 @@ export class W3mModal extends LitElement {
     }
   }
 
-  private onCloseModal(event: PointerEvent) {
-    if (event.target === event.currentTarget) {
-      ModalCtrl.close()
-    }
-  }
-
   private async preloadExplorerData() {
     const { standaloneChains, chains, isExplorer } = OptionsCtrl.state
     if (isExplorer) {
@@ -130,6 +124,12 @@ export class W3mModal extends LitElement {
       }
     } catch {
       ToastCtrl.openToast('Failed preloading', 'error')
+    }
+  }
+
+  private onCloseModal(event: PointerEvent) {
+    if (event.target === event.currentTarget) {
+      ModalCtrl.close()
     }
   }
 
