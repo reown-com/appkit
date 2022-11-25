@@ -6,7 +6,7 @@
 
 .w3m-button::after {
   border-radius: inherit;
-  border: var(--color-ovr-thin);
+  border: 1px solid var(--color-ovr-thin);
 }
 
 .w3m-button:disabled::after {
