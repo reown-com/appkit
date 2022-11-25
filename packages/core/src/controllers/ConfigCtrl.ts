@@ -8,15 +8,15 @@ function isDarkMode() {
 }
 
 const state = proxy<ConfigCtrlState>({
+  projectId: undefined,
   themeMode: isDarkMode() ? 'dark' : 'light',
   themeColor: 'default',
   themeBackground: 'gradient',
-  projectId: undefined,
-  standaloneChains: undefined,
   mobileWallets: undefined,
   desktopWallets: undefined,
   walletImages: undefined,
   chainImages: undefined,
+  standaloneChains: undefined,
   enableStandaloneMode: false,
   enableNetworkView: true
 })
