@@ -4,7 +4,7 @@ import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { WALLET_CONNECT_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-connect-button')
 export class W3mConnectButton extends LitElement {
@@ -55,8 +55,6 @@ export class W3mConnectButton extends LitElement {
     }
 
     return html`
-      ${dynamicStyles()}
-
       <button class=${classMap(classes)} .disabled=${this.loading} @click=${this.onOpen}>
         ${this.loading
           ? html`

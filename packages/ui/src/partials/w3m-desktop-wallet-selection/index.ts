@@ -12,7 +12,7 @@ import { customElement } from 'lit/decorators.js'
 import { COPY_ICON, DESKTOP_ICON, MOBILE_ICON, SCAN_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { handleUriCopy } from '../../utils/UiHelpers'
-import styles, { dynamicStyles } from './styles'
+import styles from './styles.css'
 
 @customElement('w3m-desktop-wallet-selection')
 export class W3mDesktopWalletSelection extends LitElement {
@@ -120,8 +120,6 @@ export class W3mDesktopWalletSelection extends LitElement {
     const isDesktopWallets = Boolean(wallets.length)
 
     return html`
-      ${dynamicStyles()}
-
       <w3m-modal-header
         title="Connect your wallet"
         .onAction=${handleUriCopy}
