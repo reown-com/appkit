@@ -16,7 +16,6 @@ export default function HomePage() {
   // 3. Initialize sign client
   async function onInitializeSignClient() {
     const client = await SignClient.init({ projectId: process.env.NEXT_PUBLIC_PROJECT_ID })
-
     setSignClient(client)
   }
 
@@ -26,9 +25,7 @@ export default function HomePage() {
       const namespaces = {
         eip155: { methods: ['eth_sign'], chains: ['eip155:1'], events: ['accountsChanged'] }
       }
-
       const { uri, approval } = await signClient.connect({ requiredNamespaces: namespaces })
-
       if (uri) {
         web3modal.openModal({ uri, standaloneChains: namespaces.eip155.chains })
         await approval()
@@ -41,7 +38,5 @@ export default function HomePage() {
     onInitializeSignClient()
   }, [])
 
-  return (
-    <>{signClient ? <button onClick={onOpenModal}>Connect Wallet</button> : 'Initializing...'}</>
-  )
+  return signClient ? <button onClick={onOpenModal}>Connect Wallet</button> : 'Initializing...'
 }
