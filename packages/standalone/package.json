@@ -1,5 +1,5 @@
 {
-  "name": "@web3modal/ui",
+  "name": "@web3modal/standalone",
   "version": "2.0.0-beta.7",
   "main": "dist/index.js",
   "type": "module",
@@ -15,16 +15,9 @@
     "dev": "rollup --config rollup.config.js --watch",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@web3modal/core": "2.0.0-beta.7",
-    "lit": "2.4.1",
-    "motion": "10.14.3",
-    "qrcode": "1.5.1"
-  },
-  "devDependencies": {
-    "@types/qrcode": "1.5.0",
-    "eslint-plugin-lit": "1.6.1",
-    "eslint-plugin-wc": "1.4.0"
+    "@web3modal/ui": "2.0.0-beta.7"
   },
   "keywords": [
     "web3",
@@ -32,10 +25,7 @@
     "ethereum",
     "web3modal",
     "walletconnect",
-    "web3auth",
-    "lit",
-    "webcomponents",
-    "ui"
+    "web3auth"
   ],
   "author": "WalletConnect <walletconnect.com>",
   "license": "Apache-2.0",

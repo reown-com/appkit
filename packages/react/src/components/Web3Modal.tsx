@@ -7,7 +7,7 @@ import { Modal } from './Modal'
 /**
  * Props
  */
-interface Props extends ConfigCtrlState {
+interface Props extends Omit<ConfigCtrlState, 'enableStandaloneMode' | 'standaloneChains'> {
   ethereumClient?: EthereumClient
 }
 

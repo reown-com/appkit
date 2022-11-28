@@ -1,6 +1,6 @@
 import { chain, configureChains, createClient } from '@wagmi/core'
-import { ClientCtrl, ConfigCtrl } from '@web3modal/core'
 import { EthereumClient, modalConnectors, walletConnectProvider } from '@web3modal/ethereum'
+import { Web3Modal } from '@web3modal/html'
 
 // 1. Define constants
 const projectId = '8e6b5ffdcbc9794bf9f4a1952578365b'
@@ -14,27 +14,6 @@ const wagmiClient = createClient({
   provider
 })
 
-// 3. Configure ethereum client
+// 3. Create ethereum and modal clients
 const ethereumClient = new EthereumClient(wagmiClient, chains)
-
-// 4. Configure modal and pass ethereum client to it
-ConfigCtrl.setConfig({
-  projectId,
-  themeMode: 'dark',
-  themeColor: 'default'
-})
-ClientCtrl.setEthereumClient(ethereumClient, chains)
-
-// 5. Import ui package after all configuration has been completed
-import('@web3modal/ui')
-
-/**
- * 6. Use ModalCtrl and wagmiClient in your app i.e.
- *
- * ModalCtrl.open
- *
- * wagmiClient.getAccount
- * wagmiClient.watchAccount
- *
- * etc ...
- */
+export const web3Modal = new Web3Modal({ projectId }, ethereumClient)
