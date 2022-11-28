@@ -8,8 +8,7 @@
   },
   "dependencies": {
     "@walletconnect/sign-client": "2.1.4",
-    "@web3modal/core": "2.0.0-beta.7",
-    "@web3modal/ui": "2.0.0-beta.7",
+    "@web3modal/standalone": "2.0.0-beta.7",
     "next": "13.0.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"

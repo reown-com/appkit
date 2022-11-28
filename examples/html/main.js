@@ -16,6 +16,7 @@ const wagmiClient = createClient({
 
 // 3. Create ethereum client and modal client
 const ethereumClient = new EthereumClient(wagmiClient, chains)
+
 export const web3Modal = new Web3Modal({ projectId }, ethereumClient)
 
-// 5. See docs for usage https://docs.walletconnect.com/2.0/web3modal/html-js/actions
+// See docs for usage https://docs.walletconnect.com/2.0/web3modal/html-js/actions
