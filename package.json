@@ -31,8 +31,8 @@
     "examples/html"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "5.44.0",
-    "@typescript-eslint/parser": "5.44.0",
+    "@typescript-eslint/eslint-plugin": "5.45.0",
+    "@typescript-eslint/parser": "5.45.0",
     "esbuild": "0.15.16",
     "eslint": "8.28.0",
     "eslint-config-prettier": "8.5.0",

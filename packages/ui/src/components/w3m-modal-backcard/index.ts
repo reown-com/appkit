@@ -25,7 +25,7 @@ export class W3mModalBackcard extends LitElement {
       this.playTimeout = setTimeout(() => {
         whatamesh.play(this.canvasEl)
         this.open = true
-      }, 1000)
+      }, 800)
     }
   }
 
