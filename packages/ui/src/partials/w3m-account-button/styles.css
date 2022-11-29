@@ -1,5 +1,5 @@
 button {
-  padding: 0 15px 1px;
+  padding: 0 15px 0 8px;
   height: 40px;
   border-radius: 10px;
   color: var(--color-fg-inverse);
@@ -24,4 +24,14 @@ button:disabled {
   padding-bottom: 0;
   background-color: var(--color-bg-3);
   color: var(--color-fg-3);
+}
+
+svg {
+  margin-right: 6px;
+  border-radius: 50%;
+  position: relative;
+}
+
+svg circle {
+  stroke: var(--color-ovr-thin);
 }
