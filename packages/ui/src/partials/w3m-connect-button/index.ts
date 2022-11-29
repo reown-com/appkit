@@ -13,7 +13,7 @@ export class W3mConnectButton extends LitElement {
   // -- state & properties ------------------------------------------- //
   @state() public loading = false
   @property() public label? = 'Connect Wallet'
-  @property() public icon? = true
+  @property() public icon?: 'hide' | 'show' = 'show'
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -36,7 +36,7 @@ export class W3mConnectButton extends LitElement {
   private readonly modalUnsub?: () => void = undefined
 
   private iconTemplate() {
-    return this.icon ? WALLET_CONNECT_ICON : null
+    return this.icon === 'show' ? WALLET_CONNECT_ICON : null
   }
 
   private onOpen() {

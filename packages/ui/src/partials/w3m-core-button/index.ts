@@ -8,7 +8,7 @@ export class W3mCoreButton extends LitElement {
   // -- state & properties ------------------------------------------- //
   @state() public isConnected = false
   @property() public label? = 'Connect Wallet'
-  @property() public icon? = true
+  @property() public icon?: 'hide' | 'show' = 'show'
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
