@@ -1,3 +1,4 @@
+import './w3m-avatar'
 import './w3m-button'
 import './w3m-modal'
 import './w3m-modal-backcard'

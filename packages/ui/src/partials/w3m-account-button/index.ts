@@ -3,7 +3,6 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { global } from '../../utils/Theme'
 import { truncate } from '../../utils/UiHelpers'
-import { zorbSVG } from '../../utils/Zorb'
 import styles from './styles.css'
 
 @customElement('w3m-account-button')
@@ -19,7 +18,7 @@ export class W3mAccountButton extends LitElement {
 
     return html`
       <button @click=${ClientCtrl.client().disconnect}>
-        ${address ? zorbSVG(address, 24) : null}
+        <w3m-avatar></w3m-avatar>
         <w3m-text variant="medium-normal" color="inverse">${truncate(address ?? '')}</w3m-text>
       </button>
     `

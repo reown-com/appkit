@@ -1,0 +1,8 @@
+.w3m-avatar {
+  width: 24px;
+  height: 24px;
+  background-color: red;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--color-ovr-thick);
+  display: block;
+}
