@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { color } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-spinner')
@@ -9,7 +9,7 @@ export class W3mSpinner extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property({ type: Number }) public size?: number = 24
-  @property() public color?: string = color().foreground.accent
+  @property() public color?: string = ThemeUtil.color().foreground.accent
 
   // -- render ------------------------------------------------------- //
   protected render() {

@@ -3,12 +3,12 @@ import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { SvgUtil } from '../../utils/SvgUtil'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-connect-button')
 export class W3mConnectButton extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() public loading = false

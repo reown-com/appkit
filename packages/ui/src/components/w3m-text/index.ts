@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 type Variant =
@@ -20,7 +20,7 @@ type Color = 'accent' | 'error' | 'inverse' | 'primary' | 'secondary' | 'tertiar
 
 @customElement('w3m-text')
 export class W3mText extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public variant?: Variant = 'medium-normal'

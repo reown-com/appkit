@@ -2,7 +2,7 @@ import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import { getConditionalValue } from '../../utils/UiHelpers'
 import styles from './styles.css'
 
@@ -10,7 +10,7 @@ type Variant = 'fill' | 'ghost'
 
 @customElement('w3m-button')
 export class W3mButton extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public variant?: Variant = 'fill'

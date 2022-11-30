@@ -3,7 +3,7 @@ import { CoreHelpers, ExplorerCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import {
   debounce,
   getErrorMessage,
@@ -17,7 +17,7 @@ const PAGE_ENTRIES = 40
 
 @customElement('w3m-wallet-explorer-view')
 export class W3mWalletExplorerView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private loading = !ExplorerCtrl.state.wallets.listings.length

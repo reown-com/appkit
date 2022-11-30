@@ -1,12 +1,12 @@
 import { OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-select-network-view')
 export class W3mSelectNetworkView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
   private onSelectChain(chainId: number) {

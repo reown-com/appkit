@@ -10,7 +10,7 @@ import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { animate, spring } from 'motion'
-import { global, setTheme } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import {
   getChainIcon,
   getConnectorImageUrls,
@@ -23,7 +23,7 @@ import styles from './styles.css'
 
 @customElement('w3m-modal')
 export class W3mModal extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false
@@ -32,8 +32,8 @@ export class W3mModal extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    setTheme()
-    this.unsubscribeConfig = ConfigCtrl.subscribe(setTheme)
+    ThemeUtil.setTheme()
+    this.unsubscribeConfig = ConfigCtrl.subscribe(ThemeUtil.setTheme)
     this.unsubscribeModal = ModalCtrl.subscribe(modalState => {
       if (modalState.open) {
         this.onOpenModalEvent()

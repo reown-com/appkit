@@ -1,12 +1,12 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import { handleUriCopy } from '../../utils/UiHelpers'
 
 @customElement('w3m-qrcode-view')
 export class W3mQrcodeView extends LitElement {
-  public static styles = [global]
+  public static styles = [ThemeUtil.globalCss]
 
   // -- render ------------------------------------------------------- //
   protected render() {

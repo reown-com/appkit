@@ -3,12 +3,12 @@ import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { SvgUtil } from '../../utils/SvgUtil'
-import { color, global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-metamask-connector-view')
 export class W3mMetamaskConnectorView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private connecting = true
@@ -51,7 +51,7 @@ export class W3mMetamaskConnectorView extends LitElement {
     return html`
       <div class="w3m-connecting-title">
         ${this.connecting
-          ? html`<w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>`
+          ? html`<w3m-spinner size="22" color=${ThemeUtil.color().foreground[2]}></w3m-spinner>`
           : null}
         <w3m-text variant="large-bold" color=${this.error ? 'error' : 'secondary'}>
           ${this.error ? 'Connection declined' : 'Continue in MetaMask...'}

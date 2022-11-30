@@ -2,7 +2,7 @@ import { ClientCtrl, CoreHelpers, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import { getErrorMessage } from '../../utils/UiHelpers'
 import styles from './styles.css'
 
@@ -10,7 +10,7 @@ const HORIZONTAL_PADDING = 36
 
 @customElement('w3m-coinbase-mobile-connector-view')
 export class W3mCoinbaseMobileConnectorView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private uri = ''

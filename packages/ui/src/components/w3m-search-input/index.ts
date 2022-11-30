@@ -2,12 +2,12 @@ import { CoreHelpers } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-search-input')
 export class W3mSearchInput extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   @property() public onChange = () => null
 

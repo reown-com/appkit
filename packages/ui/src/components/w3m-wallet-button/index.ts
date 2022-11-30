@@ -1,12 +1,12 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import { getWalletFirstName } from '../../utils/UiHelpers'
 import styles from './styles.css'
 
 @customElement('w3m-wallet-button')
 export class W3mWalletButton extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public onClick: () => void = () => null

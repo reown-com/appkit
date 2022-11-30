@@ -4,12 +4,12 @@ import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { PresetUtil } from '../../utils/PresetUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
-import { color, global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-desktop-connector-view')
 export class W3mDesktopConnectorView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -73,7 +73,7 @@ export class W3mDesktopConnectorView extends LitElement {
             : html`<w3m-wallet-image size="lg" walletid=${ifDefined(walletId)}></w3m-wallet-image>`}
 
           <div class="w3m-connecting-title">
-            <w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>
+            <w3m-spinner size="22" color=${ThemeUtil.color().foreground[2]}></w3m-spinner>
             <w3m-text variant="large-bold" color="secondary">
               ${`Continue in ${optimisticName}...`}
             </w3m-text>

@@ -1,13 +1,13 @@
 import { ClientCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import { truncate } from '../../utils/UiHelpers'
 import styles from './styles.css'
 
 @customElement('w3m-account-button')
 export class W3mAccountButton extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public balance?: 'hide' | 'show' = 'hide'

@@ -1,11 +1,11 @@
 import { CoreHelpers } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 
 @customElement('w3m-connect-wallet-view')
 export class W3mConnectWalletView extends LitElement {
-  public static styles = [global]
+  public static styles = [ThemeUtil.globalCss]
 
   // -- render ------------------------------------------------------- //
   protected render() {

@@ -2,13 +2,13 @@ import { CoreHelpers, ExplorerCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import { getCustomWallets } from '../../utils/UiHelpers'
 import styles from './styles.css'
 
 @customElement('w3m-get-wallet-view')
 export class W3mGetWalletView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
   private readonly explorerUrl = 'https://explorer.walletconnect.com/'

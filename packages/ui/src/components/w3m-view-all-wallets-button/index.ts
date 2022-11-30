@@ -3,13 +3,13 @@ import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { PresetUtil } from '../../utils/PresetUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import { getCustomWallets, getWalletIcon } from '../../utils/UiHelpers'
 import styles from './styles.css'
 
 @customElement('w3m-view-all-wallets-button')
 export class W3mViewAllWalletsButton extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- render ------------------------------------------------------- //
   private onClick(isPreviewWallets: boolean, isCustomWallets: boolean) {

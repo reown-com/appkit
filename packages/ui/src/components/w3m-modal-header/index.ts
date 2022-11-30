@@ -3,12 +3,12 @@ import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-modal-header')
 export class W3mModalHeader extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public title = ''

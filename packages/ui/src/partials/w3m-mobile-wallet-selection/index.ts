@@ -10,13 +10,13 @@ import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { PresetUtil } from '../../utils/PresetUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import { handleMobileLinking } from '../../utils/UiHelpers'
 import styles from './styles.css'
 
 @customElement('w3m-mobile-wallet-selection')
 export class W3mMobileWalletSelection extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
   private onGoToQrcode() {

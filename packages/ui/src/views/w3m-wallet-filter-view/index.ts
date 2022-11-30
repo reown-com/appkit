@@ -2,13 +2,13 @@ import type { DesktopConnectorData } from '@web3modal/core'
 import { CoreHelpers, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import { getCustomWallets, handleMobileLinking } from '../../utils/UiHelpers'
 import styles from './styles.css'
 
 @customElement('w3m-wallet-filter-view')
 export class W3mWalletFilterView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private search = ''

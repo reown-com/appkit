@@ -3,7 +3,7 @@ import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { SvgUtil } from '../../utils/SvgUtil'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import { getShadowRootElement } from '../../utils/UiHelpers'
 import Whatamesh from '../../utils/Whatamesh'
 import styles from './styles.css'
@@ -12,7 +12,7 @@ const whatamesh = new Whatamesh()
 
 @customElement('w3m-modal-backcard')
 export class W3mModalBackcard extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false

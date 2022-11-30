@@ -91,7 +91,7 @@ export const PresetUtil = {
   },
 
   optimisticName(name: string) {
-    if (name.toUpperCase() !== 'INJECTED') {
+    if (name.toUpperCase() !== 'INJECTED' && name !== 'MetaMask') {
       return name
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
