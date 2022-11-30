@@ -8,12 +8,7 @@ import {
   ToastCtrl
 } from '@web3modal/core'
 import type { LitElement } from 'lit'
-import {
-  getChainPresetExplorerImage,
-  getOptimisticNamePreset,
-  getOptimisticWalletIdPreset,
-  getWalletPresetExplorerImage
-} from './Presets'
+import { PresetUtil } from './PresetUtil'
 
 export const MOBILE_BREAKPOINT = 600
 
@@ -45,7 +40,7 @@ export function getConditionalValue<T extends string>(
 }
 
 export function getWalletIcon(id: string) {
-  const { fallback, presets } = getWalletPresetExplorerImage()
+  const { fallback, presets } = PresetUtil.walletExplorerImage()
   const imageId = presets[id]
   const { projectId, walletImages } = ConfigCtrl.state
 
@@ -53,7 +48,7 @@ export function getWalletIcon(id: string) {
 }
 
 export function getChainIcon(chainId: number | string) {
-  const { fallback, presets } = getChainPresetExplorerImage()
+  const { fallback, presets } = PresetUtil.chainExplorerImage()
   const { projectId, chainImages } = ConfigCtrl.state
 
   return (
@@ -63,7 +58,7 @@ export function getChainIcon(chainId: number | string) {
 }
 
 export function getWalletFirstName(fullName: string) {
-  const optimisticName = getOptimisticNamePreset(fullName)
+  const optimisticName = PresetUtil.optimisticName(fullName)
 
   return optimisticName.split(' ')[0] ?? optimisticName
 }
@@ -154,7 +149,7 @@ export function getCustomImageUrls() {
 
 export function getConnectorImageUrls() {
   const connectors = ClientCtrl.client().getConnectorWallets()
-  const ids = connectors.map(({ id }) => getOptimisticWalletIdPreset(id))
+  const ids = connectors.map(({ id }) => PresetUtil.optimisticWalletId(id))
   const images = ids.map(id => getWalletIcon(id))
 
   return images

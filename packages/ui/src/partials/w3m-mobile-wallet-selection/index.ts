@@ -8,7 +8,7 @@ import {
 } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { getOptimisticNamePreset } from '../../utils/Presets'
+import { PresetUtil } from '../../utils/PresetUtil'
 import { QRCODE_ICON } from '../../utils/Svgs'
 import { global } from '../../utils/Theme'
 import { handleMobileLinking } from '../../utils/UiHelpers'
@@ -39,8 +39,8 @@ export class W3mMobileWalletSelection extends LitElement {
     const wallets = [...(mobileWallets ?? [])]
 
     if (window.ethereum) {
-      const injectedName = getOptimisticNamePreset('injected')
-      const idx = wallets.findIndex(({ name }) => getOptimisticNamePreset(name) === injectedName)
+      const injectedName = PresetUtil.optimisticName('injected')
+      const idx = wallets.findIndex(({ name }) => PresetUtil.optimisticName(name) === injectedName)
       if (idx > -1) {
         wallets.splice(idx, 1)
       }
@@ -66,8 +66,8 @@ export class W3mMobileWalletSelection extends LitElement {
     const wallets = [...previewWallets]
 
     if (window.ethereum) {
-      const injectedName = getOptimisticNamePreset('injected')
-      const idx = wallets.findIndex(({ name }) => getOptimisticNamePreset(name) === injectedName)
+      const injectedName = PresetUtil.optimisticName('injected')
+      const idx = wallets.findIndex(({ name }) => PresetUtil.optimisticName(name) === injectedName)
       wallets.splice(idx, 1)
     }
 

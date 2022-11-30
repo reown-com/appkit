@@ -2,7 +2,7 @@ import { ClientCtrl, CoreHelpers, ModalCtrl, OptionsCtrl, RouterCtrl } from '@we
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { getOptimisticNamePreset } from '../../utils/Presets'
+import { PresetUtil } from '../../utils/PresetUtil'
 import { ARROW_UP_RIGHT_ICON, MOBILE_ICON, RETRY_ICON } from '../../utils/Svgs'
 import { color, global } from '../../utils/Theme'
 import styles from './styles.css'
@@ -61,7 +61,7 @@ export class W3mDesktopConnectorView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { name, icon, universal, walletId } = this.getRouterData()
-    const optimisticName = getOptimisticNamePreset(name)
+    const optimisticName = PresetUtil.optimisticName(name)
 
     return html`
       <w3m-modal-header title=${optimisticName}></w3m-modal-header>
