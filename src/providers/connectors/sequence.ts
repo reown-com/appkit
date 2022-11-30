@@ -41,8 +41,8 @@ const ConnectToSequence = async (
   if (!wallet.isConnected()) {
     const connectDetails = await wallet.connect({
       app: opts?.appName,
-      authorize: opts?.authorize || undefined,
-      keepWalletOpeneed: opts?.keepWalletOpened || undefined
+      authorize: opts?.authorize || false,
+      keepWalletOpeneed: opts?.keepWalletOpened || false
     });
     
     if (!connectDetails.connected) {
