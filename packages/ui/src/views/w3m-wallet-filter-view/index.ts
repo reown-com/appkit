@@ -1,5 +1,5 @@
 import type { DesktopConnectorData } from '@web3modal/core'
-import { CoreHelpers, RouterCtrl } from '@web3modal/core'
+import { CoreUtil, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -15,7 +15,7 @@ export class W3mWalletFilterView extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private async onConnectPlatform({ name, universal, native, walletId }: DesktopConnectorData) {
-    if (CoreHelpers.isMobile()) {
+    if (CoreUtil.isMobile()) {
       await UiUtil.handleMobileLinking({ native, universal }, name)
     } else {
       RouterCtrl.push('DesktopConnector', {

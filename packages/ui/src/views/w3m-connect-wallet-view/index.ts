@@ -1,4 +1,4 @@
-import { CoreHelpers } from '@web3modal/core'
+import { CoreUtil } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -10,7 +10,7 @@ export class W3mConnectWalletView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      ${CoreHelpers.isMobile()
+      ${CoreUtil.isMobile()
         ? html`<w3m-mobile-wallet-selection></w3m-mobile-wallet-selection>`
         : html`<w3m-desktop-wallet-selection></w3m-desktop-wallet-selection>`}
     `

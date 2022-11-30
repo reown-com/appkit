@@ -1,5 +1,5 @@
 import type { Listing } from '@web3modal/core'
-import { CoreHelpers, ExplorerCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
+import { CoreUtil, ExplorerCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -65,14 +65,14 @@ export class W3mWalletExplorerView extends LitElement {
         const { listings: newListings } = await ExplorerCtrl.getPaginatedWallets({
           page: this.firstFetch ? 1 : page + 1,
           entries: PAGE_ENTRIES,
-          device: CoreHelpers.isMobile() ? 'mobile' : 'desktop',
+          device: CoreUtil.isMobile() ? 'mobile' : 'desktop',
           search: this.search,
           chains
         })
         const images = newListings.map(({ image_url }) => image_url.lg)
         await Promise.all([
           ...images.map(async url => UiUtil.preloadImage(url)),
-          CoreHelpers.wait(300)
+          CoreUtil.wait(300)
         ])
         this.endReached = this.isLastPage()
       } catch (err) {
@@ -85,7 +85,7 @@ export class W3mWalletExplorerView extends LitElement {
   }
 
   private async onConnectPlatform(listing: Listing) {
-    if (CoreHelpers.isMobile()) {
+    if (CoreUtil.isMobile()) {
       const { native, universal } = listing.mobile
       await UiUtil.handleMobileLinking({ native, universal }, listing.name)
     } else {

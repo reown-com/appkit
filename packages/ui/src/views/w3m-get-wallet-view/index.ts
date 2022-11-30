@@ -1,4 +1,4 @@
-import { CoreHelpers, ExplorerCtrl } from '@web3modal/core'
+import { CoreUtil, ExplorerCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -14,11 +14,11 @@ export class W3mGetWalletView extends LitElement {
   private readonly explorerUrl = 'https://explorer.walletconnect.com/'
 
   private onGet(url: string) {
-    CoreHelpers.openHref(url, '_blank')
+    CoreUtil.openHref(url, '_blank')
   }
 
   private onExplore() {
-    CoreHelpers.openHref(this.explorerUrl, '_blank')
+    CoreUtil.openHref(this.explorerUrl, '_blank')
   }
 
   // -- render ------------------------------------------------------- //

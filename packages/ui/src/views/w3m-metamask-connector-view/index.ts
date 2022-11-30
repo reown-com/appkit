@@ -1,4 +1,4 @@
-import { ClientCtrl, CoreHelpers, ModalCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -40,7 +40,7 @@ export class W3mMetamaskConnectorView extends LitElement {
   }
 
   private onInstall() {
-    CoreHelpers.openHref(this.metamaskUrl, '_blank')
+    CoreUtil.openHref(this.metamaskUrl, '_blank')
   }
 
   private onMobile() {

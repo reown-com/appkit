@@ -1,4 +1,4 @@
-import { ClientCtrl, CoreHelpers, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
+import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -37,7 +37,7 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
   }
 
   private onInstall() {
-    CoreHelpers.openHref(this.coinbaseWalletUrl, '_blank')
+    CoreUtil.openHref(this.coinbaseWalletUrl, '_blank')
   }
 
   // -- render ------------------------------------------------------- //

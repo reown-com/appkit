@@ -1,6 +1,6 @@
 import {
   ConfigCtrl,
-  CoreHelpers,
+  CoreUtil,
   ExplorerCtrl,
   ModalCtrl,
   OptionsCtrl,
@@ -72,7 +72,7 @@ export class W3mModal extends LitElement {
           page: 1,
           entries: 10,
           chains: chainsFilter,
-          device: CoreHelpers.isMobile() ? 'mobile' : 'desktop'
+          device: CoreUtil.isMobile() ? 'mobile' : 'desktop'
         }),
         ExplorerCtrl.getRecomendedWallets()
       ])

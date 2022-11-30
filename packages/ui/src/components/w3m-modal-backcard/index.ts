@@ -5,7 +5,7 @@ import { classMap } from 'lit/directives/class-map.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
-import Whatamesh from '../../utils/Whatamesh'
+import Whatamesh from '../../libs/Whatamesh'
 import styles from './styles.css'
 
 const whatamesh = new Whatamesh()

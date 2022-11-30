@@ -1,7 +1,7 @@
 import {
   ClientCtrl,
   ConfigCtrl,
-  CoreHelpers,
+  CoreUtil,
   ExplorerCtrl,
   ModalCtrl,
   OptionsCtrl,
@@ -100,11 +100,11 @@ export const UiUtil = {
     function onRedirect(uri: string) {
       let href = ''
       if (universal) {
-        href = CoreHelpers.formatUniversalUrl(universal, uri, name)
+        href = CoreUtil.formatUniversalUrl(universal, uri, name)
       } else if (native) {
-        CoreHelpers.formatNativeUrl(native, uri, name)
+        CoreUtil.formatNativeUrl(native, uri, name)
       }
-      CoreHelpers.openHref(href)
+      CoreUtil.openHref(href)
     }
 
     if (standaloneUri) {
@@ -131,7 +131,7 @@ export const UiUtil = {
   getCustomWallets() {
     const { desktopWallets, mobileWallets } = ConfigCtrl.state
 
-    return (CoreHelpers.isMobile() ? mobileWallets : desktopWallets) ?? []
+    return (CoreUtil.isMobile() ? mobileWallets : desktopWallets) ?? []
   },
 
   getCustomImageUrls() {

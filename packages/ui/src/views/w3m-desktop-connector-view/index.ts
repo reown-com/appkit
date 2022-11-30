@@ -1,4 +1,4 @@
-import { ClientCtrl, CoreHelpers, ModalCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -30,9 +30,9 @@ export class W3mDesktopConnectorView extends LitElement {
   private onOpenHref(uri: string) {
     const { native, name } = this.getRouterData()
     if (native) {
-      const href = CoreHelpers.formatNativeUrl(native, uri, name)
+      const href = CoreUtil.formatNativeUrl(native, uri, name)
       if (href) {
-        CoreHelpers.openHref(href)
+        CoreUtil.openHref(href)
       }
     }
   }
@@ -55,7 +55,7 @@ export class W3mDesktopConnectorView extends LitElement {
   }
 
   private onInstall(link: string) {
-    CoreHelpers.openHref(link, '_blank')
+    CoreUtil.openHref(link, '_blank')
   }
 
   // -- render ------------------------------------------------------- //

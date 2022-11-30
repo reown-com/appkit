@@ -2,7 +2,7 @@ import type { DesktopConnectorData } from '@web3modal/core'
 import {
   ClientCtrl,
   ConfigCtrl,
-  CoreHelpers,
+  CoreUtil,
   ExplorerCtrl,
   OptionsCtrl,
   RouterCtrl
@@ -20,7 +20,7 @@ export class W3mDesktopWalletSelection extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private onCoinbaseWallet() {
-    if (CoreHelpers.isCoinbaseExtension()) {
+    if (CoreUtil.isCoinbaseExtension()) {
       RouterCtrl.push('CoinbaseExtensionConnector')
     } else {
       RouterCtrl.push('CoinbaseMobileConnector')

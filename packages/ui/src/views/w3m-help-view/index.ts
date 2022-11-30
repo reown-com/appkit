@@ -1,4 +1,4 @@
-import { CoreHelpers, RouterCtrl } from '@web3modal/core'
+import { CoreUtil, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -17,7 +17,7 @@ export class W3mHelpView extends LitElement {
   }
 
   private onLearnMore() {
-    CoreHelpers.openHref(this.learnUrl, '_blank')
+    CoreUtil.openHref(this.learnUrl, '_blank')
   }
 
   // -- render ------------------------------------------------------- //

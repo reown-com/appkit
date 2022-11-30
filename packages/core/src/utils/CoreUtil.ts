@@ -1,6 +1,6 @@
-import { WALLETCONNECT_DEEPLINK_CHOICE } from './CoreConstants'
+const WALLETCONNECT_DEEPLINK_CHOICE = 'WALLETCONNECT_DEEPLINK_CHOICE'
 
-export const CoreHelpers = {
+export const CoreUtil = {
   isCoinbaseExtension() {
     return window.coinbaseWalletExtension
   },

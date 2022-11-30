@@ -12,5 +12,5 @@ export type {
   ListingResponse,
   RouterView
 } from './src/types/controllerTypes'
-export { CoreHelpers } from './src/utils/CoreHelpers'
+export { CoreUtil } from './src/utils/CoreUtil'
 import './src/utils/PolyfillUtil'
