@@ -11,14 +11,7 @@ import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { animate, spring } from 'motion'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import {
-  getChainIcon,
-  getConnectorImageUrls,
-  getCustomImageUrls,
-  getShadowRootElement,
-  isMobileAnimation,
-  preloadImage
-} from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-modal')
@@ -54,11 +47,11 @@ export class W3mModal extends LitElement {
   private readonly unsubscribeConfig?: () => void = undefined
 
   private get overlayEl() {
-    return getShadowRootElement(this, '.w3m-modal-overlay')
+    return UiUtil.getShadowRootElement(this, '.w3m-modal-overlay')
   }
 
   private get containerEl() {
-    return getShadowRootElement(this, '.w3m-modal-container')
+    return UiUtil.getShadowRootElement(this, '.w3m-modal-container')
   }
 
   private toggleBodyScroll(enabled: boolean) {
@@ -84,7 +77,7 @@ export class W3mModal extends LitElement {
         ExplorerCtrl.getRecomendedWallets()
       ])
       const { previewWallets, recomendedWallets } = ExplorerCtrl.state
-      const chainsImgs = chains?.map(chain => getChainIcon(chain.id)) ?? []
+      const chainsImgs = chains?.map(chain => UiUtil.getChainIcon(chain.id)) ?? []
       const walletImgs = [...previewWallets, ...recomendedWallets].map(
         wallet => wallet.image_url.lg
       )
@@ -94,21 +87,21 @@ export class W3mModal extends LitElement {
 
   private async preloadExplorerImages(images: string[]) {
     if (images.length) {
-      await Promise.all(images.map(async url => preloadImage(url)))
+      await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
     }
   }
 
   private async preloadCustomImages() {
-    const images = getCustomImageUrls()
+    const images = UiUtil.getCustomImageUrls()
     if (images.length) {
-      await Promise.all(images.map(async url => preloadImage(url)))
+      await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
     }
   }
 
   private async preloadConnectorImages() {
-    const images = getConnectorImageUrls()
+    const images = UiUtil.getConnectorImageUrls()
     if (images.length) {
-      await Promise.all(images.map(async url => preloadImage(url)))
+      await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
     }
   }
 
@@ -138,11 +131,15 @@ export class W3mModal extends LitElement {
     this.toggleBodyScroll(false)
     const delay = 0.3
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay })
-    animate(this.containerEl, isMobileAnimation() ? { y: ['50vh', 0] } : { scale: [0.98, 1] }, {
-      scale: { easing: spring({ velocity: 0.4 }) },
-      y: { easing: spring({ mass: 0.5 }) },
-      delay
-    })
+    animate(
+      this.containerEl,
+      UiUtil.isMobileAnimation() ? { y: ['50vh', 0] } : { scale: [0.98, 1] },
+      {
+        scale: { easing: spring({ velocity: 0.4 }) },
+        y: { easing: spring({ mass: 0.5 }) },
+        delay
+      }
+    )
     document.addEventListener('keydown', this.onKeyDown)
     this.open = true
   }
@@ -151,10 +148,14 @@ export class W3mModal extends LitElement {
     this.toggleBodyScroll(true)
     document.removeEventListener('keydown', this.onKeyDown)
     await Promise.all([
-      animate(this.containerEl, isMobileAnimation() ? { y: [0, '50vh'] } : { scale: [1, 0.98] }, {
-        scale: { easing: spring({ velocity: 0 }) },
-        y: { easing: spring({ mass: 0.5 }) }
-      }).finished,
+      animate(
+        this.containerEl,
+        UiUtil.isMobileAnimation() ? { y: [0, '50vh'] } : { scale: [1, 0.98] },
+        {
+          scale: { easing: spring({ velocity: 0 }) },
+          y: { easing: spring({ mass: 0.5 }) }
+        }
+      ).finished,
       animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
     ])
     this.open = false

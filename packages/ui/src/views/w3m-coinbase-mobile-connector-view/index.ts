@@ -3,7 +3,7 @@ import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { getErrorMessage } from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 const HORIZONTAL_PADDING = 36
@@ -32,7 +32,7 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
       )
       ModalCtrl.close()
     } catch (err) {
-      ToastCtrl.openToast(getErrorMessage(err), 'error')
+      ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
     }
   }
 

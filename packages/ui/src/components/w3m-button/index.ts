@@ -3,7 +3,7 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { getConditionalValue } from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 type Variant = 'fill' | 'ghost'
@@ -29,7 +29,7 @@ export class W3mButton extends LitElement {
       'w3m-button-icon-right': this.iconRight !== undefined
     }
 
-    const textColor = getConditionalValue(
+    const textColor = UiUtil.getConditionalValue(
       ['secondary', 'accent', 'inverse'],
       [Boolean(this.disabled), this.variant === 'ghost', this.variant === 'fill']
     )

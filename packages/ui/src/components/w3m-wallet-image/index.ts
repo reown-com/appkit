@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import { PresetUtil } from '../../utils/PresetUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { getWalletIcon } from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-wallet-image')
@@ -18,7 +18,7 @@ export class W3mWalletImage extends LitElement {
   protected render() {
     const walletId = this.walletId ?? 'injected'
     const optimisticId = PresetUtil.optimisticWalletId(walletId)
-    const src = this.src ? this.src : getWalletIcon(optimisticId)
+    const src = this.src ? this.src : UiUtil.getWalletIcon(optimisticId)
 
     return html`
       ${src.length

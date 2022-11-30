@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { getChainIcon } from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-network-button')
@@ -16,7 +16,7 @@ export class W3mNetworkButton extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const src = getChainIcon(this.chainId)
+    const src = UiUtil.getChainIcon(this.chainId)
 
     return html`
       <button class="w3m-network-button" @click=${this.onClick}>

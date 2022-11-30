@@ -4,7 +4,7 @@ import { customElement } from 'lit/decorators.js'
 import { PresetUtil } from '../../utils/PresetUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { getCustomWallets, getWalletIcon } from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-view-all-wallets-button')
@@ -23,7 +23,7 @@ export class W3mViewAllWalletsButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { previewWallets } = ExplorerCtrl.state
-    const customWallets = getCustomWallets()
+    const customWallets = UiUtil.getCustomWallets()
     const rePreviewWallets = [...previewWallets].reverse().slice(0, 4)
     const reCustomWallets = [...customWallets].reverse().slice(0, 4)
     const isPreviewWallets = Boolean(rePreviewWallets.length)
@@ -38,7 +38,7 @@ export class W3mViewAllWalletsButton extends LitElement {
           ${isCustomWallets
             ? reCustomWallets.map(wallet => {
                 const optimisticId = PresetUtil.optimisticWalletId(wallet.id)
-                const src = getWalletIcon(optimisticId)
+                const src = UiUtil.getWalletIcon(optimisticId)
 
                 return src ? html`<img src=${src} />` : SvgUtil.WALLET_PLACEHOLDER
               })

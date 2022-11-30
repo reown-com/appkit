@@ -3,7 +3,7 @@ import { CoreHelpers, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { getCustomWallets, handleMobileLinking } from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-wallet-filter-view')
@@ -16,7 +16,7 @@ export class W3mWalletFilterView extends LitElement {
   // -- private ------------------------------------------------------ //
   private async onConnectPlatform({ name, universal, native, walletId }: DesktopConnectorData) {
     if (CoreHelpers.isMobile()) {
-      await handleMobileLinking({ native, universal }, name)
+      await UiUtil.handleMobileLinking({ native, universal }, name)
     } else {
       RouterCtrl.push('DesktopConnector', {
         DesktopConnector: { name, walletId, universal, native }
@@ -31,7 +31,7 @@ export class W3mWalletFilterView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const wallets = getCustomWallets()
+    const wallets = UiUtil.getCustomWallets()
     const filtered = this.search.length
       ? wallets.filter(wallet => wallet.name.toUpperCase().includes(this.search.toUpperCase()))
       : wallets

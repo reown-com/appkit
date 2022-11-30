@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { handleUriCopy } from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 
 @customElement('w3m-qrcode-view')
 export class W3mQrcodeView extends LitElement {
@@ -13,7 +13,7 @@ export class W3mQrcodeView extends LitElement {
     return html`
       <w3m-modal-header
         title="Scan the code"
-        .onAction=${handleUriCopy}
+        .onAction=${UiUtil.handleUriCopy}
         .actionIcon=${SvgUtil.COPY_ICON}
       ></w3m-modal-header>
 

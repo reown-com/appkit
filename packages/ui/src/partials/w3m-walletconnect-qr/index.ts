@@ -2,7 +2,7 @@ import { ClientCtrl, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { getErrorMessage, getShadowRootElement } from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-walletconnect-qr')
@@ -20,7 +20,7 @@ export class W3mWalletConnectQr extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private get overlayEl(): HTMLDivElement {
-    return getShadowRootElement(this, '.w3m-qr-container') as HTMLDivElement
+    return UiUtil.getShadowRootElement(this, '.w3m-qr-container') as HTMLDivElement
   }
 
   private async getConnectionUri() {
@@ -36,7 +36,7 @@ export class W3mWalletConnectQr extends LitElement {
         ModalCtrl.close()
       }
     } catch (err) {
-      ToastCtrl.openToast(getErrorMessage(err), 'error')
+      ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
     }
   }
 

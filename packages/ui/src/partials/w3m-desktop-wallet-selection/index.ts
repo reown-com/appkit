@@ -11,7 +11,7 @@ import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { handleUriCopy } from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-desktop-wallet-selection')
@@ -122,7 +122,7 @@ export class W3mDesktopWalletSelection extends LitElement {
     return html`
       <w3m-modal-header
         title="Connect your wallet"
-        .onAction=${handleUriCopy}
+        .onAction=${UiUtil.handleUriCopy}
         .actionIcon=${SvgUtil.COPY_ICON}
       ></w3m-modal-header>
 

@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { getWalletFirstName } from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-wallet-button')
@@ -22,7 +22,7 @@ export class W3mWalletButton extends LitElement {
         <div class="w3m-wallet-button-wrap">
           <w3m-wallet-image walletId=${this.walletId} .src=${this.src}></w3m-wallet-image>
           <w3m-text variant="xsmall-normal">
-            ${this.label ?? getWalletFirstName(this.name)}
+            ${this.label ?? UiUtil.getWalletFirstName(this.name)}
           </w3m-text>
         </div>
       </button>

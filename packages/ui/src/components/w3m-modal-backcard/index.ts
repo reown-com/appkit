@@ -4,7 +4,7 @@ import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { getShadowRootElement } from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 import Whatamesh from '../../utils/Whatamesh'
 import styles from './styles.css'
 
@@ -47,7 +47,7 @@ export class W3mModalBackcard extends LitElement {
   private playTimeout?: NodeJS.Timeout = undefined
 
   private get canvasEl() {
-    return getShadowRootElement(this, '.w3m-gradient-canvas')
+    return UiUtil.getShadowRootElement(this, '.w3m-gradient-canvas')
   }
 
   private onHelp() {

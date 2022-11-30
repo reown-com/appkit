@@ -4,7 +4,7 @@ import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { getShadowRootElement } from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-modal-router')
@@ -52,11 +52,11 @@ export class W3mModalRouter extends LitElement {
   private resizeObserver?: ResizeObserver = undefined
 
   private get routerEl() {
-    return getShadowRootElement(this, '.w3m-modal-router')
+    return UiUtil.getShadowRootElement(this, '.w3m-modal-router')
   }
 
   private get contentEl() {
-    return getShadowRootElement(this, '.w3m-modal-router-content')
+    return UiUtil.getShadowRootElement(this, '.w3m-modal-router-content')
   }
 
   private viewTemplate() {

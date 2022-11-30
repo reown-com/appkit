@@ -2,7 +2,7 @@ import { ClientCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { truncate } from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-account-button')
@@ -19,7 +19,9 @@ export class W3mAccountButton extends LitElement {
     return html`
       <button @click=${ClientCtrl.client().disconnect}>
         <w3m-avatar></w3m-avatar>
-        <w3m-text variant="medium-normal" color="inverse">${truncate(address ?? '')}</w3m-text>
+        <w3m-text variant="medium-normal" color="inverse">
+          ${UiUtil.truncate(address ?? '')}
+        </w3m-text>
       </button>
     `
   }

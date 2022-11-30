@@ -4,13 +4,7 @@ import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import {
-  debounce,
-  getErrorMessage,
-  getShadowRootElement,
-  handleMobileLinking,
-  preloadImage
-} from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 const PAGE_ENTRIES = 40
@@ -36,7 +30,7 @@ export class W3mWalletExplorerView extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private get placeholderEl() {
-    return getShadowRootElement(this, '.w3m-placeholder-block')
+    return UiUtil.getShadowRootElement(this, '.w3m-placeholder-block')
   }
 
   private intersectionObserver: IntersectionObserver | undefined = undefined
@@ -76,10 +70,13 @@ export class W3mWalletExplorerView extends LitElement {
           chains
         })
         const images = newListings.map(({ image_url }) => image_url.lg)
-        await Promise.all([...images.map(async url => preloadImage(url)), CoreHelpers.wait(300)])
+        await Promise.all([
+          ...images.map(async url => UiUtil.preloadImage(url)),
+          CoreHelpers.wait(300)
+        ])
         this.endReached = this.isLastPage()
       } catch (err) {
-        ToastCtrl.openToast(getErrorMessage(err), 'error')
+        ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
       } finally {
         this.loading = false
         this.firstFetch = false
@@ -90,7 +87,7 @@ export class W3mWalletExplorerView extends LitElement {
   private async onConnectPlatform(listing: Listing) {
     if (CoreHelpers.isMobile()) {
       const { native, universal } = listing.mobile
-      await handleMobileLinking({ native, universal }, listing.name)
+      await UiUtil.handleMobileLinking({ native, universal }, listing.name)
     } else {
       RouterCtrl.push('DesktopConnector', {
         DesktopConnector: {
@@ -103,7 +100,7 @@ export class W3mWalletExplorerView extends LitElement {
     }
   }
 
-  private readonly searchDebounce = debounce((value: string) => {
+  private readonly searchDebounce = UiUtil.debounce((value: string) => {
     if (value.length >= 3) {
       this.firstFetch = true
       this.endReached = false

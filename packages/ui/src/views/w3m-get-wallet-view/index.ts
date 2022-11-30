@@ -3,7 +3,7 @@ import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { getCustomWallets } from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-get-wallet-view')
@@ -24,7 +24,7 @@ export class W3mGetWalletView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { recomendedWallets } = ExplorerCtrl.state
-    const customWallets = getCustomWallets().slice(0, 6)
+    const customWallets = UiUtil.getCustomWallets().slice(0, 6)
     const isRecomendedWallets = recomendedWallets.length
     const isCustomWallets = customWallets.length
 

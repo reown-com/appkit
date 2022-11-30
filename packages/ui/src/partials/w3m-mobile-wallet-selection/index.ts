@@ -11,7 +11,7 @@ import { customElement } from 'lit/decorators.js'
 import { PresetUtil } from '../../utils/PresetUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { handleMobileLinking } from '../../utils/UiHelpers'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-mobile-wallet-selection')
@@ -52,7 +52,7 @@ export class W3mMobileWalletSelection extends LitElement {
           <w3m-wallet-button
             name=${name}
             walletId=${id}
-            .onClick=${async () => handleMobileLinking({ native, universal }, name)}
+            .onClick=${async () => UiUtil.handleMobileLinking({ native, universal }, name)}
           ></w3m-wallet-button>
         `
       )
@@ -76,7 +76,7 @@ export class W3mMobileWalletSelection extends LitElement {
         <w3m-wallet-button
           name=${name}
           src=${image_url.lg}
-          .onClick=${async () => handleMobileLinking({ native, universal }, name)}
+          .onClick=${async () => UiUtil.handleMobileLinking({ native, universal }, name)}
         ></w3m-wallet-button>
       `
     )
