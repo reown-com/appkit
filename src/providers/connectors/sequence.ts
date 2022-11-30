@@ -4,6 +4,8 @@ export interface ISequenceConnectorOptions extends IAbstractConnectorOptions {
   appName: string;
   defaultNetwork?: string;
   networkRpcUrl?: string;
+  getSequenceWallet?: (sequenceWallet: any) => void
+  onConnect?: (connectDetails: any) => void
 }
 
 const ConnectToSequence = async (
@@ -39,14 +41,22 @@ const ConnectToSequence = async (
       app: opts?.appName,
       authorize: true
     });
-
+    
     if (!connectDetails.connected) {
       throw new Error("Failed to connect");
     }
+    
+    if (opts?.onConnect) {
+      opts.onConnect(connectDetails)
+    }
   }
-
+  
   provider = wallet.getProvider();
   provider.sequence = wallet;
+
+  if (opts?.getSequenceWallet) {
+    opts.getSequenceWallet(wallet)
+  }
 
   return provider;
 };
