@@ -1,11 +1,13 @@
 import { IAbstractConnectorOptions } from "../../helpers";
 
 export interface ISequenceConnectorOptions extends IAbstractConnectorOptions {
-  appName: string;
-  defaultNetwork?: string;
-  networkRpcUrl?: string;
+  appName: string
+  defaultNetwork?: string
+  networkRpcUrl?: string
   getSequenceWallet?: (sequenceWallet: any) => void
   onConnect?: (connectDetails: any) => void
+  authorize?: boolean
+  keepWalletOpened?: boolean
 }
 
 const ConnectToSequence = async (
@@ -39,7 +41,8 @@ const ConnectToSequence = async (
   if (!wallet.isConnected()) {
     const connectDetails = await wallet.connect({
       app: opts?.appName,
-      authorize: true
+      authorize: opts?.authorize || undefined,
+      keepWalletOpeneed: opts?.keepWalletOpened || undefined
     });
     
     if (!connectDetails.connected) {
