@@ -2,7 +2,7 @@ import { ConfigCtrl, ModalCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { CROSS_ICON, HELP_ICON, NOISE_TEXTURE, WALLET_CONNECT_LOGO } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { global } from '../../utils/Theme'
 import { getShadowRootElement } from '../../utils/UiHelpers'
 import Whatamesh from '../../utils/Whatamesh'
@@ -73,16 +73,18 @@ export class W3mModalBackcard extends LitElement {
         ? html`
             <div class="w3m-gradient-placeholder"></div>
             <canvas class=${classMap(classes)}></canvas>
-            ${NOISE_TEXTURE}
+            ${SvgUtil.NOISE_TEXTURE}
           `
         : null}
 
       <div class="w3m-modal-highlight"></div>
       <div class="w3m-modal-toolbar">
-        ${WALLET_CONNECT_LOGO}
+        ${SvgUtil.WALLET_CONNECT_LOGO}
         <div class=${classMap(actionsClasses)}>
-          <button class="w3m-modal-action-btn" @click=${this.onHelp}>${HELP_ICON}</button>
-          <button class="w3m-modal-action-btn" @click=${ModalCtrl.close}>${CROSS_ICON}</button>
+          <button class="w3m-modal-action-btn" @click=${this.onHelp}>${SvgUtil.HELP_ICON}</button>
+          <button class="w3m-modal-action-btn" @click=${ModalCtrl.close}>
+            ${SvgUtil.CROSS_ICON}
+          </button>
         </div>
       </div>
     `

@@ -9,7 +9,7 @@ import {
 } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { COPY_ICON, DESKTOP_ICON, MOBILE_ICON, SCAN_ICON } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { global } from '../../utils/Theme'
 import { handleUriCopy } from '../../utils/UiHelpers'
 import styles from './styles.css'
@@ -123,18 +123,18 @@ export class W3mDesktopWalletSelection extends LitElement {
       <w3m-modal-header
         title="Connect your wallet"
         .onAction=${handleUriCopy}
-        .actionIcon=${COPY_ICON}
+        .actionIcon=${SvgUtil.COPY_ICON}
       ></w3m-modal-header>
 
       <w3m-modal-content>
         <div class="w3m-mobile-title">
           <div class="w3m-subtitle">
-            ${MOBILE_ICON}
+            ${SvgUtil.MOBILE_ICON}
             <w3m-text variant="small-normal" color="accent">Mobile</w3m-text>
           </div>
 
           <div class="w3m-subtitle">
-            ${SCAN_ICON}
+            ${SvgUtil.SCAN_ICON}
             <w3m-text variant="small-normal" color="tertiary">Scan with your wallet</w3m-text>
           </div>
         </div>
@@ -145,7 +145,7 @@ export class W3mDesktopWalletSelection extends LitElement {
         ? html`
             <w3m-modal-footer>
               <div class="w3m-desktop-title">
-                ${DESKTOP_ICON}
+                ${SvgUtil.DESKTOP_ICON}
                 <w3m-text variant="small-normal" color="accent">Desktop</w3m-text>
               </div>
 

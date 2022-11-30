@@ -2,7 +2,7 @@ import { ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { CHECKMARK_ICON, CROSS_ICON } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { global } from '../../utils/Theme'
 import styles from './styles.css'
 
@@ -48,8 +48,8 @@ export class W3mModalToast extends LitElement {
     return this.open
       ? html`
           <div class=${classMap(classes)}>
-            ${variant === 'success' ? CHECKMARK_ICON : null}
-            ${variant === 'error' ? CROSS_ICON : null}
+            ${variant === 'success' ? SvgUtil.CHECKMARK_ICON : null}
+            ${variant === 'error' ? SvgUtil.CROSS_ICON : null}
             <w3m-text variant="small-normal">${message}</w3m-text>
           </div>
         `

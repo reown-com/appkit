@@ -9,7 +9,7 @@ import {
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { PresetUtil } from '../../utils/PresetUtil'
-import { QRCODE_ICON } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { global } from '../../utils/Theme'
 import { handleMobileLinking } from '../../utils/UiHelpers'
 import styles from './styles.css'
@@ -133,7 +133,7 @@ export class W3mMobileWalletSelection extends LitElement {
       <w3m-modal-header
         title="Connect your wallet"
         .onAction=${this.onGoToQrcode}
-        .actionIcon=${QRCODE_ICON}
+        .actionIcon=${SvgUtil.QRCODE_ICON}
       ></w3m-modal-header>
 
       ${isMobileWallets

@@ -2,7 +2,7 @@ import { RouterCtrl } from '@web3modal/core'
 import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { BACK_ICON } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { global } from '../../utils/Theme'
 import styles from './styles.css'
 
@@ -17,7 +17,9 @@ export class W3mModalHeader extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private backBtnTemplate() {
-    return html`<button class="w3m-back-btn" @click=${RouterCtrl.goBack}>${BACK_ICON}</button>`
+    return html`<button class="w3m-back-btn" @click=${RouterCtrl.goBack}>
+      ${SvgUtil.BACK_ICON}
+    </button>`
   }
 
   private actionBtnTemplate() {

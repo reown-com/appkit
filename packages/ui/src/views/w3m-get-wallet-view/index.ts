@@ -1,7 +1,7 @@
 import { CoreHelpers, ExplorerCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { ARROW_RIGHT_ICON, ARROW_UP_RIGHT_ICON } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { global } from '../../utils/Theme'
 import { getCustomWallets } from '../../utils/UiHelpers'
 import styles from './styles.css'
@@ -40,7 +40,7 @@ export class W3mGetWalletView extends LitElement {
                     <div class="w3m-wallet-content">
                       <w3m-text variant="medium-normal">${name}</w3m-text>
                       <w3m-button
-                        .iconRight=${ARROW_RIGHT_ICON}
+                        .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
                         variant="ghost"
                         .onClick=${() => this.onGet(homepage)}
                       >
@@ -60,7 +60,7 @@ export class W3mGetWalletView extends LitElement {
                     <div class="w3m-wallet-content">
                       <w3m-text variant="medium-normal">${name}</w3m-text>
                       <w3m-button
-                        .iconRight=${ARROW_RIGHT_ICON}
+                        .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
                         variant="ghost"
                         .onClick=${() => this.onGet(links.universal)}
                       >
@@ -78,7 +78,10 @@ export class W3mGetWalletView extends LitElement {
           <w3m-text variant="small-thin" align="center" color="secondary" class="w3m-info-text">
             With hundreds of wallets out there, there's something for everyone
           </w3m-text>
-          <w3m-button .onClick=${this.onExplore.bind(this)} .iconRight=${ARROW_UP_RIGHT_ICON}>
+          <w3m-button
+            .onClick=${this.onExplore.bind(this)}
+            .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}
+          >
             Explore Wallets
           </w3m-button>
         </div>

@@ -2,7 +2,7 @@ import { ModalCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { WALLET_CONNECT_ICON } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { global } from '../../utils/Theme'
 import styles from './styles.css'
 
@@ -36,7 +36,7 @@ export class W3mConnectButton extends LitElement {
   private readonly modalUnsub?: () => void = undefined
 
   private iconTemplate() {
-    return this.icon === 'show' ? WALLET_CONNECT_ICON : null
+    return this.icon === 'show' ? SvgUtil.WALLET_CONNECT_ICON : null
   }
 
   private onOpen() {

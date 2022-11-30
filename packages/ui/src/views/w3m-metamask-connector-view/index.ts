@@ -2,7 +2,7 @@ import { ClientCtrl, CoreHelpers, ModalCtrl, OptionsCtrl, RouterCtrl } from '@we
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { ARROW_DOWN_ICON, MOBILE_ICON, RETRY_ICON } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { color, global } from '../../utils/Theme'
 import styles from './styles.css'
 
@@ -60,7 +60,7 @@ export class W3mMetamaskConnectorView extends LitElement {
       <w3m-button
         .onClick=${this.onConnect.bind(this)}
         .disabled=${!this.error}
-        .iconRight=${RETRY_ICON}
+        .iconRight=${SvgUtil.RETRY_ICON}
       >
         Try Again
       </w3m-button>
@@ -76,10 +76,10 @@ export class W3mMetamaskConnectorView extends LitElement {
         </w3m-text>
       </div>
       <div class="w3m-install-actions">
-        <w3m-button .onClick=${this.onInstall.bind(this)} .iconLeft=${ARROW_DOWN_ICON}>
+        <w3m-button .onClick=${this.onInstall.bind(this)} .iconLeft=${SvgUtil.ARROW_DOWN_ICON}>
           Install Extension
         </w3m-button>
-        <w3m-button .onClick=${this.onMobile} .iconLeft=${MOBILE_ICON} variant="ghost">
+        <w3m-button .onClick=${this.onMobile} .iconLeft=${SvgUtil.MOBILE_ICON} variant="ghost">
           MetaMask Mobile
         </w3m-button>
       </div>

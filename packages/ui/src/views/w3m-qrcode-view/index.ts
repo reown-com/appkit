@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { COPY_ICON } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { global } from '../../utils/Theme'
 import { handleUriCopy } from '../../utils/UiHelpers'
 
@@ -14,7 +14,7 @@ export class W3mQrcodeView extends LitElement {
       <w3m-modal-header
         title="Scan the code"
         .onAction=${handleUriCopy}
-        .actionIcon=${COPY_ICON}
+        .actionIcon=${SvgUtil.COPY_ICON}
       ></w3m-modal-header>
 
       <w3m-modal-content>

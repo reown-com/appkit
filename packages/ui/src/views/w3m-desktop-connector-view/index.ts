@@ -3,7 +3,7 @@ import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { PresetUtil } from '../../utils/PresetUtil'
-import { ARROW_UP_RIGHT_ICON, MOBILE_ICON, RETRY_ICON } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { color, global } from '../../utils/Theme'
 import styles from './styles.css'
 
@@ -80,7 +80,7 @@ export class W3mDesktopConnectorView extends LitElement {
           </div>
 
           <div class="w3m-install-actions">
-            <w3m-button .onClick=${this.onConnect.bind(this)} .iconRight=${RETRY_ICON}>
+            <w3m-button .onClick=${this.onConnect.bind(this)} .iconRight=${SvgUtil.RETRY_ICON}>
               Retry
             </w3m-button>
 
@@ -89,13 +89,17 @@ export class W3mDesktopConnectorView extends LitElement {
                   <w3m-button
                     variant="ghost"
                     .onClick=${() => this.onInstall(universal)}
-                    .iconLeft=${ARROW_UP_RIGHT_ICON}
+                    .iconLeft=${SvgUtil.ARROW_UP_RIGHT_ICON}
                   >
                     Go to Wallet
                   </w3m-button>
                 `
               : html`
-                  <w3m-button .onClick=${this.onMobile} .iconLeft=${MOBILE_ICON} variant="ghost">
+                  <w3m-button
+                    .onClick=${this.onMobile}
+                    .iconLeft=${SvgUtil.MOBILE_ICON}
+                    variant="ghost"
+                  >
                     Connect with Mobile
                   </w3m-button>
                 `}

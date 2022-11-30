@@ -1,15 +1,16 @@
 import { svg } from 'lit'
 
-export const CROSS_ICON = svg`
+export const SvgUtil = {
+  CROSS_ICON: svg`
   <svg width="12" height="12" viewBox="0 0 12 12">
     <path
       d="M9.94 11A.75.75 0 1 0 11 9.94L7.414 6.353a.5.5 0 0 1 0-.708L11 2.061A.75.75 0 1 0 9.94 1L6.353 4.586a.5.5 0 0 1-.708 0L2.061 1A.75.75 0 0 0 1 2.06l3.586 3.586a.5.5 0 0 1 0 .708L1 9.939A.75.75 0 1 0 2.06 11l3.586-3.586a.5.5 0 0 1 .708 0L9.939 11Z"
       fill="#fff"
     />
   </svg>
-`
+`,
 
-export const NOISE_TEXTURE = svg`
+  NOISE_TEXTURE: svg`
   <svg id="w3m-transparent-noise">
     <filter id="w3m-noise">
       <feTurbulence type="fractalNoise" baseFrequency="0.8" />
@@ -17,18 +18,18 @@ export const NOISE_TEXTURE = svg`
 
     <rect width="100%" height="100%" filter="url(#w3m-noise)" />
   </svg>
-`
+`,
 
-export const WALLET_CONNECT_LOGO = svg`
+  WALLET_CONNECT_LOGO: svg`
   <svg width="178" height="29" viewBox="0 0 178 29" id="w3m-wc-logo">
     <path
       d="M10.683 7.926c5.284-5.17 13.85-5.17 19.134 0l.636.623a.652.652 0 0 1 0 .936l-2.176 2.129a.343.343 0 0 1-.478 0l-.875-.857c-3.686-3.607-9.662-3.607-13.348 0l-.937.918a.343.343 0 0 1-.479 0l-2.175-2.13a.652.652 0 0 1 0-.936l.698-.683Zm23.633 4.403 1.935 1.895a.652.652 0 0 1 0 .936l-8.73 8.543a.687.687 0 0 1-.956 0L20.37 17.64a.172.172 0 0 0-.239 0l-6.195 6.063a.687.687 0 0 1-.957 0l-8.73-8.543a.652.652 0 0 1 0-.936l1.936-1.895a.687.687 0 0 1 .957 0l6.196 6.064a.172.172 0 0 0 .239 0l6.195-6.064a.687.687 0 0 1 .957 0l6.196 6.064a.172.172 0 0 0 .24 0l6.195-6.064a.687.687 0 0 1 .956 0ZM48.093 20.948l2.338-9.355c.139-.515.258-1.07.416-1.942.12.872.258 1.427.357 1.942l2.022 9.355h4.181l3.528-13.874h-3.21l-1.943 8.523a24.825 24.825 0 0 0-.456 2.457c-.158-.931-.317-1.625-.495-2.438l-1.883-8.542h-4.201l-2.042 8.542a41.204 41.204 0 0 0-.475 2.438 41.208 41.208 0 0 0-.476-2.438l-1.903-8.542h-3.349l3.508 13.874h4.083ZM63.33 21.304c1.585 0 2.596-.654 3.11-1.605-.059.297-.078.595-.078.892v.357h2.655V15.22c0-2.735-1.248-4.32-4.3-4.32-2.636 0-4.36 1.466-4.52 3.487h2.914c.1-.891.734-1.426 1.705-1.426.911 0 1.407.515 1.407 1.11 0 .435-.258.693-1.03.792l-1.388.159c-2.061.257-3.825 1.01-3.825 3.19 0 1.982 1.645 3.092 3.35 3.092Zm.891-2.041c-.773 0-1.348-.436-1.348-1.19 0-.733.655-1.09 1.645-1.268l.674-.119c.575-.118.892-.218 1.09-.396v.912c0 1.228-.892 2.06-2.06 2.06ZM70.398 7.074v13.874h2.874V7.074h-2.874ZM74.934 7.074v13.874h2.874V7.074h-2.874ZM84.08 21.304c2.735 0 4.5-1.546 4.697-3.567h-2.893c-.139.892-.892 1.387-1.804 1.387-1.228 0-2.12-.99-2.14-2.358h6.897v-.555c0-3.21-1.764-5.312-4.816-5.312-2.933 0-4.994 2.062-4.994 5.173 0 3.37 2.12 5.232 5.053 5.232Zm-2.16-6.421c.119-1.11.932-1.922 2.081-1.922 1.11 0 1.883.772 1.903 1.922H81.92ZM94.92 21.146c.633 0 1.248-.1 1.525-.179v-2.18c-.218.04-.475.06-.693.06-1.05 0-1.427-.595-1.427-1.566v-3.805h2.338v-2.24h-2.338V7.788H91.47v3.448H89.37v2.24h2.1v4.201c0 2.3 1.15 3.469 3.45 3.469ZM104.62 21.304c3.924 0 6.302-2.299 6.599-5.608h-3.111c-.238 1.803-1.506 3.032-3.369 3.032-2.2 0-3.746-1.784-3.746-4.796 0-2.953 1.605-4.638 3.805-4.638 1.883 0 2.953 1.15 3.171 2.834h3.191c-.317-3.448-2.854-5.41-6.342-5.41-3.984 0-7.036 2.695-7.036 7.214 0 4.677 2.676 7.372 6.838 7.372ZM117.449 21.304c2.993 0 5.114-1.882 5.114-5.172 0-3.23-2.121-5.233-5.114-5.233-2.972 0-5.093 2.002-5.093 5.233 0 3.29 2.101 5.172 5.093 5.172Zm0-2.22c-1.327 0-2.18-1.09-2.18-2.952 0-1.903.892-2.973 2.18-2.973 1.308 0 2.2 1.07 2.2 2.973 0 1.862-.872 2.953-2.2 2.953ZM126.569 20.948v-5.689c0-1.208.753-2.1 1.823-2.1 1.011 0 1.606.773 1.606 2.06v5.729h2.873v-6.144c0-2.339-1.229-3.905-3.428-3.905-1.526 0-2.458.734-2.953 1.606a5.31 5.31 0 0 0 .079-.892v-.377h-2.874v9.712h2.874ZM137.464 20.948v-5.689c0-1.208.753-2.1 1.823-2.1 1.011 0 1.606.773 1.606 2.06v5.729h2.873v-6.144c0-2.339-1.228-3.905-3.428-3.905-1.526 0-2.458.734-2.953 1.606a5.31 5.31 0 0 0 .079-.892v-.377h-2.874v9.712h2.874ZM149.949 21.304c2.735 0 4.499-1.546 4.697-3.567h-2.893c-.139.892-.892 1.387-1.804 1.387-1.228 0-2.12-.99-2.14-2.358h6.897v-.555c0-3.21-1.764-5.312-4.816-5.312-2.933 0-4.994 2.062-4.994 5.173 0 3.37 2.12 5.232 5.053 5.232Zm-2.16-6.421c.119-1.11.932-1.922 2.081-1.922 1.11 0 1.883.772 1.903 1.922h-3.984ZM160.876 21.304c3.013 0 4.658-1.645 4.975-4.201h-2.874c-.099 1.07-.713 1.982-2.001 1.982-1.309 0-2.2-1.21-2.2-2.993 0-1.942 1.03-2.933 2.259-2.933 1.209 0 1.803.872 1.883 1.882h2.873c-.218-2.358-1.823-4.142-4.776-4.142-2.874 0-5.153 1.903-5.153 5.193 0 3.25 1.923 5.212 5.014 5.212ZM172.067 21.146c.634 0 1.248-.1 1.526-.179v-2.18c-.218.04-.476.06-.694.06-1.05 0-1.427-.595-1.427-1.566v-3.805h2.339v-2.24h-2.339V7.788h-2.854v3.448h-2.1v2.24h2.1v4.201c0 2.3 1.15 3.469 3.449 3.469Z"
       fill="#fff"
     />
   </svg>
-`
+`,
 
-export const WALLET_CONNECT_ICON = svg`
+  WALLET_CONNECT_ICON: svg`
   <svg width="28" height="20" viewBox="0 0 28 20">
     <g clip-path="url(#a)">
       <path
@@ -40,9 +41,9 @@ export const WALLET_CONNECT_ICON = svg`
       <clipPath id="a"><path fill="#ffffff" d="M0 0h28v20H0z" /></clipPath>
     </defs>
   </svg>
-`
+`,
 
-export const WALLET_CONNECT_ICON_COLORED = svg`
+  WALLET_CONNECT_ICON_COLORED: svg`
   <svg width="96" height="96" fill="none">
     <path
       fill="#fff"
@@ -53,9 +54,9 @@ export const WALLET_CONNECT_ICON_COLORED = svg`
       d="M25.672 33.954c12.33-12.072 32.325-12.072 44.655 0l1.508 1.476a1.047 1.047 0 0 1 0 1.506l-5.157 5.048a.314.314 0 0 1-.434 0l-2.074-2.03c-8.932-8.746-23.409-8.746-32.34 0l-2.222 2.174a.314.314 0 0 1-.434 0l-5.157-5.048a1.047 1.047 0 0 1 0-1.506l1.655-1.62Zm55.319 10.44 4.59 4.494a1.047 1.047 0 0 1 0 1.506l-20.694 20.26a1.128 1.128 0 0 1-1.568 0l-14.686-14.38a.907.907 0 0 0-1.267 0L32.68 70.655a1.128 1.128 0 0 1-1.568 0L10.42 50.394a1.047 1.047 0 0 1 0-1.506l4.59-4.493a1.128 1.128 0 0 1 1.567 0l14.687 14.379a.907.907 0 0 0 1.266 0l-.35-.357.35.357 14.686-14.38a1.128 1.128 0 0 1 1.568 0l14.687 14.38a.907.907 0 0 0 1.267 0l14.686-14.38a1.128 1.128 0 0 1 1.568 0Z"
     />
   </svg>
-`
+`,
 
-export const BACK_ICON = svg`
+  BACK_ICON: svg`
   <svg width="10" height="18" viewBox="0 0 10 18">
     <path
       fill-rule="evenodd"
@@ -64,9 +65,9 @@ export const BACK_ICON = svg`
       fill="#fff"
     />
   </svg>
-`
+`,
 
-export const COPY_ICON = svg`
+  COPY_ICON: svg`
   <svg  width="24" height="24" fill="none">
     <path
       fill="#fff"
@@ -75,18 +76,18 @@ export const COPY_ICON = svg`
       clip-rule="evenodd"
     />
   </svg>
-`
+`,
 
-export const RETRY_ICON = svg`
+  RETRY_ICON: svg`
   <svg width="15" height="16" viewBox="0 0 15 16">
     <path
       d="M6.464 2.03A.75.75 0 0 0 5.403.97L2.08 4.293a1 1 0 0 0 0 1.414L5.403 9.03a.75.75 0 0 0 1.06-1.06L4.672 6.177a.25.25 0 0 1 .177-.427h2.085a4 4 0 1 1-3.93 4.746c-.077-.407-.405-.746-.82-.746-.414 0-.755.338-.7.748a5.501 5.501 0 1 0 5.45-6.248H4.848a.25.25 0 0 1-.177-.427L6.464 2.03Z"
       fill="#fff"
     />
   </svg>
-`
+`,
 
-export const DESKTOP_ICON = svg`
+  DESKTOP_ICON: svg`
   <svg width="16" height="16" viewBox="0 0 16 16">
     <path
       fill-rule="evenodd"
@@ -99,9 +100,9 @@ export const DESKTOP_ICON = svg`
       fill="#fff"
     />
   </svg>
-`
+`,
 
-export const MOBILE_ICON = svg`
+  MOBILE_ICON: svg`
   <svg width="16" height="16" viewBox="0 0 16 16">
     <path d="M6.75 5a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5Z" fill="#fff" />
     <path
@@ -111,27 +112,27 @@ export const MOBILE_ICON = svg`
       fill="#fff"
     />
   </svg>
-`
+`,
 
-export const ARROW_DOWN_ICON = svg`
+  ARROW_DOWN_ICON: svg`
   <svg width="14" height="14" viewBox="0 0 14 14">
     <path
       d="M2.28 7.47a.75.75 0 0 0-1.06 1.06l5.25 5.25a.75.75 0 0 0 1.06 0l5.25-5.25a.75.75 0 0 0-1.06-1.06l-3.544 3.543a.25.25 0 0 1-.426-.177V.75a.75.75 0 0 0-1.5 0v10.086a.25.25 0 0 1-.427.176L2.28 7.47Z"
       fill="#fff"
     />
   </svg>
-`
+`,
 
-export const ARROW_UP_RIGHT_ICON = svg`
+  ARROW_UP_RIGHT_ICON: svg`
   <svg width="15" height="14" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M4.5 1.75A.75.75 0 0 1 5.25 1H12a1.5 1.5 0 0 1 1.5 1.5v6.75a.75.75 0 0 1-1.5 0V4.164a.25.25 0 0 0-.427-.176L4.061 11.5A.75.75 0 0 1 3 10.44l7.513-7.513a.25.25 0 0 0-.177-.427H5.25a.75.75 0 0 1-.75-.75Z"
       fill="#fff"
     />
   </svg>
-`
+`,
 
-export const ARROW_RIGHT_ICON = svg`
+  ARROW_RIGHT_ICON: svg`
   <svg width="6" height="14" viewBox="0 0 6 14">
     <path
       fill-rule="evenodd"
@@ -140,9 +141,9 @@ export const ARROW_RIGHT_ICON = svg`
       fill="#fff"
     />
   </svg>
-`
+`,
 
-export const QRCODE_ICON = svg`
+  QRCODE_ICON: svg`
   <svg width="25" height="24" viewBox="0 0 25 24">
     <path
       d="M23.748 9a.748.748 0 0 0 .748-.752c-.018-2.596-.128-4.07-.784-5.22a6 6 0 0 0-2.24-2.24c-1.15-.656-2.624-.766-5.22-.784a.748.748 0 0 0-.752.748c0 .414.335.749.748.752 1.015.007 1.82.028 2.494.088.995.09 1.561.256 1.988.5.7.398 1.28.978 1.679 1.678.243.427.41.993.498 1.988.061.675.082 1.479.09 2.493a.753.753 0 0 0 .75.749ZM3.527.788C4.677.132 6.152.022 8.747.004A.748.748 0 0 1 9.5.752a.753.753 0 0 1-.749.752c-1.014.007-1.818.028-2.493.088-.995.09-1.561.256-1.988.5-.7.398-1.28.978-1.679 1.678-.243.427-.41.993-.499 1.988-.06.675-.081 1.479-.088 2.493A.753.753 0 0 1 1.252 9a.748.748 0 0 1-.748-.752c.018-2.596.128-4.07.784-5.22a6 6 0 0 1 2.24-2.24ZM1.252 15a.748.748 0 0 0-.748.752c.018 2.596.128 4.07.784 5.22a6 6 0 0 0 2.24 2.24c1.15.656 2.624.766 5.22.784a.748.748 0 0 0 .752-.748.753.753 0 0 0-.749-.752c-1.014-.007-1.818-.028-2.493-.089-.995-.089-1.561-.255-1.988-.498a4.5 4.5 0 0 1-1.679-1.68c-.243-.426-.41-.992-.499-1.987-.06-.675-.081-1.479-.088-2.493A.753.753 0 0 0 1.252 15ZM22.996 15.749a.753.753 0 0 1 .752-.749c.415 0 .751.338.748.752-.018 2.596-.128 4.07-.784 5.22a6 6 0 0 1-2.24 2.24c-1.15.656-2.624.766-5.22.784a.748.748 0 0 1-.752-.748c0-.414.335-.749.748-.752 1.015-.007 1.82-.028 2.494-.089.995-.089 1.561-.255 1.988-.498a4.5 4.5 0 0 0 1.679-1.68c.243-.426.41-.992.498-1.987.061-.675.082-1.479.09-2.493Z"
@@ -159,18 +160,18 @@ export const QRCODE_ICON = svg`
       fill="#fff"
     />
   </svg>
-`
+`,
 
-export const SCAN_ICON = svg`
+  SCAN_ICON: svg`
   <svg width="16" height="16" fill="none">
     <path
       fill="#fff"
       d="M10 15.216c0 .422.347.763.768.74 1.202-.064 2.025-.222 2.71-.613a5.001 5.001 0 0 0 1.865-1.866c.39-.684.549-1.507.613-2.709a.735.735 0 0 0-.74-.768.768.768 0 0 0-.76.732c-.009.157-.02.306-.032.447-.073.812-.206 1.244-.384 1.555-.31.545-.761.996-1.306 1.306-.311.178-.743.311-1.555.384-.141.013-.29.023-.447.032a.768.768 0 0 0-.732.76ZM10 .784c0 .407.325.737.732.76.157.009.306.02.447.032.812.073 1.244.206 1.555.384a3.5 3.5 0 0 1 1.306 1.306c.178.311.311.743.384 1.555.013.142.023.29.032.447a.768.768 0 0 0 .76.732.734.734 0 0 0 .74-.768c-.064-1.202-.222-2.025-.613-2.71A5 5 0 0 0 13.477.658c-.684-.39-1.507-.549-2.709-.613a.735.735 0 0 0-.768.74ZM5.232.044A.735.735 0 0 1 6 .784a.768.768 0 0 1-.732.76c-.157.009-.305.02-.447.032-.812.073-1.244.206-1.555.384A3.5 3.5 0 0 0 1.96 3.266c-.178.311-.311.743-.384 1.555-.013.142-.023.29-.032.447A.768.768 0 0 1 .784 6a.735.735 0 0 1-.74-.768c.064-1.202.222-2.025.613-2.71A5 5 0 0 1 2.523.658C3.207.267 4.03.108 5.233.044ZM5.268 14.456a.768.768 0 0 1 .732.76.734.734 0 0 1-.768.74c-1.202-.064-2.025-.222-2.71-.613a5 5 0 0 1-1.865-1.866c-.39-.684-.549-1.507-.613-2.709A.735.735 0 0 1 .784 10c.407 0 .737.325.76.732.009.157.02.306.032.447.073.812.206 1.244.384 1.555a3.5 3.5 0 0 0 1.306 1.306c.311.178.743.311 1.555.384.142.013.29.023.447.032Z"
     />
   </svg>
-`
+`,
 
-export const CHECKMARK_ICON = svg`
+  CHECKMARK_ICON: svg`
   <svg width="13" height="12" viewBox="0 0 13 12">
     <path
       fill-rule="evenodd"
@@ -179,9 +180,9 @@ export const CHECKMARK_ICON = svg`
       fill="#fff"
     />
   </svg>
-`
+`,
 
-export const HELP_ETH_IMG = svg`
+  HELP_ETH_IMG: svg`
   <svg width="60" height="60" fill="none" viewBox="0 0 60 60">
     <g clip-path="url(#j)">
       <rect width="60" height="60" rx="30" fill="#987DE8" />
@@ -221,9 +222,9 @@ export const HELP_ETH_IMG = svg`
       <clipPath id="j"><rect width="60" height="60" rx="30" fill="#fff" /></clipPath>
     </defs>
   </svg>
-`
+`,
 
-export const HELP_PAINTING_IMG = svg`
+  HELP_PAINTING_IMG: svg`
   <svg width="60" height="60" fill="none" viewBox="0 0 60 60">
     <g clip-path="url(#k)">
       <rect width="60" height="60" rx="3" fill="#C653C6" />
@@ -245,9 +246,9 @@ export const HELP_PAINTING_IMG = svg`
       <clipPath id="k"><rect width="60" height="60" rx="3" fill="#fff" /></clipPath>
     </defs>
   </svg>
-`
+`,
 
-export const HELP_CHART_IMG = svg`
+  HELP_CHART_IMG: svg`
   <svg width="60" height="60" fill="none" viewBox="0 0 60 60">
     <g clip-path="url(#l)">
       <path
@@ -287,9 +288,9 @@ export const HELP_CHART_IMG = svg`
       <clipPath id="l"><path fill="#fff" d="M0 0h60v60H0z" /></clipPath>
     </defs>
   </svg>
-`
+`,
 
-export const HELP_KEY_IMG = svg`
+  HELP_KEY_IMG: svg`
   <svg width="60" height="60" fill="none" viewBox="0 0 60 60">
     <g clip-path="url(#m)">
       <path
@@ -312,9 +313,9 @@ export const HELP_KEY_IMG = svg`
       <clipPath id="m"><path fill="#fff" d="M0 0h60v60H0z" /></clipPath>
     </defs>
   </svg>
-`
+`,
 
-export const HELP_USER_IMG = svg`
+  HELP_USER_IMG: svg`
   <svg width="60" height="60" fill="none" viewBox="0 0 60 60">
     <g clip-path="url(#n)">
       <rect width="60" height="60" fill="#00ACE6" rx="30" />
@@ -339,9 +340,9 @@ export const HELP_USER_IMG = svg`
       <clipPath id="n"><rect width="60" height="60" fill="#fff" rx="30" /></clipPath>
     </defs>
   </svg>
-`
+`,
 
-export const HELP_LOCK_IMG = svg`
+  HELP_LOCK_IMG: svg`
   <svg width="60" height="60" fill="none" viewBox="0 0 60 60">
     <rect width="60" height="60" fill="#C653C6" rx="3" />
     <path
@@ -360,9 +361,9 @@ export const HELP_LOCK_IMG = svg`
     />
     <rect class="help-img-highlight" width="59" height="59" x=".5" y=".5" rx="2.5" />
   </svg>
-`
+`,
 
-export const HELP_COMPAS_IMG = svg`
+  HELP_COMPAS_IMG: svg`
   <svg width="60" height="60" fill="none" viewBox="0 0 60 60">
     <rect width="60" height="60" fill="#1DC956" rx="30" />
     <circle cx="30" cy="29.999" r="3" fill="#fff" />
@@ -383,9 +384,9 @@ export const HELP_COMPAS_IMG = svg`
     <circle cx="30" cy="30" r="3" fill="#fff" transform="rotate(45 30 30)" />
     <rect class="help-img-highlight" width="59" height="59" x=".5" y=".5" rx="29.5" />
   </svg>
-`
+`,
 
-export const HELP_NOUN_IMG = svg`
+  HELP_NOUN_IMG: svg`
   <svg width="60" height="60" fill="none" viewBox="0 0 60 60">
     <rect width="60" height="60" fill="#794CFF" rx="3" />
     <path
@@ -401,9 +402,9 @@ export const HELP_NOUN_IMG = svg`
     <path fill="#fff" d="M12 30.5h4V37h-4v-6.5Z" />
     <rect class="help-img-highlight" width="59" height="59" x=".5" y=".5" rx="2.5" />
   </svg>
-`
+`,
 
-export const HELP_DAO_IMG = svg`
+  HELP_DAO_IMG: svg`
   <svg width="60" height="60" fill="none" viewBox="0 0 60 60">
     <g clip-path="url(#o)">
       <path
@@ -445,9 +446,9 @@ export const HELP_DAO_IMG = svg`
       <clipPath id="o"><path fill="#fff" d="M0 0h60v60H0z" /></clipPath>
     </defs>
   </svg>
-`
+`,
 
-export const SEARCH_ICON = svg`
+  SEARCH_ICON: svg`
   <svg width="20" height="21">
     <path
       fill-rule="evenodd"
@@ -456,9 +457,9 @@ export const SEARCH_ICON = svg`
       fill="#949E9E"
     />
   </svg>
-`
+`,
 
-export const NETWORK_POLYGON = svg`
+  NETWORK_POLYGON: svg`
   <svg width="54" height="59" fill="none">
     <defs>
       <clipPath id="network-polygon">
@@ -473,18 +474,18 @@ export const NETWORK_POLYGON = svg`
       stroke="#fff"
     />
   </svg>
-`
+`,
 
-export const HELP_ICON = svg`
+  HELP_ICON: svg`
   <svg width="11" height="17" viewBox="0 0 11 17">
     <path
       fill="#fff"
       d="M5.22 2.97c-1.07 0-2.25.843-2.25 2.25a.75.75 0 0 1-1.5 0c0-2.393 2.019-3.75 3.75-3.75 1.73 0 3.75 1.357 3.75 3.75 0 1.64-1.038 2.466-1.785 3.057-.802.635-1.215.984-1.215 1.693a.75.75 0 1 1-1.5 0c0-1.466.985-2.24 1.681-2.788l.103-.081C7.007 6.504 7.47 6.08 7.47 5.22c0-1.407-1.181-2.25-2.25-2.25ZM5.22 14.97a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5Z"
     />
   </svg>
-`
+`,
 
-export const WALLET_ICON = svg`
+  WALLET_ICON: svg`
   <svg width="15" height="14" fill="none" viewBox="0 0 15 14">
     <path
       fill="#fff"
@@ -493,9 +494,9 @@ export const WALLET_ICON = svg`
       clip-rule="evenodd"
     />
   </svg>
-`
+`,
 
-export const NETWORK_PLACEHOLDER = svg`
+  NETWORK_PLACEHOLDER: svg`
   <svg width="28" height="28" fill="none" viewBox="0 0 28 28">
     <mask
       id="p"
@@ -536,9 +537,9 @@ export const NETWORK_PLACEHOLDER = svg`
       />
     </g>
   </svg>
-`
+`,
 
-export const WALLET_PLACEHOLDER = svg`
+  WALLET_PLACEHOLDER: svg`
   <svg width="60" height="60" fill="none" viewBox="0 0 60 60">
     <g clip-path="url(#q)">
       <path
@@ -571,3 +572,4 @@ export const WALLET_PLACEHOLDER = svg`
     </defs>
   </svg>
 `
+}

@@ -2,7 +2,7 @@ import { ExplorerCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { PresetUtil } from '../../utils/PresetUtil'
-import { WALLET_PLACEHOLDER } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { global } from '../../utils/Theme'
 import { getCustomWallets, getWalletIcon } from '../../utils/UiHelpers'
 import styles from './styles.css'
@@ -40,7 +40,7 @@ export class W3mViewAllWalletsButton extends LitElement {
                 const optimisticId = PresetUtil.optimisticWalletId(wallet.id)
                 const src = getWalletIcon(optimisticId)
 
-                return src ? html`<img src=${src} />` : WALLET_PLACEHOLDER
+                return src ? html`<img src=${src} />` : SvgUtil.WALLET_PLACEHOLDER
               })
             : null}
         </div>

@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { PresetUtil } from '../../utils/PresetUtil'
-import { WALLET_PLACEHOLDER } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { global } from '../../utils/Theme'
 import { getWalletIcon } from '../../utils/UiHelpers'
 import styles from './styles.css'
@@ -27,7 +27,7 @@ export class W3mWalletImage extends LitElement {
               <img src=${src} alt=${this.id} />
             </div>
           `
-        : WALLET_PLACEHOLDER}
+        : SvgUtil.WALLET_PLACEHOLDER}
     `
   }
 }

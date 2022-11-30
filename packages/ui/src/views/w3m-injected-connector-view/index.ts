@@ -3,7 +3,7 @@ import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { PresetUtil } from '../../utils/PresetUtil'
-import { RETRY_ICON } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { color, global } from '../../utils/Theme'
 import styles from './styles.css'
 
@@ -65,7 +65,7 @@ export class W3mInjectedConnectorView extends LitElement {
           <w3m-button
             .onClick=${this.onConnect.bind(this)}
             .disabled=${!this.error}
-            .iconRight=${RETRY_ICON}
+            .iconRight=${SvgUtil.RETRY_ICON}
           >
             Try Again
           </w3m-button>

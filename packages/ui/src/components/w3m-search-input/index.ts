@@ -1,7 +1,7 @@
 import { CoreHelpers } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { SEARCH_ICON } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { global } from '../../utils/Theme'
 import styles from './styles.css'
 
@@ -18,7 +18,7 @@ export class W3mSearchInput extends LitElement {
     return html`
       <input type="text" @input=${this.onChange} placeholder=${placeholder} />
       <div class="w3m-placeholder">
-        ${SEARCH_ICON}
+        ${SvgUtil.SEARCH_ICON}
         <w3m-text color="secondary" variant="medium-thin">${placeholder}</w3m-text>
       </div>
     `

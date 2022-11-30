@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { NETWORK_POLYGON } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { global } from '../../utils/Theme'
 import styles from './styles.css'
 
@@ -16,7 +16,7 @@ export class W3mNetworkImage extends LitElement {
     return html`
       <div class="w3m-network-image">
         <img src=${this.src} />
-        ${NETWORK_POLYGON}
+        ${SvgUtil.NETWORK_POLYGON}
       </div>
     `
   }

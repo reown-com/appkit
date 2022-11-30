@@ -1,7 +1,7 @@
 import { ClientCtrl, CoreHelpers, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { ARROW_DOWN_ICON, QRCODE_ICON } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { global } from '../../utils/Theme'
 import { getErrorMessage } from '../../utils/UiHelpers'
 import styles from './styles.css'
@@ -62,7 +62,7 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
       </w3m-modal-content>
       <w3m-modal-footer>
         <div class="w3m-title">
-          ${QRCODE_ICON}
+          ${SvgUtil.QRCODE_ICON}
           <w3m-text variant="medium-normal">Scan with your phone</w3m-text>
         </div>
         <w3m-text variant="small-thin" align="center" color="secondary" class="w3m-info-text">
@@ -70,7 +70,7 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
         </w3m-text>
         <w3m-button
           variant="ghost"
-          .iconLeft=${ARROW_DOWN_ICON}
+          .iconLeft=${SvgUtil.ARROW_DOWN_ICON}
           .onClick=${this.onInstall.bind(this)}
         >
           Install Extension

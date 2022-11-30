@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { NETWORK_PLACEHOLDER } from '../../utils/Svgs'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { global } from '../../utils/Theme'
 import { getChainIcon } from '../../utils/UiHelpers'
 import styles from './styles.css'
@@ -20,7 +20,9 @@ export class W3mNetworkButton extends LitElement {
 
     return html`
       <button class="w3m-network-button" @click=${this.onClick}>
-        ${src ? html`<w3m-network-image src=${src}></w3m-network-image>` : NETWORK_PLACEHOLDER}
+        ${src
+          ? html`<w3m-network-image src=${src}></w3m-network-image>`
+          : SvgUtil.NETWORK_PLACEHOLDER}
         <w3m-text variant="xsmall-normal"> ${this.name} </w3m-text>
       </button>
     `
