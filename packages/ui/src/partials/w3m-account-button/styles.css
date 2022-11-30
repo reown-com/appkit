@@ -26,12 +26,6 @@ button:disabled {
   color: var(--color-fg-3);
 }
 
-svg {
+w3m-avatar {
   margin-right: 6px;
-  border-radius: 50%;
-  position: relative;
-}
-
-svg circle {
-  stroke: var(--color-ovr-thin);
 }
