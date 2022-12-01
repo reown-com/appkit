@@ -129,7 +129,7 @@ export class W3mModal extends LitElement {
   private async onOpenModalEvent() {
     await this.preloadModalData()
     this.toggleBodyScroll(false)
-    const delay = 0.3
+    const delay = 0.2
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay })
     animate(
       this.containerEl,

@@ -1,3 +1,4 @@
+import './w3m-account-view'
 import './w3m-coinbase-extension-connector-view'
 import './w3m-coinbase-mobile-connector-view'
 import './w3m-connect-wallet-view'

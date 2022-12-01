@@ -1,4 +1,6 @@
 import './w3m-account-button'
+import './w3m-address-text'
+import './w3m-avatar'
 import './w3m-connect-button'
 import './w3m-core-button'
 import './w3m-desktop-wallet-selection'
