@@ -1,4 +1,4 @@
-import { ClientCtrl } from '@web3modal/core'
+import { AccountCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -15,18 +15,18 @@ export class W3mAddressText extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.address = ClientCtrl.client().getAccount().address
-    this.accountUnsub = ClientCtrl.client().watchAccount(accountState => {
-      this.address = accountState.address
+    this.address = AccountCtrl.state.address
+    this.unsubscribeAccount = AccountCtrl.subscribe(({ address }) => {
+      this.address = address
     })
   }
 
   public disconnectedCallback() {
-    this.accountUnsub?.()
+    this.unsubscribeAccount?.()
   }
 
   // -- private ------------------------------------------------------ //
-  private readonly accountUnsub?: () => void = undefined
+  private readonly unsubscribeAccount?: () => void = undefined
 
   // -- render ------------------------------------------------------- //
   protected render() {

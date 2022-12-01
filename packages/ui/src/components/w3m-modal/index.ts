@@ -1,4 +1,6 @@
 import {
+  AccountCtrl,
+  ClientCtrl,
   ConfigCtrl,
   CoreUtil,
   ExplorerCtrl,
@@ -34,17 +36,24 @@ export class W3mModal extends LitElement {
         this.onCloseModalEvent()
       }
     })
+    AccountCtrl.get()
+    this.unwatchAccount = ClientCtrl.client().watchAccount(account => {
+      AccountCtrl.setAddress(account.address)
+      AccountCtrl.setIsConnected(account.isConnected)
+    })
     this.preloadModalData()
   }
 
   public disconnectedCallback() {
     this.unsubscribeModal?.()
     this.unsubscribeConfig?.()
+    this.unwatchAccount?.()
   }
 
   // -- private ------------------------------------------------------ //
   private readonly unsubscribeModal?: () => void = undefined
   private readonly unsubscribeConfig?: () => void = undefined
+  private readonly unwatchAccount?: () => void = undefined
 
   private get overlayEl() {
     return UiUtil.getShadowRootElement(this, '.w3m-modal-overlay')

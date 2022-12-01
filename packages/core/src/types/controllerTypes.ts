@@ -163,3 +163,11 @@ export interface ClientCtrlState {
   initialized: boolean
   ethereumClient?: EthereumClient
 }
+
+// -- AccountCtrl ------------------------------------------ //
+export interface AccountCtrlState {
+  isConnected: boolean
+  address?: string
+  balance?: string
+  balanceSymbol?: string
+}

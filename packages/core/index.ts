@@ -1,3 +1,4 @@
+export { AccountCtrl } from './src/controllers/AccountCtrl'
 export { ClientCtrl } from './src/controllers/ClientCtrl'
 export { ConfigCtrl } from './src/controllers/ConfigCtrl'
 export { ExplorerCtrl } from './src/controllers/ExplorerCtrl'

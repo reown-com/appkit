@@ -1,4 +1,4 @@
-import { ClientCtrl } from '@web3modal/core'
+import { AccountCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -13,27 +13,27 @@ export class W3mCoreButton extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.isConnected = ClientCtrl.client().getAccount().isConnected
-    this.accountUnsub = ClientCtrl.client().watchAccount(accountState => {
-      this.isConnected = accountState.isConnected
+    this.isConnected = AccountCtrl.state.isConnected
+    this.unsubscribeAccount = AccountCtrl.subscribe(({ isConnected }) => {
+      this.isConnected = isConnected
     })
   }
 
   public disconnectedCallback() {
-    this.accountUnsub?.()
+    this.unsubscribeAccount?.()
   }
 
   // -- private ------------------------------------------------------ //
-  private readonly accountUnsub?: () => void = undefined
+  private readonly unsubscribeAccount?: () => void = undefined
 
   // -- render ------------------------------------------------------- //
   protected render() {
     return this.isConnected
       ? html`<w3m-account-button></w3m-account-button>`
-      : html`<w3m-connect-button
-          label=${ifDefined(this.label)}
-          icon=${ifDefined(this.icon)}
-        ></w3m-connect-button>`
+      : html`
+          <w3m-connect-button label=${ifDefined(this.label)} icon=${ifDefined(this.icon)}>
+          </w3m-connect-button>
+        `
   }
 }
 

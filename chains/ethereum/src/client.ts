@@ -1,5 +1,5 @@
 import type { Chain, Client, Connector } from '@wagmi/core'
-import { connect, disconnect, getAccount, watchAccount } from '@wagmi/core'
+import { connect, disconnect, fetchBalance, getAccount, watchAccount } from '@wagmi/core'
 import type { ConnectorId } from './types'
 
 export class EthereumClient {
@@ -99,4 +99,6 @@ export class EthereumClient {
   public getAccount = getAccount
 
   public watchAccount = watchAccount
+
+  public fetchBalance = fetchBalance
 }
