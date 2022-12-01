@@ -102,7 +102,7 @@ export const UiUtil = {
       if (universal) {
         href = CoreUtil.formatUniversalUrl(universal, uri, name)
       } else if (native) {
-        CoreUtil.formatNativeUrl(native, uri, name)
+        href = CoreUtil.formatNativeUrl(native, uri, name)
       }
       CoreUtil.openHref(href)
     }
