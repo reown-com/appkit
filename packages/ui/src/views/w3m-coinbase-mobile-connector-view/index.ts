@@ -68,11 +68,7 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
         <w3m-text variant="small-thin" align="center" color="secondary" class="w3m-info-text">
           Open Coinbase Wallet on your phone and scan the code to connect
         </w3m-text>
-        <w3m-button
-          variant="ghost"
-          .iconLeft=${SvgUtil.ARROW_DOWN_ICON}
-          .onClick=${this.onInstall.bind(this)}
-        >
+        <w3m-button .iconLeft=${SvgUtil.ARROW_DOWN_ICON} .onClick=${this.onInstall.bind(this)}>
           Install Extension
         </w3m-button>
       </w3m-modal-footer>

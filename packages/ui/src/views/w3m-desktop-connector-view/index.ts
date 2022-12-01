@@ -87,7 +87,6 @@ export class W3mDesktopConnectorView extends LitElement {
             ${universal
               ? html`
                   <w3m-button
-                    variant="ghost"
                     .onClick=${() => this.onInstall(universal)}
                     .iconLeft=${SvgUtil.ARROW_UP_RIGHT_ICON}
                   >
@@ -95,11 +94,7 @@ export class W3mDesktopConnectorView extends LitElement {
                   </w3m-button>
                 `
               : html`
-                  <w3m-button
-                    .onClick=${this.onMobile}
-                    .iconLeft=${SvgUtil.MOBILE_ICON}
-                    variant="ghost"
-                  >
+                  <w3m-button .onClick=${this.onMobile} .iconLeft=${SvgUtil.MOBILE_ICON}>
                     Connect with Mobile
                   </w3m-button>
                 `}

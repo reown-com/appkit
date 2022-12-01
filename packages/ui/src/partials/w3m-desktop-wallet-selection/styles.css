@@ -8,16 +8,17 @@
 .w3m-desktop-title {
   display: flex;
   align-items: center;
-  margin-top: -8px;
 }
 
 .w3m-mobile-title {
   justify-content: space-between;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
+  margin-top: -10px;
 }
 
 .w3m-desktop-title {
   margin-bottom: 10px;
+  padding: 0 10px;
 }
 
 .w3m-subtitle {

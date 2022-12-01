@@ -41,7 +41,6 @@ export class W3mGetWalletView extends LitElement {
                       <w3m-text variant="medium-normal">${name}</w3m-text>
                       <w3m-button
                         .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
-                        variant="ghost"
                         .onClick=${() => this.onGet(homepage)}
                       >
                         Get
@@ -61,7 +60,6 @@ export class W3mGetWalletView extends LitElement {
                       <w3m-text variant="medium-normal">${name}</w3m-text>
                       <w3m-button
                         .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
-                        variant="ghost"
                         .onClick=${() => this.onGet(links.universal)}
                       >
                         Get
@@ -72,20 +70,16 @@ export class W3mGetWalletView extends LitElement {
             )
           : null}
       </w3m-modal-content>
-      <w3m-modal-footer>
-        <div class="w3m-footer-actions">
-          <w3m-text variant="medium-normal">Not what you're looking for?</w3m-text>
-          <w3m-text variant="small-thin" align="center" color="secondary" class="w3m-info-text">
-            With hundreds of wallets out there, there's something for everyone
-          </w3m-text>
-          <w3m-button
-            .onClick=${this.onExplore.bind(this)}
-            .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}
-          >
-            Explore Wallets
-          </w3m-button>
-        </div>
-      </w3m-modal-footer>
+
+      <div class="w3m-footer-actions">
+        <w3m-text variant="medium-normal">Not what you're looking for?</w3m-text>
+        <w3m-text variant="small-thin" align="center" color="secondary" class="w3m-info-text">
+          With hundreds of wallets out there, there's something for everyone
+        </w3m-text>
+        <w3m-button .onClick=${this.onExplore.bind(this)} .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}>
+          Explore Wallets
+        </w3m-button>
+      </div>
     `
   }
 }

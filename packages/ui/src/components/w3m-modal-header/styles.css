@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 18px;
+  padding: 18px 20px;
   position: relative;
   border-bottom: 1px solid var(--color-bg-2);
 }
@@ -10,7 +10,7 @@
 .w3m-modal-header button {
   background-color: transparent;
   padding: 13px 17px;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.2s ease;
 }
 
 .w3m-modal-header button:hover {

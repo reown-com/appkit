@@ -135,7 +135,7 @@ export class W3mDesktopWalletSelection extends LitElement {
 
           <div class="w3m-subtitle">
             ${SvgUtil.SCAN_ICON}
-            <w3m-text variant="small-normal" color="tertiary">Scan with your wallet</w3m-text>
+            <w3m-text variant="small-normal" color="secondary">Scan with your wallet</w3m-text>
           </div>
         </div>
         <w3m-walletconnect-qr></w3m-walletconnect-qr>

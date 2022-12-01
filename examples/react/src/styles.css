@@ -22,7 +22,7 @@ button {
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.3);
   cursor: pointer;
-  transition: 0.2s all ease-in-out;
+  transition: 0.2s all ease;
 }
 
 button:hover {
@@ -37,7 +37,7 @@ select {
   color: black;
   border: 1px solid rgba(0, 0, 0, 1);
   cursor: pointer;
-  transition: 0.2s all ease-in-out;
+  transition: 0.2s all ease;
 }
 
 h2 {

@@ -54,21 +54,19 @@ export class W3mHelpView extends LitElement {
             With your wallet, you can explore and interact with DeFi, NFTs, DAOs, and much more.
           </w3m-text>
         </div>
-      </w3m-modal-content>
-      <w3m-modal-footer>
+
         <div class="w3m-footer-actions">
           <w3m-button .onClick=${this.onGet.bind(this)} .iconLeft=${SvgUtil.WALLET_ICON}>
             Get a Wallet
           </w3m-button>
           <w3m-button
             .onClick=${this.onLearnMore.bind(this)}
-            variant="ghost"
             .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}
           >
             Learn More
           </w3m-button>
         </div>
-      </w3m-modal-footer>
+      </w3m-modal-content>
     `
   }
 }

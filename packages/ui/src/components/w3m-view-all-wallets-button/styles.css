@@ -2,6 +2,9 @@
   display: flex;
   flex-direction: column;
   background-color: transparent;
+  padding: 5px 10px;
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
 }
 
 .w3m-icons {
@@ -14,14 +17,12 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 5px;
-  transition: all 0.2s ease-in-out;
   background-color: var(--color-bg-accent);
   box-shadow: inset 0 0 0 1px var(--color-ovr-thin);
 }
 
-.w3m-button:hover .w3m-icons {
-  transform: translateY(-2px);
-  filter: brightness(105%);
+.w3m-button:hover {
+  background-color: var(--color-ovr-thin);
 }
 
 .w3m-icons img {

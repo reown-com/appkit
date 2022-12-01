@@ -79,7 +79,7 @@ export class W3mMetamaskConnectorView extends LitElement {
         <w3m-button .onClick=${this.onInstall.bind(this)} .iconLeft=${SvgUtil.ARROW_DOWN_ICON}>
           Install Extension
         </w3m-button>
-        <w3m-button .onClick=${this.onMobile} .iconLeft=${SvgUtil.MOBILE_ICON} variant="ghost">
+        <w3m-button .onClick=${this.onMobile} .iconLeft=${SvgUtil.MOBILE_ICON}>
           MetaMask Mobile
         </w3m-button>
       </div>

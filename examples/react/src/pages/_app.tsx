@@ -2,6 +2,7 @@ import { EthereumClient, modalConnectors, walletConnectProvider } from '@web3mod
 import { Web3Modal } from '@web3modal/react'
 import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import '../styles.css'
 
@@ -27,12 +28,19 @@ export const ethereumClient = new EthereumClient(wagmiClient, chains)
 // 4. Wrap your app with WagmiProvider and add <Web3Modal /> compoennt
 export default function App({ Component, pageProps }: AppProps) {
   const { pathname } = useRouter()
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    setReady(true)
+  }, [])
 
   return (
     <>
-      <WagmiConfig client={wagmiClient}>
-        <Component {...pageProps} />
-      </WagmiConfig>
+      {ready ? (
+        <WagmiConfig client={wagmiClient}>
+          <Component {...pageProps} />
+        </WagmiConfig>
+      ) : null}
 
       {/* Demo purposes only, if custom path is set, we initialize different Web3Modal instance */}
       {pathname === '/custom' ? null : (

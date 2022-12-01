@@ -17,9 +17,9 @@ export class W3mModalHeader extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private backBtnTemplate() {
-    return html`<button class="w3m-back-btn" @click=${RouterCtrl.goBack}>
-      ${SvgUtil.BACK_ICON}
-    </button>`
+    return html`
+      <button class="w3m-back-btn" @click=${RouterCtrl.goBack}>${SvgUtil.BACK_ICON}</button>
+    `
   }
 
   private actionBtnTemplate() {

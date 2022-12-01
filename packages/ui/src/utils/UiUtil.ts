@@ -22,21 +22,6 @@ export const UiUtil = {
     return el
   },
 
-  getConditionalValue<T extends string>(value: T | T[], condition: boolean[] | boolean) {
-    if (typeof value === 'string' && typeof condition === 'boolean' && condition) {
-      return value
-    } else if (Array.isArray(value) && Array.isArray(condition)) {
-      const index = condition.findIndex(c => c)
-      if (index < 0) {
-        throw new Error('No matching value')
-      }
-
-      return value[index]
-    }
-
-    throw new Error('Invalid useConditionalClass arguments')
-  },
-
   getWalletIcon(id: string) {
     const { fallback, presets } = PresetUtil.walletExplorerImage()
     const imageId = presets[id]

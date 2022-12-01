@@ -201,6 +201,7 @@ export const ThemeUtil = {
         '--color-ovr-thin': ThemeUtil.color().overlay.thin,
         '--color-ovr-thick': ThemeUtil.color().overlay.thick,
         '--color-err': ThemeUtil.color().error,
+        '--color-success': themeColors().green.light.foreground,
         '--gradient-1': ThemeUtil.color().gradient[1],
         '--gradient-2': ThemeUtil.color().gradient[2],
         '--gradient-3': ThemeUtil.color().gradient[3],
@@ -238,7 +239,7 @@ export const ThemeUtil = {
       position: absolute;
       inset: 0;
       background-color: transparent;
-      transition: background-color, 0.2s ease-in-out;
+      transition: background-color, 0.2s ease;
     }
 
     button:disabled {

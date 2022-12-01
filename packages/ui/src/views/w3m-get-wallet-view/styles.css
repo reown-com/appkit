@@ -4,24 +4,24 @@
 }
 
 .w3m-wallet-item {
-  margin: 0 -18px 0 0;
-  padding-right: 18px;
+  margin: 0 -20px 0 0;
+  padding-right: 20px;
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--color-bg-2);
 }
 
 .w3m-wallet-item:last-child {
-  margin-bottom: -18px;
+  margin-bottom: -20px;
   border-bottom: none;
 }
 
 .w3m-wallet-item:first-child {
-  margin-top: -18px;
+  margin-top: -20px;
 }
 
 .w3m-wallet-content {
-  margin-left: 18px;
+  margin-left: 20px;
   height: 60px;
   display: flex;
   flex: 1;
@@ -33,6 +33,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 20px 0;
+  border-top: 1px solid var(--color-bg-2);
 }
 
 w3m-wallet-image {

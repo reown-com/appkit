@@ -2,7 +2,7 @@
   background-color: transparent;
   padding: 5px;
   border-radius: 12px;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease;
   margin: 10px 0;
   display: flex;
   flex-direction: column;
@@ -28,8 +28,7 @@ svg {
 }
 
 .w3m-network-button:hover {
-  background-color: var(--color-bg-accent);
-  box-shadow: inset 0 0 0 1px var(--color-ovr-thin);
+  background-color: var(--color-ovr-thin);
 }
 
 #network-placeholder-fill {
