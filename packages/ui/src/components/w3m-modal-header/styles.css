@@ -9,12 +9,13 @@
 
 .w3m-modal-header button {
   background-color: transparent;
-  padding: 13px 17px;
+  padding: 15px 20px;
   transition: opacity 0.2s ease;
 }
-
-.w3m-modal-header button:hover {
-  opacity: 0.5;
+@media (hover: hover) {
+  .w3m-modal-header button:hover {
+    opacity: 0.5;
+  }
 }
 
 .w3m-back-btn {

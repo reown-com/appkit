@@ -194,7 +194,6 @@ export const ThemeUtil = {
         '--color-fg-1': ThemeUtil.color().foreground[1],
         '--color-fg-2': ThemeUtil.color().foreground[2],
         '--color-fg-3': ThemeUtil.color().foreground[3],
-        '--color-bg-accent': ThemeUtil.color().background.accent,
         '--color-bg-1': ThemeUtil.color().background[1],
         '--color-bg-2': ThemeUtil.color().background[2],
         '--color-bg-3': ThemeUtil.color().background[3],

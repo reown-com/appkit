@@ -1,6 +1,6 @@
 .w3m-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  margin: -15px;
+  margin: -5px -15px;
   justify-items: center;
 }

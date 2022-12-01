@@ -1,15 +1,14 @@
 .w3m-network-button {
   background-color: transparent;
   padding: 5px;
-  border-radius: 12px;
+  border-radius: 10px;
   transition: all 0.2s ease;
-  margin: 10px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 88px;
-  height: 88px;
+  width: 80px;
+  height: 90px;
 }
 
 w3m-text {

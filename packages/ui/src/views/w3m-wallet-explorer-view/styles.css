@@ -37,6 +37,7 @@ w3m-modal-content::-webkit-scrollbar {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   justify-items: stretch;
+  margin: -10px;
 }
 
 .w3m-placeholder-block {

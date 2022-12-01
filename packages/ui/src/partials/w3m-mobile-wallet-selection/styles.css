@@ -1,7 +1,7 @@
 .w3m-view-row {
   display: flex;
-  width: 100%;
   justify-content: space-between;
+  margin: 0 -10px;
 }
 
 .w3m-view-row:first-child {

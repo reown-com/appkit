@@ -30,10 +30,6 @@ button:disabled {
   padding: 0 15px;
 }
 
-.w3m-button-loading:disabled {
-  background-color: var(--color-bg-accent);
-}
-
 svg {
   width: 28px;
   height: 20px;
