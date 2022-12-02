@@ -149,7 +149,7 @@ export class W3mDesktopWalletSelection extends LitElement {
                 <w3m-text variant="small-normal" color="accent">Desktop</w3m-text>
               </div>
 
-              <div class="w3m-view-row">
+              <div class="w3m-grid">
                 ${wallets}
                 ${isViewAll
                   ? html`<w3m-view-all-wallets-button></w3m-view-all-wallets-button>`

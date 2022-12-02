@@ -10,10 +10,10 @@
     "@web3modal/ethereum": "2.0.0-beta.7",
     "@web3modal/react": "2.0.0-beta.7",
     "ethers": "5.7.2",
-    "next": "13.0.5",
+    "next": "13.0.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "wagmi": "0.8.8"
+    "wagmi": "0.8.9"
   },
   "devDependencies": {
     "@types/node": "18.11.10",

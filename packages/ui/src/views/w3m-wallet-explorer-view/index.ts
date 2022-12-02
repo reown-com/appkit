@@ -136,7 +136,7 @@ export class W3mWalletExplorerView extends LitElement {
       </w3m-modal-header>
 
       <w3m-modal-content class=${classMap(classes)}>
-        <div class="w3m-content">
+        <div class="w3m-grid">
           ${listings.map(
             listing => html`
               <w3m-wallet-button

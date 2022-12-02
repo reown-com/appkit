@@ -139,17 +139,17 @@ export class W3mMobileWalletSelection extends LitElement {
       ${isMobileWallets
         ? html`
             <w3m-modal-content>
-              <div class="w3m-view-row">${row1}</div>
-              ${row2.length
-                ? html`
-                    <div class="w3m-view-row">
+              <div class="w3m-grid">
+                ${row1}
+                ${row2.length
+                  ? html`
                       ${row2}
                       ${isViewAll
                         ? html`<w3m-view-all-wallets-button></w3m-view-all-wallets-button>`
                         : null}
-                    </div>
-                  `
-                : null}
+                    `
+                  : null}
+              </div>
             </w3m-modal-content>
           `
         : null}

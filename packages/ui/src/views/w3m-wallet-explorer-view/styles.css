@@ -1,10 +1,17 @@
 w3m-modal-content {
-  display: flex;
   height: 55vh;
+  display: block;
   overflow: scroll;
   scrollbar-width: none;
   position: relative;
   margin-top: 1px;
+}
+
+.w3m-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 80px);
+  justify-content: space-between;
+  margin: -15px -10px;
 }
 
 w3m-modal-content::before,
@@ -31,13 +38,6 @@ w3m-modal-content::after {
 
 w3m-modal-content::-webkit-scrollbar {
   display: none;
-}
-
-.w3m-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  justify-items: stretch;
-  margin: -10px;
 }
 
 .w3m-placeholder-block {
