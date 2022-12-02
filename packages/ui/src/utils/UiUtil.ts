@@ -19,7 +19,7 @@ export const UiUtil = {
       throw new Error(`${selector} not found`)
     }
 
-    return el
+    return el as HTMLElement
   },
 
   getWalletIcon(id: string) {

@@ -19,6 +19,7 @@
   position: relative;
   max-width: 360px;
   width: 100%;
+  outline: none;
 }
 
 .w3m-card {

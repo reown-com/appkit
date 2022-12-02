@@ -151,6 +151,7 @@ export class W3mModal extends LitElement {
     )
     document.addEventListener('keydown', this.onKeyDown)
     this.open = true
+    this.containerEl.focus()
   }
 
   private async onCloseModalEvent() {
@@ -191,7 +192,7 @@ export class W3mModal extends LitElement {
         role="alertdialog"
         aria-modal="true"
       >
-        <div class="w3m-container">
+        <div class="w3m-container" tabindex="0">
           ${this.open
             ? html`
                 <w3m-modal-backcard></w3m-modal-backcard>
