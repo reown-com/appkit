@@ -126,7 +126,7 @@ export class W3mWalletExplorerView extends LitElement {
     const isEmpty = !this.loading && !listings.length
     const classes = {
       'w3m-loading': this.loading && !listings.length,
-      'w3m-end-reached': this.endReached,
+      'w3m-end-reached': this.endReached || !this.loading,
       'w3m-empty': isEmpty
     }
 
@@ -152,7 +152,8 @@ export class W3mWalletExplorerView extends LitElement {
         <div class="w3m-placeholder-block">
           ${isEmpty
             ? html`<w3m-text variant="large-bold" color="secondary">No results found</w3m-text>`
-            : html`<w3m-spinner></w3m-spinner>`}
+            : null}
+          ${!isEmpty && this.loading ? html`<w3m-spinner></w3m-spinner>` : null}
         </div>
       </w3m-modal-content>
     `
