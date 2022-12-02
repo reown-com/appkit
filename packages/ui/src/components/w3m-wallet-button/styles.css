@@ -1,5 +1,4 @@
 button {
-  background-color: transparent;
   transition: all 0.2s ease;
   width: 100%;
   height: 100%;
@@ -8,11 +7,6 @@ button {
 
 button:hover {
   background-color: var(--color-overlay);
-}
-
-button:active {
-  transition: all 0.05s ease;
-  transform: scale(0.9);
 }
 
 button > div {

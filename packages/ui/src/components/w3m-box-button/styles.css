@@ -4,8 +4,8 @@ button {
   flex-direction: column;
   transition: background-color 0.2s ease;
   justify-content: center;
-  background-color: transparent;
-  padding: 5px 20px;
+  padding: 5px;
+  width: 100px;
 }
 
 button:hover {

@@ -8,7 +8,6 @@ header {
 }
 
 header button {
-  background-color: transparent;
   padding: 15px 20px;
   transition: opacity 0.2s ease;
 }

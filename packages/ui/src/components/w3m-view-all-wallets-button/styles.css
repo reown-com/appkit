@@ -1,7 +1,6 @@
 .w3m-button {
   display: flex;
   flex-direction: column;
-  background-color: transparent;
   padding: 5px 10px;
   border-radius: 10px;
   transition: background-color 0.2s ease;

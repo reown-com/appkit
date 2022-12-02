@@ -35,9 +35,10 @@ export class W3mAccountView extends LitElement {
       </w3m-modal-content>
 
       <w3m-modal-footer>
-        <div class="w3m-footer-actions">
+        <div class="w3m-footer">
           <w3m-box-button label="Disconnect" .onClick=${this.onDisconnect}></w3m-box-button>
           <w3m-box-button label="Copy Address" .onClick=${this.onCopyAddress}></w3m-box-button>
+          <w3m-box-button label="Disconnect" .onClick=${this.onDisconnect}></w3m-box-button>
         </div>
       </w3m-modal-footer>
     `

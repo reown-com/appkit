@@ -142,10 +142,10 @@ export class W3mModal extends LitElement {
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay })
     animate(
       this.containerEl,
-      UiUtil.isMobileAnimation() ? { y: ['50vh', 0] } : { scale: [0.98, 1] },
+      UiUtil.isMobileAnimation() ? { y: ['200vh', 0] } : { scale: [0.98, 1] },
       {
         scale: { easing: spring({ velocity: 0.4 }) },
-        y: { easing: spring({ mass: 0.5 }) },
+        y: { easing: spring({ mass: 0.4 }) },
         delay
       }
     )

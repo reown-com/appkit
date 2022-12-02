@@ -224,13 +224,13 @@ export const ThemeUtil = {
       align-items: center;
       position: relative;
       border: none;
+      background-color: transparent;
     }
 
     button::after {
       content: '';
       position: absolute;
       inset: 0;
-      background-color: transparent;
       transition: background-color, 0.2s ease;
     }
 
