@@ -1,6 +1,9 @@
-w3m-modal-footer {
+.w3m-footer {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 10px 0;
 }
 
 .w3m-qr-container {

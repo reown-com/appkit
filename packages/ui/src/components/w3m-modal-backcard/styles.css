@@ -1,5 +1,5 @@
-.w3m-gradient-canvas,
-.w3m-modal-highlight,
+.w3m-canvas,
+.w3m-highlight,
 .w3m-gradient-placeholder,
 #w3m-transparent-noise,
 .w3m-color-placeholder {
@@ -26,17 +26,17 @@
   background-color: var(--color-fg-accent);
 }
 
-.w3m-modal-highlight {
+.w3m-highlight {
   border: 1px solid var(--color-overlay);
 }
 
-.w3m-gradient-canvas {
+.w3m-canvas {
   opacity: 0;
   transition: opacity 2s ease;
   box-shadow: 0px 8px 28px -6px rgba(10, 16, 31, 0.12), 0px 18px 88px -4px rgba(10, 16, 31, 0.14);
 }
 
-.w3m-gradient-canvas-visible {
+.w3m-canvas-visible {
   opacity: 1;
 }
 
@@ -45,7 +45,7 @@
   opacity: 0.35;
 }
 
-.w3m-modal-toolbar {
+.w3m-toolbar {
   height: 28px;
   display: flex;
   position: relative;
@@ -54,8 +54,8 @@
   align-items: center;
 }
 
-.w3m-modal-toolbar svg,
-.w3m-modal-toolbar img {
+.w3m-toolbar svg,
+.w3m-toolbar img {
   height: 28px;
   object-position: left center;
   object-fit: contain;
@@ -65,7 +65,7 @@
   fill: var(--color-fg-inverse);
 }
 
-.w3m-modal-action-btn {
+.w3m-action-btn {
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -80,11 +80,11 @@
     0px 4px 4px -2px rgba(0, 0, 0, 0.08);
 }
 
-.w3m-modal-action-btn:hover {
+.w3m-action-btn:hover {
   background-color: var(--color-bg-2);
 }
 
-.w3m-modal-action-btn svg {
+.w3m-action-btn svg {
   display: block;
   object-position: center;
 }

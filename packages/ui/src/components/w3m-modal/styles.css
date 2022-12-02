@@ -1,4 +1,4 @@
-.w3m-modal-overlay {
+.w3m-overlay {
   inset: 0px;
   position: fixed;
   z-index: 10001;
@@ -11,17 +11,17 @@
   pointer-events: none;
 }
 
-.w3m-modal-open {
+.w3m-open {
   pointer-events: auto;
 }
 
-.w3m-modal-container {
+.w3m-container {
   position: relative;
   max-width: 360px;
   width: 100%;
 }
 
-.w3m-modal-card {
+.w3m-card {
   width: 100%;
   position: relative;
   transform: translateY(5px);
@@ -34,30 +34,30 @@
 }
 
 @media (max-width: 600px) {
-  .w3m-modal-container {
+  .w3m-container {
     max-width: 440px;
   }
 
-  .w3m-modal-card {
+  .w3m-card {
     border-radius: 40px 40px 0 0;
   }
 
-  .w3m-modal-overlay {
+  .w3m-overlay {
     align-items: flex-end;
   }
 }
 
 @media (max-width: 600px) {
-  .w3m-modal-container {
+  .w3m-container {
     max-width: 440px;
   }
 
-  .w3m-modal-card {
+  .w3m-card {
     transform: translateY(5px);
     border-radius: 40px 40px 0 0;
   }
 
-  .w3m-modal-overlay {
+  .w3m-overlay {
     align-items: flex-end;
   }
 }

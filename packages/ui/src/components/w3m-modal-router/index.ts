@@ -52,11 +52,11 @@ export class W3mModalRouter extends LitElement {
   private resizeObserver?: ResizeObserver = undefined
 
   private get routerEl() {
-    return UiUtil.getShadowRootElement(this, '.w3m-modal-router')
+    return UiUtil.getShadowRootElement(this, '.w3m-router')
   }
 
   private get contentEl() {
-    return UiUtil.getShadowRootElement(this, '.w3m-modal-router-content')
+    return UiUtil.getShadowRootElement(this, '.w3m-content')
   }
 
   private viewTemplate() {
@@ -99,8 +99,8 @@ export class W3mModalRouter extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    return html`<div class="w3m-modal-router">
-      <div class="w3m-modal-router-content">${this.viewTemplate()}</div>
+    return html`<div class="w3m-router">
+      <div class="w3m-content">${this.viewTemplate()}</div>
     </div>`
   }
 }

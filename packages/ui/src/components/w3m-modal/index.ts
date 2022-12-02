@@ -56,11 +56,11 @@ export class W3mModal extends LitElement {
   private readonly unwatchAccount?: () => void = undefined
 
   private get overlayEl() {
-    return UiUtil.getShadowRootElement(this, '.w3m-modal-overlay')
+    return UiUtil.getShadowRootElement(this, '.w3m-overlay')
   }
 
   private get containerEl() {
-    return UiUtil.getShadowRootElement(this, '.w3m-modal-container')
+    return UiUtil.getShadowRootElement(this, '.w3m-container')
   }
 
   private toggleBodyScroll(enabled: boolean) {
@@ -179,8 +179,8 @@ export class W3mModal extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const classes = {
-      'w3m-modal-overlay': true,
-      'w3m-modal-open': this.open
+      'w3m-overlay': true,
+      'w3m-open': this.open
     }
 
     return html`
@@ -191,11 +191,11 @@ export class W3mModal extends LitElement {
         role="alertdialog"
         aria-modal="true"
       >
-        <div class="w3m-modal-container">
+        <div class="w3m-container">
           ${this.open
             ? html`
                 <w3m-modal-backcard></w3m-modal-backcard>
-                <div class="w3m-modal-card">
+                <div class="w3m-card">
                   <w3m-modal-router></w3m-modal-router>
                   <w3m-modal-toast></w3m-modal-toast>
                 </div>

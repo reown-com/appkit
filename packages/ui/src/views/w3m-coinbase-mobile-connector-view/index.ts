@@ -6,8 +6,6 @@ import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
-const HORIZONTAL_PADDING = 36
-
 @customElement('w3m-coinbase-mobile-connector-view')
 export class W3mCoinbaseMobileConnectorView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
@@ -22,6 +20,10 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
   }
 
   // -- private ------------------------------------------------------ //
+  private get overlayEl(): HTMLDivElement {
+    return UiUtil.getShadowRootElement(this, '.w3m-qr-container') as HTMLDivElement
+  }
+
   private readonly coinbaseWalletUrl = 'https://www.coinbase.com/wallet'
 
   private async getConnectionUri() {
@@ -51,7 +53,7 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
           ${this.uri
             ? html`
                 <w3m-qrcode
-                  size=${this.offsetWidth - HORIZONTAL_PADDING}
+                  size=${this.overlayEl.offsetWidth}
                   uri=${this.uri}
                   walletId="coinbaseWallet"
                 >
@@ -61,16 +63,18 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
         </div>
       </w3m-modal-content>
       <w3m-modal-footer>
-        <div class="w3m-title">
-          ${SvgUtil.QRCODE_ICON}
-          <w3m-text variant="medium-normal">Scan with your phone</w3m-text>
+        <div class="w3m-footer">
+          <div class="w3m-title">
+            ${SvgUtil.QRCODE_ICON}
+            <w3m-text variant="medium-normal">Scan with your phone</w3m-text>
+          </div>
+          <w3m-text variant="small-thin" align="center" color="secondary" class="w3m-info-text">
+            Open Coinbase Wallet on your phone and scan the code to connect
+          </w3m-text>
+          <w3m-button .iconLeft=${SvgUtil.ARROW_DOWN_ICON} .onClick=${this.onInstall.bind(this)}>
+            Install Extension
+          </w3m-button>
         </div>
-        <w3m-text variant="small-thin" align="center" color="secondary" class="w3m-info-text">
-          Open Coinbase Wallet on your phone and scan the code to connect
-        </w3m-text>
-        <w3m-button .iconLeft=${SvgUtil.ARROW_DOWN_ICON} .onClick=${this.onInstall.bind(this)}>
-          Install Extension
-        </w3m-button>
       </w3m-modal-footer>
     `
   }
