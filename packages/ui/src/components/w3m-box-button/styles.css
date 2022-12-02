@@ -21,4 +21,5 @@ button > div {
   box-shadow: inset 0 0 0 1px var(--color-overlay);
   background-color: var(--color-fg-accent);
   border-radius: 50%;
+  margin-bottom: 4px;
 }

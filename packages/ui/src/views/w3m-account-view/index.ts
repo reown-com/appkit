@@ -1,6 +1,7 @@
 import { AccountCtrl, ClientCtrl, ModalCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
@@ -36,9 +37,23 @@ export class W3mAccountView extends LitElement {
 
       <w3m-modal-footer>
         <div class="w3m-footer">
-          <w3m-box-button label="Disconnect" .onClick=${this.onDisconnect}></w3m-box-button>
-          <w3m-box-button label="Copy Address" .onClick=${this.onCopyAddress}></w3m-box-button>
-          <w3m-box-button label="Disconnect" .onClick=${this.onDisconnect}></w3m-box-button>
+          <w3m-box-button
+            label="Disconnect"
+            .onClick=${this.onDisconnect}
+            .icon=${SvgUtil.ACCOUNT_DISCONNECT}
+          ></w3m-box-button>
+
+          <w3m-box-button
+            label="Copy Address"
+            .onClick=${this.onCopyAddress}
+            .icon=${SvgUtil.ACCOUNT_COPY}
+          ></w3m-box-button>
+
+          <w3m-box-button
+            label="Disconnect"
+            .onClick=${this.onDisconnect}
+            .icon=${SvgUtil.ACCOUNT_DISCONNECT}
+          ></w3m-box-button>
         </div>
       </w3m-modal-footer>
     `
