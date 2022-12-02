@@ -6,7 +6,7 @@
 
 .w3m-connection-badge {
   background-color: var(--color-bg-2);
-  box-shadow: inset 0 0 0 1px var(--color-ovr-thin);
+  box-shadow: inset 0 0 0 1px var(--color-overlay);
   padding: 6px 10px 6px 26px;
   position: relative;
   border-radius: 28px;
@@ -22,7 +22,7 @@
   border-radius: 50%;
   top: 50%;
   margin-top: -5px;
-  box-shadow: inset 0 0 0 1px var(--color-ovr-thin), 0px 1px 4px 1px var(--color-success);
+  box-shadow: inset 0 0 0 1px var(--color-overlay), 0px 1px 4px 1px var(--color-success);
 }
 
 .w3m-footer-actions {

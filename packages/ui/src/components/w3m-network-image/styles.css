@@ -20,5 +20,5 @@
 }
 
 .network-polygon-stroke {
-  stroke: var(--color-ovr-thin);
+  stroke: var(--color-overlay);
 }

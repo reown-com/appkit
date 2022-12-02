@@ -18,9 +18,8 @@ export class W3mButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const classes = {
-      'w3m-button': true,
-      'w3m-button-icon-left': this.iconLeft !== undefined,
-      'w3m-button-icon-right': this.iconRight !== undefined
+      'w3m-icon-left': this.iconLeft !== undefined,
+      'w3m-icon-right': this.iconRight !== undefined
     }
 
     return html`

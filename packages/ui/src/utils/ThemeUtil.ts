@@ -122,10 +122,7 @@ function themeModeColors() {
         2: `rgba(241,243,243)`,
         3: `rgba(228,231,231)`
       },
-      overlay: {
-        thin: 'rgba(0,0,0,0.1)',
-        thick: 'rgba(0,0,0,0.3)'
-      }
+      overlay: 'rgba(0,0,0,0.1)'
     },
 
     dark: {
@@ -139,10 +136,7 @@ function themeModeColors() {
         2: `rgb(39,42,42)`,
         3: `rgb(59,64,64)`
       },
-      overlay: {
-        thin: 'rgba(255,255,255,0.1)',
-        thick: 'rgba(255,255,255,0.3)'
-      }
+      overlay: 'rgba(255,255,255,0.1'
     }
   }
 }
@@ -179,7 +173,7 @@ export const ThemeUtil = {
         ...theme.background
       },
       gradient,
-      overlay: { ...theme.overlay },
+      overlay: theme.overlay,
       error: `rgb(242, 90, 103)`
     }
   },
@@ -197,8 +191,7 @@ export const ThemeUtil = {
         '--color-bg-1': ThemeUtil.color().background[1],
         '--color-bg-2': ThemeUtil.color().background[2],
         '--color-bg-3': ThemeUtil.color().background[3],
-        '--color-ovr-thin': ThemeUtil.color().overlay.thin,
-        '--color-ovr-thick': ThemeUtil.color().overlay.thick,
+        '--color-overlay': ThemeUtil.color().overlay,
         '--color-err': ThemeUtil.color().error,
         '--color-success': themeColors().green.light.foreground,
         '--gradient-1': ThemeUtil.color().gradient[1],

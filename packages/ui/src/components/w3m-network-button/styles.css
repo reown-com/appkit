@@ -27,7 +27,7 @@ svg {
 }
 
 .w3m-network-button:hover {
-  background-color: var(--color-ovr-thin);
+  background-color: var(--color-overlay);
 }
 
 #network-placeholder-fill {
@@ -35,5 +35,5 @@ svg {
 }
 
 #network-placeholder-dash {
-  stroke: var(--color-ovr-thin);
+  stroke: var(--color-overlay);
 }

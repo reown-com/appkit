@@ -10,9 +10,9 @@ export class W3mModalFooter extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <div class="w3m-modal-footer">
+      <footer>
         <slot></slot>
-      </div>
+      </footer>
     `
   }
 }

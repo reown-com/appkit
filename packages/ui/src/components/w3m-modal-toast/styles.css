@@ -15,8 +15,8 @@
   backdrop-filter: blur(20px) saturate(1.8);
   -webkit-backdrop-filter: blur(20px) saturate(1.8);
   border-radius: 36px;
-  border: 1px solid var(--color-ovr-thin);
-  background-color: var(--color-ovr-thin);
+  border: 1px solid var(--color-overlay);
+  background-color: var(--color-overlay);
 }
 
 .w3m-modal-toast svg {

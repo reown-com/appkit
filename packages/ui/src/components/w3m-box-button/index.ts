@@ -16,8 +16,8 @@ export class W3mBoxButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <button @click=${this.onClick} class="w3m-box-button">
-        <div class="w3m-icon">${this.icon}</div>
+      <button @click=${this.onClick}>
+        <div>${this.icon}</div>
         <w3m-text variant="xsmall-normal" color="accent">${this.label}</w3m-text>
       </button>
     `

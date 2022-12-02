@@ -1,35 +1,35 @@
-.w3m-button {
+button {
   border-radius: 28px;
   height: 28px;
   padding: 0 10px;
   background-color: var(--color-fg-accent);
 }
 
-.w3m-button path {
+button path {
   fill: var(--color-fg-inverse);
 }
 
-.w3m-button::after {
+button::after {
   border-radius: inherit;
-  border: 1px solid var(--color-ovr-thin);
+  border: 1px solid var(--color-overlay);
 }
 
-.w3m-button:disabled::after {
+button:disabled::after {
   background-color: transparent;
 }
 
-.w3m-button-icon-left svg {
+.w3m-icon-left svg {
   margin-right: 5px;
 }
 
-.w3m-button-icon-right svg {
+.w3m-icon-right svg {
   margin-left: 5px;
 }
 
-.w3m-button:hover::after {
-  background-color: var(--color-ovr-thin);
+button:hover::after {
+  background-color: var(--color-overlay);
 }
 
-.w3m-button:disabled {
+button:disabled {
   background-color: var(--color-bg-3);
 }

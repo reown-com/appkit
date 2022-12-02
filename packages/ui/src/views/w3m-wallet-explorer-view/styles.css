@@ -1,5 +1,5 @@
 w3m-modal-content {
-  height: 55vh;
+  height: clamp(200px, 60vh, 600px);
   display: block;
   overflow: scroll;
   scrollbar-width: none;
@@ -46,6 +46,10 @@ w3m-modal-content::-webkit-scrollbar {
   align-items: center;
   height: 100px;
   overflow: hidden;
+}
+
+.w3m-loading {
+  display: flex;
 }
 
 .w3m-loading .w3m-placeholder-block {

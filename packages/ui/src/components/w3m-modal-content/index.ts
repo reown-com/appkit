@@ -10,9 +10,9 @@ export class W3mModalContent extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <div class="w3m-modal-content">
+      <main>
         <slot></slot>
-      </div>
+      </main>
     `
   }
 }

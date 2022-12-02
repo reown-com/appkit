@@ -1,6 +1,6 @@
 .w3m-avatar {
   border-radius: 50%;
-  box-shadow: inset 0 0 0 1px var(--color-ovr-thin);
+  box-shadow: inset 0 0 0 1px var(--color-overlay);
   display: block;
   background-color: var(--color-av-1);
   background-image: radial-gradient(at 66% 77%, var(--color-av-2) 0px, transparent 50%),

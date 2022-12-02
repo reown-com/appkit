@@ -13,11 +13,11 @@ button::after {
   background-color: transparent;
   border-radius: inherit;
   transition: background-color 0.2s ease;
-  border: 1px solid var(--color-ovr-thin);
+  border: 1px solid var(--color-overlay);
 }
 
 button:hover::after {
-  background-color: var(--color-ovr-thin);
+  background-color: var(--color-overlay);
 }
 
 button:disabled {

@@ -35,10 +35,10 @@ export class W3mModalHeader extends LitElement {
       : html`<slot></slot>`
 
     return html`
-      <div class="w3m-modal-header">
+      <header>
         ${backBtn ? this.backBtnTemplate() : null} ${content}
         ${this.onAction ? this.actionBtnTemplate() : null}
-      </div>
+      </header>
     `
   }
 }
