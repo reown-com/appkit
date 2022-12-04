@@ -42,6 +42,11 @@ export default function CustomPage() {
         // Custom Linking Desktop Wallets
         desktopWallets={[
           {
+            id: 'oreid',
+            name: 'OREID',
+            links: { native: 'https://www.oreid.io/deeplink/wc', universal: 'https://www.oreid.io/' }
+          },
+          {
             id: 'ledger',
             name: 'Ledger',
             links: { native: 'ledgerlive://', universal: 'https://www.ledger.com' }
@@ -65,7 +70,8 @@ export default function CustomPage() {
           coinbaseWallet: '/images/wallet_coinbase.webp',
           zerion: '/images/wallet_zerion.webp',
           trust: '/images/wallet_trust.webp',
-          rainbow: '/images/wallet_rainbow.webp'
+          rainbow: '/images/wallet_rainbow.webp',
+          oreid: '/images/wallet_oreid.webp'
         }}
         // Custom Chain Images
         chainImages={{

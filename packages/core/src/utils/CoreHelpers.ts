@@ -25,9 +25,17 @@ export const CoreHelpers = {
   },
 
   formatNativeUrl(appUrl: string, wcUri: string, name: string) {
+    const encodedWcUrl = encodeURIComponent(wcUri)
+    const url = new URL(appUrl)
+    if(url.protocol === 'https:' || url.protocol === 'http:') 
+    {
+      url.searchParams.append('uri',encodedWcUrl)
+
+      return url.href
+    } 
+    
     const plainAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
     this.setWalletConnectDeepLink(plainAppUrl, name)
-    const encodedWcUrl = encodeURIComponent(wcUri)
 
     return `${plainAppUrl}://wc?uri=${encodedWcUrl}`
   },

@@ -32,7 +32,12 @@ export class W3mDesktopConnectorView extends LitElement {
     if (native) {
       const href = CoreHelpers.formatNativeUrl(native, uri, name)
       if (href) {
-        CoreHelpers.openHref(href)
+        const url = new URL(href)
+        if(url.protocol === 'https:' || url.protocol === 'http:') {
+          CoreHelpers.openHref(href, '_blank')
+        } else {
+          CoreHelpers.openHref(href)
+        }        
       }
     }
   }
