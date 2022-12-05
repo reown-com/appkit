@@ -28,12 +28,13 @@ export class W3mDesktopConnectorView extends LitElement {
   }
 
   private onOpenHref(uri: string) {
-    const { native, name } = this.getRouterData()
+    const { native, universal, name } = this.getRouterData()
     if (native) {
       const href = CoreUtil.formatNativeUrl(native, uri, name)
-      if (href) {
-        CoreUtil.openHref(href)
-      }
+      CoreUtil.openHref(href)
+    } else if (universal) {
+      const href = CoreUtil.formatUniversalUrl(universal, uri, name)
+      CoreUtil.openHref(href, '_blank')
     }
   }
 
@@ -86,10 +87,7 @@ export class W3mDesktopConnectorView extends LitElement {
 
             ${universal
               ? html`
-                  <w3m-button
-                    .onClick=${() => this.onInstall(universal)}
-                    .iconLeft=${SvgUtil.ARROW_UP_RIGHT_ICON}
-                  >
+                  <w3m-button .onClick=${this.onConnect} .iconLeft=${SvgUtil.ARROW_UP_RIGHT_ICON}>
                     Go to Wallet
                   </w3m-button>
                 `
