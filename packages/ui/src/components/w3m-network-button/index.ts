@@ -23,7 +23,7 @@ export class W3mNetworkButton extends LitElement {
         ${src
           ? html`<w3m-network-image src=${src}></w3m-network-image>`
           : SvgUtil.NETWORK_PLACEHOLDER}
-        <w3m-text variant="xsmall-normal"> ${this.name} </w3m-text>
+        <w3m-text variant="xsmall-normal">${this.name}</w3m-text>
       </button>
     `
   }

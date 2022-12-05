@@ -89,7 +89,7 @@
   object-position: center;
 }
 
-.w3m-modal-action-btn path {
+.w3m-action-btn path {
   fill: var(--color-fg-1);
 }
 

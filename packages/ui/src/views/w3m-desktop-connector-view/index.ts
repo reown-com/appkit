@@ -30,7 +30,7 @@ export class W3mDesktopConnectorView extends LitElement {
     return data
   }
 
-  private onOpenHref(uri: string) {
+  private onFormatAndRedirect(uri: string) {
     const { native, universal, name } = this.getRouterData()
     if (native) {
       const href = CoreUtil.formatNativeUrl(native, uri, name)
@@ -44,17 +44,17 @@ export class W3mDesktopConnectorView extends LitElement {
   private async onConnect() {
     const { standaloneUri } = OptionsCtrl.state
     if (standaloneUri) {
-      this.onOpenHref(standaloneUri)
+      this.onFormatAndRedirect(standaloneUri)
     } else {
       await ClientCtrl.client().connectWalletConnect(uri => {
         this.uri = uri
-        this.onOpenHref(uri)
+        this.onFormatAndRedirect(uri)
       }, OptionsCtrl.state.selectedChainId)
       ModalCtrl.close()
     }
   }
 
-  private onMobile() {
+  private onConnectWithMobile() {
     RouterCtrl.push('Qrcode')
   }
 
@@ -102,7 +102,7 @@ export class W3mDesktopConnectorView extends LitElement {
                   </w3m-button>
                 `
               : html`
-                  <w3m-button .onClick=${this.onMobile} .iconLeft=${SvgUtil.MOBILE_ICON}>
+                  <w3m-button .onClick=${this.onConnectWithMobile} .iconLeft=${SvgUtil.MOBILE_ICON}>
                     Connect with Mobile
                   </w3m-button>
                 `}

@@ -27,7 +27,7 @@ export class W3mModalRouter extends LitElement {
 
   public firstUpdated() {
     this.resizeObserver = new ResizeObserver(([conetnt]) => {
-      const newHeight = `${conetnt.borderBoxSize[0].blockSize}px`
+      const newHeight = `${conetnt.contentRect.height}px`
       if (this.oldHeight !== '0px') {
         animate(this.routerEl, { height: [this.oldHeight, newHeight] }, { duration: 0.2 })
         animate(

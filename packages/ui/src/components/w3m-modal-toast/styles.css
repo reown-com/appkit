@@ -25,7 +25,7 @@
 
 @-moz-document url-prefix() {
   .w3m-modal-toast {
-    background-color: var(--color-fg-accent);
+    background-color: var(--color-bg-3);
   }
 }
 
