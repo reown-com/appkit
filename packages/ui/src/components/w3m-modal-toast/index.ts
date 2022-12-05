@@ -18,7 +18,7 @@ export class W3mModalToast extends LitElement {
     this.unsubscribe = ToastCtrl.subscribe(newState => {
       if (newState.open) {
         this.open = true
-        this.timeout = setTimeout(() => ToastCtrl.closeToast(), 1200)
+        this.timeout = setTimeout(() => ToastCtrl.closeToast(), 2000)
       } else {
         this.open = false
         clearTimeout(this.timeout)

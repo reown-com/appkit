@@ -55,7 +55,7 @@ export class EthereumClient {
             const providerConnector = (await connector.getProvider()).connector
             onUri(providerConnector.uri)
             providerConnector.on('disconnect', () => {
-              reject(Error('User Rejected'))
+              reject(Error('Connection request declined'))
             })
             providerConnector.on('connect', () => {
               resolve()
