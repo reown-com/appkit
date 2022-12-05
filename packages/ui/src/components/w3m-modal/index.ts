@@ -36,11 +36,15 @@ export class W3mModal extends LitElement {
         this.onCloseModalEvent()
       }
     })
-    AccountCtrl.get()
-    this.unwatchAccount = ClientCtrl.client().watchAccount(account => {
-      AccountCtrl.setAddress(account.address)
-      AccountCtrl.setIsConnected(account.isConnected)
-    })
+
+    if (!OptionsCtrl.state.isStandalone) {
+      AccountCtrl.get()
+      this.unwatchAccount = ClientCtrl.client().watchAccount(account => {
+        AccountCtrl.setAddress(account.address)
+        AccountCtrl.setIsConnected(account.isConnected)
+      })
+    }
+
     this.preloadModalData()
   }
 

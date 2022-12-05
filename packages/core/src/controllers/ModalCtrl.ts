@@ -19,12 +19,12 @@ export const ModalCtrl = {
   },
 
   open(options?: { uri: string; standaloneChains?: string[] }) {
-    const { chains } = OptionsCtrl.state
+    const { chains, isStandalone } = OptionsCtrl.state
     const { enableNetworkView } = ConfigCtrl.state
     const isChainsList = chains?.length && chains.length > 1
-    const { isConnected } = ClientCtrl.client().getAccount()
+    const connected = isStandalone ? false : ClientCtrl.client().getAccount().isConnected
 
-    if (isConnected) {
+    if (connected) {
       RouterCtrl.replace('Account')
     } else if (isChainsList && enableNetworkView) {
       RouterCtrl.replace('SelectNetwork')
