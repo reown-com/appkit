@@ -213,6 +213,7 @@ export const ThemeUtil = {
       font-style: normal;
       text-rendering: optimizeSpeed;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       -webkit-tap-highlight-color: transparent;
       backface-visibility: hidden;
     }
