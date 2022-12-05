@@ -49,12 +49,17 @@ export class EthereumClient {
     const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
 
     async function getProviderUri() {
-      return new Promise<void>(resolve => {
+      return new Promise<void>((resolve, reject) => {
         connector.once('message', async ({ type }) => {
           if (type === 'connecting') {
-            const provider = await connector.getProvider()
-            onUri(provider.connector.uri)
-            resolve()
+            const providerConnector = (await connector.getProvider()).connector
+            onUri(providerConnector.uri)
+            providerConnector.on('disconnect', () => {
+              reject(Error('User Rejected'))
+            })
+            providerConnector.on('connect', () => {
+              resolve()
+            })
           }
         })
       })

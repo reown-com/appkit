@@ -15,7 +15,7 @@ export class W3mWalletConnectQr extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.getConnectionUri()
+    this.createConnectionAndWait()
   }
 
   // -- private ------------------------------------------------------ //
@@ -23,7 +23,7 @@ export class W3mWalletConnectQr extends LitElement {
     return UiUtil.getShadowRootElement(this, '.w3m-qr-container') as HTMLDivElement
   }
 
-  private async getConnectionUri() {
+  private async createConnectionAndWait() {
     try {
       const { standaloneUri } = OptionsCtrl.state
       if (standaloneUri) {
@@ -37,6 +37,7 @@ export class W3mWalletConnectQr extends LitElement {
       }
     } catch (err) {
       ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
+      this.createConnectionAndWait()
     }
   }
 
