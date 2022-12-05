@@ -1,6 +1,6 @@
 import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { PresetUtil } from '../../utils/PresetUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -10,6 +10,9 @@ import styles from './styles.css'
 @customElement('w3m-desktop-connector-view')
 export class W3mDesktopConnectorView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
+
+  // -- state & properties ------------------------------------------- //
+  @state() private uri = ''
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -43,16 +46,24 @@ export class W3mDesktopConnectorView extends LitElement {
     if (standaloneUri) {
       this.onOpenHref(standaloneUri)
     } else {
-      await ClientCtrl.client().connectWalletConnect(
-        uri => this.onOpenHref(uri),
-        OptionsCtrl.state.selectedChainId
-      )
+      await ClientCtrl.client().connectWalletConnect(uri => {
+        this.uri = uri
+        this.onOpenHref(uri)
+      }, OptionsCtrl.state.selectedChainId)
       ModalCtrl.close()
     }
   }
 
   private onMobile() {
     RouterCtrl.push('Qrcode')
+  }
+
+  private onGoToWallet() {
+    const { universal, name } = this.getRouterData()
+    if (universal) {
+      const href = CoreUtil.formatUniversalUrl(universal, this.uri, name)
+      CoreUtil.openHref(href, '_blank')
+    }
   }
 
   // -- render ------------------------------------------------------- //
@@ -83,7 +94,10 @@ export class W3mDesktopConnectorView extends LitElement {
 
             ${universal
               ? html`
-                  <w3m-button .onClick=${this.onConnect} .iconLeft=${SvgUtil.ARROW_UP_RIGHT_ICON}>
+                  <w3m-button
+                    .onClick=${this.onGoToWallet.bind(this)}
+                    .iconLeft=${SvgUtil.ARROW_UP_RIGHT_ICON}
+                  >
                     Go to Wallet
                   </w3m-button>
                 `
