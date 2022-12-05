@@ -55,10 +55,6 @@ export class W3mDesktopConnectorView extends LitElement {
     RouterCtrl.push('Qrcode')
   }
 
-  private onInstall(link: string) {
-    CoreUtil.openHref(link, '_blank')
-  }
-
   // -- render ------------------------------------------------------- //
   protected render() {
     const { name, icon, universal, walletId } = this.getRouterData()
