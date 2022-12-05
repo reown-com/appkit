@@ -1,7 +1,7 @@
 {
   "name": "html-example",
   "private": true,
-  "version": "2.0.0-787e037",
+  "version": "2.0.0-b648e83",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@wagmi/core": "0.7.9",
-    "@web3modal/ethereum": "2.0.0-787e037",
-    "@web3modal/html": "2.0.0-787e037",
+    "@web3modal/ethereum": "2.0.0-b648e83",
+    "@web3modal/html": "2.0.0-b648e83",
     "ethers": "5.7.2"
   },
   "devDependencies": {
