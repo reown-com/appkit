@@ -1,6 +1,6 @@
 .w3m-network-image {
-  width: 54px;
-  height: 59px;
+  width: inherit;
+  height: inherit;
 }
 
 .w3m-network-image svg {

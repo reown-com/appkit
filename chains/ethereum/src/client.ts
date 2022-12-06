@@ -5,6 +5,7 @@ import {
   fetchBalance,
   getAccount,
   getNetwork,
+  switchNetwork,
   watchAccount,
   watchNetwork
 } from '@wagmi/core'
@@ -118,4 +119,6 @@ export class EthereumClient {
   public getNetwork = getNetwork
 
   public watchNetwork = watchNetwork
+
+  public switchNetwork = switchNetwork
 }

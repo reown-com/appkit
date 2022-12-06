@@ -1,4 +1,4 @@
-import { OptionsCtrl, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -9,8 +9,17 @@ export class W3mSelectNetworkView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
-  private onSelectChain() {
-    RouterCtrl.push('ConnectWallet')
+  private async onSelectChain(chainId: number) {
+    try {
+      if (OptionsCtrl.state.isConnected) {
+        await ClientCtrl.client().switchNetwork({ chainId })
+        RouterCtrl.replace('Account')
+      } else {
+        RouterCtrl.push('ConnectWallet')
+      }
+    } catch {
+      ToastCtrl.openToast('Permission to switch networks declined', 'error')
+    }
   }
 
   // -- render ------------------------------------------------------- //
@@ -22,10 +31,17 @@ export class W3mSelectNetworkView extends LitElement {
       <w3m-modal-content>
         <div class="w3m-grid">
           ${chains?.map(
-            ({ name, id }) =>
+            chain =>
               html`
-                <w3m-network-button name=${name} chainId=${id} .onClick=${this.onSelectChain}>
-                  ${name}
+                <w3m-network-button
+                  name=${chain.name}
+                  chainId=${chain.id}
+                  .onClick=${async () => {
+                    await this.onSelectChain(chain.id)
+                    OptionsCtrl.setSelectedChain(chain)
+                  }}
+                >
+                  ${chain.name}
                 </w3m-network-button>
               `
           )}

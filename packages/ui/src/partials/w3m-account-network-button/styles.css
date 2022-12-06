@@ -1,0 +1,22 @@
+button {
+  display: flex;
+  border-radius: 10px;
+  flex-direction: column;
+  transition: background-color 0.2s ease;
+  justify-content: center;
+  padding: 5px;
+  width: 100px;
+}
+
+button:hover {
+  background-color: var(--color-overlay);
+}
+
+w3m-network-image {
+  width: 32px;
+  height: 32px;
+}
+
+w3m-text {
+  margin-top: 4px;
+}

@@ -37,11 +37,7 @@ export class W3mAccountView extends LitElement {
 
       <w3m-modal-footer>
         <div class="w3m-footer">
-          <w3m-box-button
-            label="Disconnect"
-            .onClick=${this.onDisconnect}
-            .icon=${SvgUtil.ACCOUNT_DISCONNECT}
-          ></w3m-box-button>
+          <w3m-account-network-button></w3m-account-network-button>
 
           <w3m-box-button
             label="Copy Address"

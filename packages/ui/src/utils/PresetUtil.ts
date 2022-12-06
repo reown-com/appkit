@@ -53,7 +53,7 @@ export const PresetUtil = {
   },
 
   chainExplorerImage() {
-    const fallback = '58d8f4c8-cf51-4a82-5ce5-56d8a4d24400'
+    const fallback = '692ed6ba-e569-459a-556a-776476829e00'
     const presets = {
       // Arbitrum
       42161: '600a9a04-c1b9-42ca-6785-9b4b6ff85200',
@@ -74,7 +74,7 @@ export const PresetUtil = {
       // Fantom Testnet
       4002: '06b26297-fe0c-4733-5d6b-ffa5498aac00',
       // Ethereum
-      1: '58d8f4c8-cf51-4a82-5ce5-56d8a4d24400',
+      1: '692ed6ba-e569-459a-556a-776476829e00',
       // Optimism
       10: 'ab9c186a-c52f-464b-2906-ca59d760a400',
       // Optimism Goerli Testnet
