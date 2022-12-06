@@ -31,12 +31,13 @@ export const UiUtil = {
   },
 
   getChainIcon(chainId: number | string) {
-    const { fallback, presets } = PresetUtil.chainExplorerImage()
+    const { presets } = PresetUtil.chainExplorerImage()
     const { projectId, chainImages } = ConfigCtrl.state
+    const presetImage = presets[chainId]
 
     return (
       chainImages?.[chainId] ??
-      (projectId ? ExplorerCtrl.getImageUrl(presets[chainId] ?? fallback) : '')
+      (projectId && presetImage ? ExplorerCtrl.getImageUrl(presetImage) : '')
     )
   },
 

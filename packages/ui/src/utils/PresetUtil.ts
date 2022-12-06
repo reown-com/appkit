@@ -53,7 +53,6 @@ export const PresetUtil = {
   },
 
   chainExplorerImage() {
-    const fallback = '692ed6ba-e569-459a-556a-776476829e00'
     const presets = {
       // Arbitrum
       42161: '600a9a04-c1b9-42ca-6785-9b4b6ff85200',
@@ -87,7 +86,7 @@ export const PresetUtil = {
       80001: '41d04d42-da3b-4453-8506-668cc0727900'
     } as Record<string, string | undefined>
 
-    return { fallback, presets }
+    return { presets }
   },
 
   optimisticName(name: string) {
