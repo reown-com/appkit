@@ -1,14 +1,14 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { getOptimisticWalletIdPreset } from '../../utils/Presets'
-import { WALLET_PLACEHOLDER } from '../../utils/Svgs'
-import { global } from '../../utils/Theme'
-import { getWalletIcon } from '../../utils/UiHelpers'
+import { PresetUtil } from '../../utils/PresetUtil'
+import { SvgUtil } from '../../utils/SvgUtil'
+import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-wallet-image')
 export class W3mWalletImage extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public walletId?: string = undefined
@@ -17,8 +17,8 @@ export class W3mWalletImage extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const walletId = this.walletId ?? 'injected'
-    const optimisticId = getOptimisticWalletIdPreset(walletId)
-    const src = this.src ? this.src : getWalletIcon(optimisticId)
+    const optimisticId = PresetUtil.optimisticWalletId(walletId)
+    const src = this.src ? this.src : UiUtil.getWalletIcon(optimisticId)
 
     return html`
       ${src.length
@@ -27,7 +27,7 @@ export class W3mWalletImage extends LitElement {
               <img src=${src} alt=${this.id} />
             </div>
           `
-        : WALLET_PLACEHOLDER}
+        : SvgUtil.WALLET_PLACEHOLDER}
     `
   }
 }

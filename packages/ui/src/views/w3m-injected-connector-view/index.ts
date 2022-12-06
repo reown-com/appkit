@@ -2,14 +2,14 @@ import { ClientCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { getOptimisticNamePreset, getOptimisticWalletIdPreset } from '../../utils/Presets'
-import { RETRY_ICON } from '../../utils/Svgs'
-import { color, global } from '../../utils/Theme'
+import { PresetUtil } from '../../utils/PresetUtil'
+import { SvgUtil } from '../../utils/SvgUtil'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-injected-connector-view')
 export class W3mInjectedConnectorView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private connecting = true
@@ -30,7 +30,7 @@ export class W3mInjectedConnectorView extends LitElement {
       if (ready) {
         this.error = false
         this.connecting = true
-        await ClientCtrl.client().connectConnector('injected', OptionsCtrl.state.selectedChainId)
+        await ClientCtrl.client().connectConnector('injected', OptionsCtrl.state.selectedChain?.id)
         ModalCtrl.close()
       }
     } catch (error: unknown) {
@@ -41,8 +41,8 @@ export class W3mInjectedConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const optimisticName = getOptimisticNamePreset(this.connector.name)
-    const optimisticWalletId = getOptimisticWalletIdPreset(this.connector.id)
+    const optimisticName = PresetUtil.optimisticName(this.connector.name)
+    const optimisticWalletId = PresetUtil.optimisticWalletId(this.connector.id)
     const classes = {
       'w3m-injected-wrapper': true,
       'w3m-injected-error': this.error
@@ -54,9 +54,7 @@ export class W3mInjectedConnectorView extends LitElement {
         <div class=${classMap(classes)}>
           <w3m-wallet-image walletId=${optimisticWalletId} size="lg"></w3m-wallet-image>
           <div class="w3m-connecting-title">
-            ${this.connecting
-              ? html`<w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>`
-              : null}
+            ${this.connecting ? html`<w3m-spinner></w3m-spinner>` : null}
             <w3m-text variant="large-bold" color=${this.error ? 'error' : 'secondary'}>
               ${this.error ? 'Connection declined' : `Continue in ${optimisticName}...`}
             </w3m-text>
@@ -65,7 +63,7 @@ export class W3mInjectedConnectorView extends LitElement {
           <w3m-button
             .onClick=${this.onConnect.bind(this)}
             .disabled=${!this.error}
-            .iconRight=${RETRY_ICON}
+            .iconRight=${SvgUtil.RETRY_ICON}
           >
             Try Again
           </w3m-button>

@@ -1,4 +1,4 @@
-.w3m-modal-overlay {
+.w3m-overlay {
   inset: 0px;
   position: fixed;
   z-index: 10001;
@@ -11,53 +11,54 @@
   pointer-events: none;
 }
 
-.w3m-modal-open {
+.w3m-open {
   pointer-events: auto;
 }
 
-.w3m-modal-container {
+.w3m-container {
   position: relative;
   max-width: 360px;
   width: 100%;
+  outline: none;
 }
 
-.w3m-modal-card {
+.w3m-card {
   width: 100%;
   position: relative;
   transform: translateY(5px);
   border-radius: 30px;
   overflow: hidden;
   box-shadow: 0px 6px 14px -6px rgba(10, 16, 31, 0.12), 0px 10px 32px -4px rgba(10, 16, 31, 0.1),
-    0 0 0 1px var(--color-ovr-thin);
+    0 0 0 1px var(--color-overlay);
   background-color: var(--color-bg-1);
   color: var(--color-fg-1);
 }
 
 @media (max-width: 600px) {
-  .w3m-modal-container {
+  .w3m-container {
     max-width: 440px;
   }
 
-  .w3m-modal-card {
+  .w3m-card {
     border-radius: 40px 40px 0 0;
   }
 
-  .w3m-modal-overlay {
+  .w3m-overlay {
     align-items: flex-end;
   }
 }
 
 @media (max-width: 600px) {
-  .w3m-modal-container {
+  .w3m-container {
     max-width: 440px;
   }
 
-  .w3m-modal-card {
+  .w3m-card {
     transform: translateY(5px);
     border-radius: 40px 40px 0 0;
   }
 
-  .w3m-modal-overlay {
+  .w3m-overlay {
     align-items: flex-end;
   }
 }

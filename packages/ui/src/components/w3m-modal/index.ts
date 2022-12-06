@@ -1,6 +1,7 @@
 import {
+  ClientCtrl,
   ConfigCtrl,
-  CoreHelpers,
+  CoreUtil,
   ExplorerCtrl,
   ModalCtrl,
   OptionsCtrl,
@@ -10,20 +11,13 @@ import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { animate, spring } from 'motion'
-import { global, setTheme } from '../../utils/Theme'
-import {
-  getChainIcon,
-  getConnectorImageUrls,
-  getCustomImageUrls,
-  getShadowRootElement,
-  isMobileAnimation,
-  preloadImage
-} from '../../utils/UiHelpers'
+import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-modal')
 export class W3mModal extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false
@@ -32,8 +26,8 @@ export class W3mModal extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    setTheme()
-    this.unsubscribeConfig = ConfigCtrl.subscribe(setTheme)
+    ThemeUtil.setTheme()
+    this.unsubscribeConfig = ConfigCtrl.subscribe(ThemeUtil.setTheme)
     this.unsubscribeModal = ModalCtrl.subscribe(modalState => {
       if (modalState.open) {
         this.onOpenModalEvent()
@@ -41,24 +35,41 @@ export class W3mModal extends LitElement {
         this.onCloseModalEvent()
       }
     })
+
+    if (!OptionsCtrl.state.isStandalone) {
+      OptionsCtrl.getAccount()
+      this.unwatchAccount = ClientCtrl.client().watchAccount(account => {
+        OptionsCtrl.setAddress(account.address)
+        OptionsCtrl.setIsConnected(account.isConnected)
+      })
+      OptionsCtrl.getSelectedChain()
+      this.unwatchNetwork = ClientCtrl.client().watchNetwork(network => {
+        OptionsCtrl.setSelectedChain(network.chain)
+      })
+    }
+
     this.preloadModalData()
   }
 
   public disconnectedCallback() {
     this.unsubscribeModal?.()
     this.unsubscribeConfig?.()
+    this.unwatchAccount?.()
+    this.unwatchNetwork?.()
   }
 
   // -- private ------------------------------------------------------ //
   private readonly unsubscribeModal?: () => void = undefined
   private readonly unsubscribeConfig?: () => void = undefined
+  private readonly unwatchAccount?: () => void = undefined
+  private readonly unwatchNetwork?: () => void = undefined
 
   private get overlayEl() {
-    return getShadowRootElement(this, '.w3m-modal-overlay')
+    return UiUtil.getShadowRootElement(this, '.w3m-overlay')
   }
 
   private get containerEl() {
-    return getShadowRootElement(this, '.w3m-modal-container')
+    return UiUtil.getShadowRootElement(this, '.w3m-container')
   }
 
   private toggleBodyScroll(enabled: boolean) {
@@ -79,12 +90,12 @@ export class W3mModal extends LitElement {
           page: 1,
           entries: 10,
           chains: chainsFilter,
-          device: CoreHelpers.isMobile() ? 'mobile' : 'desktop'
+          device: CoreUtil.isMobile() ? 'mobile' : 'desktop'
         }),
         ExplorerCtrl.getRecomendedWallets()
       ])
       const { previewWallets, recomendedWallets } = ExplorerCtrl.state
-      const chainsImgs = chains?.map(chain => getChainIcon(chain.id)) ?? []
+      const chainsImgs = chains?.map(chain => UiUtil.getChainIcon(chain.id)) ?? []
       const walletImgs = [...previewWallets, ...recomendedWallets].map(
         wallet => wallet.image_url.lg
       )
@@ -94,21 +105,21 @@ export class W3mModal extends LitElement {
 
   private async preloadExplorerImages(images: string[]) {
     if (images.length) {
-      await Promise.all(images.map(async url => preloadImage(url)))
+      await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
     }
   }
 
   private async preloadCustomImages() {
-    const images = getCustomImageUrls()
+    const images = UiUtil.getCustomImageUrls()
     if (images.length) {
-      await Promise.all(images.map(async url => preloadImage(url)))
+      await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
     }
   }
 
   private async preloadConnectorImages() {
-    const images = getConnectorImageUrls()
+    const images = UiUtil.getConnectorImageUrls()
     if (images.length) {
-      await Promise.all(images.map(async url => preloadImage(url)))
+      await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
     }
   }
 
@@ -136,25 +147,35 @@ export class W3mModal extends LitElement {
   private async onOpenModalEvent() {
     await this.preloadModalData()
     this.toggleBodyScroll(false)
-    const delay = 0.3
+    const delay = 0.2
+    await animate(this.containerEl, { y: 0 }, { duration: 0 }).finished
     animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay })
-    animate(this.containerEl, isMobileAnimation() ? { y: ['50vh', 0] } : { scale: [0.98, 1] }, {
-      scale: { easing: spring({ velocity: 0.4 }) },
-      y: { easing: spring({ mass: 0.5 }) },
-      delay
-    })
+    animate(
+      this.containerEl,
+      UiUtil.isMobileAnimation() ? { y: ['50vh', 0] } : { scale: [0.98, 1] },
+      {
+        scale: { easing: spring({ velocity: 0.4 }) },
+        y: { easing: spring({ mass: 0.5 }) },
+        delay
+      }
+    )
     document.addEventListener('keydown', this.onKeyDown)
     this.open = true
+    this.containerEl.focus()
   }
 
   private async onCloseModalEvent() {
     this.toggleBodyScroll(true)
     document.removeEventListener('keydown', this.onKeyDown)
     await Promise.all([
-      animate(this.containerEl, isMobileAnimation() ? { y: [0, '50vh'] } : { scale: [1, 0.98] }, {
-        scale: { easing: spring({ velocity: 0 }) },
-        y: { easing: spring({ mass: 0.5 }) }
-      }).finished,
+      animate(
+        this.containerEl,
+        UiUtil.isMobileAnimation() ? { y: [0, '50vh'] } : { scale: [1, 0.98] },
+        {
+          scale: { easing: spring({ velocity: 0 }) },
+          y: { easing: spring({ mass: 0.5 }) }
+        }
+      ).finished,
       animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
     ])
     this.open = false
@@ -169,8 +190,8 @@ export class W3mModal extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const classes = {
-      'w3m-modal-overlay': true,
-      'w3m-modal-open': this.open
+      'w3m-overlay': true,
+      'w3m-open': this.open
     }
 
     return html`
@@ -181,11 +202,11 @@ export class W3mModal extends LitElement {
         role="alertdialog"
         aria-modal="true"
       >
-        <div class="w3m-modal-container">
+        <div class="w3m-container" tabindex="0">
           ${this.open
             ? html`
                 <w3m-modal-backcard></w3m-modal-backcard>
-                <div class="w3m-modal-card">
+                <div class="w3m-card">
                   <w3m-modal-router></w3m-modal-router>
                   <w3m-modal-toast></w3m-modal-toast>
                 </div>

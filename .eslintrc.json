@@ -5,7 +5,7 @@
     "*.d.ts",
     "*.config.js",
     "server.js",
-    "Whatamesh.ts",
+    "libs",
     "dist",
     "node_modules",
     "out",
@@ -62,6 +62,7 @@
     "@typescript-eslint/no-misused-promises": "off",
     "@typescript-eslint/no-unsafe-argument": "off",
     "@typescript-eslint/prefer-regexp-exec": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/no-redundant-type-constituents": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",

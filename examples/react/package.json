@@ -1,23 +1,23 @@
 {
   "name": "react-example",
-  "version": "2.0.0-beta.7",
+  "version": "2.0.0-beta.8",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build && next export"
   },
   "dependencies": {
-    "@web3modal/ethereum": "2.0.0-beta.7",
-    "@web3modal/react": "2.0.0-beta.7",
+    "@web3modal/ethereum": "2.0.0-beta.8",
+    "@web3modal/react": "2.0.0-beta.8",
     "ethers": "5.7.2",
-    "next": "13.0.5",
+    "next": "13.0.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "wagmi": "0.8.6"
+    "wagmi": "0.8.10"
   },
   "devDependencies": {
-    "@types/node": "18.11.9",
-    "@types/react": "18.0.25",
+    "@types/node": "18.11.11",
+    "@types/react": "18.0.26",
     "@types/react-dom": "18.0.9"
   }
 }

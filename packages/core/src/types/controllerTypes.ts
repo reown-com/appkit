@@ -1,4 +1,4 @@
-import type { EthereumClient } from '@web3modal/ethereum'
+import type { Chain, EthereumClient } from '@web3modal/ethereum'
 
 export interface MobileWallet {
   id: string
@@ -48,10 +48,12 @@ export interface ModalCtrlState {
 
 // -- OptionsCtrl --------------------------------------- //
 export interface OptionsCtrlState {
-  selectedChainId?: number
+  selectedChain?: Chain
   chains?: EthereumClient['chains']
   standaloneChains?: string[]
   standaloneUri?: string
+  address?: string
+  isConnected: boolean
   isStandalone: boolean
   isCustomDesktop: boolean
   isCustomMobile: boolean
@@ -128,6 +130,7 @@ export interface ToastCtrlState {
 
 // -- RouterCtrl --------------------------------------------- //
 export type RouterView =
+  | 'Account'
   | 'CoinbaseExtensionConnector'
   | 'CoinbaseMobileConnector'
   | 'ConnectWallet'
@@ -138,6 +141,7 @@ export type RouterView =
   | 'MetaMaskConnector'
   | 'Qrcode'
   | 'SelectNetwork'
+  | 'SwitchNetwork'
   | 'WalletExplorer'
   | 'WalletFilter'
 
@@ -149,11 +153,14 @@ export interface DesktopConnectorData {
   walletId?: string
 }
 
+export type SwitchNetworkData = Chain
+
 export interface RouterCtrlState {
   history: RouterView[]
   view: RouterView
   data?: {
-    DesktopConnector: DesktopConnectorData
+    DesktopConnector?: DesktopConnectorData
+    SwitchNetwork?: SwitchNetworkData
   }
 }
 

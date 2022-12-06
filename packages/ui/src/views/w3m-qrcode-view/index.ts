@@ -1,20 +1,20 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { COPY_ICON } from '../../utils/Svgs'
-import { global } from '../../utils/Theme'
-import { handleUriCopy } from '../../utils/UiHelpers'
+import { SvgUtil } from '../../utils/SvgUtil'
+import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 
 @customElement('w3m-qrcode-view')
 export class W3mQrcodeView extends LitElement {
-  public static styles = [global]
+  public static styles = [ThemeUtil.globalCss]
 
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
       <w3m-modal-header
         title="Scan the code"
-        .onAction=${handleUriCopy}
-        .actionIcon=${COPY_ICON}
+        .onAction=${UiUtil.handleUriCopy}
+        .actionIcon=${SvgUtil.COPY_ICON}
       ></w3m-modal-header>
 
       <w3m-modal-content>

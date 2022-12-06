@@ -1,13 +1,13 @@
 import { ClientCtrl, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { global } from '../../utils/Theme'
-import { getErrorMessage, getShadowRootElement } from '../../utils/UiHelpers'
+import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-walletconnect-qr')
 export class W3mWalletConnectQr extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private uri = ''
@@ -15,15 +15,15 @@ export class W3mWalletConnectQr extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.getConnectionUri()
+    this.createConnectionAndWait()
   }
 
   // -- private ------------------------------------------------------ //
   private get overlayEl(): HTMLDivElement {
-    return getShadowRootElement(this, '.w3m-qr-container') as HTMLDivElement
+    return UiUtil.getShadowRootElement(this, '.w3m-qr-container') as HTMLDivElement
   }
 
-  private async getConnectionUri() {
+  private async createConnectionAndWait() {
     try {
       const { standaloneUri } = OptionsCtrl.state
       if (standaloneUri) {
@@ -31,12 +31,13 @@ export class W3mWalletConnectQr extends LitElement {
       } else {
         await ClientCtrl.client().connectWalletConnect(
           uri => (this.uri = uri),
-          OptionsCtrl.state.selectedChainId
+          OptionsCtrl.state.selectedChain?.id
         )
         ModalCtrl.close()
       }
     } catch (err) {
-      ToastCtrl.openToast(getErrorMessage(err), 'error')
+      ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
+      this.createConnectionAndWait()
     }
   }
 

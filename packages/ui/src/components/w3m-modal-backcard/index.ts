@@ -2,17 +2,17 @@ import { ConfigCtrl, ModalCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { CROSS_ICON, HELP_ICON, NOISE_TEXTURE, WALLET_CONNECT_LOGO } from '../../utils/Svgs'
-import { global } from '../../utils/Theme'
-import { getShadowRootElement } from '../../utils/UiHelpers'
-import Whatamesh from '../../utils/Whatamesh'
+import Whatamesh from '../../libs/Whatamesh'
+import { SvgUtil } from '../../utils/SvgUtil'
+import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 const whatamesh = new Whatamesh()
 
 @customElement('w3m-modal-backcard')
 export class W3mModalBackcard extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false
@@ -25,7 +25,7 @@ export class W3mModalBackcard extends LitElement {
       this.playTimeout = setTimeout(() => {
         whatamesh.play(this.canvasEl)
         this.open = true
-      }, 1000)
+      }, 800)
     }
   }
 
@@ -47,7 +47,7 @@ export class W3mModalBackcard extends LitElement {
   private playTimeout?: NodeJS.Timeout = undefined
 
   private get canvasEl() {
-    return getShadowRootElement(this, '.w3m-gradient-canvas')
+    return UiUtil.getShadowRootElement(this, '.w3m-canvas')
   }
 
   private onHelp() {
@@ -58,8 +58,8 @@ export class W3mModalBackcard extends LitElement {
   protected render() {
     const { themeBackground } = ConfigCtrl.state
     const classes = {
-      'w3m-gradient-canvas': true,
-      'w3m-gradient-canvas-visible': this.open
+      'w3m-canvas': true,
+      'w3m-canvas-visible': this.open
     }
 
     const actionsClasses = {
@@ -73,16 +73,16 @@ export class W3mModalBackcard extends LitElement {
         ? html`
             <div class="w3m-gradient-placeholder"></div>
             <canvas class=${classMap(classes)}></canvas>
-            ${NOISE_TEXTURE}
+            ${SvgUtil.NOISE_TEXTURE}
           `
         : null}
 
-      <div class="w3m-modal-highlight"></div>
-      <div class="w3m-modal-toolbar">
-        ${WALLET_CONNECT_LOGO}
+      <div class="w3m-highlight"></div>
+      <div class="w3m-toolbar">
+        ${SvgUtil.WALLET_CONNECT_LOGO}
         <div class=${classMap(actionsClasses)}>
-          <button class="w3m-modal-action-btn" @click=${this.onHelp}>${HELP_ICON}</button>
-          <button class="w3m-modal-action-btn" @click=${ModalCtrl.close}>${CROSS_ICON}</button>
+          <button class="w3m-action-btn" @click=${this.onHelp}>${SvgUtil.HELP_ICON}</button>
+          <button class="w3m-action-btn" @click=${ModalCtrl.close}>${SvgUtil.CROSS_ICON}</button>
         </div>
       </div>
     `

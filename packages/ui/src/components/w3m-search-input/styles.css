@@ -17,11 +17,11 @@ input {
   font-size: 16px;
   letter-spacing: -0.03em;
   padding: 0 10px 0 34px;
-  transition: 0.2s all ease-in-out;
+  transition: 0.2s all ease;
   color: transparent;
   position: absolute;
   background-color: var(--color-bg-3);
-  box-shadow: inset 0 0 0 1px var(--color-ovr-thin);
+  box-shadow: inset 0 0 0 1px var(--color-overlay);
 }
 
 input::placeholder {
@@ -36,7 +36,7 @@ svg {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  transition: 0.2s all ease-in-out;
+  transition: 0.2s all ease;
   pointer-events: none;
   display: flex;
   align-items: center;
@@ -54,7 +54,7 @@ input:not(:placeholder-shown) + .w3m-placeholder {
 
 w3m-text {
   opacity: 1;
-  transition: 0.2s opacity ease-in-out;
+  transition: 0.2s opacity ease;
 }
 
 input:focus-within + .w3m-placeholder w3m-text,

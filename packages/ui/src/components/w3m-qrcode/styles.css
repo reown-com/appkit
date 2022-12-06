@@ -34,5 +34,5 @@ w3m-wallet-image {
 }
 
 .w3m-qrcode-container svg:first-child path:last-child {
-  stroke: var(--color-ovr-thin);
+  stroke: var(--color-overlay);
 }

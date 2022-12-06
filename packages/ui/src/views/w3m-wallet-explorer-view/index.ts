@@ -1,23 +1,17 @@
 import type { Listing } from '@web3modal/core'
-import { CoreHelpers, ExplorerCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
+import { CoreUtil, ExplorerCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { global } from '../../utils/Theme'
-import {
-  debounce,
-  getErrorMessage,
-  getShadowRootElement,
-  handleMobileLinking,
-  preloadImage
-} from '../../utils/UiHelpers'
+import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 const PAGE_ENTRIES = 40
 
 @customElement('w3m-wallet-explorer-view')
 export class W3mWalletExplorerView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private loading = !ExplorerCtrl.state.wallets.listings.length
@@ -36,7 +30,7 @@ export class W3mWalletExplorerView extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private get placeholderEl() {
-    return getShadowRootElement(this, '.w3m-placeholder-block')
+    return UiUtil.getShadowRootElement(this, '.w3m-placeholder-block')
   }
 
   private intersectionObserver: IntersectionObserver | undefined = undefined
@@ -71,15 +65,18 @@ export class W3mWalletExplorerView extends LitElement {
         const { listings: newListings } = await ExplorerCtrl.getPaginatedWallets({
           page: this.firstFetch ? 1 : page + 1,
           entries: PAGE_ENTRIES,
-          device: CoreHelpers.isMobile() ? 'mobile' : 'desktop',
+          device: CoreUtil.isMobile() ? 'mobile' : 'desktop',
           search: this.search,
           chains
         })
         const images = newListings.map(({ image_url }) => image_url.lg)
-        await Promise.all([...images.map(async url => preloadImage(url)), CoreHelpers.wait(300)])
+        await Promise.all([
+          ...images.map(async url => UiUtil.preloadImage(url)),
+          CoreUtil.wait(300)
+        ])
         this.endReached = this.isLastPage()
       } catch (err) {
-        ToastCtrl.openToast(getErrorMessage(err), 'error')
+        ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
       } finally {
         this.loading = false
         this.firstFetch = false
@@ -88,9 +85,9 @@ export class W3mWalletExplorerView extends LitElement {
   }
 
   private async onConnectPlatform(listing: Listing) {
-    if (CoreHelpers.isMobile()) {
+    if (CoreUtil.isMobile()) {
       const { native, universal } = listing.mobile
-      await handleMobileLinking({ native, universal }, listing.name)
+      await UiUtil.handleMobileLinking({ native, universal }, listing.name)
     } else {
       RouterCtrl.push('DesktopConnector', {
         DesktopConnector: {
@@ -103,7 +100,7 @@ export class W3mWalletExplorerView extends LitElement {
     }
   }
 
-  private readonly searchDebounce = debounce((value: string) => {
+  private readonly searchDebounce = UiUtil.debounce((value: string) => {
     if (value.length >= 3) {
       this.firstFetch = true
       this.endReached = false
@@ -129,7 +126,7 @@ export class W3mWalletExplorerView extends LitElement {
     const isEmpty = !this.loading && !listings.length
     const classes = {
       'w3m-loading': this.loading && !listings.length,
-      'w3m-end-reached': this.endReached,
+      'w3m-end-reached': this.endReached || !this.loading,
       'w3m-empty': isEmpty
     }
 
@@ -139,7 +136,7 @@ export class W3mWalletExplorerView extends LitElement {
       </w3m-modal-header>
 
       <w3m-modal-content class=${classMap(classes)}>
-        <div class="w3m-content">
+        <div class="w3m-grid">
           ${listings.map(
             listing => html`
               <w3m-wallet-button
@@ -155,7 +152,8 @@ export class W3mWalletExplorerView extends LitElement {
         <div class="w3m-placeholder-block">
           ${isEmpty
             ? html`<w3m-text variant="large-bold" color="secondary">No results found</w3m-text>`
-            : html`<w3m-spinner></w3m-spinner>`}
+            : null}
+          ${!isEmpty && this.loading ? html`<w3m-spinner></w3m-spinner>` : null}
         </div>
       </w3m-modal-content>
     `

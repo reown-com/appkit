@@ -55,6 +55,14 @@ export default function CustomPage() {
             id: 'tokenary',
             name: 'Tokenary',
             links: { native: 'tokenary://', universal: 'https://tokenary.io' }
+          },
+          {
+            id: 'oreid',
+            name: 'OREID',
+            links: {
+              native: '',
+              universal: 'https://www.oreid.io/'
+            }
           }
         ]}
         // Custom Wallet Images
@@ -65,7 +73,8 @@ export default function CustomPage() {
           coinbaseWallet: '/images/wallet_coinbase.webp',
           zerion: '/images/wallet_zerion.webp',
           trust: '/images/wallet_trust.webp',
-          rainbow: '/images/wallet_rainbow.webp'
+          rainbow: '/images/wallet_rainbow.webp',
+          oreid: '/images/wallet_oreid.svg'
         }}
         // Custom Chain Images
         chainImages={{

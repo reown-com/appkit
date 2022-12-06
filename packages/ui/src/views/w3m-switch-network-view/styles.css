@@ -1,0 +1,33 @@
+.w3m-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  flex-direction: column;
+}
+
+.w3m-connecting-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+w3m-spinner {
+  margin-right: 10px;
+}
+
+w3m-network-image {
+  width: 96px;
+  height: 96px;
+  margin-bottom: 20px;
+}
+
+w3m-button {
+  opacity: 0;
+}
+
+.w3m-error w3m-button {
+  opacity: 1;
+}

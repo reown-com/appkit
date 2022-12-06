@@ -8,15 +8,15 @@ import {
 } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { getOptimisticNamePreset } from '../../utils/Presets'
-import { QRCODE_ICON } from '../../utils/Svgs'
-import { global } from '../../utils/Theme'
-import { handleMobileLinking } from '../../utils/UiHelpers'
+import { PresetUtil } from '../../utils/PresetUtil'
+import { SvgUtil } from '../../utils/SvgUtil'
+import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-mobile-wallet-selection')
 export class W3mMobileWalletSelection extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
   private onGoToQrcode() {
@@ -24,11 +24,11 @@ export class W3mMobileWalletSelection extends LitElement {
   }
 
   private async onConnectorWallet(id: string) {
-    const { selectedChainId } = OptionsCtrl.state
+    const { selectedChain } = OptionsCtrl.state
     if (id === 'coinbaseWallet') {
-      await ClientCtrl.client().connectCoinbaseMobile(() => null, selectedChainId)
+      await ClientCtrl.client().connectCoinbaseMobile(() => null, selectedChain?.id)
     } else {
-      await ClientCtrl.client().connectConnector(id, selectedChainId)
+      await ClientCtrl.client().connectConnector(id, selectedChain?.id)
     }
 
     ModalCtrl.close()
@@ -39,8 +39,8 @@ export class W3mMobileWalletSelection extends LitElement {
     const wallets = [...(mobileWallets ?? [])]
 
     if (window.ethereum) {
-      const injectedName = getOptimisticNamePreset('injected')
-      const idx = wallets.findIndex(({ name }) => getOptimisticNamePreset(name) === injectedName)
+      const injectedName = PresetUtil.optimisticName('injected')
+      const idx = wallets.findIndex(({ name }) => PresetUtil.optimisticName(name) === injectedName)
       if (idx > -1) {
         wallets.splice(idx, 1)
       }
@@ -52,7 +52,7 @@ export class W3mMobileWalletSelection extends LitElement {
           <w3m-wallet-button
             name=${name}
             walletId=${id}
-            .onClick=${async () => handleMobileLinking({ native, universal }, name)}
+            .onClick=${async () => UiUtil.handleMobileLinking({ native, universal }, name)}
           ></w3m-wallet-button>
         `
       )
@@ -66,8 +66,8 @@ export class W3mMobileWalletSelection extends LitElement {
     const wallets = [...previewWallets]
 
     if (window.ethereum) {
-      const injectedName = getOptimisticNamePreset('injected')
-      const idx = wallets.findIndex(({ name }) => getOptimisticNamePreset(name) === injectedName)
+      const injectedName = PresetUtil.optimisticName('injected')
+      const idx = wallets.findIndex(({ name }) => PresetUtil.optimisticName(name) === injectedName)
       wallets.splice(idx, 1)
     }
 
@@ -76,7 +76,7 @@ export class W3mMobileWalletSelection extends LitElement {
         <w3m-wallet-button
           name=${name}
           src=${image_url.lg}
-          .onClick=${async () => handleMobileLinking({ native, universal }, name)}
+          .onClick=${async () => UiUtil.handleMobileLinking({ native, universal }, name)}
         ></w3m-wallet-button>
       `
     )
@@ -133,23 +133,23 @@ export class W3mMobileWalletSelection extends LitElement {
       <w3m-modal-header
         title="Connect your wallet"
         .onAction=${this.onGoToQrcode}
-        .actionIcon=${QRCODE_ICON}
+        .actionIcon=${SvgUtil.QRCODE_ICON}
       ></w3m-modal-header>
 
       ${isMobileWallets
         ? html`
             <w3m-modal-content>
-              <div class="w3m-view-row">${row1}</div>
-              ${row2.length
-                ? html`
-                    <div class="w3m-view-row">
+              <div class="w3m-grid">
+                ${row1}
+                ${row2.length
+                  ? html`
                       ${row2}
                       ${isViewAll
                         ? html`<w3m-view-all-wallets-button></w3m-view-all-wallets-button>`
                         : null}
-                    </div>
-                  `
-                : null}
+                    `
+                  : null}
+              </div>
             </w3m-modal-content>
           `
         : null}

@@ -1,6 +1,6 @@
-import { WALLETCONNECT_DEEPLINK_CHOICE } from './CoreConstants'
+const WALLETCONNECT_DEEPLINK_CHOICE = 'WALLETCONNECT_DEEPLINK_CHOICE'
 
-export const CoreHelpers = {
+export const CoreUtil = {
   isCoinbaseExtension() {
     return window.coinbaseWalletExtension
   },
@@ -24,7 +24,14 @@ export const CoreHelpers = {
     )
   },
 
-  formatNativeUrl(appUrl: string, wcUri: string, name: string) {
+  isHttpUrl(url: string) {
+    return url.startsWith('http://') || url.startsWith('https://')
+  },
+
+  formatNativeUrl(appUrl: string, wcUri: string, name: string): string {
+    if (CoreUtil.isHttpUrl(appUrl)) {
+      return this.formatUniversalUrl(appUrl, wcUri, name)
+    }
     const plainAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
     this.setWalletConnectDeepLink(plainAppUrl, name)
     const encodedWcUrl = encodeURIComponent(wcUri)
@@ -32,7 +39,10 @@ export const CoreHelpers = {
     return `${plainAppUrl}://wc?uri=${encodedWcUrl}`
   },
 
-  formatUniversalUrl(appUrl: string, wcUri: string, name: string) {
+  formatUniversalUrl(appUrl: string, wcUri: string, name: string): string {
+    if (!CoreUtil.isHttpUrl(appUrl)) {
+      return this.formatNativeUrl(appUrl, wcUri, name)
+    }
     let plainAppUrl = appUrl
     if (appUrl.endsWith('/')) {
       plainAppUrl = appUrl.slice(0, -1)

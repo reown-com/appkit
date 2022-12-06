@@ -1,12 +1,12 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { global } from '../../utils/Theme'
-import { getWalletFirstName } from '../../utils/UiHelpers'
+import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-wallet-button')
 export class W3mWalletButton extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public onClick: () => void = () => null
@@ -18,11 +18,11 @@ export class W3mWalletButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <button class="w3m-wallet-button" @click=${this.onClick}>
-        <div class="w3m-wallet-button-wrap">
+      <button @click=${this.onClick}>
+        <div>
           <w3m-wallet-image walletId=${this.walletId} .src=${this.src}></w3m-wallet-image>
           <w3m-text variant="xsmall-normal">
-            ${this.label ?? getWalletFirstName(this.name)}
+            ${this.label ?? UiUtil.getWalletFirstName(this.name)}
           </w3m-text>
         </div>
       </button>

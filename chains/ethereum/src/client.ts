@@ -1,5 +1,14 @@
 import type { Chain, Client, Connector } from '@wagmi/core'
-import { connect, disconnect, getAccount, watchAccount } from '@wagmi/core'
+import {
+  connect,
+  disconnect,
+  fetchBalance,
+  getAccount,
+  getNetwork,
+  switchNetwork,
+  watchAccount,
+  watchNetwork
+} from '@wagmi/core'
 import type { ConnectorId } from './types'
 
 export class EthereumClient {
@@ -16,12 +25,14 @@ export class EthereumClient {
     this.chains = chains
   }
 
-  // -- private
+  // -- private ------------------------------------------- //
   private getDefaultConnectorChainId(connector: Connector) {
     return connector.chains[0].id
   }
 
-  // -- public web3modal
+  // -- public web3modal ---------------------------------- //
+  public namespace = 'eip155'
+
   public getConnectorById(id: ConnectorId | string) {
     const connector = this.wagmi.connectors.find(item => item.id === id)
     if (!connector) {
@@ -49,12 +60,17 @@ export class EthereumClient {
     const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
 
     async function getProviderUri() {
-      return new Promise<void>(resolve => {
+      return new Promise<void>((resolve, reject) => {
         connector.once('message', async ({ type }) => {
           if (type === 'connecting') {
-            const provider = await connector.getProvider()
-            onUri(provider.connector.uri)
-            resolve()
+            const providerConnector = (await connector.getProvider()).connector
+            onUri(providerConnector.uri)
+            providerConnector.on('disconnect', () => {
+              reject(Error('Connection request declined'))
+            })
+            providerConnector.on('connect', () => {
+              resolve()
+            })
           }
         })
       })
@@ -99,4 +115,12 @@ export class EthereumClient {
   public getAccount = getAccount
 
   public watchAccount = watchAccount
+
+  public fetchBalance = fetchBalance
+
+  public getNetwork = getNetwork
+
+  public watchNetwork = watchNetwork
+
+  public switchNetwork = switchNetwork
 }

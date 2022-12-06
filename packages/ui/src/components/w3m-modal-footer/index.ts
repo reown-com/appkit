@@ -1,18 +1,18 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-modal-footer')
 export class W3mModalFooter extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <div class="w3m-modal-footer">
+      <footer>
         <slot></slot>
-      </div>
+      </footer>
     `
   }
 }

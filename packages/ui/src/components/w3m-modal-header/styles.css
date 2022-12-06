@@ -1,20 +1,20 @@
-.w3m-modal-header {
+header {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 18px;
+  padding: 18px 20px;
   position: relative;
   border-bottom: 1px solid var(--color-bg-2);
 }
 
-.w3m-modal-header button {
-  background-color: transparent;
-  padding: 13px 17px;
-  transition: opacity 0.2s ease-in-out;
+header button {
+  padding: 15px 20px;
+  transition: opacity 0.2s ease;
 }
-
-.w3m-modal-header button:hover {
-  opacity: 0.5;
+@media (hover: hover) {
+  header button:hover {
+    opacity: 0.5;
+  }
 }
 
 .w3m-back-btn {

@@ -2,13 +2,13 @@ import { ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { CHECKMARK_ICON, CROSS_ICON } from '../../utils/Svgs'
-import { global } from '../../utils/Theme'
+import { SvgUtil } from '../../utils/SvgUtil'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-modal-toast')
 export class W3mModalToast extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() public open = false
@@ -18,7 +18,7 @@ export class W3mModalToast extends LitElement {
     this.unsubscribe = ToastCtrl.subscribe(newState => {
       if (newState.open) {
         this.open = true
-        this.timeout = setTimeout(() => ToastCtrl.closeToast(), 1200)
+        this.timeout = setTimeout(() => ToastCtrl.closeToast(), 2000)
       } else {
         this.open = false
         clearTimeout(this.timeout)
@@ -48,8 +48,8 @@ export class W3mModalToast extends LitElement {
     return this.open
       ? html`
           <div class=${classMap(classes)}>
-            ${variant === 'success' ? CHECKMARK_ICON : null}
-            ${variant === 'error' ? CROSS_ICON : null}
+            ${variant === 'success' ? SvgUtil.CHECKMARK_ICON : null}
+            ${variant === 'error' ? SvgUtil.CROSS_ICON : null}
             <w3m-text variant="small-normal">${message}</w3m-text>
           </div>
         `

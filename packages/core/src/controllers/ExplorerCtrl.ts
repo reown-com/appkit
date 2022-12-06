@@ -1,6 +1,6 @@
 import { proxy } from 'valtio/vanilla'
 import type { ExplorerCtrlState, PageParams } from '../types/controllerTypes'
-import { fetchWallets, formatImageUrl } from '../utils/ExplorerApi'
+import { ExplorerUtil } from '../utils/ExplorerUtil'
 import { ConfigCtrl } from './ConfigCtrl'
 
 // -- initial state ------------------------------------------------ //
@@ -26,20 +26,20 @@ export const ExplorerCtrl = {
   state,
 
   async getPreviewWallets(params: PageParams) {
-    const { listings } = await fetchWallets(getProjectId(), params)
+    const { listings } = await ExplorerUtil.fetchWallets(getProjectId(), params)
     state.previewWallets = Object.values(listings)
 
     return state.previewWallets
   },
 
   async getRecomendedWallets() {
-    const { listings } = await fetchWallets(getProjectId(), { page: 1, entries: 6 })
+    const { listings } = await ExplorerUtil.fetchWallets(getProjectId(), { page: 1, entries: 6 })
     state.recomendedWallets = Object.values(listings)
   },
 
   async getPaginatedWallets(params: PageParams) {
     const { page, search } = params
-    const { listings: listingsObj, total } = await fetchWallets(getProjectId(), params)
+    const { listings: listingsObj, total } = await ExplorerUtil.fetchWallets(getProjectId(), params)
     const listings = Object.values(listingsObj)
     const type = search ? 'search' : 'wallets'
     state[type] = {
@@ -52,7 +52,7 @@ export const ExplorerCtrl = {
   },
 
   getImageUrl(imageId: string) {
-    return formatImageUrl(getProjectId(), imageId)
+    return ExplorerUtil.formatImageUrl(getProjectId(), imageId)
   },
 
   resetSearch() {

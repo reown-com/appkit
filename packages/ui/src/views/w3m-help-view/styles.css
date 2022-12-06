@@ -12,7 +12,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .w3m-info-container:last-child {
@@ -30,5 +30,5 @@
 }
 
 .help-img-highlight {
-  stroke: var(--color-ovr-thin);
+  stroke: var(--color-overlay);
 }

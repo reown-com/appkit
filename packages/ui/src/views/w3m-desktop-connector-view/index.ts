@@ -1,15 +1,18 @@
-import { ClientCtrl, CoreHelpers, ModalCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { getOptimisticNamePreset } from '../../utils/Presets'
-import { ARROW_UP_RIGHT_ICON, MOBILE_ICON, RETRY_ICON } from '../../utils/Svgs'
-import { color, global } from '../../utils/Theme'
+import { PresetUtil } from '../../utils/PresetUtil'
+import { SvgUtil } from '../../utils/SvgUtil'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-desktop-connector-view')
 export class W3mDesktopConnectorView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
+
+  // -- state & properties ------------------------------------------- //
+  @state() private uri = ''
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -27,41 +30,46 @@ export class W3mDesktopConnectorView extends LitElement {
     return data
   }
 
-  private onOpenHref(uri: string) {
-    const { native, name } = this.getRouterData()
+  private onFormatAndRedirect(uri: string) {
+    const { native, universal, name } = this.getRouterData()
     if (native) {
-      const href = CoreHelpers.formatNativeUrl(native, uri, name)
-      if (href) {
-        CoreHelpers.openHref(href)
-      }
+      const href = CoreUtil.formatNativeUrl(native, uri, name)
+      CoreUtil.openHref(href)
+    } else if (universal) {
+      const href = CoreUtil.formatUniversalUrl(universal, uri, name)
+      CoreUtil.openHref(href, '_blank')
     }
   }
 
   private async onConnect() {
     const { standaloneUri } = OptionsCtrl.state
     if (standaloneUri) {
-      this.onOpenHref(standaloneUri)
+      this.onFormatAndRedirect(standaloneUri)
     } else {
-      await ClientCtrl.client().connectWalletConnect(
-        uri => this.onOpenHref(uri),
-        OptionsCtrl.state.selectedChainId
-      )
+      await ClientCtrl.client().connectWalletConnect(uri => {
+        this.uri = uri
+        this.onFormatAndRedirect(uri)
+      }, OptionsCtrl.state.selectedChain?.id)
       ModalCtrl.close()
     }
   }
 
-  private onMobile() {
+  private onConnectWithMobile() {
     RouterCtrl.push('Qrcode')
   }
 
-  private onInstall(link: string) {
-    CoreHelpers.openHref(link, '_blank')
+  private onGoToWallet() {
+    const { universal, name } = this.getRouterData()
+    if (universal) {
+      const href = CoreUtil.formatUniversalUrl(universal, this.uri, name)
+      CoreUtil.openHref(href, '_blank')
+    }
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
     const { name, icon, universal, walletId } = this.getRouterData()
-    const optimisticName = getOptimisticNamePreset(name)
+    const optimisticName = PresetUtil.optimisticName(name)
 
     return html`
       <w3m-modal-header title=${optimisticName}></w3m-modal-header>
@@ -73,29 +81,28 @@ export class W3mDesktopConnectorView extends LitElement {
             : html`<w3m-wallet-image size="lg" walletid=${ifDefined(walletId)}></w3m-wallet-image>`}
 
           <div class="w3m-connecting-title">
-            <w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>
+            <w3m-spinner></w3m-spinner>
             <w3m-text variant="large-bold" color="secondary">
               ${`Continue in ${optimisticName}...`}
             </w3m-text>
           </div>
 
           <div class="w3m-install-actions">
-            <w3m-button .onClick=${this.onConnect.bind(this)} .iconRight=${RETRY_ICON}>
+            <w3m-button .onClick=${this.onConnect.bind(this)} .iconRight=${SvgUtil.RETRY_ICON}>
               Retry
             </w3m-button>
 
             ${universal
               ? html`
                   <w3m-button
-                    variant="ghost"
-                    .onClick=${() => this.onInstall(universal)}
-                    .iconLeft=${ARROW_UP_RIGHT_ICON}
+                    .onClick=${this.onGoToWallet.bind(this)}
+                    .iconLeft=${SvgUtil.ARROW_UP_RIGHT_ICON}
                   >
                     Go to Wallet
                   </w3m-button>
                 `
               : html`
-                  <w3m-button .onClick=${this.onMobile} .iconLeft=${MOBILE_ICON} variant="ghost">
+                  <w3m-button .onClick=${this.onConnectWithMobile} .iconLeft=${SvgUtil.MOBILE_ICON}>
                     Connect with Mobile
                   </w3m-button>
                 `}

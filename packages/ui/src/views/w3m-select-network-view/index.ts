@@ -1,17 +1,27 @@
+import type { SwitchNetworkData } from '@web3modal/core'
 import { OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-select-network-view')
 export class W3mSelectNetworkView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
-  private onSelectChain(chainId: number) {
-    OptionsCtrl.setSelectedChainId(chainId)
-    RouterCtrl.push('ConnectWallet')
+  private onSelectChain(chain: SwitchNetworkData) {
+    const { isConnected, selectedChain } = OptionsCtrl.state
+    if (isConnected) {
+      if (selectedChain?.id === chain.id) {
+        RouterCtrl.replace('Account')
+      } else {
+        RouterCtrl.push('SwitchNetwork', { SwitchNetwork: chain })
+      }
+    } else {
+      RouterCtrl.push('ConnectWallet')
+      OptionsCtrl.setSelectedChain(chain)
+    }
   }
 
   // -- render ------------------------------------------------------- //
@@ -21,16 +31,16 @@ export class W3mSelectNetworkView extends LitElement {
     return html`
       <w3m-modal-header title="Select network"></w3m-modal-header>
       <w3m-modal-content>
-        <div class="w3m-container">
+        <div class="w3m-grid">
           ${chains?.map(
-            ({ name, id }) =>
+            chain =>
               html`
                 <w3m-network-button
-                  name=${name}
-                  chainId=${id}
-                  .onClick=${() => this.onSelectChain(id)}
+                  name=${chain.name}
+                  chainId=${chain.id}
+                  .onClick=${() => this.onSelectChain(chain)}
                 >
-                  ${name}
+                  ${chain.name}
                 </w3m-network-button>
               `
           )}

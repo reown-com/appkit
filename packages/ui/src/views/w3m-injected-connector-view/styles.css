@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  aspect-ratio: 1 / 1.25;
+  aspect-ratio: 1 / 1;
   flex-direction: column;
 }
 
@@ -11,7 +11,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 w3m-spinner {

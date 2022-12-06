@@ -1,15 +1,15 @@
 import { ExplorerCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { getOptimisticWalletIdPreset } from '../../utils/Presets'
-import { WALLET_PLACEHOLDER } from '../../utils/Svgs'
-import { global } from '../../utils/Theme'
-import { getCustomWallets, getWalletIcon } from '../../utils/UiHelpers'
+import { PresetUtil } from '../../utils/PresetUtil'
+import { SvgUtil } from '../../utils/SvgUtil'
+import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-view-all-wallets-button')
 export class W3mViewAllWalletsButton extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- render ------------------------------------------------------- //
   private onClick(isPreviewWallets: boolean, isCustomWallets: boolean) {
@@ -23,7 +23,7 @@ export class W3mViewAllWalletsButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { previewWallets } = ExplorerCtrl.state
-    const customWallets = getCustomWallets()
+    const customWallets = UiUtil.getCustomWallets()
     const rePreviewWallets = [...previewWallets].reverse().slice(0, 4)
     const reCustomWallets = [...customWallets].reverse().slice(0, 4)
     const isPreviewWallets = Boolean(rePreviewWallets.length)
@@ -37,10 +37,10 @@ export class W3mViewAllWalletsButton extends LitElement {
             : null}
           ${isCustomWallets
             ? reCustomWallets.map(wallet => {
-                const optimisticId = getOptimisticWalletIdPreset(wallet.id)
-                const src = getWalletIcon(optimisticId)
+                const optimisticId = PresetUtil.optimisticWalletId(wallet.id)
+                const src = UiUtil.getWalletIcon(optimisticId)
 
-                return src ? html`<img src=${src} />` : WALLET_PLACEHOLDER
+                return src ? html`<img src=${src} />` : SvgUtil.WALLET_PLACEHOLDER
               })
             : null}
         </div>

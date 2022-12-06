@@ -2,25 +2,25 @@ import type { DesktopConnectorData } from '@web3modal/core'
 import {
   ClientCtrl,
   ConfigCtrl,
-  CoreHelpers,
+  CoreUtil,
   ExplorerCtrl,
   OptionsCtrl,
   RouterCtrl
 } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { COPY_ICON, DESKTOP_ICON, MOBILE_ICON, SCAN_ICON } from '../../utils/Svgs'
-import { global } from '../../utils/Theme'
-import { handleUriCopy } from '../../utils/UiHelpers'
+import { SvgUtil } from '../../utils/SvgUtil'
+import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-desktop-wallet-selection')
 export class W3mDesktopWalletSelection extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
   private onCoinbaseWallet() {
-    if (CoreHelpers.isCoinbaseExtension()) {
+    if (CoreUtil.isCoinbaseExtension()) {
       RouterCtrl.push('CoinbaseExtensionConnector')
     } else {
       RouterCtrl.push('CoinbaseMobileConnector')
@@ -47,8 +47,8 @@ export class W3mDesktopWalletSelection extends LitElement {
     } else if (id === 'injected') {
       this.onInjectedWallet()
     } else {
-      const { selectedChainId } = OptionsCtrl.state
-      ClientCtrl.client().connectConnector(id, selectedChainId)
+      const { selectedChain } = OptionsCtrl.state
+      ClientCtrl.client().connectConnector(id, selectedChain?.id)
     }
   }
 
@@ -122,20 +122,20 @@ export class W3mDesktopWalletSelection extends LitElement {
     return html`
       <w3m-modal-header
         title="Connect your wallet"
-        .onAction=${handleUriCopy}
-        .actionIcon=${COPY_ICON}
+        .onAction=${UiUtil.handleUriCopy}
+        .actionIcon=${SvgUtil.COPY_ICON}
       ></w3m-modal-header>
 
       <w3m-modal-content>
         <div class="w3m-mobile-title">
           <div class="w3m-subtitle">
-            ${MOBILE_ICON}
+            ${SvgUtil.MOBILE_ICON}
             <w3m-text variant="small-normal" color="accent">Mobile</w3m-text>
           </div>
 
           <div class="w3m-subtitle">
-            ${SCAN_ICON}
-            <w3m-text variant="small-normal" color="tertiary">Scan with your wallet</w3m-text>
+            ${SvgUtil.SCAN_ICON}
+            <w3m-text variant="small-normal" color="secondary">Scan with your wallet</w3m-text>
           </div>
         </div>
         <w3m-walletconnect-qr></w3m-walletconnect-qr>
@@ -145,11 +145,11 @@ export class W3mDesktopWalletSelection extends LitElement {
         ? html`
             <w3m-modal-footer>
               <div class="w3m-desktop-title">
-                ${DESKTOP_ICON}
+                ${SvgUtil.DESKTOP_ICON}
                 <w3m-text variant="small-normal" color="accent">Desktop</w3m-text>
               </div>
 
-              <div class="w3m-view-row">
+              <div class="w3m-grid">
                 ${wallets}
                 ${isViewAll
                   ? html`<w3m-view-all-wallets-button></w3m-view-all-wallets-button>`

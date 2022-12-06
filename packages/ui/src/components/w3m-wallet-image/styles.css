@@ -17,7 +17,7 @@ svg {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 1px solid var(--color-ovr-thin);
+  border: 1px solid var(--color-overlay);
 }
 
 .w3m-wallet-image img {
@@ -32,5 +32,5 @@ svg {
 }
 
 #wallet-placeholder-dash {
-  stroke: var(--color-ovr-thin);
+  stroke: var(--color-overlay);
 }

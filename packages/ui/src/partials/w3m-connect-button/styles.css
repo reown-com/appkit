@@ -1,5 +1,5 @@
 button {
-  padding: 0 15px 1px;
+  padding: 0 15px;
   height: 40px;
   border-radius: 10px;
   color: var(--color-fg-invers);
@@ -12,12 +12,12 @@ button::after {
   position: absolute;
   background-color: transparent;
   border-radius: inherit;
-  transition: background-color 0.2s ease-in-out;
-  border: 1px solid var(--color-ovr-thin);
+  transition: background-color 0.2s ease;
+  border: 1px solid var(--color-overlay);
 }
 
 button:hover::after {
-  background-color: var(--color-ovr-thin);
+  background-color: var(--color-overlay);
 }
 
 button:disabled {
@@ -28,10 +28,6 @@ button:disabled {
 
 .w3m-button-loading {
   padding: 0 15px;
-}
-
-.w3m-button-loading:disabled {
-  background-color: var(--color-bg-accent);
 }
 
 svg {

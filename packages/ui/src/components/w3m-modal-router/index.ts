@@ -3,13 +3,13 @@ import { RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
-import { global } from '../../utils/Theme'
-import { getShadowRootElement } from '../../utils/UiHelpers'
+import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-modal-router')
 export class W3mModalRouter extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() public view: RouterView = RouterCtrl.state.view
@@ -27,7 +27,7 @@ export class W3mModalRouter extends LitElement {
 
   public firstUpdated() {
     this.resizeObserver = new ResizeObserver(([conetnt]) => {
-      const newHeight = `${conetnt.borderBoxSize[0].blockSize}px`
+      const newHeight = `${conetnt.contentRect.height}px`
       if (this.oldHeight !== '0px') {
         animate(this.routerEl, { height: [this.oldHeight, newHeight] }, { duration: 0.2 })
         animate(
@@ -52,11 +52,11 @@ export class W3mModalRouter extends LitElement {
   private resizeObserver?: ResizeObserver = undefined
 
   private get routerEl() {
-    return getShadowRootElement(this, '.w3m-modal-router')
+    return UiUtil.getShadowRootElement(this, '.w3m-router')
   }
 
   private get contentEl() {
-    return getShadowRootElement(this, '.w3m-modal-router-content')
+    return UiUtil.getShadowRootElement(this, '.w3m-content')
   }
 
   private viewTemplate() {
@@ -85,6 +85,10 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-help-view></w3m-help-view>`
       case 'WalletFilter':
         return html`<w3m-wallet-filter-view></w3m-wallet-filter-view>`
+      case 'Account':
+        return html`<w3m-account-view></w3m-account-view>`
+      case 'SwitchNetwork':
+        return html`<w3m-switch-network-view></w3m-switch-network-view>`
       default:
         return html`<div>Not Found</div>`
     }
@@ -97,8 +101,8 @@ export class W3mModalRouter extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    return html`<div class="w3m-modal-router">
-      <div class="w3m-modal-router-content">${this.viewTemplate()}</div>
+    return html`<div class="w3m-router">
+      <div class="w3m-content">${this.viewTemplate()}</div>
     </div>`
   }
 }

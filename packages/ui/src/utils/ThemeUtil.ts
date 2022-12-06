@@ -1,7 +1,7 @@
 import { ConfigCtrl } from '@web3modal/core'
-import { css, unsafeCSS } from 'lit'
+import { css } from 'lit'
 
-export function themeColors() {
+function themeColors() {
   return {
     default: {
       light: {
@@ -109,7 +109,7 @@ export function themeColors() {
   }
 }
 
-export function themeModeColors() {
+function themeModeColors() {
   return {
     light: {
       foreground: {
@@ -118,14 +118,11 @@ export function themeModeColors() {
         3: `rgb(158,169,169)`
       },
       background: {
-        1: `rgba(255,255,255)`,
-        2: `rgba(241,243,243)`,
-        3: `rgba(228,231,231)`
+        1: `rgb(255,255,255)`,
+        2: `rgb(241,243,243)`,
+        3: `rgb(228,231,231)`
       },
-      overlay: {
-        thin: 'rgba(0,0,0,0.1)',
-        thick: 'rgba(0,0,0,0.3)'
-      }
+      overlay: 'rgba(0,0,0,0.1)'
     },
 
     dark: {
@@ -139,15 +136,12 @@ export function themeModeColors() {
         2: `rgb(39,42,42)`,
         3: `rgb(59,64,64)`
       },
-      overlay: {
-        thin: 'rgba(255,255,255,0.1)',
-        thick: 'rgba(255,255,255,0.3)'
-      }
+      overlay: 'rgba(255,255,255,0.1'
     }
   }
 }
 
-export function gradientColors() {
+function gradientColors() {
   return {
     default: { 1: '#B6B9C9', 2: '#C653C6', 3: '#794DFF', 4: '#2EB8B8' },
     blue: { 1: '#E8EBFD', 2: '#C653C6', 3: '#2DD2C5', 4: '#3D5CF5' },
@@ -160,108 +154,110 @@ export function gradientColors() {
   }
 }
 
-export function color() {
-  const themeColor = ConfigCtrl.state.themeColor ?? 'default'
-  const themeMode = ConfigCtrl.state.themeMode ?? 'dark'
-  const accent = themeColors()[themeColor][themeMode]
-  const theme = themeModeColors()[themeMode]
-  const gradient = gradientColors()[themeColor]
+export const ThemeUtil = {
+  color() {
+    const themeColor = ConfigCtrl.state.themeColor ?? 'default'
+    const themeMode = ConfigCtrl.state.themeMode ?? 'dark'
+    const accent = themeColors()[themeColor][themeMode]
+    const theme = themeModeColors()[themeMode]
+    const gradient = gradientColors()[themeColor]
 
-  return {
-    foreground: {
-      accent: accent.foreground,
-      inverse: accent.inverse,
-      ...theme.foreground
-    },
-    background: {
-      accent: accent.background,
-      ...theme.background
-    },
-    gradient,
-    overlay: { ...theme.overlay },
-    error: `rgb(242, 90, 103)`
-  }
-}
-
-export const global = css`
-  *,
-  *::after,
-  *::before {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-style: normal;
-    text-rendering: optimizeSpeed;
-    -webkit-font-smoothing: antialiased;
-    -webkit-tap-highlight-color: transparent;
-    backface-visibility: hidden;
-  }
-
-  button {
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    border: none;
-  }
-
-  button::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-color: transparent;
-    transition: background-color, 0.2s ease-in-out;
-  }
-
-  button:disabled {
-    cursor: not-allowed;
-  }
-
-  button svg,
-  button w3m-text {
-    position: relative;
-    z-index: 1;
-  }
-
-  input {
-    border: none;
-    outline: none;
-    appearance: none;
-  }
-
-  img {
-    display: block;
-  }
-
-  ::selection {
-    color: ${unsafeCSS(color().foreground.inverse)};
-    background: ${unsafeCSS(color().foreground.accent)};
-  }
-`
-
-export function setTheme() {
-  const root: HTMLElement | null = document.querySelector(':root')
-
-  if (root) {
-    const variables = {
-      '--color-fg-accent': color().foreground.accent,
-      '--color-fg-inverse': color().foreground.inverse,
-      '--color-fg-1': color().foreground[1],
-      '--color-fg-2': color().foreground[2],
-      '--color-fg-3': color().foreground[3],
-      '--color-bg-accent': color().background.accent,
-      '--color-bg-1': color().background[1],
-      '--color-bg-2': color().background[2],
-      '--color-bg-3': color().background[3],
-      '--color-ovr-thin': color().overlay.thin,
-      '--color-ovr-thick': color().overlay.thick,
-      '--color-err': color().error,
-      '--gradient-1': color().gradient[1],
-      '--gradient-2': color().gradient[2],
-      '--gradient-3': color().gradient[3],
-      '--gradient-4': color().gradient[4]
+    return {
+      foreground: {
+        accent: accent.foreground,
+        inverse: accent.inverse,
+        ...theme.foreground
+      },
+      background: {
+        accent: accent.background,
+        ...theme.background
+      },
+      gradient,
+      overlay: theme.overlay,
+      error: `rgb(242, 90, 103)`
     }
-    Object.entries(variables).forEach(([key, val]) => root.style.setProperty(key, val))
-  }
+  },
+
+  setTheme() {
+    const root: HTMLElement | null = document.querySelector(':root')
+
+    if (root) {
+      const variables = {
+        '--color-fg-accent': ThemeUtil.color().foreground.accent,
+        '--color-fg-inverse': ThemeUtil.color().foreground.inverse,
+        '--color-fg-1': ThemeUtil.color().foreground[1],
+        '--color-fg-2': ThemeUtil.color().foreground[2],
+        '--color-fg-3': ThemeUtil.color().foreground[3],
+        '--color-bg-1': ThemeUtil.color().background[1],
+        '--color-bg-2': ThemeUtil.color().background[2],
+        '--color-bg-3': ThemeUtil.color().background[3],
+        '--color-overlay': ThemeUtil.color().overlay,
+        '--color-err': ThemeUtil.color().error,
+        '--color-success': themeColors().green.light.foreground,
+        '--gradient-1': ThemeUtil.color().gradient[1],
+        '--gradient-2': ThemeUtil.color().gradient[2],
+        '--gradient-3': ThemeUtil.color().gradient[3],
+        '--gradient-4': ThemeUtil.color().gradient[4]
+      }
+      Object.entries(variables).forEach(([key, val]) => root.style.setProperty(key, val))
+    }
+  },
+
+  globalCss: css`
+    *,
+    *::after,
+    *::before {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-style: normal;
+      text-rendering: optimizeSpeed;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-tap-highlight-color: transparent;
+      backface-visibility: hidden;
+    }
+
+    button {
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      border: none;
+      background-color: transparent;
+    }
+
+    button::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      transition: background-color, 0.2s ease;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+    }
+
+    button svg,
+    button w3m-text {
+      position: relative;
+      z-index: 1;
+    }
+
+    input {
+      border: none;
+      outline: none;
+      appearance: none;
+    }
+
+    img {
+      display: block;
+    }
+
+    ::selection {
+      color: var(--color-fg-inverse);
+      background: var(--color-fg-accent);
+    }
+  `
 }

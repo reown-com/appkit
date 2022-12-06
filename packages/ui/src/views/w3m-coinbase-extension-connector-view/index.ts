@@ -2,13 +2,13 @@ import { ClientCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { RETRY_ICON } from '../../utils/Svgs'
-import { color, global } from '../../utils/Theme'
+import { SvgUtil } from '../../utils/SvgUtil'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-coinbase-extension-connector-view')
 export class W3mCoinbaseExtensionConnectorView extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @state() private connecting = true
@@ -27,7 +27,7 @@ export class W3mCoinbaseExtensionConnectorView extends LitElement {
       this.connecting = true
       await ClientCtrl.client().connectConnector(
         'coinbaseWallet',
-        OptionsCtrl.state.selectedChainId
+        OptionsCtrl.state.selectedChain?.id
       )
       ModalCtrl.close()
     } catch (error: unknown) {
@@ -50,9 +50,7 @@ export class W3mCoinbaseExtensionConnectorView extends LitElement {
         <div class=${classMap(classes)}>
           <w3m-wallet-image walletId="coinbaseWallet" size="lg"></w3m-wallet-image>
           <div class="w3m-connecting-title">
-            ${this.connecting
-              ? html`<w3m-spinner size="22" color=${color().foreground[2]}></w3m-spinner>`
-              : null}
+            ${this.connecting ? html`<w3m-spinner></w3m-spinner>` : null}
             <w3m-text variant="large-bold" color=${this.error ? 'error' : 'secondary'}>
               ${this.error ? 'Connection declined' : `Continue in ${name}...`}
             </w3m-text>
@@ -61,7 +59,7 @@ export class W3mCoinbaseExtensionConnectorView extends LitElement {
           <w3m-button
             .onClick=${this.onConnect.bind(this)}
             .disabled=${!this.error}
-            .iconRight=${RETRY_ICON}
+            .iconRight=${SvgUtil.RETRY_ICON}
           >
             Try Again
           </w3m-button>

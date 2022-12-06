@@ -2,14 +2,14 @@ import { ConfigCtrl } from '@web3modal/core'
 import { html, LitElement, svg } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { getDots } from '../../utils/QrCode'
-import { WALLET_CONNECT_ICON_COLORED } from '../../utils/Svgs'
-import { global } from '../../utils/Theme'
+import { QrCodeUtil } from '../../utils/QrCode'
+import { SvgUtil } from '../../utils/SvgUtil'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-qrcode')
 export default class W3mQrCode extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public uri = ''
@@ -23,7 +23,7 @@ export default class W3mQrCode extends LitElement {
 
     return svg`
       <svg height=${this.size} width=${this.size}>
-        ${getDots(this.uri, this.size, this.size / 4, themeMode)}
+        ${QrCodeUtil.generate(this.uri, this.size, this.size / 4, themeMode)}
       </svg>
     `
   }
@@ -39,7 +39,7 @@ export default class W3mQrCode extends LitElement {
                 src=${ifDefined(this.logoSrc)}
               ></w3m-wallet-image>
             `
-          : WALLET_CONNECT_ICON_COLORED}
+          : SvgUtil.WALLET_CONNECT_ICON_COLORED}
         ${this.svgTemplate()}
       </div>
     `

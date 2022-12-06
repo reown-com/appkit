@@ -1,18 +1,18 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { global } from '../../utils/Theme'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-modal-content')
 export class W3mModalContent extends LitElement {
-  public static styles = [global, styles]
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <div class="w3m-modal-content">
+      <main>
         <slot></slot>
-      </div>
+      </main>
     `
   }
 }
