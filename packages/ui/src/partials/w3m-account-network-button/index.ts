@@ -38,8 +38,11 @@ export class W3mAccountNetworkButton extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
+    const { chains } = OptionsCtrl.state
+    const isMultichain = chains && chains.length > 1
+
     return html`
-      <button @click=${this.onClick}>
+      <button @click=${this.onClick} ?disabled=${!isMultichain}>
         <w3m-network-image chainId=${ifDefined(this.chainId)}></w3m-network-image>
         <w3m-text variant="xsmall-normal" color="accent">${this.label}</w3m-text>
       </button>
