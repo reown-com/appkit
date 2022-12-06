@@ -23,3 +23,11 @@ w3m-network-image {
   height: 96px;
   margin-bottom: 20px;
 }
+
+w3m-button {
+  opacity: 0;
+}
+
+.w3m-error w3m-button {
+  opacity: 1;
+}
