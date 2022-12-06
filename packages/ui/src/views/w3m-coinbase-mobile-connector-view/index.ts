@@ -30,7 +30,7 @@ export class W3mCoinbaseMobileConnectorView extends LitElement {
     try {
       await ClientCtrl.client().connectCoinbaseMobile(
         uri => (this.uri = uri),
-        OptionsCtrl.state.selectedChainId
+        OptionsCtrl.state.selectedChain?.id
       )
       ModalCtrl.close()
     } catch (err) {

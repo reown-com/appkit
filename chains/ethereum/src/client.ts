@@ -1,5 +1,13 @@
 import type { Chain, Client, Connector } from '@wagmi/core'
-import { connect, disconnect, fetchBalance, getAccount, watchAccount } from '@wagmi/core'
+import {
+  connect,
+  disconnect,
+  fetchBalance,
+  getAccount,
+  getNetwork,
+  watchAccount,
+  watchNetwork
+} from '@wagmi/core'
 import type { ConnectorId } from './types'
 
 export class EthereumClient {
@@ -16,12 +24,12 @@ export class EthereumClient {
     this.chains = chains
   }
 
-  // -- private
+  // -- private ------------------------------------------- //
   private getDefaultConnectorChainId(connector: Connector) {
     return connector.chains[0].id
   }
 
-  // -- public web3modal
+  // -- public web3modal ---------------------------------- //
   public getConnectorById(id: ConnectorId | string) {
     const connector = this.wagmi.connectors.find(item => item.id === id)
     if (!connector) {
@@ -106,4 +114,8 @@ export class EthereumClient {
   public watchAccount = watchAccount
 
   public fetchBalance = fetchBalance
+
+  public getNetwork = getNetwork
+
+  public watchNetwork = watchNetwork
 }

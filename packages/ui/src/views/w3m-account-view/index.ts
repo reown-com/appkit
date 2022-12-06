@@ -1,4 +1,4 @@
-import { AccountCtrl, ClientCtrl, ModalCtrl, ToastCtrl } from '@web3modal/core'
+import { ClientCtrl, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -16,7 +16,7 @@ export class W3mAccountView extends LitElement {
   }
 
   private async onCopyAddress() {
-    await navigator.clipboard.writeText(AccountCtrl.state.address ?? '')
+    await navigator.clipboard.writeText(OptionsCtrl.state.address ?? '')
     ToastCtrl.openToast('Address copied', 'success')
   }
 

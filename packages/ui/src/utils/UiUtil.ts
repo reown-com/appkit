@@ -79,7 +79,7 @@ export const UiUtil = {
   },
 
   async handleMobileLinking(links: { native?: string; universal?: string }, name: string) {
-    const { standaloneUri, selectedChainId } = OptionsCtrl.state
+    const { standaloneUri, selectedChain } = OptionsCtrl.state
     const { native, universal } = links
 
     function onRedirect(uri: string) {
@@ -97,7 +97,7 @@ export const UiUtil = {
     } else {
       await ClientCtrl.client().connectWalletConnect(uri => {
         onRedirect(uri)
-      }, selectedChainId)
+      }, selectedChain?.id)
       ModalCtrl.close()
     }
   },

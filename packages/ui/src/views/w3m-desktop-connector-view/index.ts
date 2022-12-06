@@ -49,7 +49,7 @@ export class W3mDesktopConnectorView extends LitElement {
       await ClientCtrl.client().connectWalletConnect(uri => {
         this.uri = uri
         this.onFormatAndRedirect(uri)
-      }, OptionsCtrl.state.selectedChainId)
+      }, OptionsCtrl.state.selectedChain?.id)
       ModalCtrl.close()
     }
   }

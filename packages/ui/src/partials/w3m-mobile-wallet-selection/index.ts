@@ -24,11 +24,11 @@ export class W3mMobileWalletSelection extends LitElement {
   }
 
   private async onConnectorWallet(id: string) {
-    const { selectedChainId } = OptionsCtrl.state
+    const { selectedChain } = OptionsCtrl.state
     if (id === 'coinbaseWallet') {
-      await ClientCtrl.client().connectCoinbaseMobile(() => null, selectedChainId)
+      await ClientCtrl.client().connectCoinbaseMobile(() => null, selectedChain?.id)
     } else {
-      await ClientCtrl.client().connectConnector(id, selectedChainId)
+      await ClientCtrl.client().connectConnector(id, selectedChain?.id)
     }
 
     ModalCtrl.close()

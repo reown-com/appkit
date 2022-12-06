@@ -31,7 +31,7 @@ export class W3mWalletConnectQr extends LitElement {
       } else {
         await ClientCtrl.client().connectWalletConnect(
           uri => (this.uri = uri),
-          OptionsCtrl.state.selectedChainId
+          OptionsCtrl.state.selectedChain?.id
         )
         ModalCtrl.close()
       }

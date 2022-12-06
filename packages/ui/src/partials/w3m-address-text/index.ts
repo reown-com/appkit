@@ -1,4 +1,4 @@
-import { AccountCtrl } from '@web3modal/core'
+import { OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -15,8 +15,8 @@ export class W3mAddressText extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.address = AccountCtrl.state.address
-    this.unsubscribeAccount = AccountCtrl.subscribe(({ address }) => {
+    this.address = OptionsCtrl.state.address
+    this.unsubscribeAccount = OptionsCtrl.subscribe(({ address }) => {
       this.address = address
     })
   }

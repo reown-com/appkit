@@ -47,8 +47,8 @@ export class W3mDesktopWalletSelection extends LitElement {
     } else if (id === 'injected') {
       this.onInjectedWallet()
     } else {
-      const { selectedChainId } = OptionsCtrl.state
-      ClientCtrl.client().connectConnector(id, selectedChainId)
+      const { selectedChain } = OptionsCtrl.state
+      ClientCtrl.client().connectConnector(id, selectedChain?.id)
     }
   }
 

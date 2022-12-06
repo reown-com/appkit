@@ -1,4 +1,4 @@
-import type { EthereumClient } from '@web3modal/ethereum'
+import type { Chain, EthereumClient } from '@web3modal/ethereum'
 
 export interface MobileWallet {
   id: string
@@ -48,10 +48,12 @@ export interface ModalCtrlState {
 
 // -- OptionsCtrl --------------------------------------- //
 export interface OptionsCtrlState {
-  selectedChainId?: number
+  selectedChain?: Chain
   chains?: EthereumClient['chains']
   standaloneChains?: string[]
   standaloneUri?: string
+  address?: string
+  isConnected: boolean
   isStandalone: boolean
   isCustomDesktop: boolean
   isCustomMobile: boolean
@@ -162,12 +164,4 @@ export interface RouterCtrlState {
 export interface ClientCtrlState {
   initialized: boolean
   ethereumClient?: EthereumClient
-}
-
-// -- AccountCtrl ------------------------------------------ //
-export interface AccountCtrlState {
-  isConnected: boolean
-  address?: string
-  balance?: string
-  balanceSymbol?: string
 }

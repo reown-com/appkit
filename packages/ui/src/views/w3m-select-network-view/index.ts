@@ -9,8 +9,7 @@ export class W3mSelectNetworkView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
-  private onSelectChain(chainId: number) {
-    OptionsCtrl.setSelectedChainId(chainId)
+  private onSelectChain() {
     RouterCtrl.push('ConnectWallet')
   }
 
@@ -25,11 +24,7 @@ export class W3mSelectNetworkView extends LitElement {
           ${chains?.map(
             ({ name, id }) =>
               html`
-                <w3m-network-button
-                  name=${name}
-                  chainId=${id}
-                  .onClick=${() => this.onSelectChain(id)}
-                >
+                <w3m-network-button name=${name} chainId=${id} .onClick=${this.onSelectChain}>
                   ${name}
                 </w3m-network-button>
               `

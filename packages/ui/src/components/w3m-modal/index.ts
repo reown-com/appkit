@@ -1,5 +1,4 @@
 import {
-  AccountCtrl,
   ClientCtrl,
   ConfigCtrl,
   CoreUtil,
@@ -38,10 +37,14 @@ export class W3mModal extends LitElement {
     })
 
     if (!OptionsCtrl.state.isStandalone) {
-      AccountCtrl.get()
+      OptionsCtrl.getAccount()
       this.unwatchAccount = ClientCtrl.client().watchAccount(account => {
-        AccountCtrl.setAddress(account.address)
-        AccountCtrl.setIsConnected(account.isConnected)
+        OptionsCtrl.setAddress(account.address)
+        OptionsCtrl.setIsConnected(account.isConnected)
+      })
+      OptionsCtrl.getSelectedChain()
+      this.unwatchNetwork = ClientCtrl.client().watchNetwork(network => {
+        OptionsCtrl.setSelectedChain(network.chain)
       })
     }
 
@@ -52,12 +55,14 @@ export class W3mModal extends LitElement {
     this.unsubscribeModal?.()
     this.unsubscribeConfig?.()
     this.unwatchAccount?.()
+    this.unwatchNetwork?.()
   }
 
   // -- private ------------------------------------------------------ //
   private readonly unsubscribeModal?: () => void = undefined
   private readonly unsubscribeConfig?: () => void = undefined
   private readonly unwatchAccount?: () => void = undefined
+  private readonly unwatchNetwork?: () => void = undefined
 
   private get overlayEl() {
     return UiUtil.getShadowRootElement(this, '.w3m-overlay')

@@ -27,7 +27,7 @@ export class W3mCoinbaseExtensionConnectorView extends LitElement {
       this.connecting = true
       await ClientCtrl.client().connectConnector(
         'coinbaseWallet',
-        OptionsCtrl.state.selectedChainId
+        OptionsCtrl.state.selectedChain?.id
       )
       ModalCtrl.close()
     } catch (error: unknown) {
