@@ -81,7 +81,7 @@ export class W3mDesktopConnectorView extends LitElement {
             : html`<w3m-wallet-image size="lg" walletid=${ifDefined(walletId)}></w3m-wallet-image>`}
 
           <div class="w3m-connecting-title">
-            <w3m-spinner size="22" color=${ThemeUtil.color().foreground[2]}></w3m-spinner>
+            <w3m-spinner></w3m-spinner>
             <w3m-text variant="large-bold" color="secondary">
               ${`Continue in ${optimisticName}...`}
             </w3m-text>

@@ -50,9 +50,7 @@ export class W3mCoinbaseExtensionConnectorView extends LitElement {
         <div class=${classMap(classes)}>
           <w3m-wallet-image walletId="coinbaseWallet" size="lg"></w3m-wallet-image>
           <div class="w3m-connecting-title">
-            ${this.connecting
-              ? html`<w3m-spinner size="22" color=${ThemeUtil.color().foreground[2]}></w3m-spinner>`
-              : null}
+            ${this.connecting ? html`<w3m-spinner></w3m-spinner>` : null}
             <w3m-text variant="large-bold" color=${this.error ? 'error' : 'secondary'}>
               ${this.error ? 'Connection declined' : `Continue in ${name}...`}
             </w3m-text>

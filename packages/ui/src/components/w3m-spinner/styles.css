@@ -29,4 +29,5 @@ svg {
 svg circle {
   stroke-linecap: round;
   animation: dash 1.5s ease infinite;
+  stroke: var(--color-fg-accent);
 }
