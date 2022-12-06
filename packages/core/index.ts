@@ -10,7 +10,8 @@ export type {
   DesktopConnectorData,
   Listing,
   ListingResponse,
-  RouterView
+  RouterView,
+  SwitchNetworkData
 } from './src/types/controllerTypes'
 export { CoreUtil } from './src/utils/CoreUtil'
 import './src/utils/PolyfillUtil'
