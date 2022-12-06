@@ -9,5 +9,5 @@
     "packages/standalone"
   ],
   "useWorkspaces": true,
-  "version": "2.0.0-b648e83"
+  "version": "2.0.0-beta.8"
 }

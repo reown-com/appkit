@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/html",
-  "version": "2.0.0-b648e83",
+  "version": "2.0.0-beta.8",
   "main": "dist/index.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -16,11 +16,11 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@web3modal/ethereum": "2.0.0-b648e83"
+    "@web3modal/ethereum": "2.0.0-beta.8"
   },
   "dependencies": {
-    "@web3modal/core": "2.0.0-b648e83",
-    "@web3modal/ui": "2.0.0-b648e83"
+    "@web3modal/core": "2.0.0-beta.8",
+    "@web3modal/ui": "2.0.0-beta.8"
   },
   "keywords": [
     "web3",
