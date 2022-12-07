@@ -124,7 +124,15 @@ export class W3mMobileWalletSelection extends LitElement {
     const combinedWallets = [...connectorTemplate, ...linkingWallets]
     const displayWallets = standaloneUri ? linkingWallets : combinedWallets
     const isViewAll = displayWallets.length > 8
-    const wallets = isViewAll ? displayWallets.slice(0, 7) : displayWallets
+    let wallets = []
+
+    if (isViewAll) {
+      const filtered = displayWallets.filter(wallet => !wallet.values.includes('coinbaseWallet'))
+      wallets = filtered.slice(0, 7)
+    } else {
+      wallets = displayWallets
+    }
+
     const row1 = wallets.slice(0, 4)
     const row2 = wallets.slice(4, 8)
     const isMobileWallets = Boolean(wallets.length)

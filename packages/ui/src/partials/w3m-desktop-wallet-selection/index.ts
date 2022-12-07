@@ -116,7 +116,15 @@ export class W3mDesktopWalletSelection extends LitElement {
     const combinedWallets = [...connectorTemplate, ...linkingWallets]
     const displayWallets = standaloneUri ? linkingWallets : combinedWallets
     const isViewAll = displayWallets.length > 4
-    const wallets = isViewAll ? displayWallets.slice(0, 3) : displayWallets
+    let wallets = []
+
+    if (isViewAll) {
+      const filtered = displayWallets.filter(wallet => !wallet.values.includes('coinbaseWallet'))
+      wallets = filtered.slice(0, 3)
+    } else {
+      wallets = displayWallets
+    }
+
     const isDesktopWallets = Boolean(wallets.length)
 
     return html`
