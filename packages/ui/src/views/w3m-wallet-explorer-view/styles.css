@@ -48,7 +48,8 @@ w3m-modal-content::-webkit-scrollbar {
   overflow: hidden;
 }
 
-.w3m-loading {
+.w3m-loading,
+.w3m-empty {
   display: flex;
 }
 
