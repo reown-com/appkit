@@ -14,6 +14,23 @@ export class W3mWalletButton extends LitElement {
   @property() public walletId = ''
   @property() public label?: string = undefined
   @property() public src?: string = undefined
+  @property() public installed? = false
+  @property() public recent? = false
+
+  // -- private ------------------------------------------------------ //
+  private sublabelTemplate() {
+    if (this.recent) {
+      return html`
+        <w3m-text class="w3m-sublabel" variant="xxsmall-bold" color="tertiary">RECENT</w3m-text>
+      `
+    } else if (this.installed) {
+      return html`
+        <w3m-text class="w3m-sublabel" variant="xxsmall-bold" color="tertiary">INSTALLED</w3m-text>
+      `
+    }
+
+    return null
+  }
 
   // -- render ------------------------------------------------------- //
   protected render() {
@@ -24,6 +41,8 @@ export class W3mWalletButton extends LitElement {
           <w3m-text variant="xsmall-normal">
             ${this.label ?? UiUtil.getWalletFirstName(this.name)}
           </w3m-text>
+
+          ${this.sublabelTemplate()}
         </div>
       </button>
     `

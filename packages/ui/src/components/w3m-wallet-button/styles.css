@@ -3,6 +3,8 @@ button {
   width: 100%;
   height: 100%;
   border-radius: 10px;
+  display: flex;
+  align-items: flex-start;
 }
 
 button:hover {
@@ -31,4 +33,8 @@ w3m-wallet-image {
   transition: all 0.2s ease;
   border-radius: 15px;
   margin-bottom: 5px;
+}
+
+.w3m-sublabel {
+  margin-top: 2px;
 }
