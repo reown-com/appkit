@@ -93,8 +93,14 @@ export class W3mWalletExplorerView extends LitElement {
 
   private async onConnectPlatform(listing: Listing) {
     if (CoreUtil.isMobile()) {
+      const { id, image_url } = listing
       const { native, universal } = listing.mobile
-      await UiUtil.handleMobileLinking({ native, universal }, listing.name)
+      await UiUtil.handleMobileLinking({
+        links: { native, universal },
+        name: listing.name,
+        id,
+        image: image_url.lg
+      })
     } else {
       RouterCtrl.push('DesktopConnector', {
         DesktopConnector: {
