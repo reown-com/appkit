@@ -9,9 +9,12 @@ import {
 } from '@web3modal/core'
 import type { LitElement } from 'lit'
 import { PresetUtil } from './PresetUtil'
+import type { RecentWallet } from './TypesUtil'
 
 export const UiUtil = {
   MOBILE_BREAKPOINT: 600,
+
+  RECENT_WALLET_KEY: 'RECENT_WALLET_KEY',
 
   getShadowRootElement(root: LitElement, selector: string) {
     const el = root.renderRoot.querySelector(selector)
@@ -79,16 +82,16 @@ export const UiUtil = {
     }
   },
 
-  async handleMobileLinking(links: { native?: string; universal?: string }, name: string) {
+  async handleMobileLinking(wallet: RecentWallet) {
     const { standaloneUri, selectedChain } = OptionsCtrl.state
-    const { native, universal } = links
+    const { links, name } = wallet
 
     function onRedirect(uri: string) {
       let href = ''
-      if (universal) {
-        href = CoreUtil.formatUniversalUrl(universal, uri, name)
-      } else if (native) {
-        href = CoreUtil.formatNativeUrl(native, uri, name)
+      if (links?.universal) {
+        href = CoreUtil.formatUniversalUrl(links.universal, uri, name)
+      } else if (links?.native) {
+        href = CoreUtil.formatNativeUrl(links.native, uri, name)
       }
       CoreUtil.openHref(href)
     }
@@ -178,5 +181,18 @@ export const UiUtil = {
       }
       Object.entries(variables).forEach(([key, val]) => root.style.setProperty(key, val))
     }
+  },
+
+  setRecentWallet(wallet: RecentWallet) {
+    localStorage.setItem(UiUtil.RECENT_WALLET_KEY, JSON.stringify(wallet))
+  },
+
+  getRecentWallet() {
+    const wallet = localStorage.getItem(UiUtil.RECENT_WALLET_KEY)
+    if (wallet) {
+      return JSON.parse(wallet) as RecentWallet
+    }
+
+    return undefined
   }
 }

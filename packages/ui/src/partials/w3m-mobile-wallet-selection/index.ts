@@ -30,7 +30,6 @@ export class W3mMobileWalletSelection extends LitElement {
     } else {
       await ClientCtrl.client().connectConnector(id, selectedChain?.id)
     }
-
     ModalCtrl.close()
   }
 
@@ -52,7 +51,8 @@ export class W3mMobileWalletSelection extends LitElement {
           <w3m-wallet-button
             name=${name}
             walletId=${id}
-            .onClick=${async () => UiUtil.handleMobileLinking({ native, universal }, name)}
+            .onClick=${async () =>
+              UiUtil.handleMobileLinking({ links: { native, universal }, name, id })}
           ></w3m-wallet-button>
         `
       )
@@ -72,11 +72,17 @@ export class W3mMobileWalletSelection extends LitElement {
     }
 
     return wallets.map(
-      ({ image_url, name, mobile: { native, universal } }) => html`
+      ({ image_url, name, mobile: { native, universal }, id }) => html`
         <w3m-wallet-button
           name=${name}
           src=${image_url.lg}
-          .onClick=${async () => UiUtil.handleMobileLinking({ native, universal }, name)}
+          .onClick=${async () =>
+            UiUtil.handleMobileLinking({
+              links: { native, universal },
+              name,
+              id,
+              image: image_url.lg
+            })}
         ></w3m-wallet-button>
       `
     )

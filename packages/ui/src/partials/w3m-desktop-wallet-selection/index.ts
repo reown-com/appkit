@@ -70,12 +70,13 @@ export class W3mDesktopWalletSelection extends LitElement {
     const { previewWallets } = ExplorerCtrl.state
 
     return previewWallets.map(
-      ({ name, desktop: { universal, native }, homepage, image_url }) => html`
+      ({ name, desktop: { universal, native }, homepage, image_url, id }) => html`
         <w3m-wallet-button
           src=${image_url.lg}
           name=${name}
           .onClick=${() =>
             this.onDesktopWallet({
+              walletId: id,
               name,
               native,
               universal: universal || homepage,

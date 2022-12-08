@@ -1,10 +1,18 @@
-import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
+import {
+  ClientCtrl,
+  CoreUtil,
+  ModalCtrl,
+  OptionsCtrl,
+  RouterCtrl,
+  ToastCtrl
+} from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { PresetUtil } from '../../utils/PresetUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-desktop-connector-view')
@@ -46,11 +54,18 @@ export class W3mDesktopConnectorView extends LitElement {
     if (standaloneUri) {
       this.onFormatAndRedirect(standaloneUri)
     } else {
-      await ClientCtrl.client().connectWalletConnect(uri => {
-        this.uri = uri
-        this.onFormatAndRedirect(uri)
-      }, OptionsCtrl.state.selectedChain?.id)
-      ModalCtrl.close()
+      try {
+        await ClientCtrl.client().connectWalletConnect(uri => {
+          this.uri = uri
+          this.onFormatAndRedirect(uri)
+        }, OptionsCtrl.state.selectedChain?.id)
+        const { name, walletId, native, universal, icon } = this.getRouterData()
+        UiUtil.setRecentWallet({ name, id: walletId, links: { native, universal }, image: icon })
+        ModalCtrl.close()
+      } catch (err) {
+        ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
+        this.onConnect()
+      }
     }
   }
 
