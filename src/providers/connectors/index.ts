@@ -20,6 +20,7 @@ import web3auth from "./web3auth";
 import bitkeep from "./bitkeep";
 import starzwallet from "./starzwallet";
 import ledger from "./ledger";
+import phantom from "./phantom";
 
 export {
   injected,
@@ -44,5 +45,6 @@ export {
   bitkeep,
   starzwallet,
   web3auth,
-  ledger
+  ledger,
+  phantom
 };
