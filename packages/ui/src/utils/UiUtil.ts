@@ -104,6 +104,7 @@ export const UiUtil = {
       }, selectedChain?.id)
       ModalCtrl.close()
     }
+    UiUtil.setRecentWallet(wallet)
   },
 
   async handleUriCopy() {
