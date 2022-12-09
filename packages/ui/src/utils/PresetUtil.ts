@@ -1,4 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable curly */
+
+interface EvmWindow {
+  ethereum?: any
+  spotEthWallet?: any
+  abc?: any
+}
 
 export const PresetUtil = {
   walletExplorerImage() {
@@ -19,7 +26,8 @@ export const PresetUtil = {
       tokenPocket: 'f3119826-4ef5-4d31-4789-d4ae5c18e400',
       tokenary: '5e481041-dc3c-4a81-373a-76bbde91b800',
       '1inch': 'dce1ee99-403f-44a9-9f94-20de30616500',
-      phantom: '62471a22-33cb-4e65-5b54-c3d9ea24b900'
+      phantom: '62471a22-33cb-4e65-5b54-c3d9ea24b900',
+      abcWallet: '8d0c93ce-9d18-44ec-6243-4b94ac0c6f00'
     } as Record<string, string | undefined>
 
     return { fallback, presets }
@@ -27,8 +35,8 @@ export const PresetUtil = {
 
   optimisticWalletId(id: string) {
     if (id.toUpperCase() !== 'INJECTED') return id
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { ethereum, spotEthWallet }: { ethereum?: any; spotEthWallet?: any } = window
+
+    const { ethereum, spotEthWallet, abc }: EvmWindow = window
     // Default to metamask and reccomend it as default install
     if (!ethereum) return 'metaMask'
     if (ethereum.isTrust || ethereum.isTrustWallet) return 'trust'
@@ -48,6 +56,7 @@ export const PresetUtil = {
     if (ethereum.isTokenary) return 'tokenary'
     if (ethereum.isOneInchIOSWallet || ethereum.isOneInchAndroidWallet) return '1inchWallet'
     if (ethereum.isKuCoinWallet) return 'kuCoinWallet'
+    if (abc) return 'abcWallet'
     // Have to push metamask check lower, as most other wallets add this
     if (ethereum.isMetaMask) return 'metaMask'
 
@@ -96,7 +105,7 @@ export const PresetUtil = {
       return name
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { ethereum, spotEthWallet }: { ethereum?: any; spotEthWallet?: any } = window
+    const { ethereum, spotEthWallet, abc }: EvmWindow = window
     // Default to metamask and reccomend it as default install
     if (!ethereum) return 'MetaMask'
     if (ethereum.isTrust || ethereum.isTrustWallet) return 'Trust'
@@ -116,6 +125,7 @@ export const PresetUtil = {
     if (ethereum.isTokenary) return 'Tokenary'
     if (ethereum.isOneInchIOSWallet || ethereum.isOneInchAndroidWallet) return '1inch Wallet'
     if (ethereum.isKuCoinWallet) return 'KuCoin Wallet'
+    if (abc) return 'ABC Wallet'
     // Have to push metamask check lower, as most other wallets add this
     if (ethereum.isMetaMask) return 'MetaMask'
 
