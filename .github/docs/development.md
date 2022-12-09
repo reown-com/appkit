@@ -8,8 +8,14 @@ Install dependencies from the repository's root directory (this will also set up
 yarn
 ```
 
+## .env.local file setup
+
+Some examples have `.env.local.example` files. Copy their content and create new `.env.local` files in the same directory.
+Without these `yarn:build` command will fail. To create your ProjectID head to [cloud.walletconnect.com](https://cloud.walletconnect.com/)
+
 ## Commands:
 
+- `yarn build` - Build all packages.
 - `yarn dev` - Build and watch all packages for changes.
 - `yarn dev:react` - Run react example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn dev:react-standalone` - Run react standalone example (has to be ran together with `yarn dev` in a separate terminal tab).
@@ -18,9 +24,3 @@ yarn
 - `yarn lint` - Run the linter.
 - `yarn prettier` - Run prettier.
 - `yarn typecheck` - Run typescript checks.
-
-## React Example
-
-### Configuration
-
-Inside `examples/react` folder, rename `.env.local.example` to `.env.local` and add your ProjectID from [cloud.walletconnect.com](https://cloud.walletconnect.com/)
