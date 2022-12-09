@@ -98,12 +98,12 @@ export class W3mDesktopWalletSelection extends LitElement {
     const connectorWallets = ClientCtrl.client().getConnectorWallets()
 
     return connectorWallets.map(
-      wallet => html`
+      ({ id, ready, name }) => html`
         <w3m-wallet-button
-          .installed=${wallet.ready}
-          name=${wallet.name}
-          walletId=${wallet.id}
-          .onClick=${() => this.onConnectorWallet(wallet.id)}
+          .installed=${ready}
+          name=${name}
+          walletId=${id}
+          .onClick=${() => this.onConnectorWallet(id)}
         ></w3m-wallet-button>
       `
     )

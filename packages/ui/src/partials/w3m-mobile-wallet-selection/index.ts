@@ -8,6 +8,7 @@ import {
 } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import { PresetUtil } from '../../utils/PresetUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -110,8 +111,9 @@ export class W3mMobileWalletSelection extends LitElement {
     }
 
     return wallets.map(
-      ({ name, id }) => html`
+      ({ name, id, ready }) => html`
         <w3m-wallet-button
+          .installed=${ready}
           name=${name}
           walletId=${id}
           .onClick=${async () => this.onConnectorWallet(id)}
@@ -120,14 +122,38 @@ export class W3mMobileWalletSelection extends LitElement {
     )
   }
 
+  private recentWalletTemplate() {
+    const wallet = UiUtil.getRecentWallet()
+
+    if (!wallet) {
+      return undefined
+    }
+
+    const { id, name, links, image } = wallet
+
+    return html`
+      <w3m-wallet-button
+        .recent=${true}
+        name=${name}
+        walletId=${ifDefined(id)}
+        src=${ifDefined(image)}
+        .onClick=${async () => UiUtil.handleMobileLinking({ name, id, links, image })}
+      ></w3m-wallet-button>
+    `
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     const { standaloneUri } = OptionsCtrl.state
     const connectorTemplate = this.connectorWalletsTemplate()
     const mobileTemplate = this.mobileWalletsTemplate()
     const previewTemplate = this.previewWalletsTemplate()
+    const recentTemplate = this.recentWalletTemplate()
     const linkingWallets = mobileTemplate ?? previewTemplate
     const combinedWallets = [...connectorTemplate, ...linkingWallets]
+    if (recentTemplate) {
+      combinedWallets.splice(0, 0, recentTemplate)
+    }
     const displayWallets = standaloneUri ? linkingWallets : combinedWallets
     const isViewAll = displayWallets.length > 8
     let wallets = []
