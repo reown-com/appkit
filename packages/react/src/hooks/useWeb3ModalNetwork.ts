@@ -14,7 +14,6 @@ export function useWeb3ModalNetwork() {
 
   return {
     selectedChain: network.selectedChain,
-    setSelectedChain: OptionsCtrl.setSelectedChain,
-    getSelectedChain: OptionsCtrl.getSelectedChain
+    setSelectedChain: OptionsCtrl.setSelectedChain
   }
 }
