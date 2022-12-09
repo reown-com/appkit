@@ -144,8 +144,10 @@ export class W3mDesktopWalletSelection extends LitElement {
     const connectorTemplate = this.connectorWalletsTemplate()
     const recentTemplate = this.recentWalletTemplate()
     const linkingWallets = desktopTemplate ?? previewTemplate
-    const combinedWallets = [...connectorTemplate, ...linkingWallets]
+    let combinedWallets = [...connectorTemplate, ...linkingWallets]
     if (recentTemplate) {
+      const recentWallet = UiUtil.getRecentWallet()
+      combinedWallets = combinedWallets.filter(wallet => !wallet.values.includes(recentWallet?.id))
       combinedWallets.splice(1, 0, recentTemplate)
     }
     const displayWallets = standaloneUri ? linkingWallets : combinedWallets

@@ -64,12 +64,11 @@ export class W3mMobileWalletSelection extends LitElement {
 
   private previewWalletsTemplate() {
     const { previewWallets } = ExplorerCtrl.state
-    const wallets = [...previewWallets]
+    let wallets = [...previewWallets]
 
     if (window.ethereum) {
       const injectedName = PresetUtil.optimisticName('injected')
-      const idx = wallets.findIndex(({ name }) => PresetUtil.optimisticName(name) === injectedName)
-      wallets.splice(idx, 1)
+      wallets = wallets.filter(({ name }) => PresetUtil.optimisticName(name) !== injectedName)
     }
 
     return wallets.map(
@@ -97,17 +96,10 @@ export class W3mMobileWalletSelection extends LitElement {
     }
 
     const connectorWallets = ClientCtrl.client().getConnectorWallets()
-    const wallets = [...connectorWallets]
+    let wallets = [...connectorWallets]
 
     if (!window.ethereum) {
-      const injectedIdx = wallets.findIndex(({ id }) => id === 'injected')
-      if (injectedIdx > -1) {
-        wallets.splice(injectedIdx, 1)
-      }
-      const metaMaskdIdx = wallets.findIndex(({ id }) => id === 'metaMask')
-      if (metaMaskdIdx > -1) {
-        wallets.splice(metaMaskdIdx, 1)
-      }
+      wallets = wallets.filter(({ id }) => id !== 'injected' && id !== 'metaMask')
     }
 
     return wallets.map(
@@ -150,8 +142,10 @@ export class W3mMobileWalletSelection extends LitElement {
     const previewTemplate = this.previewWalletsTemplate()
     const recentTemplate = this.recentWalletTemplate()
     const linkingWallets = mobileTemplate ?? previewTemplate
-    const combinedWallets = [...connectorTemplate, ...linkingWallets]
+    let combinedWallets = [...connectorTemplate, ...linkingWallets]
     if (recentTemplate) {
+      const recentWallet = UiUtil.getRecentWallet()
+      combinedWallets = combinedWallets.filter(wallet => !wallet.values.includes(recentWallet?.id))
       combinedWallets.splice(0, 0, recentTemplate)
     }
     const displayWallets = standaloneUri ? linkingWallets : combinedWallets
