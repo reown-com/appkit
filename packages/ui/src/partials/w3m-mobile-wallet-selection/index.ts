@@ -145,9 +145,9 @@ export class W3mMobileWalletSelection extends LitElement {
     let combinedWallets = [...connectorTemplate, ...linkingWallets]
     if (recentTemplate) {
       const recentWallet = UiUtil.getRecentWallet()
-      // eslint-disable-next-line no-console
-      console.log(combinedWallets, recentWallet)
-      combinedWallets = combinedWallets.filter(wallet => !wallet.values.includes(recentWallet?.id))
+      combinedWallets = combinedWallets.filter(
+        wallet => !wallet.values.includes(recentWallet?.name)
+      )
       combinedWallets.splice(0, 0, recentTemplate)
     }
     const displayWallets = standaloneUri ? linkingWallets : combinedWallets
