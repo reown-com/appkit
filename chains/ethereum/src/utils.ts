@@ -6,13 +6,12 @@ import type { ModalConnectorsOpts, WalletConnectProviderOpts } from './types'
 
 // -- constants ------------------------------------------------------- //
 export const NAMESPACE = 'eip155'
-const APP_TAG = 'app=2'
 
 // -- providers ------------------------------------------------------- //
 export function walletConnectProvider({ projectId }: WalletConnectProviderOpts) {
   return jsonRpcProvider({
     rpc: chain => ({
-      http: `https://rpc.walletconnect.com/v1/?chainId=${NAMESPACE}:${chain.id}&projectId=${projectId}&${APP_TAG}`
+      http: `https://rpc.walletconnect.com/v1/?chainId=${NAMESPACE}:${chain.id}&projectId=${projectId}`
     })
   })
 }
