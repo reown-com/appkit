@@ -1,11 +1,11 @@
 import { configureChains, createClient } from '@wagmi/core'
-import { mainnet } from '@wagmi/core/chains'
+import { goerli, mainnet } from '@wagmi/core/chains'
 import { EthereumClient, modalConnectors, walletConnectProvider } from '@web3modal/ethereum'
 import { Web3Modal } from '@web3modal/html'
 
 // 1. Define constants
 const projectId = '8e6b5ffdcbc9794bf9f4a1952578365b'
-const chains = [mainnet]
+const chains = [mainnet, goerli]
 
 // 2. Configure wagmi client
 const { provider } = configureChains(chains, [walletConnectProvider({ projectId })])

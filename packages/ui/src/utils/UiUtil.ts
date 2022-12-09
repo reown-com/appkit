@@ -14,7 +14,7 @@ import type { RecentWallet } from './TypesUtil'
 export const UiUtil = {
   MOBILE_BREAKPOINT: 600,
 
-  RECENT_WALLET_KEY: 'RECENT_WALLET_KEY',
+  W3M_RECENT_WALLET: 'W3M_RECENT_WALLET',
 
   getShadowRootElement(root: LitElement, selector: string) {
     const el = root.renderRoot.querySelector(selector)
@@ -184,11 +184,11 @@ export const UiUtil = {
   },
 
   setRecentWallet(wallet: RecentWallet) {
-    localStorage.setItem(UiUtil.RECENT_WALLET_KEY, JSON.stringify(wallet))
+    localStorage.setItem(UiUtil.W3M_RECENT_WALLET, JSON.stringify(wallet))
   },
 
   getRecentWallet() {
-    const wallet = localStorage.getItem(UiUtil.RECENT_WALLET_KEY)
+    const wallet = localStorage.getItem(UiUtil.W3M_RECENT_WALLET)
     if (wallet) {
       return JSON.parse(wallet) as RecentWallet
     }
