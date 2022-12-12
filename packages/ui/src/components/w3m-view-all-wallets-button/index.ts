@@ -1,7 +1,6 @@
 import { ExplorerCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { PresetUtil } from '../../utils/PresetUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -37,7 +36,7 @@ export class W3mViewAllWalletsButton extends LitElement {
             : null}
           ${isCustomWallets
             ? reCustomWallets.map(wallet => {
-                const optimisticId = PresetUtil.optimisticWalletId(wallet.id)
+                const optimisticId = UiUtil.getWalletId(wallet.id)
                 const src = UiUtil.getWalletIcon(optimisticId)
 
                 return src ? html`<img src=${src} />` : SvgUtil.WALLET_PLACEHOLDER

@@ -2,9 +2,9 @@ import { ClientCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { PresetUtil } from '../../utils/PresetUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-injected-connector-view')
@@ -41,8 +41,8 @@ export class W3mInjectedConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const optimisticName = PresetUtil.optimisticName(this.connector.name)
-    const optimisticWalletId = PresetUtil.optimisticWalletId(this.connector.id)
+    const optimisticName = UiUtil.getWalletName(this.connector.name)
+    const optimisticWalletId = UiUtil.getWalletId(this.connector.id)
     const classes = {
       'w3m-injected-wrapper': true,
       'w3m-injected-error': this.error

@@ -8,7 +8,7 @@ import {
   ToastCtrl
 } from '@web3modal/core'
 import type { LitElement } from 'lit'
-import { PresetUtil } from './PresetUtil'
+import { EthereumPresets } from './EthereumPresets'
 import type { RecentWallet } from './TypesUtil'
 
 export const UiUtil = {
@@ -25,16 +25,26 @@ export const UiUtil = {
     return el as HTMLElement
   },
 
+  getWalletId(id: string) {
+    return EthereumPresets.getInjectedId(id)
+  },
+
   getWalletIcon(id: string) {
-    const presets = PresetUtil.walletExplorerImage()
-    const imageId = presets[id]
+    const presets = EthereumPresets.injectedPreset
+    const imageId = presets[id]?.icon
     const { projectId, walletImages } = ConfigCtrl.state
 
     return walletImages?.[id] ?? (projectId && imageId ? ExplorerCtrl.getImageUrl(imageId) : '')
   },
 
+  getWalletName(name: string, short = false) {
+    const injectedName = EthereumPresets.getInjectedName(name)
+
+    return short ? injectedName.split(' ')[0] : injectedName
+  },
+
   getChainIcon(chainId: number | string) {
-    const { presets } = PresetUtil.chainExplorerImage()
+    const presets = EthereumPresets.chainIconPreset
     const { projectId, chainImages } = ConfigCtrl.state
     const presetImage = presets[chainId]
 
@@ -42,12 +52,6 @@ export const UiUtil = {
       chainImages?.[chainId] ??
       (projectId && presetImage ? ExplorerCtrl.getImageUrl(presetImage) : '')
     )
-  },
-
-  getWalletFirstName(fullName: string) {
-    const optimisticName = PresetUtil.optimisticName(fullName)
-
-    return optimisticName.split(' ')[0] ?? optimisticName
   },
 
   isMobileAnimation() {
@@ -134,7 +138,7 @@ export const UiUtil = {
 
   getConnectorImageUrls() {
     const connectors = ClientCtrl.client().getConnectorWallets()
-    const ids = connectors.map(({ id }) => PresetUtil.optimisticWalletId(id))
+    const ids = connectors.map(({ id }) => EthereumPresets.getInjectedId(id))
     const images = ids.map(id => UiUtil.getWalletIcon(id))
 
     return images

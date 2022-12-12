@@ -42,7 +42,7 @@ export class W3mWalletFilterView extends LitElement {
       </w3m-modal-header>
 
       <w3m-modal-content>
-        <div class="w3m-content">
+        <div class="w3m-grid">
           ${filtered.map(
             ({ id, name, links: { native, universal } }) => html`
               <w3m-wallet-button

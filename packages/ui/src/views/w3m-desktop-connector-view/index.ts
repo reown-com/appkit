@@ -9,7 +9,6 @@ import {
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { PresetUtil } from '../../utils/PresetUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -84,7 +83,7 @@ export class W3mDesktopConnectorView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { name, icon, universal, walletId } = this.getRouterData()
-    const optimisticName = PresetUtil.optimisticName(name)
+    const optimisticName = UiUtil.getWalletName(name)
 
     return html`
       <w3m-modal-header title=${optimisticName}></w3m-modal-header>

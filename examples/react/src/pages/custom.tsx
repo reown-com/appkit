@@ -43,7 +43,7 @@ export default function CustomPage() {
         desktopWallets={[
           {
             id: 'ledger',
-            name: 'Ledger',
+            name: 'Ledger Live',
             links: { native: 'ledgerlive://', universal: 'https://www.ledger.com' }
           },
           {

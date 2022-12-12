@@ -9,7 +9,6 @@ import {
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { PresetUtil } from '../../utils/PresetUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -39,8 +38,8 @@ export class W3mMobileWalletSelection extends LitElement {
     const wallets = [...(mobileWallets ?? [])]
 
     if (window.ethereum) {
-      const injectedName = PresetUtil.optimisticName('injected')
-      const idx = wallets.findIndex(({ name }) => PresetUtil.optimisticName(name) === injectedName)
+      const injectedName = UiUtil.getWalletName('injected')
+      const idx = wallets.findIndex(({ name }) => UiUtil.getWalletName(name) === injectedName)
       if (idx > -1) {
         wallets.splice(idx, 1)
       }
@@ -67,8 +66,8 @@ export class W3mMobileWalletSelection extends LitElement {
     let wallets = [...previewWallets]
 
     if (window.ethereum) {
-      const injectedName = PresetUtil.optimisticName('injected')
-      wallets = wallets.filter(({ name }) => PresetUtil.optimisticName(name) !== injectedName)
+      const injectedName = UiUtil.getWalletName('injected')
+      wallets = wallets.filter(({ name }) => UiUtil.getWalletName(name) !== injectedName)
     }
 
     return wallets.map(

@@ -9,7 +9,6 @@ import {
   watchAccount,
   watchNetwork
 } from '@wagmi/core'
-import { chainIconPreset, getInjectedId, getInjectedName, injectedPreset } from './presets'
 import type { ConnectorId } from './types'
 
 export class EthereumClient {
@@ -124,13 +123,4 @@ export class EthereumClient {
   public watchNetwork = watchNetwork
 
   public switchNetwork = switchNetwork
-
-  // -- public presets ----------------------------------- //
-  public injectedPreset = injectedPreset
-
-  public chainIconPreset = chainIconPreset
-
-  public getInjectedId = getInjectedId
-
-  public getInjectedName = getInjectedName
 }
