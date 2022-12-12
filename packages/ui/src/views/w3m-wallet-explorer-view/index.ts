@@ -60,6 +60,7 @@ export class W3mWalletExplorerView extends LitElement {
 
   private async fetchWallets() {
     const { wallets, search } = ExplorerCtrl.state
+    const extensionWallets = UiUtil.getExtensionWallets()
     const { listings, total, page } = this.search ? search : wallets
 
     if (
@@ -76,9 +77,11 @@ export class W3mWalletExplorerView extends LitElement {
           search: this.search,
           chains
         })
-        const images = newListings.map(({ image_url }) => image_url.lg)
+        const explorerImages = newListings.map(({ image_url }) => image_url.lg)
+        const extensionImages = extensionWallets.map(({ id }) => UiUtil.getWalletIcon(id))
         await Promise.all([
-          ...images.map(async url => UiUtil.preloadImage(url)),
+          ...explorerImages.map(async url => UiUtil.preloadImage(url)),
+          ...extensionImages.map(async url => UiUtil.preloadImage(url)),
           CoreUtil.wait(300)
         ])
         this.endReached = this.isLastPage()
@@ -160,9 +163,18 @@ export class W3mWalletExplorerView extends LitElement {
   protected render() {
     const { wallets, search } = ExplorerCtrl.state
     const { listings } = this.search ? search : wallets
-    const isEmpty = !this.loading && !listings.length
     const isLoading = this.loading && !listings.length
-    const isCoinbase = !isLoading && this.search.length < 3
+    const isSearch = this.search.length >= 3
+    const isCoinbase = !isLoading && !isSearch
+    let extensions = UiUtil.getExtensionWallets()
+
+    if (isSearch) {
+      extensions = extensions.filter(({ name }) =>
+        name?.toUpperCase().includes(this.search.toUpperCase())
+      )
+    }
+
+    const isEmpty = !this.loading && !listings.length && !extensions.length
     const classes = {
       'w3m-loading': isLoading,
       'w3m-end-reached': this.endReached || !this.loading,
@@ -176,6 +188,18 @@ export class W3mWalletExplorerView extends LitElement {
 
       <w3m-modal-content class=${classMap(classes)}>
         <div class="w3m-grid">
+          ${isLoading
+            ? null
+            : extensions.map(
+                extension => html`
+                  <w3m-wallet-button
+                    name=${extension.name ?? ''}
+                    walletId=${extension.id}
+                    .onClick=${async () => this.onConnectPlatform(extension)}
+                  >
+                  </w3m-wallet-button>
+                `
+              )}
           ${isCoinbase ? this.coinbaseConnectorTemplate() : null}
           ${listings.map(
             listing => html`

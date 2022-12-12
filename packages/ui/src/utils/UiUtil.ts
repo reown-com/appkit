@@ -199,5 +199,22 @@ export const UiUtil = {
     }
 
     return undefined
+  },
+
+  getExtensionWallets() {
+    const wallets = []
+    for (const [key, value] of Object.entries(EthereumPresets.injectedPreset)) {
+      if (key !== 'coinbaseWallet' && !value?.isDesktop) {
+        wallets.push({ id: key, ...value })
+      }
+    }
+
+    return wallets
+  },
+
+  *getArrayChunks(arr: unknown[], size: number) {
+    for (let i = 0; i < arr.length; i += size) {
+      yield arr.slice(i, i + size)
+    }
   }
 }
