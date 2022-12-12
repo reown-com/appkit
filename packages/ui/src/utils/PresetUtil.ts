@@ -9,9 +9,7 @@ interface EvmWindow {
 
 export const PresetUtil = {
   walletExplorerImage() {
-    const fallback = '09a83110-5fc3-45e1-65ab-8f7df2d6a400'
     const presets = {
-      _fallback: '09a83110-5fc3-45e1-65ab-8f7df2d6a400',
       brave: '125e828e-9936-4451-a8f2-949c119b7400',
       metaMask: '619537c0-2ff3-4c78-9ed8-a05e7567f300',
       coinbaseWallet: 'f8068a7f-83d7-4190-1f94-78154a12c600',
@@ -30,7 +28,7 @@ export const PresetUtil = {
       abcWallet: '8d0c93ce-9d18-44ec-6243-4b94ac0c6f00'
     } as Record<string, string | undefined>
 
-    return { fallback, presets }
+    return presets
   },
 
   optimisticWalletId(id: string) {

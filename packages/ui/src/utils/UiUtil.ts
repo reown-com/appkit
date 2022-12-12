@@ -26,11 +26,11 @@ export const UiUtil = {
   },
 
   getWalletIcon(id: string) {
-    const { fallback, presets } = PresetUtil.walletExplorerImage()
+    const presets = PresetUtil.walletExplorerImage()
     const imageId = presets[id]
     const { projectId, walletImages } = ConfigCtrl.state
 
-    return walletImages?.[id] ?? (projectId ? ExplorerCtrl.getImageUrl(imageId ?? fallback) : '')
+    return walletImages?.[id] ?? (projectId && imageId ? ExplorerCtrl.getImageUrl(imageId) : '')
   },
 
   getChainIcon(chainId: number | string) {
