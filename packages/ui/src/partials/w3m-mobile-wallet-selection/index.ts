@@ -8,6 +8,7 @@ import {
 } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import { PresetUtil } from '../../utils/PresetUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -30,7 +31,6 @@ export class W3mMobileWalletSelection extends LitElement {
     } else {
       await ClientCtrl.client().connectConnector(id, selectedChain?.id)
     }
-
     ModalCtrl.close()
   }
 
@@ -52,7 +52,8 @@ export class W3mMobileWalletSelection extends LitElement {
           <w3m-wallet-button
             name=${name}
             walletId=${id}
-            .onClick=${async () => UiUtil.handleMobileLinking({ native, universal }, name)}
+            .onClick=${async () =>
+              UiUtil.handleMobileLinking({ links: { native, universal }, name, id })}
           ></w3m-wallet-button>
         `
       )
@@ -63,20 +64,25 @@ export class W3mMobileWalletSelection extends LitElement {
 
   private previewWalletsTemplate() {
     const { previewWallets } = ExplorerCtrl.state
-    const wallets = [...previewWallets]
+    let wallets = [...previewWallets]
 
     if (window.ethereum) {
       const injectedName = PresetUtil.optimisticName('injected')
-      const idx = wallets.findIndex(({ name }) => PresetUtil.optimisticName(name) === injectedName)
-      wallets.splice(idx, 1)
+      wallets = wallets.filter(({ name }) => PresetUtil.optimisticName(name) !== injectedName)
     }
 
     return wallets.map(
-      ({ image_url, name, mobile: { native, universal } }) => html`
+      ({ image_url, name, mobile: { native, universal }, id }) => html`
         <w3m-wallet-button
           name=${name}
           src=${image_url.lg}
-          .onClick=${async () => UiUtil.handleMobileLinking({ native, universal }, name)}
+          .onClick=${async () =>
+            UiUtil.handleMobileLinking({
+              links: { native, universal },
+              name,
+              id,
+              image: image_url.lg
+            })}
         ></w3m-wallet-button>
       `
     )
@@ -90,22 +96,16 @@ export class W3mMobileWalletSelection extends LitElement {
     }
 
     const connectorWallets = ClientCtrl.client().getConnectorWallets()
-    const wallets = [...connectorWallets]
+    let wallets = [...connectorWallets]
 
     if (!window.ethereum) {
-      const injectedIdx = wallets.findIndex(({ id }) => id === 'injected')
-      if (injectedIdx > -1) {
-        wallets.splice(injectedIdx, 1)
-      }
-      const metaMaskdIdx = wallets.findIndex(({ id }) => id === 'metaMask')
-      if (metaMaskdIdx > -1) {
-        wallets.splice(metaMaskdIdx, 1)
-      }
+      wallets = wallets.filter(({ id }) => id !== 'injected' && id !== 'metaMask')
     }
 
     return wallets.map(
-      ({ name, id }) => html`
+      ({ name, id, ready }) => html`
         <w3m-wallet-button
+          .installed=${ready}
           name=${name}
           walletId=${id}
           .onClick=${async () => this.onConnectorWallet(id)}
@@ -114,17 +114,53 @@ export class W3mMobileWalletSelection extends LitElement {
     )
   }
 
+  private recentWalletTemplate() {
+    const wallet = UiUtil.getRecentWallet()
+
+    if (!wallet) {
+      return undefined
+    }
+
+    const { id, name, links, image } = wallet
+
+    return html`
+      <w3m-wallet-button
+        .recent=${true}
+        name=${name}
+        walletId=${ifDefined(id)}
+        src=${ifDefined(image)}
+        .onClick=${async () => UiUtil.handleMobileLinking({ name, id, links, image })}
+      ></w3m-wallet-button>
+    `
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     const { standaloneUri } = OptionsCtrl.state
     const connectorTemplate = this.connectorWalletsTemplate()
     const mobileTemplate = this.mobileWalletsTemplate()
     const previewTemplate = this.previewWalletsTemplate()
+    const recentTemplate = this.recentWalletTemplate()
     const linkingWallets = mobileTemplate ?? previewTemplate
-    const combinedWallets = [...connectorTemplate, ...linkingWallets]
+    let combinedWallets = [...connectorTemplate, ...linkingWallets]
+    if (recentTemplate) {
+      const recentWallet = UiUtil.getRecentWallet()
+      combinedWallets = combinedWallets.filter(
+        wallet => !wallet.values.includes(recentWallet?.name)
+      )
+      combinedWallets.splice(0, 0, recentTemplate)
+    }
     const displayWallets = standaloneUri ? linkingWallets : combinedWallets
     const isViewAll = displayWallets.length > 8
-    const wallets = isViewAll ? displayWallets.slice(0, 7) : displayWallets
+    let wallets = []
+
+    if (isViewAll) {
+      const filtered = displayWallets.filter(wallet => !wallet.values.includes('coinbaseWallet'))
+      wallets = filtered.slice(0, 7)
+    } else {
+      wallets = displayWallets
+    }
+
     const row1 = wallets.slice(0, 4)
     const row2 = wallets.slice(4, 8)
     const isMobileWallets = Boolean(wallets.length)

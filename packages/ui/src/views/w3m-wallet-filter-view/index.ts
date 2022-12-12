@@ -16,7 +16,7 @@ export class W3mWalletFilterView extends LitElement {
   // -- private ------------------------------------------------------ //
   private async onConnectPlatform({ name, universal, native, walletId }: DesktopConnectorData) {
     if (CoreUtil.isMobile()) {
-      await UiUtil.handleMobileLinking({ native, universal }, name)
+      await UiUtil.handleMobileLinking({ links: { native, universal }, name, id: walletId })
     } else {
       RouterCtrl.push('DesktopConnector', {
         DesktopConnector: { name, walletId, universal, native }

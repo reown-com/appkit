@@ -12,6 +12,7 @@ svg {
   height: 100%;
   margin: 0;
 }
+
 #network-placeholder-fill {
   fill: var(--color-bg-3);
 }

@@ -1,4 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable curly */
+
+interface EvmWindow {
+  ethereum?: any
+  spotEthWallet?: any
+  abc?: any
+}
 
 export const PresetUtil = {
   walletExplorerImage() {
@@ -9,6 +16,7 @@ export const PresetUtil = {
       metaMask: '619537c0-2ff3-4c78-9ed8-a05e7567f300',
       coinbaseWallet: 'f8068a7f-83d7-4190-1f94-78154a12c600',
       ledger: '39890ad8-5b2e-4df6-5db4-2ff5cf4bb300',
+      spotEthWallet: '1bf33a89-b049-4a1c-d1f6-4dd7419ee400',
       exodus: '4c16cad4-cac9-4643-6726-c696efaf5200',
       trust: '0528ee7e-16d1-4089-21e3-bbfb41933100',
       core: '35f9c46e-cc57-4aa7-315d-e6ccb2a1d600',
@@ -18,7 +26,8 @@ export const PresetUtil = {
       tokenPocket: 'f3119826-4ef5-4d31-4789-d4ae5c18e400',
       tokenary: '5e481041-dc3c-4a81-373a-76bbde91b800',
       '1inch': 'dce1ee99-403f-44a9-9f94-20de30616500',
-      phantom: '62471a22-33cb-4e65-5b54-c3d9ea24b900'
+      phantom: '62471a22-33cb-4e65-5b54-c3d9ea24b900',
+      abcWallet: '8d0c93ce-9d18-44ec-6243-4b94ac0c6f00'
     } as Record<string, string | undefined>
 
     return { fallback, presets }
@@ -26,13 +35,14 @@ export const PresetUtil = {
 
   optimisticWalletId(id: string) {
     if (id.toUpperCase() !== 'INJECTED') return id
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { ethereum }: { ethereum?: any } = window
+
+    const { ethereum, spotEthWallet, abc }: EvmWindow = window
     // Default to metamask and reccomend it as default install
     if (!ethereum) return 'metaMask'
     if (ethereum.isTrust || ethereum.isTrustWallet) return 'trust'
     if (ethereum.isPhantom) return 'phantom'
     if (ethereum.isBraveWallet) return 'brave'
+    if (spotEthWallet) return 'spotEthWallet'
     if (ethereum.isExodus) return 'exodus'
     if (ethereum.isTokenPocket) return 'tokenPocket'
     if (ethereum.isFrame) return 'frame'
@@ -46,6 +56,7 @@ export const PresetUtil = {
     if (ethereum.isTokenary) return 'tokenary'
     if (ethereum.isOneInchIOSWallet || ethereum.isOneInchAndroidWallet) return '1inchWallet'
     if (ethereum.isKuCoinWallet) return 'kuCoinWallet'
+    if (abc) return 'abcWallet'
     // Have to push metamask check lower, as most other wallets add this
     if (ethereum.isMetaMask) return 'metaMask'
 
@@ -94,12 +105,13 @@ export const PresetUtil = {
       return name
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { ethereum }: { ethereum?: any } = window
+    const { ethereum, spotEthWallet, abc }: EvmWindow = window
     // Default to metamask and reccomend it as default install
     if (!ethereum) return 'MetaMask'
     if (ethereum.isTrust || ethereum.isTrustWallet) return 'Trust'
     if (ethereum.isPhantom) return 'Phantom'
     if (ethereum.isBraveWallet) return 'Brave'
+    if (spotEthWallet) return 'Spot'
     if (ethereum.isExodus) return 'Exodus'
     if (ethereum.isTokenPocket) return 'TokenPocket'
     if (ethereum.isFrame) return 'Frame'
@@ -113,6 +125,7 @@ export const PresetUtil = {
     if (ethereum.isTokenary) return 'Tokenary'
     if (ethereum.isOneInchIOSWallet || ethereum.isOneInchAndroidWallet) return '1inch Wallet'
     if (ethereum.isKuCoinWallet) return 'KuCoin Wallet'
+    if (abc) return 'ABC Wallet'
     // Have to push metamask check lower, as most other wallets add this
     if (ethereum.isMetaMask) return 'MetaMask'
 

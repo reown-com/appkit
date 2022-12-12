@@ -1,7 +1,7 @@
 {
   "name": "html-example",
   "private": true,
-  "version": "2.0.0-beta.8",
+  "version": "2.0.0-beta.9",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,12 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@wagmi/core": "0.7.9",
-    "@web3modal/ethereum": "2.0.0-beta.8",
-    "@web3modal/html": "2.0.0-beta.8",
+    "@wagmi/core": "0.8.2",
+    "@web3modal/ethereum": "2.0.0-beta.9",
+    "@web3modal/html": "2.0.0-beta.9",
     "ethers": "5.7.2"
   },
   "devDependencies": {
-    "vite": "3.2.5"
+    "vite": "4.0.0"
   }
 }

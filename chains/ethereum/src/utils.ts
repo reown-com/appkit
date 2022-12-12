@@ -20,7 +20,10 @@ export function walletConnectProvider({ projectId }: WalletConnectProviderOpts) 
 export function modalConnectors({ appName, chains }: ModalConnectorsOpts) {
   return [
     new WalletConnectConnector({ chains, options: { qrcode: false } }),
-    new InjectedConnector({ chains, options: { shimDisconnect: true } }),
+    new InjectedConnector({
+      chains,
+      options: { shimDisconnect: true, shimChainChangedDisconnect: true }
+    }),
     new CoinbaseWalletConnector({ chains, options: { appName, headlessMode: true } })
   ]
 }

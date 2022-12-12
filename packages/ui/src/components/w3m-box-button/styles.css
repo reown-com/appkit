@@ -23,3 +23,7 @@ button > div {
   border-radius: 50%;
   margin-bottom: 4px;
 }
+
+button path {
+  fill: var(--color-fg-inverse);
+}

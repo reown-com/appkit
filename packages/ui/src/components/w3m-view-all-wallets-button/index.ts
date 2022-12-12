@@ -30,7 +30,7 @@ export class W3mViewAllWalletsButton extends LitElement {
     const isCustomWallets = Boolean(reCustomWallets.length)
 
     return html`
-      <button class="w3m-button" @click=${() => this.onClick(isPreviewWallets, isCustomWallets)}>
+      <button @click=${() => this.onClick(isPreviewWallets, isCustomWallets)}>
         <div class="w3m-icons">
           ${isPreviewWallets
             ? rePreviewWallets.map(wallet => html`<img src=${wallet.image_url.lg} />`)

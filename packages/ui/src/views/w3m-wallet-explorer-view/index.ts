@@ -1,5 +1,12 @@
 import type { Listing } from '@web3modal/core'
-import { CoreUtil, ExplorerCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
+import {
+  ClientCtrl,
+  CoreUtil,
+  ExplorerCtrl,
+  OptionsCtrl,
+  RouterCtrl,
+  ToastCtrl
+} from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -16,7 +23,7 @@ export class W3mWalletExplorerView extends LitElement {
   // -- state & properties ------------------------------------------- //
   @state() private loading = !ExplorerCtrl.state.wallets.listings.length
   @state() private firstFetch = !ExplorerCtrl.state.wallets.listings.length
-  @state() private search: string | undefined = undefined
+  @state() private search = ''
   @state() private endReached = false
 
   // -- lifecycle ---------------------------------------------------- //
@@ -86,8 +93,14 @@ export class W3mWalletExplorerView extends LitElement {
 
   private async onConnectPlatform(listing: Listing) {
     if (CoreUtil.isMobile()) {
+      const { id, image_url } = listing
       const { native, universal } = listing.mobile
-      await UiUtil.handleMobileLinking({ native, universal }, listing.name)
+      await UiUtil.handleMobileLinking({
+        links: { native, universal },
+        name: listing.name,
+        id,
+        image: image_url.lg
+      })
     } else {
       RouterCtrl.push('DesktopConnector', {
         DesktopConnector: {
@@ -108,7 +121,7 @@ export class W3mWalletExplorerView extends LitElement {
       ExplorerCtrl.resetSearch()
       this.fetchWallets()
     } else if (this.search) {
-      this.search = undefined
+      this.search = ''
       this.endReached = this.isLastPage()
       ExplorerCtrl.resetSearch()
     }
@@ -119,13 +132,39 @@ export class W3mWalletExplorerView extends LitElement {
     this.searchDebounce(value)
   }
 
+  private onCoinbaseWallet() {
+    if (CoreUtil.isCoinbaseExtension()) {
+      RouterCtrl.push('CoinbaseExtensionConnector')
+    } else {
+      RouterCtrl.push('CoinbaseMobileConnector')
+    }
+  }
+
+  private coinbaseConnectorTemplate() {
+    try {
+      const connector = ClientCtrl.client().getConnectorById('coinbaseWallet')
+
+      return html`
+        <w3m-wallet-button
+          name=${connector.name}
+          walletId=${connector.id}
+          .onClick=${() => this.onCoinbaseWallet()}
+        ></w3m-wallet-button>
+      `
+    } catch {
+      return null
+    }
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     const { wallets, search } = ExplorerCtrl.state
     const { listings } = this.search ? search : wallets
     const isEmpty = !this.loading && !listings.length
+    const isLoading = this.loading && !listings.length
+    const isCoinbase = !isLoading && this.search.length < 3
     const classes = {
-      'w3m-loading': this.loading && !listings.length,
+      'w3m-loading': isLoading,
       'w3m-end-reached': this.endReached || !this.loading,
       'w3m-empty': isEmpty
     }
@@ -137,6 +176,7 @@ export class W3mWalletExplorerView extends LitElement {
 
       <w3m-modal-content class=${classMap(classes)}>
         <div class="w3m-grid">
+          ${isCoinbase ? this.coinbaseConnectorTemplate() : null}
           ${listings.map(
             listing => html`
               <w3m-wallet-button

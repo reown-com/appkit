@@ -1,9 +1,11 @@
-.w3m-button {
+button {
   display: flex;
   flex-direction: column;
   padding: 5px 10px;
   border-radius: 10px;
   transition: background-color 0.2s ease;
+  height: 100%;
+  justify-content: flex-start;
 }
 
 .w3m-icons {
@@ -20,7 +22,7 @@
   box-shadow: inset 0 0 0 1px var(--color-overlay);
 }
 
-.w3m-button:hover {
+button:hover {
   background-color: var(--color-overlay);
 }
 
