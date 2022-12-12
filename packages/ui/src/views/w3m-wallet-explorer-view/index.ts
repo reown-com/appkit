@@ -166,7 +166,7 @@ export class W3mWalletExplorerView extends LitElement {
     const isLoading = this.loading && !listings.length
     const isSearch = this.search.length >= 3
     const isCoinbase = !isLoading && !isSearch
-    let extensions = UiUtil.getExtensionWallets()
+    let extensions = CoreUtil.isMobile() ? [] : UiUtil.getExtensionWallets()
 
     if (isSearch) {
       extensions = extensions.filter(({ name }) =>
