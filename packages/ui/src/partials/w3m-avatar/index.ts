@@ -33,9 +33,8 @@ export class W3mAvatar extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const classes = {
-      'w3m-avatar': true,
-      'w3m-avatar-small': this.size === 'small',
-      'w3m-avatar-medium': this.size === 'medium'
+      'w3m-small': this.size === 'small',
+      'w3m-medium': this.size === 'medium'
     }
 
     if (this.address) {

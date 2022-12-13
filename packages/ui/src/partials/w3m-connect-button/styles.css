@@ -26,7 +26,7 @@ button:disabled {
   color: var(--color-fg-3);
 }
 
-.w3m-button-loading {
+.w3m-loading {
   padding: 0 15px;
 }
 

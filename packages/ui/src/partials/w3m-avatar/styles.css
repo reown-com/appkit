@@ -1,4 +1,4 @@
-.w3m-avatar {
+div {
   border-radius: 50%;
   box-shadow: inset 0 0 0 1px var(--color-overlay);
   display: block;
@@ -9,12 +9,12 @@
     radial-gradient(at 29% 88%, var(--color-av-5) 0px, transparent 50%);
 }
 
-.w3m-avatar-small {
+.w3m-small {
   width: 24px;
   height: 24px;
 }
 
-.w3m-avatar-medium {
+.w3m-medium {
   width: 60px;
   height: 60px;
 }
