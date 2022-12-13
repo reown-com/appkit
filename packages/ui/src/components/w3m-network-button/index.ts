@@ -15,7 +15,7 @@ export class W3mNetworkButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <button class="w3m-network-button" @click=${this.onClick}>
+      <button @click=${this.onClick}>
         <w3m-network-image chainId=${this.chainId}></w3m-network-image>
         <w3m-text variant="xsmall-normal">${this.name}</w3m-text>
       </button>

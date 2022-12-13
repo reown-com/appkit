@@ -1,4 +1,4 @@
-.w3m-qrcode-container {
+div {
   position: relative;
   user-select: none;
   display: block;
@@ -7,15 +7,15 @@
   aspect-ratio: 1 / 1;
 }
 
-.w3m-qrcode-container svg:first-child,
-.w3m-qrcode-container w3m-wallet-image {
+svg:first-child,
+w3m-wallet-image {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translateY(-50%) translateX(-50%);
 }
 
-.w3m-qrcode-container w3m-wallet-image {
+w3m-wallet-image {
   transform: translateY(-50%) translateX(-50%);
 }
 
@@ -25,14 +25,14 @@ w3m-wallet-image {
   border-radius: 15px;
 }
 
-.w3m-qrcode-container svg:first-child {
+svg:first-child {
   transform: translateY(-50%) translateX(-50%) scale(0.9);
 }
 
-.w3m-qrcode-container svg:first-child path:first-child {
+svg:first-child path:first-child {
   fill: var(--color-fg-accent);
 }
 
-.w3m-qrcode-container svg:first-child path:last-child {
+svg:first-child path:last-child {
   stroke: var(--color-overlay);
 }

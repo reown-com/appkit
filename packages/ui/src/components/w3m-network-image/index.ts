@@ -18,7 +18,7 @@ export class W3mNetworkImage extends LitElement {
 
     if (src) {
       return html`
-        <div class="w3m-network-image">
+        <div>
           <svg width="54" height="59" viewBox="0 0 54 59" fill="none">
             <defs>
               <clipPath id="polygon">

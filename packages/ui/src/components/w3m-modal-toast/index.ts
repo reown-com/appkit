@@ -40,7 +40,6 @@ export class W3mModalToast extends LitElement {
   protected render() {
     const { message, variant } = ToastCtrl.state
     const classes = {
-      'w3m-modal-toast': true,
       'w3m-success': variant === 'success',
       'w3m-error': variant === 'error'
     }

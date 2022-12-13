@@ -31,7 +31,7 @@ export default class W3mQrCode extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <div class="w3m-qrcode-container">
+      <div>
         ${this.walletId || this.logoSrc
           ? html`
               <w3m-wallet-image

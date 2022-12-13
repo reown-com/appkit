@@ -11,6 +11,7 @@ header button {
   padding: 15px 20px;
   transition: opacity 0.2s ease;
 }
+
 @media (hover: hover) {
   header button:hover {
     opacity: 0.5;
@@ -27,7 +28,6 @@ header button {
   right: 0;
 }
 
-.w3m-back-btn path,
-.w3m-action-btn path {
+path {
   fill: var(--color-fg-accent);
 }
