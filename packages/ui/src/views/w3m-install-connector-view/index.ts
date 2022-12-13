@@ -1,4 +1,4 @@
-import { CoreUtil, RouterCtrl } from '@web3modal/core'
+import { CoreUtil, RouterCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -25,7 +25,9 @@ export class W3mInstallConnectorView extends LitElement {
   }
 
   private onMobile() {
-    RouterCtrl.push('Qrcode')
+    const { name } = this.getRouterData()
+    RouterCtrl.push('ConnectWallet')
+    ToastCtrl.openToast(`Scan the code with ${name}`, 'success')
   }
 
   // -- render ------------------------------------------------------- //
@@ -50,7 +52,7 @@ export class W3mInstallConnectorView extends LitElement {
 
             ${isMobile
               ? html`
-                  <w3m-button .onClick=${this.onMobile} .iconLeft=${SvgUtil.MOBILE_ICON}>
+                  <w3m-button .onClick=${this.onMobile.bind(this)} .iconLeft=${SvgUtil.MOBILE_ICON}>
                     ${name} Mobile
                   </w3m-button>
                 `
