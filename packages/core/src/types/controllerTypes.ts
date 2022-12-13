@@ -138,7 +138,7 @@ export type RouterView =
   | 'GetWallet'
   | 'Help'
   | 'InjectedConnector'
-  | 'MetaMaskConnector'
+  | 'InstallConnector'
   | 'Qrcode'
   | 'SelectNetwork'
   | 'SwitchNetwork'
@@ -155,12 +155,20 @@ export interface DesktopConnectorData {
 
 export type SwitchNetworkData = Chain
 
+export interface InstallConnectorData {
+  id: string
+  name: string
+  url: string
+  isMobile?: boolean
+}
+
 export interface RouterCtrlState {
   history: RouterView[]
   view: RouterView
   data?: {
     DesktopConnector?: DesktopConnectorData
     SwitchNetwork?: SwitchNetworkData
+    InstallConnector?: InstallConnectorData
   }
 }
 

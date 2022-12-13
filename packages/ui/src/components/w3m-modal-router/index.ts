@@ -71,8 +71,8 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-coinbase-extension-connector-view></w3m-coinbase-extension-connector-view>`
       case 'InjectedConnector':
         return html`<w3m-injected-connector-view></w3m-injected-connector-view>`
-      case 'MetaMaskConnector':
-        return html`<w3m-metamask-connector-view></w3m-metamask-connector-view>`
+      case 'InstallConnector':
+        return html`<w3m-install-connector-view></w3m-install-connector-view>`
       case 'GetWallet':
         return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
       case 'DesktopConnector':
@@ -101,9 +101,11 @@ export class W3mModalRouter extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    return html`<div class="w3m-router">
-      <div class="w3m-content">${this.viewTemplate()}</div>
-    </div>`
+    return html`
+      <div class="w3m-router">
+        <div class="w3m-content">${this.viewTemplate()}</div>
+      </div>
+    `
   }
 }
 

@@ -36,16 +36,23 @@ export class W3mDesktopWalletSelection extends LitElement {
     RouterCtrl.push('InjectedConnector')
   }
 
-  private onMetaMask() {
-    RouterCtrl.push('MetaMaskConnector')
+  private onInstallConnector() {
+    RouterCtrl.push('InstallConnector', {
+      InstallConnector: {
+        id: 'metaMask',
+        name: 'MetaMask',
+        isMobile: true,
+        url: 'https://metamask.io'
+      }
+    })
   }
 
   private onConnectorWallet(id: string) {
     if (id === 'coinbaseWallet') {
       this.onCoinbaseWallet()
-    } else if (id === 'metaMask' || !window.ethereum) {
-      this.onMetaMask()
-    } else if (id === 'injected') {
+    } else if (!window.ethereum) {
+      this.onInstallConnector()
+    } else if (id === 'injected' || id === 'metaMask') {
       this.onInjectedWallet()
     } else {
       const { selectedChain } = OptionsCtrl.state

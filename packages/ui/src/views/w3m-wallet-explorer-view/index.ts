@@ -1,4 +1,4 @@
-import type { Listing } from '@web3modal/core'
+import type { InstallConnectorData, Listing } from '@web3modal/core'
 import {
   ClientCtrl,
   CoreUtil,
@@ -116,6 +116,10 @@ export class W3mWalletExplorerView extends LitElement {
     }
   }
 
+  private onConnectExtension(data: InstallConnectorData) {
+    RouterCtrl.push('InstallConnector', { InstallConnector: data })
+  }
+
   private readonly searchDebounce = UiUtil.debounce((value: string) => {
     if (value.length >= 3) {
       this.firstFetch = true
@@ -170,7 +174,7 @@ export class W3mWalletExplorerView extends LitElement {
 
     if (isSearch) {
       extensions = extensions.filter(({ name }) =>
-        name?.toUpperCase().includes(this.search.toUpperCase())
+        name.toUpperCase().includes(this.search.toUpperCase())
       )
     }
 
@@ -193,9 +197,9 @@ export class W3mWalletExplorerView extends LitElement {
             : extensions.map(
                 extension => html`
                   <w3m-wallet-button
-                    name=${extension.name ?? ''}
+                    name=${extension.name}
                     walletId=${extension.id}
-                    .onClick=${async () => this.onConnectPlatform(extension)}
+                    .onClick=${() => this.onConnectExtension(extension)}
                   >
                   </w3m-wallet-button>
                 `
