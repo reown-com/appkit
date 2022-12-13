@@ -22,7 +22,7 @@ export class W3mWalletImage extends LitElement {
     return html`
       ${src.length
         ? html`
-            <div class="w3m-wallet-image">
+            <div>
               <img src=${src} alt=${this.id} />
             </div>
           `

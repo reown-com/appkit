@@ -1,11 +1,11 @@
-.w3m-font {
+span {
   font-style: normal;
   font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu,
     'Helvetica Neue', sans-serif;
   font-feature-settings: 'case' on;
 }
 
-.w3m-font-xxsmall-bold {
+.w3m-xxsmall-bold {
   font-weight: 700;
   font-size: 10px;
   line-height: 12px;
@@ -13,64 +13,64 @@
   text-transform: uppercase;
 }
 
-.w3m-font-xsmall-normal {
+.w3m-xsmall-normal {
   font-weight: 600;
   font-size: 12px;
   line-height: 14px;
   letter-spacing: -0.03em;
 }
 
-.w3m-font-small-thin {
+.w3m-small-thin {
   font-weight: 500;
   font-size: 14px;
   line-height: 16px;
   letter-spacing: -0.03em;
 }
 
-.w3m-font-small-normal {
+.w3m-small-normal {
   font-weight: 600;
   font-size: 14px;
   line-height: 16px;
   letter-spacing: -0.03em;
 }
 
-.w3m-font-medium-thin {
+.w3m-medium-thin {
   font-weight: 500;
   font-size: 16px;
   line-height: 20px;
   letter-spacing: -0.03em;
 }
 
-.w3m-font-medium-normal {
+.w3m-medium-normal {
   font-weight: 600;
   font-size: 16px;
   line-height: 20px;
   letter-spacing: -0.03em;
 }
 
-.w3m-font-medium-bold {
+.w3m-medium-bold {
   font-weight: 700;
   font-size: 16px;
   line-height: 20px;
   letter-spacing: -0.03em;
 }
 
-.w3m-font-large-bold {
+.w3m-large-bold {
   font-weight: 700;
   font-size: 20px;
   line-height: 24px;
   letter-spacing: -0.03em;
 }
 
-.w3m-font-left {
+.w3m-left {
   text-align: left;
 }
 
-.w3m-font-center {
+.w3m-center {
   text-align: center;
 }
 
-.w3m-font-right {
+.w3m-right {
   text-align: right;
 }
 
