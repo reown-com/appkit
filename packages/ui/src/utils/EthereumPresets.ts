@@ -136,7 +136,8 @@ export const EthereumPresets = {
       name: '1inch Wallet',
       icon: 'dce1ee99-403f-44a9-9f94-20de30616500',
       url: 'https://1inch.io/wallet',
-      isMobile: true
+      isMobile: true,
+      isDesktop: true
     },
     [InjectedId.abcWallet]: {
       name: 'ABC Wallet',

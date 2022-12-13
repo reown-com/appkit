@@ -184,6 +184,7 @@ export class W3mWalletExplorerView extends LitElement {
       'w3m-end-reached': this.endReached || !this.loading,
       'w3m-empty': isEmpty
     }
+    const iterator = Math.max(extensions.length, listings.length)
 
     return html`
       <w3m-modal-header>
@@ -192,30 +193,34 @@ export class W3mWalletExplorerView extends LitElement {
 
       <w3m-modal-content class=${classMap(classes)}>
         <div class="w3m-grid">
+          ${isCoinbase ? this.coinbaseConnectorTemplate() : null}
           ${isLoading
             ? null
-            : extensions.map(
-                extension => html`
-                  <w3m-wallet-button
-                    name=${extension.name}
-                    walletId=${extension.id}
-                    .onClick=${() => this.onConnectExtension(extension)}
-                  >
-                  </w3m-wallet-button>
+            : [...Array(iterator)].map(
+                (_, index) => html`
+                  ${extensions[index]
+                    ? html`
+                        <w3m-wallet-button
+                          name=${extensions[index].name}
+                          walletId=${extensions[index].id}
+                          .onClick=${() => this.onConnectExtension(extensions[index])}
+                        >
+                        </w3m-wallet-button>
+                      `
+                    : null}
+                  ${listings[index]
+                    ? html`
+                        <w3m-wallet-button
+                          src=${listings[index].image_url.lg}
+                          name=${listings[index].name}
+                          walletId=${listings[index].id}
+                          .onClick=${async () => this.onConnectPlatform(listings[index])}
+                        >
+                        </w3m-wallet-button>
+                      `
+                    : null}
                 `
               )}
-          ${isCoinbase ? this.coinbaseConnectorTemplate() : null}
-          ${listings.map(
-            listing => html`
-              <w3m-wallet-button
-                src=${listing.image_url.lg}
-                name=${listing.name}
-                walletId=${listing.id}
-                .onClick=${async () => this.onConnectPlatform(listing)}
-              >
-              </w3m-wallet-button>
-            `
-          )}
         </div>
         <div class="w3m-placeholder-block">
           ${isEmpty
