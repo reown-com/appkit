@@ -65,10 +65,6 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-connect-wallet-view></w3m-connect-wallet-view>`
       case 'SelectNetwork':
         return html`<w3m-select-network-view></w3m-select-network-view>`
-      case 'CoinbaseMobileConnector':
-        return html`<w3m-coinbase-mobile-connector-view></w3m-coinbase-mobile-connector-view>`
-      case 'CoinbaseExtensionConnector':
-        return html`<w3m-coinbase-extension-connector-view></w3m-coinbase-extension-connector-view>`
       case 'InjectedConnector':
         return html`<w3m-injected-connector-view></w3m-injected-connector-view>`
       case 'InstallConnector':

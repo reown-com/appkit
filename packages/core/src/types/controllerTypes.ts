@@ -131,8 +131,6 @@ export interface ToastCtrlState {
 // -- RouterCtrl --------------------------------------------- //
 export type RouterView =
   | 'Account'
-  | 'CoinbaseExtensionConnector'
-  | 'CoinbaseMobileConnector'
   | 'ConnectWallet'
   | 'DesktopConnector'
   | 'GetWallet'

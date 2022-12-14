@@ -122,6 +122,16 @@ export const UiUtil = {
     ToastCtrl.openToast('Link copied', 'success')
   },
 
+  async handleCustomConnector(id: string) {
+    try {
+      const { selectedChain } = OptionsCtrl.state
+      await ClientCtrl.client().connectConnector(id, selectedChain?.id)
+      ModalCtrl.close()
+    } catch (error) {
+      ToastCtrl.openToast(UiUtil.getErrorMessage(error), 'error')
+    }
+  },
+
   getCustomWallets() {
     const { desktopWallets, mobileWallets } = ConfigCtrl.state
 
@@ -210,11 +220,5 @@ export const UiUtil = {
     }
 
     return wallets
-  },
-
-  *getArrayChunks(arr: unknown[], size: number) {
-    for (let i = 0; i < arr.length; i += size) {
-      yield arr.slice(i, i + size)
-    }
   }
 }

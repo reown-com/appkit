@@ -81,33 +81,20 @@ export class EthereumClient {
     return data
   }
 
-  public async connectCoinbaseMobile(onUri?: (uri: string) => void, selectedChainId?: number) {
-    const connector = this.getConnectorById('coinbaseWallet')
-    const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
-
-    async function getProviderUri() {
-      return new Promise<void>(resolve => {
-        connector.once('message', async ({ type }) => {
-          if (type === 'connecting') {
-            const provider = await connector.getProvider()
-            onUri?.(provider.qrUrl)
-            resolve()
-          }
-        })
-      })
-    }
-
-    const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
-
-    return data
-  }
-
   public async connectConnector(connectorId: ConnectorId | string, selectedChainId?: number) {
     const connector = this.getConnectorById(connectorId)
     const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
     const data = await connect({ connector, chainId })
 
     return data
+  }
+
+  public getConnectorIds() {
+    return this.wagmi.connectors.map(connector => connector.id)
+  }
+
+  public getConnectorNames() {
+    return this.wagmi.connectors.map(connector => connector.name)
   }
 
   public disconnect = disconnect

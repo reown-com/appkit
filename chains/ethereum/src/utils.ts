@@ -24,6 +24,6 @@ export function modalConnectors({ appName, chains }: ModalConnectorsOpts) {
       chains,
       options: { shimDisconnect: true, shimChainChangedDisconnect: true }
     }),
-    new CoinbaseWalletConnector({ chains, options: { appName, headlessMode: true } })
+    new CoinbaseWalletConnector({ chains, options: { appName } })
   ]
 }

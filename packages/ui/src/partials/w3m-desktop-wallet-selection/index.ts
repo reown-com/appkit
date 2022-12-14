@@ -1,12 +1,5 @@
 import type { DesktopConnectorData } from '@web3modal/core'
-import {
-  ClientCtrl,
-  ConfigCtrl,
-  CoreUtil,
-  ExplorerCtrl,
-  OptionsCtrl,
-  RouterCtrl
-} from '@web3modal/core'
+import { ClientCtrl, ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -20,14 +13,6 @@ export class W3mDesktopWalletSelection extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
-  private onCoinbaseWallet() {
-    if (CoreUtil.isCoinbaseExtension()) {
-      RouterCtrl.push('CoinbaseExtensionConnector')
-    } else {
-      RouterCtrl.push('CoinbaseMobileConnector')
-    }
-  }
-
   private onDesktopWallet(data: DesktopConnectorData) {
     RouterCtrl.push('DesktopConnector', { DesktopConnector: data })
   }
@@ -47,16 +32,13 @@ export class W3mDesktopWalletSelection extends LitElement {
     })
   }
 
-  private onConnectorWallet(id: string) {
-    if (id === 'coinbaseWallet') {
-      this.onCoinbaseWallet()
-    } else if (!window.ethereum) {
+  private async onConnectorWallet(id: string) {
+    if (!window.ethereum) {
       this.onInstallConnector()
     } else if (id === 'injected' || id === 'metaMask') {
       this.onInjectedWallet()
     } else {
-      const { selectedChain } = OptionsCtrl.state
-      ClientCtrl.client().connectConnector(id, selectedChain?.id)
+      await UiUtil.handleCustomConnector(id)
     }
   }
 
@@ -110,7 +92,7 @@ export class W3mDesktopWalletSelection extends LitElement {
           .installed=${ready}
           name=${name}
           walletId=${id}
-          .onClick=${() => this.onConnectorWallet(id)}
+          .onClick=${async () => this.onConnectorWallet(id)}
         ></w3m-wallet-button>
       `
     )

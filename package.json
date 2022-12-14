@@ -31,9 +31,10 @@
     "examples/html"
   ],
   "devDependencies": {
+    "@types/node": "18.11.15",
     "@typescript-eslint/eslint-plugin": "5.46.1",
     "@typescript-eslint/parser": "5.46.1",
-    "esbuild": "0.16.4",
+    "esbuild": "0.16.6",
     "eslint": "8.29.0",
     "eslint-config-prettier": "8.5.0",
     "lerna": "6.1.0",

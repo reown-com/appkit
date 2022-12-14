@@ -1,11 +1,4 @@
-import {
-  ClientCtrl,
-  ConfigCtrl,
-  ExplorerCtrl,
-  ModalCtrl,
-  OptionsCtrl,
-  RouterCtrl
-} from '@web3modal/core'
+import { ClientCtrl, ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -24,13 +17,7 @@ export class W3mMobileWalletSelection extends LitElement {
   }
 
   private async onConnectorWallet(id: string) {
-    const { selectedChain } = OptionsCtrl.state
-    if (id === 'coinbaseWallet') {
-      await ClientCtrl.client().connectCoinbaseMobile(() => null, selectedChain?.id)
-    } else {
-      await ClientCtrl.client().connectConnector(id, selectedChain?.id)
-    }
-    ModalCtrl.close()
+    await UiUtil.handleCustomConnector(id)
   }
 
   private mobileWalletsTemplate() {

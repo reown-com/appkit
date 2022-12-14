@@ -139,14 +139,6 @@ export class W3mWalletExplorerView extends LitElement {
     this.searchDebounce(value)
   }
 
-  private onCoinbaseWallet() {
-    if (CoreUtil.isCoinbaseExtension()) {
-      RouterCtrl.push('CoinbaseExtensionConnector')
-    } else {
-      RouterCtrl.push('CoinbaseMobileConnector')
-    }
-  }
-
   private coinbaseConnectorTemplate() {
     try {
       const connector = ClientCtrl.client().getConnectorById('coinbaseWallet')
@@ -155,7 +147,7 @@ export class W3mWalletExplorerView extends LitElement {
         <w3m-wallet-button
           name=${connector.name}
           walletId=${connector.id}
-          .onClick=${() => this.onCoinbaseWallet()}
+          .onClick=${async () => UiUtil.handleCustomConnector('coinbaseWallet')}
         ></w3m-wallet-button>
       `
     } catch {

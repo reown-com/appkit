@@ -9,6 +9,7 @@
   "dependencies": {
     "@web3modal/ethereum": "2.0.0-beta.9",
     "@web3modal/react": "2.0.0-beta.9",
+    "@wagmi/connectors": "0.1.1",
     "ethers": "5.7.2",
     "next": "13.0.6",
     "react": "18.2.0",
@@ -16,7 +17,6 @@
     "wagmi": "0.9.2"
   },
   "devDependencies": {
-    "@types/node": "18.11.14",
     "@types/react": "18.0.26",
     "@types/react-dom": "18.0.9"
   }

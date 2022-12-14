@@ -1,10 +1,6 @@
 const WALLETCONNECT_DEEPLINK_CHOICE = 'WALLETCONNECT_DEEPLINK_CHOICE'
 
 export const CoreUtil = {
-  isCoinbaseExtension() {
-    return window.coinbaseWalletExtension
-  },
-
   isMobile() {
     if (typeof window !== 'undefined') {
       return Boolean(

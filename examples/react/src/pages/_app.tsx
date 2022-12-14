@@ -1,3 +1,4 @@
+import { LedgerConnector } from '@wagmi/connectors/ledger'
 import { EthereumClient, modalConnectors, walletConnectProvider } from '@web3modal/ethereum'
 import { Web3Modal } from '@web3modal/react'
 import type { AppProps } from 'next/app'
@@ -17,9 +18,10 @@ const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 // 2. Configure wagmi client
 const chains = [mainnet, polygon, optimism, arbitrum, avalanche, fantom, bsc]
 const { provider } = configureChains(chains, [walletConnectProvider({ projectId })])
+const ledger = new LedgerConnector({ chains })
 const wagmiClient = createClient({
   autoConnect: true,
-  connectors: modalConnectors({ appName: 'web3Modal', chains }),
+  connectors: [...modalConnectors({ appName: 'web3Modal', chains }), ledger],
   provider
 })
 

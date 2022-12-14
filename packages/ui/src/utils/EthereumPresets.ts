@@ -34,7 +34,8 @@ export const enum InjectedId {
   tokenary = 'tokenary',
   '1inch' = '1inch',
   kuCoinWallet = 'kuCoinWallet',
-  abcWallet = 'abcWallet'
+  abcWallet = 'abcWallet',
+  ledger = 'ledger'
 }
 
 // -- presets ------------------------------------------------------ //
@@ -100,6 +101,12 @@ export const EthereumPresets = {
       icon: '1e47340b-8fd7-4ad6-17e7-b2bd651fae00',
       url: 'https://kuwallet.com',
       isMobile: true
+    },
+    [InjectedId.ledger]: {
+      name: 'Ledger',
+      icon: 'a7f416de-aa03-4c5e-3280-ab49269aef00',
+      url: 'https://www.ledger.com',
+      isDesktop: true
     },
     [InjectedId.brave]: {
       name: 'Brave',
