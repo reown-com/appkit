@@ -1,7 +1,7 @@
 .w3m-overlay {
   inset: 0px;
   position: fixed;
-  z-index: 99;
+  z-index: 89;
   overflow: hidden;
   display: flex;
   justify-content: center;

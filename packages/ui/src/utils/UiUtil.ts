@@ -147,7 +147,7 @@ export const UiUtil = {
   },
 
   getConnectorImageUrls() {
-    const connectors = ClientCtrl.client().getConnectorWallets()
+    const connectors = ClientCtrl.client().getConnectors()
     const ids = connectors.map(({ id }) => EthereumPresets.getInjectedId(id))
     const images = ids.map(id => UiUtil.getWalletIcon(id))
 

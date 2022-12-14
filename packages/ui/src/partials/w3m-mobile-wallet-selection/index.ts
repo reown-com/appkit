@@ -81,7 +81,7 @@ export class W3mMobileWalletSelection extends LitElement {
       return []
     }
 
-    const connectorWallets = ClientCtrl.client().getConnectorWallets()
+    const connectorWallets = ClientCtrl.client().getConnectors()
     let wallets = [...connectorWallets]
 
     if (!window.ethereum) {

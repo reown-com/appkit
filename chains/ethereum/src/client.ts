@@ -49,7 +49,7 @@ export class EthereumClient {
     return provider.connector.uri
   }
 
-  public getConnectorWallets() {
+  public getConnectors() {
     const connectors = this.wagmi.connectors.filter(connector => connector.id !== 'walletConnect')
 
     return connectors
@@ -87,14 +87,6 @@ export class EthereumClient {
     const data = await connect({ connector, chainId })
 
     return data
-  }
-
-  public getConnectorIds() {
-    return this.wagmi.connectors.map(connector => connector.id)
-  }
-
-  public getConnectorNames() {
-    return this.wagmi.connectors.map(connector => connector.name)
   }
 
   public disconnect = disconnect

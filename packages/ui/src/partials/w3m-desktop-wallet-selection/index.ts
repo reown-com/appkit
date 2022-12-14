@@ -84,7 +84,7 @@ export class W3mDesktopWalletSelection extends LitElement {
       return []
     }
 
-    const connectorWallets = ClientCtrl.client().getConnectorWallets()
+    const connectorWallets = ClientCtrl.client().getConnectors()
 
     return connectorWallets.map(
       ({ id, name }) => html`
