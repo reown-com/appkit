@@ -93,6 +93,7 @@ export class W3mModal extends LitElement {
 
   private async fetchProfile(profileAddress?: `0x${string}`) {
     try {
+      OptionsCtrl.setProfileLoading(true)
       const address = profileAddress ?? OptionsCtrl.state.address
       if (address && this.activeChainId === 1) {
         const [name, avatar] = await Promise.all([
@@ -104,11 +105,14 @@ export class W3mModal extends LitElement {
       }
     } catch (err) {
       ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
+    } finally {
+      OptionsCtrl.setProfileLoading(false)
     }
   }
 
   private async fetchBalance(balanceAddress?: `0x${string}`) {
     try {
+      OptionsCtrl.setBalanceLoading(true)
       const address = balanceAddress ?? OptionsCtrl.state.address
       if (address) {
         const balance = await ClientCtrl.client().fetchBalance({ address })
@@ -116,6 +120,8 @@ export class W3mModal extends LitElement {
       }
     } catch (err) {
       ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
+    } finally {
+      OptionsCtrl.setBalanceLoading(false)
     }
   }
 

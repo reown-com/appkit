@@ -60,6 +60,8 @@ export interface OptionsCtrlState {
   isExplorer: boolean
   profileName?: string | null
   profileAvatar?: string | null
+  profileLoading?: boolean
+  balanceLoading?: boolean
   balance?: { amount: string; symbol: string }
 }
 

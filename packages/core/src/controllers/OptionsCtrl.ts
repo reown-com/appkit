@@ -11,6 +11,8 @@ const state = proxy<OptionsCtrlState>({
   address: undefined,
   profileName: undefined,
   profileAvatar: undefined,
+  profileLoading: false,
+  balanceLoading: false,
   balance: undefined,
   isConnected: false,
   isStandalone: false,
@@ -88,6 +90,14 @@ export const OptionsCtrl = {
 
   setProfileAvatar(profileAvatar: OptionsCtrlState['profileAvatar']) {
     state.profileAvatar = profileAvatar
+  },
+
+  setProfileLoading(profileLoading: OptionsCtrlState['profileLoading']) {
+    state.profileLoading = profileLoading
+  },
+
+  setBalanceLoading(balanceLoading: OptionsCtrlState['balanceLoading']) {
+    state.balanceLoading = balanceLoading
   },
 
   setBalance(balance: OptionsCtrlState['balance']) {
