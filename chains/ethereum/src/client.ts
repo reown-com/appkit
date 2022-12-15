@@ -3,6 +3,8 @@ import {
   connect,
   disconnect,
   fetchBalance,
+  fetchEnsAvatar,
+  fetchEnsName,
   getAccount,
   getNetwork,
   switchNetwork,
@@ -102,4 +104,9 @@ export class EthereumClient {
   public watchNetwork = watchNetwork
 
   public switchNetwork = switchNetwork
+
+  // -- public web3modal (optional) ----------------------- //
+  public fecthEnsName = fetchEnsName
+
+  public fetchEnsAvatar = fetchEnsAvatar
 }

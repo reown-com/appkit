@@ -52,12 +52,14 @@ export interface OptionsCtrlState {
   chains?: EthereumClient['chains']
   standaloneChains?: string[]
   standaloneUri?: string
-  address?: string
+  address?: `0x${string}`
   isConnected: boolean
   isStandalone: boolean
   isCustomDesktop: boolean
   isCustomMobile: boolean
   isExplorer: boolean
+  profileName?: string | null
+  profileAvatar?: string | null
 }
 
 // -- ExplorerCtrl ------------------------------------------- //

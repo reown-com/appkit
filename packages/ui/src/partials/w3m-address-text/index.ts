@@ -10,14 +10,17 @@ export class W3mAddressText extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private address?: string = undefined
+  @state() private profileName?: string | null = undefined
   @property() public variant?: 'button' | 'modal' = 'button'
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
     this.address = OptionsCtrl.state.address
-    this.unsubscribeAccount = OptionsCtrl.subscribe(({ address }) => {
+    this.profileName = OptionsCtrl.state.profileName
+    this.unsubscribeAccount = OptionsCtrl.subscribe(({ address, profileName }) => {
       this.address = address
+      this.profileName = profileName
     })
   }
 
@@ -37,7 +40,7 @@ export class W3mAddressText extends LitElement {
         variant=${isButton ? 'medium-normal' : 'large-bold'}
         color=${isButton ? 'inverse' : 'primary'}
       >
-        ${UiUtil.truncate(this.address ?? '')}
+        ${this.profileName ? this.profileName : UiUtil.truncate(this.address ?? '')}
       </w3m-text>
     `
   }

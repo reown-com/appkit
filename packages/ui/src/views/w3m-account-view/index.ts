@@ -13,6 +13,7 @@ export class W3mAccountView extends LitElement {
   private onDisconnect() {
     ModalCtrl.close()
     ClientCtrl.client().disconnect()
+    OptionsCtrl.resetAccount()
   }
 
   private async onCopyAddress() {

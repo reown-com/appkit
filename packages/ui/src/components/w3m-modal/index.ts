@@ -35,12 +35,19 @@ export class W3mModal extends LitElement {
         this.onCloseModalEvent()
       }
     })
-
     if (!OptionsCtrl.state.isStandalone) {
       OptionsCtrl.getAccount()
+      if (OptionsCtrl.state.address) {
+        this.fetchProfile(OptionsCtrl.state.address)
+      }
       this.unwatchAccount = ClientCtrl.client().watchAccount(account => {
         OptionsCtrl.setAddress(account.address)
         OptionsCtrl.setIsConnected(account.isConnected)
+        const newAddress = account.address
+        const { address } = OptionsCtrl.state
+        if (newAddress && newAddress !== address) {
+          this.fetchProfile(newAddress)
+        }
       })
       OptionsCtrl.getSelectedChain()
       this.unwatchNetwork = ClientCtrl.client().watchNetwork(network => {
@@ -70,6 +77,19 @@ export class W3mModal extends LitElement {
 
   private get containerEl() {
     return UiUtil.getShadowRootElement(this, '.w3m-container')
+  }
+
+  private async fetchProfile(address: `0x${string}`) {
+    try {
+      const [name, avatar] = await Promise.all([
+        ClientCtrl.client().fecthEnsName({ address, chainId: 1 }),
+        ClientCtrl.client().fetchEnsAvatar({ address, chainId: 1 })
+      ])
+      OptionsCtrl.setProfileName(name)
+      OptionsCtrl.setProfileAvatar(avatar)
+    } catch (err) {
+      ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
+    }
   }
 
   private toggleBodyScroll(enabled: boolean) {
