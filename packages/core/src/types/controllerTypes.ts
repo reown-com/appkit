@@ -60,6 +60,7 @@ export interface OptionsCtrlState {
   isExplorer: boolean
   profileName?: string | null
   profileAvatar?: string | null
+  balance?: { amount: string; symbol: string }
 }
 
 // -- ExplorerCtrl ------------------------------------------- //

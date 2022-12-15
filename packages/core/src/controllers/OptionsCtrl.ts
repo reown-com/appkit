@@ -11,6 +11,7 @@ const state = proxy<OptionsCtrlState>({
   address: undefined,
   profileName: undefined,
   profileAvatar: undefined,
+  balance: undefined,
   isConnected: false,
   isStandalone: false,
   isCustomDesktop: false,
@@ -89,9 +90,18 @@ export const OptionsCtrl = {
     state.profileAvatar = profileAvatar
   },
 
-  resetAccount() {
-    state.address = undefined
+  setBalance(balance: OptionsCtrlState['balance']) {
+    state.balance = balance
+  },
+
+  resetProfile() {
     state.profileName = undefined
     state.profileAvatar = undefined
+    state.balance = undefined
+  },
+
+  resetAccount() {
+    state.address = undefined
+    OptionsCtrl.resetProfile()
   }
 }

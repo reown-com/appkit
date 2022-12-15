@@ -22,11 +22,13 @@ export class W3mModal extends LitElement {
   // -- state & properties ------------------------------------------- //
   @state() private open = false
   @state() private preload = true
+  @state() private activeChainId?: number = undefined
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
     ThemeUtil.setTheme()
+
     this.unsubscribeConfig = ConfigCtrl.subscribe(ThemeUtil.setTheme)
     this.unsubscribeModal = ModalCtrl.subscribe(modalState => {
       if (modalState.open) {
@@ -35,23 +37,29 @@ export class W3mModal extends LitElement {
         this.onCloseModalEvent()
       }
     })
+
     if (!OptionsCtrl.state.isStandalone) {
+      const chain = OptionsCtrl.getSelectedChain()
+      this.activeChainId = chain?.id
+      this.unwatchNetwork = ClientCtrl.client().watchNetwork(network => {
+        OptionsCtrl.setSelectedChain(network.chain)
+        this.activeChainId = network.chain?.id
+        OptionsCtrl.resetProfile()
+        this.fetchProfile()
+        this.fetchBalance()
+      })
+
       OptionsCtrl.getAccount()
-      if (OptionsCtrl.state.address) {
-        this.fetchProfile(OptionsCtrl.state.address)
-      }
+      this.fetchProfile()
+      this.fetchBalance()
       this.unwatchAccount = ClientCtrl.client().watchAccount(account => {
-        const newAddress = account.address
         const { address } = OptionsCtrl.state
-        if (newAddress && newAddress !== address) {
-          this.fetchProfile(newAddress)
+        if (account.address !== address) {
+          this.fetchProfile(account.address)
+          this.fetchBalance(account.address)
         }
         OptionsCtrl.setAddress(account.address)
         OptionsCtrl.setIsConnected(account.isConnected)
-      })
-      OptionsCtrl.getSelectedChain()
-      this.unwatchNetwork = ClientCtrl.client().watchNetwork(network => {
-        OptionsCtrl.setSelectedChain(network.chain)
       })
     }
 
@@ -79,14 +87,29 @@ export class W3mModal extends LitElement {
     return UiUtil.getShadowRootElement(this, '.w3m-container')
   }
 
-  private async fetchProfile(address: `0x${string}`) {
+  private async fetchProfile(profileAddress?: `0x${string}`) {
     try {
-      const [name, avatar] = await Promise.all([
-        ClientCtrl.client().fecthEnsName({ address, chainId: 1 }),
-        ClientCtrl.client().fetchEnsAvatar({ address, chainId: 1 })
-      ])
-      OptionsCtrl.setProfileName(name)
-      OptionsCtrl.setProfileAvatar(avatar)
+      const address = profileAddress ?? OptionsCtrl.state.address
+      if (address && this.activeChainId === 1) {
+        const [name, avatar] = await Promise.all([
+          ClientCtrl.client().fecthEnsName({ address }),
+          ClientCtrl.client().fetchEnsAvatar({ address })
+        ])
+        OptionsCtrl.setProfileName(name)
+        OptionsCtrl.setProfileAvatar(avatar)
+      }
+    } catch (err) {
+      ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
+    }
+  }
+
+  private async fetchBalance(balanceAddress?: `0x${string}`) {
+    try {
+      const address = balanceAddress ?? OptionsCtrl.state.address
+      if (address) {
+        const balance = await ClientCtrl.client().fetchBalance({ address })
+        OptionsCtrl.setBalance({ amount: balance.formatted, symbol: balance.symbol })
+      }
     } catch (err) {
       ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
     }
