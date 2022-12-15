@@ -41,13 +41,13 @@ export class W3mModal extends LitElement {
         this.fetchProfile(OptionsCtrl.state.address)
       }
       this.unwatchAccount = ClientCtrl.client().watchAccount(account => {
-        OptionsCtrl.setAddress(account.address)
-        OptionsCtrl.setIsConnected(account.isConnected)
         const newAddress = account.address
         const { address } = OptionsCtrl.state
         if (newAddress && newAddress !== address) {
           this.fetchProfile(newAddress)
         }
+        OptionsCtrl.setAddress(account.address)
+        OptionsCtrl.setIsConnected(account.isConnected)
       })
       OptionsCtrl.getSelectedChain()
       this.unwatchNetwork = ClientCtrl.client().watchNetwork(network => {
