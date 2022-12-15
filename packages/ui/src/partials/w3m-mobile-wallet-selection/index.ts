@@ -89,9 +89,9 @@ export class W3mMobileWalletSelection extends LitElement {
     }
 
     return wallets.map(
-      ({ name, id }) => html`
+      ({ name, id, ready }) => html`
         <w3m-wallet-button
-          .installed=${['injected', 'metaMask'].includes(id)}
+          .installed=${['injected', 'metaMask'].includes(id) && ready}
           name=${name}
           walletId=${id}
           .onClick=${async () => this.onConnectorWallet(id)}
