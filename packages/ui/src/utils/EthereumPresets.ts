@@ -6,6 +6,7 @@ export interface EvmWindow {
   ethereum?: any
   spotEthWallet?: any
   abc?: any
+  coinbaseWalletExtension?: any
 }
 
 export interface InjectedPreset {
@@ -171,11 +172,11 @@ export const EthereumPresets = {
   } as Record<string, string | undefined>,
 
   getInjectedId(id: string) {
-    if (id.toUpperCase() !== 'INJECTED') {
+    if (id.toUpperCase() !== 'INJECTED' && id.length) {
       return id
     }
 
-    const { ethereum, spotEthWallet, abc }: EvmWindow = window
+    const { ethereum, spotEthWallet, abc, coinbaseWalletExtension }: EvmWindow = window
 
     if (!ethereum) return InjectedId.metaMask
     if (ethereum.isTrust || ethereum.isTrustWallet) return InjectedId.trust
@@ -186,7 +187,7 @@ export const EthereumPresets = {
     if (ethereum.isTokenPocket) return InjectedId.tokenPocket
     if (ethereum.isFrame) return InjectedId.frame
     if (ethereum.isTally) return InjectedId.tally
-    if (ethereum.isCoinbaseExtension) return InjectedId.coinbaseWallet
+    if (coinbaseWalletExtension) return InjectedId.coinbaseWallet
     if (ethereum.isAvalanche) return InjectedId.core
     if (ethereum.isBitKeep) return InjectedId.bitkeep
     if (ethereum.isMathWallet) return InjectedId.mathWallet
