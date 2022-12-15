@@ -29,6 +29,7 @@ export class W3mModal extends LitElement {
     super()
     ThemeUtil.setTheme()
 
+    // Subscribe to modal config and theme changes
     this.unsubscribeConfig = ConfigCtrl.subscribe(ThemeUtil.setTheme)
     this.unsubscribeModal = ModalCtrl.subscribe(modalState => {
       if (modalState.open) {
@@ -39,6 +40,7 @@ export class W3mModal extends LitElement {
     })
 
     if (!OptionsCtrl.state.isStandalone) {
+      // Subscribe network changes
       const chain = OptionsCtrl.getSelectedChain()
       this.activeChainId = chain?.id
       this.unwatchNetwork = ClientCtrl.client().watchNetwork(network => {
@@ -49,6 +51,7 @@ export class W3mModal extends LitElement {
         this.fetchBalance()
       })
 
+      // Subscribe account changes
       OptionsCtrl.getAccount()
       this.fetchProfile()
       this.fetchBalance()
@@ -63,6 +66,7 @@ export class W3mModal extends LitElement {
       })
     }
 
+    // Load explorer and image data
     this.preloadModalData()
   }
 
