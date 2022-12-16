@@ -20,6 +20,7 @@ Without these `yarn:build` command will fail. To create your ProjectID head to [
 - `yarn dev:react` - Run react example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn dev:react-standalone` - Run react standalone example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn dev:html` - Run plain html/js example (has to be ran together with `yarn dev` in a separate terminal tab).
+- `yarn dev:html-standalone` - Run plain html/js standalone example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn build` - Build all packages + examples.
 - `yarn lint` - Run the linter.
 - `yarn prettier` - Run prettier.
