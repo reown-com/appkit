@@ -37,5 +37,12 @@ w3m-address-text {
 
 .w3m-balance {
   border-top: 1px solid var(--color-bg-2);
+  border-bottom: 1px solid var(--color-bg-2);
   padding: 11px 20px;
+}
+
+.w3m-transactions {
+  padding: 60px 20px;
+  display: flex;
+  justify-content: center;
 }

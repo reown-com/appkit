@@ -20,7 +20,7 @@ export class W3mBalance extends LitElement {
     this.amount = OptionsCtrl.state.balance?.amount ?? '_._'
     this.unsubscribeAccount = OptionsCtrl.subscribe(({ balance }) => {
       this.symbol = balance?.symbol
-      this.amount = balance?.amount
+      this.amount = balance?.amount ?? '_._'
     })
   }
 
@@ -36,7 +36,7 @@ export class W3mBalance extends LitElement {
     return html`
       <div>
         <w3m-token-image symbol=${ifDefined(this.symbol)}></w3m-token-image>
-        <w3m-text variant="medium-normal" color="inverse"> ${this.amount} </w3m-text>
+        <w3m-text variant="medium-normal" color="primary">${this.amount} ${this.symbol}</w3m-text>
       </div>
     `
   }

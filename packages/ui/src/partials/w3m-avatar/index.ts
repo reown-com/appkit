@@ -12,14 +12,17 @@ export class W3mAvatar extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private address?: string = undefined
+  @state() private profileAvatar?: string | null = undefined
   @property() public size?: 'medium' | 'small' = 'small'
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
     this.address = OptionsCtrl.state.address
-    this.unsubscribeAccount = OptionsCtrl.subscribe(({ address }) => {
+    this.profileAvatar = OptionsCtrl.state.profileAvatar
+    this.unsubscribeAccount = OptionsCtrl.subscribe(({ address, profileAvatar }) => {
       this.address = address
+      this.profileAvatar = profileAvatar
     })
   }
 
@@ -35,6 +38,10 @@ export class W3mAvatar extends LitElement {
     const classes = {
       'w3m-small': this.size === 'small',
       'w3m-medium': this.size === 'medium'
+    }
+
+    if (this.profileAvatar) {
+      return html`<img class=${classMap(classes)} src=${this.profileAvatar} />`
     }
 
     if (this.address) {
