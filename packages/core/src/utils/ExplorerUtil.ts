@@ -22,6 +22,6 @@ export const ExplorerUtil = {
   },
 
   formatImageUrl(projectId: string, imageId: string) {
-    return `${EXPLORER_API}/v2/logo/lg/${imageId}?projectId=${projectId}`
+    return `${EXPLORER_API}/v3/logo/lg/${imageId}?projectId=${projectId}`
   }
 }
