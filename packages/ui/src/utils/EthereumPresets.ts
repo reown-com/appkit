@@ -61,8 +61,7 @@ export const EthereumPresets = {
     [InjectedId.phantom]: {
       name: 'Phantom',
       icon: '62471a22-33cb-4e65-5b54-c3d9ea24b900',
-      url: 'https://phantom.app',
-      isMobile: true
+      url: 'https://phantom.app'
     },
     [InjectedId.core]: {
       name: 'Core',

@@ -188,7 +188,6 @@ export class W3mWalletExplorerView extends LitElement {
 
       <w3m-modal-content class=${classMap(classes)}>
         <div class="w3m-grid">
-          ${isCoinbase ? this.coinbaseConnectorTemplate() : null}
           ${isLoading
             ? null
             : [...Array(iterator)].map(
@@ -216,6 +215,7 @@ export class W3mWalletExplorerView extends LitElement {
                     : null}
                 `
               )}
+          ${isCoinbase ? this.coinbaseConnectorTemplate() : null}
         </div>
         <div class="w3m-placeholder-block">
           ${isEmpty
