@@ -176,7 +176,7 @@ export const EthereumPresets = {
   },
 
   getInjectedName(name: string) {
-    if (name.toUpperCase() !== 'INJECTED') {
+    if (name.length && name.toUpperCase() !== 'INJECTED') {
       return name
     }
     const id = EthereumPresets.getInjectedId('')

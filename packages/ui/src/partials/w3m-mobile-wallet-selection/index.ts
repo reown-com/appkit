@@ -26,7 +26,7 @@ export class W3mMobileWalletSelection extends LitElement {
     const wallets = [...(mobileWallets ?? [])]
 
     if (window.ethereum) {
-      const injectedName = UiUtil.getWalletName('injected')
+      const injectedName = UiUtil.getWalletName('')
       const idx = wallets.findIndex(({ name }) => UiUtil.getWalletName(name) === injectedName)
       if (idx > -1) {
         wallets.splice(idx, 1)
@@ -54,7 +54,7 @@ export class W3mMobileWalletSelection extends LitElement {
     let wallets = [...previewWallets]
 
     if (window.ethereum) {
-      const injectedName = UiUtil.getWalletName('injected')
+      const injectedName = UiUtil.getWalletName('')
       wallets = wallets.filter(({ name }) => UiUtil.getWalletName(name) !== injectedName)
     }
 
@@ -86,7 +86,7 @@ export class W3mMobileWalletSelection extends LitElement {
     let wallets = [...connectorWallets]
 
     if (!window.ethereum) {
-      wallets = wallets.filter(({ id }) => id !== 'injected' && id !== 'metaMask')
+      wallets = wallets.filter(({ id }) => id !== 'injected' && id !== InjectedId.metaMask)
     }
 
     return wallets.map(
