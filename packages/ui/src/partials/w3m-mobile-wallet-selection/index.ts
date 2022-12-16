@@ -2,7 +2,7 @@ import { ClientCtrl, ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { InjectedId } from '../../utils/EthereumPresets'
+import { InjectedId } from '../../presets/EthereumPresets'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'

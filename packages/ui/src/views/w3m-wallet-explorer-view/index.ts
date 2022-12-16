@@ -10,7 +10,7 @@ import {
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { InjectedId } from '../../utils/EthereumPresets'
+import { InjectedId } from '../../presets/EthereumPresets'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'

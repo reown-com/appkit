@@ -36,6 +36,10 @@ export class W3mAccountView extends LitElement {
         </div>
       </w3m-modal-content>
 
+      <div class="w3m-balance">
+        <w3m-balance></w3m-balance>
+      </div>
+
       <w3m-modal-footer>
         <div class="w3m-footer">
           <w3m-account-network-button></w3m-account-network-button>

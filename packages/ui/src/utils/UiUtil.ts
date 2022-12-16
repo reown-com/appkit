@@ -8,7 +8,9 @@ import {
   ToastCtrl
 } from '@web3modal/core'
 import type { LitElement } from 'lit'
-import { EthereumPresets, InjectedId } from './EthereumPresets'
+import { ChainPresets } from '../presets/ChainPresets'
+import { EthereumPresets, InjectedId } from '../presets/EthereumPresets'
+import { TokenPresets } from '../presets/TokenPresets'
 import type { RecentWallet } from './TypesUtil'
 
 export const UiUtil = {
@@ -44,14 +46,17 @@ export const UiUtil = {
   },
 
   getChainIcon(chainId: number | string) {
-    const presets = EthereumPresets.chainIconPreset
+    const imageId = ChainPresets[chainId]
     const { projectId, chainImages } = ConfigCtrl.state
-    const presetImage = presets[chainId]
 
-    return (
-      chainImages?.[chainId] ??
-      (projectId && presetImage ? ExplorerCtrl.getImageUrl(presetImage) : '')
-    )
+    return chainImages?.[chainId] ?? (projectId && imageId ? ExplorerCtrl.getImageUrl(imageId) : '')
+  },
+
+  getTokenIcon(symbol: string) {
+    const imageId = TokenPresets[symbol]?.icon
+    const { projectId, tokenImages } = ConfigCtrl.state
+
+    return tokenImages?.[symbol] ?? (projectId && imageId ? ExplorerCtrl.getImageUrl(imageId) : '')
   },
 
   isMobileAnimation() {

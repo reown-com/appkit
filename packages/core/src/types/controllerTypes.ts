@@ -37,6 +37,7 @@ export interface ConfigCtrlState {
   desktopWallets?: DesktopWallet[]
   walletImages?: Record<string, string>
   chainImages?: Record<string, string>
+  tokenImages?: Record<string, string>
   enableNetworkView?: boolean
   enableStandaloneMode?: boolean
 }

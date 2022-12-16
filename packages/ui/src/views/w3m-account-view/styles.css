@@ -34,3 +34,8 @@ w3m-address-text {
   margin-top: 10px;
   display: block;
 }
+
+.w3m-balance {
+  border-top: 1px solid var(--color-bg-2);
+  padding: 11px 20px;
+}

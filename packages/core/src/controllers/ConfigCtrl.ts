@@ -17,6 +17,7 @@ const state = proxy<ConfigCtrlState>({
   desktopWallets: undefined,
   walletImages: undefined,
   chainImages: undefined,
+  tokenImages: undefined,
   standaloneChains: undefined,
   enableStandaloneMode: false,
   enableNetworkView: true
