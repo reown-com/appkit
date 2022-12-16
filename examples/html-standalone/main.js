@@ -3,12 +3,12 @@ import { Web3Modal } from '@web3modal/standalone'
 
 // 0. Define ui elements
 const connectButton = document.getElementById('connect-button')
-const namespaces = {
-  eip155: { methods: ['eth_sign'], chains: ['eip155:1'], events: ['accountsChanged'] }
-}
 
 // 1. Define constants
 const projectId = '8e6b5ffdcbc9794bf9f4a1952578365b'
+const namespaces = {
+  eip155: { methods: ['eth_sign'], chains: ['eip155:1'], events: ['accountsChanged'] }
+}
 
 // 3. Create modal client
 export const web3Modal = new Web3Modal({ projectId, standaloneChains: namespaces.eip155.chains })
