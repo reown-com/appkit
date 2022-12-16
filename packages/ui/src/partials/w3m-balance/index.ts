@@ -16,11 +16,11 @@ export class W3mBalance extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.symbol = OptionsCtrl.state.balance?.symbol ?? ''
-    this.amount = OptionsCtrl.state.balance?.amount ?? '_._'
+    this.symbol = OptionsCtrl.state.balance?.symbol
+    this.amount = OptionsCtrl.state.balance?.amount
     this.unsubscribeAccount = OptionsCtrl.subscribe(({ balance }) => {
       this.symbol = balance?.symbol
-      this.amount = balance?.amount ?? '_._'
+      this.amount = balance?.amount
     })
   }
 
@@ -33,10 +33,20 @@ export class W3mBalance extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
+    let formatAmount: number | string = '_._'
+
+    if (this.amount === '0.0') {
+      formatAmount = 0
+    }
+
+    if (this.amount && this.amount.length > 6) {
+      formatAmount = parseFloat(this.amount).toFixed(4)
+    }
+
     return html`
       <div>
         <w3m-token-image symbol=${ifDefined(this.symbol)}></w3m-token-image>
-        <w3m-text variant="medium-normal" color="primary">${this.amount} ${this.symbol}</w3m-text>
+        <w3m-text variant="medium-normal" color="primary">${formatAmount} ${this.symbol}</w3m-text>
       </div>
     `
   }
