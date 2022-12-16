@@ -214,7 +214,6 @@ export class W3mWalletExplorerView extends LitElement {
                         </w3m-wallet-button>
                       `
                     : null}
-                  }
                 `
               )}
         </div>
