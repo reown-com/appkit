@@ -7,8 +7,8 @@ if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
   throw new Error('You need to provide NEXT_PUBLIC_PROJECT_ID env variable')
 }
 
-// 2. Configure web3modal
-const web3modal = new Web3Modal({ projectId: process.env.NEXT_PUBLIC_PROJECT_ID })
+// 2. Configure web3Modal
+const web3Modal = new Web3Modal({ projectId: process.env.NEXT_PUBLIC_PROJECT_ID })
 
 export default function HomePage() {
   const [signClient, setSignClient] = useState<SignClient | undefined>(undefined)
@@ -27,9 +27,9 @@ export default function HomePage() {
       }
       const { uri, approval } = await signClient.connect({ requiredNamespaces: namespaces })
       if (uri) {
-        web3modal.openModal({ uri, standaloneChains: namespaces.eip155.chains })
+        web3Modal.openModal({ uri, standaloneChains: namespaces.eip155.chains })
         await approval()
-        web3modal.closeModal()
+        web3Modal.closeModal()
       }
     }
   }

@@ -1,0 +1,7 @@
+{
+  "extends": ["../../.eslintrc.json"],
+  "rules": {
+    "no-console": "off",
+    "@typescript-eslint/no-unnecessary-condition": "off"
+  }
+}

@@ -9,14 +9,13 @@
     "dev:react": "npm run dev --w=react-example",
     "dev:react-standalone": "npm run dev -w=react-standalone-example",
     "dev:html": "npm run dev --w=html-example",
+    "dev:html-standalone": "npm run dev --w=html-standalone-example",
     "lint": "eslint .",
     "prettier": "prettier --check .",
     "typecheck": "npm run typecheck --ws --if-present",
     "new-version": "lerna version --no-git-tag-version --exact",
     "pre-publish": "npm run lint; npm run typecheck; npm run prettier; npm run build; npm run new-version",
-    "npm-publish:rc": "lerna exec -- npm publish --no-private --access public --tag rc",
     "npm-publish:latest": "lerna exec -- npm publish --no-private --access public --tag latest",
-    "npm-publish:next": "lerna exec -- npm publish --no-private --access public --tag next",
     "npm-publish:canary": "lerna exec -- npm publish --no-private --access public --tag canary"
   },
   "workspaces": [
@@ -28,7 +27,8 @@
     "packages/standalone",
     "examples/react",
     "examples/react-standalone",
-    "examples/html"
+    "examples/html",
+    "examples/html-standalone"
   ],
   "devDependencies": {
     "@types/node": "18.11.15",
