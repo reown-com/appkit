@@ -3,6 +3,7 @@ import { ClientCtrl, ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { InjectedId } from '../../utils/EthereumPresets'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -35,7 +36,7 @@ export class W3mDesktopWalletSelection extends LitElement {
   private async onConnectorWallet(id: string) {
     if (!window.ethereum) {
       this.onInstallConnector()
-    } else if (id === 'injected' || id === 'metaMask') {
+    } else if (id === 'injected' || id === InjectedId.metaMask) {
       this.onInjectedWallet()
     } else {
       await UiUtil.handleCustomConnector(id)
@@ -146,7 +147,9 @@ export class W3mDesktopWalletSelection extends LitElement {
     let wallets = []
 
     if (isViewAll) {
-      const filtered = displayWallets.filter(wallet => !wallet.values.includes('coinbaseWallet'))
+      const filtered = displayWallets.filter(
+        wallet => !wallet.values.includes(InjectedId.coinbaseWallet)
+      )
       wallets = filtered.slice(0, 3)
     } else {
       wallets = displayWallets

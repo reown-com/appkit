@@ -10,6 +10,7 @@ import {
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
+import { InjectedId } from '../../utils/EthereumPresets'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -141,13 +142,13 @@ export class W3mWalletExplorerView extends LitElement {
 
   private coinbaseConnectorTemplate() {
     try {
-      const connector = ClientCtrl.client().getConnectorById('coinbaseWallet')
+      const connector = ClientCtrl.client().getConnectorById(InjectedId.coinbaseWallet)
 
       return html`
         <w3m-wallet-button
           name=${connector.name}
           walletId=${connector.id}
-          .onClick=${async () => UiUtil.handleCustomConnector('coinbaseWallet')}
+          .onClick=${async () => UiUtil.handleCustomConnector(InjectedId.coinbaseWallet)}
         ></w3m-wallet-button>
       `
     } catch {
@@ -213,6 +214,7 @@ export class W3mWalletExplorerView extends LitElement {
                         </w3m-wallet-button>
                       `
                     : null}
+                  }
                 `
               )}
         </div>

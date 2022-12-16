@@ -8,7 +8,7 @@ import {
   ToastCtrl
 } from '@web3modal/core'
 import type { LitElement } from 'lit'
-import { EthereumPresets } from './EthereumPresets'
+import { EthereumPresets, InjectedId } from './EthereumPresets'
 import type { RecentWallet } from './TypesUtil'
 
 export const UiUtil = {
@@ -214,7 +214,7 @@ export const UiUtil = {
   getExtensionWallets() {
     const wallets = []
     for (const [key, value] of Object.entries(EthereumPresets.injectedPreset)) {
-      if (key !== 'coinbaseWallet' && value && !value.isDesktop) {
+      if (key !== InjectedId.coinbaseWallet && value && !value.isDesktop) {
         wallets.push({ id: key, ...value })
       }
     }

@@ -5,7 +5,6 @@
 export interface EvmWindow {
   ethereum?: any
   spotEthWallet?: any
-  abc?: any
   coinbaseWalletExtension?: any
 }
 
@@ -35,7 +34,6 @@ export const enum InjectedId {
   tokenary = 'tokenary',
   '1inch' = '1inch',
   kuCoinWallet = 'kuCoinWallet',
-  abcWallet = 'abcWallet',
   ledger = 'ledger'
 }
 
@@ -146,11 +144,6 @@ export const EthereumPresets = {
       url: 'https://1inch.io/wallet',
       isMobile: true,
       isDesktop: true
-    },
-    [InjectedId.abcWallet]: {
-      name: 'ABC Wallet',
-      icon: '8d0c93ce-9d18-44ec-6243-4b94ac0c6f00',
-      url: 'https://myabcwallet.io'
     }
   } as Record<string, InjectedPreset | undefined>,
 
@@ -176,7 +169,7 @@ export const EthereumPresets = {
       return id
     }
 
-    const { ethereum, spotEthWallet, abc, coinbaseWalletExtension }: EvmWindow = window
+    const { ethereum, spotEthWallet, coinbaseWalletExtension }: EvmWindow = window
 
     if (!ethereum) return InjectedId.metaMask
     if (ethereum.isTrust || ethereum.isTrustWallet) return InjectedId.trust
@@ -195,7 +188,6 @@ export const EthereumPresets = {
     if (ethereum.isTokenary) return InjectedId.tokenary
     if (ethereum.isOneInchIOSWallet || ethereum.isOneInchAndroidWallet) return InjectedId['1inch']
     if (ethereum.isKuCoinWallet) return InjectedId.kuCoinWallet
-    if (abc) return InjectedId.abcWallet
     if (ethereum.isMetaMask) return InjectedId.metaMask
 
     return 'injected'
