@@ -43,7 +43,7 @@ export class W3mViewAllWalletsButton extends LitElement {
               })
             : null}
         </div>
-        <w3m-text variant="xsmall-normal">View More</w3m-text>
+        <w3m-text variant="xsmall-normal">View All</w3m-text>
       </button>
     `
   }
