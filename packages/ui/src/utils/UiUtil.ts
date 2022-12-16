@@ -220,5 +220,9 @@ export const UiUtil = {
     }
 
     return wallets
+  },
+
+  caseSafeIncludes(str1: string, str2: string) {
+    return str1.toUpperCase().includes(str2.toUpperCase())
   }
 }

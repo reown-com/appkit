@@ -33,7 +33,7 @@ export class W3mWalletFilterView extends LitElement {
   protected render() {
     const wallets = UiUtil.getCustomWallets()
     const filtered = this.search.length
-      ? wallets.filter(wallet => wallet.name.toUpperCase().includes(this.search.toUpperCase()))
+      ? wallets.filter(wallet => UiUtil.caseSafeIncludes(wallet.name, this.search))
       : wallets
 
     return html`

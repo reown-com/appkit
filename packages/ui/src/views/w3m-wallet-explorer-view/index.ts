@@ -164,18 +164,15 @@ export class W3mWalletExplorerView extends LitElement {
     const isLoading = this.loading && !listings.length
     const isSearch = this.search.length >= 3
     const isCoinbase =
-      !isLoading &&
-      (!isSearch || InjectedId.coinbaseWallet.toUpperCase().includes(this.search.toUpperCase()))
+      !isLoading && (!isSearch || UiUtil.caseSafeIncludes(InjectedId.coinbaseWallet, this.search))
     const isExtensions = !isStandalone && !CoreUtil.isMobile()
     let extensions = isExtensions ? UiUtil.getExtensionWallets() : []
 
     if (isSearch) {
-      extensions = extensions.filter(({ name }) =>
-        name.toUpperCase().includes(this.search.toUpperCase())
-      )
+      extensions = extensions.filter(({ name }) => UiUtil.caseSafeIncludes(name, this.search))
     }
 
-    const isEmpty = !this.loading && !listings.length && !extensions.length
+    const isEmpty = !this.loading && !listings.length && !extensions.length && !isCoinbase
     const classes = {
       'w3m-loading': isLoading,
       'w3m-end-reached': this.endReached || !this.loading,
