@@ -23,14 +23,11 @@ export class W3mMobileWalletSelection extends LitElement {
 
   private mobileWalletsTemplate() {
     const { mobileWallets } = ConfigCtrl.state
-    const wallets = [...(mobileWallets ?? [])]
+    let wallets = [...(mobileWallets ?? [])]
 
     if (window.ethereum) {
       const injectedName = UiUtil.getWalletName('')
-      const idx = wallets.findIndex(({ name }) => UiUtil.getWalletName(name) === injectedName)
-      if (idx > -1) {
-        wallets.splice(idx, 1)
-      }
+      wallets = wallets.filter(({ name }) => !UiUtil.caseSafeIncludes(name, injectedName))
     }
 
     if (wallets.length) {
@@ -55,7 +52,7 @@ export class W3mMobileWalletSelection extends LitElement {
 
     if (window.ethereum) {
       const injectedName = UiUtil.getWalletName('')
-      wallets = wallets.filter(({ name }) => UiUtil.getWalletName(name) !== injectedName)
+      wallets = wallets.filter(({ name }) => !UiUtil.caseSafeIncludes(name, injectedName))
     }
 
     return wallets.map(
