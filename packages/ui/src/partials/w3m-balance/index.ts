@@ -40,7 +40,7 @@ export class W3mBalance extends LitElement {
     }
 
     if (this.amount && this.amount.length > 6) {
-      formatAmount = parseFloat(this.amount).toFixed(4)
+      formatAmount = parseFloat(this.amount).toFixed(3)
     }
 
     return html`

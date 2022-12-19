@@ -15,7 +15,6 @@ body {
 }
 
 button {
-  margin: 0 10px;
   padding: 10px;
   border-radius: 8px;
   background-color: rgba(255, 255, 255, 0.2);
@@ -30,10 +29,9 @@ button:hover {
 }
 
 select {
-  margin: 10px;
-  padding: 5px;
+  padding: 10px;
   border-radius: 8px;
-  background-color: rgba(255, 255, 255, 1);
+  background-color: rgba(255, 255, 255, 0.8);
   color: black;
   border: 1px solid rgba(0, 0, 0, 1);
   cursor: pointer;
@@ -45,5 +43,8 @@ h2 {
 }
 
 .container {
-  display: flex;
+  display: grid;
+  gap: 15px;
+  place-items: center;
+  grid-template-columns: 1fr 1fr;
 }

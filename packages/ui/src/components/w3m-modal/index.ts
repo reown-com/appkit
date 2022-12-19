@@ -47,14 +47,13 @@ export class W3mModal extends LitElement {
         OptionsCtrl.setSelectedChain(network.chain)
         this.activeChainId = network.chain?.id
         OptionsCtrl.resetProfile()
+        // This also acts as initial fetch
         this.fetchProfile()
         this.fetchBalance()
       })
 
       // Subscribe account changes
       OptionsCtrl.getAccount()
-      this.fetchProfile()
-      this.fetchBalance()
       this.unwatchAccount = ClientCtrl.client().watchAccount(account => {
         const { address } = OptionsCtrl.state
         if (account.address !== address) {
