@@ -100,6 +100,9 @@ export class W3mModal extends LitElement {
           ClientCtrl.client().fecthEnsName({ address }),
           ClientCtrl.client().fetchEnsAvatar({ address })
         ])
+        if (avatar) {
+          await UiUtil.preloadImage(avatar)
+        }
         OptionsCtrl.setProfileName(name)
         OptionsCtrl.setProfileAvatar(avatar)
       }
