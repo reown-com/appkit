@@ -118,7 +118,12 @@ export class W3mWalletExplorerView extends LitElement {
   }
 
   private onConnectExtension(data: InstallConnectorData) {
-    RouterCtrl.push('InstallConnector', { InstallConnector: data })
+    const injectedId = UiUtil.getWalletId('')
+    if (injectedId === data.id) {
+      RouterCtrl.push('InjectedConnector')
+    } else {
+      RouterCtrl.push('InstallConnector', { InstallConnector: data })
+    }
   }
 
   private readonly searchDebounce = UiUtil.debounce((value: string) => {
@@ -148,7 +153,7 @@ export class W3mWalletExplorerView extends LitElement {
         <w3m-wallet-button
           name=${connector.name}
           walletId=${connector.id}
-          .onClick=${async () => UiUtil.handleCustomConnector(InjectedId.coinbaseWallet)}
+          .onClick=${async () => UiUtil.handleConnectorConnection(InjectedId.coinbaseWallet)}
         ></w3m-wallet-button>
       `
     } catch {

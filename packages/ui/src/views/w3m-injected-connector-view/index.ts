@@ -25,16 +25,14 @@ export class W3mInjectedConnectorView extends LitElement {
   private readonly connector = ClientCtrl.client().getConnectorById('injected')
 
   private async onConnect() {
-    try {
-      const { ready } = this.connector
-      if (ready) {
-        this.error = false
-        this.connecting = true
-        await UiUtil.handleCustomConnector('injected')
-      }
-    } catch (error: unknown) {
-      this.error = true
-      this.connecting = false
+    const { ready } = this.connector
+    if (ready) {
+      this.error = false
+      this.connecting = true
+      await UiUtil.handleConnectorConnection('injected', () => {
+        this.error = true
+        this.connecting = false
+      })
     }
   }
 

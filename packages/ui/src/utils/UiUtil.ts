@@ -127,13 +127,17 @@ export const UiUtil = {
     ToastCtrl.openToast('Link copied', 'success')
   },
 
-  async handleCustomConnector(id: string) {
+  async handleConnectorConnection(id: string, onError?: () => void) {
     try {
       const { selectedChain } = OptionsCtrl.state
       await ClientCtrl.client().connectConnector(id, selectedChain?.id)
       ModalCtrl.close()
     } catch (error) {
-      ToastCtrl.openToast(UiUtil.getErrorMessage(error), 'error')
+      if (onError) {
+        onError()
+      } else {
+        ToastCtrl.openToast(UiUtil.getErrorMessage(error), 'error')
+      }
     }
   },
 

@@ -18,7 +18,7 @@ export class W3mMobileWalletSelection extends LitElement {
   }
 
   private async onConnectorWallet(id: string) {
-    await UiUtil.handleCustomConnector(id)
+    await UiUtil.handleConnectorConnection(id)
   }
 
   private mobileWalletsTemplate() {

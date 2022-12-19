@@ -15,6 +15,6 @@
     "ethers": "5.7.2"
   },
   "devDependencies": {
-    "vite": "4.0.1"
+    "vite": "4.0.2"
   }
 }

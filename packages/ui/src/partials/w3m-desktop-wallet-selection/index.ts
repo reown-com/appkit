@@ -39,7 +39,7 @@ export class W3mDesktopWalletSelection extends LitElement {
     } else if (id === 'injected' || id === InjectedId.metaMask) {
       this.onInjectedWallet()
     } else {
-      await UiUtil.handleCustomConnector(id)
+      await UiUtil.handleConnectorConnection(id)
     }
   }
 
