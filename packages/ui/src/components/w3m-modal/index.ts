@@ -40,20 +40,22 @@ export class W3mModal extends LitElement {
     })
 
     if (!OptionsCtrl.state.isStandalone) {
-      // Subscribe network changes
+      OptionsCtrl.getAccount()
       const chain = OptionsCtrl.getSelectedChain()
       this.activeChainId = chain?.id
+      this.fetchProfile()
+      this.fetchBalance()
+
+      // Subscribe network changes
       this.unwatchNetwork = ClientCtrl.client().watchNetwork(network => {
         OptionsCtrl.setSelectedChain(network.chain)
         this.activeChainId = network.chain?.id
         OptionsCtrl.resetProfile()
-        // This also acts as initial fetch
         this.fetchProfile()
         this.fetchBalance()
       })
 
       // Subscribe account changes
-      OptionsCtrl.getAccount()
       this.unwatchAccount = ClientCtrl.client().watchAccount(account => {
         const { address } = OptionsCtrl.state
         if (account.address !== address) {
