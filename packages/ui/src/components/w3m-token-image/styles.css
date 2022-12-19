@@ -18,3 +18,16 @@ div img {
   object-fit: cover;
   object-position: center;
 }
+
+svg {
+  width: 100%;
+  height: 100%;
+}
+
+#token-placeholder-fill {
+  fill: var(--color-bg-3);
+}
+
+#token-placeholder-dash {
+  stroke: var(--color-overlay);
+}

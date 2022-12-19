@@ -1,5 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -15,11 +16,13 @@ export class W3mTokenImage extends LitElement {
   protected render() {
     const src = UiUtil.getTokenIcon(this.symbol ?? '')
 
-    return html`
-      <div>
-        <img src=${src} alt=${this.id} />
-      </div>
-    `
+    return src
+      ? html`
+          <div>
+            <img src=${src} alt=${this.id} />
+          </div>
+        `
+      : SvgUtil.TOKEN_PLACEHOLDER
   }
 }
 
