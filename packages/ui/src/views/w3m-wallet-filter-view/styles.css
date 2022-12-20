@@ -33,10 +33,11 @@ w3m-modal-content::-webkit-scrollbar {
   display: none;
 }
 
-.w3m-content {
+.w3m-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  justify-items: stretch;
+  grid-template-columns: repeat(4, 80px);
+  justify-content: space-between;
+  margin: -15px -10px;
 }
 
 w3m-wallet-button {

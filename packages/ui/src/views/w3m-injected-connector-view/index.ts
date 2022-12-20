@@ -1,10 +1,10 @@
-import { ClientCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
+import { ClientCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { PresetUtil } from '../../utils/PresetUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-injected-connector-view')
@@ -25,24 +25,21 @@ export class W3mInjectedConnectorView extends LitElement {
   private readonly connector = ClientCtrl.client().getConnectorById('injected')
 
   private async onConnect() {
-    try {
-      const { ready } = this.connector
-      if (ready) {
-        this.error = false
-        this.connecting = true
-        await ClientCtrl.client().connectConnector('injected', OptionsCtrl.state.selectedChain?.id)
-        ModalCtrl.close()
-      }
-    } catch (error: unknown) {
-      this.error = true
-      this.connecting = false
+    const { ready } = this.connector
+    if (ready) {
+      this.error = false
+      this.connecting = true
+      await UiUtil.handleConnectorConnection('injected', () => {
+        this.error = true
+        this.connecting = false
+      })
     }
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const optimisticName = PresetUtil.optimisticName(this.connector.name)
-    const optimisticWalletId = PresetUtil.optimisticWalletId(this.connector.id)
+    const optimisticName = UiUtil.getWalletName(this.connector.name)
+    const optimisticWalletId = UiUtil.getWalletId(this.connector.id)
     const classes = {
       'w3m-injected-wrapper': true,
       'w3m-injected-error': this.error

@@ -51,7 +51,7 @@ export class W3mConnectButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const classes = {
-      'w3m-button-loading': this.loading
+      'w3m-loading': this.loading
     }
 
     return html`

@@ -1,9 +1,25 @@
+div {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-overlay);
+  box-shadow: inset 0 0 0 1px var(--color-overlay);
+  border-radius: 10px;
+  padding: 4px 4px 4px 8px;
+}
+
 button {
   padding: 0 15px 0 8px;
   height: 40px;
   border-radius: 10px;
   color: var(--color-fg-inverse);
   background-color: var(--color-fg-accent);
+}
+
+div button {
+  border-radius: 16px;
+  padding: 4px 8px 4px 4px;
+  height: auto;
+  margin-left: 10px;
 }
 
 button::after {

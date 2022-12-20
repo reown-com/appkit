@@ -28,7 +28,9 @@
 
 .w3m-install-actions {
   display: flex;
-  margin-top: 20px;
+  margin-top: 15px;
+  align-items: center;
+  flex-direction: column;
 }
 
 @media (max-width: 355px) {
@@ -36,10 +38,6 @@
     flex-direction: column;
     align-items: center;
   }
-}
-
-w3m-spinner {
-  margin-right: 10px;
 }
 
 w3m-wallet-image {
@@ -53,11 +51,7 @@ w3m-button {
   opacity: 0;
 }
 
-.w3m-injected-error w3m-button {
-  opacity: 1;
-}
-
 .w3m-install-actions w3m-button {
-  margin: 0 5px;
+  margin: 5px;
   opacity: 1;
 }

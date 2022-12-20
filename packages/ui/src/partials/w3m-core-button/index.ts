@@ -9,6 +9,7 @@ export class W3mCoreButton extends LitElement {
   @state() public isConnected = false
   @property() public label? = 'Connect Wallet'
   @property() public icon?: 'hide' | 'show' = 'show'
+  @property() public balance?: 'hide' | 'show' = 'hide'
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -29,7 +30,7 @@ export class W3mCoreButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return this.isConnected
-      ? html`<w3m-account-button></w3m-account-button>`
+      ? html`<w3m-account-button balance=${ifDefined(this.balance)}></w3m-account-button> `
       : html`
           <w3m-connect-button label=${ifDefined(this.label)} icon=${ifDefined(this.icon)}>
           </w3m-connect-button>

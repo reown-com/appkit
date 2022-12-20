@@ -1,6 +1,5 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { PresetUtil } from '../../utils/PresetUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -16,14 +15,14 @@ export class W3mWalletImage extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const walletId = this.walletId ?? 'injected'
-    const optimisticId = PresetUtil.optimisticWalletId(walletId)
+    const walletId = UiUtil.getWalletId(this.walletId ?? '')
+    const optimisticId = UiUtil.getWalletId(walletId)
     const src = this.src ? this.src : UiUtil.getWalletIcon(optimisticId)
 
     return html`
       ${src.length
         ? html`
-            <div class="w3m-wallet-image">
+            <div>
               <img src=${src} alt=${this.id} />
             </div>
           `

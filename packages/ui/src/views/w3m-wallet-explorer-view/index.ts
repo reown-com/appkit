@@ -1,4 +1,4 @@
-import type { Listing } from '@web3modal/core'
+import type { InstallConnectorData, Listing } from '@web3modal/core'
 import {
   ClientCtrl,
   CoreUtil,
@@ -10,6 +10,7 @@ import {
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
+import { InjectedId } from '../../presets/EthereumPresets'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -60,6 +61,7 @@ export class W3mWalletExplorerView extends LitElement {
 
   private async fetchWallets() {
     const { wallets, search } = ExplorerCtrl.state
+    const extensionWallets = UiUtil.getExtensionWallets()
     const { listings, total, page } = this.search ? search : wallets
 
     if (
@@ -76,9 +78,11 @@ export class W3mWalletExplorerView extends LitElement {
           search: this.search,
           chains
         })
-        const images = newListings.map(({ image_url }) => image_url.lg)
+        const explorerImages = newListings.map(({ image_url }) => image_url.lg)
+        const extensionImages = extensionWallets.map(({ id }) => UiUtil.getWalletIcon(id))
         await Promise.all([
-          ...images.map(async url => UiUtil.preloadImage(url)),
+          ...explorerImages.map(async url => UiUtil.preloadImage(url)),
+          ...extensionImages.map(async url => UiUtil.preloadImage(url)),
           CoreUtil.wait(300)
         ])
         this.endReached = this.isLastPage()
@@ -113,6 +117,15 @@ export class W3mWalletExplorerView extends LitElement {
     }
   }
 
+  private onConnectExtension(data: InstallConnectorData) {
+    const injectedId = UiUtil.getWalletId('')
+    if (injectedId === data.id) {
+      RouterCtrl.push('InjectedConnector')
+    } else {
+      RouterCtrl.push('InstallConnector', { InstallConnector: data })
+    }
+  }
+
   private readonly searchDebounce = UiUtil.debounce((value: string) => {
     if (value.length >= 3) {
       this.firstFetch = true
@@ -132,23 +145,15 @@ export class W3mWalletExplorerView extends LitElement {
     this.searchDebounce(value)
   }
 
-  private onCoinbaseWallet() {
-    if (CoreUtil.isCoinbaseExtension()) {
-      RouterCtrl.push('CoinbaseExtensionConnector')
-    } else {
-      RouterCtrl.push('CoinbaseMobileConnector')
-    }
-  }
-
   private coinbaseConnectorTemplate() {
     try {
-      const connector = ClientCtrl.client().getConnectorById('coinbaseWallet')
+      const connector = ClientCtrl.client().getConnectorById(InjectedId.coinbaseWallet)
 
       return html`
         <w3m-wallet-button
           name=${connector.name}
           walletId=${connector.id}
-          .onClick=${() => this.onCoinbaseWallet()}
+          .onClick=${async () => UiUtil.handleConnectorConnection(InjectedId.coinbaseWallet)}
         ></w3m-wallet-button>
       `
     } catch {
@@ -159,15 +164,26 @@ export class W3mWalletExplorerView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { wallets, search } = ExplorerCtrl.state
+    const { isStandalone } = OptionsCtrl.state
     const { listings } = this.search ? search : wallets
-    const isEmpty = !this.loading && !listings.length
     const isLoading = this.loading && !listings.length
-    const isCoinbase = !isLoading && this.search.length < 3
+    const isSearch = this.search.length >= 3
+    const isCoinbase =
+      !isLoading && (!isSearch || UiUtil.caseSafeIncludes(InjectedId.coinbaseWallet, this.search))
+    const isExtensions = !isStandalone && !CoreUtil.isMobile()
+    let extensions = isExtensions ? UiUtil.getExtensionWallets() : []
+
+    if (isSearch) {
+      extensions = extensions.filter(({ name }) => UiUtil.caseSafeIncludes(name, this.search))
+    }
+
+    const isEmpty = !this.loading && !listings.length && !extensions.length && !isCoinbase
     const classes = {
       'w3m-loading': isLoading,
       'w3m-end-reached': this.endReached || !this.loading,
       'w3m-empty': isEmpty
     }
+    const iterator = Math.max(extensions.length, listings.length)
 
     return html`
       <w3m-modal-header>
@@ -176,18 +192,34 @@ export class W3mWalletExplorerView extends LitElement {
 
       <w3m-modal-content class=${classMap(classes)}>
         <div class="w3m-grid">
+          ${isLoading
+            ? null
+            : [...Array(iterator)].map(
+                (_, index) => html`
+                  ${extensions[index]
+                    ? html`
+                        <w3m-wallet-button
+                          name=${extensions[index].name}
+                          walletId=${extensions[index].id}
+                          .onClick=${() => this.onConnectExtension(extensions[index])}
+                        >
+                        </w3m-wallet-button>
+                      `
+                    : null}
+                  ${listings[index]
+                    ? html`
+                        <w3m-wallet-button
+                          src=${listings[index].image_url.lg}
+                          name=${listings[index].name}
+                          walletId=${listings[index].id}
+                          .onClick=${async () => this.onConnectPlatform(listings[index])}
+                        >
+                        </w3m-wallet-button>
+                      `
+                    : null}
+                `
+              )}
           ${isCoinbase ? this.coinbaseConnectorTemplate() : null}
-          ${listings.map(
-            listing => html`
-              <w3m-wallet-button
-                src=${listing.image_url.lg}
-                name=${listing.name}
-                walletId=${listing.id}
-                .onClick=${async () => this.onConnectPlatform(listing)}
-              >
-              </w3m-wallet-button>
-            `
-          )}
         </div>
         <div class="w3m-placeholder-block">
           ${isEmpty

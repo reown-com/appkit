@@ -1,4 +1,4 @@
-.w3m-modal-toast {
+div {
   height: 36px;
   width: max-content;
   display: flex;
@@ -19,12 +19,12 @@
   background-color: var(--color-overlay);
 }
 
-.w3m-modal-toast svg {
+svg {
   margin-right: 5px;
 }
 
 @-moz-document url-prefix() {
-  .w3m-modal-toast {
+  div {
     background-color: var(--color-bg-3);
   }
 }

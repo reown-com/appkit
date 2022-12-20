@@ -37,6 +37,7 @@ export interface ConfigCtrlState {
   desktopWallets?: DesktopWallet[]
   walletImages?: Record<string, string>
   chainImages?: Record<string, string>
+  tokenImages?: Record<string, string>
   enableNetworkView?: boolean
   enableStandaloneMode?: boolean
 }
@@ -52,12 +53,17 @@ export interface OptionsCtrlState {
   chains?: EthereumClient['chains']
   standaloneChains?: string[]
   standaloneUri?: string
-  address?: string
+  address?: `0x${string}`
   isConnected: boolean
   isStandalone: boolean
   isCustomDesktop: boolean
   isCustomMobile: boolean
   isExplorer: boolean
+  profileName?: string | null
+  profileAvatar?: string | null
+  profileLoading?: boolean
+  balanceLoading?: boolean
+  balance?: { amount: string; symbol: string }
 }
 
 // -- ExplorerCtrl ------------------------------------------- //
@@ -131,14 +137,12 @@ export interface ToastCtrlState {
 // -- RouterCtrl --------------------------------------------- //
 export type RouterView =
   | 'Account'
-  | 'CoinbaseExtensionConnector'
-  | 'CoinbaseMobileConnector'
   | 'ConnectWallet'
   | 'DesktopConnector'
   | 'GetWallet'
   | 'Help'
   | 'InjectedConnector'
-  | 'MetaMaskConnector'
+  | 'InstallConnector'
   | 'Qrcode'
   | 'SelectNetwork'
   | 'SwitchNetwork'
@@ -155,12 +159,20 @@ export interface DesktopConnectorData {
 
 export type SwitchNetworkData = Chain
 
+export interface InstallConnectorData {
+  id: string
+  name: string
+  url: string
+  isMobile?: boolean
+}
+
 export interface RouterCtrlState {
   history: RouterView[]
   view: RouterView
   data?: {
     DesktopConnector?: DesktopConnectorData
     SwitchNetwork?: SwitchNetworkData
+    InstallConnector?: InstallConnectorData
   }
 }
 

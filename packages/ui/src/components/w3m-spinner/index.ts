@@ -1,10 +1,11 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-spinner')
 export class W3mSpinner extends LitElement {
-  public static styles = styles
+  public static styles = [ThemeUtil.globalCss, styles]
 
   // -- render ------------------------------------------------------- //
   protected render() {

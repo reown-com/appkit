@@ -11,14 +11,28 @@ export class W3mAccountButton extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property() public balance?: 'hide' | 'show' = 'hide'
 
-  // -- render ------------------------------------------------------- //
-  protected render() {
+  // -- private ------------------------------------------------------ //
+  private buttonTemplate() {
     return html`
       <button @click=${ModalCtrl.open}>
         <w3m-avatar></w3m-avatar>
         <w3m-address-text></w3m-address-text>
       </button>
     `
+  }
+
+  // -- render ------------------------------------------------------- //
+  protected render() {
+    const isBalance = this.balance === 'show'
+
+    return isBalance
+      ? html`
+          <div>
+            <w3m-balance></w3m-balance>
+            ${this.buttonTemplate()}
+          </div>
+        `
+      : this.buttonTemplate()
   }
 }
 

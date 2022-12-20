@@ -8,7 +8,9 @@ import {
   ToastCtrl
 } from '@web3modal/core'
 import type { LitElement } from 'lit'
-import { PresetUtil } from './PresetUtil'
+import { ChainPresets } from '../presets/ChainPresets'
+import { EthereumPresets, InjectedId } from '../presets/EthereumPresets'
+import { TokenPresets } from '../presets/TokenPresets'
 import type { RecentWallet } from './TypesUtil'
 
 export const UiUtil = {
@@ -25,29 +27,36 @@ export const UiUtil = {
     return el as HTMLElement
   },
 
+  getWalletId(id: string) {
+    return EthereumPresets.getInjectedId(id)
+  },
+
   getWalletIcon(id: string) {
-    const { fallback, presets } = PresetUtil.walletExplorerImage()
-    const imageId = presets[id]
+    const presets = EthereumPresets.injectedPreset
+    const imageId = presets[id]?.icon
     const { projectId, walletImages } = ConfigCtrl.state
 
-    return walletImages?.[id] ?? (projectId ? ExplorerCtrl.getImageUrl(imageId ?? fallback) : '')
+    return walletImages?.[id] ?? (projectId && imageId ? ExplorerCtrl.getImageUrl(imageId) : '')
+  },
+
+  getWalletName(name: string, short = false) {
+    const injectedName = EthereumPresets.getInjectedName(name)
+
+    return short ? injectedName.split(' ')[0] : injectedName
   },
 
   getChainIcon(chainId: number | string) {
-    const { presets } = PresetUtil.chainExplorerImage()
+    const imageId = ChainPresets[chainId]
     const { projectId, chainImages } = ConfigCtrl.state
-    const presetImage = presets[chainId]
 
-    return (
-      chainImages?.[chainId] ??
-      (projectId && presetImage ? ExplorerCtrl.getImageUrl(presetImage) : '')
-    )
+    return chainImages?.[chainId] ?? (projectId && imageId ? ExplorerCtrl.getImageUrl(imageId) : '')
   },
 
-  getWalletFirstName(fullName: string) {
-    const optimisticName = PresetUtil.optimisticName(fullName)
+  getTokenIcon(symbol: string) {
+    const imageId = TokenPresets[symbol]?.icon
+    const { projectId, tokenImages } = ConfigCtrl.state
 
-    return optimisticName.split(' ')[0] ?? optimisticName
+    return tokenImages?.[symbol] ?? (projectId && imageId ? ExplorerCtrl.getImageUrl(imageId) : '')
   },
 
   isMobileAnimation() {
@@ -118,6 +127,20 @@ export const UiUtil = {
     ToastCtrl.openToast('Link copied', 'success')
   },
 
+  async handleConnectorConnection(id: string, onError?: () => void) {
+    try {
+      const { selectedChain } = OptionsCtrl.state
+      await ClientCtrl.client().connectConnector(id, selectedChain?.id)
+      ModalCtrl.close()
+    } catch (error) {
+      if (onError) {
+        onError()
+      } else {
+        ToastCtrl.openToast(UiUtil.getErrorMessage(error), 'error')
+      }
+    }
+  },
+
   getCustomWallets() {
     const { desktopWallets, mobileWallets } = ConfigCtrl.state
 
@@ -133,8 +156,8 @@ export const UiUtil = {
   },
 
   getConnectorImageUrls() {
-    const connectors = ClientCtrl.client().getConnectorWallets()
-    const ids = connectors.map(({ id }) => PresetUtil.optimisticWalletId(id))
+    const connectors = ClientCtrl.client().getConnectors()
+    const ids = connectors.map(({ id }) => EthereumPresets.getInjectedId(id))
     const images = ids.map(id => UiUtil.getWalletIcon(id))
 
     return images
@@ -195,5 +218,20 @@ export const UiUtil = {
     }
 
     return undefined
+  },
+
+  getExtensionWallets() {
+    const wallets = []
+    for (const [key, value] of Object.entries(EthereumPresets.injectedPreset)) {
+      if (key !== InjectedId.coinbaseWallet && value && !value.isDesktop) {
+        wallets.push({ id: key, ...value })
+      }
+    }
+
+    return wallets
+  },
+
+  caseSafeIncludes(str1: string, str2: string) {
+    return str1.toUpperCase().includes(str2.toUpperCase())
   }
 }

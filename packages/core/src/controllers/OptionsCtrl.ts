@@ -9,6 +9,11 @@ const state = proxy<OptionsCtrlState>({
   standaloneChains: undefined,
   standaloneUri: undefined,
   address: undefined,
+  profileName: undefined,
+  profileAvatar: undefined,
+  profileLoading: false,
+  balanceLoading: false,
+  balance: undefined,
   isConnected: false,
   isStandalone: false,
   isCustomDesktop: false,
@@ -77,5 +82,36 @@ export const OptionsCtrl = {
 
   setIsConnected(isConnected: OptionsCtrlState['isConnected']) {
     state.isConnected = isConnected
+  },
+
+  setProfileName(profileName: OptionsCtrlState['profileName']) {
+    state.profileName = profileName
+  },
+
+  setProfileAvatar(profileAvatar: OptionsCtrlState['profileAvatar']) {
+    state.profileAvatar = profileAvatar
+  },
+
+  setProfileLoading(profileLoading: OptionsCtrlState['profileLoading']) {
+    state.profileLoading = profileLoading
+  },
+
+  setBalanceLoading(balanceLoading: OptionsCtrlState['balanceLoading']) {
+    state.balanceLoading = balanceLoading
+  },
+
+  setBalance(balance: OptionsCtrlState['balance']) {
+    state.balance = balance
+  },
+
+  resetProfile() {
+    state.profileName = undefined
+    state.profileAvatar = undefined
+    state.balance = undefined
+  },
+
+  resetAccount() {
+    state.address = undefined
+    OptionsCtrl.resetProfile()
   }
 }

@@ -3,6 +3,8 @@ import {
   connect,
   disconnect,
   fetchBalance,
+  fetchEnsAvatar,
+  fetchEnsName,
   getAccount,
   getNetwork,
   switchNetwork,
@@ -49,7 +51,7 @@ export class EthereumClient {
     return provider.connector.uri
   }
 
-  public getConnectorWallets() {
+  public getConnectors() {
     const connectors = this.wagmi.connectors.filter(connector => connector.id !== 'walletConnect')
 
     return connectors
@@ -81,27 +83,6 @@ export class EthereumClient {
     return data
   }
 
-  public async connectCoinbaseMobile(onUri?: (uri: string) => void, selectedChainId?: number) {
-    const connector = this.getConnectorById('coinbaseWallet')
-    const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
-
-    async function getProviderUri() {
-      return new Promise<void>(resolve => {
-        connector.once('message', async ({ type }) => {
-          if (type === 'connecting') {
-            const provider = await connector.getProvider()
-            onUri?.(provider.qrUrl)
-            resolve()
-          }
-        })
-      })
-    }
-
-    const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
-
-    return data
-  }
-
   public async connectConnector(connectorId: ConnectorId | string, selectedChainId?: number) {
     const connector = this.getConnectorById(connectorId)
     const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
@@ -123,4 +104,9 @@ export class EthereumClient {
   public watchNetwork = watchNetwork
 
   public switchNetwork = switchNetwork
+
+  // -- public web3modal (optional) ----------------------- //
+  public fecthEnsName = fetchEnsName
+
+  public fetchEnsAvatar = fetchEnsAvatar
 }

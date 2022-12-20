@@ -13,6 +13,7 @@ export class W3mAccountView extends LitElement {
   private onDisconnect() {
     ModalCtrl.close()
     ClientCtrl.client().disconnect()
+    OptionsCtrl.resetAccount()
   }
 
   private async onCopyAddress() {
@@ -34,6 +35,10 @@ export class W3mAccountView extends LitElement {
           </div>
         </div>
       </w3m-modal-content>
+
+      <div class="w3m-balance">
+        <w3m-balance></w3m-balance>
+      </div>
 
       <w3m-modal-footer>
         <div class="w3m-footer">

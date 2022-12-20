@@ -1,0 +1,10 @@
+div {
+  display: flex;
+  align-items: center;
+}
+
+w3m-token-image {
+  width: 28px;
+  height: 28px;
+  margin-right: 6px;
+}

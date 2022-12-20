@@ -1,15 +1,8 @@
-import {
-  ClientCtrl,
-  ConfigCtrl,
-  ExplorerCtrl,
-  ModalCtrl,
-  OptionsCtrl,
-  RouterCtrl
-} from '@web3modal/core'
+import { ClientCtrl, ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { PresetUtil } from '../../utils/PresetUtil'
+import { InjectedId } from '../../presets/EthereumPresets'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -25,25 +18,16 @@ export class W3mMobileWalletSelection extends LitElement {
   }
 
   private async onConnectorWallet(id: string) {
-    const { selectedChain } = OptionsCtrl.state
-    if (id === 'coinbaseWallet') {
-      await ClientCtrl.client().connectCoinbaseMobile(() => null, selectedChain?.id)
-    } else {
-      await ClientCtrl.client().connectConnector(id, selectedChain?.id)
-    }
-    ModalCtrl.close()
+    await UiUtil.handleConnectorConnection(id)
   }
 
   private mobileWalletsTemplate() {
     const { mobileWallets } = ConfigCtrl.state
-    const wallets = [...(mobileWallets ?? [])]
+    let wallets = [...(mobileWallets ?? [])]
 
     if (window.ethereum) {
-      const injectedName = PresetUtil.optimisticName('injected')
-      const idx = wallets.findIndex(({ name }) => PresetUtil.optimisticName(name) === injectedName)
-      if (idx > -1) {
-        wallets.splice(idx, 1)
-      }
+      const injectedName = UiUtil.getWalletName('')
+      wallets = wallets.filter(({ name }) => !UiUtil.caseSafeIncludes(name, injectedName))
     }
 
     if (wallets.length) {
@@ -67,8 +51,8 @@ export class W3mMobileWalletSelection extends LitElement {
     let wallets = [...previewWallets]
 
     if (window.ethereum) {
-      const injectedName = PresetUtil.optimisticName('injected')
-      wallets = wallets.filter(({ name }) => PresetUtil.optimisticName(name) !== injectedName)
+      const injectedName = UiUtil.getWalletName('')
+      wallets = wallets.filter(({ name }) => !UiUtil.caseSafeIncludes(name, injectedName))
     }
 
     return wallets.map(
@@ -95,17 +79,17 @@ export class W3mMobileWalletSelection extends LitElement {
       return []
     }
 
-    const connectorWallets = ClientCtrl.client().getConnectorWallets()
+    const connectorWallets = ClientCtrl.client().getConnectors()
     let wallets = [...connectorWallets]
 
     if (!window.ethereum) {
-      wallets = wallets.filter(({ id }) => id !== 'injected' && id !== 'metaMask')
+      wallets = wallets.filter(({ id }) => id !== 'injected' && id !== InjectedId.metaMask)
     }
 
     return wallets.map(
       ({ name, id, ready }) => html`
         <w3m-wallet-button
-          .installed=${ready}
+          .installed=${['injected', 'metaMask'].includes(id) && ready}
           name=${name}
           walletId=${id}
           .onClick=${async () => this.onConnectorWallet(id)}
@@ -155,7 +139,9 @@ export class W3mMobileWalletSelection extends LitElement {
     let wallets = []
 
     if (isViewAll) {
-      const filtered = displayWallets.filter(wallet => !wallet.values.includes('coinbaseWallet'))
+      const filtered = displayWallets.filter(
+        wallet => !wallet.values.includes(InjectedId.coinbaseWallet)
+      )
       wallets = filtered.slice(0, 7)
     } else {
       wallets = displayWallets

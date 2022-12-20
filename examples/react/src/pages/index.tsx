@@ -8,12 +8,15 @@ export default function HomePage() {
 
   return (
     <>
+      <h2>Buttons</h2>
       <div className="container">
         {/* Use predefined button */}
         <Web3Button />
+        <Web3Button balance="show" icon="hide" label="No Icon" />
+        {!isConnected && <Web3Button label="Custom Label" />}
 
         {/* Alternatively Use custom button */}
-        {!isConnected && <button onClick={() => open()}>Custom</button>}
+        {!isConnected && <button onClick={() => open()}>Custom Button</button>}
       </div>
 
       <ThemeControls />

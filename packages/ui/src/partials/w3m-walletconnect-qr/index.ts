@@ -46,7 +46,7 @@ export class W3mWalletConnectQr extends LitElement {
     return html`
       <div class="w3m-qr-container">
         ${this.uri
-          ? html`<w3m-qrcode size=${this.overlayEl.offsetWidth} uri=${this.uri}> </w3m-qrcode>`
+          ? html`<w3m-qrcode size="${this.overlayEl.offsetWidth}" uri=${this.uri}></w3m-qrcode>`
           : null}
       </div>
     `

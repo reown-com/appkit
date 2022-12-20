@@ -1,4 +1,4 @@
-.w3m-network-button {
+button {
   padding: 5px;
   border-radius: 10px;
   transition: all 0.2s ease;
@@ -24,6 +24,6 @@ w3m-text {
   margin-top: 5px;
 }
 
-.w3m-network-button:hover {
+button:hover {
   background-color: var(--color-overlay);
 }

@@ -22,11 +22,14 @@ export class W3mModal extends LitElement {
   // -- state & properties ------------------------------------------- //
   @state() private open = false
   @state() private preload = true
+  @state() private activeChainId?: number = undefined
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
     ThemeUtil.setTheme()
+
+    // Subscribe to modal config and theme changes
     this.unsubscribeConfig = ConfigCtrl.subscribe(ThemeUtil.setTheme)
     this.unsubscribeModal = ModalCtrl.subscribe(modalState => {
       if (modalState.open) {
@@ -38,16 +41,33 @@ export class W3mModal extends LitElement {
 
     if (!OptionsCtrl.state.isStandalone) {
       OptionsCtrl.getAccount()
+      const chain = OptionsCtrl.getSelectedChain()
+      this.activeChainId = chain?.id
+      this.fetchProfile()
+      this.fetchBalance()
+
+      // Subscribe network changes
+      this.unwatchNetwork = ClientCtrl.client().watchNetwork(network => {
+        OptionsCtrl.setSelectedChain(network.chain)
+        this.activeChainId = network.chain?.id
+        OptionsCtrl.resetProfile()
+        this.fetchProfile()
+        this.fetchBalance()
+      })
+
+      // Subscribe account changes
       this.unwatchAccount = ClientCtrl.client().watchAccount(account => {
+        const { address } = OptionsCtrl.state
+        if (account.address !== address) {
+          this.fetchProfile(account.address)
+          this.fetchBalance(account.address)
+        }
         OptionsCtrl.setAddress(account.address)
         OptionsCtrl.setIsConnected(account.isConnected)
       })
-      OptionsCtrl.getSelectedChain()
-      this.unwatchNetwork = ClientCtrl.client().watchNetwork(network => {
-        OptionsCtrl.setSelectedChain(network.chain)
-      })
     }
 
+    // Load explorer and image data
     this.preloadModalData()
   }
 
@@ -70,6 +90,43 @@ export class W3mModal extends LitElement {
 
   private get containerEl() {
     return UiUtil.getShadowRootElement(this, '.w3m-container')
+  }
+
+  private async fetchProfile(profileAddress?: `0x${string}`) {
+    try {
+      OptionsCtrl.setProfileLoading(true)
+      const address = profileAddress ?? OptionsCtrl.state.address
+      if (address && this.activeChainId === 1) {
+        const [name, avatar] = await Promise.all([
+          ClientCtrl.client().fecthEnsName({ address }),
+          ClientCtrl.client().fetchEnsAvatar({ address })
+        ])
+        if (avatar) {
+          await UiUtil.preloadImage(avatar)
+        }
+        OptionsCtrl.setProfileName(name)
+        OptionsCtrl.setProfileAvatar(avatar)
+      }
+    } catch (err) {
+      ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
+    } finally {
+      OptionsCtrl.setProfileLoading(false)
+    }
+  }
+
+  private async fetchBalance(balanceAddress?: `0x${string}`) {
+    try {
+      OptionsCtrl.setBalanceLoading(true)
+      const address = balanceAddress ?? OptionsCtrl.state.address
+      if (address) {
+        const balance = await ClientCtrl.client().fetchBalance({ address })
+        OptionsCtrl.setBalance({ amount: balance.formatted, symbol: balance.symbol })
+      }
+    } catch (err) {
+      ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
+    } finally {
+      OptionsCtrl.setBalanceLoading(false)
+    }
   }
 
   private toggleBodyScroll(enabled: boolean) {
