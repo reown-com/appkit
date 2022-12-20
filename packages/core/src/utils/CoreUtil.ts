@@ -1,6 +1,6 @@
-const WALLETCONNECT_DEEPLINK_CHOICE = 'WALLETCONNECT_DEEPLINK_CHOICE'
-
 export const CoreUtil = {
+  WALLETCONNECT_DEEPLINK_CHOICE: 'WALLETCONNECT_DEEPLINK_CHOICE',
+
   isMobile() {
     if (typeof window !== 'undefined') {
       return Boolean(
@@ -64,11 +64,20 @@ export const CoreUtil = {
   },
 
   setWalletConnectDeepLink(href: string, name: string) {
-    localStorage.setItem(WALLETCONNECT_DEEPLINK_CHOICE, JSON.stringify({ href, name }))
+    localStorage.setItem(CoreUtil.WALLETCONNECT_DEEPLINK_CHOICE, JSON.stringify({ href, name }))
+  },
+
+  setWalletConnectAndroidDeepLink(wcUri: string) {
+    const [href] = wcUri.split('?')
+
+    localStorage.setItem(
+      CoreUtil.WALLETCONNECT_DEEPLINK_CHOICE,
+      JSON.stringify({ href, name: 'Android' })
+    )
   },
 
   removeWalletConnectDeepLink() {
-    localStorage.removeItem(WALLETCONNECT_DEEPLINK_CHOICE)
+    localStorage.removeItem(CoreUtil.WALLETCONNECT_DEEPLINK_CHOICE)
   },
 
   isNull<T>(value: T | null): value is null {
