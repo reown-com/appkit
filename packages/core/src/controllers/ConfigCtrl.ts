@@ -13,6 +13,7 @@ const state = proxy<ConfigCtrlState>({
   themeMode: isDarkMode() ? 'dark' : 'light',
   themeColor: 'default',
   themeBackground: CoreUtil.isMobile() ? 'themeColor' : 'gradient',
+  themeZIndex: 89,
   mobileWallets: undefined,
   desktopWallets: undefined,
   walletImages: undefined,

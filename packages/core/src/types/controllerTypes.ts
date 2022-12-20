@@ -32,6 +32,7 @@ export interface ConfigCtrlState {
     | 'purple'
     | 'teal'
   themeBackground?: 'gradient' | 'themeColor'
+  themeZIndex?: number
   standaloneChains?: string[]
   mobileWallets?: MobileWallet[]
   desktopWallets?: DesktopWallet[]

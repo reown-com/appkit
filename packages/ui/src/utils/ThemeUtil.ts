@@ -180,6 +180,7 @@ export const ThemeUtil = {
 
   setTheme() {
     const root: HTMLElement | null = document.querySelector(':root')
+    const { themeZIndex } = ConfigCtrl.state
 
     if (root) {
       const variables = {
@@ -197,7 +198,8 @@ export const ThemeUtil = {
         '--gradient-1': ThemeUtil.color().gradient[1],
         '--gradient-2': ThemeUtil.color().gradient[2],
         '--gradient-3': ThemeUtil.color().gradient[3],
-        '--gradient-4': ThemeUtil.color().gradient[4]
+        '--gradient-4': ThemeUtil.color().gradient[4],
+        '--modal-z-index': themeZIndex ?? 89
       }
       Object.entries(variables).forEach(([key, val]) => root.style.setProperty(key, val))
     }
