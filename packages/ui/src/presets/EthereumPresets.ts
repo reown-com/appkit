@@ -34,7 +34,8 @@ export const enum InjectedId {
   tokenary = 'tokenary',
   '1inch' = '1inch',
   kuCoinWallet = 'kuCoinWallet',
-  ledger = 'ledger'
+  ledger = 'ledger',
+  zerion = 'zerion'
 }
 
 // -- presets ------------------------------------------------------ //
@@ -143,6 +144,13 @@ export const EthereumPresets = {
       url: 'https://1inch.io/wallet',
       isMobile: true,
       isDesktop: true
+    },
+    [InjectedId.zerion]: {
+      name: 'Zerion Wallet',
+      icon: 'f216b371-96cf-409a-9d88-296392b85800',
+      url: 'https://zerion.io',
+      isMobile: true,
+      isDesktop: true
     }
   } as Record<string, InjectedPreset | undefined>,
 
@@ -171,6 +179,7 @@ export const EthereumPresets = {
     if (ethereum.isOneInchIOSWallet || ethereum.isOneInchAndroidWallet) return InjectedId['1inch']
     if (ethereum.isKuCoinWallet) return InjectedId.kuCoinWallet
     if (ethereum.isMetaMask) return InjectedId.metaMask
+    if (ethereum.isZerion) return InjectedId.zerion
 
     return 'injected'
   },
