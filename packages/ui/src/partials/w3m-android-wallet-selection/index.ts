@@ -1,4 +1,4 @@
-import { RouterCtrl } from '@web3modal/core'
+import { ExplorerCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -17,6 +17,10 @@ export class W3mAndroidWalletSelection extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
+    const { previewWallets } = ExplorerCtrl.state
+    const isPreviewWallets = previewWallets.length
+    const wallets = [...previewWallets, ...previewWallets]
+
     return html`
       <w3m-modal-header
         title="Connect your wallet"
@@ -25,7 +29,22 @@ export class W3mAndroidWalletSelection extends LitElement {
       ></w3m-modal-header>
 
       <w3m-modal-content>
-        <button @click=${UiUtil.handleAndroidLinking}>Connect</button>
+        ${isPreviewWallets
+          ? html`
+              <div class="w3m-slider">
+                <div class="w3m-track">
+                  ${wallets.map(
+                    ({ image_url }) =>
+                      html`<w3m-wallet-image src=${image_url.lg}></w3m-wallet-image>`
+                  )}
+                </div>
+              </div>
+            `
+          : null}
+
+        <button @click=${UiUtil.handleAndroidLinking}>
+          <w3m-text variant="medium-normal" color="inverse">Select Wallet</w3m-text>
+        </button>
       </w3m-modal-content>
     `
   }

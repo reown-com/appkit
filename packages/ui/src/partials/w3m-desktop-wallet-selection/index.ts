@@ -159,6 +159,7 @@ export class W3mDesktopWalletSelection extends LitElement {
 
     return html`
       <w3m-modal-header
+        border=${true}
         title="Connect your wallet"
         .onAction=${UiUtil.handleUriCopy}
         .actionIcon=${SvgUtil.COPY_ICON}

@@ -2,7 +2,7 @@ button {
   padding: 0 15px;
   height: 40px;
   border-radius: 10px;
-  color: var(--color-fg-invers);
+  color: var(--color-fg-inverse);
   background-color: var(--color-fg-accent);
 }
 

@@ -12,6 +12,7 @@ w3m-modal-content {
   grid-template-columns: repeat(4, 80px);
   justify-content: space-between;
   margin: -15px -10px;
+  padding-top: 20px;
 }
 
 w3m-modal-content::before,

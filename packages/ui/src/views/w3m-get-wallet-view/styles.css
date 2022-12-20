@@ -16,10 +16,6 @@
   border-bottom: none;
 }
 
-.w3m-wallet-item:first-child {
-  margin-top: -20px;
-}
-
 .w3m-wallet-content {
   margin-left: 20px;
   height: 60px;
