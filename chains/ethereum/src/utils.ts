@@ -10,9 +10,20 @@ export const NAMESPACE = 'eip155'
 // -- providers ------------------------------------------------------- //
 export function walletConnectProvider({ projectId }: WalletConnectProviderOpts) {
   return jsonRpcProvider({
-    rpc: chain => ({
-      http: `https://rpc.walletconnect.com/v1/?chainId=${NAMESPACE}:${chain.id}&projectId=${projectId}`
-    })
+    rpc: chain => {
+      const supportedChains = [1, 137, 10, 42161, 1313161554, 11297108109, 43114, 42220]
+
+      if (supportedChains.includes(chain.id)) {
+        return {
+          http: `https://rpc.walletconnect.com/v1/?chainId=${NAMESPACE}:${chain.id}&projectId=${projectId}`
+        }
+      }
+
+      return {
+        http: chain.rpcUrls.default.http[0],
+        webSocket: chain.rpcUrls.default.webSocket?.[0]
+      }
+    }
   })
 }
 
