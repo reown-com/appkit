@@ -62,6 +62,8 @@ import TokenPocketLogo from "../logos/tokenpocket.svg";
 import CoreLogo from "../logos/core.svg";
 // @ts-ignore
 import GameStopLogo from "../logos/gamestopwallet.svg";
+// @ts-ignore
+import PhantomLogo from "../logos/phantom.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -309,4 +311,15 @@ export const GAMESTOP: IProviderInfo = {
   logo: GameStopLogo,
   type: "injected",
   check: "isGamestop"
+};
+
+export const PHANTOM: IProviderInfo = {
+  id: "phantom",
+  name: "Phantom",
+  logo: PhantomLogo,
+  type: "injected",
+  check: "isPhantom",
+  package: {
+    required: ["networkType"]
+  }
 };
