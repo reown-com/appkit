@@ -2,7 +2,7 @@ span {
   font-style: normal;
   font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu,
     'Helvetica Neue', sans-serif;
-  font-feature-settings: 'tnum' on, 'lnum' on, 'case' on, 'ss06' on;
+  font-feature-settings: 'tnum' on, 'lnum' on, 'case' on;
 }
 
 .w3m-xxsmall-bold {
