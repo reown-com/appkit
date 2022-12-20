@@ -123,8 +123,10 @@ export const UiUtil = {
       CoreUtil.openHref(standaloneUri)
     } else {
       await ClientCtrl.client().connectWalletConnect(uri => {
+        CoreUtil.setWalletConnectDeepLink(uri, 'android')
         CoreUtil.openHref(uri)
       }, selectedChain?.id)
+
       ModalCtrl.close()
     }
   },
