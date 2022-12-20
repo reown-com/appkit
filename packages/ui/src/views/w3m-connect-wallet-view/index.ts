@@ -9,11 +9,15 @@ export class W3mConnectWalletView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    return html`
-      ${CoreUtil.isMobile()
-        ? html`<w3m-mobile-wallet-selection></w3m-mobile-wallet-selection>`
-        : html`<w3m-desktop-wallet-selection></w3m-desktop-wallet-selection>`}
-    `
+    if (CoreUtil.isAndroid()) {
+      return html`<w3m-android-wallet-selection></w3m-android-wallet-selection>`
+    }
+
+    if (CoreUtil.isMobile()) {
+      return html`<w3m-mobile-wallet-selection></w3m-mobile-wallet-selection>`
+    }
+
+    return html`<w3m-desktop-wallet-selection></w3m-desktop-wallet-selection>`
   }
 }
 

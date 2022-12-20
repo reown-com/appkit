@@ -1,6 +1,7 @@
 import './w3m-account-button'
 import './w3m-account-network-button'
 import './w3m-address-text'
+import './w3m-android-wallet-selection'
 import './w3m-avatar'
 import './w3m-balance'
 import './w3m-connect-button'

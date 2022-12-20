@@ -12,6 +12,10 @@ export const CoreUtil = {
     return false
   },
 
+  isAndroid() {
+    return CoreUtil.isMobile() && navigator.userAgent.toLowerCase().includes('android')
+  },
+
   isEmptyObject(value: unknown) {
     return (
       Object.getPrototypeOf(value) === Object.prototype &&

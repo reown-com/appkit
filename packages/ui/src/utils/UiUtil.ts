@@ -116,6 +116,19 @@ export const UiUtil = {
     UiUtil.setRecentWallet(wallet)
   },
 
+  async handleAndroidLinking() {
+    const { standaloneUri, selectedChain } = OptionsCtrl.state
+
+    if (standaloneUri) {
+      CoreUtil.openHref(standaloneUri)
+    } else {
+      await ClientCtrl.client().connectWalletConnect(uri => {
+        CoreUtil.openHref(uri)
+      }, selectedChain?.id)
+      ModalCtrl.close()
+    }
+  },
+
   async handleUriCopy() {
     const { standaloneUri } = OptionsCtrl.state
     if (standaloneUri) {
