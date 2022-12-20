@@ -62,6 +62,8 @@ import TokenPocketLogo from "../logos/tokenpocket.svg";
 import CoreLogo from "../logos/core.svg";
 // @ts-ignore
 import GameStopLogo from "../logos/gamestopwallet.svg";
+// @ts-ignore
+import ZerionLogo from '../logos/zerion.svg';
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -309,4 +311,12 @@ export const GAMESTOP: IProviderInfo = {
   logo: GameStopLogo,
   type: "injected",
   check: "isGamestop"
+};
+
+export const ZERION: IProviderInfo = {
+  id: "injected",
+  name: "Zerion Wallet",
+  logo: ZerionLogo,
+  type: "injected",
+  check: "isZerion"
 };
