@@ -1,5 +1,6 @@
 import './w3m-box-button'
 import './w3m-button'
+import './w3m-button-big'
 import './w3m-modal'
 import './w3m-modal-backcard'
 import './w3m-modal-content'

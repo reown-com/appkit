@@ -42,9 +42,11 @@ export class W3mAndroidWalletSelection extends LitElement {
             `
           : null}
 
-        <button @click=${UiUtil.handleAndroidLinking}>
-          <w3m-text variant="medium-normal" color="inverse">Select Wallet</w3m-text>
-        </button>
+        <div class="w3m-action">
+          <w3m-button-big @click=${UiUtil.handleAndroidLinking}>
+            <w3m-text variant="medium-normal" color="inverse">Select Wallet</w3m-text>
+          </w3m-button-big>
+        </div>
       </w3m-modal-content>
     `
   }

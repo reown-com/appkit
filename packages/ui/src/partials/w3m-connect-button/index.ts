@@ -57,7 +57,7 @@ export class W3mConnectButton extends LitElement {
     }
 
     return html`
-      <button class=${classMap(classes)} .disabled=${this.loading} @click=${this.onOpen}>
+      <w3m-button-big class=${classMap(classes)} .disabled=${this.loading} @click=${this.onOpen}>
         ${this.loading
           ? html`
               <w3m-spinner></w3m-spinner>
@@ -67,7 +67,7 @@ export class W3mConnectButton extends LitElement {
               ${this.iconTemplate()}
               <w3m-text variant="medium-normal" color="inverse">${this.label}</w3m-text>
             `}
-      </button>
+      </w3m-button-big>
     `
   }
 }

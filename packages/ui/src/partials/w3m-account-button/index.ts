@@ -19,12 +19,10 @@ export class W3mAccountButton extends LitElement {
   }
 
   // -- private ------------------------------------------------------ //
-  private buttonTemplate() {
+  private accountTemplate() {
     return html`
-      <button @click=${this.onOpen}>
-        <w3m-avatar></w3m-avatar>
-        <w3m-address-text></w3m-address-text>
-      </button>
+      <w3m-avatar></w3m-avatar>
+      <w3m-address-text></w3m-address-text>
     `
   }
 
@@ -36,10 +34,10 @@ export class W3mAccountButton extends LitElement {
       ? html`
           <div>
             <w3m-balance></w3m-balance>
-            ${this.buttonTemplate()}
+            <button @click=${this.onOpen}>${this.accountTemplate()}</button>
           </div>
         `
-      : this.buttonTemplate()
+      : html`<w3m-button-big @click=${this.onOpen}>${this.accountTemplate()}</w3m-button-big>`
   }
 }
 

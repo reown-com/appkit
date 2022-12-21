@@ -48,11 +48,13 @@ export class W3mModal extends LitElement {
 
       // Subscribe network changes
       this.unwatchNetwork = ClientCtrl.client().watchNetwork(network => {
-        OptionsCtrl.setSelectedChain(network.chain)
-        this.activeChainId = network.chain?.id
-        OptionsCtrl.resetProfile()
-        this.fetchProfile()
-        this.fetchBalance()
+        if (this.activeChainId !== network.chain?.id) {
+          OptionsCtrl.setSelectedChain(network.chain)
+          this.activeChainId = network.chain?.id
+          OptionsCtrl.resetProfile()
+          this.fetchProfile()
+          this.fetchBalance()
+        }
       })
 
       // Subscribe account changes
