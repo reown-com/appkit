@@ -13,7 +13,7 @@ yarn
 Some examples have `.env.local.example` files. Copy their content and create new `.env.local` files in the same directory.
 Without these `yarn:build` command will fail. To create your ProjectID head to [cloud.walletconnect.com](https://cloud.walletconnect.com/)
 
-## Commands:
+## Commands
 
 - `yarn build` - Build all packages.
 - `yarn dev` - Build and watch all packages for changes.
@@ -25,3 +25,16 @@ Without these `yarn:build` command will fail. To create your ProjectID head to [
 - `yarn lint` - Run the linter.
 - `yarn prettier` - Run prettier.
 - `yarn typecheck` - Run typescript checks.
+
+## Repository structure
+
+- `chains` - Helper packages for managed chain workflows
+- `examples` - Contains examples for all suported use cases, acts as testing ground
+- `packages`
+  - `core` - State, proxy between ui and chain packages
+  - `ui` - Web-components based ui of web3modal
+    - `components` - Basic ui components
+    - `partials` - Complex ui peaces composing multiple components and accessing core
+    - `vies` - Full web3modal views
+  - `react` - React wrapper on top of core and ui
+  - `html` - Vanilla html / js wrapper on top of core and ui
