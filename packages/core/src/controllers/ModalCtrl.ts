@@ -1,9 +1,14 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ModalCtrlState } from '../types/controllerTypes'
-import { ClientCtrl } from './ClientCtrl'
-import { ConfigCtrl } from './ConfigCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
 import { RouterCtrl } from './RouterCtrl'
+
+// -- types -------------------------------------------------------- //
+export interface OpenOptions {
+  uri?: string
+  standaloneChains?: string[]
+  route?: 'Account' | 'ConnectWallet' | 'Help' | 'SelectNetwork'
+}
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<ModalCtrlState>({
@@ -18,27 +23,16 @@ export const ModalCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  open(options?: { uri: string; standaloneChains?: string[] }) {
-    const { chains, isStandalone } = OptionsCtrl.state
-    const { enableNetworkView } = ConfigCtrl.state
-    const isChainsList = chains?.length && chains.length > 1
-    const connected = isStandalone ? false : ClientCtrl.client().getAccount().isConnected
-
-    if (connected) {
-      RouterCtrl.replace('Account')
-    } else if (isChainsList && enableNetworkView) {
-      RouterCtrl.replace('SelectNetwork')
-    } else {
-      RouterCtrl.replace('ConnectWallet')
+  open(options?: OpenOptions) {
+    if (options?.route) {
+      RouterCtrl.replace(options.route)
     }
-
-    if (typeof options?.uri === 'string') {
+    if (options?.uri) {
       OptionsCtrl.setStandaloneUri(options.uri)
     }
     if (options?.standaloneChains?.length) {
       OptionsCtrl.setStandaloneChains(options.standaloneChains)
     }
-
     state.open = true
   },
 

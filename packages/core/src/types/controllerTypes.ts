@@ -34,12 +34,12 @@ export interface ConfigCtrlState {
   themeBackground?: 'gradient' | 'themeColor'
   themeZIndex?: number
   standaloneChains?: string[]
+  defaultChain?: Chain
   mobileWallets?: MobileWallet[]
   desktopWallets?: DesktopWallet[]
   walletImages?: Record<string, string>
   chainImages?: Record<string, string>
   tokenImages?: Record<string, string>
-  enableNetworkView?: boolean
   enableStandaloneMode?: boolean
 }
 

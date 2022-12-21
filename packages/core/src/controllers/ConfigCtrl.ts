@@ -21,7 +21,7 @@ const state = proxy<ConfigCtrlState>({
   tokenImages: undefined,
   standaloneChains: undefined,
   enableStandaloneMode: false,
-  enableNetworkView: true
+  defaultChain: undefined
 })
 
 // -- controller --------------------------------------------------- //
@@ -40,6 +40,7 @@ export const ConfigCtrl = {
     OptionsCtrl.setIsCustomMobile(Boolean(config.mobileWallets?.length))
     OptionsCtrl.setIsCustomDesktop(Boolean(config.desktopWallets?.length))
     OptionsCtrl.setIsExplorer(Boolean(config.projectId?.length))
+    OptionsCtrl.setSelectedChain(config.defaultChain)
 
     Object.assign(state, config)
   },

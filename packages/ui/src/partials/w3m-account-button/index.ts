@@ -1,4 +1,4 @@
-import { ModalCtrl } from '@web3modal/core'
+import { ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -11,10 +11,17 @@ export class W3mAccountButton extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property() public balance?: 'hide' | 'show' = 'hide'
 
+  private onOpen() {
+    const { isStandalone } = OptionsCtrl.state
+    if (!isStandalone) {
+      ModalCtrl.open({ route: 'Account' })
+    }
+  }
+
   // -- private ------------------------------------------------------ //
   private buttonTemplate() {
     return html`
-      <button @click=${ModalCtrl.open}>
+      <button @click=${this.onOpen}>
         <w3m-avatar></w3m-avatar>
         <w3m-address-text></w3m-address-text>
       </button>
