@@ -4,6 +4,7 @@ import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-connect-button')
@@ -18,6 +19,7 @@ export class W3mConnectButton extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
+    UiUtil.rejectStandaloneButtonComponent()
     this.modalUnsub = ModalCtrl.subscribe(modalState => {
       if (modalState.open) {
         this.loading = true

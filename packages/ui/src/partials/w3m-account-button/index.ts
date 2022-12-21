@@ -2,11 +2,18 @@ import { ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-account-button')
 export class W3mAccountButton extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
+
+  // -- lifecycle ---------------------------------------------------- //
+  public constructor() {
+    super()
+    UiUtil.rejectStandaloneButtonComponent()
+  }
 
   // -- state & properties ------------------------------------------- //
   @property() public balance?: 'hide' | 'show' = 'hide'

@@ -33,3 +33,7 @@ button:hover::after {
 w3m-avatar {
   margin-right: 6px;
 }
+
+w3m-button-big w3m-avatar {
+  margin-left: -5px;
+}

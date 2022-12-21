@@ -1,4 +1,4 @@
-import { useWeb3Modal, Web3Button } from '@web3modal/react'
+import { useWeb3Modal, Web3Button, Web3NetworkSwitch } from '@web3modal/react'
 import { useAccount } from 'wagmi'
 import ThemeControls from '../components/ThemeControls'
 
@@ -17,6 +17,8 @@ export default function HomePage() {
 
         {/* Alternatively Use custom button */}
         {!isConnected && <button onClick={() => open()}>Custom Button</button>}
+
+        <Web3NetworkSwitch />
       </div>
 
       <ThemeControls />
