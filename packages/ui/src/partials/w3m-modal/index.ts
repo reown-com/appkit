@@ -136,11 +136,17 @@ export class W3mModal extends LitElement {
   }
 
   private toggleBodyScroll(enabled: boolean) {
-    const [body] = document.getElementsByTagName('body')
-    if (enabled) {
-      body.style.overflow = 'auto'
-    } else {
-      body.style.overflow = 'hidden'
+    const body = document.querySelector('body')
+    if (body) {
+      if (enabled) {
+        body.style = ''
+      } else {
+        Object.assign(body.style, {
+          overflow: 'hidden',
+          overscrollBehavior: 'contain',
+          position: 'relative'
+        })
+      }
     }
   }
 
