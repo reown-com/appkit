@@ -50,9 +50,10 @@ export class W3mModal extends LitElement {
 
       // Subscribe network changes
       this.unwatchNetwork = ClientCtrl.client().watchNetwork(network => {
-        if (this.activeChainId !== network.chain?.id) {
-          OptionsCtrl.setSelectedChain(network.chain)
-          this.activeChainId = network.chain?.id
+        const newChain = network.chain
+        if (newChain && this.activeChainId !== newChain.id) {
+          OptionsCtrl.setSelectedChain(newChain)
+          this.activeChainId = newChain.id
           OptionsCtrl.resetProfile()
           this.fetchProfile()
           this.fetchBalance()
