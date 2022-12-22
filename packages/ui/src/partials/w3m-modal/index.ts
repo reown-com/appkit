@@ -139,13 +139,19 @@ export class W3mModal extends LitElement {
     const body = document.querySelector('body')
     if (body) {
       if (enabled) {
-        body.style = ''
+        const w3mStyles = document.getElementById('w3m-styles')
+        w3mStyles?.remove()
       } else {
-        Object.assign(body.style, {
-          overflow: 'hidden',
-          overscrollBehavior: 'contain',
-          position: 'relative'
-        })
+        document.head.insertAdjacentHTML(
+          'beforeend',
+          `<style id="w3m-styles">
+            body {
+              overflow: hidden;
+              overscroll-behavior: none;
+              position: relative;
+            }
+          </style>`
+        )
       }
     }
   }
