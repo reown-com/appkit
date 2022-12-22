@@ -1,3 +1,4 @@
+import type { Listing } from '@web3modal/core'
 import {
   ClientCtrl,
   ConfigCtrl,
@@ -251,6 +252,19 @@ export const UiUtil = {
     }
 
     return wallets
+  },
+
+  getAllowedExplorerListings(listings: Listing[]) {
+    const { explorerAllowList, explorerDenyList } = ConfigCtrl.state
+    let allowedListings = [...listings]
+    if (explorerAllowList?.length) {
+      allowedListings = allowedListings.filter(l => explorerAllowList.includes(l.id))
+    }
+    if (explorerDenyList?.length) {
+      allowedListings = allowedListings.filter(l => !explorerDenyList.includes(l.id))
+    }
+
+    return allowedListings
   },
 
   caseSafeIncludes(str1: string, str2: string) {

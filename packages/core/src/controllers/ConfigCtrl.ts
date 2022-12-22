@@ -21,7 +21,9 @@ const state = proxy<ConfigCtrlState>({
   tokenImages: undefined,
   standaloneChains: undefined,
   enableStandaloneMode: false,
-  defaultChain: undefined
+  defaultChain: undefined,
+  explorerAllowList: undefined,
+  explorerDenyList: undefined
 })
 
 // -- controller --------------------------------------------------- //

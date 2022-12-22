@@ -55,6 +55,8 @@ export class W3mMobileWalletSelection extends LitElement {
       wallets = wallets.filter(({ name }) => !UiUtil.caseSafeIncludes(name, injectedName))
     }
 
+    wallets = UiUtil.getAllowedExplorerListings(previewWallets)
+
     return wallets.map(
       ({ image_url, name, mobile: { native, universal }, id }) => html`
         <w3m-wallet-button

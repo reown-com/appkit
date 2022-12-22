@@ -165,7 +165,8 @@ export class W3mWalletExplorerView extends LitElement {
   protected render() {
     const { wallets, search } = ExplorerCtrl.state
     const { isStandalone } = OptionsCtrl.state
-    const { listings } = this.search ? search : wallets
+    let { listings } = this.search ? search : wallets
+    listings = UiUtil.getAllowedExplorerListings(listings)
     const isLoading = this.loading && !listings.length
     const isSearch = this.search.length >= 3
     const isCoinbase =
@@ -178,12 +179,12 @@ export class W3mWalletExplorerView extends LitElement {
     }
 
     const isEmpty = !this.loading && !listings.length && !extensions.length && !isCoinbase
+    const iterator = Math.max(extensions.length, listings.length)
     const classes = {
       'w3m-loading': isLoading,
       'w3m-end-reached': this.endReached || !this.loading,
       'w3m-empty': isEmpty
     }
-    const iterator = Math.max(extensions.length, listings.length)
 
     return html`
       <w3m-modal-header>

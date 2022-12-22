@@ -58,7 +58,8 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private previewWalletsTemplate() {
-    const { previewWallets } = ExplorerCtrl.state
+    let { previewWallets } = ExplorerCtrl.state
+    previewWallets = UiUtil.getAllowedExplorerListings(previewWallets)
 
     return previewWallets.map(
       ({ name, desktop: { universal, native }, homepage, image_url, id }) => html`
