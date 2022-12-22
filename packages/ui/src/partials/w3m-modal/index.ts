@@ -15,6 +15,8 @@ import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
+type Target = HTMLElement | undefined
+
 @customElement('w3m-modal')
 export class W3mModal extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
@@ -218,14 +220,14 @@ export class W3mModal extends LitElement {
         delay
       }
     )
-    document.addEventListener('keydown', this.onKeyDown)
+    window.addEventListener('keydown', this.onKeyDown.bind(this))
     this.open = true
     this.containerEl.focus()
   }
 
   private async onCloseModalEvent() {
     this.toggleBodyScroll(true)
-    document.removeEventListener('keydown', this.onKeyDown)
+    window.removeEventListener('keydown', this.onKeyDown.bind(this))
     await Promise.all([
       animate(
         this.containerEl,
@@ -243,6 +245,10 @@ export class W3mModal extends LitElement {
   private onKeyDown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       ModalCtrl.close()
+    } else if (event.key === 'Tab') {
+      if ((event.target as Target)?.tagName.includes('INPUT')) {
+        this.containerEl.focus()
+      }
     }
   }
 
