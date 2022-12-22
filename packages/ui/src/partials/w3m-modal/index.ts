@@ -246,7 +246,7 @@ export class W3mModal extends LitElement {
     if (event.key === 'Escape') {
       ModalCtrl.close()
     } else if (event.key === 'Tab') {
-      if ((event.target as Target)?.tagName.includes('INPUT')) {
+      if (!(event.target as Target)?.tagName.includes('W3M-')) {
         this.containerEl.focus()
       }
     }
