@@ -87,6 +87,7 @@ export class W3mModal extends LitElement {
   private readonly unsubscribeConfig?: () => void = undefined
   private readonly unwatchAccount?: () => void = undefined
   private readonly unwatchNetwork?: () => void = undefined
+  private abortController?: AbortController = undefined
 
   private get overlayEl() {
     return UiUtil.getShadowRootElement(this, '.w3m-overlay')
@@ -220,14 +221,13 @@ export class W3mModal extends LitElement {
         delay
       }
     )
-    window.addEventListener('keydown', this.onKeyDown.bind(this))
+    this.addKeyboardEvents()
     this.open = true
-    this.containerEl.focus()
   }
 
   private async onCloseModalEvent() {
     this.toggleBodyScroll(true)
-    window.removeEventListener('keydown', this.onKeyDown.bind(this))
+    this.removeKeyboardEvents()
     await Promise.all([
       animate(
         this.containerEl,
@@ -242,14 +242,27 @@ export class W3mModal extends LitElement {
     this.open = false
   }
 
-  private onKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
-      ModalCtrl.close()
-    } else if (event.key === 'Tab') {
-      if (!(event.target as Target)?.tagName.includes('W3M-')) {
-        this.containerEl.focus()
-      }
-    }
+  private addKeyboardEvents() {
+    this.abortController = new AbortController()
+    window.addEventListener(
+      'keydown',
+      event => {
+        if (event.key === 'Escape') {
+          ModalCtrl.close()
+        } else if (event.key === 'Tab') {
+          if (!(event.target as Target)?.tagName.includes('W3M-')) {
+            this.containerEl.focus()
+          }
+        }
+      },
+      this.abortController
+    )
+    this.containerEl.focus()
+  }
+
+  private removeKeyboardEvents() {
+    this.abortController?.abort()
+    this.abortController = undefined
   }
 
   // -- render ------------------------------------------------------- //
