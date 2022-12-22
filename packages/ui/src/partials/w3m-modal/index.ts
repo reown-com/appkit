@@ -144,16 +144,7 @@ export class W3mModal extends LitElement {
       } else {
         document.head.insertAdjacentHTML(
           'beforeend',
-          `<style id="w3m-styles">
-            body {
-              position: fixed;
-              inset: 0;
-              touch-action:none;
-              overflow: hidden;
-              overscroll-behavior: none;
-              position: relative;
-            }
-          </style>`
+          `<style id="w3m-styles">body {overflow:hidden;overscroll-behavior:none;}</style>`
         )
       }
     }
