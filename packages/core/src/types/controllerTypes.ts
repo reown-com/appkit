@@ -41,6 +41,7 @@ export interface ConfigCtrlState {
   chainImages?: Record<string, string>
   tokenImages?: Record<string, string>
   enableStandaloneMode?: boolean
+  enableNetworkView?: boolean
   explorerAllowList?: string[]
   explorerDenyList?: string[]
 }

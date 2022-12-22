@@ -12,8 +12,8 @@ type Web3ModalConfig = Omit<ConfigCtrlState, 'enableStandaloneMode' | 'standalon
  */
 export class Web3Modal {
   public constructor(config: Web3ModalConfig, client: EthereumClient) {
-    ConfigCtrl.setConfig(config)
     ClientCtrl.setEthereumClient(client)
+    ConfigCtrl.setConfig(config)
     this.initUi()
   }
 

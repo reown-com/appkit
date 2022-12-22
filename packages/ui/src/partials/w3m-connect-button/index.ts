@@ -1,4 +1,4 @@
-import { ModalCtrl, OptionsCtrl } from '@web3modal/core'
+import { ConfigCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -43,9 +43,10 @@ export class W3mConnectButton extends LitElement {
 
   private onOpen() {
     this.loading = true
+    const { enableNetworkView } = ConfigCtrl.state
     const { chains, selectedChain } = OptionsCtrl.state
     const isChainsList = chains?.length && chains.length > 1
-    if (isChainsList && !selectedChain) {
+    if (enableNetworkView || (isChainsList && !selectedChain)) {
       ModalCtrl.open({ route: 'SelectNetwork' })
     } else {
       ModalCtrl.open({ route: 'ConnectWallet' })

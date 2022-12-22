@@ -35,6 +35,12 @@ export class EthereumClient {
   // -- public web3modal ---------------------------------- //
   public namespace = 'eip155'
 
+  public getDefaultChain() {
+    const mainnet = this.chains.find(chain => chain.id === 1)
+
+    return mainnet ?? this.chains[0]
+  }
+
   public getConnectorById(id: ConnectorId | string) {
     const connector = this.wagmi.connectors.find(item => item.id === id)
     if (!connector) {
