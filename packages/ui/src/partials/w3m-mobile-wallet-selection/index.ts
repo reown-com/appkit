@@ -1,8 +1,9 @@
-import { ClientCtrl, ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
+import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { InjectedId } from '../../presets/EthereumPresets'
+import { DataFilterUtil } from '../../utils/DataFilterUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -23,12 +24,7 @@ export class W3mMobileWalletSelection extends LitElement {
 
   private mobileWalletsTemplate() {
     const { mobileWallets } = ConfigCtrl.state
-    let wallets = [...(mobileWallets ?? [])]
-
-    if (window.ethereum) {
-      const injectedName = UiUtil.getWalletName('')
-      wallets = wallets.filter(({ name }) => !UiUtil.caseSafeIncludes(name, injectedName))
-    }
+    const wallets = DataFilterUtil.walletsWithInjected(mobileWallets)
 
     if (wallets.length) {
       return wallets.map(
@@ -48,14 +44,8 @@ export class W3mMobileWalletSelection extends LitElement {
 
   private previewWalletsTemplate() {
     const { previewWallets } = ExplorerCtrl.state
-    let wallets = [...previewWallets]
-
-    if (window.ethereum) {
-      const injectedName = UiUtil.getWalletName('')
-      wallets = wallets.filter(({ name }) => !UiUtil.caseSafeIncludes(name, injectedName))
-    }
-
-    wallets = UiUtil.getAllowedExplorerListings(previewWallets)
+    let wallets = DataFilterUtil.walletsWithInjected(previewWallets)
+    wallets = DataFilterUtil.allowedExplorerListings(previewWallets)
 
     return wallets.map(
       ({ image_url, name, mobile: { native, universal }, id }) => html`
@@ -75,14 +65,7 @@ export class W3mMobileWalletSelection extends LitElement {
   }
 
   private connectorWalletsTemplate() {
-    const { isStandalone } = OptionsCtrl.state
-
-    if (isStandalone) {
-      return []
-    }
-
-    const connectorWallets = ClientCtrl.client().getConnectors()
-    let wallets = [...connectorWallets]
+    let wallets = DataFilterUtil.connectorWallets()
 
     if (!window.ethereum) {
       wallets = wallets.filter(({ id }) => id !== 'injected' && id !== InjectedId.metaMask)
@@ -129,13 +112,7 @@ export class W3mMobileWalletSelection extends LitElement {
     const recentTemplate = this.recentWalletTemplate()
     const linkingWallets = mobileTemplate ?? previewTemplate
     let combinedWallets = [...connectorTemplate, ...linkingWallets]
-    if (recentTemplate) {
-      const recentWallet = UiUtil.getRecentWallet()
-      combinedWallets = combinedWallets.filter(
-        wallet => !wallet.values.includes(recentWallet?.name)
-      )
-      combinedWallets.splice(0, 0, recentTemplate)
-    }
+    combinedWallets = DataFilterUtil.walletTemplatesWithRecent(combinedWallets, recentTemplate)
     const displayWallets = standaloneUri ? linkingWallets : combinedWallets
     const isViewAll = displayWallets.length > 8
     let wallets = []

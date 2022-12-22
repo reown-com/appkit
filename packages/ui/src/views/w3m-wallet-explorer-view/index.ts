@@ -11,6 +11,7 @@ import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { InjectedId } from '../../presets/EthereumPresets'
+import { DataFilterUtil } from '../../utils/DataFilterUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -166,7 +167,7 @@ export class W3mWalletExplorerView extends LitElement {
     const { wallets, search } = ExplorerCtrl.state
     const { isStandalone } = OptionsCtrl.state
     let { listings } = this.search ? search : wallets
-    listings = UiUtil.getAllowedExplorerListings(listings)
+    listings = DataFilterUtil.allowedExplorerListings(listings)
     const isLoading = this.loading && !listings.length
     const isSearch = this.search.length >= 3
     const isCoinbase =
