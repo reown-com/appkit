@@ -11,7 +11,7 @@ export class W3mLegalNotice extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { termsOfServiceUrl, privacyPolicyUrl } = ConfigCtrl.state
-    const isLegal = termsOfServiceUrl || privacyPolicyUrl
+    const isLegal = termsOfServiceUrl ?? privacyPolicyUrl
 
     if (!isLegal) {
       return null
