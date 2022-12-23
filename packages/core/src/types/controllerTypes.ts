@@ -44,6 +44,8 @@ export interface ConfigCtrlState {
   enableNetworkView?: boolean
   explorerAllowList?: string[]
   explorerDenyList?: string[]
+  termsOfServiceUrl?: string
+  privacyPolicyUrl?: string
 }
 
 // -- ModalCtrl --------------------------------------- //

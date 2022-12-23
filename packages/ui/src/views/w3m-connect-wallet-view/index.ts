@@ -7,8 +7,8 @@ import { ThemeUtil } from '../../utils/ThemeUtil'
 export class W3mConnectWalletView extends LitElement {
   public static styles = [ThemeUtil.globalCss]
 
-  // -- render ------------------------------------------------------- //
-  protected render() {
+  // -- private ------------------------------------------------------ //
+  private viewTemplate() {
     if (CoreUtil.isAndroid()) {
       return html`<w3m-android-wallet-selection></w3m-android-wallet-selection>`
     }
@@ -18,6 +18,14 @@ export class W3mConnectWalletView extends LitElement {
     }
 
     return html`<w3m-desktop-wallet-selection></w3m-desktop-wallet-selection>`
+  }
+
+  // -- render ------------------------------------------------------- //
+  protected render() {
+    return html`
+      ${this.viewTemplate()}
+      <w3m-legal-notice></w3m-legal-notice>
+    `
   }
 }
 

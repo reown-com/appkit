@@ -25,7 +25,9 @@ const state = proxy<ConfigCtrlState>({
   enableNetworkView: false,
   defaultChain: undefined,
   explorerAllowList: undefined,
-  explorerDenyList: undefined
+  explorerDenyList: undefined,
+  termsOfServiceUrl: undefined,
+  privacyPolicyUrl: undefined
 })
 
 // -- controller --------------------------------------------------- //
