@@ -16,10 +16,10 @@ interface Props extends Omit<ConfigCtrlState, 'enableStandaloneMode' | 'standalo
  */
 export function Web3Modal({ ethereumClient, ...config }: Props) {
   const onConfigure = useCallback(async () => {
-    ConfigCtrl.setConfig(config)
     if (ethereumClient) {
       ClientCtrl.setEthereumClient(ethereumClient)
     }
+    ConfigCtrl.setConfig(config)
     await import('@web3modal/ui')
   }, [ethereumClient, config])
 

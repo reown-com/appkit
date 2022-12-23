@@ -1,0 +1,16 @@
+div {
+  background-color: var(--color-bg-2);
+  padding: 10px 20px 15px 20px;
+  border-top: 1px solid var(--color-bg-3);
+  text-align: center;
+}
+
+a {
+  color: var(--color-fg-accent);
+  text-decoration: none;
+  transition: opacity 0.2s ease-in-out;
+}
+
+a:hover {
+  opacity: 0.8;
+}

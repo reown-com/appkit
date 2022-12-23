@@ -1,9 +1,10 @@
 import type { DesktopConnectorData } from '@web3modal/core'
-import { ClientCtrl, ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
+import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { InjectedId } from '../../presets/EthereumPresets'
+import { DataFilterUtil } from '../../utils/DataFilterUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -58,9 +59,9 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private previewWalletsTemplate() {
-    const { previewWallets } = ExplorerCtrl.state
+    const wallets = DataFilterUtil.allowedExplorerListings(ExplorerCtrl.state.previewWallets)
 
-    return previewWallets.map(
+    return wallets.map(
       ({ name, desktop: { universal, native }, homepage, image_url, id }) => html`
         <w3m-wallet-button
           src=${image_url.lg}
@@ -79,15 +80,9 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private connectorWalletsTemplate() {
-    const { isStandalone } = OptionsCtrl.state
+    const wallets = DataFilterUtil.connectorWallets()
 
-    if (isStandalone) {
-      return []
-    }
-
-    const connectorWallets = ClientCtrl.client().getConnectors()
-
-    return connectorWallets.map(
+    return wallets.map(
       ({ id, name, ready }) => html`
         <w3m-wallet-button
           .installed=${['injected', 'metaMask'].includes(id) && ready}
@@ -135,13 +130,7 @@ export class W3mDesktopWalletSelection extends LitElement {
     const recentTemplate = this.recentWalletTemplate()
     const linkingWallets = desktopTemplate ?? previewTemplate
     let combinedWallets = [...connectorTemplate, ...linkingWallets]
-    if (recentTemplate) {
-      const recentWallet = UiUtil.getRecentWallet()
-      combinedWallets = combinedWallets.filter(
-        wallet => !wallet.values.includes(recentWallet?.name)
-      )
-      combinedWallets.splice(1, 0, recentTemplate)
-    }
+    combinedWallets = DataFilterUtil.walletTemplatesWithRecent(combinedWallets, recentTemplate)
     const displayWallets = standaloneUri ? linkingWallets : combinedWallets
     const isViewAll = displayWallets.length > 4
     let wallets = []
@@ -159,6 +148,7 @@ export class W3mDesktopWalletSelection extends LitElement {
 
     return html`
       <w3m-modal-header
+        border=${true}
         title="Connect your wallet"
         .onAction=${UiUtil.handleUriCopy}
         .actionIcon=${SvgUtil.COPY_ICON}

@@ -15,6 +15,8 @@ import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
+type Target = HTMLElement | undefined
+
 @customElement('w3m-modal')
 export class W3mModal extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
@@ -48,11 +50,14 @@ export class W3mModal extends LitElement {
 
       // Subscribe network changes
       this.unwatchNetwork = ClientCtrl.client().watchNetwork(network => {
-        OptionsCtrl.setSelectedChain(network.chain)
-        this.activeChainId = network.chain?.id
-        OptionsCtrl.resetProfile()
-        this.fetchProfile()
-        this.fetchBalance()
+        const newChain = network.chain
+        if (newChain && this.activeChainId !== newChain.id) {
+          OptionsCtrl.setSelectedChain(newChain)
+          this.activeChainId = newChain.id
+          OptionsCtrl.resetProfile()
+          this.fetchProfile()
+          this.fetchBalance()
+        }
       })
 
       // Subscribe account changes
@@ -83,6 +88,7 @@ export class W3mModal extends LitElement {
   private readonly unsubscribeConfig?: () => void = undefined
   private readonly unwatchAccount?: () => void = undefined
   private readonly unwatchNetwork?: () => void = undefined
+  private abortController?: AbortController = undefined
 
   private get overlayEl() {
     return UiUtil.getShadowRootElement(this, '.w3m-overlay')
@@ -130,11 +136,17 @@ export class W3mModal extends LitElement {
   }
 
   private toggleBodyScroll(enabled: boolean) {
-    const [body] = document.getElementsByTagName('body')
-    if (enabled) {
-      body.style.overflow = 'auto'
-    } else {
-      body.style.overflow = 'hidden'
+    const body = document.querySelector('body')
+    if (body) {
+      if (enabled) {
+        const w3mStyles = document.getElementById('w3m-styles')
+        w3mStyles?.remove()
+      } else {
+        document.head.insertAdjacentHTML(
+          'beforeend',
+          `<style id="w3m-styles">body{touch-action:none;overflow:hidden;overscroll-behavior:contain;}</style>`
+        )
+      }
     }
   }
 
@@ -216,14 +228,13 @@ export class W3mModal extends LitElement {
         delay
       }
     )
-    document.addEventListener('keydown', this.onKeyDown)
+    this.addKeyboardEvents()
     this.open = true
-    this.containerEl.focus()
   }
 
   private async onCloseModalEvent() {
     this.toggleBodyScroll(true)
-    document.removeEventListener('keydown', this.onKeyDown)
+    this.removeKeyboardEvents()
     await Promise.all([
       animate(
         this.containerEl,
@@ -238,10 +249,27 @@ export class W3mModal extends LitElement {
     this.open = false
   }
 
-  private onKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
-      ModalCtrl.close()
-    }
+  private addKeyboardEvents() {
+    this.abortController = new AbortController()
+    window.addEventListener(
+      'keydown',
+      event => {
+        if (event.key === 'Escape') {
+          ModalCtrl.close()
+        } else if (event.key === 'Tab') {
+          if (!(event.target as Target)?.tagName.includes('W3M-')) {
+            this.containerEl.focus()
+          }
+        }
+      },
+      this.abortController
+    )
+    this.containerEl.focus()
+  }
+
+  private removeKeyboardEvents() {
+    this.abortController?.abort()
+    this.abortController = undefined
   }
 
   // -- render ------------------------------------------------------- //

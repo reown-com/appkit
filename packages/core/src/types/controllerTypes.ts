@@ -32,14 +32,20 @@ export interface ConfigCtrlState {
     | 'purple'
     | 'teal'
   themeBackground?: 'gradient' | 'themeColor'
+  themeZIndex?: number
   standaloneChains?: string[]
+  defaultChain?: Chain
   mobileWallets?: MobileWallet[]
   desktopWallets?: DesktopWallet[]
   walletImages?: Record<string, string>
   chainImages?: Record<string, string>
   tokenImages?: Record<string, string>
-  enableNetworkView?: boolean
   enableStandaloneMode?: boolean
+  enableNetworkView?: boolean
+  explorerAllowList?: string[]
+  explorerDenyList?: string[]
+  termsOfServiceUrl?: string
+  privacyPolicyUrl?: string
 }
 
 // -- ModalCtrl --------------------------------------- //

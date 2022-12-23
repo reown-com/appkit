@@ -1,23 +1,35 @@
-import { ModalCtrl } from '@web3modal/core'
+import { ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-account-button')
 export class W3mAccountButton extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
+  // -- lifecycle ---------------------------------------------------- //
+  public constructor() {
+    super()
+    UiUtil.rejectStandaloneButtonComponent()
+  }
+
   // -- state & properties ------------------------------------------- //
   @property() public balance?: 'hide' | 'show' = 'hide'
 
+  private onOpen() {
+    const { isStandalone } = OptionsCtrl.state
+    if (!isStandalone) {
+      ModalCtrl.open({ route: 'Account' })
+    }
+  }
+
   // -- private ------------------------------------------------------ //
-  private buttonTemplate() {
+  private accountTemplate() {
     return html`
-      <button @click=${ModalCtrl.open}>
-        <w3m-avatar></w3m-avatar>
-        <w3m-address-text></w3m-address-text>
-      </button>
+      <w3m-avatar></w3m-avatar>
+      <w3m-address-text></w3m-address-text>
     `
   }
 
@@ -29,10 +41,10 @@ export class W3mAccountButton extends LitElement {
       ? html`
           <div>
             <w3m-balance></w3m-balance>
-            ${this.buttonTemplate()}
+            <button @click=${this.onOpen}>${this.accountTemplate()}</button>
           </div>
         `
-      : this.buttonTemplate()
+      : html`<w3m-button-big @click=${this.onOpen}>${this.accountTemplate()}</w3m-button-big>`
   }
 }
 

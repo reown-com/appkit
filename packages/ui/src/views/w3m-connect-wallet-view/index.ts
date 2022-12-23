@@ -7,12 +7,24 @@ import { ThemeUtil } from '../../utils/ThemeUtil'
 export class W3mConnectWalletView extends LitElement {
   public static styles = [ThemeUtil.globalCss]
 
+  // -- private ------------------------------------------------------ //
+  private viewTemplate() {
+    if (CoreUtil.isAndroid()) {
+      return html`<w3m-android-wallet-selection></w3m-android-wallet-selection>`
+    }
+
+    if (CoreUtil.isMobile()) {
+      return html`<w3m-mobile-wallet-selection></w3m-mobile-wallet-selection>`
+    }
+
+    return html`<w3m-desktop-wallet-selection></w3m-desktop-wallet-selection>`
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      ${CoreUtil.isMobile()
-        ? html`<w3m-mobile-wallet-selection></w3m-mobile-wallet-selection>`
-        : html`<w3m-desktop-wallet-selection></w3m-desktop-wallet-selection>`}
+      ${this.viewTemplate()}
+      <w3m-legal-notice></w3m-legal-notice>
     `
   }
 }

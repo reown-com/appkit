@@ -2,6 +2,7 @@ import { OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { UiUtil } from '../../utils/UiUtil'
 
 @customElement('w3m-core-button')
 export class W3mCoreButton extends LitElement {
@@ -14,6 +15,7 @@ export class W3mCoreButton extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
+    UiUtil.rejectStandaloneButtonComponent()
     this.isConnected = OptionsCtrl.state.isConnected
     this.unsubscribeAccount = OptionsCtrl.subscribe(({ isConnected }) => {
       this.isConnected = isConnected

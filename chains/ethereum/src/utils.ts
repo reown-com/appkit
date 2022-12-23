@@ -11,7 +11,10 @@ export const NAMESPACE = 'eip155'
 export function walletConnectProvider({ projectId }: WalletConnectProviderOpts) {
   return jsonRpcProvider({
     rpc: chain => {
-      const supportedChains = [1, 137, 10, 42161, 1313161554, 11297108109, 43114, 42220]
+      const supportedChains = [
+        1, 3, 4, 5, 10, 42, 56, 69, 97, 100, 137, 420, 42161, 42220, 43114, 80001, 421611, 421613,
+        1313161554, 11297108109
+      ]
 
       if (supportedChains.includes(chain.id)) {
         return {

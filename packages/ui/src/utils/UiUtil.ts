@@ -18,6 +18,13 @@ export const UiUtil = {
 
   W3M_RECENT_WALLET: 'W3M_RECENT_WALLET',
 
+  rejectStandaloneButtonComponent() {
+    const { isStandalone } = OptionsCtrl.state
+    if (isStandalone) {
+      throw new Error('Web3Modal button components are not available in standalone mode.')
+    }
+  },
+
   getShadowRootElement(root: LitElement, selector: string) {
     const el = root.renderRoot.querySelector(selector)
     if (!el) {
@@ -114,6 +121,21 @@ export const UiUtil = {
       ModalCtrl.close()
     }
     UiUtil.setRecentWallet(wallet)
+  },
+
+  async handleAndroidLinking() {
+    const { standaloneUri, selectedChain } = OptionsCtrl.state
+
+    if (standaloneUri) {
+      CoreUtil.openHref(standaloneUri)
+    } else {
+      await ClientCtrl.client().connectWalletConnect(uri => {
+        CoreUtil.setWalletConnectAndroidDeepLink(uri)
+        CoreUtil.openHref(uri)
+      }, selectedChain?.id)
+
+      ModalCtrl.close()
+    }
   },
 
   async handleUriCopy() {

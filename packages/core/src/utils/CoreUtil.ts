@@ -1,6 +1,6 @@
-const WALLETCONNECT_DEEPLINK_CHOICE = 'WALLETCONNECT_DEEPLINK_CHOICE'
-
 export const CoreUtil = {
+  WALLETCONNECT_DEEPLINK_CHOICE: 'WALLETCONNECT_DEEPLINK_CHOICE',
+
   isMobile() {
     if (typeof window !== 'undefined') {
       return Boolean(
@@ -10,6 +10,10 @@ export const CoreUtil = {
     }
 
     return false
+  },
+
+  isAndroid() {
+    return CoreUtil.isMobile() && navigator.userAgent.toLowerCase().includes('android')
   },
 
   isEmptyObject(value: unknown) {
@@ -28,11 +32,15 @@ export const CoreUtil = {
     if (CoreUtil.isHttpUrl(appUrl)) {
       return this.formatUniversalUrl(appUrl, wcUri, name)
     }
-    const plainAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
-    this.setWalletConnectDeepLink(plainAppUrl, name)
+    let safeAppUrl = appUrl
+    if (!safeAppUrl.includes('://')) {
+      safeAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
+      safeAppUrl = `${safeAppUrl}://`
+    }
+    this.setWalletConnectDeepLink(safeAppUrl, name)
     const encodedWcUrl = encodeURIComponent(wcUri)
 
-    return `${plainAppUrl}://wc?uri=${encodedWcUrl}`
+    return `${safeAppUrl}wc?uri=${encodedWcUrl}`
   },
 
   formatUniversalUrl(appUrl: string, wcUri: string, name: string): string {
@@ -60,11 +68,20 @@ export const CoreUtil = {
   },
 
   setWalletConnectDeepLink(href: string, name: string) {
-    localStorage.setItem(WALLETCONNECT_DEEPLINK_CHOICE, JSON.stringify({ href, name }))
+    localStorage.setItem(CoreUtil.WALLETCONNECT_DEEPLINK_CHOICE, JSON.stringify({ href, name }))
+  },
+
+  setWalletConnectAndroidDeepLink(wcUri: string) {
+    const [href] = wcUri.split('?')
+
+    localStorage.setItem(
+      CoreUtil.WALLETCONNECT_DEEPLINK_CHOICE,
+      JSON.stringify({ href, name: 'Android' })
+    )
   },
 
   removeWalletConnectDeepLink() {
-    localStorage.removeItem(WALLETCONNECT_DEEPLINK_CHOICE)
+    localStorage.removeItem(CoreUtil.WALLETCONNECT_DEEPLINK_CHOICE)
   },
 
   isNull<T>(value: T | null): value is null {

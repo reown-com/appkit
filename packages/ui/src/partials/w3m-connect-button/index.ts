@@ -1,9 +1,10 @@
-import { ModalCtrl } from '@web3modal/core'
+import { ConfigCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-connect-button')
@@ -18,6 +19,7 @@ export class W3mConnectButton extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
+    UiUtil.rejectStandaloneButtonComponent()
     this.modalUnsub = ModalCtrl.subscribe(modalState => {
       if (modalState.open) {
         this.loading = true
@@ -40,11 +42,14 @@ export class W3mConnectButton extends LitElement {
   }
 
   private onOpen() {
-    try {
-      this.loading = true
-      ModalCtrl.open()
-    } catch {
-      this.loading = false
+    this.loading = true
+    const { enableNetworkView } = ConfigCtrl.state
+    const { chains, selectedChain } = OptionsCtrl.state
+    const isChainsList = chains?.length && chains.length > 1
+    if (enableNetworkView || (isChainsList && !selectedChain)) {
+      ModalCtrl.open({ route: 'SelectNetwork' })
+    } else {
+      ModalCtrl.open({ route: 'ConnectWallet' })
     }
   }
 
@@ -55,7 +60,7 @@ export class W3mConnectButton extends LitElement {
     }
 
     return html`
-      <button class=${classMap(classes)} .disabled=${this.loading} @click=${this.onOpen}>
+      <w3m-button-big class=${classMap(classes)} .disabled=${this.loading} @click=${this.onOpen}>
         ${this.loading
           ? html`
               <w3m-spinner></w3m-spinner>
@@ -65,7 +70,7 @@ export class W3mConnectButton extends LitElement {
               ${this.iconTemplate()}
               <w3m-text variant="medium-normal" color="inverse">${this.label}</w3m-text>
             `}
-      </button>
+      </w3m-button-big>
     `
   }
 }

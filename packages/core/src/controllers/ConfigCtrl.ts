@@ -1,6 +1,7 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ConfigCtrlState } from '../types/controllerTypes'
 import { CoreUtil } from '../utils/CoreUtil'
+import { ClientCtrl } from './ClientCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
 
 // -- initial state ------------------------------------------------ //
@@ -13,6 +14,7 @@ const state = proxy<ConfigCtrlState>({
   themeMode: isDarkMode() ? 'dark' : 'light',
   themeColor: 'default',
   themeBackground: CoreUtil.isMobile() ? 'themeColor' : 'gradient',
+  themeZIndex: 89,
   mobileWallets: undefined,
   desktopWallets: undefined,
   walletImages: undefined,
@@ -20,7 +22,12 @@ const state = proxy<ConfigCtrlState>({
   tokenImages: undefined,
   standaloneChains: undefined,
   enableStandaloneMode: false,
-  enableNetworkView: true
+  enableNetworkView: false,
+  defaultChain: undefined,
+  explorerAllowList: undefined,
+  explorerDenyList: undefined,
+  termsOfServiceUrl: undefined,
+  privacyPolicyUrl: undefined
 })
 
 // -- controller --------------------------------------------------- //
@@ -39,6 +46,13 @@ export const ConfigCtrl = {
     OptionsCtrl.setIsCustomMobile(Boolean(config.mobileWallets?.length))
     OptionsCtrl.setIsCustomDesktop(Boolean(config.desktopWallets?.length))
     OptionsCtrl.setIsExplorer(Boolean(config.projectId?.length))
+
+    if (config.defaultChain) {
+      OptionsCtrl.setSelectedChain(config.defaultChain)
+    } else if (!OptionsCtrl.state.isStandalone) {
+      const chain = ClientCtrl.client().getDefaultChain()
+      OptionsCtrl.setSelectedChain(chain)
+    }
 
     Object.assign(state, config)
   },
