@@ -32,11 +32,15 @@ export const CoreUtil = {
     if (CoreUtil.isHttpUrl(appUrl)) {
       return this.formatUniversalUrl(appUrl, wcUri, name)
     }
-    const plainAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
-    this.setWalletConnectDeepLink(plainAppUrl, name)
+    let safeAppUrl = appUrl
+    if (!safeAppUrl.includes('://')) {
+      safeAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
+      safeAppUrl = `${safeAppUrl}://`
+    }
+    this.setWalletConnectDeepLink(safeAppUrl, name)
     const encodedWcUrl = encodeURIComponent(wcUri)
 
-    return `${plainAppUrl}://wc?uri=${encodedWcUrl}`
+    return `${safeAppUrl}wc?uri=${encodedWcUrl}`
   },
 
   formatUniversalUrl(appUrl: string, wcUri: string, name: string): string {
