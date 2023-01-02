@@ -42,8 +42,8 @@ export const OptionsCtrl = {
   },
 
   getSelectedChain() {
-    if (!state.selectedChain) {
-      const selectedChain = ClientCtrl.client().getNetwork().chain
+    const selectedChain = ClientCtrl.client().getNetwork().chain
+    if (selectedChain) {
       state.selectedChain = selectedChain
     }
 
