@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "3.6.3",
-    "@walletconnect/ethereum-provider": "1.8.0"
+    "@walletconnect/ethereum-provider": "1.8.0",
+    "@walletconnect/universal-provider": "2.1.5"
   },
   "peerDependencies": {
     "@wagmi/core": ">=0.8",

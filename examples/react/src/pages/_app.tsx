@@ -4,7 +4,7 @@ import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { configureChains, createClient, WagmiConfig } from 'wagmi'
-import { arbitrum, avalanche, bsc, fantom, mainnet, optimism, polygon } from 'wagmi/chains'
+import { mainnet } from 'wagmi/chains'
 import '../styles.css'
 
 // 1. Get projectID at https://cloud.walletconnect.com
@@ -15,11 +15,11 @@ if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 
 // 2. Configure wagmi client
-const chains = [mainnet, polygon, optimism, arbitrum, avalanche, fantom, bsc]
+const chains = [mainnet]
 const { provider } = configureChains(chains, [walletConnectProvider({ projectId })])
 const wagmiClient = createClient({
   autoConnect: true,
-  connectors: modalConnectors({ appName: 'web3Modal', chains }),
+  connectors: modalConnectors({ appName: 'web3Modal', chains, version: '2', projectId }),
   provider
 })
 

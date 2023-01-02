@@ -24,7 +24,7 @@ export class W3mDesktopConnectorView extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.onConnect()
+    this.createConnectionAndWait()
   }
 
   // -- private ------------------------------------------------------ //
@@ -48,7 +48,7 @@ export class W3mDesktopConnectorView extends LitElement {
     }
   }
 
-  private async onConnect() {
+  private async createConnectionAndWait(retry = 0) {
     const { standaloneUri } = OptionsCtrl.state
     if (standaloneUri) {
       this.onFormatAndRedirect(standaloneUri)
@@ -63,7 +63,9 @@ export class W3mDesktopConnectorView extends LitElement {
         ModalCtrl.close()
       } catch (err) {
         ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
-        this.onConnect()
+        if (retry < 2) {
+          this.createConnectionAndWait(retry + 1)
+        }
       }
     }
   }
@@ -102,7 +104,10 @@ export class W3mDesktopConnectorView extends LitElement {
           </div>
 
           <div class="w3m-install-actions">
-            <w3m-button .onClick=${this.onConnect.bind(this)} .iconRight=${SvgUtil.RETRY_ICON}>
+            <w3m-button
+              .onClick=${async () => this.createConnectionAndWait()}
+              .iconRight=${SvgUtil.RETRY_ICON}
+            >
               Retry
             </w3m-button>
 

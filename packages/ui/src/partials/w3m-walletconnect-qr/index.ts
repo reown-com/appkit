@@ -23,7 +23,7 @@ export class W3mWalletConnectQr extends LitElement {
     return UiUtil.getShadowRootElement(this, '.w3m-qr-container') as HTMLDivElement
   }
 
-  private async createConnectionAndWait() {
+  private async createConnectionAndWait(retry = 0) {
     try {
       const { standaloneUri } = OptionsCtrl.state
       if (standaloneUri) {
@@ -37,7 +37,9 @@ export class W3mWalletConnectQr extends LitElement {
       }
     } catch (err) {
       ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
-      this.createConnectionAndWait()
+      if (retry < 2) {
+        this.createConnectionAndWait(retry + 1)
+      }
     }
   }
 
