@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@walletconnect/sign-client": "2.1.4",
+    "@walletconnect/sign-client": "2.1.5",
     "@web3modal/standalone": "2.0.0-rc.1"
   },
   "devDependencies": {
-    "vite": "4.0.2"
+    "vite": "4.0.3"
   }
 }
