@@ -24,15 +24,20 @@ export const ModalCtrl = {
   },
 
   open(options?: OpenOptions) {
-    if (options?.route) {
+    const { isConnected, isStandalone } = OptionsCtrl.state
+
+    if (isStandalone) {
+      OptionsCtrl.setStandaloneUri(options?.uri)
+      OptionsCtrl.setStandaloneChains(options?.standaloneChains)
+      RouterCtrl.replace('ConnectWallet')
+    } else if (options?.route) {
       RouterCtrl.replace(options.route)
+    } else if (isConnected) {
+      RouterCtrl.replace('Account')
+    } else {
+      RouterCtrl.replace('ConnectWallet')
     }
-    if (options?.uri) {
-      OptionsCtrl.setStandaloneUri(options.uri)
-    }
-    if (options?.standaloneChains?.length) {
-      OptionsCtrl.setStandaloneChains(options.standaloneChains)
-    }
+
     state.open = true
   },
 

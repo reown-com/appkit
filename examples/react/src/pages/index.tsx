@@ -16,7 +16,7 @@ export default function HomePage() {
         {!isConnected && <Web3Button label="Custom Label" />}
 
         {/* Alternatively Use custom button */}
-        {!isConnected && <button onClick={() => open()}>Custom Button</button>}
+        <button onClick={() => open()}>Custom Button</button>
 
         <Web3NetworkSwitch />
       </div>
