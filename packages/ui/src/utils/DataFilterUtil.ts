@@ -57,6 +57,10 @@ export const DataFilterUtil = {
   },
 
   deduplicateExplorerListingsFromConnectors(listings: Listing[]) {
+    const { isStandalone } = OptionsCtrl.state
+    if (isStandalone) {
+      return listings
+    }
     const connectors = ClientCtrl.client().getConnectors()
     const connectorNames = connectors.map(({ name }) => name.toUpperCase())
 
