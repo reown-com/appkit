@@ -54,5 +54,12 @@ export const DataFilterUtil = {
     }
 
     return wallets
+  },
+
+  deduplicateExplorerListingsFromConnectors(listings: Listing[]) {
+    const connectors = ClientCtrl.client().getConnectors()
+    const connectorNames = connectors.map(({ name }) => name.toUpperCase())
+
+    return listings.filter(({ name }) => !connectorNames.includes(name.toUpperCase()))
   }
 }
