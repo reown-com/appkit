@@ -6,16 +6,11 @@ import type { EthereumClient } from '@web3modal/ethereum'
  * Types
  */
 type Web3ModalConfig = Omit<ConfigCtrlState, 'enableStandaloneMode' | 'standaloneChains'>
-type OpenOptions = Parameters<typeof ModalCtrl.open>[0]
 
 /**
  * Client
  */
 export class Web3Modal {
-  private initialized = false
-  private queueOpen = false
-  private queueOpenOptions: OpenOptions = undefined
-
   public constructor(config: Web3ModalConfig, client: EthereumClient) {
     ClientCtrl.setEthereumClient(client)
     ConfigCtrl.setConfig(config)
@@ -28,22 +23,9 @@ export class Web3Modal {
       const modal = document.createElement('w3m-modal')
       document.body.insertAdjacentElement('beforeend', modal)
     }
-    this.initialized = true
-    if (this.queueOpen) {
-      this.openModal(this.queueOpenOptions)
-      this.queueOpenOptions = undefined
-      this.queueOpen = false
-    }
   }
 
-  public openModal = (options?: OpenOptions) => {
-    if (this.initialized) {
-      ModalCtrl.open(options)
-    } else {
-      this.queueOpen = true
-      this.queueOpenOptions = options
-    }
-  }
+  public openModal = ModalCtrl.open
 
   public closeModal = ModalCtrl.close
 
