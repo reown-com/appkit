@@ -64,6 +64,8 @@ import CoreLogo from "../logos/core.svg";
 import GameStopLogo from "../logos/gamestopwallet.svg";
 // @ts-ignore
 import ZerionLogo from '../logos/zerion.svg';
+// @ts-ignore
+import PhantomLogo from "../logos/phantom.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -319,4 +321,15 @@ export const ZERION: IProviderInfo = {
   logo: ZerionLogo,
   type: "injected",
   check: "isZerion"
+};
+
+export const PHANTOM: IProviderInfo = {
+  id: "phantom",
+  name: "Phantom",
+  logo: PhantomLogo,
+  type: "injected",
+  check: "isPhantom",
+  package: {
+    required: ["networkType"]
+  }
 };
