@@ -1,18 +1,19 @@
-import { useWeb3Modal, Web3Button, Web3Modal } from '@web3modal/react'
-import { useAccount } from 'wagmi'
+import { Web3Button, Web3Modal } from '@web3modal/react'
+import CustomButton from '../components/CustomButton'
+import ThemeControls from '../components/ThemeControls'
 import { ethereumClient } from './_app'
 
 export default function CustomPage() {
-  const { isConnected } = useAccount()
-  const { open } = useWeb3Modal()
-
   return (
     <>
-      {/* Use predefined button */}
-      <Web3Button />
+      <h2>Buttons</h2>
+      <div className="container">
+        {/* Use predefined button */}
+        <Web3Button />
 
-      {/* Use custom button */}
-      {!isConnected && <button onClick={() => open()}>Or Use Custom Button</button>}
+        {/* Use custom button */}
+        <CustomButton />
+      </div>
 
       <Web3Modal
         ethereumClient={ethereumClient}
@@ -83,6 +84,8 @@ export default function CustomPage() {
           42161: '/images/chain_arbitrum.webp'
         }}
       />
+
+      <ThemeControls />
     </>
   )
 }

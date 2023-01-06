@@ -27,7 +27,7 @@ export default function HomePage() {
       }
       const { uri, approval } = await signClient.connect({ requiredNamespaces: namespaces })
       if (uri) {
-        web3Modal.openModal({ uri, standaloneChains: namespaces.eip155.chains })
+        await web3Modal.openModal({ uri, standaloneChains: namespaces.eip155.chains })
         await approval()
         web3Modal.closeModal()
       }

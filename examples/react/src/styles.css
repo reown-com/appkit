@@ -48,3 +48,18 @@ h2 {
   place-items: center;
   grid-template-columns: 1fr 1fr;
 }
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul li {
+  display: inline-block;
+  margin: 0 5px;
+}
+
+li a {
+  color: white;
+}

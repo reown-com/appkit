@@ -1,5 +1,5 @@
 import type { ConfigCtrlState } from '@web3modal/core'
-import { ClientCtrl, ConfigCtrl } from '@web3modal/core'
+import { ClientCtrl, ConfigCtrl, OptionsCtrl } from '@web3modal/core'
 import type { EthereumClient } from '@web3modal/ethereum'
 import React, { useCallback, useEffect } from 'react'
 import { Modal } from './Modal'
@@ -21,6 +21,7 @@ export function Web3Modal({ ethereumClient, ...config }: Props) {
     }
     ConfigCtrl.setConfig(config)
     await import('@web3modal/ui')
+    OptionsCtrl.setIsUiLoaded(true)
   }, [ethereumClient, config])
 
   useEffect(() => {

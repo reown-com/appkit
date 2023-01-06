@@ -163,12 +163,15 @@ export class W3mModal extends LitElement {
         }),
         ExplorerCtrl.getRecomendedWallets()
       ])
+      OptionsCtrl.setIsDataLoaded(true)
       const { previewWallets, recomendedWallets } = ExplorerCtrl.state
       const chainsImgs = chains?.map(chain => UiUtil.getChainIcon(chain.id)) ?? []
       const walletImgs = [...previewWallets, ...recomendedWallets].map(
         wallet => wallet.image_url.lg
       )
       await this.preloadExplorerImages([...chainsImgs, ...walletImgs])
+    } else {
+      OptionsCtrl.setIsDataLoaded(true)
     }
   }
 

@@ -18,7 +18,9 @@ const state = proxy<OptionsCtrlState>({
   isStandalone: false,
   isCustomDesktop: false,
   isCustomMobile: false,
-  isExplorer: false
+  isExplorer: false,
+  isDataLoaded: false,
+  isUiLoaded: false
 })
 
 // -- controller --------------------------------------------------- //
@@ -102,6 +104,14 @@ export const OptionsCtrl = {
 
   setBalance(balance: OptionsCtrlState['balance']) {
     state.balance = balance
+  },
+
+  setIsDataLoaded(isDataLoaded: OptionsCtrlState['isDataLoaded']) {
+    state.isDataLoaded = isDataLoaded
+  },
+
+  setIsUiLoaded(isUiLoaded: OptionsCtrlState['isUiLoaded']) {
+    state.isUiLoaded = isUiLoaded
   },
 
   resetProfile() {

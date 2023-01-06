@@ -1,5 +1,5 @@
 import type { ConfigCtrlState } from '@web3modal/core'
-import { ConfigCtrl, ModalCtrl } from '@web3modal/core'
+import { ConfigCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 
 /**
  * Types
@@ -20,6 +20,7 @@ export class Web3Modal {
       await import('@web3modal/ui')
       const modal = document.createElement('w3m-modal')
       document.body.insertAdjacentElement('beforeend', modal)
+      OptionsCtrl.setIsUiLoaded(true)
     }
   }
 

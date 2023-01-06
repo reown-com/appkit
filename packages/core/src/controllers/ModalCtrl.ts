@@ -24,25 +24,41 @@ export const ModalCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  open(options?: OpenOptions) {
-    const { isConnected, isStandalone } = OptionsCtrl.state
-    const { enableNetworkView } = ConfigCtrl.state
+  async open(options?: OpenOptions) {
+    return new Promise<void>(resolve => {
+      const { isConnected, isStandalone, isUiLoaded, isDataLoaded } = OptionsCtrl.state
+      const { enableNetworkView } = ConfigCtrl.state
 
-    if (isStandalone) {
-      OptionsCtrl.setStandaloneUri(options?.uri)
-      OptionsCtrl.setStandaloneChains(options?.standaloneChains)
-      RouterCtrl.replace('ConnectWallet')
-    } else if (options?.route) {
-      RouterCtrl.replace(options.route)
-    } else if (isConnected) {
-      RouterCtrl.replace('Account')
-    } else if (enableNetworkView) {
-      RouterCtrl.replace('SelectNetwork')
-    } else {
-      RouterCtrl.replace('ConnectWallet')
-    }
+      if (isStandalone) {
+        OptionsCtrl.setStandaloneUri(options?.uri)
+        OptionsCtrl.setStandaloneChains(options?.standaloneChains)
+        RouterCtrl.replace('ConnectWallet')
+      } else if (options?.route) {
+        RouterCtrl.replace(options.route)
+      } else if (isConnected) {
+        RouterCtrl.replace('Account')
+      } else if (enableNetworkView) {
+        RouterCtrl.replace('SelectNetwork')
+      } else {
+        RouterCtrl.replace('ConnectWallet')
+      }
 
-    state.open = true
+      // Open modal if async data is ready
+      if (isUiLoaded && isDataLoaded) {
+        state.open = true
+        resolve()
+      }
+      // Otherwise (slow network) re-attempt open checks
+      else {
+        const interval = setInterval(() => {
+          if (OptionsCtrl.state.isUiLoaded && OptionsCtrl.state.isDataLoaded) {
+            clearInterval(interval)
+            state.open = true
+            resolve()
+          }
+        }, 200)
+      }
+    })
   },
 
   close() {
