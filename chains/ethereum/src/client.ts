@@ -16,6 +16,7 @@ import type { ConnectorId } from './types'
 export class EthereumClient {
   private readonly wagmi = {} as Client
   public walletConnectUri = ''
+  public walletConnectVersion = 1
   public readonly chains = [] as Chain[]
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,6 +27,7 @@ export class EthereumClient {
     }
     this.wagmi = wagmi
     this.chains = chains
+    this.walletConnectVersion = Number(walletConnect.options.version ?? '1')
   }
 
   // -- private ------------------------------------------- //
@@ -91,7 +93,7 @@ export class EthereumClient {
 
   public async connectWalletConnect(onUri: (uri: string) => void, selectedChainId?: number) {
     const connector = this.getConnectorById('walletConnect')
-    const isV1 = Boolean(connector.options.version !== '2')
+    const isV1 = this.walletConnectVersion === 1
     const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
     const handleProviderEvents = isV1
       ? this.connectWalletConnectV1.bind(this)
