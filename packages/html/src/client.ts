@@ -22,6 +22,7 @@ export class Web3Modal {
       await import('@web3modal/ui')
       const modal = document.createElement('w3m-modal')
       document.body.insertAdjacentElement('beforeend', modal)
+      OptionsCtrl.setIsUiLoaded(true)
     }
   }
 

@@ -23,7 +23,7 @@ export class W3mWalletConnectQr extends LitElement {
     return UiUtil.getShadowRootElement(this, '.w3m-qr-container') as HTMLDivElement
   }
 
-  private async createConnectionAndWait() {
+  private async createConnectionAndWait(retry = 0) {
     try {
       const { standaloneUri } = OptionsCtrl.state
       if (standaloneUri) {
@@ -36,8 +36,10 @@ export class W3mWalletConnectQr extends LitElement {
         ModalCtrl.close()
       }
     } catch (err) {
-      ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
-      this.createConnectionAndWait()
+      ToastCtrl.openToast('Connection request declined', 'error')
+      if (retry < 2) {
+        this.createConnectionAndWait(retry + 1)
+      }
     }
   }
 
@@ -47,7 +49,7 @@ export class W3mWalletConnectQr extends LitElement {
       <div class="w3m-qr-container">
         ${this.uri
           ? html`<w3m-qrcode size="${this.overlayEl.offsetWidth}" uri=${this.uri}></w3m-qrcode>`
-          : null}
+          : html`<w3m-spinner></w3m-spinner>`}
       </div>
     `
   }

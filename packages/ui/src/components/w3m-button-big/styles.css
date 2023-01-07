@@ -29,3 +29,12 @@ button:disabled {
   background-color: var(--color-bg-3);
   color: var(--color-fg-3);
 }
+
+.w3m-secondary {
+  color: var(--color-fg-accent);
+  background-color: transparent;
+}
+
+.w3m-secondary::after {
+  display: none;
+}

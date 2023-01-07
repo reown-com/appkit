@@ -64,6 +64,8 @@ export interface OptionsCtrlState {
   isStandalone: boolean
   isCustomDesktop: boolean
   isCustomMobile: boolean
+  isDataLoaded: boolean
+  isUiLoaded: boolean
   isExplorer: boolean
   profileName?: string | null
   profileAvatar?: string | null

@@ -46,6 +46,7 @@ export class W3mMobileWalletSelection extends LitElement {
     const { previewWallets } = ExplorerCtrl.state
     let wallets = DataFilterUtil.walletsWithInjected(previewWallets)
     wallets = DataFilterUtil.allowedExplorerListings(wallets)
+    wallets = DataFilterUtil.deduplicateExplorerListingsFromConnectors(wallets)
 
     return wallets.map(
       ({ image_url, name, mobile: { native, universal }, id }) => html`

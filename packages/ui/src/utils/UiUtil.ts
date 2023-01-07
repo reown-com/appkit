@@ -143,7 +143,7 @@ export const UiUtil = {
     if (standaloneUri) {
       await navigator.clipboard.writeText(standaloneUri)
     } else {
-      const uri = await ClientCtrl.client().getActiveWalletConnectUri()
+      const uri = ClientCtrl.client().walletConnectUri
       await navigator.clipboard.writeText(uri)
     }
     ToastCtrl.openToast('Link copied', 'success')

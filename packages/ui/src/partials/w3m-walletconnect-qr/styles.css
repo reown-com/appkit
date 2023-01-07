@@ -1,4 +1,7 @@
 .w3m-qr-container {
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   aspect-ratio: 1 / 1;
 }

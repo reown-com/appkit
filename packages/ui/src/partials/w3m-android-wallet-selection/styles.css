@@ -41,9 +41,15 @@
 }
 
 .w3m-action {
-  padding: 10px;
+  padding: 30px 0 10px 0;
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.w3m-action w3m-button-big:last-child {
+  margin-top: 10px;
 }
 
 w3m-wallet-image {

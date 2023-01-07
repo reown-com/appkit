@@ -59,7 +59,8 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private previewWalletsTemplate() {
-    const wallets = DataFilterUtil.allowedExplorerListings(ExplorerCtrl.state.previewWallets)
+    let wallets = DataFilterUtil.allowedExplorerListings(ExplorerCtrl.state.previewWallets)
+    wallets = DataFilterUtil.deduplicateExplorerListingsFromConnectors(wallets)
 
     return wallets.map(
       ({ name, desktop: { universal, native }, homepage, image_url, id }) => html`

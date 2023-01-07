@@ -3,7 +3,7 @@ import litCss from 'rollup-plugin-lit-css'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
 
 export default function createConfig(packageName) {
-  const sharedOutput = {
+  const output = {
     exports: 'named',
     name: packageName,
     sourcemap: true
@@ -28,7 +28,7 @@ export default function createConfig(packageName) {
     {
       input: './index.ts',
       plugins: [litCssPlugin, minifyHtml.default(), esbuildPlugin],
-      output: [{ file: './dist/index.js', format: 'es', ...sharedOutput }]
+      output: [{ file: './dist/index.js', format: 'es', ...output }]
     }
   ]
 }

@@ -31,9 +31,14 @@ export function walletConnectProvider({ projectId }: WalletConnectProviderOpts) 
 }
 
 // -- connectors ------------------------------------------------------ //
-export function modalConnectors({ appName, chains }: ModalConnectorsOpts) {
+export function modalConnectors({ appName, chains, version, projectId }: ModalConnectorsOpts) {
+  if (version === '2' && !projectId) {
+    throw new Error('modalConnectors() requires projectId for WalletConnect version 2')
+  }
+
   return [
-    new WalletConnectConnector({ chains, options: { qrcode: false } }),
+    // @ts-expect-error - projectId is checked above
+    new WalletConnectConnector({ chains, options: { qrcode: false, version, projectId } }),
     new InjectedConnector({
       chains,
       options: { shimDisconnect: true, shimChainChangedDisconnect: true }

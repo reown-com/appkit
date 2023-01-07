@@ -34,7 +34,7 @@ connectButton.addEventListener('click', async () => {
     if (signClient) {
       const { uri, approval } = await signClient.connect({ requiredNamespaces: namespaces })
       if (uri) {
-        web3Modal.openModal({ uri })
+        await web3Modal.openModal({ uri })
         await approval()
         web3Modal.closeModal()
       }

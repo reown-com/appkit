@@ -15,6 +15,8 @@ import type { ConnectorId } from './types'
 
 export class EthereumClient {
   private readonly wagmi = {} as Client
+  public walletConnectUri = ''
+  public walletConnectVersion = 1
   public readonly chains = [] as Chain[]
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,11 +27,44 @@ export class EthereumClient {
     }
     this.wagmi = wagmi
     this.chains = chains
+    this.walletConnectVersion = Number(walletConnect.options.version ?? '1')
   }
 
   // -- private ------------------------------------------- //
   private getDefaultConnectorChainId(connector: Connector) {
     return connector.chains[0].id
+  }
+
+  private async connectWalletConnectV1(connector: Connector, onUri: (uri: string) => void) {
+    return new Promise<void>((resolve, reject) => {
+      connector.once('message', async ({ type }) => {
+        if (type === 'connecting') {
+          const providerConnector = (await connector.getProvider()).connector
+          this.walletConnectUri = providerConnector.uri
+          onUri(providerConnector.uri)
+          providerConnector.on('disconnect', () => {
+            reject(Error())
+          })
+          providerConnector.on('connect', () => {
+            resolve()
+          })
+        }
+      })
+    })
+  }
+
+  private async connectWalletConnectV2(connector: Connector, onUri: (uri: string) => void) {
+    return new Promise<void>(resolve => {
+      connector.on('message', ({ type, data }) => {
+        if (type === 'display_uri') {
+          this.walletConnectUri = data as string
+          onUri(data as string)
+        }
+        if (type === 'connecting') {
+          resolve()
+        }
+      })
+    })
   }
 
   // -- public web3modal ---------------------------------- //
@@ -50,13 +85,6 @@ export class EthereumClient {
     return connector
   }
 
-  public async getActiveWalletConnectUri() {
-    const connector = this.getConnectorById('walletConnect')
-    const provider = await connector.getProvider()
-
-    return provider.connector.uri
-  }
-
   public getConnectors() {
     const connectors = this.wagmi.connectors.filter(connector => connector.id !== 'walletConnect')
 
@@ -65,26 +93,15 @@ export class EthereumClient {
 
   public async connectWalletConnect(onUri: (uri: string) => void, selectedChainId?: number) {
     const connector = this.getConnectorById('walletConnect')
+    const isV1 = this.walletConnectVersion === 1
     const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
-
-    async function getProviderUri() {
-      return new Promise<void>((resolve, reject) => {
-        connector.once('message', async ({ type }) => {
-          if (type === 'connecting') {
-            const providerConnector = (await connector.getProvider()).connector
-            onUri(providerConnector.uri)
-            providerConnector.on('disconnect', () => {
-              reject(Error('Connection request declined'))
-            })
-            providerConnector.on('connect', () => {
-              resolve()
-            })
-          }
-        })
-      })
-    }
-
-    const [data] = await Promise.all([connect({ connector, chainId }), getProviderUri()])
+    const handleProviderEvents = isV1
+      ? this.connectWalletConnectV1.bind(this)
+      : this.connectWalletConnectV2.bind(this)
+    const [data] = await Promise.all([
+      connect({ connector, chainId }),
+      handleProviderEvents(connector, onUri)
+    ])
 
     return data
   }

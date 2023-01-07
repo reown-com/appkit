@@ -77,6 +77,7 @@ export class W3mWalletExplorerView extends LitElement {
           entries: PAGE_ENTRIES,
           device: CoreUtil.isMobile() ? 'mobile' : 'desktop',
           search: this.search,
+          version: CoreUtil.getWalletConnectVersion(),
           chains
         })
         const explorerImages = newListings.map(({ image_url }) => image_url.lg)
