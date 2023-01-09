@@ -66,6 +66,8 @@ import GameStopLogo from "../logos/gamestopwallet.svg";
 import ZerionLogo from '../logos/zerion.svg';
 // @ts-ignore
 import PhantomLogo from "../logos/phantom.svg";
+// @ts-ignore
+import RainbowLogo from "../logos/rainbow.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -332,4 +334,12 @@ export const PHANTOM: IProviderInfo = {
   package: {
     required: ["networkType"]
   }
+};
+
+export const RAINBOW: IProviderInfo = {
+  id: "injected",
+  name: "Rainbow",
+  logo: RainbowLogo,
+  type: "injected",
+  check: "isRainbow"
 };
