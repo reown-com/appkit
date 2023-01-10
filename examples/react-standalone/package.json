@@ -7,7 +7,7 @@
     "build": "next build && next export"
   },
   "dependencies": {
-    "@walletconnect/sign-client": "2.2.0",
+    "@walletconnect/sign-client": "2.2.1",
     "@web3modal/standalone": "2.0.0-rc.2",
     "next": "13.1.1",
     "react": "18.2.0",
