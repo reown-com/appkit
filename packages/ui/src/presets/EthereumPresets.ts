@@ -18,6 +18,7 @@ export interface InjectedPreset {
 
 export const enum InjectedId {
   metaMask = 'metaMask',
+  rainbow = 'rainbow',
   trust = 'trust',
   phantom = 'phantom',
   brave = 'brave',
@@ -44,6 +45,12 @@ export const EthereumPresets = {
       name: 'MetaMask',
       icon: '619537c0-2ff3-4c78-9ed8-a05e7567f300',
       url: 'https://metamask.io',
+      isMobile: true
+    },
+    [InjectedId.rainbow]: {
+      name: 'Rainbow',
+      icon: '6089655c-cb7e-414b-f742-01fdc154be00',
+      url: 'https://rainbow.me/extension',
       isMobile: true
     },
     [InjectedId.trust]: {
@@ -154,6 +161,7 @@ export const EthereumPresets = {
     const { ethereum, spotEthWallet, coinbaseWalletExtension }: EvmWindow = window
 
     if (!ethereum) return InjectedId.metaMask
+    if (ethereum.isRainbow) return InjectedId.rainbow
     if (ethereum.isTrust || ethereum.isTrustWallet) return InjectedId.trust
     if (ethereum.isPhantom) return InjectedId.phantom
     if (ethereum.isBraveWallet) return InjectedId.brave
