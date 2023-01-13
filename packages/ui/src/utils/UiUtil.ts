@@ -245,7 +245,7 @@ export const UiUtil = {
   getExtensionWallets() {
     const wallets = []
     for (const [key, value] of Object.entries(EthereumPresets.injectedPreset)) {
-      if (key !== InjectedId.coinbaseWallet && value && !value.isDesktop) {
+      if (key !== InjectedId.coinbaseWallet && value && value.isInjected && !value.isDesktop) {
         wallets.push({ id: key, ...value })
       }
     }
