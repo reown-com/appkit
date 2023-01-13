@@ -104,7 +104,7 @@ export class W3mModal extends LitElement {
       const address = profileAddress ?? OptionsCtrl.state.address
       if (address && this.activeChainId === 1) {
         const [name, avatar] = await Promise.all([
-          ClientCtrl.client().fecthEnsName({ address }),
+          ClientCtrl.client().fetchEnsName({ address }),
           ClientCtrl.client().fetchEnsAvatar({ address })
         ])
         if (avatar) {
