@@ -129,7 +129,7 @@ export class EthereumClient {
   public switchNetwork = switchNetwork
 
   // -- public web3modal (optional) ----------------------- //
-  public fecthEnsName = fetchEnsName
+  public fetchEnsName = fetchEnsName
 
   public fetchEnsAvatar = fetchEnsAvatar
 }
