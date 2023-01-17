@@ -1,7 +1,7 @@
 {
   "name": "html-standalone-example",
   "private": true,
-  "version": "2.0.0-rc.3",
+  "version": "2.0.0-85630cf",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@walletconnect/sign-client": "2.2.1",
-    "@web3modal/standalone": "2.0.0-rc.3"
+    "@web3modal/standalone": "2.0.0-85630cf"
   },
   "devDependencies": {
     "vite": "4.0.4"

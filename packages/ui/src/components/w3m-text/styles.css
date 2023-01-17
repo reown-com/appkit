@@ -8,57 +8,57 @@ span {
 .w3m-xxsmall-bold {
   font-weight: 700;
   font-size: 10px;
-  line-height: 12px !important;
+  line-height: 12px;
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 
 .w3m-xsmall-normal {
   font-weight: 600;
-  font-size: 12px !important;
-  line-height: 14px !important;
+  font-size: 12px;
+  line-height: 14px;
   letter-spacing: -0.03em;
 }
 
 .w3m-small-thin {
   font-weight: 500;
   font-size: 14px;
-  line-height: 16px !important;
+  line-height: 16px;
   letter-spacing: -0.03em;
 }
 
 .w3m-small-normal {
   font-weight: 600;
   font-size: 14px;
-  line-height: 16px !important;
+  line-height: 16px;
   letter-spacing: -0.03em;
 }
 
 .w3m-medium-thin {
   font-weight: 500;
   font-size: 16px;
-  line-height: 20px !important;
+  line-height: 20px;
   letter-spacing: -0.03em;
 }
 
 .w3m-medium-normal {
   font-weight: 600;
   font-size: 16px;
-  line-height: 20px !important;
+  line-height: 20px;
   letter-spacing: -0.03em;
 }
 
 .w3m-medium-bold {
   font-weight: 700;
   font-size: 16px;
-  line-height: 20px !important;
+  line-height: 20px;
   letter-spacing: -0.03em;
 }
 
 .w3m-large-bold {
   font-weight: 600;
   font-size: 20px;
-  line-height: 24px !important;
+  line-height: 24px;
   letter-spacing: -0.03em;
 }
 
