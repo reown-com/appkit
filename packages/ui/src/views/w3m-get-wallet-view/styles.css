@@ -1,6 +1,7 @@
 .w3m-info-text {
   margin: 5px 0 15px;
   max-width: 320px;
+  text-align: center;
 }
 
 .w3m-wallet-item {

@@ -14,8 +14,6 @@ type Variant =
   | 'xsmall-normal'
   | 'xxsmall-bold'
 
-type Align = 'center' | 'left' | 'right'
-
 type Color = 'accent' | 'error' | 'inverse' | 'primary' | 'secondary' | 'tertiary'
 
 @customElement('w3m-text')
@@ -24,7 +22,6 @@ export class W3mText extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public variant?: Variant = 'medium-normal'
-  @property() public align?: Align = 'left'
   @property() public color?: Color = 'primary'
 
   // -- render ------------------------------------------------------- //
@@ -38,9 +35,6 @@ export class W3mText extends LitElement {
       'w3m-small-thin': this.variant === 'small-thin',
       'w3m-xsmall-normal': this.variant === 'xsmall-normal',
       'w3m-xxsmall-bold': this.variant === 'xxsmall-bold',
-      'w3m-left': this.align === 'left',
-      'w3m-center': this.align === 'center',
-      'w3m-right': this.align === 'right',
       'w3m-color-primary': this.color === 'primary',
       'w3m-color-secondary': this.color === 'secondary',
       'w3m-color-tertiary': this.color === 'tertiary',

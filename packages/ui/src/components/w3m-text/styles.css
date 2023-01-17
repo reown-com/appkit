@@ -1,3 +1,7 @@
+:host {
+  all: initial;
+}
+
 span {
   font-style: normal;
   font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu,
@@ -60,18 +64,6 @@ span {
   font-size: 20px;
   line-height: 24px;
   letter-spacing: -0.03em;
-}
-
-.w3m-left {
-  text-align: left;
-}
-
-.w3m-center {
-  text-align: center;
-}
-
-.w3m-right {
-  text-align: right;
 }
 
 :host(*) {
