@@ -1,3 +1,7 @@
+:host {
+  all: initial;
+}
+
 .w3m-overlay {
   inset: 0px;
   position: fixed;
