@@ -73,7 +73,7 @@ export class W3mGetWalletView extends LitElement {
 
       <div class="w3m-footer-actions">
         <w3m-text variant="medium-normal">Not what you're looking for?</w3m-text>
-        <w3m-text variant="small-thin" align="center" color="secondary" class="w3m-info-text">
+        <w3m-text variant="small-thin" color="secondary" class="w3m-info-text">
           With hundreds of wallets out there, there's something for everyone
         </w3m-text>
         <w3m-button .onClick=${this.onExplore.bind(this)} .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}>

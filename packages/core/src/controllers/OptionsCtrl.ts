@@ -114,14 +114,18 @@ export const OptionsCtrl = {
     state.isUiLoaded = isUiLoaded
   },
 
-  resetProfile() {
+  resetEnsProfile() {
     state.profileName = undefined
     state.profileAvatar = undefined
+  },
+
+  resetBalance() {
     state.balance = undefined
   },
 
   resetAccount() {
     state.address = undefined
-    OptionsCtrl.resetProfile()
+    OptionsCtrl.resetEnsProfile()
+    OptionsCtrl.resetBalance()
   }
 }

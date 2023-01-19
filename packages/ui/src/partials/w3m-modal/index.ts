@@ -45,7 +45,7 @@ export class W3mModal extends LitElement {
       OptionsCtrl.getAccount()
       const chain = OptionsCtrl.getSelectedChain()
       this.activeChainId = chain?.id
-      this.fetchProfile()
+      this.fetchEnsProfile()
       this.fetchBalance()
 
       // Subscribe network changes
@@ -54,8 +54,7 @@ export class W3mModal extends LitElement {
         if (newChain && this.activeChainId !== newChain.id) {
           OptionsCtrl.setSelectedChain(newChain)
           this.activeChainId = newChain.id
-          OptionsCtrl.resetProfile()
-          this.fetchProfile()
+          OptionsCtrl.resetBalance()
           this.fetchBalance()
         }
       })
@@ -64,7 +63,7 @@ export class W3mModal extends LitElement {
       this.unwatchAccount = ClientCtrl.client().watchAccount(account => {
         const { address } = OptionsCtrl.state
         if (account.address !== address) {
-          this.fetchProfile(account.address)
+          this.fetchEnsProfile(account.address)
           this.fetchBalance(account.address)
         }
         OptionsCtrl.setAddress(account.address)
@@ -98,14 +97,15 @@ export class W3mModal extends LitElement {
     return UiUtil.getShadowRootElement(this, '.w3m-container')
   }
 
-  private async fetchProfile(profileAddress?: `0x${string}`) {
+  private async fetchEnsProfile(profileAddress?: `0x${string}`) {
     try {
       OptionsCtrl.setProfileLoading(true)
       const address = profileAddress ?? OptionsCtrl.state.address
-      if (address && this.activeChainId === 1) {
+      const { id } = ClientCtrl.client().getDefaultChain()
+      if (address && id === 1) {
         const [name, avatar] = await Promise.all([
-          ClientCtrl.client().fetchEnsName({ address }),
-          ClientCtrl.client().fetchEnsAvatar({ address })
+          ClientCtrl.client().fetchEnsName({ address, chainId: 1 }),
+          ClientCtrl.client().fetchEnsAvatar({ address, chainId: 1 })
         ])
         if (avatar) {
           await UiUtil.preloadImage(avatar)
@@ -144,7 +144,7 @@ export class W3mModal extends LitElement {
       } else {
         document.head.insertAdjacentHTML(
           'beforeend',
-          `<style id="w3m-styles">body{touch-action:none;overflow:hidden;overscroll-behavior:contain;}</style>`
+          `<style id="w3m-styles">html,body{touch-action:none;overflow:hidden;overscroll-behavior:contain;}</style>`
         )
       }
     }

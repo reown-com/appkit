@@ -1,3 +1,7 @@
+:host {
+  all: initial;
+}
+
 div {
   display: flex;
   align-items: center;
