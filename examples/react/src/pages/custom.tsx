@@ -43,6 +43,11 @@ export default function CustomPage() {
         // Custom Linking Desktop Wallets
         desktopWallets={[
           {
+            id: 'infinityWallet',
+            name: 'Infinity Wallet',
+            links: { native: 'infinity://', universal: 'https://www.infinitywallet.io' }
+          },
+          {
             id: 'ledger',
             name: 'Ledger Live',
             links: { native: 'ledgerlive://', universal: 'https://www.ledger.com' }
@@ -69,6 +74,7 @@ export default function CustomPage() {
         // Custom Wallet Images
         walletImages={{
           metaMask: '/images/wallet_metamask.webp',
+          infinityWallet: '/images/wallet_infinitywallet.svg',
           brave: '/images/wallet_brave.webp',
           ledger: '/images/wallet_ledger.webp',
           coinbaseWallet: '/images/wallet_coinbase.webp',

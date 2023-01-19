@@ -19,6 +19,7 @@ export interface InjectedPreset {
 
 export const enum InjectedId {
   metaMask = 'metaMask',
+  infinityWallet = 'infinityWallet',
   trust = 'trust',
   phantom = 'phantom',
   brave = 'brave',
@@ -46,6 +47,13 @@ export const EthereumPresets = {
       icon: '619537c0-2ff3-4c78-9ed8-a05e7567f300',
       url: 'https://metamask.io',
       isMobile: true,
+      isInjected: true
+    },
+    [InjectedId.infinityWallet]: {
+      name: 'Infinity Wallet',
+      icon: '9f259366-0bcd-4817-0af9-f78773e41900',
+      url: 'https://infinitywallet.io',
+      isDesktop: true,
       isInjected: true
     },
     [InjectedId.trust]: {
@@ -170,6 +178,7 @@ export const EthereumPresets = {
     const { ethereum, spotEthWallet, coinbaseWalletExtension }: EvmWindow = window
 
     if (!ethereum) return InjectedId.metaMask
+    if (ethereum.isInfinityWallet) return InjectedId.infinityWallet
     if (ethereum.isTrust || ethereum.isTrustWallet) return InjectedId.trust
     if (ethereum.isPhantom) return InjectedId.phantom
     if (ethereum.isBraveWallet) return InjectedId.brave
