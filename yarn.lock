@@ -2426,10 +2426,10 @@
     "@typescript-eslint/types" "5.48.2"
     eslint-visitor-keys "^3.3.0"
 
-"@wagmi/chains@0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@wagmi/chains/-/chains-0.1.12.tgz#3d8f4be3c5dfe15ac528a91a02721678070ea06d"
-  integrity sha512-tojIM8R7JqvyLWHZbPrISkvT7xKuEImdshbAeEbYHZeEapYF8NP1yNrj8QsgaB99h2cR2LlEZcdLrdpG/l2Hzw==
+"@wagmi/chains@0.1.13":
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/@wagmi/chains/-/chains-0.1.13.tgz#438af51e860a6a3516ae7133daf0d526d0ceec59"
+  integrity sha512-TnN6pJp5KIwi9kiSv6J5jB0Le484EuFfWkWQ5+/E+vv6yHI2qOcGuewiC4itgcMkVOxMfjGpSvqWNn8kq/+fkg==
 
 "@wagmi/connectors@0.1.9":
   version "0.1.9"
@@ -2444,12 +2444,12 @@
     abitype "^0.1.8"
     eventemitter3 "^4.0.7"
 
-"@wagmi/core@0.8.17":
-  version "0.8.17"
-  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.8.17.tgz#ddeefcd0b2b8872e472d96df4b97c6bd403b0864"
-  integrity sha512-j5vFnG/dLSiH0eujUKlbxm3EG/OLQW2Xk4LsDv67EybjMRTS2W+KRBvuCJNLBv3Pu2D4StrMoigaFf5cLCYlaw==
+"@wagmi/core@0.8.18":
+  version "0.8.18"
+  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.8.18.tgz#ed20a797f5c01c4737bd93e3949f4ec12a674bc1"
+  integrity sha512-T5A7YpF0MrTYGcx+iaeksAKZkc1KK/4lFz220+X/KUNzMlF/yvd9L4ZuufpcYne0Lz052c1vUzN/nnWdiNRZdg==
   dependencies:
-    "@wagmi/chains" "0.1.12"
+    "@wagmi/chains" "0.1.13"
     "@wagmi/connectors" "0.1.9"
     abitype "^0.2.5"
     eventemitter3 "^4.0.7"
@@ -8502,16 +8502,16 @@ vite@4.0.4:
   optionalDependencies:
     fsevents "~2.3.2"
 
-wagmi@0.10.13:
-  version "0.10.13"
-  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-0.10.13.tgz#66b5ff98b7aacc86feb4ff4f36382957aed67a35"
-  integrity sha512-Hw4YUc6kUhJjgMw+ROPknyfQ4jm0w+qUU6m/fxPR8hdqufFi5XyWikASoNSMmqdN5Yuc01NE0OZsocIXSd6RUw==
+wagmi@0.10.14:
+  version "0.10.14"
+  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-0.10.14.tgz#ec6fc96316c1464e0454fee37ced11797bdc5e56"
+  integrity sha512-ikTF8pxNzpw1ZlBSsmPN/cNrYGTEHPdk+SvifyskwELtCgWC7jGjBoLvPwq+OqsbcM4kM2dxJ9HnfGjS2ya6Gw==
   dependencies:
     "@coinbase/wallet-sdk" "^3.6.0"
     "@tanstack/query-sync-storage-persister" "^4.14.5"
     "@tanstack/react-query" "^4.14.5"
     "@tanstack/react-query-persist-client" "^4.14.5"
-    "@wagmi/core" "0.8.17"
+    "@wagmi/core" "0.8.18"
     "@walletconnect/ethereum-provider" "^1.8.0"
     abitype "^0.2.5"
     use-sync-external-store "^1.2.0"
