@@ -35,7 +35,8 @@ export const enum InjectedId {
   tokenary = 'tokenary',
   '1inch' = '1inch',
   kuCoinWallet = 'kuCoinWallet',
-  ledger = 'ledger'
+  ledger = 'ledger',
+  frontier = 'frontier'
 }
 
 // -- presets ------------------------------------------------------ //
@@ -159,6 +160,13 @@ export const EthereumPresets = {
       icon: 'dce1ee99-403f-44a9-9f94-20de30616500',
       url: 'https://1inch.io/wallet',
       isMobile: true
+    },
+    [InjectedId.frontier]: {
+      name: 'Frontier Wallet',
+      icon: 'a78c4d48-32c1-4a9d-52f2-ec7ee08ce200',
+      url: 'https://www.frontier.xyz/download',
+      isInjected: true,
+      isMobile: true
     }
   } as Record<string, InjectedPreset | undefined>,
 
@@ -170,6 +178,7 @@ export const EthereumPresets = {
     const { ethereum, spotEthWallet, coinbaseWalletExtension }: EvmWindow = window
 
     if (!ethereum) return InjectedId.metaMask
+    if (ethereum.isFrontier) return InjectedId.frontier
     if (ethereum.isTrust || ethereum.isTrustWallet) return InjectedId.trust
     if (ethereum.isPhantom) return InjectedId.phantom
     if (ethereum.isBraveWallet) return InjectedId.brave
