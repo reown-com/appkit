@@ -125,6 +125,7 @@ export const OptionsCtrl = {
 
   resetAccount() {
     state.address = undefined
+    state.isConnected = false
     OptionsCtrl.resetEnsProfile()
     OptionsCtrl.resetBalance()
   }
