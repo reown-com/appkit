@@ -1,9 +1,13 @@
 import { useWeb3Modal } from '@web3modal/react'
 import { useState } from 'react'
+import { useAccount, useDisconnect } from 'wagmi'
 
 export default function CustomButton() {
   const [loading, setLoading] = useState(false)
   const { open } = useWeb3Modal()
+  const { isConnected } = useAccount()
+  const { disconnect } = useDisconnect()
+  const label = isConnected ? 'Disconnect' : 'Connect'
 
   async function onOpen() {
     setLoading(true)
@@ -11,9 +15,17 @@ export default function CustomButton() {
     setLoading(false)
   }
 
+  function onClick() {
+    if (isConnected) {
+      disconnect()
+    } else {
+      onOpen()
+    }
+  }
+
   return (
-    <button onClick={onOpen} disabled={loading}>
-      {loading ? 'Loading...' : 'Custom Button'}
+    <button onClick={onClick} disabled={loading}>
+      {loading ? 'Loading...' : label}
     </button>
   )
 }

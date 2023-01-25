@@ -3,10 +3,16 @@ export default function Navigation() {
     <nav className="navigation">
       <ul>
         <li>
-          <a href="/">Full Example</a>
+          <a href="/">V1</a>
         </li>
         <li>
-          <a href="/custom">Customised Example</a>
+          <a href="/custom">V1 Custom</a>
+        </li>
+        <li>
+          <a href="/?version=2">V2</a>
+        </li>
+        <li>
+          <a href="/custom?version=2">V2 Custom</a>
         </li>
       </ul>
     </nav>

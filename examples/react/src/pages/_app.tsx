@@ -5,6 +5,7 @@ import { configureChains, createClient, WagmiConfig } from 'wagmi'
 import { arbitrum, avalanche, bsc, fantom, mainnet, optimism, polygon } from 'wagmi/chains'
 import Navigation from '../components/Navigation'
 import '../styles.css'
+import { getVersionFromUrl } from '../utilities/helpers'
 
 // 1. Get projectID at https://cloud.walletconnect.com
 if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
@@ -19,7 +20,7 @@ const { provider } = configureChains(chains, [walletConnectProvider({ projectId 
 export const wagmiClient = createClient({
   autoConnect: true,
   connectors: modalConnectors({
-    version: '2',
+    version: getVersionFromUrl(),
     projectId,
     appName: 'web3Modal',
     chains
