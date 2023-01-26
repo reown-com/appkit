@@ -9,7 +9,7 @@ button {
 }
 
 button:hover {
-  background-color: var(--color-overlay);
+  background-color: var(--w3m-color-overlay);
 }
 
 button:disabled {

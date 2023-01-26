@@ -31,5 +31,5 @@
 }
 
 .help-img-highlight {
-  stroke: var(--color-overlay);
+  stroke: var(--w3m-color-overlay);
 }

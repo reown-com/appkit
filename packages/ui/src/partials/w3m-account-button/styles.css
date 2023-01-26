@@ -5,8 +5,8 @@
 div {
   display: flex;
   align-items: center;
-  background-color: var(--color-overlay);
-  box-shadow: inset 0 0 0 1px var(--color-overlay);
+  background-color: var(--w3m-color-overlay);
+  box-shadow: inset 0 0 0 1px var(--w3m-color-overlay);
   border-radius: 10px;
   padding: 4px 4px 4px 8px;
 }
@@ -16,8 +16,8 @@ div button {
   padding: 4px 8px 4px 4px;
   height: auto;
   margin-left: 10px;
-  color: var(--color-fg-inverse);
-  background-color: var(--color-fg-accent);
+  color: var(--w3m-color-fg-inverse);
+  background-color: var(--w3m-color-fg-accent);
 }
 
 button::after {
@@ -27,11 +27,11 @@ button::after {
   background-color: transparent;
   border-radius: inherit;
   transition: background-color 0.2s ease;
-  border: 1px solid var(--color-overlay);
+  border: 1px solid var(--w3m-color-overlay);
 }
 
 button:hover::after {
-  background-color: var(--color-overlay);
+  background-color: var(--w3m-color-overlay);
 }
 
 w3m-avatar {

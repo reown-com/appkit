@@ -20,8 +20,8 @@ input {
   transition: 0.2s all ease;
   color: transparent;
   position: absolute;
-  background-color: var(--color-bg-3);
-  box-shadow: inset 0 0 0 1px var(--color-overlay);
+  background-color: var(--w3m-color-bg-3);
+  box-shadow: inset 0 0 0 1px var(--w3m-color-overlay);
 }
 
 input::placeholder {
@@ -64,13 +64,13 @@ input:not(:placeholder-shown) + .w3m-placeholder w3m-text {
 
 input:focus-within,
 input:not(:placeholder-shown) {
-  color: var(--color-fg-1);
+  color: var(--w3m-color-fg-1);
 }
 
 input:focus-within {
-  box-shadow: inset 0 0 0 1px var(--color-fg-accent);
+  box-shadow: inset 0 0 0 1px var(--w3m-color-fg-accent);
 }
 
 path {
-  fill: var(--color-fg-2);
+  fill: var(--w3m-color-fg-2);
 }

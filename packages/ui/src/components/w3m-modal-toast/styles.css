@@ -15,8 +15,8 @@ div {
   backdrop-filter: blur(20px) saturate(1.8);
   -webkit-backdrop-filter: blur(20px) saturate(1.8);
   border-radius: 36px;
-  border: 1px solid var(--color-overlay);
-  background-color: var(--color-overlay);
+  border: 1px solid var(--w3m-color-overlay);
+  background-color: var(--w3m-color-overlay);
 }
 
 svg {
@@ -25,14 +25,14 @@ svg {
 
 @-moz-document url-prefix() {
   div {
-    background-color: var(--color-bg-3);
+    background-color: var(--w3m-color-bg-3);
   }
 }
 
 .w3m-success path {
-  fill: var(--color-fg-accent);
+  fill: var(--w3m-color-fg-accent);
 }
 
 .w3m-error path {
-  fill: var(--color-err);
+  fill: var(--w3m-color-err);
 }
