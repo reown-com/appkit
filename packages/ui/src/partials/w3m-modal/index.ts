@@ -99,19 +99,21 @@ export class W3mModal extends LitElement {
 
   private async fetchEnsProfile(profileAddress?: `0x${string}`) {
     try {
-      OptionsCtrl.setProfileLoading(true)
-      const address = profileAddress ?? OptionsCtrl.state.address
-      const { id } = ClientCtrl.client().getDefaultChain()
-      if (address && id === 1) {
-        const [name, avatar] = await Promise.all([
-          ClientCtrl.client().fetchEnsName({ address, chainId: 1 }),
-          ClientCtrl.client().fetchEnsAvatar({ address, chainId: 1 })
-        ])
-        if (avatar) {
-          await UiUtil.preloadImage(avatar)
+      if (ConfigCtrl.state.enableAccountView) {
+        OptionsCtrl.setProfileLoading(true)
+        const address = profileAddress ?? OptionsCtrl.state.address
+        const { id } = ClientCtrl.client().getDefaultChain()
+        if (address && id === 1) {
+          const [name, avatar] = await Promise.all([
+            ClientCtrl.client().fetchEnsName({ address, chainId: 1 }),
+            ClientCtrl.client().fetchEnsAvatar({ address, chainId: 1 })
+          ])
+          if (avatar) {
+            await UiUtil.preloadImage(avatar)
+          }
+          OptionsCtrl.setProfileName(name)
+          OptionsCtrl.setProfileAvatar(avatar)
         }
-        OptionsCtrl.setProfileName(name)
-        OptionsCtrl.setProfileAvatar(avatar)
       }
     } catch (err) {
       ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
@@ -122,11 +124,13 @@ export class W3mModal extends LitElement {
 
   private async fetchBalance(balanceAddress?: `0x${string}`) {
     try {
-      OptionsCtrl.setBalanceLoading(true)
-      const address = balanceAddress ?? OptionsCtrl.state.address
-      if (address) {
-        const balance = await ClientCtrl.client().fetchBalance({ address })
-        OptionsCtrl.setBalance({ amount: balance.formatted, symbol: balance.symbol })
+      if (ConfigCtrl.state.enableAccountView) {
+        OptionsCtrl.setBalanceLoading(true)
+        const address = balanceAddress ?? OptionsCtrl.state.address
+        if (address) {
+          const balance = await ClientCtrl.client().fetchBalance({ address })
+          OptionsCtrl.setBalance({ amount: balance.formatted, symbol: balance.symbol })
+        }
       }
     } catch (err) {
       ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')

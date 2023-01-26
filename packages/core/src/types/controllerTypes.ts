@@ -42,6 +42,7 @@ export interface ConfigCtrlState {
   tokenImages?: Record<string, string>
   enableStandaloneMode?: boolean
   enableNetworkView?: boolean
+  enableAccountView?: boolean
   explorerAllowList?: string[]
   explorerDenyList?: string[]
   termsOfServiceUrl?: string

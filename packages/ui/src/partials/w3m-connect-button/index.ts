@@ -1,4 +1,4 @@
-import { ConfigCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
+import { ClientCtrl, ConfigCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -40,7 +40,15 @@ export class W3mConnectButton extends LitElement {
     return this.icon === 'show' ? SvgUtil.WALLET_CONNECT_ICON : null
   }
 
-  private onOpen() {
+  private onClick() {
+    if (OptionsCtrl.state.isConnected) {
+      this.onDisconnect()
+    } else {
+      this.onConnect()
+    }
+  }
+
+  private onConnect() {
     this.loading = true
     const { enableNetworkView } = ConfigCtrl.state
     const { chains, selectedChain } = OptionsCtrl.state
@@ -52,10 +60,15 @@ export class W3mConnectButton extends LitElement {
     }
   }
 
+  private onDisconnect() {
+    ClientCtrl.client().disconnect()
+    OptionsCtrl.resetAccount()
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <w3m-button-big .disabled=${this.loading} @click=${this.onOpen}>
+      <w3m-button-big .disabled=${this.loading} @click=${this.onClick}>
         ${this.loading
           ? html`
               <w3m-spinner></w3m-spinner>
