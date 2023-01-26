@@ -2,7 +2,21 @@ import { EthereumClient, modalConnectors, walletConnectProvider } from '@web3mod
 import type { AppProps } from 'next/app'
 import { useEffect, useState } from 'react'
 import { configureChains, createClient, WagmiConfig } from 'wagmi'
-import { arbitrum, avalanche, bsc, fantom, mainnet, optimism, polygon } from 'wagmi/chains'
+import {
+  arbitrum,
+  avalanche,
+  bsc,
+  evmos,
+  fantom,
+  filecoin,
+  gnosis,
+  iotex,
+  mainnet,
+  metis,
+  optimism,
+  polygon,
+  zkSync
+} from 'wagmi/chains'
 import Navigation from '../components/Navigation'
 import '../styles.css'
 import { getVersionFromUrl } from '../utilities/helpers'
@@ -15,7 +29,21 @@ if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 
 // 2. Configure wagmi client
-const chains = [mainnet, polygon, optimism, arbitrum, avalanche, fantom, bsc]
+const chains = [
+  mainnet,
+  polygon,
+  gnosis,
+  optimism,
+  arbitrum,
+  avalanche,
+  fantom,
+  bsc,
+  zkSync,
+  evmos,
+  filecoin,
+  metis,
+  iotex
+]
 const { provider } = configureChains(chains, [walletConnectProvider({ projectId })])
 export const wagmiClient = createClient({
   autoConnect: true,

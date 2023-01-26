@@ -17,8 +17,8 @@ export const ChainPresets = {
   100: '02b53f6a-e3d4-479e-1cb4-21178987d100',
   // EVMos
   9001: 'f926ff41-260d-4028-635e-91913fc28e00',
-  // ZkSync v2
-  3737: 'b310f07f-4ef7-49f3-7073-2a0a39685800',
+  // ZkSync
+  324: 'b310f07f-4ef7-49f3-7073-2a0a39685800',
   // Filecoin
   314: '5a73b3dd-af74-424e-cae0-0de859ee9400',
   // Iotx
