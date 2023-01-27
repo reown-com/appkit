@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@wagmi/core": ">=0.8",
+    "@wagmi/core": ">=0.9",
     "ethers": ">=5.7"
   },
   "keywords": [
