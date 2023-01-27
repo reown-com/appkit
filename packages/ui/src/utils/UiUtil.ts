@@ -219,11 +219,11 @@ export const UiUtil = {
     const root: HTMLElement | null = document.querySelector(':root')
     if (root) {
       const variables = {
-        '--color-av-1': colors[0],
-        '--color-av-2': colors[1],
-        '--color-av-3': colors[2],
-        '--color-av-4': colors[3],
-        '--color-av-5': colors[4]
+        '--w3m-color-av-1': colors[0],
+        '--w3m-color-av-2': colors[1],
+        '--w3m-color-av-3': colors[2],
+        '--w3m-color-av-4': colors[3],
+        '--w3m-color-av-5': colors[4]
       }
       Object.entries(variables).forEach(([key, val]) => root.style.setProperty(key, val))
     }

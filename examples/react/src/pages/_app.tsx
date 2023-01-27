@@ -29,7 +29,7 @@ if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 
 // 2. Configure wagmi client
-const chains = [
+export const chains = [
   mainnet,
   polygon,
   gnosis,
