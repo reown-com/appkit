@@ -19,5 +19,17 @@ export const TokenPresets = {
   },
   OP: {
     icon: 'ab9c186a-c52f-464b-2906-ca59d760a400'
+  },
+  xDAI: {
+    icon: '02b53f6a-e3d4-479e-1cb4-21178987d100'
+  },
+  EVMOS: {
+    icon: 'f926ff41-260d-4028-635e-91913fc28e00'
+  },
+  METIS: {
+    icon: '3897a66d-40b9-4833-162f-a2c90531c900'
+  },
+  IOTX: {
+    icon: '34e68754-e536-40da-c153-6ef2e7188a00'
   }
 } as Record<string, { icon: string } | undefined>
