@@ -1,4 +1,4 @@
-import { IAbstractConnectorOptions } from "src/helpers";
+import { IAbstractConnectorOptions } from "../../helpers";
 
 export interface ILedgerConnectKitOptions
   extends IAbstractConnectorOptions {
