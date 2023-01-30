@@ -97,9 +97,9 @@ export class W3mWalletExplorerView extends LitElement {
     }
   }
 
-  private async onCustomConnectPlatform({ name, id, links }: MobileWallet) {
+  private onConnectCustom({ name, id, links }: MobileWallet) {
     if (CoreUtil.isMobile()) {
-      await UiUtil.handleMobileLinking({ links, name, id })
+      UiUtil.handleMobileLinking({ links, name, id })
     } else {
       RouterCtrl.push('DesktopConnector', {
         DesktopConnector: { name, walletId: id, universal: links.universal, native: links.native }
@@ -107,11 +107,11 @@ export class W3mWalletExplorerView extends LitElement {
     }
   }
 
-  private async onConnectPlatform(listing: Listing) {
+  private onConnectListing(listing: Listing) {
     if (CoreUtil.isMobile()) {
       const { id, image_url } = listing
       const { native, universal } = listing.mobile
-      await UiUtil.handleMobileLinking({
+      UiUtil.handleMobileLinking({
         links: { native, universal },
         name: listing.name,
         id,
@@ -138,20 +138,6 @@ export class W3mWalletExplorerView extends LitElement {
     }
   }
 
-  private readonly searchDebounce = UiUtil.debounce((value: string) => {
-    if (value.length >= 3) {
-      this.firstFetch = true
-      this.endReached = false
-      this.search = value
-      ExplorerCtrl.resetSearch()
-      this.fetchWallets()
-    } else if (this.search) {
-      this.search = ''
-      this.endReached = this.isLastPage()
-      ExplorerCtrl.resetSearch()
-    }
-  })
-
   private onSearchChange(event: Event) {
     const { value } = event.target as HTMLInputElement
     this.searchDebounce(value)
@@ -172,6 +158,20 @@ export class W3mWalletExplorerView extends LitElement {
       return null
     }
   }
+
+  private readonly searchDebounce = UiUtil.debounce((value: string) => {
+    if (value.length >= 3) {
+      this.firstFetch = true
+      this.endReached = false
+      this.search = value
+      ExplorerCtrl.resetSearch()
+      this.fetchWallets()
+    } else if (this.search) {
+      this.search = ''
+      this.endReached = this.isLastPage()
+      ExplorerCtrl.resetSearch()
+    }
+  })
 
   // -- render ------------------------------------------------------- //
   protected render() {
@@ -216,7 +216,7 @@ export class W3mWalletExplorerView extends LitElement {
                         <w3m-wallet-button
                           name=${customWallets[index].name}
                           walletId=${customWallets[index].id}
-                          .onClick=${async () => this.onCustomConnectPlatform(customWallets[index])}
+                          .onClick=${() => this.onConnectCustom(customWallets[index])}
                         >
                         </w3m-wallet-button>
                       `
@@ -237,7 +237,7 @@ export class W3mWalletExplorerView extends LitElement {
                           src=${listings[index].image_url.lg}
                           name=${listings[index].name}
                           walletId=${listings[index].id}
-                          .onClick=${async () => this.onConnectPlatform(listings[index])}
+                          .onClick=${() => this.onConnectListing(listings[index])}
                         >
                         </w3m-wallet-button>
                       `
