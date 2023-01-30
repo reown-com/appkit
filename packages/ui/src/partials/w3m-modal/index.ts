@@ -155,30 +155,24 @@ export class W3mModal extends LitElement {
   }
 
   private async preloadExplorerData() {
-    const { standaloneChains, chains, isExplorer } = OptionsCtrl.state
+    const { standaloneChains, chains } = OptionsCtrl.state
 
-    if (isExplorer) {
-      const chainsFilter = standaloneChains?.join(',')
-      await Promise.all([
-        ExplorerCtrl.getPreviewWallets({
-          page: 1,
-          entries: 10,
-          chains: chainsFilter,
-          device: CoreUtil.isMobile() ? 'mobile' : 'desktop',
-          version: CoreUtil.getWalletConnectVersion()
-        }),
-        ExplorerCtrl.getRecomendedWallets()
-      ])
-      OptionsCtrl.setIsDataLoaded(true)
-      const { previewWallets, recomendedWallets } = ExplorerCtrl.state
-      const chainsImgs = chains?.map(chain => UiUtil.getChainIcon(chain.id)) ?? []
-      const walletImgs = [...previewWallets, ...recomendedWallets].map(
-        wallet => wallet.image_url.lg
-      )
-      await this.preloadExplorerImages([...chainsImgs, ...walletImgs])
-    } else {
-      OptionsCtrl.setIsDataLoaded(true)
-    }
+    const chainsFilter = standaloneChains?.join(',')
+    await Promise.all([
+      ExplorerCtrl.getPreviewWallets({
+        page: 1,
+        entries: 10,
+        chains: chainsFilter,
+        device: CoreUtil.isMobile() ? 'mobile' : 'desktop',
+        version: CoreUtil.getWalletConnectVersion()
+      }),
+      ExplorerCtrl.getRecomendedWallets()
+    ])
+    OptionsCtrl.setIsDataLoaded(true)
+    const { previewWallets, recomendedWallets } = ExplorerCtrl.state
+    const chainsImgs = chains?.map(chain => UiUtil.getChainIcon(chain.id)) ?? []
+    const walletImgs = [...previewWallets, ...recomendedWallets].map(wallet => wallet.image_url.lg)
+    await this.preloadExplorerImages([...chainsImgs, ...walletImgs])
   }
 
   private async preloadExplorerImages(images: string[]) {

@@ -8,10 +8,10 @@ export const DataFilterUtil = {
   allowedExplorerListings(listings: Listing[]) {
     const { explorerAllowList, explorerDenyList } = ConfigCtrl.state
     let filtered = [...listings]
-    if (explorerAllowList?.length) {
+    if (explorerAllowList) {
       filtered = filtered.filter(l => explorerAllowList.includes(l.id))
     }
-    if (explorerDenyList?.length) {
+    if (explorerDenyList) {
       filtered = filtered.filter(l => !explorerDenyList.includes(l.id))
     }
 

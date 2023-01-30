@@ -20,7 +20,7 @@ export interface DesktopWallet {
 
 // -- ConfigCtrl ------------------------------------------- //
 export interface ConfigCtrlState {
-  projectId?: string
+  projectId: string
   themeMode?: 'dark' | 'light'
   themeColor?:
     | 'blackWhite'
@@ -67,7 +67,6 @@ export interface OptionsCtrlState {
   isCustomMobile: boolean
   isDataLoaded: boolean
   isUiLoaded: boolean
-  isExplorer: boolean
   profileName?: string | null
   profileAvatar?: string | null
   profileLoading?: boolean
@@ -156,7 +155,6 @@ export type RouterView =
   | 'SelectNetwork'
   | 'SwitchNetwork'
   | 'WalletExplorer'
-  | 'WalletFilter'
 
 export interface DesktopConnectorData {
   name: string

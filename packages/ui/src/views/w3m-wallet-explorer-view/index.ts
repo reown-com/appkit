@@ -1,4 +1,4 @@
-import type { InstallConnectorData, Listing } from '@web3modal/core'
+import type { InstallConnectorData, Listing, MobileWallet } from '@web3modal/core'
 import {
   ClientCtrl,
   CoreUtil,
@@ -97,6 +97,16 @@ export class W3mWalletExplorerView extends LitElement {
     }
   }
 
+  private async onCustomConnectPlatform({ name, id, links }: MobileWallet) {
+    if (CoreUtil.isMobile()) {
+      await UiUtil.handleMobileLinking({ links, name, id })
+    } else {
+      RouterCtrl.push('DesktopConnector', {
+        DesktopConnector: { name, walletId: id, universal: links.universal, native: links.native }
+      })
+    }
+  }
+
   private async onConnectPlatform(listing: Listing) {
     if (CoreUtil.isMobile()) {
       const { id, image_url } = listing
@@ -175,9 +185,11 @@ export class W3mWalletExplorerView extends LitElement {
       !isLoading && (!isSearch || UiUtil.caseSafeIncludes(InjectedId.coinbaseWallet, this.search))
     const isExtensions = !isStandalone && !CoreUtil.isMobile()
     let extensions = isExtensions ? UiUtil.getExtensionWallets() : []
+    let customWallets = UiUtil.getCustomWallets()
 
     if (isSearch) {
       extensions = extensions.filter(({ name }) => UiUtil.caseSafeIncludes(name, this.search))
+      customWallets = customWallets.filter(({ name }) => UiUtil.caseSafeIncludes(name, this.search))
     }
 
     const isEmpty = !this.loading && !listings.length && !extensions.length && !isCoinbase
@@ -199,6 +211,16 @@ export class W3mWalletExplorerView extends LitElement {
             ? null
             : [...Array(iterator)].map(
                 (_, index) => html`
+                  ${customWallets[index]
+                    ? html`
+                        <w3m-wallet-button
+                          name=${customWallets[index].name}
+                          walletId=${customWallets[index].id}
+                          .onClick=${async () => this.onCustomConnectPlatform(customWallets[index])}
+                        >
+                        </w3m-wallet-button>
+                      `
+                    : null}
                   ${extensions[index]
                     ? html`
                         <w3m-wallet-button
