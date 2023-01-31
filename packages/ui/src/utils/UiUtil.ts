@@ -230,13 +230,21 @@ export const UiUtil = {
   },
 
   setRecentWallet(wallet: RecentWallet) {
-    localStorage.setItem(UiUtil.W3M_RECENT_WALLET, JSON.stringify(wallet))
+    const version = ClientCtrl.client().walletConnectVersion
+    localStorage.setItem(UiUtil.W3M_RECENT_WALLET, JSON.stringify({ [version]: wallet }))
   },
 
   getRecentWallet() {
     const wallet = localStorage.getItem(UiUtil.W3M_RECENT_WALLET)
+    const version = ClientCtrl.client().walletConnectVersion
+
     if (wallet) {
-      return JSON.parse(wallet) as RecentWallet
+      const json = JSON.parse(wallet)
+      if (wallet[version]) {
+        return json[version] as RecentWallet
+      }
+
+      return undefined
     }
 
     return undefined

@@ -9,7 +9,7 @@
   "dependencies": {
     "@walletconnect/sign-client": "2.3.2",
     "@web3modal/standalone": "2.0.0",
-    "next": "13.1.5",
+    "next": "13.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },

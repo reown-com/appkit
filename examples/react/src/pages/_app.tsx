@@ -8,7 +8,6 @@ import {
   bsc,
   evmos,
   fantom,
-  filecoin,
   gnosis,
   iotex,
   mainnet,
@@ -40,7 +39,6 @@ export const chains = [
   bsc,
   zkSync,
   evmos,
-  filecoin,
   metis,
   iotex
 ]
