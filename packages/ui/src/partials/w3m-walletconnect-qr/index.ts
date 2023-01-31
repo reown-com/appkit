@@ -36,6 +36,7 @@ export class W3mWalletConnectQr extends LitElement {
         ModalCtrl.close()
       }
     } catch (err) {
+      console.error(err)
       ToastCtrl.openToast('Connection request declined', 'error')
       if (retry < 2) {
         this.createConnectionAndWait(retry + 1)

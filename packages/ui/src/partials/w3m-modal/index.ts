@@ -116,6 +116,7 @@ export class W3mModal extends LitElement {
         }
       }
     } catch (err) {
+      console.error(err)
       ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
     } finally {
       OptionsCtrl.setProfileLoading(false)
@@ -133,6 +134,7 @@ export class W3mModal extends LitElement {
         }
       }
     } catch (err) {
+      console.error(err)
       ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
     } finally {
       OptionsCtrl.setBalanceLoading(false)
@@ -205,7 +207,8 @@ export class W3mModal extends LitElement {
           this.preloadConnectorImages()
         ])
       }
-    } catch {
+    } catch (err) {
+      console.error(err)
       ToastCtrl.openToast('Failed preloading', 'error')
     }
   }

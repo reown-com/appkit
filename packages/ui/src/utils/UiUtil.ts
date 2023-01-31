@@ -154,11 +154,12 @@ export const UiUtil = {
       const { selectedChain } = OptionsCtrl.state
       await ClientCtrl.client().connectConnector(id, selectedChain?.id)
       ModalCtrl.close()
-    } catch (error) {
+    } catch (err) {
+      console.error(err)
       if (onError) {
         onError()
       } else {
-        ToastCtrl.openToast(UiUtil.getErrorMessage(error), 'error')
+        ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
       }
     }
   },

@@ -18,7 +18,7 @@ import {
 } from 'wagmi/chains'
 import Navigation from '../components/Navigation'
 import '../styles.css'
-import { getVersionFromUrl } from '../utilities/helpers'
+import { getChainsFromUrl, getVersionFromUrl } from '../utilities/helpers'
 
 // 1. Get projectID at https://cloud.walletconnect.com
 if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
@@ -28,9 +28,8 @@ if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 
 // 2. Configure wagmi client
-export const chains = [
-  mainnet,
-  polygon,
+const minimalChains = [mainnet, polygon]
+const extendedChains = [
   gnosis,
   optimism,
   arbitrum,
@@ -42,6 +41,9 @@ export const chains = [
   metis,
   iotex
 ]
+export const chains =
+  getChainsFromUrl() === 'minimal' ? minimalChains : [...minimalChains, ...extendedChains]
+
 const { provider } = configureChains(chains, [walletConnectProvider({ projectId })])
 export const wagmiClient = createClient({
   autoConnect: true,

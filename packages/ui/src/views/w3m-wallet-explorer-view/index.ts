@@ -89,6 +89,7 @@ export class W3mWalletExplorerView extends LitElement {
         ])
         this.endReached = this.isLastPage()
       } catch (err) {
+        console.error(err)
         ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
       } finally {
         this.loading = false
