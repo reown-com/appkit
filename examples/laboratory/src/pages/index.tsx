@@ -2,27 +2,27 @@ import { Button, Card, Grid, Link, Text } from '@nextui-org/react'
 
 const cards = [
   {
-    title: 'WalletConnect v1',
-    description: 'Simple ethereum and polygon example that uses wagmi with WalletConnect v1',
-    link: '/v1Base',
-    color: 'primary'
-  },
-  {
-    title: 'WalletConnect v1 Extended',
-    description: 'Extended all chain example that uses wagmi with WalletConnect v1',
-    link: '/v1Extended',
-    color: 'primary'
-  },
-  {
     title: 'WalletConnect v2',
     description: 'Simple ethereum and polygon example that uses wagmi with WalletConnect v2',
     link: '/v2Base',
-    color: 'secondary'
+    color: 'primary'
   },
   {
     title: 'WalletConnect v2 Extended',
     description: 'Extended all chain example that uses wagmi with WalletConnect v2',
     link: '/v2Extended',
+    color: 'primary'
+  },
+  {
+    title: 'WalletConnect v1',
+    description: 'Simple ethereum and polygon example that uses wagmi with WalletConnect v1',
+    link: '/v1Base',
+    color: 'secondary'
+  },
+  {
+    title: 'WalletConnect v1 Extended',
+    description: 'Extended all chain example that uses wagmi with WalletConnect v1',
+    link: '/v1Extended',
     color: 'secondary'
   },
   {
