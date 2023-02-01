@@ -237,15 +237,14 @@ export const UiUtil = {
 
   getRecentWallet() {
     const wallet = localStorage.getItem(UiUtil.W3M_RECENT_WALLET)
-    const version = ClientCtrl.client().walletConnectVersion
+    const { isStandalone } = OptionsCtrl.state
 
-    if (wallet) {
+    if (wallet && !isStandalone) {
       const json = JSON.parse(wallet)
+      const version = ClientCtrl.client().walletConnectVersion
       if (wallet[version]) {
         return json[version] as RecentWallet
       }
-
-      return undefined
     }
 
     return undefined
