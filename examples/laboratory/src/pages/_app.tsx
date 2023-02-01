@@ -1,65 +1,7 @@
-import { EthereumClient, modalConnectors, walletConnectProvider } from '@web3modal/ethereum'
+import { createTheme, NextUIProvider, Text } from '@nextui-org/react'
 import type { AppProps } from 'next/app'
 import { useEffect, useState } from 'react'
-import { configureChains, createClient, WagmiConfig } from 'wagmi'
-import {
-  arbitrum,
-  avalanche,
-  bsc,
-  evmos,
-  fantom,
-  gnosis,
-  iotex,
-  mainnet,
-  metis,
-  optimism,
-  polygon,
-  zkSync
-} from 'wagmi/chains'
-import Navigation from '../components/Navigation'
-import '../styles.css'
-import { getChainsFromUrl, getVersionFromUrl } from '../utilities/helpers'
 
-// 1. Get projectID at https://cloud.walletconnect.com
-if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
-  throw new Error('You need to provide NEXT_PUBLIC_PROJECT_ID env variable')
-}
-
-export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
-
-// 2. Configure wagmi client
-const minimalChains = [mainnet, polygon]
-const extendedChains = [
-  gnosis,
-  optimism,
-  arbitrum,
-  avalanche,
-  fantom,
-  bsc,
-  zkSync,
-  evmos,
-  metis,
-  iotex
-]
-export const chains =
-  getChainsFromUrl() === 'minimal' ? minimalChains : [...minimalChains, ...extendedChains]
-
-const { provider } = configureChains(chains, [walletConnectProvider({ projectId })])
-export const wagmiClient = createClient({
-  autoConnect: true,
-  connectors: modalConnectors({
-    version: getVersionFromUrl(),
-    projectId,
-    appName: 'web3Modal',
-    chains
-  }),
-  provider
-})
-
-// 3. Configure modal ethereum client
-export const ethereumClient = new EthereumClient(wagmiClient, chains)
-
-// 4. Wrap your app with WagmiProvider and add <Web3Modal /> compoennt
 export default function App({ Component, pageProps }: AppProps) {
   const [ready, setReady] = useState(false)
 
@@ -70,14 +12,13 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       {ready ? (
-        <WagmiConfig client={wagmiClient}>
-          <Navigation />
+        <NextUIProvider theme={createTheme({ type: 'dark' })}>
+          <Text h1 color="success" css={{ width: '100%', textAlign: 'center', paddingTop: '$10' }}>
+            Web3Modal Lab 🧪
+          </Text>
           <Component {...pageProps} />
-        </WagmiConfig>
+        </NextUIProvider>
       ) : null}
-
-      {/* Add Web3Modal here, This example adds them in individual pages */}
-      {/* <Web3Modal projectId={projectId} ethereumClient={ethereumClient} /> */}
     </>
   )
 }

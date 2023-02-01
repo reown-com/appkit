@@ -1,25 +1,60 @@
-import { Web3Button, Web3Modal, Web3NetworkSwitch } from '@web3modal/react'
-import CustomButton from '../components/CustomButton'
-import ThemeControls from '../components/ThemeControls'
-import { ethereumClient, projectId } from './_app'
+import { Button, Card, Grid, Link, Text } from '@nextui-org/react'
+
+const cards = [
+  {
+    title: 'WalletConnect v1',
+    description: 'Simple ethereum and polygon example that uses wagmi with WalletConnect v1',
+    link: '/v1Base',
+    color: 'primary'
+  },
+  {
+    title: 'WalletConnect v1 Extended',
+    description: 'Extended all chain example that uses wagmi with WalletConnect v1',
+    link: '/v1Extended',
+    color: 'primary'
+  },
+  {
+    title: 'WalletConnect v2',
+    description: 'Simple ethereum and polygon example that uses wagmi with WalletConnect v2',
+    link: '/v2Base',
+    color: 'secondary'
+  },
+  {
+    title: 'WalletConnect v2 Extended',
+    description: 'Extended all chain example that uses wagmi with WalletConnect v2',
+    link: '/v2Extended',
+    color: 'secondary'
+  },
+  {
+    title: 'WalletConnect v2 Standalone',
+    description: 'Standalone WalletConnect v2 example using universal-provider',
+    link: '/v2Standalone',
+    color: 'warning'
+  }
+] as const
 
 export default function HomePage() {
   return (
-    <>
-      <h2>Buttons</h2>
-      <div className="container">
-        {/* Use predefined button  */}
-        <Web3Button icon="show" label="Connect Wallet" balance="show" />
-
-        {/* Use custom button */}
-        <CustomButton />
-
-        <Web3NetworkSwitch />
-      </div>
-
-      <ThemeControls />
-
-      <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
-    </>
+    <Grid.Container gap={2} css={{ maxWidth: '940px', margin: '0 auto' }}>
+      {cards.map(card => (
+        <Grid xs={12} sm={6}>
+          <Card key={card.title}>
+            <Card.Body>
+              <Text h3 color={card.color}>
+                {card.title}
+              </Text>
+              <Text color="grey">{card.description}</Text>
+            </Card.Body>
+            <Card.Footer>
+              <Link href={card.link}>
+                <Button shadow color={card.color}>
+                  Go to example
+                </Button>
+              </Link>
+            </Card.Footer>
+          </Card>
+        </Grid>
+      ))}
+    </Grid.Container>
   )
 }
