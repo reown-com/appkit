@@ -34,7 +34,8 @@ export const enum InjectedId {
   tokenary = 'tokenary',
   '1inch' = '1inch',
   kuCoinWallet = 'kuCoinWallet',
-  ledger = 'ledger'
+  ledger = 'ledger',
+  safepal = 'safepal'
 }
 
 // -- presets ------------------------------------------------------ //
@@ -143,6 +144,13 @@ export const EthereumPresets = {
       url: 'https://1inch.io/wallet',
       isMobile: true,
       isDesktop: true
+    },
+    [InjectedId.safepal]: {
+      name: 'SafePal',
+      icon: '3f7075d0-4ab7-4db5-404d-3e4c05e6fe00',
+      url: 'https://safepal.com',
+      isMobile: true,
+      isDesktop: true
     }
   } as Record<string, InjectedPreset | undefined>,
 
@@ -171,7 +179,7 @@ export const EthereumPresets = {
     if (ethereum.isOneInchIOSWallet || ethereum.isOneInchAndroidWallet) return InjectedId['1inch']
     if (ethereum.isKuCoinWallet) return InjectedId.kuCoinWallet
     if (ethereum.isMetaMask) return InjectedId.metaMask
-
+    if (ethereum.isSafePal) return InjectedId.safepal
     return 'injected'
   },
 

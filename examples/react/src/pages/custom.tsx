@@ -24,6 +24,11 @@ export default function CustomPage() {
             name: 'Trust Wallet',
             links: { native: 'trust://', universal: 'https://link.trustwallet.com' }
           },
+              {
+            id: 'safepal',
+            name: 'SafePal Wallet',
+            links: { native: 'safepal://', universal: 'https://www.safepal.com/' }
+          },
           {
             id: 'rainbow',
             name: 'Rainbow',
@@ -74,6 +79,7 @@ export default function CustomPage() {
           coinbaseWallet: '/images/wallet_coinbase.webp',
           zerion: '/images/wallet_zerion.webp',
           trust: '/images/wallet_trust.webp',
+          safepal: '/images/wallet_safepal.webp',
           rainbow: '/images/wallet_rainbow.webp',
           oreid: '/images/wallet_oreid.svg'
         }}
