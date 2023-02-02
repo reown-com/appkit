@@ -191,9 +191,11 @@ export class W3mModal extends LitElement {
   }
 
   private async preloadConnectorImages() {
-    const images = UiUtil.getConnectorImageUrls()
-    if (images.length) {
-      await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
+    if (!OptionsCtrl.state.isStandalone) {
+      const images = UiUtil.getConnectorImageUrls()
+      if (images.length) {
+        await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
+      }
     }
   }
 

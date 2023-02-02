@@ -44,7 +44,7 @@ export default function HomePage() {
   return (
     <Grid.Container gap={2} css={{ maxWidth: '940px', margin: '0 auto' }}>
       {cards.map(card => (
-        <Grid xs={12} sm={6}>
+        <Grid xs={12} sm={6} key={card.title}>
           <Card key={card.title} variant="bordered">
             <Card.Body>
               <Text h3 color={card.color}>
