@@ -8,7 +8,7 @@ const message = 'Hello Web3Modal!'
 export default function WagmiWeb3ModalWidget() {
   const { isConnected } = useAccount()
   const height = isConnected ? '250px' : '140px'
-  const { data, isError, isLoading, isSuccess, signMessage } = useSignMessage({
+  const { data, isLoading, signMessage } = useSignMessage({
     message
   })
   const [modalOpen, setModalOpen] = useState(false)
