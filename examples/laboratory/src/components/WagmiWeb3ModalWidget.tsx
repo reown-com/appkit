@@ -11,6 +11,14 @@ export default function WagmiWeb3ModalWidget() {
   const { data, isLoading, signMessage } = useSignMessage({ message })
   const [modalOpen, setModalOpen] = useState(false)
 
+  function getData() {
+    if (typeof data === 'object') {
+      return JSON.stringify(data)
+    }
+
+    return String(data)
+  }
+
   useEffect(() => {
     if (isLoading) {
       setModalOpen(true)
@@ -45,7 +53,8 @@ export default function WagmiWeb3ModalWidget() {
 
           <Text h4>Signature</Text>
           <Text color="grey" css={{ wordWrap: 'break-word' }}>
-            {isLoading ? 'Waiting...' : data}
+            {/* eslint-disable-next-line no-nested-ternary */}
+            {isLoading ? 'Waiting...' : getData()}
           </Text>
         </Modal.Body>
       </Modal>
