@@ -18,7 +18,11 @@ export default function v2StandalonePage() {
   async function onOpenModal() {
     if (signClient) {
       const namespaces = {
-        eip155: { methods: ['eth_sign'], chains: ['eip155:1'], events: ['accountsChanged'] }
+        eip155: {
+          methods: ['eth_sign'],
+          chains: ['eip155:1'],
+          events: ['accountsChanged']
+        }
       }
       const { uri, approval } = await signClient.connect({ requiredNamespaces: namespaces })
       if (uri) {
