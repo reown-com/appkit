@@ -7,7 +7,7 @@ const message = 'Hello Web3Modal!'
 
 export default function WagmiWeb3ModalWidget() {
   const { isConnected } = useAccount()
-  const height = isConnected ? '250px' : '140px'
+  const height = isConnected ? '230px' : '140px'
   const { data, isLoading, signMessage } = useSignMessage({
     message
   })
@@ -28,7 +28,7 @@ export default function WagmiWeb3ModalWidget() {
 
           {isConnected ? (
             <>
-              <Divider css={{ margin: '$11 0' }} />
+              <Divider />
               <Button color="gradient" onClick={() => signMessage()}>
                 Sign Message
               </Button>
