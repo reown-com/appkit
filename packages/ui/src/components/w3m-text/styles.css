@@ -62,18 +62,6 @@ span {
   letter-spacing: -0.03em;
 }
 
-.w3m-left {
-  text-align: left;
-}
-
-.w3m-center {
-  text-align: center;
-}
-
-.w3m-right {
-  text-align: right;
-}
-
 :host(*) {
   color: var(--color-fg-1);
 }

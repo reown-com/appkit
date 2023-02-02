@@ -1,5 +1,5 @@
-.w3m-loading {
-  padding: 0 15px;
+:host {
+  all: initial;
 }
 
 svg {

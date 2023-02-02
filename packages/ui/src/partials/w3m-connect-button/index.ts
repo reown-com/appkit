@@ -1,7 +1,6 @@
 import { ConfigCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
-import { classMap } from 'lit/directives/class-map.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -55,12 +54,8 @@ export class W3mConnectButton extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const classes = {
-      'w3m-loading': this.loading
-    }
-
     return html`
-      <w3m-button-big class=${classMap(classes)} .disabled=${this.loading} @click=${this.onOpen}>
+      <w3m-button-big .disabled=${this.loading} @click=${this.onOpen}>
         ${this.loading
           ? html`
               <w3m-spinner></w3m-spinner>
