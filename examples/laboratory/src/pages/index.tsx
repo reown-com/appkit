@@ -30,6 +30,13 @@ const cards = [
     description: 'Standalone WalletConnect v2 example using universal-provider',
     link: '/v2Standalone',
     color: 'warning'
+  },
+  {
+    title: 'WalletConnect v2 Custom',
+    description:
+      'Simple ethereum and polygon example that uses wagmi with WalletConnect v2, with some custom added wallet',
+    link: '/v2Customised',
+    color: 'error'
   }
 ] as const
 
@@ -38,7 +45,7 @@ export default function HomePage() {
     <Grid.Container gap={2} css={{ maxWidth: '940px', margin: '0 auto' }}>
       {cards.map(card => (
         <Grid xs={12} sm={6}>
-          <Card key={card.title}>
+          <Card key={card.title} variant="bordered">
             <Card.Body>
               <Text h3 color={card.color}>
                 {card.title}

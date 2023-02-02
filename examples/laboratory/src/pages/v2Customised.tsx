@@ -11,20 +11,47 @@ const chains = [mainnet, polygon]
 const { provider } = configureChains(chains, [walletConnectProvider({ projectId })])
 const wagmiClient = createClient({
   autoConnect: true,
-  connectors: modalConnectors({ version: '1', projectId, appName: 'web3Modal', chains }),
+  connectors: modalConnectors({ version: '2', projectId, appName: 'web3Modal', chains }),
   provider
 })
 const ethereumClient = new EthereumClient(wagmiClient, chains)
 
 // Example
-export default function v1BasePage() {
+export default function v2BasePage() {
   return (
     <>
       <WagmiConfig client={wagmiClient}>
         <WagmiWeb3ModalWidget />
       </WagmiConfig>
 
-      <Web3Modal ethereumClient={ethereumClient} projectId={projectId} themeColor="purple" />
+      <Web3Modal
+        ethereumClient={ethereumClient}
+        projectId={projectId}
+        themeColor="blue"
+        walletImages={{
+          oreid: '/images/wallet_oreid.svg'
+        }}
+        mobileWallets={[
+          {
+            id: 'oreid',
+            name: 'OREID',
+            links: {
+              native: '',
+              universal: 'https://www.oreid.io/'
+            }
+          }
+        ]}
+        desktopWallets={[
+          {
+            id: 'oreid',
+            name: 'OREID',
+            links: {
+              native: '',
+              universal: 'https://www.oreid.io/'
+            }
+          }
+        ]}
+      />
     </>
   )
 }

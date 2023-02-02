@@ -1,4 +1,4 @@
-import { createTheme, NextUIProvider, Text } from '@nextui-org/react'
+import { createTheme, Link, NextUIProvider, Text } from '@nextui-org/react'
 import type { AppProps } from 'next/app'
 import { useEffect, useState } from 'react'
 
@@ -13,9 +13,12 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       {ready ? (
         <NextUIProvider theme={createTheme({ type: 'dark' })}>
-          <Text h1 color="success" css={{ width: '100%', textAlign: 'center', paddingTop: '$10' }}>
-            Web3Modal Lab 🧪
-          </Text>
+          <Link href="/" css={{ margin: '30px auto 0', display: 'block' }}>
+            <Text h1 color="success">
+              Web3Modal Lab 🧪
+            </Text>
+          </Link>
+
           <Component {...pageProps} />
         </NextUIProvider>
       ) : null}
