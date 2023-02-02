@@ -34,9 +34,5 @@ export class Web3Modal {
 
   public setTheme = ConfigCtrl.setThemeConfig
 
-  public setSelectedChain = OptionsCtrl.setSelectedChain
-
-  public getSelectedChain = OptionsCtrl.setSelectedChain
-
-  public subscribeSelectedChain = OptionsCtrl.subscribe
+  public setDefaultChain = OptionsCtrl.setSelectedChain
 }

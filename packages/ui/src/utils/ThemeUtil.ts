@@ -184,22 +184,22 @@ export const ThemeUtil = {
 
     if (root) {
       const variables = {
-        '--color-fg-accent': ThemeUtil.color().foreground.accent,
-        '--color-fg-inverse': ThemeUtil.color().foreground.inverse,
-        '--color-fg-1': ThemeUtil.color().foreground[1],
-        '--color-fg-2': ThemeUtil.color().foreground[2],
-        '--color-fg-3': ThemeUtil.color().foreground[3],
-        '--color-bg-1': ThemeUtil.color().background[1],
-        '--color-bg-2': ThemeUtil.color().background[2],
-        '--color-bg-3': ThemeUtil.color().background[3],
-        '--color-overlay': ThemeUtil.color().overlay,
-        '--color-err': ThemeUtil.color().error,
-        '--color-success': themeColors().green.light.foreground,
-        '--gradient-1': ThemeUtil.color().gradient[1],
-        '--gradient-2': ThemeUtil.color().gradient[2],
-        '--gradient-3': ThemeUtil.color().gradient[3],
-        '--gradient-4': ThemeUtil.color().gradient[4],
-        '--modal-z-index': `${themeZIndex}`
+        '--w3m-color-fg-accent': ThemeUtil.color().foreground.accent,
+        '--w3m-color-fg-inverse': ThemeUtil.color().foreground.inverse,
+        '--w3m-color-fg-1': ThemeUtil.color().foreground[1],
+        '--w3m-color-fg-2': ThemeUtil.color().foreground[2],
+        '--w3m-color-fg-3': ThemeUtil.color().foreground[3],
+        '--w3m-color-bg-1': ThemeUtil.color().background[1],
+        '--w3m-color-bg-2': ThemeUtil.color().background[2],
+        '--w3m-color-bg-3': ThemeUtil.color().background[3],
+        '--w3m-color-overlay': ThemeUtil.color().overlay,
+        '--w3m-color-err': ThemeUtil.color().error,
+        '--w3m-color-success': themeColors().green.light.foreground,
+        '--w3m-gradient-1': ThemeUtil.color().gradient[1],
+        '--w3m-gradient-2': ThemeUtil.color().gradient[2],
+        '--w3m-gradient-3': ThemeUtil.color().gradient[3],
+        '--w3m-gradient-4': ThemeUtil.color().gradient[4],
+        '--w3m-modal-z-index': `${themeZIndex}`
       }
       Object.entries(variables).forEach(([key, val]) => root.style.setProperty(key, val))
     }
@@ -258,8 +258,8 @@ export const ThemeUtil = {
     }
 
     ::selection {
-      color: var(--color-fg-inverse);
-      background: var(--color-fg-accent);
+      color: var(--w3m-color-fg-inverse);
+      background: var(--w3m-color-fg-accent);
     }
   `
 }

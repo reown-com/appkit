@@ -1,0 +1,23 @@
+{
+  "name": "laboratory",
+  "version": "2.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && next export"
+  },
+  "dependencies": {
+    "@nextui-org/react": "1.0.0-beta.12",
+    "@web3modal/ethereum": "2.1.0",
+    "@web3modal/react": "2.1.0",
+    "ethers": "5.7.2",
+    "next": "13.1.6",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "wagmi": "0.11.3"
+  },
+  "devDependencies": {
+    "@types/react": "18.0.27",
+    "@types/react-dom": "18.0.10"
+  }
+}

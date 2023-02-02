@@ -99,21 +99,24 @@ export class W3mModal extends LitElement {
 
   private async fetchEnsProfile(profileAddress?: `0x${string}`) {
     try {
-      OptionsCtrl.setProfileLoading(true)
-      const address = profileAddress ?? OptionsCtrl.state.address
-      const { id } = ClientCtrl.client().getDefaultChain()
-      if (address && id === 1) {
-        const [name, avatar] = await Promise.all([
-          ClientCtrl.client().fetchEnsName({ address, chainId: 1 }),
-          ClientCtrl.client().fetchEnsAvatar({ address, chainId: 1 })
-        ])
-        if (avatar) {
-          await UiUtil.preloadImage(avatar)
+      if (ConfigCtrl.state.enableAccountView) {
+        OptionsCtrl.setProfileLoading(true)
+        const address = profileAddress ?? OptionsCtrl.state.address
+        const { id } = ClientCtrl.client().getDefaultChain()
+        if (address && id === 1) {
+          const [name, avatar] = await Promise.all([
+            ClientCtrl.client().fetchEnsName({ address, chainId: 1 }),
+            ClientCtrl.client().fetchEnsAvatar({ address, chainId: 1 })
+          ])
+          if (avatar) {
+            await UiUtil.preloadImage(avatar)
+          }
+          OptionsCtrl.setProfileName(name)
+          OptionsCtrl.setProfileAvatar(avatar)
         }
-        OptionsCtrl.setProfileName(name)
-        OptionsCtrl.setProfileAvatar(avatar)
       }
     } catch (err) {
+      console.error(err)
       ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
     } finally {
       OptionsCtrl.setProfileLoading(false)
@@ -122,13 +125,16 @@ export class W3mModal extends LitElement {
 
   private async fetchBalance(balanceAddress?: `0x${string}`) {
     try {
-      OptionsCtrl.setBalanceLoading(true)
-      const address = balanceAddress ?? OptionsCtrl.state.address
-      if (address) {
-        const balance = await ClientCtrl.client().fetchBalance({ address })
-        OptionsCtrl.setBalance({ amount: balance.formatted, symbol: balance.symbol })
+      if (ConfigCtrl.state.enableAccountView) {
+        OptionsCtrl.setBalanceLoading(true)
+        const address = balanceAddress ?? OptionsCtrl.state.address
+        if (address) {
+          const balance = await ClientCtrl.client().fetchBalance({ address })
+          OptionsCtrl.setBalance({ amount: balance.formatted, symbol: balance.symbol })
+        }
       }
     } catch (err) {
+      console.error(err)
       ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
     } finally {
       OptionsCtrl.setBalanceLoading(false)
@@ -151,30 +157,24 @@ export class W3mModal extends LitElement {
   }
 
   private async preloadExplorerData() {
-    const { standaloneChains, chains, isExplorer } = OptionsCtrl.state
+    const { standaloneChains, chains } = OptionsCtrl.state
 
-    if (isExplorer) {
-      const chainsFilter = standaloneChains?.join(',')
-      await Promise.all([
-        ExplorerCtrl.getPreviewWallets({
-          page: 1,
-          entries: 10,
-          chains: chainsFilter,
-          device: CoreUtil.isMobile() ? 'mobile' : 'desktop',
-          version: CoreUtil.getWalletConnectVersion()
-        }),
-        ExplorerCtrl.getRecomendedWallets()
-      ])
-      OptionsCtrl.setIsDataLoaded(true)
-      const { previewWallets, recomendedWallets } = ExplorerCtrl.state
-      const chainsImgs = chains?.map(chain => UiUtil.getChainIcon(chain.id)) ?? []
-      const walletImgs = [...previewWallets, ...recomendedWallets].map(
-        wallet => wallet.image_url.lg
-      )
-      await this.preloadExplorerImages([...chainsImgs, ...walletImgs])
-    } else {
-      OptionsCtrl.setIsDataLoaded(true)
-    }
+    const chainsFilter = standaloneChains?.join(',')
+    await Promise.all([
+      ExplorerCtrl.getPreviewWallets({
+        page: 1,
+        entries: 10,
+        chains: chainsFilter,
+        device: CoreUtil.isMobile() ? 'mobile' : 'desktop',
+        version: CoreUtil.getWalletConnectVersion()
+      }),
+      ExplorerCtrl.getRecomendedWallets()
+    ])
+    OptionsCtrl.setIsDataLoaded(true)
+    const { previewWallets, recomendedWallets } = ExplorerCtrl.state
+    const chainsImgs = chains?.map(chain => UiUtil.getChainIcon(chain.id)) ?? []
+    const walletImgs = [...previewWallets, ...recomendedWallets].map(wallet => wallet.image_url.lg)
+    await this.preloadExplorerImages([...chainsImgs, ...walletImgs])
   }
 
   private async preloadExplorerImages(images: string[]) {
@@ -191,9 +191,11 @@ export class W3mModal extends LitElement {
   }
 
   private async preloadConnectorImages() {
-    const images = UiUtil.getConnectorImageUrls()
-    if (images.length) {
-      await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
+    if (!OptionsCtrl.state.isStandalone) {
+      const images = UiUtil.getConnectorImageUrls()
+      if (images.length) {
+        await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
+      }
     }
   }
 
@@ -207,7 +209,8 @@ export class W3mModal extends LitElement {
           this.preloadConnectorImages()
         ])
       }
-    } catch {
+    } catch (err) {
+      console.error(err)
       ToastCtrl.openToast('Failed preloading', 'error')
     }
   }

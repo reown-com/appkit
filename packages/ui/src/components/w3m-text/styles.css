@@ -63,29 +63,29 @@ span {
 }
 
 :host(*) {
-  color: var(--color-fg-1);
+  color: var(--w3m-color-fg-1);
 }
 
 .w3m-color-primary {
-  color: var(--color-fg-1);
+  color: var(--w3m-color-fg-1);
 }
 
 .w3m-color-secondary {
-  color: var(--color-fg-2);
+  color: var(--w3m-color-fg-2);
 }
 
 .w3m-color-tertiary {
-  color: var(--color-fg-3);
+  color: var(--w3m-color-fg-3);
 }
 
 .w3m-color-inverse {
-  color: var(--color-fg-inverse);
+  color: var(--w3m-color-fg-inverse);
 }
 
 .w3m-color-accnt {
-  color: var(--color-fg-accent);
+  color: var(--w3m-color-fg-accent);
 }
 
 .w3m-color-error {
-  color: var(--color-err);
+  color: var(--w3m-color-err);
 }

@@ -1,25 +1,19 @@
-import { Web3Button, Web3Modal, Web3NetworkSwitch } from '@web3modal/react'
+import { Web3Button, Web3NetworkSwitch } from '@web3modal/react'
 import CustomButton from '../components/CustomButton'
-import ThemeControls from '../components/ThemeControls'
-import { ethereumClient, projectId } from './_app'
 
 export default function HomePage() {
   return (
     <>
-      <h2>Buttons</h2>
-      <div className="container">
-        {/* Use predefined button  */}
-        <Web3Button icon="show" label="Connect Wallet" balance="show" />
+      {/* Predefined button  */}
+      <Web3Button icon="show" label="Connect Wallet" balance="show" />
+      <br />
 
-        {/* Use custom button */}
-        <CustomButton />
+      {/* Network Switcher Button */}
+      <Web3NetworkSwitch />
+      <br />
 
-        <Web3NetworkSwitch />
-      </div>
-
-      <ThemeControls />
-
-      <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
+      {/* Custom button */}
+      <CustomButton />
     </>
   )
 }

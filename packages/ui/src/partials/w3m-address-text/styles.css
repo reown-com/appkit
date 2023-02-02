@@ -14,9 +14,9 @@ w3m-text {
 .w3m-loading {
   background: linear-gradient(
     270deg,
-    var(--color-fg-1) 36.33%,
-    var(--color-fg-3) 42.07%,
-    var(--color-fg-1) 83.3%
+    var(--w3m-color-fg-1) 36.33%,
+    var(--w3m-color-fg-3) 42.07%,
+    var(--w3m-color-fg-1) 83.3%
   );
   background-size: 200px 100%;
   background-clip: text;

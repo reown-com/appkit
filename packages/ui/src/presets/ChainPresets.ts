@@ -12,5 +12,21 @@ export const ChainPresets = {
   // Optimism
   10: 'ab9c186a-c52f-464b-2906-ca59d760a400',
   // Polygon
-  137: '41d04d42-da3b-4453-8506-668cc0727900'
+  137: '41d04d42-da3b-4453-8506-668cc0727900',
+  // Gnosis
+  100: '02b53f6a-e3d4-479e-1cb4-21178987d100',
+  // EVMos
+  9001: 'f926ff41-260d-4028-635e-91913fc28e00',
+  // ZkSync
+  324: 'b310f07f-4ef7-49f3-7073-2a0a39685800',
+  // Filecoin
+  314: '5a73b3dd-af74-424e-cae0-0de859ee9400',
+  // Iotx
+  4689: '34e68754-e536-40da-c153-6ef2e7188a00',
+  // Metis,
+  1088: '3897a66d-40b9-4833-162f-a2c90531c900',
+  // Moonbeam
+  1284: '161038da-44ae-4ec7-1208-0ea569454b00',
+  // Moonriver
+  1285: 'f1d73bb6-5450-4e18-38f7-fb6484264a00'
 } as Record<string, string | undefined>

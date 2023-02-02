@@ -18,7 +18,6 @@ const state = proxy<OptionsCtrlState>({
   isStandalone: false,
   isCustomDesktop: false,
   isCustomMobile: false,
-  isExplorer: false,
   isDataLoaded: false,
   isUiLoaded: false
 })
@@ -66,10 +65,6 @@ export const OptionsCtrl = {
 
   setIsCustomMobile(isCustomMobile: OptionsCtrlState['isCustomMobile']) {
     state.isCustomMobile = isCustomMobile
-  },
-
-  setIsExplorer(isExplorer: OptionsCtrlState['isExplorer']) {
-    state.isExplorer = isExplorer
   },
 
   getAccount() {
@@ -125,6 +120,7 @@ export const OptionsCtrl = {
 
   resetAccount() {
     state.address = undefined
+    state.isConnected = false
     OptionsCtrl.resetEnsProfile()
     OptionsCtrl.resetBalance()
   }

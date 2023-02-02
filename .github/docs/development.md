@@ -15,13 +15,14 @@ Without these `yarn:build` command will fail. To create your ProjectID head to [
 
 ## Commands
 
+Please execute all commands from the monorepo root to avoid issues with yarn workspaces. Running `build` command is required if this is your first time setting up the monorepo.
+
 - `yarn build` - Build all packages.
 - `yarn dev` - Build and watch all packages for changes.
 - `yarn dev:react` - Run react example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn dev:react-standalone` - Run react standalone example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn dev:html` - Run plain html/js example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn dev:html-standalone` - Run plain html/js standalone example (has to be ran together with `yarn dev` in a separate terminal tab).
-- `yarn build` - Build all packages + examples.
 - `yarn lint` - Run the linter.
 - `yarn prettier` - Run prettier.
 - `yarn typecheck` - Run typescript checks.

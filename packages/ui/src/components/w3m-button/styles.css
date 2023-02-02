@@ -2,16 +2,16 @@ button {
   border-radius: 28px;
   height: 28px;
   padding: 0 10px;
-  background-color: var(--color-fg-accent);
+  background-color: var(--w3m-color-fg-accent);
 }
 
 button path {
-  fill: var(--color-fg-inverse);
+  fill: var(--w3m-color-fg-inverse);
 }
 
 button::after {
   border-radius: inherit;
-  border: 1px solid var(--color-overlay);
+  border: 1px solid var(--w3m-color-overlay);
 }
 
 button:disabled::after {
@@ -27,9 +27,9 @@ button:disabled::after {
 }
 
 button:hover::after {
-  background-color: var(--color-overlay);
+  background-color: var(--w3m-color-overlay);
 }
 
 button:disabled {
-  background-color: var(--color-bg-3);
+  background-color: var(--w3m-color-bg-3);
 }

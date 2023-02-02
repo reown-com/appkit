@@ -1,3 +1,4 @@
+import type { Chain } from '@wagmi/core'
 import { InjectedConnector } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
@@ -8,8 +9,8 @@ import type { ModalConnectorsOpts, WalletConnectProviderOpts } from './types'
 export const NAMESPACE = 'eip155'
 
 // -- providers ------------------------------------------------------- //
-export function walletConnectProvider({ projectId }: WalletConnectProviderOpts) {
-  return jsonRpcProvider({
+export function walletConnectProvider<C extends Chain>({ projectId }: WalletConnectProviderOpts) {
+  return jsonRpcProvider<C>({
     rpc: chain => {
       const supportedChains = [
         1, 3, 4, 5, 10, 42, 56, 69, 97, 100, 137, 420, 42161, 42220, 43114, 80001, 421611, 421613,

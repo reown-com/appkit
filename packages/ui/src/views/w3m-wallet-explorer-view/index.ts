@@ -1,4 +1,4 @@
-import type { InstallConnectorData, Listing } from '@web3modal/core'
+import type { InstallConnectorData, Listing, MobileWallet } from '@web3modal/core'
 import {
   ClientCtrl,
   CoreUtil,
@@ -89,6 +89,7 @@ export class W3mWalletExplorerView extends LitElement {
         ])
         this.endReached = this.isLastPage()
       } catch (err) {
+        console.error(err)
         ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
       } finally {
         this.loading = false
@@ -97,11 +98,21 @@ export class W3mWalletExplorerView extends LitElement {
     }
   }
 
-  private async onConnectPlatform(listing: Listing) {
+  private onConnectCustom({ name, id, links }: MobileWallet) {
+    if (CoreUtil.isMobile()) {
+      UiUtil.handleMobileLinking({ links, name, id })
+    } else {
+      RouterCtrl.push('DesktopConnector', {
+        DesktopConnector: { name, walletId: id, universal: links.universal, native: links.native }
+      })
+    }
+  }
+
+  private onConnectListing(listing: Listing) {
     if (CoreUtil.isMobile()) {
       const { id, image_url } = listing
       const { native, universal } = listing.mobile
-      await UiUtil.handleMobileLinking({
+      UiUtil.handleMobileLinking({
         links: { native, universal },
         name: listing.name,
         id,
@@ -128,20 +139,6 @@ export class W3mWalletExplorerView extends LitElement {
     }
   }
 
-  private readonly searchDebounce = UiUtil.debounce((value: string) => {
-    if (value.length >= 3) {
-      this.firstFetch = true
-      this.endReached = false
-      this.search = value
-      ExplorerCtrl.resetSearch()
-      this.fetchWallets()
-    } else if (this.search) {
-      this.search = ''
-      this.endReached = this.isLastPage()
-      ExplorerCtrl.resetSearch()
-    }
-  })
-
   private onSearchChange(event: Event) {
     const { value } = event.target as HTMLInputElement
     this.searchDebounce(value)
@@ -163,6 +160,20 @@ export class W3mWalletExplorerView extends LitElement {
     }
   }
 
+  private readonly searchDebounce = UiUtil.debounce((value: string) => {
+    if (value.length >= 3) {
+      this.firstFetch = true
+      this.endReached = false
+      this.search = value
+      ExplorerCtrl.resetSearch()
+      this.fetchWallets()
+    } else if (this.search) {
+      this.search = ''
+      this.endReached = this.isLastPage()
+      ExplorerCtrl.resetSearch()
+    }
+  })
+
   // -- render ------------------------------------------------------- //
   protected render() {
     const { wallets, search } = ExplorerCtrl.state
@@ -175,9 +186,11 @@ export class W3mWalletExplorerView extends LitElement {
       !isLoading && (!isSearch || UiUtil.caseSafeIncludes(InjectedId.coinbaseWallet, this.search))
     const isExtensions = !isStandalone && !CoreUtil.isMobile()
     let extensions = isExtensions ? UiUtil.getExtensionWallets() : []
+    let customWallets = UiUtil.getCustomWallets()
 
     if (isSearch) {
       extensions = extensions.filter(({ name }) => UiUtil.caseSafeIncludes(name, this.search))
+      customWallets = customWallets.filter(({ name }) => UiUtil.caseSafeIncludes(name, this.search))
     }
 
     const isEmpty = !this.loading && !listings.length && !extensions.length && !isCoinbase
@@ -199,6 +212,16 @@ export class W3mWalletExplorerView extends LitElement {
             ? null
             : [...Array(iterator)].map(
                 (_, index) => html`
+                  ${customWallets[index]
+                    ? html`
+                        <w3m-wallet-button
+                          name=${customWallets[index].name}
+                          walletId=${customWallets[index].id}
+                          .onClick=${() => this.onConnectCustom(customWallets[index])}
+                        >
+                        </w3m-wallet-button>
+                      `
+                    : null}
                   ${extensions[index]
                     ? html`
                         <w3m-wallet-button
@@ -215,7 +238,7 @@ export class W3mWalletExplorerView extends LitElement {
                           src=${listings[index].image_url.lg}
                           name=${listings[index].name}
                           walletId=${listings[index].id}
-                          .onClick=${async () => this.onConnectPlatform(listings[index])}
+                          .onClick=${() => this.onConnectListing(listings[index])}
                         >
                         </w3m-wallet-button>
                       `

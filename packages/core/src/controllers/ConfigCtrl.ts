@@ -10,7 +10,7 @@ function isDarkMode() {
 }
 
 const state = proxy<ConfigCtrlState>({
-  projectId: undefined,
+  projectId: '',
   themeMode: isDarkMode() ? 'dark' : 'light',
   themeColor: 'default',
   themeBackground: CoreUtil.isMobile() ? 'themeColor' : 'gradient',
@@ -23,6 +23,7 @@ const state = proxy<ConfigCtrlState>({
   standaloneChains: undefined,
   enableStandaloneMode: false,
   enableNetworkView: false,
+  enableAccountView: true,
   defaultChain: undefined,
   explorerAllowList: undefined,
   explorerDenyList: undefined,
@@ -45,7 +46,6 @@ export const ConfigCtrl = {
     )
     OptionsCtrl.setIsCustomMobile(Boolean(config.mobileWallets?.length))
     OptionsCtrl.setIsCustomDesktop(Boolean(config.desktopWallets?.length))
-    OptionsCtrl.setIsExplorer(Boolean(config.projectId?.length))
 
     if (config.defaultChain) {
       OptionsCtrl.setSelectedChain(config.defaultChain)

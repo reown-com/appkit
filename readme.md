@@ -1,8 +1,8 @@
 > Looking for v1.x readme? It is available on [V1 Branch](https://github.com/WalletConnect/web3modal/tree/V1)
 
-### 📚 [Documentation](https://docs.walletconnect.com/2.0/introduction/web3modal/about)
+### 📚 [Documentation](https://docs.walletconnect.com/2.0/web3modal/about)
 
-### 🖥️ [Minimal Example](https://web3modal-dev.pages.dev/)
+### 🧪 [Laboratory](https://lab.web3modal.com)
 
 ### 🔗 [Website](https://web3modal.com)
 

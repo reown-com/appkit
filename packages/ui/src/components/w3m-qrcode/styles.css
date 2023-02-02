@@ -40,9 +40,9 @@ svg:first-child {
 }
 
 svg:first-child path:first-child {
-  fill: var(--color-fg-accent);
+  fill: var(--w3m-color-fg-accent);
 }
 
 svg:first-child path:last-child {
-  stroke: var(--color-overlay);
+  stroke: var(--w3m-color-overlay);
 }

@@ -21,7 +21,7 @@
   width: 50px;
   z-index: 2;
   position: absolute;
-  background: linear-gradient(to right, var(--color-bg-1) 0%, transparent 100%);
+  background: linear-gradient(to right, var(--w3m-color-bg-1) 0%, transparent 100%);
   top: 0;
 }
 

@@ -9,7 +9,7 @@ div::after {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  border: 1px solid var(--color-overlay);
+  border: 1px solid var(--w3m-color-overlay);
 }
 
 div img {
@@ -25,9 +25,9 @@ svg {
 }
 
 #token-placeholder-fill {
-  fill: var(--color-bg-3);
+  fill: var(--w3m-color-bg-3);
 }
 
 #token-placeholder-dash {
-  stroke: var(--color-overlay);
+  stroke: var(--w3m-color-overlay);
 }

@@ -154,11 +154,12 @@ export const UiUtil = {
       const { selectedChain } = OptionsCtrl.state
       await ClientCtrl.client().connectConnector(id, selectedChain?.id)
       ModalCtrl.close()
-    } catch (error) {
+    } catch (err) {
+      console.error(err)
       if (onError) {
         onError()
       } else {
-        ToastCtrl.openToast(UiUtil.getErrorMessage(error), 'error')
+        ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
       }
     }
   },
@@ -219,24 +220,31 @@ export const UiUtil = {
     const root: HTMLElement | null = document.querySelector(':root')
     if (root) {
       const variables = {
-        '--color-av-1': colors[0],
-        '--color-av-2': colors[1],
-        '--color-av-3': colors[2],
-        '--color-av-4': colors[3],
-        '--color-av-5': colors[4]
+        '--w3m-color-av-1': colors[0],
+        '--w3m-color-av-2': colors[1],
+        '--w3m-color-av-3': colors[2],
+        '--w3m-color-av-4': colors[3],
+        '--w3m-color-av-5': colors[4]
       }
       Object.entries(variables).forEach(([key, val]) => root.style.setProperty(key, val))
     }
   },
 
   setRecentWallet(wallet: RecentWallet) {
-    localStorage.setItem(UiUtil.W3M_RECENT_WALLET, JSON.stringify(wallet))
+    const version = ClientCtrl.client().walletConnectVersion
+    localStorage.setItem(UiUtil.W3M_RECENT_WALLET, JSON.stringify({ [version]: wallet }))
   },
 
   getRecentWallet() {
     const wallet = localStorage.getItem(UiUtil.W3M_RECENT_WALLET)
-    if (wallet) {
-      return JSON.parse(wallet) as RecentWallet
+    const { isStandalone } = OptionsCtrl.state
+
+    if (wallet && !isStandalone) {
+      const json = JSON.parse(wallet)
+      const version = ClientCtrl.client().walletConnectVersion
+      if (wallet[version]) {
+        return json[version] as RecentWallet
+      }
     }
 
     return undefined

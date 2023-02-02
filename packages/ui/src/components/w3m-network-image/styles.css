@@ -4,7 +4,7 @@ div {
 }
 
 .polygon-stroke {
-  stroke: var(--color-overlay);
+  stroke: var(--w3m-color-overlay);
 }
 
 svg {
@@ -14,9 +14,9 @@ svg {
 }
 
 #network-placeholder-fill {
-  fill: var(--color-bg-3);
+  fill: var(--w3m-color-bg-3);
 }
 
 #network-placeholder-dash {
-  stroke: var(--color-overlay);
+  stroke: var(--w3m-color-overlay);
 }

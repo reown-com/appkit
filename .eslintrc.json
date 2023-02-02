@@ -41,6 +41,7 @@
     "newline-before-return": "error",
     "camelcase": "off",
     "class-methods-use-this": "off",
+    "no-console": ["error", { "allow": ["error"] }],
 
     "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
@@ -69,6 +70,7 @@
       { "argsIgnorePattern": "^_", "varsIgnorePattern": "h" }
     ],
     "@typescript-eslint/no-confusing-void-expression": ["error", { "ignoreArrowShorthand": true }],
-    "@typescript-eslint/member-ordering": "off"
+    "@typescript-eslint/member-ordering": "off",
+    "@typescript-eslint/key-spacing": "off"
   }
 }

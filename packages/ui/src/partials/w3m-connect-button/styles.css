@@ -9,11 +9,11 @@ svg {
 }
 
 svg path {
-  fill: var(--color-fg-inverse);
+  fill: var(--w3m-color-fg-inverse);
 }
 
 button:disabled svg path {
-  fill: var(--color-fg-3);
+  fill: var(--w3m-color-fg-3);
 }
 
 w3m-spinner {

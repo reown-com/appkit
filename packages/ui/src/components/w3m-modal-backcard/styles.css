@@ -15,19 +15,19 @@
 
 .w3m-gradient-placeholder {
   background: linear-gradient(
-    var(--gradient-1),
-    var(--gradient-2),
-    var(--gradient-3),
-    var(--gradient-4)
+    var(--w3m-gradient-1),
+    var(--w3m-gradient-2),
+    var(--w3m-gradient-3),
+    var(--w3m-gradient-4)
   );
 }
 
 .w3m-color-placeholder {
-  background-color: var(--color-fg-accent);
+  background-color: var(--w3m-color-fg-accent);
 }
 
 .w3m-highlight {
-  border: 1px solid var(--color-overlay);
+  border: 1px solid var(--w3m-color-overlay);
 }
 
 .w3m-canvas {
@@ -62,7 +62,7 @@
 }
 
 #w3m-wc-logo path {
-  fill: var(--color-fg-inverse);
+  fill: var(--w3m-color-fg-inverse);
 }
 
 .w3m-action-btn {
@@ -75,13 +75,13 @@
   align-items: center;
   cursor: pointer;
   transition: background-color, 0.2s ease;
-  background-color: var(--color-bg-1);
-  box-shadow: 0 0 0 1px var(--color-overlay), 0px 2px 4px -2px rgba(0, 0, 0, 0.12),
+  background-color: var(--w3m-color-bg-1);
+  box-shadow: 0 0 0 1px var(--w3m-color-overlay), 0px 2px 4px -2px rgba(0, 0, 0, 0.12),
     0px 4px 4px -2px rgba(0, 0, 0, 0.08);
 }
 
 .w3m-action-btn:hover {
-  background-color: var(--color-bg-2);
+  background-color: var(--w3m-color-bg-2);
 }
 
 .w3m-action-btn svg {
@@ -90,7 +90,7 @@
 }
 
 .w3m-action-btn path {
-  fill: var(--color-fg-1);
+  fill: var(--w3m-color-fg-1);
 }
 
 .w3m-actions {
@@ -102,9 +102,9 @@
 }
 
 .w3m-help-active button:first-child {
-  background-color: var(--color-fg-1);
+  background-color: var(--w3m-color-fg-1);
 }
 
 .w3m-help-active button:first-child path {
-  fill: var(--color-bg-1);
+  fill: var(--w3m-color-bg-1);
 }

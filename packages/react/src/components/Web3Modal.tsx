@@ -1,7 +1,7 @@
 import type { ConfigCtrlState } from '@web3modal/core'
 import { ClientCtrl, ConfigCtrl, OptionsCtrl } from '@web3modal/core'
 import type { EthereumClient } from '@web3modal/ethereum'
-import React, { useCallback, useEffect } from 'react'
+import React, { memo, useCallback, useEffect } from 'react'
 import { Modal } from './Modal'
 
 /**
@@ -14,7 +14,7 @@ interface Props extends Omit<ConfigCtrlState, 'enableStandaloneMode' | 'standalo
 /**
  * Component
  */
-export function Web3Modal({ ethereumClient, ...config }: Props) {
+function CreateWeb3Modal({ ethereumClient, ...config }: Props) {
   const onConfigure = useCallback(async () => {
     if (ethereumClient) {
       ClientCtrl.setEthereumClient(ethereumClient)
@@ -30,3 +30,5 @@ export function Web3Modal({ ethereumClient, ...config }: Props) {
 
   return <Modal />
 }
+
+export const Web3Modal = memo(CreateWeb3Modal)

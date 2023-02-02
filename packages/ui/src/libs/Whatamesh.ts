@@ -205,7 +205,7 @@ export default class Whatamesh {
   waitForCssVars() {
     if (
       this.computedCanvasStyle &&
-      -1 !== this.computedCanvasStyle.getPropertyValue('--gradient-1').indexOf('#')
+      -1 !== this.computedCanvasStyle.getPropertyValue('--w3m-gradient-1').indexOf('#')
     )
       this.init()
     else {
@@ -213,7 +213,12 @@ export default class Whatamesh {
     }
   }
   initGradientColors() {
-    this.sectionColors = ['--gradient-1', '--gradient-2', '--gradient-3', '--gradient-4']
+    this.sectionColors = [
+      '--w3m-gradient-1',
+      '--w3m-gradient-2',
+      '--w3m-gradient-3',
+      '--w3m-gradient-4'
+    ]
       .map(cssPropertyName => {
         let hex = this.computedCanvasStyle.getPropertyValue(cssPropertyName).trim()
         if (4 === hex.length) {
