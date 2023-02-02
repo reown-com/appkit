@@ -16,8 +16,8 @@
     "typecheck": "npm run typecheck --ws --if-present",
     "new-version": "lerna version --no-git-tag-version --exact",
     "pre-publish": "npm run lint; npm run typecheck; npm run prettier; npm run build; npm run new-version",
-    "npm-publish:latest": "lerna exec -- npm publish --no-private --access public --tag latest",
-    "npm-publish:canary": "lerna exec -- npm publish --no-private --access public --tag canary"
+    "publish:latest": "lerna exec -- npm publish --no-private --access public --tag latest",
+    "publish:canary": "lerna exec -- npm publish --no-private --access public --tag canary"
   },
   "workspaces": [
     "chains/ethereum",
