@@ -11,11 +11,11 @@ export class W3mSelectNetworkView extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private async onSelectChain(chain: SwitchNetworkData) {
-    const { isConnected, selectedChain } = OptionsCtrl.state
+    const { isConnected, selectedChain, walletConnectVersion } = OptionsCtrl.state
     if (isConnected) {
       if (selectedChain?.id === chain.id) {
         RouterCtrl.replace('Account')
-      } else if (ClientCtrl.client().walletConnectVersion === 2) {
+      } else if (walletConnectVersion === 2) {
         await ClientCtrl.client().switchNetwork({ chainId: chain.id })
         RouterCtrl.replace('Account')
       } else {

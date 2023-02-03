@@ -50,7 +50,10 @@ export class W3mDesktopConnectorView extends LitElement {
 
   private async createConnectionAndWait(retry = 0) {
     const { standaloneUri } = OptionsCtrl.state
+    const { name, walletId, native, universal, icon } = this.getRouterData()
+    const recentWalletData = { name, id: walletId, links: { native, universal }, image: icon }
     if (standaloneUri) {
+      UiUtil.setRecentWallet(recentWalletData)
       this.onFormatAndRedirect(standaloneUri)
     } else {
       try {
@@ -58,8 +61,7 @@ export class W3mDesktopConnectorView extends LitElement {
           this.uri = uri
           this.onFormatAndRedirect(uri)
         }, OptionsCtrl.state.selectedChain?.id)
-        const { name, walletId, native, universal, icon } = this.getRouterData()
-        UiUtil.setRecentWallet({ name, id: walletId, links: { native, universal }, image: icon })
+        UiUtil.setRecentWallet(recentWalletData)
         ModalCtrl.close()
       } catch (err) {
         console.error(err)

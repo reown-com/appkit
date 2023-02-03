@@ -46,6 +46,7 @@ export const ConfigCtrl = {
     )
     OptionsCtrl.setIsCustomMobile(Boolean(config.mobileWallets?.length))
     OptionsCtrl.setIsCustomDesktop(Boolean(config.desktopWallets?.length))
+    OptionsCtrl.setWalletConnectVersion(config.walletConnectVersion ?? 1)
 
     if (config.defaultChain) {
       OptionsCtrl.setSelectedChain(config.defaultChain)

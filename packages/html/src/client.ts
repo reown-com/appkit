@@ -5,7 +5,10 @@ import type { EthereumClient } from '@web3modal/ethereum'
 /**
  * Types
  */
-type Web3ModalConfig = Omit<ConfigCtrlState, 'enableStandaloneMode' | 'standaloneChains'>
+type Web3ModalConfig = Omit<
+  ConfigCtrlState,
+  'enableStandaloneMode' | 'standaloneChains' | 'walletConnectVersion'
+>
 
 /**
  * Client
@@ -13,7 +16,7 @@ type Web3ModalConfig = Omit<ConfigCtrlState, 'enableStandaloneMode' | 'standalon
 export class Web3Modal {
   public constructor(config: Web3ModalConfig, client: EthereumClient) {
     ClientCtrl.setEthereumClient(client)
-    ConfigCtrl.setConfig(config)
+    ConfigCtrl.setConfig({ ...config, walletConnectVersion: client.walletConnectVersion })
     this.initUi()
   }
 

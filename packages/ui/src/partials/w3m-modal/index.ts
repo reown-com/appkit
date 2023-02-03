@@ -157,7 +157,7 @@ export class W3mModal extends LitElement {
   }
 
   private async preloadExplorerData() {
-    const { standaloneChains, chains } = OptionsCtrl.state
+    const { standaloneChains, chains, walletConnectVersion } = OptionsCtrl.state
 
     const chainsFilter = standaloneChains?.join(',')
     await Promise.all([
@@ -166,7 +166,7 @@ export class W3mModal extends LitElement {
         entries: 10,
         chains: chainsFilter,
         device: CoreUtil.isMobile() ? 'mobile' : 'desktop',
-        version: CoreUtil.getWalletConnectVersion()
+        version: walletConnectVersion
       }),
       ExplorerCtrl.getRecomendedWallets()
     ])

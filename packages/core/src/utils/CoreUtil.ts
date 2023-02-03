@@ -1,6 +1,3 @@
-import { ClientCtrl } from '../controllers/ClientCtrl'
-import { OptionsCtrl } from '../controllers/OptionsCtrl'
-
 export const CoreUtil = {
   WALLETCONNECT_DEEPLINK_CHOICE: 'WALLETCONNECT_DEEPLINK_CHOICE',
 
@@ -89,15 +86,5 @@ export const CoreUtil = {
 
   isNull<T>(value: T | null): value is null {
     return value === null
-  },
-
-  getWalletConnectVersion() {
-    const { isStandalone } = OptionsCtrl.state
-    let version = 1
-    if (!isStandalone) {
-      version = ClientCtrl.client().walletConnectVersion
-    }
-
-    return version
   }
 }

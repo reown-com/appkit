@@ -4,7 +4,9 @@ import { ConfigCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 /**
  * Types
  */
-type Web3ModalConfig = Omit<ConfigCtrlState, 'enableStandaloneMode'>
+type Web3ModalConfig = Omit<ConfigCtrlState, 'enableStandaloneMode'> & {
+  walletConnectVersion: 1 | 2
+}
 
 /**
  * Client
