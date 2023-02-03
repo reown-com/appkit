@@ -7,7 +7,11 @@ import { Modal } from './Modal'
 /**
  * Props
  */
-interface Props extends Omit<ConfigCtrlState, 'enableStandaloneMode' | 'standaloneChains'> {
+interface Props
+  extends Omit<
+    ConfigCtrlState,
+    'enableStandaloneMode' | 'standaloneChains' | 'walletConnectVersion'
+  > {
   ethereumClient?: EthereumClient
 }
 
@@ -19,7 +23,7 @@ function CreateWeb3Modal({ ethereumClient, ...config }: Props) {
     if (ethereumClient) {
       ClientCtrl.setEthereumClient(ethereumClient)
     }
-    ConfigCtrl.setConfig(config)
+    ConfigCtrl.setConfig({ ...config, walletConnectVersion: ethereumClient?.walletConnectVersion })
     await import('@web3modal/ui')
     OptionsCtrl.setIsUiLoaded(true)
   }, [ethereumClient, config])

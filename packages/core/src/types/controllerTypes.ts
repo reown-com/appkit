@@ -21,6 +21,7 @@ export interface DesktopWallet {
 // -- ConfigCtrl ------------------------------------------- //
 export interface ConfigCtrlState {
   projectId: string
+  walletConnectVersion?: 1 | 2
   themeMode?: 'dark' | 'light'
   themeColor?:
     | 'blackWhite'
@@ -72,6 +73,7 @@ export interface OptionsCtrlState {
   profileLoading?: boolean
   balanceLoading?: boolean
   balance?: { amount: string; symbol: string }
+  walletConnectVersion: 1 | 2
 }
 
 // -- ExplorerCtrl ------------------------------------------- //

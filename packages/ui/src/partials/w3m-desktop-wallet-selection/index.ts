@@ -130,9 +130,16 @@ export class W3mDesktopWalletSelection extends LitElement {
     const connectorTemplate = this.connectorWalletsTemplate()
     const recentTemplate = this.recentWalletTemplate()
     const linkingWallets = [...(desktopTemplate ?? []), ...previewTemplate]
-    let combinedWallets = [...connectorTemplate, ...linkingWallets]
-    combinedWallets = DataFilterUtil.walletTemplatesWithRecent(combinedWallets, recentTemplate)
-    const displayWallets = standaloneUri ? linkingWallets : combinedWallets
+    const combinedWallets = [...connectorTemplate, ...linkingWallets]
+    const combinedWalletsWithRecent = DataFilterUtil.walletTemplatesWithRecent(
+      combinedWallets,
+      recentTemplate
+    )
+    const linkingWalletsWithRecent = DataFilterUtil.walletTemplatesWithRecent(
+      linkingWallets,
+      recentTemplate
+    )
+    const displayWallets = standaloneUri ? linkingWalletsWithRecent : combinedWalletsWithRecent
     const isViewAll = displayWallets.length > 4
     let wallets = []
 

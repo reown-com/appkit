@@ -19,7 +19,8 @@ const state = proxy<OptionsCtrlState>({
   isCustomDesktop: false,
   isCustomMobile: false,
   isDataLoaded: false,
-  isUiLoaded: false
+  isUiLoaded: false,
+  walletConnectVersion: 1
 })
 
 // -- controller --------------------------------------------------- //
@@ -107,6 +108,10 @@ export const OptionsCtrl = {
 
   setIsUiLoaded(isUiLoaded: OptionsCtrlState['isUiLoaded']) {
     state.isUiLoaded = isUiLoaded
+  },
+
+  setWalletConnectVersion(walletConnectVersion: OptionsCtrlState['walletConnectVersion']) {
+    state.walletConnectVersion = walletConnectVersion
   },
 
   resetEnsProfile() {

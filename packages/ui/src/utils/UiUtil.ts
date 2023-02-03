@@ -113,14 +113,15 @@ export const UiUtil = {
     }
 
     if (standaloneUri) {
+      UiUtil.setRecentWallet(wallet)
       onRedirect(standaloneUri)
     } else {
       await ClientCtrl.client().connectWalletConnect(uri => {
         onRedirect(uri)
       }, selectedChain?.id)
+      UiUtil.setRecentWallet(wallet)
       ModalCtrl.close()
     }
-    UiUtil.setRecentWallet(wallet)
   },
 
   async handleAndroidLinking() {
@@ -231,19 +232,20 @@ export const UiUtil = {
   },
 
   setRecentWallet(wallet: RecentWallet) {
-    const version = ClientCtrl.client().walletConnectVersion
-    localStorage.setItem(UiUtil.W3M_RECENT_WALLET, JSON.stringify({ [version]: wallet }))
+    const { walletConnectVersion } = OptionsCtrl.state
+    localStorage.setItem(
+      UiUtil.W3M_RECENT_WALLET,
+      JSON.stringify({ [walletConnectVersion]: wallet })
+    )
   },
 
   getRecentWallet() {
     const wallet = localStorage.getItem(UiUtil.W3M_RECENT_WALLET)
-    const { isStandalone } = OptionsCtrl.state
-
-    if (wallet && !isStandalone) {
+    if (wallet) {
+      const { walletConnectVersion } = OptionsCtrl.state
       const json = JSON.parse(wallet)
-      const version = ClientCtrl.client().walletConnectVersion
-      if (wallet[version]) {
-        return json[version] as RecentWallet
+      if (json[walletConnectVersion]) {
+        return json[walletConnectVersion] as RecentWallet
       }
     }
 

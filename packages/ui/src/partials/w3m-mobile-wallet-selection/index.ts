@@ -112,9 +112,16 @@ export class W3mMobileWalletSelection extends LitElement {
     const previewTemplate = this.previewWalletsTemplate()
     const recentTemplate = this.recentWalletTemplate()
     const linkingWallets = mobileTemplate ?? previewTemplate
-    let combinedWallets = [...connectorTemplate, ...linkingWallets]
-    combinedWallets = DataFilterUtil.walletTemplatesWithRecent(combinedWallets, recentTemplate)
-    const displayWallets = standaloneUri ? linkingWallets : combinedWallets
+    const combinedWallets = [...connectorTemplate, ...linkingWallets]
+    const combinedWalletsWithRecent = DataFilterUtil.walletTemplatesWithRecent(
+      combinedWallets,
+      recentTemplate
+    )
+    const linkingWalletsWithRecent = DataFilterUtil.walletTemplatesWithRecent(
+      linkingWallets,
+      recentTemplate
+    )
+    const displayWallets = standaloneUri ? linkingWalletsWithRecent : combinedWalletsWithRecent
     const isViewAll = displayWallets.length > 8
     let wallets = []
 

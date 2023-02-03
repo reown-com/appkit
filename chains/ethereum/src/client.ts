@@ -13,10 +13,12 @@ import {
 } from '@wagmi/core'
 import type { ConnectorId } from './types'
 
+type WalletConnectVersion = 1 | 2
+
 export class EthereumClient {
   private readonly wagmi = {} as Client
   public walletConnectUri = ''
-  public walletConnectVersion = 1
+  public walletConnectVersion: WalletConnectVersion = 1
   public readonly chains = [] as Chain[]
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,7 +29,7 @@ export class EthereumClient {
     }
     this.wagmi = wagmi
     this.chains = chains
-    this.walletConnectVersion = Number(walletConnect.options.version ?? '1')
+    this.walletConnectVersion = Number(walletConnect.options.version ?? '1') as WalletConnectVersion
   }
 
   // -- private ------------------------------------------- //

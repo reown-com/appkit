@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { getProjectId } from '../utilities/EnvUtil'
 
 const projectId = getProjectId()
-const web3Modal = new Web3Modal({ projectId, themeColor: 'orange' })
+const web3Modal = new Web3Modal({ projectId, themeColor: 'orange', walletConnectVersion: 2 })
 
 export default function v2StandalonePage() {
   const [signClient, setSignClient] = useState<SignClient | undefined>(undefined)
