@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/react",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "main": "dist/index.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -16,13 +16,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/core": "2.1.0",
-    "@web3modal/ui": "2.1.0"
+    "@web3modal/core": "2.1.1",
+    "@web3modal/ui": "2.1.1"
   },
   "devDependencies": {
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
-    "@web3modal/ethereum": "2.1.0",
+    "@web3modal/ethereum": "2.1.1",
     "eslint-plugin-react": "7.32.2",
     "eslint-plugin-react-hooks": "4.6.0",
     "react": "18.2.0",
