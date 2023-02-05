@@ -2,8 +2,10 @@ import { Button, Card, Spinner } from '@nextui-org/react'
 import SignClient from '@walletconnect/sign-client'
 import { Web3Modal } from '@web3modal/standalone'
 import { useEffect, useState } from 'react'
+import { bootstrapSentry } from '../utilities/BootstrapSentry'
 import { getProjectId } from '../utilities/EnvUtil'
 
+bootstrapSentry()
 const projectId = getProjectId()
 const web3Modal = new Web3Modal({ projectId, themeColor: 'orange', walletConnectVersion: 2 })
 

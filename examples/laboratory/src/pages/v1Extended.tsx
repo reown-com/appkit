@@ -16,8 +16,10 @@ import {
   zkSync
 } from 'wagmi/chains'
 import WagmiWeb3ModalWidget from '../components/WagmiWeb3ModalWidget'
+import { bootstrapSentry } from '../utilities/BootstrapSentry'
 import { getProjectId } from '../utilities/EnvUtil'
 
+bootstrapSentry()
 // Configure wagmi and web3modal
 const projectId = getProjectId()
 const chains = [

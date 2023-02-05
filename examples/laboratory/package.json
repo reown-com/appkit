@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "@nextui-org/react": "1.0.0-beta.12",
+    "@sentry/react": "^7.36.0",
+    "@sentry/tracing": "^7.36.0",
     "@web3modal/ethereum": "2.1.1",
     "@web3modal/react": "2.1.1",
     "ethers": "5.7.2",
