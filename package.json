@@ -12,7 +12,7 @@
     "dev:html-standalone": "npm run dev --w=html-standalone-example",
     "dev:laboratory": "npm run dev --w=laboratory",
     "lint": "eslint .",
-    "prettier": "prettier --check .",
+    "prettier": "prettier --write .",
     "typecheck": "npm run typecheck --ws --if-present",
     "new-version": "lerna version --no-git-tag-version --exact",
     "pre-publish": "npm run lint; npm run typecheck; npm run prettier; npm run build; npm run new-version",

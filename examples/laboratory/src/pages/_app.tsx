@@ -1,6 +1,9 @@
 import { createTheme, Link, NextUIProvider, Text } from '@nextui-org/react'
 import type { AppProps } from 'next/app'
 import { useEffect, useState } from 'react'
+import { bootstrap as bootstrapSentry } from '../utilities/SentryUtil'
+
+bootstrapSentry()
 
 export default function App({ Component, pageProps }: AppProps) {
   const [ready, setReady] = useState(false)
