@@ -23,6 +23,7 @@ Please execute all commands from the monorepo root to avoid issues with yarn wor
 - `yarn dev:react-standalone` - Run react standalone example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn dev:html` - Run plain html/js example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn dev:html-standalone` - Run plain html/js standalone example (has to be ran together with `yarn dev` in a separate terminal tab).
+- `yarn dev:lab` - Run laboratory example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn lint` - Run the linter.
 - `yarn prettier` - Run prettier.
 - `yarn typecheck` - Run typescript checks.

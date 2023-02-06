@@ -3124,10 +3124,15 @@
   resolved "https://registry.yarnpkg.com/@types/minimist/-/minimist-1.2.2.tgz#ee771e2ba4b3dc5b372935d549fd9617bf345b8c"
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
 
-"@types/node@*", "@types/node@18.11.18":
+"@types/node@*":
   version "18.11.18"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.18.tgz#8dfb97f0da23c2293e554c5a50d61ef134d7697f"
   integrity sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==
+
+"@types/node@18.11.19":
+  version "18.11.19"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.19.tgz#35e26df9ec441ab99d73e99e9aca82935eea216d"
+  integrity sha512-YUgMWAQBWLObABqrvx8qKO1enAvBUdjZOAWQ5grBAkp5LQv45jBvYKZ3oFS9iKRCQyFjqw6iuEa1vmFqtxYLZw==
 
 "@types/node@^12.12.54":
   version "12.20.55"
@@ -3304,31 +3309,33 @@
     "@typescript-eslint/types" "5.50.0"
     eslint-visitor-keys "^3.3.0"
 
-"@wagmi/chains@0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@wagmi/chains/-/chains-0.2.5.tgz#de4c867bdab3cb0bd448147df2d920bcaeb0d4f3"
-  integrity sha512-RTmVkJbCppB7LTD/PygWS7+ogeGbeGDhrjErozFUT9ED4SOmRer8EMnVIM9qeLrK66SJxHg34Y/KGNbfNCbZrw==
+"@wagmi/chains@0.2.6":
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/@wagmi/chains/-/chains-0.2.6.tgz#21e17329f3912ce45144062360f9e59e5558af14"
+  integrity sha512-YRvWZ6G5X25BgLB8jCAz7Je3yUh+CvmXujrWnL/1lbXslheEq1Ssf77zRfdQo+zfD4bwL/qHEUNREf8r6usKsA==
 
-"@wagmi/connectors@0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@wagmi/connectors/-/connectors-0.2.3.tgz#c55bf449d18faf0772847ff55eb6f310bff421f3"
-  integrity sha512-OSWK9HSzGC6SkdAT+xDULy14577WxSMj0XfrJZsPA105RPkIiAtKmfK5w7zaX9dQbHMCrpUir4v+0esmuQahqQ==
+"@wagmi/connectors@0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@wagmi/connectors/-/connectors-0.2.4.tgz#02aec5ff5319f20b6010f46bf13c133bd7ff3671"
+  integrity sha512-vHlAPm9xIPze1SsF7MzUHG8Hl4mAgYwhCw2uKkhQCpZoEksKn3J89AmINh4BaMVVBcDK2ZYkLZfN0D1VMVMZcQ==
   dependencies:
     "@coinbase/wallet-sdk" "^3.5.4"
     "@ledgerhq/connect-kit-loader" "^1.0.1"
+    "@safe-global/safe-apps-provider" "^0.15.2"
+    "@safe-global/safe-apps-sdk" "^7.9.0"
     "@walletconnect/ethereum-provider" "^1.8.0"
     "@walletconnect/universal-provider" "^2.3.3"
     "@web3modal/standalone" "^2.0.0"
     abitype "^0.3.0"
     eventemitter3 "^4.0.7"
 
-"@wagmi/core@0.9.3":
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.9.3.tgz#7fcbbb71e1a9335068b22e4534605b8f835badfe"
-  integrity sha512-84lYAbgkrmvQUziE4PPqrPUxP4hYhQ0l/0+aIxp1N7aAaRSnX+SlEvIEw9jCWznLBkiBklKlwdBZ4z95ZufVHw==
+"@wagmi/core@0.9.4":
+  version "0.9.4"
+  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.9.4.tgz#8beda3612f8a3379b341cd7f6c693f662719c589"
+  integrity sha512-YUOS1xn2PfKo0c90J708Vd+OPM5GoOouWExL/ZyuDP05f7y3PwDbN5ZfCyiqyTWsO53mMXcajMTFyjDqLxXACg==
   dependencies:
-    "@wagmi/chains" "0.2.5"
-    "@wagmi/connectors" "0.2.3"
+    "@wagmi/chains" "0.2.6"
+    "@wagmi/connectors" "0.2.4"
     abitype "^0.3.0"
     eventemitter3 "^4.0.7"
     zustand "^4.3.1"
@@ -5193,7 +5200,7 @@ esbuild@0.17.5:
     "@esbuild/win32-ia32" "0.17.5"
     "@esbuild/win32-x64" "0.17.5"
 
-esbuild@^0.16.3:
+esbuild@^0.16.14:
   version "0.16.17"
   resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.16.17.tgz#fc2c3914c57ee750635fee71b89f615f25065259"
   integrity sha512-G8LEkV0XzDMNwXKgM0Jwu3nY3lSTwSGY6XbxM9cr9+s0T/qSV1q1JVPBGzm3dcjhCic9+emZDmMffkwgPeOeLg==
@@ -8211,7 +8218,7 @@ postcss@8.4.14:
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
-postcss@^8.4.20:
+postcss@^8.4.21:
   version "8.4.21"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.21.tgz#c639b719a57efc3187b13a1d765675485f4134f4"
   integrity sha512-tP7u/Sn/dVxK2NnruI4H9BG+x+Wxz6oeZ1cJ8P6G/PZY0IKk4k/63TDsQf2kQq3+qoJeLm2kIBUNlZe3zgb4Zg==
@@ -8681,17 +8688,10 @@ rollup-pluginutils@^2.8.2:
   dependencies:
     estree-walker "^0.6.1"
 
-rollup@3.12.1:
-  version "3.12.1"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-3.12.1.tgz#2975b97713e4af98c15e7024b88292d7fddb3853"
-  integrity sha512-t9elERrz2i4UU9z7AwISj3CQcXP39cWxgRWLdf4Tm6aKm1eYrqHIgjzXBgb67GNY1sZckTFFi0oMozh3/S++Ig==
-  optionalDependencies:
-    fsevents "~2.3.2"
-
-rollup@^3.7.0:
-  version "3.12.0"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-3.12.0.tgz#813d88ec11e36108da788fc471b3c81b365a7c29"
-  integrity sha512-4MZ8kA2HNYahIjz63rzrMMRvDqQDeS9LoriJvMuV0V6zIGysP36e9t4yObUfwdT9h/szXoHQideICftcdZklWg==
+rollup@3.14.0, rollup@^3.10.0:
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-3.14.0.tgz#f5925255f3b6e8de1dba3916d7619c7da5708d95"
+  integrity sha512-o23sdgCLcLSe3zIplT9nQ1+r97okuaiR+vmAPZPTDYB7/f3tgWIYNyiQveMsZwshBT0is4eGax/HH83Q7CG+/Q==
   optionalDependencies:
     fsevents "~2.3.2"
 
@@ -9562,35 +9562,35 @@ validate-npm-package-name@^4.0.0:
   dependencies:
     builtins "^5.0.0"
 
-valtio@1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/valtio/-/valtio-1.9.0.tgz#d5d9f664319eaf18dd98f758d50495eca28eb0b8"
-  integrity sha512-mQLFsAlKbYascZygFQh6lXuDjU5WHLoeZ8He4HqMnWfasM96V6rDbeFkw1XeG54xycmDonr/Jb4xgviHtuySrA==
+valtio@1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/valtio/-/valtio-1.10.0.tgz#c62bea113b9ff9a7437fde2ff0a27f98bd7d1bb0"
+  integrity sha512-weL/kg2394gghZWo1iKasGg4otnEl42Hqp0/wJ09cV1HieZelPh3du4qyctFzaAwOMoeyZgmSGXxD3aFKQ9J3w==
   dependencies:
     proxy-compare "2.4.0"
     use-sync-external-store "1.2.0"
 
-vite@4.0.4:
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-4.0.4.tgz#4612ce0b47bbb233a887a54a4ae0c6e240a0da31"
-  integrity sha512-xevPU7M8FU0i/80DMR+YhgrzR5KS2ORy1B4xcX/cXLsvnUWvfHuqMmVU6N0YiJ4JWGRJJsLCgjEzKjG9/GKoSw==
+vite@4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-4.1.1.tgz#3b18b81a4e85ce3df5cbdbf4c687d93ebf402e6b"
+  integrity sha512-LM9WWea8vsxhr782r9ntg+bhSFS06FJgCvvB0+8hf8UWtvaiDagKYWXndjfX6kGl74keHJUcpzrQliDXZlF5yg==
   dependencies:
-    esbuild "^0.16.3"
-    postcss "^8.4.20"
+    esbuild "^0.16.14"
+    postcss "^8.4.21"
     resolve "^1.22.1"
-    rollup "^3.7.0"
+    rollup "^3.10.0"
   optionalDependencies:
     fsevents "~2.3.2"
 
-wagmi@0.11.3:
-  version "0.11.3"
-  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-0.11.3.tgz#3d896a088be1c928760b1ecfea47e718360c57ec"
-  integrity sha512-hdoV4evIMLSg1FiL0kULidw/QOBiZMBA5usVej40UnHeIXb4/XM35sO+0W+VZ4P7SxZQdXv2wxMLRgzYzn7Bcg==
+wagmi@0.11.4:
+  version "0.11.4"
+  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-0.11.4.tgz#3711f185568574b828284bdef22322f4d4eb59b5"
+  integrity sha512-zzJAXvsHFuNYrS/3KZC8xPqP7/eQT33xSlMIvMCgO/EYfQLM34r0Z+tcYmJ5KnuS1xd/fO1K6O2sSZVlaXaiLg==
   dependencies:
     "@tanstack/query-sync-storage-persister" "^4.14.5"
     "@tanstack/react-query" "^4.14.5"
     "@tanstack/react-query-persist-client" "^4.14.5"
-    "@wagmi/core" "0.9.3"
+    "@wagmi/core" "0.9.4"
     abitype "^0.3.0"
     use-sync-external-store "^1.2.0"
 
