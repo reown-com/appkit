@@ -64,11 +64,7 @@ export const CoreUtil = {
   },
 
   openHref(href: string, target?: '_blank') {
-    if (target) {
-      window.open(href, target, 'noreferrer noopener')
-    } else {
-      window.open(href)
-    }
+    window.open(href, target, 'noreferrer noopener')
   },
 
   setWalletConnectDeepLink(href: string, name: string) {
