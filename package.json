@@ -10,7 +10,7 @@
     "dev:react-standalone": "npm run dev -w=react-standalone-example",
     "dev:html": "npm run dev --w=html-example",
     "dev:html-standalone": "npm run dev --w=html-standalone-example",
-    "dev:laboratory": "npm run dev --w=laboratory",
+    "dev:lab": "npm run dev --w=laboratory",
     "lint": "eslint .",
     "prettier": "prettier --check .",
     "typecheck": "npm run typecheck --ws --if-present",
