@@ -1,4 +1,5 @@
 dist
+build
 node_modules/
 .DS_Store
 .env
@@ -6,3 +7,4 @@ node_modules/
 out
 lerna-debug.log
 .env.local
+.env
