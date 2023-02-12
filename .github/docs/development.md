@@ -19,8 +19,9 @@ Please execute all commands from the monorepo root to avoid issues with yarn wor
 
 - `yarn build` - Build all packages.
 - `yarn dev` - Build and watch all packages for changes.
-- `yarn dev:react` - Run react example (has to be ran together with `yarn dev` in a separate terminal tab).
-- `yarn dev:react-standalone` - Run react standalone example (has to be ran together with `yarn dev` in a separate terminal tab).
+- `yarn dev:nextjs` - Run nextjs example (has to be ran together with `yarn dev` in a separate terminal tab).
+- `yarn dev:nextjs-standalone` - Run nextjs standalone example (has to be ran together with `yarn dev` in a separate terminal tab).
+- `yarn: dev:cra` - Run create-react-app example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn dev:html` - Run plain html/js example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn dev:html-standalone` - Run plain html/js standalone example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn lint` - Run the linter.
