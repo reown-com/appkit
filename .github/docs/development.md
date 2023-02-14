@@ -32,12 +32,12 @@ Please execute all commands from the monorepo root to avoid issues with yarn wor
 ## Repository structure
 
 - `chains` - Helper packages for managed chain workflows
-- `examples` - Contains examples for all suported use cases, acts as testing ground
+- `examples` - Contains examples for all supported use cases, acts as testing ground
 - `packages`
   - `core` - State, proxy between ui and chain packages
   - `ui` - Web-components based ui of web3modal
     - `components` - Basic ui components
-    - `partials` - Complex ui peaces composing multiple components and accessing core
-    - `vies` - Full web3modal views
+    - `partials` - Complex ui pieces composing multiple components and accessing core
+    - `views` - Full web3modal views
   - `react` - React wrapper on top of core and ui
   - `html` - Vanilla html / js wrapper on top of core and ui
