@@ -1,6 +1,5 @@
 import type { InstallConnectorData, Listing, MobileWallet } from '@web3modal/core'
 import {
-  ClientCtrl,
   CoreUtil,
   ExplorerCtrl,
   OptionsCtrl,
@@ -10,7 +9,6 @@ import {
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { InjectedId } from '../../presets/EthereumPresets'
 import { DataFilterUtil } from '../../utils/DataFilterUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -144,22 +142,6 @@ export class W3mWalletExplorerView extends LitElement {
     this.searchDebounce(value)
   }
 
-  private coinbaseConnectorTemplate() {
-    try {
-      const connector = ClientCtrl.client().getConnectorById(InjectedId.coinbaseWallet)
-
-      return html`
-        <w3m-wallet-button
-          name=${connector.name}
-          walletId=${connector.id}
-          .onClick=${async () => UiUtil.handleConnectorConnection(InjectedId.coinbaseWallet)}
-        ></w3m-wallet-button>
-      `
-    } catch {
-      return null
-    }
-  }
-
   private readonly searchDebounce = UiUtil.debounce((value: string) => {
     if (value.length >= 3) {
       this.firstFetch = true
@@ -182,8 +164,6 @@ export class W3mWalletExplorerView extends LitElement {
     listings = DataFilterUtil.allowedExplorerListings(listings)
     const isLoading = this.loading && !listings.length
     const isSearch = this.search.length >= 3
-    const isCoinbase =
-      !isLoading && (!isSearch || UiUtil.caseSafeIncludes(InjectedId.coinbaseWallet, this.search))
     const isExtensions = !isStandalone && !CoreUtil.isMobile()
     let extensions = isExtensions ? UiUtil.getExtensionWallets() : []
     let customWallets = UiUtil.getCustomWallets()
@@ -193,7 +173,7 @@ export class W3mWalletExplorerView extends LitElement {
       customWallets = customWallets.filter(({ name }) => UiUtil.caseSafeIncludes(name, this.search))
     }
 
-    const isEmpty = !this.loading && !listings.length && !extensions.length && !isCoinbase
+    const isEmpty = !this.loading && !listings.length && !extensions.length
     const iterator = Math.max(extensions.length, listings.length)
     const classes = {
       'w3m-loading': isLoading,
@@ -245,7 +225,6 @@ export class W3mWalletExplorerView extends LitElement {
                     : null}
                 `
               )}
-          ${isCoinbase ? this.coinbaseConnectorTemplate() : null}
         </div>
         <div class="w3m-placeholder-block">
           ${isEmpty
