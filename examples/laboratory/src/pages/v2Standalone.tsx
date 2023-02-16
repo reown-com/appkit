@@ -2,10 +2,15 @@ import { Button, Card, Divider, Modal, Spinner, Text } from '@nextui-org/react'
 import SignClient from '@walletconnect/sign-client'
 import { Web3Modal } from '@web3modal/standalone'
 import { useEffect, useState } from 'react'
-import { getProjectId } from '../utilities/EnvUtil'
+import { getProjectId, getTheme } from '../utilities/EnvUtil'
 
 const projectId = getProjectId()
-const web3Modal = new Web3Modal({ projectId, themeColor: 'orange', walletConnectVersion: 2 })
+const web3Modal = new Web3Modal({
+  projectId,
+  themeColor: 'orange',
+  walletConnectVersion: 2,
+  themeMode: getTheme()
+})
 
 export default function v2StandalonePage() {
   const [signClient, setSignClient] = useState<SignClient | undefined>(undefined)

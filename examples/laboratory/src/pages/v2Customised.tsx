@@ -3,7 +3,7 @@ import { Web3Modal } from '@web3modal/react'
 import { configureChains, createClient, WagmiConfig } from 'wagmi'
 import { mainnet, polygon } from 'wagmi/chains'
 import WagmiWeb3ModalWidget from '../components/WagmiWeb3ModalWidget'
-import { getProjectId } from '../utilities/EnvUtil'
+import { getProjectId, getTheme } from '../utilities/EnvUtil'
 
 // Configure wagmi and web3modal
 const projectId = getProjectId()
@@ -25,6 +25,7 @@ export default function v2BasePage() {
       </WagmiConfig>
 
       <Web3Modal
+        themeMode={getTheme()}
         ethereumClient={ethereumClient}
         projectId={projectId}
         themeColor="blue"

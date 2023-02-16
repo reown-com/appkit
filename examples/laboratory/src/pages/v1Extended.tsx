@@ -16,7 +16,7 @@ import {
   zkSync
 } from 'wagmi/chains'
 import WagmiWeb3ModalWidget from '../components/WagmiWeb3ModalWidget'
-import { getProjectId } from '../utilities/EnvUtil'
+import { getProjectId, getTheme } from '../utilities/EnvUtil'
 
 // Configure wagmi and web3modal
 const projectId = getProjectId()
@@ -50,7 +50,12 @@ export default function v1ExtendedPage() {
         <WagmiWeb3ModalWidget />
       </WagmiConfig>
 
-      <Web3Modal ethereumClient={ethereumClient} projectId={projectId} themeColor="purple" />
+      <Web3Modal
+        ethereumClient={ethereumClient}
+        projectId={projectId}
+        themeColor="purple"
+        themeMode={getTheme()}
+      />
     </>
   )
 }
