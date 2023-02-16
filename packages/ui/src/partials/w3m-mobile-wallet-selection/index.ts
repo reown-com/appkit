@@ -72,6 +72,18 @@ export class W3mMobileWalletSelection extends LitElement {
       wallets = wallets.filter(({ id }) => id !== 'injected' && id !== InjectedId.metaMask)
     }
 
+    /*
+     * Filter for duplicate entries due to a wallet
+     * being an "Injected Wallet" and a "Connector Wallet"
+     */
+    wallets = wallets.filter(
+      (wallet, index, arr) =>
+        index ===
+        arr.findIndex(t => {
+          return t.name === wallet.name
+        })
+    )
+
     return wallets.map(
       ({ name, id, ready }) => html`
         <w3m-wallet-button
