@@ -1,11 +1,5 @@
 import type { InstallConnectorData, Listing, MobileWallet } from '@web3modal/core'
-import {
-  CoreUtil,
-  ExplorerCtrl,
-  OptionsCtrl,
-  RouterCtrl,
-  ToastCtrl
-} from '@web3modal/core'
+import { CoreUtil, ExplorerCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'

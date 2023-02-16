@@ -81,10 +81,21 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private connectorWalletsTemplate() {
-    const wallets = DataFilterUtil.connectorWallets()
+    let wallets = DataFilterUtil.connectorWallets()
+    /*
+     * Filter for duplicate entries due to a wallet
+     * being an "Injected Wallet" and a "Connector Wallet"
+     */
+    wallets = wallets.filter(
+      (wallet, index, arr) =>
+        index ===
+        arr.findIndex(t => {
+          return t.name === wallet.name
+        })
+    )
 
-    return wallets.map(
-      ({ id, name, ready }) => html`
+    return wallets.map(({ id, name, ready }) => {
+      return html`
         <w3m-wallet-button
           .installed=${['injected', 'metaMask'].includes(id) && ready}
           name=${name}
@@ -92,7 +103,7 @@ export class W3mDesktopWalletSelection extends LitElement {
           .onClick=${async () => this.onConnectorWallet(id)}
         ></w3m-wallet-button>
       `
-    )
+    })
   }
 
   private recentWalletTemplate() {
