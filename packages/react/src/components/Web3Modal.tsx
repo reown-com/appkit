@@ -20,8 +20,7 @@ type Props = Omit<
  */
 function CreateWeb3Modal({ ethereumClient, ...config }: Props) {
   const onConfigure = useCallback(async () => {
-    const { themeBackground, themeColor, themeMode, themeZIndex } = config
-    ThemeCtrl.setThemeConfig({ themeBackground, themeColor, themeMode, themeZIndex })
+    ThemeCtrl.setThemeConfig(config)
     if (ethereumClient) {
       ClientCtrl.setEthereumClient(ethereumClient)
     }

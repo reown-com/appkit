@@ -16,8 +16,7 @@ type Web3ModalConfig = Omit<
  */
 export class Web3Modal {
   public constructor(config: Web3ModalConfig, client: EthereumClient) {
-    const { themeBackground, themeColor, themeMode, themeZIndex } = config
-    ThemeCtrl.setThemeConfig({ themeBackground, themeColor, themeMode, themeZIndex })
+    ThemeCtrl.setThemeConfig(config)
     ClientCtrl.setEthereumClient(client)
     ConfigCtrl.setConfig({ ...config, walletConnectVersion: client.walletConnectVersion })
     this.initUi()

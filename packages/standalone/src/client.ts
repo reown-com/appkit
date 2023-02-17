@@ -14,8 +14,7 @@ type Web3ModalConfig = Omit<ConfigCtrlState, 'enableStandaloneMode'> &
  */
 export class Web3Modal {
   public constructor(config: Web3ModalConfig) {
-    const { themeBackground, themeColor, themeMode, themeZIndex } = config
-    ThemeCtrl.setThemeConfig({ themeBackground, themeColor, themeMode, themeZIndex })
+    ThemeCtrl.setThemeConfig(config)
     ConfigCtrl.setConfig({ enableStandaloneMode: true, ...config })
     this.initUi()
   }
