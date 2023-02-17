@@ -77,7 +77,7 @@ export const ThemeUtil = {
         '--w3m-background-color': theme?.['--w3m-background-color'] ?? '#3396FF',
 
         '--w3m-background-image-url': theme?.['--w3m-background-image-url']
-          ? `url(${theme?.['--w3m-background-image-url']})`
+          ? `url(${theme['--w3m-background-image-url']})`
           : 'none',
 
         // Old

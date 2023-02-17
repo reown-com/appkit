@@ -55,7 +55,7 @@ export class W3mModalBackcard extends LitElement {
 
   private isCustomBg() {
     return (
-      ThemeCtrl.state.themeVariables?.['--w3m-background-color'] ||
+      ThemeCtrl.state.themeVariables?.['--w3m-background-color'] ??
       ThemeCtrl.state.themeVariables?.['--w3m-background-image-url']
     )
   }

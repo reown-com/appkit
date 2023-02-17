@@ -9,7 +9,8 @@
     "dist",
     "node_modules",
     "out",
-    "_next"
+    "_next",
+    "build"
   ],
   "parserOptions": {
     "project": ["tsconfig.json"]
