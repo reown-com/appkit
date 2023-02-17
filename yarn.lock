@@ -2220,21 +2220,21 @@
   resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
-"@lerna/child-process@6.5.0":
-  version "6.5.0"
-  resolved "https://registry.yarnpkg.com/@lerna/child-process/-/child-process-6.5.0.tgz#8a0d37453f2163c3a1737493d328399a53e4cc5b"
-  integrity sha512-ZuN3eivyzkaCCT4MNwHW5FuJ0Zu4kPFCnx7NXcGisca4a7Urjs3odZN1Tf9ZoYcPCf2I9DKfHj2bfnS0SHpMIg==
+"@lerna/child-process@6.5.1":
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/@lerna/child-process/-/child-process-6.5.1.tgz#da9161ba00e8d67fa7241a709703e5cc5e4a5e5e"
+  integrity sha512-QfyleXSD9slh4qM54wDaqKVPvtUH1NJMgsFc9BabqSHO1Ttpandv1EAvTCN9Lu73RbCX3LJpn+BfJmnjHbjCyw==
   dependencies:
     chalk "^4.1.0"
     execa "^5.0.0"
     strong-log-transformer "^2.1.0"
 
-"@lerna/create@6.5.0":
-  version "6.5.0"
-  resolved "https://registry.yarnpkg.com/@lerna/create/-/create-6.5.0.tgz#b8350e145968f17c4b785c50c0cba49079c192e8"
-  integrity sha512-EbYXW6W/khXDXhA15HETcU7toq2zxuqalBw9MZzHWj3sEBQsTd/un56qzIRMWUuHy8CO7FxJIdPItYI8QPop4A==
+"@lerna/create@6.5.1":
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/@lerna/create/-/create-6.5.1.tgz#326b5d26c247bfc9e2d8728aa1f69419840cec8c"
+  integrity sha512-ejERJnfA36jEuKrfM+94feLiyf2/hF2NoG923N0rE4rsmvRFPr1XLVPvAKleXW+Gdi/t1p410lJ7NKaLRMYCYw==
   dependencies:
-    "@lerna/child-process" "6.5.0"
+    "@lerna/child-process" "6.5.1"
     dedent "^0.7.0"
     fs-extra "^9.1.0"
     init-package-json "^3.0.2"
@@ -4315,10 +4315,10 @@
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.4.tgz#cd667bcfdd025213aafb7ca5915a932590acdcdc"
   integrity sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==
 
-"@types/react-dom@18.0.10":
-  version "18.0.10"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.0.10.tgz#3b66dec56aa0f16a6cc26da9e9ca96c35c0b4352"
-  integrity sha512-E42GW/JA4Qv15wQdqJq8DL4JhNpB3prJgjgapN3qJT9K2zO5IIAQh4VXvCEDupoqAwnz0cY4RlXeC/ajX5SFHg==
+"@types/react-dom@18.0.11":
+  version "18.0.11"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.0.11.tgz#321351c1459bc9ca3d216aefc8a167beec334e33"
+  integrity sha512-O38bPbI2CWtgw/OoQoY+BRelw7uysmXbWvw3nLWO21H1HSh+GOlqPuXshJfjmpNlKiiSDG9cc1JZAaMmVdcTlw==
   dependencies:
     "@types/react" "*"
 
@@ -4686,10 +4686,10 @@
     pino "7.11.0"
     uint8arrays "3.1.0"
 
-"@walletconnect/core@2.4.2":
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-2.4.2.tgz#aa08638f45e2b90d47102e5c9f23c3446cac8054"
-  integrity sha512-Lfeg/LSQDLOokLLo36ucuV1oWwLZAlZS83Q5iggOVpAdnd4ul4lwAu2h95lr1l6n+gzMjqqUTNN103jfFLo4aQ==
+"@walletconnect/core@2.4.4":
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-2.4.4.tgz#5f22fd2e9a13c3995c164530f5e77b671bb40850"
+  integrity sha512-tdMmPNGgpTrk95hG8H5V6Du59HA4e3tVdvGngZjcja6VnmkfZdW4fGCWaJWyKYkrQQknDug4dH47/HZ6cAxj/g==
   dependencies:
     "@walletconnect/heartbeat" "1.2.0"
     "@walletconnect/jsonrpc-provider" "^1.0.6"
@@ -4701,8 +4701,8 @@
     "@walletconnect/relay-auth" "^1.0.4"
     "@walletconnect/safe-json" "^1.0.1"
     "@walletconnect/time" "^1.0.2"
-    "@walletconnect/types" "2.4.2"
-    "@walletconnect/utils" "2.4.2"
+    "@walletconnect/types" "2.4.4"
+    "@walletconnect/utils" "2.4.4"
     events "^3.3.0"
     lodash.isequal "4.5.0"
     pino "7.11.0"
@@ -4925,20 +4925,20 @@
     events "^3.3.0"
     pino "7.11.0"
 
-"@walletconnect/sign-client@2.4.2":
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/@walletconnect/sign-client/-/sign-client-2.4.2.tgz#9ddc94599336f6a7035b8cd84333e4259eebf959"
-  integrity sha512-iz9FK+Jgqp4ISRrObujrzBCuDVj8KNrb0GREcEZ2/bt/P0M6YKvz4EVSpUn6oodls1FfLl9MM+ZGLD94NZ3OYA==
+"@walletconnect/sign-client@2.4.4":
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/@walletconnect/sign-client/-/sign-client-2.4.4.tgz#8c1109de277452356094961c45e819c8575b51aa"
+  integrity sha512-ByF1Qi+r7EAZ8HX++aiHekSxiruIlUg3KWfXvki5n4PQNv9Ldad/RaMswk7CB7ESCZuHc7ylKcT3SwOJjHOopg==
   dependencies:
-    "@walletconnect/core" "2.4.2"
+    "@walletconnect/core" "2.4.4"
     "@walletconnect/events" "^1.0.1"
     "@walletconnect/heartbeat" "1.2.0"
     "@walletconnect/jsonrpc-provider" "^1.0.6"
     "@walletconnect/jsonrpc-utils" "^1.0.4"
     "@walletconnect/logger" "^2.0.1"
     "@walletconnect/time" "^1.0.2"
-    "@walletconnect/types" "2.4.2"
-    "@walletconnect/utils" "2.4.2"
+    "@walletconnect/types" "2.4.4"
+    "@walletconnect/utils" "2.4.4"
     events "^3.3.0"
     pino "7.11.0"
 
@@ -4982,10 +4982,10 @@
     "@walletconnect/logger" "^2.0.1"
     events "^3.3.0"
 
-"@walletconnect/types@2.4.2":
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-2.4.2.tgz#1317060c5e8ff3feb48e31d1c07c8eb9fe3bcd3e"
-  integrity sha512-1snUCDVWzg8kk9VAVgtvENDb7nUdqPOE8RC3U2/xgLB77eHSrTmbYYD8suh+rxw8LRyogN/mg/wFrMBE/SRDJg==
+"@walletconnect/types@2.4.4":
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-2.4.4.tgz#f2edb02f70e7dfb0f4265d78b0b745a776eb0dae"
+  integrity sha512-4XndBOlB0qbhaJvzcBZCfR69rfU5rV0U5b3YbJ1AmtxcJSJAIg68WDP7o4BE4w1LHzdsEWvbXHRYL+KsA+uG3w==
   dependencies:
     "@walletconnect/events" "^1.0.1"
     "@walletconnect/heartbeat" "1.2.0"
@@ -5037,10 +5037,10 @@
     query-string "7.1.1"
     uint8arrays "3.1.0"
 
-"@walletconnect/utils@2.4.2":
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-2.4.2.tgz#ce8d95775696f9ae5abf474542f0d6dc1e6a7c1c"
-  integrity sha512-D1Utm2QG+7nTbK36X3lUMcqqpkSXC8mp6bytq0oidW5zViWBkc8+2EMqmqEgpVJOZjL++Bs7wkG1j7qViKHgQA==
+"@walletconnect/utils@2.4.4":
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-2.4.4.tgz#1ee72172c7fb28f096c600fde19b12b770aa44df"
+  integrity sha512-PM4biwrvi5OwXIroLHDxtCOXlvZGCGNvbYS0Jkb6ZmP1EbGjVz1xA1hnp/lC3eGFQArSyvS7EHD6XQQpymZ2jA==
   dependencies:
     "@stablelib/chacha20poly1305" "1.0.1"
     "@stablelib/hkdf" "1.0.1"
@@ -5051,7 +5051,7 @@
     "@walletconnect/relay-api" "^1.0.7"
     "@walletconnect/safe-json" "^1.0.1"
     "@walletconnect/time" "^1.0.2"
-    "@walletconnect/types" "2.4.2"
+    "@walletconnect/types" "2.4.4"
     "@walletconnect/window-getters" "^1.0.1"
     "@walletconnect/window-metadata" "^1.0.1"
     detect-browser "5.3.0"
@@ -10667,13 +10667,13 @@ language-tags@=1.0.5:
   dependencies:
     language-subtag-registry "~0.3.2"
 
-lerna@6.5.0:
-  version "6.5.0"
-  resolved "https://registry.yarnpkg.com/lerna/-/lerna-6.5.0.tgz#c46f179ecf88d6a55010ced0a0ccdacdf9d3fcd2"
-  integrity sha512-2GbRXeQLFf9KwxRXd+AgEEzKat4DbvVnXtSVDkpgzIzITXtYPThxqzYhhaHUhBSM9Rq7TcJ1XLbArS2qIvlazg==
+lerna@6.5.1:
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/lerna/-/lerna-6.5.1.tgz#eb89698e5b2891f5681f39d980f63d0519fc464f"
+  integrity sha512-Va1bysubwWdoWZ1ncKcoTGBXNAu/10/TwELb550TTivXmEWjCCdek4eX0BNLTEYKxu3tpV2UEeqVisUiWGn4WA==
   dependencies:
-    "@lerna/child-process" "6.5.0"
-    "@lerna/create" "6.5.0"
+    "@lerna/child-process" "6.5.1"
+    "@lerna/create" "6.5.1"
     "@npmcli/arborist" "5.3.0"
     "@npmcli/run-script" "4.1.7"
     "@nrwl/devkit" ">=15.5.2 < 16"
@@ -10706,6 +10706,7 @@ lerna@6.5.0:
     inquirer "^8.2.4"
     is-ci "2.0.0"
     is-stream "2.0.0"
+    js-yaml "^4.1.0"
     libnpmaccess "6.0.3"
     libnpmpublish "6.0.4"
     load-json-file "6.2.0"
@@ -15259,10 +15260,10 @@ vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-vite@4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-4.1.1.tgz#3b18b81a4e85ce3df5cbdbf4c687d93ebf402e6b"
-  integrity sha512-LM9WWea8vsxhr782r9ntg+bhSFS06FJgCvvB0+8hf8UWtvaiDagKYWXndjfX6kGl74keHJUcpzrQliDXZlF5yg==
+vite@4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-4.1.2.tgz#6908882984e490c44c28e784a2c52de556f04b41"
+  integrity sha512-MWDb9Rfy3DI8omDQySbMK93nQqStwbsQWejXRY2EBzEWKmLAXWb1mkI9Yw2IJrc+oCvPCI1Os5xSSIBYY6DEAw==
   dependencies:
     esbuild "^0.16.14"
     postcss "^8.4.21"

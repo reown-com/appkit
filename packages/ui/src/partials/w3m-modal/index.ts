@@ -5,6 +5,7 @@ import {
   ExplorerCtrl,
   ModalCtrl,
   OptionsCtrl,
+  ThemeCtrl,
   ToastCtrl
 } from '@web3modal/core'
 import { html, LitElement } from 'lit'
@@ -31,8 +32,8 @@ export class W3mModal extends LitElement {
     super()
     ThemeUtil.setTheme()
 
-    // Subscribe to modal config and theme changes
-    this.unsubscribeConfig = ConfigCtrl.subscribe(ThemeUtil.setTheme)
+    // Subscribe to modal theme changes
+    this.unsubscribeTheme = ThemeCtrl.subscribe(ThemeUtil.setTheme)
     this.unsubscribeModal = ModalCtrl.subscribe(modalState => {
       if (modalState.open) {
         this.onOpenModalEvent()
@@ -77,14 +78,14 @@ export class W3mModal extends LitElement {
 
   public disconnectedCallback() {
     this.unsubscribeModal?.()
-    this.unsubscribeConfig?.()
+    this.unsubscribeTheme?.()
     this.unwatchAccount?.()
     this.unwatchNetwork?.()
   }
 
   // -- private ------------------------------------------------------ //
   private readonly unsubscribeModal?: () => void = undefined
-  private readonly unsubscribeConfig?: () => void = undefined
+  private readonly unsubscribeTheme?: () => void = undefined
   private readonly unwatchAccount?: () => void = undefined
   private readonly unwatchNetwork?: () => void = undefined
   private abortController?: AbortController = undefined

@@ -1,4 +1,4 @@
-import { ConfigCtrl } from '@web3modal/core'
+import { ThemeCtrl } from '@web3modal/core'
 import { css } from 'lit'
 
 function themeColors() {
@@ -156,8 +156,8 @@ function gradientColors() {
 
 export const ThemeUtil = {
   color() {
-    const themeColor = ConfigCtrl.state.themeColor ?? 'default'
-    const themeMode = ConfigCtrl.state.themeMode ?? 'dark'
+    const themeColor = ThemeCtrl.state.themeColor ?? 'default'
+    const themeMode = ThemeCtrl.state.themeMode ?? 'dark'
     const accent = themeColors()[themeColor][themeMode]
     const theme = themeModeColors()[themeMode]
     const gradient = gradientColors()[themeColor]
@@ -180,7 +180,7 @@ export const ThemeUtil = {
 
   setTheme() {
     const root: HTMLElement | null = document.querySelector(':root')
-    const { themeZIndex } = ConfigCtrl.state
+    const { themeZIndex } = ThemeCtrl.state
 
     if (root) {
       const variables = {

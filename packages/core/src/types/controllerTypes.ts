@@ -22,18 +22,6 @@ export interface DesktopWallet {
 export interface ConfigCtrlState {
   projectId: string
   walletConnectVersion?: 1 | 2
-  themeMode?: 'dark' | 'light'
-  themeColor?:
-    | 'blackWhite'
-    | 'blue'
-    | 'default'
-    | 'green'
-    | 'magenta'
-    | 'orange'
-    | 'purple'
-    | 'teal'
-  themeBackground?: 'gradient' | 'themeColor'
-  themeZIndex?: number
   standaloneChains?: string[]
   defaultChain?: Chain
   mobileWallets?: MobileWallet[]
@@ -189,4 +177,20 @@ export interface RouterCtrlState {
 export interface ClientCtrlState {
   initialized: boolean
   ethereumClient?: EthereumClient
+}
+
+// -- ThemeCtrl -------------------------------------------- //
+export interface ThemeCtrlState {
+  themeMode?: 'dark' | 'light'
+  themeColor?:
+    | 'blackWhite'
+    | 'blue'
+    | 'default'
+    | 'green'
+    | 'magenta'
+    | 'orange'
+    | 'purple'
+    | 'teal'
+  themeBackground?: 'gradient' | 'themeColor'
+  themeZIndex?: number
 }

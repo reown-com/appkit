@@ -1,15 +1,15 @@
-import { ConfigCtrl } from '@web3modal/core'
+import { ThemeCtrl } from '@web3modal/core'
 import { useEffect, useState } from 'react'
 
 export function useWeb3ModalTheme() {
   const [config, setConfig] = useState({
-    themeMode: ConfigCtrl.state.themeMode,
-    themeColor: ConfigCtrl.state.themeColor,
-    themeBackground: ConfigCtrl.state.themeBackground
+    themeMode: ThemeCtrl.state.themeMode,
+    themeColor: ThemeCtrl.state.themeColor,
+    themeBackground: ThemeCtrl.state.themeBackground
   })
 
   useEffect(() => {
-    const unsubscribe = ConfigCtrl.subscribe(newTheme =>
+    const unsubscribe = ThemeCtrl.subscribe(newTheme =>
       setConfig({
         themeMode: newTheme.themeMode,
         themeColor: newTheme.themeColor,
@@ -24,6 +24,6 @@ export function useWeb3ModalTheme() {
 
   return {
     theme: config,
-    setTheme: ConfigCtrl.setThemeConfig
+    setTheme: ThemeCtrl.setThemeConfig
   }
 }

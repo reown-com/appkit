@@ -1,18 +1,21 @@
-import type { ConfigCtrlState } from '@web3modal/core'
-import { ConfigCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
+import type { ConfigCtrlState, ThemeCtrlState } from '@web3modal/core'
+import { ConfigCtrl, ModalCtrl, OptionsCtrl, ThemeCtrl } from '@web3modal/core'
 
 /**
  * Types
  */
-type Web3ModalConfig = Omit<ConfigCtrlState, 'enableStandaloneMode'> & {
-  walletConnectVersion: 1 | 2
-}
+type Web3ModalConfig = Omit<ConfigCtrlState, 'enableStandaloneMode'> &
+  ThemeCtrlState & {
+    walletConnectVersion: 1 | 2
+  }
 
 /**
  * Client
  */
 export class Web3Modal {
   public constructor(config: Web3ModalConfig) {
+    const { themeBackground, themeColor, themeMode, themeZIndex } = config
+    ThemeCtrl.setThemeConfig({ themeBackground, themeColor, themeMode, themeZIndex })
     ConfigCtrl.setConfig({ enableStandaloneMode: true, ...config })
     this.initUi()
   }
@@ -32,5 +35,5 @@ export class Web3Modal {
 
   public subscribeModal = ModalCtrl.subscribe
 
-  public setTheme = ConfigCtrl.setThemeConfig
+  public setTheme = ThemeCtrl.setThemeConfig
 }

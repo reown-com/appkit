@@ -1,4 +1,4 @@
-import { ConfigCtrl, ModalCtrl, RouterCtrl } from '@web3modal/core'
+import { ModalCtrl, RouterCtrl, ThemeCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -20,7 +20,7 @@ export class W3mModalBackcard extends LitElement {
 
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
-    const { themeBackground } = ConfigCtrl.state
+    const { themeBackground } = ThemeCtrl.state
     if (themeBackground === 'gradient') {
       this.playTimeout = setTimeout(() => {
         whatamesh.play(this.canvasEl)
@@ -56,7 +56,7 @@ export class W3mModalBackcard extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { themeBackground } = ConfigCtrl.state
+    const { themeBackground } = ThemeCtrl.state
     const classes = {
       'w3m-canvas': true,
       'w3m-canvas-visible': this.open

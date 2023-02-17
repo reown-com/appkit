@@ -1,5 +1,5 @@
-import type { ConfigCtrlState } from '@web3modal/core'
-import { ClientCtrl, ConfigCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
+import type { ConfigCtrlState, ThemeCtrlState } from '@web3modal/core'
+import { ClientCtrl, ConfigCtrl, ModalCtrl, OptionsCtrl, ThemeCtrl } from '@web3modal/core'
 import type { EthereumClient } from '@web3modal/ethereum'
 
 /**
@@ -8,13 +8,16 @@ import type { EthereumClient } from '@web3modal/ethereum'
 type Web3ModalConfig = Omit<
   ConfigCtrlState,
   'enableStandaloneMode' | 'standaloneChains' | 'walletConnectVersion'
->
+> &
+  ThemeCtrlState
 
 /**
  * Client
  */
 export class Web3Modal {
   public constructor(config: Web3ModalConfig, client: EthereumClient) {
+    const { themeBackground, themeColor, themeMode, themeZIndex } = config
+    ThemeCtrl.setThemeConfig({ themeBackground, themeColor, themeMode, themeZIndex })
     ClientCtrl.setEthereumClient(client)
     ConfigCtrl.setConfig({ ...config, walletConnectVersion: client.walletConnectVersion })
     this.initUi()
@@ -35,7 +38,7 @@ export class Web3Modal {
 
   public subscribeModal = ModalCtrl.subscribe
 
-  public setTheme = ConfigCtrl.setThemeConfig
+  public setTheme = ThemeCtrl.setThemeConfig
 
   public setDefaultChain = OptionsCtrl.setSelectedChain
 }
