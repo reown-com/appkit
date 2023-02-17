@@ -28,7 +28,6 @@ export default function v2BasePage() {
         themeMode={getTheme()}
         ethereumClient={ethereumClient}
         projectId={projectId}
-        themeColor="blue"
         walletImages={{
           oreid: '/images/wallet_oreid.svg'
         }}

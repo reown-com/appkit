@@ -20,8 +20,7 @@ export class W3mModalBackcard extends LitElement {
 
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
-    const { themeBackground } = ThemeCtrl.state
-    if (themeBackground === 'gradient') {
+    if (!this.isCustomBg()) {
       this.playTimeout = setTimeout(() => {
         whatamesh.play(this.canvasEl)
         this.open = true
@@ -54,9 +53,15 @@ export class W3mModalBackcard extends LitElement {
     RouterCtrl.push('Help')
   }
 
+  private isCustomBg() {
+    return (
+      ThemeCtrl.state.themeVariables?.['--w3m-background-color'] ||
+      ThemeCtrl.state.themeVariables?.['--w3m-background-image-url']
+    )
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { themeBackground } = ThemeCtrl.state
     const classes = {
       'w3m-canvas': true,
       'w3m-canvas-visible': this.open
@@ -68,14 +73,13 @@ export class W3mModalBackcard extends LitElement {
     }
 
     return html`
-      ${themeBackground === 'themeColor' ? html`<div class="w3m-color-placeholder"></div>` : null}
-      ${themeBackground === 'gradient'
-        ? html`
+      ${this.isCustomBg()
+        ? html`<div class="w3m-custom-placeholder"></div>`
+        : html`
             <div class="w3m-gradient-placeholder"></div>
             <canvas class=${classMap(classes)}></canvas>
             ${SvgUtil.NOISE_TEXTURE}
-          `
-        : null}
+          `}
 
       <div class="w3m-highlight"></div>
       <div class="w3m-toolbar">

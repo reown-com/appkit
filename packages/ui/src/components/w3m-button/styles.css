@@ -2,11 +2,11 @@ button {
   border-radius: 28px;
   height: 28px;
   padding: 0 10px;
-  background-color: var(--w3m-color-fg-accent);
+  background-color: var(--w3m-accent-color);
 }
 
 button path {
-  fill: var(--w3m-color-fg-inverse);
+  fill: var(--w3m-accent-color-inverse);
 }
 
 button::after {

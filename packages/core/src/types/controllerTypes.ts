@@ -181,16 +181,14 @@ export interface ClientCtrlState {
 
 // -- ThemeCtrl -------------------------------------------- //
 export interface ThemeCtrlState {
+  themeVariables?: {
+    '--w3m-z-index'?: string
+    '--w3m-accent-color'?: string
+    '--w3m-accent-color-inverse'?: string
+    '--w3m-background-color'?: string
+    '--w3m-background-image-url'?: string
+  }
+
+  // Old
   themeMode?: 'dark' | 'light'
-  themeColor?:
-    | 'blackWhite'
-    | 'blue'
-    | 'default'
-    | 'green'
-    | 'magenta'
-    | 'orange'
-    | 'purple'
-    | 'teal'
-  themeBackground?: 'gradient' | 'themeColor'
-  themeZIndex?: number
 }

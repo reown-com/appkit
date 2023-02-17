@@ -19,11 +19,11 @@ button > div {
   width: 32px;
   height: 32px;
   box-shadow: inset 0 0 0 1px var(--w3m-color-overlay);
-  background-color: var(--w3m-color-fg-accent);
+  background-color: var(--w3m-accent-color);
   border-radius: 50%;
   margin-bottom: 4px;
 }
 
 button path {
-  fill: var(--w3m-color-fg-inverse);
+  fill: var(--w3m-accent-color-inverse);
 }

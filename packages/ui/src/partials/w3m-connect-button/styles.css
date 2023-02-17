@@ -9,7 +9,7 @@ svg {
 }
 
 svg path {
-  fill: var(--w3m-color-fg-inverse);
+  fill: var(--w3m-accent-color-inverse);
 }
 
 button:disabled svg path {

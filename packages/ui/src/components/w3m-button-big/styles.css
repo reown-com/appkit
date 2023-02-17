@@ -6,8 +6,8 @@ button {
   padding: 0 15px 1px;
   height: 40px;
   border-radius: 10px;
-  color: var(--w3m-color-fg-inverse);
-  background-color: var(--w3m-color-fg-accent);
+  color: var(--w3m-accent-color-inverse);
+  background-color: var(--w3m-accent-color);
 }
 
 button::after {
@@ -31,7 +31,7 @@ button:disabled {
 }
 
 .w3m-secondary {
-  color: var(--w3m-color-fg-accent);
+  color: var(--w3m-accent-color);
   background-color: transparent;
 }
 

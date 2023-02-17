@@ -5,7 +5,7 @@
 .w3m-overlay {
   inset: 0px;
   position: fixed;
-  z-index: var(--w3m-modal-z-index);
+  z-index: var(--w3m-z-index);
   overflow: hidden;
   display: flex;
   justify-content: center;

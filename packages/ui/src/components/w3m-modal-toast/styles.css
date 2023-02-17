@@ -30,9 +30,9 @@ svg {
 }
 
 .w3m-success path {
-  fill: var(--w3m-color-fg-accent);
+  fill: var(--w3m-accent-color);
 }
 
 .w3m-error path {
-  fill: var(--w3m-color-err);
+  fill: var(--w3m-error-color);
 }

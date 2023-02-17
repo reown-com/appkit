@@ -48,13 +48,6 @@ span {
   letter-spacing: -0.03em;
 }
 
-.w3m-medium-bold {
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 20px;
-  letter-spacing: -0.03em;
-}
-
 .w3m-large-bold {
   font-weight: 600;
   font-size: 20px;
@@ -79,13 +72,13 @@ span {
 }
 
 .w3m-color-inverse {
-  color: var(--w3m-color-fg-inverse);
+  color: var(--w3m-accent-color-inverse);
 }
 
 .w3m-color-accnt {
-  color: var(--w3m-color-fg-accent);
+  color: var(--w3m-accent-color);
 }
 
 .w3m-color-error {
-  color: var(--w3m-color-err);
+  color: var(--w3m-error-color);
 }

@@ -1,114 +1,6 @@
 import { ThemeCtrl } from '@web3modal/core'
 import { css } from 'lit'
 
-function themeColors() {
-  return {
-    default: {
-      light: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(51,150,255)`,
-        background: `rgb(232,242,252)`
-      },
-      dark: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(71,161,255)`,
-        background: `rgb(21,38,55)`
-      }
-    },
-
-    magenta: {
-      light: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(198,83,128)`,
-        background: `rgb(244,221,230)`
-      },
-      dark: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(203,77,140)`,
-        background: `rgb(57,35,43)`
-      }
-    },
-
-    blue: {
-      light: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(61,92,245)`,
-        background: `rgb(232,235,252)`
-      },
-      dark: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(81,109,251)`,
-        background: `rgb(28,33,59)`
-      }
-    },
-
-    orange: {
-      light: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(234,140,46)`,
-        background: `rgb(244,236,221)`
-      },
-      dark: {
-        inverse: `rgb(0,0,0)`,
-        foreground: `rgb(255,166,76)`,
-        background: `rgb(57,50,34)`
-      }
-    },
-
-    green: {
-      light: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(38,181,98)`,
-        background: `rgb(218,246,218)`
-      },
-      dark: {
-        inverse: `rgb(0,0,0)`,
-        foreground: `rgb(38,217,98)`,
-        background: `rgb(35,52,40)`
-      }
-    },
-
-    purple: {
-      light: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(121,76,255)`,
-        background: `rgb(225,218,246)`
-      },
-      dark: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(144,110,247)`,
-        background: `rgb(36,31,51)`
-      }
-    },
-
-    teal: {
-      light: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(43,182,182)`,
-        background: `rgb(217,242,238)`
-      },
-      dark: {
-        inverse: `rgb(0,0,0)`,
-        foreground: `rgb(54,226,226)`,
-        background: `rgb(29,48,52)`
-      }
-    },
-
-    blackWhite: {
-      light: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(20,20,20)`,
-        background: `rgb(255,255,255)`
-      },
-      dark: {
-        inverse: `rgb(0,0,0)`,
-        foreground: `rgb(255,255,255)`,
-        background: `rgb(20,20,20)`
-      }
-    }
-  }
-}
-
 function themeModeColors() {
   return {
     light: {
@@ -141,38 +33,18 @@ function themeModeColors() {
   }
 }
 
-function gradientColors() {
-  return {
-    default: { 1: '#B6B9C9', 2: '#C653C6', 3: '#794DFF', 4: '#2EB8B8' },
-    blue: { 1: '#E8EBFD', 2: '#C653C6', 3: '#2DD2C5', 4: '#3D5CF5' },
-    magenta: { 1: '#F4DDE6', 2: '#E0D452', 3: '#F09475', 4: '#D1618D' },
-    orange: { 1: '#F4ECDD', 2: '#B4EB47', 3: '#3075E8', 4: '#EB9947' },
-    green: { 1: '#DAF6DA', 2: '#E06B92', 3: '#99E54D', 4: '#26B562' },
-    purple: { 1: '#E1DAF6', 2: '#EB9947', 3: '#E06B92', 4: '#794DFF' },
-    teal: { 1: '#D9F2EE', 2: '#F09475', 3: '#794DFF', 4: '#2EB8B8' },
-    blackWhite: { 1: '#E3E8E8', 2: '#98AEAE', 3: '#516767', 4: '#242E2E' }
-  }
-}
-
 export const ThemeUtil = {
   color() {
-    const themeColor = ThemeCtrl.state.themeColor ?? 'default'
     const themeMode = ThemeCtrl.state.themeMode ?? 'dark'
-    const accent = themeColors()[themeColor][themeMode]
     const theme = themeModeColors()[themeMode]
-    const gradient = gradientColors()[themeColor]
 
     return {
       foreground: {
-        accent: accent.foreground,
-        inverse: accent.inverse,
         ...theme.foreground
       },
       background: {
-        accent: accent.background,
         ...theme.background
       },
-      gradient,
       overlay: theme.overlay,
       error: `rgb(242, 90, 103)`
     }
@@ -180,26 +52,42 @@ export const ThemeUtil = {
 
   setTheme() {
     const root: HTMLElement | null = document.querySelector(':root')
-    const { themeZIndex } = ThemeCtrl.state
+    const theme = ThemeCtrl.state.themeVariables
 
     if (root) {
       const variables = {
-        '--w3m-color-fg-accent': ThemeUtil.color().foreground.accent,
-        '--w3m-color-fg-inverse': ThemeUtil.color().foreground.inverse,
+        '--w3m-accent-color': theme?.['--w3m-accent-color'] ?? '#3396FF',
+
+        '--w3m-accent-color-inverse': theme?.['--w3m-accent-color-inverse'] ?? '#FFFFFF',
+
+        '--w3m-z-index': theme?.['--w3m-z-index'] ?? '89',
+
+        '--w3m-success-color': 'rgb(38,181,98)',
+
+        '--w3m-error-color': 'rgb(242, 90, 103)',
+
+        '--w3m-gradient-1': '#B6B9C9',
+
+        '--w3m-gradient-2': '#C653C6',
+
+        '--w3m-gradient-3': '#794DFF',
+
+        '--w3m-gradient-4': '#2EB8B8',
+
+        '--w3m-background-color': theme?.['--w3m-background-color'] ?? '#3396FF',
+
+        '--w3m-background-image-url': theme?.['--w3m-background-image-url']
+          ? `url(${theme?.['--w3m-background-image-url']})`
+          : 'none',
+
+        // Old
         '--w3m-color-fg-1': ThemeUtil.color().foreground[1],
         '--w3m-color-fg-2': ThemeUtil.color().foreground[2],
         '--w3m-color-fg-3': ThemeUtil.color().foreground[3],
         '--w3m-color-bg-1': ThemeUtil.color().background[1],
         '--w3m-color-bg-2': ThemeUtil.color().background[2],
         '--w3m-color-bg-3': ThemeUtil.color().background[3],
-        '--w3m-color-overlay': ThemeUtil.color().overlay,
-        '--w3m-color-err': ThemeUtil.color().error,
-        '--w3m-color-success': themeColors().green.light.foreground,
-        '--w3m-gradient-1': ThemeUtil.color().gradient[1],
-        '--w3m-gradient-2': ThemeUtil.color().gradient[2],
-        '--w3m-gradient-3': ThemeUtil.color().gradient[3],
-        '--w3m-gradient-4': ThemeUtil.color().gradient[4],
-        '--w3m-modal-z-index': `${themeZIndex}`
+        '--w3m-color-overlay': ThemeUtil.color().overlay
       }
       Object.entries(variables).forEach(([key, val]) => root.style.setProperty(key, val))
     }
@@ -258,8 +146,8 @@ export const ThemeUtil = {
     }
 
     ::selection {
-      color: var(--w3m-color-fg-inverse);
-      background: var(--w3m-color-fg-accent);
+      color: var(--w3m-accent-color-inverse);
+      background: var(--w3m-accent-color);
     }
   `
 }

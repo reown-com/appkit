@@ -24,12 +24,7 @@ export default function v2BasePage() {
         <WagmiWeb3ModalWidget />
       </WagmiConfig>
 
-      <Web3Modal
-        ethereumClient={ethereumClient}
-        projectId={projectId}
-        themeColor="blue"
-        themeMode={getTheme()}
-      />
+      <Web3Modal ethereumClient={ethereumClient} projectId={projectId} themeMode={getTheme()} />
     </>
   )
 }

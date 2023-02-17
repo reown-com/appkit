@@ -7,7 +7,6 @@ import { getProjectId, getTheme } from '../utilities/EnvUtil'
 const projectId = getProjectId()
 const web3Modal = new Web3Modal({
   projectId,
-  themeColor: 'orange',
   walletConnectVersion: 2,
   themeMode: getTheme()
 })

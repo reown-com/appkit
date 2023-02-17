@@ -50,12 +50,7 @@ export default function v2ExtendedPage() {
         <WagmiWeb3ModalWidget />
       </WagmiConfig>
 
-      <Web3Modal
-        ethereumClient={ethereumClient}
-        projectId={projectId}
-        themeColor="blue"
-        themeMode={getTheme()}
-      />
+      <Web3Modal ethereumClient={ethereumClient} projectId={projectId} themeMode={getTheme()} />
     </>
   )
 }

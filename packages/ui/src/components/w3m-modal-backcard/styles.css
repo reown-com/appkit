@@ -2,7 +2,7 @@
 .w3m-highlight,
 .w3m-gradient-placeholder,
 #w3m-transparent-noise,
-.w3m-color-placeholder {
+.w3m-custom-placeholder {
   inset: 0;
   position: absolute;
   display: block;
@@ -22,8 +22,11 @@
   );
 }
 
-.w3m-color-placeholder {
-  background-color: var(--w3m-color-fg-accent);
+.w3m-custom-placeholder {
+  background-color: var(--w3m-background-color);
+  background-image: var(--w3m-background-image-url);
+  background-position: center;
+  background-size: cover;
 }
 
 .w3m-highlight {
@@ -62,7 +65,7 @@
 }
 
 #w3m-wc-logo path {
-  fill: var(--w3m-color-fg-inverse);
+  fill: var(--w3m-accent-color-inverse);
 }
 
 .w3m-action-btn {

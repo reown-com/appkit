@@ -1,6 +1,5 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ThemeCtrlState } from '../types/controllerTypes'
-import { CoreUtil } from '../utils/CoreUtil'
 
 // -- initial state ------------------------------------------------ //
 function isDarkMode() {
@@ -8,10 +7,7 @@ function isDarkMode() {
 }
 
 const state = proxy<ThemeCtrlState>({
-  themeMode: isDarkMode() ? 'dark' : 'light',
-  themeColor: 'default',
-  themeBackground: CoreUtil.isMobile() ? 'themeColor' : 'gradient',
-  themeZIndex: 89
+  themeMode: isDarkMode() ? 'dark' : 'light'
 })
 
 // -- controller --------------------------------------------------- //

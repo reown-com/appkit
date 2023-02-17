@@ -6,7 +6,6 @@ import styles from './styles.css'
 
 type Variant =
   | 'large-bold'
-  | 'medium-bold'
   | 'medium-normal'
   | 'medium-thin'
   | 'small-normal'
@@ -28,7 +27,6 @@ export class W3mText extends LitElement {
   protected render() {
     const classes = {
       'w3m-large-bold': this.variant === 'large-bold',
-      'w3m-medium-bold': this.variant === 'medium-bold',
       'w3m-medium-normal': this.variant === 'medium-normal',
       'w3m-medium-thin': this.variant === 'medium-thin',
       'w3m-small-normal': this.variant === 'small-normal',

@@ -16,8 +16,8 @@ div button {
   padding: 4px 8px 4px 4px;
   height: auto;
   margin-left: 10px;
-  color: var(--w3m-color-fg-inverse);
-  background-color: var(--w3m-color-fg-accent);
+  color: var(--w3m-accent-color-inverse);
+  background-color: var(--w3m-accent-color);
 }
 
 button::after {
