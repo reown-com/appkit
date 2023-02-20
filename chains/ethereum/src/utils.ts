@@ -1,3 +1,4 @@
+import { WalletConnectV1Connector } from '@wagmi/connectors/walletConnectV1'
 import type { Chain } from '@wagmi/core'
 import { InjectedConnector } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
@@ -33,16 +34,14 @@ export function walletConnectProvider<C extends Chain>({ projectId }: WalletConn
 
 // -- connectors ------------------------------------------------------ //
 export function modalConnectors({ appName, chains, version, projectId }: ModalConnectorsOpts) {
-  const walletConnectVersion = version ?? '1'
-  if (walletConnectVersion === '2' && !projectId) {
-    throw new Error('modalConnectors() requires projectId for WalletConnect version 2')
-  }
+  const isV1 = version === '1'
+  const isV2 = version === '2'
 
-  return [
-    new WalletConnectConnector({
+  const connectors = [
+    new WalletConnectConnector({ chains, options: { qrcode: false, projectId } }),
+    new WalletConnectV1Connector({
       chains,
-      // @ts-expect-error - projectId is checked above
-      options: { qrcode: false, version: walletConnectVersion, projectId }
+      options: { qrcode: false }
     }),
     new InjectedConnector({
       chains,
@@ -50,4 +49,12 @@ export function modalConnectors({ appName, chains, version, projectId }: ModalCo
     }),
     new CoinbaseWalletConnector({ chains, options: { appName } })
   ]
+
+  if (isV1) {
+    connectors.splice(0, 1)
+  } else if (isV2) {
+    connectors.splice(1, 1)
+  }
+
+  return connectors
 }
