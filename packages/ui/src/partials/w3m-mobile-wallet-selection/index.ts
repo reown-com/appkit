@@ -126,10 +126,7 @@ export class W3mMobileWalletSelection extends LitElement {
     let wallets = []
 
     if (isViewAll) {
-      const filtered = displayWallets.filter(
-        wallet => !wallet.values.includes(InjectedId.coinbaseWallet)
-      )
-      wallets = filtered.slice(0, 7)
+      wallets = displayWallets.slice(0, 7)
     } else {
       wallets = displayWallets
     }

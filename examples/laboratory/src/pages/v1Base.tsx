@@ -11,7 +11,7 @@ const chains = [mainnet, polygon]
 const { provider } = configureChains(chains, [walletConnectProvider({ projectId })])
 const wagmiClient = createClient({
   autoConnect: true,
-  connectors: modalConnectors({ version: '1', projectId, appName: 'web3Modal', chains }),
+  connectors: modalConnectors({ version: 1, projectId, chains }),
   provider
 })
 const ethereumClient = new EthereumClient(wagmiClient, chains)

@@ -9,7 +9,7 @@ import {
 } from '@web3modal/core'
 import type { LitElement } from 'lit'
 import { ChainPresets } from '../presets/ChainPresets'
-import { EthereumPresets, InjectedId } from '../presets/EthereumPresets'
+import { EthereumPresets } from '../presets/EthereumPresets'
 import { TokenPresets } from '../presets/TokenPresets'
 import type { RecentWallet } from './TypesUtil'
 
@@ -255,7 +255,7 @@ export const UiUtil = {
   getExtensionWallets() {
     const wallets = []
     for (const [key, value] of Object.entries(EthereumPresets.injectedPreset)) {
-      if (key !== InjectedId.coinbaseWallet && value && value.isInjected && !value.isDesktop) {
+      if (value?.isInjected && !value.isDesktop) {
         wallets.push({ id: key, ...value })
       }
     }

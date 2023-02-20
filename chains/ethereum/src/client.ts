@@ -11,14 +11,12 @@ import {
   watchAccount,
   watchNetwork
 } from '@wagmi/core'
-import type { ConnectorId } from './types'
-
-type WalletConnectVersion = 1 | 2
+import type { ConnectorId, ModalConnectorsOpts } from './types'
 
 export class EthereumClient {
   private readonly wagmi = {} as Client
   public walletConnectUri = ''
-  public walletConnectVersion: WalletConnectVersion = 1
+  public walletConnectVersion: ModalConnectorsOpts['version'] = 1
   public readonly chains = [] as Chain[]
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

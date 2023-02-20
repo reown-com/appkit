@@ -144,10 +144,7 @@ export class W3mDesktopWalletSelection extends LitElement {
     let wallets = []
 
     if (isViewAll) {
-      const filtered = displayWallets.filter(
-        wallet => !wallet.values.includes(InjectedId.coinbaseWallet)
-      )
-      wallets = filtered.slice(0, 3)
+      wallets = displayWallets.slice(0, 3)
     } else {
       wallets = displayWallets
     }

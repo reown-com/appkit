@@ -1,7 +1,6 @@
 import { WalletConnectV1Connector } from '@wagmi/connectors/walletConnectV1'
-import type { Chain } from '@wagmi/core'
+import type { Chain, Connector } from '@wagmi/core'
 import { InjectedConnector } from '@wagmi/core'
-import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import type { ModalConnectorsOpts, WalletConnectProviderOpts } from './types'
@@ -33,27 +32,31 @@ export function walletConnectProvider<C extends Chain>({ projectId }: WalletConn
 }
 
 // -- connectors ------------------------------------------------------ //
-export function modalConnectors({ appName, chains, version, projectId }: ModalConnectorsOpts) {
-  const isV1 = version === '1'
-  const isV2 = version === '2'
+export function modalConnectors({ chains, version, projectId }: ModalConnectorsOpts) {
+  const isV1 = version === 1
+  const isV2 = version === 2
 
-  const connectors = [
-    new WalletConnectConnector({ chains, options: { qrcode: false, projectId } }),
-    new WalletConnectV1Connector({
-      chains,
-      options: { qrcode: false }
-    }),
+  const connectors: Connector[] = [
     new InjectedConnector({
       chains,
       options: { shimDisconnect: true, shimChainChangedDisconnect: true }
-    }),
-    new CoinbaseWalletConnector({ chains, options: { appName } })
+    })
   ]
 
   if (isV1) {
-    connectors.splice(0, 1)
+    connectors.unshift(
+      new WalletConnectV1Connector({
+        chains,
+        options: { qrcode: false }
+      })
+    )
   } else if (isV2) {
-    connectors.splice(1, 1)
+    connectors.unshift(
+      new WalletConnectConnector({
+        chains,
+        options: { qrcode: false, projectId }
+      })
+    )
   }
 
   return connectors
