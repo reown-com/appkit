@@ -24,16 +24,16 @@ export default function v2StandalonePage() {
       const namespaces = {
         eip155: {
           methods: ['eth_sign', 'eth_sendTransaction'],
-          chains: ['eip155:1'],
+          chains: ['eip155:1', 'eip155:137'],
           events: ['accountsChanged', 'chainChanged']
         }
       }
       const { uri, approval } = await signClient.connect({
         requiredNamespaces: namespaces,
         optionalNamespaces: {
-          eip155: {
-            methods: ['eth_signTypedData_v3', 'eth_signTypedData_v4'],
+          'eip155:137': {
             chains: ['eip155:137'],
+            methods: ['get_balance', 'personal_sign'],
             events: ['disconnect']
           }
         }
