@@ -1,0 +1,39 @@
+name: "\U0001F41B Bug Report"
+description: 'Report a reproducible bug'
+labels: ['needs review']
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to file a bug report! If you are convinced that you have found a bug in Web3Modal, this is the right place. Please fill out this entire form. The most important piece is a minimal reproducible example.
+  - type: markdown
+    attributes:
+      value: If you have a question or you think your issue might be caused by your application code, you can get help from the community on on [Discord](https://discord.com/invite/kdTQHQ6AFQ).
+  - type: input
+    attributes:
+      label: Minimal reproducible example
+      description: |
+        This should include as little code as possible, and no extraneous dependencies. Do not share your entire project.
+        You should also test your issue against the latest NPM package version(s) to ensure that it hasn't already been resolved.
+        Sharing a link to a GitHub repository and/or preview deployment are best. Include any instructions to run the project in the README or the summary field below.
+        If a reproducible demo is not provided, your issue will be closed.
+        [Learn more about creating a minimal reproducible example](https://stackoverflow.com/help/mcve).
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        **Realize that it is up to you to debug your code and be as certain as possible that the bug is with Web3Modal, not with your own app.**
+  - type: textarea
+    attributes:
+      label: Summary
+      description: |
+        Clearly describe what the expected behavior is and what is actually happening. Be concise and precise in your description. Include any affected platforms, chains, rpc's, conenctors etc...
+        Ex: if you report that "X method isn't working", then you will need to continue debugging on your own to more precisely define your issue before proceeding.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: List of related Web3Modal / third-party dependencies related to the issue
+      description: Include all @web3modal, wagmi and other packages that can be related to the issue
+    validations:
+      required: true
