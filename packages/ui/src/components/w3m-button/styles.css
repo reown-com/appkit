@@ -1,5 +1,5 @@
 button {
-  border-radius: 28px;
+  border-radius: var(--w3m-secondary-button-border-radius);
   height: 28px;
   padding: 0 10px;
   background-color: var(--w3m-accent-color);

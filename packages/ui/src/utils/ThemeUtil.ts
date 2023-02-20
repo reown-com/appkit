@@ -86,6 +86,20 @@ export const ThemeUtil = {
 
         '--w3m-wallet-icon-border-radius': theme?.['--w3m-wallet-icon-border-radius'] ?? '15px',
 
+        '--w3m-input-border-radius': theme?.['--w3m-input-border-radius'] ?? '28px',
+
+        '--w3m-button-border-radius': theme?.['--w3m-button-border-radius'] ?? '10px',
+
+        '--w3m-notification-border-radius': theme?.['--w3m-notification-border-radius'] ?? '36px',
+
+        '--w3m-secondary-button-border-radius':
+          theme?.['--w3m-secondary-button-border-radius'] ?? '28px',
+
+        '--w3m-icon-button-border-radius': theme?.['--w3m-icon-button-border-radius'] ?? '50%',
+
+        '--w3m-button-hover-highlight-border-radius':
+          theme?.['--w3m-button-hover-highlight-border-radius'] ?? '10px',
+
         // Old
         '--w3m-color-fg-1': ThemeUtil.color().foreground[1],
         '--w3m-color-fg-2': ThemeUtil.color().foreground[2],

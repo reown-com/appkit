@@ -8,7 +8,7 @@ input {
   width: 100%;
   height: 100%;
   line-height: 28px !important;
-  border-radius: 28px;
+  border-radius: var(--w3m-input-border-radius);
   font-style: normal;
   font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu,
     'Helvetica Neue', sans-serif;

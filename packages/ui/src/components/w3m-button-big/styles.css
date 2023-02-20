@@ -5,7 +5,7 @@
 button {
   padding: 0 15px 1px;
   height: 40px;
-  border-radius: 10px;
+  border-radius: var(--w3m-button-border-radius);
   color: var(--w3m-accent-color-inverse);
   background-color: var(--w3m-accent-color);
 }

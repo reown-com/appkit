@@ -34,7 +34,13 @@ export default function v2BasePage() {
           '--w3m-logo-image-url': '/images/customisation/logo.png',
           '--w3m-background-border-radius': '0px',
           '--w3m-container-border-radius': '0px',
-          '--w3m-wallet-icon-border-radius': '0px'
+          '--w3m-wallet-icon-border-radius': '0px',
+          '--w3m-input-border-radius': '0px',
+          '--w3m-button-border-radius': '0px',
+          '--w3m-secondary-button-border-radius': '0px',
+          '--w3m-notification-border-radius': '0px',
+          '--w3m-icon-button-border-radius': '0px',
+          '--w3m-button-hover-highlight-border-radius': '0px'
         }}
         ethereumClient={ethereumClient}
         projectId={projectId}

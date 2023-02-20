@@ -2,7 +2,7 @@ button {
   display: flex;
   flex-direction: column;
   padding: 5px 10px;
-  border-radius: calc(var(--w3m-wallet-icon-border-radius) * 0.66);
+  border-radius: var(--w3m-button-hover-highlight-border-radius);
   transition: background-color 0.2s ease;
   height: 100%;
   justify-content: flex-start;

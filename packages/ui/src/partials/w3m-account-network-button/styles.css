@@ -1,6 +1,6 @@
 button {
   display: flex;
-  border-radius: 10px;
+  border-radius: var(--w3m-button-hover-highlight-border-radius);
   flex-direction: column;
   transition: background-color 0.2s ease;
   justify-content: center;

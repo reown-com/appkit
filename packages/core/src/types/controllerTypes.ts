@@ -191,6 +191,12 @@ export interface ThemeCtrlState {
     '--w3m-background-border-radius'?: string
     '--w3m-container-border-radius'?: string
     '--w3m-wallet-icon-border-radius'?: string
+    '--w3m-input-border-radius'?: string
+    '--w3m-notification-border-radius'?: string
+    '--w3m-button-border-radius'?: string
+    '--w3m-secondary-button-border-radius'?: string
+    '--w3m-icon-button-border-radius'?: string
+    '--w3m-button-hover-highlight-border-radius'?: string
   }
   themeMode?: 'dark' | 'light'
 }
