@@ -24,13 +24,16 @@
   max-width: 360px;
   width: 100%;
   outline: none;
+  border-radius: var(--w3m-background-border-radius) var(--w3m-background-border-radius)
+    var(--w3m-container-border-radius) var(--w3m-container-border-radius);
+  border: 1px solid var(--w3m-color-overlay);
+  overflow: hidden;
 }
 
 .w3m-card {
   width: 100%;
   position: relative;
-  transform: translateY(5px);
-  border-radius: 30px;
+  border-radius: var(--w3m-container-border-radius);
   overflow: hidden;
   box-shadow: 0px 6px 14px -6px rgba(10, 16, 31, 0.12), 0px 10px 32px -4px rgba(10, 16, 31, 0.1),
     0 0 0 1px var(--w3m-color-overlay);

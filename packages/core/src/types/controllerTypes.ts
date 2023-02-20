@@ -187,8 +187,10 @@ export interface ThemeCtrlState {
     '--w3m-accent-color-inverse'?: string
     '--w3m-background-color'?: string
     '--w3m-background-image-url'?: string
+    '--w3m-logo-image-url'?: string
+    '--w3m-background-border-radius'?: string
+    '--w3m-container-border-radius'?: string
+    '--w3m-wallet-icon-border-radius'?: string
   }
-
-  // Old
   themeMode?: 'dark' | 'light'
 }

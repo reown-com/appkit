@@ -80,6 +80,12 @@ export const ThemeUtil = {
           ? `url(${theme['--w3m-background-image-url']})`
           : 'none',
 
+        '--w3m-background-border-radius': theme?.['--w3m-background-border-radius'] ?? '8px',
+
+        '--w3m-container-border-radius': theme?.['--w3m-container-border-radius'] ?? '30px',
+
+        '--w3m-wallet-icon-border-radius': theme?.['--w3m-wallet-icon-border-radius'] ?? '15px',
+
         // Old
         '--w3m-color-fg-1': ThemeUtil.color().foreground[1],
         '--w3m-color-fg-2': ThemeUtil.color().foreground[2],

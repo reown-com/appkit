@@ -1,4 +1,4 @@
-import { ModalCtrl, RouterCtrl, ThemeCtrl } from '@web3modal/core'
+import { CoreUtil, ModalCtrl, RouterCtrl, ThemeCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -20,7 +20,7 @@ export class W3mModalBackcard extends LitElement {
 
   // -- lifecycle ---------------------------------------------------- //
   public firstUpdated() {
-    if (!this.isCustomBg()) {
+    if (!this.isGradientDisabled()) {
       this.playTimeout = setTimeout(() => {
         whatamesh.play(this.canvasEl)
         this.open = true
@@ -53,11 +53,22 @@ export class W3mModalBackcard extends LitElement {
     RouterCtrl.push('Help')
   }
 
-  private isCustomBg() {
+  private isGradientDisabled() {
     return (
       ThemeCtrl.state.themeVariables?.['--w3m-background-color'] ??
-      ThemeCtrl.state.themeVariables?.['--w3m-background-image-url']
+      ThemeCtrl.state.themeVariables?.['--w3m-background-image-url'] ??
+      CoreUtil.isMobile()
     )
+  }
+
+  private logoTemplate() {
+    const customSrc = ThemeCtrl.state.themeVariables?.['--w3m-logo-image-url']
+
+    if (customSrc) {
+      return html`<img src=${customSrc} />`
+    }
+
+    return SvgUtil.WALLET_CONNECT_LOGO
   }
 
   // -- render ------------------------------------------------------- //
@@ -73,7 +84,7 @@ export class W3mModalBackcard extends LitElement {
     }
 
     return html`
-      ${this.isCustomBg()
+      ${this.isGradientDisabled()
         ? html`<div class="w3m-custom-placeholder"></div>`
         : html`
             <div class="w3m-gradient-placeholder"></div>
@@ -81,9 +92,8 @@ export class W3mModalBackcard extends LitElement {
             ${SvgUtil.NOISE_TEXTURE}
           `}
 
-      <div class="w3m-highlight"></div>
       <div class="w3m-toolbar">
-        ${SvgUtil.WALLET_CONNECT_LOGO}
+        ${this.logoTemplate()}
         <div class=${classMap(actionsClasses)}>
           <button class="w3m-action-btn" @click=${this.onHelp}>${SvgUtil.HELP_ICON}</button>
           <button class="w3m-action-btn" @click=${ModalCtrl.close}>${SvgUtil.CROSS_ICON}</button>

@@ -26,6 +26,16 @@ export default function v2BasePage() {
 
       <Web3Modal
         themeMode={getTheme()}
+        themeVariables={{
+          '--w3m-accent-color': '#FF8700',
+          '--w3m-accent-color-inverse': '#000000',
+          '--w3m-background-color': '#000000',
+          '--w3m-background-image-url': '/images/customisation/background.png',
+          '--w3m-logo-image-url': '/images/customisation/logo.png',
+          '--w3m-background-border-radius': '0px',
+          '--w3m-container-border-radius': '0px',
+          '--w3m-wallet-icon-border-radius': '0px'
+        }}
         ethereumClient={ethereumClient}
         projectId={projectId}
         walletImages={{
