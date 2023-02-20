@@ -1,17 +1,15 @@
 name: "\U0001F41B Bug Report"
-description: 'Report a reproducible bug'
-labels: ['needs review']
+description: 'Report a reproducible bug.'
+title: '[bug] '
+labels: ['bug', 'needs review']
 body:
-  - type: markdown
-    attributes:
-      value: Thanks for taking the time to file a bug report! If you are convinced that you have found a bug in Web3Modal, this is the right place. Please fill out this entire form. The most important piece is a minimal reproducible example. If you have a question or you think your issue might be caused by your application code, you can get help from the community on on [Discord](https://discord.com/invite/kdTQHQ6AFQ).
   - type: input
     attributes:
       label: Link to minimal reproducible example
       description: |
         This should include as little code as possible, and no extraneous dependencies. Do not share your entire project.
         You should also test your issue against the latest NPM package version(s) to ensure that it hasn't already been resolved.
-        Sharing a link to a [GitHub repository](https://github.com), [Codesandbox](https://codesandbox.io) and/or preview deployment are best. Include any instructions to run the project in the README or the summary field below.
+        Sharing a link to a GitHub repository, [Codesandbox](https://codesandbox.io) and/or preview deployment are best. Include any instructions to run the project in the README or the summary field below.
         
         IF A REPRODUCIBLE DEMO IS NOT PROVIDED, YOUR ISSUE WILL BE CLOSED.
         [Learn more about creating a minimal reproducible example](https://stackoverflow.com/help/mcve).
