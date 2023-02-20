@@ -8,15 +8,15 @@
   },
   "dependencies": {
     "@nextui-org/react": "1.0.0-beta.12",
-    "@sentry/react": "7.37.2",
-    "@sentry/tracing": "7.37.2",
+    "@sentry/react": "7.38.0",
+    "@sentry/tracing": "7.38.0",
     "@web3modal/ethereum": "2.1.1",
     "@web3modal/react": "2.1.1",
     "ethers": "5.7.2",
     "next": "13.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "wagmi": "0.11.5"
+    "wagmi": "0.11.6"
   },
   "devDependencies": {
     "@types/react": "18.0.28",

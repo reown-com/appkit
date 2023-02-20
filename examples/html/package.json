@@ -9,12 +9,12 @@
   },
   "dependencies": {
     "@gnosis.pm/safe-apps-wagmi": "2.1.0",
-    "@wagmi/core": "0.9.5",
+    "@wagmi/core": "0.9.6",
     "@web3modal/ethereum": "2.1.1",
     "@web3modal/html": "2.1.1",
     "ethers": "5.7.2"
   },
   "devDependencies": {
-    "vite": "4.1.2"
+    "vite": "4.1.3"
   }
 }

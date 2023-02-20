@@ -1,7 +1,7 @@
+import { WalletConnectConnector } from '@wagmi/connectors/walletConnect'
 import { WalletConnectV1Connector } from '@wagmi/connectors/walletConnectV1'
 import type { Chain, Connector } from '@wagmi/core'
 import { InjectedConnector } from '@wagmi/core'
-import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import type { ModalConnectorsOpts, WalletConnectProviderOpts } from './types'
 
@@ -34,7 +34,6 @@ export function walletConnectProvider<C extends Chain>({ projectId }: WalletConn
 // -- connectors ------------------------------------------------------ //
 export function modalConnectors({ chains, version, projectId }: ModalConnectorsOpts) {
   const isV1 = version === 1
-  const isV2 = version === 2
 
   const connectors: Connector[] = [
     new InjectedConnector({
@@ -45,13 +44,15 @@ export function modalConnectors({ chains, version, projectId }: ModalConnectorsO
 
   if (isV1) {
     connectors.unshift(
+      // @ts-expect-error - TODO(ilja) remove after updated wagmi release
       new WalletConnectV1Connector({
         chains,
         options: { qrcode: false }
       })
     )
-  } else if (isV2) {
+  } else {
     connectors.unshift(
+      // @ts-expect-error - TODO(ilja) remove after updated wagmi release
       new WalletConnectConnector({
         chains,
         options: { qrcode: false, projectId }
