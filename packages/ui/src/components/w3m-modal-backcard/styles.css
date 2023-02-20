@@ -3,6 +3,7 @@
 #w3m-transparent-noise,
 .w3m-custom-placeholder {
   inset: 0;
+  width: 100%;
   position: absolute;
   display: block;
   pointer-events: none;
