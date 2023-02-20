@@ -48,6 +48,8 @@ export default function v2StandalonePage() {
           await web3Modal.openModal({ uri, standaloneChains: namespaces.eip155.chains })
           await approval()
           setModalOpen(true)
+        } catch (error) {
+          console.error(error)
         } finally {
           web3Modal.closeModal()
         }
