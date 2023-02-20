@@ -1,10 +1,8 @@
 name: "\U0001F64B Feature Request"
 description: 'Want us to add something to Web3Modal?'
-labels: ['needs review']
+title: '[feature] '
+labels: ['feature-request', 'needs review']
 body:
-  - type: markdown
-    attributes:
-      value: Thanks for helping us make Web3Modal even better!
   - type: textarea
     attributes:
       label: What problem does this new feature solve?
