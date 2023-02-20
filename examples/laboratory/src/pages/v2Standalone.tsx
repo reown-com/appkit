@@ -23,12 +23,21 @@ export default function v2StandalonePage() {
     if (signClient) {
       const namespaces = {
         eip155: {
-          methods: ['eth_sign'],
-          chains: ['eip155:1'],
-          events: ['accountsChanged']
+          methods: ['eth_sign', 'eth_sendTransaction'],
+          chains: ['eip155:1', 'eip155:137'],
+          events: ['accountsChanged', 'chainChanged']
         }
       }
-      const { uri, approval } = await signClient.connect({ requiredNamespaces: namespaces })
+      const { uri, approval } = await signClient.connect({
+        requiredNamespaces: namespaces,
+        optionalNamespaces: {
+          'eip155:137': {
+            chains: ['eip155:137'],
+            methods: ['get_balance', 'personal_sign'],
+            events: ['disconnect']
+          }
+        }
+      })
       if (uri) {
         try {
           await web3Modal.openModal({ uri, standaloneChains: namespaces.eip155.chains })
