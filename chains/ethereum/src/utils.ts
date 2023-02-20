@@ -44,7 +44,6 @@ export function modalConnectors({ chains, version, projectId }: ModalConnectorsO
 
   if (isV1) {
     connectors.unshift(
-      // @ts-expect-error - TODO(ilja) remove after updated wagmi release
       new WalletConnectV1Connector({
         chains,
         options: { qrcode: false }
@@ -52,7 +51,6 @@ export function modalConnectors({ chains, version, projectId }: ModalConnectorsO
     )
   } else {
     connectors.unshift(
-      // @ts-expect-error - TODO(ilja) remove after updated wagmi release
       new WalletConnectConnector({
         chains,
         options: { qrcode: false, projectId }
