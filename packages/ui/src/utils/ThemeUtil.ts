@@ -104,7 +104,44 @@ export const ThemeUtil = {
         '--w3m-text-big-bold-text-transform':
           theme?.['--w3m-text-big-bold-text-transform'] ?? 'none',
 
-        // Old
+        '--w3m-text-xsmall-bold-size': theme?.['--w3m-text-xsmall-bold-size'] ?? '10px',
+
+        '--w3m-text-xsmall-bold-weight': theme?.['--w3m-text-xsmall-bold-weight'] ?? '700',
+
+        '--w3m-text-xsmall-bold-line-height':
+          theme?.['--w3m-text-xsmall-bold-line-height'] ?? '12px',
+
+        '--w3m-text-xsmall-bold-letter-spacing':
+          theme?.['--w3m-text-xsmall-bold-letter-spacing'] ?? '0.02em',
+
+        '--w3m-text-xsmall-bold-text-transform':
+          theme?.['--w3m-text-xsmall-bold-text-transform'] ?? 'uppercase',
+
+        '--w3m-text-xsmall-regular-size': theme?.['--w3m-text-xsmall-regular-size'] ?? '12px',
+
+        '--w3m-text-xsmall-regular-weight': theme?.['--w3m-text-xsmall-regular-weight'] ?? '600',
+
+        '--w3m-text-xsmall-regular-line-height':
+          theme?.['--w3m-text-xsmall-regular-line-height'] ?? '14px',
+
+        '--w3m-text-xsmall-regular-letter-spacing':
+          theme?.['--w3m-text-xsmall-regular-letter-spacing'] ?? '-0.03em',
+
+        '--w3m-text-xsmall-regular-text-transform':
+          theme?.['--w3m-text-xsmall-regular-text-transform'] ?? 'none',
+
+        '--w3m-text-small-thin-size': theme?.['--w3m-text-small-thin-size'] ?? '14px',
+
+        '--w3m-text-small-thin-weight': theme?.['--w3m-text-small-thin-weight'] ?? '500',
+
+        '--w3m-text-small-thin-line-height': theme?.['--w3m-text-small-thin-line-height'] ?? '16px',
+
+        '--w3m-text-small-thin-letter-spacing':
+          theme?.['--w3m-text-small-thin-letter-spacing'] ?? '-0.03em',
+
+        '--w3m-text-small-thin-text-transform':
+          theme?.['--w3m-text-small-thin-text-transform'] ?? 'none',
+
         '--w3m-color-fg-1': ThemeUtil.color().foreground[1],
         '--w3m-color-fg-2': ThemeUtil.color().foreground[2],
         '--w3m-color-fg-3': ThemeUtil.color().foreground[3],

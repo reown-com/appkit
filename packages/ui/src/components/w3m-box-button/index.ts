@@ -18,7 +18,7 @@ export class W3mBoxButton extends LitElement {
     return html`
       <button @click=${this.onClick}>
         <div>${this.icon}</div>
-        <w3m-text variant="xsmall-normal" color="accent">${this.label}</w3m-text>
+        <w3m-text variant="xsmall-regular" color="accent">${this.label}</w3m-text>
       </button>
     `
   }

@@ -10,8 +10,8 @@ type Variant =
   | 'medium-thin'
   | 'small-normal'
   | 'small-thin'
-  | 'xsmall-normal'
-  | 'xxsmall-bold'
+  | 'xsmall-bold'
+  | 'xsmall-regular'
 
 type Color = 'accent' | 'error' | 'inverse' | 'primary' | 'secondary' | 'tertiary'
 
@@ -31,8 +31,8 @@ export class W3mText extends LitElement {
       'w3m-medium-thin': this.variant === 'medium-thin',
       'w3m-small-normal': this.variant === 'small-normal',
       'w3m-small-thin': this.variant === 'small-thin',
-      'w3m-xsmall-normal': this.variant === 'xsmall-normal',
-      'w3m-xxsmall-bold': this.variant === 'xxsmall-bold',
+      'w3m-xsmall-regular': this.variant === 'xsmall-regular',
+      'w3m-xsmall-bold': this.variant === 'xsmall-bold',
       'w3m-color-primary': this.color === 'primary',
       'w3m-color-secondary': this.color === 'secondary',
       'w3m-color-tertiary': this.color === 'tertiary',
@@ -42,8 +42,8 @@ export class W3mText extends LitElement {
     }
 
     return html`
-      <span class=${classMap(classes)}>
-        <slot></slot>
+      <span>
+        <slot class=${classMap(classes)}></slot>
       </span>
     `
   }

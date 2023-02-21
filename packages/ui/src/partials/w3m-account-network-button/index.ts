@@ -44,7 +44,7 @@ export class W3mAccountNetworkButton extends LitElement {
     return html`
       <button @click=${this.onClick} ?disabled=${!isMultichain}>
         <w3m-network-image chainId=${ifDefined(this.chainId)}></w3m-network-image>
-        <w3m-text variant="xsmall-normal" color="accent">${this.label}</w3m-text>
+        <w3m-text variant="xsmall-regular" color="accent">${this.label}</w3m-text>
       </button>
     `
   }
