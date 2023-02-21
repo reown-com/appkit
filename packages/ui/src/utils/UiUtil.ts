@@ -99,6 +99,7 @@ export const UiUtil = {
   },
 
   async handleMobileLinking(wallet: RecentWallet) {
+    CoreUtil.removeWalletConnectDeepLink()
     const { standaloneUri, selectedChain } = OptionsCtrl.state
     const { links, name } = wallet
 
@@ -125,6 +126,7 @@ export const UiUtil = {
   },
 
   async handleAndroidLinking() {
+    CoreUtil.removeWalletConnectDeepLink()
     const { standaloneUri, selectedChain } = OptionsCtrl.state
 
     if (standaloneUri) {

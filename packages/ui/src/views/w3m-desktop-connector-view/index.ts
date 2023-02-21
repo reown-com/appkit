@@ -49,6 +49,7 @@ export class W3mDesktopConnectorView extends LitElement {
   }
 
   private async createConnectionAndWait(retry = 0) {
+    CoreUtil.removeWalletConnectDeepLink()
     const { standaloneUri } = OptionsCtrl.state
     const { name, walletId, native, universal, icon } = this.getRouterData()
     const recentWalletData = { name, id: walletId, links: { native, universal }, image: icon }
