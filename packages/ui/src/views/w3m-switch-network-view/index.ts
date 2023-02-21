@@ -58,7 +58,7 @@ export class W3mSwitchNetworkView extends LitElement {
 
           <div class="w3m-connecting-title">
             ${this.error ? null : html`<w3m-spinner></w3m-spinner>`}
-            <w3m-text variant="large-bold" color=${this.error ? 'error' : 'secondary'}>
+            <w3m-text variant="big-bold" color=${this.error ? 'error' : 'secondary'}>
               ${this.error ? 'Connection declined' : 'Approve in your wallet'}
             </w3m-text>
           </div>

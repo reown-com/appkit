@@ -28,7 +28,7 @@ export default function v2BasePage() {
         themeMode={getTheme()}
         themeVariables={{
           '--w3m-accent-color': '#FF8700',
-          '--w3m-accent-color-inverse': '#000000',
+          '--w3m-accent-fill-color': '#000000',
           '--w3m-background-color': '#000000',
           '--w3m-background-image-url': '/images/customisation/background.png',
           '--w3m-logo-image-url': '/images/customisation/logo.png',
@@ -40,7 +40,8 @@ export default function v2BasePage() {
           '--w3m-secondary-button-border-radius': '0px',
           '--w3m-notification-border-radius': '0px',
           '--w3m-icon-button-border-radius': '0px',
-          '--w3m-button-hover-highlight-border-radius': '0px'
+          '--w3m-button-hover-highlight-border-radius': '0px',
+          '--w3m-font-family': 'monospace'
         }}
         ethereumClient={ethereumClient}
         projectId={projectId}

@@ -1,7 +1,6 @@
 span {
   font-style: normal;
-  font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu,
-    'Helvetica Neue', sans-serif;
+  font-family: var(--w3m-font-family);
   font-feature-settings: 'tnum' on, 'lnum' on, 'case' on;
 }
 
@@ -48,11 +47,12 @@ span {
   letter-spacing: -0.03em;
 }
 
-.w3m-large-bold {
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 24px;
-  letter-spacing: -0.03em;
+.w3m-big-bold {
+  font-weight: var(--w3m-text-big-bold-weight);
+  font-size: var(--w3m-text-big-bold-size);
+  line-height: var(--w3m-text-big-bold-line-height);
+  letter-spacing: var(--w3m-text-big-bold-letter-spacing);
+  text-transform: var(--w3m-text-big-bold-text-transform);
 }
 
 :host(*) {
@@ -72,7 +72,7 @@ span {
 }
 
 .w3m-color-inverse {
-  color: var(--w3m-accent-color-inverse);
+  color: var(--w3m-accent-fill-color);
 }
 
 .w3m-color-accnt {

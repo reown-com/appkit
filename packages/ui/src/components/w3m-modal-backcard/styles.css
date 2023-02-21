@@ -60,7 +60,7 @@
 }
 
 #w3m-wc-logo path {
-  fill: var(--w3m-accent-color-inverse);
+  fill: var(--w3m-accent-fill-color);
 }
 
 .w3m-action-btn {

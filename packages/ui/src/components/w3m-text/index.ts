@@ -5,7 +5,7 @@ import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 type Variant =
-  | 'large-bold'
+  | 'big-bold'
   | 'medium-normal'
   | 'medium-thin'
   | 'small-normal'
@@ -26,7 +26,7 @@ export class W3mText extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const classes = {
-      'w3m-large-bold': this.variant === 'large-bold',
+      'w3m-big-bold': this.variant === 'big-bold',
       'w3m-medium-normal': this.variant === 'medium-normal',
       'w3m-medium-thin': this.variant === 'medium-thin',
       'w3m-small-normal': this.variant === 'small-normal',

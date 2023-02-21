@@ -222,7 +222,7 @@ export class W3mWalletExplorerView extends LitElement {
         </div>
         <div class="w3m-placeholder-block">
           ${isEmpty
-            ? html`<w3m-text variant="large-bold" color="secondary">No results found</w3m-text>`
+            ? html`<w3m-text variant="big-bold" color="secondary">No results found</w3m-text>`
             : null}
           ${!isEmpty && this.loading ? html`<w3m-spinner></w3m-spinner>` : null}
         </div>

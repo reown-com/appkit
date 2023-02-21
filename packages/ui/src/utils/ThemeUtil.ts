@@ -58,21 +58,9 @@ export const ThemeUtil = {
       const variables = {
         '--w3m-accent-color': theme?.['--w3m-accent-color'] ?? '#3396FF',
 
-        '--w3m-accent-color-inverse': theme?.['--w3m-accent-color-inverse'] ?? '#FFFFFF',
+        '--w3m-accent-fill-color': theme?.['--w3m-accent-fill-color'] ?? '#FFFFFF',
 
         '--w3m-z-index': theme?.['--w3m-z-index'] ?? '89',
-
-        '--w3m-success-color': 'rgb(38,181,98)',
-
-        '--w3m-error-color': 'rgb(242, 90, 103)',
-
-        '--w3m-gradient-1': '#B6B9C9',
-
-        '--w3m-gradient-2': '#C653C6',
-
-        '--w3m-gradient-3': '#794DFF',
-
-        '--w3m-gradient-4': '#2EB8B8',
 
         '--w3m-background-color': theme?.['--w3m-background-color'] ?? '#3396FF',
 
@@ -100,6 +88,22 @@ export const ThemeUtil = {
         '--w3m-button-hover-highlight-border-radius':
           theme?.['--w3m-button-hover-highlight-border-radius'] ?? '10px',
 
+        '--w3m-font-family':
+          theme?.['--w3m-font-family'] ??
+          "-apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, 'Helvetica Neue', sans-serif",
+
+        '--w3m-text-big-bold-size': theme?.['--w3m-text-big-bold-size'] ?? '20px',
+
+        '--w3m-text-big-bold-weight': theme?.['--w3m-text-big-bold-weight'] ?? '600',
+
+        '--w3m-text-big-bold-line-height': theme?.['--w3m-text-big-bold-line-height'] ?? '24px',
+
+        '--w3m-text-big-bold-letter-spacing':
+          theme?.['--w3m-text-big-bold-letter-spacing'] ?? '-0.03em',
+
+        '--w3m-text-big-bold-text-transform':
+          theme?.['--w3m-text-big-bold-text-transform'] ?? 'none',
+
         // Old
         '--w3m-color-fg-1': ThemeUtil.color().foreground[1],
         '--w3m-color-fg-2': ThemeUtil.color().foreground[2],
@@ -107,7 +111,13 @@ export const ThemeUtil = {
         '--w3m-color-bg-1': ThemeUtil.color().background[1],
         '--w3m-color-bg-2': ThemeUtil.color().background[2],
         '--w3m-color-bg-3': ThemeUtil.color().background[3],
-        '--w3m-color-overlay': ThemeUtil.color().overlay
+        '--w3m-color-overlay': ThemeUtil.color().overlay,
+        '--w3m-success-color': 'rgb(38,181,98)',
+        '--w3m-error-color': 'rgb(242, 90, 103)',
+        '--w3m-gradient-1': '#B6B9C9',
+        '--w3m-gradient-2': '#C653C6',
+        '--w3m-gradient-3': '#794DFF',
+        '--w3m-gradient-4': '#2EB8B8'
       }
       Object.entries(variables).forEach(([key, val]) => root.style.setProperty(key, val))
     }
@@ -166,7 +176,7 @@ export const ThemeUtil = {
     }
 
     ::selection {
-      color: var(--w3m-accent-color-inverse);
+      color: var(--w3m-accent-fill-color);
       background: var(--w3m-accent-color);
     }
   `

@@ -101,7 +101,7 @@ export class W3mDesktopConnectorView extends LitElement {
 
           <div class="w3m-connecting-title">
             <w3m-spinner></w3m-spinner>
-            <w3m-text variant="large-bold" color="secondary">
+            <w3m-text variant="big-bold" color="secondary">
               ${`Continue in ${optimisticName}...`}
             </w3m-text>
           </div>

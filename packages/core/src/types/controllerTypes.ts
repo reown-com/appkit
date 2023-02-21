@@ -184,7 +184,7 @@ export interface ThemeCtrlState {
   themeVariables?: {
     '--w3m-z-index'?: string
     '--w3m-accent-color'?: string
-    '--w3m-accent-color-inverse'?: string
+    '--w3m-accent-fill-color'?: string
     '--w3m-background-color'?: string
     '--w3m-background-image-url'?: string
     '--w3m-logo-image-url'?: string
@@ -197,6 +197,12 @@ export interface ThemeCtrlState {
     '--w3m-secondary-button-border-radius'?: string
     '--w3m-icon-button-border-radius'?: string
     '--w3m-button-hover-highlight-border-radius'?: string
+    '--w3m-font-family'?: string
+    '--w3m-text-big-bold-size'?: string
+    '--w3m-text-big-bold-weight'?: string
+    '--w3m-text-big-bold-line-height'?: string
+    '--w3m-text-big-bold-letter-spacing'?: string
+    '--w3m-text-big-bold-text-transform'?: string
   }
   themeMode?: 'dark' | 'light'
 }
