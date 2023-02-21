@@ -15,6 +15,13 @@
   pointer-events: none;
 }
 
+@media (max-height: 720px) and (orientation: landscape) {
+  .w3m-overlay {
+    overflow: scroll;
+    align-items: flex-start;
+  }
+}
+
 .w3m-open {
   pointer-events: auto;
 }
@@ -44,10 +51,11 @@
 @media (max-width: 600px) {
   .w3m-container {
     max-width: 440px;
+    border-radius: var(--w3m-background-border-radius) var(--w3m-background-border-radius) 0 0;
   }
 
   .w3m-card {
-    border-radius: 40px 40px 0 0;
+    border-radius: var(--w3m-container-border-radius) var(--w3m-container-border-radius) 0 0;
   }
 
   .w3m-overlay {
@@ -55,17 +63,8 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 440px) {
   .w3m-container {
-    max-width: 440px;
-  }
-
-  .w3m-card {
-    transform: translateY(5px);
-    border-radius: 40px 40px 0 0;
-  }
-
-  .w3m-overlay {
-    align-items: flex-end;
+    border: none;
   }
 }
