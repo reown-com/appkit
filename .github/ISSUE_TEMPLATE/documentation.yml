@@ -1,0 +1,20 @@
+name: "\U0001F4C3 Documentation"
+description: 'Report issue or suggest an improvement to docs.'
+title: '[docs] '
+labels: ['docs', 'needs review']
+body:
+  - type: textarea
+    attributes:
+      label: Summary
+      description: |
+        Clearly describe what is wrong or missing from the docs.
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Link to the related docs page
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: If this is a typo, or something you feel up to fixing, please do so! You can edit any page in our docs by scrolling to the bottom and selecting `Edit this page`.

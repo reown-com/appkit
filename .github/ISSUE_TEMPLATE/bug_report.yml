@@ -1,0 +1,32 @@
+name: "\U0001F41B Bug Report"
+description: 'Report a reproducible bug.'
+title: '[bug] '
+labels: ['bug', 'needs review']
+body:
+  - type: input
+    attributes:
+      label: Link to minimal reproducible example
+      description: |
+        This should include as little code as possible, and no extraneous dependencies. Do not share your entire project.
+        You should also test your issue against the latest NPM package version(s) to ensure that it hasn't already been resolved.
+        Sharing a link to a GitHub repository, [Codesandbox](https://codesandbox.io) and/or preview deployment are best. Include any instructions to run the project in the README or the summary field below.
+        
+        IF A REPRODUCIBLE DEMO IS NOT PROVIDED, YOUR ISSUE WILL BE CLOSED.
+        [Learn more about creating a minimal reproducible example](https://stackoverflow.com/help/mcve).
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Summary
+      description: |
+        Clearly describe what the expected behavior is and what is actually happening. Be concise and precise in your description. Include any affected platforms, chains, rpc's, conenctors etc...
+
+        Ex: if you report that "X method isn't working", then you will need to continue debugging on your own to more precisely define your issue before proceeding.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: List of related npm package versions
+      description: Include all web3modal, wagmi and other packages that can be related to the issue, including their versions.
+    validations:
+      required: true
