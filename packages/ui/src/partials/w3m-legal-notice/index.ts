@@ -19,7 +19,7 @@ export class W3mLegalNotice extends LitElement {
 
     return html`
       <div>
-        <w3m-text variant="small-normal" color="secondary">
+        <w3m-text variant="small-regular" color="secondary">
           By connecting your wallet, you agree to our <br />
           ${termsOfServiceUrl
             ? html`<a href=${termsOfServiceUrl} target="_blank" rel="noopener noreferrer">

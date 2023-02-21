@@ -46,7 +46,7 @@ export class W3mAddressText extends LitElement {
     return html`
       <w3m-text
         class=${classMap(classes)}
-        variant=${isButton ? 'medium-normal' : 'big-bold'}
+        variant=${isButton ? 'medium-regular' : 'big-bold'}
         color=${isButton ? 'inverse' : 'primary'}
       >
         ${this.name ? this.name : UiUtil.truncate(this.address ?? '')}

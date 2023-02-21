@@ -28,7 +28,7 @@ function themeModeColors() {
         2: `rgb(39,42,42)`,
         3: `rgb(59,64,64)`
       },
-      overlay: 'rgba(255,255,255,0.1'
+      overlay: 'rgba(255,255,255,0.1)'
     }
   }
 }
@@ -39,12 +39,8 @@ export const ThemeUtil = {
     const theme = themeModeColors()[themeMode]
 
     return {
-      foreground: {
-        ...theme.foreground
-      },
-      background: {
-        ...theme.background
-      },
+      foreground: { ...theme.foreground },
+      background: { ...theme.background },
       overlay: theme.overlay,
       error: `rgb(242, 90, 103)`
     }
@@ -142,6 +138,32 @@ export const ThemeUtil = {
         '--w3m-text-small-thin-text-transform':
           theme?.['--w3m-text-small-thin-text-transform'] ?? 'none',
 
+        '--w3m-text-small-regular-size': theme?.['--w3m-text-small-regular-size'] ?? '14px',
+
+        '--w3m-text-small-regular-weight': theme?.['--w3m-text-small-regular-weight'] ?? '600',
+
+        '--w3m-text-small-regular-line-height':
+          theme?.['--w3m-text-small-regular-line-height'] ?? '16px',
+
+        '--w3m-text-small-regular-letter-spacing':
+          theme?.['--w3m-text-small-regular-letter-spacing'] ?? '-0.03em',
+
+        '--w3m-text-small-regular-text-transform':
+          theme?.['--w3m-text-small-regular-text-transform'] ?? 'none',
+
+        '--w3m-text-medium-regular-size': theme?.['--w3m-text-medium-regular-size'] ?? '16px',
+
+        '--w3m-text-medium-regular-weight': theme?.['--w3m-text-medium-regular-weight'] ?? '600',
+
+        '--w3m-text-medium-regular-line-height':
+          theme?.['--w3m-text-medium-regular-line-height'] ?? '20px',
+
+        '--w3m-text-medium-regular-letter-spacing':
+          theme?.['--w3m-text-medium-regular-letter-spacing'] ?? '-0.03em',
+
+        '--w3m-text-medium-regular-text-transform':
+          theme?.['--w3m-text-medium-regular-text-transform'] ?? 'none',
+
         '--w3m-color-fg-1': ThemeUtil.color().foreground[1],
         '--w3m-color-fg-2': ThemeUtil.color().foreground[2],
         '--w3m-color-fg-3': ThemeUtil.color().foreground[3],
@@ -156,6 +178,7 @@ export const ThemeUtil = {
         '--w3m-gradient-3': '#794DFF',
         '--w3m-gradient-4': '#2EB8B8'
       }
+
       Object.entries(variables).forEach(([key, val]) => root.style.setProperty(key, val))
     }
   },

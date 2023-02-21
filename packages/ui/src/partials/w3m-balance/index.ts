@@ -46,7 +46,7 @@ export class W3mBalance extends LitElement {
     return html`
       <div>
         <w3m-token-image symbol=${ifDefined(this.symbol)}></w3m-token-image>
-        <w3m-text variant="medium-normal" color="primary">${formatAmount} ${this.symbol}</w3m-text>
+        <w3m-text variant="medium-regular" color="primary">${formatAmount} ${this.symbol}</w3m-text>
       </div>
     `
   }

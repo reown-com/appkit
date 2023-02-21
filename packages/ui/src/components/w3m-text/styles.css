@@ -31,25 +31,22 @@ span {
   text-transform: var(--w3m-text-small-thin-text-transform);
 }
 
-.w3m-small-normal {
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 16px;
-  letter-spacing: -0.03em;
+.w3m-small-regular {
+  font-family: var(--w3m-text-small-regular-font-family);
+  font-weight: var(--w3m-text-small-regular-weight);
+  font-size: var(--w3m-text-small-regular-size);
+  line-height: var(--w3m-text-small-regular-line-height);
+  letter-spacing: var(--w3m-text-small-regular-letter-spacing);
+  text-transform: var(--w3m-text-small-regular-text-transform);
 }
 
-.w3m-medium-thin {
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 20px;
-  letter-spacing: -0.03em;
-}
-
-.w3m-medium-normal {
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 20px;
-  letter-spacing: -0.03em;
+.w3m-medium-regular {
+  font-family: var(--w3m-text-medium-regular-font-family);
+  font-weight: var(--w3m-text-medium-regular-weight);
+  font-size: var(--w3m-text-medium-regular-size);
+  line-height: var(--w3m-text-medium-regular-line-height);
+  letter-spacing: var(--w3m-text-medium-regular-letter-spacing);
+  text-transform: var(--w3m-text-medium-regular-text-transform);
 }
 
 .w3m-big-bold {

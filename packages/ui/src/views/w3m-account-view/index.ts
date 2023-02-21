@@ -31,7 +31,7 @@ export class W3mAccountView extends LitElement {
             <w3m-address-text variant="modal"></w3m-address-text>
           </div>
           <div class="w3m-connection-badge">
-            <w3m-text variant="small-normal" color="secondary">Connected</w3m-text>
+            <w3m-text variant="small-regular" color="secondary">Connected</w3m-text>
           </div>
         </div>
       </w3m-modal-content>

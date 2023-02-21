@@ -29,7 +29,7 @@ export class W3mHelpView extends LitElement {
           <div class="w3m-images">
             ${SvgUtil.HELP_CHART_IMG} ${SvgUtil.HELP_PAINTING_IMG} ${SvgUtil.HELP_ETH_IMG}
           </div>
-          <w3m-text variant="medium-normal">A home for your digital assets</w3m-text>
+          <w3m-text variant="medium-regular">A home for your digital assets</w3m-text>
           <w3m-text variant="small-thin" color="secondary" class="w3m-info-text">
             A wallet lets you store, send and receive digital assets like cryptocurrencies and NFTs.
           </w3m-text>
@@ -39,7 +39,7 @@ export class W3mHelpView extends LitElement {
           <div class="w3m-images">
             ${SvgUtil.HELP_KEY_IMG} ${SvgUtil.HELP_USER_IMG} ${SvgUtil.HELP_LOCK_IMG}
           </div>
-          <w3m-text variant="medium-normal">One login for all of web3</w3m-text>
+          <w3m-text variant="medium-regular">One login for all of web3</w3m-text>
           <w3m-text variant="small-thin" color="secondary" class="w3m-info-text">
             Log in to any app by connecting your wallet. Say goodbye to countless passwords!
           </w3m-text>
@@ -49,7 +49,7 @@ export class W3mHelpView extends LitElement {
           <div class="w3m-images">
             ${SvgUtil.HELP_COMPAS_IMG} ${SvgUtil.HELP_NOUN_IMG} ${SvgUtil.HELP_DAO_IMG}
           </div>
-          <w3m-text variant="medium-normal">Your gateway to a new web</w3m-text>
+          <w3m-text variant="medium-regular">Your gateway to a new web</w3m-text>
           <w3m-text variant="small-thin" color="secondary" class="w3m-info-text">
             With your wallet, you can explore and interact with DeFi, NFTs, DAOs, and much more.
           </w3m-text>

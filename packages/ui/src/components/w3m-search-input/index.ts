@@ -19,7 +19,7 @@ export class W3mSearchInput extends LitElement {
       <input type="text" @input=${this.onChange} placeholder=${placeholder} />
       <div class="w3m-placeholder">
         ${SvgUtil.SEARCH_ICON}
-        <w3m-text color="secondary" variant="medium-thin">${placeholder}</w3m-text>
+        <w3m-text color="secondary" variant="small-thin">${placeholder}</w3m-text>
       </div>
     `
   }

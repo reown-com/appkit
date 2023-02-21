@@ -72,11 +72,11 @@ export class W3mConnectButton extends LitElement {
         ${this.loading
           ? html`
               <w3m-spinner></w3m-spinner>
-              <w3m-text variant="medium-normal" color="accent">Connecting...</w3m-text>
+              <w3m-text variant="medium-regular" color="accent">Connecting...</w3m-text>
             `
           : html`
               ${this.iconTemplate()}
-              <w3m-text variant="medium-normal" color="inverse">${this.label}</w3m-text>
+              <w3m-text variant="medium-regular" color="inverse">${this.label}</w3m-text>
             `}
       </w3m-button-big>
     `

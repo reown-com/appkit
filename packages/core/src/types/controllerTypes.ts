@@ -240,13 +240,6 @@ export interface ThemeCtrlState {
     '--w3m-text-medium-regular-letter-spacing'?: string
     '--w3m-text-medium-regular-text-transform'?: string
     '--w3m-text-medium-regular-font-family'?: string
-
-    '--w3m-text-medium-thin-size'?: string
-    '--w3m-text-medium-thin-weight'?: string
-    '--w3m-text-medium-thin-line-height'?: string
-    '--w3m-text-medium-thin-letter-spacing'?: string
-    '--w3m-text-medium-thin-text-transform'?: string
-    '--w3m-text-medium-thin-font-family'?: string
   }
   themeMode?: 'dark' | 'light'
 }

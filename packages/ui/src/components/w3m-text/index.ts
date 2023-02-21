@@ -6,9 +6,8 @@ import styles from './styles.css'
 
 type Variant =
   | 'big-bold'
-  | 'medium-normal'
-  | 'medium-thin'
-  | 'small-normal'
+  | 'medium-regular'
+  | 'small-regular'
   | 'small-thin'
   | 'xsmall-bold'
   | 'xsmall-regular'
@@ -20,16 +19,15 @@ export class W3mText extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
-  @property() public variant?: Variant = 'medium-normal'
+  @property() public variant?: Variant = 'medium-regular'
   @property() public color?: Color = 'primary'
 
   // -- render ------------------------------------------------------- //
   protected render() {
     const classes = {
       'w3m-big-bold': this.variant === 'big-bold',
-      'w3m-medium-normal': this.variant === 'medium-normal',
-      'w3m-medium-thin': this.variant === 'medium-thin',
-      'w3m-small-normal': this.variant === 'small-normal',
+      'w3m-medium-regular': this.variant === 'medium-regular',
+      'w3m-small-regular': this.variant === 'small-regular',
       'w3m-small-thin': this.variant === 'small-thin',
       'w3m-xsmall-regular': this.variant === 'xsmall-regular',
       'w3m-xsmall-bold': this.variant === 'xsmall-bold',

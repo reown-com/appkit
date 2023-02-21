@@ -163,12 +163,12 @@ export class W3mDesktopWalletSelection extends LitElement {
         <div class="w3m-mobile-title">
           <div class="w3m-subtitle">
             ${SvgUtil.MOBILE_ICON}
-            <w3m-text variant="small-normal" color="accent">Mobile</w3m-text>
+            <w3m-text variant="small-regular" color="accent">Mobile</w3m-text>
           </div>
 
           <div class="w3m-subtitle">
             ${SvgUtil.SCAN_ICON}
-            <w3m-text variant="small-normal" color="secondary">Scan with your wallet</w3m-text>
+            <w3m-text variant="small-regular" color="secondary">Scan with your wallet</w3m-text>
           </div>
         </div>
         <w3m-walletconnect-qr></w3m-walletconnect-qr>
@@ -179,7 +179,7 @@ export class W3mDesktopWalletSelection extends LitElement {
             <w3m-modal-footer>
               <div class="w3m-desktop-title">
                 ${SvgUtil.DESKTOP_ICON}
-                <w3m-text variant="small-normal" color="accent">Desktop</w3m-text>
+                <w3m-text variant="small-regular" color="accent">Desktop</w3m-text>
               </div>
 
               <div class="w3m-grid">
