@@ -49,19 +49,23 @@ export interface OptionsCtrlState {
   chains?: EthereumClient['chains']
   standaloneChains?: string[]
   standaloneUri?: string
-  address?: `0x${string}`
-  isConnected: boolean
   isStandalone: boolean
   isCustomDesktop: boolean
   isCustomMobile: boolean
   isDataLoaded: boolean
   isUiLoaded: boolean
+  walletConnectVersion: 1 | 2
+}
+
+// -- AccountCtrl -------------------------------------------- //
+export interface AccountCtrlState {
+  address?: `0x${string}`
+  isConnected: boolean
   profileName?: string | null
   profileAvatar?: string | null
   profileLoading?: boolean
   balanceLoading?: boolean
   balance?: { amount: string; symbol: string }
-  walletConnectVersion: 1 | 2
 }
 
 // -- ExplorerCtrl ------------------------------------------- //

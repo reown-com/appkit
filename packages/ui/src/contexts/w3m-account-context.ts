@@ -1,4 +1,4 @@
-import { ClientCtrl, ConfigCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
+import { AccountCtrl, ClientCtrl, ConfigCtrl, ToastCtrl } from '@web3modal/core'
 import { LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { UiUtil } from '../utils/UiUtil'
@@ -10,17 +10,17 @@ export class W3mAccountContext extends LitElement {
     super()
 
     // Set & Subscribe to account, ens state
-    OptionsCtrl.getAccount()
+    AccountCtrl.getAccount()
     this.fetchEnsProfile()
     this.fetchBalance()
     this.unwatchAccount = ClientCtrl.client().watchAccount(account => {
-      const { address } = OptionsCtrl.state
+      const { address } = AccountCtrl.state
       if (account.address !== address) {
         this.fetchEnsProfile(account.address)
         this.fetchBalance(account.address)
       }
-      OptionsCtrl.setAddress(account.address)
-      OptionsCtrl.setIsConnected(account.isConnected)
+      AccountCtrl.setAddress(account.address)
+      AccountCtrl.setIsConnected(account.isConnected)
     })
   }
 
@@ -34,8 +34,8 @@ export class W3mAccountContext extends LitElement {
   private async fetchEnsProfile(profileAddress?: `0x${string}`) {
     try {
       if (ConfigCtrl.state.enableAccountView) {
-        OptionsCtrl.setProfileLoading(true)
-        const address = profileAddress ?? OptionsCtrl.state.address
+        AccountCtrl.setProfileLoading(true)
+        const address = profileAddress ?? AccountCtrl.state.address
         const { id } = ClientCtrl.client().getDefaultChain()
         if (address && id === 1) {
           const [name, avatar] = await Promise.all([
@@ -45,33 +45,33 @@ export class W3mAccountContext extends LitElement {
           if (avatar) {
             await UiUtil.preloadImage(avatar)
           }
-          OptionsCtrl.setProfileName(name)
-          OptionsCtrl.setProfileAvatar(avatar)
+          AccountCtrl.setProfileName(name)
+          AccountCtrl.setProfileAvatar(avatar)
         }
       }
     } catch (err) {
       console.error(err)
       ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
     } finally {
-      OptionsCtrl.setProfileLoading(false)
+      AccountCtrl.setProfileLoading(false)
     }
   }
 
   private async fetchBalance(balanceAddress?: `0x${string}`) {
     try {
       if (ConfigCtrl.state.enableAccountView) {
-        OptionsCtrl.setBalanceLoading(true)
-        const address = balanceAddress ?? OptionsCtrl.state.address
+        AccountCtrl.setBalanceLoading(true)
+        const address = balanceAddress ?? AccountCtrl.state.address
         if (address) {
           const balance = await ClientCtrl.client().fetchBalance({ address })
-          OptionsCtrl.setBalance({ amount: balance.formatted, symbol: balance.symbol })
+          AccountCtrl.setBalance({ amount: balance.formatted, symbol: balance.symbol })
         }
       }
     } catch (err) {
       console.error(err)
       ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
     } finally {
-      OptionsCtrl.setBalanceLoading(false)
+      AccountCtrl.setBalanceLoading(false)
     }
   }
 }

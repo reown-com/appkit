@@ -1,5 +1,5 @@
 import type { SwitchNetworkData } from '@web3modal/core'
-import { ClientCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
+import { AccountCtrl, ClientCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -11,7 +11,8 @@ export class W3mSelectNetworkView extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private async onSelectChain(chain: SwitchNetworkData) {
-    const { isConnected, selectedChain, walletConnectVersion } = OptionsCtrl.state
+    const { selectedChain, walletConnectVersion } = OptionsCtrl.state
+    const { isConnected } = AccountCtrl.state
     if (isConnected) {
       if (selectedChain?.id === chain.id) {
         RouterCtrl.replace('Account')

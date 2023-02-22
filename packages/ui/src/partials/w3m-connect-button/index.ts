@@ -1,4 +1,4 @@
-import { ClientCtrl, ConfigCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
+import { AccountCtrl, ClientCtrl, ConfigCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -41,7 +41,7 @@ export class W3mConnectButton extends LitElement {
   }
 
   private onClick() {
-    if (OptionsCtrl.state.isConnected) {
+    if (AccountCtrl.state.isConnected) {
       this.onDisconnect()
     } else {
       this.onConnect()
@@ -62,7 +62,7 @@ export class W3mConnectButton extends LitElement {
 
   private onDisconnect() {
     ClientCtrl.client().disconnect()
-    OptionsCtrl.resetAccount()
+    AccountCtrl.resetAccount()
   }
 
   // -- render ------------------------------------------------------- //

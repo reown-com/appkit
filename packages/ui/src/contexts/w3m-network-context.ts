@@ -1,4 +1,4 @@
-import { ClientCtrl, ConfigCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
+import { AccountCtrl, ClientCtrl, ConfigCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { UiUtil } from '../utils/UiUtil'
@@ -21,7 +21,7 @@ export class W3mNetworkContext extends LitElement {
       if (newChain && this.activeChainId !== newChain.id) {
         OptionsCtrl.setSelectedChain(newChain)
         this.activeChainId = newChain.id
-        OptionsCtrl.resetBalance()
+        AccountCtrl.resetBalance()
         this.fetchBalance()
       }
     })
@@ -37,18 +37,18 @@ export class W3mNetworkContext extends LitElement {
   private async fetchBalance(balanceAddress?: `0x${string}`) {
     try {
       if (ConfigCtrl.state.enableAccountView) {
-        OptionsCtrl.setBalanceLoading(true)
-        const address = balanceAddress ?? OptionsCtrl.state.address
+        AccountCtrl.setBalanceLoading(true)
+        const address = balanceAddress ?? AccountCtrl.state.address
         if (address) {
           const balance = await ClientCtrl.client().fetchBalance({ address })
-          OptionsCtrl.setBalance({ amount: balance.formatted, symbol: balance.symbol })
+          AccountCtrl.setBalance({ amount: balance.formatted, symbol: balance.symbol })
         }
       }
     } catch (err) {
       console.error(err)
       ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
     } finally {
-      OptionsCtrl.setBalanceLoading(false)
+      AccountCtrl.setBalanceLoading(false)
     }
   }
 }

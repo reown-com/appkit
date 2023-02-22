@@ -1,4 +1,4 @@
-import { OptionsCtrl } from '@web3modal/core'
+import { AccountCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -19,10 +19,10 @@ export class W3mAvatar extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.address = OptionsCtrl.state.address
-    this.avatar = OptionsCtrl.state.profileAvatar
-    this.loading = Boolean(OptionsCtrl.state.profileLoading)
-    this.unsubscribeAccount = OptionsCtrl.subscribe(
+    this.address = AccountCtrl.state.address
+    this.avatar = AccountCtrl.state.profileAvatar
+    this.loading = Boolean(AccountCtrl.state.profileLoading)
+    this.unsubscribeAccount = AccountCtrl.subscribe(
       ({ address, profileAvatar, profileLoading }) => {
         this.address = address
         this.avatar = profileAvatar
