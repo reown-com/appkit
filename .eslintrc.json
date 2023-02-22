@@ -42,7 +42,7 @@
     "newline-before-return": "error",
     "camelcase": "off",
     "class-methods-use-this": "off",
-    "no-console": ["error", { "allow": ["error"] }],
+    "no-console": ["error", { "allow": ["error", "info"] }],
     "no-duplicate-imports": "off",
 
     "@typescript-eslint/no-unsafe-call": "off",

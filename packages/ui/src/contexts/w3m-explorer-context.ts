@@ -38,24 +38,36 @@ export class W3mExplorerContext extends LitElement {
   }
 
   private async preloadListingImages(images: string[]) {
-    if (images.length) {
-      await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
+    try {
+      if (images.length) {
+        await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
+      }
+    } catch {
+      console.info('Unsuccessful attempt at preloading some images')
     }
   }
 
   private async preloadCustomImages() {
-    const images = UiUtil.getCustomImageUrls()
-    if (images.length) {
-      await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
+    try {
+      const images = UiUtil.getCustomImageUrls()
+      if (images.length) {
+        await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
+      }
+    } catch {
+      console.info('Unsuccessful attempt at preloading some images')
     }
   }
 
   private async preloadConnectorImages() {
-    if (!OptionsCtrl.state.isStandalone) {
-      const images = UiUtil.getConnectorImageUrls()
-      if (images.length) {
-        await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
+    try {
+      if (!OptionsCtrl.state.isStandalone) {
+        const images = UiUtil.getConnectorImageUrls()
+        if (images.length) {
+          await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
+        }
       }
+    } catch {
+      console.info('Unsuccessful attempt at preloading some images')
     }
   }
 
