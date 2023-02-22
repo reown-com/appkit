@@ -1,5 +1,5 @@
 {
-  "name": "react-standalone-example",
+  "name": "nextjs-standalone-example",
   "version": "2.1.1",
   "private": true,
   "scripts": {
@@ -7,14 +7,14 @@
     "build": "next build && next export"
   },
   "dependencies": {
-    "@walletconnect/sign-client": "2.3.3",
+    "@walletconnect/sign-client": "2.4.4",
     "@web3modal/standalone": "2.1.1",
     "next": "13.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@types/react": "18.0.27",
-    "@types/react-dom": "18.0.10"
+    "@types/react": "18.0.28",
+    "@types/react-dom": "18.0.11"
   }
 }
