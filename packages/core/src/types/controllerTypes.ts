@@ -32,6 +32,7 @@ export interface ConfigCtrlState {
   enableStandaloneMode?: boolean
   enableNetworkView?: boolean
   enableAccountView?: boolean
+  enableExplorer?: boolean
   explorerAllowList?: string[]
   explorerDenyList?: string[]
   termsOfServiceUrl?: string

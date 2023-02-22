@@ -18,6 +18,8 @@ export const UiUtil = {
 
   W3M_RECENT_WALLET: 'W3M_RECENT_WALLET',
 
+  EXPLORER_WALLET_URL: 'https://explorer.walletconnect.com/?type=wallet',
+
   rejectStandaloneButtonComponent() {
     const { isStandalone } = OptionsCtrl.state
     if (isStandalone) {
@@ -267,5 +269,9 @@ export const UiUtil = {
 
   caseSafeIncludes(str1: string, str2: string) {
     return str1.toUpperCase().includes(str2.toUpperCase())
+  },
+
+  openWalletExplorerUrl() {
+    CoreUtil.openHref(UiUtil.EXPLORER_WALLET_URL, '_blank')
   }
 }

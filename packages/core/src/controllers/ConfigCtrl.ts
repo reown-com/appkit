@@ -14,6 +14,7 @@ const state = proxy<ConfigCtrlState>({
   enableStandaloneMode: false,
   enableNetworkView: false,
   enableAccountView: true,
+  enableExplorer: true,
   defaultChain: undefined,
   explorerAllowList: undefined,
   explorerDenyList: undefined,

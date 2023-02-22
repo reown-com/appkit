@@ -11,14 +11,8 @@ export class W3mGetWalletView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
-  private readonly explorerUrl = 'https://explorer.walletconnect.com/'
-
   private onGet(url: string) {
     CoreUtil.openHref(url, '_blank')
-  }
-
-  private onExplore() {
-    CoreUtil.openHref(this.explorerUrl, '_blank')
   }
 
   // -- render ------------------------------------------------------- //
@@ -76,7 +70,10 @@ export class W3mGetWalletView extends LitElement {
         <w3m-text variant="small-thin" color="secondary" class="w3m-info-text">
           With hundreds of wallets out there, there's something for everyone
         </w3m-text>
-        <w3m-button .onClick=${this.onExplore.bind(this)} .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}>
+        <w3m-button
+          .onClick=${UiUtil.openWalletExplorerUrl}
+          .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}
+        >
           Explore Wallets
         </w3m-button>
       </div>

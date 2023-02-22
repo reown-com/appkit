@@ -1,4 +1,4 @@
-import { CoreUtil, ExplorerCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
+import { ConfigCtrl, CoreUtil, ExplorerCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { UiUtil } from '../utils/UiUtil'
@@ -28,23 +28,29 @@ export class W3mExplorerContext extends LitElement {
   }
 
   private async preloadListings() {
-    const { standaloneChains, chains, walletConnectVersion } = OptionsCtrl.state
-    const chainsFilter = standaloneChains?.join(',')
-    await Promise.all([
-      ExplorerCtrl.getPreviewWallets({
-        page: 1,
-        entries: 10,
-        chains: chainsFilter,
-        device: CoreUtil.isMobile() ? 'mobile' : 'desktop',
-        version: walletConnectVersion
-      }),
-      ExplorerCtrl.getRecomendedWallets()
-    ])
-    OptionsCtrl.setIsDataLoaded(true)
-    const { previewWallets, recomendedWallets } = ExplorerCtrl.state
-    const chainsImgs = chains?.map(chain => UiUtil.getChainIcon(chain.id)) ?? []
-    const walletImgs = [...previewWallets, ...recomendedWallets].map(wallet => wallet.image_url.lg)
-    await this.loadImages([...chainsImgs, ...walletImgs])
+    if (ConfigCtrl.state.enableExplorer) {
+      const { standaloneChains, chains, walletConnectVersion } = OptionsCtrl.state
+      const chainsFilter = standaloneChains?.join(',')
+      await Promise.all([
+        ExplorerCtrl.getPreviewWallets({
+          page: 1,
+          entries: 10,
+          chains: chainsFilter,
+          device: CoreUtil.isMobile() ? 'mobile' : 'desktop',
+          version: walletConnectVersion
+        }),
+        ExplorerCtrl.getRecomendedWallets()
+      ])
+      OptionsCtrl.setIsDataLoaded(true)
+      const { previewWallets, recomendedWallets } = ExplorerCtrl.state
+      const chainsImgs = chains?.map(chain => UiUtil.getChainIcon(chain.id)) ?? []
+      const walletImgs = [...previewWallets, ...recomendedWallets].map(
+        wallet => wallet.image_url.lg
+      )
+      await this.loadImages([...chainsImgs, ...walletImgs])
+    } else {
+      OptionsCtrl.setIsDataLoaded(true)
+    }
   }
 
   private async preloadCustomImages() {
