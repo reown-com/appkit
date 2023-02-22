@@ -45,7 +45,7 @@ export const ModalCtrl = {
         RouterCtrl.replace('ConnectWallet')
       }
 
-      // Open modal if async data is ready
+      // Open modal if essential async data is ready
       if (isUiLoaded && isDataLoaded) {
         state.open = true
         resolve()

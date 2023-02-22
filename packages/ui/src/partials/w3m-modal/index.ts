@@ -68,7 +68,6 @@ export class W3mModal extends LitElement {
   }
 
   private async onOpenModalEvent() {
-    // TODO(ilja) await explorer data load here
     this.toggleBodyScroll(false)
     const delay = 0.2
     await animate(this.containerEl, { y: 0 }, { duration: 0 }).finished
