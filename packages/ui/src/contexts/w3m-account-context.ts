@@ -11,12 +11,12 @@ export class W3mAccountContext extends LitElement {
 
     // Set & Subscribe to account, ens state
     AccountCtrl.getAccount()
-    this.fetchEnsProfile()
+    this.fetchProfile()
     this.fetchBalance()
     this.unwatchAccount = ClientCtrl.client().watchAccount(account => {
       const { address } = AccountCtrl.state
       if (account.address !== address) {
-        this.fetchEnsProfile(account.address)
+        this.fetchProfile(account.address)
         this.fetchBalance(account.address)
       }
       AccountCtrl.setAddress(account.address)
@@ -31,47 +31,25 @@ export class W3mAccountContext extends LitElement {
   // -- private ------------------------------------------------------ //
   private readonly unwatchAccount?: () => void = undefined
 
-  private async fetchEnsProfile(profileAddress?: `0x${string}`) {
-    try {
-      if (ConfigCtrl.state.enableAccountView) {
-        AccountCtrl.setProfileLoading(true)
-        const address = profileAddress ?? AccountCtrl.state.address
-        const { id } = ClientCtrl.client().getDefaultChain()
-        if (address && id === 1) {
-          const [name, avatar] = await Promise.all([
-            ClientCtrl.client().fetchEnsName({ address, chainId: 1 }),
-            ClientCtrl.client().fetchEnsAvatar({ address, chainId: 1 })
-          ])
-          if (avatar) {
-            await UiUtil.preloadImage(avatar)
-          }
-          AccountCtrl.setProfileName(name)
-          AccountCtrl.setProfileAvatar(avatar)
-        }
+  private async fetchProfile(profileAddress?: `0x${string}`) {
+    if (ConfigCtrl.state.enableAccountView) {
+      try {
+        await AccountCtrl.fetchProfile(UiUtil.preloadImage, profileAddress)
+      } catch (err) {
+        console.error(err)
+        ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
       }
-    } catch (err) {
-      console.error(err)
-      ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
-    } finally {
-      AccountCtrl.setProfileLoading(false)
     }
   }
 
   private async fetchBalance(balanceAddress?: `0x${string}`) {
-    try {
-      if (ConfigCtrl.state.enableAccountView) {
-        AccountCtrl.setBalanceLoading(true)
-        const address = balanceAddress ?? AccountCtrl.state.address
-        if (address) {
-          const balance = await ClientCtrl.client().fetchBalance({ address })
-          AccountCtrl.setBalance({ amount: balance.formatted, symbol: balance.symbol })
-        }
+    if (ConfigCtrl.state.enableAccountView) {
+      try {
+        await AccountCtrl.fetchBalance(balanceAddress)
+      } catch (err) {
+        console.error(err)
+        ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
       }
-    } catch (err) {
-      console.error(err)
-      ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
-    } finally {
-      AccountCtrl.setBalanceLoading(false)
     }
   }
 }

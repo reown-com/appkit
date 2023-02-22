@@ -34,21 +34,14 @@ export class W3mNetworkContext extends LitElement {
   // -- private ------------------------------------------------------ //
   private readonly unwatchNetwork?: () => void = undefined
 
-  private async fetchBalance(balanceAddress?: `0x${string}`) {
-    try {
-      if (ConfigCtrl.state.enableAccountView) {
-        AccountCtrl.setBalanceLoading(true)
-        const address = balanceAddress ?? AccountCtrl.state.address
-        if (address) {
-          const balance = await ClientCtrl.client().fetchBalance({ address })
-          AccountCtrl.setBalance({ amount: balance.formatted, symbol: balance.symbol })
-        }
+  private async fetchBalance() {
+    if (ConfigCtrl.state.enableAccountView) {
+      try {
+        await AccountCtrl.fetchBalance()
+      } catch (err) {
+        console.error(err)
+        ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
       }
-    } catch (err) {
-      console.error(err)
-      ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
-    } finally {
-      AccountCtrl.setBalanceLoading(false)
     }
   }
 }

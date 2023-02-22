@@ -27,37 +27,49 @@ export const AccountCtrl = {
     state.isConnected = account.isConnected
   },
 
+  async fetchProfile(
+    preloadAvatarFn: (avatar: string) => Promise<unknown>,
+    profileAddress?: `0x${string}`
+  ) {
+    try {
+      state.profileLoading = true
+      const address = profileAddress ?? state.address
+      const { id } = ClientCtrl.client().getDefaultChain()
+      if (address && id === 1) {
+        const [name, avatar] = await Promise.all([
+          ClientCtrl.client().fetchEnsName({ address, chainId: 1 }),
+          ClientCtrl.client().fetchEnsAvatar({ address, chainId: 1 })
+        ])
+        if (avatar) {
+          await preloadAvatarFn(avatar)
+        }
+        state.profileName = name
+        state.profileAvatar = avatar
+      }
+    } finally {
+      state.profileLoading = false
+    }
+  },
+
+  async fetchBalance(balanceAddress?: `0x${string}`) {
+    try {
+      state.balanceLoading = true
+      const address = balanceAddress ?? state.address
+      if (address) {
+        const balance = await ClientCtrl.client().fetchBalance({ address })
+        state.balance = { amount: balance.formatted, symbol: balance.symbol }
+      }
+    } finally {
+      state.balanceLoading = false
+    }
+  },
+
   setAddress(address: AccountCtrlState['address']) {
     state.address = address
   },
 
   setIsConnected(isConnected: AccountCtrlState['isConnected']) {
     state.isConnected = isConnected
-  },
-
-  setProfileName(profileName: AccountCtrlState['profileName']) {
-    state.profileName = profileName
-  },
-
-  setProfileAvatar(profileAvatar: AccountCtrlState['profileAvatar']) {
-    state.profileAvatar = profileAvatar
-  },
-
-  setProfileLoading(profileLoading: AccountCtrlState['profileLoading']) {
-    state.profileLoading = profileLoading
-  },
-
-  setBalanceLoading(balanceLoading: AccountCtrlState['balanceLoading']) {
-    state.balanceLoading = balanceLoading
-  },
-
-  setBalance(balance: AccountCtrlState['balance']) {
-    state.balance = balance
-  },
-
-  resetProfile() {
-    state.profileName = undefined
-    state.profileAvatar = undefined
   },
 
   resetBalance() {
@@ -67,7 +79,8 @@ export const AccountCtrl = {
   resetAccount() {
     state.address = undefined
     state.isConnected = false
-    AccountCtrl.resetProfile()
-    AccountCtrl.resetBalance()
+    state.profileName = undefined
+    state.profileAvatar = undefined
+    state.balance = undefined
   }
 }
