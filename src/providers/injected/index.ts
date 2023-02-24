@@ -68,6 +68,8 @@ import ZerionLogo from '../logos/zerion.svg';
 import PhantomLogo from "../logos/phantom.svg";
 // @ts-ignore
 import RainbowLogo from "../logos/rainbow.svg";
+// @ts-ignore
+import KucoinLogo from "../logos/kucoin.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -342,4 +344,12 @@ export const RAINBOW: IProviderInfo = {
   logo: RainbowLogo,
   type: "injected",
   check: "isRainbow"
+};
+
+export const KUCOIN: IProviderInfo = {
+  id: "injected",
+  name: "KUCOIN",
+  logo: KucoinLogo,
+  type: "injected",
+  check: "isKucoinWallet"
 };

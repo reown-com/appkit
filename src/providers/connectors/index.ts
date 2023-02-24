@@ -21,6 +21,7 @@ import bitkeep from "./bitkeep";
 import starzwallet from "./starzwallet";
 import ledger from "./ledger";
 import phantom from "./phantom";
+import kucoinwallet from "./kucoinwallet";
 
 export {
   injected,
@@ -46,5 +47,6 @@ export {
   starzwallet,
   web3auth,
   ledger,
-  phantom
+  phantom,
+  kucoinwallet
 };
