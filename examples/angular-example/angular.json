@@ -17,7 +17,26 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": ["buffer","qrcode","react-dom/client"],
+            "allowedCommonJsDependencies": [
+              "buffer",
+              "qrcode",
+              "react-dom/client",
+              "aes-js",
+              "scrypt-js",
+              "bech32",
+              "hash.js",
+              "eventemitter3",
+              "@coinbase/wallet-sdk",
+              "ethers/lib/utils.js",
+              "@walletconnect/window-getters",
+              "@walletconnect/window-metadata",
+              "@walletconnect/socket-transport",
+              "cross-fetch",
+              "@walletconnect/environment",
+              "@stablelib/ed25519",
+              "query-string",
+              "bn.js"
+            ],
             "outputPath": "dist/angular-example",
             "index": "src/index.html",
             "main": "src/main.ts",
