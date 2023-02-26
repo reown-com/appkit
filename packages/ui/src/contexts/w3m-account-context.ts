@@ -1,4 +1,4 @@
-import { AccountCtrl, ClientCtrl, ConfigCtrl, ToastCtrl } from '@web3modal/core'
+import { AccountCtrl, ClientCtrl, ConfigCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { UiUtil } from '../utils/UiUtil'
@@ -32,7 +32,8 @@ export class W3mAccountContext extends LitElement {
   private readonly unwatchAccount?: () => void = undefined
 
   private async fetchProfile(profileAddress?: `0x${string}`) {
-    if (ConfigCtrl.state.enableAccountView) {
+    const hasMainnet = OptionsCtrl.state.chains?.find(chain => chain.id === 1)
+    if (ConfigCtrl.state.enableAccountView && hasMainnet) {
       try {
         await AccountCtrl.fetchProfile(UiUtil.preloadImage, profileAddress)
       } catch (err) {
