@@ -6,6 +6,7 @@ export interface EvmWindow {
   ethereum?: any
   spotEthWallet?: any
   coinbaseWalletExtension?: any
+  xfi?: any
 }
 
 export interface InjectedPreset {
@@ -35,6 +36,7 @@ export const enum InjectedId {
   tokenary = 'tokenary',
   '1inch' = '1inch',
   kuCoinWallet = 'kuCoinWallet',
+  xdefiWallet = 'xdefiWallet',
   ledger = 'ledger'
 }
 
@@ -159,6 +161,12 @@ export const EthereumPresets = {
       icon: 'dce1ee99-403f-44a9-9f94-20de30616500',
       url: 'https://1inch.io/wallet',
       isMobile: true
+    },
+    [InjectedId.xdefiWallet]: {
+      name: 'XDEFI Wallet',
+      icon: 'efec6318-7f96-4b30-9287-6c287660cd00',
+      url: 'https://www.xdefi.io',
+      isInjected: true
     }
   } as Record<string, InjectedPreset | undefined>,
 
@@ -167,7 +175,7 @@ export const EthereumPresets = {
       return id
     }
 
-    const { ethereum, spotEthWallet, coinbaseWalletExtension }: EvmWindow = window
+    const { ethereum, spotEthWallet, xfi, coinbaseWalletExtension }: EvmWindow = window
 
     if (!ethereum) return InjectedId.metaMask
     if (ethereum.isTrust || ethereum.isTrustWallet) return InjectedId.trust
@@ -186,6 +194,7 @@ export const EthereumPresets = {
     if (ethereum.isTokenary) return InjectedId.tokenary
     if (ethereum.isOneInchIOSWallet || ethereum.isOneInchAndroidWallet) return InjectedId['1inch']
     if (ethereum.isKuCoinWallet) return InjectedId.kuCoinWallet
+    if (xfi) return InjectedId.xdefiWallet
     if (ethereum.isMetaMask) return InjectedId.metaMask
 
     return 'injected'
