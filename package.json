@@ -35,15 +35,15 @@
     "examples/create-react-app"
   ],
   "devDependencies": {
-    "@types/node": "18.14.0",
+    "@types/node": "18.14.2",
     "@typescript-eslint/eslint-plugin": "5.53.0",
     "@typescript-eslint/parser": "5.53.0",
     "esbuild": "0.17.10",
-    "eslint": "8.34.0",
+    "eslint": "8.35.0",
     "eslint-config-prettier": "8.6.0",
     "lerna": "6.5.1",
     "prettier": "2.8.4",
-    "rollup": "3.17.2",
+    "rollup": "3.17.3",
     "rollup-plugin-esbuild": "5.0.0",
     "rollup-plugin-minify-html-literals": "1.2.6",
     "rollup-plugin-lit-css": "4.0.1",

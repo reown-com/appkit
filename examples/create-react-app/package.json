@@ -8,7 +8,7 @@
     "react-scripts": "5.0.1",
     "@web3modal/ethereum": "2.1.1",
     "@web3modal/react": "2.1.1",
-    "wagmi": "0.11.6",
+    "wagmi": "0.11.7",
     "ethers": "5.7.2"
   },
   "devDependencies": {

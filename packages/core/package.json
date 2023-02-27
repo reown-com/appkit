@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "buffer": "6.0.3",
-    "valtio": "1.10.2"
+    "valtio": "1.10.3"
   },
   "devDependencies": {
     "@web3modal/ethereum": "2.1.1"
