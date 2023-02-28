@@ -16,7 +16,6 @@
     "@types/react-dom": "18.0.11"
   },
   "scripts": {
-    "build": "react-scripts build",
     "dev": "react-scripts start"
   },
   "browserslist": {
