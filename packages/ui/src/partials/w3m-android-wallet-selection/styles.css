@@ -59,3 +59,25 @@ w3m-wallet-image {
   box-shadow: 0px 2px 4px -2px rgba(0, 0, 0, 0.12), 0px 4px 4px -2px rgba(0, 0, 0, 0.08);
   border-radius: 15px;
 }
+
+.w3m-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 80px);
+  justify-content: space-between;
+  row-gap: 10px;
+}
+
+.w3m-subtitle {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 0 10px;
+}
+
+.w3m-subtitle svg {
+  margin-right: 6px;
+}
+
+.w3m-subtitle path {
+  fill: var(--w3m-color-fg-accent);
+}

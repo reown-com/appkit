@@ -1,6 +1,8 @@
 import { ExplorerCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import { InjectedId } from '../../presets/EthereumPresets'
+import { DataFilterUtil } from '../../utils/DataFilterUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -19,11 +21,35 @@ export class W3mAndroidWalletSelection extends LitElement {
     RouterCtrl.push('GetWallet')
   }
 
+  private async onConnectorWallet(id: string) {
+    await UiUtil.handleConnectorConnection(id)
+  }
+
+  private connectorWalletsTemplate() {
+    let wallets = DataFilterUtil.connectorWallets()
+
+    if (!window.ethereum) {
+      wallets = wallets.filter(({ id }) => id !== 'injected' && id !== InjectedId.metaMask)
+    }
+
+    return wallets.map(
+      ({ name, id, ready }) => html`
+        <w3m-wallet-button
+          .installed=${['injected', 'metaMask'].includes(id) && ready}
+          name=${name}
+          walletId=${id}
+          .onClick=${async () => this.onConnectorWallet(id)}
+        ></w3m-wallet-button>
+      `
+    )
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     const { previewWallets } = ExplorerCtrl.state
     const isPreviewWallets = previewWallets.length
     const wallets = [...previewWallets, ...previewWallets]
+    const connectors = this.connectorWalletsTemplate()
 
     return html`
       <w3m-modal-header
@@ -56,6 +82,16 @@ export class W3mAndroidWalletSelection extends LitElement {
           </w3m-button-big>
         </div>
       </w3m-modal-content>
+
+      ${connectors.length
+        ? html`<w3m-modal-footer>
+            <div class="w3m-subtitle">
+              ${SvgUtil.WALLET_ICON}
+              <w3m-text variant="small-normal" color="accent">Other</w3m-text>
+            </div>
+            <div class="w3m-grid">${connectors}</div></w3m-modal-footer
+          >`
+        : null}
     `
   }
 }
