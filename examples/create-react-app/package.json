@@ -1,15 +1,15 @@
 {
   "name": "cra-example",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "private": true,
   "dependencies": {
+    "@web3modal/ethereum": "2.1.2",
+    "@web3modal/react": "2.1.2",
+    "ethers": "5.7.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-scripts": "5.0.1",
-    "@web3modal/ethereum": "2.1.1",
-    "@web3modal/react": "2.1.1",
-    "wagmi": "0.11.7",
-    "ethers": "5.7.2"
+    "wagmi": "0.11.7"
   },
   "devDependencies": {
     "@types/react": "18.0.28",

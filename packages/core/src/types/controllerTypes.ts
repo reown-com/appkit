@@ -140,6 +140,7 @@ export interface ToastCtrlState {
 // -- RouterCtrl --------------------------------------------- //
 export type RouterView =
   | 'Account'
+  | 'Connectors'
   | 'ConnectWallet'
   | 'DesktopConnector'
   | 'GetWallet'

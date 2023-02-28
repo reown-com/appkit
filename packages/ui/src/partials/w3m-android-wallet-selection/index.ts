@@ -1,6 +1,8 @@
 import { ExplorerCtrl, RouterCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import { InjectedId } from '../../presets/EthereumPresets'
+import { DataFilterUtil } from '../../utils/DataFilterUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -15,8 +17,21 @@ export class W3mAndroidWalletSelection extends LitElement {
     RouterCtrl.push('Qrcode')
   }
 
+  private onGoToConnectors() {
+    RouterCtrl.push('Connectors')
+  }
+
   private onGoToGetWallet() {
     RouterCtrl.push('GetWallet')
+  }
+
+  private getConnectors() {
+    let wallets = DataFilterUtil.connectorWallets()
+    if (!window.ethereum) {
+      wallets = wallets.filter(({ id }) => id !== 'injected' && id !== InjectedId.metaMask)
+    }
+
+    return wallets
   }
 
   // -- render ------------------------------------------------------- //
@@ -24,6 +39,8 @@ export class W3mAndroidWalletSelection extends LitElement {
     const { previewWallets } = ExplorerCtrl.state
     const isPreviewWallets = previewWallets.length
     const wallets = [...previewWallets, ...previewWallets]
+    const connectors = this.getConnectors()
+    const isConnectors = connectors.length > 0
 
     return html`
       <w3m-modal-header
@@ -47,9 +64,19 @@ export class W3mAndroidWalletSelection extends LitElement {
           : null}
 
         <div class="w3m-action">
-          <w3m-button-big @click=${UiUtil.handleAndroidLinking}>
-            <w3m-text variant="medium-regular" color="inverse">Select Wallet</w3m-text>
-          </w3m-button-big>
+          <div>
+            <w3m-button-big @click=${UiUtil.handleAndroidLinking}>
+              <w3m-text variant="medium-normal" color="inverse">
+                ${isConnectors ? 'WalletConnect' : 'Select Wallet'}
+              </w3m-text>
+            </w3m-button-big>
+
+            ${isConnectors
+              ? html`<w3m-button-big @click=${this.onGoToConnectors}>
+                  <w3m-text variant="medium-normal" color="inverse">Other</w3m-text>
+                </w3m-button-big>`
+              : null}
+          </div>
 
           <w3m-button-big variant="secondary" @click=${this.onGoToGetWallet}>
             <w3m-text variant="medium-regular" color="accent"> I don’t have a wallet</w3m-text>
