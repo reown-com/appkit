@@ -112,7 +112,7 @@ export const UiUtil = {
       } else if (links?.native) {
         href = CoreUtil.formatNativeUrl(links.native, uri, name)
       }
-      CoreUtil.openHref(href)
+      CoreUtil.openHref(href, '_self')
     }
 
     if (standaloneUri) {
@@ -132,11 +132,11 @@ export const UiUtil = {
     const { standaloneUri, selectedChain } = OptionsCtrl.state
 
     if (standaloneUri) {
-      CoreUtil.openHref(standaloneUri)
+      CoreUtil.openHref(standaloneUri, '_self')
     } else {
       await ClientCtrl.client().connectWalletConnect(uri => {
         CoreUtil.setWalletConnectAndroidDeepLink(uri)
-        CoreUtil.openHref(uri)
+        CoreUtil.openHref(uri, '_self')
       }, selectedChain?.id)
 
       ModalCtrl.close()

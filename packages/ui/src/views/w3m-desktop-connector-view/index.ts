@@ -41,7 +41,7 @@ export class W3mDesktopConnectorView extends LitElement {
     const { native, universal, name } = this.getRouterData()
     if (native) {
       const href = CoreUtil.formatNativeUrl(native, uri, name)
-      CoreUtil.openHref(href)
+      CoreUtil.openHref(href, '_self')
     } else if (universal) {
       const href = CoreUtil.formatUniversalUrl(universal, uri, name)
       CoreUtil.openHref(href, '_blank')

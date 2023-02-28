@@ -63,7 +63,7 @@ export const CoreUtil = {
     })
   },
 
-  openHref(href: string, target?: '_blank') {
+  openHref(href: string, target: '_blank' | '_self') {
     window.open(href, target, 'noreferrer noopener')
   },
 
