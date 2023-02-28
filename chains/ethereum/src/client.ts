@@ -39,8 +39,9 @@ export class EthereumClient {
     if (!connector) {
       throw new Error('WalletConnectConnector or WalletConnectV1Connector is required')
     }
+    const { version } = connector.options
 
-    return { isV2: wcc, connector }
+    return { isV2: version === '2', connector }
   }
 
   private async connectWalletConnectV1(connector: Connector, onUri: (uri: string) => void) {
