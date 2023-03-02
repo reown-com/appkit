@@ -212,19 +212,12 @@ export interface ThemeCtrlState {
     '--w3m-text-big-bold-text-transform'?: string
     '--w3m-text-big-bold-font-family'?: string
 
-    '--w3m-text-xsmall-bold-size'?: string
-    '--w3m-text-xsmall-bold-weight'?: string
-    '--w3m-text-xsmall-bold-line-height'?: string
-    '--w3m-text-xsmall-bold-letter-spacing'?: string
-    '--w3m-text-xsmall-bold-text-transform'?: string
-    '--w3m-text-xsmall-bold-font-family'?: string
-
-    '--w3m-text-xsmall-regular-size'?: string
-    '--w3m-text-xsmall-regular-weight'?: string
-    '--w3m-text-xsmall-regular-line-height'?: string
-    '--w3m-text-xsmall-regular-letter-spacing'?: string
-    '--w3m-text-xsmall-regular-text-transform'?: string
-    '--w3m-text-xsmall-regular-font-family'?: string
+    '--w3m-text-medium-regular-size'?: string
+    '--w3m-text-medium-regular-weight'?: string
+    '--w3m-text-medium-regular-line-height'?: string
+    '--w3m-text-medium-regular-letter-spacing'?: string
+    '--w3m-text-medium-regular-text-transform'?: string
+    '--w3m-text-medium-regular-font-family'?: string
 
     '--w3m-text-small-regular-size'?: string
     '--w3m-text-small-regular-weight'?: string
@@ -240,12 +233,19 @@ export interface ThemeCtrlState {
     '--w3m-text-small-thin-text-transform'?: string
     '--w3m-text-small-thin-font-family'?: string
 
-    '--w3m-text-medium-regular-size'?: string
-    '--w3m-text-medium-regular-weight'?: string
-    '--w3m-text-medium-regular-line-height'?: string
-    '--w3m-text-medium-regular-letter-spacing'?: string
-    '--w3m-text-medium-regular-text-transform'?: string
-    '--w3m-text-medium-regular-font-family'?: string
+    '--w3m-text-xsmall-bold-size'?: string
+    '--w3m-text-xsmall-bold-weight'?: string
+    '--w3m-text-xsmall-bold-line-height'?: string
+    '--w3m-text-xsmall-bold-letter-spacing'?: string
+    '--w3m-text-xsmall-bold-text-transform'?: string
+    '--w3m-text-xsmall-bold-font-family'?: string
+
+    '--w3m-text-xsmall-regular-size'?: string
+    '--w3m-text-xsmall-regular-weight'?: string
+    '--w3m-text-xsmall-regular-line-height'?: string
+    '--w3m-text-xsmall-regular-letter-spacing'?: string
+    '--w3m-text-xsmall-regular-text-transform'?: string
+    '--w3m-text-xsmall-regular-font-family'?: string
   }
   themeMode?: 'dark' | 'light'
 }
