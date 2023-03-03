@@ -9,5 +9,5 @@
     "packages/standalone"
   ],
   "useWorkspaces": true,
-  "version": "2.2.0-17f140d"
+  "version": "2.1.3"
 }
