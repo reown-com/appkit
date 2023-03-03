@@ -1,13 +1,13 @@
 {
   "name": "nextjs-example",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "private": true,
   "scripts": {
     "dev": "next dev"
   },
   "dependencies": {
-    "@web3modal/ethereum": "2.1.2",
-    "@web3modal/react": "2.1.2",
+    "@web3modal/ethereum": "2.1.3",
+    "@web3modal/react": "2.1.3",
     "ethers": "5.7.2",
     "next": "13.1.6",
     "react": "18.2.0",

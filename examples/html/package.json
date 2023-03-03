@@ -1,7 +1,7 @@
 {
   "name": "html-example",
   "private": true,
-  "version": "2.1.2",
+  "version": "2.1.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,8 +10,8 @@
   "dependencies": {
     "@gnosis.pm/safe-apps-wagmi": "2.1.0",
     "@wagmi/core": "0.9.6",
-    "@web3modal/ethereum": "2.1.2",
-    "@web3modal/html": "2.1.2",
+    "@web3modal/ethereum": "2.1.3",
+    "@web3modal/html": "2.1.3",
     "ethers": "5.7.2"
   },
   "devDependencies": {
