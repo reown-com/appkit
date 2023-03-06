@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@gnosis.pm/safe-apps-wagmi": "2.1.0",
-    "@wagmi/core": "0.9.7",
+    "@wagmi/core": "0.10.0",
     "@web3modal/ethereum": "2.1.3",
     "@web3modal/html": "2.1.3",
     "ethers": "5.7.2"

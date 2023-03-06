@@ -1,6 +1,7 @@
 import { WalletConnectConnector } from '@wagmi/connectors/walletConnect'
 import type { Chain, Connector } from '@wagmi/core'
 import { InjectedConnector } from '@wagmi/core'
+import { WalletConnectLegacyConnector } from '@wagmi/core/connectors/walletConnectLegacy'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import type { ModalConnectorsOpts, WalletConnectProviderOpts } from './types'
 
@@ -43,16 +44,16 @@ export function w3mConnectors({ chains, version, projectId }: ModalConnectorsOpt
 
   if (isV1) {
     connectors.unshift(
-      new WalletConnectConnector({
+      new WalletConnectLegacyConnector({
         chains,
-        options: { qrcode: false, version: '1' }
+        options: { qrcode: false }
       })
     )
   } else {
     connectors.unshift(
       new WalletConnectConnector({
         chains,
-        options: { qrcode: false, version: '2', projectId }
+        options: { projectId, showQrModal: false }
       })
     )
   }

@@ -34,14 +34,13 @@ export class EthereumClient {
 
   private getWalletConnectConnectors() {
     const wcc = this.wagmi.connectors.find((c: Connector) => c.id === 'walletConnect')
-    const wc1c = this.wagmi.connectors.find((c: Connector) => c.id === 'walletConnectV1')
+    const wc1c = this.wagmi.connectors.find((c: Connector) => c.id === 'walletConnectLegacy')
     const connector = wcc ?? wc1c
     if (!connector) {
-      throw new Error('WalletConnectConnector or WalletConnectV1Connector is required')
+      throw new Error('WalletConnectConnector or WalletConnectLegacyConnector is required')
     }
-    const { version } = connector.options
 
-    return { isV2: version === '2', connector }
+    return { isV2: Boolean(wcc), connector }
   }
 
   private async connectWalletConnectV1(connector: Connector, onUri: (uri: string) => void) {
