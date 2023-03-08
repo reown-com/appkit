@@ -287,7 +287,7 @@ export const CLV: IProviderInfo = {
 
 export const BITKEEPWALLET: IProviderInfo = {
   id: "injected",
-  name: "Bitkeep Wallet",
+  name: "BitKeep Wallet",
   logo: BitkeepLogo,
   type: "injected",
   check: "isBitKeep"
