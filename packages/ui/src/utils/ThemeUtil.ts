@@ -91,17 +91,6 @@ function themeBackgroundImage() {
   }
 }
 
-function themeGradientVariables(variableAccentColor?: string) {
-  const accentColor = variableAccentColor ?? themeVariablesPresets()['--w3m-accent-color']
-
-  return {
-    '--w3m-gradient-1': accentColor,
-    '--w3m-gradient-2': '#C653C6',
-    '--w3m-gradient-3': '#794DFF',
-    '--w3m-gradient-4': '#2EB8B8'
-  }
-}
-
 export const ThemeUtil = {
   setTheme() {
     const root: HTMLElement | null = document.querySelector(':root')
@@ -110,7 +99,6 @@ export const ThemeUtil = {
     if (root) {
       const variables = {
         ...themeModeVariables(),
-        ...themeGradientVariables(themeVariables?.['--w3m-accent-color']),
         ...themeVariablesPresets(),
         ...themeVariables,
         ...themeBackgroundImage()

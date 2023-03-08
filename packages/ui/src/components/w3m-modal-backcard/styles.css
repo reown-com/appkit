@@ -1,6 +1,3 @@
-.w3m-canvas,
-.w3m-gradient-placeholder,
-#w3m-transparent-noise,
 .w3m-custom-placeholder {
   inset: 0;
   width: 100%;
@@ -11,35 +8,11 @@
   border-radius: calc(var(--w3m-background-border-radius) * 0.9);
 }
 
-.w3m-gradient-placeholder {
-  background: linear-gradient(
-    var(--w3m-gradient-1),
-    var(--w3m-gradient-2),
-    var(--w3m-gradient-3),
-    var(--w3m-gradient-4)
-  );
-}
-
 .w3m-custom-placeholder {
   background-color: var(--w3m-background-color);
   background-image: var(--w3m-background-image-url);
   background-position: center;
   background-size: cover;
-}
-
-.w3m-canvas {
-  opacity: 0;
-  transition: opacity 2s ease;
-  box-shadow: 0px 8px 28px -6px rgba(10, 16, 31, 0.12), 0px 18px 88px -4px rgba(10, 16, 31, 0.14);
-}
-
-.w3m-canvas-visible {
-  opacity: 1;
-}
-
-#w3m-transparent-noise {
-  mix-blend-mode: multiply;
-  opacity: 0.35;
 }
 
 .w3m-toolbar {

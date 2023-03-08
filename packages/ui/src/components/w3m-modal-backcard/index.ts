@@ -1,33 +1,19 @@
-import { CoreUtil, ModalCtrl, RouterCtrl, ThemeCtrl } from '@web3modal/core'
+import { ModalCtrl, RouterCtrl, ThemeCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import Whatamesh from '../../libs/Whatamesh'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
-
-const whatamesh = new Whatamesh()
 
 @customElement('w3m-modal-backcard')
 export class W3mModalBackcard extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
-  @state() private open = false
   @state() private isHelp = false
 
   // -- lifecycle ---------------------------------------------------- //
-  public firstUpdated() {
-    if (!this.isGradientDisabled()) {
-      this.playTimeout = setTimeout(() => {
-        whatamesh.play(this.canvasEl)
-        this.open = true
-      }, 800)
-    }
-  }
-
   public constructor() {
     super()
     this.unsubscribeRouter = RouterCtrl.subscribe(routerState => {
@@ -37,28 +23,13 @@ export class W3mModalBackcard extends LitElement {
 
   public disconnectedCallback() {
     this.unsubscribeRouter?.()
-    clearTimeout(this.playTimeout)
-    whatamesh.stop()
   }
 
   // -- private ------------------------------------------------------ //
   private readonly unsubscribeRouter?: () => void = undefined
-  private playTimeout?: NodeJS.Timeout = undefined
-
-  private get canvasEl() {
-    return UiUtil.getShadowRootElement(this, '.w3m-canvas')
-  }
 
   private onHelp() {
     RouterCtrl.push('Help')
-  }
-
-  private isGradientDisabled() {
-    return (
-      ThemeCtrl.state.themeVariables?.['--w3m-background-color'] ??
-      ThemeCtrl.state.themeVariables?.['--w3m-background-image-url'] ??
-      CoreUtil.isMobile()
-    )
   }
 
   private logoTemplate() {
@@ -73,25 +44,13 @@ export class W3mModalBackcard extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const classes = {
-      'w3m-canvas': true,
-      'w3m-canvas-visible': this.open
-    }
-
     const actionsClasses = {
       'w3m-actions': true,
       'w3m-help-active': this.isHelp
     }
 
     return html`
-      ${this.isGradientDisabled()
-        ? html`<div class="w3m-custom-placeholder"></div>`
-        : html`
-            <div class="w3m-gradient-placeholder"></div>
-            <canvas class=${classMap(classes)}></canvas>
-            ${SvgUtil.NOISE_TEXTURE}
-          `}
-
+      <div class="w3m-custom-placeholder"></div>
       <div class="w3m-toolbar">
         ${this.logoTemplate()}
         <div class=${classMap(actionsClasses)}>
