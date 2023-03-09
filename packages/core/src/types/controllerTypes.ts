@@ -22,18 +22,6 @@ export interface DesktopWallet {
 export interface ConfigCtrlState {
   projectId: string
   walletConnectVersion?: 1 | 2
-  themeMode?: 'dark' | 'light'
-  themeColor?:
-    | 'blackWhite'
-    | 'blue'
-    | 'default'
-    | 'green'
-    | 'magenta'
-    | 'orange'
-    | 'purple'
-    | 'teal'
-  themeBackground?: 'gradient' | 'themeColor'
-  themeZIndex?: number
   standaloneChains?: string[]
   defaultChain?: Chain
   mobileWallets?: MobileWallet[]
@@ -44,6 +32,7 @@ export interface ConfigCtrlState {
   enableStandaloneMode?: boolean
   enableNetworkView?: boolean
   enableAccountView?: boolean
+  enableExplorer?: boolean
   explorerAllowList?: string[]
   explorerDenyList?: string[]
   termsOfServiceUrl?: string
@@ -61,19 +50,23 @@ export interface OptionsCtrlState {
   chains?: EthereumClient['chains']
   standaloneChains?: string[]
   standaloneUri?: string
-  address?: `0x${string}`
-  isConnected: boolean
   isStandalone: boolean
   isCustomDesktop: boolean
   isCustomMobile: boolean
   isDataLoaded: boolean
   isUiLoaded: boolean
+  walletConnectVersion: 1 | 2
+}
+
+// -- AccountCtrl -------------------------------------------- //
+export interface AccountCtrlState {
+  address?: `0x${string}`
+  isConnected: boolean
   profileName?: string | null
   profileAvatar?: string | null
   profileLoading?: boolean
   balanceLoading?: boolean
   balance?: { amount: string; symbol: string }
-  walletConnectVersion: 1 | 2
 }
 
 // -- ExplorerCtrl ------------------------------------------- //
@@ -190,4 +183,69 @@ export interface RouterCtrlState {
 export interface ClientCtrlState {
   initialized: boolean
   ethereumClient?: EthereumClient
+}
+
+// -- ThemeCtrl -------------------------------------------- //
+export interface ThemeCtrlState {
+  themeVariables?: {
+    '--w3m-z-index'?: string
+    '--w3m-accent-color'?: string
+    '--w3m-accent-fill-color'?: string
+    '--w3m-background-color'?: string
+    '--w3m-background-image-url'?: string
+    '--w3m-logo-image-url'?: string
+    '--w3m-background-border-radius'?: string
+    '--w3m-container-border-radius'?: string
+    '--w3m-wallet-icon-border-radius'?: string
+    '--w3m-input-border-radius'?: string
+    '--w3m-notification-border-radius'?: string
+    '--w3m-button-border-radius'?: string
+    '--w3m-secondary-button-border-radius'?: string
+    '--w3m-icon-button-border-radius'?: string
+    '--w3m-button-hover-highlight-border-radius'?: string
+    '--w3m-font-family'?: string
+
+    '--w3m-text-big-bold-size'?: string
+    '--w3m-text-big-bold-weight'?: string
+    '--w3m-text-big-bold-line-height'?: string
+    '--w3m-text-big-bold-letter-spacing'?: string
+    '--w3m-text-big-bold-text-transform'?: string
+    '--w3m-text-big-bold-font-family'?: string
+
+    '--w3m-text-medium-regular-size'?: string
+    '--w3m-text-medium-regular-weight'?: string
+    '--w3m-text-medium-regular-line-height'?: string
+    '--w3m-text-medium-regular-letter-spacing'?: string
+    '--w3m-text-medium-regular-text-transform'?: string
+    '--w3m-text-medium-regular-font-family'?: string
+
+    '--w3m-text-small-regular-size'?: string
+    '--w3m-text-small-regular-weight'?: string
+    '--w3m-text-small-regular-line-height'?: string
+    '--w3m-text-small-regular-letter-spacing'?: string
+    '--w3m-text-small-regular-text-transform'?: string
+    '--w3m-text-small-regular-font-family'?: string
+
+    '--w3m-text-small-thin-size'?: string
+    '--w3m-text-small-thin-weight'?: string
+    '--w3m-text-small-thin-line-height'?: string
+    '--w3m-text-small-thin-letter-spacing'?: string
+    '--w3m-text-small-thin-text-transform'?: string
+    '--w3m-text-small-thin-font-family'?: string
+
+    '--w3m-text-xsmall-bold-size'?: string
+    '--w3m-text-xsmall-bold-weight'?: string
+    '--w3m-text-xsmall-bold-line-height'?: string
+    '--w3m-text-xsmall-bold-letter-spacing'?: string
+    '--w3m-text-xsmall-bold-text-transform'?: string
+    '--w3m-text-xsmall-bold-font-family'?: string
+
+    '--w3m-text-xsmall-regular-size'?: string
+    '--w3m-text-xsmall-regular-weight'?: string
+    '--w3m-text-xsmall-regular-line-height'?: string
+    '--w3m-text-xsmall-regular-letter-spacing'?: string
+    '--w3m-text-xsmall-regular-text-transform'?: string
+    '--w3m-text-xsmall-regular-font-family'?: string
+  }
+  themeMode?: 'dark' | 'light'
 }

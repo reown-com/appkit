@@ -1,4 +1,4 @@
-import { ClientCtrl, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
+import { AccountCtrl, ClientCtrl, ModalCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -13,11 +13,11 @@ export class W3mAccountView extends LitElement {
   private onDisconnect() {
     ModalCtrl.close()
     ClientCtrl.client().disconnect()
-    OptionsCtrl.resetAccount()
+    AccountCtrl.resetAccount()
   }
 
   private async onCopyAddress() {
-    await navigator.clipboard.writeText(OptionsCtrl.state.address ?? '')
+    await navigator.clipboard.writeText(AccountCtrl.state.address ?? '')
     ToastCtrl.openToast('Address copied', 'success')
   }
 
@@ -31,7 +31,7 @@ export class W3mAccountView extends LitElement {
             <w3m-address-text variant="modal"></w3m-address-text>
           </div>
           <div class="w3m-connection-badge">
-            <w3m-text variant="small-normal" color="secondary">Connected</w3m-text>
+            <w3m-text variant="small-regular" color="secondary">Connected</w3m-text>
           </div>
         </div>
       </w3m-modal-content>

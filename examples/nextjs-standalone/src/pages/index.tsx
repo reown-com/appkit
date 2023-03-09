@@ -8,7 +8,10 @@ if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
 }
 
 // 2. Configure web3Modal
-const web3Modal = new Web3Modal({ projectId: process.env.NEXT_PUBLIC_PROJECT_ID })
+const web3Modal = new Web3Modal({
+  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+  walletConnectVersion: 2
+})
 
 export default function HomePage() {
   const [signClient, setSignClient] = useState<SignClient | undefined>(undefined)

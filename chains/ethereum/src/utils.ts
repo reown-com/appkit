@@ -1,7 +1,7 @@
-import type { Chain } from '@wagmi/core'
+import { WalletConnectConnector } from '@wagmi/connectors/walletConnect'
+import type { Chain, Connector } from '@wagmi/core'
 import { InjectedConnector } from '@wagmi/core'
-import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
-import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
+import { WalletConnectLegacyConnector } from '@wagmi/core/connectors/walletConnectLegacy'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import type { ModalConnectorsOpts, WalletConnectProviderOpts } from './types'
 
@@ -9,7 +9,7 @@ import type { ModalConnectorsOpts, WalletConnectProviderOpts } from './types'
 export const NAMESPACE = 'eip155'
 
 // -- providers ------------------------------------------------------- //
-export function walletConnectProvider<C extends Chain>({ projectId }: WalletConnectProviderOpts) {
+export function w3mProvider<C extends Chain>({ projectId }: WalletConnectProviderOpts) {
   return jsonRpcProvider<C>({
     rpc: chain => {
       const supportedChains = [
@@ -32,22 +32,31 @@ export function walletConnectProvider<C extends Chain>({ projectId }: WalletConn
 }
 
 // -- connectors ------------------------------------------------------ //
-export function modalConnectors({ appName, chains, version, projectId }: ModalConnectorsOpts) {
-  const walletConnectVersion = version ?? '1'
-  if (walletConnectVersion === '2' && !projectId) {
-    throw new Error('modalConnectors() requires projectId for WalletConnect version 2')
-  }
+export function w3mConnectors({ chains, version, projectId }: ModalConnectorsOpts) {
+  const isV1 = version === 1
 
-  return [
-    new WalletConnectConnector({
-      chains,
-      // @ts-expect-error - projectId is checked above
-      options: { qrcode: false, version: walletConnectVersion, projectId }
-    }),
+  const connectors: Connector[] = [
     new InjectedConnector({
       chains,
       options: { shimDisconnect: true, shimChainChangedDisconnect: true }
-    }),
-    new CoinbaseWalletConnector({ chains, options: { appName } })
+    })
   ]
+
+  if (isV1) {
+    connectors.unshift(
+      new WalletConnectLegacyConnector({
+        chains,
+        options: { qrcode: false }
+      })
+    )
+  } else {
+    connectors.unshift(
+      new WalletConnectConnector({
+        chains,
+        options: { projectId, showQrModal: false }
+      })
+    )
+  }
+
+  return connectors
 }

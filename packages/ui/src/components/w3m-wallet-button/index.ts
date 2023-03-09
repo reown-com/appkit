@@ -21,11 +21,11 @@ export class W3mWalletButton extends LitElement {
   private sublabelTemplate() {
     if (this.recent) {
       return html`
-        <w3m-text class="w3m-sublabel" variant="xxsmall-bold" color="tertiary">RECENT</w3m-text>
+        <w3m-text class="w3m-sublabel" variant="xsmall-bold" color="tertiary">RECENT</w3m-text>
       `
     } else if (this.installed) {
       return html`
-        <w3m-text class="w3m-sublabel" variant="xxsmall-bold" color="tertiary">INSTALLED</w3m-text>
+        <w3m-text class="w3m-sublabel" variant="xsmall-bold" color="tertiary">INSTALLED</w3m-text>
       `
     }
 
@@ -38,7 +38,7 @@ export class W3mWalletButton extends LitElement {
       <button @click=${this.onClick}>
         <div>
           <w3m-wallet-image walletId=${this.walletId} .src=${this.src}></w3m-wallet-image>
-          <w3m-text variant="xsmall-normal">
+          <w3m-text variant="xsmall-regular">
             ${this.label ?? UiUtil.getWalletName(this.name, true)}
           </w3m-text>
 

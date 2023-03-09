@@ -14,7 +14,7 @@ div {
   pointer-events: none;
   backdrop-filter: blur(20px) saturate(1.8);
   -webkit-backdrop-filter: blur(20px) saturate(1.8);
-  border-radius: 36px;
+  border-radius: var(--w3m-notification-border-radius);
   border: 1px solid var(--w3m-color-overlay);
   background-color: var(--w3m-color-overlay);
 }
@@ -30,9 +30,9 @@ svg {
 }
 
 .w3m-success path {
-  fill: var(--w3m-color-fg-accent);
+  fill: var(--w3m-accent-color);
 }
 
 .w3m-error path {
-  fill: var(--w3m-color-err);
+  fill: var(--w3m-error-color);
 }

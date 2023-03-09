@@ -52,7 +52,7 @@ export class W3mInjectedConnectorView extends LitElement {
           <w3m-wallet-image walletId=${optimisticWalletId} size="lg"></w3m-wallet-image>
           <div class="w3m-connecting-title">
             ${this.connecting ? html`<w3m-spinner></w3m-spinner>` : null}
-            <w3m-text variant="large-bold" color=${this.error ? 'error' : 'secondary'}>
+            <w3m-text variant="big-bold" color=${this.error ? 'error' : 'secondary'}>
               ${this.error ? 'Connection declined' : `Continue in ${optimisticName}...`}
             </w3m-text>
           </div>

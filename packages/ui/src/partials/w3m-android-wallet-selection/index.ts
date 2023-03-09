@@ -79,7 +79,7 @@ export class W3mAndroidWalletSelection extends LitElement {
           </div>
 
           <w3m-button-big variant="secondary" @click=${this.onGoToGetWallet}>
-            <w3m-text variant="medium-normal" color="accent"> I don’t have a wallet</w3m-text>
+            <w3m-text variant="medium-regular" color="accent"> I don’t have a wallet</w3m-text>
           </w3m-button-big>
         </div>
       </w3m-modal-content>

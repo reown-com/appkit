@@ -36,7 +36,7 @@ export class W3mViewAllWalletsButton extends LitElement {
             return src ? html`<img src=${src} />` : SvgUtil.WALLET_PLACEHOLDER
           })}
         </div>
-        <w3m-text variant="xsmall-normal">View All</w3m-text>
+        <w3m-text variant="xsmall-regular">View All</w3m-text>
       </button>
     `
   }

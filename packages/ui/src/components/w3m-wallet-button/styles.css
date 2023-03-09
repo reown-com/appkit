@@ -2,7 +2,7 @@ button {
   transition: all 0.2s ease;
   width: 100%;
   height: 100%;
-  border-radius: 10px;
+  border-radius: var(--w3m-button-hover-highlight-border-radius);
   display: flex;
   align-items: flex-start;
 }
@@ -31,7 +31,7 @@ w3m-wallet-image {
   height: 60px;
   width: 60px;
   transition: all 0.2s ease;
-  border-radius: 15px;
+  border-radius: var(--w3m-wallet-icon-border-radius);
   margin-bottom: 5px;
 }
 

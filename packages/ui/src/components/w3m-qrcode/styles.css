@@ -40,7 +40,7 @@ svg:first-child {
 }
 
 svg:first-child path:first-child {
-  fill: var(--w3m-color-fg-accent);
+  fill: var(--w3m-accent-color);
 }
 
 svg:first-child path:last-child {

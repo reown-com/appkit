@@ -1,4 +1,4 @@
-import { ConfigCtrl, OptionsCtrl } from '@web3modal/core'
+import { AccountCtrl, ConfigCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -10,14 +10,15 @@ export class W3mCoreButton extends LitElement {
   @state() public isConnected = false
   @property() public label? = 'Connect Wallet'
   @property() public icon?: 'hide' | 'show' = 'show'
+  @property() public avatar?: 'hide' | 'show' = 'show'
   @property() public balance?: 'hide' | 'show' = 'hide'
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
     UiUtil.rejectStandaloneButtonComponent()
-    this.isConnected = OptionsCtrl.state.isConnected
-    this.unsubscribeAccount = OptionsCtrl.subscribe(({ isConnected }) => {
+    this.isConnected = AccountCtrl.state.isConnected
+    this.unsubscribeAccount = AccountCtrl.subscribe(({ isConnected }) => {
       this.isConnected = isConnected
     })
   }
@@ -32,14 +33,15 @@ export class W3mCoreButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { enableAccountView } = ConfigCtrl.state
+    const isBalance = ifDefined(this.balance)
+    const isLabel = ifDefined(this.label)
+    const isIcon = ifDefined(this.icon)
+    const isAvatar = ifDefined(this.avatar)
 
     return this.isConnected && enableAccountView
-      ? html`<w3m-account-button balance=${ifDefined(this.balance)}></w3m-account-button> `
+      ? html`<w3m-account-button balance=${isBalance} avatar=${isAvatar}></w3m-account-button>`
       : html`
-          <w3m-connect-button
-            label=${this.isConnected ? 'Disconnect' : ifDefined(this.label)}
-            icon=${ifDefined(this.icon)}
-          >
+          <w3m-connect-button label=${this.isConnected ? 'Disconnect' : isLabel} icon=${isIcon}>
           </w3m-connect-button>
         `
   }

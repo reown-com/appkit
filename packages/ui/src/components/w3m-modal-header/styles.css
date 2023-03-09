@@ -33,5 +33,5 @@ header button {
 }
 
 path {
-  fill: var(--w3m-color-fg-accent);
+  fill: var(--w3m-accent-color);
 }

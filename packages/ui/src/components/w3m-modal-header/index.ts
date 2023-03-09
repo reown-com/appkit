@@ -36,7 +36,7 @@ export class W3mModalHeader extends LitElement {
     const backBtn = RouterCtrl.state.history.length > 1
 
     const content = this.title
-      ? html`<w3m-text variant="large-bold">${this.title}</w3m-text>`
+      ? html`<w3m-text variant="big-bold">${this.title}</w3m-text>`
       : html`<slot></slot>`
 
     return html`

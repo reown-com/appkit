@@ -9,7 +9,7 @@ import {
 } from '@web3modal/core'
 import type { LitElement } from 'lit'
 import { ChainPresets } from '../presets/ChainPresets'
-import { EthereumPresets, InjectedId } from '../presets/EthereumPresets'
+import { EthereumPresets } from '../presets/EthereumPresets'
 import { TokenPresets } from '../presets/TokenPresets'
 import type { RecentWallet } from './TypesUtil'
 
@@ -17,6 +17,8 @@ export const UiUtil = {
   MOBILE_BREAKPOINT: 600,
 
   W3M_RECENT_WALLET: 'W3M_RECENT_WALLET',
+
+  EXPLORER_WALLET_URL: 'https://explorer.walletconnect.com/?type=wallet',
 
   rejectStandaloneButtonComponent() {
     const { isStandalone } = OptionsCtrl.state
@@ -71,12 +73,14 @@ export const UiUtil = {
   },
 
   async preloadImage(src: string) {
-    return new Promise((resolve, reject) => {
+    const imagePromise = new Promise((resolve, reject) => {
       const image = new Image()
       image.onload = resolve
       image.onerror = reject
       image.src = src
     })
+
+    return Promise.race([imagePromise, CoreUtil.wait(3_000)])
   },
 
   getErrorMessage(err: unknown) {
@@ -99,6 +103,7 @@ export const UiUtil = {
   },
 
   async handleMobileLinking(wallet: RecentWallet) {
+    CoreUtil.removeWalletConnectDeepLink()
     const { standaloneUri, selectedChain } = OptionsCtrl.state
     const { links, name } = wallet
 
@@ -109,7 +114,7 @@ export const UiUtil = {
       } else if (links?.native) {
         href = CoreUtil.formatNativeUrl(links.native, uri, name)
       }
-      CoreUtil.openHref(href)
+      CoreUtil.openHref(href, '_self')
     }
 
     if (standaloneUri) {
@@ -125,14 +130,15 @@ export const UiUtil = {
   },
 
   async handleAndroidLinking() {
+    CoreUtil.removeWalletConnectDeepLink()
     const { standaloneUri, selectedChain } = OptionsCtrl.state
 
     if (standaloneUri) {
-      CoreUtil.openHref(standaloneUri)
+      CoreUtil.openHref(standaloneUri, '_self')
     } else {
       await ClientCtrl.client().connectWalletConnect(uri => {
         CoreUtil.setWalletConnectAndroidDeepLink(uri)
-        CoreUtil.openHref(uri)
+        CoreUtil.openHref(uri, '_self')
       }, selectedChain?.id)
 
       ModalCtrl.close()
@@ -255,7 +261,7 @@ export const UiUtil = {
   getExtensionWallets() {
     const wallets = []
     for (const [key, value] of Object.entries(EthereumPresets.injectedPreset)) {
-      if (key !== InjectedId.coinbaseWallet && value && value.isInjected && !value.isDesktop) {
+      if (value?.isInjected && !value.isDesktop) {
         wallets.push({ id: key, ...value })
       }
     }
@@ -265,5 +271,9 @@ export const UiUtil = {
 
   caseSafeIncludes(str1: string, str2: string) {
     return str1.toUpperCase().includes(str2.toUpperCase())
+  },
+
+  openWalletExplorerUrl() {
+    CoreUtil.openHref(UiUtil.EXPLORER_WALLET_URL, '_blank')
   }
 }

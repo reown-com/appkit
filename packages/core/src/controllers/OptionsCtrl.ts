@@ -8,13 +8,6 @@ const state = proxy<OptionsCtrlState>({
   chains: undefined,
   standaloneChains: undefined,
   standaloneUri: undefined,
-  address: undefined,
-  profileName: undefined,
-  profileAvatar: undefined,
-  profileLoading: false,
-  balanceLoading: false,
-  balance: undefined,
-  isConnected: false,
   isStandalone: false,
   isCustomDesktop: false,
   isCustomMobile: false,
@@ -68,40 +61,6 @@ export const OptionsCtrl = {
     state.isCustomMobile = isCustomMobile
   },
 
-  getAccount() {
-    const account = ClientCtrl.client().getAccount()
-    state.address = account.address
-    state.isConnected = account.isConnected
-  },
-
-  setAddress(address: OptionsCtrlState['address']) {
-    state.address = address
-  },
-
-  setIsConnected(isConnected: OptionsCtrlState['isConnected']) {
-    state.isConnected = isConnected
-  },
-
-  setProfileName(profileName: OptionsCtrlState['profileName']) {
-    state.profileName = profileName
-  },
-
-  setProfileAvatar(profileAvatar: OptionsCtrlState['profileAvatar']) {
-    state.profileAvatar = profileAvatar
-  },
-
-  setProfileLoading(profileLoading: OptionsCtrlState['profileLoading']) {
-    state.profileLoading = profileLoading
-  },
-
-  setBalanceLoading(balanceLoading: OptionsCtrlState['balanceLoading']) {
-    state.balanceLoading = balanceLoading
-  },
-
-  setBalance(balance: OptionsCtrlState['balance']) {
-    state.balance = balance
-  },
-
   setIsDataLoaded(isDataLoaded: OptionsCtrlState['isDataLoaded']) {
     state.isDataLoaded = isDataLoaded
   },
@@ -112,21 +71,5 @@ export const OptionsCtrl = {
 
   setWalletConnectVersion(walletConnectVersion: OptionsCtrlState['walletConnectVersion']) {
     state.walletConnectVersion = walletConnectVersion
-  },
-
-  resetEnsProfile() {
-    state.profileName = undefined
-    state.profileAvatar = undefined
-  },
-
-  resetBalance() {
-    state.balance = undefined
-  },
-
-  resetAccount() {
-    state.address = undefined
-    state.isConnected = false
-    OptionsCtrl.resetEnsProfile()
-    OptionsCtrl.resetBalance()
   }
 }

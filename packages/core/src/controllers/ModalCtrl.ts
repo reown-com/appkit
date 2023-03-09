@@ -1,5 +1,6 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ModalCtrlState } from '../types/controllerTypes'
+import { AccountCtrl } from './AccountCtrl'
 import { ConfigCtrl } from './ConfigCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
 import { RouterCtrl } from './RouterCtrl'
@@ -26,7 +27,8 @@ export const ModalCtrl = {
 
   async open(options?: OpenOptions) {
     return new Promise<void>(resolve => {
-      const { isConnected, isStandalone, isUiLoaded, isDataLoaded } = OptionsCtrl.state
+      const { isStandalone, isUiLoaded, isDataLoaded } = OptionsCtrl.state
+      const { isConnected } = AccountCtrl.state
       const { enableNetworkView } = ConfigCtrl.state
 
       if (isStandalone) {
@@ -43,7 +45,7 @@ export const ModalCtrl = {
         RouterCtrl.replace('ConnectWallet')
       }
 
-      // Open modal if async data is ready
+      // Open modal if essential async data is ready
       if (isUiLoaded && isDataLoaded) {
         state.open = true
         resolve()

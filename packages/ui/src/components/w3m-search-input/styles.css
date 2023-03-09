@@ -1,14 +1,14 @@
 :host {
   position: relative;
   height: 28px;
-  width: 75%;
+  width: 80%;
 }
 
 input {
   width: 100%;
   height: 100%;
   line-height: 28px !important;
-  border-radius: 28px;
+  border-radius: var(--w3m-input-border-radius);
   font-style: normal;
   font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu,
     'Helvetica Neue', sans-serif;
@@ -68,7 +68,7 @@ input:not(:placeholder-shown) {
 }
 
 input:focus-within {
-  box-shadow: inset 0 0 0 1px var(--w3m-color-fg-accent);
+  box-shadow: inset 0 0 0 1px var(--w3m-accent-color);
 }
 
 path {
