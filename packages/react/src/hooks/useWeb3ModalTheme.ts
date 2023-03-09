@@ -3,13 +3,15 @@ import { useEffect, useState } from 'react'
 
 export function useWeb3ModalTheme() {
   const [config, setConfig] = useState({
-    themeMode: ThemeCtrl.state.themeMode
+    themeMode: ThemeCtrl.state.themeMode,
+    themeVariables: ThemeCtrl.state.themeVariables
   })
 
   useEffect(() => {
     const unsubscribe = ThemeCtrl.subscribe(newTheme =>
       setConfig({
-        themeMode: newTheme.themeMode
+        themeMode: newTheme.themeMode,
+        themeVariables: newTheme.themeVariables
       })
     )
 

@@ -1,5 +1,5 @@
 import { Button, Card, Divider, Modal, Text } from '@nextui-org/react'
-import { Web3Button, Web3NetworkSwitch } from '@web3modal/react'
+import { useWeb3ModalTheme, Web3Button, Web3NetworkSwitch } from '@web3modal/react'
 import { useEffect, useState } from 'react'
 import { useAccount, useContractRead, useSignMessage } from 'wagmi'
 import { avalanche } from 'wagmi/chains'
@@ -9,7 +9,8 @@ const message = 'Hello Web3Modal!'
 
 export default function WagmiWeb3ModalWidget() {
   const { isConnected } = useAccount()
-  const height = isConnected ? '230px' : '140px'
+  const { setTheme } = useWeb3ModalTheme()
+  const height = isConnected ? '280px' : '190px'
   const { data: signData, isLoading, signMessage } = useSignMessage({ message })
   const { data: contractData, refetch } = useContractRead({
     enabled: false,
@@ -52,15 +53,26 @@ export default function WagmiWeb3ModalWidget() {
           {isConnected ? (
             <>
               <Divider />
-              <Button color="gradient" onClick={() => signMessage()}>
+              <Button color="gradient" onPress={() => signMessage()}>
                 Sign Message
               </Button>
               <Divider />
-              <Button color="gradient" onClick={async () => refetch()}>
+              <Button color="gradient" onPress={async () => refetch()}>
                 Read Avax Contract
               </Button>
             </>
           ) : null}
+
+          <Button
+            color="error"
+            onPress={() =>
+              setTheme({
+                themeVariables: { '--w3m-accent-color': 'coral', '--w3m-background-color': 'coral' }
+              })
+            }
+          >
+            Set coral theme
+          </Button>
         </Card.Body>
       </Card>
 

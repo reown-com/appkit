@@ -4522,10 +4522,10 @@
     "@typescript-eslint/types" "5.54.1"
     eslint-visitor-keys "^3.3.0"
 
-"@wagmi/chains@0.2.10":
-  version "0.2.10"
-  resolved "https://registry.yarnpkg.com/@wagmi/chains/-/chains-0.2.10.tgz#02d84a8c83cea904656b6151cd9fbd2930d630e6"
-  integrity sha512-MoMyQaR5cb1CmhuRu2C9Xyoddas8AZU7RwVQHIX7IHAL2LKbURjMnt0YQu2vr575yCO4llwVMmt2OyGFnq6P9w==
+"@wagmi/chains@0.2.11":
+  version "0.2.11"
+  resolved "https://registry.yarnpkg.com/@wagmi/chains/-/chains-0.2.11.tgz#3f5bed54524f2d3399944946b88b1e7207aa5a8d"
+  integrity sha512-aMrI1zKKXdeAaiTxBiv+3Zfgd3IajCDpxBtPPvpjXuWVRe4ikwzbyZ1HARKj3V1+wNMPng8EJiWpN966PcvROg==
 
 "@wagmi/connectors@0.3.2":
   version "0.3.2"
@@ -4541,12 +4541,12 @@
     abitype "^0.3.0"
     eventemitter3 "^4.0.7"
 
-"@wagmi/core@0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.10.0.tgz#a9b2e44ac57d560a58135d867c81344bfe781d8f"
-  integrity sha512-biDjKhN9H/hEsbdWfIXovV90nHdwnO3urUTlZVX8fsntg8d9TFQFxhjRCgspHfXcznfRGbUHVslPyQoup1wvrg==
+"@wagmi/core@0.10.1":
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-0.10.1.tgz#a1d676075c76790403de16c39f8df413a275ec37"
+  integrity sha512-UmcX4JNBRl20rg8ybPLOA5SEzKdyqEDd0TXqTfowil1T+IMjsZJhoJ/SWdTPkBXbAQyo8GlQ+Yr0lZ3/CKC1Nw==
   dependencies:
-    "@wagmi/chains" "0.2.10"
+    "@wagmi/chains" "0.2.11"
     "@wagmi/connectors" "0.3.2"
     abitype "^0.3.0"
     eventemitter3 "^4.0.7"
@@ -14740,15 +14740,15 @@ w3c-xmlserializer@^2.0.0:
   dependencies:
     xml-name-validator "^3.0.0"
 
-wagmi@0.12.0:
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-0.12.0.tgz#d82ac6da936d223a2c2366a8abada349aea54fef"
-  integrity sha512-NUm1Z/SH+GbCVbLhQe8xPEztz3Rq0F1oxMiDrLuOMZbbydtcm2OI7QsqMDQYqL/1rXTCbniTwzlRe7sV3CeNLQ==
+wagmi@0.12.1:
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-0.12.1.tgz#b987696ba9448d6d72812e60133a2bd1ec27c9bf"
+  integrity sha512-O3X2D5dm3LBesuVSG8qdwSEIulDUn9pouSW/bOn/xdbKR6Q/GouphbiqOyoTn+a1urKlmDI7nq9EU6UeY8Hd3w==
   dependencies:
     "@tanstack/query-sync-storage-persister" "^4.14.5"
     "@tanstack/react-query" "^4.14.5"
     "@tanstack/react-query-persist-client" "^4.14.5"
-    "@wagmi/core" "0.10.0"
+    "@wagmi/core" "0.10.1"
     abitype "^0.3.0"
     use-sync-external-store "^1.2.0"
 

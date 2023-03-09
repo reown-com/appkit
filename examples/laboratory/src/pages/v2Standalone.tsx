@@ -65,7 +65,7 @@ export default function v2StandalonePage() {
     <>
       <Card css={{ maxWidth: '400px', margin: '100px auto' }} variant="bordered">
         <Card.Body css={{ justifyContent: 'center', alignItems: 'center', height: '200px' }}>
-          <Button shadow color="warning" onClick={onOpenModal}>
+          <Button shadow color="warning" onPress={onOpenModal}>
             Connect Wallet
           </Button>
 
