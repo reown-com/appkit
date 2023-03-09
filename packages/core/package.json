@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/core",
-  "version": "2.1.3",
+  "version": "2.2.0-afa987d",
   "main": "dist/index.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -20,7 +20,7 @@
     "valtio": "1.9.0"
   },
   "devDependencies": {
-    "@web3modal/ethereum": "2.1.3"
+    "@web3modal/ethereum": "2.2.0-afa987d"
   },
   "keywords": [
     "web3",
