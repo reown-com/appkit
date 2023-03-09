@@ -73,12 +73,14 @@ export const UiUtil = {
   },
 
   async preloadImage(src: string) {
-    return new Promise((resolve, reject) => {
+    const imagePromise = new Promise((resolve, reject) => {
       const image = new Image()
       image.onload = resolve
       image.onerror = reject
       image.src = src
     })
+
+    return Promise.race([imagePromise, CoreUtil.wait(3_000)])
   },
 
   getErrorMessage(err: unknown) {
