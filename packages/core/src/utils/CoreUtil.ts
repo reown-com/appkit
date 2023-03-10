@@ -40,6 +40,8 @@ export const CoreUtil = {
     this.setWalletConnectDeepLink(safeAppUrl, name)
     const encodedWcUrl = encodeURIComponent(wcUri)
 
+    console.info(`${safeAppUrl}wc?uri=${encodedWcUrl}`)
+
     return `${safeAppUrl}wc?uri=${encodedWcUrl}`
   },
 
@@ -53,6 +55,8 @@ export const CoreUtil = {
     }
     this.setWalletConnectDeepLink(plainAppUrl, name)
     const encodedWcUrl = encodeURIComponent(wcUri)
+
+    console.info(`${plainAppUrl}/wc?uri=${encodedWcUrl}`)
 
     return `${plainAppUrl}/wc?uri=${encodedWcUrl}`
   },
