@@ -1,0 +1,4 @@
+- cd examples/angular-example
+- yarn
+- npm i --save-dev @angular/compiler-cli
+- yarn start
