@@ -1,4 +1,4 @@
-import { ConfigCtrl } from '@web3modal/core'
+import { ThemeCtrl } from '@web3modal/core'
 import { html, LitElement, svg } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -19,7 +19,7 @@ export default class W3mQrCode extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private svgTemplate() {
-    const themeMode = ConfigCtrl.state.themeMode ?? 'light'
+    const themeMode = ThemeCtrl.state.themeMode ?? 'light'
 
     return svg`
       <svg height=${this.size} width=${this.size}>

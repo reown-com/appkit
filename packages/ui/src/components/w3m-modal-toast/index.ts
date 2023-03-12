@@ -49,7 +49,7 @@ export class W3mModalToast extends LitElement {
           <div class=${classMap(classes)}>
             ${variant === 'success' ? SvgUtil.CHECKMARK_ICON : null}
             ${variant === 'error' ? SvgUtil.CROSS_ICON : null}
-            <w3m-text variant="small-normal">${message}</w3m-text>
+            <w3m-text variant="small-regular">${message}</w3m-text>
           </div>
         `
       : null

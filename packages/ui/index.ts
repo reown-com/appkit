@@ -1,4 +1,5 @@
 import './src/components'
+import './src/contexts'
 import './src/partials'
 import './src/views'
 

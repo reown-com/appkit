@@ -1,52 +1,22 @@
-.w3m-canvas,
-.w3m-highlight,
-.w3m-gradient-placeholder,
-#w3m-transparent-noise,
-.w3m-color-placeholder {
+.w3m-custom-placeholder {
   inset: 0;
+  width: 100%;
   position: absolute;
   display: block;
   pointer-events: none;
-  width: 100%;
   height: 100px;
-  border-radius: 8px 8px 0 0;
-  transform: translateY(-5px);
+  border-radius: calc(var(--w3m-background-border-radius) * 0.9);
 }
 
-.w3m-gradient-placeholder {
-  background: linear-gradient(
-    var(--w3m-gradient-1),
-    var(--w3m-gradient-2),
-    var(--w3m-gradient-3),
-    var(--w3m-gradient-4)
-  );
-}
-
-.w3m-color-placeholder {
-  background-color: var(--w3m-color-fg-accent);
-}
-
-.w3m-highlight {
-  border: 1px solid var(--w3m-color-overlay);
-}
-
-.w3m-canvas {
-  opacity: 0;
-  transition: opacity 2s ease;
-  box-shadow: 0px 8px 28px -6px rgba(10, 16, 31, 0.12), 0px 18px 88px -4px rgba(10, 16, 31, 0.14);
-}
-
-.w3m-canvas-visible {
-  opacity: 1;
-}
-
-#w3m-transparent-noise {
-  mix-blend-mode: multiply;
-  opacity: 0.35;
+.w3m-custom-placeholder {
+  background-color: var(--w3m-background-color);
+  background-image: var(--w3m-background-image-url);
+  background-position: center;
+  background-size: cover;
 }
 
 .w3m-toolbar {
-  height: 28px;
+  height: 38px;
   display: flex;
   position: relative;
   margin: 5px 15px 5px 5px;
@@ -57,18 +27,19 @@
 .w3m-toolbar svg,
 .w3m-toolbar img {
   height: 28px;
+
   object-position: left center;
   object-fit: contain;
 }
 
 #w3m-wc-logo path {
-  fill: var(--w3m-color-fg-inverse);
+  fill: var(--w3m-accent-fill-color);
 }
 
 .w3m-action-btn {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  border-radius: var(--w3m-icon-button-border-radius);
   border: none;
   display: flex;
   justify-content: center;
@@ -76,8 +47,7 @@
   cursor: pointer;
   transition: background-color, 0.2s ease;
   background-color: var(--w3m-color-bg-1);
-  box-shadow: 0 0 0 1px var(--w3m-color-overlay), 0px 2px 4px -2px rgba(0, 0, 0, 0.12),
-    0px 4px 4px -2px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 0 1px var(--w3m-color-overlay);
 }
 
 .w3m-action-btn:hover {

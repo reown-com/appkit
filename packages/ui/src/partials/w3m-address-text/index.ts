@@ -1,4 +1,4 @@
-import { OptionsCtrl } from '@web3modal/core'
+import { AccountCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -19,10 +19,10 @@ export class W3mAddressText extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.address = OptionsCtrl.state.address
-    this.name = OptionsCtrl.state.profileName
-    this.loading = Boolean(OptionsCtrl.state.profileLoading)
-    this.unsubscribeAccount = OptionsCtrl.subscribe(({ address, profileName, profileLoading }) => {
+    this.address = AccountCtrl.state.address
+    this.name = AccountCtrl.state.profileName
+    this.loading = Boolean(AccountCtrl.state.profileLoading)
+    this.unsubscribeAccount = AccountCtrl.subscribe(({ address, profileName, profileLoading }) => {
       this.address = address
       this.name = profileName
       this.loading = Boolean(profileLoading)
@@ -46,7 +46,7 @@ export class W3mAddressText extends LitElement {
     return html`
       <w3m-text
         class=${classMap(classes)}
-        variant=${isButton ? 'medium-normal' : 'large-bold'}
+        variant=${isButton ? 'medium-regular' : 'big-bold'}
         color=${isButton ? 'inverse' : 'primary'}
       >
         ${this.name ? this.name : UiUtil.truncate(this.address ?? '')}

@@ -2,7 +2,7 @@ button {
   display: flex;
   flex-direction: column;
   padding: 5px 10px;
-  border-radius: 10px;
+  border-radius: var(--w3m-button-hover-highlight-border-radius);
   transition: background-color 0.2s ease;
   height: 100%;
   justify-content: flex-start;
@@ -14,7 +14,7 @@ button {
   display: flex;
   flex-wrap: wrap;
   padding: 7px;
-  border-radius: 15px;
+  border-radius: var(--w3m-wallet-icon-border-radius);
   justify-content: space-between;
   align-items: center;
   margin-bottom: 5px;
@@ -31,7 +31,7 @@ button:hover {
   height: 21px;
   object-fit: cover;
   object-position: center;
-  border-radius: 8px;
+  border-radius: calc(var(--w3m-wallet-icon-border-radius) / 2);
   border: 1px solid var(--w3m-color-overlay);
 }
 

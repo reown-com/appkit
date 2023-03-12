@@ -1,206 +1,109 @@
-import { ConfigCtrl } from '@web3modal/core'
+import { ThemeCtrl } from '@web3modal/core'
 import { css } from 'lit'
 
-function themeColors() {
-  return {
-    default: {
-      light: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(51,150,255)`,
-        background: `rgb(232,242,252)`
-      },
-      dark: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(71,161,255)`,
-        background: `rgb(21,38,55)`
-      }
-    },
-
-    magenta: {
-      light: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(198,83,128)`,
-        background: `rgb(244,221,230)`
-      },
-      dark: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(203,77,140)`,
-        background: `rgb(57,35,43)`
-      }
-    },
-
-    blue: {
-      light: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(61,92,245)`,
-        background: `rgb(232,235,252)`
-      },
-      dark: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(81,109,251)`,
-        background: `rgb(28,33,59)`
-      }
-    },
-
-    orange: {
-      light: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(234,140,46)`,
-        background: `rgb(244,236,221)`
-      },
-      dark: {
-        inverse: `rgb(0,0,0)`,
-        foreground: `rgb(255,166,76)`,
-        background: `rgb(57,50,34)`
-      }
-    },
-
-    green: {
-      light: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(38,181,98)`,
-        background: `rgb(218,246,218)`
-      },
-      dark: {
-        inverse: `rgb(0,0,0)`,
-        foreground: `rgb(38,217,98)`,
-        background: `rgb(35,52,40)`
-      }
-    },
-
-    purple: {
-      light: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(121,76,255)`,
-        background: `rgb(225,218,246)`
-      },
-      dark: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(144,110,247)`,
-        background: `rgb(36,31,51)`
-      }
-    },
-
-    teal: {
-      light: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(43,182,182)`,
-        background: `rgb(217,242,238)`
-      },
-      dark: {
-        inverse: `rgb(0,0,0)`,
-        foreground: `rgb(54,226,226)`,
-        background: `rgb(29,48,52)`
-      }
-    },
-
-    blackWhite: {
-      light: {
-        inverse: `rgb(255,255,255)`,
-        foreground: `rgb(20,20,20)`,
-        background: `rgb(255,255,255)`
-      },
-      dark: {
-        inverse: `rgb(0,0,0)`,
-        foreground: `rgb(255,255,255)`,
-        background: `rgb(20,20,20)`
-      }
-    }
-  }
-}
-
-function themeModeColors() {
-  return {
+function themeModeVariables() {
+  const themeMode = ThemeCtrl.state.themeMode ?? 'dark'
+  const themeModePresets = {
     light: {
-      foreground: {
-        1: `rgb(20,20,20)`,
-        2: `rgb(121,134,134)`,
-        3: `rgb(158,169,169)`
-      },
-      background: {
-        1: `rgb(255,255,255)`,
-        2: `rgb(241,243,243)`,
-        3: `rgb(228,231,231)`
-      },
+      foreground: { 1: `rgb(20,20,20)`, 2: `rgb(121,134,134)`, 3: `rgb(158,169,169)` },
+      background: { 1: `rgb(255,255,255)`, 2: `rgb(241,243,243)`, 3: `rgb(228,231,231)` },
       overlay: 'rgba(0,0,0,0.1)'
     },
-
     dark: {
-      foreground: {
-        1: `rgb(228,231,231)`,
-        2: `rgb(148,158,158)`,
-        3: `rgb(110,119,119)`
-      },
-      background: {
-        1: `rgb(20,20,20)`,
-        2: `rgb(39,42,42)`,
-        3: `rgb(59,64,64)`
-      },
-      overlay: 'rgba(255,255,255,0.1'
+      foreground: { 1: `rgb(228,231,231)`, 2: `rgb(148,158,158)`, 3: `rgb(110,119,119)` },
+      background: { 1: `rgb(20,20,20)`, 2: `rgb(39,42,42)`, 3: `rgb(59,64,64)` },
+      overlay: 'rgba(255,255,255,0.1)'
     }
+  }
+  const themeModeColors = themeModePresets[themeMode]
+
+  return {
+    '--w3m-color-fg-1': themeModeColors.foreground[1],
+    '--w3m-color-fg-2': themeModeColors.foreground[2],
+    '--w3m-color-fg-3': themeModeColors.foreground[3],
+    '--w3m-color-bg-1': themeModeColors.background[1],
+    '--w3m-color-bg-2': themeModeColors.background[2],
+    '--w3m-color-bg-3': themeModeColors.background[3],
+    '--w3m-color-overlay': themeModeColors.overlay
   }
 }
 
-function gradientColors() {
+function themeVariablesPresets() {
   return {
-    default: { 1: '#B6B9C9', 2: '#C653C6', 3: '#794DFF', 4: '#2EB8B8' },
-    blue: { 1: '#E8EBFD', 2: '#C653C6', 3: '#2DD2C5', 4: '#3D5CF5' },
-    magenta: { 1: '#F4DDE6', 2: '#E0D452', 3: '#F09475', 4: '#D1618D' },
-    orange: { 1: '#F4ECDD', 2: '#B4EB47', 3: '#3075E8', 4: '#EB9947' },
-    green: { 1: '#DAF6DA', 2: '#E06B92', 3: '#99E54D', 4: '#26B562' },
-    purple: { 1: '#E1DAF6', 2: '#EB9947', 3: '#E06B92', 4: '#794DFF' },
-    teal: { 1: '#D9F2EE', 2: '#F09475', 3: '#794DFF', 4: '#2EB8B8' },
-    blackWhite: { 1: '#E3E8E8', 2: '#98AEAE', 3: '#516767', 4: '#242E2E' }
+    '--w3m-accent-color': '#3396FF',
+    '--w3m-accent-fill-color': '#FFFFFF',
+    '--w3m-z-index': '89',
+    '--w3m-background-color': '#3396FF',
+    '--w3m-background-border-radius': '8px',
+    '--w3m-container-border-radius': '30px',
+    '--w3m-wallet-icon-border-radius': '15px',
+    '--w3m-input-border-radius': '28px',
+    '--w3m-button-border-radius': '10px',
+    '--w3m-notification-border-radius': '36px',
+    '--w3m-secondary-button-border-radius': '28px',
+    '--w3m-icon-button-border-radius': '50%',
+    '--w3m-button-hover-highlight-border-radius': '10px',
+    '--w3m-text-big-bold-size': '20px',
+    '--w3m-text-big-bold-weight': '600',
+    '--w3m-text-big-bold-line-height': '24px',
+    '--w3m-text-big-bold-letter-spacing': '-0.03em',
+    '--w3m-text-big-bold-text-transform': 'none',
+    '--w3m-text-xsmall-bold-size': '10px',
+    '--w3m-text-xsmall-bold-weight': '700',
+    '--w3m-text-xsmall-bold-line-height': '12px',
+    '--w3m-text-xsmall-bold-letter-spacing': '0.02em',
+    '--w3m-text-xsmall-bold-text-transform': 'uppercase',
+    '--w3m-text-xsmall-regular-size': '12px',
+    '--w3m-text-xsmall-regular-weight': '600',
+    '--w3m-text-xsmall-regular-line-height': '14px',
+    '--w3m-text-xsmall-regular-letter-spacing': '-0.03em',
+    '--w3m-text-xsmall-regular-text-transform': 'none',
+    '--w3m-text-small-thin-size': '14px',
+    '--w3m-text-small-thin-weight': '500',
+    '--w3m-text-small-thin-line-height': '16px',
+    '--w3m-text-small-thin-letter-spacing': '-0.03em',
+    '--w3m-text-small-thin-text-transform': 'none',
+    '--w3m-text-small-regular-size': '14px',
+    '--w3m-text-small-regular-weight': '600',
+    '--w3m-text-small-regular-line-height': '16px',
+    '--w3m-text-small-regular-letter-spacing': '-0.03em',
+    '--w3m-text-small-regular-text-transform': 'none',
+    '--w3m-text-medium-regular-size': '16px',
+    '--w3m-text-medium-regular-weight': '600',
+    '--w3m-text-medium-regular-line-height': '20px',
+    '--w3m-text-medium-regular-letter-spacing': '-0.03em',
+    '--w3m-text-medium-regular-text-transform': 'none',
+    '--w3m-font-family':
+      "-apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, 'Helvetica Neue', sans-serif",
+    '--w3m-success-color': 'rgb(38,181,98)',
+    '--w3m-error-color': 'rgb(242, 90, 103)'
+  }
+}
+
+function themeBackgroundImage() {
+  const { themeVariables } = ThemeCtrl.state
+  const backgroundImageUrl = themeVariables?.['--w3m-background-image-url']
+    ? `url(${themeVariables['--w3m-background-image-url']})`
+    : 'none'
+
+  return {
+    '--w3m-background-image-url': backgroundImageUrl
   }
 }
 
 export const ThemeUtil = {
-  color() {
-    const themeColor = ConfigCtrl.state.themeColor ?? 'default'
-    const themeMode = ConfigCtrl.state.themeMode ?? 'dark'
-    const accent = themeColors()[themeColor][themeMode]
-    const theme = themeModeColors()[themeMode]
-    const gradient = gradientColors()[themeColor]
-
-    return {
-      foreground: {
-        accent: accent.foreground,
-        inverse: accent.inverse,
-        ...theme.foreground
-      },
-      background: {
-        accent: accent.background,
-        ...theme.background
-      },
-      gradient,
-      overlay: theme.overlay,
-      error: `rgb(242, 90, 103)`
-    }
-  },
-
   setTheme() {
     const root: HTMLElement | null = document.querySelector(':root')
-    const { themeZIndex } = ConfigCtrl.state
+    const { themeVariables } = ThemeCtrl.state
 
     if (root) {
       const variables = {
-        '--w3m-color-fg-accent': ThemeUtil.color().foreground.accent,
-        '--w3m-color-fg-inverse': ThemeUtil.color().foreground.inverse,
-        '--w3m-color-fg-1': ThemeUtil.color().foreground[1],
-        '--w3m-color-fg-2': ThemeUtil.color().foreground[2],
-        '--w3m-color-fg-3': ThemeUtil.color().foreground[3],
-        '--w3m-color-bg-1': ThemeUtil.color().background[1],
-        '--w3m-color-bg-2': ThemeUtil.color().background[2],
-        '--w3m-color-bg-3': ThemeUtil.color().background[3],
-        '--w3m-color-overlay': ThemeUtil.color().overlay,
-        '--w3m-color-err': ThemeUtil.color().error,
-        '--w3m-color-success': themeColors().green.light.foreground,
-        '--w3m-gradient-1': ThemeUtil.color().gradient[1],
-        '--w3m-gradient-2': ThemeUtil.color().gradient[2],
-        '--w3m-gradient-3': ThemeUtil.color().gradient[3],
-        '--w3m-gradient-4': ThemeUtil.color().gradient[4],
-        '--w3m-modal-z-index': `${themeZIndex}`
+        ...themeModeVariables(),
+        ...themeVariablesPresets(),
+        ...themeVariables,
+        ...themeBackgroundImage()
       }
+
       Object.entries(variables).forEach(([key, val]) => root.style.setProperty(key, val))
     }
   },
@@ -258,8 +161,8 @@ export const ThemeUtil = {
     }
 
     ::selection {
-      color: var(--w3m-color-fg-inverse);
-      background: var(--w3m-color-fg-accent);
+      color: var(--w3m-accent-fill-color);
+      background: var(--w3m-accent-color);
     }
   `
 }

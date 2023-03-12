@@ -6,7 +6,7 @@ div {
 }
 
 a {
-  color: var(--w3m-color-fg-accent);
+  color: var(--w3m-accent-color);
   text-decoration: none;
   transition: opacity 0.2s ease-in-out;
 }

@@ -1,20 +1,10 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ConfigCtrlState } from '../types/controllerTypes'
-import { CoreUtil } from '../utils/CoreUtil'
 import { ClientCtrl } from './ClientCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
 
-// -- initial state ------------------------------------------------ //
-function isDarkMode() {
-  return typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: dark)').matches
-}
-
 const state = proxy<ConfigCtrlState>({
   projectId: '',
-  themeMode: isDarkMode() ? 'dark' : 'light',
-  themeColor: 'default',
-  themeBackground: CoreUtil.isMobile() ? 'themeColor' : 'gradient',
-  themeZIndex: 89,
   mobileWallets: undefined,
   desktopWallets: undefined,
   walletImages: undefined,
@@ -24,6 +14,7 @@ const state = proxy<ConfigCtrlState>({
   enableStandaloneMode: false,
   enableNetworkView: false,
   enableAccountView: true,
+  enableExplorer: true,
   defaultChain: undefined,
   explorerAllowList: undefined,
   explorerDenyList: undefined,
@@ -56,9 +47,5 @@ export const ConfigCtrl = {
     }
 
     Object.assign(state, config)
-  },
-
-  setThemeConfig(theme: Pick<ConfigCtrlState, 'themeBackground' | 'themeColor' | 'themeMode'>) {
-    Object.assign(state, theme)
   }
 }

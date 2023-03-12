@@ -1,5 +1,5 @@
-import type { ConfigCtrlState } from '@web3modal/core'
-import { ClientCtrl, ConfigCtrl, OptionsCtrl } from '@web3modal/core'
+import type { ConfigCtrlState, ThemeCtrlState } from '@web3modal/core'
+import { ClientCtrl, ConfigCtrl, OptionsCtrl, ThemeCtrl } from '@web3modal/core'
 import type { EthereumClient } from '@web3modal/ethereum'
 import React, { memo, useCallback, useEffect } from 'react'
 import { Modal } from './Modal'
@@ -7,19 +7,20 @@ import { Modal } from './Modal'
 /**
  * Props
  */
-interface Props
-  extends Omit<
-    ConfigCtrlState,
-    'enableStandaloneMode' | 'standaloneChains' | 'walletConnectVersion'
-  > {
-  ethereumClient?: EthereumClient
-}
+type Props = Omit<
+  ConfigCtrlState,
+  'enableStandaloneMode' | 'standaloneChains' | 'walletConnectVersion'
+> &
+  ThemeCtrlState & {
+    ethereumClient?: EthereumClient
+  }
 
 /**
  * Component
  */
 function CreateWeb3Modal({ ethereumClient, ...config }: Props) {
   const onConfigure = useCallback(async () => {
+    ThemeCtrl.setThemeConfig(config)
     if (ethereumClient) {
       ClientCtrl.setEthereumClient(ethereumClient)
     }

@@ -1,12 +1,12 @@
 button {
-  border-radius: 28px;
+  border-radius: var(--w3m-secondary-button-border-radius);
   height: 28px;
   padding: 0 10px;
-  background-color: var(--w3m-color-fg-accent);
+  background-color: var(--w3m-accent-color);
 }
 
 button path {
-  fill: var(--w3m-color-fg-inverse);
+  fill: var(--w3m-accent-fill-color);
 }
 
 button::after {

@@ -10,15 +10,6 @@ export const SvgUtil = {
     </svg>
   `,
 
-  NOISE_TEXTURE: svg`
-    <svg id="w3m-transparent-noise">
-      <filter id="w3m-noise">
-        <feTurbulence type="fractalNoise" baseFrequency="0.8" />
-      </filter>
-      <rect width="100%" height="100%" filter="url(#w3m-noise)" />
-    </svg>
-  `,
-
   WALLET_CONNECT_LOGO: svg`
     <svg width="178" height="29" viewBox="0 0 178 29" id="w3m-wc-logo">
       <path

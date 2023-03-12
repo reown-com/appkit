@@ -1,4 +1,4 @@
-import { ClientCtrl, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
+import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -24,6 +24,7 @@ export class W3mWalletConnectQr extends LitElement {
   }
 
   private async createConnectionAndWait(retry = 0) {
+    CoreUtil.removeWalletConnectDeepLink()
     try {
       const { standaloneUri } = OptionsCtrl.state
       if (standaloneUri) {

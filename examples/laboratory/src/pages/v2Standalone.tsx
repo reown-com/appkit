@@ -2,10 +2,14 @@ import { Button, Card, Divider, Modal, Spinner, Text } from '@nextui-org/react'
 import SignClient from '@walletconnect/sign-client'
 import { Web3Modal } from '@web3modal/standalone'
 import { useEffect, useState } from 'react'
-import { getProjectId } from '../utilities/EnvUtil'
+import { getProjectId, getTheme } from '../utilities/EnvUtil'
 
 const projectId = getProjectId()
-const web3Modal = new Web3Modal({ projectId, themeColor: 'orange', walletConnectVersion: 2 })
+const web3Modal = new Web3Modal({
+  projectId,
+  walletConnectVersion: 2,
+  themeMode: getTheme()
+})
 
 export default function v2StandalonePage() {
   const [signClient, setSignClient] = useState<SignClient | undefined>(undefined)
@@ -28,6 +32,7 @@ export default function v2StandalonePage() {
           events: ['accountsChanged', 'chainChanged']
         }
       }
+
       const { uri, approval } = await signClient.connect({
         requiredNamespaces: namespaces,
         optionalNamespaces: {
@@ -43,6 +48,8 @@ export default function v2StandalonePage() {
           await web3Modal.openModal({ uri, standaloneChains: namespaces.eip155.chains })
           await approval()
           setModalOpen(true)
+        } catch (error) {
+          console.error(error)
         } finally {
           web3Modal.closeModal()
         }
@@ -58,7 +65,7 @@ export default function v2StandalonePage() {
     <>
       <Card css={{ maxWidth: '400px', margin: '100px auto' }} variant="bordered">
         <Card.Body css={{ justifyContent: 'center', alignItems: 'center', height: '200px' }}>
-          <Button shadow color="warning" onClick={onOpenModal}>
+          <Button shadow color="warning" onPress={onOpenModal}>
             Connect Wallet
           </Button>
 

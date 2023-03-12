@@ -37,5 +37,5 @@
 
 .w3m-mobile-title path,
 .w3m-desktop-title path {
-  fill: var(--w3m-color-fg-accent);
+  fill: var(--w3m-accent-color);
 }

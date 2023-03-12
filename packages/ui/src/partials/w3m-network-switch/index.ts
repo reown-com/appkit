@@ -55,7 +55,7 @@ export class W3mNetworkSwitch extends LitElement {
     return html`
       <w3m-button-big @click=${this.onClick} ?disabled=${!isMultichain}>
         <w3m-network-image chainId=${ifDefined(this.chainId)}></w3m-network-image>
-        <w3m-text variant="medium-normal" color="inverse">
+        <w3m-text variant="medium-regular" color="inverse">
           ${this.label?.length ? this.label : 'Select Network'}
         </w3m-text>
       </w3m-button-big>

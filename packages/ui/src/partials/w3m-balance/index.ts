@@ -1,4 +1,4 @@
-import { OptionsCtrl } from '@web3modal/core'
+import { AccountCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -16,9 +16,9 @@ export class W3mBalance extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.symbol = OptionsCtrl.state.balance?.symbol
-    this.amount = OptionsCtrl.state.balance?.amount
-    this.unsubscribeAccount = OptionsCtrl.subscribe(({ balance }) => {
+    this.symbol = AccountCtrl.state.balance?.symbol
+    this.amount = AccountCtrl.state.balance?.amount
+    this.unsubscribeAccount = AccountCtrl.subscribe(({ balance }) => {
       this.symbol = balance?.symbol
       this.amount = balance?.amount
     })
@@ -46,7 +46,7 @@ export class W3mBalance extends LitElement {
     return html`
       <div>
         <w3m-token-image symbol=${ifDefined(this.symbol)}></w3m-token-image>
-        <w3m-text variant="medium-normal" color="primary">${formatAmount} ${this.symbol}</w3m-text>
+        <w3m-text variant="medium-regular" color="primary">${formatAmount} ${this.symbol}</w3m-text>
       </div>
     `
   }

@@ -11,30 +11,36 @@ import {
   watchAccount,
   watchNetwork
 } from '@wagmi/core'
-import type { ConnectorId } from './types'
-
-type WalletConnectVersion = 1 | 2
+import type { ConnectorId, ModalConnectorsOpts } from './types'
 
 export class EthereumClient {
   private readonly wagmi = {} as Client
   public walletConnectUri = ''
-  public walletConnectVersion: WalletConnectVersion = 1
+  public walletConnectVersion: ModalConnectorsOpts['version'] = 1
   public readonly chains = [] as Chain[]
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public constructor(wagmi: any, chains: Chain[]) {
-    const walletConnect = wagmi.connectors.find((c: Connector) => c.id === 'walletConnect')
-    if (!walletConnect) {
-      throw new Error('WalletConnectConnector is required')
-    }
     this.wagmi = wagmi
     this.chains = chains
-    this.walletConnectVersion = Number(walletConnect.options.version ?? '1') as WalletConnectVersion
+    const { isV2 } = this.getWalletConnectConnectors()
+    this.walletConnectVersion = isV2 ? 2 : 1
   }
 
   // -- private ------------------------------------------- //
   private getDefaultConnectorChainId(connector: Connector) {
     return connector.chains[0].id
+  }
+
+  private getWalletConnectConnectors() {
+    const wcc = this.wagmi.connectors.find((c: Connector) => c.id === 'walletConnect')
+    const wc1c = this.wagmi.connectors.find((c: Connector) => c.id === 'walletConnectLegacy')
+    const connector = wcc ?? wc1c
+    if (!connector) {
+      throw new Error('WalletConnectConnector or WalletConnectLegacyConnector is required')
+    }
+
+    return { isV2: Boolean(wcc), connector }
   }
 
   private async connectWalletConnectV1(connector: Connector, onUri: (uri: string) => void) {
@@ -92,18 +98,19 @@ export class EthereumClient {
   }
 
   public getConnectors() {
-    const connectors = this.wagmi.connectors.filter(connector => connector.id !== 'walletConnect')
+    const connectors = this.wagmi.connectors.filter(
+      connector => !connector.id.includes('walletConnect')
+    )
 
     return connectors
   }
 
   public async connectWalletConnect(onUri: (uri: string) => void, selectedChainId?: number) {
-    const connector = this.getConnectorById('walletConnect')
-    const isV1 = this.walletConnectVersion === 1
+    const { connector, isV2 } = this.getWalletConnectConnectors()
     const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
-    const handleProviderEvents = isV1
-      ? this.connectWalletConnectV1.bind(this)
-      : this.connectWalletConnectV2.bind(this)
+    const handleProviderEvents = isV2
+      ? this.connectWalletConnectV2.bind(this)
+      : this.connectWalletConnectV1.bind(this)
     const [data] = await Promise.all([
       connect({ connector, chainId }),
       handleProviderEvents(connector, onUri)

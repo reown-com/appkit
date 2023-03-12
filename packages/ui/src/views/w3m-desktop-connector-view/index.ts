@@ -41,7 +41,7 @@ export class W3mDesktopConnectorView extends LitElement {
     const { native, universal, name } = this.getRouterData()
     if (native) {
       const href = CoreUtil.formatNativeUrl(native, uri, name)
-      CoreUtil.openHref(href)
+      CoreUtil.openHref(href, '_self')
     } else if (universal) {
       const href = CoreUtil.formatUniversalUrl(universal, uri, name)
       CoreUtil.openHref(href, '_blank')
@@ -49,6 +49,7 @@ export class W3mDesktopConnectorView extends LitElement {
   }
 
   private async createConnectionAndWait(retry = 0) {
+    CoreUtil.removeWalletConnectDeepLink()
     const { standaloneUri } = OptionsCtrl.state
     const { name, walletId, native, universal, icon } = this.getRouterData()
     const recentWalletData = { name, id: walletId, links: { native, universal }, image: icon }
@@ -64,7 +65,6 @@ export class W3mDesktopConnectorView extends LitElement {
         UiUtil.setRecentWallet(recentWalletData)
         ModalCtrl.close()
       } catch (err) {
-        console.error(err)
         ToastCtrl.openToast('Connection request declined', 'error')
         if (retry < 2) {
           this.createConnectionAndWait(retry + 1)
@@ -101,7 +101,7 @@ export class W3mDesktopConnectorView extends LitElement {
 
           <div class="w3m-connecting-title">
             <w3m-spinner></w3m-spinner>
-            <w3m-text variant="large-bold" color="secondary">
+            <w3m-text variant="big-bold" color="secondary">
               ${`Continue in ${optimisticName}...`}
             </w3m-text>
           </div>

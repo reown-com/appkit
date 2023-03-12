@@ -11,14 +11,8 @@ export class W3mGetWalletView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
-  private readonly explorerUrl = 'https://explorer.walletconnect.com/'
-
   private onGet(url: string) {
     CoreUtil.openHref(url, '_blank')
-  }
-
-  private onExplore() {
-    CoreUtil.openHref(this.explorerUrl, '_blank')
   }
 
   // -- render ------------------------------------------------------- //
@@ -38,7 +32,7 @@ export class W3mGetWalletView extends LitElement {
                   <div class="w3m-wallet-item">
                     <w3m-wallet-image src=${image_url.lg}></w3m-wallet-image>
                     <div class="w3m-wallet-content">
-                      <w3m-text variant="medium-normal">${name}</w3m-text>
+                      <w3m-text variant="medium-regular">${name}</w3m-text>
                       <w3m-button
                         .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
                         .onClick=${() => this.onGet(homepage)}
@@ -57,7 +51,7 @@ export class W3mGetWalletView extends LitElement {
                   <div class="w3m-wallet-item">
                     <w3m-wallet-image walletId=${id}></w3m-wallet-image>
                     <div class="w3m-wallet-content">
-                      <w3m-text variant="medium-normal">${name}</w3m-text>
+                      <w3m-text variant="medium-regular">${name}</w3m-text>
                       <w3m-button
                         .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
                         .onClick=${() => this.onGet(links.universal)}
@@ -72,11 +66,14 @@ export class W3mGetWalletView extends LitElement {
       </w3m-modal-content>
 
       <div class="w3m-footer-actions">
-        <w3m-text variant="medium-normal">Not what you're looking for?</w3m-text>
+        <w3m-text variant="medium-regular">Not what you're looking for?</w3m-text>
         <w3m-text variant="small-thin" color="secondary" class="w3m-info-text">
           With hundreds of wallets out there, there's something for everyone
         </w3m-text>
-        <w3m-button .onClick=${this.onExplore.bind(this)} .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}>
+        <w3m-button
+          .onClick=${UiUtil.openWalletExplorerUrl}
+          .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}
+        >
           Explore Wallets
         </w3m-button>
       </div>
