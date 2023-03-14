@@ -220,7 +220,7 @@ export const WEB3AUTH: IProviderInfo = {
 
 export const BITKEEPWALLET: IProviderInfo = {
   id: "bitkeep",
-  name: "Bitkeep Wallet",
+  name: "BitKeep Wallet",
   logo: BitkeepLogo,
   type: "injected",
   check: "isBitKeep"
