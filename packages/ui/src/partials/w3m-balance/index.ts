@@ -42,6 +42,9 @@ export class W3mBalance extends LitElement {
     if (this.amount && this.amount.length > 6) {
       formatAmount = parseFloat(this.amount).toFixed(3)
     }
+    else if(this.amount){
+      formatAmount = parseFloat(this.amount)
+    }
 
     return html`
       <div>
