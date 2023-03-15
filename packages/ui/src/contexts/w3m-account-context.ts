@@ -1,4 +1,11 @@
-import { AccountCtrl, ClientCtrl, ConfigCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
+import {
+  AccountCtrl,
+  ClientCtrl,
+  ConfigCtrl,
+  ModalCtrl,
+  OptionsCtrl,
+  ToastCtrl
+} from '@web3modal/core'
 import { LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { UiUtil } from '../utils/UiUtil'
@@ -14,12 +21,16 @@ export class W3mAccountContext extends LitElement {
     this.fetchProfile()
     this.fetchBalance()
     this.unwatchAccount = ClientCtrl.client().watchAccount(account => {
-      const { address } = AccountCtrl.state
-      if (account.address !== address) {
-        this.fetchProfile(account.address)
-        this.fetchBalance(account.address)
+      if (AccountCtrl.state.isConnected && !account.isConnected) {
+        ModalCtrl.close()
+      } else {
+        const { address } = AccountCtrl.state
+        if (account.address !== address) {
+          this.fetchProfile(account.address)
+          this.fetchBalance(account.address)
+        }
+        AccountCtrl.setAddress(account.address)
       }
-      AccountCtrl.setAddress(account.address)
       AccountCtrl.setIsConnected(account.isConnected)
     })
   }
