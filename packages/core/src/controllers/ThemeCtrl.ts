@@ -21,8 +21,6 @@ export const ThemeCtrl = {
   setThemeConfig(theme: ThemeCtrlState) {
     const { themeMode, themeVariables } = theme
 
-    console.log({ themeMode, themeVariables })
-
     if (themeMode) {
       state.themeMode = themeMode
     }
