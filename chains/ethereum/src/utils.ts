@@ -35,12 +35,7 @@ export function w3mProvider<C extends Chain>({ projectId }: WalletConnectProvide
 export function w3mConnectors({ chains, version, projectId }: ModalConnectorsOpts) {
   const isV1 = version === 1
 
-  const connectors: Connector[] = [
-    new InjectedConnector({
-      chains,
-      options: { shimDisconnect: true, shimChainChangedDisconnect: true }
-    })
-  ]
+  const connectors: Connector[] = [new InjectedConnector({ chains })]
 
   if (isV1) {
     connectors.unshift(

@@ -39,11 +39,14 @@ export const ConfigCtrl = {
     OptionsCtrl.setIsCustomDesktop(Boolean(config.desktopWallets?.length))
     OptionsCtrl.setWalletConnectVersion(config.walletConnectVersion ?? 1)
 
-    if (config.defaultChain) {
-      OptionsCtrl.setSelectedChain(config.defaultChain)
-    } else if (!OptionsCtrl.state.isStandalone) {
+    if (!OptionsCtrl.state.isStandalone) {
       const chain = ClientCtrl.client().getDefaultChain()
       OptionsCtrl.setSelectedChain(chain)
+      OptionsCtrl.setChains(ClientCtrl.client().chains)
+    }
+
+    if (config.defaultChain) {
+      OptionsCtrl.setSelectedChain(config.defaultChain)
     }
 
     Object.assign(state, config)
