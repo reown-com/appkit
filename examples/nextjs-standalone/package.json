@@ -6,7 +6,7 @@
     "dev": "next dev"
   },
   "dependencies": {
-    "@walletconnect/sign-client": "2.4.10",
+    "@walletconnect/sign-client": "2.5.1",
     "@web3modal/standalone": "2.2.1-ccae676",
     "next": "13.2.4",
     "react": "18.2.0",
