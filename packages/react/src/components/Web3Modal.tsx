@@ -1,7 +1,7 @@
 import type { ConfigCtrlState, ThemeCtrlState } from '@web3modal/core'
 import { ClientCtrl, ConfigCtrl, OptionsCtrl, ThemeCtrl } from '@web3modal/core'
 import type { EthereumClient } from '@web3modal/ethereum'
-import React, { useCallback, useEffect } from 'react'
+import React, { memo, useCallback, useEffect } from 'react'
 import { Modal } from './Modal'
 
 /**
@@ -36,4 +36,4 @@ function CreateWeb3Modal({ ethereumClient, ...config }: Props) {
   return <Modal />
 }
 
-export const Web3Modal = CreateWeb3Modal
+export const Web3Modal = memo(CreateWeb3Modal)
