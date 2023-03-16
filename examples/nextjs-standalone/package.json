@@ -1,13 +1,13 @@
 {
   "name": "nextjs-standalone-example",
-  "version": "2.2.1-7d2ab91",
+  "version": "2.2.1-ccae676",
   "private": true,
   "scripts": {
     "dev": "next dev"
   },
   "dependencies": {
     "@walletconnect/sign-client": "2.4.10",
-    "@web3modal/standalone": "2.2.1-7d2ab91",
+    "@web3modal/standalone": "2.2.1-ccae676",
     "next": "13.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0"

@@ -1,6 +1,6 @@
 {
   "name": "laboratory",
-  "version": "2.2.1-7d2ab91",
+  "version": "2.2.1-ccae676",
   "private": true,
   "scripts": {
     "dev": "rm -rf .next; next dev",
@@ -10,8 +10,8 @@
     "@nextui-org/react": "1.0.0-beta.12",
     "@sentry/react": "7.43.0",
     "@sentry/tracing": "7.43.0",
-    "@web3modal/ethereum": "2.2.1-7d2ab91",
-    "@web3modal/react": "2.2.1-7d2ab91",
+    "@web3modal/ethereum": "2.2.1-ccae676",
+    "@web3modal/react": "2.2.1-ccae676",
     "ethers": "5.7.2",
     "next": "13.2.4",
     "react": "18.2.0",

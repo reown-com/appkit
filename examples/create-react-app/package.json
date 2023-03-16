@@ -1,10 +1,10 @@
 {
   "name": "cra-example",
-  "version": "2.2.1-7d2ab91",
+  "version": "2.2.1-ccae676",
   "private": true,
   "dependencies": {
-    "@web3modal/ethereum": "2.2.1-7d2ab91",
-    "@web3modal/react": "2.2.1-7d2ab91",
+    "@web3modal/ethereum": "2.2.1-ccae676",
+    "@web3modal/react": "2.2.1-ccae676",
     "ethers": "5.7.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
