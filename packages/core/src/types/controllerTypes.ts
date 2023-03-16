@@ -181,7 +181,6 @@ export interface RouterCtrlState {
 
 // -- ClientCtrl ------------------------------------------- //
 export interface ClientCtrlState {
-  initialized: boolean
   ethereumClient?: EthereumClient
 }
 

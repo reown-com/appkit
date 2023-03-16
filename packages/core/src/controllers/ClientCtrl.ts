@@ -1,26 +1,19 @@
-import { proxy } from 'valtio/vanilla'
 import type { ClientCtrlState } from '../types/controllerTypes'
-import { OptionsCtrl } from './OptionsCtrl'
 
 // -- initial state ------------------------------------------------ //
-const state = proxy<ClientCtrlState>({
-  initialized: false,
-  ethereumClient: undefined
-})
+let client: ClientCtrlState['ethereumClient'] = undefined
 
 // -- controller -- As function to enable correct ssr handling
 export const ClientCtrl = {
+  ethereumClient: undefined,
+
   setEthereumClient(ethereumClient: ClientCtrlState['ethereumClient']) {
-    if (!state.initialized && ethereumClient) {
-      state.ethereumClient = ethereumClient
-      OptionsCtrl.setChains(ethereumClient.chains)
-      state.initialized = true
-    }
+    client = ethereumClient
   },
 
   client() {
-    if (state.ethereumClient) {
-      return state.ethereumClient
+    if (client) {
+      return client
     }
 
     throw new Error('ClientCtrl has no client set')
