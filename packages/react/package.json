@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "@web3modal/core": "2.2.1-ccae676",
-    "@web3modal/ui": "2.2.1-ccae676"
+    "@web3modal/ui": "2.2.1-ccae676",
+    "@web3modal/standalone": "2.2.1-ccae676"
   },
   "devDependencies": {
     "@types/react": "18.0.28",

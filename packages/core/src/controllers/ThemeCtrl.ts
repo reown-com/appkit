@@ -19,9 +19,16 @@ export const ThemeCtrl = {
   },
 
   setThemeConfig(theme: ThemeCtrlState) {
-    Object.assign(state, {
-      ...theme,
-      themeMode: theme.themeMode ?? (isDarkMode() ? 'dark' : 'light')
-    })
+    const { themeMode, themeVariables } = theme
+
+    console.log({ themeMode, themeVariables })
+
+    if (themeMode) {
+      state.themeMode = themeMode
+    }
+
+    if (themeVariables) {
+      state.themeVariables = { ...themeVariables }
+    }
   }
 }

@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "@web3modal/core": "2.2.1-ccae676",
-    "@web3modal/ui": "2.2.1-ccae676"
+    "@web3modal/ui": "2.2.1-ccae676",
+    "@web3modal/standalone": "2.2.1-ccae676"
   },
   "keywords": [
     "web3",
