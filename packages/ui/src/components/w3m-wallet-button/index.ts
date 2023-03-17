@@ -32,17 +32,27 @@ export class W3mWalletButton extends LitElement {
     return null
   }
 
+  private nameTemplate() {
+    if (this.installed) {
+      const injectedName = UiUtil.getWalletNameById(this.walletId)
+
+      return html` <w3m-text variant="xsmall-regular">${injectedName}</w3m-text> `
+    }
+
+    return html`
+      <w3m-text variant="xsmall-regular">
+        ${this.label ?? UiUtil.getWalletName(this.name, true)}
+      </w3m-text>
+    `
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
       <button @click=${this.onClick}>
         <div>
           <w3m-wallet-image walletId=${this.walletId} .src=${this.src}></w3m-wallet-image>
-          <w3m-text variant="xsmall-regular">
-            ${this.label ?? UiUtil.getWalletName(this.name, true)}
-          </w3m-text>
-
-          ${this.sublabelTemplate()}
+          ${this.nameTemplate()} ${this.sublabelTemplate()}
         </div>
       </button>
     `

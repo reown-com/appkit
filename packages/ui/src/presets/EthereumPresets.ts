@@ -198,5 +198,11 @@ export const EthereumPresets = {
     const id = EthereumPresets.getInjectedId('')
 
     return EthereumPresets.injectedPreset[id]?.name ?? 'Injected'
+  },
+
+  getInjectedNameById(id: string) {
+    if (!id) return 'Injected'
+
+    return EthereumPresets.injectedPreset[id]?.name ?? 'Injected'
   }
 }

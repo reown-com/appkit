@@ -38,8 +38,8 @@ export class W3mInjectedConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const optimisticName = UiUtil.getWalletName(this.connector.name)
     const optimisticWalletId = UiUtil.getWalletId(this.connector.id)
+    const optimisticName = UiUtil.getWalletNameById(optimisticWalletId)
     const classes = {
       'w3m-injected-wrapper': true,
       'w3m-injected-error': this.error

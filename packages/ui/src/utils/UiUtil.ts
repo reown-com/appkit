@@ -54,6 +54,13 @@ export const UiUtil = {
     return short ? injectedName.split(' ')[0] : injectedName
   },
 
+  getWalletNameById(id: string, short = false) {
+    const injectedId = EthereumPresets.getInjectedId(id)
+    const injectedName = EthereumPresets.getInjectedNameById(injectedId)
+
+    return short ? injectedName.split(' ')[0] : injectedName
+  },
+
   getChainIcon(chainId: number | string) {
     const imageId = ChainPresets[chainId]
     const { projectId, chainImages } = ConfigCtrl.state
