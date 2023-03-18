@@ -23,7 +23,7 @@ export class W3mExplorerContext extends LitElement {
         await Promise.all(images.map(async url => UiUtil.preloadImage(url)))
       }
     } catch {
-      console.info('Unsuccessful attempt at preloading some images')
+      console.info('Unsuccessful attempt at preloading some images', images)
     }
   }
 

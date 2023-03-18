@@ -19,6 +19,14 @@ export const ThemeCtrl = {
   },
 
   setThemeConfig(theme: ThemeCtrlState) {
-    Object.assign(state, theme)
+    const { themeMode, themeVariables } = theme
+
+    if (themeMode) {
+      state.themeMode = themeMode
+    }
+
+    if (themeVariables) {
+      state.themeVariables = { ...themeVariables }
+    }
   }
 }
