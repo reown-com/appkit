@@ -22,10 +22,10 @@ export class Web3modalComponent {
   }
 
   setProvider():void{
-    const {provider} = configureChains(this.chains, [w3mProvider({ projectId:this.id })])
+    const { provider } = configureChains(this.chains, [w3mProvider({ projectId:this.id })])
     this.wagmiClient = createClient({
       autoConnect: true,
-      connectors: w3mConnectors({ projectId:this.id, version: 1, chains:this.chains }),
+      connectors: w3mConnectors({ projectId:this.id, version: 2, chains:this.chains }),
       provider
     })
     this.ethereumClient = new EthereumClient(this.wagmiClient, this.chains)

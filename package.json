@@ -12,6 +12,7 @@
     "dev:html": "npm run dev --w=html-example",
     "dev:html-standalone": "npm run dev --w=html-standalone-example",
     "dev:lab": "npm run dev --w=laboratory",
+    "dev:angular": "npm run dev --w=angular-example",
     "lint": "eslint .",
     "prettier": "prettier --check .",
     "typecheck": "npm run typecheck --ws --if-present",
@@ -32,7 +33,8 @@
     "examples/html",
     "examples/html-standalone",
     "examples/laboratory",
-    "examples/create-react-app"
+    "examples/create-react-app",
+    "examples/angular"
   ],
   "devDependencies": {
     "@types/node": "18.15.3",
