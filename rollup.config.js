@@ -31,13 +31,13 @@ export default function createConfig(packageJson) {
   })
 
   const replacePlugin = replace({
-    'process.env.W3M_VERSION': packageJson.version
+    'process.env.ROLLUP_W3M_VERSION': JSON.stringify(packageJson.version)
   })
 
   return [
     {
       input: './index.ts',
-      plugins: [litCssPlugin, minifyHtml.default(), esbuildPlugin],
+      plugins: [replacePlugin, litCssPlugin, minifyHtml.default(), esbuildPlugin],
       output: [{ file: './dist/index.js', format: 'es', ...output }]
     }
   ]

@@ -20,8 +20,6 @@ export const UiUtil = {
 
   EXPLORER_WALLET_URL: 'https://explorer.walletconnect.com/?type=wallet',
 
-  W3M_VERSIOBN: 'W3M_VERSIOBN',
-
   rejectStandaloneButtonComponent() {
     const { isStandalone } = OptionsCtrl.state
     if (isStandalone) {
