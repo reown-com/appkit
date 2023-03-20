@@ -92,7 +92,7 @@ export const CoreUtil = {
 
   setWeb3ModalVersionInStorage() {
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(CoreUtil.W3M_VERSION, process.env.ROLLUP_W3M_VERSION ?? 'UNDEFINED')
+      localStorage.setItem(CoreUtil.W3M_VERSION, process.env.ROLLUP_W3M_VERSION ?? 'UNKNOWN')
     }
   }
 }
