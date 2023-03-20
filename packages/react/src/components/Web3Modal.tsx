@@ -7,7 +7,7 @@ import { Modal } from './Modal'
 /**
  * Props
  */
-type Props = Omit<
+export type Web3ModalProps = Omit<
   ConfigCtrlState,
   'enableStandaloneMode' | 'standaloneChains' | 'walletConnectVersion'
 > &
@@ -18,7 +18,7 @@ type Props = Omit<
 /**
  * Component
  */
-function CreateWeb3Modal({ ethereumClient, ...config }: Props) {
+function CreateWeb3Modal({ ethereumClient, ...config }: Web3ModalProps) {
   const onConfigure = useCallback(async () => {
     ThemeCtrl.setThemeConfig(config)
     if (ethereumClient) {
