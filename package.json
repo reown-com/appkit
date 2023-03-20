@@ -27,12 +27,7 @@
     "packages/react",
     "packages/html",
     "packages/standalone",
-    "examples/nextjs",
-    "examples/nextjs-standalone",
-    "examples/html",
-    "examples/html-standalone",
-    "examples/laboratory",
-    "examples/create-react-app"
+    "laboratory"
   ],
   "devDependencies": {
     "@types/node": "18.15.3",
@@ -49,6 +44,5 @@
     "rollup-plugin-minify-html-literals": "1.2.6",
     "rollup-plugin-lit-css": "4.0.1",
     "typescript": "5.0.2"
-  },
-  "preinstall": "yarn config set ignore-engines true"
+  }
 }

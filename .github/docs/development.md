@@ -10,7 +10,7 @@ yarn
 
 ## .env.local file setup
 
-Some examples have `.env.local.example` files. Copy their content and create new `.env.local` files in the same directory.
+Laboratory has `.env.local.example` file. Copy its content and create new `.env.local` file in the same directory.
 Without these `yarn:build` command will fail. To create your ProjectID head to [cloud.walletconnect.com](https://cloud.walletconnect.com/)
 
 ## Commands
@@ -19,11 +19,6 @@ Please execute all commands from the monorepo root to avoid issues with yarn wor
 
 - `yarn build` - Build all packages.
 - `yarn dev` - Build and watch all packages for changes.
-- `yarn dev:nextjs` - Run nextjs example (has to be ran together with `yarn dev` in a separate terminal tab).
-- `yarn dev:nextjs-standalone` - Run nextjs standalone example (has to be ran together with `yarn dev` in a separate terminal tab).
-- `yarn: dev:cra` - Run create-react-app example (has to be ran together with `yarn dev` in a separate terminal tab).
-- `yarn dev:html` - Run plain html/js example (has to be ran together with `yarn dev` in a separate terminal tab).
-- `yarn dev:html-standalone` - Run plain html/js standalone example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn dev:lab` - Run laboratory example (has to be ran together with `yarn dev` in a separate terminal tab).
 - `yarn lint` - Run the linter.
 - `yarn prettier` - Run prettier.
@@ -31,8 +26,8 @@ Please execute all commands from the monorepo root to avoid issues with yarn wor
 
 ## Repository structure
 
+- `laboratory` - Web3Modal test playground
 - `chains` - Helper packages for managed chain workflows
-- `examples` - Contains examples for all supported use cases, acts as testing ground
 - `packages`
   - `core` - State, proxy between ui and chain packages
   - `ui` - Web-components based ui of web3modal
