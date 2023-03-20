@@ -38,6 +38,7 @@
     "@types/node": "18.15.3",
     "@typescript-eslint/eslint-plugin": "5.55.0",
     "@typescript-eslint/parser": "5.55.0",
+    "@rollup/plugin-replace": "5.0.2",
     "esbuild": "0.17.12",
     "eslint": "8.36.0",
     "eslint-config-prettier": "8.7.0",
