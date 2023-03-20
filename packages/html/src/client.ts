@@ -5,7 +5,7 @@ import type { EthereumClient } from '@web3modal/ethereum'
 /**
  * Types
  */
-type Web3ModalConfig = Omit<
+export type Web3ModalConfig = Omit<
   ConfigCtrlState,
   'enableStandaloneMode' | 'standaloneChains' | 'walletConnectVersion'
 > &

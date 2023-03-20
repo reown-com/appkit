@@ -1,6 +1,8 @@
 export const CoreUtil = {
   WALLETCONNECT_DEEPLINK_CHOICE: 'WALLETCONNECT_DEEPLINK_CHOICE',
 
+  W3M_VERSION: 'W3M_VERSION',
+
   isMobile() {
     if (typeof window !== 'undefined') {
       return Boolean(
@@ -86,5 +88,11 @@ export const CoreUtil = {
 
   isNull<T>(value: T | null): value is null {
     return value === null
+  },
+
+  setWeb3ModalVersionInStorage() {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(CoreUtil.W3M_VERSION, process.env.ROLLUP_W3M_VERSION ?? 'UNKNOWN')
+    }
   }
 }

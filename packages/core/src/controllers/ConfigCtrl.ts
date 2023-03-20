@@ -1,5 +1,6 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ConfigCtrlState } from '../types/controllerTypes'
+import { CoreUtil } from '../utils/CoreUtil'
 import { ClientCtrl } from './ClientCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
 
@@ -48,6 +49,8 @@ export const ConfigCtrl = {
     if (config.defaultChain) {
       OptionsCtrl.setSelectedChain(config.defaultChain)
     }
+
+    CoreUtil.setWeb3ModalVersionInStorage()
 
     Object.assign(state, config)
   }

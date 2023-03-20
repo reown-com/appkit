@@ -1,11 +1,17 @@
+import replace from '@rollup/plugin-replace'
 import esbuild from 'rollup-plugin-esbuild'
 import litCss from 'rollup-plugin-lit-css'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
 
-export default function createConfig(packageName) {
+const nodeVersion = Number(process.versions.node.split('.')[0])
+if (nodeVersion < 17) {
+  throw new Error('Node version must be 17.x or higher')
+}
+
+export default function createConfig(packageJson) {
   const output = {
     exports: 'named',
-    name: packageName,
+    name: packageJson.name,
     sourcemap: true
   }
 
@@ -24,10 +30,14 @@ export default function createConfig(packageName) {
     uglify: true
   })
 
+  const replacePlugin = replace({
+    'process.env.ROLLUP_W3M_VERSION': JSON.stringify(packageJson.version)
+  })
+
   return [
     {
       input: './index.ts',
-      plugins: [litCssPlugin, minifyHtml.default(), esbuildPlugin],
+      plugins: [replacePlugin, litCssPlugin, minifyHtml.default(), esbuildPlugin],
       output: [{ file: './dist/index.js', format: 'es', ...output }]
     }
   ]
