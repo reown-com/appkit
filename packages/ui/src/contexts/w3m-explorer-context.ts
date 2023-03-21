@@ -34,7 +34,7 @@ export class W3mExplorerContext extends LitElement {
       await Promise.all([
         ExplorerCtrl.getRecomendedWallets({
           page: 1,
-          entries: 7,
+          entries: 9,
           chains: chainsFilter,
           version: walletConnectVersion
         })

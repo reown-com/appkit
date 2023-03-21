@@ -17,8 +17,8 @@ export class W3mGetWalletView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { recomendedWallets } = ExplorerCtrl.state
-    const customWallets = UiUtil.getCustomWallets().slice(0, 6)
+    const recomendedWallets = ExplorerCtrl.state.recomendedWallets.slice(0, 5)
+    const customWallets = UiUtil.getCustomWallets().slice(0, 5)
     const isRecomendedWallets = recomendedWallets.length
     const isCustomWallets = customWallets.length
 

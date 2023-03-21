@@ -121,10 +121,10 @@ export const UiUtil = {
 
     function onRedirect(uri: string) {
       let href = ''
-      if (links?.universal) {
-        href = CoreUtil.formatUniversalUrl(links.universal, uri, name)
-      } else if (links?.native) {
-        href = CoreUtil.formatNativeUrl(links.native, uri, name)
+      if (links?.native) {
+        href = CoreUtil.formatUniversalUrl(links.native, uri, name)
+      } else if (links?.universal) {
+        href = CoreUtil.formatNativeUrl(links.universal, uri, name)
       }
       CoreUtil.openHref(href, '_self')
     }
