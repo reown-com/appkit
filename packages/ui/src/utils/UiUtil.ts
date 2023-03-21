@@ -40,12 +40,20 @@ export const UiUtil = {
     return EthereumPresets.getInjectedId(id)
   },
 
-  getWalletIcon(id: string) {
+  getWalletIcon({ id, image_id }: { id: string; image_id?: string }) {
     const presets = EthereumPresets.injectedPreset
-    const imageId = presets[id]?.icon
-    const { projectId, walletImages } = ConfigCtrl.state
+    const presetImageId = presets[id]?.icon
+    const { walletImages } = ConfigCtrl.state
 
-    return walletImages?.[id] ?? (projectId && imageId ? ExplorerCtrl.getImageUrl(imageId) : '')
+    if (walletImages?.[id]) {
+      return walletImages[id]
+    } else if (image_id) {
+      return ExplorerCtrl.getWalletImageUrl(image_id)
+    } else if (presetImageId) {
+      return ExplorerCtrl.getAssetImageUrl(presetImageId)
+    }
+
+    return ''
   },
 
   getWalletName(name: string, short = false) {
@@ -58,14 +66,18 @@ export const UiUtil = {
     const imageId = ChainPresets[chainId]
     const { projectId, chainImages } = ConfigCtrl.state
 
-    return chainImages?.[chainId] ?? (projectId && imageId ? ExplorerCtrl.getImageUrl(imageId) : '')
+    return (
+      chainImages?.[chainId] ?? (projectId && imageId ? ExplorerCtrl.getAssetImageUrl(imageId) : '')
+    )
   },
 
   getTokenIcon(symbol: string) {
     const imageId = TokenPresets[symbol]?.icon
     const { projectId, tokenImages } = ConfigCtrl.state
 
-    return tokenImages?.[symbol] ?? (projectId && imageId ? ExplorerCtrl.getImageUrl(imageId) : '')
+    return (
+      tokenImages?.[symbol] ?? (projectId && imageId ? ExplorerCtrl.getAssetImageUrl(imageId) : '')
+    )
   },
 
   isMobileAnimation() {
@@ -188,7 +200,7 @@ export const UiUtil = {
   getConnectorImageUrls() {
     const connectors = ClientCtrl.client().getConnectors()
     const ids = connectors.map(({ id }) => EthereumPresets.getInjectedId(id))
-    const images = ids.map(id => UiUtil.getWalletIcon(id))
+    const images = ids.map(id => UiUtil.getWalletIcon({ id }))
 
     return images
   },

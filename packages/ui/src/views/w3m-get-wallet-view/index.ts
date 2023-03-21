@@ -1,5 +1,5 @@
 import { CoreUtil, ExplorerCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -27,10 +27,11 @@ export class W3mGetWalletView extends LitElement {
       <w3m-modal-content>
         ${isRecomendedWallets
           ? recomendedWallets.map(
-              ({ name, image_url, homepage }) =>
+              ({ name, image_id, id, homepage }) =>
                 html`
                   <div class="w3m-wallet-item">
-                    <w3m-wallet-image src=${image_url.lg}></w3m-wallet-image>
+                    <w3m-wallet-image src=${UiUtil.getWalletIcon({ id, image_id })}>
+                    </w3m-wallet-image>
                     <div class="w3m-wallet-content">
                       <w3m-text variant="medium-regular">${name}</w3m-text>
                       <w3m-button

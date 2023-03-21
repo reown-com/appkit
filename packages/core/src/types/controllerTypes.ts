@@ -73,55 +73,46 @@ export interface AccountCtrlState {
 export interface ExplorerCtrlState {
   wallets: ListingResponse & { page: number }
   search: ListingResponse & { page: number }
-  previewWallets: Listing[]
   recomendedWallets: Listing[]
 }
 
-export interface PageParams {
+export interface ListingParams {
   page?: number
   search?: string
   entries?: number
   version?: number
-  device?: 'desktop' | 'mobile'
-  order?: 'asc' | 'desc'
   chains?: string
-}
-
-export interface PlatformInfo {
-  native: string
-  universal: string
 }
 
 export interface Listing {
   id: string
   name: string
-  description: string
   homepage: string
-  chains: string[]
-  versions: string[]
-  app_type: string
   image_id: string
-  image_url: {
-    sm: string
-    md: string
-    lg: string
-  }
   app: {
-    browser: string
-    ios: string
-    android: string
-    mac: string
-    window: string
-    linux: string
+    browser?: string
+    ios?: string
+    android?: string
+    mac?: string
+    windows?: string
+    linux?: string
+    chrome?: string
+    firefox?: string
+    safari?: string
+    edge?: string
+    opera?: string
   }
-  mobile: PlatformInfo
-  desktop: PlatformInfo
-  metadata: {
-    shortName: string
-    colors: {
-      primary: string
-      secondary: string
-    }
+  injected: {
+    injected_id: string
+    namespace: string
+  }
+  mobile: {
+    native: string
+    universal: string
+  }
+  desktop: {
+    native: string
+    universal: string
   }
 }
 

@@ -1,5 +1,5 @@
 import { ExplorerCtrl, RouterCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -17,21 +17,20 @@ export class W3mViewAllWalletsButton extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { previewWallets } = ExplorerCtrl.state
+    const { recomendedWallets } = ExplorerCtrl.state
     const customWallets = UiUtil.getCustomWallets()
-    const reversedWallets = [...previewWallets, ...customWallets].reverse().slice(0, 4)
+    const reversedWallets = [...recomendedWallets, ...customWallets].reverse().slice(0, 4)
 
     return html`
       <button @click=${this.onClick}>
         <div class="w3m-icons">
           ${reversedWallets.map(wallet => {
-            // @ts-expect-error Can exist
-            const explorerImg = wallet.image_url?.lg
+            const explorerImg = UiUtil.getWalletIcon(wallet)
             if (explorerImg) {
               return html`<img src=${explorerImg} />`
             }
             const optimisticId = UiUtil.getWalletId(wallet.id)
-            const src = UiUtil.getWalletIcon(optimisticId)
+            const src = UiUtil.getWalletIcon({ id: optimisticId })
 
             return src ? html`<img src=${src} />` : SvgUtil.WALLET_PLACEHOLDER
           })}

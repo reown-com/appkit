@@ -1,5 +1,5 @@
 import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { InjectedId } from '../../presets/EthereumPresets'
@@ -42,23 +42,23 @@ export class W3mMobileWalletSelection extends LitElement {
     return undefined
   }
 
-  private previewWalletsTemplate() {
-    const { previewWallets } = ExplorerCtrl.state
-    let wallets = DataFilterUtil.walletsWithInjected(previewWallets)
+  private recomendedWalletsTemplate() {
+    const { recomendedWallets } = ExplorerCtrl.state
+    let wallets = DataFilterUtil.walletsWithInjected(recomendedWallets)
     wallets = DataFilterUtil.allowedExplorerListings(wallets)
     wallets = DataFilterUtil.deduplicateExplorerListingsFromConnectors(wallets)
 
     return wallets.map(
-      ({ image_url, name, mobile: { native, universal }, id }) => html`
+      ({ image_id, name, mobile: { native, universal }, id }) => html`
         <w3m-wallet-button
           name=${name}
-          src=${image_url.lg}
+          src=${UiUtil.getWalletIcon({ id, image_id })}
           .onClick=${async () =>
             UiUtil.handleMobileLinking({
               links: { native, universal },
               name,
               id,
-              image: image_url.lg
+              image: UiUtil.getWalletIcon({ id, image_id })
             })}
         ></w3m-wallet-button>
       `
@@ -109,9 +109,9 @@ export class W3mMobileWalletSelection extends LitElement {
     const { standaloneUri } = OptionsCtrl.state
     const connectorTemplate = this.connectorWalletsTemplate()
     const mobileTemplate = this.mobileWalletsTemplate()
-    const previewTemplate = this.previewWalletsTemplate()
+    const recomendedTemplate = this.recomendedWalletsTemplate()
     const recentTemplate = this.recentWalletTemplate()
-    const linkingWallets = mobileTemplate ?? previewTemplate
+    const linkingWallets = mobileTemplate ?? recomendedTemplate
     const combinedWallets = [...connectorTemplate, ...linkingWallets]
     const combinedWalletsWithRecent = DataFilterUtil.walletTemplatesWithRecent(
       combinedWallets,

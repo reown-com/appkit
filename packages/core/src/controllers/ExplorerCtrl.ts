@@ -1,45 +1,35 @@
 import { proxy } from 'valtio/vanilla'
-import type { ExplorerCtrlState, PageParams } from '../types/controllerTypes'
+import type { ExplorerCtrlState, ListingParams } from '../types/controllerTypes'
+import { CoreUtil } from '../utils/CoreUtil'
 import { ExplorerUtil } from '../utils/ExplorerUtil'
-import { ConfigCtrl } from './ConfigCtrl'
+
+const isMobile = CoreUtil.isMobile()
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<ExplorerCtrlState>({
   wallets: { listings: [], total: 0, page: 1 },
   search: { listings: [], total: 0, page: 1 },
-  previewWallets: [],
   recomendedWallets: []
 })
-
-// -- helpers ------------------------------------------------------ //
-function getProjectId() {
-  const { projectId } = ConfigCtrl.state
-  if (!projectId) {
-    throw new Error('projectId is required to work with explorer api')
-  }
-
-  return projectId
-}
 
 // -- controller --------------------------------------------------- //
 export const ExplorerCtrl = {
   state,
 
-  async getPreviewWallets(params: PageParams) {
-    const { listings } = await ExplorerUtil.fetchWallets(getProjectId(), params)
-    state.previewWallets = Object.values(listings)
-
-    return state.previewWallets
-  },
-
-  async getRecomendedWallets() {
-    const { listings } = await ExplorerUtil.fetchWallets(getProjectId(), { page: 1, entries: 6 })
+  async getRecomendedWallets(params: ListingParams) {
+    const { listings } = isMobile
+      ? await ExplorerUtil.getMobileListings(params)
+      : await ExplorerUtil.getDesktopListings(params)
     state.recomendedWallets = Object.values(listings)
+
+    return state.recomendedWallets
   },
 
-  async getPaginatedWallets(params: PageParams) {
+  async getPaginatedWallets(params: ListingParams) {
     const { page, search } = params
-    const { listings: listingsObj, total } = await ExplorerUtil.fetchWallets(getProjectId(), params)
+    const { listings: listingsObj, total } = isMobile
+      ? await ExplorerUtil.getMobileListings(params)
+      : await ExplorerUtil.getDesktopListings(params)
     const listings = Object.values(listingsObj)
     const type = search ? 'search' : 'wallets'
     state[type] = {
@@ -51,8 +41,12 @@ export const ExplorerCtrl = {
     return { listings, total }
   },
 
-  getImageUrl(imageId: string) {
-    return ExplorerUtil.formatImageUrl(getProjectId(), imageId)
+  getWalletImageUrl(imageId: string) {
+    return ExplorerUtil.getWalletImageUrl(imageId)
+  },
+
+  getAssetImageUrl(imageId: string) {
+    return ExplorerUtil.getAssetImageUrl(imageId)
   },
 
   resetSearch() {

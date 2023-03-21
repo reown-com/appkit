@@ -1,6 +1,6 @@
 import type { DesktopConnectorData } from '@web3modal/core'
 import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { InjectedId } from '../../presets/EthereumPresets'
@@ -58,14 +58,14 @@ export class W3mDesktopWalletSelection extends LitElement {
     )
   }
 
-  private previewWalletsTemplate() {
-    let wallets = DataFilterUtil.allowedExplorerListings(ExplorerCtrl.state.previewWallets)
+  private recomendedWalletsTemplate() {
+    let wallets = DataFilterUtil.allowedExplorerListings(ExplorerCtrl.state.recomendedWallets)
     wallets = DataFilterUtil.deduplicateExplorerListingsFromConnectors(wallets)
 
     return wallets.map(
-      ({ name, desktop: { universal, native }, homepage, image_url, id }) => html`
+      ({ name, desktop: { universal, native }, homepage, image_id, id }) => html`
         <w3m-wallet-button
-          src=${image_url.lg}
+          src=${UiUtil.getWalletIcon({ id, image_id })}
           name=${name}
           .onClick=${() =>
             this.onDesktopWallet({
@@ -73,7 +73,7 @@ export class W3mDesktopWalletSelection extends LitElement {
               name,
               native,
               universal: universal || homepage,
-              icon: image_url.lg
+              icon: UiUtil.getWalletIcon({ id, image_id })
             })}
         ></w3m-wallet-button>
       `
@@ -126,10 +126,10 @@ export class W3mDesktopWalletSelection extends LitElement {
   protected render() {
     const { standaloneUri } = OptionsCtrl.state
     const desktopTemplate = this.desktopWalletsTemplate()
-    const previewTemplate = this.previewWalletsTemplate()
+    const recomendedTemplate = this.recomendedWalletsTemplate()
     const connectorTemplate = this.connectorWalletsTemplate()
     const recentTemplate = this.recentWalletTemplate()
-    const linkingWallets = [...(desktopTemplate ?? []), ...previewTemplate]
+    const linkingWallets = [...(desktopTemplate ?? []), ...recomendedTemplate]
     const combinedWallets = [...connectorTemplate, ...linkingWallets]
     const combinedWalletsWithRecent = DataFilterUtil.walletTemplatesWithRecent(
       combinedWallets,

@@ -67,13 +67,12 @@ export class W3mWalletExplorerView extends LitElement {
         const { listings: newListings } = await ExplorerCtrl.getPaginatedWallets({
           page: this.firstFetch ? 1 : page + 1,
           entries: PAGE_ENTRIES,
-          device: CoreUtil.isMobile() ? 'mobile' : 'desktop',
           search: this.search,
           version: OptionsCtrl.state.walletConnectVersion,
           chains
         })
-        const explorerImages = newListings.map(({ image_url }) => image_url.lg)
-        const extensionImages = extensionWallets.map(({ id }) => UiUtil.getWalletIcon(id))
+        const explorerImages = newListings.map(wallet => UiUtil.getWalletIcon(wallet))
+        const extensionImages = extensionWallets.map(({ id }) => UiUtil.getWalletIcon({ id }))
         await Promise.all([
           ...explorerImages.map(async url => UiUtil.preloadImage(url)),
           ...extensionImages.map(async url => UiUtil.preloadImage(url)),
@@ -102,19 +101,19 @@ export class W3mWalletExplorerView extends LitElement {
 
   private onConnectListing(listing: Listing) {
     if (CoreUtil.isMobile()) {
-      const { id, image_url } = listing
+      const { id } = listing
       const { native, universal } = listing.mobile
       UiUtil.handleMobileLinking({
         links: { native, universal },
         name: listing.name,
         id,
-        image: image_url.lg
+        image: UiUtil.getWalletIcon(listing)
       })
     } else {
       RouterCtrl.push('DesktopConnector', {
         DesktopConnector: {
           name: listing.name,
-          icon: listing.image_url.lg,
+          icon: UiUtil.getWalletIcon(listing),
           universal: listing.desktop.universal || listing.homepage,
           native: listing.desktop.native
         }
@@ -209,7 +208,7 @@ export class W3mWalletExplorerView extends LitElement {
                   ${listings[index]
                     ? html`
                         <w3m-wallet-button
-                          src=${listings[index].image_url.lg}
+                          src=${UiUtil.getWalletIcon(listings[index])}
                           name=${listings[index].name}
                           walletId=${listings[index].id}
                           .onClick=${() => this.onConnectListing(listings[index])}

@@ -1,5 +1,5 @@
 import { ExplorerCtrl, RouterCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { InjectedId } from '../../presets/EthereumPresets'
 import { DataFilterUtil } from '../../utils/DataFilterUtil'
@@ -36,9 +36,9 @@ export class W3mAndroidWalletSelection extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { previewWallets } = ExplorerCtrl.state
-    const isPreviewWallets = previewWallets.length
-    const wallets = [...previewWallets, ...previewWallets]
+    const { recomendedWallets } = ExplorerCtrl.state
+    const isRecomendedWallets = recomendedWallets.length
+    const wallets = [...recomendedWallets, ...recomendedWallets]
     const connectors = this.getConnectors()
     const isConnectors = connectors.length > 0
 
@@ -50,13 +50,14 @@ export class W3mAndroidWalletSelection extends LitElement {
       ></w3m-modal-header>
 
       <w3m-modal-content>
-        ${isPreviewWallets
+        ${isRecomendedWallets
           ? html`
               <div class="w3m-slider">
                 <div class="w3m-track">
                   ${wallets.map(
-                    ({ image_url }) =>
-                      html`<w3m-wallet-image src=${image_url.lg}></w3m-wallet-image>`
+                    wallet =>
+                      html`<w3m-wallet-image src=${UiUtil.getWalletIcon(wallet)}>
+                      </w3m-wallet-image>`
                   )}
                 </div>
               </div>
