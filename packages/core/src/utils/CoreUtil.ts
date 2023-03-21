@@ -66,11 +66,7 @@ export const CoreUtil = {
   },
 
   openHref(href: string, target: '_blank' | '_self') {
-    if (href.includes('https://')) {
-      window.open(href, target, 'noreferrer noopener')
-    } else {
-      window.location.href = href
-    }
+    window.open(href, target, 'noreferrer noopener')
   },
 
   setWalletConnectDeepLink(href: string, name: string) {

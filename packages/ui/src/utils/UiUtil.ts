@@ -133,10 +133,8 @@ export const UiUtil = {
       UiUtil.setRecentWallet(wallet)
       onRedirect(standaloneUri)
     } else {
-      onRedirect('wc?uri=')
       await ClientCtrl.client().connectWalletConnect(uri => {
-        // eslint-disable-next-line no-console
-        console.log(uri)
+        onRedirect(uri)
       }, selectedChain?.id)
       UiUtil.setRecentWallet(wallet)
       ModalCtrl.close()
