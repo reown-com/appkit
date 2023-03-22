@@ -47,22 +47,16 @@ export class W3mIosConnectorView extends LitElement {
   private async createConnectionAndWait(retry = 0) {
     CoreUtil.removeWalletConnectDeepLink()
     const { standaloneUri } = OptionsCtrl.state
-    const { name, id, nativeUrl, universalUrl, imageId } = this.getRouterData()
-    const recentWalletData = {
-      name,
-      id,
-      links: { native: nativeUrl, universal: universalUrl },
-      image: imageId
-    }
+    const routerWalletData = this.getRouterData()
     if (standaloneUri) {
-      UiUtil.setRecentWallet(recentWalletData)
+      UiUtil.setRecentWallet(routerWalletData)
       this.onFormatAndRedirect(standaloneUri)
     } else {
       try {
         await ClientCtrl.client().connectWalletConnect(uri => {
           this.onFormatAndRedirect(uri)
         }, OptionsCtrl.state.selectedChain?.id)
-        UiUtil.setRecentWallet(recentWalletData)
+        UiUtil.setRecentWallet(routerWalletData)
         ModalCtrl.close()
       } catch (err) {
         ToastCtrl.openToast('Connection request declined', 'error')
@@ -75,7 +69,8 @@ export class W3mIosConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { name, imageId, id } = this.getRouterData()
+    const routerWalletData = this.getRouterData()
+    const { name } = routerWalletData
     const optimisticName = UiUtil.getWalletName(name)
 
     return html`
@@ -83,8 +78,7 @@ export class W3mIosConnectorView extends LitElement {
 
       <w3m-modal-content>
         <div class="w3m-wrapper">
-          <w3m-wallet-image src=${UiUtil.getWalletIcon({ id, image_id: imageId })}>
-          </w3m-wallet-image>
+          <w3m-wallet-image src=${UiUtil.getWalletIcon(routerWalletData)}></w3m-wallet-image>
 
           <div class="w3m-connecting-title">
             <w3m-spinner></w3m-spinner>
