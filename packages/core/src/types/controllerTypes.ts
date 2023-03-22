@@ -138,17 +138,19 @@ export type RouterView =
   | 'Help'
   | 'InjectedConnector'
   | 'InstallConnector'
+  | 'IosConnector'
   | 'Qrcode'
   | 'SelectNetwork'
   | 'SwitchNetwork'
   | 'WalletExplorer'
 
-export interface DesktopConnectorData {
+export interface WalletRouteData {
+  id: string
   name: string
-  native?: string
-  universal?: string
-  icon?: string
-  walletId?: string
+  imageId?: string
+  nativeUrl?: string
+  universalUrl?: string
+  downloadUrl?: string
 }
 
 export type SwitchNetworkData = Chain
@@ -164,9 +166,10 @@ export interface RouterCtrlState {
   history: RouterView[]
   view: RouterView
   data?: {
-    DesktopConnector?: DesktopConnectorData
+    DesktopConnector?: WalletRouteData
     SwitchNetwork?: SwitchNetworkData
     InstallConnector?: InstallConnectorData
+    IosConnector?: WalletRouteData
   }
 }
 

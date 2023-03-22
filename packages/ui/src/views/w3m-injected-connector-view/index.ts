@@ -49,7 +49,7 @@ export class W3mInjectedConnectorView extends LitElement {
       <w3m-modal-header title=${optimisticName}></w3m-modal-header>
       <w3m-modal-content>
         <div class=${classMap(classes)}>
-          <w3m-wallet-image walletId=${optimisticWalletId} size="lg"></w3m-wallet-image>
+          <w3m-wallet-image walletId=${optimisticWalletId}></w3m-wallet-image>
           <div class="w3m-connecting-title">
             ${this.connecting ? html`<w3m-spinner></w3m-spinner>` : null}
             <w3m-text variant="big-bold" color=${this.error ? 'error' : 'secondary'}>

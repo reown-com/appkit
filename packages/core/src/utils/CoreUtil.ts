@@ -18,6 +18,12 @@ export const CoreUtil = {
     return CoreUtil.isMobile() && navigator.userAgent.toLowerCase().includes('android')
   },
 
+  isIos() {
+    const ua = navigator.userAgent.toLowerCase()
+
+    return CoreUtil.isMobile() && (ua.includes('iphone') || ua.includes('ipad'))
+  },
+
   isEmptyObject(value: unknown) {
     return (
       Object.getPrototypeOf(value) === Object.prototype &&

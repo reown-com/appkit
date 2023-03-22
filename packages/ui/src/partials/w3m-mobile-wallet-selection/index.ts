@@ -1,3 +1,4 @@
+import type { WalletRouteData } from '@web3modal/core'
 import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
@@ -18,6 +19,10 @@ export class W3mMobileWalletSelection extends LitElement {
     RouterCtrl.push('Qrcode')
   }
 
+  private onGoToIosConnector(data: WalletRouteData) {
+    RouterCtrl.push('IosConnector', { IosConnector: data })
+  }
+
   private async onConnectorWallet(id: string) {
     await UiUtil.handleConnectorConnection(id)
   }
@@ -28,12 +33,18 @@ export class W3mMobileWalletSelection extends LitElement {
 
     if (wallets.length) {
       return wallets.map(
-        ({ id, name, links: { universal, native } }) => html`
+        ({ id, name, links }) => html`
           <w3m-wallet-button
             name=${name}
             walletId=${id}
-            .onClick=${async () =>
-              UiUtil.handleMobileLinking({ links: { native, universal }, name, id })}
+            .onClick=${() => {
+              this.onGoToIosConnector({
+                id,
+                name,
+                nativeUrl: links.native,
+                universalUrl: links.universal
+              })
+            }}
           ></w3m-wallet-button>
         `
       )
@@ -49,17 +60,20 @@ export class W3mMobileWalletSelection extends LitElement {
     wallets = DataFilterUtil.deduplicateExplorerListingsFromConnectors(wallets)
 
     return wallets.map(
-      ({ image_id, name, mobile: { native, universal }, id }) => html`
+      ({ image_id, name, mobile, id, app }) => html`
         <w3m-wallet-button
           name=${name}
           src=${UiUtil.getWalletIcon({ id, image_id })}
-          .onClick=${async () =>
-            UiUtil.handleMobileLinking({
-              links: { native, universal },
-              name,
+          .onClick=${() => {
+            this.onGoToIosConnector({
               id,
-              image: UiUtil.getWalletIcon({ id, image_id })
-            })}
+              name,
+              nativeUrl: mobile.native,
+              universalUrl: mobile.universal,
+              imageId: image_id,
+              downloadUrl: app.ios
+            })
+          }}
         ></w3m-wallet-button>
       `
     )
@@ -91,15 +105,17 @@ export class W3mMobileWalletSelection extends LitElement {
       return undefined
     }
 
-    const { id, name, links, image } = wallet
+    const { id, name } = wallet
 
     return html`
       <w3m-wallet-button
         .recent=${true}
         name=${name}
         walletId=${ifDefined(id)}
-        src=${ifDefined(image)}
-        .onClick=${async () => UiUtil.handleMobileLinking({ name, id, links, image })}
+        src=${UiUtil.getWalletIcon(wallet)}
+        .onClick=${() => {
+          this.onGoToIosConnector(wallet)
+        }}
       ></w3m-wallet-button>
     `
   }

@@ -85,6 +85,8 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-switch-network-view></w3m-switch-network-view>`
       case 'Connectors':
         return html`<w3m-connectors-view></w3m-connectors-view>`
+      case 'IosConnector':
+        return html`<w3m-ios-connector-view></w3m-ios-connector-view>`
       default:
         return html`<div>Not Found</div>`
     }

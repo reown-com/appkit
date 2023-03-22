@@ -9,14 +9,14 @@ export { ThemeCtrl } from './src/controllers/ThemeCtrl'
 export { ToastCtrl } from './src/controllers/ToastCtrl'
 export type {
   ConfigCtrlState,
-  DesktopConnectorData,
   InstallConnectorData,
   Listing,
   ListingResponse,
   MobileWallet,
   RouterView,
   SwitchNetworkData,
-  ThemeCtrlState
+  ThemeCtrlState,
+  WalletRouteData
 } from './src/types/controllerTypes'
 export { CoreUtil } from './src/utils/CoreUtil'
 import './src/utils/PolyfillUtil'

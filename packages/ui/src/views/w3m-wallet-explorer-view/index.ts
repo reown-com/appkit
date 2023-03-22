@@ -90,33 +90,34 @@ export class W3mWalletExplorerView extends LitElement {
   }
 
   private onConnectCustom({ name, id, links }: MobileWallet) {
-    if (CoreUtil.isMobile()) {
-      UiUtil.handleMobileLinking({ links, name, id })
+    const routerWalletData = { name, id, universalUrl: links.universal, nativeUrl: links.native }
+    if (CoreUtil.isAndroid()) {
+      UiUtil.handleMobileLinking(routerWalletData)
+    } else if (CoreUtil.isIos()) {
+      RouterCtrl.push('IosConnector', { IosConnector: routerWalletData })
     } else {
-      RouterCtrl.push('DesktopConnector', {
-        DesktopConnector: { name, walletId: id, universal: links.universal, native: links.native }
-      })
+      RouterCtrl.push('DesktopConnector', { DesktopConnector: routerWalletData })
     }
   }
 
-  private onConnectListing(listing: Listing) {
-    if (CoreUtil.isMobile()) {
-      const { id } = listing
-      const { native, universal } = listing.mobile
-      UiUtil.handleMobileLinking({
-        links: { native, universal },
-        name: listing.name,
-        id,
-        image: UiUtil.getWalletIcon(listing)
+  private onConnectListing({ id, name, image_id, mobile, app, homepage }: Listing) {
+    const routerWalletData = {
+      id,
+      name,
+      imageId: image_id,
+      universalUrl: mobile.universal,
+      nativeUrl: mobile.native
+    }
+
+    if (CoreUtil.isAndroid()) {
+      UiUtil.handleMobileLinking({ ...routerWalletData, downloadUrl: app.android })
+    } else if (CoreUtil.isIos()) {
+      RouterCtrl.push('IosConnector', {
+        IosConnector: { ...routerWalletData, downloadUrl: app.ios }
       })
     } else {
       RouterCtrl.push('DesktopConnector', {
-        DesktopConnector: {
-          name: listing.name,
-          icon: UiUtil.getWalletIcon(listing),
-          universal: listing.desktop.universal || listing.homepage,
-          native: listing.desktop.native
-        }
+        DesktopConnector: { ...routerWalletData, downloadUrl: homepage }
       })
     }
   }

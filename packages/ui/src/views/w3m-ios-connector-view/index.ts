@@ -7,19 +7,15 @@ import {
   ToastCtrl
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
-@customElement('w3m-desktop-connector-view')
-export class W3mDesktopConnectorView extends LitElement {
+@customElement('w3m-ios-connector-view')
+export class W3mIosConnectorView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
-
-  // -- state & properties ------------------------------------------- //
-  @state() private uri = ''
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -29,7 +25,7 @@ export class W3mDesktopConnectorView extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private getRouterData() {
-    const data = RouterCtrl.state.data?.DesktopConnector
+    const data = RouterCtrl.state.data?.IosConnector
     if (!data) {
       throw new Error('Missing router data')
     }
@@ -44,24 +40,29 @@ export class W3mDesktopConnectorView extends LitElement {
       CoreUtil.openHref(href, '_self')
     } else if (universalUrl) {
       const href = CoreUtil.formatUniversalUrl(universalUrl, uri, name)
-      CoreUtil.openHref(href, '_blank')
+      CoreUtil.openHref(href, '_self')
     }
   }
 
   private async createConnectionAndWait(retry = 0) {
     CoreUtil.removeWalletConnectDeepLink()
     const { standaloneUri } = OptionsCtrl.state
-    const routerWalletData = this.getRouterData()
+    const { name, id, nativeUrl, universalUrl, imageId } = this.getRouterData()
+    const recentWalletData = {
+      name,
+      id,
+      links: { native: nativeUrl, universal: universalUrl },
+      image: imageId
+    }
     if (standaloneUri) {
-      UiUtil.setRecentWallet(routerWalletData)
+      UiUtil.setRecentWallet(recentWalletData)
       this.onFormatAndRedirect(standaloneUri)
     } else {
       try {
         await ClientCtrl.client().connectWalletConnect(uri => {
-          this.uri = uri
           this.onFormatAndRedirect(uri)
         }, OptionsCtrl.state.selectedChain?.id)
-        UiUtil.setRecentWallet(routerWalletData)
+        UiUtil.setRecentWallet(recentWalletData)
         ModalCtrl.close()
       } catch (err) {
         ToastCtrl.openToast('Connection request declined', 'error')
@@ -72,22 +73,9 @@ export class W3mDesktopConnectorView extends LitElement {
     }
   }
 
-  private onConnectWithMobile() {
-    RouterCtrl.push('Qrcode')
-  }
-
-  private onGoToWallet() {
-    const { universalUrl, name } = this.getRouterData()
-    if (universalUrl) {
-      const href = CoreUtil.formatUniversalUrl(universalUrl, this.uri, name)
-      CoreUtil.openHref(href, '_blank')
-    }
-  }
-
   // -- render ------------------------------------------------------- //
   protected render() {
-    const routerWalletData = this.getRouterData()
-    const { name, id, universalUrl } = routerWalletData
+    const { name, imageId, id } = this.getRouterData()
     const optimisticName = UiUtil.getWalletName(name)
 
     return html`
@@ -95,10 +83,8 @@ export class W3mDesktopConnectorView extends LitElement {
 
       <w3m-modal-content>
         <div class="w3m-wrapper">
-          <w3m-wallet-image
-            walletid=${ifDefined(id)}
-            src=${UiUtil.getWalletIcon(routerWalletData)}
-          ></w3m-wallet-image>
+          <w3m-wallet-image src=${UiUtil.getWalletIcon({ id, image_id: imageId })}>
+          </w3m-wallet-image>
 
           <div class="w3m-connecting-title">
             <w3m-spinner></w3m-spinner>
@@ -114,21 +100,6 @@ export class W3mDesktopConnectorView extends LitElement {
             >
               Retry
             </w3m-button>
-
-            ${universalUrl
-              ? html`
-                  <w3m-button
-                    .onClick=${this.onGoToWallet.bind(this)}
-                    .iconLeft=${SvgUtil.ARROW_UP_RIGHT_ICON}
-                  >
-                    Go to Wallet
-                  </w3m-button>
-                `
-              : html`
-                  <w3m-button .onClick=${this.onConnectWithMobile} .iconLeft=${SvgUtil.MOBILE_ICON}>
-                    Connect with Mobile
-                  </w3m-button>
-                `}
           </div>
         </div>
       </w3m-modal-content>
@@ -138,6 +109,6 @@ export class W3mDesktopConnectorView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-desktop-connector-view': W3mDesktopConnectorView
+    'w3m-ios-connector-view': W3mIosConnectorView
   }
 }

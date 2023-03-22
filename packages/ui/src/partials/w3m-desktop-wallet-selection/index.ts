@@ -1,4 +1,4 @@
-import type { DesktopConnectorData } from '@web3modal/core'
+import type { WalletRouteData } from '@web3modal/core'
 import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
@@ -15,7 +15,7 @@ export class W3mDesktopWalletSelection extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
-  private onDesktopWallet(data: DesktopConnectorData) {
+  private onDesktopWallet(data: WalletRouteData) {
     RouterCtrl.push('DesktopConnector', { DesktopConnector: data })
   }
 
@@ -48,11 +48,17 @@ export class W3mDesktopWalletSelection extends LitElement {
     const { desktopWallets } = ConfigCtrl.state
 
     return desktopWallets?.map(
-      ({ id, name, links: { universal, native } }) => html`
+      ({ id, name, links }) => html`
         <w3m-wallet-button
           walletId=${id}
           name=${name}
-          .onClick=${() => this.onDesktopWallet({ name, walletId: id, universal, native })}
+          .onClick=${() =>
+            this.onDesktopWallet({
+              name,
+              id,
+              universalUrl: links.universal,
+              nativeUrl: links.native
+            })}
         ></w3m-wallet-button>
       `
     )
@@ -63,17 +69,18 @@ export class W3mDesktopWalletSelection extends LitElement {
     wallets = DataFilterUtil.deduplicateExplorerListingsFromConnectors(wallets)
 
     return wallets.map(
-      ({ name, desktop: { universal, native }, homepage, image_id, id }) => html`
+      ({ name, desktop, homepage, image_id, id }) => html`
         <w3m-wallet-button
           src=${UiUtil.getWalletIcon({ id, image_id })}
           name=${name}
           .onClick=${() =>
             this.onDesktopWallet({
-              walletId: id,
+              id,
               name,
-              native,
-              universal: universal || homepage,
-              icon: UiUtil.getWalletIcon({ id, image_id })
+              nativeUrl: desktop.native,
+              universalUrl: desktop.universal,
+              downloadUrl: homepage,
+              imageId: image_id
             })}
         ></w3m-wallet-button>
       `
@@ -102,22 +109,15 @@ export class W3mDesktopWalletSelection extends LitElement {
       return undefined
     }
 
-    const { id, name, links, image } = wallet
+    const { id, name } = wallet
 
     return html`
       <w3m-wallet-button
         .recent=${true}
         name=${name}
         walletId=${ifDefined(id)}
-        src=${ifDefined(image)}
-        .onClick=${() =>
-          this.onDesktopWallet({
-            name,
-            walletId: id,
-            universal: links?.universal,
-            native: links?.native,
-            icon: image
-          })}
+        src=${UiUtil.getWalletIcon(wallet)}
+        .onClick=${() => this.onDesktopWallet(wallet)}
       ></w3m-wallet-button>
     `
   }

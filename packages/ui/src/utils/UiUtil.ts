@@ -1,3 +1,4 @@
+import type { WalletRouteData } from '@web3modal/core'
 import {
   ClientCtrl,
   ConfigCtrl,
@@ -11,12 +12,11 @@ import type { LitElement } from 'lit'
 import { ChainPresets } from '../presets/ChainPresets'
 import { EthereumPresets } from '../presets/EthereumPresets'
 import { TokenPresets } from '../presets/TokenPresets'
-import type { RecentWallet } from './TypesUtil'
 
 export const UiUtil = {
   MOBILE_BREAKPOINT: 600,
 
-  W3M_RECENT_WALLET: 'W3M_RECENT_WALLET',
+  W3M_RECENT_WALLET_DATA: 'W3M_RECENT_WALLET_DATA',
 
   EXPLORER_WALLET_URL: 'https://explorer.walletconnect.com/?type=wallet',
 
@@ -40,7 +40,7 @@ export const UiUtil = {
     return EthereumPresets.getInjectedId(id)
   },
 
-  getWalletIcon({ id, image_id }: { id: string; image_id?: string }) {
+  getWalletIcon({ id, image_id, imageId }: { id: string; image_id?: string; imageId?: string }) {
     const presets = EthereumPresets.injectedPreset
     const presetImageId = presets[id]?.icon
     const { walletImages } = ConfigCtrl.state
@@ -49,6 +49,8 @@ export const UiUtil = {
       return walletImages[id]
     } else if (image_id) {
       return ExplorerCtrl.getWalletImageUrl(image_id)
+    } else if (imageId) {
+      return ExplorerCtrl.getWalletImageUrl(imageId)
     } else if (presetImageId) {
       return ExplorerCtrl.getAssetImageUrl(presetImageId)
     }
@@ -114,17 +116,17 @@ export const UiUtil = {
     }
   },
 
-  async handleMobileLinking(wallet: RecentWallet) {
+  async handleMobileLinking(wallet: WalletRouteData) {
     CoreUtil.removeWalletConnectDeepLink()
     const { standaloneUri, selectedChain } = OptionsCtrl.state
-    const { links, name } = wallet
+    const { universalUrl, nativeUrl, name } = wallet
 
     function onRedirect(uri: string) {
       let href = ''
-      if (links?.native) {
-        href = CoreUtil.formatUniversalUrl(links.native, uri, name)
-      } else if (links?.universal) {
-        href = CoreUtil.formatNativeUrl(links.universal, uri, name)
+      if (nativeUrl) {
+        href = CoreUtil.formatUniversalUrl(nativeUrl, uri, name)
+      } else if (universalUrl) {
+        href = CoreUtil.formatNativeUrl(universalUrl, uri, name)
       }
       CoreUtil.openHref(href, '_self')
     }
@@ -249,21 +251,21 @@ export const UiUtil = {
     }
   },
 
-  setRecentWallet(wallet: RecentWallet) {
+  setRecentWallet(wallet: WalletRouteData) {
     const { walletConnectVersion } = OptionsCtrl.state
     localStorage.setItem(
-      UiUtil.W3M_RECENT_WALLET,
+      UiUtil.W3M_RECENT_WALLET_DATA,
       JSON.stringify({ [walletConnectVersion]: wallet })
     )
   },
 
   getRecentWallet() {
-    const wallet = localStorage.getItem(UiUtil.W3M_RECENT_WALLET)
+    const wallet = localStorage.getItem(UiUtil.W3M_RECENT_WALLET_DATA)
     if (wallet) {
       const { walletConnectVersion } = OptionsCtrl.state
       const json = JSON.parse(wallet)
       if (json[walletConnectVersion]) {
-        return json[walletConnectVersion] as RecentWallet
+        return json[walletConnectVersion] as WalletRouteData
       }
     }
 
