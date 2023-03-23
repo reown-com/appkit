@@ -2,6 +2,8 @@
 
 ### 📚 [Documentation](https://docs.walletconnect.com/2.0/web3modal/about)
 
+### 🔎 [Examples](https://github.com/WalletConnect/web3modal-examples)
+
 ### 🧪 [Laboratory](https://lab.web3modal.com)
 
 ### 🔗 [Website](https://web3modal.com)
@@ -13,13 +15,6 @@ Your on-ramp to web3 multichain. Web3Modal is a versatile library that makes it 
 <p align="center">
   <img src="./.github/assets/header.jpg" alt="" border="0">
 </p>
-
-## Getting Started
-
-- [React Docs](https://docs.walletconnect.com/2.0/introduction/web3modal/react/installation) / [Create React App Example](./examples/create-react-app) / [NextJS Example](./examples/nextjs)
-- [Vanilla JS Docs](https://docs.walletconnect.com/2.0/web3modal/html-js/installation) / [Vanila JS Example](./examples/html/)
-- Vue Docs / Vue Example (coming soon)
-- Angular Docs / Angular Example (coming soon)
 
 ## Development
 
