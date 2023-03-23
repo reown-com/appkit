@@ -1,3 +1,7 @@
+:host {
+  display: block;
+}
+
 div {
   overflow: hidden;
   position: relative;

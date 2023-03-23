@@ -1,0 +1,13 @@
+w3m-modal-content div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 0;
+}
+
+w3m-wallet-image {
+  border-radius: var(--w3m-wallet-icon-large-border-radius);
+  width: 96px;
+  height: 96px;
+  margin-bottom: 20px;
+}

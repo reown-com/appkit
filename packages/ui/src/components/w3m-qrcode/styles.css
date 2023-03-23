@@ -17,22 +17,11 @@ div {
   animation: fadeIn ease 0.2s;
 }
 
-svg:first-child,
-w3m-wallet-image {
+svg:first-child {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translateY(-50%) translateX(-50%);
-}
-
-w3m-wallet-image {
-  transform: translateY(-50%) translateX(-50%);
-}
-
-w3m-wallet-image {
-  width: 25%;
-  height: 25%;
-  border-radius: 15px;
 }
 
 svg:first-child {

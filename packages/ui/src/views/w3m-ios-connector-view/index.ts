@@ -77,26 +77,22 @@ export class W3mIosConnectorView extends LitElement {
       <w3m-modal-header title=${optimisticName}></w3m-modal-header>
 
       <w3m-modal-content>
-        <div class="w3m-wrapper">
+        <div>
           <w3m-wallet-image walletId=${id} imageId=${imageId}></w3m-wallet-image>
-
-          <div class="w3m-connecting-title">
-            <w3m-spinner></w3m-spinner>
-            <w3m-text variant="big-bold" color="secondary">
-              ${`Continue in ${optimisticName}...`}
-            </w3m-text>
-          </div>
-
-          <div class="w3m-install-actions">
-            <w3m-button
-              .onClick=${async () => this.createConnectionAndWait()}
-              .iconRight=${SvgUtil.RETRY_ICON}
-            >
-              Retry
-            </w3m-button>
-          </div>
+          <w3m-text variant="medium-regular"> Tap 'Open' to continue… </w3m-text>
         </div>
       </w3m-modal-content>
+
+      <w3m-modal-footer>
+        <div class="w3m-install-actions">
+          <w3m-button
+            .onClick=${async () => this.createConnectionAndWait()}
+            .iconRight=${SvgUtil.RETRY_ICON}
+          >
+            Retry
+          </w3m-button>
+        </div>
+      </w3m-modal-footer>
     `
   }
 }

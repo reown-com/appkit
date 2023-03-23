@@ -20,7 +20,7 @@ w3m-spinner {
 
 w3m-wallet-image {
   border-radius: var(--w3m-wallet-icon-border-radius);
-  width: 25%;
+  width: 96px;
   aspect-ratio: 1 / 1;
   margin-bottom: 20px;
 }
