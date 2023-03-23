@@ -44,25 +44,20 @@ export class W3mIosConnectorView extends LitElement {
     }
   }
 
-  private async createConnectionAndWait(retry = 0) {
-    CoreUtil.removeWalletConnectDeepLink()
+  private async createConnectionAndWait() {
     const { standaloneUri } = OptionsCtrl.state
     const routerWalletData = this.getRouterData()
+    UiUtil.setRecentWallet(routerWalletData)
     if (standaloneUri) {
-      UiUtil.setRecentWallet(routerWalletData)
       this.onFormatAndRedirect(standaloneUri)
     } else {
       try {
         await ClientCtrl.client().connectWalletConnect(uri => {
           this.onFormatAndRedirect(uri)
         }, OptionsCtrl.state.selectedChain?.id)
-        UiUtil.setRecentWallet(routerWalletData)
         ModalCtrl.close()
       } catch (err) {
         ToastCtrl.openToast('Connection request declined', 'error')
-        if (retry < 2) {
-          this.createConnectionAndWait(retry + 1)
-        }
       }
     }
   }
@@ -77,10 +72,11 @@ export class W3mIosConnectorView extends LitElement {
       <w3m-modal-header title=${optimisticName}></w3m-modal-header>
 
       <w3m-modal-content>
-        <div>
-          <w3m-connector-image walletId=${id} imageId=${imageId}></w3m-connector-image>
-          <w3m-text variant="medium-regular"> Tap 'Open' to continue… </w3m-text>
-        </div>
+        <w3m-connector-image
+          walletId=${id}
+          imageId=${imageId}
+          label="Tap 'Open' to continue…"
+        ></w3m-connector-image>
       </w3m-modal-content>
 
       <w3m-modal-footer>

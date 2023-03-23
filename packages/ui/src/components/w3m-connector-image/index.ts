@@ -1,6 +1,7 @@
 import { ThemeCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { classMap } from 'lit/directives/class-map.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
@@ -11,6 +12,8 @@ export class W3mConnectorImage extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property() public walletId?: string = undefined
   @property() public imageId?: string = undefined
+  @property() public isError = false
+  @property() public label = ''
 
   // -- private ------------------------------------------------------ //
   private svgLoaderTemplate() {
@@ -47,12 +50,18 @@ export class W3mConnectorImage extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    return html`
-      <div>
-        ${this.svgLoaderTemplate()}
+    const classes = {
+      'w3m-error': this.isError
+    }
 
+    return html`
+      <div class=${classMap(classes)}>
+        ${this.svgLoaderTemplate()}
         <w3m-wallet-image walletId=${this.walletId} imageId=${this.imageId}></w3m-wallet-image>
       </div>
+      <w3m-text variant="medium-regular" color=${this.isError ? 'error' : 'primary'}>
+        ${this.isError ? 'Connection declined' : this.label}
+      </w3m-text>
     `
   }
 }

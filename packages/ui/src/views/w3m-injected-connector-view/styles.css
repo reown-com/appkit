@@ -27,6 +27,7 @@ w3m-wallet-image {
 
 w3m-button {
   opacity: 0;
+  margin: 0 auto;
 }
 
 .w3m-injected-error w3m-button {

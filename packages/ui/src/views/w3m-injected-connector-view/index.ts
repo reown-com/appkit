@@ -41,30 +41,25 @@ export class W3mInjectedConnectorView extends LitElement {
     const optimisticName = UiUtil.getWalletName(this.connector.name)
     const optimisticWalletId = UiUtil.getWalletId(this.connector.id)
     const classes = {
-      'w3m-injected-wrapper': true,
       'w3m-injected-error': this.error
     }
 
     return html`
       <w3m-modal-header title=${optimisticName}></w3m-modal-header>
-      <w3m-modal-content>
-        <div class=${classMap(classes)}>
-          <w3m-wallet-image walletId=${optimisticWalletId}></w3m-wallet-image>
-          <div class="w3m-connecting-title">
-            ${this.connecting ? html`<w3m-spinner></w3m-spinner>` : null}
-            <w3m-text variant="big-bold" color=${this.error ? 'error' : 'secondary'}>
-              ${this.error ? 'Connection declined' : `Continue in ${optimisticName}...`}
-            </w3m-text>
-          </div>
+      <w3m-modal-content class=${classMap(classes)}>
+        <w3m-connector-image
+          walletId=${optimisticWalletId}
+          label=${`Continue in ${optimisticName}...`}
+          .isError=${this.error}
+        ></w3m-connector-image>
 
-          <w3m-button
-            .onClick=${this.onConnect.bind(this)}
-            .disabled=${!this.error}
-            .iconRight=${SvgUtil.RETRY_ICON}
-          >
-            Try Again
-          </w3m-button>
-        </div>
+        <w3m-button
+          .onClick=${this.onConnect.bind(this)}
+          .disabled=${!this.error}
+          .iconRight=${SvgUtil.RETRY_ICON}
+        >
+          Try Again
+        </w3m-button>
       </w3m-modal-content>
     `
   }
