@@ -26,10 +26,10 @@ export class W3mConnectorImage extends LitElement {
       ThemeUtil.getPreset('--w3m-wallet-icon-large-border-radius')
     let numRadius = 0
 
-    if (radius?.includes('%')) {
+    if (radius.includes('%')) {
       numRadius = (ICON_SIZE / 100) * parseInt(radius, 10)
     } else {
-      numRadius = parseInt(radius ?? '0', 10)
+      numRadius = parseInt(radius, 10)
     }
 
     numRadius *= 1.17

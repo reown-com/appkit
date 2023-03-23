@@ -1,7 +1,6 @@
 import { ClientCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { classMap } from 'lit/directives/class-map.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -12,8 +11,7 @@ export class W3mInjectedConnectorView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
-  @state() private connecting = true
-  @state() private error = false
+  @state() private isError = false
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -27,11 +25,9 @@ export class W3mInjectedConnectorView extends LitElement {
   private async onConnect() {
     const { ready } = this.connector
     if (ready) {
-      this.error = false
-      this.connecting = true
+      this.isError = false
       await UiUtil.handleConnectorConnection('injected', () => {
-        this.error = true
-        this.connecting = false
+        this.isError = true
       })
     }
   }
@@ -40,22 +36,19 @@ export class W3mInjectedConnectorView extends LitElement {
   protected render() {
     const optimisticName = UiUtil.getWalletName(this.connector.name)
     const optimisticWalletId = UiUtil.getWalletId(this.connector.id)
-    const classes = {
-      'w3m-injected-error': this.error
-    }
 
     return html`
       <w3m-modal-header title=${optimisticName}></w3m-modal-header>
-      <w3m-modal-content class=${classMap(classes)}>
+      <w3m-modal-content>
         <w3m-connector-image
           walletId=${optimisticWalletId}
           label=${`Continue in ${optimisticName}...`}
-          .isError=${this.error}
+          .isError=${this.isError}
         ></w3m-connector-image>
 
         <w3m-button
           .onClick=${this.onConnect.bind(this)}
-          .disabled=${!this.error}
+          .disabled=${!this.isError}
           .iconRight=${SvgUtil.RETRY_ICON}
         >
           Try Again
