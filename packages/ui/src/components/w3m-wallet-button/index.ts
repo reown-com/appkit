@@ -13,7 +13,7 @@ export class W3mWalletButton extends LitElement {
   @property() public name = ''
   @property() public walletId = ''
   @property() public label?: string = undefined
-  @property() public src?: string = undefined
+  @property() public imageId?: string = undefined
   @property() public installed? = false
   @property() public recent? = false
 
@@ -37,7 +37,7 @@ export class W3mWalletButton extends LitElement {
     return html`
       <button @click=${this.onClick}>
         <div>
-          <w3m-wallet-image walletId=${this.walletId} .src=${this.src}></w3m-wallet-image>
+          <w3m-wallet-image walletId=${this.walletId} imageId=${this.imageId}></w3m-wallet-image>
           <w3m-text variant="xsmall-regular">
             ${this.label ?? UiUtil.getWalletName(this.name, true)}
           </w3m-text>

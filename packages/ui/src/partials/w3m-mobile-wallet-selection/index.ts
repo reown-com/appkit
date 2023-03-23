@@ -2,7 +2,6 @@ import type { WalletRouteData } from '@web3modal/core'
 import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 import { InjectedId } from '../../presets/EthereumPresets'
 import { DataFilterUtil } from '../../utils/DataFilterUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -63,7 +62,8 @@ export class W3mMobileWalletSelection extends LitElement {
       ({ image_id, name, mobile, id, app }) => html`
         <w3m-wallet-button
           name=${name}
-          src=${UiUtil.getWalletIcon({ id, image_id })}
+          walletId=${id}
+          imageId=${image_id}
           .onClick=${() => {
             this.onGoToIosConnector({
               id,
@@ -105,14 +105,14 @@ export class W3mMobileWalletSelection extends LitElement {
       return undefined
     }
 
-    const { id, name } = wallet
+    const { id, name, imageId } = wallet
 
     return html`
       <w3m-wallet-button
         .recent=${true}
         name=${name}
-        walletId=${ifDefined(id)}
-        src=${UiUtil.getWalletIcon(wallet)}
+        walletId=${id}
+        imageId=${imageId}
         .onClick=${() => {
           this.onGoToIosConnector(wallet)
         }}

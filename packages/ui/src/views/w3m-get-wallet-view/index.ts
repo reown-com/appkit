@@ -27,16 +27,16 @@ export class W3mGetWalletView extends LitElement {
       <w3m-modal-content>
         ${isRecomendedWallets
           ? recomendedWallets.map(
-              ({ name, image_id, id, homepage }) =>
+              wallet =>
                 html`
                   <div class="w3m-wallet-item">
-                    <w3m-wallet-image src=${UiUtil.getWalletIcon({ id, image_id })}>
+                    <w3m-wallet-image walletId=${wallet.id} imageId=${wallet.image_id}>
                     </w3m-wallet-image>
                     <div class="w3m-wallet-content">
-                      <w3m-text variant="medium-regular">${name}</w3m-text>
+                      <w3m-text variant="medium-regular">${wallet.name}</w3m-text>
                       <w3m-button
                         .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
-                        .onClick=${() => this.onGet(homepage)}
+                        .onClick=${() => this.onGet(wallet.homepage)}
                       >
                         Get
                       </w3m-button>
@@ -47,15 +47,15 @@ export class W3mGetWalletView extends LitElement {
           : null}
         ${isCustomWallets
           ? customWallets.map(
-              ({ name, id, links }) =>
+              wallet =>
                 html`
                   <div class="w3m-wallet-item">
-                    <w3m-wallet-image walletId=${id}></w3m-wallet-image>
+                    <w3m-wallet-image walletId=${wallet.id}></w3m-wallet-image>
                     <div class="w3m-wallet-content">
-                      <w3m-text variant="medium-regular">${name}</w3m-text>
+                      <w3m-text variant="medium-regular">${wallet.name}</w3m-text>
                       <w3m-button
                         .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
-                        .onClick=${() => this.onGet(links.universal)}
+                        .onClick=${() => this.onGet(wallet.links.universal)}
                       >
                         Get
                       </w3m-button>

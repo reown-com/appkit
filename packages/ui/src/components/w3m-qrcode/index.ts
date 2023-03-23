@@ -1,7 +1,6 @@
 import { ThemeCtrl } from '@web3modal/core'
 import { html, LitElement, svg } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 import { QrCodeUtil } from '../../utils/QrCode'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -14,8 +13,6 @@ export default class W3mQrCode extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property() public uri = ''
   @property({ type: Number }) public size = 0
-  @property() public logoSrc? = ''
-  @property() public walletId? = ''
 
   // -- private ------------------------------------------------------ //
   private svgTemplate() {
@@ -30,19 +27,7 @@ export default class W3mQrCode extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    return html`
-      <div>
-        ${this.walletId || this.logoSrc
-          ? html`
-              <w3m-wallet-image
-                walletId=${ifDefined(this.walletId)}
-                src=${ifDefined(this.logoSrc)}
-              ></w3m-wallet-image>
-            `
-          : SvgUtil.WALLET_CONNECT_ICON_COLORED}
-        ${this.svgTemplate()}
-      </div>
-    `
+    return html` <div>${SvgUtil.WALLET_CONNECT_ICON_COLORED} ${this.svgTemplate()}</div> `
   }
 }
 

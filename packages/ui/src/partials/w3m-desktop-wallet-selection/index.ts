@@ -2,7 +2,6 @@ import type { WalletRouteData } from '@web3modal/core'
 import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 import { InjectedId } from '../../presets/EthereumPresets'
 import { DataFilterUtil } from '../../utils/DataFilterUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -71,7 +70,8 @@ export class W3mDesktopWalletSelection extends LitElement {
     return wallets.map(
       ({ name, desktop, homepage, image_id, id }) => html`
         <w3m-wallet-button
-          src=${UiUtil.getWalletIcon({ id, image_id })}
+          walletId=${id}
+          imageId=${image_id}
           name=${name}
           .onClick=${() =>
             this.onDesktopWallet({
@@ -109,14 +109,14 @@ export class W3mDesktopWalletSelection extends LitElement {
       return undefined
     }
 
-    const { id, name } = wallet
+    const { id, name, imageId } = wallet
 
     return html`
       <w3m-wallet-button
-        .recent=${true}
         name=${name}
-        walletId=${ifDefined(id)}
-        src=${UiUtil.getWalletIcon(wallet)}
+        walletId=${id}
+        imageId=${imageId}
+        .recent=${true}
         .onClick=${() => this.onDesktopWallet(wallet)}
       ></w3m-wallet-button>
     `

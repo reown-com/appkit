@@ -56,7 +56,7 @@ export class W3mAndroidWalletSelection extends LitElement {
                 <div class="w3m-track">
                   ${wallets.map(
                     wallet =>
-                      html`<w3m-wallet-image src=${UiUtil.getWalletIcon(wallet)}>
+                      html`<w3m-wallet-image walletId=${wallet.id} imageId=${wallet.image_id}>
                       </w3m-wallet-image>`
                   )}
                 </div>

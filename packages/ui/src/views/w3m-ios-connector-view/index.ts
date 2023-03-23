@@ -70,7 +70,7 @@ export class W3mIosConnectorView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const routerWalletData = this.getRouterData()
-    const { name } = routerWalletData
+    const { name, id, imageId } = routerWalletData
     const optimisticName = UiUtil.getWalletName(name)
 
     return html`
@@ -78,7 +78,7 @@ export class W3mIosConnectorView extends LitElement {
 
       <w3m-modal-content>
         <div class="w3m-wrapper">
-          <w3m-wallet-image src=${UiUtil.getWalletIcon(routerWalletData)}></w3m-wallet-image>
+          <w3m-wallet-image walletId=${id} imageId=${imageId}></w3m-wallet-image>
 
           <div class="w3m-connecting-title">
             <w3m-spinner></w3m-spinner>

@@ -209,7 +209,7 @@ export class W3mWalletExplorerView extends LitElement {
                   ${listings[index]
                     ? html`
                         <w3m-wallet-button
-                          src=${UiUtil.getWalletIcon(listings[index])}
+                          imageId=${listings[index].image_id}
                           name=${listings[index].name}
                           walletId=${listings[index].id}
                           .onClick=${() => this.onConnectListing(listings[index])}
