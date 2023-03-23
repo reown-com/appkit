@@ -84,7 +84,7 @@ export class W3mIosConnectorView extends LitElement {
       </w3m-modal-content>
 
       <w3m-modal-footer>
-        <div class="w3m-install-actions">
+        <div>
           <w3m-button
             .onClick=${async () => this.createConnectionAndWait()}
             .iconRight=${SvgUtil.RETRY_ICON}
