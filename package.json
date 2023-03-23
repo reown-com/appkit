@@ -32,7 +32,7 @@
     "esbuild": "0.17.12",
     "eslint": "8.36.0",
     "eslint-config-prettier": "8.8.0",
-    "lerna": "6.5.1",
+    "lerna": "6.6.0",
     "prettier": "2.8.6",
     "rollup": "3.20.1",
     "rollup-plugin-esbuild": "5.0.0",
