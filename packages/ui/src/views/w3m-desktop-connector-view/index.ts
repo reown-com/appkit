@@ -1,11 +1,4 @@
-import {
-  ClientCtrl,
-  CoreUtil,
-  ModalCtrl,
-  OptionsCtrl,
-  RouterCtrl,
-  ToastCtrl
-} from '@web3modal/core'
+import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -19,6 +12,7 @@ export class W3mDesktopConnectorView extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private uri = ''
+  @state() private isError = false
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -47,12 +41,12 @@ export class W3mDesktopConnectorView extends LitElement {
     }
   }
 
-  private async createConnectionAndWait(retry = 0) {
-    CoreUtil.removeWalletConnectDeepLink()
+  private async createConnectionAndWait() {
+    this.isError = false
     const { standaloneUri } = OptionsCtrl.state
     const routerWalletData = this.getRouterData()
+    UiUtil.setRecentWallet(routerWalletData)
     if (standaloneUri) {
-      UiUtil.setRecentWallet(routerWalletData)
       this.onFormatAndRedirect(standaloneUri)
     } else {
       try {
@@ -60,13 +54,9 @@ export class W3mDesktopConnectorView extends LitElement {
           this.uri = uri
           this.onFormatAndRedirect(uri)
         }, OptionsCtrl.state.selectedChain?.id)
-        UiUtil.setRecentWallet(routerWalletData)
         ModalCtrl.close()
       } catch (err) {
-        ToastCtrl.openToast('Connection request declined', 'error')
-        if (retry < 2) {
-          this.createConnectionAndWait(retry + 1)
-        }
+        this.isError = true
       }
     }
   }
@@ -93,40 +83,34 @@ export class W3mDesktopConnectorView extends LitElement {
       <w3m-modal-header title=${optimisticName}></w3m-modal-header>
 
       <w3m-modal-content>
-        <div class="w3m-wrapper">
-          <w3m-wallet-image walletId=${id} imageId=${imageId}></w3m-wallet-image>
+        <w3m-connector-image
+          walletId=${id}
+          imageId=${imageId}
+          label=${`Continue in ${optimisticName}...`}
+          .isError=${this.isError}
+        ></w3m-connector-image>
 
-          <div class="w3m-connecting-title">
-            <w3m-spinner></w3m-spinner>
-            <w3m-text variant="big-bold" color="secondary">
-              ${`Continue in ${optimisticName}...`}
-            </w3m-text>
-          </div>
+        <w3m-button
+          .onClick=${async () => this.createConnectionAndWait()}
+          .iconRight=${SvgUtil.RETRY_ICON}
+        >
+          Retry
+        </w3m-button>
 
-          <div class="w3m-install-actions">
-            <w3m-button
-              .onClick=${async () => this.createConnectionAndWait()}
-              .iconRight=${SvgUtil.RETRY_ICON}
-            >
-              Retry
-            </w3m-button>
-
-            ${universalUrl
-              ? html`
-                  <w3m-button
-                    .onClick=${this.onGoToWallet.bind(this)}
-                    .iconLeft=${SvgUtil.ARROW_UP_RIGHT_ICON}
-                  >
-                    Go to Wallet
-                  </w3m-button>
-                `
-              : html`
-                  <w3m-button .onClick=${this.onConnectWithMobile} .iconLeft=${SvgUtil.MOBILE_ICON}>
-                    Connect with Mobile
-                  </w3m-button>
-                `}
-          </div>
-        </div>
+        ${universalUrl
+          ? html`
+              <w3m-button
+                .onClick=${this.onGoToWallet.bind(this)}
+                .iconLeft=${SvgUtil.ARROW_UP_RIGHT_ICON}
+              >
+                Go to Wallet
+              </w3m-button>
+            `
+          : html`
+              <w3m-button .onClick=${this.onConnectWithMobile} .iconLeft=${SvgUtil.MOBILE_ICON}>
+                Connect with Mobile
+              </w3m-button>
+            `}
       </w3m-modal-content>
     `
   }
