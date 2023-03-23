@@ -13,6 +13,10 @@ svg {
   margin: 0;
 }
 
+image {
+  will-change: transform;
+}
+
 #network-placeholder-fill {
   fill: var(--w3m-color-bg-3);
 }
