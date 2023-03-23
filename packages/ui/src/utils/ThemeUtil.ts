@@ -93,6 +93,10 @@ function themeBackgroundImage() {
 }
 
 export const ThemeUtil = {
+  getPreset(key: string) {
+    return themeVariablesPresets()[key as never]
+  },
+
   setTheme() {
     const root: HTMLElement | null = document.querySelector(':root')
     const { themeVariables } = ThemeCtrl.state

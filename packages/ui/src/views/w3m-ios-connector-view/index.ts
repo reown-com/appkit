@@ -78,7 +78,7 @@ export class W3mIosConnectorView extends LitElement {
 
       <w3m-modal-content>
         <div>
-          <w3m-wallet-image walletId=${id} imageId=${imageId}></w3m-wallet-image>
+          <w3m-connector-image walletId=${id} imageId=${imageId}></w3m-connector-image>
           <w3m-text variant="medium-regular"> Tap 'Open' to continue… </w3m-text>
         </div>
       </w3m-modal-content>
