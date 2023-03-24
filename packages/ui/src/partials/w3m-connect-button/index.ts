@@ -1,5 +1,5 @@
-import { AccountCtrl, ClientCtrl, ConfigCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { AccountCtrl, ClientCtrl, ConfigCtrl, ModalCtrl } from '@web3modal/core'
+import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -51,9 +51,7 @@ export class W3mConnectButton extends LitElement {
   private onConnect() {
     this.loading = true
     const { enableNetworkView } = ConfigCtrl.state
-    const { chains, selectedChain } = OptionsCtrl.state
-    const isChainsList = chains?.length && chains.length > 1
-    if (enableNetworkView || (isChainsList && !selectedChain)) {
+    if (enableNetworkView) {
       ModalCtrl.open({ route: 'SelectNetwork' })
     } else {
       ModalCtrl.open({ route: 'ConnectWallet' })

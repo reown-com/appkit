@@ -1,6 +1,6 @@
 import type { SwitchNetworkData } from '@web3modal/core'
 import { AccountCtrl, ClientCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'

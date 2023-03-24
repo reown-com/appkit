@@ -1,6 +1,7 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { AccountCtrlState } from '../types/controllerTypes'
 import { ClientCtrl } from './ClientCtrl'
+import { OptionsCtrl } from './OptionsCtrl'
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<AccountCtrlState>({
@@ -34,8 +35,8 @@ export const AccountCtrl = {
     try {
       state.profileLoading = true
       const address = profileAddress ?? state.address
-      const { id } = ClientCtrl.client().getDefaultChain()
-      if (address && id === 1) {
+      const isMainnetConfigured = OptionsCtrl.state.chains?.find(chain => chain.id === 1)
+      if (address && isMainnetConfigured) {
         const [name, avatar] = await Promise.all([
           ClientCtrl.client().fetchEnsName({ address, chainId: 1 }),
           ClientCtrl.client().fetchEnsAvatar({ address, chainId: 1 })

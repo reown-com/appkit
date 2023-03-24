@@ -41,8 +41,6 @@ export const ConfigCtrl = {
     OptionsCtrl.setWalletConnectVersion(config.walletConnectVersion ?? 1)
 
     if (!OptionsCtrl.state.isStandalone) {
-      const chain = ClientCtrl.client().getDefaultChain()
-      OptionsCtrl.setSelectedChain(chain)
       OptionsCtrl.setChains(ClientCtrl.client().chains)
     }
 
