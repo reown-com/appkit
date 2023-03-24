@@ -58,7 +58,7 @@ svg {
 
 use {
   stroke: var(--w3m-accent-color);
-  animation: loading 0.8s linear infinite;
+  animation: loading 1s linear infinite;
 }
 
 w3m-network-image {
