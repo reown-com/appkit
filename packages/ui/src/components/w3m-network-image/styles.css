@@ -1,6 +1,13 @@
+@keyframes loading {
+  to {
+    stroke-dashoffset: 0px;
+  }
+}
+
 :host {
   width: inherit;
   height: inherit;
+  position: relative;
 }
 
 .w3m-stroke {

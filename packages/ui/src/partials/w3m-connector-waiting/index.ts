@@ -5,8 +5,8 @@ import { classMap } from 'lit/directives/class-map.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
-@customElement('w3m-connector-image')
-export class W3mConnectorImage extends LitElement {
+@customElement('w3m-connector-waiting')
+export class W3mConnectorWaiting extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -68,6 +68,6 @@ export class W3mConnectorImage extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-connector-image': W3mConnectorImage
+    'w3m-connector-waiting': W3mConnectorWaiting
   }
 }

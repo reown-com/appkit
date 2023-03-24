@@ -40,11 +40,11 @@ export class W3mInjectedConnectorView extends LitElement {
     return html`
       <w3m-modal-header title=${optimisticName}></w3m-modal-header>
       <w3m-modal-content>
-        <w3m-connector-image
+        <w3m-connector-waiting
           walletId=${optimisticWalletId}
           label=${`Continue in ${optimisticName}...`}
           .isError=${this.isError}
-        ></w3m-connector-image>
+        ></w3m-connector-waiting>
 
         <w3m-button
           .onClick=${this.onConnect.bind(this)}

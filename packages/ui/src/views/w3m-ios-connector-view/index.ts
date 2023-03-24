@@ -69,12 +69,12 @@ export class W3mIosConnectorView extends LitElement {
       <w3m-modal-header title=${optimisticName}></w3m-modal-header>
 
       <w3m-modal-content>
-        <w3m-connector-image
+        <w3m-connector-waiting
           walletId=${id}
           imageId=${imageId}
           label="Tap 'Open' to continue…"
           .isError=${this.isError}
-        ></w3m-connector-image>
+        ></w3m-connector-waiting>
       </w3m-modal-content>
 
       <w3m-modal-footer>
