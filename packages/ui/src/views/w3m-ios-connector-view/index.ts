@@ -54,7 +54,7 @@ export class W3mIosConnectorView extends LitElement {
         }, OptionsCtrl.state.selectedChain?.id)
         ModalCtrl.close()
       } catch (err) {
-        this.isError = false
+        this.isError = true
       }
     }
   }
