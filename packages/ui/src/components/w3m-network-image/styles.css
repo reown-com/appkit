@@ -1,6 +1,7 @@
-div {
+:host {
   width: inherit;
   height: inherit;
+  will-change: opacity;
 }
 
 .polygon-stroke {
@@ -11,10 +12,6 @@ svg {
   width: 100%;
   height: 100%;
   margin: 0;
-}
-
-image {
-  will-change: transform;
 }
 
 #network-placeholder-fill {
