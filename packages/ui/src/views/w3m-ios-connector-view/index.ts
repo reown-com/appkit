@@ -1,13 +1,6 @@
-import {
-  ClientCtrl,
-  CoreUtil,
-  ModalCtrl,
-  OptionsCtrl,
-  RouterCtrl,
-  ToastCtrl
-} from '@web3modal/core'
+import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -16,6 +9,9 @@ import styles from './styles.css'
 @customElement('w3m-ios-connector-view')
 export class W3mIosConnectorView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
+
+  // -- state & properties ------------------------------------------- //
+  @state() private isError = false
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -45,6 +41,7 @@ export class W3mIosConnectorView extends LitElement {
   }
 
   private async createConnectionAndWait() {
+    this.isError = false
     const { standaloneUri } = OptionsCtrl.state
     const routerWalletData = this.getRouterData()
     UiUtil.setRecentWallet(routerWalletData)
@@ -57,7 +54,7 @@ export class W3mIosConnectorView extends LitElement {
         }, OptionsCtrl.state.selectedChain?.id)
         ModalCtrl.close()
       } catch (err) {
-        ToastCtrl.openToast('Connection request declined', 'error')
+        this.isError = false
       }
     }
   }
@@ -76,6 +73,7 @@ export class W3mIosConnectorView extends LitElement {
           walletId=${id}
           imageId=${imageId}
           label="Tap 'Open' to continue…"
+          .isError=${this.isError}
         ></w3m-connector-image>
       </w3m-modal-content>
 
