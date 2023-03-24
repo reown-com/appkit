@@ -1,4 +1,7 @@
+import fs from 'node:fs'
 import createConfig from '../../rollup.config.js'
-import packageJson from './package.json' assert { type: 'json' }
+
+const packageJsonString = fs.readFileSync('./package.json')
+const packageJson = JSON.parse(packageJsonString)
 
 export default createConfig(packageJson)
