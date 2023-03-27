@@ -37,15 +37,15 @@ export class W3mInstallConnectorView extends LitElement {
     return html`
       <w3m-modal-header title=${name}></w3m-modal-header>
       <w3m-modal-content>
-        <div class="w3m-injected-wrapper">
+        <div class="w3m-wrapper">
           <w3m-wallet-image walletId=${id}></w3m-wallet-image>
-          <div class="w3m-install-title">
+          <div class="w3m-title">
             <w3m-text>Install ${name}</w3m-text>
             <w3m-text color="secondary" variant="small-thin" class="w3m-info-text">
               To connect ${name}, install the browser extension.
             </w3m-text>
           </div>
-          <div class="w3m-install-actions">
+          <div class="w3m-actions">
             <w3m-button .onClick=${this.onInstall.bind(this)} .iconLeft=${SvgUtil.ARROW_DOWN_ICON}>
               Install Extension
             </w3m-button>

@@ -1,32 +1,22 @@
-.w3m-injected-wrapper {
+.w3m-wrapper {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  aspect-ratio: 1 / 1;
   flex-direction: column;
-}
-
-.w3m-connecting-title {
-  display: flex;
-  align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
-}
-
-.w3m-install-title {
-  display: flex;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  margin: 40px 0 20px 0;
 }
 
-.w3m-install-title w3m-text:last-child {
+w3m-text {
+  text-align: center;
+  display: block;
+}
+
+.w3m-title w3m-text:last-child {
   margin-top: 10px;
   max-width: 240px;
 }
 
-.w3m-install-actions {
+.w3m-actions {
   display: flex;
   margin-top: 15px;
   align-items: center;
@@ -34,7 +24,7 @@
 }
 
 @media (max-width: 355px) {
-  .w3m-install-actions {
+  .w3m-actions {
     flex-direction: column;
     align-items: center;
   }
@@ -42,8 +32,8 @@
 
 w3m-wallet-image {
   border-radius: var(--w3m-wallet-icon-large-border-radius);
-  width: 96px;
-  aspect-ratio: 1 / 1;
+  width: 90px;
+  height: 90px;
   margin-bottom: 20px;
 }
 
@@ -51,11 +41,7 @@ w3m-button {
   opacity: 0;
 }
 
-.w3m-install-actions w3m-button {
+.w3m-actions w3m-button {
   margin: 5px;
   opacity: 1;
-}
-
-.w3m-info-text {
-  text-align: center;
 }
