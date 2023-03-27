@@ -3,6 +3,7 @@ w3m-info-footer {
   align-items: center;
   display: flex;
   width: 100%;
+  padding: 5px 0;
 }
 
 w3m-button {
