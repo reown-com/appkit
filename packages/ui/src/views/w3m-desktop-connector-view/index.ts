@@ -86,7 +86,7 @@ export class W3mDesktopConnectorView extends LitElement {
         <w3m-connector-waiting
           walletId=${id}
           imageId=${imageId}
-          label=${`Continue in ${optimisticName}`}
+          label=${`Continue in ${optimisticName}...`}
           .isError=${this.isError}
         ></w3m-connector-waiting>
       </w3m-modal-content>

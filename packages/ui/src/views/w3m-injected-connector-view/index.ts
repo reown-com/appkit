@@ -42,7 +42,7 @@ export class W3mInjectedConnectorView extends LitElement {
       <w3m-modal-content>
         <w3m-connector-waiting
           walletId=${optimisticWalletId}
-          label=${`Continue in ${optimisticName}`}
+          label=${`Continue in ${optimisticName}...`}
           .isError=${this.isError}
         ></w3m-connector-waiting>
       </w3m-modal-content>

@@ -85,7 +85,8 @@ export class W3mIosConnectorView extends LitElement {
 
       <w3m-info-footer class="w3m-note">
         <w3m-text color="secondary" variant="small-thin">
-          ${`You can reload the website to try again or open ${optimisticName} using a Backup Link instead`}
+          ${`You can reload the website to try again`}
+          ${universalUrl ? ` or open ${optimisticName} using a Backup Link instead` : ''}
         </w3m-text>
 
         <div>
