@@ -67,20 +67,20 @@ export class W3mAndroidWalletSelection extends LitElement {
         <div class="w3m-action">
           <div>
             <w3m-button-big @click=${UiUtil.handleAndroidLinking}>
-              <w3m-text variant="medium-normal" color="inverse">
+              <w3m-text color="inverse">
                 ${isConnectors ? 'WalletConnect' : 'Select Wallet'}
               </w3m-text>
             </w3m-button-big>
 
             ${isConnectors
               ? html`<w3m-button-big @click=${this.onGoToConnectors}>
-                  <w3m-text variant="medium-normal" color="inverse">Other</w3m-text>
+                  <w3m-text color="inverse">Other</w3m-text>
                 </w3m-button-big>`
               : null}
           </div>
 
           <w3m-button-big variant="secondary" @click=${this.onGoToGetWallet}>
-            <w3m-text variant="medium-regular" color="accent"> I don’t have a wallet</w3m-text>
+            <w3m-text variant="small-regular" color="accent">I don't have a wallet</w3m-text>
           </w3m-button-big>
         </div>
       </w3m-modal-content>
