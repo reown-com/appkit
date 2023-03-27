@@ -29,9 +29,9 @@ export class W3mIosConnectorView extends LitElement {
     return data
   }
 
-  private onFormatAndRedirect(uri: string) {
+  private onFormatAndRedirect(uri: string, forceUniversalUrl = false) {
     const { nativeUrl, universalUrl, name } = this.getRouterData()
-    if (nativeUrl) {
+    if (nativeUrl && !forceUniversalUrl) {
       const href = CoreUtil.formatNativeUrl(nativeUrl, uri, name)
       CoreUtil.openHref(href, '_self')
     } else if (universalUrl) {
@@ -40,7 +40,7 @@ export class W3mIosConnectorView extends LitElement {
     }
   }
 
-  private async createConnectionAndWait() {
+  private async createConnectionAndWait(forceUniversalUrl = false) {
     this.isError = false
     const { standaloneUri } = OptionsCtrl.state
     const routerWalletData = this.getRouterData()
@@ -50,7 +50,7 @@ export class W3mIosConnectorView extends LitElement {
     } else {
       try {
         await ClientCtrl.client().connectWalletConnect(uri => {
-          this.onFormatAndRedirect(uri)
+          this.onFormatAndRedirect(uri, forceUniversalUrl)
         }, OptionsCtrl.state.selectedChain?.id)
         ModalCtrl.close()
       } catch (err) {
@@ -59,10 +59,16 @@ export class W3mIosConnectorView extends LitElement {
     }
   }
 
+  private onGoToAppStore(downloadUrl?: string) {
+    if (downloadUrl) {
+      CoreUtil.openHref(downloadUrl, '_blank')
+    }
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     const routerWalletData = this.getRouterData()
-    const { name, id, imageId } = routerWalletData
+    const { name, id, imageId, downloadUrl, universalUrl } = routerWalletData
     const optimisticName = UiUtil.getWalletName(name)
 
     return html`
@@ -77,16 +83,45 @@ export class W3mIosConnectorView extends LitElement {
         ></w3m-connector-waiting>
       </w3m-modal-content>
 
-      <w3m-modal-footer>
+      <w3m-info-footer class="w3m-note">
+        <w3m-text color="secondary" variant="small-thin">
+          ${`You can reload the website to try again or open ${optimisticName} using a Backup Link instead`}
+        </w3m-text>
+
         <div>
           <w3m-button
+            variant="outline"
             .onClick=${async () => this.createConnectionAndWait()}
             .iconRight=${SvgUtil.RETRY_ICON}
           >
-            Retry
+            Try Again
           </w3m-button>
+
+          ${universalUrl
+            ? html`<w3m-button
+                variant="outline"
+                .onClick=${async () => this.createConnectionAndWait(true)}
+                .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}
+              >
+                Backup Link
+              </w3m-button>`
+            : null}
         </div>
-      </w3m-modal-footer>
+      </w3m-info-footer>
+
+      <w3m-info-footer class="w3m-app-store">
+        <div>
+          <w3m-wallet-image walletId=${id} imageId=${imageId}></w3m-wallet-image>
+          <w3m-text>${`Get ${optimisticName}`}</w3m-text>
+        </div>
+        <w3m-button
+          .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
+          .onClick=${() => this.onGoToAppStore(downloadUrl)}
+          variant="ghost"
+        >
+          App Store
+        </w3m-button>
+      </w3m-info-footer>
     `
   }
 }

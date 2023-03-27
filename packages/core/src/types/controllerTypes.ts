@@ -191,6 +191,7 @@ export interface ThemeCtrlState {
     '--w3m-container-border-radius'?: string
     '--w3m-wallet-icon-border-radius'?: string
     '--w3m-wallet-icon-large-border-radius'?: string
+    '--w3m-wallet-icon-small-border-radius'?: string
     '--w3m-input-border-radius'?: string
     '--w3m-notification-border-radius'?: string
     '--w3m-button-border-radius'?: string

@@ -38,6 +38,7 @@ function themeVariablesPresets() {
     '--w3m-container-border-radius': '30px',
     '--w3m-wallet-icon-border-radius': '15px',
     '--w3m-wallet-icon-large-border-radius': '30px',
+    '--w3m-wallet-icon-small-border-radius': '7px',
     '--w3m-input-border-radius': '28px',
     '--w3m-button-border-radius': '10px',
     '--w3m-notification-border-radius': '36px',
