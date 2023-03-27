@@ -50,6 +50,13 @@ export class W3mSwitchNetworkView extends LitElement {
       <w3m-modal-content>
         <w3m-network-waiting chainId=${id} label="Approve in your wallet" .isError=${this.isError}>
         </w3m-network-waiting>
+      </w3m-modal-content>
+
+      <w3m-info-footer>
+        <w3m-text color="secondary" variant="small-thin">
+          Switch can be declined if chain is not supported by a wallet or previous request is still
+          active
+        </w3m-text>
 
         <w3m-button
           .onClick=${this.onSwitchNetwork.bind(this)}
@@ -58,7 +65,7 @@ export class W3mSwitchNetworkView extends LitElement {
         >
           Try Again
         </w3m-button>
-      </w3m-modal-content>
+      </w3m-info-footer>
     `
   }
 }
