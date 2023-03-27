@@ -34,7 +34,6 @@ w3m-info-footer {
 .w3m-note {
   flex-direction: column;
   align-items: center;
-  padding: 5px 0;
 }
 
 .w3m-note w3m-text {

@@ -33,6 +33,7 @@ button:hover::after {
 
 button:disabled {
   background-color: var(--w3m-color-bg-3);
+  pointer-events: none;
 }
 
 .w3m-ghost,
@@ -55,4 +56,9 @@ button:disabled {
 
 .w3m-outline path {
   fill: var(--w3m-accent-color);
+}
+
+.w3m-outline:disabled {
+  background-color: transparent;
+  opacity: 0.5;
 }

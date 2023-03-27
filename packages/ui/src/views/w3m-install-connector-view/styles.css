@@ -41,7 +41,7 @@
 }
 
 w3m-wallet-image {
-  border-radius: 15px;
+  border-radius: var(--w3m-wallet-icon-large-border-radius);
   width: 96px;
   aspect-ratio: 1 / 1;
   margin-bottom: 20px;

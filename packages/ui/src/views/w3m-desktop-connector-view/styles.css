@@ -1,35 +1,20 @@
-.w3m-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  aspect-ratio: 1 / 1;
+w3m-info-footer {
   flex-direction: column;
-}
-
-.w3m-connecting-title {
-  display: flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 16px;
-}
-
-w3m-spinner {
-  margin-right: 10px;
-}
-
-w3m-wallet-image {
-  border-radius: var(--w3m-wallet-icon-border-radius);
-  width: 96px;
-  aspect-ratio: 1 / 1;
-  margin-bottom: 20px;
-}
-
-.w3m-install-actions {
   display: flex;
+  width: 100%;
 }
 
-.w3m-install-actions w3m-button {
-  margin: 0 5px;
-  opacity: 1;
+.w3m-actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+}
+
+w3m-button:first-child {
+  margin-right: 15px;
+}
+
+w3m-text {
+  text-align: center;
 }

@@ -42,18 +42,26 @@ export class W3mInjectedConnectorView extends LitElement {
       <w3m-modal-content>
         <w3m-connector-waiting
           walletId=${optimisticWalletId}
-          label=${`Continue in ${optimisticName}...`}
+          label=${`Continue in ${optimisticName}`}
           .isError=${this.isError}
         ></w3m-connector-waiting>
+      </w3m-modal-content>
+
+      <w3m-info-footer>
+        <w3m-text color="secondary" variant="small-thin">
+          Connection can be declined if multiple wallets are installed or previous request is still
+          active
+        </w3m-text>
 
         <w3m-button
+          variant="outline"
           .onClick=${this.onConnect.bind(this)}
           .disabled=${!this.isError}
           .iconRight=${SvgUtil.RETRY_ICON}
         >
           Try Again
         </w3m-button>
-      </w3m-modal-content>
+      </w3m-info-footer>
     `
   }
 }

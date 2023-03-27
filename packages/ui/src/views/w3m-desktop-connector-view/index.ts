@@ -86,32 +86,46 @@ export class W3mDesktopConnectorView extends LitElement {
         <w3m-connector-waiting
           walletId=${id}
           imageId=${imageId}
-          label=${`Continue in ${optimisticName}...`}
+          label=${`Continue in ${optimisticName}`}
           .isError=${this.isError}
         ></w3m-connector-waiting>
-
-        <w3m-button
-          .onClick=${async () => this.createConnectionAndWait()}
-          .iconRight=${SvgUtil.RETRY_ICON}
-        >
-          Retry
-        </w3m-button>
-
-        ${universalUrl
-          ? html`
-              <w3m-button
-                .onClick=${this.onGoToWallet.bind(this)}
-                .iconLeft=${SvgUtil.ARROW_UP_RIGHT_ICON}
-              >
-                Go to Wallet
-              </w3m-button>
-            `
-          : html`
-              <w3m-button .onClick=${this.onConnectWithMobile} .iconLeft=${SvgUtil.MOBILE_ICON}>
-                Connect with Mobile
-              </w3m-button>
-            `}
       </w3m-modal-content>
+
+      <w3m-info-footer>
+        <w3m-text color="secondary" variant="small-thin">
+          ${`Connection can be declined if ${optimisticName} is not installed on your device`}
+        </w3m-text>
+
+        <div class="w3m-actions">
+          <w3m-button
+            variant="outline"
+            .onClick=${async () => this.createConnectionAndWait()}
+            .iconRight=${SvgUtil.RETRY_ICON}
+          >
+            Retry
+          </w3m-button>
+
+          ${universalUrl
+            ? html`
+                <w3m-button
+                  variant="outline"
+                  .onClick=${this.onGoToWallet.bind(this)}
+                  .iconLeft=${SvgUtil.ARROW_UP_RIGHT_ICON}
+                >
+                  Go to Wallet
+                </w3m-button>
+              `
+            : html`
+                <w3m-button
+                  variant="outline"
+                  .onClick=${this.onConnectWithMobile}
+                  .iconLeft=${SvgUtil.MOBILE_ICON}
+                >
+                  Use Mobile
+                </w3m-button>
+              `}
+        </div>
+      </w3m-info-footer>
     `
   }
 }
