@@ -78,11 +78,14 @@ export class EthereumClient {
   }
 
   private isWalletConnectCache(chainId?: number) {
+    const { isV2 } = this.getWalletConnectConnectors()
+
     return (
       this.walletConnectUri &&
       this.walletConnectPairingPromise &&
       this.walletConnectChainId === chainId &&
-      this.walletConnectPairingExpiry - Date.now() >= TWO_MIN_MS
+      this.walletConnectPairingExpiry - Date.now() >= TWO_MIN_MS &&
+      isV2
     )
   }
 
