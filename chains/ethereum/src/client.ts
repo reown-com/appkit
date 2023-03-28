@@ -117,6 +117,7 @@ export class EthereumClient {
     if (this.isWalletConnectCache(chainId)) {
       onUri(this.walletConnectUri)
     } else {
+      this.resetWalletConnectCache()
       const { connector, isV2 } = this.getWalletConnectConnectors()
       const options: ConnectArgs = { connector }
       if (chainId) {
