@@ -16,10 +16,10 @@
     "next": "13.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "wagmi": "0.12.6"
+    "wagmi": "0.12.7"
   },
   "devDependencies": {
-    "@types/react": "18.0.29",
+    "@types/react": "18.0.30",
     "@types/react-dom": "18.0.11"
   }
 }

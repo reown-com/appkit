@@ -113,6 +113,15 @@ export class EthereumClient {
     return data
   }
 
+  public async reconnectWalletConnect() {
+    const { connector, isV2 } = this.getWalletConnectConnectors()
+    if (isV2) {
+      console.log('halloooo')
+      const provider = await connector.getProvider()
+      provider.signer.client.core.relayer.transportOpen()
+    }
+  }
+
   public disconnect = disconnect
 
   public getAccount = getAccount

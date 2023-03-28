@@ -17,9 +17,22 @@ export class W3mIosConnectorView extends LitElement {
   public constructor() {
     super()
     this.createConnectionAndWait()
+    if (!OptionsCtrl.state.isStandalone) {
+      window.addEventListener('focus', this.reconnectWalletConnect)
+    }
+  }
+
+  public disconnectedCallback() {
+    if (!OptionsCtrl.state.isStandalone) {
+      window.removeEventListener('focus', this.reconnectWalletConnect)
+    }
   }
 
   // -- private ------------------------------------------------------ //
+  private reconnectWalletConnect() {
+    ClientCtrl.client().reconnectWalletConnect()
+  }
+
   private getRouterData() {
     const data = RouterCtrl.state.data?.IosConnector
     if (!data) {
