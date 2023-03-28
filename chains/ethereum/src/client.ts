@@ -13,9 +13,15 @@ import {
 } from '@wagmi/core'
 import type { ConnectorId, ModalConnectorsOpts } from './types'
 
+const FIVE_MIN_MS = 300_000
+const TWO_MIN_MS = 120_000
+
 export class EthereumClient {
   private readonly wagmi = {} as Client
   public walletConnectUri = ''
+  public walletConnectPairingExpiry = Date.now()
+  public walletConnectPairingPromise?: Promise<void>
+  public walletConnectChainId?: number
   public walletConnectVersion: ModalConnectorsOpts['version'] = 1
   public readonly chains = [] as Chain[]
 
@@ -62,10 +68,27 @@ export class EthereumClient {
 
     return new Promise<void>(resolve => {
       provider.once('display_uri', (uri: string) => {
+        this.walletConnectUri = uri
         onUri(uri)
         resolve()
       })
     })
+  }
+
+  private isWalletConnectCache(chainId?: number) {
+    return (
+      this.walletConnectUri &&
+      this.walletConnectPairingPromise &&
+      this.walletConnectChainId === chainId &&
+      this.walletConnectPairingExpiry - Date.now() >= TWO_MIN_MS
+    )
+  }
+
+  private resetWalletConnectCache() {
+    this.walletConnectUri = ''
+    this.walletConnectPairingExpiry = Date.now()
+    this.walletConnectPairingPromise = undefined
+    this.walletConnectChainId = undefined
   }
 
   // -- public web3modal ---------------------------------- //
@@ -89,17 +112,29 @@ export class EthereumClient {
   }
 
   public async connectWalletConnect(onUri: (uri: string) => void, chainId?: number) {
-    const { connector, isV2 } = this.getWalletConnectConnectors()
-    const options: ConnectArgs = { connector }
-    if (chainId) {
-      options.chainId = chainId
+    if (this.isWalletConnectCache(chainId)) {
+      onUri(this.walletConnectUri)
+    } else {
+      const { connector, isV2 } = this.getWalletConnectConnectors()
+      const options: ConnectArgs = { connector }
+      if (chainId) {
+        options.chainId = chainId
+      }
+      const handleProviderEvents = isV2
+        ? this.connectWalletConnectV2.bind(this)
+        : this.connectWalletConnectV1.bind(this)
+      this.walletConnectPairingPromise = (async () => {
+        try {
+          await Promise.all([connect(options), handleProviderEvents(connector, onUri)])
+        } finally {
+          this.resetWalletConnectCache()
+        }
+      })()
+      this.walletConnectPairingExpiry = Date.now() + FIVE_MIN_MS
+      this.walletConnectChainId = chainId
     }
-    const handleProviderEvents = isV2
-      ? this.connectWalletConnectV2.bind(this)
-      : this.connectWalletConnectV1.bind(this)
-    const [data] = await Promise.all([connect(options), handleProviderEvents(connector, onUri)])
 
-    return data
+    return this.walletConnectPairingPromise
   }
 
   public async connectConnector(connectorId: ConnectorId | string, chainId?: number) {

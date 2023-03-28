@@ -1,5 +1,5 @@
 import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -30,10 +30,9 @@ export class W3mWalletConnectQr extends LitElement {
       if (standaloneUri) {
         setTimeout(() => (this.uri = standaloneUri), 0)
       } else {
-        await ClientCtrl.client().connectWalletConnect(
-          uri => (this.uri = uri),
-          OptionsCtrl.state.selectedChain?.id
-        )
+        await ClientCtrl.client().connectWalletConnect(uri => {
+          setTimeout(() => (this.uri = uri), 0)
+        }, OptionsCtrl.state.selectedChain?.id)
         ModalCtrl.close()
       }
     } catch (err) {
