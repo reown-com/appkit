@@ -58,13 +58,13 @@ export class EthereumClient {
   }
 
   private async connectWalletConnectV2(connector: Connector, onUri: (uri: string) => void) {
+    const provider = await connector.getProvider()
+
     return new Promise<void>(resolve => {
-      connector.on('message', ({ type, data }) => {
-        if (type === 'display_uri') {
-          onUri(data as string)
-        }
+      provider.once('display_uri', (uri: string) => {
+        onUri(uri)
+        resolve()
       })
-      connector.on('connect', () => resolve())
     })
   }
 
@@ -111,14 +111,6 @@ export class EthereumClient {
     const data = await connect(options)
 
     return data
-  }
-
-  public async reconnectWalletConnect() {
-    const { connector, isV2 } = this.getWalletConnectConnectors()
-    if (isV2) {
-      const provider = await connector.getProvider()
-      provider.signer.client.core.relayer.transportOpen()
-    }
   }
 
   public disconnect = disconnect
