@@ -12,6 +12,8 @@
     "@sentry/tracing": "7.45.0",
     "@web3modal/ethereum": "2.2.2",
     "@web3modal/react": "2.2.2",
+    "@walletconnect/sign-client": "2.5.2",
+    "@walletconnect/auth-client": "2.0.5",
     "ethers": "5.7.2",
     "next": "13.2.4",
     "react": "18.2.0",
