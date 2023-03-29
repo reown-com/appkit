@@ -45,6 +45,7 @@ export default function v2AuthPage() {
           aud: window.location.href,
           domain: window.location.hostname.split('.').slice(-2).join('.'),
           chainId: 'eip155:1',
+          type: 'eip4361',
           nonce: generateNonce(),
           statement: 'Sign in with wallet.'
         })
