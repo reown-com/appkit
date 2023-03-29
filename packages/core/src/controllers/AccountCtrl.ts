@@ -1,6 +1,7 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { AccountCtrlState } from '../types/controllerTypes'
 import { ClientCtrl } from './ClientCtrl'
+import { ConfigCtrl } from './ConfigCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
 
 // -- initial state ------------------------------------------------ //
@@ -54,10 +55,16 @@ export const AccountCtrl = {
 
   async fetchBalance(balanceAddress?: `0x${string}`) {
     try {
+      const { selectedChain } = OptionsCtrl.state
+      const { tokenContracts } = ConfigCtrl.state
+      let token: `0x${string}` | undefined = undefined
+      if (selectedChain && tokenContracts) {
+        token = tokenContracts[selectedChain.id] as `0x${string}`
+      }
       state.balanceLoading = true
       const address = balanceAddress ?? state.address
       if (address) {
-        const balance = await ClientCtrl.client().fetchBalance({ address })
+        const balance = await ClientCtrl.client().fetchBalance({ address, token })
         state.balance = { amount: balance.formatted, symbol: balance.symbol }
       }
     } finally {

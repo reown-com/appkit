@@ -31,8 +31,10 @@ export class EthereumClient {
     this.chains = chains
     const { isV2 } = this.getWalletConnectConnectors()
     this.walletConnectVersion = isV2 ? 2 : 1
-    // Pre heat connection optimistically
-    this.connectWalletConnect(() => null)
+    // Pre heat connection optimistically on client
+    if (typeof window !== 'undefined') {
+      this.connectWalletConnect(() => null)
+    }
   }
 
   // -- private ------------------------------------------- //

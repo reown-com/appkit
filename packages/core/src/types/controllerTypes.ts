@@ -29,6 +29,7 @@ export interface ConfigCtrlState {
   walletImages?: Record<string, string>
   chainImages?: Record<string, string>
   tokenImages?: Record<string, string>
+  tokenContracts?: Record<number, string>
   enableStandaloneMode?: boolean
   enableNetworkView?: boolean
   enableAccountView?: boolean
