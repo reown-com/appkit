@@ -55,11 +55,11 @@ export const AccountCtrl = {
 
   async fetchBalance(balanceAddress?: `0x${string}`) {
     try {
-      const { selectedChain } = OptionsCtrl.state
+      const { chain } = ClientCtrl.client().getNetwork()
       const { tokenContracts } = ConfigCtrl.state
       let token: `0x${string}` | undefined = undefined
-      if (selectedChain && tokenContracts) {
-        token = tokenContracts[selectedChain.id] as `0x${string}`
+      if (chain && tokenContracts) {
+        token = tokenContracts[chain.id] as `0x${string}`
       }
       state.balanceLoading = true
       const address = balanceAddress ?? state.address

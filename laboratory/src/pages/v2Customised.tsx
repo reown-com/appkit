@@ -68,6 +68,13 @@ export default function v2BasePage() {
             }
           }
         ]}
+        tokenContracts={{
+          1: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+          137: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
+        }}
+        tokenImages={{
+          UNI: 'https://images.ctfassets.net/v44fuld738we/3Dj6wy5JChiZYfx598gIAN/fedbab0cc0a1887abc18e9fd9c05f286/uniswap.png?w=384&h=384&q=90&fm=png&bg=transparent'
+        }}
       />
     </>
   )
