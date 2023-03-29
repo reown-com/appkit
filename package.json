@@ -25,12 +25,12 @@
     "laboratory"
   ],
   "devDependencies": {
-    "@types/node": "18.15.10",
+    "@types/node": "18.15.11",
     "@typescript-eslint/eslint-plugin": "5.57.0",
     "@typescript-eslint/parser": "5.57.0",
     "@rollup/plugin-replace": "5.0.2",
     "esbuild": "0.17.14",
-    "eslint": "8.36.0",
+    "eslint": "8.37.0",
     "eslint-config-prettier": "8.8.0",
     "lerna": "6.6.1",
     "prettier": "2.8.7",
