@@ -18,6 +18,7 @@ export class EthereumClient {
   public walletConnectUri = ''
   public walletConnectVersion: ModalConnectorsOpts['version'] = 1
   public readonly chains = [] as Chain[]
+  private defaultChain = 1
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public constructor(wagmi: any, chains: Chain[]) {
@@ -83,9 +84,16 @@ export class EthereumClient {
   public namespace = 'eip155'
 
   public getDefaultChain() {
-    const mainnet = this.chains.find(chain => chain.id === 1)
+    const mainnet = this.chains.find(chain => chain.id === this.defaultChain)
 
     return mainnet ?? this.chains[0]
+  }
+
+  public setDefaultChain(chainId: number) {
+    if (!this.chains.find(chain => chain.id === chainId)) {
+      throw new Error(`No chain with chain id '${chainId}' available`)
+    }
+    this.defaultChain = chainId
   }
 
   public getConnectorById(id: ConnectorId | string) {
