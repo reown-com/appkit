@@ -276,13 +276,22 @@ export const UiUtil = {
     const isInstalled = ClientCtrl.client().isInjectedProviderInstalled()
     if (isInstalled) {
       const { injectedWallets } = ExplorerCtrl.state
-      const listings = injectedWallets.filter(({ injected }) => {
+      let listings = injectedWallets.filter(({ injected }) => {
         const injectedIds = injected.map(({ injected_id }) => injected_id)
 
         return Boolean(injectedIds.some(id => ClientCtrl.client().safeCheckInjectedProvider(id)))
       })
 
-      return listings ?? [{ name: 'Browser' }]
+      // Extension was loaded that masks as metamask, we need to filter mm out
+      if (listings.length > 1) {
+        listings = listings.filter(({ injected }) => {
+          const injectedIds = injected.map(({ injected_id }) => injected_id)
+
+          return Boolean(injectedIds.every(id => id !== 'isMetaMask'))
+        })
+      }
+
+      return listings ?? [{ name: 'Browser', id: 'browser' }]
     }
 
     return []

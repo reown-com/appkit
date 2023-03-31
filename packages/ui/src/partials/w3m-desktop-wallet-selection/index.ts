@@ -2,7 +2,6 @@ import type { WalletRouteData } from '@web3modal/core'
 import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { InjectedId } from '../../presets/EthereumPresets'
 import { DataFilterUtil } from '../../utils/DataFilterUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -22,28 +21,11 @@ export class W3mDesktopWalletSelection extends LitElement {
     RouterCtrl.push('InjectedConnector')
   }
 
-  private onInstallConnector() {
-    RouterCtrl.push('InstallConnector', {
-      InstallConnector: {
-        id: 'metaMask',
-        name: 'MetaMask',
-        isMobile: true,
-        url: 'https://metamask.io'
-      }
-    })
-  }
-
   private async onConnectorWallet(id: string) {
-    if (!window.ethereum) {
-      this.onInstallConnector()
-    } else if (id === 'injected' || id === InjectedId.metaMask) {
-      this.onInjectedWallet()
-    } else {
-      await UiUtil.handleConnectorConnection(id)
-    }
+    await UiUtil.handleConnectorConnection(id)
   }
 
-  private desktopWalletsTemplate() {
+  private manualWalletsTemplate() {
     const { desktopWallets } = ConfigCtrl.state
 
     return desktopWallets?.map(
@@ -88,12 +70,11 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private connectorWalletsTemplate() {
-    const wallets = DataFilterUtil.connectorWallets()
+    const wallets = DataFilterUtil.thirdPartyConnectors()
 
     return wallets.map(
-      ({ id, name, ready }) => html`
+      ({ id, name }) => html`
         <w3m-wallet-button
-          .installed=${['injected', 'metaMask'].includes(id) && ready}
           name=${name}
           walletId=${id}
           .onClick=${async () => this.onConnectorWallet(id)}
@@ -122,15 +103,36 @@ export class W3mDesktopWalletSelection extends LitElement {
     `
   }
 
+  private injectedWalletsTemplate() {
+    const { isStandalone } = OptionsCtrl.state
+    if (isStandalone) {
+      return []
+    }
+    const wallets = UiUtil.getInstalledInjectedWallets()
+
+    return wallets.map(
+      ({ id, name, image_id }) => html`
+        <w3m-wallet-button
+          .installed=${true}
+          name=${name}
+          walletId=${id}
+          imageId=${image_id}
+          .onClick=${this.onInjectedWallet}
+        ></w3m-wallet-button>
+      `
+    )
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     const { standaloneUri } = OptionsCtrl.state
-    const desktopTemplate = this.desktopWalletsTemplate()
+    const manualTemplate = this.manualWalletsTemplate()
     const recomendedTemplate = this.recomendedWalletsTemplate()
     const connectorTemplate = this.connectorWalletsTemplate()
     const recentTemplate = this.recentWalletTemplate()
-    const linkingWallets = [...(desktopTemplate ?? []), ...recomendedTemplate]
-    const combinedWallets = [...connectorTemplate, ...linkingWallets]
+    const injectedWallets = this.injectedWalletsTemplate()
+    const linkingWallets = [...(manualTemplate ?? []), ...recomendedTemplate]
+    const combinedWallets = [...injectedWallets, ...connectorTemplate, ...linkingWallets]
     const combinedWalletsWithRecent = DataFilterUtil.walletTemplatesWithRecent(
       combinedWallets,
       recentTemplate

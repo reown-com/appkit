@@ -99,13 +99,14 @@ export class W3mWalletExplorerView extends LitElement {
     }
   }
 
-  private onConnectListing({ id, name, image_id, mobile, app, homepage }: Listing) {
+  private onConnectListing({ id, name, image_id, mobile, desktop, app, homepage }: Listing) {
+    const isMobile = CoreUtil.isMobile()
     const routerWalletData = {
       id,
       name,
       imageId: image_id,
-      universalUrl: mobile.universal,
-      nativeUrl: mobile.native
+      universalUrl: isMobile ? mobile.universal : desktop.universal,
+      nativeUrl: isMobile ? mobile.native : desktop.native
     }
 
     if (CoreUtil.isAndroid()) {

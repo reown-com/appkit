@@ -16,7 +16,7 @@ export class W3mConnectorsView extends LitElement {
   }
 
   private connectorWalletsTemplate() {
-    let wallets = DataFilterUtil.connectorWallets()
+    let wallets = DataFilterUtil.thirdPartyConnectors()
 
     if (!window.ethereum) {
       wallets = wallets.filter(({ id }) => id !== 'injected' && id !== InjectedId.metaMask)

@@ -172,6 +172,7 @@ export interface RouterCtrlState {
     SwitchNetwork?: SwitchNetworkData
     InstallConnector?: InstallConnectorData
     IosConnector?: WalletRouteData
+    InjectedConnector?: WalletRouteData
   }
 }
 

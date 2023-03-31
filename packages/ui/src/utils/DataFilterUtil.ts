@@ -1,7 +1,6 @@
 import type { Listing, MobileWallet } from '@web3modal/core'
-import { ClientCtrl, ConfigCtrl, CoreUtil, OptionsCtrl } from '@web3modal/core'
+import { ClientCtrl, ConfigCtrl, OptionsCtrl } from '@web3modal/core'
 import type { TemplateResult } from 'lit'
-import { InjectedId } from '../presets/EthereumPresets'
 import { UiUtil } from './UiUtil'
 
 export const DataFilterUtil = {
@@ -29,15 +28,13 @@ export const DataFilterUtil = {
     return filtered
   },
 
-  connectorWallets() {
+  thirdPartyConnectors() {
     const { isStandalone } = OptionsCtrl.state
     if (isStandalone) {
       return []
     }
     let connectors = ClientCtrl.client().getConnectors()
-    if (!window.ethereum && CoreUtil.isMobile()) {
-      connectors = connectors.filter(({ id }) => id !== 'injected' && id !== InjectedId.metaMask)
-    }
+    connectors = connectors.filter(connector => connector.id !== 'injected')
 
     return connectors
   },
