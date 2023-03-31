@@ -1,4 +1,4 @@
-import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
+import { ConfigCtrl, CoreUtil, ExplorerCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { UiUtil } from '../utils/UiUtil'
@@ -31,19 +31,26 @@ export class W3mExplorerContext extends LitElement {
     if (ConfigCtrl.state.enableExplorer) {
       const { standaloneChains, chains, walletConnectVersion } = OptionsCtrl.state
       const chainsFilter = standaloneChains?.join(',')
-      await Promise.all([
+      const promises = [
         ExplorerCtrl.getRecomendedWallets({
           page: 1,
           entries: 9,
           chains: chainsFilter,
           version: walletConnectVersion
         })
-      ])
+      ]
+      if (!CoreUtil.isMobile()) {
+        promises.push(ExplorerCtrl.getInjectedWallets())
+      }
+      await Promise.all(promises)
       OptionsCtrl.setIsDataLoaded(true)
       const { recomendedWallets } = ExplorerCtrl.state
+      const injectedWallets = UiUtil.getInstalledInjectedWallets()
+      console.log(injectedWallets)
       const chainsImgs = chains?.map(chain => UiUtil.getChainIcon(chain.id)) ?? []
       const walletImgs = recomendedWallets.map(wallet => UiUtil.getWalletIcon(wallet))
-      await this.loadImages([...chainsImgs, ...walletImgs])
+      const injectedImgs = injectedWallets.map(wallet => UiUtil.getWalletIcon(wallet))
+      await this.loadImages([...chainsImgs, ...walletImgs, ...injectedImgs])
     } else {
       OptionsCtrl.setIsDataLoaded(true)
     }
@@ -54,22 +61,11 @@ export class W3mExplorerContext extends LitElement {
     await this.loadImages(images)
   }
 
-  private async preloadConnectorImages() {
-    if (!OptionsCtrl.state.isStandalone) {
-      const images = UiUtil.getConnectorImageUrls()
-      await this.loadImages(images)
-    }
-  }
-
   private async preloadData() {
     try {
       if (this.preload) {
         this.preload = false
-        await Promise.all([
-          this.preloadListings(),
-          this.preloadCustomImages(),
-          this.preloadConnectorImages()
-        ])
+        await Promise.all([this.preloadListings(), this.preloadCustomImages()])
       }
     } catch (err) {
       console.error(err)

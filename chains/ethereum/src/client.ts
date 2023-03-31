@@ -156,6 +156,23 @@ export class EthereumClient {
     return data
   }
 
+  public isInjectedProviderInstalled() {
+    return typeof window.ethereum !== 'undefined'
+  }
+
+  public safeCheckInjectedProvider(providerId: string) {
+    try {
+      const stringId = String(providerId)
+
+      // @ts-expect-error - Structure is correct
+      return Boolean(window.ethereum?.[stringId])
+    } catch (err) {
+      console.error(err)
+
+      return false
+    }
+  }
+
   public disconnect = disconnect
 
   public getAccount = getAccount

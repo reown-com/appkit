@@ -199,14 +199,6 @@ export const UiUtil = {
     return Object.values([...chainUrls, ...walletUrls])
   },
 
-  getConnectorImageUrls() {
-    const connectors = ClientCtrl.client().getConnectors()
-    const ids = connectors.map(({ id }) => EthereumPresets.getInjectedId(id))
-    const images = ids.map(id => UiUtil.getWalletIcon({ id }))
-
-    return images
-  },
-
   truncate(value: string, strLen = 8) {
     if (value.length <= strLen) {
       return value
@@ -272,22 +264,27 @@ export const UiUtil = {
     return undefined
   },
 
-  getExtensionWallets() {
-    const wallets = []
-    for (const [key, value] of Object.entries(EthereumPresets.injectedPreset)) {
-      if (value?.isInjected && !value.isDesktop) {
-        wallets.push({ id: key, ...value })
-      }
-    }
-
-    return wallets
-  },
-
   caseSafeIncludes(str1: string, str2: string) {
     return str1.toUpperCase().includes(str2.toUpperCase())
   },
 
   openWalletExplorerUrl() {
     CoreUtil.openHref(UiUtil.EXPLORER_WALLET_URL, '_blank')
+  },
+
+  getInstalledInjectedWallets() {
+    const isInstalled = ClientCtrl.client().isInjectedProviderInstalled()
+    if (isInstalled) {
+      const { injectedWallets } = ExplorerCtrl.state
+      const listings = injectedWallets.filter(({ injected }) => {
+        const injectedIds = injected.map(({ injected_id }) => injected_id)
+
+        return Boolean(injectedIds.some(id => ClientCtrl.client().safeCheckInjectedProvider(id)))
+      })
+
+      return listings ?? [{ name: 'Browser' }]
+    }
+
+    return []
   }
 }

@@ -24,14 +24,6 @@ export const CoreUtil = {
     return CoreUtil.isMobile() && (ua.includes('iphone') || ua.includes('ipad'))
   },
 
-  isEmptyObject(value: unknown) {
-    return (
-      Object.getPrototypeOf(value) === Object.prototype &&
-      Object.getOwnPropertyNames(value).length === 0 &&
-      Object.getOwnPropertySymbols(value).length === 0
-    )
-  },
-
   isHttpUrl(url: string) {
     return url.startsWith('http://') || url.startsWith('https://')
   },
@@ -90,10 +82,6 @@ export const CoreUtil = {
 
   removeWalletConnectDeepLink() {
     localStorage.removeItem(CoreUtil.WALLETCONNECT_DEEPLINK_CHOICE)
-  },
-
-  isNull<T>(value: T | null): value is null {
-    return value === null
   },
 
   setWeb3ModalVersionInStorage() {

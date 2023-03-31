@@ -1,4 +1,4 @@
-import type { InstallConnectorData, Listing, MobileWallet } from '@web3modal/core'
+import type { Listing, MobileWallet } from '@web3modal/core'
 import { CoreUtil, ExplorerCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
@@ -53,8 +53,7 @@ export class W3mWalletExplorerView extends LitElement {
   }
 
   private async fetchWallets() {
-    const { wallets, search } = ExplorerCtrl.state
-    const extensionWallets = UiUtil.getExtensionWallets()
+    const { wallets, search, injectedWallets } = ExplorerCtrl.state
     const { listings, total, page } = this.search ? search : wallets
 
     if (
@@ -64,7 +63,7 @@ export class W3mWalletExplorerView extends LitElement {
       try {
         this.loading = true
         const chains = OptionsCtrl.state.standaloneChains?.join(',')
-        const { listings: newListings } = await ExplorerCtrl.getPaginatedWallets({
+        const { listings: newListings } = await ExplorerCtrl.getWallets({
           page: this.firstFetch ? 1 : page + 1,
           entries: PAGE_ENTRIES,
           search: this.search,
@@ -72,7 +71,7 @@ export class W3mWalletExplorerView extends LitElement {
           chains
         })
         const explorerImages = newListings.map(wallet => UiUtil.getWalletIcon(wallet))
-        const extensionImages = extensionWallets.map(({ id }) => UiUtil.getWalletIcon({ id }))
+        const extensionImages = injectedWallets.map(wallet => UiUtil.getWalletIcon(wallet))
         await Promise.all([
           ...explorerImages.map(async url => UiUtil.preloadImage(url)),
           ...extensionImages.map(async url => UiUtil.preloadImage(url)),
@@ -122,13 +121,13 @@ export class W3mWalletExplorerView extends LitElement {
     }
   }
 
-  private onConnectExtension(data: InstallConnectorData) {
+  private onConnectExtension(data: Listing) {
     const injectedId = UiUtil.getWalletId('')
-    if (injectedId === data.id) {
-      RouterCtrl.push('InjectedConnector')
-    } else {
-      RouterCtrl.push('InstallConnector', { InstallConnector: data })
-    }
+    // if (injectedId === data.id) {
+    //   RouterCtrl.push('InjectedConnector')
+    // } else {
+    //   RouterCtrl.push('InstallConnector', { InstallConnector: data })
+    // }
   }
 
   private onSearchChange(event: Event) {
@@ -159,7 +158,7 @@ export class W3mWalletExplorerView extends LitElement {
     const isLoading = this.loading && !listings.length
     const isSearch = this.search.length >= 3
     const isExtensions = !isStandalone && !CoreUtil.isMobile()
-    let extensions = isExtensions ? UiUtil.getExtensionWallets() : []
+    let extensions = isExtensions ? ExplorerCtrl.state.injectedWallets : []
     let customWallets = UiUtil.getCustomWallets()
 
     if (isSearch) {
@@ -201,6 +200,7 @@ export class W3mWalletExplorerView extends LitElement {
                         <w3m-wallet-button
                           name=${extensions[index].name}
                           walletId=${extensions[index].id}
+                          imageId=${extensions[index].image_id}
                           .onClick=${() => this.onConnectExtension(extensions[index])}
                         >
                         </w3m-wallet-button>

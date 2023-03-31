@@ -8,6 +8,7 @@ const isMobile = CoreUtil.isMobile()
 // -- initial state ------------------------------------------------ //
 const state = proxy<ExplorerCtrlState>({
   wallets: { listings: [], total: 0, page: 1 },
+  injectedWallets: [],
   search: { listings: [], total: 0, page: 1 },
   recomendedWallets: []
 })
@@ -25,7 +26,7 @@ export const ExplorerCtrl = {
     return state.recomendedWallets
   },
 
-  async getPaginatedWallets(params: ListingParams) {
+  async getWallets(params: ListingParams) {
     const { page, search } = params
     const { listings: listingsObj, total } = isMobile
       ? await ExplorerUtil.getMobileListings(params)
@@ -39,6 +40,14 @@ export const ExplorerCtrl = {
     }
 
     return { listings, total }
+  },
+
+  async getInjectedWallets() {
+    const { listings: listingsObj } = await ExplorerUtil.getInjectedListings({})
+    const listings = Object.values(listingsObj)
+    state.injectedWallets = listings
+
+    return state.injectedWallets
   },
 
   getWalletImageUrl(imageId: string) {

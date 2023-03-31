@@ -73,6 +73,7 @@ export interface AccountCtrlState {
 // -- ExplorerCtrl ------------------------------------------- //
 export interface ExplorerCtrlState {
   wallets: ListingResponse & { page: number }
+  injectedWallets: Listing[]
   search: ListingResponse & { page: number }
   recomendedWallets: Listing[]
 }
@@ -106,7 +107,7 @@ export interface Listing {
   injected: {
     injected_id: string
     namespace: string
-  }
+  }[]
   mobile: {
     native: string
     universal: string
