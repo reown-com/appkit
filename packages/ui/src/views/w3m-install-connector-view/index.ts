@@ -1,5 +1,5 @@
 import { CoreUtil, RouterCtrl, ToastCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -42,7 +42,8 @@ export class W3mInstallConnectorView extends LitElement {
           <div class="w3m-install-title">
             <w3m-text variant="big-bold">Install ${name}</w3m-text>
             <w3m-text color="secondary" variant="small-thin" class="w3m-info-text">
-              To connect ${name}, install the browser extension.
+              To connect ${name}, install the browser extension. If you have the extension installed,
+              having multiple wallets may conflict with each other.
             </w3m-text>
           </div>
           <div class="w3m-install-actions">
