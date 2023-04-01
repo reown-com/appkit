@@ -42,8 +42,7 @@ export class W3mInstallConnectorView extends LitElement {
           <div class="w3m-install-title">
             <w3m-text variant="big-bold">Install ${name}</w3m-text>
             <w3m-text color="secondary" variant="small-thin" class="w3m-info-text">
-              To connect ${name}, install the browser extension. If you have the extension installed,
-              having multiple wallets may conflict with each other.
+              To connect ${name}, install the browser extension.
             </w3m-text>
           </div>
           <div class="w3m-install-actions">

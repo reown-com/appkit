@@ -1,9 +1,8 @@
 import type { DesktopConnectorData } from '@web3modal/core'
 import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { InjectedId } from '../../presets/EthereumPresets'
 import { DataFilterUtil } from '../../utils/DataFilterUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -37,7 +36,7 @@ export class W3mDesktopWalletSelection extends LitElement {
   private async onConnectorWallet(id: string) {
     if (!window.ethereum) {
       this.onInstallConnector()
-    } else if (id === 'injected' || id === InjectedId.metaMask) {
+    } else if (id === 'injected') {
       this.onInjectedWallet()
     } else {
       await UiUtil.handleConnectorConnection(id)
