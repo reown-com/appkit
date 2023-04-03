@@ -36,10 +36,6 @@ export const UiUtil = {
     return el as HTMLElement
   },
 
-  getWalletId(id: string) {
-    return EthereumPresets.getInjectedId(id)
-  },
-
   getWalletIcon({ id, image_id, imageId }: { id: string; image_id?: string; imageId?: string }) {
     const presets = EthereumPresets.injectedPreset
     const presetImageId = presets[id]?.icon
@@ -59,9 +55,7 @@ export const UiUtil = {
   },
 
   getWalletName(name: string, short = false) {
-    const injectedName = EthereumPresets.getInjectedName(name)
-
-    return short ? injectedName.split(' ')[0] : injectedName
+    return short ? name.split(' ')[0] : name
   },
 
   getChainIcon(chainId: number | string) {
@@ -291,7 +285,7 @@ export const UiUtil = {
         })
       }
 
-      return listings ?? [{ name: 'Browser', id: 'browser' }]
+      return listings.length ? listings : [{ name: 'Browser', id: 'browser', image_id: undefined }]
     }
 
     return []

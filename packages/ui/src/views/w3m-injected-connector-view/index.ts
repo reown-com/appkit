@@ -34,15 +34,12 @@ export class W3mInjectedConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const optimisticName = UiUtil.getWalletName(this.connector.name)
-    const optimisticWalletId = UiUtil.getWalletId(this.connector.id)
-
     return html`
-      <w3m-modal-header title=${optimisticName}></w3m-modal-header>
+      <w3m-modal-header title=${this.connector.name}></w3m-modal-header>
       <w3m-modal-content>
         <w3m-connector-waiting
-          walletId=${optimisticWalletId}
-          label=${`Continue in ${optimisticName}...`}
+          walletId=${this.connector.id}
+          label=${`Continue in ${this.connector.name}...`}
           .isError=${this.isError}
         ></w3m-connector-waiting>
       </w3m-modal-content>

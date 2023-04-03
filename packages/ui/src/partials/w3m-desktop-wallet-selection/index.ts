@@ -13,12 +13,8 @@ export class W3mDesktopWalletSelection extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
-  private onDesktopWallet(data: WalletRouteData) {
-    RouterCtrl.push('DesktopConnector', { DesktopConnector: data })
-  }
-
-  private onInjectedWallet() {
-    RouterCtrl.push('InjectedConnector')
+  private onGoToConnecting(data: WalletRouteData) {
+    RouterCtrl.push('Connecting', { Connecting: data })
   }
 
   private async onConnectorWallet(id: string) {
@@ -34,7 +30,7 @@ export class W3mDesktopWalletSelection extends LitElement {
           walletId=${id}
           name=${name}
           .onClick=${() =>
-            this.onDesktopWallet({
+            this.onGoToConnecting({
               name,
               id,
               universalUrl: links.universal,
@@ -56,7 +52,7 @@ export class W3mDesktopWalletSelection extends LitElement {
           imageId=${image_id}
           name=${name}
           .onClick=${() =>
-            this.onDesktopWallet({
+            this.onGoToConnecting({
               id,
               name,
               nativeUrl: desktop.native,
@@ -98,7 +94,7 @@ export class W3mDesktopWalletSelection extends LitElement {
         walletId=${id}
         imageId=${imageId}
         .recent=${true}
-        .onClick=${() => this.onDesktopWallet(wallet)}
+        .onClick=${() => this.onGoToConnecting(wallet)}
       ></w3m-wallet-button>
     `
   }
@@ -111,13 +107,13 @@ export class W3mDesktopWalletSelection extends LitElement {
     const wallets = UiUtil.getInstalledInjectedWallets()
 
     return wallets.map(
-      ({ id, name, image_id }) => html`
+      wallet => html`
         <w3m-wallet-button
           .installed=${true}
-          name=${name}
-          walletId=${id}
-          imageId=${image_id}
-          .onClick=${this.onInjectedWallet}
+          name=${wallet.name}
+          walletId=${wallet.id}
+          imageId=${wallet.image_id}
+          .onClick=${() => this.onGoToConnecting(wallet)}
         ></w3m-wallet-button>
       `
     )

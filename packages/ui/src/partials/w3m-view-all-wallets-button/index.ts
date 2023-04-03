@@ -29,8 +29,7 @@ export class W3mViewAllWalletsButton extends LitElement {
             if (explorerImg) {
               return html`<img src=${explorerImg} />`
             }
-            const optimisticId = UiUtil.getWalletId(wallet.id)
-            const src = UiUtil.getWalletIcon({ id: optimisticId })
+            const src = UiUtil.getWalletIcon({ id: wallet.id })
 
             return src ? html`<img src=${src} />` : SvgUtil.WALLET_PLACEHOLDER
           })}

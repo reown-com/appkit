@@ -1,5 +1,6 @@
 import './w3m-account-view'
 import './w3m-connect-wallet-view'
+import './w3m-connecting-view'
 import './w3m-connectors-view'
 import './w3m-desktop-connector-view'
 import './w3m-get-wallet-view'

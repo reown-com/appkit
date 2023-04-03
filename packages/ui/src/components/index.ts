@@ -1,7 +1,6 @@
 import './w3m-box-button'
 import './w3m-button'
 import './w3m-button-big'
-import './w3m-connection-state-image'
 import './w3m-info-footer'
 import './w3m-modal-backcard'
 import './w3m-modal-content'

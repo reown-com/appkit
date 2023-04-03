@@ -65,14 +65,10 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-connect-wallet-view></w3m-connect-wallet-view>`
       case 'SelectNetwork':
         return html`<w3m-select-network-view></w3m-select-network-view>`
-      case 'InjectedConnector':
-        return html`<w3m-injected-connector-view></w3m-injected-connector-view>`
-      case 'InstallConnector':
-        return html`<w3m-install-connector-view></w3m-install-connector-view>`
+      case 'Connecting':
+        return html`<w3m-connecting-view></w3m-connecting-view>`
       case 'GetWallet':
         return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
-      case 'DesktopConnector':
-        return html`<w3m-desktop-connector-view></w3m-desktop-connector-view>`
       case 'WalletExplorer':
         return html`<w3m-wallet-explorer-view></w3m-wallet-explorer-view>`
       case 'Qrcode':
@@ -85,8 +81,6 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-switch-network-view></w3m-switch-network-view>`
       case 'Connectors':
         return html`<w3m-connectors-view></w3m-connectors-view>`
-      case 'IosConnector':
-        return html`<w3m-ios-connector-view></w3m-ios-connector-view>`
       default:
         return html`<div>Not Found</div>`
     }

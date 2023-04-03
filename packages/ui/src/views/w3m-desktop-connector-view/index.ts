@@ -22,7 +22,7 @@ export class W3mDesktopConnectorView extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private getRouterData() {
-    const data = RouterCtrl.state.data?.DesktopConnector
+    const data = RouterCtrl.state.data?.Connecting
     if (!data) {
       throw new Error('Missing router data')
     }
@@ -77,23 +77,22 @@ export class W3mDesktopConnectorView extends LitElement {
   protected render() {
     const routerWalletData = this.getRouterData()
     const { name, universalUrl, id, imageId } = routerWalletData
-    const optimisticName = UiUtil.getWalletName(name)
 
     return html`
-      <w3m-modal-header title=${optimisticName}></w3m-modal-header>
+      <w3m-modal-header title=${name}></w3m-modal-header>
 
       <w3m-modal-content>
         <w3m-connector-waiting
           walletId=${id}
           imageId=${imageId}
-          label=${`Continue in ${optimisticName}...`}
+          label=${`Continue in ${name}...`}
           .isError=${this.isError}
         ></w3m-connector-waiting>
       </w3m-modal-content>
 
       <w3m-info-footer>
         <w3m-text color="secondary" variant="small-thin">
-          ${`Connection can be declined if ${optimisticName} is not installed on your device`}
+          ${`Connection can be declined if ${name} is not installed on your device`}
         </w3m-text>
 
         <div class="w3m-actions">

@@ -92,43 +92,29 @@ export class W3mWalletExplorerView extends LitElement {
     const routerWalletData = { name, id, universalUrl: links.universal, nativeUrl: links.native }
     if (CoreUtil.isAndroid()) {
       UiUtil.handleMobileLinking(routerWalletData)
-    } else if (CoreUtil.isIos()) {
-      RouterCtrl.push('IosConnector', { IosConnector: routerWalletData })
     } else {
-      RouterCtrl.push('DesktopConnector', { DesktopConnector: routerWalletData })
+      RouterCtrl.push('Connecting', { Connecting: routerWalletData })
     }
   }
 
-  private onConnectListing({ id, name, image_id, mobile, desktop, app, homepage }: Listing) {
+  private onConnect({ id, name, image_id, mobile, desktop, app, homepage }: Listing) {
     const isMobile = CoreUtil.isMobile()
     const routerWalletData = {
       id,
       name,
       imageId: image_id,
       universalUrl: isMobile ? mobile.universal : desktop.universal,
-      nativeUrl: isMobile ? mobile.native : desktop.native
+      nativeUrl: isMobile ? mobile.native : desktop.native,
+      downloadUrl: isMobile ? app.ios : homepage
     }
 
     if (CoreUtil.isAndroid()) {
       UiUtil.handleMobileLinking({ ...routerWalletData, downloadUrl: app.android })
-    } else if (CoreUtil.isIos()) {
-      RouterCtrl.push('IosConnector', {
-        IosConnector: { ...routerWalletData, downloadUrl: app.ios }
-      })
     } else {
-      RouterCtrl.push('DesktopConnector', {
-        DesktopConnector: { ...routerWalletData, downloadUrl: homepage }
+      RouterCtrl.push('Connecting', {
+        Connecting: routerWalletData
       })
     }
-  }
-
-  private onConnectExtension(data: Listing) {
-    const injectedId = UiUtil.getWalletId('')
-    // if (injectedId === data.id) {
-    //   RouterCtrl.push('InjectedConnector')
-    // } else {
-    //   RouterCtrl.push('InstallConnector', { InstallConnector: data })
-    // }
   }
 
   private onSearchChange(event: Event) {
@@ -202,7 +188,7 @@ export class W3mWalletExplorerView extends LitElement {
                           name=${extensions[index].name}
                           walletId=${extensions[index].id}
                           imageId=${extensions[index].image_id}
-                          .onClick=${() => this.onConnectExtension(extensions[index])}
+                          .onClick=${() => this.onConnect(extensions[index])}
                         >
                         </w3m-wallet-button>
                       `
@@ -213,7 +199,7 @@ export class W3mWalletExplorerView extends LitElement {
                           imageId=${listings[index].image_id}
                           name=${listings[index].name}
                           walletId=${listings[index].id}
-                          .onClick=${() => this.onConnectListing(listings[index])}
+                          .onClick=${() => this.onConnect(listings[index])}
                         >
                         </w3m-wallet-button>
                       `

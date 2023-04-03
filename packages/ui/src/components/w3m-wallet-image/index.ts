@@ -15,8 +15,7 @@ export class W3mWalletImage extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const optimisticId = UiUtil.getWalletId(this.walletId)
-    const src = UiUtil.getWalletIcon({ id: optimisticId, imageId: this.imageId })
+    const src = UiUtil.getWalletIcon({ id: this.walletId, imageId: this.imageId })
 
     return html`
       ${src.length

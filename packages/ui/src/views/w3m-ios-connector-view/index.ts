@@ -21,7 +21,7 @@ export class W3mIosConnectorView extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private getRouterData() {
-    const data = RouterCtrl.state.data?.IosConnector
+    const data = RouterCtrl.state.data?.Connecting
     if (!data) {
       throw new Error('Missing router data')
     }
@@ -69,10 +69,9 @@ export class W3mIosConnectorView extends LitElement {
   protected render() {
     const routerWalletData = this.getRouterData()
     const { name, id, imageId, downloadUrl, universalUrl } = routerWalletData
-    const optimisticName = UiUtil.getWalletName(name)
 
     return html`
-      <w3m-modal-header title=${optimisticName}></w3m-modal-header>
+      <w3m-modal-header title=${name}></w3m-modal-header>
 
       <w3m-modal-content>
         <w3m-connector-waiting
@@ -86,7 +85,7 @@ export class W3mIosConnectorView extends LitElement {
       <w3m-info-footer class="w3m-note">
         <w3m-text color="secondary" variant="small-thin">
           ${`You can reload the website to try again`}
-          ${universalUrl ? ` or open ${optimisticName} using a Backup Link instead` : ''}
+          ${universalUrl ? ` or open ${name} using a Backup Link instead` : ''}
         </w3m-text>
 
         <div>
@@ -113,7 +112,7 @@ export class W3mIosConnectorView extends LitElement {
       <w3m-info-footer class="w3m-app-store">
         <div>
           <w3m-wallet-image walletId=${id} imageId=${imageId}></w3m-wallet-image>
-          <w3m-text>${`Get ${optimisticName}`}</w3m-text>
+          <w3m-text>${`Get ${name}`}</w3m-text>
         </div>
         <w3m-button
           .iconRight=${SvgUtil.ARROW_RIGHT_ICON}

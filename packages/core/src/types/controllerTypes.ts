@@ -133,14 +133,11 @@ export interface ToastCtrlState {
 // -- RouterCtrl --------------------------------------------- //
 export type RouterView =
   | 'Account'
+  | 'Connecting'
   | 'Connectors'
   | 'ConnectWallet'
-  | 'DesktopConnector'
   | 'GetWallet'
   | 'Help'
-  | 'InjectedConnector'
-  | 'InstallConnector'
-  | 'IosConnector'
   | 'Qrcode'
   | 'SelectNetwork'
   | 'SwitchNetwork'
@@ -168,11 +165,8 @@ export interface RouterCtrlState {
   history: RouterView[]
   view: RouterView
   data?: {
-    DesktopConnector?: WalletRouteData
+    Connecting?: WalletRouteData
     SwitchNetwork?: SwitchNetworkData
-    InstallConnector?: InstallConnectorData
-    IosConnector?: WalletRouteData
-    InjectedConnector?: WalletRouteData
   }
 }
 

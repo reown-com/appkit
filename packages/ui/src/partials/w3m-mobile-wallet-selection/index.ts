@@ -19,7 +19,7 @@ export class W3mMobileWalletSelection extends LitElement {
   }
 
   private onGoToIosConnector(data: WalletRouteData) {
-    RouterCtrl.push('IosConnector', { IosConnector: data })
+    RouterCtrl.push('Connecting', { Connecting: data })
   }
 
   private async onConnectorWallet(id: string) {
