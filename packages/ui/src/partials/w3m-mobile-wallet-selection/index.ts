@@ -100,7 +100,7 @@ export class W3mMobileWalletSelection extends LitElement {
     if (!isStandalone) {
       templates = [recentTemplate, ...externalTemplate, ...manualTemplate, ...recomendedTemplate]
     }
-    templates.filter(Boolean)
+    templates = templates.filter(Boolean)
 
     const isViewAll = templates.length > 8
     let wallets = []

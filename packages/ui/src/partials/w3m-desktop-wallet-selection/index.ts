@@ -117,7 +117,7 @@ export class W3mDesktopWalletSelection extends LitElement {
         ...recomendedTemplate
       ]
     }
-    templates.filter(Boolean)
+    templates = templates.filter(Boolean)
 
     const isViewAll = templates.length > 4
     let wallets = []
