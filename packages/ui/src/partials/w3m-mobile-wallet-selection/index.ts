@@ -1,5 +1,5 @@
 import type { ConnectingData } from '@web3modal/core'
-import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
+import { OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { DataUtil } from '../../utils/DataUtil'
@@ -13,7 +13,7 @@ export class W3mMobileWalletSelection extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
-  private onGoToQrcode() {
+  private onQrcode() {
     RouterCtrl.push('Qrcode')
   }
 
@@ -21,17 +21,12 @@ export class W3mMobileWalletSelection extends LitElement {
     RouterCtrl.push('Connecting', { Connecting: data })
   }
 
-  private async onConnectorWallet(id: string) {
-    await UiUtil.handleConnectorConnection(id)
+  private onExternal(id: string) {
+    UiUtil.handleConnectorConnection(id)
   }
 
-  private mobileWalletsTemplate() {
-    const { mobileWallets } = ConfigCtrl.state
-    const wallets = DataUtil.walletsWithInjected(mobileWallets)
-
-    if (!wallets.length) {
-      return undefined
-    }
+  private manualWalletsTemplate() {
+    const wallets = DataUtil.manualMobileWallets()
 
     return wallets.map(
       ({ id, name, links }) => html`
@@ -47,10 +42,7 @@ export class W3mMobileWalletSelection extends LitElement {
   }
 
   private recomendedWalletsTemplate() {
-    const { recomendedWallets } = ExplorerCtrl.state
-    let wallets = DataUtil.walletsWithInjected(recomendedWallets)
-    wallets = DataUtil.allowedExplorerListings(wallets)
-    wallets = DataUtil.deduplicateExplorerListingsFromConnectors(wallets)
+    const wallets = DataUtil.recomendedWallets()
 
     return wallets.map(
       wallet => html`
@@ -64,7 +56,7 @@ export class W3mMobileWalletSelection extends LitElement {
     )
   }
 
-  private connectorWalletsTemplate() {
+  private externalWalletsTemplate() {
     const wallets = DataUtil.externalWallets()
 
     return wallets.map(
@@ -72,14 +64,14 @@ export class W3mMobileWalletSelection extends LitElement {
         <w3m-wallet-button
           name=${name}
           walletId=${id}
-          .onClick=${async () => this.onConnectorWallet(id)}
+          .onClick=${() => this.onExternal(id)}
         ></w3m-wallet-button>
       `
     )
   }
 
   private recentWalletTemplate() {
-    const wallet = UiUtil.getRecentWallet()
+    const wallet = DataUtil.recentWallet()
 
     if (!wallet) {
       return undefined
@@ -98,43 +90,37 @@ export class W3mMobileWalletSelection extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { standaloneUri } = OptionsCtrl.state
-    const connectorTemplate = this.connectorWalletsTemplate()
-    const mobileTemplate = this.mobileWalletsTemplate()
+    const { isStandalone } = OptionsCtrl.state
+    const manualTemplate = this.manualWalletsTemplate()
     const recomendedTemplate = this.recomendedWalletsTemplate()
+    const externalTemplate = this.externalWalletsTemplate()
     const recentTemplate = this.recentWalletTemplate()
-    const linkingWallets = mobileTemplate ?? recomendedTemplate
-    const combinedWallets = [...connectorTemplate, ...linkingWallets]
-    const combinedWalletsWithRecent = DataUtil.walletTemplatesWithRecent(
-      combinedWallets,
-      recentTemplate
-    )
-    const linkingWalletsWithRecent = DataUtil.walletTemplatesWithRecent(
-      linkingWallets,
-      recentTemplate
-    )
-    const displayWallets = standaloneUri ? linkingWalletsWithRecent : combinedWalletsWithRecent
-    const isViewAll = displayWallets.length > 8
-    let wallets = []
 
-    if (isViewAll) {
-      wallets = displayWallets.slice(0, 7)
-    } else {
-      wallets = displayWallets
+    let templates = [recentTemplate, ...manualTemplate, ...recomendedTemplate]
+    if (!isStandalone) {
+      templates = [recentTemplate, ...externalTemplate, ...manualTemplate, ...recomendedTemplate]
     }
+    templates.filter(Boolean)
 
+    const isViewAll = templates.length > 8
+    let wallets = []
+    if (isViewAll) {
+      wallets = templates.slice(0, 7)
+    } else {
+      wallets = templates
+    }
     const row1 = wallets.slice(0, 4)
     const row2 = wallets.slice(4, 8)
-    const isMobileWallets = Boolean(wallets.length)
+    const isWallets = Boolean(wallets.length)
 
     return html`
       <w3m-modal-header
         title="Connect your wallet"
-        .onAction=${this.onGoToQrcode}
+        .onAction=${this.onQrcode}
         .actionIcon=${SvgUtil.QRCODE_ICON}
       ></w3m-modal-header>
 
-      ${isMobileWallets
+      ${isWallets
         ? html`
             <w3m-modal-content>
               <div class="w3m-grid">

@@ -126,7 +126,6 @@ export class W3mDesktopWalletSelection extends LitElement {
     } else {
       wallets = templates
     }
-
     const isWallets = Boolean(wallets.length)
 
     return html`
