@@ -10,31 +10,23 @@ export class W3mInstallConnectorView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
-  private getRouterData() {
-    const data = RouterCtrl.state.data?.Connecting
-    if (!data) {
-      throw new Error('Missing router data')
-    }
-
-    return data
-  }
 
   private onInstall() {
-    const { homepage } = this.getRouterData()
+    const { homepage } = CoreUtil.getConnectingRouterData()
     if (homepage) {
       CoreUtil.openHref(homepage, '_blank')
     }
   }
 
   private onMobile() {
-    const { name } = this.getRouterData()
+    const { name } = CoreUtil.getConnectingRouterData()
     RouterCtrl.push('ConnectWallet')
     ToastCtrl.openToast(`Scan the code with ${name}`, 'success')
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { name, id, mobile } = this.getRouterData()
+    const { name, id, mobile } = CoreUtil.getConnectingRouterData()
     const isMobile = mobile && (mobile.native || mobile.universal)
 
     return html`

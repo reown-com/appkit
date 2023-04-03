@@ -1,4 +1,4 @@
-import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -20,17 +20,9 @@ export class W3mIosConnectorView extends LitElement {
   }
 
   // -- private ------------------------------------------------------ //
-  private getRouterData() {
-    const data = RouterCtrl.state.data?.Connecting
-    if (!data) {
-      throw new Error('Missing router data')
-    }
-
-    return data
-  }
 
   private onFormatAndRedirect(uri: string, forceUniversalUrl = false) {
-    const { mobile, name } = this.getRouterData()
+    const { mobile, name } = CoreUtil.getConnectingRouterData()
     const nativeUrl = mobile?.native
     const universalUrl = mobile?.universal
 
@@ -46,7 +38,7 @@ export class W3mIosConnectorView extends LitElement {
   private async createConnectionAndWait(forceUniversalUrl = false) {
     this.isError = false
     const { standaloneUri } = OptionsCtrl.state
-    const routerData = this.getRouterData()
+    const routerData = CoreUtil.getConnectingRouterData()
     UiUtil.setRecentWallet(routerData)
     if (standaloneUri) {
       this.onFormatAndRedirect(standaloneUri)
@@ -70,7 +62,7 @@ export class W3mIosConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const routerData = this.getRouterData()
+    const routerData = CoreUtil.getConnectingRouterData()
     const { name, id, image_id, app, mobile } = routerData
     const downloadUrl = app?.ios
     const universalUrl = mobile?.universal

@@ -1,4 +1,4 @@
-import { ClientCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, CoreUtil, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -19,19 +19,11 @@ export class W3mSwitchNetworkView extends LitElement {
   }
 
   // -- private ------------------------------------------------------ //
-  private getRouterData() {
-    const data = RouterCtrl.state.data?.SwitchNetwork
-    if (!data) {
-      throw new Error('Missing router data')
-    }
-
-    return data
-  }
 
   private async onSwitchNetwork() {
     try {
       this.isError = false
-      const chain = this.getRouterData()
+      const chain = CoreUtil.getSwitchNetworkRouterData()
       await ClientCtrl.client().switchNetwork({ chainId: chain.id })
       OptionsCtrl.setSelectedChain(chain)
       RouterCtrl.replace('Account')
@@ -42,7 +34,7 @@ export class W3mSwitchNetworkView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { id, name } = this.getRouterData()
+    const { id, name } = CoreUtil.getSwitchNetworkRouterData()
 
     return html`
       <w3m-modal-header title=${`Connect to ${name}`}></w3m-modal-header>

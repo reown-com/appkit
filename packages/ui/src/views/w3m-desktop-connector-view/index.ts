@@ -21,17 +21,9 @@ export class W3mDesktopConnectorView extends LitElement {
   }
 
   // -- private ------------------------------------------------------ //
-  private getRouterData() {
-    const data = RouterCtrl.state.data?.Connecting
-    if (!data) {
-      throw new Error('Missing router data')
-    }
-
-    return data
-  }
 
   private onFormatAndRedirect(uri: string) {
-    const { desktop, name } = this.getRouterData()
+    const { desktop, name } = CoreUtil.getConnectingRouterData()
     const nativeUrl = desktop?.native
     const universalUrl = desktop?.universal
 
@@ -47,7 +39,7 @@ export class W3mDesktopConnectorView extends LitElement {
   private async createConnectionAndWait() {
     this.isError = false
     const { standaloneUri } = OptionsCtrl.state
-    const routerData = this.getRouterData()
+    const routerData = CoreUtil.getConnectingRouterData()
     UiUtil.setRecentWallet(routerData)
     if (standaloneUri) {
       this.onFormatAndRedirect(standaloneUri)
@@ -69,7 +61,7 @@ export class W3mDesktopConnectorView extends LitElement {
   }
 
   private onGoToWallet() {
-    const { homepage, name } = this.getRouterData()
+    const { homepage, name } = CoreUtil.getConnectingRouterData()
     if (homepage) {
       const href = CoreUtil.formatUniversalUrl(homepage, this.uri, name)
       CoreUtil.openHref(href, '_blank')
@@ -78,7 +70,7 @@ export class W3mDesktopConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const routerData = this.getRouterData()
+    const routerData = CoreUtil.getConnectingRouterData()
     const { name, homepage, id, image_id } = routerData
 
     return html`

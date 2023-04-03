@@ -1,3 +1,5 @@
+import { RouterCtrl } from '../controllers/RouterCtrl'
+
 export const CoreUtil = {
   WALLETCONNECT_DEEPLINK_CHOICE: 'WALLETCONNECT_DEEPLINK_CHOICE',
 
@@ -88,5 +90,23 @@ export const CoreUtil = {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(CoreUtil.W3M_VERSION, process.env.ROLLUP_W3M_VERSION ?? 'UNKNOWN')
     }
+  },
+
+  getConnectingRouterData() {
+    const routerData = RouterCtrl.state.data?.Connecting
+    if (!routerData) {
+      throw new Error('Missing "Connecting" view data')
+    }
+
+    return routerData
+  },
+
+  getSwitchNetworkRouterData() {
+    const routerData = RouterCtrl.state.data?.SwitchNetwork
+    if (!routerData) {
+      throw new Error('Missing "SwitchNetwork" view data')
+    }
+
+    return routerData
   }
 }
