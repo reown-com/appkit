@@ -19,8 +19,8 @@ export class W3mConnectingView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const routerWalletData = this.getRouterData()
-    const { name } = routerWalletData
+    const routerData = this.getRouterData()
+    const { name } = routerData
 
     return html`<w3m-modal-header title=${name}></w3m-modal-header>`
   }

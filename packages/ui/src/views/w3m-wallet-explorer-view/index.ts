@@ -89,30 +89,20 @@ export class W3mWalletExplorerView extends LitElement {
   }
 
   private onConnectCustom({ name, id, links }: MobileWallet) {
-    const routerWalletData = { name, id, universalUrl: links.universal, nativeUrl: links.native }
+    const routerData = { name, id, mobile: links }
     if (CoreUtil.isAndroid()) {
-      UiUtil.handleMobileLinking(routerWalletData)
+      UiUtil.handleMobileLinking(routerData)
     } else {
-      RouterCtrl.push('Connecting', { Connecting: routerWalletData })
+      RouterCtrl.push('Connecting', { Connecting: routerData })
     }
   }
 
-  private onConnect({ id, name, image_id, mobile, desktop, app, homepage }: Listing) {
-    const isMobile = CoreUtil.isMobile()
-    const routerWalletData = {
-      id,
-      name,
-      imageId: image_id,
-      universalUrl: isMobile ? mobile.universal : desktop.universal,
-      nativeUrl: isMobile ? mobile.native : desktop.native,
-      downloadUrl: isMobile ? app.ios : homepage
-    }
-
+  private onConnect(listing: Listing) {
     if (CoreUtil.isAndroid()) {
-      UiUtil.handleMobileLinking({ ...routerWalletData, downloadUrl: app.android })
+      UiUtil.handleMobileLinking(listing)
     } else {
       RouterCtrl.push('Connecting', {
-        Connecting: routerWalletData
+        Connecting: listing
       })
     }
   }

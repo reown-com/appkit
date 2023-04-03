@@ -1,8 +1,7 @@
-import type { WalletRouteData } from '@web3modal/core'
+import type { ConnectingData } from '@web3modal/core'
 import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { InjectedId } from '../../presets/EthereumPresets'
 import { DataFilterUtil } from '../../utils/DataFilterUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -18,7 +17,7 @@ export class W3mMobileWalletSelection extends LitElement {
     RouterCtrl.push('Qrcode')
   }
 
-  private onGoToIosConnector(data: WalletRouteData) {
+  private onConnecting(data: ConnectingData) {
     RouterCtrl.push('Connecting', { Connecting: data })
   }
 
@@ -30,26 +29,21 @@ export class W3mMobileWalletSelection extends LitElement {
     const { mobileWallets } = ConfigCtrl.state
     const wallets = DataFilterUtil.walletsWithInjected(mobileWallets)
 
-    if (wallets.length) {
-      return wallets.map(
-        ({ id, name, links }) => html`
-          <w3m-wallet-button
-            name=${name}
-            walletId=${id}
-            .onClick=${() => {
-              this.onGoToIosConnector({
-                id,
-                name,
-                nativeUrl: links.native,
-                universalUrl: links.universal
-              })
-            }}
-          ></w3m-wallet-button>
-        `
-      )
+    if (!wallets.length) {
+      return undefined
     }
 
-    return undefined
+    return wallets.map(
+      ({ id, name, links }) => html`
+        <w3m-wallet-button
+          name=${name}
+          walletId=${id}
+          .onClick=${() => {
+            this.onConnecting({ id, name, mobile: links })
+          }}
+        ></w3m-wallet-button>
+      `
+    )
   }
 
   private recomendedWalletsTemplate() {
@@ -59,37 +53,23 @@ export class W3mMobileWalletSelection extends LitElement {
     wallets = DataFilterUtil.deduplicateExplorerListingsFromConnectors(wallets)
 
     return wallets.map(
-      ({ image_id, name, mobile, id, app }) => html`
+      wallet => html`
         <w3m-wallet-button
-          name=${name}
-          walletId=${id}
-          imageId=${image_id}
-          .onClick=${() => {
-            this.onGoToIosConnector({
-              id,
-              name,
-              nativeUrl: mobile.native,
-              universalUrl: mobile.universal,
-              imageId: image_id,
-              downloadUrl: app.ios
-            })
-          }}
+          name=${wallet.name}
+          walletId=${wallet.id}
+          imageId=${wallet.image_id}
+          .onClick=${() => this.onConnecting(wallet)}
         ></w3m-wallet-button>
       `
     )
   }
 
   private connectorWalletsTemplate() {
-    let wallets = DataFilterUtil.thirdPartyConnectors()
-
-    if (!window.ethereum) {
-      wallets = wallets.filter(({ id }) => id !== 'injected' && id !== InjectedId.metaMask)
-    }
+    const wallets = DataFilterUtil.thirdPartyConnectors()
 
     return wallets.map(
-      ({ name, id, ready }) => html`
+      ({ name, id }) => html`
         <w3m-wallet-button
-          .installed=${['injected', 'metaMask'].includes(id) && ready}
           name=${name}
           walletId=${id}
           .onClick=${async () => this.onConnectorWallet(id)}
@@ -105,17 +85,13 @@ export class W3mMobileWalletSelection extends LitElement {
       return undefined
     }
 
-    const { id, name, imageId } = wallet
-
     return html`
       <w3m-wallet-button
         .recent=${true}
-        name=${name}
-        walletId=${id}
-        imageId=${imageId}
-        .onClick=${() => {
-          this.onGoToIosConnector(wallet)
-        }}
+        name=${wallet.name}
+        walletId=${wallet.id}
+        imageId=${wallet.image_id}
+        .onClick=${() => this.onConnecting(wallet)}
       ></w3m-wallet-button>
     `
   }

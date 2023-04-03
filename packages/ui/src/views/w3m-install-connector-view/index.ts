@@ -11,7 +11,7 @@ export class W3mInstallConnectorView extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private getRouterData() {
-    const data = RouterCtrl.state.data?.InstallConnector
+    const data = RouterCtrl.state.data?.Connecting
     if (!data) {
       throw new Error('Missing router data')
     }
@@ -20,8 +20,10 @@ export class W3mInstallConnectorView extends LitElement {
   }
 
   private onInstall() {
-    const { url } = this.getRouterData()
-    CoreUtil.openHref(url, '_blank')
+    const { homepage } = this.getRouterData()
+    if (homepage) {
+      CoreUtil.openHref(homepage, '_blank')
+    }
   }
 
   private onMobile() {
@@ -32,7 +34,8 @@ export class W3mInstallConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { name, id, isMobile } = this.getRouterData()
+    const { name, id, mobile } = this.getRouterData()
+    const isMobile = mobile && (mobile.native || mobile.universal)
 
     return html`
       <w3m-modal-header title=${name}></w3m-modal-header>

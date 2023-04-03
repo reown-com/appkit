@@ -143,13 +143,28 @@ export type RouterView =
   | 'SwitchNetwork'
   | 'WalletExplorer'
 
-export interface WalletRouteData {
+export interface ConnectingData {
   id: string
   name: string
-  imageId?: string
-  nativeUrl?: string
-  universalUrl?: string
-  downloadUrl?: string
+  homepage?: string
+  image_id?: string
+  app?: {
+    browser?: string
+    ios?: string
+    android?: string
+  }
+  injected?: {
+    injected_id?: string
+    namespace?: string
+  }[]
+  mobile?: {
+    native?: string
+    universal?: string
+  }
+  desktop?: {
+    native?: string
+    universal?: string
+  }
 }
 
 export type SwitchNetworkData = Chain
@@ -165,7 +180,7 @@ export interface RouterCtrlState {
   history: RouterView[]
   view: RouterView
   data?: {
-    Connecting?: WalletRouteData
+    Connecting?: ConnectingData
     SwitchNetwork?: SwitchNetworkData
   }
 }

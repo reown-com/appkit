@@ -30,7 +30,10 @@ export class W3mIosConnectorView extends LitElement {
   }
 
   private onFormatAndRedirect(uri: string, forceUniversalUrl = false) {
-    const { nativeUrl, universalUrl, name } = this.getRouterData()
+    const { mobile, name } = this.getRouterData()
+    const nativeUrl = mobile?.native
+    const universalUrl = mobile?.universal
+
     if (nativeUrl && !forceUniversalUrl) {
       const href = CoreUtil.formatNativeUrl(nativeUrl, uri, name)
       CoreUtil.openHref(href, '_self')
@@ -43,8 +46,8 @@ export class W3mIosConnectorView extends LitElement {
   private async createConnectionAndWait(forceUniversalUrl = false) {
     this.isError = false
     const { standaloneUri } = OptionsCtrl.state
-    const routerWalletData = this.getRouterData()
-    UiUtil.setRecentWallet(routerWalletData)
+    const routerData = this.getRouterData()
+    UiUtil.setRecentWallet(routerData)
     if (standaloneUri) {
       this.onFormatAndRedirect(standaloneUri)
     } else {
@@ -67,8 +70,10 @@ export class W3mIosConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const routerWalletData = this.getRouterData()
-    const { name, id, imageId, downloadUrl, universalUrl } = routerWalletData
+    const routerData = this.getRouterData()
+    const { name, id, image_id, app, mobile } = routerData
+    const downloadUrl = app?.ios
+    const universalUrl = mobile?.universal
 
     return html`
       <w3m-modal-header title=${name}></w3m-modal-header>
@@ -76,7 +81,7 @@ export class W3mIosConnectorView extends LitElement {
       <w3m-modal-content>
         <w3m-connector-waiting
           walletId=${id}
-          imageId=${imageId}
+          imageId=${image_id}
           label="Tap 'Open' to continue…"
           .isError=${this.isError}
         ></w3m-connector-waiting>
@@ -111,7 +116,7 @@ export class W3mIosConnectorView extends LitElement {
 
       <w3m-info-footer class="w3m-app-store">
         <div>
-          <w3m-wallet-image walletId=${id} imageId=${imageId}></w3m-wallet-image>
+          <w3m-wallet-image walletId=${id} imageId=${image_id}></w3m-wallet-image>
           <w3m-text>${`Get ${name}`}</w3m-text>
         </div>
         <w3m-button

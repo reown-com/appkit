@@ -1,4 +1,4 @@
-import type { WalletRouteData } from '@web3modal/core'
+import type { ConnectingData } from '@web3modal/core'
 import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
@@ -13,7 +13,7 @@ export class W3mDesktopWalletSelection extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
-  private onGoToConnecting(data: WalletRouteData) {
+  private onConnecting(data: ConnectingData) {
     RouterCtrl.push('Connecting', { Connecting: data })
   }
 
@@ -29,13 +29,7 @@ export class W3mDesktopWalletSelection extends LitElement {
         <w3m-wallet-button
           walletId=${id}
           name=${name}
-          .onClick=${() =>
-            this.onGoToConnecting({
-              name,
-              id,
-              universalUrl: links.universal,
-              nativeUrl: links.native
-            })}
+          .onClick=${() => this.onConnecting({ name, id, desktop: links })}
         ></w3m-wallet-button>
       `
     )
@@ -46,20 +40,12 @@ export class W3mDesktopWalletSelection extends LitElement {
     wallets = DataFilterUtil.deduplicateExplorerListingsFromConnectors(wallets)
 
     return wallets.map(
-      ({ name, desktop, homepage, image_id, id }) => html`
+      wallet => html`
         <w3m-wallet-button
-          walletId=${id}
-          imageId=${image_id}
-          name=${name}
-          .onClick=${() =>
-            this.onGoToConnecting({
-              id,
-              name,
-              nativeUrl: desktop.native,
-              universalUrl: desktop.universal,
-              downloadUrl: homepage,
-              imageId: image_id
-            })}
+          walletId=${wallet.id}
+          imageId=${wallet.image_id}
+          name=${wallet.name}
+          .onClick=${() => this.onConnecting(wallet)}
         ></w3m-wallet-button>
       `
     )
@@ -86,15 +72,13 @@ export class W3mDesktopWalletSelection extends LitElement {
       return undefined
     }
 
-    const { id, name, imageId } = wallet
-
     return html`
       <w3m-wallet-button
-        name=${name}
-        walletId=${id}
-        imageId=${imageId}
+        name=${wallet.name}
+        walletId=${wallet.id}
+        imageId=${wallet.image_id}
         .recent=${true}
-        .onClick=${() => this.onGoToConnecting(wallet)}
+        .onClick=${() => this.onConnecting(wallet)}
       ></w3m-wallet-button>
     `
   }
@@ -113,7 +97,7 @@ export class W3mDesktopWalletSelection extends LitElement {
           name=${wallet.name}
           walletId=${wallet.id}
           imageId=${wallet.image_id}
-          .onClick=${() => this.onGoToConnecting(wallet)}
+          .onClick=${() => this.onConnecting(wallet)}
         ></w3m-wallet-button>
       `
     )
@@ -151,7 +135,7 @@ export class W3mDesktopWalletSelection extends LitElement {
 
     return html`
       <w3m-modal-header
-        border=${true}
+        .border=${true}
         title="Connect your wallet"
         .onAction=${UiUtil.handleUriCopy}
         .actionIcon=${SvgUtil.COPY_ICON}

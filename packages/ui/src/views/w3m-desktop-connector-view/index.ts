@@ -31,7 +31,10 @@ export class W3mDesktopConnectorView extends LitElement {
   }
 
   private onFormatAndRedirect(uri: string) {
-    const { nativeUrl, universalUrl, name } = this.getRouterData()
+    const { desktop, name } = this.getRouterData()
+    const nativeUrl = desktop?.native
+    const universalUrl = desktop?.universal
+
     if (nativeUrl) {
       const href = CoreUtil.formatNativeUrl(nativeUrl, uri, name)
       CoreUtil.openHref(href, '_self')
@@ -44,8 +47,8 @@ export class W3mDesktopConnectorView extends LitElement {
   private async createConnectionAndWait() {
     this.isError = false
     const { standaloneUri } = OptionsCtrl.state
-    const routerWalletData = this.getRouterData()
-    UiUtil.setRecentWallet(routerWalletData)
+    const routerData = this.getRouterData()
+    UiUtil.setRecentWallet(routerData)
     if (standaloneUri) {
       this.onFormatAndRedirect(standaloneUri)
     } else {
@@ -66,17 +69,17 @@ export class W3mDesktopConnectorView extends LitElement {
   }
 
   private onGoToWallet() {
-    const { universalUrl, name } = this.getRouterData()
-    if (universalUrl) {
-      const href = CoreUtil.formatUniversalUrl(universalUrl, this.uri, name)
+    const { homepage, name } = this.getRouterData()
+    if (homepage) {
+      const href = CoreUtil.formatUniversalUrl(homepage, this.uri, name)
       CoreUtil.openHref(href, '_blank')
     }
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const routerWalletData = this.getRouterData()
-    const { name, universalUrl, id, imageId } = routerWalletData
+    const routerData = this.getRouterData()
+    const { name, homepage, id, image_id } = routerData
 
     return html`
       <w3m-modal-header title=${name}></w3m-modal-header>
@@ -84,7 +87,7 @@ export class W3mDesktopConnectorView extends LitElement {
       <w3m-modal-content>
         <w3m-connector-waiting
           walletId=${id}
-          imageId=${imageId}
+          imageId=${image_id}
           label=${`Continue in ${name}...`}
           .isError=${this.isError}
         ></w3m-connector-waiting>
@@ -104,7 +107,7 @@ export class W3mDesktopConnectorView extends LitElement {
             Retry
           </w3m-button>
 
-          ${universalUrl
+          ${homepage
             ? html`
                 <w3m-button
                   variant="outline"

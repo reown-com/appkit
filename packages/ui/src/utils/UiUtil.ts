@@ -1,4 +1,4 @@
-import type { WalletRouteData } from '@web3modal/core'
+import type { ConnectingData } from '@web3modal/core'
 import {
   ClientCtrl,
   ConfigCtrl,
@@ -36,7 +36,7 @@ export const UiUtil = {
     return el as HTMLElement
   },
 
-  getWalletIcon({ id, image_id, imageId }: { id: string; image_id?: string; imageId?: string }) {
+  getWalletIcon({ id, image_id }: { id: string; image_id?: string }) {
     const presets = EthereumPresets.injectedPreset
     const presetImageId = presets[id]?.icon
     const { walletImages } = ConfigCtrl.state
@@ -45,8 +45,6 @@ export const UiUtil = {
       return walletImages[id]
     } else if (image_id) {
       return ExplorerCtrl.getWalletImageUrl(image_id)
-    } else if (imageId) {
-      return ExplorerCtrl.getWalletImageUrl(imageId)
     } else if (presetImageId) {
       return ExplorerCtrl.getAssetImageUrl(presetImageId)
     }
@@ -110,10 +108,12 @@ export const UiUtil = {
     }
   },
 
-  async handleMobileLinking(wallet: WalletRouteData) {
+  async handleMobileLinking(wallet: ConnectingData) {
     CoreUtil.removeWalletConnectDeepLink()
     const { standaloneUri, selectedChain } = OptionsCtrl.state
-    const { universalUrl, nativeUrl, name } = wallet
+    const { mobile, name } = wallet
+    const nativeUrl = mobile?.native
+    const universalUrl = mobile?.universal
 
     function onRedirect(uri: string) {
       let href = ''
@@ -237,7 +237,7 @@ export const UiUtil = {
     }
   },
 
-  setRecentWallet(wallet: WalletRouteData) {
+  setRecentWallet(wallet: ConnectingData) {
     const { walletConnectVersion } = OptionsCtrl.state
     localStorage.setItem(
       UiUtil.W3M_RECENT_WALLET_DATA,
@@ -251,7 +251,7 @@ export const UiUtil = {
       const { walletConnectVersion } = OptionsCtrl.state
       const json = JSON.parse(wallet)
       if (json[walletConnectVersion]) {
-        return json[walletConnectVersion] as WalletRouteData
+        return json[walletConnectVersion] as ConnectingData
       }
     }
 
