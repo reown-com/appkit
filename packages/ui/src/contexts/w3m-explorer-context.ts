@@ -1,6 +1,7 @@
 import { ConfigCtrl, CoreUtil, ExplorerCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
+import { DataUtil } from '../utils/DataUtil'
 import { UiUtil } from '../utils/UiUtil'
 
 @customElement('w3m-explorer-context')
@@ -45,7 +46,7 @@ export class W3mExplorerContext extends LitElement {
       await Promise.all(promises)
       OptionsCtrl.setIsDataLoaded(true)
       const { recomendedWallets } = ExplorerCtrl.state
-      const injectedWallets = UiUtil.getInstalledInjectedWallets()
+      const injectedWallets = DataUtil.injectedWallets()
       const chainsImgs = chains?.map(chain => UiUtil.getChainIcon(chain.id)) ?? []
       const walletImgs = recomendedWallets.map(wallet => UiUtil.getWalletIcon(wallet))
       const injectedImgs = injectedWallets.map(wallet => UiUtil.getWalletIcon(wallet))

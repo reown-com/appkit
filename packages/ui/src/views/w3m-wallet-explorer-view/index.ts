@@ -3,7 +3,7 @@ import { CoreUtil, ExplorerCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@web
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { DataFilterUtil } from '../../utils/DataFilterUtil'
+import { DataUtil } from '../../utils/DataUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -131,7 +131,7 @@ export class W3mWalletExplorerView extends LitElement {
     const { wallets, search } = ExplorerCtrl.state
     const { isStandalone } = OptionsCtrl.state
     let { listings } = this.search ? search : wallets
-    listings = DataFilterUtil.allowedExplorerListings(listings)
+    listings = DataUtil.allowedExplorerListings(listings)
     const isLoading = this.loading && !listings.length
     const isSearch = this.search.length >= 3
     const isExtensions = !isStandalone && !CoreUtil.isMobile()

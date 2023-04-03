@@ -1,8 +1,8 @@
 import type { ConnectingData } from '@web3modal/core'
-import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
+import { OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { DataFilterUtil } from '../../utils/DataFilterUtil'
+import { DataUtil } from '../../utils/DataUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -17,14 +17,14 @@ export class W3mDesktopWalletSelection extends LitElement {
     RouterCtrl.push('Connecting', { Connecting: data })
   }
 
-  private async onConnectorWallet(id: string) {
-    await UiUtil.handleConnectorConnection(id)
+  private onExternal(id: string) {
+    UiUtil.handleConnectorConnection(id)
   }
 
   private manualWalletsTemplate() {
-    const { desktopWallets } = ConfigCtrl.state
+    const wallets = DataUtil.manualDesktopWallets()
 
-    return desktopWallets?.map(
+    return wallets.map(
       ({ id, name, links }) => html`
         <w3m-wallet-button
           walletId=${id}
@@ -36,8 +36,7 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private recomendedWalletsTemplate() {
-    let wallets = DataFilterUtil.allowedExplorerListings(ExplorerCtrl.state.recomendedWallets)
-    wallets = DataFilterUtil.deduplicateExplorerListingsFromConnectors(wallets)
+    const wallets = DataUtil.recomendedWallets()
 
     return wallets.map(
       wallet => html`
@@ -51,22 +50,22 @@ export class W3mDesktopWalletSelection extends LitElement {
     )
   }
 
-  private connectorWalletsTemplate() {
-    const wallets = DataFilterUtil.thirdPartyConnectors()
+  private externalWalletsTemplate() {
+    const wallets = DataUtil.externalWallets()
 
     return wallets.map(
       ({ id, name }) => html`
         <w3m-wallet-button
           name=${name}
           walletId=${id}
-          .onClick=${async () => this.onConnectorWallet(id)}
+          .onClick=${() => this.onExternal(id)}
         ></w3m-wallet-button>
       `
     )
   }
 
   private recentWalletTemplate() {
-    const wallet = UiUtil.getRecentWallet()
+    const wallet = DataUtil.recentWallet()
 
     if (!wallet) {
       return undefined
@@ -84,11 +83,7 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private injectedWalletsTemplate() {
-    const { isStandalone } = OptionsCtrl.state
-    if (isStandalone) {
-      return []
-    }
-    const wallets = UiUtil.getInstalledInjectedWallets()
+    const wallets = DataUtil.injectedWallets()
 
     return wallets.map(
       wallet => html`
@@ -105,33 +100,34 @@ export class W3mDesktopWalletSelection extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { standaloneUri } = OptionsCtrl.state
+    const { isStandalone } = OptionsCtrl.state
     const manualTemplate = this.manualWalletsTemplate()
     const recomendedTemplate = this.recomendedWalletsTemplate()
-    const connectorTemplate = this.connectorWalletsTemplate()
+    const externalTemplate = this.externalWalletsTemplate()
     const recentTemplate = this.recentWalletTemplate()
     const injectedWallets = this.injectedWalletsTemplate()
-    const linkingWallets = [...(manualTemplate ?? []), ...recomendedTemplate]
-    const combinedWallets = [...injectedWallets, ...connectorTemplate, ...linkingWallets]
-    const combinedWalletsWithRecent = DataFilterUtil.walletTemplatesWithRecent(
-      combinedWallets,
-      recentTemplate
-    )
-    const linkingWalletsWithRecent = DataFilterUtil.walletTemplatesWithRecent(
-      linkingWallets,
-      recentTemplate
-    )
-    const displayWallets = standaloneUri ? linkingWalletsWithRecent : combinedWalletsWithRecent
-    const isViewAll = displayWallets.length > 4
-    let wallets = []
 
+    let templates = [recentTemplate, ...manualTemplate, ...recomendedTemplate]
+    if (!isStandalone) {
+      templates = [
+        ...injectedWallets,
+        recentTemplate,
+        ...externalTemplate,
+        ...manualTemplate,
+        ...recomendedTemplate
+      ]
+    }
+    templates.filter(Boolean)
+
+    const isViewAll = templates.length > 4
+    let wallets = []
     if (isViewAll) {
-      wallets = displayWallets.slice(0, 3)
+      wallets = templates.slice(0, 3)
     } else {
-      wallets = displayWallets
+      wallets = templates
     }
 
-    const isDesktopWallets = Boolean(wallets.length)
+    const isWallets = Boolean(wallets.length)
 
     return html`
       <w3m-modal-header
@@ -156,7 +152,7 @@ export class W3mDesktopWalletSelection extends LitElement {
         <w3m-walletconnect-qr></w3m-walletconnect-qr>
       </w3m-modal-content>
 
-      ${isDesktopWallets
+      ${isWallets
         ? html`
             <w3m-modal-footer>
               <div class="w3m-desktop-title">

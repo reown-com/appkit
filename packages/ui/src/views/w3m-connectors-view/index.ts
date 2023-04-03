@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { InjectedId } from '../../presets/EthereumPresets'
-import { DataFilterUtil } from '../../utils/DataFilterUtil'
+import { DataUtil } from '../../utils/DataUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import { styles } from './styles.css'
@@ -16,7 +16,7 @@ export class W3mConnectorsView extends LitElement {
   }
 
   private connectorWalletsTemplate() {
-    let wallets = DataFilterUtil.thirdPartyConnectors()
+    let wallets = DataUtil.externalWallets()
 
     if (!window.ethereum) {
       wallets = wallets.filter(({ id }) => id !== 'injected' && id !== InjectedId.metaMask)

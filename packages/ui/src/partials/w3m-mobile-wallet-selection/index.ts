@@ -2,7 +2,7 @@ import type { ConnectingData } from '@web3modal/core'
 import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { DataFilterUtil } from '../../utils/DataFilterUtil'
+import { DataUtil } from '../../utils/DataUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -27,7 +27,7 @@ export class W3mMobileWalletSelection extends LitElement {
 
   private mobileWalletsTemplate() {
     const { mobileWallets } = ConfigCtrl.state
-    const wallets = DataFilterUtil.walletsWithInjected(mobileWallets)
+    const wallets = DataUtil.walletsWithInjected(mobileWallets)
 
     if (!wallets.length) {
       return undefined
@@ -48,9 +48,9 @@ export class W3mMobileWalletSelection extends LitElement {
 
   private recomendedWalletsTemplate() {
     const { recomendedWallets } = ExplorerCtrl.state
-    let wallets = DataFilterUtil.walletsWithInjected(recomendedWallets)
-    wallets = DataFilterUtil.allowedExplorerListings(wallets)
-    wallets = DataFilterUtil.deduplicateExplorerListingsFromConnectors(wallets)
+    let wallets = DataUtil.walletsWithInjected(recomendedWallets)
+    wallets = DataUtil.allowedExplorerListings(wallets)
+    wallets = DataUtil.deduplicateExplorerListingsFromConnectors(wallets)
 
     return wallets.map(
       wallet => html`
@@ -65,7 +65,7 @@ export class W3mMobileWalletSelection extends LitElement {
   }
 
   private connectorWalletsTemplate() {
-    const wallets = DataFilterUtil.thirdPartyConnectors()
+    const wallets = DataUtil.externalWallets()
 
     return wallets.map(
       ({ name, id }) => html`
@@ -105,11 +105,11 @@ export class W3mMobileWalletSelection extends LitElement {
     const recentTemplate = this.recentWalletTemplate()
     const linkingWallets = mobileTemplate ?? recomendedTemplate
     const combinedWallets = [...connectorTemplate, ...linkingWallets]
-    const combinedWalletsWithRecent = DataFilterUtil.walletTemplatesWithRecent(
+    const combinedWalletsWithRecent = DataUtil.walletTemplatesWithRecent(
       combinedWallets,
       recentTemplate
     )
-    const linkingWalletsWithRecent = DataFilterUtil.walletTemplatesWithRecent(
+    const linkingWalletsWithRecent = DataUtil.walletTemplatesWithRecent(
       linkingWallets,
       recentTemplate
     )

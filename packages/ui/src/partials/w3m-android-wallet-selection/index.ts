@@ -2,7 +2,7 @@ import { ExplorerCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { InjectedId } from '../../presets/EthereumPresets'
-import { DataFilterUtil } from '../../utils/DataFilterUtil'
+import { DataUtil } from '../../utils/DataUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -26,7 +26,7 @@ export class W3mAndroidWalletSelection extends LitElement {
   }
 
   private getConnectors() {
-    let wallets = DataFilterUtil.thirdPartyConnectors()
+    let wallets = DataUtil.externalWallets()
     if (!window.ethereum) {
       wallets = wallets.filter(({ id }) => id !== 'injected' && id !== InjectedId.metaMask)
     }
