@@ -29,7 +29,7 @@
     "@typescript-eslint/eslint-plugin": "5.57.0",
     "@typescript-eslint/parser": "5.57.0",
     "@rollup/plugin-replace": "5.0.2",
-    "esbuild": "0.17.14",
+    "esbuild": "0.17.15",
     "eslint": "8.37.0",
     "eslint-config-prettier": "8.8.0",
     "lerna": "6.6.1",

@@ -13,7 +13,7 @@
     "@web3modal/ethereum": "2.2.2",
     "@web3modal/react": "2.2.2",
     "@walletconnect/sign-client": "2.5.2",
-    "@walletconnect/auth-client": "2.0.5",
+    "@walletconnect/auth-client": "2.0.6",
     "ethers": "5.7.2",
     "next": "13.2.4",
     "react": "18.2.0",
@@ -21,7 +21,7 @@
     "wagmi": "0.12.8"
   },
   "devDependencies": {
-    "@types/react": "18.0.31",
+    "@types/react": "18.0.32",
     "@types/react-dom": "18.0.11"
   }
 }
