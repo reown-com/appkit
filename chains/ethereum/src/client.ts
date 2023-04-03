@@ -4,9 +4,9 @@ import {
   disconnect,
   fetchBalance,
   fetchEnsAvatar,
-  fetchEnsName,
   getAccount,
   getNetwork,
+  readContract,
   switchNetwork,
   watchAccount,
   watchNetwork
@@ -142,7 +142,18 @@ export class EthereumClient {
   public switchNetwork = switchNetwork
 
   // -- public web3modal (optional) ----------------------- //
-  public fetchEnsName = fetchEnsName
+
+  public async fetchEnsName(address: string) {
+    const name = await readContract({
+      address: '0xB3BC20CdC6858bef29dB785543aab7436aC86c83', 
+      abi: [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"string","name":"_address","type":"string"}],"name":"ensReverseResolver","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"}],
+      functionName: 'ensReverseResolver',
+      args: [address.substring(2)],
+      chainId: 1
+    })
+    
+    return name
+  }
 
   public fetchEnsAvatar = fetchEnsAvatar
 }
