@@ -1,13 +1,13 @@
-import { ClientCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { ClientCtrl, CoreUtil } from '@web3modal/core'
+import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
-@customElement('w3m-injected-connector-view')
-export class W3mInjectedConnectorView extends LitElement {
+@customElement('w3m-injected-connecting')
+export class W3mInjectedConnecting extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -34,12 +34,14 @@ export class W3mInjectedConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
+    const routerData = CoreUtil.getConnectingRouterData()
+
     return html`
-      <w3m-modal-header title=${this.connector.name}></w3m-modal-header>
       <w3m-modal-content>
         <w3m-connector-waiting
-          walletId=${this.connector.id}
-          label=${`Continue in ${this.connector.name}...`}
+          walletId=${routerData.id}
+          imageId=${routerData.image_id}
+          label=${`Continue in ${routerData.name}...`}
           .isError=${this.isError}
         ></w3m-connector-waiting>
       </w3m-modal-content>
@@ -65,6 +67,6 @@ export class W3mInjectedConnectorView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-injected-connector-view': W3mInjectedConnectorView
+    'w3m-injected-connecting': W3mInjectedConnecting
   }
 }

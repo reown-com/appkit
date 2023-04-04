@@ -5,8 +5,8 @@ import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
-@customElement('w3m-install-connector-view')
-export class W3mInstallConnectorView extends LitElement {
+@customElement('w3m-install-wallet')
+export class W3mInstallWallet extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
@@ -26,14 +26,13 @@ export class W3mInstallConnectorView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { name, id, mobile } = CoreUtil.getConnectingRouterData()
+    const { name, id, mobile, image_id } = CoreUtil.getConnectingRouterData()
     const isMobile = mobile && (mobile.native || mobile.universal)
 
     return html`
-      <w3m-modal-header title=${name}></w3m-modal-header>
       <w3m-modal-content>
         <div class="w3m-wrapper">
-          <w3m-wallet-image walletId=${id}></w3m-wallet-image>
+          <w3m-wallet-image walletId=${id} imageId=${image_id}></w3m-wallet-image>
           <div class="w3m-title">
             <w3m-text>Install ${name}</w3m-text>
             <w3m-text color="secondary" variant="small-thin" class="w3m-info-text">
@@ -61,6 +60,6 @@ export class W3mInstallConnectorView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-install-connector-view': W3mInstallConnectorView
+    'w3m-install-wallet': W3mInstallWallet
   }
 }

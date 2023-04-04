@@ -31,11 +31,16 @@ export const DataUtil = {
       return []
     }
 
+    const { namespace } = ClientCtrl.client()
     const { injectedWallets } = ExplorerCtrl.state
     let wallets = injectedWallets.filter(({ injected }) => {
-      const injectedIds = injected.map(({ injected_id }) => injected_id)
-
-      return Boolean(injectedIds.some(id => ClientCtrl.client().safeCheckInjectedProvider(id)))
+      return Boolean(
+        injected.some(
+          i =>
+            ClientCtrl.client().safeCheckInjectedProvider(i.injected_id) &&
+            i.namespace === namespace
+        )
+      )
     })
 
     // Extension was loaded that masks as metamask, we need to filter mm out
@@ -60,8 +65,8 @@ export const DataUtil = {
     const recentWalletId = DataUtil.recentWallet()?.id
     const existingIds = [...injectedIds, recentWalletId]
     const { recomendedWallets } = ExplorerCtrl.state
-    const wallets = [...recomendedWallets]
-    wallets.filter(wallet => !existingIds.includes(wallet.id))
+    let wallets = [...recomendedWallets]
+    wallets = wallets.filter(wallet => !existingIds.includes(wallet.id))
 
     return wallets
   }
