@@ -48,12 +48,17 @@ export class W3mConnectButton extends LitElement {
     }
   }
 
-  private onConnect() {
+  private async onConnect() {
+    this.loading = true
     const { selectedChain, isInjectedMobile } = OptionsCtrl.state
     if (isInjectedMobile) {
-      ClientCtrl.client().connectConnector('injected', selectedChain?.id)
+      try {
+        await ClientCtrl.client().connectConnector('injected', selectedChain?.id)
+        this.loading = false
+      } catch {
+        this.loading = false
+      }
     } else {
-      this.loading = true
       const { enableNetworkView } = ConfigCtrl.state
       if (enableNetworkView) {
         ModalCtrl.open({ route: 'SelectNetwork' })
