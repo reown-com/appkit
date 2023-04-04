@@ -8,9 +8,13 @@ export class W3mConnectingView extends LitElement {
   public static styles = [ThemeUtil.globalCss]
 
   // -- private ------------------------------------------------------ //
-  private desktopTemplate() {}
+  private desktopTemplate() {
+    return null
+  }
 
-  private mobileTemplate() {}
+  private mobileTemplate() {
+    return null
+  }
 
   // -- render ------------------------------------------------------- //
   protected render() {
