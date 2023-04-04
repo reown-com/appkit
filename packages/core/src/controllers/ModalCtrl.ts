@@ -33,40 +33,47 @@ export const ModalCtrl = {
       const { isConnected } = AccountCtrl.state
       const { enableNetworkView } = ConfigCtrl.state
 
-      if (isStandalone) {
-        OptionsCtrl.setStandaloneUri(options?.uri)
-        OptionsCtrl.setStandaloneChains(options?.standaloneChains)
-        RouterCtrl.replace('ConnectWallet')
-      } else if (
+      // Handle connection without modal ui (mobile injected browsers)
+      if (
+        !isStandalone &&
+        !isConnected &&
         CoreUtil.isMobile() &&
-        ClientCtrl.client().isInjectedProviderInstalled() &&
-        !isConnected
+        ClientCtrl.client().isInjectedProviderInstalled()
       ) {
         ClientCtrl.client().connectConnector('injected', selectedChain?.id)
-      } else if (options?.route) {
-        RouterCtrl.replace(options.route)
-      } else if (isConnected) {
-        RouterCtrl.replace('Account')
-      } else if (enableNetworkView) {
-        RouterCtrl.replace('SelectNetwork')
-      } else {
-        RouterCtrl.replace('ConnectWallet')
       }
 
-      // Open modal if essential async data is ready
-      if (isUiLoaded && isDataLoaded) {
-        state.open = true
-        resolve()
-      }
-      // Otherwise (slow network) re-attempt open checks
+      // Hanlde connection with modal ui
       else {
-        const interval = setInterval(() => {
-          if (OptionsCtrl.state.isUiLoaded && OptionsCtrl.state.isDataLoaded) {
-            clearInterval(interval)
-            state.open = true
-            resolve()
-          }
-        }, 200)
+        if (isStandalone) {
+          OptionsCtrl.setStandaloneUri(options?.uri)
+          OptionsCtrl.setStandaloneChains(options?.standaloneChains)
+          RouterCtrl.replace('ConnectWallet')
+        } else if (options?.route) {
+          RouterCtrl.replace(options.route)
+        } else if (isConnected) {
+          RouterCtrl.replace('Account')
+        } else if (enableNetworkView) {
+          RouterCtrl.replace('SelectNetwork')
+        } else {
+          RouterCtrl.replace('ConnectWallet')
+        }
+
+        // Open modal if essential async data is ready
+        if (isUiLoaded && isDataLoaded) {
+          state.open = true
+          resolve()
+        }
+        // Otherwise (slow network) re-attempt open checks
+        else {
+          const interval = setInterval(() => {
+            if (OptionsCtrl.state.isUiLoaded && OptionsCtrl.state.isDataLoaded) {
+              clearInterval(interval)
+              state.open = true
+              resolve()
+            }
+          }, 200)
+        }
       }
     })
   },
