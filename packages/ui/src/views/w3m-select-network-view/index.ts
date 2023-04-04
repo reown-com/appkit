@@ -32,10 +32,11 @@ export class W3mSelectNetworkView extends LitElement {
           RouterCtrl.push('SwitchNetwork', { SwitchNetwork: chain })
         }
       } else if (isInjectedMobile) {
+        OptionsCtrl.setSelectedChain(chain)
         ModalCtrl.close()
       } else {
-        RouterCtrl.push('ConnectWallet')
         OptionsCtrl.setSelectedChain(chain)
+        RouterCtrl.push('ConnectWallet')
       }
     } catch (err) {
       console.error(err)
