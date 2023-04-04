@@ -1,6 +1,8 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ModalCtrlState } from '../types/controllerTypes'
+import { CoreUtil } from '../utils/CoreUtil'
 import { AccountCtrl } from './AccountCtrl'
+import { ClientCtrl } from './ClientCtrl'
 import { ConfigCtrl } from './ConfigCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
 import { RouterCtrl } from './RouterCtrl'
@@ -41,6 +43,9 @@ export const ModalCtrl = {
         RouterCtrl.replace('Account')
       } else if (enableNetworkView) {
         RouterCtrl.replace('SelectNetwork')
+      } else if (CoreUtil.isMobile() && ClientCtrl.client().isInjectedProviderInstalled()) {
+        const { selectedChain } = OptionsCtrl.state
+        ClientCtrl.client().connectConnector('injected', selectedChain?.id)
       } else {
         RouterCtrl.replace('ConnectWallet')
       }

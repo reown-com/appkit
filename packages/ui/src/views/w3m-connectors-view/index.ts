@@ -1,6 +1,5 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { InjectedId } from '../../presets/EthereumPresets'
 import { DataUtil } from '../../utils/DataUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -11,24 +10,19 @@ export class W3mConnectorsView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
-  private async onConnectorWallet(id: string) {
-    await UiUtil.handleConnectorConnection(id)
+  private onExternal(id: string) {
+    UiUtil.handleConnectorConnection(id)
   }
 
-  private connectorWalletsTemplate() {
-    let wallets = DataUtil.externalWallets()
-
-    if (!window.ethereum) {
-      wallets = wallets.filter(({ id }) => id !== 'injected' && id !== InjectedId.metaMask)
-    }
+  private externalWalletsTemplate() {
+    const wallets = DataUtil.externalWallets()
 
     return wallets.map(
-      ({ name, id, ready }) => html`
+      wallet => html`
         <w3m-wallet-button
-          .installed=${['injected', 'metaMask'].includes(id) && ready}
-          name=${name}
-          walletId=${id}
-          .onClick=${async () => this.onConnectorWallet(id)}
+          name=${wallet.name}
+          walletId=${wallet.id}
+          .onClick=${() => this.onExternal(wallet.id)}
         ></w3m-wallet-button>
       `
     )
@@ -36,12 +30,12 @@ export class W3mConnectorsView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const connectors = this.connectorWalletsTemplate()
+    const template = this.externalWalletsTemplate()
 
     return html`
       <w3m-modal-header title="Other wallets"></w3m-modal-header>
       <w3m-modal-content>
-        <div class="w3m-grid">${connectors}</div>
+        <div class="w3m-grid">${template}</div>
       </w3m-modal-content>
     `
   }
