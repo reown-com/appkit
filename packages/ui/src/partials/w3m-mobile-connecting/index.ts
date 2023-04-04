@@ -6,8 +6,8 @@ import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
-@customElement('w3m-ios-connector-view')
-export class W3mIosConnectorView extends LitElement {
+@customElement('w3m-mobile-connecting')
+export class W3mMobileConnecting extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -68,8 +68,6 @@ export class W3mIosConnectorView extends LitElement {
     const universalUrl = mobile?.universal
 
     return html`
-      <w3m-modal-header title=${name}></w3m-modal-header>
-
       <w3m-modal-content>
         <w3m-connector-waiting
           walletId=${id}
@@ -125,6 +123,6 @@ export class W3mIosConnectorView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-ios-connector-view': W3mIosConnectorView
+    'w3m-mobile-connecting': W3mMobileConnecting
   }
 }

@@ -27,18 +27,20 @@ export class W3mConnectingView extends LitElement {
     } else if (isDesktop) {
       return html`<w3m-desktop-connecting></w3m-desktop-connecting>`
     } else if (isMobile) {
-      return html`todo`
+      return html`TODO`
     }
 
     return html`<w3m-install-wallet></w3m-install-wallet>`
   }
 
   private mobileTemplate() {
-    // 1. Check if has mobile wallet
-    // 2. Check if has web wallet
-    // 3. Fallback to install page
+    const { isMobile } = this.getSupportedPlatfroms()
 
-    return null
+    if (isMobile) {
+      return html`<w3m-mobile-connecting></w3m-mobile-connecting>`
+    }
+
+    return html`<w3m-install-wallet></w3m-install-wallet>`
   }
 
   // -- render ------------------------------------------------------- //
