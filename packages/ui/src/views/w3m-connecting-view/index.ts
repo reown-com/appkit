@@ -27,9 +27,11 @@ export class W3mConnectingView extends LitElement {
     } else if (isDesktop) {
       return html`<w3m-desktop-connecting></w3m-desktop-connecting>`
     } else if (isMobile) {
+      // TODO: New desktop mobile view
       return html`TODO`
     }
 
+    // TODO: New design for this case
     return html`<w3m-install-wallet></w3m-install-wallet>`
   }
 
@@ -40,6 +42,9 @@ export class W3mConnectingView extends LitElement {
       return html`<w3m-mobile-connecting></w3m-mobile-connecting>`
     }
 
+    // TODO: Web wallet handling
+
+    // TODO: New design for this case
     return html`<w3m-install-wallet></w3m-install-wallet>`
   }
 
