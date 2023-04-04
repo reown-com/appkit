@@ -40,7 +40,10 @@ export const ModalCtrl = {
         CoreUtil.isMobile() &&
         ClientCtrl.client().isInjectedProviderInstalled()
       ) {
-        ClientCtrl.client().connectConnector('injected', selectedChain?.id)
+        ClientCtrl.client()
+          .connectConnector('injected', selectedChain?.id)
+          .then(() => resolve())
+          .catch(() => resolve())
       }
 
       // Hanlde connection with modal ui
