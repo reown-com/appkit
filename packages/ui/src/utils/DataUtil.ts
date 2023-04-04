@@ -65,8 +65,7 @@ export const DataUtil = {
     const recentWalletId = DataUtil.recentWallet()?.id
     const existingIds = [...injectedIds, recentWalletId]
     const { recomendedWallets } = ExplorerCtrl.state
-    let wallets = [...recomendedWallets]
-    wallets = wallets.filter(wallet => !existingIds.includes(wallet.id))
+    const wallets = recomendedWallets.filter(wallet => !existingIds.includes(wallet.id))
 
     return wallets
   }
