@@ -56,6 +56,7 @@ export interface OptionsCtrlState {
   isCustomMobile: boolean
   isDataLoaded: boolean
   isUiLoaded: boolean
+  isInjectedMobile: boolean
   walletConnectVersion: 1 | 2
 }
 

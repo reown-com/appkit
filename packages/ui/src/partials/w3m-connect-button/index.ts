@@ -1,4 +1,4 @@
-import { AccountCtrl, ClientCtrl, ConfigCtrl, ModalCtrl } from '@web3modal/core'
+import { AccountCtrl, ClientCtrl, ConfigCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -49,12 +49,17 @@ export class W3mConnectButton extends LitElement {
   }
 
   private onConnect() {
-    this.loading = true
-    const { enableNetworkView } = ConfigCtrl.state
-    if (enableNetworkView) {
-      ModalCtrl.open({ route: 'SelectNetwork' })
+    const { selectedChain, isInjectedMobile } = OptionsCtrl.state
+    if (isInjectedMobile) {
+      ClientCtrl.client().connectConnector('injected', selectedChain?.id)
     } else {
-      ModalCtrl.open({ route: 'ConnectWallet' })
+      this.loading = true
+      const { enableNetworkView } = ConfigCtrl.state
+      if (enableNetworkView) {
+        ModalCtrl.open({ route: 'SelectNetwork' })
+      } else {
+        ModalCtrl.open({ route: 'ConnectWallet' })
+      }
     }
   }
 

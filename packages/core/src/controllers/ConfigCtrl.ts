@@ -43,6 +43,9 @@ export const ConfigCtrl = {
 
     if (!OptionsCtrl.state.isStandalone) {
       OptionsCtrl.setChains(ClientCtrl.client().chains)
+      OptionsCtrl.setIsInjectedMobile(
+        CoreUtil.isMobile() && ClientCtrl.client().isInjectedProviderInstalled()
+      )
     }
 
     if (config.defaultChain) {

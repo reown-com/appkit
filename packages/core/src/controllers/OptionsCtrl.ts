@@ -13,6 +13,7 @@ const state = proxy<OptionsCtrlState>({
   isCustomMobile: false,
   isDataLoaded: false,
   isUiLoaded: false,
+  isInjectedMobile: false,
   walletConnectVersion: 1
 })
 
@@ -71,5 +72,9 @@ export const OptionsCtrl = {
 
   setWalletConnectVersion(walletConnectVersion: OptionsCtrlState['walletConnectVersion']) {
     state.walletConnectVersion = walletConnectVersion
+  },
+
+  setIsInjectedMobile(isInjectedMobile: OptionsCtrlState['isInjectedMobile']) {
+    state.isInjectedMobile = isInjectedMobile
   }
 }

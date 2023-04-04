@@ -1,5 +1,12 @@
 import type { SwitchNetworkData } from '@web3modal/core'
-import { AccountCtrl, ClientCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
+import {
+  AccountCtrl,
+  ClientCtrl,
+  ModalCtrl,
+  OptionsCtrl,
+  RouterCtrl,
+  ToastCtrl
+} from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -13,7 +20,7 @@ export class W3mSelectNetworkView extends LitElement {
   // -- private ------------------------------------------------------ //
   private async onSelectChain(chain: SwitchNetworkData) {
     try {
-      const { selectedChain, walletConnectVersion } = OptionsCtrl.state
+      const { selectedChain, walletConnectVersion, isInjectedMobile } = OptionsCtrl.state
       const { isConnected } = AccountCtrl.state
       if (isConnected) {
         if (selectedChain?.id === chain.id) {
@@ -24,6 +31,8 @@ export class W3mSelectNetworkView extends LitElement {
         } else {
           RouterCtrl.push('SwitchNetwork', { SwitchNetwork: chain })
         }
+      } else if (isInjectedMobile) {
+        ModalCtrl.close()
       } else {
         RouterCtrl.push('ConnectWallet')
         OptionsCtrl.setSelectedChain(chain)
