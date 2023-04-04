@@ -29,7 +29,7 @@ export const ModalCtrl = {
 
   async open(options?: OpenOptions) {
     return new Promise<void>(resolve => {
-      const { isStandalone, isUiLoaded, isDataLoaded } = OptionsCtrl.state
+      const { isStandalone, isUiLoaded, isDataLoaded, selectedChain } = OptionsCtrl.state
       const { isConnected } = AccountCtrl.state
       const { enableNetworkView } = ConfigCtrl.state
 
@@ -37,15 +37,18 @@ export const ModalCtrl = {
         OptionsCtrl.setStandaloneUri(options?.uri)
         OptionsCtrl.setStandaloneChains(options?.standaloneChains)
         RouterCtrl.replace('ConnectWallet')
+      } else if (
+        CoreUtil.isMobile() &&
+        ClientCtrl.client().isInjectedProviderInstalled() &&
+        !isConnected
+      ) {
+        ClientCtrl.client().connectConnector('injected', selectedChain?.id)
       } else if (options?.route) {
         RouterCtrl.replace(options.route)
       } else if (isConnected) {
         RouterCtrl.replace('Account')
       } else if (enableNetworkView) {
         RouterCtrl.replace('SelectNetwork')
-      } else if (CoreUtil.isMobile() && ClientCtrl.client().isInjectedProviderInstalled()) {
-        const { selectedChain } = OptionsCtrl.state
-        ClientCtrl.client().connectConnector('injected', selectedChain?.id)
       } else {
         RouterCtrl.replace('ConnectWallet')
       }
