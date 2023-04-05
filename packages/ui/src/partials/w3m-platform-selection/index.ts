@@ -43,22 +43,38 @@ export class W3mPlatformSelection extends LitElement {
       <div>
         <slot></slot>
         ${this.isMobile
-          ? html`<w3m-button .onClick=${this.onMobile} .iconLeft=${SvgUtil.MOBILE_ICON}>
+          ? html`<w3m-button
+              .onClick=${this.onMobile}
+              .iconLeft=${SvgUtil.MOBILE_ICON}
+              variant="outline"
+            >
               Mobile
             </w3m-button>`
           : null}
         ${this.isInjected
-          ? html`<w3m-button .onClick=${this.onInjected} .iconLeft=${SvgUtil.WALLET_ICON}>
+          ? html`<w3m-button
+              .onClick=${this.onInjected}
+              .iconLeft=${SvgUtil.WALLET_ICON}
+              variant="outline"
+            >
               Browser
             </w3m-button>`
           : null}
         ${this.isDesktop
-          ? html`<w3m-button .onClick=${this.onDesktop} .iconLeft=${SvgUtil.DESKTOP_ICON}>
+          ? html`<w3m-button
+              .onClick=${this.onDesktop}
+              .iconLeft=${SvgUtil.DESKTOP_ICON}
+              variant="outline"
+            >
               Desktop
             </w3m-button>`
           : null}
         ${this.isWeb
-          ? html`<w3m-button .onClick=${this.onWeb} .iconLeft=${SvgUtil.MOBILE_ICON}>
+          ? html`<w3m-button
+              .onClick=${this.onWeb}
+              .iconLeft=${SvgUtil.MOBILE_ICON}
+              variant="outline"
+            >
               Web
             </w3m-button>`
           : null}

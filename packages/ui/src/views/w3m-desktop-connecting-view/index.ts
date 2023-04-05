@@ -24,14 +24,10 @@ export class W3mDesktopConnectingView extends LitElement {
   private onFormatAndRedirect(uri: string) {
     const { desktop, name } = CoreUtil.getWalletRouterData()
     const nativeUrl = desktop?.native
-    const universalUrl = desktop?.universal
 
     if (nativeUrl) {
       const href = CoreUtil.formatNativeUrl(nativeUrl, uri, name)
       CoreUtil.openHref(href, '_self')
-    } else if (universalUrl) {
-      const href = CoreUtil.formatUniversalUrl(universalUrl, uri, name)
-      CoreUtil.openHref(href, '_blank')
     }
   }
 
@@ -60,7 +56,11 @@ export class W3mDesktopConnectingView extends LitElement {
     const { isMobile, isInjected, isWeb } = UiUtil.getCachedRouterWalletPlatforms()
 
     return html`
-      <w3m-modal-header title=${name}></w3m-modal-header>
+      <w3m-modal-header
+        title=${name}
+        .onAction=${UiUtil.handleUriCopy}
+        .actionIcon=${SvgUtil.COPY_ICON}
+      ></w3m-modal-header>
 
       <w3m-modal-content>
         <w3m-connector-waiting
@@ -78,7 +78,6 @@ export class W3mDesktopConnectingView extends LitElement {
 
         <w3m-platform-selection .isMobile=${isMobile} .isInjected=${isInjected} .isWeb=${isWeb}>
           <w3m-button
-            variant="outline"
             .onClick=${async () => this.createConnectionAndWait()}
             .iconRight=${SvgUtil.RETRY_ICON}
           >

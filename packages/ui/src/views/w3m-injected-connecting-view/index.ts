@@ -57,7 +57,6 @@ export class W3mInjectedConnectingView extends LitElement {
 
         <w3m-platform-selection .isMobile=${isMobile} .isDesktop=${isDesktop} .isWeb=${isWeb}>
           <w3m-button
-            variant="outline"
             .onClick=${this.onConnect.bind(this)}
             .disabled=${!this.isError}
             .iconRight=${SvgUtil.RETRY_ICON}
