@@ -7,9 +7,13 @@ w3m-info-footer {
 }
 
 w3m-button {
-  margin-top: 15px;
+  margin: 15px 5px 0 5px;
 }
 
 w3m-text {
   text-align: center;
+}
+
+div {
+  display: flex;
 }

@@ -29,19 +29,19 @@ input::placeholder {
 }
 
 svg {
-  margin-right: 4px;
+  margin: 2px 4px 0 0;
 }
 
 .w3m-placeholder {
   top: 0;
-  left: 50%;
+  left: calc(50% - 12px);
   transform: translateX(-50%);
   transition: 0.2s all ease;
   pointer-events: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: calc(100% - 2px);
   width: fit-content;
   position: relative;
 }

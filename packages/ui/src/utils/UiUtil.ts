@@ -12,6 +12,7 @@ import type { LitElement } from 'lit'
 import { ChainPresets } from '../presets/ChainPresets'
 import { EthereumPresets } from '../presets/EthereumPresets'
 import { TokenPresets } from '../presets/TokenPresets'
+import { DataUtil } from './DataUtil'
 
 export const UiUtil = {
   MOBILE_BREAKPOINT: 600,
@@ -264,5 +265,15 @@ export const UiUtil = {
 
   openWalletExplorerUrl() {
     CoreUtil.openHref(UiUtil.EXPLORER_WALLET_URL, '_blank')
+  },
+
+  getCachedRouterWalletPlatforms() {
+    const { id, desktop, mobile } = CoreUtil.getConnectingRouterData()
+    const injectedWallets = DataUtil.injectedWallets()
+    const isInjected = injectedWallets.some(wallet => wallet.id === id)
+    const isDesktop = Boolean(desktop?.native ?? desktop?.universal)
+    const isMobile = Boolean(mobile?.native ?? mobile?.universal)
+
+    return { isInjected, isDesktop, isMobile }
   }
 }
