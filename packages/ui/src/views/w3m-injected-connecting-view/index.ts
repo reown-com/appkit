@@ -6,8 +6,8 @@ import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
-@customElement('w3m-injected-connecting')
-export class W3mInjectedConnecting extends LitElement {
+@customElement('w3m-injected-connecting-view')
+export class W3mInjectedConnectingView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -34,7 +34,7 @@ export class W3mInjectedConnecting extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { name, id, image_id } = CoreUtil.getConnectingRouterData()
+    const { name, id, image_id } = CoreUtil.getWalletRouterData()
     const { isMobile, isDesktop, isWeb } = UiUtil.getCachedRouterWalletPlatforms()
 
     return html`
@@ -78,6 +78,6 @@ export class W3mInjectedConnecting extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-injected-connecting': W3mInjectedConnecting
+    'w3m-injected-connecting-view': W3mInjectedConnectingView
   }
 }

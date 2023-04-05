@@ -269,7 +269,7 @@ export const UiUtil = {
   },
 
   getCachedRouterWalletPlatforms() {
-    const { id, desktop, mobile, injected } = CoreUtil.getConnectingRouterData()
+    const { id, desktop, mobile, injected } = CoreUtil.getWalletRouterData()
     const injectedWallets = DataUtil.injectedWallets()
     const isInjected = Boolean(injected?.length)
     const isInjectedInstalled = injectedWallets.some(wallet => wallet.id === id)
@@ -288,26 +288,24 @@ export const UiUtil = {
 
     if (isMoMobileDevice) {
       if (isMobile) {
-        // TODO: Go to mobile connecting view
+        RouterCtrl.push('MobileConnecting')
       } else if (isWeb) {
         // TODO: Go to web connecting view
       } else {
         // TODO: Handle no installed wallets case
       }
+    } else if (isInjectedInstalled) {
+      RouterCtrl.push('InjectedConnecting')
+    } else if (isDesktop) {
+      RouterCtrl.push('DesktopConnecting')
+    } else if (isWeb) {
+      // TODO: Go to web connecting view
+    } else if (!isMobile) {
+      // TODO: Go to desktop mobile connecting view
+    } else if (isInjected) {
+      RouterCtrl.push('InjectedConnecting')
     } else {
-      if (isInjectedInstalled) {
-        // TODO: Go to injected connecting view
-      } else if (isDesktop) {
-        // TODO: Go to desktop connecting view
-      } else if (isWeb) {
-        // TODO: Go to web connecting view
-      } else if (!isMobile) {
-        // TODO: Go to desktop mobile connecting view
-      } else if (isInjected) {
-        // TODO: Go to injected connecting view
-      } else {
-        // TODO: Handle no installed wallets case
-      }
+      // TODO: Handle no installed wallets case
     }
   }
 }

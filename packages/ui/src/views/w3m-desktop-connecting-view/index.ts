@@ -6,8 +6,8 @@ import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
-@customElement('w3m-desktop-connecting')
-export class W3mDesktopConnecting extends LitElement {
+@customElement('w3m-desktop-connecting-view')
+export class W3mDesktopConnectingView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -22,7 +22,7 @@ export class W3mDesktopConnecting extends LitElement {
   // -- private ------------------------------------------------------ //
 
   private onFormatAndRedirect(uri: string) {
-    const { desktop, name } = CoreUtil.getConnectingRouterData()
+    const { desktop, name } = CoreUtil.getWalletRouterData()
     const nativeUrl = desktop?.native
     const universalUrl = desktop?.universal
 
@@ -38,7 +38,7 @@ export class W3mDesktopConnecting extends LitElement {
   private async createConnectionAndWait() {
     this.isError = false
     const { standaloneUri } = OptionsCtrl.state
-    const routerData = CoreUtil.getConnectingRouterData()
+    const routerData = CoreUtil.getWalletRouterData()
     UiUtil.setRecentWallet(routerData)
     if (standaloneUri) {
       this.onFormatAndRedirect(standaloneUri)
@@ -56,7 +56,7 @@ export class W3mDesktopConnecting extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { name, id, image_id } = CoreUtil.getConnectingRouterData()
+    const { name, id, image_id } = CoreUtil.getWalletRouterData()
 
     return html`
       <w3m-modal-header title=${name}></w3m-modal-header>
@@ -91,6 +91,6 @@ export class W3mDesktopConnecting extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-desktop-connecting': W3mDesktopConnecting
+    'w3m-desktop-connecting-view': W3mDesktopConnectingView
   }
 }

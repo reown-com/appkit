@@ -12,21 +12,21 @@ export class W3mInstallWallet extends LitElement {
   // -- private ------------------------------------------------------ //
 
   private onInstall() {
-    const { homepage } = CoreUtil.getConnectingRouterData()
+    const { homepage } = CoreUtil.getWalletRouterData()
     if (homepage) {
       CoreUtil.openHref(homepage, '_blank')
     }
   }
 
   private onMobile() {
-    const { name } = CoreUtil.getConnectingRouterData()
+    const { name } = CoreUtil.getWalletRouterData()
     RouterCtrl.push('ConnectWallet')
     ToastCtrl.openToast(`Scan the code with ${name}`, 'success')
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { name, id, mobile, image_id } = CoreUtil.getConnectingRouterData()
+    const { name, id, mobile, image_id } = CoreUtil.getWalletRouterData()
     const isMobile = mobile && (mobile.native || mobile.universal)
 
     return html`

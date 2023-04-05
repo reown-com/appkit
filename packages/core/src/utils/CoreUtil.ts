@@ -92,10 +92,10 @@ export const CoreUtil = {
     }
   },
 
-  getConnectingRouterData() {
-    const routerData = RouterCtrl.state.data?.Connecting
+  getWalletRouterData() {
+    const routerData = RouterCtrl.state.data?.Wallet
     if (!routerData) {
-      throw new Error('Missing "Connecting" view data')
+      throw new Error('Missing "Wallet" view data')
     }
 
     return routerData

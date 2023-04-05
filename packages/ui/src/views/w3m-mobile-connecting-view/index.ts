@@ -6,8 +6,8 @@ import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
-@customElement('w3m-mobile-connecting')
-export class W3mMobileConnecting extends LitElement {
+@customElement('w3m-mobile-connecting-view')
+export class W3mMobileConnectingView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -22,7 +22,7 @@ export class W3mMobileConnecting extends LitElement {
   // -- private ------------------------------------------------------ //
 
   private onFormatAndRedirect(uri: string, forceUniversalUrl = false) {
-    const { mobile, name } = CoreUtil.getConnectingRouterData()
+    const { mobile, name } = CoreUtil.getWalletRouterData()
     const nativeUrl = mobile?.native
     const universalUrl = mobile?.universal
 
@@ -38,7 +38,7 @@ export class W3mMobileConnecting extends LitElement {
   private async createConnectionAndWait(forceUniversalUrl = false) {
     this.isError = false
     const { standaloneUri } = OptionsCtrl.state
-    const routerData = CoreUtil.getConnectingRouterData()
+    const routerData = CoreUtil.getWalletRouterData()
     UiUtil.setRecentWallet(routerData)
     if (standaloneUri) {
       this.onFormatAndRedirect(standaloneUri)
@@ -62,7 +62,7 @@ export class W3mMobileConnecting extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { name, id, image_id, app, mobile } = CoreUtil.getConnectingRouterData()
+    const { name, id, image_id, app, mobile } = CoreUtil.getWalletRouterData()
     const downloadUrl = app?.ios
     const universalUrl = mobile?.universal
 
@@ -124,6 +124,6 @@ export class W3mMobileConnecting extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-mobile-connecting': W3mMobileConnecting
+    'w3m-mobile-connecting-view': W3mMobileConnectingView
   }
 }

@@ -1,3 +1,4 @@
+import { CoreUtil, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -16,19 +17,24 @@ export class W3mPlatformSelection extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private onMobile() {
-    // TODO go to mobile desktop view
+    const isMobile = CoreUtil.isMobile()
+    if (isMobile) {
+      RouterCtrl.push('MobileConnecting')
+    } else {
+      RouterCtrl.push('MobileQrcodeConnecting')
+    }
   }
 
   private onInjected() {
-    // TODO go to mobile desktop view
+    RouterCtrl.push('InjectedConnecting')
   }
 
   private onDesktop() {
-    // TODO go to mobile desktop view
+    RouterCtrl.push('DesktopConnecting')
   }
 
   private onWeb() {
-    // TODO go to mobile desktop view
+    RouterCtrl.push('WebConnecting')
   }
 
   // -- render ------------------------------------------------------- //

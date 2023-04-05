@@ -66,11 +66,11 @@ export class W3mModalRouter extends LitElement {
       case 'SelectNetwork':
         return html`<w3m-select-network-view></w3m-select-network-view>`
       case 'InjectedConnecting':
-        return null
+        return html`<w3m-injected-connecting-view></w3m-injected-connecting-view>`
       case 'DesktopConnecting':
-        return null
+        return html`<w3m-desktop-connecting-view></w3m-desktop-connecting-view>`
       case 'MobileConnecting':
-        return null
+        return html`<w3m-mobile-connecting-view></w3m-mobile-connecting-view>`
       case 'WebConnecting':
         return null
       case 'MobileQrcodeConnecting':
