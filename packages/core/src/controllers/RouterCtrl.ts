@@ -37,5 +37,9 @@ export const RouterCtrl = {
       const [last] = state.history.slice(-1)
       state.view = last
     }
+  },
+
+  setData(data: RouterCtrlState['data']) {
+    state.data = data
   }
 }

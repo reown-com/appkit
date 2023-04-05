@@ -1,4 +1,4 @@
-import type { ConnectingData } from '@web3modal/core'
+import type { WalletData } from '@web3modal/core'
 import {
   ClientCtrl,
   ConfigCtrl,
@@ -6,6 +6,7 @@ import {
   ExplorerCtrl,
   ModalCtrl,
   OptionsCtrl,
+  RouterCtrl,
   ToastCtrl
 } from '@web3modal/core'
 import type { LitElement } from 'lit'
@@ -109,7 +110,7 @@ export const UiUtil = {
     }
   },
 
-  async handleMobileLinking(wallet: ConnectingData) {
+  async handleMobileLinking(wallet: WalletData) {
     CoreUtil.removeWalletConnectDeepLink()
     const { standaloneUri, selectedChain } = OptionsCtrl.state
     const { mobile, name } = wallet
@@ -238,7 +239,7 @@ export const UiUtil = {
     }
   },
 
-  setRecentWallet(wallet: ConnectingData) {
+  setRecentWallet(wallet: WalletData) {
     const { walletConnectVersion } = OptionsCtrl.state
     localStorage.setItem(
       UiUtil.W3M_RECENT_WALLET_DATA,
@@ -252,7 +253,7 @@ export const UiUtil = {
       const { walletConnectVersion } = OptionsCtrl.state
       const json = JSON.parse(wallet)
       if (json[walletConnectVersion]) {
-        return json[walletConnectVersion] as ConnectingData
+        return json[walletConnectVersion] as WalletData
       }
     }
 
@@ -277,5 +278,36 @@ export const UiUtil = {
     const isMobile = Boolean(mobile?.native ?? mobile?.universal)
 
     return { isInjectedInstalled, isInjected, isDesktop, isMobile, isWeb }
+  },
+
+  goToConnectingView(wallet: WalletData) {
+    RouterCtrl.setData({ Wallet: wallet })
+    const isMoMobileDevice = CoreUtil.isMobile()
+    const { isDesktop, isWeb, isMobile, isInjectedInstalled, isInjected } =
+      UiUtil.getCachedRouterWalletPlatforms()
+
+    if (isMoMobileDevice) {
+      if (isMobile) {
+        // TODO: Go to mobile connecting view
+      } else if (isWeb) {
+        // TODO: Go to web connecting view
+      } else {
+        // TODO: Handle no installed wallets case
+      }
+    } else {
+      if (isInjectedInstalled) {
+        // TODO: Go to injected connecting view
+      } else if (isDesktop) {
+        // TODO: Go to desktop connecting view
+      } else if (isWeb) {
+        // TODO: Go to web connecting view
+      } else if (!isMobile) {
+        // TODO: Go to desktop mobile connecting view
+      } else if (isInjected) {
+        // TODO: Go to injected connecting view
+      } else {
+        // TODO: Handle no installed wallets case
+      }
+    }
   }
 }

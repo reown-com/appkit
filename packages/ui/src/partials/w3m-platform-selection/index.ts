@@ -15,7 +15,19 @@ export class W3mPlatformSelection extends LitElement {
   @property() public isWeb = false
 
   // -- private ------------------------------------------------------ //
-  private onGoToMobile() {
+  private onMobile() {
+    // TODO go to mobile desktop view
+  }
+
+  private onInjected() {
+    // TODO go to mobile desktop view
+  }
+
+  private onDesktop() {
+    // TODO go to mobile desktop view
+  }
+
+  private onWeb() {
     // TODO go to mobile desktop view
   }
 
@@ -23,22 +35,22 @@ export class W3mPlatformSelection extends LitElement {
   protected render() {
     return html`
       ${this.isMobile
-        ? html`<w3m-button .onClick=${this.onGoToMobile} .iconLeft=${SvgUtil.MOBILE_ICON}>
+        ? html`<w3m-button .onClick=${this.onMobile} .iconLeft=${SvgUtil.MOBILE_ICON}>
             Mobile
           </w3m-button>`
         : null}
       ${this.isInjected
-        ? html`<w3m-button .onClick=${this.onGoToMobile} .iconLeft=${SvgUtil.WALLET_ICON}>
+        ? html`<w3m-button .onClick=${this.onInjected} .iconLeft=${SvgUtil.WALLET_ICON}>
             Browser
           </w3m-button>`
         : null}
       ${this.isDesktop
-        ? html`<w3m-button .onClick=${this.onGoToMobile} .iconLeft=${SvgUtil.DESKTOP_ICON}>
+        ? html`<w3m-button .onClick=${this.onDesktop} .iconLeft=${SvgUtil.DESKTOP_ICON}>
             Desktop
           </w3m-button>`
         : null}
       ${this.isWeb
-        ? html`<w3m-button .onClick=${this.onGoToMobile} .iconLeft=${SvgUtil.MOBILE_ICON}>
+        ? html`<w3m-button .onClick=${this.onWeb} .iconLeft=${SvgUtil.MOBILE_ICON}>
             Web
           </w3m-button>`
         : null}

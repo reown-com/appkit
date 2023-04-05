@@ -1,5 +1,5 @@
 import type { Listing, MobileWallet } from '@web3modal/core'
-import { CoreUtil, ExplorerCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
+import { CoreUtil, ExplorerCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -92,7 +92,7 @@ export class W3mWalletExplorerView extends LitElement {
     if (CoreUtil.isAndroid()) {
       UiUtil.handleMobileLinking(routerData)
     } else {
-      RouterCtrl.push('Connecting', { Connecting: routerData })
+      UiUtil.goToConnectingView(routerData)
     }
   }
 
@@ -100,9 +100,7 @@ export class W3mWalletExplorerView extends LitElement {
     if (CoreUtil.isAndroid()) {
       UiUtil.handleMobileLinking(listing)
     } else {
-      RouterCtrl.push('Connecting', {
-        Connecting: listing
-      })
+      UiUtil.goToConnectingView(listing)
     }
   }
 

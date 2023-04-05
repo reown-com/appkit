@@ -65,8 +65,16 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-connect-wallet-view></w3m-connect-wallet-view>`
       case 'SelectNetwork':
         return html`<w3m-select-network-view></w3m-select-network-view>`
-      case 'Connecting':
-        return html`<w3m-connecting-view></w3m-connecting-view>`
+      case 'InjectedConnecting':
+        return null
+      case 'DesktopConnecting':
+        return null
+      case 'MobileConnecting':
+        return null
+      case 'WebConnecting':
+        return null
+      case 'MobileQrcodeConnecting':
+        return null
       case 'GetWallet':
         return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
       case 'WalletExplorer':

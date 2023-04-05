@@ -1,5 +1,5 @@
-import type { ConnectingData } from '@web3modal/core'
-import { OptionsCtrl, RouterCtrl } from '@web3modal/core'
+import type { WalletData } from '@web3modal/core'
+import { OptionsCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { DataUtil } from '../../utils/DataUtil'
@@ -13,8 +13,8 @@ export class W3mDesktopWalletSelection extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
-  private onConnecting(data: ConnectingData) {
-    RouterCtrl.push('Connecting', { Connecting: data })
+  private onConnecting(data: WalletData) {
+    UiUtil.goToConnectingView(data)
   }
 
   private onExternal(id: string) {

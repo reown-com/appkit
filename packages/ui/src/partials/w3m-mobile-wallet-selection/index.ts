@@ -1,4 +1,4 @@
-import type { ConnectingData } from '@web3modal/core'
+import type { WalletData } from '@web3modal/core'
 import { OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
@@ -17,8 +17,8 @@ export class W3mMobileWalletSelection extends LitElement {
     RouterCtrl.push('Qrcode')
   }
 
-  private onConnecting(data: ConnectingData) {
-    RouterCtrl.push('Connecting', { Connecting: data })
+  private onConnecting(data: WalletData) {
+    UiUtil.goToConnectingView(data)
   }
 
   private onExternal(id: string) {
