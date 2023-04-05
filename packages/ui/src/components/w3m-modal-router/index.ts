@@ -30,11 +30,6 @@ export class W3mModalRouter extends LitElement {
       const newHeight = `${conetnt.contentRect.height}px`
       if (this.oldHeight !== '0px') {
         animate(this.routerEl, { height: [this.oldHeight, newHeight] }, { duration: 0.2 })
-        animate(
-          this.routerEl,
-          { opacity: [0, 1], scale: [0.99, 1] },
-          { duration: 0.37, delay: 0.03 }
-        )
       }
       this.oldHeight = newHeight
     })
@@ -97,6 +92,7 @@ export class W3mModalRouter extends LitElement {
   private async onChangeRoute() {
     await animate(this.routerEl, { opacity: [1, 0], scale: [1, 1.02] }, { duration: 0.15 }).finished
     this.view = RouterCtrl.state.view
+    animate(this.routerEl, { opacity: [0, 1], scale: [0.99, 1] }, { duration: 0.37, delay: 0.03 })
   }
 
   // -- render ------------------------------------------------------- //
