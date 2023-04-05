@@ -26,7 +26,7 @@ export const RouterCtrl = {
     }
   },
 
-  replace(view: RouterCtrlState['view']) {
+  reset(view: RouterCtrlState['view']) {
     state.view = view
     state.history = [view]
   },

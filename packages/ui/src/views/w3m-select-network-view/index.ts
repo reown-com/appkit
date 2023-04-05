@@ -24,10 +24,10 @@ export class W3mSelectNetworkView extends LitElement {
       const { isConnected } = AccountCtrl.state
       if (isConnected) {
         if (selectedChain?.id === chain.id) {
-          RouterCtrl.replace('Account')
+          RouterCtrl.reset('Account')
         } else if (walletConnectVersion === 2) {
           await ClientCtrl.client().switchNetwork({ chainId: chain.id })
-          RouterCtrl.replace('Account')
+          RouterCtrl.reset('Account')
         } else {
           RouterCtrl.push('SwitchNetwork', { SwitchNetwork: chain })
         }

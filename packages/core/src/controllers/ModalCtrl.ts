@@ -34,15 +34,15 @@ export const ModalCtrl = {
       if (isStandalone) {
         OptionsCtrl.setStandaloneUri(options?.uri)
         OptionsCtrl.setStandaloneChains(options?.standaloneChains)
-        RouterCtrl.replace('ConnectWallet')
+        RouterCtrl.reset('ConnectWallet')
       } else if (options?.route) {
-        RouterCtrl.replace(options.route)
+        RouterCtrl.reset(options.route)
       } else if (isConnected) {
-        RouterCtrl.replace('Account')
+        RouterCtrl.reset('Account')
       } else if (enableNetworkView) {
-        RouterCtrl.replace('SelectNetwork')
+        RouterCtrl.reset('SelectNetwork')
       } else {
-        RouterCtrl.replace('ConnectWallet')
+        RouterCtrl.reset('ConnectWallet')
       }
 
       // Open modal if essential async data is ready

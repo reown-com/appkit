@@ -26,7 +26,7 @@ export class W3mSwitchNetworkView extends LitElement {
       const chain = CoreUtil.getSwitchNetworkRouterData()
       await ClientCtrl.client().switchNetwork({ chainId: chain.id })
       OptionsCtrl.setSelectedChain(chain)
-      RouterCtrl.replace('Account')
+      RouterCtrl.reset('Account')
     } catch {
       this.isError = true
     }
