@@ -6,8 +6,8 @@ import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
-@customElement('w3m-desktop-connecting-view')
-export class W3mDesktopConnectingView extends LitElement {
+@customElement('w3m-web-connecting-view')
+export class W3mWebConnectingView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -23,11 +23,11 @@ export class W3mDesktopConnectingView extends LitElement {
 
   private onFormatAndRedirect(uri: string) {
     const { desktop, name } = CoreUtil.getWalletRouterData()
-    const nativeUrl = desktop?.native
+    const universalUrl = desktop?.universal
 
-    if (nativeUrl) {
-      const href = CoreUtil.formatNativeUrl(nativeUrl, uri, name)
-      CoreUtil.openHref(href, '_self')
+    if (universalUrl) {
+      const href = CoreUtil.formatUniversalUrl(universalUrl, uri, name)
+      CoreUtil.openHref(href, '_blank')
     }
   }
 
@@ -53,7 +53,7 @@ export class W3mDesktopConnectingView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { name, id, image_id } = CoreUtil.getWalletRouterData()
-    const { isMobile, isInjected, isWeb } = UiUtil.getCachedRouterWalletPlatforms()
+    const { isMobile, isInjected, isDesktop } = UiUtil.getCachedRouterWalletPlatforms()
 
     return html`
       <w3m-modal-header
@@ -73,10 +73,14 @@ export class W3mDesktopConnectingView extends LitElement {
 
       <w3m-info-footer>
         <w3m-text color="secondary" variant="small-thin">
-          ${`Connection can continue loading if ${name} is not installed on your device`}
+          ${`To finish connecting, continue in ${name} web app and come back`}
         </w3m-text>
 
-        <w3m-platform-selection .isMobile=${isMobile} .isInjected=${isInjected} .isWeb=${isWeb}>
+        <w3m-platform-selection
+          .isMobile=${isMobile}
+          .isInjected=${isInjected}
+          .isDesktop=${isDesktop}
+        >
           <w3m-button
             .onClick=${async () => this.createConnectionAndWait()}
             .iconRight=${SvgUtil.RETRY_ICON}
@@ -91,6 +95,6 @@ export class W3mDesktopConnectingView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-desktop-connecting-view': W3mDesktopConnectingView
+    'w3m-web-connecting-view': W3mWebConnectingView
   }
 }

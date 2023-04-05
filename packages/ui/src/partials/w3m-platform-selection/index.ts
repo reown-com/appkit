@@ -72,7 +72,7 @@ export class W3mPlatformSelection extends LitElement {
         ${this.isWeb
           ? html`<w3m-button
               .onClick=${this.onWeb}
-              .iconLeft=${SvgUtil.MOBILE_ICON}
+              .iconLeft=${SvgUtil.GLOBE_ICON}
               variant="outline"
             >
               Web

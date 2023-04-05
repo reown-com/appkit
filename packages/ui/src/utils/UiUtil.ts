@@ -291,7 +291,7 @@ export const UiUtil = {
       if (isMobile) {
         RouterCtrl.push('MobileConnecting')
       } else if (isWeb) {
-        // TODO: Go to web connecting view
+        RouterCtrl.push('WebConnecting')
       } else {
         // TODO: Handle no installed wallets case
       }
@@ -303,7 +303,7 @@ export const UiUtil = {
     } else if (isDesktop) {
       RouterCtrl.push('DesktopConnecting')
     } else if (isWeb) {
-      // TODO: Go to web connecting view
+      RouterCtrl.push('WebConnecting')
     } else if (!isMobile) {
       // TODO: Go to desktop mobile connecting view
     } else if (isInjected) {
