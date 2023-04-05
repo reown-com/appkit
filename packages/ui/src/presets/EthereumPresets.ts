@@ -35,7 +35,8 @@ export const enum InjectedId {
   tokenary = 'tokenary',
   '1inch' = '1inch',
   kuCoinWallet = 'kuCoinWallet',
-  ledger = 'ledger'
+  ledger = 'ledger',
+  dawn = 'dawn'
 }
 
 // -- presets ------------------------------------------------------ //
@@ -123,6 +124,12 @@ export const EthereumPresets = {
       url: 'https://brave.com/wallet',
       isInjected: true
     },
+    [InjectedId.dawn]: {
+      name: 'Dawn',
+      icon: '',
+      url: 'https://apps.apple.com/us/app/dawn-ethereum-wallet/id1673143782',
+      isInjected: true
+    },
     [InjectedId.frame]: {
       name: 'Frame',
       icon: 'cd492418-ea85-4ef1-aeed-1c9e20b58900',
@@ -186,6 +193,7 @@ export const EthereumPresets = {
     if (ethereum.isTokenary) return InjectedId.tokenary
     if (ethereum.isOneInchIOSWallet || ethereum.isOneInchAndroidWallet) return InjectedId['1inch']
     if (ethereum.isKuCoinWallet) return InjectedId.kuCoinWallet
+    if (ethereum.isDawn) return InjectedId.dawn
     if (ethereum.isMetaMask) return InjectedId.metaMask
 
     return 'injected'
