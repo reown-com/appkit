@@ -12,15 +12,21 @@ export class W3mConnectingView extends LitElement {
   // -- private ------------------------------------------------------ //
 
   private desktopTemplate() {
-    const { isInjected, isDesktop, isMobile } = UiUtil.getCachedRouterWalletPlatforms()
+    const { isInjected, isInjectedInstalled, isDesktop, isMobile, isWeb } =
+      UiUtil.getCachedRouterWalletPlatforms()
 
-    if (isInjected) {
+    if (isInjectedInstalled) {
       return html`<w3m-injected-connecting></w3m-injected-connecting>`
     } else if (isDesktop) {
       return html`<w3m-desktop-connecting></w3m-desktop-connecting>`
-    } else if (isMobile) {
+    } else if (isWeb) {
+      // TODO: New web wallet view
+      return html`TODO WEB`
+    } else if (!isMobile) {
       // TODO: New desktop mobile view
-      return html`TODO`
+      return html`TODO MOBILE`
+    } else if (isInjected) {
+      return html`<w3m-injected-connecting></w3m-injected-connecting>`
     }
 
     // TODO: New design for this case
@@ -28,13 +34,14 @@ export class W3mConnectingView extends LitElement {
   }
 
   private mobileTemplate() {
-    const { isMobile } = UiUtil.getCachedRouterWalletPlatforms()
+    const { isMobile, isWeb } = UiUtil.getCachedRouterWalletPlatforms()
 
     if (isMobile) {
       return html`<w3m-mobile-connecting></w3m-mobile-connecting>`
+    } else if (isWeb) {
+      // TODO: New web wallet view
+      return html`TODO`
     }
-
-    // TODO: Web wallet handling
 
     // TODO: New design for this case
     return html`<w3m-install-wallet></w3m-install-wallet>`
@@ -42,14 +49,9 @@ export class W3mConnectingView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const routerData = CoreUtil.getConnectingRouterData()
-    const { name } = routerData
     const isMobile = CoreUtil.isMobile()
 
-    return html`
-      <w3m-modal-header title=${name}></w3m-modal-header>
-      ${isMobile ? this.mobileTemplate() : this.desktopTemplate()}
-    `
+    return html` ${isMobile ? this.mobileTemplate() : this.desktopTemplate()} `
   }
 }
 

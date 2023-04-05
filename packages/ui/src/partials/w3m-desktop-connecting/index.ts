@@ -1,4 +1,4 @@
-import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
+import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -11,7 +11,6 @@ export class W3mDesktopConnecting extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
-  @state() private uri = ''
   @state() private isError = false
 
   // -- lifecycle ---------------------------------------------------- //
@@ -46,7 +45,6 @@ export class W3mDesktopConnecting extends LitElement {
     } else {
       try {
         await ClientCtrl.client().connectWalletConnect(uri => {
-          this.uri = uri
           this.onFormatAndRedirect(uri)
         }, OptionsCtrl.state.selectedChain?.id)
         ModalCtrl.close()
@@ -56,24 +54,13 @@ export class W3mDesktopConnecting extends LitElement {
     }
   }
 
-  private onConnectWithMobile() {
-    RouterCtrl.push('Qrcode')
-  }
-
-  private onGoToWallet() {
-    const { homepage, name } = CoreUtil.getConnectingRouterData()
-    if (homepage) {
-      const href = CoreUtil.formatUniversalUrl(homepage, this.uri, name)
-      CoreUtil.openHref(href, '_blank')
-    }
-  }
-
   // -- render ------------------------------------------------------- //
   protected render() {
-    const routerData = CoreUtil.getConnectingRouterData()
-    const { name, homepage, id, image_id } = routerData
+    const { name, id, image_id } = CoreUtil.getConnectingRouterData()
 
     return html`
+      <w3m-modal-header title=${name}></w3m-modal-header>
+
       <w3m-modal-content>
         <w3m-connector-waiting
           walletId=${id}
@@ -96,26 +83,6 @@ export class W3mDesktopConnecting extends LitElement {
           >
             Retry
           </w3m-button>
-
-          ${homepage
-            ? html`
-                <w3m-button
-                  variant="outline"
-                  .onClick=${this.onGoToWallet.bind(this)}
-                  .iconLeft=${SvgUtil.ARROW_UP_RIGHT_ICON}
-                >
-                  Go to Wallet
-                </w3m-button>
-              `
-            : html`
-                <w3m-button
-                  variant="outline"
-                  .onClick=${this.onConnectWithMobile}
-                  .iconLeft=${SvgUtil.MOBILE_ICON}
-                >
-                  Use Mobile
-                </w3m-button>
-              `}
         </div>
       </w3m-info-footer>
     `

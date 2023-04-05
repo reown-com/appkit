@@ -22,8 +22,6 @@ export class W3mInjectedConnecting extends LitElement {
   // -- private ------------------------------------------------------ //
   private readonly connector = ClientCtrl.client().getConnectorById('injected')
 
-  private onGoToMobile() {}
-
   private async onConnect() {
     const { ready } = this.connector
     if (ready) {
@@ -36,15 +34,17 @@ export class W3mInjectedConnecting extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const routerData = CoreUtil.getConnectingRouterData()
-    const { isMobile } = UiUtil.getCachedRouterWalletPlatforms()
+    const { name, id, image_id } = CoreUtil.getConnectingRouterData()
+    const { isMobile, isDesktop, isWeb } = UiUtil.getCachedRouterWalletPlatforms()
 
     return html`
+      <w3m-modal-header title=${name}></w3m-modal-header>
+
       <w3m-modal-content>
         <w3m-connector-waiting
-          walletId=${routerData.id}
-          imageId=${routerData.image_id}
-          label=${`Continue in ${routerData.name}...`}
+          walletId=${id}
+          imageId=${image_id}
+          label=${`Continue in ${name}...`}
           .isError=${this.isError}
         ></w3m-connector-waiting>
       </w3m-modal-content>
@@ -65,11 +65,11 @@ export class W3mInjectedConnecting extends LitElement {
             Retry
           </w3m-button>
 
-          ${isMobile
-            ? html`<w3m-button .onClick=${this.onGoToMobile} .iconLeft=${SvgUtil.MOBILE_ICON}>
-                Mobile
-              </w3m-button>`
-            : null}
+          <w3m-platform-selection
+            .isMobile=${isMobile}
+            .isDesktop=${isDesktop}
+            .isWeb=${isWeb}
+          ></w3m-platform-selection>
         </div>
       </w3m-info-footer>
     `

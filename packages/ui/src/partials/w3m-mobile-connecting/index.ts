@@ -62,12 +62,13 @@ export class W3mMobileConnecting extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const routerData = CoreUtil.getConnectingRouterData()
-    const { name, id, image_id, app, mobile } = routerData
+    const { name, id, image_id, app, mobile } = CoreUtil.getConnectingRouterData()
     const downloadUrl = app?.ios
     const universalUrl = mobile?.universal
 
     return html`
+      <w3m-modal-header title=${name}></w3m-modal-header>
+
       <w3m-modal-content>
         <w3m-connector-waiting
           walletId=${id}

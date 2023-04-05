@@ -268,12 +268,14 @@ export const UiUtil = {
   },
 
   getCachedRouterWalletPlatforms() {
-    const { id, desktop, mobile } = CoreUtil.getConnectingRouterData()
+    const { id, desktop, mobile, injected } = CoreUtil.getConnectingRouterData()
     const injectedWallets = DataUtil.injectedWallets()
-    const isInjected = injectedWallets.some(wallet => wallet.id === id)
-    const isDesktop = Boolean(desktop?.native ?? desktop?.universal)
+    const isInjected = Boolean(injected?.length)
+    const isInjectedInstalled = injectedWallets.some(wallet => wallet.id === id)
+    const isDesktop = Boolean(desktop?.native)
+    const isWeb = Boolean(desktop?.universal)
     const isMobile = Boolean(mobile?.native ?? mobile?.universal)
 
-    return { isInjected, isDesktop, isMobile }
+    return { isInjectedInstalled, isInjected, isDesktop, isMobile, isWeb }
   }
 }

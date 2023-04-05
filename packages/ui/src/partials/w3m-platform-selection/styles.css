@@ -1,0 +1,7 @@
+:host {
+  display: flex;
+}
+
+w3m-button {
+  margin: 0 5px;
+}
