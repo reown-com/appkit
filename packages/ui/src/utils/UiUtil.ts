@@ -286,6 +286,7 @@ export const UiUtil = {
     const { isDesktop, isWeb, isMobile, isInjectedInstalled, isInjected } =
       UiUtil.getCachedRouterWalletPlatforms()
 
+    // Mobile
     if (isMoMobileDevice) {
       if (isMobile) {
         RouterCtrl.push('MobileConnecting')
@@ -294,7 +295,10 @@ export const UiUtil = {
       } else {
         // TODO: Handle no installed wallets case
       }
-    } else if (isInjectedInstalled) {
+    }
+
+    // Desktop
+    else if (isInjectedInstalled) {
       RouterCtrl.push('InjectedConnecting')
     } else if (isDesktop) {
       RouterCtrl.push('DesktopConnecting')

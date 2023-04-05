@@ -1,5 +1,11 @@
-:host {
+div {
   display: flex;
+  margin-top: 15px;
+}
+
+slot {
+  display: inline-block;
+  margin: 0 5px;
 }
 
 w3m-button {

@@ -6,16 +6,6 @@ w3m-info-footer {
   padding: 5px 0;
 }
 
-.w3m-actions {
-  margin-top: 15px;
-  display: flex;
-  justify-content: center;
-}
-
-w3m-button:first-child {
-  margin-right: 15px;
-}
-
 w3m-text {
   text-align: center;
 }

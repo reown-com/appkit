@@ -57,6 +57,7 @@ export class W3mDesktopConnectingView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { name, id, image_id } = CoreUtil.getWalletRouterData()
+    const { isMobile, isInjected, isWeb } = UiUtil.getCachedRouterWalletPlatforms()
 
     return html`
       <w3m-modal-header title=${name}></w3m-modal-header>
@@ -75,7 +76,7 @@ export class W3mDesktopConnectingView extends LitElement {
           ${`Connection can be declined if ${name} is not installed on your device`}
         </w3m-text>
 
-        <div class="w3m-actions">
+        <w3m-platform-selection .isMobile=${isMobile} .isInjected=${isInjected} .isWeb=${isWeb}>
           <w3m-button
             variant="outline"
             .onClick=${async () => this.createConnectionAndWait()}
@@ -83,7 +84,7 @@ export class W3mDesktopConnectingView extends LitElement {
           >
             Retry
           </w3m-button>
-        </div>
+        </w3m-platform-selection>
       </w3m-info-footer>
     `
   }

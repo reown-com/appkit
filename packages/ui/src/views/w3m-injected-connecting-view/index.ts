@@ -55,7 +55,7 @@ export class W3mInjectedConnectingView extends LitElement {
           active
         </w3m-text>
 
-        <div>
+        <w3m-platform-selection .isMobile=${isMobile} .isDesktop=${isDesktop} .isWeb=${isWeb}>
           <w3m-button
             variant="outline"
             .onClick=${this.onConnect.bind(this)}
@@ -64,13 +64,7 @@ export class W3mInjectedConnectingView extends LitElement {
           >
             Retry
           </w3m-button>
-
-          <w3m-platform-selection
-            .isMobile=${isMobile}
-            .isDesktop=${isDesktop}
-            .isWeb=${isWeb}
-          ></w3m-platform-selection>
-        </div>
+        </w3m-platform-selection>
       </w3m-info-footer>
     `
   }
