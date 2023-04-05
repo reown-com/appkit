@@ -126,7 +126,7 @@ export const EthereumPresets = {
     },
     [InjectedId.dawn]: {
       name: 'Dawn',
-      icon: '',
+      icon: 'dcb4a287-a6f5-4e81-cbab-2d0eb27b2f00',
       url: 'https://apps.apple.com/us/app/dawn-ethereum-wallet/id1673143782',
       isInjected: true
     },
