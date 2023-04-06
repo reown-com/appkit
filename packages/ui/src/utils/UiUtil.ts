@@ -278,7 +278,7 @@ export const UiUtil = {
   goToConnectingView(wallet: WalletData) {
     RouterCtrl.setData({ Wallet: wallet })
     const isMoMobileDevice = CoreUtil.isMobile()
-    const { isDesktop, isWeb, isMobile, isInjectedInstalled, isInjected } =
+    const { isDesktop, isWeb, isMobile, isInjectedInstalled } =
       UiUtil.getCachedRouterWalletPlatforms()
 
     // Mobile
@@ -288,7 +288,7 @@ export const UiUtil = {
       } else if (isWeb) {
         RouterCtrl.push('WebConnecting')
       } else {
-        // TODO: Handle no installed wallets case
+        RouterCtrl.push('InstallWallet')
       }
     }
 
@@ -299,12 +299,10 @@ export const UiUtil = {
       RouterCtrl.push('DesktopConnecting')
     } else if (isWeb) {
       RouterCtrl.push('WebConnecting')
-    } else if (!isMobile) {
+    } else if (isMobile) {
       RouterCtrl.push('MobileQrcodeConnecting')
-    } else if (isInjected) {
-      RouterCtrl.push('InjectedConnecting')
     } else {
-      // TODO: Handle no installed wallets case
+      RouterCtrl.push('InstallWallet')
     }
   }
 }

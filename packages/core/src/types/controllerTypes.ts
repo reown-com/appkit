@@ -140,6 +140,7 @@ export type RouterView =
   | 'GetWallet'
   | 'Help'
   | 'InjectedConnecting'
+  | 'InstallWallet'
   | 'MobileConnecting'
   | 'MobileQrcodeConnecting'
   | 'Qrcode'
@@ -173,13 +174,6 @@ export interface WalletData {
 }
 
 export type SwitchNetworkData = Chain
-
-export interface InstallConnectorData {
-  id: string
-  name: string
-  url: string
-  isMobile?: boolean
-}
 
 export interface RouterCtrlState {
   history: RouterView[]

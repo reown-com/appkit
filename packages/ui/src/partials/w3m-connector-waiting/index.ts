@@ -13,6 +13,7 @@ export class W3mConnectorWaiting extends LitElement {
   @property() public walletId?: string = undefined
   @property() public imageId?: string = undefined
   @property() public isError = false
+  @property() public isStale = false
   @property() public label = ''
 
   // -- private ------------------------------------------------------ //
@@ -51,7 +52,8 @@ export class W3mConnectorWaiting extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const classes = {
-      'w3m-error': this.isError
+      'w3m-error': this.isError,
+      'w3m-stale': this.isStale
     }
 
     return html`

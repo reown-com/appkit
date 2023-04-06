@@ -9,7 +9,6 @@ export { ThemeCtrl } from './src/controllers/ThemeCtrl'
 export { ToastCtrl } from './src/controllers/ToastCtrl'
 export type {
   ConfigCtrlState,
-  InstallConnectorData,
   Listing,
   ListingResponse,
   MobileWallet,
