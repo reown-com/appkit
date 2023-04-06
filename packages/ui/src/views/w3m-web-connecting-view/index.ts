@@ -73,7 +73,7 @@ export class W3mWebConnectingView extends LitElement {
 
       <w3m-info-footer>
         <w3m-text color="secondary" variant="small-thin">
-          ${`To finish connecting, continue in ${name} web app and come back`}
+          ${`To finish connecting, continue in ${name} web app and return back once you're done`}
         </w3m-text>
 
         <w3m-platform-selection

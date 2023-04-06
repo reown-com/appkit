@@ -11,7 +11,6 @@ import {
 } from '@web3modal/core'
 import type { LitElement } from 'lit'
 import { ChainPresets } from '../presets/ChainPresets'
-import { EthereumPresets } from '../presets/EthereumPresets'
 import { TokenPresets } from '../presets/TokenPresets'
 import { DataUtil } from './DataUtil'
 
@@ -39,16 +38,12 @@ export const UiUtil = {
   },
 
   getWalletIcon({ id, image_id }: { id: string; image_id?: string }) {
-    const presets = EthereumPresets.injectedPreset
-    const presetImageId = presets[id]?.icon
     const { walletImages } = ConfigCtrl.state
 
     if (walletImages?.[id]) {
       return walletImages[id]
     } else if (image_id) {
       return ExplorerCtrl.getWalletImageUrl(image_id)
-    } else if (presetImageId) {
-      return ExplorerCtrl.getAssetImageUrl(presetImageId)
     }
 
     return ''
