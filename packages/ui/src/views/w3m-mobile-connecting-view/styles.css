@@ -41,11 +41,10 @@ w3m-info-footer {
   text-align: center;
 }
 
-.w3m-note div {
+w3m-platform-selection div {
   display: flex;
-  margin-top: 15px;
 }
 
-.w3m-note div w3m-button:last-child {
-  margin-left: 15px;
+w3m-platform-selection w3m-button:nth-child(2) {
+  margin-left: 10px;
 }

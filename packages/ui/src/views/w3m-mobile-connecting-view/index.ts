@@ -63,6 +63,7 @@ export class W3mMobileConnectingView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { name, id, image_id, app, mobile } = CoreUtil.getWalletRouterData()
+    const { isWeb } = UiUtil.getCachedRouterWalletPlatforms()
     const downloadUrl = app?.ios
     const universalUrl = mobile?.universal
 
@@ -80,29 +81,30 @@ export class W3mMobileConnectingView extends LitElement {
 
       <w3m-info-footer class="w3m-note">
         <w3m-text color="secondary" variant="small-thin">
-          ${`You can reload the website to try again`}
-          ${universalUrl ? ` or open ${name} using a Backup Link instead` : ''}
+          You can reload the website to try again
+          ${universalUrl ? ` or open ${name} using a "Backup" instead` : ''}
         </w3m-text>
 
-        <div>
-          <w3m-button
-            variant="outline"
-            .onClick=${async () => this.createConnectionAndWait()}
-            .iconRight=${SvgUtil.RETRY_ICON}
-          >
-            Try Again
-          </w3m-button>
+        <w3m-platform-selection .isWeb=${isWeb}>
+          <div>
+            <w3m-button
+              .onClick=${async () => this.createConnectionAndWait()}
+              .iconRight=${SvgUtil.RETRY_ICON}
+            >
+              Retry
+            </w3m-button>
 
-          ${universalUrl
-            ? html`<w3m-button
-                variant="outline"
-                .onClick=${async () => this.createConnectionAndWait(true)}
-                .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}
-              >
-                Backup Link
-              </w3m-button>`
-            : null}
-        </div>
+            ${universalUrl
+              ? html`<w3m-button
+                  variant="outline"
+                  .onClick=${async () => this.createConnectionAndWait(true)}
+                  .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}
+                >
+                  Backup
+                </w3m-button>`
+              : null}
+          </div>
+        </w3m-platform-selection>
       </w3m-info-footer>
 
       <w3m-info-footer class="w3m-app-store">
