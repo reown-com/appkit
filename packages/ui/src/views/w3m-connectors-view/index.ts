@@ -35,7 +35,7 @@ export class W3mConnectorsView extends LitElement {
     return html`
       <w3m-modal-header title="Other wallets"></w3m-modal-header>
       <w3m-modal-content>
-        <div class="w3m-grid">${template}</div>
+        <div>${template}</div>
       </w3m-modal-content>
     `
   }

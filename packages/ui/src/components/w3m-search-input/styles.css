@@ -32,7 +32,7 @@ svg {
   margin: 2px 4px 0 0;
 }
 
-.w3m-placeholder {
+div {
   top: 0;
   left: calc(50% - 12px);
   transform: translateX(-50%);
@@ -46,8 +46,8 @@ svg {
   position: relative;
 }
 
-input:focus-within + .w3m-placeholder,
-input:not(:placeholder-shown) + .w3m-placeholder {
+input:focus-within + div,
+input:not(:placeholder-shown) + div {
   transform: translateX(10px);
   left: 0;
 }
@@ -57,8 +57,8 @@ w3m-text {
   transition: 0.2s opacity ease;
 }
 
-input:focus-within + .w3m-placeholder w3m-text,
-input:not(:placeholder-shown) + .w3m-placeholder w3m-text {
+input:focus-within + div w3m-text,
+input:not(:placeholder-shown) + div w3m-text {
   opacity: 0;
 }
 

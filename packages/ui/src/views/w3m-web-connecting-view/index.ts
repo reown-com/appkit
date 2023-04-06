@@ -54,6 +54,7 @@ export class W3mWebConnectingView extends LitElement {
   protected render() {
     const { name, id, image_id } = CoreUtil.getWalletRouterData()
     const { isMobile, isInjected, isDesktop } = UiUtil.getCachedRouterWalletPlatforms()
+    const isMobilePlatform = CoreUtil.isMobile()
 
     return html`
       <w3m-modal-header
@@ -78,8 +79,8 @@ export class W3mWebConnectingView extends LitElement {
 
         <w3m-platform-selection
           .isMobile=${isMobile}
-          .isInjected=${isInjected}
-          .isDesktop=${isDesktop}
+          .isInjected=${isMobilePlatform ? false : isInjected}
+          .isDesktop=${isMobilePlatform ? false : isDesktop}
         >
           <w3m-button
             .onClick=${async () => this.createConnectionAndWait()}

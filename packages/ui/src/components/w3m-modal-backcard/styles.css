@@ -1,4 +1,4 @@
-.w3m-custom-placeholder {
+.w3m-toolbar-placeholder {
   inset: 0;
   width: 100%;
   position: absolute;
@@ -6,9 +6,6 @@
   pointer-events: none;
   height: 100px;
   border-radius: calc(var(--w3m-background-border-radius) * 0.9);
-}
-
-.w3m-custom-placeholder {
   background-color: var(--w3m-background-color);
   background-image: var(--w3m-background-image-url);
   background-position: center;
@@ -36,7 +33,7 @@
   fill: var(--w3m-accent-fill-color);
 }
 
-.w3m-action-btn {
+button {
   width: 28px;
   height: 28px;
   border-radius: var(--w3m-icon-button-border-radius);
@@ -50,24 +47,24 @@
   box-shadow: 0 0 0 1px var(--w3m-color-overlay);
 }
 
-.w3m-action-btn:hover {
+button:hover {
   background-color: var(--w3m-color-bg-2);
 }
 
-.w3m-action-btn svg {
+button svg {
   display: block;
   object-position: center;
 }
 
-.w3m-action-btn path {
+button path {
   fill: var(--w3m-color-fg-1);
 }
 
-.w3m-actions {
+.w3m-toolbar div {
   display: flex;
 }
 
-.w3m-actions button:first-child {
+.w3m-toolbar div button:first-child {
   margin-right: 16px;
 }
 

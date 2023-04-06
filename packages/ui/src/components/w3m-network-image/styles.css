@@ -10,7 +10,7 @@
   position: relative;
 }
 
-.w3m-stroke {
+path {
   stroke: var(--w3m-color-overlay);
 }
 

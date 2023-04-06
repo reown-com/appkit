@@ -123,7 +123,7 @@ export class W3mMobileWalletSelection extends LitElement {
       ${isWallets
         ? html`
             <w3m-modal-content>
-              <div class="w3m-grid">
+              <div>
                 ${row1}
                 ${row2.length
                   ? html`
