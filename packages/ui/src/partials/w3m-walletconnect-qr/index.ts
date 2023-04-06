@@ -1,6 +1,6 @@
 import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { customElement, property, state } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -10,6 +10,8 @@ export class W3mWalletConnectQr extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
+  @property() public walletId? = ''
+  @property() public imageId? = ''
   @state() private uri = ''
 
   // -- lifecycle ---------------------------------------------------- //
@@ -49,7 +51,12 @@ export class W3mWalletConnectQr extends LitElement {
     return html`
       <div class="w3m-qr-container">
         ${this.uri
-          ? html`<w3m-qrcode size="${this.overlayEl.offsetWidth}" uri=${this.uri}></w3m-qrcode>`
+          ? html`<w3m-qrcode
+              size="${this.overlayEl.offsetWidth}"
+              uri=${this.uri}
+              walletId=${this.walletId}
+              imageId=${this.imageId}
+            ></w3m-qrcode>`
           : html`<w3m-spinner></w3m-spinner>`}
       </div>
     `

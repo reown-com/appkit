@@ -13,6 +13,8 @@ export default class W3mQrCode extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property() public uri = ''
   @property({ type: Number }) public size = 0
+  @property() public imageId? = ''
+  @property() public walletId? = ''
 
   // -- private ------------------------------------------------------ //
   private svgTemplate() {
@@ -27,7 +29,19 @@ export default class W3mQrCode extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    return html` <div>${SvgUtil.WALLET_CONNECT_ICON_COLORED} ${this.svgTemplate()}</div> `
+    return html`
+      <div>
+        ${this.walletId
+          ? html`
+              <w3m-wallet-image
+                walletId=${this.walletId}
+                imageId=${this.imageId}
+              ></w3m-wallet-image>
+            `
+          : SvgUtil.WALLET_CONNECT_ICON_COLORED}
+        ${this.svgTemplate()}
+      </div>
+    `
   }
 }
 

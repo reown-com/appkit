@@ -300,7 +300,7 @@ export const UiUtil = {
     } else if (isWeb) {
       RouterCtrl.push('WebConnecting')
     } else if (!isMobile) {
-      // TODO: Go to desktop mobile connecting view
+      RouterCtrl.push('MobileQrcodeConnecting')
     } else if (isInjected) {
       RouterCtrl.push('InjectedConnecting')
     } else {

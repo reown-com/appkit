@@ -31,6 +31,13 @@ export const RouterCtrl = {
     state.history = [view]
   },
 
+  replace(view: RouterCtrlState['view']) {
+    if (state.history.length > 1) {
+      state.history[state.history.length - 1] = view
+      state.view = view
+    }
+  },
+
   goBack() {
     if (state.history.length > 1) {
       state.history.pop()

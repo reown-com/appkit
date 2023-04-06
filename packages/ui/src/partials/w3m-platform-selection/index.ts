@@ -19,22 +19,22 @@ export class W3mPlatformSelection extends LitElement {
   private onMobile() {
     const isMobile = CoreUtil.isMobile()
     if (isMobile) {
-      RouterCtrl.push('MobileConnecting')
+      RouterCtrl.replace('MobileConnecting')
     } else {
-      RouterCtrl.push('MobileQrcodeConnecting')
+      RouterCtrl.replace('MobileQrcodeConnecting')
     }
   }
 
   private onInjected() {
-    RouterCtrl.push('InjectedConnecting')
+    RouterCtrl.replace('InjectedConnecting')
   }
 
   private onDesktop() {
-    RouterCtrl.push('DesktopConnecting')
+    RouterCtrl.replace('DesktopConnecting')
   }
 
   private onWeb() {
-    RouterCtrl.push('WebConnecting')
+    RouterCtrl.replace('WebConnecting')
   }
 
   // -- render ------------------------------------------------------- //

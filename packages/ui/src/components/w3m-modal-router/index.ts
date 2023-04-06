@@ -69,7 +69,7 @@ export class W3mModalRouter extends LitElement {
       case 'WebConnecting':
         return html`<w3m-web-connecting-view></w3m-web-connecting-view>`
       case 'MobileQrcodeConnecting':
-        return null
+        return html`<w3m-mobile-qr-connecting-view></w3m-mobile-qr-connecting-view>`
       case 'GetWallet':
         return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
       case 'WalletExplorer':
