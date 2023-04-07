@@ -37,11 +37,11 @@ export class W3mWcConnectionContext extends LitElement {
   private selectedChainId?: number = OptionsCtrl.state.selectedChain?.id
   private isAccountConnected = AccountCtrl.state.isConnected
 
-  private async connectAndWait(retry = 0) {
+  private async connectAndWait() {
     clearTimeout(this.timeout)
 
     if (!this.isAccountConnected) {
-      this.timeout = setTimeout(this.connectAndWait, THREE_MIN_MS)
+      this.timeout = setTimeout(this.connectAndWait.bind(this), THREE_MIN_MS)
       try {
         const { standaloneUri, selectedChain } = OptionsCtrl.state
         if (standaloneUri) {
@@ -56,9 +56,7 @@ export class W3mWcConnectionContext extends LitElement {
         console.error(err)
         WcConnectionCtrl.setPairingError(true)
         ToastCtrl.openToast('Connection request declined', 'error')
-        if (retry < 2) {
-          this.connectAndWait(retry + 1)
-        }
+        this.connectAndWait()
       }
     }
   }
