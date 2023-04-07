@@ -7,7 +7,8 @@ import {
   ModalCtrl,
   OptionsCtrl,
   RouterCtrl,
-  ToastCtrl
+  ToastCtrl,
+  WcConnectionCtrl
 } from '@web3modal/core'
 import type { LitElement } from 'lit'
 import { ChainPresets } from '../presets/ChainPresets'
@@ -105,12 +106,14 @@ export const UiUtil = {
     }
   },
 
-  async handleMobileLinking(wallet: WalletData) {
-    CoreUtil.removeWalletConnectDeepLink()
-    const { standaloneUri, selectedChain } = OptionsCtrl.state
+  handleMobileLinking(wallet: WalletData) {
+    const { standaloneUri } = OptionsCtrl.state
+    const { pairingUri } = WcConnectionCtrl.state
     const { mobile, name } = wallet
     const nativeUrl = mobile?.native
     const universalUrl = mobile?.universal
+
+    UiUtil.setRecentWallet(wallet)
 
     function onRedirect(uri: string) {
       let href = ''
@@ -123,40 +126,32 @@ export const UiUtil = {
     }
 
     if (standaloneUri) {
-      UiUtil.setRecentWallet(wallet)
       onRedirect(standaloneUri)
     } else {
-      await ClientCtrl.client().connectWalletConnect(uri => {
-        onRedirect(uri)
-      }, selectedChain?.id)
-      UiUtil.setRecentWallet(wallet)
-      ModalCtrl.close()
+      onRedirect(pairingUri)
     }
   },
 
-  async handleAndroidLinking() {
-    CoreUtil.removeWalletConnectDeepLink()
-    const { standaloneUri, selectedChain } = OptionsCtrl.state
+  handleAndroidLinking() {
+    const { standaloneUri } = OptionsCtrl.state
+    const { pairingUri } = WcConnectionCtrl.state
 
     if (standaloneUri) {
+      CoreUtil.setWalletConnectAndroidDeepLink(standaloneUri)
       CoreUtil.openHref(standaloneUri, '_self')
     } else {
-      await ClientCtrl.client().connectWalletConnect(uri => {
-        CoreUtil.setWalletConnectAndroidDeepLink(uri)
-        CoreUtil.openHref(uri, '_self')
-      }, selectedChain?.id)
-
-      ModalCtrl.close()
+      CoreUtil.setWalletConnectAndroidDeepLink(pairingUri)
+      CoreUtil.openHref(pairingUri, '_self')
     }
   },
 
   async handleUriCopy() {
     const { standaloneUri } = OptionsCtrl.state
+    const { pairingUri } = WcConnectionCtrl.state
     if (standaloneUri) {
       await navigator.clipboard.writeText(standaloneUri)
     } else {
-      const uri = ClientCtrl.client().walletConnectUri
-      await navigator.clipboard.writeText(uri)
+      await navigator.clipboard.writeText(pairingUri)
     }
     ToastCtrl.openToast('Link copied', 'success')
   },

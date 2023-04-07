@@ -255,3 +255,9 @@ export interface ThemeCtrlState {
   }
   themeMode?: 'dark' | 'light'
 }
+
+// -- WcConnectionCtrl ------------------------------------- //
+export interface WcConnectionCtrlState {
+  pairingUri: string
+  pairingError: boolean
+}

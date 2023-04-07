@@ -1,4 +1,4 @@
-import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl } from '@web3modal/core'
+import { CoreUtil, OptionsCtrl, WcConnectionCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -11,15 +11,23 @@ export class W3mMobileConnectingView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
-  @state() private isError = false
+  @state() public isError = false
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.createConnectionAndWait()
+    this.openMobileApp()
+    this.unwatchConnection = WcConnectionCtrl.subscribe(connection => {
+      this.isError = connection.pairingError
+    })
+  }
+
+  public disconnectedCallback() {
+    this.unwatchConnection?.()
   }
 
   // -- private ------------------------------------------------------ //
+  private readonly unwatchConnection?: () => void = undefined
 
   private onFormatAndRedirect(uri: string, forceUniversalUrl = false) {
     const { mobile, name } = CoreUtil.getWalletRouterData()
@@ -35,22 +43,16 @@ export class W3mMobileConnectingView extends LitElement {
     }
   }
 
-  private async createConnectionAndWait(forceUniversalUrl = false) {
-    this.isError = false
+  private openMobileApp(forceUniversalUrl = false) {
+    WcConnectionCtrl.setPairingError(false)
     const { standaloneUri } = OptionsCtrl.state
+    const { pairingUri } = WcConnectionCtrl.state
     const routerData = CoreUtil.getWalletRouterData()
     UiUtil.setRecentWallet(routerData)
     if (standaloneUri) {
-      this.onFormatAndRedirect(standaloneUri)
+      this.onFormatAndRedirect(standaloneUri, forceUniversalUrl)
     } else {
-      try {
-        await ClientCtrl.client().connectWalletConnect(uri => {
-          this.onFormatAndRedirect(uri, forceUniversalUrl)
-        }, OptionsCtrl.state.selectedChain?.id)
-        ModalCtrl.close()
-      } catch (err) {
-        this.isError = true
-      }
+      this.onFormatAndRedirect(pairingUri, forceUniversalUrl)
     }
   }
 
@@ -87,17 +89,14 @@ export class W3mMobileConnectingView extends LitElement {
 
         <w3m-platform-selection .isWeb=${isWeb}>
           <div>
-            <w3m-button
-              .onClick=${async () => this.createConnectionAndWait()}
-              .iconRight=${SvgUtil.RETRY_ICON}
-            >
+            <w3m-button .onClick=${this.openMobileApp} .iconRight=${SvgUtil.RETRY_ICON}>
               Retry
             </w3m-button>
 
             ${universalUrl
               ? html`<w3m-button
                   variant="outline"
-                  .onClick=${async () => this.createConnectionAndWait(true)}
+                  .onClick=${() => this.openMobileApp(true)}
                   .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}
                 >
                   Backup

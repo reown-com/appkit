@@ -82,10 +82,6 @@ export const CoreUtil = {
     )
   },
 
-  removeWalletConnectDeepLink() {
-    localStorage.removeItem(CoreUtil.WALLETCONNECT_DEEPLINK_CHOICE)
-  },
-
   setWeb3ModalVersionInStorage() {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(CoreUtil.W3M_VERSION, process.env.ROLLUP_W3M_VERSION ?? 'UNKNOWN')

@@ -16,13 +16,13 @@ export class W3mInjectedConnectingView extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.onConnect()
+    this.openInjectedApp()
   }
 
   // -- private ------------------------------------------------------ //
   private readonly connector = ClientCtrl.client().getConnectorById('injected')
 
-  private async onConnect() {
+  private async openInjectedApp() {
     const { ready } = this.connector
     if (ready) {
       this.isError = false
@@ -57,7 +57,7 @@ export class W3mInjectedConnectingView extends LitElement {
 
         <w3m-platform-selection .isMobile=${isMobile} .isDesktop=${isDesktop} .isWeb=${isWeb}>
           <w3m-button
-            .onClick=${this.onConnect.bind(this)}
+            .onClick=${this.openInjectedApp.bind(this)}
             .disabled=${!this.isError}
             .iconRight=${SvgUtil.RETRY_ICON}
           >

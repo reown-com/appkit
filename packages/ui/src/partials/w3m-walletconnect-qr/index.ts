@@ -1,4 +1,4 @@
-import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
+import { WcConnectionCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -12,38 +12,30 @@ export class W3mWalletConnectQr extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property() public walletId? = ''
   @property() public imageId? = ''
-  @state() private uri = ''
+  @state() private uri? = ''
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.createConnectionAndWait()
+    setTimeout(() => {
+      this.uri = WcConnectionCtrl.state.pairingUri
+    }, 0)
+    this.unwatchWcConnection = WcConnectionCtrl.subscribe(connection => {
+      if (connection.pairingUri) {
+        this.uri = connection.pairingUri
+      }
+    })
+  }
+
+  public disconnectedCallback() {
+    this.unwatchWcConnection?.()
   }
 
   // -- private ------------------------------------------------------ //
+  private readonly unwatchWcConnection?: () => void = undefined
+
   private get overlayEl(): HTMLDivElement {
     return UiUtil.getShadowRootElement(this, '.w3m-qr-container') as HTMLDivElement
-  }
-
-  private async createConnectionAndWait(retry = 0) {
-    CoreUtil.removeWalletConnectDeepLink()
-    try {
-      const { standaloneUri } = OptionsCtrl.state
-      if (standaloneUri) {
-        setTimeout(() => (this.uri = standaloneUri), 0)
-      } else {
-        await ClientCtrl.client().connectWalletConnect(uri => {
-          setTimeout(() => (this.uri = uri), 0)
-        }, OptionsCtrl.state.selectedChain?.id)
-        ModalCtrl.close()
-      }
-    } catch (err) {
-      console.error(err)
-      ToastCtrl.openToast('Connection request declined', 'error')
-      if (retry < 2) {
-        this.createConnectionAndWait(retry + 1)
-      }
-    }
   }
 
   // -- render ------------------------------------------------------- //

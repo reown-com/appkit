@@ -7,6 +7,7 @@ export { OptionsCtrl } from './src/controllers/OptionsCtrl'
 export { RouterCtrl } from './src/controllers/RouterCtrl'
 export { ThemeCtrl } from './src/controllers/ThemeCtrl'
 export { ToastCtrl } from './src/controllers/ToastCtrl'
+export { WcConnectionCtrl } from './src/controllers/WcConnectionCtrl'
 export type {
   ConfigCtrlState,
   Listing,

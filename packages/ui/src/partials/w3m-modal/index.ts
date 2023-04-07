@@ -1,5 +1,5 @@
 import { ModalCtrl, OptionsCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { animate, spring } from 'motion'
@@ -131,6 +131,7 @@ export class W3mModal extends LitElement {
     return isStandalone
       ? null
       : html`
+          <w3m-wc-connection-context></w3m-wc-connection-context>
           <w3m-account-context></w3m-account-context>
           <w3m-network-context></w3m-network-context>
         `

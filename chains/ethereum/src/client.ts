@@ -13,15 +13,8 @@ import {
 } from '@wagmi/core'
 import type { ConnectorId, ModalConnectorsOpts } from './types'
 
-const FIVE_MIN_MS = 300_000
-const TWO_MIN_MS = 120_000
-
 export class EthereumClient {
   private readonly wagmi = {} as Client
-  public walletConnectUri = ''
-  public walletConnectPairingExpiry = Date.now()
-  public walletConnectPairingPromise?: Promise<void>
-  public walletConnectChainId?: number
   public walletConnectVersion: ModalConnectorsOpts['version'] = 1
   public readonly chains = [] as Chain[]
 
@@ -31,10 +24,6 @@ export class EthereumClient {
     this.chains = chains
     const { isV2 } = this.getWalletConnectConnectors()
     this.walletConnectVersion = isV2 ? 2 : 1
-    // Pre heat connection optimistically on client
-    if (typeof window !== 'undefined') {
-      this.connectWalletConnect(() => null)
-    }
   }
 
   // -- private ------------------------------------------- //
@@ -54,7 +43,6 @@ export class EthereumClient {
       connector.once('message', async ({ type }) => {
         if (type === 'connecting') {
           const providerConnector = (await connector.getProvider()).connector
-          this.walletConnectUri = providerConnector.uri
           onUri(providerConnector.uri)
           providerConnector.on('disconnect', () => {
             reject(Error())
@@ -72,30 +60,10 @@ export class EthereumClient {
 
     return new Promise<void>(resolve => {
       provider.once('display_uri', (uri: string) => {
-        this.walletConnectUri = uri
         onUri(uri)
         resolve()
       })
     })
-  }
-
-  private isWalletConnectCache(chainId?: number) {
-    const { isV2 } = this.getWalletConnectConnectors()
-
-    return (
-      this.walletConnectUri &&
-      this.walletConnectPairingPromise &&
-      this.walletConnectChainId === chainId &&
-      this.walletConnectPairingExpiry - Date.now() >= TWO_MIN_MS &&
-      isV2
-    )
-  }
-
-  private resetWalletConnectCache() {
-    this.walletConnectUri = ''
-    this.walletConnectPairingExpiry = Date.now()
-    this.walletConnectPairingPromise = undefined
-    this.walletConnectChainId = undefined
   }
 
   // -- public web3modal ---------------------------------- //
@@ -119,30 +87,16 @@ export class EthereumClient {
   }
 
   public async connectWalletConnect(onUri: (uri: string) => void, chainId?: number) {
-    if (this.isWalletConnectCache(chainId)) {
-      onUri(this.walletConnectUri)
-    } else {
-      this.resetWalletConnectCache()
-      const { connector, isV2 } = this.getWalletConnectConnectors()
-      const options: ConnectArgs = { connector }
-      if (chainId) {
-        options.chainId = chainId
-      }
-      const handleProviderEvents = isV2
-        ? this.connectWalletConnectV2.bind(this)
-        : this.connectWalletConnectV1.bind(this)
-      this.walletConnectPairingPromise = (async () => {
-        try {
-          await Promise.all([connect(options), handleProviderEvents(connector, onUri)])
-        } finally {
-          this.resetWalletConnectCache()
-        }
-      })()
-      this.walletConnectPairingExpiry = Date.now() + FIVE_MIN_MS
-      this.walletConnectChainId = chainId
+    const { connector, isV2 } = this.getWalletConnectConnectors()
+    const options: ConnectArgs = { connector }
+    if (chainId) {
+      options.chainId = chainId
     }
+    const handleProviderEvents = isV2
+      ? this.connectWalletConnectV2.bind(this)
+      : this.connectWalletConnectV1.bind(this)
 
-    return this.walletConnectPairingPromise
+    return Promise.all([connect(options), handleProviderEvents(connector, onUri)])
   }
 
   public async connectConnector(connectorId: ConnectorId | string, chainId?: number) {

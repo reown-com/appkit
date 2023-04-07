@@ -1,4 +1,4 @@
-import { ClientCtrl, CoreUtil, ModalCtrl, OptionsCtrl } from '@web3modal/core'
+import { CoreUtil, OptionsCtrl, WcConnectionCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -11,15 +11,23 @@ export class W3mWebConnectingView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
-  @state() private isError = false
+  @state() public isError = false
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    this.createConnectionAndWait()
+    this.openWebWallet()
+    this.unwatchConnection = WcConnectionCtrl.subscribe(connection => {
+      this.isError = connection.pairingError
+    })
+  }
+
+  public disconnectedCallback() {
+    this.unwatchConnection?.()
   }
 
   // -- private ------------------------------------------------------ //
+  private readonly unwatchConnection?: () => void = undefined
 
   private onFormatAndRedirect(uri: string) {
     const { desktop, name } = CoreUtil.getWalletRouterData()
@@ -31,22 +39,16 @@ export class W3mWebConnectingView extends LitElement {
     }
   }
 
-  private async createConnectionAndWait() {
-    this.isError = false
+  private openWebWallet() {
+    WcConnectionCtrl.setPairingError(false)
     const { standaloneUri } = OptionsCtrl.state
+    const { pairingUri } = WcConnectionCtrl.state
     const routerData = CoreUtil.getWalletRouterData()
     UiUtil.setRecentWallet(routerData)
     if (standaloneUri) {
       this.onFormatAndRedirect(standaloneUri)
     } else {
-      try {
-        await ClientCtrl.client().connectWalletConnect(uri => {
-          this.onFormatAndRedirect(uri)
-        }, OptionsCtrl.state.selectedChain?.id)
-        ModalCtrl.close()
-      } catch (err) {
-        this.isError = true
-      }
+      this.onFormatAndRedirect(pairingUri)
     }
   }
 
@@ -82,10 +84,7 @@ export class W3mWebConnectingView extends LitElement {
           .isInjected=${isMobilePlatform ? false : isInjected}
           .isDesktop=${isMobilePlatform ? false : isDesktop}
         >
-          <w3m-button
-            .onClick=${async () => this.createConnectionAndWait()}
-            .iconRight=${SvgUtil.RETRY_ICON}
-          >
+          <w3m-button .onClick=${this.openWebWallet} .iconRight=${SvgUtil.RETRY_ICON}>
             Retry
           </w3m-button>
         </w3m-platform-selection>

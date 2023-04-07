@@ -4,6 +4,7 @@ import { AccountCtrl } from './AccountCtrl'
 import { ConfigCtrl } from './ConfigCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
 import { RouterCtrl } from './RouterCtrl'
+import { WcConnectionCtrl } from './WcConnectionCtrl'
 
 // -- types -------------------------------------------------------- //
 export interface OpenOptions {
@@ -28,6 +29,7 @@ export const ModalCtrl = {
   async open(options?: OpenOptions) {
     return new Promise<void>(resolve => {
       const { isStandalone, isUiLoaded, isDataLoaded } = OptionsCtrl.state
+      const { pairingUri } = WcConnectionCtrl.state
       const { isConnected } = AccountCtrl.state
       const { enableNetworkView } = ConfigCtrl.state
 
@@ -46,14 +48,20 @@ export const ModalCtrl = {
       }
 
       // Open modal if essential async data is ready
-      if (isUiLoaded && isDataLoaded) {
+      if (isUiLoaded && isDataLoaded && (!isStandalone || pairingUri)) {
         state.open = true
         resolve()
       }
       // Otherwise (slow network) re-attempt open checks
       else {
         const interval = setInterval(() => {
-          if (OptionsCtrl.state.isUiLoaded && OptionsCtrl.state.isDataLoaded) {
+          const opts = OptionsCtrl.state
+          const connection = WcConnectionCtrl.state
+          if (
+            opts.isUiLoaded &&
+            opts.isDataLoaded &&
+            (!opts.isStandalone || connection.pairingUri)
+          ) {
             clearInterval(interval)
             state.open = true
             resolve()
