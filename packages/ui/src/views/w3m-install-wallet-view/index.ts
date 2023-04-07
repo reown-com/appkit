@@ -35,7 +35,7 @@ export class W3mInstallWalletView extends LitElement {
 
       <w3m-info-footer>
         <w3m-text color="secondary" variant="small-thin">
-          ${`Download ${name} to continue. If you have multiple browser extensions, disable non ${name} ones and try again`}
+          ${`Download ${name} to continue. If multiple browser extensions are installed, disable non ${name} ones and try again`}
         </w3m-text>
 
         <w3m-button .onClick=${() => this.onInstall(homepage)} .iconLeft=${SvgUtil.ARROW_DOWN_ICON}>

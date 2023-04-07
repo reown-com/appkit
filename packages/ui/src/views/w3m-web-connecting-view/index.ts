@@ -74,7 +74,7 @@ export class W3mWebConnectingView extends LitElement {
 
       <w3m-info-footer>
         <w3m-text color="secondary" variant="small-thin">
-          ${`To finish connecting, continue in ${name} web app and return back once you're done`}
+          ${`${name} web app has opened in a new tab. Go there, accept the connection, and come back`}
         </w3m-text>
 
         <w3m-platform-selection
