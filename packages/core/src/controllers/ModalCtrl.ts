@@ -48,7 +48,7 @@ export const ModalCtrl = {
       }
 
       // Open modal if essential async data is ready
-      if (isUiLoaded && isDataLoaded && (!isStandalone || pairingUri)) {
+      if (isUiLoaded && isDataLoaded && (isStandalone || pairingUri)) {
         state.open = true
         resolve()
       }
@@ -60,7 +60,7 @@ export const ModalCtrl = {
           if (
             opts.isUiLoaded &&
             opts.isDataLoaded &&
-            (!opts.isStandalone || connection.pairingUri)
+            (opts.isStandalone || connection.pairingUri)
           ) {
             clearInterval(interval)
             state.open = true

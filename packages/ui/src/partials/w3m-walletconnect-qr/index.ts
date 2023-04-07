@@ -1,4 +1,4 @@
-import { WcConnectionCtrl } from '@web3modal/core'
+import { OptionsCtrl, WcConnectionCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -18,7 +18,9 @@ export class W3mWalletConnectQr extends LitElement {
   public constructor() {
     super()
     setTimeout(() => {
-      this.uri = WcConnectionCtrl.state.pairingUri
+      const { pairingUri } = WcConnectionCtrl.state
+      const { standaloneUri } = OptionsCtrl.state
+      this.uri = standaloneUri ?? pairingUri
     }, 0)
     this.unwatchWcConnection = WcConnectionCtrl.subscribe(connection => {
       if (connection.pairingUri) {
