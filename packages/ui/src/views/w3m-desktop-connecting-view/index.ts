@@ -79,7 +79,7 @@ export class W3mDesktopConnectingView extends LitElement {
         </w3m-text>
 
         <w3m-platform-selection .isMobile=${isMobile} .isInjected=${isInjected} .isWeb=${isWeb}>
-          <w3m-button .onClick=${this.openDesktopApp} .iconRight=${SvgUtil.RETRY_ICON}>
+          <w3m-button .onClick=${this.openDesktopApp.bind(this)} .iconRight=${SvgUtil.RETRY_ICON}>
             Retry
           </w3m-button>
         </w3m-platform-selection>
