@@ -68,8 +68,8 @@ export class W3mConnectButton extends LitElement {
     }
   }
 
-  private onDisconnect() {
-    ClientCtrl.client().disconnect()
+  private async onDisconnect() {
+    await ClientCtrl.client().disconnect()
     AccountCtrl.resetAccount()
   }
 
