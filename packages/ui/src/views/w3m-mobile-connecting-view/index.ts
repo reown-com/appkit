@@ -89,7 +89,10 @@ export class W3mMobileConnectingView extends LitElement {
 
         <w3m-platform-selection .isWeb=${isWeb}>
           <div>
-            <w3m-button .onClick=${this.openMobileApp.bind(this)} .iconRight=${SvgUtil.RETRY_ICON}>
+            <w3m-button
+              .onClick=${() => this.openMobileApp(false)}
+              .iconRight=${SvgUtil.RETRY_ICON}
+            >
               Retry
             </w3m-button>
 
