@@ -45,7 +45,7 @@ export class W3mWcConnectionContext extends LitElement {
   private readonly unwatchAccount?: () => void = undefined
   private timeout?: NodeJS.Timeout = undefined
   private isGenerated = false
-  private selectedChainId?: number = OptionsCtrl.state.selectedChain?.id
+  private selectedChainId = OptionsCtrl.state.selectedChain?.id
   private isAccountConnected = AccountCtrl.state.isConnected
   private lastVisible = Date.now()
 
@@ -53,13 +53,13 @@ export class W3mWcConnectionContext extends LitElement {
     clearTimeout(this.timeout)
 
     if (!this.isAccountConnected) {
+      this.isGenerated = true
       this.timeout = setTimeout(this.connectAndWait.bind(this), THREE_MIN_MS)
       try {
         const { standaloneUri, selectedChain } = OptionsCtrl.state
         if (standaloneUri) {
           WcConnectionCtrl.setPairingUri(standaloneUri)
         } else {
-          this.isGenerated = true
           await ClientCtrl.client().connectWalletConnect(
             uri => WcConnectionCtrl.setPairingUri(uri),
             selectedChain?.id

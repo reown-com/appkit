@@ -1,6 +1,7 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ModalCtrlState } from '../types/controllerTypes'
 import { AccountCtrl } from './AccountCtrl'
+import { ClientCtrl } from './ClientCtrl'
 import { ConfigCtrl } from './ConfigCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
 import { RouterCtrl } from './RouterCtrl'
@@ -28,45 +29,53 @@ export const ModalCtrl = {
 
   async open(options?: OpenOptions) {
     return new Promise<void>(resolve => {
-      const { isStandalone, isUiLoaded, isDataLoaded } = OptionsCtrl.state
+      const { isStandalone, isUiLoaded, isDataLoaded, selectedChain, isInjectedMobile } =
+        OptionsCtrl.state
       const { pairingUri } = WcConnectionCtrl.state
       const { isConnected } = AccountCtrl.state
       const { enableNetworkView } = ConfigCtrl.state
 
-      if (isStandalone) {
-        OptionsCtrl.setStandaloneUri(options?.uri)
-        OptionsCtrl.setStandaloneChains(options?.standaloneChains)
-        RouterCtrl.reset('ConnectWallet')
-      } else if (options?.route) {
-        RouterCtrl.reset(options.route)
-      } else if (isConnected) {
-        RouterCtrl.reset('Account')
-      } else if (enableNetworkView) {
-        RouterCtrl.reset('SelectNetwork')
+      if (isInjectedMobile && !isConnected && !options?.route) {
+        ClientCtrl.client()
+          .connectConnector('injected', selectedChain?.id)
+          .catch(error => console.error(error))
+          .finally(() => resolve())
       } else {
-        RouterCtrl.reset('ConnectWallet')
-      }
+        if (isStandalone) {
+          OptionsCtrl.setStandaloneUri(options?.uri)
+          OptionsCtrl.setStandaloneChains(options?.standaloneChains)
+          RouterCtrl.reset('ConnectWallet')
+        } else if (options?.route) {
+          RouterCtrl.reset(options.route)
+        } else if (isConnected) {
+          RouterCtrl.reset('Account')
+        } else if (enableNetworkView) {
+          RouterCtrl.reset('SelectNetwork')
+        } else {
+          RouterCtrl.reset('ConnectWallet')
+        }
 
-      // Open modal if essential async data is ready
-      if (isUiLoaded && isDataLoaded && (isStandalone || pairingUri || isConnected)) {
-        state.open = true
-        resolve()
-      }
-      // Otherwise (slow network) re-attempt open checks
-      else {
-        const interval = setInterval(() => {
-          const opts = OptionsCtrl.state
-          const connection = WcConnectionCtrl.state
-          if (
-            opts.isUiLoaded &&
-            opts.isDataLoaded &&
-            (opts.isStandalone || connection.pairingUri || isConnected)
-          ) {
-            clearInterval(interval)
-            state.open = true
-            resolve()
-          }
-        }, 200)
+        // Open modal if essential async data is ready
+        if (isUiLoaded && isDataLoaded && (isStandalone || pairingUri || isConnected)) {
+          state.open = true
+          resolve()
+        }
+        // Otherwise (slow network) re-attempt open checks
+        else {
+          const interval = setInterval(() => {
+            const opts = OptionsCtrl.state
+            const connection = WcConnectionCtrl.state
+            if (
+              opts.isUiLoaded &&
+              opts.isDataLoaded &&
+              (opts.isStandalone || connection.pairingUri || isConnected)
+            ) {
+              clearInterval(interval)
+              state.open = true
+              resolve()
+            }
+          }, 200)
+        }
       }
     })
   },
