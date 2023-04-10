@@ -51,7 +51,9 @@ export class W3mConnectButton extends LitElement {
   private async onConnect() {
     this.loading = true
     await ModalCtrl.open()
-    this.loading = false
+    if (!ModalCtrl.state.open) {
+      this.loading = false
+    }
   }
 
   private async onDisconnect() {

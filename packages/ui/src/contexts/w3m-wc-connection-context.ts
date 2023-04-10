@@ -11,8 +11,6 @@ import { customElement } from 'lit/decorators.js'
 
 // -- constants ---------------------------------------------------- //
 const THREE_MIN_MS = 180_000
-const FIVE_SEC_MS = 5_000
-const THIRTY_SEC_MS = 30_000
 
 @customElement('w3m-wc-connection-context')
 export class W3mWcConnectionContext extends LitElement {
@@ -47,7 +45,6 @@ export class W3mWcConnectionContext extends LitElement {
   private isGenerated = false
   private selectedChainId = OptionsCtrl.state.selectedChain?.id
   private isAccountConnected = AccountCtrl.state.isConnected
-  private lastVisible = Date.now()
 
   private async connectAndWait() {
     clearTimeout(this.timeout)
@@ -75,11 +72,8 @@ export class W3mWcConnectionContext extends LitElement {
   }
 
   private onVisibilityChange() {
-    const interval = CoreUtil.isMobile() ? FIVE_SEC_MS : THIRTY_SEC_MS
-    if (document.hidden) {
-      this.lastVisible = Date.now()
-    } else if (Date.now() - this.lastVisible >= interval) {
-      this.connectAndWait()
+    if (!document.hidden && CoreUtil.isMobile()) {
+      setTimeout(this.connectAndWait.bind(this), 1_000)
     }
   }
 }
