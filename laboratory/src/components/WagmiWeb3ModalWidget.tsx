@@ -1,5 +1,5 @@
 import { Button, Card, Divider, Modal, Text } from '@nextui-org/react'
-import { useWeb3ModalTheme, Web3Button, Web3NetworkSwitch } from '@web3modal/react'
+import { Web3Button, Web3NetworkSwitch, useWeb3Modal, useWeb3ModalTheme } from '@web3modal/react'
 import { useEffect, useState } from 'react'
 import { useAccount, useContractRead, useSignMessage } from 'wagmi'
 import { avalanche } from 'wagmi/chains'
@@ -10,6 +10,7 @@ const message = 'Hello Web3Modal!'
 export default function WagmiWeb3ModalWidget() {
   const { isConnected } = useAccount()
   const { setTheme } = useWeb3ModalTheme()
+  const { open } = useWeb3Modal()
   const height = isConnected ? '280px' : '190px'
   const { data: signData, isLoading, signMessage } = useSignMessage({ message })
   const { data: contractData, refetch } = useContractRead({
@@ -61,7 +62,11 @@ export default function WagmiWeb3ModalWidget() {
                 Read Avax Contract
               </Button>
             </>
-          ) : null}
+          ) : (
+            <Button color="gradient" onPress={async () => open()}>
+              Custom Connect Btn
+            </Button>
+          )}
 
           <Button
             color="error"
