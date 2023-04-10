@@ -1,4 +1,4 @@
-import { Button, Card, Divider, Modal, Text } from '@nextui-org/react'
+import { Button, Card, Modal, Text } from '@nextui-org/react'
 import { Web3Button, Web3NetworkSwitch, useWeb3Modal, useWeb3ModalTheme } from '@web3modal/react'
 import { useEffect, useState } from 'react'
 import { useAccount, useContractRead, useSignMessage } from 'wagmi'
@@ -11,7 +11,6 @@ export default function WagmiWeb3ModalWidget() {
   const { isConnected } = useAccount()
   const { setTheme } = useWeb3ModalTheme()
   const { open } = useWeb3Modal()
-  const height = isConnected ? '280px' : '190px'
   const { data: signData, isLoading, signMessage } = useSignMessage({ message })
   const { data: contractData, refetch } = useContractRead({
     enabled: false,
@@ -47,17 +46,15 @@ export default function WagmiWeb3ModalWidget() {
   return (
     <>
       <Card css={{ maxWidth: '400px', margin: '100px auto' }} variant="bordered">
-        <Card.Body css={{ justifyContent: 'space-between', alignItems: 'center', height }}>
+        <Card.Body css={{ justifyContent: 'space-between', alignItems: 'center', height: '280px' }}>
           <Web3Button balance="show" />
           <Web3NetworkSwitch />
 
           {isConnected ? (
             <>
-              <Divider />
               <Button color="gradient" onPress={() => signMessage()}>
                 Sign Message
               </Button>
-              <Divider />
               <Button color="gradient" onPress={async () => refetch()}>
                 Read Avax Contract
               </Button>
