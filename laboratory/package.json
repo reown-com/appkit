@@ -1,6 +1,6 @@
 {
   "name": "laboratory",
-  "version": "2.3.0-e8cbe91",
+  "version": "2.3.0-6a0bdcf",
   "private": true,
   "scripts": {
     "dev": "rm -rf .next; next dev",
@@ -12,8 +12,8 @@
     "@sentry/tracing": "7.47.0",
     "@walletconnect/auth-client": "2.0.7",
     "@walletconnect/sign-client": "2.6.2",
-    "@web3modal/ethereum": "2.3.0-e8cbe91",
-    "@web3modal/react": "2.3.0-e8cbe91",
+    "@web3modal/ethereum": "2.3.0-6a0bdcf",
+    "@web3modal/react": "2.3.0-6a0bdcf",
     "ethers": "5.7.2",
     "next": "13.3.0",
     "react": "18.2.0",
