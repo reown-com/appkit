@@ -1,4 +1,4 @@
-import { CoreUtil, RouterCtrl } from '@web3modal/core'
+import { CoreUtil, OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -44,6 +44,8 @@ export class W3mPlatformSelection extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
+    const { isStandalone } = OptionsCtrl.state
+
     return html`
       <div>
         <slot></slot>
@@ -56,7 +58,7 @@ export class W3mPlatformSelection extends LitElement {
               Mobile
             </w3m-button>`
           : null}
-        ${this.isInjected
+        ${this.isInjected && !isStandalone
           ? html`<w3m-button
               .onClick=${this.onInjected}
               .iconLeft=${SvgUtil.WALLET_ICON}

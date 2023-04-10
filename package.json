@@ -29,8 +29,8 @@
     "@typescript-eslint/eslint-plugin": "5.57.1",
     "@typescript-eslint/parser": "5.57.1",
     "@rollup/plugin-replace": "5.0.2",
-    "esbuild": "0.17.15",
-    "eslint": "8.37.0",
+    "esbuild": "0.17.16",
+    "eslint": "8.38.0",
     "eslint-config-prettier": "8.8.0",
     "lerna": "6.6.1",
     "prettier": "2.8.7",
@@ -38,6 +38,6 @@
     "rollup-plugin-esbuild": "5.0.0",
     "rollup-plugin-minify-html-literals": "1.2.6",
     "rollup-plugin-lit-css": "4.0.1",
-    "typescript": "5.0.3"
+    "typescript": "5.0.4"
   }
 }
