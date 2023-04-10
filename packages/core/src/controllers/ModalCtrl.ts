@@ -35,12 +35,16 @@ export const ModalCtrl = {
       const { isConnected } = AccountCtrl.state
       const { enableNetworkView } = ConfigCtrl.state
 
-      if (isInjectedMobile && !isConnected && !options?.route) {
+      // Use injected wallet connection flow on mobile right away
+      if (isInjectedMobile && !isConnected && !options?.route && !isStandalone) {
         ClientCtrl.client()
           .connectConnector('injected', selectedChain?.id)
           .catch(error => console.error(error))
           .finally(() => resolve())
-      } else {
+      }
+
+      // Otherwise, handle everything with norml ui flows
+      else {
         if (isStandalone) {
           OptionsCtrl.setStandaloneUri(options?.uri)
           OptionsCtrl.setStandaloneChains(options?.standaloneChains)
