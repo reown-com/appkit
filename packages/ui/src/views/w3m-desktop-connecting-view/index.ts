@@ -78,7 +78,12 @@ export class W3mDesktopConnectingView extends LitElement {
           ${`Connection can continue loading if ${name} is not installed on your device`}
         </w3m-text>
 
-        <w3m-platform-selection .isMobile=${isMobile} .isInjected=${isInjected} .isWeb=${isWeb}>
+        <w3m-platform-selection
+          .isMobile=${isMobile}
+          .isInjected=${isInjected}
+          .isWeb=${isWeb}
+          .isRetry=${true}
+        >
           <w3m-button .onClick=${this.openDesktopApp.bind(this)} .iconRight=${SvgUtil.RETRY_ICON}>
             Retry
           </w3m-button>

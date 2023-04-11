@@ -87,7 +87,7 @@ export class W3mMobileConnectingView extends LitElement {
           ${universalUrl ? ` or open ${name} using a "Backup" instead` : ''}
         </w3m-text>
 
-        <w3m-platform-selection .isWeb=${isWeb}>
+        <w3m-platform-selection .isWeb=${isWeb} .isRetry=${true}>
           <div>
             <w3m-button
               .onClick=${() => this.openMobileApp(false)}

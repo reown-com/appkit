@@ -83,6 +83,7 @@ export class W3mWebConnectingView extends LitElement {
           .isMobile=${isMobile}
           .isInjected=${isMobilePlatform ? false : isInjected}
           .isDesktop=${isMobilePlatform ? false : isDesktop}
+          .isRetry=${true}
         >
           <w3m-button .onClick=${this.openWebWallet.bind(this)} .iconRight=${SvgUtil.RETRY_ICON}>
             Retry

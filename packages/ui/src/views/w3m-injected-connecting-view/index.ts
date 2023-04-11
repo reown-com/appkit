@@ -55,7 +55,12 @@ export class W3mInjectedConnectingView extends LitElement {
           active
         </w3m-text>
 
-        <w3m-platform-selection .isMobile=${isMobile} .isDesktop=${isDesktop} .isWeb=${isWeb}>
+        <w3m-platform-selection
+          .isMobile=${isMobile}
+          .isDesktop=${isDesktop}
+          .isWeb=${isWeb}
+          .isRetry=${true}
+        >
           <w3m-button
             .onClick=${this.openInjectedApp.bind(this)}
             .disabled=${!this.isError}

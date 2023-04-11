@@ -15,6 +15,7 @@ export class W3mPlatformSelection extends LitElement {
   @property() public isInjectedInstalled = false
   @property() public isDesktop = false
   @property() public isWeb = false
+  @property() public isRetry = false
 
   // -- private ------------------------------------------------------ //
   private onMobile() {
@@ -48,7 +49,7 @@ export class W3mPlatformSelection extends LitElement {
 
     return html`
       <div>
-        <slot></slot>
+        ${this.isRetry ? html`<slot></slot>` : null}
         ${this.isMobile
           ? html`<w3m-button
               .onClick=${this.onMobile}
