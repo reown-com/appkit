@@ -26,7 +26,8 @@ export class W3mWcConnectionContext extends LitElement {
     this.unwatchAccount = AccountCtrl.subscribe(account => {
       if (this.isAccountConnected !== account.isConnected || !this.isGenerated) {
         this.isAccountConnected = account.isConnected
-        this.connectAndWait()
+        // FIX setTimout(0) needed for WalletConnectLegacyConnector
+        setTimeout(this.connectAndWait.bind(this), 0)
       }
     })
     document.addEventListener('visibilitychange', this.onVisibilityChange.bind(this))

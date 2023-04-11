@@ -1,4 +1,4 @@
-import { AccountCtrl, ClientCtrl, ModalCtrl, ToastCtrl } from '@web3modal/core'
+import { AccountCtrl, ClientCtrl, ToastCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -12,8 +12,6 @@ export class W3mAccountView extends LitElement {
   // -- private ------------------------------------------------------ //
   private async onDisconnect() {
     await ClientCtrl.client().disconnect()
-    ModalCtrl.close()
-    AccountCtrl.resetAccount()
   }
 
   private async onCopyAddress() {

@@ -58,7 +58,6 @@ export class W3mConnectButton extends LitElement {
 
   private async onDisconnect() {
     await ClientCtrl.client().disconnect()
-    AccountCtrl.resetAccount()
   }
 
   // -- render ------------------------------------------------------- //
