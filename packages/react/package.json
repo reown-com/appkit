@@ -21,7 +21,7 @@
     "@web3modal/ui": "2.3.0-6a0bdcf"
   },
   "devDependencies": {
-    "@types/react": "18.0.33",
+    "@types/react": "18.0.34",
     "@types/react-dom": "18.0.11",
     "@web3modal/ethereum": "2.3.0-6a0bdcf",
     "eslint-plugin-react": "7.32.2",
