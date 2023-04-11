@@ -19,14 +19,6 @@ div button {
   margin-left: 10px;
   color: var(--w3m-accent-fill-color);
   background-color: var(--w3m-accent-color);
-  transition: all 0.2s ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  div button:active {
-    transition: all 0.1s ease;
-    transform: scale(0.93);
-  }
 }
 
 .w3m-no-avatar {

@@ -137,6 +137,14 @@ export const ThemeUtil = {
       position: relative;
       border: none;
       background-color: transparent;
+      transition: all 0.2s ease;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      button:active {
+        transition: all 0.1s ease;
+        transform: scale(0.93);
+      }
     }
 
     button::after {

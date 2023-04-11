@@ -1,20 +1,12 @@
 button {
   padding: 5px;
   border-radius: var(--w3m-button-hover-highlight-border-radius);
-  transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 80px;
   height: 90px;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  button:active {
-    transition: all 0.1s ease;
-    transform: scale(0.93);
-  }
 }
 
 w3m-network-image {

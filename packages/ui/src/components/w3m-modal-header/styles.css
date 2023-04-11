@@ -13,14 +13,6 @@ header {
 
 header button {
   padding: 15px 20px;
-  transition: all 0.2s ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  header button:active {
-    transition: all 0.1s ease;
-    transform: scale(0.93);
-  }
 }
 
 @media (hover: hover) {

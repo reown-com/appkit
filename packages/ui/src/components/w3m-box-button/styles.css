@@ -2,7 +2,6 @@ button {
   display: flex;
   border-radius: var(--w3m-button-hover-highlight-border-radius);
   flex-direction: column;
-  transition: all 0.2s ease;
   justify-content: center;
   padding: 5px;
   width: 100px;
@@ -26,11 +25,4 @@ button > div {
 
 button path {
   fill: var(--w3m-accent-fill-color);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  button:active {
-    transition: all 0.1s ease;
-    transform: scale(0.93);
-  }
 }

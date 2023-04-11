@@ -1,17 +1,9 @@
 button {
-  transition: all 0.2s ease;
   width: 100%;
   height: 100%;
   border-radius: var(--w3m-button-hover-highlight-border-radius);
   display: flex;
   align-items: flex-start;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  button:active {
-    transition: all 0.1s ease;
-    transform: scale(0.93);
-  }
 }
 
 button:hover {

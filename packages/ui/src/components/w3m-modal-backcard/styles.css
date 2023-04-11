@@ -45,17 +45,10 @@ button {
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: all 0.2s ease;
   background-color: var(--w3m-color-bg-1);
   box-shadow: 0 0 0 1px var(--w3m-color-overlay);
 }
 
-@media (hover: hover) and (pointer: fine) {
-  button:active {
-    transition: all 0.1s ease;
-    transform: scale(0.93);
-  }
-}
 button:hover {
   background-color: var(--w3m-color-bg-2);
 }
