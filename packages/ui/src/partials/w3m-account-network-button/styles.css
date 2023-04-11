@@ -8,9 +8,11 @@ button {
   width: 100px;
 }
 
-button:active {
-  transition: all 0.1s ease;
-  transform: scale(0.93);
+@media (hover: hover) and (pointer: fine) {
+  button:active {
+    transition: all 0.1s ease;
+    transform: scale(0.93);
+  }
 }
 
 button:hover {

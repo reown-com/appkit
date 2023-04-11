@@ -28,7 +28,9 @@ button path {
   fill: var(--w3m-accent-fill-color);
 }
 
-button:active {
-  transition: all 0.1s ease;
-  transform: scale(0.93);
+@media (hover: hover) and (pointer: fine) {
+  button:active {
+    transition: all 0.1s ease;
+    transform: scale(0.93);
+  }
 }

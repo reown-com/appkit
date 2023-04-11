@@ -50,11 +50,12 @@ button {
   box-shadow: 0 0 0 1px var(--w3m-color-overlay);
 }
 
-button:active {
-  transition: all 0.1s ease;
-  transform: scale(0.93);
+@media (hover: hover) and (pointer: fine) {
+  button:active {
+    transition: all 0.1s ease;
+    transform: scale(0.93);
+  }
 }
-
 button:hover {
   background-color: var(--w3m-color-bg-2);
 }

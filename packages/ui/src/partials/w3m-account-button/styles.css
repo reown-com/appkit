@@ -22,9 +22,11 @@ div button {
   transition: all 0.2s ease;
 }
 
-div button:active {
-  transition: all 0.1s ease;
-  transform: scale(0.93);
+@media (hover: hover) and (pointer: fine) {
+  div button:active {
+    transition: all 0.1s ease;
+    transform: scale(0.93);
+  }
 }
 
 .w3m-no-avatar {
