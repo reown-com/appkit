@@ -142,7 +142,10 @@ export const ThemeUtil = {
     button::after {
       content: '';
       position: absolute;
-      inset: 0;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
       transition: background-color, 0.2s ease;
     }
 

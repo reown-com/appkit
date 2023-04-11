@@ -3,7 +3,12 @@ button {
   height: 28px;
   padding: 0 10px;
   background-color: var(--w3m-accent-color);
-  transition: opacity 0.2s ease-in-out;
+  transition: all 0.2s ease;
+}
+
+button:active {
+  transition: all 0.1s ease;
+  transform: scale(0.93);
 }
 
 button path {

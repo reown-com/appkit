@@ -2,7 +2,7 @@ button {
   display: flex;
   border-radius: var(--w3m-button-hover-highlight-border-radius);
   flex-direction: column;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   justify-content: center;
   padding: 5px;
   width: 100px;
@@ -26,4 +26,9 @@ button > div {
 
 button path {
   fill: var(--w3m-accent-fill-color);
+}
+
+button:active {
+  transition: all 0.1s ease;
+  transform: scale(0.93);
 }

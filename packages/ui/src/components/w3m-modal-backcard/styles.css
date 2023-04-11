@@ -1,5 +1,8 @@
 .w3m-toolbar-placeholder {
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   width: 100%;
   position: absolute;
   display: block;
@@ -42,9 +45,14 @@ button {
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: background-color, 0.2s ease;
+  transition: all 0.2s ease;
   background-color: var(--w3m-color-bg-1);
   box-shadow: 0 0 0 1px var(--w3m-color-overlay);
+}
+
+button:active {
+  transition: all 0.1s ease;
+  transform: scale(0.93);
 }
 
 button:hover {

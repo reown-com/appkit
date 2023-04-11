@@ -3,9 +3,14 @@ button {
   flex-direction: column;
   padding: 5px 10px;
   border-radius: var(--w3m-button-hover-highlight-border-radius);
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   height: 100%;
   justify-content: flex-start;
+}
+
+button:active {
+  transition: all 0.1s ease;
+  transform: scale(0.93);
 }
 
 .w3m-icons {

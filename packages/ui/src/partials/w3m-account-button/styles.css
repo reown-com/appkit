@@ -19,6 +19,12 @@ div button {
   margin-left: 10px;
   color: var(--w3m-accent-fill-color);
   background-color: var(--w3m-accent-color);
+  transition: all 0.2s ease;
+}
+
+div button:active {
+  transition: all 0.1s ease;
+  transform: scale(0.93);
 }
 
 .w3m-no-avatar {
@@ -27,7 +33,10 @@ div button {
 
 button::after {
   content: '';
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   position: absolute;
   background-color: transparent;
   border-radius: inherit;

@@ -7,6 +7,11 @@ button {
   align-items: flex-start;
 }
 
+button:active {
+  transition: all 0.1s ease;
+  transform: scale(0.93);
+}
+
 button:hover {
   background-color: var(--w3m-color-overlay);
 }

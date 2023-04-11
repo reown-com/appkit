@@ -92,9 +92,13 @@ export class W3mModalRouter extends LitElement {
   }
 
   private async onChangeRoute() {
-    await animate(this.routerEl, { opacity: [1, 0], scale: [1, 1.02] }, { duration: 0.15 }).finished
+    await animate(
+      this.routerEl,
+      { opacity: [1, 0], scale: [1, 1.02] },
+      { duration: 0.15, delay: 0.1 }
+    ).finished
     this.view = RouterCtrl.state.view
-    animate(this.routerEl, { opacity: [0, 1], scale: [0.99, 1] }, { duration: 0.37, delay: 0.03 })
+    animate(this.routerEl, { opacity: [0, 1], scale: [0.99, 1] }, { duration: 0.37, delay: 0.05 })
   }
 
   // -- render ------------------------------------------------------- //
