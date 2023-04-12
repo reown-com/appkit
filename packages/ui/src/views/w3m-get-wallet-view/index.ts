@@ -1,6 +1,7 @@
 import { CoreUtil, ExplorerCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import { DataUtil } from '../../utils/DataUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -18,9 +19,9 @@ export class W3mGetWalletView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const recomendedWallets = ExplorerCtrl.state.recomendedWallets.slice(0, 5)
-    const customWallets = UiUtil.getCustomWallets().slice(0, 5)
+    const manualWallets = DataUtil.manualWallets().slice(0, 5)
     const isRecomendedWallets = recomendedWallets.length
-    const isCustomWallets = customWallets.length
+    const isCustomWallets = manualWallets.length
 
     return html`
       <w3m-modal-header title="Get a wallet"></w3m-modal-header>

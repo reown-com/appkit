@@ -38,7 +38,7 @@ export class W3mExplorerContext extends LitElement {
       await Promise.all(promises)
       OptionsCtrl.setIsDataLoaded(true)
       const { recomendedWallets } = ExplorerCtrl.state
-      const injectedWallets = DataUtil.injectedWallets()
+      const injectedWallets = DataUtil.installedInjectedWallets()
       const chainsImgs = chains?.map(chain => UiUtil.getChainIcon(chain.id)) ?? []
       const walletImgs = recomendedWallets.map(wallet => UiUtil.getWalletIcon(wallet))
       const injectedImgs = injectedWallets.map(wallet => UiUtil.getWalletIcon(wallet))

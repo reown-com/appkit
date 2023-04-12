@@ -1,4 +1,4 @@
-import { ClientCtrl, ConfigCtrl, ExplorerCtrl, OptionsCtrl } from '@web3modal/core'
+import { ClientCtrl, ConfigCtrl, CoreUtil, ExplorerCtrl, OptionsCtrl } from '@web3modal/core'
 import { UiUtil } from './UiUtil'
 
 export const DataUtil = {
@@ -21,7 +21,13 @@ export const DataUtil = {
     return ConfigCtrl.state.desktopWallets ?? []
   },
 
-  injectedWallets() {
+  manualWallets() {
+    const { mobileWallets, desktopWallets } = ConfigCtrl.state
+
+    return (CoreUtil.isMobile() ? mobileWallets : desktopWallets) ?? []
+  },
+
+  installedInjectedWallets() {
     const { isStandalone } = OptionsCtrl.state
     if (isStandalone) {
       return []
@@ -55,12 +61,40 @@ export const DataUtil = {
     return wallets.length ? wallets : [{ name: 'Browser', id: 'browser', image_id: undefined }]
   },
 
+  injectedWallets() {
+    const { isStandalone } = OptionsCtrl.state
+    const { explorerExcludedWalletIds, explorerRecommendedWalletIds } = ConfigCtrl.state
+    if (isStandalone || explorerExcludedWalletIds === 'ALL') {
+      return []
+    }
+    const { namespace } = ClientCtrl.client()
+    const { injectedWallets } = ExplorerCtrl.state
+
+    const wallets = injectedWallets.filter(({ id, injected }) => {
+      const excludedIds = CoreUtil.isArray(explorerExcludedWalletIds)
+        ? explorerExcludedWalletIds
+        : []
+      const recommendedIds = CoreUtil.isArray(explorerRecommendedWalletIds)
+        ? explorerRecommendedWalletIds
+        : []
+
+      return Boolean(
+        injected.some(
+          i =>
+            i.namespace === namespace && !excludedIds.includes(id) && !recommendedIds.includes(id)
+        )
+      )
+    })
+
+    return wallets
+  },
+
   recentWallet() {
     return UiUtil.getRecentWallet()
   },
 
   recomendedWallets() {
-    const injectedWallets = DataUtil.injectedWallets()
+    const injectedWallets = DataUtil.installedInjectedWallets()
     const injectedIds = injectedWallets.map(({ id }) => id)
     const recentWalletId = DataUtil.recentWallet()?.id
     const existingIds = [...injectedIds, recentWalletId]

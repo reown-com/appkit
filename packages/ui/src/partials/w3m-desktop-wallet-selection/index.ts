@@ -1,5 +1,5 @@
 import type { WalletData } from '@web3modal/core'
-import { OptionsCtrl } from '@web3modal/core'
+import { ConfigCtrl, OptionsCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { DataUtil } from '../../utils/DataUtil'
@@ -83,7 +83,7 @@ export class W3mDesktopWalletSelection extends LitElement {
   }
 
   private injectedWalletsTemplate() {
-    const wallets = DataUtil.injectedWallets()
+    const wallets = DataUtil.installedInjectedWallets()
 
     return wallets.map(
       wallet => html`
@@ -101,6 +101,8 @@ export class W3mDesktopWalletSelection extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { isStandalone } = OptionsCtrl.state
+    const { explorerExcludedWalletIds, enableExplorer } = ConfigCtrl.state
+    const isExplorerWallets = explorerExcludedWalletIds !== 'ALL' && enableExplorer
     const manualTemplate = this.manualWalletsTemplate()
     const recomendedTemplate = this.recomendedWalletsTemplate()
     const externalTemplate = this.externalWalletsTemplate()
@@ -119,7 +121,7 @@ export class W3mDesktopWalletSelection extends LitElement {
     }
     templates = templates.filter(Boolean)
 
-    const isViewAll = templates.length > 4
+    const isViewAll = templates.length > 4 || isExplorerWallets
     let wallets = []
     if (isViewAll) {
       wallets = templates.slice(0, 3)

@@ -127,18 +127,16 @@ export class W3mWalletExplorerView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { wallets, search } = ExplorerCtrl.state
-    const { isStandalone } = OptionsCtrl.state
     const { listings } = this.search ? search : wallets
     const isLoading = this.loading && !listings.length
     const isSearch = this.search.length >= 3
-    const isExtensions = !isStandalone && !CoreUtil.isMobile()
-    let extensions = isExtensions ? ExplorerCtrl.state.injectedWallets : []
-    let customWallets = UiUtil.getCustomWallets()
+    let extensions = DataUtil.injectedWallets()
+    let manualWallets = DataUtil.manualWallets()
     let recomendedWallets = DataUtil.recomendedWallets()
 
     if (isSearch) {
       extensions = extensions.filter(({ name }) => UiUtil.caseSafeIncludes(name, this.search))
-      customWallets = customWallets.filter(({ name }) => UiUtil.caseSafeIncludes(name, this.search))
+      manualWallets = manualWallets.filter(({ name }) => UiUtil.caseSafeIncludes(name, this.search))
       recomendedWallets = recomendedWallets.filter(({ name }) =>
         UiUtil.caseSafeIncludes(name, this.search)
       )
@@ -177,12 +175,12 @@ export class W3mWalletExplorerView extends LitElement {
             ? null
             : [...Array(iterator)].map(
                 (_, index) => html`
-                  ${customWallets[index]
+                  ${manualWallets[index]
                     ? html`
                         <w3m-wallet-button
-                          name=${customWallets[index].name}
-                          walletId=${customWallets[index].id}
-                          .onClick=${() => this.onConnectCustom(customWallets[index])}
+                          name=${manualWallets[index].name}
+                          walletId=${manualWallets[index].id}
+                          .onClick=${() => this.onConnectCustom(manualWallets[index])}
                         >
                         </w3m-wallet-button>
                       `

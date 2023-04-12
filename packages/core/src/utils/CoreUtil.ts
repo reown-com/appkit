@@ -30,6 +30,10 @@ export const CoreUtil = {
     return url.startsWith('http://') || url.startsWith('https://')
   },
 
+  isArray<T>(data?: T | T[]): data is T[] {
+    return Array.isArray(data) && data.length > 0
+  },
+
   formatNativeUrl(appUrl: string, wcUri: string, name: string): string {
     if (CoreUtil.isHttpUrl(appUrl)) {
       return this.formatUniversalUrl(appUrl, wcUri, name)

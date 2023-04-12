@@ -23,24 +23,33 @@ export const ExplorerCtrl = {
     const { explorerRecommendedWalletIds, explorerExcludedWalletIds } = ConfigCtrl.state
 
     // Don't fetch recomended wallets
-    if (explorerRecommendedWalletIds === 'NONE') {
+    if (
+      explorerRecommendedWalletIds === 'NONE' ||
+      (explorerExcludedWalletIds === 'ALL' && !explorerRecommendedWalletIds)
+    ) {
       return state.recomendedWallets
     }
 
     // Fetch only recomended wallets defined in config
-    if (Array.isArray(explorerRecommendedWalletIds) && explorerRecommendedWalletIds.length) {
+    if (CoreUtil.isArray(explorerRecommendedWalletIds)) {
       const recommendedIds = explorerRecommendedWalletIds.join(',')
       const params = { recommendedIds }
       const { listings } = await ExplorerUtil.getAllListings(params)
-      state.recomendedWallets = Object.values(listings)
+      const listingsArr = Object.values(listings)
+      listingsArr.sort((a, b) => {
+        const aIndex = explorerRecommendedWalletIds.indexOf(a.id)
+        const bIndex = explorerRecommendedWalletIds.indexOf(b.id)
+
+        return aIndex - bIndex
+      })
+      state.recomendedWallets = listingsArr
     }
 
     // Fetch default recomended wallets based on user's device, options and excluded config
     else {
       const { standaloneChains, walletConnectVersion } = OptionsCtrl.state
       const chainsFilter = standaloneChains?.join(',')
-      const isExcluded =
-        Array.isArray(explorerExcludedWalletIds) && explorerExcludedWalletIds.length
+      const isExcluded = CoreUtil.isArray(explorerExcludedWalletIds)
       const params = {
         page: 1,
         entries: 9,
@@ -70,12 +79,12 @@ export const ExplorerCtrl = {
     // Don't fetch recomended wallets, as we already have these
     if (recomendedWallets.length) {
       extendedParams.excludedIds = recomendedWallets.map(wallet => wallet.id).join(',')
-    } else if (Array.isArray(explorerRecommendedWalletIds) && explorerRecommendedWalletIds.length) {
+    } else if (CoreUtil.isArray(explorerRecommendedWalletIds)) {
       extendedParams.excludedIds = explorerRecommendedWalletIds.join(',')
     }
 
     // Don't fetch user defined excluded wallets & recomended wallets
-    if (Array.isArray(explorerExcludedWalletIds) && explorerExcludedWalletIds.length) {
+    if (CoreUtil.isArray(explorerExcludedWalletIds)) {
       extendedParams.excludedIds = [extendedParams.excludedIds, explorerExcludedWalletIds]
         .filter(Boolean)
         .join(',')

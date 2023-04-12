@@ -171,12 +171,6 @@ export const UiUtil = {
     }
   },
 
-  getCustomWallets() {
-    const { desktopWallets, mobileWallets } = ConfigCtrl.state
-
-    return (CoreUtil.isMobile() ? mobileWallets : desktopWallets) ?? []
-  },
-
   getCustomImageUrls() {
     const { chainImages, walletImages } = ConfigCtrl.state
     const chainUrls = Object.values(chainImages ?? {})
@@ -260,7 +254,7 @@ export const UiUtil = {
 
   getCachedRouterWalletPlatforms() {
     const { id, desktop, mobile, injected } = CoreUtil.getWalletRouterData()
-    const injectedWallets = DataUtil.injectedWallets()
+    const injectedWallets = DataUtil.installedInjectedWallets()
     const isInjected = Boolean(injected?.length)
     const isInjectedInstalled = injectedWallets.some(wallet => wallet.id === id)
     const isDesktop = Boolean(desktop?.native)
