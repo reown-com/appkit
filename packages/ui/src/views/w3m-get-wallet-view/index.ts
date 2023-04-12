@@ -47,7 +47,7 @@ export class W3mGetWalletView extends LitElement {
             )
           : null}
         ${isCustomWallets
-          ? customWallets.map(
+          ? manualWallets.map(
               wallet =>
                 html`
                   <div class="w3m-wallet-item">
