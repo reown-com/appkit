@@ -31,6 +31,10 @@ export const ExplorerUtil = {
     return fetchListings('/w3m/v1/getInjectedListings', params)
   },
 
+  async getAllListings(params: ListingParams) {
+    return fetchListings('/w3m/v1/getAllListings', params)
+  },
+
   getWalletImageUrl(imageId: string) {
     return `${W3M_API}/w3m/v1/getWalletImage/${imageId}?projectId=${ConfigCtrl.state.projectId}`
   },

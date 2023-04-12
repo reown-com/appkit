@@ -34,8 +34,8 @@ export interface ConfigCtrlState {
   enableNetworkView?: boolean
   enableAccountView?: boolean
   enableExplorer?: boolean
-  explorerAllowList?: string[]
-  explorerDenyList?: string[]
+  explorerRecommendedWalletIds?: string[] | 'NONE'
+  explorerExcludedWalletIds?: string[] | 'ALL'
   termsOfServiceUrl?: string
   privacyPolicyUrl?: string
 }
@@ -85,6 +85,8 @@ export interface ListingParams {
   entries?: number
   version?: number
   chains?: string
+  recommendedIds?: string
+  excludedIds?: string
 }
 
 export interface Listing {

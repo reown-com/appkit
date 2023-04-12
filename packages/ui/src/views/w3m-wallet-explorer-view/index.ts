@@ -3,6 +3,7 @@ import { CoreUtil, ExplorerCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
+import { DataUtil } from '../../utils/DataUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -133,13 +134,18 @@ export class W3mWalletExplorerView extends LitElement {
     const isExtensions = !isStandalone && !CoreUtil.isMobile()
     let extensions = isExtensions ? ExplorerCtrl.state.injectedWallets : []
     let customWallets = UiUtil.getCustomWallets()
+    let recomendedWallets = DataUtil.recomendedWallets()
 
     if (isSearch) {
       extensions = extensions.filter(({ name }) => UiUtil.caseSafeIncludes(name, this.search))
       customWallets = customWallets.filter(({ name }) => UiUtil.caseSafeIncludes(name, this.search))
+      recomendedWallets = recomendedWallets.filter(({ name }) =>
+        UiUtil.caseSafeIncludes(name, this.search)
+      )
     }
 
-    const isEmpty = !this.loading && !listings.length && !extensions.length
+    const isEmpty =
+      !this.loading && !listings.length && !extensions.length && !recomendedWallets.length
     const iterator = Math.max(extensions.length, listings.length)
     const classes = {
       'w3m-loading': isLoading,
@@ -154,6 +160,19 @@ export class W3mWalletExplorerView extends LitElement {
 
       <w3m-modal-content class=${classMap(classes)}>
         <div class="w3m-grid">
+          ${isLoading
+            ? null
+            : recomendedWallets.map(
+                wallet => html`
+                  <w3m-wallet-button
+                    imageId=${wallet.image_id}
+                    name=${wallet.name}
+                    walletId=${wallet.id}
+                    .onClick=${() => this.onConnect(wallet)}
+                  >
+                  </w3m-wallet-button>
+                `
+              )}
           ${isLoading
             ? null
             : [...Array(iterator)].map(

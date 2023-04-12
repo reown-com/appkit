@@ -18,8 +18,8 @@ const state = proxy<ConfigCtrlState>({
   enableAccountView: true,
   enableExplorer: true,
   defaultChain: undefined,
-  explorerAllowList: undefined,
-  explorerDenyList: undefined,
+  explorerExcludedWalletIds: undefined,
+  explorerRecommendedWalletIds: undefined,
   termsOfServiceUrl: undefined,
   privacyPolicyUrl: undefined
 })

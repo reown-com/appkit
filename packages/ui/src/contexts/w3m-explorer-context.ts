@@ -30,16 +30,8 @@ export class W3mExplorerContext extends LitElement {
 
   private async preloadListings() {
     if (ConfigCtrl.state.enableExplorer) {
-      const { standaloneChains, chains, walletConnectVersion } = OptionsCtrl.state
-      const chainsFilter = standaloneChains?.join(',')
-      const promises = [
-        ExplorerCtrl.getRecomendedWallets({
-          page: 1,
-          entries: 9,
-          chains: chainsFilter,
-          version: walletConnectVersion
-        })
-      ]
+      const { chains } = OptionsCtrl.state
+      const promises = [ExplorerCtrl.getRecomendedWallets()]
       if (!CoreUtil.isMobile()) {
         promises.push(ExplorerCtrl.getInjectedWallets())
       }
