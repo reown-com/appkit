@@ -25,17 +25,16 @@ export class W3mViewAllWalletsButton extends LitElement {
     return html`
       <button @click=${this.onClick}>
         <div class="w3m-icons">
-          ${reversedWallets.length
-            ? reversedWallets.map(wallet => {
-                const explorerImg = UiUtil.getWalletIcon(wallet)
-                if (explorerImg) {
-                  return html`<img src=${explorerImg} />`
-                }
-                const src = UiUtil.getWalletIcon({ id: wallet.id })
+          ${reversedWallets.map(wallet => {
+            const explorerImg = UiUtil.getWalletIcon(wallet)
+            if (explorerImg) {
+              return html`<img src=${explorerImg} />`
+            }
+            const src = UiUtil.getWalletIcon({ id: wallet.id })
 
-                return src ? html`<img src=${src} />` : SvgUtil.WALLET_PLACEHOLDER
-              })
-            : [...Array(4)].map(() => SvgUtil.WALLET_PLACEHOLDER)}
+            return src ? html`<img src=${src} />` : SvgUtil.WALLET_PLACEHOLDER
+          })}
+          ${[...Array(4 - reversedWallets.length)].map(() => SvgUtil.WALLET_PLACEHOLDER)}
         </div>
         <w3m-text variant="xsmall-regular">View All</w3m-text>
       </button>
