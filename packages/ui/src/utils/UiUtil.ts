@@ -259,19 +259,19 @@ export const UiUtil = {
     const isInjectedInstalled = injectedWallets.some(wallet => wallet.id === id)
     const isDesktop = Boolean(desktop?.native)
     const isWeb = Boolean(desktop?.universal)
-    const isMobile = Boolean(mobile?.native ?? mobile?.universal)
+    const isMobile = Boolean(mobile?.native) || Boolean(mobile?.universal)
 
     return { isInjectedInstalled, isInjected, isDesktop, isMobile, isWeb }
   },
 
   goToConnectingView(wallet: WalletData) {
     RouterCtrl.setData({ Wallet: wallet })
-    const isMoMobileDevice = CoreUtil.isMobile()
+    const isMobileDevice = CoreUtil.isMobile()
     const { isDesktop, isWeb, isMobile, isInjectedInstalled } =
       UiUtil.getCachedRouterWalletPlatforms()
 
     // Mobile
-    if (isMoMobileDevice) {
+    if (isMobileDevice) {
       if (isMobile) {
         RouterCtrl.push('MobileConnecting')
       } else if (isWeb) {
