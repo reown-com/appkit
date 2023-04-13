@@ -1,6 +1,7 @@
 import { CoreUtil, ExplorerCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import { DataUtil } from '../../utils/DataUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -17,25 +18,26 @@ export class W3mGetWalletView extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { recomendedWallets } = ExplorerCtrl.state
-    const customWallets = UiUtil.getCustomWallets().slice(0, 6)
+    const recomendedWallets = ExplorerCtrl.state.recomendedWallets.slice(0, 5)
+    const manualWallets = DataUtil.manualWallets().slice(0, 5)
     const isRecomendedWallets = recomendedWallets.length
-    const isCustomWallets = customWallets.length
+    const isCustomWallets = manualWallets.length
 
     return html`
       <w3m-modal-header title="Get a wallet"></w3m-modal-header>
       <w3m-modal-content>
         ${isRecomendedWallets
           ? recomendedWallets.map(
-              ({ name, image_url, homepage }) =>
+              wallet =>
                 html`
                   <div class="w3m-wallet-item">
-                    <w3m-wallet-image src=${image_url.lg}></w3m-wallet-image>
+                    <w3m-wallet-image walletId=${wallet.id} imageId=${wallet.image_id}>
+                    </w3m-wallet-image>
                     <div class="w3m-wallet-content">
-                      <w3m-text variant="medium-regular">${name}</w3m-text>
+                      <w3m-text variant="medium-regular">${wallet.name}</w3m-text>
                       <w3m-button
                         .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
-                        .onClick=${() => this.onGet(homepage)}
+                        .onClick=${() => this.onGet(wallet.homepage)}
                       >
                         Get
                       </w3m-button>
@@ -45,16 +47,16 @@ export class W3mGetWalletView extends LitElement {
             )
           : null}
         ${isCustomWallets
-          ? customWallets.map(
-              ({ name, id, links }) =>
+          ? manualWallets.map(
+              wallet =>
                 html`
                   <div class="w3m-wallet-item">
-                    <w3m-wallet-image walletId=${id}></w3m-wallet-image>
+                    <w3m-wallet-image walletId=${wallet.id}></w3m-wallet-image>
                     <div class="w3m-wallet-content">
-                      <w3m-text variant="medium-regular">${name}</w3m-text>
+                      <w3m-text variant="medium-regular">${wallet.name}</w3m-text>
                       <w3m-button
                         .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
-                        .onClick=${() => this.onGet(links.universal)}
+                        .onClick=${() => this.onGet(wallet.links.universal)}
                       >
                         Get
                       </w3m-button>

@@ -21,16 +21,22 @@ export class W3mAccountContext extends LitElement {
     this.fetchProfile()
     this.fetchBalance()
     this.unwatchAccount = ClientCtrl.client().watchAccount(account => {
-      if (AccountCtrl.state.isConnected && !account.isConnected) {
-        ModalCtrl.close()
-      } else {
-        const { address } = AccountCtrl.state
-        if (account.address !== address) {
-          this.fetchProfile(account.address)
-          this.fetchBalance(account.address)
-        }
+      const { address, isConnected } = AccountCtrl.state
+
+      if (account.isConnected && account.address !== address) {
+        this.fetchProfile(account.address)
+        this.fetchBalance(account.address)
         AccountCtrl.setAddress(account.address)
       }
+
+      if (!account.isConnected) {
+        AccountCtrl.resetAccount()
+      }
+
+      if (isConnected !== account.isConnected) {
+        ModalCtrl.close()
+      }
+
       AccountCtrl.setIsConnected(account.isConnected)
     })
   }

@@ -1,0 +1,13 @@
+:host {
+  background-color: var(--w3m-color-bg-2);
+  border-top: 1px solid var(--w3m-color-bg-3);
+}
+
+div {
+  padding: 10px 20px;
+  display: inherit;
+  flex-direction: inherit;
+  align-items: inherit;
+  width: inherit;
+  justify-content: inherit;
+}

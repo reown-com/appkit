@@ -10,13 +10,12 @@ export class W3mWalletImage extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
-  @property() public walletId?: string = undefined
-  @property() public src?: string = undefined
+  @property() public walletId = ''
+  @property() public imageId?: string = undefined
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const optimisticId = UiUtil.getWalletId(this.walletId ?? '')
-    const src = this.src ? this.src : UiUtil.getWalletIcon(optimisticId)
+    const src = UiUtil.getWalletIcon({ id: this.walletId, image_id: this.imageId })
 
     return html`
       ${src.length

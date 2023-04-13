@@ -37,6 +37,8 @@ function themeVariablesPresets() {
     '--w3m-background-border-radius': '8px',
     '--w3m-container-border-radius': '30px',
     '--w3m-wallet-icon-border-radius': '15px',
+    '--w3m-wallet-icon-large-border-radius': '30px',
+    '--w3m-wallet-icon-small-border-radius': '7px',
     '--w3m-input-border-radius': '28px',
     '--w3m-button-border-radius': '10px',
     '--w3m-notification-border-radius': '36px',
@@ -92,6 +94,10 @@ function themeBackgroundImage() {
 }
 
 export const ThemeUtil = {
+  getPreset(key: string) {
+    return themeVariablesPresets()[key as never]
+  },
+
   setTheme() {
     const root: HTMLElement | null = document.querySelector(':root')
     const { themeVariables } = ThemeCtrl.state
@@ -131,12 +137,23 @@ export const ThemeUtil = {
       position: relative;
       border: none;
       background-color: transparent;
+      transition: all 0.2s ease;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      button:active {
+        transition: all 0.1s ease;
+        transform: scale(0.93);
+      }
     }
 
     button::after {
       content: '';
       position: absolute;
-      inset: 0;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
       transition: background-color, 0.2s ease;
     }
 

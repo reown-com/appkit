@@ -1,6 +1,13 @@
 import type { SwitchNetworkData } from '@web3modal/core'
-import { AccountCtrl, ClientCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import {
+  AccountCtrl,
+  ClientCtrl,
+  ModalCtrl,
+  OptionsCtrl,
+  RouterCtrl,
+  ToastCtrl
+} from '@web3modal/core'
+import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
@@ -13,20 +20,23 @@ export class W3mSelectNetworkView extends LitElement {
   // -- private ------------------------------------------------------ //
   private async onSelectChain(chain: SwitchNetworkData) {
     try {
-      const { selectedChain, walletConnectVersion } = OptionsCtrl.state
+      const { selectedChain, walletConnectVersion, isInjectedMobile } = OptionsCtrl.state
       const { isConnected } = AccountCtrl.state
       if (isConnected) {
         if (selectedChain?.id === chain.id) {
-          RouterCtrl.replace('Account')
+          RouterCtrl.reset('Account')
         } else if (walletConnectVersion === 2) {
           await ClientCtrl.client().switchNetwork({ chainId: chain.id })
-          RouterCtrl.replace('Account')
+          RouterCtrl.reset('Account')
         } else {
           RouterCtrl.push('SwitchNetwork', { SwitchNetwork: chain })
         }
-      } else {
-        RouterCtrl.push('ConnectWallet')
+      } else if (isInjectedMobile) {
         OptionsCtrl.setSelectedChain(chain)
+        ModalCtrl.close()
+      } else {
+        OptionsCtrl.setSelectedChain(chain)
+        RouterCtrl.push('ConnectWallet')
       }
     } catch (err) {
       console.error(err)
@@ -41,7 +51,7 @@ export class W3mSelectNetworkView extends LitElement {
     return html`
       <w3m-modal-header title="Select network"></w3m-modal-header>
       <w3m-modal-content>
-        <div class="w3m-grid">
+        <div>
           ${chains?.map(
             chain =>
               html`

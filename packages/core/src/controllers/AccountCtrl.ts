@@ -1,6 +1,8 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { AccountCtrlState } from '../types/controllerTypes'
 import { ClientCtrl } from './ClientCtrl'
+import { ConfigCtrl } from './ConfigCtrl'
+import { OptionsCtrl } from './OptionsCtrl'
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<AccountCtrlState>({
@@ -34,8 +36,8 @@ export const AccountCtrl = {
     try {
       state.profileLoading = true
       const address = profileAddress ?? state.address
-      const { id } = ClientCtrl.client().getDefaultChain()
-      if (address && id === 1) {
+      const isMainnetConfigured = OptionsCtrl.state.chains?.find(chain => chain.id === 1)
+      if (address && isMainnetConfigured) {
         const [name, avatar] = await Promise.all([
           ClientCtrl.client().fetchEnsName({ address, chainId: 1 }),
           ClientCtrl.client().fetchEnsAvatar({ address, chainId: 1 })
@@ -53,10 +55,16 @@ export const AccountCtrl = {
 
   async fetchBalance(balanceAddress?: `0x${string}`) {
     try {
+      const { chain } = ClientCtrl.client().getNetwork()
+      const { tokenContracts } = ConfigCtrl.state
+      let token: `0x${string}` | undefined = undefined
+      if (chain && tokenContracts) {
+        token = tokenContracts[chain.id] as `0x${string}`
+      }
       state.balanceLoading = true
       const address = balanceAddress ?? state.address
       if (address) {
-        const balance = await ClientCtrl.client().fetchBalance({ address })
+        const balance = await ClientCtrl.client().fetchBalance({ address, token })
         state.balance = { amount: balance.formatted, symbol: balance.symbol }
       }
     } finally {

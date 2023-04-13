@@ -29,25 +29,25 @@ input::placeholder {
 }
 
 svg {
-  margin-right: 4px;
+  margin: 2px 4px 0 0;
 }
 
-.w3m-placeholder {
+div {
   top: 0;
-  left: 50%;
+  left: calc(50% - 12px);
   transform: translateX(-50%);
   transition: 0.2s all ease;
   pointer-events: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: calc(100% - 2px);
   width: fit-content;
   position: relative;
 }
 
-input:focus-within + .w3m-placeholder,
-input:not(:placeholder-shown) + .w3m-placeholder {
+input:focus-within + div,
+input:not(:placeholder-shown) + div {
   transform: translateX(10px);
   left: 0;
 }
@@ -57,8 +57,8 @@ w3m-text {
   transition: 0.2s opacity ease;
 }
 
-input:focus-within + .w3m-placeholder w3m-text,
-input:not(:placeholder-shown) + .w3m-placeholder w3m-text {
+input:focus-within + div w3m-text,
+input:not(:placeholder-shown) + div w3m-text {
   opacity: 0;
 }
 

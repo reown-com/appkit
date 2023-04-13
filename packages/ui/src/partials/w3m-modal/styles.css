@@ -3,7 +3,10 @@
 }
 
 .w3m-overlay {
-  inset: 0px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   position: fixed;
   z-index: var(--w3m-z-index);
   overflow: hidden;
@@ -19,10 +22,11 @@
   .w3m-overlay {
     overflow: scroll;
     align-items: flex-start;
+    padding: 20px 0;
   }
 }
 
-.w3m-open {
+.w3m-active {
   pointer-events: auto;
 }
 

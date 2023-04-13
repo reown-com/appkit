@@ -4,8 +4,8 @@ import litCss from 'rollup-plugin-lit-css'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
 
 const nodeVersion = Number(process.versions.node.split('.')[0])
-if (nodeVersion < 17) {
-  throw new Error('Node version must be 17.x or higher')
+if (nodeVersion < 16) {
+  throw new Error('Node version must be 16.x or higher')
 }
 
 export default function createConfig(packageJson) {

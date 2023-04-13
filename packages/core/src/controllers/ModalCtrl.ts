@@ -4,6 +4,7 @@ import { AccountCtrl } from './AccountCtrl'
 import { ConfigCtrl } from './ConfigCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
 import { RouterCtrl } from './RouterCtrl'
+import { WcConnectionCtrl } from './WcConnectionCtrl'
 
 // -- types -------------------------------------------------------- //
 export interface OpenOptions {
@@ -28,32 +29,39 @@ export const ModalCtrl = {
   async open(options?: OpenOptions) {
     return new Promise<void>(resolve => {
       const { isStandalone, isUiLoaded, isDataLoaded } = OptionsCtrl.state
+      const { pairingUri } = WcConnectionCtrl.state
       const { isConnected } = AccountCtrl.state
       const { enableNetworkView } = ConfigCtrl.state
 
       if (isStandalone) {
         OptionsCtrl.setStandaloneUri(options?.uri)
         OptionsCtrl.setStandaloneChains(options?.standaloneChains)
-        RouterCtrl.replace('ConnectWallet')
+        RouterCtrl.reset('ConnectWallet')
       } else if (options?.route) {
-        RouterCtrl.replace(options.route)
+        RouterCtrl.reset(options.route)
       } else if (isConnected) {
-        RouterCtrl.replace('Account')
+        RouterCtrl.reset('Account')
       } else if (enableNetworkView) {
-        RouterCtrl.replace('SelectNetwork')
+        RouterCtrl.reset('SelectNetwork')
       } else {
-        RouterCtrl.replace('ConnectWallet')
+        RouterCtrl.reset('ConnectWallet')
       }
 
       // Open modal if essential async data is ready
-      if (isUiLoaded && isDataLoaded) {
+      if (isUiLoaded && isDataLoaded && (isStandalone || pairingUri || isConnected)) {
         state.open = true
         resolve()
       }
       // Otherwise (slow network) re-attempt open checks
       else {
         const interval = setInterval(() => {
-          if (OptionsCtrl.state.isUiLoaded && OptionsCtrl.state.isDataLoaded) {
+          const opts = OptionsCtrl.state
+          const connection = WcConnectionCtrl.state
+          if (
+            opts.isUiLoaded &&
+            opts.isDataLoaded &&
+            (opts.isStandalone || connection.pairingUri || isConnected)
+          ) {
             clearInterval(interval)
             state.open = true
             resolve()

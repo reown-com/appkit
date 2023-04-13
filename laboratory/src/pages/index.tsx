@@ -37,6 +37,12 @@ const cards = [
       'Simple ethereum and polygon example that uses wagmi with WalletConnect v2, with some custom added wallet',
     link: '/v2Customised',
     color: 'error'
+  },
+  {
+    title: 'WalletConnect v2 Auth',
+    description: 'Simple ethereum example that uses WalletConnect Auth SDK',
+    link: '/v2Auth',
+    color: 'success'
   }
 ] as const
 

@@ -1,0 +1,89 @@
+@keyframes loading {
+  to {
+    stroke-dashoffset: 0px;
+  }
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(1px, 0, 0);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-2px, 0, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(2px, 0, 0);
+  }
+}
+
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+div {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 40px 0 20px 0;
+  transform: translate3d(0, 0, 0);
+}
+
+svg {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  fill: none;
+  stroke: transparent;
+  stroke-linecap: round;
+  stroke-width: 2px;
+  top: 0;
+  left: 0;
+}
+
+use {
+  stroke: var(--w3m-accent-color);
+  animation: loading 1s linear infinite;
+}
+
+w3m-wallet-image {
+  border-radius: var(--w3m-wallet-icon-large-border-radius);
+  width: 90px;
+  height: 90px;
+}
+
+w3m-text {
+  margin-bottom: 40px;
+}
+
+.w3m-error svg {
+  stroke: var(--w3m-error-color);
+}
+
+.w3m-error use {
+  display: none;
+}
+
+.w3m-error {
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.w3m-stale use,
+.w3m-stale svg {
+  display: none;
+}

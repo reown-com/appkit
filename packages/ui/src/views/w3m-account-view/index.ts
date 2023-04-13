@@ -1,5 +1,5 @@
-import { AccountCtrl, ClientCtrl, ModalCtrl, ToastCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { AccountCtrl, ClientCtrl, ToastCtrl } from '@web3modal/core'
+import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -10,10 +10,8 @@ export class W3mAccountView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- private ------------------------------------------------------ //
-  private onDisconnect() {
-    ModalCtrl.close()
-    ClientCtrl.client().disconnect()
-    AccountCtrl.resetAccount()
+  private async onDisconnect() {
+    await ClientCtrl.client().disconnect()
   }
 
   private async onCopyAddress() {

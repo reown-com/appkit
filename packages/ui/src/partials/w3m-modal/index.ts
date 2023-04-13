@@ -1,5 +1,5 @@
 import { ModalCtrl, OptionsCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { animate, spring } from 'motion'
@@ -15,6 +15,7 @@ export class W3mModal extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false
+  @state() private active = false
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
@@ -69,20 +70,23 @@ export class W3mModal extends LitElement {
 
   private async onOpenModalEvent() {
     this.toggleBodyScroll(false)
-    const delay = 0.2
+    const delay = 0.1
     await animate(this.containerEl, { y: 0 }, { duration: 0 }).finished
-    animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay })
-    animate(
-      this.containerEl,
-      UiUtil.isMobileAnimation() ? { y: ['50vh', 0] } : { scale: [0.98, 1] },
-      {
-        scale: { easing: spring({ velocity: 0.4 }) },
-        y: { easing: spring({ mass: 0.5 }) },
-        delay
-      }
-    )
     this.addKeyboardEvents()
     this.open = true
+    await Promise.all([
+      animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay }).finished,
+      animate(
+        this.containerEl,
+        UiUtil.isMobileAnimation() ? { y: ['50vh', 0] } : { scale: [0.98, 1] },
+        {
+          scale: { easing: spring({ velocity: 0.4 }) },
+          y: { easing: spring({ mass: 0.5 }) },
+          delay
+        }
+      ).finished
+    ])
+    this.active = true
   }
 
   private async onCloseModalEvent() {
@@ -99,6 +103,7 @@ export class W3mModal extends LitElement {
       ).finished,
       animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
     ])
+    this.active = false
     this.open = false
   }
 
@@ -131,6 +136,7 @@ export class W3mModal extends LitElement {
     return isStandalone
       ? null
       : html`
+          <w3m-wc-connection-context></w3m-wc-connection-context>
           <w3m-account-context></w3m-account-context>
           <w3m-network-context></w3m-network-context>
         `
@@ -140,7 +146,7 @@ export class W3mModal extends LitElement {
   protected render() {
     const classes = {
       'w3m-overlay': true,
-      'w3m-open': this.open
+      'w3m-active': this.active
     }
 
     return html`

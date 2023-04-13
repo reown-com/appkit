@@ -29,12 +29,13 @@ export interface ConfigCtrlState {
   walletImages?: Record<string, string>
   chainImages?: Record<string, string>
   tokenImages?: Record<string, string>
+  tokenContracts?: Record<number, string>
   enableStandaloneMode?: boolean
   enableNetworkView?: boolean
   enableAccountView?: boolean
   enableExplorer?: boolean
-  explorerAllowList?: string[]
-  explorerDenyList?: string[]
+  explorerRecommendedWalletIds?: string[] | 'NONE'
+  explorerExcludedWalletIds?: string[] | 'ALL'
   termsOfServiceUrl?: string
   privacyPolicyUrl?: string
 }
@@ -55,6 +56,7 @@ export interface OptionsCtrlState {
   isCustomMobile: boolean
   isDataLoaded: boolean
   isUiLoaded: boolean
+  isInjectedMobile: boolean
   walletConnectVersion: 1 | 2
 }
 
@@ -72,56 +74,50 @@ export interface AccountCtrlState {
 // -- ExplorerCtrl ------------------------------------------- //
 export interface ExplorerCtrlState {
   wallets: ListingResponse & { page: number }
+  injectedWallets: Listing[]
   search: ListingResponse & { page: number }
-  previewWallets: Listing[]
   recomendedWallets: Listing[]
 }
 
-export interface PageParams {
+export interface ListingParams {
   page?: number
   search?: string
   entries?: number
   version?: number
-  device?: 'desktop' | 'mobile'
-  order?: 'asc' | 'desc'
   chains?: string
-}
-
-export interface PlatformInfo {
-  native: string
-  universal: string
+  recommendedIds?: string
+  excludedIds?: string
 }
 
 export interface Listing {
   id: string
   name: string
-  description: string
   homepage: string
-  chains: string[]
-  versions: string[]
-  app_type: string
   image_id: string
-  image_url: {
-    sm: string
-    md: string
-    lg: string
-  }
   app: {
-    browser: string
-    ios: string
-    android: string
-    mac: string
-    window: string
-    linux: string
+    browser?: string
+    ios?: string
+    android?: string
+    mac?: string
+    windows?: string
+    linux?: string
+    chrome?: string
+    firefox?: string
+    safari?: string
+    edge?: string
+    opera?: string
   }
-  mobile: PlatformInfo
-  desktop: PlatformInfo
-  metadata: {
-    shortName: string
-    colors: {
-      primary: string
-      secondary: string
-    }
+  injected: {
+    injected_id: string
+    namespace: string
+  }[]
+  mobile: {
+    native: string
+    universal: string
+  }
+  desktop: {
+    native: string
+    universal: string
   }
 }
 
@@ -140,42 +136,52 @@ export interface ToastCtrlState {
 // -- RouterCtrl --------------------------------------------- //
 export type RouterView =
   | 'Account'
-  | 'Connectors'
   | 'ConnectWallet'
-  | 'DesktopConnector'
+  | 'DesktopConnecting'
   | 'GetWallet'
   | 'Help'
-  | 'InjectedConnector'
-  | 'InstallConnector'
+  | 'InjectedConnecting'
+  | 'InstallWallet'
+  | 'MobileConnecting'
+  | 'MobileQrcodeConnecting'
   | 'Qrcode'
   | 'SelectNetwork'
   | 'SwitchNetwork'
   | 'WalletExplorer'
+  | 'WebConnecting'
 
-export interface DesktopConnectorData {
+export interface WalletData {
+  id: string
   name: string
-  native?: string
-  universal?: string
-  icon?: string
-  walletId?: string
+  homepage?: string
+  image_id?: string
+  app?: {
+    browser?: string
+    ios?: string
+    android?: string
+  }
+  injected?: {
+    injected_id?: string
+    namespace?: string
+  }[]
+  mobile?: {
+    native?: string
+    universal?: string
+  }
+  desktop?: {
+    native?: string
+    universal?: string
+  }
 }
 
 export type SwitchNetworkData = Chain
-
-export interface InstallConnectorData {
-  id: string
-  name: string
-  url: string
-  isMobile?: boolean
-}
 
 export interface RouterCtrlState {
   history: RouterView[]
   view: RouterView
   data?: {
-    DesktopConnector?: DesktopConnectorData
+    Wallet?: WalletData
     SwitchNetwork?: SwitchNetworkData
-    InstallConnector?: InstallConnectorData
   }
 }
 
@@ -196,6 +202,8 @@ export interface ThemeCtrlState {
     '--w3m-background-border-radius'?: string
     '--w3m-container-border-radius'?: string
     '--w3m-wallet-icon-border-radius'?: string
+    '--w3m-wallet-icon-large-border-radius'?: string
+    '--w3m-wallet-icon-small-border-radius'?: string
     '--w3m-input-border-radius'?: string
     '--w3m-notification-border-radius'?: string
     '--w3m-button-border-radius'?: string
@@ -247,4 +255,10 @@ export interface ThemeCtrlState {
     '--w3m-text-xsmall-regular-font-family'?: string
   }
   themeMode?: 'dark' | 'light'
+}
+
+// -- WcConnectionCtrl ------------------------------------- //
+export interface WcConnectionCtrlState {
+  pairingUri: string
+  pairingError: boolean
 }

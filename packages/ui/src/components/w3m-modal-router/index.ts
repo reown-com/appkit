@@ -30,11 +30,6 @@ export class W3mModalRouter extends LitElement {
       const newHeight = `${conetnt.contentRect.height}px`
       if (this.oldHeight !== '0px') {
         animate(this.routerEl, { height: [this.oldHeight, newHeight] }, { duration: 0.2 })
-        animate(
-          this.routerEl,
-          { opacity: [0, 1], scale: [0.99, 1] },
-          { duration: 0.37, delay: 0.03 }
-        )
       }
       this.oldHeight = newHeight
     })
@@ -65,14 +60,18 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-connect-wallet-view></w3m-connect-wallet-view>`
       case 'SelectNetwork':
         return html`<w3m-select-network-view></w3m-select-network-view>`
-      case 'InjectedConnector':
-        return html`<w3m-injected-connector-view></w3m-injected-connector-view>`
-      case 'InstallConnector':
-        return html`<w3m-install-connector-view></w3m-install-connector-view>`
+      case 'InjectedConnecting':
+        return html`<w3m-injected-connecting-view></w3m-injected-connecting-view>`
+      case 'DesktopConnecting':
+        return html`<w3m-desktop-connecting-view></w3m-desktop-connecting-view>`
+      case 'MobileConnecting':
+        return html`<w3m-mobile-connecting-view></w3m-mobile-connecting-view>`
+      case 'WebConnecting':
+        return html`<w3m-web-connecting-view></w3m-web-connecting-view>`
+      case 'MobileQrcodeConnecting':
+        return html`<w3m-mobile-qr-connecting-view></w3m-mobile-qr-connecting-view>`
       case 'GetWallet':
         return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
-      case 'DesktopConnector':
-        return html`<w3m-desktop-connector-view></w3m-desktop-connector-view>`
       case 'WalletExplorer':
         return html`<w3m-wallet-explorer-view></w3m-wallet-explorer-view>`
       case 'Qrcode':
@@ -83,16 +82,21 @@ export class W3mModalRouter extends LitElement {
         return html`<w3m-account-view></w3m-account-view>`
       case 'SwitchNetwork':
         return html`<w3m-switch-network-view></w3m-switch-network-view>`
-      case 'Connectors':
-        return html`<w3m-connectors-view></w3m-connectors-view>`
+      case 'InstallWallet':
+        return html`<w3m-install-wallet-view></w3m-install-wallet-view>`
       default:
         return html`<div>Not Found</div>`
     }
   }
 
   private async onChangeRoute() {
-    await animate(this.routerEl, { opacity: [1, 0], scale: [1, 1.02] }, { duration: 0.15 }).finished
+    await animate(
+      this.routerEl,
+      { opacity: [1, 0], scale: [1, 1.02] },
+      { duration: 0.15, delay: 0.1 }
+    ).finished
     this.view = RouterCtrl.state.view
+    animate(this.routerEl, { opacity: [0, 1], scale: [0.99, 1] }, { duration: 0.37, delay: 0.05 })
   }
 
   // -- render ------------------------------------------------------- //

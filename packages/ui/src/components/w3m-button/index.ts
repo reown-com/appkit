@@ -14,18 +14,28 @@ export class W3mButton extends LitElement {
   @property() public iconLeft?: TemplateResult<2> = undefined
   @property() public iconRight?: TemplateResult<2> = undefined
   @property() public onClick: () => void = () => null
+  @property() public variant: 'default' | 'ghost' | 'outline' = 'default'
 
   // -- render ------------------------------------------------------- //
   protected render() {
     const classes = {
       'w3m-icon-left': this.iconLeft !== undefined,
-      'w3m-icon-right': this.iconRight !== undefined
+      'w3m-icon-right': this.iconRight !== undefined,
+      'w3m-ghost': this.variant === 'ghost',
+      'w3m-outline': this.variant === 'outline'
+    }
+    let textColor = 'inverse'
+    if (this.variant === 'ghost') {
+      textColor = 'secondary'
+    }
+    if (this.variant === 'outline') {
+      textColor = 'accent'
     }
 
     return html`
       <button class=${classMap(classes)} ?disabled=${this.disabled} @click=${this.onClick}>
         ${this.iconLeft}
-        <w3m-text variant="small-regular" color="inverse">
+        <w3m-text variant="small-regular" color=${textColor}>
           <slot></slot>
         </w3m-text>
         ${this.iconRight}

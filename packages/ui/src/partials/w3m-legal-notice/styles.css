@@ -9,6 +9,7 @@ a {
   color: var(--w3m-accent-color);
   text-decoration: none;
   transition: opacity 0.2s ease-in-out;
+  display: inline;
 }
 
 a:hover {

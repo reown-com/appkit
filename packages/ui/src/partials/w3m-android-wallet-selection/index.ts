@@ -1,9 +1,8 @@
-import { ExplorerCtrl, RouterCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { CoreUtil, ExplorerCtrl, RouterCtrl } from '@web3modal/core'
+import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { InjectedId } from '../../presets/EthereumPresets'
-import { DataFilterUtil } from '../../utils/DataFilterUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
+import { TemplateUtil } from '../../utils/TemplateUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -17,30 +16,18 @@ export class W3mAndroidWalletSelection extends LitElement {
     RouterCtrl.push('Qrcode')
   }
 
-  private onGoToConnectors() {
-    RouterCtrl.push('Connectors')
-  }
-
-  private onGoToGetWallet() {
+  private onGetWallet() {
     RouterCtrl.push('GetWallet')
-  }
-
-  private getConnectors() {
-    let wallets = DataFilterUtil.connectorWallets()
-    if (!window.ethereum) {
-      wallets = wallets.filter(({ id }) => id !== 'injected' && id !== InjectedId.metaMask)
-    }
-
-    return wallets
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { previewWallets } = ExplorerCtrl.state
-    const isPreviewWallets = previewWallets.length
-    const wallets = [...previewWallets, ...previewWallets]
-    const connectors = this.getConnectors()
-    const isConnectors = connectors.length > 0
+    const { recomendedWallets } = ExplorerCtrl.state
+    const wallets = [...recomendedWallets, ...recomendedWallets]
+    const external = TemplateUtil.externalWalletsTemplate()
+    const injected = TemplateUtil.installedInjectedWalletsTemplate()
+    const isOther = [...injected, ...external].length > 0
+    const recomendedCount = CoreUtil.RECOMMENDED_WALLET_AMOUNT * 2
 
     return html`
       <w3m-modal-header
@@ -50,39 +37,53 @@ export class W3mAndroidWalletSelection extends LitElement {
       ></w3m-modal-header>
 
       <w3m-modal-content>
-        ${isPreviewWallets
-          ? html`
-              <div class="w3m-slider">
-                <div class="w3m-track">
-                  ${wallets.map(
-                    ({ image_url }) =>
-                      html`<w3m-wallet-image src=${image_url.lg}></w3m-wallet-image>`
-                  )}
-                </div>
-              </div>
-            `
-          : null}
+        <div class="w3m-title">
+          ${SvgUtil.MOBILE_ICON}
+          <w3m-text variant="small-regular" color="accent">WalletConnect</w3m-text>
+        </div>
 
-        <div class="w3m-action">
-          <div>
-            <w3m-button-big @click=${UiUtil.handleAndroidLinking}>
-              <w3m-text variant="medium-normal" color="inverse">
-                ${isConnectors ? 'WalletConnect' : 'Select Wallet'}
-              </w3m-text>
-            </w3m-button-big>
-
-            ${isConnectors
-              ? html`<w3m-button-big @click=${this.onGoToConnectors}>
-                  <w3m-text variant="medium-normal" color="inverse">Other</w3m-text>
-                </w3m-button-big>`
-              : null}
+        <div class="w3m-slider">
+          <div class="w3m-track">
+            ${wallets.map(
+              wallet =>
+                html`<w3m-wallet-image walletId=${wallet.id} imageId=${wallet.image_id}>
+                </w3m-wallet-image>`
+            )}
+            ${[...Array(recomendedCount - wallets.length)].map(() => SvgUtil.WALLET_PLACEHOLDER)}
           </div>
-
-          <w3m-button-big variant="secondary" @click=${this.onGoToGetWallet}>
-            <w3m-text variant="medium-regular" color="accent"> I don’t have a wallet</w3m-text>
+          <w3m-button-big @click=${UiUtil.handleAndroidLinking}>
+            <w3m-text variant="medium-regular" color="inverse">Select Wallet</w3m-text>
           </w3m-button-big>
         </div>
       </w3m-modal-content>
+
+      ${isOther
+        ? html`
+            <w3m-modal-footer>
+              <div class="w3m-title">
+                ${SvgUtil.WALLET_ICON}
+                <w3m-text variant="small-regular" color="accent">Other</w3m-text>
+              </div>
+
+              <div class="w3m-grid">${injected} ${external}</div>
+            </w3m-modal-footer>
+          `
+        : null}
+
+      <w3m-info-footer>
+        <w3m-text color="secondary" variant="small-thin">
+          ${`Choose WalletConnect to see supported apps on your device${
+            isOther ? ', or select from other options' : ''
+          }`}
+        </w3m-text>
+
+        <w3m-button
+          variant="outline"
+          .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}
+          .onClick=${() => this.onGetWallet()}
+          >I don't have a wallet</w3m-button
+        >
+      </w3m-info-footer>
     `
   }
 }

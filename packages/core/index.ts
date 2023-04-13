@@ -7,16 +7,16 @@ export { OptionsCtrl } from './src/controllers/OptionsCtrl'
 export { RouterCtrl } from './src/controllers/RouterCtrl'
 export { ThemeCtrl } from './src/controllers/ThemeCtrl'
 export { ToastCtrl } from './src/controllers/ToastCtrl'
+export { WcConnectionCtrl } from './src/controllers/WcConnectionCtrl'
 export type {
   ConfigCtrlState,
-  DesktopConnectorData,
-  InstallConnectorData,
   Listing,
   ListingResponse,
   MobileWallet,
   RouterView,
   SwitchNetworkData,
-  ThemeCtrlState
+  ThemeCtrlState,
+  WalletData
 } from './src/types/controllerTypes'
 export { CoreUtil } from './src/utils/CoreUtil'
 import './src/utils/PolyfillUtil'

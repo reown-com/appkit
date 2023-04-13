@@ -32,4 +32,32 @@ button:hover::after {
 
 button:disabled {
   background-color: var(--w3m-color-bg-3);
+  pointer-events: none;
+}
+
+.w3m-ghost,
+.w3m-ghost:hover::after,
+.w3m-outline {
+  background-color: transparent;
+}
+
+.w3m-ghost:hover {
+  opacity: 0.5;
+}
+
+.w3m-ghost::after {
+  border-color: transparent;
+}
+
+.w3m-ghost path {
+  fill: var(--w3m-color-fg-2);
+}
+
+.w3m-outline path {
+  fill: var(--w3m-accent-color);
+}
+
+.w3m-outline:disabled {
+  background-color: transparent;
+  opacity: 0.5;
 }

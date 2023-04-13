@@ -11,14 +11,15 @@ const state = proxy<ConfigCtrlState>({
   walletImages: undefined,
   chainImages: undefined,
   tokenImages: undefined,
+  tokenContracts: undefined,
   standaloneChains: undefined,
   enableStandaloneMode: false,
   enableNetworkView: false,
   enableAccountView: true,
   enableExplorer: true,
   defaultChain: undefined,
-  explorerAllowList: undefined,
-  explorerDenyList: undefined,
+  explorerExcludedWalletIds: undefined,
+  explorerRecommendedWalletIds: undefined,
   termsOfServiceUrl: undefined,
   privacyPolicyUrl: undefined
 })
@@ -41,9 +42,10 @@ export const ConfigCtrl = {
     OptionsCtrl.setWalletConnectVersion(config.walletConnectVersion ?? 1)
 
     if (!OptionsCtrl.state.isStandalone) {
-      const chain = ClientCtrl.client().getDefaultChain()
-      OptionsCtrl.setSelectedChain(chain)
       OptionsCtrl.setChains(ClientCtrl.client().chains)
+      OptionsCtrl.setIsInjectedMobile(
+        CoreUtil.isMobile() && ClientCtrl.client().isInjectedProviderInstalled()
+      )
     }
 
     if (config.defaultChain) {
