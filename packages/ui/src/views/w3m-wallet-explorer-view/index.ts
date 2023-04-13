@@ -1,9 +1,9 @@
-import type { Listing, MobileWallet } from '@web3modal/core'
+import type { Listing } from '@web3modal/core'
 import { CoreUtil, ExplorerCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { DataUtil } from '../../utils/DataUtil'
+import { TemplateUtil } from '../../utils/TemplateUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -88,15 +88,6 @@ export class W3mWalletExplorerView extends LitElement {
     }
   }
 
-  private onConnectCustom({ name, id, links }: MobileWallet) {
-    const routerData = { name, id, mobile: links }
-    if (CoreUtil.isAndroid()) {
-      UiUtil.handleMobileLinking(routerData)
-    } else {
-      UiUtil.goToConnectingView(routerData)
-    }
-  }
-
   private onConnect(listing: Listing) {
     if (CoreUtil.isAndroid()) {
       UiUtil.handleMobileLinking(listing)
@@ -130,15 +121,19 @@ export class W3mWalletExplorerView extends LitElement {
     const { listings } = this.search ? search : wallets
     const isLoading = this.loading && !listings.length
     const isSearch = this.search.length >= 3
-    let extensions = DataUtil.injectedWallets()
-    let manualWallets = DataUtil.manualWallets()
-    let recomendedWallets = DataUtil.recomendedWallets()
+    let extensions = TemplateUtil.injectedWalletsTemplate()
+    let manualWallets = TemplateUtil.manualWalletsTemplate()
+    let recomendedWallets = TemplateUtil.recomendedWalletsTemplate()
 
     if (isSearch) {
-      extensions = extensions.filter(({ name }) => UiUtil.caseSafeIncludes(name, this.search))
-      manualWallets = manualWallets.filter(({ name }) => UiUtil.caseSafeIncludes(name, this.search))
-      recomendedWallets = recomendedWallets.filter(({ name }) =>
-        UiUtil.caseSafeIncludes(name, this.search)
+      extensions = extensions.filter(({ values }) =>
+        UiUtil.caseSafeIncludes(values[0] as string, this.search)
+      )
+      manualWallets = manualWallets.filter(({ values }) =>
+        UiUtil.caseSafeIncludes(values[0] as string, this.search)
+      )
+      recomendedWallets = recomendedWallets.filter(({ values }) =>
+        UiUtil.caseSafeIncludes(values[0] as string, this.search)
       )
     }
 
@@ -158,44 +153,12 @@ export class W3mWalletExplorerView extends LitElement {
 
       <w3m-modal-content class=${classMap(classes)}>
         <div class="w3m-grid">
-          ${isLoading
-            ? null
-            : recomendedWallets.map(
-                wallet => html`
-                  <w3m-wallet-button
-                    imageId=${wallet.image_id}
-                    name=${wallet.name}
-                    walletId=${wallet.id}
-                    .onClick=${() => this.onConnect(wallet)}
-                  >
-                  </w3m-wallet-button>
-                `
-              )}
+          ${isLoading ? null : recomendedWallets}
           ${isLoading
             ? null
             : [...Array(iterator)].map(
                 (_, index) => html`
-                  ${manualWallets[index]
-                    ? html`
-                        <w3m-wallet-button
-                          name=${manualWallets[index].name}
-                          walletId=${manualWallets[index].id}
-                          .onClick=${() => this.onConnectCustom(manualWallets[index])}
-                        >
-                        </w3m-wallet-button>
-                      `
-                    : null}
-                  ${extensions[index]
-                    ? html`
-                        <w3m-wallet-button
-                          name=${extensions[index].name}
-                          walletId=${extensions[index].id}
-                          imageId=${extensions[index].image_id}
-                          .onClick=${() => this.onConnect(extensions[index])}
-                        >
-                        </w3m-wallet-button>
-                      `
-                    : null}
+                  ${manualWallets[index]} ${extensions[index]}
                   ${listings[index]
                     ? html`
                         <w3m-wallet-button

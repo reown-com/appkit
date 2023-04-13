@@ -1,11 +1,9 @@
-import type { WalletData } from '@web3modal/core'
 import { OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { DataUtil } from '../../utils/DataUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
+import { TemplateUtil } from '../../utils/TemplateUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-mobile-wallet-selection')
@@ -17,101 +15,14 @@ export class W3mMobileWalletSelection extends LitElement {
     RouterCtrl.push('Qrcode')
   }
 
-  private onConnecting(data: WalletData) {
-    UiUtil.goToConnectingView(data)
-  }
-
-  private onExternal(id: string) {
-    UiUtil.handleConnectorConnection(id)
-  }
-
-  private manualWalletsTemplate() {
-    const wallets = DataUtil.manualMobileWallets()
-
-    return wallets.map(
-      ({ id, name, links }) => html`
-        <w3m-wallet-button
-          name=${name}
-          walletId=${id}
-          .onClick=${() => {
-            this.onConnecting({ id, name, mobile: links })
-          }}
-        ></w3m-wallet-button>
-      `
-    )
-  }
-
-  private recomendedWalletsTemplate() {
-    const wallets = DataUtil.recomendedWallets()
-
-    return wallets.map(
-      wallet => html`
-        <w3m-wallet-button
-          name=${wallet.name}
-          walletId=${wallet.id}
-          imageId=${wallet.image_id}
-          .onClick=${() => this.onConnecting(wallet)}
-        ></w3m-wallet-button>
-      `
-    )
-  }
-
-  private externalWalletsTemplate() {
-    const wallets = DataUtil.externalWallets()
-
-    return wallets.map(
-      ({ name, id }) => html`
-        <w3m-wallet-button
-          name=${name}
-          walletId=${id}
-          .onClick=${() => this.onExternal(id)}
-        ></w3m-wallet-button>
-      `
-    )
-  }
-
-  private recentWalletTemplate() {
-    const wallet = DataUtil.recentWallet()
-
-    if (!wallet) {
-      return undefined
-    }
-
-    return html`
-      <w3m-wallet-button
-        .recent=${true}
-        name=${wallet.name}
-        walletId=${wallet.id}
-        imageId=${wallet.image_id}
-        .onClick=${() => this.onConnecting(wallet)}
-      ></w3m-wallet-button>
-    `
-  }
-
-  private injectedWalletsTemplate() {
-    const wallets = DataUtil.installedInjectedWallets()
-
-    return wallets.map(
-      wallet => html`
-        <w3m-wallet-button
-          .installed=${true}
-          name=${wallet.name}
-          walletId=${wallet.id}
-          imageId=${wallet.image_id}
-          .onClick=${() => this.onConnecting(wallet)}
-        ></w3m-wallet-button>
-      `
-    )
-  }
-
   // -- render ------------------------------------------------------- //
   protected render() {
     const { isStandalone } = OptionsCtrl.state
-    const manualTemplate = this.manualWalletsTemplate()
-    const recomendedTemplate = this.recomendedWalletsTemplate()
-    const externalTemplate = this.externalWalletsTemplate()
-    const recentTemplate = this.recentWalletTemplate()
-    const injectedWallets = this.injectedWalletsTemplate()
+    const manualTemplate = TemplateUtil.manualWalletsTemplate()
+    const recomendedTemplate = TemplateUtil.recomendedWalletsTemplate()
+    const externalTemplate = TemplateUtil.externalWalletsTemplate()
+    const recentTemplate = TemplateUtil.recentWalletTemplate()
+    const injectedWallets = TemplateUtil.installedInjectedWalletsTemplate()
 
     let templates = [recentTemplate, ...manualTemplate, ...recomendedTemplate]
     if (!isStandalone) {

@@ -1,8 +1,8 @@
 import { ExplorerCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { DataUtil } from '../../utils/DataUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
+import { TemplateUtil } from '../../utils/TemplateUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -24,25 +24,13 @@ export class W3mAndroidWalletSelection extends LitElement {
     RouterCtrl.push('GetWallet')
   }
 
-  private getConnectors() {
-    const wallets = DataUtil.externalWallets()
-
-    return wallets
-  }
-
-  private getInjected() {
-    const wallets = DataUtil.installedInjectedWallets()
-
-    return wallets
-  }
-
   // -- render ------------------------------------------------------- //
   protected render() {
     const { recomendedWallets } = ExplorerCtrl.state
     const isRecomendedWallets = recomendedWallets.length
     const wallets = [...recomendedWallets, ...recomendedWallets]
-    const connectors = this.getConnectors()
-    const injected = this.getInjected()
+    const connectors = TemplateUtil.externalWalletsTemplate()
+    const injected = TemplateUtil.installedInjectedWalletsTemplate()
     const isConnectors = [...injected, ...connectors].length > 0
 
     return html`

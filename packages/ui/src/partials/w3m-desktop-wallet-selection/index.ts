@@ -1,9 +1,8 @@
-import type { WalletData } from '@web3modal/core'
 import { ConfigCtrl, OptionsCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { DataUtil } from '../../utils/DataUtil'
 import { SvgUtil } from '../../utils/SvgUtil'
+import { TemplateUtil } from '../../utils/TemplateUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -12,102 +11,16 @@ import styles from './styles.css'
 export class W3mDesktopWalletSelection extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
-  // -- private ------------------------------------------------------ //
-  private onConnecting(data: WalletData) {
-    UiUtil.goToConnectingView(data)
-  }
-
-  private onExternal(id: string) {
-    UiUtil.handleConnectorConnection(id)
-  }
-
-  private manualWalletsTemplate() {
-    const wallets = DataUtil.manualDesktopWallets()
-
-    return wallets.map(
-      ({ id, name, links }) => html`
-        <w3m-wallet-button
-          walletId=${id}
-          name=${name}
-          .onClick=${() => this.onConnecting({ name, id, desktop: links })}
-        ></w3m-wallet-button>
-      `
-    )
-  }
-
-  private recomendedWalletsTemplate() {
-    const wallets = DataUtil.recomendedWallets()
-
-    return wallets.map(
-      wallet => html`
-        <w3m-wallet-button
-          walletId=${wallet.id}
-          imageId=${wallet.image_id}
-          name=${wallet.name}
-          .onClick=${() => this.onConnecting(wallet)}
-        ></w3m-wallet-button>
-      `
-    )
-  }
-
-  private externalWalletsTemplate() {
-    const wallets = DataUtil.externalWallets()
-
-    return wallets.map(
-      ({ id, name }) => html`
-        <w3m-wallet-button
-          name=${name}
-          walletId=${id}
-          .onClick=${() => this.onExternal(id)}
-        ></w3m-wallet-button>
-      `
-    )
-  }
-
-  private recentWalletTemplate() {
-    const wallet = DataUtil.recentWallet()
-
-    if (!wallet) {
-      return undefined
-    }
-
-    return html`
-      <w3m-wallet-button
-        name=${wallet.name}
-        walletId=${wallet.id}
-        imageId=${wallet.image_id}
-        .recent=${true}
-        .onClick=${() => this.onConnecting(wallet)}
-      ></w3m-wallet-button>
-    `
-  }
-
-  private injectedWalletsTemplate() {
-    const wallets = DataUtil.installedInjectedWallets()
-
-    return wallets.map(
-      wallet => html`
-        <w3m-wallet-button
-          .installed=${true}
-          name=${wallet.name}
-          walletId=${wallet.id}
-          imageId=${wallet.image_id}
-          .onClick=${() => this.onConnecting(wallet)}
-        ></w3m-wallet-button>
-      `
-    )
-  }
-
   // -- render ------------------------------------------------------- //
   protected render() {
     const { isStandalone } = OptionsCtrl.state
     const { explorerExcludedWalletIds, enableExplorer } = ConfigCtrl.state
     const isExplorerWallets = explorerExcludedWalletIds !== 'ALL' && enableExplorer
-    const manualTemplate = this.manualWalletsTemplate()
-    const recomendedTemplate = this.recomendedWalletsTemplate()
-    const externalTemplate = this.externalWalletsTemplate()
-    const recentTemplate = this.recentWalletTemplate()
-    const injectedWallets = this.injectedWalletsTemplate()
+    const manualTemplate = TemplateUtil.manualWalletsTemplate()
+    const recomendedTemplate = TemplateUtil.recomendedWalletsTemplate()
+    const externalTemplate = TemplateUtil.externalWalletsTemplate()
+    const recentTemplate = TemplateUtil.recentWalletTemplate()
+    const injectedWallets = TemplateUtil.installedInjectedWalletsTemplate()
 
     let templates = [recentTemplate, ...manualTemplate, ...recomendedTemplate]
     if (!isStandalone) {
