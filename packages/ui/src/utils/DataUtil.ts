@@ -64,7 +64,8 @@ export const DataUtil = {
   injectedWallets() {
     const { isStandalone } = OptionsCtrl.state
     const { explorerExcludedWalletIds, explorerRecommendedWalletIds } = ConfigCtrl.state
-    if (isStandalone || explorerExcludedWalletIds === 'ALL') {
+    const isMobile = CoreUtil.isMobile()
+    if (isStandalone || explorerExcludedWalletIds === 'ALL' || isMobile) {
       return []
     }
     const { namespace } = ClientCtrl.client()

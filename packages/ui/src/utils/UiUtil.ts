@@ -272,7 +272,9 @@ export const UiUtil = {
 
     // Mobile
     if (isMobileDevice) {
-      if (isMobile) {
+      if (isInjectedInstalled) {
+        RouterCtrl.push('InjectedConnecting')
+      } else if (isMobile) {
         RouterCtrl.push('MobileConnecting')
       } else if (isWeb) {
         RouterCtrl.push('WebConnecting')

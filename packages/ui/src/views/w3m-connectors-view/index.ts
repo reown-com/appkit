@@ -1,3 +1,4 @@
+import type { WalletData } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { DataUtil } from '../../utils/DataUtil'
@@ -14,6 +15,10 @@ export class W3mConnectorsView extends LitElement {
     UiUtil.handleConnectorConnection(id)
   }
 
+  private onConnecting(data: WalletData) {
+    UiUtil.goToConnectingView(data)
+  }
+
   private externalWalletsTemplate() {
     const wallets = DataUtil.externalWallets()
 
@@ -28,9 +33,27 @@ export class W3mConnectorsView extends LitElement {
     )
   }
 
+  private injectedWalletsTemplate() {
+    const wallets = DataUtil.installedInjectedWallets()
+
+    return wallets.map(
+      wallet => html`
+        <w3m-wallet-button
+          .installed=${true}
+          name=${wallet.name}
+          walletId=${wallet.id}
+          imageId=${wallet.image_id}
+          .onClick=${() => this.onConnecting(wallet)}
+        ></w3m-wallet-button>
+      `
+    )
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
-    const template = this.externalWalletsTemplate()
+    const injected = this.injectedWalletsTemplate()
+    const external = this.externalWalletsTemplate()
+    const template = [...injected, ...external]
 
     return html`
       <w3m-modal-header title="Other wallets"></w3m-modal-header>

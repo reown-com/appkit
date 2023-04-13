@@ -30,13 +30,20 @@ export class W3mAndroidWalletSelection extends LitElement {
     return wallets
   }
 
+  private getInjected() {
+    const wallets = DataUtil.installedInjectedWallets()
+
+    return wallets
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     const { recomendedWallets } = ExplorerCtrl.state
     const isRecomendedWallets = recomendedWallets.length
     const wallets = [...recomendedWallets, ...recomendedWallets]
     const connectors = this.getConnectors()
-    const isConnectors = connectors.length > 0
+    const injected = this.getInjected()
+    const isConnectors = [...injected, ...connectors].length > 0
 
     return html`
       <w3m-modal-header

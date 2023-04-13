@@ -88,6 +88,22 @@ export class W3mMobileWalletSelection extends LitElement {
     `
   }
 
+  private injectedWalletsTemplate() {
+    const wallets = DataUtil.installedInjectedWallets()
+
+    return wallets.map(
+      wallet => html`
+        <w3m-wallet-button
+          .installed=${true}
+          name=${wallet.name}
+          walletId=${wallet.id}
+          imageId=${wallet.image_id}
+          .onClick=${() => this.onConnecting(wallet)}
+        ></w3m-wallet-button>
+      `
+    )
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     const { isStandalone } = OptionsCtrl.state
@@ -95,10 +111,17 @@ export class W3mMobileWalletSelection extends LitElement {
     const recomendedTemplate = this.recomendedWalletsTemplate()
     const externalTemplate = this.externalWalletsTemplate()
     const recentTemplate = this.recentWalletTemplate()
+    const injectedWallets = this.injectedWalletsTemplate()
 
     let templates = [recentTemplate, ...manualTemplate, ...recomendedTemplate]
     if (!isStandalone) {
-      templates = [recentTemplate, ...externalTemplate, ...manualTemplate, ...recomendedTemplate]
+      templates = [
+        ...injectedWallets,
+        recentTemplate,
+        ...externalTemplate,
+        ...manualTemplate,
+        ...recomendedTemplate
+      ]
     }
     templates = templates.filter(Boolean)
 

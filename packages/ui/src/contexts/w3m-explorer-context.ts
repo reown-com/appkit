@@ -1,4 +1,4 @@
-import { ConfigCtrl, CoreUtil, ExplorerCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
+import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { DataUtil } from '../utils/DataUtil'
@@ -31,11 +31,7 @@ export class W3mExplorerContext extends LitElement {
   private async preloadListings() {
     if (ConfigCtrl.state.enableExplorer) {
       const { chains } = OptionsCtrl.state
-      const promises = [ExplorerCtrl.getRecomendedWallets()]
-      if (!CoreUtil.isMobile()) {
-        promises.push(ExplorerCtrl.getInjectedWallets())
-      }
-      await Promise.all(promises)
+      await Promise.all([ExplorerCtrl.getRecomendedWallets(), ExplorerCtrl.getInjectedWallets()])
       OptionsCtrl.setIsDataLoaded(true)
       const { recomendedWallets } = ExplorerCtrl.state
       const injectedWallets = DataUtil.installedInjectedWallets()
