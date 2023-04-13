@@ -4,7 +4,6 @@ import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { TemplateUtil } from '../../utils/TemplateUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-android-wallet-selection')
@@ -16,22 +15,17 @@ export class W3mAndroidWalletSelection extends LitElement {
     RouterCtrl.push('Qrcode')
   }
 
-  private onGoToConnectors() {
-    RouterCtrl.push('Connectors')
-  }
-
-  private onGoToGetWallet() {
+  private onGetWallet() {
     RouterCtrl.push('GetWallet')
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
     const { recomendedWallets } = ExplorerCtrl.state
-    const isRecomendedWallets = recomendedWallets.length
     const wallets = [...recomendedWallets, ...recomendedWallets]
-    const connectors = TemplateUtil.externalWalletsTemplate()
+    const external = TemplateUtil.externalWalletsTemplate()
     const injected = TemplateUtil.installedInjectedWalletsTemplate()
-    const isConnectors = [...injected, ...connectors].length > 0
+    const isOther = [...injected, ...external].length > 0
 
     return html`
       <w3m-modal-header
@@ -41,40 +35,53 @@ export class W3mAndroidWalletSelection extends LitElement {
       ></w3m-modal-header>
 
       <w3m-modal-content>
-        ${isRecomendedWallets
-          ? html`
-              <div class="w3m-slider">
-                <div class="w3m-track">
-                  ${wallets.map(
-                    wallet =>
-                      html`<w3m-wallet-image walletId=${wallet.id} imageId=${wallet.image_id}>
-                      </w3m-wallet-image>`
-                  )}
-                </div>
-              </div>
-            `
-          : null}
+        <div class="w3m-title">
+          ${SvgUtil.MOBILE_ICON}
+          <w3m-text variant="small-regular" color="accent">WalletConnect</w3m-text>
+        </div>
 
-        <div class="w3m-action">
-          <div>
-            <w3m-button-big @click=${UiUtil.handleAndroidLinking}>
-              <w3m-text color="inverse">
-                ${isConnectors ? 'WalletConnect' : 'Select Wallet'}
-              </w3m-text>
-            </w3m-button-big>
-
-            ${isConnectors
-              ? html`<w3m-button-big @click=${this.onGoToConnectors}>
-                  <w3m-text color="inverse">Other</w3m-text>
-                </w3m-button-big>`
-              : null}
+        <div class="w3m-slider">
+          <div class="w3m-track">
+            ${wallets.map(
+              wallet =>
+                html`<w3m-wallet-image walletId=${wallet.id} imageId=${wallet.image_id}>
+                </w3m-wallet-image>`
+            )}
+            ${[...Array(18 - wallets.length)].map(() => SvgUtil.WALLET_PLACEHOLDER)}
           </div>
-
-          <w3m-button-big variant="secondary" @click=${this.onGoToGetWallet}>
-            <w3m-text variant="small-regular" color="accent">I don't have a wallet</w3m-text>
+          <w3m-button-big>
+            <w3m-text variant="medium-regular" color="inverse">Select Wallet</w3m-text>
           </w3m-button-big>
         </div>
       </w3m-modal-content>
+
+      ${isOther
+        ? html`
+            <w3m-modal-footer>
+              <div class="w3m-title">
+                ${SvgUtil.WALLET_ICON}
+                <w3m-text variant="small-regular" color="accent">Other</w3m-text>
+              </div>
+
+              <div class="w3m-grid">${injected} ${external}</div>
+            </w3m-modal-footer>
+          `
+        : null}
+
+      <w3m-info-footer>
+        <w3m-text color="secondary" variant="small-thin">
+          ${`Choose WalletConnect to see supported apps on your device${
+            isOther ? ', or select from other options' : ''
+          }`}
+        </w3m-text>
+
+        <w3m-button
+          variant="outline"
+          .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}
+          .onClick=${() => this.onGetWallet()}
+          >I don't have a wallet</w3m-button
+        >
+      </w3m-info-footer>
     `
   }
 }

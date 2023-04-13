@@ -2,6 +2,7 @@ import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
 import { Web3Modal } from '@web3modal/react'
 import { WagmiConfig, configureChains, createClient } from 'wagmi'
 import { mainnet, polygon } from 'wagmi/chains'
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 import WagmiWeb3ModalWidget from '../components/WagmiWeb3ModalWidget'
 import { getProjectId, getTheme } from '../utilities/EnvUtil'
 
@@ -11,7 +12,10 @@ const chains = [mainnet, polygon]
 const { provider } = configureChains(chains, [w3mProvider({ projectId })])
 const wagmiClient = createClient({
   autoConnect: true,
-  connectors: w3mConnectors({ version: 2, projectId, chains }),
+  connectors: [
+    ...w3mConnectors({ version: 2, projectId, chains }),
+    new CoinbaseWalletConnector({ chains, options: { appName: 'Web3Modal' } })
+  ],
   provider
 })
 const ethereumClient = new EthereumClient(wagmiClient, chains)
@@ -35,6 +39,7 @@ export default function v2BasePage() {
           '--w3m-background-border-radius': '0px',
           '--w3m-container-border-radius': '0px',
           '--w3m-wallet-icon-border-radius': '0px',
+          '--w3m-wallet-icon-large-border-radius': '0px',
           '--w3m-input-border-radius': '0px',
           '--w3m-button-border-radius': '0px',
           '--w3m-secondary-button-border-radius': '0px',
@@ -46,7 +51,9 @@ export default function v2BasePage() {
         ethereumClient={ethereumClient}
         projectId={projectId}
         walletImages={{
-          oreid: '/images/wallet_oreid.svg'
+          oreid: '/images/wallet_oreid.svg',
+          coinbaseWallet:
+            'https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0'
         }}
         mobileWallets={[
           {
