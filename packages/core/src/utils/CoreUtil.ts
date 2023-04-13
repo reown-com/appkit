@@ -5,6 +5,8 @@ export const CoreUtil = {
 
   W3M_VERSION: 'W3M_VERSION',
 
+  RECOMMENDED_WALLET_AMOUNT: 9,
+
   isMobile() {
     if (typeof window !== 'undefined') {
       return Boolean(

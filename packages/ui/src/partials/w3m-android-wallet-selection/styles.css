@@ -3,6 +3,7 @@
     transform: translate3d(0, 0, 0);
   }
   100% {
+    /* Wallet image width + 10px + recomended wallet count */
     transform: translate3d(calc(-70px * 9), 0, 0);
   }
 }
@@ -17,6 +18,7 @@
 
 .w3m-track {
   display: flex;
+  /* Wallet image width + 10px + recomended wallet count x 2 */
   width: calc(70px * 18);
   animation: scroll 20s linear infinite;
   opacity: 0.7;

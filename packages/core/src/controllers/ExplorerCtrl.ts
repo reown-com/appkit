@@ -52,7 +52,7 @@ export const ExplorerCtrl = {
       const isExcluded = CoreUtil.isArray(explorerExcludedWalletIds)
       const params = {
         page: 1,
-        entries: 9,
+        entries: CoreUtil.RECOMMENDED_WALLET_AMOUNT,
         chains: chainsFilter,
         version: walletConnectVersion,
         excludedIds: isExcluded ? explorerExcludedWalletIds.join(',') : undefined

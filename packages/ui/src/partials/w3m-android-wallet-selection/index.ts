@@ -1,4 +1,4 @@
-import { ExplorerCtrl, RouterCtrl } from '@web3modal/core'
+import { CoreUtil, ExplorerCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -26,6 +26,7 @@ export class W3mAndroidWalletSelection extends LitElement {
     const external = TemplateUtil.externalWalletsTemplate()
     const injected = TemplateUtil.installedInjectedWalletsTemplate()
     const isOther = [...injected, ...external].length > 0
+    const recomendedCount = CoreUtil.RECOMMENDED_WALLET_AMOUNT * 2
 
     return html`
       <w3m-modal-header
@@ -47,7 +48,7 @@ export class W3mAndroidWalletSelection extends LitElement {
                 html`<w3m-wallet-image walletId=${wallet.id} imageId=${wallet.image_id}>
                 </w3m-wallet-image>`
             )}
-            ${[...Array(18 - wallets.length)].map(() => SvgUtil.WALLET_PLACEHOLDER)}
+            ${[...Array(recomendedCount - wallets.length)].map(() => SvgUtil.WALLET_PLACEHOLDER)}
           </div>
           <w3m-button-big>
             <w3m-text variant="medium-regular" color="inverse">Select Wallet</w3m-text>
