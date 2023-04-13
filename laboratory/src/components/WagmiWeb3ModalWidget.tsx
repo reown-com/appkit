@@ -2,8 +2,8 @@ import { Button, Card, Modal, Text } from '@nextui-org/react'
 import { Web3Button, Web3NetworkSwitch, useWeb3Modal, useWeb3ModalTheme } from '@web3modal/react'
 import { useEffect, useState } from 'react'
 import { useAccount, useContractRead, useSignMessage } from 'wagmi'
-import { avalanche } from 'wagmi/chains'
-import { abi } from '../data/aavePoolV3Abi'
+import { mainnet } from 'wagmi/chains'
+import { abi } from '../data/SeaportAbi'
 
 const message = 'Hello Web3Modal!'
 
@@ -14,10 +14,10 @@ export default function WagmiWeb3ModalWidget() {
   const { data: signData, isLoading, signMessage } = useSignMessage({ message })
   const { data: contractData, refetch } = useContractRead({
     enabled: false,
-    address: '0x794a61358D6845594F94dc1DB02A252b5b4814aD',
+    address: '0x00000000000001ad428e4906aE43D8F9852d0dD6',
     abi,
-    functionName: 'getReservesList',
-    chainId: avalanche.id,
+    functionName: 'name',
+    chainId: mainnet.id,
     cacheTime: 0
   })
   const [signModal, setSignModal] = useState(false)
@@ -56,7 +56,7 @@ export default function WagmiWeb3ModalWidget() {
                 Sign Message
               </Button>
               <Button color="gradient" onPress={async () => refetch()}>
-                Read Avax Contract
+                Read Eth Contract
               </Button>
             </>
           ) : (
