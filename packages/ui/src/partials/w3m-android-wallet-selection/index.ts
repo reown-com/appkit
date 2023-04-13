@@ -4,6 +4,7 @@ import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { TemplateUtil } from '../../utils/TemplateUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-android-wallet-selection')
@@ -50,7 +51,7 @@ export class W3mAndroidWalletSelection extends LitElement {
             )}
             ${[...Array(recomendedCount - wallets.length)].map(() => SvgUtil.WALLET_PLACEHOLDER)}
           </div>
-          <w3m-button-big>
+          <w3m-button-big @click=${UiUtil.handleAndroidLinking}>
             <w3m-text variant="medium-regular" color="inverse">Select Wallet</w3m-text>
           </w3m-button-big>
         </div>
