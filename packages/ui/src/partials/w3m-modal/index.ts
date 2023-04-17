@@ -79,11 +79,7 @@ export class W3mModal extends LitElement {
       animate(
         this.containerEl,
         UiUtil.isMobileAnimation() ? { y: ['50vh', 0] } : { scale: [0.98, 1] },
-        {
-          scale: { easing: spring({ velocity: 0.4 }) },
-          y: { easing: spring({ mass: 0.5 }) },
-          delay
-        }
+        { delay }
       ).finished
     ])
     this.active = true
