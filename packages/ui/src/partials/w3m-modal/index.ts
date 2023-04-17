@@ -2,7 +2,7 @@ import { ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { animate, spring } from 'motion'
+import { animate } from 'motion'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -77,7 +77,7 @@ export class W3mModal extends LitElement {
       animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay }).finished,
       animate(
         this.containerEl,
-        UiUtil.isMobileAnimation() ? { y: ['50vh', 0] } : { scale: [0.98, 1] },
+        UiUtil.isMobileAnimation() ? { y: ['50vh', '0vh'] } : { scale: [0.98, 1] },
         { delay }
       ).finished
     ])
@@ -88,15 +88,11 @@ export class W3mModal extends LitElement {
     this.toggleBodyScroll(true)
     this.removeKeyboardEvents()
     await Promise.all([
+      animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished,
       animate(
         this.containerEl,
-        UiUtil.isMobileAnimation() ? { y: [0, '50vh'] } : { scale: [1, 0.98] },
-        {
-          scale: { easing: spring({ velocity: 0 }) },
-          y: { easing: spring({ mass: 0.5 }) }
-        }
-      ).finished,
-      animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
+        UiUtil.isMobileAnimation() ? { y: ['0vh', '50vh'] } : { scale: [1, 0.98] }
+      ).finished
     ])
     this.active = false
     this.open = false

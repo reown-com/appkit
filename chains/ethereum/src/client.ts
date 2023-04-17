@@ -56,12 +56,14 @@ export class EthereumClient {
   }
 
   private async connectWalletConnectV2(connector: Connector, onUri: (uri: string) => void) {
-    const provider = await connector.getProvider()
+    await connector.getProvider()
 
     return new Promise<void>(resolve => {
-      provider.once('display_uri', (uri: string) => {
-        onUri(uri)
-        resolve()
+      connector.once('message', event => {
+        if (event.type === 'display_uri') {
+          onUri(event.data as string)
+          resolve()
+        }
       })
     })
   }
