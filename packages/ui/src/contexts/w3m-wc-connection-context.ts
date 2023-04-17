@@ -79,7 +79,7 @@ export class W3mWcConnectionContext extends LitElement {
 
   private onVisibilityChange() {
     if (!document.hidden && CoreUtil.isMobile()) {
-      setTimeout(this.connectAndWait.bind(this), ONE_SEC_MS)
+      this.connectAndWait.bind(this)
     }
   }
 }
