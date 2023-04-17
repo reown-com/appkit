@@ -71,7 +71,6 @@ export class W3mModal extends LitElement {
   private async onOpenModalEvent() {
     this.toggleBodyScroll(false)
     const delay = 0.1
-    await animate(this.containerEl, { y: 0 }, { duration: 0 }).finished
     this.addKeyboardEvents()
     this.open = true
     await Promise.all([
