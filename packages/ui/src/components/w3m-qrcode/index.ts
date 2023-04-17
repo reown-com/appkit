@@ -7,7 +7,7 @@ import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-qrcode')
-export default class W3mQrCode extends LitElement {
+export class W3mQrCode extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
@@ -15,6 +15,7 @@ export default class W3mQrCode extends LitElement {
   @property({ type: Number }) public size = 0
   @property() public imageId? = ''
   @property() public walletId? = ''
+  @property() public imageUrl? = ''
 
   // -- private ------------------------------------------------------ //
   private svgTemplate() {
@@ -31,11 +32,12 @@ export default class W3mQrCode extends LitElement {
   protected render() {
     return html`
       <div>
-        ${this.walletId
+        ${this.walletId || this.imageUrl
           ? html`
               <w3m-wallet-image
                 walletId=${this.walletId}
                 imageId=${this.imageId}
+                imageUrlOverride=${this.imageUrl}
               ></w3m-wallet-image>
             `
           : SvgUtil.WALLET_CONNECT_ICON_COLORED}
@@ -44,6 +46,8 @@ export default class W3mQrCode extends LitElement {
     `
   }
 }
+
+export default W3mQrCode
 
 declare global {
   interface HTMLElementTagNameMap {
