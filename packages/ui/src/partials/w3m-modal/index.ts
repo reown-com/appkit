@@ -2,7 +2,7 @@ import { ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { animate, spring } from 'motion'
+import { animate } from 'motion'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -77,11 +77,7 @@ export class W3mModal extends LitElement {
       const delay = 0.1
       await Promise.all([
         animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay }).finished,
-        animate(this.containerEl, animation, {
-          scale: { easing: spring({ velocity: 0.4 }) },
-          y: { easing: spring({ mass: 0.2 }) },
-          delay
-        }).finished
+        animate(this.containerEl, animation, { delay }).finished
       ])
       this.active = true
     }, 0)
@@ -93,10 +89,7 @@ export class W3mModal extends LitElement {
     const animation = UiUtil.isMobileAnimation() ? { y: ['0vh', '50vh'] } : { scale: [1, 0.98] }
     await Promise.all([
       animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished,
-      animate(this.containerEl, animation, {
-        scale: { easing: spring({ velocity: 0 }) },
-        y: { easing: spring({ mass: 0.2 }) }
-      }).finished
+      animate(this.containerEl, animation).finished
     ])
     this.containerEl.removeAttribute('style')
     this.active = false

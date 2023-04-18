@@ -24,6 +24,10 @@
   opacity: 0.7;
 }
 
+.w3m-track svg {
+  margin: 0 5px;
+}
+
 w3m-wallet-image {
   width: 60px;
   height: 60px;
@@ -74,4 +78,12 @@ w3m-info-footer {
 w3m-info-footer w3m-text {
   text-align: center;
   margin-bottom: 15px;
+}
+
+#wallet-placeholder-fill {
+  fill: var(--w3m-color-bg-3);
+}
+
+#wallet-placeholder-dash {
+  stroke: var(--w3m-color-overlay);
 }
