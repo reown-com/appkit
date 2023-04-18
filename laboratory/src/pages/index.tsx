@@ -43,12 +43,6 @@ const cards = [
     description: 'Simple ethereum example that uses WalletConnect Auth SDK',
     link: '/v2Auth',
     color: 'success'
-  },
-  {
-    title: 'WalletConnect QRCode',
-    description: 'The QRCode displayer',
-    link: '/qrcode',
-    color: 'secondary'
   }
 ] as const
 
