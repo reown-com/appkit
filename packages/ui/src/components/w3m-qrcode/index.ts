@@ -16,11 +16,10 @@ export class W3mQrCode extends LitElement {
   @property() public imageId? = ''
   @property() public walletId? = ''
   @property() public imageUrl? = ''
-  @property() public theme?: typeof ThemeCtrl.state.themeMode
 
   // -- private ------------------------------------------------------ //
   private svgTemplate() {
-    const themeMode = this.theme ?? ThemeCtrl.state.themeMode ?? 'light'
+    const themeMode = ThemeCtrl.state.themeMode ?? 'light'
 
     return svg`
       <svg height=${this.size} width=${this.size}>
@@ -38,11 +37,12 @@ export class W3mQrCode extends LitElement {
               <w3m-wallet-image
                 walletId=${this.walletId}
                 imageId=${this.imageId}
-                imageUrlOverride=${this.imageUrl}
+                imageUrl=${this.imageUrl}
               ></w3m-wallet-image>
             `
           : SvgUtil.WALLET_CONNECT_ICON_COLORED}
         ${this.svgTemplate()}
+        <w3m-theme-context></w3m-theme-context>
       </div>
     `
   }
