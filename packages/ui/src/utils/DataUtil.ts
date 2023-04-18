@@ -94,10 +94,10 @@ export const DataUtil = {
     return UiUtil.getRecentWallet()
   },
 
-  recomendedWallets() {
+  recomendedWallets(skipRecent = false) {
     const injectedWallets = DataUtil.installedInjectedWallets()
     const injectedIds = injectedWallets.map(({ id }) => id)
-    const recentWalletId = DataUtil.recentWallet()?.id
+    const recentWalletId = skipRecent ? undefined : DataUtil.recentWallet()?.id
     const existingIds = [...injectedIds, recentWalletId]
     const { recomendedWallets } = ExplorerCtrl.state
     const wallets = recomendedWallets.filter(wallet => !existingIds.includes(wallet.id))

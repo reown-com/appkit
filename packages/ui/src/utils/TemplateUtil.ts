@@ -26,8 +26,8 @@ export const TemplateUtil = {
     )
   },
 
-  recomendedWalletsTemplate() {
-    const wallets = DataUtil.recomendedWallets()
+  recomendedWalletsTemplate(skipRecent = false) {
+    const wallets = DataUtil.recomendedWallets(skipRecent)
 
     return wallets.map(
       wallet => html`
