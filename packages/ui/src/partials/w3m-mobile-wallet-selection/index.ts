@@ -45,8 +45,7 @@ export class W3mMobileWalletSelection extends LitElement {
     } else {
       wallets = templates
     }
-    const row1 = wallets.slice(0, 4)
-    const row2 = wallets.slice(4, 8)
+
     const isWallets = Boolean(wallets.length)
 
     return html`
@@ -60,14 +59,9 @@ export class W3mMobileWalletSelection extends LitElement {
         ? html`
             <w3m-modal-content>
               <div>
-                ${row1}
-                ${row2.length
-                  ? html`
-                      ${row2}
-                      ${isViewAll
-                        ? html`<w3m-view-all-wallets-button></w3m-view-all-wallets-button>`
-                        : null}
-                    `
+                ${wallets}
+                ${isViewAll
+                  ? html`<w3m-view-all-wallets-button></w3m-view-all-wallets-button>`
                   : null}
               </div>
             </w3m-modal-content>
