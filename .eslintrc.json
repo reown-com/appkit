@@ -69,6 +69,7 @@
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/no-redundant-type-constituents": "off",
     "@typescript-eslint/non-nullable-type-assertion-style": "off",
+    "@typescript-eslint/no-unnecessary-condition": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
       { "argsIgnorePattern": "^_", "varsIgnorePattern": "h" }
