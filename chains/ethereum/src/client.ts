@@ -39,8 +39,6 @@ export class EthereumClient {
   }
 
   private async connectWalletConnectV1(connector: Connector, onUri: (uri: string) => void) {
-    connector.removeAllListeners()
-
     return new Promise<void>((resolve, reject) => {
       connector.on('message', async ({ type }) => {
         if (type === 'connecting') {
@@ -58,8 +56,6 @@ export class EthereumClient {
   }
 
   private async connectWalletConnectV2(connector: Connector, onUri: (uri: string) => void) {
-    connector.removeAllListeners()
-
     await connector.getProvider()
 
     return new Promise<void>(resolve => {
