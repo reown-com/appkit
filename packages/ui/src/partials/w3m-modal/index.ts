@@ -75,10 +75,9 @@ export class W3mModal extends LitElement {
     setTimeout(async () => {
       const animation = UiUtil.isMobileAnimation() ? { y: ['50vh', '0vh'] } : { scale: [0.98, 1] }
       const delay = 0.1
-      const duration = 0.2
       await Promise.all([
-        animate(this.overlayEl, { opacity: [0, 1] }, { duration, delay }).finished,
-        animate(this.containerEl, animation, { delay, duration, easing: 'ease' }).finished
+        animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay }).finished,
+        animate(this.containerEl, animation, { delay, duration: 0.15 }).finished
       ])
       this.active = true
     }, 0)
