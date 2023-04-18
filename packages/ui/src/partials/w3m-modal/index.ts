@@ -2,7 +2,7 @@ import { ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { animate, spring } from 'motion'
+import { animate } from 'motion'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -78,10 +78,7 @@ export class W3mModal extends LitElement {
       const duration = 0.2
       await Promise.all([
         animate(this.overlayEl, { opacity: [0, 1] }, { duration, delay }).finished,
-        animate(this.containerEl, animation, {
-          delay,
-          easing: spring({ mass: 0.1 })
-        }).finished
+        animate(this.containerEl, animation, { delay, duration, easing: 'ease' }).finished
       ])
       this.active = true
     }, 0)
