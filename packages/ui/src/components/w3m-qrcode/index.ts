@@ -16,10 +16,11 @@ export class W3mQrCode extends LitElement {
   @property() public imageId? = ''
   @property() public walletId? = ''
   @property() public imageUrl? = ''
+  @property() public theme?: typeof ThemeCtrl.state.themeMode
 
   // -- private ------------------------------------------------------ //
   private svgTemplate() {
-    const themeMode = ThemeCtrl.state.themeMode ?? 'light'
+    const themeMode = this.theme ?? ThemeCtrl.state.themeMode ?? 'light'
 
     return svg`
       <svg height=${this.size} width=${this.size}>

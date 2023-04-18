@@ -6,6 +6,7 @@ import React, { useEffect } from 'react'
  */
 export function QrCode(props: JSX.IntrinsicElements['w3m-qrcode']) {
   const { size } = props
+
   useEffect(() => {
     import('@web3modal/ui')
   })
