@@ -123,7 +123,7 @@ export class W3mWalletExplorerView extends LitElement {
     const isSearch = this.search.length >= 3
     let extensions = TemplateUtil.injectedWalletsTemplate()
     let manualWallets = TemplateUtil.manualWalletsTemplate()
-    let recomendedWallets = TemplateUtil.recomendedWalletsTemplate()
+    let recomendedWallets = TemplateUtil.recomendedWalletsTemplate(true)
 
     if (isSearch) {
       extensions = extensions.filter(({ values }) =>
