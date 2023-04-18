@@ -44,12 +44,16 @@ export class W3mAndroidWalletSelection extends LitElement {
 
         <div class="w3m-slider">
           <div class="w3m-track">
-            ${wallets.map(
-              wallet =>
-                html`<w3m-wallet-image walletId=${wallet.id} imageId=${wallet.image_id}>
-                </w3m-wallet-image>`
-            )}
-            ${[...Array(recomendedCount - wallets.length)].map(() => SvgUtil.WALLET_PLACEHOLDER)}
+            ${[...Array(recomendedCount)].map((_, index) => {
+              const wallet = wallets[index % wallets.length]
+
+              return wallet
+                ? html`<w3m-wallet-image
+                    walletId=${wallet.id}
+                    imageId=${wallet.image_id}
+                  ></w3m-wallet-image>`
+                : SvgUtil.WALLET_PLACEHOLDER
+            })}
           </div>
           <w3m-button-big @click=${UiUtil.handleAndroidLinking}>
             <w3m-text variant="medium-regular" color="inverse">Select Wallet</w3m-text>

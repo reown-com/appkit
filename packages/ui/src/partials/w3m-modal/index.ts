@@ -2,7 +2,7 @@ import { ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { animate, spring } from 'motion'
+import { animate } from 'motion'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -68,41 +68,31 @@ export class W3mModal extends LitElement {
     }
   }
 
-  private async onOpenModalEvent() {
+  private onOpenModalEvent() {
     this.toggleBodyScroll(false)
-    const delay = 0.1
-    await animate(this.containerEl, { y: 0 }, { duration: 0 }).finished
     this.addKeyboardEvents()
     this.open = true
-    await Promise.all([
-      animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay }).finished,
-      animate(
-        this.containerEl,
-        UiUtil.isMobileAnimation() ? { y: ['50vh', 0] } : { scale: [0.98, 1] },
-        {
-          scale: { easing: spring({ velocity: 0.4 }) },
-          y: { easing: spring({ mass: 0.5 }) },
-          delay
-        }
-      ).finished
-    ])
-    this.active = true
+    setTimeout(async () => {
+      const animation = UiUtil.isMobileAnimation() ? { y: ['50vh', '0vh'] } : { scale: [0.98, 1] }
+      const delay = 0.1
+      await Promise.all([
+        animate(this.overlayEl, { opacity: [0, 1] }, { duration: 0.2, delay }).finished,
+        animate(this.containerEl, animation, { delay, duration: 0.15 }).finished
+      ])
+      this.active = true
+    }, 0)
   }
 
   private async onCloseModalEvent() {
     this.toggleBodyScroll(true)
     this.removeKeyboardEvents()
+    const animation = UiUtil.isMobileAnimation() ? { y: ['0vh', '50vh'] } : { scale: [1, 0.98] }
+    const duration = 0.2
     await Promise.all([
-      animate(
-        this.containerEl,
-        UiUtil.isMobileAnimation() ? { y: [0, '50vh'] } : { scale: [1, 0.98] },
-        {
-          scale: { easing: spring({ velocity: 0 }) },
-          y: { easing: spring({ mass: 0.5 }) }
-        }
-      ).finished,
-      animate(this.overlayEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
+      animate(this.overlayEl, { opacity: [1, 0] }, { duration }).finished,
+      animate(this.containerEl, animation, { duration }).finished
     ])
+    this.containerEl.removeAttribute('style')
     this.active = false
     this.open = false
   }
