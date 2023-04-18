@@ -13,9 +13,9 @@ export class W3mQrCode extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property() public uri = ''
   @property({ type: Number }) public size = 0
-  @property() public imageId? = ''
-  @property() public walletId? = ''
-  @property() public imageUrl? = ''
+  @property() public imageId?: string = undefined
+  @property() public walletId?: string = undefined
+  @property() public imageUrl?: string = undefined
 
   // -- private ------------------------------------------------------ //
   private svgTemplate() {

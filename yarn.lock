@@ -2841,10 +2841,10 @@
     pino "7.11.0"
     uint8arrays "^3.1.0"
 
-"@walletconnect/core@2.7.0":
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-2.7.0.tgz#26f19710958648e401968ab2fd427d6b07fb3b37"
-  integrity sha512-xUeFPpElybgn1a+lknqtHleei4VyuV/4qWgB1nP8qQUAO6a5pNsioODrnB2VAPdUHJYBdx2dCt2maRk6g53IPQ==
+"@walletconnect/core@2.7.0-rc-3":
+  version "2.7.0-rc-3"
+  resolved "https://registry.yarnpkg.com/@walletconnect/core/-/core-2.7.0-rc-3.tgz#9a1ff3af7f69e72e12c71a3852b9e288b9927eca"
+  integrity sha512-Jjypp7Ka4UK+/UOL0EwquPGhIyKq+sragTqfua0wNkSePf2JeYRreM2wEmOAM0IgYLKyugy39OAw5FxWWeh23w==
   dependencies:
     "@walletconnect/heartbeat" "1.2.1"
     "@walletconnect/jsonrpc-provider" "^1.0.12"
@@ -2856,8 +2856,8 @@
     "@walletconnect/relay-auth" "^1.0.4"
     "@walletconnect/safe-json" "^1.0.2"
     "@walletconnect/time" "^1.0.2"
-    "@walletconnect/types" "2.7.0"
-    "@walletconnect/utils" "2.7.0"
+    "@walletconnect/types" "2.7.0-rc-3"
+    "@walletconnect/utils" "2.7.0-rc-3"
     events "^3.3.0"
     lodash.isequal "4.5.0"
     uint8arrays "^3.1.0"
@@ -3110,19 +3110,19 @@
     events "^3.3.0"
     pino "7.11.0"
 
-"@walletconnect/sign-client@2.7.0":
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/@walletconnect/sign-client/-/sign-client-2.7.0.tgz#c08c90a1fc95340d5d40d2cfd88f59d4d385a676"
-  integrity sha512-K99xa6GSFS04U+140yrIEi/VJJJ0Q1ov4jCaiqa9euILDKxlBsM7m5GR+9sq6oYyj18SluJY4CJTdeOXUJlarA==
+"@walletconnect/sign-client@2.7.0-rc-3":
+  version "2.7.0-rc-3"
+  resolved "https://registry.yarnpkg.com/@walletconnect/sign-client/-/sign-client-2.7.0-rc-3.tgz#754be3577a16149b2a3e899fa41ab1ab5023fae8"
+  integrity sha512-j6ZUw6hAuw1T6VEjwinLA0L28us3q1yBFXfH1ROGOHa9WPcfreJIfxbomvtk1xwIdjRvnr7okjaEiXefPXUxig==
   dependencies:
-    "@walletconnect/core" "2.7.0"
+    "@walletconnect/core" "2.7.0-rc-3"
     "@walletconnect/events" "^1.0.1"
     "@walletconnect/heartbeat" "1.2.1"
     "@walletconnect/jsonrpc-utils" "^1.0.7"
     "@walletconnect/logger" "^2.0.1"
     "@walletconnect/time" "^1.0.2"
-    "@walletconnect/types" "2.7.0"
-    "@walletconnect/utils" "2.7.0"
+    "@walletconnect/types" "2.7.0-rc-3"
+    "@walletconnect/utils" "2.7.0-rc-3"
     events "^3.3.0"
 
 "@walletconnect/time@^1.0.2":
@@ -3144,10 +3144,10 @@
     "@walletconnect/logger" "^2.0.1"
     events "^3.3.0"
 
-"@walletconnect/types@2.7.0":
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-2.7.0.tgz#af639c463d0d80d0fd03da80f2fc593c73a93ae9"
-  integrity sha512-aMUDUtO79WSBtC/bDetE6aFwdgwJr0tJ8nC8gnAl5ELsrjygEKCn6M8Q+v6nP9svG9yf5Rds4cImxCT6BWwTyw==
+"@walletconnect/types@2.7.0-rc-3":
+  version "2.7.0-rc-3"
+  resolved "https://registry.yarnpkg.com/@walletconnect/types/-/types-2.7.0-rc-3.tgz#c8f9a735b7ce5827f095a14ef2f2124adefb3750"
+  integrity sha512-+1kjjvCYY4y31/j5HwRAO83KCQ8SSXmO0Nom0eY6zE/WyYTy/4muoReNs1/FpkL9LavfoQFhpSAXL7V73/L3/g==
   dependencies:
     "@walletconnect/events" "^1.0.1"
     "@walletconnect/heartbeat" "1.2.1"
@@ -3194,10 +3194,10 @@
     query-string "7.1.1"
     uint8arrays "^3.1.0"
 
-"@walletconnect/utils@2.7.0":
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-2.7.0.tgz#18482834b8a27e0515ef160a1ff7e4632c9d77f5"
-  integrity sha512-k32jrQeyJsNZPdmtmg85Y3QgaS5YfzYSPrAxRC2uUD1ts7rrI6P5GG2iXNs3AvWKOuCgsp/PqU8s7AC7CRUscw==
+"@walletconnect/utils@2.7.0-rc-3":
+  version "2.7.0-rc-3"
+  resolved "https://registry.yarnpkg.com/@walletconnect/utils/-/utils-2.7.0-rc-3.tgz#dfd503a3bfbba3a194612d90ec61bb46b92ca0d6"
+  integrity sha512-PIDVI4+k/fJJgL/YPFrkqolIoFY4ABRORWMHHq6jpeoGf/X62xnkuJmatCcUoWSDhiIDEEYjPsjzS/cXktp/VA==
   dependencies:
     "@stablelib/chacha20poly1305" "1.0.1"
     "@stablelib/hkdf" "1.0.1"
@@ -3208,7 +3208,7 @@
     "@walletconnect/relay-api" "^1.0.9"
     "@walletconnect/safe-json" "^1.0.2"
     "@walletconnect/time" "^1.0.2"
-    "@walletconnect/types" "2.7.0"
+    "@walletconnect/types" "2.7.0-rc-3"
     "@walletconnect/window-getters" "^1.0.1"
     "@walletconnect/window-metadata" "^1.0.1"
     detect-browser "5.3.0"
