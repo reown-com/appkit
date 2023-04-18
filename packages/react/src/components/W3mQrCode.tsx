@@ -1,10 +1,10 @@
-import type { W3mQrCode } from '@web3modal/ui'
+import type { W3mQrCode as TW3mQrCode } from '@web3modal/ui'
 import React from 'react'
 
 /**
  * Component
  */
-export function QrCode(props: JSX.IntrinsicElements['w3m-qrcode']) {
+export function W3mQrCode(props: JSX.IntrinsicElements['w3m-qrcode']) {
   const { size } = props
 
   return (
@@ -20,7 +20,7 @@ export function QrCode(props: JSX.IntrinsicElements['w3m-qrcode']) {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      'w3m-qrcode': Partial<W3mQrCode>
+      'w3m-qrcode': Partial<TW3mQrCode>
     }
   }
 }

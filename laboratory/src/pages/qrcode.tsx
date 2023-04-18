@@ -1,4 +1,4 @@
-import { QrCode, useWeb3ModalTheme } from '@web3modal/react'
+import { W3mQrCode, useWeb3ModalTheme } from '@web3modal/react'
 import { useState } from 'react'
 
 import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
@@ -31,7 +31,7 @@ export default function qrcode() {
     <>
       <WagmiConfig client={wagmiClient}>
         <div style={{ display: 'grid', placeItems: 'center', padding: '5em' }}>
-          <QrCode
+          <W3mQrCode
             size={300}
             imageUrl="https://walletconnect.com/_next/static/media/brand_icon_blue.c5e25f1c.svg"
             uri={uri}
