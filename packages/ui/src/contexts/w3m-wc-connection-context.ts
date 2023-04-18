@@ -12,7 +12,6 @@ import { customElement } from 'lit/decorators.js'
 // -- constants ---------------------------------------------------- //
 const THREE_MIN_MS = 180_000
 const ONE_SEC_MS = 1_000
-const ONE_HUNDRED_MS = 100
 
 @customElement('w3m-wc-connection-context')
 export class W3mWcConnectionContext extends LitElement {
@@ -80,7 +79,7 @@ export class W3mWcConnectionContext extends LitElement {
 
   private onVisibilityChange() {
     if (!document.hidden && CoreUtil.isMobile()) {
-      setTimeout(this.connectAndWait.bind(this), ONE_HUNDRED_MS)
+      this.connectAndWait.bind(this)
     }
   }
 }
