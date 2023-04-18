@@ -48,8 +48,6 @@ export class W3mQrCode extends LitElement {
   }
 }
 
-export default W3mQrCode
-
 declare global {
   interface HTMLElementTagNameMap {
     'w3m-qrcode': W3mQrCode
