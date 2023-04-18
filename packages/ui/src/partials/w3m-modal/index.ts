@@ -80,7 +80,7 @@ export class W3mModal extends LitElement {
         animate(this.overlayEl, { opacity: [0, 1] }, { duration, delay }).finished,
         animate(this.containerEl, animation, {
           delay,
-          easing: spring({ mass: 0.3 })
+          easing: spring({ mass: 0.1 })
         }).finished
       ])
       this.active = true
