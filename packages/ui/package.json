@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@types/qrcode": "1.5.0",
-    "eslint-plugin-lit": "1.8.2",
+    "eslint-plugin-lit": "1.8.3",
     "eslint-plugin-wc": "1.4.0"
   },
   "keywords": [
