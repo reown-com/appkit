@@ -67,6 +67,7 @@ export class W3mWcConnectionContext extends LitElement {
         }
       } catch (err) {
         console.error(err)
+        WcConnectionCtrl.setPairingError(true)
         ToastCtrl.openToast('Connection request declined', 'error')
         if (Date.now() - this.lastRetry >= ONE_SEC_MS) {
           this.lastRetry = Date.now()
