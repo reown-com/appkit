@@ -33,7 +33,6 @@ export class W3mWcConnectionContext extends LitElement {
       }
     })
     document.addEventListener('visibilitychange', this.onVisibilityChange.bind(this))
-    this.enableWakeLock()
   }
 
   public disconnectedCallback() {
@@ -50,16 +49,6 @@ export class W3mWcConnectionContext extends LitElement {
   private selectedChainId = OptionsCtrl.state.selectedChain?.id
   private isAccountConnected = AccountCtrl.state.isConnected
   private lastRetry = Date.now()
-
-  private async enableWakeLock() {
-    try {
-      // @ts-expect-error Exists
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const wakeLock = await navigator.wakeLock.request('screen')
-    } catch (err) {
-      console.error(err)
-    }
-  }
 
   private async connectAndWait() {
     clearTimeout(this.timeout)
