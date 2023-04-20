@@ -130,11 +130,15 @@ export class EthereumClient {
   }
 
   public async pingWalletConnect() {
-    const { connector } = this.getWalletConnectConnectors()
-    const provider = await connector.getProvider()
-    const pairings = provider.signer.client.pairing.getAll()
-    const { topic } = pairings[pairings.length - 1]
-    provider.signer.client.ping({ topic })
+    try {
+      const { connector } = this.getWalletConnectConnectors()
+      const provider = await connector.getProvider()
+      const pairings = provider.signer.client.pairing.getAll()
+      const { topic } = pairings[pairings.length - 1]
+      provider.signer.client.ping({ topic })
+    } catch (err) {
+      console.info(err)
+    }
   }
 
   public disconnect = disconnect
