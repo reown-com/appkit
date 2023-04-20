@@ -4,7 +4,8 @@ import type { WcConnectionCtrlState } from '../types/controllerTypes'
 // -- initial state ------------------------------------------------ //
 const state = proxy<WcConnectionCtrlState>({
   pairingUri: '',
-  pairingError: false
+  pairingError: false,
+  pairingCanRetry: true
 })
 
 // -- controller --------------------------------------------------- //
@@ -21,5 +22,9 @@ export const WcConnectionCtrl = {
 
   setPairingError(pairingError: WcConnectionCtrlState['pairingError']) {
     state.pairingError = pairingError
+  },
+
+  setPairingCanRetry(pairingCanRetry: WcConnectionCtrlState['pairingCanRetry']) {
+    state.pairingCanRetry = pairingCanRetry
   }
 }

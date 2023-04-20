@@ -12,13 +12,15 @@ export class W3mMobileConnectingView extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() public isError = false
+  @state() public pairingCanRetry = WcConnectionCtrl.state.pairingCanRetry
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
     this.openMobileApp()
-    this.unwatchConnection = WcConnectionCtrl.subscribe(connection => {
-      this.isError = connection.pairingError
+    this.unwatchConnection = WcConnectionCtrl.subscribe(connectionState => {
+      this.isError = connectionState.pairingError
+      this.pairingCanRetry = connectionState.pairingCanRetry
     })
   }
 
@@ -92,6 +94,7 @@ export class W3mMobileConnectingView extends LitElement {
             <w3m-button
               .onClick=${() => this.openMobileApp(false)}
               .iconRight=${SvgUtil.RETRY_ICON}
+              .disabled=${!this.pairingCanRetry}
             >
               Retry
             </w3m-button>
@@ -101,6 +104,7 @@ export class W3mMobileConnectingView extends LitElement {
                   variant="outline"
                   .onClick=${() => this.openMobileApp(true)}
                   .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}
+                  .disabled=${!this.pairingCanRetry}
                 >
                   Backup
                 </w3m-button>`

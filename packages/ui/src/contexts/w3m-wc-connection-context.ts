@@ -79,8 +79,13 @@ export class W3mWcConnectionContext extends LitElement {
 
   private async onVisibilityChange() {
     if (!document.hidden && CoreUtil.isMobile()) {
-      await ClientCtrl.client().pingWalletConnect()
-      this.connectAndWait.bind(this)
+      try {
+        WcConnectionCtrl.setPairingCanRetry(false)
+        await ClientCtrl.client().pingWalletConnect()
+        this.connectAndWait.bind(this)
+      } finally {
+        WcConnectionCtrl.setPairingCanRetry(true)
+      }
     }
   }
 }
