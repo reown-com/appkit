@@ -261,5 +261,4 @@ export interface ThemeCtrlState {
 export interface WcConnectionCtrlState {
   pairingUri: string
   pairingError: boolean
-  pairingCanRetry: boolean
 }

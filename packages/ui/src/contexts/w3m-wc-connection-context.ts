@@ -67,7 +67,6 @@ export class W3mWcConnectionContext extends LitElement {
         }
       } catch (err) {
         console.error(err)
-        WcConnectionCtrl.setPairingError(true)
         ToastCtrl.openToast('Connection request declined', 'error')
         if (Date.now() - this.lastRetry >= ONE_SEC_MS) {
           this.lastRetry = Date.now()
@@ -79,10 +78,8 @@ export class W3mWcConnectionContext extends LitElement {
 
   private async onVisibilityChange() {
     if (!document.hidden && CoreUtil.isMobile()) {
-      WcConnectionCtrl.setPairingCanRetry(false)
       await ClientCtrl.client().pingWalletConnect()
       this.connectAndWait()
-      WcConnectionCtrl.setPairingCanRetry(true)
     }
   }
 }
