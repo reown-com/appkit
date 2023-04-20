@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ui",
-  "version": "2.3.4",
+  "version": "2.3.5",
   "main": "dist/index.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/core": "2.3.4",
+    "@web3modal/core": "2.3.5",
     "lit": "2.7.2",
     "motion": "10.15.5",
     "qrcode": "1.5.1"
