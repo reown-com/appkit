@@ -54,8 +54,8 @@ export class W3mWcConnectionContext extends LitElement {
   private async enableWakeLock() {
     try {
       // @ts-expect-error Exists
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const wakeLock = await navigator.wakeLock.request('screen')
-      console.log(wakeLock)
     } catch (err) {
       console.error(err)
     }
