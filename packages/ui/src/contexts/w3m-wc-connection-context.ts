@@ -12,7 +12,6 @@ import { customElement } from 'lit/decorators.js'
 // -- constants ---------------------------------------------------- //
 const THREE_MIN_MS = 180_000
 const ONE_SEC_MS = 1_000
-const THREE_HUNDRED_MS = 300
 
 @customElement('w3m-wc-connection-context')
 export class W3mWcConnectionContext extends LitElement {
@@ -68,7 +67,6 @@ export class W3mWcConnectionContext extends LitElement {
         }
       } catch (err) {
         console.error(err)
-        WcConnectionCtrl.setPairingError(true)
         ToastCtrl.openToast('Connection request declined', 'error')
         if (Date.now() - this.lastRetry >= ONE_SEC_MS) {
           this.lastRetry = Date.now()
@@ -78,9 +76,10 @@ export class W3mWcConnectionContext extends LitElement {
     }
   }
 
-  private onVisibilityChange() {
+  private async onVisibilityChange() {
     if (!document.hidden && CoreUtil.isMobile()) {
-      setTimeout(this.connectAndWait.bind(this), THREE_HUNDRED_MS)
+      await ClientCtrl.client().pingWalletConnect()
+      this.connectAndWait()
     }
   }
 }

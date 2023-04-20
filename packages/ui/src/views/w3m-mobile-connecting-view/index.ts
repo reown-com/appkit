@@ -17,8 +17,8 @@ export class W3mMobileConnectingView extends LitElement {
   public constructor() {
     super()
     this.openMobileApp()
-    this.unwatchConnection = WcConnectionCtrl.subscribe(connection => {
-      this.isError = connection.pairingError
+    this.unwatchConnection = WcConnectionCtrl.subscribe(connectionState => {
+      this.isError = connectionState.pairingError
     })
   }
 
