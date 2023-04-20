@@ -73,8 +73,6 @@ export class W3mWcConnectionContext extends LitElement {
           this.lastRetry = Date.now()
           this.connectAndWait()
         }
-      } finally {
-        WcConnectionCtrl.setPairingCanRetry(true)
       }
     }
   }
@@ -83,7 +81,8 @@ export class W3mWcConnectionContext extends LitElement {
     if (!document.hidden && CoreUtil.isMobile()) {
       WcConnectionCtrl.setPairingCanRetry(false)
       await ClientCtrl.client().pingWalletConnect()
-      this.connectAndWait.bind(this)
+      this.connectAndWait()
+      WcConnectionCtrl.setPairingCanRetry(true)
     }
   }
 }
