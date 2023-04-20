@@ -25,7 +25,6 @@ export const WcConnectionCtrl = {
   },
 
   setPairingCanRetry(pairingCanRetry: WcConnectionCtrlState['pairingCanRetry']) {
-    console.log('ufff', pairingCanRetry)
     state.pairingCanRetry = pairingCanRetry
   }
 }
