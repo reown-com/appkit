@@ -13,7 +13,7 @@ export const TemplateUtil = {
   },
 
   manualWalletsTemplate() {
-    const wallets = DataUtil.manualDesktopWallets()
+    const wallets = DataUtil.manualWallets()
 
     return wallets.map(
       wallet => html`
