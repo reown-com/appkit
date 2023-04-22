@@ -4,10 +4,11 @@ import { useEffect } from 'react'
 
 export function useWeb3ModalEvents(callback: (event: ModalEvent) => void) {
   useEffect(() => {
-    const unsubscribe = EventsCtrl.subscribe(newEvent => callback(newEvent))
+    const unsubscribe = EventsCtrl.subscribe(callback)
 
     return () => {
       unsubscribe()
     }
-  }, [callback])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 }

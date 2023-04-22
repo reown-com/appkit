@@ -269,6 +269,12 @@ export type ModalEventData =
       name: 'ACCOUNT_BUTTON'
     }
   | {
+      name: 'ACCOUNT_CONNECTED'
+    }
+  | {
+      name: 'ACCOUNT_DISCONNECTED'
+    }
+  | {
       name: 'CONNECT_BUTTON'
     }
   | {
@@ -276,6 +282,10 @@ export type ModalEventData =
     }
   | {
       name: 'NETWORK_BUTTON'
+    }
+  | {
+      name: 'WALLET_BUTTON'
+      walletId: string
     }
 
 export interface ModalEvent {

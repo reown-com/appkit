@@ -2,6 +2,7 @@ import {
   AccountCtrl,
   ClientCtrl,
   ConfigCtrl,
+  EventsCtrl,
   ModalCtrl,
   OptionsCtrl,
   ToastCtrl
@@ -35,6 +36,12 @@ export class W3mAccountContext extends LitElement {
 
       if (isConnected !== account.isConnected) {
         ModalCtrl.close()
+      }
+
+      if (!isConnected && account.isConnected) {
+        EventsCtrl.track({ name: 'ACCOUNT_CONNECTED' })
+      } else if (isConnected && !account.isConnected) {
+        EventsCtrl.track({ name: 'ACCOUNT_DISCONNECTED' })
       }
 
       AccountCtrl.setIsConnected(account.isConnected)
