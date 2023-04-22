@@ -262,3 +262,32 @@ export interface WcConnectionCtrlState {
   pairingUri: string
   pairingError: boolean
 }
+
+// -- EventsCrrl ------------------------------------------- //
+export type ModalEventData =
+  | {
+      name: 'ACCOUNT_BUTTON'
+    }
+  | {
+      name: 'CONNECT_BUTTON'
+    }
+  | {
+      name: 'DISCONNECT_BUTTON'
+    }
+  | {
+      name: 'NETWORK_BUTTON'
+    }
+
+export interface ModalEvent {
+  type: 'CLICK' | 'TRACK' | 'VIEW'
+  name: ModalEventData['name']
+  timestamp: number
+  userSessionId: string
+  data?: ModalEventData
+}
+
+export interface EventsCtrlState {
+  userSessionId: string
+  events: ModalEvent[]
+  connectedWalletId?: string
+}

@@ -1,4 +1,4 @@
-import { ModalCtrl, OptionsCtrl } from '@web3modal/core'
+import { EventsCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -43,6 +43,7 @@ export class W3mNetworkSwitch extends LitElement {
   }
 
   private onClick() {
+    EventsCtrl.click({ name: 'NETWORK_BUTTON' })
     ModalCtrl.open({ route: 'SelectNetwork' })
   }
 

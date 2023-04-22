@@ -1,6 +1,7 @@
 export { AccountCtrl } from './src/controllers/AccountCtrl'
 export { ClientCtrl } from './src/controllers/ClientCtrl'
 export { ConfigCtrl } from './src/controllers/ConfigCtrl'
+export { EventsCtrl } from './src/controllers/EventsCtrl'
 export { ExplorerCtrl } from './src/controllers/ExplorerCtrl'
 export { ModalCtrl } from './src/controllers/ModalCtrl'
 export { OptionsCtrl } from './src/controllers/OptionsCtrl'
@@ -13,6 +14,7 @@ export type {
   Listing,
   ListingResponse,
   MobileWallet,
+  ModalEvent,
   RouterView,
   SwitchNetworkData,
   ThemeCtrlState,
