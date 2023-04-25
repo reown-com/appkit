@@ -17,7 +17,7 @@ export const EventsCtrl = {
   },
 
   initialize() {
-    if (typeof window !== 'undefined') {
+    if (typeof crypto !== 'undefined') {
       state.userSessionId = crypto.randomUUID()
     }
   },
