@@ -17,7 +17,9 @@ export const EventsCtrl = {
   },
 
   initialize() {
-    state.userSessionId = crypto.randomUUID()
+    if (typeof window !== 'undefined') {
+      state.userSessionId = crypto.randomUUID()
+    }
   },
 
   setConnectedWalletId(connectedWalletId: EventsCtrlState['connectedWalletId']) {
