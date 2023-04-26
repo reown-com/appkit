@@ -21,8 +21,8 @@ export const DataUtil = {
 
     return (
       (CoreUtil.isMobile()
-        ? wallets?.map(({ id, name, links }) => ({ id, name, mobile: links }))
-        : wallets?.map(({ id, name, links }) => ({ id, name, desktop: links }))) ?? []
+        ? wallets?.map(({ id, name, links }) => ({ id, name, mobile: links, links }))
+        : wallets?.map(({ id, name, links }) => ({ id, name, desktop: links, links }))) ?? []
     )
   },
 
