@@ -63,6 +63,14 @@ export default function v2BasePage() {
               native: '',
               universal: 'https://www.oreid.io/'
             }
+          },
+          {
+            id: 'metamaskDeeplink',
+            name: 'Metamask Deeplink',
+            links: {
+              native: 'metamask://',
+              universal: ''
+            }
           }
         ]}
         desktopWallets={[
