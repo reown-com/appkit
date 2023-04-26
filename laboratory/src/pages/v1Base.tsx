@@ -8,11 +8,11 @@ import { getProjectId, getTheme } from '../utilities/EnvUtil'
 // Configure wagmi and web3modal
 const projectId = getProjectId()
 const chains = [mainnet, polygon]
-const { provider } = configureChains(chains, [w3mProvider({ projectId })])
+const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
 const wagmiClient = createClient({
   autoConnect: true,
   connectors: w3mConnectors({ version: 1, projectId, chains }),
-  provider
+  publicClient
 })
 const ethereumClient = new EthereumClient(wagmiClient, chains)
 

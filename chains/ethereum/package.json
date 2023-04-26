@@ -16,8 +16,8 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@wagmi/core": ">=0.10",
-    "ethers": ">=5.7"
+    "@wagmi/core": "viem",
+    "viem": ">=0.3"
   },
   "keywords": [
     "web3",

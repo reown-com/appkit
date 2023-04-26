@@ -113,6 +113,7 @@ export class EthereumClient {
   }
 
   public isInjectedProviderInstalled() {
+    // @ts-expect-error - ethereum can exist
     return typeof window.ethereum !== 'undefined'
   }
 
