@@ -13,18 +13,17 @@ export const DataUtil = {
     return connectors
   },
 
-  manualMobileWallets() {
-    return ConfigCtrl.state.mobileWallets ?? []
-  },
-
-  manualDesktopWallets() {
-    return ConfigCtrl.state.desktopWallets ?? []
-  },
-
   manualWallets() {
     const { mobileWallets, desktopWallets } = ConfigCtrl.state
+    const recentWalletId = DataUtil.recentWallet()?.id
+    const platformWallets = CoreUtil.isMobile() ? mobileWallets : desktopWallets
+    const wallets = platformWallets?.filter(wallet => recentWalletId !== wallet.id)
 
-    return (CoreUtil.isMobile() ? mobileWallets : desktopWallets) ?? []
+    return (
+      (CoreUtil.isMobile()
+        ? wallets?.map(({ id, name, links }) => ({ id, name, mobile: links }))
+        : wallets?.map(({ id, name, links }) => ({ id, name, desktop: links }))) ?? []
+    )
   },
 
   installedInjectedWallets() {
