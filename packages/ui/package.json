@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ui",
-  "version": "2.3.6",
+  "version": "2.3.7",
   "main": "dist/index.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -16,15 +16,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/core": "2.3.6",
-    "lit": "2.7.2",
+    "@web3modal/core": "2.3.7",
+    "lit": "2.7.3",
     "motion": "10.15.5",
-    "qrcode": "1.5.1"
+    "qrcode": "1.5.3"
   },
   "devDependencies": {
     "@types/qrcode": "1.5.0",
     "eslint-plugin-lit": "1.8.3",
-    "eslint-plugin-wc": "1.4.0"
+    "eslint-plugin-wc": "1.5.0"
   },
   "keywords": [
     "web3",

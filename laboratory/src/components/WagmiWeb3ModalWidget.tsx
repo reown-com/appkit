@@ -1,5 +1,11 @@
 import { Button, Card, Modal, Text } from '@nextui-org/react'
-import { Web3Button, Web3NetworkSwitch, useWeb3Modal, useWeb3ModalTheme } from '@web3modal/react'
+import {
+  Web3Button,
+  Web3NetworkSwitch,
+  useWeb3Modal,
+  useWeb3ModalEvents,
+  useWeb3ModalTheme
+} from '@web3modal/react'
 import { useEffect, useState } from 'react'
 import { useAccount, useContractRead, useSignMessage } from 'wagmi'
 import { mainnet } from 'wagmi/chains'
@@ -8,9 +14,13 @@ import { abi } from '../data/SeaportAbi'
 const message = 'Hello Web3Modal!'
 
 export default function WagmiWeb3ModalWidget() {
-  const { isConnected } = useAccount()
+  // -- Web3Modal Hooks -------------------------------------------------------
+  useWeb3ModalEvents(event => console.info(event))
   const { setTheme } = useWeb3ModalTheme()
   const { open } = useWeb3Modal()
+
+  // -- Wagmi Hooks -----------------------------------------------------------
+  const { isConnected } = useAccount()
   const { data: signData, isLoading, signMessage } = useSignMessage({ message })
   const { data: contractData, refetch } = useContractRead({
     enabled: false,
@@ -20,6 +30,8 @@ export default function WagmiWeb3ModalWidget() {
     chainId: mainnet.id,
     cacheTime: 0
   })
+
+  // -- React Hooks -----------------------------------------------------------
   const [signModal, setSignModal] = useState(false)
   const [contractModal, setContractModal] = useState(false)
 

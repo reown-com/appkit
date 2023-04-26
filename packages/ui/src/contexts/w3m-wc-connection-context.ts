@@ -77,10 +77,9 @@ export class W3mWcConnectionContext extends LitElement {
     }
   }
 
-  private async onVisibilityChange() {
+  private onVisibilityChange() {
     if (!document.hidden && CoreUtil.isMobile()) {
-      await ClientCtrl.client().pingWalletConnect()
-      this.connectAndWait()
+      setTimeout(this.connectAndWait.bind(this), ONE_SEC_MS)
     }
   }
 }

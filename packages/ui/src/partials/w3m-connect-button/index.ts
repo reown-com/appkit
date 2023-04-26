@@ -1,4 +1,4 @@
-import { AccountCtrl, ClientCtrl, ModalCtrl } from '@web3modal/core'
+import { AccountCtrl, ClientCtrl, EventsCtrl, ModalCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -50,6 +50,7 @@ export class W3mConnectButton extends LitElement {
 
   private async onConnect() {
     this.loading = true
+    EventsCtrl.click({ name: 'CONNECT_BUTTON' })
     await ModalCtrl.open()
     if (!ModalCtrl.state.open) {
       this.loading = false
@@ -57,6 +58,7 @@ export class W3mConnectButton extends LitElement {
   }
 
   private async onDisconnect() {
+    EventsCtrl.click({ name: 'DISCONNECT_BUTTON' })
     await ClientCtrl.client().disconnect()
   }
 

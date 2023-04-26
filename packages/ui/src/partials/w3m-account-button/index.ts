@@ -1,5 +1,5 @@
-import { ModalCtrl, OptionsCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { EventsCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
+import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -23,6 +23,7 @@ export class W3mAccountButton extends LitElement {
   private onOpen() {
     const { isStandalone } = OptionsCtrl.state
     if (!isStandalone) {
+      EventsCtrl.click({ name: 'ACCOUNT_BUTTON' })
       ModalCtrl.open({ route: 'Account' })
     }
   }

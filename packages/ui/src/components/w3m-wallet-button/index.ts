@@ -1,3 +1,4 @@
+import { EventsCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -32,10 +33,15 @@ export class W3mWalletButton extends LitElement {
     return null
   }
 
+  private handleClick() {
+    EventsCtrl.click({ name: 'WALLET_BUTTON', walletId: this.walletId })
+    this.onClick()
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <button @click=${this.onClick}>
+      <button @click=${this.handleClick.bind(this)}>
         <div>
           <w3m-wallet-image walletId=${this.walletId} imageId=${this.imageId}></w3m-wallet-image>
           <w3m-text variant="xsmall-regular">

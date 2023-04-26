@@ -2,6 +2,7 @@ import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ConfigCtrlState } from '../types/controllerTypes'
 import { CoreUtil } from '../utils/CoreUtil'
 import { ClientCtrl } from './ClientCtrl'
+import { EventsCtrl } from './EventsCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
 
 const state = proxy<ConfigCtrlState>({
@@ -33,6 +34,7 @@ export const ConfigCtrl = {
   },
 
   setConfig(config: ConfigCtrlState) {
+    EventsCtrl.initialize()
     OptionsCtrl.setStandaloneChains(config.standaloneChains)
     OptionsCtrl.setIsStandalone(
       Boolean(config.standaloneChains?.length) || Boolean(config.enableStandaloneMode)
