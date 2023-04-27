@@ -84,7 +84,6 @@ export class W3mSelectNetworkView extends LitElement {
     const sortedChains = decoratedChains?.sort(
       (a, b) => Number(a.unsupported) - Number(b.unsupported)
     )
-    console.log(sortedChains)
 
     return html`
       <w3m-modal-header title="Select network"></w3m-modal-header>
