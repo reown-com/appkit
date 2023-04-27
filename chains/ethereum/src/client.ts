@@ -13,6 +13,9 @@ import {
 } from '@wagmi/core'
 import type { ConnectorId, ModalConnectorsOpts } from './types'
 
+// -- helpers ------------------------------------------- //
+const ADD_ETH_CHAIN_METHOD = 'wallet_addEthereumChain'
+
 export class EthereumClient {
   private readonly wagmi = {} as Client
   public walletConnectVersion: ModalConnectorsOpts['version'] = 1
@@ -127,6 +130,32 @@ export class EthereumClient {
 
       return false
     }
+  }
+
+  public async getConnectedChainIds() {
+    const { connector, isV2 } = this.getWalletConnectConnectors()
+
+    if (isV2) {
+      const provider = await connector.getProvider()
+      const sessionNamespaces = provider.signer?.session?.namespaces
+      const sessionMethods = sessionNamespaces?.[this.namespace]?.methods
+      if (sessionMethods?.includes(ADD_ETH_CHAIN_METHOD)) {
+        return 'ALL'
+      }
+      if (sessionNamespaces?.length) {
+        const sessionAccounts: string[] = []
+        Object.keys(sessionNamespaces).forEach(namespaceKey => {
+          if (namespaceKey.includes(this.namespace)) {
+            sessionAccounts.push(...sessionNamespaces[namespaceKey].accounts)
+          }
+        })
+        const sessionChains = sessionAccounts?.map((a: string) => a.split(':')[1])
+
+        return sessionChains
+      }
+    }
+
+    return 'ALL'
   }
 
   public disconnect = disconnect
