@@ -142,7 +142,7 @@ export class EthereumClient {
       if (sessionMethods?.includes(ADD_ETH_CHAIN_METHOD)) {
         return 'ALL'
       }
-      if (sessionNamespaces?.length) {
+      if (sessionNamespaces) {
         const sessionAccounts: string[] = []
         Object.keys(sessionNamespaces).forEach(namespaceKey => {
           if (namespaceKey.includes(this.namespace)) {
