@@ -23,6 +23,12 @@ w3m-text {
   margin-top: 5px;
 }
 
-button:hover {
+button:active {
   background-color: var(--w3m-color-overlay);
+}
+
+@media (hover: hover) {
+  button:hover {
+    background-color: var(--w3m-color-overlay);
+  }
 }

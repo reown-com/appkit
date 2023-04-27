@@ -6,8 +6,14 @@ button {
   align-items: flex-start;
 }
 
-button:hover {
+button:active {
   background-color: var(--w3m-color-overlay);
+}
+
+@media (hover: hover) {
+  button:hover {
+    background-color: var(--w3m-color-overlay);
+  }
 }
 
 button > div {

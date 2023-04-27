@@ -26,23 +26,37 @@ button:disabled::after {
   margin-left: 5px;
 }
 
-button:hover::after {
+button:active::after {
   background-color: var(--w3m-color-overlay);
+}
+
+.w3m-ghost,
+.w3m-ghost:active::after,
+.w3m-outline {
+  background-color: transparent;
+}
+
+.w3m-ghost:active {
+  opacity: 0.5;
+}
+
+@media (hover: hover) {
+  button:hover::after {
+    background-color: var(--w3m-color-overlay);
+  }
+
+  .w3m-ghost:hover::after {
+    background-color: transparent;
+  }
+
+  .w3m-ghost:hover {
+    opacity: 0.5;
+  }
 }
 
 button:disabled {
   background-color: var(--w3m-color-bg-3);
   pointer-events: none;
-}
-
-.w3m-ghost,
-.w3m-ghost:hover::after,
-.w3m-outline {
-  background-color: transparent;
-}
-
-.w3m-ghost:hover {
-  opacity: 0.5;
 }
 
 .w3m-ghost::after {
