@@ -34,7 +34,7 @@ export class W3mSelectNetworkView extends LitElement {
 
   private async onSelectChain(chain: SwitchNetworkData) {
     try {
-      const { selectedChain, walletConnectVersion, isInjectedMobile } = OptionsCtrl.state
+      const { selectedChain, walletConnectVersion, isPreferInjected } = OptionsCtrl.state
       const { isConnected } = AccountCtrl.state
       if (isConnected) {
         if (selectedChain?.id === chain.id) {
@@ -45,7 +45,7 @@ export class W3mSelectNetworkView extends LitElement {
         } else {
           RouterCtrl.push('SwitchNetwork', { SwitchNetwork: chain })
         }
-      } else if (isInjectedMobile) {
+      } else if (isPreferInjected) {
         OptionsCtrl.setSelectedChain(chain)
         ModalCtrl.close()
       } else {

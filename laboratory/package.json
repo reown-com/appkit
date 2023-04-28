@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "@nextui-org/react": "1.0.0-beta.12",
-    "@sentry/react": "7.49.0",
-    "@sentry/tracing": "7.49.0",
+    "@sentry/react": "7.50.0",
+    "@sentry/tracing": "7.50.0",
     "@walletconnect/auth-client": "2.0.7",
     "@walletconnect/sign-client": "2.7.1",
     "@web3modal/ethereum": "2.3.7",

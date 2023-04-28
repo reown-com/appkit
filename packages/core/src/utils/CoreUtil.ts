@@ -5,6 +5,8 @@ export const CoreUtil = {
 
   W3M_VERSION: 'W3M_VERSION',
 
+  W3M_PREFER_INJECTED_URL_FLAG: 'w3mPreferInjected',
+
   RECOMMENDED_WALLET_AMOUNT: 9,
 
   isMobile() {
@@ -114,5 +116,15 @@ export const CoreUtil = {
     }
 
     return routerData
+  },
+
+  isPreferInjectedFlag() {
+    if (typeof location !== 'undefined') {
+      const queryParams = new URLSearchParams(location.search)
+
+      return queryParams.has(CoreUtil.W3M_PREFER_INJECTED_URL_FLAG)
+    }
+
+    return false
   }
 }
