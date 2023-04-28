@@ -15,12 +15,8 @@
     "dev": "rollup --config rollup.config.js --watch",
     "typecheck": "tsc --noEmit"
   },
-  "devDependencies": {
-    "@web3modal/ethereum": "2.3.7"
-  },
   "dependencies": {
     "@web3modal/core": "2.3.7",
-    "@web3modal/standalone": "2.3.7",
     "@web3modal/ui": "2.3.7"
   },
   "keywords": [
