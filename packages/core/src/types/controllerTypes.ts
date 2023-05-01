@@ -31,6 +31,7 @@ export interface ConfigCtrlState {
   tokenImages?: Record<string, string>
   tokenContracts?: Record<number, string>
   enableStandaloneMode?: boolean
+  enableAuthMode?: boolean
   enableNetworkView?: boolean
   enableAccountView?: boolean
   enableExplorer?: boolean
@@ -52,6 +53,7 @@ export interface OptionsCtrlState {
   standaloneChains?: string[]
   standaloneUri?: string
   isStandalone: boolean
+  isAuth: boolean
   isCustomDesktop: boolean
   isCustomMobile: boolean
   isDataLoaded: boolean
@@ -87,6 +89,7 @@ export interface ListingParams {
   chains?: string
   recommendedIds?: string
   excludedIds?: string
+  sdks?: string
 }
 
 export interface Listing {

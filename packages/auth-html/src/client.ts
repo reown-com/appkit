@@ -91,6 +91,7 @@ export class Web3ModalAuth {
     const { modalOptions, projectId } = this.#options
     this.#modal = new Web3Modal({
       ...modalOptions,
+      enableAuthMode: true,
       walletConnectVersion: 2,
       projectId
     })

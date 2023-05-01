@@ -9,6 +9,7 @@ const state = proxy<OptionsCtrlState>({
   standaloneChains: undefined,
   standaloneUri: undefined,
   isStandalone: false,
+  isAuth: false,
   isCustomDesktop: false,
   isCustomMobile: false,
   isDataLoaded: false,
@@ -76,5 +77,9 @@ export const OptionsCtrl = {
 
   setIsPreferInjected(isPreferInjected: OptionsCtrlState['isPreferInjected']) {
     state.isPreferInjected = isPreferInjected
+  },
+
+  setIsAuth(isAuth: OptionsCtrlState['isAuth']) {
+    state.isAuth = isAuth
   }
 }
