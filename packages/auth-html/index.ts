@@ -1,2 +1,2 @@
-export { Web3Modal } from './src/client'
-export type { Web3ModalConfig } from './src/client'
+export { Web3ModalAuth } from './src/client'
+export type { Web3ModalAuthOptions } from './src/client'

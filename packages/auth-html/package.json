@@ -16,8 +16,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/core": "2.3.7",
-    "@web3modal/ui": "2.3.7"
+    "@web3modal/standalone": "2.3.7",
+    "@walletconnect/auth-client": "2.0.7"
   },
   "keywords": [
     "web3",

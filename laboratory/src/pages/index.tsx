@@ -43,6 +43,12 @@ const cards = [
     description: 'Simple ethereum example that uses WalletConnect Auth SDK',
     link: '/v2Auth',
     color: 'success'
+  },
+  {
+    title: 'WalletConnect v2 Auth Html',
+    description: 'Example using @web3modal/auth-html package',
+    link: '/v2AuthHtml',
+    color: 'success'
   }
 ] as const
 
