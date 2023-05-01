@@ -12,7 +12,7 @@ export interface Web3ModalAuthOptions {
   modalOptions?: Omit<Web3ModalConfig, 'projectId' | 'walletConnectVersion'>
 }
 
-export interface Web3ModalAuthConnectArguments {
+export interface Web3ModalAuthSignInArguments {
   statement: string
   chainId?: string
   aud?: string
@@ -33,7 +33,7 @@ export class Web3ModalAuth {
   }
 
   // -- public ------------------------------------------------------------
-  public async signIn(args: Web3ModalAuthConnectArguments) {
+  public async signIn(args: Web3ModalAuthSignInArguments) {
     const { chainId, statement, aud, domain } = args
     const defaultChainId = chainId ?? 'eip155:1'
     const defaultAud = aud ?? location.href
