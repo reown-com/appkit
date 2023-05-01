@@ -19,10 +19,12 @@ const web3ModalAuth = new Web3ModalAuth({
 
 export default function v2AuthHtmlPage() {
   const [modalOpen, setModalOpen] = useState(false)
+  const [response, setResponse] = useState('')
 
   async function onConnect() {
-    const data = await web3ModalAuth.connect({ statement: 'Connect to Web3Modal Lab' })
-    console.info(data)
+    const data = await web3ModalAuth.signIn({ statement: 'Connect to Web3Modal Lab' })
+    setResponse(JSON.stringify(data, null, 2))
+    setModalOpen(true)
   }
 
   return (
@@ -40,7 +42,7 @@ export default function v2AuthHtmlPage() {
           <Text h3>Success</Text>
         </Modal.Header>
         <Modal.Body>
-          <Text color="grey">TODO response</Text>
+          <Text color="grey">{response}</Text>
         </Modal.Body>
       </Modal>
     </>

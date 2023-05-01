@@ -14,73 +14,88 @@ export interface Web3ModalAuthOptions {
 
 export interface Web3ModalAuthConnectArguments {
   statement: string
+  chainId?: string
+  aud?: string
+  domain?: string
 }
 
 // -- Client ---------------------------------------------------------------
 export class Web3ModalAuth {
-  #modal: Web3Modal
   #options: Web3ModalAuthOptions
+  #modal?: Web3Modal
   #initAuthClientPromise?: Promise<void> = undefined
   #authClient?: InstanceType<typeof AuthClient> = undefined
 
   public constructor(options: Web3ModalAuthOptions) {
     this.#options = options
-    const { projectId, modalOptions } = options
+    this.#initModal()
+    this.#initAuthClient()
+  }
+
+  // -- public ------------------------------------------------------------
+  public async signIn(args: Web3ModalAuthConnectArguments) {
+    const { chainId, statement, aud, domain } = args
+    const defaultChainId = chainId ?? 'eip155:1'
+    const defaultAud = aud ?? location.href
+    const defaultDomain = domain ?? location.host
+
+    return new Promise<{ valid: boolean; address: string; cacao: Record<string, string> }>(
+      async (resolve, reject) => {
+        if (!this.#authClient) {
+          await this.#initAuthClient()
+        }
+
+        const unsubscribeModal = this.#modal!.subscribeModal(state => {
+          if (!state.open) {
+            unsubscribeModal()
+            reject(new Error('Modal closed'))
+          }
+        })
+
+        this.#authClient!.once('auth_response', ({ params }) => {
+          unsubscribeModal()
+          this.#modal!.closeModal()
+          // @ts-expect-error - result exists
+          if (params.result) {
+            resolve({
+              valid: true,
+              // @ts-expect-error - result exists
+              address: params.result.p.iss.split(':')[4],
+              // @ts-expect-error - result exists
+              cacao: params.result
+            })
+          } else {
+            // @ts-expect-error - message exists
+            reject(new Error(params.message))
+          }
+        })
+
+        const { uri } = await this.#authClient!.request({
+          aud: defaultAud,
+          domain: defaultDomain,
+          chainId: defaultChainId,
+          type: 'eip4361',
+          nonce: generateNonce(),
+          statement
+        })
+
+        if (uri) {
+          await this.#modal!.openModal({ uri, standaloneChains: [defaultChainId] })
+        }
+      }
+    )
+  }
+
+  // -- private -----------------------------------------------------------
+  #initModal() {
+    const { modalOptions, projectId } = this.#options
     this.#modal = new Web3Modal({
       ...modalOptions,
       walletConnectVersion: 2,
       projectId
     })
-    this.#initAuthClient()
   }
 
-  // -- public ------------------------------------------------------------
-  public async connect(args: Web3ModalAuthConnectArguments) {
-    return new Promise(async (resolve, reject) => {
-      if (!this.#authClient) {
-        await this.#initAuthClient()
-      }
-
-      const unsubscribeModal = this.#modal.subscribeModal(state => {
-        if (!state.open) {
-          unsubscribeModal()
-          reject(new Error('Modal closed'))
-        }
-      })
-
-      this.#authClient!.once('auth_response', ({ params }) => {
-        unsubscribeModal()
-        this.#modal.closeModal()
-        // @ts-expect-error yes it is
-        if (params.result?.s && params.result?.p) {
-          resolve({
-            // @ts-expect-error yes it is
-            signature: params.result.s.s,
-            // @ts-expect-error yes it is
-            address: params.result.p.iss.split(':')[4]
-          })
-        } else {
-          // @ts-expect-error yes it is
-          reject(new Error(params.message))
-        }
-      })
-
-      const { uri } = await this.#authClient!.request({
-        aud: window.location.href,
-        domain: window.location.hostname.split('.').slice(-2).join('.'),
-        chainId: 'eip155:1',
-        type: 'eip4361',
-        nonce: generateNonce(),
-        statement: args.statement
-      })
-
-      if (uri) {
-        await this.#modal.openModal({ uri })
-      }
-    })
-  }
-
-  // -- private -----------------------------------------------------------
   async #initAuthClient() {
     if (!this.#initAuthClientPromise && typeof window !== 'undefined') {
       this.#initAuthClientPromise = this.#createAuthClient()
