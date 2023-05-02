@@ -1,4 +1,4 @@
-import type { Chain, Client, ConnectArgs, Connector } from '@wagmi/core'
+import type { Chain, Config, ConnectArgs, Connector } from '@wagmi/core'
 import {
   connect,
   disconnect,
@@ -14,7 +14,7 @@ import {
 import type { ConnectorId, ModalConnectorsOpts } from './types'
 
 export class EthereumClient {
-  private readonly wagmi = {} as Client
+  private readonly wagmi = {} as Config
   public walletConnectVersion: ModalConnectorsOpts['version'] = 1
   public readonly chains = [] as Chain[]
 

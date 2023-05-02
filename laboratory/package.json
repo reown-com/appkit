@@ -8,17 +8,17 @@
   },
   "dependencies": {
     "@nextui-org/react": "1.0.0-beta.12",
-    "@sentry/react": "7.49.0",
-    "@sentry/tracing": "7.49.0",
+    "@sentry/react": "7.50.0",
+    "@sentry/tracing": "7.50.0",
     "@walletconnect/auth-client": "2.0.7",
-    "@walletconnect/sign-client": "2.7.1",
+    "@walletconnect/sign-client": "2.7.2",
     "@web3modal/ethereum": "2.3.7",
     "@web3modal/react": "2.3.7",
     "next": "13.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "wagmi": "viem",
-    "viem": "0.3.12"
+    "wagmi": "1.0.0-next.2",
+    "viem": "0.3.16"
   },
   "devDependencies": {
     "@types/react": "18.2.0",

@@ -1,6 +1,6 @@
 import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
 import { Web3Modal } from '@web3modal/react'
-import { WagmiConfig, configureChains, createClient } from 'wagmi'
+import { WagmiConfig, configureChains, createConfig } from 'wagmi'
 import { mainnet, polygon } from 'wagmi/chains'
 import WagmiWeb3ModalWidget from '../components/WagmiWeb3ModalWidget'
 import { getProjectId, getTheme } from '../utilities/EnvUtil'
@@ -9,7 +9,7 @@ import { getProjectId, getTheme } from '../utilities/EnvUtil'
 const projectId = getProjectId()
 const chains = [mainnet, polygon]
 const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
-const wagmiClient = createClient({
+const wagmiClient = createConfig({
   autoConnect: true,
   connectors: w3mConnectors({ version: 2, projectId, chains }),
   publicClient
@@ -20,7 +20,7 @@ const ethereumClient = new EthereumClient(wagmiClient, chains)
 export default function v2BasePage() {
   return (
     <>
-      <WagmiConfig client={wagmiClient}>
+      <WagmiConfig config={wagmiClient}>
         <WagmiWeb3ModalWidget />
       </WagmiConfig>
 

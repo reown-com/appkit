@@ -1,6 +1,6 @@
-import { WalletConnectConnector } from '@wagmi/connectors/walletConnect'
 import type { Chain, Connector } from '@wagmi/core'
 import { InjectedConnector } from '@wagmi/core'
+import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { WalletConnectLegacyConnector } from '@wagmi/core/connectors/walletConnectLegacy'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import type { ModalConnectorsOpts, WalletConnectProviderOpts } from './types'
