@@ -1,5 +1,5 @@
 import { ModalCtrl, RouterCtrl, ThemeCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -45,17 +45,16 @@ export class W3mModalBackcard extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const actionsClasses = {
-      'w3m-actions': true,
       'w3m-help-active': this.isHelp
     }
 
     return html`
-      <div class="w3m-custom-placeholder"></div>
+      <div class="w3m-toolbar-placeholder"></div>
       <div class="w3m-toolbar">
         ${this.logoTemplate()}
         <div class=${classMap(actionsClasses)}>
-          <button class="w3m-action-btn" @click=${this.onHelp}>${SvgUtil.HELP_ICON}</button>
-          <button class="w3m-action-btn" @click=${ModalCtrl.close}>${SvgUtil.CROSS_ICON}</button>
+          <button @click=${this.onHelp}>${SvgUtil.HELP_ICON}</button>
+          <button @click=${ModalCtrl.close}>${SvgUtil.CROSS_ICON}</button>
         </div>
       </div>
     `

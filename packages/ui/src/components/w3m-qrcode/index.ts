@@ -1,21 +1,21 @@
 import { ThemeCtrl } from '@web3modal/core'
 import { html, LitElement, svg } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 import { QrCodeUtil } from '../../utils/QrCode'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 @customElement('w3m-qrcode')
-export default class W3mQrCode extends LitElement {
+export class W3mQrCode extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public uri = ''
   @property({ type: Number }) public size = 0
-  @property() public logoSrc? = ''
-  @property() public walletId? = ''
+  @property() public imageId?: string = undefined
+  @property() public walletId?: string = undefined
+  @property() public imageUrl?: string = undefined
 
   // -- private ------------------------------------------------------ //
   private svgTemplate() {
@@ -32,15 +32,17 @@ export default class W3mQrCode extends LitElement {
   protected render() {
     return html`
       <div>
-        ${this.walletId || this.logoSrc
+        ${this.walletId || this.imageUrl
           ? html`
               <w3m-wallet-image
-                walletId=${ifDefined(this.walletId)}
-                src=${ifDefined(this.logoSrc)}
+                walletId=${this.walletId}
+                imageId=${this.imageId}
+                imageUrl=${this.imageUrl}
               ></w3m-wallet-image>
             `
           : SvgUtil.WALLET_CONNECT_ICON_COLORED}
         ${this.svgTemplate()}
+        <w3m-theme-context></w3m-theme-context>
       </div>
     `
   }

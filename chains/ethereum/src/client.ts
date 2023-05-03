@@ -1,4 +1,4 @@
-import type { Chain, Client, Connector } from '@wagmi/core'
+import type { Chain, Client, ConnectArgs, Connector } from '@wagmi/core'
 import {
   connect,
   disconnect,
@@ -15,7 +15,6 @@ import type { ConnectorId, ModalConnectorsOpts } from './types'
 
 export class EthereumClient {
   private readonly wagmi = {} as Client
-  public walletConnectUri = ''
   public walletConnectVersion: ModalConnectorsOpts['version'] = 1
   public readonly chains = [] as Chain[]
 
@@ -28,10 +27,6 @@ export class EthereumClient {
   }
 
   // -- private ------------------------------------------- //
-  private getDefaultConnectorChainId(connector: Connector) {
-    return connector.chains[0].id
-  }
-
   private getWalletConnectConnectors() {
     const wcc = this.wagmi.connectors.find((c: Connector) => c.id === 'walletConnect')
     const wc1c = this.wagmi.connectors.find((c: Connector) => c.id === 'walletConnectLegacy')
@@ -48,7 +43,6 @@ export class EthereumClient {
       connector.once('message', async ({ type }) => {
         if (type === 'connecting') {
           const providerConnector = (await connector.getProvider()).connector
-          this.walletConnectUri = providerConnector.uri
           onUri(providerConnector.uri)
           providerConnector.on('disconnect', () => {
             reject(Error())
@@ -62,17 +56,12 @@ export class EthereumClient {
   }
 
   private async connectWalletConnectV2(connector: Connector, onUri: (uri: string) => void) {
-    const provider = await connector.getProvider()
-    let activeWalletConnectUri = ''
+    await connector.getProvider()
 
     return new Promise<void>(resolve => {
-      provider.once('display_uri', (uri: string) => {
-        this.walletConnectUri = uri
-        activeWalletConnectUri = uri
-        onUri(uri)
-      })
-      provider.once('connect', () => {
-        if (activeWalletConnectUri === this.walletConnectUri) {
+      connector.once('message', event => {
+        if (event.type === 'display_uri') {
+          onUri(event.data as string)
           resolve()
         }
       })
@@ -81,12 +70,6 @@ export class EthereumClient {
 
   // -- public web3modal ---------------------------------- //
   public namespace = 'eip155'
-
-  public getDefaultChain() {
-    const mainnet = this.chains.find(chain => chain.id === 1)
-
-    return mainnet ?? this.chains[0]
-  }
 
   public getConnectorById(id: ConnectorId | string) {
     const connector = this.wagmi.connectors.find(item => item.id === id)
@@ -105,26 +88,45 @@ export class EthereumClient {
     return connectors
   }
 
-  public async connectWalletConnect(onUri: (uri: string) => void, selectedChainId?: number) {
+  public async connectWalletConnect(onUri: (uri: string) => void, chainId?: number) {
     const { connector, isV2 } = this.getWalletConnectConnectors()
-    const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
+    const options: ConnectArgs = { connector }
+    if (chainId) {
+      options.chainId = chainId
+    }
     const handleProviderEvents = isV2
       ? this.connectWalletConnectV2.bind(this)
       : this.connectWalletConnectV1.bind(this)
-    const [data] = await Promise.all([
-      connect({ connector, chainId }),
-      handleProviderEvents(connector, onUri)
-    ])
+
+    return Promise.all([connect(options), handleProviderEvents(connector, onUri)])
+  }
+
+  public async connectConnector(connectorId: ConnectorId | string, chainId?: number) {
+    const connector = this.getConnectorById(connectorId)
+    const options: ConnectArgs = { connector }
+    if (chainId) {
+      options.chainId = chainId
+    }
+    const data = await connect(options)
 
     return data
   }
 
-  public async connectConnector(connectorId: ConnectorId | string, selectedChainId?: number) {
-    const connector = this.getConnectorById(connectorId)
-    const chainId = selectedChainId ?? this.getDefaultConnectorChainId(connector)
-    const data = await connect({ connector, chainId })
+  public isInjectedProviderInstalled() {
+    return typeof window.ethereum !== 'undefined'
+  }
 
-    return data
+  public safeCheckInjectedProvider(providerId: string) {
+    try {
+      const stringId = String(providerId)
+
+      // @ts-expect-error - Structure is correct
+      return Boolean(window.ethereum?.[stringId])
+    } catch (err) {
+      console.error(err)
+
+      return false
+    }
   }
 
   public disconnect = disconnect

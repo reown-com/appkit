@@ -1,6 +1,7 @@
-import { ConfigCtrl, CoreUtil, ExplorerCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
+import { ConfigCtrl, ExplorerCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
 import { LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
+import { DataUtil } from '../utils/DataUtil'
 import { UiUtil } from '../utils/UiUtil'
 
 @customElement('w3m-explorer-context')
@@ -29,25 +30,15 @@ export class W3mExplorerContext extends LitElement {
 
   private async preloadListings() {
     if (ConfigCtrl.state.enableExplorer) {
-      const { standaloneChains, chains, walletConnectVersion } = OptionsCtrl.state
-      const chainsFilter = standaloneChains?.join(',')
-      await Promise.all([
-        ExplorerCtrl.getPreviewWallets({
-          page: 1,
-          entries: 10,
-          chains: chainsFilter,
-          device: CoreUtil.isMobile() ? 'mobile' : 'desktop',
-          version: walletConnectVersion
-        }),
-        ExplorerCtrl.getRecomendedWallets()
-      ])
+      const { chains } = OptionsCtrl.state
+      await Promise.all([ExplorerCtrl.getRecomendedWallets(), ExplorerCtrl.getInjectedWallets()])
       OptionsCtrl.setIsDataLoaded(true)
-      const { previewWallets, recomendedWallets } = ExplorerCtrl.state
+      const { recomendedWallets } = ExplorerCtrl.state
+      const injectedWallets = DataUtil.installedInjectedWallets()
       const chainsImgs = chains?.map(chain => UiUtil.getChainIcon(chain.id)) ?? []
-      const walletImgs = [...previewWallets, ...recomendedWallets].map(
-        wallet => wallet.image_url.lg
-      )
-      await this.loadImages([...chainsImgs, ...walletImgs])
+      const walletImgs = recomendedWallets.map(wallet => UiUtil.getWalletIcon(wallet))
+      const injectedImgs = injectedWallets.map(wallet => UiUtil.getWalletIcon(wallet))
+      await this.loadImages([...chainsImgs, ...walletImgs, ...injectedImgs])
     } else {
       OptionsCtrl.setIsDataLoaded(true)
     }
@@ -58,22 +49,11 @@ export class W3mExplorerContext extends LitElement {
     await this.loadImages(images)
   }
 
-  private async preloadConnectorImages() {
-    if (!OptionsCtrl.state.isStandalone) {
-      const images = UiUtil.getConnectorImageUrls()
-      await this.loadImages(images)
-    }
-  }
-
   private async preloadData() {
     try {
       if (this.preload) {
         this.preload = false
-        await Promise.all([
-          this.preloadListings(),
-          this.preloadCustomImages(),
-          this.preloadConnectorImages()
-        ])
+        await Promise.all([this.preloadListings(), this.preloadCustomImages()])
       }
     } catch (err) {
       console.error(err)

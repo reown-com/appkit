@@ -13,8 +13,8 @@ export function w3mProvider<C extends Chain>({ projectId }: WalletConnectProvide
   return jsonRpcProvider<C>({
     rpc: chain => {
       const supportedChains = [
-        1, 3, 4, 5, 10, 42, 56, 69, 97, 100, 137, 420, 42161, 42220, 43114, 80001, 421611, 421613,
-        1313161554, 11297108109
+        1, 3, 4, 5, 10, 42, 56, 69, 97, 100, 137, 280, 324, 420, 42161, 42220, 43114, 80001, 421611,
+        421613, 1313161554, 1313161555
       ]
 
       if (supportedChains.includes(chain.id)) {

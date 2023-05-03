@@ -1,0 +1,11 @@
+w3m-info-footer {
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  width: 100%;
+  padding: 5px 0;
+}
+
+w3m-text {
+  text-align: center;
+}

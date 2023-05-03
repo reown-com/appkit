@@ -1,5 +1,0 @@
-.w3m-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 80px);
-  justify-content: space-between;
-}

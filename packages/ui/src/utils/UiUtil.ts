@@ -1,3 +1,4 @@
+import type { WalletData } from '@web3modal/core'
 import {
   ClientCtrl,
   ConfigCtrl,
@@ -5,18 +6,19 @@ import {
   ExplorerCtrl,
   ModalCtrl,
   OptionsCtrl,
-  ToastCtrl
+  RouterCtrl,
+  ToastCtrl,
+  WcConnectionCtrl
 } from '@web3modal/core'
 import type { LitElement } from 'lit'
 import { ChainPresets } from '../presets/ChainPresets'
-import { EthereumPresets } from '../presets/EthereumPresets'
 import { TokenPresets } from '../presets/TokenPresets'
-import type { RecentWallet } from './TypesUtil'
+import { DataUtil } from './DataUtil'
 
 export const UiUtil = {
   MOBILE_BREAKPOINT: 600,
 
-  W3M_RECENT_WALLET: 'W3M_RECENT_WALLET',
+  W3M_RECENT_WALLET_DATA: 'W3M_RECENT_WALLET_DATA',
 
   EXPLORER_WALLET_URL: 'https://explorer.walletconnect.com/?type=wallet',
 
@@ -36,36 +38,38 @@ export const UiUtil = {
     return el as HTMLElement
   },
 
-  getWalletId(id: string) {
-    return EthereumPresets.getInjectedId(id)
-  },
+  getWalletIcon({ id, image_id }: { id: string; image_id?: string }) {
+    const { walletImages } = ConfigCtrl.state
 
-  getWalletIcon(id: string) {
-    const presets = EthereumPresets.injectedPreset
-    const imageId = presets[id]?.icon
-    const { projectId, walletImages } = ConfigCtrl.state
+    if (walletImages?.[id]) {
+      return walletImages[id]
+    } else if (image_id) {
+      return ExplorerCtrl.getWalletImageUrl(image_id)
+    }
 
-    return walletImages?.[id] ?? (projectId && imageId ? ExplorerCtrl.getImageUrl(imageId) : '')
+    return ''
   },
 
   getWalletName(name: string, short = false) {
-    const injectedName = EthereumPresets.getInjectedName(name)
-
-    return short ? injectedName.split(' ')[0] : injectedName
+    return short ? name.split(' ')[0] : name
   },
 
   getChainIcon(chainId: number | string) {
     const imageId = ChainPresets[chainId]
     const { projectId, chainImages } = ConfigCtrl.state
 
-    return chainImages?.[chainId] ?? (projectId && imageId ? ExplorerCtrl.getImageUrl(imageId) : '')
+    return (
+      chainImages?.[chainId] ?? (projectId && imageId ? ExplorerCtrl.getAssetImageUrl(imageId) : '')
+    )
   },
 
   getTokenIcon(symbol: string) {
     const imageId = TokenPresets[symbol]?.icon
     const { projectId, tokenImages } = ConfigCtrl.state
 
-    return tokenImages?.[symbol] ?? (projectId && imageId ? ExplorerCtrl.getImageUrl(imageId) : '')
+    return (
+      tokenImages?.[symbol] ?? (projectId && imageId ? ExplorerCtrl.getAssetImageUrl(imageId) : '')
+    )
   },
 
   isMobileAnimation() {
@@ -102,56 +106,52 @@ export const UiUtil = {
     }
   },
 
-  async handleMobileLinking(wallet: RecentWallet) {
-    CoreUtil.removeWalletConnectDeepLink()
-    const { standaloneUri, selectedChain } = OptionsCtrl.state
-    const { links, name } = wallet
+  handleMobileLinking(wallet: WalletData) {
+    const { standaloneUri } = OptionsCtrl.state
+    const { pairingUri } = WcConnectionCtrl.state
+    const { mobile, name } = wallet
+    const nativeUrl = mobile?.native
+    const universalUrl = mobile?.universal
+
+    UiUtil.setRecentWallet(wallet)
 
     function onRedirect(uri: string) {
       let href = ''
-      if (links?.universal) {
-        href = CoreUtil.formatUniversalUrl(links.universal, uri, name)
-      } else if (links?.native) {
-        href = CoreUtil.formatNativeUrl(links.native, uri, name)
+      if (nativeUrl) {
+        href = CoreUtil.formatUniversalUrl(nativeUrl, uri, name)
+      } else if (universalUrl) {
+        href = CoreUtil.formatNativeUrl(universalUrl, uri, name)
       }
       CoreUtil.openHref(href, '_self')
     }
 
     if (standaloneUri) {
-      UiUtil.setRecentWallet(wallet)
       onRedirect(standaloneUri)
     } else {
-      await ClientCtrl.client().connectWalletConnect(uri => {
-        onRedirect(uri)
-      }, selectedChain?.id)
-      UiUtil.setRecentWallet(wallet)
-      ModalCtrl.close()
+      onRedirect(pairingUri)
     }
   },
 
-  async handleAndroidLinking() {
-    CoreUtil.removeWalletConnectDeepLink()
-    const { standaloneUri, selectedChain } = OptionsCtrl.state
+  handleAndroidLinking() {
+    const { standaloneUri } = OptionsCtrl.state
+    const { pairingUri } = WcConnectionCtrl.state
 
     if (standaloneUri) {
+      CoreUtil.setWalletConnectAndroidDeepLink(standaloneUri)
       CoreUtil.openHref(standaloneUri, '_self')
     } else {
-      await ClientCtrl.client().connectWalletConnect(uri => {
-        CoreUtil.setWalletConnectAndroidDeepLink(uri)
-        CoreUtil.openHref(uri, '_self')
-      }, selectedChain?.id)
-
-      ModalCtrl.close()
+      CoreUtil.setWalletConnectAndroidDeepLink(pairingUri)
+      CoreUtil.openHref(pairingUri, '_self')
     }
   },
 
   async handleUriCopy() {
     const { standaloneUri } = OptionsCtrl.state
+    const { pairingUri } = WcConnectionCtrl.state
     if (standaloneUri) {
       await navigator.clipboard.writeText(standaloneUri)
     } else {
-      const uri = ClientCtrl.client().walletConnectUri
-      await navigator.clipboard.writeText(uri)
+      await navigator.clipboard.writeText(pairingUri)
     }
     ToastCtrl.openToast('Link copied', 'success')
   },
@@ -171,26 +171,12 @@ export const UiUtil = {
     }
   },
 
-  getCustomWallets() {
-    const { desktopWallets, mobileWallets } = ConfigCtrl.state
-
-    return (CoreUtil.isMobile() ? mobileWallets : desktopWallets) ?? []
-  },
-
   getCustomImageUrls() {
     const { chainImages, walletImages } = ConfigCtrl.state
     const chainUrls = Object.values(chainImages ?? {})
     const walletUrls = Object.values(walletImages ?? {})
 
     return Object.values([...chainUrls, ...walletUrls])
-  },
-
-  getConnectorImageUrls() {
-    const connectors = ClientCtrl.client().getConnectors()
-    const ids = connectors.map(({ id }) => EthereumPresets.getInjectedId(id))
-    const images = ids.map(id => UiUtil.getWalletIcon(id))
-
-    return images
   },
 
   truncate(value: string, strLen = 8) {
@@ -237,36 +223,25 @@ export const UiUtil = {
     }
   },
 
-  setRecentWallet(wallet: RecentWallet) {
+  setRecentWallet(wallet: WalletData) {
     const { walletConnectVersion } = OptionsCtrl.state
     localStorage.setItem(
-      UiUtil.W3M_RECENT_WALLET,
+      UiUtil.W3M_RECENT_WALLET_DATA,
       JSON.stringify({ [walletConnectVersion]: wallet })
     )
   },
 
   getRecentWallet() {
-    const wallet = localStorage.getItem(UiUtil.W3M_RECENT_WALLET)
+    const wallet = localStorage.getItem(UiUtil.W3M_RECENT_WALLET_DATA)
     if (wallet) {
       const { walletConnectVersion } = OptionsCtrl.state
       const json = JSON.parse(wallet)
       if (json[walletConnectVersion]) {
-        return json[walletConnectVersion] as RecentWallet
+        return json[walletConnectVersion] as WalletData
       }
     }
 
     return undefined
-  },
-
-  getExtensionWallets() {
-    const wallets = []
-    for (const [key, value] of Object.entries(EthereumPresets.injectedPreset)) {
-      if (value?.isInjected && !value.isDesktop) {
-        wallets.push({ id: key, ...value })
-      }
-    }
-
-    return wallets
   },
 
   caseSafeIncludes(str1: string, str2: string) {
@@ -275,5 +250,50 @@ export const UiUtil = {
 
   openWalletExplorerUrl() {
     CoreUtil.openHref(UiUtil.EXPLORER_WALLET_URL, '_blank')
+  },
+
+  getCachedRouterWalletPlatforms() {
+    const { id, desktop, mobile, injected } = CoreUtil.getWalletRouterData()
+    const injectedWallets = DataUtil.installedInjectedWallets()
+    const isInjected = Boolean(injected?.length)
+    const isInjectedInstalled = injectedWallets.some(wallet => wallet.id === id)
+    const isDesktop = Boolean(desktop?.native)
+    const isWeb = Boolean(desktop?.universal)
+    const isMobile = Boolean(mobile?.native) || Boolean(mobile?.universal)
+
+    return { isInjectedInstalled, isInjected, isDesktop, isMobile, isWeb }
+  },
+
+  goToConnectingView(wallet: WalletData) {
+    RouterCtrl.setData({ Wallet: wallet })
+    const isMobileDevice = CoreUtil.isMobile()
+    const { isDesktop, isWeb, isMobile, isInjectedInstalled } =
+      UiUtil.getCachedRouterWalletPlatforms()
+
+    // Mobile
+    if (isMobileDevice) {
+      if (isInjectedInstalled) {
+        RouterCtrl.push('InjectedConnecting')
+      } else if (isMobile) {
+        RouterCtrl.push('MobileConnecting')
+      } else if (isWeb) {
+        RouterCtrl.push('WebConnecting')
+      } else {
+        RouterCtrl.push('InstallWallet')
+      }
+    }
+
+    // Desktop
+    else if (isInjectedInstalled) {
+      RouterCtrl.push('InjectedConnecting')
+    } else if (isDesktop) {
+      RouterCtrl.push('DesktopConnecting')
+    } else if (isWeb) {
+      RouterCtrl.push('WebConnecting')
+    } else if (isMobile) {
+      RouterCtrl.push('MobileQrcodeConnecting')
+    } else {
+      RouterCtrl.push('InstallWallet')
+    }
   }
 }

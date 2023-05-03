@@ -2,6 +2,7 @@ import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ConfigCtrlState } from '../types/controllerTypes'
 import { CoreUtil } from '../utils/CoreUtil'
 import { ClientCtrl } from './ClientCtrl'
+import { EventsCtrl } from './EventsCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
 
 const state = proxy<ConfigCtrlState>({
@@ -11,14 +12,15 @@ const state = proxy<ConfigCtrlState>({
   walletImages: undefined,
   chainImages: undefined,
   tokenImages: undefined,
+  tokenContracts: undefined,
   standaloneChains: undefined,
   enableStandaloneMode: false,
   enableNetworkView: false,
   enableAccountView: true,
   enableExplorer: true,
   defaultChain: undefined,
-  explorerAllowList: undefined,
-  explorerDenyList: undefined,
+  explorerExcludedWalletIds: undefined,
+  explorerRecommendedWalletIds: undefined,
   termsOfServiceUrl: undefined,
   privacyPolicyUrl: undefined
 })
@@ -32,6 +34,7 @@ export const ConfigCtrl = {
   },
 
   setConfig(config: ConfigCtrlState) {
+    EventsCtrl.initialize()
     OptionsCtrl.setStandaloneChains(config.standaloneChains)
     OptionsCtrl.setIsStandalone(
       Boolean(config.standaloneChains?.length) || Boolean(config.enableStandaloneMode)
@@ -41,9 +44,10 @@ export const ConfigCtrl = {
     OptionsCtrl.setWalletConnectVersion(config.walletConnectVersion ?? 1)
 
     if (!OptionsCtrl.state.isStandalone) {
-      const chain = ClientCtrl.client().getDefaultChain()
-      OptionsCtrl.setSelectedChain(chain)
       OptionsCtrl.setChains(ClientCtrl.client().chains)
+      OptionsCtrl.setIsInjectedMobile(
+        CoreUtil.isMobile() && ClientCtrl.client().isInjectedProviderInstalled()
+      )
     }
 
     if (config.defaultChain) {

@@ -1,5 +1,12 @@
 import type { ConfigCtrlState, ThemeCtrlState } from '@web3modal/core'
-import { ClientCtrl, ConfigCtrl, ModalCtrl, OptionsCtrl, ThemeCtrl } from '@web3modal/core'
+import {
+  ClientCtrl,
+  ConfigCtrl,
+  EventsCtrl,
+  ModalCtrl,
+  OptionsCtrl,
+  ThemeCtrl
+} from '@web3modal/core'
 import type { EthereumClient } from '@web3modal/ethereum'
 
 /**
@@ -40,4 +47,6 @@ export class Web3Modal {
   public setTheme = ThemeCtrl.setThemeConfig
 
   public setDefaultChain = OptionsCtrl.setSelectedChain
+
+  public subscribeEvents = EventsCtrl.subscribe
 }

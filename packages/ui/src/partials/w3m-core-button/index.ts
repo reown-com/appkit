@@ -1,7 +1,6 @@
 import { AccountCtrl, ConfigCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 import { UiUtil } from '../../utils/UiUtil'
 
 @customElement('w3m-core-button')
@@ -33,10 +32,10 @@ export class W3mCoreButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     const { enableAccountView } = ConfigCtrl.state
-    const isBalance = ifDefined(this.balance)
-    const isLabel = ifDefined(this.label)
-    const isIcon = ifDefined(this.icon)
-    const isAvatar = ifDefined(this.avatar)
+    const isBalance = this.balance
+    const isLabel = this.label
+    const isIcon = this.icon
+    const isAvatar = this.avatar
 
     return this.isConnected && enableAccountView
       ? html`<w3m-account-button balance=${isBalance} avatar=${isAvatar}></w3m-account-button>`

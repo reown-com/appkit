@@ -13,7 +13,6 @@ header {
 
 header button {
   padding: 15px 20px;
-  transition: opacity 0.2s ease;
 }
 
 @media (hover: hover) {

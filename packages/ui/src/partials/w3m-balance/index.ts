@@ -1,7 +1,6 @@
 import { AccountCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
@@ -45,7 +44,7 @@ export class W3mBalance extends LitElement {
 
     return html`
       <div>
-        <w3m-token-image symbol=${ifDefined(this.symbol)}></w3m-token-image>
+        <w3m-token-image symbol=${this.symbol}></w3m-token-image>
         <w3m-text variant="medium-regular" color="primary">${formatAmount} ${this.symbol}</w3m-text>
       </div>
     `
