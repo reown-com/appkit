@@ -20,7 +20,7 @@
     "next": "13.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "wagmi": "0.12.12"
+    "wagmi": "0.12.13"
   },
   "devDependencies": {
     "@types/react": "18.2.0",
