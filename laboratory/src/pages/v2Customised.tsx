@@ -57,11 +57,11 @@ export default function v2BasePage() {
         }}
         mobileWallets={[
           {
-            id: 'oreid',
-            name: 'OREID',
+            id: 'metamask',
+            name: 'MetaMask',
             links: {
-              native: '',
-              universal: 'https://www.oreid.io/'
+              native: 'metamask://',
+              universal: ''
             }
           }
         ]}
