@@ -8,22 +8,21 @@
   },
   "dependencies": {
     "@nextui-org/react": "1.0.0-beta.12",
-    "@sentry/react": "7.50.0",
-    "@sentry/tracing": "7.50.0",
-    "@walletconnect/auth-client": "2.0.7",
+    "@sentry/react": "7.51.0",
+    "@sentry/tracing": "7.51.0",
     "@walletconnect/sign-client": "2.7.2",
     "@web3modal/ethereum": "2.3.7",
     "@web3modal/react": "2.3.7",
     "@web3modal/auth-html": "2.3.7",
     "@web3modal/auth-react": "2.3.7",
     "ethers": "5.7.2",
-    "next": "13.3.0",
+    "next": "13.4.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "wagmi": "0.12.13"
   },
   "devDependencies": {
-    "@types/react": "18.2.0",
-    "@types/react-dom": "18.2.1"
+    "@types/react": "18.2.6",
+    "@types/react-dom": "18.2.4"
   }
 }

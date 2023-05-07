@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "buffer": "6.0.3",
-    "valtio": "1.10.4"
+    "valtio": "1.10.5"
   },
   "keywords": [
     "web3",
