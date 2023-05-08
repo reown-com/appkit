@@ -300,6 +300,7 @@ export interface ModalEvent {
 }
 
 export interface EventsCtrlState {
+  enabled: boolean
   userSessionId: string
   events: ModalEvent[]
   connectedWalletId?: string
