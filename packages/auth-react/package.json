@@ -16,8 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/core": "2.3.7",
-    "@web3modal/ui": "2.3.7"
+    "@web3modal/html": "2.3.7"
   },
   "peerDependencies": {
     "react": ">=17",

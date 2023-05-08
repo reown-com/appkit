@@ -10,7 +10,7 @@
     "@nextui-org/react": "1.0.0-beta.12",
     "@sentry/react": "7.51.0",
     "@sentry/tracing": "7.51.0",
-    "@walletconnect/sign-client": "2.7.2",
+    "@walletconnect/sign-client": "2.7.3",
     "@web3modal/ethereum": "2.3.7",
     "@web3modal/react": "2.3.7",
     "@web3modal/auth-html": "2.3.7",
