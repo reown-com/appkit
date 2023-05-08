@@ -59,7 +59,7 @@ export default function HomePage() {
       </Container>
       <Grid.Container gap={2} css={{ maxWidth: '940px', margin: '0 auto' }}>
         {reactCards.map(card => (
-          <Grid xs={12} sm={6} key={`${card.title}-REACT`}>
+          <Grid xs={12} sm={6} key={card.title}>
             <Card key={card.title} variant="bordered">
               <Card.Body>
                 <Text h3 color={card.color}>
@@ -69,7 +69,7 @@ export default function HomePage() {
                 <Divider y={1} />
                 <Grid.Container alignItems="center" gap={0.5}>
                   {card.libraries.map(library => (
-                    <Grid>
+                    <Grid key={library}>
                       <Badge variant="bordered" color={card.color} size="sm">
                         {library}
                       </Badge>
@@ -96,7 +96,7 @@ export default function HomePage() {
 
       <Grid.Container gap={2} css={{ maxWidth: '940px', margin: '0 auto' }}>
         {htmlCards.map(card => (
-          <Grid xs={12} sm={6} key={`${card.title}-HTML`}>
+          <Grid xs={12} sm={6} key={card.title}>
             <Card key={card.title} variant="bordered">
               <Card.Body>
                 <Text h3 color={card.color}>
@@ -105,7 +105,7 @@ export default function HomePage() {
                 <Text color="grey">{card.description}</Text>
                 <Grid.Container alignItems="center" gap={0.5}>
                   {card.libraries.map(library => (
-                    <Grid>
+                    <Grid key={library}>
                       <Badge variant="bordered" color={card.color} size="sm">
                         {library}
                       </Badge>
