@@ -5,7 +5,7 @@ import { getProjectId, getTheme } from '../utilities/EnvUtil'
 
 const projectId = getProjectId()
 
-export default function v2AuthReactPage() {
+export default function AuthReactPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [response, setResponse] = useState('')
   const signIn = useSignIn({ statement: 'Connect to Web3Modal Lab' })

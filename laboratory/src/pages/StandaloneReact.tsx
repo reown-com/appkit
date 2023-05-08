@@ -11,7 +11,7 @@ const web3Modal = new Web3Modal({
   themeMode: getTheme()
 })
 
-export default function v2StandalonePage() {
+export default function StandaloneReactPage() {
   const [signClient, setSignClient] = useState<SignClient | undefined>(undefined)
   const [clientId, setClientId] = useState<string | undefined>(undefined)
   const [modalOpen, setModalOpen] = useState(false)

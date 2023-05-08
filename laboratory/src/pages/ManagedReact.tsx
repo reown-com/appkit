@@ -1,6 +1,6 @@
 import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
 import { Web3Modal } from '@web3modal/react'
-import { configureChains, createClient, WagmiConfig } from 'wagmi'
+import { WagmiConfig, configureChains, createClient } from 'wagmi'
 import {
   arbitrum,
   avalanche,
@@ -43,7 +43,7 @@ const wagmiClient = createClient({
 const ethereumClient = new EthereumClient(wagmiClient, chains)
 
 // Example
-export default function v2ExtendedPage() {
+export default function ManagedReactPage() {
   return (
     <>
       <WagmiConfig client={wagmiClient}>

@@ -17,7 +17,7 @@ const web3ModalAuth = new Web3ModalAuth({
   }
 })
 
-export default function v2AuthHtmlPage() {
+export default function AuthHtmlPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [response, setResponse] = useState('')
 

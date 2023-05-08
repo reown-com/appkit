@@ -21,7 +21,7 @@ const wagmiClient = createClient({
 const ethereumClient = new EthereumClient(wagmiClient, chains)
 
 // Example
-export default function v2BasePage() {
+export default function CustomisedReactPage() {
   return (
     <>
       <WagmiConfig client={wagmiClient}>
