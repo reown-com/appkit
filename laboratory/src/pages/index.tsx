@@ -59,7 +59,7 @@ export default function HomePage() {
       </Container>
       <Grid.Container gap={2} css={{ maxWidth: '940px', margin: '0 auto' }}>
         {reactCards.map(card => (
-          <Grid xs={12} sm={6} key={card.title}>
+          <Grid xs={12} sm={6} key={`${card.title}-REACT`}>
             <Card key={card.title} variant="bordered">
               <Card.Body>
                 <Text h3 color={card.color}>
@@ -96,7 +96,7 @@ export default function HomePage() {
 
       <Grid.Container gap={2} css={{ maxWidth: '940px', margin: '0 auto' }}>
         {htmlCards.map(card => (
-          <Grid xs={12} sm={6} key={card.title}>
+          <Grid xs={12} sm={6} key={`${card.title}-HTML`}>
             <Card key={card.title} variant="bordered">
               <Card.Body>
                 <Text h3 color={card.color}>
