@@ -1,10 +1,10 @@
-### 📚 [Documentation](https://docs.walletconnect.com/2.0/web3modal/about)
+#### 📚 [Documentation](https://docs.walletconnect.com/2.0/web3modal/about)
 
-### 🔎 [Examples](https://github.com/WalletConnect/web3modal-examples)
+#### 🔎 [Examples](https://github.com/WalletConnect/web3modal-examples)
 
-### 🧪 [Laboratory](https://lab.web3modal.com)
+#### 🧪 [Laboratory](https://lab.web3modal.com)
 
-### 🔗 [Website](https://web3modal.com)
+#### 🔗 [Website](https://web3modal.com)
 
 # Web3Modal
 
