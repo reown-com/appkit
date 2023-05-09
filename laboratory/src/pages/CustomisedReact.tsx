@@ -1,6 +1,6 @@
 import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
 import { Web3Modal } from '@web3modal/react'
-import { WagmiConfig, configureChains, createClient } from 'wagmi'
+import { WagmiConfig, configureChains, createConfig } from 'wagmi'
 import { mainnet, polygon } from 'wagmi/chains'
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 import WagmiWeb3ModalWidget from '../components/WagmiWeb3ModalWidget'
@@ -9,14 +9,14 @@ import { getProjectId, getTheme } from '../utilities/EnvUtil'
 // Configure wagmi and web3modal
 const projectId = getProjectId()
 const chains = [mainnet, polygon]
-const { provider } = configureChains(chains, [w3mProvider({ projectId })])
-const wagmiClient = createClient({
+const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
+const wagmiClient = createConfig({
   autoConnect: true,
   connectors: [
     ...w3mConnectors({ version: 2, projectId, chains }),
     new CoinbaseWalletConnector({ chains, options: { appName: 'Web3Modal' } })
   ],
-  provider
+  publicClient
 })
 const ethereumClient = new EthereumClient(wagmiClient, chains)
 
@@ -24,7 +24,7 @@ const ethereumClient = new EthereumClient(wagmiClient, chains)
 export default function CustomisedReactPage() {
   return (
     <>
-      <WagmiConfig client={wagmiClient}>
+      <WagmiConfig config={wagmiClient}>
         <WagmiWeb3ModalWidget />
       </WagmiConfig>
 

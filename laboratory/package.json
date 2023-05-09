@@ -15,11 +15,11 @@
     "@web3modal/react": "2.3.7",
     "@web3modal/auth-html": "2.3.7",
     "@web3modal/auth-react": "2.3.7",
-    "ethers": "5.7.2",
     "next": "13.4.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "wagmi": "0.12.13"
+    "wagmi": "1.0.0",
+    "viem": "0.3.19"
   },
   "devDependencies": {
     "@types/react": "18.2.6",
