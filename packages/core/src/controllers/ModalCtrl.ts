@@ -1,6 +1,7 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ModalCtrlState } from '../types/controllerTypes'
 import { AccountCtrl } from './AccountCtrl'
+import { ClientCtrl } from './ClientCtrl'
 import { ConfigCtrl } from './ConfigCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
 import { RouterCtrl } from './RouterCtrl'
@@ -28,7 +29,8 @@ export const ModalCtrl = {
 
   async open(options?: OpenOptions) {
     return new Promise<void>(resolve => {
-      const { isStandalone, isUiLoaded, isDataLoaded } = OptionsCtrl.state
+      const { isStandalone, isUiLoaded, isDataLoaded, isPreferInjected, selectedChain } =
+        OptionsCtrl.state
       const { pairingUri } = WcConnectionCtrl.state
       const { isConnected } = AccountCtrl.state
       const { enableNetworkView } = ConfigCtrl.state
@@ -43,6 +45,13 @@ export const ModalCtrl = {
         RouterCtrl.reset('Account')
       } else if (enableNetworkView) {
         RouterCtrl.reset('SelectNetwork')
+      } else if (isPreferInjected) {
+        ClientCtrl.client()
+          .connectConnector('injected', selectedChain?.id)
+          .catch(err => console.error(err))
+        resolve()
+
+        return
       } else {
         RouterCtrl.reset('ConnectWallet')
       }

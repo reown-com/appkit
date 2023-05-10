@@ -14,7 +14,7 @@ import type { EthereumClient } from '@web3modal/ethereum'
  */
 export type Web3ModalConfig = Omit<
   ConfigCtrlState,
-  'enableStandaloneMode' | 'standaloneChains' | 'walletConnectVersion'
+  'enableAuthMode' | 'enableStandaloneMode' | 'standaloneChains' | 'walletConnectVersion'
 > &
   ThemeCtrlState
 

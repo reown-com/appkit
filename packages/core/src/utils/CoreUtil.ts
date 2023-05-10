@@ -5,6 +5,8 @@ export const CoreUtil = {
 
   W3M_VERSION: 'W3M_VERSION',
 
+  W3M_PREFER_INJECTED_URL_FLAG: 'w3mPreferInjected',
+
   RECOMMENDED_WALLET_AMOUNT: 9,
 
   isMobile() {
@@ -88,6 +90,10 @@ export const CoreUtil = {
     )
   },
 
+  removeWalletConnectDeepLink() {
+    localStorage.removeItem(CoreUtil.WALLETCONNECT_DEEPLINK_CHOICE)
+  },
+
   setWeb3ModalVersionInStorage() {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(CoreUtil.W3M_VERSION, process.env.ROLLUP_W3M_VERSION ?? 'UNKNOWN')
@@ -110,5 +116,15 @@ export const CoreUtil = {
     }
 
     return routerData
+  },
+
+  isPreferInjectedFlag() {
+    if (typeof location !== 'undefined') {
+      const queryParams = new URLSearchParams(location.search)
+
+      return queryParams.has(CoreUtil.W3M_PREFER_INJECTED_URL_FLAG)
+    }
+
+    return false
   }
 }

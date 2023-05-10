@@ -49,7 +49,7 @@ button {
   box-shadow: 0 0 0 1px var(--w3m-color-overlay);
 }
 
-button:hover {
+button:active {
   background-color: var(--w3m-color-bg-2);
 }
 
@@ -76,4 +76,10 @@ button path {
 
 .w3m-help-active button:first-child path {
   fill: var(--w3m-color-bg-1);
+}
+
+@media (hover: hover) {
+  button:hover {
+    background-color: var(--w3m-color-bg-2);
+  }
 }

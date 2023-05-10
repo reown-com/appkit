@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ethereum",
-  "version": "2.3.7",
+  "version": "2.4.0",
   "main": "dist/index.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -16,8 +16,8 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@wagmi/core": ">=0.10",
-    "ethers": ">=5.7"
+    "@wagmi/core": ">=1",
+    "viem": ">=0.3"
   },
   "keywords": [
     "web3",

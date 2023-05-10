@@ -23,7 +23,7 @@ button::after {
   border: 1px solid var(--w3m-color-overlay);
 }
 
-button:hover::after {
+button:active::after {
   background-color: var(--w3m-color-overlay);
 }
 
@@ -40,4 +40,10 @@ button:disabled {
 
 .w3m-secondary::after {
   display: none;
+}
+
+@media (hover: hover) {
+  button:hover::after {
+    background-color: var(--w3m-color-overlay);
+  }
 }

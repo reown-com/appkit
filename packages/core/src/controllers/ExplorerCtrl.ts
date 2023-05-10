@@ -47,11 +47,12 @@ export const ExplorerCtrl = {
 
     // Fetch default recomended wallets based on user's device, options and excluded config
     else {
-      const { standaloneChains, walletConnectVersion } = OptionsCtrl.state
+      const { standaloneChains, walletConnectVersion, isAuth } = OptionsCtrl.state
       const chainsFilter = standaloneChains?.join(',')
       const isExcluded = CoreUtil.isArray(explorerExcludedWalletIds)
       const params = {
         page: 1,
+        sdks: isAuth ? 'auth_v1' : undefined,
         entries: CoreUtil.RECOMMENDED_WALLET_AMOUNT,
         chains: chainsFilter,
         version: walletConnectVersion,
@@ -90,6 +91,11 @@ export const ExplorerCtrl = {
       extendedParams.excludedIds = [extendedParams.excludedIds, explorerExcludedWalletIds]
         .filter(Boolean)
         .join(',')
+    }
+
+    // Fetch only auth wallets
+    if (OptionsCtrl.state.isAuth) {
+      extendedParams.sdks = 'auth_v1'
     }
 
     const { page, search } = params

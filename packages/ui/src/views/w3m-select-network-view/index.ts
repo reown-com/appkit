@@ -8,7 +8,7 @@ import {
   ToastCtrl
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, state } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -17,10 +17,24 @@ import styles from './styles.css'
 export class W3mSelectNetworkView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
+  // -- state & properties ------------------------------------------- //
+  @state() private connectedChains: string[] | 'ALL' = 'ALL'
+  @state() private isUnsupportedChains = false
+
+  // -- lifecycle ---------------------------------------------------- //
+  public constructor() {
+    super()
+    this.getConnectedChainIds()
+  }
+
   // -- private ------------------------------------------------------ //
+  private async getConnectedChainIds() {
+    this.connectedChains = await ClientCtrl.client().getConnectedChainIds()
+  }
+
   private async onSelectChain(chain: SwitchNetworkData) {
     try {
-      const { selectedChain, walletConnectVersion, isInjectedMobile } = OptionsCtrl.state
+      const { selectedChain, walletConnectVersion, isPreferInjected } = OptionsCtrl.state
       const { isConnected } = AccountCtrl.state
       if (isConnected) {
         if (selectedChain?.id === chain.id) {
@@ -31,7 +45,7 @@ export class W3mSelectNetworkView extends LitElement {
         } else {
           RouterCtrl.push('SwitchNetwork', { SwitchNetwork: chain })
         }
-      } else if (isInjectedMobile) {
+      } else if (isPreferInjected) {
         OptionsCtrl.setSelectedChain(chain)
         ModalCtrl.close()
       } else {
@@ -44,20 +58,44 @@ export class W3mSelectNetworkView extends LitElement {
     }
   }
 
+  private isUnsuportedChainId(chainId: number) {
+    if (typeof this.connectedChains === 'string' && this.connectedChains !== 'ALL') {
+      this.isUnsupportedChains = true
+
+      return true
+    }
+
+    if (Array.isArray(this.connectedChains) && !this.connectedChains.includes(String(chainId))) {
+      this.isUnsupportedChains = true
+
+      return true
+    }
+
+    return false
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
     const { chains } = OptionsCtrl.state
+    const decoratedChains = chains?.map(chain => ({
+      ...chain,
+      unsupported: this.isUnsuportedChainId(chain.id)
+    }))
+    const sortedChains = decoratedChains?.sort(
+      (a, b) => Number(a.unsupported) - Number(b.unsupported)
+    )
 
     return html`
       <w3m-modal-header title="Select network"></w3m-modal-header>
       <w3m-modal-content>
         <div>
-          ${chains?.map(
+          ${sortedChains?.map(
             chain =>
               html`
                 <w3m-network-button
                   name=${chain.name}
                   chainId=${chain.id}
+                  .unsupported=${chain.unsupported}
                   .onClick=${async () => this.onSelectChain(chain)}
                 >
                   ${chain.name}
@@ -66,6 +104,14 @@ export class W3mSelectNetworkView extends LitElement {
           )}
         </div>
       </w3m-modal-content>
+
+      ${this.isUnsupportedChains
+        ? html`<w3m-info-footer>
+            <w3m-text color="secondary" variant="small-thin">
+              Your connected wallet may not support some of the networks available for this dapp
+            </w3m-text>
+          </w3m-info-footer>`
+        : null}
     `
   }
 }

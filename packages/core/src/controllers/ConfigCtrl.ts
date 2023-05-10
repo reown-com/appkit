@@ -15,6 +15,7 @@ const state = proxy<ConfigCtrlState>({
   tokenContracts: undefined,
   standaloneChains: undefined,
   enableStandaloneMode: false,
+  enableAuthMode: false,
   enableNetworkView: false,
   enableAccountView: true,
   enableExplorer: true,
@@ -39,14 +40,15 @@ export const ConfigCtrl = {
     OptionsCtrl.setIsStandalone(
       Boolean(config.standaloneChains?.length) || Boolean(config.enableStandaloneMode)
     )
+    OptionsCtrl.setIsAuth(Boolean(config.enableAuthMode))
     OptionsCtrl.setIsCustomMobile(Boolean(config.mobileWallets?.length))
     OptionsCtrl.setIsCustomDesktop(Boolean(config.desktopWallets?.length))
     OptionsCtrl.setWalletConnectVersion(config.walletConnectVersion ?? 1)
 
     if (!OptionsCtrl.state.isStandalone) {
       OptionsCtrl.setChains(ClientCtrl.client().chains)
-      OptionsCtrl.setIsInjectedMobile(
-        CoreUtil.isMobile() && ClientCtrl.client().isInjectedProviderInstalled()
+      OptionsCtrl.setIsPreferInjected(
+        ClientCtrl.client().isInjectedProviderInstalled() && CoreUtil.isPreferInjectedFlag()
       )
     }
 
