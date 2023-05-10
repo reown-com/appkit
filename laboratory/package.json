@@ -1,6 +1,6 @@
 {
   "name": "laboratory",
-  "version": "2.3.7",
+  "version": "2.4.0",
   "private": true,
   "scripts": {
     "dev": "rm -rf .next; next dev",
@@ -11,15 +11,15 @@
     "@sentry/react": "7.51.0",
     "@sentry/tracing": "7.51.0",
     "@walletconnect/sign-client": "2.7.3",
-    "@web3modal/ethereum": "2.3.7",
-    "@web3modal/react": "2.3.7",
-    "@web3modal/auth-html": "2.3.7",
-    "@web3modal/auth-react": "2.3.7",
+    "@web3modal/auth-html": "2.4.0",
+    "@web3modal/auth-react": "2.4.0",
+    "@web3modal/ethereum": "2.4.0",
+    "@web3modal/react": "2.4.0",
     "next": "13.4.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "wagmi": "1.0.0",
-    "viem": "0.3.19"
+    "viem": "0.3.19",
+    "wagmi": "1.0.0"
   },
   "devDependencies": {
     "@types/react": "18.2.6",
