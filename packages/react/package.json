@@ -19,6 +19,9 @@
     "@web3modal/core": "2.4.0",
     "@web3modal/ui": "2.4.0"
   },
+  "devDependencies": {
+    "@web3modal/ethereum": "2.4.0"
+  },
   "peerDependencies": {
     "react": ">=17",
     "react-dom": ">=17"
