@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/auth-html",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "main": "dist/index.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@walletconnect/auth-client": "2.1.0",
-    "@web3modal/standalone": "2.4.0"
+    "@web3modal/standalone": "2.4.1"
   },
   "keywords": [
     "web3",
