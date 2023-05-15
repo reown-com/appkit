@@ -1,3 +1,5 @@
+⚠️ V1 of Web3Modal is now officially deprecated, please refer to https://web3modal.com to get started with new web3modal.
+
 # Web3Modal
 
 A single Web3 / Ethereum provider solution for all Wallets
