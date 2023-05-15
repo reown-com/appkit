@@ -34,11 +34,18 @@ export default function createConfig(packageJson) {
     'process.env.ROLLUP_W3M_VERSION': JSON.stringify(packageJson.version)
   })
 
+  const plugins = [replacePlugin, litCssPlugin, minifyHtml.default(), esbuildPlugin]
+
   return [
     {
       input: './index.ts',
-      plugins: [replacePlugin, litCssPlugin, minifyHtml.default(), esbuildPlugin],
+      plugins,
       output: [{ file: './dist/index.js', format: 'es', ...output }]
+    },
+    {
+      input: './index.ts',
+      plugins,
+      output: [{ file: './umd/index.js', format: 'iife', ...output, extend: true }]
     }
   ]
 }
