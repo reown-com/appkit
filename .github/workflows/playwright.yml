@@ -4,6 +4,10 @@ on:
     branches: [ V2, feat/playwright ]
   pull_request:
     branches: [ V2 ]
+
+env:
+  NEXT_PUBLIC_PROJECT_ID: c7119a043f7ea0f453485c8bda9f9b8c
+
 jobs:
   test:
     timeout-minutes: 5
@@ -22,8 +26,6 @@ jobs:
     - name: Run Playwright tests
       run: yarn playwright test
       working-directory: laboratory
-      env:
-        NEXT_PUBLIC_PROJECT_ID: c7119a043f7ea0f453485c8bda9f9b8c
     - uses: actions/upload-artifact@v3
       if: always()
       with:
