@@ -2,14 +2,14 @@ import { expect, test } from '@playwright/test'
 
 test('has title', async ({ page }) => {
   await page.goto('./')
-  await expect(page.locator('h1')).toHaveText(/Web3Modal Lab/)
+  await expect(page.locator('h1')).toHaveText(/Web3Modal Lab/u)
 })
 
 test('can navigate to ManagedReact playground', async ({ page }) => {
   await page.goto('./')
   await page.getByText('Go to playground').first().click()
   expect(page.url()).toBe('http://127.0.0.1:3000/ManagedReact')
-  await expect(page.locator('h1')).toHaveText(/Web3Modal Lab/)
+  await expect(page.locator('h1')).toHaveText(/Web3Modal Lab/u)
 })
 
 test('can open modal with Connect Wallet', async ({ page }) => {
