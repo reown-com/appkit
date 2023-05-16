@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test'
 
-test('can connect wallet', async ({ page: w3m, context }) => {
+test('can connect wallet', async ({ page: w3m, context, browserName }) => {
   await w3m.goto('./ManagedReact')
   await expect(w3m.getByText('Connect your wallet')).not.toBeVisible()
   await w3m.getByText('Connect Wallet').click({ force: true })
   await expect(w3m.getByText('Connect your wallet')).toBeVisible()
 
-  if (context.browser()?.browserType().name() === 'chromium') {
+  if (browserName === 'chromium') {
     await context.grantPermissions(['clipboard-write'])
   }
   await w3m.locator('w3m-modal-header[title="Connect your wallet"] button').click()
@@ -18,11 +18,10 @@ test('can connect wallet', async ({ page: w3m, context }) => {
   await expect(uriField).toBeVisible()
   await uriField.focus()
 
-  /*
-   * https://github.com/microsoft/playwright/issues/8114#issuecomment-1550404655
-   * const modifier = isMac ? 'Meta' : 'Control'
-   */
-  await wallet.keyboard.press('Meta+KeyV')
+  // https://github.com/microsoft/playwright/issues/8114#issuecomment-1550404655
+  const isMac = process.env.HOME?.startsWith('/Users/')
+  const modifier = isMac ? 'Meta' : 'Control'
+  await wallet.keyboard.press(`${modifier}+KeyV`)
 
   const connectButton = uriField.locator('..').getByText('Connect')
   await expect(connectButton).toBeEnabled()
