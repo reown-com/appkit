@@ -20,5 +20,8 @@
     "react-dom": "18.2.0",
     "viem": "0.3.19",
     "wagmi": "1.0.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.33.0"
   }
 }
