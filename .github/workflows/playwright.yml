@@ -5,27 +5,30 @@ on:
   pull_request:
     branches: [ V2 ]
 
-env:
-  NEXT_PUBLIC_PROJECT_ID: c7119a043f7ea0f453485c8bda9f9b8c
-
 jobs:
   test:
-    timeout-minutes: 5
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
       with:
-        node-version: 18
+        node-version: 18.x
+        cache: 'yarn'
+        cache-dependency-path: 'yarn.lock'
     - name: Install dependencies
-      run: yarn
+      run: yarn install --frozen-lockfile
     - name: Build
       run: yarn build
+      env:
+        NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
     - name: Install Playwright Browsers
       run: yarn playwright install --with-deps
     - name: Run Playwright tests
       run: yarn playwright test
       working-directory: laboratory
+      env:
+        NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
     - uses: actions/upload-artifact@v3
       if: always()
       with:
