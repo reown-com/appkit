@@ -19,5 +19,5 @@
     "allowUnreachableCode": false,
     "experimentalDecorators": true
   },
-  "exclude": ["node_modules", "dist", "build", "out"]
+  "exclude": ["node_modules", "dist", "build", "out", "umd"]
 }

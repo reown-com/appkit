@@ -10,7 +10,8 @@
     "node_modules",
     "out",
     "_next",
-    "build"
+    "build",
+    "umd"
   ],
   "parserOptions": {
     "project": ["tsconfig.json"]
