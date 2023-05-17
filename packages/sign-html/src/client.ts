@@ -9,7 +9,7 @@ export type Web3ModalSignSession = SignClient['session']['values'][number]
 export interface Web3ModalSignOptions {
   projectId: string
   metadata: SignClient['metadata']
-  relayUrl: string
+  relayUrl?: string
   modalOptions?: Omit<Web3ModalConfig, 'projectId' | 'walletConnectVersion'>
 }
 

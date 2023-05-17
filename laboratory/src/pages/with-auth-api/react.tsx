@@ -1,11 +1,11 @@
 import { Button, Card, Modal, Text } from '@nextui-org/react'
 import { Web3ModalAuth, useSignIn } from '@web3modal/auth-react'
 import { useState } from 'react'
-import { getProjectId, getTheme } from '../utilities/EnvUtil'
+import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 
 const projectId = getProjectId()
 
-export default function AuthReactPage() {
+export default function WithAuthReactPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [response, setResponse] = useState('')
   const signIn = useSignIn({ statement: 'Connect to Web3Modal Lab' })

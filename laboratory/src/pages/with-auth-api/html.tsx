@@ -1,7 +1,7 @@
 import { Button, Card, Modal, Text } from '@nextui-org/react'
 import { Web3ModalAuth } from '@web3modal/auth-html'
 import { useState } from 'react'
-import { getProjectId, getTheme } from '../utilities/EnvUtil'
+import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 
 const projectId = getProjectId()
 const web3ModalAuth = new Web3ModalAuth({
@@ -17,7 +17,7 @@ const web3ModalAuth = new Web3ModalAuth({
   }
 })
 
-export default function AuthHtmlPage() {
+export default function WithAuthHtmlPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [response, setResponse] = useState('')
 

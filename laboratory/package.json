@@ -13,6 +13,7 @@
     "@walletconnect/sign-client": "2.7.4",
     "@web3modal/auth-html": "2.4.1",
     "@web3modal/auth-react": "2.4.1",
+    "@web3modal/sign-html": "2.4.1",
     "@web3modal/ethereum": "2.4.1",
     "@web3modal/react": "2.4.1",
     "next": "13.4.2",

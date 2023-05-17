@@ -16,13 +16,6 @@ const reactCards = [
     libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi']
   },
   {
-    title: 'Standalone',
-    description: 'Standalone modal playground',
-    link: '/StandaloneReact',
-    color: 'warning',
-    libraries: ['@web3modal/standalone', '@walletconnect/sign-client']
-  },
-  {
     title: 'Customised',
     description: 'Customised modal playground',
     link: '/CustomisedReact',
@@ -30,9 +23,9 @@ const reactCards = [
     libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi']
   },
   {
-    title: 'Auth',
+    title: 'With Auth Api',
     description: 'Auth modal playground',
-    link: '/AuthReact',
+    link: '/with-auth-api/react',
     color: 'success',
     libraries: ['@web3modal/auth-react']
   }
@@ -40,9 +33,16 @@ const reactCards = [
 
 const htmlCards = [
   {
-    title: 'Auth',
+    title: 'With Sign API',
+    description: 'Sign modal playground',
+    link: '/with-sign-api/html',
+    color: 'primary',
+    libraries: ['@web3modal/sign-html']
+  },
+  {
+    title: 'With Auth API',
     description: 'Auth modal playground',
-    link: '/AuthHtml',
+    link: '/with-auth-api/html',
     color: 'success',
     libraries: ['@web3modal/auth-html']
   }
