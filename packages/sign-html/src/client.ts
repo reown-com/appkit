@@ -15,6 +15,10 @@ export interface Web3ModalSignOptions {
 
 export type Web3ModalSignConnectArguments = Parameters<SignClient['connect']>[0]
 
+export type Web3ModalSignRequestArguments = Parameters<SignClient['request']>[0]
+
+export type Web3ModalSignDisconnectArguments = Parameters<SignClient['disconnect']>[0]
+
 // -- Client ---------------------------------------------------------------
 export class Web3ModalSign {
   #options: Web3ModalSignOptions
@@ -66,10 +70,39 @@ export class Web3ModalSign {
       }
 
       const session = await approval()
+      unsubscribeModal()
+      this.#modal!.closeModal()
 
       resolve(session)
     })
   }
+
+  public async disconnect(args: Web3ModalSignDisconnectArguments) {
+    if (!this.#signClient) {
+      await this.#initSignClient()
+    }
+    await this.#signClient!.disconnect(args)
+  }
+
+  public async request<Result>(args: Web3ModalSignRequestArguments) {
+    if (!this.#signClient) {
+      await this.#initSignClient()
+    }
+
+    const result = await this.#signClient!.request(args)
+
+    return result as Result
+  }
+
+  public async getActiveSession() {
+    if (!this.#signClient) {
+      await this.#initSignClient()
+    }
+
+    return this.#signClient!.session.getAll().at(-1)
+  }
+
+  // TODO: expose event listeners, unsubscribers
 
   // -- private -----------------------------------------------------------
   #initModal() {

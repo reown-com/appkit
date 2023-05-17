@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@walletconnect/sign-client": "2.7.4",
+    "@walletconnect/sign-client": "2.7.4-rc-a7ad32",
     "@web3modal/standalone": "2.4.1"
   },
   "keywords": [

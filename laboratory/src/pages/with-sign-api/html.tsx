@@ -1,6 +1,8 @@
-import { Button, Card, Modal, Text } from '@nextui-org/react'
+import { Button, Card, Divider, Modal, Text } from '@nextui-org/react'
+import { getAddressFromAccount, getSdkError } from '@walletconnect/utils'
+import type { Web3ModalSignSession } from '@web3modal/sign-html'
 import { Web3ModalSign } from '@web3modal/sign-html'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 
 const projectId = getProjectId()
@@ -21,9 +23,10 @@ const web3ModalSign = new Web3ModalSign({
 export default function WithSignHtmlPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [response, setResponse] = useState('')
+  const [session, setSession] = useState<Web3ModalSignSession | undefined>(undefined)
 
-  async function onSignIn() {
-    const session = await web3ModalSign.connect({
+  async function onConnect() {
+    const result = await web3ModalSign.connect({
       requiredNamespaces: {
         eip155: {
           methods: ['eth_sendTransaction', 'personal_sign'],
@@ -32,17 +35,67 @@ export default function WithSignHtmlPage() {
         }
       }
     })
-    setResponse(JSON.stringify(session, null, 2))
+    setSession(result)
+    setResponse(JSON.stringify(result, null, 2))
     setModalOpen(true)
   }
+
+  async function onDisconnect() {
+    if (session) {
+      await web3ModalSign.disconnect({
+        topic: session.topic,
+        reason: getSdkError('USER_DISCONNECTED')
+      })
+      setSession(undefined)
+    }
+  }
+
+  async function onSignMessage() {
+    if (session) {
+      const account = getAddressFromAccount(session.namespaces.eip155.accounts[0])
+      const result = await web3ModalSign.request({
+        topic: session.topic,
+        chainId: 'eip155:1',
+        request: {
+          method: 'personal_sign',
+          params: ['0xdeadbeaf', account]
+        }
+      })
+      setResponse(JSON.stringify(result, null, 2))
+    } else {
+      setResponse('No active session, please connect first')
+    }
+    setModalOpen(true)
+  }
+
+  useEffect(() => {
+    async function init() {
+      const result = await web3ModalSign.getActiveSession()
+      setSession(result)
+    }
+
+    init()
+  }, [])
 
   return (
     <>
       <Card css={{ maxWidth: '400px', margin: '100px auto' }} variant="bordered">
         <Card.Body css={{ justifyContent: 'center', alignItems: 'center', height: '200px' }}>
-          <Button shadow color="primary" onPress={onSignIn}>
-            Sign In With Wallet
-          </Button>
+          {session ? (
+            <>
+              <Button shadow color="primary" onPress={onSignMessage}>
+                Sign Message
+              </Button>
+              <Divider y={2} />
+              <Button shadow color="error" onPress={onDisconnect}>
+                Disconnect
+              </Button>
+            </>
+          ) : (
+            <Button shadow color="primary" onPress={onConnect}>
+              Sign In With Wallet
+            </Button>
+          )}
         </Card.Body>
       </Card>
 
