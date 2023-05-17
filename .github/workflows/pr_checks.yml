@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 18.x
           cache: 'npm'
-          cache-dependency-path: 'package-lock.lock'
+          cache-dependency-path: 'package-lock.json'
       - name: install
         run: npm ci
       - name: build
@@ -42,7 +42,7 @@ jobs:
         with:
           node-version: 18.x
           cache: 'npm'
-          cache-dependency-path: 'package-lock.lock'
+          cache-dependency-path: 'package-lock.json'
       - name: install
         run: npm ci
       - name: check
