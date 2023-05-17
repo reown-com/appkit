@@ -63,11 +63,13 @@ import CoreLogo from "../logos/core.svg";
 // @ts-ignore
 import GameStopLogo from "../logos/gamestopwallet.svg";
 // @ts-ignore
-import ZerionLogo from '../logos/zerion.svg';
+import ZerionLogo from "../logos/zerion.svg";
 // @ts-ignore
 import PhantomLogo from "../logos/phantom.svg";
 // @ts-ignore
 import RainbowLogo from "../logos/rainbow.svg";
+// @ts-ignore
+import WombatLogo from "../logos/wombat.svg";
 
 export const FALLBACK: IProviderInfo = {
   id: "injected",
@@ -342,4 +344,12 @@ export const RAINBOW: IProviderInfo = {
   logo: RainbowLogo,
   type: "injected",
   check: "isRainbow"
+};
+
+export const WOMBAT: IProviderInfo = {
+  id: "injected",
+  name: "Wombat",
+  logo: WombatLogo,
+  type: "injected",
+  check: "isWombat"
 };
