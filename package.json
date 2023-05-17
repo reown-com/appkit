@@ -24,6 +24,7 @@
     "packages/standalone",
     "packages/auth-react",
     "packages/auth-html",
+    "packages/sign-html",
     "laboratory"
   ],
   "devDependencies": {
