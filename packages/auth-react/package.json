@@ -1,7 +1,8 @@
 {
   "name": "@web3modal/auth-react",
-  "version": "2.4.2-b826d556",
+  "version": "2.4.2-c7de30f0",
   "main": "dist/index.js",
+  "unpkg": "umd/index.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
@@ -17,7 +18,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/auth-html": "2.4.2-b826d556"
+    "@web3modal/auth-html": "2.4.2-c7de30f0"
   },
   "peerDependencies": {
     "react": ">=17",

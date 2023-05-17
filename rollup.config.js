@@ -5,6 +5,7 @@ import replace from '@rollup/plugin-replace'
 import esbuild from 'rollup-plugin-esbuild'
 import litCss from 'rollup-plugin-lit-css'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
+import polyfillNode from 'rollup-plugin-polyfill-node'
 
 const nodeVersion = Number(process.versions.node.split('.')[0])
 if (nodeVersion < 16) {
@@ -14,8 +15,7 @@ if (nodeVersion < 16) {
 export default function createConfig(packageJson) {
   const output = {
     exports: 'named',
-    name: packageJson.name,
-    sourcemap: true
+    name: packageJson.name
   }
 
   const esbuildPlugin = esbuild({
@@ -43,22 +43,14 @@ export default function createConfig(packageJson) {
     {
       input: './index.ts',
       plugins,
-      output: [{ file: './dist/index.js', format: 'es', ...output }]
+      output: [{ file: './dist/esm.js', format: 'esm', ...output }]
     },
     {
       input: './index.ts',
-      plugins: [
-        replacePlugin,
-        litCssPlugin,
-        minifyHtml.default(),
-        esbuildPlugin,
-        json(),
-        commonjs({ include: /node_modules/, requireReturnsDefault: 'auto' }),
-        resolve()
-      ],
+      plugins: [...plugins, json(), polyfillNode(), commonjs(), resolve({ browser: true })],
       output: [
         {
-          file: './umd/index.js',
+          file: './dist/umd.js',
           format: 'umd',
           inlineDynamicImports: true,
           extend: true,
