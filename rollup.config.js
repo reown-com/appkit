@@ -1,3 +1,6 @@
+import commonjs from '@rollup/plugin-commonjs'
+import json from '@rollup/plugin-json'
+import resolve from '@rollup/plugin-node-resolve'
 import replace from '@rollup/plugin-replace'
 import esbuild from 'rollup-plugin-esbuild'
 import litCss from 'rollup-plugin-lit-css'
@@ -44,8 +47,24 @@ export default function createConfig(packageJson) {
     },
     {
       input: './index.ts',
-      plugins,
-      output: [{ file: './umd/index.js', format: 'iife', ...output, extend: true }]
+      plugins: [
+        replacePlugin,
+        litCssPlugin,
+        minifyHtml.default(),
+        esbuildPlugin,
+        json(),
+        commonjs({ include: /node_modules/, requireReturnsDefault: 'auto' }),
+        resolve()
+      ],
+      output: [
+        {
+          file: './umd/index.js',
+          format: 'umd',
+          inlineDynamicImports: true,
+          extend: true,
+          ...output
+        }
+      ]
     }
   ]
 }
