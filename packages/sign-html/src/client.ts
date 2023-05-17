@@ -102,8 +102,6 @@ export class Web3ModalSign {
     return this.#signClient!.session.getAll().at(-1)
   }
 
-  // TODO: expose event listeners, unsubscribers
-
   // -- private -----------------------------------------------------------
   #initModal() {
     const { modalOptions, projectId } = this.#options
