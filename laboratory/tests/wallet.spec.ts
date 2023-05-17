@@ -17,10 +17,12 @@ test('can connect wallet', async ({ page: w3m, context, browserName }) => {
   const uriField = wallet.locator('input[type=text][placeholder^="e.g. wc:"]')
   await expect(uriField).toBeVisible()
   await uriField.focus()
+  await expect(uriField).toBeFocused()
 
   // https://github.com/microsoft/playwright/issues/8114#issuecomment-1550404655
   const isMac = process.env.HOME?.startsWith('/Users/')
   const modifier = isMac ? 'Meta' : 'Control'
+  console.log(`keys ${modifier}+KeyV`)
   await wallet.keyboard.press(`${modifier}+KeyV`)
 
   const connectButton = uriField.locator('..').getByText('Connect')
