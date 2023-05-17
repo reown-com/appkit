@@ -1,89 +1,74 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-
-import type { AuthClientTypes } from '@walletconnect/auth-client'
-import { AuthClient, generateNonce } from '@walletconnect/auth-client'
+import SignClient from '@walletconnect/sign-client'
 import type { Web3ModalConfig } from '@web3modal/standalone'
 import { Web3Modal } from '@web3modal/standalone'
 
 // -- Types ----------------------------------------------------------------
-export interface Web3ModalAuthOptions {
+export type Web3ModalSignSession = SignClient['session']['values'][number]
+
+export interface Web3ModalSignOptions {
   projectId: string
-  metadata: AuthClientTypes.Metadata
+  metadata: SignClient['metadata']
+  relayUrl: string
   modalOptions?: Omit<Web3ModalConfig, 'projectId' | 'walletConnectVersion'>
 }
 
-export interface Web3ModalAuthSignInArguments {
-  statement: string
-  chainId?: string
-  aud?: string
-  domain?: string
-}
+export type Web3ModalSignConnectArguments = Parameters<SignClient['connect']>[0]
 
 // -- Client ---------------------------------------------------------------
-export class Web3ModalAuth {
-  #options: Web3ModalAuthOptions
+export class Web3ModalSign {
+  #options: Web3ModalSignOptions
   #modal?: Web3Modal
-  #initAuthClientPromise?: Promise<void> = undefined
-  #authClient?: InstanceType<typeof AuthClient> = undefined
+  #initSignClientPromise?: Promise<void> = undefined
+  #signClient?: InstanceType<typeof SignClient> = undefined
 
-  public constructor(options: Web3ModalAuthOptions) {
+  public constructor(options: Web3ModalSignOptions) {
     this.#options = options
     this.#initModal()
-    this.#initAuthClient()
+    this.#initSignClient()
   }
 
   // -- public ------------------------------------------------------------
-  public async signIn(args: Web3ModalAuthSignInArguments) {
-    const { chainId, statement, aud, domain } = args
-    const defaultChainId = chainId ?? 'eip155:1'
-    const defaultAud = aud ?? location.href
-    const defaultDomain = domain ?? location.host
+  public async connect(args: Web3ModalSignConnectArguments) {
+    const { requiredNamespaces, optionalNamespaces } = args
 
-    return new Promise<{ valid: boolean; address: string; cacao: Record<string, string> }>(
-      async (resolve, reject) => {
-        if (!this.#authClient) {
-          await this.#initAuthClient()
-        }
-
-        const unsubscribeModal = this.#modal!.subscribeModal(state => {
-          if (!state.open) {
-            unsubscribeModal()
-            reject(new Error('Modal closed'))
-          }
-        })
-
-        this.#authClient!.once('auth_response', ({ params }) => {
-          unsubscribeModal()
-          this.#modal!.closeModal()
-          // @ts-expect-error - result exists
-          if (params.result) {
-            resolve({
-              valid: true,
-              // @ts-expect-error - result exists
-              address: params.result.p.iss.split(':')[4],
-              // @ts-expect-error - result exists
-              cacao: params.result
-            })
-          } else {
-            // @ts-expect-error - message exists
-            reject(new Error(params.message))
-          }
-        })
-
-        const { uri } = await this.#authClient!.request({
-          aud: defaultAud,
-          domain: defaultDomain,
-          chainId: defaultChainId,
-          type: 'eip4361',
-          nonce: generateNonce(),
-          statement
-        })
-
-        if (uri) {
-          await this.#modal!.openModal({ uri, standaloneChains: [defaultChainId] })
-        }
+    return new Promise<Web3ModalSignSession>(async (resolve, reject) => {
+      if (!this.#signClient) {
+        await this.#initSignClient()
       }
-    )
+
+      const unsubscribeModal = this.#modal!.subscribeModal(state => {
+        if (!state.open) {
+          unsubscribeModal()
+          reject(new Error('Modal closed'))
+        }
+      })
+
+      const { uri, approval } = await this.#signClient!.connect(args)
+
+      if (uri) {
+        const standaloneChains = new Set<string>()
+        if (requiredNamespaces) {
+          Object.values(requiredNamespaces).forEach(({ chains }) => {
+            if (chains) {
+              chains.forEach(chain => standaloneChains.add(chain))
+            }
+          })
+        }
+        if (optionalNamespaces) {
+          Object.values(optionalNamespaces).forEach(({ chains }) => {
+            if (chains) {
+              chains.forEach(chain => standaloneChains.add(chain))
+            }
+          })
+        }
+        await this.#modal!.openModal({ uri, standaloneChains: Array.from(standaloneChains) })
+      }
+
+      const session = await approval()
+
+      resolve(session)
+    })
   }
 
   // -- private -----------------------------------------------------------
@@ -91,24 +76,24 @@ export class Web3ModalAuth {
     const { modalOptions, projectId } = this.#options
     this.#modal = new Web3Modal({
       ...modalOptions,
-      enableAuthMode: true,
       walletConnectVersion: 2,
       projectId
     })
   }
 
-  async #initAuthClient() {
-    if (!this.#initAuthClientPromise && typeof window !== 'undefined') {
-      this.#initAuthClientPromise = this.#createAuthClient()
+  async #initSignClient() {
+    if (!this.#initSignClientPromise && typeof window !== 'undefined') {
+      this.#initSignClientPromise = this.#createSignClient()
     }
 
-    return this.#initAuthClientPromise
+    return this.#initSignClientPromise
   }
 
-  async #createAuthClient() {
-    this.#authClient = await AuthClient.init({
+  async #createSignClient() {
+    this.#signClient = await SignClient.init({
       metadata: this.#options.metadata,
-      projectId: this.#options.projectId
+      projectId: this.#options.projectId,
+      relayUrl: this.#options.relayUrl
     })
   }
 }
