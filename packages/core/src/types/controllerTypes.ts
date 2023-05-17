@@ -1,4 +1,4 @@
-import type { Chain, EthereumClient } from '@web3modal/ethereum'
+import type { EthereumClient } from '@web3modal/ethereum'
 
 export interface MobileWallet {
   id: string
@@ -16,6 +16,11 @@ export interface DesktopWallet {
     native: string
     universal: string
   }
+}
+
+export interface Chain {
+  id: number
+  name: string
 }
 
 // -- ConfigCtrl ------------------------------------------- //

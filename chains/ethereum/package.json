@@ -19,6 +19,10 @@
     "@wagmi/core": ">=1",
     "viem": ">=0.3"
   },
+  "devDependencies": {
+    "@wagmi/core": "1.0.5",
+    "viem": "0.3.28"
+  },
   "keywords": [
     "web3",
     "crypto",
