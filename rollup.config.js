@@ -7,11 +7,6 @@ import litCss from 'rollup-plugin-lit-css'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
 import polyfillNode from 'rollup-plugin-polyfill-node'
 
-const nodeVersion = Number(process.versions.node.split('.')[0])
-if (nodeVersion < 16) {
-  throw new Error('Node version must be 16.x or higher')
-}
-
 export default function createConfig(packageJson) {
   const output = {
     exports: 'named',
@@ -43,14 +38,14 @@ export default function createConfig(packageJson) {
     {
       input: './index.ts',
       plugins,
-      output: [{ file: './dist/esm.js', format: 'esm', ...output }]
+      output: [{ file: './dist/index.es.js', format: 'es', ...output }]
     },
     {
       input: './index.ts',
       plugins: [...plugins, json(), polyfillNode(), commonjs(), resolve({ browser: true })],
       output: [
         {
-          file: './dist/umd.js',
+          file: './dist/index.umd.js',
           format: 'umd',
           inlineDynamicImports: true,
           extend: true,

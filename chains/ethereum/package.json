@@ -1,12 +1,10 @@
 {
   "name": "@web3modal/ethereum",
   "version": "2.4.2-c7de30f0",
-  "main": "dist/index.js",
-  "unpkg": "umd/index.js",
+  "main": "dist/index.es.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
-    "umd",
     "dist"
   ],
   "scripts": {
