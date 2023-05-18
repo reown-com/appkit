@@ -3,8 +3,8 @@ import { getAddressFromAccount, getSdkError } from '@walletconnect/utils'
 import type { Web3ModalSignSession } from '@web3modal/sign-html'
 import { Web3ModalSign } from '@web3modal/sign-html'
 import { useEffect, useState } from 'react'
-import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 import { METADATA } from '../../data/Constants'
+import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 
 const projectId = getProjectId()
 
@@ -107,7 +107,7 @@ export default function WithSignHtmlPage() {
             </>
           ) : (
             <Button shadow color="primary" onPress={onConnect}>
-              Sign In With Wallet
+              Connect
             </Button>
           )}
         </Card.Body>

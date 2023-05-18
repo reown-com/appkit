@@ -8,7 +8,8 @@ export type Web3ModalSignProps = Web3ModalSignOptions
 function Web3ModalSignComp(props: Web3ModalSignProps) {
   useEffect(() => {
     setWeb3ModalSignClient(props)
-  }, [props])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return null
 }

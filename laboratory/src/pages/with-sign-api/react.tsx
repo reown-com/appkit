@@ -1,14 +1,19 @@
-import { Button, Card, Modal, Text } from '@nextui-org/react'
-import { Web3ModalSign, useConnect } from '@web3modal/sign-react'
-import { useState } from 'react'
+import { Button, Card, Divider, Modal, Text } from '@nextui-org/react'
+import { getSdkError } from '@walletconnect/utils'
+import { Web3ModalSign, useActiveSession, useConnect, useDisconnect } from '@web3modal/sign-react'
+import { useEffect, useState } from 'react'
 import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 
 const projectId = getProjectId()
 
 export default function WithSignReactPage() {
   const [modalOpen, setModalOpen] = useState(false)
-  const [response, setResponse] = useState('')
-  const connect = useConnect({
+  const session = useActiveSession()
+  const { disconnect } = useDisconnect({
+    topic: session?.topic as string,
+    reason: getSdkError('USER_DISCONNECTED')
+  })
+  const { connect, data } = useConnect({
     requiredNamespaces: {
       eip155: {
         methods: ['eth_sendTransaction', 'personal_sign'],
@@ -18,19 +23,31 @@ export default function WithSignReactPage() {
     }
   })
 
-  async function onConnect() {
-    const data = await connect()
-    setResponse(JSON.stringify(data, null, 2))
-    setModalOpen(true)
-  }
+  useEffect(() => {
+    if (data?.topic) {
+      setModalOpen(true)
+    }
+  }, [data?.topic])
 
   return (
     <>
       <Card css={{ maxWidth: '400px', margin: '100px auto' }} variant="bordered">
         <Card.Body css={{ justifyContent: 'center', alignItems: 'center', height: '200px' }}>
-          <Button shadow color="primary" onPress={onConnect}>
-            Connect
-          </Button>
+          {session ? (
+            <>
+              {/* <Button shadow color="primary" onPress={onSignMessage}>
+                Sign Message
+              </Button> */}
+              <Divider y={2} />
+              <Button shadow color="error" onPress={() => disconnect()}>
+                Disconnect
+              </Button>
+            </>
+          ) : (
+            <Button shadow color="primary" onPress={() => connect()}>
+              Connect
+            </Button>
+          )}
         </Card.Body>
       </Card>
 
@@ -39,7 +56,7 @@ export default function WithSignReactPage() {
           <Text h3>Success</Text>
         </Modal.Header>
         <Modal.Body>
-          <Text color="grey">{response}</Text>
+          <Text color="grey">{JSON.stringify(data, null, 2)}</Text>
         </Modal.Body>
       </Modal>
 
