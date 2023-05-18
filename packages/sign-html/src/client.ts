@@ -37,9 +37,7 @@ export class Web3ModalSign {
     const { requiredNamespaces, optionalNamespaces } = args
 
     return new Promise<Web3ModalSignSession>(async (resolve, reject) => {
-      if (!this.#signClient) {
-        await this.#initSignClient()
-      }
+      await this.#initSignClient()
 
       const unsubscribeModal = this.#modal!.subscribeModal(state => {
         if (!state.open) {
@@ -69,25 +67,25 @@ export class Web3ModalSign {
         await this.#modal!.openModal({ uri, standaloneChains: Array.from(standaloneChains) })
       }
 
-      const session = await approval()
-      unsubscribeModal()
-      this.#modal!.closeModal()
-
-      resolve(session)
+      try {
+        const session = await approval()
+        resolve(session)
+      } catch (err) {
+        reject(err)
+      } finally {
+        unsubscribeModal()
+        this.#modal!.closeModal()
+      }
     })
   }
 
   public async disconnect(args: Web3ModalSignDisconnectArguments) {
-    if (!this.#signClient) {
-      await this.#initSignClient()
-    }
+    await this.#initSignClient()
     await this.#signClient!.disconnect(args)
   }
 
   public async request<Result>(args: Web3ModalSignRequestArguments) {
-    if (!this.#signClient) {
-      await this.#initSignClient()
-    }
+    await this.#initSignClient()
 
     const result = await this.#signClient!.request(args)
 
@@ -95,9 +93,7 @@ export class Web3ModalSign {
   }
 
   public async getActiveSession() {
-    if (!this.#signClient) {
-      await this.#initSignClient()
-    }
+    await this.#initSignClient()
 
     return this.#signClient!.session.getAll().at(-1)
   }
