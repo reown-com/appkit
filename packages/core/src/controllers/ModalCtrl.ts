@@ -31,7 +31,6 @@ export const ModalCtrl = {
     return new Promise<void>(resolve => {
       const { isStandalone, isUiLoaded, isDataLoaded, isPreferInjected, selectedChain } =
         OptionsCtrl.state
-      const { pairingUri } = WcConnectionCtrl.state
       const { isConnected } = AccountCtrl.state
       const { enableNetworkView } = ConfigCtrl.state
 
@@ -56,6 +55,7 @@ export const ModalCtrl = {
         RouterCtrl.reset('ConnectWallet')
       }
 
+      const { pairingUri } = WcConnectionCtrl.state
       // Open modal if essential async data is ready
       if (isUiLoaded && isDataLoaded && (isStandalone || pairingUri || isConnected)) {
         state.open = true

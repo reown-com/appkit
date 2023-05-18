@@ -30,7 +30,7 @@ export default function WithSignHtmlPage() {
       requiredNamespaces: {
         eip155: {
           methods: ['eth_sendTransaction', 'personal_sign'],
-          chains: ['eip155:1', 'eip155:137'],
+          chains: ['eip155:1'],
           events: ['chainChanged', 'accountsChanged']
         }
       }
@@ -74,7 +74,25 @@ export default function WithSignHtmlPage() {
       setSession(result)
     }
 
+    function logData(data: unknown) {
+      console.info(data)
+    }
+
+    function deleteSession() {
+      setSession(undefined)
+    }
+
+    web3ModalSign.onSessionEvent(logData)
+    web3ModalSign.onSessionUpdate(logData)
+    web3ModalSign.onSessionDelete(deleteSession)
+
     init()
+
+    return () => {
+      web3ModalSign.offSessionEvent(logData)
+      web3ModalSign.offSessionUpdate(logData)
+      web3ModalSign.offSessionDelete(deleteSession)
+    }
   }, [])
 
   return (

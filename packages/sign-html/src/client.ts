@@ -19,6 +19,8 @@ export type Web3ModalSignRequestArguments = Parameters<SignClient['request']>[0]
 
 export type Web3ModalSignDisconnectArguments = Parameters<SignClient['disconnect']>[0]
 
+export type Web3ModalEventCallback = (data: unknown) => void
+
 // -- Client ---------------------------------------------------------------
 export class Web3ModalSign {
   #options: Web3ModalSignOptions
@@ -92,16 +94,47 @@ export class Web3ModalSign {
     return result as Result
   }
 
+  public async getAllSessions() {
+    await this.#initSignClient()
+
+    return this.#signClient!.session.getAll()
+  }
+
   public async getActiveSession() {
     await this.#initSignClient()
 
     return this.#signClient!.session.getAll().at(-1)
   }
 
-  /**
-   * TODO: expose event listeners, unsubscribers
-   * TODO: handle rejections for connect, close modal
-   */
+  public async onSessionEvent(callback: Web3ModalEventCallback) {
+    await this.#initSignClient()
+    this.#signClient!.on('session_event', callback)
+  }
+
+  public async offSessionEvent(callback: Web3ModalEventCallback) {
+    await this.#initSignClient()
+    this.#signClient!.off('session_event', callback)
+  }
+
+  public async onSessionUpdate(callback: Web3ModalEventCallback) {
+    await this.#initSignClient()
+    this.#signClient!.on('session_update', callback)
+  }
+
+  public async offSessionUpdate(callback: Web3ModalEventCallback) {
+    await this.#initSignClient()
+    this.#signClient!.off('session_update', callback)
+  }
+
+  public async onSessionDelete(callback: () => void) {
+    await this.#initSignClient()
+    this.#signClient!.on('session_delete', callback)
+  }
+
+  public async offSessionDelete(callback: () => void) {
+    await this.#initSignClient()
+    this.#signClient!.off('session_delete', callback)
+  }
 
   // -- private -----------------------------------------------------------
   #initModal() {
