@@ -15,6 +15,7 @@
     "@web3modal/ethereum": "2.4.2-c7de30f0",
     "@web3modal/react": "2.4.2-c7de30f0",
     "@web3modal/sign-html": "2.4.2-c7de30f0",
+    "@web3modal/sign-react": "2.4.2-c7de30f0",
     "next": "13.4.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",

@@ -23,6 +23,13 @@ const reactCards = [
     libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi']
   },
   {
+    title: 'With Sign API',
+    description: 'Sign modal playground',
+    link: '/with-sign-api/react',
+    color: 'primary',
+    libraries: ['@web3modal/sign-react']
+  },
+  {
     title: 'With Auth Api',
     description: 'Auth modal playground',
     link: '/with-auth-api/react',

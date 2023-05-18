@@ -136,6 +136,16 @@ export class Web3ModalSign {
     this.#signClient!.off('session_delete', callback)
   }
 
+  public async onSessionExpire(callback: Web3ModalEventCallback) {
+    await this.#initSignClient()
+    this.#signClient!.on('session_expire', callback)
+  }
+
+  public async offSessionExpire(callback: Web3ModalEventCallback) {
+    await this.#initSignClient()
+    this.#signClient!.off('session_expire', callback)
+  }
+
   // -- private -----------------------------------------------------------
   #initModal() {
     const { modalOptions, projectId } = this.#options
