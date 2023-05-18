@@ -1,12 +1,29 @@
 import type { Web3ModalSignConnectArguments } from '@web3modal/sign-html'
+import type { Web3ModalSignInstance } from '../client'
 import { getWeb3ModalSignClient } from '../client'
+import { useAsyncAction } from './_useAsyncAction'
+
+type Data = Awaited<ReturnType<Web3ModalSignInstance['connect']>>
 
 export function useConnect(params: Web3ModalSignConnectArguments) {
-  async function connect(paramsOverride?: Web3ModalSignConnectArguments) {
-    const client = await getWeb3ModalSignClient()
+  const { data, error, loading, setData, setError, setLoading } = useAsyncAction<Data>()
 
-    return client.connect(paramsOverride ?? params)
+  async function connect(paramsOverride?: Web3ModalSignConnectArguments) {
+    try {
+      setLoading(true)
+      setError(undefined)
+      const client = await getWeb3ModalSignClient()
+      const response = await client.connect(paramsOverride ?? params)
+      setData(response)
+
+      return response
+    } catch (err) {
+      setError(err)
+      throw err
+    } finally {
+      setLoading(false)
+    }
   }
 
-  return connect
+  return { data, error, loading, connect }
 }

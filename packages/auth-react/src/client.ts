@@ -11,12 +11,13 @@ export async function getWeb3ModalAuthClient(): Promise<Web3ModalAuth> {
   return new Promise(resolve => {
     if (web3ModalAuthClient) {
       resolve(web3ModalAuthClient)
+    } else {
+      const interval = setInterval(() => {
+        if (web3ModalAuthClient) {
+          clearInterval(interval)
+          resolve(web3ModalAuthClient)
+        }
+      }, 200)
     }
-    const interval = setInterval(() => {
-      if (web3ModalAuthClient) {
-        clearInterval(interval)
-        resolve(web3ModalAuthClient)
-      }
-    }, 100)
   })
 }

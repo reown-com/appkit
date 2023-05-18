@@ -19,7 +19,7 @@ export type Web3ModalSignRequestArguments = Parameters<SignClient['request']>[0]
 
 export type Web3ModalSignDisconnectArguments = Parameters<SignClient['disconnect']>[0]
 
-export type Web3ModalEventCallback = (data: unknown) => void
+export type Web3ModalEventCallback<T> = (data: T) => void
 
 // -- Client ---------------------------------------------------------------
 export class Web3ModalSign {
@@ -106,22 +106,22 @@ export class Web3ModalSign {
     return this.#signClient!.session.getAll().at(-1)
   }
 
-  public async onSessionEvent(callback: Web3ModalEventCallback) {
+  public async onSessionEvent<Event>(callback: Web3ModalEventCallback<Event>) {
     await this.#initSignClient()
     this.#signClient!.on('session_event', callback)
   }
 
-  public async offSessionEvent(callback: Web3ModalEventCallback) {
+  public async offSessionEvent<Event>(callback: Web3ModalEventCallback<Event>) {
     await this.#initSignClient()
     this.#signClient!.off('session_event', callback)
   }
 
-  public async onSessionUpdate(callback: Web3ModalEventCallback) {
+  public async onSessionUpdate<Event>(callback: Web3ModalEventCallback<Event>) {
     await this.#initSignClient()
     this.#signClient!.on('session_update', callback)
   }
 
-  public async offSessionUpdate(callback: Web3ModalEventCallback) {
+  public async offSessionUpdate<Event>(callback: Web3ModalEventCallback<Event>) {
     await this.#initSignClient()
     this.#signClient!.off('session_update', callback)
   }
@@ -136,12 +136,12 @@ export class Web3ModalSign {
     this.#signClient!.off('session_delete', callback)
   }
 
-  public async onSessionExpire(callback: Web3ModalEventCallback) {
+  public async onSessionExpire<Event>(callback: Web3ModalEventCallback<Event>) {
     await this.#initSignClient()
     this.#signClient!.on('session_expire', callback)
   }
 
-  public async offSessionExpire(callback: Web3ModalEventCallback) {
+  public async offSessionExpire<Event>(callback: Web3ModalEventCallback<Event>) {
     await this.#initSignClient()
     this.#signClient!.off('session_expire', callback)
   }

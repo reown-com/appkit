@@ -2,25 +2,25 @@ import { Badge, Button, Card, Container, Divider, Grid, Link, Text } from '@next
 
 const reactCards = [
   {
-    title: 'Managed',
-    description: 'Fully managed modal playground',
-    link: '/ManagedReact',
-    color: 'primary',
-    libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi']
-  },
-  {
-    title: 'Managed v1',
-    description: 'Full managed modal playground, v1',
-    link: '/v1ManagedReact',
+    title: 'With Wagmi',
+    description: 'Wagmi playground',
+    link: '/with-wagmi/react',
     color: 'secondary',
-    libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi']
+    libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi', 'viem']
   },
   {
-    title: 'Customised',
-    description: 'Customised modal playground',
-    link: '/CustomisedReact',
-    color: 'error',
-    libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi']
+    title: 'With Wagmi v1',
+    description: 'Wagmi playground using WalletConnect v1',
+    link: '/with-wagmi/react-v1',
+    color: 'secondary',
+    libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi', 'viem']
+  },
+  {
+    title: 'With Wagmi Themed',
+    description: 'Wagmi playground with themed modal',
+    link: '/with-wagmi/react-themed',
+    color: 'secondary',
+    libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi', 'viem']
   },
   {
     title: 'With Sign API',

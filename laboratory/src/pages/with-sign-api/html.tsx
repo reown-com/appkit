@@ -4,6 +4,7 @@ import type { Web3ModalSignSession } from '@web3modal/sign-html'
 import { Web3ModalSign } from '@web3modal/sign-html'
 import { useEffect, useState } from 'react'
 import { getProjectId, getTheme } from '../../utilities/EnvUtil'
+import { METADATA } from '../../data/Constants'
 
 const projectId = getProjectId()
 
@@ -12,12 +13,7 @@ const web3ModalSign = new Web3ModalSign({
   modalOptions: {
     themeMode: getTheme()
   },
-  metadata: {
-    name: 'Web3Modal Lab',
-    description: 'Web3Modal Laboratory',
-    url: 'lab.web3modal.com',
-    icons: ['https://walletconnect.com/_next/static/media/logo_mark.84dd8525.svg']
-  }
+  metadata: METADATA
 })
 
 export default function WithSignHtmlPage() {
