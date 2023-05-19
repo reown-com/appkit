@@ -1,4 +1,4 @@
-import { createTheme, Link, NextUIProvider, Row, Switch, Text } from '@nextui-org/react'
+import { Button, Link, NextUIProvider, Row, Switch, Text, createTheme } from '@nextui-org/react'
 import type { AppProps } from 'next/app'
 import { useEffect, useState } from 'react'
 import { MoonIcon } from '../components/MoonIcon'
@@ -18,6 +18,11 @@ export default function App({ Component, pageProps }: AppProps) {
 
       return !prev
     })
+  }
+
+  function clearLocalStorage() {
+    localStorage.clear()
+    window.location.reload()
   }
 
   useEffect(() => {
@@ -43,6 +48,14 @@ export default function App({ Component, pageProps }: AppProps) {
               onChange={toggleTheme}
               checked={!dark}
             />
+            <Button
+              size="sm"
+              flat
+              onClick={clearLocalStorage}
+              css={{ marginLeft: 15, marginTop: 5 }}
+            >
+              Clear localStorage
+            </Button>
           </Row>
 
           <Component {...pageProps} />
