@@ -7,6 +7,8 @@ export function setWeb3ModalAuthClient(options: Web3ModalAuthOptions) {
   web3ModalAuthClient = new Web3ModalAuth(options)
 }
 
+export type Web3ModalAuthInstance = InstanceType<typeof Web3ModalAuth>
+
 export async function getWeb3ModalAuthClient(): Promise<Web3ModalAuth> {
   return new Promise(resolve => {
     if (web3ModalAuthClient) {

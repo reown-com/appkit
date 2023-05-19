@@ -8,10 +8,10 @@ const projectId = getProjectId()
 export default function WithAuthReactPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [response, setResponse] = useState('')
-  const signIn = useSignIn({ statement: 'Connect to Web3Modal Lab' })
+  const { signIn } = useSignIn({ statement: 'Connect to Web3Modal Lab' })
 
   async function onSignIn() {
-    const data = await signIn({ statement: 'Connect to Web3Modal Lab' })
+    const data = await signIn()
     setResponse(JSON.stringify(data, null, 2))
     setModalOpen(true)
   }

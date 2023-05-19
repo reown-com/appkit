@@ -52,7 +52,7 @@ export default function App({ Component, pageProps }: AppProps) {
               size="sm"
               flat
               onClick={clearLocalStorage}
-              css={{ marginLeft: 15, marginTop: 5 }}
+              css={{ marginLeft: 15, marginTop: 5, zIndex: 1 }}
             >
               Clear localStorage
             </Button>
