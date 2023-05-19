@@ -15,8 +15,6 @@ export function useSession() {
     }
   })
 
-  // Ilja TODO session creation, update state
-
   useOnSessionUpdate(event => {
     if (session && event.topic === session?.topic) {
       const { namespaces } = event.params

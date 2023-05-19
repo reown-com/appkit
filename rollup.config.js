@@ -1,11 +1,7 @@
-import commonjs from '@rollup/plugin-commonjs'
-import json from '@rollup/plugin-json'
-import resolve from '@rollup/plugin-node-resolve'
 import replace from '@rollup/plugin-replace'
 import esbuild from 'rollup-plugin-esbuild'
 import litCss from 'rollup-plugin-lit-css'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
-import polyfillNode from 'rollup-plugin-polyfill-node'
 
 export default function createConfig(packageJson) {
   const output = {
@@ -18,6 +14,7 @@ export default function createConfig(packageJson) {
     tsconfig: './tsconfig.json',
     platform: 'browser',
     treeShaking: true,
+    sourceMap: true,
     loaders: {
       '.json': 'json'
     }
@@ -39,19 +36,19 @@ export default function createConfig(packageJson) {
       input: './index.ts',
       plugins,
       output: [{ file: './dist/index.es.js', format: 'es', ...output }]
-    },
-    {
-      input: './index.ts',
-      plugins: [...plugins, json(), polyfillNode(), commonjs(), resolve({ browser: true })],
-      output: [
-        {
-          file: './dist/index.umd.js',
-          format: 'umd',
-          inlineDynamicImports: true,
-          extend: true,
-          ...output
-        }
-      ]
     }
+    // {
+    //   input: './index.ts',
+    //   plugins: [...plugins, json(), polyfillNode(), commonjs(), resolve({ browser: true })],
+    //   output: [
+    //     {
+    //       file: './dist/index.umd.js',
+    //       format: 'umd',
+    //       inlineDynamicImports: true,
+    //       extend: true,
+    //       ...output
+    //     }
+    //   ]
+    // }
   ]
 }
