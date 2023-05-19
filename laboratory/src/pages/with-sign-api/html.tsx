@@ -66,7 +66,7 @@ export default function WithSignHtmlPage() {
 
   useEffect(() => {
     async function init() {
-      const result = await web3ModalSign.getActiveSession()
+      const result = await web3ModalSign.getSession()
       setSession(result)
     }
 

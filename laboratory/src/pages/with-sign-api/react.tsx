@@ -1,6 +1,6 @@
 import { Button, Card, Divider, Modal, Text } from '@nextui-org/react'
 import { getSdkError } from '@walletconnect/utils'
-import { Web3ModalSign, useActiveSession, useConnect, useDisconnect } from '@web3modal/sign-react'
+import { Web3ModalSign, useConnect, useDisconnect, useSession } from '@web3modal/sign-react'
 import { useEffect, useState } from 'react'
 import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 
@@ -8,7 +8,7 @@ const projectId = getProjectId()
 
 export default function WithSignReactPage() {
   const [modalOpen, setModalOpen] = useState(false)
-  const session = useActiveSession()
+  const session = useSession()
   const { disconnect } = useDisconnect({
     topic: session?.topic as string,
     reason: getSdkError('USER_DISCONNECTED')
@@ -39,7 +39,7 @@ export default function WithSignReactPage() {
                 Sign Message
               </Button> */}
               <Divider y={2} />
-              <Button shadow color="error" onPress={() => disconnect()}>
+              <Button shadow color="error" onPress={async () => disconnect()}>
                 Disconnect
               </Button>
             </>

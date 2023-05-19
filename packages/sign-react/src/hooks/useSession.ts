@@ -4,9 +4,9 @@ import { getWeb3ModalSignClient } from '../client'
 import { useOnSessionDelete } from './useOnSessionDelete'
 import { useOnSessionUpdate } from './useOnSessionUpdate'
 
-type Data = Awaited<ReturnType<Web3ModalSignInstance['getActiveSession']>>
+type Data = Awaited<ReturnType<Web3ModalSignInstance['getSession']>>
 
-export function useActiveSession() {
+export function useSession() {
   const [session, setSession] = useState<Data | undefined>(undefined)
 
   useOnSessionDelete(event => {
@@ -15,7 +15,7 @@ export function useActiveSession() {
     }
   })
 
-  // TODO: session creation, update state
+  // Ilja TODO session creation, update state
 
   useOnSessionUpdate(event => {
     if (session && event.topic === session?.topic) {
@@ -28,7 +28,7 @@ export function useActiveSession() {
   useEffect(() => {
     async function getActiveSession() {
       const client = await getWeb3ModalSignClient()
-      const response = await client.getActiveSession()
+      const response = await client.getSession()
       setSession(response)
     }
 

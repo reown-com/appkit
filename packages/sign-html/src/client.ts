@@ -95,13 +95,13 @@ export class Web3ModalSign {
     return result as Result
   }
 
-  public async getAllSessions() {
+  public async getSessions() {
     await this.#initSignClient()
 
     return this.#signClient!.session.getAll()
   }
 
-  public async getActiveSession() {
+  public async getSession() {
     await this.#initSignClient()
 
     return this.#signClient!.session.getAll().at(-1)
