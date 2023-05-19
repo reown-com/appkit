@@ -23,6 +23,14 @@ export default function WithSignReactPage() {
     }
   })
 
+  function onConnect() {
+    connect()
+  }
+
+  function onDisconnect() {
+    disconnect()
+  }
+
   useEffect(() => {
     if (data?.topic) {
       setModalOpen(true)
@@ -39,12 +47,12 @@ export default function WithSignReactPage() {
                 Sign Message
               </Button> */}
               <Divider y={2} />
-              <Button shadow color="error" onPress={async () => disconnect()}>
+              <Button shadow color="error" onPress={onDisconnect}>
                 Disconnect
               </Button>
             </>
           ) : (
-            <Button shadow color="primary" onPress={() => connect()}>
+            <Button shadow color="primary" onPress={onConnect}>
               Connect
             </Button>
           )}
