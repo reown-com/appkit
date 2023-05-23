@@ -2,6 +2,10 @@ import { expect, test } from '@playwright/test'
 
 test('can connect wallet', async ({ page: w3m, context, browserName }) => {
   await w3m.goto('./ManagedReact')
+
+  const wallet = await context.newPage()
+  const reactWalletPromise = wallet.goto('https://react-wallet.walletconnect.com/walletconnect')
+
   await expect(w3m.getByText('Connect your wallet')).not.toBeVisible()
   await w3m.getByText('Connect Wallet').click({ force: true })
   await expect(w3m.getByText('Connect your wallet')).toBeVisible()
@@ -11,8 +15,7 @@ test('can connect wallet', async ({ page: w3m, context, browserName }) => {
   }
   await w3m.locator('w3m-modal-header[title="Connect your wallet"] button').click()
 
-  const wallet = await context.newPage()
-  await wallet.goto('https://react-wallet.walletconnect.com/walletconnect')
+  await reactWalletPromise
 
   const uriField = wallet.locator('input[type=text][placeholder^="e.g. wc:"]')
   await expect(uriField).toBeVisible()
