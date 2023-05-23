@@ -7,7 +7,7 @@ test('can connect wallet', async ({ page: w3m, context, browserName }) => {
   await expect(w3m.getByText('Connect your wallet')).toBeVisible()
 
   if (browserName === 'chromium') {
-    await context.grantPermissions(['clipboard-write'])
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
   }
   await w3m.locator('w3m-modal-header[title="Connect your wallet"] button').click()
 

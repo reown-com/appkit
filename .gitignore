@@ -8,3 +8,4 @@ out
 lerna-debug.log
 .env.local
 .env
+.secrets
