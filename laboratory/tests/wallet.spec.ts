@@ -20,7 +20,7 @@ test('can connect wallet', async ({ page: w3m, context, browserName }) => {
   await expect(uriField).toBeFocused()
 
   // https://github.com/microsoft/playwright/issues/8114#issuecomment-1550404655
-  const isMac = process.env.HOME?.startsWith('/Users/')
+  const isMac = process.platform === 'darwin'
   const modifier = isMac ? 'Meta' : 'Control'
   console.log(`keys ${modifier}+KeyV`)
   await wallet.keyboard.press(`${modifier}+KeyV`)
