@@ -36,9 +36,24 @@ test('can connect wallet', async ({ page: w3m, context, browserName }) => {
     has: wallet.locator('h3').filter({ hasText: 'Session Proposal' })
   })
   await expect(sessionProposal).toBeVisible()
-  await sessionProposal.locator('[role=button]').filter({ hasText: 'Account 1' }).click()
+  const account1Buttons = await sessionProposal
+    .locator('[role=button]')
+    .filter({ hasText: 'Account 1' })
+    .all()
+  for (const button of account1Buttons) {
+    await button.click()
+  }
 
   await expect(w3m.getByText('0 ETH')).not.toBeVisible()
-  await sessionProposal.getByText('Approve').click()
+
+  // await sessionProposal.locator('button', { hasText: 'Approve' }).click()
+
+  // .click() doesn't work for some reason (seems like recent change), so using keyboard instead
+  const approveButton = sessionProposal.locator('button', { hasText: 'Approve' })
+  await expect(approveButton).toBeVisible()
+  await expect(approveButton).toBeEnabled()
+  await approveButton.focus()
+  await wallet.keyboard.press('Space')
+
   await expect(w3m.getByText('0 ETH')).toBeVisible()
 })
