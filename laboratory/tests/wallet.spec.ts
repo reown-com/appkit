@@ -24,6 +24,7 @@ test('can connect wallet', async ({ page: w3mPage, context, browserName }) => {
   }
   await w3mPage.locator('w3m-modal-header[title="Connect your wallet"] button').click()
 
+  // Parallelize page loading for test speed
   await walletPagePromise
 
   const uriField = walletPage.locator('input[type=text][placeholder^="e.g. wc:"]')

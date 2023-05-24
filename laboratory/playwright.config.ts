@@ -6,6 +6,19 @@ import { defineConfig, devices } from '@playwright/test'
  */
 // Require('dotenv').config();
 
+const CI_SCHEDULE = process.env.CI_SCHEDULE
+/*
+ * CI_SCHEDULE == true
+ * - https://lab.web3modal.com
+ * - https://react-wallet.walletconnect.com
+ *
+ * CI_SCHEDULE == false
+ * - http://127.0.0.1:3000
+ * - https://react-wallet.walletconnect.com
+ */
+
+const LOCAL_SERVER = 'http://127.0.0.1:3000'
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -28,7 +41,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://127.0.0.1:3000',
+    baseURL: CI_SCHEDULE ? 'https://lab.web3modal.com' : LOCAL_SERVER,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry'
@@ -77,9 +90,11 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'yarn dev',
-    url: 'http://127.0.0.1:3000',
-    reuseExistingServer: !process.env.CI
-  }
+  webServer: CI_SCHEDULE
+    ? undefined
+    : {
+        command: 'yarn dev',
+        url: LOCAL_SERVER,
+        reuseExistingServer: !process.env.CI
+      }
 })

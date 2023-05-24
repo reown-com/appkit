@@ -4,6 +4,8 @@ on:
     branches: [ V2, feat/playwright ]
   pull_request:
     branches: [ V2 ]
+  schedule:
+  - cron: '0 0 * * *' # run every day at midnight
 
 jobs:
   test:
@@ -20,6 +22,7 @@ jobs:
       run: yarn install --frozen-lockfile
     - name: Build
       run: yarn build
+      if: ${{ github.event_name != 'schedule' }}
       env:
         NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
     - name: Install Playwright Browsers
@@ -29,6 +32,7 @@ jobs:
       working-directory: laboratory
       env:
         NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+        CI_SCHEDULE: ${{ github.event_name == 'schedule' }}
     - uses: actions/upload-artifact@v3
       if: always()
       with:
