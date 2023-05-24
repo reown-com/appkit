@@ -55,5 +55,5 @@ test('can connect wallet', async ({ page: w3m, context, browserName }) => {
   await approveButton.focus()
   await wallet.keyboard.press('Space')
 
-  await expect(w3m.getByText('0 ETH')).toBeVisible()
+  await expect(w3m.getByText('1 ETH')).toBeVisible()
 })
