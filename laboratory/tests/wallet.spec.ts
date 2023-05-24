@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 test('can connect wallet', async ({ page: w3mPage, context, browserName }) => {
   test.skip(
-    browserName == 'webkit' && process.platform == 'linux',
+    browserName === 'webkit' && process.platform === 'linux',
     "Webkit on Linux doesn't seem to support clipboard"
   )
 
@@ -15,8 +15,10 @@ test('can connect wallet', async ({ page: w3mPage, context, browserName }) => {
   await w3mPage.getByText('Connect Wallet').click({ force: true })
   await expect(w3mPage.getByText('Connect your wallet')).toBeVisible()
 
-  // Chromium needs clipboard permissions granted, but other browsers don't support this (and don't need it):
-  // https://github.com/microsoft/playwright/issues/19888
+  /*
+   * Chromium needs clipboard permissions granted, but other browsers don't support this (and don't need it):
+   * https://github.com/microsoft/playwright/issues/19888
+   */
   if (browserName === 'chromium') {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
   }
@@ -26,14 +28,12 @@ test('can connect wallet', async ({ page: w3mPage, context, browserName }) => {
 
   const uriField = walletPage.locator('input[type=text][placeholder^="e.g. wc:"]')
   await expect(uriField).toBeVisible()
-  await walletPage.waitForTimeout(2000)
   await uriField.focus()
   await expect(uriField).toBeFocused()
 
   // https://github.com/microsoft/playwright/issues/8114#issuecomment-1550404655
   const isMac = process.platform === 'darwin'
   const modifier = isMac ? 'Meta' : 'Control'
-  console.log(`keys ${modifier}+KeyV`)
   await walletPage.keyboard.press(`${modifier}+KeyV`)
   await expect(uriField).toBeFocused()
 
@@ -49,15 +49,14 @@ test('can connect wallet', async ({ page: w3mPage, context, browserName }) => {
     .locator('[role=button]')
     .filter({ hasText: 'Account 1' })
     .all()
-  for (const button of account1Buttons) {
-    await button.click()
-  }
+  await Promise.all(account1Buttons.map(async button => button.click()))
 
   await expect(w3mPage.getByText('0 ETH')).not.toBeVisible()
 
-  // await sessionProposal.locator('button', { hasText: 'Approve' }).click()
-
-  // .click() doesn't work for some reason (seems like recent change), so using keyboard instead
+  /*
+   * Await sessionProposal.locator('button', { hasText: 'Approve' }).click()
+   * .click() no longer works on this button for some reason (seems like recent change), so using keyboard instead
+   */
   const approveButton = sessionProposal.locator('button', { hasText: 'Approve' })
   await expect(approveButton).toBeVisible()
   await expect(approveButton).toBeEnabled()
