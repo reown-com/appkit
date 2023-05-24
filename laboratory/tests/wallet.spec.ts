@@ -10,7 +10,8 @@ test('can connect wallet', async ({ page: w3mPage, context, browserName }) => {
   await w3mPage.getByText('Connect Wallet').click({ force: true })
   await expect(w3mPage.getByText('Connect your wallet')).toBeVisible()
 
-  if (browserName === 'chromium') {
+  const isMac = process.platform === 'darwin'
+  if (browserName === 'chromium' || !isMac) {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
   }
   await w3mPage.locator('w3m-modal-header[title="Connect your wallet"] button').click()
@@ -24,7 +25,6 @@ test('can connect wallet', async ({ page: w3mPage, context, browserName }) => {
   await expect(uriField).toBeFocused()
 
   // https://github.com/microsoft/playwright/issues/8114#issuecomment-1550404655
-  const isMac = process.platform === 'darwin'
   const modifier = isMac ? 'Meta' : 'Control'
   console.log(`keys ${modifier}+KeyV`)
   await walletPage.keyboard.press(`${modifier}+KeyV`)
