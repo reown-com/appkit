@@ -19,6 +19,7 @@ test('can connect wallet', async ({ page: w3m, context, browserName }) => {
 
   const uriField = wallet.locator('input[type=text][placeholder^="e.g. wc:"]')
   await expect(uriField).toBeVisible()
+  await wallet.waitForTimeout(500)
   await uriField.focus()
   await expect(uriField).toBeFocused()
 
