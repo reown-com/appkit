@@ -1,6 +1,11 @@
 import { expect, test } from '@playwright/test'
 
 test('can connect wallet', async ({ page: w3mPage, context, browserName }) => {
+  test.skip(
+    browserName == 'webkit' && process.platform == 'linux',
+    "Webkit on Linux doesn't seem to support clipboard"
+  )
+
   await w3mPage.goto('./ManagedReact')
 
   const walletPage = await context.newPage()
@@ -10,8 +15,9 @@ test('can connect wallet', async ({ page: w3mPage, context, browserName }) => {
   await w3mPage.getByText('Connect Wallet').click({ force: true })
   await expect(w3mPage.getByText('Connect your wallet')).toBeVisible()
 
-  const isMac = process.platform === 'darwin'
-  if (browserName === 'chromium' || !isMac) {
+  // Chromium needs clipboard permissions granted, but other browsers don't support this (and don't need it):
+  // https://github.com/microsoft/playwright/issues/19888
+  if (browserName === 'chromium') {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
   }
   await w3mPage.locator('w3m-modal-header[title="Connect your wallet"] button').click()
@@ -25,6 +31,7 @@ test('can connect wallet', async ({ page: w3mPage, context, browserName }) => {
   await expect(uriField).toBeFocused()
 
   // https://github.com/microsoft/playwright/issues/8114#issuecomment-1550404655
+  const isMac = process.platform === 'darwin'
   const modifier = isMac ? 'Meta' : 'Control'
   console.log(`keys ${modifier}+KeyV`)
   await walletPage.keyboard.press(`${modifier}+KeyV`)
