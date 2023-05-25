@@ -32,5 +32,8 @@
   "javascript.updateImportsOnFileMove.enabled": "always",
   "typescript.suggest.autoImports": false,
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.updateImportsOnFileMove.enabled": "always"
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "github-actions.workflows.pinned.workflows": [
+    ".github/workflows/playwright.yml"
+  ]
 }
