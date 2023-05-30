@@ -65,4 +65,12 @@ test('can connect', async ({ page: w3mPage, context, browserName }) => {
   await walletPage.keyboard.press('Space')
 
   await expect(w3mPage.getByText('0 ETH')).toBeVisible()
+
+  await expect(w3mPage.getByText('Connected')).not.toBeVisible()
+  await w3mPage.locator('w3m-address-text').click()
+  await expect(w3mPage.getByText('Connected')).toBeVisible()
+
+  await w3mPage.locator('w3m-box-button', { hasText: 'Disconnect' }).click()
+  await expect(w3mPage.getByText('Connected')).not.toBeVisible()
+  await expect(w3mPage.getByText('0 ETH')).not.toBeVisible()
 })
