@@ -46,7 +46,7 @@ test('can get Zerion', async ({ page }) => {
   const zerionIoPagePromise = page.waitForEvent('popup')
   await page.getByText('Zerion').locator('../..').locator('button').click()
   const zerionIo = await zerionIoPagePromise
-  await expect(zerionIo).toHaveURL(/zerion.io/)
+  await expect(zerionIo).toHaveURL(/zerion.io/u)
 })
 
 test('can Learn More', async ({ page }) => {
@@ -57,7 +57,7 @@ test('can Learn More', async ({ page }) => {
   const ethereumPagePromise = page.waitForEvent('popup')
   await page.locator('w3m-button', { hasText: 'Learn More' }).first().click()
   const ethereumPage = await ethereumPagePromise
-  await expect(ethereumPage).toHaveURL(/ethereum.org\/en\/wallets/)
+  await expect(ethereumPage).toHaveURL(/ethereum.org\/en\/wallets/u)
 })
 
 test('can Explore Wallets', async ({ page }) => {
@@ -71,7 +71,7 @@ test('can Explore Wallets', async ({ page }) => {
   const explorerPagePromise = page.waitForEvent('popup')
   await page.locator('w3m-button', { hasText: 'Explore Wallets' }).click()
   const explorerPage = await explorerPagePromise
-  await expect(explorerPage).toHaveURL(/walletconnect.com\/explorer/)
+  await expect(explorerPage).toHaveURL(/walletconnect.com\/explorer/u)
 })
 
 test('can open Zerion', async ({ page }) => {
