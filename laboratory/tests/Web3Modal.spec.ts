@@ -18,6 +18,35 @@ test('can click (?)', async ({ page }) => {
   await expect(page.locator('w3m-modal-content')).toContainText('A home for your digital assets')
 })
 
+test('can get Zerion', async ({ page }) => {
+  await openModal(page)
+  await page.locator('.w3m-toolbar').locator('button').first().click()
+  await expect(page.locator('[title="Get a wallet"]')).not.toBeVisible()
+  await page.locator('w3m-button', { hasText: 'Get a Wallet' }).first().click()
+  await expect(page.getByText('Zerion')).not.toBeVisible()
+  await expect(page.locator('[title="Get a wallet"]')).toBeVisible()
+  await expect(page.getByText('Zerion')).toBeVisible()
+
+  const zerionIoPagePromise = page.waitForEvent('popup')
+  await page.getByText('Zerion').locator('../..').locator('button').click()
+  const zerionIo = await zerionIoPagePromise
+  await expect(zerionIo).toHaveURL(/zerion.io/)
+})
+
+test('can Explore Wallets', async ({ page }) => {
+  await openModal(page)
+  await page.locator('.w3m-toolbar').locator('button').first().click()
+  await expect(page.locator('[title="Get a wallet"]')).not.toBeVisible()
+  await page.locator('w3m-button', { hasText: 'Get a Wallet' }).first().click()
+  await expect(page.locator('[title="Get a wallet"]')).toBeVisible()
+  await expect(page.getByText("Not what you're looking for?")).toBeVisible()
+
+  const explorerPagePromise = page.waitForEvent('popup')
+  await page.locator('w3m-button', { hasText: 'Explore Wallets' }).click()
+  const explorerPage = await explorerPagePromise
+  await expect(explorerPage).toHaveURL(/walletconnect.com\/explorer/)
+})
+
 test('can open Zerion', async ({ page }) => {
   await openModal(page)
 
@@ -26,7 +55,7 @@ test('can open Zerion', async ({ page }) => {
 
   const appZerionIoPromise = page.waitForEvent('popup')
 
-  const webButton = page.locator('button.w3m-outline').nth(1)
+  const webButton = page.locator('w3m-button', { hasText: 'Web' })
   await webButton.click()
 
   const appZerionIo = await appZerionIoPromise
