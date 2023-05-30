@@ -6,7 +6,7 @@ import { defineConfig, devices } from '@playwright/test'
  */
 // Require('dotenv').config();
 
-const {CI_SCHEDULE} = process.env
+const { CI_SCHEDULE } = process.env
 /*
  * CI_SCHEDULE == true
  * - https://lab.web3modal.com
