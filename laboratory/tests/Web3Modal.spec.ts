@@ -7,6 +7,17 @@ test('can click View All', async ({ page }) => {
   await expect(page.locator('[placeholder="Search wallets"]')).toBeVisible()
 })
 
+test('can click (?)', async ({ page }) => {
+  await openModal(page)
+  await expect(page.locator('w3m-modal-content')).not.toContainText(
+    'A home for your digital assets'
+  )
+  await page.locator('.w3m-toolbar').locator('button').first().click()
+  await expect(page.locator('[title="What is a wallet?"]')).toBeVisible()
+  await expect(page.locator('[title="What is a wallet?"]')).toContainText('What is a wallet?')
+  await expect(page.locator('w3m-modal-content')).toContainText('A home for your digital assets')
+})
+
 test('can open Zerion', async ({ page }) => {
   await openModal(page)
 
