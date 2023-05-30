@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-test('can connect wallet', async ({ page: w3mPage, context, browserName }) => {
+test('can connect', async ({ page: w3mPage, context, browserName }) => {
   test.skip(
     browserName === 'webkit' && process.platform === 'linux',
     "Webkit on Linux doesn't seem to support clipboard"
