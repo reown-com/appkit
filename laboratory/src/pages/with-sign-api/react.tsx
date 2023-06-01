@@ -7,57 +7,41 @@ import {
   useRequest,
   useSession
 } from '@web3modal/sign-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { DEMO_METADATA, DEMO_NAMESPACE, DEMO_SIGN_REQUEST } from '../../data/Constants'
 import { getProjectId, getTheme } from '../../utilities/EnvUtil'
-
-const projectId = getProjectId()
 
 export default function WithSignReactPage() {
   const [modalOpen, setModalOpen] = useState(false)
-
+  const [response, setResponse] = useState('')
   const session = useSession()
-
-  const { request } = useRequest({
-    topic: session?.topic as string,
-    chainId: 'eip155:1',
-    request: {
-      method: 'personal_sign',
-      params: ['0xdeadbeaf', getAddressFromAccount(session?.namespaces.eip155.accounts[0] ?? '')]
-    }
-  })
-
+  const { request } = useRequest(
+    DEMO_SIGN_REQUEST(
+      session?.topic as string,
+      getAddressFromAccount(session?.namespaces.eip155.accounts[0] ?? '')
+    )
+  )
   const { disconnect } = useDisconnect({
     topic: session?.topic as string,
     reason: getSdkError('USER_DISCONNECTED')
   })
+  const { connect } = useConnect(DEMO_NAMESPACE)
 
-  const { connect, data } = useConnect({
-    requiredNamespaces: {
-      eip155: {
-        methods: ['eth_sendTransaction', 'personal_sign'],
-        chains: ['eip155:1'],
-        events: ['chainChanged', 'accountsChanged']
-      }
-    }
-  })
-
-  function onConnect() {
-    connect()
+  async function onConnect() {
+    const result = await connect()
+    setResponse(JSON.stringify(result, null, 2))
+    setModalOpen(true)
   }
 
   function onDisconnect() {
     disconnect()
   }
 
-  function onSignMessage() {
-    request()
+  async function onSignMessage() {
+    const result = await request()
+    setResponse(JSON.stringify(result, null, 2))
+    setModalOpen(true)
   }
-
-  useEffect(() => {
-    if (data?.topic) {
-      setModalOpen(true)
-    }
-  }, [data?.topic])
 
   return (
     <>
@@ -86,21 +70,14 @@ export default function WithSignReactPage() {
           <Text h3>Success</Text>
         </Modal.Header>
         <Modal.Body>
-          <Text color="grey">{JSON.stringify(data, null, 2)}</Text>
+          <Text color="grey">{response}</Text>
         </Modal.Body>
       </Modal>
 
       <Web3ModalSign
-        projectId={projectId}
-        modalOptions={{
-          themeMode: getTheme()
-        }}
-        metadata={{
-          name: 'Web3Modal Lab',
-          description: 'Web3Modal Laboratory',
-          url: 'lab.web3modal.com',
-          icons: ['https://walletconnect.com/_next/static/media/logo_mark.84dd8525.svg']
-        }}
+        projectId={getProjectId()}
+        modalOptions={{ themeMode: getTheme() }}
+        metadata={DEMO_METADATA}
       />
     </>
   )

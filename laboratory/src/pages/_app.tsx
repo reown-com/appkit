@@ -1,7 +1,9 @@
-import { Button, Link, NextUIProvider, Row, Switch, Text, createTheme } from '@nextui-org/react'
+import { Link, NextUIProvider, Row, Switch, Text, createTheme } from '@nextui-org/react'
 import type { AppProps } from 'next/app'
 import { useEffect, useState } from 'react'
+import { ClearLocalStorageButton } from '../components/ClearLocalStorageButton'
 import { MoonIcon } from '../components/MoonIcon'
+import { ShowLocalStorageButton } from '../components/ShowLocalStorageButton'
 import { SunIcon } from '../components/SunIcon'
 import { getTheme } from '../utilities/EnvUtil'
 import { bootstrap as bootstrapSentry } from '../utilities/SentryUtil'
@@ -20,11 +22,6 @@ export default function App({ Component, pageProps }: AppProps) {
     })
   }
 
-  function clearLocalStorage() {
-    localStorage.clear()
-    window.location.reload()
-  }
-
   useEffect(() => {
     setDark(getTheme() === 'dark')
     setReady(true)
@@ -35,12 +32,12 @@ export default function App({ Component, pageProps }: AppProps) {
       {ready ? (
         <NextUIProvider theme={createTheme({ type: dark ? 'dark' : 'light' })}>
           <Link href="/" css={{ margin: '30px auto 0', display: 'block' }}>
-            <Text h1 color="success">
-              Web3Modal Lab 🧪
+            <Text h2 color="success">
+              Web3Modal Lab
             </Text>
           </Link>
 
-          <Row justify="center">
+          <Row justify="center" align="center">
             <Switch
               size="xl"
               iconOff={<MoonIcon />}
@@ -48,14 +45,10 @@ export default function App({ Component, pageProps }: AppProps) {
               onChange={toggleTheme}
               checked={!dark}
             />
-            <Button
-              size="sm"
-              flat
-              onClick={clearLocalStorage}
-              css={{ marginLeft: 15, marginTop: 5, zIndex: 1 }}
-            >
-              Clear localStorage
-            </Button>
+            <div>
+              <ShowLocalStorageButton />
+              <ClearLocalStorageButton />
+            </div>
           </Row>
 
           <Component {...pageProps} />

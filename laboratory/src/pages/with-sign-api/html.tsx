@@ -3,17 +3,13 @@ import { getAddressFromAccount, getSdkError } from '@walletconnect/utils'
 import type { Web3ModalSignSession } from '@web3modal/sign-html'
 import { Web3ModalSign } from '@web3modal/sign-html'
 import { useEffect, useState } from 'react'
-import { METADATA } from '../../data/Constants'
+import { DEMO_METADATA, DEMO_NAMESPACE, DEMO_SIGN_REQUEST } from '../../data/Constants'
 import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 
-const projectId = getProjectId()
-
 const web3ModalSign = new Web3ModalSign({
-  projectId,
-  modalOptions: {
-    themeMode: getTheme()
-  },
-  metadata: METADATA
+  projectId: getProjectId(),
+  modalOptions: { themeMode: getTheme() },
+  metadata: DEMO_METADATA
 })
 
 export default function WithSignHtmlPage() {
@@ -22,15 +18,7 @@ export default function WithSignHtmlPage() {
   const [session, setSession] = useState<Web3ModalSignSession | undefined>(undefined)
 
   async function onConnect() {
-    const result = await web3ModalSign.connect({
-      requiredNamespaces: {
-        eip155: {
-          methods: ['eth_sendTransaction', 'personal_sign'],
-          chains: ['eip155:1'],
-          events: ['chainChanged', 'accountsChanged']
-        }
-      }
-    })
+    const result = await web3ModalSign.connect(DEMO_NAMESPACE)
     setSession(result)
     setResponse(JSON.stringify(result, null, 2))
     setModalOpen(true)
@@ -49,14 +37,7 @@ export default function WithSignHtmlPage() {
   async function onSignMessage() {
     if (session) {
       const account = getAddressFromAccount(session.namespaces.eip155.accounts[0])
-      const result = await web3ModalSign.request({
-        topic: session.topic,
-        chainId: 'eip155:1',
-        request: {
-          method: 'personal_sign',
-          params: ['0xdeadbeaf', account]
-        }
-      })
+      const result = await web3ModalSign.request(DEMO_SIGN_REQUEST(session.topic, account))
       setResponse(JSON.stringify(result, null, 2))
     } else {
       setResponse('No active session, please connect first')
@@ -70,23 +51,14 @@ export default function WithSignHtmlPage() {
       setSession(result)
     }
 
-    function logData(data: unknown) {
-      console.info(data)
-    }
-
     function deleteSession() {
       setSession(undefined)
     }
 
-    web3ModalSign.onSessionEvent(logData)
-    web3ModalSign.onSessionUpdate(logData)
     web3ModalSign.onSessionDelete(deleteSession)
-
     init()
 
     return () => {
-      web3ModalSign.offSessionEvent(logData)
-      web3ModalSign.offSessionUpdate(logData)
       web3ModalSign.offSessionDelete(deleteSession)
     }
   }, [])
