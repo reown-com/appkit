@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/react",
-  "version": "2.4.2-3d672481",
+  "version": "2.4.2",
   "main": "dist/index.es.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -16,11 +16,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/core": "2.4.2-3d672481",
-    "@web3modal/ui": "2.4.2-3d672481"
+    "@web3modal/core": "2.4.2",
+    "@web3modal/ui": "2.4.2"
   },
   "devDependencies": {
-    "@web3modal/ethereum": "2.4.2-3d672481"
+    "@web3modal/ethereum": "2.4.2"
   },
   "peerDependencies": {
     "react": ">=17",
@@ -32,7 +32,6 @@
     "ethereum",
     "web3modal",
     "walletconnect",
-    "web3auth",
     "react"
   ],
   "author": "WalletConnect <walletconnect.com>",

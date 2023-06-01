@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ui",
-  "version": "2.4.2-3d672481",
+  "version": "2.4.2",
   "main": "dist/index.es.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/core": "2.4.2-3d672481",
+    "@web3modal/core": "2.4.2",
     "lit": "2.7.4",
     "motion": "10.16.2",
     "qrcode": "1.5.3"
@@ -32,10 +32,8 @@
     "ethereum",
     "web3modal",
     "walletconnect",
-    "web3auth",
     "lit",
-    "webcomponents",
-    "ui"
+    "webcomponents"
   ],
   "author": "WalletConnect <walletconnect.com>",
   "license": "Apache-2.0",

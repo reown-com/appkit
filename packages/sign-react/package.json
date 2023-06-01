@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/sign-react",
-  "version": "2.4.2-3d672481",
+  "version": "2.4.2",
   "main": "dist/index.es.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/sign-html": "2.4.2-3d672481",
+    "@web3modal/sign-html": "2.4.2",
     "mitt": "3.0.0"
   },
   "peerDependencies": {
@@ -29,7 +29,7 @@
     "ethereum",
     "web3modal",
     "walletconnect",
-    "web3auth",
+    "sign",
     "react"
   ],
   "author": "WalletConnect <walletconnect.com>",
