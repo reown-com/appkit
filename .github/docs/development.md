@@ -5,24 +5,24 @@
 Install dependencies from the repository's root directory (this will also set up each workspace):
 
 ```bash
-yarn
+npm install
 ```
 
 ## .env.local file setup
 
 Laboratory has `.env.local.example` file. Copy its content and create new `.env.local` file in the same directory.
-Without these `yarn:build` command will fail. To create your ProjectID head to [cloud.walletconnect.com](https://cloud.walletconnect.com/)
+Without these `npm run build` command will fail. To create your ProjectID head to [cloud.walletconnect.com](https://cloud.walletconnect.com/)
 
 ## Commands
 
-Please execute all commands from the monorepo root to avoid issues with yarn workspaces. Running `build` command is required if this is your first time setting up the monorepo.
+Please execute all commands from the monorepo root to avoid issues with npm workspaces. Running `build` command is required if this is your first time setting up the monorepo.
 
-- `yarn build` - Build all packages.
-- `yarn dev` - Build and watch all packages for changes.
-- `yarn dev:lab` - Run laboratory example (has to be ran together with `yarn dev` in a separate terminal tab).
-- `yarn lint` - Run the linter.
-- `yarn prettier` - Run prettier.
-- `yarn typecheck` - Run typescript checks.
+- `npm run build` - Build all packages.
+- `npm run dev` - Build and watch all packages for changes.
+- `npm run lab` - Run laboratory example (has to be ran together with `npm run dev` in a separate terminal tab).
+- `npm run lint` - Run the linter.
+- `npm run prettier` - Run prettier.
+- `npm run typecheck` - Run typescript checks.
 
 ## Repository structure
 

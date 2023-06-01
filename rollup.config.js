@@ -3,16 +3,10 @@ import esbuild from 'rollup-plugin-esbuild'
 import litCss from 'rollup-plugin-lit-css'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
 
-const nodeVersion = Number(process.versions.node.split('.')[0])
-if (nodeVersion < 16) {
-  throw new Error('Node version must be 16.x or higher')
-}
-
 export default function createConfig(packageJson) {
   const output = {
     exports: 'named',
-    name: packageJson.name,
-    sourcemap: true
+    name: packageJson.name
   }
 
   const esbuildPlugin = esbuild({
@@ -20,6 +14,7 @@ export default function createConfig(packageJson) {
     tsconfig: './tsconfig.json',
     platform: 'browser',
     treeShaking: true,
+    sourceMap: true,
     loaders: {
       '.json': 'json'
     }
@@ -34,11 +29,28 @@ export default function createConfig(packageJson) {
     'process.env.ROLLUP_W3M_VERSION': JSON.stringify(packageJson.version)
   })
 
+  const plugins = [replacePlugin, litCssPlugin, minifyHtml.default(), esbuildPlugin]
+
   return [
     {
       input: './index.ts',
-      plugins: [replacePlugin, litCssPlugin, minifyHtml.default(), esbuildPlugin],
-      output: [{ file: './dist/index.js', format: 'es', ...output }]
+      plugins,
+      output: [{ file: './dist/index.es.js', format: 'es', ...output }]
     }
+    // TODO: Ilja finish umd build
+    //
+    // {
+    //   input: './index.ts',
+    //   plugins: [...plugins, json(), polyfillNode(), commonjs(), resolve({ browser: true })],
+    //   output: [
+    //     {
+    //       file: './dist/index.umd.js',
+    //       format: 'umd',
+    //       inlineDynamicImports: true,
+    //       extend: true,
+    //       ...output
+    //     }
+    //   ]
+    // }
   ]
 }

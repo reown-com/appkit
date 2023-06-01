@@ -1,17 +1,21 @@
 import { Button, Card, Modal, Text } from '@nextui-org/react'
-import { Web3ModalAuth, useSignIn } from '@web3modal/auth-react'
+import { Web3ModalAuth } from '@web3modal/auth-html'
 import { useState } from 'react'
-import { getProjectId, getTheme } from '../utilities/EnvUtil'
+import { DEMO_METADATA, DEMO_STATEMENT } from '../../data/Constants'
+import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 
-const projectId = getProjectId()
+const web3ModalAuth = new Web3ModalAuth({
+  projectId: getProjectId(),
+  modalOptions: { themeMode: getTheme() },
+  metadata: DEMO_METADATA
+})
 
-export default function AuthReactPage() {
+export default function WithAuthHtmlPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [response, setResponse] = useState('')
-  const signIn = useSignIn({ statement: 'Connect to Web3Modal Lab' })
 
   async function onSignIn() {
-    const data = await signIn({ statement: 'Connect to Web3Modal Lab' })
+    const data = await web3ModalAuth.signIn(DEMO_STATEMENT)
     setResponse(JSON.stringify(data, null, 2))
     setModalOpen(true)
   }
@@ -34,19 +38,6 @@ export default function AuthReactPage() {
           <Text color="grey">{response}</Text>
         </Modal.Body>
       </Modal>
-
-      <Web3ModalAuth
-        projectId={projectId}
-        modalOptions={{
-          themeMode: getTheme()
-        }}
-        metadata={{
-          name: 'Web3Modal Lab',
-          description: 'Web3Modal Laboratory',
-          url: 'lab.web3modal.com',
-          icons: ['https://walletconnect.com/_next/static/media/logo_mark.84dd8525.svg']
-        }}
-      />
     </>
   )
 }

@@ -2,37 +2,37 @@ import { Badge, Button, Card, Container, Divider, Grid, Link, Text } from '@next
 
 const reactCards = [
   {
-    title: 'Managed',
-    description: 'Fully managed modal playground',
-    link: '/ManagedReact',
-    color: 'primary',
-    libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi']
-  },
-  {
-    title: 'Managed v1',
-    description: 'Full managed modal playground, v1',
-    link: '/v1ManagedReact',
+    title: 'With Wagmi',
+    description: 'Wagmi playground',
+    link: '/with-wagmi/react',
     color: 'secondary',
-    libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi']
+    libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi', 'viem']
   },
   {
-    title: 'Standalone',
-    description: 'Standalone modal playground',
-    link: '/StandaloneReact',
-    color: 'warning',
-    libraries: ['@web3modal/standalone', '@walletconnect/sign-client']
+    title: 'With Wagmi v1',
+    description: 'Wagmi playground using WalletConnect v1',
+    link: '/with-wagmi/react-v1',
+    color: 'secondary',
+    libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi', 'viem']
   },
   {
-    title: 'Customised',
-    description: 'Customised modal playground',
-    link: '/CustomisedReact',
-    color: 'error',
-    libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi']
+    title: 'With Wagmi Themed',
+    description: 'Wagmi playground with themed modal',
+    link: '/with-wagmi/react-themed',
+    color: 'secondary',
+    libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi', 'viem']
   },
   {
-    title: 'Auth',
+    title: 'With Sign API',
+    description: 'Sign modal playground',
+    link: '/with-sign-api/react',
+    color: 'primary',
+    libraries: ['@web3modal/sign-react']
+  },
+  {
+    title: 'With Auth Api',
     description: 'Auth modal playground',
-    link: '/AuthReact',
+    link: '/with-auth-api/react',
     color: 'success',
     libraries: ['@web3modal/auth-react']
   }
@@ -40,9 +40,16 @@ const reactCards = [
 
 const htmlCards = [
   {
-    title: 'Auth',
+    title: 'With Sign API',
+    description: 'Sign modal playground',
+    link: '/with-sign-api/html',
+    color: 'primary',
+    libraries: ['@web3modal/sign-html']
+  },
+  {
+    title: 'With Auth API',
     description: 'Auth modal playground',
-    link: '/AuthHtml',
+    link: '/with-auth-api/html',
     color: 'success',
     libraries: ['@web3modal/auth-html']
   }
