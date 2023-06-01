@@ -1,5 +1,8 @@
 import type { Web3ModalSignOptions } from '@web3modal/sign-html'
 import { Web3ModalSign } from '@web3modal/sign-html'
+import mitt from 'mitt'
+
+export const emitter = mitt()
 
 let web3ModalSignClient: Web3ModalSign | undefined = undefined
 

@@ -1,6 +1,12 @@
 import { Button, Card, Divider, Modal, Text } from '@nextui-org/react'
-import { getSdkError } from '@walletconnect/utils'
-import { Web3ModalSign, useConnect, useDisconnect, useSession } from '@web3modal/sign-react'
+import { getAddressFromAccount, getSdkError } from '@walletconnect/utils'
+import {
+  Web3ModalSign,
+  useConnect,
+  useDisconnect,
+  useRequest,
+  useSession
+} from '@web3modal/sign-react'
 import { useEffect, useState } from 'react'
 import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 
@@ -8,11 +14,23 @@ const projectId = getProjectId()
 
 export default function WithSignReactPage() {
   const [modalOpen, setModalOpen] = useState(false)
+
   const session = useSession()
+
+  const { request } = useRequest({
+    topic: session?.topic as string,
+    chainId: 'eip155:1',
+    request: {
+      method: 'personal_sign',
+      params: ['0xdeadbeaf', getAddressFromAccount(session?.namespaces.eip155.accounts[0] ?? '')]
+    }
+  })
+
   const { disconnect } = useDisconnect({
     topic: session?.topic as string,
     reason: getSdkError('USER_DISCONNECTED')
   })
+
   const { connect, data } = useConnect({
     requiredNamespaces: {
       eip155: {
@@ -31,6 +49,10 @@ export default function WithSignReactPage() {
     disconnect()
   }
 
+  function onSignMessage() {
+    request()
+  }
+
   useEffect(() => {
     if (data?.topic) {
       setModalOpen(true)
@@ -43,9 +65,9 @@ export default function WithSignReactPage() {
         <Card.Body css={{ justifyContent: 'center', alignItems: 'center', height: '200px' }}>
           {session ? (
             <>
-              {/* <Button shadow color="primary" onPress={onSignMessage}>
+              <Button shadow color="primary" onPress={onSignMessage}>
                 Sign Message
-              </Button> */}
+              </Button>
               <Divider y={2} />
               <Button shadow color="error" onPress={onDisconnect}>
                 Disconnect

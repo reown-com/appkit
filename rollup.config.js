@@ -37,6 +37,8 @@ export default function createConfig(packageJson) {
       plugins,
       output: [{ file: './dist/index.es.js', format: 'es', ...output }]
     }
+    // TODO: Ilja finish umd build
+    //
     // {
     //   input: './index.ts',
     //   plugins: [...plugins, json(), polyfillNode(), commonjs(), resolve({ browser: true })],

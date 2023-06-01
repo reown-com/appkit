@@ -16,7 +16,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/sign-html": "2.4.2-3d672481"
+    "@web3modal/sign-html": "2.4.2-3d672481",
+    "mitt": "3.0.0"
   },
   "peerDependencies": {
     "react": ">=17",

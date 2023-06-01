@@ -1,6 +1,6 @@
 import type { Web3ModalSignConnectArguments } from '@web3modal/sign-html'
 import type { Web3ModalSignInstance } from '../client'
-import { getWeb3ModalSignClient } from '../client'
+import { emitter, getWeb3ModalSignClient } from '../client'
 import { useAsyncAction } from './_useAsyncAction'
 
 type Data = Awaited<ReturnType<Web3ModalSignInstance['connect']>>
@@ -15,6 +15,7 @@ export function useConnect(params: Web3ModalSignConnectArguments) {
       const client = await getWeb3ModalSignClient()
       const response = await client.connect(paramsOverride ?? params)
       setData(response)
+      emitter.emit('session_change')
 
       return response
     } catch (err) {
