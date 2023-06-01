@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/standalone",
-  "version": "2.4.2-169b1cbb",
+  "version": "2.4.2-3d672481",
   "main": "dist/index.es.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -16,8 +16,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/core": "2.4.2-169b1cbb",
-    "@web3modal/ui": "2.4.2-169b1cbb"
+    "@web3modal/core": "2.4.2-3d672481",
+    "@web3modal/ui": "2.4.2-3d672481"
   },
   "keywords": [
     "web3",

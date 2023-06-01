@@ -1,25 +1,25 @@
 {
   "name": "laboratory",
-  "version": "2.4.2-169b1cbb",
+  "version": "2.4.2-3d672481",
   "private": true,
   "scripts": {
     "dev": "rm -rf .next; next dev",
     "build": "next build"
   },
   "dependencies": {
-    "@nextui-org/react": "1.0.0-beta.12",
-    "@sentry/react": "7.52.1",
-    "@sentry/tracing": "7.52.1",
-    "@web3modal/auth-html": "2.4.2-169b1cbb",
-    "@web3modal/auth-react": "2.4.2-169b1cbb",
-    "@web3modal/ethereum": "2.4.2-169b1cbb",
-    "@web3modal/react": "2.4.2-169b1cbb",
-    "@web3modal/sign-html": "2.4.2-169b1cbb",
-    "@web3modal/sign-react": "2.4.2-169b1cbb",
-    "next": "13.4.2",
+    "@nextui-org/react": "1.0.0-beta.13",
+    "@sentry/react": "7.53.1",
+    "@sentry/tracing": "7.53.1",
+    "@web3modal/auth-html": "2.4.2-3d672481",
+    "@web3modal/auth-react": "2.4.2-3d672481",
+    "@web3modal/ethereum": "2.4.2-3d672481",
+    "@web3modal/react": "2.4.2-3d672481",
+    "@web3modal/sign-html": "2.4.2-3d672481",
+    "@web3modal/sign-react": "2.4.2-3d672481",
+    "next": "13.4.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "viem": "0.3.30",
-    "wagmi": "1.0.5"
+    "viem": "0.3.41",
+    "wagmi": "1.0.9"
   }
 }
