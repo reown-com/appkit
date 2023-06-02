@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@walletconnect/sign-client": "2.7.7",
+    "@walletconnect/sign-client": "2.7.8-canary-2",
     "@web3modal/standalone": "2.4.2"
   },
   "keywords": [
