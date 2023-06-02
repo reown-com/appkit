@@ -1,4 +1,4 @@
-import { Button, Card, Modal, Text } from '@nextui-org/react'
+import { Button, Card, Spacer } from '@nextui-org/react'
 import {
   Web3Button,
   Web3NetworkSwitch,
@@ -6,10 +6,9 @@ import {
   useWeb3ModalEvents,
   useWeb3ModalTheme
 } from '@web3modal/react'
-import { useEffect, useState } from 'react'
-import { useAccount, useContractRead, useSignMessage } from 'wagmi'
-import { mainnet } from 'wagmi/chains'
-import { abi } from '../data/SeaportAbi'
+import { useEffect } from 'react'
+import { useAccount, useSignMessage } from 'wagmi'
+import { NotificationCtrl } from '../controllers/NotificationCtrl'
 
 const message = 'Hello Web3Modal!'
 
@@ -21,23 +20,11 @@ export default function WagmiWeb3ModalWidget() {
 
   // -- Wagmi Hooks -----------------------------------------------------------
   const { isConnected } = useAccount()
-  const { data: signData, isLoading, signMessage } = useSignMessage({ message })
-  const { data: contractData, refetch } = useContractRead({
-    enabled: false,
-    address: '0x00000000000001ad428e4906aE43D8F9852d0dD6',
-    abi,
-    functionName: 'name',
-    chainId: mainnet.id,
-    cacheTime: 0
-  })
-
-  // -- React Hooks -----------------------------------------------------------
-  const [signModal, setSignModal] = useState(false)
-  const [contractModal, setContractModal] = useState(false)
+  const { data: signData, signMessage } = useSignMessage({ message })
 
   function getData(data: unknown) {
     if (typeof data === 'object' || Array.isArray(data)) {
-      return JSON.stringify(data)
+      return JSON.stringify(data, null, 2)
     }
 
     return String(data)
@@ -45,79 +32,47 @@ export default function WagmiWeb3ModalWidget() {
 
   useEffect(() => {
     if (signData) {
-      setSignModal(true)
+      NotificationCtrl.open('Sign Message', getData(signData))
     }
   }, [signData])
-
-  useEffect(() => {
-    if (contractData) {
-      setContractModal(true)
-    }
-  }, [contractData])
 
   return (
     <>
       <Card css={{ maxWidth: '400px', margin: '100px auto' }} variant="bordered">
-        <Card.Body css={{ justifyContent: 'space-between', alignItems: 'center', height: '280px' }}>
+        <Card.Body css={{ justifyContent: 'space-between', alignItems: 'center' }}>
           <Web3Button balance="show" />
+
+          <Spacer />
+
           <Web3NetworkSwitch />
 
+          <Spacer />
+
           {isConnected ? (
+            <Button onPress={() => signMessage()}>Sign Message</Button>
+          ) : (
             <>
-              <Button color="gradient" onPress={() => signMessage()}>
-                Sign Message
+              <Button color="secondary" onPress={async () => open()}>
+                Custom Connect Btn
               </Button>
-              <Button color="gradient" onPress={async () => refetch()}>
-                Read Eth Contract
+              <Spacer />
+              <Button
+                css={{ backgroundColor: 'teal' }}
+                onPress={() =>
+                  setTheme({
+                    themeVariables: {
+                      '--w3m-accent-color': 'teal',
+                      '--w3m-background-color': 'teal'
+                    }
+                  })
+                }
+              >
+                Set teal theme
               </Button>
             </>
-          ) : (
-            <Button color="gradient" onPress={async () => open()}>
-              Custom Connect Btn
-            </Button>
           )}
-
-          <Button
-            color="error"
-            onPress={() =>
-              setTheme({
-                themeVariables: { '--w3m-accent-color': 'coral', '--w3m-background-color': 'coral' }
-              })
-            }
-          >
-            Set coral theme
-          </Button>
         </Card.Body>
       </Card>
-
-      <Modal closeButton blur open={signModal} onClose={() => setSignModal(false)}>
-        <Modal.Header>
-          <Text h3>Sign Message</Text>
-        </Modal.Header>
-        <Modal.Body>
-          <Text h4>Message</Text>
-          <Text color="grey">{message}</Text>
-
-          <Text h4>Signature</Text>
-          <Text color="grey" css={{ wordWrap: 'break-word' }}>
-            {/* eslint-disable-next-line no-nested-ternary */}
-            {isLoading ? 'Waiting...' : getData(signData)}
-          </Text>
-        </Modal.Body>
-      </Modal>
-
-      <Modal closeButton blur open={contractModal} onClose={() => setContractModal(false)}>
-        <Modal.Header>
-          <Text h3>Read Contract</Text>
-        </Modal.Header>
-        <Modal.Body>
-          <Text h4>Data</Text>
-          <Text color="grey" css={{ wordWrap: 'break-word' }}>
-            {/* eslint-disable-next-line no-nested-ternary */}
-            {isLoading ? 'Waiting...' : getData(contractData)}
-          </Text>
-        </Modal.Body>
-      </Modal>
     </>
   )
 }

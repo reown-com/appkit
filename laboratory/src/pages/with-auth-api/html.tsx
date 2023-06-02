@@ -1,6 +1,6 @@
-import { Button, Card, Modal, Text } from '@nextui-org/react'
+import { Button, Card } from '@nextui-org/react'
 import { Web3ModalAuth } from '@web3modal/auth-html'
-import { useState } from 'react'
+import { NotificationCtrl } from '../../controllers/NotificationCtrl'
 import { DEMO_METADATA, DEMO_STATEMENT } from '../../data/Constants'
 import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 
@@ -11,13 +11,9 @@ const web3ModalAuth = new Web3ModalAuth({
 })
 
 export default function WithAuthHtmlPage() {
-  const [modalOpen, setModalOpen] = useState(false)
-  const [response, setResponse] = useState('')
-
   async function onSignIn() {
     const data = await web3ModalAuth.signIn(DEMO_STATEMENT)
-    setResponse(JSON.stringify(data, null, 2))
-    setModalOpen(true)
+    NotificationCtrl.open('Sign In', JSON.stringify(data, null, 2))
   }
 
   return (
@@ -29,15 +25,6 @@ export default function WithAuthHtmlPage() {
           </Button>
         </Card.Body>
       </Card>
-
-      <Modal closeButton blur open={modalOpen} onClose={() => setModalOpen(false)}>
-        <Modal.Header>
-          <Text h3>Success</Text>
-        </Modal.Header>
-        <Modal.Body>
-          <Text color="grey">{response}</Text>
-        </Modal.Body>
-      </Modal>
     </>
   )
 }

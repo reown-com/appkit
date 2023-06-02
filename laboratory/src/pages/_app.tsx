@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app'
 import { useEffect, useState } from 'react'
 import { ClearLocalStorageButton } from '../components/ClearLocalStorageButton'
 import { MoonIcon } from '../components/MoonIcon'
+import { NotificationModal } from '../components/NotificationModal'
 import { ShowLocalStorageButton } from '../components/ShowLocalStorageButton'
 import { SunIcon } from '../components/SunIcon'
 import { getTheme } from '../utilities/EnvUtil'
@@ -50,6 +51,7 @@ export default function App({ Component, pageProps }: AppProps) {
               <ClearLocalStorageButton />
             </div>
           </Row>
+          <NotificationModal />
 
           <Component {...pageProps} />
         </NextUIProvider>
