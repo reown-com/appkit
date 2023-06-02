@@ -33,12 +33,16 @@ export default function WithSignHtmlPage() {
   }
 
   async function onSignMessage() {
-    if (session) {
-      const account = getAddressFromAccount(session.namespaces.eip155.accounts[0])
-      const result = await web3ModalSign.request(DEMO_SIGN_REQUEST(session.topic, account))
-      NotificationCtrl.open('Sign Message', JSON.stringify(result, null, 2))
-    } else {
-      NotificationCtrl.open('Sign Message', 'No active session, please connect first')
+    try {
+      if (session) {
+        const account = getAddressFromAccount(session.namespaces.eip155.accounts[0])
+        const result = await web3ModalSign.request(DEMO_SIGN_REQUEST(session.topic, account))
+        NotificationCtrl.open('Sign Message', JSON.stringify(result, null, 2))
+      } else {
+        NotificationCtrl.open('Sign Message', 'No active session, please connect first')
+      }
+    } catch (error) {
+      NotificationCtrl.open('Sign Message', JSON.stringify(error))
     }
   }
 

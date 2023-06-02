@@ -12,8 +12,12 @@ const web3ModalAuth = new Web3ModalAuth({
 
 export default function WithAuthHtmlPage() {
   async function onSignIn() {
-    const data = await web3ModalAuth.signIn(DEMO_STATEMENT)
-    NotificationCtrl.open('Sign In', JSON.stringify(data, null, 2))
+    try {
+      const data = await web3ModalAuth.signIn(DEMO_STATEMENT)
+      NotificationCtrl.open('Sign In', JSON.stringify(data, null, 2))
+    } catch (error) {
+      NotificationCtrl.open('Sign In', JSON.stringify(error, null, 2))
+    }
   }
 
   return (
