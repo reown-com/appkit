@@ -1,11 +1,4 @@
-import {
-  AccountCtrl,
-  ClientCtrl,
-  CoreUtil,
-  OptionsCtrl,
-  ToastCtrl,
-  WcConnectionCtrl
-} from '@web3modal/core'
+import { AccountCtrl, ClientCtrl, OptionsCtrl, ToastCtrl, WcConnectionCtrl } from '@web3modal/core'
 import { LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 
@@ -31,13 +24,13 @@ export class W3mWcConnectionContext extends LitElement {
         setTimeout(this.connectAndWait.bind(this), 0)
       }
     })
-    document.addEventListener('visibilitychange', this.onVisibilityChange.bind(this))
+    // document.addEventListener('visibilitychange', this.onVisibilityChange.bind(this))
   }
 
   public disconnectedCallback() {
     this.unwatchOptions?.()
     this.unwatchAccount?.()
-    document.removeEventListener('visibilitychange', this.onVisibilityChange)
+    // document.removeEventListener('visibilitychange', this.onVisibilityChange)
   }
 
   // -- private ------------------------------------------------------ //
@@ -77,11 +70,11 @@ export class W3mWcConnectionContext extends LitElement {
     }
   }
 
-  private onVisibilityChange() {
-    if (!document.hidden && CoreUtil.isMobile()) {
-      setTimeout(this.connectAndWait.bind(this), ONE_SEC_MS)
-    }
-  }
+  // private onVisibilityChange() {
+  //   if (!document.hidden && CoreUtil.isMobile()) {
+  //     setTimeout(this.connectAndWait.bind(this), ONE_SEC_MS)
+  //   }
+  // }
 }
 
 declare global {
