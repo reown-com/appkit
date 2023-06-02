@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@web3modal/core": "2.4.2",
-    "lit": "2.7.4",
+    "lit": "2.7.5",
     "motion": "10.16.2",
     "qrcode": "1.5.3"
   },

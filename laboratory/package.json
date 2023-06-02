@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "@nextui-org/react": "1.0.0-beta.13",
-    "@sentry/react": "7.53.1",
-    "@sentry/tracing": "7.53.1",
+    "@sentry/react": "7.54.0",
+    "@sentry/tracing": "7.54.0",
     "@web3modal/auth-html": "2.4.2",
     "@web3modal/auth-react": "2.4.2",
     "@web3modal/ethereum": "2.4.2",
@@ -19,7 +19,7 @@
     "next": "13.4.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "viem": "0.3.41",
-    "wagmi": "1.0.9"
+    "viem": "0.3.45",
+    "wagmi": "1.1.0"
   }
 }
