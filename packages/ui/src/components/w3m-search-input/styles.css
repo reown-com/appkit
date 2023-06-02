@@ -18,53 +18,23 @@ input {
   letter-spacing: -0.03em;
   padding: 0 10px 0 34px;
   transition: 0.2s all ease;
-  color: transparent;
-  position: absolute;
+  color: var(--w3m-color-fg-1);
   background-color: var(--w3m-color-bg-3);
   box-shadow: inset 0 0 0 1px var(--w3m-color-overlay);
+  caret-color: var(--w3m-accent-color);
 }
 
 input::placeholder {
-  color: transparent;
+  color: var(--w3m-color-fg-2);
 }
 
 svg {
-  margin: 2px 4px 0 0;
-}
-
-div {
-  top: 0;
-  left: calc(50% - 12px);
-  transform: translateX(-50%);
-  transition: 0.2s all ease;
+  left: 10px;
+  top: 4px;
   pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: calc(100% - 2px);
-  width: fit-content;
-  position: relative;
-}
-
-input:focus-within + div,
-input:not(:placeholder-shown) + div {
-  transform: translateX(10px);
-  left: 0;
-}
-
-w3m-text {
-  opacity: 1;
-  transition: 0.2s opacity ease;
-}
-
-input:focus-within + div w3m-text,
-input:not(:placeholder-shown) + div w3m-text {
-  opacity: 0;
-}
-
-input:focus-within,
-input:not(:placeholder-shown) {
-  color: var(--w3m-color-fg-1);
+  position: absolute;
+  width: 20px;
+  height: 20px;
 }
 
 input:focus-within {
