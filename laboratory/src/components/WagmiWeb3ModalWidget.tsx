@@ -20,7 +20,7 @@ export default function WagmiWeb3ModalWidget() {
 
   // -- Wagmi Hooks -----------------------------------------------------------
   const { isConnected } = useAccount()
-  const { data: signData, signMessage } = useSignMessage({ message })
+  const { data: signData, error, signMessage } = useSignMessage({ message })
 
   function getData(data: unknown) {
     if (typeof data === 'object' || Array.isArray(data)) {
@@ -33,8 +33,10 @@ export default function WagmiWeb3ModalWidget() {
   useEffect(() => {
     if (signData) {
       NotificationCtrl.open('Sign Message', getData(signData))
+    } else if (error) {
+      NotificationCtrl.open('Sign Message', JSON.stringify(error))
     }
-  }, [signData])
+  }, [signData, error])
 
   return (
     <>
