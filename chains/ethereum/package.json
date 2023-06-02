@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@wagmi/core": "1.1.0",
-    "viem": "0.3.45"
+    "viem": "0.3.48"
   },
   "keywords": [
     "wagmi",
