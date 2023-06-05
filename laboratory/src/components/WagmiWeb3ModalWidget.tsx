@@ -62,6 +62,8 @@ export default function WagmiWeb3ModalWidget() {
           <Spacer />
 
           {isConnected ? (
+            <Button onPress={() => signMessage()}>Sign Message</Button>
+          ) : (
             <>
               <Button onPress={onSignMessage}>Sign Message</Button>
               <Spacer />
