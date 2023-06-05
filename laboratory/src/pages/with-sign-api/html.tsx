@@ -1,8 +1,9 @@
-import { Button, Card, Divider, Modal, Text } from '@nextui-org/react'
+import { Button, Card, Divider } from '@nextui-org/react'
 import { getAddressFromAccount, getSdkError } from '@walletconnect/utils'
 import type { Web3ModalSignSession } from '@web3modal/sign-html'
 import { Web3ModalSign } from '@web3modal/sign-html'
 import { useEffect, useState } from 'react'
+import { NotificationCtrl } from '../../controllers/NotificationCtrl'
 import { DEMO_METADATA, DEMO_NAMESPACE, DEMO_SIGN_REQUEST } from '../../data/Constants'
 import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 
@@ -13,15 +14,12 @@ const web3ModalSign = new Web3ModalSign({
 })
 
 export default function WithSignHtmlPage() {
-  const [modalOpen, setModalOpen] = useState(false)
-  const [response, setResponse] = useState('')
   const [session, setSession] = useState<Web3ModalSignSession | undefined>(undefined)
 
   async function onConnect() {
     const result = await web3ModalSign.connect(DEMO_NAMESPACE)
     setSession(result)
-    setResponse(JSON.stringify(result, null, 2))
-    setModalOpen(true)
+    NotificationCtrl.open('Connect', JSON.stringify(result, null, 2))
   }
 
   async function onDisconnect() {
@@ -35,14 +33,17 @@ export default function WithSignHtmlPage() {
   }
 
   async function onSignMessage() {
-    if (session) {
-      const account = getAddressFromAccount(session.namespaces.eip155.accounts[0])
-      const result = await web3ModalSign.request(DEMO_SIGN_REQUEST(session.topic, account))
-      setResponse(JSON.stringify(result, null, 2))
-    } else {
-      setResponse('No active session, please connect first')
+    try {
+      if (session) {
+        const account = getAddressFromAccount(session.namespaces.eip155.accounts[0])
+        const result = await web3ModalSign.request(DEMO_SIGN_REQUEST(session.topic, account))
+        NotificationCtrl.open('Sign Message', JSON.stringify(result, null, 2))
+      } else {
+        NotificationCtrl.open('Sign Message', 'No active session, please connect first')
+      }
+    } catch (error) {
+      NotificationCtrl.open('Sign Message', JSON.stringify(error))
     }
-    setModalOpen(true)
   }
 
   useEffect(() => {
@@ -84,15 +85,6 @@ export default function WithSignHtmlPage() {
           )}
         </Card.Body>
       </Card>
-
-      <Modal closeButton blur open={modalOpen} onClose={() => setModalOpen(false)}>
-        <Modal.Header>
-          <Text h3>Success</Text>
-        </Modal.Header>
-        <Modal.Body>
-          <Text color="grey">{response}</Text>
-        </Modal.Body>
-      </Modal>
     </>
   )
 }

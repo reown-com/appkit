@@ -1,12 +1,13 @@
 {
   "name": "@web3modal/sign-react",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "main": "dist/index.es.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
     "dist"
   ],
+  "sideEffects": false,
   "scripts": {
     "build:clean": "rm -rf dist",
     "build:types": "tsc --emitDeclarationOnly",
@@ -16,7 +17,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/sign-html": "2.4.2",
+    "@web3modal/sign-html": "2.4.3",
     "mitt": "3.0.0"
   },
   "peerDependencies": {

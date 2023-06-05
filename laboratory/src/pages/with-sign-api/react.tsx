@@ -1,4 +1,4 @@
-import { Button, Card, Divider, Modal, Text } from '@nextui-org/react'
+import { Button, Card, Divider } from '@nextui-org/react'
 import { getAddressFromAccount, getSdkError } from '@walletconnect/utils'
 import {
   Web3ModalSign,
@@ -7,13 +7,11 @@ import {
   useRequest,
   useSession
 } from '@web3modal/sign-react'
-import { useState } from 'react'
+import { NotificationCtrl } from '../../controllers/NotificationCtrl'
 import { DEMO_METADATA, DEMO_NAMESPACE, DEMO_SIGN_REQUEST } from '../../data/Constants'
 import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 
 export default function WithSignReactPage() {
-  const [modalOpen, setModalOpen] = useState(false)
-  const [response, setResponse] = useState('')
   const session = useSession()
   const { request } = useRequest(
     DEMO_SIGN_REQUEST(
@@ -29,8 +27,7 @@ export default function WithSignReactPage() {
 
   async function onConnect() {
     const result = await connect()
-    setResponse(JSON.stringify(result, null, 2))
-    setModalOpen(true)
+    NotificationCtrl.open('Connect', JSON.stringify(result, null, 2))
   }
 
   function onDisconnect() {
@@ -39,8 +36,7 @@ export default function WithSignReactPage() {
 
   async function onSignMessage() {
     const result = await request()
-    setResponse(JSON.stringify(result, null, 2))
-    setModalOpen(true)
+    NotificationCtrl.open('Sign Message', JSON.stringify(result, null, 2))
   }
 
   return (
@@ -64,15 +60,6 @@ export default function WithSignReactPage() {
           )}
         </Card.Body>
       </Card>
-
-      <Modal closeButton blur open={modalOpen} onClose={() => setModalOpen(false)}>
-        <Modal.Header>
-          <Text h3>Success</Text>
-        </Modal.Header>
-        <Modal.Body>
-          <Text color="grey">{response}</Text>
-        </Modal.Body>
-      </Modal>
 
       <Web3ModalSign
         projectId={getProjectId()}

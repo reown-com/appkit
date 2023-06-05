@@ -35,11 +35,11 @@ export class W3mBalance extends LitElement {
     let formatAmount: number | string = '_._'
 
     if (this.amount === '0.0') {
-      formatAmount = 0
+      formatAmount = '0'
     } else if (typeof this.amount === 'string' && this.amount.length > 6) {
-      formatAmount = parseFloat(this.amount).toFixed(3)
+      formatAmount = this.amount.substring(0, 6)
     } else if (typeof this.amount === 'string') {
-      formatAmount = parseFloat(this.amount)
+      formatAmount = this.amount
     }
 
     return html`

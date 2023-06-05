@@ -41,10 +41,14 @@ w3m-info-footer {
   text-align: center;
 }
 
-w3m-platform-selection div {
-  display: flex;
+w3m-platform-selection {
+  margin-top: -15px;
 }
 
-w3m-platform-selection w3m-button:nth-child(2) {
-  margin-left: 10px;
+.w3m-note w3m-text {
+  margin-top: 15px;
+}
+
+.w3m-note w3m-text span {
+  color: var(--w3m-accent-color);
 }

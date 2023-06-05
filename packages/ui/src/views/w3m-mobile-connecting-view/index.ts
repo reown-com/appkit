@@ -82,31 +82,22 @@ export class W3mMobileConnectingView extends LitElement {
       </w3m-modal-content>
 
       <w3m-info-footer class="w3m-note">
-        <w3m-text color="secondary" variant="small-thin">
-          You can reload the website to try again
-          ${universalUrl ? ` or open ${name} using a "Backup" instead` : ''}
-        </w3m-text>
-
         <w3m-platform-selection .isWeb=${isWeb} .isRetry=${true}>
-          <div>
-            <w3m-button
-              .onClick=${() => this.openMobileApp(false)}
-              .iconRight=${SvgUtil.RETRY_ICON}
-            >
-              Retry
-            </w3m-button>
-
-            ${universalUrl
-              ? html`<w3m-button
-                  variant="outline"
-                  .onClick=${() => this.openMobileApp(true)}
-                  .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}
-                >
-                  Backup
-                </w3m-button>`
-              : null}
-          </div>
+          <w3m-button .onClick=${() => this.openMobileApp(false)} .iconRight=${SvgUtil.RETRY_ICON}>
+            Retry
+          </w3m-button>
         </w3m-platform-selection>
+
+        ${universalUrl
+          ? html`
+              <w3m-text color="secondary" variant="small-thin">
+                Still doesn't work?
+                <span tabindex="0" @click=${() => this.openMobileApp(true)}>
+                  Try this alternate link
+                </span>
+              </w3m-text>
+            `
+          : null}
       </w3m-info-footer>
 
       <w3m-info-footer class="w3m-app-store">

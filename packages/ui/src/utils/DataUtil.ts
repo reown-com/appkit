@@ -7,7 +7,7 @@ export const DataUtil = {
     if (isStandalone) {
       return []
     }
-    let connectors = ClientCtrl.client().getConnectors() as { id: string; name: string }[]
+    let connectors = ClientCtrl.client().getConnectors()
     connectors = connectors.filter(connector => connector.id !== 'injected')
 
     return connectors
