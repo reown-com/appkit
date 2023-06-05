@@ -15,6 +15,7 @@
     "dev": "rollup --config rollup.config.js --watch",
     "typecheck": "tsc --noEmit"
   },
+  "sideEffects": false,
   "dependencies": {
     "@web3modal/core": "2.4.2",
     "@web3modal/ui": "2.4.2"
