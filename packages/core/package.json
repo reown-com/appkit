@@ -16,11 +16,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@web3modal/ethereum": "2.4.2",
     "buffer": "6.0.3",
     "valtio": "1.10.5"
-  },
-  "devDependencies": {
-    "@web3modal/ethereum": "2.4.2"
   },
   "keywords": [
     "web3",
