@@ -23,7 +23,7 @@ export function DEMO_SIGN_REQUEST(topic: string, account: string) {
     chainId: 'eip155:1',
     request: {
       method: 'personal_sign',
-      params: ['0xdeadbeaf', account]
+      params: ['0x48656c6c6f20576562334d6f64616c', account]
     }
   }
 }
