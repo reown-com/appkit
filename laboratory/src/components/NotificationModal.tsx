@@ -1,4 +1,4 @@
-import { Button, Modal, Text } from '@nextui-org/react'
+import { Modal, Text } from '@nextui-org/react'
 import { useSnapshot } from 'valtio'
 import { NotificationCtrl } from '../controllers/NotificationCtrl'
 
@@ -9,6 +9,7 @@ export function NotificationModal() {
     <Modal
       scroll
       fullScreen
+      closeButton
       open={open}
       onClose={NotificationCtrl.close}
       css={{ maxWidth: 900, margin: '0 auto' }}
@@ -26,11 +27,6 @@ export function NotificationModal() {
       >
         <pre>{body}</pre>
       </Modal.Body>
-      <Modal.Footer>
-        <Button auto color="error" onPress={NotificationCtrl.close}>
-          Close
-        </Button>
-      </Modal.Footer>
     </Modal>
   )
 }
