@@ -70,7 +70,7 @@ export default function WagmiWeb3ModalWidget() {
           ) : (
             <>
               <Button color="secondary" onPress={async () => open()}>
-                Custom Connect Btn
+                Custom Connect Button
               </Button>
               <Spacer />
               <Button
