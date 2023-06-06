@@ -15,8 +15,8 @@ import {
   polygon,
   zkSync
 } from 'wagmi/chains'
-import WagmiWeb3ModalWidget from '../components/WagmiWeb3ModalWidget'
-import { getProjectId, getTheme } from '../utilities/EnvUtil'
+import WagmiWeb3ModalWidget from '../../components/WagmiWeb3ModalWidget'
+import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 
 // Configure wagmi and web3modal
 const projectId = getProjectId()
@@ -37,13 +37,13 @@ const chains = [
 const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
 const wagmiClient = createConfig({
   autoConnect: true,
-  connectors: w3mConnectors({ version: 1, projectId, chains }),
+  connectors: w3mConnectors({ version: 2, projectId, chains }),
   publicClient
 })
 const ethereumClient = new EthereumClient(wagmiClient, chains)
 
 // Example
-export default function v1ManagedReactPage() {
+export default function WithWagmiReactPage() {
   return (
     <>
       <WagmiConfig config={wagmiClient}>

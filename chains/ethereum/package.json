@@ -1,7 +1,7 @@
 {
   "name": "@web3modal/ethereum",
-  "version": "2.4.1",
-  "main": "dist/index.js",
+  "version": "2.4.3",
+  "main": "dist/index.es.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
@@ -19,13 +19,18 @@
     "@wagmi/core": ">=1",
     "viem": ">=0.3"
   },
+  "devDependencies": {
+    "@wagmi/core": "1.1.0",
+    "viem": "0.3.50"
+  },
   "keywords": [
+    "wagmi",
+    "viem",
     "web3",
     "crypto",
     "ethereum",
     "web3modal",
-    "walletconnect",
-    "web3auth"
+    "walletconnect"
   ],
   "author": "WalletConnect <walletconnect.com>",
   "license": "Apache-2.0",

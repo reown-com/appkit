@@ -28,7 +28,7 @@ export class W3mMobileQrConnectingView extends LitElement {
 
       <w3m-info-footer>
         <w3m-text color="secondary" variant="small-thin">
-          ${`Scan this qrcode with your phone's camera or inside ${name} app`}
+          ${`Scan this QR Code with your phone's camera or inside ${name} app`}
         </w3m-text>
 
         <w3m-platform-selection .isDesktop=${isDesktop} .isInjected=${isInjected} .isWeb=${isWeb}>

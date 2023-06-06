@@ -10,7 +10,6 @@ import {
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-select-network-view')
@@ -54,7 +53,7 @@ export class W3mSelectNetworkView extends LitElement {
       }
     } catch (err) {
       console.error(err)
-      ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
+      ToastCtrl.openToast('Unsupported chain', 'error')
     }
   }
 

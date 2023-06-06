@@ -1,7 +1,7 @@
 {
   "name": "@web3modal/react",
-  "version": "2.4.1",
-  "main": "dist/index.js",
+  "version": "2.4.3",
+  "main": "dist/index.es.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
@@ -15,12 +15,13 @@
     "dev": "rollup --config rollup.config.js --watch",
     "typecheck": "tsc --noEmit"
   },
+  "sideEffects": false,
   "dependencies": {
-    "@web3modal/core": "2.4.1",
-    "@web3modal/ui": "2.4.1"
+    "@web3modal/core": "2.4.3",
+    "@web3modal/ui": "2.4.3"
   },
   "devDependencies": {
-    "@web3modal/ethereum": "2.4.1"
+    "@web3modal/ethereum": "2.4.3"
   },
   "peerDependencies": {
     "react": ">=17",
@@ -32,7 +33,6 @@
     "ethereum",
     "web3modal",
     "walletconnect",
-    "web3auth",
     "react"
   ],
   "author": "WalletConnect <walletconnect.com>",

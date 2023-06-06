@@ -8,7 +8,8 @@ export type Web3ModalAuthProps = Web3ModalAuthOptions
 function Web3ModalAuthComp(props: Web3ModalAuthProps) {
   useEffect(() => {
     setWeb3ModalAuthClient(props)
-  }, [props])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return null
 }

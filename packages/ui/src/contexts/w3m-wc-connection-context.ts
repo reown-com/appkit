@@ -1,16 +1,9 @@
-import {
-  AccountCtrl,
-  ClientCtrl,
-  CoreUtil,
-  OptionsCtrl,
-  ToastCtrl,
-  WcConnectionCtrl
-} from '@web3modal/core'
+import { AccountCtrl, ClientCtrl, OptionsCtrl, ToastCtrl, WcConnectionCtrl } from '@web3modal/core'
 import { LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 
 // -- constants ---------------------------------------------------- //
-const THREE_MIN_MS = 180_000
+const FOUR_MIN_MS = 240_000
 const ONE_SEC_MS = 1_000
 
 @customElement('w3m-wc-connection-context')
@@ -31,13 +24,11 @@ export class W3mWcConnectionContext extends LitElement {
         setTimeout(this.connectAndWait.bind(this), 0)
       }
     })
-    document.addEventListener('visibilitychange', this.onVisibilityChange.bind(this))
   }
 
   public disconnectedCallback() {
     this.unwatchOptions?.()
     this.unwatchAccount?.()
-    document.removeEventListener('visibilitychange', this.onVisibilityChange)
   }
 
   // -- private ------------------------------------------------------ //
@@ -54,7 +45,7 @@ export class W3mWcConnectionContext extends LitElement {
 
     if (!this.isAccountConnected) {
       this.isGenerated = true
-      this.timeout = setTimeout(this.connectAndWait.bind(this), THREE_MIN_MS)
+      this.timeout = setTimeout(this.connectAndWait.bind(this), FOUR_MIN_MS)
       try {
         const { standaloneUri, selectedChain } = OptionsCtrl.state
         if (standaloneUri) {
@@ -74,12 +65,6 @@ export class W3mWcConnectionContext extends LitElement {
           this.connectAndWait()
         }
       }
-    }
-  }
-
-  private onVisibilityChange() {
-    if (!document.hidden && CoreUtil.isMobile()) {
-      setTimeout(this.connectAndWait.bind(this), ONE_SEC_MS)
     }
   }
 }

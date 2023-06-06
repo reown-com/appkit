@@ -1,12 +1,13 @@
 {
   "name": "@web3modal/auth-html",
-  "version": "2.4.1",
-  "main": "dist/index.js",
+  "version": "2.4.3",
+  "main": "dist/index.es.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
     "dist"
   ],
+  "sideEffects": false,
   "scripts": {
     "build:clean": "rm -rf dist",
     "build:types": "tsc --emitDeclarationOnly",
@@ -17,7 +18,7 @@
   },
   "dependencies": {
     "@walletconnect/auth-client": "2.1.0",
-    "@web3modal/standalone": "2.4.1"
+    "@web3modal/standalone": "2.4.3"
   },
   "keywords": [
     "web3",
@@ -25,7 +26,8 @@
     "ethereum",
     "web3modal",
     "walletconnect",
-    "web3auth"
+    "auth",
+    "html"
   ],
   "author": "WalletConnect <walletconnect.com>",
   "license": "Apache-2.0",
