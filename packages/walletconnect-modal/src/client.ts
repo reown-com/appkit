@@ -7,6 +7,7 @@ import { ConfigCtrl, ModalCtrl, OptionsCtrl, ThemeCtrl } from '@web3modal/core'
 export type WalletConnectModalConfig = Pick<
   ConfigCtrlState,
   | 'desktopWallets'
+  | 'enableAuthMode'
   | 'enableExplorer'
   | 'explorerExcludedWalletIds'
   | 'explorerRecommendedWalletIds'
