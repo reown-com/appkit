@@ -16,7 +16,6 @@ export type WalletConnectModalConfig = Pick<
   | 'standaloneChains'
   | 'termsOfServiceUrl'
   | 'tokenImages'
-  | 'walletConnectVersion'
   | 'walletImages'
 > &
   ThemeCtrlState & {
