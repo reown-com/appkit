@@ -21,7 +21,7 @@
     "react-code-blocks": "0.0.9-0",
     "react-dom": "18.2.0",
     "valtio": "1.10.5",
-    "viem": "0.3.50",
+    "viem": "1.0.0",
     "wagmi": "1.1.0"
   }
 }

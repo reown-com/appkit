@@ -17,11 +17,11 @@
   },
   "peerDependencies": {
     "@wagmi/core": ">=1",
-    "viem": ">=0.3"
+    "viem": ">=1"
   },
   "devDependencies": {
     "@wagmi/core": "1.1.0",
-    "viem": "0.3.50"
+    "viem": "1.0.0"
   },
   "keywords": [
     "wagmi",
