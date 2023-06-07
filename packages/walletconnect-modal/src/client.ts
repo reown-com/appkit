@@ -4,7 +4,21 @@ import { ConfigCtrl, ModalCtrl, OptionsCtrl, ThemeCtrl } from '@web3modal/core'
 /**
  * Types
  */
-export type WalletConnectModalConfig = Omit<ConfigCtrlState, 'enableStandaloneMode'> &
+export type WalletConnectModalConfig = Pick<
+  ConfigCtrlState,
+  | 'desktopWallets'
+  | 'enableExplorer'
+  | 'explorerExcludedWalletIds'
+  | 'explorerRecommendedWalletIds'
+  | 'mobileWallets'
+  | 'privacyPolicyUrl'
+  | 'projectId'
+  | 'standaloneChains'
+  | 'termsOfServiceUrl'
+  | 'tokenImages'
+  | 'walletConnectVersion'
+  | 'walletImages'
+> &
   ThemeCtrlState & {
     walletConnectVersion: 1 | 2
   }
