@@ -4,7 +4,7 @@ import { ConfigCtrl, ModalCtrl, OptionsCtrl, ThemeCtrl } from '@web3modal/core'
 /**
  * Types
  */
-export type Web3ModalConfig = Omit<ConfigCtrlState, 'enableStandaloneMode'> &
+export type WalletConnectModalConfig = Omit<ConfigCtrlState, 'enableStandaloneMode'> &
   ThemeCtrlState & {
     walletConnectVersion: 1 | 2
   }
@@ -12,8 +12,8 @@ export type Web3ModalConfig = Omit<ConfigCtrlState, 'enableStandaloneMode'> &
 /**
  * Client
  */
-export class Web3Modal {
-  public constructor(config: Web3ModalConfig) {
+export class WalletConnectModal {
+  public constructor(config: WalletConnectModalConfig) {
     ThemeCtrl.setThemeConfig(config)
     ConfigCtrl.setConfig({ enableStandaloneMode: true, ...config })
     this.initUi()

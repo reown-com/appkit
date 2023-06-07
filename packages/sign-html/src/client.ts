@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import type { WalletConnectModalConfig } from '@walletconnect/modal'
+import { WalletConnectModal } from '@walletconnect/modal'
 import SignClient from '@walletconnect/sign-client'
-import type { Web3ModalConfig } from '@web3modal/standalone'
-import { Web3Modal } from '@web3modal/standalone'
 
 // -- Types ----------------------------------------------------------------
 export type Web3ModalSignSession = SignClient['session']['values'][number]
@@ -10,7 +10,7 @@ export interface Web3ModalSignOptions {
   projectId: string
   metadata: SignClient['metadata']
   relayUrl?: string
-  modalOptions?: Omit<Web3ModalConfig, 'projectId' | 'walletConnectVersion'>
+  modalOptions?: Omit<WalletConnectModalConfig, 'projectId' | 'walletConnectVersion'>
 }
 
 export type Web3ModalSignConnectArguments = Parameters<SignClient['connect']>[0]
@@ -25,12 +25,13 @@ export type Web3ModalEventCallback = (data: any) => void
 // -- Client ---------------------------------------------------------------
 export class Web3ModalSign {
   #options: Web3ModalSignOptions
-  #modal?: Web3Modal
+  #modal: WalletConnectModal
   #initSignClientPromise?: Promise<void> = undefined
   #signClient?: InstanceType<typeof SignClient> = undefined
 
   public constructor(options: Web3ModalSignOptions) {
     this.#options = options
+    this.#modal = this.#initModal()
     this.#initModal()
     this.#initSignClient()
   }
@@ -42,7 +43,7 @@ export class Web3ModalSign {
     return new Promise<Web3ModalSignSession>(async (resolve, reject) => {
       await this.#initSignClient()
 
-      const unsubscribeModal = this.#modal!.subscribeModal(state => {
+      const unsubscribeModal = this.#modal.subscribeModal(state => {
         if (!state.open) {
           unsubscribeModal()
           reject(new Error('Modal closed'))
@@ -67,7 +68,7 @@ export class Web3ModalSign {
             }
           })
         }
-        await this.#modal!.openModal({ uri, standaloneChains: Array.from(standaloneChains) })
+        await this.#modal.openModal({ uri, standaloneChains: Array.from(standaloneChains) })
       }
 
       try {
@@ -77,7 +78,7 @@ export class Web3ModalSign {
         reject(err)
       } finally {
         unsubscribeModal()
-        this.#modal!.closeModal()
+        this.#modal.closeModal()
       }
     })
   }
@@ -150,7 +151,8 @@ export class Web3ModalSign {
   // -- private -----------------------------------------------------------
   #initModal() {
     const { modalOptions, projectId } = this.#options
-    this.#modal = new Web3Modal({
+
+    return new WalletConnectModal({
       ...modalOptions,
       walletConnectVersion: 2,
       projectId

@@ -6,7 +6,7 @@
     "packages/ui",
     "packages/react",
     "packages/html",
-    "packages/standalone",
+    "packages/walletconnect-modal",
     "packages/auth-react",
     "packages/auth-html",
     "packages/sign-html",

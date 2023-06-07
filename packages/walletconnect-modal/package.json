@@ -1,5 +1,5 @@
 {
-  "name": "@web3modal/standalone",
+  "name": "@walletconnect/modal",
   "version": "2.4.3",
   "main": "dist/index.es.js",
   "type": "module",
@@ -24,7 +24,9 @@
     "web3",
     "crypto",
     "ethereum",
-    "web3modal",
+    "solana",
+    "cosmos",
+    "qrcode",
     "walletconnect"
   ],
   "author": "WalletConnect <walletconnect.com>",
