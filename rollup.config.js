@@ -1,3 +1,4 @@
+import commonjs from '@rollup/plugin-commonjs'
 import replace from '@rollup/plugin-replace'
 import esbuild from 'rollup-plugin-esbuild'
 import litCss from 'rollup-plugin-lit-css'
@@ -36,21 +37,28 @@ export default function createConfig(packageJson) {
       input: './index.ts',
       plugins,
       output: [{ file: './dist/index.es.js', format: 'es', ...output }]
+    },
+    {
+      input: './index.ts',
+      plugins: [...plugins, commonjs()],
+      output: [
+        {
+          file: './dist/index.umd.js',
+          format: 'umd',
+          ...output
+        }
+      ]
+    },
+    {
+      input: './index.ts',
+      plugins: [...plugins, commonjs()],
+      output: [
+        {
+          file: './dist/index.cjs',
+          format: 'cjs',
+          ...output
+        }
+      ]
     }
-    // TODO: Ilja finish umd build
-    //
-    // {
-    //   input: './index.ts',
-    //   plugins: [...plugins, json(), polyfillNode(), commonjs(), resolve({ browser: true })],
-    //   output: [
-    //     {
-    //       file: './dist/index.umd.js',
-    //       format: 'umd',
-    //       inlineDynamicImports: true,
-    //       extend: true,
-    //       ...output
-    //     }
-    //   ]
-    // }
   ]
 }
