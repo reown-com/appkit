@@ -23,6 +23,10 @@ Please execute all commands from the monorepo root to avoid issues with npm work
 - `npm run lint` - Run the linter.
 - `npm run prettier` - Run prettier.
 - `npm run typecheck` - Run typescript checks.
+- `npm run playwright:install` - Install Playwright browsers.
+- `npm run playwright:test` - Run Playwright tests (after installing browsers).
+- `npm run playwright:test -- -- --ui` - Run Playwright UI.
+- `npm run playwright:test -- -- --ui --headed` - Run Playwright UI with browser windows.
 
 ## Repository structure
 

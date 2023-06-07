@@ -7,6 +7,8 @@
     "build": "npm run build --ws --if-present",
     "dev": "npm run dev --w=@web3modal/core & npm run dev --w=@web3modal/ui & npm run dev --w=@web3modal/ethereum & npm run dev --w=@web3modal/react",
     "lab": "npm run dev --w=laboratory",
+    "playwright:install": "cd laboratory && npm run playwright:install",
+    "playwright:test": "cd laboratory && npm run playwright:test",
     "lint": "eslint .",
     "prettier": "prettier --check .",
     "typecheck": "npm run typecheck --ws --if-present",

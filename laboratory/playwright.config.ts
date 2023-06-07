@@ -93,7 +93,7 @@ export default defineConfig({
   webServer: CI_SCHEDULE
     ? undefined
     : {
-        command: 'yarn dev',
+        command: 'npm run dev',
         url: LOCAL_SERVER,
         reuseExistingServer: !process.env.CI
       }

@@ -16,20 +16,19 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 18.x
-        cache: 'yarn'
-        cache-dependency-path: 'yarn.lock'
+        cache: 'npm'
+        cache-dependency-path: 'package-lock.json'
     - name: Install dependencies
-      run: yarn install --frozen-lockfile
+      run: npm ci
     - name: Build
-      run: yarn build
+      run: npm run build
       if: ${{ github.event_name != 'schedule' }}
       env:
         NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
     - name: Install Playwright Browsers
-      run: yarn playwright install --with-deps
+      run: npm run playwright:install
     - name: Run Playwright tests
-      run: yarn playwright test
-      working-directory: laboratory
+      run: npm run playwright:test
       env:
         NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
         CI_SCHEDULE: ${{ github.event_name == 'schedule' }}

@@ -6,7 +6,7 @@ test('can connect', async ({ page: w3mPage, context, browserName }) => {
     "Webkit on Linux doesn't seem to support clipboard"
   )
 
-  await w3mPage.goto('./ManagedReact')
+  await w3mPage.goto('./with-wagmi/react')
 
   const walletPage = await context.newPage()
   const walletPagePromise = walletPage.goto('https://react-wallet.walletconnect.com/walletconnect')
