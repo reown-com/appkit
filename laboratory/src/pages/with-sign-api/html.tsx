@@ -1,4 +1,4 @@
-import { Button, Card, Divider } from '@nextui-org/react'
+import { Button, Card, Spacer } from '@nextui-org/react'
 import { getAddressFromAccount, getSdkError } from '@walletconnect/utils'
 import type { Web3ModalSignSession } from '@web3modal/sign-html'
 import { Web3ModalSign } from '@web3modal/sign-html'
@@ -44,6 +44,36 @@ export default function WithSignHtmlPage() {
     }
   }
 
+  /*
+   * Async function onAddEthereumChain() {
+   *   try {
+   *     if (session) {
+   *       const result = await web3ModalSign.request({
+   *         topic: session.topic,
+   *         chainId: 'eip155:1',
+   *         request: {
+   *           method: 'wallet_addEthereumChain',
+   *           params: [
+   *             {
+   *               chainId: `0x${avalanche.id.toString(16)}`,
+   *               chainName: avalanche.name,
+   *               blockExplorerUrls: [avalanche.blockExplorers.default.url],
+   *               nativeCurrency: avalanche.nativeCurrency,
+   *               rpcUrls: [...avalanche.rpcUrls.default.http]
+   *             }
+   *           ]
+   *         }
+   *       })
+   *       NotificationCtrl.open('Add Ethereum Chain', JSON.stringify(result, null, 2))
+   *     } else {
+   *       NotificationCtrl.open('Add Ethereum Chain', 'No active session, please connect first')
+   *     }
+   *   } catch (error) {
+   *     NotificationCtrl.open('Add Ethereum Chain', JSON.stringify(error))
+   *   }
+   * }
+   */
+
   async function onSignMessage() {
     try {
       if (session) {
@@ -85,7 +115,7 @@ export default function WithSignHtmlPage() {
               <Button shadow color="primary" onPress={onSignMessage}>
                 Sign Message
               </Button>
-              <Divider y={2} />
+              <Spacer />
               <Button shadow color="error" onPress={onDisconnect}>
                 Disconnect
               </Button>
