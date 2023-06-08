@@ -44,36 +44,6 @@ export default function WithSignHtmlPage() {
     }
   }
 
-  /*
-   * Async function onAddEthereumChain() {
-   *   try {
-   *     if (session) {
-   *       const result = await web3ModalSign.request({
-   *         topic: session.topic,
-   *         chainId: 'eip155:1',
-   *         request: {
-   *           method: 'wallet_addEthereumChain',
-   *           params: [
-   *             {
-   *               chainId: `0x${avalanche.id.toString(16)}`,
-   *               chainName: avalanche.name,
-   *               blockExplorerUrls: [avalanche.blockExplorers.default.url],
-   *               nativeCurrency: avalanche.nativeCurrency,
-   *               rpcUrls: [...avalanche.rpcUrls.default.http]
-   *             }
-   *           ]
-   *         }
-   *       })
-   *       NotificationCtrl.open('Add Ethereum Chain', JSON.stringify(result, null, 2))
-   *     } else {
-   *       NotificationCtrl.open('Add Ethereum Chain', 'No active session, please connect first')
-   *     }
-   *   } catch (error) {
-   *     NotificationCtrl.open('Add Ethereum Chain', JSON.stringify(error))
-   *   }
-   * }
-   */
-
   async function onSignMessage() {
     try {
       if (session) {
