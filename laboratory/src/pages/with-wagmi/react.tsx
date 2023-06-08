@@ -50,7 +50,21 @@ export default function WithWagmiReactPage() {
         <WagmiWeb3ModalWidget />
       </WagmiConfig>
 
-      <Web3Modal ethereumClient={ethereumClient} projectId={projectId} themeMode={getTheme()} />
+      <Web3Modal
+        ethereumClient={ethereumClient}
+        projectId={projectId}
+        themeMode={getTheme()}
+        mobileWallets={[
+          {
+            id: 'metamask',
+            name: 'MetaMask',
+            links: {
+              native: 'metamask://',
+              universal: ''
+            }
+          }
+        ]}
+      />
     </>
   )
 }

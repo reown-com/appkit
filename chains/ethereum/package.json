@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ethereum",
-  "version": "2.4.3",
+  "version": "2.4.5",
   "main": "dist/index.es.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -17,11 +17,11 @@
   },
   "peerDependencies": {
     "@wagmi/core": ">=1",
-    "viem": ">=0.3"
+    "viem": ">=1"
   },
   "devDependencies": {
-    "@wagmi/core": "1.1.0",
-    "viem": "0.3.50"
+    "@wagmi/core": "1.1.1",
+    "viem": "1.0.0"
   },
   "keywords": [
     "wagmi",

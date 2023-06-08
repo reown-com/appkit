@@ -6,12 +6,12 @@
     "packages/ui",
     "packages/react",
     "packages/html",
-    "packages/standalone",
+    "packages/walletconnect-modal",
     "packages/auth-react",
     "packages/auth-html",
     "packages/sign-html",
     "packages/sign-react"
   ],
   "useWorkspaces": true,
-  "version": "2.4.3"
+  "version": "2.4.5"
 }

@@ -32,9 +32,9 @@ export const TemplateUtil = {
     return wallets.map(
       wallet => html`
         <w3m-wallet-button
+          name=${wallet.name}
           walletId=${wallet.id}
           imageId=${wallet.image_id}
-          name=${wallet.name}
           .onClick=${() => this.onConnecting(wallet)}
         ></w3m-wallet-button>
       `

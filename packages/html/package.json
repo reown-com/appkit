@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/html",
-  "version": "2.4.3",
+  "version": "2.4.5",
   "main": "dist/index.es.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -17,11 +17,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/core": "2.4.3",
-    "@web3modal/ui": "2.4.3"
+    "@web3modal/core": "2.4.5",
+    "@web3modal/ui": "2.4.5"
   },
   "devDependencies": {
-    "@web3modal/ethereum": "2.4.3"
+    "@web3modal/ethereum": "2.4.5"
   },
   "keywords": [
     "web3",
