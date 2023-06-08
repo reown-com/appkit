@@ -177,5 +177,7 @@ export class Web3ModalSign {
       projectId: this.#options.projectId,
       relayUrl: this.#options.relayUrl
     })
+    const clientId = await this.#signClient.core.crypto.getClientId()
+    localStorage.setItem('W3M_WALLETCONNECT_CLIENT_ID', clientId)
   }
 }
