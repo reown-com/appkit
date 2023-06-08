@@ -63,7 +63,19 @@ export default function WithSignReactPage() {
 
       <Web3ModalSign
         projectId={getProjectId()}
-        modalOptions={{ themeMode: getTheme() }}
+        modalOptions={{
+          themeMode: getTheme(),
+          mobileWallets: [
+            {
+              id: 'metamask',
+              name: 'MetaMask',
+              links: {
+                native: 'metamask://',
+                universal: ''
+              }
+            }
+          ]
+        }}
         metadata={DEMO_METADATA}
       />
     </>
