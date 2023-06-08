@@ -17,7 +17,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@walletconnect/sign-client": "2.7.9-7fa58fba",
+    "@walletconnect/sign-client": "2.8.0-canary-1",
     "@walletconnect/modal": "2.4.3"
   },
   "keywords": [
