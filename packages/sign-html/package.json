@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/sign-html",
-  "version": "2.4.3",
+  "version": "2.4.4",
   "main": "dist/index.es.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -17,8 +17,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@walletconnect/sign-client": "2.8.0",
-    "@walletconnect/modal": "2.4.3"
+    "@walletconnect/modal": "2.4.4",
+    "@walletconnect/sign-client": "2.8.0"
   },
   "keywords": [
     "web3",
