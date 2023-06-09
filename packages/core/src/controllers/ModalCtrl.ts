@@ -34,6 +34,10 @@ export const ModalCtrl = {
       const { isConnected } = AccountCtrl.state
       const { enableNetworkView } = ConfigCtrl.state
 
+      if (!isStandalone) {
+        WcConnectionCtrl.setPairingEnabled(true)
+      }
+
       if (isStandalone) {
         OptionsCtrl.setStandaloneUri(options?.uri)
         OptionsCtrl.setStandaloneChains(options?.standaloneChains)

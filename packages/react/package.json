@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/react",
-  "version": "2.4.3",
+  "version": "2.4.5",
   "main": "dist/index.cjs",
   "module": "dist/index.es.js",
   "unpkg": "dist/index.umd.js",
@@ -19,11 +19,11 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@web3modal/core": "2.4.3",
-    "@web3modal/ui": "2.4.3"
+    "@web3modal/core": "2.4.5",
+    "@web3modal/ui": "2.4.5"
   },
   "devDependencies": {
-    "@web3modal/ethereum": "2.4.3"
+    "@web3modal/ethereum": "2.4.5"
   },
   "peerDependencies": {
     "react": ">=17",

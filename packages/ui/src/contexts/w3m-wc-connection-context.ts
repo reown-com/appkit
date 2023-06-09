@@ -24,16 +24,23 @@ export class W3mWcConnectionContext extends LitElement {
         setTimeout(this.connectAndWait.bind(this), 0)
       }
     })
+    this.unwatchWcConnection = WcConnectionCtrl.subscribe(wcConnection => {
+      if (wcConnection.pairingEnabled && !this.isGenerated) {
+        this.connectAndWait()
+      }
+    })
   }
 
   public disconnectedCallback() {
     this.unwatchOptions?.()
     this.unwatchAccount?.()
+    this.unwatchWcConnection?.()
   }
 
   // -- private ------------------------------------------------------ //
   private readonly unwatchOptions?: () => void = undefined
   private readonly unwatchAccount?: () => void = undefined
+  private readonly unwatchWcConnection?: () => void = undefined
   private timeout?: NodeJS.Timeout = undefined
   private isGenerated = false
   private selectedChainId = OptionsCtrl.state.selectedChain?.id
@@ -41,9 +48,10 @@ export class W3mWcConnectionContext extends LitElement {
   private lastRetry = Date.now()
 
   private async connectAndWait() {
+    const { pairingEnabled } = WcConnectionCtrl.state
     clearTimeout(this.timeout)
 
-    if (!this.isAccountConnected) {
+    if (!this.isAccountConnected && pairingEnabled) {
       this.isGenerated = true
       this.timeout = setTimeout(this.connectAndWait.bind(this), FOUR_MIN_MS)
       try {

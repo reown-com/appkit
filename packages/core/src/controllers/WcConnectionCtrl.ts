@@ -3,6 +3,7 @@ import type { WcConnectionCtrlState } from '../types/controllerTypes'
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<WcConnectionCtrlState>({
+  pairingEnabled: false,
   pairingUri: '',
   pairingError: false
 })
@@ -21,5 +22,9 @@ export const WcConnectionCtrl = {
 
   setPairingError(pairingError: WcConnectionCtrlState['pairingError']) {
     state.pairingError = pairingError
+  },
+
+  setPairingEnabled(pairingEnabled: WcConnectionCtrlState['pairingEnabled']) {
+    state.pairingEnabled = pairingEnabled
   }
 }

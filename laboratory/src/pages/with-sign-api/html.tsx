@@ -1,4 +1,4 @@
-import { Button, Card, Divider } from '@nextui-org/react'
+import { Button, Card, Spacer } from '@nextui-org/react'
 import { getAddressFromAccount, getSdkError } from '@walletconnect/utils'
 import type { Web3ModalSignSession } from '@web3modal/sign-html'
 import { Web3ModalSign } from '@web3modal/sign-html'
@@ -9,7 +9,19 @@ import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 
 const web3ModalSign = new Web3ModalSign({
   projectId: getProjectId(),
-  modalOptions: { themeMode: getTheme() },
+  modalOptions: {
+    themeMode: getTheme(),
+    mobileWallets: [
+      {
+        id: 'metamask',
+        name: 'MetaMask',
+        links: {
+          native: 'metamask://',
+          universal: ''
+        }
+      }
+    ]
+  },
   metadata: DEMO_METADATA
 })
 
@@ -73,7 +85,7 @@ export default function WithSignHtmlPage() {
               <Button shadow color="primary" onPress={onSignMessage}>
                 Sign Message
               </Button>
-              <Divider y={2} />
+              <Spacer />
               <Button shadow color="error" onPress={onDisconnect}>
                 Disconnect
               </Button>

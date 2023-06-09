@@ -2,14 +2,14 @@
 
 import type { AuthClientTypes } from '@walletconnect/auth-client'
 import { AuthClient, generateNonce } from '@walletconnect/auth-client'
-import type { Web3ModalConfig } from '@web3modal/standalone'
-import { Web3Modal } from '@web3modal/standalone'
+import type { WalletConnectModalConfig } from '@walletconnect/modal'
+import { WalletConnectModal } from '@walletconnect/modal'
 
 // -- Types ----------------------------------------------------------------
 export interface Web3ModalAuthOptions {
   projectId: string
   metadata: AuthClientTypes.Metadata
-  modalOptions?: Omit<Web3ModalConfig, 'projectId' | 'walletConnectVersion'>
+  modalOptions?: Omit<WalletConnectModalConfig, 'projectId' | 'walletConnectVersion'>
 }
 
 export interface Web3ModalAuthSignInArguments {
@@ -22,13 +22,13 @@ export interface Web3ModalAuthSignInArguments {
 // -- Client ---------------------------------------------------------------
 export class Web3ModalAuth {
   #options: Web3ModalAuthOptions
-  #modal?: Web3Modal
+  #modal: WalletConnectModal
   #initAuthClientPromise?: Promise<void> = undefined
   #authClient?: InstanceType<typeof AuthClient> = undefined
 
   public constructor(options: Web3ModalAuthOptions) {
     this.#options = options
-    this.#initModal()
+    this.#modal = this.#initModal()
     this.#initAuthClient()
   }
 
@@ -45,7 +45,7 @@ export class Web3ModalAuth {
           await this.#initAuthClient()
         }
 
-        const unsubscribeModal = this.#modal!.subscribeModal(state => {
+        const unsubscribeModal = this.#modal.subscribeModal(state => {
           if (!state.open) {
             unsubscribeModal()
             reject(new Error('Modal closed'))
@@ -54,7 +54,7 @@ export class Web3ModalAuth {
 
         this.#authClient!.once('auth_response', ({ params }) => {
           unsubscribeModal()
-          this.#modal!.closeModal()
+          this.#modal.closeModal()
           // @ts-expect-error - result exists
           if (params.result) {
             resolve({
@@ -80,7 +80,7 @@ export class Web3ModalAuth {
         })
 
         if (uri) {
-          await this.#modal!.openModal({ uri, standaloneChains: [defaultChainId] })
+          await this.#modal.openModal({ uri, standaloneChains: [defaultChainId] })
         }
       }
     )
@@ -89,7 +89,8 @@ export class Web3ModalAuth {
   // -- private -----------------------------------------------------------
   #initModal() {
     const { modalOptions, projectId } = this.#options
-    this.#modal = new Web3Modal({
+
+    return new WalletConnectModal({
       ...modalOptions,
       enableAuthMode: true,
       walletConnectVersion: 2,

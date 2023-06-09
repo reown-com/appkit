@@ -6,9 +6,9 @@ import {
   useWeb3ModalEvents,
   useWeb3ModalTheme
 } from '@web3modal/react'
-import { useEffect } from 'react'
-import { useAccount, useSignMessage } from 'wagmi'
+import { useAccount, useNetwork, useSignMessage, useSignTypedData } from 'wagmi'
 import { NotificationCtrl } from '../controllers/NotificationCtrl'
+import { DEMO_SIGN_TYPED_DATA_REQUEST } from '../data/Constants'
 
 const message = 'Hello Web3Modal!'
 
@@ -19,8 +19,10 @@ export default function WagmiWeb3ModalWidget() {
   const { open } = useWeb3Modal()
 
   // -- Wagmi Hooks -----------------------------------------------------------
+  const { chain } = useNetwork()
   const { isConnected } = useAccount()
-  const { data: signData, error, signMessage } = useSignMessage({ message })
+  const { signMessageAsync } = useSignMessage({ message })
+  const { signTypedDataAsync } = useSignTypedData(DEMO_SIGN_TYPED_DATA_REQUEST(chain?.id))
 
   function getData(data: unknown) {
     if (typeof data === 'object' || Array.isArray(data)) {
@@ -30,13 +32,23 @@ export default function WagmiWeb3ModalWidget() {
     return String(data)
   }
 
-  useEffect(() => {
-    if (signData) {
-      NotificationCtrl.open('Sign Message', getData(signData))
-    } else if (error) {
+  async function onSignTypedData() {
+    try {
+      const data = await signTypedDataAsync()
+      NotificationCtrl.open('Sign Typed Data', getData(data))
+    } catch (error) {
+      NotificationCtrl.open('Sign Typed Data', JSON.stringify(error))
+    }
+  }
+
+  async function onSignMessage() {
+    try {
+      const data = await signMessageAsync()
+      NotificationCtrl.open('Sign Message', getData(data))
+    } catch (error) {
       NotificationCtrl.open('Sign Message', JSON.stringify(error))
     }
-  }, [signData, error])
+  }
 
   return (
     <>
@@ -51,11 +63,15 @@ export default function WagmiWeb3ModalWidget() {
           <Spacer />
 
           {isConnected ? (
-            <Button onPress={() => signMessage()}>Sign Message</Button>
+            <>
+              <Button onPress={onSignMessage}>Sign Message</Button>
+              <Spacer />
+              <Button onPress={onSignTypedData}>Sign Typed Data</Button>
+            </>
           ) : (
             <>
               <Button color="secondary" onPress={async () => open()}>
-                Custom Connect Btn
+                Custom Connect Button
               </Button>
               <Spacer />
               <Button

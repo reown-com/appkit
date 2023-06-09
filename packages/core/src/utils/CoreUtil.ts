@@ -47,6 +47,9 @@ export const CoreUtil = {
       safeAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
       safeAppUrl = `${safeAppUrl}://`
     }
+    if (!safeAppUrl.endsWith('/')) {
+      safeAppUrl = `${safeAppUrl}/`
+    }
     this.setWalletConnectDeepLink(safeAppUrl, name)
     const encodedWcUrl = encodeURIComponent(wcUri)
 
@@ -57,14 +60,14 @@ export const CoreUtil = {
     if (!CoreUtil.isHttpUrl(appUrl)) {
       return this.formatNativeUrl(appUrl, wcUri, name)
     }
-    let plainAppUrl = appUrl
-    if (appUrl.endsWith('/')) {
-      plainAppUrl = appUrl.slice(0, -1)
+    let safeAppUrl = appUrl
+    if (!safeAppUrl.endsWith('/')) {
+      safeAppUrl = `${safeAppUrl}/`
     }
-    this.setWalletConnectDeepLink(plainAppUrl, name)
+    this.setWalletConnectDeepLink(safeAppUrl, name)
     const encodedWcUrl = encodeURIComponent(wcUri)
 
-    return `${plainAppUrl}/wc?uri=${encodedWcUrl}`
+    return `${safeAppUrl}wc?uri=${encodedWcUrl}`
   },
 
   async wait(miliseconds: number) {
