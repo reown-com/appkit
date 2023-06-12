@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/auth-react",
-  "version": "2.4.6-8a8fa723",
+  "version": "2.4.6-d52fccc0",
   "main": "dist/index.es.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -17,7 +17,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/auth-html": "2.4.6-8a8fa723"
+    "@web3modal/auth-html": "2.4.6-d52fccc0"
   },
   "peerDependencies": {
     "react": ">=17",
