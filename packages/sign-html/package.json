@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/sign-html",
-  "version": "2.4.5",
+  "version": "2.4.6-46487043",
   "main": "dist/index.es.js",
   "unpkg": "dist/index.umd.js",
   "type": "module",
@@ -18,7 +18,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@walletconnect/modal": "2.4.5",
+    "@walletconnect/modal": "2.4.6-46487043",
     "@walletconnect/sign-client": "2.8.0"
   },
   "keywords": [

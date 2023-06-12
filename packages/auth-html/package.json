@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/auth-html",
-  "version": "2.4.5",
+  "version": "2.4.6-46487043",
   "main": "dist/index.es.js",
   "unpkg": "dist/index.umd.js",
   "type": "module",
@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@walletconnect/auth-client": "2.1.0",
-    "@walletconnect/modal": "2.4.5"
+    "@walletconnect/modal": "2.4.6-46487043"
   },
   "keywords": [
     "web3",
