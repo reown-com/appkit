@@ -5,6 +5,7 @@ import replace from '@rollup/plugin-replace'
 import esbuild from 'rollup-plugin-esbuild'
 import litCss from 'rollup-plugin-lit-css'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
+import nodePolyfill from 'rollup-plugin-polyfill-node'
 
 export default function createConfig(packageJson, scriptBundleName) {
   const esbuildPluginEs = esbuild({
@@ -29,7 +30,14 @@ export default function createConfig(packageJson, scriptBundleName) {
 
   const plugnsCommon = [replacePlugin, litCssPlugin, minifyHtml.default()]
   const pluginsEs = [...plugnsCommon, esbuildPluginEs]
-  const pluginsUmd = [...plugnsCommon, esbuildPluginEs, nodeResolve(), commonjs(), json()]
+  const pluginsUmd = [
+    ...plugnsCommon,
+    esbuildPluginEs,
+    nodeResolve(),
+    commonjs(),
+    json(),
+    nodePolyfill()
+  ]
 
   const config = [
     {
