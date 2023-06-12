@@ -18,8 +18,6 @@ export default function createConfig(packageJson, scriptBundleName) {
     }
   })
 
-  const esbuildPluginUmd = esbuild({ minify: true, tsconfig: 'tsconfig.json', platform: 'browser' })
-
   const litCssPlugin = litCss({
     include: ['**/*.css'],
     uglify: true
@@ -31,7 +29,7 @@ export default function createConfig(packageJson, scriptBundleName) {
 
   const plugnsCommon = [replacePlugin, litCssPlugin, minifyHtml.default()]
   const pluginsEs = [...plugnsCommon, esbuildPluginEs]
-  const pluginsUmd = [...plugnsCommon, esbuildPluginUmd, json(), commonjs(), nodeResolve()]
+  const pluginsUmd = [...plugnsCommon, esbuildPluginEs, nodeResolve(), commonjs(), json()]
 
   const config = [
     {
@@ -49,7 +47,7 @@ export default function createConfig(packageJson, scriptBundleName) {
       inlineDynamicImports: true,
       plugins: pluginsUmd,
       output: [
-        { file: './dist/index.umd.js', format: 'umd', exports: 'named', name: scriptBundleName }
+        { file: './dist/index.bundle.js', format: 'es', exports: 'named', name: scriptBundleName }
       ]
     })
   }
