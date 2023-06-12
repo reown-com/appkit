@@ -2,7 +2,6 @@
   "name": "@web3modal/ethereum",
   "version": "2.4.6-46487043",
   "main": "dist/index.es.js",
-  "unpkg": "dist/index.umd.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [

@@ -1,15 +1,13 @@
+import commonjs from '@rollup/plugin-commonjs'
+import json from '@rollup/plugin-json'
+import nodeResolve from '@rollup/plugin-node-resolve'
 import replace from '@rollup/plugin-replace'
 import esbuild from 'rollup-plugin-esbuild'
 import litCss from 'rollup-plugin-lit-css'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
 
-export default function createConfig(packageJson) {
-  const output = {
-    exports: 'named',
-    name: packageJson.name
-  }
-
-  const esbuildPlugin = esbuild({
+export default function createConfig(packageJson, scriptBundleName) {
+  const esbuildPluginEs = esbuild({
     minify: true,
     tsconfig: 'tsconfig.json',
     platform: 'browser',
@@ -20,6 +18,8 @@ export default function createConfig(packageJson) {
     }
   })
 
+  const esbuildPluginUmd = esbuild({ minify: true, tsconfig: 'tsconfig.json', platform: 'browser' })
+
   const litCssPlugin = litCss({
     include: ['**/*.css'],
     uglify: true
@@ -29,18 +29,30 @@ export default function createConfig(packageJson) {
     'process.env.ROLLUP_W3M_VERSION': JSON.stringify(packageJson.version)
   })
 
-  const plugins = [replacePlugin, litCssPlugin, minifyHtml.default(), esbuildPlugin]
+  const plugnsCommon = [replacePlugin, litCssPlugin, minifyHtml.default()]
+  const pluginsEs = [...plugnsCommon, esbuildPluginEs]
+  const pluginsUmd = [...plugnsCommon, esbuildPluginUmd, json(), commonjs(), nodeResolve()]
 
-  return [
+  const config = [
     {
       input: './index.ts',
-      plugins,
-      output: [{ file: './dist/index.es.js', format: 'es', ...output }]
-    },
-    {
-      input: './index.ts',
-      plugins,
-      output: [{ file: './dist/index.umd.js', format: 'umd', ...output }]
+      plugins: pluginsEs,
+      output: [
+        { file: './dist/index.es.js', format: 'es', exports: 'named', name: packageJson.name }
+      ]
     }
   ]
+
+  if (scriptBundleName) {
+    config.push({
+      input: './index.ts',
+      inlineDynamicImports: true,
+      plugins: pluginsUmd,
+      output: [
+        { file: './dist/index.umd.js', format: 'umd', exports: 'named', name: scriptBundleName }
+      ]
+    })
+  }
+
+  return config
 }
