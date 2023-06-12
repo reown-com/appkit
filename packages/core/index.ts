@@ -21,4 +21,6 @@ export type {
   WalletData
 } from './src/types/controllerTypes'
 export { CoreUtil } from './src/utils/CoreUtil'
+export { IS_SERVER, W3aUtil } from './src/utils/W3aUtil'
+export type { Eip1193Provider } from './src/utils/W3aUtil'
 import './src/utils/PolyfillUtil'
