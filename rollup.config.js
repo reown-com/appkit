@@ -11,7 +11,7 @@ export default function createConfig(packageJson) {
 
   const esbuildPlugin = esbuild({
     minify: true,
-    tsconfig: './tsconfig.json',
+    tsconfig: 'tsconfig.json',
     platform: 'browser',
     treeShaking: true,
     sourceMap: true,
@@ -36,21 +36,11 @@ export default function createConfig(packageJson) {
       input: './index.ts',
       plugins,
       output: [{ file: './dist/index.es.js', format: 'es', ...output }]
+    },
+    {
+      input: './index.ts',
+      plugins,
+      output: [{ file: './dist/index.umd.js', format: 'umd', ...output }]
     }
-    // TODO: Ilja finish umd build
-    //
-    // {
-    //   input: './index.ts',
-    //   plugins: [...plugins, json(), polyfillNode(), commonjs(), resolve({ browser: true })],
-    //   output: [
-    //     {
-    //       file: './dist/index.umd.js',
-    //       format: 'umd',
-    //       inlineDynamicImports: true,
-    //       extend: true,
-    //       ...output
-    //     }
-    //   ]
-    // }
   ]
 }

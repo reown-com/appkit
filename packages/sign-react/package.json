@@ -2,6 +2,7 @@
   "name": "@web3modal/sign-react",
   "version": "2.4.5",
   "main": "dist/index.es.js",
+  "unpkg": "dist/index.umd.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
