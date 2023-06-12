@@ -33,7 +33,7 @@ export default function createConfig(packageJson, scriptBundleName) {
   const pluginsUmd = [
     ...plugnsCommon,
     esbuildPluginEs,
-    nodeResolve(),
+    nodeResolve({ browser: true }),
     commonjs(),
     json(),
     nodePolyfill()

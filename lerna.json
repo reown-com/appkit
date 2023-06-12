@@ -12,6 +12,6 @@
     "packages/sign-html",
     "packages/sign-react"
   ],
-  "version": "2.4.6-315d31a3",
+  "version": "2.4.6-8a8fa723",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
