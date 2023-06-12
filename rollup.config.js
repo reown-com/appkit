@@ -1,8 +1,11 @@
 import commonjs from '@rollup/plugin-commonjs'
+import json from '@rollup/plugin-json'
+import resolve from '@rollup/plugin-node-resolve'
 import replace from '@rollup/plugin-replace'
 import esbuild from 'rollup-plugin-esbuild'
 import litCss from 'rollup-plugin-lit-css'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
+import polyfillNode from 'rollup-plugin-polyfill-node'
 
 export default function createConfig(packageJson) {
   const output = {
@@ -40,7 +43,7 @@ export default function createConfig(packageJson) {
     },
     {
       input: './index.ts',
-      plugins: [...plugins, commonjs()],
+      plugins: [...plugins],
       output: [
         {
           file: './dist/index.umd.js',
@@ -51,11 +54,21 @@ export default function createConfig(packageJson) {
     },
     {
       input: './index.ts',
-      plugins: [...plugins, commonjs()],
+      plugins: [
+        ...plugins,
+        json(),
+        polyfillNode(),
+        commonjs(),
+        resolve({
+          extensions: ['.js', '.json'],
+          preferBuiltins: false
+        })
+      ],
       output: [
         {
           file: './dist/index.cjs',
           format: 'cjs',
+          inlineDynamicImports: true,
           ...output
         }
       ]
