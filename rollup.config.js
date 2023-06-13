@@ -33,7 +33,7 @@ export default function createConfig(packageJson, isBundle = false) {
   const pluginsUmd = [
     ...plugnsCommon,
     esbuildPluginEs,
-    nodeResolve({ browser: true, dedupe: ['@web3modal/core', '@web3modal/ui', 'viem'] }),
+    nodeResolve({ browser: true }),
     commonjs(),
     json(),
     nodePolyfill()
@@ -51,7 +51,7 @@ export default function createConfig(packageJson, isBundle = false) {
     config.push({
       input: './bundle.ts',
       plugins: pluginsUmd,
-      output: [{ dir: './cdn', format: 'es' }]
+      output: [{ dir: './dist/cdn', format: 'es' }]
     })
   }
 
