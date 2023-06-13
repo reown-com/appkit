@@ -23,5 +23,5 @@
       "@walletconnect/types": ["node_modules/@walletconnect/types"]
     }
   },
-  "exclude": ["node_modules", "dist", "out", "build"]
+  "exclude": ["node_modules", "dist", "out", "cdn"]
 }

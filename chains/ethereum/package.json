@@ -1,12 +1,13 @@
 {
   "name": "@web3modal/ethereum",
-  "version": "2.4.6-130334c3",
+  "version": "2.4.6-7e0f6f83",
   "main": "dist/index.js",
   "unpkg": "cdn/bundle.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "cdn"
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
