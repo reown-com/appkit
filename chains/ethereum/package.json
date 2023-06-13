@@ -2,6 +2,7 @@
   "name": "@web3modal/ethereum",
   "version": "2.4.6-5f6feb6a",
   "main": "dist/index.js",
+  "unpkg": "dist/bundle.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
