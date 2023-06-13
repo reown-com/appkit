@@ -1,3 +1,7 @@
+if (!window.global) {
+  window.global = window
+}
+
 export * as WagmiCore from '@wagmi/core'
 export * as WagmiCoreChains from '@wagmi/core/chains'
 export * as WagmiCoreConnectors from '@wagmi/core/connectors'

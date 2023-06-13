@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/react",
-  "version": "2.4.6-6887b404",
+  "version": "2.4.6-fe131b4f",
   "main": "dist/index.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -17,11 +17,11 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "@web3modal/core": "2.4.6-6887b404",
-    "@web3modal/ui": "2.4.6-6887b404"
+    "@web3modal/core": "2.4.6-fe131b4f",
+    "@web3modal/ui": "2.4.6-fe131b4f"
   },
   "devDependencies": {
-    "@web3modal/ethereum": "2.4.6-6887b404"
+    "@web3modal/ethereum": "2.4.6-fe131b4f"
   },
   "peerDependencies": {
     "react": ">=17",
