@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/sign-react",
-  "version": "2.4.6-d52fccc0",
+  "version": "2.4.6-5f6feb6a",
   "main": "dist/index.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
@@ -17,7 +17,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/sign-html": "2.4.6-d52fccc0",
+    "@web3modal/sign-html": "2.4.6-5f6feb6a",
     "mitt": "3.0.0"
   },
   "peerDependencies": {
