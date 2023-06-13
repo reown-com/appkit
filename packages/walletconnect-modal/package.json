@@ -1,8 +1,8 @@
 {
   "name": "@walletconnect/modal",
-  "version": "2.4.6-fe131b4f",
+  "version": "2.4.6-130334c3",
   "main": "dist/index.js",
-  "unpkg": "dist/bundle.js",
+  "unpkg": "cdn/bundle.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
@@ -18,8 +18,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/core": "2.4.6-fe131b4f",
-    "@web3modal/ui": "2.4.6-fe131b4f"
+    "@web3modal/core": "2.4.6-130334c3",
+    "@web3modal/ui": "2.4.6-130334c3"
   },
   "keywords": [
     "web3",
