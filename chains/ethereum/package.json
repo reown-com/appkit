@@ -20,8 +20,8 @@
     "viem": ">=1"
   },
   "devDependencies": {
-    "@wagmi/core": "1.1.1",
-    "viem": "1.0.5"
+    "@wagmi/core": "1.2.0",
+    "viem": "1.0.6"
   },
   "keywords": [
     "wagmi",
