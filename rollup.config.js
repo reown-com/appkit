@@ -7,7 +7,7 @@ import litCss from 'rollup-plugin-lit-css'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
 import nodePolyfill from 'rollup-plugin-polyfill-node'
 
-export default function createConfig(packageJson, scriptBundleName) {
+export default function createConfig(packageJson, bundleName) {
   const esbuildPluginEs = esbuild({
     minify: true,
     tsconfig: 'tsconfig.json',
@@ -43,20 +43,16 @@ export default function createConfig(packageJson, scriptBundleName) {
     {
       input: './index.ts',
       plugins: pluginsEs,
-      output: [
-        { file: './dist/index.es.js', format: 'es', exports: 'named', name: packageJson.name }
-      ]
+      output: [{ file: './dist/index.js', format: 'es', exports: 'named', name: packageJson.name }]
     }
   ]
 
-  if (scriptBundleName) {
+  if (bundleName) {
     config.push({
-      input: './index.ts',
+      input: './bundle.ts',
       inlineDynamicImports: true,
       plugins: pluginsUmd,
-      output: [
-        { file: './dist/index.bundle.js', format: 'es', exports: 'named', name: scriptBundleName }
-      ]
+      output: [{ file: './dist/bundle.js', format: 'es', exports: 'named', name: bundleName }]
     })
   }
 

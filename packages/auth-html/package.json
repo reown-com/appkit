@@ -1,8 +1,8 @@
 {
   "name": "@web3modal/auth-html",
   "version": "2.4.6-d52fccc0",
-  "main": "dist/index.es.js",
-  "unpkg": "dist/index.bundle.js",
+  "main": "dist/index.js",
+  "unpkg": "dist/bundle.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
