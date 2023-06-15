@@ -313,7 +313,7 @@ export interface EventsCtrlState {
 }
 
 export interface W3aCtrlState {
-  iFrame: any
+  iFrame: HTMLIFrameElement
   iFrameMsgIndex: number
   iFrameReady: boolean
   providerInited: boolean
