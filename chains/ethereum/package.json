@@ -1,7 +1,8 @@
 {
   "name": "@web3modal/ethereum",
-  "version": "2.4.5",
-  "main": "dist/index.es.js",
+  "version": "2.4.6",
+  "main": "dist/index.js",
+  "unpkg": "dist/cdn/bundle.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
@@ -20,8 +21,8 @@
     "viem": ">=1"
   },
   "devDependencies": {
-    "@wagmi/core": "1.1.1",
-    "viem": "1.0.0"
+    "@wagmi/core": "1.2.0",
+    "viem": "1.0.7"
   },
   "keywords": [
     "wagmi",
