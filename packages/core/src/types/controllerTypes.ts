@@ -311,3 +311,11 @@ export interface EventsCtrlState {
   events: ModalEvent[]
   connectedWalletId?: string
 }
+
+export interface W3aCtrlState {
+  iFrame: any
+  iFrameMsgIndex: number
+  iFrameReady: boolean
+  providerInited: boolean
+  notifyReady: (() => void)[]
+}

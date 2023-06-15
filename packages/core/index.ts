@@ -8,6 +8,7 @@ export { OptionsCtrl } from './src/controllers/OptionsCtrl'
 export { RouterCtrl } from './src/controllers/RouterCtrl'
 export { ThemeCtrl } from './src/controllers/ThemeCtrl'
 export { ToastCtrl } from './src/controllers/ToastCtrl'
+export { W3aCtrl } from './src/controllers/W3aCtrl'
 export { WcConnectionCtrl } from './src/controllers/WcConnectionCtrl'
 export type {
   ConfigCtrlState,
@@ -18,9 +19,8 @@ export type {
   RouterView,
   SwitchNetworkData,
   ThemeCtrlState,
+  W3aCtrlState,
   WalletData
 } from './src/types/controllerTypes'
 export { CoreUtil } from './src/utils/CoreUtil'
-export { IS_SERVER, W3aUtil } from './src/utils/W3aUtil'
-export type { Eip1193Provider } from './src/utils/W3aUtil'
 import './src/utils/PolyfillUtil'

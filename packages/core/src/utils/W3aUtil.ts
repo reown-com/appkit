@@ -1,143 +1,76 @@
-import type { BaseMessage, Message, Params } from './MessageUtil'
-import { MAGIC_NUMBER, isBaseMessage } from './MessageUtil'
+import { W3aCtrl } from '../controllers/W3aCtrl'
 
-export interface Eip1193Provider {
-  request: (params: unknown[]) => Promise<unknown>
+export interface BaseMessage {
+  MAGIC_NUMBER: typeof MAGIC_NUMBER
+  reply: string
 }
 
-const IFRAME_ID = 'walletconnect-web3account-iframe'
-const IFRAME_API = 'https://web3account-iframe.pages.dev'
+export type Params =
+  | { method: 'getAddress' }
+  | { method: 'isLoggedIn' }
+  | { method: 'logout' }
+  | { method: 'request'; args: unknown[] }
+  | { method: 'sendEmailVerification'; email: string }
+  | { method: 'verifyEmail'; code: string }
+export type Message = BaseMessage & Params
+
+export const IFRAME_ID = 'walletconnect-web3account-iframe'
+
+export const IFRAME_API = 'https://web3account-iframe.pages.dev'
+
 export const IS_SERVER = typeof window === 'undefined'
 
-export const W3aUtil = {
-  iframeMsgIndex: 0,
-  iframeReady: false,
-  providerInited: false,
-  iframe: null as unknown as HTMLIFrameElement,
-  notifyReady: [] as (() => void)[],
+export const MAGIC_NUMBER = 'f41ef320-9a42-43c2-87d6-7be2a21b6400'
 
-  initIFrame() {
-    if (IS_SERVER) {
-      this.iframe = null as unknown as HTMLIFrameElement
-    } else {
-      const existingIframe = document.getElementById(IFRAME_ID)
-      if (existingIframe) {
-        existingIframe.remove()
-      }
-      const iframe = document.createElement('iframe')
-      iframe.id = IFRAME_ID
-      iframe.name = IFRAME_ID
-      iframe.style.display = 'none'
-      iframe.src = IFRAME_API
-
-      // Watch for iframe to be ready
-      const messageHandler = (e: MessageEvent) => {
-        if (e.origin === IFRAME_API) {
-          this.iframeReady = true
-          for (const notifyReady of this.notifyReady) {
-            notifyReady()
-          }
-          window.removeEventListener('message', messageHandler)
-        }
-      }
-      window.addEventListener('message', messageHandler)
-
-      document.body.append(iframe)
-      this.iframe = iframe
+export function messageHandler(e: MessageEvent) {
+  if (e.origin === IFRAME_API) {
+    W3aCtrl.state.iFrameReady = true
+    for (const notifyReady of W3aCtrl.state.notifyReady) {
+      notifyReady()
     }
-  },
-
-  async postMessage(message: unknown): Promise<void> {
-    function post(contentWindow: Window | null) {
-      if (!contentWindow) {
-        throw new Error('iframe.contentWindow is null')
-      }
-      contentWindow.postMessage(message, IFRAME_API)
-    }
-
-    if (this.iframeReady) {
-      post(this.iframe.contentWindow)
-
-      return Promise.resolve()
-    }
-
-    return new Promise<void>(resolve => {
-      this.notifyReady.push(() => {
-        if (this.iframeReady) {
-          post(this.iframe.contentWindow)
-          resolve()
-        } else {
-          throw new Error('this.iframe.contentWindow still null after notifyReady was called')
-        }
-      })
-    })
-  },
-
-  getReply(): string {
-    const reply = `${this.iframeMsgIndex}`
-    this.iframeMsgIndex += 1
-
-    return reply
-  },
-
-  async call<T>(msg: Params): Promise<BaseMessage & T> {
-    const reply = this.getReply()
-
-    const promise = new Promise<BaseMessage & T>((resolve, _reject) => {
-      function messageHandler({ origin, data }: MessageEvent) {
-        if (!isBaseMessage(data)) {
-          return
-        }
-        if (origin !== IFRAME_API) {
-          return
-        }
-        if (data.reply !== reply) {
-          return
-        }
-        window.removeEventListener('message', messageHandler)
-        resolve(data as BaseMessage & T)
-      }
-      window.addEventListener('message', messageHandler)
-    })
-
-    const message: Message = {
-      MAGIC_NUMBER,
-      reply,
-      ...msg
-    }
-    this.postMessage(message)
-
-    return promise
-  },
-
-  async isAuthorized(): Promise<boolean> {
-    return this.call<{ isLoggedIn: boolean }>({ method: 'isLoggedIn' }).then(msg => msg.isLoggedIn)
-  },
-
-  async disconnect(): Promise<void> {
-    return this.call({ method: 'logout' })
-  },
-
-  async sendEmailVerification(email: string): Promise<void> {
-    return this.call<{ error: string | undefined }>({
-      method: 'sendEmailVerification',
-      email
-    }).then(msg => {
-      if (msg.error) {
-        throw new Error(msg.error)
-      }
-    })
-  },
-
-  async verifyEmail(code: string): Promise<boolean> {
-    return this.call<{ error: string } | { error: undefined; verified: boolean }>({
-      method: 'verifyEmail',
-      code
-    }).then(msg => {
-      if (msg.error === undefined) {
-        return msg.verified
-      }
-      throw new Error(msg.error)
-    })
+    window.removeEventListener('message', messageHandler)
   }
+}
+
+export function isBaseMessage(data: { MAGIC_NUMBER: typeof MAGIC_NUMBER }): data is BaseMessage {
+  try {
+    if (data.MAGIC_NUMBER === MAGIC_NUMBER) {
+      return true
+    }
+
+    return false
+  } catch (e) {
+    return false
+  }
+}
+
+export async function call<T>(msg: Params): Promise<BaseMessage & T> {
+  const reply = W3aCtrl.getReply()
+
+  const promise = new Promise<BaseMessage & T>((resolve, _reject) => {
+    function baseMessageHandler({ origin, data }: MessageEvent) {
+      if (!isBaseMessage(data)) {
+        return
+      }
+      if (origin !== IFRAME_API) {
+        return
+      }
+      if (data.reply !== reply) {
+        return
+      }
+      window.removeEventListener('message', baseMessageHandler)
+      resolve(data as BaseMessage & T)
+    }
+    window.addEventListener('message', baseMessageHandler)
+  })
+
+  const message: Message = {
+    MAGIC_NUMBER,
+    reply,
+    ...msg
+  }
+
+  W3aCtrl.postMessage(message)
+
+  return promise
 }
