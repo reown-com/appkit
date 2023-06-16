@@ -20,6 +20,7 @@ div {
   background-color: #ffffff;
   border-radius: var(--w3m-container-border-radius);
   padding: 18px;
+  box-shadow: 0 2px 5px #000000;
 }
 
 svg:first-child,
