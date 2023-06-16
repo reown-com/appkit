@@ -142,7 +142,7 @@ export default function HomePage() {
 
       <Container css={{ maxWidth: '940px', margin: '50px auto 0' }}>
         <Text h3 color="gray">
-          @walletconnect/modal Playgrounds
+          WalletConnectModal Playgrounds
         </Text>
         <Divider />
       </Container>

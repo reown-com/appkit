@@ -1,42 +1,59 @@
-import { Button, Card, Modal, Text } from '@nextui-org/react'
+import { Button, Card, Spacer } from '@nextui-org/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
-import type { IEthereumProvider } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider'
-
+import type { EthereumProvider as IEthereumProvider } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider'
 import { useEffect, useState } from 'react'
+import { NotificationCtrl } from '../../controllers/NotificationCtrl'
 import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 
 export default function WithEthereumProvider() {
   const [providerClient, setProviderClient] = useState<IEthereumProvider | undefined>(undefined)
-  const [modalOpen, setModalOpen] = useState(false)
+  const [session, setSession] = useState<boolean>(false)
 
   async function onInitializeProviderClient() {
-    setProviderClient(
-      await EthereumProvider.init({
-        projectId: getProjectId(),
-        showQrModal: true,
-        qrModalOptions: { themeMode: getTheme() },
-        chains: [1],
-        methods: ['eth_sendTransaction', 'personal_sign'],
-        events: ['connect']
-      })
-    )
+    const client = await EthereumProvider.init({
+      projectId: getProjectId(),
+      showQrModal: true,
+      qrModalOptions: { themeMode: getTheme() },
+      chains: [1],
+      methods: ['eth_sendTransaction', 'personal_sign'],
+      events: ['connect', 'disconnect']
+    })
+    if (client.session) {
+      setSession(true)
+    }
+    setProviderClient(client)
   }
 
   async function onConnect() {
     if (providerClient) {
       await providerClient.connect()
+      setSession(true)
+      NotificationCtrl.open('Connect', JSON.stringify(providerClient.session, null, 2))
     } else {
       throw new Error('providerClient is not initialized')
     }
   }
 
-  useEffect(() => {
+  async function onDisconnect() {
     if (providerClient) {
-      providerClient.on('connect', () => {
-        setModalOpen(true)
-      })
+      await providerClient.disconnect()
+      setSession(false)
+    } else {
+      throw new Error('providerClient is not initialized')
     }
-  }, [providerClient])
+  }
+
+  async function onSignMessage() {
+    if (providerClient) {
+      const result = await providerClient.request({
+        method: 'personal_sign',
+        params: ['0x48656c6c6f20576562334d6f64616c', providerClient.accounts[0]]
+      })
+      NotificationCtrl.open('Sign Message', JSON.stringify(result, null, 2))
+    } else {
+      throw new Error('providerClient is not initialized')
+    }
+  }
 
   useEffect(() => {
     onInitializeProviderClient()
@@ -44,22 +61,27 @@ export default function WithEthereumProvider() {
 
   return (
     <>
-      <Card css={{ maxWidth: '400px', margin: '100px auto' }} variant="bordered">
-        <Card.Body css={{ justifyContent: 'center', alignItems: 'center', height: '200px' }}>
-          <Button shadow color="primary" onPress={onConnect}>
-            Connect Wallet
-          </Button>
-        </Card.Body>
-      </Card>
-
-      <Modal closeButton blur open={modalOpen} onClose={() => setModalOpen(false)}>
-        <Modal.Header>
-          <Text h3>Success</Text>
-        </Modal.Header>
-        <Modal.Body>
-          <Text color="grey">Successfully connected</Text>
-        </Modal.Body>
-      </Modal>
+      {providerClient && (
+        <Card css={{ maxWidth: '400px', margin: '100px auto' }} variant="bordered">
+          <Card.Body css={{ justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+            {session ? (
+              <>
+                <Button shadow color="primary" onPress={onSignMessage}>
+                  Sign Message
+                </Button>
+                <Spacer />
+                <Button shadow color="error" onPress={onDisconnect}>
+                  Disconnect
+                </Button>
+              </>
+            ) : (
+              <Button shadow color="primary" onPress={onConnect}>
+                Connect
+              </Button>
+            )}
+          </Card.Body>
+        </Card>
+      )}
     </>
   )
 }
