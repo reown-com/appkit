@@ -6,7 +6,7 @@ import {
   useWeb3ModalEvents,
   useWeb3ModalTheme
 } from '@web3modal/react'
-import { useAccount, useSignMessage, useSignTypedData } from 'wagmi'
+import { useAccount, useNetwork, useSignMessage, useSignTypedData } from 'wagmi'
 import { NotificationCtrl } from '../controllers/NotificationCtrl'
 import { DEMO_SIGN_TYPED_DATA_REQUEST } from '../data/Constants'
 
@@ -19,9 +19,10 @@ export default function WagmiWeb3ModalWidget() {
   const { open } = useWeb3Modal()
 
   // -- Wagmi Hooks -----------------------------------------------------------
+  const { chain } = useNetwork()
   const { isConnected } = useAccount()
   const { signMessageAsync } = useSignMessage({ message })
-  const { signTypedDataAsync } = useSignTypedData(DEMO_SIGN_TYPED_DATA_REQUEST)
+  const { signTypedDataAsync } = useSignTypedData(DEMO_SIGN_TYPED_DATA_REQUEST(chain?.id))
 
   function getData(data: unknown) {
     if (typeof data === 'object' || Array.isArray(data)) {
