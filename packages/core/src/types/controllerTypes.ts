@@ -219,6 +219,7 @@ export interface ThemeCtrlState {
     '--w3m-icon-button-border-radius'?: string
     '--w3m-button-hover-highlight-border-radius'?: string
     '--w3m-font-family'?: string
+    '--w3m-font-feature-settings'?: string
 
     '--w3m-text-big-bold-size'?: string
     '--w3m-text-big-bold-weight'?: string

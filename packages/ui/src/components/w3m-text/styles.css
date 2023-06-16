@@ -1,7 +1,7 @@
 span {
   font-style: normal;
   font-family: var(--w3m-font-family);
-  font-feature-settings: 'tnum' on, 'lnum' on, 'case' on;
+  font-feature-settings: var(--w3m-font-feature-settings);
 }
 
 .w3m-xsmall-bold {

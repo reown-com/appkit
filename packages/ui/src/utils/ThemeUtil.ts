@@ -77,6 +77,7 @@ function themeVariablesPresets() {
     '--w3m-text-medium-regular-text-transform': 'none',
     '--w3m-font-family':
       "-apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, 'Helvetica Neue', sans-serif",
+    '--w3m-font-feature-settings': `'tnum' on, 'lnum' on, 'case' on`,
     '--w3m-success-color': 'rgb(38,181,98)',
     '--w3m-error-color': 'rgb(242, 90, 103)'
   }
