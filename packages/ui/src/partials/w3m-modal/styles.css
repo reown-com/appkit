@@ -13,9 +13,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.3);
   opacity: 0;
   pointer-events: none;
+  background-color: var(--w3m-overlay-background-color);
+  backdrop-filter: var(--w3m-overlay-backdrop-filter);
 }
 
 @media (max-height: 720px) and (orientation: landscape) {

@@ -12,9 +12,15 @@ div {
   user-select: none;
   display: block;
   overflow: hidden;
-  width: 100%;
   aspect-ratio: 1 / 1;
   animation: fadeIn ease 0.2s;
+}
+
+.w3m-dark {
+  background-color: #ffffff;
+  border-radius: var(--w3m-container-border-radius);
+  padding: 18px;
+  box-shadow: 0 2px 5px #000000;
 }
 
 svg:first-child,

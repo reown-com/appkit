@@ -1,6 +1,7 @@
 import { ThemeCtrl } from '@web3modal/core'
 import { html, LitElement, svg } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { classMap } from 'lit/directives/class-map.js'
 import { QrCodeUtil } from '../../utils/QrCode'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -19,19 +20,24 @@ export class W3mQrCode extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private svgTemplate() {
-    const themeMode = ThemeCtrl.state.themeMode ?? 'light'
+    const isLightMode = ThemeCtrl.state.themeMode === 'light'
+    const size = isLightMode ? this.size : this.size - 18 * 2
 
     return svg`
-      <svg height=${this.size} width=${this.size}>
-        ${QrCodeUtil.generate(this.uri, this.size, this.size / 4, themeMode)}
+      <svg height=${size} width=${size}>
+        ${QrCodeUtil.generate(this.uri, size, size / 4)}
       </svg>
     `
   }
 
   // -- render ------------------------------------------------------- //
   protected render() {
+    const classes = {
+      'w3m-dark': ThemeCtrl.state.themeMode === 'dark'
+    }
+
     return html`
-      <div>
+      <div style=${`width: ${this.size}px`} class=${classMap(classes)}>
         ${this.walletId || this.imageUrl
           ? html`
               <w3m-wallet-image
@@ -42,7 +48,6 @@ export class W3mQrCode extends LitElement {
             `
           : SvgUtil.WALLET_CONNECT_ICON_COLORED}
         ${this.svgTemplate()}
-        <w3m-theme-context></w3m-theme-context>
       </div>
     `
   }

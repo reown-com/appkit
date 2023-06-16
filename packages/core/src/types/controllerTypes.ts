@@ -219,6 +219,7 @@ export interface ThemeCtrlState {
     '--w3m-icon-button-border-radius'?: string
     '--w3m-button-hover-highlight-border-radius'?: string
     '--w3m-font-family'?: string
+    '--w3m-font-feature-settings'?: string
 
     '--w3m-text-big-bold-size'?: string
     '--w3m-text-big-bold-weight'?: string
@@ -261,6 +262,9 @@ export interface ThemeCtrlState {
     '--w3m-text-xsmall-regular-letter-spacing'?: string
     '--w3m-text-xsmall-regular-text-transform'?: string
     '--w3m-text-xsmall-regular-font-family'?: string
+
+    '--w3m-overlay-background-color'?: string
+    '--w3m-overlay-backdrop-filter'?: string
   }
   themeMode?: 'dark' | 'light'
 }
