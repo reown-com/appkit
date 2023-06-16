@@ -46,7 +46,7 @@ svg:first-child {
 }
 
 svg:first-child path:first-child {
-  fill: #141414;
+  fill: var(--w3m-accent-color);
 }
 
 svg:first-child path:last-child {
