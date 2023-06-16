@@ -7,8 +7,14 @@ button {
   width: 100px;
 }
 
-button:hover {
+button:active {
   background-color: var(--w3m-color-overlay);
+}
+
+@media (hover: hover) {
+  button:hover {
+    background-color: var(--w3m-color-overlay);
+  }
 }
 
 button:disabled {

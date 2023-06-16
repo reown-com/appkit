@@ -9,11 +9,12 @@ const state = proxy<OptionsCtrlState>({
   standaloneChains: undefined,
   standaloneUri: undefined,
   isStandalone: false,
+  isAuth: false,
   isCustomDesktop: false,
   isCustomMobile: false,
   isDataLoaded: false,
   isUiLoaded: false,
-  isInjectedMobile: false,
+  isPreferInjected: false,
   walletConnectVersion: 1
 })
 
@@ -74,7 +75,11 @@ export const OptionsCtrl = {
     state.walletConnectVersion = walletConnectVersion
   },
 
-  setIsInjectedMobile(isInjectedMobile: OptionsCtrlState['isInjectedMobile']) {
-    state.isInjectedMobile = isInjectedMobile
+  setIsPreferInjected(isPreferInjected: OptionsCtrlState['isPreferInjected']) {
+    state.isPreferInjected = isPreferInjected
+  },
+
+  setIsAuth(isAuth: OptionsCtrlState['isAuth']) {
+    state.isAuth = isAuth
   }
 }

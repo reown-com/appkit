@@ -1,0 +1,43 @@
+{
+  "name": "@web3modal/auth-html",
+  "version": "2.4.7",
+  "main": "dist/index.js",
+  "unpkg": "dist/cdn/bundle.js",
+  "type": "module",
+  "types": "dist/_types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:source": "rollup --silent --config rollup.config.js",
+    "build": "npm run build:clean; npm run build:types & npm run build:source",
+    "dev": "rollup --config rollup.config.js --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@walletconnect/auth-client": "2.1.0",
+    "@walletconnect/modal": "2.4.7"
+  },
+  "keywords": [
+    "web3",
+    "crypto",
+    "ethereum",
+    "web3modal",
+    "walletconnect",
+    "auth",
+    "html"
+  ],
+  "author": "WalletConnect <walletconnect.com>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/web3modal/web3modal",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/web3modal/web3modal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/web3modal/web3modal/issues"
+  }
+}

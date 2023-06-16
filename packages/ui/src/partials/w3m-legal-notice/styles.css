@@ -12,6 +12,12 @@ a {
   display: inline;
 }
 
-a:hover {
+a:active {
   opacity: 0.8;
+}
+
+@media (hover: hover) {
+  a:hover {
+    opacity: 0.8;
+  }
 }

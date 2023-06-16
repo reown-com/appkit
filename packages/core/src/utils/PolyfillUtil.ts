@@ -12,4 +12,7 @@ if (typeof window !== 'undefined') {
     // @ts-expect-error minimal process
     window.process = { env: {} }
   }
+  if (!window.global) {
+    window.global = window
+  }
 }

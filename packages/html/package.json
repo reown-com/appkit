@@ -1,12 +1,14 @@
 {
   "name": "@web3modal/html",
-  "version": "2.3.7",
+  "version": "2.4.7",
   "main": "dist/index.js",
+  "unpkg": "dist/cdn/bundle.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
     "dist"
   ],
+  "sideEffects": false,
   "scripts": {
     "build:clean": "rm -rf dist",
     "build:types": "tsc --emitDeclarationOnly",
@@ -15,13 +17,12 @@
     "dev": "rollup --config rollup.config.js --watch",
     "typecheck": "tsc --noEmit"
   },
-  "devDependencies": {
-    "@web3modal/ethereum": "2.3.7"
-  },
   "dependencies": {
-    "@web3modal/core": "2.3.7",
-    "@web3modal/standalone": "2.3.7",
-    "@web3modal/ui": "2.3.7"
+    "@web3modal/core": "2.4.7",
+    "@web3modal/ui": "2.4.7"
+  },
+  "devDependencies": {
+    "@web3modal/ethereum": "2.4.7"
   },
   "keywords": [
     "web3",
@@ -29,7 +30,7 @@
     "ethereum",
     "web3modal",
     "walletconnect",
-    "web3auth"
+    "html"
   ],
   "author": "WalletConnect <walletconnect.com>",
   "license": "Apache-2.0",

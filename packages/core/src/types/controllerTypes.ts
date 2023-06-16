@@ -1,4 +1,4 @@
-import type { Chain, EthereumClient } from '@web3modal/ethereum'
+import type { EthereumClient } from '@web3modal/ethereum'
 
 export interface MobileWallet {
   id: string
@@ -18,6 +18,11 @@ export interface DesktopWallet {
   }
 }
 
+export interface Chain {
+  id: number
+  name: string
+}
+
 // -- ConfigCtrl ------------------------------------------- //
 export interface ConfigCtrlState {
   projectId: string
@@ -31,6 +36,7 @@ export interface ConfigCtrlState {
   tokenImages?: Record<string, string>
   tokenContracts?: Record<number, string>
   enableStandaloneMode?: boolean
+  enableAuthMode?: boolean
   enableNetworkView?: boolean
   enableAccountView?: boolean
   enableExplorer?: boolean
@@ -52,11 +58,12 @@ export interface OptionsCtrlState {
   standaloneChains?: string[]
   standaloneUri?: string
   isStandalone: boolean
+  isAuth: boolean
   isCustomDesktop: boolean
   isCustomMobile: boolean
   isDataLoaded: boolean
   isUiLoaded: boolean
-  isInjectedMobile: boolean
+  isPreferInjected: boolean
   walletConnectVersion: 1 | 2
 }
 
@@ -87,6 +94,7 @@ export interface ListingParams {
   chains?: string
   recommendedIds?: string
   excludedIds?: string
+  sdks?: string
 }
 
 export interface Listing {
@@ -211,6 +219,7 @@ export interface ThemeCtrlState {
     '--w3m-icon-button-border-radius'?: string
     '--w3m-button-hover-highlight-border-radius'?: string
     '--w3m-font-family'?: string
+    '--w3m-font-feature-settings'?: string
 
     '--w3m-text-big-bold-size'?: string
     '--w3m-text-big-bold-weight'?: string
@@ -253,12 +262,16 @@ export interface ThemeCtrlState {
     '--w3m-text-xsmall-regular-letter-spacing'?: string
     '--w3m-text-xsmall-regular-text-transform'?: string
     '--w3m-text-xsmall-regular-font-family'?: string
+
+    '--w3m-overlay-background-color'?: string
+    '--w3m-overlay-backdrop-filter'?: string
   }
   themeMode?: 'dark' | 'light'
 }
 
 // -- WcConnectionCtrl ------------------------------------- //
 export interface WcConnectionCtrlState {
+  pairingEnabled: boolean
   pairingUri: string
   pairingError: boolean
 }
@@ -297,6 +310,7 @@ export interface ModalEvent {
 }
 
 export interface EventsCtrlState {
+  enabled: boolean
   userSessionId: string
   events: ModalEvent[]
   connectedWalletId?: string

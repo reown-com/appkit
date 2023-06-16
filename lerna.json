@@ -1,13 +1,17 @@
 {
-  "npmClient": "yarn",
+  "npmClient": "npm",
   "packages": [
     "chains/ethereum",
     "packages/core",
     "packages/ui",
     "packages/react",
     "packages/html",
-    "packages/standalone"
+    "packages/walletconnect-modal",
+    "packages/auth-react",
+    "packages/auth-html",
+    "packages/sign-html",
+    "packages/sign-react"
   ],
-  "useWorkspaces": true,
-  "version": "2.3.7"
+  "version": "2.4.7",
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }

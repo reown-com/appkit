@@ -7,6 +7,7 @@ button {
   justify-content: center;
   width: 80px;
   height: 90px;
+  position: relative;
 }
 
 w3m-network-image {
@@ -23,6 +24,16 @@ w3m-text {
   margin-top: 5px;
 }
 
-button:hover {
+button:active {
   background-color: var(--w3m-color-overlay);
+}
+
+.w3m-unsupported {
+  opacity: 0.3;
+}
+
+@media (hover: hover) {
+  button:hover {
+    background-color: var(--w3m-color-overlay);
+  }
 }

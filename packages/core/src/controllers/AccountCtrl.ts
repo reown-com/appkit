@@ -38,15 +38,15 @@ export const AccountCtrl = {
       const address = profileAddress ?? state.address
       const isMainnetConfigured = OptionsCtrl.state.chains?.find(chain => chain.id === 1)
       if (address && isMainnetConfigured) {
-        const [name, avatar] = await Promise.all([
-          ClientCtrl.client().fetchEnsName({ address, chainId: 1 }),
-          ClientCtrl.client().fetchEnsAvatar({ address, chainId: 1 })
-        ])
-        if (avatar) {
-          await preloadAvatarFn(avatar)
+        const name = await ClientCtrl.client().fetchEnsName({ address, chainId: 1 })
+        if (name) {
+          const avatar = await ClientCtrl.client().fetchEnsAvatar({ name, chainId: 1 })
+          if (avatar) {
+            await preloadAvatarFn(avatar)
+          }
+          state.profileAvatar = avatar
         }
         state.profileName = name
-        state.profileAvatar = avatar
       }
     } finally {
       state.profileLoading = false

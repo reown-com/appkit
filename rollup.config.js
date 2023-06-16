@@ -1,25 +1,19 @@
+import commonjs from '@rollup/plugin-commonjs'
+import json from '@rollup/plugin-json'
+import nodeResolve from '@rollup/plugin-node-resolve'
 import replace from '@rollup/plugin-replace'
 import esbuild from 'rollup-plugin-esbuild'
 import litCss from 'rollup-plugin-lit-css'
 import minifyHtml from 'rollup-plugin-minify-html-literals'
+import nodePolyfill from 'rollup-plugin-polyfill-node'
 
-const nodeVersion = Number(process.versions.node.split('.')[0])
-if (nodeVersion < 16) {
-  throw new Error('Node version must be 16.x or higher')
-}
-
-export default function createConfig(packageJson) {
-  const output = {
-    exports: 'named',
-    name: packageJson.name,
-    sourcemap: true
-  }
-
-  const esbuildPlugin = esbuild({
+export default function createConfig(packageJson, isBundle = false) {
+  const esbuildPluginEs = esbuild({
     minify: true,
-    tsconfig: './tsconfig.json',
+    tsconfig: 'tsconfig.json',
     platform: 'browser',
     treeShaking: true,
+    sourceMap: true,
     loaders: {
       '.json': 'json'
     }
@@ -34,11 +28,32 @@ export default function createConfig(packageJson) {
     'process.env.ROLLUP_W3M_VERSION': JSON.stringify(packageJson.version)
   })
 
-  return [
+  const plugnsCommon = [replacePlugin, litCssPlugin, minifyHtml.default()]
+  const pluginsEs = [...plugnsCommon, esbuildPluginEs]
+  const pluginsUmd = [
+    ...plugnsCommon,
+    esbuildPluginEs,
+    nodeResolve({ browser: true }),
+    commonjs(),
+    json(),
+    nodePolyfill()
+  ]
+
+  const config = [
     {
       input: './index.ts',
-      plugins: [replacePlugin, litCssPlugin, minifyHtml.default(), esbuildPlugin],
-      output: [{ file: './dist/index.js', format: 'es', ...output }]
+      plugins: pluginsEs,
+      output: [{ file: './dist/index.js', format: 'es' }]
     }
   ]
+
+  if (isBundle) {
+    config.push({
+      input: './bundle.ts',
+      plugins: pluginsUmd,
+      output: [{ dir: './dist/cdn', format: 'es' }]
+    })
+  }
+
+  return config
 }

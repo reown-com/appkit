@@ -15,6 +15,10 @@ header button {
   padding: 15px 20px;
 }
 
+header button:active {
+  opacity: 0.5;
+}
+
 @media (hover: hover) {
   header button:hover {
     opacity: 0.5;

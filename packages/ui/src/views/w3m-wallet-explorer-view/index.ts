@@ -125,6 +125,7 @@ export class W3mWalletExplorerView extends LitElement {
     let manualWallets = TemplateUtil.manualWalletsTemplate()
     let recomendedWallets = TemplateUtil.recomendedWalletsTemplate(true)
 
+    // If search is active, we only show results matching query
     if (isSearch) {
       extensions = extensions.filter(({ values }) =>
         UiUtil.caseSafeIncludes(values[0] as string, this.search)
@@ -136,6 +137,14 @@ export class W3mWalletExplorerView extends LitElement {
         UiUtil.caseSafeIncludes(values[0] as string, this.search)
       )
     }
+
+    // Deduplicate extension wallets from recomended wallets
+    extensions = extensions.filter(
+      ext =>
+        !recomendedWallets.find(rcm =>
+          UiUtil.caseSafeIncludes(ext.values[0] as string, rcm.values[0] as string)
+        )
+    )
 
     const isEmpty =
       !this.loading && !listings.length && !extensions.length && !recomendedWallets.length

@@ -1,8 +1,14 @@
 import { proxy, snapshot, subscribe as valtioSub } from 'valtio/vanilla'
 import type { EventsCtrlState, ModalEvent, ModalEventData } from '../types/controllerTypes'
 
+// -- helpers ------------------------------------------------------ //
+const isEnabled =
+  typeof location !== 'undefined' &&
+  (location.hostname.includes('localhost') || location.protocol.includes('https'))
+
 // -- initial state ------------------------------------------------ //
 const state = proxy<EventsCtrlState>({
+  enabled: isEnabled,
   userSessionId: '',
   events: [],
   connectedWalletId: undefined
@@ -17,7 +23,7 @@ export const EventsCtrl = {
   },
 
   initialize() {
-    if (typeof crypto !== 'undefined') {
+    if (state.enabled && typeof crypto !== 'undefined') {
       state.userSessionId = crypto.randomUUID()
     }
   },
@@ -27,35 +33,41 @@ export const EventsCtrl = {
   },
 
   click(data: ModalEventData) {
-    const event = {
-      type: 'CLICK' as const,
-      name: data.name,
-      userSessionId: state.userSessionId,
-      timestamp: Date.now(),
-      data
+    if (state.enabled) {
+      const event = {
+        type: 'CLICK' as const,
+        name: data.name,
+        userSessionId: state.userSessionId,
+        timestamp: Date.now(),
+        data
+      }
+      state.events.push(event)
     }
-    state.events.push(event)
   },
 
   track(data: ModalEventData) {
-    const event = {
-      type: 'TRACK' as const,
-      name: data.name,
-      userSessionId: state.userSessionId,
-      timestamp: Date.now(),
-      data
+    if (state.enabled) {
+      const event = {
+        type: 'TRACK' as const,
+        name: data.name,
+        userSessionId: state.userSessionId,
+        timestamp: Date.now(),
+        data
+      }
+      state.events.push(event)
     }
-    state.events.push(event)
   },
 
   view(data: ModalEventData) {
-    const event = {
-      type: 'VIEW' as const,
-      name: data.name,
-      userSessionId: state.userSessionId,
-      timestamp: Date.now(),
-      data
+    if (state.enabled) {
+      const event = {
+        type: 'VIEW' as const,
+        name: data.name,
+        userSessionId: state.userSessionId,
+        timestamp: Date.now(),
+        data
+      }
+      state.events.push(event)
     }
-    state.events.push(event)
   }
 }
