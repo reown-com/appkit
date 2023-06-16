@@ -201,7 +201,7 @@ export interface ClientCtrlState {
 // -- ThemeCtrl -------------------------------------------- //
 export interface ThemeCtrlState {
   themeVariables?: {
-    '--w3m-z-index'?: string
+    '--w3m-z-index'?: string | number
     '--w3m-accent-color'?: string
     '--w3m-accent-fill-color'?: string
     '--w3m-background-color'?: string
