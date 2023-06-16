@@ -53,7 +53,7 @@ export const QrCodeUtil = {
         dots.push(
           svg`
             <rect
-              fill="${i % 2 === 0 ? dotColor : edgeColor}"
+              fill=${i % 2 === 0 ? dotColor : edgeColor}
               height=${dotSize}
               rx=${dotSize * borderRadius}
               ry=${dotSize * borderRadius}
