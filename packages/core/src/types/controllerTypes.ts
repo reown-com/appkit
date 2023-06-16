@@ -262,6 +262,9 @@ export interface ThemeCtrlState {
     '--w3m-text-xsmall-regular-letter-spacing'?: string
     '--w3m-text-xsmall-regular-text-transform'?: string
     '--w3m-text-xsmall-regular-font-family'?: string
+
+    '--w3m-overlay-background-color'?: string
+    '--w3m-overlay-backdrop-filter'?: string
   }
   themeMode?: 'dark' | 'light'
 }
