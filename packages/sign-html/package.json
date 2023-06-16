@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@walletconnect/modal": "2.4.6",
-    "@walletconnect/sign-client": "2.8.0"
+    "@walletconnect/sign-client": "2.8.1"
   },
   "keywords": [
     "web3",
