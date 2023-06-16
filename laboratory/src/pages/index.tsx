@@ -55,6 +55,16 @@ const htmlCards = [
   }
 ] as const
 
+const modalCards = [
+  {
+    title: 'With Ethereum Provider',
+    description: 'Ethereum Provider playground',
+    link: '/with-ethereum-provider',
+    color: 'primary',
+    libraries: ['@walletconnect/ethereum-provider', '@walletconnect/modal']
+  }
+] as const
+
 export default function HomePage() {
   return (
     <>
@@ -103,6 +113,42 @@ export default function HomePage() {
 
       <Grid.Container gap={2} css={{ maxWidth: '940px', margin: '0 auto' }}>
         {htmlCards.map(card => (
+          <Grid xs={12} sm={6} key={card.title}>
+            <Card key={card.title} variant="bordered">
+              <Card.Body>
+                <Text h3 color={card.color}>
+                  {card.title}
+                </Text>
+                <Text color="grey">{card.description}</Text>
+                <Grid.Container alignItems="center" gap={0.5}>
+                  {card.libraries.map(library => (
+                    <Grid key={library}>
+                      <Badge variant="bordered" color={card.color} size="sm">
+                        {library}
+                      </Badge>
+                    </Grid>
+                  ))}
+                </Grid.Container>
+              </Card.Body>
+              <Card.Footer>
+                <Link href={card.link}>
+                  <Button color={card.color}>Go to playground</Button>
+                </Link>
+              </Card.Footer>
+            </Card>
+          </Grid>
+        ))}
+      </Grid.Container>
+
+      <Container css={{ maxWidth: '940px', margin: '50px auto 0' }}>
+        <Text h3 color="gray">
+          WalletConnectModal Playgrounds
+        </Text>
+        <Divider />
+      </Container>
+
+      <Grid.Container gap={2} css={{ maxWidth: '940px', margin: '0 auto' }}>
+        {modalCards.map(card => (
           <Grid xs={12} sm={6} key={card.title}>
             <Card key={card.title} variant="bordered">
               <Card.Body>
