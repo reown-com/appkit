@@ -56,6 +56,14 @@ export default function WithEthereumProvider() {
   }
 
   useEffect(() => {
+    if (providerClient) {
+      providerClient.on('disconnect', () => {
+        setSession(false)
+      })
+    }
+  }, [providerClient])
+
+  useEffect(() => {
     onInitializeProviderClient()
   }, [])
 
