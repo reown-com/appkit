@@ -38,15 +38,16 @@ export const AccountCtrl = {
       const address = profileAddress ?? state.address
       const isMainnetConfigured = OptionsCtrl.state.chains?.find(chain => chain.id === 1)
       if (address && isMainnetConfigured) {
-        const name = await ClientCtrl.client().fetchEnsName({ address, chainId: 1 })
-        if (name) {
-          const avatar = await ClientCtrl.client().fetchEnsAvatar({ name, chainId: 1 })
-          if (avatar) {
-            await preloadAvatarFn(avatar)
-          }
-          state.profileAvatar = avatar
+        const blockchainApi = 'http://localhost:3001'
+        const { projectId } = ConfigCtrl.state
+        const chainId = 'eip155:1'
+        const endpoint = `${blockchainApi}/v1/identity/${address}?chainId=${chainId}&projectId=${projectId}`
+        const { name, avatar } = await (await fetch(endpoint)).json()
+        if (avatar) {
+          await preloadAvatarFn(avatar)
         }
         state.profileName = name
+        state.profileAvatar = avatar
       }
     } finally {
       state.profileLoading = false
