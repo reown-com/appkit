@@ -32,7 +32,6 @@ export class Web3ModalSign {
   public constructor(options: Web3ModalSignOptions) {
     this.#options = options
     this.#modal = this.#initModal()
-    this.#initModal()
     this.#initSignClient()
   }
 
