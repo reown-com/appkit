@@ -11,13 +11,14 @@ export class W3mBoxButton extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property() public icon?: TemplateResult<2> = undefined
   @property() public label = ''
+  @property() public loading?: boolean = false
   @property() public onClick: () => void = () => null
 
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <button @click=${this.onClick}>
-        <div>${this.icon}</div>
+      <button @click=${this.onClick} class="${this.loading ? 'disabled' : ''}">
+        <div>${this.loading ? html`<span class="spinner"></span>` : html`${this.icon}`}</div>
         <w3m-text variant="xsmall-regular" color="accent">${this.label}</w3m-text>
       </button>
     `
