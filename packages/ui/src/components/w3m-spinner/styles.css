@@ -35,6 +35,6 @@ svg circle {
   stroke: var(--w3m-accent-color);
 }
 
-.white {
-  stroke: #fff;
+.fill {
+  stroke: var(--w3m-accent-fill-color);
 }
