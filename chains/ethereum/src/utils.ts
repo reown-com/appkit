@@ -7,6 +7,7 @@ import type { ModalConnectorsOpts, WalletConnectProviderOpts } from './types'
 
 // -- constants ------------------------------------------------------- //
 export const NAMESPACE = 'eip155'
+export const BLOCKCHAIN_API = 'https://rpc.walletconnect.com'
 
 // -- providers ------------------------------------------------------- //
 export function w3mProvider<C extends Chain>({ projectId }: WalletConnectProviderOpts) {
@@ -19,7 +20,7 @@ export function w3mProvider<C extends Chain>({ projectId }: WalletConnectProvide
 
       if (supportedChains.includes(chain.id)) {
         return {
-          http: `https://rpc.walletconnect.com/v1/?chainId=${NAMESPACE}:${chain.id}&projectId=${projectId}`
+          http: `${BLOCKCHAIN_API}/v1/?chainId=${NAMESPACE}:${chain.id}&projectId=${projectId}`
         }
       }
 

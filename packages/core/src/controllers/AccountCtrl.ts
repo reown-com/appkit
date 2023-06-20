@@ -1,3 +1,4 @@
+import { BLOCKCHAIN_API } from 'chains/ethereum/src/utils'
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { AccountCtrlState } from '../types/controllerTypes'
 import { ClientCtrl } from './ClientCtrl'
@@ -38,10 +39,9 @@ export const AccountCtrl = {
       const address = profileAddress ?? state.address
       const isMainnetConfigured = OptionsCtrl.state.chains?.find(chain => chain.id === 1)
       if (address && isMainnetConfigured) {
-        const blockchainApi = 'http://localhost:3001'
         const { projectId } = ConfigCtrl.state
         const chainId = 'eip155:1'
-        const endpoint = `${blockchainApi}/v1/identity/${address}?chainId=${chainId}&projectId=${projectId}`
+        const endpoint = `${BLOCKCHAIN_API}/v1/identity/${address}?chainId=${chainId}&projectId=${projectId}`
         const { name, avatar } = await (await fetch(endpoint)).json()
         if (avatar) {
           await preloadAvatarFn(avatar)
