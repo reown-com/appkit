@@ -8,12 +8,12 @@ export class W3mSpinner extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   @property() public color: 'accent' | 'fill' = 'accent'
-  @property() public size: 'medium' | 'small' = 'medium'
+  @property({ type: Number }) public size = 24
 
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <svg class="${this.size}" viewBox="0 0 50 50">
+      <svg viewBox="0 0 50 50" width="${this.size}" height="${this.size}">
         <circle
           class="${this.color}"
           cx="25"

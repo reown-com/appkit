@@ -19,27 +19,19 @@
   }
 }
 
-svg {
-  animation: rotate 2s linear infinite;
+:host {
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.medium {
-  width: 24px;
-  height: 24px;
-}
-
-.small {
-  width: 20px;
-  height: 20px;
-}
-
-@media only screen and (max-width: 500px) {
-  svg {
-    margin-top: 2px;
-  }
+svg {
+  animation: rotate 2s linear infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 svg circle {
