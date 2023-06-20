@@ -7,13 +7,13 @@ import styles from './styles.css'
 export class W3mSpinner extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
-  @property() public color = 'accent'
-  @property({ type: Number }) public size = 24
+  @property() public color: 'accent' | 'fill' = 'accent'
+  @property() public size: 'medium' | 'small' = 'medium'
 
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <svg viewBox="0 0 50 50" width="${this.size}" height="${this.size}">
+      <svg class="${this.size}" viewBox="0 0 50 50">
         <circle
           class="${this.color}"
           cx="25"

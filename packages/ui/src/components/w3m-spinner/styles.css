@@ -26,6 +26,22 @@ svg {
   align-items: center;
 }
 
+.medium {
+  width: 24px;
+  height: 24px;
+}
+
+.small {
+  width: 20px;
+  height: 20px;
+}
+
+@media only screen and (max-width: 500px) {
+  svg {
+    margin-top: 2px;
+  }
+}
+
 svg circle {
   stroke-linecap: round;
   animation: dash 1.5s ease infinite;

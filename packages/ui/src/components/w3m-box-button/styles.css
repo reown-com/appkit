@@ -12,7 +12,7 @@ button:active {
 }
 
 button:disabled {
-  opacity: 0.25;
+  opacity: 0.7;
 }
 
 @media (hover: hover) {
