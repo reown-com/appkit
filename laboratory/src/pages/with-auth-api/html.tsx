@@ -1,5 +1,6 @@
 import { Button, Card } from '@nextui-org/react'
 import { Web3ModalAuth } from '@web3modal/auth-html'
+import { getErrorMessage, showErrorToast } from 'laboratory/src/utilities/ErrorUtil'
 import { NotificationCtrl } from '../../controllers/NotificationCtrl'
 import { DEMO_METADATA, DEMO_STATEMENT } from '../../data/Constants'
 import { getProjectId, getTheme } from '../../utilities/EnvUtil'
@@ -16,7 +17,8 @@ export default function WithAuthHtmlPage() {
       const data = await web3ModalAuth.signIn(DEMO_STATEMENT)
       NotificationCtrl.open('Sign In', JSON.stringify(data, null, 2))
     } catch (error) {
-      NotificationCtrl.open('Sign In', JSON.stringify(error, null, 2))
+      const message = getErrorMessage(error)
+      showErrorToast(message)
     }
   }
 
