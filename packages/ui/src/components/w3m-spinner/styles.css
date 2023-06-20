@@ -29,5 +29,12 @@ svg {
 svg circle {
   stroke-linecap: round;
   animation: dash 1.5s ease infinite;
+}
+
+.accent {
   stroke: var(--w3m-accent-color);
+}
+
+.white {
+  stroke: #fff;
 }

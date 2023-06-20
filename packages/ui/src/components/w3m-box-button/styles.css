@@ -11,19 +11,8 @@ button:active {
   background-color: var(--w3m-color-overlay);
 }
 
-.disabled {
+button:disabled {
   opacity: 0.25;
-}
-
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 1px solid #fff;
-  border-bottom-color: transparent;
-  border-radius: 50%;
-  display: inline-block;
-  box-sizing: border-box;
-  animation: rotation 1s linear infinite;
 }
 
 @media (hover: hover) {

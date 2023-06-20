@@ -17,8 +17,12 @@ export class W3mBoxButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <button @click=${this.onClick} class="${this.loading ? 'disabled' : ''}">
-        <div>${this.loading ? html`<span class="spinner"></span>` : html`${this.icon}`}</div>
+      <button @click=${this.onClick} .disabled="${Boolean(this.loading)}">
+        <div>
+          ${this.loading
+            ? html`<w3m-spinner ?small=${true} color="white"></w3m-spinner>`
+            : html`${this.icon}`}
+        </div>
         <w3m-text variant="xsmall-regular" color="accent">${this.label}</w3m-text>
       </button>
     `
