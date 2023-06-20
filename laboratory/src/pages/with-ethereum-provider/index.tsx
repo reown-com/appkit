@@ -1,6 +1,7 @@
-import { Button, Card, Spacer } from '@nextui-org/react'
+import { Button, Card, Loading, Spacer } from '@nextui-org/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import type { EthereumProvider as IEthereumProvider } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider'
+import { showToast } from 'laboratory/src/components/Toast'
 import { DEMO_SIGN_REQUEST } from 'laboratory/src/data/Constants'
 import { useEffect, useState } from 'react'
 import { NotificationCtrl } from '../../controllers/NotificationCtrl'
@@ -9,12 +10,13 @@ import { getProjectId, getTheme } from '../../utilities/EnvUtil'
 export default function WithEthereumProvider() {
   const [providerClient, setProviderClient] = useState<IEthereumProvider | undefined>(undefined)
   const [session, setSession] = useState<boolean>(false)
+  const [disconnecting, setDisconnecting] = useState<boolean>(false)
 
   async function onInitializeProviderClient() {
     const client = await EthereumProvider.init({
       projectId: getProjectId(),
       showQrModal: true,
-      qrModalOptions: { themeMode: getTheme() },
+      qrModalOptions: { themeMode: getTheme(), chainImages: true },
       chains: [1],
       methods: ['eth_sendTransaction', 'personal_sign'],
       events: ['connect', 'disconnect']
@@ -36,11 +38,19 @@ export default function WithEthereumProvider() {
   }
 
   async function onDisconnect() {
-    if (providerClient) {
-      await providerClient.disconnect()
-      setSession(false)
-    } else {
-      throw new Error('providerClient is not initialized')
+    if (!disconnecting) {
+      if (providerClient) {
+        setDisconnecting(true)
+        try {
+          await providerClient.disconnect()
+        } catch (error) {
+          showToast.error('Something went wrong', { duration: 2000 })
+        }
+        setDisconnecting(false)
+        setSession(false)
+      } else {
+        throw new Error('providerClient is not initialized')
+      }
     }
   }
 
@@ -80,8 +90,8 @@ export default function WithEthereumProvider() {
                   Sign Message
                 </Button>
                 <Spacer />
-                <Button shadow color="error" onPress={onDisconnect}>
-                  Disconnect
+                <Button shadow color="error" onPress={onDisconnect} disabled={disconnecting}>
+                  {disconnecting ? <Loading size="xs" color={'white'} /> : 'Disconnect'}
                 </Button>
               </>
             ) : (
