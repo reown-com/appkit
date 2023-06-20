@@ -1,8 +1,8 @@
 import { Button, Card, Loading, Spacer } from '@nextui-org/react'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import type { EthereumProvider as IEthereumProvider } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider'
-import { showToast } from 'laboratory/src/components/Toast'
 import { DEMO_SIGN_REQUEST } from 'laboratory/src/data/Constants'
+import { getErrorMessage, showErrorToast } from 'laboratory/src/utilities/ErrorUtil'
 import { useEffect, useState } from 'react'
 import { NotificationCtrl } from '../../controllers/NotificationCtrl'
 import { getProjectId, getTheme } from '../../utilities/EnvUtil'
@@ -29,11 +29,16 @@ export default function WithEthereumProvider() {
 
   async function onConnect() {
     if (providerClient) {
-      await providerClient.connect()
-      setSession(true)
-      NotificationCtrl.open('Connect', JSON.stringify(providerClient.session, null, 2))
+      try {
+        await providerClient.connect()
+        setSession(true)
+        NotificationCtrl.open('Connect', JSON.stringify(providerClient.session, null, 2))
+      } catch (error) {
+        const message = getErrorMessage(error)
+        showErrorToast(message)
+      }
     } else {
-      throw new Error('providerClient is not initialized')
+      showErrorToast('providerClient is not initialized')
     }
   }
 
@@ -44,26 +49,32 @@ export default function WithEthereumProvider() {
         try {
           await providerClient.disconnect()
         } catch (error) {
-          showToast.error('Something went wrong', { duration: 2000 })
+          const message = getErrorMessage(error)
+          showErrorToast(message)
         }
         setDisconnecting(false)
         setSession(false)
       } else {
-        throw new Error('providerClient is not initialized')
+        showErrorToast('providerClient is not initialized')
       }
     }
   }
 
   async function onSignMessage() {
     if (providerClient?.session) {
-      const { request } = DEMO_SIGN_REQUEST(
-        providerClient.session.topic,
-        providerClient.accounts[0]
-      )
-      const result = await providerClient.request(request)
-      NotificationCtrl.open('Sign Message', JSON.stringify(result, null, 2))
+      try {
+        const { request } = DEMO_SIGN_REQUEST(
+          providerClient.session.topic,
+          providerClient.accounts[0]
+        )
+        const result = await providerClient.request(request)
+        NotificationCtrl.open('Sign Message', JSON.stringify(result, null, 2))
+      } catch (error) {
+        const message = getErrorMessage(error)
+        showErrorToast(message)
+      }
     } else {
-      throw new Error('providerClient is not initialized')
+      showErrorToast('providerClient is not initialized')
     }
   }
 

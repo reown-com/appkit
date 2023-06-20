@@ -2,7 +2,7 @@ import { Button, Card, Loading, Spacer } from '@nextui-org/react'
 import { getAddressFromAccount, getSdkError } from '@walletconnect/utils'
 import type { Web3ModalSignSession } from '@web3modal/sign-html'
 import { Web3ModalSign } from '@web3modal/sign-html'
-import { showToast } from 'laboratory/src/components/Toast'
+import { getErrorMessage, showErrorToast } from 'laboratory/src/utilities/ErrorUtil'
 import { useEffect, useState } from 'react'
 import { NotificationCtrl } from '../../controllers/NotificationCtrl'
 import { DEMO_METADATA, DEMO_NAMESPACE, DEMO_SIGN_REQUEST } from '../../data/Constants'
@@ -31,9 +31,14 @@ export default function WithSignHtmlPage() {
   const [disconnecting, setDisconnecting] = useState<boolean>(false)
 
   async function onConnect() {
-    const result = await web3ModalSign.connect(DEMO_NAMESPACE)
-    setSession(result)
-    NotificationCtrl.open('Connect', JSON.stringify(result, null, 2))
+    try {
+      const result = await web3ModalSign.connect(DEMO_NAMESPACE)
+      setSession(result)
+      NotificationCtrl.open('Connect', JSON.stringify(result, null, 2))
+    } catch (error) {
+      const message = getErrorMessage(error)
+      showErrorToast(message)
+    }
   }
 
   async function onDisconnect() {
@@ -46,7 +51,8 @@ export default function WithSignHtmlPage() {
             reason: getSdkError('USER_DISCONNECTED')
           })
         } catch (error) {
-          showToast.error('Something went wrong', { duration: 2000 })
+          const message = getErrorMessage(error)
+          showErrorToast(message)
         }
         setDisconnecting(false)
         setSession(undefined)
@@ -64,14 +70,20 @@ export default function WithSignHtmlPage() {
         NotificationCtrl.open('Sign Message', 'No active session, please connect first')
       }
     } catch (error) {
-      NotificationCtrl.open('Sign Message', JSON.stringify(error))
+      const message = getErrorMessage(error)
+      showErrorToast(message)
     }
   }
 
   useEffect(() => {
     async function init() {
-      const result = await web3ModalSign.getSession()
-      setSession(result)
+      try {
+        const result = await web3ModalSign.getSession()
+        setSession(result)
+      } catch (error) {
+        const message = getErrorMessage(error)
+        showErrorToast(message)
+      }
     }
 
     function deleteSession() {

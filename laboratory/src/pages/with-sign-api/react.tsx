@@ -7,7 +7,7 @@ import {
   useRequest,
   useSession
 } from '@web3modal/sign-react'
-import { showToast } from 'laboratory/src/components/Toast'
+import { getErrorMessage, showErrorToast } from 'laboratory/src/utilities/ErrorUtil'
 import { useState } from 'react'
 import { NotificationCtrl } from '../../controllers/NotificationCtrl'
 import { DEMO_METADATA, DEMO_NAMESPACE, DEMO_SIGN_REQUEST } from '../../data/Constants'
@@ -29,9 +29,14 @@ export default function WithSignReactPage() {
   const { connect } = useConnect(DEMO_NAMESPACE)
 
   async function onConnect() {
-    setDisconnecting(false)
-    const result = await connect()
-    NotificationCtrl.open('Connect', JSON.stringify(result, null, 2))
+    try {
+      setDisconnecting(false)
+      const result = await connect()
+      NotificationCtrl.open('Connect', JSON.stringify(result, null, 2))
+    } catch (error) {
+      const message = getErrorMessage(error)
+      showErrorToast(message)
+    }
   }
 
   function onDisconnect() {
@@ -40,14 +45,20 @@ export default function WithSignReactPage() {
       try {
         disconnect()
       } catch (error) {
-        showToast.error('Something went wrong', { duration: 2000 })
+        const message = getErrorMessage(error)
+        showErrorToast(message)
       }
     }
   }
 
   async function onSignMessage() {
-    const result = await request()
-    NotificationCtrl.open('Sign Message', JSON.stringify(result, null, 2))
+    try {
+      const result = await request()
+      NotificationCtrl.open('Sign Message', JSON.stringify(result, null, 2))
+    } catch (error) {
+      const message = getErrorMessage(error)
+      showErrorToast(message)
+    }
   }
 
   return (
