@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@walletconnect/modal": "2.4.7",
-    "@walletconnect/sign-client": "2.8.1"
+    "@walletconnect/sign-client": "2.8.1-canary-9be2ce1a.1"
   },
   "keywords": [
     "web3",
