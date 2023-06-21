@@ -1,7 +1,8 @@
-import { Button, Card, Spacer } from '@nextui-org/react'
+import { Button, Card, Loading, Spacer } from '@nextui-org/react'
 import { getAddressFromAccount, getSdkError } from '@walletconnect/utils'
 import type { Web3ModalSignSession } from '@web3modal/sign-html'
 import { Web3ModalSign } from '@web3modal/sign-html'
+import { getErrorMessage, showErrorToast } from 'laboratory/src/utilities/ErrorUtil'
 import { useEffect, useState } from 'react'
 import { NotificationCtrl } from '../../controllers/NotificationCtrl'
 import { DEMO_METADATA, DEMO_NAMESPACE, DEMO_SIGN_REQUEST } from '../../data/Constants'
@@ -27,20 +28,35 @@ const web3ModalSign = new Web3ModalSign({
 
 export default function WithSignHtmlPage() {
   const [session, setSession] = useState<Web3ModalSignSession | undefined>(undefined)
+  const [disconnecting, setDisconnecting] = useState<boolean>(false)
 
   async function onConnect() {
-    const result = await web3ModalSign.connect(DEMO_NAMESPACE)
-    setSession(result)
-    NotificationCtrl.open('Connect', JSON.stringify(result, null, 2))
+    try {
+      const result = await web3ModalSign.connect(DEMO_NAMESPACE)
+      setSession(result)
+      NotificationCtrl.open('Connect', JSON.stringify(result, null, 2))
+    } catch (error) {
+      const message = getErrorMessage(error)
+      showErrorToast(message)
+    }
   }
 
   async function onDisconnect() {
-    if (session) {
-      await web3ModalSign.disconnect({
-        topic: session.topic,
-        reason: getSdkError('USER_DISCONNECTED')
-      })
-      setSession(undefined)
+    if (!disconnecting) {
+      if (session) {
+        setDisconnecting(true)
+        try {
+          await web3ModalSign.disconnect({
+            topic: session.topic,
+            reason: getSdkError('USER_DISCONNECTED')
+          })
+        } catch (error) {
+          const message = getErrorMessage(error)
+          showErrorToast(message)
+        }
+        setDisconnecting(false)
+        setSession(undefined)
+      }
     }
   }
 
@@ -54,14 +70,20 @@ export default function WithSignHtmlPage() {
         NotificationCtrl.open('Sign Message', 'No active session, please connect first')
       }
     } catch (error) {
-      NotificationCtrl.open('Sign Message', JSON.stringify(error))
+      const message = getErrorMessage(error)
+      showErrorToast(message)
     }
   }
 
   useEffect(() => {
     async function init() {
-      const result = await web3ModalSign.getSession()
-      setSession(result)
+      try {
+        const result = await web3ModalSign.getSession()
+        setSession(result)
+      } catch (error) {
+        const message = getErrorMessage(error)
+        showErrorToast(message)
+      }
     }
 
     function deleteSession() {
@@ -86,8 +108,8 @@ export default function WithSignHtmlPage() {
                 Sign Message
               </Button>
               <Spacer />
-              <Button shadow color="error" onPress={onDisconnect}>
-                Disconnect
+              <Button shadow color="error" onPress={onDisconnect} disabled={disconnecting}>
+                {disconnecting ? <Loading size="xs" color={'white'} /> : 'Disconnect'}
               </Button>
             </>
           ) : (

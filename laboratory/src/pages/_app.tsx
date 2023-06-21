@@ -6,6 +6,7 @@ import { MoonIcon } from '../components/MoonIcon'
 import { NotificationModal } from '../components/NotificationModal'
 import { ShowLocalStorageButton } from '../components/ShowLocalStorageButton'
 import { SunIcon } from '../components/SunIcon'
+import Toast from '../components/Toast'
 import { getTheme } from '../utilities/EnvUtil'
 import { bootstrap as bootstrapSentry } from '../utilities/SentryUtil'
 
@@ -52,6 +53,7 @@ export default function App({ Component, pageProps }: AppProps) {
             </div>
           </Row>
           <NotificationModal />
+          <Toast />
 
           <Component {...pageProps} />
         </NextUIProvider>
