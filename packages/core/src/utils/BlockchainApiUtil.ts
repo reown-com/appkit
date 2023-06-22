@@ -2,7 +2,8 @@ import { ConfigCtrl } from '../controllers/ConfigCtrl'
 
 // -- Constants -------------------------------------------------------
 export const NAMESPACE = 'eip155'
-const BLOCKCHAIN_API = 'https://dev.rpc.walletconnect.com' // TODO remove dev.
+// To do remove dev.
+const BLOCKCHAIN_API = 'https://dev.rpc.walletconnect.com'
 
 // -- Utility -------------------------------------------------------
 export const BlockchainApiUtil = {
@@ -18,8 +19,7 @@ export const BlockchainApiUtil = {
     if (response.status === 404) {
       // Profile not found
       return null
-    } else {
-      return response.json()
     }
+    return response.json()
   }
 }
