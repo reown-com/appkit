@@ -43,7 +43,7 @@ export const AccountCtrl = {
       const isMainnetConfigured = OptionsCtrl.state.chains?.find(chain => chain.id === mainnetId)
       if (address && isMainnetConfigured) {
         try {
-          const profile = await BlockchainApiUtil.getProfile(address, mainnetId)
+          const profile = await BlockchainApiUtil.getIdentity(address, mainnetId)
           if (profile) {
             state.profileName = profile.name
             state.profileAvatar = profile.avatar

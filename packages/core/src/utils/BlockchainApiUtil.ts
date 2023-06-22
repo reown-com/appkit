@@ -6,7 +6,7 @@ const BLOCKCHAIN_API = 'https://dev.rpc.walletconnect.com' // TODO remove dev.
 
 // -- Utility -------------------------------------------------------
 export const BlockchainApiUtil = {
-  async getProfile(
+  async getIdentity(
     address: string,
     chainId: number
   ): Promise<{ name: string; avatar?: string } | null> {
