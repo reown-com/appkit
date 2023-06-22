@@ -7,7 +7,7 @@ import type { ModalConnectorsOpts, WalletConnectProviderOpts } from './types'
 
 // -- constants ------------------------------------------------------- //
 export const NAMESPACE = 'eip155'
-export const BLOCKCHAIN_API = 'https://rpc.walletconnect.com'
+export const BLOCKCHAIN_API = 'https://dev.rpc.walletconnect.com'
 
 // -- providers ------------------------------------------------------- //
 export function w3mProvider<C extends Chain>({ projectId }: WalletConnectProviderOpts) {
