@@ -37,10 +37,11 @@ export const AccountCtrl = {
     try {
       state.profileLoading = true
       const address = profileAddress ?? state.address
-      const isMainnetConfigured = OptionsCtrl.state.chains?.find(chain => chain.id === 1)
+      const mainnetId = 1
+      const isMainnetConfigured = OptionsCtrl.state.chains?.find(chain => chain.id == mainnetId)
       if (address && isMainnetConfigured) {
         const { projectId } = ConfigCtrl.state
-        const chainId = `${NAMESPACE}:1`
+        const chainId = `${NAMESPACE}:${mainnetId}`
         const endpoint = `${BLOCKCHAIN_API}/v1/identity/${address}?chainId=${chainId}&projectId=${projectId}`
         const { name, avatar } = await (await fetch(endpoint)).json()
         if (avatar) {
