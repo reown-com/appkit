@@ -16,13 +16,13 @@
     "@web3modal/react": "2.4.7",
     "@web3modal/sign-html": "2.4.7",
     "@web3modal/sign-react": "2.4.7",
-    "next": "13.4.6",
+    "next": "13.4.7",
     "react": "18.2.0",
     "react-code-blocks": "0.0.9-0",
     "react-dom": "18.2.0",
     "react-hot-toast": "2.4.1",
-    "valtio": "1.10.5",
-    "viem": "1.1.0",
-    "wagmi": "1.2.0"
+    "valtio": "1.10.6",
+    "viem": "1.1.4",
+    "wagmi": "1.2.1"
   }
 }

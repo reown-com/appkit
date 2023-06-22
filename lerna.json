@@ -10,7 +10,8 @@
     "packages/auth-react",
     "packages/auth-html",
     "packages/sign-html",
-    "packages/sign-react"
+    "packages/sign-react",
+    "laboratory"
   ],
   "version": "2.4.7",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
