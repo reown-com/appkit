@@ -1,6 +1,6 @@
-import { BLOCKCHAIN_API, NAMESPACE } from 'chains/ethereum/src/utils'
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { AccountCtrlState } from '../types/controllerTypes'
+import { BlockchainApiUtil } from '../utils/BlockchainApiUtil'
 import { ClientCtrl } from './ClientCtrl'
 import { ConfigCtrl } from './ConfigCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
@@ -36,19 +36,31 @@ export const AccountCtrl = {
   ) {
     try {
       state.profileLoading = true
+      state.profileName = null
+      state.profileAvatar = null
       const address = profileAddress ?? state.address
       const mainnetId = 1
       const isMainnetConfigured = OptionsCtrl.state.chains?.find(chain => chain.id === mainnetId)
       if (address && isMainnetConfigured) {
-        const { projectId } = ConfigCtrl.state
-        const chainId = `${NAMESPACE}:${mainnetId}`
-        const endpoint = `${BLOCKCHAIN_API}/v1/identity/${address}?chainId=${chainId}&projectId=${projectId}`
-        const { name, avatar } = await (await fetch(endpoint)).json()
-        if (avatar) {
-          await preloadAvatarFn(avatar)
+        try {
+          const profile = await BlockchainApiUtil.getProfile(address, mainnetId)
+          if (profile) {
+            state.profileName = profile.name
+            state.profileAvatar = profile.avatar
+          } else {
+            // Profile not found
+          }
+        } catch (_) {
+          const name = await ClientCtrl.client().fetchEnsName({ address, chainId: mainnetId })
+          state.profileName = name
+          if (name) {
+            const avatar = await ClientCtrl.client().fetchEnsAvatar({ name, chainId: mainnetId })
+            state.profileAvatar = avatar
+          }
         }
-        state.profileName = name
-        state.profileAvatar = avatar
+        if (state.profileAvatar) {
+          await preloadAvatarFn(state.profileAvatar)
+        }
       }
     } finally {
       state.profileLoading = false
