@@ -7,10 +7,7 @@ import { Modal } from './Modal'
 /**
  * Props
  */
-export type Web3ModalProps = Omit<
-  ConfigCtrlState,
-  'enableAuthMode' | 'enableStandaloneMode' | 'standaloneChains' | 'walletConnectVersion'
-> &
+export type Web3ModalProps = Omit<ConfigCtrlState, 'walletConnectVersion'> &
   ThemeCtrlState & {
     ethereumClient?: EthereumClient
   }

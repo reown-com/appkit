@@ -62,13 +62,11 @@ export class W3mWalletExplorerView extends LitElement {
     ) {
       try {
         this.loading = true
-        const chains = OptionsCtrl.state.standaloneChains?.join(',')
         const { listings: newListings } = await ExplorerCtrl.getWallets({
           page: this.firstFetch ? 1 : page + 1,
           entries: PAGE_ENTRIES,
           search: this.search,
-          version: OptionsCtrl.state.walletConnectVersion,
-          chains
+          version: OptionsCtrl.state.walletConnectVersion
         })
         const explorerImages = newListings.map(wallet => UiUtil.getWalletIcon(wallet))
         const extensionImages = injectedWallets.map(wallet => UiUtil.getWalletIcon(wallet))

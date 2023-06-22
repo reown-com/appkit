@@ -9,8 +9,6 @@ import { WcConnectionCtrl } from './WcConnectionCtrl'
 
 // -- types -------------------------------------------------------- //
 export interface OpenOptions {
-  uri?: string
-  standaloneChains?: string[]
   route?: 'Account' | 'ConnectWallet' | 'Help' | 'SelectNetwork'
 }
 
@@ -29,20 +27,12 @@ export const ModalCtrl = {
 
   async open(options?: OpenOptions) {
     return new Promise<void>(resolve => {
-      const { isStandalone, isUiLoaded, isDataLoaded, isPreferInjected, selectedChain } =
-        OptionsCtrl.state
+      const { isUiLoaded, isDataLoaded, isPreferInjected, selectedChain } = OptionsCtrl.state
       const { isConnected } = AccountCtrl.state
       const { enableNetworkView } = ConfigCtrl.state
+      WcConnectionCtrl.setPairingEnabled(true)
 
-      if (!isStandalone) {
-        WcConnectionCtrl.setPairingEnabled(true)
-      }
-
-      if (isStandalone) {
-        OptionsCtrl.setStandaloneUri(options?.uri)
-        OptionsCtrl.setStandaloneChains(options?.standaloneChains)
-        RouterCtrl.reset('ConnectWallet')
-      } else if (options?.route) {
+      if (options?.route) {
         RouterCtrl.reset(options.route)
       } else if (isConnected) {
         RouterCtrl.reset('Account')
@@ -61,7 +51,7 @@ export const ModalCtrl = {
 
       const { pairingUri } = WcConnectionCtrl.state
       // Open modal if essential async data is ready
-      if (isUiLoaded && isDataLoaded && (isStandalone || pairingUri || isConnected)) {
+      if (isUiLoaded && isDataLoaded && (pairingUri || isConnected)) {
         state.open = true
         resolve()
       }
@@ -70,11 +60,7 @@ export const ModalCtrl = {
         const interval = setInterval(() => {
           const opts = OptionsCtrl.state
           const connection = WcConnectionCtrl.state
-          if (
-            opts.isUiLoaded &&
-            opts.isDataLoaded &&
-            (opts.isStandalone || connection.pairingUri || isConnected)
-          ) {
+          if (opts.isUiLoaded && opts.isDataLoaded && (connection.pairingUri || isConnected)) {
             clearInterval(interval)
             state.open = true
             resolve()
