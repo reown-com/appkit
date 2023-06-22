@@ -2,7 +2,7 @@ import { ConfigCtrl } from '../controllers/ConfigCtrl'
 
 // -- Constants -------------------------------------------------------
 export const NAMESPACE = 'eip155'
-const BLOCKCHAIN_API = 'https://dev.rpc.walletconnect.com'
+const BLOCKCHAIN_API = 'https://dev.rpc.walletconnect.com' // TODO remove dev.
 
 // -- Utility -------------------------------------------------------
 export const BlockchainApiUtil = {
