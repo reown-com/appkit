@@ -1,6 +1,6 @@
 import { AccountCtrl, ClientCtrl, ToastCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
@@ -9,9 +9,15 @@ import styles from './styles.css'
 export class W3mAccountView extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
+  @state() public loading = false
+
   // -- private ------------------------------------------------------ //
   private async onDisconnect() {
-    await ClientCtrl.client().disconnect()
+    if (!this.loading) {
+      this.loading = true
+      await ClientCtrl.client().disconnect()
+      this.loading = false
+    }
   }
 
   private async onCopyAddress() {
@@ -50,6 +56,7 @@ export class W3mAccountView extends LitElement {
 
           <w3m-box-button
             label="Disconnect"
+            .loading=${this.loading}
             .onClick=${this.onDisconnect}
             .icon=${SvgUtil.ACCOUNT_DISCONNECT}
           ></w3m-box-button>
