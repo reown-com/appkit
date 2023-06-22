@@ -22,11 +22,6 @@
     "packages/ui",
     "packages/react",
     "packages/html",
-    "packages/walletconnect-modal",
-    "packages/auth-react",
-    "packages/auth-html",
-    "packages/sign-html",
-    "packages/sign-react",
     "laboratory"
   ],
   "devDependencies": {
