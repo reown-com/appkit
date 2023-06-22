@@ -20,6 +20,7 @@ export const BlockchainApiUtil = {
       // Profile not found
       return null
     }
+
     return response.json()
   }
 }
