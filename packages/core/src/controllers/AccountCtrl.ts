@@ -38,7 +38,7 @@ export const AccountCtrl = {
       state.profileLoading = true
       const address = profileAddress ?? state.address
       const mainnetId = 1
-      const isMainnetConfigured = OptionsCtrl.state.chains?.find(chain => chain.id == mainnetId)
+      const isMainnetConfigured = OptionsCtrl.state.chains?.find(chain => chain.id === mainnetId)
       if (address && isMainnetConfigured) {
         const { projectId } = ConfigCtrl.state
         const chainId = `${NAMESPACE}:${mainnetId}`
