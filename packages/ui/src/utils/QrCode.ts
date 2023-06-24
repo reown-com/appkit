@@ -24,8 +24,10 @@ function getMatrix(value: string, errorCorrectionLevel: QRCodeUtil.QRCodeErrorCo
   )
   const sqrt = Math.sqrt(arr.length)
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return arr.reduce(
     (rows, key, index) =>
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       (index % sqrt === 0 ? rows.push([key]) : rows[rows.length - 1].push(key)) && rows,
     []
   )

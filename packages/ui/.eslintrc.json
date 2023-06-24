@@ -1,6 +1,3 @@
 {
-  "extends": ["plugin:wc/recommended", "plugin:lit/recommended", "../../.eslintrc.json"],
-  "rules": {
-    "lit/attribute-value-entities": "off"
-  }
+  "extends": ["plugin:wc/recommended", "plugin:lit/recommended", "../../.eslintrc.json"]
 }

@@ -17,11 +17,7 @@
     "noFallthroughCasesInSwitch": true,
     "isolatedModules": true,
     "allowUnreachableCode": false,
-    "experimentalDecorators": true,
-    "baseUrl": ".",
-    "paths": {
-      "@walletconnect/types": ["node_modules/@walletconnect/types"]
-    }
+    "experimentalDecorators": true
   },
-  "exclude": ["node_modules", "dist", "out"]
+  "exclude": ["node_modules", "dist", "out", ".next"]
 }

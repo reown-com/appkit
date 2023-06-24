@@ -1,0 +1,24 @@
+{
+  "name": "@apps/gallery",
+  "version": "3.0.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "dev": "storybook dev -p 6006",
+    "build": "storybook build"
+  },
+  "dependencies": {
+    "@web3modal/ui": "3.0.0",
+    "lit": "2.7.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "storybook": "7.0.23"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "7.0.23",
+    "@storybook/addon-links": "7.0.23",
+    "@storybook/blocks": "7.0.23",
+    "@storybook/web-components": "7.0.23",
+    "@storybook/web-components-vite": "7.0.23"
+  }
+}

@@ -1,17 +1,9 @@
 {
   "npmClient": "npm",
   "packages": [
-    "chains/ethereum",
-    "packages/core",
     "packages/ui",
-    "packages/react",
-    "packages/html",
-    "packages/walletconnect-modal",
-    "packages/auth-react",
-    "packages/auth-html",
-    "packages/sign-html",
-    "packages/sign-react"
+    "apps/gallery"
   ],
-  "version": "2.4.7",
+  "version": "3.0.0",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
