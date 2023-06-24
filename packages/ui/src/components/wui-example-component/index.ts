@@ -1,10 +1,15 @@
 import { html, LitElement } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, property } from 'lit/decorators.js'
+import styles from './styles'
 
 @customElement('wui-example-component')
 export class WuiExampleComponent extends LitElement {
+  public static styles = [styles]
+
+  @property() public color: 'blue' | 'orange' | 'red' = 'red'
+
   public render() {
-    return html`<p>Example component</p>`
+    return html`<p class=${this.color}>Example component</p>`
   }
 }
 

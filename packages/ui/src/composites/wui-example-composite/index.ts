@@ -1,10 +1,15 @@
 import { html, LitElement } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, property } from 'lit/decorators.js'
+import styles from './styles'
 
 @customElement('wui-example-composite')
 export class WuiExampleComposite extends LitElement {
+  public static styles = [styles]
+
+  @property({ type: Boolean }) public uppercase = false
+
   public render() {
-    return html`<p>Example composite</p>`
+    return html`<p class=${this.uppercase && 'uppercase'}>Example composite</p>`
   }
 }
 
