@@ -127,9 +127,13 @@ export const UiUtil = {
   },
 
   async handleUriCopy() {
-    const { pairingUri } = WcConnectionCtrl.state
-    await navigator.clipboard.writeText(pairingUri)
-    ToastCtrl.openToast('Link copied', 'success')
+    try {
+      const { pairingUri } = WcConnectionCtrl.state
+      await navigator.clipboard.writeText(pairingUri)
+      ToastCtrl.openToast('Link copied', 'success')
+    } catch {
+      ToastCtrl.openToast('Failed to copy', 'error')
+    }
   },
 
   async handleConnectorConnection(id: string, onError?: () => void) {
