@@ -10,6 +10,7 @@ import {
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-select-network-view')
@@ -38,9 +39,11 @@ export class W3mSelectNetworkView extends LitElement {
       if (isConnected) {
         if (selectedChain?.id === chain.id) {
           RouterCtrl.reset('Account')
-        } else {
+        } else if (UiUtil.getWagmiWalletType() === 'walletConnect') {
           await ClientCtrl.client().switchNetwork({ chainId: chain.id })
           RouterCtrl.reset('Account')
+        } else {
+          RouterCtrl.push('SwitchNetwork', { SwitchNetwork: chain })
         }
       } else if (isPreferInjected) {
         OptionsCtrl.setSelectedChain(chain)

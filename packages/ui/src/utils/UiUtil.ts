@@ -22,6 +22,8 @@ export const UiUtil = {
 
   EXPLORER_WALLET_URL: 'https://explorer.walletconnect.com/?type=wallet',
 
+  WAGMI_WALLET: 'wagmi.wallet',
+
   getShadowRootElement(root: LitElement, selector: string) {
     const el = root.renderRoot.querySelector(selector)
     if (!el) {
@@ -264,5 +266,11 @@ export const UiUtil = {
     } else {
       RouterCtrl.push('InstallWallet')
     }
+  },
+
+  getWagmiWalletType() {
+    const type = localStorage.getItem(UiUtil.WAGMI_WALLET)
+
+    return type
   }
 }
