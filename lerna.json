@@ -6,12 +6,8 @@
     "packages/ui",
     "packages/react",
     "packages/html",
-    "packages/walletconnect-modal",
-    "packages/auth-react",
-    "packages/auth-html",
-    "packages/sign-html",
-    "packages/sign-react"
+    "laboratory"
   ],
-  "version": "2.4.7",
+  "version": "2.5.0",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }

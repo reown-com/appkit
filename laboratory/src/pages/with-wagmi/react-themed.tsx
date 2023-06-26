@@ -57,11 +57,11 @@ export default function WithWagmiReactThemedPage() {
         }}
         mobileWallets={[
           {
-            id: 'metamask',
-            name: 'MetaMask',
+            id: 'oreid',
+            name: 'OREID',
             links: {
-              native: 'metamask://',
-              universal: ''
+              native: '',
+              universal: 'https://www.oreid.io/'
             }
           }
         ]}

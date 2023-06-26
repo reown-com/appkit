@@ -1,4 +1,4 @@
-import { CoreUtil, OptionsCtrl, WcConnectionCtrl } from '@web3modal/core'
+import { CoreUtil, WcConnectionCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -41,15 +41,10 @@ export class W3mWebConnectingView extends LitElement {
 
   private openWebWallet() {
     WcConnectionCtrl.setPairingError(false)
-    const { standaloneUri } = OptionsCtrl.state
     const { pairingUri } = WcConnectionCtrl.state
     const routerData = CoreUtil.getWalletRouterData()
     UiUtil.setRecentWallet(routerData)
-    if (standaloneUri) {
-      this.onFormatAndRedirect(standaloneUri)
-    } else {
-      this.onFormatAndRedirect(pairingUri)
-    }
+    this.onFormatAndRedirect(pairingUri)
   }
 
   // -- render ------------------------------------------------------- //

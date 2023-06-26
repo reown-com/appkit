@@ -1,12 +1,8 @@
-import { ClientCtrl, ConfigCtrl, CoreUtil, ExplorerCtrl, OptionsCtrl } from '@web3modal/core'
+import { ClientCtrl, ConfigCtrl, CoreUtil, ExplorerCtrl } from '@web3modal/core'
 import { UiUtil } from './UiUtil'
 
 export const DataUtil = {
   externalWallets() {
-    const { isStandalone } = OptionsCtrl.state
-    if (isStandalone) {
-      return []
-    }
     let connectors = ClientCtrl.client().getConnectors()
     connectors = connectors.filter(connector => connector.id !== 'injected')
 
@@ -27,10 +23,6 @@ export const DataUtil = {
   },
 
   installedInjectedWallets() {
-    const { isStandalone } = OptionsCtrl.state
-    if (isStandalone) {
-      return []
-    }
     const isInstalled = ClientCtrl.client().isInjectedProviderInstalled()
     if (!isInstalled) {
       return []
@@ -61,10 +53,9 @@ export const DataUtil = {
   },
 
   injectedWallets() {
-    const { isStandalone } = OptionsCtrl.state
     const { explorerExcludedWalletIds, explorerRecommendedWalletIds } = ConfigCtrl.state
     const isMobile = CoreUtil.isMobile()
-    if (isStandalone || explorerExcludedWalletIds === 'ALL' || isMobile) {
+    if (explorerExcludedWalletIds === 'ALL' || isMobile) {
       return []
     }
     const { namespace } = ClientCtrl.client()

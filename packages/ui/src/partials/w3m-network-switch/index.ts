@@ -2,7 +2,6 @@ import { EventsCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-network-switch')
@@ -17,7 +16,6 @@ export class W3mNetworkSwitch extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    UiUtil.rejectStandaloneButtonComponent()
     const { selectedChain } = OptionsCtrl.state
     this.onSetChainData(selectedChain)
     this.unsubscribeNetwork = OptionsCtrl.subscribe(({ selectedChain: newChain }) => {

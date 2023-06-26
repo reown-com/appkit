@@ -21,8 +21,12 @@ export class W3mAccountView extends LitElement {
   }
 
   private async onCopyAddress() {
-    await navigator.clipboard.writeText(AccountCtrl.state.address ?? '')
-    ToastCtrl.openToast('Address copied', 'success')
+    try {
+      await navigator.clipboard.writeText(AccountCtrl.state.address ?? '')
+      ToastCtrl.openToast('Address copied', 'success')
+    } catch {
+      ToastCtrl.openToast('Failed to copy', 'error')
+    }
   }
 
   // -- render ------------------------------------------------------- //

@@ -6,10 +6,6 @@ import { ClientCtrl } from './ClientCtrl'
 const state = proxy<OptionsCtrlState>({
   selectedChain: undefined,
   chains: undefined,
-  standaloneChains: undefined,
-  standaloneUri: undefined,
-  isStandalone: false,
-  isAuth: false,
   isCustomDesktop: false,
   isCustomMobile: false,
   isDataLoaded: false,
@@ -30,14 +26,6 @@ export const OptionsCtrl = {
     state.chains = chains
   },
 
-  setStandaloneChains(standaloneChains: OptionsCtrlState['standaloneChains']) {
-    state.standaloneChains = standaloneChains
-  },
-
-  setStandaloneUri(standaloneUri: OptionsCtrlState['standaloneUri']) {
-    state.standaloneUri = standaloneUri
-  },
-
   getSelectedChain() {
     const selectedChain = ClientCtrl.client().getNetwork().chain
     if (selectedChain) {
@@ -49,10 +37,6 @@ export const OptionsCtrl = {
 
   setSelectedChain(selectedChain: OptionsCtrlState['selectedChain']) {
     state.selectedChain = selectedChain
-  },
-
-  setIsStandalone(isStandalone: OptionsCtrlState['isStandalone']) {
-    state.isStandalone = isStandalone
   },
 
   setIsCustomDesktop(isCustomDesktop: OptionsCtrlState['isCustomDesktop']) {
@@ -77,9 +61,5 @@ export const OptionsCtrl = {
 
   setIsPreferInjected(isPreferInjected: OptionsCtrlState['isPreferInjected']) {
     state.isPreferInjected = isPreferInjected
-  },
-
-  setIsAuth(isAuth: OptionsCtrlState['isAuth']) {
-    state.isAuth = isAuth
   }
 }

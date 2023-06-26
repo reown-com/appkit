@@ -1,4 +1,4 @@
-import { ModalCtrl, OptionsCtrl } from '@web3modal/core'
+import { ModalCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -121,18 +121,6 @@ export class W3mModal extends LitElement {
     this.abortController = undefined
   }
 
-  private managedModalContextTemplate() {
-    const { isStandalone } = OptionsCtrl.state
-
-    return isStandalone
-      ? null
-      : html`
-          <w3m-wc-connection-context></w3m-wc-connection-context>
-          <w3m-account-context></w3m-account-context>
-          <w3m-network-context></w3m-network-context>
-        `
-  }
-
   // -- render ------------------------------------------------------- //
   protected render() {
     const classes = {
@@ -143,8 +131,9 @@ export class W3mModal extends LitElement {
     return html`
       <w3m-explorer-context></w3m-explorer-context>
       <w3m-theme-context></w3m-theme-context>
-
-      ${this.managedModalContextTemplate()}
+      <w3m-wc-connection-context></w3m-wc-connection-context>
+      <w3m-account-context></w3m-account-context>
+      <w3m-network-context></w3m-network-context>
 
       <div
         id="w3m-modal"

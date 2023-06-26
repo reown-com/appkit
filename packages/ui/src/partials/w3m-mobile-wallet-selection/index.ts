@@ -1,4 +1,4 @@
-import { ConfigCtrl, OptionsCtrl, RouterCtrl } from '@web3modal/core'
+import { ConfigCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { SvgUtil } from '../../utils/SvgUtil'
@@ -17,7 +17,6 @@ export class W3mMobileWalletSelection extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { isStandalone } = OptionsCtrl.state
     const { explorerExcludedWalletIds, enableExplorer } = ConfigCtrl.state
     const isExplorerWallets = explorerExcludedWalletIds !== 'ALL' && enableExplorer
     const manualTemplate = TemplateUtil.manualWalletsTemplate()
@@ -26,16 +25,14 @@ export class W3mMobileWalletSelection extends LitElement {
     const recentTemplate = TemplateUtil.recentWalletTemplate()
     const injectedWallets = TemplateUtil.installedInjectedWalletsTemplate()
 
-    let templates = [recentTemplate, ...manualTemplate, ...recomendedTemplate]
-    if (!isStandalone) {
-      templates = [
-        ...injectedWallets,
-        recentTemplate,
-        ...externalTemplate,
-        ...manualTemplate,
-        ...recomendedTemplate
-      ]
-    }
+    let templates = [
+      ...injectedWallets,
+      recentTemplate,
+      ...externalTemplate,
+      ...manualTemplate,
+      ...recomendedTemplate
+    ]
+
     templates = templates.filter(Boolean)
 
     const isViewAll = templates.length > 8 || isExplorerWallets

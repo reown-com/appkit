@@ -23,7 +23,7 @@ export const EventsCtrl = {
   },
 
   initialize() {
-    if (state.enabled && typeof crypto !== 'undefined') {
+    if (state.enabled && typeof crypto?.randomUUID !== 'undefined') {
       state.userSessionId = crypto.randomUUID()
     }
   },

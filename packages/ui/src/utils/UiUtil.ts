@@ -22,13 +22,6 @@ export const UiUtil = {
 
   EXPLORER_WALLET_URL: 'https://explorer.walletconnect.com/?type=wallet',
 
-  rejectStandaloneButtonComponent() {
-    const { isStandalone } = OptionsCtrl.state
-    if (isStandalone) {
-      throw new Error('Web3Modal button components are not available in standalone mode.')
-    }
-  },
-
   getShadowRootElement(root: LitElement, selector: string) {
     const el = root.renderRoot.querySelector(selector)
     if (!el) {
@@ -107,7 +100,6 @@ export const UiUtil = {
   },
 
   handleMobileLinking(wallet: WalletData) {
-    const { standaloneUri } = OptionsCtrl.state
     const { pairingUri } = WcConnectionCtrl.state
     const { mobile, name } = wallet
     const nativeUrl = mobile?.native
@@ -125,35 +117,23 @@ export const UiUtil = {
       CoreUtil.openHref(href, '_self')
     }
 
-    if (standaloneUri) {
-      onRedirect(standaloneUri)
-    } else {
-      onRedirect(pairingUri)
-    }
+    onRedirect(pairingUri)
   },
 
   handleAndroidLinking() {
-    const { standaloneUri } = OptionsCtrl.state
     const { pairingUri } = WcConnectionCtrl.state
-
-    if (standaloneUri) {
-      CoreUtil.setWalletConnectAndroidDeepLink(standaloneUri)
-      CoreUtil.openHref(standaloneUri, '_self')
-    } else {
-      CoreUtil.setWalletConnectAndroidDeepLink(pairingUri)
-      CoreUtil.openHref(pairingUri, '_self')
-    }
+    CoreUtil.setWalletConnectAndroidDeepLink(pairingUri)
+    CoreUtil.openHref(pairingUri, '_self')
   },
 
   async handleUriCopy() {
-    const { standaloneUri } = OptionsCtrl.state
-    const { pairingUri } = WcConnectionCtrl.state
-    if (standaloneUri) {
-      await navigator.clipboard.writeText(standaloneUri)
-    } else {
+    try {
+      const { pairingUri } = WcConnectionCtrl.state
       await navigator.clipboard.writeText(pairingUri)
+      ToastCtrl.openToast('Link copied', 'success')
+    } catch {
+      ToastCtrl.openToast('Failed to copy', 'error')
     }
-    ToastCtrl.openToast('Link copied', 'success')
   },
 
   async handleConnectorConnection(id: string, onError?: () => void) {
