@@ -3,7 +3,7 @@ name: Pull request checks
 on:
   pull_request:
     branches:
-      - V2
+      - V3
 
 jobs:
   build:
@@ -24,7 +24,7 @@ jobs:
       - name: build
         run: npm run build
         env:
-         NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
   code_style:
     runs-on: ubuntu-latest
