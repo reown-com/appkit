@@ -18,7 +18,7 @@ import { DataUtil } from './DataUtil'
 export const UiUtil = {
   MOBILE_BREAKPOINT: 600,
 
-  W3M_RECENT_WALLET_DATA: 'W3M_RECENT_WALLET_DATA',
+  W3M_RECENT_WALLET_INFO: 'W3M_RECENT_WALLET_INFO',
 
   EXPLORER_WALLET_URL: 'https://explorer.walletconnect.com/?type=wallet',
 
@@ -204,24 +204,13 @@ export const UiUtil = {
   },
 
   setRecentWallet(wallet: WalletData) {
-    const { walletConnectVersion } = OptionsCtrl.state
-    localStorage.setItem(
-      UiUtil.W3M_RECENT_WALLET_DATA,
-      JSON.stringify({ [walletConnectVersion]: wallet })
-    )
+    localStorage.setItem(UiUtil.W3M_RECENT_WALLET_INFO, JSON.stringify(wallet))
   },
 
   getRecentWallet() {
-    const wallet = localStorage.getItem(UiUtil.W3M_RECENT_WALLET_DATA)
-    if (wallet) {
-      const { walletConnectVersion } = OptionsCtrl.state
-      const json = JSON.parse(wallet)
-      if (json[walletConnectVersion]) {
-        return json[walletConnectVersion] as WalletData
-      }
-    }
+    const wallet = localStorage.getItem(UiUtil.W3M_RECENT_WALLET_INFO)
 
-    return undefined
+    return wallet ? (JSON.parse(wallet) as WalletData) : undefined
   },
 
   caseSafeIncludes(str1: string, str2: string) {

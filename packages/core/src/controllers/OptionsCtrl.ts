@@ -10,8 +10,7 @@ const state = proxy<OptionsCtrlState>({
   isCustomMobile: false,
   isDataLoaded: false,
   isUiLoaded: false,
-  isPreferInjected: false,
-  walletConnectVersion: 1
+  isPreferInjected: false
 })
 
 // -- controller --------------------------------------------------- //
@@ -53,10 +52,6 @@ export const OptionsCtrl = {
 
   setIsUiLoaded(isUiLoaded: OptionsCtrlState['isUiLoaded']) {
     state.isUiLoaded = isUiLoaded
-  },
-
-  setWalletConnectVersion(walletConnectVersion: OptionsCtrlState['walletConnectVersion']) {
-    state.walletConnectVersion = walletConnectVersion
   },
 
   setIsPreferInjected(isPreferInjected: OptionsCtrlState['isPreferInjected']) {

@@ -1,5 +1,5 @@
 import type { Listing } from '@web3modal/core'
-import { CoreUtil, ExplorerCtrl, OptionsCtrl, ToastCtrl } from '@web3modal/core'
+import { CoreUtil, ExplorerCtrl, ToastCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
@@ -66,7 +66,7 @@ export class W3mWalletExplorerView extends LitElement {
           page: this.firstFetch ? 1 : page + 1,
           entries: PAGE_ENTRIES,
           search: this.search,
-          version: OptionsCtrl.state.walletConnectVersion
+          version: 2
         })
         const explorerImages = newListings.map(wallet => UiUtil.getWalletIcon(wallet))
         const extensionImages = injectedWallets.map(wallet => UiUtil.getWalletIcon(wallet))

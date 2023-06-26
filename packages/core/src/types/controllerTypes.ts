@@ -26,7 +26,6 @@ export interface Chain {
 // -- ConfigCtrl ------------------------------------------- //
 export interface ConfigCtrlState {
   projectId: string
-  walletConnectVersion?: 1 | 2
   defaultChain?: Chain
   mobileWallets?: MobileWallet[]
   desktopWallets?: DesktopWallet[]
@@ -57,7 +56,6 @@ export interface OptionsCtrlState {
   isDataLoaded: boolean
   isUiLoaded: boolean
   isPreferInjected: boolean
-  walletConnectVersion: 1 | 2
 }
 
 // -- AccountCtrl -------------------------------------------- //
