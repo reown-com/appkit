@@ -3,7 +3,8 @@ import { css } from 'lit'
 export const globalStyles = css`
   *,
   *::after,
-  *::before {
+  *::before,
+  :host {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -32,13 +33,14 @@ export const globalStyles = css`
     --wui-line-height-md: 125%;
     --wui-line-height-lg: 130%;
 
-    --wui-color-accent: #47a1ff;
-    --wui-color-error: #f25a67;
-    --wui-color-success: #26d962;
-    --wui-color-inverse: #ffffff;
-    --wui-color-primary: #e4e7e7;
-    --wui-color-secondary: #949e9e;
-    --wui-color-tertiary: #6e7777;
+    --wui-color-blue-100: #47a1ff;
+    --wui-color-inverse-100: #fff;
+    --wui-color-inverse-000: #000;
+    --wui-color-error-100: #f25a67;
+    --wui-color-success-100: #26d962;
+    --wui-color-fg-100: #e4e7e7;
+    --wui-color-fg-200: #949e9e;
+    --wui-color-fg-300: #6e7777;
   }
 
   button {

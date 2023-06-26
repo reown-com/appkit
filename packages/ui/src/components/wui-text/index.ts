@@ -1,7 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-
 import { globalStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
 
@@ -16,7 +15,15 @@ type Variant =
   | 'sm-semibold'
   | 'xxs-bold'
 
-type Color = 'accent' | 'error' | 'inverse' | 'primary' | 'secondary' | 'tertiary' | 'success'
+type Color =
+  | 'blue-100'
+  | 'error-100'
+  | 'fg-100'
+  | 'fg-200'
+  | 'fg-300'
+  | 'inverse-000'
+  | 'inverse-100'
+  | 'success-100'
 
 @customElement('wui-text')
 export class WuiText extends LitElement {
@@ -25,7 +32,7 @@ export class WuiText extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property() public variant: Variant = 'md-medium'
 
-  @property() public color: Color = 'primary'
+  @property() public color: Color = 'fg-300'
 
   // -- render ------------------------------------------------------- //
   public render() {
@@ -39,13 +46,14 @@ export class WuiText extends LitElement {
       'wui-sm-semibold': this.variant === 'sm-semibold',
       'wui-sm-medium': this.variant === 'sm-medium',
       'wui-xxs-bold': this.variant === 'xxs-bold',
-      'wui-color-accent': this.color === 'accent',
-      'wui-color-error': this.color === 'error',
-      'wui-color-success': this.color === 'success',
-      'wui-color-inverse': this.color === 'inverse',
-      'wui-color-primary': this.color === 'primary',
-      'wui-color-secondary': this.color === 'secondary',
-      'wui-color-tertiary': this.color === 'tertiary'
+      'wui-color-blue-100': this.color === 'blue-100',
+      'wui-color-error-100': this.color === 'error-100',
+      'wui-color-success-100': this.color === 'success-100',
+      'wui-color-inverse-100': this.color === 'inverse-100',
+      'wui-color-inverse-000': this.color === 'inverse-000',
+      'wui-color-fg-300': this.color === 'fg-300',
+      'wui-color-fg-200': this.color === 'fg-200',
+      'wui-color-fg-100': this.color === 'fg-100'
     }
 
     return html`

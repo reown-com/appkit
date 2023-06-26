@@ -1,7 +1,7 @@
 import { css } from 'lit'
 
 export default css`
-  span {
+  :host {
     font-style: normal;
     font-family: var(--wui-font-family);
     font-feature-settings: var(--wui-font-feature-settings);
@@ -70,25 +70,35 @@ export default css`
     letter-spacing: var(--wui-letter-spacing-sm);
   }
 
-  .wui-color-accent {
-    color: var(--wui-color-accent);
+  .wui-color-blue-100 {
+    color: var(--wui-color-blue-100);
   }
-  .wui-color-error {
-    color: var(--wui-color-error);
+
+  .wui-color-error-100 {
+    color: var(--wui-color-error-100);
   }
-  .wui-color-success {
-    color: var(--wui-color-success);
+
+  .wui-color-success-100 {
+    color: var(--wui-color-success-100);
   }
-  .wui-color-inverse {
-    color: var(--wui-color-inverse);
+
+  .wui-color-inverse-100 {
+    color: var(--wui-color-inverse-100);
   }
-  .wui-color-primary {
-    color: var(--wui-color-primary);
+
+  .wui-color-inverse-000 {
+    color: var(--wui-color-inverse-000);
   }
-  .wui-color-secondary {
-    color: var(--wui-color-secondary);
+
+  .wui-color-fg-100 {
+    color: var(--wui-color-fg-100);
   }
-  .wui-color-tertiary {
-    color: var(--wui-color-tertiary);
+
+  .wui-color-fg-200 {
+    color: var(--wui-color-fg-200);
+  }
+
+  .wui-color-fg-300 {
+    color: var(--wui-color-fg-300);
   }
 `
