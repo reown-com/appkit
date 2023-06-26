@@ -9,13 +9,6 @@ const reactCards = [
     libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi', 'viem']
   },
   {
-    title: 'With Wagmi v1',
-    description: 'Wagmi playground using WalletConnect v1',
-    link: '/with-wagmi/react-v1',
-    color: 'secondary',
-    libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi', 'viem']
-  },
-  {
     title: 'With Wagmi Themed',
     description: 'Wagmi playground with themed modal',
     link: '/with-wagmi/react-themed',

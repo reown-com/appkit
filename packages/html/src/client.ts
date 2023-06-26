@@ -12,7 +12,7 @@ import type { EthereumClient } from '@web3modal/ethereum'
 /**
  * Types
  */
-export type Web3ModalConfig = Omit<ConfigCtrlState, 'walletConnectVersion'> & ThemeCtrlState
+export type Web3ModalConfig = ConfigCtrlState & ThemeCtrlState
 
 /**
  * Client
@@ -21,7 +21,7 @@ export class Web3Modal {
   public constructor(config: Web3ModalConfig, client: EthereumClient) {
     ThemeCtrl.setThemeConfig(config)
     ClientCtrl.setEthereumClient(client)
-    ConfigCtrl.setConfig({ ...config, walletConnectVersion: client.walletConnectVersion })
+    ConfigCtrl.setConfig(config)
     this.initUi()
   }
 

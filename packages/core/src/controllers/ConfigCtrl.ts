@@ -35,7 +35,6 @@ export const ConfigCtrl = {
     EventsCtrl.initialize()
     OptionsCtrl.setIsCustomMobile(Boolean(config.mobileWallets?.length))
     OptionsCtrl.setIsCustomDesktop(Boolean(config.desktopWallets?.length))
-    OptionsCtrl.setWalletConnectVersion(config.walletConnectVersion ?? 1)
     OptionsCtrl.setChains(ClientCtrl.client().chains)
     OptionsCtrl.setIsPreferInjected(
       ClientCtrl.client().isInjectedProviderInstalled() && CoreUtil.isPreferInjectedFlag()

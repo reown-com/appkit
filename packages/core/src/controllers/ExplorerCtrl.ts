@@ -3,7 +3,6 @@ import type { ExplorerCtrlState, ListingParams } from '../types/controllerTypes'
 import { CoreUtil } from '../utils/CoreUtil'
 import { ExplorerUtil } from '../utils/ExplorerUtil'
 import { ConfigCtrl } from './ConfigCtrl'
-import { OptionsCtrl } from './OptionsCtrl'
 
 const isMobile = CoreUtil.isMobile()
 
@@ -47,12 +46,11 @@ export const ExplorerCtrl = {
 
     // Fetch default recomended wallets based on user's device, options and excluded config
     else {
-      const { walletConnectVersion } = OptionsCtrl.state
       const isExcluded = CoreUtil.isArray(explorerExcludedWalletIds)
       const params = {
         page: 1,
         entries: CoreUtil.RECOMMENDED_WALLET_AMOUNT,
-        version: walletConnectVersion,
+        version: 2,
         excludedIds: isExcluded ? explorerExcludedWalletIds.join(',') : undefined
       }
       const { listings } = isMobile
