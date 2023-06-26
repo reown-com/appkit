@@ -37,7 +37,16 @@ export const Preview: Component = {
     },
     color: {
       defaultValue: 'inverse',
-      options: ['accent', 'error', 'inverse', 'primary', 'secondary', 'tertiary', 'success'],
+      options: [
+        'blue-100',
+        'error-100',
+        'success-100',
+        'inverse-100',
+        'inverse-000',
+        'fg-100',
+        'fg-200',
+        'fg-300'
+      ],
       control: { type: 'select' }
     }
   }
