@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "storybook dev -p 6006",
-    "build": "storybook build"
+    "build": "npm install -g vite; storybook build"
   },
   "dependencies": {
     "@web3modal/ui": "3.0.0",
