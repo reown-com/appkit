@@ -47,3 +47,19 @@ jobs:
         run: npm ci
       - name: check
         run: npm run ${{ matrix.style-command }}
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: setup-node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+      - name: install
+        run: npm ci
+      - name: test
+        run: npm run test
