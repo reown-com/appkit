@@ -4,9 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "npm run build --ws --if-present",
     "gallery": "npm run dev --w=@apps/gallery",
+    "build": "npm run build --ws --if-present",
+    "test": "npm run test --ws --if-present",
     "lint": "eslint .",
+    "danger-ci": "danger ci",
     "prettier": "prettier --check .",
     "typecheck": "npm run typecheck --ws --if-present",
     "new-version": "lerna version --no-git-tag-version --exact",
@@ -17,6 +19,7 @@
   },
   "workspaces": [
     "packages/ui",
+    "packages/core",
     "apps/gallery"
   ],
   "devDependencies": {
@@ -28,6 +31,8 @@
     "eslint-config-prettier": "8.8.0",
     "lerna": "7.1.0",
     "prettier": "2.8.8",
-    "typescript": "5.1.3"
+    "typescript": "5.1.3",
+    "vitest": "0.32.2",
+    "danger": "11.2.6"
   }
 }
