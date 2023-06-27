@@ -14,6 +14,11 @@ const controller = new AccountController({
   getProfileImage: async () => Promise.resolve(profileImage)
 })
 
+const partialController = new AccountController({
+  getAddress: async () => Promise.resolve(address),
+  getBalance: async () => Promise.resolve(balance)
+})
+
 // -- Tests --------------------------------------------------------------------
 describe('ModalController', () => {
   it('should have valid default state', () => {
@@ -41,5 +46,15 @@ describe('ModalController', () => {
   it('should update state correctly on getProfileImage()', async () => {
     await controller.getProfileImage()
     expect(controller.state.profileImage).toEqual(profileImage)
+  })
+
+  it('should not throw / update state when getProfileName() is undefined', async () => {
+    await partialController.getProfileName()
+    expect(partialController.state.profileName).toEqual(undefined)
+  })
+
+  it('should not throw / update state when getProfileImage() is undefined', async () => {
+    await partialController.getProfileImage()
+    expect(partialController.state.profileImage).toEqual(undefined)
   })
 })
