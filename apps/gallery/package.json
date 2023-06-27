@@ -4,8 +4,9 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "fix": "echo \"export PATH=$PATH:$(npm get prefix)/bin\" >> ~/.zshrc",
     "dev": "storybook dev -p 6006",
-    "build": "npm install -g vite; storybook build"
+    "build": "npm run fix; storybook build"
   },
   "dependencies": {
     "@web3modal/ui": "3.0.0",
@@ -19,7 +20,6 @@
     "@storybook/addon-links": "7.1.0-alpha.40",
     "@storybook/blocks": "7.1.0-alpha.40",
     "@storybook/web-components": "7.1.0-alpha.40",
-    "@storybook/web-components-vite": "7.1.0-alpha.40",
-    "vite": "4.3.9"
+    "@storybook/web-components-vite": "7.1.0-alpha.40"
   }
 }
