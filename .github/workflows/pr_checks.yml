@@ -34,6 +34,7 @@ jobs:
           - lint
           - prettier
           - typecheck
+          - danger-ci
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -47,6 +48,8 @@ jobs:
         run: npm ci
       - name: check
         run: npm run ${{ matrix.style-command }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   test:
     runs-on: ubuntu-latest
