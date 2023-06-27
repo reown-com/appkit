@@ -19,6 +19,7 @@
     "@storybook/addon-links": "7.1.0-alpha.40",
     "@storybook/blocks": "7.1.0-alpha.40",
     "@storybook/web-components": "7.1.0-alpha.40",
-    "@storybook/web-components-vite": "7.1.0-alpha.40"
+    "@storybook/web-components-vite": "7.1.0-alpha.40",
+    "vite": "4.3.9"
   }
 }
