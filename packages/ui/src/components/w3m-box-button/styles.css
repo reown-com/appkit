@@ -11,6 +11,10 @@ button:active {
   background-color: var(--w3m-color-overlay);
 }
 
+button:disabled {
+  opacity: 0.7;
+}
+
 @media (hover: hover) {
   button:hover {
     background-color: var(--w3m-color-overlay);
