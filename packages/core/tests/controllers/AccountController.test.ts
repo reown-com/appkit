@@ -1,6 +1,7 @@
 import { AccountController } from '../../index'
 import { describe, it, expect } from 'vitest'
 
+// -- Setup --------------------------------------------------------------------
 const address = '0x123'
 const balance = '0.100'
 const profileName = 'john.eth'
@@ -13,6 +14,7 @@ const controller = new AccountController({
   getProfileImage: async () => Promise.resolve(profileImage)
 })
 
+// -- Tests --------------------------------------------------------------------
 describe('ModalController', () => {
   it('should have valid default state', () => {
     expect(controller.state).toEqual({

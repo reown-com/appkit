@@ -1,8 +1,10 @@
 import { RouterController } from '../../index'
 import { describe, it, expect } from 'vitest'
 
+// -- Setup --------------------------------------------------------------------
 const controller = new RouterController()
 
+// -- Tests --------------------------------------------------------------------
 describe('ModalController', () => {
   it('should have valid default state', () => {
     expect(controller.state).toEqual({
