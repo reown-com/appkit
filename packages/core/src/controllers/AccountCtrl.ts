@@ -49,6 +49,7 @@ export const AccountCtrl = {
             state.profileAvatar = profile.avatar
           }
         } catch {
+          // If problem resolving the identity using our own Identity API, fallback to RPC resolution
           const name = await ClientCtrl.client().fetchEnsName({ address, chainId: mainnetId })
           state.profileName = name
           if (name) {
