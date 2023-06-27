@@ -20,6 +20,6 @@
     "@storybook/blocks": "7.0.23",
     "@storybook/web-components": "7.0.23",
     "@storybook/web-components-vite": "7.0.23",
-    "file-system-cache": "2.0.0"
+    "file-system-cache": "2.3.0"
   }
 }
