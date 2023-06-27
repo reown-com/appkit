@@ -5,16 +5,16 @@ const controller = new ModalController()
 
 describe('ModalController', () => {
   it('should have valid default state', () => {
-    expect(controller.state.open).toBe(false)
+    expect(controller.state.open).toEqual(false)
   })
 
   it('should update state correctly on open()', () => {
     controller.open()
-    expect(controller.state.open).toBe(true)
+    expect(controller.state.open).toEqual(true)
   })
 
   it('should update state correctly on close()', () => {
     controller.close()
-    expect(controller.state.open).toBe(false)
+    expect(controller.state.open).toEqual(false)
   })
 })
