@@ -4,7 +4,8 @@ import { copySvg } from '@web3modal/ui/src/assets/svg/copy'
 import { walletSvg } from '@web3modal/ui/src/assets/svg/wallet'
 import '@web3modal/ui/src/components/wui-icon'
 import type { WuiIcon } from '@web3modal/ui/src/components/wui-icon'
-import { TemplateResult, html } from 'lit'
+import { html } from 'lit'
+import type { TemplateResult } from 'lit'
 
 type Component = Meta<WuiIcon & { svg: keyof typeof svgOptions }>
 
