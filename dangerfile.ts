@@ -3,8 +3,9 @@ import { danger, warn, fail } from 'danger'
 
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
-const updated_files = [...modified_files, ...created_files, ...deleted_files]
-const packageJsons = updated_files.filter(f => f.includes('package.json'))
+const updated_files = [...modified_files, ...created_files]
+const all_files = [...updated_files, ...created_files, ...deleted_files]
+const packageJsons = all_files.filter(f => f.includes('package.json'))
 const packageLock = updated_files.find(f => f.includes('package-lock.json'))
 const yarnLock = updated_files.find(f => f.includes('yarn.lock'))
 const pnpmLock = updated_files.find(f => f.includes('pnpm-lock.yaml'))
@@ -21,11 +22,8 @@ if (yarnLock || pnpmLock) {
 async function checkStrictDependencies() {
   for (const f of packageJsons) {
     const diff = await diffForFile(f)
-    if (diff) {
-      const { added } = diff
-      if (added.includes('^') || added.includes('~')) {
-        fail(`${f} should use strict dependency versions`)
-      }
+    if (diff && (diff.added.includes('^') || diff.added.includes('~'))) {
+      fail(`${f} should use strict dependency versions`)
     }
   }
 }
