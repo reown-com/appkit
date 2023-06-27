@@ -37,7 +37,7 @@ export class WuiIconBox extends LitElement {
     return html`
       <div
         class="${sizeClass}"
-        style="background-color: var(--wui-rgba-transparent);
+        style="background-color: var(--wui-overlay-020);
             background-color: color-mix(in srgb, var(--wui-color-${this
           .backgroundColor}) ${opacityValue}, transparent);"
       >

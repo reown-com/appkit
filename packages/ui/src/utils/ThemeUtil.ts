@@ -42,7 +42,8 @@ export const globalStyles = css`
     --wui-color-fg-200: #949e9e;
     --wui-color-fg-300: #6e7777;
 
-    --wui-rgba-transparent: rgba(255, 255, 255, 0.2);
+    --wui-overlay-010: rgba(255, 255, 255, 0.1);
+    --wui-overlay-020: rgba(255, 255, 255, 0.2);
   }
 
   button {
@@ -51,9 +52,6 @@ export const globalStyles = css`
     justify-content: center;
     align-items: center;
     position: relative;
-    border: none;
-    background-color: transparent;
-    transition: all 0.2s ease;
   }
 
   @media (hover: hover) and (pointer: fine) {
