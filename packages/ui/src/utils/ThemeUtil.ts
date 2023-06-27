@@ -41,6 +41,8 @@ export const globalStyles = css`
     --wui-color-fg-100: #e4e7e7;
     --wui-color-fg-200: #949e9e;
     --wui-color-fg-300: #6e7777;
+
+    --wui-rgba-transparent: rgba(255, 255, 255, 0.2);
   }
 
   button {

@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 import { clockSvg } from '@web3modal/ui/src/assets/svg/clock'
 import { copySvg } from '@web3modal/ui/src/assets/svg/copy'
 import { walletSvg } from '@web3modal/ui/src/assets/svg/wallet'
-import '@web3modal/ui/src/components/wui-icon-box'
-import type { WuiIconBox } from '@web3modal/ui/src/components/wui-icon-box'
+import '@web3modal/ui/src/composites/wui-icon-box'
+import type { WuiIconBox } from '@web3modal/ui/src/composites/wui-icon-box'
 import { html } from 'lit'
 import type { TemplateResult } from 'lit'
 import { colorOptions } from '../../utils/PresetUtils'
@@ -17,7 +17,7 @@ const svgOptions: Record<string, TemplateResult<2>> = {
 }
 
 export default {
-  title: 'Components/wui-icon-box',
+  title: 'Composites/wui-icon-box',
   args: {
     size: 'md',
     backgroundColor: 'blue-100',
@@ -46,7 +46,7 @@ export default {
   }
 } as Component
 
-export const copy: Component = {
+export const Default: Component = {
   render: args =>
     html`<wui-icon-box
       size=${args.size}
