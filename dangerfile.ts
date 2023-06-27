@@ -16,14 +16,14 @@ if (packageJsons.length && !packageLock) {
 }
 
 if (yarnLock || pnpmLock) {
-  fail('yarn or pnpm lockfile(s) detected, please use npm')
+  fail('Non npm lockfile(s) detected (yarn / pnpm), please use npm')
 }
 
 async function checkStrictDependencies() {
   for (const f of packageJsons) {
     const diff = await diffForFile(f)
     if (diff && (diff.added.includes('^') || diff.added.includes('~'))) {
-      fail(`${f} should use strict dependency versions`)
+      fail(`Loose dependency versions in ${f}, please use strict versioning`)
     }
   }
 }
