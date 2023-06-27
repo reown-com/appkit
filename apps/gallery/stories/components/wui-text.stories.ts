@@ -13,9 +13,9 @@ export default {
   tags: ['autodocs'],
 
   render: args =>
-    html`<wui-text variant=${args.variant} color=${args.color}
-      >The fox jumped over the lazy dog</wui-text
-    >`
+    html`<wui-text variant=${args.variant} color=${args.color}>
+      The fox jumped over the lazy dog
+    </wui-text>`
 } as Component
 
 export const Preview: Component = {
