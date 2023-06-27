@@ -13,7 +13,6 @@ export default function createConfig(packageJson, isBundle = false) {
     tsconfig: 'tsconfig.json',
     platform: 'browser',
     treeShaking: true,
-    sourceMap: true,
     loaders: {
       '.json': 'json'
     }
@@ -43,7 +42,7 @@ export default function createConfig(packageJson, isBundle = false) {
     {
       input: './index.ts',
       plugins: pluginsEs,
-      output: [{ file: './dist/index.js', format: 'es' }]
+      output: [{ file: './dist/index.js', format: 'es', sourcemap: true }]
     }
   ]
 
@@ -51,7 +50,7 @@ export default function createConfig(packageJson, isBundle = false) {
     config.push({
       input: './bundle.ts',
       plugins: pluginsUmd,
-      output: [{ dir: './dist/cdn', format: 'es' }]
+      output: [{ dir: './dist/cdn', format: 'es', sourcemap: true }]
     })
   }
 

@@ -26,8 +26,6 @@ export interface Chain {
 // -- ConfigCtrl ------------------------------------------- //
 export interface ConfigCtrlState {
   projectId: string
-  walletConnectVersion?: 1 | 2
-  standaloneChains?: string[]
   defaultChain?: Chain
   mobileWallets?: MobileWallet[]
   desktopWallets?: DesktopWallet[]
@@ -35,8 +33,6 @@ export interface ConfigCtrlState {
   chainImages?: Record<string, string>
   tokenImages?: Record<string, string>
   tokenContracts?: Record<number, string>
-  enableStandaloneMode?: boolean
-  enableAuthMode?: boolean
   enableNetworkView?: boolean
   enableAccountView?: boolean
   enableExplorer?: boolean
@@ -55,16 +51,11 @@ export interface ModalCtrlState {
 export interface OptionsCtrlState {
   selectedChain?: Chain
   chains?: EthereumClient['chains']
-  standaloneChains?: string[]
-  standaloneUri?: string
-  isStandalone: boolean
-  isAuth: boolean
   isCustomDesktop: boolean
   isCustomMobile: boolean
   isDataLoaded: boolean
   isUiLoaded: boolean
   isPreferInjected: boolean
-  walletConnectVersion: 1 | 2
 }
 
 // -- AccountCtrl -------------------------------------------- //

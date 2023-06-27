@@ -3,7 +3,6 @@ import type { ExplorerCtrlState, ListingParams } from '../types/controllerTypes'
 import { CoreUtil } from '../utils/CoreUtil'
 import { ExplorerUtil } from '../utils/ExplorerUtil'
 import { ConfigCtrl } from './ConfigCtrl'
-import { OptionsCtrl } from './OptionsCtrl'
 
 const isMobile = CoreUtil.isMobile()
 
@@ -47,15 +46,11 @@ export const ExplorerCtrl = {
 
     // Fetch default recomended wallets based on user's device, options and excluded config
     else {
-      const { standaloneChains, walletConnectVersion, isAuth } = OptionsCtrl.state
-      const chainsFilter = standaloneChains?.join(',')
       const isExcluded = CoreUtil.isArray(explorerExcludedWalletIds)
       const params = {
         page: 1,
-        sdks: isAuth ? 'auth_v1' : undefined,
         entries: CoreUtil.RECOMMENDED_WALLET_AMOUNT,
-        chains: chainsFilter,
-        version: walletConnectVersion,
+        version: 2,
         excludedIds: isExcluded ? explorerExcludedWalletIds.join(',') : undefined
       }
       const { listings } = isMobile
@@ -91,11 +86,6 @@ export const ExplorerCtrl = {
       extendedParams.excludedIds = [extendedParams.excludedIds, explorerExcludedWalletIds]
         .filter(Boolean)
         .join(',')
-    }
-
-    // Fetch only auth wallets
-    if (OptionsCtrl.state.isAuth) {
-      extendedParams.sdks = 'auth_v1'
     }
 
     const { page, search } = params

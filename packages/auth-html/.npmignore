@@ -1,9 +1,0 @@
-*.log
-npm-debug.log*
-node_modules
-package-lock.json
-src
-types
-rollup.config.js
-index.ts
-.eslintrc.json

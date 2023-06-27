@@ -20,8 +20,7 @@ export class W3mWcConnectionContext extends LitElement {
     this.unwatchAccount = AccountCtrl.subscribe(account => {
       if (this.isAccountConnected !== account.isConnected || !this.isGenerated) {
         this.isAccountConnected = account.isConnected
-        // FIX setTimout(0) needed for WalletConnectLegacyConnector
-        setTimeout(this.connectAndWait.bind(this), 0)
+        this.connectAndWait()
       }
     })
     this.unwatchWcConnection = WcConnectionCtrl.subscribe(wcConnection => {
@@ -55,15 +54,11 @@ export class W3mWcConnectionContext extends LitElement {
       this.isGenerated = true
       this.timeout = setTimeout(this.connectAndWait.bind(this), FOUR_MIN_MS)
       try {
-        const { standaloneUri, selectedChain } = OptionsCtrl.state
-        if (standaloneUri) {
-          WcConnectionCtrl.setPairingUri(standaloneUri)
-        } else {
-          await ClientCtrl.client().connectWalletConnect(
-            uri => WcConnectionCtrl.setPairingUri(uri),
-            selectedChain?.id
-          )
-        }
+        const { selectedChain } = OptionsCtrl.state
+        await ClientCtrl.client().connectWalletConnect(
+          uri => WcConnectionCtrl.setPairingUri(uri),
+          selectedChain?.id
+        )
       } catch (err) {
         console.error(err)
         WcConnectionCtrl.setPairingError(true)

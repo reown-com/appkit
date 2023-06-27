@@ -37,7 +37,7 @@ const chains = [
 const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
 const wagmiClient = createConfig({
   autoConnect: true,
-  connectors: w3mConnectors({ version: 2, projectId, chains }),
+  connectors: w3mConnectors({ projectId, chains }),
   publicClient
 })
 const ethereumClient = new EthereumClient(wagmiClient, chains)
@@ -50,21 +50,7 @@ export default function WithWagmiReactPage() {
         <WagmiWeb3ModalWidget />
       </WagmiConfig>
 
-      <Web3Modal
-        ethereumClient={ethereumClient}
-        projectId={projectId}
-        themeMode={getTheme()}
-        mobileWallets={[
-          {
-            id: 'metamask',
-            name: 'MetaMask',
-            links: {
-              native: 'metamask://',
-              universal: ''
-            }
-          }
-        ]}
-      />
+      <Web3Modal ethereumClient={ethereumClient} projectId={projectId} themeMode={getTheme()} />
     </>
   )
 }

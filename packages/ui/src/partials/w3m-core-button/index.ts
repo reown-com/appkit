@@ -1,7 +1,6 @@
 import { AccountCtrl, ConfigCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
-import { UiUtil } from '../../utils/UiUtil'
 
 @customElement('w3m-core-button')
 export class W3mCoreButton extends LitElement {
@@ -15,7 +14,6 @@ export class W3mCoreButton extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    UiUtil.rejectStandaloneButtonComponent()
     this.isConnected = AccountCtrl.state.isConnected
     this.unsubscribeAccount = AccountCtrl.subscribe(({ isConnected }) => {
       this.isConnected = isConnected

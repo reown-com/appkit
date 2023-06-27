@@ -13,7 +13,7 @@ const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
 const wagmiClient = createConfig({
   autoConnect: true,
   connectors: [
-    ...w3mConnectors({ version: 2, projectId, chains }),
+    ...w3mConnectors({ projectId, chains }),
     new CoinbaseWalletConnector({ chains, options: { appName: 'Web3Modal' } })
   ],
   publicClient
@@ -57,11 +57,11 @@ export default function WithWagmiReactThemedPage() {
         }}
         mobileWallets={[
           {
-            id: 'metamask',
-            name: 'MetaMask',
+            id: 'oreid',
+            name: 'OREID',
             links: {
-              native: 'metamask://',
-              universal: ''
+              native: '',
+              universal: 'https://www.oreid.io/'
             }
           }
         ]}

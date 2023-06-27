@@ -18,16 +18,11 @@ import { DataUtil } from './DataUtil'
 export const UiUtil = {
   MOBILE_BREAKPOINT: 600,
 
-  W3M_RECENT_WALLET_DATA: 'W3M_RECENT_WALLET_DATA',
+  W3M_RECENT_WALLET_INFO: 'W3M_RECENT_WALLET_INFO',
 
   EXPLORER_WALLET_URL: 'https://explorer.walletconnect.com/?type=wallet',
 
-  rejectStandaloneButtonComponent() {
-    const { isStandalone } = OptionsCtrl.state
-    if (isStandalone) {
-      throw new Error('Web3Modal button components are not available in standalone mode.')
-    }
-  },
+  WAGMI_WALLET: 'wagmi.wallet',
 
   getShadowRootElement(root: LitElement, selector: string) {
     const el = root.renderRoot.querySelector(selector)
@@ -107,7 +102,6 @@ export const UiUtil = {
   },
 
   handleMobileLinking(wallet: WalletData) {
-    const { standaloneUri } = OptionsCtrl.state
     const { pairingUri } = WcConnectionCtrl.state
     const { mobile, name } = wallet
     const nativeUrl = mobile?.native
@@ -125,35 +119,23 @@ export const UiUtil = {
       CoreUtil.openHref(href, '_self')
     }
 
-    if (standaloneUri) {
-      onRedirect(standaloneUri)
-    } else {
-      onRedirect(pairingUri)
-    }
+    onRedirect(pairingUri)
   },
 
   handleAndroidLinking() {
-    const { standaloneUri } = OptionsCtrl.state
     const { pairingUri } = WcConnectionCtrl.state
-
-    if (standaloneUri) {
-      CoreUtil.setWalletConnectAndroidDeepLink(standaloneUri)
-      CoreUtil.openHref(standaloneUri, '_self')
-    } else {
-      CoreUtil.setWalletConnectAndroidDeepLink(pairingUri)
-      CoreUtil.openHref(pairingUri, '_self')
-    }
+    CoreUtil.setWalletConnectAndroidDeepLink(pairingUri)
+    CoreUtil.openHref(pairingUri, '_self')
   },
 
   async handleUriCopy() {
-    const { standaloneUri } = OptionsCtrl.state
-    const { pairingUri } = WcConnectionCtrl.state
-    if (standaloneUri) {
-      await navigator.clipboard.writeText(standaloneUri)
-    } else {
+    try {
+      const { pairingUri } = WcConnectionCtrl.state
       await navigator.clipboard.writeText(pairingUri)
+      ToastCtrl.openToast('Link copied', 'success')
+    } catch {
+      ToastCtrl.openToast('Failed to copy', 'error')
     }
-    ToastCtrl.openToast('Link copied', 'success')
   },
 
   async handleConnectorConnection(id: string, onError?: () => void) {
@@ -224,24 +206,13 @@ export const UiUtil = {
   },
 
   setRecentWallet(wallet: WalletData) {
-    const { walletConnectVersion } = OptionsCtrl.state
-    localStorage.setItem(
-      UiUtil.W3M_RECENT_WALLET_DATA,
-      JSON.stringify({ [walletConnectVersion]: wallet })
-    )
+    localStorage.setItem(UiUtil.W3M_RECENT_WALLET_INFO, JSON.stringify(wallet))
   },
 
   getRecentWallet() {
-    const wallet = localStorage.getItem(UiUtil.W3M_RECENT_WALLET_DATA)
-    if (wallet) {
-      const { walletConnectVersion } = OptionsCtrl.state
-      const json = JSON.parse(wallet)
-      if (json[walletConnectVersion]) {
-        return json[walletConnectVersion] as WalletData
-      }
-    }
+    const wallet = localStorage.getItem(UiUtil.W3M_RECENT_WALLET_INFO)
 
-    return undefined
+    return wallet ? (JSON.parse(wallet) as WalletData) : undefined
   },
 
   caseSafeIncludes(str1: string, str2: string) {
@@ -295,5 +266,11 @@ export const UiUtil = {
     } else {
       RouterCtrl.push('InstallWallet')
     }
+  },
+
+  getWagmiWalletType() {
+    const type = localStorage.getItem(UiUtil.WAGMI_WALLET)
+
+    return type
   }
 }

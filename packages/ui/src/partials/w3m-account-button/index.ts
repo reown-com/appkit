@@ -1,9 +1,8 @@
-import { EventsCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
+import { EventsCtrl, ModalCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
-import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-account-button')
@@ -13,7 +12,6 @@ export class W3mAccountButton extends LitElement {
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
-    UiUtil.rejectStandaloneButtonComponent()
   }
 
   // -- state & properties ------------------------------------------- //
@@ -21,11 +19,8 @@ export class W3mAccountButton extends LitElement {
   @property() public avatar?: 'hide' | 'show' = 'show'
 
   private onOpen() {
-    const { isStandalone } = OptionsCtrl.state
-    if (!isStandalone) {
-      EventsCtrl.click({ name: 'ACCOUNT_BUTTON' })
-      ModalCtrl.open({ route: 'Account' })
-    }
+    EventsCtrl.click({ name: 'ACCOUNT_BUTTON' })
+    ModalCtrl.open({ route: 'Account' })
   }
 
   // -- private ------------------------------------------------------ //

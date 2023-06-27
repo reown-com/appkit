@@ -11,7 +11,7 @@ export class W3mNetworkContext extends LitElement {
   public constructor() {
     super()
 
-    // Additional full modal features, not available in standalone
+    // Additional full modal features
     const chain = OptionsCtrl.getSelectedChain()
     this.activeChainId = chain?.id
 

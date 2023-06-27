@@ -11,54 +11,33 @@ import {
   watchAccount,
   watchNetwork
 } from '@wagmi/core'
-import type { ConnectorId, ModalConnectorsOpts } from './types'
+import type { ConnectorId } from './types'
 
 // -- helpers ------------------------------------------- //
 const ADD_ETH_CHAIN_METHOD = 'wallet_addEthereumChain'
 
 export class EthereumClient {
   private readonly wagmi = {} as Config
-  public walletConnectVersion: ModalConnectorsOpts['version'] = 1
   public readonly chains = [] as Chain[]
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public constructor(wagmi: any, chains: Chain[]) {
     this.wagmi = wagmi
     this.chains = chains
-    const { isV2 } = this.getWalletConnectConnectors()
-    this.walletConnectVersion = isV2 ? 2 : 1
   }
 
   // -- private ------------------------------------------- //
-  private getWalletConnectConnectors() {
-    const wcc = this.wagmi.connectors.find((c: Connector) => c.id === 'walletConnect')
-    const wc1c = this.wagmi.connectors.find((c: Connector) => c.id === 'walletConnectLegacy')
-    const connector = wcc ?? wc1c
+  private getWalletConnectConnector() {
+    const connector = this.wagmi.connectors.find((c: Connector) => c.id === 'walletConnect')
+
     if (!connector) {
-      throw new Error('WalletConnectConnector or WalletConnectLegacyConnector is required')
+      throw new Error('WalletConnectConnector is required')
     }
 
-    return { isV2: Boolean(wcc), connector }
+    return connector
   }
 
-  private async connectWalletConnectV1(connector: Connector, onUri: (uri: string) => void) {
-    return new Promise<void>((resolve, reject) => {
-      connector.once('message', async ({ type }) => {
-        if (type === 'connecting') {
-          const providerConnector = (await connector.getProvider()).connector
-          onUri(providerConnector.uri)
-          providerConnector.on('disconnect', () => {
-            reject(Error())
-          })
-          providerConnector.on('connect', () => {
-            resolve()
-          })
-        }
-      })
-    })
-  }
-
-  private async connectWalletConnectV2(connector: Connector, onUri: (uri: string) => void) {
+  private async connectWalletConnectProvider(connector: Connector, onUri: (uri: string) => void) {
     await connector.getProvider()
 
     return new Promise<void>(resolve => {
@@ -92,16 +71,13 @@ export class EthereumClient {
   }
 
   public async connectWalletConnect(onUri: (uri: string) => void, chainId?: number) {
-    const { connector, isV2 } = this.getWalletConnectConnectors()
+    const connector = this.getWalletConnectConnector()
     const options: ConnectArgs = { connector }
     if (chainId) {
       options.chainId = chainId
     }
-    const handleProviderEvents = isV2
-      ? this.connectWalletConnectV2.bind(this)
-      : this.connectWalletConnectV1.bind(this)
 
-    return Promise.all([connect(options), handleProviderEvents(connector, onUri)])
+    return Promise.all([connect(options), this.connectWalletConnectProvider(connector, onUri)])
   }
 
   public async connectConnector(connectorId: ConnectorId | string, chainId?: number) {
@@ -134,26 +110,25 @@ export class EthereumClient {
   }
 
   public async getConnectedChainIds() {
-    const { connector, isV2 } = this.getWalletConnectConnectors()
+    const connector = this.getWalletConnectConnector()
+    const provider = await connector.getProvider()
+    const sessionNamespaces = provider.signer?.session?.namespaces
+    const sessionMethods = sessionNamespaces?.[this.namespace]?.methods
 
-    if (isV2) {
-      const provider = await connector.getProvider()
-      const sessionNamespaces = provider.signer?.session?.namespaces
-      const sessionMethods = sessionNamespaces?.[this.namespace]?.methods
-      if (sessionMethods?.includes(ADD_ETH_CHAIN_METHOD)) {
-        return 'ALL'
-      }
-      if (sessionNamespaces) {
-        const sessionAccounts: string[] = []
-        Object.keys(sessionNamespaces).forEach(namespaceKey => {
-          if (namespaceKey.includes(this.namespace)) {
-            sessionAccounts.push(...sessionNamespaces[namespaceKey].accounts)
-          }
-        })
-        const sessionChains = sessionAccounts?.map((a: string) => a.split(':')[1])
+    if (sessionMethods?.includes(ADD_ETH_CHAIN_METHOD)) {
+      return 'ALL'
+    }
 
-        return sessionChains
-      }
+    if (sessionNamespaces) {
+      const sessionAccounts: string[] = []
+      Object.keys(sessionNamespaces).forEach(namespaceKey => {
+        if (namespaceKey.includes(this.namespace)) {
+          sessionAccounts.push(...sessionNamespaces[namespaceKey].accounts)
+        }
+      })
+      const sessionChains = sessionAccounts?.map((a: string) => a.split(':')[1])
+
+      return sessionChains
     }
 
     return 'ALL'

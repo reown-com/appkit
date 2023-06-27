@@ -10,6 +10,7 @@ import {
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
+import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
 
 @customElement('w3m-select-network-view')
@@ -33,12 +34,13 @@ export class W3mSelectNetworkView extends LitElement {
 
   private async onSelectChain(chain: SwitchNetworkData) {
     try {
-      const { selectedChain, walletConnectVersion, isPreferInjected } = OptionsCtrl.state
+      const { selectedChain, isPreferInjected } = OptionsCtrl.state
       const { isConnected } = AccountCtrl.state
       if (isConnected) {
         if (selectedChain?.id === chain.id) {
           RouterCtrl.reset('Account')
-        } else if (walletConnectVersion === 2) {
+          // Use of "" inside string is intentional
+        } else if (UiUtil.getWagmiWalletType() === '"walletConnect"') {
           await ClientCtrl.client().switchNetwork({ chainId: chain.id })
           RouterCtrl.reset('Account')
         } else {
