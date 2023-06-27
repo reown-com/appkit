@@ -1,7 +1,5 @@
-import { Controls, Description, Primary, Source, Stories, Subtitle, Title } from '@storybook/blocks'
 import React from 'react'
-
-import {} from '@storybook/blocks'
+import { Controls, Description, Primary, Source, Stories, Subtitle, Title } from '@storybook/blocks'
 
 /** @type { import('@storybook/web-components').Preview } */
 const preview = {

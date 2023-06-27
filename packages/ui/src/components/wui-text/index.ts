@@ -56,11 +56,7 @@ export class WuiText extends LitElement {
       'wui-color-fg-100': this.color === 'fg-100'
     }
 
-    return html`
-      <span>
-        <slot class=${classMap(classes)}></slot>
-      </span>
-    `
+    return html` <slot class=${classMap(classes)}></slot> `
   }
 }
 
