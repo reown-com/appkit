@@ -18,12 +18,15 @@ if (yarnLock || pnpmLock) {
   fail('yarn or pnpm lockfile(s) detected, please use npm')
 }
 
-for (const f of packageJsons) {
-  const diff = await diffForFile(f)
-  if (diff) {
-    const { added } = diff
-    if (added.includes('^') || added.includes('~')) {
-      fail(`${f} should use strict dependency versions`)
+async function checkStrictDependencies() {
+  for (const f of packageJsons) {
+    const diff = await diffForFile(f)
+    if (diff) {
+      const { added } = diff
+      if (added.includes('^') || added.includes('~')) {
+        fail(`${f} should use strict dependency versions`)
+      }
     }
   }
 }
+checkStrictDependencies()
