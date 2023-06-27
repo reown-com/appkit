@@ -4,16 +4,16 @@ import { describe, it, expect } from 'vitest'
 const controller = new ModalController()
 
 describe('ModalController', () => {
-  it('should have default state.open = false', () => {
+  it('should have valid default state', () => {
     expect(controller.state.open).toBe(false)
   })
 
-  it('should set state.open = true when open()', () => {
+  it('should update state correctly on open()', () => {
     controller.open()
     expect(controller.state.open).toBe(true)
   })
 
-  it('should set state.open = false when close()', () => {
+  it('should update state correctly on close()', () => {
     controller.close()
     expect(controller.state.open).toBe(false)
   })
