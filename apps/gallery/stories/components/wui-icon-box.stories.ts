@@ -4,9 +4,15 @@ import { copySvg } from '@web3modal/ui/src/assets/svg/copy'
 import { walletSvg } from '@web3modal/ui/src/assets/svg/wallet'
 import '@web3modal/ui/src/components/wui-icon-box'
 import type { WuiIconBox } from '@web3modal/ui/src/components/wui-icon-box'
-import { html } from 'lit'
+import { TemplateResult, html } from 'lit'
 
-type Component = Meta<WuiIconBox>
+type Component = Meta<WuiIconBox & { svg: keyof typeof svgOptions }>
+
+const svgOptions: Record<string, TemplateResult<2>> = {
+  copy: copySvg,
+  wallet: walletSvg,
+  clock: clockSvg
+}
 
 export default {
   title: 'Components/wui-icon-box',
@@ -17,7 +23,8 @@ export default {
   args: {
     size: 'md',
     backgroundColor: 'blue-100',
-    iconColor: 'blue-100'
+    iconColor: 'blue-100',
+    svg: 'copy'
   },
 
   argTypes: {
@@ -27,7 +34,6 @@ export default {
       control: { type: 'select' }
     },
     backgroundColor: {
-      defaultValue: 'blue-100',
       options: [
         'blue-100',
         'error-100',
@@ -41,7 +47,6 @@ export default {
       control: { type: 'select' }
     },
     iconColor: {
-      defaultValue: 'inverse-100',
       options: [
         'blue-100',
         'error-100',
@@ -53,6 +58,10 @@ export default {
         'fg-300'
       ],
       control: { type: 'select' }
+    },
+    svg: {
+      options: Object.keys(svgOptions),
+      control: { type: 'select' }
     }
   }
 } as Component
@@ -63,26 +72,6 @@ export const copy: Component = {
       size=${args.size}
       iconColor=${args.iconColor}
       backgroundColor=${args.backgroundColor}
-      >${copySvg}</wui-icon-box
-    >`
-}
-
-export const wallet: Component = {
-  render: args =>
-    html`<wui-icon-box
-      size=${args.size}
-      iconColor=${args.iconColor}
-      backgroundColor=${args.backgroundColor}
-      >${walletSvg}</wui-icon-box
-    >`
-}
-
-export const clock: Component = {
-  render: args =>
-    html`<wui-icon-box
-      size=${args.size}
-      iconColor=${args.iconColor}
-      backgroundColor=${args.backgroundColor}
-      >${clockSvg}</wui-icon-box
+      >${svgOptions[args.svg]}</wui-icon-box
     >`
 }

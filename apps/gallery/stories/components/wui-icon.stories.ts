@@ -4,9 +4,15 @@ import { copySvg } from '@web3modal/ui/src/assets/svg/copy'
 import { walletSvg } from '@web3modal/ui/src/assets/svg/wallet'
 import '@web3modal/ui/src/components/wui-icon'
 import type { WuiIcon } from '@web3modal/ui/src/components/wui-icon'
-import { html } from 'lit'
+import { TemplateResult, html } from 'lit'
 
-type Component = Meta<WuiIcon>
+type Component = Meta<WuiIcon & { svg: keyof typeof svgOptions }>
+
+const svgOptions: Record<string, TemplateResult<2>> = {
+  copy: copySvg,
+  wallet: walletSvg,
+  clock: clockSvg
+}
 
 export default {
   title: 'Components/wui-icon',
@@ -15,16 +21,16 @@ export default {
   },
   tags: ['autodocs'],
   args: {
-    size: 'md'
+    size: 'md',
+    color: 'inverse-000',
+    svg: 'copy'
   },
   argTypes: {
     size: {
-      defaultValue: 'md',
       options: ['xxs', 'xs', 'sm', 'md', 'lg'],
       control: { type: 'select' }
     },
     color: {
-      defaultValue: 'inverse-100',
       options: [
         'blue-100',
         'error-100',
@@ -36,18 +42,15 @@ export default {
         'fg-300'
       ],
       control: { type: 'select' }
+    },
+    svg: {
+      options: Object.keys(svgOptions),
+      control: { type: 'select' }
     }
   }
 } as Component
 
-export const copy: Component = {
-  render: args => html`<wui-icon size=${args.size} color=${args.color}>${copySvg}</wui-icon>`
-}
-
-export const wallet: Component = {
-  render: args => html`<wui-icon size=${args.size} color=${args.color}>${walletSvg}</wui-icon>`
-}
-
-export const clock: Component = {
-  render: args => html`<wui-icon size=${args.size} color=${args.color}>${clockSvg}</wui-icon>`
+export const Default: Component = {
+  render: args =>
+    html`<wui-icon size=${args.size} color=${args.color}>${svgOptions[args.svg]}</wui-icon>`
 }
