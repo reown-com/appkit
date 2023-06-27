@@ -4,9 +4,8 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "fix": "echo \"export PATH=$PATH:$(npm get prefix)/bin\" >> ~/.zshrc",
     "dev": "storybook dev -p 6006",
-    "build": "npm run fix; storybook build"
+    "build": "storybook build"
   },
   "dependencies": {
     "@web3modal/ui": "3.0.0",
