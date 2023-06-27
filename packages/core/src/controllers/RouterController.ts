@@ -2,7 +2,7 @@ import { proxy } from 'valtio/vanilla'
 
 // -- Types --------------------------------------------------------------------
 export interface RouterControllerState {
-  view: 'Account' | 'Connect'
+  view: 'Account' | 'Connect' | 'Networks'
   history: RouterControllerState['view'][]
 }
 
