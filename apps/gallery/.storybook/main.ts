@@ -10,7 +10,8 @@ const config = {
     options: {}
   },
   docs: {
-    autodocs: 'tag'
+    autodocs: true,
+    defaultName: 'Docs'
   }
 }
 

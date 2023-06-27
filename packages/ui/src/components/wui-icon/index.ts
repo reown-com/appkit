@@ -1,24 +1,14 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { globalStyles } from '../../utils/ThemeUtil'
+import { globalStyles, colorStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
-
-export type Size = 'lg' | 'md' | 'sm' | 'xs' | 'xxs'
-
-type Color =
-  | 'blue-100'
-  | 'error-100'
-  | 'fg-100'
-  | 'fg-200'
-  | 'fg-300'
-  | 'inverse-000'
-  | 'inverse-100'
-  | 'success-100'
+import type { Color } from '../../utils/TypesUtil'
+import type { Size } from '../../utils/TypesUtil'
 
 @customElement('wui-icon')
 export class WuiIcon extends LitElement {
-  public static styles = [globalStyles, styles]
+  public static styles = [globalStyles, colorStyles, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public size: Size = 'md'
@@ -27,19 +17,12 @@ export class WuiIcon extends LitElement {
 
   // -- render ------------------------------------------------------- //
   public render() {
-    const sizeClasses = {
-      [`wui-size-${this.size}`]: true
-    }
-
-    const colorClasses = {
+    const classes = {
+      [`wui-size-${this.size}`]: true,
       [`wui-color-${this.color}`]: true
     }
 
-    return html`
-      <i class=${classMap(sizeClasses)}>
-        <slot class=${classMap(colorClasses)}></slot>
-      </i>
-    `
+    return html`<slot class="${classMap(classes)}"></slot>`
   }
 }
 

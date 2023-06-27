@@ -6,6 +6,7 @@ import '@web3modal/ui/src/components/wui-icon'
 import type { WuiIcon } from '@web3modal/ui/src/components/wui-icon'
 import { html } from 'lit'
 import type { TemplateResult } from 'lit'
+import { colorOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiIcon & { svg: keyof typeof svgOptions }>
 
@@ -17,10 +18,6 @@ const svgOptions: Record<string, TemplateResult<2>> = {
 
 export default {
   title: 'Components/wui-icon',
-  parameters: {
-    layout: 'centered'
-  },
-  tags: ['autodocs'],
   args: {
     size: 'md',
     color: 'inverse-000',
@@ -32,16 +29,7 @@ export default {
       control: { type: 'select' }
     },
     color: {
-      options: [
-        'blue-100',
-        'error-100',
-        'success-100',
-        'inverse-100',
-        'inverse-000',
-        'fg-100',
-        'fg-200',
-        'fg-300'
-      ],
+      options: colorOptions,
       control: { type: 'select' }
     },
     svg: {

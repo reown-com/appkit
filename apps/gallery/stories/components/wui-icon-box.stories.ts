@@ -6,6 +6,7 @@ import '@web3modal/ui/src/components/wui-icon-box'
 import type { WuiIconBox } from '@web3modal/ui/src/components/wui-icon-box'
 import { html } from 'lit'
 import type { TemplateResult } from 'lit'
+import { colorOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiIconBox & { svg: keyof typeof svgOptions }>
 
@@ -17,10 +18,6 @@ const svgOptions: Record<string, TemplateResult<2>> = {
 
 export default {
   title: 'Components/wui-icon-box',
-  parameters: {
-    layout: 'centered'
-  },
-  tags: ['autodocs'],
   args: {
     size: 'md',
     backgroundColor: 'blue-100',
@@ -35,29 +32,11 @@ export default {
       control: { type: 'select' }
     },
     backgroundColor: {
-      options: [
-        'blue-100',
-        'error-100',
-        'success-100',
-        'inverse-100',
-        'inverse-000',
-        'fg-100',
-        'fg-200',
-        'fg-300'
-      ],
+      options: colorOptions,
       control: { type: 'select' }
     },
     iconColor: {
-      options: [
-        'blue-100',
-        'error-100',
-        'success-100',
-        'inverse-100',
-        'inverse-000',
-        'fg-100',
-        'fg-200',
-        'fg-300'
-      ],
+      options: colorOptions,
       control: { type: 'select' }
     },
     svg: {
