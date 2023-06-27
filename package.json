@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "build": "npm run build --ws --if-present",
-    "laboratory": "npm run dev --w=@apps/laboratory",
     "gallery": "npm run dev --w=@apps/gallery",
     "lint": "eslint .",
     "prettier": "prettier --check .",

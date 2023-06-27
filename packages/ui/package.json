@@ -10,7 +10,7 @@
   "scripts": {
     "build:clean": "rm -rf dist",
     "build:types": "tsc --emitDeclarationOnly",
-    "build:source": "rollup --silent --config rollup.config.js",
+    "build:source": "echo TODO",
     "build": "npm run build:clean; npm run build:types & npm run build:source",
     "typecheck": "tsc --noEmit"
   },
