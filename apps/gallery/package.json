@@ -20,6 +20,7 @@
     "storybook": "7.0.23"
   },
   "devDependencies": {
-    "@storybook/builder-vite": "7.0.23"
+    "@storybook/builder-vite": "7.0.23",
+    "@storybook/cli": "7.0.23"
   }
 }
