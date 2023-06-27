@@ -7,9 +7,6 @@ type Component = Meta<WuiText>
 
 export default {
   title: 'Components/wui-text',
-  parameters: {
-    layout: 'centered'
-  },
   tags: ['autodocs'],
 
   render: args =>
