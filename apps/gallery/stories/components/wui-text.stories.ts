@@ -10,10 +10,6 @@ export default {
   parameters: {
     layout: 'centered'
   },
-  tags: ['autodocs']
-} as Component
-
-export const Default: Component = {
   argTypes: {
     variant: {
       defaultValue: 'md-medium',
@@ -45,6 +41,10 @@ export const Default: Component = {
       control: { type: 'select' }
     }
   },
+  tags: ['autodocs']
+} as Component
+
+export const Default: Component = {
   render: args =>
     html`<wui-text variant=${args.variant} color=${args.color}
       >The fox jumped over the lazy dog</wui-text
