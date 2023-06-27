@@ -47,8 +47,6 @@ export const AccountCtrl = {
           if (profile) {
             state.profileName = profile.name
             state.profileAvatar = profile.avatar
-          } else {
-            // Profile not found
           }
         } catch {
           const name = await ClientCtrl.client().fetchEnsName({ address, chainId: mainnetId })
