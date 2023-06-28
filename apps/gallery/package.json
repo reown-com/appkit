@@ -21,6 +21,6 @@
     "@storybook/web-components": "7.0.23",
     "@storybook/web-components-vite": "7.0.23",
     "file-system-cache": "2.3.0",
-    "storybook-dark-mode": "^3.0.0"
+    "storybook-dark-mode": "3.0.0"
   }
 }
