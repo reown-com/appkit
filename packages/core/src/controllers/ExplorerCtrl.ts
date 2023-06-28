@@ -73,12 +73,10 @@ export const ExplorerCtrl = {
     }
 
     // Don't fetch recomended wallets, as we already have these
-    if (!extendedParams.search) {
-      if (recomendedWallets.length) {
-        extendedParams.excludedIds = recomendedWallets.map(wallet => wallet.id).join(',')
-      } else if (CoreUtil.isArray(explorerRecommendedWalletIds)) {
-        extendedParams.excludedIds = explorerRecommendedWalletIds.join(',')
-      }
+    if (recomendedWallets.length) {
+      extendedParams.excludedIds = recomendedWallets.map(wallet => wallet.id).join(',')
+    } else if (CoreUtil.isArray(explorerRecommendedWalletIds)) {
+      extendedParams.excludedIds = explorerRecommendedWalletIds.join(',')
     }
 
     // Don't fetch user defined excluded wallets & recomended wallets
