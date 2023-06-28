@@ -1,11 +1,12 @@
+import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { globalStyles } from '../../utils/ThemeUtil'
 import '../wui-text'
+import '../wui-icon'
 import styles from './styles'
-import type { Color } from '../../utils/TypesUtil'
-import type { Size } from '../../utils/TypesUtil'
+import type { Color, Size } from '../../utils/TypesUtil'
 
 @customElement('wui-button')
 export class WuiButton extends LitElement {
@@ -13,6 +14,10 @@ export class WuiButton extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public size: Exclude<Size, 'lg' | 'xs' | 'xxs'> = 'md'
+
+  @property({ type: Object }) public iconLeft?: TemplateResult<2> = undefined
+
+  @property({ type: Object }) public iconRight?: TemplateResult<2> = undefined
 
   @property({ type: Boolean }) public disabled = false
 
@@ -34,10 +39,9 @@ export class WuiButton extends LitElement {
       default:
         textColor = 'inverse-100'
     }
+    textColor = this.disabled ? 'inherit' : textColor
 
     const textVariant = this.size === 'md' ? 'md-semibold' : 'sm-semibold'
-
-    textColor = this.disabled ? 'inherit' : textColor
 
     const classes = {
       [`wui-size-${this.size}`]: true,
@@ -45,11 +49,21 @@ export class WuiButton extends LitElement {
       'wui-variant-transparent': this.variant === 'shade' || this.variant === 'accent'
     }
 
+    const iconLeftHtml = this.iconLeft
+      ? html`<wui-icon size="sm" color=${textColor}>${this.iconLeft}</wui-icon>`
+      : undefined
+
+    const iconRightHtml = this.iconRight
+      ? html`<wui-icon size="sm" color=${textColor}>${this.iconRight}</wui-icon>`
+      : undefined
+
     return html`
       <button class="${classMap(classes)}" ?disabled=${this.disabled}>
+        ${iconLeftHtml}
         <wui-text variant=${textVariant} color=${textColor}>
           <slot></slot>
         </wui-text>
+        ${iconRightHtml}
       </button>
     `
   }

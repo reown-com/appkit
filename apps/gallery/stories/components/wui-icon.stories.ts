@@ -1,5 +1,4 @@
 import type { Meta } from '@storybook/web-components'
-import { clockSvg } from '@web3modal/ui/src/assets/svg/clock'
 import { copySvg } from '@web3modal/ui/src/assets/svg/copy'
 import { walletSvg } from '@web3modal/ui/src/assets/svg/wallet'
 import '@web3modal/ui/src/components/wui-icon'
@@ -12,15 +11,14 @@ type Component = Meta<WuiIcon & { svg: keyof typeof svgOptions }>
 
 const svgOptions: Record<string, TemplateResult<2>> = {
   copy: copySvg,
-  wallet: walletSvg,
-  clock: clockSvg
+  wallet: walletSvg
 }
 
 export default {
   title: 'Components/wui-icon',
   args: {
     size: 'md',
-    color: 'inverse-000',
+    color: 'inverse-100',
     svg: 'copy'
   },
   argTypes: {

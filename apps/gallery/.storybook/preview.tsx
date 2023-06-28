@@ -1,6 +1,8 @@
 import React from 'react'
 import { Controls, Description, Primary, Source, Stories, Subtitle, Title } from '@storybook/blocks'
 
+import '../css/index.css'
+
 /** @type { import('@storybook/web-components').Preview } */
 const preview = {
   parameters: {

@@ -1,5 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { classMap } from 'lit/directives/class-map.js'
 import { globalStyles } from '../../utils/ThemeUtil'
 import '../../components/wui-icon'
 import styles from './styles'
@@ -31,16 +32,15 @@ export class WuiIconBox extends LitElement {
         iconSize = 'xxs'
     }
 
-    const sizeClass = `wui-size-${this.size}`
-    const opacityValue = this.size === 'lg' ? '12%' : '16%'
+    const classes = {
+      [`wui-size-${this.size}`]: true,
+      [`wui-overlay-${this.size === 'lg' ? 'sm' : 'md'}`]: true
+    }
+
+    const bgColorStyle = `--wui-bg-value: var(--wui-color-${this.backgroundColor});`
 
     return html`
-      <div
-        class="${sizeClass}"
-        style="background-color: var(--wui-overlay-020);
-            background-color: color-mix(in srgb, var(--wui-color-${this
-          .backgroundColor}) ${opacityValue}, transparent);"
-      >
+      <div class="wui-overlay-default ${classMap(classes)}" style=${bgColorStyle}>
         <wui-icon color=${this.iconColor} size=${iconSize}><slot></slot></wui-icon>
       </div>
     `

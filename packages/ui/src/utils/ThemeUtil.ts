@@ -53,6 +53,8 @@ export const globalStyles = css`
     --wui-overlay-020: rgba(255, 255, 255, 0.2);
     --wui-overlay-025: rgba(255, 255, 255, 0.25);
     --wui-overlay-030: rgba(255, 255, 255, 0.3);
+
+    --wui-box-shadow-blue: rgba(71, 161, 255, 0.16);
   }
 
   button {

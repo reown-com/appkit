@@ -5,10 +5,15 @@ export default css`
     border: 1px solid var(--wui-overlay-010);
     border-radius: 28px;
     transition: all 200ms ease-in-out;
+    column-gap: 4px;
   }
 
   button:disabled {
     border: 1px solid var(--wui-overlay-010);
+  }
+
+  button:focus {
+    box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
   }
 
   .wui-size-sm {
@@ -23,6 +28,10 @@ export default css`
     background-color: transparent;
   }
 
+  .wui-variant-transparent:focus {
+    border: 1px solid var(--wui-color-blue-100);
+  }
+
   .wui-variant-fill {
     background-color: var(--wui-color-blue-100);
   }
@@ -31,11 +40,13 @@ export default css`
     background-color: var(--wui-overlay-020);
   }
 
-  .wui-variant-fill:disabled > wui-text {
+  .wui-variant-fill:disabled > wui-text,
+  .wui-variant-fill:disabled > wui-icon {
     color: var(--wui-color-fg-300);
   }
 
-  .wui-variant-transparent:disabled > wui-text {
+  .wui-variant-transparent:disabled > wui-text,
+  .wui-variant-transparent:disabled > wui-icon {
     color: var(--wui-color-bg-300);
   }
 
