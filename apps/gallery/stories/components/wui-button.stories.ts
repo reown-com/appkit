@@ -37,8 +37,8 @@ export default {
 } as Component
 
 export const Default: Component = {
-  render: args => {
-    return html`<wui-button
+  render: args =>
+    html`<wui-button
       size=${args.size}
       .iconLeft=${args.iconLeft}
       .iconRight=${args.iconRight}
@@ -46,5 +46,4 @@ export const Default: Component = {
       variant=${args.variant}
       >Button</wui-button
     >`
-  }
 }
