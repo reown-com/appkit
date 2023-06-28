@@ -9,6 +9,7 @@ const thirdPartyWalletId = 'coinbase'
 const controller = new ConnectionController({
   getWalletConnectUri: async () => Promise.resolve(walletConnectUri),
   connectWalletConnect: async () => Promise.resolve(),
+  disconnect: async () => Promise.resolve(),
   connectBrowserExtension: async (id: string) => {
     id.toUpperCase()
     await Promise.resolve()
@@ -21,7 +22,8 @@ const controller = new ConnectionController({
 
 const partialController = new ConnectionController({
   getWalletConnectUri: async () => Promise.resolve(walletConnectUri),
-  connectWalletConnect: async () => Promise.resolve()
+  connectWalletConnect: async () => Promise.resolve(),
+  disconnect: async () => Promise.resolve()
 })
 
 // -- Tests --------------------------------------------------------------------
@@ -35,6 +37,11 @@ describe('ModalController', () => {
   it('should update state correctly on getWalletConnectUri()', async () => {
     await controller.getWalletConnectUri()
     expect(controller.state.walletConnectUri).toEqual(walletConnectUri)
+  })
+
+  it('should update state correctly on disconnect()', async () => {
+    await controller.disconnect()
+    expect(controller.state.walletConnectUri).toEqual('')
   })
 
   it('should not throw on connectWalletConnect()', async () => {
