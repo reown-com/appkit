@@ -6,3 +6,6 @@ export type { RouterControllerState } from './src/controllers/RouterController'
 
 export { AccountController } from './src/controllers/AccountController'
 export type { AccountControllerState } from './src/controllers/AccountController'
+
+export { NetworkController } from './src/controllers/NetworkController'
+export type { NetworkControllerState } from './src/controllers/NetworkController'
