@@ -9,6 +9,18 @@ export default css`
     overflow: hidden;
   }
 
+  .wui-overlay-default {
+    background-color: var(--wui-overlay-020);
+  }
+
+  .wui-overlay-sm {
+    background-color: color-mix(in srgb, var(--wui-bg-value) 12%, transparent);
+  }
+
+  .wui-overlay-md {
+    background-color: color-mix(in srgb, var(--wui-bg-value) 16%, transparent);
+  }
+
   .wui-size-sm {
     width: 20px;
     height: 20px;
