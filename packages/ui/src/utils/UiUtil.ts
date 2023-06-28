@@ -206,13 +206,23 @@ export const UiUtil = {
   },
 
   setRecentWallet(wallet: WalletData) {
-    localStorage.setItem(UiUtil.W3M_RECENT_WALLET_INFO, JSON.stringify(wallet))
+    try {
+      localStorage.setItem(UiUtil.W3M_RECENT_WALLET_INFO, JSON.stringify(wallet))
+    } catch {
+      console.info('Unable to set recent wallet')
+    }
   },
 
   getRecentWallet() {
-    const wallet = localStorage.getItem(UiUtil.W3M_RECENT_WALLET_INFO)
+    try {
+      const wallet = localStorage.getItem(UiUtil.W3M_RECENT_WALLET_INFO)
 
-    return wallet ? (JSON.parse(wallet) as WalletData) : undefined
+      return wallet ? (JSON.parse(wallet) as WalletData) : undefined
+    } catch {
+      console.info('Unable to get recent wallet')
+    }
+
+    return undefined
   },
 
   caseSafeIncludes(str1: string, str2: string) {
