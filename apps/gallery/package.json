@@ -12,7 +12,7 @@
     "lit": "2.7.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "storybook": "7.0.24"
+    "storybook": "7.0.23"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "7.0.23",
@@ -24,3 +24,4 @@
     "file-system-cache": "2.3.0"
   }
 }
+
