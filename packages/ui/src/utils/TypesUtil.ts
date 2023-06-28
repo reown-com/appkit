@@ -4,6 +4,7 @@ export type Color =
   | 'fg-100'
   | 'fg-200'
   | 'fg-300'
+  | 'inherit'
   | 'inverse-000'
   | 'inverse-100'
   | 'success-100'

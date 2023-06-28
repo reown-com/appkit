@@ -9,7 +9,8 @@ export default {
   title: 'Components/wui-button',
   args: {
     size: 'md',
-    variant: 'fill'
+    variant: 'fill',
+    disabled: false
   },
   argTypes: {
     size: {
@@ -19,10 +20,16 @@ export default {
     variant: {
       options: ['fill', 'shade', 'accent'],
       control: { type: 'select' }
+    },
+    disabled: {
+      control: { type: 'boolean' }
     }
   }
 } as Component
 
 export const Default: Component = {
-  render: args => html`<wui-button size=${args.size} variant=${args.variant}>Button</wui-button>`
+  render: args =>
+    html`<wui-button size=${args.size} ?disabled=${args.disabled} variant=${args.variant}
+      >Button</wui-button
+    >`
 }
