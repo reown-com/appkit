@@ -9,14 +9,17 @@
   },
   "dependencies": {
     "@web3modal/ui": "3.0.0",
-    "@storybook/addon-essentials": "7.0.23",
-    "@storybook/addon-links": "7.0.23",
-    "@storybook/blocks": "7.0.23",
-    "@storybook/web-components": "7.0.23",
-    "@storybook/web-components-vite": "7.0.23",
     "lit": "2.7.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "storybook": "7.0.23"
+    "storybook": "7.0.24"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "7.0.24",
+    "@storybook/addon-links": "7.0.24",
+    "@storybook/blocks": "7.0.24",
+    "@storybook/web-components": "7.0.24",
+    "@storybook/web-components-vite": "7.0.24",
+    "file-system-cache": "2.3.0"
   }
 }
