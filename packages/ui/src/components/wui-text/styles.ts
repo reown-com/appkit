@@ -69,36 +69,4 @@ export default css`
     line-height: var(--wui-line-height-sm);
     letter-spacing: var(--wui-letter-spacing-sm);
   }
-
-  .wui-color-blue-100 {
-    color: var(--wui-color-blue-100);
-  }
-
-  .wui-color-error-100 {
-    color: var(--wui-color-error-100);
-  }
-
-  .wui-color-success-100 {
-    color: var(--wui-color-success-100);
-  }
-
-  .wui-color-inverse-100 {
-    color: var(--wui-color-inverse-100);
-  }
-
-  .wui-color-inverse-000 {
-    color: var(--wui-color-inverse-000);
-  }
-
-  .wui-color-fg-100 {
-    color: var(--wui-color-fg-100);
-  }
-
-  .wui-color-fg-200 {
-    color: var(--wui-color-fg-200);
-  }
-
-  .wui-color-fg-300 {
-    color: var(--wui-color-fg-300);
-  }
 `

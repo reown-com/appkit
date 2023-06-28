@@ -41,6 +41,8 @@ export const globalStyles = css`
     --wui-color-fg-100: #e4e7e7;
     --wui-color-fg-200: #949e9e;
     --wui-color-fg-300: #6e7777;
+
+    --wui-overlay-020: rgba(255, 255, 255, 0.2);
   }
 
   button {
@@ -94,5 +96,71 @@ export const globalStyles = css`
   ::selection {
     color: var(--w3m-accent-fill-color);
     background: var(--w3m-accent-color);
+  }
+`
+
+export const colorStyles = css`
+  .wui-color-blue-100 {
+    color: var(--wui-color-blue-100);
+  }
+
+  .wui-color-error-100 {
+    color: var(--wui-color-error-100);
+  }
+
+  .wui-color-success-100 {
+    color: var(--wui-color-success-100);
+  }
+
+  .wui-color-inverse-100 {
+    color: var(--wui-color-inverse-100);
+  }
+
+  .wui-color-inverse-000 {
+    color: var(--wui-color-inverse-000);
+  }
+
+  .wui-color-fg-100 {
+    color: var(--wui-color-fg-100);
+  }
+
+  .wui-color-fg-200 {
+    color: var(--wui-color-fg-200);
+  }
+
+  .wui-color-fg-300 {
+    color: var(--wui-color-fg-300);
+  }
+
+  .wui-bg-color-blue-100 {
+    background-color: var(--wui-color-blue-100);
+  }
+
+  .wui-bg-color-error-100 {
+    background-color: var(--wui-color-error-100);
+  }
+
+  .wui-bg-color-success-100 {
+    background-color: var(--wui-color-success-100);
+  }
+
+  .wui-bg-color-inverse-100 {
+    background-color: var(--wui-color-inverse-100);
+  }
+
+  .wui-bg-color-inverse-000 {
+    background-color: var(--wui-color-inverse-000);
+  }
+
+  .wui-bg-color-fg-100 {
+    background-color: var(--wui-color-fg-100);
+  }
+
+  .wui-bg-color-fg-200 {
+    background-color: var(--wui-color-fg-200);
+  }
+
+  .wui-bg-color-fg-300 {
+    background-color: var(--wui-color-fg-300);
   }
 `

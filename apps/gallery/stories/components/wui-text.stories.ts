@@ -2,14 +2,12 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/components/wui-text'
 import type { WuiText } from '@web3modal/ui/src/components/wui-text'
 import { html } from 'lit'
+import { colorOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiText>
 
 export default {
   title: 'Components/wui-text',
-  parameters: {
-    layout: 'centered'
-  },
   argTypes: {
     variant: {
       defaultValue: 'md-medium',
@@ -28,20 +26,10 @@ export default {
     },
     color: {
       defaultValue: 'inverse',
-      options: [
-        'blue-100',
-        'error-100',
-        'success-100',
-        'inverse-100',
-        'inverse-000',
-        'fg-100',
-        'fg-200',
-        'fg-300'
-      ],
+      options: colorOptions,
       control: { type: 'select' }
     }
-  },
-  tags: ['autodocs']
+  }
 } as Component
 
 export const Default: Component = {

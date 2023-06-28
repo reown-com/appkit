@@ -5,6 +5,7 @@ import { Controls, Description, Primary, Source, Stories, Subtitle, Title } from
 const preview = {
   parameters: {
     actions: { argTypesRegex: '^on[A-Z].*' },
+    layout: 'centered',
     controls: {
       matchers: {
         color: /(background|color)$/i,
