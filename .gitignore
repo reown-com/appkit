@@ -12,3 +12,4 @@ lib
 
 yarn.lock
 .eslintcache
+.env.local

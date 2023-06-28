@@ -1,6 +1,7 @@
 import injected from "./injected";
 import boltx from "./boltx";
 import walletconnect from "./walletconnect";
+import walletconnectv2 from "./walletconnectv2";
 import portis from "./portis";
 import fortmatic from "./fortmatic";
 import torus from "./torus";
@@ -25,6 +26,7 @@ import phantom from "./phantom";
 export {
   injected,
   walletconnect,
+  walletconnectv2,
   boltx,
   portis,
   torus,

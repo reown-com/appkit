@@ -55,6 +55,17 @@ export const WALLETCONNECT: IProviderInfo = {
   }
 };
 
+export const WALLETCONNECTV2: IProviderInfo = {
+  id: "walletconnectv2",
+  name: "WalletConnect",
+  logo: WalletConnectLogo,
+  type: "qrcode",
+  check: "isWalletConnect",
+  package: {
+    required: [["projectId", "chains"]]
+  }
+};
+
 export const PORTIS: IProviderInfo = {
   id: "portis",
   name: "Portis",

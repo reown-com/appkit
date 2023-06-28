@@ -231,11 +231,14 @@ class App extends React.Component<any, any> {
 
   public getProviderOptions = () => {
     const infuraId = process.env.REACT_APP_INFURA_ID;
+    const projectId = process.env.REACT_APP_WC_PROJECT_ID;
     const providerOptions = {
       walletconnect: {
         package: WalletConnect,
         options: {
-          infuraId
+          projectId,
+          chains: [1], // required
+          showQrCode: true // requires @walletconnect/modal
         }
       },
       coinbasewallet: {

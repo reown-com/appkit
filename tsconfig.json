@@ -25,7 +25,11 @@
     "sourceMap": true,
     "strict": true,
     "strictNullChecks": true,
-    "suppressImplicitAnyIndexErrors": true
+    "allowJs": true,
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "noEmit": true,
+    "incremental": true
   },
   "include": ["./src/**/*"]
 }
