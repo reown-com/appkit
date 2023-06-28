@@ -29,18 +29,15 @@ export class NetworkController {
   }
 
   public async getActiveNetwork() {
-    const activeNetwork = await this.#clientProxy.getActiveNetwork()
-    this.state.activeNetwork = activeNetwork
+    this.state.activeNetwork = await this.#clientProxy.getActiveNetwork()
   }
 
   public async getRequestedNetworks() {
-    const requestedNetworks = await this.#clientProxy.getRequestedNetworks()
-    this.state.requestedNetworks = requestedNetworks
+    this.state.requestedNetworks = await this.#clientProxy.getRequestedNetworks()
   }
 
   public async getApprovedNetworks() {
-    const approvedNetworks = await this.#clientProxy.getApprovedNetworks()
-    this.state.approvedNetworks = approvedNetworks
+    this.state.approvedNetworks = await this.#clientProxy.getApprovedNetworks()
   }
 
   public async switchActiveNetwork(network: NetworkControllerState['activeNetwork']) {
