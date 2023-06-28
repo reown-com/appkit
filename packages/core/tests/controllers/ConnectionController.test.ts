@@ -41,12 +41,12 @@ describe('ModalController', () => {
     await controller.connectWalletConnect()
   })
 
-  it('should not throw on connectBrowserExtension()', async () => {
+  it('should not throw on connectBrowserExtension() defined or not', async () => {
     await controller.connectBrowserExtension(browserExtensionId)
     await partialController.connectBrowserExtension(browserExtensionId)
   })
 
-  it('should not throw on connectThirdPartyWallet()', async () => {
+  it('should not throw on connectThirdPartyWallet() defined or not', async () => {
     await controller.connectThirdPartyWallet(thirdPartyWalletId)
     await partialController.connectThirdPartyWallet(thirdPartyWalletId)
   })
