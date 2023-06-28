@@ -8,6 +8,8 @@ export interface ConnectionControllerState {
 export interface ConnectionControllerClientProxy {
   getWalletConnectUri: () => Promise<ConnectionControllerState['walletConnectUri']>
   connectWalletConnect: () => Promise<void>
+  connectBrowserExtension?: (id: string) => Promise<void>
+  connectThirdPartyWallet?: (id: string) => Promise<void>
 }
 
 // -- Controller ---------------------------------------------------------------
@@ -28,5 +30,17 @@ export class ConnectionController {
 
   public async connectWalletConnect() {
     await this.#clientProxy.connectWalletConnect()
+  }
+
+  public async connectBrowserExtension(id: string) {
+    if (this.#clientProxy.connectBrowserExtension) {
+      await this.#clientProxy.connectBrowserExtension(id)
+    }
+  }
+
+  public async connectThirdPartyWallet(id: string) {
+    if (this.#clientProxy.connectThirdPartyWallet) {
+      await this.#clientProxy.connectThirdPartyWallet(id)
+    }
   }
 }
