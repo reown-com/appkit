@@ -26,15 +26,8 @@ const preview = {
         }
       ]
     },
-    darkMode: {
-      current: 'dark',
-      stylePreview: true,
-      classTarget: 'html',
-      dark: { ...themes.dark, appBg: '#272A2A' },
-      light: { ...themes.normal, appBg: '#EAF1F1' }
-    },
-
     docs: {
+      theme: themes.dark,
       page: () => (
         <>
           <Title />
