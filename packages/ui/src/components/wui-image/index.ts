@@ -1,0 +1,26 @@
+import { html, LitElement } from 'lit'
+import { customElement, property } from 'lit/decorators.js'
+
+import { globalStyles, colorStyles } from '../../utils/ThemeUtil'
+import styles from './styles'
+
+@customElement('wui-image')
+export class WuiImage extends LitElement {
+  public static styles = [globalStyles, colorStyles, styles]
+
+  // -- state & properties ------------------------------------------- //
+  @property() public src = './path/to/image.jpg'
+
+  @property() public alt = 'Image'
+
+  // -- render ------------------------------------------------------- //
+  public render() {
+    return html`<img src=${this.src} alt=${this.alt} />`
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'wui-image': WuiImage
+  }
+}
