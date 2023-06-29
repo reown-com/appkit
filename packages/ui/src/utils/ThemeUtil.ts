@@ -109,8 +109,8 @@ export const rootStyles = css`
     --wui-color-bg-275: #dce7e7;
     --wui-color-bg-300: #d8e3e3;
 
-    --wui-color-inverse-100: #000;
-    --wui-color-inverse-000: #fff;
+    --wui-color-inverse-100: #fff;
+    --wui-color-inverse-000: #000;
 
     --wui-color-success-100: #26b562;
     --wui-color-error-100: #f05142;
