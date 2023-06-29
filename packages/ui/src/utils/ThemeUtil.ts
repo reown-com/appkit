@@ -33,7 +33,10 @@ export const globalStyles = css`
     --wui-line-height-md: 125%;
     --wui-line-height-lg: 130%;
 
+    --wui-color-inherit: inherit;
     --wui-color-blue-100: #47a1ff;
+    --wui-color-blue-090: #59aaff;
+    --wui-color-blue-080: #6cb4ff;
     --wui-color-inverse-100: #fff;
     --wui-color-inverse-000: #000;
     --wui-color-error-100: #f25a67;
@@ -41,8 +44,17 @@ export const globalStyles = css`
     --wui-color-fg-100: #e4e7e7;
     --wui-color-fg-200: #949e9e;
     --wui-color-fg-300: #6e7777;
+    --wui-color-bg-300: #3b4040;
 
+    --wui-overlay-002: rgba(255, 255, 255, 0.02);
+    --wui-overlay-005: rgba(255, 255, 255, 0.05);
+    --wui-overlay-010: rgba(255, 255, 255, 0.1);
+    --wui-overlay-015: rgba(255, 255, 255, 0.15);
     --wui-overlay-020: rgba(255, 255, 255, 0.2);
+    --wui-overlay-025: rgba(255, 255, 255, 0.25);
+    --wui-overlay-030: rgba(255, 255, 255, 0.3);
+
+    --wui-box-shadow-blue: rgba(71, 161, 255, 0.16);
   }
 
   button {
@@ -51,26 +63,6 @@ export const globalStyles = css`
     justify-content: center;
     align-items: center;
     position: relative;
-    border: none;
-    background-color: transparent;
-    transition: all 0.2s ease;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    button:active {
-      transition: all 0.1s ease;
-      transform: scale(0.93);
-    }
-  }
-
-  button::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    transition: background-color, 0.2s ease;
   }
 
   button:disabled {
@@ -100,6 +92,10 @@ export const globalStyles = css`
 `
 
 export const colorStyles = css`
+  .wui-color-inherit {
+    color: var(--wui-color-inherit);
+  }
+
   .wui-color-blue-100 {
     color: var(--wui-color-blue-100);
   }
@@ -130,6 +126,10 @@ export const colorStyles = css`
 
   .wui-color-fg-300 {
     color: var(--wui-color-fg-300);
+  }
+
+  .wui-bg-color-inherit {
+    background-color: var(--wui-color-inherit);
   }
 
   .wui-bg-color-blue-100 {

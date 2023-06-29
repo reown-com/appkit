@@ -18,6 +18,7 @@
     "@storybook/addon-essentials": "7.0.24",
     "@storybook/addon-links": "7.0.24",
     "@storybook/blocks": "7.0.24",
+    "@storybook/theming": "7.0.24",
     "@storybook/web-components": "7.0.24",
     "@storybook/web-components-vite": "7.0.24",
     "file-system-cache": "2.3.0"
