@@ -20,6 +20,7 @@ export default css`
     right: 0;
     border-radius: inherit;
     border: 1px solid var(--wui-overlay-010);
+    pointer-events: none;
   }
 
   .wui-size-sm {

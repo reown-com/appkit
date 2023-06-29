@@ -22,17 +22,9 @@ export class WuiWalletImage extends LitElement {
   public render() {
     const sizeClass = `wui-size-${this.size}`
 
-    function isImageUrl(url: string): boolean {
-      const imageExtensions = ['.jpg', '.jpeg', '.png', '.webp']
-      const lowercasedUrl = url.toLowerCase()
-
-      return imageExtensions.some(extension => lowercasedUrl.endsWith(extension))
-    }
-
-    const walletVisual =
-      this.src && isImageUrl(this.src)
-        ? html`<wui-image src=${this.src} alt=${this.walletName}></wui-image>`
-        : html`<wui-icon size="inherit" color="inherit">${walletPlaceholderSvg}</wui-icon>`
+    const walletVisual = this.src
+      ? html`<wui-image src=${this.src} alt=${this.walletName}></wui-image>`
+      : html`<wui-icon size="inherit" color="inherit">${walletPlaceholderSvg}</wui-icon>`
 
     return html` <div class=${sizeClass}>${walletVisual}</div> `
   }
