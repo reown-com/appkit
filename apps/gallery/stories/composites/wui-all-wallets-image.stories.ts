@@ -1,5 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import { WalletImage, WuiAllWalletsImage } from '@web3modal/ui/src/composites/wui-all-wallets-image'
+import { WuiAllWalletsImage } from '@web3modal/ui/src/composites/wui-all-wallets-image'
+import type { WalletImage } from '@web3modal/ui/src/composites/wui-all-wallets-image'
 import '@web3modal/ui/src/composites/wui-all-wallets-image'
 import '@web3modal/ui/src/composites/wui-wallet-image'
 
