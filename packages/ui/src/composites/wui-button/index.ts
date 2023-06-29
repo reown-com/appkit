@@ -23,6 +23,8 @@ export class WuiButton extends LitElement {
 
   @property() public variant: 'accent' | 'fill' | 'shade' = 'fill'
 
+  @property() public onClick: () => void = () => null
+
   // -- render ------------------------------------------------------- //
   public render() {
     let textColor: Color = 'inverse-100'
@@ -58,7 +60,7 @@ export class WuiButton extends LitElement {
       : undefined
 
     return html`
-      <button class="${classMap(classes)}" ?disabled=${this.disabled}>
+      <button class="${classMap(classes)}" ?disabled=${this.disabled} @click=${this.onClick}>
         ${iconLeftHtml}
         <wui-text variant=${textVariant} color=${textColor}>
           <slot></slot>
