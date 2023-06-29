@@ -1,6 +1,19 @@
 import { css } from 'lit'
 
-export const globalStyles = css`
+// -- Utilities ---------------------------------------------------------------
+export function initializeTheming() {
+  const styleTag = document.createElement('style')
+  styleTag.dataset.wui = 'theme'
+  styleTag.textContent = rootStyles.cssText
+  document.head.appendChild(styleTag)
+}
+
+export function setColorTheme(theme: string) {
+  document.documentElement.setAttribute('data-wui-theme', theme)
+}
+
+// -- Presets -----------------------------------------------------------------
+export const rootStyles = css`
   :root {
     --wui-font-family: 'SF Pro Text', 'Segoe UI', Roboto, Ubuntu, 'Helvetica Neue', sans-serif;
     --wui-font-size-xxs: 10px;
@@ -21,7 +34,9 @@ export const globalStyles = css`
     --wui-line-height-lg: 130%;
 
     --wui-color-inherit: inherit;
+  }
 
+  [data-wui-theme='dark'] {
     --wui-color-blue-100: #47a1ff;
     --wui-color-blue-090: #59aaff;
     --wui-color-blue-080: #6cb4ff;
@@ -116,7 +131,9 @@ export const globalStyles = css`
 
     --wui-box-shadow-blue: rgba(51, 150, 255, 0.16);
   }
+`
 
+export const globalStyles = css`
   *,
   *::after,
   *::before,
@@ -239,11 +256,3 @@ export const colorStyles = css`
     background-color: var(--wui-color-fg-300);
   }
 `
-
-export function initDefaultTheme() {
-  document.documentElement.setAttribute('data-wui-theme', 'dark')
-}
-
-export function setColorTheme(theme: string) {
-  document.documentElement.setAttribute('data-wui-theme', theme)
-}
