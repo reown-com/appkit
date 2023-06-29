@@ -9,4 +9,4 @@ export type Color =
   | 'inverse-100'
   | 'success-100'
 
-export type Size = 'lg' | 'md' | 'sm' | 'xs' | 'xxs'
+export type Size = 'inherit' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs'
