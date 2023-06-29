@@ -10,7 +10,7 @@ export default {
   title: 'Components/wui-text',
   args: {
     variant: 'md-medium',
-    color: 'inverse-100'
+    color: 'fg-100'
   },
   argTypes: {
     variant: {
