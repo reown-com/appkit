@@ -18,7 +18,7 @@ export default {
   title: 'Components/wui-icon',
   args: {
     size: 'md',
-    color: 'inverse-100',
+    color: 'fg-100',
     svg: 'copy'
   },
   argTypes: {
