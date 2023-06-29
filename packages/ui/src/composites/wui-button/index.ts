@@ -13,7 +13,7 @@ export class WuiButton extends LitElement {
   public static styles = [globalStyles, styles]
 
   // -- state & properties ------------------------------------------- //
-  @property() public size: Exclude<Size, 'lg' | 'xs' | 'xxs'> = 'md'
+  @property() public size: Exclude<Size, 'inherit' | 'lg' | 'xs' | 'xxs'> = 'md'
 
   @property({ type: Object }) public iconLeft?: TemplateResult<2> = undefined
 
