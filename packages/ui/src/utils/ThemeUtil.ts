@@ -161,25 +161,10 @@ export const globalStyles = css`
     cursor: not-allowed;
   }
 
-  button svg,
-  button w3m-text {
-    position: relative;
-    z-index: 1;
-  }
-
   input {
     border: none;
     outline: none;
     appearance: none;
-  }
-
-  img {
-    display: block;
-  }
-
-  ::selection {
-    color: var(--w3m-accent-fill-color);
-    background: var(--w3m-accent-color);
   }
 `
 
