@@ -23,6 +23,7 @@
     "prefer-destructuring": "off",
     "class-methods-use-this": "off",
     "id-length": "off",
+    "max-lines": "off",
 
     // Typescript
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
