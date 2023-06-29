@@ -9,6 +9,22 @@ export default {
     name: '@storybook/web-components-vite',
     options: {}
   },
+  managerHead: head => `
+  ${head}
+    <style>
+      a[data-nodetype='story'] {
+        display: none;
+      }
+    </style>
+  `,
+  previewHead: head => `
+  ${head}
+    <style>
+      .docblock-code-toggle {
+        display: none !important;
+      }
+    </style>
+  `,
   docs: {
     autodocs: true,
     defaultName: 'Docs'

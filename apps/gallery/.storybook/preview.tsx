@@ -56,9 +56,8 @@ export default {
           <Subtitle />
           <Description />
           <Primary />
-          <Source />
+          <Source dark />
           <Controls />
-          <Stories />
         </>
       )
     }
