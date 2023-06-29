@@ -23,7 +23,7 @@ export class WuiButton extends LitElement {
 
   @property() public variant: 'accent' | 'fill' | 'shade' = 'fill'
 
-  @property() public onClick: () => void = () => null
+  @property() public onClick: (event: PointerEvent) => void = () => null
 
   // -- render ------------------------------------------------------- //
   public render() {
@@ -60,7 +60,11 @@ export class WuiButton extends LitElement {
       : undefined
 
     return html`
-      <button class="${classMap(classes)}" ?disabled=${this.disabled} @click=${this.onClick}>
+      <button
+        class="${classMap(classes)}"
+        ?disabled=${this.disabled}
+        @click=${this.onClick.bind(this)}
+      >
         ${iconLeftHtml}
         <wui-text variant=${textVariant} color=${textColor}>
           <slot></slot>

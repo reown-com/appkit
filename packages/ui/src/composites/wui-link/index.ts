@@ -11,14 +11,13 @@ export class WuiLink extends LitElement {
   public static styles = [globalStyles, styles]
 
   // -- state & properties ------------------------------------------- //
-
   @property({ type: Object }) public iconLeft?: TemplateResult<2> = undefined
 
   @property({ type: Object }) public iconRight?: TemplateResult<2> = undefined
 
   @property({ type: Boolean }) public disabled = false
 
-  @property() public onClick: () => void = () => null
+  @property() public onClick: (event: PointerEvent) => void = () => null
 
   // -- render ------------------------------------------------------- //
   public render() {
@@ -33,7 +32,7 @@ export class WuiLink extends LitElement {
       : undefined
 
     return html`
-      <button ?disabled=${this.disabled} @click=${this.onClick}>
+      <button ?disabled=${this.disabled} @click=${this.onClick.bind(this)}>
         ${iconLeftHtml}
         <wui-text variant="sm-semibold" color=${textColor}>
           <slot></slot>
