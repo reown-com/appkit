@@ -29,9 +29,9 @@
     "@types/react-dom": "18.2.6",
     "eslint": "8.43.0",
     "eslint-config-prettier": "8.8.0",
-    "lerna": "7.1.0",
+    "lerna": "7.1.1",
     "prettier": "2.8.8",
-    "typescript": "5.1.5",
+    "typescript": "5.1.6",
     "vitest": "0.32.2",
     "danger": "11.2.6"
   }
