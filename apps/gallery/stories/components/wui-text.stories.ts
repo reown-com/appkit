@@ -8,9 +8,12 @@ type Component = Meta<WuiText>
 
 export default {
   title: 'Components/wui-text',
+  args: {
+    variant: 'md-medium',
+    color: 'inverse-100'
+  },
   argTypes: {
     variant: {
-      defaultValue: 'md-medium',
       options: [
         'lg-semibold',
         'lg-medium',
@@ -25,7 +28,6 @@ export default {
       control: { type: 'select' }
     },
     color: {
-      defaultValue: 'inverse',
       options: colorOptions,
       control: { type: 'select' }
     }
