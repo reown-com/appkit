@@ -8,9 +8,9 @@ export class GalleryPlaceholder extends LitElement {
   public static styles = [styles]
 
   // -- state & properties ------------------------------------------- //
-  @property() public size: 'xs' | 'sm' | 'md' | 'lg' = 'md'
+  @property() public size: 'lg' | 'md' | 'sm' | 'xs' = 'md'
 
-  @property() public background: 'green' | 'red' | 'blue' = 'green'
+  @property() public background: 'blue' | 'green' | 'red' = 'green'
 
   // -- render ------------------------------------------------------- //
   public render() {
