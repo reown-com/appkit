@@ -1,10 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import type {
-  WalletImage,
-  WuiAllWalletsImage
-} from '@web3modal/ui/src/composites/wui-all-wallets-image'
+import type { WuiAllWalletsImage } from '@web3modal/ui/src/composites/wui-all-wallets-image'
 import '@web3modal/ui/src/composites/wui-all-wallets-image'
-import '@web3modal/ui/src/composites/wui-wallet-image'
 
 import { html } from 'lit'
 
@@ -30,7 +26,7 @@ export default {
         src: 'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7e1514ba-932d-415d-1bdb-bccb6c2cbc00?projectId=f63a70d1bd9dd78b5eb556c25d11cf05',
         walletName: 'Fireblocks'
       }
-    ] as WalletImage[]
+    ]
   }
 } as Component
 

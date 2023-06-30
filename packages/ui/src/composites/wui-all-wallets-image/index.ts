@@ -1,6 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { globalStyles } from '../../utils/ThemeUtil'
+import '../wui-wallet-image'
 import styles from './styles'
 
 export interface WalletImage {
@@ -17,15 +18,14 @@ export class WuiAllWalletsImage extends LitElement {
 
   // -- render ------------------------------------------------------- //
   public render() {
-    const walletImagesHtml = this.walletImages.map(walletImage =>
-      this.renderWalletImage(walletImage.src, walletImage.walletName)
+    return this.walletImages.map(
+      ({ src, walletName }) =>
+        html`<wui-wallet-image
+          size="inherit"
+          src=${src}
+          walletName=${walletName}
+        ></wui-wallet-image>`
     )
-
-    return html` <div>${walletImagesHtml}</div> `
-  }
-
-  private renderWalletImage(src: string, alt: string) {
-    return html` <wui-wallet-image size="inherit" src=${src} alt=${alt}></wui-wallet-image> `
   }
 }
 

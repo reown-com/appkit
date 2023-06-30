@@ -1,7 +1,7 @@
 import { css } from 'lit'
 
 export default css`
-  div {
+  :host {
     position: relative;
     border-radius: 12px;
     width: 40px;
@@ -16,7 +16,7 @@ export default css`
     padding: 3.5px;
   }
 
-  div::after {
+  :host::after {
     content: '';
     position: absolute;
     top: 0;
@@ -28,7 +28,7 @@ export default css`
     pointer-events: none;
   }
 
-  div > wui-wallet-image {
+  :host > wui-wallet-image {
     width: 15px;
     height: 15px;
     border-radius: 5px;
