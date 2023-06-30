@@ -1,6 +1,6 @@
 {
   "name": "web3modal",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -21,6 +21,8 @@
   "workspaces": [
     "packages/ui",
     "packages/core",
+    "packages/scaffold-html",
+    "packages/wagmi",
     "apps/gallery",
     "apps/laboratory"
   ],
