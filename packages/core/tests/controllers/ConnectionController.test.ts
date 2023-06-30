@@ -49,13 +49,17 @@ describe('ModalController', () => {
     await ConnectionController.connectWalletConnect()
   })
 
-  it('should not throw on optional connectBrowserExtension() and connectThirdPartyWallet() when defined', async () => {
+  it('should not throw on connectBrowserExtension()', async () => {
     await ConnectionController.connectBrowserExtension(browserExtensionId)
+  })
+
+  it('should not throw on connectThirdPartyWallet()', async () => {
     await ConnectionController.connectThirdPartyWallet(thirdPartyWalletId)
   })
 
-  it('should not throw on optional connectBrowserExtension() and connectThirdPartyWallet() when undefined', async () => {
+  it('should not throw when optional methods are undefined', async () => {
     ConnectionController.setClient(partialClient)
+
     await ConnectionController.connectThirdPartyWallet(thirdPartyWalletId)
     await ConnectionController.connectBrowserExtension(browserExtensionId)
   })

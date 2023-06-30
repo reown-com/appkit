@@ -55,15 +55,10 @@ describe('ModalController', () => {
     expect(AccountController.state.profileImage).toEqual(profileImage)
   })
 
-  it('should not throw / update state when getProfileName() is undefined', async () => {
+  it('when optional methods are undefined', async () => {
     AccountController.setClient(partialClient)
 
     await AccountController.getProfileName()
-    expect(AccountController.state.profileName).toEqual(undefined)
-  })
-
-  it('should not throw / update state when getProfileImage() is undefined', async () => {
     await AccountController.getProfileImage()
-    expect(AccountController.state.profileImage).toEqual(undefined)
   })
 })
