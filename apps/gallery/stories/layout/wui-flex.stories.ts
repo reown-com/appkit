@@ -18,6 +18,9 @@ type Component = Meta<WuiFlex>
 
 export default {
   title: 'Layout/wui-flex',
+  args: {
+    gap: 'm'
+  },
   argTypes: {
     flexDirection: {
       options: flexDirectionOptions,
