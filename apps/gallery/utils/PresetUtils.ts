@@ -1,36 +1,77 @@
-export const colorOptions = [
+import type {
+  ColorType,
+  FlexDirectionType,
+  FlexWrapType,
+  FlexBasisType,
+  FlexGrowType,
+  FlexShrinkType,
+  AlignItemsType,
+  JustifyContentType,
+  BorderRadiusType,
+  SpacingType
+} from '@web3modal/ui/src/utils/TypesUtil'
+
+export const colorOptions: ColorType[] = [
   'blue-100',
   'error-100',
-  'success-100',
-  'inverse-100',
-  'inverse-000',
   'fg-100',
   'fg-200',
   'fg-300',
-  'inherit'
+  'inherit',
+  'inverse-000',
+  'inverse-100',
+  'success-100'
 ]
 
-export const flexDirectionOptions = ['row', 'row-reverse', 'column', 'column-reverse']
+export const flexDirectionOptions: FlexDirectionType[] = [
+  'column-reverse',
+  'column',
+  'row-reverse',
+  'row'
+]
 
-export const flexWrapOptions = ['nowrap', 'wrap', 'wrap-reverse']
+export const flexWrapOptions: FlexWrapType[] = ['nowrap', 'wrap-reverse', 'wrap']
 
-export const flexBasisOptions = ['auto', 'content', 'fit-content', 'max-content', 'min-content']
+export const flexBasisOptions: FlexBasisType[] = [
+  'auto',
+  'content',
+  'fit-content',
+  'max-content',
+  'min-content'
+]
 
-export const flexGrowOptions = ['0', '1']
+export const flexGrowOptions: FlexGrowType[] = ['0', '1']
 
-export const flexShrinkOptions = ['0', '1']
+export const flexShrinkOptions: FlexShrinkType[] = ['0', '1']
 
-export const alignItemsOptions = ['stretch', 'flex-start', 'flex-end', 'center', 'baseline']
-
-export const justifyContentOptions = [
-  'flex-start',
-  'flex-end',
+export const alignItemsOptions: AlignItemsType[] = [
+  'baseline',
   'center',
-  'space-between',
+  'flex-end',
+  'flex-start',
+  'stretch'
+]
+
+export const justifyContentOptions: JustifyContentType[] = [
+  'center',
+  'flex-end',
+  'flex-start',
   'space-around',
+  'space-between',
   'space-evenly'
 ]
 
-export const borderRadiusOptions = ['4xs', '3xs', 'xxs', 'xs', 's', 'm', 'l', '3xl']
+export const borderRadiusOptions: BorderRadiusType[] = ['3xs', '4xs', 'l', 'm', 's', 'xxs']
 
-export const spacingOptions = ['4xs', '3xs', 'xxs', 'xs', 's', 'm', 'l', 'xl', 'xxl', '3xl']
+export const spacingOptions: SpacingType[] = [
+  '3xl',
+  '3xs',
+  '4xs',
+  'l',
+  'm',
+  's',
+  'xl',
+  'xs',
+  'xxl',
+  'xxs'
+]

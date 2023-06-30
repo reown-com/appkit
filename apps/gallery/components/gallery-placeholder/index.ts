@@ -1,24 +1,22 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { globalStyles, colorStyles } from '@web3modal/ui/src/utils/ThemeUtil'
 import styles from './styles'
-import type { Color, Size } from '@web3modal/ui/src/utils/TypesUtil'
 
-@customElement('wui-gallery-div')
-export class WuiGalleryDiv extends LitElement {
-  public static styles = [globalStyles, colorStyles, styles]
+@customElement('gallery-placeholder')
+export class GalleryPlaceholder extends LitElement {
+  public static styles = [styles]
 
   // -- state & properties ------------------------------------------- //
-  @property() public size: Size = 'md'
+  @property() public size: 'xs' | 'sm' | 'md' | 'lg' = 'md'
 
-  @property() public background: Color = 'fg-300'
+  @property() public background: 'green' | 'red' | 'blue' = 'green'
 
   // -- render ------------------------------------------------------- //
   public render() {
     const classes = {
-      [`wui-size-${this.size}`]: true,
-      [`wui-bg-color-${this.background}`]: true
+      [`placeholder-size-${this.size}`]: true,
+      [`placeholder-bg-color-${this.background}`]: true
     }
 
     return html`<div class="${classMap(classes)}"></div>`
@@ -27,6 +25,6 @@ export class WuiGalleryDiv extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-gallery-div': WuiGalleryDiv
+    'gallery-placeholder': GalleryPlaceholder
   }
 }

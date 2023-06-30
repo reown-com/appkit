@@ -5,14 +5,14 @@ import '../../components/wui-image'
 import '../../components/wui-icon'
 import styles from './styles'
 import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder'
-import type { Size } from '../../utils/TypesUtil'
+import type { SizeType } from '../../utils/TypesUtil'
 
 @customElement('wui-wallet-image')
 export class WuiWalletImage extends LitElement {
   public static styles = [globalStyles, styles]
 
   // -- state & properties ------------------------------------------- //
-  @property() public size: Exclude<Size, 'xs' | 'xxs'> = 'md'
+  @property() public size: Exclude<SizeType, 'xs' | 'xxs'> = 'md'
 
   @property() public walletName = ''
 
