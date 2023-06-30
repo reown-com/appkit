@@ -9,8 +9,8 @@ import type {
   FlexBasisType,
   FlexShrinkType,
   FlexGrowType,
-  AlignItemsType,
-  JustifyContentType
+  FlexAlignItemsType,
+  FlexJustifyContentType
 } from '../../utils/TypesUtil'
 
 @customElement('wui-flex')
@@ -27,9 +27,9 @@ export class WuiFlex extends LitElement {
 
   @property() public flexShrink?: FlexShrinkType
 
-  @property() public alignItems?: AlignItemsType
+  @property() public alignItems?: FlexAlignItemsType
 
-  @property() public justifyContent?: JustifyContentType
+  @property() public justifyContent?: FlexJustifyContentType
 
   @property() public columnGap?: SpacingType
 

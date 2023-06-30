@@ -9,8 +9,8 @@ import {
   flexBasisOptions,
   flexGrowOptions,
   flexShrinkOptions,
-  alignItemsOptions,
-  justifyContentOptions,
+  flexAlignItemsOptions,
+  flexJustifyContentOptions,
   spacingOptions
 } from '../../utils/PresetUtils'
 
@@ -40,11 +40,11 @@ export default {
       control: { type: 'select' }
     },
     alignItems: {
-      options: alignItemsOptions,
+      options: flexAlignItemsOptions,
       control: { type: 'select' }
     },
     justifyContent: {
-      options: justifyContentOptions,
+      options: flexJustifyContentOptions,
       control: { type: 'select' }
     },
     columnGap: {
