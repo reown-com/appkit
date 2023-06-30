@@ -13,7 +13,7 @@ export type {
 export { NetworkController } from './src/controllers/NetworkController'
 export type {
   NetworkControllerState,
-  NetworkControllerClientProxy
+  NetworkControllerClient
 } from './src/controllers/NetworkController'
 
 export { ConnectionController } from './src/controllers/ConnectionController'

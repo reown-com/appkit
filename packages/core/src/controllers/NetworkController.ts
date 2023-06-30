@@ -9,18 +9,18 @@ export interface NetworkControllerClient {
 }
 
 export interface NetworkControllerState {
+  _client?: NetworkControllerClient
   activeNetwork: string
   requestedNetworks: string[]
   approvedNetworks: string[]
-  client?: NetworkControllerClient
 }
 
 // -- State --------------------------------------------------------------------
 const state = proxy<NetworkControllerState>({
+  _client: undefined,
   activeNetwork: '',
   requestedNetworks: [],
-  approvedNetworks: [],
-  client: undefined
+  approvedNetworks: []
 })
 
 // -- Controller ---------------------------------------------------------------
@@ -28,31 +28,31 @@ export const NetworkController = {
   state,
 
   _getClient() {
-    if (!state.client) {
+    if (!state._client) {
       throw new Error('NetworkController client not set')
     }
 
-    return state.client
+    return state._client
   },
 
   setClient(client: NetworkControllerClient) {
-    state.client = ref(client)
+    state._client = ref(client)
   },
 
   async getActiveNetwork() {
-    state.activeNetwork = await NetworkController._getClient().getActiveNetwork()
+    state.activeNetwork = await this._getClient().getActiveNetwork()
   },
 
   async getRequestedNetworks() {
-    state.requestedNetworks = await NetworkController._getClient().getRequestedNetworks()
+    state.requestedNetworks = await this._getClient().getRequestedNetworks()
   },
 
   async getApprovedNetworks() {
-    state.approvedNetworks = await NetworkController._getClient().getApprovedNetworks()
+    state.approvedNetworks = await this._getClient().getApprovedNetworks()
   },
 
   async switchActiveNetwork(network: NetworkControllerState['activeNetwork']) {
-    await NetworkController._getClient().switchActiveNetwork(network)
+    await this._getClient().switchActiveNetwork(network)
     state.activeNetwork = network
   }
 }

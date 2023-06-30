@@ -24,10 +24,10 @@ describe('ModalController', () => {
     })
 
     expect(NetworkController.state).toEqual({
+      _client: NetworkController._getClient(),
       activeNetwork: '',
       requestedNetworks: [],
-      approvedNetworks: [],
-      client: NetworkController._getClient()
+      approvedNetworks: []
     })
   })
 
