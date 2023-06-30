@@ -3,7 +3,7 @@ import { css } from 'lit'
 export default css`
   :host {
     position: relative;
-    border-radius: 12px;
+    border-radius: var(--wui-border-radius-xxs);
     width: 40px;
     height: 40px;
     overflow: hidden;
@@ -31,6 +31,6 @@ export default css`
   :host > wui-wallet-image {
     width: 15px;
     height: 15px;
-    border-radius: 5px;
+    border-radius: var(--wui-border-radius-4xs);
   }
 `

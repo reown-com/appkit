@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "gallery": "npm run dev --w=@apps/gallery",
+    "laboratory": "npm run dev --w=@apps/laboratory",
     "build": "npm run build --ws --if-present",
     "test": "npm run test --ws --if-present",
     "lint": "eslint .",
@@ -20,7 +21,8 @@
   "workspaces": [
     "packages/ui",
     "packages/core",
-    "apps/gallery"
+    "apps/gallery",
+    "apps/laboratory"
   ],
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.60.1",
@@ -29,10 +31,12 @@
     "@types/react-dom": "18.2.6",
     "eslint": "8.43.0",
     "eslint-config-prettier": "8.8.0",
-    "lerna": "7.1.0",
+    "lerna": "7.1.1",
     "prettier": "2.8.8",
-    "typescript": "5.1.5",
+    "typescript": "5.1.6",
     "vitest": "0.32.2",
-    "danger": "11.2.6"
+    "danger": "11.2.6",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   }
 }

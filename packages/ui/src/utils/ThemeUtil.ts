@@ -34,6 +34,26 @@ export const rootStyles = css`
     --wui-line-height-lg: 130%;
 
     --wui-color-inherit: inherit;
+
+    --wui-border-radius-4xs: 6px;
+    --wui-border-radius-3xs: 8px;
+    --wui-border-radius-xxs: 12px;
+    --wui-border-radius-xs: 16px;
+    --wui-border-radius-s: 20px;
+    --wui-border-radius-m: 28px;
+    --wui-border-radius-l: 36px;
+    --wui-border-radius-3xl: 80px;
+
+    --wui-spacing-4xs: 2px;
+    --wui-spacing-3xs: 4px;
+    --wui-spacing-xxs: 6px;
+    --wui-spacing-xs: 8px;
+    --wui-spacing-s: 12px;
+    --wui-spacing-m: 14px;
+    --wui-spacing-l: 16px;
+    --wui-spacing-xl: 20px;
+    --wui-spacing-xxl: 24px;
+    --wui-spacing-3xl: 40px;
   }
 
   [data-wui-theme='dark'] {
