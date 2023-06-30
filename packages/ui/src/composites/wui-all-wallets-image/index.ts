@@ -3,18 +3,14 @@ import { customElement, property } from 'lit/decorators.js'
 import { globalStyles } from '../../utils/ThemeUtil'
 import '../wui-wallet-image'
 import styles from './styles'
-
-export interface WalletImage {
-  src: string
-  walletName: string
-}
+import type { IWalletImage } from '../../utils/TypesUtil'
 
 @customElement('wui-all-wallets-image')
 export class WuiAllWalletsImage extends LitElement {
   public static styles = [globalStyles, styles]
 
   // -- state & properties ------------------------------------------- //
-  @property({ type: Array }) public walletImages: WalletImage[] = []
+  @property({ type: Array }) public walletImages: IWalletImage[] = []
 
   // -- render ------------------------------------------------------- //
   public render() {

@@ -35,7 +35,7 @@ export default css`
     letter-spacing: var(--wui-letter-spacing-tiny);
   }
 
-  .wui-font-micro-500,
+  .wui-font-micro-700,
   .wui-font-micro-600 {
     font-size: var(--wui-font-size-micro);
     letter-spacing: var(--wui-letter-spacing-micro);
@@ -43,7 +43,8 @@ export default css`
   }
 
   .wui-font-large-700,
-  .wui-font-paragraph-700 {
+  .wui-font-paragraph-700,
+  .wui-font-micro-700 {
     font-weight: var(--wui-font-weight-bold);
   }
 
