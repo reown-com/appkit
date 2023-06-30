@@ -2,29 +2,34 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { styleMap } from 'lit/directives/style-map.js'
 import styles from './styles'
-import type { Color, BorderRadius, Spacing } from '../../utils/TypesUtil'
+import type {
+  Spacing,
+  FlexDirection,
+  FlexWrap,
+  FlexBasis,
+  FlexShrink,
+  FlexGrow,
+  AlignItems,
+  JustifyContent
+} from '../../utils/TypesUtil'
 
 @customElement('wui-flex')
 export class WuiFlex extends LitElement {
   public static styles = [styles]
 
-  @property() public backgroundColor?: Color
+  @property() public flexDirection?: FlexDirection
 
-  @property() public borderRadius?: BorderRadius
+  @property() public flexWrap?: FlexWrap
 
-  @property() public flexDirection?: string
+  @property() public flexBasis?: FlexBasis
 
-  @property() public flexWrap?: string
+  @property() public flexGrow?: FlexGrow
 
-  @property() public flexBasis?: string
+  @property() public flexShrink?: FlexShrink
 
-  @property() public flexGrow?: string
+  @property() public alignItems?: AlignItems
 
-  @property() public flexShrink?: string
-
-  @property() public alignItems?: string
-
-  @property() public justifyContent?: string
+  @property() public justifyContent?: JustifyContent
 
   @property() public columnGap?: Spacing
 
@@ -32,16 +37,8 @@ export class WuiFlex extends LitElement {
 
   @property() public gap?: Spacing
 
-  @property() public width?: string
-
-  @property() public height?: string
-
-  @property() public padding?: string
-
   public render() {
     const inlineStyles = {
-      backgroundColor: this.backgroundColor && `var(--wui-color-${this.backgroundColor})`,
-      borderRadius: this.borderRadius && `var(--wui-border-radius-${this.borderRadius})`,
       flexDirection: this.flexDirection,
       flexWrap: this.flexWrap,
       flexBasis: this.flexBasis,
@@ -51,10 +48,7 @@ export class WuiFlex extends LitElement {
       justifyContent: this.justifyContent,
       columnGap: this.columnGap && `var(--wui-spacing-${this.columnGap})`,
       rowGap: this.rowGap && `var(--wui-spacing-${this.rowGap})`,
-      gap: this.gap && `var(--wui-spacing-${this.gap})`,
-      padding: this.padding && `var(--wui-spacing-${this.padding})`,
-      width: this.width,
-      height: this.height
+      gap: this.gap && `var(--wui-spacing-${this.gap})`
     }
 
     return html`<div style="${styleMap(inlineStyles)}"><slot></slot></div>`

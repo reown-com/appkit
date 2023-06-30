@@ -1,5 +1,6 @@
 import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/layout/wui-flex'
+import '../../components/wui-gallery-div'
 import type { WuiFlex } from '@web3modal/ui/src/layout/wui-flex'
 import { html } from 'lit'
 import {
@@ -74,19 +75,9 @@ export const Default: Component = {
       .columnGap=${args.columnGap}
       .rowGap=${args.rowGap}
       .gap=${args.gap}
-      width="400px"
-      height="250px"
-      padding="m"
-      backgroundColor="fg-300"
-      borderRadius="m"
     >
-      <wui-flex width="40px" height="40px" backgroundColor="blue-100" borderRadius="3xl"></wui-flex>
-      <wui-flex
-        width="80px"
-        height="80px"
-        backgroundColor="success-100"
-        borderRadius="3xl"
-      ></wui-flex>
-      <wui-flex width="50px" height="50px" backgroundColor="error-100" borderRadius="3xl"></wui-flex
-    ></wui-flex>`
+      <wui-gallery-div size="sm" background="success-100"></wui-gallery-div>
+      <wui-gallery-div size="lg" background="blue-100"></wui-gallery-div>
+      <wui-gallery-div size="md" background="error-100"></wui-gallery-div>
+    </wui-flex>`
 }
