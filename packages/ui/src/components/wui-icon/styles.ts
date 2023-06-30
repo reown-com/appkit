@@ -29,4 +29,9 @@ export default css`
     width: 18px;
     height: 18px;
   }
+
+  .wui-size-inherit::slotted(svg) {
+    width: inherit;
+    height: inherit;
+  }
 `

@@ -24,18 +24,18 @@ export default css`
   .wui-size-sm {
     width: 20px;
     height: 20px;
-    border-radius: 100px;
+    border-radius: var(--wui-border-radius-3xl);
   }
 
   .wui-size-md {
     width: 24px;
     height: 24px;
-    border-radius: 100px;
+    border-radius: var(--wui-border-radius-3xl);
   }
 
   .wui-size-lg {
     width: 40px;
     height: 40px;
-    border-radius: 12px;
+    border-radius: var(--wui-border-radius-xxs);
   }
 `

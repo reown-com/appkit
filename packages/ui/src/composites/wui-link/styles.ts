@@ -5,7 +5,7 @@ export default css`
     padding: 2px 6px;
     column-gap: 4px;
     transition: all 200ms ease-in-out;
-    border-radius: 8px;
+    border-radius: var(--wui-border-radius-3xs);
     background-color: transparent;
     border: 1px solid transparent;
   }

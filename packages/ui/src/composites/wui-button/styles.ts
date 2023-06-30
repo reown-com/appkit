@@ -3,7 +3,7 @@ import { css } from 'lit'
 export default css`
   button {
     border: 1px solid var(--wui-overlay-010);
-    border-radius: 28px;
+    border-radius: var(--wui-border-radius-m);
     transition: all 200ms ease-in-out;
     column-gap: 4px;
   }

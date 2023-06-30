@@ -34,6 +34,15 @@ export const rootStyles = css`
     --wui-line-height-lg: 130%;
 
     --wui-color-inherit: inherit;
+
+    --wui-border-radius-4xs: 6px;
+    --wui-border-radius-3xs: 8px;
+    --wui-border-radius-xxs: 12px;
+    --wui-border-radius-xs: 16px;
+    --wui-border-radius-s: 20px;
+    --wui-border-radius-m: 28px;
+    --wui-border-radius-l: 36px;
+    --wui-border-radius-3xl: 80px;
   }
 
   [data-wui-theme='dark'] {
@@ -161,25 +170,10 @@ export const globalStyles = css`
     cursor: not-allowed;
   }
 
-  button svg,
-  button w3m-text {
-    position: relative;
-    z-index: 1;
-  }
-
   input {
     border: none;
     outline: none;
     appearance: none;
-  }
-
-  img {
-    display: block;
-  }
-
-  ::selection {
-    color: var(--w3m-accent-fill-color);
-    background: var(--w3m-accent-color);
   }
 `
 
