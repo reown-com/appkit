@@ -25,6 +25,7 @@
     "class-methods-use-this": "off",
     "id-length": "off",
     "max-lines": "off",
+    "no-async-promise-executor": "off",
 
     // Typescript
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
