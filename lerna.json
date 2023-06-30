@@ -8,6 +8,6 @@
     "packages/html",
     "laboratory"
   ],
-  "version": "2.6.0",
+  "version": "2.6.2",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
