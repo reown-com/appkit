@@ -1,0 +1,12 @@
+{
+  "name": "@apps/laboratory",
+  "version": "3.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build"
+  },
+  "dependencies": {
+    "next": "13.4.7"
+  }
+}

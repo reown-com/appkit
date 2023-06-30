@@ -6,6 +6,7 @@
   "parserOptions": {
     "project": ["tsconfig.json"]
   },
+  "ignorePatterns": ["*.config.js", "next-env.d.ts"],
   "rules": {
     // Core
     "func-style": ["error", "declaration"],

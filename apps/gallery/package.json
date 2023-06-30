@@ -10,8 +10,6 @@
   "dependencies": {
     "@web3modal/ui": "3.0.0",
     "lit": "2.7.5",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
     "storybook": "7.0.24"
   },
   "devDependencies": {
