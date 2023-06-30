@@ -29,7 +29,7 @@ export default css`
   }
 
   .wui-size-sm {
-    border-radius: 12px;
+    border-radius: var(--wui-border-radius-xxs);
     width: 40px;
     height: 40px;
   }
@@ -40,7 +40,7 @@ export default css`
   }
 
   .wui-size-md {
-    border-radius: 16px;
+    border-radius: var(--wui-border-radius-xs);
     width: 56px;
     height: 56px;
   }
@@ -51,7 +51,7 @@ export default css`
   }
 
   .wui-size-lg {
-    border-radius: 28px;
+    border-radius: var(--wui-border-radius-m);
     width: 80px;
     height: 80px;
   }
