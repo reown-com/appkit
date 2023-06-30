@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { globalStyles, colorStyles } from '@web3modal/ui/src/utils/ThemeUtil'
 import styles from './styles'
-import { Color, Size } from '@web3modal/ui/src/utils/TypesUtil'
+import type { Color, Size } from '@web3modal/ui/src/utils/TypesUtil'
 
 @customElement('wui-gallery-div')
 export class WuiGalleryDiv extends LitElement {
