@@ -27,8 +27,11 @@ export const rootStyles = css`
     --wui-font-weight-medium: 600;
     --wui-font-weight-bold: 700;
 
-    --wui-letter-spacing-sm: -0.2%;
-    --wui-letter-spacing-md: -0.4%;
+    --wui-letter-spacing-large: -0.8px;
+    --wui-letter-spacing-paragraph: -0.64px;
+    --wui-letter-spacing-small: -0.56px;
+    --wui-letter-spacing-tiny: -0.48px;
+    --wui-letter-spacing-micro: -0.2px;
 
     --wui-color-inherit: inherit;
 
