@@ -27,6 +27,7 @@
     "id-length": "off",
     "max-lines": "off",
     "no-async-promise-executor": "off",
+    "no-underscore-dangle": "off",
 
     // Typescript
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
