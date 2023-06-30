@@ -23,7 +23,7 @@ export class WuiText extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property() public variant: Variant = 'md-medium'
 
-  @property() public color: ColorType = 'fssg-300'
+  @property() public color: ColorType = 'fg-300'
 
   // -- render ------------------------------------------------------- //
   public render() {
