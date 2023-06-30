@@ -5,7 +5,7 @@ export default css`
     border: 1px solid var(--wui-overlay-010);
     border-radius: var(--wui-border-radius-m);
     transition: all 200ms ease-in-out;
-    column-gap: 4px;
+    column-gap: var(--wui-spacing-3xs);
   }
 
   button:disabled {

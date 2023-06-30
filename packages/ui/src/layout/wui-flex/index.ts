@@ -12,19 +12,19 @@ export class WuiFlex extends LitElement {
 
   @property() public borderRadius?: BorderRadius
 
-  @property() public direction?: string
+  @property() public flexDirection?: string
 
-  @property() public wrap?: string
+  @property() public flexWrap?: string
 
-  @property() public basis?: string
+  @property() public flexBasis?: string
 
-  @property() public grow?: string
+  @property() public flexGrow?: string
 
-  @property() public shrink?: string
+  @property() public flexShrink?: string
 
-  @property() public align?: string
+  @property() public alignItems?: string
 
-  @property() public justify?: string
+  @property() public justifyContent?: string
 
   @property() public columnGap?: Spacing
 
@@ -42,13 +42,13 @@ export class WuiFlex extends LitElement {
     const inlineStyles = {
       backgroundColor: this.backgroundColor && `var(--wui-color-${this.backgroundColor})`,
       borderRadius: this.borderRadius && `var(--wui-border-radius-${this.borderRadius})`,
-      flexDirection: this.direction,
-      flexWrap: this.wrap,
-      flexBasis: this.basis,
-      flexGrow: this.grow,
-      flexShrink: this.shrink,
-      alignItems: this.align,
-      justifyContent: this.justify,
+      flexDirection: this.flexDirection,
+      flexWrap: this.flexWrap,
+      flexBasis: this.flexBasis,
+      flexGrow: this.flexGrow,
+      flexShrink: this.flexShrink,
+      alignItems: this.alignItems,
+      justifyContent: this.justifyContent,
       columnGap: this.columnGap && `var(--wui-spacing-${this.columnGap})`,
       rowGap: this.rowGap && `var(--wui-spacing-${this.rowGap})`,
       gap: this.gap && `var(--wui-spacing-${this.gap})`,
