@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { globalStyles, colorStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
-import type { Color } from '../../utils/TypesUtil'
+import type { ColorType } from '../../utils/TypesUtil'
 
 type Variant =
   | 'lg-medium'
@@ -23,7 +23,7 @@ export class WuiText extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property() public variant: Variant = 'md-medium'
 
-  @property() public color: Color = 'fg-300'
+  @property() public color: ColorType = 'fg-300'
 
   // -- render ------------------------------------------------------- //
   public render() {

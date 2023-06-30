@@ -4,23 +4,22 @@ import { classMap } from 'lit/directives/class-map.js'
 import { globalStyles } from '../../utils/ThemeUtil'
 import '../../components/wui-icon'
 import styles from './styles'
-import type { Size } from '../../utils/TypesUtil'
-import type { Color } from '../../utils/TypesUtil'
+import type { SizeType, ColorType } from '../../utils/TypesUtil'
 
 @customElement('wui-icon-box')
 export class WuiIconBox extends LitElement {
   public static styles = [globalStyles, styles]
 
   // -- state & properties ------------------------------------------- //
-  @property() public size: Exclude<Size, 'inherit' | 'xs' | 'xxs'> = 'md'
+  @property() public size: Exclude<SizeType, 'inherit' | 'xs' | 'xxs'> = 'md'
 
-  @property() public backgroundColor: Color = 'blue-100'
+  @property() public backgroundColor: ColorType = 'blue-100'
 
-  @property() public iconColor: Color = 'blue-100'
+  @property() public iconColor: ColorType = 'blue-100'
 
   // -- render ------------------------------------------------------- //
   public render() {
-    let iconSize: Size = 'xxs'
+    let iconSize: SizeType = 'xxs'
     switch (this.size) {
       case 'lg':
         iconSize = 'lg'
