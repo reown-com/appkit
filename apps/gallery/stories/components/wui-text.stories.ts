@@ -2,29 +2,19 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/components/wui-text'
 import type { WuiText } from '@web3modal/ui/src/components/wui-text'
 import { html } from 'lit'
-import { colorOptions } from '../../utils/PresetUtils'
+import { colorOptions, textOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiText>
 
 export default {
   title: 'Components/wui-text',
   args: {
-    variant: 'md-medium',
+    variant: 'paragraph-500',
     color: 'fg-100'
   },
   argTypes: {
     variant: {
-      options: [
-        'lg-semibold',
-        'lg-medium',
-        'md-bold',
-        'md-semibold',
-        'md-medium',
-        'md-numerals',
-        'sm-semibold',
-        'sm-medium',
-        'xxs-bold'
-      ],
+      options: textOptions,
       control: { type: 'select' }
     },
     color: {

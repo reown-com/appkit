@@ -5,68 +5,50 @@ export default css`
     font-style: normal;
     font-family: var(--wui-font-family);
     font-feature-settings: var(--wui-font-feature-settings);
-  }
-
-  .wui-lg-semibold {
-    font-size: var(--wui-font-size-lg);
-    font-weight: var(--wui-font-weight-semibold);
-    line-height: var(--wui-line-height-sm);
-    letter-spacing: var(--wui-letter-spacing-lg);
-  }
-
-  .wui-lg-medium {
-    font-size: var(--wui-font-size-lg);
-    font-weight: var(--wui-font-weight-medium);
-    line-height: var(--wui-line-height-sm);
+    line-height: 130%;
+    font-weight: var(--wui-font-weight-regular);
     letter-spacing: var(--wui-letter-spacing-md);
   }
 
-  .wui-md-bold {
-    font-size: var(--wui-font-size-md);
-    font-weight: var(--wui-font-weight-bold);
-    line-height: var(--wui-line-height-md);
-    letter-spacing: var(--wui-letter-spacing-md);
+  .wui-font-large-500,
+  .wui-font-large-600,
+  .wui-font-large-700 {
+    font-size: var(--wui-font-size-large);
   }
 
-  .wui-md-semibold {
-    font-size: var(--wui-font-size-md);
-    font-weight: var(--wui-font-weight-semibold);
-    line-height: var(--wui-line-height-md);
-    letter-spacing: var(--wui-letter-spacing-md);
+  .wui-font-paragraph-500,
+  .wui-font-paragraph-600,
+  .wui-font-paragraph-700 {
+    font-size: var(--wui-font-size-paragraph);
   }
 
-  .wui-md-medium {
-    font-size: var(--wui-font-size-md);
-    font-weight: var(--wui-font-weight-medium);
-    line-height: var(--wui-line-height-md);
-    letter-spacing: var(--wui-letter-spacing-md);
+  .wui-font-small-500,
+  .wui-font-small-600 {
+    font-size: var(--wui-font-size-small);
   }
 
-  .wui-md-numerals {
-    font-size: var(--wui-font-size-md);
-    font-weight: var(--wui-font-weight-medium);
-    line-height: var(--wui-line-height-md);
-    letter-spacing: var(--wui-letter-spacing-md);
+  .wui-font-tiny-500,
+  .wui-font-tiny-600 {
+    font-size: var(--wui-font-size-tiny);
   }
 
-  .wui-sm-semibold {
-    font-size: var(--wui-font-size-sm);
-    font-weight: var(--wui-font-weight-semibold);
-    line-height: var(--wui-line-height-lg);
-    letter-spacing: var(--wui-letter-spacing-md);
-  }
-
-  .wui-sm-medium {
-    font-size: var(--wui-font-size-sm);
-    font-weight: var(--wui-font-weight-medium);
-    line-height: var(--wui-line-height-lg);
-    letter-spacing: var(--wui-letter-spacing-md);
-  }
-
-  .wui-xxs-bold {
-    font-size: var(--wui-font-size-xxs);
-    font-weight: var(--wui-font-weight-bold);
-    line-height: var(--wui-line-height-sm);
+  .wui-font-micro-500,
+  .wui-font-micro-600 {
+    font-size: var(--wui-font-size-micro);
     letter-spacing: var(--wui-letter-spacing-sm);
+    text-transform: uppercase;
+  }
+
+  .wui-font-large-700,
+  .wui-font-paragraph-700 {
+    font-weight: var(--wui-font-weight-bold);
+  }
+
+  .wui-font-large-600,
+  .wui-font-paragraph-600,
+  .wui-font-small-600,
+  .wui-font-tiny-600,
+  .wui-font-micro-600 {
+    font-weight: var(--wui-font-weight-medium);
   }
 `

@@ -9,6 +9,20 @@ export type ColorType =
   | 'inverse-100'
   | 'success-100'
 
+export type TextType =
+  | 'large-500'
+  | 'large-600'
+  | 'large-700'
+  | 'micro-500'
+  | 'micro-600'
+  | 'paragraph-500'
+  | 'paragraph-600'
+  | 'paragraph-700'
+  | 'small-500'
+  | 'small-600'
+  | 'tiny-500'
+  | 'tiny-600'
+
 export type SizeType = 'inherit' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs'
 
 export type SpacingType = '3xl' | '3xs' | '4xs' | 'l' | 'm' | 's' | 'xl' | 'xs' | 'xxl' | 'xxs'

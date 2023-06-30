@@ -16,22 +16,19 @@ export function setColorTheme(theme: string) {
 export const rootStyles = css`
   :root {
     --wui-font-family: 'SF Pro Text', 'Segoe UI', Roboto, Ubuntu, 'Helvetica Neue', sans-serif;
-    --wui-font-size-xxs: 10px;
-    --wui-font-size-sm: 14px;
-    --wui-font-size-md: 16px;
-    --wui-font-size-lg: 20px;
 
-    --wui-font-weight-medium: 500;
-    --wui-font-weight-semibold: 600;
+    --wui-font-size-micro: 10px;
+    --wui-font-size-tiny: 12px;
+    --wui-font-size-small: 14px;
+    --wui-font-size-paragraph: 16px;
+    --wui-font-size-large: 20px;
+
+    --wui-font-weight-regular: 500;
+    --wui-font-weight-medium: 600;
     --wui-font-weight-bold: 700;
 
-    --wui-letter-spacing-sm: -0.02em;
-    --wui-letter-spacing-md: -0.03em;
-    --wui-letter-spacing-lg: -0.05em;
-
-    --wui-line-height-sm: 120%;
-    --wui-line-height-md: 125%;
-    --wui-line-height-lg: 130%;
+    --wui-letter-spacing-sm: -0.2%;
+    --wui-letter-spacing-md: -0.4%;
 
     --wui-color-inherit: inherit;
 
