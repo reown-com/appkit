@@ -1,14 +1,15 @@
 import type {
-  AccountControllerClientProxy,
-  NetworkControllerClientProxy,
-  ConnectionControllerClientProxy
+  AccountControllerClient,
+  NetworkControllerClient,
+  ConnectionControllerClient
 } from '@web3modal/core'
+import { AccountController, NetworkController, ConnectionController } from '@web3modal/core'
 
 // -- Types ---------------------------------------------------------------------
 interface Options {
-  accountControllerClientProxy: AccountControllerClientProxy
-  networkControllerClientProxy: NetworkControllerClientProxy
-  connectionControllerClientProxy: ConnectionControllerClientProxy
+  accountControllerClient: AccountControllerClient
+  networkControllerClient: NetworkControllerClient
+  connectionControllerClient: ConnectionControllerClient
 }
 
 // -- Client --------------------------------------------------------------------
@@ -16,11 +17,15 @@ export class Web3ModalScaffoldHtml {
   #initPromise?: Promise<void> = undefined
 
   public constructor(options: Options) {
-    this.#createControllers(options)
+    this.#setControllerClients(options)
     this.#initOrContinue()
   }
 
-  #createControllers(options: Options) {}
+  #setControllerClients(options: Options) {
+    AccountController.setClient(options.accountControllerClient)
+    NetworkController.setClient(options.networkControllerClient)
+    ConnectionController.setClient(options.connectionControllerClient)
+  }
 
   async #initOrContinue() {
     if (!this.#initPromise && typeof window !== 'undefined') {
