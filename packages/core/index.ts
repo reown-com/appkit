@@ -7,7 +7,7 @@ export type { RouterControllerState } from './src/controllers/RouterController'
 export { AccountController } from './src/controllers/AccountController'
 export type {
   AccountControllerState,
-  AccountControllerClientProxy
+  AccountControllerClient
 } from './src/controllers/AccountController'
 
 export { NetworkController } from './src/controllers/NetworkController'
@@ -19,5 +19,5 @@ export type {
 export { ConnectionController } from './src/controllers/ConnectionController'
 export type {
   ConnectionControllerState,
-  ConnectionControllerClientProxy
+  ConnectionControllerClient
 } from './src/controllers/ConnectionController'

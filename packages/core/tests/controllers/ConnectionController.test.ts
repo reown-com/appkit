@@ -6,55 +6,57 @@ const walletConnectUri = 'wc://uri?=123'
 const browserExtensionId = 'isMetaMask'
 const thirdPartyWalletId = 'coinbase'
 
-const controller = new ConnectionController({
+const client = {
   getWalletConnectUri: async () => Promise.resolve(walletConnectUri),
   connectWalletConnect: async () => Promise.resolve(),
   disconnect: async () => Promise.resolve(),
-  connectBrowserExtension: async (id: string) => {
-    id.toUpperCase()
-    await Promise.resolve()
-  },
-  connectThirdPartyWallet: async (id: string) => {
-    id.toUpperCase()
-    await Promise.resolve()
-  }
-})
+  connectBrowserExtension: async (_id: string) => Promise.resolve(),
+  connectThirdPartyWallet: async (_id: string) => Promise.resolve()
+}
 
-const partialController = new ConnectionController({
+const partialClient = {
   getWalletConnectUri: async () => Promise.resolve(walletConnectUri),
   connectWalletConnect: async () => Promise.resolve(),
   disconnect: async () => Promise.resolve()
-})
+}
 
 // -- Tests --------------------------------------------------------------------
 describe('ModalController', () => {
+  it('should throw if client not set', () => {
+    expect(ConnectionController._getClient).toThrow('ConnectionController client not set')
+  })
+
   it('should have valid default state', () => {
-    expect(controller.state).toEqual({
+    ConnectionController.setClient(client)
+
+    expect(ConnectionController.state).toEqual({
+      _client: ConnectionController._getClient(),
       walletConnectUri: ''
     })
   })
 
   it('should update state correctly on getWalletConnectUri()', async () => {
-    await controller.getWalletConnectUri()
-    expect(controller.state.walletConnectUri).toEqual(walletConnectUri)
+    await ConnectionController.getWalletConnectUri()
+    expect(ConnectionController.state.walletConnectUri).toEqual(walletConnectUri)
   })
 
   it('should update state correctly on disconnect()', async () => {
-    await controller.disconnect()
-    expect(controller.state.walletConnectUri).toEqual('')
+    await ConnectionController.disconnect()
+    expect(ConnectionController.state.walletConnectUri).toEqual('')
   })
 
   it('should not throw on connectWalletConnect()', async () => {
-    await controller.connectWalletConnect()
+    await ConnectionController.connectWalletConnect()
   })
 
-  it('should not throw on connectBrowserExtension() defined or not', async () => {
-    await controller.connectBrowserExtension(browserExtensionId)
-    await partialController.connectBrowserExtension(browserExtensionId)
+  it('should not throw on optional connectBrowserExtension() and connectThirdPartyWallet() when defined', async () => {
+    await ConnectionController.connectBrowserExtension(browserExtensionId)
+    await ConnectionController.connectThirdPartyWallet(thirdPartyWalletId)
   })
 
-  it('should not throw on connectThirdPartyWallet() defined or not', async () => {
-    await controller.connectThirdPartyWallet(thirdPartyWalletId)
-    await partialController.connectThirdPartyWallet(thirdPartyWalletId)
+  it('should not throw on optional connectBrowserExtension() and connectThirdPartyWallet() when undefined', async () => {
+    ConnectionController.setClient(partialClient)
+    await ConnectionController.connectThirdPartyWallet(thirdPartyWalletId)
+    await ConnectionController.connectBrowserExtension(browserExtensionId)
   })
 })

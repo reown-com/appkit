@@ -6,6 +6,13 @@ const activeNetwork = '1'
 const requestedNetworks = ['1', '2', '3']
 const approvedNetworks = ['1', '2']
 
+const client = {
+  getActiveNetwork: async () => Promise.resolve(activeNetwork),
+  getRequestedNetworks: async () => Promise.resolve(requestedNetworks),
+  getApprovedNetworks: async () => Promise.resolve(approvedNetworks),
+  switchActiveNetwork: async (_network: string) => Promise.resolve()
+}
+
 // -- Tests --------------------------------------------------------------------
 describe('ModalController', () => {
   it('should throw if client not set', () => {
@@ -13,15 +20,7 @@ describe('ModalController', () => {
   })
 
   it('should have valid default state', () => {
-    NetworkController.setClient({
-      getActiveNetwork: async () => Promise.resolve(activeNetwork),
-      getRequestedNetworks: async () => Promise.resolve(requestedNetworks),
-      getApprovedNetworks: async () => Promise.resolve(approvedNetworks),
-      switchActiveNetwork: async (network: string) => {
-        network.toUpperCase()
-        await Promise.resolve()
-      }
-    })
+    NetworkController.setClient(client)
 
     expect(NetworkController.state).toEqual({
       _client: NetworkController._getClient(),
