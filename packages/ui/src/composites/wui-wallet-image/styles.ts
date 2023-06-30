@@ -3,7 +3,7 @@ import { css } from 'lit'
 export default css`
   div {
     position: relative;
-    border-radius: 12px;
+    border-radius: inherit;
     overflow: hidden;
     background: var(--wui-overlay-002);
     display: flex;
@@ -23,7 +23,13 @@ export default css`
     pointer-events: none;
   }
 
+  .wui-size-inherit {
+    width: inherit;
+    height: inherit;
+  }
+
   .wui-size-sm {
+    border-radius: 12px;
     width: 40px;
     height: 40px;
   }

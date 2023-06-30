@@ -12,7 +12,7 @@ export class WuiWalletImage extends LitElement {
   public static styles = [globalStyles, styles]
 
   // -- state & properties ------------------------------------------- //
-  @property() public size: Exclude<Size, 'inherit' | 'xs' | 'xxs'> = 'md'
+  @property() public size: Exclude<Size, 'xs' | 'xxs'> = 'md'
 
   @property() public walletName = ''
 
