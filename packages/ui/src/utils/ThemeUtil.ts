@@ -34,6 +34,15 @@ export const rootStyles = css`
     --wui-line-height-lg: 130%;
 
     --wui-color-inherit: inherit;
+
+    --wui-border-radius-4xs: 6px;
+    --wui-border-radius-3xs: 8px;
+    --wui-border-radius-xxs: 12px;
+    --wui-border-radius-xs: 16px;
+    --wui-border-radius-s: 20px;
+    --wui-border-radius-m: 28px;
+    --wui-border-radius-l: 36px;
+    --wui-border-radius-3xl: 80px;
   }
 
   [data-wui-theme='dark'] {
