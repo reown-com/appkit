@@ -10,3 +10,7 @@ export type Color =
   | 'success-100'
 
 export type Size = 'inherit' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs'
+
+export type BorderRadius = '3xl' | '3xs' | '4xs' | 'l' | 'm' | 's' | 'xs' | 'xxs'
+
+export type Spacing = '3xl' | '3xs' | '4xs' | 'l' | 'm' | 's' | 'xl' | 'xs' | 'xxl' | 'xxs'
