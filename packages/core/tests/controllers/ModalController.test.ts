@@ -1,22 +1,19 @@
 import { ModalController } from '../../index'
 import { describe, it, expect } from 'vitest'
 
-// -- Setup --------------------------------------------------------------------
-const controller = new ModalController()
-
 // -- Tests --------------------------------------------------------------------
 describe('ModalController', () => {
   it('should have valid default state', () => {
-    expect(controller.state.open).toEqual(false)
+    expect(ModalController.state.open).toEqual(false)
   })
 
   it('should update state correctly on open()', () => {
-    controller.open()
-    expect(controller.state.open).toEqual(true)
+    ModalController.open()
+    expect(ModalController.state.open).toEqual(true)
   })
 
   it('should update state correctly on close()', () => {
-    controller.close()
-    expect(controller.state.open).toEqual(false)
+    ModalController.close()
+    expect(ModalController.state.open).toEqual(false)
   })
 })

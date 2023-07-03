@@ -1,50 +1,59 @@
-import { proxy } from 'valtio/vanilla'
+import { proxy, ref } from 'valtio/vanilla'
 
 // -- Types --------------------------------------------------------------------
+export interface AccountControllerClient {
+  getAddress: () => Promise<AccountControllerState['address']>
+  getBalance: (
+    address: AccountControllerState['address']
+  ) => Promise<AccountControllerState['balance']>
+  getProfile?: (address: AccountControllerState['address']) => Promise<{
+    name: AccountControllerState['profileName']
+    image: AccountControllerState['profileImage']
+  }>
+}
+
 export interface AccountControllerState {
+  _client?: AccountControllerClient
   address: string
   balance: string
   profileName?: string
   profileImage?: string
 }
 
-export interface AccountControllerClientProxy {
-  getAddress: () => Promise<AccountControllerState['address']>
-  getBalance: () => Promise<AccountControllerState['balance']>
-  getProfileName?: () => Promise<AccountControllerState['profileName']>
-  getProfileImage?: () => Promise<AccountControllerState['profileImage']>
-}
+// -- State --------------------------------------------------------------------
+const state = proxy<AccountControllerState>({
+  _client: undefined,
+  address: '',
+  balance: ''
+})
 
 // -- Controller ---------------------------------------------------------------
-export class AccountController {
-  public state = proxy<AccountControllerState>({
-    address: '',
-    balance: ''
-  })
+export const AccountController = {
+  state,
 
-  #clientProxy: AccountControllerClientProxy
-
-  public constructor(clientProxy: AccountControllerClientProxy) {
-    this.#clientProxy = clientProxy
-  }
-
-  public async getAddress() {
-    this.state.address = await this.#clientProxy.getAddress()
-  }
-
-  public async getBalance() {
-    this.state.balance = await this.#clientProxy.getBalance()
-  }
-
-  public async getProfileName() {
-    if (this.#clientProxy.getProfileName) {
-      this.state.profileName = await this.#clientProxy.getProfileName()
+  _getClient() {
+    if (!state._client) {
+      throw new Error('AccountController client not set')
     }
-  }
 
-  public async getProfileImage() {
-    if (this.#clientProxy.getProfileImage) {
-      this.state.profileImage = await this.#clientProxy.getProfileImage()
-    }
+    return state._client
+  },
+
+  setClient(client: AccountControllerClient) {
+    state._client = ref(client)
+  },
+
+  async getAddress() {
+    this.state.address = await this._getClient().getAddress()
+  },
+
+  async getBalance(address: AccountControllerState['address']) {
+    this.state.balance = await this._getClient().getBalance(address)
+  },
+
+  async getProfile(address: AccountControllerState['address']) {
+    const profile = await this._getClient().getProfile?.(address)
+    this.state.profileName = profile?.name
+    this.state.profileImage = profile?.image
   }
 }

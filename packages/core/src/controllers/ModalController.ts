@@ -5,17 +5,20 @@ export interface ModalControllerState {
   open: boolean
 }
 
+// -- State --------------------------------------------------------------------
+const state = proxy<ModalControllerState>({
+  open: false
+})
+
 // -- Controller ---------------------------------------------------------------
-export class ModalController {
-  public state = proxy<ModalControllerState>({
-    open: false
-  })
+export const ModalController = {
+  state,
 
-  public open() {
-    this.state.open = true
-  }
+  open() {
+    state.open = true
+  },
 
-  public close() {
-    this.state.open = false
+  close() {
+    state.open = false
   }
 }
