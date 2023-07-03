@@ -22,11 +22,15 @@ export class WuiWalletImage extends LitElement {
   public render() {
     const sizeClass = `wui-size-${this.size}`
 
-    const walletVisual = this.src
-      ? html`<wui-image src=${this.src} alt=${this.walletName}></wui-image>`
-      : html`<wui-icon size="inherit" color="inherit">${walletPlaceholderSvg}</wui-icon>`
+    return html` <div class=${sizeClass}>${this.templateVisual()}</div> `
+  }
 
-    return html` <div class=${sizeClass}>${walletVisual}</div> `
+  private templateVisual() {
+    if (this.src) {
+      return html`<wui-image src=${this.src} alt=${this.walletName}></wui-image>`
+    }
+
+    return html`<wui-icon size="inherit" color="inherit">${walletPlaceholderSvg}</wui-icon>`
   }
 }
 

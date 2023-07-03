@@ -13,8 +13,8 @@ export type TextType =
   | 'large-500'
   | 'large-600'
   | 'large-700'
-  | 'micro-500'
   | 'micro-600'
+  | 'micro-700'
   | 'paragraph-500'
   | 'paragraph-600'
   | 'paragraph-700'
@@ -48,6 +48,11 @@ export type FlexJustifyContentType =
   | 'space-around'
   | 'space-between'
   | 'space-evenly'
+
+export interface IWalletImage {
+  src: string
+  walletName: string
+}
 
 export type GridContentType =
   | 'center'

@@ -13,6 +13,7 @@ export class WuiButton extends LitElement {
   public static styles = [globalStyles, styles]
 
   // -- state & properties ------------------------------------------- //
+
   @property() public size: Exclude<SizeType, 'inherit' | 'lg' | 'xs' | 'xxs'> = 'md'
 
   @property({ type: Object }) public iconLeft?: TemplateResult<2> = undefined
@@ -23,25 +24,26 @@ export class WuiButton extends LitElement {
 
   @property() public variant: 'accent' | 'fill' | 'shade' = 'fill'
 
+  private textColor: ColorType = 'inverse-100'
+
   @property() public onClick: (event: PointerEvent) => void = () => null
 
   // -- render ------------------------------------------------------- //
   public render() {
-    let textColor: ColorType = 'inverse-100'
     switch (this.variant) {
       case 'accent':
-        textColor = 'blue-100'
+        this.textColor = 'blue-100'
         break
       case 'shade':
-        textColor = 'fg-200'
+        this.textColor = 'fg-200'
         break
       case 'fill':
-        textColor = 'inverse-100'
+        this.textColor = 'inverse-100'
         break
       default:
-        textColor = 'inverse-100'
+        this.textColor = 'inverse-100'
     }
-    textColor = this.disabled ? 'inherit' : textColor
+    this.textColor = this.disabled ? 'inherit' : this.textColor
 
     const textVariant = this.size === 'md' ? 'paragraph-600' : 'small-600'
 
@@ -51,27 +53,35 @@ export class WuiButton extends LitElement {
       'wui-variant-transparent': this.variant === 'shade' || this.variant === 'accent'
     }
 
-    const iconLeftHtml = this.iconLeft
-      ? html`<wui-icon size="sm" color=${textColor}>${this.iconLeft}</wui-icon>`
-      : undefined
-
-    const iconRightHtml = this.iconRight
-      ? html`<wui-icon size="sm" color=${textColor}>${this.iconRight}</wui-icon>`
-      : undefined
-
     return html`
       <button
         class="${classMap(classes)}"
         ?disabled=${this.disabled}
         @click=${this.onClick.bind(this)}
       >
-        ${iconLeftHtml}
-        <wui-text variant=${textVariant} color=${textColor}>
+        ${this.templateIconRight()}
+        <wui-text variant=${textVariant} color=${this.textColor}>
           <slot></slot>
         </wui-text>
-        ${iconRightHtml}
+        ${this.templateIconLeft()}
       </button>
     `
+  }
+
+  private templateIconRight() {
+    if (this.iconRight) {
+      return html`<wui-icon size="sm" color=${this.textColor}>${this.iconRight}</wui-icon>`
+    }
+
+    return null
+  }
+
+  private templateIconLeft() {
+    if (this.iconLeft) {
+      return html`<wui-icon size="sm" color=${this.textColor}>${this.iconLeft}</wui-icon>`
+    }
+
+    return null
   }
 }
 
