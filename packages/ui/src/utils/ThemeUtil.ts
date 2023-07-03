@@ -187,6 +187,11 @@ export const globalStyles = css`
     background-color: var(--wui-overlay-010);
   }
 
+  button:disabled > wui-wallet-image,
+  button:disabled > wui-all-wallets-image {
+    filter: grayscale(1);
+  }
+
   button:focus {
     background-color: var(--wui-overlay-005);
     border: 1px solid var(--wui-color-blue-100);
