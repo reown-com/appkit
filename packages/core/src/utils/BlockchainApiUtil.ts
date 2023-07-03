@@ -19,7 +19,7 @@ export const BlockchainApiUtil = {
       // Profile not found
       return null
     } else if (response.status !== 200) {
-      throw new Error("Problem resolving profile: " + response.status)
+      throw new Error('Problem resolving profile: ' + response.status)
     } else {
       return response.json()
     }
