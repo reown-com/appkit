@@ -1,5 +1,3 @@
-'use client'
-
 import { Web3Modal } from '@web3modal/wagmi'
 import { configureChains, createConfig, mainnet, WagmiConfig } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
