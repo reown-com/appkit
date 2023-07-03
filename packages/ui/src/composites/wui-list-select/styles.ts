@@ -3,7 +3,7 @@ import { css } from 'lit'
 export default css`
   button {
     display: flex;
-    justify-content: space-between;
+    column-gap: var(--wui-spacing-s);
     align-items: center;
     width: 336px;
     padding: 8px 16px 8px 8px;
@@ -12,6 +12,11 @@ export default css`
     border: 1px solid transparent;
     transition: all 200ms ease-in-out;
     cursor: pointer;
+  }
+
+  button > wui-text:nth-child(2) {
+    display: flex;
+    flex: 1;
   }
 
   button:focus {
@@ -28,11 +33,5 @@ export default css`
     button:active:enabled {
       background-color: var(--wui-overlay-010);
     }
-  }
-
-  button > div:nth-child(1) {
-    display: flex;
-    align-items: center;
-    column-gap: var(--wui-spacing-s);
   }
 `

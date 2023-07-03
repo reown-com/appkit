@@ -16,40 +16,31 @@ export class WuiListSelect extends LitElement {
 
   @property() public imageSrc? = ''
 
-  @property() public listName = ''
+  @property() public name = ''
 
-  @property() public listStatus?: string
+  @property() public status?: 'installed' | 'qr code' | 'recent'
 
   @property({ type: Boolean }) public showAllWallets = false
 
   // -- render ------------------------------------------------------- //
   public render() {
-    const getWalletComponent = () => {
-      if (this.showAllWallets && this.walletImages) {
-        return html`<wui-all-wallets-image
-          .walletImages=${this.walletImages}
-        ></wui-all-wallets-image>`
-      } else if (this.imageSrc) {
-        return html`<wui-wallet-image
-          size="sm"
-          src=${this.imageSrc}
-          alt=${this.listName}
-        ></wui-wallet-image>`
-      }
-
-      return undefined
-    }
+    const visual =
+      this.showAllWallets && this.walletImages
+        ? html`<wui-all-wallets-image .walletImages=${this.walletImages}></wui-all-wallets-image>`
+        : this.imageSrc &&
+          html`<wui-wallet-image
+            size="sm"
+            src=${this.imageSrc}
+            alt=${this.name}
+          ></wui-wallet-image>`
 
     const status =
-      this.listStatus &&
-      html` <wui-text variant="micro-700" color="fg-300">${this.listStatus}</wui-text> `
+      this.status && html` <wui-text variant="micro-700" color="fg-300">${this.status}</wui-text> `
 
     return html`
       <button>
-        <div>
-          ${getWalletComponent()}
-          <wui-text variant="paragraph-500" color="fg-100">${this.listName}</wui-text>
-        </div>
+        ${visual}
+        <wui-text variant="paragraph-500" color="fg-100">${this.name}</wui-text>
         ${status}
       </button>
     `

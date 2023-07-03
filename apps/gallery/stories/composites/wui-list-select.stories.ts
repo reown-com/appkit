@@ -12,9 +12,9 @@ export default {
     walletImages: walletImagesOptions,
     imageSrc:
       'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7a33d7f1-3d12-4b5c-f3ee-5cd83cb1b500?projectId=a8d876c6f91c3748db621583fad358f1',
-    listName: 'Rainbow',
+    name: 'Rainbow',
     showAllWallets: false,
-    listStatus: ''
+    status: 'recent'
   },
   argTypes: {
     showAllWallets: {
@@ -29,7 +29,7 @@ export const Default: Component = {
       .imageSrc=${args.imageSrc}
       .walletImages=${args.walletImages}
       .showAllWallets=${args.showAllWallets}
-      .listStatus=${args.listStatus}
-      listName=${args.listName}
+      .status=${args.status}
+      name=${args.name}
     ></wui-list-select>`
 }
