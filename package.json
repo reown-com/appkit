@@ -1,6 +1,6 @@
 {
   "name": "web3modal",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -21,6 +21,8 @@
   "workspaces": [
     "packages/ui",
     "packages/core",
+    "packages/scaffold-html",
+    "packages/wagmi",
     "apps/gallery",
     "apps/laboratory"
   ],
@@ -29,12 +31,12 @@
     "@typescript-eslint/parser": "5.60.1",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
-    "eslint": "8.43.0",
+    "eslint": "8.44.0",
     "eslint-config-prettier": "8.8.0",
     "lerna": "7.1.1",
     "prettier": "2.8.8",
     "typescript": "5.1.6",
-    "vitest": "0.32.2",
+    "vitest": "0.32.3",
     "danger": "11.2.6",
     "react": "18.2.0",
     "react-dom": "18.2.0"
