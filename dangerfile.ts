@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { danger, warn, fail } from 'danger'
+import { danger, fail, warn } from 'danger'
 
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
@@ -28,3 +28,29 @@ async function checkStrictDependencies() {
   }
 }
 checkStrictDependencies()
+
+// -- Ui Package Checks -------------------------------------------------------
+async function checkCreatedUiFiles() {
+  const created_ui_components = created_files.filter(f => f.includes('ui/src/components'))
+  const created_ui_composites = created_files.filter(f => f.includes('ui/src/composites'))
+  const create_ui_components_tests = created_files.filter(f => f.includes('stories/components'))
+  const create_ui_composites_tests = created_files.filter(f => f.includes('stories/composites'))
+  const ui_index_diff = await diffForFile('ui/index.ts')
+
+  if (created_ui_components.length && !ui_index_diff?.added.includes('src/components')) {
+    fail('New components were added, but not exported in ui/index.ts')
+  }
+
+  if (created_ui_composites.length && !ui_index_diff?.added.includes('src/composites')) {
+    fail('New composites were added, but not exported in ui/index.ts')
+  }
+
+  if (created_ui_components.length && !create_ui_components_tests.length) {
+    fail('New components were added, but no tests were created')
+  }
+
+  if (created_ui_composites.length && !create_ui_composites_tests.length) {
+    fail('New composites were added, but no tests were created')
+  }
+}
+checkCreatedUiFiles()

@@ -36,7 +36,7 @@
     "lerna": "7.1.1",
     "prettier": "2.8.8",
     "typescript": "5.1.6",
-    "vitest": "0.32.2",
+    "vitest": "0.32.3",
     "danger": "11.2.6",
     "react": "18.2.0",
     "react-dom": "18.2.0"
