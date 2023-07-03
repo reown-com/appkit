@@ -176,11 +176,38 @@ export const globalStyles = css`
     justify-content: center;
     align-items: center;
     position: relative;
+    transition: all 200ms ease-in-out;
+    border: 1px solid transparent;
+    column-gap: var(--wui-spacing-3xs);
+    background-color: transparent;
   }
 
   button:disabled {
     cursor: not-allowed;
+    background-color: var(--wui-overlay-010);
   }
+
+  button:disabled > wui-wallet-image,
+  button:disabled > wui-all-wallets-image {
+    filter: grayscale(1);
+  }
+
+  button:focus {
+    background-color: var(--wui-overlay-005);
+    border: 1px solid var(--wui-color-blue-100);
+    -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+    -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+    box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    button:hover:enabled {
+      background-color: var(--wui-overlay-005);
+    }
+
+    button:active:enabled {
+      background-color: var(--wui-overlay-010);
+    }
 
   input {
     border: none;
