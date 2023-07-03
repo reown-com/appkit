@@ -13,8 +13,8 @@ export default css`
   }
 
   button:focus {
-    -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue); /* For Safari */
-    -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue); /* For Firefox */
+    -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+    -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
     box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
   }
 
