@@ -44,10 +44,8 @@ export const AccountCtrl = {
       if (address && isMainnetConfigured) {
         try {
           const profile = await BlockchainApiUtil.getIdentity(address, mainnetId)
-          if (profile) {
-            state.profileName = profile.name
-            state.profileAvatar = profile.avatar
-          }
+          state.profileName = profile.name
+          state.profileAvatar = profile.avatar
         } catch {
           // If problem resolving the identity using our own Identity API, fallback to RPC resolution
           const name = await ClientCtrl.client().fetchEnsName({ address, chainId: mainnetId })
