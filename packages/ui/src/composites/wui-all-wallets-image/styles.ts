@@ -13,7 +13,7 @@ export default css`
     align-items: center;
     flex-wrap: wrap;
     gap: 2px;
-    padding: 3.5px;
+    padding: 3.5px !important;
   }
 
   :host::after {
