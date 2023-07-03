@@ -39,12 +39,23 @@ export type FlexGrowType = '0' | '1'
 
 export type FlexShrinkType = '0' | '1'
 
-export type AlignItemsType = 'baseline' | 'center' | 'flex-end' | 'flex-start' | 'stretch'
+export type FlexAlignItemsType = 'baseline' | 'center' | 'flex-end' | 'flex-start' | 'stretch'
 
-export type JustifyContentType =
+export type FlexJustifyContentType =
   | 'center'
   | 'flex-end'
   | 'flex-start'
   | 'space-around'
   | 'space-between'
   | 'space-evenly'
+
+export type GridContentType =
+  | 'center'
+  | 'end'
+  | 'space-around'
+  | 'space-between'
+  | 'space-evenly'
+  | 'start'
+  | 'stretch'
+
+export type GridItemsType = 'center' | 'end' | 'start' | 'stretch'

@@ -9,8 +9,8 @@ import {
   flexBasisOptions,
   flexGrowOptions,
   flexShrinkOptions,
-  alignItemsOptions,
-  justifyContentOptions,
+  flexAlignItemsOptions,
+  flexJustifyContentOptions,
   spacingOptions
 } from '../../utils/PresetUtils'
 
@@ -18,6 +18,9 @@ type Component = Meta<WuiFlex>
 
 export default {
   title: 'Layout/wui-flex',
+  args: {
+    gap: 'm'
+  },
   argTypes: {
     flexDirection: {
       options: flexDirectionOptions,
@@ -40,23 +43,23 @@ export default {
       control: { type: 'select' }
     },
     alignItems: {
-      options: alignItemsOptions,
+      options: flexAlignItemsOptions,
       control: { type: 'select' }
     },
     justifyContent: {
-      options: justifyContentOptions,
+      options: flexJustifyContentOptions,
       control: { type: 'select' }
     },
     columnGap: {
-      options: spacingOptions,
+      options: [...spacingOptions, undefined],
       control: { type: 'select' }
     },
     rowGap: {
-      options: spacingOptions,
+      options: [...spacingOptions, undefined],
       control: { type: 'select' }
     },
     gap: {
-      options: spacingOptions,
+      options: [...spacingOptions, undefined],
       control: { type: 'select' }
     }
   }

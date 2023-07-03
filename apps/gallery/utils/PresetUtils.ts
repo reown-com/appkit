@@ -6,10 +6,12 @@ import type {
   FlexBasisType,
   FlexGrowType,
   FlexShrinkType,
-  AlignItemsType,
-  JustifyContentType,
+  FlexAlignItemsType,
+  FlexJustifyContentType,
   BorderRadiusType,
-  SpacingType
+  SpacingType,
+  GridContentType,
+  GridItemsType
 } from '@web3modal/ui/src/utils/TypesUtil'
 
 export const colorOptions: ColorType[] = [
@@ -60,7 +62,7 @@ export const flexGrowOptions: FlexGrowType[] = ['0', '1']
 
 export const flexShrinkOptions: FlexShrinkType[] = ['0', '1']
 
-export const alignItemsOptions: AlignItemsType[] = [
+export const flexAlignItemsOptions: FlexAlignItemsType[] = [
   'baseline',
   'center',
   'flex-end',
@@ -68,7 +70,7 @@ export const alignItemsOptions: AlignItemsType[] = [
   'stretch'
 ]
 
-export const justifyContentOptions: JustifyContentType[] = [
+export const flexJustifyContentOptions: FlexJustifyContentType[] = [
   'center',
   'flex-end',
   'flex-start',
@@ -77,17 +79,18 @@ export const justifyContentOptions: JustifyContentType[] = [
   'space-evenly'
 ]
 
-export const borderRadiusOptions: BorderRadiusType[] = ['3xs', '4xs', 'l', 'm', 's', 'xxs']
-
-export const spacingOptions: SpacingType[] = [
-  '3xl',
-  '3xs',
-  '4xs',
-  'l',
-  'm',
-  's',
-  'xl',
-  'xs',
-  'xxl',
-  'xxs'
+export const gridContentOptions: GridContentType[] = [
+  'center',
+  'end',
+  'space-around',
+  'space-between',
+  'space-evenly',
+  'start',
+  'stretch'
 ]
+
+export const gridItemsOptions: GridItemsType[] = ['center', 'end', 'start', 'stretch']
+
+export const borderRadiusOptions: BorderRadiusType[] = ['4xs', '3xs', 'xxs', 'xs', 's', 'm', 'l']
+
+export const spacingOptions: SpacingType[] = ['4xs', '3xs', 'xxs', 'xs', 's', 'm', 'l', 'xl', '3xl']
