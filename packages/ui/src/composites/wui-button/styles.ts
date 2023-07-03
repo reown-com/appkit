@@ -13,6 +13,8 @@ export default css`
   }
 
   button:focus {
+    -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue); /* For Safari */
+    -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue); /* For Firefox */
     box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
   }
 
@@ -21,7 +23,7 @@ export default css`
   }
 
   .wui-size-md {
-    padding: 8.5px 16px 10.5px 16px;
+    padding: 9px 16px 10px 16px;
   }
 
   .wui-variant-transparent {
