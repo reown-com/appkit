@@ -1,5 +1,5 @@
+import { describe, expect, it } from 'vitest'
 import { AccountController } from '../../index'
-import { describe, it, expect } from 'vitest'
 
 // -- Setup --------------------------------------------------------------------
 const address = '0x123'
@@ -9,9 +9,9 @@ const profileImage = 'https://ipfs.com/0x123.png'
 
 const client = {
   getAddress: async () => Promise.resolve(address),
-  getBalance: async () => Promise.resolve(balance),
-  getProfileName: async () => Promise.resolve(profileName),
-  getProfileImage: async () => Promise.resolve(profileImage)
+  getBalance: async (_address: string) => Promise.resolve(balance),
+  getProfile: async (_address: string) =>
+    Promise.resolve({ name: profileName, image: profileImage })
 }
 
 const partialClient = {
@@ -41,24 +41,19 @@ describe('ModalController', () => {
   })
 
   it('should update state correctly on getBalance()', async () => {
-    await AccountController.getBalance()
+    await AccountController.getBalance(AccountController.state.address)
     expect(AccountController.state.balance).toEqual(balance)
   })
 
-  it('should update state correctly on getProfileName()', async () => {
-    await AccountController.getProfileName()
+  it('should update state correctly on getProfile()', async () => {
+    await AccountController.getProfile(AccountController.state.address)
     expect(AccountController.state.profileName).toEqual(profileName)
-  })
-
-  it('should update state correctly on getProfileImage()', async () => {
-    await AccountController.getProfileImage()
     expect(AccountController.state.profileImage).toEqual(profileImage)
   })
 
   it('when optional methods are undefined', async () => {
     AccountController.setClient(partialClient)
 
-    await AccountController.getProfileName()
-    await AccountController.getProfileImage()
+    await AccountController.getProfile(AccountController.state.address)
   })
 })

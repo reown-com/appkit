@@ -3,9 +3,13 @@ import { proxy, ref } from 'valtio/vanilla'
 // -- Types --------------------------------------------------------------------
 export interface AccountControllerClient {
   getAddress: () => Promise<AccountControllerState['address']>
-  getBalance: () => Promise<AccountControllerState['balance']>
-  getProfileName?: () => Promise<AccountControllerState['profileName']>
-  getProfileImage?: () => Promise<AccountControllerState['profileImage']>
+  getBalance: (
+    address: AccountControllerState['address']
+  ) => Promise<AccountControllerState['balance']>
+  getProfile?: (address: AccountControllerState['address']) => Promise<{
+    name: AccountControllerState['profileName']
+    image: AccountControllerState['profileImage']
+  }>
 }
 
 export interface AccountControllerState {
@@ -43,15 +47,13 @@ export const AccountController = {
     this.state.address = await this._getClient().getAddress()
   },
 
-  async getBalance() {
-    this.state.balance = await this._getClient().getBalance()
+  async getBalance(address: AccountControllerState['address']) {
+    this.state.balance = await this._getClient().getBalance(address)
   },
 
-  async getProfileName() {
-    this.state.profileName = await this._getClient().getProfileName?.()
-  },
-
-  async getProfileImage() {
-    this.state.profileImage = await this._getClient().getProfileImage?.()
+  async getProfile(address: AccountControllerState['address']) {
+    const profile = await this._getClient().getProfile?.(address)
+    this.state.profileName = profile?.name
+    this.state.profileImage = profile?.image
   }
 }

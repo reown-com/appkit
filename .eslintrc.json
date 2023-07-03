@@ -12,7 +12,7 @@
     "func-style": ["error", "declaration"],
     "newline-before-return": "error",
     "one-var": ["error", "never"],
-    "no-console": ["error", { "allow": ["info"] }],
+    "no-console": ["error", { "allow": ["warn"] }],
     "curly": "error",
     "sort-imports": "off",
     "sort-keys": "off",
@@ -28,6 +28,7 @@
     "max-lines": "off",
     "no-async-promise-executor": "off",
     "no-underscore-dangle": "off",
+    "no-undef-init": "off",
 
     // Typescript
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
