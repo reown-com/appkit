@@ -28,6 +28,11 @@ export default css`
     height: inherit;
   }
 
+  .wui-size-inherit > wui-icon {
+    width: 75%;
+    height: 75%;
+  }
+
   .wui-size-sm {
     border-radius: var(--wui-border-radius-xxs);
     width: 40px;

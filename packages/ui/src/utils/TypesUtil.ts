@@ -13,8 +13,8 @@ export type TextType =
   | 'large-500'
   | 'large-600'
   | 'large-700'
-  | 'micro-500'
   | 'micro-600'
+  | 'micro-700'
   | 'paragraph-500'
   | 'paragraph-600'
   | 'paragraph-700'
@@ -39,12 +39,28 @@ export type FlexGrowType = '0' | '1'
 
 export type FlexShrinkType = '0' | '1'
 
-export type AlignItemsType = 'baseline' | 'center' | 'flex-end' | 'flex-start' | 'stretch'
+export type FlexAlignItemsType = 'baseline' | 'center' | 'flex-end' | 'flex-start' | 'stretch'
 
-export type JustifyContentType =
+export type FlexJustifyContentType =
   | 'center'
   | 'flex-end'
   | 'flex-start'
   | 'space-around'
   | 'space-between'
   | 'space-evenly'
+
+export interface IWalletImage {
+  src: string
+  walletName: string
+}
+
+export type GridContentType =
+  | 'center'
+  | 'end'
+  | 'space-around'
+  | 'space-between'
+  | 'space-evenly'
+  | 'start'
+  | 'stretch'
+
+export type GridItemsType = 'center' | 'end' | 'start' | 'stretch'
