@@ -130,6 +130,17 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
         await connector.connect()
       },
 
+      async connectThirdPartyWallet(id) {
+        const connector = wagmiClient.connectors.find(c => c.name === id)
+        if (!connector) {
+          throw new Error(
+            'connectionControllerClient:connectThirdPartyWallet - connector is undefined'
+          )
+        }
+
+        await connector.connect()
+      },
+
       disconnect
     }
 

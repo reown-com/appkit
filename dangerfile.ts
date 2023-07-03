@@ -60,7 +60,7 @@ async function checkUiPackage() {
 checkUiPackage()
 
 // -- Core Package Checks -----------------------------------------------------
-async function checkCorePackage() {
+function checkCorePackage() {
   const created_core_controllers = created_files.filter(f => f.includes('core/src/controllers'))
   const created_core_controllers_tests = created_files.filter(f =>
     f.includes('core/tests/controllers')
