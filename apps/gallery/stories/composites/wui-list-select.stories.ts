@@ -1,5 +1,6 @@
 import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-list-select'
+import '../../components/gallery-container'
 import type { WuiListSelect } from '@web3modal/ui/src/composites/wui-list-select'
 import { html } from 'lit'
 import { walletImagesOptions } from '../../utils/PresetUtils'
@@ -25,11 +26,13 @@ export default {
 
 export const Default: Component = {
   render: args =>
-    html`<wui-list-select
-      .imageSrc=${args.imageSrc}
-      .walletImages=${args.walletImages}
-      .showAllWallets=${args.showAllWallets}
-      .status=${args.status}
-      name=${args.name}
-    ></wui-list-select>`
+    html` <gallery-container width="336">
+      <wui-list-select
+        .imageSrc=${args.imageSrc}
+        .walletImages=${args.walletImages}
+        .showAllWallets=${args.showAllWallets}
+        .status=${args.status}
+        name=${args.name}
+      ></wui-list-select>
+    </gallery-container>`
 }

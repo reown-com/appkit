@@ -24,26 +24,43 @@ export class WuiListSelect extends LitElement {
 
   // -- render ------------------------------------------------------- //
   public render() {
-    const visual =
-      this.showAllWallets && this.walletImages
-        ? html`<wui-all-wallets-image .walletImages=${this.walletImages}></wui-all-wallets-image>`
-        : this.imageSrc &&
-          html`<wui-wallet-image
-            size="sm"
-            src=${this.imageSrc}
-            alt=${this.name}
-          ></wui-wallet-image>`
-
-    const status =
-      this.status && html` <wui-text variant="micro-700" color="fg-300">${this.status}</wui-text> `
-
     return html`
       <button>
-        ${visual}
+        ${this.templateAllWallets()} ${this.templateWalletImage()}
         <wui-text variant="paragraph-500" color="fg-100">${this.name}</wui-text>
-        ${status}
+        ${this.templateStatus()}
       </button>
     `
+  }
+
+  private templateAllWallets() {
+    if (this.showAllWallets && this.walletImages) {
+      return html`<wui-all-wallets-image
+        .walletImages=${this.walletImages}
+      ></wui-all-wallets-image>`
+    }
+
+    return null
+  }
+
+  private templateWalletImage() {
+    if (!this.showAllWallets && this.imageSrc) {
+      return html`<wui-wallet-image
+        size="sm"
+        src=${this.imageSrc}
+        alt=${this.name}
+      ></wui-wallet-image>`
+    }
+
+    return null
+  }
+
+  private templateStatus() {
+    if (this.status) {
+      return html` <wui-text variant="micro-700" color="fg-300">${this.status}</wui-text> `
+    }
+
+    return null
   }
 }
 
