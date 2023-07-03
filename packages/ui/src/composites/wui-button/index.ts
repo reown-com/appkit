@@ -43,7 +43,7 @@ export class WuiButton extends LitElement {
     }
     textColor = this.disabled ? 'inherit' : textColor
 
-    const textVariant = this.size === 'md' ? 'md-semibold' : 'sm-semibold'
+    const textVariant = this.size === 'md' ? 'paragraph-600' : 'small-600'
 
     const classes = {
       [`wui-size-${this.size}`]: true,

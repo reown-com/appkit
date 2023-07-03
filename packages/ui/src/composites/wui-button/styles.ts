@@ -17,11 +17,11 @@ export default css`
   }
 
   .wui-size-sm {
-    padding: 5px 10px;
+    padding: 6.75px 10px 7.25px;
   }
 
   .wui-size-md {
-    padding: 4px 16px 5px 16px;
+    padding: 8.5px 16px 10.5px 16px;
   }
 
   .wui-variant-transparent {
