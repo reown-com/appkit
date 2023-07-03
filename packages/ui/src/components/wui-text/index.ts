@@ -3,32 +3,21 @@ import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { globalStyles, colorStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
-import type { Color } from '../../utils/TypesUtil'
-
-type Variant =
-  | 'lg-medium'
-  | 'lg-semibold'
-  | 'md-bold'
-  | 'md-medium'
-  | 'md-numerals'
-  | 'md-semibold'
-  | 'sm-medium'
-  | 'sm-semibold'
-  | 'xxs-bold'
+import type { ColorType, TextType } from '../../utils/TypesUtil'
 
 @customElement('wui-text')
 export class WuiText extends LitElement {
   public static styles = [globalStyles, colorStyles, styles]
 
   // -- state & properties ------------------------------------------- //
-  @property() public variant: Variant = 'md-medium'
+  @property() public variant: TextType = 'paragraph-500'
 
-  @property() public color: Color = 'fg-300'
+  @property() public color: ColorType = 'fg-300'
 
   // -- render ------------------------------------------------------- //
   public render() {
     const classes = {
-      [`wui-${this.variant}`]: true,
+      [`wui-font-${this.variant}`]: true,
       [`wui-color-${this.color}`]: true
     }
 

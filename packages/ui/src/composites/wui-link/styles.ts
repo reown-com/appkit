@@ -3,7 +3,7 @@ import { css } from 'lit'
 export default css`
   button {
     padding: 2px 6px;
-    column-gap: 4px;
+    column-gap: var(--wui-spacing-3xs);
     transition: all 200ms ease-in-out;
     border-radius: var(--wui-border-radius-3xs);
     background-color: transparent;

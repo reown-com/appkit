@@ -16,22 +16,22 @@ export function setColorTheme(theme: string) {
 export const rootStyles = css`
   :root {
     --wui-font-family: 'SF Pro Text', 'Segoe UI', Roboto, Ubuntu, 'Helvetica Neue', sans-serif;
-    --wui-font-size-xxs: 10px;
-    --wui-font-size-sm: 14px;
-    --wui-font-size-md: 16px;
-    --wui-font-size-lg: 20px;
 
-    --wui-font-weight-medium: 500;
-    --wui-font-weight-semibold: 600;
+    --wui-font-size-micro: 10px;
+    --wui-font-size-tiny: 12px;
+    --wui-font-size-small: 14px;
+    --wui-font-size-paragraph: 16px;
+    --wui-font-size-large: 20px;
+
+    --wui-font-weight-regular: 500;
+    --wui-font-weight-medium: 600;
     --wui-font-weight-bold: 700;
 
-    --wui-letter-spacing-sm: -0.02em;
-    --wui-letter-spacing-md: -0.03em;
-    --wui-letter-spacing-lg: -0.05em;
-
-    --wui-line-height-sm: 120%;
-    --wui-line-height-md: 125%;
-    --wui-line-height-lg: 130%;
+    --wui-letter-spacing-large: -0.8px;
+    --wui-letter-spacing-paragraph: -0.64px;
+    --wui-letter-spacing-small: -0.56px;
+    --wui-letter-spacing-tiny: -0.48px;
+    --wui-letter-spacing-micro: -0.2px;
 
     --wui-color-inherit: inherit;
 
@@ -43,6 +43,17 @@ export const rootStyles = css`
     --wui-border-radius-m: 28px;
     --wui-border-radius-l: 36px;
     --wui-border-radius-3xl: 80px;
+
+    --wui-spacing-4xs: 2px;
+    --wui-spacing-3xs: 4px;
+    --wui-spacing-xxs: 6px;
+    --wui-spacing-xs: 8px;
+    --wui-spacing-s: 12px;
+    --wui-spacing-m: 14px;
+    --wui-spacing-l: 16px;
+    --wui-spacing-xl: 20px;
+    --wui-spacing-xxl: 24px;
+    --wui-spacing-3xl: 40px;
   }
 
   [data-wui-theme='dark'] {

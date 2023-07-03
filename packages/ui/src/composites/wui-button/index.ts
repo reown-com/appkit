@@ -6,14 +6,14 @@ import { globalStyles } from '../../utils/ThemeUtil'
 import '../../components/wui-text'
 import '../../components/wui-icon'
 import styles from './styles'
-import type { Color, Size } from '../../utils/TypesUtil'
+import type { ColorType, SizeType } from '../../utils/TypesUtil'
 
 @customElement('wui-button')
 export class WuiButton extends LitElement {
   public static styles = [globalStyles, styles]
 
   // -- state & properties ------------------------------------------- //
-  @property() public size: Exclude<Size, 'inherit' | 'lg' | 'xs' | 'xxs'> = 'md'
+  @property() public size: Exclude<SizeType, 'inherit' | 'lg' | 'xs' | 'xxs'> = 'md'
 
   @property({ type: Object }) public iconLeft?: TemplateResult<2> = undefined
 
@@ -27,7 +27,7 @@ export class WuiButton extends LitElement {
 
   // -- render ------------------------------------------------------- //
   public render() {
-    let textColor: Color = 'inverse-100'
+    let textColor: ColorType = 'inverse-100'
     switch (this.variant) {
       case 'accent':
         textColor = 'blue-100'
@@ -43,7 +43,7 @@ export class WuiButton extends LitElement {
     }
     textColor = this.disabled ? 'inherit' : textColor
 
-    const textVariant = this.size === 'md' ? 'md-semibold' : 'sm-semibold'
+    const textVariant = this.size === 'md' ? 'paragraph-600' : 'small-600'
 
     const classes = {
       [`wui-size-${this.size}`]: true,
