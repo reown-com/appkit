@@ -34,7 +34,7 @@ export class WuiLink extends LitElement {
     return html`
       <button ?disabled=${this.disabled} @click=${this.onClick.bind(this)}>
         ${iconLeftHtml}
-        <wui-text variant="sm-semibold" color=${textColor}>
+        <wui-text variant="small-600" color=${textColor}>
           <slot></slot>
         </wui-text>
         ${iconRightHtml}
