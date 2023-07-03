@@ -59,11 +59,11 @@ export class WuiButton extends LitElement {
         ?disabled=${this.disabled}
         @click=${this.onClick.bind(this)}
       >
-        ${this.templateIconRight()}
+        ${this.templateIconLeft()}
         <wui-text variant=${textVariant} color=${this.textColor}>
           <slot></slot>
         </wui-text>
-        ${this.templateIconLeft()}
+        ${this.templateIconRight()}
       </button>
     `
   }
