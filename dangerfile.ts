@@ -19,7 +19,7 @@ if (yarnLock || pnpmLock) {
   fail('Non npm lockfile(s) detected (yarn / pnpm), please use npm')
 }
 
-async function checkStrictDependencies() {
+async function checkPackageJsons() {
   for (const f of packageJsons) {
     const diff = await diffForFile(f)
     if (diff && (diff.added.includes('^') || diff.added.includes('~'))) {
@@ -27,14 +27,18 @@ async function checkStrictDependencies() {
     }
   }
 }
-checkStrictDependencies()
+checkPackageJsons()
 
 // -- Ui Package Checks -------------------------------------------------------
-async function checkCreatedUiFiles() {
+async function checkUiPackage() {
   const created_ui_components = created_files.filter(f => f.includes('ui/src/components'))
   const created_ui_composites = created_files.filter(f => f.includes('ui/src/composites'))
-  const create_ui_components_tests = created_files.filter(f => f.includes('stories/components'))
-  const create_ui_composites_tests = created_files.filter(f => f.includes('stories/composites'))
+  const created_ui_components_stories = created_files.filter(f =>
+    f.includes('gallery/stories/components')
+  )
+  const created_ui_composites_stories = created_files.filter(f =>
+    f.includes('gallery/stories/composites')
+  )
   const ui_index_diff = await diffForFile('ui/index.ts')
 
   if (created_ui_components.length && !ui_index_diff?.added.includes('src/components')) {
@@ -45,12 +49,25 @@ async function checkCreatedUiFiles() {
     fail('New composites were added, but not exported in ui/index.ts')
   }
 
-  if (created_ui_components.length && !create_ui_components_tests.length) {
+  if (created_ui_components.length && !created_ui_components_stories.length) {
     fail('New components were added, but no tests were created')
   }
 
-  if (created_ui_composites.length && !create_ui_composites_tests.length) {
+  if (created_ui_composites.length && !created_ui_composites_stories.length) {
     fail('New composites were added, but no tests were created')
   }
 }
-checkCreatedUiFiles()
+checkUiPackage()
+
+// -- Core Package Checks -----------------------------------------------------
+async function checkCorePackage() {
+  const created_core_controllers = created_files.filter(f => f.includes('core/src/controllers'))
+  const created_core_controllers_tests = created_files.filter(f =>
+    f.includes('core/tests/controllers')
+  )
+
+  if (created_core_controllers.length && !created_core_controllers_tests.length) {
+    fail('New controllers were added, but no tests were created')
+  }
+}
+checkCorePackage()
