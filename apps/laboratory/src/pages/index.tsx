@@ -13,6 +13,7 @@ const wagmiClient = createConfig({
 })
 
 const modal = new Web3Modal({ wagmiClient })
+console.warn(modal)
 
 export default function Home() {
   return (

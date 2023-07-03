@@ -1,12 +1,13 @@
+import { describe, expect, it } from 'vitest'
+import type { NetworkControllerClient } from '../../index'
 import { NetworkController } from '../../index'
-import { describe, it, expect } from 'vitest'
 
 // -- Setup --------------------------------------------------------------------
 const activeNetwork = '1'
 const requestedNetworks = ['1', '2', '3']
 const approvedNetworks = ['1', '2']
 
-const client = {
+const client: NetworkControllerClient = {
   getActiveNetwork: async () => Promise.resolve(activeNetwork),
   getRequestedNetworks: async () => Promise.resolve(requestedNetworks),
   getApprovedNetworks: async () => Promise.resolve(approvedNetworks),

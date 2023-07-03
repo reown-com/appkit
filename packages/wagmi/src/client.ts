@@ -1,5 +1,6 @@
 import type { Config } from '@wagmi/core'
 import {
+  disconnect,
   fetchBalance,
   fetchEnsAvatar,
   fetchEnsName,
@@ -13,6 +14,10 @@ import type {
   NetworkControllerClient
 } from '@web3modal/core'
 import { Web3ModalScaffoldHtml } from '@web3modal/scaffold-html'
+
+// -- Helpers -------------------------------------------------------------------
+const WALLET_CONNECT_ID = 'walletconnect'
+const INJECTED_ID = 'injected'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalOptions {
@@ -99,7 +104,34 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       }
     }
 
-    const connectionControllerClient: ConnectionControllerClient = {}
+    const connectionControllerClient: ConnectionControllerClient = {
+      async connectWalletConnect(onUri) {
+        const connector = wagmiClient.connectors.find(c => c.name === WALLET_CONNECT_ID)
+        if (!connector) {
+          throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
+        }
+        connector.once('message', event => {
+          if (event.type === 'display_uri') {
+            onUri(event.data as string)
+          }
+        })
+
+        await connector.connect()
+      },
+
+      async connectBrowserExtension(_id) {
+        const connector = wagmiClient.connectors.find(c => c.name === INJECTED_ID)
+        if (!connector) {
+          throw new Error(
+            'connectionControllerClient:connectBrowserExtension - connector is undefined'
+          )
+        }
+
+        await connector.connect()
+      },
+
+      disconnect
+    }
 
     super({
       accountControllerClient,

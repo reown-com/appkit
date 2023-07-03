@@ -1,23 +1,26 @@
+import { describe, expect, it } from 'vitest'
+import type { ConnectionControllerClient } from '../../index'
 import { ConnectionController } from '../../index'
-import { describe, it, expect } from 'vitest'
 
 // -- Setup --------------------------------------------------------------------
 const walletConnectUri = 'wc://uri?=123'
 const browserExtensionId = 'isMetaMask'
 const thirdPartyWalletId = 'coinbase'
 
-const client = {
-  getWalletConnectUri: async () => Promise.resolve(walletConnectUri),
-  connectWalletConnect: async () => Promise.resolve(),
+const client: ConnectionControllerClient = {
+  connectWalletConnect: async onUri => {
+    onUri(walletConnectUri)
+    await Promise.resolve()
+  },
   disconnect: async () => Promise.resolve(),
-  connectBrowserExtension: async (_id: string) => Promise.resolve(),
-  connectThirdPartyWallet: async (_id: string) => Promise.resolve()
+  connectBrowserExtension: async _id => Promise.resolve(),
+  connectThirdPartyWallet: async _id => Promise.resolve()
 }
 
-const partialClient = {
-  getWalletConnectUri: async () => Promise.resolve(walletConnectUri),
+const partialClient: ConnectionControllerClient = {
   connectWalletConnect: async () => Promise.resolve(),
-  disconnect: async () => Promise.resolve()
+  disconnect: async () => Promise.resolve(),
+  connectBrowserExtension: async (_id: string) => Promise.resolve()
 }
 
 // -- Tests --------------------------------------------------------------------
@@ -33,11 +36,6 @@ describe('ModalController', () => {
       _client: ConnectionController._getClient(),
       walletConnectUri: ''
     })
-  })
-
-  it('should update state correctly on getWalletConnectUri()', async () => {
-    await ConnectionController.getWalletConnectUri()
-    expect(ConnectionController.state.walletConnectUri).toEqual(walletConnectUri)
   })
 
   it('should update state correctly on disconnect()', async () => {

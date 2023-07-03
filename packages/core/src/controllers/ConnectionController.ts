@@ -2,10 +2,9 @@ import { proxy, ref } from 'valtio/vanilla'
 
 // -- Types --------------------------------------------------------------------
 export interface ConnectionControllerClient {
-  getWalletConnectUri: () => Promise<ConnectionControllerState['walletConnectUri']>
-  connectWalletConnect: () => Promise<void>
+  connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
+  connectBrowserExtension: (id: string) => Promise<void>
   disconnect: () => Promise<void>
-  connectBrowserExtension?: (id: string) => Promise<void>
   connectThirdPartyWallet?: (id: string) => Promise<void>
 }
 
@@ -36,16 +35,14 @@ export const ConnectionController = {
     state._client = ref(client)
   },
 
-  async getWalletConnectUri() {
-    this.state.walletConnectUri = await this._getClient().getWalletConnectUri()
-  },
-
   async connectWalletConnect() {
-    await this._getClient().connectWalletConnect()
+    await this._getClient().connectWalletConnect(uri => {
+      this.state.walletConnectUri = uri
+    })
   },
 
   async connectBrowserExtension(id: string) {
-    await this._getClient().connectBrowserExtension?.(id)
+    await this._getClient().connectBrowserExtension(id)
   },
 
   async connectThirdPartyWallet(id: string) {

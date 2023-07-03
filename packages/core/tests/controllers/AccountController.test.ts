@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import type { AccountControllerClient } from '../../index'
 import { AccountController } from '../../index'
 
 // -- Setup --------------------------------------------------------------------
@@ -7,14 +8,13 @@ const balance = '0.100'
 const profileName = 'john.eth'
 const profileImage = 'https://ipfs.com/0x123.png'
 
-const client = {
+const client: AccountControllerClient = {
   getAddress: async () => Promise.resolve(address),
-  getBalance: async (_address: string) => Promise.resolve(balance),
-  getProfile: async (_address: string) =>
-    Promise.resolve({ name: profileName, image: profileImage })
+  getBalance: async _address => Promise.resolve(balance),
+  getProfile: async _address => Promise.resolve({ name: profileName, image: profileImage })
 }
 
-const partialClient = {
+const partialClient: AccountControllerClient = {
   getAddress: async () => Promise.resolve(address),
   getBalance: async () => Promise.resolve(balance)
 }
