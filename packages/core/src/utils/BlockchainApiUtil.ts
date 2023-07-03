@@ -20,8 +20,7 @@ export const BlockchainApiUtil = {
       return null
     } else if (response.status === 200) {
       return response.json()
-    } else {
-      throw new Error(`Problem resolving profile: ${response.status}`)
     }
+    throw new Error(`Problem resolving profile: ${response.status}`)
   }
 }
