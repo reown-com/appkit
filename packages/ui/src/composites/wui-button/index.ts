@@ -1,6 +1,6 @@
 import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
-import { customElement, property, state } from 'lit/decorators.js'
+import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { globalStyles } from '../../utils/ThemeUtil'
 import '../../components/wui-text'
@@ -24,7 +24,7 @@ export class WuiButton extends LitElement {
 
   @property() public variant: 'accent' | 'fill' | 'shade' = 'fill'
 
-  @state() private textColor: ColorType = 'inverse-100'
+  private textColor: ColorType = 'inverse-100'
 
   @property() public onClick: (event: PointerEvent) => void = () => null
 

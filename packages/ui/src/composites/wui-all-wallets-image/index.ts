@@ -1,9 +1,11 @@
 import { html, LitElement } from 'lit'
-import { customElement, property, state } from 'lit/decorators.js'
+import { customElement, property } from 'lit/decorators.js'
 import { globalStyles } from '../../utils/ThemeUtil'
 import '../wui-wallet-image'
 import styles from './styles'
 import type { IWalletImage } from '../../utils/TypesUtil'
+
+const TOTAL_IMAGES = 4
 
 @customElement('wui-all-wallets-image')
 export class WuiAllWalletsImage extends LitElement {
@@ -12,28 +14,17 @@ export class WuiAllWalletsImage extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property({ type: Array }) public walletImages: IWalletImage[] = []
 
-  @state() public totalImages = 4
-
   // -- render ------------------------------------------------------- //
   public render() {
-    return html`${this.templateWalletImages()}`
-  }
-
-  private templateWalletImages() {
-    const renderedImages = this.walletImages
-      .slice(0, this.totalImages)
+    return html`${this.walletImages
+      .slice(0, TOTAL_IMAGES)
       .map(
         ({ src, walletName }) => html`
           <wui-wallet-image size="inherit" src=${src} walletName=${walletName}></wui-wallet-image>
         `
-      )
-
-    const remainingImages = this.totalImages - renderedImages.length
-    for (let i = 0; i < remainingImages; i += 1) {
-      renderedImages.push(html`<wui-wallet-image size="inherit" walletName=""></wui-wallet-image>`)
-    }
-
-    return renderedImages
+      )}${[...Array(TOTAL_IMAGES - this.walletImages.length)].map(
+      () => html` <wui-wallet-image size="inherit" walletName=""></wui-wallet-image>`
+    )}`
   }
 }
 
