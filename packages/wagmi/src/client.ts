@@ -1,5 +1,12 @@
 import type { Config } from '@wagmi/core'
-import { fetchBalance, fetchEnsAvatar, fetchEnsName, getAccount, getNetwork } from '@wagmi/core'
+import {
+  fetchBalance,
+  fetchEnsAvatar,
+  fetchEnsName,
+  getAccount,
+  getNetwork,
+  switchNetwork
+} from '@wagmi/core'
 import type {
   AccountControllerClient,
   ConnectionControllerClient,
@@ -73,10 +80,22 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       },
 
       async getRequestedNetworks() {
+        const { chains } = wagmiClient
+        const chainIds = chains?.map(chain => String(chain.id))
+
+        return Promise.resolve(chainIds ?? [])
+      },
+
+      async getApprovedNetworks() {
         const { chains } = getNetwork()
         const chainIds = chains.map(chain => String(chain.id))
 
         return Promise.resolve(chainIds)
+      },
+
+      async switchActiveNetwork(chainId) {
+        const chainIdNumber = Number(chainId)
+        await switchNetwork({ chainId: chainIdNumber })
       }
     }
 
