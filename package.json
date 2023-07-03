@@ -31,7 +31,7 @@
     "@typescript-eslint/parser": "5.60.1",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
-    "eslint": "8.43.0",
+    "eslint": "8.44.0",
     "eslint-config-prettier": "8.8.0",
     "lerna": "7.1.1",
     "prettier": "2.8.8",
