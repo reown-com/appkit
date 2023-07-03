@@ -18,8 +18,8 @@
     "@web3modal/scaffold-html": "3.0.0"
   },
   "devDependencies": {
-    "@wagmi/core": "1.3.4",
-    "viem": "1.2.9"
+    "@wagmi/core": "^1",
+    "viem": "^1"
   },
   "peerDependencies": {
     "@wagmi/core": ">=1",
