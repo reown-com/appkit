@@ -93,15 +93,4 @@ export const gridItemsOptions: GridItemsType[] = ['center', 'end', 'start', 'str
 
 export const borderRadiusOptions: BorderRadiusType[] = ['4xs', '3xs', 'xxs', 'xs', 's', 'm', 'l']
 
-export const spacingOptions: SpacingType[] = [
-  '4xs',
-  '3xs',
-  'xxs',
-  'xs',
-  'xxs',
-  's',
-  'm',
-  'l',
-  'xl',
-  '3xl'
-]
+export const spacingOptions: SpacingType[] = ['4xs', '3xs', 'xxs', 'xs', 's', 'm', 'l', 'xl', '3xl']

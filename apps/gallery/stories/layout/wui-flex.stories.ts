@@ -51,15 +51,15 @@ export default {
       control: { type: 'select' }
     },
     columnGap: {
-      options: spacingOptions,
+      options: [...spacingOptions, undefined],
       control: { type: 'select' }
     },
     rowGap: {
-      options: spacingOptions,
+      options: [...spacingOptions, undefined],
       control: { type: 'select' }
     },
     gap: {
-      options: spacingOptions,
+      options: [...spacingOptions, undefined],
       control: { type: 'select' }
     }
   }
