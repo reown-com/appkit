@@ -19,6 +19,19 @@ export default css`
     flex: 1;
   }
 
+  button:disabled {
+    background-color: var(--wui-overlay-010);
+  }
+
+  button:disabled > wui-text:nth-child(3) {
+    opacity: 0.6;
+  }
+
+  button:disabled > wui-wallet-image,
+  button:disabled > wui-all-wallets-image {
+    opacity: 0.3;
+  }
+
   button:focus {
     background-color: var(--wui-overlay-005);
     border: 1px solid var(--wui-color-blue-100);

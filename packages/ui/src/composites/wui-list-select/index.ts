@@ -20,14 +20,18 @@ export class WuiListSelect extends LitElement {
 
   @property() public status?: 'installed' | 'qr code' | 'recent'
 
+  @property({ type: Boolean }) public disabled = false
+
   @property({ type: Boolean }) public showAllWallets = false
 
   // -- render ------------------------------------------------------- //
   public render() {
+    const textColor = this.disabled ? 'fg-300' : 'fg-100'
+
     return html`
-      <button>
+      <button ?disabled=${this.disabled}>
         ${this.templateAllWallets()} ${this.templateWalletImage()}
-        <wui-text variant="paragraph-500" color="fg-100">${this.name}</wui-text>
+        <wui-text variant="paragraph-500" color=${textColor}>${this.name}</wui-text>
         ${this.templateStatus()}
       </button>
     `
@@ -50,6 +54,8 @@ export class WuiListSelect extends LitElement {
         src=${this.imageSrc}
         alt=${this.name}
       ></wui-wallet-image>`
+    } else if (!this.showAllWallets && !this.imageSrc) {
+      return html`<wui-wallet-image size="sm" alt=${this.name}></wui-wallet-image>`
     }
 
     return null
