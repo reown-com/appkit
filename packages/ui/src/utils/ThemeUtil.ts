@@ -208,6 +208,7 @@ export const globalStyles = css`
     button:active:enabled {
       background-color: var(--wui-overlay-010);
     }
+  }
 
   input {
     border: none;
