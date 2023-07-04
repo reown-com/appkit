@@ -1,8 +1,9 @@
-import { html, LitElement, TemplateResult } from 'lit'
+import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { globalStyles } from '../../utils/ThemeUtil'
 import '../../components/wui-icon'
 import styles from './styles'
+import type { TemplateResult } from 'lit'
 import type { SizeType } from '../../utils/TypesUtil'
 
 @customElement('wui-input')
