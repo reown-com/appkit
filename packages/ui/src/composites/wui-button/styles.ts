@@ -46,7 +46,7 @@ export default css`
     }
 
     button.wui-variant-fill:active:enabled {
-       border: 1px solid var(--wui-overlay-010);
+      border: 1px solid var(--wui-overlay-010);
       background-color: var(--wui-color-blue-080);
     }
   }
