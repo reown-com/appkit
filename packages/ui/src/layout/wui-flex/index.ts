@@ -37,6 +37,8 @@ export class WuiFlex extends LitElement {
 
   @property() public gap?: SpacingType
 
+  @property() public padding?: SpacingType | SpacingType[]
+
   public render() {
     const inlineStyles = {
       flexDirection: this.flexDirection,
@@ -48,7 +50,15 @@ export class WuiFlex extends LitElement {
       justifyContent: this.justifyContent,
       columnGap: this.columnGap && `var(--wui-spacing-${this.columnGap})`,
       rowGap: this.rowGap && `var(--wui-spacing-${this.rowGap})`,
-      gap: this.gap && `var(--wui-spacing-${this.gap})`
+      gap: this.gap && `var(--wui-spacing-${this.gap})`,
+      paddingTop: Array.isArray(this.padding) ? `var(--wui-spacing-${this.padding[0]})` : undefined,
+      paddingRight: Array.isArray(this.padding)
+        ? `var(--wui-spacing-${this.padding[1]})`
+        : undefined,
+      paddingBottom: Array.isArray(this.padding)
+        ? `var(--wui-spacing-${this.padding[2]})`
+        : undefined,
+      paddingLeft: Array.isArray(this.padding) ? `var(--wui-spacing-${this.padding[3]})` : undefined
     }
 
     return html`<div style="${styleMap(inlineStyles)}"><slot></slot></div>`
