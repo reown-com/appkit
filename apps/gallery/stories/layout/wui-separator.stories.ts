@@ -20,7 +20,10 @@ export default {
 
 export const Default: Component = {
   render: args =>
-    html`<gallery-container width="200"
+    html`<gallery-container
+      style="background-color: var(--wui-color-bg-100);"
+      width="200"
+      height="100"
       ><wui-separator ?showText=${args.showText}></wui-separator
     ></gallery-container>`
 }
