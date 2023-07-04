@@ -177,6 +177,7 @@ export const globalStyles = css`
     align-items: center;
     position: relative;
     transition: all 200ms ease-in-out;
+    outline: none;
     border: 1px solid transparent;
     column-gap: var(--wui-spacing-3xs);
     background-color: transparent;
@@ -192,7 +193,7 @@ export const globalStyles = css`
     filter: grayscale(1);
   }
 
-  button:focus {
+  button:focus-visible {
     background-color: var(--wui-overlay-005);
     border: 1px solid var(--wui-color-blue-100);
     -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
@@ -207,6 +208,10 @@ export const globalStyles = css`
 
     button:active:enabled {
       background-color: var(--wui-overlay-010);
+      border: 1px solid var(--wui-color-blue-100);
+      -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+      -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+      box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
     }
   }
 
