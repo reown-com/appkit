@@ -7,7 +7,7 @@
     "gallery": "npm run dev --w=@apps/gallery",
     "laboratory": "npm run dev --w=@apps/laboratory",
     "build": "npm run build --ws --if-present",
-    "build:storybook": "npm run build; npm run build:storybook --w=@apps/gallery",
+    "build:gallery": "npm run build; npm run build:gallery --w=@apps/gallery",
     "build:laboratory": "npm run build; npm run build:laboratory --w=@apps/laboratory",
     "test": "npm run test --ws --if-present",
     "lint": "eslint .",
