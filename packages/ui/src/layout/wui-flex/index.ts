@@ -1,17 +1,16 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { styleMap } from 'lit/directives/style-map.js'
-import styles from './styles'
 import type {
-  SpacingType,
-  FlexDirectionType,
-  FlexWrapType,
-  FlexBasisType,
-  FlexShrinkType,
-  FlexGrowType,
   FlexAlignItemsType,
-  FlexJustifyContentType
+  FlexBasisType,
+  FlexDirectionType,
+  FlexGrowType,
+  FlexJustifyContentType,
+  FlexShrinkType,
+  FlexWrapType,
+  SpacingType
 } from '../../utils/TypesUtil'
+import styles from './styles'
 
 @customElement('wui-flex')
 export class WuiFlex extends LitElement {
@@ -38,20 +37,20 @@ export class WuiFlex extends LitElement {
   @property() public gap?: SpacingType
 
   public render() {
-    const inlineStyles = {
-      flexDirection: this.flexDirection,
-      flexWrap: this.flexWrap,
-      flexBasis: this.flexBasis,
-      flexGrow: this.flexGrow,
-      flexShrink: this.flexShrink,
-      alignItems: this.alignItems,
-      justifyContent: this.justifyContent,
-      columnGap: this.columnGap && `var(--wui-spacing-${this.columnGap})`,
-      rowGap: this.rowGap && `var(--wui-spacing-${this.rowGap})`,
-      gap: this.gap && `var(--wui-spacing-${this.gap})`
-    }
+    this.style.cssText = `
+      flex-direction: ${this.flexDirection};
+      flex-wrap: ${this.flexWrap};
+      flex-basis: ${this.flexBasis};
+      flex-grow: ${this.flexGrow};
+      flex-shrink: ${this.flexShrink};
+      align-items: ${this.alignItems};
+      justify-content: ${this.justifyContent};
+      column-gap: ${this.columnGap && `var(--wui-spacing-${this.columnGap})`};
+      row-gap: ${this.rowGap && `var(--wui-spacing-${this.rowGap})`};
+      gap: ${this.gap && `var(--wui-spacing-${this.gap})`};
+    `
 
-    return html`<div style="${styleMap(inlineStyles)}"><slot></slot></div>`
+    return html`<slot></slot>`
   }
 }
 

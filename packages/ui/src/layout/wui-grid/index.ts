@@ -1,8 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { styleMap } from 'lit/directives/style-map.js'
+import type { GridContentType, GridItemsType, SpacingType } from '../../utils/TypesUtil'
 import styles from './styles'
-import type { SpacingType, GridContentType, GridItemsType } from '../../utils/TypesUtil'
 
 @customElement('wui-grid')
 export class WuiGrid extends LitElement {
@@ -27,19 +26,19 @@ export class WuiGrid extends LitElement {
   @property() public gap?: SpacingType
 
   public render() {
-    const inlineStyles = {
-      gridTemplateRows: this.gridTemplateRows,
-      gridTemplateColumns: this.gridTemplateColumns,
-      justifyItems: this.justifyItems,
-      alignItems: this.alignItems,
-      justifyContent: this.justifyContent,
-      alignContent: this.alignContent,
-      columnGap: this.columnGap && `var(--wui-spacing-${this.columnGap})`,
-      rowGap: this.rowGap && `var(--wui-spacing-${this.rowGap})`,
-      gap: this.gap && `var(--wui-spacing-${this.gap})`
-    }
+    this.style.cssText = `
+      grid-template-rows: ${this.gridTemplateRows};
+      grid-template-columns: ${this.gridTemplateColumns};
+      justify-items: ${this.justifyItems};
+      align-items: ${this.alignItems};
+      justify-content: ${this.justifyContent};
+      align-content: ${this.alignContent};
+      column-gap: ${this.columnGap && `var(--wui-spacing-${this.columnGap})`};
+      row-gap: ${this.rowGap && `var(--wui-spacing-${this.rowGap})`};
+      gap: ${this.gap && `var(--wui-spacing-${this.gap})`};
+    `
 
-    return html`<div style="${styleMap(inlineStyles)}"><slot></slot></div>`
+    return html`<slot></slot>`
   }
 }
 
