@@ -108,6 +108,9 @@ export const walletImagesOptions = [
   }
 ]
 
+export const walletImageSrc =
+  'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7a33d7f1-3d12-4b5c-f3ee-5cd83cb1b500?projectId=a8d876c6f91c3748db621583fad358f1'
+
 export const gridItemsOptions: GridItemsType[] = ['center', 'end', 'start', 'stretch']
 
 export const borderRadiusOptions: BorderRadiusType[] = ['4xs', '3xs', 'xxs', 'xs', 's', 'm', 'l']

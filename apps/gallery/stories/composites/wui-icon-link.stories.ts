@@ -9,7 +9,8 @@ type Component = Meta<WuiIconLink>
 export default {
   title: 'Composites/wui-icon-link',
   args: {
-    size: 'md'
+    size: 'md',
+    disabled: false
   },
 
   argTypes: {
@@ -17,10 +18,14 @@ export default {
       defaultValue: 'md',
       options: ['sm', 'md', 'lg'],
       control: { type: 'select' }
+    },
+    disabled: {
+      control: { type: 'boolean' }
     }
   }
 } as Component
 
 export const Default: Component = {
-  render: args => html`<wui-icon-link size=${args.size}>${closeSvg}</wui-icon-link>`
+  render: args =>
+    html`<wui-icon-link ?disabled=${args.disabled} size=${args.size}>${closeSvg}</wui-icon-link>`
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@web3modal/ui",
+  "name": "@web3modal/wagmi",
   "version": "3.0.0",
   "main": "dist/index.js",
   "type": "module",
@@ -15,13 +15,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "lit": "2.7.5",
-    "qrcode": "1.5.3"
+    "@web3modal/scaffold-html": "3.0.0"
   },
   "devDependencies": {
-    "@types/qrcode": "1.5.1",
-    "eslint-plugin-lit": "1.8.3",
-    "eslint-plugin-wc": "1.5.0"
+    "@wagmi/core": "^1",
+    "viem": "^1"
+  },
+  "peerDependencies": {
+    "@wagmi/core": ">=1",
+    "viem": ">=1"
   },
   "keywords": [
     "web3",

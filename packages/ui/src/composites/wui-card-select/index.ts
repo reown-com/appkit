@@ -22,17 +22,9 @@ export class WuiCardSelect extends LitElement {
     return html`
       <button ?disabled=${this.disabled}>
         <wui-wallet-image size="md" src=${this.imageSrc} alt=${this.name}></wui-wallet-image>
-        <wui-text variant="tiny-500" color="inherit">${this.getTruncatedName()}</wui-text>
+        <wui-text variant="tiny-500" color="inherit">${this.name}</wui-text>
       </button>
     `
-  }
-
-  private getTruncatedName() {
-    if (this.name.length > 11) {
-      return `${this.name.slice(0, 9)}..`
-    }
-
-    return this.name
   }
 }
 
