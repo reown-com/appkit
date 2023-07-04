@@ -39,22 +39,23 @@ async function checkUiPackage() {
   const created_ui_composites_stories = created_files.filter(f =>
     f.includes('gallery/stories/composites')
   )
-  const ui_index_diff = await diffForFile('ui/index.ts')
+  const ui_index = modified_files.find(f => f.includes('ui/index.ts'))
+  const ui_index_diff = ui_index ? await diffForFile(ui_index) : undefined
 
-  if (created_ui_components.length && !ui_index_diff?.after.includes('src/components')) {
+  if (created_ui_components.length && !ui_index_diff?.added.includes('src/components')) {
     fail('New components were added, but not exported in ui/index.ts')
   }
 
-  if (created_ui_composites.length && !ui_index_diff?.after.includes('src/composites')) {
+  if (created_ui_composites.length && !ui_index_diff?.added.includes('src/composites')) {
     fail('New composites were added, but not exported in ui/index.ts')
   }
 
   if (created_ui_components.length && !created_ui_components_stories.length) {
-    fail('New components were added, but no tests were created')
+    fail('New components were added, but no stories were created')
   }
 
   if (created_ui_composites.length && !created_ui_composites_stories.length) {
-    fail('New composites were added, but no tests were created')
+    fail('New composites were added, but no stories were created')
   }
 }
 checkUiPackage()
