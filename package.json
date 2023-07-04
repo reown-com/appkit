@@ -7,6 +7,8 @@
     "gallery": "npm run dev --w=@apps/gallery",
     "laboratory": "npm run dev --w=@apps/laboratory",
     "build": "npm run build --ws --if-present",
+    "build:gallery": "npm run build; npm run build:gallery --w=@apps/gallery",
+    "build:laboratory": "npm run build; npm run build:laboratory --w=@apps/laboratory",
     "test": "npm run test --ws --if-present",
     "lint": "eslint .",
     "danger-ci": "danger ci",
@@ -27,8 +29,8 @@
     "apps/laboratory"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "5.60.1",
-    "@typescript-eslint/parser": "5.60.1",
+    "@typescript-eslint/eslint-plugin": "5.61.0",
+    "@typescript-eslint/parser": "5.61.0",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
     "eslint": "8.44.0",
@@ -36,7 +38,7 @@
     "lerna": "7.1.1",
     "prettier": "2.8.8",
     "typescript": "5.1.6",
-    "vitest": "0.32.3",
+    "vitest": "0.32.4",
     "danger": "11.2.6",
     "react": "18.2.0",
     "react-dom": "18.2.0"

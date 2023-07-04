@@ -1,7 +1,7 @@
 import { css } from 'lit'
 
 export default css`
-  div {
+  :host {
     display: flex;
     width: inherit;
     height: inherit;

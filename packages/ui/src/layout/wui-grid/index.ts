@@ -1,9 +1,8 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { styleMap } from 'lit/directives/style-map.js'
-import styles from './styles'
-import type { SpacingType, GridContentType, GridItemsType } from '../../utils/TypesUtil'
 import { getSpacingStyles } from '../../utils/HelperUtils'
+import type { GridContentType, GridItemsType, SpacingType } from '../../utils/TypesUtil'
+import styles from './styles'
 
 @customElement('wui-grid')
 export class WuiGrid extends LitElement {
@@ -32,27 +31,27 @@ export class WuiGrid extends LitElement {
   @property() public margin?: SpacingType | SpacingType[]
 
   public render() {
-    const inlineStyles = {
-      gridTemplateRows: this.gridTemplateRows,
-      gridTemplateColumns: this.gridTemplateColumns,
-      justifyItems: this.justifyItems,
-      alignItems: this.alignItems,
-      justifyContent: this.justifyContent,
-      alignContent: this.alignContent,
-      columnGap: this.columnGap && `var(--wui-spacing-${this.columnGap})`,
-      rowGap: this.rowGap && `var(--wui-spacing-${this.rowGap})`,
-      gap: this.gap && `var(--wui-spacing-${this.gap})`,
-      paddingTop: this.padding && getSpacingStyles(this.padding, 0),
-      paddingRight: this.padding && getSpacingStyles(this.padding, 1),
-      paddingBottom: this.padding && getSpacingStyles(this.padding, 2),
-      paddingLeft: this.padding && getSpacingStyles(this.padding, 3),
-      marginTop: this.margin && getSpacingStyles(this.margin, 0),
-      marginRight: this.margin && getSpacingStyles(this.margin, 1),
-      marginBottom: this.margin && getSpacingStyles(this.margin, 2),
-      marginLeft: this.margin && getSpacingStyles(this.margin, 3)
-    }
+    this.style.cssText = `
+      grid-template-rows: ${this.gridTemplateRows};
+      grid-template-columns: ${this.gridTemplateColumns};
+      justify-items: ${this.justifyItems};
+      align-items: ${this.alignItems};
+      justify-content: ${this.justifyContent};
+      align-content: ${this.alignContent};
+      column-gap: ${this.columnGap && `var(--wui-spacing-${this.columnGap})`};
+      row-gap: ${this.rowGap && `var(--wui-spacing-${this.rowGap})`};
+      gap: ${this.gap && `var(--wui-spacing-${this.gap})`};
+      padding-top: ${this.padding && getSpacingStyles(this.padding, 0)};
+      padding-right: ${this.padding && getSpacingStyles(this.padding, 1)};
+      padding-bottom: ${this.padding && getSpacingStyles(this.padding, 2)};
+      padding-left: ${this.padding && getSpacingStyles(this.padding, 3)};
+      margin-top: ${this.margin && getSpacingStyles(this.margin, 0)};
+      margin-right: ${this.margin && getSpacingStyles(this.margin, 1)};
+      margin-bottom: ${this.margin && getSpacingStyles(this.margin, 2)};
+      margin-left: ${this.margin && getSpacingStyles(this.margin, 3)};
+    `
 
-    return html`<div style="${styleMap(inlineStyles)}"><slot></slot></div>`
+    return html`<slot></slot>`
   }
 }
 

@@ -5,20 +5,20 @@
   "main": "index.js",
   "scripts": {
     "dev": "storybook dev -p 6006",
-    "build": "storybook build"
+    "build:gallery": "storybook build"
   },
   "dependencies": {
     "@web3modal/ui": "3.0.0",
     "lit": "2.7.5",
-    "storybook": "7.0.24"
+    "storybook": "7.0.25"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "7.0.24",
-    "@storybook/addon-links": "7.0.24",
-    "@storybook/blocks": "7.0.24",
-    "@storybook/theming": "7.0.24",
-    "@storybook/web-components": "7.0.24",
-    "@storybook/web-components-vite": "7.0.24",
+    "@storybook/addon-essentials": "7.0.25",
+    "@storybook/addon-links": "7.0.25",
+    "@storybook/blocks": "7.0.25",
+    "@storybook/theming": "7.0.25",
+    "@storybook/web-components": "7.0.25",
+    "@storybook/web-components-vite": "7.0.25",
     "file-system-cache": "2.3.0"
   }
 }
