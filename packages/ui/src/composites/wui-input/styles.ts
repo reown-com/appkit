@@ -15,6 +15,7 @@ export default css`
     letter-spacing: var(--wui-letter-spacing-paragraph);
     color: var(--wui-color-fg-100);
     transition: all 200ms ease-in-out 35ms;
+    caret-color: var(--wui-color-blue-100);
   }
 
   input:disabled {
@@ -52,6 +53,7 @@ export default css`
     top: 50%;
     transform: translateY(-50%);
     color: var(--wui-color-fg-275);
+    pointer-events: none;
   }
 
   .wui-size-sm {
