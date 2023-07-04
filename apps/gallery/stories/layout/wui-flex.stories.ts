@@ -82,7 +82,7 @@ export const Default: Component = {
       .columnGap=${args.columnGap}
       .rowGap=${args.rowGap}
       .gap=${args.gap}
-      .padding=${['xs', 'xs', 'xs', 'xs']}
+      .padding=${['xl', 'xl', 'xl', 'xl']}
     >
       <gallery-placeholder size="sm" background="green"></gallery-placeholder>
       <gallery-placeholder size="lg" background="red"></gallery-placeholder>

@@ -25,7 +25,18 @@ export type TextType =
 
 export type SizeType = 'inherit' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs'
 
-export type SpacingType = '3xl' | '3xs' | '4xs' | 'l' | 'm' | 's' | 'xl' | 'xs' | 'xxl' | 'xxs'
+export type SpacingType =
+  | '0'
+  | '3xl'
+  | '3xs'
+  | '4xs'
+  | 'l'
+  | 'm'
+  | 's'
+  | 'xl'
+  | 'xs'
+  | 'xxl'
+  | 'xxs'
 
 export type BorderRadiusType = Exclude<SpacingType, 'xl' | 'xxl'>
 
