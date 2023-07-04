@@ -3,7 +3,12 @@ import type {
   ConnectionControllerClient,
   NetworkControllerClient
 } from '@web3modal/core'
-import { AccountController, ConnectionController, NetworkController } from '@web3modal/core'
+import {
+  AccountController,
+  ConnectionController,
+  HelperUtil,
+  NetworkController
+} from '@web3modal/core'
 
 // -- Types ---------------------------------------------------------------------
 interface Options {
@@ -28,7 +33,7 @@ export class Web3ModalScaffoldHtml {
   }
 
   async #initOrContinue() {
-    if (!this.#initPromise) {
+    if (!this.#initPromise && HelperUtil.isClient()) {
       this.#initPromise = new Promise<void>(async resolve => {
         const Web3ModalUi = await import('@web3modal/ui')
         Web3ModalUi.initializeTheming()
