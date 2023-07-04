@@ -13,5 +13,6 @@ export * from './src/composites/wui-wallet-image'
 
 export * from './src/layout/wui-flex'
 export * from './src/layout/wui-grid'
+export * from './src/layout/wui-separator'
 
 export { initializeTheming, setColorTheme } from './src/utils/ThemeUtil'

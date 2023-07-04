@@ -33,12 +33,16 @@ checkPackageJsons()
 async function checkUiPackage() {
   const created_ui_components = created_files.filter(f => f.includes('ui/src/components'))
   const created_ui_composites = created_files.filter(f => f.includes('ui/src/composites'))
+  const created_ui_layout = created_files.filter(f => f.includes('ui/src/layout'))
+
   const created_ui_components_stories = created_files.filter(f =>
     f.includes('gallery/stories/components')
   )
   const created_ui_composites_stories = created_files.filter(f =>
     f.includes('gallery/stories/composites')
   )
+  const created_ui_layout_stories = created_files.filter(f => f.includes('gallery/stories/layout'))
+
   const ui_index = modified_files.find(f => f.includes('ui/index.ts'))
   const ui_index_diff = ui_index ? await diffForFile(ui_index) : undefined
 
@@ -50,12 +54,20 @@ async function checkUiPackage() {
     fail('New composites were added, but not exported in ui/index.ts')
   }
 
+  if (created_ui_layout.length && !ui_index_diff?.added.includes('src/layout')) {
+    fail('New layout components were added, but not exported in ui/index.ts')
+  }
+
   if (created_ui_components.length && !created_ui_components_stories.length) {
     fail('New components were added, but no stories were created')
   }
 
   if (created_ui_composites.length && !created_ui_composites_stories.length) {
     fail('New composites were added, but no stories were created')
+  }
+
+  if (created_ui_layout.length && !created_ui_layout_stories.length) {
+    fail('New layout components were added, but no stories were created')
   }
 }
 checkUiPackage()
