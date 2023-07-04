@@ -45,6 +45,7 @@ export const rootStyles = css`
     --wui-border-radius-l: 36px;
     --wui-border-radius-3xl: 80px;
 
+    --wui-spacing-0: 0px;
     --wui-spacing-4xs: 2px;
     --wui-spacing-3xs: 4px;
     --wui-spacing-xxs: 6px;

@@ -1,5 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { getSpacingStyles } from '../../utils/HelperUtils'
 import type { GridContentType, GridItemsType, SpacingType } from '../../utils/TypesUtil'
 import styles from './styles'
 
@@ -25,6 +26,10 @@ export class WuiGrid extends LitElement {
 
   @property() public gap?: SpacingType
 
+  @property() public padding?: SpacingType | SpacingType[]
+
+  @property() public margin?: SpacingType | SpacingType[]
+
   public render() {
     this.style.cssText = `
       grid-template-rows: ${this.gridTemplateRows};
@@ -36,6 +41,14 @@ export class WuiGrid extends LitElement {
       column-gap: ${this.columnGap && `var(--wui-spacing-${this.columnGap})`};
       row-gap: ${this.rowGap && `var(--wui-spacing-${this.rowGap})`};
       gap: ${this.gap && `var(--wui-spacing-${this.gap})`};
+      padding-top: ${this.padding && getSpacingStyles(this.padding, 0)};
+      padding-right: ${this.padding && getSpacingStyles(this.padding, 1)};
+      padding-bottom: ${this.padding && getSpacingStyles(this.padding, 2)};
+      padding-left: ${this.padding && getSpacingStyles(this.padding, 3)};
+      margin-top: ${this.margin && getSpacingStyles(this.margin, 0)};
+      margin-right: ${this.margin && getSpacingStyles(this.margin, 1)};
+      margin-bottom: ${this.margin && getSpacingStyles(this.margin, 2)};
+      margin-left: ${this.margin && getSpacingStyles(this.margin, 3)};
     `
 
     return html`<slot></slot>`
