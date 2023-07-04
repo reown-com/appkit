@@ -41,11 +41,11 @@ async function checkUiPackage() {
   )
   const ui_index_diff = await diffForFile('ui/index.ts')
 
-  if (created_ui_components.length && !ui_index_diff?.added.includes('src/components')) {
+  if (created_ui_components.length && !ui_index_diff?.after.includes('src/components')) {
     fail('New components were added, but not exported in ui/index.ts')
   }
 
-  if (created_ui_composites.length && !ui_index_diff?.added.includes('src/composites')) {
+  if (created_ui_composites.length && !ui_index_diff?.after.includes('src/composites')) {
     fail('New composites were added, but not exported in ui/index.ts')
   }
 
