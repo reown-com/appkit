@@ -41,6 +41,14 @@ export default {
     gap: {
       options: [...spacingOptions, undefined],
       control: { type: 'select' }
+    },
+    padding: {
+      options: [...spacingOptions, undefined],
+      control: { type: 'select' }
+    },
+    margin: {
+      options: [...spacingOptions, undefined],
+      control: { type: 'select' }
     }
   }
 } as Component
@@ -57,6 +65,8 @@ export const Default: Component = {
       .columnGap=${args.columnGap}
       .rowGap=${args.rowGap}
       .gap=${args.gap}
+      .padding=${args.padding}
+      .margin=${args.margin}
     >
       <gallery-placeholder size="md" background="green"></gallery-placeholder>
       <gallery-placeholder size="md" background="red"></gallery-placeholder>

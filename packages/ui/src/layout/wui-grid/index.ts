@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import { styleMap } from 'lit/directives/style-map.js'
 import styles from './styles'
 import type { SpacingType, GridContentType, GridItemsType } from '../../utils/TypesUtil'
+import { getSpacingStyles } from '../../utils/HelperUtils'
 
 @customElement('wui-grid')
 export class WuiGrid extends LitElement {
@@ -26,6 +27,10 @@ export class WuiGrid extends LitElement {
 
   @property() public gap?: SpacingType
 
+  @property() public padding?: SpacingType | SpacingType[]
+
+  @property() public margin?: SpacingType | SpacingType[]
+
   public render() {
     const inlineStyles = {
       gridTemplateRows: this.gridTemplateRows,
@@ -36,7 +41,15 @@ export class WuiGrid extends LitElement {
       alignContent: this.alignContent,
       columnGap: this.columnGap && `var(--wui-spacing-${this.columnGap})`,
       rowGap: this.rowGap && `var(--wui-spacing-${this.rowGap})`,
-      gap: this.gap && `var(--wui-spacing-${this.gap})`
+      gap: this.gap && `var(--wui-spacing-${this.gap})`,
+      paddingTop: this.padding && getSpacingStyles(this.padding, 0),
+      paddingRight: this.padding && getSpacingStyles(this.padding, 1),
+      paddingBottom: this.padding && getSpacingStyles(this.padding, 2),
+      paddingLeft: this.padding && getSpacingStyles(this.padding, 3),
+      marginTop: this.margin && getSpacingStyles(this.margin, 0),
+      marginRight: this.margin && getSpacingStyles(this.margin, 1),
+      marginBottom: this.margin && getSpacingStyles(this.margin, 2),
+      marginLeft: this.margin && getSpacingStyles(this.margin, 3)
     }
 
     return html`<div style="${styleMap(inlineStyles)}"><slot></slot></div>`
