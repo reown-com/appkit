@@ -22,16 +22,16 @@ const INJECTED_ID = 'injected'
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalOptions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  wagmiClient?: Config<any, any>
+  wagmiConfig?: Config<any, any>
 }
 
 // -- Client --------------------------------------------------------------------
 export class Web3Modal extends Web3ModalScaffoldHtml {
   public constructor(options: Web3ModalOptions) {
-    const { wagmiClient } = options
+    const { wagmiConfig } = options
 
-    if (!wagmiClient) {
-      throw new Error('wagmi:constructor - wagmiClient is undefined')
+    if (!wagmiConfig) {
+      throw new Error('wagmi:constructor - wagmiConfig is undefined')
     }
 
     const accountControllerClient: AccountControllerClient = {
@@ -85,7 +85,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       },
 
       async getRequestedNetworks() {
-        const { chains } = wagmiClient
+        const { chains } = wagmiConfig
         const chainIds = chains?.map(chain => String(chain.id))
 
         return Promise.resolve(chainIds ?? [])
@@ -106,7 +106,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
 
     const connectionControllerClient: ConnectionControllerClient = {
       async connectWalletConnect(onUri) {
-        const connector = wagmiClient.connectors.find(c => c.name === WALLET_CONNECT_ID)
+        const connector = wagmiConfig.connectors.find(c => c.name === WALLET_CONNECT_ID)
         if (!connector) {
           throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
         }
@@ -120,7 +120,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       },
 
       async connectBrowserExtension(_id) {
-        const connector = wagmiClient.connectors.find(c => c.name === INJECTED_ID)
+        const connector = wagmiConfig.connectors.find(c => c.name === INJECTED_ID)
         if (!connector) {
           throw new Error(
             'connectionControllerClient:connectBrowserExtension - connector is undefined'
@@ -131,7 +131,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       },
 
       async connectThirdPartyWallet(id) {
-        const connector = wagmiClient.connectors.find(c => c.name === id)
+        const connector = wagmiConfig.connectors.find(c => c.name === id)
         if (!connector) {
           throw new Error(
             'connectionControllerClient:connectThirdPartyWallet - connector is undefined'

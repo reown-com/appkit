@@ -7,6 +7,7 @@ import {
   AccountController,
   ConnectionController,
   HelperUtil,
+  ModalController,
   NetworkController
 } from '@web3modal/core'
 
@@ -26,6 +27,18 @@ export class Web3ModalScaffoldHtml {
     this.#initOrContinue()
   }
 
+  // -- Public -------------------------------------------------------------------
+  public async open() {
+    await this.#initOrContinue()
+    ModalController.open()
+  }
+
+  public async close() {
+    await this.#initOrContinue()
+    ModalController.close()
+  }
+
+  // -- Private ------------------------------------------------------------------
   #setControllerClients(options: Options) {
     AccountController.setClient(options.accountControllerClient)
     NetworkController.setClient(options.networkControllerClient)
