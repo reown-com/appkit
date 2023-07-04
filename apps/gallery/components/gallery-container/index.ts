@@ -9,11 +9,13 @@ export class GalleryContainer extends LitElement {
   // -- state & properties ------------------------------------------- //
   @property() public width = '0'
 
+  @property() public height = 'auto'
+
   // -- render ------------------------------------------------------- //
   public render() {
-    const maxWidth = `--container-width: ${this.width}px;`
+    const inlineStyles = `--container-width: ${this.width}px; --container-height: ${this.height}px;`
 
-    return html`<div style=${maxWidth}><slot></slot></div>`
+    return html`<div style=${inlineStyles}><slot></slot></div>`
   }
 }
 
