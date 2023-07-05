@@ -7,17 +7,18 @@ import '../../composites/wui-input'
 import { searchSvg } from '../../assets/svg/search'
 import { closeSvg } from '../../assets/svg/close'
 import styles from './styles'
+import { WuiInput } from '../../composites/wui-input'
 
 @customElement('wui-search-bar')
 export class WuiSearchBar extends LitElement {
   public static styles = [resetStyles, styles]
 
-  public inputRef = createRef<HTMLInputElement>()
+  public inputComponentRef = createRef<WuiInput>()
 
   // -- render ------------------------------------------------------- //
   public render() {
     return html`<wui-input
-      ${ref(this.inputRef)}
+      ${ref(this.inputComponentRef)}
       placeholder="Search wallet"
       .icon=${searchSvg}
       size="sm"
@@ -26,9 +27,8 @@ export class WuiSearchBar extends LitElement {
   }
 
   private clearValue() {
-    const inputComponent = this.inputRef.value
-    const inputElement = inputComponent?.shadowRoot?.querySelector('input')
-
+    const inputComponent = this.inputComponentRef.value
+    const inputElement = inputComponent?.inputElementRef.value
     if (inputElement) {
       inputElement.value = ''
     }
