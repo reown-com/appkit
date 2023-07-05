@@ -1,13 +1,13 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { globalStyles } from '../../utils/ThemeUtil'
 import '../../components/wui-text'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import '../wui-wallet-image'
 import styles from './styles'
 
 @customElement('wui-card-select')
 export class WuiCardSelect extends LitElement {
-  public static styles = [globalStyles, styles]
+  public static styles = [resetStyles, elementStyles, styles]
 
   // -- state & properties ------------------------------------------- //
 

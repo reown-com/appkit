@@ -1,12 +1,11 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-
-import { globalStyles, colorStyles } from '../../utils/ThemeUtil'
+import { colorStyles, resetStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
 
 @customElement('wui-image')
 export class WuiImage extends LitElement {
-  public static styles = [globalStyles, colorStyles, styles]
+  public static styles = [resetStyles, colorStyles, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public src = './path/to/image.jpg'

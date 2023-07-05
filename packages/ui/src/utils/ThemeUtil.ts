@@ -159,7 +159,7 @@ export const rootStyles = css`
   }
 `
 
-export const globalStyles = css`
+export const resetStyles = css`
   *,
   *::after,
   *::before,
@@ -175,7 +175,9 @@ export const globalStyles = css`
     backface-visibility: hidden;
     font-family: var(--wui-font-family);
   }
+`
 
+export const elementStyles = css`
   button {
     cursor: pointer;
     display: flex;

@@ -29,6 +29,7 @@
     "no-async-promise-executor": "off",
     "no-underscore-dangle": "off",
     "no-undef-init": "off",
+    "complexity": "off",
 
     // Typescript
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],

@@ -1,13 +1,13 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { globalStyles, colorStyles } from '../../utils/ThemeUtil'
 import '../../components/wui-icon'
-import styles from './styles'
+import { colorStyles, elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { SizeType } from '../../utils/TypesUtil'
+import styles from './styles'
 
 @customElement('wui-icon-link')
 export class WuiIconLink extends LitElement {
-  public static styles = [globalStyles, colorStyles, styles]
+  public static styles = [resetStyles, elementStyles, colorStyles, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public size: SizeType = 'md'
