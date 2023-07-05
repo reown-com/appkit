@@ -23,7 +23,7 @@ async function checkPackageJsons() {
 
   for (const f of packageJsons) {
     const diff = await diffForFile(f)
-    if (diff && (diff.added.includes('^') || diff.added.includes('~'))) {
+    if (diff?.added.includes('^') || diff?.added.includes('~')) {
       fail(`Loose dependency versions in ${f}, please use strict versioning`)
     }
   }
@@ -48,7 +48,7 @@ async function checkUiPackage() {
 
   for (const f of ui_style_files) {
     const diff = await diffForFile(f)
-    if (diff && diff.added.includes(':host') && !diff.added.includes('display: ')) {
+    if (diff?.added.includes(':host') && !diff.added.includes('display: ')) {
       fail(`${f} uses :host container, but does not set display style on it`)
     }
   }
