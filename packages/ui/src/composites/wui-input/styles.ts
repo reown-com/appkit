@@ -64,8 +64,16 @@ export default css`
     left: 12px;
   }
 
+  .wui-size-sm:only-child {
+    padding: 9px 14px 10px 12px;
+  }
+
   .wui-size-md {
     padding: 15px 14px 16px 42px;
+  }
+
+  .wui-size-md:only-child {
+    padding: 15px 14px 16px 14px;
   }
 
   .wui-size-md + wui-icon {
