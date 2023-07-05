@@ -56,6 +56,12 @@ export const rootStyles = css`
     --wui-spacing-xl: 20px;
     --wui-spacing-xxl: 24px;
     --wui-spacing-3xl: 40px;
+
+    --wui-cover: rgba(0, 0, 0, 0.3);
+
+    --wui-z-index: 99;
+
+    --wui-max-container-width: 360px;
   }
 
   [data-wui-theme='dark'] {
