@@ -1,6 +1,6 @@
 import { proxy, ref } from 'valtio/vanilla'
 
-// -- Types --------------------------------------------------------------------
+// -- Types --------------------------------------------- //
 export interface AccountControllerClient {
   getAddress: () => Promise<AccountControllerState['address']>
   getBalance: (
@@ -20,14 +20,14 @@ export interface AccountControllerState {
   profileImage?: string
 }
 
-// -- State --------------------------------------------------------------------
+// -- State --------------------------------------------- //
 const state = proxy<AccountControllerState>({
   _client: undefined,
   address: '',
   balance: ''
 })
 
-// -- Controller ---------------------------------------------------------------
+// -- Controller ---------------------------------------- //
 export const AccountController = {
   state,
 

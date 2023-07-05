@@ -1,6 +1,6 @@
 import { proxy, ref } from 'valtio/vanilla'
 
-// -- Types --------------------------------------------------------------------
+// -- Types --------------------------------------------- //
 export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
   connectBrowserExtension: (id: string) => Promise<void>
@@ -13,13 +13,13 @@ export interface ConnectionControllerState {
   walletConnectUri: string
 }
 
-// -- State --------------------------------------------------------------------
+// -- State --------------------------------------------- //
 const state = proxy<ConnectionControllerState>({
   _client: undefined,
   walletConnectUri: ''
 })
 
-// -- Controller ---------------------------------------------------------------
+// -- Controller ---------------------------------------- //
 export const ConnectionController = {
   state,
 

@@ -7,6 +7,7 @@ import styles from './styles'
 export class WuiOverlay extends LitElement {
   public static styles = [resetStyles, styles]
 
+  // -- Render -------------------------------------------- //
   public render() {
     return html`<slot></slot>`
   }

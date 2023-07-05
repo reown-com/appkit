@@ -1,6 +1,14 @@
 /* eslint-disable no-await-in-loop */
 import { danger, fail, warn } from 'danger'
 
+// -- Constants ---------------------------------------------------------------
+const TYPE_COMMENT = `// -- Types --------------------------------------------- //`
+const STATE_COMMENT = `// -- State --------------------------------------------- //`
+const CONTROLLER_COMMENT = `// -- Controller ---------------------------------------- //`
+const RENDER_COMMENT = `// -- Render -------------------------------------------- //`
+const STATE_PROPERTIES_COMMENT = `// -- State & Properties -------------------------------- //`
+const PRIVATE_COMMENT = `// -- Private ------------------------------------------- //`
+
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
 const updated_files = [...modified_files, ...created_files]
@@ -35,19 +43,41 @@ async function checkUiPackage() {
   const created_ui_components = created_files.filter(f => f.includes('ui/src/components'))
   const created_ui_composites = created_files.filter(f => f.includes('ui/src/composites'))
   const created_ui_layout = created_files.filter(f => f.includes('ui/src/layout'))
-  const ui_files = [...created_ui_components, ...created_ui_composites, ...created_ui_layout]
-  const ui_index_files = ui_files.filter(f => f.includes('index.ts'))
-  const ui_style_files = ui_files.filter(f => f.includes('styles.ts'))
+  const created_ui_files = [
+    ...created_ui_components,
+    ...created_ui_composites,
+    ...created_ui_layout
+  ]
+  const created_ui_index_files = created_ui_files.filter(f => f.includes('index.ts'))
+  const created_ui_style_files = created_ui_files.filter(f => f.includes('styles.ts'))
 
-  for (const f of ui_index_files) {
+  for (const f of created_ui_index_files) {
     const diff = await diffForFile(f)
+
     if (!diff?.added.includes('[resetStyles')) {
       fail(`${f} does not apply resetStyles`)
     }
+
+    if (diff?.added.includes('@state(')) {
+      fail(`${f} is using @state decorator, which is not allowd in ui package`)
+    }
+
+    if (!diff?.added.includes(RENDER_COMMENT)) {
+      fail(`${f} is missing \`${RENDER_COMMENT}\` comment`)
+    }
+
+    if (diff?.added.includes('@property(') && !diff.added.includes(STATE_PROPERTIES_COMMENT)) {
+      fail(`${f} is missing \`${STATE_PROPERTIES_COMMENT}\` comment`)
+    }
+
+    if (diff?.added.includes('\nprivate ') && !diff.added.includes(PRIVATE_COMMENT)) {
+      fail(`${f} is missing \`${PRIVATE_COMMENT}\` comment`)
+    }
   }
 
-  for (const f of ui_style_files) {
+  for (const f of created_ui_style_files) {
     const diff = await diffForFile(f)
+
     if (diff?.added.includes(':host') && !diff.added.includes('display: ')) {
       fail(`${f} uses :host container, but does not set display style on it`)
     }
@@ -91,14 +121,59 @@ async function checkUiPackage() {
 checkUiPackage()
 
 // -- Core Package Checks -----------------------------------------------------
-function checkCorePackage() {
+async function checkCorePackage() {
   const created_core_controllers = created_files.filter(f => f.includes('core/src/controllers'))
   const created_core_controllers_tests = created_files.filter(f =>
     f.includes('core/tests/controllers')
   )
+
+  for (const f of created_core_controllers) {
+    const diff = await diffForFile(f)
+
+    if (!diff?.added.includes(TYPE_COMMENT)) {
+      fail(`${f} is missing \`${TYPE_COMMENT}\` comment`)
+    }
+
+    if (!diff?.added.includes(STATE_COMMENT)) {
+      fail(`${f} is missing \`${STATE_COMMENT}\` comment`)
+    }
+
+    if (!diff?.added.includes(CONTROLLER_COMMENT)) {
+      fail(`${f} is missing \`${CONTROLLER_COMMENT}\` comment`)
+    }
+  }
 
   if (created_core_controllers.length && !created_core_controllers_tests.length) {
     fail('New controllers were added, but no tests were created')
   }
 }
 checkCorePackage()
+
+// -- Scaffold Html Package Checks --------------------------------------------
+async function checkScaffoldHtmlPackage() {
+  const created_modal = created_files.filter(f => f.includes('scaffold-html/src/modal'))
+  const created_pages = created_files.filter(f => f.includes('scaffold-html/src/pages'))
+  const created_partials = created_files.filter(f => f.includes('scaffold-html/src/partials'))
+  const created_scaffold_files = [...created_modal, ...created_pages, ...created_partials]
+  const created_scaffold_index_files = created_scaffold_files.filter(f => f.includes('index.ts'))
+
+  for (const f of created_scaffold_index_files) {
+    const diff = await diffForFile(f)
+
+    if (!diff?.added.includes(RENDER_COMMENT)) {
+      fail(`${f} is missing \`${RENDER_COMMENT}\` comment`)
+    }
+
+    if (
+      (diff?.added.includes('@state(') || diff?.added.includes('@property(')) &&
+      !diff.added.includes(STATE_PROPERTIES_COMMENT)
+    ) {
+      fail(`${f} is missing \`${STATE_PROPERTIES_COMMENT}\` comment`)
+    }
+
+    if (diff?.added.includes('\nprivate ') && !diff.added.includes(PRIVATE_COMMENT)) {
+      fail(`${f} is missing \`${PRIVATE_COMMENT}\` comment`)
+    }
+  }
+}
+checkScaffoldHtmlPackage()

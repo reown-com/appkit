@@ -11,10 +11,10 @@ const TOTAL_IMAGES = 4
 export class WuiAllWalletsImage extends LitElement {
   public static styles = [resetStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property({ type: Array }) public walletImages: IWalletImage[] = []
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
   public render() {
     return html`${this.walletImages
       .slice(0, TOTAL_IMAGES)

@@ -18,6 +18,7 @@ import styles from './styles'
 export class WuiFlex extends LitElement {
   public static styles = [resetStyles, styles]
 
+  // -- State & Properties -------------------------------- //
   @property() public flexDirection?: FlexDirectionType
 
   @property() public flexWrap?: FlexWrapType
@@ -42,6 +43,7 @@ export class WuiFlex extends LitElement {
 
   @property() public margin?: SpacingType | SpacingType[]
 
+  // -- Render -------------------------------------------- //
   public render() {
     this.style.cssText = `
       flex-direction: ${this.flexDirection};
