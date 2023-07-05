@@ -1,14 +1,14 @@
+import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { globalStyles } from '../../utils/ThemeUtil'
 import '../../components/wui-icon'
-import styles from './styles'
-import type { TemplateResult } from 'lit'
+import { globalStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { SizeType } from '../../utils/TypesUtil'
+import styles from './styles'
 
 @customElement('wui-input')
 export class WuiInput extends LitElement {
-  public static styles = [globalStyles, styles]
+  public static styles = [resetStyles, globalStyles, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public size: Exclude<SizeType, 'inherit' | 'lg' | 'xs' | 'xxs'> = 'md'

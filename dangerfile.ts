@@ -35,6 +35,14 @@ async function checkUiPackage() {
   const created_ui_components = created_files.filter(f => f.includes('ui/src/components'))
   const created_ui_composites = created_files.filter(f => f.includes('ui/src/composites'))
   const created_ui_layout = created_files.filter(f => f.includes('ui/src/layout'))
+  const ui_files = [...created_ui_components, ...created_ui_composites, ...created_ui_layout]
+
+  for (const f of ui_files) {
+    const diff = await diffForFile(f)
+    if (diff && !diff.added.includes('[resetStyles')) {
+      fail(`${f} does not apply resetStyles`)
+    }
+  }
 
   const created_ui_components_stories = created_files.filter(f =>
     f.includes('gallery/stories/components')
