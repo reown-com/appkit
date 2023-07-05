@@ -30,7 +30,7 @@ export class WuiSearchBar extends LitElement {
     </wui-input>`
   }
 
-  // -- private --
+  // -- private ------------------------------------------------------ //
 
   private clearValue() {
     const inputComponent = this.inputComponentRef.value

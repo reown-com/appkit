@@ -39,7 +39,7 @@ export class WuiListSelect extends LitElement {
     `
   }
 
-  // -- private --
+  // -- private ------------------------------------------------------ //
 
   private templateAllWallets() {
     if (this.showAllWallets && this.walletImages) {

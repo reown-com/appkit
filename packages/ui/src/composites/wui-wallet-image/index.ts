@@ -26,7 +26,7 @@ export class WuiWalletImage extends LitElement {
     return html` <div class=${sizeClass}>${this.templateVisual()}</div> `
   }
 
-  // -- private --
+  // -- private ------------------------------------------------------ //
 
   private templateVisual() {
     if (this.src) {

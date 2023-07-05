@@ -18,7 +18,7 @@ export class WuiSeparator extends LitElement {
     return html`${this.template()}`
   }
 
-  // -- private --
+  // -- private ------------------------------------------------------ //
 
   private template() {
     if (this.showText) {
