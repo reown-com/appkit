@@ -1,5 +1,5 @@
 import { html, LitElement } from 'lit'
-import { customElement, property, state } from 'lit/decorators.js'
+import { customElement, property } from 'lit/decorators.js'
 import { globalStyles } from '../../utils/ThemeUtil'
 import '../../components/wui-icon'
 import styles from './styles'
@@ -19,8 +19,6 @@ export class WuiInput extends LitElement {
 
   @property() public placeholder = ''
 
-  @property() public onChange: (event: InputEvent) => void = () => null
-
   // -- render ------------------------------------------------------- //
   public render() {
     const sizeClass = `wui-size-${this.size}`
@@ -37,10 +35,6 @@ export class WuiInput extends LitElement {
     }
 
     return null
-  }
-
-  private setValue(e: InputEvent) {
-    this.value = e.target.value
   }
 }
 
