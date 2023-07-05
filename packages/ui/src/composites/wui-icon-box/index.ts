@@ -1,14 +1,14 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { globalStyles } from '../../utils/ThemeUtil'
 import '../../components/wui-icon'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
+import type { ColorType, SizeType } from '../../utils/TypesUtil'
 import styles from './styles'
-import type { SizeType, ColorType } from '../../utils/TypesUtil'
 
 @customElement('wui-icon-box')
 export class WuiIconBox extends LitElement {
-  public static styles = [globalStyles, styles]
+  public static styles = [resetStyles, elementStyles, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public size: Exclude<SizeType, 'inherit' | 'xs' | 'xxs'> = 'md'

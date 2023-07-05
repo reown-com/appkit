@@ -5,24 +5,25 @@ import { danger, fail, warn } from 'danger'
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
 const updated_files = [...modified_files, ...created_files]
 const all_files = [...updated_files, ...created_files, ...deleted_files]
-const packageJsons = all_files.filter(f => f.includes('package.json'))
-const packageLock = updated_files.find(f => f.includes('package-lock.json'))
-const yarnLock = updated_files.find(f => f.includes('yarn.lock'))
-const pnpmLock = updated_files.find(f => f.includes('pnpm-lock.yaml'))
 
 // -- Dependency Checks -------------------------------------------------------
-if (packageJsons.length && !packageLock) {
-  warn('Changes were made to one or more package.json(s), but not to package-lock.json')
-}
-
-if (yarnLock || pnpmLock) {
-  fail('Non npm lockfile(s) detected (yarn / pnpm), please use npm')
-}
-
 async function checkPackageJsons() {
+  const packageJsons = all_files.filter(f => f.includes('package.json'))
+  const packageLock = updated_files.find(f => f.includes('package-lock.json'))
+  const yarnLock = updated_files.find(f => f.includes('yarn.lock'))
+  const pnpmLock = updated_files.find(f => f.includes('pnpm-lock.yaml'))
+
+  if (packageJsons.length && !packageLock) {
+    warn('Changes were made to one or more package.json(s), but not to package-lock.json')
+  }
+
+  if (yarnLock || pnpmLock) {
+    fail('Non npm lockfile(s) detected (yarn / pnpm), please use npm')
+  }
+
   for (const f of packageJsons) {
     const diff = await diffForFile(f)
-    if (diff && (diff.added.includes('^') || diff.added.includes('~'))) {
+    if (diff?.added.includes('^') || diff?.added.includes('~')) {
       fail(`Loose dependency versions in ${f}, please use strict versioning`)
     }
   }
@@ -34,6 +35,23 @@ async function checkUiPackage() {
   const created_ui_components = created_files.filter(f => f.includes('ui/src/components'))
   const created_ui_composites = created_files.filter(f => f.includes('ui/src/composites'))
   const created_ui_layout = created_files.filter(f => f.includes('ui/src/layout'))
+  const ui_files = [...created_ui_components, ...created_ui_composites, ...created_ui_layout]
+  const ui_index_files = ui_files.filter(f => f.includes('index.ts'))
+  const ui_style_files = ui_files.filter(f => f.includes('styles.ts'))
+
+  for (const f of ui_index_files) {
+    const diff = await diffForFile(f)
+    if (!diff?.added.includes('[resetStyles')) {
+      fail(`${f} does not apply resetStyles`)
+    }
+  }
+
+  for (const f of ui_style_files) {
+    const diff = await diffForFile(f)
+    if (diff?.added.includes(':host') && !diff.added.includes('display: ')) {
+      fail(`${f} uses :host container, but does not set display style on it`)
+    }
+  }
 
   const created_ui_components_stories = created_files.filter(f =>
     f.includes('gallery/stories/components')

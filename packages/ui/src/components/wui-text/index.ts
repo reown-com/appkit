@@ -1,13 +1,13 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { globalStyles, colorStyles } from '../../utils/ThemeUtil'
-import styles from './styles'
+import { colorStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { ColorType, TextType } from '../../utils/TypesUtil'
+import styles from './styles'
 
 @customElement('wui-text')
 export class WuiText extends LitElement {
-  public static styles = [globalStyles, colorStyles, styles]
+  public static styles = [resetStyles, colorStyles, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public variant: TextType = 'paragraph-500'

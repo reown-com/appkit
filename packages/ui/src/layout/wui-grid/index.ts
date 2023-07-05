@@ -1,12 +1,13 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { getSpacingStyles } from '../../utils/HelperUtils'
+import { resetStyles } from '../../utils/ThemeUtil'
 import type { GridContentType, GridItemsType, SpacingType } from '../../utils/TypesUtil'
 import styles from './styles'
 
 @customElement('wui-grid')
 export class WuiGrid extends LitElement {
-  public static styles = [styles]
+  public static styles = [resetStyles, styles]
 
   @property() public gridTemplateRows?: string
 

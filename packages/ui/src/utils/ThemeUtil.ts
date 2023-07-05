@@ -56,6 +56,10 @@ export const rootStyles = css`
     --wui-spacing-xl: 20px;
     --wui-spacing-xxl: 24px;
     --wui-spacing-3xl: 40px;
+
+    --wui-cover: rgba(0, 0, 0, 0.3);
+
+    --wui-z-index: 99;
   }
 
   [data-wui-theme='dark'] {
@@ -155,7 +159,7 @@ export const rootStyles = css`
   }
 `
 
-export const globalStyles = css`
+export const resetStyles = css`
   *,
   *::after,
   *::before,
@@ -171,7 +175,9 @@ export const globalStyles = css`
     backface-visibility: hidden;
     font-family: var(--wui-font-family);
   }
+`
 
+export const elementStyles = css`
   button {
     cursor: pointer;
     display: flex;

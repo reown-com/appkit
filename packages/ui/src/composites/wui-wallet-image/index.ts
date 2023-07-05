@@ -1,15 +1,15 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { globalStyles } from '../../utils/ThemeUtil'
-import '../../components/wui-image'
-import '../../components/wui-icon'
-import styles from './styles'
 import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder'
+import '../../components/wui-icon'
+import '../../components/wui-image'
+import { resetStyles } from '../../utils/ThemeUtil'
 import type { SizeType } from '../../utils/TypesUtil'
+import styles from './styles'
 
 @customElement('wui-wallet-image')
 export class WuiWalletImage extends LitElement {
-  public static styles = [globalStyles, styles]
+  public static styles = [resetStyles, styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public size: Exclude<SizeType, 'xs' | 'xxs'> = 'md'
@@ -19,11 +19,14 @@ export class WuiWalletImage extends LitElement {
   @property() public src?: string
 
   // -- render ------------------------------------------------------- //
+
   public render() {
     const sizeClass = `wui-size-${this.size}`
 
     return html` <div class=${sizeClass}>${this.templateVisual()}</div> `
   }
+
+  // -- private ------------------------------------------------------ //
 
   private templateVisual() {
     if (this.src) {

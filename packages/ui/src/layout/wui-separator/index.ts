@@ -1,17 +1,24 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-text'
+import { resetStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
 
 @customElement('wui-separator')
 export class WuiSeparator extends LitElement {
-  public static styles = [styles]
+  public static styles = [resetStyles, styles]
+
+  // -- state & properties ------------------------------------------- //
 
   @property({ type: Boolean }) public showText = false
+
+  // -- render ------------------------------------------------------- //
 
   public render() {
     return html`${this.template()}`
   }
+
+  // -- private ------------------------------------------------------ //
 
   private template() {
     if (this.showText) {

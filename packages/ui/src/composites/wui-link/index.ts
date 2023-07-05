@@ -1,14 +1,14 @@
 import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { globalStyles } from '../../utils/ThemeUtil'
-import '../../components/wui-text'
 import '../../components/wui-icon'
+import '../../components/wui-text'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
 
 @customElement('wui-link')
 export class WuiLink extends LitElement {
-  public static styles = [globalStyles, styles]
+  public static styles = [resetStyles, elementStyles, styles]
 
   // -- state & properties ------------------------------------------- //
   @property({ type: Object }) public iconLeft?: TemplateResult<2> = undefined
