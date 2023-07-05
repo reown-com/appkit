@@ -1,14 +1,14 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import '../../components/wui-shimmer'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
 
 @customElement('wui-card-select-loader')
 export class WuiCardSelectLoader extends LitElement {
   public static styles = [resetStyles, elementStyles, styles]
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
   public render() {
     return html`
       <wui-shimmer width="56px" height="56px" borderRadius="xs"></wui-shimmer>
