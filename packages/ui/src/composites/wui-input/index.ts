@@ -1,6 +1,7 @@
 import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { createRef, ref } from 'lit/directives/ref.js'
 import '../../components/wui-icon'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { SizeType } from '../../utils/TypesUtil'
@@ -19,16 +20,20 @@ export class WuiInput extends LitElement {
 
   @property() public placeholder = ''
 
+  public inputElementRef = createRef<HTMLInputElement>()
+
   // -- Render -------------------------------------------- //
   public render() {
     const sizeClass = `wui-size-${this.size}`
 
-    return html`<input
+    return html` ${this.templateIcon()}
+      <input
+        ${ref(this.inputElementRef)}
         class=${sizeClass}
         ?disabled=${this.disabled}
         placeholder=${this.placeholder}
       />
-      ${this.templateIcon()}`
+      <slot></slot>`
   }
 
   // -- Private ------------------------------------------- //
