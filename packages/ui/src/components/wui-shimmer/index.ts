@@ -20,7 +20,7 @@ export class WuiShimmer extends LitElement {
       border-radius: ${`var(--wui-border-radius-${this.borderRadius})`};
     `
 
-    return html``
+    return null
   }
 }
 
