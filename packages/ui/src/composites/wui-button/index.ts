@@ -4,13 +4,13 @@ import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import '../../components/wui-icon'
 import '../../components/wui-text'
-import { globalStyles, resetStyles } from '../../utils/ThemeUtil'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { ColorType, SizeType } from '../../utils/TypesUtil'
 import styles from './styles'
 
 @customElement('wui-button')
 export class WuiButton extends LitElement {
-  public static styles = [resetStyles, globalStyles, styles]
+  public static styles = [resetStyles, elementStyles, styles]
 
   // -- state & properties ------------------------------------------- //
 

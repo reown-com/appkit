@@ -177,7 +177,7 @@ export const resetStyles = css`
   }
 `
 
-export const globalStyles = css`
+export const elementStyles = css`
   button {
     cursor: pointer;
     display: flex;

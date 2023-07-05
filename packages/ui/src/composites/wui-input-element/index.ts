@@ -3,12 +3,12 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { closeSvg } from '../../assets/svg/close'
 import '../../components/wui-icon'
-import { globalStyles, resetStyles } from '../../utils/ThemeUtil'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
 
 @customElement('wui-input-element')
 export class WuiInputElement extends LitElement {
-  public static styles = [resetStyles, globalStyles, styles]
+  public static styles = [resetStyles, elementStyles, styles]
 
   // -- state & properties ------------------------------------------- //
   @property({ type: Object }) public icon: TemplateResult<2> = closeSvg

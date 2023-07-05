@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-text'
-import { globalStyles, resetStyles } from '../../utils/ThemeUtil'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { IWalletImage } from '../../utils/TypesUtil'
 import '../wui-all-wallets-image'
 import '../wui-wallet-image'
@@ -9,7 +9,7 @@ import styles from './styles'
 
 @customElement('wui-list-select')
 export class WuiListSelect extends LitElement {
-  public static styles = [resetStyles, globalStyles, styles]
+  public static styles = [resetStyles, elementStyles, styles]
 
   // -- state & properties ------------------------------------------- //
   @property({ type: Array }) public walletImages?: IWalletImage[] = []
