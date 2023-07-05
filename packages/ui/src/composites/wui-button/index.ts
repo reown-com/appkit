@@ -68,6 +68,8 @@ export class WuiButton extends LitElement {
     `
   }
 
+  // -- private --
+
   private templateIconRight() {
     if (this.iconRight) {
       return html`<wui-icon size="sm" color=${this.textColor}>${this.iconRight}</wui-icon>`

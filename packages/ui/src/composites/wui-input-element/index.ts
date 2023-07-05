@@ -19,7 +19,7 @@ export class WuiInputElement extends LitElement {
   public render() {
     return html`
       <button @click=${this.onClick.bind(this)}>
-        <wui-icon color="bg-200" size="xxs">${this.icon}</wui-icon>
+        <wui-icon color="inherit" size="xxs">${this.icon}</wui-icon>
       </button>
     `
   }

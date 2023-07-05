@@ -8,11 +8,17 @@ import styles from './styles'
 export class WuiSeparator extends LitElement {
   public static styles = [resetStyles, styles]
 
+  // -- state & properties ------------------------------------------- //
+
   @property({ type: Boolean }) public showText = false
+
+  // -- render ------------------------------------------------------- //
 
   public render() {
     return html`${this.template()}`
   }
+
+  // -- private ------------------------------------------------------ //
 
   private template() {
     if (this.showText) {

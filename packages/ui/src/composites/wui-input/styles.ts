@@ -3,6 +3,7 @@ import { css } from 'lit'
 export default css`
   :host {
     position: relative;
+    width: 100%;
     display: inline-block;
   }
 
@@ -58,26 +59,38 @@ export default css`
   }
 
   .wui-size-sm {
-    padding: 9px 14px 10px 38px;
-  }
-
-  .wui-size-sm + wui-icon {
-    left: 12px;
-  }
-
-  .wui-size-sm:only-child {
     padding: 9px 14px 10px 12px;
   }
 
-  .wui-size-md {
-    padding: 15px 14px 16px 42px;
+  wui-icon + .wui-size-sm {
+    padding: 9px 14px 10px 38px;
   }
 
-  .wui-size-md:only-child {
+  wui-icon[size='md'] {
+    left: 12px;
+  }
+
+  .wui-size-md {
     padding: 15px 14px 16px 14px;
   }
 
-  .wui-size-md + wui-icon {
+  wui-icon + .wui-size-md {
+    padding: 15px 14px 16px 42px;
+  }
+
+  wui-icon[size='lg'] {
     left: 14px;
+  }
+
+  input:placeholder-shown ~ ::slotted(wui-input-element) {
+    opacity: 0;
+  }
+
+  ::slotted(wui-input-element) {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 14px;
+    transition: all 200ms ease-in;
   }
 `
