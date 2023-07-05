@@ -41,7 +41,7 @@ async function checkUiPackage() {
 
   for (const f of ui_index_files) {
     const diff = await diffForFile(f)
-    if (diff && !diff.added.includes('[resetStyles')) {
+    if (!diff?.added.includes('[resetStyles')) {
       fail(`${f} does not apply resetStyles`)
     }
   }
