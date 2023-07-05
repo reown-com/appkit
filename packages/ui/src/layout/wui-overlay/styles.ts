@@ -8,16 +8,7 @@ export default css`
     right: 0;
     position: fixed;
     overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background-color: var(--wui-cover);
     z-index: var(--wui-z-index);
-  }
-
-  @media (max-width: 360px) {
-    :host {
-      align-items: flex-end;
-    }
   }
 `

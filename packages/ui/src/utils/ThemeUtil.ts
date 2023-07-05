@@ -60,8 +60,6 @@ export const rootStyles = css`
     --wui-cover: rgba(0, 0, 0, 0.3);
 
     --wui-z-index: 99;
-
-    --wui-max-container-width: 360px;
   }
 
   [data-wui-theme='dark'] {
