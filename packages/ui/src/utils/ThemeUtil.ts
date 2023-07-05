@@ -169,6 +169,7 @@ export const globalStyles = css`
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
     backface-visibility: hidden;
+    font-family: var(--wui-font-family);
   }
 
   button {
