@@ -3,6 +3,7 @@ import { css } from 'lit'
 export default css`
   :host {
     position: relative;
+    width: 100%;
     display: inline-block;
   }
 

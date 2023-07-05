@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { globalStyles } from '../../utils/ThemeUtil'
+import { resetStyles } from '../../utils/ThemeUtil'
 import '../../composites/wui-input-element'
 import '../../composites/wui-input'
 import { searchSvg } from '../../assets/svg/search'
@@ -9,7 +9,7 @@ import styles from './styles'
 
 @customElement('wui-search-bar')
 export class WuiSearchBar extends LitElement {
-  public static styles = [globalStyles, styles]
+  public static styles = [resetStyles, styles]
 
   // -- render ------------------------------------------------------- //
   public render() {
