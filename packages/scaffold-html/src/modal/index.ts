@@ -9,16 +9,17 @@ import styles from './styles'
 export class W3mModal extends LitElement {
   public static styles = [styles]
 
+  // -- lifecycle ----------------------------------------------------------------
   @state() private open = ModalController.state.open
 
   public constructor() {
     super()
     initializeTheming()
     setColorTheme('dark')
-
     ModalController.subscribe('open', open => (this.open = open))
   }
 
+  // -- render -------------------------------------------------------------------
   public render() {
     return this.open
       ? html`
