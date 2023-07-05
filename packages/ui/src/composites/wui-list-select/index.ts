@@ -39,6 +39,8 @@ export class WuiListSelect extends LitElement {
     `
   }
 
+  // -- private --
+
   private templateAllWallets() {
     if (this.showAllWallets && this.walletImages) {
       return html`<wui-all-wallets-image

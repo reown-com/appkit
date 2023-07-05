@@ -13,18 +13,24 @@ import type { WuiInput } from '../../composites/wui-input'
 export class WuiSearchBar extends LitElement {
   public static styles = [resetStyles, styles]
 
+  // -- state & properties ------------------------------------------- //
+
   public inputComponentRef = createRef<WuiInput>()
 
   // -- render ------------------------------------------------------- //
+
   public render() {
-    return html`<wui-input
+    return html` <wui-input
       ${ref(this.inputComponentRef)}
       placeholder="Search wallet"
       .icon=${searchSvg}
       size="sm"
-      ><wui-input-element @click=${this.clearValue} .icon=${closeSvg}></wui-input-element
-    ></wui-input>`
+    >
+      <wui-input-element @click=${this.clearValue} .icon=${closeSvg}></wui-input-element>
+    </wui-input>`
   }
+
+  // -- private --
 
   private clearValue() {
     const inputComponent = this.inputComponentRef.value

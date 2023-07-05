@@ -19,11 +19,14 @@ export class WuiWalletImage extends LitElement {
   @property() public src?: string
 
   // -- render ------------------------------------------------------- //
+
   public render() {
     const sizeClass = `wui-size-${this.size}`
 
     return html` <div class=${sizeClass}>${this.templateVisual()}</div> `
   }
+
+  // -- private --
 
   private templateVisual() {
     if (this.src) {

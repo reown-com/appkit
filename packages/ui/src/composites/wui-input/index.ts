@@ -37,6 +37,8 @@ export class WuiInput extends LitElement {
       <slot></slot>`
   }
 
+  // -- private --
+
   private templateIcon() {
     const iconSize = this.size === 'md' ? 'lg' : 'md'
     if (this.icon) {
