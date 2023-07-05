@@ -7,7 +7,7 @@ import '../../composites/wui-input'
 import { searchSvg } from '../../assets/svg/search'
 import { closeSvg } from '../../assets/svg/close'
 import styles from './styles'
-import { WuiInput } from '../../composites/wui-input'
+import type { WuiInput } from '../../composites/wui-input'
 
 @customElement('wui-search-bar')
 export class WuiSearchBar extends LitElement {
