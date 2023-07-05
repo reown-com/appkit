@@ -13,6 +13,7 @@ export * from './src/composites/wui-input'
 export * from './src/composites/wui-input-element'
 export * from './src/composites/wui-link'
 export * from './src/composites/wui-list-select'
+export * from './src/composites/wui-search-bar'
 export * from './src/composites/wui-wallet-image'
 
 export * from './src/layout/wui-flex'
