@@ -1,15 +1,15 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { globalStyles } from '../../utils/ThemeUtil'
 import '../../components/wui-text'
-import '../wui-wallet-image'
-import '../wui-all-wallets-image'
-import styles from './styles'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { IWalletImage } from '../../utils/TypesUtil'
+import '../wui-all-wallets-image'
+import '../wui-wallet-image'
+import styles from './styles'
 
 @customElement('wui-list-select')
 export class WuiListSelect extends LitElement {
-  public static styles = [globalStyles, styles]
+  public static styles = [resetStyles, elementStyles, styles]
 
   // -- state & properties ------------------------------------------- //
   @property({ type: Array }) public walletImages?: IWalletImage[] = []

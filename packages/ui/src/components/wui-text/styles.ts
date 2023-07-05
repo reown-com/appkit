@@ -2,6 +2,7 @@ import { css } from 'lit'
 
 export default css`
   :host {
+    display: inline-block;
     font-style: normal;
     font-family: var(--wui-font-family);
     font-feature-settings: var(--wui-font-feature-settings);

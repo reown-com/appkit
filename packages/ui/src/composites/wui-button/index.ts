@@ -2,15 +2,15 @@ import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { globalStyles } from '../../utils/ThemeUtil'
-import '../../components/wui-text'
 import '../../components/wui-icon'
-import styles from './styles'
+import '../../components/wui-text'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { ColorType, SizeType } from '../../utils/TypesUtil'
+import styles from './styles'
 
 @customElement('wui-button')
 export class WuiButton extends LitElement {
-  public static styles = [globalStyles, styles]
+  public static styles = [resetStyles, elementStyles, styles]
 
   // -- state & properties ------------------------------------------- //
 

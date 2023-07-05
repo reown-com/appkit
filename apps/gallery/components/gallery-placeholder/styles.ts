@@ -37,4 +37,8 @@ export default css`
   .placeholder-bg-color-blue {
     background-color: #47a1ff;
   }
+
+  .placeholder-margin {
+    margin: 20px;
+  }
 `
