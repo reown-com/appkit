@@ -70,7 +70,7 @@ async function checkUiPackage() {
       fail(`${f} is missing \`${STATE_PROPERTIES_COMMENT}\` comment`)
     }
 
-    if (diff?.added.includes('private ') && !diff.added.includes(PRIVATE_COMMENT)) {
+    if (diff?.added.includes('\nprivate ') && !diff.added.includes(PRIVATE_COMMENT)) {
       fail(`${f} is missing \`${PRIVATE_COMMENT}\` comment`)
     }
   }
@@ -171,7 +171,7 @@ async function checkScaffoldHtmlPackage() {
       fail(`${f} is missing \`${STATE_PROPERTIES_COMMENT}\` comment`)
     }
 
-    if (diff?.added.includes('private ') && !diff.added.includes(PRIVATE_COMMENT)) {
+    if (diff?.added.includes('\nprivate ') && !diff.added.includes(PRIVATE_COMMENT)) {
       fail(`${f} is missing \`${PRIVATE_COMMENT}\` comment`)
     }
   }
