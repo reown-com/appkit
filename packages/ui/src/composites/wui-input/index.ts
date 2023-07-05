@@ -10,7 +10,7 @@ import styles from './styles'
 export class WuiInput extends LitElement {
   public static styles = [resetStyles, elementStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property() public size: Exclude<SizeType, 'inherit' | 'lg' | 'xs' | 'xxs'> = 'md'
 
   @property({ type: Object }) public icon?: TemplateResult<2> = undefined
@@ -19,7 +19,7 @@ export class WuiInput extends LitElement {
 
   @property() public placeholder = ''
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
   public render() {
     const sizeClass = `wui-size-${this.size}`
 
@@ -31,6 +31,7 @@ export class WuiInput extends LitElement {
       ${this.templateIcon()}`
   }
 
+  // -- Private ------------------------------------------- //
   private templateIcon() {
     const iconSize = this.size === 'md' ? 'lg' : 'md'
     if (this.icon) {

@@ -9,12 +9,12 @@ import styles from './styles'
 export class WuiText extends LitElement {
   public static styles = [resetStyles, colorStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property() public variant: TextType = 'paragraph-500'
 
   @property() public color: ColorType = 'fg-300'
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
   public render() {
     const classes = {
       [`wui-font-${this.variant}`]: true,

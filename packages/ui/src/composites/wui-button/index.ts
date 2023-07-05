@@ -12,8 +12,7 @@ import styles from './styles'
 export class WuiButton extends LitElement {
   public static styles = [resetStyles, elementStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
-
+  // -- State & Properties -------------------------------- //
   @property() public size: Exclude<SizeType, 'inherit' | 'lg' | 'xs' | 'xxs'> = 'md'
 
   @property({ type: Object }) public iconLeft?: TemplateResult<2> = undefined
@@ -28,7 +27,7 @@ export class WuiButton extends LitElement {
 
   @property() public onClick: (event: PointerEvent) => void = () => null
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
   public render() {
     switch (this.variant) {
       case 'accent':
@@ -68,6 +67,7 @@ export class WuiButton extends LitElement {
     `
   }
 
+  // -- Private ------------------------------------------- //
   private templateIconRight() {
     if (this.iconRight) {
       return html`<wui-icon size="sm" color=${this.textColor}>${this.iconRight}</wui-icon>`

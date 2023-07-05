@@ -1,19 +1,19 @@
 import { subscribeKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
 
-// -- Types --------------------------------------------------------------------
+// -- Types --------------------------------------------- //
 export interface ModalControllerState {
   open: boolean
 }
 
 type StateKey = keyof ModalControllerState
 
-// -- State --------------------------------------------------------------------
+// -- State --------------------------------------------- //
 const state = proxy<ModalControllerState>({
   open: false
 })
 
-// -- Controller ---------------------------------------------------------------
+// -- Controller ---------------------------------------- //
 export const ModalController = {
   state,
 

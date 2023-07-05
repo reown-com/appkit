@@ -11,20 +11,21 @@ import styles from './styles'
 export class WuiWalletImage extends LitElement {
   public static styles = [resetStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property() public size: Exclude<SizeType, 'xs' | 'xxs'> = 'md'
 
   @property() public walletName = ''
 
   @property() public src?: string
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
   public render() {
     const sizeClass = `wui-size-${this.size}`
 
     return html` <div class=${sizeClass}>${this.templateVisual()}</div> `
   }
 
+  // -- Private ------------------------------------------- //
   private templateVisual() {
     if (this.src) {
       return html`<wui-image src=${this.src} alt=${this.walletName}></wui-image>`

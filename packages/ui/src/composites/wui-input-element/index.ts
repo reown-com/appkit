@@ -10,16 +10,16 @@ import styles from './styles'
 export class WuiInputElement extends LitElement {
   public static styles = [resetStyles, elementStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property({ type: Object }) public icon: TemplateResult<2> = closeSvg
 
   @property() public onClick: (event: PointerEvent) => void = () => null
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
   public render() {
     return html`
       <button @click=${this.onClick.bind(this)}>
-        <wui-icon color="bg-200" size="xxs">${this.icon}</wui-icon>
+        <wui-icon color="inherit" size="xxs">${this.icon}</wui-icon>
       </button>
     `
   }

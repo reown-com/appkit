@@ -10,7 +10,7 @@ import styles from './styles'
 export class WuiLink extends LitElement {
   public static styles = [resetStyles, elementStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property({ type: Object }) public iconLeft?: TemplateResult<2> = undefined
 
   @property({ type: Object }) public iconRight?: TemplateResult<2> = undefined
@@ -19,7 +19,7 @@ export class WuiLink extends LitElement {
 
   @property() public onClick: (event: PointerEvent) => void = () => null
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
   public render() {
     const textColor = this.disabled ? 'inherit' : 'blue-100'
 
