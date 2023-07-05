@@ -2,6 +2,7 @@ import { css } from 'lit'
 
 export default css`
   :host {
+    display: block;
     top: 0;
     bottom: 0;
     left: 0;

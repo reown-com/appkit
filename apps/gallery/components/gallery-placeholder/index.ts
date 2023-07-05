@@ -12,11 +12,14 @@ export class GalleryPlaceholder extends LitElement {
 
   @property() public background: 'blue' | 'green' | 'red' = 'green'
 
+  @property({ type: Boolean }) public margin = false
+
   // -- render ------------------------------------------------------- //
   public render() {
     const classes = {
       [`placeholder-size-${this.size}`]: true,
-      [`placeholder-bg-color-${this.background}`]: true
+      [`placeholder-bg-color-${this.background}`]: true,
+      'placeholder-margin': this.margin
     }
 
     return html`<div class="${classMap(classes)}"></div>`

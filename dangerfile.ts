@@ -36,11 +36,20 @@ async function checkUiPackage() {
   const created_ui_composites = created_files.filter(f => f.includes('ui/src/composites'))
   const created_ui_layout = created_files.filter(f => f.includes('ui/src/layout'))
   const ui_files = [...created_ui_components, ...created_ui_composites, ...created_ui_layout]
+  const ui_index_files = ui_files.filter(f => f.includes('index.ts'))
+  const ui_style_files = ui_files.filter(f => f.includes('styles.ts'))
 
-  for (const f of ui_files) {
+  for (const f of ui_index_files) {
     const diff = await diffForFile(f)
     if (diff && !diff.added.includes('[resetStyles')) {
       fail(`${f} does not apply resetStyles`)
+    }
+  }
+
+  for (const f of ui_style_files) {
+    const diff = await diffForFile(f)
+    if (diff && diff.added.includes(':host') && !diff.added.includes('display: ')) {
+      fail(`${f} uses :host container, but does not set display style on it`)
     }
   }
 
