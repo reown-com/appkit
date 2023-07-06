@@ -1,5 +1,4 @@
 import type { Meta } from '@storybook/web-components'
-import { searchSvg } from '@web3modal/ui/src/assets/svg/search'
 import '@web3modal/ui/src/composites/wui-input'
 import '../../components/gallery-container'
 import type { WuiInput } from '@web3modal/ui/src/composites/wui-input'

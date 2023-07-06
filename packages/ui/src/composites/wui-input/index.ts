@@ -1,4 +1,3 @@
-import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { createRef, ref } from 'lit/directives/ref.js'

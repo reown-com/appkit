@@ -1,9 +1,9 @@
 import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-button'
 import type { WuiButton } from '@web3modal/ui/src/composites/wui-button'
-import { html } from 'lit'
+import { html, nothing } from 'lit'
 import { iconOptions } from '../../utils/PresetUtils'
-import { IconType } from '@web3modal/ui/src/utils/TypesUtil'
+import type { IconType } from '@web3modal/ui/src/utils/TypesUtil'
 
 type Component = Meta<WuiButton & { iconLeft?: IconType; iconRight?: IconType }>
 
@@ -49,7 +49,7 @@ export const Default: Component = {
             name=${args.iconLeft}
             slot="iconLeft"
           ></wui-icon>`
-        : ''}
+        : nothing}
       Button
       ${args.iconRight !== undefined
         ? html`<wui-icon
@@ -58,6 +58,6 @@ export const Default: Component = {
             name=${args.iconRight}
             slot="iconRight"
           ></wui-icon>`
-        : ''}
+        : nothing}
     </wui-button>`
 }

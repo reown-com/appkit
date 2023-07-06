@@ -1,8 +1,8 @@
 import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-link'
 import type { WuiLink } from '@web3modal/ui/src/composites/wui-link'
-import { IconType } from '@web3modal/ui/src/utils/TypesUtil'
-import { html } from 'lit'
+import type { IconType } from '@web3modal/ui/src/utils/TypesUtil'
+import { html, nothing } from 'lit'
 import { iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiLink & { iconLeft?: IconType; iconRight?: IconType }>
@@ -33,7 +33,7 @@ export const Default: Component = {
   render: args => html`<wui-link ?disabled=${args.disabled}>
     ${args.iconLeft !== undefined
       ? html`<wui-icon size="xs" color="inherit" name=${args.iconLeft} slot="iconLeft"></wui-icon>`
-      : ''}
+      : nothing}
     Link
     ${args.iconRight !== undefined
       ? html`<wui-icon
@@ -42,6 +42,6 @@ export const Default: Component = {
           name=${args.iconRight}
           slot="iconRight"
         ></wui-icon>`
-      : ''}
+      : nothing}
   </wui-link>`
 }
