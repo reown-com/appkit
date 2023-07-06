@@ -11,10 +11,9 @@ export default {
 } as Component
 
 export const Default: Component = {
-  render: () =>
-    html`
-      <wui-card>
-        <gallery-placeholder size="lg" margin background="blue"></gallery-placeholder>
-      </wui-card>
-    `
+  render: () => html`
+    <wui-card>
+      <gallery-placeholder size="lg" margin background="blue"></gallery-placeholder>
+    </wui-card>
+  `
 }
