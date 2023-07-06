@@ -42,22 +42,22 @@ export default {
 export const Default: Component = {
   render: args =>
     html`<wui-button size=${args.size} ?disabled=${args.disabled} variant=${args.variant}>
-      ${args.iconLeft !== undefined
-        ? html`<wui-icon
+      ${args.iconLeft === undefined
+        ? nothing
+        : html`<wui-icon
             size="sm"
             color="inherit"
             name=${args.iconLeft}
             slot="iconLeft"
-          ></wui-icon>`
-        : nothing}
+          ></wui-icon>`}
       Button
-      ${args.iconRight !== undefined
-        ? html`<wui-icon
+      ${args.iconRight === undefined
+        ? nothing
+        : html`<wui-icon
             size="sm"
             color="inherit"
             name=${args.iconRight}
             slot="iconRight"
-          ></wui-icon>`
-        : nothing}
+          ></wui-icon>`}
     </wui-button>`
 }

@@ -31,17 +31,17 @@ export default {
 
 export const Default: Component = {
   render: args => html`<wui-link ?disabled=${args.disabled}>
-    ${args.iconLeft !== undefined
-      ? html`<wui-icon size="xs" color="inherit" name=${args.iconLeft} slot="iconLeft"></wui-icon>`
-      : nothing}
+    ${args.iconLeft === undefined
+      ? nothing
+      : html`<wui-icon size="xs" color="inherit" name=${args.iconLeft} slot="iconLeft"></wui-icon>`}
     Link
-    ${args.iconRight !== undefined
-      ? html`<wui-icon
+    ${args.iconRight === undefined
+      ? nothing
+      : html`<wui-icon
           size="xs"
           color="inherit"
           name=${args.iconRight}
           slot="iconRight"
-        ></wui-icon>`
-      : nothing}
+        ></wui-icon>`}
   </wui-link>`
 }
