@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import '../../components/wui-icon'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import type { ColorType, SizeType } from '../../utils/TypesUtil'
+import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil'
 import styles from './styles'
 
 @customElement('wui-icon-box')
@@ -16,6 +16,8 @@ export class WuiIconBox extends LitElement {
   @property() public backgroundColor: ColorType = 'blue-100'
 
   @property() public iconColor: ColorType = 'blue-100'
+
+  @property() public icon: IconType = 'copy'
 
   // -- Render -------------------------------------------- //
   public render() {
@@ -40,7 +42,7 @@ export class WuiIconBox extends LitElement {
 
     return html`
       <div class="wui-overlay-default ${classMap(classes)}" style=${bgColorStyle}>
-        <wui-icon color=${this.iconColor} size=${iconSize}><slot></slot></wui-icon>
+        <wui-icon color=${this.iconColor} size=${iconSize} name=${this.icon}></wui-icon>
       </div>
     `
   }

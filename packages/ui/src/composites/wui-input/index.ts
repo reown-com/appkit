@@ -4,7 +4,7 @@ import { customElement, property } from 'lit/decorators.js'
 import { createRef, ref } from 'lit/directives/ref.js'
 import '../../components/wui-icon'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import type { SizeType } from '../../utils/TypesUtil'
+import type { IconType, SizeType } from '../../utils/TypesUtil'
 import styles from './styles'
 
 @customElement('wui-input')
@@ -14,7 +14,7 @@ export class WuiInput extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public size: Exclude<SizeType, 'inherit' | 'lg' | 'xs' | 'xxs'> = 'md'
 
-  @property({ type: Object }) public icon?: TemplateResult<2> = undefined
+  @property() public icon?: IconType
 
   @property({ type: Boolean }) public disabled = false
 
@@ -40,7 +40,7 @@ export class WuiInput extends LitElement {
   private templateIcon() {
     const iconSize = this.size === 'md' ? 'lg' : 'md'
     if (this.icon) {
-      return html`<wui-icon size=${iconSize} color="inherit">${this.icon}</wui-icon>`
+      return html`<wui-icon size=${iconSize} color="inherit" name=${this.icon}></wui-icon>`
     }
 
     return null

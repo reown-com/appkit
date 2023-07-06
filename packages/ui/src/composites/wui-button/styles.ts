@@ -10,42 +10,49 @@ export default css`
     border: 1px solid var(--wui-overlay-010);
   }
 
-  .wui-size-sm {
+  button[size='sm'] {
     padding: 6.75px 10px 7.25px;
   }
 
-  .wui-size-md {
+  button[size='md'] {
     padding: 9px 16px 10px 16px;
   }
 
-  button.wui-variant-fill {
+  button[variant='fill'] {
+    color: var(--wui-color-inverse-100);
     background-color: var(--wui-color-blue-100);
   }
 
-  button.wui-variant-fill:disabled {
+  button[variant='fill']:disabled {
+    color: var(--wui-color-fg-200);
     background-color: var(--wui-overlay-020);
   }
 
-  button.wui-variant-fill:disabled > wui-text,
-  button.wui-variant-fill:disabled > wui-icon {
-    color: var(--wui-color-fg-300);
+  button[variant='shade'] {
+    color: var(--wui-color-fg-200);
   }
 
-  button.wui-variant-transparent:disabled {
+  button[variant='accent'] {
+    color: var(--wui-color-blue-100);
+  }
+
+  button[variant='shade']:disabled,
+  button[variant='accent']:disabled {
+    color: var(--wui-color-bg-300);
+  }
+
+  button[variant='shade']:disabled,
+  button[variant='accent']:disabled {
     background-color: transparent;
-  }
-
-  button.wui-variant-transparent:disabled > wui-text,
-  button.wui-variant-transparent:disabled > wui-icon {
     color: var(--wui-color-bg-300);
   }
 
   @media (hover: hover) and (pointer: fine) {
-    button.wui-variant-fill:hover:enabled {
+    button[variant='fill']:hover:enabled {
       background-color: var(--wui-color-blue-090);
     }
 
-    button.wui-variant-fill:active:enabled {
+    button[variant='fill']:active:enabled {
       border: 1px solid var(--wui-overlay-010);
       background-color: var(--wui-color-blue-080);
     }

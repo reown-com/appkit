@@ -5,6 +5,7 @@ export default css`
     position: relative;
     width: 100%;
     display: inline-block;
+    color: var(--wui-color-fg-275);
   }
 
   input {
@@ -54,7 +55,6 @@ export default css`
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--wui-color-fg-275);
     pointer-events: none;
   }
 

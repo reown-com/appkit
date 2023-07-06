@@ -5,10 +5,11 @@ export default css`
     padding: 2px 6px;
     border-radius: var(--wui-border-radius-3xs);
     background-color: transparent;
+    color: var(--wui-color-blue-100);
   }
 
-  button:disabled > wui-text,
-  button:disabled > wui-icon {
+  button:disabled {
+    background-color: transparent;
     color: var(--wui-color-bg-300);
   }
 `
