@@ -74,7 +74,7 @@ async function checkUiPackage() {
       fail(`${f} is missing \`${PRIVATE_COMMENT}\` comment`)
     }
 
-    if (!diff?.added.includes(`@customElement('wui-)`)) {
+    if (!diff?.added.includes(`@customElement('wui-`)) {
       fail(`${f} is a ui element, but does not define wui- prefix`)
     }
   }
@@ -179,7 +179,7 @@ async function checkScaffoldHtmlPackage() {
       fail(`${f} is missing \`${PRIVATE_COMMENT}\` comment`)
     }
 
-    if (!diff?.added.includes(`@customElement('w3m-)`)) {
+    if (!diff?.added.includes(`@customElement('w3m-`)) {
       fail(`${f} is a scaffold element, but does not define w3m- prefix`)
     }
   }
