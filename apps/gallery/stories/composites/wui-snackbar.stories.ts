@@ -9,7 +9,7 @@ type Component = Meta<WuiSnackbar>
 export default {
   title: 'Composites/wui-snackbar',
   args: {
-		message: 'Address approved',
+    message: 'Address approved',
     backgroundColor: 'success-100',
     iconColor: 'success-100',
     icon: 'checkmark'
@@ -33,12 +33,11 @@ export default {
 
 export const Default: Component = {
   render: args =>
-    html`
-		<wui-snackbar
-			iconColor=${args.iconColor}
-			backgroundColor=${args.backgroundColor}
-			icon=${args.icon}
-			message=${args.message}
-			>
-		</wui-snackbar>`
+    html` <wui-snackbar
+      iconColor=${args.iconColor}
+      backgroundColor=${args.backgroundColor}
+      icon=${args.icon}
+      message=${args.message}
+    >
+    </wui-snackbar>`
 }

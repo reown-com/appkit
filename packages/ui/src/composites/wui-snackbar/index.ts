@@ -22,9 +22,14 @@ export class WuiSnackbar extends LitElement {
   // -- Render -------------------------------------------- //
   public render() {
     return html`
-      <wui-icon-box size="md" iconColor=${this.iconColor} backgroundColor=${this.backgroundColor} icon=${this.icon}></wui-icon-box>
+      <wui-icon-box
+        size="md"
+        iconColor=${this.iconColor}
+        backgroundColor=${this.backgroundColor}
+        icon=${this.icon}
+      ></wui-icon-box>
       <wui-text variant="paragraph-500" color="fg-100">${this.message}</wui-text>
-      `
+    `
   }
 }
 
