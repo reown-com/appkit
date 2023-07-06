@@ -1,3 +1,4 @@
+import { subscribeKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
 
 // -- Types --------------------------------------------- //
@@ -12,9 +13,15 @@ const state = proxy<RouterControllerState>({
   history: ['Connect']
 })
 
+type StateKey = keyof RouterControllerState
+
 // -- Controller ---------------------------------------- //
 export const RouterController = {
   state,
+
+  subscribe<K extends StateKey>(key: K, callback: (value: RouterControllerState[K]) => void) {
+    subscribeKey(state, key, callback)
+  },
 
   push(view: RouterControllerState['view']) {
     if (view !== state.view) {

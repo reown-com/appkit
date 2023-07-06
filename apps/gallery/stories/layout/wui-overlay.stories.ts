@@ -10,9 +10,8 @@ export default {
 } as Component
 
 export const Default: Component = {
-  render: () =>
-    html`
-      <!-- Set to absolute instead of fixed to fit within story container -->
-      <wui-overlay style="position: absolute"></wui-overlay>
-    `
+  render: () => html`
+    <!-- Set to absolute instead of fixed to fit within story container -->
+    <wui-overlay style="position: absolute"></wui-overlay>
+  `
 }

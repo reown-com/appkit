@@ -18,7 +18,7 @@
     "@web3modal/ui": "3.0.0",
     "@web3modal/core": "3.0.0",
     "motion": "10.16.2",
-    "lit": "2.7.5"
+    "lit": "2.7.6"
   },
   "keywords": [
     "web3",

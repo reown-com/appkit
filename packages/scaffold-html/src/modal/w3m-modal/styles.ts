@@ -9,6 +9,7 @@ export default css`
 
   wui-card {
     max-width: 360px;
+    width: 100%;
   }
 
   @media (max-width: 360px) {

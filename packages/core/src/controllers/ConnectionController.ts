@@ -3,9 +3,10 @@ import { proxy, ref } from 'valtio/vanilla'
 // -- Types --------------------------------------------- //
 export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
-  connectBrowserExtension: (id: string) => Promise<void>
   disconnect: () => Promise<void>
-  connectThirdPartyWallet?: (id: string) => Promise<void>
+  connectExternal?: (id: string) => Promise<void>
+  connectInjected?: (id: string) => Promise<void>
+  connectInjectedLegacy?: () => Promise<void>
 }
 
 export interface ConnectionControllerState {
@@ -41,12 +42,16 @@ export const ConnectionController = {
     })
   },
 
-  async connectBrowserExtension(id: string) {
-    await this._getClient().connectBrowserExtension(id)
+  async connectInjected(id: string) {
+    await this._getClient().connectInjected?.(id)
   },
 
-  async connectThirdPartyWallet(id: string) {
-    await this._getClient().connectThirdPartyWallet?.(id)
+  async connectInjectedLegacy() {
+    await this._getClient().connectInjectedLegacy?.()
+  },
+
+  async connectExternal(id: string) {
+    await this._getClient().connectExternal?.(id)
   },
 
   async disconnect() {

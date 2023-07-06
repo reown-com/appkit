@@ -48,7 +48,7 @@ export class Web3ModalScaffoldHtml {
   async #initOrContinue() {
     if (!this.#initPromise && HelperUtil.isClient()) {
       this.#initPromise = new Promise<void>(async resolve => {
-        await import('./modal')
+        await Promise.all([import('@web3modal/ui'), import('./modal/w3m-modal')])
         const modal = document.createElement('w3m-modal')
         document.body.insertAdjacentElement('beforeend', modal)
         resolve()

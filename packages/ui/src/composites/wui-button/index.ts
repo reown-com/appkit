@@ -17,19 +17,12 @@ export class WuiButton extends LitElement {
 
   @property() public variant: 'accent' | 'fill' | 'shade' = 'fill'
 
-  @property() public onClick: (event: PointerEvent) => void = () => null
-
   // -- Render -------------------------------------------- //
   public render() {
     const textVariant = this.size === 'md' ? 'paragraph-600' : 'small-600'
 
     return html`
-      <button
-        variant=${this.variant}
-        size=${this.size}
-        ?disabled=${this.disabled}
-        @click=${this.onClick.bind(this)}
-      >
+      <button variant=${this.variant} size=${this.size} ?disabled=${this.disabled}>
         <slot name="iconLeft"></slot>
         <wui-text variant=${textVariant} color="inherit">
           <slot></slot>
