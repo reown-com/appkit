@@ -15,8 +15,6 @@ export class W3mHeader extends LitElement {
       <wui-separator></wui-separator>
     `
   }
-
-  // -- Private ------------------------------------------- //
 }
 
 declare global {
