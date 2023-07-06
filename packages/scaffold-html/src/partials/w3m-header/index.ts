@@ -9,7 +9,7 @@ export class W3mHeader extends LitElement {
     return html`
       <wui-flex padding="l" justifyContent="space-between" alignItems="center">
         <wui-icon-link icon="copy"></wui-icon-link>
-        Connect wallet
+        <wui-text variant="paragraph-700">Connect wallet</wui-text>
         <wui-icon-link icon="close" @click=${ModalController.close}></wui-icon-link>
       </wui-flex>
       <wui-separator></wui-separator>
