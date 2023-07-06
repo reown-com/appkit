@@ -1,9 +1,8 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { classMap } from 'lit/directives/class-map.js'
 import '../../components/wui-icon'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import type { ColorType, SizeType } from '../../utils/TypesUtil'
+import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil'
 import styles from './styles'
 
 @customElement('wui-icon-box')
@@ -16,6 +15,8 @@ export class WuiIconBox extends LitElement {
   @property() public backgroundColor: ColorType = 'blue-100'
 
   @property() public iconColor: ColorType = 'blue-100'
+
+  @property() public icon: IconType = 'copy'
 
   // -- Render -------------------------------------------- //
   public render() {
@@ -30,19 +31,18 @@ export class WuiIconBox extends LitElement {
       default:
         iconSize = 'xxs'
     }
+    const isLg = this.size === 'lg'
+    const bgMix = isLg ? '12%' : '16%'
+    const borderRadius = isLg ? 'xxs' : '3xl'
 
-    const classes = {
-      [`wui-size-${this.size}`]: true,
-      [`wui-overlay-${this.size === 'lg' ? 'sm' : 'md'}`]: true
-    }
+    this.style.cssText = `
+       --local-bg-value: var(--wui-color-${this.backgroundColor});
+       --local-bg-mix: ${bgMix};
+       --local-border-radius: var(--wui-border-radius-${borderRadius});
+       --local-size: var(--wui-icon-box-size-${this.size});
+   `
 
-    const bgColorStyle = `--wui-bg-value: var(--wui-color-${this.backgroundColor});`
-
-    return html`
-      <div class="wui-overlay-default ${classMap(classes)}" style=${bgColorStyle}>
-        <wui-icon color=${this.iconColor} size=${iconSize}><slot></slot></wui-icon>
-      </div>
-    `
+    return html` <wui-icon color=${this.iconColor} size=${iconSize} name=${this.icon}></wui-icon> `
   }
 }
 

@@ -1,9 +1,9 @@
 import type { Meta } from '@storybook/web-components'
-import { searchSvg } from '@web3modal/ui/src/assets/svg/search'
 import '@web3modal/ui/src/composites/wui-input'
 import '../../components/gallery-container'
 import type { WuiInput } from '@web3modal/ui/src/composites/wui-input'
 import { html } from 'lit'
+import { iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiInput>
 
@@ -12,7 +12,7 @@ export default {
   args: {
     size: 'sm',
     placeholder: 'Search wallet',
-    icon: searchSvg,
+    icon: 'search',
     disabled: false
   },
   argTypes: {
@@ -22,6 +22,10 @@ export default {
     },
     disabled: {
       control: { type: 'boolean' }
+    },
+    icon: {
+      options: [undefined, ...iconOptions],
+      control: { type: 'select' }
     }
   }
 } as Component

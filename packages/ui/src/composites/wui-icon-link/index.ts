@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-icon'
 import { colorStyles, elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import type { SizeType } from '../../utils/TypesUtil'
+import type { IconType, SizeType } from '../../utils/TypesUtil'
 import styles from './styles'
 
 @customElement('wui-icon-link')
@@ -14,12 +14,14 @@ export class WuiIconLink extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
+  @property() public icon: IconType = 'copy'
+
   @property() public onClick: (event: PointerEvent) => void = () => null
 
   // -- Render -------------------------------------------- //
   public render() {
     return html`<button ?disabled=${this.disabled} @click=${this.onClick.bind(this)}>
-      <wui-icon color="inherit" size=${this.size}><slot></slot></wui-icon>
+      <wui-icon color="inherit" size=${this.size} name=${this.icon}></wui-icon>
     </button>`
   }
 }

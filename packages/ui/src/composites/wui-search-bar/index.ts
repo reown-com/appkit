@@ -4,8 +4,6 @@ import { resetStyles } from '../../utils/ThemeUtil'
 import '../../composites/wui-input-element'
 import { ref, createRef } from 'lit/directives/ref.js'
 import '../../composites/wui-input'
-import { searchSvg } from '../../assets/svg/search'
-import { closeSvg } from '../../assets/svg/close'
 import styles from './styles'
 import type { WuiInput } from '../../composites/wui-input'
 
@@ -23,10 +21,10 @@ export class WuiSearchBar extends LitElement {
     return html` <wui-input
       ${ref(this.inputComponentRef)}
       placeholder="Search wallet"
-      .icon=${searchSvg}
+      icon="search"
       size="sm"
     >
-      <wui-input-element @click=${this.clearValue} .icon=${closeSvg}></wui-input-element>
+      <wui-input-element @click=${this.clearValue} icon="close"></wui-input-element>
     </wui-input>`
   }
 
