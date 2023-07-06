@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-link'
 import type { WuiLink } from '@web3modal/ui/src/composites/wui-link'
 import type { IconType } from '@web3modal/ui/src/utils/TypesUtil'
-import { html, nothing } from 'lit'
+import { html } from 'lit'
 import { iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiLink & { iconLeft?: IconType; iconRight?: IconType }>
