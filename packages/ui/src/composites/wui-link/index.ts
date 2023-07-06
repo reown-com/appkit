@@ -12,12 +12,10 @@ export class WuiLink extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled = false
 
-  @property() public onClick: (event: PointerEvent) => void = () => null
-
   // -- Render -------------------------------------------- //
   public render() {
     return html`
-      <button ?disabled=${this.disabled} @click=${this.onClick.bind(this)}>
+      <button ?disabled=${this.disabled}>
         <slot name="iconLeft"></slot>
         <wui-text variant="small-600" color="inherit">
           <slot></slot>

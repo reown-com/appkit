@@ -73,6 +73,10 @@ async function checkUiPackage() {
     if (diff?.added.includes('\nprivate ') && !diff.added.includes(PRIVATE_COMMENT)) {
       fail(`${f} is missing \`${PRIVATE_COMMENT}\` comment`)
     }
+
+    if (!diff?.added.includes(`@customElement('wui-`)) {
+      fail(`${f} is a ui element, but does not define wui- prefix`)
+    }
   }
 
   for (const f of created_ui_style_files) {
@@ -173,6 +177,10 @@ async function checkScaffoldHtmlPackage() {
 
     if (diff?.added.includes('\nprivate ') && !diff.added.includes(PRIVATE_COMMENT)) {
       fail(`${f} is missing \`${PRIVATE_COMMENT}\` comment`)
+    }
+
+    if (!diff?.added.includes(`@customElement('w3m-`)) {
+      fail(`${f} is a scaffold element, but does not define w3m- prefix`)
     }
   }
 }

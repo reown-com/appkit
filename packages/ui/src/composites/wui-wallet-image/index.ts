@@ -1,6 +1,5 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder'
 import '../../components/wui-icon'
 import '../../components/wui-image'
 import { resetStyles } from '../../utils/ThemeUtil'
@@ -31,7 +30,7 @@ export class WuiWalletImage extends LitElement {
       return html`<wui-image src=${this.src} alt=${this.walletName}></wui-image>`
     }
 
-    return html`<wui-icon size="inherit" color="inherit">${walletPlaceholderSvg}</wui-icon>`
+    return html`<wui-icon size="inherit" color="inherit" name="walletPlaceholder"></wui-icon>`
   }
 }
 

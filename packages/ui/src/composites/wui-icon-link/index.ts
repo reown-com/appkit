@@ -16,11 +16,9 @@ export class WuiIconLink extends LitElement {
 
   @property() public icon: IconType = 'copy'
 
-  @property() public onClick: (event: PointerEvent) => void = () => null
-
   // -- Render -------------------------------------------- //
   public render() {
-    return html`<button ?disabled=${this.disabled} @click=${this.onClick.bind(this)}>
+    return html`<button ?disabled=${this.disabled}>
       <wui-icon color="inherit" size=${this.size} name=${this.icon}></wui-icon>
     </button>`
   }

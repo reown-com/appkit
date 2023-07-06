@@ -119,23 +119,19 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
         await connector.connect()
       },
 
-      async connectBrowserExtension(_id) {
+      async connectInjected(_id) {
         const connector = wagmiConfig.connectors.find(c => c.name === INJECTED_ID)
         if (!connector) {
-          throw new Error(
-            'connectionControllerClient:connectBrowserExtension - connector is undefined'
-          )
+          throw new Error('connectionControllerClient:connectInjected - connector is undefined')
         }
 
         await connector.connect()
       },
 
-      async connectThirdPartyWallet(id) {
+      async connectExternal(id) {
         const connector = wagmiConfig.connectors.find(c => c.name === id)
         if (!connector) {
-          throw new Error(
-            'connectionControllerClient:connectThirdPartyWallet - connector is undefined'
-          )
+          throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
 
         await connector.connect()

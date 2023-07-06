@@ -30,18 +30,24 @@ export default {
 } as Component
 
 export const Default: Component = {
-  render: args => html`<wui-link ?disabled=${args.disabled}>
-    ${args.iconLeft
-      ? html`<wui-icon size="xs" color="inherit" name=${args.iconLeft} slot="iconLeft"></wui-icon>`
-      : null}
-    Link
-    ${args.iconRight
-      ? html`<wui-icon
-          size="xs"
-          color="inherit"
-          name=${args.iconRight}
-          slot="iconRight"
-        ></wui-icon>`
-      : null}
-  </wui-link>`
+  render: args =>
+    html`<wui-link ?disabled=${args.disabled}>
+      ${args.iconLeft
+        ? html`<wui-icon
+            size="xs"
+            color="inherit"
+            name=${args.iconLeft}
+            slot="iconLeft"
+          ></wui-icon>`
+        : null}
+      Link
+      ${args.iconRight
+        ? html`<wui-icon
+            size="xs"
+            color="inherit"
+            name=${args.iconRight}
+            slot="iconRight"
+          ></wui-icon>`
+        : null}
+    </wui-link>`
 }

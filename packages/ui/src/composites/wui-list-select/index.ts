@@ -24,14 +24,12 @@ export class WuiListSelect extends LitElement {
 
   @property({ type: Boolean }) public showAllWallets = false
 
-  @property() public onClick: (event: PointerEvent) => void = () => null
-
   // -- Render -------------------------------------------- //
   public render() {
     const textColor = this.disabled ? 'fg-300' : 'fg-100'
 
     return html`
-      <button ?disabled=${this.disabled} @click=${this.onClick.bind(this)}>
+      <button ?disabled=${this.disabled}>
         ${this.templateAllWallets()} ${this.templateWalletImage()}
         <wui-text variant="paragraph-500" color=${textColor}>${this.name}</wui-text>
         ${this.templateStatus()}

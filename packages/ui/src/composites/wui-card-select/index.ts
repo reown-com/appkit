@@ -16,12 +16,10 @@ export class WuiCardSelect extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
-  @property() public onClick: (event: PointerEvent) => void = () => null
-
   // -- Render -------------------------------------------- //
   public render() {
     return html`
-      <button ?disabled=${this.disabled} @click=${this.onClick.bind(this)}>
+      <button ?disabled=${this.disabled}>
         <wui-wallet-image size="md" src=${this.imageSrc} alt=${this.name}></wui-wallet-image>
         <wui-text variant="tiny-500" color="inherit">${this.name}</wui-text>
       </button>
