@@ -11,11 +11,13 @@ import { walletSvg } from '@web3modal/ui/src/assets/svg/wallet'
 import { walletPlaceholderSvg } from '@web3modal/ui/src/assets/svg/wallet-placeholder'
 
 import styles from './styles'
+import { cursorSvg } from '../../assets/svg/cursor'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   clock: clockSvg,
   close: closeSvg,
   copy: copySvg,
+  cursor: cursorSvg,
   search: searchSvg,
   wallet: walletSvg,
   walletPlaceholder: walletPlaceholderSvg
