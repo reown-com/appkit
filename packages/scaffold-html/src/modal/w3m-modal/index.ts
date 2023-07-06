@@ -20,8 +20,6 @@ export class W3mModal extends LitElement {
 
   // -- Render -------------------------------------------- //
   public render() {
-    console.log(this.open)
-
     return this.open
       ? html`
           <wui-overlay @click=${ModalController.close}>

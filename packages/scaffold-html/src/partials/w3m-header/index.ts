@@ -6,8 +6,10 @@ export class W3mHeader extends LitElement {
   // -- Render -------------------------------------------- //
   public render() {
     return html`
-      <wui-flex>
+      <wui-flex padding="l" justifyContent="space-between" alignItems="center">
+        <slot name="left"></slot>
         <slot></slot>
+        <slot name="right"></slot>
       </wui-flex>
     `
   }
