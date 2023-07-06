@@ -1,25 +1,17 @@
 import type { Meta } from '@storybook/web-components'
-import { copySvg } from '@web3modal/ui/src/assets/svg/copy'
-import { walletSvg } from '@web3modal/ui/src/assets/svg/wallet'
 import '@web3modal/ui/src/components/wui-icon'
 import type { WuiIcon } from '@web3modal/ui/src/components/wui-icon'
 import { html } from 'lit'
-import type { TemplateResult } from 'lit'
-import { colorOptions } from '../../utils/PresetUtils'
+import { colorOptions, iconOptions } from '../../utils/PresetUtils'
 
-type Component = Meta<WuiIcon & { svg: keyof typeof svgOptions }>
-
-const svgOptions: Record<string, TemplateResult<2>> = {
-  copy: copySvg,
-  wallet: walletSvg
-}
+type Component = Meta<WuiIcon>
 
 export default {
   title: 'Components/wui-icon',
   args: {
     size: 'md',
     color: 'fg-100',
-    svg: 'copy'
+    name: 'copy'
   },
   argTypes: {
     size: {
@@ -30,8 +22,8 @@ export default {
       options: colorOptions,
       control: { type: 'select' }
     },
-    svg: {
-      options: Object.keys(svgOptions),
+    name: {
+      options: iconOptions,
       control: { type: 'select' }
     }
   }
@@ -39,5 +31,5 @@ export default {
 
 export const Default: Component = {
   render: args =>
-    html`<wui-icon size=${args.size} color=${args.color}>${svgOptions[args.svg]}</wui-icon>`
+    html`<wui-icon size=${args.size} color=${args.color} name=${args.name}></wui-icon>`
 }

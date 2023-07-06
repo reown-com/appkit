@@ -1,18 +1,11 @@
 import type { Meta } from '@storybook/web-components'
-import { copySvg } from '@web3modal/ui/src/assets/svg/copy'
-import { walletSvg } from '@web3modal/ui/src/assets/svg/wallet'
 import '@web3modal/ui/src/composites/wui-icon-box'
 import type { WuiIconBox } from '@web3modal/ui/src/composites/wui-icon-box'
 import { html } from 'lit'
-import type { TemplateResult } from 'lit'
-import { colorOptions } from '../../utils/PresetUtils'
 
-type Component = Meta<WuiIconBox & { svg: keyof typeof svgOptions }>
+import { colorOptions, iconOptions } from '../../utils/PresetUtils'
 
-const svgOptions: Record<string, TemplateResult<2>> = {
-  copy: copySvg,
-  wallet: walletSvg
-}
+type Component = Meta<WuiIconBox>
 
 export default {
   title: 'Composites/wui-icon-box',
@@ -20,7 +13,7 @@ export default {
     size: 'md',
     backgroundColor: 'blue-100',
     iconColor: 'blue-100',
-    svg: 'copy'
+    icon: 'copy'
   },
 
   argTypes: {
@@ -37,8 +30,8 @@ export default {
       options: colorOptions,
       control: { type: 'select' }
     },
-    svg: {
-      options: Object.keys(svgOptions),
+    icon: {
+      options: iconOptions,
       control: { type: 'select' }
     }
   }
@@ -50,6 +43,6 @@ export const Default: Component = {
       size=${args.size}
       iconColor=${args.iconColor}
       backgroundColor=${args.backgroundColor}
-      >${svgOptions[args.svg]}</wui-icon-box
-    >`
+      icon=${args.icon}
+    ></wui-icon-box>`
 }

@@ -11,7 +11,8 @@ import type {
   BorderRadiusType,
   SpacingType,
   GridContentType,
-  GridItemsType
+  GridItemsType,
+  IconType
 } from '@web3modal/ui/src/utils/TypesUtil'
 
 export const colorOptions: ColorType[] = [
@@ -116,3 +117,12 @@ export const gridItemsOptions: GridItemsType[] = ['center', 'end', 'start', 'str
 export const borderRadiusOptions: BorderRadiusType[] = ['4xs', '3xs', 'xxs', 'xs', 's', 'm', 'l']
 
 export const spacingOptions: SpacingType[] = ['4xs', '3xs', 'xxs', 'xs', 's', 'm', 'l', 'xl', '3xl']
+
+export const iconOptions: IconType[] = [
+  'clock',
+  'close',
+  'copy',
+  'search',
+  'wallet',
+  'walletPlaceholder'
+]

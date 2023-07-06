@@ -45,6 +45,17 @@ export const rootStyles = css`
     --wui-border-radius-l: 36px;
     --wui-border-radius-3xl: 80px;
 
+    --wui-icon-box-size-sm: 20px;
+    --wui-icon-box-size-md: 24px;
+    --wui-icon-box-size-lg: 40px;
+
+    --wui-icon-size-inherit: inherit;
+    --wui-icon-size-xxs: 8px;
+    --wui-icon-size-xs: 10px;
+    --wui-icon-size-sm: 12px;
+    --wui-icon-size-md: 14px;
+    --wui-icon-size-lg: 18px;
+
     --wui-spacing-0: 0px;
     --wui-spacing-4xs: 2px;
     --wui-spacing-3xs: 4px;

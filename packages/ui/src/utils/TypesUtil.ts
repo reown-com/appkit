@@ -75,3 +75,5 @@ export type GridContentType =
   | 'stretch'
 
 export type GridItemsType = 'center' | 'end' | 'start' | 'stretch'
+
+export type IconType = 'clock' | 'close' | 'copy' | 'search' | 'wallet' | 'walletPlaceholder'
