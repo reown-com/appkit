@@ -1,12 +1,12 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-icon'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
+import { resetStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
 
 @customElement('wui-loading-thumbnail')
 export class WuiLoadingThumbnail extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static styles = [resetStyles, styles]
 
   // -- state & properties ------------------------------------------- //
 
