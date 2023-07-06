@@ -11,7 +11,6 @@ export class WuiTooltip extends LitElement {
   public static styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-
   @property() public placement: PlacementType = 'top'
 
   @property() public message = ''
