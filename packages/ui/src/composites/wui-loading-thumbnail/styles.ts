@@ -13,7 +13,7 @@ export default css`
   rect {
     fill: none;
     stroke: var(--wui-color-blue-100);
-    stroke-width: 6;
+    stroke-width: 4px;
     stroke-dasharray: 92, 245;
     stroke-dashoffset: 340;
     stroke-linecap: round;
