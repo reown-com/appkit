@@ -22,13 +22,21 @@ export class W3mModal extends LitElement {
   public render() {
     return this.open
       ? html`
-          <wui-overlay @click=${ModalController.close}>
+          <wui-overlay @click=${this.onClose.bind(this)}>
             <wui-card>
+              <w3m-header></w3m-header>
               <w3m-router></w3m-router>
             </wui-card>
           </wui-overlay>
         `
       : null
+  }
+
+  // -- Private ------------------------------------------- //
+  private onClose(event: PointerEvent) {
+    if (event.target === event.currentTarget) {
+      ModalController.close()
+    }
   }
 }
 

@@ -1,3 +1,4 @@
+import { ModalController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 
@@ -7,12 +8,15 @@ export class W3mHeader extends LitElement {
   public render() {
     return html`
       <wui-flex padding="l" justifyContent="space-between" alignItems="center">
-        <slot name="left"></slot>
-        <slot></slot>
-        <slot name="right"></slot>
+        <wui-icon-link icon="copy"></wui-icon-link>
+        Connect wallet
+        <wui-icon-link icon="close" @click=${ModalController.close}></wui-icon-link>
       </wui-flex>
+      <wui-separator></wui-separator>
     `
   }
+
+  // -- Private ------------------------------------------- //
 }
 
 declare global {
