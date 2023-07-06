@@ -3,6 +3,7 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil'
+import { checkmarkSvg } from '../../assets/svg/checkmark'
 import { clockSvg } from '@web3modal/ui/src/assets/svg/clock'
 import { closeSvg } from '@web3modal/ui/src/assets/svg/close'
 import { copySvg } from '@web3modal/ui/src/assets/svg/copy'
@@ -13,6 +14,7 @@ import { walletPlaceholderSvg } from '@web3modal/ui/src/assets/svg/wallet-placeh
 import styles from './styles'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
+  checkmark: checkmarkSvg,
   clock: clockSvg,
   close: closeSvg,
   copy: copySvg,

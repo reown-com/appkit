@@ -119,6 +119,7 @@ export const borderRadiusOptions: BorderRadiusType[] = ['4xs', '3xs', 'xxs', 'xs
 export const spacingOptions: SpacingType[] = ['4xs', '3xs', 'xxs', 'xs', 's', 'm', 'l', 'xl', '3xl']
 
 export const iconOptions: IconType[] = [
+  'checkmark',
   'clock',
   'close',
   'copy',
