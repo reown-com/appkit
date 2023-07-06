@@ -31,20 +31,16 @@ export class WuiIconBox extends LitElement {
       default:
         iconSize = 'xxs'
     }
+    const isLg = this.size === 'lg'
+    const bgMix = isLg ? '12%' : '16%'
+    const borderRadius = isLg ? '3xl' : 'xxs'
 
     this.style.cssText = `
-      --wui-bg-value: var(--wui-color-${this.backgroundColor});
-      background-color: ${
-        this.size === 'lg'
-          ? `color-mix(in srgb, var(--wui-bg-value) 12%, transparent);`
-          : `color-mix(in srgb, var(--wui-bg-value) 16%, transparent);`
-      }
-      border-radius: ${
-        this.size === 'lg' ? `var(--wui-border-radius-3xl);` : `var(--wui-border-radius-xxs);`
-      }
-      width: ${`var(--wui-icon-box-size-${this.size});`}
-      height: ${`var(--wui-icon-box-size-${this.size});`}
-  `
+       --local-bg-value: var(--wui-color-${this.backgroundColor});
+       --local-bg-mix: ${bgMix};
+       --local-border-radius: var(--wui-border-radius-${borderRadius});
+       --local-size: var(--wui-icon-box-size-${this.size});
+   `
 
     return html` <wui-icon color=${this.iconColor} size=${iconSize} name=${this.icon}></wui-icon> `
   }
