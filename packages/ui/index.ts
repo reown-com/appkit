@@ -17,6 +17,7 @@ export * from './src/composites/wui-list-select'
 export * from './src/composites/wui-loading-spinner'
 export * from './src/composites/wui-loading-thumbnail'
 export * from './src/composites/wui-search-bar'
+export * from './src/composites/wui-snackbar'
 export * from './src/composites/wui-wallet-image'
 
 export * from './src/layout/wui-flex'
