@@ -100,7 +100,7 @@ export class W3mWalletExplorerView extends LitElement {
   }
 
   private readonly searchDebounce = UiUtil.debounce((value: string) => {
-    if (value.length >= 3) {
+    if (value.length >= 1) {
       this.firstFetch = true
       this.endReached = false
       this.search = value
