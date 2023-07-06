@@ -6,12 +6,9 @@ import { html } from 'lit'
 type Component = Meta<WuiLoadingSpinner>
 
 export default {
-  title: 'Composites/wui-loading-spinner',
-  args: {
-    loading: true
-  }
+  title: 'Composites/wui-loading-spinner'
 } as Component
 
 export const Default: Component = {
-  render: args => html` <wui-loading-spinner ?loading=${args.loading}></wui-loading-spinner> `
+  render: () => html` <wui-loading-spinner></wui-loading-spinner> `
 }

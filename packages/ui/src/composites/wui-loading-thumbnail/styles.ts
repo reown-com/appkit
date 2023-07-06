@@ -6,10 +6,6 @@ export default css`
     transition: 200ms all ease-in;
   }
 
-  svg[data-loading='false'] {
-    opacity: 0;
-  }
-
   rect {
     fill: none;
     stroke: var(--wui-color-blue-100);

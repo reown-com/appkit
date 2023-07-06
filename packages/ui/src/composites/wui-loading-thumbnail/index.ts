@@ -8,15 +8,10 @@ import styles from './styles'
 export class WuiLoadingThumbnail extends LitElement {
   public static styles = [resetStyles, styles]
 
-  // -- State & Properties -------------------------------- //
-
-  @property({ type: Boolean }) public loading = true
-
   // -- Render -------------------------------------------- //
-
   public render() {
     return html`
-      <svg data-loading=${this.loading} viewBox="0 0 110 110" width="110" height="110">
+      <svg viewBox="0 0 110 110" width="110" height="110">
         <rect id="wui-thumbnail-loading" x="2" y="2" width="100" height="100" rx="36" />
       </svg>
     `

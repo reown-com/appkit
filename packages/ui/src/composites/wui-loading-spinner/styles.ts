@@ -7,10 +7,6 @@ export default css`
     transition: 200ms all ease-in;
   }
 
-  svg[data-loading='false'] {
-    opacity: 0;
-  }
-
   circle {
     fill: none;
     stroke: var(--wui-color-blue-100);

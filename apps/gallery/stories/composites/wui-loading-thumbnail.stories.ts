@@ -6,12 +6,9 @@ import { html } from 'lit'
 type Component = Meta<WuiLoadingThumbnail>
 
 export default {
-  title: 'Composites/wui-loading-thumbnail',
-  args: {
-    loading: true
-  }
+  title: 'Composites/wui-loading-thumbnail'
 } as Component
 
 export const Default: Component = {
-  render: args => html` <wui-loading-thumbnail ?loading=${args.loading}></wui-loading-thumbnail> `
+  render: () => html` <wui-loading-thumbnail></wui-loading-thumbnail>`
 }
