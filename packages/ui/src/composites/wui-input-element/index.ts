@@ -1,17 +1,17 @@
-import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { closeSvg } from '../../assets/svg/close'
 import '../../components/wui-icon'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
+import type { IconType } from '../../utils/TypesUtil'
 
 @customElement('wui-input-element')
 export class WuiInputElement extends LitElement {
   public static styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Object }) public icon: TemplateResult<2> = closeSvg
+
+  @property() public icon: IconType = 'copy'
 
   @property() public onClick: (event: PointerEvent) => void = () => null
 
@@ -19,7 +19,7 @@ export class WuiInputElement extends LitElement {
   public render() {
     return html`
       <button @click=${this.onClick.bind(this)}>
-        <wui-icon color="inherit" size="xxs">${this.icon}</wui-icon>
+        <wui-icon color="inherit" size="xxs" name=${this.icon}></wui-icon>
       </button>
     `
   }
