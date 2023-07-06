@@ -37,7 +37,6 @@ export class WuiIcon extends LitElement {
     this.style.cssText = `
       color: ${`var(--wui-color-${this.color});`};
       width: ${`var(--wui-icon-size-${this.size});`};
-      height:${`var(--wui-icon-size-${this.size});`}};
     `
 
     return html`${svgOptions[this.name]}`
