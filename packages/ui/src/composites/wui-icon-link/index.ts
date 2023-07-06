@@ -9,14 +9,14 @@ import styles from './styles'
 export class WuiIconLink extends LitElement {
   public static styles = [resetStyles, elementStyles, colorStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property() public size: SizeType = 'md'
 
   @property({ type: Boolean }) public disabled = false
 
   @property() public onClick: (event: PointerEvent) => void = () => null
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
   public render() {
     return html`<button ?disabled=${this.disabled} @click=${this.onClick.bind(this)}>
       <wui-icon color="inherit" size=${this.size}><slot></slot></wui-icon>

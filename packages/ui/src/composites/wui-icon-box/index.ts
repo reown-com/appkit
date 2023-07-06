@@ -10,14 +10,14 @@ import styles from './styles'
 export class WuiIconBox extends LitElement {
   public static styles = [resetStyles, elementStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property() public size: Exclude<SizeType, 'inherit' | 'xs' | 'xxs'> = 'md'
 
   @property() public backgroundColor: ColorType = 'blue-100'
 
   @property() public iconColor: ColorType = 'blue-100'
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
   public render() {
     let iconSize: SizeType = 'xxs'
     switch (this.size) {

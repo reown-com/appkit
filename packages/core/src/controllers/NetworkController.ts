@@ -1,6 +1,6 @@
 import { proxy, ref } from 'valtio/vanilla'
 
-// -- Types --------------------------------------------------------------------
+// -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
   getActiveNetwork: () => Promise<NetworkControllerState['activeNetwork']>
   getRequestedNetworks: () => Promise<NetworkControllerState['requestedNetworks']>
@@ -15,7 +15,7 @@ export interface NetworkControllerState {
   approvedNetworks: string[]
 }
 
-// -- State --------------------------------------------------------------------
+// -- State --------------------------------------------- //
 const state = proxy<NetworkControllerState>({
   _client: undefined,
   activeNetwork: '',
@@ -23,7 +23,7 @@ const state = proxy<NetworkControllerState>({
   approvedNetworks: []
 })
 
-// -- Controller ---------------------------------------------------------------
+// -- Controller ---------------------------------------- //
 export const NetworkController = {
   state,
 

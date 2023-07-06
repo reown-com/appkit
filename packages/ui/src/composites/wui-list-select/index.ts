@@ -11,7 +11,7 @@ import styles from './styles'
 export class WuiListSelect extends LitElement {
   public static styles = [resetStyles, elementStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property({ type: Array }) public walletImages?: IWalletImage[] = []
 
   @property() public imageSrc? = ''
@@ -26,7 +26,7 @@ export class WuiListSelect extends LitElement {
 
   @property() public onClick: (event: PointerEvent) => void = () => null
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
   public render() {
     const textColor = this.disabled ? 'fg-300' : 'fg-100'
 
@@ -39,8 +39,7 @@ export class WuiListSelect extends LitElement {
     `
   }
 
-  // -- private ------------------------------------------------------ //
-
+  // -- Private ------------------------------------------- //
   private templateAllWallets() {
     if (this.showAllWallets && this.walletImages) {
       return html`<wui-all-wallets-image

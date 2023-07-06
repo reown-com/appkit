@@ -9,12 +9,12 @@ import styles from './styles'
 export class WuiIcon extends LitElement {
   public static styles = [resetStyles, colorStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property() public size: SizeType = 'md'
 
   @property() public color: ColorType = 'fg-300'
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
   public render() {
     const classes = {
       [`wui-size-${this.size}`]: true,
