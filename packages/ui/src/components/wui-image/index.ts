@@ -7,12 +7,12 @@ import styles from './styles'
 export class WuiImage extends LitElement {
   public static styles = [resetStyles, colorStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property() public src = './path/to/image.jpg'
 
   @property() public alt = 'Image'
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
   public render() {
     return html`<img src=${this.src} alt=${this.alt} />`
   }

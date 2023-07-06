@@ -1,18 +1,18 @@
 import { proxy } from 'valtio/vanilla'
 
-// -- Types --------------------------------------------------------------------
+// -- Types --------------------------------------------- //
 export interface RouterControllerState {
   view: 'Account' | 'Connect' | 'Networks'
   history: RouterControllerState['view'][]
 }
 
-// -- State --------------------------------------------------------------------
+// -- State --------------------------------------------- //
 const state = proxy<RouterControllerState>({
   view: 'Connect',
   history: ['Connect']
 })
 
-// -- Controller ---------------------------------------------------------------
+// -- Controller ---------------------------------------- //
 export const RouterController = {
   state,
 

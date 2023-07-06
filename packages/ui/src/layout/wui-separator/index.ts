@@ -8,18 +8,15 @@ import styles from './styles'
 export class WuiSeparator extends LitElement {
   public static styles = [resetStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
-
+  // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public showText = false
 
-  // -- render ------------------------------------------------------- //
-
+  // -- Render -------------------------------------------- //
   public render() {
     return html`${this.template()}`
   }
 
-  // -- private ------------------------------------------------------ //
-
+  // -- Private ------------------------------------------- //
   private template() {
     if (this.showText) {
       return html`<wui-text variant="small-500" color="fg-200">or</wui-text>`

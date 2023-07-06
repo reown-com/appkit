@@ -9,8 +9,7 @@ import styles from './styles'
 export class WuiCardSelect extends LitElement {
   public static styles = [resetStyles, elementStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
-
+  // -- State & Properties -------------------------------- //
   @property() public imageSrc = ''
 
   @property() public name = ''
@@ -19,7 +18,7 @@ export class WuiCardSelect extends LitElement {
 
   @property() public onClick: (event: PointerEvent) => void = () => null
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
   public render() {
     return html`
       <button ?disabled=${this.disabled} @click=${this.onClick.bind(this)}>

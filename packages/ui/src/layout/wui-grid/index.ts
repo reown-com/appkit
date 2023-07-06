@@ -9,6 +9,7 @@ import styles from './styles'
 export class WuiGrid extends LitElement {
   public static styles = [resetStyles, styles]
 
+  // -- State & Properties -------------------------------- //
   @property() public gridTemplateRows?: string
 
   @property() public gridTemplateColumns?: string
@@ -31,6 +32,7 @@ export class WuiGrid extends LitElement {
 
   @property() public margin?: SpacingType | SpacingType[]
 
+  // -- Render -------------------------------------------- //
   public render() {
     this.style.cssText = `
       grid-template-rows: ${this.gridTemplateRows};
