@@ -195,7 +195,7 @@ export const elementStyles = css`
     justify-content: center;
     align-items: center;
     position: relative;
-    transition: all 200ms ease-in-out 35ms;
+    transition: all 200ms ease-in-out;
     outline: none;
     border: 1px solid transparent;
     column-gap: var(--wui-spacing-3xs);
@@ -226,7 +226,7 @@ export const elementStyles = css`
     }
 
     button:active:enabled {
-      transition: all 100ms ease-out;
+      transition: all 80ms ease-out;
       background-color: var(--wui-overlay-010);
       border: 1px solid var(--wui-color-blue-100);
       -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
