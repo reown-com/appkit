@@ -81,6 +81,9 @@ export type IconType =
   | 'clock'
   | 'close'
   | 'copy'
+  | 'cursor'
   | 'search'
   | 'wallet'
   | 'walletPlaceholder'
+
+export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
