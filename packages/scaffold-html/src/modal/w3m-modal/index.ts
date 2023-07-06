@@ -1,5 +1,4 @@
 import { ModalController } from '@web3modal/core'
-import '@web3modal/ui'
 import { initializeTheming, setColorTheme } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
@@ -21,10 +20,14 @@ export class W3mModal extends LitElement {
 
   // -- Render -------------------------------------------- //
   public render() {
+    console.log(this.open)
+
     return this.open
       ? html`
           <wui-overlay @click=${ModalController.close}>
-            <wui-card>Hello</wui-card>
+            <wui-card>
+              <w3m-router></w3m-router>
+            </wui-card>
           </wui-overlay>
         `
       : null
