@@ -34,31 +34,10 @@ export class WuiIcon extends LitElement {
 
   // -- Render -------------------------------------------- //
   public render() {
-    let size = 'inherit'
-    switch (this.size) {
-      case 'xxs':
-        size = '8px'
-        break
-      case 'xs':
-        size = '10px'
-        break
-      case 'sm':
-        size = '12px'
-        break
-      case 'md':
-        size = '14px'
-        break
-      case 'lg':
-        size = '18px'
-        break
-      default:
-        size = 'inherit'
-    }
-
     this.style.cssText = `
-      color: ${`var(--wui-color-${this.color})`};
-      width: ${size};
-      height: ${size};
+      color: ${`var(--wui-color-${this.color});`};
+      width: ${`var(--wui-icon-size-${this.size});`};
+      height:${`var(--wui-icon-size-${this.size});`}};
     `
 
     return html`${svgOptions[this.name]}`
