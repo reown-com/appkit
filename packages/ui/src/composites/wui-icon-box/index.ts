@@ -33,7 +33,7 @@ export class WuiIconBox extends LitElement {
     }
     const isLg = this.size === 'lg'
     const bgMix = isLg ? '12%' : '16%'
-    const borderRadius = isLg ? '3xl' : 'xxs'
+    const borderRadius = isLg ? 'xxs' : '3xl'
 
     this.style.cssText = `
        --local-bg-value: var(--wui-color-${this.backgroundColor});
