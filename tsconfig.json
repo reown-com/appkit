@@ -17,11 +17,7 @@
     "noFallthroughCasesInSwitch": true,
     "isolatedModules": true,
     "allowUnreachableCode": false,
-    "experimentalDecorators": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/ui": ["packages/*"]
-    }
+    "experimentalDecorators": true
   },
   "exclude": ["node_modules", "dist", "out", ".next"]
 }
