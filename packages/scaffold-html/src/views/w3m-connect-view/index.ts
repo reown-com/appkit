@@ -19,6 +19,7 @@ export class W3mConnectView extends LitElement {
           <wui-list-select name="Rainbow"></wui-list-select>
           <wui-list-select name="MetaMask"></wui-list-select>
           <wui-list-select name="WalletConnect"></wui-list-select>
+          <wui-list-select name="View All" showAllWallets></wui-list-select>
         </wui-flex>
       </wui-flex>
     `
