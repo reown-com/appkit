@@ -8,11 +8,11 @@ import styles from './styles'
 export class WuiLoadingThumbnail extends LitElement {
   public static styles = [resetStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
+  // -- State & Properties -------------------------------- //
 
   @property({ type: Boolean }) public loading = true
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
 
   public render() {
     return html`

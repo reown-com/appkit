@@ -8,11 +8,11 @@ import styles from './styles'
 export class WuiLoadingSpinner extends LitElement {
   public static styles = [resetStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
+  // -- State & Properties -------------------------------- //
 
   @property({ type: Boolean }) public loading = true
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
 
   public render() {
     return html`<svg data-loading=${this.loading} viewBox="25 25 50 50">
