@@ -8,10 +8,7 @@ const requestedNetworks = ['eip155:1', 'eip155:2', 'eip155:3'] as CaipChainId[]
 const approvedNetworks = ['eip155:1', 'eip155:2'] as CaipChainId[]
 
 const client: NetworkControllerClient = {
-  getNetwork: async () => Promise.resolve(network),
-  getRequestedNetworks: async () => Promise.resolve(requestedNetworks),
-  getApprovedNetworks: async () => Promise.resolve(approvedNetworks),
-  switchActiveNetwork: async _network => Promise.resolve()
+  switchNetwork: async _network => Promise.resolve()
 }
 
 // -- Tests --------------------------------------------------------------------
@@ -28,13 +25,13 @@ describe('ModalController', () => {
     })
   })
 
-  it('should update state correctly on getRequestedNetworks()', async () => {
-    await NetworkController.getRequestedNetworks()
+  it('should update state correctly on setRequestedNetworks()', () => {
+    NetworkController.setRequestedNetworks(requestedNetworks)
     expect(NetworkController.state.requestedNetworks).toEqual(requestedNetworks)
   })
 
-  it('should update state correctly on getApprovedNetworks()', async () => {
-    await NetworkController.getApprovedNetworks()
+  it('should update state correctly on setApprovedNetworks()', () => {
+    NetworkController.setApprovedNetworks(approvedNetworks)
     expect(NetworkController.state.approvedNetworks).toEqual(approvedNetworks)
   })
 
@@ -43,13 +40,8 @@ describe('ModalController', () => {
     expect(NetworkController.state.network).toEqual(network)
   })
 
-  it('should update state correctly on getNetwork()', async () => {
-    await NetworkController.getNetwork()
+  it('should update state correctly on setNetwork()', () => {
+    NetworkController.setNetwork(network)
     expect(NetworkController.state.network).toEqual(network)
-  })
-
-  it('should update state correctly on setActiveNetwork()', () => {
-    NetworkController.setNetwork('eip155:2')
-    expect(NetworkController.state.network).toEqual('eip155:2')
   })
 })

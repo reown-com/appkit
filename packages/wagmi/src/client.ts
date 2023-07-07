@@ -1,4 +1,4 @@
-import type { Config } from '@wagmi/core'
+import type { Address, Chain, Config } from '@wagmi/core'
 import {
   disconnect,
   fetchBalance,
@@ -10,8 +10,8 @@ import {
   watchAccount,
   watchNetwork
 } from '@wagmi/core'
+import { mainnet } from '@wagmi/core/chains'
 import type {
-  AccountControllerClient,
   CaipAddress,
   CaipChainId,
   ConnectionControllerClient,
@@ -39,79 +39,8 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       throw new Error('wagmi:constructor - wagmiConfig is undefined')
     }
 
-    const accountControllerClient: AccountControllerClient = {
-      async getAddress() {
-        const { address } = getAccount()
-        const { chain } = getNetwork()
-        if (!address) {
-          throw new Error('accountControllerClient:getAddress - address is undefined')
-        }
-        if (!chain) {
-          throw new Error('accountControllerClient:getAddress - chain is undefined')
-        }
-        const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
-
-        return Promise.resolve(caipAddress)
-      },
-
-      async getBalance(address) {
-        if (!address) {
-          throw new Error('accountControllerClient:getBalance - address is undefined')
-        }
-        const { formatted } = await fetchBalance({ address } as { address: `0x${string}` })
-        if (!formatted) {
-          throw new Error('accountControllerClient:getBalance - formatted is undefined')
-        }
-
-        return formatted
-      },
-
-      async getProfile(address) {
-        if (!address) {
-          throw new Error('accountControllerClient:getProfile - address is undefined')
-        }
-        const name = await fetchEnsName({ address } as { address: `0x${string}` })
-        let image = undefined
-        if (name) {
-          image = await fetchEnsAvatar({ name })
-        }
-
-        return {
-          name: name ?? undefined,
-          image: image ?? undefined
-        }
-      }
-    }
-
     const networkControllerClient: NetworkControllerClient = {
-      async getNetwork() {
-        const { chain } = getNetwork()
-        if (!chain) {
-          throw new Error('wagmi:networkControllerClient:getNetwork - chain is undefined')
-        }
-        const chainId = String(chain.id)
-        const caipChainId: CaipChainId = `${NAMESPACE}:${chainId}`
-
-        return Promise.resolve(caipChainId)
-      },
-
-      async getRequestedNetworks() {
-        const { chains } = wagmiConfig
-        const chainIds = chains?.map(chain => String(chain.id))
-        const caipChainIds = chainIds?.map(chainId => `${NAMESPACE}:${chainId}` as CaipChainId)
-
-        return Promise.resolve(caipChainIds ?? [])
-      },
-
-      async getApprovedNetworks() {
-        const { chains } = getNetwork()
-        const chainIds = chains.map(chain => String(chain.id))
-        const caipChainIds = chainIds.map(chainId => `${NAMESPACE}:${chainId}` as CaipChainId)
-
-        return Promise.resolve(caipChainIds)
-      },
-
-      async switchActiveNetwork(chainId) {
+      async switchNetwork(chainId) {
         const chainIdNumber = Number(chainId)
         await switchNetwork({ chainId: chainIdNumber })
       }
@@ -154,25 +83,58 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     }
 
     super({
-      accountControllerClient,
       networkControllerClient,
       connectionControllerClient
     })
 
-    watchAccount(({ address }) => {
-      const { chain } = getNetwork()
-      if (address && chain) {
-        const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
-        super._setAddress(caipAddress)
-      }
+    this.syncAccount()
+    watchAccount(() => {
+      this.syncAccount()
     })
 
-    watchNetwork(({ chain }) => {
-      if (chain) {
-        const chainId = String(chain.id)
-        const caipChainId: CaipChainId = `${NAMESPACE}:${chainId}`
-        super._setNetwork(caipChainId)
-      }
+    this.syncNetwork()
+    watchNetwork(() => {
+      this.syncNetwork()
     })
+  }
+
+  // -- Private ------------------------------------------------------------------
+  private async syncAccount() {
+    const { address } = getAccount()
+    const { chain } = getNetwork()
+    if (address && chain) {
+      const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
+      super.setAddress(caipAddress)
+      await Promise.all([this.syncProfile(address), this.syncBalance(address, chain)])
+    }
+  }
+
+  private async syncNetwork() {
+    const { address } = getAccount()
+    const { chain } = getNetwork()
+    if (chain) {
+      const chainId = String(chain.id)
+      const caipChainId: CaipChainId = `${NAMESPACE}:${chainId}`
+      super.setNetwork(caipChainId)
+      if (address) {
+        await this.syncBalance(address, chain)
+      }
+    }
+  }
+
+  private async syncProfile(address: Address) {
+    const profileName = await fetchEnsName({ address, chainId: mainnet.id })
+    if (profileName) {
+      super.setProfileName(profileName)
+      const profileImage = await fetchEnsAvatar({ name: profileName, chainId: mainnet.id })
+      if (profileImage) {
+        super.setProfileImage(profileImage)
+      }
+    }
+  }
+
+  private async syncBalance(address: Address, chain: Chain) {
+    const balance = await fetchBalance({ address, chainId: chain.id })
+    super.setBalance(balance.formatted)
   }
 }
