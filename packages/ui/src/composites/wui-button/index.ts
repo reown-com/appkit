@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-icon'
 import '../../components/wui-text'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import type { SizeType } from '../../utils/TypesUtil'
+import type { ButtonType, SizeType } from '../../utils/TypesUtil'
 import styles from './styles'
 
 @customElement('wui-button')
@@ -15,7 +15,7 @@ export class WuiButton extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
-  @property() public variant: 'accent' | 'fill' | 'shade' = 'fill'
+  @property() public variant: ButtonType = 'fill'
 
   // -- Render -------------------------------------------- //
   public render() {

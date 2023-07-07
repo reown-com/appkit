@@ -208,7 +208,8 @@ export const resetStyles = css`
 `
 
 export const elementStyles = css`
-  button {
+  button,
+  a {
     cursor: pointer;
     display: flex;
     justify-content: center;
@@ -219,6 +220,7 @@ export const elementStyles = css`
     border: 1px solid transparent;
     column-gap: var(--wui-spacing-3xs);
     background-color: transparent;
+    text-decoration: none;
   }
 
   button:disabled {
@@ -227,7 +229,8 @@ export const elementStyles = css`
   }
 
   button:disabled > wui-wallet-image,
-  button:disabled > wui-all-wallets-image {
+  button:disabled > wui-all-wallets-image,
+  button:disabled > wui-image {
     filter: grayscale(1);
   }
 
@@ -246,6 +249,14 @@ export const elementStyles = css`
 
     button:active:enabled {
       transition: all var(--wui-ease-out-power-4) var(--wui-duration-sm);
+      background-color: var(--wui-overlay-010);
+      border: 1px solid var(--wui-color-blue-100);
+      -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+      -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+      box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+    }
+
+    a:focus {
       background-color: var(--wui-overlay-010);
       border: 1px solid var(--wui-color-blue-100);
       -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);

@@ -9,3 +9,16 @@ export function getSpacingStyles(spacing: SpacingType | SpacingType[], index: nu
 
   return undefined
 }
+
+export function removeUrlPrefix(url: string) {
+  const prefixes = ['https://', 'http://', 'www.']
+  let modifiedUrl = url
+
+  prefixes.forEach(prefix => {
+    if (modifiedUrl.startsWith(prefix)) {
+      modifiedUrl = modifiedUrl.slice(prefix.length)
+    }
+  })
+
+  return modifiedUrl
+}
