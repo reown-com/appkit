@@ -3,7 +3,7 @@ import type { CaipChainId } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
-  getActiveNetwork: () => Promise<NetworkControllerState['network']>
+  getNetwork: () => Promise<NetworkControllerState['network']>
   getRequestedNetworks: () => Promise<NetworkControllerState['requestedNetworks']>
   getApprovedNetworks: () => Promise<NetworkControllerState['approvedNetworks']>
   switchActiveNetwork: (network: NetworkControllerState['network']) => Promise<void>
@@ -36,7 +36,7 @@ export const NetworkController = {
   },
 
   async getNetwork() {
-    state.network = await this._getClient().getActiveNetwork()
+    state.network = await this._getClient().getNetwork()
   },
 
   setNetwork(network: NetworkControllerState['network']) {

@@ -8,7 +8,7 @@ const requestedNetworks = ['eip155:1', 'eip155:2', 'eip155:3'] as CaipChainId[]
 const approvedNetworks = ['eip155:1', 'eip155:2'] as CaipChainId[]
 
 const client: NetworkControllerClient = {
-  getActiveNetwork: async () => Promise.resolve(network),
+  getNetwork: async () => Promise.resolve(network),
   getRequestedNetworks: async () => Promise.resolve(requestedNetworks),
   getApprovedNetworks: async () => Promise.resolve(approvedNetworks),
   switchActiveNetwork: async _network => Promise.resolve()
