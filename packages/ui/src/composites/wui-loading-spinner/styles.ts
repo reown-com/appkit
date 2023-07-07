@@ -4,7 +4,7 @@ export default css`
   svg {
     width: 24px;
     animation: rotate 2s linear infinite;
-    transition: 200ms all ease-in;
+    transition: all var(--wui-ease-in-power-3) var(--wui-duration-lg);
   }
 
   circle {

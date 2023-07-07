@@ -17,7 +17,7 @@ export default css`
     font-weight: var(--wui-font-weight-regular);
     letter-spacing: var(--wui-letter-spacing-paragraph);
     color: var(--wui-color-fg-100);
-    transition: all 200ms ease-in-out 35ms;
+    transition: all var(--wui-ease-inout-power-2) var(--wui-duration-lg);
     caret-color: var(--wui-color-blue-100);
   }
 
@@ -37,7 +37,7 @@ export default css`
   }
 
   input:focus:enabled {
-    transition: all 100ms ease-out;
+    transition: all var(--wui-ease-out-power-4) var(--wui-duration-sm);
     background-color: var(--wui-overlay-010);
     border: 1px solid var(--wui-color-blue-100);
     -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
@@ -91,6 +91,6 @@ export default css`
     top: 50%;
     transform: translateY(-50%);
     right: 14px;
-    transition: all 200ms ease-in;
+    transition: all var(--wui-ease-in-power-2) var(--wui-duration-md);
   }
 `
