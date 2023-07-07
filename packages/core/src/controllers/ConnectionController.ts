@@ -11,14 +11,11 @@ export interface ConnectionControllerClient {
 
 export interface ConnectionControllerState {
   _client?: ConnectionControllerClient
-  walletConnectUri: string
+  walletConnectUri?: string
 }
 
 // -- State --------------------------------------------- //
-const state = proxy<ConnectionControllerState>({
-  _client: undefined,
-  walletConnectUri: ''
-})
+const state = proxy<ConnectionControllerState>({})
 
 // -- Controller ---------------------------------------- //
 export const ConnectionController = {
