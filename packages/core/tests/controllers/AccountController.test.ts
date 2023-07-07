@@ -3,7 +3,7 @@ import type { AccountControllerClient } from '../../index'
 import { AccountController } from '../../index'
 
 // -- Setup --------------------------------------------------------------------
-const address = '0x123'
+const address = 'eip155:1:0x123'
 const balance = '0.100'
 const profileName = 'john.eth'
 const profileImage = 'https://ipfs.com/0x123.png'
@@ -29,9 +29,7 @@ describe('ModalController', () => {
     AccountController.setClient(client)
 
     expect(AccountController.state).toEqual({
-      _client: AccountController._getClient(),
-      address: '',
-      balance: ''
+      _client: AccountController._getClient()
     })
   })
 

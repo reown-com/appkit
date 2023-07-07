@@ -1,17 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import type { NetworkControllerClient } from '../../index'
+import type { CaipChainId, NetworkControllerClient } from '../../index'
 import { NetworkController } from '../../index'
 
 // -- Setup --------------------------------------------------------------------
-const activeNetwork = '1'
-const requestedNetworks = ['1', '2', '3']
-const approvedNetworks = ['1', '2']
+const activeNetwork = 'eip155:1'
+const requestedNetworks = ['eip155:1', 'eip155:2', 'eip155:3'] as CaipChainId[]
+const approvedNetworks = ['eip155:1', 'eip155:2'] as CaipChainId[]
 
 const client: NetworkControllerClient = {
   getActiveNetwork: async () => Promise.resolve(activeNetwork),
   getRequestedNetworks: async () => Promise.resolve(requestedNetworks),
   getApprovedNetworks: async () => Promise.resolve(approvedNetworks),
-  switchActiveNetwork: async (_network: string) => Promise.resolve()
+  switchActiveNetwork: async _network => Promise.resolve()
 }
 
 // -- Tests --------------------------------------------------------------------
@@ -24,10 +24,7 @@ describe('ModalController', () => {
     NetworkController.setClient(client)
 
     expect(NetworkController.state).toEqual({
-      _client: NetworkController._getClient(),
-      activeNetwork: '',
-      requestedNetworks: [],
-      approvedNetworks: []
+      _client: NetworkController._getClient()
     })
   })
 

@@ -25,3 +25,4 @@ export type {
 
 // -- Utils -------------------------------------------------------------------
 export { HelperUtil } from './src/utils/HelperUtil'
+export type { CaipAddress, CaipChainId } from './src/utils/TypeUtils'
