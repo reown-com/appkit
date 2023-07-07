@@ -6,7 +6,6 @@ import {
   chipOptions,
   externalLink,
   iconOptions,
-  walletImageSrc,
   walletImagesOptions
 } from '../../utils/PresetUtils'
 
@@ -15,7 +14,6 @@ type Component = Meta<WuiChip>
 export default {
   title: 'Composites/wui-chip',
   args: {
-    src: walletImageSrc,
     variant: 'fill',
     icon: 'externalLink',
     imageSrc: walletImagesOptions[3].src,

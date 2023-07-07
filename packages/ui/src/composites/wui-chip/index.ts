@@ -5,8 +5,8 @@ import '../../components/wui-text'
 import '../../components/wui-image'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { ChipType, IconType } from '../../utils/TypesUtil'
+import { getHostName } from '../../utils/HelperUtils'
 import styles from './styles'
-import { removeUrlPrefix } from '../../utils/HelperUtils'
 
 @customElement('wui-chip')
 export class WuiChip extends LitElement {
@@ -15,7 +15,7 @@ export class WuiChip extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public variant: ChipType = 'fill'
 
-  @property() public imageSrc? = ''
+  @property() public imageSrc?: string = undefined
 
   @property() public icon: IconType = 'externalLink'
 
@@ -28,7 +28,7 @@ export class WuiChip extends LitElement {
     return html`
       <a rel="noreferrer" target="_blank" href=${this.href} variant=${this.variant}>
         ${this.imageTemplate()}
-        <wui-text variant=${textVariant} color="inherit"> ${removeUrlPrefix(this.href)} </wui-text>
+        <wui-text variant=${textVariant} color="inherit"> ${getHostName(this.href)} </wui-text>
         <wui-icon name=${this.icon} color="inherit" size="inherit"></wui-icon>
       </a>
     `

@@ -29,10 +29,19 @@ export default css`
     color: var(--wui-color-fg-150);
   }
 
+  a[variant='transparent']:has(wui-text:first-child) {
+    padding: 7px 12px;
+  }
+
   a[variant='fill'],
   a[variant='shade'] {
     column-gap: var(--wui-spacing-xs);
     padding: 9px 14px 10px 8px;
+  }
+
+  a[variant='fill']:has(wui-text:first-child),
+  a[variant='shade']:has(wui-text:first-child) {
+    padding: 9px 14px 10px 14px;
   }
 
   a[variant='fill'] > wui-image,
