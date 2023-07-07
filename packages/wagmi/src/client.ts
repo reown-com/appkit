@@ -10,14 +10,16 @@ import {
 } from '@wagmi/core'
 import type {
   AccountControllerClient,
+  CaipAddress,
   ConnectionControllerClient,
   NetworkControllerClient
-} from '@web3modal/core'
+} from '@web3modal/scaffold-html'
 import { Web3ModalScaffoldHtml } from '@web3modal/scaffold-html'
 
 // -- Helpers -------------------------------------------------------------------
 const WALLET_CONNECT_ID = 'walletconnect'
 const INJECTED_ID = 'injected'
+const NAMESPACE = 'eip155'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalOptions {
@@ -37,11 +39,15 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     const accountControllerClient: AccountControllerClient = {
       async getAddress() {
         const { address } = getAccount()
+        const { chain } = getNetwork()
         if (!address) {
           throw new Error('accountControllerClient:getAddress - address is undefined')
         }
+        if (!chain) {
+          throw new Error('accountControllerClient:getAddress - chain is undefined')
+        }
 
-        return Promise.resolve(address)
+        return Promise.resolve(`${NAMESPACE}:${chain.id}:${address}` as CaipAddress)
       },
 
       async getBalance(address) {

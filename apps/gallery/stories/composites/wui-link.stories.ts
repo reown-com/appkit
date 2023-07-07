@@ -19,11 +19,11 @@ export default {
       control: { type: 'boolean' }
     },
     iconLeft: {
-      options: [undefined, ...iconOptions],
+      options: iconOptions,
       control: { type: 'select' }
     },
     iconRight: {
-      options: [undefined, ...iconOptions],
+      options: iconOptions,
       control: { type: 'select' }
     }
   }

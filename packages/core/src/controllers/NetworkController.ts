@@ -1,4 +1,5 @@
 import { proxy, ref } from 'valtio/vanilla'
+import type { CaipChainId } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -10,17 +11,14 @@ export interface NetworkControllerClient {
 
 export interface NetworkControllerState {
   _client?: NetworkControllerClient
-  activeNetwork: string
-  requestedNetworks: string[]
-  approvedNetworks: string[]
+  activeNetwork?: CaipChainId
+  requestedNetworks?: CaipChainId[]
+  approvedNetworks?: CaipChainId[]
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<NetworkControllerState>({
-  _client: undefined,
-  activeNetwork: '',
-  requestedNetworks: [],
-  approvedNetworks: []
+  _client: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -51,7 +49,7 @@ export const NetworkController = {
     state.approvedNetworks = await this._getClient().getApprovedNetworks()
   },
 
-  async switchActiveNetwork(network: NetworkControllerState['activeNetwork']) {
+  async switchActiveNetwork(network: Required<NetworkControllerState['activeNetwork']>) {
     await this._getClient().switchActiveNetwork(network)
     state.activeNetwork = network
   }
