@@ -1,27 +1,23 @@
 import { proxy, ref } from 'valtio/vanilla'
+import type { CaipChainId } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
-  getActiveNetwork: () => Promise<NetworkControllerState['activeNetwork']>
+  getNetwork: () => Promise<NetworkControllerState['network']>
   getRequestedNetworks: () => Promise<NetworkControllerState['requestedNetworks']>
   getApprovedNetworks: () => Promise<NetworkControllerState['approvedNetworks']>
-  switchActiveNetwork: (network: NetworkControllerState['activeNetwork']) => Promise<void>
+  switchActiveNetwork: (network: NetworkControllerState['network']) => Promise<void>
 }
 
 export interface NetworkControllerState {
   _client?: NetworkControllerClient
-  activeNetwork: string
-  requestedNetworks: string[]
-  approvedNetworks: string[]
+  network?: CaipChainId
+  requestedNetworks?: CaipChainId[]
+  approvedNetworks?: CaipChainId[]
 }
 
 // -- State --------------------------------------------- //
-const state = proxy<NetworkControllerState>({
-  _client: undefined,
-  activeNetwork: '',
-  requestedNetworks: [],
-  approvedNetworks: []
-})
+const state = proxy<NetworkControllerState>({})
 
 // -- Controller ---------------------------------------- //
 export const NetworkController = {
@@ -39,8 +35,12 @@ export const NetworkController = {
     state._client = ref(client)
   },
 
-  async getActiveNetwork() {
-    state.activeNetwork = await this._getClient().getActiveNetwork()
+  async getNetwork() {
+    state.network = await this._getClient().getNetwork()
+  },
+
+  setNetwork(network: NetworkControllerState['network']) {
+    state.network = network
   },
 
   async getRequestedNetworks() {
@@ -51,8 +51,8 @@ export const NetworkController = {
     state.approvedNetworks = await this._getClient().getApprovedNetworks()
   },
 
-  async switchActiveNetwork(network: NetworkControllerState['activeNetwork']) {
+  async switchActiveNetwork(network: NetworkControllerState['network']) {
     await this._getClient().switchActiveNetwork(network)
-    state.activeNetwork = network
+    state.network = network
   }
 }

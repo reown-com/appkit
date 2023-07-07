@@ -3,7 +3,7 @@ import type { AccountControllerClient } from '../../index'
 import { AccountController } from '../../index'
 
 // -- Setup --------------------------------------------------------------------
-const address = '0x123'
+const address = 'eip155:1:0x123'
 const balance = '0.100'
 const profileName = 'john.eth'
 const profileImage = 'https://ipfs.com/0x123.png'
@@ -29,15 +29,18 @@ describe('ModalController', () => {
     AccountController.setClient(client)
 
     expect(AccountController.state).toEqual({
-      _client: AccountController._getClient(),
-      address: '',
-      balance: ''
+      _client: AccountController._getClient()
     })
   })
 
   it('should update state correctly on getAddress()', async () => {
     await AccountController.getAddress()
     expect(AccountController.state.address).toEqual(address)
+  })
+
+  it('should update state correctly on setAddress()', () => {
+    AccountController.setAddress('eip155:1:0x124')
+    expect(AccountController.state.address).toEqual('eip155:1:0x124')
   })
 
   it('should update state correctly on getBalance()', async () => {
@@ -53,7 +56,6 @@ describe('ModalController', () => {
 
   it('when optional methods are undefined', async () => {
     AccountController.setClient(partialClient)
-
     await AccountController.getProfile(AccountController.state.address)
   })
 })

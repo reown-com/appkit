@@ -1,4 +1,5 @@
 import { proxy, ref } from 'valtio/vanilla'
+import type { CaipAddress } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerClient {
@@ -14,18 +15,14 @@ export interface AccountControllerClient {
 
 export interface AccountControllerState {
   _client?: AccountControllerClient
-  address: string
-  balance: string
+  address?: CaipAddress
+  balance?: string
   profileName?: string
   profileImage?: string
 }
 
 // -- State --------------------------------------------- //
-const state = proxy<AccountControllerState>({
-  _client: undefined,
-  address: '',
-  balance: ''
-})
+const state = proxy<AccountControllerState>({})
 
 // -- Controller ---------------------------------------- //
 export const AccountController = {
@@ -45,6 +42,10 @@ export const AccountController = {
 
   async getAddress() {
     this.state.address = await this._getClient().getAddress()
+  },
+
+  setAddress(address: AccountControllerState['address']) {
+    this.state.address = address
   },
 
   async getBalance(address: AccountControllerState['address']) {

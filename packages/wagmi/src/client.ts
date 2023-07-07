@@ -6,18 +6,23 @@ import {
   fetchEnsName,
   getAccount,
   getNetwork,
-  switchNetwork
+  switchNetwork,
+  watchAccount,
+  watchNetwork
 } from '@wagmi/core'
 import type {
   AccountControllerClient,
+  CaipAddress,
+  CaipChainId,
   ConnectionControllerClient,
   NetworkControllerClient
-} from '@web3modal/core'
+} from '@web3modal/scaffold-html'
 import { Web3ModalScaffoldHtml } from '@web3modal/scaffold-html'
 
 // -- Helpers -------------------------------------------------------------------
 const WALLET_CONNECT_ID = 'walletconnect'
 const INJECTED_ID = 'injected'
+const NAMESPACE = 'eip155'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalOptions {
@@ -37,11 +42,16 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     const accountControllerClient: AccountControllerClient = {
       async getAddress() {
         const { address } = getAccount()
+        const { chain } = getNetwork()
         if (!address) {
           throw new Error('accountControllerClient:getAddress - address is undefined')
         }
+        if (!chain) {
+          throw new Error('accountControllerClient:getAddress - chain is undefined')
+        }
+        const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
 
-        return Promise.resolve(address)
+        return Promise.resolve(caipAddress)
       },
 
       async getBalance(address) {
@@ -74,28 +84,31 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     }
 
     const networkControllerClient: NetworkControllerClient = {
-      async getActiveNetwork() {
+      async getNetwork() {
         const { chain } = getNetwork()
         if (!chain) {
-          throw new Error('wagmi:networkControllerClient:getActiveNetwork - chain is undefined')
+          throw new Error('wagmi:networkControllerClient:getNetwork - chain is undefined')
         }
         const chainId = String(chain.id)
+        const caipChainId: CaipChainId = `${NAMESPACE}:${chainId}`
 
-        return Promise.resolve(chainId)
+        return Promise.resolve(caipChainId)
       },
 
       async getRequestedNetworks() {
         const { chains } = wagmiConfig
         const chainIds = chains?.map(chain => String(chain.id))
+        const caipChainIds = chainIds?.map(chainId => `${NAMESPACE}:${chainId}` as CaipChainId)
 
-        return Promise.resolve(chainIds ?? [])
+        return Promise.resolve(caipChainIds ?? [])
       },
 
       async getApprovedNetworks() {
         const { chains } = getNetwork()
         const chainIds = chains.map(chain => String(chain.id))
+        const caipChainIds = chainIds.map(chainId => `${NAMESPACE}:${chainId}` as CaipChainId)
 
-        return Promise.resolve(chainIds)
+        return Promise.resolve(caipChainIds)
       },
 
       async switchActiveNetwork(chainId) {
@@ -144,6 +157,22 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       accountControllerClient,
       networkControllerClient,
       connectionControllerClient
+    })
+
+    watchAccount(({ address }) => {
+      const { chain } = getNetwork()
+      if (address && chain) {
+        const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
+        super._setAddress(caipAddress)
+      }
+    })
+
+    watchNetwork(({ chain }) => {
+      if (chain) {
+        const chainId = String(chain.id)
+        const caipChainId: CaipChainId = `${NAMESPACE}:${chainId}`
+        super._setNetwork(caipChainId)
+      }
     })
   }
 }
