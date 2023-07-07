@@ -6,7 +6,9 @@ import {
   fetchEnsName,
   getAccount,
   getNetwork,
-  switchNetwork
+  switchNetwork,
+  watchAccount,
+  watchNetwork
 } from '@wagmi/core'
 import type {
   AccountControllerClient,
@@ -82,10 +84,10 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     }
 
     const networkControllerClient: NetworkControllerClient = {
-      async getActiveNetwork() {
+      async getNetwork() {
         const { chain } = getNetwork()
         if (!chain) {
-          throw new Error('wagmi:networkControllerClient:getActiveNetwork - chain is undefined')
+          throw new Error('wagmi:networkControllerClient:getNetwork - chain is undefined')
         }
         const chainId = String(chain.id)
         const caipChainId: CaipChainId = `${NAMESPACE}:${chainId}`
@@ -155,6 +157,22 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       accountControllerClient,
       networkControllerClient,
       connectionControllerClient
+    })
+
+    watchAccount(({ address }) => {
+      const { chain } = getNetwork()
+      if (address && chain) {
+        const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
+        super._setAddress(caipAddress)
+      }
+    })
+
+    watchNetwork(({ chain }) => {
+      if (chain) {
+        const chainId = String(chain.id)
+        const caipChainId: CaipChainId = `${NAMESPACE}:${chainId}`
+        super._setNetwork(caipChainId)
+      }
     })
   }
 }

@@ -44,6 +44,10 @@ export const AccountController = {
     this.state.address = await this._getClient().getAddress()
   },
 
+  setAddress(address: AccountControllerState['address']) {
+    this.state.address = address
+  },
+
   async getBalance(address: AccountControllerState['address']) {
     this.state.balance = await this._getClient().getBalance(address)
   },

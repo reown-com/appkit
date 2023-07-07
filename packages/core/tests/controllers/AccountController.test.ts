@@ -38,6 +38,11 @@ describe('ModalController', () => {
     expect(AccountController.state.address).toEqual(address)
   })
 
+  it('should update state correctly on setAddress()', () => {
+    AccountController.setAddress('eip155:1:0x124')
+    expect(AccountController.state.address).toEqual('eip155:1:0x124')
+  })
+
   it('should update state correctly on getBalance()', async () => {
     await AccountController.getBalance(AccountController.state.address)
     expect(AccountController.state.balance).toEqual(balance)
@@ -51,7 +56,6 @@ describe('ModalController', () => {
 
   it('when optional methods are undefined', async () => {
     AccountController.setClient(partialClient)
-
     await AccountController.getProfile(AccountController.state.address)
   })
 })

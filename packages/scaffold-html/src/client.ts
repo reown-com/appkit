@@ -1,7 +1,9 @@
 import type {
   AccountControllerClient,
+  AccountControllerState,
   ConnectionControllerClient,
-  NetworkControllerClient
+  NetworkControllerClient,
+  NetworkControllerState
 } from '@web3modal/core'
 import {
   AccountController,
@@ -36,6 +38,15 @@ export class Web3ModalScaffoldHtml {
   public async close() {
     await this.#initOrContinue()
     ModalController.close()
+  }
+
+  // -- Internal -----------------------------------------------------------------
+  public _setAddress(address: AccountControllerState['address']) {
+    AccountController.setAddress(address)
+  }
+
+  public _setNetwork(network: NetworkControllerState['network']) {
+    NetworkController.setNetwork(network)
   }
 
   // -- Private ------------------------------------------------------------------
