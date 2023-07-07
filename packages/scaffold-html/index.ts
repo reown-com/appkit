@@ -10,6 +10,7 @@ export { Web3ModalScaffoldHtml } from './src/client'
 export type {
   AccountControllerClient,
   CaipAddress,
+  CaipChainId,
   ConnectionControllerClient,
   NetworkControllerClient
 } from '@web3modal/core'

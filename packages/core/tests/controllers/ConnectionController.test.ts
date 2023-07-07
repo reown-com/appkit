@@ -33,8 +33,7 @@ describe('ModalController', () => {
     ConnectionController.setClient(client)
 
     expect(ConnectionController.state).toEqual({
-      _client: ConnectionController._getClient(),
-      walletConnectUri: ''
+      _client: ConnectionController._getClient()
     })
   })
 

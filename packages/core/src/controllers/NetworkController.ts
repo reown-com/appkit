@@ -17,9 +17,7 @@ export interface NetworkControllerState {
 }
 
 // -- State --------------------------------------------- //
-const state = proxy<NetworkControllerState>({
-  _client: undefined
-})
+const state = proxy<NetworkControllerState>({})
 
 // -- Controller ---------------------------------------- //
 export const NetworkController = {
