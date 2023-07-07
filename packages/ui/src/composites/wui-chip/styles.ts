@@ -36,12 +36,12 @@ export default css`
   a[variant='fill'],
   a[variant='shade'] {
     column-gap: var(--wui-spacing-xs);
-    padding: 9px 14px 10px 8px;
+    padding: 8.5px 14px 10.5px 8px;
   }
 
   a[variant='fill']:has(wui-text:first-child),
   a[variant='shade']:has(wui-text:first-child) {
-    padding: 9px 14px 10px 14px;
+    padding: 8.5px 14px 10.5px 14px;
   }
 
   a[variant='fill'] > wui-image,
