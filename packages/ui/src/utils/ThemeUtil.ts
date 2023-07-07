@@ -68,6 +68,25 @@ export const rootStyles = css`
     --wui-spacing-xxl: 24px;
     --wui-spacing-3xl: 40px;
 
+    --wui-ease-out-power-4: cubic-bezier(0, 0, 0.22, 1);
+    --wui-ease-out-power-3: cubic-bezier(0, 0, 0.31, 1);
+    --wui-ease-out-power-2: cubic-bezier(0, 0, 0.55, 1);
+    --wui-ease-out-power-1: cubic-bezier(0, 0, 0.75, 1);
+
+    --wui-ease-in-power-4: cubic-bezier(0.92, 0, 1, 1);
+    --wui-ease-in-power-3: cubic-bezier(0.66, 0, 1, 1);
+    --wui-ease-in-power-2: cubic-bezier(0.45, 0, 1, 1);
+    --wui-ease-in-power-1: cubic-bezier(0.3, 0, 1, 1);
+
+    --wui-ease-inout-power-4: cubic-bezier(0.75, 0, 0.25, 1);
+    --wui-ease-inout-power-3: cubic-bezier(0.6, 0, 0.4, 1);
+    --wui-ease-inout-power-2: cubic-bezier(0.45, 0, 0.55, 1);
+    --wui-ease-inout-power-1: cubic-bezier(0.3, 0, 0.7, 1);
+
+    --wui-duration-lg: 200ms;
+    --wui-duration-md: 125ms;
+    --wui-duration-sm: 75ms;
+
     --wui-cover: rgba(0, 0, 0, 0.3);
 
     --wui-z-index: 99;
@@ -195,7 +214,7 @@ export const elementStyles = css`
     justify-content: center;
     align-items: center;
     position: relative;
-    transition: all 200ms ease-in-out;
+    transition: all var(--wui-ease-out-power-2) var(--wui-duration-lg);
     outline: none;
     border: 1px solid transparent;
     column-gap: var(--wui-spacing-3xs);
@@ -226,7 +245,7 @@ export const elementStyles = css`
     }
 
     button:active:enabled {
-      transition: all 80ms ease-out;
+      transition: all var(--wui-ease-out-power-4) var(--wui-duration-sm);
       background-color: var(--wui-overlay-010);
       border: 1px solid var(--wui-color-blue-100);
       -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);

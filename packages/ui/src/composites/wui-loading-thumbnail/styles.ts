@@ -3,7 +3,7 @@ import { css } from 'lit'
 export default css`
   svg {
     width: 100px;
-    transition: 200ms all ease-in;
+    transition: all var(--wui-ease-in-power-3) var(--wui-duration-lg);
   }
 
   rect {
