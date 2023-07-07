@@ -3,15 +3,15 @@ import type { CaipChainId } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
-  getActiveNetwork: () => Promise<NetworkControllerState['activeNetwork']>
+  getNetwork: () => Promise<NetworkControllerState['network']>
   getRequestedNetworks: () => Promise<NetworkControllerState['requestedNetworks']>
   getApprovedNetworks: () => Promise<NetworkControllerState['approvedNetworks']>
-  switchActiveNetwork: (network: NetworkControllerState['activeNetwork']) => Promise<void>
+  switchActiveNetwork: (network: NetworkControllerState['network']) => Promise<void>
 }
 
 export interface NetworkControllerState {
   _client?: NetworkControllerClient
-  activeNetwork?: CaipChainId
+  network?: CaipChainId
   requestedNetworks?: CaipChainId[]
   approvedNetworks?: CaipChainId[]
 }
@@ -35,8 +35,12 @@ export const NetworkController = {
     state._client = ref(client)
   },
 
-  async getActiveNetwork() {
-    state.activeNetwork = await this._getClient().getActiveNetwork()
+  async getNetwork() {
+    state.network = await this._getClient().getNetwork()
+  },
+
+  setNetwork(network: NetworkControllerState['network']) {
+    state.network = network
   },
 
   async getRequestedNetworks() {
@@ -47,8 +51,8 @@ export const NetworkController = {
     state.approvedNetworks = await this._getClient().getApprovedNetworks()
   },
 
-  async switchActiveNetwork(network: Required<NetworkControllerState['activeNetwork']>) {
+  async switchActiveNetwork(network: NetworkControllerState['network']) {
     await this._getClient().switchActiveNetwork(network)
-    state.activeNetwork = network
+    state.network = network
   }
 }
