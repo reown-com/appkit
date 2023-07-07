@@ -160,24 +160,19 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     })
 
     watchAccount(({ address }) => {
-      if (!address) {
-        throw new Error('wagmi:watchAccount - address is undefined')
-      }
       const { chain } = getNetwork()
-      if (!chain) {
-        throw new Error('wagmi:watchAccount - chain is undefined')
+      if (address && chain) {
+        const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
+        super._setAddress(caipAddress)
       }
-      const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
-      super._setAddress(caipAddress)
     })
 
     watchNetwork(({ chain }) => {
-      if (!chain) {
-        throw new Error('wagmi:watchNetwork - chain is undefined')
+      if (chain) {
+        const chainId = String(chain.id)
+        const caipChainId: CaipChainId = `${NAMESPACE}:${chainId}`
+        super._setNetwork(caipChainId)
       }
-      const chainId = String(chain.id)
-      const caipChainId: CaipChainId = `${NAMESPACE}:${chainId}`
-      super._setNetwork(caipChainId)
     })
   }
 }
