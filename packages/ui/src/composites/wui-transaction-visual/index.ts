@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
+import { resetStyles } from '../../utils/ThemeUtil'
 import '../wui-icon-box'
 import '../../components/wui-image'
 import styles from './styles'
@@ -8,7 +8,7 @@ import type { TransactionIconType, TransactionType } from '../../utils/TypesUtil
 
 @customElement('wui-transaction-visual')
 export class WuiTransactionVisual extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public type: TransactionType = 'buy'
@@ -19,16 +19,13 @@ export class WuiTransactionVisual extends LitElement {
   public render() {
     let color: 'blue-100' | 'error-100' | 'success-100' = 'blue-100'
     let icon: TransactionIconType = 'arrowTop'
-    if (
-      this.type === 'bought' ||
-      this.type === 'buy' ||
-      this.type === 'deposited' ||
-      this.type === 'cryptoSent' ||
-      this.type === 'minted'
-    ) {
+    const outgoing: TransactionType[] = ['bought', 'buy', 'deposited', 'cryptoSent', 'minted']
+    const incoming: TransactionType[] = ['withdrawed', 'received', 'nftSent']
+
+    if (outgoing.includes(this.type)) {
       color = 'error-100'
       icon = 'arrowBottom'
-    } else if (this.type === 'withdrawed' || this.type === 'received' || this.type === 'nftSent') {
+    } else if (incoming.includes(this.type)) {
       color = 'success-100'
       icon = 'arrowTop'
     } else {
