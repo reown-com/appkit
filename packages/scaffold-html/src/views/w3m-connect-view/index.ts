@@ -1,18 +1,32 @@
+import { ConnectorController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, state } from 'lit/decorators.js'
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
+  // -- State & Properties -------------------------------- //
+  @state() private connectors = ConnectorController.state.connectors
+
+  public constructor() {
+    super()
+    ConnectorController.subscribe('connectors', connectors => (this.connectors = connectors))
+  }
+
   // -- Render -------------------------------------------- //
   public render() {
     return html`
       <wui-flex flexDirection="column" padding="l" gap="xs">
-        <wui-list-select name="Rainbow"></wui-list-select>
-        <wui-list-select name="MetaMask"></wui-list-select>
-        <wui-list-select name="WalletConnect"></wui-list-select>
+        ${this.connectorsTemplate()}
         <wui-list-select name="View All" showAllWallets></wui-list-select>
       </wui-flex>
     `
+  }
+
+  // -- Private ------------------------------------------- //
+  private connectorsTemplate() {
+    return this.connectors.map(
+      connector => html`<wui-list-select name=${connector.name ?? 'Unknown'}></wui-list-select>`
+    )
   }
 }
 

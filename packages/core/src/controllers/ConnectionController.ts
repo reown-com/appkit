@@ -6,7 +6,7 @@ export interface ConnectionControllerClient {
   disconnect: () => Promise<void>
   connectExternal?: (id: string) => Promise<void>
   connectInjected?: (id: string) => Promise<void>
-  connectInjectedLegacy?: () => Promise<void>
+  connectMultiInjected?: () => Promise<void>
 }
 
 export interface ConnectionControllerState {
@@ -43,8 +43,8 @@ export const ConnectionController = {
     await this._getClient().connectInjected?.(id)
   },
 
-  async connectInjectedLegacy() {
-    await this._getClient().connectInjectedLegacy?.()
+  async connectMultiInjected() {
+    await this._getClient().connectMultiInjected?.()
   },
 
   async connectExternal(id: string) {

@@ -14,7 +14,7 @@ const client: ConnectionControllerClient = {
   },
   disconnect: async () => Promise.resolve(),
   connectInjected: async _id => Promise.resolve(),
-  connectInjectedLegacy: async () => Promise.resolve(),
+  connectMultiInjected: async () => Promise.resolve(),
   connectExternal: async _id => Promise.resolve()
 }
 
@@ -50,8 +50,8 @@ describe('ModalController', () => {
     await ConnectionController.connectInjected(browserExtensionId)
   })
 
-  it('should not throw on connectInjectedLegacy()', async () => {
-    await ConnectionController.connectInjected(browserExtensionId)
+  it('should not throw on connectMultiInjected()', async () => {
+    await ConnectionController.connectMultiInjected()
   })
 
   it('should not throw on connectExternal()', async () => {

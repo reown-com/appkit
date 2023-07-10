@@ -11,5 +11,6 @@ export type {
   CaipAddress,
   CaipChainId,
   ConnectionControllerClient,
+  ConnectorType,
   NetworkControllerClient
 } from '@web3modal/core'
