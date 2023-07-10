@@ -89,7 +89,7 @@ export const rootStyles = css`
 
     --wui-cover: rgba(0, 0, 0, 0.3);
 
-    --wui-z-index: 99;
+    --wui-z-index: 89;
   }
 
   [data-wui-theme='dark'] {

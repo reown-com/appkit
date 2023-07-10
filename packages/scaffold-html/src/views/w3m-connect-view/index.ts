@@ -1,4 +1,5 @@
-import { ConnectorController } from '@web3modal/core'
+import type { Connector } from '@web3modal/core'
+import { ConnectionController, ConnectorController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 
@@ -25,8 +26,27 @@ export class W3mConnectView extends LitElement {
   // -- Private ------------------------------------------- //
   private connectorsTemplate() {
     return this.connectors.map(
-      connector => html`<wui-list-select name=${connector.name ?? 'Unknown'}></wui-list-select>`
+      connector =>
+        html`<wui-list-select
+          name=${connector.name ?? 'Unknown'}
+          @click=${() => {
+            this.onConnectorClick(connector)
+          }}
+        ></wui-list-select>`
     )
+  }
+
+  private async onConnectorClick(connector: Connector) {
+    switch (connector.type) {
+      case 'INJECTED':
+        await ConnectionController.connectExternal(connector.id)
+        break
+      case 'WALLET_CONNECT':
+        await ConnectionController.connectWalletConnect()
+        break
+      default:
+        return ConnectionController.connectExternal(connector.id)
+    }
   }
 }
 

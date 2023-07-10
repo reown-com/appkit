@@ -21,7 +21,7 @@ import type {
 import { Web3ModalScaffoldHtml } from '@web3modal/scaffold-html'
 
 // -- Helpers -------------------------------------------------------------------
-const WALLET_CONNECT_ID = 'walletconnect'
+const WALLET_CONNECT_ID = 'walletConnect'
 const INJECTED_ID = 'injected'
 const NAMESPACE = 'eip155'
 const CONNECTOR_ID_TYPE_MAP: Record<string, ConnectorType | undefined> = {
@@ -57,7 +57,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
 
     const connectionControllerClient: ConnectionControllerClient = {
       async connectWalletConnect(onUri) {
-        const connector = wagmiConfig.connectors.find(c => c.name === WALLET_CONNECT_ID)
+        const connector = wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_ID)
         if (!connector) {
           throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
         }
@@ -71,7 +71,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       },
 
       async connectInjected(_id) {
-        const connector = wagmiConfig.connectors.find(c => c.name === INJECTED_ID)
+        const connector = wagmiConfig.connectors.find(c => c.id === INJECTED_ID)
         if (!connector) {
           throw new Error('connectionControllerClient:connectInjected - connector is undefined')
         }
@@ -80,7 +80,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       },
 
       async connectExternal(id) {
-        const connector = wagmiConfig.connectors.find(c => c.name === id)
+        const connector = wagmiConfig.connectors.find(c => c.id === id)
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
@@ -152,7 +152,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
   private syncConnectors(wagmiConfig: Web3ModalOptions['wagmiConfig']) {
     const connectors = wagmiConfig?.connectors.map(connector => ({
       id: connector.id,
-      type: CONNECTOR_ID_TYPE_MAP[connector.name] ?? 'EXTERNAL',
+      type: CONNECTOR_ID_TYPE_MAP[connector.id] ?? 'EXTERNAL',
       name: connector.name
     }))
     this.setConnectors(connectors ?? [])
