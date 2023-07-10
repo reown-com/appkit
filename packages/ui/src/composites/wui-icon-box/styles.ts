@@ -10,6 +10,7 @@ export default css`
     background-color: var(--wui-overlay-020);
     background-color: color-mix(in srgb, var(--local-bg-value) var(--local-bg-mix), transparent);
     border-radius: var(--local-border-radius);
+    border: var(--local-border);
     width: var(--local-size);
     height: var(--local-size);
   }

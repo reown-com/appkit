@@ -13,7 +13,8 @@ export default {
     size: 'md',
     backgroundColor: 'blue-100',
     iconColor: 'blue-100',
-    icon: 'copy'
+    icon: 'copy',
+    border: false
   },
 
   argTypes: {
@@ -33,6 +34,9 @@ export default {
     icon: {
       options: iconOptions,
       control: { type: 'select' }
+    },
+    border: {
+      control: { type: 'boolean' }
     }
   }
 } as Component
@@ -44,5 +48,6 @@ export const Default: Component = {
       iconColor=${args.iconColor}
       backgroundColor=${args.backgroundColor}
       icon=${args.icon}
+      ?border=${args.border}
     ></wui-icon-box>`
 }

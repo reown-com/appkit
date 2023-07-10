@@ -15,7 +15,8 @@ import type {
   IconType,
   PlacementType,
   ButtonType,
-  ChipType
+  ChipType,
+  TransactionType
 } from '@web3modal/ui/src/utils/TypesUtil'
 
 export const colorOptions: ColorType[] = [
@@ -124,6 +125,8 @@ export const borderRadiusOptions: BorderRadiusType[] = ['4xs', '3xs', 'xxs', 'xs
 export const spacingOptions: SpacingType[] = ['4xs', '3xs', 'xxs', 'xs', 's', 'm', 'l', 'xl', '3xl']
 
 export const iconOptions: IconType[] = [
+  'arrowBottom',
+  'arrowTop',
   'checkmark',
   'clock',
   'close',
@@ -131,6 +134,7 @@ export const iconOptions: IconType[] = [
   'cursor',
   'externalLink',
   'search',
+  'swap',
   'wallet',
   'walletPlaceholder'
 ]
@@ -140,3 +144,15 @@ export const placementOptions: PlacementType[] = ['top', 'right', 'bottom', 'lef
 export const chipOptions: ChipType[] = ['fill', 'transparent', 'shade']
 
 export const buttonOptions: ButtonType[] = ['fill', 'accent', 'shade']
+
+export const transactionOptions: TransactionType[] = [
+  'bought',
+  'buy',
+  'deposited',
+  'minted',
+  'received',
+  'nftSent',
+  'cryptoSent',
+  'swapped',
+  'withdrawed'
+]
