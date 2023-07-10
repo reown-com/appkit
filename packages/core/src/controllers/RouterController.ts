@@ -27,7 +27,7 @@ export const RouterController = {
     subscribeKey(state, key, callback)
   },
 
-  push(view: RouterControllerState['view'], data: RouterControllerState['data']) {
+  push(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
     if (view !== state.view) {
       state.view = view
       state.history.push(view)

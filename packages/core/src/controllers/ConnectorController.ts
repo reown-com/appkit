@@ -2,7 +2,7 @@ import { subscribeKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
 
 // -- Types --------------------------------------------- //
-export type ConnectorType = 'EXTERNAL' | 'INJECTED' | 'MULTI_INJECTED' | 'WALLET_CONNECT'
+export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT'
 
 export interface Connector {
   id: string

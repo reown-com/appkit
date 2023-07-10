@@ -25,20 +25,13 @@ export class W3mConnectView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private connectorsTemplate() {
-    return this.connectors.map(connector => {
-      if (connector.type === 'INJECTED') {
-        return html`<wui-list-select
-          name="Browser Wallet"
-          showAllWallets
+    return this.connectors.map(
+      connector =>
+        html`<wui-list-select
+          name=${connector.name ?? 'Unknown'}
           @click=${() => this.onConnectorClick(connector)}
         ></wui-list-select>`
-      }
-
-      return html`<wui-list-select
-        name=${connector.name ?? 'Unknown'}
-        @click=${() => this.onConnectorClick(connector)}
-      ></wui-list-select>`
-    })
+    )
   }
 
   private onConnectorClick(connector: Connector) {

@@ -58,4 +58,15 @@ describe('ModalController', () => {
       history: ['Account', 'Networks']
     })
   })
+
+  it('should update state correctly on push() with data', () => {
+    RouterController.push('Connecting', { connector: { id: 'test', type: 'WALLET_CONNECT' } })
+    expect(RouterController.state).toEqual({
+      view: 'Connecting',
+      history: ['Account', 'Networks', 'Connecting'],
+      data: {
+        connector: { id: 'test', type: 'WALLET_CONNECT' }
+      }
+    })
+  })
 })
