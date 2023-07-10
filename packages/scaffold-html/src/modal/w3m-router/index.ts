@@ -22,6 +22,8 @@ export class W3mRouter extends LitElement {
     switch (this.view) {
       case 'Connect':
         return html`<w3m-connect-view></w3m-connect-view>`
+      case 'Connecting':
+        return html`<w3m-connecting-view></w3m-connecting-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

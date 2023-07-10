@@ -4,8 +4,7 @@ import { ConnectionController } from '../../index'
 
 // -- Setup --------------------------------------------------------------------
 const walletConnectUri = 'wc://uri?=123'
-const browserExtensionId = 'isMetaMask'
-const thirdPartyWalletId = 'coinbase'
+const externalId = 'coinbaseWallet'
 
 const client: ConnectionControllerClient = {
   connectWalletConnect: async onUri => {
@@ -13,8 +12,6 @@ const client: ConnectionControllerClient = {
     await Promise.resolve()
   },
   disconnect: async () => Promise.resolve(),
-  connectInjected: async _id => Promise.resolve(),
-  connectInjectedLegacy: async () => Promise.resolve(),
   connectExternal: async _id => Promise.resolve()
 }
 
@@ -46,22 +43,13 @@ describe('ModalController', () => {
     await ConnectionController.connectWalletConnect()
   })
 
-  it('should not throw on connectInjected()', async () => {
-    await ConnectionController.connectInjected(browserExtensionId)
-  })
-
-  it('should not throw on connectInjectedLegacy()', async () => {
-    await ConnectionController.connectInjected(browserExtensionId)
-  })
-
   it('should not throw on connectExternal()', async () => {
-    await ConnectionController.connectExternal(thirdPartyWalletId)
+    await ConnectionController.connectExternal(externalId)
   })
 
   it('should not throw when optional methods are undefined', async () => {
     ConnectionController.setClient(partialClient)
 
-    await ConnectionController.connectExternal(thirdPartyWalletId)
-    await ConnectionController.connectInjected(browserExtensionId)
+    await ConnectionController.connectExternal(externalId)
   })
 })

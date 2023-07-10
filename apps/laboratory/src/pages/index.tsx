@@ -1,6 +1,8 @@
 import { Button, Center, VStack } from '@chakra-ui/react'
 import { Web3Modal } from '@web3modal/wagmi'
 import { WagmiConfig, configureChains, createConfig, mainnet } from 'wagmi'
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
+import { InjectedConnector } from 'wagmi/connectors/injected'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 import { publicProvider } from 'wagmi/providers/public'
 
@@ -11,14 +13,13 @@ if (!projectId) {
 }
 
 // 2. Create wagmiConfig
-const { chains, publicClient } = configureChains([mainnet], [publicProvider()])
+const { publicClient } = configureChains([mainnet], [publicProvider()])
 const wagmiConfig = createConfig({
   autoConnect: true,
   connectors: [
-    new WalletConnectConnector({
-      chains,
-      options: { projectId }
-    })
+    new WalletConnectConnector({ options: { projectId } }),
+    new InjectedConnector({ options: { shimDisconnect: true } }),
+    new CoinbaseWalletConnector({ options: { appName: 'Web3Modal' } })
   ],
   publicClient
 })
@@ -32,16 +33,11 @@ export default function Home() {
     await modal.open()
   }
 
-  async function closeModal() {
-    await modal.close()
-  }
-
   return (
     <WagmiConfig config={wagmiConfig}>
       <Center h="100vh">
         <VStack>
-          <Button onClick={openModal}>Open Modal</Button>
-          <Button onClick={closeModal}>Close Modal</Button>
+          <Button onClick={openModal}>Connect Wallet</Button>
         </VStack>
       </Center>
     </WagmiConfig>
