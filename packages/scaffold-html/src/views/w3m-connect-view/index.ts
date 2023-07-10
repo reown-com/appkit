@@ -1,5 +1,5 @@
 import type { Connector } from '@web3modal/core'
-import { ConnectionController, ConnectorController } from '@web3modal/core'
+import { ConnectorController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 
@@ -25,26 +25,24 @@ export class W3mConnectView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private connectorsTemplate() {
-    return this.connectors.map(
-      connector =>
-        html`<wui-list-select
-          name=${connector.name ?? 'Unknown'}
-          @click=${() => {
-            this.onConnectorClick(connector)
-          }}
+    return this.connectors.map(connector => {
+      if (connector.type === 'INJECTED') {
+        return html`<wui-list-select
+          name="Browser Wallet"
+          showAllWallets
+          @click=${() => this.onConnectorClick(connector)}
         ></wui-list-select>`
-    )
+      }
+
+      return html`<wui-list-select
+        name=${connector.name ?? 'Unknown'}
+        @click=${() => this.onConnectorClick(connector)}
+      ></wui-list-select>`
+    })
   }
 
-  private async onConnectorClick(connector: Connector) {
-    switch (connector.type) {
-      case 'INJECTED':
-        return ConnectionController.connectInjected(connector.id)
-      case 'WALLET_CONNECT':
-        return ConnectionController.connectWalletConnect()
-      default:
-        return ConnectionController.connectExternal(connector.id)
-    }
+  private onConnectorClick(connector: Connector) {
+    RouterController.push('Connecting', { connector })
   }
 }
 

@@ -152,8 +152,8 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
   private syncConnectors(wagmiConfig: Web3ModalOptions['wagmiConfig']) {
     const connectors = wagmiConfig?.connectors.map(connector => ({
       id: connector.id,
-      type: CONNECTOR_ID_TYPE_MAP[connector.id] ?? 'EXTERNAL',
-      name: connector.name
+      name: connector.name,
+      type: CONNECTOR_ID_TYPE_MAP[connector.id] ?? 'EXTERNAL'
     }))
     this.setConnectors(connectors ?? [])
   }

@@ -1,10 +1,14 @@
 import { subscribeKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
+import type { Connector } from './ConnectorController'
 
 // -- Types --------------------------------------------- //
 export interface RouterControllerState {
-  view: 'Account' | 'Connect' | 'Networks'
+  view: 'Account' | 'Connect' | 'Connecting' | 'Networks'
   history: RouterControllerState['view'][]
+  data?: {
+    connector: Connector
+  }
 }
 
 // -- State --------------------------------------------- //
@@ -23,10 +27,11 @@ export const RouterController = {
     subscribeKey(state, key, callback)
   },
 
-  push(view: RouterControllerState['view']) {
+  push(view: RouterControllerState['view'], data: RouterControllerState['data']) {
     if (view !== state.view) {
       state.view = view
       state.history.push(view)
+      state.data = data
     }
   },
 
