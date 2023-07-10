@@ -6,6 +6,7 @@ import { clockSvg } from '../../assets/svg/clock'
 import { closeSvg } from '../../assets/svg/close'
 import { copySvg } from '../../assets/svg/copy'
 import { cursorSvg } from '../../assets/svg/cursor'
+import { externalLinkSvg } from '../../assets/svg/external-link'
 import { searchSvg } from '../../assets/svg/search'
 import { walletSvg } from '../../assets/svg/wallet'
 import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder'
@@ -19,6 +20,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   close: closeSvg,
   copy: copySvg,
   cursor: cursorSvg,
+  externalLink: externalLinkSvg,
   search: searchSvg,
   wallet: walletSvg,
   walletPlaceholder: walletPlaceholderSvg

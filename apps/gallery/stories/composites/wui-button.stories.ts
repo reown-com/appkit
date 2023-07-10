@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-button'
 import type { WuiButton } from '@web3modal/ui/src/composites/wui-button'
 import { html } from 'lit'
-import { iconOptions } from '../../utils/PresetUtils'
+import { buttonOptions, iconOptions } from '../../utils/PresetUtils'
 import type { IconType } from '@web3modal/ui/src/utils/TypesUtil'
 
 type Component = Meta<WuiButton & { iconLeft?: IconType; iconRight?: IconType }>
@@ -22,7 +22,7 @@ export default {
       control: { type: 'select' }
     },
     variant: {
-      options: ['fill', 'shade', 'accent'],
+      options: buttonOptions,
       control: { type: 'select' }
     },
     disabled: {
