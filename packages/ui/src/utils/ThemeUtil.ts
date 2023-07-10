@@ -230,6 +230,7 @@ export const elementStyles = css`
 
   button:disabled > wui-wallet-image,
   button:disabled > wui-all-wallets-image,
+  button:disabled > wui-network-image,
   button:disabled > wui-image {
     filter: grayscale(1);
   }

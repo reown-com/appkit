@@ -108,3 +108,5 @@ export type TransactionType =
   | 'withdrawed'
 
 export type TransactionIconType = 'arrowBottom' | 'arrowTop' | 'swap'
+
+export type CardSelectType = 'network' | 'wallet'

@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-text'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import '../wui-wallet-image'
+import '../wui-network-image'
 import styles from './styles'
 
 @customElement('wui-card-select')
@@ -14,16 +15,30 @@ export class WuiCardSelect extends LitElement {
 
   @property() public name = ''
 
+  @property() public type = 'wallet'
+
   @property({ type: Boolean }) public disabled = false
 
   // -- Render -------------------------------------------- //
   public render() {
     return html`
       <button ?disabled=${this.disabled}>
-        <wui-wallet-image size="md" src=${this.imageSrc} alt=${this.name}></wui-wallet-image>
+        ${this.imageTemplate()}
         <wui-text variant="tiny-500" color="inherit">${this.name}</wui-text>
       </button>
     `
+  }
+
+  private imageTemplate() {
+    if (this.type === 'network') {
+      return html`<wui-network-image src=${this.imageSrc} alt=${this.name}></wui-network-image>`
+    }
+
+    return html`<wui-wallet-image
+      size="md"
+      src=${this.imageSrc}
+      alt=${this.name}
+    ></wui-wallet-image>`
   }
 }
 
