@@ -20,8 +20,7 @@ import type {
 import { Web3ModalScaffoldHtml } from '@web3modal/scaffold-html'
 
 // -- Helpers -------------------------------------------------------------------
-const WALLET_CONNECT_ID = 'walletconnect'
-const INJECTED_ID = 'injected'
+const WALLET_CONNECT_ID = 'walletConnect'
 const NAMESPACE = 'eip155'
 
 // -- Types ---------------------------------------------------------------------
@@ -48,7 +47,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
 
     const connectionControllerClient: ConnectionControllerClient = {
       async connectWalletConnect(onUri) {
-        const connector = wagmiConfig.connectors.find(c => c.name === WALLET_CONNECT_ID)
+        const connector = wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_ID)
         if (!connector) {
           throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
         }
@@ -61,17 +60,8 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
         await connector.connect()
       },
 
-      async connectInjected(_id) {
-        const connector = wagmiConfig.connectors.find(c => c.name === INJECTED_ID)
-        if (!connector) {
-          throw new Error('connectionControllerClient:connectInjected - connector is undefined')
-        }
-
-        await connector.connect()
-      },
-
       async connectExternal(id) {
-        const connector = wagmiConfig.connectors.find(c => c.name === id)
+        const connector = wagmiConfig.connectors.find(c => c.id === id)
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
@@ -87,15 +77,13 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       connectionControllerClient
     })
 
+    this.syncConnectors(wagmiConfig)
+
     this.syncAccount()
-    watchAccount(() => {
-      this.syncAccount()
-    })
+    watchAccount(() => this.syncAccount())
 
     this.syncNetwork()
-    watchNetwork(() => {
-      this.syncNetwork()
-    })
+    watchNetwork(() => this.syncNetwork())
   }
 
   // -- Private ------------------------------------------------------------------
@@ -104,7 +92,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     const { chain } = getNetwork()
     if (address && chain) {
       const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
-      super.setAddress(caipAddress)
+      this.setAddress(caipAddress)
       await Promise.all([this.syncProfile(address), this.syncBalance(address, chain)])
     }
   }
@@ -115,7 +103,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     if (chain) {
       const chainId = String(chain.id)
       const caipChainId: CaipChainId = `${NAMESPACE}:${chainId}`
-      super.setNetwork(caipChainId)
+      this.setNetwork(caipChainId)
       if (address) {
         await this.syncBalance(address, chain)
       }
@@ -125,16 +113,28 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
   private async syncProfile(address: Address) {
     const profileName = await fetchEnsName({ address, chainId: mainnet.id })
     if (profileName) {
-      super.setProfileName(profileName)
+      this.setProfileName(profileName)
       const profileImage = await fetchEnsAvatar({ name: profileName, chainId: mainnet.id })
       if (profileImage) {
-        super.setProfileImage(profileImage)
+        this.setProfileImage(profileImage)
       }
     }
   }
 
   private async syncBalance(address: Address, chain: Chain) {
     const balance = await fetchBalance({ address, chainId: chain.id })
-    super.setBalance(balance.formatted)
+    this.setBalance(balance.formatted)
+  }
+
+  private syncConnectors(wagmiConfig: Web3ModalOptions['wagmiConfig']) {
+    const connectors = wagmiConfig?.connectors.map(
+      connector =>
+        ({
+          id: connector.id,
+          name: connector.name,
+          type: connector.id === WALLET_CONNECT_ID ? 'WALLET_CONNECT' : 'EXTERNAL'
+        }) as const
+    )
+    this.setConnectors(connectors ?? [])
   }
 }

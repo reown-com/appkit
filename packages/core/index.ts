@@ -20,6 +20,13 @@ export type {
   ConnectionControllerState
 } from './src/controllers/ConnectionController'
 
+export { ConnectorController } from './src/controllers/ConnectorController'
+export type {
+  Connector,
+  ConnectorControllerState,
+  ConnectorType
+} from './src/controllers/ConnectorController'
+
 // -- Utils -------------------------------------------------------------------
 export { HelperUtil } from './src/utils/HelperUtil'
 export type { CaipAddress, CaipChainId } from './src/utils/TypeUtils'

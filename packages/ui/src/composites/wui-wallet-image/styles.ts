@@ -31,6 +31,7 @@ export default css`
   .wui-size-inherit > wui-icon {
     width: 75%;
     height: 75%;
+    align-items: center;
   }
 
   .wui-size-sm {

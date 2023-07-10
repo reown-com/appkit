@@ -5,8 +5,6 @@ export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
   disconnect: () => Promise<void>
   connectExternal?: (id: string) => Promise<void>
-  connectInjected?: (id: string) => Promise<void>
-  connectInjectedLegacy?: () => Promise<void>
 }
 
 export interface ConnectionControllerState {
@@ -37,14 +35,6 @@ export const ConnectionController = {
     await this._getClient().connectWalletConnect(uri => {
       this.state.walletConnectUri = uri
     })
-  },
-
-  async connectInjected(id: string) {
-    await this._getClient().connectInjected?.(id)
-  },
-
-  async connectInjectedLegacy() {
-    await this._getClient().connectInjectedLegacy?.()
   },
 
   async connectExternal(id: string) {

@@ -2,6 +2,7 @@ import type { ConnectionControllerClient, NetworkControllerClient } from '@web3m
 import {
   AccountController,
   ConnectionController,
+  ConnectorController,
   HelperUtil,
   ModalController,
   NetworkController
@@ -52,6 +53,10 @@ export class Web3ModalScaffoldHtml {
 
   protected setNetwork: (typeof NetworkController)['setNetwork'] = network => {
     NetworkController.setNetwork(network)
+  }
+
+  protected setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
+    ConnectorController.setConnectors(connectors)
   }
 
   // -- Private ------------------------------------------------------------------
