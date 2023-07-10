@@ -1,5 +1,6 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { AccountCtrlState } from '../types/controllerTypes'
+import { BlockchainApiUtil } from '../utils/BlockchainApiUtil'
 import { ClientCtrl } from './ClientCtrl'
 import { ConfigCtrl } from './ConfigCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
@@ -35,18 +36,28 @@ export const AccountCtrl = {
   ) {
     try {
       state.profileLoading = true
+      state.profileName = null
+      state.profileAvatar = null
       const address = profileAddress ?? state.address
-      const isMainnetConfigured = OptionsCtrl.state.chains?.find(chain => chain.id === 1)
+      const mainnetId = 1
+      const isMainnetConfigured = OptionsCtrl.state.chains?.find(chain => chain.id === mainnetId)
       if (address && isMainnetConfigured) {
-        const name = await ClientCtrl.client().fetchEnsName({ address, chainId: 1 })
-        if (name) {
-          const avatar = await ClientCtrl.client().fetchEnsAvatar({ name, chainId: 1 })
-          if (avatar) {
-            await preloadAvatarFn(avatar)
+        try {
+          const profile = await BlockchainApiUtil.getIdentity(address, mainnetId)
+          state.profileName = profile.name
+          state.profileAvatar = profile.avatar
+        } catch {
+          // If problem resolving the identity using our own Identity API, fallback to RPC resolution
+          const name = await ClientCtrl.client().fetchEnsName({ address, chainId: mainnetId })
+          state.profileName = name
+          if (name) {
+            const avatar = await ClientCtrl.client().fetchEnsAvatar({ name, chainId: mainnetId })
+            state.profileAvatar = avatar
           }
-          state.profileAvatar = avatar
         }
-        state.profileName = name
+        if (state.profileAvatar) {
+          await preloadAvatarFn(state.profileAvatar)
+        }
       }
     } finally {
       state.profileLoading = false
