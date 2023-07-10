@@ -80,14 +80,10 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     this.syncConnectors(wagmiConfig)
 
     this.syncAccount()
-    watchAccount(() => {
-      this.syncAccount()
-    })
+    watchAccount(() => this.syncAccount())
 
     this.syncNetwork()
-    watchNetwork(() => {
-      this.syncNetwork()
-    })
+    watchNetwork(() => this.syncNetwork())
   }
 
   // -- Private ------------------------------------------------------------------
