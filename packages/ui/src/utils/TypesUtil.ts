@@ -82,8 +82,13 @@ export type IconType =
   | 'close'
   | 'copy'
   | 'cursor'
+  | 'externalLink'
   | 'search'
   | 'wallet'
   | 'walletPlaceholder'
 
 export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
+
+export type ChipType = 'fill' | 'shade' | 'transparent'
+
+export type ButtonType = 'accent' | 'fill' | 'shade'

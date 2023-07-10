@@ -9,3 +9,9 @@ export function getSpacingStyles(spacing: SpacingType | SpacingType[], index: nu
 
   return undefined
 }
+
+export function getHostName(url: string) {
+  const newUrl = new URL(url)
+
+  return newUrl.hostname
+}
