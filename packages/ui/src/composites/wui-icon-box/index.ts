@@ -16,6 +16,8 @@ export class WuiIconBox extends LitElement {
 
   @property() public iconColor: ColorType = 'blue-100'
 
+  @property({ type: Boolean }) public border? = false
+
   @property() public icon: IconType = 'copy'
 
   // -- Render -------------------------------------------- //
@@ -40,6 +42,7 @@ export class WuiIconBox extends LitElement {
        --local-bg-mix: ${bgMix};
        --local-border-radius: var(--wui-border-radius-${borderRadius});
        --local-size: var(--wui-icon-box-size-${this.size});
+       --local-border: 2px solid ${this.border ? `var(--wui-color-bg-125)` : `transparent`}
    `
 
     return html` <wui-icon color=${this.iconColor} size=${iconSize} name=${this.icon}></wui-icon> `
