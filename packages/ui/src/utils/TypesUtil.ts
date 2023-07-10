@@ -77,6 +77,8 @@ export type GridContentType =
 export type GridItemsType = 'center' | 'end' | 'start' | 'stretch'
 
 export type IconType =
+  | 'arrowBottom'
+  | 'arrowTop'
   | 'checkmark'
   | 'clock'
   | 'close'
@@ -84,6 +86,7 @@ export type IconType =
   | 'cursor'
   | 'externalLink'
   | 'search'
+  | 'swap'
   | 'wallet'
   | 'walletPlaceholder'
 
@@ -92,3 +95,16 @@ export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 export type ChipType = 'fill' | 'shade' | 'transparent'
 
 export type ButtonType = 'accent' | 'fill' | 'shade'
+
+export type TransactionType =
+  | 'bought'
+  | 'buy'
+  | 'cryptoSent'
+  | 'deposited'
+  | 'minted'
+  | 'nftSent'
+  | 'received'
+  | 'swapped'
+  | 'withdrawed'
+
+export type TransactionIconType = 'arrowBottom' | 'arrowTop' | 'swap'

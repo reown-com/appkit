@@ -7,5 +7,6 @@ export default css`
     height: 100%;
     object-fit: cover;
     object-position: center center;
+    border-radius: inherit;
   }
 `
