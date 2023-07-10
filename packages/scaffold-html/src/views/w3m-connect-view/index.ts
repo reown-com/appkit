@@ -39,11 +39,9 @@ export class W3mConnectView extends LitElement {
   private async onConnectorClick(connector: Connector) {
     switch (connector.type) {
       case 'INJECTED':
-        await ConnectionController.connectExternal(connector.id)
-        break
+        return ConnectionController.connectInjected(connector.id)
       case 'WALLET_CONNECT':
-        await ConnectionController.connectWalletConnect()
-        break
+        return ConnectionController.connectWalletConnect()
       default:
         return ConnectionController.connectExternal(connector.id)
     }
