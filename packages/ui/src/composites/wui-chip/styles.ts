@@ -50,6 +50,14 @@ export default css`
     height: 24px;
   }
 
+  a[variant='fill'] > wui-image {
+    border: 1px solid var(--wui-color-blue-090);
+  }
+
+  a[variant='shade'] > wui-image {
+    border: 1px solid var(--wui-overlay-010);
+  }
+
   a[variant='fill'] > wui-icon,
   a[variant='shade'] > wui-icon {
     width: 12px;
