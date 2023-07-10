@@ -15,7 +15,7 @@ export default css`
   }
 
   button[size='md'] {
-    padding: 9px 16px 10px 16px;
+    padding: 9px 16px;
   }
 
   button[variant='fill'] {
