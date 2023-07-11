@@ -3,7 +3,7 @@ import '@web3modal/ui/src/composites/wui-card-select'
 import '../../components/gallery-container'
 import type { WuiCardSelect } from '@web3modal/ui/src/composites/wui-card-select'
 import { html } from 'lit'
-import { walletImageSrc } from '../../utils/PresetUtils'
+import { cardSelectOptions, walletImageSrc } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiCardSelect>
 
@@ -12,7 +12,14 @@ export default {
   args: {
     imageSrc: walletImageSrc,
     name: 'Rainbow',
-    disabled: false
+    disabled: false,
+    type: 'wallet'
+  },
+  argTypes: {
+    type: {
+      options: cardSelectOptions,
+      control: { type: 'select' }
+    }
   }
 } as Component
 
@@ -20,6 +27,7 @@ export const Default: Component = {
   render: args => html`
     <gallery-container width="76"
       ><wui-card-select
+        type=${args.type}
         imageSrc=${args.imageSrc}
         ?disabled=${args.disabled}
         name=${args.name}

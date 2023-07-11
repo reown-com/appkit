@@ -9,8 +9,8 @@ type Component = Meta<WuiWalletImage>
 export default {
   title: 'Composites/wui-wallet-image',
   args: {
-    src: walletImageSrc,
-    walletName: 'Rainbow',
+    imageSrc: walletImageSrc,
+    name: 'Rainbow',
     size: 'md'
   },
   argTypes: {
@@ -25,7 +25,7 @@ export const Default: Component = {
   render: args =>
     html`<wui-wallet-image
       size=${args.size}
-      .src=${args.src}
-      alt=${args.walletName}
+      .imageSrc=${args.imageSrc}
+      alt=${args.name}
     ></wui-wallet-image>`
 }
