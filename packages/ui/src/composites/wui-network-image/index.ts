@@ -4,6 +4,7 @@ import '../../components/wui-icon'
 import '../../components/wui-image'
 import { resetStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
+import { networkSvg } from '../../assets/svg/network'
 
 @customElement('wui-network-image')
 export class WuiNetworkImage extends LitElement {
@@ -22,12 +23,7 @@ export class WuiNetworkImage extends LitElement {
   // -- Private ------------------------------------------- //
   private templateVisual() {
     if (this.imageSrc) {
-      return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image>
-        <svg width="48" height="53" fill="none">
-          <path
-            d="M20.041 1.061a7.915 7.915 0 0 1 7.918 0l16.082 9.29A7.922 7.922 0 0 1 48 17.21v18.578c0 2.83-1.51 5.445-3.959 6.86l-16.082 9.29a7.915 7.915 0 0 1-7.918 0l-16.082-9.29A7.922 7.922 0 0 1 0 35.79V17.211c0-2.83 1.51-5.445 3.959-6.86l16.082-9.29Z"
-          />
-        </svg>`
+      return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image> ${networkSvg}`
     }
 
     return html`<wui-icon size="inherit" color="inherit" name="walletPlaceholder"></wui-icon>`
