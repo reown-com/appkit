@@ -27,16 +27,4 @@ export default css`
     bottom: 0;
     transform: translate(20%, 20%);
   }
-
-  wui-icon-box[backgroundColor='blue-100'] {
-    background-color: #20303f;
-  }
-
-  wui-icon-box[backgroundColor='error-100'] {
-    background-color: #3c2426;
-  }
-
-  wui-icon-box[backgroundColor='success-100'] {
-    background-color: #1b3925;
-  }
 `
