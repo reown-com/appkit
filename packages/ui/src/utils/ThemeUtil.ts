@@ -36,6 +36,7 @@ export const rootStyles = css`
 
     --wui-color-inherit: inherit;
 
+    --wui-border-radius-5xs: 4px;
     --wui-border-radius-4xs: 6px;
     --wui-border-radius-3xs: 8px;
     --wui-border-radius-xxs: 12px;
@@ -109,6 +110,7 @@ export const rootStyles = css`
     --wui-color-blue-100: #47a1ff;
     --wui-color-blue-090: #59aaff;
     --wui-color-blue-080: #6cb4ff;
+    --wui-color-blue-015: rgba(71, 161, 255, 0.15);
 
     --wui-color-fg-100: #e4e7e7;
     --wui-color-fg-125: #d0d5d5;
@@ -158,6 +160,7 @@ export const rootStyles = css`
     --wui-color-blue-100: #3396ff;
     --wui-color-blue-090: #2d7dd2;
     --wui-color-blue-080: #2978cc;
+    --wui-color-blue-015: rgba(51, 150, 255, 0.15);
 
     --wui-color-fg-100: #141414;
     --wui-color-fg-125: #2d3131;

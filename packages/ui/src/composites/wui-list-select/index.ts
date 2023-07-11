@@ -2,9 +2,10 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-text'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import type { IWalletImage } from '../../utils/TypesUtil'
+import type { IWalletImage, TagType } from '../../utils/TypesUtil'
 import '../wui-all-wallets-image'
 import '../wui-wallet-image'
+import '../wui-tag'
 import styles from './styles'
 
 @customElement('wui-list-select')
@@ -18,7 +19,9 @@ export class WuiListSelect extends LitElement {
 
   @property() public name = ''
 
-  @property() public status?: 'installed' | 'qr code' | 'recent'
+  @property() public tagLabel?: 'installed' | 'qr code' | 'recent'
+
+  @property() public tagVariant?: TagType
 
   @property({ type: Boolean }) public disabled = false
 
@@ -63,8 +66,8 @@ export class WuiListSelect extends LitElement {
   }
 
   private templateStatus() {
-    if (this.status) {
-      return html` <wui-text variant="micro-700" color="fg-300">${this.status}</wui-text> `
+    if (this.tagLabel && this.tagVariant) {
+      return html` <wui-tag variant=${this.tagVariant}>${this.tagLabel}</wui-tag>`
     }
 
     return null
