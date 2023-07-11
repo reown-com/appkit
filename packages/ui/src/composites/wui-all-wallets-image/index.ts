@@ -20,10 +20,10 @@ export class WuiAllWalletsImage extends LitElement {
       .slice(0, TOTAL_IMAGES)
       .map(
         ({ src, walletName }) => html`
-          <wui-wallet-image size="inherit" src=${src} walletName=${walletName}></wui-wallet-image>
+          <wui-wallet-image size="inherit" imageSrc=${src} name=${walletName}></wui-wallet-image>
         `
       )}${[...Array(TOTAL_IMAGES - this.walletImages.length)].map(
-      () => html` <wui-wallet-image size="inherit" walletName=""></wui-wallet-image>`
+      () => html` <wui-wallet-image size="inherit" name=""></wui-wallet-image>`
     )}`
   }
 }
