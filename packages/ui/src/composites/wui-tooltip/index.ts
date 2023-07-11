@@ -18,7 +18,7 @@ export class WuiTooltip extends LitElement {
   // -- Render -------------------------------------------- //
   public render() {
     return html`<wui-icon
-        placement=${this.placement}
+        data-placement=${this.placement}
         color="fg-100"
         size="inherit"
         name="cursor"

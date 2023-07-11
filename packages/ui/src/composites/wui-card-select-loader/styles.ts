@@ -13,7 +13,7 @@ export default css`
     position: relative;
   }
 
-  wui-shimmer[type='network'] {
+  wui-shimmer[data-type='network'] {
     border: none;
     width: 48px;
     height: 54px;
