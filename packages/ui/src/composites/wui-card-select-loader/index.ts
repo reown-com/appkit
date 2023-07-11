@@ -24,7 +24,7 @@ export class WuiCardSelectLoader extends LitElement {
   private shimmerTemplate() {
     if (this.type === 'network') {
       return html` <wui-shimmer
-          type=${this.type}
+          data-type=${this.type}
           width="48px"
           height="54px"
           borderRadius="xs"

@@ -56,6 +56,11 @@ export const rootStyles = css`
     --wui-icon-size-md: 14px;
     --wui-icon-size-lg: 18px;
 
+    --wui-wallet-image-size-inherit: inherit;
+    --wui-wallet-image-size-sm: 40px;
+    --wui-wallet-image-size-md: 56px;
+    --wui-wallet-image-size-lg: 80px;
+
     --wui-spacing-0: 0px;
     --wui-spacing-4xs: 2px;
     --wui-spacing-3xs: 4px;

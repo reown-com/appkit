@@ -22,7 +22,7 @@ export class WuiButton extends LitElement {
     const textVariant = this.size === 'md' ? 'paragraph-600' : 'small-600'
 
     return html`
-      <button variant=${this.variant} size=${this.size} ?disabled=${this.disabled}>
+      <button data-variant=${this.variant} data-size=${this.size} ?disabled=${this.disabled}>
         <slot name="iconLeft"></slot>
         <wui-text variant=${textVariant} color="inherit">
           <slot></slot>

@@ -16,25 +16,25 @@ export default css`
     height: 4px !important;
   }
 
-  wui-icon[placement='top'] {
+  wui-icon[data-placement='top'] {
     bottom: 0;
     left: 50%;
     transform: translate(-50%, 95%);
   }
 
-  wui-icon[placement='bottom'] {
+  wui-icon[data-placement='bottom'] {
     top: 0;
     left: 50%;
     transform: translate(-50%, -95%) rotate(180deg);
   }
 
-  wui-icon[placement='right'] {
+  wui-icon[data-placement='right'] {
     top: 50%;
     left: 0;
     transform: translate(-65%, -50%) rotate(90deg);
   }
 
-  wui-icon[placement='left'] {
+  wui-icon[data-placement='left'] {
     top: 50%;
     right: 0%;
     transform: translate(65%, -50%) rotate(270deg);

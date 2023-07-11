@@ -26,7 +26,7 @@ export class WuiChip extends LitElement {
     const textVariant = this.variant === 'transparent' ? 'small-600' : 'paragraph-600'
 
     return html`
-      <a rel="noreferrer" target="_blank" href=${this.href} variant=${this.variant}>
+      <a rel="noreferrer" target="_blank" href=${this.href} data-variant=${this.variant}>
         ${this.imageTemplate()}
         <wui-text variant=${textVariant} color="inherit"> ${getHostName(this.href)} </wui-text>
         <wui-icon name=${this.icon} color="inherit" size="inherit"></wui-icon>
