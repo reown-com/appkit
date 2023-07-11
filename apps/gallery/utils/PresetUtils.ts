@@ -16,7 +16,8 @@ import type {
   PlacementType,
   ButtonType,
   ChipType,
-  TransactionType
+  TransactionType,
+  CardSelectType
 } from '@web3modal/ui/src/utils/TypesUtil'
 
 export const colorOptions: ColorType[] = [
@@ -116,6 +117,9 @@ export const walletImagesOptions = [
 export const walletImageSrc =
   'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7a33d7f1-3d12-4b5c-f3ee-5cd83cb1b500?projectId=a8d876c6f91c3748db621583fad358f1'
 
+export const networkImageSrc =
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=a8d876c6f91c3748db621583fad358f1'
+
 export const externalLink = 'https://www.fireblocks.com'
 
 export const gridItemsOptions: GridItemsType[] = ['center', 'end', 'start', 'stretch']
@@ -156,3 +160,5 @@ export const transactionOptions: TransactionType[] = [
   'swapped',
   'withdrawed'
 ]
+
+export const cardSelectOptions: CardSelectType[] = ['network', 'wallet']

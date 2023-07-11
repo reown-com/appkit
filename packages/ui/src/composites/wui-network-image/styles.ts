@@ -2,19 +2,12 @@ import { css } from 'lit'
 
 export default css`
   :host {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    row-gap: var(--wui-spacing-xs);
-    padding: 8px 10px;
-    background-color: var(--wui-overlay-002);
-    border-radius: var(--wui-border-radius-xs);
     position: relative;
-  }
-
-  wui-shimmer[type='network'] {
-    border: none;
+    border-radius: inherit;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 48px;
     height: 54px;
     -webkit-clip-path: var(--wui-path-network);
@@ -23,13 +16,25 @@ export default css`
 
   svg {
     position: absolute;
-    width: 48px;
-    height: 54px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     z-index: 1;
   }
 
   svg > path {
     stroke: var(--wui-overlay-010);
-    stroke-width: 1px;
+    stroke-width: 2px;
+  }
+
+  wui-image {
+    width: 100%;
+    height: 100%;
+  }
+
+  wui-icon {
+    width: 24px;
+    height: 24px;
   }
 `
