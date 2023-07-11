@@ -1,9 +1,12 @@
 import { ConnectionController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import styles from './styles'
 
 @customElement('w3m-connecting-view')
 export class W3mConnectingView extends LitElement {
+  public static styles = styles
+
   // -- Members ------------------------------------------- //
   private readonly connector = RouterController.state.data?.connector
 
@@ -19,8 +22,23 @@ export class W3mConnectingView extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" padding="l" gap="xs" alignItems="center">
-        <wui-loading-thumbnail></wui-loading-thumbnail>
+      <wui-flex
+        flexDirection="column"
+        alignItems="center"
+        .padding=${['3xl', 'l', '3xl', 'l'] as const}
+        gap="xl"
+      >
+        <wui-flex justifyContent="center" alignItems="center" id="thumbnail">
+          <wui-loading-thumbnail></wui-loading-thumbnail>
+          <wui-wallet-image size="lg"></wui-wallet-image>
+        </wui-flex>
+
+        <wui-flex flexDirection="column" alignItems="center" gap="xs">
+          <wui-text variant="paragraph-500" color="fg-100">Continue in MetaMask</wui-text>
+          <wui-text variant="small-500" color="fg-200">
+            Accept connection request in the wallet
+          </wui-text>
+        </wui-flex>
       </wui-flex>
     `
   }
