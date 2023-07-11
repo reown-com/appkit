@@ -14,7 +14,8 @@ export default css`
     flex: 1;
   }
 
-  button:disabled > wui-text:nth-child(3) {
-    opacity: 0.6;
+  button:disabled > wui-tag {
+    background-color: var(--wui-overlay-010);
+    color: var(--wui-color-fg-300);
   }
 `
