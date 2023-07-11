@@ -28,7 +28,6 @@ export default css`
 
     button:active:enabled {
       background-color: var(--wui-color-fg-225);
-      /* border: 1px solid var(--wui-color-blue-100); */
     }
   }
 `
