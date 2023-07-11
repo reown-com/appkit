@@ -1,6 +1,6 @@
 import { ConnectionController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, state } from 'lit/decorators.js'
 import styles from './styles'
 
 @customElement('w3m-connecting-view')
@@ -9,6 +9,9 @@ export class W3mConnectingView extends LitElement {
 
   // -- Members ------------------------------------------- //
   private readonly connector = RouterController.state.data?.connector
+
+  // -- State & Properties -------------------------------- //
+  @state() private error = false
 
   public constructor() {
     super()
@@ -21,23 +24,32 @@ export class W3mConnectingView extends LitElement {
       throw new Error('w3m-connecting-view: No connector provided')
     }
 
+    const subLabel = this.error ? 'Connection declined' : 'Accept connection request in the wallet'
+    const subLabelColor = this.error ? 'error-100' : 'fg-200'
+
     return html`
       <wui-flex
+        data-error=${this.error}
         flexDirection="column"
         alignItems="center"
         .padding=${['3xl', 'l', '3xl', 'l'] as const}
         gap="xl"
       >
-        <wui-flex justifyContent="center" alignItems="center" id="thumbnail">
-          <wui-loading-thumbnail></wui-loading-thumbnail>
+        <wui-flex justifyContent="center" alignItems="center">
           <wui-wallet-image size="lg"></wui-wallet-image>
+          ${this.error ? null : html`<wui-loading-thumbnail></wui-loading-thumbnail>`}
+          <wui-icon-box
+            backgroundColor="error-100"
+            background="opaque"
+            iconColor="error-100"
+            icon="close"
+            border
+          ></wui-icon-box>
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
           <wui-text variant="paragraph-500" color="fg-100">Continue in MetaMask</wui-text>
-          <wui-text variant="small-500" color="fg-200">
-            Accept connection request in the wallet
-          </wui-text>
+          <wui-text variant="small-500" color=${subLabelColor}>${subLabel}</wui-text>
         </wui-flex>
       </wui-flex>
     `
@@ -45,8 +57,13 @@ export class W3mConnectingView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private async onConnect() {
-    if (this.connector) {
-      await ConnectionController.connectExternal(this.connector.id)
+    try {
+      this.error = false
+      if (this.connector) {
+        await ConnectionController.connectExternal(this.connector.id)
+      }
+    } catch {
+      this.error = true
     }
   }
 }
