@@ -4,6 +4,7 @@ export * from './src/components/wui-image'
 export * from './src/components/wui-shimmer'
 export * from './src/components/wui-text'
 
+export * from './src/composites/wui-account-entry'
 export * from './src/composites/wui-all-wallets-image'
 export * from './src/composites/wui-button'
 export * from './src/composites/wui-card-select'

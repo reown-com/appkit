@@ -10,7 +10,7 @@ export class WuiIconBox extends LitElement {
   public static styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: Exclude<SizeType, 'inherit' | 'xs' | 'xxs'> = 'md'
+  @property() public size: Exclude<SizeType, 'inherit' | 'xxs'> = 'md'
 
   @property() public backgroundColor: ColorType = 'blue-100'
 
@@ -30,6 +30,9 @@ export class WuiIconBox extends LitElement {
         iconSize = 'lg'
         break
       case 'md':
+        iconSize = 'md'
+        break
+      case 'sm':
         iconSize = 'xs'
         break
       default:

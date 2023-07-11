@@ -46,8 +46,9 @@ export const rootStyles = css`
     --wui-border-radius-l: 36px;
     --wui-border-radius-3xl: 80px;
 
-    --wui-icon-box-size-sm: 20px;
-    --wui-icon-box-size-md: 24px;
+    --wui-icon-box-size-xs: 20px;
+    --wui-icon-box-size-sm: 24px;
+    --wui-icon-box-size-md: 32px;
     --wui-icon-box-size-lg: 40px;
 
     --wui-icon-size-inherit: inherit;
@@ -109,6 +110,8 @@ export const rootStyles = css`
     --wui-color-blue-090: #59aaff;
     --wui-color-blue-080: #6cb4ff;
     --wui-color-blue-015: rgba(71, 161, 255, 0.15);
+    --wui-color-blue-010: rgba(71, 161, 255, 0.1);
+    --wui-color-blue-005: rgba(71, 161, 255, 0.05);
 
     --wui-color-fg-100: #e4e7e7;
     --wui-color-fg-125: #d0d5d5;
@@ -159,6 +162,8 @@ export const rootStyles = css`
     --wui-color-blue-090: #2d7dd2;
     --wui-color-blue-080: #2978cc;
     --wui-color-blue-015: rgba(51, 150, 255, 0.15);
+    --wui-color-blue-010: rgba(51, 150, 255, 0.1);
+    --wui-color-blue-005: rgba(51, 150, 255, 0.05);
 
     --wui-color-fg-100: #141414;
     --wui-color-fg-125: #2d3131;
@@ -247,7 +252,8 @@ export const elementStyles = css`
   button:disabled > wui-wallet-image,
   button:disabled > wui-all-wallets-image,
   button:disabled > wui-network-image,
-  button:disabled > wui-image {
+  button:disabled > wui-image,
+  button:disabled > wui-icon-box {
     filter: grayscale(1);
   }
 

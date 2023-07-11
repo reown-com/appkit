@@ -80,10 +80,12 @@ export type IconType =
   | 'arrowBottom'
   | 'arrowTop'
   | 'checkmark'
+  | 'chevronRight'
   | 'clock'
   | 'close'
   | 'copy'
   | 'cursor'
+  | 'disconnect'
   | 'externalLink'
   | 'search'
   | 'swap'
@@ -114,3 +116,5 @@ export type CardSelectType = 'network' | 'wallet'
 export type BackgroundType = 'opaque' | 'transparent'
 
 export type TagType = 'main' | 'shade'
+
+export type AccountEntryType = 'icon' | 'image'

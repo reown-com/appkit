@@ -23,7 +23,7 @@ export class WuiSnackbar extends LitElement {
   public render() {
     return html`
       <wui-icon-box
-        size="md"
+        size="sm"
         iconColor=${this.iconColor}
         backgroundColor=${this.backgroundColor}
         icon=${this.icon}
