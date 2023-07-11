@@ -14,9 +14,9 @@ export default css`
     display: block;
   }
 
-  wui-image[type='minted'],
-  wui-image[type='nftSent'],
-  wui-image[type='bought'] {
+  wui-image[data-type='minted'],
+  wui-image[data-type='nftSent'],
+  wui-image[data-type='bought'] {
     border-radius: var(--wui-border-radius-xs);
     order: 1px solid transparent;
   }

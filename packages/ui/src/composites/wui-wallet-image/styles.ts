@@ -26,23 +26,23 @@ export default css`
     pointer-events: none;
   }
 
-  wui-icon[parentSize='inherit'] {
+  wui-icon[data-parent-size='inherit'] {
     width: 75%;
     height: 75%;
     align-items: center;
   }
 
-  wui-icon[parentSize='sm'] {
+  wui-icon[data-parent-size='sm'] {
     width: 18px;
     height: 18px;
   }
 
-  wui-icon[parentSize='md'] {
+  wui-icon[data-parent-size='md'] {
     width: 24px;
     height: 24px;
   }
 
-  wui-icon[parentSize='lg'] {
+  wui-icon[data-parent-size='lg'] {
     width: 42px;
     height: 42px;
   }

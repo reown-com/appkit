@@ -42,7 +42,7 @@ export class WuiWalletImage extends LitElement {
     }
 
     return html`<wui-icon
-      parentSize=${this.size}
+      data-parent-size=${this.size}
       size="inherit"
       color="inherit"
       name="walletPlaceholder"
