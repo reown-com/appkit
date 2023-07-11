@@ -26,7 +26,8 @@ export class W3mAndroidWalletSelection extends LitElement {
     const wallets = [...recomendedWallets, ...recomendedWallets]
     const external = TemplateUtil.externalWalletsTemplate()
     const injected = TemplateUtil.installedInjectedWalletsTemplate()
-    const isOther = [...injected, ...external].length > 0
+    const manual = TemplateUtil.manualWalletsTemplate()
+    const isOther = [...injected, ...external, ...manual].length > 0
     const recomendedCount = CoreUtil.RECOMMENDED_WALLET_AMOUNT * 2
 
     return html`
