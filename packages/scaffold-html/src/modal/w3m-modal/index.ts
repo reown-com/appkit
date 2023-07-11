@@ -7,7 +7,7 @@ import styles from './styles'
 
 @customElement('w3m-modal')
 export class W3mModal extends LitElement {
-  public static styles = [styles]
+  public static styles = styles
 
   // -- State & Properties -------------------------------- //
   @state() private open = ModalController.state.open
