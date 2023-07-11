@@ -14,9 +14,9 @@ export default css`
     display: block;
   }
 
-  wui-image[type='minted'],
-  wui-image[type='nftSent'],
-  wui-image[type='bought'] {
+  wui-image[data-type='minted'],
+  wui-image[data-type='nftSent'],
+  wui-image[data-type='bought'] {
     border-radius: var(--wui-border-radius-xs);
     order: 1px solid transparent;
   }
@@ -26,17 +26,5 @@ export default css`
     right: 0;
     bottom: 0;
     transform: translate(20%, 20%);
-  }
-
-  wui-icon-box[backgroundColor='blue-100'] {
-    background-color: #20303f;
-  }
-
-  wui-icon-box[backgroundColor='error-100'] {
-    background-color: #3c2426;
-  }
-
-  wui-icon-box[backgroundColor='success-100'] {
-    background-color: #1b3925;
   }
 `

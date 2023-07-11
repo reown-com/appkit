@@ -52,11 +52,11 @@ export class WuiListSelect extends LitElement {
     if (!this.showAllWallets && this.imageSrc) {
       return html`<wui-wallet-image
         size="sm"
-        src=${this.imageSrc}
-        alt=${this.name}
+        imageSrc=${this.imageSrc}
+        name=${this.name}
       ></wui-wallet-image>`
     } else if (!this.showAllWallets && !this.imageSrc) {
-      return html`<wui-wallet-image size="sm" alt=${this.name}></wui-wallet-image>`
+      return html`<wui-wallet-image size="sm" name=${this.name}></wui-wallet-image>`
     }
 
     return null

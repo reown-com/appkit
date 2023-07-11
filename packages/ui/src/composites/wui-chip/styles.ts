@@ -11,84 +11,84 @@ export default css`
     overflow: hidden;
   }
 
-  a[variant='fill'] {
+  a[data-variant='fill'] {
     color: var(--wui-color-inverse-100);
     background-color: var(--wui-color-blue-100);
   }
 
-  a[variant='shade'] {
+  a[data-variant='shade'] {
     background-color: transparent;
     background-color: var(--wui-overlay-010);
     color: var(--wui-color-fg-200);
   }
 
-  a[variant='transparent'] {
+  a[data-variant='transparent'] {
     column-gap: var(--wui-spacing-xxs);
     background-color: transparent;
     padding: 7px 12px 7px 10px;
     color: var(--wui-color-fg-150);
   }
 
-  a[variant='transparent']:has(wui-text:first-child) {
+  a[data-variant='transparent']:has(wui-text:first-child) {
     padding: 7px 12px;
   }
 
-  a[variant='fill'],
-  a[variant='shade'] {
+  a[data-variant='fill'],
+  a[data-variant='shade'] {
     column-gap: var(--wui-spacing-xs);
     padding: 8.5px 14px 9.5px 8px;
   }
 
-  a[variant='fill']:has(wui-text:first-child),
-  a[variant='shade']:has(wui-text:first-child) {
+  a[data-variant='fill']:has(wui-text:first-child),
+  a[data-variant='shade']:has(wui-text:first-child) {
     padding: 8.5px 14px 9.5px 14px;
   }
 
-  a[variant='fill'] > wui-image,
-  a[variant='shade'] > wui-image {
+  a[data-variant='fill'] > wui-image,
+  a[data-variant='shade'] > wui-image {
     width: 24px;
     height: 24px;
   }
 
-  a[variant='fill'] > wui-image {
+  a[data-variant='fill'] > wui-image {
     border: 1px solid var(--wui-color-blue-090);
   }
 
-  a[variant='shade'] > wui-image {
+  a[data-variant='shade'] > wui-image {
     border: 1px solid var(--wui-overlay-010);
   }
 
-  a[variant='fill'] > wui-icon,
-  a[variant='shade'] > wui-icon {
+  a[data-variant='fill'] > wui-icon,
+  a[data-variant='shade'] > wui-icon {
     width: 12px;
     height: 12px;
   }
 
-  a[variant='transparent'] > wui-image {
+  a[data-variant='transparent'] > wui-image {
     width: 14px;
     height: 14px;
   }
 
-  a[variant='transparent'] > wui-icon {
+  a[data-variant='transparent'] > wui-icon {
     width: 10px;
     height: 10px;
   }
 
-  a[variant='fill']:focus {
+  a[data-variant='fill']:focus {
     border: 1px solid var(--wui-overlay-010);
     background-color: var(--wui-color-blue-080);
   }
 
   @media (hover: hover) and (pointer: fine) {
-    a[variant='fill']:hover {
+    a[data-variant='fill']:hover {
       background-color: var(--wui-color-blue-090);
     }
 
-    a[variant='shade']:hover {
+    a[data-variant='shade']:hover {
       background-color: var(--wui-overlay-015);
     }
 
-    a[variant='transparent']:hover {
+    a[data-variant='transparent']:hover {
       background-color: var(--wui-overlay-005);
     }
   }

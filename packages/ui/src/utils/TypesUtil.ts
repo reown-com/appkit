@@ -110,3 +110,5 @@ export type TransactionType =
 export type TransactionIconType = 'arrowBottom' | 'arrowTop' | 'swap'
 
 export type CardSelectType = 'network' | 'wallet'
+
+export type BackgroundType = 'opaque' | 'transparent'

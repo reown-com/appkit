@@ -1,7 +1,7 @@
 import { css } from 'lit'
 
 export default css`
-  div {
+  :host {
     position: relative;
     border-radius: inherit;
     overflow: hidden;
@@ -9,9 +9,12 @@ export default css`
     display: flex;
     justify-content: center;
     align-items: center;
+    width: var(--local-size);
+    height: var(--local-size);
+    border-radius: var(--local-border-radius);
   }
 
-  div::after {
+  :host::after {
     content: '';
     position: absolute;
     top: 0;
@@ -23,46 +26,23 @@ export default css`
     pointer-events: none;
   }
 
-  .wui-size-inherit {
-    width: inherit;
-    height: inherit;
-  }
-
-  .wui-size-inherit > wui-icon {
+  wui-icon[data-parent-size='inherit'] {
     width: 75%;
     height: 75%;
     align-items: center;
   }
 
-  .wui-size-sm {
-    border-radius: var(--wui-border-radius-xxs);
-    width: 40px;
-    height: 40px;
-  }
-
-  .wui-size-sm > wui-icon {
+  wui-icon[data-parent-size='sm'] {
     width: 18px;
     height: 18px;
   }
 
-  .wui-size-md {
-    border-radius: var(--wui-border-radius-xs);
-    width: 56px;
-    height: 56px;
-  }
-
-  .wui-size-md > wui-icon {
+  wui-icon[data-parent-size='md'] {
     width: 24px;
     height: 24px;
   }
 
-  .wui-size-lg {
-    border-radius: var(--wui-border-radius-m);
-    width: 80px;
-    height: 80px;
-  }
-
-  .wui-size-lg > wui-icon {
+  wui-icon[data-parent-size='lg'] {
     width: 42px;
     height: 42px;
   }
