@@ -41,13 +41,13 @@ export class W3mModal extends LitElement {
   }
 
   private async onClose() {
-    await animate(this, { opacity: [1, 0] }).finished
+    await animate(this, { opacity: [1, 0] }, { duration: 0.2 }).finished
     this.open = false
   }
 
   private onOpen() {
     this.open = true
-    animate(this, { opacity: [0, 1] })
+    animate(this, { opacity: [0, 1] }, { duration: 0.2 })
   }
 }
 

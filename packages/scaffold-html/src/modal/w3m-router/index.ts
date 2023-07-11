@@ -55,9 +55,9 @@ export class W3mRouter extends LitElement {
   }
 
   private async onRouteChange(newView: RouterControllerState['view']) {
-    await animate(this, { opacity: [1, 0], scale: [1, 1.02] }, { duration: 0.15 }).finished
+    await animate(this, { opacity: [1, 0], scale: [1, 1.05] }, { duration: 0.15 }).finished
     this.view = newView
-    animate(this, { opacity: [0, 1], scale: [1.02, 1] }, { duration: 0.35 })
+    animate(this, { opacity: [0, 1], scale: [0.95, 1] }, { duration: 0.3 })
   }
 }
 

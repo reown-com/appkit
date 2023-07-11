@@ -42,6 +42,6 @@ export default css`
   }
 
   [data-error='true'] wui-flex:first-child:not(:only-child) {
-    animation: shake 300ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    animation: shake 250ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   }
 `
