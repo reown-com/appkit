@@ -18,7 +18,11 @@ export class W3mConnectingView extends LitElement {
       throw new Error('w3m-connecting-view: No connector provided')
     }
 
-    return html`<wui-flex flexDirection="column" padding="l" gap="xs">Hello Connecting</wui-flex>`
+    return html`
+      <wui-flex flexDirection="column" padding="l" gap="xs" alignItems="center">
+        <wui-loading-thumbnail></wui-loading-thumbnail>
+      </wui-flex>
+    `
   }
 
   // -- Private ------------------------------------------- //
