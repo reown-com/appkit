@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { danger, fail, warn } from 'danger'
+import { danger, fail, message, warn } from 'danger'
 
 // -- Constants ---------------------------------------------------------------
 const TYPE_COMMENT = `// -- Types --------------------------------------------- //`
@@ -70,8 +70,10 @@ async function checkUiPackage() {
       fail(`${f} is missing \`${STATE_PROPERTIES_COMMENT}\` comment`)
     }
 
-    if (diff?.added.includes('\nprivate ') && !diff.added.includes(PRIVATE_COMMENT)) {
-      fail(`${f} is missing \`${PRIVATE_COMMENT}\` comment`)
+    if (diff?.added.includes('private ') && !diff.added.includes(PRIVATE_COMMENT)) {
+      message(
+        `${f} is missing \`${PRIVATE_COMMENT}\` comment, but seems to have private members. Check if this is correct`
+      )
     }
 
     if (!diff?.added.includes(`@customElement('wui-`)) {
@@ -175,8 +177,10 @@ async function checkScaffoldHtmlPackage() {
       fail(`${f} is missing \`${STATE_PROPERTIES_COMMENT}\` comment`)
     }
 
-    if (diff?.added.includes('\nprivate ') && !diff.added.includes(PRIVATE_COMMENT)) {
-      fail(`${f} is missing \`${PRIVATE_COMMENT}\` comment`)
+    if (diff?.added.includes('private ') && !diff.added.includes(PRIVATE_COMMENT)) {
+      message(
+        `${f} is missing \`${PRIVATE_COMMENT}\` comment, but seems to have private members. Check if this is correct`
+      )
     }
 
     if (!diff?.added.includes(`@customElement('w3m-`)) {
