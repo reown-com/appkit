@@ -3,7 +3,7 @@ import '@web3modal/ui/src/composites/wui-icon-box'
 import type { WuiIconBox } from '@web3modal/ui/src/composites/wui-icon-box'
 import { html } from 'lit'
 
-import { colorOptions, iconOptions } from '../../utils/PresetUtils'
+import { backgroundOptions, colorOptions, iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiIconBox>
 
@@ -14,6 +14,7 @@ export default {
     backgroundColor: 'blue-100',
     iconColor: 'blue-100',
     icon: 'copy',
+    background: 'transparent',
     border: false
   },
 
@@ -35,6 +36,10 @@ export default {
       options: iconOptions,
       control: { type: 'select' }
     },
+    background: {
+      options: backgroundOptions,
+      control: { type: 'select' }
+    },
     border: {
       control: { type: 'boolean' }
     }
@@ -48,6 +53,7 @@ export const Default: Component = {
       iconColor=${args.iconColor}
       backgroundColor=${args.backgroundColor}
       icon=${args.icon}
+      background=${args.background}
       ?border=${args.border}
     ></wui-icon-box>`
 }

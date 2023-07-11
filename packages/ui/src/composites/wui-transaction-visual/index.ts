@@ -17,7 +17,7 @@ export class WuiTransactionVisual extends LitElement {
 
   // -- Render -------------------------------------------- //
   public render() {
-    let color: 'blue-100' | 'error-100' | 'success-100' = 'blue-100'
+    let color: 'blue-100' | 'error-100' = 'blue-100'
     let icon: TransactionIconType = 'arrowTop'
     const outgoing: TransactionType[] = ['bought', 'buy', 'deposited', 'cryptoSent', 'minted']
     const incoming: TransactionType[] = ['withdrawed', 'received', 'nftSent']
@@ -26,7 +26,7 @@ export class WuiTransactionVisual extends LitElement {
       color = 'error-100'
       icon = 'arrowBottom'
     } else if (incoming.includes(this.type)) {
-      color = 'success-100'
+      color = 'blue-100'
       icon = 'arrowTop'
     } else {
       color = 'blue-100'
@@ -38,6 +38,7 @@ export class WuiTransactionVisual extends LitElement {
         size="sm"
         iconColor=${color}
         backgroundColor=${color}
+        background="opaque"
         icon=${icon}
         ?border=${true}
       ></wui-icon-box>`

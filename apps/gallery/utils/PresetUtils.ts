@@ -17,7 +17,8 @@ import type {
   ButtonType,
   ChipType,
   TransactionType,
-  CardSelectType
+  CardSelectType,
+  BackgroundType
 } from '@web3modal/ui/src/utils/TypesUtil'
 
 export const colorOptions: ColorType[] = [
@@ -162,3 +163,5 @@ export const transactionOptions: TransactionType[] = [
 ]
 
 export const cardSelectOptions: CardSelectType[] = ['network', 'wallet']
+
+export const backgroundOptions: BackgroundType[] = ['opaque', 'transparent']

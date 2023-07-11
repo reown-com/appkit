@@ -89,7 +89,13 @@ export const rootStyles = css`
 
     --wui-cover: rgba(0, 0, 0, 0.3);
 
+    --wui-box-shadow-blue: rgba(51, 150, 255, 0.16);
+
     --wui-z-index: 89;
+
+    --wui-path-network: path(
+      'M20.041 1.061a7.915 7.915 0 0 1 7.918 0l16.082 9.29A7.922 7.922 0 0 1 48 17.21v18.578c0 2.83-1.51 5.445-3.959 6.86l-16.082 9.29a7.915 7.915 0 0 1-7.918 0l-16.082-9.29A7.922 7.922 0 0 1 0 35.79V17.211c0-2.83 1.51-5.445 3.959-6.86l16.082-9.29Z'
+    );
   }
 
   [data-wui-theme='dark'] {
@@ -137,11 +143,8 @@ export const rootStyles = css`
     --wui-overlay-025: rgba(255, 255, 255, 0.25);
     --wui-overlay-030: rgba(255, 255, 255, 0.3);
 
-    --wui-box-shadow-blue: rgba(71, 161, 255, 0.16);
-
-    --wui-path-network: path(
-      'M20.041 1.061a7.915 7.915 0 0 1 7.918 0l16.082 9.29A7.922 7.922 0 0 1 48 17.21v18.578c0 2.83-1.51 5.445-3.959 6.86l-16.082 9.29a7.915 7.915 0 0 1-7.918 0l-16.082-9.29A7.922 7.922 0 0 1 0 35.79V17.211c0-2.83 1.51-5.445 3.959-6.86l16.082-9.29Z'
-    );
+    --wui-icon-box-bg-error-100: #3c2426;
+    --wui-icon-box-bg-blue-100: #20303f;
   }
 
   [data-wui-theme='light'] {
@@ -189,7 +192,8 @@ export const rootStyles = css`
     --wui-overlay-025: rgba(0, 0, 0, 0.25);
     --wui-overlay-030: rgba(0, 0, 0, 0.3);
 
-    --wui-box-shadow-blue: rgba(51, 150, 255, 0.16);
+    --wui-icon-box-bg-error-100: #f4dfdd;
+    --wui-icon-box-bg-blue-100: #d9ecfb;
   }
 `
 
