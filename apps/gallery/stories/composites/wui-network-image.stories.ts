@@ -9,12 +9,12 @@ type Component = Meta<WuiNetworkImage>
 export default {
   title: 'Composites/wui-network-image',
   args: {
-    src: networkImageSrc,
-    networkName: 'Ethereum'
+    imageSrc: networkImageSrc,
+    name: 'Ethereum'
   }
 } as Component
 
 export const Default: Component = {
   render: args =>
-    html`<wui-network-image .src=${args.src} alt=${args.networkName}></wui-network-image>`
+    html`<wui-network-image .imageSrc=${args.imageSrc} alt=${args.name}></wui-network-image>`
 }

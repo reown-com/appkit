@@ -5,6 +5,7 @@ import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import '../wui-wallet-image'
 import '../wui-network-image'
 import styles from './styles'
+import type { CardSelectType } from '../../utils/TypesUtil'
 
 @customElement('wui-card-select')
 export class WuiCardSelect extends LitElement {
@@ -13,9 +14,9 @@ export class WuiCardSelect extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public imageSrc = ''
 
-  @property() public name = ''
+  @property() public name = 'unknown'
 
-  @property() public type = 'wallet'
+  @property() public type: CardSelectType = 'wallet'
 
   @property({ type: Boolean }) public disabled = false
 
@@ -31,13 +32,16 @@ export class WuiCardSelect extends LitElement {
 
   private imageTemplate() {
     if (this.type === 'network') {
-      return html`<wui-network-image src=${this.imageSrc} alt=${this.name}></wui-network-image>`
+      return html`<wui-network-image
+        imageSrc=${this.imageSrc}
+        name=${this.name}
+      ></wui-network-image>`
     }
 
     return html`<wui-wallet-image
       size="md"
-      src=${this.imageSrc}
-      alt=${this.name}
+      imageSrc=${this.imageSrc}
+      name=${this.name}
     ></wui-wallet-image>`
   }
 }

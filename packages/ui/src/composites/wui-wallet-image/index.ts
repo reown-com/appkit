@@ -13,9 +13,9 @@ export class WuiWalletImage extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public size: Exclude<SizeType, 'xs' | 'xxs'> = 'md'
 
-  @property() public walletName = ''
+  @property() public name = ''
 
-  @property() public src?: string
+  @property() public imageSrc?: string
 
   // -- Render -------------------------------------------- //
   public render() {
@@ -26,8 +26,8 @@ export class WuiWalletImage extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateVisual() {
-    if (this.src) {
-      return html`<wui-image src=${this.src} alt=${this.walletName}></wui-image>`
+    if (this.imageSrc) {
+      return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image>`
     }
 
     return html`<wui-icon size="inherit" color="inherit" name="walletPlaceholder"></wui-icon>`
