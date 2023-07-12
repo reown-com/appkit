@@ -27,9 +27,9 @@ export class W3mConnectingExternalView extends LitElement {
       throw new Error('w3m-connecting-view: No connector provided')
     }
 
+    const label = `Continue in ${this.connector.name}`
     const subLabel = this.error ? 'Connection declined' : 'Accept connection request in the wallet'
     const subLabelColor = this.error ? 'error-100' : 'fg-200'
-    const title = `Continue in ${this.connector.name}`
 
     return html`
       <wui-flex
@@ -53,7 +53,7 @@ export class W3mConnectingExternalView extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text variant="paragraph-500" color="fg-100">${title}</wui-text>
+          <wui-text variant="paragraph-500" color="fg-100">${label}</wui-text>
           <wui-text variant="small-500" color=${subLabelColor}>${subLabel}</wui-text>
         </wui-flex>
 
