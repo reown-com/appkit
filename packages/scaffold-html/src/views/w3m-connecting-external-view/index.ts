@@ -4,8 +4,8 @@ import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
 import styles from './styles'
 
-@customElement('w3m-connecting-view')
-export class W3mConnectingView extends LitElement {
+@customElement('w3m-connecting-external-view')
+export class W3mConnectingExternalView extends LitElement {
   public static styles = styles
 
   // -- Members ------------------------------------------- //
@@ -41,7 +41,7 @@ export class W3mConnectingView extends LitElement {
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-wallet-image size="lg"></wui-wallet-image>
-          ${this.thumbnailTemplate()}
+          ${this.error ? html`<wui-loading-thumbnail></wui-loading-thumbnail>` : null}
           <wui-icon-box
             backgroundColor="error-100"
             background="opaque"
@@ -91,18 +91,10 @@ export class W3mConnectingView extends LitElement {
       animate(retryButton, { opacity: [0, 1] })
     }
   }
-
-  private thumbnailTemplate() {
-    if (this.error) {
-      return null
-    }
-
-    return html`<wui-loading-thumbnail></wui-loading-thumbnail>`
-  }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-connecting-view': W3mConnectingView
+    'w3m-connecting-external-view': W3mConnectingExternalView
   }
 }
