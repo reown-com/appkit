@@ -52,5 +52,6 @@ function tintColor(rgb: [number, number, number], tint: number): [number, number
   const tintedR = Math.round(r + (255 - r) * tint)
   const tintedG = Math.round(g + (255 - g) * tint)
   const tintedB = Math.round(b + (255 - b) * tint)
+
   return [tintedR, tintedG, tintedB]
 }
