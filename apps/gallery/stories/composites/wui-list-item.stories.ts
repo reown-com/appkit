@@ -1,15 +1,14 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-account-entry'
+import '@web3modal/ui/src/composites/wui-list-item'
 import '../../components/gallery-container'
-import '@web3modal/ui/src/layout/wui-flex'
-import type { WuiAccountEntry } from '@web3modal/ui/src/composites/wui-account-entry'
+import type { WuiListItem } from '@web3modal/ui/src/composites/wui-list-item'
 import { html } from 'lit'
 import { accountEntryOptions, iconOptions, networkImageSrc } from '../../utils/PresetUtils'
 
-type Component = Meta<WuiAccountEntry>
+type Component = Meta<WuiListItem>
 
 export default {
-  title: 'Composites/wui-account-entry',
+  title: 'Composites/wui-list-item',
   args: {
     disabled: false,
     icon: 'swap',
@@ -40,7 +39,7 @@ export default {
 export const Default: Component = {
   render: args =>
     html` <gallery-container width="336">
-      <wui-account-entry
+      <wui-list-item
         variant=${args.variant}
         .icon=${args.icon}
         .imageSrc=${args.imageSrc}
@@ -48,10 +47,8 @@ export const Default: Component = {
         .iconVariant=${args.iconVariant}
         ?disabled=${args.disabled}
       >
-        <wui-flex gap="3xs">
-          <wui-text variant="paragraph-500" color="fg-100">0.527 ETH</wui-text>
-          <wui-text variant="paragraph-500" color="fg-200">607.38 USD</wui-text>
-        </wui-flex>
-      </wui-account-entry>
+        <wui-text variant="paragraph-500" color="fg-100">0.527 ETH</wui-text>
+        <wui-text variant="paragraph-500" color="fg-200">607.38 USD</wui-text>
+      </wui-list-item>
     </gallery-container>`
 }

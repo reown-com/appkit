@@ -10,9 +10,7 @@ export default css`
     color: var(--wui-color-fg-250);
   }
 
-  button > ::slotted(wui-text),
-  button > ::slotted(wui-flex) {
-    display: flex;
+  button > wui-flex {
     flex: 1;
   }
 

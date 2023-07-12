@@ -4,12 +4,13 @@ import '../../components/wui-text'
 import '../../components/wui-icon'
 import '../../components/wui-image'
 import '../wui-icon-box'
+import '../../layout/wui-flex'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
 import type { AccountEntryType, IconType } from '../../utils/TypesUtil'
 
-@customElement('wui-account-entry')
-export class WuiAccountEntry extends LitElement {
+@customElement('wui-list-item')
+export class WuiListItem extends LitElement {
   public static styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
@@ -30,7 +31,9 @@ export class WuiAccountEntry extends LitElement {
     return html`
       <button ?disabled=${this.disabled}>
         ${this.visualTemplate()}
-        <slot></slot>
+        <wui-flex gap="3xs">
+          <slot></slot>
+        </wui-flex>
         <wui-icon size="inherit" color="inherit" name="chevronRight"></wui-icon>
       </button>
     `
@@ -59,6 +62,6 @@ export class WuiAccountEntry extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-account-entry': WuiAccountEntry
+    'wui-list-item': WuiListItem
   }
 }
