@@ -1,8 +1,15 @@
 import { css } from 'lit'
 
 export default css`
+  :host {
+    display: block;
+    width: var(--wui-box-size-md);
+    height: var(--wui-box-size-md);
+  }
+
   svg {
-    width: 100px;
+    width: var(--wui-box-size-md);
+    height: var(--wui-box-size-md);
     transition: all var(--wui-ease-in-power-3) var(--wui-duration-lg);
   }
 
@@ -10,8 +17,8 @@ export default css`
     fill: none;
     stroke: var(--wui-color-blue-100);
     stroke-width: 4px;
-    stroke-dasharray: 92, 245;
-    stroke-dashoffset: 340;
+    stroke-dasharray: 116, 245;
+    stroke-dashoffset: 360;
     stroke-linecap: round;
     animation: dash 1s linear infinite;
   }
