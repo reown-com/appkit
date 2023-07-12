@@ -1,7 +1,7 @@
 import { EventsCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 

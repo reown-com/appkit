@@ -1,7 +1,7 @@
 import { AccountCtrl } from '@web3modal/core'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 

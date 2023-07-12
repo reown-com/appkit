@@ -1,7 +1,7 @@
 import { AccountCtrl, ConfigCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-core-button')
 export class W3mCoreButton extends LitElement {
