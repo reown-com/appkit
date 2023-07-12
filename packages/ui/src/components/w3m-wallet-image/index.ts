@@ -11,7 +11,9 @@ export class W3mWalletImage extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public walletId = ''
+
   @property() public imageId?: string = undefined
+
   @property() public imageUrl?: string = undefined
 
   // -- render ------------------------------------------------------- //

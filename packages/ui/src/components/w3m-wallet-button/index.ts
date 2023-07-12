@@ -11,11 +11,17 @@ export class W3mWalletButton extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public onClick: () => void = () => null
+
   @property() public name = ''
+
   @property() public walletId = ''
+
   @property() public label?: string = undefined
+
   @property() public imageId?: string = undefined
+
   @property() public installed? = false
+
   @property() public recent? = false
 
   // -- private ------------------------------------------------------ //

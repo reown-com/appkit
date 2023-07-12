@@ -10,8 +10,11 @@ export class W3mNetworkButton extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public onClick: () => void = () => null
+
   @property() public name = ''
+
   @property() public chainId = ''
+
   @property() public unsupported = false
 
   // -- render ------------------------------------------------------- //

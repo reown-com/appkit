@@ -19,6 +19,7 @@ export class W3mSelectNetworkView extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private connectedChains: string[] | 'ALL' = 'ALL'
+
   @state() private isUnsupportedChains = false
 
   // -- lifecycle ---------------------------------------------------- //
@@ -91,17 +92,16 @@ export class W3mSelectNetworkView extends LitElement {
       <w3m-modal-content>
         <div>
           ${sortedChains?.map(
-            chain =>
-              html`
-                <w3m-network-button
-                  name=${chain.name}
-                  chainId=${chain.id}
-                  .unsupported=${chain.unsupported}
-                  .onClick=${async () => this.onSelectChain(chain)}
-                >
-                  ${chain.name}
-                </w3m-network-button>
-              `
+            chain => html`
+              <w3m-network-button
+                name=${chain.name}
+                chainId=${chain.id}
+                .unsupported=${chain.unsupported}
+                .onClick=${async () => this.onSelectChain(chain)}
+              >
+                ${chain.name}
+              </w3m-network-button>
+            `
           )}
         </div>
       </w3m-modal-content>

@@ -1,6 +1,7 @@
 import { WcConnectionCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -11,7 +12,9 @@ export class W3mWalletConnectQr extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public walletId? = ''
+
   @property() public imageId? = ''
+
   @state() private uri? = ''
 
   // -- lifecycle ---------------------------------------------------- //
@@ -47,8 +50,8 @@ export class W3mWalletConnectQr extends LitElement {
           ? html`<w3m-qrcode
               size="${this.overlayEl.offsetWidth}"
               uri=${this.uri}
-              walletId=${this.walletId}
-              imageId=${this.imageId}
+              walletId=${ifDefined(this.walletId)}
+              imageId=${ifDefined(this.imageId)}
             ></w3m-qrcode>`
           : html`<w3m-spinner></w3m-spinner>`}
       </div>

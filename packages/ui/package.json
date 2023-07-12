@@ -17,12 +17,12 @@
   },
   "dependencies": {
     "@web3modal/core": "2.6.2",
-    "lit": "2.7.5",
+    "lit": "2.7.6",
     "motion": "10.16.2",
     "qrcode": "1.5.3"
   },
   "devDependencies": {
-    "@types/qrcode": "1.5.0",
+    "@types/qrcode": "1.5.1",
     "eslint-plugin-lit": "1.8.3",
     "eslint-plugin-wc": "1.5.0"
   },

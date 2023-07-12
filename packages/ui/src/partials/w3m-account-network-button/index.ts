@@ -1,6 +1,7 @@
 import { OptionsCtrl, RouterCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
@@ -10,6 +11,7 @@ export class W3mAccountNetworkButton extends LitElement {
 
   // -- state & properties ----------------------------------------------- //
   @state() private chainId? = 0
+
   @state() private label? = ''
 
   // -- lifecycle ---------------------------------------------------- //
@@ -44,7 +46,7 @@ export class W3mAccountNetworkButton extends LitElement {
 
     return html`
       <button @click=${this.onClick} ?disabled=${isSwitchNetoworkDisabled}>
-        <w3m-network-image chainId=${this.chainId}></w3m-network-image>
+        <w3m-network-image chainId=${ifDefined(this.chainId)}></w3m-network-image>
         <w3m-text variant="xsmall-regular" color="accent">${this.label}</w3m-text>
       </button>
     `

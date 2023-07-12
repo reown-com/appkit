@@ -46,7 +46,7 @@ export const UiUtil = {
   },
 
   getWalletName(name: string, short = false) {
-    return short ? name.split(' ')[0] : name
+    return short ? UiUtil.truncate(name, 8) : name
   },
 
   getChainIcon(chainId: number | string) {
