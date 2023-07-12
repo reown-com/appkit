@@ -87,6 +87,7 @@ export type IconType =
   | 'cursor'
   | 'disconnect'
   | 'externalLink'
+  | 'mail'
   | 'search'
   | 'swap'
   | 'wallet'

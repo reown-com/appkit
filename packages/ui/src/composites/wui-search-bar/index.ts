@@ -12,11 +12,9 @@ export class WuiSearchBar extends LitElement {
   public static styles = [resetStyles, styles]
 
   // -- state & properties ------------------------------------------- //
-
   public inputComponentRef = createRef<WuiInput>()
 
   // -- render ------------------------------------------------------- //
-
   public render() {
     return html` <wui-input
       ${ref(this.inputComponentRef)}

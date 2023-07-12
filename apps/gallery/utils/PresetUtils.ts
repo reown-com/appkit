@@ -147,6 +147,7 @@ export const iconOptions: IconType[] = [
   'cursor',
   'disconnect',
   'externalLink',
+  'mail',
   'search',
   'swap',
   'wallet',
