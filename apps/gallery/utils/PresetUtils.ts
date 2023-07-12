@@ -123,7 +123,12 @@ export const walletImageSrc =
 export const networkImageSrc =
   'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=a8d876c6f91c3748db621583fad358f1'
 
+export const avatarImageSrc =
+  'https://i.seadn.io/gcs/files/007a5af0d93d561f87c8d026ddd5179e.png?auto=format&dpr=1&w=1000'
+
 export const externalLink = 'https://www.fireblocks.com'
+
+export const address = '0xDBbD65026a07cFbFa1aa92744E4D69951686077d'
 
 export const gridItemsOptions: GridItemsType[] = ['center', 'end', 'start', 'stretch']
 
