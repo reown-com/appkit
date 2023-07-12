@@ -18,9 +18,11 @@ export class WuiIconLink extends LitElement {
 
   // -- Render -------------------------------------------- //
   public render() {
-    return html`<button ?disabled=${this.disabled}>
-      <wui-icon color="inherit" size=${this.size} name=${this.icon}></wui-icon>
-    </button>`
+    return html`
+      <button ?disabled=${this.disabled}>
+        <wui-icon color="inherit" size=${this.size} name=${this.icon}></wui-icon>
+      </button>
+    `
   }
 }
 

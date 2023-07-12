@@ -100,6 +100,8 @@ export const rootStyles = css`
 
     --wui-z-index: 89;
 
+    --wui-box-size-md: 100px;
+
     --wui-path-network: path(
       'M20.041 1.061a7.915 7.915 0 0 1 7.918 0l16.082 9.29A7.922 7.922 0 0 1 48 17.21v18.578c0 2.83-1.51 5.445-3.959 6.86l-16.082 9.29a7.915 7.915 0 0 1-7.918 0l-16.082-9.29A7.922 7.922 0 0 1 0 35.79V17.211c0-2.83 1.51-5.445 3.959-6.86l16.082-9.29Z'
     );
@@ -258,7 +260,13 @@ export const elementStyles = css`
   }
 
   button:focus-visible {
-    background-color: var(--wui-overlay-005);
+    border: 1px solid var(--wui-color-blue-100);
+    -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+    -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+    box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+  }
+
+  a:focus {
     border: 1px solid var(--wui-color-blue-100);
     -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
     -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
@@ -273,18 +281,6 @@ export const elementStyles = css`
     button:active:enabled {
       transition: all var(--wui-ease-out-power-4) var(--wui-duration-sm);
       background-color: var(--wui-overlay-010);
-      border: 1px solid var(--wui-color-blue-100);
-      -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-      -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-      box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    }
-
-    a:focus {
-      background-color: var(--wui-overlay-010);
-      border: 1px solid var(--wui-color-blue-100);
-      -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-      -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-      box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
     }
   }
 
