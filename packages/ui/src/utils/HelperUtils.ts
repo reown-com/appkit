@@ -17,7 +17,7 @@ export function getHostName(url: string) {
   return newUrl.hostname
 }
 
-export function generateAvatarColors(address: string): string {
+export function generateAvatarColors(address: string) {
   const hash = address.toLowerCase().replace(/^0x/iu, '')
   const baseColor = hash.substring(0, 6)
   const rgbColor = hexToRgb(baseColor)

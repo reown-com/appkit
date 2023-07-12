@@ -24,15 +24,19 @@ export class WuiAvatar extends LitElement {
   // -- Private ------------------------------------------- //
   public visualTemplate() {
     if (this.imageSrc && this.alt) {
+      this.dataset.variant = 'image'
+
       return html`<wui-image src=${this.imageSrc} alt=${this.alt}></wui-image>`
     } else if (this.address) {
+      this.dataset.variant = 'generated'
       const cssColors = generateAvatarColors(this.address)
       this.style.cssText = cssColors
 
-      return html`<div class="generated"></div>`
+      return null
     }
+    this.dataset.variant = 'default'
 
-    return html`<div class="default"></div> `
+    return null
   }
 }
 
