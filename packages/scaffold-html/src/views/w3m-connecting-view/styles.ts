@@ -36,6 +36,10 @@ export default css`
     transition: all var(--wui-ease-out-power-4) var(--wui-duration-lg);
   }
 
+  wui-button {
+    display: none;
+  }
+
   [data-error='true'] wui-icon-box {
     opacity: 1;
     transform: scale(1);
@@ -43,5 +47,9 @@ export default css`
 
   [data-error='true'] wui-flex:first-child:not(:only-child) {
     animation: shake 250ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+
+  wui-button[data-retry='true'] {
+    display: block;
   }
 `

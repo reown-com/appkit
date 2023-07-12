@@ -1,6 +1,7 @@
 import { ConnectionController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
+import { animate } from 'motion'
 import styles from './styles'
 
 @customElement('w3m-connecting-view')
@@ -12,6 +13,8 @@ export class W3mConnectingView extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() private error = false
+
+  @state() private showRetry = false
 
   public constructor() {
     super()
@@ -26,6 +29,7 @@ export class W3mConnectingView extends LitElement {
 
     const subLabel = this.error ? 'Connection declined' : 'Accept connection request in the wallet'
     const subLabelColor = this.error ? 'error-100' : 'fg-200'
+    const title = `Continue in ${this.connector.name}`
 
     return html`
       <wui-flex
@@ -49,11 +53,20 @@ export class W3mConnectingView extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text variant="paragraph-500" color="fg-100">Continue in MetaMask</wui-text>
+          <wui-text variant="paragraph-500" color="fg-100">${title}</wui-text>
           <wui-text variant="small-500" color=${subLabelColor}>${subLabel}</wui-text>
         </wui-flex>
 
-        ${this.tryAgainTemplate()}
+        <wui-button
+          data-retry=${this.showRetry}
+          size="sm"
+          variant="fill"
+          .disabled=${!this.error}
+          @click=${this.onConnect.bind(this)}
+        >
+          <wui-icon color="inherit" slot="iconLeft" name="swap"></wui-icon>
+          Try again
+        </wui-button>
       </wui-flex>
     `
   }
@@ -67,6 +80,15 @@ export class W3mConnectingView extends LitElement {
       }
     } catch {
       this.error = true
+      this.onShowRetry()
+    }
+  }
+
+  private onShowRetry() {
+    if (!this.showRetry) {
+      this.showRetry = true
+      const retryButton = this.shadowRoot?.querySelector('wui-button') as HTMLElement
+      animate(retryButton, { opacity: [0, 1] })
     }
   }
 
@@ -76,18 +98,6 @@ export class W3mConnectingView extends LitElement {
     }
 
     return html`<wui-loading-thumbnail></wui-loading-thumbnail>`
-  }
-
-  private tryAgainTemplate() {
-    if (this.error) {
-      return html`
-        <wui-button size="sm" variant="fill" @click=${this.onConnect.bind(this)}>
-          Try again
-        </wui-button>
-      `
-    }
-
-    return null
   }
 }
 

@@ -132,7 +132,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       connector =>
         ({
           id: connector.id,
-          name: connector.name,
+          name: connector.id === 'injected' ? 'Browser Wallet' : connector.name,
           type: connector.id === WALLET_CONNECT_ID ? 'WALLET_CONNECT' : 'EXTERNAL'
         }) as const
     )
