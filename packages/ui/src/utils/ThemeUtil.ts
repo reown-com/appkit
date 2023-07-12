@@ -46,8 +46,9 @@ export const rootStyles = css`
     --wui-border-radius-l: 36px;
     --wui-border-radius-3xl: 80px;
 
-    --wui-icon-box-size-sm: 20px;
-    --wui-icon-box-size-md: 24px;
+    --wui-icon-box-size-xs: 20px;
+    --wui-icon-box-size-sm: 24px;
+    --wui-icon-box-size-md: 32px;
     --wui-icon-box-size-lg: 40px;
 
     --wui-icon-size-inherit: inherit;
@@ -99,6 +100,8 @@ export const rootStyles = css`
 
     --wui-z-index: 89;
 
+    --wui-box-size-md: 100px;
+
     --wui-path-network: path(
       'M20.041 1.061a7.915 7.915 0 0 1 7.918 0l16.082 9.29A7.922 7.922 0 0 1 48 17.21v18.578c0 2.83-1.51 5.445-3.959 6.86l-16.082 9.29a7.915 7.915 0 0 1-7.918 0l-16.082-9.29A7.922 7.922 0 0 1 0 35.79V17.211c0-2.83 1.51-5.445 3.959-6.86l16.082-9.29Z'
     );
@@ -109,6 +112,8 @@ export const rootStyles = css`
     --wui-color-blue-090: #59aaff;
     --wui-color-blue-080: #6cb4ff;
     --wui-color-blue-015: rgba(71, 161, 255, 0.15);
+    --wui-color-blue-010: rgba(71, 161, 255, 0.1);
+    --wui-color-blue-005: rgba(71, 161, 255, 0.05);
 
     --wui-color-fg-100: #e4e7e7;
     --wui-color-fg-125: #d0d5d5;
@@ -159,6 +164,8 @@ export const rootStyles = css`
     --wui-color-blue-090: #2d7dd2;
     --wui-color-blue-080: #2978cc;
     --wui-color-blue-015: rgba(51, 150, 255, 0.15);
+    --wui-color-blue-010: rgba(51, 150, 255, 0.1);
+    --wui-color-blue-005: rgba(51, 150, 255, 0.05);
 
     --wui-color-fg-100: #141414;
     --wui-color-fg-125: #2d3131;
@@ -247,12 +254,19 @@ export const elementStyles = css`
   button:disabled > wui-wallet-image,
   button:disabled > wui-all-wallets-image,
   button:disabled > wui-network-image,
-  button:disabled > wui-image {
+  button:disabled > wui-image,
+  button:disabled > wui-icon-box {
     filter: grayscale(1);
   }
 
   button:focus-visible {
-    background-color: var(--wui-overlay-005);
+    border: 1px solid var(--wui-color-blue-100);
+    -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+    -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+    box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+  }
+
+  a:focus {
     border: 1px solid var(--wui-color-blue-100);
     -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
     -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
@@ -267,18 +281,6 @@ export const elementStyles = css`
     button:active:enabled {
       transition: all var(--wui-ease-out-power-4) var(--wui-duration-sm);
       background-color: var(--wui-overlay-010);
-      border: 1px solid var(--wui-color-blue-100);
-      -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-      -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-      box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    }
-
-    a:focus {
-      background-color: var(--wui-overlay-010);
-      border: 1px solid var(--wui-color-blue-100);
-      -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-      -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-      box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
     }
   }
 

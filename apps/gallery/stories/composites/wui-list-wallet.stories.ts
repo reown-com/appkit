@@ -1,14 +1,14 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-list-select'
+import '@web3modal/ui/src/composites/wui-list-wallet'
 import '../../components/gallery-container'
-import type { WuiListSelect } from '@web3modal/ui/src/composites/wui-list-select'
+import type { WuiListWallet } from '@web3modal/ui/src/composites/wui-list-wallet'
 import { html } from 'lit'
 import { tagOptions, walletImagesOptions } from '../../utils/PresetUtils'
 
-type Component = Meta<WuiListSelect>
+type Component = Meta<WuiListWallet>
 
 export default {
-  title: 'Composites/wui-list-select',
+  title: 'Composites/wui-list-wallet',
   args: {
     walletImages: walletImagesOptions,
     imageSrc: walletImagesOptions[0].src,
@@ -32,7 +32,7 @@ export default {
 export const Default: Component = {
   render: args =>
     html` <gallery-container width="336">
-      <wui-list-select
+      <wui-list-wallet
         .imageSrc=${args.imageSrc}
         .walletImages=${args.walletImages}
         .showAllWallets=${args.showAllWallets}
@@ -40,6 +40,6 @@ export const Default: Component = {
         .tagVariant=${args.tagVariant}
         ?disabled=${args.disabled}
         name=${args.name}
-      ></wui-list-select>
+      ></wui-list-wallet>
     </gallery-container>`
 }

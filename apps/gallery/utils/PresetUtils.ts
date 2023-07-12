@@ -19,7 +19,8 @@ import type {
   TransactionType,
   CardSelectType,
   BackgroundType,
-  TagType
+  TagType,
+  AccountEntryType
 } from '@web3modal/ui/src/utils/TypesUtil'
 
 export const colorOptions: ColorType[] = [
@@ -134,10 +135,12 @@ export const iconOptions: IconType[] = [
   'arrowBottom',
   'arrowTop',
   'checkmark',
+  'chevronRight',
   'clock',
   'close',
   'copy',
   'cursor',
+  'disconnect',
   'externalLink',
   'search',
   'swap',
@@ -168,3 +171,5 @@ export const cardSelectOptions: CardSelectType[] = ['network', 'wallet']
 export const backgroundOptions: BackgroundType[] = ['opaque', 'transparent']
 
 export const tagOptions: TagType[] = ['main', 'shade']
+
+export const accountEntryOptions: AccountEntryType[] = ['icon', 'image']

@@ -18,7 +18,7 @@ export class W3mConnectView extends LitElement {
     return html`
       <wui-flex flexDirection="column" padding="l" gap="xs">
         ${this.connectorsTemplate()}
-        <wui-list-select name="View All" showAllWallets></wui-list-select>
+        <wui-list-wallet name="View All" showAllWallets></wui-list-wallet>
       </wui-flex>
     `
   }
@@ -27,10 +27,10 @@ export class W3mConnectView extends LitElement {
   private connectorsTemplate() {
     return this.connectors.map(
       connector =>
-        html`<wui-list-select
+        html`<wui-list-wallet
           name=${connector.name ?? 'Unknown'}
           @click=${() => this.onConnectorClick(connector)}
-        ></wui-list-select>`
+        ></wui-list-wallet>`
     )
   }
 

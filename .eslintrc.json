@@ -2,7 +2,12 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
-  "extends": ["eslint:all", "plugin:@typescript-eslint/all", "prettier"],
+  "extends": [
+    "eslint:all",
+    "plugin:@typescript-eslint/stylistic-type-checked",
+    "plugin:@typescript-eslint/strict-type-checked",
+    "prettier"
+  ],
   "parserOptions": {
     "project": ["tsconfig.json"]
   },
@@ -30,6 +35,8 @@
     "no-underscore-dangle": "off",
     "no-undef-init": "off",
     "complexity": "off",
+    "no-magic-numbers": "off",
+    "no-use-before-define": "off",
 
     // Typescript
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
@@ -55,6 +62,7 @@
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/no-unsafe-return": "off",
     "@typescript-eslint/promise-function-async": "off",
-    "@typescript-eslint/no-confusing-void-expression": "off"
+    "@typescript-eslint/no-confusing-void-expression": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off"
   }
 }
