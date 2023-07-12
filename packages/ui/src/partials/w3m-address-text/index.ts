@@ -12,8 +12,11 @@ export class W3mAddressText extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private address?: string = undefined
+
   @state() private name?: string | null = undefined
+
   @state() private loading = true
+
   @property() public variant?: 'button' | 'modal' = 'button'
 
   // -- lifecycle ---------------------------------------------------- //

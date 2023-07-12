@@ -11,10 +11,15 @@ export class W3mPlatformSelection extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public isMobile = false
+
   @property() public isInjected = false
+
   @property() public isInjectedInstalled = false
+
   @property() public isDesktop = false
+
   @property() public isWeb = false
+
   @property() public isRetry = false
 
   // -- private ------------------------------------------------------ //

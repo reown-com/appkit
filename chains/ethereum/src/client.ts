@@ -18,6 +18,7 @@ const ADD_ETH_CHAIN_METHOD = 'wallet_addEthereumChain'
 
 export class EthereumClient {
   private readonly wagmi = {} as Config
+
   public readonly chains = [] as Chain[]
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

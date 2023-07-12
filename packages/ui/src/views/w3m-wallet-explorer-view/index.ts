@@ -16,8 +16,11 @@ export class W3mWalletExplorerView extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private loading = !ExplorerCtrl.state.wallets.listings.length
+
   @state() private firstFetch = !ExplorerCtrl.state.wallets.listings.length
+
   @state() private search = ''
+
   @state() private endReached = false
 
   // -- lifecycle ---------------------------------------------------- //

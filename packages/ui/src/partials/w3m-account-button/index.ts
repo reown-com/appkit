@@ -16,6 +16,7 @@ export class W3mAccountButton extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public balance?: 'hide' | 'show' = 'hide'
+
   @property() public avatar?: 'hide' | 'show' = 'show'
 
   private onOpen() {

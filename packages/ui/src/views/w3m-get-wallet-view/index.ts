@@ -28,41 +28,39 @@ export class W3mGetWalletView extends LitElement {
       <w3m-modal-content>
         ${isRecomendedWallets
           ? recomendedWallets.map(
-              wallet =>
-                html`
-                  <div class="w3m-wallet-item">
-                    <w3m-wallet-image walletId=${wallet.id} imageId=${wallet.image_id}>
-                    </w3m-wallet-image>
-                    <div class="w3m-wallet-content">
-                      <w3m-text variant="medium-regular">${wallet.name}</w3m-text>
-                      <w3m-button
-                        .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
-                        .onClick=${() => this.onGet(wallet.homepage)}
-                      >
-                        Get
-                      </w3m-button>
-                    </div>
+              wallet => html`
+                <div class="w3m-wallet-item">
+                  <w3m-wallet-image walletId=${wallet.id} imageId=${wallet.image_id}>
+                  </w3m-wallet-image>
+                  <div class="w3m-wallet-content">
+                    <w3m-text variant="medium-regular">${wallet.name}</w3m-text>
+                    <w3m-button
+                      .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
+                      .onClick=${() => this.onGet(wallet.homepage)}
+                    >
+                      Get
+                    </w3m-button>
                   </div>
-                `
+                </div>
+              `
             )
           : null}
         ${isCustomWallets
           ? manualWallets.map(
-              wallet =>
-                html`
-                  <div class="w3m-wallet-item">
-                    <w3m-wallet-image walletId=${wallet.id}></w3m-wallet-image>
-                    <div class="w3m-wallet-content">
-                      <w3m-text variant="medium-regular">${wallet.name}</w3m-text>
-                      <w3m-button
-                        .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
-                        .onClick=${() => this.onGet(wallet.links.universal)}
-                      >
-                        Get
-                      </w3m-button>
-                    </div>
+              wallet => html`
+                <div class="w3m-wallet-item">
+                  <w3m-wallet-image walletId=${wallet.id}></w3m-wallet-image>
+                  <div class="w3m-wallet-content">
+                    <w3m-text variant="medium-regular">${wallet.name}</w3m-text>
+                    <w3m-button
+                      .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
+                      .onClick=${() => this.onGet(wallet.links.universal)}
+                    >
+                      Get
+                    </w3m-button>
                   </div>
-                `
+                </div>
+              `
             )
           : null}
       </w3m-modal-content>

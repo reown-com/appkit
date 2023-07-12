@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/html",
-  "version": "2.6.2",
+  "version": "2.7.0",
   "main": "dist/index.js",
   "unpkg": "dist/cdn/bundle.js",
   "type": "module",
@@ -18,11 +18,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/core": "2.6.2",
-    "@web3modal/ui": "2.6.2"
+    "@web3modal/core": "2.7.0",
+    "@web3modal/ui": "2.7.0"
   },
   "devDependencies": {
-    "@web3modal/ethereum": "2.6.2"
+    "@web3modal/ethereum": "2.7.0"
   },
   "keywords": [
     "web3",

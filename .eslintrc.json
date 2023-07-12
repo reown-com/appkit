@@ -9,7 +9,12 @@
     "browser": true
   },
   "plugins": ["@typescript-eslint"],
-  "extends": ["eslint:all", "plugin:@typescript-eslint/all", "prettier"],
+  "extends": [
+    "eslint:all",
+    "plugin:@typescript-eslint/stylistic-type-checked",
+    "plugin:@typescript-eslint/strict-type-checked",
+    "prettier"
+  ],
   "rules": {
     "sort-imports": "off",
     "one-var": "off",
@@ -35,6 +40,8 @@
     "no-console": ["error", { "allow": ["error", "info"] }],
     "no-duplicate-imports": "off",
     "no-async-promise-executor": "off",
+    "no-magic-numbers": "off",
+    "no-use-before-define": "off",
 
     "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
@@ -67,6 +74,7 @@
     "@typescript-eslint/no-confusing-void-expression": ["error", { "ignoreArrowShorthand": true }],
     "@typescript-eslint/member-ordering": "off",
     "@typescript-eslint/key-spacing": "off",
-    "@typescript-eslint/no-import-type-side-effects": "off"
+    "@typescript-eslint/no-import-type-side-effects": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off"
   }
 }

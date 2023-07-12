@@ -13,8 +13,11 @@ export class W3mModalHeader extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public title = ''
+
   @property() public onAction?: () => void = undefined
+
   @property() public actionIcon?: TemplateResult<2> = undefined
+
   @property() public border = false
 
   // -- private ------------------------------------------------------ //

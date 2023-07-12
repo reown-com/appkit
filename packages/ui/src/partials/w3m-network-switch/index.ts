@@ -1,6 +1,7 @@
 import { EventsCtrl, ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
@@ -10,7 +11,9 @@ export class W3mNetworkSwitch extends LitElement {
 
   // -- state & properties ----------------------------------------------- //
   @state() private chainId? = ''
+
   @state() private label? = ''
+
   @state() private wrongNetwork = false
 
   // -- lifecycle ---------------------------------------------------- //
@@ -52,7 +55,7 @@ export class W3mNetworkSwitch extends LitElement {
 
     return html`
       <w3m-button-big @click=${this.onClick} ?disabled=${!isMultichain}>
-        <w3m-network-image chainId=${this.chainId}></w3m-network-image>
+        <w3m-network-image chainId=${ifDefined(this.chainId)}></w3m-network-image>
         <w3m-text variant="medium-regular" color="inverse">
           ${this.label?.length ? this.label : 'Select Network'}
         </w3m-text>

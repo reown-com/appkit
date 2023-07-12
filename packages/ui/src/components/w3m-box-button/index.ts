@@ -10,8 +10,11 @@ export class W3mBoxButton extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public icon?: TemplateResult<2> = undefined
+
   @property() public label = ''
+
   @property() public loading?: boolean = false
+
   @property() public onClick: () => void = () => null
 
   // -- render ------------------------------------------------------- //
