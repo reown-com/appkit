@@ -11,10 +11,10 @@ import type { WuiInput } from '../../composites/wui-input'
 export class WuiSearchBar extends LitElement {
   public static styles = [resetStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
+  // -- State & Properties -------------------------------- //
   public inputComponentRef = createRef<WuiInput>()
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
   public render() {
     return html` <wui-input
       ${ref(this.inputComponentRef)}
@@ -26,8 +26,7 @@ export class WuiSearchBar extends LitElement {
     </wui-input>`
   }
 
-  // -- private ------------------------------------------------------ //
-
+  // -- Private ------------------------------------------- //
   private clearValue() {
     const inputComponent = this.inputComponentRef.value
     const inputElement = inputComponent?.inputElementRef.value

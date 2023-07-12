@@ -10,10 +10,10 @@ import styles from './styles'
 export class WuiEmailInput extends LitElement {
   public static styles = [resetStyles, styles]
 
-  // -- state & properties ------------------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property() public errorMessage?: string
 
-  // -- render ------------------------------------------------------- //
+  // -- Render -------------------------------------------- //
   public render() {
     return html` <wui-input placeholder="Email" icon="mail" size="md">
         <wui-icon size="sm" color="inverse-100" name="chevronRight"></wui-icon>
