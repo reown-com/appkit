@@ -16,8 +16,7 @@ export class W3mConnectingExternalView extends LitElement {
 
   @state() private showRetry = false
 
-  public constructor() {
-    super()
+  public firstUpdated() {
     this.onConnect()
   }
 
@@ -41,7 +40,7 @@ export class W3mConnectingExternalView extends LitElement {
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-wallet-image size="lg"></wui-wallet-image>
-          ${this.error ? html`<wui-loading-thumbnail></wui-loading-thumbnail>` : null}
+          ${this.error ? null : html`<wui-loading-thumbnail></wui-loading-thumbnail>`}
           <wui-icon-box
             backgroundColor="error-100"
             background="opaque"

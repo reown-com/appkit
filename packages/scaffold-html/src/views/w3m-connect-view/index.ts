@@ -35,7 +35,7 @@ export class W3mConnectView extends LitElement {
   }
 
   private onConnectorClick(connector: Connector) {
-    RouterController.push('Connecting', { connector })
+    RouterController.push('ConnectingExternal', { connector })
   }
 }
 

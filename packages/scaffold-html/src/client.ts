@@ -1,4 +1,8 @@
-import type { ConnectionControllerClient, NetworkControllerClient } from '@web3modal/core'
+import type {
+  ConnectionControllerClient,
+  ModalControllerArguments,
+  NetworkControllerClient
+} from '@web3modal/core'
 import {
   AccountController,
   ConnectionController,
@@ -24,12 +28,12 @@ export class Web3ModalScaffoldHtml {
   }
 
   // -- Public -------------------------------------------------------------------
-  public open: (typeof ModalController)['open'] = async options => {
+  public async open(options?: ModalControllerArguments['open']) {
     await this.initOrContinue()
     ModalController.open(options)
   }
 
-  public close: (typeof ModalController)['close'] = async () => {
+  public async close() {
     await this.initOrContinue()
     ModalController.close()
   }

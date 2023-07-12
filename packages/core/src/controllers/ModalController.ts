@@ -9,11 +9,13 @@ export interface ModalControllerState {
   open: boolean
 }
 
-type StateKey = keyof ModalControllerState
-
-interface OpenOptions {
-  view?: RouterControllerState['view']
+export interface ModalControllerArguments {
+  open: {
+    view?: RouterControllerState['view']
+  }
 }
+
+type StateKey = keyof ModalControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ModalControllerState>({
@@ -28,7 +30,7 @@ export const ModalController = {
     subscribeKey(state, key, callback)
   },
 
-  open(options?: OpenOptions) {
+  open(options?: ModalControllerArguments['open']) {
     if (options?.view) {
       RouterController.reset(options.view)
     } else if (AccountController.state.isConnected) {
