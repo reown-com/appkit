@@ -31,7 +31,7 @@ export class WuiAvatar extends LitElement {
       return html`<div class="generated"></div>`
     }
 
-    return html`<div class="fallback"></div> `
+    return html`<div class="default"></div> `
   }
 }
 

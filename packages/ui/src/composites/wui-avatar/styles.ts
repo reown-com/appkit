@@ -27,7 +27,7 @@ export default css`
     );
   }
 
-  .fallback {
+  .default {
     background: radial-gradient(
       75.29% 75.29% at 64.96% 24.36%,
       #fff 0.52%,
