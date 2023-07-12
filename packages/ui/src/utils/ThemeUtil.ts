@@ -157,6 +157,8 @@ export const rootStyles = css`
 
     --wui-icon-box-bg-error-100: #3c2426;
     --wui-icon-box-bg-blue-100: #20303f;
+
+    --wui-avatar-border: #252525;
   }
 
   [data-wui-theme='light'] {
@@ -209,6 +211,8 @@ export const rootStyles = css`
 
     --wui-icon-box-bg-error-100: #f4dfdd;
     --wui-icon-box-bg-blue-100: #d9ecfb;
+
+    --wui-avatar-border: #f3f4f4;
   }
 `
 
