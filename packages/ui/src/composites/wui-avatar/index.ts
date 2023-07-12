@@ -28,6 +28,7 @@ export class WuiAvatar extends LitElement {
     } else if (this.address) {
       const cssColors = generateAvatarColors(this.address)
       this.style.cssText = cssColors
+
       return html`<div class="generated"></div>`
     }
 

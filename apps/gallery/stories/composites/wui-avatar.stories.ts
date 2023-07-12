@@ -11,7 +11,7 @@ export default {
   args: {
     imageSrc: avatarImageSrc,
     alt: 'Avatar',
-    address: address
+    address
   }
 } as Component
 

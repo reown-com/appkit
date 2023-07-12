@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 import type { SpacingType } from './TypesUtil'
 
 export function getSpacingStyles(spacing: SpacingType | SpacingType[], index: number) {
@@ -17,13 +18,13 @@ export function getHostName(url: string) {
 }
 
 export function generateAvatarColors(address: string): string {
-  const hash = address.toLowerCase().replace(/^0x/i, '')
+  const hash = address.toLowerCase().replace(/^0x/iu, '')
   const baseColor = hash.substring(0, 6)
   const rgbColor = hexToRgb(baseColor)
 
   const colors: string[] = []
 
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 5; i += 1) {
     const tintedColor = tintColor(rgbColor, 0.15 * i)
     colors.push(`rgb(${tintedColor[0]}, ${tintedColor[1]}, ${tintedColor[2]})`)
   }
