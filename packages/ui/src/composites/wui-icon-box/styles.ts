@@ -14,12 +14,4 @@ export default css`
     width: var(--local-size);
     height: var(--local-size);
   }
-
-  :host[opaque='blue-100'] {
-    background-color: var(--wui-icon-box-bg-blue-100);
-  }
-
-  :host[opaque='error-100'] {
-    background-color: var(--wui-icon-box-bg-error-100);
-  }
 `

@@ -27,8 +27,7 @@ export default css`
     }
 
     button:active:enabled {
-      background-color: var(--wui-color-fg-275);
-      border: 1px solid var(--wui-color-blue-100);
+      background-color: var(--wui-color-fg-225);
     }
   }
 `
