@@ -4,10 +4,12 @@ import { customElement, property } from 'lit/decorators.js'
 import { arrowBottomSvg } from '../../assets/svg/arrow-buttom'
 import { arrowTopSvg } from '../../assets/svg/arrow-top'
 import { checkmarkSvg } from '../../assets/svg/checkmark'
+import { chevronRightSvg } from '../../assets/svg/chevron-right'
 import { clockSvg } from '../../assets/svg/clock'
 import { closeSvg } from '../../assets/svg/close'
 import { copySvg } from '../../assets/svg/copy'
 import { cursorSvg } from '../../assets/svg/cursor'
+import { disconnectSvg } from '../../assets/svg/disconnect'
 import { externalLinkSvg } from '../../assets/svg/external-link'
 import { searchSvg } from '../../assets/svg/search'
 import { swapSvg } from '../../assets/svg/swap'
@@ -21,10 +23,12 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   arrowBottom: arrowBottomSvg,
   arrowTop: arrowTopSvg,
   checkmark: checkmarkSvg,
+  chevronRight: chevronRightSvg,
   clock: clockSvg,
   close: closeSvg,
   copy: copySvg,
   cursor: cursorSvg,
+  disconnect: disconnectSvg,
   externalLink: externalLinkSvg,
   search: searchSvg,
   swap: swapSvg,
