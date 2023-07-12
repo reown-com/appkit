@@ -10,7 +10,12 @@ const profileImage = 'https://ipfs.com/0x123.png'
 // -- Tests --------------------------------------------------------------------
 describe('ModalController', () => {
   it('should have valid default state', () => {
-    expect(AccountController.state).toEqual({})
+    expect(AccountController.state).toEqual({ isConnected: false })
+  })
+
+  it('should update state correctly on setIsConnected()', () => {
+    AccountController.setIsConnected(true)
+    expect(AccountController.state.isConnected).toEqual(true)
   })
 
   it('should update state correctly on setAddress()', () => {

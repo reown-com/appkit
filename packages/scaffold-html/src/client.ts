@@ -24,17 +24,21 @@ export class Web3ModalScaffoldHtml {
   }
 
   // -- Public -------------------------------------------------------------------
-  public async open() {
+  public open: (typeof ModalController)['open'] = async options => {
     await this.initOrContinue()
-    ModalController.open()
+    ModalController.open(options)
   }
 
-  public async close() {
+  public close: (typeof ModalController)['close'] = async () => {
     await this.initOrContinue()
     ModalController.close()
   }
 
   // -- Protected ----------------------------------------------------------------
+  protected setIsConnected: (typeof AccountController)['setIsConnected'] = isConnected => {
+    AccountController.setIsConnected(isConnected)
+  }
+
   protected setAddress: (typeof AccountController)['setAddress'] = address => {
     AccountController.setAddress(address)
   }

@@ -37,12 +37,13 @@ export class W3mConnectingView extends LitElement {
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-wallet-image size="lg"></wui-wallet-image>
-          ${this.error ? null : html`<wui-loading-thumbnail></wui-loading-thumbnail>`}
+          ${this.thumbnailTemplate()}
           <wui-icon-box
             backgroundColor="error-100"
             background="opaque"
             iconColor="error-100"
             icon="close"
+            size="sm"
             border
           ></wui-icon-box>
         </wui-flex>
@@ -51,6 +52,8 @@ export class W3mConnectingView extends LitElement {
           <wui-text variant="paragraph-500" color="fg-100">Continue in MetaMask</wui-text>
           <wui-text variant="small-500" color=${subLabelColor}>${subLabel}</wui-text>
         </wui-flex>
+
+        ${this.tryAgainTemplate()}
       </wui-flex>
     `
   }
@@ -65,6 +68,26 @@ export class W3mConnectingView extends LitElement {
     } catch {
       this.error = true
     }
+  }
+
+  private thumbnailTemplate() {
+    if (this.error) {
+      return null
+    }
+
+    return html`<wui-loading-thumbnail></wui-loading-thumbnail>`
+  }
+
+  private tryAgainTemplate() {
+    if (this.error) {
+      return html`
+        <wui-button size="sm" variant="fill" @click=${this.onConnect.bind(this)}>
+          Try again
+        </wui-button>
+      `
+    }
+
+    return null
   }
 }
 

@@ -25,21 +25,21 @@ export class W3mRouter extends LitElement {
     this.resizeObserver = new ResizeObserver(async ([content]) => {
       const height = `${content.contentRect.height}px`
       if (this.prevHeight !== '0px') {
-        this.resizeObserver?.unobserve(this)
         await animate(this, { height: [this.prevHeight, height] }, { duration: 0.15 }).finished
+        this.style.height = 'auto'
       }
       this.prevHeight = height
     })
-    this.resizeObserver.observe(this)
+    this.resizeObserver.observe(this.getWrapper())
   }
 
   public disconnectedCallback() {
-    this.resizeObserver?.unobserve(this)
+    this.resizeObserver?.unobserve(this.getWrapper())
   }
 
   // -- Render -------------------------------------------- //
   public render() {
-    return this.viewTemplate()
+    return html`<div>${this.viewTemplate()}</div>`
   }
 
   // -- Private ------------------------------------------- //
@@ -58,6 +58,10 @@ export class W3mRouter extends LitElement {
     await animate(this, { opacity: [1, 0], scale: [1, 1.05] }, { duration: 0.15 }).finished
     this.view = newView
     animate(this, { opacity: [0, 1], scale: [0.95, 1] }, { duration: 0.2 })
+  }
+
+  private getWrapper() {
+    return this.shadowRoot?.querySelector('div') as HTMLElement
   }
 }
 

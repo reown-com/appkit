@@ -88,10 +88,11 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
 
   // -- Private ------------------------------------------------------------------
   private async syncAccount() {
-    const { address } = getAccount()
+    const { address, isConnected } = getAccount()
     const { chain } = getNetwork()
     if (address && chain) {
       const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
+      this.setIsConnected(isConnected)
       this.setAddress(caipAddress)
       await Promise.all([this.syncProfile(address), this.syncBalance(address, chain)])
     }

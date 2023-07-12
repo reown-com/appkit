@@ -1,5 +1,8 @@
 import { subscribeKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
+import { AccountController } from './AccountController'
+import type { RouterControllerState } from './RouterController'
+import { RouterController } from './RouterController'
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
@@ -7,6 +10,10 @@ export interface ModalControllerState {
 }
 
 type StateKey = keyof ModalControllerState
+
+interface OpenOptions {
+  view?: RouterControllerState['view']
+}
 
 // -- State --------------------------------------------- //
 const state = proxy<ModalControllerState>({
@@ -21,7 +28,14 @@ export const ModalController = {
     subscribeKey(state, key, callback)
   },
 
-  open() {
+  open(options?: OpenOptions) {
+    if (options?.view) {
+      RouterController.reset(options.view)
+    } else if (AccountController.state.isConnected) {
+      RouterController.reset('Account')
+    } else {
+      RouterController.reset('Connect')
+    }
     state.open = true
   },
 

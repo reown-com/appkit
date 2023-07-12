@@ -3,6 +3,7 @@ import type { CaipAddress } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
+  isConnected: boolean
   address?: CaipAddress
   balance?: string
   profileName?: string
@@ -10,11 +11,17 @@ export interface AccountControllerState {
 }
 
 // -- State --------------------------------------------- //
-const state = proxy<AccountControllerState>({})
+const state = proxy<AccountControllerState>({
+  isConnected: false
+})
 
 // -- Controller ---------------------------------------- //
 export const AccountController = {
   state,
+
+  setIsConnected(isConnected: AccountControllerState['isConnected']) {
+    this.state.isConnected = isConnected
+  },
 
   setAddress(address: AccountControllerState['address']) {
     this.state.address = address
