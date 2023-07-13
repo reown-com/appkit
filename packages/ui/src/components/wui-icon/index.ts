@@ -15,6 +15,7 @@ import { mailSvg } from '../../assets/svg/mail'
 import { searchSvg } from '../../assets/svg/search'
 import { swapSvg } from '../../assets/svg/swap'
 import { walletSvg } from '../../assets/svg/wallet'
+import { walletConnectSvg } from '../../assets/svg/walletconnect'
 import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil'
@@ -35,6 +36,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   search: searchSvg,
   swap: swapSvg,
   wallet: walletSvg,
+  walletConnect: walletConnectSvg,
   walletPlaceholder: walletPlaceholderSvg
 }
 

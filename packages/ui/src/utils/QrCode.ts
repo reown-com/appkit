@@ -36,7 +36,8 @@ function getMatrix(value: string, errorCorrectionLevel: QRCodeUtil.QRCodeErrorCo
 export const QrCodeUtil = {
   generate(uri: string, size: number, logoSize: number) {
     const dotColor = '#141414'
-    const edgeColor = '#ffffff'
+    const edgeColor = 'transparent'
+    const strokeWidth = 5
     const dots: TemplateResult[] = []
     const matrix = getMatrix(uri, 'Q')
     const cellSize = size / matrix.length
@@ -55,13 +56,15 @@ export const QrCodeUtil = {
         dots.push(
           svg`
             <rect
-              fill=${i % 2 === 0 ? dotColor : edgeColor}
-              height=${dotSize}
-              rx=${dotSize * borderRadius}
-              ry=${dotSize * borderRadius}
-              width=${dotSize}
-              x=${x1 + cellSize * i}
-              y=${y1 + cellSize * i}
+              fill=${i === 2 ? dotColor : edgeColor}
+              width=${i === 0 ? dotSize - strokeWidth : dotSize}
+              rx= ${i === 0 ? (dotSize - strokeWidth) * borderRadius : dotSize * borderRadius}
+              ry= ${i === 0 ? (dotSize - strokeWidth) * borderRadius : dotSize * borderRadius}
+              stroke=${dotColor}
+              stroke-width=${i === 0 ? strokeWidth : 0}
+              height=${i === 0 ? dotSize - strokeWidth : dotSize}
+              x= ${i === 0 ? y1 + cellSize * i + strokeWidth / 2 : y1 + cellSize * i}
+              y= ${i === 0 ? x1 + cellSize * i + strokeWidth / 2 : x1 + cellSize * i}
             />
           `
         )
