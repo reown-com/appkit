@@ -5,12 +5,21 @@ import { customElement, state } from 'lit/decorators.js'
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
+  // -- Members ------------------------------------------- //
+  private unsubscribe: (() => void)[] = []
+
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
 
   public constructor() {
     super()
-    ConnectorController.subscribe('connectors', connectors => (this.connectors = connectors))
+    this.unsubscribe.push(
+      ConnectorController.subscribe('connectors', connectors => (this.connectors = connectors))
+    )
+  }
+
+  public disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //

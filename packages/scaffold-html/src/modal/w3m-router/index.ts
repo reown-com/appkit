@@ -13,12 +13,14 @@ export class W3mRouter extends LitElement {
 
   private prevHeight = '0px'
 
+  private unsubscribe: (() => void)[] = []
+
   // -- State & Properties -------------------------------- //
   @state() private view = RouterController.state.view
 
   public constructor() {
     super()
-    RouterController.subscribe('view', view => this.onRouteChange(view))
+    this.unsubscribe.push(RouterController.subscribe('view', view => this.onRouteChange(view)))
   }
 
   public firstUpdated() {
@@ -35,6 +37,7 @@ export class W3mRouter extends LitElement {
 
   public disconnectedCallback() {
     this.resizeObserver?.unobserve(this.getWrapper())
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //

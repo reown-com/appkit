@@ -27,7 +27,7 @@ export const ModalController = {
   state,
 
   subscribe<K extends StateKey>(key: K, callback: (value: ModalControllerState[K]) => void) {
-    subscribeKey(state, key, callback)
+    return subscribeKey(state, key, callback)
   },
 
   open(options?: ModalControllerArguments['open']) {

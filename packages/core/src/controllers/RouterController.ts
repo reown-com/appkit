@@ -24,7 +24,7 @@ export const RouterController = {
   state,
 
   subscribe<K extends StateKey>(key: K, callback: (value: RouterControllerState[K]) => void) {
-    subscribeKey(state, key, callback)
+    return subscribeKey(state, key, callback)
   },
 
   push(view: RouterControllerState['view'], data?: RouterControllerState['data']) {

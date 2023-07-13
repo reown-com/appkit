@@ -25,31 +25,36 @@ export const AccountController = {
   state,
 
   subscribe<K extends StateKey>(key: K, callback: (value: AccountControllerState[K]) => void) {
-    subscribeKey(state, key, callback)
+    return subscribeKey(state, key, callback)
   },
 
   setIsConnected(isConnected: AccountControllerState['isConnected']) {
-    this.state.isConnected = isConnected
+    state.isConnected = isConnected
   },
 
   setCaipAddress(caipAddress: AccountControllerState['caipAddress']) {
-    this.state.caipAddress = caipAddress
-    this.state.address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
+    state.caipAddress = caipAddress
+    state.address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
   },
 
   setBalance(balance: AccountControllerState['balance']) {
-    this.state.balance = balance
+    state.balance = balance
   },
 
   setProfileName(profileName: AccountControllerState['profileName']) {
-    this.state.profileName = profileName
+    state.profileName = profileName
   },
 
   setProfileImage(profileImage: AccountControllerState['profileImage']) {
-    this.state.profileImage = profileImage
+    state.profileImage = profileImage
   },
 
   resetAccount() {
-    this.state = { isConnected: false }
+    state.isConnected = false
+    state.caipAddress = undefined
+    state.address = undefined
+    state.balance = undefined
+    state.profileName = undefined
+    state.profileImage = undefined
   }
 }

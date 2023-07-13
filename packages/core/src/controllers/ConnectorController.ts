@@ -27,7 +27,7 @@ export const ConnectorController = {
   state,
 
   subscribe<K extends StateKey>(key: K, callback: (value: ConnectorControllerState[K]) => void) {
-    subscribeKey(state, key, callback)
+    return subscribeKey(state, key, callback)
   },
 
   setConnectors(connectors: ConnectorControllerState['connectors']) {
