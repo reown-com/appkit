@@ -91,6 +91,7 @@ export type IconType =
   | 'search'
   | 'swap'
   | 'wallet'
+  | 'walletConnect'
   | 'walletPlaceholder'
 
 export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
@@ -119,3 +120,5 @@ export type BackgroundType = 'opaque' | 'transparent'
 export type TagType = 'main' | 'shade'
 
 export type AccountEntryType = 'icon' | 'image'
+
+export type ThemeType = 'dark' | 'light'
