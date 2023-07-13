@@ -12,6 +12,9 @@ import {
   NetworkController
 } from '@web3modal/core'
 
+// -- Helpers -------------------------------------------------------------------
+let isInitialized = false
+
 // -- Types ---------------------------------------------------------------------
 interface Options {
   networkControllerClient: NetworkControllerClient
@@ -23,8 +26,12 @@ export class Web3ModalScaffoldHtml {
   private initPromise?: Promise<void> = undefined
 
   public constructor(options: Options) {
+    if (isInitialized) {
+      throw new Error('Web3Modal is already initialized')
+    }
     this.setControllerClients(options)
     this.initOrContinue()
+    isInitialized = true
   }
 
   // -- Public -------------------------------------------------------------------
