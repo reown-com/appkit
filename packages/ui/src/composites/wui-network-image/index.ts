@@ -17,16 +17,16 @@ export class WuiNetworkImage extends LitElement {
 
   // -- Render -------------------------------------------- //
   public render() {
-    return html`${this.templateVisual()}`
+    return html`${this.templateVisual()} ${networkSvg}`
   }
 
   // -- Private ------------------------------------------- //
   private templateVisual() {
     if (this.imageSrc) {
-      return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image> ${networkSvg}`
+      return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image>`
     }
 
-    return html`<wui-icon size="inherit" color="inherit" name="walletPlaceholder"></wui-icon>`
+    return html`<wui-icon size="inherit" color="fg-200" name="networkPlaceholder"></wui-icon>`
   }
 }
 
