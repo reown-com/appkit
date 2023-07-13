@@ -1,5 +1,6 @@
 import type { Address, Chain, Config } from '@wagmi/core'
 import {
+  connect,
   disconnect,
   fetchBalance,
   fetchEnsAvatar,
@@ -39,7 +40,8 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     }
 
     const networkControllerClient: NetworkControllerClient = {
-      async switchNetwork(chainId) {
+      async switchCaipNetwork(caipChainId) {
+        const chainId = caipChainId?.split(':')[1]
         const chainIdNumber = Number(chainId)
         await switchNetwork({ chainId: chainIdNumber })
       }
@@ -57,7 +59,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
           }
         })
 
-        await connector.connect()
+        await connect({ connector })
       },
 
       async connectExternal(id) {
@@ -66,7 +68,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
 
-        await connector.connect()
+        await connect({ connector })
       },
 
       disconnect
@@ -86,25 +88,29 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     watchNetwork(() => this.syncNetwork())
   }
 
-  // -- Private ------------------------------------------------------------------
+  // -- Private -----------------------------------------------------------------
   private async syncAccount() {
-    const { address } = getAccount()
+    const { address, isConnected } = getAccount()
     const { chain } = getNetwork()
-    if (address && chain) {
+    this.resetAccount()
+    if (isConnected && address && chain) {
       const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
-      this.setAddress(caipAddress)
+      this.setIsConnected(isConnected)
+      this.setCaipAddress(caipAddress)
       await Promise.all([this.syncProfile(address), this.syncBalance(address, chain)])
     }
   }
 
   private async syncNetwork() {
-    const { address } = getAccount()
+    const { address, isConnected } = getAccount()
     const { chain } = getNetwork()
     if (chain) {
       const chainId = String(chain.id)
       const caipChainId: CaipChainId = `${NAMESPACE}:${chainId}`
-      this.setNetwork(caipChainId)
-      if (address) {
+      this.setCaipNetwork(caipChainId)
+      if (isConnected && address) {
+        const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
+        this.setCaipAddress(caipAddress)
         await this.syncBalance(address, chain)
       }
     }
@@ -131,7 +137,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       connector =>
         ({
           id: connector.id,
-          name: connector.name,
+          name: connector.id === 'injected' ? 'Browser Wallet' : connector.name,
           type: connector.id === WALLET_CONNECT_ID ? 'WALLET_CONNECT' : 'EXTERNAL'
         }) as const
     )

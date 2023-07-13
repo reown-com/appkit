@@ -33,7 +33,7 @@ export const ConnectionController = {
 
   async connectWalletConnect() {
     await this._getClient().connectWalletConnect(uri => {
-      this.state.walletConnectUri = uri
+      state.walletConnectUri = uri
     })
   },
 
@@ -43,6 +43,6 @@ export const ConnectionController = {
 
   async disconnect() {
     await this._getClient().disconnect()
-    this.state.walletConnectUri = ''
+    state.walletConnectUri = ''
   }
 }
