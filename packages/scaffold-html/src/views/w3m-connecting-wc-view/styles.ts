@@ -5,4 +5,8 @@ export default css`
     display: block;
     width: 100%;
   }
+
+  wui-flex {
+    width: 100%;
+  }
 `
