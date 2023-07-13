@@ -11,6 +11,7 @@ import { copySvg } from '../../assets/svg/copy'
 import { cursorSvg } from '../../assets/svg/cursor'
 import { disconnectSvg } from '../../assets/svg/disconnect'
 import { externalLinkSvg } from '../../assets/svg/external-link'
+import { mailSvg } from '../../assets/svg/mail'
 import { searchSvg } from '../../assets/svg/search'
 import { swapSvg } from '../../assets/svg/swap'
 import { walletSvg } from '../../assets/svg/wallet'
@@ -30,6 +31,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   cursor: cursorSvg,
   disconnect: disconnectSvg,
   externalLink: externalLinkSvg,
+  mail: mailSvg,
   search: searchSvg,
   swap: swapSvg,
   wallet: walletSvg,
