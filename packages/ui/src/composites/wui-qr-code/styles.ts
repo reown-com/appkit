@@ -7,17 +7,7 @@ export default css`
     display: block;
     overflow: hidden;
     aspect-ratio: 1 / 1;
-    animation: fadeIn ease 0.2s;
     width: var(--local-size);
-  }
-
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
   }
 
   :host([data-theme='dark']) {
@@ -45,7 +35,7 @@ export default css`
   wui-icon {
     width: 100%;
     height: 100%;
-    color: var(--wui-color-blue-100) !important;
+    color: #3396ff !important;
     transform: translateY(-50%) translateX(-50%) scale(0.2);
   }
 `
