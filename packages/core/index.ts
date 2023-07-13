@@ -1,6 +1,9 @@
 // -- Controllers -------------------------------------------------------------
 export { ModalController } from './src/controllers/ModalController'
-export type { ModalControllerState } from './src/controllers/ModalController'
+export type {
+  ModalControllerArguments,
+  ModalControllerState
+} from './src/controllers/ModalController'
 
 export { RouterController } from './src/controllers/RouterController'
 export type { RouterControllerState } from './src/controllers/RouterController'
@@ -28,5 +31,5 @@ export type {
 } from './src/controllers/ConnectorController'
 
 // -- Utils -------------------------------------------------------------------
-export { HelperUtil } from './src/utils/HelperUtil'
+export { CoreHelperUtil } from './src/utils/CoreHelperUtil'
 export type { CaipAddress, CaipChainId } from './src/utils/TypeUtils'

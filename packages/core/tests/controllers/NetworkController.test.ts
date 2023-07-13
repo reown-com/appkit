@@ -3,12 +3,12 @@ import type { CaipChainId, NetworkControllerClient } from '../../index'
 import { NetworkController } from '../../index'
 
 // -- Setup --------------------------------------------------------------------
-const network = 'eip155:1'
-const requestedNetworks = ['eip155:1', 'eip155:2', 'eip155:3'] as CaipChainId[]
-const approvedNetworks = ['eip155:1', 'eip155:2'] as CaipChainId[]
+const caipNetwork = 'eip155:1'
+const requestedCaipNetworks = ['eip155:1', 'eip155:2', 'eip155:3'] as CaipChainId[]
+const approvedCaipNetworks = ['eip155:1', 'eip155:2'] as CaipChainId[]
 
 const client: NetworkControllerClient = {
-  switchNetwork: async _network => Promise.resolve()
+  switchCaipNetwork: async _caipNetwork => Promise.resolve()
 }
 
 // -- Tests --------------------------------------------------------------------
@@ -25,23 +25,23 @@ describe('ModalController', () => {
     })
   })
 
-  it('should update state correctly on setRequestedNetworks()', () => {
-    NetworkController.setRequestedNetworks(requestedNetworks)
-    expect(NetworkController.state.requestedNetworks).toEqual(requestedNetworks)
+  it('should update state correctly on setRequestedCaipNetworks()', () => {
+    NetworkController.setRequestedCaipNetworks(requestedCaipNetworks)
+    expect(NetworkController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks)
   })
 
-  it('should update state correctly on setApprovedNetworks()', () => {
-    NetworkController.setApprovedNetworks(approvedNetworks)
-    expect(NetworkController.state.approvedNetworks).toEqual(approvedNetworks)
+  it('should update state correctly on setApprovedCaipNetworks()', () => {
+    NetworkController.setApprovedCaipNetworks(approvedCaipNetworks)
+    expect(NetworkController.state.approvedCaipNetworks).toEqual(approvedCaipNetworks)
   })
 
-  it('should update state correctly on switchNetwork()', async () => {
-    await NetworkController.switchActiveNetwork(network)
-    expect(NetworkController.state.network).toEqual(network)
+  it('should update state correctly on switchCaipNetwork()', async () => {
+    await NetworkController.switchActiveNetwork(caipNetwork)
+    expect(NetworkController.state.caipNetwork).toEqual(caipNetwork)
   })
 
-  it('should update state correctly on setNetwork()', () => {
-    NetworkController.setNetwork(network)
-    expect(NetworkController.state.network).toEqual(network)
+  it('should update state correctly on setCaipNetwork()', () => {
+    NetworkController.setCaipNetwork(caipNetwork)
+    expect(NetworkController.state.caipNetwork).toEqual(caipNetwork)
   })
 })

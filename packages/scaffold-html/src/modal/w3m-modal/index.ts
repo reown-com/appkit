@@ -9,6 +9,9 @@ import styles from './styles'
 export class W3mModal extends LitElement {
   public static styles = styles
 
+  // -- Members ------------------------------------------- //
+  private unsubscribe: (() => void)[] = []
+
   // -- State & Properties -------------------------------- //
   @state() private open = ModalController.state.open
 
@@ -16,7 +19,13 @@ export class W3mModal extends LitElement {
     super()
     initializeTheming()
     setColorTheme('dark')
-    ModalController.subscribe('open', open => (open ? this.onOpen() : this.onClose()))
+    this.unsubscribe.push(
+      ModalController.subscribe('open', open => (open ? this.onOpen() : this.onClose()))
+    )
+  }
+
+  public disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //

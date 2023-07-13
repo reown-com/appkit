@@ -147,6 +147,10 @@ async function checkCorePackage() {
     if (!diff?.added.includes(CONTROLLER_COMMENT)) {
       fail(`${f} is missing \`${CONTROLLER_COMMENT}\` comment`)
     }
+
+    if (diff?.added.includes('this.state')) {
+      fail(`${f} is using this.state, use just state`)
+    }
   }
 
   if (created_core_controllers.length && !created_core_controllers_tests.length) {
@@ -185,6 +189,10 @@ async function checkScaffoldHtmlPackage() {
 
     if (!diff?.added.includes(`@customElement('w3m-`)) {
       fail(`${f} is a scaffold element, but does not define w3m- prefix`)
+    }
+
+    if (diff?.added.includes('.subscribe(') && !diff.added.includes('this.unsubscribe.forEach')) {
+      fail(`${f} is subscribing to controller states without unsubscribe logic`)
     }
   }
 }

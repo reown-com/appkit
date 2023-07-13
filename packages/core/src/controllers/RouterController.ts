@@ -4,7 +4,7 @@ import type { Connector } from './ConnectorController'
 
 // -- Types --------------------------------------------- //
 export interface RouterControllerState {
-  view: 'Account' | 'Connect' | 'Connecting' | 'Networks'
+  view: 'Account' | 'Connect' | 'ConnectingExternal' | 'Networks'
   history: RouterControllerState['view'][]
   data?: {
     connector: Connector
@@ -24,7 +24,7 @@ export const RouterController = {
   state,
 
   subscribe<K extends StateKey>(key: K, callback: (value: RouterControllerState[K]) => void) {
-    subscribeKey(state, key, callback)
+    return subscribeKey(state, key, callback)
   },
 
   push(view: RouterControllerState['view'], data?: RouterControllerState['data']) {

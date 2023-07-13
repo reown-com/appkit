@@ -1,12 +1,19 @@
-import type { ConnectionControllerClient, NetworkControllerClient } from '@web3modal/core'
+import type {
+  ConnectionControllerClient,
+  ModalControllerArguments,
+  NetworkControllerClient
+} from '@web3modal/core'
 import {
   AccountController,
   ConnectionController,
   ConnectorController,
-  HelperUtil,
+  CoreHelperUtil,
   ModalController,
   NetworkController
 } from '@web3modal/core'
+
+// -- Helpers -------------------------------------------------------------------
+let isInitialized = false
 
 // -- Types ---------------------------------------------------------------------
 interface Options {
@@ -19,14 +26,18 @@ export class Web3ModalScaffoldHtml {
   private initPromise?: Promise<void> = undefined
 
   public constructor(options: Options) {
+    if (isInitialized) {
+      throw new Error('Web3Modal is already initialized')
+    }
     this.setControllerClients(options)
     this.initOrContinue()
+    isInitialized = true
   }
 
   // -- Public -------------------------------------------------------------------
-  public async open() {
+  public async open(options?: ModalControllerArguments['open']) {
     await this.initOrContinue()
-    ModalController.open()
+    ModalController.open(options)
   }
 
   public async close() {
@@ -35,8 +46,12 @@ export class Web3ModalScaffoldHtml {
   }
 
   // -- Protected ----------------------------------------------------------------
-  protected setAddress: (typeof AccountController)['setAddress'] = address => {
-    AccountController.setAddress(address)
+  protected setIsConnected: (typeof AccountController)['setIsConnected'] = isConnected => {
+    AccountController.setIsConnected(isConnected)
+  }
+
+  protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = caipAddress => {
+    AccountController.setCaipAddress(caipAddress)
   }
 
   protected setBalance: (typeof AccountController)['setBalance'] = balance => {
@@ -51,8 +66,12 @@ export class Web3ModalScaffoldHtml {
     AccountController.setProfileImage(profileImage)
   }
 
-  protected setNetwork: (typeof NetworkController)['setNetwork'] = network => {
-    NetworkController.setNetwork(network)
+  protected resetAccount: (typeof AccountController)['resetAccount'] = () => {
+    AccountController.resetAccount()
+  }
+
+  protected setCaipNetwork: (typeof NetworkController)['setCaipNetwork'] = caipNetwork => {
+    NetworkController.setCaipNetwork(caipNetwork)
   }
 
   protected setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
@@ -66,7 +85,7 @@ export class Web3ModalScaffoldHtml {
   }
 
   private async initOrContinue() {
-    if (!this.initPromise && HelperUtil.isClient()) {
+    if (!this.initPromise && CoreHelperUtil.isClient()) {
       this.initPromise = new Promise<void>(async resolve => {
         await Promise.all([import('@web3modal/ui'), import('./modal/w3m-modal')])
         const modal = document.createElement('w3m-modal')

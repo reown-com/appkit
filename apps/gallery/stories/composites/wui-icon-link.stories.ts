@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-icon-link'
 import type { WuiIconLink } from '@web3modal/ui/src/composites/wui-icon-link'
 import { html } from 'lit'
-import { iconOptions } from '../../utils/PresetUtils'
+import { colorOptions, iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiIconLink>
 
@@ -11,7 +11,8 @@ export default {
   args: {
     size: 'md',
     disabled: false,
-    icon: 'copy'
+    icon: 'copy',
+    iconColor: 'inherit'
   },
 
   argTypes: {
@@ -26,6 +27,10 @@ export default {
     icon: {
       options: iconOptions,
       control: { type: 'select' }
+    },
+    iconColor: {
+      options: colorOptions,
+      control: { type: 'select' }
     }
   }
 } as Component
@@ -36,5 +41,6 @@ export const Default: Component = {
       ?disabled=${args.disabled}
       size=${args.size}
       icon=${args.icon}
+      iconColor=${args.iconColor}
     ></wui-icon-link>`
 }

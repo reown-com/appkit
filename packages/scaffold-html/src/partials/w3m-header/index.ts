@@ -1,4 +1,4 @@
-import { ModalController } from '@web3modal/core'
+import { ModalController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 
@@ -12,7 +12,7 @@ export class W3mHeader extends LitElement {
         justifyContent="space-between"
         alignItems="center"
       >
-        <wui-icon-link icon="copy"></wui-icon-link>
+        <wui-icon-link icon="copy" @click=${RouterController.goBack}></wui-icon-link>
         <wui-text variant="paragraph-700" color="fg-100">Connect wallet</wui-text>
         <wui-icon-link icon="close" @click=${ModalController.close}></wui-icon-link>
       </wui-flex>
