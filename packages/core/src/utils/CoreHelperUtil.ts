@@ -11,5 +11,9 @@ export const CoreHelperUtil = {
 
   truncateAddress(address: string) {
     return `${address.substring(0, 4)}...${address.substring(address.length - 4)}`
+  },
+
+  copyToClopboard(text: string) {
+    navigator.clipboard.writeText(text)
   }
 }

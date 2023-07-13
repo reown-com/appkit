@@ -37,10 +37,26 @@ export class W3mAccountView extends LitElement {
           <wui-text variant="large-600" color="fg-100">
             ${this.profileName ?? CoreHelperUtil.truncateAddress(this.address)}
           </wui-text>
-          <wui-icon-link size="lg" icon="copy" iconColor="fg-250"></wui-icon-link>
+          <wui-icon-link
+            size="md"
+            icon="copy"
+            iconColor="fg-200"
+            @click=${this.onCopyAddress}
+          ></wui-icon-link>
         </wui-flex>
       </wui-flex>
     `
+  }
+
+  // -- Private Methods ------------------------------------ //
+  private onCopyAddress() {
+    try {
+      if (this.address) {
+        CoreHelperUtil.copyToClopboard(this.address)
+      }
+    } catch {
+      // TASK: Show error toast
+    }
   }
 }
 
