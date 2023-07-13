@@ -38,4 +38,9 @@ describe('ModalController', () => {
     AccountController.setProfileImage(profileImage)
     expect(AccountController.state.profileImage).toEqual(profileImage)
   })
+
+  it('should update state correctly on resetAccount()', () => {
+    AccountController.resetAccount()
+    expect(AccountController.state).toEqual({ isConnected: false })
+  })
 })
