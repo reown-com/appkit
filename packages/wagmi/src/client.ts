@@ -53,9 +53,11 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
         if (!connector) {
           throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
         }
-        connector.once('message', event => {
+
+        connector.on('message', event => {
           if (event.type === 'display_uri') {
             onUri(event.data as string)
+            connector.removeAllListeners()
           }
         })
 

@@ -1,3 +1,4 @@
+import { ConstantsUtil } from './ConstantsUtil'
 import { CaipAddress } from './TypeUtils'
 
 export const CoreHelperUtil = {
@@ -5,8 +6,8 @@ export const CoreHelperUtil = {
     return typeof window !== 'undefined'
   },
 
-  getPlainAddress(caipAddress: CaipAddress) {
-    return caipAddress.split(':')[2]
+  isActivePairingExpiry(expiry: number) {
+    return expiry - Date.now() >= ConstantsUtil.ONE_MINUTE_MS
   },
 
   truncateAddress(address: string) {
@@ -15,5 +16,13 @@ export const CoreHelperUtil = {
 
   copyToClopboard(text: string) {
     navigator.clipboard.writeText(text)
+  },
+
+  getPairingExpiry() {
+    return Date.now() + ConstantsUtil.FIVE_MINUTES_MS
+  },
+
+  getPlainAddress(caipAddress: CaipAddress) {
+    return caipAddress.split(':')[2]
   }
 }

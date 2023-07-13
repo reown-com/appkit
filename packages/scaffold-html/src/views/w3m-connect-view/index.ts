@@ -44,7 +44,11 @@ export class W3mConnectView extends LitElement {
   }
 
   private onConnectorClick(connector: Connector) {
-    RouterController.push('ConnectingExternal', { connector })
+    if (connector.type === 'WALLET_CONNECT') {
+      RouterController.push('ConnectingWalletConnect', { connector })
+    } else {
+      RouterController.push('ConnectingWalletConnect', { connector })
+    }
   }
 }
 

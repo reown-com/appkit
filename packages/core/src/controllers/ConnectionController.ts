@@ -1,4 +1,6 @@
+import { subscribeKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil'
 
 // -- Types --------------------------------------------- //
 export interface ConnectionControllerClient {
@@ -10,7 +12,10 @@ export interface ConnectionControllerClient {
 export interface ConnectionControllerState {
   _client?: ConnectionControllerClient
   walletConnectUri?: string
+  walletConnectPromise?: Promise<void>
+  walletConnectPairingExpiry?: number
 }
+type StateKey = keyof ConnectionControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ConnectionControllerState>({})
@@ -18,6 +23,10 @@ const state = proxy<ConnectionControllerState>({})
 // -- Controller ---------------------------------------- //
 export const ConnectionController = {
   state,
+
+  subscribe<K extends StateKey>(key: K, callback: (value: ConnectionControllerState[K]) => void) {
+    return subscribeKey(state, key, callback)
+  },
 
   _getClient() {
     if (!state._client) {
@@ -31,10 +40,13 @@ export const ConnectionController = {
     state._client = ref(client)
   },
 
-  async connectWalletConnect() {
-    await this._getClient().connectWalletConnect(uri => {
-      state.walletConnectUri = uri
-    })
+  connectWalletConnect() {
+    state.walletConnectPromise = ref(
+      this._getClient().connectWalletConnect(uri => {
+        state.walletConnectUri = uri
+        state.walletConnectPairingExpiry = CoreHelperUtil.getPairingExpiry()
+      })
+    )
   },
 
   async connectExternal(id: string) {
