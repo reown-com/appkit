@@ -149,6 +149,7 @@ export const iconOptions: IconType[] = [
   'disconnect',
   'externalLink',
   'mail',
+  'networkPlaceholder',
   'search',
   'swap',
   'wallet',

@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { getSpacingStyles } from '../../utils/HelperUtils'
+import { UiHelperUtil } from '../../utils/UiHelperUtils'
 import { resetStyles } from '../../utils/ThemeUtil'
 import type {
   FlexAlignItemsType,
@@ -56,14 +56,14 @@ export class WuiFlex extends LitElement {
       column-gap: ${this.columnGap && `var(--wui-spacing-${this.columnGap})`};
       row-gap: ${this.rowGap && `var(--wui-spacing-${this.rowGap})`};
       gap: ${this.gap && `var(--wui-spacing-${this.gap})`};
-      padding-top: ${this.padding && getSpacingStyles(this.padding, 0)};
-      padding-right: ${this.padding && getSpacingStyles(this.padding, 1)};
-      padding-bottom: ${this.padding && getSpacingStyles(this.padding, 2)};
-      padding-left: ${this.padding && getSpacingStyles(this.padding, 3)};
-      margin-top: ${this.margin && getSpacingStyles(this.margin, 0)};
-      margin-right: ${this.margin && getSpacingStyles(this.margin, 1)};
-      margin-bottom: ${this.margin && getSpacingStyles(this.margin, 2)};
-      margin-left: ${this.margin && getSpacingStyles(this.margin, 3)};
+      padding-top: ${this.padding && UiHelperUtil.getSpacingStyles(this.padding, 0)};
+      padding-right: ${this.padding && UiHelperUtil.getSpacingStyles(this.padding, 1)};
+      padding-bottom: ${this.padding && UiHelperUtil.getSpacingStyles(this.padding, 2)};
+      padding-left: ${this.padding && UiHelperUtil.getSpacingStyles(this.padding, 3)};
+      margin-top: ${this.margin && UiHelperUtil.getSpacingStyles(this.margin, 0)};
+      margin-right: ${this.margin && UiHelperUtil.getSpacingStyles(this.margin, 1)};
+      margin-bottom: ${this.margin && UiHelperUtil.getSpacingStyles(this.margin, 2)};
+      margin-left: ${this.margin && UiHelperUtil.getSpacingStyles(this.margin, 3)};
     `
 
     return html`<slot></slot>`

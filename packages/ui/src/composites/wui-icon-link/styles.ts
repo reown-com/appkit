@@ -12,7 +12,7 @@ export default css`
   }
 
   button:disabled > wui-icon {
-    color: var(--wui-color-bg-300);
+    color: var(--wui-color-bg-300) !important;
   }
 
   button:disabled {
