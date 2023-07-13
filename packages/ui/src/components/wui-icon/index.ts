@@ -20,6 +20,7 @@ import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil'
 import styles from './styles'
+import { networkPlaceholderSvg } from '../../assets/svg/network-placeholder'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   arrowBottom: arrowBottomSvg,
@@ -33,6 +34,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   disconnect: disconnectSvg,
   externalLink: externalLinkSvg,
   mail: mailSvg,
+  networkPlaceholder: networkPlaceholderSvg,
   search: searchSvg,
   swap: swapSvg,
   wallet: walletSvg,

@@ -88,6 +88,7 @@ export type IconType =
   | 'disconnect'
   | 'externalLink'
   | 'mail'
+  | 'networkPlaceholder'
   | 'search'
   | 'swap'
   | 'wallet'

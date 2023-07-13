@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-image'
 import { resetStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
-import { generateAvatarColors } from '../../utils/HelperUtils'
+import { UiHelperUtil } from '../../utils/UiHelperUtils'
 
 @customElement('wui-avatar')
 export class WuiAvatar extends LitElement {
@@ -29,7 +29,7 @@ export class WuiAvatar extends LitElement {
       return html`<wui-image src=${this.imageSrc} alt=${this.alt}></wui-image>`
     } else if (this.address) {
       this.dataset.variant = 'generated'
-      const cssColors = generateAvatarColors(this.address)
+      const cssColors = UiHelperUtil.generateAvatarColors(this.address)
       this.style.cssText = cssColors
 
       return null

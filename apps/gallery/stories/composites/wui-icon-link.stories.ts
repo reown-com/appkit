@@ -14,10 +14,8 @@ export default {
     icon: 'copy',
     iconColor: 'inherit'
   },
-
   argTypes: {
     size: {
-      defaultValue: 'md',
       options: ['sm', 'md', 'lg'],
       control: { type: 'select' }
     },
