@@ -34,6 +34,7 @@ export default css`
   }
 
   wui-icon {
+    transform: translateY(-5%);
     width: 24px;
     height: 24px;
   }

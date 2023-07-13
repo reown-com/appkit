@@ -5,7 +5,7 @@ import '../../components/wui-text'
 import '../../components/wui-image'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { ChipType, IconType } from '../../utils/TypesUtil'
-import { getHostName } from '../../utils/HelperUtils'
+import { UiHelperUtil } from '../../utils/UiHelperUtils'
 import styles from './styles'
 
 @customElement('wui-chip')
@@ -28,7 +28,9 @@ export class WuiChip extends LitElement {
     return html`
       <a rel="noreferrer" target="_blank" href=${this.href} data-variant=${this.variant}>
         ${this.imageTemplate()}
-        <wui-text variant=${textVariant} color="inherit"> ${getHostName(this.href)} </wui-text>
+        <wui-text variant=${textVariant} color="inherit">
+          ${UiHelperUtil.getHostName(this.href)}
+        </wui-text>
         <wui-icon name=${this.icon} color="inherit" size="inherit"></wui-icon>
       </a>
     `
