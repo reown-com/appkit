@@ -91,7 +91,8 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
   private async syncAccount() {
     const { address, isConnected } = getAccount()
     const { chain } = getNetwork()
-    if (address && chain) {
+    this.resetAccount()
+    if (isConnected && address && chain) {
       const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
       this.setIsConnected(isConnected)
       this.setAddress(caipAddress)
@@ -100,13 +101,15 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
   }
 
   private async syncNetwork() {
-    const { address } = getAccount()
+    const { address, isConnected } = getAccount()
     const { chain } = getNetwork()
     if (chain) {
       const chainId = String(chain.id)
       const caipChainId: CaipChainId = `${NAMESPACE}:${chainId}`
       this.setNetwork(caipChainId)
-      if (address) {
+      if (isConnected && address) {
+        const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
+        this.setAddress(caipAddress)
         await this.syncBalance(address, chain)
       }
     }

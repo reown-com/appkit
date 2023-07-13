@@ -7,7 +7,7 @@ import {
   AccountController,
   ConnectionController,
   ConnectorController,
-  HelperUtil,
+  CoreHelperUtil,
   ModalController,
   NetworkController
 } from '@web3modal/core'
@@ -59,6 +59,10 @@ export class Web3ModalScaffoldHtml {
     AccountController.setProfileImage(profileImage)
   }
 
+  protected resetAccount: (typeof AccountController)['resetAccount'] = () => {
+    AccountController.resetAccount()
+  }
+
   protected setNetwork: (typeof NetworkController)['setNetwork'] = network => {
     NetworkController.setNetwork(network)
   }
@@ -74,7 +78,7 @@ export class Web3ModalScaffoldHtml {
   }
 
   private async initOrContinue() {
-    if (!this.initPromise && HelperUtil.isClient()) {
+    if (!this.initPromise && CoreHelperUtil.isClient()) {
       this.initPromise = new Promise<void>(async resolve => {
         await Promise.all([import('@web3modal/ui'), import('./modal/w3m-modal')])
         const modal = document.createElement('w3m-modal')
