@@ -32,7 +32,7 @@ export const AccountController = {
     this.state.isConnected = isConnected
   },
 
-  setAddress(caipAddress: AccountControllerState['caipAddress']) {
+  setCaipAddress(caipAddress: AccountControllerState['caipAddress']) {
     this.state.caipAddress = caipAddress
     this.state.address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
   },

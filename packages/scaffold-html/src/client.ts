@@ -43,8 +43,8 @@ export class Web3ModalScaffoldHtml {
     AccountController.setIsConnected(isConnected)
   }
 
-  protected setAddress: (typeof AccountController)['setAddress'] = address => {
-    AccountController.setAddress(address)
+  protected setCaipAddress: (typeof AccountController)['setCaipAddress'] = caipAddress => {
+    AccountController.setCaipAddress(caipAddress)
   }
 
   protected setBalance: (typeof AccountController)['setBalance'] = balance => {
@@ -63,8 +63,8 @@ export class Web3ModalScaffoldHtml {
     AccountController.resetAccount()
   }
 
-  protected setNetwork: (typeof NetworkController)['setNetwork'] = network => {
-    NetworkController.setNetwork(network)
+  protected setCaipNetwork: (typeof NetworkController)['setCaipNetwork'] = caipNetwork => {
+    NetworkController.setCaipNetwork(caipNetwork)
   }
 
   protected setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {

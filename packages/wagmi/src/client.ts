@@ -40,7 +40,8 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     }
 
     const networkControllerClient: NetworkControllerClient = {
-      async switchNetwork(chainId) {
+      async switchCaipNetwork(caipChainId) {
+        const chainId = caipChainId?.split(':')[1]
         const chainIdNumber = Number(chainId)
         await switchNetwork({ chainId: chainIdNumber })
       }
@@ -95,7 +96,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     if (isConnected && address && chain) {
       const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
       this.setIsConnected(isConnected)
-      this.setAddress(caipAddress)
+      this.setCaipAddress(caipAddress)
       await Promise.all([this.syncProfile(address), this.syncBalance(address, chain)])
     }
   }
@@ -106,10 +107,10 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     if (chain) {
       const chainId = String(chain.id)
       const caipChainId: CaipChainId = `${NAMESPACE}:${chainId}`
-      this.setNetwork(caipChainId)
+      this.setCaipNetwork(caipChainId)
       if (isConnected && address) {
         const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
-        this.setAddress(caipAddress)
+        this.setCaipAddress(caipAddress)
         await this.syncBalance(address, chain)
       }
     }
