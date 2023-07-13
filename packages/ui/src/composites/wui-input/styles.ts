@@ -82,15 +82,25 @@ export default css`
     left: 14px;
   }
 
-  input:placeholder-shown ~ ::slotted(wui-input-element) {
+  input:placeholder-shown ~ ::slotted(wui-input-element),
+  input:placeholder-shown ~ ::slotted(wui-icon) {
     opacity: 0;
+    pointer-events: none;
   }
 
-  ::slotted(wui-input-element) {
+  ::slotted(wui-input-element),
+  ::slotted(wui-icon) {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    right: 14px;
     transition: all var(--wui-ease-in-power-2) var(--wui-duration-md);
+  }
+
+  ::slotted(wui-input-element) {
+    right: 14px;
+  }
+
+  ::slotted(wui-icon) {
+    right: 0px;
   }
 `
