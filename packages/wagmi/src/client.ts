@@ -1,5 +1,6 @@
 import type { Address, Chain, Config } from '@wagmi/core'
 import {
+  connect,
   disconnect,
   fetchBalance,
   fetchEnsAvatar,
@@ -57,7 +58,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
           }
         })
 
-        await connector.connect()
+        await connect({ connector })
       },
 
       async connectExternal(id) {
@@ -66,7 +67,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
 
-        await connector.connect()
+        await connect({ connector })
       },
 
       disconnect
@@ -86,7 +87,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     watchNetwork(() => this.syncNetwork())
   }
 
-  // -- Private ------------------------------------------------------------------
+  // -- Private -----------------------------------------------------------------
   private async syncAccount() {
     const { address, isConnected } = getAccount()
     const { chain } = getNetwork()

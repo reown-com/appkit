@@ -1,4 +1,4 @@
-import { ConnectionController, RouterController } from '@web3modal/core'
+import { ConnectionController, ModalController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
@@ -76,6 +76,7 @@ export class W3mConnectingExternalView extends LitElement {
       this.error = false
       if (this.connector) {
         await ConnectionController.connectExternal(this.connector.id)
+        ModalController.close()
       }
     } catch {
       this.error = true
