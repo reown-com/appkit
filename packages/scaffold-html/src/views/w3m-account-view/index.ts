@@ -81,7 +81,7 @@ export class W3mAccountView extends LitElement {
         CoreHelperUtil.copyToClopboard(this.address)
       }
     } catch {
-      // TASK: Show error toast
+      // TODO: Show error toast
     }
   }
 }

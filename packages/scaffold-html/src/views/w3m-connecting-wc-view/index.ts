@@ -58,7 +58,7 @@ export class W3mConnectingWcView extends LitElement {
       try {
         await ConnectionController.state.walletConnectPromise
       } catch {
-        // TASK: Show toast erorr, retry logic
+        // TODO: Show toast error, retry logic
       }
     } else {
       ConnectionController.connectWalletConnect()
@@ -68,6 +68,7 @@ export class W3mConnectingWcView extends LitElement {
 
   private qrCodeTenmplate() {
     if (!this.uri || !this.size) {
+      // TODO: Create propper placeholder
       return html`<div style="width: 100%; aspect-ratio: 1 / 1;"></div>`
     }
 
@@ -80,7 +81,7 @@ export class W3mConnectingWcView extends LitElement {
         CoreHelperUtil.copyToClopboard(this.uri)
       }
     } catch {
-      // TASK: Show error toast
+      // TODO: Show error toast
     }
   }
 }
