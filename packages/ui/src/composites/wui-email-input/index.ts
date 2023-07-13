@@ -15,10 +15,12 @@ export class WuiEmailInput extends LitElement {
 
   // -- Render -------------------------------------------- //
   public render() {
-    return html` <wui-input placeholder="Email" icon="mail" size="md">
-        <wui-icon size="sm" color="inverse-100" name="chevronRight"></wui-icon>
+    return html`
+      <wui-input placeholder="Email" icon="mail" size="md">
+        <wui-icon size="inherit" color="fg-100" name="chevronRight"></wui-icon>
       </wui-input>
-      ${this.templateError()}`
+      ${this.templateError()}
+    `
   }
 
   // -- Private ------------------------------------------- //

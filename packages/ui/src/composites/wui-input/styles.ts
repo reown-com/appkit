@@ -101,6 +101,6 @@ export default css`
   }
 
   ::slotted(wui-icon) {
-    right: 16px;
+    right: 0px;
   }
 `

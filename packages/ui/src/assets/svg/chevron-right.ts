@@ -1,6 +1,6 @@
 import { svg } from 'lit'
 
-export const chevronRightSvg = svg`<svg fill="none" viewBox="0 0 14 14">
+export const chevronRightSvg = svg`<svg part="chevronRight" fill="none" viewBox="0 0 14 14">
   <path
     fill="currentColor"
     fill-rule="evenodd"
