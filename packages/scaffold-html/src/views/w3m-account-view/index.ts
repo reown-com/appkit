@@ -26,16 +26,19 @@ export class W3mAccountView extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" padding="l" alignItems="center">
+      <wui-flex flexDirection="column" padding="l" alignItems="center" gap="xs">
         <wui-avatar
           alt=${this.address}
           address=${this.address}
           imageSrc=${ifDefined(this.profileImage)}
         ></wui-avatar>
 
-        <wui-text variant="large-600" color="fg-100">
-          ${this.profileName ?? CoreHelperUtil.truncateAddress(this.address)}
-        </wui-text>
+        <wui-flex gap="3xs" alignItems="center">
+          <wui-text variant="large-600" color="fg-100">
+            ${this.profileName ?? CoreHelperUtil.truncateAddress(this.address)}
+          </wui-text>
+          <wui-icon-link size="lg" icon="copy" iconColor="fg-250"></wui-icon-link>
+        </wui-flex>
       </wui-flex>
     `
   }
