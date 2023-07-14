@@ -10,13 +10,7 @@ export class W3mConnectingWcQrcode extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() private uri?: string = undefined
 
-  @state() private size = 0
-
   @state() private ready = false
-
-  public firstUpdated() {
-    this.size = this.offsetWidth - 40
-  }
 
   // -- Render -------------------------------------------- //
   public render() {
@@ -38,17 +32,19 @@ export class W3mConnectingWcQrcode extends LitElement {
 
   // -- Private ------------------------------------------- //
   private isReady() {
-    if (this.uri && this.size) {
+    if (this.uri) {
       setTimeout(() => (this.ready = true), 250)
     }
   }
 
   private qrCodeTenmplate() {
-    if (!this.uri || !this.size || !this.ready) {
+    if (!this.uri || !this.ready) {
       return null
     }
 
-    return html`<wui-qr-code size=${this.size} theme="dark" uri=${this.uri}></wui-qr-code>`
+    const size = this.getBoundingClientRect().width - 40
+
+    return html`<wui-qr-code size=${size} theme="dark" uri=${this.uri}></wui-qr-code>`
   }
 
   private onCopyUri() {
