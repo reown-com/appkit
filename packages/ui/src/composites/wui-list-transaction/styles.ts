@@ -7,15 +7,27 @@ export default css`
     width: 100%;
     background-color: var(--wui-overlay-002);
     border-radius: var(--wui-border-radius-xs);
+    color: var(--wui-color-fg-250);
   }
 
-  button > wui-text:nth-child(2) {
-    display: flex;
+  wui-transaction-visual {
+    width: 40px;
+    height: 40px;
+  }
+
+  wui-flex {
     flex: 1;
   }
 
-  button:disabled > wui-tag {
-    background-color: var(--wui-overlay-010);
+  button > wui-flex > wui-text:nth-child(1) {
+    text-transform: capitalize;
+  }
+
+  button > wui-flex > wui-text:nth-child(2) {
+    text-transform: uppercase;
+  }
+
+  button:disabled {
     color: var(--wui-color-fg-300);
   }
 `

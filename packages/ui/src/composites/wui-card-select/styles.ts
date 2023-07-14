@@ -16,6 +16,7 @@ export default css`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    justify-content: center;
   }
 
   button:disabled > wui-text {

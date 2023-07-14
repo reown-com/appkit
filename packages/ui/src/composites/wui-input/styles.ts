@@ -63,7 +63,7 @@ export default css`
   }
 
   wui-icon + .wui-size-sm {
-    padding: 9px 14px 10px 38px;
+    padding: 9px 14px 10px 36px;
   }
 
   wui-icon[size='md'] {

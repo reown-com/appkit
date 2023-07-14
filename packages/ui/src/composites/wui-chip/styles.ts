@@ -36,7 +36,7 @@ export default css`
   a[data-variant='fill'],
   a[data-variant='shade'] {
     column-gap: var(--wui-spacing-xs);
-    padding: 8.5px 14px 9.5px 8px;
+    padding: 6px 14px 6px 8px;
   }
 
   a[data-variant='fill']:has(wui-text:first-child),
@@ -74,9 +74,16 @@ export default css`
     height: 10px;
   }
 
-  a[data-variant='fill']:focus {
-    border: 1px solid var(--wui-overlay-010);
-    background-color: var(--wui-color-blue-080);
+  a[data-variant='fill']:focus-visible {
+    background-color: var(--wui-color-blue-090);
+  }
+
+  a[data-variant='shade']:focus-visible {
+    background-color: var(--wui-overlay-015);
+  }
+
+  a[data-variant='transparent']:focus-visible {
+    background-color: var(--wui-overlay-005);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -90,6 +97,18 @@ export default css`
 
     a[data-variant='transparent']:hover {
       background-color: var(--wui-overlay-005);
+    }
+
+    a[data-variant='fill']:active {
+      background-color: var(--wui-color-blue-080);
+    }
+
+    a[data-variant='shade']:active {
+      background-color: var(--wui-overlay-020);
+    }
+
+    a[data-variant='transparent']:active {
+      background-color: var(--wui-overlay-010);
     }
   }
 `

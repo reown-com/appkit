@@ -2,10 +2,17 @@ import { css } from 'lit'
 
 export default css`
   :host {
+    display: flex !important;
+  }
+
+  slot {
     display: inline-block;
     font-style: normal;
     font-family: var(--wui-font-family);
-    font-feature-settings: var(--wui-font-feature-settings);
+    font-feature-settings:
+      'tnum' on,
+      'lnum' on,
+      'case' on;
     line-height: 130%;
     font-weight: var(--wui-font-weight-regular);
   }

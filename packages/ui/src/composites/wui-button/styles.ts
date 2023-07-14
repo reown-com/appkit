@@ -47,6 +47,10 @@ export default css`
     color: var(--wui-color-bg-300);
   }
 
+  button[data-variant='fill']:focus-visible {
+    background-color: var(--wui-color-blue-090);
+  }
+
   @media (hover: hover) and (pointer: fine) {
     button[data-variant='fill']:hover:enabled {
       background-color: var(--wui-color-blue-090);
