@@ -1,4 +1,9 @@
-import { AccountController, CoreHelperUtil } from '@web3modal/core'
+import {
+  AccountController,
+  ConnectionController,
+  CoreHelperUtil,
+  ModalController
+} from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -67,7 +72,12 @@ export class W3mAccountView extends LitElement {
         <wui-list-item variant="icon" iconVariant="overlay" icon="networkPlaceholder">
           <wui-text variant="paragraph-500" color="fg-100">${this.balance ?? '_._'}</wui-text>
         </wui-list-item>
-        <wui-list-item variant="icon" iconVariant="overlay" icon="disconnect">
+        <wui-list-item
+          variant="icon"
+          iconVariant="overlay"
+          icon="disconnect"
+          @click=${this.onDisconnect.bind(this)}
+        >
           <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
         </wui-list-item>
       </wui-flex>
@@ -83,6 +93,11 @@ export class W3mAccountView extends LitElement {
     } catch {
       // TASK: Show error toast
     }
+  }
+
+  private async onDisconnect() {
+    await ConnectionController.disconnect()
+    ModalController.close()
   }
 }
 
