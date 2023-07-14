@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import { resetStyles } from '../../utils/ThemeUtil'
 import '../../components/wui-icon'
 import '../../components/wui-text'
-import '../../composites/wui-input'
+import '../wui-input-text'
 import styles from './styles'
 
 @customElement('wui-email-input')
@@ -16,9 +16,9 @@ export class WuiEmailInput extends LitElement {
   // -- Render -------------------------------------------- //
   public render() {
     return html`
-      <wui-input placeholder="Email" icon="mail" size="md">
+      <wui-input-text placeholder="Email" icon="mail" size="md">
         <wui-icon size="inherit" color="fg-100" name="chevronRight"></wui-icon>
-      </wui-input>
+      </wui-input-text>
       ${this.templateError()}
     `
   }
