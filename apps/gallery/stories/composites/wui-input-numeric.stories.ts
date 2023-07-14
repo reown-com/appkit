@@ -7,9 +7,17 @@ import { html } from 'lit'
 type Component = Meta<WuiInputNumeric>
 
 export default {
-  title: 'Composites/wui-input-numeric'
+  title: 'Composites/wui-input-numeric',
+  args: {
+    disabled: false
+  },
+  argTypes: {
+    disabled: {
+      control: { type: 'boolean' }
+    }
+  }
 } as Component
 
 export const Default: Component = {
-  render: () => html` <wui-input-numeric></wui-input-numeric>`
+  render: args => html` <wui-input-numeric ?disabled=${args.disabled}></wui-input-numeric>`
 }
