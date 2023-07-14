@@ -14,7 +14,7 @@ export default css`
     background-color: var(--wui-color-inverse-100);
     border-radius: var(--wui-border-radius-m);
     box-shadow: 0 2px 5px var(--wui-color-inverse-000);
-    padding: 16px;
+    padding: var(--wui-spacing-l);
   }
 
   svg:first-child,

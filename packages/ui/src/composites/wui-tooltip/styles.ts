@@ -3,7 +3,7 @@ import { css } from 'lit'
 export default css`
   :host {
     display: block;
-    padding: 9px 12px 10px 12px;
+    padding: 9px var(--wui-spacing-s) 10px var(--wui-spacing-s);
     border-radius: var(--wui-border-radius-xxs);
     background-color: var(--wui-color-fg-100);
     color: var(--wui-color-bg-100);

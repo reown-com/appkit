@@ -4,11 +4,11 @@ export default css`
   :host {
     display: block;
     position: relative;
+    width: 40px;
+    height: 40px;
   }
 
   wui-image {
-    width: 48px;
-    height: 48px;
     border-radius: var(--wui-border-radius-3xl);
     border: 1px solid var(--wui-overlay-010);
     display: block;
