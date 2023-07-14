@@ -1,0 +1,106 @@
+import { css } from 'lit'
+
+export default css`
+  :host {
+    position: relative;
+    width: 100%;
+    display: inline-block;
+    color: var(--wui-color-fg-275);
+  }
+
+  input {
+    width: 100%;
+    border-radius: var(--wui-border-radius-xxs);
+    border: 1px solid var(--wui-overlay-005);
+    background: var(--wui-overlay-005);
+    font-size: var(--wui-font-size-paragraph);
+    font-weight: var(--wui-font-weight-regular);
+    letter-spacing: var(--wui-letter-spacing-paragraph);
+    color: var(--wui-color-fg-100);
+    transition: all var(--wui-ease-inout-power-2) var(--wui-duration-lg);
+    caret-color: var(--wui-color-blue-100);
+  }
+
+  input:disabled {
+    cursor: not-allowed;
+    border: 1px solid var(--wui-overlay-010);
+    background: var(--wui-overlay-015);
+  }
+
+  input:disabled::placeholder,
+  input:disabled + wui-icon {
+    color: var(--wui-color-fg-300);
+  }
+
+  input::placeholder {
+    color: var(--wui-color-fg-275);
+  }
+
+  input:focus:enabled {
+    transition: all var(--wui-ease-out-power-4) var(--wui-duration-sm);
+    background-color: var(--wui-overlay-010);
+    border: 1px solid var(--wui-color-blue-100);
+    -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+    -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+    box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    input:hover:enabled {
+      background-color: var(--wui-overlay-010);
+    }
+  }
+
+  wui-icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  .wui-size-sm {
+    padding: 9px 14px 10px 12px;
+  }
+
+  wui-icon + .wui-size-sm {
+    padding: 9px 14px 10px 38px;
+  }
+
+  wui-icon[size='md'] {
+    left: 12px;
+  }
+
+  .wui-size-md {
+    padding: 15px 14px 16px 14px;
+  }
+
+  wui-icon + .wui-size-md {
+    padding: 15px 14px 16px 42px;
+  }
+
+  wui-icon[size='lg'] {
+    left: 14px;
+  }
+
+  input:placeholder-shown ~ ::slotted(wui-input-element),
+  input:placeholder-shown ~ ::slotted(wui-icon) {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  ::slotted(wui-input-element),
+  ::slotted(wui-icon) {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all var(--wui-ease-in-power-2) var(--wui-duration-md);
+  }
+
+  ::slotted(wui-input-element) {
+    right: 14px;
+  }
+
+  ::slotted(wui-icon) {
+    right: 0px;
+  }
+`
