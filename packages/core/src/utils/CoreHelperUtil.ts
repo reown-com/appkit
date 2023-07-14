@@ -6,8 +6,12 @@ export const CoreHelperUtil = {
     return typeof window !== 'undefined'
   },
 
-  isActivePairingExpiry(expiry: number) {
-    return expiry - Date.now() >= ConstantsUtil.ONE_MINUTE_MS
+  isPairingExpired(expiry?: number) {
+    return expiry ? expiry - Date.now() <= ConstantsUtil.TEN_SEC_MS : true
+  },
+
+  isAllowedRetry(lastRetry: number) {
+    return Date.now() - lastRetry >= ConstantsUtil.ONE_SEC_MS
   },
 
   truncateAddress(address: string) {
@@ -19,7 +23,7 @@ export const CoreHelperUtil = {
   },
 
   getPairingExpiry() {
-    return Date.now() + ConstantsUtil.FIVE_MINUTES_MS
+    return Date.now() + ConstantsUtil.FOUR_MINUTES_MS
   },
 
   getPlainAddress(caipAddress: CaipAddress) {

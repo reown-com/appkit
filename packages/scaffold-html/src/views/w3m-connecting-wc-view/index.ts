@@ -1,31 +1,34 @@
-import { ConnectionController, CoreHelperUtil } from '@web3modal/core'
+import {
+  ConnectionController,
+  ConstantsUtil,
+  CoreHelperUtil,
+  ModalController
+} from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
+import styles from './styles'
 
 @customElement('w3m-connecting-wc-view')
 export class W3mConnectingWcView extends LitElement {
+  public static styles = styles
+
   // -- Members ------------------------------------------- //
   private usnubscribe: (() => void)[] = []
 
-  // -- State & Properties -------------------------------- //
-  @state() private uri = ConnectionController.state.walletConnectUri
+  private interval?: ReturnType<typeof setTimeout> = undefined
 
-  @state() private expiry = ConnectionController.state.walletConnectPairingExpiry
+  private lastRetry = Date.now()
+
+  // -- State & Properties -------------------------------- //
+  @state() private uri = ConnectionController.state.wcUri
 
   @state() private size = 0
 
   public constructor() {
     super()
-    this.usnubscribe.push(
-      ...[
-        ConnectionController.subscribe('walletConnectUri', uri => (this.uri = uri)),
-        ConnectionController.subscribe(
-          'walletConnectPairingExpiry',
-          expiry => (this.expiry = expiry)
-        )
-      ]
-    )
+    this.usnubscribe.push(ConnectionController.subscribe('wcUri', uri => (this.uri = uri)))
     this.initializeConnection()
+    this.interval = setInterval(this.initializeConnection.bind(this), ConstantsUtil.TEN_SEC_MS)
   }
 
   public firstUpdated() {
@@ -33,6 +36,7 @@ export class W3mConnectingWcView extends LitElement {
   }
 
   public disconnectedCallback() {
+    clearTimeout(this.interval)
     this.usnubscribe.forEach(unsubscribe => unsubscribe())
   }
 
@@ -53,23 +57,25 @@ export class W3mConnectingWcView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private async initializeConnection() {
-    if (this.expiry && CoreHelperUtil.isActivePairingExpiry(this.expiry)) {
-      try {
-        await ConnectionController.state.walletConnectPromise
-      } catch {
-        // TODO: Show toast error, retry logic
+  private async initializeConnection(retry = false) {
+    try {
+      const { wcPairingExpiry } = ConnectionController.state
+      if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
+        ConnectionController.connectWalletConnect()
+        await ConnectionController.state.wcPromise
+        ModalController.close()
       }
-    } else {
-      ConnectionController.connectWalletConnect()
-      await ConnectionController.state.walletConnectPromise
+    } catch {
+      if (CoreHelperUtil.isAllowedRetry(this.lastRetry)) {
+        this.lastRetry = Date.now()
+        this.initializeConnection(true)
+      }
     }
   }
 
   private qrCodeTenmplate() {
     if (!this.uri || !this.size) {
-      // TODO: Create propper placeholder
-      return html`<div style="width: 100%; aspect-ratio: 1 / 1;"></div>`
+      return html`<wui-shimmer borderRadius="l" width="100%"></wui-shimmer>`
     }
 
     return html`<wui-qr-code size=${this.size} theme="dark" uri=${this.uri}></wui-qr-code>`

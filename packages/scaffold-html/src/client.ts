@@ -78,6 +78,10 @@ export class Web3ModalScaffoldHtml {
     ConnectorController.setConnectors(connectors)
   }
 
+  protected resetWcConnection: (typeof ConnectionController)['resetWcConnection'] = () => {
+    ConnectionController.resetWcConnection()
+  }
+
   // -- Private ------------------------------------------------------------------
   private setControllerClients(options: Options) {
     NetworkController.setClient(options.networkControllerClient)

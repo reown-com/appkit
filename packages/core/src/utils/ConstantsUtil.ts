@@ -1,5 +1,7 @@
 export const ConstantsUtil = {
-  FIVE_MINUTES_MS: 300_000,
+  FOUR_MINUTES_MS: 240_000,
 
-  ONE_MINUTE_MS: 60_000
+  TEN_SEC_MS: 10_000,
+
+  ONE_SEC_MS: 1_000
 }

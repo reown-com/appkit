@@ -11,9 +11,9 @@ export interface ConnectionControllerClient {
 
 export interface ConnectionControllerState {
   _client?: ConnectionControllerClient
-  walletConnectUri?: string
-  walletConnectPromise?: Promise<void>
-  walletConnectPairingExpiry?: number
+  wcUri?: string
+  wcPromise?: Promise<void>
+  wcPairingExpiry?: number
 }
 type StateKey = keyof ConnectionControllerState
 
@@ -41,20 +41,23 @@ export const ConnectionController = {
   },
 
   connectWalletConnect() {
-    state.walletConnectPromise = ref(
-      this._getClient().connectWalletConnect(uri => {
-        state.walletConnectUri = uri
-        state.walletConnectPairingExpiry = CoreHelperUtil.getPairingExpiry()
-      })
-    )
+    state.wcPromise = this._getClient().connectWalletConnect(uri => {
+      state.wcUri = uri
+      state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
+    })
   },
 
   async connectExternal(id: string) {
     await this._getClient().connectExternal?.(id)
   },
 
+  resetWcConnection() {
+    state.wcUri = undefined
+    state.wcPairingExpiry = undefined
+    state.wcPromise = undefined
+  },
+
   async disconnect() {
     await this._getClient().disconnect()
-    state.walletConnectUri = ''
   }
 }

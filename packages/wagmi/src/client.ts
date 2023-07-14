@@ -95,6 +95,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     const { address, isConnected } = getAccount()
     const { chain } = getNetwork()
     this.resetAccount()
+    this.resetWcConnection()
     if (isConnected && address && chain) {
       const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
       this.setIsConnected(isConnected)
