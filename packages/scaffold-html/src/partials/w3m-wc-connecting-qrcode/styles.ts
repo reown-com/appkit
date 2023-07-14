@@ -13,10 +13,14 @@ export default css`
   wui-shimmer {
     width: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: var(--wui-border-radius-m);
+    border-radius: var(--wui-border-radius-m) !important;
   }
 
   wui-qr-code {
-    animation: fadein ease 200ms;
+    opacity: 0;
+    animation-duration: 300ms;
+    animation-timing-function: ease;
+    animation-name: fadein;
+    animation-fill-mode: forwards;
   }
 `

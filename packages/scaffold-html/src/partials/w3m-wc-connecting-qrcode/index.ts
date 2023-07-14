@@ -41,7 +41,6 @@ export class W3mConnectingWcQrcode extends LitElement {
     if (!this.uri || !this.ready) {
       return null
     }
-
     const size = this.getBoundingClientRect().width - 40
 
     return html`<wui-qr-code size=${size} theme="dark" uri=${this.uri}></wui-qr-code>`
