@@ -42,12 +42,6 @@ export default css`
     box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
   }
 
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
   @media (hover: hover) and (pointer: fine) {
     input:hover:enabled {
       background-color: var(--wui-overlay-010);
