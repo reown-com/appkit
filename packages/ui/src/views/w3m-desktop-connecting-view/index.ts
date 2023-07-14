@@ -57,6 +57,7 @@ export class W3mDesktopConnectingView extends LitElement {
         title=${name}
         .onAction=${UiUtil.handleUriCopy}
         .actionIcon=${SvgUtil.COPY_ICON}
+        data-testid="view-desktop-connecting-header"
       ></w3m-modal-header>
 
       <w3m-modal-content>
@@ -65,10 +66,11 @@ export class W3mDesktopConnectingView extends LitElement {
           imageId=${image_id}
           label=${`Continue in ${name}...`}
           .isError=${this.isError}
+          data-testid="view-desktop-connecting-waiting"
         ></w3m-connector-waiting>
       </w3m-modal-content>
 
-      <w3m-info-footer>
+      <w3m-info-footer data-testid="view-desktop-connecting-footer">
         <w3m-text color="secondary" variant="small-thin">
           ${`Connection can continue loading if ${name} is not installed on your device`}
         </w3m-text>
@@ -79,7 +81,11 @@ export class W3mDesktopConnectingView extends LitElement {
           .isWeb=${isWeb}
           .isRetry=${true}
         >
-          <w3m-button .onClick=${this.openDesktopApp.bind(this)} .iconRight=${SvgUtil.RETRY_ICON}>
+          <w3m-button
+            .onClick=${this.openDesktopApp.bind(this)}
+            .iconRight=${SvgUtil.RETRY_ICON}
+            data-testid="view-desktop-connecting-retry-button"
+          >
             Retry
           </w3m-button>
         </w3m-platform-selection>

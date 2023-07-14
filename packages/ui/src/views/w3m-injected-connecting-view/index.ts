@@ -38,9 +38,9 @@ export class W3mInjectedConnectingView extends LitElement {
     const { isMobile, isDesktop, isWeb } = UiUtil.getCachedRouterWalletPlatforms()
 
     return html`
-      <w3m-modal-header title=${name}></w3m-modal-header>
+      <w3m-modal-header title=${name} data-testid="view-injected-header"></w3m-modal-header>
 
-      <w3m-modal-content>
+      <w3m-modal-content data-testid="view-injected-content">
         <w3m-connector-waiting
           walletId=${id}
           imageId=${image_id}
@@ -49,7 +49,7 @@ export class W3mInjectedConnectingView extends LitElement {
         ></w3m-connector-waiting>
       </w3m-modal-content>
 
-      <w3m-info-footer>
+      <w3m-info-footer data-testid="view-injected-footer">
         <w3m-text color="secondary" variant="small-thin">
           Connection can be declined if multiple wallets are installed or previous request is still
           active
