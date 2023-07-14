@@ -64,7 +64,7 @@ export class W3mAccountView extends LitElement {
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['3xs', 'l', 'l', 'l'] as const}>
-        <wui-list-item variant="icon" iconVariant="overlay" icon="disconnect">
+        <wui-list-item variant="icon" iconVariant="overlay" icon="networkPlaceholder">
           <wui-text variant="paragraph-500" color="fg-100">${this.balance ?? '_._'}</wui-text>
         </wui-list-item>
         <wui-list-item variant="icon" iconVariant="overlay" icon="disconnect">
@@ -81,7 +81,7 @@ export class W3mAccountView extends LitElement {
         CoreHelperUtil.copyToClopboard(this.address)
       }
     } catch {
-      // TODO: Show error toast
+      // TASK: Show error toast
     }
   }
 }

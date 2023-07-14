@@ -6,12 +6,10 @@ import {
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import styles from './styles'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connecting-wc-view')
 export class W3mConnectingWcView extends LitElement {
-  public static styles = styles
-
   // -- Members ------------------------------------------- //
   private usnubscribe: (() => void)[] = []
 
@@ -22,17 +20,11 @@ export class W3mConnectingWcView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private uri = ConnectionController.state.wcUri
 
-  @state() private size = 0
-
   public constructor() {
     super()
     this.usnubscribe.push(ConnectionController.subscribe('wcUri', uri => (this.uri = uri)))
     this.initializeConnection()
     this.interval = setInterval(this.initializeConnection.bind(this), ConstantsUtil.TEN_SEC_MS)
-  }
-
-  public firstUpdated() {
-    this.size = this.offsetWidth - 40
   }
 
   public disconnectedCallback() {
@@ -42,18 +34,7 @@ export class W3mConnectingWcView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public render() {
-    return html`
-      <wui-flex .padding=${['s', 'xl', 'xl', 'xl'] as const} flexDirection="column" gap="s">
-        <wui-flex justifyContent="space-between" alignItems="center">
-          <wui-text variant="paragraph-500" color="fg-100">
-            Scan this QR Code with your phone
-          </wui-text>
-          <wui-icon-link size="md" icon="copy" @click=${this.onCopyUri}></wui-icon-link>
-        </wui-flex>
-
-        ${this.qrCodeTenmplate()}
-      </wui-flex>
-    `
+    return html`<w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>`
   }
 
   // -- Private ------------------------------------------- //
@@ -70,24 +51,6 @@ export class W3mConnectingWcView extends LitElement {
         this.lastRetry = Date.now()
         this.initializeConnection(true)
       }
-    }
-  }
-
-  private qrCodeTenmplate() {
-    if (!this.uri || !this.size) {
-      return html`<wui-shimmer borderRadius="l" width="100%"></wui-shimmer>`
-    }
-
-    return html`<wui-qr-code size=${this.size} theme="dark" uri=${this.uri}></wui-qr-code>`
-  }
-
-  private onCopyUri() {
-    try {
-      if (this.uri) {
-        CoreHelperUtil.copyToClopboard(this.uri)
-      }
-    } catch {
-      // TODO: Show error toast
     }
   }
 }
