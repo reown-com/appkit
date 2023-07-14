@@ -25,23 +25,24 @@ export default css`
   a[data-variant='transparent'] {
     column-gap: var(--wui-spacing-xxs);
     background-color: transparent;
-    padding: 7px 12px 7px 10px;
+    padding: 7px var(--wui-spacing-s) 7px 10px;
     color: var(--wui-color-fg-150);
   }
 
   a[data-variant='transparent']:has(wui-text:first-child) {
-    padding: 7px 12px;
+    padding: 7px var(--wui-spacing-s);
   }
 
   a[data-variant='fill'],
   a[data-variant='shade'] {
     column-gap: var(--wui-spacing-xs);
-    padding: 6px 14px 6px 8px;
+    padding: var(--wui-spacing-xxs) var(--wui-spacing-m) var(--wui-spacing-xxs)
+      var(--wui-spacing-xs);
   }
 
   a[data-variant='fill']:has(wui-text:first-child),
   a[data-variant='shade']:has(wui-text:first-child) {
-    padding: 8.5px 14px 9.5px 14px;
+    padding: 8.5px var(--wui-spacing-m) 9.5px var(--wui-spacing-m);
   }
 
   a[data-variant='fill'] > wui-image,

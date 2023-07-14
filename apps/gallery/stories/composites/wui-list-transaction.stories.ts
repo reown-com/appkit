@@ -14,7 +14,7 @@ export default {
     disabled: false,
     imageSrc:
       'https://uploads-ssl.webflow.com/61fe6bb74158b468a1112105/61fe8900148b6e6ee7c2c4e4_Profile%20Pic_Smoker-p-500.jpeg',
-    date: 'Jun 13',
+    date: new Date(),
     transactionDetail: '+0.8 Socks'
   },
   argTypes: {
@@ -30,7 +30,7 @@ export const Default: Component = {
     html` <gallery-container width="336">
       <wui-list-transaction
         type=${args.type}
-        date=${args.date}
+        .date=${args.date}
         imageSrc=${args.imageSrc}
         transactionDetail=${args.transactionDetail}
         ?disabled=${args.disabled}

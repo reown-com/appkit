@@ -12,6 +12,10 @@ export const UiHelperUtil = {
     return undefined
   },
 
+  getFormattedDate(date: Date) {
+    return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date)
+  },
+
   getHostName(url: string) {
     const newUrl = new URL(url)
 

@@ -15,7 +15,7 @@ export default css`
   }
 
   button[data-size='md'] {
-    padding: 9px 16px;
+    padding: 9px var(--wui-spacing-l);
   }
 
   button[data-variant='fill'] {

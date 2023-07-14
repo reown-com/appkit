@@ -3,7 +3,7 @@ import { css } from 'lit'
 export default css`
   button {
     column-gap: var(--wui-spacing-s);
-    padding: 7px 16px 7px 8px;
+    padding: 7px var(--wui-spacing-l) 7px var(--wui-spacing-xs);
     width: 100%;
     background-color: var(--wui-overlay-002);
     border-radius: var(--wui-border-radius-xs);

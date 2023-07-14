@@ -5,6 +5,7 @@ import '../wui-transaction-visual'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
 import type { TransactionType } from '../../utils/TypesUtil'
+import { UiHelperUtil } from '../../utils/UiHelperUtils'
 
 @customElement('wui-list-transaction')
 export class WuiListTransaction extends LitElement {
@@ -17,7 +18,7 @@ export class WuiListTransaction extends LitElement {
 
   @property() public imageSrc = ''
 
-  @property() public date = ''
+  @property({ attribute: false }) public date: Date = new Date()
 
   @property() public transactionDetail = ''
 
@@ -25,6 +26,8 @@ export class WuiListTransaction extends LitElement {
   public render() {
     const isSent = this.type === 'nftSent' || this.type === 'cryptoSent'
     const title = isSent ? 'Sent' : this.type
+
+    const formattedDate = UiHelperUtil.getFormattedDate(this.date)
 
     return html`
       <button ?disabled=${this.disabled}>
@@ -36,7 +39,7 @@ export class WuiListTransaction extends LitElement {
           <wui-text variant="paragraph-600" color="fg-100">${title}</wui-text>
           <wui-text variant="small-500" color="fg-200">${this.transactionDetail}</wui-text>
         </wui-flex>
-        <wui-text variant="micro-700" color="fg-300">${this.date}</wui-text>
+        <wui-text variant="micro-700" color="fg-300">${formattedDate}</wui-text>
       </button>
     `
   }

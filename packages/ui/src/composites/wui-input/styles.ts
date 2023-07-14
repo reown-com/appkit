@@ -59,27 +59,27 @@ export default css`
   }
 
   .wui-size-sm {
-    padding: 9px 14px 10px 12px;
+    padding: 9px var(--wui-spacing-m) 10px var(--wui-spacing-s);
   }
 
   wui-icon + .wui-size-sm {
-    padding: 9px 14px 10px 36px;
+    padding: 9px var(--wui-spacing-m) 10px 36px;
   }
 
   wui-icon[size='md'] {
-    left: 12px;
+    left: var(--wui-spacing-s);
   }
 
   .wui-size-md {
-    padding: 15px 14px 16px 14px;
+    padding: 15px var(--wui-spacing-m) var(--wui-spacing-l) var(--wui-spacing-m);
   }
 
   wui-icon + .wui-size-md {
-    padding: 15px 14px 16px 42px;
+    padding: 15px var(--wui-spacing-m) var(--wui-spacing-l) 42px;
   }
 
   wui-icon[size='lg'] {
-    left: 14px;
+    left: var(--wui-spacing-m);
   }
 
   input:placeholder-shown ~ ::slotted(wui-input-element),
@@ -97,7 +97,7 @@ export default css`
   }
 
   ::slotted(wui-input-element) {
-    right: 14px;
+    right: var(--wui-spacing-m);
   }
 
   ::slotted(wui-icon) {

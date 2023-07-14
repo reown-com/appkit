@@ -7,7 +7,7 @@ export default css`
   }
 
   wui-icon {
-    padding: 16px;
+    padding: var(--wui-spacing-xl);
     cursor: pointer;
     transition: all var(--wui-duration-lg) var(--wui-ease-in-power-1);
   }
@@ -22,6 +22,6 @@ export default css`
   }
 
   wui-text {
-    margin: 6px 14px 0px 14px;
+    margin: var(--wui-spacing-xxs) var(--wui-spacing-m) var(--wui-spacing-0) var(--wui-spacing-m);
   }
 `
