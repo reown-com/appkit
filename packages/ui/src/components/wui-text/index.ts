@@ -21,7 +21,7 @@ export class WuiText extends LitElement {
       [`wui-color-${this.color}`]: true
     }
 
-    return html`<slot class=${classMap(classes)}></span>`
+    return html` <slot class=${classMap(classes)}></slot>`
   }
 }
 
