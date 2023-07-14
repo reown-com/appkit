@@ -12,7 +12,7 @@ export default css`
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: 2px;
+    gap: var(--wui-spacing-4xs);
     padding: 3.5px !important;
   }
 

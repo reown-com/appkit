@@ -5,7 +5,7 @@ export default css`
     flex-direction: column;
     width: 100%;
     row-gap: var(--wui-spacing-xs);
-    padding: 8px 0px;
+    padding: var(--wui-spacing-xs) var(--wui-spacing-0);
     background-color: var(--wui-overlay-002);
     border-radius: var(--wui-border-radius-xs);
   }
@@ -16,6 +16,7 @@ export default css`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    justify-content: center;
   }
 
   button:disabled > wui-text {

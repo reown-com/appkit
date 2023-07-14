@@ -13,7 +13,7 @@ export default css`
   }
 
   wui-icon {
-    color: var(--wui-color-bg-200);
+    color: var(--wui-color-bg-200) !important;
   }
 
   button:focus-visible {
