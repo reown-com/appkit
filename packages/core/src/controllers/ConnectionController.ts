@@ -62,5 +62,6 @@ export const ConnectionController = {
 
   async disconnect() {
     await this._getClient().disconnect()
+    this.resetWcConnection()
   }
 }
