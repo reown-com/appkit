@@ -17,11 +17,17 @@ export class W3mBoxButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <button @click=${this.onClick} .disabled="${Boolean(this.loading)}">
+      <button
+        data-testid="component-button-box"
+        @click=${this.onClick} 
+        .disabled="${Boolean(this.loading)} 
+      >
         <div>
-          ${this.loading
-            ? html`<w3m-spinner size=${20} color="fill"></w3m-spinner>`
-            : html`${this.icon}`}
+          ${
+            this.loading
+              ? html`<w3m-spinner size=${20} color="fill"></w3m-spinner>`
+              : html`${this.icon}`
+          }
         </div>
         <w3m-text variant="xsmall-regular" color="accent">${this.label}</w3m-text>
       </button>

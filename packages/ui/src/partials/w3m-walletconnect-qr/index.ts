@@ -50,7 +50,7 @@ export class W3mWalletConnectQr extends LitElement {
               walletId=${this.walletId}
               imageId=${this.imageId}
             ></w3m-qrcode>`
-          : html`<w3m-spinner></w3m-spinner>`}
+          : html`<w3m-spinner data-testid="partial-qr-spinner"></w3m-spinner>`}
       </div>
     `
   }

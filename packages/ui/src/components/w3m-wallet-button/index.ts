@@ -41,7 +41,7 @@ export class W3mWalletButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <button @click=${this.handleClick.bind(this)}>
+      <button @click=${this.handleClick.bind(this)} data-testid="component-wallet-button">
         <div>
           <w3m-wallet-image walletId=${this.walletId} imageId=${this.imageId}></w3m-wallet-image>
           <w3m-text variant="xsmall-regular">

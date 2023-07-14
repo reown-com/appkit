@@ -55,7 +55,10 @@ export class W3mAndroidWalletSelection extends LitElement {
                 : SvgUtil.WALLET_PLACEHOLDER
             })}
           </div>
-          <w3m-button-big @click=${UiUtil.handleAndroidLinking}>
+          <w3m-button-big
+            @click=${UiUtil.handleAndroidLinking}
+            data-testid="partial-android-wallet-button"
+          >
             <w3m-text variant="medium-regular" color="inverse">Select Wallet</w3m-text>
           </w3m-button-big>
         </div>
@@ -63,7 +66,7 @@ export class W3mAndroidWalletSelection extends LitElement {
 
       ${isOther
         ? html`
-            <w3m-modal-footer>
+            <w3m-modal-footer data-testid="partial-android-footer">
               <div class="w3m-title">
                 ${SvgUtil.WALLET_ICON}
                 <w3m-text variant="small-regular" color="accent">Other</w3m-text>
@@ -85,6 +88,7 @@ export class W3mAndroidWalletSelection extends LitElement {
           variant="outline"
           .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}
           .onClick=${() => this.onGetWallet()}
+          data-testid="partial-android-nowallet-button"
           >I don't have a wallet</w3m-button
         >
       </w3m-info-footer>

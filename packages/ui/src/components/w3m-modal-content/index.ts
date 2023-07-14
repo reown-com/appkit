@@ -10,7 +10,7 @@ export class W3mModalContent extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <main>
+      <main data-testid="component-modal-content">
         <slot></slot>
       </main>
     `

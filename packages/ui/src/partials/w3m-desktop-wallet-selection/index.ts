@@ -46,9 +46,10 @@ export class W3mDesktopWalletSelection extends LitElement {
         title="Connect your wallet"
         .onAction=${UiUtil.handleUriCopy}
         .actionIcon=${SvgUtil.COPY_ICON}
+        data-testid="partial-desktop-wallet-selection-header"
       ></w3m-modal-header>
 
-      <w3m-modal-content>
+      <w3m-modal-content data-testid="partial-desktop-wallet-selection-content">
         <div class="w3m-mobile-title">
           <div class="w3m-subtitle">
             ${SvgUtil.MOBILE_ICON}
@@ -65,7 +66,7 @@ export class W3mDesktopWalletSelection extends LitElement {
 
       ${isWallets
         ? html`
-            <w3m-modal-footer>
+            <w3m-modal-footer data-testid="partial-desktop-wallet-selection-footer">
               <div class="w3m-desktop-title">
                 ${SvgUtil.DESKTOP_ICON}
                 <w3m-text variant="small-regular" color="accent">Desktop</w3m-text>

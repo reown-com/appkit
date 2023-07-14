@@ -63,15 +63,23 @@ export class W3mConnectButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <w3m-button-big .disabled=${this.loading} @click=${this.onClick}>
+      <w3m-button-big
+        .disabled=${this.loading}
+        @click=${this.onClick}
+        data-testid="partial-connect-button"
+      >
         ${this.loading
           ? html`
-              <w3m-spinner></w3m-spinner>
-              <w3m-text variant="medium-regular" color="accent">Connecting...</w3m-text>
+              <w3m-spinner data-testid="partial-connect-spinner"></w3m-spinner>
+              <w3m-text variant="medium-regular" color="accent" data-testid="partial-connect-text"
+                >Connecting...</w3m-text
+              >
             `
           : html`
               ${this.iconTemplate()}
-              <w3m-text variant="medium-regular" color="inverse">${this.label}</w3m-text>
+              <w3m-text variant="medium-regular" color="inverse" data-testid="partial-connect-text"
+                >${this.label}</w3m-text
+              >
             `}
       </w3m-button-big>
     `

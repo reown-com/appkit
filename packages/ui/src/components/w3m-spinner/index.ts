@@ -13,7 +13,12 @@ export class W3mSpinner extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <svg viewBox="0 0 50 50" width="${this.size}" height="${this.size}">
+      <svg
+        viewBox="0 0 50 50"
+        width="${this.size}"
+        height="${this.size}"
+        data-testid="component-spinner-svg"
+      >
         <circle
           class="${this.color}"
           cx="25"

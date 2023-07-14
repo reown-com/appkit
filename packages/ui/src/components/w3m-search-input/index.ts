@@ -13,7 +13,12 @@ export class W3mSearchInput extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <input type="text" @input=${this.onChange} placeholder="Search wallets" />
+      <input
+        type="text"
+        @input=${this.onChange}
+        placeholder="Search wallets"
+        data-testid="component-search-input"
+      />
       ${SvgUtil.SEARCH_ICON}
     `
   }

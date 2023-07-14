@@ -40,7 +40,7 @@ export class W3mText extends LitElement {
     }
 
     return html`
-      <span>
+      <span data-testid="component-text">
         <slot class=${classMap(classes)}></slot>
       </span>
     `
