@@ -157,6 +157,7 @@ export const rootStyles = css`
 
     --wui-icon-box-bg-error-100: #3c2426;
     --wui-icon-box-bg-blue-100: #20303f;
+    --wui-icon-box-bg-success-100: #1f3a28;
 
     --wui-avatar-border: #252525;
   }
@@ -211,6 +212,7 @@ export const rootStyles = css`
 
     --wui-icon-box-bg-error-100: #f4dfdd;
     --wui-icon-box-bg-blue-100: #d9ecfb;
+    --wui-icon-box-bg-success-100: #daf0e4;
 
     --wui-avatar-border: #f3f4f4;
   }
@@ -259,19 +261,15 @@ export const elementStyles = css`
   button:disabled > wui-all-wallets-image,
   button:disabled > wui-network-image,
   button:disabled > wui-image,
-  button:disabled > wui-icon-box {
+  button:disabled > wui-icon-box,
+  button:disabled > wui-transaction-visual {
     filter: grayscale(1);
   }
 
-  button:focus-visible {
+  button:focus-visible,
+  a:focus-visible {
     border: 1px solid var(--wui-color-blue-100);
-    -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-    box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
-  }
-
-  a:focus {
-    border: 1px solid var(--wui-color-blue-100);
+    background-color: var(--wui-overlay-005);
     -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
     -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
     box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);

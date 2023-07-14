@@ -25,23 +25,24 @@ export default css`
   a[data-variant='transparent'] {
     column-gap: var(--wui-spacing-xxs);
     background-color: transparent;
-    padding: 7px 12px 7px 10px;
+    padding: 7px var(--wui-spacing-s) 7px 10px;
     color: var(--wui-color-fg-150);
   }
 
   a[data-variant='transparent']:has(wui-text:first-child) {
-    padding: 7px 12px;
+    padding: 7px var(--wui-spacing-s);
   }
 
   a[data-variant='fill'],
   a[data-variant='shade'] {
     column-gap: var(--wui-spacing-xs);
-    padding: 8.5px 14px 9.5px 8px;
+    padding: var(--wui-spacing-xxs) var(--wui-spacing-m) var(--wui-spacing-xxs)
+      var(--wui-spacing-xs);
   }
 
   a[data-variant='fill']:has(wui-text:first-child),
   a[data-variant='shade']:has(wui-text:first-child) {
-    padding: 8.5px 14px 9.5px 14px;
+    padding: 8.5px var(--wui-spacing-m) 9.5px var(--wui-spacing-m);
   }
 
   a[data-variant='fill'] > wui-image,
@@ -74,9 +75,16 @@ export default css`
     height: 10px;
   }
 
-  a[data-variant='fill']:focus {
-    border: 1px solid var(--wui-overlay-010);
-    background-color: var(--wui-color-blue-080);
+  a[data-variant='fill']:focus-visible {
+    background-color: var(--wui-color-blue-090);
+  }
+
+  a[data-variant='shade']:focus-visible {
+    background-color: var(--wui-overlay-015);
+  }
+
+  a[data-variant='transparent']:focus-visible {
+    background-color: var(--wui-overlay-005);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -90,6 +98,18 @@ export default css`
 
     a[data-variant='transparent']:hover {
       background-color: var(--wui-overlay-005);
+    }
+
+    a[data-variant='fill']:active {
+      background-color: var(--wui-color-blue-080);
+    }
+
+    a[data-variant='shade']:active {
+      background-color: var(--wui-overlay-020);
+    }
+
+    a[data-variant='transparent']:active {
+      background-color: var(--wui-overlay-010);
     }
   }
 `

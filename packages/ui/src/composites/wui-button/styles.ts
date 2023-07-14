@@ -15,7 +15,7 @@ export default css`
   }
 
   button[data-size='md'] {
-    padding: 9px 16px;
+    padding: 9px var(--wui-spacing-l);
   }
 
   button[data-variant='fill'] {
@@ -45,6 +45,10 @@ export default css`
   button[data-variant='accent']:disabled {
     background-color: transparent;
     color: var(--wui-color-bg-300);
+  }
+
+  button[data-variant='fill']:focus-visible {
+    background-color: var(--wui-color-blue-090);
   }
 
   @media (hover: hover) and (pointer: fine) {
