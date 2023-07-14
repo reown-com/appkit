@@ -12,6 +12,7 @@ export default css`
     height: 54px;
     -webkit-clip-path: var(--wui-path-network);
     clip-path: var(--wui-path-network);
+    background: var(--wui-overlay-002);
   }
 
   svg {

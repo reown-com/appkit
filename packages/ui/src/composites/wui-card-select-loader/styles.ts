@@ -7,7 +7,7 @@ export default css`
     align-items: center;
     width: 100%;
     row-gap: var(--wui-spacing-xs);
-    padding: 8px 10px;
+    padding: var(--wui-spacing-xs) 10px;
     background-color: var(--wui-overlay-002);
     border-radius: var(--wui-border-radius-xs);
     position: relative;
