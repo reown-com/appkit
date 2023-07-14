@@ -22,7 +22,7 @@ export class W3mConnectingWcView extends LitElement {
 
   public constructor() {
     super()
-    this.usnubscribe.push(ConnectionController.subscribe('wcUri', uri => (this.uri = uri)))
+    this.usnubscribe.push(ConnectionController.subscribeKey('wcUri', uri => (this.uri = uri)))
     this.initializeConnection()
     this.interval = setInterval(this.initializeConnection.bind(this), ConstantsUtil.TEN_SEC_MS)
   }

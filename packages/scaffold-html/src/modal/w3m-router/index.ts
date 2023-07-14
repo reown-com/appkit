@@ -20,7 +20,7 @@ export class W3mRouter extends LitElement {
 
   public constructor() {
     super()
-    this.unsubscribe.push(RouterController.subscribe('view', view => this.onRouteChange(view)))
+    this.unsubscribe.push(RouterController.subscribeKey('view', view => this.onRouteChange(view)))
   }
 
   public firstUpdated() {

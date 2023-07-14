@@ -1,4 +1,4 @@
-import { subscribeKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil'
 
@@ -24,8 +24,11 @@ const state = proxy<ConnectionControllerState>({})
 export const ConnectionController = {
   state,
 
-  subscribe<K extends StateKey>(key: K, callback: (value: ConnectionControllerState[K]) => void) {
-    return subscribeKey(state, key, callback)
+  subscribeKey<K extends StateKey>(
+    key: K,
+    callback: (value: ConnectionControllerState[K]) => void
+  ) {
+    return subKey(state, key, callback)
   },
 
   _getClient() {

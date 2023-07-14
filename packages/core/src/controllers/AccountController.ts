@@ -1,5 +1,5 @@
-import { subscribeKey } from 'valtio/utils'
-import { proxy } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/utils'
+import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil'
 import type { CaipAddress } from '../utils/TypeUtils'
 
@@ -24,8 +24,12 @@ const state = proxy<AccountControllerState>({
 export const AccountController = {
   state,
 
-  subscribe<K extends StateKey>(key: K, callback: (value: AccountControllerState[K]) => void) {
-    return subscribeKey(state, key, callback)
+  subscribe(callback: (newState: AccountControllerState) => void) {
+    return sub(state, () => callback(state))
+  },
+
+  subscribeKey<K extends StateKey>(key: K, callback: (value: AccountControllerState[K]) => void) {
+    return subKey(state, key, callback)
   },
 
   setIsConnected(isConnected: AccountControllerState['isConnected']) {
