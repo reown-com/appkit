@@ -1,6 +1,7 @@
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
@@ -10,7 +11,9 @@ export class W3mNetworkWaiting extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public chainId?: string = undefined
+
   @property() public isError = false
+
   @property() public label = ''
 
   // -- private ------------------------------------------------------ //
@@ -42,10 +45,7 @@ export class W3mNetworkWaiting extends LitElement {
     return html`
       <div class=${classMap(classes)}>
         ${this.svgLoaderTemplate()}
-        <w3m-network-image
-          chainId=${this.chainId}
-          data-testid="partial-network-waiting-image"
-        ></w3m-network-image>
+        <w3m-network-image chainId=${ifDefined(this.chainId)} data-testid="partial-network-waiting-image"></w3m-network-image>
       </div>
       <w3m-text
         variant="medium-regular"

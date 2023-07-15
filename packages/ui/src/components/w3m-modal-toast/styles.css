@@ -7,7 +7,9 @@ div {
   padding: 9px 15px 11px;
   position: absolute;
   top: 12px;
-  box-shadow: 0px 6px 14px -6px rgba(10, 16, 31, 0.3), 0px 10px 32px -4px rgba(10, 16, 31, 0.15);
+  box-shadow:
+    0px 6px 14px -6px rgba(10, 16, 31, 0.3),
+    0px 10px 32px -4px rgba(10, 16, 31, 0.15);
   z-index: 2;
   left: 50%;
   transform: translateX(-50%);

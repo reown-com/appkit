@@ -11,9 +11,13 @@ export class W3mButton extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public disabled? = false
+
   @property() public iconLeft?: TemplateResult<2> = undefined
+
   @property() public iconRight?: TemplateResult<2> = undefined
+
   @property() public onClick: () => void = () => null
+
   @property() public variant: 'default' | 'ghost' | 'outline' = 'default'
 
   // -- render ------------------------------------------------------- //

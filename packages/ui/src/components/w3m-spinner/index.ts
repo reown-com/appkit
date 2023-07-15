@@ -8,6 +8,7 @@ export class W3mSpinner extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   @property() public color: 'accent' | 'fill' = 'accent'
+
   @property({ type: Number }) public size = 24
 
   // -- render ------------------------------------------------------- //

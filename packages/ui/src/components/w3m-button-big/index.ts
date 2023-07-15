@@ -12,6 +12,7 @@ export class W3mButtonBig extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public disabled? = false
+
   @property() public variant?: Variant = 'primary'
 
   // -- render ------------------------------------------------------- //

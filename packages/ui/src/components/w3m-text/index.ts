@@ -20,6 +20,7 @@ export class W3mText extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public variant?: Variant = 'medium-regular'
+
   @property() public color?: Color = 'primary'
 
   // -- render ------------------------------------------------------- //

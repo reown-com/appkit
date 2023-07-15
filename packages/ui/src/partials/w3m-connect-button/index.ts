@@ -11,7 +11,9 @@ export class W3mConnectButton extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() public loading = false
+
   @property() public label? = 'Connect Wallet'
+
   @property() public icon?: 'hide' | 'show' = 'show'
 
   // -- lifecycle ---------------------------------------------------- //

@@ -34,6 +34,7 @@ export class W3mModalToast extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private readonly unsubscribe?: () => void = undefined
+
   private timeout?: NodeJS.Timeout = undefined
 
   // -- render ------------------------------------------------------- //
