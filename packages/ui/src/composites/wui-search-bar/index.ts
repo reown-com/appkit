@@ -3,27 +3,27 @@ import { customElement } from 'lit/decorators.js'
 import { resetStyles } from '../../utils/ThemeUtil'
 import '../../composites/wui-input-element'
 import { ref, createRef } from 'lit/directives/ref.js'
-import '../../composites/wui-input'
+import '../wui-input-text'
 import styles from './styles'
-import type { WuiInput } from '../../composites/wui-input'
+import type { WuiInputText } from '../wui-input-text'
 
 @customElement('wui-search-bar')
 export class WuiSearchBar extends LitElement {
   public static styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  public inputComponentRef = createRef<WuiInput>()
+  public inputComponentRef = createRef<WuiInputText>()
 
   // -- Render -------------------------------------------- //
   public render() {
-    return html` <wui-input
+    return html` <wui-input-text
       ${ref(this.inputComponentRef)}
       placeholder="Search wallet"
       icon="search"
       size="sm"
     >
       <wui-input-element @click=${this.clearValue} icon="close"></wui-input-element>
-    </wui-input>`
+    </wui-input-text>`
   }
 
   // -- Private ------------------------------------------- //

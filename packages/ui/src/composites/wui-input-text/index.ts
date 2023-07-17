@@ -6,8 +6,8 @@ import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { IconType, SizeType } from '../../utils/TypesUtil'
 import styles from './styles'
 
-@customElement('wui-input')
-export class WuiInput extends LitElement {
+@customElement('wui-input-text')
+export class WuiInputText extends LitElement {
   public static styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
@@ -48,6 +48,6 @@ export class WuiInput extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-input': WuiInput
+    'wui-input-text': WuiInputText
   }
 }
