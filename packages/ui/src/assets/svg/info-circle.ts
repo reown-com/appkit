@@ -11,4 +11,4 @@ export const infoCircleSvg = svg`<svg fill="none" viewBox="0 0 16 16">
     d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16Zm6-8A6 6 0 1 1 2 8a6 6 0 0 1 12 0Z"
     clip-rule="evenodd"
   />
-</svg> `
+</svg>`
