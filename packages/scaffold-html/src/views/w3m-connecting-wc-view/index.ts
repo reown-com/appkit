@@ -2,7 +2,8 @@ import {
   ConnectionController,
   ConstantsUtil,
   CoreHelperUtil,
-  ModalController
+  ModalController,
+  SnackController
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
@@ -48,6 +49,7 @@ export class W3mConnectingWcView extends LitElement {
       }
     } catch {
       if (CoreHelperUtil.isAllowedRetry(this.lastRetry)) {
+        SnackController.showError('Declined')
         this.lastRetry = Date.now()
         this.initializeConnection(true)
       }
