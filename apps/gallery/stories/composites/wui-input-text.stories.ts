@@ -1,14 +1,14 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-input'
+import '@web3modal/ui/src/composites/wui-input-text'
 import '../../components/gallery-container'
-import type { WuiInput } from '@web3modal/ui/src/composites/wui-input'
+import type { WuiInputText } from '@web3modal/ui/src/composites/wui-input-text'
 import { html } from 'lit'
 import { iconOptions } from '../../utils/PresetUtils'
 
-type Component = Meta<WuiInput>
+type Component = Meta<WuiInputText>
 
 export default {
-  title: 'Composites/wui-input',
+  title: 'Composites/wui-input-text',
   args: {
     size: 'sm',
     placeholder: 'Search wallet',
@@ -33,11 +33,11 @@ export default {
 export const Default: Component = {
   render: args =>
     html`<gallery-container width="336">
-      <wui-input
+      <wui-input-text
         size=${args.size}
         placeholder=${args.placeholder}
         ?disabled=${args.disabled}
         .icon=${args.icon}
-      ></wui-input
+      ></wui-input-text
     ></gallery-container>`
 }
