@@ -2,7 +2,8 @@ import {
   AccountController,
   ConnectionController,
   CoreHelperUtil,
-  ModalController
+  ModalController,
+  SnackController
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
@@ -28,12 +29,12 @@ export class W3mAccountView extends LitElement {
   public constructor() {
     super()
     this.usubscribe.push(
-      AccountController.subscribe(newState => {
-        if (newState.address) {
-          this.address = newState.address
-          this.profileImage = newState.profileImage
-          this.profileName = newState.profileName
-          this.balance = newState.balance
+      AccountController.subscribe(val => {
+        if (val.address) {
+          this.address = val.address
+          this.profileImage = val.profileImage
+          this.profileName = val.profileName
+          this.balance = val.balance
         } else {
           ModalController.close()
         }
@@ -93,9 +94,10 @@ export class W3mAccountView extends LitElement {
     try {
       if (this.address) {
         CoreHelperUtil.copyToClopboard(this.address)
+        SnackController.showSuccess('Address copied')
       }
     } catch {
-      // TASK: Show error toast
+      SnackController.showError('Failed to copy')
     }
   }
 
