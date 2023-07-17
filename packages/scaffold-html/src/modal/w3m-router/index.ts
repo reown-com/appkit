@@ -20,7 +20,7 @@ export class W3mRouter extends LitElement {
 
   public constructor() {
     super()
-    this.unsubscribe.push(RouterController.subscribe('view', view => this.onRouteChange(view)))
+    this.unsubscribe.push(RouterController.subscribeKey('view', view => this.onRouteChange(view)))
   }
 
   public firstUpdated() {
@@ -50,6 +50,8 @@ export class W3mRouter extends LitElement {
     switch (this.view) {
       case 'Connect':
         return html`<w3m-connect-view></w3m-connect-view>`
+      case 'ConnectingWalletConnect':
+        return html`<w3m-connecting-wc-view></w3m-connecting-wc-view>`
       case 'ConnectingExternal':
         return html`<w3m-connecting-external-view></w3m-connecting-external-view>`
       case 'Account':
