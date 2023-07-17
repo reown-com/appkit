@@ -13,6 +13,8 @@ export class W3mRouter extends LitElement {
 
   private prevHeight = '0px'
 
+  private prevHistoryLength = 1
+
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
@@ -62,9 +64,17 @@ export class W3mRouter extends LitElement {
   }
 
   private async onViewChange(newView: RouterControllerState['view']) {
-    await animate(this, { opacity: [1, 0], scale: [1, 1.02] }, { duration: 0.15 }).finished
+    const { history } = RouterController.state
+    let xOut = -10
+    let xIn = 10
+    if (history.length < this.prevHistoryLength) {
+      xOut = 10
+      xIn = -10
+    }
+    this.prevHistoryLength = history.length
+    await animate(this, { opacity: [1, 0], x: [0, xOut] }, { duration: 0.15 }).finished
     this.view = newView
-    animate(this, { opacity: [0, 1], scale: [0.98, 1] }, { duration: 0.15, delay: 0.05 })
+    animate(this, { opacity: [0, 1], x: [xIn, 0] }, { duration: 0.15, delay: 0.05 })
   }
 
   private getWrapper() {
