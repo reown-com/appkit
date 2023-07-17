@@ -41,7 +41,11 @@ export class W3mCoreButton extends LitElement {
     const isAvatar = this.avatar
 
     return this.isConnected && enableAccountView
-      ? html`<w3m-account-button .balance=${isBalance} .avatar=${isAvatar} data-testid="partial-core-account-button"></w3m-account-button>`
+      ? html`<w3m-account-button
+          .balance=${isBalance}
+          .avatar=${isAvatar}
+          data-testid="partial-core-account-button"
+        ></w3m-account-button>`
       : html`
           <w3m-connect-button
             label=${ifDefined(this.isConnected ? 'Disconnect' : isLabel)}

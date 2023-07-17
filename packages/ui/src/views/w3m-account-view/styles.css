@@ -23,9 +23,7 @@
   border-radius: 50%;
   top: 50%;
   margin-top: -5px;
-  box-shadow:
-    0px 1px 4px 1px var(--w3m-success-color),
-    inset 0 0 0 1px var(--w3m-color-overlay);
+  box-shadow: 0px 1px 4px 1px var(--w3m-success-color), inset 0 0 0 1px var(--w3m-color-overlay);
 }
 
 .w3m-footer {

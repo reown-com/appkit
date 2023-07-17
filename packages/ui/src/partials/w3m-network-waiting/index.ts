@@ -45,7 +45,10 @@ export class W3mNetworkWaiting extends LitElement {
     return html`
       <div class=${classMap(classes)}>
         ${this.svgLoaderTemplate()}
-        <w3m-network-image chainId=${ifDefined(this.chainId)} data-testid="partial-network-waiting-image"></w3m-network-image>
+        <w3m-network-image
+          chainId=${ifDefined(this.chainId)}
+          data-testid="partial-network-waiting-image"
+        ></w3m-network-image>
       </div>
       <w3m-text
         variant="medium-regular"
