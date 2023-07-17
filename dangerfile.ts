@@ -191,7 +191,7 @@ async function checkScaffoldHtmlPackage() {
       fail(`${f} is a scaffold element, but does not define w3m- prefix`)
     }
 
-    if (diff?.added.includes('.subscribe(') && !diff.added.includes('this.unsubscribe.forEach')) {
+    if (diff?.added.includes('.subscribe') && !diff.added.includes('this.unsubscribe.forEach')) {
       fail(`${f} is subscribing to controller states without unsubscribe logic`)
     }
   }

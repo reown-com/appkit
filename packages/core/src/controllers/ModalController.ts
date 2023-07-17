@@ -1,4 +1,4 @@
-import { subscribeKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
 import { AccountController } from './AccountController'
 import type { RouterControllerState } from './RouterController'
@@ -26,8 +26,8 @@ const state = proxy<ModalControllerState>({
 export const ModalController = {
   state,
 
-  subscribe<K extends StateKey>(key: K, callback: (value: ModalControllerState[K]) => void) {
-    return subscribeKey(state, key, callback)
+  subscribeKey<K extends StateKey>(key: K, callback: (value: ModalControllerState[K]) => void) {
+    return subKey(state, key, callback)
   },
 
   open(options?: ModalControllerArguments['open']) {

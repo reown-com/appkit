@@ -36,11 +36,13 @@ describe('ModalController', () => {
 
   it('should update state correctly on disconnect()', async () => {
     await ConnectionController.disconnect()
-    expect(ConnectionController.state.walletConnectUri).toEqual('')
+    expect(ConnectionController.state.wcUri).toEqual(undefined)
+    expect(ConnectionController.state.wcPairingExpiry).toEqual(undefined)
+    expect(ConnectionController.state.wcPromise).toEqual(undefined)
   })
 
-  it('should not throw on connectWalletConnect()', async () => {
-    await ConnectionController.connectWalletConnect()
+  it('should not throw on connectWalletConnect()', () => {
+    ConnectionController.connectWalletConnect()
   })
 
   it('should not throw on connectExternal()', async () => {
@@ -51,5 +53,12 @@ describe('ModalController', () => {
     ConnectionController.setClient(partialClient)
 
     await ConnectionController.connectExternal(externalId)
+  })
+
+  it('should update state correctly on resetWcConnection()', () => {
+    ConnectionController.resetWcConnection()
+    expect(ConnectionController.state.wcUri).toEqual(undefined)
+    expect(ConnectionController.state.wcPairingExpiry).toEqual(undefined)
+    expect(ConnectionController.state.wcPromise).toEqual(undefined)
   })
 })

@@ -1,10 +1,10 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { networkSvg } from '../../assets/svg/network'
 import '../../components/wui-shimmer'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import styles from './styles'
-import { networkSvg } from '../../assets/svg/network'
 import type { CardSelectType } from '../../utils/TypesUtil'
+import styles from './styles'
 
 @customElement('wui-card-select-loader')
 export class WuiCardSelectLoader extends LitElement {

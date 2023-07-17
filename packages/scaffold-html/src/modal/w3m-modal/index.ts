@@ -20,7 +20,7 @@ export class W3mModal extends LitElement {
     initializeTheming()
     setColorTheme('dark')
     this.unsubscribe.push(
-      ModalController.subscribe('open', open => (open ? this.onOpen() : this.onClose()))
+      ModalController.subscribeKey('open', open => (open ? this.onOpen() : this.onClose()))
     )
   }
 

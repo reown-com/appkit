@@ -15,8 +15,6 @@ export default css`
 
   wui-shimmer[data-type='network'] {
     border: none;
-    width: 48px;
-    height: 54px;
     -webkit-clip-path: var(--wui-path-network);
     clip-path: var(--wui-path-network);
   }

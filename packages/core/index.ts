@@ -31,5 +31,6 @@ export type {
 } from './src/controllers/ConnectorController'
 
 // -- Utils -------------------------------------------------------------------
+export { ConstantsUtil } from './src/utils/ConstantsUtil'
 export { CoreHelperUtil } from './src/utils/CoreHelperUtil'
 export type { CaipAddress, CaipChainId } from './src/utils/TypeUtils'
