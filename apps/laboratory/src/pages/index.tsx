@@ -19,7 +19,7 @@ const { chains, publicClient } = configureChains([mainnet], [publicProvider()])
 const wagmiConfig = createConfig({
   autoConnect: true,
   connectors: [
-    new WalletConnectConnector({ chains, options: { projectId } }),
+    new WalletConnectConnector({ chains, options: { projectId, showQrModal: false } }),
     new InjectedConnector({ chains, options: { shimDisconnect: true } }),
     new CoinbaseWalletConnector({ chains, options: { appName: 'Web3Modal' } })
   ],

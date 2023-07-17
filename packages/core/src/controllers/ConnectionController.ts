@@ -1,4 +1,6 @@
+import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil'
 
 // -- Types --------------------------------------------- //
 export interface ConnectionControllerClient {
@@ -9,8 +11,11 @@ export interface ConnectionControllerClient {
 
 export interface ConnectionControllerState {
   _client?: ConnectionControllerClient
-  walletConnectUri?: string
+  wcUri?: string
+  wcPromise?: Promise<void>
+  wcPairingExpiry?: number
 }
+type StateKey = keyof ConnectionControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ConnectionControllerState>({})
@@ -18,6 +23,13 @@ const state = proxy<ConnectionControllerState>({})
 // -- Controller ---------------------------------------- //
 export const ConnectionController = {
   state,
+
+  subscribeKey<K extends StateKey>(
+    key: K,
+    callback: (value: ConnectionControllerState[K]) => void
+  ) {
+    return subKey(state, key, callback)
+  },
 
   _getClient() {
     if (!state._client) {
@@ -31,9 +43,10 @@ export const ConnectionController = {
     state._client = ref(client)
   },
 
-  async connectWalletConnect() {
-    await this._getClient().connectWalletConnect(uri => {
-      state.walletConnectUri = uri
+  connectWalletConnect() {
+    state.wcPromise = this._getClient().connectWalletConnect(uri => {
+      state.wcUri = uri
+      state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
     })
   },
 
@@ -41,8 +54,14 @@ export const ConnectionController = {
     await this._getClient().connectExternal?.(id)
   },
 
+  resetWcConnection() {
+    state.wcUri = undefined
+    state.wcPairingExpiry = undefined
+    state.wcPromise = undefined
+  },
+
   async disconnect() {
     await this._getClient().disconnect()
-    state.walletConnectUri = ''
+    this.resetWcConnection()
   }
 }
