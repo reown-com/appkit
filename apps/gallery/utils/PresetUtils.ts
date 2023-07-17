@@ -139,22 +139,37 @@ export const spacingOptions: SpacingType[] = ['4xs', '3xs', 'xxs', 'xs', 's', 'm
 
 export const iconOptions: IconType[] = [
   'arrowBottom',
+  'arrowLeft',
+  'arrowRight',
   'arrowTop',
+  'browser',
   'checkmark',
+  'chevronBottom',
+  'chevronLeft',
   'chevronRight',
+  'chevronTop',
   'clock',
   'close',
+  'compass',
   'copy',
   'cursor',
   'disconnect',
+  'etherscan',
   'externalLink',
+  'filters',
+  'helpCircle',
+  'infoCircle',
   'mail',
+  'mobile',
   'networkPlaceholder',
+  'off',
   'search',
   'swap',
+  'twitter',
   'wallet',
   'walletConnect',
-  'walletPlaceholder'
+  'walletPlaceholder',
+  'warningCircle'
 ]
 
 export const placementOptions: PlacementType[] = ['top', 'right', 'bottom', 'left']
