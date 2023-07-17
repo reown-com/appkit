@@ -94,6 +94,7 @@ export class W3mAccountView extends LitElement {
     try {
       if (this.address) {
         CoreHelperUtil.copyToClopboard(this.address)
+        SnackController.showSuccess('Address copied')
       }
     } catch {
       SnackController.showError('Failed to copy')
