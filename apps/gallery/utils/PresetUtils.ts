@@ -153,6 +153,7 @@ export const iconOptions: IconType[] = [
   'compass',
   'copy',
   'cursor',
+  'desktop',
   'disconnect',
   'etherscan',
   'externalLink',

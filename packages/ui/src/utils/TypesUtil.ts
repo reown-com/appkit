@@ -92,6 +92,7 @@ export type IconType =
   | 'compass'
   | 'copy'
   | 'cursor'
+  | 'desktop'
   | 'disconnect'
   | 'etherscan'
   | 'externalLink'
