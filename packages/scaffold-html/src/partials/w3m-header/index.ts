@@ -30,12 +30,10 @@ export class W3mHeader extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ...[
-        RouterController.subscribeKey('view', val => {
-          this.onViewChange(val)
-          this.onHistoryChange()
-        })
-      ]
+      RouterController.subscribeKey('view', val => {
+        this.onViewChange(val)
+        this.onHistoryChange()
+      })
     )
   }
 
@@ -51,7 +49,7 @@ export class W3mHeader extends LitElement {
         justifyContent="space-between"
         alignItems="center"
       >
-        <wui-icon-link id="hmm" icon="clock" @click=${RouterController.goBack}></wui-icon-link>
+        ${this.dynamicButtonTemplate()}
         <wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>
         <wui-icon-link icon="close" @click=${ModalController.close}></wui-icon-link>
       </wui-flex>
@@ -60,6 +58,22 @@ export class W3mHeader extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private dynamicButtonTemplate() {
+    if (this.showBack) {
+      return html`<wui-icon-link
+        id="dynamic"
+        icon="clock"
+        @click=${RouterController.goBack}
+      ></wui-icon-link>`
+    }
+
+    return html`<wui-icon-link
+      id="dynamic"
+      icon="close"
+      @click=${ModalController.close}
+    ></wui-icon-link>`
+  }
+
   private async onViewChange(view: RouterControllerState['view']) {
     const headingEl = this.shadowRoot?.querySelector('wui-text')
     if (headingEl) {
@@ -72,11 +86,15 @@ export class W3mHeader extends LitElement {
 
   private async onHistoryChange() {
     const { history } = RouterController.state
-    const buttonEl = this.shadowRoot?.querySelector('#hmm')
+    const buttonEl = this.shadowRoot?.querySelector('#dynamic')
     if (history.length > 1 && !this.showBack && buttonEl) {
-      await animate(buttonEl, { opacity: [0, 1] }, { duration: 0.2 }).finished
+      await animate(buttonEl, { opacity: 0 }, { duration: 0.2 }).finished
       this.showBack = true
-      animate(buttonEl, { opacity: [1, 0] }, { duration: 0.2 })
+      animate(buttonEl, { opacity: 1 }, { duration: 0.2 })
+    } else if (history.length <= 1 && this.showBack && buttonEl) {
+      await animate(buttonEl, { opacity: 0 }, { duration: 0.2 }).finished
+      this.showBack = false
+      animate(buttonEl, { opacity: 1 }, { duration: 0.2 })
     }
   }
 }
