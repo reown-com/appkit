@@ -30,6 +30,9 @@ export type {
   ConnectorType
 } from './src/controllers/ConnectorController'
 
+export { SnackController } from './src/controllers/SnackController'
+export type { SnackControllerState } from './src/controllers/SnackController'
+
 // -- Utils -------------------------------------------------------------------
 export { ConstantsUtil } from './src/utils/ConstantsUtil'
 export { CoreHelperUtil } from './src/utils/CoreHelperUtil'

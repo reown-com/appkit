@@ -13,7 +13,7 @@ export class W3mConnectingWcView extends LitElement {
   // -- Members ------------------------------------------- //
   private usnubscribe: (() => void)[] = []
 
-  private interval?: ReturnType<typeof setTimeout> = undefined
+  private interval?: ReturnType<typeof setInterval> = undefined
 
   private lastRetry = Date.now()
 

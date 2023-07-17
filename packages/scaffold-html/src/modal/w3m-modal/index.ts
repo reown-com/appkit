@@ -1,4 +1,4 @@
-import { ModalController } from '@web3modal/core'
+import { ModalController, SnackController } from '@web3modal/core'
 import { initializeTheming, setColorTheme } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
@@ -36,6 +36,7 @@ export class W3mModal extends LitElement {
             <wui-card>
               <w3m-header></w3m-header>
               <w3m-router></w3m-router>
+              <w3m-snackbar></w3m-snackbar>
             </wui-card>
           </wui-overlay>
         `
@@ -51,6 +52,7 @@ export class W3mModal extends LitElement {
 
   private async onClose() {
     await animate(this, { opacity: [1, 0] }, { duration: 0.2 }).finished
+    SnackController.hide()
     this.open = false
   }
 

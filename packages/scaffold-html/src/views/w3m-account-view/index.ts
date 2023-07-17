@@ -2,7 +2,8 @@ import {
   AccountController,
   ConnectionController,
   CoreHelperUtil,
-  ModalController
+  ModalController,
+  SnackController
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
@@ -95,7 +96,7 @@ export class W3mAccountView extends LitElement {
         CoreHelperUtil.copyToClopboard(this.address)
       }
     } catch {
-      // TASK: Show error toast
+      SnackController.showError('Failed to copy')
     }
   }
 
