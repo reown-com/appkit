@@ -131,6 +131,8 @@ export class WuiOtp extends LitElement {
       } else {
         this.focusInputField('next', index)
       }
+    } else {
+      input.value = ''
     }
   }
 }
