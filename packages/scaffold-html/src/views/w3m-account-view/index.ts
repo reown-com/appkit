@@ -29,12 +29,12 @@ export class W3mAccountView extends LitElement {
   public constructor() {
     super()
     this.usubscribe.push(
-      AccountController.subscribe(newState => {
-        if (newState.address) {
-          this.address = newState.address
-          this.profileImage = newState.profileImage
-          this.profileName = newState.profileName
-          this.balance = newState.balance
+      AccountController.subscribe(val => {
+        if (val.address) {
+          this.address = val.address
+          this.profileImage = val.profileImage
+          this.profileName = val.profileName
+          this.balance = val.balance
         } else {
           ModalController.close()
         }

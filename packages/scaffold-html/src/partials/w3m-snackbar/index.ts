@@ -32,7 +32,12 @@ export class W3mSnackBar extends LitElement {
 
   public constructor() {
     super()
-    this.unsubscribe.push(SnackController.subscribeKey('open', value => (this.open = value)))
+    this.unsubscribe.push(
+      SnackController.subscribeKey('open', val => {
+        this.open = val
+        this.onOpen()
+      })
+    )
   }
 
   public disconnectedCallback() {
@@ -44,7 +49,6 @@ export class W3mSnackBar extends LitElement {
   public render() {
     const { message, variant } = SnackController.state
     const preset = presets[variant]
-    this.onOpen()
 
     return html`
       <wui-snackbar
@@ -60,10 +64,10 @@ export class W3mSnackBar extends LitElement {
   private onOpen() {
     clearTimeout(this.timeout)
     if (this.open) {
-      animate(this, { opacity: 1, x: '-50%', scale: [0.85, 1] }, { duration: 0.15 })
+      animate(this, { opacity: 1, x: ['-50%', '-50%'], scale: [0.85, 1] }, { duration: 0.15 })
       this.timeout = setTimeout(() => SnackController.hide(), 3000)
     } else {
-      animate(this, { opacity: 0, x: '-50%', scale: [1, 0.85] }, { duration: 0.15 })
+      animate(this, { opacity: 0, x: ['-50%', '-50%'], scale: [1, 0.85] }, { duration: 0.15 })
     }
   }
 }

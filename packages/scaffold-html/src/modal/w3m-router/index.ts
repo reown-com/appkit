@@ -20,7 +20,7 @@ export class W3mRouter extends LitElement {
 
   public constructor() {
     super()
-    this.unsubscribe.push(RouterController.subscribeKey('view', view => this.onRouteChange(view)))
+    this.unsubscribe.push(RouterController.subscribeKey('view', val => this.onViewChange(val)))
   }
 
   public firstUpdated() {
@@ -61,7 +61,7 @@ export class W3mRouter extends LitElement {
     }
   }
 
-  private async onRouteChange(newView: RouterControllerState['view']) {
+  private async onViewChange(newView: RouterControllerState['view']) {
     await animate(this, { opacity: [1, 0], scale: [1, 1.02] }, { duration: 0.15 }).finished
     this.view = newView
     animate(this, { opacity: [0, 1], scale: [0.98, 1] }, { duration: 0.15, delay: 0.05 })
