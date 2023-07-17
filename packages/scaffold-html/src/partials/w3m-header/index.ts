@@ -62,16 +62,12 @@ export class W3mHeader extends LitElement {
     if (this.showBack) {
       return html`<wui-icon-link
         id="dynamic"
-        icon="clock"
+        icon="chevronLeft"
         @click=${RouterController.goBack}
       ></wui-icon-link>`
     }
 
-    return html`<wui-icon-link
-      id="dynamic"
-      icon="close"
-      @click=${ModalController.close}
-    ></wui-icon-link>`
+    return html`<wui-icon-link id="dynamic" icon="helpCircle" @click=${() => null}></wui-icon-link>`
   }
 
   private async onViewChange(view: RouterControllerState['view']) {
