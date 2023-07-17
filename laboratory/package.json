@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "rm -rf .next; next dev",
-    "build": "next build"
+    "build": "next build",
+    "playwright:install": "playwright install --with-deps",
+    "playwright:test": "playwright test",
+    "playwright:debug": "playwright test --debug"
   },
   "dependencies": {
     "@nextui-org/react": "1.0.0-beta.13",
@@ -20,5 +23,8 @@
     "valtio": "1.10.6",
     "viem": "1.2.5",
     "wagmi": "1.3.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.36.1"
   }
 }
