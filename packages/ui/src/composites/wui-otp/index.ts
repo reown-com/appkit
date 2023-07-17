@@ -24,7 +24,7 @@ export class WuiOtp extends LitElement {
               <wui-input-numeric
                 @input=${(e: InputEvent) => this.handleInput(e, index)}
                 @keydown=${(e: KeyboardEvent) => this.handleKeyDown(e, index)}
-                ${ref(el => this.registerInputRef(el as HTMLInputElement, index))}
+                ${ref(el => this.registerInputRef(el as HTMLElement, index))}
               ></wui-input-numeric>
             `
           )}
@@ -35,7 +35,7 @@ export class WuiOtp extends LitElement {
               <wui-input-numeric
                 @input=${(e: InputEvent) => this.handleInput(e, index)}
                 @keydown=${(e: KeyboardEvent) => this.handleKeyDown(e, index)}
-                ${ref(el => this.registerInputRef(el as HTMLInputElement, index))}
+                ${ref(el => this.registerInputRef(el as HTMLElement, index))}
               ></wui-input-numeric>
             `
           )}
@@ -49,7 +49,7 @@ export class WuiOtp extends LitElement {
 
   private validate = (character: string) => regex.number.test(character)
 
-  private registerInputRef(el: HTMLInputElement, index: number) {
+  private registerInputRef(el: HTMLElement, index: number) {
     setTimeout(() => {
       const inputElement = el.shadowRoot?.querySelector('input')
       if (inputElement instanceof HTMLInputElement) {
