@@ -50,8 +50,9 @@ export class W3mWalletConnectQr extends LitElement {
           ? html`<w3m-qrcode
               size="${this.overlayEl.offsetWidth}"
               uri=${this.uri}
-              walletId=${ifDefined(this.walletId)}
-              imageId=${ifDefined(this.imageId)}
+              walletId=${this.walletId}
+              imageId=${this.imageId}
+              data-testid="partial-qr-code"
             ></w3m-qrcode>`
           : html`<w3m-spinner data-testid="partial-qr-spinner"></w3m-spinner>`}
       </div>

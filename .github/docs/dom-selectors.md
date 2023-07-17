@@ -161,3 +161,4 @@
 | w3m-text           | `component-text`                 | W3M Text              | `<span>`   |
 | w3m-modal-content  | `component-modal-content`        | W3M Content           | `<main>`   |
 | w3m-modal-footer   | `component-modal-footer`         | W3M Footer            | `<footer>` |
+| w3m-modal-backcard   | `component-modal-backcard`         | W3M Backcard            | `<div>` |
