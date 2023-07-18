@@ -16,6 +16,7 @@ export class WuiInputNumeric extends LitElement {
     return html`<input
       type="number"
       inputmode="numeric"
+      autofocus
       maxlength="1"
       ?disabled=${this.disabled}
     /> `
