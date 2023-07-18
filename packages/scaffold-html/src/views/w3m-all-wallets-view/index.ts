@@ -8,7 +8,30 @@ export class W3mAllWalletsView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public render() {
-    return html` Hello World `
+    return html`
+      <wui-flex padding="s">
+        <wui-search-bar></wui-search-bar>
+      </wui-flex>
+      <wui-grid
+        .padding=${['0', 's', 's', 's'] as const}
+        gridTemplateColumns="repeat(4, 1fr)"
+        rowGap="l"
+        columnGap="xs"
+      >
+        <wui-card-select-loader type="wallet"></wui-card-select-loader>
+        <wui-card-select-loader type="wallet"></wui-card-select-loader>
+        <wui-card-select-loader type="wallet"></wui-card-select-loader>
+        <wui-card-select-loader type="wallet"></wui-card-select-loader>
+        <wui-card-select-loader type="wallet"></wui-card-select-loader>
+        <wui-card-select-loader type="wallet"></wui-card-select-loader>
+        <wui-card-select-loader type="wallet"></wui-card-select-loader>
+        <wui-card-select-loader type="wallet"></wui-card-select-loader>
+        <wui-card-select-loader type="wallet"></wui-card-select-loader>
+        <wui-card-select-loader type="wallet"></wui-card-select-loader>
+        <wui-card-select-loader type="wallet"></wui-card-select-loader>
+        <wui-card-select-loader type="wallet"></wui-card-select-loader>
+      </wui-grid>
+    `
   }
 }
 

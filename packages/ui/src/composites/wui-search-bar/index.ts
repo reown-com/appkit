@@ -1,11 +1,11 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { resetStyles } from '../../utils/ThemeUtil'
+import { createRef, ref } from 'lit/directives/ref.js'
 import '../../composites/wui-input-element'
-import { ref, createRef } from 'lit/directives/ref.js'
+import { resetStyles } from '../../utils/ThemeUtil'
 import '../wui-input-text'
-import styles from './styles'
 import type { WuiInputText } from '../wui-input-text'
+import styles from './styles'
 
 @customElement('wui-search-bar')
 export class WuiSearchBar extends LitElement {
@@ -16,7 +16,7 @@ export class WuiSearchBar extends LitElement {
 
   // -- Render -------------------------------------------- //
   public render() {
-    return html` <wui-input-text
+    return html`<wui-input-text
       ${ref(this.inputComponentRef)}
       placeholder="Search wallet"
       icon="search"
