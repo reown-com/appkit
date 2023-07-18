@@ -17,9 +17,9 @@ export class WuiOtp extends LitElement {
   private numerics: WuiInputNumeric[] = []
 
   firstUpdated() {
-    const shadowRoot = this.shadowRoot
-    if (shadowRoot) {
-      this.numerics = [...shadowRoot.querySelectorAll<WuiInputNumeric>('wui-input-numeric')]
+    const numericElements = this.shadowRoot?.querySelectorAll<WuiInputNumeric>('wui-input-numeric')
+    if (numericElements) {
+      this.numerics = Array.from(numericElements)
     }
   }
 
@@ -43,22 +43,22 @@ export class WuiOtp extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private handleInput(e: InputEvent, index: number) {
+    const inputElement = e.target as HTMLElement
+    const input = this.getInputElement(inputElement)
 
-  private focusInputField = (dir: 'next' | 'prev', index: number) => {
-    if (dir === 'next') {
-      const nextIndex = index + 1
-      const numeric = this.numerics[nextIndex < this.length ? nextIndex : index]
-      const input = this.getInputElement(numeric)
-      if (input) {
-        input.focus()
-      }
-    }
-    if (dir === 'prev') {
-      const nextIndex = index - 1
-      const numeric = this.numerics[nextIndex > -1 ? nextIndex : index]
-      const input = this.getInputElement(numeric)
-      if (input) {
-        input.focus()
+    if (input) {
+      const inputValue = input.value
+      if (e.inputType === 'insertFromPaste') {
+        this.handlePaste(input, inputValue, index)
+      } else {
+        const isValid = UiHelperUtil.isNumber(inputValue)
+        if (isValid && e.data) {
+          input.value = e.data
+          this.focusInputField('next', index)
+        } else {
+          input.value = ''
+        }
       }
     }
   }
@@ -99,38 +99,7 @@ export class WuiOtp extends LitElement {
     }
   }
 
-  private getInputElement(el: HTMLElement) {
-    if (el.shadowRoot) {
-      const shadowRoot = el.shadowRoot
-      if (shadowRoot.querySelector('input')) {
-        return shadowRoot.querySelector('input')
-      }
-    }
-
-    return null
-  }
-
-  private handleInput(e: InputEvent, index: number) {
-    const inputElement = e.target as HTMLElement
-    const input = this.getInputElement(inputElement)
-
-    if (input) {
-      const inputValue = input.value
-      if (e.inputType === 'insertFromPaste') {
-        this.fillNext(input, inputValue, index)
-      } else {
-        const isValid = UiHelperUtil.isNumber(inputValue)
-        if (isValid && e.data) {
-          input.value = e.data
-          this.focusInputField('next', index)
-        } else {
-          input.value = ''
-        }
-      }
-    }
-  }
-
-  private fillNext(input: HTMLInputElement, inputValue: string, index: number) {
+  private handlePaste(input: HTMLInputElement, inputValue: string, index: number) {
     const isValid = UiHelperUtil.isNumber(inputValue[0])
     if (isValid) {
       input.value = inputValue[0]
@@ -139,7 +108,7 @@ export class WuiOtp extends LitElement {
         const nextNumeric = this.numerics[index + 1]
         const nextInput = this.getInputElement(nextNumeric)
         if (nextInput) {
-          this.fillNext(nextInput, inputString, index + 1)
+          this.handlePaste(nextInput, inputString, index + 1)
         }
       } else {
         this.focusInputField('next', index)
@@ -147,6 +116,33 @@ export class WuiOtp extends LitElement {
     } else {
       input.value = ''
     }
+  }
+
+  private focusInputField = (dir: 'next' | 'prev', index: number) => {
+    if (dir === 'next') {
+      const nextIndex = index + 1
+      const numeric = this.numerics[nextIndex < this.length ? nextIndex : index]
+      const input = this.getInputElement(numeric)
+      if (input) {
+        input.focus()
+      }
+    }
+    if (dir === 'prev') {
+      const nextIndex = index - 1
+      const numeric = this.numerics[nextIndex > -1 ? nextIndex : index]
+      const input = this.getInputElement(numeric)
+      if (input) {
+        input.focus()
+      }
+    }
+  }
+
+  private getInputElement(el: HTMLElement) {
+    if (el.shadowRoot?.querySelector('input')) {
+      return el.shadowRoot.querySelector('input')
+    }
+
+    return null
   }
 }
 
