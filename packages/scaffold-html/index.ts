@@ -7,6 +7,7 @@ export * from './src/views/w3m-connecting-external-view'
 export * from './src/views/w3m-connecting-wc-view'
 
 export * from './src/partials/w3m-header'
+export * from './src/partials/w3m-snackbar'
 export * from './src/partials/w3m-wc-connecting-qrcode'
 
 export { Web3ModalScaffoldHtml } from './src/client'
