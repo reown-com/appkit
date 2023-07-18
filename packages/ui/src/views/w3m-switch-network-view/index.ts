@@ -37,14 +37,17 @@ export class W3mSwitchNetworkView extends LitElement {
     const { id, name } = CoreUtil.getSwitchNetworkRouterData()
 
     return html`
-      <w3m-modal-header title=${`Connect to ${name}`}></w3m-modal-header>
+      <w3m-modal-header
+        title=${`Connect to ${name}`}
+        data-testid="view-switch-network-header"
+      ></w3m-modal-header>
 
-      <w3m-modal-content>
+      <w3m-modal-content data-testid="view-switch-network-content">
         <w3m-network-waiting chainId=${id} label="Approve in your wallet" .isError=${this.isError}>
         </w3m-network-waiting>
       </w3m-modal-content>
 
-      <w3m-info-footer>
+      <w3m-info-footer data-testid="view-switch-network-footer">
         <w3m-text color="secondary" variant="small-thin">
           Switch can be declined if chain is not supported by a wallet or previous request is still
           active
@@ -54,6 +57,7 @@ export class W3mSwitchNetworkView extends LitElement {
           .onClick=${this.onSwitchNetwork.bind(this)}
           .disabled=${!this.isError}
           .iconRight=${SvgUtil.RETRY_ICON}
+          data-testid="view-switch-network-retry-button"
         >
           Try Again
         </w3m-button>

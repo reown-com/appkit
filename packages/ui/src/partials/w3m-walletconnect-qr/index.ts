@@ -11,7 +11,9 @@ export class W3mWalletConnectQr extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public walletId? = ''
+
   @property() public imageId? = ''
+
   @state() private uri? = ''
 
   // -- lifecycle ---------------------------------------------------- //
@@ -49,8 +51,9 @@ export class W3mWalletConnectQr extends LitElement {
               uri=${this.uri}
               walletId=${this.walletId}
               imageId=${this.imageId}
+              data-testid="partial-qr-code"
             ></w3m-qrcode>`
-          : html`<w3m-spinner></w3m-spinner>`}
+          : html`<w3m-spinner data-testid="partial-qr-spinner"></w3m-spinner>`}
       </div>
     `
   }

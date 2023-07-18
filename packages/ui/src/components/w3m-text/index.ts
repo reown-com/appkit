@@ -20,6 +20,7 @@ export class W3mText extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public variant?: Variant = 'medium-regular'
+
   @property() public color?: Color = 'primary'
 
   // -- render ------------------------------------------------------- //
@@ -40,7 +41,7 @@ export class W3mText extends LitElement {
     }
 
     return html`
-      <span>
+      <span data-testid="component-text">
         <slot class=${classMap(classes)}></slot>
       </span>
     `

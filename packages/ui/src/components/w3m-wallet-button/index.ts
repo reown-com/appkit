@@ -11,11 +11,17 @@ export class W3mWalletButton extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public onClick: () => void = () => null
+
   @property() public name = ''
+
   @property() public walletId = ''
+
   @property() public label?: string = undefined
+
   @property() public imageId?: string = undefined
+
   @property() public installed? = false
+
   @property() public recent? = false
 
   // -- private ------------------------------------------------------ //
@@ -41,7 +47,10 @@ export class W3mWalletButton extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <button @click=${this.handleClick.bind(this)}>
+      <button
+        @click=${this.handleClick.bind(this)}
+        data-testid="component-wallet-button-${this.name.toLowerCase()}"
+      >
         <div>
           <w3m-wallet-image walletId=${this.walletId} imageId=${this.imageId}></w3m-wallet-image>
           <w3m-text variant="xsmall-regular">

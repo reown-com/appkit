@@ -13,9 +13,13 @@ export class W3mQrCode extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public uri = ''
+
   @property({ type: Number }) public size = 0
+
   @property() public imageId?: string = undefined
+
   @property() public walletId?: string = undefined
+
   @property() public imageUrl?: string = undefined
 
   // -- private ------------------------------------------------------ //
@@ -23,8 +27,8 @@ export class W3mQrCode extends LitElement {
     const isLightMode = ThemeCtrl.state.themeMode === 'light'
     const size = isLightMode ? this.size : this.size - 18 * 2
 
-    return svg`
-      <svg height=${size} width=${size}>
+    return svg`                
+      <svg height=${size} width=${size} data-testid="component-qrcode-svg">
         ${QrCodeUtil.generate(this.uri, size, size / 4)}
       </svg>
     `

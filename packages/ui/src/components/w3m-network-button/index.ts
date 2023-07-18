@@ -10,8 +10,11 @@ export class W3mNetworkButton extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public onClick: () => void = () => null
+
   @property() public name = ''
+
   @property() public chainId = ''
+
   @property() public unsupported = false
 
   // -- render ------------------------------------------------------- //
@@ -21,7 +24,11 @@ export class W3mNetworkButton extends LitElement {
     }
 
     return html`
-      <button @click=${this.onClick} class=${classMap(classes)}>
+      <button
+        data-testid="component-network-button"
+        @click=${this.onClick}
+        class=${classMap(classes)}
+      >
         <w3m-network-image chainId=${this.chainId}></w3m-network-image>
         <w3m-text variant="xsmall-regular">${this.name}</w3m-text>
       </button>

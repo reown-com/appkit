@@ -16,8 +16,11 @@ export class W3mWalletExplorerView extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private loading = !ExplorerCtrl.state.wallets.listings.length
+
   @state() private firstFetch = !ExplorerCtrl.state.wallets.listings.length
+
   @state() private search = ''
+
   @state() private endReached = false
 
   // -- lifecycle ---------------------------------------------------- //
@@ -100,7 +103,7 @@ export class W3mWalletExplorerView extends LitElement {
   }
 
   private readonly searchDebounce = UiUtil.debounce((value: string) => {
-    if (value.length >= 3) {
+    if (value.length >= 1) {
       this.firstFetch = true
       this.endReached = false
       this.search = value
@@ -154,11 +157,11 @@ export class W3mWalletExplorerView extends LitElement {
     }
 
     return html`
-      <w3m-modal-header>
+      <w3m-modal-header data-testid="view-wallet-explorer-header">
         <w3m-search-input .onChange=${this.onSearchChange.bind(this)}></w3m-search-input>
       </w3m-modal-header>
 
-      <w3m-modal-content class=${classMap(classes)}>
+      <w3m-modal-content class=${classMap(classes)} data-testid="view-wallet-explorer-content">
         <div class="w3m-grid">
           ${isLoading ? null : recomendedWallets}
           ${isLoading
@@ -173,6 +176,7 @@ export class W3mWalletExplorerView extends LitElement {
                           name=${listings[index].name}
                           walletId=${listings[index].id}
                           .onClick=${() => this.onConnect(listings[index])}
+                          data-testid="view-wallet-explorer-button-${listings[index].id}"
                         >
                         </w3m-wallet-button>
                       `

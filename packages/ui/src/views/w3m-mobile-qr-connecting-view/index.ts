@@ -20,13 +20,14 @@ export class W3mMobileQrConnectingView extends LitElement {
         title=${name}
         .onAction=${UiUtil.handleUriCopy}
         .actionIcon=${SvgUtil.COPY_ICON}
+        data-testid="view-mobile-qr-connecting-header"
       ></w3m-modal-header>
 
-      <w3m-modal-content>
+      <w3m-modal-content data-testid="view-mobile-qr-connecting-content">
         <w3m-walletconnect-qr walletId=${id} imageId=${image_id}></w3m-walletconnect-qr>
       </w3m-modal-content>
 
-      <w3m-info-footer>
+      <w3m-info-footer data-testid="view-mobile-qr-connecting-footer">
         <w3m-text color="secondary" variant="small-thin">
           ${`Scan this QR Code with your phone's camera or inside ${name} app`}
         </w3m-text>

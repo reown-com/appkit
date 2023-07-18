@@ -16,6 +16,7 @@ export class W3mAccountButton extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public balance?: 'hide' | 'show' = 'hide'
+
   @property() public avatar?: 'hide' | 'show' = 'show'
 
   private onOpen() {
@@ -28,8 +29,8 @@ export class W3mAccountButton extends LitElement {
     const isAvatar = this.avatar === 'show'
 
     return html`
-      ${isAvatar ? html`<w3m-avatar></w3m-avatar>` : null}
-      <w3m-address-text></w3m-address-text>
+      ${isAvatar ? html`<w3m-avatar data-testid="partial-account-avatar"></w3m-avatar>` : null}
+      <w3m-address-text data-testid="partial-account-address"></w3m-address-text>
     `
   }
 
@@ -44,13 +45,19 @@ export class W3mAccountButton extends LitElement {
     return isBalance
       ? html`
           <div>
-            <w3m-balance></w3m-balance>
-            <button @click=${this.onOpen} class=${classMap(classes)}>
+            <w3m-balance data-testid="partial-account-balance"></w3m-balance>
+            <button
+              @click=${this.onOpen}
+              class=${classMap(classes)}
+              data-testid="partial-account-open-button"
+            >
               ${this.accountTemplate()}
             </button>
           </div>
         `
-      : html`<w3m-button-big @click=${this.onOpen}>${this.accountTemplate()}</w3m-button-big>`
+      : html`<w3m-button-big @click=${this.onOpen} data-testid="partial-account-open-button">
+          ${this.accountTemplate()}
+        </w3m-button-big>`
   }
 }
 

@@ -12,8 +12,11 @@ export class W3mAddressText extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private address?: string = undefined
+
   @state() private name?: string | null = undefined
+
   @state() private loading = true
+
   @property() public variant?: 'button' | 'modal' = 'button'
 
   // -- lifecycle ---------------------------------------------------- //
@@ -46,6 +49,7 @@ export class W3mAddressText extends LitElement {
     return html`
       <w3m-text
         class=${classMap(classes)}
+        data-testid="partial-address-text"
         variant=${isButton ? 'medium-regular' : 'big-bold'}
         color=${isButton ? 'inverse' : 'primary'}
       >

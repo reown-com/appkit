@@ -15,6 +15,7 @@ export class W3mModal extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private open = false
+
   @state() private active = false
 
   // -- lifecycle ---------------------------------------------------- //
@@ -37,6 +38,7 @@ export class W3mModal extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private readonly unsubscribeModal?: () => void = undefined
+
   private abortController?: AbortController = undefined
 
   private get overlayEl() {
@@ -129,11 +131,13 @@ export class W3mModal extends LitElement {
     }
 
     return html`
-      <w3m-explorer-context></w3m-explorer-context>
-      <w3m-theme-context></w3m-theme-context>
-      <w3m-wc-connection-context></w3m-wc-connection-context>
-      <w3m-account-context></w3m-account-context>
-      <w3m-network-context></w3m-network-context>
+      <w3m-explorer-context data-id="partial-modal-explorer-context"></w3m-explorer-context>
+      <w3m-theme-context data-id="partial-modal-theme-context"></w3m-theme-context>
+      <w3m-wc-connection-context
+        data-id="partial-modal-connection-context"
+      ></w3m-wc-connection-context>
+      <w3m-account-context data-id="partial-modal-account-context"></w3m-account-context>
+      <w3m-network-context data-id="partial-modal-network-context"></w3m-network-context>
 
       <div
         id="w3m-modal"

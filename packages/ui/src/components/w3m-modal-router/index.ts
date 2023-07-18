@@ -13,6 +13,7 @@ export class W3mModalRouter extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() public view: RouterView = RouterCtrl.state.view
+
   @state() public prevView: RouterView = RouterCtrl.state.view
 
   // -- lifecycle ---------------------------------------------------- //
@@ -43,7 +44,9 @@ export class W3mModalRouter extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private readonly unsubscribe?: () => void = undefined
+
   private oldHeight = '0px'
+
   private resizeObserver?: ResizeObserver = undefined
 
   private get routerEl() {

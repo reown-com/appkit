@@ -38,12 +38,19 @@ export class W3mWcConnectionContext extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private readonly unwatchOptions?: () => void = undefined
+
   private readonly unwatchAccount?: () => void = undefined
+
   private readonly unwatchWcConnection?: () => void = undefined
+
   private timeout?: NodeJS.Timeout = undefined
+
   private isGenerated = false
+
   private selectedChainId = OptionsCtrl.state.selectedChain?.id
+
   private isAccountConnected = AccountCtrl.state.isConnected
+
   private lastRetry = Date.now()
 
   private async connectAndWait() {

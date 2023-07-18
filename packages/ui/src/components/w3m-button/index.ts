@@ -11,9 +11,13 @@ export class W3mButton extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public disabled? = false
+
   @property() public iconLeft?: TemplateResult<2> = undefined
+
   @property() public iconRight?: TemplateResult<2> = undefined
+
   @property() public onClick: () => void = () => null
+
   @property() public variant: 'default' | 'ghost' | 'outline' = 'default'
 
   // -- render ------------------------------------------------------- //
@@ -33,7 +37,12 @@ export class W3mButton extends LitElement {
     }
 
     return html`
-      <button class=${classMap(classes)} ?disabled=${this.disabled} @click=${this.onClick}>
+      <button
+        class=${classMap(classes)}
+        data-testid="component-button"
+        ?disabled=${this.disabled}
+        @click=${this.onClick}
+      >
         ${this.iconLeft}
         <w3m-text variant="small-regular" color=${textColor}>
           <slot></slot>

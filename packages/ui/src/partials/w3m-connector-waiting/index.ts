@@ -2,6 +2,7 @@ import { ThemeCtrl } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
@@ -11,9 +12,13 @@ export class W3mConnectorWaiting extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public walletId?: string = undefined
+
   @property() public imageId?: string = undefined
+
   @property() public isError = false
+
   @property() public isStale = false
+
   @property() public label = ''
 
   // -- private ------------------------------------------------------ //
@@ -59,9 +64,17 @@ export class W3mConnectorWaiting extends LitElement {
     return html`
       <div class=${classMap(classes)}>
         ${this.svgLoaderTemplate()}
-        <w3m-wallet-image walletId=${this.walletId} imageId=${this.imageId}></w3m-wallet-image>
+        <w3m-wallet-image
+          walletId=${ifDefined(this.walletId)}
+          imageId=${ifDefined(this.imageId)}
+          data-useid="partial-connector-wallet-image"
+        ></w3m-wallet-image>
       </div>
-      <w3m-text variant="medium-regular" color=${this.isError ? 'error' : 'primary'}>
+      <w3m-text
+        variant="medium-regular"
+        color=${this.isError ? 'error' : 'primary'}
+        data-useid="partial-connector-error-text"
+      >
         ${this.isError ? 'Connection declined' : this.label}
       </w3m-text>
     `

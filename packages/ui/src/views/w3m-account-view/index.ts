@@ -32,30 +32,41 @@ export class W3mAccountView extends LitElement {
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <w3m-modal-content>
+      <w3m-modal-content data-testid="view-account-content">
         <div class="w3m-profile">
           <div class="w3m-info">
-            <w3m-avatar size="medium"></w3m-avatar>
-            <w3m-address-text variant="modal"></w3m-address-text>
+            <w3m-avatar size="medium" data-testid="view-account-avatar"></w3m-avatar>
+            <w3m-address-text
+              variant="modal"
+              data-testid="view-account-address-text"
+            ></w3m-address-text>
           </div>
           <div class="w3m-connection-badge">
-            <w3m-text variant="small-regular" color="secondary">Connected</w3m-text>
+            <w3m-text
+              variant="small-regular"
+              color="secondary"
+              data-testid="view-account-connection-badge"
+              >Connected</w3m-text
+            >
           </div>
         </div>
       </w3m-modal-content>
 
       <div class="w3m-balance">
-        <w3m-balance></w3m-balance>
+        <w3m-balance data-testid="view-account-balance"></w3m-balance>
       </div>
 
-      <w3m-modal-footer>
+      <w3m-modal-footer data-testid="view-account-footer">
         <div class="w3m-footer">
-          <w3m-account-network-button></w3m-account-network-button>
+          <w3m-account-network-button
+            data-testid="view-account-network-button"
+          ></w3m-account-network-button>
 
           <w3m-box-button
             label="Copy Address"
             .onClick=${this.onCopyAddress}
             .icon=${SvgUtil.ACCOUNT_COPY}
+            data-testid="view-account-copy-button"
           ></w3m-box-button>
 
           <w3m-box-button
@@ -63,6 +74,7 @@ export class W3mAccountView extends LitElement {
             .loading=${this.loading}
             .onClick=${this.onDisconnect}
             .icon=${SvgUtil.ACCOUNT_DISCONNECT}
+            data-testid="view-account-disconnect-button"
           ></w3m-box-button>
         </div>
       </w3m-modal-footer>

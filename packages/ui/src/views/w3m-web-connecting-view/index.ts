@@ -58,18 +58,20 @@ export class W3mWebConnectingView extends LitElement {
         title=${name}
         .onAction=${UiUtil.handleUriCopy}
         .actionIcon=${SvgUtil.COPY_ICON}
+        data-testid="view-web-connecting-header"
       ></w3m-modal-header>
 
-      <w3m-modal-content>
+      <w3m-modal-content data-testid="view-web-connecting-content">
         <w3m-connector-waiting
           walletId=${id}
           imageId=${image_id}
           label=${`Continue in ${name}...`}
           .isError=${this.isError}
+          data-testid="view-web-connecting-waiting"
         ></w3m-connector-waiting>
       </w3m-modal-content>
 
-      <w3m-info-footer>
+      <w3m-info-footer data-testid="view-web-connecting-footer">
         <w3m-text color="secondary" variant="small-thin">
           ${`${name} web app has opened in a new tab. Go there, accept the connection, and come back`}
         </w3m-text>
@@ -80,7 +82,11 @@ export class W3mWebConnectingView extends LitElement {
           .isDesktop=${isMobilePlatform ? false : isDesktop}
           .isRetry=${true}
         >
-          <w3m-button .onClick=${this.openWebWallet.bind(this)} .iconRight=${SvgUtil.RETRY_ICON}>
+          <w3m-button
+            .onClick=${this.openWebWallet.bind(this)}
+            .iconRight=${SvgUtil.RETRY_ICON}
+            data-testid="view-web-connecting-retry-button"
+          >
             Retry
           </w3m-button>
         </w3m-platform-selection>
