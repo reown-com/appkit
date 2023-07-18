@@ -24,12 +24,15 @@ export class W3mGetWalletView extends LitElement {
     const isCustomWallets = manualWallets.length
 
     return html`
-      <w3m-modal-header title="Get a wallet"></w3m-modal-header>
-      <w3m-modal-content>
+      <w3m-modal-header
+        title="Get a wallet"
+        data-testid="view-get-wallet-header"
+      ></w3m-modal-header>
+      <w3m-modal-content data-testid="view-get-wallet-content">
         ${isRecomendedWallets
           ? recomendedWallets.map(
               wallet => html`
-                <div class="w3m-wallet-item">
+                <div class="w3m-wallet-item" data-testid="view-get-wallet-${wallet.id}">
                   <w3m-wallet-image walletId=${wallet.id} imageId=${wallet.image_id}>
                   </w3m-wallet-image>
                   <div class="w3m-wallet-content">
@@ -37,6 +40,7 @@ export class W3mGetWalletView extends LitElement {
                     <w3m-button
                       .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
                       .onClick=${() => this.onGet(wallet.homepage)}
+                      data-testid="view-get-wallet-button-${wallet.id}"
                     >
                       Get
                     </w3m-button>
@@ -48,13 +52,14 @@ export class W3mGetWalletView extends LitElement {
         ${isCustomWallets
           ? manualWallets.map(
               wallet => html`
-                <div class="w3m-wallet-item">
+                <div class="w3m-wallet-item" data-testid="view-get-wallet-${wallet.id}">
                   <w3m-wallet-image walletId=${wallet.id}></w3m-wallet-image>
                   <div class="w3m-wallet-content">
                     <w3m-text variant="medium-regular">${wallet.name}</w3m-text>
                     <w3m-button
                       .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
                       .onClick=${() => this.onGet(wallet.links.universal)}
+                      data-testid="view-get-wallet-button-${wallet.id}"
                     >
                       Get
                     </w3m-button>
@@ -73,6 +78,7 @@ export class W3mGetWalletView extends LitElement {
         <w3m-button
           .onClick=${UiUtil.openWalletExplorerUrl}
           .iconRight=${SvgUtil.ARROW_UP_RIGHT_ICON}
+          data-testid="view-get-wallet-explorer-button"
         >
           Explore Wallets
         </w3m-button>

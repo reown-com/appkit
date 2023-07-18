@@ -50,11 +50,12 @@ export class W3mMobileWalletSelection extends LitElement {
         title="Connect your wallet"
         .onAction=${this.onQrcode}
         .actionIcon=${SvgUtil.QRCODE_ICON}
+        data-testid="partial-mobile-wallet-selection-header"
       ></w3m-modal-header>
 
       ${isWallets
         ? html`
-            <w3m-modal-content>
+            <w3m-modal-content data-testid="partial-mobile-wallet-selection-content">
               <div>
                 ${wallets}
                 ${isViewAll

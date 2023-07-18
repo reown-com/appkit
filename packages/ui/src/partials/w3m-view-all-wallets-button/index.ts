@@ -23,7 +23,7 @@ export class W3mViewAllWalletsButton extends LitElement {
     const reversedWallets = [...recomendedWallets, ...manualWallets].reverse().slice(0, 4)
 
     return html`
-      <button @click=${this.onClick}>
+      <button @click=${this.onClick} data-testid="partial-all-wallets-button">
         <div class="w3m-icons">
           ${reversedWallets.map(wallet => {
             const explorerImg = UiUtil.getWalletIcon(wallet)

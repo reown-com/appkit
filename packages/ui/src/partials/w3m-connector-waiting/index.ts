@@ -67,9 +67,14 @@ export class W3mConnectorWaiting extends LitElement {
         <w3m-wallet-image
           walletId=${ifDefined(this.walletId)}
           imageId=${ifDefined(this.imageId)}
+          data-useid="partial-connector-wallet-image"
         ></w3m-wallet-image>
       </div>
-      <w3m-text variant="medium-regular" color=${this.isError ? 'error' : 'primary'}>
+      <w3m-text
+        variant="medium-regular"
+        color=${this.isError ? 'error' : 'primary'}
+        data-useid="partial-connector-error-text"
+      >
         ${this.isError ? 'Connection declined' : this.label}
       </w3m-text>
     `

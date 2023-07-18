@@ -49,6 +49,7 @@ export class W3mAddressText extends LitElement {
     return html`
       <w3m-text
         class=${classMap(classes)}
+        data-testid="partial-address-text"
         variant=${isButton ? 'medium-regular' : 'big-bold'}
         color=${isButton ? 'inverse' : 'primary'}
       >

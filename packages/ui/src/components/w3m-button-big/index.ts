@@ -22,7 +22,11 @@ export class W3mButtonBig extends LitElement {
     }
 
     return html`
-      <button ?disabled=${this.disabled} class=${classMap(classes)}>
+      <button
+        ?disabled=${this.disabled}
+        data-testid="component-big-button"
+        class=${classMap(classes)}
+      >
         <slot></slot>
       </button>
     `

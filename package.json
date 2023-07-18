@@ -9,6 +9,7 @@
     "lab": "npm run dev --w=laboratory",
     "lint": "eslint .",
     "prettier": "prettier --check .",
+    "prettier:fix": "prettier --write .",
     "typecheck": "npm run typecheck --ws --if-present",
     "new-version": "lerna version --no-git-tag-version --exact",
     "pre-publish": "npm run lint; npm run typecheck; npm run prettier; npm run new-version; npm install; npm run build;",

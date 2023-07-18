@@ -37,7 +37,12 @@ export class W3mButton extends LitElement {
     }
 
     return html`
-      <button class=${classMap(classes)} ?disabled=${this.disabled} @click=${this.onClick}>
+      <button
+        class=${classMap(classes)}
+        data-testid="component-button"
+        ?disabled=${this.disabled}
+        @click=${this.onClick}
+      >
         ${this.iconLeft}
         <w3m-text variant="small-regular" color=${textColor}>
           <slot></slot>

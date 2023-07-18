@@ -65,9 +65,12 @@ export class W3mMobileConnectingView extends LitElement {
     const universalUrl = mobile?.universal
 
     return html`
-      <w3m-modal-header title=${name}></w3m-modal-header>
+      <w3m-modal-header
+        title=${name}
+        data-testid="view-mobile-connecting-header"
+      ></w3m-modal-header>
 
-      <w3m-modal-content>
+      <w3m-modal-content data-testid="view-mobile-connecting-content">
         <w3m-connector-waiting
           walletId=${id}
           imageId=${image_id}
@@ -76,7 +79,7 @@ export class W3mMobileConnectingView extends LitElement {
         ></w3m-connector-waiting>
       </w3m-modal-content>
 
-      <w3m-info-footer class="w3m-note">
+      <w3m-info-footer class="w3m-note" data-testid="view-mobile-connecting-footer">
         <w3m-platform-selection .isWeb=${isWeb} .isRetry=${true}>
           <w3m-button .onClick=${() => this.openMobileApp(false)} .iconRight=${SvgUtil.RETRY_ICON}>
             Retry
@@ -95,7 +98,7 @@ export class W3mMobileConnectingView extends LitElement {
           : null}
       </w3m-info-footer>
 
-      <w3m-info-footer class="w3m-app-store">
+      <w3m-info-footer class="w3m-app-store" data-testid="view-mobile-connecting-footer">
         <div>
           <w3m-wallet-image walletId=${id} imageId=${image_id}></w3m-wallet-image>
           <w3m-text>${`Get ${name}`}</w3m-text>
@@ -104,6 +107,7 @@ export class W3mMobileConnectingView extends LitElement {
           .iconRight=${SvgUtil.ARROW_RIGHT_ICON}
           .onClick=${() => this.onGoToAppStore(downloadUrl)}
           variant="ghost"
+          data-testid="view-mobile-connecting-app-store-button"
         >
           App Store
         </w3m-button>

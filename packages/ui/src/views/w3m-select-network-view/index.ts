@@ -88,8 +88,11 @@ export class W3mSelectNetworkView extends LitElement {
     )
 
     return html`
-      <w3m-modal-header title="Select network"></w3m-modal-header>
-      <w3m-modal-content>
+      <w3m-modal-header
+        title="Select network"
+        data-testid="view-select-network-header"
+      ></w3m-modal-header>
+      <w3m-modal-content data-testid="view-select-network-content">
         <div>
           ${sortedChains?.map(
             chain => html`
@@ -98,6 +101,7 @@ export class W3mSelectNetworkView extends LitElement {
                 chainId=${chain.id}
                 .unsupported=${chain.unsupported}
                 .onClick=${async () => this.onSelectChain(chain)}
+                data-testid="view-select-network-button-${chain.id}"
               >
                 ${chain.name}
               </w3m-network-button>

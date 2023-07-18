@@ -23,12 +23,24 @@ export class W3mModalHeader extends LitElement {
   // -- private ------------------------------------------------------ //
   private backBtnTemplate() {
     return html`
-      <button class="w3m-back-btn" @click=${RouterCtrl.goBack}>${SvgUtil.BACK_ICON}</button>
+      <button
+        class="w3m-back-btn"
+        data-testid="component-header-back-button"
+        @click=${RouterCtrl.goBack}
+      >
+        ${SvgUtil.BACK_ICON}
+      </button>
     `
   }
 
   private actionBtnTemplate() {
-    return html`<button class="w3m-action-btn" @click=${this.onAction}>${this.actionIcon}</button>`
+    return html`<button
+      class="w3m-action-btn"
+      data-testid="component-header-action-button"
+      @click=${this.onAction}
+    >
+      ${this.actionIcon}
+    </button>`
   }
 
   // -- render ------------------------------------------------------- //

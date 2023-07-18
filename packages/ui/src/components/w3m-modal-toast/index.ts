@@ -47,7 +47,7 @@ export class W3mModalToast extends LitElement {
 
     return this.open
       ? html`
-          <div class=${classMap(classes)}>
+          <div data-testid="component-modal-toast" class=${classMap(classes)}>
             ${variant === 'success' ? SvgUtil.CHECKMARK_ICON : null}
             ${variant === 'error' ? SvgUtil.CROSS_ICON : null}
             <w3m-text variant="small-regular">${message}</w3m-text>

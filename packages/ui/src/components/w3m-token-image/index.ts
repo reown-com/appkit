@@ -19,7 +19,7 @@ export class W3mTokenImage extends LitElement {
     return src
       ? html`
           <div>
-            <img src=${src} alt=${this.id} />
+            <img src=${src} alt=${this.id} data-testid="component-token-image" />
           </div>
         `
       : SvgUtil.TOKEN_PLACEHOLDER
