@@ -14,7 +14,7 @@ export class W3mConnectView extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', connectors => (this.connectors = connectors))
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
     )
   }
 
