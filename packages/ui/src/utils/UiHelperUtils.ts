@@ -60,5 +60,13 @@ export const UiHelperUtil = {
     const tintedB = Math.round(b + (255 - b) * tint)
 
     return [tintedR, tintedG, tintedB]
+  },
+
+  isNumber(character: string) {
+    const regex = {
+      number: /^[0-9]+$/u
+    }
+
+    return regex.number.test(character)
   }
 }
