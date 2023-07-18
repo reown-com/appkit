@@ -13,13 +13,7 @@ export class WuiInputNumeric extends LitElement {
 
   // -- Render -------------------------------------------- //
   public render() {
-    return html`<input
-      type="number"
-      inputmode="numeric"
-      autofocus
-      maxlength="1"
-      ?disabled=${this.disabled}
-    /> `
+    return html`<input type="text" inputmode="numeric" autofocus ?disabled=${this.disabled} /> `
   }
 }
 

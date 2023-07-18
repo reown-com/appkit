@@ -20,7 +20,6 @@ export default css`
     color: var(--wui-color-fg-100);
     caret-color: var(--wui-color-blue-100);
     transition: all var(--wui-ease-inout-power-2) var(--wui-duration-lg);
-
     box-sizing: border-box;
     -webkit-appearance: none;
     -moz-appearance: textfield;

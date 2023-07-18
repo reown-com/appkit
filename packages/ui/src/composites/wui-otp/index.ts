@@ -26,18 +26,16 @@ export class WuiOtp extends LitElement {
   // -- Render -------------------------------------------- //
   public render() {
     return html`
-      <wui-flex gap="s">
-        <wui-flex gap="xxs">
-          ${[...Array(this.length)].map(
-            (_: undefined, index: number) => html`
-              <wui-input-numeric
-                @input=${(e: InputEvent) => this.handleInput(e, index)}
-                @keydown=${(e: KeyboardEvent) => this.handleKeyDown(e, index)}
-              >
-              </wui-input-numeric>
-            `
-          )}
-        </wui-flex>
+      <wui-flex gap="xxs">
+        ${[...Array(this.length)].map(
+          (_, index: number) => html`
+            <wui-input-numeric
+              @input=${(e: InputEvent) => this.handleInput(e, index)}
+              @keydown=${(e: KeyboardEvent) => this.handleKeyDown(e, index)}
+            >
+            </wui-input-numeric>
+          `
+        )}
       </wui-flex>
     `
   }
@@ -66,13 +64,22 @@ export class WuiOtp extends LitElement {
   private handleKeyDown = (e: KeyboardEvent, index: number) => {
     const inputElement = e.target as HTMLElement
     const input = this.getInputElement(inputElement)
+    const keyArr = ['ArrowLeft', 'ArrowRight', 'Shift', 'Delete']
 
     if (!input) {
       return
     }
 
+    if (keyArr.includes(e.key)) {
+      e.preventDefault()
+    }
+
+    const currentCaretPos = input.selectionStart
     switch (e.key) {
       case 'ArrowLeft':
+        if (currentCaretPos) {
+          input.setSelectionRange(currentCaretPos + 1, currentCaretPos + 1)
+        }
         this.focusInputField('prev', index)
         break
       case 'ArrowRight':
