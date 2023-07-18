@@ -7,9 +7,12 @@ import { html } from 'lit'
 type Component = Meta<WuiOtp>
 
 export default {
-  title: 'Composites/wui-otp'
+  title: 'Composites/wui-otp',
+  args: {
+    length: 6
+  }
 } as Component
 
 export const Default: Component = {
-  render: () => html` <wui-otp></wui-otp>`
+  render: args => html` <wui-otp length=${args.length}></wui-otp>`
 }

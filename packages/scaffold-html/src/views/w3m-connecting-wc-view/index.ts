@@ -2,7 +2,8 @@ import {
   ConnectionController,
   ConstantsUtil,
   CoreHelperUtil,
-  ModalController
+  ModalController,
+  SnackController
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
@@ -13,7 +14,7 @@ export class W3mConnectingWcView extends LitElement {
   // -- Members ------------------------------------------- //
   private usnubscribe: (() => void)[] = []
 
-  private interval?: ReturnType<typeof setTimeout> = undefined
+  private interval?: ReturnType<typeof setInterval> = undefined
 
   private lastRetry = Date.now()
 
@@ -22,7 +23,7 @@ export class W3mConnectingWcView extends LitElement {
 
   public constructor() {
     super()
-    this.usnubscribe.push(ConnectionController.subscribeKey('wcUri', uri => (this.uri = uri)))
+    this.usnubscribe.push(ConnectionController.subscribeKey('wcUri', val => (this.uri = val)))
     this.initializeConnection()
     this.interval = setInterval(this.initializeConnection.bind(this), ConstantsUtil.TEN_SEC_MS)
   }
@@ -48,6 +49,7 @@ export class W3mConnectingWcView extends LitElement {
       }
     } catch {
       if (CoreHelperUtil.isAllowedRetry(this.lastRetry)) {
+        SnackController.showError('Declined')
         this.lastRetry = Date.now()
         this.initializeConnection(true)
       }

@@ -27,6 +27,16 @@ export default css`
     padding: 0px;
   }
 
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+
   input:disabled {
     cursor: not-allowed;
     border: 1px solid var(--wui-overlay-010);

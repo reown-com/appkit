@@ -1,4 +1,4 @@
-import { CoreHelperUtil } from '@web3modal/core'
+import { CoreHelperUtil, SnackController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import styles from './styles'
@@ -50,9 +50,10 @@ export class W3mConnectingWcQrcode extends LitElement {
     try {
       if (this.uri) {
         CoreHelperUtil.copyToClopboard(this.uri)
+        SnackController.showSuccess('Uri copied')
       }
     } catch {
-      // TASK: Show error toast
+      SnackController.showError('Failed to copy')
     }
   }
 }

@@ -1,0 +1,23 @@
+import { Meta, Title } from '@storybook/blocks'
+import '@web3modal/ui/src/layout/wui-grid'
+import '@web3modal/ui/src/layout/wui-flex'
+import '@web3modal/ui/src/components/wui-icon'
+import '@web3modal/ui/src/components/wui-text'
+import { iconOptions } from '../../utils/PresetUtils'
+
+<Meta title="assets/Icons" />
+
+<Title>Icons</Title>
+
+<wui-grid gridTemplateColumns="repeat(6, 1fr)" gap="3xl">
+  {iconOptions.map(value => (
+    <>
+      <wui-flex flexDirection="column" alignItems="center" justifyContent="space-between" gap="s">
+        <wui-icon size="lg" color="fg-100" name={value}></wui-icon>
+        <wui-text variant="paragraph-500" color="fg-100">
+          {value}
+        </wui-text>
+      </wui-flex>
+    </>
+  ))}
+</wui-grid>
