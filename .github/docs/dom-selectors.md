@@ -152,7 +152,7 @@
 | w3m-network-button | `component-network-button`       | Select network button | `<button>` |
 | w3m-modal-header   | `component-header-action-button` | Action button         | `<button>` |
 | w3m-modal-header   | `component-header-back-button`   | Back button           | `<button>` |
-| w3m-wallet-button  | `component-wallet-button`        | Select wallet button  | `<button>` |
+| w3m-wallet-button  | `component-wallet-button-{name.lowercase}`        | Select wallet button by name  | `<button>` |
 | w3m-network-image  | `component-network-logo-svg`     | SVG of network logo   | `<svg>`    |
 | w3m-qrcode         | `component-qrcode-svg`           | SVG of connect qrcode | `<svg>`    |
 | w3m-spinner        | `component-spinner-svg`          | SVG of spinnger       | `<svg>`    |
