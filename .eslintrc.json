@@ -63,6 +63,7 @@
     "@typescript-eslint/no-unsafe-return": "off",
     "@typescript-eslint/promise-function-async": "off",
     "@typescript-eslint/no-confusing-void-expression": "off",
-    "@typescript-eslint/prefer-nullish-coalescing": "off"
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "@typescript-eslint/no-unnecessary-condition": "off"
   }
 }

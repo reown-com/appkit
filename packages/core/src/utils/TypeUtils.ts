@@ -33,3 +33,10 @@ export interface ExplorerListing {
     universal: string
   }
 }
+
+export interface ExplorerListingsResponse {
+  listings: ExplorerListing[]
+  total: number
+}
+
+export type ProjectId = string

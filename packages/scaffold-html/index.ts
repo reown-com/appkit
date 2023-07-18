@@ -18,5 +18,6 @@ export type {
   CaipChainId,
   ConnectionControllerClient,
   ConnectorType,
-  NetworkControllerClient
+  NetworkControllerClient,
+  ProjectId
 } from '@web3modal/core'

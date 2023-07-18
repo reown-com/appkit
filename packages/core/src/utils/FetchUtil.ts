@@ -5,7 +5,7 @@ interface Options {
 
 interface RequestArguments {
   path: string
-  params?: Record<string, string>
+  params?: Record<string, unknown>
 }
 
 interface PostArguments extends RequestArguments {

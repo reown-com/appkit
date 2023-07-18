@@ -16,7 +16,8 @@ import type {
   CaipAddress,
   CaipChainId,
   ConnectionControllerClient,
-  NetworkControllerClient
+  NetworkControllerClient,
+  ProjectId
 } from '@web3modal/scaffold-html'
 import { Web3ModalScaffoldHtml } from '@web3modal/scaffold-html'
 
@@ -27,16 +28,21 @@ const NAMESPACE = 'eip155'
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalOptions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  wagmiConfig?: Config<any, any>
+  wagmiConfig: Config<any, any>
+  projectId: ProjectId
 }
 
 // -- Client --------------------------------------------------------------------
 export class Web3Modal extends Web3ModalScaffoldHtml {
   public constructor(options: Web3ModalOptions) {
-    const { wagmiConfig } = options
+    const { wagmiConfig, projectId } = options
 
     if (!wagmiConfig) {
-      throw new Error('wagmi:constructor - wagmiConfig is undefined')
+      throw new Error('web3modal:constructor - wagmiConfig is undefined')
+    }
+
+    if (!projectId) {
+      throw new Error('web3modal:constructor - projectId is undefined')
     }
 
     const networkControllerClient: NetworkControllerClient = {
@@ -78,7 +84,8 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
 
     super({
       networkControllerClient,
-      connectionControllerClient
+      connectionControllerClient,
+      projectId
     })
 
     this.syncConnectors(wagmiConfig)

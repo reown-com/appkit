@@ -15,6 +15,8 @@ export default css`
       'case' on;
     line-height: 130%;
     font-weight: var(--wui-font-weight-regular);
+    overflow: inherit;
+    text-overflow: inherit;
   }
 
   .wui-font-large-500,
