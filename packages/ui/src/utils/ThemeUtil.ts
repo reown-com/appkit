@@ -71,6 +71,7 @@ export const rootStyles = css`
     --wui-spacing-s: 12px;
     --wui-spacing-m: 14px;
     --wui-spacing-l: 16px;
+    --wui-spacing-2l: 18px;
     --wui-spacing-xl: 20px;
     --wui-spacing-xxl: 24px;
     --wui-spacing-3xl: 40px;

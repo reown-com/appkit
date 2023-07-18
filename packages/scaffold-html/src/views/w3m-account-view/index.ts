@@ -53,7 +53,12 @@ export class W3mAccountView extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" padding="l" alignItems="center" gap="xs">
+      <wui-flex
+        flexDirection="column"
+        .padding=${['s', 's', 'xl', 's'] as const}
+        alignItems="center"
+        gap="xs"
+      >
         <wui-avatar
           alt=${this.address}
           address=${this.address}
@@ -73,7 +78,7 @@ export class W3mAccountView extends LitElement {
         </wui-flex>
       </wui-flex>
 
-      <wui-flex flexDirection="column" gap="xs" .padding=${['3xs', 'l', 'l', 'l'] as const}>
+      <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
         <wui-list-item variant="icon" iconVariant="overlay" icon="networkPlaceholder">
           <wui-text variant="paragraph-500" color="fg-100">${this.balance ?? '_._'}</wui-text>
         </wui-list-item>

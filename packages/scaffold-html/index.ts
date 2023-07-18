@@ -2,6 +2,7 @@ export * from './src/modal/w3m-modal'
 export * from './src/modal/w3m-router'
 
 export * from './src/views/w3m-account-view'
+export * from './src/views/w3m-all-wallets-view'
 export * from './src/views/w3m-connect-view'
 export * from './src/views/w3m-connecting-external-view'
 export * from './src/views/w3m-connecting-wc-view'

@@ -4,7 +4,13 @@ import type { Connector } from './ConnectorController'
 
 // -- Types --------------------------------------------- //
 export interface RouterControllerState {
-  view: 'Account' | 'Connect' | 'ConnectingExternal' | 'ConnectingWalletConnect' | 'Networks'
+  view:
+    | 'Account'
+    | 'Connect'
+    | 'ConnectingExternal'
+    | 'ConnectingWalletConnect'
+    | 'Networks'
+    | 'AllWallets'
   history: RouterControllerState['view'][]
   data?: {
     connector: Connector

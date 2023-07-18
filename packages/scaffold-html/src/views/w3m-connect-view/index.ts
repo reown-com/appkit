@@ -25,9 +25,13 @@ export class W3mConnectView extends LitElement {
   // -- Render -------------------------------------------- //
   public render() {
     return html`
-      <wui-flex flexDirection="column" padding="l" gap="xs">
+      <wui-flex flexDirection="column" padding="s" gap="xs">
         ${this.connectorsTemplate()}
-        <wui-list-wallet name="View All" showAllWallets></wui-list-wallet>
+        <wui-list-wallet
+          name="All Wallets"
+          showAllWallets
+          @click=${this.onAllWallets.bind(this)}
+        ></wui-list-wallet>
       </wui-flex>
     `
   }
@@ -38,17 +42,21 @@ export class W3mConnectView extends LitElement {
       connector =>
         html`<wui-list-wallet
           name=${connector.name ?? 'Unknown'}
-          @click=${() => this.onConnectorClick(connector)}
+          @click=${() => this.onConnector(connector)}
         ></wui-list-wallet>`
     )
   }
 
-  private onConnectorClick(connector: Connector) {
+  private onConnector(connector: Connector) {
     if (connector.type === 'WALLET_CONNECT') {
       RouterController.push('ConnectingWalletConnect', { connector })
     } else {
       RouterController.push('ConnectingExternal', { connector })
     }
+  }
+
+  private onAllWallets() {
+    RouterController.push('AllWallets')
   }
 }
 

@@ -4,7 +4,7 @@ export default css`
   button {
     border-radius: var(--wui-border-radius-xxs);
     color: var(--wui-color-fg-100);
-    padding: 9px;
+    padding: var(--wui-spacing-xs);
   }
 
   button > wui-icon {

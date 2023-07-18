@@ -31,6 +31,7 @@ export type SpacingType =
   | '3xs'
   | '4xs'
   | 'l'
+  | '2l'
   | 'm'
   | 's'
   | 'xl'
