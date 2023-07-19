@@ -42,6 +42,7 @@ export class W3mAllWalletsView extends LitElement {
         <wui-search-bar></wui-search-bar>
       </wui-flex>
       <wui-grid
+        data-scroll=${!this.initial}
         .padding=${['0', 's', 's', 's'] as const}
         gridTemplateColumns="repeat(4, 1fr)"
         rowGap="l"

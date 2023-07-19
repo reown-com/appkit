@@ -7,6 +7,10 @@ export default css`
     scrollbar-width: none;
   }
 
+  wui-grid[data-scroll='false'] {
+    overflow: hidden;
+  }
+
   wui-grid::-webkit-scrollbar {
     display: none;
   }
