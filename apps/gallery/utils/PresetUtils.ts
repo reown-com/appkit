@@ -21,7 +21,8 @@ import type {
   BackgroundType,
   TagType,
   AccountEntryType,
-  ThemeType
+  ThemeType,
+  LogoType
 } from '@web3modal/ui/src/utils/TypesUtil'
 
 export const colorOptions: ColorType[] = [
@@ -138,6 +139,7 @@ export const borderRadiusOptions: BorderRadiusType[] = ['4xs', '3xs', 'xxs', 'xs
 export const spacingOptions: SpacingType[] = ['4xs', '3xs', 'xxs', 'xs', 's', 'm', 'l', 'xl', '3xl']
 
 export const iconOptions: IconType[] = [
+  'apple',
   'arrowBottom',
   'arrowLeft',
   'arrowRight',
@@ -156,10 +158,14 @@ export const iconOptions: IconType[] = [
   'cursor',
   'desktop',
   'disconnect',
+  'discord',
   'etherscan',
   'extension',
   'externalLink',
+  'facebook',
   'filters',
+  'github',
+  'google',
   'helpCircle',
   'infoCircle',
   'mail',
@@ -171,11 +177,25 @@ export const iconOptions: IconType[] = [
   'search',
   'swapHorizontal',
   'swapVertical',
+  'telegram',
+  'twitch',
+  'twitterIcon',
   'twitter',
   'wallet',
   'walletConnect',
   'walletPlaceholder',
   'warningCircle'
+]
+
+export const logoOptions: LogoType[] = [
+  'apple',
+  'discord',
+  'facebook',
+  'github',
+  'google',
+  'telegram',
+  'twitch',
+  'twitter'
 ]
 
 export const placementOptions: PlacementType[] = ['top', 'right', 'bottom', 'left']

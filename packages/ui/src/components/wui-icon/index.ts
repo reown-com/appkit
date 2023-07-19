@@ -6,6 +6,7 @@ import styles from './styles'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil'
 
 // -- Svg's-------------------------------- //
+import { appleSvg } from '../../assets/svg/apple'
 import { arrowBottomSvg } from '../../assets/svg/arrow-bottom'
 import { arrowLeftSvg } from '../../assets/svg/arrow-left'
 import { arrowRightSvg } from '../../assets/svg/arrow-right'
@@ -24,10 +25,14 @@ import { copySvg } from '../../assets/svg/copy'
 import { cursorSvg } from '../../assets/svg/cursor'
 import { desktopSvg } from '../../assets/svg/desktop'
 import { disconnectSvg } from '../../assets/svg/disconnect'
+import { discordSvg } from '../../assets/svg/discord'
 import { etherscanSvg } from '../../assets/svg/etherscan'
 import { extensionSvg } from '../../assets/svg/extension'
 import { externalLinkSvg } from '../../assets/svg/external-link'
+import { facebookSvg } from '../../assets/svg/facebook'
 import { filtersSvg } from '../../assets/svg/filters'
+import { githubSvg } from '../../assets/svg/github'
+import { googleSvg } from '../../assets/svg/google'
 import { helpCircleSvg } from '../../assets/svg/help-circle'
 import { infoCircleSvg } from '../../assets/svg/info-circle'
 import { mailSvg } from '../../assets/svg/mail'
@@ -39,13 +44,17 @@ import { refreshSvg } from '../../assets/svg/refresh'
 import { searchSvg } from '../../assets/svg/search'
 import { swapHorizontalSvg } from '../../assets/svg/swapHorizontal'
 import { swapVerticalSvg } from '../../assets/svg/swapVertical'
+import { telegramSvg } from '../../assets/svg/telegram'
+import { twitchSvg } from '../../assets/svg/twitch'
 import { twitterSvg } from '../../assets/svg/twitter'
+import { twitterIconSvg } from '../../assets/svg/twitterIcon'
 import { warningCircleSvg } from '../../assets/svg/warning-circle'
 import { walletSvg } from '../../assets/svg/wallet'
 import { walletConnectSvg } from '../../assets/svg/walletconnect'
 import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
+  apple: appleSvg,
   arrowBottom: arrowBottomSvg,
   arrowLeft: arrowLeftSvg,
   arrowRight: arrowRightSvg,
@@ -64,10 +73,14 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   cursor: cursorSvg,
   desktop: desktopSvg,
   disconnect: disconnectSvg,
+  discord: discordSvg,
   etherscan: etherscanSvg,
   extension: extensionSvg,
   externalLink: externalLinkSvg,
+  facebook: facebookSvg,
   filters: filtersSvg,
+  github: githubSvg,
+  google: googleSvg,
   helpCircle: helpCircleSvg,
   infoCircle: infoCircleSvg,
   mail: mailSvg,
@@ -79,7 +92,10 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   search: searchSvg,
   swapHorizontal: swapHorizontalSvg,
   swapVertical: swapVerticalSvg,
+  telegram: telegramSvg,
+  twitch: twitchSvg,
   twitter: twitterSvg,
+  twitterIcon: twitterIconSvg,
   wallet: walletSvg,
   walletConnect: walletConnectSvg,
   walletPlaceholder: walletPlaceholderSvg,

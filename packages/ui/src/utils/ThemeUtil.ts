@@ -264,7 +264,8 @@ export const elementStyles = css`
   button:disabled > wui-network-image,
   button:disabled > wui-image,
   button:disabled > wui-icon-box,
-  button:disabled > wui-transaction-visual {
+  button:disabled > wui-transaction-visual,
+  button:disabled > wui-logo {
     filter: grayscale(1);
   }
 
