@@ -1,3 +1,4 @@
+import { CoreHelperUtil } from '@web3modal/core'
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
 import { FetchUtil } from '../utils/FetchUtil'
@@ -10,7 +11,7 @@ import type {
 
 // -- Helpers ------------------------------------------- //
 const api = new FetchUtil({ baseUrl: 'https://explorer-api.walletconnect.com' })
-const entries = 28
+const entries = 32
 
 // -- Types --------------------------------------------- //
 export interface ExplorerApiControllerState {
@@ -54,14 +55,18 @@ export const ExplorerApiController = {
       if (!state.fetching) {
         state.fetching = true
         const page = req?.page ?? 1
-        const response = await api.get<ExplorerListingsResponse>({
-          path: '/w3m/v1/getAllListings',
-          params: {
-            projectId: state.projectId,
-            page,
-            entries
-          }
-        })
+        const [response] = await Promise.all([
+          api.get<ExplorerListingsResponse>({
+            path: '/w3m/v1/getAllListings',
+            params: {
+              projectId: state.projectId,
+              page,
+              entries
+            }
+          }),
+          CoreHelperUtil.wait(300)
+        ])
+
         state.listings = [...state.listings, ...Object.values(response.listings)]
         state.total = response.total
         state.page = page
