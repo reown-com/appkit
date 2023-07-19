@@ -1,10 +1,10 @@
 import { svg } from 'lit'
 
-export const chevronLeftSvg = svg`<svg fill="none" viewBox="0 0 12 12">
+export const chevronLeftSvg = svg`<svg fill="none" viewBox="0 0 16 16">
   <path
     fill="currentColor"
     fill-rule="evenodd"
-    d="M8.7.3a1 1 0 0 1 0 1.4L4.42 6l4.3 4.3a1 1 0 1 1-1.42 1.4l-5-5a1 1 0 0 1 0-1.4l5-5a1 1 0 0 1 1.42 0Z"
+    d="M11.04 1.46a1 1 0 0 1 0 1.41L5.91 8l5.13 5.13a1 1 0 1 1-1.41 1.41L3.79 8.71a1 1 0 0 1 0-1.42l5.84-5.83a1 1 0 0 1 1.41 0Z"
     clip-rule="evenodd"
   />
 </svg>`
