@@ -12,7 +12,7 @@ export class W3mAllWalletsView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public render() {
-    const isSearch = this.search.length > 2
+    const isSearch = this.search.length >= 2
 
     return html`
       <wui-flex padding="s">

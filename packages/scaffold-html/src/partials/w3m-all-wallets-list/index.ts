@@ -42,6 +42,7 @@ export class W3mAllWalletsList extends LitElement {
         data-scroll=${!this.initial}
         .padding=${['0', 's', 's', 's'] as const}
         gridTemplateColumns="repeat(4, 1fr)"
+        gridTemplateRows="auto 1fr"
         rowGap="l"
         columnGap="xs"
       >
