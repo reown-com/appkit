@@ -69,13 +69,16 @@ export const ExplorerApiController = {
 
   async searchListings(req: ExplorerSearchRequest) {
     state.search = []
-    const response = await api.get<ExplorerListingsResponse>({
-      path: '/w3m/v1/getAllListings',
-      params: {
-        projectId: state.projectId,
-        search: req.search
-      }
-    })
+    const [response] = await Promise.all([
+      await api.get<ExplorerListingsResponse>({
+        path: '/w3m/v1/getAllListings',
+        params: {
+          projectId: state.projectId,
+          search: req.search
+        }
+      }),
+      CoreHelperUtil.wait(300)
+    ])
     state.search = Object.values(response.listings)
   }
 }

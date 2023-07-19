@@ -8,12 +8,12 @@ export class W3mAllWalletsSearch extends LitElement {
   public static styles = styles
 
   // -- Members ------------------------------------------- //
-  private prevSearch = ''
+  private prevQuery = ''
 
   // -- State & Properties -------------------------------- //
   @state() private loading = true
 
-  @property() private search = ''
+  @property() private query = ''
 
   // -- Render -------------------------------------------- //
   public render() {
@@ -35,10 +35,10 @@ export class W3mAllWalletsSearch extends LitElement {
 
   // Private Methods ------------------------------------- //
   private async onSearch() {
-    if (this.search === this.prevSearch) {
-      this.prevSearch = this.search
+    if (this.query !== this.prevQuery) {
+      this.prevQuery = this.query
       this.loading = true
-      await ExplorerApiController.searchListings({ search: this.search })
+      await ExplorerApiController.searchListings({ search: this.query })
       this.loading = false
     }
   }

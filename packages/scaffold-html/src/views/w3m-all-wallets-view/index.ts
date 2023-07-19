@@ -1,20 +1,37 @@
+import { CoreHelperUtil } from '@web3modal/core'
 import { LitElement, html } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, state } from 'lit/decorators.js'
 import styles from './styles'
 
 @customElement('w3m-all-wallets-view')
 export class W3mAllWalletsView extends LitElement {
   public static styles = styles
 
+  // -- State & Properties -------------------------------- //
+  @state() private search = ''
+
   // -- Render -------------------------------------------- //
   public render() {
+    const isSearch = this.search.length > 2
+
     return html`
       <wui-flex padding="s">
-        <wui-search-bar></wui-search-bar>
+        <wui-search-bar @inputChange=${this.onSearchChange.bind(this)}></wui-search-bar>
       </wui-flex>
-      <w3m-all-wallets-list></w3m-all-wallets-list>
+      ${isSearch
+        ? html`<w3m-all-wallets-search query=${this.search}></w3m-all-wallets-search>`
+        : html`<w3m-all-wallets-list></w3m-all-wallets-list>`}
     `
   }
+
+  // -- Private Methods ----------------------------------- //
+  private onSearchChange(event: CustomEvent) {
+    this.onDebouncedSearch(event.detail)
+  }
+
+  private onDebouncedSearch = CoreHelperUtil.debounce((value: string) => {
+    this.search = value
+  })
 }
 
 declare global {

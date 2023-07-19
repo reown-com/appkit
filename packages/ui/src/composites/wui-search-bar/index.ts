@@ -32,6 +32,7 @@ export class WuiSearchBar extends LitElement {
     const inputElement = inputComponent?.inputElementRef.value
     if (inputElement) {
       inputElement.value = ''
+      inputElement.dispatchEvent(new Event('input'))
     }
   }
 }

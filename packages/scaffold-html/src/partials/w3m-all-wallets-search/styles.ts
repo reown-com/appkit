@@ -2,7 +2,7 @@ import { css } from 'lit'
 
 export default css`
   wui-grid {
-    max-height: 360px;
+    height: 360px;
     overflow: scroll;
     scrollbar-width: none;
   }
@@ -16,9 +16,8 @@ export default css`
   }
 
   wui-loading-spinner {
-    padding-top: var(--wui-spacing-l);
-    padding-bottom: var(--wui-spacing-l);
+    height: 360px;
     justify-content: center;
-    grid-column: 1 / span 4;
+    align-items: center;
   }
 `
