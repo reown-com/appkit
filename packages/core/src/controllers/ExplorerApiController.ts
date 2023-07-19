@@ -1,6 +1,6 @@
-import { CoreHelperUtil } from '@web3modal/core'
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil'
 import { FetchUtil } from '../utils/FetchUtil'
 import type {
   ExplorerListing,

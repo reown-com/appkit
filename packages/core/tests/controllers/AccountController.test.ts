@@ -8,7 +8,7 @@ const profileName = 'john.eth'
 const profileImage = 'https://ipfs.com/0x123.png'
 
 // -- Tests --------------------------------------------------------------------
-describe('ModalController', () => {
+describe('AccountController', () => {
   it('should have valid default state', () => {
     expect(AccountController.state).toEqual({ isConnected: false })
   })

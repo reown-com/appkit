@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { RouterController } from '../../index'
 
 // -- Tests --------------------------------------------------------------------
-describe('ModalController', () => {
+describe('RouterController', () => {
   it('should have valid default state', () => {
     expect(RouterController.state).toEqual({
       view: 'Connect',

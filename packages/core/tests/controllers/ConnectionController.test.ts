@@ -21,7 +21,7 @@ const partialClient: ConnectionControllerClient = {
 }
 
 // -- Tests --------------------------------------------------------------------
-describe('ModalController', () => {
+describe('ConnectionController', () => {
   it('should throw if client not set', () => {
     expect(ConnectionController._getClient).toThrow('ConnectionController client not set')
   })
