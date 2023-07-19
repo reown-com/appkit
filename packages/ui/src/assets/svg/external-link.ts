@@ -1,10 +1,10 @@
 import { svg } from 'lit'
 
-export const externalLinkSvg = svg`<svg fill="none" viewBox="0 0 12 12">
+export const externalLinkSvg = svg`<svg fill="none" viewBox="0 0 14 15">
   <path
     fill="currentColor"
     fill-rule="evenodd"
-    d="M1.96 1.96a1 1 0 0 1 1-1h7.07a1 1 0 0 1 1 1v7.08a1 1 0 0 1-2 0V4.38l-7.32 7.33a1 1 0 0 1-1.42-1.42l7.33-7.33H2.96a1 1 0 0 1-1-1Z"
+    d="M3.74 3.99a1 1 0 0 1 1-1H11a1 1 0 0 1 1 1v6.26a1 1 0 0 1-2 0V6.4l-6.3 6.3a1 1 0 0 1-1.4-1.42l6.29-6.3H4.74a1 1 0 0 1-1-1Z"
     clip-rule="evenodd"
   />
-</svg> `
+</svg>`

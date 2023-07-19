@@ -1,10 +1,10 @@
 import { svg } from 'lit'
 
-export const checkmarkSvg = svg`<svg viewBox="0 0 12 12">
+export const checkmarkSvg = svg`<svg fill="none" viewBox="0 0 14 15">
   <path
     fill="currentColor"
     fill-rule="evenodd"
-    d="M10.82.92c.4.25.5.77.25 1.16l-5.62 8.75a.83.83 0 0 1-1.34.08L.98 7.16a.83.83 0 1 1 1.28-1.07l2.4 2.88 5.01-7.8a.83.83 0 0 1 1.15-.25Z"
+    d="M12.04 2.65c.47.3.6.91.3 1.38l-5.78 9a1 1 0 0 1-1.61.1L1.73 9.27A1 1 0 1 1 3.27 8L5.6 10.8l5.05-7.85a1 1 0 0 1 1.38-.3Z"
     clip-rule="evenodd"
   />
 </svg>`

@@ -3,7 +3,9 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil'
 import styles from './styles'
+import { colorStyles, resetStyles } from '../../utils/ThemeUtil'
 
+// -- Svg's-------------------------------- //
 import { arrowBottomSvg } from '../../assets/svg/arrow-bottom'
 import { arrowLeftSvg } from '../../assets/svg/arrow-left'
 import { arrowRightSvg } from '../../assets/svg/arrow-right'
@@ -23,6 +25,7 @@ import { cursorSvg } from '../../assets/svg/cursor'
 import { desktopSvg } from '../../assets/svg/desktop'
 import { disconnectSvg } from '../../assets/svg/disconnect'
 import { etherscanSvg } from '../../assets/svg/etherscan'
+import { extensionSvg } from '../../assets/svg/extension'
 import { externalLinkSvg } from '../../assets/svg/external-link'
 import { filtersSvg } from '../../assets/svg/filters'
 import { helpCircleSvg } from '../../assets/svg/help-circle'
@@ -32,14 +35,15 @@ import { mobileSvg } from '../../assets/svg/mobile'
 import { networkPlaceholderSvg } from '../../assets/svg/network-placeholder'
 import { nftPlaceholderSvg } from '../../assets/svg/nftPlaceholder'
 import { offSvg } from '../../assets/svg/off'
+import { refreshSvg } from '../../assets/svg/refresh'
 import { searchSvg } from '../../assets/svg/search'
-import { swapSvg } from '../../assets/svg/swap'
+import { swapHorizontalSvg } from '../../assets/svg/swapHorizontal'
+import { swapVerticalSvg } from '../../assets/svg/swapVertical'
 import { twitterSvg } from '../../assets/svg/twitter'
 import { warningCircleSvg } from '../../assets/svg/warning-circle'
 import { walletSvg } from '../../assets/svg/wallet'
 import { walletConnectSvg } from '../../assets/svg/walletconnect'
 import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder'
-import { colorStyles, resetStyles } from '../../utils/ThemeUtil'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   arrowBottom: arrowBottomSvg,
@@ -61,6 +65,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   desktop: desktopSvg,
   disconnect: disconnectSvg,
   etherscan: etherscanSvg,
+  extension: extensionSvg,
   externalLink: externalLinkSvg,
   filters: filtersSvg,
   helpCircle: helpCircleSvg,
@@ -70,8 +75,10 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   networkPlaceholder: networkPlaceholderSvg,
   nftPlaceholder: nftPlaceholderSvg,
   off: offSvg,
+  refresh: refreshSvg,
   search: searchSvg,
-  swap: swapSvg,
+  swapHorizontal: swapHorizontalSvg,
+  swapVertical: swapVerticalSvg,
   twitter: twitterSvg,
   wallet: walletSvg,
   walletConnect: walletConnectSvg,

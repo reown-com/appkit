@@ -1,10 +1,10 @@
 import { svg } from 'lit'
 
-export const arrowRightSvg = svg`<svg fill="none" viewBox="0 0 14 13">
+export const arrowRightSvg = svg`<svg fill="none" viewBox="0 0 14 15">
   <path
     fill="currentColor"
     fill-rule="evenodd"
-    d="M0 7a1 1 0 0 1 1-1h9.58L7.3 2.7a1 1 0 1 1 1.42-1.4l5 5a1 1 0 0 1 0 1.4l-5 5a1 1 0 0 1-1.42-1.4L10.6 8H1a1 1 0 0 1-1-1Z"
+    d="M1 7.99a1 1 0 0 1 1-1h7.58L7.12 4.53A1 1 0 1 1 8.54 3.1l4.16 4.17a1 1 0 0 1 0 1.41l-4.16 4.17a1 1 0 1 1-1.42-1.41l2.46-2.46H2a1 1 0 0 1-1-1Z"
     clip-rule="evenodd"
   />
-</svg> `
+</svg>`
