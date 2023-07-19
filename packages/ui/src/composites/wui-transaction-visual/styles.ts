@@ -2,23 +2,30 @@ import { css } from 'lit'
 
 export default css`
   :host {
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
     width: 40px;
     height: 40px;
+    border: 1px solid var(--wui-overlay-005);
+    border-radius: var(--wui-border-radius-3xl);
+  }
+
+  :host([data-type='minted']),
+  :host([data-type='nftSent']),
+  :host([data-type='bought']) {
+    border-radius: var(--wui-border-radius-xs);
   }
 
   wui-image {
-    border-radius: var(--wui-border-radius-3xl);
-    border: 1px solid var(--wui-overlay-010);
     display: block;
+    border-radius: inherit;
   }
 
-  wui-image[data-type='minted'],
-  wui-image[data-type='nftSent'],
-  wui-image[data-type='bought'] {
-    border-radius: var(--wui-border-radius-xs);
-    order: 1px solid transparent;
+  wui-icon {
+    width: 20px;
+    height: 20px;
   }
 
   wui-icon-box {
