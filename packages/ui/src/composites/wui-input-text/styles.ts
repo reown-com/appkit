@@ -66,7 +66,7 @@ export default css`
     padding: 9px var(--wui-spacing-m) 10px 36px;
   }
 
-  wui-icon[size='md'] {
+  wui-icon[data-input='sm'] {
     left: var(--wui-spacing-s);
   }
 
@@ -78,7 +78,7 @@ export default css`
     padding: 15px var(--wui-spacing-m) var(--wui-spacing-l) 42px;
   }
 
-  wui-icon[size='lg'] {
+  wui-icon[data-input='md'] {
     left: var(--wui-spacing-m);
   }
 
