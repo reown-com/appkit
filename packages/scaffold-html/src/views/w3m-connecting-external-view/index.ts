@@ -63,7 +63,7 @@ export class W3mConnectingExternalView extends LitElement {
           .disabled=${!this.error}
           @click=${this.onConnect.bind(this)}
         >
-          <wui-icon color="inherit" slot="iconLeft" name="swap"></wui-icon>
+          <wui-icon color="inherit" slot="iconLeft" name="swapHorizontal"></wui-icon>
           Try again
         </wui-button>
       </wui-flex>

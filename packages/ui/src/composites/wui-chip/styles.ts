@@ -61,8 +61,8 @@ export default css`
 
   a[data-variant='fill'] > wui-icon,
   a[data-variant='shade'] > wui-icon {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
   }
 
   a[data-variant='transparent'] > wui-image {
@@ -71,8 +71,8 @@ export default css`
   }
 
   a[data-variant='transparent'] > wui-icon {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
   }
 
   a[data-variant='fill']:focus-visible {
