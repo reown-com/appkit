@@ -19,19 +19,7 @@ export class W3mAllWalletsSearch extends LitElement {
   public render() {
     this.onSearch()
 
-    return this.loading
-      ? html`<wui-loading-spinner></wui-loading-spinner>`
-      : html`
-          <wui-grid
-            .padding=${['0', 's', 's', 's'] as const}
-            gridTemplateColumns="repeat(4, 1fr)"
-            gridTemplateRows="auto 1fr"
-            rowGap="l"
-            columnGap="xs"
-          >
-            ${this.walletsTemplate()}
-          </wui-grid>
-        `
+    return this.loading ? html`<wui-loading-spinner></wui-loading-spinner>` : this.walletsTemplate()
   }
 
   // Private Methods ------------------------------------- //
@@ -47,9 +35,33 @@ export class W3mAllWalletsSearch extends LitElement {
   private walletsTemplate() {
     const { search } = ExplorerApiController.state
 
-    return search.map(
-      wallet => html` <wui-card-select type="wallet" name=${wallet.name}></wui-card-select> `
-    )
+    if (!search.length) {
+      return html`
+        <wui-flex justifyContent="center" alignItems="center" gap="s" flexDirection="column">
+          <wui-icon-box
+            size="lg"
+            iconcolor="fg-200"
+            backgroundcolor="fg-300"
+            icon="wallet"
+            background="transparent"
+          ></wui-icon-box>
+          <wui-text color="fg-200" variant="paragraph-500">No Wallet found</wui-text>
+        </wui-flex>
+      `
+    }
+
+    return html`
+      <wui-grid
+        .padding=${['0', 's', 's', 's'] as const}
+        gridTemplateColumns="repeat(4, 1fr)"
+        rowGap="l"
+        columnGap="xs"
+      >
+        ${search.map(
+          wallet => html` <wui-card-select type="wallet" name=${wallet.name}></wui-card-select> `
+        )}
+      </wui-grid>
+    `
   }
 }
 

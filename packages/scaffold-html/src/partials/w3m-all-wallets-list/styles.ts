@@ -5,6 +5,7 @@ export default css`
     max-height: 360px;
     overflow: scroll;
     scrollbar-width: none;
+    grid-auto-rows: min-content;
   }
 
   wui-grid[data-scroll='false'] {

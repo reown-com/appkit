@@ -16,7 +16,7 @@ export class W3mAllWalletsView extends LitElement {
 
     return html`
       <wui-flex padding="s">
-        <wui-search-bar @inputChange=${this.onSearchChange.bind(this)}></wui-search-bar>
+        <wui-search-bar @inputChange=${this.onInputChange.bind(this)}></wui-search-bar>
       </wui-flex>
       ${isSearch
         ? html`<w3m-all-wallets-search query=${this.search}></w3m-all-wallets-search>`
@@ -25,7 +25,7 @@ export class W3mAllWalletsView extends LitElement {
   }
 
   // -- Private Methods ----------------------------------- //
-  private onSearchChange(event: CustomEvent) {
+  private onInputChange(event: CustomEvent) {
     this.onDebouncedSearch(event.detail)
   }
 

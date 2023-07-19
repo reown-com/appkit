@@ -79,6 +79,6 @@ export const ExplorerApiController = {
       }),
       CoreHelperUtil.wait(300)
     ])
-    state.search = Object.values(response.listings)
+    state.search = response.listings ? Object.values(response.listings) : []
   }
 }
