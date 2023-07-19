@@ -94,7 +94,7 @@ export class W3mAccountView extends LitElement {
     `
   }
 
-  // -- Private Methods ------------------------------------ //
+  // -- Private ------------------------------------------- //
   private onCopyAddress() {
     try {
       if (this.address) {

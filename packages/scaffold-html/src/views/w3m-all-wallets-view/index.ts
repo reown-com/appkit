@@ -24,7 +24,7 @@ export class W3mAllWalletsView extends LitElement {
     `
   }
 
-  // -- Private Methods ----------------------------------- //
+  // -- Private ------------------------------------------- //
   private onInputChange(event: CustomEvent) {
     this.onDebouncedSearch(event.detail)
   }
