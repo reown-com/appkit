@@ -158,6 +158,7 @@ export const rootStyles = css`
     --wui-icon-box-bg-error-100: #3c2426;
     --wui-icon-box-bg-blue-100: #20303f;
     --wui-icon-box-bg-success-100: #1f3a28;
+    --wui-icon-box-bg-inverse-100: #243240;
 
     --wui-avatar-border: #252525;
   }
@@ -213,6 +214,7 @@ export const rootStyles = css`
     --wui-icon-box-bg-error-100: #f4dfdd;
     --wui-icon-box-bg-blue-100: #d9ecfb;
     --wui-icon-box-bg-success-100: #daf0e4;
+    --wui-icon-box-bg-inverse-100: #dcecfc;
 
     --wui-avatar-border: #f3f4f4;
   }

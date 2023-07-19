@@ -1,42 +1,45 @@
 import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil'
+import styles from './styles'
+
 import { arrowBottomSvg } from '../../assets/svg/arrow-bottom'
 import { arrowLeftSvg } from '../../assets/svg/arrow-left'
 import { arrowRightSvg } from '../../assets/svg/arrow-right'
 import { arrowTopSvg } from '../../assets/svg/arrow-top'
+import { browserSvg } from '../../assets/svg/browser'
 import { checkmarkSvg } from '../../assets/svg/checkmark'
+import { chevronBottomSvg } from '../../assets/svg/chevron-bottom'
+import { chevronLeftSvg } from '../../assets/svg/chevron-left'
 import { chevronRightSvg } from '../../assets/svg/chevron-right'
+import { chevronTopSvg } from '../../assets/svg/chevron-top'
 import { clockSvg } from '../../assets/svg/clock'
 import { closeSvg } from '../../assets/svg/close'
+import { coinPlaceholderSvg } from '../../assets/svg/coinPlaceholder'
+import { compassSvg } from '../../assets/svg/compass'
 import { copySvg } from '../../assets/svg/copy'
 import { cursorSvg } from '../../assets/svg/cursor'
+import { desktopSvg } from '../../assets/svg/desktop'
 import { disconnectSvg } from '../../assets/svg/disconnect'
+import { etherscanSvg } from '../../assets/svg/etherscan'
 import { externalLinkSvg } from '../../assets/svg/external-link'
+import { filtersSvg } from '../../assets/svg/filters'
 import { helpCircleSvg } from '../../assets/svg/help-circle'
+import { infoCircleSvg } from '../../assets/svg/info-circle'
 import { mailSvg } from '../../assets/svg/mail'
+import { mobileSvg } from '../../assets/svg/mobile'
+import { networkPlaceholderSvg } from '../../assets/svg/network-placeholder'
+import { nftPlaceholderSvg } from '../../assets/svg/nftPlaceholder'
+import { offSvg } from '../../assets/svg/off'
 import { searchSvg } from '../../assets/svg/search'
 import { swapSvg } from '../../assets/svg/swap'
+import { twitterSvg } from '../../assets/svg/twitter'
+import { warningCircleSvg } from '../../assets/svg/warning-circle'
 import { walletSvg } from '../../assets/svg/wallet'
 import { walletConnectSvg } from '../../assets/svg/walletconnect'
 import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil'
-import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil'
-import styles from './styles'
-import { networkPlaceholderSvg } from '../../assets/svg/network-placeholder'
-import { browserSvg } from '../../assets/svg/browser'
-import { chevronBottomSvg } from '../../assets/svg/chevron-bottom'
-import { chevronLeftSvg } from '../../assets/svg/chevron-left'
-import { chevronTopSvg } from '../../assets/svg/chevron-top'
-import { compassSvg } from '../../assets/svg/compass'
-import { desktopSvg } from '../../assets/svg/desktop'
-import { etherscanSvg } from '../../assets/svg/etherscan'
-import { filtersSvg } from '../../assets/svg/filters'
-import { infoCircleSvg } from '../../assets/svg/info-circle'
-import { mobileSvg } from '../../assets/svg/mobile'
-import { offSvg } from '../../assets/svg/off'
-import { twitterSvg } from '../../assets/svg/twitter'
-import { warningCircleSvg } from '../../assets/svg/warning-circle'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   arrowBottom: arrowBottomSvg,
@@ -52,6 +55,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   clock: clockSvg,
   close: closeSvg,
   compass: compassSvg,
+  coinPlaceholder: coinPlaceholderSvg,
   copy: copySvg,
   cursor: cursorSvg,
   desktop: desktopSvg,
@@ -64,6 +68,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   mail: mailSvg,
   mobile: mobileSvg,
   networkPlaceholder: networkPlaceholderSvg,
+  nftPlaceholder: nftPlaceholderSvg,
   off: offSvg,
   search: searchSvg,
   swap: swapSvg,
