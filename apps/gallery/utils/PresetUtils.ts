@@ -16,6 +16,7 @@ import type {
   GridContentType,
   GridItemsType,
   IconType,
+  LogoType,
   PlacementType,
   SpacingType,
   TagType,
@@ -149,6 +150,7 @@ export const spacingOptions: SpacingType[] = [
 ]
 
 export const iconOptions: IconType[] = [
+  'apple',
   'arrowBottom',
   'arrowLeft',
   'arrowRight',
@@ -167,10 +169,14 @@ export const iconOptions: IconType[] = [
   'cursor',
   'desktop',
   'disconnect',
+  'discord',
   'etherscan',
   'extension',
   'externalLink',
+  'facebook',
   'filters',
+  'github',
+  'google',
   'helpCircle',
   'infoCircle',
   'mail',
@@ -182,11 +188,25 @@ export const iconOptions: IconType[] = [
   'search',
   'swapHorizontal',
   'swapVertical',
+  'telegram',
+  'twitch',
+  'twitterIcon',
   'twitter',
   'wallet',
   'walletConnect',
   'walletPlaceholder',
   'warningCircle'
+]
+
+export const logoOptions: LogoType[] = [
+  'apple',
+  'discord',
+  'facebook',
+  'github',
+  'google',
+  'telegram',
+  'twitch',
+  'twitter'
 ]
 
 export const placementOptions: PlacementType[] = ['top', 'right', 'bottom', 'left']

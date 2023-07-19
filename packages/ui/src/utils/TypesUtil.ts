@@ -78,6 +78,7 @@ export type GridContentType =
 export type GridItemsType = 'center' | 'end' | 'start' | 'stretch'
 
 export type IconType =
+  | 'apple'
   | 'arrowBottom'
   | 'arrowLeft'
   | 'arrowRight'
@@ -96,10 +97,14 @@ export type IconType =
   | 'cursor'
   | 'desktop'
   | 'disconnect'
+  | 'discord'
   | 'etherscan'
   | 'extension'
   | 'externalLink'
+  | 'facebook'
   | 'filters'
+  | 'github'
+  | 'google'
   | 'helpCircle'
   | 'infoCircle'
   | 'mail'
@@ -111,11 +116,24 @@ export type IconType =
   | 'search'
   | 'swapHorizontal'
   | 'swapVertical'
+  | 'telegram'
+  | 'twitch'
   | 'twitter'
+  | 'twitterIcon'
   | 'wallet'
   | 'walletConnect'
   | 'walletPlaceholder'
   | 'warningCircle'
+
+export type LogoType =
+  | 'apple'
+  | 'discord'
+  | 'facebook'
+  | 'github'
+  | 'google'
+  | 'telegram'
+  | 'twitch'
+  | 'twitter'
 
 export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 
