@@ -1,10 +1,10 @@
 import { svg } from 'lit'
 
-export const clockSvg = svg`<svg viewBox="0 0 16 16">
+export const clockSvg = svg`<svg fill="none" viewBox="0 0 16 16">
   <path
     fill="currentColor"
     fill-rule="evenodd"
-    d="M8 2a6 6 0 1 0 0 12A6 6 0 0 0 8 2ZM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-4.5a1 1 0 0 1 1 1v3.09l2.2 2.2a1 1 0 0 1-1.4 1.42L7.3 8.7A1 1 0 0 1 7 8V4.5a1 1 0 0 1 1-1Z"
+    d="M7 2.99a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm-7 5a7 7 0 1 1 14 0 7 7 0 0 1-14 0Zm7-4a1 1 0 0 1 1 1v2.58l1.85 1.85a1 1 0 0 1-1.41 1.42L6.29 8.69A1 1 0 0 1 6 8v-3a1 1 0 0 1 1-1Z"
     clip-rule="evenodd"
   />
-</svg> `
+</svg>`
