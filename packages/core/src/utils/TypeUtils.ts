@@ -34,6 +34,10 @@ export interface ExplorerListing {
   }
 }
 
+export interface ExplorerListingsRequest {
+  page?: number
+}
+
 export interface ExplorerListingsResponse {
   listings: ExplorerListing[]
   total: number

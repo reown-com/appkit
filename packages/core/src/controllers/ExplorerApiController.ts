@@ -1,14 +1,20 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
 import { FetchUtil } from '../utils/FetchUtil'
-import type { ExplorerListing, ExplorerListingsResponse, ProjectId } from '../utils/TypeUtils'
+import type {
+  ExplorerListing,
+  ExplorerListingsRequest,
+  ExplorerListingsResponse,
+  ProjectId
+} from '../utils/TypeUtils'
 
 // -- Helpers ------------------------------------------- //
 const api = new FetchUtil({ baseUrl: 'https://explorer-api.walletconnect.com' })
-const entries = 24
+const entries = 28
 
 // -- Types --------------------------------------------- //
 export interface ExplorerApiControllerState {
+  fetching: boolean
   projectId: ProjectId
   page: number
   total: number
@@ -20,6 +26,7 @@ type StateKey = keyof ExplorerApiControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ExplorerApiControllerState>({
+  fetching: false,
   projectId: '',
   page: 1,
   total: 0,
@@ -42,12 +49,25 @@ export const ExplorerApiController = {
     state.projectId = projectId
   },
 
-  async fetchListings() {
-    const response = await api.get<ExplorerListingsResponse>({
-      path: '/w3m/v1/getAllListings',
-      params: { projectId: state.projectId, page: 1, entries }
-    })
-    state.listings = [...state.listings, ...Object.values(response.listings)]
-    state.total = response.total
+  async fetchListings(req?: ExplorerListingsRequest) {
+    try {
+      if (!state.fetching) {
+        state.fetching = true
+        const page = req?.page ?? 1
+        const response = await api.get<ExplorerListingsResponse>({
+          path: '/w3m/v1/getAllListings',
+          params: {
+            projectId: state.projectId,
+            page,
+            entries
+          }
+        })
+        state.listings = [...state.listings, ...Object.values(response.listings)]
+        state.total = response.total
+        state.page = page
+      }
+    } finally {
+      state.fetching = false
+    }
   }
 }

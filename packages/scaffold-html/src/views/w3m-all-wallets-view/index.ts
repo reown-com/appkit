@@ -11,6 +11,8 @@ export class W3mAllWalletsView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
+  private paginationObserver?: IntersectionObserver = undefined
+
   // -- State & Properties -------------------------------- //
   @state() private initial = !ExplorerApiController.state.listings.length
 
@@ -25,10 +27,12 @@ export class W3mAllWalletsView extends LitElement {
 
   public firstUpdated() {
     this.initialFetch()
+    this.createPaginationObserver()
   }
 
   public disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    this.paginationObserver?.disconnect()
   }
 
   // -- Render -------------------------------------------- //
@@ -43,7 +47,8 @@ export class W3mAllWalletsView extends LitElement {
         rowGap="l"
         columnGap="xs"
       >
-        ${this.initial ? this.loaderTemplate() : this.walletsTemplate()}
+        ${this.initial ? this.shimmerTemplate() : this.walletsTemplate()}
+        ${this.paginationLoaderTemplate()}
       </wui-grid>
     `
   }
@@ -59,7 +64,7 @@ export class W3mAllWalletsView extends LitElement {
     }
   }
 
-  private loaderTemplate() {
+  private shimmerTemplate() {
     return [...Array(16)].map(
       () => html`<wui-card-select-loader type="wallet"></wui-card-select-loader>`
     )
@@ -69,6 +74,30 @@ export class W3mAllWalletsView extends LitElement {
     return this.listings.map(
       wallet => html` <wui-card-select type="wallet" name=${wallet.name}></wui-card-select> `
     )
+  }
+
+  private paginationLoaderTemplate() {
+    const { listings, total } = ExplorerApiController.state
+    if (total === 0 || listings.length < total) {
+      return html`<wui-loading-spinner></wui-loading-spinner>`
+    }
+
+    return null
+  }
+
+  private createPaginationObserver() {
+    const loaderEl = this.shadowRoot?.querySelector('wui-loading-spinner')
+    if (loaderEl) {
+      this.paginationObserver = new IntersectionObserver(([element]) => {
+        if (element.isIntersecting && !this.initial) {
+          const { page, total, listings } = ExplorerApiController.state
+          if (listings.length < total) {
+            ExplorerApiController.fetchListings({ page: page + 1 })
+          }
+        }
+      })
+      this.paginationObserver.observe(loaderEl)
+    }
   }
 }
 
