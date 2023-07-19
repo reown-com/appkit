@@ -18,7 +18,7 @@ export default css`
 
   wui-qr-code {
     opacity: 0;
-    animation-duration: 300ms;
+    animation-duration: 200ms;
     animation-timing-function: ease;
     animation-name: fadein;
     animation-fill-mode: forwards;

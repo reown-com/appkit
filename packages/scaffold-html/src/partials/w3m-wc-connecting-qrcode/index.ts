@@ -33,7 +33,7 @@ export class W3mConnectingWcQrcode extends LitElement {
   // -- Private ------------------------------------------- //
   private isReady() {
     if (this.uri) {
-      setTimeout(() => (this.ready = true), 250)
+      setTimeout(() => (this.ready = true), 300)
     }
   }
 

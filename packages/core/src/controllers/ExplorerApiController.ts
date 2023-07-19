@@ -42,7 +42,7 @@ export const ExplorerApiController = {
     state.projectId = projectId
   },
 
-  async fetchWallets() {
+  async fetchListings() {
     const response = await api.get<ExplorerListingsResponse>({
       path: '/w3m/v1/getAllListings',
       params: { projectId: state.projectId, page: 1, entries }

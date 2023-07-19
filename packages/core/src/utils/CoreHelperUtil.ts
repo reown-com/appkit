@@ -28,5 +28,11 @@ export const CoreHelperUtil = {
 
   getPlainAddress(caipAddress: CaipAddress) {
     return caipAddress.split(':')[2]
+  },
+
+  async wait(milliseconds: number) {
+    return new Promise(resolve => {
+      setTimeout(resolve, milliseconds)
+    })
   }
 }
