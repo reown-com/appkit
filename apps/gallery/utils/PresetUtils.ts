@@ -1,28 +1,28 @@
 import type {
-  TextType,
-  ColorType,
-  FlexDirectionType,
-  FlexWrapType,
-  FlexBasisType,
-  FlexGrowType,
-  FlexShrinkType,
-  FlexAlignItemsType,
-  FlexJustifyContentType,
+  AccountEntryType,
+  BackgroundType,
   BorderRadiusType,
-  SpacingType,
+  ButtonType,
+  CardSelectType,
+  ChipType,
+  ColorType,
+  FlexAlignItemsType,
+  FlexBasisType,
+  FlexDirectionType,
+  FlexGrowType,
+  FlexJustifyContentType,
+  FlexShrinkType,
+  FlexWrapType,
   GridContentType,
   GridItemsType,
   IconType,
+  LogoType,
   PlacementType,
-  ButtonType,
-  ChipType,
-  TransactionType,
-  CardSelectType,
-  BackgroundType,
+  SpacingType,
   TagType,
-  AccountEntryType,
+  TextType,
   ThemeType,
-  LogoType
+  TransactionType
 } from '@web3modal/ui/src/utils/TypesUtil'
 
 export const colorOptions: ColorType[] = [
@@ -136,7 +136,18 @@ export const gridItemsOptions: GridItemsType[] = ['center', 'end', 'start', 'str
 
 export const borderRadiusOptions: BorderRadiusType[] = ['4xs', '3xs', 'xxs', 'xs', 's', 'm', 'l']
 
-export const spacingOptions: SpacingType[] = ['4xs', '3xs', 'xxs', 'xs', 's', 'm', 'l', 'xl', '3xl']
+export const spacingOptions: SpacingType[] = [
+  '4xs',
+  '3xs',
+  'xxs',
+  'xs',
+  's',
+  'm',
+  'l',
+  '2l',
+  'xl',
+  '3xl'
+]
 
 export const iconOptions: IconType[] = [
   'apple',

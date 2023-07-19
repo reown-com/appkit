@@ -35,7 +35,7 @@ export class W3mConnectingExternalView extends LitElement {
         data-error=${this.error}
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'l', '3xl', 'l'] as const}
+        .padding=${['3xl', 'xl', '3xl', 'xl'] as const}
         gap="xl"
       >
         <wui-flex justifyContent="center" alignItems="center">

@@ -33,7 +33,10 @@ export type {
 export { SnackController } from './src/controllers/SnackController'
 export type { SnackControllerState } from './src/controllers/SnackController'
 
+export { ExplorerApiController } from './src/controllers/ExplorerApiController'
+export type { ExplorerApiControllerState } from './src/controllers/ExplorerApiController'
+
 // -- Utils -------------------------------------------------------------------
 export { ConstantsUtil } from './src/utils/ConstantsUtil'
 export { CoreHelperUtil } from './src/utils/CoreHelperUtil'
-export type { CaipAddress, CaipChainId } from './src/utils/TypeUtils'
+export type { CaipAddress, CaipChainId, ProjectId } from './src/utils/TypeUtils'

@@ -10,7 +10,7 @@ export class W3mConnectingWcQrcode extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() private uri?: string = undefined
 
-  @state() private ready = false
+  @state() private ready = Boolean(this.uri)
 
   // -- Render -------------------------------------------- //
   public render() {
@@ -32,8 +32,8 @@ export class W3mConnectingWcQrcode extends LitElement {
 
   // -- Private ------------------------------------------- //
   private isReady() {
-    if (this.uri) {
-      setTimeout(() => (this.ready = true), 250)
+    if (!this.ready && this.uri) {
+      setTimeout(() => (this.ready = true), 300)
     }
   }
 

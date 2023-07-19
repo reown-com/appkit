@@ -31,6 +31,7 @@ export class WuiInputText extends LitElement {
         class=${sizeClass}
         ?disabled=${this.disabled}
         placeholder=${this.placeholder}
+        @input=${this.dispatchInputChangeEvent.bind(this)}
       />
       <slot></slot>`
   }
@@ -47,6 +48,16 @@ export class WuiInputText extends LitElement {
     }
 
     return null
+  }
+
+  private dispatchInputChangeEvent() {
+    this.dispatchEvent(
+      new CustomEvent('inputChange', {
+        detail: this.inputElementRef.value?.value,
+        bubbles: true,
+        composed: true
+      })
+    )
   }
 }
 

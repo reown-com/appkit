@@ -67,10 +67,12 @@ export const rootStyles = css`
     --wui-spacing-4xs: 2px;
     --wui-spacing-3xs: 4px;
     --wui-spacing-xxs: 6px;
+    --wui-spacing-2xs: 7px;
     --wui-spacing-xs: 8px;
     --wui-spacing-s: 12px;
     --wui-spacing-m: 14px;
     --wui-spacing-l: 16px;
+    --wui-spacing-2l: 18px;
     --wui-spacing-xl: 20px;
     --wui-spacing-xxl: 24px;
     --wui-spacing-3xl: 40px;

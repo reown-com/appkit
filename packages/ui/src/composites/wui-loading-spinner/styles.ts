@@ -1,8 +1,13 @@
 import { css } from 'lit'
 
 export default css`
+  :host {
+    display: flex;
+  }
+
   svg {
     width: 24px;
+    height: 24px;
     animation: rotate 2s linear infinite;
     transition: all var(--wui-ease-in-power-3) var(--wui-duration-lg);
   }

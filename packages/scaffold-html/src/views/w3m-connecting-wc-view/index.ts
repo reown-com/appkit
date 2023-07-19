@@ -12,7 +12,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 @customElement('w3m-connecting-wc-view')
 export class W3mConnectingWcView extends LitElement {
   // -- Members ------------------------------------------- //
-  private usnubscribe: (() => void)[] = []
+  private unsubscribe: (() => void)[] = []
 
   private interval?: ReturnType<typeof setInterval> = undefined
 
@@ -23,14 +23,14 @@ export class W3mConnectingWcView extends LitElement {
 
   public constructor() {
     super()
-    this.usnubscribe.push(ConnectionController.subscribeKey('wcUri', val => (this.uri = val)))
+    this.unsubscribe.push(ConnectionController.subscribeKey('wcUri', val => (this.uri = val)))
     this.initializeConnection()
     this.interval = setInterval(this.initializeConnection.bind(this), ConstantsUtil.TEN_SEC_MS)
   }
 
   public disconnectedCallback() {
     clearTimeout(this.interval)
-    this.usnubscribe.forEach(unsubscribe => unsubscribe())
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //

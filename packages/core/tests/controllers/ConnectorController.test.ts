@@ -6,7 +6,7 @@ const walletConnectConnector = { id: 'walletConnect', type: 'WALLET_CONNECT' } a
 const externalConnector = { id: 'external', type: 'EXTERNAL' } as const
 
 // -- Tests --------------------------------------------------------------------
-describe('ConnectionController', () => {
+describe('ConnectorController', () => {
   it('should have valid default state', () => {
     expect(ConnectorController.state.connectors).toEqual([])
   })

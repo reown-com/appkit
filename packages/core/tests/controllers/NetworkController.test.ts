@@ -12,7 +12,7 @@ const client: NetworkControllerClient = {
 }
 
 // -- Tests --------------------------------------------------------------------
-describe('ModalController', () => {
+describe('NetworkController', () => {
   it('should throw if client not set', () => {
     expect(NetworkController._getClient).toThrow('NetworkController client not set')
   })

@@ -1,5 +1,6 @@
 import type {
   ConnectionControllerClient,
+  ExplorerApiControllerState,
   ModalControllerArguments,
   NetworkControllerClient
 } from '@web3modal/core'
@@ -8,6 +9,7 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
+  ExplorerApiController,
   ModalController,
   NetworkController
 } from '@web3modal/core'
@@ -19,6 +21,7 @@ let isInitialized = false
 interface Options {
   networkControllerClient: NetworkControllerClient
   connectionControllerClient: ConnectionControllerClient
+  projectId: ExplorerApiControllerState['projectId']
 }
 
 // -- Client --------------------------------------------------------------------
@@ -29,7 +32,7 @@ export class Web3ModalScaffoldHtml {
     if (isInitialized) {
       throw new Error('Web3Modal is already initialized')
     }
-    this.setControllerClients(options)
+    this.initControllers(options)
     this.initOrContinue()
     isInitialized = true
   }
@@ -83,9 +86,10 @@ export class Web3ModalScaffoldHtml {
   }
 
   // -- Private ------------------------------------------------------------------
-  private setControllerClients(options: Options) {
+  private initControllers(options: Options) {
     NetworkController.setClient(options.networkControllerClient)
     ConnectionController.setClient(options.connectionControllerClient)
+    ExplorerApiController.setProjectId(options.projectId)
   }
 
   private async initOrContinue() {

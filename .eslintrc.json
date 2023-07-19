@@ -37,6 +37,7 @@
     "complexity": "off",
     "no-magic-numbers": "off",
     "no-use-before-define": "off",
+    "require-atomic-updates": "off",
 
     // Typescript
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
@@ -63,6 +64,7 @@
     "@typescript-eslint/no-unsafe-return": "off",
     "@typescript-eslint/promise-function-async": "off",
     "@typescript-eslint/no-confusing-void-expression": "off",
-    "@typescript-eslint/prefer-nullish-coalescing": "off"
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "@typescript-eslint/no-unnecessary-condition": "off"
   }
 }

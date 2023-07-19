@@ -13,7 +13,8 @@ function headings() {
     Account: 'Account',
     ConnectingExternal: connectorName ?? 'Connect Wallet',
     ConnectingWalletConnect: connectorName ?? 'WalletConnect',
-    Networks: 'Choose Network'
+    Networks: 'Choose Network',
+    AllWallets: 'All Wallets'
   }
 }
 
@@ -45,7 +46,7 @@ export class W3mHeader extends LitElement {
   public render() {
     return html`
       <wui-flex
-        .padding=${['m', 'l', 'm', 'l'] as const}
+        .padding=${['l', '2l', 'l', '2l'] as const}
         justifyContent="space-between"
         alignItems="center"
       >
