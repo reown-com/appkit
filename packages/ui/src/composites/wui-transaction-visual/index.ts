@@ -6,6 +6,7 @@ import '../../components/wui-image'
 import styles from './styles'
 import type { TransactionIconType, TransactionType } from '../../utils/TypesUtil'
 
+// -- Helpers -------------------------------- //
 const outgoing: TransactionType[] = ['withdrawed', 'buy', 'cryptoSent', 'nftSent']
 const incoming: TransactionType[] = ['deposited', 'received', 'bought', 'minted']
 const nft: TransactionType[] = ['minted', 'bought', 'nftSent']
