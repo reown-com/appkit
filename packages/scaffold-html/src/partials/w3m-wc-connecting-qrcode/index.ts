@@ -7,6 +7,9 @@ import styles from './styles'
 export class W3mConnectingWcQrcode extends LitElement {
   public static styles = styles
 
+  // -- Members ------------------------------------------- //
+  private firstMountTime = Date.now()
+
   // -- State & Properties -------------------------------- //
   @property() private uri?: string = undefined
 
@@ -33,7 +36,8 @@ export class W3mConnectingWcQrcode extends LitElement {
   // -- Private ------------------------------------------- //
   private isReady() {
     if (this.uri) {
-      setTimeout(() => (this.ready = true), 300)
+      const delay = Math.min(300, Date.now() - this.firstMountTime)
+      setTimeout(() => (this.ready = true), delay)
     }
   }
 
