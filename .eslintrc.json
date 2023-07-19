@@ -37,6 +37,7 @@
     "complexity": "off",
     "no-magic-numbers": "off",
     "no-use-before-define": "off",
+    "require-atomic-updates": "off",
 
     // Typescript
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],

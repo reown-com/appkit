@@ -6,6 +6,7 @@ import type {
   ExplorerListing,
   ExplorerListingsRequest,
   ExplorerListingsResponse,
+  ExplorerSearchRequest,
   ProjectId
 } from '../utils/TypeUtils'
 
@@ -15,7 +16,6 @@ const entries = 32
 
 // -- Types --------------------------------------------- //
 export interface ExplorerApiControllerState {
-  fetching: boolean
   projectId: ProjectId
   page: number
   total: number
@@ -27,7 +27,6 @@ type StateKey = keyof ExplorerApiControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ExplorerApiControllerState>({
-  fetching: false,
   projectId: '',
   page: 1,
   total: 0,
@@ -51,28 +50,32 @@ export const ExplorerApiController = {
   },
 
   async fetchListings(req?: ExplorerListingsRequest) {
-    try {
-      if (!state.fetching) {
-        state.fetching = true
-        const page = req?.page ?? 1
-        const [response] = await Promise.all([
-          api.get<ExplorerListingsResponse>({
-            path: '/w3m/v1/getAllListings',
-            params: {
-              projectId: state.projectId,
-              page,
-              entries
-            }
-          }),
-          CoreHelperUtil.wait(300)
-        ])
+    const page = req?.page ?? 1
+    const [response] = await Promise.all([
+      api.get<ExplorerListingsResponse>({
+        path: '/w3m/v1/getAllListings',
+        params: {
+          projectId: state.projectId,
+          page,
+          entries
+        }
+      }),
+      CoreHelperUtil.wait(300)
+    ])
+    state.listings = [...state.listings, ...Object.values(response.listings)]
+    state.total = response.total
+    state.page = page
+  },
 
-        state.listings = [...state.listings, ...Object.values(response.listings)]
-        state.total = response.total
-        state.page = page
+  async searchListings(req: ExplorerSearchRequest) {
+    state.search = []
+    const response = await api.get<ExplorerListingsResponse>({
+      path: '/w3m/v1/getAllListings',
+      params: {
+        projectId: state.projectId,
+        search: req.search
       }
-    } finally {
-      state.fetching = false
-    }
+    })
+    state.search = Object.values(response.listings)
   }
 }

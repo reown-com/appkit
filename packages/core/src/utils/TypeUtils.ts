@@ -38,6 +38,10 @@ export interface ExplorerListingsRequest {
   page?: number
 }
 
+export interface ExplorerSearchRequest {
+  search: string
+}
+
 export interface ExplorerListingsResponse {
   listings: ExplorerListing[]
   total: number
