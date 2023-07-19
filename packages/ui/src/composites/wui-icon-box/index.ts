@@ -45,7 +45,8 @@ export class WuiIconBox extends LitElement {
     const isColorChange =
       (this.backgroundColor === 'blue-100' && isOpaque) ||
       (this.backgroundColor === 'success-100' && isOpaque) ||
-      (this.backgroundColor === 'error-100' && isOpaque)
+      (this.backgroundColor === 'error-100' && isOpaque) ||
+      (this.backgroundColor === 'inverse-100' && isOpaque)
 
     this.style.cssText = `
        --local-bg-value: ${
