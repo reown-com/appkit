@@ -1,16 +1,28 @@
-import { CoreHelperUtil, SnackController } from '@web3modal/core'
+import { ConnectionController, CoreHelperUtil, SnackController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
-import { customElement, property, state } from 'lit/decorators.js'
+import { customElement, state } from 'lit/decorators.js'
 import styles from './styles'
 
 @customElement('w3m-connecting-wc-qrcode')
 export class W3mConnectingWcQrcode extends LitElement {
   public static styles = styles
 
-  // -- State & Properties -------------------------------- //
-  @property() private uri?: string = undefined
+  // -- Members ------------------------------------------- //
+  private unsubscribe: (() => void)[] = []
 
-  @state() private ready = Boolean(this.uri)
+  // -- State & Properties -------------------------------- //
+  @state() private uri = ConnectionController.state.wcUri
+
+  @state() private ready = false
+
+  public constructor() {
+    super()
+    this.unsubscribe.push(ConnectionController.subscribeKey('wcUri', val => (this.uri = val)))
+  }
+
+  public disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
 
   // -- Render -------------------------------------------- //
   public render() {

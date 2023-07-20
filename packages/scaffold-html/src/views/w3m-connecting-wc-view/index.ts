@@ -9,7 +9,6 @@ import {
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 // -- Types ----------------------------------------------- //
 type Preference = 'mobile' | 'desktop' | 'injected' | 'web' | 'qrcode' | 'unsupported'
@@ -17,8 +16,6 @@ type Preference = 'mobile' | 'desktop' | 'injected' | 'web' | 'qrcode' | 'unsupp
 @customElement('w3m-connecting-wc-view')
 export class W3mConnectingWcView extends LitElement {
   // -- Members ------------------------------------------- //
-  private unsubscribe: (() => void)[] = []
-
   private interval?: ReturnType<typeof setInterval> = undefined
 
   private lastRetry = Date.now()
@@ -26,53 +23,40 @@ export class W3mConnectingWcView extends LitElement {
   private listing = RouterController.state.data?.listing
 
   // -- State & Properties -------------------------------- //
-  @state() private uri = ConnectionController.state.wcUri
 
   @state() private preference?: Preference = undefined
 
   public constructor() {
     super()
-    this.unsubscribe.push(ConnectionController.subscribeKey('wcUri', val => (this.uri = val)))
     this.initializeConnection()
     this.interval = setInterval(this.initializeConnection.bind(this), ConstantsUtil.TEN_SEC_MS)
   }
 
   public disconnectedCallback() {
     clearTimeout(this.interval)
-    this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //
   public render() {
     if (!this.listing) {
-      return html`<w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>`
+      return html`<w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode>`
     }
 
     const preference = this.preference ?? this.determinePreference()
 
     switch (preference) {
       case 'injected':
-        return html` <w3m-connecting-wc-injected></w3m-connecting-wc-injected> `
+        return html`<w3m-connecting-wc-injected></w3m-connecting-wc-injected>`
       case 'mobile':
-        return html`
-          <w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>
-        `
+        return html` <w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode> `
       case 'desktop':
-        return html`
-          <w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>
-        `
+        return html` <w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode> `
       case 'web':
-        return html`
-          <w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>
-        `
+        return html` <w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode> `
       case 'qrcode':
-        return html`
-          <w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>
-        `
+        return html` <w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode> `
       default:
-        return html`
-          <w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>
-        `
+        return html` <w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode> `
     }
   }
 
@@ -101,7 +85,6 @@ export class W3mConnectingWcView extends LitElement {
 
     const { connectors } = ConnectorController.state
     const { mobile, desktop, injected } = this.listing
-
     const injectedIds = injected?.map(({ injected_id }) => injected_id) ?? []
     const isMobile = CoreHelperUtil.isMobile()
     const isMobileWc = mobile?.native || mobile?.universal
