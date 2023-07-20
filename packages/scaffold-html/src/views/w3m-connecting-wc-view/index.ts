@@ -52,9 +52,7 @@ export class W3mConnectingWcView extends LitElement {
 
     switch (preference) {
       case 'injected':
-        return html`
-          <w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>
-        `
+        return html` <w3m-connecting-wc-injected></w3m-connecting-wc-injected> `
       case 'mobile':
         return html`
           <w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>
@@ -101,14 +99,17 @@ export class W3mConnectingWcView extends LitElement {
       throw new Error('w3m-connecting-wc-view:determinePreference No listing')
     }
 
+    const { connectors } = ConnectorController.state
     const { mobile, desktop, injected } = this.listing
-    const isExternal = ConnectorController.state.connectors.find(c => c.type === 'EXTERNAL')
+
     const injectedIds = injected?.map(({ injected_id }) => injected_id) ?? []
     const isMobile = CoreHelperUtil.isMobile()
-    const isMobileWc = mobile.native || mobile.universal
-    const isWebWc = desktop.universal
-    const isInjectedWc = ConnectionController.checkExternalInstalled(injectedIds) && isExternal
-    const isDesktopWc = desktop.native
+    const isMobileWc = mobile?.native || mobile?.universal
+    const isWebWc = desktop?.universal
+    const isInjectedConnector = connectors.find(c => c.type === 'INJECTED')
+    const isInjectedInstalled = ConnectionController.checkExternalInstalled(injectedIds)
+    const isInjectedWc = isInjectedInstalled && isInjectedConnector
+    const isDesktopWc = desktop?.native
 
     // Mobile
     if (isMobile) {

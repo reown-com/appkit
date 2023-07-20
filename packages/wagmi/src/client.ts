@@ -16,6 +16,7 @@ import type {
   CaipAddress,
   CaipChainId,
   ConnectionControllerClient,
+  ConnectorType,
   NetworkControllerClient,
   ProjectId
 } from '@web3modal/scaffold-html'
@@ -23,7 +24,19 @@ import { Web3ModalScaffoldHtml } from '@web3modal/scaffold-html'
 
 // -- Helpers -------------------------------------------------------------------
 const WALLET_CONNECT_ID = 'walletConnect'
+
+const INJECTED_ID = 'injected'
+
 const NAMESPACE = 'eip155'
+
+const NAME_MAP = {
+  [INJECTED_ID]: 'Browser Wallet'
+} as Record<string, string>
+
+const TYPE_MAP = {
+  [WALLET_CONNECT_ID]: 'WALLET_CONNECT',
+  [INJECTED_ID]: 'INJECTED'
+} as Record<string, ConnectorType>
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalOptions {
@@ -78,6 +91,15 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
         const connector = wagmiConfig.connectors.find(c => c.id === id)
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
+        }
+
+        await connect({ connector })
+      },
+
+      async connectInjected() {
+        const connector = wagmiConfig.connectors.find(c => c.id === INJECTED_ID)
+        if (!connector) {
+          throw new Error('connectionControllerClient:connectInjected - connector is undefined')
         }
 
         await connect({ connector })
@@ -159,8 +181,8 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       connector =>
         ({
           id: connector.id,
-          name: connector.id === 'injected' ? 'Browser Wallet' : connector.name,
-          type: connector.id === WALLET_CONNECT_ID ? 'WALLET_CONNECT' : 'EXTERNAL'
+          name: NAME_MAP[connector.id] ?? connector.name,
+          type: TYPE_MAP[connector.id] ?? 'EXTERNAL'
         }) as const
     )
     this.setConnectors(connectors ?? [])

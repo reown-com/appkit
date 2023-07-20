@@ -7,6 +7,7 @@ export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
   disconnect: () => Promise<void>
   connectExternal?: (id: string) => Promise<void>
+  connectInjected?: () => Promise<void>
   checkExternalInstalled?: (ids: string[]) => boolean
 }
 
@@ -53,6 +54,10 @@ export const ConnectionController = {
 
   async connectExternal(id: string) {
     await this._getClient().connectExternal?.(id)
+  },
+
+  async connectInjected() {
+    await this._getClient().connectInjected?.()
   },
 
   checkExternalInstalled(ids: string[]) {
