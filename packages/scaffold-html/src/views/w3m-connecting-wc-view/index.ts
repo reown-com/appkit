@@ -1,5 +1,6 @@
 import {
   ConnectionController,
+  ConnectorController,
   ConstantsUtil,
   CoreHelperUtil,
   ModalController,
@@ -101,11 +102,12 @@ export class W3mConnectingWcView extends LitElement {
     }
 
     const { mobile, desktop, injected } = this.listing
-    const injectedIds = injected?.map(({ injected_id }) => injected_id)
+    const isExternal = ConnectorController.state.connectors.find(c => c.type === 'EXTERNAL')
+    const injectedIds = injected?.map(({ injected_id }) => injected_id) ?? []
     const isMobile = CoreHelperUtil.isMobile()
     const isMobileWc = mobile.native || mobile.universal
     const isWebWc = desktop.universal
-    const isInjectedWc = ConnectionController.checkExternalInstalled(injectedIds)
+    const isInjectedWc = ConnectionController.checkExternalInstalled(injectedIds) && isExternal
     const isDesktopWc = desktop.native
 
     // Mobile
