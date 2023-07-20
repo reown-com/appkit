@@ -3,11 +3,15 @@ import {
   ConstantsUtil,
   CoreHelperUtil,
   ModalController,
+  RouterController,
   SnackController
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
+// -- Types ----------------------------------------------- //
+type Preference = 'mobile' | 'desktop' | 'injected' | 'web' | 'qr' | 'unsupported'
 
 @customElement('w3m-connecting-wc-view')
 export class W3mConnectingWcView extends LitElement {
@@ -18,8 +22,12 @@ export class W3mConnectingWcView extends LitElement {
 
   private lastRetry = Date.now()
 
+  private listing = RouterController.state.data?.listing
+
   // -- State & Properties -------------------------------- //
   @state() private uri = ConnectionController.state.wcUri
+
+  @state() private preference?: Preference = undefined
 
   public constructor() {
     super()
@@ -35,7 +43,38 @@ export class W3mConnectingWcView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public render() {
-    return html`<w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>`
+    if (!this.listing) {
+      return html`<w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>`
+    }
+
+    const preference = this.preference ?? this.determinePreference()
+
+    switch (preference) {
+      case 'injected':
+        return html`
+          <w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>
+        `
+      case 'mobile':
+        return html`
+          <w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>
+        `
+      case 'desktop':
+        return html`
+          <w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>
+        `
+      case 'web':
+        return html`
+          <w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>
+        `
+      case 'qr':
+        return html`
+          <w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>
+        `
+      default:
+        return html`
+          <w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>
+        `
+    }
   }
 
   // -- Private ------------------------------------------- //
@@ -54,6 +93,45 @@ export class W3mConnectingWcView extends LitElement {
         this.initializeConnection(true)
       }
     }
+  }
+
+  private determinePreference(): Preference {
+    if (!this.listing) {
+      throw new Error('w3m-connecting-wc-view:determinePreference No listing')
+    }
+    const { mobile, desktop, injected } = this.listing
+    const isMobile = CoreHelperUtil.isMobile()
+    const isInjectedInstalled = CoreHelperUtil.isInjectedInstalled()
+    const isMobileWc = mobile.native || mobile.universal
+    const isWebWc = desktop.universal
+    const isInjectedWc = injected && isInjectedInstalled
+    const isDesktopWc = desktop.native
+
+    // Mobile
+    if (isMobile) {
+      if (isInjectedWc) {
+        return 'injected'
+      } else if (isMobileWc) {
+        return 'mobile'
+      } else if (isWebWc) {
+        return 'web'
+      }
+
+      return 'unsupported'
+    }
+
+    // Desktop
+    if (isInjectedWc) {
+      return 'injected'
+    } else if (isDesktopWc) {
+      return 'desktop'
+    } else if (isWebWc) {
+      return 'web'
+    } else if (isMobileWc) {
+      return 'qr'
+    }
+
+    return 'unsupported'
   }
 }
 

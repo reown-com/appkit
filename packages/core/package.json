@@ -16,7 +16,7 @@
     "test": "vitest run --dir tests"
   },
   "dependencies": {
-    "valtio": "1.10.7"
+    "valtio": "1.11.0"
   },
   "keywords": [
     "web3",

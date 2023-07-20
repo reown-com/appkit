@@ -1,5 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
+import type { ExplorerListing } from '../utils/TypeUtils'
 import type { Connector } from './ConnectorController'
 
 // -- Types --------------------------------------------- //
@@ -13,7 +14,8 @@ export interface RouterControllerState {
     | 'AllWallets'
   history: RouterControllerState['view'][]
   data?: {
-    connector: Connector
+    connector?: Connector
+    listing?: ExplorerListing
   }
 }
 

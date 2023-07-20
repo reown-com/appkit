@@ -6,13 +6,15 @@ import { animate } from 'motion'
 
 // -- Helpers ------------------------------------------- //
 function headings() {
-  const connectorName = RouterController.state.data?.connector.name
+  const connectorName = RouterController.state.data?.connector?.name
+  const listingName = RouterController.state.data?.listing?.name
+  const name = listingName ?? connectorName
 
   return {
     Connect: 'Connect Wallet',
     Account: 'Account',
-    ConnectingExternal: connectorName ?? 'Connect Wallet',
-    ConnectingWalletConnect: connectorName ?? 'WalletConnect',
+    ConnectingExternal: name ?? 'Connect Wallet',
+    ConnectingWalletConnect: name ?? 'WalletConnect',
     Networks: 'Choose Network',
     AllWallets: 'All Wallets'
   }

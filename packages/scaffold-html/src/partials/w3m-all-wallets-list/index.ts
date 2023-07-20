@@ -1,4 +1,5 @@
-import { ExplorerApiController } from '@web3modal/core'
+import type { ExplorerListing } from '@web3modal/core'
+import { ExplorerApiController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
@@ -70,7 +71,13 @@ export class W3mAllWalletsList extends LitElement {
 
   private walletsTemplate() {
     return this.listings.map(
-      wallet => html` <wui-card-select type="wallet" name=${wallet.name}></wui-card-select> `
+      listing => html`
+        <wui-card-select
+          type="wallet"
+          name=${listing.name}
+          @click=${() => this.onConnectListing(listing)}
+        ></wui-card-select>
+      `
     )
   }
 
@@ -96,6 +103,10 @@ export class W3mAllWalletsList extends LitElement {
       })
       this.paginationObserver.observe(loaderEl)
     }
+  }
+
+  private onConnectListing(listing: ExplorerListing) {
+    RouterController.push('ConnectingWalletConnect', { listing })
   }
 }
 

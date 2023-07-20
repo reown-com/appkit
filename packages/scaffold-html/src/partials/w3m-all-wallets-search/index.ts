@@ -1,4 +1,5 @@
-import { ExplorerApiController } from '@web3modal/core'
+import type { ExplorerListing } from '@web3modal/core'
+import { ExplorerApiController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import styles from './styles'
@@ -58,10 +59,20 @@ export class W3mAllWalletsSearch extends LitElement {
         columnGap="xs"
       >
         ${search.map(
-          wallet => html` <wui-card-select type="wallet" name=${wallet.name}></wui-card-select> `
+          listing => html`
+            <wui-card-select
+              type="wallet"
+              name=${listing.name}
+              @click=${() => this.onConnectListing(listing)}
+            ></wui-card-select>
+          `
         )}
       </wui-grid>
     `
+  }
+
+  private onConnectListing(listing: ExplorerListing) {
+    RouterController.push('ConnectingWalletConnect', { listing })
   }
 }
 
