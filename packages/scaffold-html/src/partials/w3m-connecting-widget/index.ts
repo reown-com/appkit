@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { customElement, property, state } from 'lit/decorators.js'
 import { animate } from 'motion'
 import styles from './styles'
 
@@ -8,9 +8,9 @@ export class W3mConnectingWidget extends LitElement {
   public static styles = styles
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Boolean }) public error = false
+  @state() private showRetry = false
 
-  @property({ type: Boolean }) public showRetry = false
+  @property({ type: Boolean }) public error = false
 
   @property() public label = ''
 
@@ -24,6 +24,7 @@ export class W3mConnectingWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public render() {
+    this.onShowRetry()
     const subLabelColor = this.error ? 'error-100' : 'fg-200'
 
     return html`
@@ -57,7 +58,7 @@ export class W3mConnectingWidget extends LitElement {
           size="sm"
           variant="fill"
           .disabled=${!this.error}
-          @click=${this.onConnect?.bind(this)}
+          @click=${this.onConnect}
         >
           <wui-icon color="inherit" slot="iconLeft" name="swapHorizontal"></wui-icon>
           Try again
@@ -68,7 +69,7 @@ export class W3mConnectingWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onShowRetry() {
-    if (!this.showRetry) {
+    if (this.error && !this.showRetry) {
       this.showRetry = true
       const retryButton = this.shadowRoot?.querySelector('wui-button') as HTMLElement
       animate(retryButton, { opacity: [0, 1] })
