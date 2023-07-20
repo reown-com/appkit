@@ -79,6 +79,14 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
         await connect({ connector })
       },
 
+      checkExternalInstalled(ids) {
+        if (!window?.ethereum) {
+          return false
+        }
+
+        return ids.some(id => Boolean(window.ethereum?.[String(id)]))
+      },
+
       disconnect
     }
 
@@ -152,5 +160,11 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
         }) as const
     )
     this.setConnectors(connectors ?? [])
+  }
+}
+
+declare global {
+  interface Window {
+    ethereum?: Record<string, unknown>
   }
 }

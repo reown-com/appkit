@@ -12,7 +12,8 @@ const client: ConnectionControllerClient = {
     await Promise.resolve()
   },
   disconnect: async () => Promise.resolve(),
-  connectExternal: async _id => Promise.resolve()
+  connectExternal: async _id => Promise.resolve(),
+  checkExternalInstalled: _id => true
 }
 
 const partialClient: ConnectionControllerClient = {
@@ -49,10 +50,14 @@ describe('ConnectionController', () => {
     await ConnectionController.connectExternal(externalId)
   })
 
+  it('should not throw on checkExternalInstalled()', () => {
+    ConnectionController.checkExternalInstalled([externalId])
+  })
+
   it('should not throw when optional methods are undefined', async () => {
     ConnectionController.setClient(partialClient)
-
     await ConnectionController.connectExternal(externalId)
+    ConnectionController.checkExternalInstalled([externalId])
   })
 
   it('should update state correctly on resetWcConnection()', () => {

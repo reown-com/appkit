@@ -1,12 +1,9 @@
 import { CoreHelperUtil, SnackController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
-import styles from './styles'
 
 @customElement('w3m-connecting-wc-desktop')
 export class W3mConnectingWcDesktop extends LitElement {
-  public static styles = styles
-
   // -- State & Properties -------------------------------- //
   @property() private uri?: string = undefined
 

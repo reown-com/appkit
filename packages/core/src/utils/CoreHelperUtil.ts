@@ -13,11 +13,6 @@ export const CoreHelperUtil = {
     return false
   },
 
-  isInjectedInstalled() {
-    // @ts-expect-error - window ethereum can exist
-    return this.isClient() && Boolean(window.ethereum)
-  },
-
   isClient() {
     return typeof window !== 'undefined'
   },

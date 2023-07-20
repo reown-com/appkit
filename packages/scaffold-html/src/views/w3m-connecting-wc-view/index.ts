@@ -99,12 +99,13 @@ export class W3mConnectingWcView extends LitElement {
     if (!this.listing) {
       throw new Error('w3m-connecting-wc-view:determinePreference No listing')
     }
+
     const { mobile, desktop, injected } = this.listing
+    const injectedIds = injected?.map(({ injected_id }) => injected_id)
     const isMobile = CoreHelperUtil.isMobile()
-    const isInjectedInstalled = CoreHelperUtil.isInjectedInstalled()
     const isMobileWc = mobile.native || mobile.universal
     const isWebWc = desktop.universal
-    const isInjectedWc = injected && isInjectedInstalled
+    const isInjectedWc = ConnectionController.checkExternalInstalled(injectedIds)
     const isDesktopWc = desktop.native
 
     // Mobile
