@@ -107,7 +107,7 @@ export class W3mConnectingWcView extends LitElement {
     const isMobileWc = mobile?.native || mobile?.universal
     const isWebWc = desktop?.universal
     const isInjectedConnector = connectors.find(c => c.type === 'INJECTED')
-    const isInjectedInstalled = ConnectionController.checkExternalInstalled(injectedIds)
+    const isInjectedInstalled = ConnectionController.checkInjectedInstalled(injectedIds)
     const isInjectedWc = isInjectedInstalled && isInjectedConnector
     const isDesktopWc = desktop?.native
 

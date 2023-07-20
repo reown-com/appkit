@@ -105,9 +105,13 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
         await connect({ connector })
       },
 
-      checkExternalInstalled(ids) {
+      checkInjectedInstalled(ids) {
         if (!window?.ethereum) {
           return false
+        }
+
+        if (!ids) {
+          return Boolean(window.ethereum)
         }
 
         return ids.some(id => Boolean(window.ethereum?.[String(id)]))

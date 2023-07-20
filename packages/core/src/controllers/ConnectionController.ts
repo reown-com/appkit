@@ -8,7 +8,7 @@ export interface ConnectionControllerClient {
   disconnect: () => Promise<void>
   connectExternal?: (id: string) => Promise<void>
   connectInjected?: () => Promise<void>
-  checkExternalInstalled?: (ids: string[]) => boolean
+  checkInjectedInstalled?: (ids?: string[]) => boolean
 }
 
 export interface ConnectionControllerState {
@@ -60,8 +60,8 @@ export const ConnectionController = {
     await this._getClient().connectInjected?.()
   },
 
-  checkExternalInstalled(ids: string[]) {
-    return this._getClient().checkExternalInstalled?.(ids)
+  checkInjectedInstalled(ids?: string[]) {
+    return this._getClient().checkInjectedInstalled?.(ids)
   },
 
   resetWcConnection() {
