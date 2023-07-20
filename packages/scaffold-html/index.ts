@@ -9,9 +9,13 @@ export * from './src/views/w3m-connecting-wc-view'
 
 export * from './src/partials/w3m-all-wallets-list'
 export * from './src/partials/w3m-all-wallets-search'
+export * from './src/partials/w3m-connecting-wc-desktop'
+export * from './src/partials/w3m-connecting-wc-injected'
+export * from './src/partials/w3m-connecting-wc-mobile'
+export * from './src/partials/w3m-connecting-wc-qrcode'
+export * from './src/partials/w3m-connecting-wc-web'
 export * from './src/partials/w3m-header'
 export * from './src/partials/w3m-snackbar'
-export * from './src/partials/w3m-wc-connecting-qrcode'
 
 export { Web3ModalScaffoldHtml } from './src/client'
 

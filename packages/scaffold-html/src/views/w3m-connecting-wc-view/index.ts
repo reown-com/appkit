@@ -11,7 +11,7 @@ import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 // -- Types ----------------------------------------------- //
-type Preference = 'mobile' | 'desktop' | 'injected' | 'web' | 'qr' | 'unsupported'
+type Preference = 'mobile' | 'desktop' | 'injected' | 'web' | 'qrcode' | 'unsupported'
 
 @customElement('w3m-connecting-wc-view')
 export class W3mConnectingWcView extends LitElement {
@@ -66,7 +66,7 @@ export class W3mConnectingWcView extends LitElement {
         return html`
           <w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>
         `
-      case 'qr':
+      case 'qrcode':
         return html`
           <w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>
         `
@@ -128,7 +128,7 @@ export class W3mConnectingWcView extends LitElement {
     } else if (isWebWc) {
       return 'web'
     } else if (isMobileWc) {
-      return 'qr'
+      return 'qrcode'
     }
 
     return 'unsupported'
