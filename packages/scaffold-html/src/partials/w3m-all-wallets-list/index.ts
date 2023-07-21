@@ -70,9 +70,12 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private walletsTemplate() {
+    const { images } = ExplorerApiController.state
+
     return this.listings.map(
       listing => html`
         <wui-card-select
+          imageSrc=${images[listing.image_id]}
           type="wallet"
           name=${listing.name}
           @click=${() => this.onConnectListing(listing)}

@@ -104,5 +104,16 @@ export const CoreHelperUtil = {
 
   openHref(href: string, target: '_blank' | '_self') {
     window.open(href, target, 'noreferrer noopener')
+  },
+
+  async preloadImage(src: string) {
+    const imagePromise = new Promise((resolve, reject) => {
+      const image = new Image()
+      image.onload = resolve
+      image.onerror = reject
+      image.src = src
+    })
+
+    return Promise.race([imagePromise, CoreHelperUtil.wait(2000)])
   }
 }

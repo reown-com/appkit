@@ -34,7 +34,7 @@ export class W3mAllWalletsSearch extends LitElement {
   }
 
   private walletsTemplate() {
-    const { search } = ExplorerApiController.state
+    const { search, images } = ExplorerApiController.state
 
     if (!search.length) {
       return html`
@@ -61,6 +61,7 @@ export class W3mAllWalletsSearch extends LitElement {
         ${search.map(
           listing => html`
             <wui-card-select
+              imageSrc=${images[listing.image_id]}
               type="wallet"
               name=${listing.name}
               @click=${() => this.onConnectListing(listing)}
