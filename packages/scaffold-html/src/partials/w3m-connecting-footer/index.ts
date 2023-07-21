@@ -1,14 +1,12 @@
 import { LitElement, html } from 'lit'
-import { customElement, property, state } from 'lit/decorators.js'
+import { customElement, property } from 'lit/decorators.js'
 
 @customElement('w3m-connecting-footer')
 export class W3mConnectingFooter extends LitElement {
-  // -- State & Properties --------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property() public preference = ''
 
   @property({ type: Array }) public preferences: string[] = []
-
-  @state() private selectedPreference = false
 
   // -- Render -------------------------------------------- //
   public render() {

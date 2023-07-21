@@ -27,8 +27,6 @@ export class W3mConnectingWcView extends LitElement {
 
   @state() private preference?: Preference = undefined
 
-  @state() private preferences?: Preference[] = undefined
-
   public constructor() {
     super()
     this.initializeConnection()
