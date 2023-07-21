@@ -30,7 +30,7 @@ export class W3mConnectingWcWeb extends LitElement {
   // -- Private ------------------------------------------- //
   private isReady() {
     if (!this.ready && this.uri) {
-      setTimeout(() => (this.ready = true), 300)
+      setTimeout(() => (this.ready = true), 250)
     }
   }
 

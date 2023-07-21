@@ -50,7 +50,7 @@ export class W3mConnectingWcView extends LitElement {
       case 'mobile':
         return html` <w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode> `
       case 'desktop':
-        return html` <w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode> `
+        return html` <w3m-connecting-wc-desktop></w3m-connecting-wc-desktop> `
       case 'web':
         return html` <w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode> `
       case 'qrcode':

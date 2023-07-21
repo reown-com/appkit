@@ -10,6 +10,8 @@ export class W3mConnectingWcQrcode extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
+  private timeout?: ReturnType<typeof setTimeout> = undefined
+
   // -- State & Properties -------------------------------- //
   @state() private uri = ConnectionController.state.wcUri
 
@@ -22,6 +24,7 @@ export class W3mConnectingWcQrcode extends LitElement {
 
   public disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    clearTimeout(this.timeout)
   }
 
   // -- Render -------------------------------------------- //
@@ -45,7 +48,7 @@ export class W3mConnectingWcQrcode extends LitElement {
   // -- Private ------------------------------------------- //
   private isReady() {
     if (!this.ready && this.uri) {
-      setTimeout(() => (this.ready = true), 300)
+      this.timeout = setTimeout(() => (this.ready = true), 250)
     }
   }
 

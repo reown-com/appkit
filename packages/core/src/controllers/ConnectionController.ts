@@ -16,7 +16,12 @@ export interface ConnectionControllerState {
   wcUri?: string
   wcPromise?: Promise<void>
   wcPairingExpiry?: number
+  wcLinking?: {
+    href: string
+    name: string
+  }
 }
+
 type StateKey = keyof ConnectionControllerState
 
 // -- State --------------------------------------------- //
@@ -68,6 +73,11 @@ export const ConnectionController = {
     state.wcUri = undefined
     state.wcPairingExpiry = undefined
     state.wcPromise = undefined
+    state.wcLinking = undefined
+  },
+
+  setWcLinking(wcLinking: ConnectionControllerState['wcLinking']) {
+    state.wcLinking = wcLinking
   },
 
   async disconnect() {

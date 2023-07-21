@@ -16,10 +16,15 @@ export class W3mConnectingWidget extends LitElement {
 
   @property() public subLabel = ''
 
-  @property() public onConnect?: () => Promise<void> = undefined
+  @property() public onConnect?: (() => void) | (() => Promise<void>) = undefined
+
+  @property({ type: Boolean }) public autoConnect = true
 
   public firstUpdated() {
-    this.onConnect?.()
+    if (this.autoConnect) {
+      this.onConnect?.()
+    }
+    this.showRetry = !this.autoConnect
   }
 
   // -- Render -------------------------------------------- //
@@ -57,10 +62,10 @@ export class W3mConnectingWidget extends LitElement {
           data-retry=${this.showRetry}
           size="sm"
           variant="fill"
-          .disabled=${!this.error}
+          .disabled=${!this.error && this.autoConnect}
           @click=${this.onConnect}
         >
-          <wui-icon color="inherit" slot="iconLeft" name="swapHorizontal"></wui-icon>
+          <wui-icon color="inherit" slot="iconLeft" name="refresh"></wui-icon>
           Try again
         </wui-button>
       </wui-flex>

@@ -1,9 +1,9 @@
 import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { colorStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil'
 import styles from './styles'
-import { colorStyles, resetStyles } from '../../utils/ThemeUtil'
 
 // -- Svg's-------------------------------- //
 import { appleSvg } from '../../assets/svg/apple'
@@ -48,10 +48,10 @@ import { telegramSvg } from '../../assets/svg/telegram'
 import { twitchSvg } from '../../assets/svg/twitch'
 import { twitterSvg } from '../../assets/svg/twitter'
 import { twitterIconSvg } from '../../assets/svg/twitterIcon'
-import { warningCircleSvg } from '../../assets/svg/warning-circle'
 import { walletSvg } from '../../assets/svg/wallet'
-import { walletConnectSvg } from '../../assets/svg/walletconnect'
 import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder'
+import { walletConnectSvg } from '../../assets/svg/walletconnect'
+import { warningCircleSvg } from '../../assets/svg/warning-circle'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   apple: appleSvg,
@@ -116,8 +116,8 @@ export class WuiIcon extends LitElement {
   // -- Render -------------------------------------------- //
   public render() {
     this.style.cssText = `
-      color: ${`var(--wui-color-${this.color});`};
-      width: ${`var(--wui-icon-size-${this.size});`};
+      color: ${`var(--wui-color-${this.color});`}
+      width: ${`var(--wui-icon-size-${this.size});`}
     `
 
     return html`${svgOptions[this.name]}`

@@ -47,4 +47,9 @@ export interface ExplorerListingsResponse {
   total: number
 }
 
+export interface LinkingRecord {
+  redirect: string
+  href: string
+}
+
 export type ProjectId = string

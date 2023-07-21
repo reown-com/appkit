@@ -1,5 +1,5 @@
 import { ConstantsUtil } from './ConstantsUtil'
-import { CaipAddress } from './TypeUtils'
+import { CaipAddress, LinkingRecord } from './TypeUtils'
 
 export const CoreHelperUtil = {
   isMobile() {
@@ -60,5 +60,49 @@ export const CoreHelperUtil = {
       }
       timer = setTimeout(next, timeout)
     }
+  },
+
+  isHttpUrl(url: string) {
+    return url.startsWith('http://') || url.startsWith('https://')
+  },
+
+  formatNativeUrl(appUrl: string, wcUri: string): LinkingRecord {
+    if (CoreHelperUtil.isHttpUrl(appUrl)) {
+      return this.formatUniversalUrl(appUrl, wcUri)
+    }
+    let safeAppUrl = appUrl
+    if (!safeAppUrl.includes('://')) {
+      safeAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
+      safeAppUrl = `${safeAppUrl}://`
+    }
+    if (!safeAppUrl.endsWith('/')) {
+      safeAppUrl = `${safeAppUrl}/`
+    }
+    const encodedWcUrl = encodeURIComponent(wcUri)
+
+    return {
+      redirect: `${safeAppUrl}wc?uri=${encodedWcUrl}`,
+      href: safeAppUrl
+    }
+  },
+
+  formatUniversalUrl(appUrl: string, wcUri: string): LinkingRecord {
+    if (!CoreHelperUtil.isHttpUrl(appUrl)) {
+      return this.formatNativeUrl(appUrl, wcUri)
+    }
+    let safeAppUrl = appUrl
+    if (!safeAppUrl.endsWith('/')) {
+      safeAppUrl = `${safeAppUrl}/`
+    }
+    const encodedWcUrl = encodeURIComponent(wcUri)
+
+    return {
+      redirect: `${safeAppUrl}wc?uri=${encodedWcUrl}`,
+      href: safeAppUrl
+    }
+  },
+
+  openHref(href: string, target: '_blank' | '_self') {
+    window.open(href, target, 'noreferrer noopener')
   }
 }

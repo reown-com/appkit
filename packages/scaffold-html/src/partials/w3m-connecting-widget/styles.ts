@@ -51,5 +51,6 @@ export default css`
 
   wui-button[data-retry='true'] {
     display: block;
+    opacity: 1;
   }
 `
