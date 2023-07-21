@@ -6,7 +6,7 @@ export default css`
     display: flex;
     width: 100%;
     height: 1px;
-    background-color: var(--wui-overlay-010);
+    background-color: var(--wui-overlay-005);
     justify-content: center;
     align-items: center;
   }
@@ -14,6 +14,6 @@ export default css`
   :host > wui-text {
     position: absolute;
     padding: 0px 10px;
-    background-color: var(--wui-color-bg-100);
+    background-color: var(--wui-color-bg-125);
   }
 `

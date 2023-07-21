@@ -1,41 +1,52 @@
 import {
   ConnectionController,
+  ConnectorController,
   ConstantsUtil,
   CoreHelperUtil,
   ModalController,
-  SnackController
+  RouterController,
+  SnackController,
+  StorageUtil
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+
+// -- Types ----------------------------------------------- //
+type Preference = 'mobile' | 'desktop' | 'injected' | 'web' | 'qrcode' | 'unsupported'
 
 @customElement('w3m-connecting-wc-view')
 export class W3mConnectingWcView extends LitElement {
   // -- Members ------------------------------------------- //
-  private unsubscribe: (() => void)[] = []
-
   private interval?: ReturnType<typeof setInterval> = undefined
 
   private lastRetry = Date.now()
 
+  private listing = RouterController.state.data?.listing
+
   // -- State & Properties -------------------------------- //
-  @state() private uri = ConnectionController.state.wcUri
+
+  @state() private preference?: Preference = undefined
 
   public constructor() {
     super()
-    this.unsubscribe.push(ConnectionController.subscribeKey('wcUri', val => (this.uri = val)))
     this.initializeConnection()
     this.interval = setInterval(this.initializeConnection.bind(this), ConstantsUtil.TEN_SEC_MS)
   }
 
   public disconnectedCallback() {
     clearTimeout(this.interval)
-    this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //
   public render() {
-    return html`<w3m-connecting-wc-qrcode uri=${ifDefined(this.uri)}></w3m-connecting-wc-qrcode>`
+    if (!this.listing) {
+      return html`<w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode>`
+    }
+
+    return html`
+      ${this.preferenceTemplate()}
+      <!-- <w3m-connecting-footer></w3m-connecting-footer> -->
+    `
   }
 
   // -- Private ------------------------------------------- //
@@ -45,6 +56,10 @@ export class W3mConnectingWcView extends LitElement {
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.connectWalletConnect()
         await ConnectionController.state.wcPromise
+        const { wcLinking } = ConnectionController.state
+        if (wcLinking) {
+          StorageUtil.setWalletConnectDeepLink(wcLinking)
+        }
         ModalController.close()
       }
     } catch {
@@ -53,6 +68,68 @@ export class W3mConnectingWcView extends LitElement {
         this.lastRetry = Date.now()
         this.initializeConnection(true)
       }
+    }
+  }
+
+  private determinePreference(): Preference {
+    if (!this.listing) {
+      throw new Error('w3m-connecting-wc-view:determinePreference No listing')
+    }
+
+    const { connectors } = ConnectorController.state
+    const { mobile, desktop, injected } = this.listing
+    const injectedIds = injected?.map(({ injected_id }) => injected_id) ?? []
+    const isMobile = CoreHelperUtil.isMobile()
+    const isMobileWc = mobile?.native || mobile?.universal
+    const isWebWc = desktop?.universal
+    const isInjectedConnector = connectors.find(c => c.type === 'INJECTED')
+    const isInjectedInstalled = ConnectionController.checkInjectedInstalled(injectedIds)
+    const isInjectedWc = isInjectedInstalled && isInjectedConnector
+    const isDesktopWc = desktop?.native
+
+    // Mobile
+    if (isMobile) {
+      if (isInjectedWc) {
+        return 'injected'
+      } else if (isMobileWc) {
+        return 'mobile'
+      } else if (isWebWc) {
+        return 'web'
+      }
+
+      return 'unsupported'
+    }
+
+    // Desktop
+    if (isInjectedWc) {
+      return 'injected'
+    } else if (isDesktopWc) {
+      return 'desktop'
+    } else if (isWebWc) {
+      return 'web'
+    } else if (isMobileWc) {
+      return 'qrcode'
+    }
+
+    return 'unsupported'
+  }
+
+  private preferenceTemplate() {
+    const preference = this.preference ?? this.determinePreference()
+
+    switch (preference) {
+      case 'injected':
+        return html`<w3m-connecting-wc-injected></w3m-connecting-wc-injected>`
+      case 'mobile':
+        return html` <w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode> `
+      case 'desktop':
+        return html`<w3m-connecting-wc-desktop></w3m-connecting-wc-desktop>`
+      case 'web':
+        return html`<w3m-connecting-wc-web></w3m-connecting-wc-web>`
+      case 'qrcode':
+        return html` <w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode> `
+      default:
+        return html`TODO - Unsuported view`
     }
   }
 }

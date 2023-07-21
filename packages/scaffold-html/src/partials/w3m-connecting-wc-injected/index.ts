@@ -1,22 +1,29 @@
-import { ConnectionController, ModalController, RouterController } from '@web3modal/core'
+import {
+  ConnectionController,
+  ExplorerApiController,
+  ModalController,
+  RouterController
+} from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 
-@customElement('w3m-connecting-external-view')
-export class W3mConnectingExternalView extends LitElement {
+@customElement('w3m-connecting-wc-injected')
+export class W3mConnectingWcInjected extends LitElement {
   // -- Members ------------------------------------------- //
-  private readonly connector = RouterController.state.data?.connector
+  private readonly listing = RouterController.state.data?.listing
+
+  private readonly images = ExplorerApiController.state.images
 
   // -- State & Properties -------------------------------- //
   @state() private error = false
 
   // -- Render -------------------------------------------- //
   public render() {
-    if (!this.connector) {
-      throw new Error('w3m-connecting-view: No connector provided')
+    if (!this.listing) {
+      throw new Error('w3m-connecting-wc-injected: No listing provided')
     }
 
-    const label = `Continue in ${this.connector.name}`
+    const label = `Continue in ${this.listing.name}`
     const subLabel = this.error ? 'Connection declined' : 'Accept connection request in the wallet'
 
     return html`
@@ -24,6 +31,7 @@ export class W3mConnectingExternalView extends LitElement {
         .error=${this.error}
         .onConnect=${this.onConnect.bind(this)}
         label=${label}
+        imageSrc=${this.images[this.listing.image_id]}
         subLabel=${subLabel}
       ></w3m-connecting-widget>
     `
@@ -33,10 +41,8 @@ export class W3mConnectingExternalView extends LitElement {
   private async onConnect() {
     try {
       this.error = false
-      if (this.connector) {
-        await ConnectionController.connectExternal(this.connector.id)
-        ModalController.close()
-      }
+      await ConnectionController.connectInjected()
+      ModalController.close()
     } catch {
       this.error = true
     }
@@ -45,6 +51,6 @@ export class W3mConnectingExternalView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-connecting-external-view': W3mConnectingExternalView
+    'w3m-connecting-wc-injected': W3mConnectingWcInjected
   }
 }

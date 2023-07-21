@@ -1,12 +1,15 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil'
+import { StorageUtil } from '../utils/StorageUtil'
 
 // -- Types --------------------------------------------- //
 export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
   disconnect: () => Promise<void>
   connectExternal?: (id: string) => Promise<void>
+  connectInjected?: () => Promise<void>
+  checkInjectedInstalled?: (ids?: string[]) => boolean
 }
 
 export interface ConnectionControllerState {
@@ -14,7 +17,12 @@ export interface ConnectionControllerState {
   wcUri?: string
   wcPromise?: Promise<void>
   wcPairingExpiry?: number
+  wcLinking?: {
+    href: string
+    name: string
+  }
 }
+
 type StateKey = keyof ConnectionControllerState
 
 // -- State --------------------------------------------- //
@@ -54,14 +62,28 @@ export const ConnectionController = {
     await this._getClient().connectExternal?.(id)
   },
 
+  async connectInjected() {
+    await this._getClient().connectInjected?.()
+  },
+
+  checkInjectedInstalled(ids?: string[]) {
+    return this._getClient().checkInjectedInstalled?.(ids)
+  },
+
   resetWcConnection() {
     state.wcUri = undefined
     state.wcPairingExpiry = undefined
     state.wcPromise = undefined
+    state.wcLinking = undefined
+  },
+
+  setWcLinking(wcLinking: ConnectionControllerState['wcLinking']) {
+    state.wcLinking = wcLinking
   },
 
   async disconnect() {
     await this._getClient().disconnect()
+    StorageUtil.deleteWalletConnectDeepLink()
     this.resetWcConnection()
   }
 }

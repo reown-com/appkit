@@ -14,10 +14,10 @@ interface PostArguments extends RequestArguments {
 
 // -- Utility --------------------------------------------------------------------
 export class FetchUtil {
-  #baseUrl: Options['baseUrl']
+  public baseUrl: Options['baseUrl']
 
   public constructor({ baseUrl }: Options) {
-    this.#baseUrl = baseUrl
+    this.baseUrl = baseUrl
   }
 
   public async get<T>(args: RequestArguments) {
@@ -58,7 +58,7 @@ export class FetchUtil {
   }
 
   private createUrl({ path, params }: RequestArguments) {
-    const url = new URL(path, this.#baseUrl)
+    const url = new URL(path, this.baseUrl)
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         if (value) {
