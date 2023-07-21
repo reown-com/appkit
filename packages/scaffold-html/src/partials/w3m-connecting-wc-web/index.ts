@@ -56,7 +56,7 @@ export class W3mConnectingWcWeb extends LitElement {
       this.timeout = setTimeout(() => {
         this.ready = true
         this.onConnect()
-      }, 200)
+      }, 250)
     }
   }
 
