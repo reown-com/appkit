@@ -27,6 +27,8 @@ export class W3mConnectingWcView extends LitElement {
 
   @state() private preference?: Preference = undefined
 
+  @state() private preferences?: Preference[] = undefined
+
   public constructor() {
     super()
     this.initializeConnection()
@@ -43,22 +45,10 @@ export class W3mConnectingWcView extends LitElement {
       return html`<w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode>`
     }
 
-    const preference = this.preference ?? this.determinePreference()
-
-    switch (preference) {
-      case 'injected':
-        return html`<w3m-connecting-wc-injected></w3m-connecting-wc-injected>`
-      case 'mobile':
-        return html` <w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode> `
-      case 'desktop':
-        return html`<w3m-connecting-wc-desktop></w3m-connecting-wc-desktop>`
-      case 'web':
-        return html`<w3m-connecting-wc-web></w3m-connecting-wc-web>`
-      case 'qrcode':
-        return html` <w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode> `
-      default:
-        return html` <w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode> `
-    }
+    return html`
+      ${this.preferenceTemplate()}
+      <!-- <w3m-connecting-footer></w3m-connecting-footer> -->
+    `
   }
 
   // -- Private ------------------------------------------- //
@@ -124,6 +114,25 @@ export class W3mConnectingWcView extends LitElement {
     }
 
     return 'unsupported'
+  }
+
+  private preferenceTemplate() {
+    const preference = this.preference ?? this.determinePreference()
+
+    switch (preference) {
+      case 'injected':
+        return html`<w3m-connecting-wc-injected></w3m-connecting-wc-injected>`
+      case 'mobile':
+        return html` <w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode> `
+      case 'desktop':
+        return html`<w3m-connecting-wc-desktop></w3m-connecting-wc-desktop>`
+      case 'web':
+        return html`<w3m-connecting-wc-web></w3m-connecting-wc-web>`
+      case 'qrcode':
+        return html` <w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode> `
+      default:
+        return html`TODO - Unsuported view`
+    }
   }
 }
 

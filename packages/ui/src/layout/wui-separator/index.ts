@@ -9,7 +9,7 @@ export class WuiSeparator extends LitElement {
   public static styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Boolean }) public showText = false
+  @property() public text? = ''
 
   // -- Render -------------------------------------------- //
   public render() {
@@ -18,8 +18,8 @@ export class WuiSeparator extends LitElement {
 
   // -- Private ------------------------------------------- //
   private template() {
-    if (this.showText) {
-      return html`<wui-text variant="small-500" color="fg-200">or</wui-text>`
+    if (this.text) {
+      return html`<wui-text variant="small-500" color="fg-200">${this.text}</wui-text>`
     }
 
     return null
