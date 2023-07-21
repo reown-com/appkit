@@ -1,6 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil'
+import { StorageUtil } from '../utils/StorageUtil'
 
 // -- Types --------------------------------------------- //
 export interface ConnectionControllerClient {
@@ -82,6 +83,7 @@ export const ConnectionController = {
 
   async disconnect() {
     await this._getClient().disconnect()
+    StorageUtil.deleteWalletConnectDeepLink()
     this.resetWcConnection()
   }
 }

@@ -5,7 +5,7 @@ const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE'
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
-  setWalletConnectDeepLink(href: string, name: string) {
+  setWalletConnectDeepLink({ href, name }: { href: string; name: string }) {
     try {
       localStorage.setItem(WC_DEEPLINK, JSON.stringify({ href, name }))
     } catch {

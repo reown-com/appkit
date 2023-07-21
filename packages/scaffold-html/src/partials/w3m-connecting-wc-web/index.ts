@@ -1,56 +1,76 @@
-import { CoreHelperUtil, SnackController } from '@web3modal/core'
+import { ConnectionController, CoreHelperUtil, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
-import { customElement, property, state } from 'lit/decorators.js'
+import { customElement, state } from 'lit/decorators.js'
 
 @customElement('w3m-connecting-wc-web')
 export class W3mConnectingWcWeb extends LitElement {
-  // -- State & Properties -------------------------------- //
-  @property() private uri?: string = undefined
+  // -- Members ------------------------------------------- //
+  private readonly listing = RouterController.state.data?.listing
 
-  @state() private ready = Boolean(this.uri)
+  private unsubscribe: (() => void)[] = []
+
+  private timeout?: ReturnType<typeof setTimeout> = undefined
+
+  // -- State & Properties -------------------------------- //
+  @state() private error = false
+
+  @state() private uri = ConnectionController.state.wcUri
+
+  @state() private ready = false
+
+  public constructor() {
+    super()
+    this.unsubscribe.push(ConnectionController.subscribeKey('wcUri', val => (this.uri = val)))
+  }
+
+  public disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    clearTimeout(this.timeout)
+  }
 
   // -- Render -------------------------------------------- //
   public render() {
+    if (!this.listing) {
+      throw new Error('w3m-connecting-wc-web: No listing provided')
+    }
+
     this.isReady()
 
-    return html`
-      <wui-flex .padding=${['s', 'xl', 'xl', 'xl'] as const} flexDirection="column" gap="s">
-        <wui-flex justifyContent="space-between" alignItems="center">
-          <wui-text variant="paragraph-500" color="fg-100">
-            Scan this QR Code with your phone
-          </wui-text>
-          <wui-icon-link size="md" icon="copy" @click=${this.onCopyUri}></wui-icon-link>
-        </wui-flex>
+    const label = `Continue in ${this.listing.name}`
+    const subLabel = this.error ? 'Connection declined' : 'Accept connection request in the wallet'
 
-        <wui-shimmer borderRadius="l" width="100%"> ${this.qrCodeTenmplate()} </wui-shimmer>
-      </wui-flex>
+    return html`
+      <w3m-connecting-widget
+        .error=${this.error}
+        .onConnect=${this.onConnect.bind(this)}
+        label=${label}
+        subLabel=${subLabel}
+        .autoConnect=${false}
+      ></w3m-connecting-widget>
     `
   }
 
   // -- Private ------------------------------------------- //
   private isReady() {
     if (!this.ready && this.uri) {
-      setTimeout(() => (this.ready = true), 250)
+      this.timeout = setTimeout(() => {
+        this.ready = true
+        this.onConnect()
+      }, 200)
     }
   }
 
-  private qrCodeTenmplate() {
-    if (!this.uri || !this.ready) {
-      return null
-    }
-    const size = this.getBoundingClientRect().width - 40
-
-    return html`<wui-qr-code size=${size} theme="dark" uri=${this.uri}></wui-qr-code>`
-  }
-
-  private onCopyUri() {
-    try {
-      if (this.uri) {
-        CoreHelperUtil.copyToClopboard(this.uri)
-        SnackController.showSuccess('Uri copied')
+  private onConnect() {
+    if (this.listing && this.uri) {
+      try {
+        this.error = false
+        const { desktop, name } = this.listing
+        const { redirect, href } = CoreHelperUtil.formatUniversalUrl(desktop.universal, this.uri)
+        ConnectionController.setWcLinking({ name, href })
+        CoreHelperUtil.openHref(redirect, '_blank')
+      } catch {
+        this.error = true
       }
-    } catch {
-      SnackController.showError('Failed to copy')
     }
   }
 }
