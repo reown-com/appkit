@@ -21,6 +21,8 @@ export class W3mConnectingWidget extends LitElement {
 
   @property() public onConnect?: (() => void) | (() => Promise<void>) = undefined
 
+  @property() public onCopyUri?: (() => void) | (() => Promise<void>) = undefined
+
   @property({ type: Boolean }) public autoConnect = true
 
   public firstUpdated() {
@@ -57,7 +59,21 @@ export class W3mConnectingWidget extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text variant="paragraph-500" color="fg-100">${this.label}</wui-text>
+          <wui-flex gap="3xs" alignItems="center" justifyContent="center">
+            <wui-text variant="paragraph-500" color="fg-100">${this.label}</wui-text>
+
+            ${this.onCopyUri
+              ? html`
+                  <wui-icon-link
+                    size="md"
+                    icon="copy"
+                    iconColor="fg-200"
+                    @click=${this.onCopyUri}
+                  ></wui-icon-link>
+                `
+              : null}
+          </wui-flex>
+
           <wui-text variant="small-500" color=${subLabelColor}>${this.subLabel}</wui-text>
         </wui-flex>
 

@@ -84,7 +84,7 @@ export class W3mConnectingWcQrcode extends LitElement {
     try {
       if (this.uri) {
         CoreHelperUtil.copyToClopboard(this.uri)
-        SnackController.showSuccess('Uri copied')
+        SnackController.showSuccess('Link copied')
       }
     } catch {
       SnackController.showError('Failed to copy')

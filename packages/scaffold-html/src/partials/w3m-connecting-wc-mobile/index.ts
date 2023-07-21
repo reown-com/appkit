@@ -2,7 +2,8 @@ import {
   ConnectionController,
   CoreHelperUtil,
   ExplorerApiController,
-  RouterController
+  RouterController,
+  SnackController
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
@@ -46,6 +47,7 @@ export class W3mConnectingWcMobile extends LitElement {
       <w3m-connecting-widget
         .error=${this.error}
         .onConnect=${this.onConnect.bind(this)}
+        .onCopyUri=${this.onCopyUri.bind(this)}
         label=${label}
         imageSrc=${this.images[this.listing.image_id]}
         subLabel=${subLabel}
@@ -68,6 +70,17 @@ export class W3mConnectingWcMobile extends LitElement {
       } catch {
         this.error = true
       }
+    }
+  }
+
+  private onCopyUri() {
+    try {
+      if (this.uri) {
+        CoreHelperUtil.copyToClopboard(this.uri)
+        SnackController.showSuccess('Link copied')
+      }
+    } catch {
+      SnackController.showError('Failed to copy')
     }
   }
 }
