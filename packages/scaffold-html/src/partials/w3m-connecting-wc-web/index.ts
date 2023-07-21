@@ -1,4 +1,9 @@
-import { ConnectionController, CoreHelperUtil, RouterController } from '@web3modal/core'
+import {
+  ConnectionController,
+  CoreHelperUtil,
+  ExplorerApiController,
+  RouterController
+} from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 
@@ -6,6 +11,8 @@ import { customElement, state } from 'lit/decorators.js'
 export class W3mConnectingWcWeb extends LitElement {
   // -- Members ------------------------------------------- //
   private readonly listing = RouterController.state.data?.listing
+
+  private readonly images = ExplorerApiController.state.images
 
   private unsubscribe: (() => void)[] = []
 
@@ -45,6 +52,7 @@ export class W3mConnectingWcWeb extends LitElement {
         .onConnect=${this.onConnect.bind(this)}
         label=${label}
         subLabel=${subLabel}
+        imageSrc=${this.images[this.listing.image_id]}
         .autoConnect=${false}
       ></w3m-connecting-widget>
     `

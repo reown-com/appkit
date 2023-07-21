@@ -12,7 +12,7 @@ import type {
 
 // -- Helpers ------------------------------------------- //
 const api = new FetchUtil({ baseUrl: 'https://explorer-api.walletconnect.com' })
-const entries = 32
+const entries = 28
 
 // -- Types --------------------------------------------- //
 export interface ExplorerApiControllerState {

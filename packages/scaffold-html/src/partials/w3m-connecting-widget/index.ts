@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import { animate } from 'motion'
 import styles from './styles'
 
@@ -9,6 +10,8 @@ export class W3mConnectingWidget extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() private showRetry = false
+
+  @property() imageSrc?: string = undefined
 
   @property({ type: Boolean }) public error = false
 
@@ -41,7 +44,7 @@ export class W3mConnectingWidget extends LitElement {
         gap="xl"
       >
         <wui-flex justifyContent="center" alignItems="center">
-          <wui-wallet-image size="lg"></wui-wallet-image>
+          <wui-wallet-image size="lg" imageSrc=${ifDefined(this.imageSrc)}></wui-wallet-image>
           ${this.error ? null : html`<wui-loading-thumbnail></wui-loading-thumbnail>`}
           <wui-icon-box
             backgroundColor="error-100"
