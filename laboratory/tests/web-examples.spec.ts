@@ -5,13 +5,7 @@ import {
   disconnectUsingWallet
 } from './shared/util/web-examples'
 
-// eslint-disable-next-line @typescript-eslint/require-await
-test.describe('Functional tests', async () => {
-  test.beforeEach(async ({ page, context, browserName }) => {
-    await connectToWallet(page, context, browserName)
-
-    return ''
-  })
+test.describe('Functional tests', () => {
   test('should be able to connect to wallet', async ({ page, context, browserName }) => {
     await connectToWallet(page, context, browserName)
   })
@@ -68,5 +62,18 @@ test.describe('Functional tests', async () => {
 
     await expect(page.getByText('Sign Typed Data')).toBeVisible()
     await expect(page.getByText(/User rejected/u)).toBeVisible()
+  })
+
+  test('should handle chain switch', async ({ page, context, browserName }) => {
+    const walletPage = await connectToWallet(page, context, browserName)
+
+    await page.getByTestId('partial-network-switch-button').click()
+    await page.getByText(/Polygon/u).click()
+    await page.getByTestId('backcard-close').click()
+    await page.getByTestId('lab-sign').click()
+
+    await expect(walletPage.getByText('Sign Message')).toBeVisible()
+
+    await expect(walletPage.getByTestId('request-details-chain')).toHaveText('Polygon')
   })
 })

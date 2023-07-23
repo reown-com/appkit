@@ -53,8 +53,10 @@ export class W3mModalBackcard extends LitElement {
       <div class="w3m-toolbar">
         ${this.logoTemplate()}
         <div class=${classMap(actionsClasses)}>
-          <button @click=${this.onHelp}>${SvgUtil.HELP_ICON}</button>
-          <button @click=${ModalCtrl.close}>${SvgUtil.CROSS_ICON}</button>
+          <button @click=${this.onHelp} data-testid="backcard-help">${SvgUtil.HELP_ICON}</button>
+          <button @click=${ModalCtrl.close} data-testid="backcard-close">
+            ${SvgUtil.CROSS_ICON}
+          </button>
         </div>
       </div>
     `

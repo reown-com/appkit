@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-// eslint-disable-next-line @typescript-eslint/require-await
-test.describe('Basic tests', async () => {
+test.describe('Basic tests', () => {
   /* Open web3 modal page */
   test.beforeEach(async ({ page }) => {
     page.goto('./with-wagmi/react')

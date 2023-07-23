@@ -6,8 +6,7 @@ import {
   testWalletInstallView
 } from './shared/util/explorer'
 
-// eslint-disable-next-line @typescript-eslint/require-await
-test.describe('Explorer view', async () => {
+test.describe('Explorer view', () => {
   /* Open explorer view */
   test.beforeEach(async ({ page }) => {
     await page.goto('./with-wagmi/react')
