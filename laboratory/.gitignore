@@ -5,3 +5,5 @@ node_modules/
 /test-results/
 /playwright-report/
 /playwright/.cache/
+/tests/shared/data/
+!/tests/shared/data/extension.txt
