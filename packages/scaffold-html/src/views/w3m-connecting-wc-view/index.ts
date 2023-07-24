@@ -12,6 +12,7 @@ import {
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { animate } from 'motion'
 
 @customElement('w3m-connecting-wc-view')
 export class W3mConnectingWcView extends LitElement {
@@ -122,7 +123,7 @@ export class W3mConnectingWcView extends LitElement {
     }
 
     // Desktop
-    if (isInjectedWc) {
+    else if (isInjectedWc) {
       this.platform = 'injected'
     } else if (isDesktopWc) {
       this.platform = 'desktop'
@@ -151,25 +152,38 @@ export class W3mConnectingWcView extends LitElement {
         return html`
           <w3m-connecting-wc-web .multiPlatfrom=${multiPlatform}></w3m-connecting-wc-web>
         `
-      case 'qrcode':
       case 'mobile':
+        return html`
+          <w3m-connecting-wc-mobile .multiPlatfrom=${multiPlatform}></w3m-connecting-wc-mobile>
+        `
+      case 'qrcode':
         return html`<w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode>`
       default:
-        return html`TODO - Unsuported view`
+        return html`<w3m-connecting-wc-unsupported></w3m-connecting-wc-unsupported>`
     }
   }
 
   private footerTemplate() {
     const multiPlatform = this.platforms.length > 1
 
-    if (!multiPlatform) {
+    if (!multiPlatform || this.platform === 'unsupported') {
       return null
     }
 
     return html`
-      <w3m-connecting-footer platform=${ifDefined(this.platform)} .platforms=${this.platforms}>
+      <w3m-connecting-footer
+        platform=${ifDefined(this.platform)}
+        .platforms=${this.platforms}
+        .onSelectPlatfrom=${this.onSelectPlatform.bind(this)}
+      >
       </w3m-connecting-footer>
     `
+  }
+
+  private async onSelectPlatform(platform: Platform) {
+    await animate(this, { opacity: [1, 0] }, { duration: 0.2 }).finished
+    this.platform = platform
+    animate(this, { opacity: [0, 1] }, { duration: 0.2 })
   }
 }
 

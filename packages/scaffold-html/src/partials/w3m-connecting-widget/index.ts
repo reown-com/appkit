@@ -61,7 +61,6 @@ export class W3mConnectingWidget extends LitElement {
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
             <wui-text variant="paragraph-500" color="fg-100">${this.label}</wui-text>
-
             ${this.onCopyUri
               ? html`
                   <wui-icon-link
