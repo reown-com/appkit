@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const LOCAL_SERVER = 'http://127.0.0.1:3000'
+const LOCAL_SERVER = 'http://localhost:3000/with-wagmi/react'
 
 export default defineConfig({
   testDir: './tests',
