@@ -1,10 +1,12 @@
 import type { Page } from '@playwright/test'
 
 export class WalletPage {
+  baseURL = 'http://localhost:3001'
+
   constructor(public readonly page: Page) {}
 
-  async goto() {
-    await this.page.goto('http://localhost:3001')
+  async load() {
+    await this.page.goto(this.baseURL)
   }
 
   async connect() {
