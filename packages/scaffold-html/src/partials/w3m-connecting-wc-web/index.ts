@@ -6,7 +6,7 @@ import {
   SnackController
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { customElement, property, state } from 'lit/decorators.js'
 
 @customElement('w3m-connecting-wc-web')
 export class W3mConnectingWcWeb extends LitElement {
@@ -25,6 +25,8 @@ export class W3mConnectingWcWeb extends LitElement {
   @state() private uri = ConnectionController.state.wcUri
 
   @state() private ready = false
+
+  @property({ type: Boolean }) public multiPlatfrom = false
 
   public constructor() {
     super()
@@ -53,7 +55,7 @@ export class W3mConnectingWcWeb extends LitElement {
         .onConnect=${this.onConnect.bind(this)}
         .onCopyUri=${this.onCopyUri.bind(this)}
         label=${label}
-        subLabel=${subLabel}
+        .subLabel=${this.multiPlatfrom ? undefined : subLabel}
         imageSrc=${this.images[this.listing.image_id]}
         .autoConnect=${false}
       ></w3m-connecting-widget>

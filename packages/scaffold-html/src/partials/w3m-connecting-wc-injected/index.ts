@@ -5,7 +5,7 @@ import {
   RouterController
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { customElement, property, state } from 'lit/decorators.js'
 
 @customElement('w3m-connecting-wc-injected')
 export class W3mConnectingWcInjected extends LitElement {
@@ -16,6 +16,8 @@ export class W3mConnectingWcInjected extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() private error = false
+
+  @property({ type: Boolean }) public multiPlatfrom = false
 
   // -- Render -------------------------------------------- //
   public render() {
@@ -32,7 +34,7 @@ export class W3mConnectingWcInjected extends LitElement {
         .onConnect=${this.onConnect.bind(this)}
         label=${label}
         imageSrc=${this.images[this.listing.image_id]}
-        subLabel=${subLabel}
+        .subLabel=${this.multiPlatfrom ? undefined : subLabel}
       ></w3m-connecting-widget>
     `
   }

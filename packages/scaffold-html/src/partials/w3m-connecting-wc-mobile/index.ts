@@ -6,7 +6,7 @@ import {
   SnackController
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { customElement, property, state } from 'lit/decorators.js'
 
 @customElement('w3m-connecting-wc-mobile')
 export class W3mConnectingWcMobile extends LitElement {
@@ -23,6 +23,8 @@ export class W3mConnectingWcMobile extends LitElement {
   @state() private error = false
 
   @state() private uri = ConnectionController.state.wcUri
+
+  @property({ type: Boolean }) public multiPlatfrom = false
 
   public constructor() {
     super()
@@ -50,7 +52,7 @@ export class W3mConnectingWcMobile extends LitElement {
         .onCopyUri=${this.onCopyUri.bind(this)}
         label=${label}
         imageSrc=${this.images[this.listing.image_id]}
-        subLabel=${subLabel}
+        .subLabel=${this.multiPlatfrom ? undefined : subLabel}
       ></w3m-connecting-widget>
     `
   }

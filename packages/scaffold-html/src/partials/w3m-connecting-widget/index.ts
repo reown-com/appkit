@@ -17,7 +17,7 @@ export class W3mConnectingWidget extends LitElement {
 
   @property() public label = ''
 
-  @property() public subLabel = ''
+  @property() public subLabel?: string = undefined
 
   @property() public onConnect?: (() => void) | (() => Promise<void>) = undefined
 
@@ -74,7 +74,9 @@ export class W3mConnectingWidget extends LitElement {
               : null}
           </wui-flex>
 
-          <wui-text variant="small-500" color=${subLabelColor}>${this.subLabel}</wui-text>
+          ${this.subLabel
+            ? html`<wui-text variant="small-500" color=${subLabelColor}>${this.subLabel}</wui-text>`
+            : null}
         </wui-flex>
 
         <wui-button
