@@ -17,7 +17,7 @@ export class W3mConnectingWidget extends LitElement {
 
   @property() public label = ''
 
-  @property() public subLabel = ''
+  @property() public subLabel?: string = undefined
 
   @property() public onConnect?: (() => void) | (() => Promise<void>) = undefined
 
@@ -36,13 +36,14 @@ export class W3mConnectingWidget extends LitElement {
   public render() {
     this.onShowRetry()
     const subLabelColor = this.error ? 'error-100' : 'fg-200'
+    const paddingBot = !this.subLabel && this.showRetry ? 'xxl' : '3xl'
 
     return html`
       <wui-flex
         data-error=${this.error}
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', '3xl', 'xl'] as const}
+        .padding=${['3xl', 'xl', paddingBot, 'xl'] as const}
         gap="xl"
       >
         <wui-flex justifyContent="center" alignItems="center">
@@ -61,7 +62,6 @@ export class W3mConnectingWidget extends LitElement {
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
             <wui-text variant="paragraph-500" color="fg-100">${this.label}</wui-text>
-
             ${this.onCopyUri
               ? html`
                   <wui-icon-link
@@ -74,7 +74,9 @@ export class W3mConnectingWidget extends LitElement {
               : null}
           </wui-flex>
 
-          <wui-text variant="small-500" color=${subLabelColor}>${this.subLabel}</wui-text>
+          ${this.subLabel
+            ? html`<wui-text variant="small-500" color=${subLabelColor}>${this.subLabel}</wui-text>`
+            : null}
         </wui-flex>
 
         <wui-button

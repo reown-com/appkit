@@ -53,3 +53,5 @@ export interface LinkingRecord {
 }
 
 export type ProjectId = string
+
+export type Platform = 'mobile' | 'desktop' | 'injected' | 'web' | 'qrcode' | 'unsupported'

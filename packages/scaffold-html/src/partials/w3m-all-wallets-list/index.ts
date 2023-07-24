@@ -57,9 +57,9 @@ export class W3mAllWalletsList extends LitElement {
     const gridEl = this.shadowRoot?.querySelector('wui-grid')
     if (this.initial && gridEl) {
       await ExplorerApiController.fetchListings()
-      await animate(gridEl, { opacity: 0 }, { duration: 0.2 }).finished
+      await animate(gridEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
       this.initial = false
-      animate(gridEl, { opacity: 1 }, { duration: 0.2 })
+      animate(gridEl, { opacity: [0, 1] }, { duration: 0.2 })
     }
   }
 

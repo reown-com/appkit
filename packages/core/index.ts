@@ -40,4 +40,10 @@ export type { ExplorerApiControllerState } from './src/controllers/ExplorerApiCo
 export { ConstantsUtil } from './src/utils/ConstantsUtil'
 export { CoreHelperUtil } from './src/utils/CoreHelperUtil'
 export { StorageUtil } from './src/utils/StorageUtil'
-export type { CaipAddress, CaipChainId, ExplorerListing, ProjectId } from './src/utils/TypeUtils'
+export type {
+  CaipAddress,
+  CaipChainId,
+  ExplorerListing,
+  Platform,
+  ProjectId
+} from './src/utils/TypeUtils'
