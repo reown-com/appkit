@@ -24,7 +24,6 @@ export class W3mConnectingWcView extends LitElement {
   private listing = RouterController.state.data?.listing
 
   // -- State & Properties -------------------------------- //
-
   @state() private platform?: Platform = undefined
 
   @state() private platforms: Platform[] = []
