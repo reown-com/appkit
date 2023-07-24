@@ -1,4 +1,10 @@
-import { CoreHelperUtil, Platform } from '@web3modal/core'
+import {
+  ConnectionController,
+  ConnectorController,
+  CoreHelperUtil,
+  Platform,
+  RouterController
+} from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 
@@ -52,8 +58,20 @@ export class W3mConnectingFooter extends LitElement {
       return null
     }
 
+    const { connectors } = ConnectorController.state
+    const listing = RouterController.state.data?.listing
+    const injectedIds = listing?.injected?.map(({ injected_id }) => injected_id) ?? []
+    const isInjected = injectedIds.length
+    const isInjectedConnector = connectors.find(c => c.type === 'INJECTED')
+    const isInjectedInstalled = ConnectionController.checkInjectedInstalled(injectedIds)
+    const isInstalled = isInjected && isInjectedInstalled && isInjectedConnector
+
     return html`
-      <wui-button size="sm" variant="accent" @click=${() => this.onSelectPlatfrom?.('injected')}>
+      <wui-button
+        size="sm"
+        variant="accent"
+        @click=${() => this.onSelectPlatfrom?.(isInstalled ? 'injected' : 'unsupported')}
+      >
         <wui-icon size="sm" color="inherit" slot="iconLeft" name="extension"></wui-icon>
         Extension
       </wui-button>
