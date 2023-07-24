@@ -77,9 +77,9 @@ export class W3mHeader extends LitElement {
     const headingEl = this.shadowRoot?.querySelector('wui-text')
     if (headingEl) {
       const preset = headings()[view]
-      await animate(headingEl, { opacity: 0 }, { duration: 0.2 }).finished
+      await animate(headingEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
       this.heading = preset
-      animate(headingEl, { opacity: 1 }, { duration: 0.2 })
+      animate(headingEl, { opacity: [0, 1] }, { duration: 0.2 })
     }
   }
 
@@ -87,13 +87,13 @@ export class W3mHeader extends LitElement {
     const { history } = RouterController.state
     const buttonEl = this.shadowRoot?.querySelector('#dynamic')
     if (history.length > 1 && !this.showBack && buttonEl) {
-      await animate(buttonEl, { opacity: 0 }, { duration: 0.2 }).finished
+      await animate(buttonEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
       this.showBack = true
-      animate(buttonEl, { opacity: 1 }, { duration: 0.2 })
+      animate(buttonEl, { opacity: [0, 1] }, { duration: 0.2 })
     } else if (history.length <= 1 && this.showBack && buttonEl) {
-      await animate(buttonEl, { opacity: 0 }, { duration: 0.2 }).finished
+      await animate(buttonEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
       this.showBack = false
-      animate(buttonEl, { opacity: 1 }, { duration: 0.2 })
+      animate(buttonEl, { opacity: [0, 1] }, { duration: 0.2 })
     }
   }
 }

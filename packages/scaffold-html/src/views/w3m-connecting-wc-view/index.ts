@@ -45,7 +45,7 @@ export class W3mConnectingWcView extends LitElement {
 
     return html`
       ${this.preferenceTemplate()}
-      <!-- <w3m-connecting-footer></w3m-connecting-footer> -->
+      <w3m-connecting-footer></w3m-connecting-footer>
     `
   }
 

@@ -64,10 +64,10 @@ export class W3mSnackBar extends LitElement {
   private onOpen() {
     clearTimeout(this.timeout)
     if (this.open) {
-      animate(this, { opacity: 1, x: ['-50%', '-50%'], scale: [0.85, 1] }, { duration: 0.15 })
+      animate(this, { opacity: [0, 1], x: ['-50%', '-50%'], scale: [0.85, 1] }, { duration: 0.15 })
       this.timeout = setTimeout(() => SnackController.hide(), 2500)
     } else {
-      animate(this, { opacity: 0, x: ['-50%', '-50%'], scale: [1, 0.85] }, { duration: 0.15 })
+      animate(this, { opacity: [1, 0], x: ['-50%', '-50%'], scale: [1, 0.85] }, { duration: 0.15 })
     }
   }
 }
