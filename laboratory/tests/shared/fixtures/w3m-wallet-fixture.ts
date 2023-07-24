@@ -1,4 +1,4 @@
-import { testM as base } from '../fixtures/modal-fix'
+import { testM as base } from './w3m-fixture'
 import { WalletPage } from '../pages/WalletPage'
 
 // Declare the types of fixtures to use

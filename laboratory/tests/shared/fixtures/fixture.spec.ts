@@ -1,4 +1,4 @@
-import { testMW, expect } from './shared/fixtures/modal-wallet-fix'
+import { testMW, expect } from './w3m-wallet-fixture'
 
 testMW('Open pages', ({ modalPage, walletPage }) => {
   expect(modalPage).toBeDefined()
@@ -8,4 +8,13 @@ testMW('Open pages', ({ modalPage, walletPage }) => {
 testMW('Connect', async ({ modalPage, walletPage }) => {
   await modalPage.getUri()
   await walletPage.connect()
+
+  // Validate methods would go here
+  await walletPage.handleSessionProposal({
+    reqAccounts: ['1'],
+    optAccounts: ['2'],
+    accept: true
+  })
+
+  // Validate methods would go here
 })

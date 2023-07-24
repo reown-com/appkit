@@ -18,4 +18,13 @@ export class ModalPage {
     await this.w3modal.click()
     await this.page.getByTestId('component-header-action-button').click()
   }
+
+  async disconnect() {
+    await this.page.getByTestId('partial-account-address').click()
+    await this.page.getByTestId('view-account-disconnect-button').click()
+  }
+
+  async sign() {
+    await this.page.getByTestId('lab-sign').click()
+  }
 }
