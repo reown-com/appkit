@@ -27,11 +27,12 @@ export class W3mConnectingWcUnsupported extends LitElement {
           imageSrc=${this.images[this.listing.image_id]}
         ></wui-wallet-image>
 
-        <wui-text variant="paragraph-500" color="fg-100">Not Detected</wui-text>
-
-        <wui-text variant="small-500" color="fg-200">
-          Download and install ${this.listing.name} to continue
-        </wui-text>
+        <wui-flex flexDirection="column" alignItems="center" gap="xxs">
+          <wui-text variant="paragraph-500" color="fg-100">Not Detected</wui-text>
+          <wui-text variant="small-500" color="fg-200">
+            Download and install ${this.listing.name} to continue
+          </wui-text>
+        </wui-flex>
 
         <wui-button size="sm" variant="fill" @click=${this.onDownload}>
           <wui-icon color="inherit" slot="iconRight" name="externalLink"></wui-icon>

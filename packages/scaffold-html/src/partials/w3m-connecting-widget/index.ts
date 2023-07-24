@@ -36,13 +36,14 @@ export class W3mConnectingWidget extends LitElement {
   public render() {
     this.onShowRetry()
     const subLabelColor = this.error ? 'error-100' : 'fg-200'
+    const paddingBot = !this.subLabel && this.showRetry ? 'xxl' : '3xl'
 
     return html`
       <wui-flex
         data-error=${this.error}
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', '3xl', 'xl'] as const}
+        .padding=${['3xl', 'xl', paddingBot, 'xl'] as const}
         gap="xl"
       >
         <wui-flex justifyContent="center" alignItems="center">
