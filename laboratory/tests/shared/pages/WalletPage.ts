@@ -1,9 +1,10 @@
 /* eslint-disable no-await-in-loop */
 import type { Locator, Page } from '@playwright/test'
 import type { SessionParams } from '../types'
+import { LOCAL_WALLET_URL } from '../constants'
 
 export class WalletPage {
-  private readonly baseURL = 'http://localhost:3001'
+  private readonly baseURL = LOCAL_WALLET_URL
 
   private readonly goToAccounts: Locator
 
@@ -40,6 +41,13 @@ export class WalletPage {
     await this.page.getByTestId('uri-connect-button').click()
   }
 
+  async disconnect() {
+    await this.goToSessions.click()
+    const sessionCard = this.page.getByTestId('session-card').first()
+    await sessionCard.getByTestId('session-icon').click()
+    await this.page.getByTestId('session-delete-button').click()
+  }
+
   /**
    * Handle a session proposal event in the wallet
    * @param reqAccounts - required account numbers to select ex/ ['1', '2']
@@ -55,11 +63,9 @@ export class WalletPage {
     await this.page.keyboard.press('Space')
   }
 
-  async disconnect() {
-    await this.goToSessions.click()
-    const sessionCard = this.page.getByTestId('session-card').first()
-    await sessionCard.getByTestId('session-icon').click()
-    await this.page.getByTestId('session-delete-button').click()
+  async handleRequest({ accept }: { accept: boolean }) {
+    const meh = accept ? `approve` : `reject`
+    await this.page.getByTestId(`request-button-${meh}`).click()
   }
 
   private async selectAccounts(accountNums: string[], required: boolean) {

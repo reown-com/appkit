@@ -1,74 +1,113 @@
+import { DEFAULT_SESSION_PARAMS } from './shared/constants'
 import { testMW, expect } from './shared/fixtures/w3m-wallet-fixture'
-import { connect } from './shared/util/w3m-wallet-utils'
+
 testMW.describe('W3M using wallet web-example', () => {
-  testMW.beforeEach(async ({ modalPage, walletPage }) => {
-    await connect(modalPage, walletPage)
+  testMW.beforeEach(async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+    await modalPage.getUri()
+    await walletPage.connect()
+
+    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+    await modalValidator.isConnected()
+    await walletValidator.isConnected()
   })
 
-  testMW('Should be able to connect', async ({ modalPage, walletPage }) => {
+  testMW('Should be able to connect', ({ modalPage, walletPage }) => {
     expect(modalPage).toBeDefined()
     expect(walletPage).toBeDefined()
-    await expect(modalPage.page.getByText('0 ETH')).toBeVisible()
   })
 
-  testMW('Should send disconnect to wallet', async ({ modalPage }) => {
-    await modalPage.disconnect()
-    // UI validation methods would go here for modal AND wallet
-  })
-  testMW('Should recieve disconnect from a wallet', async ({ modalPage, walletPage }) => {
-    await walletPage.disconnect()
-    // UI validation methods would go here for modal AND wallet
-    await expect(modalPage.page.getByText('0 ETH')).not.toBeVisible()
-  })
+  testMW(
+    'Should send disconnect to wallet',
+    async ({ modalPage, modalValidator, walletValidator }) => {
+      await modalPage.disconnect()
+      await modalValidator.isDisconnected()
+      await walletValidator.isDisconnected()
+    }
+  )
+  testMW(
+    'Should recieve disconnect from a wallet',
+    async ({ walletPage, modalValidator, walletValidator }) => {
+      await walletPage.disconnect()
+      await walletValidator.isDisconnected()
+      await modalValidator.isDisconnected()
+    }
+  )
 
-  testMW('Should sign a message', async ({ modalPage, walletPage }) => {
-    await modalPage.page.getByTestId('lab-sign').click()
+  testMW(
+    'Should sign a message',
+    async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+      await modalPage.sign()
 
-    await expect(walletPage.page.getByText('Sign Message')).toBeVisible()
-    await walletPage.page.getByTestId('request-button-approve').click()
+      await walletValidator.recievedSign({})
+      await walletPage.handleRequest({ accept: true })
 
-    await expect(modalPage.page.getByText('Sign Message')).toBeVisible()
-    await expect(modalPage.page.getByText('0x')).toBeVisible()
-  })
+      await modalValidator.acceptedSign()
+    }
+  )
 
-  testMW('Should handle rejected sign', async ({ modalPage, walletPage }) => {
-    await modalPage.page.getByTestId('lab-sign').click()
+  testMW(
+    'Should handle rejected sign',
+    async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+      await modalPage.sign()
 
-    await expect(walletPage.page.getByText('Sign Message')).toBeVisible()
-    await walletPage.page.getByTestId('request-button-reject').click()
+      await walletValidator.recievedSign({})
+      await walletPage.handleRequest({ accept: false })
 
-    await expect(modalPage.page.getByText('Sign Message')).toBeVisible()
-    await expect(modalPage.page.getByText(/User rejected/u)).toBeVisible()
-  })
+      await modalValidator.rejectedSign()
+    }
+  )
 
-  testMW('should sign typed data', async ({ modalPage, walletPage }) => {
-    await modalPage.page.getByTestId('lab-sign-typed').click()
+  testMW(
+    'should sign typed data',
+    async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+      await modalPage.signTyped()
 
-    await expect(walletPage.page.getByText('Sign Typed Data')).toBeVisible()
-    await walletPage.page.getByTestId('request-button-approve').click()
+      await walletValidator.recievedSignTyped({})
+      await walletPage.handleRequest({ accept: true })
 
-    await expect(modalPage.page.getByText('Sign Typed Data')).toBeVisible()
-    await expect(modalPage.page.getByText('0x')).toBeVisible()
-  })
+      await modalValidator.acceptedSignTyped()
+    }
+  )
 
-  testMW('should handle rejected sign typed data', async ({ modalPage, walletPage }) => {
-    await modalPage.page.getByTestId('lab-sign-typed').click()
+  testMW(
+    'should handle rejected sign typed data',
+    async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+      await modalPage.signTyped()
 
-    await expect(walletPage.page.getByText('Sign Typed Data')).toBeVisible()
-    await walletPage.page.getByTestId('request-button-reject').click()
+      await walletValidator.recievedSignTyped({})
+      await walletPage.handleRequest({ accept: false })
 
-    await expect(modalPage.page.getByText('Sign Typed Data')).toBeVisible()
-    await expect(modalPage.page.getByText(/User rejected/u)).toBeVisible()
-  })
+      await modalValidator.acceptedSignTyped()
+    }
+  )
 
-  testMW('should handle chain switch', async ({ modalPage, walletPage }) => {
-    await modalPage.page.getByTestId('partial-network-switch-button').click()
-    await modalPage.page.getByText(/Polygon/u).click()
-    await modalPage.page.getByTestId('backcard-close').click()
-    await modalPage.page.getByTestId('lab-sign').click()
+  testMW(
+    'should handle chain switch using sign',
+    async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+      await modalPage.switchChain({ chainName: 'Polygon' })
+      await modalPage.closeModal()
 
-    await expect(walletPage.page.getByText('Sign Message')).toBeVisible()
+      await modalPage.sign()
 
-    await expect(walletPage.page.getByTestId('request-details-chain')).toHaveText('Polygon')
-  })
+      await walletValidator.recievedSign({ chainName: 'Polygon' })
+      await walletPage.handleRequest({ accept: true })
+
+      await modalValidator.acceptedSign()
+    }
+  )
+
+  testMW(
+    'should handle chain switch using sign typed',
+    async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+      await modalPage.switchChain({ chainName: 'Polygon' })
+      await modalPage.closeModal()
+
+      await modalPage.signTyped()
+
+      await walletValidator.recievedSignTyped({ chainName: 'Polygon' })
+      await walletPage.handleRequest({ accept: true })
+
+      await modalValidator.acceptedSignTyped()
+    }
+  )
 })

@@ -1,7 +1,8 @@
 import type { Locator, Page } from '@playwright/test'
+import { LOCAL_LAB_URL } from '../constants'
 
 export class ModalPage {
-  private readonly baseURL = 'http://localhost:3000/with-wagmi/react'
+  private readonly baseURL = LOCAL_LAB_URL
 
   private readonly w3modal: Locator
 
@@ -26,5 +27,22 @@ export class ModalPage {
 
   async sign() {
     await this.page.getByTestId('lab-sign').click()
+  }
+
+  async signTyped() {
+    await this.page.getByTestId('lab-sign-typed').click()
+  }
+
+  async switchChain({ chainName }: { chainName: string }) {
+    await this.page.getByTestId('partial-network-switch-button').click()
+    await this.page.getByText(new RegExp(chainName, 'u')).click()
+  }
+
+  async helpModal() {
+    await this.page.getByTestId('backcard-help').click()
+  }
+
+  async closeModal() {
+    await this.page.getByTestId('backcard-close').click()
   }
 }

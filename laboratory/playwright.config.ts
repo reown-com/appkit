@@ -1,6 +1,5 @@
 import { defineConfig, devices } from '@playwright/test'
-
-const LOCAL_SERVER = 'http://localhost:3000/with-wagmi/react'
+import { LOCAL_LAB_URL } from './tests/shared/constants'
 
 export default defineConfig({
   testDir: './tests',
@@ -18,7 +17,7 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     /* BaseURL: process.env.CI ? LAB_URL : LOCAL_SERVER, */
-    baseURL: LOCAL_SERVER,
+    baseURL: LOCAL_LAB_URL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -28,12 +27,6 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    /**
-     * Run tests in Chromium. {
-     *   name: 'Google Chrome',
-     * use: { ...devices['Desktop Chrome'], channel: 'chrome' }
-     * }
-     */
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] }
@@ -89,7 +82,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     command: 'npm run dev',
-    url: LOCAL_SERVER,
+    url: LOCAL_LAB_URL,
     reuseExistingServer: true
   }
 })
