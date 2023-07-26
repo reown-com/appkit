@@ -20,6 +20,7 @@ import type {
   PlacementType,
   SpacingType,
   TagType,
+  TextAlign,
   TextType,
   ThemeType,
   TransactionType
@@ -51,6 +52,8 @@ export const textOptions: TextType[] = [
   'large-600',
   'large-700'
 ]
+
+export const textAlignOptions: TextAlign[] = ['center', 'left', 'right']
 
 export const flexDirectionOptions: FlexDirectionType[] = [
   'column-reverse',

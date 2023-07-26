@@ -3,6 +3,7 @@ import {
   ConnectionController,
   CoreHelperUtil,
   ModalController,
+  RouterController,
   SnackController
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
@@ -79,7 +80,12 @@ export class W3mAccountView extends LitElement {
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
-        <wui-list-item variant="icon" iconVariant="overlay" icon="networkPlaceholder">
+        <wui-list-item
+          variant="icon"
+          iconVariant="overlay"
+          icon="networkPlaceholder"
+          @click=${this.onNetworks.bind(this)}
+        >
           <wui-text variant="paragraph-500" color="fg-100">${this.balance ?? '_._'}</wui-text>
         </wui-list-item>
         <wui-list-item
@@ -104,6 +110,10 @@ export class W3mAccountView extends LitElement {
     } catch {
       SnackController.showError('Failed to copy')
     }
+  }
+
+  private onNetworks() {
+    RouterController.push('Networks')
   }
 
   private async onDisconnect() {
