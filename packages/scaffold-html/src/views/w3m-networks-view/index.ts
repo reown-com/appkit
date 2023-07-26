@@ -18,7 +18,7 @@ export class W3mNetworksView extends LitElement {
       <wui-separator></wui-separator>
 
       <wui-flex padding="s">
-        <wui-text variant="small-500" color="fg-300">
+        <wui-text variant="small-500" color="fg-300" align="center">
           Your connected wallet may not support some of the networks available for this dApp
         </wui-text>
       </wui-flex>
