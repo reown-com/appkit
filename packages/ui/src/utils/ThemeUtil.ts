@@ -107,12 +107,15 @@ export const rootStyles = css`
     --wui-path-network: path(
       'M20.041 1.061a7.915 7.915 0 0 1 7.918 0l16.082 9.29A7.922 7.922 0 0 1 48 17.21v18.578c0 2.83-1.51 5.445-3.959 6.86l-16.082 9.29a7.915 7.915 0 0 1-7.918 0l-16.082-9.29A7.922 7.922 0 0 1 0 35.79V17.211c0-2.83 1.51-5.445 3.959-6.86l16.082-9.29Z'
     );
+
+    --wui-overlay-blue: rgba(51, 150, 255, 0.2);
   }
 
   [data-wui-theme='dark'] {
     --wui-color-blue-100: #47a1ff;
     --wui-color-blue-090: #59aaff;
     --wui-color-blue-080: #6cb4ff;
+    --wui-color-blue-020: rgba(71, 161, 255, 0.2);
     --wui-color-blue-015: rgba(71, 161, 255, 0.15);
     --wui-color-blue-010: rgba(71, 161, 255, 0.1);
     --wui-color-blue-005: rgba(71, 161, 255, 0.05);
@@ -169,6 +172,7 @@ export const rootStyles = css`
     --wui-color-blue-100: #3396ff;
     --wui-color-blue-090: #2d7dd2;
     --wui-color-blue-080: #2978cc;
+    --wui-color-blue-020: rgba(51, 150, 255, 0.2);
     --wui-color-blue-015: rgba(51, 150, 255, 0.15);
     --wui-color-blue-010: rgba(51, 150, 255, 0.1);
     --wui-color-blue-005: rgba(51, 150, 255, 0.05);

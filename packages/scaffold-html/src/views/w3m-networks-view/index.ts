@@ -27,9 +27,12 @@ export class W3mNetworksView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private networksTemplate() {
+    const { caipNetwork } = NetworkController.state
+
     return this.requestedNetworks?.map(
       network => html`
         <wui-card-select
+          .selected=${caipNetwork?.id === network.id}
           imageSrc=${ifDefined(network.imageSrc)}
           type="network"
           name=${network.name ?? network.id}

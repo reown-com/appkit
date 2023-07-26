@@ -22,4 +22,18 @@ export default css`
   button:disabled > wui-text {
     color: var(--wui-color-fg-300);
   }
+
+  [data-selected='true'] {
+    background-color: var(--wui-color-blue-020);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    [data-selected='true']:hover:enabled {
+      background-color: var(--wui-color-blue-015);
+    }
+
+    [data-selected='true']:active:enabled {
+      background-color: var(--wui-color-blue-010);
+    }
+  }
 `
