@@ -1,5 +1,6 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ModalCtrlState } from '../types/controllerTypes'
+import { CoreUtil } from '../utils/CoreUtil'
 import { AccountCtrl } from './AccountCtrl'
 import { ClientCtrl } from './ClientCtrl'
 import { ConfigCtrl } from './ConfigCtrl'
@@ -31,6 +32,10 @@ export const ModalCtrl = {
       const { isConnected } = AccountCtrl.state
       const { enableNetworkView } = ConfigCtrl.state
       WcConnectionCtrl.setPairingEnabled(true)
+
+      if (!isConnected) {
+        CoreUtil.removeWalletConnectDeepLink()
+      }
 
       if (options?.route) {
         RouterCtrl.reset(options.route)
