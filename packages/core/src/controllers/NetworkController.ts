@@ -1,5 +1,5 @@
 import { proxy, ref } from 'valtio/vanilla'
-import type { CaipChainId } from '../utils/TypeUtils'
+import type { CaipNetwork } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -8,9 +8,9 @@ export interface NetworkControllerClient {
 
 export interface NetworkControllerState {
   _client?: NetworkControllerClient
-  caipNetwork?: CaipChainId
-  requestedCaipNetworks?: CaipChainId[]
-  approvedCaipNetworks?: CaipChainId[]
+  caipNetwork?: CaipNetwork
+  requestedCaipNetworks?: CaipNetwork[]
+  approvedCaipNetworks?: CaipNetwork[]
 }
 
 // -- State --------------------------------------------- //

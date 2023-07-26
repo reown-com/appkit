@@ -6,6 +6,7 @@ export * from './src/views/w3m-all-wallets-view'
 export * from './src/views/w3m-connect-view'
 export * from './src/views/w3m-connecting-external-view'
 export * from './src/views/w3m-connecting-wc-view'
+export * from './src/views/w3m-networks-view'
 
 export * from './src/partials/w3m-all-wallets-list'
 export * from './src/partials/w3m-all-wallets-search'
@@ -22,11 +23,4 @@ export * from './src/partials/w3m-snackbar'
 
 export { Web3ModalScaffoldHtml } from './src/client'
 
-export type {
-  CaipAddress,
-  CaipChainId,
-  ConnectionControllerClient,
-  ConnectorType,
-  NetworkControllerClient,
-  ProjectId
-} from '@web3modal/core'
+export type * from '@web3modal/core'

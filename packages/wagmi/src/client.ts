@@ -14,7 +14,8 @@ import {
 import { mainnet } from '@wagmi/core/chains'
 import type {
   CaipAddress,
-  CaipChainId,
+  CaipNetwork,
+  CaipNetworkId,
   ConnectionControllerClient,
   ConnectorType,
   NetworkControllerClient,
@@ -43,12 +44,19 @@ export interface Web3ModalOptions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wagmiConfig: Config<any, any>
   projectId: ProjectId
+  chains?: Chain[]
+}
+
+declare global {
+  interface Window {
+    ethereum?: Record<string, unknown>
+  }
 }
 
 // -- Client --------------------------------------------------------------------
 export class Web3Modal extends Web3ModalScaffoldHtml {
   public constructor(options: Web3ModalOptions) {
-    const { wagmiConfig, projectId } = options
+    const { wagmiConfig, projectId, chains } = options
 
     if (!wagmiConfig) {
       throw new Error('web3modal:constructor - wagmiConfig is undefined')
@@ -63,8 +71,8 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     }
 
     const networkControllerClient: NetworkControllerClient = {
-      async switchCaipNetwork(caipChainId) {
-        const chainId = caipChainId?.split(':')[1]
+      async switchCaipNetwork(caipNetwork) {
+        const chainId = caipNetwork?.id.split(':')[1]
         const chainIdNumber = Number(chainId)
         await switchNetwork({ chainId: chainIdNumber })
       }
@@ -126,7 +134,9 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       projectId
     })
 
-    this.syncConnectors(wagmiConfig)
+    this.syncRequestedNetworks(chains)
+
+    this.syncConnectors(wagmiConfig.connectors)
 
     this.syncAccount()
     watchAccount(() => this.syncAccount())
@@ -136,6 +146,17 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
   }
 
   // -- Private -----------------------------------------------------------------
+  private syncRequestedNetworks(chains: Web3ModalOptions['chains']) {
+    const requestedCaipNetworks = chains?.map(
+      chain =>
+        ({
+          id: `${NAMESPACE}:${chain.id}`,
+          name: chain.name
+        }) as CaipNetwork
+    )
+    this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
+  }
+
   private async syncAccount() {
     const { address, isConnected } = getAccount()
     const { chain } = getNetwork()
@@ -154,8 +175,8 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     const { chain } = getNetwork()
     if (chain) {
       const chainId = String(chain.id)
-      const caipChainId: CaipChainId = `${NAMESPACE}:${chainId}`
-      this.setCaipNetwork(caipChainId)
+      const caipChainId: CaipNetworkId = `${NAMESPACE}:${chainId}`
+      this.setCaipNetwork({ id: caipChainId, name: chain.name })
       if (isConnected && address) {
         const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
         this.setCaipAddress(caipAddress)
@@ -180,8 +201,8 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     this.setBalance(balance.formatted)
   }
 
-  private syncConnectors(wagmiConfig: Web3ModalOptions['wagmiConfig']) {
-    const connectors = wagmiConfig?.connectors.map(
+  private syncConnectors(connectors: Web3ModalOptions['wagmiConfig']['connectors']) {
+    const w3mConnectors = connectors.map(
       connector =>
         ({
           id: connector.id,
@@ -189,12 +210,6 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
           type: TYPE_MAP[connector.id] ?? 'EXTERNAL'
         }) as const
     )
-    this.setConnectors(connectors ?? [])
-  }
-}
-
-declare global {
-  interface Window {
-    ethereum?: Record<string, unknown>
+    this.setConnectors(w3mConnectors ?? [])
   }
 }

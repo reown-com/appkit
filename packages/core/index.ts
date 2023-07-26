@@ -24,11 +24,7 @@ export type {
 } from './src/controllers/ConnectionController'
 
 export { ConnectorController } from './src/controllers/ConnectorController'
-export type {
-  Connector,
-  ConnectorControllerState,
-  ConnectorType
-} from './src/controllers/ConnectorController'
+export type { ConnectorControllerState } from './src/controllers/ConnectorController'
 
 export { SnackController } from './src/controllers/SnackController'
 export type { SnackControllerState } from './src/controllers/SnackController'
@@ -42,7 +38,10 @@ export { CoreHelperUtil } from './src/utils/CoreHelperUtil'
 export { StorageUtil } from './src/utils/StorageUtil'
 export type {
   CaipAddress,
-  CaipChainId,
+  CaipNetwork,
+  CaipNetworkId,
+  Connector,
+  ConnectorType,
   ExplorerListing,
   Platform,
   ProjectId
