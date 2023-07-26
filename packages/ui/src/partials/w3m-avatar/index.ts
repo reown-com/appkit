@@ -51,6 +51,7 @@ export class W3mAvatar extends LitElement {
 
     if (this.avatar) {
       return html`<img
+        crossorigin="anonymous"
         class=${classMap(classes)}
         src=${this.avatar}
         data-testid="partial-avatar-image"
