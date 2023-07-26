@@ -26,7 +26,7 @@ export class W3mWalletImage extends LitElement {
       ${src.length
         ? html`
             <div>
-              <img src=${src} alt=${this.id} />
+              <img crossorigin="anonymous" src=${src} alt=${this.id} />
             </div>
           `
         : SvgUtil.WALLET_PLACEHOLDER}
