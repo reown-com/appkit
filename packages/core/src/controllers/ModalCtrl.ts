@@ -6,6 +6,7 @@ import { ConfigCtrl } from './ConfigCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
 import { RouterCtrl } from './RouterCtrl'
 import { WcConnectionCtrl } from './WcConnectionCtrl'
+import { CoreUtil } from '../utils/CoreUtil';
 
 // -- types -------------------------------------------------------- //
 export interface OpenOptions {
@@ -31,6 +32,7 @@ export const ModalCtrl = {
       const { isConnected } = AccountCtrl.state
       const { enableNetworkView } = ConfigCtrl.state
       WcConnectionCtrl.setPairingEnabled(true)
+      CoreUtil.removeWalletConnectDeepLink();
 
       if (options?.route) {
         RouterCtrl.reset(options.route)
