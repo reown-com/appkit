@@ -1,16 +1,8 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
+import type { Connector } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
-export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED'
-
-export interface Connector {
-  id: string
-  type: ConnectorType
-  name?: string
-  imageSrc?: string
-}
-
 export interface ConnectorControllerState {
   connectors: Connector[]
 }

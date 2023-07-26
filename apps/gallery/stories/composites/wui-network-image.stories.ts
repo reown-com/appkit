@@ -10,11 +10,16 @@ export default {
   title: 'Composites/wui-network-image',
   args: {
     imageSrc: networkImageSrc,
-    name: 'Ethereum'
+    name: 'Ethereum',
+    selected: false
   }
 } as Component
 
 export const Default: Component = {
   render: args =>
-    html`<wui-network-image .imageSrc=${args.imageSrc} alt=${args.name}></wui-network-image>`
+    html`<wui-network-image
+      .imageSrc=${args.imageSrc}
+      alt=${args.name}
+      .selected=${args.selected}
+    ></wui-network-image>`
 }

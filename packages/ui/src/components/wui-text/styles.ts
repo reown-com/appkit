@@ -17,6 +17,7 @@ export default css`
     font-weight: var(--wui-font-weight-regular);
     overflow: inherit;
     text-overflow: inherit;
+    text-align: var(--local-align);
   }
 
   .wui-font-large-500,

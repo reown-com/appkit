@@ -26,7 +26,7 @@ export class W3mHeader extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties --------------------------------- //
-  @state() private heading = 'Connect Wallet'
+  @state() private heading = headings()[RouterController.state.view]
 
   @state() private showBack = false
 

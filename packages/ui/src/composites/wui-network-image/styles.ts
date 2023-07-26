@@ -25,7 +25,7 @@ export default css`
   }
 
   svg > path {
-    stroke: var(--wui-overlay-010);
+    stroke: var(--local-stroke);
     stroke-width: 2px;
   }
 

@@ -1,11 +1,18 @@
 import { describe, expect, it } from 'vitest'
-import type { CaipChainId, NetworkControllerClient } from '../../index'
+import type { CaipNetwork, NetworkControllerClient } from '../../index'
 import { NetworkController } from '../../index'
 
 // -- Setup --------------------------------------------------------------------
-const caipNetwork = 'eip155:1'
-const requestedCaipNetworks = ['eip155:1', 'eip155:2', 'eip155:3'] as CaipChainId[]
-const approvedCaipNetworks = ['eip155:1', 'eip155:2'] as CaipChainId[]
+const caipNetwork = { id: 'eip155:1', name: 'Ethereum' } as const
+const requestedCaipNetworks = [
+  { id: 'eip155:1', name: 'Ethereum' },
+  { id: 'eip155:42161', name: 'Arbitrum One' },
+  { id: 'eip155:43114', name: 'Avalanche C-Chain' }
+] as CaipNetwork[]
+const approvedCaipNetworks = [
+  { id: 'eip155:1', name: 'Ethereum' },
+  { id: 'eip155:42161', name: 'Arbitrum One' }
+] as CaipNetwork[]
 
 const client: NetworkControllerClient = {
   switchCaipNetwork: async _caipNetwork => Promise.resolve()
@@ -43,5 +50,11 @@ describe('NetworkController', () => {
   it('should update state correctly on setCaipNetwork()', () => {
     NetworkController.setCaipNetwork(caipNetwork)
     expect(NetworkController.state.caipNetwork).toEqual(caipNetwork)
+  })
+
+  it('should reset state correctly on resetNetwork()', () => {
+    NetworkController.resetNetwork()
+    expect(NetworkController.state.caipNetwork).toEqual(undefined)
+    expect(NetworkController.state.approvedCaipNetworks).toEqual(undefined)
   })
 })

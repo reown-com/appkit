@@ -1,7 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
-import type { ExplorerListing } from '../utils/TypeUtils'
-import type { Connector } from './ConnectorController'
+import type { Connector, ExplorerListing } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface RouterControllerState {

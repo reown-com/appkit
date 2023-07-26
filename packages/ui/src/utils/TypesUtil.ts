@@ -23,6 +23,8 @@ export type TextType =
   | 'tiny-500'
   | 'tiny-600'
 
+export type TextAlign = 'center' | 'left' | 'right'
+
 export type SizeType = 'inherit' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs'
 
 export type SpacingType =

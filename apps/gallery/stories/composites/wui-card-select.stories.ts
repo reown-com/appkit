@@ -1,8 +1,8 @@
 import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-card-select'
-import '../../components/gallery-container'
 import type { WuiCardSelect } from '@web3modal/ui/src/composites/wui-card-select'
 import { html } from 'lit'
+import '../../components/gallery-container'
 import { cardSelectOptions, walletImageSrc } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiCardSelect>
@@ -13,7 +13,8 @@ export default {
     imageSrc: walletImageSrc,
     name: 'Rainbow',
     disabled: false,
-    type: 'wallet'
+    type: 'wallet',
+    selected: false
   },
   argTypes: {
     type: {
@@ -28,9 +29,10 @@ export const Default: Component = {
     <gallery-container width="76"
       ><wui-card-select
         type=${args.type}
-        imageSrc=${args.imageSrc}
+        .imageSrc=${args.imageSrc}
         ?disabled=${args.disabled}
         name=${args.name}
+        .selected=${args.selected}
       ></wui-card-select>
     </gallery-container>
   `

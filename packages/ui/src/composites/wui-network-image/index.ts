@@ -1,10 +1,10 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { networkSvg } from '../../assets/svg/network'
 import '../../components/wui-icon'
 import '../../components/wui-image'
 import { resetStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
-import { networkSvg } from '../../assets/svg/network'
 
 @customElement('wui-network-image')
 export class WuiNetworkImage extends LitElement {
@@ -15,8 +15,14 @@ export class WuiNetworkImage extends LitElement {
 
   @property() public imageSrc?: string
 
+  @property({ type: Boolean }) public selected?: boolean = false
+
   // -- Render -------------------------------------------- //
   public render() {
+    this.style.cssText = `
+      --local-stroke: ${this.selected ? 'var(--wui-color-blue-100)' : 'var(--wui-overlay-010)'}
+    `
+
     return html`${this.templateVisual()} ${networkSvg}`
   }
 

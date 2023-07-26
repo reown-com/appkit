@@ -29,9 +29,9 @@
     "apps/laboratory"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "6.1.0",
-    "@typescript-eslint/parser": "6.1.0",
-    "@types/react": "18.2.15",
+    "@typescript-eslint/eslint-plugin": "6.2.0",
+    "@typescript-eslint/parser": "6.2.0",
+    "@types/react": "18.2.16",
     "@types/react-dom": "18.2.7",
     "eslint": "8.45.0",
     "eslint-config-prettier": "8.8.0",
@@ -39,7 +39,7 @@
     "prettier": "3.0.0",
     "typescript": "5.1.6",
     "vitest": "0.33.0",
-    "danger": "11.2.6",
+    "danger": "11.2.7",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   }

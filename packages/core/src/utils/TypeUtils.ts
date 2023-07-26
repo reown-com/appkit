@@ -1,6 +1,12 @@
 export type CaipAddress = `${string}:${string}:${string}`
 
-export type CaipChainId = `${string}:${string}`
+export type CaipNetworkId = `${string}:${string}`
+
+export interface CaipNetwork {
+  id: CaipNetworkId
+  name?: string
+  imageSrc?: string
+}
 
 export interface ExplorerListing {
   id: string
@@ -55,3 +61,12 @@ export interface LinkingRecord {
 export type ProjectId = string
 
 export type Platform = 'mobile' | 'desktop' | 'injected' | 'web' | 'qrcode' | 'unsupported'
+
+export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED'
+
+export interface Connector {
+  id: string
+  type: ConnectorType
+  name?: string
+  imageSrc?: string
+}
