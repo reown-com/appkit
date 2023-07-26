@@ -87,6 +87,10 @@ export class Web3ModalScaffoldHtml {
       NetworkController.setApprovedCaipNetworks(approvedCaipNetworks)
     }
 
+  protected resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
+    NetworkController.resetNetwork()
+  }
+
   protected setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
     ConnectorController.setConnectors(connectors)
   }

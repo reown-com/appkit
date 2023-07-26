@@ -1,3 +1,4 @@
+import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
 import type { CaipNetwork } from '../utils/TypeUtils'
 
@@ -13,12 +14,18 @@ export interface NetworkControllerState {
   approvedCaipNetworks?: CaipNetwork[]
 }
 
+type StateKey = keyof NetworkControllerState
+
 // -- State --------------------------------------------- //
 const state = proxy<NetworkControllerState>({})
 
 // -- Controller ---------------------------------------- //
 export const NetworkController = {
   state,
+
+  subscribeKey<K extends StateKey>(key: K, callback: (value: NetworkControllerState[K]) => void) {
+    return subKey(state, key, callback)
+  },
 
   _getClient() {
     if (!state._client) {
@@ -47,5 +54,10 @@ export const NetworkController = {
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
     await this._getClient().switchCaipNetwork(network)
     state.caipNetwork = network
+  },
+
+  resetNetwork() {
+    state.caipNetwork = undefined
+    state.approvedCaipNetworks = undefined
   }
 }

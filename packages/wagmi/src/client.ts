@@ -166,6 +166,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
+      this.syncNetwork()
       await Promise.all([this.syncProfile(address), this.syncBalance(address, chain)])
     }
   }
