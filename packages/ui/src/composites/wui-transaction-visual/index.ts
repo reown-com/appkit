@@ -1,10 +1,10 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { resetStyles } from '../../utils/ThemeUtil'
-import '../wui-icon-box'
 import '../../components/wui-image'
-import styles from './styles'
+import { resetStyles } from '../../utils/ThemeUtil'
 import type { TransactionIconType, TransactionType } from '../../utils/TypesUtil'
+import '../wui-icon-box'
+import styles from './styles'
 
 // -- Helpers -------------------------------- //
 const outgoing: TransactionType[] = ['withdrawed', 'buy', 'cryptoSent', 'nftSent']
@@ -49,7 +49,7 @@ export class WuiTransactionVisual extends LitElement {
         iconColor=${color}
         backgroundColor=${color}
         background="opaque"
-        icon=${icon}
+        .icon=${icon}
         ?border=${true}
       ></wui-icon-box>
     `

@@ -1,6 +1,5 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import '../../components/wui-icon'
 import { resetStyles } from '../../utils/ThemeUtil'
 import styles from './styles'
 
