@@ -1,6 +1,7 @@
 export * from './src/components/wui-card'
 export * from './src/components/wui-icon'
 export * from './src/components/wui-image'
+export * from './src/components/wui-loading-hexagon'
 export * from './src/components/wui-loading-spinner'
 export * from './src/components/wui-loading-thumbnail'
 export * from './src/components/wui-shimmer'
