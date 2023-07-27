@@ -14,7 +14,9 @@ export class W3mNetworksView extends LitElement {
 
   public constructor() {
     super()
-    this.unsubscribe.push(NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val)))
+    this.unsubscribe.push(
+      NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
+    )
   }
 
   public disconnectedCallback() {
@@ -40,7 +42,8 @@ export class W3mNetworksView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private networksTemplate() {
-    const { approvedCaipNetworkIds, requestedCaipNetworks, supportsAllNetworks } = NetworkController.state
+    const { approvedCaipNetworkIds, requestedCaipNetworks, supportsAllNetworks } =
+      NetworkController.state
     const approvedIds = approvedCaipNetworkIds
     const requested = requestedCaipNetworks
 

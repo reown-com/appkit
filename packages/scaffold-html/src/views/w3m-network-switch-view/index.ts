@@ -42,7 +42,10 @@ export class W3mNetworkSwitchView extends LitElement {
         gap="xl"
       >
         <wui-flex justifyContent="center" alignItems="center">
-          <wui-network-image size="lg" imageSrc=${ifDefined(this.network.imageSrc)}></wui-network-image>
+          <wui-network-image
+            size="lg"
+            imageSrc=${ifDefined(this.network.imageSrc)}
+          ></wui-network-image>
 
           ${this.error ? null : html`<wui-loading-hexagon></wui-loading-hexagon>`}
 

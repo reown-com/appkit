@@ -15,8 +15,8 @@ export function setColorTheme(theme: string) {
 // -- Presets -----------------------------------------------------------------
 export const rootStyles = css`
   :root {
-    --wui-font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell,
-      Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    --wui-font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
+      Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 
     --wui-font-size-micro: 10px;
     --wui-font-size-tiny: 12px;

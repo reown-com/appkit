@@ -27,7 +27,8 @@ describe('NetworkController', () => {
     NetworkController.setClient(client)
 
     expect(NetworkController.state).toEqual({
-      _client: NetworkController._getClient()
+      _client: NetworkController._getClient(),
+      supportsAllNetworks: true
     })
   })
 
