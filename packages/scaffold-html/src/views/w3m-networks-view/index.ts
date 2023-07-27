@@ -1,5 +1,5 @@
 import type { CaipNetwork } from '@web3modal/core'
-import { AccountController, NetworkController } from '@web3modal/core'
+import { AccountController, NetworkController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -69,6 +69,7 @@ export class W3mNetworksView extends LitElement {
       await NetworkController.switchActiveNetwork(network)
     } else {
       NetworkController.setCaipNetwork(network)
+      RouterController.push('Connect')
     }
   }
 }

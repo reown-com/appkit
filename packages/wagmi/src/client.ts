@@ -63,10 +63,11 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     }
 
     const networkControllerClient: NetworkControllerClient = {
-      async switchCaipNetwork(caipNetwork) {
-        const chainId = caipNetwork?.id.split(':')[1]
-        const chainIdNumber = Number(chainId)
-        await switchNetwork({ chainId: chainIdNumber })
+      switchCaipNetwork: async caipNetwork => {
+        const chainId = this.caipNetworkIdToNumber(caipNetwork?.id)
+        if (chainId) {
+          await switchNetwork({ chainId })
+        }
       },
 
       async getApprovedCaipNetworkIds() {
@@ -108,25 +109,31 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
           }
         })
 
-        await connect({ connector })
+        const chainId = this.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        await connect({ connector, chainId })
       },
 
-      async connectExternal(id) {
+      connectExternal: async id => {
         const connector = wagmiConfig.connectors.find(c => c.id === id)
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
 
-        await connect({ connector })
+        const chainId = this.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        await connect({ connector, chainId })
       },
 
-      async connectInjected() {
+      connectInjected: async () => {
         const connector = wagmiConfig.connectors.find(c => c.id === INJECTED_ID)
         if (!connector) {
           throw new Error('connectionControllerClient:connectInjected - connector is undefined')
         }
 
-        await connect({ connector })
+        const chainId = this.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        await connect({ connector, chainId })
       },
 
       checkInjectedInstalled(ids) {
@@ -230,5 +237,9 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
         }) as const
     )
     this.setConnectors(w3mConnectors ?? [])
+  }
+
+  private caipNetworkIdToNumber(caipnetworkId?: CaipNetworkId) {
+    return caipnetworkId ? Number(caipnetworkId.split(':')[1]) : undefined
   }
 }
