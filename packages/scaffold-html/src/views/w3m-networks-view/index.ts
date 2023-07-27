@@ -1,4 +1,5 @@
-import { NetworkController } from '@web3modal/core'
+import type { CaipNetwork } from '@web3modal/core'
+import { AccountController, NetworkController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -7,10 +8,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 export class W3mNetworksView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
-
-  private requestedNetworks = NetworkController.state.requestedCaipNetworks
-
-  private approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
 
   // -- State & Properties -------------------------------- //
   @state() public caipNetwork = NetworkController.state.caipNetwork
@@ -45,8 +42,9 @@ export class W3mNetworksView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private networksTemplate() {
-    const approvedIds = this.approvedCaipNetworkIds
-    const requested = this.requestedNetworks
+    const { approvedCaipNetworkIds, requestedCaipNetworks } = NetworkController.state
+    const approvedIds = approvedCaipNetworkIds
+    const requested = requestedCaipNetworks
 
     if (approvedIds?.length) {
       requested?.sort((a, b) => approvedIds.indexOf(b.id) - approvedIds.indexOf(a.id))
@@ -59,11 +57,19 @@ export class W3mNetworksView extends LitElement {
           imageSrc=${ifDefined(network.imageSrc)}
           type="network"
           name=${network.name ?? network.id}
-          @click=${() => null}
+          @click=${() => this.onSwitchNetwork(network)}
           .disabled=${approvedIds && !approvedIds.includes(network.id)}
         ></wui-card-select>
       `
     )
+  }
+
+  private async onSwitchNetwork(network: CaipNetwork) {
+    if (AccountController.state.isConnected) {
+      await NetworkController.switchActiveNetwork(network)
+    } else {
+      NetworkController.setCaipNetwork(network)
+    }
   }
 }
 

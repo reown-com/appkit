@@ -27,6 +27,7 @@ export default css`
   svg > path {
     stroke: var(--local-stroke);
     stroke-width: 2px;
+    transition: stroke var(--wui-ease-out-power-2) var(--wui-duration-lg);
   }
 
   wui-image {
