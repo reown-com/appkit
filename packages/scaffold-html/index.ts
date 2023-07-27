@@ -6,6 +6,7 @@ export * from './src/views/w3m-all-wallets-view'
 export * from './src/views/w3m-connect-view'
 export * from './src/views/w3m-connecting-external-view'
 export * from './src/views/w3m-connecting-wc-view'
+export * from './src/views/w3m-network-switch-view'
 export * from './src/views/w3m-networks-view'
 
 export * from './src/partials/w3m-all-wallets-list'

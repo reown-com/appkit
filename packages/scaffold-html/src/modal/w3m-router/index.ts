@@ -60,6 +60,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-all-wallets-view></w3m-all-wallets-view>`
       case 'Networks':
         return html`<w3m-networks-view></w3m-networks-view>`
+      case 'SwitchNetwork':
+        return html`<w3m-network-switch-view></w3m-network-switch-view>`
       case 'Account':
         return html`<w3m-account-view></w3m-account-view>`
       default:

@@ -1,23 +1,30 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
-import type { CaipNetwork } from '../utils/TypeUtils'
+import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
   switchCaipNetwork: (network: NetworkControllerState['caipNetwork']) => Promise<void>
+  getApprovedCaipNetworksData: () => Promise<{
+    approvedCaipNetworkIds: NetworkControllerState['approvedCaipNetworkIds']
+    supportsAllNetworks: NetworkControllerState['supportsAllNetworks']
+  }>
 }
 
 export interface NetworkControllerState {
+  supportsAllNetworks: boolean
   _client?: NetworkControllerClient
   caipNetwork?: CaipNetwork
   requestedCaipNetworks?: CaipNetwork[]
-  approvedCaipNetworks?: CaipNetwork[]
+  approvedCaipNetworkIds?: CaipNetworkId[]
 }
 
 type StateKey = keyof NetworkControllerState
 
 // -- State --------------------------------------------- //
-const state = proxy<NetworkControllerState>({})
+const state = proxy<NetworkControllerState>({
+  supportsAllNetworks: true
+})
 
 // -- Controller ---------------------------------------- //
 export const NetworkController = {
@@ -47,8 +54,10 @@ export const NetworkController = {
     state.requestedCaipNetworks = requestedNetworks
   },
 
-  setApprovedCaipNetworks(approvedNetworks: NetworkControllerState['approvedCaipNetworks']) {
-    state.approvedCaipNetworks = approvedNetworks
+  async getApprovedCaipNetworksData() {
+    const data = await this._getClient().getApprovedCaipNetworksData()
+    state.supportsAllNetworks = data.supportsAllNetworks
+    state.approvedCaipNetworkIds = data.approvedCaipNetworkIds
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
@@ -58,6 +67,7 @@ export const NetworkController = {
 
   resetNetwork() {
     state.caipNetwork = undefined
-    state.approvedCaipNetworks = undefined
+    state.approvedCaipNetworkIds = undefined
+    state.supportsAllNetworks = true
   }
 }

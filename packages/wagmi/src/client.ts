@@ -17,27 +17,19 @@ import type {
   CaipNetwork,
   CaipNetworkId,
   ConnectionControllerClient,
-  ConnectorType,
   NetworkControllerClient,
   ProjectId
 } from '@web3modal/scaffold-html'
 import { Web3ModalScaffoldHtml } from '@web3modal/scaffold-html'
-
-// -- Helpers -------------------------------------------------------------------
-const WALLET_CONNECT_ID = 'walletConnect'
-
-const INJECTED_ID = 'injected'
-
-const NAMESPACE = 'eip155'
-
-const NAME_MAP = {
-  [INJECTED_ID]: 'Browser Wallet'
-} as Record<string, string>
-
-const TYPE_MAP = {
-  [WALLET_CONNECT_ID]: 'WALLET_CONNECT',
-  [INJECTED_ID]: 'INJECTED'
-} as Record<string, ConnectorType>
+import {
+  ADD_CHAIN_METHOD,
+  INJECTED_ID,
+  NAMESPACE,
+  NAME_MAP,
+  TYPE_MAP,
+  WALLET_CHOICE_KEY,
+  WALLET_CONNECT_ID
+} from './constants'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalOptions {
@@ -71,15 +63,39 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
     }
 
     const networkControllerClient: NetworkControllerClient = {
-      async switchCaipNetwork(caipNetwork) {
-        const chainId = caipNetwork?.id.split(':')[1]
-        const chainIdNumber = Number(chainId)
-        await switchNetwork({ chainId: chainIdNumber })
+      switchCaipNetwork: async caipNetwork => {
+        const chainId = this.caipNetworkIdToNumber(caipNetwork?.id)
+        if (chainId) {
+          await switchNetwork({ chainId })
+        }
+      },
+
+      async getApprovedCaipNetworksData() {
+        const walletChoice = localStorage.getItem(WALLET_CHOICE_KEY)
+        if (walletChoice?.includes(WALLET_CONNECT_ID)) {
+          const connector = wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_ID)
+          if (!connector) {
+            throw new Error(
+              'networkControllerClient:getApprovedCaipNetworks - connector is undefined'
+            )
+          }
+          const provider = await connector.getProvider()
+          const ns = provider.signer?.session?.namespaces
+          const nsMethods = ns?.[NAMESPACE]?.methods
+          const nsChains = ns?.[NAMESPACE]?.chains
+
+          return {
+            supportsAllNetworks: nsMethods?.includes(ADD_CHAIN_METHOD),
+            approvedCaipNetworkIds: nsChains as CaipNetworkId[]
+          }
+        }
+
+        return { approvedCaipNetworkIds: undefined, supportsAllNetworks: true }
       }
     }
 
     const connectionControllerClient: ConnectionControllerClient = {
-      async connectWalletConnect(onUri) {
+      connectWalletConnect: async onUri => {
         const connector = wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_ID)
         if (!connector) {
           throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
@@ -92,25 +108,31 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
           }
         })
 
-        await connect({ connector })
+        const chainId = this.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        await connect({ connector, chainId })
       },
 
-      async connectExternal(id) {
+      connectExternal: async id => {
         const connector = wagmiConfig.connectors.find(c => c.id === id)
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
 
-        await connect({ connector })
+        const chainId = this.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        await connect({ connector, chainId })
       },
 
-      async connectInjected() {
+      connectInjected: async () => {
         const connector = wagmiConfig.connectors.find(c => c.id === INJECTED_ID)
         if (!connector) {
           throw new Error('connectionControllerClient:connectInjected - connector is undefined')
         }
 
-        await connect({ connector })
+        const chainId = this.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        await connect({ connector, chainId })
       },
 
       checkInjectedInstalled(ids) {
@@ -167,7 +189,9 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
       this.syncNetwork()
-      await Promise.all([this.syncProfile(address), this.syncBalance(address, chain)])
+      await Promise.all([this.syncProfile(address), this.getApprovedCaipNetworksData()])
+    } else if (!isConnected) {
+      this.resetNetwork()
     }
   }
 
@@ -212,5 +236,9 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
         }) as const
     )
     this.setConnectors(w3mConnectors ?? [])
+  }
+
+  private caipNetworkIdToNumber(caipnetworkId?: CaipNetworkId) {
+    return caipnetworkId ? Number(caipnetworkId.split(':')[1]) : undefined
   }
 }

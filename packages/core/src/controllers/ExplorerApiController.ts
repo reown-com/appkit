@@ -1,5 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
+import { version } from '../../package.json'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil'
 import { FetchUtil } from '../utils/FetchUtil'
 import type {
@@ -13,6 +14,8 @@ import type {
 // -- Helpers ------------------------------------------- //
 const api = new FetchUtil({ baseUrl: 'https://explorer-api.walletconnect.com' })
 const entries = 28
+const sdkVersion = `js-${version}`
+const sdkType = 'w3m'
 
 // -- Types --------------------------------------------- //
 export interface ExplorerApiControllerState {
@@ -55,7 +58,7 @@ export const ExplorerApiController = {
     const page = req?.page ?? 1
     const response = await api.get<ExplorerListingsResponse>({
       path: '/w3m/v1/getAllListings',
-      params: { projectId: state.projectId, page, entries }
+      params: { projectId: state.projectId, page, entries, sdkVersion, sdkType }
     })
     const listingsArr = Object.values(response.listings)
     listingsArr.forEach(({ image_id }) => {
@@ -74,7 +77,7 @@ export const ExplorerApiController = {
     state.search = []
     const response = await api.get<ExplorerListingsResponse>({
       path: '/w3m/v1/getAllListings',
-      params: { projectId: state.projectId, search: req.search }
+      params: { projectId: state.projectId, search: req.search, sdkVersion, sdkType }
     })
     const searchArr = Object.values(response.listings)
     searchArr.forEach(({ image_id }) => {
@@ -87,6 +90,6 @@ export const ExplorerApiController = {
   },
 
   getWalletImageUrl(imageId: string) {
-    return `${api.baseUrl}/w3m/v1/getWalletImage/${imageId}?projectId=${state.projectId}`
+    return `${api.baseUrl}/w3m/v1/getWalletImage/${imageId}?projectId=${state.projectId}&sdkVersion=${sdkVersion}&sdkType=${sdkType}`
   }
 }

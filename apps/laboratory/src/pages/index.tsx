@@ -2,7 +2,16 @@ import { Center, VStack } from '@chakra-ui/react'
 import { Web3Modal } from '@web3modal/wagmi'
 import { useEffect, useState } from 'react'
 import { WagmiConfig, configureChains, createConfig } from 'wagmi'
-import { arbitrum, avalanche, gnosis, mainnet, optimism, polygon } from 'wagmi/chains'
+import {
+  arbitrum,
+  avalanche,
+  fantom,
+  gnosis,
+  mainnet,
+  optimism,
+  polygon,
+  sepolia
+} from 'wagmi/chains'
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
@@ -18,7 +27,7 @@ if (!projectId) {
 
 // 2. Create wagmiConfig
 const { chains, publicClient } = configureChains(
-  [mainnet, arbitrum, avalanche, polygon, gnosis, optimism],
+  [mainnet, arbitrum, avalanche, polygon, gnosis, optimism, sepolia, fantom],
   [publicProvider()]
 )
 const wagmiConfig = createConfig({

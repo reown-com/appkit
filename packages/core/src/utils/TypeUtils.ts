@@ -70,3 +70,12 @@ export interface Connector {
   name?: string
   imageSrc?: string
 }
+
+export type CaipNamespaces = Record<
+  string,
+  {
+    chains: CaipNetworkId[]
+    methods: string[]
+    events: string[]
+  }
+>

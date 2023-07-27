@@ -22,9 +22,11 @@ export class WuiTag extends LitElement {
     --local-color-value: var(--wui-color-${color});
   `
 
-    return html`<wui-text data-variant=${this.variant} variant="micro-700" color="inherit"
-      ><slot></slot
-    ></wui-text>`
+    return html`
+      <wui-text data-variant=${this.variant} variant="micro-700" color="inherit">
+        <slot></slot>
+      </wui-text>
+    `
   }
 }
 

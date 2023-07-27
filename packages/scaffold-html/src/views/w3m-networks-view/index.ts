@@ -1,4 +1,5 @@
-import { NetworkController } from '@web3modal/core'
+import type { CaipNetwork } from '@web3modal/core'
+import { AccountController, NetworkController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -7,8 +8,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 export class W3mNetworksView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
-
-  private requestedNetworks = NetworkController.state.requestedCaipNetworks
 
   // -- State & Properties -------------------------------- //
   @state() public caipNetwork = NetworkController.state.caipNetwork
@@ -43,17 +42,43 @@ export class W3mNetworksView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private networksTemplate() {
-    return this.requestedNetworks?.map(
+    const { approvedCaipNetworkIds, requestedCaipNetworks, supportsAllNetworks } =
+      NetworkController.state
+    const approvedIds = approvedCaipNetworkIds
+    const requested = requestedCaipNetworks
+
+    if (approvedIds?.length) {
+      requested?.sort((a, b) => approvedIds.indexOf(b.id) - approvedIds.indexOf(a.id))
+    }
+
+    return requested?.map(
       network => html`
         <wui-card-select
           .selected=${this.caipNetwork?.id === network.id}
           imageSrc=${ifDefined(network.imageSrc)}
           type="network"
           name=${network.name ?? network.id}
-          @click=${() => null}
+          @click=${() => this.onSwitchNetwork(network)}
+          .disabled=${!supportsAllNetworks && !approvedIds?.includes(network.id)}
         ></wui-card-select>
       `
     )
+  }
+
+  private async onSwitchNetwork(network: CaipNetwork) {
+    const { isConnected } = AccountController.state
+    const { approvedCaipNetworkIds, supportsAllNetworks, caipNetwork } = NetworkController.state
+
+    if (isConnected && caipNetwork?.id !== network.id) {
+      if (approvedCaipNetworkIds?.includes(network.id)) {
+        await NetworkController.switchActiveNetwork(network)
+      } else if (supportsAllNetworks) {
+        RouterController.push('SwitchNetwork', { network })
+      }
+    } else if (!isConnected) {
+      NetworkController.setCaipNetwork(network)
+      RouterController.push('Connect')
+    }
   }
 }
 
