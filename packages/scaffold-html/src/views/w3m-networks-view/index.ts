@@ -14,9 +14,7 @@ export class W3mNetworksView extends LitElement {
 
   public constructor() {
     super()
-    this.unsubscribe.push(
-      NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
-    )
+    this.unsubscribe.push(NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val)))
   }
 
   public disconnectedCallback() {
@@ -42,8 +40,7 @@ export class W3mNetworksView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private networksTemplate() {
-    const { approvedCaipNetworkIds, requestedCaipNetworks, supportsAllNetworks } =
-      NetworkController.state
+    const { approvedCaipNetworkIds, requestedCaipNetworks, supportsAllNetworks } = NetworkController.state
     const approvedIds = approvedCaipNetworkIds
     const requested = requestedCaipNetworks
 
@@ -66,14 +63,16 @@ export class W3mNetworksView extends LitElement {
   }
 
   private async onSwitchNetwork(network: CaipNetwork) {
-    if (AccountController.state.isConnected) {
-      const { approvedCaipNetworkIds, supportsAllNetworks } = NetworkController.state
+    const { isConnected } = AccountController.state
+    const { approvedCaipNetworkIds, supportsAllNetworks, caipNetwork } = NetworkController.state
+
+    if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
         await NetworkController.switchActiveNetwork(network)
       } else if (supportsAllNetworks) {
         RouterController.push('SwitchNetwork', { network })
       }
-    } else {
+    } else if (!isConnected) {
       NetworkController.setCaipNetwork(network)
       RouterController.push('Connect')
     }

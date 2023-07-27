@@ -29,8 +29,8 @@ export default css`
 
   wui-icon-box {
     position: absolute;
-    right: -2px;
-    bottom: -2px;
+    right: 4px;
+    bottom: 0;
     opacity: 0;
     transform: scale(0.5);
     transition: all var(--wui-ease-out-power-4) var(--wui-duration-lg);

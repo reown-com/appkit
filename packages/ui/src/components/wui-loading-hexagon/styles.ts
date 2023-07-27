@@ -3,13 +3,13 @@ import { css } from 'lit'
 export default css`
   :host {
     display: block;
-    width: var(--wui-box-size-md);
-    height: var(--wui-box-size-md);
+    width: var(--wui-box-size-lg);
+    height: var(--wui-box-size-lg);
   }
 
   svg {
-    width: var(--wui-box-size-md);
-    height: var(--wui-box-size-md);
+    width: var(--wui-box-size-lg);
+    height: var(--wui-box-size-lg);
     fill: none;
     stroke: transparent;
     stroke-linecap: round;

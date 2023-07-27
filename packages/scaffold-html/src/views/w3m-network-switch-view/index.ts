@@ -28,6 +28,10 @@ export class W3mNetworkSwitchView extends LitElement {
     }
 
     this.onShowRetry()
+    const label = this.error ? 'Switch declined' : 'Approve in wallet'
+    const subLabel = this.error
+      ? 'Switch can be declined if chain is not supported by a wallet or previous request is still active'
+      : 'Accept connection request in your wallet'
 
     return html`
       <wui-flex
@@ -38,11 +42,10 @@ export class W3mNetworkSwitchView extends LitElement {
         gap="xl"
       >
         <wui-flex justifyContent="center" alignItems="center">
-          <wui-network-image
-            size="lg"
-            imageSrc=${ifDefined(this.network.imageSrc)}
-          ></wui-network-image>
+          <wui-network-image size="lg" imageSrc=${ifDefined(this.network.imageSrc)}></wui-network-image>
+
           ${this.error ? null : html`<wui-loading-hexagon></wui-loading-hexagon>`}
+
           <wui-icon-box
             backgroundColor="error-100"
             background="opaque"
@@ -53,9 +56,8 @@ export class W3mNetworkSwitchView extends LitElement {
           ></wui-icon-box>
         </wui-flex>
 
-        <wui-text variant="small-500" color="fg-200">
-          Accept connection request in your wallet
-        </wui-text>
+        <wui-text align="center" variant="paragraph-500" color="fg-100">${label}</wui-text>
+        <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
 
         <wui-button
           data-retry=${this.showRetry}
