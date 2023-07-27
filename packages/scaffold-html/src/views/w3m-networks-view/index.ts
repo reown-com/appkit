@@ -10,6 +10,8 @@ export class W3mNetworksView extends LitElement {
 
   private requestedNetworks = NetworkController.state.requestedCaipNetworks
 
+  private approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
+
   // -- State & Properties -------------------------------- //
   @state() public caipNetwork = NetworkController.state.caipNetwork
 
@@ -43,7 +45,14 @@ export class W3mNetworksView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private networksTemplate() {
-    return this.requestedNetworks?.map(
+    const approvedIds = this.approvedCaipNetworkIds
+    const requested = this.requestedNetworks
+
+    if (approvedIds?.length) {
+      requested?.sort((a, b) => approvedIds.indexOf(b.id) - approvedIds.indexOf(a.id))
+    }
+
+    return requested?.map(
       network => html`
         <wui-card-select
           .selected=${this.caipNetwork?.id === network.id}
@@ -51,6 +60,7 @@ export class W3mNetworksView extends LitElement {
           type="network"
           name=${network.name ?? network.id}
           @click=${() => null}
+          .disabled=${approvedIds && !approvedIds.includes(network.id)}
         ></wui-card-select>
       `
     )

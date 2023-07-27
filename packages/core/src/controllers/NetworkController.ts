@@ -1,17 +1,18 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
-import type { CaipNetwork } from '../utils/TypeUtils'
+import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtils'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
   switchCaipNetwork: (network: NetworkControllerState['caipNetwork']) => Promise<void>
+  getApprovedCaipNetworkIds: () => Promise<NetworkControllerState['approvedCaipNetworkIds']>
 }
 
 export interface NetworkControllerState {
   _client?: NetworkControllerClient
   caipNetwork?: CaipNetwork
   requestedCaipNetworks?: CaipNetwork[]
-  approvedCaipNetworks?: CaipNetwork[]
+  approvedCaipNetworkIds?: CaipNetworkId[]
 }
 
 type StateKey = keyof NetworkControllerState
@@ -47,8 +48,13 @@ export const NetworkController = {
     state.requestedCaipNetworks = requestedNetworks
   },
 
-  setApprovedCaipNetworks(approvedNetworks: NetworkControllerState['approvedCaipNetworks']) {
-    state.approvedCaipNetworks = approvedNetworks
+  async getApprovedCaipNetworks() {
+    const networks = await this._getClient().getApprovedCaipNetworkIds()
+    if (networks) {
+      state.approvedCaipNetworkIds = networks
+    } else {
+      state.approvedCaipNetworkIds = state.requestedCaipNetworks?.map(n => n.id)
+    }
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
@@ -58,6 +64,6 @@ export const NetworkController = {
 
   resetNetwork() {
     state.caipNetwork = undefined
-    state.approvedCaipNetworks = undefined
+    state.approvedCaipNetworkIds = undefined
   }
 }

@@ -19,6 +19,10 @@ export default css`
     justify-content: center;
   }
 
+  button:disabled {
+    opacity: 0.5;
+  }
+
   button:disabled > wui-text {
     color: var(--wui-color-fg-300);
   }
