@@ -11,7 +11,14 @@ export default {
   args: {
     imageSrc: networkImageSrc,
     name: 'Ethereum',
-    selected: false
+    selected: false,
+    size: 'md'
+  },
+  argTypes: {
+    size: {
+      options: ['md', 'lg'],
+      control: { type: 'select' }
+    }
   }
 } as Component
 
@@ -21,5 +28,6 @@ export const Default: Component = {
       .imageSrc=${args.imageSrc}
       alt=${args.name}
       .selected=${args.selected}
+      size=${args.size}
     ></wui-network-image>`
 }

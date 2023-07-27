@@ -4,15 +4,11 @@ export default css`
   :host {
     position: relative;
     border-radius: inherit;
-    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
     width: var(--local-width);
     height: var(--local-height);
-    -webkit-clip-path: var(--local-path);
-    clip-path: var(--local-path);
-    background: var(--wui-overlay-002);
   }
 
   svg {
@@ -22,17 +18,20 @@ export default css`
     width: 100%;
     height: 100%;
     z-index: 1;
+    fill: var(--wui-overlay-002);
   }
 
   svg > path {
     stroke: var(--local-stroke);
-    stroke-width: 2px;
     transition: stroke var(--wui-ease-out-power-2) var(--wui-duration-lg);
   }
 
   wui-image {
     width: 100%;
     height: 100%;
+    -webkit-clip-path: var(--local-path);
+    clip-path: var(--local-path);
+    background: var(--wui-overlay-002);
   }
 
   wui-icon {
