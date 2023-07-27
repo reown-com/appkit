@@ -42,7 +42,8 @@ export class W3mNetworksView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private networksTemplate() {
-    const { approvedCaipNetworkIds, requestedCaipNetworks } = NetworkController.state
+    const { approvedCaipNetworkIds, requestedCaipNetworks, supportsAllNetworks } =
+      NetworkController.state
     const approvedIds = approvedCaipNetworkIds
     const requested = requestedCaipNetworks
 
@@ -58,7 +59,7 @@ export class W3mNetworksView extends LitElement {
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
-          .disabled=${approvedIds && !approvedIds.includes(network.id)}
+          .disabled=${!supportsAllNetworks && !approvedIds?.includes(network.id)}
         ></wui-card-select>
       `
     )
@@ -66,7 +67,12 @@ export class W3mNetworksView extends LitElement {
 
   private async onSwitchNetwork(network: CaipNetwork) {
     if (AccountController.state.isConnected) {
-      await NetworkController.switchActiveNetwork(network)
+      const { approvedCaipNetworkIds, supportsAllNetworks } = NetworkController.state
+      if (approvedCaipNetworkIds?.includes(network.id)) {
+        await NetworkController.switchActiveNetwork(network)
+      } else if (supportsAllNetworks) {
+        RouterController.push('SwitchNetwork', { network })
+      }
     } else {
       NetworkController.setCaipNetwork(network)
       RouterController.push('Connect')

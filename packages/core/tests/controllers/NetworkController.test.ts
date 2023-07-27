@@ -13,7 +13,8 @@ const approvedCaipNetworkIds = ['eip155:1', 'eip155:42161'] as CaipNetworkId[]
 
 const client: NetworkControllerClient = {
   switchCaipNetwork: async _caipNetwork => Promise.resolve(),
-  getApprovedCaipNetworkIds: async () => Promise.resolve(approvedCaipNetworkIds)
+  getApprovedCaipNetworksData: async () =>
+    Promise.resolve({ approvedCaipNetworkIds, supportsAllNetworks: false })
 }
 
 // -- Tests --------------------------------------------------------------------
@@ -46,7 +47,7 @@ describe('NetworkController', () => {
   })
 
   it('should update state correctly on getApprovedCaipNetworkIds()', async () => {
-    await NetworkController.getApprovedCaipNetworks()
+    await NetworkController.getApprovedCaipNetworksData()
     expect(NetworkController.state.approvedCaipNetworkIds).toEqual(approvedCaipNetworkIds)
   })
 

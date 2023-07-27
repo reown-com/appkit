@@ -10,6 +10,7 @@ export interface RouterControllerState {
     | 'ConnectingExternal'
     | 'ConnectingWalletConnect'
     | 'Networks'
+    | 'SwitchNetwork'
     | 'AllWallets'
   history: RouterControllerState['view'][]
   data?: {

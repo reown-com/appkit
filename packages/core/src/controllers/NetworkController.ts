@@ -5,10 +5,14 @@ import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtils'
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
   switchCaipNetwork: (network: NetworkControllerState['caipNetwork']) => Promise<void>
-  getApprovedCaipNetworkIds: () => Promise<NetworkControllerState['approvedCaipNetworkIds']>
+  getApprovedCaipNetworksData: () => Promise<{
+    approvedCaipNetworkIds: NetworkControllerState['approvedCaipNetworkIds']
+    supportsAllNetworks: NetworkControllerState['supportsAllNetworks']
+  }>
 }
 
 export interface NetworkControllerState {
+  supportsAllNetworks: boolean
   _client?: NetworkControllerClient
   caipNetwork?: CaipNetwork
   requestedCaipNetworks?: CaipNetwork[]
@@ -18,7 +22,9 @@ export interface NetworkControllerState {
 type StateKey = keyof NetworkControllerState
 
 // -- State --------------------------------------------- //
-const state = proxy<NetworkControllerState>({})
+const state = proxy<NetworkControllerState>({
+  supportsAllNetworks: true
+})
 
 // -- Controller ---------------------------------------- //
 export const NetworkController = {
@@ -48,13 +54,10 @@ export const NetworkController = {
     state.requestedCaipNetworks = requestedNetworks
   },
 
-  async getApprovedCaipNetworks() {
-    const networks = await this._getClient().getApprovedCaipNetworkIds()
-    if (networks) {
-      state.approvedCaipNetworkIds = networks
-    } else {
-      state.approvedCaipNetworkIds = state.requestedCaipNetworks?.map(n => n.id)
-    }
+  async getApprovedCaipNetworksData() {
+    const data = await this._getClient().getApprovedCaipNetworksData()
+    state.supportsAllNetworks = data.supportsAllNetworks
+    state.approvedCaipNetworkIds = data.approvedCaipNetworkIds
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
@@ -65,5 +68,6 @@ export const NetworkController = {
   resetNetwork() {
     state.caipNetwork = undefined
     state.approvedCaipNetworkIds = undefined
+    state.supportsAllNetworks = true
   }
 }

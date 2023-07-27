@@ -8,6 +8,7 @@ import { animate } from 'motion'
 function headings() {
   const connectorName = RouterController.state.data?.connector?.name
   const listingName = RouterController.state.data?.listing?.name
+  const networkName = RouterController.state.data?.network?.name
   const name = listingName ?? connectorName
 
   return {
@@ -16,6 +17,7 @@ function headings() {
     ConnectingExternal: name ?? 'Connect Wallet',
     ConnectingWalletConnect: name ?? 'WalletConnect',
     Networks: 'Choose Network',
+    SwitchNetwork: networkName ?? 'Switch Network',
     AllWallets: 'All Wallets'
   }
 }

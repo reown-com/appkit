@@ -70,7 +70,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
         }
       },
 
-      async getApprovedCaipNetworkIds() {
+      async getApprovedCaipNetworksData() {
         const walletChoice = localStorage.getItem(WALLET_CHOICE_KEY)
         if (walletChoice?.includes(WALLET_CONNECT_ID)) {
           const connector = wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_ID)
@@ -84,14 +84,13 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
           const nsMethods = ns?.[NAMESPACE]?.methods
           const nsChains = ns?.[NAMESPACE]?.chains
 
-          if (nsMethods?.includes(ADD_CHAIN_METHOD)) {
-            return undefined
-          } else if (nsChains) {
-            return nsChains as CaipNetworkId[]
+          return {
+            supportsAllNetworks: nsMethods?.includes(ADD_CHAIN_METHOD),
+            approvedCaipNetworkIds: nsChains as CaipNetworkId[]
           }
         }
 
-        return undefined
+        return { approvedCaipNetworkIds: undefined, supportsAllNetworks: true }
       }
     }
 
@@ -190,7 +189,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
       this.syncNetwork()
-      await Promise.all([this.syncProfile(address), this.getApprovedCaipNetworks()])
+      await Promise.all([this.syncProfile(address), this.getApprovedCaipNetworksData()])
     } else if (!isConnected) {
       this.resetNetwork()
     }
