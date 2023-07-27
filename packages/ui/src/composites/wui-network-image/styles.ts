@@ -8,10 +8,10 @@ export default css`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 48px;
-    height: 54px;
-    -webkit-clip-path: var(--wui-path-network);
-    clip-path: var(--wui-path-network);
+    width: var(--local-width);
+    height: var(--local-height);
+    -webkit-clip-path: var(--local-path);
+    clip-path: var(--local-path);
     background: var(--wui-overlay-002);
   }
 
@@ -37,7 +37,7 @@ export default css`
 
   wui-icon {
     transform: translateY(-5%);
-    width: 24px;
-    height: 24px;
+    width: var(--local-icon-size);
+    height: var(--local-icon-size);
   }
 `

@@ -23,7 +23,7 @@ export default css`
     position: relative;
   }
 
-  wui-loading-thumbnail {
+  wui-loading-hexagon {
     position: absolute;
   }
 
