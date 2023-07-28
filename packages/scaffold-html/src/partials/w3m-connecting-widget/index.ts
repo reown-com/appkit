@@ -60,19 +60,7 @@ export class W3mConnectingWidget extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-flex gap="3xs" alignItems="center" justifyContent="center">
-            <wui-text variant="paragraph-500" color="fg-100">${this.label}</wui-text>
-            ${this.onCopyUri
-              ? html`
-                  <wui-icon-link
-                    size="md"
-                    icon="copy"
-                    iconColor="fg-200"
-                    @click=${this.onCopyUri}
-                  ></wui-icon-link>
-                `
-              : null}
-          </wui-flex>
+          <wui-text variant="paragraph-500" color="fg-100">${this.label}</wui-text>
 
           ${this.subLabel
             ? html`<wui-text variant="small-500" color=${subLabelColor}>${this.subLabel}</wui-text>`
@@ -89,6 +77,15 @@ export class W3mConnectingWidget extends LitElement {
           <wui-icon color="inherit" slot="iconLeft" name="refresh"></wui-icon>
           Try again
         </wui-button>
+
+        ${this.onCopyUri
+          ? html`
+              <wui-button variant="fullWidth" @click=${this.onCopyUri}>
+                <wui-icon size="sm" color="inherit" slot="iconLeft" name="copy"></wui-icon>
+                Copy Link
+              </wui-button>
+            `
+          : null}
       </wui-flex>
     `
   }
