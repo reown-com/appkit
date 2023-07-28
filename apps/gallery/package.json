@@ -19,6 +19,6 @@
     "@storybook/theming": "7.1.1",
     "@storybook/web-components": "7.1.1",
     "@storybook/web-components-vite": "7.1.1",
-    "file-system-cache": "2.4.2"
+    "file-system-cache": "2.4.3"
   }
 }

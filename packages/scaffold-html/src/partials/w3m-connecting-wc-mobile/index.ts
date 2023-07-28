@@ -24,6 +24,8 @@ export class W3mConnectingWcMobile extends LitElement {
 
   @state() private uri = ConnectionController.state.wcUri
 
+  @state() private ready = false
+
   @property({ type: Boolean }) public multiPlatfrom = false
 
   public constructor() {
@@ -42,6 +44,8 @@ export class W3mConnectingWcMobile extends LitElement {
       throw new Error('w3m-connecting-wc-mobile: No listing provided')
     }
 
+    this.isReady()
+
     const label = `Continue in ${this.listing.name}`
     const subLabel = this.error ? 'Connection declined' : 'Accept connection request in the wallet'
 
@@ -58,6 +62,15 @@ export class W3mConnectingWcMobile extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private isReady() {
+    if (!this.ready && this.uri) {
+      this.timeout = setTimeout(() => {
+        this.ready = true
+        this.onConnect()
+      }, 250)
+    }
+  }
+
   private onConnect() {
     if (this.listing && this.uri) {
       try {
