@@ -46,7 +46,7 @@ export class W3mConnectingWcView extends LitElement {
 
     this.determinePlatforms()
 
-    return html`${this.platformTemplate()} ${this.footerTemplate()}`
+    return html`${this.headerTemplate()} ${this.platformTemplate()}`
   }
 
   // -- Private ------------------------------------------- //
@@ -162,7 +162,7 @@ export class W3mConnectingWcView extends LitElement {
     }
   }
 
-  private footerTemplate() {
+  private headerTemplate() {
     const multiPlatform = this.platforms.length > 1
 
     if (!multiPlatform || this.platform === 'unsupported') {
@@ -170,12 +170,12 @@ export class W3mConnectingWcView extends LitElement {
     }
 
     return html`
-      <w3m-connecting-footer
+      <w3m-connecting-header
         platform=${ifDefined(this.platform)}
         .platforms=${this.platforms}
         .onSelectPlatfrom=${this.onSelectPlatform.bind(this)}
       >
-      </w3m-connecting-footer>
+      </w3m-connecting-header>
     `
   }
 

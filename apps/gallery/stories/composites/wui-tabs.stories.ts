@@ -13,12 +13,12 @@ export default {
       { icon: 'extension', label: 'Extension' },
       { icon: 'desktop', label: 'Desktop' }
     ],
-    activeTab: 1
+    onTabChange: _index => null
   },
 
   argTypes: {}
 } as Component
 
 export const Default: Component = {
-  render: args => html`<wui-tabs .tabs=${args.tabs} activeTab=${args.activeTab}></wui-tabs>`
+  render: args => html`<wui-tabs .tabs=${args.tabs} .onTabChange=${args.onTabChange}></wui-tabs>`
 }

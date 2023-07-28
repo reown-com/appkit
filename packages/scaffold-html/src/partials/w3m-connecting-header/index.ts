@@ -8,8 +8,8 @@ import {
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 
-@customElement('w3m-connecting-footer')
-export class W3mConnectingFooter extends LitElement {
+@customElement('w3m-connecting-header')
+export class W3mConnectingHeader extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public platform?: Platform = undefined
 
@@ -19,18 +19,44 @@ export class W3mConnectingFooter extends LitElement {
 
   // -- Render -------------------------------------------- //
   public render() {
-    const title = this.platforms.length > 2 ? 'or try other options' : 'or try other option'
+    const tabs = this.generateTabs()
 
-    return html`
-      <wui-separator text=${title}></wui-separator>
-      <wui-flex .padding=${['xxl', '0', 'xl', '0'] as const} justifyContent="center" gap="xs">
-        ${this.mobileTemplate()} ${this.extensionTemplate()} ${this.webappTemplate()}
-        ${this.desktopTemplate()}
-      </wui-flex>
-    `
+    return html` <wui-tabs .tabs=${tabs}></wui-tabs> `
   }
 
   // -- Private ------------------------------------------- //
+  private generateTabs() {
+    const isMobile = CoreHelperUtil.isMobile() && this.platforms.includes('mobile')
+    const isQrcode = !CoreHelperUtil.isMobile() && this.platforms.includes('mobile')
+    const isExtension = this.platforms.includes('injected')
+    const isWebapp = this.platforms.includes('web')
+    const isDesktop = this.platforms.includes('desktop')
+
+    const tabs = []
+
+    if (isMobile) {
+      tabs.push({ label: 'Mobile', icon: 'mobile' } as const)
+    }
+
+    if (isQrcode) {
+      tabs.push({ label: 'Qrcode', icon: 'mobile' } as const)
+    }
+
+    if (isExtension) {
+      tabs.push({ label: 'Extension', icon: 'extension' } as const)
+    }
+
+    if (isWebapp) {
+      tabs.push({ label: 'Web App', icon: 'browser' } as const)
+    }
+
+    if (isDesktop) {
+      tabs.push({ label: 'Desktop', icon: 'desktop' } as const)
+    }
+
+    return tabs
+  }
+
   private mobileTemplate() {
     const isMobile =
       this.platforms.includes('mobile') && this.platform !== 'mobile' && this.platform !== 'qrcode'
@@ -111,6 +137,6 @@ export class W3mConnectingFooter extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-connecting-footer': W3mConnectingFooter
+    'w3m-connecting-header': W3mConnectingHeader
   }
 }
