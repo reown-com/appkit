@@ -7,12 +7,18 @@ type Component = Meta<WuiTabs>
 
 export default {
   title: 'Composites/wui-tabs',
-  args: {},
+  args: {
+    tabs: [
+      { icon: 'checkmark', label: 'one' },
+      { icon: 'checkmark', label: 'two' },
+      { icon: 'checkmark', label: 'three' }
+    ],
+    activeTab: 1
+  },
 
   argTypes: {}
 } as Component
 
 export const Default: Component = {
-  render: args =>
-    html` <wui-tabs><span>one</span><span>two</span><span>three</span></span></wui-tabs>`
+  render: args => html`<wui-tabs .tabs=${args.tabs} activeTab=${args.activeTab}></wui-tabs>`
 }

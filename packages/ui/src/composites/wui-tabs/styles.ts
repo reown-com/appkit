@@ -8,6 +8,7 @@ export default css`
     padding: var(--wui-spacing-3xs);
     position: relative;
     height: 36px;
+    overflow: hidden;
   }
 
   :host::before {
@@ -23,13 +24,10 @@ export default css`
     background-color: var(--wui-overlay-002);
     box-shadow: inset 0 0 0 1px var(--wui-overlay-002);
     transform: translateX(calc(var(--local-tab) * 100px));
-    transition: transform var(--wui-ease-in-power-3) var(--wui-duration-lg);
+    transition: transform var(--wui-ease-out-power-3) var(--wui-duration-lg);
   }
 
-  ::slotted(*) {
+  button {
     width: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 `
