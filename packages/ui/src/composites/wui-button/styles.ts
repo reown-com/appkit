@@ -1,6 +1,10 @@
 import { css } from 'lit'
 
 export default css`
+  :host {
+    width: var(--local-width);
+  }
+
   button {
     border: 1px solid var(--wui-overlay-010);
     border-radius: var(--wui-border-radius-m);
@@ -49,6 +53,15 @@ export default css`
 
   button[data-variant='fill']:focus-visible {
     background-color: var(--wui-color-blue-090);
+  }
+
+  button[data-variant='fullWidth'] {
+    width: 100%;
+    border-radius: var(--wui-border-radius-xs);
+    height: 56px;
+    border: none;
+    background-color: var(--wui-overlay-002);
+    color: var(--wui-color-fg-200);
   }
 
   @media (hover: hover) and (pointer: fine) {
