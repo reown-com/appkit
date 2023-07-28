@@ -11,7 +11,6 @@ import {
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 import { animate } from 'motion'
 
 @customElement('w3m-connecting-wc-view')
@@ -87,7 +86,6 @@ export class W3mConnectingWcView extends LitElement {
     const { mobile, desktop, injected } = this.listing
     const injectedIds = injected?.map(({ injected_id }) => injected_id) ?? []
     const isInjected = injectedIds.length
-    const isMobile = CoreHelperUtil.isMobile()
     const isMobileWc = mobile?.native || mobile?.universal
     const isWebWc = desktop?.universal
     const isInjectedConnector = connectors.find(c => c.type === 'INJECTED')
@@ -96,50 +94,31 @@ export class W3mConnectingWcView extends LitElement {
     const isDesktopWc = desktop?.native
 
     // Populate all preferences
-    if (!this.platforms.length) {
-      if (isInjected && isInjectedConnector) {
-        this.platforms.push('injected')
-      }
-      if (isMobileWc) {
-        this.platforms.push('mobile')
-      }
-      if (isWebWc) {
-        this.platforms.push('web')
-      }
-      if (isDesktopWc) {
-        this.platforms.push('desktop')
-      }
+    if (isInjectedWc) {
+      this.platforms.push('injected')
+    }
+    if (isMobileWc) {
+      this.platforms.push(CoreHelperUtil.isMobile() ? 'mobile' : 'qrcode')
+    }
+    if (isWebWc) {
+      this.platforms.push('web')
+    }
+    if (isDesktopWc) {
+      this.platforms.push('desktop')
+    }
+    if (!isInjectedWc && isInjected) {
+      this.platforms.push('unsupported')
     }
 
-    // Mobile
-    if (isMobile) {
-      if (isInjectedWc) {
-        this.platform = 'injected'
-      } else if (isMobileWc) {
-        this.platform = 'mobile'
-      } else if (isWebWc) {
-        this.platform = 'web'
-      } else {
-        this.platform = 'unsupported'
-      }
-    }
-
-    // Desktop
-    else if (isInjectedWc) {
-      this.platform = 'injected'
-    } else if (isDesktopWc) {
-      this.platform = 'desktop'
-    } else if (isWebWc) {
-      this.platform = 'web'
-    } else if (isMobileWc) {
-      this.platform = 'qrcode'
-    } else {
-      this.platform = 'unsupported'
-    }
+    this.platform = this.platforms[0]
   }
 
   private platformTemplate() {
     const multiPlatform = this.platforms.length > 1
+
+    if (!this.platform) {
+      return null
+    }
 
     switch (this.platform) {
       case 'injected':
@@ -174,7 +153,6 @@ export class W3mConnectingWcView extends LitElement {
 
     return html`
       <w3m-connecting-header
-        platform=${ifDefined(this.platform)}
         .platforms=${this.platforms}
         .onSelectPlatfrom=${this.onSelectPlatform.bind(this)}
       >
