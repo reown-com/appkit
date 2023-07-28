@@ -1,8 +1,6 @@
 import { html, LitElement } from 'lit'
-import { customElement } from 'lit/decorators.js'
-import '../../components/wui-text'
+import { customElement, property } from 'lit/decorators.js'
 import { resetStyles } from '../../utils/ThemeUtil'
-import '../wui-icon-box'
 import styles from './styles'
 
 @customElement('wui-tabs')
@@ -10,13 +8,12 @@ export class WuiTabs extends LitElement {
   public static styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-
-  public firstUpdated() {
-    const slot = this.shadowRoot?.querySelector('slot')
-  }
+  @property({ type: Number }) public selectedTab = 0
 
   // -- Render -------------------------------------------- //
   public render() {
+    this.style.cssText = `--local-tab: ${this.selectedTab};`
+
     return html`<slot></slot>`
   }
 }

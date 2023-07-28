@@ -22,6 +22,8 @@ export default css`
     border-radius: var(--wui-border-radius-3xl);
     background-color: var(--wui-overlay-002);
     box-shadow: inset 0 0 0 1px var(--wui-overlay-002);
+    transform: translateX(calc(var(--local-tab) * 100px));
+    transition: transform var(--wui-ease-in-power-3) var(--wui-duration-lg);
   }
 
   ::slotted(*) {
