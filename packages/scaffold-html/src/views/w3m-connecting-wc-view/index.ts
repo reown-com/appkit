@@ -46,7 +46,10 @@ export class W3mConnectingWcView extends LitElement {
 
     this.determinePlatforms()
 
-    return html`${this.headerTemplate()} ${this.platformTemplate()}`
+    return html`
+      ${this.headerTemplate()}
+      <div>${this.platformTemplate()}</div>
+    `
   }
 
   // -- Private ------------------------------------------- //
@@ -165,7 +168,7 @@ export class W3mConnectingWcView extends LitElement {
   private headerTemplate() {
     const multiPlatform = this.platforms.length > 1
 
-    if (!multiPlatform || this.platform === 'unsupported') {
+    if (!multiPlatform) {
       return null
     }
 
@@ -180,9 +183,12 @@ export class W3mConnectingWcView extends LitElement {
   }
 
   private async onSelectPlatform(platform: Platform) {
-    await animate(this, { opacity: [1, 0] }, { duration: 0.2 }).finished
-    this.platform = platform
-    animate(this, { opacity: [0, 1] }, { duration: 0.2 })
+    const container = this.shadowRoot?.querySelector('div')
+    if (container) {
+      await animate(container, { opacity: [1, 0] }, { duration: 0.2 }).finished
+      this.platform = platform
+      animate(container, { opacity: [0, 1] }, { duration: 0.2 })
+    }
   }
 }
 
