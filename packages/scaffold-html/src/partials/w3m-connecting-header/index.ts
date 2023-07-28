@@ -47,6 +47,14 @@ export class W3mConnectingHeader extends LitElement {
       tabs.push({ label: 'Mobile', icon: 'mobile', platform: 'qrcode' } as const)
     }
 
+    if (isWebapp) {
+      tabs.push({ label: 'Webapp', icon: 'browser', platform: 'web' } as const)
+    }
+
+    if (isDesktop) {
+      tabs.push({ label: 'Desktop', icon: 'desktop', platform: 'desktop' } as const)
+    }
+
     if (isExtension) {
       const { connectors } = ConnectorController.state
       const listing = RouterController.state.data?.listing
@@ -56,19 +64,11 @@ export class W3mConnectingHeader extends LitElement {
       const isInjectedInstalled = ConnectionController.checkInjectedInstalled(injectedIds)
       const isInstalled = isInjected && isInjectedInstalled && isInjectedConnector
 
-      tabs.push({
-        label: 'Extension',
-        icon: 'extension',
-        platform: isInstalled ? 'injected' : 'unsupported'
-      } as const)
-    }
-
-    if (isWebapp) {
-      tabs.push({ label: 'Web App', icon: 'browser', platform: 'web' } as const)
-    }
-
-    if (isDesktop) {
-      tabs.push({ label: 'Desktop', icon: 'desktop', platform: 'desktop' } as const)
+      if (isInstalled) {
+        tabs.unshift({ label: 'Extension', icon: 'extension', platform: 'injected' } as const)
+      } else {
+        tabs.push({ label: 'Extension', icon: 'extension', platform: 'unsupported' } as const)
+      }
     }
 
     this.platformTabs = tabs.map(({ platform }) => platform)
