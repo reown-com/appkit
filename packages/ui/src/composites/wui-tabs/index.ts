@@ -9,7 +9,9 @@ export class WuiTabs extends LitElement {
   public static styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Array }) tabs: { icon: IconType; label: string }[] = []
+  @property({ type: Array }) public tabs: { icon: IconType; label: string }[] = []
+
+  @property() public onTabChange: (index: number) => void = () => null
 
   @state() public activeTab = 0
 
@@ -21,7 +23,7 @@ export class WuiTabs extends LitElement {
       const isActive = index === this.activeTab
 
       return html`
-        <button @click=${() => this.onTabChange(index)}>
+        <button @click=${() => this.onTabClick(index)}>
           <wui-icon size="xs" color=${isActive ? 'fg-100' : 'fg-200'} name=${tab.icon}></wui-icon>
           <wui-text variant="small-600" color=${isActive ? 'fg-100' : 'fg-200'}>
             ${tab.label}
@@ -32,8 +34,9 @@ export class WuiTabs extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private onTabChange(index: number) {
+  private onTabClick(index: number) {
     this.activeTab = index
+    this.onTabChange(index)
   }
 }
 
