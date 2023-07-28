@@ -1,6 +1,7 @@
 import { html, LitElement } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { customElement, property, state } from 'lit/decorators.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
+import type { IconType } from '../../utils/TypesUtil'
 import styles from './styles'
 
 @customElement('wui-tabs')
@@ -8,9 +9,9 @@ export class WuiTabs extends LitElement {
   public static styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Array }) tabs: { icon: string; label: string }[] = []
+  @property({ type: Array }) tabs: { icon: IconType; label: string }[] = []
 
-  @property({ type: Number }) public activeTab = 0
+  @state() public activeTab = 0
 
   // -- Render -------------------------------------------- //
   public render() {
@@ -20,7 +21,7 @@ export class WuiTabs extends LitElement {
       const isActive = index === this.activeTab
 
       return html`
-        <button>
+        <button @click=${() => this.onTabChange(index)}>
           <wui-icon size="xs" color=${isActive ? 'fg-100' : 'fg-200'} name=${tab.icon}></wui-icon>
           <wui-text variant="small-600" color=${isActive ? 'fg-100' : 'fg-200'}>
             ${tab.label}
@@ -28,6 +29,11 @@ export class WuiTabs extends LitElement {
         </button>
       `
     })
+  }
+
+  // -- Private ------------------------------------------- //
+  private onTabChange(index: number) {
+    this.activeTab = index
   }
 }
 

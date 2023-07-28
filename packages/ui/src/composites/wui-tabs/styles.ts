@@ -30,4 +30,11 @@ export default css`
   button {
     width: 100px;
   }
+
+  @media (hover: hover) and (pointer: fine) {
+    button:hover:enabled,
+    button:active:enabled {
+      background-color: transparent !important;
+    }
+  }
 `

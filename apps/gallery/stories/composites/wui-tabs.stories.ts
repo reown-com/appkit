@@ -9,9 +9,9 @@ export default {
   title: 'Composites/wui-tabs',
   args: {
     tabs: [
-      { icon: 'checkmark', label: 'one' },
-      { icon: 'checkmark', label: 'two' },
-      { icon: 'checkmark', label: 'three' }
+      { icon: 'mobile', label: 'Mobile' },
+      { icon: 'extension', label: 'Extension' },
+      { icon: 'desktop', label: 'Desktop' }
     ],
     activeTab: 1
   },
