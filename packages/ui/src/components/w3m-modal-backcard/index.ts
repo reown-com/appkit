@@ -36,7 +36,11 @@ export class W3mModalBackcard extends LitElement {
     const customSrc = ThemeCtrl.state.themeVariables?.['--w3m-logo-image-url']
 
     if (customSrc) {
-      return html`<img src=${customSrc} data-testid="component-modal-backcard" />`
+      return html`<img
+        crossorigin="anonymous"
+        src=${customSrc}
+        data-testid="component-modal-backcard"
+      />`
     }
 
     return SvgUtil.WALLET_CONNECT_LOGO

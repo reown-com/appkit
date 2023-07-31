@@ -28,11 +28,13 @@ export class W3mViewAllWalletsButton extends LitElement {
           ${reversedWallets.map(wallet => {
             const explorerImg = UiUtil.getWalletIcon(wallet)
             if (explorerImg) {
-              return html`<img src=${explorerImg} />`
+              return html`<img crossorigin="anonymous" src=${explorerImg} />`
             }
             const src = UiUtil.getWalletIcon({ id: wallet.id })
 
-            return src ? html`<img src=${src} />` : SvgUtil.WALLET_PLACEHOLDER
+            return src
+              ? html`<img crossorigin="anonymous" src=${src} />`
+              : SvgUtil.WALLET_PLACEHOLDER
           })}
           ${[...Array(4 - reversedWallets.length)].map(() => SvgUtil.WALLET_PLACEHOLDER)}
         </div>
