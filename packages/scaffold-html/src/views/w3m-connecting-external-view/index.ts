@@ -1,6 +1,7 @@
 import { ConnectionController, ModalController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connecting-external-view')
 export class W3mConnectingExternalView extends LitElement {
@@ -16,15 +17,11 @@ export class W3mConnectingExternalView extends LitElement {
       throw new Error('w3m-connecting-view: No connector provided')
     }
 
-    const label = `Continue in ${this.connector.name}`
-    const subLabel = this.error ? 'Connection declined' : 'Accept connection request in the wallet'
-
     return html`
       <w3m-connecting-widget
+        name=${ifDefined(this.connector.name)}
         .error=${this.error}
         .onConnect=${this.onConnect.bind(this)}
-        label=${label}
-        subLabel=${subLabel}
       ></w3m-connecting-widget>
     `
   }

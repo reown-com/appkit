@@ -46,17 +46,13 @@ export class W3mConnectingWcDesktop extends LitElement {
 
     this.isReady()
 
-    const label = `Continue in ${this.listing.name}`
-    const subLabel = this.error ? 'Connection declined' : 'Accept connection request in the wallet'
-
     return html`
       <w3m-connecting-widget
+        imageSrc=${this.images[this.listing.image_id]}
+        name=${this.listing.name}
         .error=${this.error}
         .onConnect=${this.onConnect.bind(this)}
         .onCopyUri=${this.onCopyUri.bind(this)}
-        imageSrc=${this.images[this.listing.image_id]}
-        label=${label}
-        .subLabel=${this.multiPlatfrom ? undefined : subLabel}
         .autoConnect=${false}
       ></w3m-connecting-widget>
     `
