@@ -5,6 +5,9 @@ import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
 import styles from './styles'
 
+// -- Helpers --------------------------------------------- //
+const SCROLL_LOCK = 'scroll-lock'
+
 @customElement('w3m-modal')
 export class W3mModal extends LitElement {
   public static styles = styles
@@ -51,14 +54,37 @@ export class W3mModal extends LitElement {
   }
 
   private async onClose() {
+    this.onScrollUnlock()
     await animate(this, { opacity: [1, 0] }, { duration: 0.2 }).finished
     SnackController.hide()
     this.open = false
   }
 
   private onOpen() {
+    this.onScrollLock()
     this.open = true
     animate(this, { opacity: [0, 1] }, { duration: 0.2 })
+  }
+
+  private onScrollLock() {
+    const styleTag = document.createElement('style')
+    styleTag.dataset.w3m = SCROLL_LOCK
+    styleTag.textContent = `
+      html, body {
+        touch-action: none;
+        overflow: hidden;
+        overscroll-behavior: contain;
+        scrollbar-gutter: stable;
+      }
+    `
+    document.head.appendChild(styleTag)
+  }
+
+  private onScrollUnlock() {
+    const styleTag = document.head.querySelector(`style[data-w3m="${SCROLL_LOCK}"]`)
+    if (styleTag) {
+      styleTag.remove()
+    }
   }
 }
 
