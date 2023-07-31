@@ -33,6 +33,7 @@ export default css`
     animation-name: zoom-in;
     animation-fill-mode: backwards;
     animation-timing-function: var(--wui-ease-out-power-4);
+    outline: none;
   }
 
   @media (max-width: 430px) {
