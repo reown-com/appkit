@@ -41,19 +41,6 @@ export default defineConfig({
       name: 'webkit',
       use: { ...devices['Desktop Safari'] }
     }
-
-    /* Test against other browsers. */
-    /*
-     *     {
-     *     name: 'firefox',
-     *     use: { ...devices['Desktop Firefox'] }
-     *     },
-     *
-     *     {
-     *     name: 'webkit',
-     *     use: { ...devices['Desktop Safari'] }
-     *     }
-     */
     /* Test against mobile viewports. */
     /*
      * {
@@ -81,8 +68,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run dev',
-    url: LOCAL_LAB_URL,
-    reuseExistingServer: true
+    command: 'npm run playwright:start',
+    url: LOCAL_LAB_URL
   }
 })

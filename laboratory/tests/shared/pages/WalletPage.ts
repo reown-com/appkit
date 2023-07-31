@@ -6,22 +6,22 @@ import { LOCAL_WALLET_URL } from '../constants'
 export class WalletPage {
   private readonly baseURL = LOCAL_WALLET_URL
 
-  private readonly goToAccounts: Locator
+  private readonly gotoAccounts: Locator
 
-  private readonly goToSessions: Locator
+  private readonly gotoSessions: Locator
 
-  private readonly goToHome: Locator
+  private readonly gotoHome: Locator
 
-  private readonly goToPairings: Locator
+  private readonly gotoPairings: Locator
 
-  private readonly goToSettings: Locator
+  private readonly gotoSettings: Locator
 
   constructor(public readonly page: Page) {
-    this.goToAccounts = this.page.getByTestId('accounts')
-    this.goToSessions = this.page.getByTestId('sessions')
-    this.goToHome = this.page.getByTestId('wc-connect')
-    this.goToPairings = this.page.getByTestId('pairings')
-    this.goToSettings = this.page.getByTestId('settings')
+    this.gotoAccounts = this.page.getByTestId('accounts')
+    this.gotoSessions = this.page.getByTestId('sessions')
+    this.gotoHome = this.page.getByTestId('wc-connect')
+    this.gotoPairings = this.page.getByTestId('pairings')
+    this.gotoSettings = this.page.getByTestId('settings')
   }
 
   async load() {
@@ -29,7 +29,7 @@ export class WalletPage {
   }
 
   async connect() {
-    await this.goToHome.click()
+    await this.gotoHome.click()
 
     await this.page.getByTestId('uri-input').click()
 
@@ -42,7 +42,7 @@ export class WalletPage {
   }
 
   async disconnect() {
-    await this.goToSessions.click()
+    await this.gotoSessions.click()
     const sessionCard = this.page.getByTestId('session-card').first()
     await sessionCard.getByTestId('session-icon').click()
     await this.page.getByTestId('session-delete-button').click()

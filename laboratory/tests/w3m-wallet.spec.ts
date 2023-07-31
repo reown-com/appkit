@@ -7,8 +7,8 @@ testMW.describe('W3M using wallet web-example', () => {
     await walletPage.connect()
 
     await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    await modalValidator.isConnected()
-    await walletValidator.isConnected()
+    await modalValidator.expectConnected()
+    await walletValidator.expectConnected()
   })
 
   testMW('Should be able to connect', ({ modalPage, walletPage }) => {
@@ -20,16 +20,16 @@ testMW.describe('W3M using wallet web-example', () => {
     'Should send disconnect to wallet',
     async ({ modalPage, modalValidator, walletValidator }) => {
       await modalPage.disconnect()
-      await modalValidator.isDisconnected()
-      await walletValidator.isDisconnected()
+      await modalValidator.expectDisconnected()
+      await walletValidator.expectDisconnected()
     }
   )
   testMW(
     'Should recieve disconnect from a wallet',
     async ({ walletPage, modalValidator, walletValidator }) => {
       await walletPage.disconnect()
-      await walletValidator.isDisconnected()
-      await modalValidator.isDisconnected()
+      await walletValidator.expectDisconnected()
+      await modalValidator.expectDisconnected()
     }
   )
 
@@ -38,10 +38,10 @@ testMW.describe('W3M using wallet web-example', () => {
     async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
       await modalPage.sign()
 
-      await walletValidator.recievedSign({})
+      await walletValidator.expectRecievedSign({})
       await walletPage.handleRequest({ accept: true })
 
-      await modalValidator.acceptedSign()
+      await modalValidator.expectAcceptedSign()
     }
   )
 
@@ -50,10 +50,10 @@ testMW.describe('W3M using wallet web-example', () => {
     async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
       await modalPage.sign()
 
-      await walletValidator.recievedSign({})
+      await walletValidator.expectRecievedSign({})
       await walletPage.handleRequest({ accept: false })
 
-      await modalValidator.rejectedSign()
+      await modalValidator.expectRejectedSign()
     }
   )
 
@@ -62,10 +62,10 @@ testMW.describe('W3M using wallet web-example', () => {
     async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
       await modalPage.signTyped()
 
-      await walletValidator.recievedSignTyped({})
+      await walletValidator.expectRecievedSignTyped({})
       await walletPage.handleRequest({ accept: true })
 
-      await modalValidator.acceptedSignTyped()
+      await modalValidator.expectAcceptedSignTyped()
     }
   )
 
@@ -74,10 +74,10 @@ testMW.describe('W3M using wallet web-example', () => {
     async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
       await modalPage.signTyped()
 
-      await walletValidator.recievedSignTyped({})
+      await walletValidator.expectRecievedSignTyped({})
       await walletPage.handleRequest({ accept: false })
 
-      await modalValidator.acceptedSignTyped()
+      await modalValidator.expectAcceptedSignTyped()
     }
   )
 
@@ -89,10 +89,10 @@ testMW.describe('W3M using wallet web-example', () => {
 
       await modalPage.sign()
 
-      await walletValidator.recievedSign({ chainName: 'Polygon' })
+      await walletValidator.expectRecievedSign({ chainName: 'Polygon' })
       await walletPage.handleRequest({ accept: true })
 
-      await modalValidator.acceptedSign()
+      await modalValidator.expectAcceptedSign()
     }
   )
 
@@ -104,10 +104,10 @@ testMW.describe('W3M using wallet web-example', () => {
 
       await modalPage.signTyped()
 
-      await walletValidator.recievedSignTyped({ chainName: 'Polygon' })
+      await walletValidator.expectRecievedSignTyped({ chainName: 'Polygon' })
       await walletPage.handleRequest({ accept: true })
 
-      await modalValidator.acceptedSignTyped()
+      await modalValidator.expectAcceptedSignTyped()
     }
   )
 })

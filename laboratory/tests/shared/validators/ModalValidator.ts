@@ -7,36 +7,36 @@ export class ModalValidator {
 
   constructor(public readonly page: Page) {}
 
-  async isConnected() {
+  async expectConnected() {
     if (this.page.url() !== this.baseURL) {
       await this.page.goto(this.baseURL)
     }
     await expect(this.page.getByTestId('partial-account-address')).toBeVisible()
   }
 
-  async isDisconnected() {
+  async expectDisconnected() {
     if (this.page.url() !== this.baseURL) {
       await this.page.goto(this.baseURL)
     }
     await expect(this.page.getByTestId('partial-account-address')).not.toBeVisible()
   }
 
-  async acceptedSign() {
+  async expectAcceptedSign() {
     await expect(this.page.getByText('Sign Message')).toBeVisible()
     await expect(this.page.getByText('0x')).toBeVisible()
   }
 
-  async rejectedSign() {
+  async expectRejectedSign() {
     await expect(this.page.getByText('Sign Message')).toBeVisible()
     await expect(this.page.getByText(/User rejected/u)).toBeVisible()
   }
 
-  async acceptedSignTyped() {
+  async expectAcceptedSignTyped() {
     await expect(this.page.getByText('Sign Typed Data')).toBeVisible()
     await expect(this.page.getByText('0x')).toBeVisible()
   }
 
-  async rejectedSignTyped() {
+  async expectRejectedSignTyped() {
     await expect(this.page.getByText('Sign Typed Data')).toBeVisible()
     await expect(this.page.getByText(/User rejected/u)).toBeVisible()
   }

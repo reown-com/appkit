@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "rm -rf .next; next dev",
     "build": "next build",
+    "playwright:start": "next dev",
     "playwright:install": "playwright install --with-deps",
     "playwright:test": "playwright test",
     "playwright:debug": "playwright test --debug"
