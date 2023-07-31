@@ -91,7 +91,7 @@ export class W3mConnectingWcView extends LitElement {
     const isInjectedConnector = connectors.find(c => c.type === 'INJECTED')
     const isInjectedInstalled = ConnectionController.checkInjectedInstalled(injectedIds)
     const isInjectedWc = isInjected && isInjectedInstalled && isInjectedConnector
-    const isDesktopWc = desktop?.native
+    const isDesktopWc = desktop?.native && !CoreHelperUtil.isMobile()
 
     // Populate all preferences
     if (isInjectedWc) {
