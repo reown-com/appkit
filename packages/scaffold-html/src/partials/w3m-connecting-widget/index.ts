@@ -15,9 +15,7 @@ export class W3mConnectingWidget extends LitElement {
 
   @property({ type: Boolean }) public error = false
 
-  @property() public label = ''
-
-  @property() public subLabel?: string = undefined
+  @property() public name = 'Wallet'
 
   @property() public onConnect?: (() => void) | (() => Promise<void>) = undefined
 
@@ -36,6 +34,8 @@ export class W3mConnectingWidget extends LitElement {
   public render() {
     this.onShowRetry()
     const subLabelColor = this.error ? 'error-100' : 'fg-200'
+    const subLabel = this.error ? 'Connection declined' : 'Accept connection request in the wallet'
+    const label = `Continue in ${this.name}`
 
     return html`
       <wui-flex
@@ -60,16 +60,12 @@ export class W3mConnectingWidget extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text variant="paragraph-500" color="fg-100">${this.label}</wui-text>
-
-          ${this.subLabel
-            ? html`<wui-text variant="small-500" color=${subLabelColor}>${this.subLabel}</wui-text>`
-            : null}
+          <wui-text variant="paragraph-500" color="fg-100">${label}</wui-text>
+          <wui-text variant="small-500" color=${subLabelColor}>${subLabel}</wui-text>
         </wui-flex>
 
         <wui-button
-          size="sm"
-          variant="fill"
+          variant="accent"
           .disabled=${!this.error && this.autoConnect}
           @click=${this.onConnect}
         >

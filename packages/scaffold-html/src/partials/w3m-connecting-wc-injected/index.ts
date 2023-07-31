@@ -25,16 +25,12 @@ export class W3mConnectingWcInjected extends LitElement {
       throw new Error('w3m-connecting-wc-injected: No listing provided')
     }
 
-    const label = `Continue in ${this.listing.name}`
-    const subLabel = this.error ? 'Connection declined' : 'Accept connection request in the wallet'
-
     return html`
       <w3m-connecting-widget
+        name=${this.listing.name}
+        imageSrc=${this.images[this.listing.image_id]}
         .error=${this.error}
         .onConnect=${this.onConnect.bind(this)}
-        label=${label}
-        imageSrc=${this.images[this.listing.image_id]}
-        .subLabel=${this.multiPlatfrom ? undefined : subLabel}
       ></w3m-connecting-widget>
     `
   }
