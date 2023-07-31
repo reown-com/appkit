@@ -43,15 +43,17 @@ export class W3mConnectingWcQrcode extends LitElement {
     this.isReady()
 
     return html`
-      <wui-flex .padding=${['s', 'xl', 'xl', 'xl'] as const} flexDirection="column" gap="s">
-        <wui-flex justifyContent="space-between" alignItems="center">
-          <wui-text variant="paragraph-500" color="fg-100">
-            Scan this QR Code with your phone
-          </wui-text>
-          <wui-icon-link size="md" icon="copy" @click=${this.onCopyUri}></wui-icon-link>
-        </wui-flex>
-
+      <wui-flex padding="xl" flexDirection="column" gap="xl" alignItems="center">
         <wui-shimmer borderRadius="l" width="100%"> ${this.qrCodeTenmplate()} </wui-shimmer>
+
+        <wui-text variant="paragraph-500" color="fg-100">
+          Scan this QR Code with your phone
+        </wui-text>
+
+        <wui-button variant="fullWidth" @click=${this.onCopyUri}>
+          <wui-icon size="sm" color="inherit" slot="iconLeft" name="copy"></wui-icon>
+          Copy Link
+        </wui-button>
       </wui-flex>
     `
   }

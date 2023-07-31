@@ -20,6 +20,7 @@ export class WuiButton extends LitElement {
   // -- Render -------------------------------------------- //
   public render() {
     const textVariant = this.size === 'md' ? 'paragraph-600' : 'small-600'
+    this.style.cssText = `--local-width: ${this.variant === 'fullWidth' ? '100%' : 'auto'};`
 
     return html`
       <button data-variant=${this.variant} data-size=${this.size} ?disabled=${this.disabled}>

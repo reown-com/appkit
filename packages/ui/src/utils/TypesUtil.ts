@@ -141,7 +141,7 @@ export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 
 export type ChipType = 'fill' | 'shade' | 'transparent'
 
-export type ButtonType = 'accent' | 'fill' | 'shade'
+export type ButtonType = 'accent' | 'fill' | 'shade' | 'fullWidth'
 
 export type TransactionType =
   | 'bought'

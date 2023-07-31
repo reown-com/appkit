@@ -36,14 +36,14 @@ export class W3mConnectingWidget extends LitElement {
   public render() {
     this.onShowRetry()
     const subLabelColor = this.error ? 'error-100' : 'fg-200'
-    const paddingBot = !this.subLabel && this.showRetry ? 'xxl' : '3xl'
 
     return html`
       <wui-flex
         data-error=${this.error}
+        data-retry=${this.showRetry}
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', paddingBot, 'xl'] as const}
+        .padding=${['3xl', 'xl', '3xl', 'xl'] as const}
         gap="xl"
       >
         <wui-flex justifyContent="center" alignItems="center">
@@ -60,19 +60,7 @@ export class W3mConnectingWidget extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-flex gap="3xs" alignItems="center" justifyContent="center">
-            <wui-text variant="paragraph-500" color="fg-100">${this.label}</wui-text>
-            ${this.onCopyUri
-              ? html`
-                  <wui-icon-link
-                    size="md"
-                    icon="copy"
-                    iconColor="fg-200"
-                    @click=${this.onCopyUri}
-                  ></wui-icon-link>
-                `
-              : null}
-          </wui-flex>
+          <wui-text variant="paragraph-500" color="fg-100">${this.label}</wui-text>
 
           ${this.subLabel
             ? html`<wui-text variant="small-500" color=${subLabelColor}>${this.subLabel}</wui-text>`
@@ -80,7 +68,6 @@ export class W3mConnectingWidget extends LitElement {
         </wui-flex>
 
         <wui-button
-          data-retry=${this.showRetry}
           size="sm"
           variant="fill"
           .disabled=${!this.error && this.autoConnect}
@@ -90,6 +77,17 @@ export class W3mConnectingWidget extends LitElement {
           Try again
         </wui-button>
       </wui-flex>
+
+      ${this.onCopyUri
+        ? html`
+            <wui-flex .padding=${['0', 'xl', 'xl', 'xl'] as const}>
+              <wui-button variant="fullWidth" @click=${this.onCopyUri}>
+                <wui-icon size="sm" color="inherit" slot="iconLeft" name="copy"></wui-icon>
+                Copy Link
+              </wui-button>
+            </wui-flex>
+          `
+        : null}
     `
   }
 

@@ -11,7 +11,7 @@ export * from './src/views/w3m-networks-view'
 
 export * from './src/partials/w3m-all-wallets-list'
 export * from './src/partials/w3m-all-wallets-search'
-export * from './src/partials/w3m-connecting-footer'
+export * from './src/partials/w3m-connecting-header'
 export * from './src/partials/w3m-connecting-wc-desktop'
 export * from './src/partials/w3m-connecting-wc-injected'
 export * from './src/partials/w3m-connecting-wc-mobile'
