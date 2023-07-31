@@ -289,6 +289,14 @@ export const elementStyles = css`
     box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
   }
 
+  button:hover:enabled {
+    background-color: var(--wui-overlay-010);
+  }
+
+  button:active:enabled {
+    background-color: var(--wui-overlay-010);
+  }
+
   @media (hover: hover) and (pointer: fine) {
     button:hover:enabled {
       background-color: var(--wui-overlay-005);
