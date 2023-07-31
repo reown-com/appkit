@@ -17,8 +17,6 @@ export class W3mConnectingWcMobile extends LitElement {
 
   private unsubscribe: (() => void)[] = []
 
-  private timeout?: ReturnType<typeof setTimeout> = undefined
-
   // -- State & Properties -------------------------------- //
   @state() private error = false
 
@@ -35,7 +33,6 @@ export class W3mConnectingWcMobile extends LitElement {
 
   public disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
-    clearTimeout(this.timeout)
   }
 
   // -- Render -------------------------------------------- //
@@ -57,6 +54,7 @@ export class W3mConnectingWcMobile extends LitElement {
         label=${label}
         imageSrc=${this.images[this.listing.image_id]}
         .subLabel=${this.multiPlatfrom ? undefined : subLabel}
+        .autoConnect=${false}
       ></w3m-connecting-widget>
     `
   }
@@ -64,10 +62,8 @@ export class W3mConnectingWcMobile extends LitElement {
   // -- Private ------------------------------------------- //
   private isReady() {
     if (!this.ready && this.uri) {
-      this.timeout = setTimeout(() => {
-        this.ready = true
-        this.onConnect()
-      }, 250)
+      this.ready = true
+      this.onConnect()
     }
   }
 
