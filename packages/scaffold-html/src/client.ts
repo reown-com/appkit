@@ -57,8 +57,8 @@ export class Web3ModalScaffoldHtml {
     AccountController.setCaipAddress(caipAddress)
   }
 
-  protected setBalance: (typeof AccountController)['setBalance'] = balance => {
-    AccountController.setBalance(balance)
+  protected setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol) => {
+    AccountController.setBalance(balance, balanceSymbol)
   }
 
   protected setProfileName: (typeof AccountController)['setProfileName'] = profileName => {

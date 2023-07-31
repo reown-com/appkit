@@ -66,7 +66,6 @@ export class W3mNetworkSwitchView extends LitElement {
 
         <wui-button
           data-retry=${this.showRetry}
-          size="sm"
           variant="fill"
           .disabled=${!this.error}
           @click=${this.onSwitchNetwork.bind(this)}

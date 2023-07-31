@@ -9,6 +9,7 @@ export interface AccountControllerState {
   caipAddress?: CaipAddress
   address?: string
   balance?: string
+  balanceSymbol?: string
   profileName?: string
   profileImage?: string
 }
@@ -41,8 +42,12 @@ export const AccountController = {
     state.address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
   },
 
-  setBalance(balance: AccountControllerState['balance']) {
+  setBalance(
+    balance: AccountControllerState['balance'],
+    balanceSymbol: AccountControllerState['balanceSymbol']
+  ) {
     state.balance = balance
+    state.balanceSymbol = balanceSymbol
   },
 
   setProfileName(profileName: AccountControllerState['profileName']) {
@@ -58,6 +63,7 @@ export const AccountController = {
     state.caipAddress = undefined
     state.address = undefined
     state.balance = undefined
+    state.balanceSymbol = undefined
     state.profileName = undefined
     state.profileImage = undefined
   }

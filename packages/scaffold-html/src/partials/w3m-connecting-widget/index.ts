@@ -65,7 +65,6 @@ export class W3mConnectingWidget extends LitElement {
         </wui-flex>
 
         <wui-button
-          size="sm"
           variant="accent"
           .disabled=${!this.error && this.autoConnect}
           @click=${this.onConnect}
