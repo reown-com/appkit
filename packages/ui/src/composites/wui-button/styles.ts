@@ -64,23 +64,14 @@ export default css`
     color: var(--wui-color-fg-200);
   }
 
-  button[data-variant='fill']:hover:enabled {
-    background-color: var(--wui-color-blue-080);
-    border: 1px solid var(--wui-overlay-010);
-  }
-
-  button[data-variant='fill']:active:enabled {
-    background-color: var(--wui-color-blue-080);
-  }
-
   @media (hover: hover) and (pointer: fine) {
     button[data-variant='fill']:hover:enabled {
       background-color: var(--wui-color-blue-090);
     }
+  }
 
-    button[data-variant='fill']:active:enabled {
-      border: 1px solid var(--wui-overlay-010);
-      background-color: var(--wui-color-blue-080);
-    }
+  button[data-variant='fill']:active {
+    background-color: var(--wui-color-blue-080);
+    border: 1px solid var(--wui-overlay-010);
   }
 `

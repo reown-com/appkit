@@ -31,21 +31,13 @@ export default css`
     background-color: var(--wui-color-blue-020);
   }
 
-  [data-selected='true']:hover:enabled {
-    background-color: var(--wui-color-blue-010);
-  }
-
-  [data-selected='true']:active:enabled {
-    background-color: var(--wui-color-blue-010);
-  }
-
   @media (hover: hover) and (pointer: fine) {
     [data-selected='true']:hover:enabled {
       background-color: var(--wui-color-blue-015);
     }
+  }
 
-    [data-selected='true']:active:enabled {
-      background-color: var(--wui-color-blue-010);
-    }
+  [data-selected='true']:active:enabled {
+    background-color: var(--wui-color-blue-010);
   }
 `

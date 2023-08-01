@@ -25,10 +25,6 @@ export default css`
     background-color: var(--wui-color-fg-225);
   }
 
-  button:hover:enabled {
-    background-color: var(--wui-color-fg-225);
-  }
-
   @media (hover: hover) and (pointer: fine) {
     button:hover:enabled {
       background-color: var(--wui-color-fg-250);
