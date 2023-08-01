@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "jsx": "preserve",
-    "noEmit": true,
     "incremental": true,
     "module": "esnext"
   },

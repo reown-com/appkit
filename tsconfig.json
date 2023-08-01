@@ -15,7 +15,6 @@
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "allowUnreachableCode": false,
-    "noEmit": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,

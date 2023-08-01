@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "include": ["index.ts", "src"],
   "compilerOptions": {
-    "outDir": "./dist/_types",
+    "outDir": "./dist/esm",
     "declaration": true
   }
 }
