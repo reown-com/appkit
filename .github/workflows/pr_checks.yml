@@ -47,3 +47,28 @@ jobs:
         run: npm ci
       - name: check
         run: npm run ${{ matrix.style-command }}
+
+  e2e_tests:
+      runs-on: ubuntu-latest
+      steps:
+        - name: checkout
+          uses: actions/checkout@v3
+        - name: setup-node
+          uses: actions/setup-node@v3
+          with:
+            node-version: 18.x
+            cache: 'npm'
+            cache-dependency-path: 'package-lock.json'
+        - name: install deps
+          run: npm ci
+        - name: Install Playwright Browsers
+          run: npx playwright install --with-deps
+        - name: Run Playwright tests
+          working-directory: ./laboratory
+          run: npx playwright test
+        - uses: actions/upload-artifact@v3
+          if: always()
+          with:
+            name: playwright-report
+            path: ./laboratory/playwright-report/
+            retention-days: 30
