@@ -14,7 +14,7 @@ export class W3mHelpWidget extends LitElement {
   @property({ type: Array }) public data: Data[] = []
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       <wui-flex flexDirection="column" alignItems="center" gap="l">
         ${this.data.map(

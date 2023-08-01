@@ -1,7 +1,7 @@
-import { LitElement, html } from 'lit'
-import { customElement } from 'lit/decorators.js'
 import { RouterController } from '@web3modal/core'
 import { resetStyles } from '@web3modal/ui/src/utils/ThemeUtil'
+import { LitElement, html } from 'lit'
+import { customElement } from 'lit/decorators.js'
 
 const data = [
   {
@@ -23,10 +23,10 @@ const data = [
 
 @customElement('w3m-what-is-a-wallet-view')
 export class W3mWhatIsAWalletView extends LitElement {
-  public static styles = [resetStyles]
+  public static override styles = [resetStyles]
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       <wui-flex
         flexDirection="column"
