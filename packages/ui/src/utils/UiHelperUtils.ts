@@ -22,6 +22,10 @@ export const UiHelperUtil = {
     return newUrl.hostname
   },
 
+  getTruncateAddress(address: string, chars: number) {
+    return `${address.substring(0, chars)}...${address.substring(address.length - chars)}`
+  },
+
   generateAvatarColors(address: string) {
     const hash = address.toLowerCase().replace(/^0x/iu, '')
     const baseColor = hash.substring(0, 6)
