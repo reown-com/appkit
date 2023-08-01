@@ -6,6 +6,6 @@ export const DEFAULT_SESSION_PARAMS: SessionParams = {
   accept: true
 }
 
-// Will be moved to env vars in the future
-export const LOCAL_LAB_URL = 'http://localhost:3000/with-wagmi/react'
+export const LOCAL_LABS_URL = 'http://localhost:3000/with-wagmi/react'
 export const LOCAL_WALLET_URL = 'http://localhost:3001'
+export const WALLET_URL = process.env.CI ? (process.env.WALLET_URL as string) : LOCAL_WALLET_URL

@@ -1,0 +1,48 @@
+name: Playwright tests
+
+on:
+  push:
+    branches:
+      - feat/e2e-ci
+
+jobs:
+  e2e_tests:
+      runs-on: ubuntu-latest
+      timeout-minutes: 30
+      permissions:
+        contents: read
+        deployments: write
+      steps:
+        - name: checkout
+          uses: actions/checkout@v3
+
+        - name: setup-node
+          uses: actions/setup-node@v3
+          with:
+            node-version: 18.x
+            cache: 'npm'
+            cache-dependency-path: 'package-lock.json'
+
+        - name: Install deps
+          run: npm ci
+          
+        - name: build
+          run: npm run build
+          env:
+            NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+
+        - name: Install Playwright Browsers
+          run: npx playwright install --with-deps
+
+        - name: Run Playwright tests
+          working-directory: ./laboratory
+          run: npx playwright test
+          env:
+            NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+
+        - uses: actions/upload-artifact@v3
+          if: always()
+          with:
+            name: playwright-report
+            path: ./laboratory/playwright-report/
+            retention-days: 30
