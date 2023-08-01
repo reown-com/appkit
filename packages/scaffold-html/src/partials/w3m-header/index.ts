@@ -77,8 +77,16 @@ export class W3mHeader extends LitElement {
     return html`<wui-icon-link
       id="dynamic"
       icon="helpCircle"
-      @click=${() => RouterController.push('WhatIsAWallet')}
+      @click=${this.handleHelpClick}
     ></wui-icon-link>`
+  }
+
+  private handleHelpClick() {
+    if (RouterController.state.view === 'Networks') {
+      RouterController.push('WhatIsANetwork')
+    } else {
+      RouterController.push('WhatIsAWallet')
+    }
   }
 
   private async onViewChange(view: RouterControllerState['view']) {

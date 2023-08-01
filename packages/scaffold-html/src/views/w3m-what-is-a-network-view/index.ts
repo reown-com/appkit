@@ -1,6 +1,7 @@
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { RouterController } from '@web3modal/core'
+import { resetStyles } from '@web3modal/ui/src/utils/ThemeUtil'
 
 const data = [
   {
@@ -17,6 +18,8 @@ const data = [
 
 @customElement('w3m-what-is-a-network-view')
 export class W3mWhatIsANetworkView extends LitElement {
+  public static styles = [resetStyles]
+
   // -- Render -------------------------------------------- //
   public render() {
     return html`
