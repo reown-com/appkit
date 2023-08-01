@@ -23,7 +23,8 @@ import type {
   TextAlign,
   TextType,
   ThemeType,
-  TransactionType
+  TransactionType,
+  VisualType
 } from '@web3modal/ui/src/utils/TypesUtil'
 
 export const colorOptions: ColorType[] = [
@@ -199,6 +200,22 @@ export const iconOptions: IconType[] = [
   'walletConnect',
   'walletPlaceholder',
   'warningCircle'
+]
+
+export const visualOptions: VisualType[] = [
+  'browser',
+  'dao',
+  'defi',
+  'defiAlt',
+  'eth',
+  'layers',
+  'lock',
+  'login',
+  'network',
+  'nft',
+  'noun',
+  'profile',
+  'system'
 ]
 
 export const logoOptions: LogoType[] = [

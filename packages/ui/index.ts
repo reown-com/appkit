@@ -6,6 +6,7 @@ export * from './src/components/wui-loading-spinner'
 export * from './src/components/wui-loading-thumbnail'
 export * from './src/components/wui-shimmer'
 export * from './src/components/wui-text'
+export * from './src/components/wui-visual'
 
 export * from './src/composites/wui-all-wallets-image'
 export * from './src/composites/wui-avatar'

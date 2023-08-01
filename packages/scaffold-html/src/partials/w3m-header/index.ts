@@ -18,7 +18,9 @@ function headings() {
     ConnectingWalletConnect: name ?? 'WalletConnect',
     Networks: 'Choose Network',
     SwitchNetwork: networkName ?? 'Switch Network',
-    AllWallets: 'All Wallets'
+    AllWallets: 'All Wallets',
+    WhatIsANetwork: 'What is a network?',
+    WhatIsAWallet: 'What is a wallet?'
   }
 }
 
@@ -72,7 +74,11 @@ export class W3mHeader extends LitElement {
       ></wui-icon-link>`
     }
 
-    return html`<wui-icon-link id="dynamic" icon="helpCircle" @click=${() => null}></wui-icon-link>`
+    return html`<wui-icon-link
+      id="dynamic"
+      icon="helpCircle"
+      @click=${() => RouterController.push('WhatIsAWallet')}
+    ></wui-icon-link>`
   }
 
   private async onViewChange(view: RouterControllerState['view']) {
