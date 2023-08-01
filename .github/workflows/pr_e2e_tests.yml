@@ -40,12 +40,15 @@ jobs:
             wait_until_ready: true
         - name: Get URL
           run: echo "https://${{ steps.cloudflare_preview_url.outputs.preview_url }}"
-        # - name: Run Playwright tests
-        #   working-directory: ./laboratory
-        #   run: npx playwright test
-        # - uses: actions/upload-artifact@v3
-        #   if: always()
-        #   with:
-        #     name: playwright-report
-        #     path: ./laboratory/playwright-report/
-        #     retention-days: 30
+        - name: Run Playwright tests
+          working-directory: ./laboratory
+          run: npx playwright test
+          env:
+            LABS_URL: ${{ steps.cloudflare_preview_url.outputs.preview_url }}
+            WALLET_URL: "https://react-wallet.walletconnect.com/"
+        - uses: actions/upload-artifact@v3
+          if: always()
+          with:
+            name: playwright-report
+            path: ./laboratory/playwright-report/
+            retention-days: 30
