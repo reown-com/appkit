@@ -61,6 +61,8 @@ jobs:
             cache-dependency-path: 'package-lock.json'
         - name: install deps
           run: npm ci
+        - name: build
+          run: npm run build
         - name: Install Playwright Browsers
           run: npx playwright install --with-deps
         - name: Run Playwright tests
