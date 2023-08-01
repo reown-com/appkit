@@ -1,9 +1,9 @@
-name: Pull request E2E tests
+name: E2E tests
 
 on:
-  pull_request:
+  push:
     branches:
-      - V2
+      - feat/e2e-pipeline
 
 jobs:
   e2e_tests:
