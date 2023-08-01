@@ -47,7 +47,7 @@ export class W3mHeader extends LitElement {
   }
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       <wui-flex
         .padding=${['l', '2l', 'l', '2l'] as const}

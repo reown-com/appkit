@@ -9,13 +9,13 @@ import styles from './styles'
 
 @customElement('wui-search-bar')
 export class WuiSearchBar extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   public inputComponentRef = createRef<WuiInputText>()
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`<wui-input-text
       ${ref(this.inputComponentRef)}
       placeholder="Search wallet"

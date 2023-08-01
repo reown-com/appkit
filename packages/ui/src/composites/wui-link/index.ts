@@ -7,13 +7,13 @@ import styles from './styles'
 
 @customElement('wui-link')
 export class WuiLink extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled = false
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       <button ?disabled=${this.disabled}>
         <slot name="iconLeft"></slot>

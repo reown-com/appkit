@@ -154,7 +154,7 @@ export type TransactionType =
   | 'swapped'
   | 'withdrawed'
 
-export type TransactionIconType = 'arrowBottom' | 'arrowTop' | 'swap'
+export type TransactionIconType = 'arrowBottom' | 'arrowTop' | 'swapVertical' | 'swapHorizontal'
 
 export type CardSelectType = 'network' | 'wallet'
 

@@ -8,13 +8,13 @@ import styles from './styles'
 
 @customElement('wui-card-select-loader')
 export class WuiCardSelectLoader extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public type: CardSelectType = 'wallet'
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       ${this.shimmerTemplate()}
       <wui-shimmer width="56px" height="20px" borderRadius="xs"></wui-shimmer>

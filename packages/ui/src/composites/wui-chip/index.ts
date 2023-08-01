@@ -1,8 +1,8 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-icon'
-import '../../components/wui-text'
 import '../../components/wui-image'
+import '../../components/wui-text'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { ChipType, IconType } from '../../utils/TypesUtil'
 import { UiHelperUtil } from '../../utils/UiHelperUtils'
@@ -10,7 +10,7 @@ import styles from './styles'
 
 @customElement('wui-chip')
 export class WuiChip extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public variant: ChipType = 'fill'
@@ -22,7 +22,7 @@ export class WuiChip extends LitElement {
   @property() public href = ''
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     const textVariant = this.variant === 'transparent' ? 'small-600' : 'paragraph-600'
 
     return html`

@@ -10,7 +10,7 @@ const SCROLL_LOCK = 'scroll-lock'
 
 @customElement('w3m-modal')
 export class W3mModal extends LitElement {
-  public static styles = styles
+  public static override styles = styles
 
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
@@ -30,13 +30,13 @@ export class W3mModal extends LitElement {
     )
   }
 
-  public disconnectedCallback() {
+  public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     this.onRemoveKeyboardListener()
   }
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return this.open
       ? html`
           <wui-overlay @click=${this.onOverlayClick.bind(this)}>
@@ -74,7 +74,7 @@ export class W3mModal extends LitElement {
 
   private onScrollLock() {
     const styleTag = document.createElement('style')
-    styleTag.dataset.w3m = SCROLL_LOCK
+    styleTag.dataset['w3m'] = SCROLL_LOCK
     styleTag.textContent = `
       html, body {
         touch-action: none;

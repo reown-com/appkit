@@ -6,7 +6,7 @@ import styles from './styles'
 
 @customElement('w3m-router')
 export class W3mRouter extends LitElement {
-  public static styles = styles
+  public static override styles = styles
 
   // -- Members ------------------------------------------- //
   private resizeObserver?: ResizeObserver = undefined
@@ -25,9 +25,9 @@ export class W3mRouter extends LitElement {
     this.unsubscribe.push(RouterController.subscribeKey('view', val => this.onViewChange(val)))
   }
 
-  public firstUpdated() {
+  public override firstUpdated() {
     this.resizeObserver = new ResizeObserver(async ([content]) => {
-      const height = `${content.contentRect.height}px`
+      const height = `${content?.contentRect.height}px`
       if (this.prevHeight !== '0px') {
         await animate(this, { height: [this.prevHeight, height] }, { duration: 0.15 }).finished
         this.style.height = 'auto'
@@ -37,13 +37,13 @@ export class W3mRouter extends LitElement {
     this.resizeObserver.observe(this.getWrapper())
   }
 
-  public disconnectedCallback() {
+  public override disconnectedCallback() {
     this.resizeObserver?.unobserve(this.getWrapper())
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`<div>${this.viewTemplate()}</div>`
   }
 

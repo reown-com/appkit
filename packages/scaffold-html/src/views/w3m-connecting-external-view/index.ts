@@ -12,7 +12,7 @@ export class W3mConnectingExternalView extends LitElement {
   @state() private error = false
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     if (!this.connector) {
       throw new Error('w3m-connecting-view: No connector provided')
     }

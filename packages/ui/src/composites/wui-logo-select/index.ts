@@ -1,13 +1,13 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../wui-logo'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import styles from './styles'
 import { LogoType } from '../../utils/TypesUtil'
+import '../wui-logo'
+import styles from './styles'
 
 @customElement('wui-logo-select')
 export class WuiLogoSelect extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public logo: LogoType = 'google'
@@ -15,7 +15,7 @@ export class WuiLogoSelect extends LitElement {
   @property({ type: Boolean }) public disabled = false
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       <button ?disabled=${this.disabled}>
         <wui-logo logo=${this.logo}></wui-logo>

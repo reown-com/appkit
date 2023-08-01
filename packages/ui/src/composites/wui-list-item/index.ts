@@ -1,17 +1,17 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../../components/wui-text'
 import '../../components/wui-icon'
 import '../../components/wui-image'
-import '../wui-icon-box'
+import '../../components/wui-text'
 import '../../layout/wui-flex'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import styles from './styles'
 import type { AccountEntryType, IconType } from '../../utils/TypesUtil'
+import '../wui-icon-box'
+import styles from './styles'
 
 @customElement('wui-list-item')
 export class WuiListItem extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public icon?: IconType
@@ -27,7 +27,7 @@ export class WuiListItem extends LitElement {
   @property() public alt?: string = undefined
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       <button ?disabled=${this.disabled}>
         ${this.visualTemplate()}

@@ -13,7 +13,7 @@ import styles from './styles'
 
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
-  public static styles = styles
+  public static override styles = styles
 
   // -- Members -------------------------------------------- //
   private usubscribe: (() => void)[] = []
@@ -46,12 +46,12 @@ export class W3mAccountView extends LitElement {
     )
   }
 
-  public disconnectedCallback() {
+  public override disconnectedCallback() {
     this.usubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     if (!this.address) {
       throw new Error('w3m-account-view: No account provided')
     }

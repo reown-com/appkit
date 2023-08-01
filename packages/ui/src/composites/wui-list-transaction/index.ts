@@ -1,15 +1,15 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-text'
-import '../wui-transaction-visual'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import styles from './styles'
 import type { TransactionType } from '../../utils/TypesUtil'
 import { UiHelperUtil } from '../../utils/UiHelperUtils'
+import '../wui-transaction-visual'
+import styles from './styles'
 
 @customElement('wui-list-transaction')
 export class WuiListTransaction extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public type: TransactionType = 'bought'
@@ -23,7 +23,7 @@ export class WuiListTransaction extends LitElement {
   @property() public transactionDetail = ''
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     const isSent = this.type === 'nftSent' || this.type === 'cryptoSent'
     const title = isSent ? 'Sent' : this.type
 

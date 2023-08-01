@@ -5,13 +5,13 @@ import styles from './styles'
 
 @customElement('w3m-all-wallets-view')
 export class W3mAllWalletsView extends LitElement {
-  public static styles = styles
+  public static override styles = styles
 
   // -- State & Properties -------------------------------- //
   @state() private search = ''
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     const isSearch = this.search.length >= 2
 
     return html`

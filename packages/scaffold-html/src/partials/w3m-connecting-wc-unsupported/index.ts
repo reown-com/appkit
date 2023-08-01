@@ -1,6 +1,7 @@
 import { CoreHelperUtil, ExplorerApiController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connecting-wc-unsupported')
 export class W3mConnectingWcUnsupported extends LitElement {
@@ -10,7 +11,7 @@ export class W3mConnectingWcUnsupported extends LitElement {
   private readonly images = ExplorerApiController.state.images
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     if (!this.listing) {
       throw new Error('w3m-connecting-wc-unsupported: No listing provided')
     }
@@ -24,7 +25,7 @@ export class W3mConnectingWcUnsupported extends LitElement {
       >
         <wui-wallet-image
           size="lg"
-          imageSrc=${this.images[this.listing.image_id]}
+          imageSrc=${ifDefined(this.images[this.listing.image_id])}
         ></wui-wallet-image>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xxs">

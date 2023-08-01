@@ -10,7 +10,7 @@ import styles from './styles'
 
 @customElement('wui-card-select')
 export class WuiCardSelect extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
 
@@ -25,7 +25,7 @@ export class WuiCardSelect extends LitElement {
   @property({ type: Boolean }) public selected?: boolean = false
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       <button data-selected=${ifDefined(this.selected)} ?disabled=${this.disabled}>
         ${this.imageTemplate()}

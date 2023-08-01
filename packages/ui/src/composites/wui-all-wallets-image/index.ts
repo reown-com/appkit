@@ -10,13 +10,13 @@ const TOTAL_IMAGES = 4
 
 @customElement('wui-all-wallets-image')
 export class WuiAllWalletsImage extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property({ type: Array }) public walletImages: IWalletImage[] = []
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     const isPlaceholders = this.walletImages.length < TOTAL_IMAGES
 
     return html`${this.walletImages

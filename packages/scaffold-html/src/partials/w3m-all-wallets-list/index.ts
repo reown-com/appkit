@@ -2,12 +2,13 @@ import type { ExplorerListing } from '@web3modal/core'
 import { ExplorerApiController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import { animate } from 'motion'
 import styles from './styles'
 
 @customElement('w3m-all-wallets-list')
 export class W3mAllWalletsList extends LitElement {
-  public static styles = styles
+  public static override styles = styles
 
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
@@ -28,18 +29,18 @@ export class W3mAllWalletsList extends LitElement {
     )
   }
 
-  public firstUpdated() {
+  public override firstUpdated() {
     this.initialFetch()
     this.createPaginationObserver()
   }
 
-  public disconnectedCallback() {
+  public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     this.paginationObserver?.disconnect()
   }
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       <wui-grid
         data-scroll=${!this.initial}
@@ -78,7 +79,7 @@ export class W3mAllWalletsList extends LitElement {
     return wallets.map(
       listing => html`
         <wui-card-select
-          imageSrc=${images[listing.image_id]}
+          imageSrc=${ifDefined(images[listing.image_id])}
           type="wallet"
           name=${listing.name}
           @click=${() => this.onConnectListing(listing)}
@@ -100,7 +101,7 @@ export class W3mAllWalletsList extends LitElement {
     const loaderEl = this.shadowRoot?.querySelector('wui-loading-spinner')
     if (loaderEl) {
       this.paginationObserver = new IntersectionObserver(([element]) => {
-        if (element.isIntersecting && !this.initial) {
+        if (element?.isIntersecting && !this.initial) {
           const { page, total, listings } = ExplorerApiController.state
           if (listings.length < total) {
             ExplorerApiController.fetchListings({ page: page + 1 })

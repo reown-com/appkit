@@ -20,12 +20,12 @@ export class W3mConnectView extends LitElement {
     )
   }
 
-  public disconnectedCallback() {
+  public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     const walletImages = Object.values(this.images).map(src => ({ src }))
 
     return html`

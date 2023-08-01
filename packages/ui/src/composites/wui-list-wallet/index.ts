@@ -10,7 +10,7 @@ import styles from './styles'
 
 @customElement('wui-list-wallet')
 export class WuiListWallet extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property({ type: Array }) public walletImages?: IWalletImage[] = []
@@ -28,7 +28,7 @@ export class WuiListWallet extends LitElement {
   @property({ type: Boolean }) public showAllWallets = false
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     const textColor = this.disabled ? 'fg-300' : 'fg-100'
 
     return html`

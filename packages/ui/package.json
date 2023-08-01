@@ -1,9 +1,10 @@
 {
   "name": "@web3modal/ui",
   "version": "3.0.0",
-  "main": "dist/index.js",
   "type": "module",
-  "types": "dist/_types/index.d.ts",
+  "main": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "sideEffects": false,
   "files": [
     "dist"
   ],

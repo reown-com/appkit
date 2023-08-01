@@ -5,10 +5,10 @@ import styles from './styles'
 
 @customElement('wui-loading-hexagon')
 export class WuiLoadingHexagon extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       <svg viewBox="0 0 54 59">
         <path

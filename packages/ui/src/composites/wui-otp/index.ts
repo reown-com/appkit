@@ -1,22 +1,22 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { resetStyles } from '../../utils/ThemeUtil'
-import styles from './styles'
 import '../../layout/wui-flex'
-import '../wui-input-numeric'
+import { resetStyles } from '../../utils/ThemeUtil'
 import { UiHelperUtil } from '../../utils/UiHelperUtils'
+import '../wui-input-numeric'
 import { WuiInputNumeric } from '../wui-input-numeric'
+import styles from './styles'
 
 @customElement('wui-otp')
 export class WuiOtp extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property({ type: Number }) public length = 6
 
   private numerics: WuiInputNumeric[] = []
 
-  firstUpdated() {
+  public override firstUpdated() {
     const numericElements = this.shadowRoot?.querySelectorAll<WuiInputNumeric>('wui-input-numeric')
     if (numericElements) {
       this.numerics = Array.from(numericElements)
@@ -24,7 +24,7 @@ export class WuiOtp extends LitElement {
   }
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       <wui-flex gap="xxs">
         ${[...Array(this.length)].map(
@@ -107,13 +107,14 @@ export class WuiOtp extends LitElement {
   }
 
   private handlePaste(input: HTMLInputElement, inputValue: string, index: number) {
-    const isValid = UiHelperUtil.isNumber(inputValue[0])
+    const value = inputValue[0]
+    const isValid = value && UiHelperUtil.isNumber(value)
     if (isValid) {
-      input.value = inputValue[0]
+      input.value = value
       const inputString = inputValue.substring(1)
       if (index + 1 < this.length && inputString.length) {
         const nextNumeric = this.numerics[index + 1]
-        const nextInput = this.getInputElement(nextNumeric)
+        const nextInput = nextNumeric ? this.getInputElement(nextNumeric) : undefined
         if (nextInput) {
           this.handlePaste(nextInput, inputString, index + 1)
         }
@@ -129,7 +130,7 @@ export class WuiOtp extends LitElement {
     if (dir === 'next') {
       const nextIndex = index + 1
       const numeric = this.numerics[nextIndex < this.length ? nextIndex : index]
-      const input = this.getInputElement(numeric)
+      const input = numeric ? this.getInputElement(numeric) : undefined
       if (input) {
         input.focus()
       }
@@ -137,7 +138,7 @@ export class WuiOtp extends LitElement {
     if (dir === 'prev') {
       const nextIndex = index - 1
       const numeric = this.numerics[nextIndex > -1 ? nextIndex : index]
-      const input = this.getInputElement(numeric)
+      const input = numeric ? this.getInputElement(numeric) : undefined
       if (input) {
         input.focus()
       }

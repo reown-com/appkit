@@ -6,7 +6,7 @@ import styles from './styles'
 
 @customElement('w3m-connecting-widget')
 export class W3mConnectingWidget extends LitElement {
-  public static styles = styles
+  public static override styles = styles
 
   // -- State & Properties -------------------------------- //
   @state() private showRetry = false
@@ -23,7 +23,7 @@ export class W3mConnectingWidget extends LitElement {
 
   @property({ type: Boolean }) public autoConnect = true
 
-  public firstUpdated() {
+  public override firstUpdated() {
     if (this.autoConnect) {
       this.onConnect?.()
     }
@@ -31,7 +31,7 @@ export class W3mConnectingWidget extends LitElement {
   }
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     this.onShowRetry()
     const subLabelColor = this.error ? 'error-100' : 'fg-200'
     const subLabel = this.error ? 'Connection declined' : 'Accept connection request in the wallet'

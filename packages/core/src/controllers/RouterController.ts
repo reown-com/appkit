@@ -60,7 +60,9 @@ export const RouterController = {
     if (state.history.length > 1) {
       state.history.pop()
       const [last] = state.history.slice(-1)
-      state.view = last
+      if (last) {
+        state.view = last
+      }
     }
   }
 }
