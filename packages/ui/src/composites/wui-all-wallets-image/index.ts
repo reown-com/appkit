@@ -1,5 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import { resetStyles } from '../../utils/ThemeUtil'
 import type { IWalletImage } from '../../utils/TypesUtil'
 import '../wui-wallet-image'
@@ -16,15 +17,24 @@ export class WuiAllWalletsImage extends LitElement {
 
   // -- Render -------------------------------------------- //
   public render() {
+    const isPlaceholders = this.walletImages.length < TOTAL_IMAGES
+
     return html`${this.walletImages
       .slice(0, TOTAL_IMAGES)
       .map(
         ({ src, walletName }) => html`
-          <wui-wallet-image size="inherit" imageSrc=${src} name=${walletName}></wui-wallet-image>
+          <wui-wallet-image
+            size="inherit"
+            imageSrc=${src}
+            name=${ifDefined(walletName)}
+          ></wui-wallet-image>
         `
-      )}${[...Array(TOTAL_IMAGES - this.walletImages.length)].map(
-      () => html` <wui-wallet-image size="inherit" name=""></wui-wallet-image>`
-    )}`
+      )}
+    ${isPlaceholders
+      ? [...Array(TOTAL_IMAGES - this.walletImages.length)].map(
+          () => html` <wui-wallet-image size="inherit" name=""></wui-wallet-image>`
+        )
+      : null}`
   }
 }
 

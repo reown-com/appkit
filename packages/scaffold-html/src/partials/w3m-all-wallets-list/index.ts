@@ -14,6 +14,8 @@ export class W3mAllWalletsList extends LitElement {
 
   private paginationObserver?: IntersectionObserver = undefined
 
+  private recommended = ExplorerApiController.state.recommended
+
   // -- State & Properties -------------------------------- //
   @state() private initial = !ExplorerApiController.state.listings.length
 
@@ -71,8 +73,9 @@ export class W3mAllWalletsList extends LitElement {
 
   private walletsTemplate() {
     const { images } = ExplorerApiController.state
+    const wallets = [...this.recommended, ...this.listings]
 
-    return this.listings.map(
+    return wallets.map(
       listing => html`
         <wui-card-select
           imageSrc=${images[listing.image_id]}

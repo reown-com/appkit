@@ -1,11 +1,11 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-text'
-import '../wui-all-wallets-image'
-import '../wui-wallet-image'
-import '../wui-tag'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { IWalletImage, TagType } from '../../utils/TypesUtil'
+import '../wui-all-wallets-image'
+import '../wui-tag'
+import '../wui-wallet-image'
 import styles from './styles'
 
 @customElement('wui-list-wallet')
@@ -43,9 +43,9 @@ export class WuiListWallet extends LitElement {
   // -- Private ------------------------------------------- //
   private templateAllWallets() {
     if (this.showAllWallets && this.walletImages) {
-      return html`<wui-all-wallets-image
-        .walletImages=${this.walletImages}
-      ></wui-all-wallets-image>`
+      return html`
+        <wui-all-wallets-image .walletImages=${this.walletImages}> </wui-all-wallets-image>
+      `
     }
 
     return null

@@ -1,4 +1,4 @@
-import { ModalController, SnackController } from '@web3modal/core'
+import { ExplorerApiController, ModalController, SnackController } from '@web3modal/core'
 import { initializeTheming, setColorTheme } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
@@ -24,6 +24,7 @@ export class W3mModal extends LitElement {
     super()
     initializeTheming()
     setColorTheme('dark')
+    ExplorerApiController.fetchRecommendedListings()
     this.unsubscribe.push(
       ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose()))
     )

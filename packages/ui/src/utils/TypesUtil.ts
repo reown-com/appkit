@@ -65,7 +65,7 @@ export type FlexJustifyContentType =
 
 export interface IWalletImage {
   src: string
-  walletName: string
+  walletName?: string
 }
 
 export type GridContentType =
