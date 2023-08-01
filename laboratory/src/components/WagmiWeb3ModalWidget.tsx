@@ -64,9 +64,13 @@ export default function WagmiWeb3ModalWidget() {
 
           {isConnected ? (
             <>
-              <Button onPress={onSignMessage}>Sign Message</Button>
+              <Button onPress={onSignMessage} data-testid="lab-sign">
+                Sign Message
+              </Button>
               <Spacer />
-              <Button onPress={onSignTypedData}>Sign Typed Data</Button>
+              <Button onPress={onSignTypedData} data-testid="lab-sign-typed">
+                Sign Typed Data
+              </Button>
             </>
           ) : (
             <>

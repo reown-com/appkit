@@ -162,3 +162,5 @@
 | w3m-modal-content  | `component-modal-content`        | W3M Content           | `<main>`   |
 | w3m-modal-footer   | `component-modal-footer`         | W3M Footer            | `<footer>` |
 | w3m-modal-backcard   | `component-modal-backcard`         | W3M Backcard            | `<div>` |
+| w3m-modal-backcard   | `backcard-help`         | Help Button on Backcard | `<button>` |
+| w3m-modal-backcard   | `backcard-close`         | Close Button on Backcard           | `<buttong>` |

@@ -4,7 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "rm -rf .next; next dev",
-    "build": "next build"
+    "build": "next build",
+    "playwright:start": "next dev",
+    "playwright:install": "playwright install --with-deps",
+    "playwright:test": "playwright test",
+    "playwright:debug": "playwright test --debug"
   },
   "dependencies": {
     "@nextui-org/react": "1.0.0-beta.13",

@@ -15,7 +15,9 @@ export function NotificationModal() {
       css={{ maxWidth: 900, margin: '0 auto' }}
     >
       <Modal.Header>
-        <Text h3>{title}</Text>
+        <Text h3 data-testid="notification-header">
+          {title}
+        </Text>
       </Modal.Header>
       <Modal.Body
         css={{
@@ -24,6 +26,7 @@ export function NotificationModal() {
           borderRadius: 16,
           padding: 0
         }}
+        data-testid="notification-body"
       >
         <pre>{body}</pre>
       </Modal.Body>
