@@ -46,7 +46,6 @@ jobs:
           env:
             LABS_URL: ${{ steps.cloudflare_preview_url.outputs.preview_url }}
             WALLET_URL: "https://react-wallet.walletconnect.com/"
-            LOCAL_LABS_URL: "http://localhost:3000"
             NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
         - uses: actions/upload-artifact@v3
           if: always()

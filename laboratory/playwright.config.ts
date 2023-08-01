@@ -70,6 +70,6 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     command: 'npm run playwright:start',
-    url: process.env.LOCAL_LABS_URL
+    url: process.env.CI ? process.env.LABS_URL : process.env.LOCAL_LABS_URL
   }
 })
