@@ -1,6 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
-import { version } from '../../package.json'
+import packageJson from '../../package.json'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil'
 import { FetchUtil } from '../utils/FetchUtil'
 import type {
@@ -15,7 +15,7 @@ import type {
 const api = new FetchUtil({ baseUrl: 'https://explorer-api.walletconnect.com' })
 const entries = 24
 const recommendedEntries = 4
-const sdkVersion = `js-${version}`
+const sdkVersion = `js-${packageJson.version}`
 const sdkType = 'w3m'
 
 // -- Types --------------------------------------------- //

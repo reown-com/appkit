@@ -21,7 +21,8 @@
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true,
     "noPropertyAccessFromIndexSignature": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "incremental": true
   },
   "exclude": ["node_modules", "dist", "out", ".next", "storybook-static"]
 }

@@ -2,8 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "jsx": "preserve",
-    "incremental": true,
-    "module": "esnext"
+    "noEmit": true
   },
   "include": ["next-env.d.ts", "src"]
 }
