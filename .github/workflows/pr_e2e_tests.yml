@@ -36,7 +36,7 @@ jobs:
             CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
             CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           with:
-            cloudflare_project_id: ${{ secrets.CF_ZONE_ID}}
+            cloudflare_project_id: ${{ secrets.CF_PROJECT_ID}}
             wait_until_ready: true
         - name: Get URL
           run: echo "https://${{ steps.cloudflare_preview_url.outputs.preview_url }}"
