@@ -1,9 +1,22 @@
-name: Playwright tests
+name: Playwright Tests
 
-on:
-  push:
-    branches:
-      - feat/e2e-ci
+on: 
+  push:  
+    branches: '*'
+
+  pull_request:
+    branches: [ "V2", "V3" ]    
+
+concurrency:
+  # Support push/pr as event types with different behaviors each:
+  # 1. push: queue up builds
+  # 2. pr: only allow one run per PR
+  group: ${{ github.workflow }}-${{ github.event.type }}${{ github.event.pull_request.number }}
+  # If there is already a workflow running for the same pull request, cancel it
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
 jobs:
   e2e_tests:
@@ -28,8 +41,6 @@ jobs:
           
         - name: build
           run: npm run build
-          env:
-            NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
         - name: Install Playwright Browsers
           run: npx playwright install --with-deps
@@ -37,8 +48,6 @@ jobs:
         - name: Run Playwright tests
           working-directory: ./laboratory
           run: npx playwright test
-          env:
-            NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
         - uses: actions/upload-artifact@v3
           if: always()
