@@ -1,0 +1,51 @@
+name: Pull request E2E tests
+
+on:
+  pull_request:
+    branches:
+      - V2
+
+jobs:
+  e2e_tests:
+      runs-on: ubuntu-latest
+      timeout-minutes: 30
+      permissions:
+        contents: read
+        deployments: write
+      steps:
+        - name: checkout
+          uses: actions/checkout@v3
+        - name: setup-node
+          uses: actions/setup-node@v3
+          with:
+            node-version: 18.x
+            cache: 'npm'
+            cache-dependency-path: 'package-lock.json'
+        - name: install deps
+          run: npm ci
+        - name: build
+          run: npm run build
+          env: 
+            NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+        - name: Install Playwright Browsers
+          run: npx playwright install --with-deps
+        - name: cloudflare-preview-url
+          id: cloudflare_preview_url
+          uses: zentered/cloudflare-preview-url@v1.4.0
+          env:
+            CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+            CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          with:
+            cloudflare_project_id: ${{ secrets.CF_ZONE_ID}}
+            wait_until_ready: true
+        - name: Get URL
+          run: echo "https://${{ steps.cloudflare_preview_url.outputs.preview_url }}"
+        # - name: Run Playwright tests
+        #   working-directory: ./laboratory
+        #   run: npx playwright test
+        # - uses: actions/upload-artifact@v3
+        #   if: always()
+        #   with:
+        #     name: playwright-report
+        #     path: ./laboratory/playwright-report/
+        #     retention-days: 30
