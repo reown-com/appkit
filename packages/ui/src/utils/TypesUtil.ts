@@ -29,6 +29,7 @@ export type SizeType = 'inherit' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs'
 
 export type SpacingType =
   | '0'
+  | '1xs'
   | '3xl'
   | '3xs'
   | '4xs'
@@ -126,6 +127,21 @@ export type IconType =
   | 'walletConnect'
   | 'walletPlaceholder'
   | 'warningCircle'
+
+export type VisualType =
+  | 'browser'
+  | 'dao'
+  | 'defi'
+  | 'defiAlt'
+  | 'eth'
+  | 'layers'
+  | 'lock'
+  | 'login'
+  | 'network'
+  | 'nft'
+  | 'noun'
+  | 'profile'
+  | 'system'
 
 export type LogoType =
   | 'apple'
