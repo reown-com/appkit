@@ -1,6 +1,6 @@
 import { VisualType } from '@web3modal/ui/src/utils/TypesUtil'
 import { LitElement, html } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, property } from 'lit/decorators.js'
 
 type Data = {
   images: VisualType[]
@@ -10,8 +10,8 @@ type Data = {
 
 @customElement('w3m-help-widget')
 export class W3mHelpWidget extends LitElement {
-  // -- Members ------------------------------------------- //
-  private data: Data[] = []
+  // -- State & Properties -------------------------------- //
+  @property({ type: Array }) public data: Data[] = []
 
   // -- Render -------------------------------------------- //
   public render() {
