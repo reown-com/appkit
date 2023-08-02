@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import styles from './styles'
+import styles from './styles.js'
 
 @customElement('gallery-container')
 export class GalleryContainer extends LitElement {

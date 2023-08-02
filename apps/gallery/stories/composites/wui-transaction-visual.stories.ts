@@ -3,7 +3,7 @@ import '@web3modal/ui/src/composites/wui-transaction-visual'
 import type { WuiTransactionVisual } from '@web3modal/ui/src/composites/wui-transaction-visual'
 import { html } from 'lit'
 
-import { transactionOptions } from '../../utils/PresetUtils'
+import { transactionOptions } from '../../utils/PresetUtils.js'
 
 type Component = Meta<WuiTransactionVisual>
 

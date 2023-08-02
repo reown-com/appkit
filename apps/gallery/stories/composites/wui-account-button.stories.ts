@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-account-button'
 import type { WuiAccountButton } from '@web3modal/ui/src/composites/wui-account-button'
 import { html } from 'lit'
-import { networkImageSrc, address, avatarImageSrc } from '../../utils/PresetUtils'
+import { address, avatarImageSrc, networkImageSrc } from '../../utils/PresetUtils.js'
 
 type Component = Meta<WuiAccountButton>
 

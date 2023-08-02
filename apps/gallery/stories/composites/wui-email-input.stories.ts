@@ -1,8 +1,8 @@
 import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-email-input'
 import type { WuiEmailInput } from '@web3modal/ui/src/composites/wui-email-input'
-import '../../components/gallery-container'
 import { html } from 'lit'
+import '../../components/gallery-container.js'
 
 type Component = Meta<WuiEmailInput>
 

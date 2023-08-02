@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-tag'
 import type { WuiTag } from '@web3modal/ui/src/composites/wui-tag'
 import { html } from 'lit'
-import { tagOptions } from '../../utils/PresetUtils'
+import { tagOptions } from '../../utils/PresetUtils.js'
 
 type Component = Meta<WuiTag>
 

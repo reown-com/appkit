@@ -1,8 +1,8 @@
 import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-card-select-loader'
-import { html } from 'lit'
 import type { WuiCardSelectLoader } from '@web3modal/ui/src/composites/wui-card-select-loader'
-import { cardSelectOptions } from '../../utils/PresetUtils'
+import { html } from 'lit'
+import { cardSelectOptions } from '../../utils/PresetUtils.js'
 
 type Component = Meta<WuiCardSelectLoader>
 
