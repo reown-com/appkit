@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { RouterController } from '../../index'
+import { RouterController } from '../../index.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('RouterController', () => {

@@ -2,7 +2,7 @@ import { SnackController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
-import styles from './styles'
+import styles from './styles.js'
 
 // -- Helpers ------------------------------------------- //
 const presets = {

@@ -1,6 +1,6 @@
 import { Button } from '@chakra-ui/react'
 import { useNetwork } from 'wagmi'
-import { modal } from '../pages/index'
+import { modal } from '../pages/index.js'
 
 export function NetworksButton() {
   const { chain } = useNetwork()

@@ -1,2 +1,2 @@
-export { Web3Modal } from './src/client'
-export type { Web3ModalOptions } from './src/client'
+export { Web3Modal } from './src/client.js'
+export type { Web3ModalOptions } from './src/client.js'

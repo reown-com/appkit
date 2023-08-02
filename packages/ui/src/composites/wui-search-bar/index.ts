@@ -1,11 +1,11 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { createRef, ref } from 'lit/directives/ref.js'
-import '../../composites/wui-input-element'
-import { resetStyles } from '../../utils/ThemeUtil'
-import '../wui-input-text'
-import type { WuiInputText } from '../wui-input-text'
-import styles from './styles'
+import '../../composites/wui-input-element/index.js'
+import { resetStyles } from '../../utils/ThemeUtil.js'
+import '../wui-input-text/index.js'
+import type { WuiInputText } from '../wui-input-text/index.js'
+import styles from './styles.js'
 
 @customElement('wui-search-bar')
 export class WuiSearchBar extends LitElement {

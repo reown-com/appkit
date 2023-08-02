@@ -1,10 +1,10 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../../components/wui-icon'
-import '../../components/wui-text'
-import { resetStyles } from '../../utils/ThemeUtil'
-import '../wui-input-text'
-import styles from './styles'
+import '../../components/wui-icon/index.js'
+import '../../components/wui-text/index.js'
+import { resetStyles } from '../../utils/ThemeUtil.js'
+import '../wui-input-text/index.js'
+import styles from './styles.js'
 
 @customElement('wui-email-input')
 export class WuiEmailInput extends LitElement {

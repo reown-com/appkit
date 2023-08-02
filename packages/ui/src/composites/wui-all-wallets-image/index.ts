@@ -1,10 +1,10 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { resetStyles } from '../../utils/ThemeUtil'
-import type { IWalletImage } from '../../utils/TypesUtil'
-import '../wui-wallet-image'
-import styles from './styles'
+import { resetStyles } from '../../utils/ThemeUtil.js'
+import type { IWalletImage } from '../../utils/TypesUtil.js'
+import '../wui-wallet-image/index.js'
+import styles from './styles.js'
 
 const TOTAL_IMAGES = 4
 

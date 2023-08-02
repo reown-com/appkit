@@ -1,15 +1,15 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
 import packageJson from '../../package.json'
-import { CoreHelperUtil } from '../utils/CoreHelperUtil'
-import { FetchUtil } from '../utils/FetchUtil'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { FetchUtil } from '../utils/FetchUtil.js'
 import type {
   ExplorerListing,
   ExplorerListingsRequest,
   ExplorerListingsResponse,
   ExplorerSearchRequest,
   ProjectId
-} from '../utils/TypeUtils'
+} from '../utils/TypeUtils.js'
 
 // -- Helpers ------------------------------------------- //
 const api = new FetchUtil({ baseUrl: 'https://explorer-api.walletconnect.com' })

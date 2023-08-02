@@ -1,9 +1,9 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import type { LogoType } from '../../utils/TypesUtil'
-import '../wui-logo'
-import styles from './styles'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import type { LogoType } from '../../utils/TypesUtil.js'
+import '../wui-logo/index.js'
+import styles from './styles.js'
 
 @customElement('wui-logo-select')
 export class WuiLogoSelect extends LitElement {

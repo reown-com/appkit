@@ -1,12 +1,12 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../../components/wui-icon'
-import '../../components/wui-image'
-import '../../components/wui-text'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import type { ChipType, IconType } from '../../utils/TypesUtil'
-import { UiHelperUtil } from '../../utils/UiHelperUtils'
-import styles from './styles'
+import '../../components/wui-icon/index.js'
+import '../../components/wui-image/index.js'
+import '../../components/wui-text/index.js'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import type { ChipType, IconType } from '../../utils/TypesUtil.js'
+import { UiHelperUtil } from '../../utils/UiHelperUtils.js'
+import styles from './styles.js'
 
 @customElement('wui-chip')
 export class WuiChip extends LitElement {

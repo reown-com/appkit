@@ -29,7 +29,7 @@ import {
   TYPE_MAP,
   WALLET_CHOICE_KEY,
   WALLET_CONNECT_ID
-} from './constants'
+} from './constants.js'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalOptions {

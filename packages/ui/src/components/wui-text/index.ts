@@ -1,9 +1,9 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import { colorStyles, resetStyles } from '../../utils/ThemeUtil'
-import type { ColorType, TextAlign, TextType } from '../../utils/TypesUtil'
-import styles from './styles'
+import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import type { ColorType, TextAlign, TextType } from '../../utils/TypesUtil.js'
+import styles from './styles.js'
 
 @customElement('wui-text')
 export class WuiText extends LitElement {

@@ -1,6 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
-import type { Connector } from '../utils/TypeUtils'
+import type { Connector } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectorControllerState {

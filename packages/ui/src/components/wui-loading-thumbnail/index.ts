@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { resetStyles } from '../../utils/ThemeUtil'
-import styles from './styles'
+import { resetStyles } from '../../utils/ThemeUtil.js'
+import styles from './styles.js'
 
 @customElement('wui-loading-thumbnail')
 export class WuiLoadingThumbnail extends LitElement {

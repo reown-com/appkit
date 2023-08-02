@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ExplorerApiController } from '../../index'
+import { ExplorerApiController } from '../../index.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('ExplorerApiController', () => {

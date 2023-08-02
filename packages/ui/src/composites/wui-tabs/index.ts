@@ -1,8 +1,8 @@
 import { html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import type { IconType } from '../../utils/TypesUtil'
-import styles from './styles'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import type { IconType } from '../../utils/TypesUtil.js'
+import styles from './styles.js'
 
 @customElement('wui-tabs')
 export class WuiTabs extends LitElement {

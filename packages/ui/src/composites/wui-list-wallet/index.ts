@@ -1,12 +1,12 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../../components/wui-text'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import type { IWalletImage, TagType } from '../../utils/TypesUtil'
-import '../wui-all-wallets-image'
-import '../wui-tag'
-import '../wui-wallet-image'
-import styles from './styles'
+import '../../components/wui-text/index.js'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import type { IWalletImage, TagType } from '../../utils/TypesUtil.js'
+import '../wui-all-wallets-image/index.js'
+import '../wui-tag/index.js'
+import '../wui-wallet-image/index.js'
+import styles from './styles.js'
 
 @customElement('wui-list-wallet')
 export class WuiListWallet extends LitElement {

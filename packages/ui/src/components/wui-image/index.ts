@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { colorStyles, resetStyles } from '../../utils/ThemeUtil'
-import styles from './styles'
+import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import styles from './styles.js'
 
 @customElement('wui-image')
 export class WuiImage extends LitElement {

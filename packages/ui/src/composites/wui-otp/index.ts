@@ -1,11 +1,11 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../../layout/wui-flex'
-import { resetStyles } from '../../utils/ThemeUtil'
-import { UiHelperUtil } from '../../utils/UiHelperUtils'
-import '../wui-input-numeric'
-import { WuiInputNumeric } from '../wui-input-numeric'
-import styles from './styles'
+import '../../layout/wui-flex/index.js'
+import { resetStyles } from '../../utils/ThemeUtil.js'
+import { UiHelperUtil } from '../../utils/UiHelperUtils.js'
+import '../wui-input-numeric/index.js'
+import { WuiInputNumeric } from '../wui-input-numeric/index.js'
+import styles from './styles.js'
 
 @customElement('wui-otp')
 export class WuiOtp extends LitElement {

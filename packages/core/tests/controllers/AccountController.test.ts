@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { AccountController } from '../../index'
+import { AccountController } from '../../index.js'
 
 // -- Setup --------------------------------------------------------------------
 const caipAddress = 'eip155:1:0x123'

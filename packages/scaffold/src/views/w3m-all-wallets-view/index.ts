@@ -1,7 +1,7 @@
 import { CoreHelperUtil } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import styles from './styles'
+import styles from './styles.js'
 
 @customElement('w3m-all-wallets-view')
 export class W3mAllWalletsView extends LitElement {

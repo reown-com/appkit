@@ -16,8 +16,8 @@ import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 import { publicProvider } from 'wagmi/providers/public'
-import { ConnectButton } from '../components/ConnectButton'
-import { NetworksButton } from '../components/NetworksButton'
+import { ConnectButton } from '../components/ConnectButton.js'
+import { NetworksButton } from '../components/NetworksButton.js'
 
 // 1. Get projectId
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']

@@ -1,11 +1,11 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../../components/wui-text'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import type { TransactionType } from '../../utils/TypesUtil'
-import { UiHelperUtil } from '../../utils/UiHelperUtils'
-import '../wui-transaction-visual'
-import styles from './styles'
+import '../../components/wui-text/index.js'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import type { TransactionType } from '../../utils/TypesUtil.js'
+import { UiHelperUtil } from '../../utils/UiHelperUtils.js'
+import '../wui-transaction-visual/index.js'
+import styles from './styles.js'
 
 @customElement('wui-list-transaction')
 export class WuiListTransaction extends LitElement {
