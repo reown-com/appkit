@@ -7,7 +7,7 @@ import styles from './styles'
 
 @customElement('wui-icon-link')
 export class WuiIconLink extends LitElement {
-  public static styles = [resetStyles, elementStyles, colorStyles, styles]
+  public static override styles = [resetStyles, elementStyles, colorStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public size: SizeType = 'md'
@@ -19,7 +19,7 @@ export class WuiIconLink extends LitElement {
   @property() public iconColor: ColorType = 'inherit'
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       <button ?disabled=${this.disabled} ontouchstart>
         <wui-icon color=${this.iconColor} size=${this.size} name=${this.icon}></wui-icon>

@@ -8,7 +8,7 @@ import styles from './styles'
 
 @customElement('wui-tooltip')
 export class WuiTooltip extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public placement: PlacementType = 'top'
@@ -16,7 +16,7 @@ export class WuiTooltip extends LitElement {
   @property() public message = ''
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`<wui-icon
         data-placement=${this.placement}
         color="fg-100"

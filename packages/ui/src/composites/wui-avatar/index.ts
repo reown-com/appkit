@@ -2,12 +2,12 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-image'
 import { resetStyles } from '../../utils/ThemeUtil'
-import styles from './styles'
 import { UiHelperUtil } from '../../utils/UiHelperUtils'
+import styles from './styles'
 
 @customElement('wui-avatar')
 export class WuiAvatar extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public imageSrc?: string = undefined
@@ -17,24 +17,24 @@ export class WuiAvatar extends LitElement {
   @property() public address?: string = undefined
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`${this.visualTemplate()}`
   }
 
   // -- Private ------------------------------------------- //
   public visualTemplate() {
     if (this.imageSrc && this.alt) {
-      this.dataset.variant = 'image'
+      this.dataset['variant'] = 'image'
 
       return html`<wui-image src=${this.imageSrc} alt=${this.alt}></wui-image>`
     } else if (this.address) {
-      this.dataset.variant = 'generated'
+      this.dataset['variant'] = 'generated'
       const cssColors = UiHelperUtil.generateAvatarColors(this.address)
       this.style.cssText = cssColors
 
       return null
     }
-    this.dataset.variant = 'default'
+    this.dataset['variant'] = 'default'
 
     return null
   }

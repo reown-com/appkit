@@ -7,7 +7,7 @@ import styles from './styles'
 
 @customElement('wui-icon-box')
 export class WuiIconBox extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public size: Exclude<SizeType, 'inherit' | 'xxs'> = 'md'
@@ -23,7 +23,7 @@ export class WuiIconBox extends LitElement {
   @property() public icon: IconType = 'copy'
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     let iconSize: SizeType = 'xxs'
     switch (this.size) {
       case 'lg':

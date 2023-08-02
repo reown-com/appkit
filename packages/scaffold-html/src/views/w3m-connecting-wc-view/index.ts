@@ -33,12 +33,12 @@ export class W3mConnectingWcView extends LitElement {
     this.interval = setInterval(this.initializeConnection.bind(this), ConstantsUtil.TEN_SEC_MS)
   }
 
-  public disconnectedCallback() {
+  public override disconnectedCallback() {
     clearTimeout(this.interval)
   }
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     if (!this.listing) {
       return html`<w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode>`
     }

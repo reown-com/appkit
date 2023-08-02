@@ -14,7 +14,7 @@ const currency: TransactionType[] = ['deposited', 'withdrawed', 'cryptoSent', 'b
 
 @customElement('wui-transaction-visual')
 export class WuiTransactionVisual extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public type: TransactionType = 'buy'
@@ -22,7 +22,7 @@ export class WuiTransactionVisual extends LitElement {
   @property() public imageSrc?: string
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     let color: 'blue-100' | 'error-100' | 'success-100' | 'inverse-100' = 'blue-100'
     let icon: TransactionIconType = 'arrowTop'
 
@@ -37,10 +37,10 @@ export class WuiTransactionVisual extends LitElement {
       icon = 'arrowBottom'
     } else {
       color = 'blue-100'
-      icon = 'swap'
+      icon = 'swapVertical'
     }
 
-    this.dataset.type = this.type
+    this.dataset['type'] = this.type
 
     return html`
       ${this.templateVisual()}

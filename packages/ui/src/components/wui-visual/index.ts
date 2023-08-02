@@ -1,8 +1,5 @@
 import { html, LitElement, TemplateResult } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { resetStyles } from '../../utils/ThemeUtil'
-import type { VisualType } from '../../utils/TypesUtil'
-import styles from './styles'
 import { browserSvg } from '../../assets/visual/browser'
 import { daoSvg } from '../../assets/visual/dao'
 import { defiSvg } from '../../assets/visual/defi'
@@ -16,6 +13,9 @@ import { nftSvg } from '../../assets/visual/nft'
 import { nounSvg } from '../../assets/visual/noun'
 import { profileSvg } from '../../assets/visual/profile'
 import { systemSvg } from '../../assets/visual/system'
+import { resetStyles } from '../../utils/ThemeUtil'
+import type { VisualType } from '../../utils/TypesUtil'
+import styles from './styles'
 
 // -- Svg's-------------------------------- //
 const svgOptions: Record<VisualType, TemplateResult<2>> = {
@@ -36,13 +36,13 @@ const svgOptions: Record<VisualType, TemplateResult<2>> = {
 
 @customElement('wui-visual')
 export class WuiVisual extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public name: VisualType = 'browser'
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`${svgOptions[this.name]}`
   }
 }

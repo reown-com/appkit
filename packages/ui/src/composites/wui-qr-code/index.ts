@@ -9,7 +9,7 @@ import styles from './styles'
 
 @customElement('wui-qr-code')
 export class WuiQrCode extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public uri = ''
@@ -23,8 +23,8 @@ export class WuiQrCode extends LitElement {
   @property() public alt?: string = undefined
 
   // -- Render -------------------------------------------- //
-  public render() {
-    this.dataset.theme = this.theme
+  public override render() {
+    this.dataset['theme'] = this.theme
     this.style.cssText = `--local-size: ${this.size}px`
 
     return html`${this.templateVisual()} ${this.templateSvg()}`

@@ -8,7 +8,7 @@ import styles from './styles'
 
 @customElement('wui-button')
 export class WuiButton extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public size: Exclude<SizeType, 'inherit' | 'lg' | 'xs' | 'xxs'> = 'md'
@@ -18,7 +18,7 @@ export class WuiButton extends LitElement {
   @property() public variant: ButtonType = 'fill'
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     const textVariant = this.size === 'md' ? 'paragraph-600' : 'small-600'
     this.style.cssText = `--local-width: ${this.variant === 'fullWidth' ? '100%' : 'auto'};`
 

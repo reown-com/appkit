@@ -8,7 +8,7 @@ import styles from './styles'
 
 @customElement('wui-wallet-image')
 export class WuiWalletImage extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public size: Exclude<SizeType, 'xs' | 'xxs'> = 'md'
@@ -18,7 +18,7 @@ export class WuiWalletImage extends LitElement {
   @property() public imageSrc?: string
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     let borderRadius: BorderRadiusType = 'xxs'
     if (this.size === 'lg') {
       borderRadius = 'm'

@@ -7,7 +7,7 @@ import styles from './styles'
 
 @customElement('wui-text')
 export class WuiText extends LitElement {
-  public static styles = [resetStyles, colorStyles, styles]
+  public static override styles = [resetStyles, colorStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public variant: TextType = 'paragraph-500'
@@ -17,7 +17,7 @@ export class WuiText extends LitElement {
   @property() public align?: TextAlign = 'left'
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     const classes = {
       [`wui-font-${this.variant}`]: true,
       [`wui-color-${this.color}`]: true

@@ -5,10 +5,10 @@ import styles from './styles'
 
 @customElement('wui-loading-thumbnail')
 export class WuiLoadingThumbnail extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       <svg viewBox="0 0 110 110" width="110" height="110">
         <rect x="2" y="2" width="106" height="106" rx="36" />

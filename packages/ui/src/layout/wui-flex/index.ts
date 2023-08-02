@@ -1,6 +1,5 @@
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtils'
 import { resetStyles } from '../../utils/ThemeUtil'
 import type {
   FlexAlignItemsType,
@@ -12,11 +11,12 @@ import type {
   FlexWrapType,
   SpacingType
 } from '../../utils/TypesUtil'
+import { UiHelperUtil } from '../../utils/UiHelperUtils'
 import styles from './styles'
 
 @customElement('wui-flex')
 export class WuiFlex extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public flexDirection?: FlexDirectionType
@@ -44,7 +44,7 @@ export class WuiFlex extends LitElement {
   @property() public margin?: SpacingType | SpacingType[]
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     this.style.cssText = `
       flex-direction: ${this.flexDirection};
       flex-wrap: ${this.flexWrap};

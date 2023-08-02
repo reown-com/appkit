@@ -9,6 +9,7 @@ describe('ExplorerApiController', () => {
       page: 1,
       total: 0,
       listings: [],
+      recommended: [],
       search: [],
       images: {}
     })

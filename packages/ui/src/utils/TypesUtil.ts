@@ -66,7 +66,7 @@ export type FlexJustifyContentType =
 
 export interface IWalletImage {
   src: string
-  walletName: string
+  walletName?: string
 }
 
 export type GridContentType =
@@ -170,7 +170,7 @@ export type TransactionType =
   | 'swapped'
   | 'withdrawed'
 
-export type TransactionIconType = 'arrowBottom' | 'arrowTop' | 'swap'
+export type TransactionIconType = 'arrowBottom' | 'arrowTop' | 'swapVertical' | 'swapHorizontal'
 
 export type CardSelectType = 'network' | 'wallet'
 

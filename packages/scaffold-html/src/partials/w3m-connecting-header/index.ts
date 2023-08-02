@@ -13,7 +13,7 @@ export class W3mConnectingHeader extends LitElement {
   @property() public onSelectPlatfrom?: (platform: Platform) => void = undefined
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     const tabs = this.generateTabs()
 
     return html`
@@ -47,7 +47,10 @@ export class W3mConnectingHeader extends LitElement {
   }
 
   private onTabChange(index: number) {
-    this.onSelectPlatfrom?.(this.platformTabs[index])
+    const tab = this.platformTabs[index]
+    if (tab) {
+      this.onSelectPlatfrom?.(tab)
+    }
   }
 }
 

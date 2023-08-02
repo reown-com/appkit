@@ -8,7 +8,7 @@ import styles from './styles'
 
 @customElement('wui-input-text')
 export class WuiInputText extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public size: Exclude<SizeType, 'inherit' | 'lg' | 'xs' | 'xxs'> = 'md'
@@ -22,7 +22,7 @@ export class WuiInputText extends LitElement {
   public inputElementRef = createRef<HTMLInputElement>()
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     const sizeClass = `wui-size-${this.size}`
 
     return html` ${this.templateIcon()}

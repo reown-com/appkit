@@ -10,7 +10,7 @@ import styles from './styles'
 
 @customElement('wui-network-image')
 export class WuiNetworkImage extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public size: Exclude<SizeType, 'inherit' | 'sm' | 'xs' | 'xxs'> = 'md'
@@ -22,7 +22,7 @@ export class WuiNetworkImage extends LitElement {
   @property({ type: Boolean }) public selected?: boolean = false
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     const isLg = this.size === 'lg'
     this.style.cssText = `
       --local-stroke: ${this.selected ? 'var(--wui-color-blue-100)' : 'var(--wui-overlay-010)'};

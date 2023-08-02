@@ -7,6 +7,7 @@ import {
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connecting-wc-desktop')
 export class W3mConnectingWcDesktop extends LitElement {
@@ -33,13 +34,13 @@ export class W3mConnectingWcDesktop extends LitElement {
     this.unsubscribe.push(ConnectionController.subscribeKey('wcUri', val => (this.uri = val)))
   }
 
-  public disconnectedCallback() {
+  public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     clearTimeout(this.timeout)
   }
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     if (!this.listing) {
       throw new Error('w3m-connecting-wc-desktop: No listing provided')
     }
@@ -48,7 +49,7 @@ export class W3mConnectingWcDesktop extends LitElement {
 
     return html`
       <w3m-connecting-widget
-        imageSrc=${this.images[this.listing.image_id]}
+        imageSrc=${ifDefined(this.images[this.listing.image_id])}
         name=${this.listing.name}
         .error=${this.error}
         .onConnect=${this.onConnect.bind(this)}
