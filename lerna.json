@@ -8,6 +8,6 @@
     "apps/gallery",
     "apps/laboratory"
   ],
-  "version": "3.0.0-23dbc01e",
+  "version": "3.0.0-efbb62fa",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
