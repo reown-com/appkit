@@ -23,7 +23,12 @@ export class WuiButton extends LitElement {
     this.style.cssText = `--local-width: ${this.variant === 'fullWidth' ? '100%' : 'auto'};`
 
     return html`
-      <button data-variant=${this.variant} data-size=${this.size} ?disabled=${this.disabled}>
+      <button
+        data-variant=${this.variant}
+        data-size=${this.size}
+        ?disabled=${this.disabled}
+        ontouchstart
+      >
         <slot name="iconLeft"></slot>
         <wui-text variant=${textVariant} color="inherit">
           <slot></slot>

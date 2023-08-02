@@ -30,7 +30,7 @@ export class WuiListTransaction extends LitElement {
     const formattedDate = UiHelperUtil.getFormattedDate(this.date)
 
     return html`
-      <button ?disabled=${this.disabled}>
+      <button ?disabled=${this.disabled} ontouchstart>
         <wui-transaction-visual
           type=${this.type}
           imageSrc=${this.imageSrc}

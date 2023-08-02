@@ -29,7 +29,7 @@ export class WuiListItem extends LitElement {
   // -- Render -------------------------------------------- //
   public render() {
     return html`
-      <button ?disabled=${this.disabled}>
+      <button ?disabled=${this.disabled} ontouchstart>
         ${this.visualTemplate()}
         <wui-flex gap="3xs">
           <slot></slot>
