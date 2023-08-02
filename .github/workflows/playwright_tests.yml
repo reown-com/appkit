@@ -17,14 +17,13 @@ concurrency:
 
 env:
   NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+  # The wallet example url to test against 
+  WALLET_URL: "https://react-wallet.walletconnect.com/"
 
 jobs:
   e2e_tests:
       runs-on: ubuntu-latest
       timeout-minutes: 30
-      permissions:
-        contents: read
-        deployments: write
       steps:
         - name: checkout
           uses: actions/checkout@v3
