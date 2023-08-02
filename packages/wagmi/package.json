@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wagmi",
-  "version": "3.0.0",
+  "version": "3.0.0-0029e67f",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -25,7 +25,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/scaffold": "3.0.0"
+    "@web3modal/scaffold": "3.0.0-0029e67f"
   },
   "devDependencies": {
     "@wagmi/core": "^1",
@@ -33,9 +33,9 @@
   },
   "peerDependencies": {
     "@wagmi/core": ">=1",
-    "viem": ">=1",
     "react": ">=17",
-    "react-dom": ">=17"
+    "react-dom": ">=17",
+    "viem": ">=1"
   },
   "keywords": [
     "web3",
