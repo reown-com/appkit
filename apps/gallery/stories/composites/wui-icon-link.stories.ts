@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-icon-link'
 import type { WuiIconLink } from '@web3modal/ui/src/composites/wui-icon-link'
 import { html } from 'lit'
-import { colorOptions, iconOptions } from '../../utils/PresetUtils'
+import { colorOptions, iconOptions } from '../../utils/PresetUtils.js'
 
 type Component = Meta<WuiIconLink>
 

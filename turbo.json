@@ -1,0 +1,41 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["packages/**/dist/**"]
+    },
+    "build:gallery": {
+      "dependsOn": ["build", "^build:gallery"],
+      "outputs": ["apps/gallery/out/**"]
+    },
+    "build:laboratory": {
+      "dependsOn": ["build", "^build:laboratory"],
+      "outputs": ["apps/laboratory/out/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"],
+      "cache": false
+    },
+    "test": {
+      "dependsOn": ["^test"],
+      "cache": false
+    },
+    "lint": {
+      "dependsOn": ["^lint"],
+      "cache": false
+    },
+    "prettier": {
+      "dependsOn": ["^prettier"],
+      "cache": false
+    },
+    "dev:laboratory": {
+      "dependsOn": ["build", "^dev:laboratory"],
+      "cache": false
+    },
+    "dev:gallery": {
+      "dependsOn": ["build", "^dev:gallery"],
+      "cache": false
+    }
+  }
+}

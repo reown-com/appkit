@@ -1,6 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
-import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtils'
+import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {

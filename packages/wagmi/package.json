@@ -1,21 +1,31 @@
 {
   "name": "@web3modal/wagmi",
-  "version": "3.0.0",
+  "version": "3.0.0-91ecf92a",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./react": {
+      "import": "./dist/esm/src/react.js",
+      "types": "./dist/types/src/react.d.ts"
+    }
+  },
   "scripts": {
     "build:clean": "rm -rf dist",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir ./dist/types",
-    "build:source": "echo TODO",
-    "build": "npm run build:clean; npm run build:types & npm run build:source",
+    "build:source": "tsc --outDir ./dist/esm",
+    "build": "npm run build:clean; npm run build:types; npm run build:source",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/scaffold-html": "3.0.0"
+    "@web3modal/scaffold": "3.0.0-91ecf92a"
   },
   "devDependencies": {
     "@wagmi/core": "^1",
@@ -23,6 +33,8 @@
   },
   "peerDependencies": {
     "@wagmi/core": ">=1",
+    "react": ">=17",
+    "react-dom": ">=17",
     "viem": ">=1"
   },
   "keywords": [

@@ -1,11 +1,11 @@
 import { html, LitElement, svg } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../../components/wui-icon'
-import '../../components/wui-image'
-import { QrCodeUtil } from '../../utils/QrCode'
-import { resetStyles } from '../../utils/ThemeUtil'
-import { ThemeType } from '../../utils/TypesUtil'
-import styles from './styles'
+import '../../components/wui-icon/index.js'
+import '../../components/wui-image/index.js'
+import { QrCodeUtil } from '../../utils/QrCode.js'
+import { resetStyles } from '../../utils/ThemeUtil.js'
+import type { ThemeType } from '../../utils/TypesUtil.js'
+import styles from './styles.js'
 
 @customElement('wui-qr-code')
 export class WuiQrCode extends LitElement {

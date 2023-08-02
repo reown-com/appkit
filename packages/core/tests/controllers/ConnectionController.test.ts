@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { ConnectionControllerClient } from '../../index'
-import { ConnectionController } from '../../index'
+import type { ConnectionControllerClient } from '../../index.js'
+import { ConnectionController } from '../../index.js'
 
 // -- Setup --------------------------------------------------------------------
 const walletConnectUri = 'wc://uri?=123'

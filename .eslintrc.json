@@ -11,7 +11,15 @@
   "parserOptions": {
     "project": ["tsconfig.json"]
   },
-  "ignorePatterns": ["*.config.js", "next-env.d.ts"],
+  "ignorePatterns": [
+    "node_modules",
+    "*.config.js",
+    "next-env.d.ts",
+    "out",
+    "dist",
+    ".next",
+    ".turbo"
+  ],
   "rules": {
     // Core
     "func-style": ["error", "declaration"],

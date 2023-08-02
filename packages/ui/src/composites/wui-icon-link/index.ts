@@ -1,9 +1,9 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../../components/wui-icon'
-import { colorStyles, elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil'
-import styles from './styles'
+import '../../components/wui-icon/index.js'
+import { colorStyles, elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil.js'
+import styles from './styles.js'
 
 @customElement('wui-icon-link')
 export class WuiIconLink extends LitElement {

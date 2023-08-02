@@ -1,10 +1,10 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { createRef, ref } from 'lit/directives/ref.js'
-import '../../components/wui-icon'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import type { IconType, SizeType } from '../../utils/TypesUtil'
-import styles from './styles'
+import '../../components/wui-icon/index.js'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import type { IconType, SizeType } from '../../utils/TypesUtil.js'
+import styles from './styles.js'
 
 @customElement('wui-input-text')
 export class WuiInputText extends LitElement {

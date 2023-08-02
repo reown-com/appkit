@@ -1,8 +1,8 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 
-import styles from './styles'
+import styles from './styles.js'
 
 @customElement('wui-input-numeric')
 export class WuiInputNumeric extends LitElement {

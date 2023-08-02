@@ -19,8 +19,8 @@ import type {
   ConnectionControllerClient,
   NetworkControllerClient,
   ProjectId
-} from '@web3modal/scaffold-html'
-import { Web3ModalScaffoldHtml } from '@web3modal/scaffold-html'
+} from '@web3modal/scaffold'
+import { Web3ModalScaffoldHtml } from '@web3modal/scaffold'
 import {
   ADD_CHAIN_METHOD,
   INJECTED_ID,
@@ -29,7 +29,7 @@ import {
   TYPE_MAP,
   WALLET_CHOICE_KEY,
   WALLET_CONNECT_ID
-} from './constants'
+} from './constants.js'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalOptions {

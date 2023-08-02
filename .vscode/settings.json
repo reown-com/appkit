@@ -13,7 +13,7 @@
     "**/node_modules": true,
     "**/out": true,
     "**/dist": true,
-    "**/storybook-static": true
+    "**/.turbo": true
   },
   "javascript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsdk": "node_modules/typescript/lib",

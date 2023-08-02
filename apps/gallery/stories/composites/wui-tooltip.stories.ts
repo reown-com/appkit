@@ -3,7 +3,7 @@ import '@web3modal/ui/src/composites/wui-tooltip'
 import type { WuiTooltip } from '@web3modal/ui/src/composites/wui-tooltip'
 import { html } from 'lit'
 
-import { placementOptions } from '../../utils/PresetUtils'
+import { placementOptions } from '../../utils/PresetUtils.js'
 
 type Component = Meta<WuiTooltip>
 

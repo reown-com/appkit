@@ -1,9 +1,9 @@
 import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-button'
 import type { WuiButton } from '@web3modal/ui/src/composites/wui-button'
-import { html } from 'lit'
-import { buttonOptions, iconOptions } from '../../utils/PresetUtils'
 import type { IconType } from '@web3modal/ui/src/utils/TypesUtil'
+import { html } from 'lit'
+import { buttonOptions, iconOptions } from '../../utils/PresetUtils.js'
 
 type Component = Meta<WuiButton & { iconLeft?: IconType; iconRight?: IconType }>
 

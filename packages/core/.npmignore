@@ -2,7 +2,8 @@
 npm-debug.log*
 node_modules
 package-lock.json
-src
+./src
+./tests
 types
 rollup.config.js
 index.ts

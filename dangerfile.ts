@@ -161,9 +161,9 @@ checkCorePackage()
 
 // -- Scaffold Html Package Checks --------------------------------------------
 async function checkScaffoldHtmlPackage() {
-  const created_modal = created_files.filter(f => f.includes('scaffold-html/src/modal'))
-  const created_pages = created_files.filter(f => f.includes('scaffold-html/src/pages'))
-  const created_partials = created_files.filter(f => f.includes('scaffold-html/src/partials'))
+  const created_modal = created_files.filter(f => f.includes('scaffold/src/modal'))
+  const created_pages = created_files.filter(f => f.includes('scaffold/src/pages'))
+  const created_partials = created_files.filter(f => f.includes('scaffold/src/partials'))
   const created_scaffold_files = [...created_modal, ...created_pages, ...created_partials]
   const created_scaffold_index_files = created_scaffold_files.filter(f => f.includes('index.ts'))
 

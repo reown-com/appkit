@@ -1,5 +1,5 @@
-import { ConstantsUtil } from './ConstantsUtil'
-import { CaipAddress, LinkingRecord } from './TypeUtils'
+import { ConstantsUtil } from './ConstantsUtil.js'
+import type { CaipAddress, LinkingRecord } from './TypeUtils.js'
 
 export const CoreHelperUtil = {
   isMobile() {

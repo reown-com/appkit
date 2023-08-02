@@ -4,26 +4,26 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "gallery": "npm run dev --w=@apps/gallery",
-    "laboratory": "npm run dev --w=@apps/laboratory",
-    "build": "npm run build --ws --if-present",
-    "build:gallery": "npm run build; npm run build:gallery --w=@apps/gallery",
-    "build:laboratory": "npm run build; npm run build:laboratory --w=@apps/laboratory",
-    "test": "npm run test --ws --if-present",
+    "build": "turbo run build",
+    "gallery": "turbo run dev:gallery",
+    "laboratory": "turbo run dev:laboratory",
+    "build:gallery": "turbo run build:gallery",
+    "build:laboratory": "turbo run build:laboratory",
+    "test": "turbo run test --parallel",
+    "typecheck": "turbo run typecheck --parallel",
     "lint": "eslint .",
-    "danger-ci": "danger ci",
+    "danger": "danger ci",
     "prettier": "prettier --check .",
-    "typecheck": "npm run typecheck --ws --if-present",
     "new-version": "lerna version --no-git-tag-version --exact",
-    "pre-publish": "npm run lint; npm run typecheck; npm run prettier; npm run build; npm run new-version; npm install",
+    "pre-publish": "turbo lint typecheck prettier test --parallel; npm run new-version; npm install; turbo run build;",
     "publish:latest": "lerna exec -- npm publish --no-private --access public --tag latest",
     "publish:canary": "lerna exec -- npm publish --no-private --access public --tag canary",
-    "clean": "rm -rf `find . -type d -name node_modules -o -name dist -o -name .next -o -name out -o -name storybook-static`; rm package-lock.json"
+    "clean": "rm -rf `find . -type d -name node_modules -o -name dist -o -name .next -o -name out`; rm package-lock.json"
   },
   "workspaces": [
     "packages/ui",
     "packages/core",
-    "packages/scaffold-html",
+    "packages/scaffold",
     "packages/wagmi",
     "apps/gallery",
     "apps/laboratory"
@@ -35,12 +35,14 @@
     "@types/react-dom": "18.2.7",
     "eslint": "8.46.0",
     "eslint-config-prettier": "8.9.0",
+    "eslint-plugin-require-extensions": "0.1.3",
     "lerna": "7.1.4",
     "prettier": "3.0.0",
     "typescript": "5.1.6",
-    "vitest": "0.33.0",
+    "vitest": "0.34.1",
     "danger": "11.2.8",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "turbo": "1.10.12"
   }
 }

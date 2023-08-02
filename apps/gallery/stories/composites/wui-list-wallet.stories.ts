@@ -1,9 +1,9 @@
 import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-list-wallet'
-import '../../components/gallery-container'
 import type { WuiListWallet } from '@web3modal/ui/src/composites/wui-list-wallet'
 import { html } from 'lit'
-import { tagOptions, walletImagesOptions } from '../../utils/PresetUtils'
+import '../../components/gallery-container/index.js'
+import { tagOptions, walletImagesOptions } from '../../utils/PresetUtils.js'
 
 type Component = Meta<WuiListWallet>
 
@@ -11,7 +11,7 @@ export default {
   title: 'Composites/wui-list-wallet',
   args: {
     walletImages: walletImagesOptions,
-    imageSrc: walletImagesOptions[0].src,
+    imageSrc: walletImagesOptions[0]?.src,
     name: 'Rainbow',
     showAllWallets: false,
     disabled: false,

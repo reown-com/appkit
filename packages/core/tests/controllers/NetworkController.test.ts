@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { CaipNetwork, CaipNetworkId, NetworkControllerClient } from '../../index'
-import { NetworkController } from '../../index'
+import type { CaipNetwork, CaipNetworkId, NetworkControllerClient } from '../../index.js'
+import { NetworkController } from '../../index.js'
 
 // -- Setup --------------------------------------------------------------------
 const caipNetwork = { id: 'eip155:1', name: 'Ethereum' } as const

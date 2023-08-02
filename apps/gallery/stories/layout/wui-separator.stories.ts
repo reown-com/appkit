@@ -1,8 +1,8 @@
 import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/layout/wui-separator'
-import '../../components/gallery-container'
 import type { WuiSeparator } from '@web3modal/ui/src/layout/wui-separator'
 import { html } from 'lit'
+import '../../components/gallery-container/index.js'
 
 type Component = Meta<WuiSeparator>
 

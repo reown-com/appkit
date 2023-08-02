@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import type { BorderRadiusType } from '../../utils/TypesUtil'
-import styles from './styles'
+import type { BorderRadiusType } from '../../utils/TypesUtil.js'
+import styles from './styles.js'
 
 @customElement('wui-shimmer')
 export class WuiShimmer extends LitElement {

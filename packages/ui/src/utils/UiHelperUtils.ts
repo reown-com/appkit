@@ -1,5 +1,5 @@
 /* eslint-disable no-bitwise */
-import type { SpacingType } from './TypesUtil'
+import type { SpacingType } from './TypesUtil.js'
 
 export const UiHelperUtil = {
   getSpacingStyles(spacing: SpacingType | SpacingType[], index: number) {

@@ -1,8 +1,8 @@
 import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-search-bar'
 import type { WuiSearchBar } from '@web3modal/ui/src/composites/wui-search-bar'
-import '../../components/gallery-container'
 import { html } from 'lit'
+import '../../components/gallery-container/index.js'
 
 type Component = Meta<WuiSearchBar>
 

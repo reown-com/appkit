@@ -1,10 +1,10 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../../components/wui-text'
-import { resetStyles } from '../../utils/ThemeUtil'
-import type { ColorType, IconType } from '../../utils/TypesUtil'
-import '../wui-icon-box'
-import styles from './styles'
+import '../../components/wui-text/index.js'
+import { resetStyles } from '../../utils/ThemeUtil.js'
+import type { ColorType, IconType } from '../../utils/TypesUtil.js'
+import '../wui-icon-box/index.js'
+import styles from './styles.js'
 
 @customElement('wui-snackbar')
 export class WuiSnackbar extends LitElement {

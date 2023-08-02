@@ -1,8 +1,8 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
-import { AccountController } from './AccountController'
-import type { RouterControllerState } from './RouterController'
-import { RouterController } from './RouterController'
+import { AccountController } from './AccountController.js'
+import type { RouterControllerState } from './RouterController.js'
+import { RouterController } from './RouterController.js'
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {

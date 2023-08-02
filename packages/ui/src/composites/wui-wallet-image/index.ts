@@ -1,10 +1,10 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../../components/wui-icon'
-import '../../components/wui-image'
-import { resetStyles } from '../../utils/ThemeUtil'
-import type { BorderRadiusType, SizeType } from '../../utils/TypesUtil'
-import styles from './styles'
+import '../../components/wui-icon/index.js'
+import '../../components/wui-image/index.js'
+import { resetStyles } from '../../utils/ThemeUtil.js'
+import type { BorderRadiusType, SizeType } from '../../utils/TypesUtil.js'
+import styles from './styles.js'
 
 @customElement('wui-wallet-image')
 export class WuiWalletImage extends LitElement {

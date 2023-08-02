@@ -7,7 +7,7 @@ import {
   externalLink,
   iconOptions,
   walletImagesOptions
-} from '../../utils/PresetUtils'
+} from '../../utils/PresetUtils.js'
 
 type Component = Meta<WuiChip>
 
@@ -16,7 +16,7 @@ export default {
   args: {
     variant: 'fill',
     icon: 'externalLink',
-    imageSrc: walletImagesOptions[3].src,
+    imageSrc: walletImagesOptions[3]?.src,
     href: externalLink
   },
   argTypes: {

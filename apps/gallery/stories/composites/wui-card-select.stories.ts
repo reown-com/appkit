@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-card-select'
 import type { WuiCardSelect } from '@web3modal/ui/src/composites/wui-card-select'
 import { html } from 'lit'
-import '../../components/gallery-container'
-import { cardSelectOptions, walletImageSrc } from '../../utils/PresetUtils'
+import '../../components/gallery-container/index.js'
+import { cardSelectOptions, walletImageSrc } from '../../utils/PresetUtils.js'
 
 type Component = Meta<WuiCardSelect>
 

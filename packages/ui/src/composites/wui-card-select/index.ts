@@ -1,12 +1,12 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import '../../components/wui-text'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import type { CardSelectType } from '../../utils/TypesUtil'
-import '../wui-network-image'
-import '../wui-wallet-image'
-import styles from './styles'
+import '../../components/wui-text/index.js'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import type { CardSelectType } from '../../utils/TypesUtil.js'
+import '../wui-network-image/index.js'
+import '../wui-wallet-image/index.js'
+import styles from './styles.js'
 
 @customElement('wui-card-select')
 export class WuiCardSelect extends LitElement {

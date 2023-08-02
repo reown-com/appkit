@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ConnectorController } from '../../index'
+import { ConnectorController } from '../../index.js'
 
 // -- Setup --------------------------------------------------------------------
 const walletConnectConnector = { id: 'walletConnect', type: 'WALLET_CONNECT' } as const

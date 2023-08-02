@@ -7,7 +7,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "removeComments": true,
@@ -21,7 +21,9 @@
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true,
     "noPropertyAccessFromIndexSignature": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "verbatimModuleSyntax": true,
+    "sourceMap": true
   },
   "exclude": ["node_modules", "dist", "out", ".next", "storybook-static"]
 }

@@ -1,9 +1,9 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { resetStyles } from '../../utils/ThemeUtil'
-import type { GridContentType, GridItemsType, SpacingType } from '../../utils/TypesUtil'
-import { UiHelperUtil } from '../../utils/UiHelperUtils'
-import styles from './styles'
+import { resetStyles } from '../../utils/ThemeUtil.js'
+import type { GridContentType, GridItemsType, SpacingType } from '../../utils/TypesUtil.js'
+import { UiHelperUtil } from '../../utils/UiHelperUtils.js'
+import styles from './styles.js'
 
 @customElement('wui-grid')
 export class WuiGrid extends LitElement {

@@ -1,18 +1,18 @@
 import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/layout/wui-flex'
-import '../../components/gallery-placeholder'
 import type { WuiFlex } from '@web3modal/ui/src/layout/wui-flex'
 import { html } from 'lit'
+import '../../components/gallery-placeholder/index.js'
 import {
-  flexDirectionOptions,
-  flexWrapOptions,
-  flexBasisOptions,
-  flexGrowOptions,
-  flexShrinkOptions,
   flexAlignItemsOptions,
+  flexBasisOptions,
+  flexDirectionOptions,
+  flexGrowOptions,
   flexJustifyContentOptions,
+  flexShrinkOptions,
+  flexWrapOptions,
   spacingOptions
-} from '../../utils/PresetUtils'
+} from '../../utils/PresetUtils.js'
 
 type Component = Meta<WuiFlex>
 

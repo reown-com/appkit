@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/components/wui-card'
 import type { WuiCard } from '@web3modal/ui/src/components/wui-card'
 import { html } from 'lit'
-import '../../components/gallery-placeholder'
+import '../../components/gallery-placeholder/index.js'
 
 type Component = Meta<WuiCard>
 

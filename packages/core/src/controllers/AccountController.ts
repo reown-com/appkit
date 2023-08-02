@@ -1,7 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import { CoreHelperUtil } from '../utils/CoreHelperUtil'
-import type { CaipAddress } from '../utils/TypeUtils'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import type { CaipAddress } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
