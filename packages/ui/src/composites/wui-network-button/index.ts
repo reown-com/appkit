@@ -1,11 +1,11 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../wui-icon-box'
-import '../../components/wui-text'
 import '../../components/wui-image'
+import '../../components/wui-text'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
+import type { ButtonType } from '../../utils/TypesUtil'
+import '../wui-icon-box'
 import styles from './styles'
-import { ButtonType } from '../../utils/TypesUtil'
 
 @customElement('wui-network-button')
 export class WuiNetworkButton extends LitElement {
