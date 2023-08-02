@@ -27,6 +27,8 @@ export class W3mAccountView extends LitElement {
 
   @state() private balance = AccountController.state.balance
 
+  @state() private balanceSymbol = AccountController.state.balanceSymbol
+
   public constructor() {
     super()
     this.usubscribe.push(
@@ -36,6 +38,7 @@ export class W3mAccountView extends LitElement {
           this.profileImage = val.profileImage
           this.profileName = val.profileName
           this.balance = val.balance
+          this.balanceSymbol = val.balanceSymbol
         } else {
           ModalController.close()
         }
@@ -86,7 +89,7 @@ export class W3mAccountView extends LitElement {
           icon="networkPlaceholder"
           @click=${this.onNetworks.bind(this)}
         >
-          <wui-text variant="paragraph-500" color="fg-100">${this.balance ?? '_._'}</wui-text>
+          <wui-text variant="paragraph-500" color="fg-100">${this.showBalance()}</wui-text>
         </wui-list-item>
         <wui-list-item
           variant="icon"
@@ -119,6 +122,20 @@ export class W3mAccountView extends LitElement {
   private async onDisconnect() {
     await ConnectionController.disconnect()
     ModalController.close()
+  }
+
+  private showBalance() {
+    let formattedBalance = undefined
+
+    if (this.balance === '0.0') {
+      formattedBalance = '0'
+    } else if (typeof this.balance === 'string' && this.balance.length > 6) {
+      formattedBalance = this.balance.substring(0, 6)
+    } else if (typeof this.balance === 'string') {
+      formattedBalance = this.balance
+    }
+
+    return formattedBalance ? `${formattedBalance} ${this.balanceSymbol}` : '_._'
   }
 }
 

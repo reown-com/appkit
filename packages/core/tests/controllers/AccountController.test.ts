@@ -4,6 +4,7 @@ import { AccountController } from '../../index'
 // -- Setup --------------------------------------------------------------------
 const caipAddress = 'eip155:1:0x123'
 const balance = '0.100'
+const balanceSymbol = 'ETH'
 const profileName = 'john.eth'
 const profileImage = 'https://ipfs.com/0x123.png'
 
@@ -25,8 +26,9 @@ describe('AccountController', () => {
   })
 
   it('should update state correctly on setBalance()', () => {
-    AccountController.setBalance(balance)
+    AccountController.setBalance(balance, balanceSymbol)
     expect(AccountController.state.balance).toEqual(balance)
+    expect(AccountController.state.balanceSymbol).toEqual(balanceSymbol)
   })
 
   it('should update state correctly on setProfileName()', () => {

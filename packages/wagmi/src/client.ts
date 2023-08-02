@@ -223,7 +223,7 @@ export class Web3Modal extends Web3ModalScaffoldHtml {
 
   private async syncBalance(address: Address, chain: Chain) {
     const balance = await fetchBalance({ address, chainId: chain.id })
-    this.setBalance(balance.formatted)
+    this.setBalance(balance.formatted, balance.symbol)
   }
 
   private syncConnectors(connectors: Web3ModalOptions['wagmiConfig']['connectors']) {
