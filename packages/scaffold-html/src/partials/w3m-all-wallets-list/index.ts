@@ -15,17 +15,20 @@ export class W3mAllWalletsList extends LitElement {
 
   private paginationObserver?: IntersectionObserver = undefined
 
-  private recommended = ExplorerApiController.state.recommended
-
   // -- State & Properties -------------------------------- //
   @state() private initial = !ExplorerApiController.state.listings.length
 
   @state() private listings = ExplorerApiController.state.listings
 
+  @state() private recommended = ExplorerApiController.state.recommended
+
   public constructor() {
     super()
     this.unsubscribe.push(
-      ExplorerApiController.subscribeKey('listings', val => (this.listings = val))
+      ...[
+        ExplorerApiController.subscribeKey('listings', val => (this.listings = val)),
+        ExplorerApiController.subscribeKey('recommended', val => (this.recommended = val))
+      ]
     )
   }
 
