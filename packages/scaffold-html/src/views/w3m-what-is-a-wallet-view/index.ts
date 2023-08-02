@@ -36,7 +36,7 @@ export class W3mWhatIsAWalletView extends LitElement {
       >
         <w3m-help-widget .data=${data}></w3m-help-widget>
         <wui-button variant="fill" size="sm" @click=${() => RouterController.push('WhatIsAWallet')}>
-          <wui-icon color="inherit" slot="iconLeft" name="extension"></wui-icon>
+          <wui-icon color="inherit" slot="iconLeft" name="wallet"></wui-icon>
           Get a Wallet
         </wui-button>
       </wui-flex>
