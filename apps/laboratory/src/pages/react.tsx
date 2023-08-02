@@ -58,7 +58,9 @@ export default function ReactPage() {
           </VStack>
         </Center>
       </WagmiConfig>
-      <Web3Modal wagmiConfig={wagmiConfig} projectId={projectId} chains={chains} />
+      {projectId ? (
+        <Web3Modal wagmiConfig={wagmiConfig} projectId={projectId} chains={chains} />
+      ) : null}
     </>
   ) : null
 }

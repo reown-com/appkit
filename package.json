@@ -4,11 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "gallery": "npm run dev --w=@apps/gallery",
-    "laboratory": "npm run dev --w=@apps/laboratory",
-    "build": "npm run build --ws --if-present",
-    "build:gallery": "npm run build; npm run build:gallery --w=@apps/gallery",
-    "build:laboratory": "npm run build; npm run build:laboratory --w=@apps/laboratory",
+    "build": "turbo run build",
+    "gallery": "turbo run gallery",
+    "laboratory": "turbo run laboratory",
+    "build:gallery": "turbo run build:gallery",
+    "build:laboratory": "turbo run build:laboratory",
     "test": "npm run test --ws --if-present",
     "lint": "eslint .",
     "danger-ci": "danger ci",
@@ -18,7 +18,7 @@
     "pre-publish": "npm run lint; npm run typecheck; npm run prettier; npm run build; npm run new-version; npm install",
     "publish:latest": "lerna exec -- npm publish --no-private --access public --tag latest",
     "publish:canary": "lerna exec -- npm publish --no-private --access public --tag canary",
-    "clean": "rm -rf `find . -type d -name node_modules -o -name dist -o -name .next -o -name out -o -name storybook-static`; rm package-lock.json"
+    "clean": "rm -rf `find . -type d -name node_modules -o -name dist -o -name .next -o -name out`; rm package-lock.json"
   },
   "workspaces": [
     "packages/ui",
@@ -41,6 +41,7 @@
     "vitest": "0.34.1",
     "danger": "11.2.8",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "turbo": "1.10.12"
   }
 }
