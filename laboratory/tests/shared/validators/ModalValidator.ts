@@ -22,22 +22,30 @@ export class ModalValidator {
   }
 
   async expectAcceptedSign() {
-    await expect(this.page.getByText('Sign Message')).toBeVisible()
-    await expect(this.page.getByText('0x')).toBeVisible()
+    await expect(this.page.getByTestId('notification-header')).toBeVisible()
+    await expect(this.page.getByTestId('notification-header')).toHaveText('Sign Message')
+    await expect(this.page.getByTestId('notification-body')).toBeVisible()
+    await expect(this.page.getByTestId('notification-body')).toHaveText(/0x/u)
   }
 
   async expectRejectedSign() {
-    await expect(this.page.getByText('Sign Message')).toBeVisible()
-    await expect(this.page.getByText(/User rejected/u)).toBeVisible()
+    await expect(this.page.getByTestId('notification-header')).toBeVisible()
+    await expect(this.page.getByTestId('notification-header')).toHaveText('Sign Message')
+    await expect(this.page.getByTestId('notification-body')).toBeVisible()
+    await expect(this.page.getByTestId('notification-body')).toHaveText(/User rejected/u)
   }
 
   async expectAcceptedSignTyped() {
-    await expect(this.page.getByText('Sign Typed Data')).toBeVisible()
-    await expect(this.page.getByText('0x')).toBeVisible()
+    await expect(this.page.getByTestId('notification-header')).toBeVisible()
+    await expect(this.page.getByTestId('notification-header')).toHaveText('Sign Typed Data')
+    await expect(this.page.getByTestId('notification-body')).toBeVisible()
+    await expect(this.page.getByTestId('notification-body')).toHaveText(/0x/u)
   }
 
   async expectRejectedSignTyped() {
-    await expect(this.page.getByText('Sign Typed Data')).toBeVisible()
-    await expect(this.page.getByText(/User rejected/u)).toBeVisible()
+    await expect(this.page.getByTestId('notification-header')).toBeVisible()
+    await expect(this.page.getByTestId('notification-header')).toHaveText('Sign Typed Data')
+    await expect(this.page.getByTestId('notification-body')).toBeVisible()
+    await expect(this.page.getByTestId('notification-body')).toHaveText(/User rejected/u)
   }
 }

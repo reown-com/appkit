@@ -2,14 +2,21 @@ import { DEFAULT_SESSION_PARAMS } from './shared/constants'
 import { testMW, expect } from './shared/fixtures/w3m-wallet-fixture'
 
 testMW.describe('W3M using wallet web-example', () => {
-  testMW.beforeEach(async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    await modalPage.getUri()
-    await walletPage.connect()
+  testMW.beforeEach(
+    async ({ modalPage, walletPage, modalValidator, walletValidator, browserName }) => {
+      testMW.skip(
+        browserName === 'webkit' && process.platform === 'linux',
+        'Webkit on Linux does not support clipboard'
+      )
 
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    await modalValidator.expectConnected()
-    await walletValidator.expectConnected()
-  })
+      await modalPage.getUri()
+      await walletPage.connect()
+
+      await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+      await modalValidator.expectConnected()
+      await walletValidator.expectConnected()
+    }
+  )
 
   testMW('Should be able to connect', ({ modalPage, walletPage }) => {
     expect(modalPage).toBeDefined()
@@ -77,7 +84,7 @@ testMW.describe('W3M using wallet web-example', () => {
       await walletValidator.expectRecievedSignTyped({})
       await walletPage.handleRequest({ accept: false })
 
-      await modalValidator.expectAcceptedSignTyped()
+      await modalValidator.expectRejectedSignTyped()
     }
   )
 

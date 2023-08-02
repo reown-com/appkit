@@ -22,14 +22,8 @@ env:
 
 jobs:
   e2e_tests:
-      name: 'Playwright Tests - ${{ matrix.project }} - Shard ${{ matrix.shardIndex }} of ${{ matrix.shardTotal }}'
-      runs-on: ubuntu-latest
-      strategy:
-        fail-fast: false
-        matrix:
-          project: [chromium, webkit, firefox]
-          shardIndex: [1, 2, 3]
-          shardTotal: [3]
+      name: 'Playwright Tests'
+      runs-on: ubuntu-latest      
       timeout-minutes: 30
       steps:
         - name: checkout
@@ -53,7 +47,7 @@ jobs:
 
         - name: Run Playwright tests
           working-directory: ./laboratory
-          run: npx playwright test --project=${{ matrix.project }} --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+          run: npx playwright test
 
         - uses: actions/upload-artifact@v3
           if: always()
