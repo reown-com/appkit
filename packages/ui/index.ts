@@ -45,4 +45,5 @@ export * from './src/layout/wui-overlay'
 export * from './src/layout/wui-separator'
 
 export { initializeTheming, setColorTheme } from './src/utils/ThemeUtil'
+export type { VisualType } from './src/utils/TypesUtil'
 export { UiHelperUtil } from './src/utils/UiHelperUtils'
