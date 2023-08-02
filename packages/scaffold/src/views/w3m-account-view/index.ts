@@ -6,11 +6,11 @@ import {
   RouterController,
   SnackController
 } from '@web3modal/core'
+import { UiHelperUtil } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles'
-import { UiHelperUtil } from '@web3modal/ui/src/utils/UiHelperUtils'
 
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
