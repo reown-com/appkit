@@ -22,7 +22,8 @@
     "noFallthroughCasesInSwitch": true,
     "noPropertyAccessFromIndexSignature": true,
     "noUncheckedIndexedAccess": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "sourceMap": true
   },
   "exclude": ["node_modules", "dist", "out", ".next", "storybook-static"]
 }
