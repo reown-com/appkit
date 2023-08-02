@@ -294,11 +294,11 @@ export const elementStyles = css`
     button:hover:enabled {
       background-color: var(--wui-overlay-005);
     }
+  }
 
-    button:active:enabled {
-      transition: all var(--wui-ease-out-power-4) var(--wui-duration-sm);
-      background-color: var(--wui-overlay-010);
-    }
+  button:active {
+    transition: all var(--wui-ease-out-power-4) var(--wui-duration-sm);
+    background-color: var(--wui-overlay-010);
   }
 
   input {

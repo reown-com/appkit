@@ -32,9 +32,12 @@ export default css`
   }
 
   @media (hover: hover) and (pointer: fine) {
-    button:hover:enabled,
-    button:active:enabled {
+    button:hover:enabled {
       background-color: transparent !important;
     }
+  }
+
+  button:active {
+    background-color: transparent !important;
   }
 `
