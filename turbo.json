@@ -14,10 +14,20 @@
       "outputs": ["apps/laboratory/out/**"]
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"]
+      "dependsOn": ["^typecheck"],
+      "cache": false
     },
     "test": {
-      "dependsOn": ["^test"]
+      "dependsOn": ["^test"],
+      "cache": false
+    },
+    "lint": {
+      "dependsOn": ["^lint"],
+      "cache": false
+    },
+    "prettier": {
+      "dependsOn": ["^prettier"],
+      "cache": false
     },
     "dev:laboratory": {
       "dependsOn": ["build", "^dev:laboratory"],
