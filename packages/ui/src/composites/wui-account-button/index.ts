@@ -1,6 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../wui-avatar'
+import '../wui-icon-box'
 import '../../layout/wui-flex'
 import '../../components/wui-text'
 import '../../components/wui-image'
@@ -13,9 +14,11 @@ export class WuiAccountButton extends LitElement {
   public static styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public imageSrc?: string = undefined
+  @property() public networkSrc?: string = undefined
 
-  @property() public balance?: string
+  @property() public avatarSrc?: string = undefined
+
+  @property() public balance?: string = undefined
 
   @property() public address = ''
 
@@ -25,7 +28,11 @@ export class WuiAccountButton extends LitElement {
       <button>
         ${this.balanceTemplate()}
         <wui-flex gap="xxs" alignItems="center">
-          <wui-avatar address=${this.address}></wui-avatar>
+          <wui-avatar
+            .imageSrc=${this.avatarSrc}
+            alt=${this.address}
+            address=${this.address}
+          ></wui-avatar>
           <wui-text variant="paragraph-600" color="inverse-100">
             ${UiHelperUtil.getTruncateAddress(this.address, 4)}
           </wui-text>
@@ -36,9 +43,20 @@ export class WuiAccountButton extends LitElement {
 
   // -- Private ------------------------------------------- //
   private balanceTemplate() {
-    if (this.balance && this.imageSrc) {
+    if (this.balance) {
+      const networkElement = this.networkSrc
+        ? html`<wui-image src=${this.networkSrc}></wui-image>`
+        : html`
+            <wui-icon-box
+              size="sm"
+              iconColor="fg-200"
+              backgroundColor="fg-300"
+              icon="networkPlaceholder"
+            ></wui-icon-box>
+          `
+
       return html`
-        <wui-image src=${this.imageSrc}></wui-image>
+        ${networkElement}
         <wui-text variant="paragraph-600" color="fg-100"> ${this.balance} </wui-text>
       `
     }

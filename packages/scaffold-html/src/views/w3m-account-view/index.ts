@@ -10,6 +10,7 @@ import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles'
+import { UiHelperUtil } from '@web3modal/ui/src/utils/UiHelperUtils'
 
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
@@ -71,7 +72,7 @@ export class W3mAccountView extends LitElement {
 
         <wui-flex gap="3xs" alignItems="center" justifyContent="center">
           <wui-text variant="large-600" color="fg-100">
-            ${this.profileName ?? CoreHelperUtil.truncateAddress(this.address)}
+            ${this.profileName ?? UiHelperUtil.getTruncateAddress(this.address, 4)}
           </wui-text>
           <wui-icon-link
             size="md"

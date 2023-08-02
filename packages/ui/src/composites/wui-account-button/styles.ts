@@ -19,10 +19,15 @@ export default css`
       var(--wui-spacing-xs);
   }
 
-  wui-image {
+  wui-image,
+  wui-icon-box {
     border-radius: var(--wui-border-radius-3xl);
     width: 24px;
     height: 24px;
+  }
+
+  wui-icon-box {
+    border: 1px solid var(--wui-overlay-010);
   }
 
   wui-flex {

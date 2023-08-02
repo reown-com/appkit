@@ -25,10 +25,6 @@ export const CoreHelperUtil = {
     return Date.now() - lastRetry >= ConstantsUtil.ONE_SEC_MS
   },
 
-  truncateAddress(address: string) {
-    return `${address.substring(0, 4)}...${address.substring(address.length - 4)}`
-  },
-
   copyToClopboard(text: string) {
     navigator.clipboard.writeText(text)
   },
