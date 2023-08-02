@@ -34,7 +34,7 @@ jobs:
           - lint
           - prettier
           - typecheck
-          - danger-ci
+          - danger
     steps:
       - name: checkout
         uses: actions/checkout@v3
