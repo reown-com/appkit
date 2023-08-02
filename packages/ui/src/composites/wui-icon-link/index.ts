@@ -21,7 +21,7 @@ export class WuiIconLink extends LitElement {
   // -- Render -------------------------------------------- //
   public render() {
     return html`
-      <button ?disabled=${this.disabled}>
+      <button ?disabled=${this.disabled} ontouchstart>
         <wui-icon color=${this.iconColor} size=${this.size} name=${this.icon}></wui-icon>
       </button>
     `

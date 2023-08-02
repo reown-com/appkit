@@ -99,17 +99,17 @@ export default css`
     a[data-variant='transparent']:hover {
       background-color: var(--wui-overlay-005);
     }
+  }
 
-    a[data-variant='fill']:active {
-      background-color: var(--wui-color-blue-080);
-    }
+  a[data-variant='fill']:active {
+    background-color: var(--wui-color-blue-080);
+  }
 
-    a[data-variant='shade']:active {
-      background-color: var(--wui-overlay-020);
-    }
+  a[data-variant='shade']:active {
+    background-color: var(--wui-overlay-020);
+  }
 
-    a[data-variant='transparent']:active {
-      background-color: var(--wui-overlay-010);
-    }
+  a[data-variant='transparent']:active {
+    background-color: var(--wui-overlay-010);
   }
 `

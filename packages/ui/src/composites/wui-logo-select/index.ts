@@ -17,7 +17,7 @@ export class WuiLogoSelect extends LitElement {
   // -- Render -------------------------------------------- //
   public render() {
     return html`
-      <button ?disabled=${this.disabled}>
+      <button ?disabled=${this.disabled} ontouchstart>
         <wui-logo logo=${this.logo}></wui-logo>
       </button>
     `
