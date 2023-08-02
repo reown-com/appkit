@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-list-wallet'
 import type { WuiListWallet } from '@web3modal/ui/src/composites/wui-list-wallet'
 import { html } from 'lit'
-import '../../components/gallery-container.js'
+import '../../components/gallery-container/index.js'
 import { tagOptions, walletImagesOptions } from '../../utils/PresetUtils.js'
 
 type Component = Meta<WuiListWallet>

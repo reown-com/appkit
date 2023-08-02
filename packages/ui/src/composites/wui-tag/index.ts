@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../../components/wui-text.js'
+import '../../components/wui-text/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { TagType } from '../../utils/TypesUtil.js'
 import styles from './styles.js'

@@ -1,10 +1,9 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "require-extensions"],
+  "plugins": ["@typescript-eslint"],
   "extends": [
     "eslint:all",
-    "plugin:require-extensions/recommended",
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:@typescript-eslint/strict-type-checked",
     "prettier"

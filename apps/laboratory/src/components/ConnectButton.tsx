@@ -1,6 +1,6 @@
 import { Button } from '@chakra-ui/react'
 import { useAccount, useDisconnect } from 'wagmi'
-import { modal } from '../pages/index.js'
+import { modal } from '../pages/index'
 
 export function ConnectButton() {
   const { isConnected, address } = useAccount()

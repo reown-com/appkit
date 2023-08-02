@@ -1,12 +1,12 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../wui-avatar/index.js'
-import '../wui-icon-box/index.js'
-import '../../layout/wui-flex/index.js'
-import '../../components/wui-text/index.js'
 import '../../components/wui-image/index.js'
+import '../../components/wui-text/index.js'
+import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtils.js'
+import '../wui-avatar/index.js'
+import '../wui-icon-box/index.js'
 import styles from './styles.js'
 
 @customElement('wui-account-button')

@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/layout/wui-grid'
 import type { WuiGrid } from '@web3modal/ui/src/layout/wui-grid'
 import { html } from 'lit'
-import '../../components/gallery-placeholder.js'
+import '../../components/gallery-placeholder/index.js'
 import { gridContentOptions, gridItemsOptions, spacingOptions } from '../../utils/PresetUtils.js'
 
 type Component = Meta<WuiGrid>
