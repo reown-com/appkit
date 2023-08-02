@@ -2,13 +2,16 @@
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "outputs": ["packages/**/dist/**"]
     },
     "build:gallery": {
-      "dependsOn": ["build", "^build:gallery"]
+      "dependsOn": ["build", "^build:gallery"],
+      "outputs": ["apps/gallery/out/**"]
     },
     "build:laboratory": {
-      "dependsOn": ["build", "^build:laboratory"]
+      "dependsOn": ["build", "^build:laboratory"],
+      "outputs": ["apps/laboratory/out/**"]
     },
     "typecheck": {
       "dependsOn": ["^typecheck"]

@@ -1,4 +1,4 @@
-import type { ConnectorType } from '@web3modal/scaffold-html'
+import type { ConnectorType } from '@web3modal/scaffold'
 
 export const WALLET_CONNECT_ID = 'walletConnect'
 

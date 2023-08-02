@@ -23,7 +23,7 @@
   "workspaces": [
     "packages/ui",
     "packages/core",
-    "packages/scaffold-html",
+    "packages/scaffold",
     "packages/wagmi",
     "apps/gallery",
     "apps/laboratory"

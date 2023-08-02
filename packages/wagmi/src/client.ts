@@ -19,8 +19,8 @@ import type {
   ConnectionControllerClient,
   NetworkControllerClient,
   ProjectId
-} from '@web3modal/scaffold-html'
-import { Web3ModalScaffoldHtml } from '@web3modal/scaffold-html'
+} from '@web3modal/scaffold'
+import { Web3ModalScaffoldHtml } from '@web3modal/scaffold'
 import {
   ADD_CHAIN_METHOD,
   INJECTED_ID,
