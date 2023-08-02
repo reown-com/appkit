@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build:types": "tsc --emitDeclarationOnly --outDir ./dist/types",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir ./dist/types",
     "build:source": "echo TODO",
     "build": "npm run build:clean; npm run build:types & npm run build:source",
     "typecheck": "tsc --noEmit"
