@@ -34,7 +34,7 @@ export default css`
     border-radius: var(--wui-border-radius-3xl);
     border: 1px solid var(--wui-overlay-010);
     background: var(--wui-color-blue-100);
-    padding: 5px var(--wui-spacing-m) 5px var(--wui-spacing-xxs);
+    padding: 4px var(--wui-spacing-m) 4px var(--wui-spacing-xxs);
   }
 
   wui-avatar {

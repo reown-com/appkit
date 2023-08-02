@@ -32,7 +32,7 @@ export default css`
     animation-duration: 0.2s;
     animation-name: zoom-in;
     animation-fill-mode: backwards;
-    animation-timing-function: var(--wui-ease-out-power-4);
+    animation-timing-function: var(--wui-ease-out-power-2);
     outline: none;
   }
 

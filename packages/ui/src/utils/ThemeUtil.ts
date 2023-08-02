@@ -78,20 +78,14 @@ export const rootStyles = css`
     --wui-spacing-xxl: 24px;
     --wui-spacing-3xl: 40px;
 
-    --wui-ease-out-power-4: cubic-bezier(0, 0, 0.22, 1);
-    --wui-ease-out-power-3: cubic-bezier(0, 0, 0.31, 1);
-    --wui-ease-out-power-2: cubic-bezier(0, 0, 0.55, 1);
-    --wui-ease-out-power-1: cubic-bezier(0, 0, 0.75, 1);
+    --wui-ease-out-power-2: cubic-bezier(0, 0, 0.22, 1);
+    --wui-ease-out-power-1: cubic-bezier(0, 0, 0.55, 1);
 
-    --wui-ease-in-power-4: cubic-bezier(0.92, 0, 1, 1);
     --wui-ease-in-power-3: cubic-bezier(0.66, 0, 1, 1);
     --wui-ease-in-power-2: cubic-bezier(0.45, 0, 1, 1);
     --wui-ease-in-power-1: cubic-bezier(0.3, 0, 1, 1);
 
-    --wui-ease-inout-power-4: cubic-bezier(0.75, 0, 0.25, 1);
-    --wui-ease-inout-power-3: cubic-bezier(0.6, 0, 0.4, 1);
-    --wui-ease-inout-power-2: cubic-bezier(0.45, 0, 0.55, 1);
-    --wui-ease-inout-power-1: cubic-bezier(0.3, 0, 0.7, 1);
+    --wui-ease-inout-power-1: cubic-bezier(0.45, 0, 0.55, 1);
 
     --wui-duration-lg: 200ms;
     --wui-duration-md: 125ms;
@@ -258,7 +252,7 @@ export const elementStyles = css`
     justify-content: center;
     align-items: center;
     position: relative;
-    transition: all var(--wui-ease-out-power-2) var(--wui-duration-lg);
+    transition: all var(--wui-ease-out-power-1) var(--wui-duration-lg);
     outline: none;
     border: 1px solid transparent;
     column-gap: var(--wui-spacing-3xs);
@@ -272,14 +266,29 @@ export const elementStyles = css`
     }
 
     button:active:enabled {
-      transition: all var(--wui-ease-out-power-4) var(--wui-duration-sm);
+      transition: all var(--wui-ease-out-power-2) var(--wui-duration-sm);
       background-color: var(--wui-overlay-010);
+    }
+
+    button[data-variant='fill']:hover:enabled {
+      background-color: var(--wui-color-blue-090);
     }
   }
 
   button:disabled {
     cursor: not-allowed;
     background-color: var(--wui-overlay-010);
+  }
+
+  button[data-variant='shade']:disabled,
+  button[data-variant='accent']:disabled {
+    color: var(--wui-color-bg-300);
+  }
+
+  button[data-variant='shade']:disabled,
+  button[data-variant='accent']:disabled {
+    background-color: transparent;
+    color: var(--wui-color-bg-300);
   }
 
   button:disabled > wui-wallet-image,
@@ -301,8 +310,44 @@ export const elementStyles = css`
     box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
   }
 
+  button[data-variant='fill']:focus-visible {
+    background-color: var(--wui-color-blue-090);
+  }
+
+  button[data-variant='fill'] {
+    color: var(--wui-color-inverse-100);
+    background-color: var(--wui-color-blue-100);
+  }
+
+  button[data-variant='fill']:disabled {
+    color: var(--wui-color-fg-200);
+    background-color: var(--wui-overlay-020);
+  }
+
+  button[data-variant='shade'] {
+    color: var(--wui-color-fg-200);
+  }
+
+  button[data-variant='accent'] {
+    color: var(--wui-color-blue-100);
+  }
+
+  button[data-variant='fullWidth'] {
+    width: 100%;
+    border-radius: var(--wui-border-radius-xs);
+    height: 56px;
+    border: none;
+    background-color: var(--wui-overlay-002);
+    color: var(--wui-color-fg-200);
+  }
+
   button:active:enabled {
     background-color: var(--wui-overlay-010);
+  }
+
+  button[data-variant='fill']:active:enabled {
+    background-color: var(--wui-color-blue-080);
+    border: 1px solid var(--wui-overlay-010);
   }
 
   input {
