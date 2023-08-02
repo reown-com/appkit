@@ -45,10 +45,8 @@ export default css`
     box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
   }
 
-  @media (hover: hover) and (pointer: fine) {
-    input:hover:enabled {
-      background-color: var(--wui-overlay-010);
-    }
+  input:hover:enabled {
+    background-color: var(--wui-overlay-010);
   }
 
   wui-icon {

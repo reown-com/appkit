@@ -31,13 +31,8 @@ export default css`
     width: 100px;
   }
 
-  @media (hover: hover) and (pointer: fine) {
-    button:hover:enabled {
-      background-color: transparent !important;
-    }
-
-    button:active:enabled {
-      background-color: transparent !important;
-    }
+  button:hover:enabled,
+  button:active:enabled {
+    background-color: transparent !important;
   }
 `

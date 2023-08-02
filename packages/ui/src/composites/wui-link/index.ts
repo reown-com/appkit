@@ -15,7 +15,7 @@ export class WuiLink extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled}>
+      <button ?disabled=${this.disabled} ontouchstart>
         <slot name="iconLeft"></slot>
         <wui-text variant="small-600" color="inherit">
           <slot></slot>
