@@ -1,6 +1,6 @@
 {
   "name": "@apps/laboratory",
-  "version": "3.0.0-84bf2f84",
+  "version": "3.0.0-0d5dd1b5",
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
@@ -10,7 +10,7 @@
     "@chakra-ui/react": "2.8.0",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
-    "@web3modal/wagmi": "3.0.0-84bf2f84",
+    "@web3modal/wagmi": "3.0.0-0d5dd1b5",
     "framer-motion": "10.15.0",
     "next": "13.4.12",
     "viem": "1.5.0",
