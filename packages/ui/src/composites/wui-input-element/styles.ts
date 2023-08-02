@@ -25,9 +25,9 @@ export default css`
     button:hover:enabled {
       background-color: var(--wui-color-fg-250);
     }
-  }
 
-  button:active {
-    background-color: var(--wui-color-fg-225);
+    button:enabled:active {
+      background-color: var(--wui-color-fg-225);
+    }
   }
 `

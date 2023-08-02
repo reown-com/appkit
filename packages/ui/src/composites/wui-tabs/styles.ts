@@ -35,9 +35,9 @@ export default css`
     button:hover:enabled {
       background-color: transparent !important;
     }
-  }
 
-  button:active {
-    background-color: transparent !important;
+    button:active:enabled {
+      background-color: transparent !important;
+    }
   }
 `

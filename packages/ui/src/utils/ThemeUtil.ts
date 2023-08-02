@@ -296,7 +296,7 @@ export const elementStyles = css`
     }
   }
 
-  button:active {
+  button:active:enabled {
     transition: all var(--wui-ease-out-power-4) var(--wui-duration-sm);
     background-color: var(--wui-overlay-010);
   }

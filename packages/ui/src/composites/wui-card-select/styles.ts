@@ -35,9 +35,9 @@ export default css`
     [data-selected='true']:hover:enabled {
       background-color: var(--wui-color-blue-015);
     }
-  }
 
-  [data-selected='true']:active {
-    background-color: var(--wui-color-blue-010);
+    [data-selected='true']:active:enabled {
+      background-color: var(--wui-color-blue-010);
+    }
   }
 `
