@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
-import { LogoType } from '../../utils/TypesUtil'
+import type { LogoType } from '../../utils/TypesUtil'
 import '../wui-logo'
 import styles from './styles'
 

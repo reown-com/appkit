@@ -1,4 +1,5 @@
-import { html, LitElement, TemplateResult } from 'lit'
+import type { TemplateResult } from 'lit'
+import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { browserSvg } from '../../assets/visual/browser'
 import { daoSvg } from '../../assets/visual/dao'

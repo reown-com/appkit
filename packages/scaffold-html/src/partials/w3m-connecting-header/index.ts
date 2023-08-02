@@ -1,4 +1,4 @@
-import { Platform } from '@web3modal/core'
+import type { Platform } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 

@@ -29,12 +29,8 @@ export class Web3ModalScaffoldHtml {
   private initPromise?: Promise<void> = undefined
 
   public constructor(options: Options) {
-    if (isInitialized) {
-      throw new Error('Web3Modal is already initialized')
-    }
     this.initControllers(options)
     this.initOrContinue()
-    isInitialized = true
   }
 
   // -- Public -------------------------------------------------------------------
@@ -107,7 +103,8 @@ export class Web3ModalScaffoldHtml {
   }
 
   private async initOrContinue() {
-    if (!this.initPromise && CoreHelperUtil.isClient()) {
+    if (!this.initPromise && !isInitialized && CoreHelperUtil.isClient()) {
+      isInitialized = true
       this.initPromise = new Promise<void>(async resolve => {
         await Promise.all([import('@web3modal/ui'), import('./modal/w3m-modal')])
         const modal = document.createElement('w3m-modal')

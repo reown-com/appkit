@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect } from 'react'
-import { Web3Modal as Web3ModalCore, Web3ModalOptions } from './client'
+import type { Web3ModalOptions } from './client'
+import { Web3Modal as Web3ModalCore } from './client'
 
 let modal: Web3ModalCore | undefined = undefined
 
@@ -11,6 +12,8 @@ export function Web3Modal(props: Web3ModalProps) {
   useEffect(() => {
     modal = new Web3ModalCore(props)
   }, [])
+
+  return null
 }
 
 export function useWeb3Modal() {

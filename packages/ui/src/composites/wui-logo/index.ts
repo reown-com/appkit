@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-icon'
 import { resetStyles } from '../../utils/ThemeUtil'
-import { LogoType } from '../../utils/TypesUtil'
+import type { LogoType } from '../../utils/TypesUtil'
 import styles from './styles'
 
 @customElement('wui-logo')

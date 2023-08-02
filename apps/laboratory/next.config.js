@@ -6,7 +6,8 @@ const nextConfig = {
     '@web3modal/core',
     '@web3modal/ui',
     '@web3modal/scaffold-html',
-    '@web3modal/wagmi'
+    '@web3modal/wagmi',
+    '@web3modal/wagmi/react'
   ]
 }
 

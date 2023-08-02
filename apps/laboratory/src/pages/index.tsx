@@ -44,7 +44,7 @@ const wagmiConfig = createConfig({
 export const modal = new Web3Modal({ wagmiConfig, projectId, chains })
 
 // 4. Create Home page
-export default function Home() {
+export default function HomePage() {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {

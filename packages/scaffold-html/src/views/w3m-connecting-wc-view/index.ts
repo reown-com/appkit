@@ -1,10 +1,10 @@
+import type { Platform } from '@web3modal/core'
 import {
   ConnectionController,
   ConnectorController,
   ConstantsUtil,
   CoreHelperUtil,
   ModalController,
-  Platform,
   RouterController,
   SnackController,
   StorageUtil

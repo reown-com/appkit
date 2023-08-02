@@ -1,4 +1,5 @@
-import { RouterController, RouterControllerState } from '@web3modal/core'
+import type { RouterControllerState } from '@web3modal/core'
+import { RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'

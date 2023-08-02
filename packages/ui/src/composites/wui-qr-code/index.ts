@@ -4,7 +4,7 @@ import '../../components/wui-icon'
 import '../../components/wui-image'
 import { QrCodeUtil } from '../../utils/QrCode'
 import { resetStyles } from '../../utils/ThemeUtil'
-import { ThemeType } from '../../utils/TypesUtil'
+import type { ThemeType } from '../../utils/TypesUtil'
 import styles from './styles'
 
 @customElement('wui-qr-code')

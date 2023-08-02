@@ -1,4 +1,4 @@
-import { VisualType } from '@web3modal/ui/src/utils/TypesUtil'
+import type { VisualType } from '@web3modal/ui/src/utils/TypesUtil'
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 
