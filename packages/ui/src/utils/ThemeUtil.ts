@@ -290,14 +290,14 @@ export const elementStyles = css`
     box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
   }
 
-  button:active {
-    transition: all var(--wui-ease-out-power-4) var(--wui-duration-sm) !important;
-    background-color: var(--wui-overlay-010) !important;
-  }
-
   @media (hover: hover) and (pointer: fine) {
     button:hover:enabled {
       background-color: var(--wui-overlay-005);
+    }
+
+    button:active:enabled {
+      transition: all var(--wui-ease-out-power-4) var(--wui-duration-sm);
+      background-color: var(--wui-overlay-010);
     }
   }
 
