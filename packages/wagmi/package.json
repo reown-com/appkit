@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wagmi",
-  "version": "3.0.0-efbb62fa",
+  "version": "3.0.0-91ecf92a",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -25,7 +25,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/scaffold": "3.0.0-efbb62fa"
+    "@web3modal/scaffold": "3.0.0-91ecf92a"
   },
   "devDependencies": {
     "@wagmi/core": "^1",

@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/scaffold",
-  "version": "3.0.0-efbb62fa",
+  "version": "3.0.0-91ecf92a",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -15,8 +15,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/core": "3.0.0-efbb62fa",
-    "@web3modal/ui": "3.0.0-efbb62fa",
+    "@web3modal/core": "3.0.0-91ecf92a",
+    "@web3modal/ui": "3.0.0-91ecf92a",
     "lit": "2.7.6",
     "motion": "10.16.2"
   },
