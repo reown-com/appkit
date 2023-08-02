@@ -14,7 +14,7 @@ export class WuiNetworkButton extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public imageSrc?: string = undefined
 
-  @property() public name = ''
+  @property() public name = 'Unknown'
 
   @property() public variant: Exclude<ButtonType, 'accent' | 'fullwidth'> = 'fill'
 
