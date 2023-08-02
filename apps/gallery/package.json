@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "dev": "storybook dev -p 6006",
+    "dev:gallery": "storybook dev -p 6006",
     "build:gallery": "storybook build -o out"
   },
   "dependencies": {

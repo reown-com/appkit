@@ -15,6 +15,14 @@
     },
     "test": {
       "dependsOn": ["^test"]
+    },
+    "dev:laboratory": {
+      "dependsOn": ["build", "^dev:laboratory"],
+      "cache": false
+    },
+    "dev:gallery": {
+      "dependsOn": ["build", "^dev:gallery"],
+      "cache": false
     }
   }
 }
