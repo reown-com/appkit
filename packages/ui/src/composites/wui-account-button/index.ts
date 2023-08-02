@@ -11,7 +11,7 @@ import styles from './styles'
 
 @customElement('wui-account-button')
 export class WuiAccountButton extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public networkSrc?: string = undefined
@@ -23,7 +23,7 @@ export class WuiAccountButton extends LitElement {
   @property() public address = ''
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       <button>
         ${this.balanceTemplate()}
