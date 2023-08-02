@@ -1,8 +1,8 @@
 import type { Locator, Page } from '@playwright/test'
-import { LOCAL_LAB_URL } from '../constants'
+import { LOCAL_LABS_URL } from '../constants'
 
 export class ModalPage {
-  private readonly baseURL = LOCAL_LAB_URL
+  private readonly baseURL = LOCAL_LABS_URL
 
   private readonly w3modal: Locator
 

@@ -1,9 +1,9 @@
 import { expect } from '@playwright/test'
 import type { Locator, Page } from '@playwright/test'
-import { LOCAL_WALLET_URL } from '../constants'
+import { WALLET_URL } from '../constants'
 
 export class WalletValidator {
-  private readonly baseURL = LOCAL_WALLET_URL
+  private readonly baseURL = WALLET_URL
 
   private readonly gotoAccounts: Locator
 

@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
-import { LOCAL_LAB_URL } from './tests/shared/constants'
+import { LOCAL_LABS_URL } from './tests/shared/constants'
+
+import { config } from 'dotenv'
+config({ path: './.env.local' })
 
 export default defineConfig({
   testDir: './tests',
@@ -7,7 +10,7 @@ export default defineConfig({
   fullyParallel: true,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'list',
+  reporter: [['list'], ['html']],
 
   expect: {
     timeout: (process.env.CI ? 60 : 5) * 1000
@@ -16,8 +19,7 @@ export default defineConfig({
 
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    /* BaseURL: process.env.CI ? LAB_URL : LOCAL_SERVER, */
-    baseURL: LOCAL_LAB_URL,
+    baseURL: LOCAL_LABS_URL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -35,12 +37,8 @@ export default defineConfig({
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] }
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] }
     }
+
     /* Test against mobile viewports. */
     /*
      * {
@@ -69,6 +67,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     command: 'npm run playwright:start',
-    url: LOCAL_LAB_URL
+    url: LOCAL_LABS_URL,
+    reuseExistingServer: !process.env.CI
   }
 })

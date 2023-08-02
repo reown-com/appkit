@@ -1,10 +1,10 @@
 /* eslint-disable no-await-in-loop */
 import type { Locator, Page } from '@playwright/test'
 import type { SessionParams } from '../types'
-import { LOCAL_WALLET_URL } from '../constants'
+import { WALLET_URL } from '../constants'
 
 export class WalletPage {
-  private readonly baseURL = LOCAL_WALLET_URL
+  private readonly baseURL = WALLET_URL
 
   private readonly gotoAccounts: Locator
 
