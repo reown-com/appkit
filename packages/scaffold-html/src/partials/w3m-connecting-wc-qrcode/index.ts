@@ -12,7 +12,7 @@ import styles from './styles'
 
 @customElement('w3m-connecting-wc-qrcode')
 export class W3mConnectingWcQrcode extends LitElement {
-  public static styles = styles
+  public static override styles = styles
 
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
@@ -33,13 +33,13 @@ export class W3mConnectingWcQrcode extends LitElement {
     this.unsubscribe.push(ConnectionController.subscribeKey('wcUri', val => (this.uri = val)))
   }
 
-  public disconnectedCallback() {
+  public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     clearTimeout(this.timeout)
   }
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     this.isReady()
 
     return html`

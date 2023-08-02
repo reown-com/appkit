@@ -104,7 +104,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
 
 @customElement('wui-icon')
 export class WuiIcon extends LitElement {
-  public static styles = [resetStyles, colorStyles, styles]
+  public static override styles = [resetStyles, colorStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public size: SizeType = 'md'
@@ -114,7 +114,7 @@ export class WuiIcon extends LitElement {
   @property() public color: ColorType = 'fg-300'
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     this.style.cssText = `
       color: ${`var(--wui-color-${this.color});`}
       width: ${`var(--wui-icon-size-${this.size});`}

@@ -5,7 +5,7 @@ import styles from './styles'
 
 @customElement('wui-image')
 export class WuiImage extends LitElement {
-  public static styles = [resetStyles, colorStyles, styles]
+  public static override styles = [resetStyles, colorStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public src = './path/to/image.jpg'
@@ -13,7 +13,7 @@ export class WuiImage extends LitElement {
   @property() public alt = 'Image'
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`<img crossorigin="anonymous" src=${this.src} alt=${this.alt} />`
   }
 }

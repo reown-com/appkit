@@ -6,7 +6,7 @@ import styles from './styles'
 
 @customElement('wui-tabs')
 export class WuiTabs extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property({ type: Array }) public tabs: { icon: IconType; label: string }[] = []
@@ -16,7 +16,7 @@ export class WuiTabs extends LitElement {
   @state() public activeTab = 0
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     this.style.cssText = `--local-tab: ${this.activeTab};`
 
     return this.tabs.map((tab, index) => {

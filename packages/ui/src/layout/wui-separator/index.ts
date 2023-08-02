@@ -6,13 +6,13 @@ import styles from './styles'
 
 @customElement('wui-separator')
 export class WuiSeparator extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public text? = ''
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`${this.template()}`
   }
 

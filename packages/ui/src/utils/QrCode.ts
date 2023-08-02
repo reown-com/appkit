@@ -111,7 +111,7 @@ export const QrCodeUtil = {
     circles.forEach(([cx, cy]) => {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (circlesToConnect[cx]) {
-        circlesToConnect[cx].push(cy)
+        circlesToConnect[cx]?.push(cy)
       } else {
         circlesToConnect[cx] = [cy]
       }

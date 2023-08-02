@@ -7,13 +7,13 @@ import styles from './styles'
 
 @customElement('wui-tag')
 export class WuiTag extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public variant: TagType = 'main'
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     const isMain = this.variant === 'main'
     const backgroundColor = isMain ? 'var(--wui-color-blue-015)' : 'var(--wui-overlay-010)'
     const color = isMain ? 'blue-100' : 'fg-200'

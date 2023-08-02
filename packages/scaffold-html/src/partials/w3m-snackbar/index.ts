@@ -20,7 +20,7 @@ const presets = {
 
 @customElement('w3m-snackbar')
 export class W3mSnackBar extends LitElement {
-  public static styles = styles
+  public static override styles = styles
 
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
@@ -40,13 +40,13 @@ export class W3mSnackBar extends LitElement {
     )
   }
 
-  public disconnectedCallback() {
+  public override disconnectedCallback() {
     clearTimeout(this.timeout)
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     const { message, variant } = SnackController.state
     const preset = presets[variant]
 

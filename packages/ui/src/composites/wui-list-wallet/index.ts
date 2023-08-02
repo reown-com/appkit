@@ -1,16 +1,16 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-text'
-import '../wui-all-wallets-image'
-import '../wui-wallet-image'
-import '../wui-tag'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil'
 import type { IWalletImage, TagType } from '../../utils/TypesUtil'
+import '../wui-all-wallets-image'
+import '../wui-tag'
+import '../wui-wallet-image'
 import styles from './styles'
 
 @customElement('wui-list-wallet')
 export class WuiListWallet extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property({ type: Array }) public walletImages?: IWalletImage[] = []
@@ -28,7 +28,7 @@ export class WuiListWallet extends LitElement {
   @property({ type: Boolean }) public showAllWallets = false
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     const textColor = this.disabled ? 'fg-300' : 'fg-100'
 
     return html`
@@ -43,9 +43,9 @@ export class WuiListWallet extends LitElement {
   // -- Private ------------------------------------------- //
   private templateAllWallets() {
     if (this.showAllWallets && this.walletImages) {
-      return html`<wui-all-wallets-image
-        .walletImages=${this.walletImages}
-      ></wui-all-wallets-image>`
+      return html`
+        <wui-all-wallets-image .walletImages=${this.walletImages}> </wui-all-wallets-image>
+      `
     }
 
     return null

@@ -19,12 +19,12 @@ export class W3mNetworksView extends LitElement {
     )
   }
 
-  public disconnectedCallback() {
+  public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       <wui-grid padding="s" gridTemplateColumns="repeat(4, 1fr)" rowGap="l" columnGap="xs">
         ${this.networksTemplate()}

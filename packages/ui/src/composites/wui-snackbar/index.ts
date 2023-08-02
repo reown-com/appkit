@@ -1,14 +1,14 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../wui-icon-box'
 import '../../components/wui-text'
 import { resetStyles } from '../../utils/ThemeUtil'
 import type { ColorType, IconType } from '../../utils/TypesUtil'
+import '../wui-icon-box'
 import styles from './styles'
 
 @customElement('wui-snackbar')
 export class WuiSnackbar extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public backgroundColor: ColorType = 'blue-100'
@@ -20,7 +20,7 @@ export class WuiSnackbar extends LitElement {
   @property() public message = ''
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       <wui-icon-box
         size="sm"

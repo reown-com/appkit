@@ -7,13 +7,13 @@ import styles from './styles'
 
 @customElement('wui-input-element')
 export class WuiInputElement extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public icon: IconType = 'copy'
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`
       <button>
         <wui-icon color="inherit" size="xxs" name=${this.icon}></wui-icon>

@@ -3,7 +3,7 @@ import { css } from 'lit'
 // -- Utilities ---------------------------------------------------------------
 export function initializeTheming() {
   const styleTag = document.createElement('style')
-  styleTag.dataset.wui = 'theme'
+  styleTag.dataset['wui'] = 'theme'
   styleTag.textContent = rootStyles.cssText
   document.head.appendChild(styleTag)
 }

@@ -7,7 +7,7 @@ import styles from './styles'
 
 @customElement('w3m-network-switch-view')
 export class W3mNetworkSwitchView extends LitElement {
-  public static styles = styles
+  public static override styles = styles
 
   // -- Members ------------------------------------------- //
   private network = RouterController.state.data?.network
@@ -17,12 +17,12 @@ export class W3mNetworkSwitchView extends LitElement {
 
   @state() public error = false
 
-  public firstUpdated() {
+  public override firstUpdated() {
     this.onSwitchNetwork()
   }
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     if (!this.network) {
       throw new Error('w3m-network-switch-view: No network provided')
     }

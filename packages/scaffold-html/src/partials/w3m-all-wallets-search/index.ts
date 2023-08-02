@@ -2,11 +2,12 @@ import type { ExplorerListing } from '@web3modal/core'
 import { ExplorerApiController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles'
 
 @customElement('w3m-all-wallets-search')
 export class W3mAllWalletsSearch extends LitElement {
-  public static styles = styles
+  public static override styles = styles
 
   // -- Members ------------------------------------------- //
   private prevQuery = ''
@@ -17,7 +18,7 @@ export class W3mAllWalletsSearch extends LitElement {
   @property() private query = ''
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     this.onSearch()
 
     return this.loading ? html`<wui-loading-spinner></wui-loading-spinner>` : this.walletsTemplate()
@@ -61,7 +62,7 @@ export class W3mAllWalletsSearch extends LitElement {
         ${search.map(
           listing => html`
             <wui-card-select
-              imageSrc=${images[listing.image_id]}
+              imageSrc=${ifDefined(images[listing.image_id])}
               type="wallet"
               name=${listing.name}
               @click=${() => this.onConnectListing(listing)}

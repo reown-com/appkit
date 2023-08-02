@@ -5,10 +5,10 @@ import styles from './styles'
 
 @customElement('wui-overlay')
 export class WuiOverlay extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`<slot></slot>`
   }
 }

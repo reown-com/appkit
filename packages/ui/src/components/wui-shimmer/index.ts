@@ -5,7 +5,7 @@ import styles from './styles'
 
 @customElement('wui-shimmer')
 export class WuiShimmer extends LitElement {
-  public static styles = [styles]
+  public static override styles = [styles]
 
   // -- State & Properties -------------------------------- //
   @property() public width = ''
@@ -15,7 +15,7 @@ export class WuiShimmer extends LitElement {
   @property() public borderRadius: BorderRadiusType = 'm'
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     this.style.cssText = `
       width: ${this.width};
       height: ${this.height};

@@ -5,10 +5,10 @@ import styles from './styles'
 
 @customElement('wui-loading-spinner')
 export class WuiLoadingSpinner extends LitElement {
-  public static styles = [resetStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`<svg viewBox="25 25 50 50">
       <circle r="20" cy="50" cx="50"></circle>
     </svg>`

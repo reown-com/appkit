@@ -6,13 +6,13 @@ import styles from './styles'
 
 @customElement('wui-input-numeric')
 export class WuiInputNumeric extends LitElement {
-  public static styles = [resetStyles, elementStyles, styles]
+  public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled = false
 
   // -- Render -------------------------------------------- //
-  public render() {
+  public override render() {
     return html`<input
       type="number"
       maxlength="1"

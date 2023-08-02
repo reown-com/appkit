@@ -5,7 +5,7 @@ import styles from './styles'
 
 @customElement('gallery-placeholder')
 export class GalleryPlaceholder extends LitElement {
-  public static styles = [styles]
+  public static override styles = [styles]
 
   // -- state & properties ------------------------------------------- //
   @property() public size: 'lg' | 'md' | 'sm' | 'xs' = 'md'
@@ -15,7 +15,7 @@ export class GalleryPlaceholder extends LitElement {
   @property({ type: Boolean }) public margin = false
 
   // -- render ------------------------------------------------------- //
-  public render() {
+  public override render() {
     const classes = {
       [`placeholder-size-${this.size}`]: true,
       [`placeholder-bg-color-${this.background}`]: true,

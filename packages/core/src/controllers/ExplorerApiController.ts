@@ -1,6 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
-import { version } from '../../package.json'
+import packageJson from '../../package.json'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil'
 import { FetchUtil } from '../utils/FetchUtil'
 import type {
@@ -13,8 +13,9 @@ import type {
 
 // -- Helpers ------------------------------------------- //
 const api = new FetchUtil({ baseUrl: 'https://explorer-api.walletconnect.com' })
-const entries = 28
-const sdkVersion = `js-${version}`
+const entries = 24
+const recommendedEntries = 4
+const sdkVersion = `js-${packageJson.version}`
 const sdkType = 'w3m'
 
 // -- Types --------------------------------------------- //
@@ -22,6 +23,7 @@ export interface ExplorerApiControllerState {
   projectId: ProjectId
   page: number
   total: number
+  recommended: ExplorerListing[]
   listings: ExplorerListing[]
   search: ExplorerListing[]
   images: Record<string, string>
@@ -34,6 +36,7 @@ const state = proxy<ExplorerApiControllerState>({
   projectId: '',
   page: 1,
   total: 0,
+  recommended: [],
   listings: [],
   search: [],
   images: {}
@@ -54,11 +57,33 @@ export const ExplorerApiController = {
     state.projectId = projectId
   },
 
-  async fetchListings(req?: ExplorerListingsRequest) {
-    const page = req?.page ?? 1
+  async fetchRecommendedListings() {
     const response = await api.get<ExplorerListingsResponse>({
       path: '/w3m/v1/getAllListings',
-      params: { projectId: state.projectId, page, entries, sdkVersion, sdkType }
+      params: {
+        projectId: state.projectId,
+        page: 1,
+        entries: recommendedEntries,
+        sdkVersion,
+        sdkType
+      }
+    })
+    const recommendedArr = Object.values(response.listings)
+    recommendedArr.forEach(({ image_id }) => {
+      state.images[image_id] = ExplorerApiController.getWalletImageUrl(image_id)
+    })
+    await Promise.all(
+      Object.values(state.images).map(async url => CoreHelperUtil.preloadImage(url))
+    )
+    state.recommended = recommendedArr
+  },
+
+  async fetchListings(req?: ExplorerListingsRequest) {
+    const page = req?.page ?? 1
+    const excludedIds = state.recommended.map(({ id }) => id)
+    const response = await api.get<ExplorerListingsResponse>({
+      path: '/w3m/v1/getAllListings',
+      params: { projectId: state.projectId, excludedIds, page, entries, sdkVersion, sdkType }
     })
     const listingsArr = Object.values(response.listings)
     listingsArr.forEach(({ image_id }) => {
