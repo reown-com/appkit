@@ -45,7 +45,7 @@ jobs:
           run: npm run build
 
         - name: Install Playwright Browsers
-          run: npx playwright install --with-deps
+          run: npx playwright install --with-deps chromium firefox
 
         - name: Run Playwright tests
           working-directory: ./laboratory
