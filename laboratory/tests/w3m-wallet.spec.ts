@@ -18,10 +18,16 @@ testMW.describe('W3M using wallet web-example', () => {
     }
   )
 
-  testMW('Should be able to connect', ({ modalPage, walletPage }) => {
-    expect(modalPage).toBeDefined()
-    expect(walletPage).toBeDefined()
-  })
+  testMW(
+    'Should be able to connect, then disconnect',
+    async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+      expect(modalPage).toBeDefined()
+      expect(walletPage).toBeDefined()
+      await modalPage.disconnect()
+      await modalValidator.expectDisconnected()
+      await walletValidator.expectDisconnected()
+    }
+  )
 
   testMW(
     'Should send disconnect to wallet',
