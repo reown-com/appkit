@@ -30,7 +30,7 @@ jobs:
         fail-fast: false
         matrix:
           project: [chromium, firefox]
-          shardIndex: [1, 2, 3]
+          shardIndex: [1, 2]
           shardTotal: [2]
       timeout-minutes: 5
       steps:
