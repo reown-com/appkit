@@ -48,12 +48,12 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright tests
-        working-directory: ./laboratory
+        working-directory: ./apps/laboratory
         run: npx playwright test
 
       - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: playwright-report
-          path: ./laboratory/playwright-report/
+          path: ./apps/laboratory/playwright-report/
           retention-days: 30
