@@ -29,9 +29,9 @@ jobs:
       strategy:
         fail-fast: false
         matrix:
-          project: [chromium, webkit]
-          shardIndex: [1]
-          shardTotal: [1]
+          project: [chromium, firefox]
+          shardIndex: [1, 2, 3]
+          shardTotal: [2]
       timeout-minutes: 5
       steps:
         - name: checkout
