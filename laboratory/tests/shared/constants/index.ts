@@ -8,4 +8,4 @@ export const DEFAULT_SESSION_PARAMS: SessionParams = {
 
 export const LOCAL_LABS_URL = 'http://localhost:3000/with-wagmi/react'
 export const LOCAL_WALLET_URL = 'http://localhost:3001'
-export const WALLET_URL = process.env.CI ? (process.env.WALLET_URL as string) : LOCAL_WALLET_URL
+export const WALLET_URL = 'https://react-wallet.walletconnect.com/'

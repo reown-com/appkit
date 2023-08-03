@@ -2,11 +2,12 @@ name: Playwright Tests
 
 on: 
   push:  
-    branches: [ "V2", "V3" ]
+    branches: [ "V2" ]
     paths-ignore:
       - "**.md"
 
   pull_request:
+    branches: [ "V2" ]
     paths-ignore:
       - "**.md"
 
@@ -19,9 +20,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}  
 
 env:
-  NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-  # The wallet example url to test against 
-  WALLET_URL: "https://react-wallet.walletconnect.com/"
+  NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}  
 
 jobs:
   e2e_tests:
