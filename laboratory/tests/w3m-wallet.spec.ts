@@ -58,12 +58,8 @@ testMW(
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSignTyped()
     await modalPage.closePopup()
-  }
-)
 
-testMW(
-  'Should connect, send disconnect event to wallet, recieve disconnect event',
-  async ({ modalPage, modalValidator, walletValidator }) => {
+    // Should be able to disconnect
     await modalValidator.expectConnected()
     await walletValidator.expectConnected()
     await modalPage.disconnect()
