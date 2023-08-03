@@ -24,8 +24,12 @@ env:
 
 jobs:
   e2e_tests:
-      name: 'Playwright Tests'
-      runs-on: ubuntu-latest      
+      name: 'Playwright Tests - ${{ matrix.project }}'
+      runs-on: ubuntu-latest
+      strategy:
+        fail-fast: false
+        matrix:
+          project: [chromium, firefox]
       timeout-minutes: 10
       steps:
         - name: checkout
@@ -49,11 +53,11 @@ jobs:
 
         - name: Run Playwright tests
           working-directory: ./laboratory
-          run: npx playwright test
+          run: npx playwright test --project=${{ matrix.project }}
 
         - uses: actions/upload-artifact@v3
           if: always()
           with:
-            name: playwright-report
+            name: playwright-report-${{ matrix.project }}
             path: ./laboratory/playwright-report/
-            retention-days: 30
+            retention-days: 7
