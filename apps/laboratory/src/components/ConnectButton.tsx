@@ -8,10 +8,16 @@ export function ConnectButton() {
 
   return isConnected ? (
     <>
-      <Button onClick={() => modal.open()}>{address}</Button>
-      <Button onClick={() => disconnect()}>Disconnect</Button>
+      <Button onClick={() => modal.open()} data-testid="partial-account-address">
+        {address}
+      </Button>
+      <Button onClick={() => disconnect()} data-testid="view-account-disconnect-button">
+        Disconnect
+      </Button>
     </>
   ) : (
-    <Button onClick={() => modal.open()}>Connect Wallet</Button>
+    <Button onClick={() => modal.open()} data-testid="partial-core-connect-button">
+      Connect Wallet
+    </Button>
   )
 }

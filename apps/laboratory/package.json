@@ -15,5 +15,8 @@
     "next": "13.4.12",
     "viem": "1.5.0",
     "wagmi": "1.3.9"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.36.2"
   }
 }

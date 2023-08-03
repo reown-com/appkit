@@ -50,7 +50,7 @@ export class W3mConnectingWcQrcode extends LitElement {
           Scan this QR Code with your phone
         </wui-text>
 
-        <wui-button variant="fullWidth" @click=${this.onCopyUri}>
+        <wui-button variant="fullWidth" @click=${this.onCopyUri} data-testid="copy-link-button">
           <wui-icon size="sm" color="inherit" slot="iconLeft" name="copy"></wui-icon>
           Copy Link
         </wui-button>

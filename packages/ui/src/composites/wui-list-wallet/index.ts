@@ -32,7 +32,7 @@ export class WuiListWallet extends LitElement {
     const textColor = this.disabled ? 'fg-300' : 'fg-100'
 
     return html`
-      <button ?disabled=${this.disabled} ontouchstart>
+      <button ?disabled=${this.disabled} ontouchstart data-testid="component-header-action-button">
         ${this.templateAllWallets()} ${this.templateWalletImage()}
         <wui-text variant="paragraph-500" color=${textColor}>${this.name}</wui-text>
         ${this.templateStatus()}
