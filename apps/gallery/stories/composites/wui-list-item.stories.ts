@@ -11,7 +11,7 @@ export default {
   title: 'Composites/wui-list-item',
   args: {
     disabled: false,
-    icon: 'swap',
+    icon: 'swapHorizontal',
     variant: 'image',
     imageSrc: networkImageSrc,
     alt: 'Ethereum',

@@ -2,6 +2,7 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-transaction-visual'
 import type { WuiTransactionVisual } from '@web3modal/ui/src/composites/wui-transaction-visual'
 import { html } from 'lit'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { transactionOptions } from '../../utils/PresetUtils'
 
@@ -27,6 +28,6 @@ export const Default: Component = {
   render: args =>
     html`<wui-transaction-visual
       type=${args.type}
-      imageSrc=${args.imageSrc}
+      imageSrc=${ifDefined(args.imageSrc)}
     ></wui-transaction-visual>`
 }
