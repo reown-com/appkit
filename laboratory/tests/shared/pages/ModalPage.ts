@@ -45,4 +45,8 @@ export class ModalPage {
   async closeModal() {
     await this.page.getByTestId('backcard-close').click()
   }
+
+  async closePopup() {
+    await this.page.locator('.nextui-modal-close-icon-svg').click()
+  }
 }
