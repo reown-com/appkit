@@ -3,7 +3,7 @@ import '@web3modal/ui/src/components/wui-text'
 import type { WuiText } from '@web3modal/ui/src/components/wui-text'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { colorOptions, textAlignOptions, textOptions } from '../../utils/PresetUtils.js'
+import { colorOptions, textAlignOptions, textOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiText>
 

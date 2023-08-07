@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/layout/wui-flex'
 import type { WuiFlex } from '@web3modal/ui/src/layout/wui-flex'
 import { html } from 'lit'
-import '../../components/gallery-placeholder/index.js'
+import '../../components/gallery-placeholder'
 import {
   flexAlignItemsOptions,
   flexBasisOptions,
@@ -12,7 +12,7 @@ import {
   flexShrinkOptions,
   flexWrapOptions,
   spacingOptions
-} from '../../utils/PresetUtils.js'
+} from '../../utils/PresetUtils'
 
 type Component = Meta<WuiFlex>
 

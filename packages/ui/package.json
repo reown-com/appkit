@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "lit": "2.7.6",
+    "lit": "2.8.0",
     "qrcode": "1.5.3"
   },
   "devDependencies": {

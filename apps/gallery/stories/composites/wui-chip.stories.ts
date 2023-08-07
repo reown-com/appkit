@@ -7,7 +7,7 @@ import {
   externalLink,
   iconOptions,
   walletImagesOptions
-} from '../../utils/PresetUtils.js'
+} from '../../utils/PresetUtils'
 
 type Component = Meta<WuiChip>
 

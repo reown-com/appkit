@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-search-bar'
 import type { WuiSearchBar } from '@web3modal/ui/src/composites/wui-search-bar'
 import { html } from 'lit'
-import '../../components/gallery-container/index.js'
+import '../../components/gallery-container'
 
 type Component = Meta<WuiSearchBar>
 
