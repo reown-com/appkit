@@ -3,7 +3,7 @@ import '@web3modal/ui/src/composites/wui-icon-box'
 import type { WuiIconBox } from '@web3modal/ui/src/composites/wui-icon-box'
 import { html } from 'lit'
 
-import { backgroundOptions, colorOptions, iconOptions } from '../../utils/PresetUtils.js'
+import { backgroundOptions, colorOptions, iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiIconBox>
 

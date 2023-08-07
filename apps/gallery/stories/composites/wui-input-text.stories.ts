@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-input-text'
 import type { WuiInputText } from '@web3modal/ui/src/composites/wui-input-text'
 import { html } from 'lit'
-import '../../components/gallery-container/index.js'
-import { iconOptions } from '../../utils/PresetUtils.js'
+import '../../components/gallery-container'
+import { iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiInputText>
 
