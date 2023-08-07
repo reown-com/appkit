@@ -25,5 +25,5 @@
     "verbatimModuleSyntax": true,
     "sourceMap": true
   },
-  "exclude": ["node_modules", "dist", "out", ".next", "storybook-static"]
+  "exclude": ["node_modules", "dist", "out", ".next", ".turbo"]
 }

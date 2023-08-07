@@ -3,15 +3,15 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["packages/**/dist/**"]
+      "outputs": ["dist/**"]
     },
     "build:gallery": {
       "dependsOn": ["build", "^build:gallery"],
-      "outputs": ["apps/gallery/out/**"]
+      "outputs": ["out/**"]
     },
     "build:laboratory": {
       "dependsOn": ["build", "^build:laboratory"],
-      "outputs": ["apps/laboratory/out/**"]
+      "outputs": ["out/**", ".next/**", "!.next/cache/**"]
     },
     "typecheck": {
       "dependsOn": ["^typecheck"],
