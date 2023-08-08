@@ -3,7 +3,7 @@ import '@web3modal/ui/src/composites/wui-button'
 import type { WuiButton } from '@web3modal/ui/src/composites/wui-button'
 import type { IconType } from '@web3modal/ui/src/utils/TypesUtil'
 import { html } from 'lit'
-import { buttonOptions, iconOptions } from '../../utils/PresetUtils.js'
+import { buttonOptions, iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiButton & { iconLeft?: IconType; iconRight?: IconType }>
 

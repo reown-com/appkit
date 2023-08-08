@@ -79,6 +79,10 @@ async function checkUiPackage() {
     if (!diff?.added.includes(`@customElement('wui-`)) {
       fail(`${f} is a ui element, but does not define wui- prefix`)
     }
+
+    if (diff?.added.includes('@web3modal/ui/')) {
+      fail(`${f} should use relative imports instead of direct package access`)
+    }
   }
 
   for (const f of created_ui_style_files) {
@@ -151,6 +155,10 @@ async function checkCorePackage() {
     if (diff?.added.includes('this.state')) {
       fail(`${f} is using this.state, use just state`)
     }
+
+    if (diff?.added.includes('@web3modal/core/')) {
+      fail(`${f} should use relative imports instead of direct package access`)
+    }
   }
 
   if (created_core_controllers.length && !created_core_controllers_tests.length) {
@@ -193,6 +201,14 @@ async function checkScaffoldHtmlPackage() {
 
     if (diff?.added.includes('.subscribe') && !diff.added.includes('this.unsubscribe.forEach')) {
       fail(`${f} is subscribing to controller states without unsubscribe logic`)
+    }
+
+    if (
+      diff?.added.includes('@web3modal/core/') ||
+      diff?.added.includes('@web3modal/ui/') ||
+      diff?.added.includes('@web3modal/scaffold/')
+    ) {
+      fail(`${f} should use relative imports instead of direct package access`)
     }
   }
 }

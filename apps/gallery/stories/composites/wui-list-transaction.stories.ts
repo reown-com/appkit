@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-list-transaction'
 import type { WuiListTransaction } from '@web3modal/ui/src/composites/wui-list-transaction'
 import { html } from 'lit'
-import '../../components/gallery-container/index.js'
-import { transactionOptions } from '../../utils/PresetUtils.js'
+import '../../components/gallery-container'
+import { transactionOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiListTransaction>
 

@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-list-item'
 import type { WuiListItem } from '@web3modal/ui/src/composites/wui-list-item'
 import { html } from 'lit'
-import '../../components/gallery-container/index.js'
-import { accountEntryOptions, iconOptions, networkImageSrc } from '../../utils/PresetUtils.js'
+import '../../components/gallery-container'
+import { accountEntryOptions, iconOptions, networkImageSrc } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiListItem>
 
@@ -11,7 +11,7 @@ export default {
   title: 'Composites/wui-list-item',
   args: {
     disabled: false,
-    icon: 'swap',
+    icon: 'swapHorizontal',
     variant: 'image',
     imageSrc: networkImageSrc,
     alt: 'Ethereum',

@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/components/wui-image'
 import type { WuiImage } from '@web3modal/ui/src/components/wui-image'
 import { html } from 'lit'
-import { walletImageSrc } from '../../utils/PresetUtils.js'
+import { walletImageSrc } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiImage>
 

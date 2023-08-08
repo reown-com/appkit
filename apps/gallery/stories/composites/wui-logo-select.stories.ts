@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-logo-select'
 import type { WuiLogoSelect } from '@web3modal/ui/src/composites/wui-logo-select'
 import { html } from 'lit'
-import { logoOptions } from '../../utils/PresetUtils.js'
+import { logoOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiLogoSelect>
 

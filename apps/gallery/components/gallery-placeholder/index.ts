@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import styles from './styles.js'
+import styles from './styles'
 
 @customElement('gallery-placeholder')
 export class GalleryPlaceholder extends LitElement {
