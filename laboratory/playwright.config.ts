@@ -31,12 +31,20 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      testIgnore: '**/w3m-injected.spec.ts',
       use: { ...devices['Desktop Chrome'] }
     },
 
     {
       name: 'firefox',
+      testIgnore: '**/w3m-injected.spec.ts',
       use: { ...devices['Desktop Firefox'] }
+    },
+
+    {
+      name: 'injected',
+      testMatch: '**/w3m-injected.spec.ts',
+      use: { ...devices['Desktop Chrome'] }
     }
 
     /* Test against mobile viewports. */

@@ -61,3 +61,42 @@ jobs:
             name: playwright-report-${{ matrix.project }}
             path: ./laboratory/playwright-report/
             retention-days: 7
+
+  e2e_injected_tests:
+      name: 'Playwright Injected Wallet Tests'
+      runs-on: ubuntu-latest
+      timeout-minutes: 10
+      steps:
+        - name: checkout
+          uses: actions/checkout@v3
+
+        - name: setup-node
+          uses: actions/setup-node@v3
+          with:
+            node-version: 18.x
+            cache: 'npm'
+            cache-dependency-path: 'package-lock.json'
+        
+        - name: unzip extension data
+          working-directory: ./laboratory/tests/shared/data
+          run: 7z x *.zip -o*.zip
+
+        - name: Install deps
+          run: npm ci
+          
+        - name: build
+          run: npm run build
+
+        - name: Install Playwright Browsers
+          run: npx playwright install --with-deps chromium
+
+        - name: Run Playwright tests
+          working-directory: ./laboratory
+          run: npx playwright test --project=injected
+
+        - uses: actions/upload-artifact@v3
+          if: always()
+          with:
+            name: playwright-report-injected
+            path: ./laboratory/playwright-report/
+            retention-days: 7
