@@ -79,7 +79,11 @@ jobs:
         
         - name: unzip extension data
           working-directory: ./laboratory/tests/shared/data
-          run: 7z x *.zip -o*.zip
+          run: |
+            mkdir metamask-chrome-10.34.0
+            mkdir mm-storage
+            7z x metamask-chrome-10.34.0.zip -ometamask-chrome-10.34.0
+            7z x mm-storage.zip -omm-storage
 
         - name: Install deps
           run: npm ci

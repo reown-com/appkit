@@ -14,7 +14,7 @@ export const testWithMM = base.extend<{
     const context = await chromium.launchPersistentContext(pathToStorage, {
       headless: false,
       args: [
-        // `--headless=new`,
+        `--headless=new`,
         `--disable-extensions-except=${pathToExtension}`,
         `--load-extension=${pathToExtension}`
       ]
