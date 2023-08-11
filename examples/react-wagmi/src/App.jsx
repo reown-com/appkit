@@ -1,28 +1,16 @@
-import { Center, VStack } from '@chakra-ui/react'
-import { Web3Modal } from '@web3modal/wagmi'
+import { Web3Modal } from '@web3modal/wagmi/react'
 import { useEffect, useState } from 'react'
 import { WagmiConfig, configureChains, createConfig } from 'wagmi'
-import {
-  arbitrum,
-  avalanche,
-  fantom,
-  gnosis,
-  mainnet,
-  optimism,
-  polygon,
-  sepolia
-} from 'wagmi/chains'
+import { arbitrum, mainnet } from 'wagmi/chains'
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 import { publicProvider } from 'wagmi/providers/public'
-import { ConnectButton } from '../components/ConnectButton'
-import { NetworksButton } from '../components/NetworksButton'
 
 // 1. Get projectId
-const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+const projectId = import.meta.env.VITE_PROJECT_ID
 if (!projectId) {
-  throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
+  throw new Error('VITE_PROJECT_ID is not set')
 }
 
 // 2. Create wagmiConfig
@@ -40,9 +28,6 @@ const wagmiConfig = createConfig({
   publicClient
 })
 
-// 3. Create Web3Modal
-export const modal = new Web3Modal({ wagmiConfig, projectId, chains })
-
 export default function HomePage() {
   const [ready, setReady] = useState(false)
 
@@ -51,13 +36,9 @@ export default function HomePage() {
   }, [])
 
   return ready ? (
-    <WagmiConfig config={wagmiConfig}>
-      <Center h="100vh">
-        <VStack gap={4}>
-          <ConnectButton />
-          <NetworksButton />
-        </VStack>
-      </Center>
-    </WagmiConfig>
+    <>
+      <WagmiConfig config={wagmiConfig}></WagmiConfig>
+      <Web3Modal wagmiConfig={wagmiConfig} projectId={projectId} chains={chains} />
+    </>
   ) : null
 }

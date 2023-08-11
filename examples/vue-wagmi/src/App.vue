@@ -13,7 +13,13 @@ export default {
   },
 
   data() {
-    const projectId = 'd99dde3b11a5eb0ed2dc9947a1e7c0a5'
+    // 1. Get projectId
+    const projectId = import.meta.env.VITE_PROJECT_ID
+    if (!projectId) {
+      throw new Error('VITE_PROJECT_ID is not set')
+    }
+
+    // 2. Create wagmiConfig
     const { chains, publicClient } = configureChains([mainnet, arbitrum], [publicProvider()])
     const wagmiConfig = createConfig({
       autoConnect: true,
