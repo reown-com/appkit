@@ -46,7 +46,7 @@ export class WuiButton extends LitElement {
   }
 
   public loadingTemplate() {
-    let spinnerColor: ColorType = 'fg-100'
+    let spinnerColor: ColorType = 'inverse-100'
     switch (this.variant) {
       case 'accent':
         spinnerColor = 'blue-100'
@@ -55,7 +55,7 @@ export class WuiButton extends LitElement {
         spinnerColor = 'fg-300'
         break
       default:
-        spinnerColor = 'fg-100'
+        spinnerColor = 'inverse-100'
     }
 
     if (this.loading) {

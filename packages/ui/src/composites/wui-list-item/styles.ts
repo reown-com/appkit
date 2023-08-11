@@ -37,4 +37,16 @@ export default css`
   button:disabled {
     color: var(--wui-color-fg-300);
   }
+
+  button[data-loading='true'] > wui-icon {
+    transition: all 200ms ease-in-out;
+    opacity: 0;
+  }
+
+  wui-loading-spinner {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 `

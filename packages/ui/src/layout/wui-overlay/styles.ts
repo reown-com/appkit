@@ -8,8 +8,18 @@ export default css`
     left: 0;
     right: 0;
     position: fixed;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     background-color: var(--wui-cover);
     z-index: var(--wui-z-index);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  :host([data-top='true']) {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
   }
 `

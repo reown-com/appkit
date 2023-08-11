@@ -88,6 +88,7 @@ export class W3mAccountView extends LitElement {
           variant="icon"
           iconVariant="overlay"
           icon="networkPlaceholder"
+          ?chevron=${true}
           @click=${this.onNetworks.bind(this)}
         >
           <wui-text variant="paragraph-500" color="fg-100">${this.showBalance()}</wui-text>
@@ -96,6 +97,7 @@ export class W3mAccountView extends LitElement {
           variant="icon"
           iconVariant="overlay"
           icon="disconnect"
+          ?chevron=${false}
           @click=${this.onDisconnect.bind(this)}
         >
           <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
