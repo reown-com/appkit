@@ -1,5 +1,4 @@
-'use client'
-
+import { ref } from 'vue'
 import type { Web3ModalOptions } from './client.js'
 import { Web3Modal } from './client.js'
 
@@ -18,8 +17,10 @@ export function useWeb3Modal(options?: Web3ModalOptions) {
     modal = new Web3Modal(options)
   }
 
-  return {
+  const modalRef = ref({
     open: modal.open.bind(modal),
     close: modal.close.bind(modal)
-  }
+  })
+
+  return modalRef
 }
