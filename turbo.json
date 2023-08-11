@@ -36,6 +36,10 @@
     "dev:gallery": {
       "dependsOn": ["build", "^dev:gallery"],
       "cache": false
+    },
+    "dev:example": {
+      "dependsOn": ["build", "^dev:example"],
+      "cache": false
     }
   }
 }
