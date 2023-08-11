@@ -1,24 +1,25 @@
 'use client'
 
-import { useEffect } from 'react'
 import type { Web3ModalOptions } from './client.js'
-import { Web3Modal as Web3ModalCore } from './client.js'
+import { Web3Modal } from './client.js'
 
 // -- Types -------------------------------------------------------------------
-export type Web3ModalProps = Web3ModalOptions
+export type { Web3ModalOptions } from './client.js'
 
 // -- Setup -------------------------------------------------------------------
-let modal: Web3ModalCore | undefined = undefined
+let modal: Web3Modal | undefined = undefined
 
 // -- Lib ---------------------------------------------------------------------
-export function Web3Modal(props: Web3ModalProps) {
-  useEffect(() => {
-    modal = new Web3ModalCore(props)
-  }, [])
+export function useWeb3Modal(options?: Web3ModalOptions) {
+  if (!modal) {
+    if (!options) {
+      throw new Error('useWeb3Modal: options are required on first call')
+    }
+    modal = new Web3Modal(options)
+  }
 
-  return null
-}
-
-export function useWeb3Modal() {
-  return (() => modal)()
+  return {
+    open: modal.open.bind(modal),
+    close: modal.close.bind(modal)
+  }
 }

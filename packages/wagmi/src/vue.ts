@@ -1,25 +1,26 @@
+import { ref } from 'vue'
 import type { Web3ModalOptions } from './client.js'
-import { Web3Modal as Web3ModalCore } from './client.js'
+import { Web3Modal } from './client.js'
 
 // -- Types -------------------------------------------------------------------
-export type Web3ModalProps = Web3ModalOptions
+export type { Web3ModalOptions } from './client.js'
 
 // -- Setup -------------------------------------------------------------------
-let modal: Web3ModalCore | undefined = undefined
+let modal: Web3Modal | undefined = undefined
 
 // -- Lib ---------------------------------------------------------------------
-export const Web3Modal = {
-  props: ['projectId', 'wagmiConfig', 'chains'] satisfies (keyof Web3ModalProps)[],
-
-  setup(props: Web3ModalProps) {
-    modal = new Web3ModalCore(props)
-  },
-
-  render() {
-    return null
+export function useWeb3Modal(options?: Web3ModalOptions) {
+  if (!modal) {
+    if (!options) {
+      throw new Error('useWeb3Modal: options are required on first call')
+    }
+    modal = new Web3Modal(options)
   }
-}
 
-export function useWeb3Modal() {
-  return (() => modal)()
+  const modalRef = ref({
+    open: modal.open.bind(modal),
+    close: modal.close.bind(modal)
+  })
+
+  return modalRef
 }

@@ -1,5 +1,4 @@
-import { Web3Modal } from '@web3modal/wagmi/react'
-import { useEffect, useState } from 'react'
+import { useWeb3Modal } from '@web3modal/wagmi'
 import { WagmiConfig, configureChains, createConfig } from 'wagmi'
 import { arbitrum, mainnet } from 'wagmi/chains'
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
@@ -26,16 +25,11 @@ const wagmiConfig = createConfig({
 })
 
 export default function App() {
-  const [ready, setReady] = useState(false)
+  const modal = useWeb3Modal({ wagmiConfig, projectId, chains })
 
-  useEffect(() => {
-    setReady(true)
-  }, [])
-
-  return ready ? (
-    <>
-      <WagmiConfig config={wagmiConfig}></WagmiConfig>
-      <Web3Modal wagmiConfig={wagmiConfig} projectId={projectId} chains={chains} />
-    </>
-  ) : null
+  return (
+    <WagmiConfig config={wagmiConfig}>
+      <button onClick={() => modal.open()}>Open Modal</button>
+    </WagmiConfig>
+  )
 }
