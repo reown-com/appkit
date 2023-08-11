@@ -19,6 +19,7 @@
     "pre-publish": "turbo lint typecheck prettier test --parallel; npm run new-version; npm install; turbo run build;",
     "publish:latest": "lerna exec -- npm publish --no-private --access public --tag latest",
     "publish:canary": "lerna exec -- npm publish --no-private --access public --tag canary",
+    "publish:alpha": "lerna exec -- npm publish --no-private --access public --tag alpha",
     "clean": "rm -rf `find . -type d -name node_modules -o -name dist -o -name .next -o -name out`; rm package-lock.json"
   },
   "workspaces": [
@@ -37,7 +38,7 @@
     "eslint": "8.46.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-require-extensions": "0.1.3",
-    "lerna": "7.1.4",
+    "lerna": "7.1.5",
     "prettier": "3.0.1",
     "typescript": "5.1.6",
     "vitest": "0.34.1",
@@ -47,7 +48,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "turbo": "1.10.12",
-    "viem": "1.5.3",
-    "wagmi": "1.3.9"
+    "viem": "1.6.0",
+    "wagmi": "1.3.10"
   }
 }

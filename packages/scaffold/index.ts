@@ -25,6 +25,6 @@ export * from './src/partials/w3m-header/index.js'
 export * from './src/partials/w3m-help-widget/index.js'
 export * from './src/partials/w3m-snackbar/index.js'
 
-export { Web3ModalScaffoldHtml } from './src/client.js'
+export { Web3ModalScaffold } from './src/client.js'
 
 export type * from '@web3modal/core'

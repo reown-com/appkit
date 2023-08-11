@@ -12,6 +12,6 @@
     "@emotion/styled": "11.11.0",
     "@web3modal/wagmi": "3.0.0-8d5e8f4e",
     "framer-motion": "10.15.1",
-    "next": "13.4.12"
+    "next": "13.4.13"
   }
 }
