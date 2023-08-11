@@ -1,32 +1,24 @@
-import type { Ref } from 'vue'
-import { onMounted, ref } from 'vue'
 import type { Web3ModalOptions } from './client.js'
 import { Web3Modal as Web3ModalCore } from './client.js'
 
-const modal: Ref<Web3ModalCore | null> = ref(null)
+let modal: Web3ModalCore | undefined = undefined
 
 export const Web3Modal = {
-  name: 'Web3Modal',
-  props: {
-    options: {
-      type: Object as () => Web3ModalOptions,
-      required: true
-    }
+  props: ['projectId', 'wagmiConfig', 'chains'] as (keyof Web3ModalOptions)[],
+
+  setup(props: Web3ModalOptions) {
+    modal = new Web3ModalCore(props)
   },
-  setup(props: { options: Web3ModalOptions }) {
-    onMounted(() => {
-      modal.value = new Web3ModalCore(props.options)
-    })
-  },
+
   render() {
     return null
   }
 }
 
 export function useWeb3Modal() {
-  if (!modal.value) {
+  if (!modal) {
     throw new Error('useWeb3Modal function used before <Web3Modal /> component was mounted')
   }
 
-  return modal.value
+  return modal
 }

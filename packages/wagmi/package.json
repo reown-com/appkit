@@ -31,10 +31,6 @@
   "dependencies": {
     "@web3modal/scaffold": "3.0.0-8d5e8f4e"
   },
-  "devDependencies": {
-    "@wagmi/core": "^1",
-    "viem": "^1"
-  },
   "peerDependencies": {
     "@wagmi/core": ">=1",
     "react": ">=17",
