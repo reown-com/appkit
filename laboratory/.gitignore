@@ -3,4 +3,4 @@ node_modules/
 /playwright-report/
 /playwright/.cache/
 /tests/shared/data/**
-!/tests/shared/data/*.zip
+!/tests/shared/data/*.7z
