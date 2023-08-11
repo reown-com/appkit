@@ -3,8 +3,8 @@
   "private": true,
   "version": "3.0.0-8d5e8f4e",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build"
+    "dev:example": "vite --port 3001",
+    "build:example": "vite build"
   },
   "dependencies": {
     "@web3modal/wagmi": "3.0.0-8d5e8f4e"
