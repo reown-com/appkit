@@ -10,6 +10,8 @@
     "@chakra-ui/react": "2.8.0",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
+    "@sentry/browser": "^7.63.0",
+    "@sentry/react": "^7.63.0",
     "@web3modal/wagmi": "3.0.0-91ecf92a",
     "framer-motion": "10.15.0",
     "next": "13.4.12",
