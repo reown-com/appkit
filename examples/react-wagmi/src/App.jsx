@@ -14,10 +14,7 @@ if (!projectId) {
 }
 
 // 2. Create wagmiConfig
-const { chains, publicClient } = configureChains(
-  [mainnet, arbitrum, avalanche, polygon, gnosis, optimism, sepolia, fantom],
-  [publicProvider()]
-)
+const { chains, publicClient } = configureChains([mainnet, arbitrum], [publicProvider()])
 const wagmiConfig = createConfig({
   autoConnect: true,
   connectors: [
@@ -28,7 +25,7 @@ const wagmiConfig = createConfig({
   publicClient
 })
 
-export default function HomePage() {
+export default function App() {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
