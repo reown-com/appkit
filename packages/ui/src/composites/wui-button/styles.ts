@@ -20,12 +20,12 @@ export default css`
   }
 
   ::slotted(*) {
-    transition: all 200ms ease-in-out;
+    transition: opacity 200ms ease-in-out;
     opacity: var(--local-opacity-100);
   }
 
   button > wui-text {
-    transition: all 200ms ease-in-out;
+    transition: opacity 200ms ease-in-out;
     opacity: var(--local-opacity-100);
   }
 

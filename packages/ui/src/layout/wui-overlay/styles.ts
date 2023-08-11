@@ -17,9 +17,15 @@ export default css`
     justify-content: center;
   }
 
-  :host([data-top='true']) {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
+  @media (max-height: 500px) {
+    :host {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    ::slotted(wui-card) {
+      margin: 24px 0px;
+    }
   }
 `

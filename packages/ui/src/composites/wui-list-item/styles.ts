@@ -39,7 +39,7 @@ export default css`
   }
 
   button[data-loading='true'] > wui-icon {
-    transition: all 200ms ease-in-out;
+    transition: opacity 200ms ease-in-out;
     opacity: 0;
   }
 

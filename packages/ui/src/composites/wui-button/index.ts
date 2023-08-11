@@ -4,7 +4,7 @@ import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import '../../components/wui-loading-spinner/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ButtonType, ColorType, SizeType } from '../../utils/TypesUtil.js'
+import type { ButtonType, SizeType } from '../../utils/TypesUtil.js'
 import styles from './styles.js'
 
 @customElement('wui-button')
@@ -32,7 +32,7 @@ export class WuiButton extends LitElement {
       <button
         data-variant=${this.variant}
         data-size=${this.size}
-        ?disabled=${this.disabled}
+        ?disabled=${this.loading ? true : Boolean(this.disabled)}
         ontouchstart
       >
         ${this.loadingTemplate()}
@@ -46,20 +46,8 @@ export class WuiButton extends LitElement {
   }
 
   public loadingTemplate() {
-    let spinnerColor: ColorType = 'inverse-100'
-    switch (this.variant) {
-      case 'accent':
-        spinnerColor = 'blue-100'
-        break
-      case 'shade':
-        spinnerColor = 'fg-300'
-        break
-      default:
-        spinnerColor = 'inverse-100'
-    }
-
     if (this.loading) {
-      return html`<wui-loading-spinner color=${spinnerColor}></wui-loading-spinner>`
+      return html`<wui-loading-spinner color="fg-300"></wui-loading-spinner>`
     }
 
     return html``
