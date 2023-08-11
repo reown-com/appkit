@@ -1,12 +1,17 @@
 import type { Web3ModalOptions } from './client.js'
 import { Web3Modal as Web3ModalCore } from './client.js'
 
+// -- Types -------------------------------------------------------------------
+export type Web3ModalProps = Web3ModalOptions
+
+// -- Setup -------------------------------------------------------------------
 let modal: Web3ModalCore | undefined = undefined
 
+// -- Lib ---------------------------------------------------------------------
 export const Web3Modal = {
-  props: ['projectId', 'wagmiConfig', 'chains'] as (keyof Web3ModalOptions)[],
+  props: ['projectId', 'wagmiConfig', 'chains'] satisfies (keyof Web3ModalProps)[],
 
-  setup(props: Web3ModalOptions) {
+  setup(props: Web3ModalProps) {
     modal = new Web3ModalCore(props)
   },
 
@@ -16,9 +21,5 @@ export const Web3Modal = {
 }
 
 export function useWeb3Modal() {
-  if (!modal) {
-    throw new Error('useWeb3Modal function used before <Web3Modal /> component was mounted')
-  }
-
-  return modal
+  return (() => modal)()
 }
