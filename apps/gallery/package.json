@@ -10,15 +10,15 @@
   "dependencies": {
     "@web3modal/ui": "3.0.0-91ecf92a",
     "lit": "2.8.0",
-    "storybook": "7.2.1"
+    "storybook": "7.2.2"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "7.2.1",
-    "@storybook/addon-links": "7.2.1",
-    "@storybook/blocks": "7.2.1",
-    "@storybook/theming": "7.2.1",
-    "@storybook/web-components": "7.2.1",
-    "@storybook/web-components-vite": "7.2.1",
-    "file-system-cache": "2.4.3"
+    "@storybook/addon-essentials": "7.2.2",
+    "@storybook/addon-links": "7.2.2",
+    "@storybook/blocks": "7.2.2",
+    "@storybook/theming": "7.2.2",
+    "@storybook/web-components": "7.2.2",
+    "@storybook/web-components-vite": "7.2.2",
+    "file-system-cache": "2.4.4"
   }
 }

@@ -15,6 +15,10 @@
     "./react": {
       "import": "./dist/esm/src/react.js",
       "types": "./dist/types/src/react.d.ts"
+    },
+    "./vue": {
+      "import": "./dist/esm/src/vue.js",
+      "types": "./dist/types/src/vue.d.ts"
     }
   },
   "scripts": {
@@ -35,7 +39,8 @@
     "@wagmi/core": ">=1",
     "react": ">=17",
     "react-dom": ">=17",
-    "viem": ">=1"
+    "viem": ">=1",
+    "vue": ">=3"
   },
   "keywords": [
     "web3",
