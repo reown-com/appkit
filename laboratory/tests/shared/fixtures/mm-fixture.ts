@@ -8,8 +8,8 @@ export const testWithMM = base.extend<{
   extensionId: string
 }>({
   context: async ({}, use) => {
-    const pathToExtension = path.join(__dirname, '../data/metamask-chrome-10.34.0')
-    const pathToStorage = path.join(__dirname, '../data/mm-storage')
+    const pathToExtension = './tests/shared/data/metamask-chrome-10.34.0'
+    const pathToStorage = './tests/shared/data/mm-storage'
 
     const context = await chromium.launchPersistentContext(pathToStorage, {
       headless: false,
