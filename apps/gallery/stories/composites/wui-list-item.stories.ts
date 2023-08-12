@@ -15,10 +15,18 @@ export default {
     variant: 'image',
     imageSrc: networkImageSrc,
     alt: 'Ethereum',
-    iconVariant: 'blue'
+    iconVariant: 'blue',
+    chevron: true,
+    loading: false
   },
   argTypes: {
     disabled: {
+      control: { type: 'boolean' }
+    },
+    chevron: {
+      control: { type: 'boolean' }
+    },
+    loading: {
       control: { type: 'boolean' }
     },
     variant: {
@@ -46,6 +54,8 @@ export const Default: Component = {
         .alt=${args.alt}
         .iconVariant=${args.iconVariant}
         ?disabled=${args.disabled}
+        ?chevron=${args.chevron}
+        ?loading=${args.loading}
       >
         <wui-text variant="paragraph-500" color="fg-100">0.527 ETH</wui-text>
         <wui-text variant="paragraph-500" color="fg-200">607.38 USD</wui-text>
