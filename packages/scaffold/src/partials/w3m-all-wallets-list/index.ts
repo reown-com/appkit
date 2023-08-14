@@ -94,7 +94,7 @@ export class W3mAllWalletsList extends LitElement {
   private paginationLoaderTemplate() {
     const { listings, total } = ExplorerApiController.state
     if (total === 0 || listings.length < total) {
-      return html`<wui-loading-spinner></wui-loading-spinner>`
+      return html`<wui-loading-spinner color="blue-100"></wui-loading-spinner>`
     }
 
     return null

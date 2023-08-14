@@ -14,7 +14,7 @@ export default css`
 
   circle {
     fill: none;
-    stroke: var(--wui-color-blue-100);
+    stroke: var(--local-color);
     stroke-width: 4px;
     stroke-dasharray: 1, 124;
     stroke-dashoffset: 0;

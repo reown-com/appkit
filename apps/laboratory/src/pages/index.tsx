@@ -43,7 +43,6 @@ const wagmiConfig = createConfig({
 // 3. Create Web3Modal
 export const modal = new Web3Modal({ wagmiConfig, projectId, chains })
 
-// 4. Create Home page
 export default function HomePage() {
   const [ready, setReady] = useState(false)
 

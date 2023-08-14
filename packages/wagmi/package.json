@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wagmi",
-  "version": "3.0.0-91ecf92a",
+  "version": "3.0.0-8d5e8f4e",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -15,6 +15,10 @@
     "./react": {
       "import": "./dist/esm/src/react.js",
       "types": "./dist/types/src/react.d.ts"
+    },
+    "./vue": {
+      "import": "./dist/esm/src/vue.js",
+      "types": "./dist/types/src/vue.d.ts"
     }
   },
   "scripts": {
@@ -25,17 +29,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@web3modal/scaffold": "3.0.0-91ecf92a"
-  },
-  "devDependencies": {
-    "@wagmi/core": "^1",
-    "viem": "^1"
+    "@web3modal/scaffold": "3.0.0-8d5e8f4e"
   },
   "peerDependencies": {
     "@wagmi/core": ">=1",
     "react": ">=17",
     "react-dom": ">=17",
-    "viem": ">=1"
+    "viem": ">=1",
+    "vue": ">=3"
   },
   "keywords": [
     "web3",

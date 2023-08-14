@@ -14,7 +14,8 @@ export default {
     variant: 'fill',
     disabled: false,
     iconLeft: undefined,
-    iconRight: undefined
+    iconRight: undefined,
+    loading: false
   },
   argTypes: {
     size: {
@@ -26,6 +27,9 @@ export default {
       control: { type: 'select' }
     },
     disabled: {
+      control: { type: 'boolean' }
+    },
+    loading: {
       control: { type: 'boolean' }
     },
     iconLeft: {
@@ -41,7 +45,12 @@ export default {
 
 export const Default: Component = {
   render: args =>
-    html`<wui-button size=${args.size} ?disabled=${args.disabled} variant=${args.variant}>
+    html`<wui-button
+      size=${args.size}
+      ?loading=${args.loading}
+      ?disabled=${args.disabled}
+      variant=${args.variant}
+    >
       ${args.iconLeft
         ? html`<wui-icon
             size="sm"

@@ -5,9 +5,9 @@
     "packages/core",
     "packages/scaffold",
     "packages/wagmi",
-    "apps/gallery",
-    "apps/laboratory"
+    "apps/*",
+    "examples/*"
   ],
-  "version": "3.0.0-91ecf92a",
+  "version": "3.0.0-8d5e8f4e",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }

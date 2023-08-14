@@ -8,6 +8,7 @@ export class WuiOverlay extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- Render -------------------------------------------- //
+
   public override render() {
     return html`<slot></slot>`
   }
