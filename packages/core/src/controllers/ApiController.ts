@@ -1,5 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import type {
   ApiGetWalletsRequest,
@@ -89,7 +90,10 @@ export const ApiController = {
         exclude
       }
     })
-    await Promise.all(data.map(({ image_id }) => ApiController.fetchImageBlob(image_id)))
+    await Promise.all([
+      ...data.map(({ image_id }) => ApiController.fetchImageBlob(image_id)),
+      CoreHelperUtil.wait(300)
+    ])
     state.wallets = [...state.wallets, ...data]
     state.count = count
     state.page = page
