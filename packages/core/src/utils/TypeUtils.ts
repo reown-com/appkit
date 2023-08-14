@@ -81,7 +81,7 @@ export type CaipNamespaces = Record<
 >
 
 // --- new api types ----
-export interface ApiListing {
+export interface ApiWallet {
   id: string
   name: string
   homepage: string
@@ -101,11 +101,14 @@ export interface ApiListing {
 }
 
 export interface ApiGetWalletsRequest {
-  page?: number
-  entries?: number
+  page: number
+  entries: number
+  search?: string
+  include?: string[]
+  exclude?: string[]
 }
 
 export interface ApiGetWalletsResponse {
-  data: ApiListing[]
+  data: ApiWallet[]
   count: number
 }

@@ -1,6 +1,6 @@
 import type {
+  ApiControllerState,
   ConnectionControllerClient,
-  ExplorerApiControllerState,
   ModalControllerArguments,
   NetworkControllerClient
 } from '@web3modal/core'
@@ -10,7 +10,6 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
-  ExplorerApiController,
   ModalController,
   NetworkController
 } from '@web3modal/core'
@@ -22,7 +21,7 @@ let isInitialized = false
 interface Options {
   networkControllerClient: NetworkControllerClient
   connectionControllerClient: ConnectionControllerClient
-  projectId: ExplorerApiControllerState['projectId']
+  projectId: ApiControllerState['projectId']
 }
 
 // -- Client --------------------------------------------------------------------
@@ -100,7 +99,6 @@ export class Web3ModalScaffold {
   private initControllers(options: Options) {
     NetworkController.setClient(options.networkControllerClient)
     ConnectionController.setClient(options.connectionControllerClient)
-    ExplorerApiController.setProjectId(options.projectId)
     ApiController.setProjectId(options.projectId)
   }
 

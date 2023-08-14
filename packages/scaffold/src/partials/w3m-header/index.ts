@@ -7,9 +7,9 @@ import { animate } from 'motion'
 // -- Helpers ------------------------------------------- //
 function headings() {
   const connectorName = RouterController.state.data?.connector?.name
-  const listingName = RouterController.state.data?.listing?.name
+  const walletName = RouterController.state.data?.wallet?.name
   const networkName = RouterController.state.data?.network?.name
-  const name = listingName ?? connectorName
+  const name = walletName ?? connectorName
 
   return {
     Connect: 'Connect Wallet',

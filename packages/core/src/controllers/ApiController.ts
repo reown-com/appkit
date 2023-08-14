@@ -1,12 +1,16 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
 import { FetchUtil } from '../utils/FetchUtil.js'
-import type { ApiGetWalletsResponse, ApiListing, ProjectId } from '../utils/TypeUtils.js'
+import type {
+  ApiGetWalletsRequest,
+  ApiGetWalletsResponse,
+  ApiWallet,
+  ProjectId
+} from '../utils/TypeUtils.js'
 
 // -- Helpers ------------------------------------------- //
 const api = new FetchUtil({ baseUrl: 'https://api.web3modal.com' })
-
-// TOD const entries = 24
+const entries = 24
 const recommendedEntries = 4
 const sdkVersion = `js-3.0.0`
 const sdkType = 'w3m'
@@ -16,9 +20,9 @@ export interface ApiControllerState {
   projectId: ProjectId
   page: number
   count: number
-  recommended: ApiListing[]
-  listings: ApiListing[]
-  search: ApiListing[]
+  recommended: ApiWallet[]
+  wallets: ApiWallet[]
+  search: ApiWallet[]
   images: Record<string, string>
 }
 
@@ -30,7 +34,7 @@ const state = proxy<ApiControllerState>({
   page: 1,
   count: 0,
   recommended: [],
-  listings: [],
+  wallets: [],
   search: [],
   images: {}
 })
@@ -72,5 +76,37 @@ export const ApiController = {
     })
     await Promise.all(data.map(({ image_id }) => ApiController.fetchImageBlob(image_id)))
     state.recommended = data
+  },
+
+  async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
+    const exclude = state.recommended.map(({ id }) => id)
+    const { data, count } = await api.post<ApiGetWalletsResponse>({
+      path: '/getWallets',
+      headers: ApiController.getApiHeaders(),
+      body: {
+        page,
+        entries,
+        exclude
+      }
+    })
+    await Promise.all(data.map(({ image_id }) => ApiController.fetchImageBlob(image_id)))
+    state.wallets = [...state.wallets, ...data]
+    state.count = count
+    state.page = page
+  },
+
+  async searchWallet({ search }: Pick<ApiGetWalletsRequest, 'search'>) {
+    state.search = []
+    const { data } = await api.post<ApiGetWalletsResponse>({
+      path: '/getWallets',
+      headers: ApiController.getApiHeaders(),
+      body: {
+        page: 1,
+        entries: 100,
+        search
+      }
+    })
+    await Promise.all(data.map(({ image_id }) => ApiController.fetchImageBlob(image_id)))
+    state.search = data
   }
 }

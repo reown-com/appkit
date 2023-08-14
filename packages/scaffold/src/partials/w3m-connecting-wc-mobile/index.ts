@@ -1,7 +1,7 @@
 import {
+  ApiController,
   ConnectionController,
   CoreHelperUtil,
-  ExplorerApiController,
   RouterController,
   SnackController
 } from '@web3modal/core'
@@ -12,9 +12,9 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 @customElement('w3m-connecting-wc-mobile')
 export class W3mConnectingWcMobile extends LitElement {
   // -- Members ------------------------------------------- //
-  private readonly listing = RouterController.state.data?.listing
+  private readonly wallet = RouterController.state.data?.wallet
 
-  private readonly images = ExplorerApiController.state.images
+  private readonly images = ApiController.state.images
 
   private unsubscribe: (() => void)[] = []
 
@@ -38,16 +38,16 @@ export class W3mConnectingWcMobile extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (!this.listing) {
-      throw new Error('w3m-connecting-wc-mobile: No listing provided')
+    if (!this.wallet) {
+      throw new Error('w3m-connecting-wc-mobile: No wallet provided')
     }
 
     this.isReady()
 
     return html`
       <w3m-connecting-widget
-        name=${this.listing.name}
-        imageSrc=${ifDefined(this.images[this.listing.image_id])}
+        name=${this.wallet.name}
+        imageSrc=${ifDefined(this.images[this.wallet.image_id])}
         .error=${this.error}
         .onConnect=${this.onConnect.bind(this)}
         .onCopyUri=${this.onCopyUri.bind(this)}
@@ -65,14 +65,11 @@ export class W3mConnectingWcMobile extends LitElement {
   }
 
   private onConnect() {
-    if (this.listing && this.uri) {
+    if (this.wallet?.mobile_link && this.uri) {
       try {
         this.error = false
-        const { mobile, name } = this.listing
-        const { redirect, href } = CoreHelperUtil.formatNativeUrl(
-          mobile.native ?? mobile.universal,
-          this.uri
-        )
+        const { mobile_link, name } = this.wallet
+        const { redirect, href } = CoreHelperUtil.formatNativeUrl(mobile_link, this.uri)
         ConnectionController.setWcLinking({ name, href })
         CoreHelperUtil.openHref(redirect, '_self')
       } catch {

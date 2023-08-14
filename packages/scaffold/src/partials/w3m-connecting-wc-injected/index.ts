@@ -1,6 +1,6 @@
 import {
+  ApiController,
   ConnectionController,
-  ExplorerApiController,
   ModalController,
   RouterController
 } from '@web3modal/core'
@@ -11,9 +11,9 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 @customElement('w3m-connecting-wc-injected')
 export class W3mConnectingWcInjected extends LitElement {
   // -- Members ------------------------------------------- //
-  private readonly listing = RouterController.state.data?.listing
+  private readonly wallet = RouterController.state.data?.wallet
 
-  private readonly images = ExplorerApiController.state.images
+  private readonly images = ApiController.state.images
 
   // -- State & Properties -------------------------------- //
   @state() private error = false
@@ -22,14 +22,14 @@ export class W3mConnectingWcInjected extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (!this.listing) {
-      throw new Error('w3m-connecting-wc-injected: No listing provided')
+    if (!this.wallet) {
+      throw new Error('w3m-connecting-wc-injected: No wallet provided')
     }
 
     return html`
       <w3m-connecting-widget
-        name=${this.listing.name}
-        imageSrc=${ifDefined(this.images[this.listing.image_id])}
+        name=${this.wallet.name}
+        imageSrc=${ifDefined(this.images[this.wallet.image_id])}
         .error=${this.error}
         .onConnect=${this.onConnect.bind(this)}
       ></w3m-connecting-widget>
