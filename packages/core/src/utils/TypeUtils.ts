@@ -79,3 +79,33 @@ export type CaipNamespaces = Record<
     events: string[]
   }
 >
+
+// --- new api types ----
+export interface ApiListing {
+  id: string
+  name: string
+  homepage: string
+  image_id: string
+  order: number
+  mobile_link: string | null
+  desktop_link: string | null
+  webapp_link: string | null
+  app_store: string | null
+  play_store: string | null
+  injected:
+    | {
+        namespace: string
+        injected_id: string
+      }[]
+    | null
+}
+
+export interface ApiGetWalletsRequest {
+  page?: number
+  entries?: number
+}
+
+export interface ApiGetWalletsResponse {
+  data: ApiListing[]
+  count: number
+}

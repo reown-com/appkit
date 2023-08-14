@@ -32,6 +32,9 @@ export type { SnackControllerState } from './src/controllers/SnackController.js'
 export { ExplorerApiController } from './src/controllers/ExplorerApiController.js'
 export type { ExplorerApiControllerState } from './src/controllers/ExplorerApiController.js'
 
+export { ApiController } from './src/controllers/ApiController.js'
+export type { ApiControllerState } from './src/controllers/ApiController.js'
+
 // -- Utils -------------------------------------------------------------------
 export { ConstantsUtil } from './src/utils/ConstantsUtil.js'
 export { CoreHelperUtil } from './src/utils/CoreHelperUtil.js'

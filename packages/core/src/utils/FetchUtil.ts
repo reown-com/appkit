@@ -5,6 +5,7 @@ interface Options {
 
 interface RequestArguments {
   path: string
+  headers?: HeadersInit
   params?: Record<string, unknown>
 }
 
@@ -25,6 +26,13 @@ export class FetchUtil {
     const response = await fetch(url, { method: 'GET' })
 
     return response.json() as T
+  }
+
+  public async getBlob(args: RequestArguments) {
+    const url = this.createUrl(args)
+    const response = await fetch(url, { method: 'GET' })
+
+    return response.blob()
   }
 
   public async post<T>({ body, ...args }: PostArguments) {

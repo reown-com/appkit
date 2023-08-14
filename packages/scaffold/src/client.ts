@@ -6,6 +6,7 @@ import type {
 } from '@web3modal/core'
 import {
   AccountController,
+  ApiController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
@@ -100,6 +101,7 @@ export class Web3ModalScaffold {
     NetworkController.setClient(options.networkControllerClient)
     ConnectionController.setClient(options.connectionControllerClient)
     ExplorerApiController.setProjectId(options.projectId)
+    ApiController.setProjectId(options.projectId)
   }
 
   private async initOrContinue() {
