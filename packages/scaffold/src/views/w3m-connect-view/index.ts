@@ -1,5 +1,5 @@
 import type { Connector } from '@web3modal/core'
-import { ConnectorController, ExplorerApiController, RouterController } from '@web3modal/core'
+import { ApiController, ConnectorController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 
@@ -8,7 +8,7 @@ export class W3mConnectView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
-  private images = ExplorerApiController.state.images
+  private images = ApiController.state.images
 
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors

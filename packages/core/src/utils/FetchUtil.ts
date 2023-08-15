@@ -5,6 +5,7 @@ interface Options {
 
 interface RequestArguments {
   path: string
+  headers?: HeadersInit
   params?: Record<string, unknown>
 }
 
@@ -20,37 +21,47 @@ export class FetchUtil {
     this.baseUrl = baseUrl
   }
 
-  public async get<T>(args: RequestArguments) {
+  public async get<T>({ headers, ...args }: RequestArguments) {
     const url = this.createUrl(args)
-    const response = await fetch(url, { method: 'GET' })
+    const response = await fetch(url, { method: 'GET', headers })
 
     return response.json() as T
   }
 
-  public async post<T>({ body, ...args }: PostArguments) {
+  public async getBlob({ headers, ...args }: RequestArguments) {
+    const url = this.createUrl(args)
+    const response = await fetch(url, { method: 'GET', headers })
+
+    return response.blob()
+  }
+
+  public async post<T>({ body, headers, ...args }: PostArguments) {
     const url = this.createUrl(args)
     const response = await fetch(url, {
       method: 'POST',
+      headers,
       body: body ? JSON.stringify(body) : undefined
     })
 
     return response.json() as T
   }
 
-  public async put<T>({ body, ...args }: PostArguments) {
+  public async put<T>({ body, headers, ...args }: PostArguments) {
     const url = this.createUrl(args)
     const response = await fetch(url, {
       method: 'PUT',
+      headers,
       body: body ? JSON.stringify(body) : undefined
     })
 
     return response.json() as T
   }
 
-  public async delete<T>({ body, ...args }: PostArguments) {
+  public async delete<T>({ body, headers, ...args }: PostArguments) {
     const url = this.createUrl(args)
     const response = await fetch(url, {
       method: 'DELETE',
+      headers,
       body: body ? JSON.stringify(body) : undefined
     })
 

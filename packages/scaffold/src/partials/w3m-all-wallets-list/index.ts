@@ -1,5 +1,5 @@
-import type { ExplorerListing } from '@web3modal/core'
-import { ExplorerApiController, RouterController } from '@web3modal/core'
+import type { ApiWallet } from '@web3modal/core'
+import { ApiController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -16,18 +16,18 @@ export class W3mAllWalletsList extends LitElement {
   private paginationObserver?: IntersectionObserver = undefined
 
   // -- State & Properties -------------------------------- //
-  @state() private initial = !ExplorerApiController.state.listings.length
+  @state() private initial = !ApiController.state.wallets.length
 
-  @state() private listings = ExplorerApiController.state.listings
+  @state() private wallets = ApiController.state.wallets
 
-  @state() private recommended = ExplorerApiController.state.recommended
+  @state() private recommended = ApiController.state.recommended
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
-        ExplorerApiController.subscribeKey('listings', val => (this.listings = val)),
-        ExplorerApiController.subscribeKey('recommended', val => (this.recommended = val))
+        ApiController.subscribeKey('wallets', val => (this.wallets = val)),
+        ApiController.subscribeKey('recommended', val => (this.recommended = val))
       ]
     )
   }
@@ -62,7 +62,7 @@ export class W3mAllWalletsList extends LitElement {
   private async initialFetch() {
     const gridEl = this.shadowRoot?.querySelector('wui-grid')
     if (this.initial && gridEl) {
-      await ExplorerApiController.fetchListings()
+      await ApiController.fetchWallets({ page: 1 })
       await animate(gridEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
       this.initial = false
       animate(gridEl, { opacity: [0, 1] }, { duration: 0.2 })
@@ -76,24 +76,24 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private walletsTemplate() {
-    const { images } = ExplorerApiController.state
-    const wallets = [...this.recommended, ...this.listings]
+    const { images } = ApiController.state
+    const wallets = [...this.recommended, ...this.wallets]
 
     return wallets.map(
-      listing => html`
+      wallet => html`
         <wui-card-select
-          imageSrc=${ifDefined(images[listing.image_id])}
+          imageSrc=${ifDefined(images[wallet.image_id])}
           type="wallet"
-          name=${listing.name}
-          @click=${() => this.onConnectListing(listing)}
+          name=${wallet.name}
+          @click=${() => this.onConnectListing(wallet)}
         ></wui-card-select>
       `
     )
   }
 
   private paginationLoaderTemplate() {
-    const { listings, total } = ExplorerApiController.state
-    if (total === 0 || listings.length < total) {
+    const { wallets, count } = ApiController.state
+    if (count === 0 || wallets.length < count) {
       return html`<wui-loading-spinner color="blue-100"></wui-loading-spinner>`
     }
 
@@ -105,9 +105,9 @@ export class W3mAllWalletsList extends LitElement {
     if (loaderEl) {
       this.paginationObserver = new IntersectionObserver(([element]) => {
         if (element?.isIntersecting && !this.initial) {
-          const { page, total, listings } = ExplorerApiController.state
-          if (listings.length < total) {
-            ExplorerApiController.fetchListings({ page: page + 1 })
+          const { page, count, wallets } = ApiController.state
+          if (wallets.length < count) {
+            ApiController.fetchWallets({ page: page + 1 })
           }
         }
       })
@@ -115,8 +115,8 @@ export class W3mAllWalletsList extends LitElement {
     }
   }
 
-  private onConnectListing(listing: ExplorerListing) {
-    RouterController.push('ConnectingWalletConnect', { listing })
+  private onConnectListing(wallet: ApiWallet) {
+    RouterController.push('ConnectingWalletConnect', { wallet })
   }
 }
 
