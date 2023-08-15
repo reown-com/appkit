@@ -1,5 +1,5 @@
-import type { ExplorerListing } from '@web3modal/core'
-import { ExplorerApiController, RouterController } from '@web3modal/core'
+import type { ApiWallet } from '@web3modal/core'
+import { ApiController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -31,13 +31,13 @@ export class W3mAllWalletsSearch extends LitElement {
     if (this.query !== this.prevQuery) {
       this.prevQuery = this.query
       this.loading = true
-      await ExplorerApiController.searchListings({ search: this.query })
+      await ApiController.searchWallet({ search: this.query })
       this.loading = false
     }
   }
 
   private walletsTemplate() {
-    const { search, images } = ExplorerApiController.state
+    const { search, images } = ApiController.state
 
     if (!search.length) {
       return html`
@@ -62,12 +62,12 @@ export class W3mAllWalletsSearch extends LitElement {
         columnGap="xs"
       >
         ${search.map(
-          listing => html`
+          wallet => html`
             <wui-card-select
-              imageSrc=${ifDefined(images[listing.image_id])}
+              imageSrc=${ifDefined(images[wallet.image_id])}
               type="wallet"
-              name=${listing.name}
-              @click=${() => this.onConnectListing(listing)}
+              name=${wallet.name}
+              @click=${() => this.onConnectListing(wallet)}
             ></wui-card-select>
           `
         )}
@@ -75,8 +75,8 @@ export class W3mAllWalletsSearch extends LitElement {
     `
   }
 
-  private onConnectListing(listing: ExplorerListing) {
-    RouterController.push('ConnectingWalletConnect', { listing })
+  private onConnectListing(wallet: ApiWallet) {
+    RouterController.push('ConnectingWalletConnect', { wallet })
   }
 }
 

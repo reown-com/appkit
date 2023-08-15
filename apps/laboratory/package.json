@@ -11,9 +11,9 @@
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
     "@web3modal/wagmi": "3.0.0-8d5e8f4e",
-    "@sentry/browser": "7.63.0",
-    "@sentry/react": "7.63.0",
-    "framer-motion": "10.15.1",
-    "next": "13.4.13"
+    "@sentry/browser": "7.64.0",
+    "@sentry/react": "7.64.0",
+    "framer-motion": "10.15.2",
+    "next": "13.4.16"
   }
 }

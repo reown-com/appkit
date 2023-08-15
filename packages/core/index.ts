@@ -29,20 +29,20 @@ export type { ConnectorControllerState } from './src/controllers/ConnectorContro
 export { SnackController } from './src/controllers/SnackController.js'
 export type { SnackControllerState } from './src/controllers/SnackController.js'
 
-export { ExplorerApiController } from './src/controllers/ExplorerApiController.js'
-export type { ExplorerApiControllerState } from './src/controllers/ExplorerApiController.js'
+export { ApiController } from './src/controllers/ApiController.js'
+export type { ApiControllerState } from './src/controllers/ApiController.js'
 
 // -- Utils -------------------------------------------------------------------
 export { ConstantsUtil } from './src/utils/ConstantsUtil.js'
 export { CoreHelperUtil } from './src/utils/CoreHelperUtil.js'
 export { StorageUtil } from './src/utils/StorageUtil.js'
 export type {
+  ApiWallet,
   CaipAddress,
   CaipNetwork,
   CaipNetworkId,
   Connector,
   ConnectorType,
-  ExplorerListing,
   Platform,
   ProjectId
 } from './src/utils/TypeUtils.js'

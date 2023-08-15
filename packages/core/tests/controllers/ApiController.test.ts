@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { ExplorerApiController } from '../../index.js'
+import { ApiController } from '../../index.js'
 
 // -- Tests --------------------------------------------------------------------
-describe('ExplorerApiController', () => {
+describe('ApiController', () => {
   it('should have valid default state', () => {
-    expect(ExplorerApiController.state).toEqual({
+    expect(ApiController.state).toEqual({
       projectId: '',
       page: 1,
-      total: 0,
-      listings: [],
+      count: 0,
       recommended: [],
+      wallets: [],
       search: [],
       images: {}
     })

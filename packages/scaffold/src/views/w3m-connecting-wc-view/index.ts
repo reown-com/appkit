@@ -20,7 +20,7 @@ export class W3mConnectingWcView extends LitElement {
 
   private lastRetry = Date.now()
 
-  private listing = RouterController.state.data?.listing
+  private wallet = RouterController.state.data?.wallet
 
   // -- State & Properties -------------------------------- //
   @state() private platform?: Platform = undefined
@@ -39,7 +39,7 @@ export class W3mConnectingWcView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (!this.listing) {
+    if (!this.wallet) {
       return html`<w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode>`
     }
 
@@ -74,8 +74,8 @@ export class W3mConnectingWcView extends LitElement {
   }
 
   private determinePlatforms() {
-    if (!this.listing) {
-      throw new Error('w3m-connecting-wc-view:determinePlatforms No listing')
+    if (!this.wallet) {
+      throw new Error('w3m-connecting-wc-view:determinePlatforms No wallet')
     }
 
     if (this.platform) {
@@ -83,15 +83,15 @@ export class W3mConnectingWcView extends LitElement {
     }
 
     const { connectors } = ConnectorController.state
-    const { mobile, desktop, injected } = this.listing
+    const { mobile_link, desktop_link, webapp_link, injected } = this.wallet
     const injectedIds = injected?.map(({ injected_id }) => injected_id) ?? []
     const isInjected = injectedIds.length
-    const isMobileWc = mobile?.native || mobile?.universal
-    const isWebWc = desktop?.universal
+    const isMobileWc = mobile_link
+    const isWebWc = webapp_link
     const isInjectedConnector = connectors.find(c => c.type === 'INJECTED')
     const isInjectedInstalled = ConnectionController.checkInjectedInstalled(injectedIds)
     const isInjectedWc = isInjected && isInjectedInstalled && isInjectedConnector
-    const isDesktopWc = desktop?.native && !CoreHelperUtil.isMobile()
+    const isDesktopWc = desktop_link && !CoreHelperUtil.isMobile()
 
     // Populate all preferences
     if (isInjectedWc) {
