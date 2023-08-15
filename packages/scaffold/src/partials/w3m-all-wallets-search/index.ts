@@ -1,5 +1,5 @@
 import type { ApiWallet } from '@web3modal/core'
-import { ApiController, RouterController } from '@web3modal/core'
+import { ApiController, AssetController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -37,7 +37,8 @@ export class W3mAllWalletsSearch extends LitElement {
   }
 
   private walletsTemplate() {
-    const { search, images } = ApiController.state
+    const { search } = ApiController.state
+    const { walletImages } = AssetController.state
 
     if (!search.length) {
       return html`
@@ -64,7 +65,7 @@ export class W3mAllWalletsSearch extends LitElement {
         ${search.map(
           wallet => html`
             <wui-card-select
-              imageSrc=${ifDefined(images[wallet.image_id])}
+              imageSrc=${ifDefined(walletImages[wallet.image_id])}
               type="wallet"
               name=${wallet.name}
               @click=${() => this.onConnectListing(wallet)}
