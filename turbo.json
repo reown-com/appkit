@@ -5,6 +5,10 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
+    "watch": {
+      "dependsOn": ["^watch"],
+      "cache": false
+    },
     "build:gallery": {
       "dependsOn": ["build", "^build:gallery"],
       "outputs": ["out/**"]
@@ -30,11 +34,11 @@
       "cache": false
     },
     "dev:laboratory": {
-      "dependsOn": ["build", "^dev:laboratory"],
+      "dependsOn": ["watch", "^dev:laboratory"],
       "cache": false
     },
     "dev:gallery": {
-      "dependsOn": ["build", "^dev:gallery"],
+      "dependsOn": ["watch", "^dev:gallery"],
       "cache": false
     },
     "dev:example": {
