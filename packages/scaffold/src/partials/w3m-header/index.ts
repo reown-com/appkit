@@ -20,7 +20,8 @@ function headings() {
     SwitchNetwork: networkName ?? 'Switch Network',
     AllWallets: 'All Wallets',
     WhatIsANetwork: 'What is a network?',
-    WhatIsAWallet: 'What is a wallet?'
+    WhatIsAWallet: 'What is a wallet?',
+    GetWallet: 'Get a Wallet'
   }
 }
 

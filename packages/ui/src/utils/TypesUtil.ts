@@ -205,3 +205,5 @@ export type InputType =
   | 'time'
   | 'url'
   | 'week'
+
+export type TagLabelType = 'installed' | 'qr code' | 'recent' | 'get wallet'

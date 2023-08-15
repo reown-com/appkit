@@ -1,4 +1,4 @@
-import { RouterController } from '@web3modal/core'
+import { CoreHelperUtil } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 
@@ -11,7 +11,7 @@ const data = [
   {
     images: ['noun', 'defiAlt', 'dao'],
     title: 'Designed for different uses',
-    text: 'A wallet lets you store, send and receive digital assets like cryptocurrencies and NFTs.'
+    text: 'Each network is designed differently, and may therefore suit certain apps and experiences.'
   }
 ] as const
 
@@ -30,7 +30,9 @@ export class W3mWhatIsANetworkView extends LitElement {
         <wui-button
           variant="fill"
           size="sm"
-          @click=${() => RouterController.push('WhatIsANetwork')}
+          @click=${() => {
+            CoreHelperUtil.openHref('https://ethereum.org/en/developers/docs/networks/', '_blank')
+          }}
         >
           Learn more
           <wui-icon color="inherit" slot="iconRight" name="externalLink"></wui-icon>

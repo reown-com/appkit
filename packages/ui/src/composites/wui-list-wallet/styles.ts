@@ -14,6 +14,10 @@ export default css`
     flex: 1;
   }
 
+  wui-icon {
+    color: var(--wui-color-fg-200) !important;
+  }
+
   button:disabled > wui-tag {
     background-color: var(--wui-overlay-010);
     color: var(--wui-color-fg-300);

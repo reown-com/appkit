@@ -1,8 +1,9 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IWalletImage, TagType } from '../../utils/TypesUtil.js'
+import type { IconType, IWalletImage, TagLabelType, TagType } from '../../utils/TypesUtil.js'
+import '../../components/wui-text/index.js'
+import '../../components/wui-icon/index.js'
 import '../wui-all-wallets-image/index.js'
 import '../wui-tag/index.js'
 import '../wui-wallet-image/index.js'
@@ -19,9 +20,11 @@ export class WuiListWallet extends LitElement {
 
   @property() public name = ''
 
-  @property() public tagLabel?: 'installed' | 'qr code' | 'recent'
+  @property() public tagLabel?: TagLabelType
 
   @property() public tagVariant?: TagType
+
+  @property() public icon?: IconType
 
   @property({ type: Boolean }) public disabled = false
 
@@ -67,7 +70,9 @@ export class WuiListWallet extends LitElement {
 
   private templateStatus() {
     if (this.tagLabel && this.tagVariant) {
-      return html` <wui-tag variant=${this.tagVariant}>${this.tagLabel}</wui-tag>`
+      return html`<wui-tag variant=${this.tagVariant}>${this.tagLabel}</wui-tag>`
+    } else if (this.icon) {
+      return html`<wui-icon color="inherit" size="sm" name=${this.icon}></wui-icon>`
     }
 
     return null
