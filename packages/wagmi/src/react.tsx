@@ -5,6 +5,7 @@ import { Web3Modal } from './client.js'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from './client.js'
+type OpenOptions = Parameters<Web3Modal['open']>[0]
 
 // -- Setup -------------------------------------------------------------------
 let modal: Web3Modal | undefined = undefined
@@ -23,8 +24,13 @@ export function useWeb3Modal() {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3Modal" hook')
   }
 
-  return {
-    open: modal.open.bind(modal),
-    close: modal.close.bind(modal)
+  async function open(options?: OpenOptions) {
+    await modal?.open(options)
   }
+
+  async function close() {
+    await modal?.close()
+  }
+
+  return { open, close }
 }

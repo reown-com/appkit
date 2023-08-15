@@ -1,6 +1,6 @@
 <script setup>
 import { configureChains, createConfig } from '@wagmi/core'
-import { mainnet } from '@wagmi/core/chains'
+import { mainnet, arbitrum } from '@wagmi/core/chains'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { InjectedConnector } from '@wagmi/core/connectors/injected'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
@@ -14,7 +14,10 @@ if (!projectId) {
 }
 
 // 2. Create wagmiConfig
-const { chains, publicClient } = configureChains([mainnet], [walletConnectProvider({ projectId })])
+const { chains, publicClient } = configureChains(
+  [mainnet, arbitrum],
+  [walletConnectProvider({ projectId })]
+)
 
 const wagmiConfig = createConfig({
   autoConnect: true,
@@ -34,5 +37,6 @@ const modal = useWeb3Modal()
 </script>
 
 <template>
-  <button @click="() => modal.open()">Open Modal</button>
+  <button @click="modal.open()">Open Connect Modal</button>
+  <button @click="modal.open({ view: 'Networks' })">Open Network Modal</button>
 </template>
