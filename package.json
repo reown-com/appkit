@@ -7,7 +7,7 @@
     "build": "turbo run build",
     "gallery": "turbo run dev:gallery --parallel",
     "laboratory": "turbo run dev:laboratory --parallel",
-    "examples": "turbo run dev:example",
+    "examples": "turbo run dev:example --parallel",
     "build:gallery": "turbo run build:gallery",
     "build:laboratory": "turbo run build:laboratory",
     "test": "turbo run test --parallel",

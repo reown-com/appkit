@@ -10,12 +10,17 @@ export type { Web3ModalOptions } from './client.js'
 let modal: Web3Modal | undefined = undefined
 
 // -- Lib ---------------------------------------------------------------------
-export function useWeb3Modal(options?: Web3ModalOptions) {
+export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
-    if (!options) {
-      throw new Error('useWeb3Modal: options are required on first call')
-    }
     modal = new Web3Modal(options)
+  }
+
+  return modal
+}
+
+export function useWeb3Modal() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3Modal" hook')
   }
 
   return {

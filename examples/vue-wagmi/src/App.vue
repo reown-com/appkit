@@ -1,11 +1,11 @@
 <script setup>
-import { useWeb3Modal } from '@web3modal/wagmi/vue'
 import { configureChains, createConfig } from '@wagmi/core'
-import { arbitrum, mainnet } from 'wagmi/chains'
+import { mainnet } from '@wagmi/core/chains'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { InjectedConnector } from '@wagmi/core/connectors/injected'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
-import { publicProvider } from '@wagmi/core/providers/public'
+import { walletConnectProvider } from '@web3modal/wagmi'
+import { createWeb3Modal, useWeb3Modal } from '@web3modal/wagmi/vue'
 
 // 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -14,19 +14,23 @@ if (!projectId) {
 }
 
 // 2. Create wagmiConfig
-const { chains, publicClient } = configureChains([mainnet, arbitrum], [publicProvider()])
+const { chains, publicClient } = configureChains([mainnet], [walletConnectProvider({ projectId })])
+
 const wagmiConfig = createConfig({
   autoConnect: true,
   connectors: [
-    new WalletConnectConnector({ chains, options: { projectId, showQrModal: false } }),
-    new InjectedConnector({ chains, options: { shimDisconnect: true } }),
-    new CoinbaseWalletConnector({ chains, options: { appName: 'Web3Modal' } })
+    new WalletConnectConnector({ options: { projectId, showQrModal: false } }),
+    new InjectedConnector({ options: { shimDisconnect: true } }),
+    new CoinbaseWalletConnector({ options: { appName: 'Web3Modal' } })
   ],
   publicClient
 })
 
 // 3. Create modal
-const modal = useWeb3Modal({ wagmiConfig, projectId, chains })
+createWeb3Modal({ wagmiConfig, projectId, chains })
+
+// 4. Use modal composable
+const modal = useWeb3Modal()
 </script>
 
 <template>
