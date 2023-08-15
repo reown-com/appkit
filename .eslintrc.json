@@ -75,6 +75,7 @@
     "@typescript-eslint/promise-function-async": "off",
     "@typescript-eslint/no-confusing-void-expression": "off",
     "@typescript-eslint/prefer-nullish-coalescing": "off",
-    "@typescript-eslint/no-unnecessary-condition": "off"
+    "@typescript-eslint/no-unnecessary-condition": "off",
+    "@typescript-eslint/no-unsafe-argument": "off"
   }
 }
