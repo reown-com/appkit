@@ -7,7 +7,7 @@ export const INJECTED_ID = 'injected'
 export const NAMESPACE = 'eip155'
 
 export const NAME_MAP = {
-  [INJECTED_ID]: 'Browser Wallet'
+  [INJECTED_ID]: 'Extension Wallet'
 } as Record<string, string>
 
 export const TYPE_MAP = {
