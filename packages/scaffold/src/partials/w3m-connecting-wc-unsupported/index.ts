@@ -1,4 +1,4 @@
-import { ApiController, CoreHelperUtil, RouterController } from '@web3modal/core'
+import { AssetController, CoreHelperUtil, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -8,7 +8,7 @@ export class W3mConnectingWcUnsupported extends LitElement {
   // -- Members ------------------------------------------- //
   private readonly wallet = RouterController.state.data?.wallet
 
-  private readonly images = ApiController.state.images
+  private readonly images = AssetController.state.walletImages
 
   // -- Render -------------------------------------------- //
   public override render() {

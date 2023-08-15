@@ -32,6 +32,9 @@ export type { SnackControllerState } from './src/controllers/SnackController.js'
 export { ApiController } from './src/controllers/ApiController.js'
 export type { ApiControllerState } from './src/controllers/ApiController.js'
 
+export { AssetController } from './src/controllers/AssetController.js'
+export type { AssetControllerState } from './src/controllers/AssetController.js'
+
 // -- Utils -------------------------------------------------------------------
 export { ConstantsUtil } from './src/utils/ConstantsUtil.js'
 export { CoreHelperUtil } from './src/utils/CoreHelperUtil.js'

@@ -5,7 +5,7 @@ export type CaipNetworkId = `${string}:${string}`
 export interface CaipNetwork {
   id: CaipNetworkId
   name?: string
-  imageSrc?: string
+  imageId?: string
 }
 
 export interface LinkingRecord {
@@ -23,7 +23,7 @@ export interface Connector {
   id: string
   type: ConnectorType
   name?: string
-  imageSrc?: string
+  imageId?: string
 }
 
 export type CaipNamespaces = Record<

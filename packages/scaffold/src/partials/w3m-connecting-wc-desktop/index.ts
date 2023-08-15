@@ -1,5 +1,5 @@
 import {
-  ApiController,
+  AssetController,
   ConnectionController,
   CoreHelperUtil,
   RouterController,
@@ -14,7 +14,7 @@ export class W3mConnectingWcDesktop extends LitElement {
   // -- Members ------------------------------------------- //
   private readonly wallet = RouterController.state.data?.wallet
 
-  private readonly images = ApiController.state.images
+  private readonly images = AssetController.state.walletImages
 
   private unsubscribe: (() => void)[] = []
 

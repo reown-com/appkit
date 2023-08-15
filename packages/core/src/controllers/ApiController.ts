@@ -9,6 +9,7 @@ import type {
   ProjectId,
   SdkVersion
 } from '../utils/TypeUtils.js'
+import { AssetController } from './AssetController.js'
 
 // -- Helpers ------------------------------------------- //
 const api = new FetchUtil({ baseUrl: 'https://api.web3modal.com' })
@@ -25,7 +26,6 @@ export interface ApiControllerState {
   recommended: ApiWallet[]
   wallets: ApiWallet[]
   search: ApiWallet[]
-  images: Record<string, string>
 }
 
 type StateKey = keyof ApiControllerState
@@ -38,8 +38,7 @@ const state = proxy<ApiControllerState>({
   count: 0,
   recommended: [],
   wallets: [],
-  search: [],
-  images: {}
+  search: []
 })
 
 // -- Controller ---------------------------------------- //
@@ -69,7 +68,7 @@ export const ApiController = {
   async fetchImageBlob(imageId: string) {
     const imageUrl = `${api.baseUrl}/getWalletImage/${imageId}`
     const blob = await api.getBlob({ path: imageUrl, headers: ApiController.getApiHeaders() })
-    state.images[imageId] = URL.createObjectURL(blob)
+    AssetController.setWalletImage(imageId, URL.createObjectURL(blob))
   },
 
   async fetchRecommendedWallets() {

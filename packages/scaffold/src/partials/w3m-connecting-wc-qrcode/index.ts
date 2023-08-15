@@ -1,5 +1,5 @@
 import {
-  ApiController,
+  AssetController,
   ConnectionController,
   CoreHelperUtil,
   RouterController,
@@ -21,7 +21,7 @@ export class W3mConnectingWcQrcode extends LitElement {
 
   private readonly wallet = RouterController.state.data?.wallet
 
-  private readonly images = ApiController.state.images
+  private readonly images = AssetController.state.walletImages
 
   // -- State & Properties -------------------------------- //
   @state() private uri = ConnectionController.state.wcUri
