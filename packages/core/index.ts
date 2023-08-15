@@ -44,5 +44,6 @@ export type {
   Connector,
   ConnectorType,
   Platform,
-  ProjectId
+  ProjectId,
+  SdkVersion
 } from './src/utils/TypeUtils.js'

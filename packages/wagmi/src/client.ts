@@ -18,7 +18,8 @@ import type {
   CaipNetworkId,
   ConnectionControllerClient,
   NetworkControllerClient,
-  ProjectId
+  ProjectId,
+  SdkVersion
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
@@ -27,9 +28,12 @@ import {
   NAMESPACE,
   NAME_MAP,
   TYPE_MAP,
+  VERSION,
   WALLET_CHOICE_KEY,
   WALLET_CONNECT_ID
 } from './utils/constants.js'
+
+// -- Helpers -------------------------------------------------------------------
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalOptions {
@@ -37,6 +41,7 @@ export interface Web3ModalOptions {
   wagmiConfig: Config<any, any>
   projectId: ProjectId
   chains?: Chain[]
+  _sdkVersion?: SdkVersion
 }
 
 declare global {
@@ -48,7 +53,7 @@ declare global {
 // -- Client --------------------------------------------------------------------
 export class Web3Modal extends Web3ModalScaffold {
   public constructor(options: Web3ModalOptions) {
-    const { wagmiConfig, projectId, chains } = options
+    const { wagmiConfig, projectId, chains, _sdkVersion } = options
 
     if (!wagmiConfig) {
       throw new Error('web3modal:constructor - wagmiConfig is undefined')
@@ -153,7 +158,8 @@ export class Web3Modal extends Web3ModalScaffold {
     super({
       networkControllerClient,
       connectionControllerClient,
-      projectId
+      projectId,
+      sdkVersion: _sdkVersion ?? `html-wagmi-${VERSION}`
     })
 
     this.syncRequestedNetworks(chains)

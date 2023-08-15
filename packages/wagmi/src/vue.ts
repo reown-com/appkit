@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import type { Web3ModalOptions } from './client.js'
 import { Web3Modal } from './client.js'
+import { VERSION } from './utils/constants.js'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from './client.js'
@@ -10,9 +11,9 @@ type OpenOptions = Parameters<Web3Modal['open']>[0]
 let modal: Web3Modal | undefined = undefined
 
 // -- Lib ---------------------------------------------------------------------
-export function createWeb3Modal(options: Web3ModalOptions) {
+export function createWeb3Modal(options: Omit<Web3ModalOptions, '_sdkVersion'>) {
   if (!modal) {
-    modal = new Web3Modal(options)
+    modal = new Web3Modal({ ...options, _sdkVersion: `vue-wagmi-${VERSION}` })
   }
 
   return modal

@@ -22,6 +22,7 @@ interface Options {
   networkControllerClient: NetworkControllerClient
   connectionControllerClient: ConnectionControllerClient
   projectId: ApiControllerState['projectId']
+  sdkVersion: ApiControllerState['sdkVersion']
 }
 
 // -- Client --------------------------------------------------------------------
@@ -100,6 +101,7 @@ export class Web3ModalScaffold {
     NetworkController.setClient(options.networkControllerClient)
     ConnectionController.setClient(options.connectionControllerClient)
     ApiController.setProjectId(options.projectId)
+    ApiController.setSdkVersion(options.sdkVersion)
   }
 
   private async initOrContinue() {

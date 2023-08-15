@@ -22,3 +22,9 @@ export const WALLET_CHOICE_KEY = 'wagmi.wallet'
 export const BLOCKCHAIN_HTTP_API = 'https://rpc.walletconnect.com'
 
 export const BLOCKCHAIN_WSS_API = 'wss://rpc.walletconnect.com'
+
+/**
+ * DO NOT REMOVE
+ * Checked against packages/core version in dangerfile
+ */
+export const VERSION = '3.0.0-alpha.1'
