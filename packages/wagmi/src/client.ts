@@ -20,7 +20,7 @@ import type {
   NetworkControllerClient,
   ProjectId
 } from '@web3modal/scaffold'
-import { Web3ModalScaffoldHtml } from '@web3modal/scaffold'
+import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
   ADD_CHAIN_METHOD,
   INJECTED_ID,
@@ -46,7 +46,7 @@ declare global {
 }
 
 // -- Client --------------------------------------------------------------------
-export class Web3Modal extends Web3ModalScaffoldHtml {
+export class Web3Modal extends Web3ModalScaffold {
   public constructor(options: Web3ModalOptions) {
     const { wagmiConfig, projectId, chains } = options
 

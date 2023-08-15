@@ -25,7 +25,7 @@ interface Options {
 }
 
 // -- Client --------------------------------------------------------------------
-export class Web3ModalScaffoldHtml {
+export class Web3ModalScaffold {
   private initPromise?: Promise<void> = undefined
 
   public constructor(options: Options) {

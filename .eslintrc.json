@@ -18,7 +18,8 @@
     "out",
     "dist",
     ".next",
-    ".turbo"
+    ".turbo",
+    "examples"
   ],
   "rules": {
     // Core

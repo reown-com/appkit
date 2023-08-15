@@ -21,7 +21,9 @@ export class W3mAllWalletsSearch extends LitElement {
   public override render() {
     this.onSearch()
 
-    return this.loading ? html`<wui-loading-spinner></wui-loading-spinner>` : this.walletsTemplate()
+    return this.loading
+      ? html`<wui-loading-spinner color="blue-100"></wui-loading-spinner>`
+      : this.walletsTemplate()
   }
 
   // Private Methods ------------------------------------- //

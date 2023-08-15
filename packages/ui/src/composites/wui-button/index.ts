@@ -2,6 +2,7 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
+import '../../components/wui-loading-spinner/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { ButtonType, SizeType } from '../../utils/TypesUtil.js'
 import styles from './styles.js'
@@ -15,20 +16,26 @@ export class WuiButton extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
+  @property({ type: Boolean }) public loading = false
+
   @property() public variant: ButtonType = 'fill'
 
   // -- Render -------------------------------------------- //
   public override render() {
+    this.style.cssText = `
+    --local-width: ${this.variant === 'fullWidth' ? '100%' : 'auto'};
+    --local-opacity-100: ${this.loading ? 0 : 1};
+    --local-opacity-000: ${this.loading ? 1 : 0};`
     const textVariant = this.size === 'md' ? 'paragraph-600' : 'small-600'
-    this.style.cssText = `--local-width: ${this.variant === 'fullWidth' ? '100%' : 'auto'};`
 
     return html`
       <button
         data-variant=${this.variant}
         data-size=${this.size}
-        ?disabled=${this.disabled}
+        ?disabled=${this.loading ? true : Boolean(this.disabled)}
         ontouchstart
       >
+        ${this.loadingTemplate()}
         <slot name="iconLeft"></slot>
         <wui-text variant=${textVariant} color="inherit">
           <slot></slot>
@@ -36,6 +43,14 @@ export class WuiButton extends LitElement {
         <slot name="iconRight"></slot>
       </button>
     `
+  }
+
+  public loadingTemplate() {
+    if (this.loading) {
+      return html`<wui-loading-spinner color="fg-300"></wui-loading-spinner>`
+    }
+
+    return html``
   }
 }
 
