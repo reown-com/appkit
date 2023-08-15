@@ -1,4 +1,4 @@
-import { CoreHelperUtil, ExplorerApiController, RouterController } from '@web3modal/core'
+import { ApiController, CoreHelperUtil, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -6,14 +6,14 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 @customElement('w3m-connecting-wc-unsupported')
 export class W3mConnectingWcUnsupported extends LitElement {
   // -- Members ------------------------------------------- //
-  private readonly listing = RouterController.state.data?.listing
+  private readonly wallet = RouterController.state.data?.wallet
 
-  private readonly images = ExplorerApiController.state.images
+  private readonly images = ApiController.state.images
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (!this.listing) {
-      throw new Error('w3m-connecting-wc-unsupported: No listing provided')
+    if (!this.wallet) {
+      throw new Error('w3m-connecting-wc-unsupported: No wallet provided')
     }
 
     return html`
@@ -25,13 +25,13 @@ export class W3mConnectingWcUnsupported extends LitElement {
       >
         <wui-wallet-image
           size="lg"
-          imageSrc=${ifDefined(this.images[this.listing.image_id])}
+          imageSrc=${ifDefined(this.images[this.wallet.image_id])}
         ></wui-wallet-image>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xxs">
           <wui-text variant="paragraph-500" color="fg-100">Not Detected</wui-text>
           <wui-text variant="small-500" color="fg-200" align="center">
-            Download and install ${this.listing.name} to continue
+            Download and install ${this.wallet.name} to continue
           </wui-text>
         </wui-flex>
 
@@ -45,11 +45,11 @@ export class W3mConnectingWcUnsupported extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onDownload() {
-    if (!this.listing) {
-      throw new Error('w3m-connecting-wc-unsupported:onDownload No listing provided')
+    if (!this.wallet) {
+      throw new Error('w3m-connecting-wc-unsupported:onDownload No wallet provided')
     }
 
-    CoreHelperUtil.openHref(this.listing.homepage, '_blank')
+    CoreHelperUtil.openHref(this.wallet.homepage, '_blank')
   }
 }
 
