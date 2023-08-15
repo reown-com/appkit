@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "turbo run build",
-    "gallery": "turbo run dev:gallery",
-    "laboratory": "turbo run dev:laboratory",
+    "gallery": "turbo run dev:gallery --parallel",
+    "laboratory": "turbo run dev:laboratory --parallel",
     "examples": "turbo run dev:example",
     "build:gallery": "turbo run build:gallery",
     "build:laboratory": "turbo run build:laboratory",
@@ -15,12 +15,11 @@
     "lint": "eslint .",
     "danger": "danger ci",
     "prettier": "prettier --check .",
+    "clean": "rm -rf `find . -type d -name node_modules -o -name dist -o -name .next -o -name out`; rm package-lock.json",
     "new-version": "lerna version --no-git-tag-version --exact",
     "pre-publish": "turbo lint typecheck prettier test --parallel; npm run new-version; npm install; turbo run build;",
     "publish:latest": "lerna exec -- npm publish --no-private --access public --tag latest",
-    "publish:canary": "lerna exec -- npm publish --no-private --access public --tag canary",
-    "publish:alpha": "lerna exec -- npm publish --no-private --access public --tag alpha",
-    "clean": "rm -rf `find . -type d -name node_modules -o -name dist -o -name .next -o -name out`; rm package-lock.json"
+    "publish:canary": "lerna exec -- npm publish --no-private --access public --tag canary"
   },
   "workspaces": [
     "packages/ui",
@@ -31,8 +30,8 @@
     "examples/*"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "6.3.0",
-    "@typescript-eslint/parser": "6.3.0",
+    "@typescript-eslint/eslint-plugin": "6.4.0",
+    "@typescript-eslint/parser": "6.4.0",
     "@types/react": "18.2.20",
     "@types/react-dom": "18.2.7",
     "eslint": "8.47.0",
