@@ -160,10 +160,8 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.syncConnectors(wagmiConfig.connectors)
 
-    this.syncAccount()
     watchAccount(() => this.syncAccount())
 
-    this.syncNetwork()
     watchNetwork(() => this.syncNetwork())
   }
 
@@ -188,8 +186,11 @@ export class Web3Modal extends Web3ModalScaffold {
       const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
-      this.syncNetwork()
-      await Promise.all([this.syncProfile(address), this.getApprovedCaipNetworksData()])
+      await Promise.all([
+        this.syncProfile(address),
+        this.syncBalance(address, chain),
+        this.getApprovedCaipNetworksData()
+      ])
     } else if (!isConnected) {
       this.resetNetwork()
     }
