@@ -25,6 +25,7 @@ export class W3mModal extends LitElement {
     initializeTheming()
     setColorTheme('dark')
     ApiController.fetchRecommendedWallets()
+    ApiController.fetchNetworkImages()
     this.unsubscribe.push(
       ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose()))
     )

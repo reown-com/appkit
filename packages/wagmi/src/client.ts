@@ -32,8 +32,7 @@ import {
   WALLET_CHOICE_KEY,
   WALLET_CONNECT_ID
 } from './utils/constants.js'
-
-// -- Helpers -------------------------------------------------------------------
+import { NetworkImageIds } from './utils/presets.js'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalOptions {
@@ -177,7 +176,8 @@ export class Web3Modal extends Web3ModalScaffold {
       chain =>
         ({
           id: `${NAMESPACE}:${chain.id}`,
-          name: chain.name
+          name: chain.name,
+          imageId: NetworkImageIds[chain.id]
         }) as CaipNetwork
     )
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
@@ -208,7 +208,7 @@ export class Web3Modal extends Web3ModalScaffold {
     if (chain) {
       const chainId = String(chain.id)
       const caipChainId: CaipNetworkId = `${NAMESPACE}:${chainId}`
-      this.setCaipNetwork({ id: caipChainId, name: chain.name })
+      this.setCaipNetwork({ id: caipChainId, name: chain.name, imageId: NetworkImageIds[chain.id] })
       if (isConnected && address) {
         const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
         this.setCaipAddress(caipAddress)

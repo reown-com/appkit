@@ -1,11 +1,10 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
-import type { CaipNetworkId } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
 export interface AssetControllerState {
   walletImages: Record<string, string>
-  networkImages: Record<CaipNetworkId, string>
+  networkImages: Record<string, string>
   connectorImages: Record<string, string>
   tokenImages: Record<string, string>
 }
@@ -32,7 +31,7 @@ export const AssetController = {
     state.walletImages[key] = value
   },
 
-  setNetworkImage(key: CaipNetworkId, value: string) {
+  setNetworkImage(key: string, value: string) {
     state.networkImages[key] = value
   },
 

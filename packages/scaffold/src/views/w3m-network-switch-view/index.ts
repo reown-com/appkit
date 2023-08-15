@@ -1,4 +1,4 @@
-import { NetworkController, RouterController } from '@web3modal/core'
+import { AssetController, NetworkController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -11,6 +11,8 @@ export class W3mNetworkSwitchView extends LitElement {
 
   // -- Members ------------------------------------------- //
   private network = RouterController.state.data?.network
+
+  private readonly images = AssetController.state.networkImages
 
   // -- State & Properties -------------------------------- //
   @state() private showRetry = false
@@ -44,7 +46,7 @@ export class W3mNetworkSwitchView extends LitElement {
         <wui-flex justifyContent="center" alignItems="center">
           <wui-network-image
             size="lg"
-            imageSrc=${ifDefined(this.network.imageSrc)}
+            imageSrc=${ifDefined(this.images[this.network.imageId ?? ''])}
           ></wui-network-image>
 
           ${this.error ? null : html`<wui-loading-hexagon></wui-loading-hexagon>`}

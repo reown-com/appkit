@@ -10,6 +10,7 @@ import type {
   SdkVersion
 } from '../utils/TypeUtils.js'
 import { AssetController } from './AssetController.js'
+import { NetworkController } from './NetworkController.js'
 
 // -- Helpers ------------------------------------------- //
 const api = new FetchUtil({ baseUrl: 'https://api.web3modal.com' })
@@ -65,10 +66,23 @@ export const ApiController = {
     }
   },
 
-  async fetchImageBlob(imageId: string) {
+  async fetchWalletImage(imageId: string) {
     const imageUrl = `${api.baseUrl}/getWalletImage/${imageId}`
     const blob = await api.getBlob({ path: imageUrl, headers: ApiController.getApiHeaders() })
     AssetController.setWalletImage(imageId, URL.createObjectURL(blob))
+  },
+
+  async fetchNetworkImage(imageId: string) {
+    const imageUrl = `${api.baseUrl}/public/getAssetImage/${imageId}`
+    const blob = await api.getBlob({ path: imageUrl, headers: ApiController.getApiHeaders() })
+    AssetController.setNetworkImage(imageId, URL.createObjectURL(blob))
+  },
+
+  async fetchNetworkImages() {
+    const { requestedCaipNetworks } = NetworkController.state
+    const imageIds = requestedCaipNetworks?.map(({ imageId }) => imageId) ?? []
+    const imageIdsStrings = imageIds.filter(id => typeof id === 'string') as string[]
+    await Promise.all(imageIdsStrings.map(id => ApiController.fetchNetworkImage(id)))
   },
 
   async fetchRecommendedWallets() {
@@ -80,7 +94,7 @@ export const ApiController = {
         entries: recommendedEntries
       }
     })
-    await Promise.all(data.map(({ image_id }) => ApiController.fetchImageBlob(image_id)))
+    await Promise.all(data.map(({ image_id }) => ApiController.fetchWalletImage(image_id)))
     state.recommended = data
   },
 
@@ -96,7 +110,7 @@ export const ApiController = {
       }
     })
     await Promise.all([
-      ...data.map(({ image_id }) => ApiController.fetchImageBlob(image_id)),
+      ...data.map(({ image_id }) => ApiController.fetchWalletImage(image_id)),
       CoreHelperUtil.wait(300)
     ])
     state.wallets = [...state.wallets, ...data]
@@ -115,7 +129,7 @@ export const ApiController = {
         search
       }
     })
-    await Promise.all(data.map(({ image_id }) => ApiController.fetchImageBlob(image_id)))
+    await Promise.all(data.map(({ image_id }) => ApiController.fetchWalletImage(image_id)))
     state.search = data
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@apps/gallery",
-  "version": "3.0.0-8d5e8f4e",
+  "version": "3.0.0-alpha.1",
   "private": true,
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "build:gallery": "storybook build -o out"
   },
   "dependencies": {
-    "@web3modal/ui": "3.0.0-8d5e8f4e",
+    "@web3modal/ui": "3.0.0-alpha.1",
     "lit": "2.8.0",
     "storybook": "7.2.3"
   },

@@ -1,8 +1,10 @@
 import {
   AccountController,
+  AssetController,
   ConnectionController,
   CoreHelperUtil,
   ModalController,
+  NetworkController,
   RouterController,
   SnackController
 } from '@web3modal/core'
@@ -19,6 +21,8 @@ export class W3mAccountView extends LitElement {
   // -- Members -------------------------------------------- //
   private usubscribe: (() => void)[] = []
 
+  private readonly networkImages = AssetController.state.networkImages
+
   // -- State & Properties --------------------------------- //
   @state() private address = AccountController.state.address
 
@@ -30,20 +34,25 @@ export class W3mAccountView extends LitElement {
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
+  @state() private network = NetworkController.state.caipNetwork
+
   public constructor() {
     super()
     this.usubscribe.push(
-      AccountController.subscribe(val => {
-        if (val.address) {
-          this.address = val.address
-          this.profileImage = val.profileImage
-          this.profileName = val.profileName
-          this.balance = val.balance
-          this.balanceSymbol = val.balanceSymbol
-        } else {
-          ModalController.close()
-        }
-      })
+      ...[
+        AccountController.subscribe(val => {
+          if (val.address) {
+            this.address = val.address
+            this.profileImage = val.profileImage
+            this.profileName = val.profileName
+            this.balance = val.balance
+            this.balanceSymbol = val.balanceSymbol
+          } else {
+            ModalController.close()
+          }
+        })
+      ],
+      NetworkController.subscribeKey('caipNetwork', val => (this.network = val))
     )
   }
 
@@ -56,6 +65,8 @@ export class W3mAccountView extends LitElement {
     if (!this.address) {
       throw new Error('w3m-account-view: No account provided')
     }
+
+    const networkImage = this.networkImages[this.network?.imageId ?? '']
 
     return html`
       <wui-flex
@@ -85,9 +96,10 @@ export class W3mAccountView extends LitElement {
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
         <wui-list-item
-          variant="icon"
+          .variant=${networkImage ? 'image' : 'icon'}
           iconVariant="overlay"
           icon="networkPlaceholder"
+          imageSrc=${ifDefined(networkImage)}
           ?chevron=${true}
           @click=${this.onNetworks.bind(this)}
         >
