@@ -55,7 +55,7 @@ export class W3mNetworkSwitchView extends LitElement {
             iconColor="error-100"
             icon="close"
             size="sm"
-            border
+            ?border=${true}
           ></wui-icon-box>
         </wui-flex>
 
