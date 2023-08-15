@@ -20,6 +20,7 @@ export class WuiSearchBar extends LitElement {
       ${ref(this.inputComponentRef)}
       placeholder="Search wallet"
       icon="search"
+      type="search"
       size="sm"
     >
       <wui-input-element @click=${this.clearValue} icon="close"></wui-input-element>
@@ -32,6 +33,7 @@ export class WuiSearchBar extends LitElement {
     const inputElement = inputComponent?.inputElementRef.value
     if (inputElement) {
       inputElement.value = ''
+      inputElement.focus()
       inputElement.dispatchEvent(new Event('input'))
     }
   }

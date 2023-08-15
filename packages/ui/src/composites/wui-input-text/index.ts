@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import { createRef, ref } from 'lit/directives/ref.js'
 import '../../components/wui-icon/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconType, SizeType } from '../../utils/TypesUtil.js'
+import type { IconType, InputType, SizeType } from '../../utils/TypesUtil.js'
 import styles from './styles.js'
 
 @customElement('wui-input-text')
@@ -19,6 +19,8 @@ export class WuiInputText extends LitElement {
 
   @property() public placeholder = ''
 
+  @property() public type: InputType = 'text'
+
   public inputElementRef = createRef<HTMLInputElement>()
 
   // -- Render -------------------------------------------- //
@@ -29,6 +31,7 @@ export class WuiInputText extends LitElement {
       <input
         ${ref(this.inputElementRef)}
         class=${sizeClass}
+        type=${this.type}
         ?disabled=${this.disabled}
         placeholder=${this.placeholder}
         @input=${this.dispatchInputChangeEvent.bind(this)}
