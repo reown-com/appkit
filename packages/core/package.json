@@ -12,6 +12,7 @@
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir ./dist/types",
     "build:source": "tsc --outDir ./dist/esm",
     "build": "npm run build:clean; npm run build:types; npm run build:source",
+    "watch": "npm run build:clean; tsc --watch --outDir ./dist/esm",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --dir tests"
   },
