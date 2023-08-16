@@ -1,5 +1,5 @@
 import type { Connector } from '@web3modal/core'
-import { ApiController, ConnectorController, RouterController } from '@web3modal/core'
+import { AssetController, ConnectorController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 
@@ -7,8 +7,6 @@ import { customElement, state } from 'lit/decorators.js'
 export class W3mConnectView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
-
-  private images = ApiController.state.images
 
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
@@ -26,7 +24,8 @@ export class W3mConnectView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const walletImages = Object.values(this.images).map(src => ({ src }))
+    const { walletImages } = AssetController.state
+    const walletImagesSrc = Object.values(walletImages).map(src => ({ src }))
 
     return html`
       <wui-flex flexDirection="column" padding="s" gap="xs">
@@ -34,7 +33,7 @@ export class W3mConnectView extends LitElement {
         <wui-list-wallet
           name="All Wallets"
           showAllWallets
-          .walletImages=${walletImages}
+          .walletImages=${walletImagesSrc}
           @click=${this.onAllWallets.bind(this)}
         ></wui-list-wallet>
       </wui-flex>

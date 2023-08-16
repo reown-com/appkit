@@ -6,25 +6,27 @@ import type {
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
   ApiWallet,
-  ProjectId
+  ProjectId,
+  SdkVersion
 } from '../utils/TypeUtils.js'
+import { AssetController } from './AssetController.js'
+import { NetworkController } from './NetworkController.js'
 
 // -- Helpers ------------------------------------------- //
 const api = new FetchUtil({ baseUrl: 'https://api.web3modal.com' })
 const entries = 24
 const recommendedEntries = 4
-const sdkVersion = `js-3.0.0`
 const sdkType = 'w3m'
 
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {
   projectId: ProjectId
+  sdkVersion: SdkVersion
   page: number
   count: number
   recommended: ApiWallet[]
   wallets: ApiWallet[]
   search: ApiWallet[]
-  images: Record<string, string>
 }
 
 type StateKey = keyof ApiControllerState
@@ -32,12 +34,12 @@ type StateKey = keyof ApiControllerState
 // -- State --------------------------------------------- //
 const state = proxy<ApiControllerState>({
   projectId: '',
+  sdkVersion: 'html-wagmi-undefined',
   page: 1,
   count: 0,
   recommended: [],
   wallets: [],
-  search: [],
-  images: {}
+  search: []
 })
 
 // -- Controller ---------------------------------------- //
@@ -52,18 +54,35 @@ export const ApiController = {
     state.projectId = projectId
   },
 
+  setSdkVersion(sdkVersion: ApiControllerState['sdkVersion']) {
+    state.sdkVersion = sdkVersion
+  },
+
   getApiHeaders() {
     return {
       'x-project-id': state.projectId,
       'x-sdk-type': sdkType,
-      'x-sdk-version': sdkVersion
+      'x-sdk-version': state.sdkVersion
     }
   },
 
-  async fetchImageBlob(imageId: string) {
+  async fetchWalletImage(imageId: string) {
     const imageUrl = `${api.baseUrl}/getWalletImage/${imageId}`
     const blob = await api.getBlob({ path: imageUrl, headers: ApiController.getApiHeaders() })
-    state.images[imageId] = URL.createObjectURL(blob)
+    AssetController.setWalletImage(imageId, URL.createObjectURL(blob))
+  },
+
+  async fetchNetworkImage(imageId: string) {
+    const imageUrl = `${api.baseUrl}/public/getAssetImage/${imageId}`
+    const blob = await api.getBlob({ path: imageUrl, headers: ApiController.getApiHeaders() })
+    AssetController.setNetworkImage(imageId, URL.createObjectURL(blob))
+  },
+
+  async fetchNetworkImages() {
+    const { requestedCaipNetworks } = NetworkController.state
+    const imageIds = requestedCaipNetworks?.map(({ imageId }) => imageId) ?? []
+    const imageIdsStrings = imageIds.filter(id => typeof id === 'string') as string[]
+    await Promise.all(imageIdsStrings.map(id => ApiController.fetchNetworkImage(id)))
   },
 
   async fetchRecommendedWallets() {
@@ -75,7 +94,7 @@ export const ApiController = {
         entries: recommendedEntries
       }
     })
-    await Promise.all(data.map(({ image_id }) => ApiController.fetchImageBlob(image_id)))
+    await Promise.all(data.map(({ image_id }) => ApiController.fetchWalletImage(image_id)))
     state.recommended = data
   },
 
@@ -91,7 +110,7 @@ export const ApiController = {
       }
     })
     await Promise.all([
-      ...data.map(({ image_id }) => ApiController.fetchImageBlob(image_id)),
+      ...data.map(({ image_id }) => ApiController.fetchWalletImage(image_id)),
       CoreHelperUtil.wait(300)
     ])
     state.wallets = [...state.wallets, ...data]
@@ -110,7 +129,7 @@ export const ApiController = {
         search
       }
     })
-    await Promise.all(data.map(({ image_id }) => ApiController.fetchImageBlob(image_id)))
+    await Promise.all(data.map(({ image_id }) => ApiController.fetchWalletImage(image_id)))
     state.search = data
   }
 }

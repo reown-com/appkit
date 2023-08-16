@@ -1,4 +1,4 @@
-import { ApiController, CoreHelperUtil, RouterController } from '@web3modal/core'
+import { AssetUtil, CoreHelperUtil, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -7,8 +7,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 export class W3mConnectingWcUnsupported extends LitElement {
   // -- Members ------------------------------------------- //
   private readonly wallet = RouterController.state.data?.wallet
-
-  private readonly images = ApiController.state.images
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -25,7 +23,7 @@ export class W3mConnectingWcUnsupported extends LitElement {
       >
         <wui-wallet-image
           size="lg"
-          imageSrc=${ifDefined(this.images[this.wallet.image_id])}
+          imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet.image_id))}
         ></wui-wallet-image>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xxs">

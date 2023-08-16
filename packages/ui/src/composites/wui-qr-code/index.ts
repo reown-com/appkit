@@ -42,8 +42,8 @@ export class WuiQrCode extends LitElement {
   }
 
   private templateVisual() {
-    if (this.imageSrc && this.alt) {
-      return html`<wui-image src=${this.imageSrc} alt=${this.alt}></wui-image>`
+    if (this.imageSrc) {
+      return html`<wui-image src=${this.imageSrc} alt=${this.alt ?? 'logo'}></wui-image>`
     }
 
     return html`<wui-icon size="inherit" color="inherit" name="walletConnect"></wui-icon>`

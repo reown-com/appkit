@@ -11,7 +11,7 @@ describe('ApiController', () => {
       recommended: [],
       wallets: [],
       search: [],
-      images: {}
+      sdkVersion: 'html-wagmi-undefined'
     })
   })
 })

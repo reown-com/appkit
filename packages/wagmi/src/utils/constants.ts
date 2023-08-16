@@ -7,7 +7,7 @@ export const INJECTED_ID = 'injected'
 export const NAMESPACE = 'eip155'
 
 export const NAME_MAP = {
-  [INJECTED_ID]: 'Browser Wallet'
+  [INJECTED_ID]: 'Extension Wallet'
 } as Record<string, string>
 
 export const TYPE_MAP = {
@@ -19,4 +19,12 @@ export const ADD_CHAIN_METHOD = 'wallet_addEthereumChain'
 
 export const WALLET_CHOICE_KEY = 'wagmi.wallet'
 
-export const BLOCKCHAIN_API = 'https://rpc.walletconnect.com'
+export const BLOCKCHAIN_HTTP_API = 'https://rpc.walletconnect.com'
+
+export const BLOCKCHAIN_WSS_API = 'wss://rpc.walletconnect.com'
+
+/**
+ * DO NOT REMOVE
+ * Checked against packages/core version in dangerfile
+ */
+export const VERSION = '3.0.0-alpha.1'

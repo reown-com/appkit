@@ -1,9 +1,4 @@
-import {
-  ApiController,
-  ConnectionController,
-  ModalController,
-  RouterController
-} from '@web3modal/core'
+import { AssetUtil, ConnectionController, ModalController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -12,8 +7,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 export class W3mConnectingWcInjected extends LitElement {
   // -- Members ------------------------------------------- //
   private readonly wallet = RouterController.state.data?.wallet
-
-  private readonly images = ApiController.state.images
 
   // -- State & Properties -------------------------------- //
   @state() private error = false
@@ -29,7 +22,7 @@ export class W3mConnectingWcInjected extends LitElement {
     return html`
       <w3m-connecting-widget
         name=${this.wallet.name}
-        imageSrc=${ifDefined(this.images[this.wallet.image_id])}
+        imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet.image_id))}
         .error=${this.error}
         .onConnect=${this.onConnect.bind(this)}
       ></w3m-connecting-widget>

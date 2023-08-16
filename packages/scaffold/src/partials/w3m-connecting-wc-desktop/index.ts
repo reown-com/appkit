@@ -1,5 +1,5 @@
 import {
-  ApiController,
+  AssetUtil,
   ConnectionController,
   CoreHelperUtil,
   RouterController,
@@ -13,8 +13,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 export class W3mConnectingWcDesktop extends LitElement {
   // -- Members ------------------------------------------- //
   private readonly wallet = RouterController.state.data?.wallet
-
-  private readonly images = ApiController.state.images
 
   private unsubscribe: (() => void)[] = []
 
@@ -49,7 +47,7 @@ export class W3mConnectingWcDesktop extends LitElement {
 
     return html`
       <w3m-connecting-widget
-        imageSrc=${ifDefined(this.images[this.wallet.image_id])}
+        imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet.image_id))}
         name=${this.wallet.name}
         .error=${this.error}
         .onConnect=${this.onConnect.bind(this)}
