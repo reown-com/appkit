@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "turbo run build",
+    "watch": "turbo run watch",
     "gallery": "turbo run dev:gallery --parallel",
     "laboratory": "turbo run dev:laboratory --parallel",
     "examples": "turbo run dev:example --parallel",

@@ -74,7 +74,7 @@ export class W3mConnectingWcQrcode extends LitElement {
       size=${size}
       theme="dark"
       uri=${this.uri}
-      imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet.image_id))}
+      imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet?.image_id))}
       alt=${ifDefined(alt)}
     ></wui-qr-code>`
   }
