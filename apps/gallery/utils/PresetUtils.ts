@@ -19,6 +19,7 @@ import type {
   LogoType,
   PlacementType,
   SpacingType,
+  TagLabelType,
   TagType,
   TextAlign,
   TextType,
@@ -256,3 +257,5 @@ export const tagOptions: TagType[] = ['main', 'shade']
 export const accountEntryOptions: AccountEntryType[] = ['icon', 'image']
 
 export const themeOptions: ThemeType[] = ['dark', 'light']
+
+export const tagLabelOptions: TagLabelType[] = ['get wallet', 'installed', 'qr code', 'recent']

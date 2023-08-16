@@ -3,7 +3,12 @@ import '@web3modal/ui/src/composites/wui-list-wallet'
 import type { WuiListWallet } from '@web3modal/ui/src/composites/wui-list-wallet'
 import { html } from 'lit'
 import '../../components/gallery-container'
-import { tagOptions, walletImagesOptions } from '../../utils/PresetUtils'
+import {
+  iconOptions,
+  tagLabelOptions,
+  tagOptions,
+  walletImagesOptions
+} from '../../utils/PresetUtils'
 
 type Component = Meta<WuiListWallet>
 
@@ -16,14 +21,23 @@ export default {
     showAllWallets: false,
     disabled: false,
     tagLabel: 'qr code',
-    tagVariant: 'main'
+    tagVariant: 'main',
+    icon: undefined
   },
   argTypes: {
     showAllWallets: {
       control: { type: 'boolean' }
     },
+    tagLabel: {
+      options: [undefined, ...tagLabelOptions],
+      control: { type: 'select' }
+    },
     tagVariant: {
       options: [undefined, ...tagOptions],
+      control: { type: 'select' }
+    },
+    icon: {
+      options: [undefined, ...iconOptions],
       control: { type: 'select' }
     }
   }
@@ -38,6 +52,7 @@ export const Default: Component = {
         .showAllWallets=${args.showAllWallets}
         .tagLabel=${args.tagLabel}
         .tagVariant=${args.tagVariant}
+        .icon=${args.icon}
         ?disabled=${args.disabled}
         name=${args.name}
       ></wui-list-wallet>
