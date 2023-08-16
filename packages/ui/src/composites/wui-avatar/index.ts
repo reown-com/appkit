@@ -23,10 +23,10 @@ export class WuiAvatar extends LitElement {
 
   // -- Private ------------------------------------------- //
   public visualTemplate() {
-    if (this.imageSrc && this.alt) {
+    if (this.imageSrc) {
       this.dataset['variant'] = 'image'
 
-      return html`<wui-image src=${this.imageSrc} alt=${this.alt}></wui-image>`
+      return html`<wui-image src=${this.imageSrc} alt=${this.alt ?? 'avatar'}></wui-image>`
     } else if (this.address) {
       this.dataset['variant'] = 'generated'
       const cssColors = UiHelperUtil.generateAvatarColors(this.address)

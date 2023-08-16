@@ -2,8 +2,8 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
-import '../../components/wui-text/index.js'
 import '../../components/wui-loading-spinner/index.js'
+import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { AccountEntryType, IconType } from '../../utils/TypesUtil.js'
@@ -50,8 +50,8 @@ export class WuiListItem extends LitElement {
 
   // -- Private ------------------------------------------- //
   public visualTemplate() {
-    if (this.variant === 'image' && this.imageSrc && this.alt) {
-      return html`<wui-image src=${this.imageSrc} alt=${this.alt}></wui-image>`
+    if (this.variant === 'image' && this.imageSrc) {
+      return html`<wui-image src=${this.imageSrc} alt=${this.alt ?? 'list item'}></wui-image>`
     } else if (this.variant === 'icon' && this.icon && this.iconVariant) {
       const color = this.iconVariant === 'blue' ? 'blue-100' : 'fg-200'
 

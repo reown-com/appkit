@@ -1,5 +1,5 @@
 import {
-  ApiController,
+  AssetUtil,
   ConnectionController,
   CoreHelperUtil,
   RouterController,
@@ -20,8 +20,6 @@ export class W3mConnectingWcQrcode extends LitElement {
   private timeout?: ReturnType<typeof setTimeout> = undefined
 
   private readonly wallet = RouterController.state.data?.wallet
-
-  private readonly images = ApiController.state.images
 
   // -- State & Properties -------------------------------- //
   @state() private uri = ConnectionController.state.wcUri
@@ -70,14 +68,13 @@ export class W3mConnectingWcQrcode extends LitElement {
       return null
     }
     const size = this.getBoundingClientRect().width - 40
-    const imageSrc = this.wallet ? this.images[this.wallet.image_id] : undefined
     const alt = this.wallet ? this.wallet.name : undefined
 
     return html`<wui-qr-code
       size=${size}
       theme="dark"
       uri=${this.uri}
-      imageSrc=${ifDefined(imageSrc)}
+      imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet?.image_id))}
       alt=${ifDefined(alt)}
     ></wui-qr-code>`
   }

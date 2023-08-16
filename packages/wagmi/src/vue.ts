@@ -1,26 +1,39 @@
 import { ref } from 'vue'
 import type { Web3ModalOptions } from './client.js'
 import { Web3Modal } from './client.js'
+import { VERSION } from './utils/constants.js'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from './client.js'
+type OpenOptions = Parameters<Web3Modal['open']>[0]
 
 // -- Setup -------------------------------------------------------------------
 let modal: Web3Modal | undefined = undefined
 
 // -- Lib ---------------------------------------------------------------------
-export function useWeb3Modal(options?: Web3ModalOptions) {
+export function createWeb3Modal(options: Omit<Web3ModalOptions, '_sdkVersion'>) {
   if (!modal) {
-    if (!options) {
-      throw new Error('useWeb3Modal: options are required on first call')
-    }
-    modal = new Web3Modal(options)
+    modal = new Web3Modal({ ...options, _sdkVersion: `vue-wagmi-${VERSION}` })
   }
 
-  const modalRef = ref({
-    open: modal.open.bind(modal),
-    close: modal.close.bind(modal)
-  })
+  return modal
+}
 
-  return modalRef
+export function useWeb3Modal() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3Modal" composable')
+  }
+
+  async function open(options?: OpenOptions) {
+    await modal?.open(options)
+  }
+
+  async function close() {
+    await modal?.close()
+  }
+
+  return ref({
+    open,
+    close
+  })
 }

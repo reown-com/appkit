@@ -42,7 +42,7 @@
       "cache": false
     },
     "dev:example": {
-      "dependsOn": ["build", "^dev:example"],
+      "dependsOn": ["watch", "^dev:example"],
       "cache": false
     }
   }

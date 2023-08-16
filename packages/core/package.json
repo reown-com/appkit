@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/core",
-  "version": "3.0.0-8d5e8f4e",
+  "version": "3.0.0-alpha.1",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -9,10 +9,9 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build:types": "tsc --declaration --emitDeclarationOnly --outDir ./dist/types",
-    "build:source": "tsc --outDir ./dist/esm",
-    "build": "npm run build:clean; npm run build:types; npm run build:source",
-    "watch": "npm run build:clean; tsc --watch --outDir ./dist/esm",
+    "build:dist": "tsc --build",
+    "build": "npm run build:clean; npm run build:dist",
+    "watch": "npm run build:clean; tsc --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --dir tests"
   },

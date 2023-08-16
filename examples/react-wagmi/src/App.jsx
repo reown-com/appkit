@@ -1,10 +1,10 @@
-import { useWeb3Modal } from '@web3modal/wagmi'
+import { walletConnectProvider } from '@web3modal/wagmi'
+import { createWeb3Modal, useWeb3Modal } from '@web3modal/wagmi/react'
 import { WagmiConfig, configureChains, createConfig } from 'wagmi'
 import { arbitrum, mainnet } from 'wagmi/chains'
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
-import { publicProvider } from 'wagmi/providers/public'
 
 // 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -13,24 +13,32 @@ if (!projectId) {
 }
 
 // 2. Create wagmiConfig
-const { chains, publicClient } = configureChains([mainnet, arbitrum], [publicProvider()])
+const { chains, publicClient } = configureChains(
+  [mainnet, arbitrum],
+  [walletConnectProvider({ projectId })]
+)
+
 const wagmiConfig = createConfig({
   autoConnect: true,
   connectors: [
-    new WalletConnectConnector({ chains, options: { projectId, showQrModal: false } }),
-    new InjectedConnector({ chains, options: { shimDisconnect: true } }),
-    new CoinbaseWalletConnector({ chains, options: { appName: 'Web3Modal' } })
+    new WalletConnectConnector({ options: { projectId, showQrModal: false } }),
+    new InjectedConnector({ options: { shimDisconnect: true } }),
+    new CoinbaseWalletConnector({ options: { appName: 'Web3Modal' } })
   ],
   publicClient
 })
 
+// 3. Create modal
+createWeb3Modal({ wagmiConfig, projectId, chains })
+
 export default function App() {
-  // 3. Create modal
-  const modal = useWeb3Modal({ wagmiConfig, projectId, chains })
+  // 4. Use modal hook
+  const modal = useWeb3Modal()
 
   return (
     <WagmiConfig config={wagmiConfig}>
-      <button onClick={() => modal.open()}>Open Modal</button>
+      <button onClick={() => modal.open()}>Open Connect Modal</button>
+      <button onClick={() => modal.open({ view: 'Networks' })}>Open Network Modal</button>
     </WagmiConfig>
   )
 }
