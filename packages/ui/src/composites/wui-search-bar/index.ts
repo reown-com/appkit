@@ -16,15 +16,18 @@ export class WuiSearchBar extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html`<wui-input-text
-      ${ref(this.inputComponentRef)}
-      placeholder="Search wallet"
-      icon="search"
-      type="search"
-      size="sm"
-    >
-      <wui-input-element @click=${this.clearValue} icon="close"></wui-input-element>
-    </wui-input-text>`
+    return html`
+      <wui-input-text
+        ${ref(this.inputComponentRef)}
+        placeholder="Search wallet"
+        icon="search"
+        type="search"
+        enterKeyHint="search"
+        size="sm"
+      >
+        <wui-input-element @click=${this.clearValue} icon="close"></wui-input-element>
+      </wui-input-text>
+    `
   }
 
   // -- Private ------------------------------------------- //
