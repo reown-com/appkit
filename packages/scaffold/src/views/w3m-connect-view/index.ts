@@ -8,8 +8,6 @@ export class W3mConnectView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
-  private readonly images = AssetController.state.walletImages
-
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
 
@@ -26,7 +24,8 @@ export class W3mConnectView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const walletImages = Object.values(this.images).map(src => ({ src }))
+    const { walletImages } = AssetController.state
+    const walletImagesSrc = Object.values(walletImages).map(src => ({ src }))
 
     return html`
       <wui-flex flexDirection="column" padding="s" gap="xs">
@@ -34,7 +33,7 @@ export class W3mConnectView extends LitElement {
         <wui-list-wallet
           name="All Wallets"
           showAllWallets
-          .walletImages=${walletImages}
+          .walletImages=${walletImagesSrc}
           @click=${this.onAllWallets.bind(this)}
         ></wui-list-wallet>
       </wui-flex>

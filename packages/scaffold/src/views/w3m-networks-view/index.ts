@@ -1,10 +1,5 @@
 import type { CaipNetwork } from '@web3modal/core'
-import {
-  AccountController,
-  AssetController,
-  NetworkController,
-  RouterController
-} from '@web3modal/core'
+import { AccountController, AssetUtil, NetworkController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -13,8 +8,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 export class W3mNetworksView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
-
-  private readonly images = AssetController.state.networkImages
 
   // -- State & Properties -------------------------------- //
   @state() public caipNetwork = NetworkController.state.caipNetwork
@@ -62,7 +55,7 @@ export class W3mNetworksView extends LitElement {
       network => html`
         <wui-card-select
           .selected=${this.caipNetwork?.id === network.id}
-          imageSrc=${ifDefined(this.images[network.imageId ?? ''])}
+          imageSrc=${ifDefined(AssetUtil.getNetworkImage(network.imageId))}
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}

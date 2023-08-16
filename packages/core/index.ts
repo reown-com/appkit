@@ -36,6 +36,7 @@ export { AssetController } from './src/controllers/AssetController.js'
 export type { AssetControllerState } from './src/controllers/AssetController.js'
 
 // -- Utils -------------------------------------------------------------------
+export { AssetUtil } from './src/utils/AssetUtil.js'
 export { ConstantsUtil } from './src/utils/ConstantsUtil.js'
 export { CoreHelperUtil } from './src/utils/CoreHelperUtil.js'
 export { StorageUtil } from './src/utils/StorageUtil.js'

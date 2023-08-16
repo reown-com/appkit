@@ -51,7 +51,7 @@ export class WuiListItem extends LitElement {
   // -- Private ------------------------------------------- //
   public visualTemplate() {
     if (this.variant === 'image' && this.imageSrc) {
-      return html`<wui-image src=${this.imageSrc} alt=${this.alt ?? 'image'}></wui-image>`
+      return html`<wui-image src=${this.imageSrc} alt=${this.alt ?? 'list item'}></wui-image>`
     } else if (this.variant === 'icon' && this.icon && this.iconVariant) {
       const color = this.iconVariant === 'blue' ? 'blue-100' : 'fg-200'
 
