@@ -26,7 +26,7 @@ export function setThemeVariables(themeVariables: ThemeVariables) {
 function createRootStyles(themeVariables: ThemeVariables) {
   return css`
     :root {
-      --w3m-background-percentage: ${unsafeCSS(themeVariables['w3m-accent'] ? '92%' : '100%')};
+      --w3m-background-percentage: ${unsafeCSS(themeVariables['w3m-accent'] ? '85%' : '100%')};
 
       --wui-font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
         Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
@@ -123,14 +123,6 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-box-shadow-blue: color-mix(in srgb, var(--wui-color-blue-100) 16%, transparent);
 
       --wui-cover: rgba(0, 0, 0, 0.3);
-
-      --wui-overlay-002: color-mix(in srgb, var(--w3m-accent) 2%, transparent);
-      --wui-overlay-005: color-mix(in srgb, var(--w3m-accent) 5%, transparent);
-      --wui-overlay-010: color-mix(in srgb, var(--w3m-accent) 10%, transparent);
-      --wui-overlay-015: color-mix(in srgb, var(--w3m-accent) 15%, transparent);
-      --wui-overlay-020: color-mix(in srgb, var(--w3m-accent) 20%, transparent);
-      --wui-overlay-025: color-mix(in srgb, var(--w3m-accent) 25%, transparent);
-      --wui-overlay-030: color-mix(in srgb, var(--w3m-accent) 30%, transparent);
     }
 
     [data-wui-theme='dark'] {
@@ -173,6 +165,14 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-icon-box-bg-blue-100: #20303f;
       --wui-icon-box-bg-success-100: #1f3a28;
       --wui-icon-box-bg-inverse-100: #243240;
+
+      --wui-overlay-002: rgba(255, 255, 255, 0.02);
+      --wui-overlay-005: rgba(255, 255, 255, 0.05);
+      --wui-overlay-010: rgba(255, 255, 255, 0.1);
+      --wui-overlay-015: rgba(255, 255, 255, 0.15);
+      --wui-overlay-020: rgba(255, 255, 255, 0.2);
+      --wui-overlay-025: rgba(255, 255, 255, 0.25);
+      --wui-overlay-030: rgba(255, 255, 255, 0.3);
 
       --wui-avatar-border: #252525;
     }
@@ -217,6 +217,14 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-icon-box-bg-blue-100: #d9ecfb;
       --wui-icon-box-bg-success-100: #daf0e4;
       --wui-icon-box-bg-inverse-100: #dcecfc;
+
+      --wui-overlay-002: rgba(0, 0, 0, 0.02);
+      --wui-overlay-005: rgba(0, 0, 0, 0.05);
+      --wui-overlay-010: rgba(0, 0, 0, 0.1);
+      --wui-overlay-015: rgba(0, 0, 0, 0.15);
+      --wui-overlay-020: rgba(0, 0, 0, 0.2);
+      --wui-overlay-025: rgba(0, 0, 0, 0.25);
+      --wui-overlay-030: rgba(0, 0, 0, 0.3);
 
       --wui-avatar-border: #f3f4f4;
     }
