@@ -26,15 +26,19 @@ import type {
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
   ADD_CHAIN_METHOD,
-  INJECTED_ID,
+  INJECTED_CONNECTOR_ID,
   NAMESPACE,
-  NAME_MAP,
-  TYPE_MAP,
   VERSION,
   WALLET_CHOICE_KEY,
-  WALLET_CONNECT_ID
+  WALLET_CONNECT_CONNECTOR_ID
 } from './utils/constants.js'
-import { NetworkImageIds } from './utils/presets.js'
+import {
+  ConnectorExplorerIds,
+  ConnectorImageIds,
+  ConnectorNamesMap,
+  ConnectorTypesMap,
+  NetworkImageIds
+} from './utils/presets.js'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalOptions {
@@ -70,7 +74,7 @@ export class Web3Modal extends Web3ModalScaffold {
       throw new Error('web3modal:constructor - themeMode is undefined')
     }
 
-    if (!wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_ID)) {
+    if (!wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_CONNECTOR_ID)) {
       throw new Error('web3modal:constructor - WalletConnectConnector is required')
     }
 
@@ -84,8 +88,8 @@ export class Web3Modal extends Web3ModalScaffold {
 
       async getApprovedCaipNetworksData() {
         const walletChoice = localStorage.getItem(WALLET_CHOICE_KEY)
-        if (walletChoice?.includes(WALLET_CONNECT_ID)) {
-          const connector = wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_ID)
+        if (walletChoice?.includes(WALLET_CONNECT_CONNECTOR_ID)) {
+          const connector = wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_CONNECTOR_ID)
           if (!connector) {
             throw new Error(
               'networkControllerClient:getApprovedCaipNetworks - connector is undefined'
@@ -108,7 +112,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const connectionControllerClient: ConnectionControllerClient = {
       connectWalletConnect: async onUri => {
-        const connector = wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_ID)
+        const connector = wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_CONNECTOR_ID)
         if (!connector) {
           throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
         }
@@ -137,7 +141,7 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       connectInjected: async () => {
-        const connector = wagmiConfig.connectors.find(c => c.id === INJECTED_ID)
+        const connector = wagmiConfig.connectors.find(c => c.id === INJECTED_CONNECTOR_ID)
         if (!connector) {
           throw new Error('connectionControllerClient:connectInjected - connector is undefined')
         }
@@ -245,11 +249,13 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private syncConnectors(connectors: Web3ModalOptions['wagmiConfig']['connectors']) {
     const w3mConnectors = connectors.map(
-      connector =>
+      ({ id, name }) =>
         ({
-          id: connector.id,
-          name: NAME_MAP[connector.id] ?? connector.name,
-          type: TYPE_MAP[connector.id] ?? 'EXTERNAL'
+          id,
+          explorerId: ConnectorExplorerIds[id],
+          imageId: ConnectorImageIds[id],
+          name: ConnectorNamesMap[id] ?? name,
+          type: ConnectorTypesMap[id] ?? 'EXTERNAL'
         }) as const
     )
     this.setConnectors(w3mConnectors ?? [])

@@ -24,6 +24,7 @@ export interface Connector {
   type: ConnectorType
   name?: string
   imageId?: string
+  explorerId?: string
 }
 
 export type CaipNamespaces = Record<

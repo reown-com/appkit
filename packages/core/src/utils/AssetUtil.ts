@@ -7,5 +7,9 @@ export const AssetUtil = {
 
   getNetworkImage(imageId?: string) {
     return imageId ? AssetController.state.networkImages[imageId] : undefined
+  },
+
+  getConnectorImage(imageId?: string) {
+    return imageId ? AssetController.state.connectorImages[imageId] : undefined
   }
 }
