@@ -42,8 +42,8 @@ export const NetworkImageIds = {
 
 export const ConnectorImageIds = {
   [COINBASE_CONNECTOR_ID]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
-  [SAFE_CONNECTOR_ID]: '54a1aa77-d202-4f8d-0fb2-5d2bb6db0300',
-  [LEDGER_CONNECTOR_ID]: '461db637-8616-43ce-035a-d89b8a1d5800'
+  [SAFE_CONNECTOR_ID]: '461db637-8616-43ce-035a-d89b8a1d5800',
+  [LEDGER_CONNECTOR_ID]: '54a1aa77-d202-4f8d-0fb2-5d2bb6db0300'
 } as Record<string, string>
 
 export const ConnectorExplorerIds = {
