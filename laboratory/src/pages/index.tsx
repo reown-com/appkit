@@ -14,13 +14,6 @@ const reactCards = [
     link: '/with-wagmi/react-themed',
     color: 'secondary',
     libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi', 'viem']
-  },
-  {
-    title: 'With Ethers Wagmi',
-    description: 'Wagmi playground using older deps with Ethers',
-    link: '/with-wagmi/react-ethers',
-    color: 'secondary',
-    libraries: ['@web3modal/react', '@web3modal/ethereum', 'wagmi', 'ethers']
   }
 ] as const
 
