@@ -35,6 +35,9 @@ export type { ApiControllerState } from './src/controllers/ApiController.js'
 export { AssetController } from './src/controllers/AssetController.js'
 export type { AssetControllerState } from './src/controllers/AssetController.js'
 
+export { ThemeController } from './src/controllers/ThemeController.js'
+export type { ThemeControllerState } from './src/controllers/ThemeController.js'
+
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from './src/utils/AssetUtil.js'
 export { ConstantsUtil } from './src/utils/ConstantsUtil.js'
@@ -49,5 +52,7 @@ export type {
   ConnectorType,
   Platform,
   ProjectId,
-  SdkVersion
+  SdkVersion,
+  ThemeMode,
+  ThemeVariables
 } from './src/utils/TypeUtils.js'

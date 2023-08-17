@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import type { Web3ModalOptions } from './client.js'
 import { Web3Modal } from './client.js'
 import { VERSION } from './utils/constants.js'
+import type { ThemeMode, ThemeVariables } from '@web3modal/scaffold'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from './client.js'
@@ -32,8 +33,24 @@ export function useWeb3Modal() {
     await modal?.close()
   }
 
+  async function setThemeMode(themeMode: ThemeMode) {
+    await modal?.setThemeMode(themeMode)
+  }
+
+  async function setThemeVariables(themeVariables: ThemeVariables) {
+    await modal?.setThemeVariables(themeVariables)
+  }
+
+  const themeMode = modal?.getThemeMode()
+
+  const themeVariables = modal?.getThemeVariables()
+
   return ref({
     open,
-    close
+    close,
+    themeMode,
+    themeVariables,
+    setThemeMode,
+    setThemeVariables
   })
 }

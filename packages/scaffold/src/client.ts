@@ -2,7 +2,9 @@ import type {
   ApiControllerState,
   ConnectionControllerClient,
   ModalControllerArguments,
-  NetworkControllerClient
+  NetworkControllerClient,
+  ThemeMode,
+  ThemeVariables
 } from '@web3modal/core'
 import {
   AccountController,
@@ -11,8 +13,10 @@ import {
   ConnectorController,
   CoreHelperUtil,
   ModalController,
-  NetworkController
+  NetworkController,
+  ThemeController
 } from '@web3modal/core'
+import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
@@ -23,6 +27,8 @@ interface Options {
   connectionControllerClient: ConnectionControllerClient
   projectId: ApiControllerState['projectId']
   sdkVersion: ApiControllerState['sdkVersion']
+  themeMode: ThemeMode
+  themeVariables?: ThemeVariables
 }
 
 // -- Client --------------------------------------------------------------------
@@ -43,6 +49,24 @@ export class Web3ModalScaffold {
   public async close() {
     await this.initOrContinue()
     ModalController.close()
+  }
+
+  public getThemeMode() {
+    return ThemeController.state.themeMode
+  }
+
+  public getThemeVariables() {
+    return ThemeController.state.themeVariables
+  }
+
+  public setThemeMode(themeMode: ThemeMode) {
+    ThemeController.setThemeMode(themeMode)
+    setColorTheme(themeMode)
+  }
+
+  public setThemeVariables(themeVariables: ThemeVariables) {
+    ThemeController.setThemeVariables(themeVariables)
+    setThemeVariables(themeVariables)
   }
 
   // -- Protected ----------------------------------------------------------------
@@ -102,6 +126,10 @@ export class Web3ModalScaffold {
     ConnectionController.setClient(options.connectionControllerClient)
     ApiController.setProjectId(options.projectId)
     ApiController.setSdkVersion(options.sdkVersion)
+    ThemeController.setThemeMode(options.themeMode)
+    if (options.themeVariables) {
+      ThemeController.setThemeVariables(options.themeVariables)
+    }
   }
 
   private async initOrContinue() {

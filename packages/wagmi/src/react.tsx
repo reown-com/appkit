@@ -1,5 +1,6 @@
 'use client'
 
+import type { ThemeMode, ThemeVariables } from '@web3modal/scaffold'
 import type { Web3ModalOptions } from './client.js'
 import { Web3Modal } from './client.js'
 import { VERSION } from './utils/constants.js'
@@ -33,5 +34,17 @@ export function useWeb3Modal() {
     await modal?.close()
   }
 
-  return { open, close }
+  function setThemeMode(themeMode: ThemeMode) {
+    modal?.setThemeMode(themeMode)
+  }
+
+  function setThemeVariables(themeVariables: ThemeVariables) {
+    modal?.setThemeVariables(themeVariables)
+  }
+
+  const themeMode = modal?.getThemeMode()
+
+  const themeVariables = modal?.getThemeVariables()
+
+  return { open, close, themeMode, themeVariables, setThemeMode, setThemeVariables }
 }

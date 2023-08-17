@@ -69,3 +69,7 @@ export interface ApiGetWalletsResponse {
   data: ApiWallet[]
   count: number
 }
+
+export type ThemeMode = 'dark' | 'light'
+
+export type ThemeVariables = Record<string, string>

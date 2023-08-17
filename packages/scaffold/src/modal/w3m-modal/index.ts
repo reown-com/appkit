@@ -1,4 +1,4 @@
-import { ApiController, ModalController, SnackController } from '@web3modal/core'
+import { ApiController, ModalController, SnackController, ThemeController } from '@web3modal/core'
 import { initializeTheming, setColorTheme } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
@@ -22,8 +22,8 @@ export class W3mModal extends LitElement {
 
   public constructor() {
     super()
-    initializeTheming()
-    setColorTheme('dark')
+    initializeTheming(ThemeController.state.themeVariables)
+    setColorTheme(ThemeController.state.themeMode)
     ApiController.fetchRecommendedWallets()
     ApiController.fetchNetworkImages()
     this.unsubscribe.push(
