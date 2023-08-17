@@ -43,7 +43,9 @@ export const NetworkImageIds = {
 export const ConnectorImageIds = {
   [COINBASE_CONNECTOR_ID]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
   [SAFE_CONNECTOR_ID]: '461db637-8616-43ce-035a-d89b8a1d5800',
-  [LEDGER_CONNECTOR_ID]: '54a1aa77-d202-4f8d-0fb2-5d2bb6db0300'
+  [LEDGER_CONNECTOR_ID]: '54a1aa77-d202-4f8d-0fb2-5d2bb6db0300',
+  [WALLET_CONNECT_CONNECTOR_ID]: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400',
+  [INJECTED_CONNECTOR_ID]: 'f488b4f0-1e70-472f-17a0-9a6c6bf37900'
 } as Record<string, string>
 
 export const ConnectorExplorerIds = {
