@@ -10,6 +10,7 @@ import type {
   SdkVersion
 } from '../utils/TypeUtils.js'
 import { AssetController } from './AssetController.js'
+import { ConnectorController } from './ConnectorController.js'
 import { NetworkController } from './NetworkController.js'
 
 // -- Helpers ------------------------------------------- //
@@ -58,7 +59,7 @@ export const ApiController = {
     state.sdkVersion = sdkVersion
   },
 
-  getApiHeaders() {
+  _getApiHeaders() {
     return {
       'x-project-id': state.projectId,
       'x-sdk-type': sdkType,
@@ -66,51 +67,70 @@ export const ApiController = {
     }
   },
 
-  async fetchWalletImage(imageId: string) {
+  async _fetchWalletImage(imageId: string) {
     const imageUrl = `${api.baseUrl}/getWalletImage/${imageId}`
-    const blob = await api.getBlob({ path: imageUrl, headers: ApiController.getApiHeaders() })
+    const blob = await api.getBlob({ path: imageUrl, headers: ApiController._getApiHeaders() })
     AssetController.setWalletImage(imageId, URL.createObjectURL(blob))
   },
 
-  async fetchNetworkImage(imageId: string) {
+  async _fetchNetworkImage(imageId: string) {
     const imageUrl = `${api.baseUrl}/public/getAssetImage/${imageId}`
-    const blob = await api.getBlob({ path: imageUrl, headers: ApiController.getApiHeaders() })
+    const blob = await api.getBlob({ path: imageUrl, headers: ApiController._getApiHeaders() })
     AssetController.setNetworkImage(imageId, URL.createObjectURL(blob))
+  },
+
+  async _fetchConnectorImage(imageId: string) {
+    const imageUrl = `${api.baseUrl}/public/getAssetImage/${imageId}`
+    const blob = await api.getBlob({ path: imageUrl, headers: ApiController._getApiHeaders() })
+    AssetController.setConnectorImage(imageId, URL.createObjectURL(blob))
   },
 
   async fetchNetworkImages() {
     const { requestedCaipNetworks } = NetworkController.state
-    const imageIds = requestedCaipNetworks?.map(({ imageId }) => imageId) ?? []
-    const imageIdsStrings = imageIds.filter(id => typeof id === 'string') as string[]
-    await Promise.all(imageIdsStrings.map(id => ApiController.fetchNetworkImage(id)))
+    const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean)
+    if (ids) {
+      await Promise.all((ids as string[]).map(id => ApiController._fetchNetworkImage(id)))
+    }
+  },
+
+  async fetchConnectorImages() {
+    const { connectors } = ConnectorController.state
+    const ids = connectors.map(({ imageId }) => imageId).filter(Boolean)
+    await Promise.all((ids as string[]).map(id => ApiController._fetchConnectorImage(id)))
   },
 
   async fetchRecommendedWallets() {
+    const { connectors } = ConnectorController.state
+    const exclude = connectors.map(({ explorerId }) => explorerId).filter(Boolean)
     const { data } = await api.post<ApiGetWalletsResponse>({
       path: '/getWallets',
-      headers: ApiController.getApiHeaders(),
+      headers: ApiController._getApiHeaders(),
       body: {
         page: 1,
-        entries: recommendedEntries
+        entries: recommendedEntries,
+        exclude: exclude.length ? exclude : undefined
       }
     })
-    await Promise.all(data.map(({ image_id }) => ApiController.fetchWalletImage(image_id)))
+    await Promise.all(data.map(({ image_id }) => ApiController._fetchWalletImage(image_id)))
     state.recommended = data
   },
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
-    const exclude = state.recommended.map(({ id }) => id)
+    const { connectors } = ConnectorController.state
+    const excludeRecommended = state.recommended.map(({ id }) => id)
+    const excludeConnectors = connectors.map(({ explorerId }) => explorerId).filter(Boolean)
+    const exclude = [...excludeRecommended, ...excludeConnectors]
     const { data, count } = await api.post<ApiGetWalletsResponse>({
       path: '/getWallets',
-      headers: ApiController.getApiHeaders(),
+      headers: ApiController._getApiHeaders(),
       body: {
         page,
         entries,
-        exclude
+        exclude: exclude.length ? exclude : undefined
       }
     })
     await Promise.all([
-      ...data.map(({ image_id }) => ApiController.fetchWalletImage(image_id)),
+      ...data.map(({ image_id }) => ApiController._fetchWalletImage(image_id)),
       CoreHelperUtil.wait(300)
     ])
     state.wallets = [...state.wallets, ...data]
@@ -119,17 +139,20 @@ export const ApiController = {
   },
 
   async searchWallet({ search }: Pick<ApiGetWalletsRequest, 'search'>) {
+    const { connectors } = ConnectorController.state
+    const exclude = connectors.map(({ explorerId }) => explorerId).filter(Boolean)
     state.search = []
     const { data } = await api.post<ApiGetWalletsResponse>({
       path: '/getWallets',
-      headers: ApiController.getApiHeaders(),
+      headers: ApiController._getApiHeaders(),
       body: {
         page: 1,
         entries: 100,
-        search
+        search,
+        exclude: exclude.length ? exclude : undefined
       }
     })
-    await Promise.all(data.map(({ image_id }) => ApiController.fetchWalletImage(image_id)))
+    await Promise.all(data.map(({ image_id }) => ApiController._fetchWalletImage(image_id)))
     state.search = data
   }
 }

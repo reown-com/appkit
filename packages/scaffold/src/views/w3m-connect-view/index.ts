@@ -1,7 +1,8 @@
 import type { Connector } from '@web3modal/core'
-import { AssetController, ConnectorController, RouterController } from '@web3modal/core'
+import { AssetController, AssetUtil, ConnectorController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -45,6 +46,7 @@ export class W3mConnectView extends LitElement {
     return this.connectors.map(
       connector =>
         html`<wui-list-wallet
+          imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector.imageId))}
           name=${connector.name ?? 'Unknown'}
           @click=${() => this.onConnector(connector)}
         ></wui-list-wallet>`

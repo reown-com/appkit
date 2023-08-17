@@ -240,7 +240,7 @@ async function checkSdkVersion() {
 
   if (wagmiConstants) {
     const diff = await diffForFile(wagmiConstants)
-    if (!diff?.added.includes(`VERSION = '${corePackageJson.version}'`)) {
+    if (!diff?.after.includes(`VERSION = '${corePackageJson.version}'`)) {
       fail(`VERSION in ${wagmiConstantsPath} does not match latest packages/core version`)
     }
   } else {
