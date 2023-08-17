@@ -33,12 +33,12 @@ export function useWeb3Modal() {
     await modal?.close()
   }
 
-  async function setThemeMode(themeMode: ThemeMode) {
-    await modal?.setThemeMode(themeMode)
+  function setThemeMode(themeMode: ThemeMode) {
+    modal?.setThemeMode(themeMode)
   }
 
-  async function setThemeVariables(themeVariables: ThemeVariables) {
-    await modal?.setThemeVariables(themeVariables)
+  function setThemeVariables(themeVariables: ThemeVariables) {
+    modal?.setThemeVariables(themeVariables)
   }
 
   const themeMode = modal?.getThemeMode()
