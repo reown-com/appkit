@@ -1,3 +1,12 @@
+import type { ConnectorType } from '@web3modal/scaffold'
+import {
+  COINBASE_CONNECTOR_ID,
+  INJECTED_CONNECTOR_ID,
+  LEDGER_CONNECTOR_ID,
+  SAFE_CONNECTOR_ID,
+  WALLET_CONNECT_CONNECTOR_ID
+} from './constants.js'
+
 export const NetworkImageIds = {
   // Ethereum
   1: '692ed6ba-e569-459a-556a-776476829e00',
@@ -29,4 +38,25 @@ export const NetworkImageIds = {
   1284: '161038da-44ae-4ec7-1208-0ea569454b00',
   // Moonriver
   1285: 'f1d73bb6-5450-4e18-38f7-fb6484264a00'
-} as Record<string, string | undefined>
+} as Record<string, string>
+
+export const ConnectorImageIds = {
+  [COINBASE_CONNECTOR_ID]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
+  [SAFE_CONNECTOR_ID]: '54a1aa77-d202-4f8d-0fb2-5d2bb6db0300',
+  [LEDGER_CONNECTOR_ID]: '461db637-8616-43ce-035a-d89b8a1d5800'
+} as Record<string, string>
+
+export const ConnectorExplorerIds = {
+  [COINBASE_CONNECTOR_ID]: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+  [SAFE_CONNECTOR_ID]: '225affb176778569276e484e1b92637ad061b01e13a048b35a9d280c3b58970f',
+  [LEDGER_CONNECTOR_ID]: '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927'
+} as Record<string, string>
+
+export const ConnectorNamesMap = {
+  [INJECTED_CONNECTOR_ID]: 'Extension Wallet'
+} as Record<string, string>
+
+export const ConnectorTypesMap = {
+  [INJECTED_CONNECTOR_ID]: 'INJECTED',
+  [WALLET_CONNECT_CONNECTOR_ID]: 'WALLET_CONNECT'
+} as Record<string, ConnectorType>
