@@ -1,11 +1,11 @@
 'use client'
 
-import type { Web3ModalOptions } from './client.js'
-import { Web3Modal } from './client.js'
-import { VERSION } from './utils/constants.js'
+import type { Web3ModalOptions } from '../src/client.js'
+import { Web3Modal } from '../src/client.js'
+import { VERSION } from '../src/utils/constants.js'
 
 // -- Types -------------------------------------------------------------------
-export type { Web3ModalOptions } from './client.js'
+export type { Web3ModalOptions } from '../src/client.js'
 type OpenOptions = Parameters<Web3Modal['open']>[0]
 
 // -- Setup -------------------------------------------------------------------
@@ -35,3 +35,7 @@ export function useWeb3Modal() {
 
   return { open, close }
 }
+
+export { defaultWagmiConfig } from '../src/utils/defaultWagmiReactConfig.js'
+
+export type { DefaultConfigOptions } from '../src/utils/defaultWagmiReactConfig.js'

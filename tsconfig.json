@@ -7,7 +7,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "moduleResolution": "Bundler",
+    "moduleResolution": "Node",
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "removeComments": true,
