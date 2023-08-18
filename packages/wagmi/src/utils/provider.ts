@@ -22,11 +22,12 @@ export function walletConnectProvider<C extends Chain = Chain>({
       137,
       280,
       324,
+      8453,
       43114,
       80001,
       421611,
       7777777,
-      8453
+      11155111
     ]
 
     if (!supportedHttp.includes(chain.id)) {
