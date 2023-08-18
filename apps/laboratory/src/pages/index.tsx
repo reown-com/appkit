@@ -17,7 +17,7 @@ const chains = [mainnet, arbitrum, polygon, avalanche, bsc, optimism, gnosis, zk
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, appName: 'Web3Modal' })
 
 // 3. Create Web3Modal
-export const modal = createWeb3Modal({ wagmiConfig, projectId, chains })
+createWeb3Modal({ wagmiConfig, projectId, chains })
 
 export default function HomePage() {
   const [ready, setReady] = useState(false)
