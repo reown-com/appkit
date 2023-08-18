@@ -7,7 +7,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "removeComments": true,
@@ -23,7 +23,13 @@
     "noPropertyAccessFromIndexSignature": true,
     "noUncheckedIndexedAccess": true,
     "verbatimModuleSyntax": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": ".",
+    // https://github.com/microsoft/TypeScript/issues/48212
+    "paths": {
+      "@wagmi/core": ["node_modules/@wagmi/core/dist"],
+      "@wagmi/core/*": ["node_modules/@wagmi/core/dist/*"]
+    }
   },
   "exclude": ["node_modules", "dist", "types", "out", ".next", ".turbo"]
 }

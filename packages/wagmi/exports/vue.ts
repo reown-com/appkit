@@ -39,5 +39,3 @@ export function useWeb3Modal() {
 }
 
 export { defaultWagmiConfig } from '../src/utils/defaultWagmiCoreConfig.js'
-
-export type { DefaultConfigOptions } from '../src/utils/defaultWagmiCoreConfig.js'

@@ -1,19 +1,13 @@
 import '@web3modal/polyfills'
 
-import type { Chain } from 'wagmi'
 import { configureChains, createConfig } from 'wagmi'
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
+import type { ConfigOptions } from './defaultWagmiCoreConfig.js'
 import { walletConnectProvider } from './provider.js'
 
-export interface DefaultConfigOptions {
-  appName: string
-  projectId: string
-  chains: Chain[]
-}
-
-export function defaultWagmiConfig({ projectId, chains, appName }: DefaultConfigOptions) {
+export function defaultWagmiConfig({ projectId, chains, appName }: ConfigOptions) {
   const { publicClient, webSocketPublicClient } = configureChains(chains, [
     walletConnectProvider({ projectId })
   ])

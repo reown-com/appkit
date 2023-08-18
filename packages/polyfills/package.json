@@ -9,8 +9,7 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build:dist": "tsc --build",
-    "build": "npm run build:clean; npm run build:dist",
+    "build": "npm run build:clean; tsc --build",
     "watch": "npm run build:clean; tsc --watch",
     "typecheck": "tsc --noEmit"
   },

@@ -7,13 +7,13 @@ import { InjectedConnector } from '@wagmi/core/connectors/injected'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { walletConnectProvider } from './provider.js'
 
-export interface DefaultConfigOptions {
+export interface ConfigOptions {
   appName: string
   projectId: string
   chains: Chain[]
 }
 
-export function defaultWagmiConfig({ projectId, chains, appName }: DefaultConfigOptions) {
+export function defaultWagmiConfig({ projectId, chains, appName }: ConfigOptions) {
   const { publicClient, webSocketPublicClient } = configureChains(chains, [
     walletConnectProvider({ projectId })
   ])
