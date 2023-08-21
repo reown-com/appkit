@@ -36,6 +36,8 @@ export class W3mAccountView extends LitElement {
 
   @state() private network = NetworkController.state.caipNetwork
 
+  @state() private disconecting = false
+
   public constructor() {
     super()
     this.usubscribe.push(
@@ -110,6 +112,7 @@ export class W3mAccountView extends LitElement {
           iconVariant="overlay"
           icon="disconnect"
           ?chevron=${false}
+          .loading=${this.disconecting}
           @click=${this.onDisconnect.bind(this)}
         >
           <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
@@ -135,8 +138,15 @@ export class W3mAccountView extends LitElement {
   }
 
   private async onDisconnect() {
-    await ConnectionController.disconnect()
-    ModalController.close()
+    try {
+      this.disconecting = true
+      await ConnectionController.disconnect()
+      ModalController.close()
+    } catch {
+      SnackController.showError('Failed to disconnect')
+    } finally {
+      this.disconecting = false
+    }
   }
 
   private showBalance() {
