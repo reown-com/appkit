@@ -1,7 +1,6 @@
 > [!NOTE]
 > The latest Web3Modal stable version is v2. To preview v3 alpha [visit the docs](https://docs.walletconnect.com/2.0/web3modal/v3/about).
 
-
 #### 📚 [Documentation](https://docs.walletconnect.com/2.0/web3modal/about)
 
 #### 🔎 [Examples](https://github.com/WalletConnect/web3modal-examples)
