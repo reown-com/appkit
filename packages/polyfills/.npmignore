@@ -1,0 +1,10 @@
+*.log
+*.env
+npm-debug.log*
+node_modules
+package-lock.json
+src
+tests
+index.ts
+.eslintrc.json
+.turbo

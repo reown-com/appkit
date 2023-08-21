@@ -1,5 +1,5 @@
 {
-  "name": "@web3modal/ui",
+  "name": "@web3modal/polyfills",
   "version": "3.0.0-alpha.3",
   "type": "module",
   "main": "./dist/esm/index.js",
@@ -14,13 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "lit": "2.8.0",
-    "qrcode": "1.5.3"
-  },
-  "devDependencies": {
-    "@types/qrcode": "1.5.1",
-    "eslint-plugin-lit": "1.9.1",
-    "eslint-plugin-wc": "1.5.0"
+    "buffer": "6.0.3"
   },
   "keywords": [
     "web3",
@@ -28,8 +22,7 @@
     "ethereum",
     "web3modal",
     "walletconnect",
-    "lit",
-    "webcomponents"
+    "polyfills"
   ],
   "author": "WalletConnect <walletconnect.com>",
   "license": "Apache-2.0",

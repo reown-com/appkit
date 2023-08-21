@@ -1,4 +1,4 @@
-import { ConnectionController, ModalController, RouterController } from '@web3modal/core'
+import { AssetUtil, ConnectionController, ModalController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -17,9 +17,12 @@ export class W3mConnectingExternalView extends LitElement {
       throw new Error('w3m-connecting-view: No connector provided')
     }
 
+    const { name, imageId } = this.connector
+
     return html`
       <w3m-connecting-widget
-        name=${ifDefined(this.connector.name)}
+        name=${ifDefined(name)}
+        imageSrc=${ifDefined(AssetUtil.getConnectorImage(imageId))}
         .error=${this.error}
         .onConnect=${this.onConnect.bind(this)}
       ></w3m-connecting-widget>

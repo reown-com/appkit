@@ -26,6 +26,7 @@
     "packages/ui",
     "packages/core",
     "packages/scaffold",
+    "packages/polyfills",
     "packages/wagmi",
     "apps/*",
     "examples/*"
@@ -41,7 +42,7 @@
     "lerna": "7.1.5",
     "prettier": "3.0.2",
     "typescript": "5.1.6",
-    "vitest": "0.34.1",
+    "vitest": "0.34.2",
     "vite": "4.4.9",
     "danger": "11.2.8",
     "vue": "3.3.4",
