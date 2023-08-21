@@ -77,9 +77,11 @@ export class W3mConnectView extends LitElement {
 
   private getTag(connector: Connector) {
     if (connector.type === 'WALLET_CONNECT') {
-      if (!CoreHelperUtil.isMobile()) {
-        return { tagLabel: 'qr code', tagVariant: 'main' } as const
+      if (CoreHelperUtil.isMobile()) {
+        return { tagLabel: 'all', tagVariant: 'main' } as const
       }
+
+      return { tagLabel: 'qr code', tagVariant: 'main' } as const
     }
     if (connector.type === 'INJECTED') {
       if (ConnectionController.checkInjectedInstalled()) {
