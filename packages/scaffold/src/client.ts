@@ -19,6 +19,7 @@ import {
   ThemeController,
   OptionsController
 } from '@web3modal/core'
+import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
@@ -65,17 +66,16 @@ export class Web3ModalScaffold {
 
   public setThemeMode(themeMode: ThemeMode) {
     ThemeController.setThemeMode(themeMode)
-    ThemeController.updateThemeMode(themeMode)
   }
 
   public setThemeVariables(themeVariables: ThemeVariables) {
     ThemeController.setThemeVariables(themeVariables)
-    ThemeController.updateThemeVariables(themeVariables)
   }
 
   public subscribeThemeMode(setter: (value: ThemeMode) => void) {
     this.unsubscribe.push(
       ThemeController.subscribeKey('themeMode', val => {
+        setColorTheme(val)
         setter(val)
       })
     )
@@ -84,6 +84,7 @@ export class Web3ModalScaffold {
   public subscribeThemeVariables(setter: (value: ThemeVariables) => void) {
     this.unsubscribe.push(
       ThemeController.subscribeKey('themeVariables', val => {
+        setThemeVariables(val)
         setter(val)
       })
     )

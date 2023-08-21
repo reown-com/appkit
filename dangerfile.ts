@@ -60,7 +60,11 @@ async function checkUiPackage() {
     }
 
     if (diff?.added.includes('@state(')) {
-      fail(`${f} is using @state decorator, which is not allowd in ui package`)
+      fail(`${f} is using @state decorator, which is not allowed in ui package`)
+    }
+
+    if (diff?.added.includes('import @web3modal/core')) {
+      fail(`${f} is using importing @web3modal/core, which is not allowed in ui package`)
     }
 
     if (!diff?.added.includes(RENDER_COMMENT)) {
@@ -140,6 +144,10 @@ async function checkCorePackage() {
 
   for (const f of created_core_controllers) {
     const diff = await diffForFile(f)
+
+    if (diff?.added.includes('import @web3modal/ui')) {
+      fail(`${f} is using importing @web3modal/ui, which is not allowed in core package`)
+    }
 
     if (!diff?.added.includes(TYPE_COMMENT)) {
       fail(`${f} is missing \`${TYPE_COMMENT}\` comment`)
