@@ -1,6 +1,6 @@
 'use client'
 
-import { ThemeController, type ThemeMode, type ThemeVariables } from '@web3modal/scaffold'
+import { type ThemeMode, type ThemeVariables } from '@web3modal/scaffold'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { VERSION } from '../src/utils/constants.js'

@@ -4,17 +4,20 @@ import type {
   ModalControllerArguments,
   NetworkControllerClient,
   ThemeMode,
-  ThemeVariables
+  ThemeVariables,
+  OptionsControllerState
 } from '@web3modal/core'
 import {
   AccountController,
   ApiController,
+  BlockchainApiController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   ModalController,
   NetworkController,
-  ThemeController
+  ThemeController,
+  OptionsController
 } from '@web3modal/core'
 
 // -- Helpers -------------------------------------------------------------------
@@ -24,7 +27,7 @@ let isInitialized = false
 interface Options {
   networkControllerClient: NetworkControllerClient
   connectionControllerClient: ConnectionControllerClient
-  projectId: ApiControllerState['projectId']
+  projectId: OptionsControllerState['projectId']
   sdkVersion: ApiControllerState['sdkVersion']
   themeMode?: ThemeMode
   themeVariables?: ThemeVariables
@@ -141,11 +144,14 @@ export class Web3ModalScaffold {
     ConnectionController.resetWcConnection()
   }
 
+  protected fetchIdentity: (typeof BlockchainApiController)['fetchIdentity'] = request =>
+    BlockchainApiController.fetchIdentity(request)
+
   // -- Private ------------------------------------------------------------------
   private initControllers(options: Options) {
     NetworkController.setClient(options.networkControllerClient)
     ConnectionController.setClient(options.connectionControllerClient)
-    ApiController.setProjectId(options.projectId)
+    OptionsController.setProjectId(options.projectId)
     ApiController.setSdkVersion(options.sdkVersion)
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)

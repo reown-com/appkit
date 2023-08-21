@@ -14,8 +14,8 @@
     "@sentry/react": "7.64.0",
     "@web3modal/wagmi": "3.0.0-alpha.3",
     "framer-motion": "10.16.0",
-    "next": "13.4.18",
-    "react-icons": "^4.10.1",
-    "zustand": "^4.4.1"
+    "next": "13.4.19",
+    "react-icons": "4.10.1",
+    "zustand": "4.4.1"
   }
 }

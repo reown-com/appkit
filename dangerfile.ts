@@ -244,7 +244,7 @@ async function checkSdkVersion() {
       fail(`VERSION in ${wagmiConstantsPath} does not match latest packages/core version`)
     }
   } else {
-    fail(`Could not find ${wagmiConstantsPath} file`)
+    warn(`No version updates in ${wagmiConstantsPath} file`)
   }
 }
 checkSdkVersion()

@@ -6,12 +6,12 @@ import type {
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
   ApiWallet,
-  ProjectId,
   SdkVersion
 } from '../utils/TypeUtils.js'
 import { AssetController } from './AssetController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { NetworkController } from './NetworkController.js'
+import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
 const api = new FetchUtil({ baseUrl: 'https://api.web3modal.com' })
@@ -21,7 +21,6 @@ const sdkType = 'w3m'
 
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {
-  projectId: ProjectId
   sdkVersion: SdkVersion
   page: number
   count: number
@@ -34,7 +33,6 @@ type StateKey = keyof ApiControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ApiControllerState>({
-  projectId: '',
   sdkVersion: 'html-wagmi-undefined',
   page: 1,
   count: 0,
@@ -51,17 +49,13 @@ export const ApiController = {
     return subKey(state, key, callback)
   },
 
-  setProjectId(projectId: ApiControllerState['projectId']) {
-    state.projectId = projectId
-  },
-
   setSdkVersion(sdkVersion: ApiControllerState['sdkVersion']) {
     state.sdkVersion = sdkVersion
   },
 
   _getApiHeaders() {
     return {
-      'x-project-id': state.projectId,
+      'x-project-id': OptionsController.state.projectId,
       'x-sdk-type': sdkType,
       'x-sdk-version': state.sdkVersion
     }
