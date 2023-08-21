@@ -63,7 +63,11 @@ export const ConnectorExplorerIds = {
 } as Record<string, string>
 
 export const ConnectorNamesMap = {
-  [INJECTED_CONNECTOR_ID]: 'Extension Wallet'
+  [INJECTED_CONNECTOR_ID]: 'Extension',
+  [WALLET_CONNECT_CONNECTOR_ID]: 'Mobile',
+  [COINBASE_CONNECTOR_ID]: 'Coinbase',
+  [LEDGER_CONNECTOR_ID]: 'Ledger',
+  [SAFE_CONNECTOR_ID]: 'Safe'
 } as Record<string, string>
 
 export const ConnectorTypesMap = {
