@@ -206,4 +206,4 @@ export type InputType =
   | 'url'
   | 'week'
 
-export type TagLabelType = 'installed' | 'qr code' | 'recent' | 'get wallet'
+export type TagLabelType = 'installed' | 'qr code' | 'recent' | 'get wallet' | 'all'
