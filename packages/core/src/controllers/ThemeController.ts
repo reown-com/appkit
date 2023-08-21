@@ -26,7 +26,7 @@ export const ThemeController = {
   },
 
   init() {
-    initializeTheming(this.state.themeVariables)
+    initializeTheming(state.themeVariables)
   },
 
   setThemeMode(themeMode: ThemeMode) {
