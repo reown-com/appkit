@@ -32,18 +32,9 @@ export class W3mConnectView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { walletImages } = AssetController.state
-    const walletImagesSrc = Object.values(walletImages).map(src => ({ src }))
-
     return html`
       <wui-flex flexDirection="column" padding="s" gap="xs">
-        ${this.connectorsTemplate()}
-        <wui-list-wallet
-          name="All Wallets"
-          showAllWallets
-          .walletImages=${walletImagesSrc}
-          @click=${this.onAllWallets.bind(this)}
-        ></wui-list-wallet>
+        ${this.connectorsTemplate()} ${this.dynamicTemplate()}
       </wui-flex>
     `
   }
@@ -64,6 +55,24 @@ export class W3mConnectView extends LitElement {
         </wui-list-wallet>
       `
     })
+  }
+
+  private dynamicTemplate() {
+    if (CoreHelperUtil.isMobile()) {
+      return null
+    }
+
+    const { walletImages } = AssetController.state
+    const walletImagesSrc = Object.values(walletImages).map(src => ({ src }))
+
+    return html`
+      <wui-list-wallet
+        name="All Wallets"
+        showAllWallets
+        .walletImages=${walletImagesSrc}
+        @click=${this.onAllWallets.bind(this)}
+      ></wui-list-wallet>
+    `
   }
 
   private getTag(connector: Connector) {
