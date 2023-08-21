@@ -64,7 +64,7 @@ export const ConnectorExplorerIds = {
 
 export const ConnectorNamesMap = {
   [INJECTED_CONNECTOR_ID]: 'Extension',
-  [WALLET_CONNECT_CONNECTOR_ID]: 'Mobile',
+  [WALLET_CONNECT_CONNECTOR_ID]: 'WalletConnect',
   [COINBASE_CONNECTOR_ID]: 'Coinbase',
   [LEDGER_CONNECTOR_ID]: 'Ledger',
   [SAFE_CONNECTOR_ID]: 'Safe'

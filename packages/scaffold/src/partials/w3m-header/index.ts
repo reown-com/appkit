@@ -15,7 +15,7 @@ function headings() {
     Connect: 'Connect Wallet',
     Account: 'Account',
     ConnectingExternal: name ?? 'Connect Wallet',
-    ConnectingWalletConnect: name ?? 'Mobile Wallets',
+    ConnectingWalletConnect: name ?? 'WalletConnect',
     Networks: 'Choose Network',
     SwitchNetwork: networkName ?? 'Switch Network',
     AllWallets: 'All Wallets',
