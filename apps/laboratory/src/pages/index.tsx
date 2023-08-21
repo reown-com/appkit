@@ -2,7 +2,20 @@ import { Center, VStack } from '@chakra-ui/react'
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { useEffect, useState } from 'react'
 import { WagmiConfig } from 'wagmi'
-import { arbitrum, avalanche, bsc, gnosis, mainnet, optimism, polygon, zkSync } from 'wagmi/chains'
+import {
+  arbitrum,
+  aurora,
+  avalanche,
+  base,
+  bsc,
+  celo,
+  gnosis,
+  mainnet,
+  optimism,
+  polygon,
+  zkSync,
+  zora
+} from 'wagmi/chains'
 import { ConnectButton } from '../components/ConnectButton'
 import { NetworksButton } from '../components/NetworksButton'
 
@@ -13,7 +26,20 @@ if (!projectId) {
 }
 
 // 2. Create wagmiConfig
-const chains = [mainnet, arbitrum, polygon, avalanche, bsc, optimism, gnosis, zkSync]
+const chains = [
+  mainnet,
+  arbitrum,
+  polygon,
+  avalanche,
+  bsc,
+  optimism,
+  gnosis,
+  zkSync,
+  zora,
+  base,
+  celo,
+  aurora
+]
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, appName: 'Web3Modal' })
 
 // 3. Create Web3Modal
