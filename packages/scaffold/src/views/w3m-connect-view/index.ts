@@ -32,18 +32,9 @@ export class W3mConnectView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { walletImages } = AssetController.state
-    const walletImagesSrc = Object.values(walletImages).map(src => ({ src }))
-
     return html`
       <wui-flex flexDirection="column" padding="s" gap="xs">
-        ${this.connectorsTemplate()}
-        <wui-list-wallet
-          name="All Wallets"
-          showAllWallets
-          .walletImages=${walletImagesSrc}
-          @click=${this.onAllWallets.bind(this)}
-        ></wui-list-wallet>
+        ${this.connectorsTemplate()} ${this.dynamicTemplate()}
       </wui-flex>
     `
   }
@@ -66,11 +57,31 @@ export class W3mConnectView extends LitElement {
     })
   }
 
+  private dynamicTemplate() {
+    if (CoreHelperUtil.isMobile()) {
+      return null
+    }
+
+    const { walletImages } = AssetController.state
+    const walletImagesSrc = Object.values(walletImages).map(src => ({ src }))
+
+    return html`
+      <wui-list-wallet
+        name="All Wallets"
+        showAllWallets
+        .walletImages=${walletImagesSrc}
+        @click=${this.onAllWallets.bind(this)}
+      ></wui-list-wallet>
+    `
+  }
+
   private getTag(connector: Connector) {
     if (connector.type === 'WALLET_CONNECT') {
-      if (!CoreHelperUtil.isMobile()) {
-        return { tagLabel: 'qr code', tagVariant: 'main' } as const
+      if (CoreHelperUtil.isMobile()) {
+        return { tagLabel: 'all', tagVariant: 'main' } as const
       }
+
+      return { tagLabel: 'qr code', tagVariant: 'main' } as const
     }
     if (connector.type === 'INJECTED') {
       if (ConnectionController.checkInjectedInstalled()) {

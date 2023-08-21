@@ -13,5 +13,7 @@ export default css`
     border: var(--local-border);
     width: var(--local-size);
     height: var(--local-size);
+    min-height: var(--local-size);
+    min-width: var(--local-size);
   }
 `

@@ -206,8 +206,6 @@ export type InputType =
   | 'url'
   | 'week'
 
-export type TagLabelType = 'installed' | 'qr code' | 'recent' | 'get wallet'
-
 export interface ThemeVariables {
   '--w3m-font-family'?: string
   '--w3m-accent'?: string
@@ -217,3 +215,5 @@ export interface ThemeVariables {
   '--w3m-border-radius-master'?: string
   '--w3m-z-index'?: string
 }
+
+export type TagLabelType = 'installed' | 'qr code' | 'recent' | 'get wallet' | 'all'

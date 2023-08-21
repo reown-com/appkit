@@ -1,4 +1,4 @@
-import { CoreHelperUtil } from '@web3modal/core'
+import { CoreHelperUtil, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -15,8 +15,9 @@ export class W3mAllWalletsView extends LitElement {
     const isSearch = this.search.length >= 2
 
     return html`
-      <wui-flex padding="s">
+      <wui-flex padding="s" gap="s">
         <wui-search-bar @inputChange=${this.onInputChange.bind(this)}></wui-search-bar>
+        ${this.qrButtonTemplate()}
       </wui-flex>
       ${isSearch
         ? html`<w3m-all-wallets-search query=${this.search}></w3m-all-wallets-search>`
@@ -32,6 +33,27 @@ export class W3mAllWalletsView extends LitElement {
   private onDebouncedSearch = CoreHelperUtil.debounce((value: string) => {
     this.search = value
   })
+
+  private qrButtonTemplate() {
+    if (CoreHelperUtil.isMobile()) {
+      return html`
+        <wui-icon-box
+          size="lg"
+          iconcolor="blue-100"
+          backgroundcolor="blue-100"
+          icon="browser"
+          background="transparent"
+          @click=${this.onWalletConnectQr.bind(this)}
+        ></wui-icon-box>
+      `
+    }
+
+    return null
+  }
+
+  private onWalletConnectQr() {
+    RouterController.push('ConnectingWalletConnect')
+  }
 }
 
 declare global {
