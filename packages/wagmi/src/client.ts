@@ -47,7 +47,7 @@ export interface Web3ModalOptions {
   projectId: ProjectId
   chains?: Chain[]
   _sdkVersion?: SdkVersion
-  themeMode: ThemeMode
+  themeMode?: ThemeMode
   themeVariables?: ThemeVariables
 }
 
@@ -68,10 +68,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (!projectId) {
       throw new Error('web3modal:constructor - projectId is undefined')
-    }
-
-    if (!themeMode) {
-      throw new Error('web3modal:constructor - themeMode is undefined')
     }
 
     if (!wagmiConfig.connectors.find(c => c.id === WALLET_CONNECT_CONNECTOR_ID)) {

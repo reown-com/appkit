@@ -73,4 +73,12 @@ export interface ApiGetWalletsResponse {
 
 export type ThemeMode = 'dark' | 'light'
 
-export type ThemeVariables = Record<string, string>
+export interface ThemeVariables {
+  '--w3m-font-family'?: string
+  '--w3m-accent'?: string
+  '--w3m-color-mix'?: string
+  '--w3m-color-mix-strength'?: number
+  '--w3m-font-size-master'?: '8px' | '9px' | '10px' | '11px' | '12px'
+  '--w3m-border-radius-master'?: '0px' | '1px' | '2px' | '3px' | '4px'
+  '--w3m-z-index'?: string
+}

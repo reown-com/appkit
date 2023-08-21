@@ -4,6 +4,7 @@ export default css`
   :host {
     display: flex;
     aspect-ratio: 1 / 1;
+    color: var(--local-color);
   }
 
   svg {

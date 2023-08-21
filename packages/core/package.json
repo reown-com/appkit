@@ -16,6 +16,7 @@
     "test": "vitest run --dir tests"
   },
   "dependencies": {
+    "@web3modal/ui": "3.0.0-alpha.1",
     "valtio": "1.11.2"
   },
   "keywords": [

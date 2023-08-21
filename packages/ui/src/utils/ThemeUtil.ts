@@ -1,7 +1,5 @@
 import { css, unsafeCSS } from 'lit'
-
-// -- Types -------------------------------------------------------------------
-type ThemeVariables = Record<string, string>
+import type { ThemeVariables } from './TypesUtil.js'
 
 // -- Utilities ---------------------------------------------------------------
 export function initializeTheming(themeVariables: ThemeVariables) {
@@ -17,8 +15,10 @@ export function setColorTheme(theme: string) {
 }
 
 export function setThemeVariables(themeVariables: ThemeVariables) {
-  const oldStyleTag = document.querySelector('.w3m')
-  oldStyleTag?.remove()
+  if (typeof document !== 'undefined') {
+    const oldStyleTag = document.querySelector('.w3m')
+    oldStyleTag?.remove()
+  }
 
   initializeTheming(themeVariables)
 }
@@ -26,16 +26,38 @@ export function setThemeVariables(themeVariables: ThemeVariables) {
 function createRootStyles(themeVariables: ThemeVariables) {
   return css`
     :root {
-      --w3m-background-percentage: ${unsafeCSS(themeVariables['w3m-accent'] ? '85%' : '100%')};
+      --w3m-color-mix-strength: ${unsafeCSS(
+        themeVariables['--w3m-color-mix-strength']
+          ? `${themeVariables['--w3m-color-mix-strength']}%`
+          : '0%'
+      )};
+      --w3m-font-family: ${unsafeCSS(
+        themeVariables['--w3m-font-family'] ||
+          '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif'
+      )};
+      --w3m-font-size-master: ${unsafeCSS(themeVariables['--w3m-font-size-master'] || '10px')};
+      --w3m-border-radius-master: ${unsafeCSS(
+        themeVariables['--w3m-border-radius-master'] || '4px'
+      )};
+      --w3m-z-index: ${unsafeCSS(themeVariables['--w3m-font-size-master'] || '89')};
 
-      --wui-font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
-        Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+      --wui-font-family: var(--w3m-font-family);
 
-      --wui-font-size-micro: 10px;
-      --wui-font-size-tiny: 12px;
-      --wui-font-size-small: 14px;
-      --wui-font-size-paragraph: 16px;
-      --wui-font-size-large: 20px;
+      --wui-font-size-micro: var(--w3m-font-size-master);
+      --wui-font-size-tiny: calc(var(--w3m-font-size-master) * 1.2);
+      --wui-font-size-small: calc(var(--w3m-font-size-master) * 1.4);
+      --wui-font-size-paragraph: calc(var(--w3m-font-size-master) * 1.6);
+      --wui-font-size-large: calc(var(--w3m-font-size-master) * 2);
+
+      --wui-border-radius-5xs: var(--w3m-border-radius-master);
+      --wui-border-radius-4xs: calc(var(--w3m-border-radius-master) * 1.5);
+      --wui-border-radius-3xs: calc(var(--w3m-border-radius-master) * 2);
+      --wui-border-radius-xxs: calc(var(--w3m-border-radius-master) * 3);
+      --wui-border-radius-xs: calc(var(--w3m-border-radius-master) * 4);
+      --wui-border-radius-s: calc(var(--w3m-border-radius-master) * 5);
+      --wui-border-radius-m: calc(var(--w3m-border-radius-master) * 7);
+      --wui-border-radius-l: calc(var(--w3m-border-radius-master) * 9);
+      --wui-border-radius-3xl: calc(var(--w3m-border-radius-master) * 20);
 
       --wui-font-weight-regular: 500;
       --wui-font-weight-medium: 600;
@@ -46,16 +68,6 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-letter-spacing-small: -0.56px;
       --wui-letter-spacing-tiny: -0.48px;
       --wui-letter-spacing-micro: -0.2px;
-
-      --wui-border-radius-5xs: 4px;
-      --wui-border-radius-4xs: 6px;
-      --wui-border-radius-3xs: 8px;
-      --wui-border-radius-xxs: 12px;
-      --wui-border-radius-xs: 16px;
-      --wui-border-radius-s: 20px;
-      --wui-border-radius-m: 28px;
-      --wui-border-radius-l: 36px;
-      --wui-border-radius-3xl: 80px;
 
       --wui-spacing-0: 0px;
       --wui-spacing-4xs: 2px;
@@ -113,58 +125,244 @@ function createRootStyles(themeVariables: ThemeVariables) {
         'M78.3244 18.926L50.1808 2.45078C45.7376 -0.150261 40.2624 -0.150262 35.8192 2.45078L7.6756 18.926C3.23322 21.5266 0.5 26.3301 0.5 31.5248V64.4752C0.5 69.6699 3.23322 74.4734 7.6756 77.074L35.8192 93.5492C40.2624 96.1503 45.7376 96.1503 50.1808 93.5492L78.3244 77.074C82.7668 74.4734 85.5 69.6699 85.5 64.4752V31.5248C85.5 26.3301 82.7668 21.5266 78.3244 18.926Z'
       );
 
-      --wui-z-index: 89;
+      --wui-z-index: var(--w3m-z-index);
 
       --wui-color-inherit: inherit;
 
       --wui-color-inverse-100: #fff;
       --wui-color-inverse-000: #000;
 
-      --wui-box-shadow-blue: color-mix(in srgb, var(--wui-color-blue-100) 16%, transparent);
-
       --wui-cover: rgba(0, 0, 0, 0.3);
+
+      --wui-color-accent-100: var(--wui-color-accent-base-100);
+      --wui-color-accent-090: var(--wui-color-accent-base-100);
+      --wui-color-accent-080: var(--wui-color-accent-base-080);
+      --wui-color-accent-020: var(--wui-color-accent-base-020);
+      --wui-color-accent-015: var(--wui-color-accent-base-015);
+      --wui-color-accent-010: var(--wui-color-accent-base-010);
+      --wui-color-accent-005: var(--wui-color-accent-base-005);
+
+      --wui-color-fg-100: var(--wui-color-fg-base-100);
+      --wui-color-fg-125: var(--wui-color-fg-base-125);
+      --wui-color-fg-150: var(--wui-color-fg-base-150);
+      --wui-color-fg-175: var(--wui-color-fg-base-175);
+      --wui-color-fg-200: var(--wui-color-fg-base-200);
+      --wui-color-fg-225: var(--wui-color-fg-base-225);
+      --wui-color-fg-250: var(--wui-color-fg-base-250);
+      --wui-color-fg-275: var(--wui-color-fg-base-275);
+      --wui-color-fg-300: var(--wui-color-fg-base-300);
+
+      --wui-color-bg-100: var(--wui-color-bg-base-100);
+      --wui-color-bg-125: var(--wui-color-bg-base-125);
+      --wui-color-bg-150: var(--wui-color-bg-base-150);
+      --wui-color-bg-175: var(--wui-color-bg-base-175);
+      --wui-color-bg-200: var(--wui-color-bg-base-200);
+      --wui-color-bg-225: var(--wui-color-bg-base-225);
+      --wui-color-bg-250: var(--wui-color-bg-base-250);
+      --wui-color-bg-275: var(--wui-color-bg-base-275);
+      --wui-color-bg-300: var(--wui-color-bg-base-300);
+
+      --wui-color-success-100: var(--wui-color-success-base-100);
+      --wui-color-error-100: var(--wui-color-error-base-100);
+
+      --wui-icon-box-bg-error-100: var(--wui-icon-box-bg-error-base-100);
+      --wui-icon-box-bg-blue-100: var(--wui-icon-box-bg-blue-base-100);
+      --wui-icon-box-bg-success-100: var(--wui-icon-box-bg-success-base-100);
+      --wui-icon-box-bg-inverse-100: var(--wui-icon-box-bg-inverse-base-100);
+
+      --wui-avatar-border: var(--wui-avatar-border-base);
+
+      --wui-box-shadow-blue: rgba(71, 161, 255, 0.16);
+      --wui-box-shadow-blue: color-mix(in srgb, var(--wui-color-accent-100) 16%, transparent);
+
+      --wui-color-accent-090: color-mix(
+        in srgb,
+        var(--wui-color-accent-base-100) 90%,
+        var(--w3m-default)
+      );
+      --wui-color-accent-080: color-mix(
+        in srgb,
+        var(--wui-color-accent-base-100) 80%,
+        var(--w3m-default)
+      );
+      --wui-color-accent-020: color-mix(in srgb, var(--wui-color-accent-base-100) 20%, transparent);
+      --wui-color-accent-015: color-mix(in srgb, var(--wui-color-accent-base-100) 15%, transparent);
+      --wui-color-accent-010: color-mix(in srgb, var(--wui-color-accent-base-100) 10%, transparent);
+      --wui-color-accent-005: color-mix(in srgb, var(--wui-color-accent-base-100) 5%, transparent);
+
+      --wui-color-fg-100: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-fg-base-100)
+      );
+      --wui-color-fg-125: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-fg-base-125)
+      );
+      --wui-color-fg-150: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-fg-base-150)
+      );
+      --wui-color-fg-175: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-fg-base-175)
+      );
+      --wui-color-fg-200: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-fg-base-200)
+      );
+      --wui-color-fg-225: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-fg-base-225)
+      );
+      --wui-color-fg-250: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-fg-base-250)
+      );
+      --wui-color-fg-275: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-fg-base-275)
+      );
+      --wui-color-fg-300: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-fg-base-300)
+      );
+
+      --wui-color-bg-100: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-bg-base-100)
+      );
+      --wui-color-bg-125: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-bg-base-125)
+      );
+      --wui-color-bg-150: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-bg-base-150)
+      );
+      --wui-color-bg-175: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-bg-base-175)
+      );
+      --wui-color-bg-200: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-bg-base-200)
+      );
+      --wui-color-bg-225: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-bg-base-225)
+      );
+      --wui-color-bg-250: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-bg-base-250)
+      );
+      --wui-color-bg-275: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-bg-base-275)
+      );
+      --wui-color-bg-300: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-bg-base-300)
+      );
+
+      --wui-color-success-100: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-success-base-100)
+      );
+      --wui-color-error-100: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-color-error-base-100)
+      );
+
+      --wui-icon-box-bg-error-100: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-icon-box-bg-error-base-100)
+      );
+      --wui-icon-box-bg-blue-100: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-icon-box-bg-blue-base-100)
+      );
+      --wui-icon-box-bg-success-100: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-icon-box-bg-success-base-100)
+      );
+      --wui-icon-box-bg-inverse-100: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-icon-box-bg-inverse-base-100)
+      );
+
+      --wui-avatar-border: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-avatar-border-base)
+      );
     }
 
     [data-wui-theme='dark'] {
-      --w3m-accent: ${unsafeCSS(
-        themeVariables['w3m-accent'] ? themeVariables['w3m-accent'] : '#fff'
-      )};
+      --w3m-color-mix: ${unsafeCSS(themeVariables['--w3m-color-mix'] || '#fff')};
+      --w3m-accent: ${unsafeCSS(themeVariables['--w3m-accent'] || '#47a1ff')};
+      --w3m-default: #fff;
 
-      --wui-color-blue-100: #47a1ff;
-      --wui-color-blue-090: #59aaff;
-      --wui-color-blue-080: #6cb4ff;
-      --wui-color-blue-020: rgba(71, 161, 255, 0.2);
-      --wui-color-blue-015: rgba(71, 161, 255, 0.15);
-      --wui-color-blue-010: rgba(71, 161, 255, 0.1);
-      --wui-color-blue-005: rgba(71, 161, 255, 0.05);
+      --wui-color-accent-base-100: var(--w3m-accent);
+      --wui-color-accent-base-090: #59aaff;
+      --wui-color-accent-base-080: #6cb4ff;
+      --wui-color-accent-base-020: rgba(71, 161, 255, 0.2);
+      --wui-color-accent-base-015: rgba(71, 161, 255, 0.15);
+      --wui-color-accent-base-010: rgba(71, 161, 255, 0.1);
+      --wui-color-accent-base-005: rgba(71, 161, 255, 0.05);
 
-      --wui-color-fg-100: #e4e7e7;
-      --wui-color-fg-125: #d0d5d5;
-      --wui-color-fg-150: #a8b1b1;
-      --wui-color-fg-175: #a8b0b0;
-      --wui-color-fg-200: #949e9e;
-      --wui-color-fg-225: #868f8f;
-      --wui-color-fg-250: #788080;
-      --wui-color-fg-275: #788181;
-      --wui-color-fg-300: #6e7777;
+      --wui-color-fg-base-100: #e4e7e7;
+      --wui-color-fg-base-125: #d0d5d5;
+      --wui-color-fg-base-150: #a8b1b1;
+      --wui-color-fg-base-175: #a8b0b0;
+      --wui-color-fg-base-200: #949e9e;
+      --wui-color-fg-base-225: #868f8f;
+      --wui-color-fg-base-250: #788080;
+      --wui-color-fg-base-275: #788181;
+      --wui-color-fg-base-300: #6e7777;
 
-      --wui-color-bg-100: #141414;
-      --wui-color-bg-125: #191a1a;
-      --wui-color-bg-150: #1e1f1f;
-      --wui-color-bg-175: #222525;
-      --wui-color-bg-200: #272a2a;
-      --wui-color-bg-225: #2c3030;
-      --wui-color-bg-250: #313535;
-      --wui-color-bg-275: #363b3b;
-      --wui-color-bg-300: #3b4040;
+      --wui-color-bg-base-100: #141414;
+      --wui-color-bg-base-125: #191a1a;
+      --wui-color-bg-base-150: #1e1f1f;
+      --wui-color-bg-base-175: #222525;
+      --wui-color-bg-base-200: #272a2a;
+      --wui-color-bg-base-225: #2c3030;
+      --wui-color-bg-base-250: #313535;
+      --wui-color-bg-base-275: #363b3b;
+      --wui-color-bg-base-300: #3b4040;
 
-      --wui-color-success-100: #26d962;
-      --wui-color-error-100: #f25a67;
+      --wui-color-success-base-100: #26d962;
+      --wui-color-error-base-100: #f25a67;
 
-      --wui-icon-box-bg-error-100: #3c2426;
-      --wui-icon-box-bg-blue-100: #20303f;
-      --wui-icon-box-bg-success-100: #1f3a28;
-      --wui-icon-box-bg-inverse-100: #243240;
+      --wui-icon-box-bg-error-base-100: #3c2426;
+      --wui-icon-box-bg-blue-base-100: #20303f;
+      --wui-icon-box-bg-success-base-100: #1f3a28;
+      --wui-icon-box-bg-inverse-base-100: #243240;
+
+      --wui-avatar-border-base: #252525;
 
       --wui-overlay-002: rgba(255, 255, 255, 0.02);
       --wui-overlay-005: rgba(255, 255, 255, 0.05);
@@ -173,50 +371,50 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-overlay-020: rgba(255, 255, 255, 0.2);
       --wui-overlay-025: rgba(255, 255, 255, 0.25);
       --wui-overlay-030: rgba(255, 255, 255, 0.3);
-
-      --wui-avatar-border: #252525;
     }
 
     [data-wui-theme='light'] {
-      --w3m-accent: ${unsafeCSS(
-        themeVariables['w3m-accent'] ? themeVariables['w3m-accent'] : '#000'
-      )};
+      --w3m-color-mix: ${unsafeCSS(themeVariables['--w3m-color-mix'] || '#000')};
+      --w3m-accent: ${unsafeCSS(themeVariables['--w3m-accent'] || '#3396ff')};
+      --w3m-default: #000;
 
-      --wui-color-blue-100: #3396ff;
-      --wui-color-blue-090: #2d7dd2;
-      --wui-color-blue-080: #2978cc;
-      --wui-color-blue-020: rgba(51, 150, 255, 0.2);
-      --wui-color-blue-015: rgba(51, 150, 255, 0.15);
-      --wui-color-blue-010: rgba(51, 150, 255, 0.1);
-      --wui-color-blue-005: rgba(51, 150, 255, 0.05);
+      --wui-color-accent-base-100: var(--w3m-accent);
+      --wui-color-accent-base-090: #2d7dd2;
+      --wui-color-accent-base-080: #2978cc;
+      --wui-color-accent-base-020: rgba(51, 150, 255, 0.2);
+      --wui-color-accent-base-015: rgba(51, 150, 255, 0.15);
+      --wui-color-accent-base-010: rgba(51, 150, 255, 0.1);
+      --wui-color-accent-base-005: rgba(51, 150, 255, 0.05);
 
-      --wui-color-fg-100: #141414;
-      --wui-color-fg-125: #2d3131;
-      --wui-color-fg-150: #474d4d;
-      --wui-color-fg-175: #636d6d;
-      --wui-color-fg-200: #798686;
-      --wui-color-fg-225: #828f8f;
-      --wui-color-fg-250: #8b9797;
-      --wui-color-fg-275: #95a0a0;
-      --wui-color-fg-300: #9ea9a9;
+      --wui-color-fg-base-100: #141414;
+      --wui-color-fg-base-125: #2d3131;
+      --wui-color-fg-base-150: #474d4d;
+      --wui-color-fg-base-175: #636d6d;
+      --wui-color-fg-base-200: #798686;
+      --wui-color-fg-base-225: #828f8f;
+      --wui-color-fg-base-250: #8b9797;
+      --wui-color-fg-base-275: #95a0a0;
+      --wui-color-fg-base-300: #9ea9a9;
 
-      --wui-color-bg-100: #ffffff;
-      --wui-color-bg-125: #f5fafa;
-      --wui-color-bg-150: #f3f8f8;
-      --wui-color-bg-175: #eef4f4;
-      --wui-color-bg-200: #eaf1f1;
-      --wui-color-bg-225: #e5eded;
-      --wui-color-bg-250: #e1e9e9;
-      --wui-color-bg-275: #dce7e7;
-      --wui-color-bg-300: #d8e3e3;
+      --wui-color-bg-base-100: #ffffff;
+      --wui-color-bg-base-125: #f5fafa;
+      --wui-color-bg-base-150: #f3f8f8;
+      --wui-color-bg-base-175: #eef4f4;
+      --wui-color-bg-base-200: #eaf1f1;
+      --wui-color-bg-base-225: #e5eded;
+      --wui-color-bg-base-250: #e1e9e9;
+      --wui-color-bg-base-275: #dce7e7;
+      --wui-color-bg-base-300: #d8e3e3;
 
-      --wui-color-success-100: #26b562;
-      --wui-color-error-100: #f05142;
+      --wui-color-success-base-100: #26b562;
+      --wui-color-error-base-100: #f05142;
 
-      --wui-icon-box-bg-error-100: #f4dfdd;
-      --wui-icon-box-bg-blue-100: #d9ecfb;
-      --wui-icon-box-bg-success-100: #daf0e4;
-      --wui-icon-box-bg-inverse-100: #dcecfc;
+      --wui-icon-box-bg-error-base-100: #f4dfdd;
+      --wui-icon-box-bg-blue-base-100: #d9ecfb;
+      --wui-icon-box-bg-success-base-100: #daf0e4;
+      --wui-icon-box-bg-inverse-base-100: #dcecfc;
+
+      --wui-avatar-border-base: #f3f4f4;
 
       --wui-overlay-002: rgba(0, 0, 0, 0.02);
       --wui-overlay-005: rgba(0, 0, 0, 0.05);
@@ -225,8 +423,6 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-overlay-020: rgba(0, 0, 0, 0.2);
       --wui-overlay-025: rgba(0, 0, 0, 0.25);
       --wui-overlay-030: rgba(0, 0, 0, 0.3);
-
-      --wui-avatar-border: #f3f4f4;
     }
   `
 }
@@ -277,7 +473,7 @@ export const elementStyles = css`
     }
 
     button[data-variant='fill']:hover:enabled {
-      background-color: var(--wui-color-blue-090);
+      background-color: var(--wui-color-accent-090);
     }
   }
 
@@ -289,6 +485,11 @@ export const elementStyles = css`
   button[data-variant='shade']:disabled,
   button[data-variant='accent']:disabled {
     color: var(--wui-color-bg-300);
+    color: color-mix(
+      in srgb,
+      var(--wui-color-bg-300) var(--w3m-color-mix-percentage-65),
+      var(--w3m-color-mix)
+    );
   }
 
   button[data-variant='shade']:disabled,
@@ -309,7 +510,7 @@ export const elementStyles = css`
 
   button:focus-visible,
   a:focus-visible {
-    border: 1px solid var(--wui-color-blue-100);
+    border: 1px solid var(--wui-color-accent-100);
     background-color: var(--wui-overlay-005);
     -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
     -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
@@ -317,12 +518,12 @@ export const elementStyles = css`
   }
 
   button[data-variant='fill']:focus-visible {
-    background-color: var(--wui-color-blue-090);
+    background-color: var(--wui-color-accent-090);
   }
 
   button[data-variant='fill'] {
     color: var(--wui-color-inverse-100);
-    background-color: var(--wui-color-blue-100);
+    background-color: var(--wui-color-accent-100);
   }
 
   button[data-variant='fill']:disabled {
@@ -335,7 +536,7 @@ export const elementStyles = css`
   }
 
   button[data-variant='accent'] {
-    color: var(--wui-color-blue-100);
+    color: var(--wui-color-accent-100);
   }
 
   button[data-variant='fullWidth'] {
@@ -352,7 +553,7 @@ export const elementStyles = css`
   }
 
   button[data-variant='fill']:active:enabled {
-    background-color: var(--wui-color-blue-080);
+    background-color: var(--wui-color-accent-080);
     border: 1px solid var(--wui-overlay-010);
   }
 
@@ -368,8 +569,8 @@ export const colorStyles = css`
     color: var(--wui-color-inherit);
   }
 
-  .wui-color-blue-100 {
-    color: var(--wui-color-blue-100);
+  .wui-color-accent-100 {
+    color: var(--wui-color-accent-100);
   }
 
   .wui-color-error-100 {
@@ -405,7 +606,7 @@ export const colorStyles = css`
   }
 
   .wui-bg-color-blue-100 {
-    background-color: var(--wui-color-blue-100);
+    background-color: var(--wui-color-accent-100);
   }
 
   .wui-bg-color-error-100 {

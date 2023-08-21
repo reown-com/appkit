@@ -15,7 +15,7 @@ export default css`
 
   rect {
     fill: none;
-    stroke: var(--wui-color-blue-100);
+    stroke: var(--wui-color-accent-100);
     stroke-width: 4px;
     stroke-dasharray: 116, 245;
     stroke-dashoffset: 360;

@@ -35,8 +35,7 @@ const wagmiConfig = createConfig({
 export const modal = new Web3Modal({
   wagmiConfig,
   projectId,
-  chains,
-  themeMode: 'dark'
+  chains
 })
 
 export default function HomePage() {
@@ -58,11 +57,16 @@ export default function HomePage() {
           <Select
             placeholder="Select theme"
             onChange={e => {
-              modal.setThemeVariables({ 'w3m-accent': `${e.target.value}` })
+              const selectedTheme = themes.find(theme => theme.name === e.target.value)
+              if (selectedTheme) {
+                modal.setThemeVariables(selectedTheme.theme)
+              }
             }}
           >
             {themes.map(theme => (
-              <option value={`${theme.color}`}>{theme.name}</option>
+              <option key={theme.name} value={theme.name}>
+                {theme.name}
+              </option>
             ))}
           </Select>
           <ConnectButton />

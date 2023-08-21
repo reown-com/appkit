@@ -21,6 +21,41 @@ export function createWeb3Modal(options: Omit<Web3ModalOptions, '_sdkVersion'>) 
   return modal
 }
 
+export function useWeb3ModalTheme() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalTheme" hook')
+  }
+
+  function setThemeMode(themeMode: ThemeMode) {
+    modal?.setThemeMode(themeMode)
+  }
+
+  function setThemeVariables(themeVariables: ThemeVariables) {
+    modal?.setThemeVariables(themeVariables)
+  }
+
+  function getThemeMode() {
+    return modal?.getThemeMode()
+  }
+
+  function getThemeVariables() {
+    return modal?.getThemeVariables()
+  }
+
+  const themeMode = modal?.subscribeThemeMode()
+
+  const themeVariables = modal?.subscribeThemeVariables()
+
+  return {
+    themeMode,
+    themeVariables,
+    getThemeMode,
+    getThemeVariables,
+    setThemeMode,
+    setThemeVariables
+  }
+}
+
 export function useWeb3Modal() {
   if (!modal) {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3Modal" hook')
@@ -34,17 +69,5 @@ export function useWeb3Modal() {
     await modal?.close()
   }
 
-  function setThemeMode(themeMode: ThemeMode) {
-    modal?.setThemeMode(themeMode)
-  }
-
-  function setThemeVariables(themeVariables: ThemeVariables) {
-    modal?.setThemeVariables(themeVariables)
-  }
-
-  const themeMode = modal?.getThemeMode()
-
-  const themeVariables = modal?.getThemeVariables()
-
-  return { open, close, themeMode, themeVariables, setThemeMode, setThemeVariables }
+  return { open, close }
 }

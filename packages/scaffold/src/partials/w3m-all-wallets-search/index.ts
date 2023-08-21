@@ -22,7 +22,7 @@ export class W3mAllWalletsSearch extends LitElement {
     this.onSearch()
 
     return this.loading
-      ? html`<wui-loading-spinner color="blue-100"></wui-loading-spinner>`
+      ? html`<wui-loading-spinner color="accent-100"></wui-loading-spinner>`
       : this.walletsTemplate()
   }
 

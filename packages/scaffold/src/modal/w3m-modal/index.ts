@@ -1,5 +1,4 @@
 import { ApiController, ModalController, SnackController, ThemeController } from '@web3modal/core'
-import { initializeTheming, setColorTheme } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
@@ -22,8 +21,7 @@ export class W3mModal extends LitElement {
 
   public constructor() {
     super()
-    initializeTheming(ThemeController.state.themeVariables)
-    setColorTheme(ThemeController.state.themeMode)
+    this.initializeTheming()
     ApiController.fetchRecommendedWallets()
     ApiController.fetchNetworkImages()
     ApiController.fetchConnectorImages()
@@ -56,6 +54,25 @@ export class W3mModal extends LitElement {
   private onOverlayClick(event: PointerEvent) {
     if (event.target === event.currentTarget) {
       ModalController.close()
+    }
+  }
+
+  private initializeTheming() {
+    ThemeController.init()
+    if (ThemeController.state.themeMode) {
+      ThemeController.setThemeMode(ThemeController.state.themeMode)
+      ThemeController.updateThemeMode(ThemeController.state.themeMode)
+    } else if (typeof window !== 'undefined' && window.matchMedia) {
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        ThemeController.setThemeMode('dark')
+        ThemeController.updateThemeMode(ThemeController.state.themeMode)
+      } else {
+        ThemeController.setThemeMode('light')
+        ThemeController.updateThemeMode(ThemeController.state.themeMode)
+      }
+    } else {
+      ThemeController.setThemeMode('dark')
+      ThemeController.updateThemeMode(ThemeController.state.themeMode)
     }
   }
 

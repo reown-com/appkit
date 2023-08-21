@@ -16,7 +16,6 @@ import {
   NetworkController,
   ThemeController
 } from '@web3modal/core'
-import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
@@ -27,7 +26,7 @@ interface Options {
   connectionControllerClient: ConnectionControllerClient
   projectId: ApiControllerState['projectId']
   sdkVersion: ApiControllerState['sdkVersion']
-  themeMode: ThemeMode
+  themeMode?: ThemeMode
   themeVariables?: ThemeVariables
 }
 
@@ -61,12 +60,20 @@ export class Web3ModalScaffold {
 
   public setThemeMode(themeMode: ThemeMode) {
     ThemeController.setThemeMode(themeMode)
-    setColorTheme(themeMode)
+    ThemeController.updateThemeMode(themeMode)
   }
 
   public setThemeVariables(themeVariables: ThemeVariables) {
     ThemeController.setThemeVariables(themeVariables)
-    setThemeVariables(themeVariables)
+    ThemeController.updateThemeVariables(themeVariables)
+  }
+
+  public subscribeThemeMode() {
+    ThemeController.subscribeKey('themeMode', val => val)
+  }
+
+  public subscribeThemeVariables() {
+    ThemeController.subscribeKey('themeVariables', val => val)
   }
 
   // -- Protected ----------------------------------------------------------------
@@ -126,7 +133,9 @@ export class Web3ModalScaffold {
     ConnectionController.setClient(options.connectionControllerClient)
     ApiController.setProjectId(options.projectId)
     ApiController.setSdkVersion(options.sdkVersion)
-    ThemeController.setThemeMode(options.themeMode)
+    if (options.themeMode) {
+      ThemeController.setThemeMode(options.themeMode)
+    }
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables)
     }

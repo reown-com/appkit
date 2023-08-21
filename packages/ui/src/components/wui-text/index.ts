@@ -7,7 +7,7 @@ import styles from './styles.js'
 
 @customElement('wui-text')
 export class WuiText extends LitElement {
-  public static override styles = [resetStyles, colorStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public variant: TextType = 'paragraph-500'
@@ -23,7 +23,7 @@ export class WuiText extends LitElement {
       [`wui-color-${this.color}`]: true
     }
 
-    this.style.cssText = `--local-align: ${this.align}`
+    this.style.cssText = `--local-align: ${this.align}; --local-color: var(--wui-color-${this.color});`
 
     return html`<slot class=${classMap(classes)}></slot>`
   }

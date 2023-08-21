@@ -13,7 +13,7 @@ export default css`
 
   a[data-variant='fill'] {
     color: var(--wui-color-inverse-100);
-    background-color: var(--wui-color-blue-100);
+    background-color: var(--wui-color-accent-100);
   }
 
   a[data-variant='shade'] {
@@ -52,7 +52,7 @@ export default css`
   }
 
   a[data-variant='fill'] > wui-image {
-    border: 1px solid var(--wui-color-blue-090);
+    border: 1px solid var(--wui-color-accent-090);
   }
 
   a[data-variant='shade'] > wui-image {
@@ -76,7 +76,7 @@ export default css`
   }
 
   a[data-variant='fill']:focus-visible {
-    background-color: var(--wui-color-blue-090);
+    background-color: var(--wui-color-accent-090);
   }
 
   a[data-variant='shade']:focus-visible {
@@ -89,7 +89,7 @@ export default css`
 
   @media (hover: hover) and (pointer: fine) {
     a[data-variant='fill']:hover {
-      background-color: var(--wui-color-blue-090);
+      background-color: var(--wui-color-accent-090);
     }
 
     a[data-variant='shade']:hover {
@@ -102,7 +102,7 @@ export default css`
   }
 
   a[data-variant='fill']:active {
-    background-color: var(--wui-color-blue-080);
+    background-color: var(--wui-color-accent-080);
   }
 
   a[data-variant='shade']:active {

@@ -29,7 +29,7 @@ import type {
 } from '@web3modal/ui/src/utils/TypesUtil'
 
 export const colorOptions: ColorType[] = [
-  'blue-100',
+  'accent-100',
   'error-100',
   'fg-100',
   'fg-200',

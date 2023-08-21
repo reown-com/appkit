@@ -116,7 +116,7 @@ export class WuiIcon extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
-      color: ${`var(--wui-color-${this.color});`}
+      --local-color: ${`var(--wui-color-${this.color});`}
       width: ${`var(--wui-icon-size-${this.size});`}
     `
 

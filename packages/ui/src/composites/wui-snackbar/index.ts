@@ -11,9 +11,9 @@ export class WuiSnackbar extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public backgroundColor: ColorType = 'blue-100'
+  @property() public backgroundColor: ColorType = 'accent-100'
 
-  @property() public iconColor: ColorType = 'blue-100'
+  @property() public iconColor: ColorType = 'accent-100'
 
   @property() public icon: IconType = 'checkmark'
 
