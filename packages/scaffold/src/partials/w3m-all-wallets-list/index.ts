@@ -1,5 +1,10 @@
 import type { ApiWallet } from '@web3modal/core'
-import { ApiController, AssetController, RouterController } from '@web3modal/core'
+import {
+  ApiController,
+  AssetController,
+  ConnectorController,
+  RouterController
+} from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -85,7 +90,7 @@ export class W3mAllWalletsList extends LitElement {
           imageSrc=${ifDefined(walletImages[wallet.image_id])}
           type="wallet"
           name=${wallet.name}
-          @click=${() => this.onConnectListing(wallet)}
+          @click=${() => this.onConnectWallet(wallet)}
         ></wui-card-select>
       `
     )
@@ -115,8 +120,14 @@ export class W3mAllWalletsList extends LitElement {
     }
   }
 
-  private onConnectListing(wallet: ApiWallet) {
-    RouterController.push('ConnectingWalletConnect', { wallet })
+  private onConnectWallet(wallet: ApiWallet) {
+    const { connectors } = ConnectorController.state
+    const connector = connectors.find(({ explorerId }) => explorerId === wallet.id)
+    if (connector) {
+      RouterController.push('ConnectingExternal', { connector })
+    } else {
+      RouterController.push('ConnectingWalletConnect', { wallet })
+    }
   }
 }
 

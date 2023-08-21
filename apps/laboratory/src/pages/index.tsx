@@ -1,11 +1,8 @@
 import { Button, Center, Select, VStack, useColorMode } from '@chakra-ui/react'
-import { Web3Modal, walletConnectProvider } from '@web3modal/wagmi'
+import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { useEffect, useState } from 'react'
-import { WagmiConfig, configureChains, createConfig } from 'wagmi'
+import { WagmiConfig } from 'wagmi'
 import { arbitrum, avalanche, bsc, gnosis, mainnet, optimism, polygon, zkSync } from 'wagmi/chains'
-import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
-import { InjectedConnector } from 'wagmi/connectors/injected'
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 import { ConnectButton } from '../components/ConnectButton'
 import { NetworksButton } from '../components/NetworksButton'
 import { themes } from '../utils/DataUtil'
@@ -17,26 +14,11 @@ if (!projectId) {
 }
 
 // 2. Create wagmiConfig
-const { chains, publicClient } = configureChains(
-  [mainnet, arbitrum, polygon, avalanche, bsc, optimism, gnosis, zkSync],
-  [walletConnectProvider({ projectId })]
-)
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors: [
-    new WalletConnectConnector({ chains, options: { projectId, showQrModal: false } }),
-    new InjectedConnector({ chains, options: { shimDisconnect: true } }),
-    new CoinbaseWalletConnector({ chains, options: { appName: 'Web3Modal' } })
-  ],
-  publicClient
-})
+const chains = [mainnet, arbitrum, polygon, avalanche, bsc, optimism, gnosis, zkSync]
+const wagmiConfig = defaultWagmiConfig({ chains, projectId, appName: 'Web3Modal' })
 
 // 3. Create Web3Modal
-export const modal = new Web3Modal({
-  wagmiConfig,
-  projectId,
-  chains
-})
+const modal = createWeb3Modal({ wagmiConfig, projectId, chains })
 
 export default function HomePage() {
   const { colorMode, toggleColorMode } = useColorMode()

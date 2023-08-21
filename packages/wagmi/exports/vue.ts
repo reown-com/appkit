@@ -1,12 +1,11 @@
-'use client'
-
+import { ref } from 'vue'
+import type { Web3ModalOptions } from '../src/client.js'
+import { Web3Modal } from '../src/client.js'
+import { VERSION } from '../src/utils/constants.js'
 import type { ThemeMode, ThemeVariables } from '@web3modal/scaffold'
-import type { Web3ModalOptions } from './client.js'
-import { Web3Modal } from './client.js'
-import { VERSION } from './utils/constants.js'
 
 // -- Types -------------------------------------------------------------------
-export type { Web3ModalOptions } from './client.js'
+export type { Web3ModalOptions } from '../src/client.js'
 type OpenOptions = Parameters<Web3Modal['open']>[0]
 
 // -- Setup -------------------------------------------------------------------
@@ -15,7 +14,7 @@ let modal: Web3Modal | undefined = undefined
 // -- Lib ---------------------------------------------------------------------
 export function createWeb3Modal(options: Omit<Web3ModalOptions, '_sdkVersion'>) {
   if (!modal) {
-    modal = new Web3Modal({ ...options, _sdkVersion: `react-wagmi-${VERSION}` })
+    modal = new Web3Modal({ ...options, _sdkVersion: `vue-wagmi-${VERSION}` })
   }
 
   return modal
@@ -46,19 +45,19 @@ export function useWeb3ModalTheme() {
 
   const themeVariables = modal?.subscribeThemeVariables()
 
-  return {
+  return ref({
     themeMode,
     themeVariables,
     getThemeMode,
     getThemeVariables,
     setThemeMode,
     setThemeVariables
-  }
+  })
 }
 
 export function useWeb3Modal() {
   if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3Modal" hook')
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3Modal" composable')
   }
 
   async function open(options?: OpenOptions) {
@@ -69,5 +68,10 @@ export function useWeb3Modal() {
     await modal?.close()
   }
 
-  return { open, close }
+  return ref({
+    open,
+    close
+  })
 }
+
+export { defaultWagmiConfig } from '../src/utils/defaultWagmiCoreConfig.js'

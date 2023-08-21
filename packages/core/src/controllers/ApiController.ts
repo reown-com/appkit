@@ -100,15 +100,12 @@ export const ApiController = {
   },
 
   async fetchRecommendedWallets() {
-    const { connectors } = ConnectorController.state
-    const exclude = connectors.map(({ explorerId }) => explorerId).filter(Boolean)
     const { data } = await api.post<ApiGetWalletsResponse>({
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
       body: {
         page: 1,
-        entries: recommendedEntries,
-        exclude: exclude.length ? exclude : undefined
+        entries: recommendedEntries
       }
     })
     await Promise.all(data.map(({ image_id }) => ApiController._fetchWalletImage(image_id)))
@@ -116,10 +113,7 @@ export const ApiController = {
   },
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
-    const { connectors } = ConnectorController.state
-    const excludeRecommended = state.recommended.map(({ id }) => id)
-    const excludeConnectors = connectors.map(({ explorerId }) => explorerId).filter(Boolean)
-    const exclude = [...excludeRecommended, ...excludeConnectors]
+    const exclude = state.recommended.map(({ id }) => id)
     const { data, count } = await api.post<ApiGetWalletsResponse>({
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
@@ -139,8 +133,6 @@ export const ApiController = {
   },
 
   async searchWallet({ search }: Pick<ApiGetWalletsRequest, 'search'>) {
-    const { connectors } = ConnectorController.state
-    const exclude = connectors.map(({ explorerId }) => explorerId).filter(Boolean)
     state.search = []
     const { data } = await api.post<ApiGetWalletsResponse>({
       path: '/getWallets',
@@ -148,8 +140,7 @@ export const ApiController = {
       body: {
         page: 1,
         entries: 100,
-        search,
-        exclude: exclude.length ? exclude : undefined
+        search
       }
     })
     await Promise.all(data.map(({ image_id }) => ApiController._fetchWalletImage(image_id)))
