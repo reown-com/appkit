@@ -1,9 +1,10 @@
 'use client'
 
-import type { ThemeMode, ThemeVariables } from '@web3modal/scaffold'
+import { ThemeController, type ThemeMode, type ThemeVariables } from '@web3modal/scaffold'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { VERSION } from '../src/utils/constants.js'
+import { useEffect, useState } from 'react'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
@@ -42,9 +43,17 @@ export function useWeb3ModalTheme() {
     return modal?.getThemeVariables()
   }
 
-  const themeMode = modal?.subscribeThemeMode()
+  const [themeMode, setInternalThemeMode] = useState(getThemeMode())
+  const [themeVariables, setInternalThemeVariables] = useState(getThemeVariables())
 
-  const themeVariables = modal?.subscribeThemeVariables()
+  useEffect(() => {
+    modal?.subscribeThemeMode(setInternalThemeMode)
+    modal?.subscribeThemeVariables(setInternalThemeVariables)
+
+    return () => {
+      modal?.unmount()
+    }
+  }, [])
 
   return {
     themeMode,

@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { VERSION } from '../src/utils/constants.js'
@@ -41,9 +41,20 @@ export function useWeb3ModalTheme() {
     return modal?.getThemeVariables()
   }
 
-  const themeMode = modal?.subscribeThemeMode()
+  const themeMode = ref<ThemeMode | undefined>(modal.getThemeMode())
+  const themeVariables = ref<ThemeVariables | undefined>(modal.getThemeVariables())
 
-  const themeVariables = modal?.subscribeThemeVariables()
+  modal.subscribeThemeMode(mode => {
+    themeMode.value = mode
+  })
+
+  modal.subscribeThemeVariables(variables => {
+    themeVariables.value = variables
+  })
+
+  onBeforeMount(() => {
+    modal?.unmount()
+  })
 
   return ref({
     themeMode,

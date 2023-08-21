@@ -45,6 +45,8 @@ export class Web3ModalScaffold {
     ModalController.open(options)
   }
 
+  public unsubscribe: (() => void)[] = []
+
   public async close() {
     await this.initOrContinue()
     ModalController.close()
@@ -68,12 +70,24 @@ export class Web3ModalScaffold {
     ThemeController.updateThemeVariables(themeVariables)
   }
 
-  public subscribeThemeMode() {
-    ThemeController.subscribeKey('themeMode', val => val)
+  public subscribeThemeMode(setter: (value: ThemeMode) => void) {
+    this.unsubscribe.push(
+      ThemeController.subscribeKey('themeMode', val => {
+        setter(val)
+      })
+    )
   }
 
-  public subscribeThemeVariables() {
-    ThemeController.subscribeKey('themeVariables', val => val)
+  public subscribeThemeVariables(setter: (value: ThemeVariables) => void) {
+    this.unsubscribe.push(
+      ThemeController.subscribeKey('themeVariables', val => {
+        setter(val)
+      })
+    )
+  }
+
+  public unmount() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Protected ----------------------------------------------------------------

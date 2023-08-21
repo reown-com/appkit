@@ -78,7 +78,7 @@ export interface ThemeVariables {
   '--w3m-accent'?: string
   '--w3m-color-mix'?: string
   '--w3m-color-mix-strength'?: number
-  '--w3m-font-size-master'?: '8px' | '9px' | '10px' | '11px' | '12px'
-  '--w3m-border-radius-master'?: '0px' | '1px' | '2px' | '3px' | '4px'
+  '--w3m-font-size-master'?: string
+  '--w3m-border-radius-master'?: string
   '--w3m-z-index'?: string
 }
