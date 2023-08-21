@@ -38,7 +38,7 @@ export type CaipNamespaces = Record<
 
 export type SdkVersion = `${'html' | 'react' | 'vue'}-wagmi-${string}`
 
-// --- new api types ----
+// -- ApiController Types -------------------------------------------------------
 export interface ApiWallet {
   id: string
   name: string
@@ -69,4 +69,15 @@ export interface ApiGetWalletsRequest {
 export interface ApiGetWalletsResponse {
   data: ApiWallet[]
   count: number
+}
+
+// -- BlockchainApiController Types ---------------------------------------------
+export interface BlockchainApiIdentityRequest {
+  caipChainId: CaipNetworkId
+  address: string
+}
+
+export interface BlockchainApiIdentityResponse {
+  avatar: string
+  name: string
 }

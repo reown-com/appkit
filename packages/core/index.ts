@@ -35,19 +35,14 @@ export type { ApiControllerState } from './src/controllers/ApiController.js'
 export { AssetController } from './src/controllers/AssetController.js'
 export type { AssetControllerState } from './src/controllers/AssetController.js'
 
+export { OptionsController } from './src/controllers/OptionsController.js'
+export type { OptionsControllerState } from './src/controllers/OptionsController.js'
+
+export { BlockchainApiController } from './src/controllers/BlockchainApiController.js'
+
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from './src/utils/AssetUtil.js'
 export { ConstantsUtil } from './src/utils/ConstantsUtil.js'
 export { CoreHelperUtil } from './src/utils/CoreHelperUtil.js'
 export { StorageUtil } from './src/utils/StorageUtil.js'
-export type {
-  ApiWallet,
-  CaipAddress,
-  CaipNetwork,
-  CaipNetworkId,
-  Connector,
-  ConnectorType,
-  Platform,
-  ProjectId,
-  SdkVersion
-} from './src/utils/TypeUtils.js'
+export type * from './src/utils/TypeUtils.js'

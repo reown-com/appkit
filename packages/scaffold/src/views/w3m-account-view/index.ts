@@ -36,6 +36,8 @@ export class W3mAccountView extends LitElement {
 
   @state() private network = NetworkController.state.caipNetwork
 
+  @state() private disconecting = false
+
   public constructor() {
     super()
     this.usubscribe.push(
@@ -52,7 +54,11 @@ export class W3mAccountView extends LitElement {
           }
         })
       ],
-      NetworkController.subscribeKey('caipNetwork', val => (this.network = val))
+      NetworkController.subscribeKey('caipNetwork', val => {
+        if (val?.id) {
+          this.network = val
+        }
+      })
     )
   }
 
@@ -81,16 +87,19 @@ export class W3mAccountView extends LitElement {
           imageSrc=${ifDefined(this.profileImage)}
         ></wui-avatar>
 
-        <wui-flex gap="3xs" alignItems="center" justifyContent="center">
-          <wui-text variant="large-600" color="fg-100">
-            ${this.profileName ?? UiHelperUtil.getTruncateAddress(this.address, 4)}
-          </wui-text>
-          <wui-icon-link
-            size="md"
-            icon="copy"
-            iconColor="fg-200"
-            @click=${this.onCopyAddress}
-          ></wui-icon-link>
+        <wui-flex flexDirection="column" alignItems="center">
+          <wui-flex gap="3xs" alignItems="center" justifyContent="center">
+            <wui-text variant="large-600" color="fg-100">
+              ${this.profileName ?? UiHelperUtil.getTruncateAddress(this.address, 4)}
+            </wui-text>
+            <wui-icon-link
+              size="md"
+              icon="copy"
+              iconColor="fg-200"
+              @click=${this.onCopyAddress}
+            ></wui-icon-link>
+          </wui-flex>
+          <wui-text variant="paragraph-500" color="fg-200">${this.showBalance()}</wui-text>
         </wui-flex>
       </wui-flex>
 
@@ -103,13 +112,16 @@ export class W3mAccountView extends LitElement {
           ?chevron=${true}
           @click=${this.onNetworks.bind(this)}
         >
-          <wui-text variant="paragraph-500" color="fg-100">${this.showBalance()}</wui-text>
+          <wui-text variant="paragraph-500" color="fg-100">
+            ${this.network?.name ?? 'Unknown'}
+          </wui-text>
         </wui-list-item>
         <wui-list-item
           variant="icon"
           iconVariant="overlay"
           icon="disconnect"
           ?chevron=${false}
+          .loading=${this.disconecting}
           @click=${this.onDisconnect.bind(this)}
         >
           <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
@@ -135,8 +147,15 @@ export class W3mAccountView extends LitElement {
   }
 
   private async onDisconnect() {
-    await ConnectionController.disconnect()
-    ModalController.close()
+    try {
+      this.disconecting = true
+      await ConnectionController.disconnect()
+      ModalController.close()
+    } catch {
+      SnackController.showError('Failed to disconnect')
+    } finally {
+      this.disconecting = false
+    }
   }
 
   private showBalance() {
