@@ -222,12 +222,21 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncProfile(address: Address) {
-    const profileName = await fetchEnsName({ address, chainId: mainnet.id })
-    if (profileName) {
-      this.setProfileName(profileName)
-      const profileImage = await fetchEnsAvatar({ name: profileName, chainId: mainnet.id })
-      if (profileImage) {
-        this.setProfileImage(profileImage)
+    try {
+      const { name, avatar } = await this.fetchIdentity({
+        caipChainId: `${NAMESPACE}:${mainnet.id}`,
+        address
+      })
+      this.setProfileName(name)
+      this.setProfileImage(avatar)
+    } catch {
+      const profileName = await fetchEnsName({ address, chainId: mainnet.id })
+      if (profileName) {
+        this.setProfileName(profileName)
+        const profileImage = await fetchEnsAvatar({ name: profileName, chainId: mainnet.id })
+        if (profileImage) {
+          this.setProfileImage(profileImage)
+        }
       }
     }
   }
