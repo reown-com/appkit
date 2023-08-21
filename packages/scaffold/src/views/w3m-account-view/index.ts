@@ -54,7 +54,11 @@ export class W3mAccountView extends LitElement {
           }
         })
       ],
-      NetworkController.subscribeKey('caipNetwork', val => (this.network = val))
+      NetworkController.subscribeKey('caipNetwork', val => {
+        if (val?.id) {
+          this.network = val
+        }
+      })
     )
   }
 
