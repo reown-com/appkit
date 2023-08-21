@@ -14,6 +14,6 @@
     "@sentry/react": "7.64.0",
     "@web3modal/wagmi": "3.0.0-alpha.3",
     "framer-motion": "10.16.0",
-    "next": "13.4.18"
+    "next": "13.4.19"
   }
 }
