@@ -71,6 +71,7 @@ export class W3mConnectingWcQrcode extends LitElement {
     const size = this.getBoundingClientRect().width - 40
     const alt = this.wallet ? this.wallet.name : undefined
     ConnectionController.setWcLinking(undefined)
+    ConnectionController.setRecentWallet(this.wallet)
 
     return html`<wui-qr-code
       size=${size}

@@ -2,6 +2,7 @@ import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
+import type { ApiWallet } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectionControllerClient {
@@ -21,6 +22,7 @@ export interface ConnectionControllerState {
     href: string
     name: string
   }
+  recentWallet?: ApiWallet
 }
 
 type StateKey = keyof ConnectionControllerState
@@ -75,11 +77,16 @@ export const ConnectionController = {
     state.wcPairingExpiry = undefined
     state.wcPromise = undefined
     state.wcLinking = undefined
+    state.recentWallet = undefined
     StorageUtil.deleteWalletConnectDeepLink()
   },
 
   setWcLinking(wcLinking: ConnectionControllerState['wcLinking']) {
     state.wcLinking = wcLinking
+  },
+
+  setRecentWallet(wallet: ConnectionControllerState['recentWallet']) {
+    state.recentWallet = wallet
   },
 
   async disconnect() {

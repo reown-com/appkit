@@ -74,6 +74,7 @@ export class W3mConnectingWcDesktop extends LitElement {
         const { desktop_link, name } = this.wallet
         const { redirect, href } = CoreHelperUtil.formatNativeUrl(desktop_link, this.uri)
         ConnectionController.setWcLinking({ name, href })
+        ConnectionController.setRecentWallet(this.wallet)
         CoreHelperUtil.openHref(redirect, '_self')
       } catch {
         this.error = true
