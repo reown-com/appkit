@@ -143,7 +143,10 @@ export const ApiController = {
         search
       }
     })
-    await Promise.all(data.map(({ image_id }) => ApiController._fetchWalletImage(image_id)))
+    await Promise.all([
+      ...data.map(({ image_id }) => ApiController._fetchWalletImage(image_id)),
+      CoreHelperUtil.wait(300)
+    ])
     state.search = data
   }
 }
