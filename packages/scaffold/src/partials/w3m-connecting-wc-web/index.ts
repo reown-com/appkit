@@ -74,6 +74,7 @@ export class W3mConnectingWcWeb extends LitElement {
         const { webapp_link, name } = this.wallet
         const { redirect, href } = CoreHelperUtil.formatUniversalUrl(webapp_link, this.uri)
         ConnectionController.setWcLinking({ name, href })
+        ConnectionController.setRecentWallet(this.wallet)
         CoreHelperUtil.openHref(redirect, '_blank')
       } catch {
         this.error = true

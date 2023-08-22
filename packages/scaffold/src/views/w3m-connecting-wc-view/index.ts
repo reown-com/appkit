@@ -71,9 +71,12 @@ export class W3mConnectingWcView extends LitElement {
   }
 
   private storeWalletConnectDeeplink() {
-    const { wcLinking } = ConnectionController.state
+    const { wcLinking, recentWallet } = ConnectionController.state
     if (wcLinking) {
       StorageUtil.setWalletConnectDeepLink(wcLinking)
+    }
+    if (recentWallet) {
+      StorageUtil.setWeb3ModalRecent(recentWallet)
     }
   }
 
