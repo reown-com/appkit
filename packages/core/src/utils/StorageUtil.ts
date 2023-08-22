@@ -41,9 +41,9 @@ export const StorageUtil = {
       const recentWallets = StorageUtil.getRecentWallets()
       const exists = recentWallets.find(w => w.id === wallet.id)
       if (!exists) {
-        recentWallets.push(wallet)
+        recentWallets.unshift(wallet)
         if (recentWallets.length > 2) {
-          recentWallets.shift()
+          recentWallets.pop()
         }
         localStorage.setItem(W3M_RECENT, JSON.stringify(recentWallets))
       }

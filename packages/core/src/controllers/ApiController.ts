@@ -2,6 +2,7 @@ import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
+import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
@@ -102,7 +103,12 @@ export const ApiController = {
         entries: recommendedEntries
       }
     })
-    await Promise.all(data.map(({ image_id }) => ApiController._fetchWalletImage(image_id)))
+    const recent = StorageUtil.getRecentWallets()
+    const recommendedImages = data.map(d => d.image_id)
+    const recentImages = recent.map(r => r.image_id)
+    await Promise.all(
+      [...recommendedImages, ...recentImages].map(id => ApiController._fetchWalletImage(id))
+    )
     state.recommended = data
   },
 
