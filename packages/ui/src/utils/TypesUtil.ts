@@ -176,7 +176,7 @@ export type CardSelectType = 'network' | 'wallet'
 
 export type BackgroundType = 'opaque' | 'transparent'
 
-export type TagType = 'main' | 'shade'
+export type TagType = 'main' | 'shade' | 'error' | 'success'
 
 export type AccountEntryType = 'icon' | 'image'
 

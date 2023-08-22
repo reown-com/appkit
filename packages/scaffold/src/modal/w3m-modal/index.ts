@@ -4,6 +4,7 @@ import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
 import styles from './styles.js'
 import { initializeTheming } from '@web3modal/ui'
+import { getColorTheme } from '@web3modal/ui/'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
@@ -60,17 +61,7 @@ export class W3mModal extends LitElement {
 
   private initializeTheming() {
     initializeTheming(ThemeController.state.themeVariables)
-    if (ThemeController.state.themeMode) {
-      ThemeController.setThemeMode(ThemeController.state.themeMode)
-    } else if (typeof window !== 'undefined' && window.matchMedia) {
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        ThemeController.setThemeMode('dark')
-      } else {
-        ThemeController.setThemeMode('light')
-      }
-    } else {
-      ThemeController.setThemeMode('dark')
-    }
+    ThemeController.setThemeMode(getColorTheme(ThemeController.state.themeMode))
   }
 
   private async onClose() {

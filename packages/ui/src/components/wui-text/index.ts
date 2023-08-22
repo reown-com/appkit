@@ -23,7 +23,10 @@ export class WuiText extends LitElement {
       [`wui-color-${this.color}`]: true
     }
 
-    this.style.cssText = `--local-align: ${this.align}; --local-color: var(--wui-color-${this.color});`
+    this.style.cssText = `
+      --local-align: ${this.align};
+      --local-color: var(--wui-color-${this.color});
+    `
 
     return html`<slot class=${classMap(classes)}></slot>`
   }

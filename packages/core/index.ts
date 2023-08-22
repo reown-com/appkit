@@ -49,18 +49,4 @@ export { ConstantsUtil } from './src/utils/ConstantsUtil.js'
 export { CoreHelperUtil } from './src/utils/CoreHelperUtil.js'
 export { StorageUtil } from './src/utils/StorageUtil.js'
 
-export type {
-  ApiWallet,
-  CaipAddress,
-  CaipNetwork,
-  CaipNetworkId,
-  Connector,
-  ConnectorType,
-  Platform,
-  ProjectId,
-  SdkVersion,
-  ThemeMode,
-  ThemeVariables
-} from './src/utils/TypeUtils.js'
-
 export type * from './src/utils/TypeUtils.js'

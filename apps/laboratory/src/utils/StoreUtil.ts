@@ -1,4 +1,4 @@
-import { create } from 'zustand'
+import { proxy } from 'valtio'
 
 interface ThemeVariables {
   '--w3m-font-family'?: string
@@ -9,27 +9,36 @@ interface ThemeVariables {
   '--w3m-border-radius-master'?: string
   '--w3m-z-index'?: string
 }
-
 interface ThemeStoreState {
   mixColorStrength: number
-  setMixColorStrength: (value: number) => void
   mixColor?: string
-  setMixColor: (value: string) => void
   accentColor?: string
-  setAccentColor: (value: string) => void
   themeVariables: ThemeVariables
-  setThemeVariables: (value: ThemeVariables) => void
 }
 
-const useThemeStore = create<ThemeStoreState>(set => ({
+const state = proxy<ThemeStoreState>({
   mixColorStrength: 0,
-  setMixColorStrength: value => set(() => ({ mixColorStrength: value })),
   mixColor: undefined,
-  setMixColor: value => set(() => ({ mixColor: value })),
   accentColor: undefined,
-  setAccentColor: value => set(() => ({ accentColor: value })),
-  themeVariables: {},
-  setThemeVariables: value => set(() => ({ themeVariables: value }))
-}))
+  themeVariables: {}
+})
 
-export default useThemeStore
+export const themeController = {
+  state,
+
+  setMixColorStrength(value: number) {
+    state.mixColorStrength = value
+  },
+
+  setMixColor(value: string) {
+    state.mixColor = value
+  },
+
+  setAccentColor(value: string) {
+    state.accentColor = value
+  },
+
+  setThemeVariables(value: ThemeVariables) {
+    state.themeVariables = value
+  }
+}

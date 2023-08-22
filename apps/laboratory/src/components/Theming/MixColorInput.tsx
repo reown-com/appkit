@@ -11,42 +11,32 @@ import {
 import { colors } from '../../utils/DataUtil'
 import RadioColor from './RadioColor'
 import { useEffect } from 'react'
-import useThemeStore from '../../utils/StoreUtil'
+import { themeController } from '../../utils/StoreUtil'
+import { useProxy } from 'valtio/utils'
 
 export default function MixColorInput() {
-  const [
-    themeVariables,
-    setThemeVariables,
-    mixColorStrength,
-    setMixColorStrength,
-    mixColor,
-    setMixColor
-  ] = useThemeStore(state => [
-    state.themeVariables,
-    state.setThemeVariables,
-    state.mixColorStrength,
-    state.setMixColorStrength,
-    state.mixColor,
-    state.setMixColor
-  ])
+  const state = useProxy(themeController.state)
 
   function handleColorChange(e: string) {
-    setMixColor(e)
-    const updatedVariables = { ...themeVariables, '--w3m-color-mix': e }
-    setThemeVariables(updatedVariables)
+    themeController.setMixColor(e)
+    const updatedVariables = { ...state.themeVariables, '--w3m-color-mix': e }
+    themeController.setThemeVariables(updatedVariables)
   }
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'mixColor',
     onChange: handleColorChange,
-    defaultValue: mixColor ? mixColor : undefined
+    defaultValue: state.mixColor ? state.mixColor : undefined
   })
   const group = getRootProps()
 
   useEffect(() => {
-    const updatedVariables = { ...themeVariables, '--w3m-color-mix-strength': mixColorStrength }
-    setThemeVariables(updatedVariables)
-  }, [mixColorStrength])
+    const updatedVariables = {
+      ...state.themeVariables,
+      '--w3m-color-mix-strength': state.mixColorStrength
+    }
+    themeController.setThemeVariables(updatedVariables)
+  }, [state.mixColorStrength])
 
   return (
     <>
@@ -67,13 +57,13 @@ export default function MixColorInput() {
       <Slider
         min={0}
         max={50}
-        value={mixColorStrength}
+        value={state.mixColorStrength}
         onChange={val => {
-          setMixColorStrength(val)
+          themeController.setMixColorStrength(val)
         }}
       >
         <SliderMark
-          value={mixColorStrength}
+          value={state.mixColorStrength}
           textAlign="center"
           bg="blackAlpha.700"
           color="white"
@@ -82,7 +72,7 @@ export default function MixColorInput() {
           borderRadius="base"
           w="12"
         >
-          {mixColorStrength}%
+          {state.mixColorStrength}%
         </SliderMark>
         <SliderTrack>
           <SliderFilledTrack />

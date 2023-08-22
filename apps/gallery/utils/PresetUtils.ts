@@ -252,7 +252,7 @@ export const cardSelectOptions: CardSelectType[] = ['network', 'wallet']
 
 export const backgroundOptions: BackgroundType[] = ['opaque', 'transparent']
 
-export const tagOptions: TagType[] = ['main', 'shade']
+export const tagOptions: TagType[] = ['main', 'shade', 'error', 'success']
 
 export const accountEntryOptions: AccountEntryType[] = ['icon', 'image']
 

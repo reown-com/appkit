@@ -5,6 +5,7 @@ export default css`
     display: flex;
     aspect-ratio: 1 / 1;
     color: var(--local-color);
+    width: var(--local-width);
   }
 
   svg {

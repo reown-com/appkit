@@ -47,11 +47,12 @@ export function useWeb3ModalTheme() {
   const [themeVariables, setInternalThemeVariables] = useState(getThemeVariables())
 
   useEffect(() => {
-    modal?.subscribeThemeMode(setInternalThemeMode)
-    modal?.subscribeThemeVariables(setInternalThemeVariables)
+    const unsubscribe = modal?.subscribeTheme(setInternalThemeMode, setInternalThemeVariables)
 
     return () => {
-      modal?.unmount()
+      if (unsubscribe) {
+        unsubscribe()
+      }
     }
   }, [])
 

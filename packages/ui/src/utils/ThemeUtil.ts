@@ -1,13 +1,29 @@
 import { css, unsafeCSS } from 'lit'
-import type { ThemeVariables } from './TypesUtil.js'
+import type { ThemeType, ThemeVariables } from './TypesUtil.js'
 
 // -- Utilities ---------------------------------------------------------------
+
+let styleTag: HTMLStyleElement | undefined = undefined
+
 export function initializeTheming(themeVariables: ThemeVariables) {
-  const styleTag = document.createElement('style')
-  styleTag.classList.add('w3m')
+  styleTag = document.createElement('style')
   styleTag.dataset['wui'] = 'theme'
   styleTag.textContent = createRootStyles(themeVariables).cssText
   document.head.appendChild(styleTag)
+}
+
+export function getColorTheme(theme: ThemeType | undefined): ThemeType {
+  if (theme) {
+    return theme
+  } else if (typeof window !== 'undefined' && window.matchMedia) {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark'
+    }
+
+    return 'light'
+  }
+
+  return 'dark'
 }
 
 export function setColorTheme(theme: string) {
@@ -15,12 +31,9 @@ export function setColorTheme(theme: string) {
 }
 
 export function setThemeVariables(themeVariables: ThemeVariables) {
-  if (typeof document !== 'undefined') {
-    const oldStyleTag = document.querySelector('.w3m')
-    oldStyleTag?.remove()
+  if (styleTag) {
+    styleTag.textContent = createRootStyles(themeVariables).cssText
   }
-
-  initializeTheming(themeVariables)
 }
 
 function createRootStyles(themeVariables: ThemeVariables) {
@@ -133,6 +146,9 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-color-inverse-000: #000;
 
       --wui-cover: rgba(0, 0, 0, 0.3);
+
+      --wui-color-blue-100: var(--wui-color-blue-base-100);
+      --wui-color-blue-015: var(--wui-color-accent-base-015);
 
       --wui-color-accent-100: var(--wui-color-accent-base-100);
       --wui-color-accent-090: var(--wui-color-accent-base-100);
@@ -326,6 +342,8 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --w3m-accent: ${unsafeCSS(themeVariables['--w3m-accent'] || '#47a1ff')};
       --w3m-default: #fff;
 
+      --wui-color-blue-base-100: #47a1ff;
+
       --wui-color-accent-base-100: var(--w3m-accent);
       --wui-color-accent-base-090: #59aaff;
       --wui-color-accent-base-080: #6cb4ff;
@@ -377,6 +395,8 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --w3m-color-mix: ${unsafeCSS(themeVariables['--w3m-color-mix'] || '#000')};
       --w3m-accent: ${unsafeCSS(themeVariables['--w3m-accent'] || '#3396ff')};
       --w3m-default: #000;
+
+      --wui-color-blue-base-100: #3396ff;
 
       --wui-color-accent-base-100: var(--w3m-accent);
       --wui-color-accent-base-090: #2d7dd2;

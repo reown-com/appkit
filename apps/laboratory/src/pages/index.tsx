@@ -18,8 +18,8 @@ import {
 } from 'wagmi/chains'
 import { ConnectButton } from '../components/ConnectButton'
 import { NetworksButton } from '../components/NetworksButton'
-import useThemeStore from '../utils/StoreUtil'
-import { setThemeVariables } from '@web3modal/ui'
+import { themeController } from '../utils/StoreUtil'
+import { useProxy } from 'valtio/utils'
 
 // 1. Get projectId
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
@@ -48,13 +48,13 @@ const wagmiConfig = defaultWagmiConfig({ chains, projectId, appName: 'Web3Modal'
 createWeb3Modal({ wagmiConfig, projectId, chains })
 
 export default function HomePage() {
+  const state = useProxy(themeController.state)
+
   const [ready, setReady] = useState(false)
 
   const { colorMode } = useColorMode()
 
-  const { setThemeMode } = useWeb3ModalTheme()
-
-  const themeVariables = useThemeStore(state => state.themeVariables)
+  const { setThemeMode, setThemeVariables } = useWeb3ModalTheme()
 
   useEffect(() => {
     setReady(true)
@@ -65,8 +65,8 @@ export default function HomePage() {
   }, [colorMode])
 
   useEffect(() => {
-    setThemeVariables(themeVariables)
-  }, [themeVariables])
+    setThemeVariables(state.themeVariables)
+  }, [state.themeVariables])
 
   return ready ? (
     <WagmiConfig config={wagmiConfig}>

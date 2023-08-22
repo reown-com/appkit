@@ -1,26 +1,22 @@
 import { Grid, Heading, useRadioGroup } from '@chakra-ui/react'
 import { colors } from '../../utils/DataUtil'
 import RadioColor from './RadioColor'
-import useThemeStore from '../../utils/StoreUtil'
+import { themeController } from '../../utils/StoreUtil'
+import { useProxy } from 'valtio/utils'
 
 export default function AccentColorInput() {
-  const [themeVariables, setThemeVariables, accentColor, setAccentColor] = useThemeStore(state => [
-    state.themeVariables,
-    state.setThemeVariables,
-    state.accentColor,
-    state.setAccentColor
-  ])
+  const state = useProxy(themeController.state)
 
   function handleColorChange(e: string) {
-    setAccentColor(e)
-    const updatedVariables = { ...themeVariables, '--w3m-accent': e }
-    setThemeVariables(updatedVariables)
+    themeController.setAccentColor(e)
+    const updatedVariables = { ...state.themeVariables, '--w3m-accent': e }
+    themeController.setThemeVariables(updatedVariables)
   }
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'accentColor',
     onChange: handleColorChange,
-    defaultValue: accentColor ? accentColor : undefined
+    defaultValue: state.accentColor ? state.accentColor : undefined
   })
   const group = getRootProps()
 

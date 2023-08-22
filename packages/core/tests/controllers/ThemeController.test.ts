@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { ThemeController } from '../../index.js'
 
 // -- Tests --------------------------------------------------------------------
-describe('SnackController', () => {
+describe('ThemeController', () => {
   it('should have valid default state', () => {
     expect(ThemeController.state).toEqual({
       themeMode: 'dark',
