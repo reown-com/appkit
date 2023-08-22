@@ -198,7 +198,6 @@ export class Web3Modal extends Web3ModalScaffold {
     const { chain } = getNetwork()
     this.resetAccount()
     if (isConnected && address && chain) {
-      this.resetWcConnection()
       const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
@@ -208,6 +207,7 @@ export class Web3Modal extends Web3ModalScaffold {
         this.getApprovedCaipNetworksData()
       ])
     } else if (!isConnected) {
+      this.resetWcConnection()
       this.resetNetwork()
     }
   }

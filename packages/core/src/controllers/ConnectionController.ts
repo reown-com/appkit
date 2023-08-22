@@ -75,6 +75,7 @@ export const ConnectionController = {
     state.wcPairingExpiry = undefined
     state.wcPromise = undefined
     state.wcLinking = undefined
+    StorageUtil.deleteWalletConnectDeepLink()
   },
 
   setWcLinking(wcLinking: ConnectionControllerState['wcLinking']) {
@@ -83,7 +84,6 @@ export const ConnectionController = {
 
   async disconnect() {
     await this._getClient().disconnect()
-    StorageUtil.deleteWalletConnectDeepLink()
     this.resetWcConnection()
   }
 }

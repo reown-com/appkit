@@ -58,10 +58,7 @@ export class W3mConnectingWcView extends LitElement {
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.connectWalletConnect()
         await ConnectionController.state.wcPromise
-        const { wcLinking } = ConnectionController.state
-        if (wcLinking) {
-          StorageUtil.setWalletConnectDeepLink(wcLinking)
-        }
+        this.storeWalletConnectDeeplink()
         ModalController.close()
       }
     } catch {
@@ -70,6 +67,13 @@ export class W3mConnectingWcView extends LitElement {
         this.lastRetry = Date.now()
         this.initializeConnection(true)
       }
+    }
+  }
+
+  private storeWalletConnectDeeplink() {
+    const { wcLinking } = ConnectionController.state
+    if (wcLinking) {
+      StorageUtil.setWalletConnectDeepLink(wcLinking)
     }
   }
 
