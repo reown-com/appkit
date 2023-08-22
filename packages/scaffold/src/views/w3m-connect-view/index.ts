@@ -5,7 +5,8 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
-  RouterController
+  RouterController,
+  StorageUtil
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
@@ -34,12 +35,29 @@ export class W3mConnectView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="xs">
-        ${this.connectorsTemplate()} ${this.dynamicTemplate()}
+        ${this.recentTemplate()} ${this.connectorsTemplate()} ${this.dynamicTemplate()}
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
+  private recentTemplate() {
+    const recent = StorageUtil.getRecentWallets()
+
+    return recent.map(
+      wallet => html`
+        <wui-list-wallet
+          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet.image_id))}
+          name=${wallet.name ?? 'Unknown'}
+          @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
+          tagLabel="recent"
+          tagVariant="shade"
+        >
+        </wui-list-wallet>
+      `
+    )
+  }
+
   private connectorsTemplate() {
     return this.connectors.map(connector => {
       const { tagLabel, tagVariant } = this.getTag(connector)
@@ -97,7 +115,7 @@ export class W3mConnectView extends LitElement {
       if (CoreHelperUtil.isMobile()) {
         RouterController.push('AllWallets')
       } else {
-        RouterController.push('ConnectingWalletConnect', { connector })
+        RouterController.push('ConnectingWalletConnect')
       }
     } else {
       RouterController.push('ConnectingExternal', { connector })
