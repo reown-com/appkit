@@ -1,6 +1,5 @@
 'use client'
 
-import { type ThemeMode, type ThemeVariables } from '@web3modal/scaffold'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { VERSION } from '../src/utils/constants.js'
@@ -9,6 +8,8 @@ import { useEffect, useState } from 'react'
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
 type OpenOptions = Parameters<Web3Modal['open']>[0]
+type ThemeModeOptions = Parameters<Web3Modal['setThemeMode']>[0]
+type ThemeVariablesOptions = Parameters<Web3Modal['setThemeVariables']>[0]
 
 // -- Setup -------------------------------------------------------------------
 let modal: Web3Modal | undefined = undefined
@@ -27,40 +28,31 @@ export function useWeb3ModalTheme() {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalTheme" hook')
   }
 
-  function setThemeMode(themeMode: ThemeMode) {
+  function setThemeMode(themeMode: ThemeModeOptions) {
     modal?.setThemeMode(themeMode)
   }
 
-  function setThemeVariables(themeVariables: ThemeVariables) {
+  function setThemeVariables(themeVariables: ThemeVariablesOptions) {
     modal?.setThemeVariables(themeVariables)
   }
 
-  function getThemeMode() {
-    return modal?.getThemeMode()
-  }
-
-  function getThemeVariables() {
-    return modal?.getThemeVariables()
-  }
-
-  const [themeMode, setInternalThemeMode] = useState(getThemeMode())
-  const [themeVariables, setInternalThemeVariables] = useState(getThemeVariables())
+  const [themeMode, setInternalThemeMode] = useState(modal.getThemeMode())
+  const [themeVariables, setInternalThemeVariables] = useState(modal.getThemeVariables())
 
   useEffect(() => {
-    const unsubscribe = modal?.subscribeTheme(setInternalThemeMode, setInternalThemeVariables)
+    const unsubscribe = modal?.subscribeTheme(state => {
+      setInternalThemeMode(state.themeMode)
+      setInternalThemeVariables(state.themeVariables)
+    })
 
     return () => {
-      if (unsubscribe) {
-        unsubscribe()
-      }
+      unsubscribe?.()
     }
   }, [])
 
   return {
     themeMode,
     themeVariables,
-    getThemeMode,
-    getThemeVariables,
     setThemeMode,
     setThemeVariables
   }

@@ -10,17 +10,15 @@ import {
 } from '@chakra-ui/react'
 import { colors } from '../../utils/DataUtil'
 import RadioColor from './RadioColor'
-import { useEffect } from 'react'
-import { themeController } from '../../utils/StoreUtil'
+
+import { ThemeStore } from '../../utils/StoreUtil'
 import { useProxy } from 'valtio/utils'
 
 export default function MixColorInput() {
-  const state = useProxy(themeController.state)
+  const state = useProxy(ThemeStore.state)
 
   function handleColorChange(e: string) {
-    themeController.setMixColor(e)
-    const updatedVariables = { ...state.themeVariables, '--w3m-color-mix': e }
-    themeController.setThemeVariables(updatedVariables)
+    ThemeStore.setMixColor(e)
   }
 
   const { getRootProps, getRadioProps } = useRadioGroup({
@@ -28,15 +26,8 @@ export default function MixColorInput() {
     onChange: handleColorChange,
     defaultValue: state.mixColor ? state.mixColor : undefined
   })
-  const group = getRootProps()
 
-  useEffect(() => {
-    const updatedVariables = {
-      ...state.themeVariables,
-      '--w3m-color-mix-strength': state.mixColorStrength
-    }
-    themeController.setThemeVariables(updatedVariables)
-  }, [state.mixColorStrength])
+  const group = getRootProps()
 
   return (
     <>
@@ -59,7 +50,7 @@ export default function MixColorInput() {
         max={50}
         value={state.mixColorStrength}
         onChange={val => {
-          themeController.setMixColorStrength(val)
+          ThemeStore.setMixColorStrength(val)
         }}
       >
         <SliderMark

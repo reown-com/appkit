@@ -5,7 +5,8 @@ import type {
   NetworkControllerClient,
   ThemeMode,
   ThemeVariables,
-  OptionsControllerState
+  OptionsControllerState,
+  ThemeControllerState
 } from '@web3modal/core'
 import {
   AccountController,
@@ -62,24 +63,18 @@ export class Web3ModalScaffold {
     return ThemeController.state.themeVariables
   }
 
-  public setThemeMode(themeMode: ThemeMode) {
+  public setThemeMode(themeMode: ThemeControllerState['themeMode']) {
     ThemeController.setThemeMode(themeMode)
+    setColorTheme(ThemeController.state.themeMode)
   }
 
-  public setThemeVariables(themeVariables: ThemeVariables) {
+  public setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
     ThemeController.setThemeVariables(themeVariables)
+    setThemeVariables(ThemeController.state.themeVariables)
   }
 
-  public subscribeTheme(
-    themeModeSetter: (value: ThemeMode) => void,
-    themeVariablesSetter: (value: ThemeVariables) => void
-  ) {
-    return ThemeController.subscribe(state => {
-      setColorTheme(state.themeMode)
-      setThemeVariables(state.themeVariables)
-      themeModeSetter(state.themeMode)
-      themeVariablesSetter(state.themeVariables)
-    })
+  public subscribeTheme(callback: (newState: ThemeControllerState) => void) {
+    return ThemeController.subscribe(callback)
   }
 
   // -- Protected ----------------------------------------------------------------

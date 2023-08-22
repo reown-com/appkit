@@ -1,4 +1,5 @@
 import { proxy } from 'valtio'
+import { modal } from '../pages'
 
 interface ThemeVariables {
   '--w3m-font-family'?: string
@@ -23,22 +24,26 @@ const state = proxy<ThemeStoreState>({
   themeVariables: {}
 })
 
-export const themeController = {
+export const ThemeStore = {
   state,
 
-  setMixColorStrength(value: number) {
+  setMixColorStrength(value: ThemeStoreState['mixColorStrength']) {
     state.mixColorStrength = value
+    modal.setThemeVariables({ '--w3m-color-mix-strength': value })
   },
 
-  setMixColor(value: string) {
+  setMixColor(value: ThemeStoreState['mixColor']) {
     state.mixColor = value
+    modal.setThemeVariables({ '--w3m-color-mix': value })
   },
 
-  setAccentColor(value: string) {
+  setAccentColor(value: ThemeStoreState['accentColor']) {
     state.accentColor = value
+    modal.setThemeVariables({ '--w3m-accent': value })
   },
 
-  setThemeVariables(value: ThemeVariables) {
+  setThemeVariables(value: ThemeStoreState['themeVariables']) {
     state.themeVariables = value
+    modal.setThemeVariables(value)
   }
 }

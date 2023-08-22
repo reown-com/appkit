@@ -44,11 +44,6 @@ export * from './src/layout/wui-grid/index.js'
 export * from './src/layout/wui-overlay/index.js'
 export * from './src/layout/wui-separator/index.js'
 
-export {
-  initializeTheming,
-  setColorTheme,
-  setThemeVariables,
-  getColorTheme
-} from './src/utils/ThemeUtil.js'
+export { initializeTheming, setColorTheme, setThemeVariables } from './src/utils/ThemeUtil.js'
 export type { VisualType } from './src/utils/TypesUtil.js'
 export { UiHelperUtil } from './src/utils/UiHelperUtils.js'

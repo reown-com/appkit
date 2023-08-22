@@ -5,25 +5,12 @@ import type { ThemeType, ThemeVariables } from './TypesUtil.js'
 
 let styleTag: HTMLStyleElement | undefined = undefined
 
-export function initializeTheming(themeVariables: ThemeVariables) {
+export function initializeTheming(themeVariables: ThemeVariables, themeMode: ThemeType) {
   styleTag = document.createElement('style')
   styleTag.dataset['wui'] = 'theme'
   styleTag.textContent = createRootStyles(themeVariables).cssText
   document.head.appendChild(styleTag)
-}
-
-export function getColorTheme(theme: ThemeType | undefined): ThemeType {
-  if (theme) {
-    return theme
-  } else if (typeof window !== 'undefined' && window.matchMedia) {
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark'
-    }
-
-    return 'light'
-  }
-
-  return 'dark'
+  setColorTheme(themeMode)
 }
 
 export function setColorTheme(theme: string) {

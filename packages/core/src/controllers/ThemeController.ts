@@ -21,11 +21,11 @@ export const ThemeController = {
     return sub(state, () => callback(state))
   },
 
-  setThemeMode(themeMode: ThemeMode) {
+  setThemeMode(themeMode: ThemeControllerState['themeMode']) {
     state.themeMode = themeMode
   },
 
-  setThemeVariables(themeVariables: ThemeVariables) {
+  setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
     state.themeVariables = { ...state.themeVariables, ...themeVariables }
   }
 }
