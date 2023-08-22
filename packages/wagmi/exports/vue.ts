@@ -44,16 +44,19 @@ export function useWeb3ModalTheme() {
   const themeMode = ref<ThemeMode | undefined>(modal.getThemeMode())
   const themeVariables = ref<ThemeVariables | undefined>(modal.getThemeVariables())
 
-  modal.subscribeThemeMode(mode => {
-    themeMode.value = mode
-  })
-
-  modal.subscribeThemeVariables(variables => {
-    themeVariables.value = variables
-  })
+  const unsubscribe = modal?.subscribeTheme(
+    mode => {
+      themeMode.value = mode
+    },
+    mode => {
+      themeVariables.value = mode
+    }
+  )
 
   onBeforeMount(() => {
-    modal?.unmount()
+    if (unsubscribe) {
+      unsubscribe()
+    }
   })
 
   return ref({
