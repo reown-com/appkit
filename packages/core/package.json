@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/core",
-  "version": "3.0.0-alpha.3",
+  "version": "3.0.0-alpha.4",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -12,7 +12,8 @@
     "build": "npm run build:clean; tsc --build",
     "watch": "npm run build:clean; tsc --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --dir tests"
+    "test": "vitest run --dir tests",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "valtio": "1.11.2"

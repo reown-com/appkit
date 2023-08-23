@@ -6,7 +6,7 @@ interface Options {
 interface RequestArguments {
   path: string
   headers?: HeadersInit
-  params?: Record<string, unknown>
+  params?: Record<string, string | undefined>
 }
 
 interface PostArguments extends RequestArguments {
@@ -73,7 +73,7 @@ export class FetchUtil {
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         if (value) {
-          url.searchParams.append(key, String(value))
+          url.searchParams.append(key, value)
         }
       })
     }

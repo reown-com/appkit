@@ -3,10 +3,11 @@ import type {
   ConnectionControllerClient,
   ModalControllerArguments,
   NetworkControllerClient,
-  ThemeMode,
-  ThemeVariables,
+  NetworkControllerState,
   OptionsControllerState,
-  ThemeControllerState
+  ThemeControllerState,
+  ThemeMode,
+  ThemeVariables
 } from '@web3modal/core'
 import {
   AccountController,
@@ -17,8 +18,8 @@ import {
   CoreHelperUtil,
   ModalController,
   NetworkController,
-  ThemeController,
-  OptionsController
+  OptionsController,
+  ThemeController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 
@@ -26,20 +27,26 @@ import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 let isInitialized = false
 
 // -- Types ---------------------------------------------------------------------
-interface Options {
-  networkControllerClient: NetworkControllerClient
-  connectionControllerClient: ConnectionControllerClient
+export interface LibraryOptions {
   projectId: OptionsControllerState['projectId']
-  sdkVersion: ApiControllerState['sdkVersion']
   themeMode?: ThemeMode
   themeVariables?: ThemeVariables
+  includeWalletIds?: OptionsControllerState['includeWalletIds']
+  excludeWalletIds?: OptionsControllerState['excludeWalletIds']
+  defaultChain?: NetworkControllerState['caipNetwork']
+  _sdkVersion: ApiControllerState['sdkVersion']
+}
+
+export interface ScaffoldOptions extends LibraryOptions {
+  networkControllerClient: NetworkControllerClient
+  connectionControllerClient: ConnectionControllerClient
 }
 
 // -- Client --------------------------------------------------------------------
 export class Web3ModalScaffold {
   private initPromise?: Promise<void> = undefined
 
-  public constructor(options: Options) {
+  public constructor(options: ScaffoldOptions) {
     this.initControllers(options)
     this.initOrContinue()
   }
@@ -132,16 +139,21 @@ export class Web3ModalScaffold {
     BlockchainApiController.fetchIdentity(request)
 
   // -- Private ------------------------------------------------------------------
-  private initControllers(options: Options) {
+  private initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)
     ConnectionController.setClient(options.connectionControllerClient)
     OptionsController.setProjectId(options.projectId)
-    ApiController.setSdkVersion(options.sdkVersion)
+    OptionsController.setIncludeWalletIds(options.includeWalletIds)
+    OptionsController.setExcludeWalletIds(options.excludeWalletIds)
+    ApiController.setSdkVersion(options._sdkVersion)
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)
     }
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables)
+    }
+    if (options.defaultChain) {
+      NetworkController.setDefaultCaipNetwork(options.defaultChain)
     }
   }
 

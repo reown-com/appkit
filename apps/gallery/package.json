@@ -1,14 +1,15 @@
 {
   "name": "@apps/gallery",
-  "version": "3.0.0-alpha.3",
+  "version": "3.0.0-alpha.4",
   "private": true,
   "main": "index.js",
   "scripts": {
     "dev:gallery": "storybook dev -p 6006",
-    "build:gallery": "storybook build -o out"
+    "build:gallery": "storybook build -o out",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/ui": "3.0.0-alpha.3",
+    "@web3modal/ui": "3.0.0-alpha.4",
     "lit": "2.8.0",
     "storybook": "7.3.2"
   },

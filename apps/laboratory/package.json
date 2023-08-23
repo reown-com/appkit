@@ -1,10 +1,11 @@
 {
   "name": "@apps/laboratory",
-  "version": "3.0.0-alpha.3",
+  "version": "3.0.0-alpha.4",
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
-    "build:laboratory": "next build"
+    "build:laboratory": "next build",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "@chakra-ui/react": "2.8.0",
@@ -12,7 +13,7 @@
     "@emotion/styled": "11.11.0",
     "@sentry/browser": "7.64.0",
     "@sentry/react": "7.64.0",
-    "@web3modal/wagmi": "3.0.0-alpha.3",
+    "@web3modal/wagmi": "3.0.0-alpha.4",
     "framer-motion": "10.16.1",
     "next": "13.4.19",
     "react-icons": "4.10.1",
