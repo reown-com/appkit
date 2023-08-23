@@ -17,11 +17,8 @@ import type {
   CaipNetwork,
   CaipNetworkId,
   ConnectionControllerClient,
-  NetworkControllerClient,
-  ProjectId,
-  SdkVersion,
-  ThemeMode,
-  ThemeVariables
+  LibraryOptions,
+  NetworkControllerClient
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
@@ -41,16 +38,13 @@ import {
 } from './utils/presets.js'
 
 // -- Types ---------------------------------------------------------------------
-
-export interface Web3ModalOptions {
+export interface Web3ModalClientOptions extends LibraryOptions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wagmiConfig: Config<any, any>
-  projectId: ProjectId
   chains?: Chain[]
-  themeMode?: ThemeMode
-  themeVariables?: ThemeVariables
-  _sdkVersion?: SdkVersion
 }
+
+export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
 
 declare global {
   interface Window {
@@ -60,14 +54,14 @@ declare global {
 
 // -- Client --------------------------------------------------------------------
 export class Web3Modal extends Web3ModalScaffold {
-  public constructor(options: Web3ModalOptions) {
-    const { wagmiConfig, projectId, chains, _sdkVersion, themeMode, themeVariables } = options
+  public constructor(options: Web3ModalClientOptions) {
+    const { wagmiConfig, chains, _sdkVersion, ...w3mOptions } = options
 
     if (!wagmiConfig) {
       throw new Error('web3modal:constructor - wagmiConfig is undefined')
     }
 
-    if (!projectId) {
+    if (!w3mOptions.projectId) {
       throw new Error('web3modal:constructor - projectId is undefined')
     }
 
@@ -166,10 +160,8 @@ export class Web3Modal extends Web3ModalScaffold {
     super({
       networkControllerClient,
       connectionControllerClient,
-      projectId,
-      sdkVersion: _sdkVersion ?? `html-wagmi-${VERSION}`,
-      themeMode,
-      themeVariables
+      _sdkVersion: _sdkVersion ?? `html-wagmi-${VERSION}`,
+      ...w3mOptions
     })
 
     this.syncRequestedNetworks(chains)
@@ -182,7 +174,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   // -- Private -----------------------------------------------------------------
-  private syncRequestedNetworks(chains: Web3ModalOptions['chains']) {
+  private syncRequestedNetworks(chains: Web3ModalClientOptions['chains']) {
     const requestedCaipNetworks = chains?.map(
       chain =>
         ({
@@ -253,7 +245,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setBalance(balance.formatted, balance.symbol)
   }
 
-  private syncConnectors(connectors: Web3ModalOptions['wagmiConfig']['connectors']) {
+  private syncConnectors(connectors: Web3ModalClientOptions['wagmiConfig']['connectors']) {
     const w3mConnectors = connectors.map(
       ({ id, name }) =>
         ({

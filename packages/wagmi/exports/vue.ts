@@ -14,7 +14,7 @@ type ThemeVariablesOptions = Parameters<Web3Modal['setThemeVariables']>[0]
 let modal: Web3Modal | undefined = undefined
 
 // -- Lib ---------------------------------------------------------------------
-export function createWeb3Modal(options: Omit<Web3ModalOptions, '_sdkVersion'>) {
+export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
     modal = new Web3Modal({ ...options, _sdkVersion: `vue-wagmi-${VERSION}` })
   }

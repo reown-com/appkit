@@ -26,22 +26,25 @@ import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 let isInitialized = false
 
 // -- Types ---------------------------------------------------------------------
-interface Options {
-  networkControllerClient: NetworkControllerClient
-  connectionControllerClient: ConnectionControllerClient
+export interface LibraryOptions {
   projectId: OptionsControllerState['projectId']
-  sdkVersion: ApiControllerState['sdkVersion']
   themeMode?: ThemeMode
   themeVariables?: ThemeVariables
   includeWalletIds?: OptionsControllerState['includeWalletIds']
   excludeWalletIds?: OptionsControllerState['excludeWalletIds']
+  _sdkVersion: ApiControllerState['sdkVersion']
+}
+
+export interface ScaffoldOptions extends LibraryOptions {
+  networkControllerClient: NetworkControllerClient
+  connectionControllerClient: ConnectionControllerClient
 }
 
 // -- Client --------------------------------------------------------------------
 export class Web3ModalScaffold {
   private initPromise?: Promise<void> = undefined
 
-  public constructor(options: Options) {
+  public constructor(options: ScaffoldOptions) {
     this.initControllers(options)
     this.initOrContinue()
   }
@@ -134,13 +137,13 @@ export class Web3ModalScaffold {
     BlockchainApiController.fetchIdentity(request)
 
   // -- Private ------------------------------------------------------------------
-  private initControllers(options: Options) {
+  private initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)
     ConnectionController.setClient(options.connectionControllerClient)
     OptionsController.setProjectId(options.projectId)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
     OptionsController.setExcludeWalletIds(options.excludeWalletIds)
-    ApiController.setSdkVersion(options.sdkVersion)
+    ApiController.setSdkVersion(options._sdkVersion)
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)
     }

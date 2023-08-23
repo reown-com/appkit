@@ -97,8 +97,8 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private paginationLoaderTemplate() {
-    const { wallets, count } = ApiController.state
-    if (count === 0 || wallets.length < count) {
+    const { wallets, recommended, count } = ApiController.state
+    if (count === 0 || [...wallets, ...recommended].length < count) {
       return html`<wui-loading-spinner color="accent-100"></wui-loading-spinner>`
     }
 

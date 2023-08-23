@@ -15,7 +15,7 @@ import { NetworkController } from './NetworkController.js'
 import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
-const api = new FetchUtil({ baseUrl: 'https://api.web3modal.com' })
+const api = new FetchUtil({ baseUrl: 'http://127.0.0.1:8787' })
 const entries = '24'
 const recommendedEntries = '4'
 const sdkType = 'w3m'
@@ -113,6 +113,7 @@ export const ApiController = {
       [...recommendedImages, ...recentImages].map(id => ApiController._fetchWalletImage(id))
     )
     state.recommended = data
+    state.count = includeWalletIds?.length ?? 0
   },
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
@@ -133,7 +134,7 @@ export const ApiController = {
       CoreHelperUtil.wait(300)
     ])
     state.wallets = [...state.wallets, ...data]
-    state.count = count
+    state.count = count > state.count ? count : state.count
     state.page = page
   },
 

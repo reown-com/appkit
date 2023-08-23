@@ -39,8 +39,8 @@ export class W3mAllWalletsView extends LitElement {
       return html`
         <wui-icon-box
           size="lg"
-          iconcolor="blue-100"
-          backgroundcolor="blue-100"
+          iconcolor="accent-100"
+          backgroundcolor="accent-100"
           icon="browser"
           background="transparent"
           @click=${this.onWalletConnectQr.bind(this)}
