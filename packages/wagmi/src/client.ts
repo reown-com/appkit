@@ -29,6 +29,7 @@ import {
   WALLET_CHOICE_KEY,
   WALLET_CONNECT_CONNECTOR_ID
 } from './utils/constants.js'
+import { getCaipDefaultChain } from './utils/helpers.js'
 import {
   ConnectorExplorerIds,
   ConnectorImageIds,
@@ -38,10 +39,11 @@ import {
 } from './utils/presets.js'
 
 // -- Types ---------------------------------------------------------------------
-export interface Web3ModalClientOptions extends LibraryOptions {
+export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain'> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wagmiConfig: Config<any, any>
   chains?: Chain[]
+  defaultChain?: Chain
 }
 
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
@@ -55,7 +57,7 @@ declare global {
 // -- Client --------------------------------------------------------------------
 export class Web3Modal extends Web3ModalScaffold {
   public constructor(options: Web3ModalClientOptions) {
-    const { wagmiConfig, chains, _sdkVersion, ...w3mOptions } = options
+    const { wagmiConfig, chains, defaultChain, _sdkVersion, ...w3mOptions } = options
 
     if (!wagmiConfig) {
       throw new Error('web3modal:constructor - wagmiConfig is undefined')
@@ -160,6 +162,7 @@ export class Web3Modal extends Web3ModalScaffold {
     super({
       networkControllerClient,
       connectionControllerClient,
+      defaultChain: getCaipDefaultChain(defaultChain),
       _sdkVersion: _sdkVersion ?? `html-wagmi-${VERSION}`,
       ...w3mOptions
     })
@@ -174,6 +177,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   // -- Private -----------------------------------------------------------------
+
   private syncRequestedNetworks(chains: Web3ModalClientOptions['chains']) {
     const requestedCaipNetworks = chains?.map(
       chain =>

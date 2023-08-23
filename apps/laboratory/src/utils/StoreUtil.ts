@@ -1,5 +1,5 @@
 import { proxy } from 'valtio'
-import { modal } from '../pages'
+import { modal } from '../pages/_app'
 
 interface ThemeVariables {
   '--w3m-font-family'?: string

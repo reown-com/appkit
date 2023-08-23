@@ -3,6 +3,7 @@ import type {
   ConnectionControllerClient,
   ModalControllerArguments,
   NetworkControllerClient,
+  NetworkControllerState,
   OptionsControllerState,
   ThemeControllerState,
   ThemeMode,
@@ -32,6 +33,7 @@ export interface LibraryOptions {
   themeVariables?: ThemeVariables
   includeWalletIds?: OptionsControllerState['includeWalletIds']
   excludeWalletIds?: OptionsControllerState['excludeWalletIds']
+  defaultChain?: NetworkControllerState['caipNetwork']
   _sdkVersion: ApiControllerState['sdkVersion']
 }
 
@@ -149,6 +151,9 @@ export class Web3ModalScaffold {
     }
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables)
+    }
+    if (options.defaultChain) {
+      NetworkController.setDefaultCaipNetwork(options.defaultChain)
     }
   }
 
