@@ -17,7 +17,7 @@ export default css`
   }
 
   use {
-    stroke: var(--wui-color-blue-100);
+    stroke: var(--wui-color-accent-100);
     stroke-width: 2px;
     stroke-dasharray: 54, 118;
     stroke-dashoffset: 172;

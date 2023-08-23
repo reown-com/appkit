@@ -9,7 +9,7 @@ type Component = Meta<WuiLoadingSpinner>
 export default {
   title: 'Components/wui-loading-spinner',
   args: {
-    color: 'blue-100'
+    color: 'accent-100'
   },
   argTypes: {
     color: {

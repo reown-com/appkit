@@ -1,5 +1,5 @@
 export type ColorType =
-  | 'blue-100'
+  | 'accent-100'
   | 'error-100'
   | 'fg-100'
   | 'fg-200'
@@ -176,7 +176,7 @@ export type CardSelectType = 'network' | 'wallet'
 
 export type BackgroundType = 'opaque' | 'transparent'
 
-export type TagType = 'main' | 'shade'
+export type TagType = 'main' | 'shade' | 'error' | 'success'
 
 export type AccountEntryType = 'icon' | 'image'
 
@@ -205,5 +205,15 @@ export type InputType =
   | 'time'
   | 'url'
   | 'week'
+
+export interface ThemeVariables {
+  '--w3m-font-family'?: string
+  '--w3m-accent'?: string
+  '--w3m-color-mix'?: string
+  '--w3m-color-mix-strength'?: number
+  '--w3m-font-size-master'?: string
+  '--w3m-border-radius-master'?: string
+  '--w3m-z-index'?: string
+}
 
 export type TagLabelType = 'installed' | 'qr code' | 'recent' | 'get wallet' | 'all'

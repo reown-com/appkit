@@ -6,7 +6,7 @@ import { addons } from '@storybook/preview-api'
 import { GLOBALS_UPDATED, SET_GLOBALS } from '@storybook/core-events'
 
 // -- Utilities ------------------------------------------------------------
-initializeTheming()
+initializeTheming({})
 
 const backgroundChangeListener = args => {
   const bgColor = args.globals.backgrounds?.value

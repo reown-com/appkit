@@ -3,10 +3,13 @@
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { VERSION } from '../src/utils/constants.js'
+import { useEffect, useState } from 'react'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
 type OpenOptions = Parameters<Web3Modal['open']>[0]
+type ThemeModeOptions = Parameters<Web3Modal['setThemeMode']>[0]
+type ThemeVariablesOptions = Parameters<Web3Modal['setThemeVariables']>[0]
 
 // -- Setup -------------------------------------------------------------------
 let modal: Web3Modal | undefined = undefined
@@ -18,6 +21,41 @@ export function createWeb3Modal(options: Omit<Web3ModalOptions, '_sdkVersion'>) 
   }
 
   return modal
+}
+
+export function useWeb3ModalTheme() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalTheme" hook')
+  }
+
+  function setThemeMode(themeMode: ThemeModeOptions) {
+    modal?.setThemeMode(themeMode)
+  }
+
+  function setThemeVariables(themeVariables: ThemeVariablesOptions) {
+    modal?.setThemeVariables(themeVariables)
+  }
+
+  const [themeMode, setInternalThemeMode] = useState(modal.getThemeMode())
+  const [themeVariables, setInternalThemeVariables] = useState(modal.getThemeVariables())
+
+  useEffect(() => {
+    const unsubscribe = modal?.subscribeTheme(state => {
+      setInternalThemeMode(state.themeMode)
+      setInternalThemeVariables(state.themeVariables)
+    })
+
+    return () => {
+      unsubscribe?.()
+    }
+  }, [])
+
+  return {
+    themeMode,
+    themeVariables,
+    setThemeMode,
+    setThemeVariables
+  }
 }
 
 export function useWeb3Modal() {

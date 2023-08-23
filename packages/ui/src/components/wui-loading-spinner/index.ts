@@ -8,7 +8,7 @@ import type { ColorType } from '../../utils/TypesUtil.js'
 export class WuiLoadingSpinner extends LitElement {
   public static override styles = [resetStyles, styles]
 
-  @property() public color: ColorType = 'blue-100'
+  @property() public color: ColorType = 'accent-100'
 
   // -- Render -------------------------------------------- //
   public override render() {

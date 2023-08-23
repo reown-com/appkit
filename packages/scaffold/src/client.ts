@@ -3,7 +3,10 @@ import type {
   ConnectionControllerClient,
   ModalControllerArguments,
   NetworkControllerClient,
-  OptionsControllerState
+  ThemeMode,
+  ThemeVariables,
+  OptionsControllerState,
+  ThemeControllerState
 } from '@web3modal/core'
 import {
   AccountController,
@@ -14,8 +17,10 @@ import {
   CoreHelperUtil,
   ModalController,
   NetworkController,
+  ThemeController,
   OptionsController
 } from '@web3modal/core'
+import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
@@ -26,6 +31,8 @@ interface Options {
   connectionControllerClient: ConnectionControllerClient
   projectId: OptionsControllerState['projectId']
   sdkVersion: ApiControllerState['sdkVersion']
+  themeMode?: ThemeMode
+  themeVariables?: ThemeVariables
 }
 
 // -- Client --------------------------------------------------------------------
@@ -46,6 +53,28 @@ export class Web3ModalScaffold {
   public async close() {
     await this.initOrContinue()
     ModalController.close()
+  }
+
+  public getThemeMode() {
+    return ThemeController.state.themeMode
+  }
+
+  public getThemeVariables() {
+    return ThemeController.state.themeVariables
+  }
+
+  public setThemeMode(themeMode: ThemeControllerState['themeMode']) {
+    ThemeController.setThemeMode(themeMode)
+    setColorTheme(ThemeController.state.themeMode)
+  }
+
+  public setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
+    ThemeController.setThemeVariables(themeVariables)
+    setThemeVariables(ThemeController.state.themeVariables)
+  }
+
+  public subscribeTheme(callback: (newState: ThemeControllerState) => void) {
+    return ThemeController.subscribe(callback)
   }
 
   // -- Protected ----------------------------------------------------------------
@@ -108,6 +137,12 @@ export class Web3ModalScaffold {
     ConnectionController.setClient(options.connectionControllerClient)
     OptionsController.setProjectId(options.projectId)
     ApiController.setSdkVersion(options.sdkVersion)
+    if (options.themeMode) {
+      ThemeController.setThemeMode(options.themeMode)
+    }
+    if (options.themeVariables) {
+      ThemeController.setThemeVariables(options.themeVariables)
+    }
   }
 
   private async initOrContinue() {
