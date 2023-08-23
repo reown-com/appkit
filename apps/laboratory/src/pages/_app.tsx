@@ -46,7 +46,7 @@ const chains = [
 export const wagmiConfig = defaultWagmiConfig({ chains, projectId, appName: 'Web3Modal' })
 
 // 3. Create Web3Modal
-export const modal = createWeb3Modal({ wagmiConfig, projectId, chains, defaultChain: zora })
+export const modal = createWeb3Modal({ wagmiConfig, projectId, chains })
 
 export default function App({ Component, pageProps }: AppProps) {
   const [ready, setReady] = useState(false)
