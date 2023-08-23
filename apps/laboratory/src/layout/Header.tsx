@@ -45,8 +45,8 @@ export default function Header() {
 
       <Box borderBottom={'1px'}>
         <Container maxW="container.xl" padding={'4'}>
-          <Flex justify={'space-between'} alignItems={'center'}>
-            <Text fontSize={'lg'} fontWeight={'bold'}>
+          <Flex justify={['flex-end', 'space-between']} alignItems={'center'}>
+            <Text fontSize={'lg'} fontWeight={'bold'} display={['none', 'block']}>
               Web3Modal Lab
             </Text>
             <Flex gridGap={4} alignItems={'center'}>

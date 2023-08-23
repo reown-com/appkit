@@ -189,6 +189,7 @@ export const iconOptions: IconType[] = [
   'networkPlaceholder',
   'nftPlaceholder',
   'off',
+  'qrCode',
   'refresh',
   'search',
   'swapHorizontal',

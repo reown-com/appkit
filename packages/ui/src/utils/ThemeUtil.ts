@@ -39,7 +39,7 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --w3m-border-radius-master: ${unsafeCSS(
         themeVariables['--w3m-border-radius-master'] || '4px'
       )};
-      --w3m-z-index: ${unsafeCSS(themeVariables['--w3m-font-size-master'] || '89')};
+      --w3m-z-index: ${unsafeCSS(themeVariables['--w3m-z-index'] || '100')};
 
       --wui-font-family: var(--w3m-font-family);
 
