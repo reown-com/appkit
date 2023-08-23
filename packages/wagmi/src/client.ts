@@ -41,14 +41,15 @@ import {
 } from './utils/presets.js'
 
 // -- Types ---------------------------------------------------------------------
+
 export interface Web3ModalOptions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wagmiConfig: Config<any, any>
   projectId: ProjectId
   chains?: Chain[]
-  _sdkVersion?: SdkVersion
   themeMode?: ThemeMode
   themeVariables?: ThemeVariables
+  _sdkVersion?: SdkVersion
 }
 
 declare global {

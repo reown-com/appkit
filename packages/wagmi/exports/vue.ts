@@ -1,8 +1,8 @@
+import type { ThemeMode, ThemeVariables } from '@web3modal/scaffold'
 import { onUnmounted, ref } from 'vue'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { VERSION } from '../src/utils/constants.js'
-import type { ThemeMode, ThemeVariables } from '@web3modal/scaffold'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
@@ -35,8 +35,8 @@ export function useWeb3ModalTheme() {
     modal?.setThemeVariables(themeVariables)
   }
 
-  const themeMode = ref<ThemeMode | undefined>(modal.getThemeMode())
-  const themeVariables = ref<ThemeVariables | undefined>(modal.getThemeVariables())
+  const themeMode = ref<ThemeMode>(modal.getThemeMode())
+  const themeVariables = ref<ThemeVariables>(modal.getThemeVariables())
 
   const unsubscribe = modal?.subscribeTheme(state => {
     themeMode.value = state.themeMode

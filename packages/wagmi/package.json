@@ -25,7 +25,8 @@
     "build:clean": "rm -rf dist",
     "build": "npm run build:clean; tsc --build",
     "watch": "npm run build:clean; tsc --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "@web3modal/polyfills": "3.0.0-alpha.3",

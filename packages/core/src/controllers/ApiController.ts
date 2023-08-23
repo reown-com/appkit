@@ -95,12 +95,15 @@ export const ApiController = {
   },
 
   async fetchRecommendedWallets() {
+    const { includeWalletIds, excludeWalletIds } = OptionsController.state
     const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
       params: {
         page: '1',
-        entries: recommendedEntries
+        entries: recommendedEntries,
+        include: includeWalletIds?.join(','),
+        exclude: excludeWalletIds?.join(',')
       }
     })
     const recent = StorageUtil.getRecentWallets()
@@ -113,14 +116,16 @@ export const ApiController = {
   },
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
-    const exclude = state.recommended.map(({ id }) => id)
+    const { includeWalletIds, excludeWalletIds } = OptionsController.state
+    const exclude = [...state.recommended.map(({ id }) => id), ...(excludeWalletIds ?? [])]
     const { data, count } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
       params: {
         page: String(page),
         entries,
-        exclude: exclude.length ? exclude.join(',') : undefined
+        include: includeWalletIds?.join(','),
+        exclude: exclude.join(',')
       }
     })
     await Promise.all([
@@ -133,6 +138,7 @@ export const ApiController = {
   },
 
   async searchWallet({ search }: Pick<ApiGetWalletsRequest, 'search'>) {
+    const { includeWalletIds, excludeWalletIds } = OptionsController.state
     state.search = []
     const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
@@ -140,7 +146,9 @@ export const ApiController = {
       params: {
         page: '1',
         entries: '100',
-        search
+        search,
+        include: includeWalletIds?.join(','),
+        exclude: excludeWalletIds?.join(',')
       }
     })
     await Promise.all([

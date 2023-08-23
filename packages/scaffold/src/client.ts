@@ -3,10 +3,10 @@ import type {
   ConnectionControllerClient,
   ModalControllerArguments,
   NetworkControllerClient,
-  ThemeMode,
-  ThemeVariables,
   OptionsControllerState,
-  ThemeControllerState
+  ThemeControllerState,
+  ThemeMode,
+  ThemeVariables
 } from '@web3modal/core'
 import {
   AccountController,
@@ -17,8 +17,8 @@ import {
   CoreHelperUtil,
   ModalController,
   NetworkController,
-  ThemeController,
-  OptionsController
+  OptionsController,
+  ThemeController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 
@@ -33,6 +33,8 @@ interface Options {
   sdkVersion: ApiControllerState['sdkVersion']
   themeMode?: ThemeMode
   themeVariables?: ThemeVariables
+  includeWalletIds?: OptionsControllerState['includeWalletIds']
+  excludeWalletIds?: OptionsControllerState['excludeWalletIds']
 }
 
 // -- Client --------------------------------------------------------------------
@@ -136,6 +138,8 @@ export class Web3ModalScaffold {
     NetworkController.setClient(options.networkControllerClient)
     ConnectionController.setClient(options.connectionControllerClient)
     OptionsController.setProjectId(options.projectId)
+    OptionsController.setIncludeWalletIds(options.includeWalletIds)
+    OptionsController.setExcludeWalletIds(options.excludeWalletIds)
     ApiController.setSdkVersion(options.sdkVersion)
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)

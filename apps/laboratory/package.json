@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
-    "build:laboratory": "next build"
+    "build:laboratory": "next build",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "@chakra-ui/react": "2.8.0",

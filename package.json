@@ -13,7 +13,7 @@
     "build:laboratory": "turbo run build:laboratory",
     "test": "turbo run test --parallel",
     "typecheck": "turbo run typecheck --parallel",
-    "lint": "eslint .",
+    "lint": "turbo run lint --parallel",
     "danger": "danger ci",
     "prettier": "prettier --check .",
     "clean": "rm -rf `find . -type d -name node_modules -o -name dist -o -name .next -o -name out`; rm package-lock.json",

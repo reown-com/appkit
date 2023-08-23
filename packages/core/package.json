@@ -12,7 +12,8 @@
     "build": "npm run build:clean; tsc --build",
     "watch": "npm run build:clean; tsc --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --dir tests"
+    "test": "vitest run --dir tests",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "valtio": "1.11.2"
