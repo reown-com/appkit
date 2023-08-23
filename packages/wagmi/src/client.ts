@@ -19,7 +19,9 @@ import type {
   ConnectionControllerClient,
   NetworkControllerClient,
   ProjectId,
-  SdkVersion
+  SdkVersion,
+  ThemeMode,
+  ThemeVariables
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
@@ -45,6 +47,8 @@ export interface Web3ModalOptions {
   projectId: ProjectId
   chains?: Chain[]
   _sdkVersion?: SdkVersion
+  themeMode?: ThemeMode
+  themeVariables?: ThemeVariables
 }
 
 declare global {
@@ -56,7 +60,7 @@ declare global {
 // -- Client --------------------------------------------------------------------
 export class Web3Modal extends Web3ModalScaffold {
   public constructor(options: Web3ModalOptions) {
-    const { wagmiConfig, projectId, chains, _sdkVersion } = options
+    const { wagmiConfig, projectId, chains, _sdkVersion, themeMode, themeVariables } = options
 
     if (!wagmiConfig) {
       throw new Error('web3modal:constructor - wagmiConfig is undefined')
@@ -162,7 +166,9 @@ export class Web3Modal extends Web3ModalScaffold {
       networkControllerClient,
       connectionControllerClient,
       projectId,
-      sdkVersion: _sdkVersion ?? `html-wagmi-${VERSION}`
+      sdkVersion: _sdkVersion ?? `html-wagmi-${VERSION}`,
+      themeMode,
+      themeVariables
     })
 
     this.syncRequestedNetworks(chains)
@@ -192,7 +198,6 @@ export class Web3Modal extends Web3ModalScaffold {
     const { chain } = getNetwork()
     this.resetAccount()
     if (isConnected && address && chain) {
-      this.resetWcConnection()
       const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
@@ -202,6 +207,7 @@ export class Web3Modal extends Web3ModalScaffold {
         this.getApprovedCaipNetworksData()
       ])
     } else if (!isConnected) {
+      this.resetWcConnection()
       this.resetNetwork()
     }
   }
@@ -222,12 +228,21 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncProfile(address: Address) {
-    const profileName = await fetchEnsName({ address, chainId: mainnet.id })
-    if (profileName) {
-      this.setProfileName(profileName)
-      const profileImage = await fetchEnsAvatar({ name: profileName, chainId: mainnet.id })
-      if (profileImage) {
-        this.setProfileImage(profileImage)
+    try {
+      const { name, avatar } = await this.fetchIdentity({
+        caipChainId: `${NAMESPACE}:${mainnet.id}`,
+        address
+      })
+      this.setProfileName(name)
+      this.setProfileImage(avatar)
+    } catch {
+      const profileName = await fetchEnsName({ address, chainId: mainnet.id })
+      if (profileName) {
+        this.setProfileName(profileName)
+        const profileImage = await fetchEnsAvatar({ name: profileName, chainId: mainnet.id })
+        if (profileImage) {
+          this.setProfileImage(profileImage)
+        }
       }
     }
   }

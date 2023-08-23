@@ -53,7 +53,7 @@ export class WuiListItem extends LitElement {
     if (this.variant === 'image' && this.imageSrc) {
       return html`<wui-image src=${this.imageSrc} alt=${this.alt ?? 'list item'}></wui-image>`
     } else if (this.variant === 'icon' && this.icon && this.iconVariant) {
-      const color = this.iconVariant === 'blue' ? 'blue-100' : 'fg-200'
+      const color = this.iconVariant === 'blue' ? 'accent-100' : 'fg-200'
 
       return html`
         <wui-icon-box

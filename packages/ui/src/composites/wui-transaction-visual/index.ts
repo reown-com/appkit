@@ -23,20 +23,20 @@ export class WuiTransactionVisual extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    let color: 'blue-100' | 'error-100' | 'success-100' | 'inverse-100' = 'blue-100'
+    let color: 'accent-100' | 'error-100' | 'success-100' | 'inverse-100' = 'accent-100'
     let icon: TransactionIconType = 'arrowTop'
 
     if (outgoing.includes(this.type)) {
       color = 'inverse-100'
       icon = 'arrowTop'
     } else if (incoming.includes(this.type) && nft.includes(this.type)) {
-      color = 'blue-100'
+      color = 'accent-100'
       icon = 'arrowBottom'
     } else if (incoming.includes(this.type) && currency.includes(this.type)) {
       color = 'success-100'
       icon = 'arrowBottom'
     } else {
-      color = 'blue-100'
+      color = 'accent-100'
       icon = 'swapVertical'
     }
 

@@ -13,7 +13,16 @@ const chains = [mainnet, arbitrum]
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, appName: 'Web3Modal' })
 
 // 3. Create modal
-createWeb3Modal({ wagmiConfig, projectId, chains })
+createWeb3Modal({
+  wagmiConfig,
+  projectId,
+  chains,
+  themeMode: 'light',
+  themeVariables: {
+    '--w3m-color-mix': '#00DCFF',
+    '--w3m-color-mix-strength': 50
+  }
+})
 
 export default function App() {
   // 4. Use modal hook

@@ -2,17 +2,25 @@ import type {
   ApiControllerState,
   ConnectionControllerClient,
   ModalControllerArguments,
-  NetworkControllerClient
+  NetworkControllerClient,
+  ThemeMode,
+  ThemeVariables,
+  OptionsControllerState,
+  ThemeControllerState
 } from '@web3modal/core'
 import {
   AccountController,
   ApiController,
+  BlockchainApiController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   ModalController,
-  NetworkController
+  NetworkController,
+  ThemeController,
+  OptionsController
 } from '@web3modal/core'
+import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
@@ -21,8 +29,10 @@ let isInitialized = false
 interface Options {
   networkControllerClient: NetworkControllerClient
   connectionControllerClient: ConnectionControllerClient
-  projectId: ApiControllerState['projectId']
+  projectId: OptionsControllerState['projectId']
   sdkVersion: ApiControllerState['sdkVersion']
+  themeMode?: ThemeMode
+  themeVariables?: ThemeVariables
 }
 
 // -- Client --------------------------------------------------------------------
@@ -43,6 +53,28 @@ export class Web3ModalScaffold {
   public async close() {
     await this.initOrContinue()
     ModalController.close()
+  }
+
+  public getThemeMode() {
+    return ThemeController.state.themeMode
+  }
+
+  public getThemeVariables() {
+    return ThemeController.state.themeVariables
+  }
+
+  public setThemeMode(themeMode: ThemeControllerState['themeMode']) {
+    ThemeController.setThemeMode(themeMode)
+    setColorTheme(ThemeController.state.themeMode)
+  }
+
+  public setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
+    ThemeController.setThemeVariables(themeVariables)
+    setThemeVariables(ThemeController.state.themeVariables)
+  }
+
+  public subscribeTheme(callback: (newState: ThemeControllerState) => void) {
+    return ThemeController.subscribe(callback)
   }
 
   // -- Protected ----------------------------------------------------------------
@@ -96,12 +128,21 @@ export class Web3ModalScaffold {
     ConnectionController.resetWcConnection()
   }
 
+  protected fetchIdentity: (typeof BlockchainApiController)['fetchIdentity'] = request =>
+    BlockchainApiController.fetchIdentity(request)
+
   // -- Private ------------------------------------------------------------------
   private initControllers(options: Options) {
     NetworkController.setClient(options.networkControllerClient)
     ConnectionController.setClient(options.connectionControllerClient)
-    ApiController.setProjectId(options.projectId)
+    OptionsController.setProjectId(options.projectId)
     ApiController.setSdkVersion(options.sdkVersion)
+    if (options.themeMode) {
+      ThemeController.setThemeMode(options.themeMode)
+    }
+    if (options.themeVariables) {
+      ThemeController.setThemeVariables(options.themeVariables)
+    }
   }
 
   private async initOrContinue() {

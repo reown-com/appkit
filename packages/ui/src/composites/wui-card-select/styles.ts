@@ -28,16 +28,16 @@ export default css`
   }
 
   [data-selected='true'] {
-    background-color: var(--wui-color-blue-020);
+    background-color: var(--wui-color-accent-020);
   }
 
   @media (hover: hover) and (pointer: fine) {
     [data-selected='true']:hover:enabled {
-      background-color: var(--wui-color-blue-015);
+      background-color: var(--wui-color-accent-015);
     }
   }
 
   [data-selected='true']:active:enabled {
-    background-color: var(--wui-color-blue-010);
+    background-color: var(--wui-color-accent-010);
   }
 `

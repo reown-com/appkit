@@ -29,7 +29,7 @@ import type {
 } from '@web3modal/ui/src/utils/TypesUtil'
 
 export const colorOptions: ColorType[] = [
-  'blue-100',
+  'accent-100',
   'error-100',
   'fg-100',
   'fg-200',
@@ -252,7 +252,7 @@ export const cardSelectOptions: CardSelectType[] = ['network', 'wallet']
 
 export const backgroundOptions: BackgroundType[] = ['opaque', 'transparent']
 
-export const tagOptions: TagType[] = ['main', 'shade']
+export const tagOptions: TagType[] = ['main', 'shade', 'error', 'success']
 
 export const accountEntryOptions: AccountEntryType[] = ['icon', 'image']
 

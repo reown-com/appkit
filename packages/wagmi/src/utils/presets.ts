@@ -37,7 +37,15 @@ export const NetworkImageIds = {
   // Moonbeam
   1284: '161038da-44ae-4ec7-1208-0ea569454b00',
   // Moonriver
-  1285: 'f1d73bb6-5450-4e18-38f7-fb6484264a00'
+  1285: 'f1d73bb6-5450-4e18-38f7-fb6484264a00',
+  // Zora
+  7777777: '845c60df-d429-4991-e687-91ae45791600',
+  // Celo
+  42220: 'ab781bbc-ccc6-418d-d32d-789b15da1f00',
+  // Base
+  8453: '7289c336-3981-4081-c5f4-efc26ac64a00',
+  // Aurora
+  1313161554: '3ff73439-a619-4894-9262-4470c773a100'
 } as Record<string, string>
 
 export const ConnectorImageIds = {
@@ -55,7 +63,11 @@ export const ConnectorExplorerIds = {
 } as Record<string, string>
 
 export const ConnectorNamesMap = {
-  [INJECTED_CONNECTOR_ID]: 'Extension Wallet'
+  [INJECTED_CONNECTOR_ID]: 'Extension',
+  [WALLET_CONNECT_CONNECTOR_ID]: 'WalletConnect',
+  [COINBASE_CONNECTOR_ID]: 'Coinbase',
+  [LEDGER_CONNECTOR_ID]: 'Ledger',
+  [SAFE_CONNECTOR_ID]: 'Safe'
 } as Record<string, string>
 
 export const ConnectorTypesMap = {

@@ -3,7 +3,8 @@ import {
   ConnectionController,
   CoreHelperUtil,
   RouterController,
-  SnackController
+  SnackController,
+  ThemeController
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
@@ -69,10 +70,12 @@ export class W3mConnectingWcQrcode extends LitElement {
     }
     const size = this.getBoundingClientRect().width - 40
     const alt = this.wallet ? this.wallet.name : undefined
+    ConnectionController.setWcLinking(undefined)
+    ConnectionController.setRecentWallet(this.wallet)
 
     return html`<wui-qr-code
       size=${size}
-      theme="dark"
+      theme=${ThemeController.state.themeMode}
       uri=${this.uri}
       imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet?.image_id))}
       alt=${ifDefined(alt)}

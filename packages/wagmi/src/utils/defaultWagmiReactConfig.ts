@@ -15,9 +15,9 @@ export function defaultWagmiConfig({ projectId, chains, appName }: ConfigOptions
   return createConfig({
     autoConnect: true,
     connectors: [
-      new WalletConnectConnector({ options: { projectId, showQrModal: false } }),
-      new InjectedConnector({ options: { shimDisconnect: true } }),
-      new CoinbaseWalletConnector({ options: { appName } })
+      new WalletConnectConnector({ chains, options: { projectId, showQrModal: false } }),
+      new InjectedConnector({ chains, options: { shimDisconnect: true } }),
+      new CoinbaseWalletConnector({ chains, options: { appName } })
     ],
     publicClient,
     webSocketPublicClient

@@ -1,5 +1,5 @@
 import type { Chain, ChainProviderFn } from '@wagmi/core'
-import { BLOCKCHAIN_HTTP_API, BLOCKCHAIN_WSS_API, NAMESPACE } from './constants.js'
+import { BLOCKCHAIN_HTTP_API, NAMESPACE } from './constants.js'
 
 interface Options {
   projectId: string
@@ -9,37 +9,60 @@ export function walletConnectProvider<C extends Chain = Chain>({
   projectId
 }: Options): ChainProviderFn<C> {
   return function provider(chain) {
-    const supportedWss = [1, 5, 10, 69, 420, 42161, 42220, 421613, 1313161554, 1313161555]
-
-    const supportedHttp = [
-      ...supportedWss,
-      3,
-      4,
-      42,
-      56,
-      97,
-      100,
+    const supported = [
+      // Ethereum
+      1,
+      // Ethereum Goerli
+      5,
+      // Ethereum Sepolia
+      11155111,
+      // Optimism
+      10,
+      // Optimism Goerli
+      420,
+      // Arbitrum
+      42161,
+      // Arbitrum Goerli
+      421613,
+      // Polygon
       137,
-      280,
-      324,
-      8453,
-      43114,
+      // Polygon Mumbai
       80001,
-      421611,
+      // Celo Mainnet
+      42220,
+      // Aurora
+      1313161554,
+      // Aurora Testnet
+      1313161555,
+      // Binance Smart Chain
+      56,
+      // Binance Smart Chain Testnet
+      97,
+      // Avalanche C-Chain
+      43114,
+      // Avalanche Fuji Testnet
+      43113,
+      // Gnosis Chain
+      100,
+      // Base
+      8453,
+      // Base Goerli
+      84531,
+      // Zora
       7777777,
-      11155111
+      // Zora Goerli
+      999,
+      // ZkSync Era Mainnet
+      324,
+      // ZkSync Era Testnet
+      280
     ]
 
-    if (!supportedHttp.includes(chain.id)) {
+    if (!supported.includes(chain.id)) {
       return null
     }
 
     const baseHttpUrl = `${BLOCKCHAIN_HTTP_API}/v1/?chainId=${NAMESPACE}:${chain.id}&projectId=${projectId}`
-    let baseWssUrl = undefined
-
-    if (supportedWss.includes(chain.id)) {
-      baseWssUrl = `${BLOCKCHAIN_WSS_API}/v1/?chainId=${NAMESPACE}:${chain.id}&projectId=${projectId}`
-    }
 
     return {
       chain: {
@@ -50,8 +73,7 @@ export function walletConnectProvider<C extends Chain = Chain>({
         }
       } as C,
       rpcUrls: {
-        http: [baseHttpUrl],
-        webSocket: baseWssUrl ? [baseWssUrl] : undefined
+        http: [baseHttpUrl]
       }
     }
   }
