@@ -40,6 +40,7 @@ import { mobileSvg } from '../../assets/svg/mobile.js'
 import { networkPlaceholderSvg } from '../../assets/svg/network-placeholder.js'
 import { nftPlaceholderSvg } from '../../assets/svg/nftPlaceholder.js'
 import { offSvg } from '../../assets/svg/off.js'
+import { qrCodeIcon } from '../../assets/svg/qr-code.js'
 import { refreshSvg } from '../../assets/svg/refresh.js'
 import { searchSvg } from '../../assets/svg/search.js'
 import { swapHorizontalSvg } from '../../assets/svg/swapHorizontal.js'
@@ -88,6 +89,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   networkPlaceholder: networkPlaceholderSvg,
   nftPlaceholder: nftPlaceholderSvg,
   off: offSvg,
+  qrCode: qrCodeIcon,
   refresh: refreshSvg,
   search: searchSvg,
   swapHorizontal: swapHorizontalSvg,
