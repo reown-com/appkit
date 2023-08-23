@@ -15,7 +15,7 @@ import { NetworkController } from './NetworkController.js'
 import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
-const api = new FetchUtil({ baseUrl: 'http://127.0.0.1:8787' })
+const api = new FetchUtil({ baseUrl: 'https://api.web3modal.com' })
 const entries = '24'
 const recommendedEntries = '4'
 const sdkType = 'w3m'
