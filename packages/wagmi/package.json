@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wagmi",
-  "version": "3.0.0-alpha.3",
+  "version": "3.0.0-alpha.4",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -29,8 +29,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/polyfills": "3.0.0-alpha.3",
-    "@web3modal/scaffold": "3.0.0-alpha.3"
+    "@web3modal/polyfills": "3.0.0-alpha.4",
+    "@web3modal/scaffold": "3.0.0-alpha.4"
   },
   "peerDependencies": {
     "@wagmi/core": ">=1",
