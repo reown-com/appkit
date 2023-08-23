@@ -74,7 +74,7 @@ export const UiHelperUtil = {
     return regex.number.test(character)
   },
 
-  getColorTheme(theme: ThemeType | undefined): ThemeType {
+  getColorTheme(theme: ThemeType | undefined) {
     if (theme) {
       return theme
     } else if (typeof window !== 'undefined' && window.matchMedia) {

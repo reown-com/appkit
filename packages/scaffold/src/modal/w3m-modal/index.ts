@@ -59,8 +59,11 @@ export class W3mModal extends LitElement {
   }
 
   private initializeTheming() {
-    initializeTheming(ThemeController.state.themeVariables, ThemeController.state.themeMode)
-    ThemeController.setThemeMode(UiHelperUtil.getColorTheme(ThemeController.state.themeMode))
+    const { themeVariables, themeMode } = ThemeController.state
+    initializeTheming(themeVariables, themeMode)
+
+    const defaultThemeMode = UiHelperUtil.getColorTheme(themeMode)
+    ThemeController.setThemeMode(defaultThemeMode)
   }
 
   private async onClose() {

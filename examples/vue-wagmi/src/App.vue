@@ -1,12 +1,6 @@
 <script lang="ts" setup>
 import { mainnet, arbitrum } from '@wagmi/core/chains'
-import {
-  createWeb3Modal,
-  useWeb3Modal,
-  defaultWagmiConfig,
-  useWeb3ModalTheme
-} from '@web3modal/wagmi/vue'
-import { onMounted } from 'vue'
+import { createWeb3Modal, useWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/vue'
 
 // 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID

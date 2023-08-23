@@ -44,9 +44,7 @@ export function useWeb3ModalTheme() {
   })
 
   onUnmounted(() => {
-    if (unsubscribe) {
-      unsubscribe()
-    }
+    unsubscribe?.()
   })
 
   return ref({
