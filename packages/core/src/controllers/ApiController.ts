@@ -15,9 +15,9 @@ import { NetworkController } from './NetworkController.js'
 import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
-const api = new FetchUtil({ baseUrl: 'https://api.web3modal.com' })
-const entries = 24
-const recommendedEntries = 4
+const api = new FetchUtil({ baseUrl: 'http://127.0.0.1:8787' })
+const entries = '24'
+const recommendedEntries = '4'
 const sdkType = 'w3m'
 
 // -- Types --------------------------------------------- //
@@ -95,11 +95,11 @@ export const ApiController = {
   },
 
   async fetchRecommendedWallets() {
-    const { data } = await api.post<ApiGetWalletsResponse>({
+    const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
-      body: {
-        page: 1,
+      params: {
+        page: '1',
         entries: recommendedEntries
       }
     })
@@ -114,13 +114,13 @@ export const ApiController = {
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
     const exclude = state.recommended.map(({ id }) => id)
-    const { data, count } = await api.post<ApiGetWalletsResponse>({
+    const { data, count } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
-      body: {
-        page,
+      params: {
+        page: String(page),
         entries,
-        exclude: exclude.length ? exclude : undefined
+        exclude: exclude.length ? exclude.join(',') : undefined
       }
     })
     await Promise.all([
@@ -134,12 +134,12 @@ export const ApiController = {
 
   async searchWallet({ search }: Pick<ApiGetWalletsRequest, 'search'>) {
     state.search = []
-    const { data } = await api.post<ApiGetWalletsResponse>({
+    const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
-      body: {
-        page: 1,
-        entries: 100,
+      params: {
+        page: '1',
+        entries: '100',
         search
       }
     })
