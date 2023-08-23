@@ -28,7 +28,8 @@ describe('NetworkController', () => {
 
     expect(NetworkController.state).toEqual({
       _client: NetworkController._getClient(),
-      supportsAllNetworks: true
+      supportsAllNetworks: true,
+      isDefaultCaipNetwork: false
     })
   })
 
@@ -56,5 +57,19 @@ describe('NetworkController', () => {
     NetworkController.resetNetwork()
     expect(NetworkController.state.caipNetwork).toEqual(undefined)
     expect(NetworkController.state.approvedCaipNetworkIds).toEqual(undefined)
+    expect(NetworkController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks)
+  })
+
+  it('should update state correctly on setDefaultCaipNetwork()', () => {
+    NetworkController.setDefaultCaipNetwork(caipNetwork)
+    expect(NetworkController.state.caipNetwork).toEqual(caipNetwork)
+    expect(NetworkController.state.isDefaultCaipNetwork).toEqual(true)
+  })
+
+  it('should reset state correctly when default caip network is true', () => {
+    NetworkController.resetNetwork()
+    expect(NetworkController.state.caipNetwork).toEqual(caipNetwork)
+    expect(NetworkController.state.approvedCaipNetworkIds).toEqual(undefined)
+    expect(NetworkController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks)
   })
 })
