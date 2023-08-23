@@ -5,16 +5,12 @@ import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
 
 type Variant =
-  | 'large-bold'
-  | 'medium-bold'
-  | 'medium-normal'
-  | 'medium-thin'
-  | 'small-normal'
+  | 'big-bold'
+  | 'medium-regular'
+  | 'small-regular'
   | 'small-thin'
-  | 'xsmall-normal'
-  | 'xxsmall-bold'
-
-type Align = 'center' | 'left' | 'right'
+  | 'xsmall-bold'
+  | 'xsmall-regular'
 
 type Color = 'accent' | 'error' | 'inverse' | 'primary' | 'secondary' | 'tertiary'
 
@@ -23,25 +19,19 @@ export class W3mText extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ------------------------------------------- //
-  @property() public variant?: Variant = 'medium-normal'
-  @property() public align?: Align = 'left'
+  @property() public variant?: Variant = 'medium-regular'
+
   @property() public color?: Color = 'primary'
 
   // -- render ------------------------------------------------------- //
   protected render() {
     const classes = {
-      'w3m-font': true,
-      'w3m-font-large-bold': this.variant === 'large-bold',
-      'w3m-font-medium-bold': this.variant === 'medium-bold',
-      'w3m-font-medium-normal': this.variant === 'medium-normal',
-      'w3m-font-medium-thin': this.variant === 'medium-thin',
-      'w3m-font-small-normal': this.variant === 'small-normal',
-      'w3m-font-small-thin': this.variant === 'small-thin',
-      'w3m-font-xsmall-normal': this.variant === 'xsmall-normal',
-      'w3m-font-xxsmall-bold': this.variant === 'xxsmall-bold',
-      'w3m-font-left': this.align === 'left',
-      'w3m-font-center': this.align === 'center',
-      'w3m-font-right': this.align === 'right',
+      'w3m-big-bold': this.variant === 'big-bold',
+      'w3m-medium-regular': this.variant === 'medium-regular',
+      'w3m-small-regular': this.variant === 'small-regular',
+      'w3m-small-thin': this.variant === 'small-thin',
+      'w3m-xsmall-regular': this.variant === 'xsmall-regular',
+      'w3m-xsmall-bold': this.variant === 'xsmall-bold',
       'w3m-color-primary': this.color === 'primary',
       'w3m-color-secondary': this.color === 'secondary',
       'w3m-color-tertiary': this.color === 'tertiary',
@@ -51,8 +41,8 @@ export class W3mText extends LitElement {
     }
 
     return html`
-      <span class=${classMap(classes)}>
-        <slot></slot>
+      <span data-testid="component-text">
+        <slot class=${classMap(classes)}></slot>
       </span>
     `
   }

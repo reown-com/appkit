@@ -26,9 +26,16 @@ export const RouterCtrl = {
     }
   },
 
-  replace(view: RouterCtrlState['view']) {
+  reset(view: RouterCtrlState['view']) {
     state.view = view
     state.history = [view]
+  },
+
+  replace(view: RouterCtrlState['view']) {
+    if (state.history.length > 1) {
+      state.history[state.history.length - 1] = view
+      state.view = view
+    }
   },
 
   goBack() {
@@ -37,5 +44,9 @@ export const RouterCtrl = {
       const [last] = state.history.slice(-1)
       state.view = last
     }
+  },
+
+  setData(data: RouterCtrlState['data']) {
+    state.data = data
   }
 }

@@ -1,0 +1,29 @@
+@keyframes slide {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 200px 0%;
+  }
+}
+
+w3m-text {
+  padding: 1px 0;
+}
+
+.w3m-loading {
+  background: linear-gradient(
+    270deg,
+    var(--w3m-color-fg-1) 36.33%,
+    var(--w3m-color-fg-3) 42.07%,
+    var(--w3m-color-fg-1) 83.3%
+  );
+  background-size: 200px 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation-name: slide;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}

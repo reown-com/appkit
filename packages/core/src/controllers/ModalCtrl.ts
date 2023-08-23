@@ -1,9 +1,17 @@
 import { proxy, subscribe as valtioSub } from 'valtio/vanilla'
 import type { ModalCtrlState } from '../types/controllerTypes'
+import { CoreUtil } from '../utils/CoreUtil'
+import { AccountCtrl } from './AccountCtrl'
 import { ClientCtrl } from './ClientCtrl'
 import { ConfigCtrl } from './ConfigCtrl'
 import { OptionsCtrl } from './OptionsCtrl'
 import { RouterCtrl } from './RouterCtrl'
+import { WcConnectionCtrl } from './WcConnectionCtrl'
+
+// -- types -------------------------------------------------------- //
+export interface OpenOptions {
+  route?: 'Account' | 'ConnectWallet' | 'Help' | 'SelectNetwork'
+}
 
 // -- initial state ------------------------------------------------ //
 const state = proxy<ModalCtrlState>({
@@ -18,28 +26,53 @@ export const ModalCtrl = {
     return valtioSub(state, () => callback(state))
   },
 
-  open(options?: { uri: string; standaloneChains?: string[] }) {
-    const { chains, isStandalone } = OptionsCtrl.state
-    const { enableNetworkView } = ConfigCtrl.state
-    const isChainsList = chains?.length && chains.length > 1
-    const connected = isStandalone ? false : ClientCtrl.client().getAccount().isConnected
+  async open(options?: OpenOptions) {
+    return new Promise<void>(resolve => {
+      const { isUiLoaded, isDataLoaded, isPreferInjected, selectedChain } = OptionsCtrl.state
+      const { isConnected } = AccountCtrl.state
+      const { enableNetworkView } = ConfigCtrl.state
+      WcConnectionCtrl.setPairingEnabled(true)
 
-    if (connected) {
-      RouterCtrl.replace('Account')
-    } else if (isChainsList && enableNetworkView) {
-      RouterCtrl.replace('SelectNetwork')
-    } else {
-      RouterCtrl.replace('ConnectWallet')
-    }
+      if (!isConnected) {
+        CoreUtil.removeWalletConnectDeepLink()
+      }
 
-    if (typeof options?.uri === 'string') {
-      OptionsCtrl.setStandaloneUri(options.uri)
-    }
-    if (options?.standaloneChains?.length) {
-      OptionsCtrl.setStandaloneChains(options.standaloneChains)
-    }
+      if (options?.route) {
+        RouterCtrl.reset(options.route)
+      } else if (isConnected) {
+        RouterCtrl.reset('Account')
+      } else if (enableNetworkView) {
+        RouterCtrl.reset('SelectNetwork')
+      } else if (isPreferInjected) {
+        ClientCtrl.client()
+          .connectConnector('injected', selectedChain?.id)
+          .catch(err => console.error(err))
+        resolve()
 
-    state.open = true
+        return
+      } else {
+        RouterCtrl.reset('ConnectWallet')
+      }
+
+      const { pairingUri } = WcConnectionCtrl.state
+      // Open modal if essential async data is ready
+      if (isUiLoaded && isDataLoaded && (pairingUri || isConnected)) {
+        state.open = true
+        resolve()
+      }
+      // Otherwise (slow network) re-attempt open checks
+      else {
+        const interval = setInterval(() => {
+          const opts = OptionsCtrl.state
+          const connection = WcConnectionCtrl.state
+          if (opts.isUiLoaded && opts.isDataLoaded && (connection.pairingUri || isConnected)) {
+            clearInterval(interval)
+            state.open = true
+            resolve()
+          }
+        }, 200)
+      }
+    })
   },
 
   close() {

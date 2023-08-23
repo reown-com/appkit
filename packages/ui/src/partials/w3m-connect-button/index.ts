@@ -1,7 +1,6 @@
-import { ModalCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { AccountCtrl, ClientCtrl, EventsCtrl, ModalCtrl } from '@web3modal/core'
+import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
-import { classMap } from 'lit/directives/class-map.js'
 import { SvgUtil } from '../../utils/SvgUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import styles from './styles.css'
@@ -12,7 +11,9 @@ export class W3mConnectButton extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() public loading = false
+
   @property() public label? = 'Connect Wallet'
+
   @property() public icon?: 'hide' | 'show' = 'show'
 
   // -- lifecycle ---------------------------------------------------- //
@@ -39,33 +40,50 @@ export class W3mConnectButton extends LitElement {
     return this.icon === 'show' ? SvgUtil.WALLET_CONNECT_ICON : null
   }
 
-  private onOpen() {
-    try {
-      this.loading = true
-      ModalCtrl.open()
-    } catch {
+  private onClick() {
+    if (AccountCtrl.state.isConnected) {
+      this.onDisconnect()
+    } else {
+      this.onConnect()
+    }
+  }
+
+  private async onConnect() {
+    this.loading = true
+    EventsCtrl.click({ name: 'CONNECT_BUTTON' })
+    await ModalCtrl.open()
+    if (!ModalCtrl.state.open) {
       this.loading = false
     }
   }
 
+  private async onDisconnect() {
+    EventsCtrl.click({ name: 'DISCONNECT_BUTTON' })
+    await ClientCtrl.client().disconnect()
+  }
+
   // -- render ------------------------------------------------------- //
   protected render() {
-    const classes = {
-      'w3m-button-loading': this.loading
-    }
-
     return html`
-      <button class=${classMap(classes)} .disabled=${this.loading} @click=${this.onOpen}>
+      <w3m-button-big
+        .disabled=${this.loading}
+        @click=${this.onClick}
+        data-testid="partial-connect-button"
+      >
         ${this.loading
           ? html`
-              <w3m-spinner></w3m-spinner>
-              <w3m-text variant="medium-normal" color="accent">Connecting...</w3m-text>
+              <w3m-spinner data-testid="partial-connect-spinner"></w3m-spinner>
+              <w3m-text variant="medium-regular" color="accent" data-testid="partial-connect-text"
+                >Connecting...</w3m-text
+              >
             `
           : html`
               ${this.iconTemplate()}
-              <w3m-text variant="medium-normal" color="inverse">${this.label}</w3m-text>
+              <w3m-text variant="medium-regular" color="inverse" data-testid="partial-connect-text"
+                >${this.label}</w3m-text
+              >
             `}
-      </button>
+      </w3m-button-big>
     `
   }
 }

@@ -1,38 +1,40 @@
-.w3m-modal-toast {
+div {
   height: 36px;
   width: max-content;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 15px;
+  padding: 9px 15px 11px;
   position: absolute;
   top: 12px;
-  box-shadow: 0px 6px 14px -6px rgba(10, 16, 31, 0.3), 0px 10px 32px -4px rgba(10, 16, 31, 0.15);
+  box-shadow:
+    0px 6px 14px -6px rgba(10, 16, 31, 0.3),
+    0px 10px 32px -4px rgba(10, 16, 31, 0.15);
   z-index: 2;
   left: 50%;
   transform: translateX(-50%);
   pointer-events: none;
   backdrop-filter: blur(20px) saturate(1.8);
   -webkit-backdrop-filter: blur(20px) saturate(1.8);
-  border-radius: 36px;
-  border: 1px solid var(--color-overlay);
-  background-color: var(--color-overlay);
+  border-radius: var(--w3m-notification-border-radius);
+  border: 1px solid var(--w3m-color-overlay);
+  background-color: var(--w3m-color-overlay);
 }
 
-.w3m-modal-toast svg {
+svg {
   margin-right: 5px;
 }
 
 @-moz-document url-prefix() {
-  .w3m-modal-toast {
-    background-color: var(--color-bg-3);
+  div {
+    background-color: var(--w3m-color-bg-3);
   }
 }
 
 .w3m-success path {
-  fill: var(--color-fg-accent);
+  fill: var(--w3m-accent-color);
 }
 
 .w3m-error path {
-  fill: var(--color-err);
+  fill: var(--w3m-error-color);
 }

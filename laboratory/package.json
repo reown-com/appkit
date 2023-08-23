@@ -1,0 +1,30 @@
+{
+  "name": "laboratory",
+  "version": "2.7.1",
+  "private": true,
+  "scripts": {
+    "dev": "rm -rf .next; next dev",
+    "build": "next build",
+    "playwright:start": "next dev",
+    "playwright:install": "npx playwright install --with-deps",
+    "playwright:test": "playwright test",
+    "playwright:debug": "playwright test --debug"
+  },
+  "dependencies": {
+    "@nextui-org/react": "1.0.0-beta.13",
+    "@sentry/react": "7.60.0",
+    "@sentry/tracing": "7.60.0",
+    "@web3modal/ethereum": "2.7.1",
+    "@web3modal/react": "2.7.1",
+    "next": "13.4.12",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-hot-toast": "2.4.1",
+    "valtio": "1.11.0",
+    "viem": "1.4.1",
+    "wagmi": "1.3.9"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.36.2"
+  }
+}

@@ -1,13 +1,13 @@
 {
-  "npmClient": "yarn",
+  "npmClient": "npm",
   "packages": [
     "chains/ethereum",
     "packages/core",
     "packages/ui",
     "packages/react",
     "packages/html",
-    "packages/standalone"
+    "laboratory"
   ],
-  "useWorkspaces": true,
-  "version": "2.0.0-beta.8"
+  "version": "2.7.1",
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }

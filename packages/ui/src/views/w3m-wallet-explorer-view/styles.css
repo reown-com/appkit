@@ -12,6 +12,7 @@ w3m-modal-content {
   grid-template-columns: repeat(4, 80px);
   justify-content: space-between;
   margin: -15px -10px;
+  padding-top: 20px;
 }
 
 w3m-modal-content::before,
@@ -26,13 +27,13 @@ w3m-modal-content::after {
 }
 
 w3m-modal-content::before {
-  box-shadow: 0 -1px 0 0 var(--color-bg-1);
-  background: linear-gradient(var(--color-bg-1), rgba(255, 255, 255, 0));
+  box-shadow: 0 -1px 0 0 var(--w3m-color-bg-1);
+  background: linear-gradient(var(--w3m-color-bg-1), rgba(255, 255, 255, 0));
 }
 
 w3m-modal-content::after {
-  box-shadow: 0 1px 0 0 var(--color-bg-1);
-  background: linear-gradient(rgba(255, 255, 255, 0), var(--color-bg-1));
+  box-shadow: 0 1px 0 0 var(--w3m-color-bg-1);
+  background: linear-gradient(rgba(255, 255, 255, 0), var(--w3m-color-bg-1));
   top: calc(100% - 20px);
 }
 
@@ -48,7 +49,8 @@ w3m-modal-content::-webkit-scrollbar {
   overflow: hidden;
 }
 
-.w3m-loading {
+.w3m-loading,
+.w3m-empty {
   display: flex;
 }
 

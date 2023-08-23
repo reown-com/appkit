@@ -32,9 +32,9 @@ function getMatrix(value: string, errorCorrectionLevel: QRCodeUtil.QRCodeErrorCo
 }
 
 export const QrCodeUtil = {
-  generate(uri: string, size: number, logoSize: number, theme: 'dark' | 'light') {
-    const dotColor = theme === 'light' ? '#141414' : '#fff'
-    const edgeColor = theme === 'light' ? '#fff' : '#141414'
+  generate(uri: string, size: number, logoSize: number) {
+    const dotColor = '#141414'
+    const edgeColor = '#ffffff'
     const dots: TemplateResult[] = []
     const matrix = getMatrix(uri, 'Q')
     const cellSize = size / matrix.length
@@ -47,7 +47,7 @@ export const QrCodeUtil = {
     qrList.forEach(({ x, y }) => {
       const x1 = (matrix.length - QRCODE_MATRIX_MARGIN) * cellSize * x
       const y1 = (matrix.length - QRCODE_MATRIX_MARGIN) * cellSize * y
-      const borderRadius = 0.32
+      const borderRadius = 0.45
       for (let i = 0; i < qrList.length; i += 1) {
         const dotSize = cellSize * (QRCODE_MATRIX_MARGIN - i * 2)
         dots.push(

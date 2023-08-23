@@ -1,16 +1,7 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "ignorePatterns": [
-    "*.d.ts",
-    "*.config.js",
-    "server.js",
-    "libs",
-    "dist",
-    "node_modules",
-    "out",
-    "_next"
-  ],
+  "ignorePatterns": ["*.d.ts", "*.config.js", "dist", "node_modules", "out"],
   "parserOptions": {
     "project": ["tsconfig.json"]
   },
@@ -18,7 +9,12 @@
     "browser": true
   },
   "plugins": ["@typescript-eslint"],
-  "extends": ["eslint:all", "plugin:@typescript-eslint/all", "prettier"],
+  "extends": [
+    "eslint:all",
+    "plugin:@typescript-eslint/stylistic-type-checked",
+    "plugin:@typescript-eslint/strict-type-checked",
+    "prettier"
+  ],
   "rules": {
     "sort-imports": "off",
     "one-var": "off",
@@ -41,6 +37,11 @@
     "newline-before-return": "error",
     "camelcase": "off",
     "class-methods-use-this": "off",
+    "no-console": ["error", { "allow": ["error", "info"] }],
+    "no-duplicate-imports": "off",
+    "no-async-promise-executor": "off",
+    "no-magic-numbers": "off",
+    "no-use-before-define": "off",
 
     "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
@@ -64,11 +65,16 @@
     "@typescript-eslint/prefer-regexp-exec": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/no-redundant-type-constituents": "off",
+    "@typescript-eslint/non-nullable-type-assertion-style": "off",
+    "@typescript-eslint/no-unnecessary-condition": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
       { "argsIgnorePattern": "^_", "varsIgnorePattern": "h" }
     ],
     "@typescript-eslint/no-confusing-void-expression": ["error", { "ignoreArrowShorthand": true }],
-    "@typescript-eslint/member-ordering": "off"
+    "@typescript-eslint/member-ordering": "off",
+    "@typescript-eslint/key-spacing": "off",
+    "@typescript-eslint/no-import-type-side-effects": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off"
   }
 }

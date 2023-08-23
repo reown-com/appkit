@@ -1,8 +1,11 @@
 import './src/components'
+import './src/contexts'
 import './src/partials'
 import './src/views'
 
-export * from './src/components/w3m-modal'
 export * from './src/partials/w3m-account-button'
 export * from './src/partials/w3m-connect-button'
 export * from './src/partials/w3m-core-button'
+export * from './src/partials/w3m-modal'
+export * from './src/partials/w3m-network-switch'
+export * from './src/components/w3m-qrcode'

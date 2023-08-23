@@ -1,4 +1,4 @@
-import { ModalCtrl } from '@web3modal/core'
+import { ModalCtrl, OptionsCtrl } from '@web3modal/core'
 import { useEffect, useState } from 'react'
 
 export function useWeb3Modal() {
@@ -15,6 +15,7 @@ export function useWeb3Modal() {
   return {
     isOpen: modal.open,
     open: ModalCtrl.open,
-    close: ModalCtrl.close
+    close: ModalCtrl.close,
+    setDefaultChain: OptionsCtrl.setSelectedChain
   }
 }

@@ -1,0 +1,89 @@
+@keyframes scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    /* Wallet image width + 10px + recomended wallet count */
+    transform: translate3d(calc(-70px * 9), 0, 0);
+  }
+}
+
+.w3m-slider {
+  position: relative;
+  overflow-x: hidden;
+  padding: 10px 0;
+  margin: 0 -20px;
+  width: calc(100% + 40px);
+}
+
+.w3m-track {
+  display: flex;
+  /* Wallet image width + 10px + recomended wallet count x 2 */
+  width: calc(70px * 18);
+  animation: scroll 20s linear infinite;
+  opacity: 0.7;
+}
+
+.w3m-track svg {
+  margin: 0 5px;
+}
+
+w3m-wallet-image {
+  width: 60px;
+  height: 60px;
+  margin: 0 5px;
+  border-radius: var(--w3m-wallet-icon-border-radius);
+}
+
+.w3m-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 80px);
+  justify-content: space-between;
+}
+
+.w3m-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.w3m-title svg {
+  margin-right: 6px;
+}
+
+.w3m-title path {
+  fill: var(--w3m-accent-color);
+}
+
+w3m-modal-footer .w3m-title {
+  padding: 0 10px;
+}
+
+w3m-button-big {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+  filter: drop-shadow(0 0 17px var(--w3m-color-bg-1));
+}
+
+w3m-info-footer {
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  width: 100%;
+  padding: 5px 0;
+}
+
+w3m-info-footer w3m-text {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+#wallet-placeholder-fill {
+  fill: var(--w3m-color-bg-3);
+}
+
+#wallet-placeholder-dash {
+  stroke: var(--w3m-color-overlay);
+}

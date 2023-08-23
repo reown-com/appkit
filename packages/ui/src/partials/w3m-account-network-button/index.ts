@@ -1,5 +1,5 @@
 import { OptionsCtrl, RouterCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { ThemeUtil } from '../../utils/ThemeUtil'
@@ -10,17 +10,18 @@ export class W3mAccountNetworkButton extends LitElement {
   public static styles = [ThemeUtil.globalCss, styles]
 
   // -- state & properties ----------------------------------------------- //
-  @state() private chainId? = ''
+  @state() private chainId? = 0
+
   @state() private label? = ''
 
   // -- lifecycle ---------------------------------------------------- //
   public constructor() {
     super()
     const { selectedChain } = OptionsCtrl.state
-    this.chainId = selectedChain?.id.toString()
+    this.chainId = selectedChain?.id
     this.label = selectedChain?.name
     this.unsubscribeNetwork = OptionsCtrl.subscribe(({ selectedChain: newChain }) => {
-      this.chainId = newChain?.id.toString()
+      this.chainId = newChain?.id
       this.label = newChain?.name
     })
   }
@@ -38,13 +39,15 @@ export class W3mAccountNetworkButton extends LitElement {
 
   // -- render ------------------------------------------------------- //
   protected render() {
-    const { chains } = OptionsCtrl.state
-    const isMultichain = chains && chains.length > 1
+    const { chains, selectedChain } = OptionsCtrl.state
+    const supportedChainIds = chains?.map(chain => chain.id)
+    const isChainSupported = selectedChain && supportedChainIds?.includes(selectedChain.id)
+    const isSwitchNetoworkDisabled = chains && chains.length <= 1 && isChainSupported
 
     return html`
-      <button @click=${this.onClick} ?disabled=${!isMultichain}>
+      <button @click=${this.onClick} ?disabled=${isSwitchNetoworkDisabled}>
         <w3m-network-image chainId=${ifDefined(this.chainId)}></w3m-network-image>
-        <w3m-text variant="xsmall-normal" color="accent">${this.label}</w3m-text>
+        <w3m-text variant="xsmall-regular" color="accent">${this.label}</w3m-text>
       </button>
     `
   }

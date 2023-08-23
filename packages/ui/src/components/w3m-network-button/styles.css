@@ -1,13 +1,13 @@
-.w3m-network-button {
+button {
   padding: 5px;
-  border-radius: 10px;
-  transition: all 0.2s ease;
+  border-radius: var(--w3m-button-hover-highlight-border-radius);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 80px;
   height: 90px;
+  position: relative;
 }
 
 w3m-network-image {
@@ -24,6 +24,16 @@ w3m-text {
   margin-top: 5px;
 }
 
-.w3m-network-button:hover {
-  background-color: var(--color-overlay);
+button:active {
+  background-color: var(--w3m-color-overlay);
+}
+
+.w3m-unsupported {
+  opacity: 0.3;
+}
+
+@media (hover: hover) {
+  button:hover {
+    background-color: var(--w3m-color-overlay);
+  }
 }

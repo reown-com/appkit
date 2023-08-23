@@ -1,8 +1,9 @@
 import type { Listing } from '@web3modal/core'
-import { CoreUtil, ExplorerCtrl, OptionsCtrl, RouterCtrl, ToastCtrl } from '@web3modal/core'
-import { html, LitElement } from 'lit'
+import { CoreUtil, ExplorerCtrl, ToastCtrl } from '@web3modal/core'
+import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
+import { TemplateUtil } from '../../utils/TemplateUtil'
 import { ThemeUtil } from '../../utils/ThemeUtil'
 import { UiUtil } from '../../utils/UiUtil'
 import styles from './styles.css'
@@ -15,8 +16,11 @@ export class W3mWalletExplorerView extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @state() private loading = !ExplorerCtrl.state.wallets.listings.length
+
   @state() private firstFetch = !ExplorerCtrl.state.wallets.listings.length
-  @state() private search: string | undefined = undefined
+
+  @state() private search = ''
+
   @state() private endReached = false
 
   // -- lifecycle ---------------------------------------------------- //
@@ -52,7 +56,7 @@ export class W3mWalletExplorerView extends LitElement {
   }
 
   private async fetchWallets() {
-    const { wallets, search } = ExplorerCtrl.state
+    const { wallets, search, injectedWallets } = ExplorerCtrl.state
     const { listings, total, page } = this.search ? search : wallets
 
     if (
@@ -61,21 +65,22 @@ export class W3mWalletExplorerView extends LitElement {
     ) {
       try {
         this.loading = true
-        const chains = OptionsCtrl.state.standaloneChains?.join(',')
-        const { listings: newListings } = await ExplorerCtrl.getPaginatedWallets({
+        const { listings: newListings } = await ExplorerCtrl.getWallets({
           page: this.firstFetch ? 1 : page + 1,
           entries: PAGE_ENTRIES,
-          device: CoreUtil.isMobile() ? 'mobile' : 'desktop',
           search: this.search,
-          chains
+          version: 2
         })
-        const images = newListings.map(({ image_url }) => image_url.lg)
+        const explorerImages = newListings.map(wallet => UiUtil.getWalletIcon(wallet))
+        const extensionImages = injectedWallets.map(wallet => UiUtil.getWalletIcon(wallet))
         await Promise.all([
-          ...images.map(async url => UiUtil.preloadImage(url)),
+          ...explorerImages.map(async url => UiUtil.preloadImage(url)),
+          ...extensionImages.map(async url => UiUtil.preloadImage(url)),
           CoreUtil.wait(300)
         ])
         this.endReached = this.isLastPage()
       } catch (err) {
+        console.error(err)
         ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
       } finally {
         this.loading = false
@@ -84,74 +89,104 @@ export class W3mWalletExplorerView extends LitElement {
     }
   }
 
-  private async onConnectPlatform(listing: Listing) {
-    if (CoreUtil.isMobile()) {
-      const { native, universal } = listing.mobile
-      await UiUtil.handleMobileLinking({ native, universal }, listing.name)
+  private onConnect(listing: Listing) {
+    if (CoreUtil.isAndroid()) {
+      UiUtil.handleMobileLinking(listing)
     } else {
-      RouterCtrl.push('DesktopConnector', {
-        DesktopConnector: {
-          name: listing.name,
-          icon: listing.image_url.lg,
-          universal: listing.desktop.universal || listing.homepage,
-          native: listing.desktop.native
-        }
-      })
+      UiUtil.goToConnectingView(listing)
     }
   }
-
-  private readonly searchDebounce = UiUtil.debounce((value: string) => {
-    if (value.length >= 3) {
-      this.firstFetch = true
-      this.endReached = false
-      this.search = value
-      ExplorerCtrl.resetSearch()
-      this.fetchWallets()
-    } else if (this.search) {
-      this.search = undefined
-      this.endReached = this.isLastPage()
-      ExplorerCtrl.resetSearch()
-    }
-  })
 
   private onSearchChange(event: Event) {
     const { value } = event.target as HTMLInputElement
     this.searchDebounce(value)
   }
 
+  private readonly searchDebounce = UiUtil.debounce((value: string) => {
+    if (value.length >= 1) {
+      this.firstFetch = true
+      this.endReached = false
+      this.search = value
+      ExplorerCtrl.resetSearch()
+      this.fetchWallets()
+    } else if (this.search) {
+      this.search = ''
+      this.endReached = this.isLastPage()
+      ExplorerCtrl.resetSearch()
+    }
+  })
+
   // -- render ------------------------------------------------------- //
   protected render() {
     const { wallets, search } = ExplorerCtrl.state
     const { listings } = this.search ? search : wallets
-    const isEmpty = !this.loading && !listings.length
+    const isLoading = this.loading && !listings.length
+    const isSearch = this.search.length >= 3
+    let extensions = TemplateUtil.injectedWalletsTemplate()
+    let manualWallets = TemplateUtil.manualWalletsTemplate()
+    let recomendedWallets = TemplateUtil.recomendedWalletsTemplate(true)
+
+    // If search is active, we only show results matching query
+    if (isSearch) {
+      extensions = extensions.filter(({ values }) =>
+        UiUtil.caseSafeIncludes(values[0] as string, this.search)
+      )
+      manualWallets = manualWallets.filter(({ values }) =>
+        UiUtil.caseSafeIncludes(values[0] as string, this.search)
+      )
+      recomendedWallets = recomendedWallets.filter(({ values }) =>
+        UiUtil.caseSafeIncludes(values[0] as string, this.search)
+      )
+    }
+
+    // Deduplicate extension wallets from recomended wallets
+    extensions = extensions.filter(
+      ext =>
+        !recomendedWallets.find(rcm =>
+          UiUtil.caseSafeIncludes(ext.values[0] as string, rcm.values[0] as string)
+        )
+    )
+
+    const isEmpty =
+      !this.loading && !listings.length && !extensions.length && !recomendedWallets.length
+    const iterator = Math.max(extensions.length, listings.length)
     const classes = {
-      'w3m-loading': this.loading && !listings.length,
+      'w3m-loading': isLoading,
       'w3m-end-reached': this.endReached || !this.loading,
       'w3m-empty': isEmpty
     }
 
     return html`
-      <w3m-modal-header>
+      <w3m-modal-header data-testid="view-wallet-explorer-header">
         <w3m-search-input .onChange=${this.onSearchChange.bind(this)}></w3m-search-input>
       </w3m-modal-header>
 
-      <w3m-modal-content class=${classMap(classes)}>
+      <w3m-modal-content class=${classMap(classes)} data-testid="view-wallet-explorer-content">
         <div class="w3m-grid">
-          ${listings.map(
-            listing => html`
-              <w3m-wallet-button
-                src=${listing.image_url.lg}
-                name=${listing.name}
-                walletId=${listing.id}
-                .onClick=${async () => this.onConnectPlatform(listing)}
-              >
-              </w3m-wallet-button>
-            `
-          )}
+          ${isLoading ? null : recomendedWallets}
+          ${isLoading
+            ? null
+            : [...Array(iterator)].map(
+                (_, index) => html`
+                  ${manualWallets[index]} ${extensions[index]}
+                  ${listings[index]
+                    ? html`
+                        <w3m-wallet-button
+                          imageId=${listings[index].image_id}
+                          name=${listings[index].name}
+                          walletId=${listings[index].id}
+                          .onClick=${() => this.onConnect(listings[index])}
+                          data-testid="view-wallet-explorer-button-${listings[index].id}"
+                        >
+                        </w3m-wallet-button>
+                      `
+                    : null}
+                `
+              )}
         </div>
         <div class="w3m-placeholder-block">
           ${isEmpty
-            ? html`<w3m-text variant="large-bold" color="secondary">No results found</w3m-text>`
+            ? html`<w3m-text variant="big-bold" color="secondary">No results found</w3m-text>`
             : null}
           ${!isEmpty && this.loading ? html`<w3m-spinner></w3m-spinner>` : null}
         </div>

@@ -1,14 +1,14 @@
 :host {
   position: relative;
   height: 28px;
-  width: 75%;
+  width: 80%;
 }
 
 input {
   width: 100%;
   height: 100%;
-  line-height: 28px;
-  border-radius: 28px;
+  line-height: 28px !important;
+  border-radius: var(--w3m-input-border-radius);
   font-style: normal;
   font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu,
     'Helvetica Neue', sans-serif;
@@ -18,59 +18,29 @@ input {
   letter-spacing: -0.03em;
   padding: 0 10px 0 34px;
   transition: 0.2s all ease;
-  color: transparent;
-  position: absolute;
-  background-color: var(--color-bg-3);
-  box-shadow: inset 0 0 0 1px var(--color-overlay);
+  color: var(--w3m-color-fg-1);
+  background-color: var(--w3m-color-bg-3);
+  box-shadow: inset 0 0 0 1px var(--w3m-color-overlay);
+  caret-color: var(--w3m-accent-color);
 }
 
 input::placeholder {
-  color: transparent;
+  color: var(--w3m-color-fg-2);
 }
 
 svg {
-  margin-right: 4px;
-}
-
-.w3m-placeholder {
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  transition: 0.2s all ease;
+  left: 10px;
+  top: 4px;
   pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: fit-content;
-  position: relative;
-}
-
-input:focus-within + .w3m-placeholder,
-input:not(:placeholder-shown) + .w3m-placeholder {
-  transform: translateX(10px);
-  left: 0;
-}
-
-w3m-text {
-  opacity: 1;
-  transition: 0.2s opacity ease;
-}
-
-input:focus-within + .w3m-placeholder w3m-text,
-input:not(:placeholder-shown) + .w3m-placeholder w3m-text {
-  opacity: 0;
-}
-
-input:focus-within,
-input:not(:placeholder-shown) {
-  color: var(--color-fg-1);
+  position: absolute;
+  width: 20px;
+  height: 20px;
 }
 
 input:focus-within {
-  box-shadow: inset 0 0 0 1px var(--color-fg-accent);
+  box-shadow: inset 0 0 0 1px var(--w3m-accent-color);
 }
 
 path {
-  fill: var(--color-fg-2);
+  fill: var(--w3m-color-fg-2);
 }

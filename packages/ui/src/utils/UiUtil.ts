@@ -1,3 +1,4 @@
+import type { WalletData } from '@web3modal/core'
 import {
   ClientCtrl,
   ConfigCtrl,
@@ -5,13 +6,23 @@ import {
   ExplorerCtrl,
   ModalCtrl,
   OptionsCtrl,
-  ToastCtrl
+  RouterCtrl,
+  ToastCtrl,
+  WcConnectionCtrl
 } from '@web3modal/core'
 import type { LitElement } from 'lit'
-import { PresetUtil } from './PresetUtil'
+import { ChainPresets } from '../presets/ChainPresets'
+import { TokenPresets } from '../presets/TokenPresets'
+import { DataUtil } from './DataUtil'
 
 export const UiUtil = {
   MOBILE_BREAKPOINT: 600,
+
+  W3M_RECENT_WALLET_INFO: 'W3M_RECENT_WALLET_INFO',
+
+  EXPLORER_WALLET_URL: 'https://explorer.walletconnect.com/?type=wallet',
+
+  WAGMI_WALLET: 'wagmi.wallet',
 
   getShadowRootElement(root: LitElement, selector: string) {
     const el = root.renderRoot.querySelector(selector)
@@ -22,29 +33,38 @@ export const UiUtil = {
     return el as HTMLElement
   },
 
-  getWalletIcon(id: string) {
-    const { fallback, presets } = PresetUtil.walletExplorerImage()
-    const imageId = presets[id]
-    const { projectId, walletImages } = ConfigCtrl.state
+  getWalletIcon({ id, image_id }: { id: string; image_id?: string }) {
+    const { walletImages } = ConfigCtrl.state
 
-    return walletImages?.[id] ?? (projectId ? ExplorerCtrl.getImageUrl(imageId ?? fallback) : '')
+    if (walletImages?.[id]) {
+      return walletImages[id]
+    } else if (image_id) {
+      return ExplorerCtrl.getWalletImageUrl(image_id)
+    }
+
+    return ''
+  },
+
+  getWalletName(name: string, short = false) {
+    return short && name.length > 8 ? `${name.substring(0, 8)}..` : name
   },
 
   getChainIcon(chainId: number | string) {
-    const { presets } = PresetUtil.chainExplorerImage()
+    const imageId = ChainPresets[chainId]
     const { projectId, chainImages } = ConfigCtrl.state
-    const presetImage = presets[chainId]
 
     return (
-      chainImages?.[chainId] ??
-      (projectId && presetImage ? ExplorerCtrl.getImageUrl(presetImage) : '')
+      chainImages?.[chainId] ?? (projectId && imageId ? ExplorerCtrl.getAssetImageUrl(imageId) : '')
     )
   },
 
-  getWalletFirstName(fullName: string) {
-    const optimisticName = PresetUtil.optimisticName(fullName)
+  getTokenIcon(symbol: string) {
+    const imageId = TokenPresets[symbol]?.icon
+    const { projectId, tokenImages } = ConfigCtrl.state
 
-    return optimisticName.split(' ')[0] ?? optimisticName
+    return (
+      tokenImages?.[symbol] ?? (projectId && imageId ? ExplorerCtrl.getAssetImageUrl(imageId) : '')
+    )
   },
 
   isMobileAnimation() {
@@ -52,12 +72,15 @@ export const UiUtil = {
   },
 
   async preloadImage(src: string) {
-    return new Promise((resolve, reject) => {
+    const imagePromise = new Promise((resolve, reject) => {
       const image = new Image()
       image.onload = resolve
       image.onerror = reject
+      image.crossOrigin = 'anonymous'
       image.src = src
     })
+
+    return Promise.race([imagePromise, CoreUtil.wait(3_000)])
   },
 
   getErrorMessage(err: unknown) {
@@ -79,45 +102,56 @@ export const UiUtil = {
     }
   },
 
-  async handleMobileLinking(links: { native?: string; universal?: string }, name: string) {
-    const { standaloneUri, selectedChain } = OptionsCtrl.state
-    const { native, universal } = links
+  handleMobileLinking(wallet: WalletData) {
+    const { pairingUri } = WcConnectionCtrl.state
+    const { mobile, name } = wallet
+    const nativeUrl = mobile?.native
+    const universalUrl = mobile?.universal
+
+    UiUtil.setRecentWallet(wallet)
 
     function onRedirect(uri: string) {
       let href = ''
-      if (universal) {
-        href = CoreUtil.formatUniversalUrl(universal, uri, name)
-      } else if (native) {
-        href = CoreUtil.formatNativeUrl(native, uri, name)
+      if (nativeUrl) {
+        href = CoreUtil.formatUniversalUrl(nativeUrl, uri, name)
+      } else if (universalUrl) {
+        href = CoreUtil.formatNativeUrl(universalUrl, uri, name)
       }
-      CoreUtil.openHref(href)
+      CoreUtil.openHref(href, '_self')
     }
 
-    if (standaloneUri) {
-      onRedirect(standaloneUri)
-    } else {
-      await ClientCtrl.client().connectWalletConnect(uri => {
-        onRedirect(uri)
-      }, selectedChain?.id)
-      ModalCtrl.close()
-    }
+    onRedirect(pairingUri)
+  },
+
+  handleAndroidLinking() {
+    const { pairingUri } = WcConnectionCtrl.state
+    CoreUtil.setWalletConnectAndroidDeepLink(pairingUri)
+    CoreUtil.openHref(pairingUri, '_self')
   },
 
   async handleUriCopy() {
-    const { standaloneUri } = OptionsCtrl.state
-    if (standaloneUri) {
-      await navigator.clipboard.writeText(standaloneUri)
-    } else {
-      const uri = await ClientCtrl.client().getActiveWalletConnectUri()
-      await navigator.clipboard.writeText(uri)
+    try {
+      const { pairingUri } = WcConnectionCtrl.state
+      await navigator.clipboard.writeText(pairingUri)
+      ToastCtrl.openToast('Link copied', 'success')
+    } catch {
+      ToastCtrl.openToast('Failed to copy', 'error')
     }
-    ToastCtrl.openToast('Link copied', 'success')
   },
 
-  getCustomWallets() {
-    const { desktopWallets, mobileWallets } = ConfigCtrl.state
-
-    return (CoreUtil.isMobile() ? mobileWallets : desktopWallets) ?? []
+  async handleConnectorConnection(id: string, onError?: () => void) {
+    try {
+      const { selectedChain } = OptionsCtrl.state
+      await ClientCtrl.client().connectConnector(id, selectedChain?.id)
+      ModalCtrl.close()
+    } catch (err) {
+      console.error(err)
+      if (onError) {
+        onError()
+      } else {
+        ToastCtrl.openToast(UiUtil.getErrorMessage(err), 'error')
+      }
+    }
   },
 
   getCustomImageUrls() {
@@ -126,14 +160,6 @@ export const UiUtil = {
     const walletUrls = Object.values(walletImages ?? {})
 
     return Object.values([...chainUrls, ...walletUrls])
-  },
-
-  getConnectorImageUrls() {
-    const connectors = ClientCtrl.client().getConnectorWallets()
-    const ids = connectors.map(({ id }) => PresetUtil.optimisticWalletId(id))
-    const images = ids.map(id => UiUtil.getWalletIcon(id))
-
-    return images
   },
 
   truncate(value: string, strLen = 8) {
@@ -170,13 +196,92 @@ export const UiUtil = {
     const root: HTMLElement | null = document.querySelector(':root')
     if (root) {
       const variables = {
-        '--color-av-1': colors[0],
-        '--color-av-2': colors[1],
-        '--color-av-3': colors[2],
-        '--color-av-4': colors[3],
-        '--color-av-5': colors[4]
+        '--w3m-color-av-1': colors[0],
+        '--w3m-color-av-2': colors[1],
+        '--w3m-color-av-3': colors[2],
+        '--w3m-color-av-4': colors[3],
+        '--w3m-color-av-5': colors[4]
       }
       Object.entries(variables).forEach(([key, val]) => root.style.setProperty(key, val))
     }
+  },
+
+  setRecentWallet(wallet: WalletData) {
+    try {
+      localStorage.setItem(UiUtil.W3M_RECENT_WALLET_INFO, JSON.stringify(wallet))
+    } catch {
+      console.info('Unable to set recent wallet')
+    }
+  },
+
+  getRecentWallet() {
+    try {
+      const wallet = localStorage.getItem(UiUtil.W3M_RECENT_WALLET_INFO)
+
+      return wallet ? (JSON.parse(wallet) as WalletData) : undefined
+    } catch {
+      console.info('Unable to get recent wallet')
+    }
+
+    return undefined
+  },
+
+  caseSafeIncludes(str1: string, str2: string) {
+    return str1.toUpperCase().includes(str2.toUpperCase())
+  },
+
+  openWalletExplorerUrl() {
+    CoreUtil.openHref(UiUtil.EXPLORER_WALLET_URL, '_blank')
+  },
+
+  getCachedRouterWalletPlatforms() {
+    const { id, desktop, mobile, injected } = CoreUtil.getWalletRouterData()
+    const injectedWallets = DataUtil.installedInjectedWallets()
+    const isInjected = Boolean(injected?.length)
+    const isInjectedInstalled = injectedWallets.some(wallet => wallet.id === id)
+    const isDesktop = Boolean(desktop?.native)
+    const isWeb = Boolean(desktop?.universal)
+    const isMobile = Boolean(mobile?.native) || Boolean(mobile?.universal)
+
+    return { isInjectedInstalled, isInjected, isDesktop, isMobile, isWeb }
+  },
+
+  goToConnectingView(wallet: WalletData) {
+    RouterCtrl.setData({ Wallet: wallet })
+    const isMobileDevice = CoreUtil.isMobile()
+    const { isDesktop, isWeb, isMobile, isInjectedInstalled } =
+      UiUtil.getCachedRouterWalletPlatforms()
+
+    // Mobile
+    if (isMobileDevice) {
+      if (isInjectedInstalled) {
+        RouterCtrl.push('InjectedConnecting')
+      } else if (isMobile) {
+        RouterCtrl.push('MobileConnecting')
+      } else if (isWeb) {
+        RouterCtrl.push('WebConnecting')
+      } else {
+        RouterCtrl.push('InstallWallet')
+      }
+    }
+
+    // Desktop
+    else if (isInjectedInstalled) {
+      RouterCtrl.push('InjectedConnecting')
+    } else if (isDesktop) {
+      RouterCtrl.push('DesktopConnecting')
+    } else if (isWeb) {
+      RouterCtrl.push('WebConnecting')
+    } else if (isMobile) {
+      RouterCtrl.push('MobileQrcodeConnecting')
+    } else {
+      RouterCtrl.push('InstallWallet')
+    }
+  },
+
+  getWagmiWalletType() {
+    const type = localStorage.getItem(UiUtil.WAGMI_WALLET)
+
+    return type
   }
 }

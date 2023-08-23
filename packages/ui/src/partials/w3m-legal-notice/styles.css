@@ -1,0 +1,23 @@
+div {
+  background-color: var(--w3m-color-bg-2);
+  padding: 10px 20px 15px 20px;
+  border-top: 1px solid var(--w3m-color-bg-3);
+  text-align: center;
+}
+
+a {
+  color: var(--w3m-accent-color);
+  text-decoration: none;
+  transition: opacity 0.2s ease-in-out;
+  display: inline;
+}
+
+a:active {
+  opacity: 0.8;
+}
+
+@media (hover: hover) {
+  a:hover {
+    opacity: 0.8;
+  }
+}

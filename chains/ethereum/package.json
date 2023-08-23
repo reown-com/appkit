@@ -1,7 +1,8 @@
 {
   "name": "@web3modal/ethereum",
-  "version": "2.0.0-beta.8",
+  "version": "2.7.1",
   "main": "dist/index.js",
+  "unpkg": "dist/cdn/bundle.js",
   "type": "module",
   "types": "dist/_types/index.d.ts",
   "files": [
@@ -15,21 +16,22 @@
     "dev": "rollup --config rollup.config.js --watch",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "@coinbase/wallet-sdk": "3.6.2",
-    "@walletconnect/ethereum-provider": "1.8.0"
-  },
   "peerDependencies": {
-    "@wagmi/core": ">=0.7",
-    "ethers": ">=5.7"
+    "@wagmi/core": ">=1",
+    "viem": ">=1"
+  },
+  "devDependencies": {
+    "@wagmi/core": "^1",
+    "viem": "^1"
   },
   "keywords": [
+    "wagmi",
+    "viem",
     "web3",
     "crypto",
     "ethereum",
     "web3modal",
-    "walletconnect",
-    "web3auth"
+    "walletconnect"
   ],
   "author": "WalletConnect <walletconnect.com>",
   "license": "Apache-2.0",

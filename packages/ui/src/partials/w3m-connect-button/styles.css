@@ -1,33 +1,5 @@
-button {
-  padding: 0 15px;
-  height: 40px;
-  border-radius: 10px;
-  color: var(--color-fg-invers);
-  background-color: var(--color-fg-accent);
-}
-
-button::after {
-  content: '';
-  inset: 0;
-  position: absolute;
-  background-color: transparent;
-  border-radius: inherit;
-  transition: background-color 0.2s ease;
-  border: 1px solid var(--color-overlay);
-}
-
-button:hover::after {
-  background-color: var(--color-overlay);
-}
-
-button:disabled {
-  padding-bottom: 0;
-  background-color: var(--color-bg-3);
-  color: var(--color-fg-3);
-}
-
-.w3m-button-loading {
-  padding: 0 15px;
+:host {
+  all: initial;
 }
 
 svg {
@@ -37,11 +9,11 @@ svg {
 }
 
 svg path {
-  fill: var(--color-fg-inverse);
+  fill: var(--w3m-accent-fill-color);
 }
 
 button:disabled svg path {
-  fill: var(--color-fg-3);
+  fill: var(--w3m-color-fg-3);
 }
 
 w3m-spinner {

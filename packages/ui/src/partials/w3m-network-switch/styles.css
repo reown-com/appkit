@@ -1,0 +1,10 @@
+:host {
+  all: initial;
+}
+
+w3m-network-image {
+  margin-left: -6px;
+  margin-right: 6px;
+  width: 28px;
+  height: 28px;
+}

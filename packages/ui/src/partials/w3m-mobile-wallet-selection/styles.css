@@ -1,7 +1,7 @@
-.w3m-grid {
+div {
   display: grid;
   grid-template-columns: repeat(4, 80px);
   margin: 0 -10px;
   justify-content: space-between;
-  row-gap: 15px;
+  row-gap: 10px;
 }

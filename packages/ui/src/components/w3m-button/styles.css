@@ -1,17 +1,17 @@
 button {
-  border-radius: 28px;
+  border-radius: var(--w3m-secondary-button-border-radius);
   height: 28px;
   padding: 0 10px;
-  background-color: var(--color-fg-accent);
+  background-color: var(--w3m-accent-color);
 }
 
 button path {
-  fill: var(--color-fg-inverse);
+  fill: var(--w3m-accent-fill-color);
 }
 
 button::after {
   border-radius: inherit;
-  border: 1px solid var(--color-overlay);
+  border: 1px solid var(--w3m-color-overlay);
 }
 
 button:disabled::after {
@@ -26,10 +26,52 @@ button:disabled::after {
   margin-left: 5px;
 }
 
-button:hover::after {
-  background-color: var(--color-overlay);
+button:active::after {
+  background-color: var(--w3m-color-overlay);
+}
+
+.w3m-ghost,
+.w3m-ghost:active::after,
+.w3m-outline {
+  background-color: transparent;
+}
+
+.w3m-ghost:active {
+  opacity: 0.5;
+}
+
+@media (hover: hover) {
+  button:hover::after {
+    background-color: var(--w3m-color-overlay);
+  }
+
+  .w3m-ghost:hover::after {
+    background-color: transparent;
+  }
+
+  .w3m-ghost:hover {
+    opacity: 0.5;
+  }
 }
 
 button:disabled {
-  background-color: var(--color-bg-3);
+  background-color: var(--w3m-color-bg-3);
+  pointer-events: none;
+}
+
+.w3m-ghost::after {
+  border-color: transparent;
+}
+
+.w3m-ghost path {
+  fill: var(--w3m-color-fg-2);
+}
+
+.w3m-outline path {
+  fill: var(--w3m-accent-color);
+}
+
+.w3m-outline:disabled {
+  background-color: transparent;
+  opacity: 0.5;
 }

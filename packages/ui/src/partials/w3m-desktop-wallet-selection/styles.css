@@ -27,7 +27,7 @@
 }
 
 .w3m-subtitle:last-child path {
-  fill: var(--color-fg-3);
+  fill: var(--w3m-color-fg-3);
 }
 
 .w3m-mobile-title svg,
@@ -37,5 +37,5 @@
 
 .w3m-mobile-title path,
 .w3m-desktop-title path {
-  fill: var(--color-fg-accent);
+  fill: var(--w3m-accent-color);
 }

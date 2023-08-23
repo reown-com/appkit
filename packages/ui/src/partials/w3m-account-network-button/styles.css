@@ -1,15 +1,20 @@
 button {
   display: flex;
-  border-radius: 10px;
+  border-radius: var(--w3m-button-hover-highlight-border-radius);
   flex-direction: column;
-  transition: background-color 0.2s ease;
   justify-content: center;
   padding: 5px;
   width: 100px;
 }
 
-button:hover {
-  background-color: var(--color-overlay);
+button:active {
+  background-color: var(--w3m-color-overlay);
+}
+
+@media (hover: hover) {
+  button:hover {
+    background-color: var(--w3m-color-overlay);
+  }
 }
 
 button:disabled {

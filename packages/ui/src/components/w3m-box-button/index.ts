@@ -10,15 +10,27 @@ export class W3mBoxButton extends LitElement {
 
   // -- state & properties ------------------------------------------- //
   @property() public icon?: TemplateResult<2> = undefined
+
   @property() public label = ''
+
+  @property() public loading?: boolean = false
+
   @property() public onClick: () => void = () => null
 
   // -- render ------------------------------------------------------- //
   protected render() {
     return html`
-      <button @click=${this.onClick}>
-        <div>${this.icon}</div>
-        <w3m-text variant="xsmall-normal" color="accent">${this.label}</w3m-text>
+      <button
+        data-testid="component-button-box"
+        @click=${this.onClick}
+        .disabled="${Boolean(this.loading)}"
+      >
+        <div>
+          ${this.loading
+            ? html`<w3m-spinner size=${20} color="fill"></w3m-spinner>`
+            : html`${this.icon}`}
+        </div>
+        <w3m-text variant="xsmall-regular" color="accent">${this.label}</w3m-text>
       </button>
     `
   }

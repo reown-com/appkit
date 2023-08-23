@@ -18,7 +18,7 @@ export class W3mModalToast extends LitElement {
     this.unsubscribe = ToastCtrl.subscribe(newState => {
       if (newState.open) {
         this.open = true
-        this.timeout = setTimeout(() => ToastCtrl.closeToast(), 2000)
+        this.timeout = setTimeout(() => ToastCtrl.closeToast(), 2200)
       } else {
         this.open = false
         clearTimeout(this.timeout)
@@ -34,23 +34,23 @@ export class W3mModalToast extends LitElement {
 
   // -- private ------------------------------------------------------ //
   private readonly unsubscribe?: () => void = undefined
+
   private timeout?: NodeJS.Timeout = undefined
 
   // -- render ------------------------------------------------------- //
   protected render() {
     const { message, variant } = ToastCtrl.state
     const classes = {
-      'w3m-modal-toast': true,
       'w3m-success': variant === 'success',
       'w3m-error': variant === 'error'
     }
 
     return this.open
       ? html`
-          <div class=${classMap(classes)}>
+          <div data-testid="component-modal-toast" class=${classMap(classes)}>
             ${variant === 'success' ? SvgUtil.CHECKMARK_ICON : null}
             ${variant === 'error' ? SvgUtil.CROSS_ICON : null}
-            <w3m-text variant="small-normal">${message}</w3m-text>
+            <w3m-text variant="small-regular">${message}</w3m-text>
           </div>
         `
       : null

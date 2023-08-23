@@ -1,19 +1,27 @@
-import type { ConfigCtrlState } from '@web3modal/core'
-import { ClientCtrl, ConfigCtrl, ModalCtrl } from '@web3modal/core'
+import type { ConfigCtrlState, ThemeCtrlState } from '@web3modal/core'
+import {
+  ClientCtrl,
+  ConfigCtrl,
+  EventsCtrl,
+  ModalCtrl,
+  OptionsCtrl,
+  ThemeCtrl
+} from '@web3modal/core'
 import type { EthereumClient } from '@web3modal/ethereum'
 
 /**
  * Types
  */
-type Web3ModalConfig = Omit<ConfigCtrlState, 'enableStandaloneMode' | 'standaloneChains'>
+export type Web3ModalConfig = ConfigCtrlState & ThemeCtrlState
 
 /**
  * Client
  */
 export class Web3Modal {
   public constructor(config: Web3ModalConfig, client: EthereumClient) {
-    ConfigCtrl.setConfig(config)
+    ThemeCtrl.setThemeConfig(config)
     ClientCtrl.setEthereumClient(client)
+    ConfigCtrl.setConfig(config)
     this.initUi()
   }
 
@@ -22,6 +30,7 @@ export class Web3Modal {
       await import('@web3modal/ui')
       const modal = document.createElement('w3m-modal')
       document.body.insertAdjacentElement('beforeend', modal)
+      OptionsCtrl.setIsUiLoaded(true)
     }
   }
 
@@ -31,5 +40,9 @@ export class Web3Modal {
 
   public subscribeModal = ModalCtrl.subscribe
 
-  public setTheme = ConfigCtrl.setThemeConfig
+  public setTheme = ThemeCtrl.setThemeConfig
+
+  public setDefaultChain = OptionsCtrl.setSelectedChain
+
+  public subscribeEvents = EventsCtrl.subscribe
 }

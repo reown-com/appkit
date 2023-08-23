@@ -1,0 +1,49 @@
+:host {
+  display: inline-block;
+}
+
+button {
+  padding: 0 15px 1px;
+  height: 40px;
+  border-radius: var(--w3m-button-border-radius);
+  color: var(--w3m-accent-fill-color);
+  background-color: var(--w3m-accent-color);
+}
+
+button::after {
+  content: '';
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: absolute;
+  background-color: transparent;
+  border-radius: inherit;
+  transition: background-color 0.2s ease;
+  border: 1px solid var(--w3m-color-overlay);
+}
+
+button:active::after {
+  background-color: var(--w3m-color-overlay);
+}
+
+button:disabled {
+  padding-bottom: 0;
+  background-color: var(--w3m-color-bg-3);
+  color: var(--w3m-color-fg-3);
+}
+
+.w3m-secondary {
+  color: var(--w3m-accent-color);
+  background-color: transparent;
+}
+
+.w3m-secondary::after {
+  display: none;
+}
+
+@media (hover: hover) {
+  button:hover::after {
+    background-color: var(--w3m-color-overlay);
+  }
+}
