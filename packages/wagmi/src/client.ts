@@ -19,7 +19,9 @@ import type {
   ConnectionControllerClient,
   NetworkControllerClient,
   ProjectId,
-  SdkVersion
+  SdkVersion,
+  ThemeMode,
+  ThemeVariables
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
@@ -45,6 +47,8 @@ export interface Web3ModalOptions {
   projectId: ProjectId
   chains?: Chain[]
   _sdkVersion?: SdkVersion
+  themeMode?: ThemeMode
+  themeVariables?: ThemeVariables
 }
 
 declare global {
@@ -56,7 +60,7 @@ declare global {
 // -- Client --------------------------------------------------------------------
 export class Web3Modal extends Web3ModalScaffold {
   public constructor(options: Web3ModalOptions) {
-    const { wagmiConfig, projectId, chains, _sdkVersion } = options
+    const { wagmiConfig, projectId, chains, _sdkVersion, themeMode, themeVariables } = options
 
     if (!wagmiConfig) {
       throw new Error('web3modal:constructor - wagmiConfig is undefined')
@@ -162,7 +166,9 @@ export class Web3Modal extends Web3ModalScaffold {
       networkControllerClient,
       connectionControllerClient,
       projectId,
-      sdkVersion: _sdkVersion ?? `html-wagmi-${VERSION}`
+      sdkVersion: _sdkVersion ?? `html-wagmi-${VERSION}`,
+      themeMode,
+      themeVariables
     })
 
     this.syncRequestedNetworks(chains)

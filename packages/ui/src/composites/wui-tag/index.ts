@@ -14,13 +14,7 @@ export class WuiTag extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const isMain = this.variant === 'main'
-    const backgroundColor = isMain ? 'var(--wui-color-blue-015)' : 'var(--wui-overlay-010)'
-    const color = isMain ? 'blue-100' : 'fg-200'
-    this.style.cssText = `
-    --local-bg-value: ${backgroundColor};
-    --local-color-value: var(--wui-color-${color});
-  `
+    this.dataset['variant'] = this.variant
 
     return html`
       <wui-text data-variant=${this.variant} variant="micro-700" color="inherit">

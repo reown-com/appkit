@@ -18,7 +18,7 @@ export default css`
 
   button:focus-visible {
     background-color: var(--wui-color-fg-250);
-    border: 1px solid var(--wui-color-blue-100);
+    border: 1px solid var(--wui-color-accent-100);
   }
 
   button:active:enabled {

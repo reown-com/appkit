@@ -4,8 +4,26 @@ export default css`
   :host {
     display: block;
     padding: 3.5px 5px !important;
-    background-color: var(--local-bg-value);
     border-radius: var(--wui-border-radius-5xs);
-    color: var(--local-color-value);
+  }
+
+  :host([data-variant='main']) {
+    background-color: var(--wui-color-accent-015);
+    color: var(--wui-color-accent-100);
+  }
+
+  :host([data-variant='shade']) {
+    background-color: var(--wui-overlay-010);
+    color: var(--wui-color-fg-200);
+  }
+
+  :host([data-variant='success']) {
+    background-color: var(--wui-icon-box-bg-success-100);
+    color: var(--wui-color-success-100);
+  }
+
+  :host([data-variant='error']) {
+    background-color: var(--wui-icon-box-bg-error-100);
+    color: var(--wui-color-error-100);
   }
 `

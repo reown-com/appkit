@@ -22,7 +22,7 @@ export default css`
   }
 
   button > wui-icon-box[data-variant='blue'] {
-    border: 2px solid var(--wui-color-blue-005);
+    border: 2px solid var(--wui-color-accent-005);
   }
 
   button > wui-icon-box[data-variant='overlay'] {

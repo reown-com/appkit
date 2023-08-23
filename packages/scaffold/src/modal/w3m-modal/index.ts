@@ -1,9 +1,9 @@
-import { ApiController, ModalController, SnackController } from '@web3modal/core'
-import { initializeTheming, setColorTheme } from '@web3modal/ui'
+import { ApiController, ModalController, SnackController, ThemeController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
 import styles from './styles.js'
+import { UiHelperUtil, initializeTheming } from '@web3modal/ui'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
@@ -22,8 +22,7 @@ export class W3mModal extends LitElement {
 
   public constructor() {
     super()
-    initializeTheming()
-    setColorTheme('dark')
+    this.initializeTheming()
     ApiController.fetchRecommendedWallets()
     ApiController.fetchNetworkImages()
     ApiController.fetchConnectorImages()
@@ -57,6 +56,14 @@ export class W3mModal extends LitElement {
     if (event.target === event.currentTarget) {
       ModalController.close()
     }
+  }
+
+  private initializeTheming() {
+    const { themeVariables, themeMode } = ThemeController.state
+    initializeTheming(themeVariables, themeMode)
+
+    const defaultThemeMode = UiHelperUtil.getColorTheme(themeMode)
+    ThemeController.setThemeMode(defaultThemeMode)
   }
 
   private async onClose() {

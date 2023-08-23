@@ -11,8 +11,8 @@ export default {
   title: 'Composites/wui-icon-box',
   args: {
     size: 'md',
-    backgroundColor: 'blue-100',
-    iconColor: 'blue-100',
+    backgroundColor: 'accent-100',
+    iconColor: 'accent-100',
     icon: 'copy',
     background: 'transparent',
     border: false

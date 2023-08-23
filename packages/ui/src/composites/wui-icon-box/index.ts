@@ -12,9 +12,9 @@ export class WuiIconBox extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public size: Exclude<SizeType, 'inherit' | 'xxs'> = 'md'
 
-  @property() public backgroundColor: ColorType = 'blue-100'
+  @property() public backgroundColor: ColorType = 'accent-100'
 
-  @property() public iconColor: ColorType = 'blue-100'
+  @property() public iconColor: ColorType = 'accent-100'
 
   @property() public background: BackgroundType = 'transparent'
 
@@ -43,7 +43,7 @@ export class WuiIconBox extends LitElement {
     const borderRadius = isLg ? 'xxs' : '3xl'
     const isOpaque = this.background === 'opaque'
     const isColorChange =
-      (this.backgroundColor === 'blue-100' && isOpaque) ||
+      (this.backgroundColor === 'accent-100' && isOpaque) ||
       (this.backgroundColor === 'success-100' && isOpaque) ||
       (this.backgroundColor === 'error-100' && isOpaque) ||
       (this.backgroundColor === 'inverse-100' && isOpaque)

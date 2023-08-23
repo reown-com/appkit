@@ -11,10 +11,15 @@ export default css`
   }
 
   :host([data-theme='dark']) {
-    background-color: var(--wui-color-inverse-100);
     border-radius: var(--wui-border-radius-m);
+    background-color: var(--wui-color-inverse-100);
     box-shadow: 0 2px 5px var(--wui-color-inverse-000);
     padding: var(--wui-spacing-l);
+  }
+
+  :host([data-theme='light']) {
+    outline: 1px solid var(--wui-color-bg-125);
+    background-color: var(--wui-color-bg-125);
   }
 
   svg:first-child,

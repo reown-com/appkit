@@ -38,7 +38,7 @@ export class WuiNetworkButton extends LitElement {
       <wui-icon-box
         size="sm"
         iconColor="inverse-100"
-        backgroundColor="blue-100"
+        backgroundColor="accent-100"
         icon="networkPlaceholder"
       ></wui-icon-box>
     `

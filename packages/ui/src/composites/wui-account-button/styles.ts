@@ -33,13 +33,13 @@ export default css`
   wui-flex {
     border-radius: var(--wui-border-radius-3xl);
     border: 1px solid var(--wui-overlay-010);
-    background: var(--wui-color-blue-100);
+    background: var(--wui-color-accent-100);
     padding: 4px var(--wui-spacing-m) 4px var(--wui-spacing-xxs);
   }
 
   wui-avatar {
     width: 20px;
     height: 20px;
-    border: 2px solid var(--wui-color-blue-080);
+    border: 2px solid var(--wui-color-accent-080);
   }
 `

@@ -1,5 +1,5 @@
 /* eslint-disable no-bitwise */
-import type { SpacingType } from './TypesUtil.js'
+import type { SpacingType, ThemeType } from './TypesUtil.js'
 
 export const UiHelperUtil = {
   getSpacingStyles(spacing: SpacingType | SpacingType[], index: number) {
@@ -72,5 +72,19 @@ export const UiHelperUtil = {
     }
 
     return regex.number.test(character)
+  },
+
+  getColorTheme(theme: ThemeType | undefined) {
+    if (theme) {
+      return theme
+    } else if (typeof window !== 'undefined' && window.matchMedia) {
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark'
+      }
+
+      return 'light'
+    }
+
+    return 'dark'
   }
 }
