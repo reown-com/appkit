@@ -51,7 +51,7 @@ export default function Header() {
             </Text>
             <Flex gridGap={4} alignItems={'center'}>
               <Link isExternal href="https://github.com/WalletConnect/web3modal">
-                Github
+                GitHub
               </Link>
               <Link
                 isExternal
