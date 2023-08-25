@@ -3,7 +3,7 @@ import { css } from 'lit'
 export default css`
   button {
     flex-direction: column;
-    width: 100%;
+    width: 76px;
     row-gap: var(--wui-spacing-xs);
     padding: var(--wui-spacing-xs) var(--wui-spacing-0);
     background-color: var(--wui-overlay-002);

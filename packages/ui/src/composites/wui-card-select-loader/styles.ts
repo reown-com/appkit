@@ -5,7 +5,7 @@ export default css`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    width: 76px;
     row-gap: var(--wui-spacing-xs);
     padding: var(--wui-spacing-xs) 10px;
     background-color: var(--wui-overlay-002);

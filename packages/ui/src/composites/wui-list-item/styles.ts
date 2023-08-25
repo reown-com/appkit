@@ -17,20 +17,20 @@ export default css`
   button > wui-image {
     width: 32px;
     height: 32px;
-    border: 2px solid var(--wui-overlay-005);
+    outline: 2px solid var(--wui-overlay-005);
     border-radius: var(--wui-border-radius-3xl);
   }
 
   button > wui-icon-box[data-variant='blue'] {
-    border: 2px solid var(--wui-color-accent-005);
+    outline: 2px solid var(--wui-color-accent-005);
   }
 
   button > wui-icon-box[data-variant='overlay'] {
-    border: 2px solid var(--wui-overlay-005);
+    outline: 2px solid var(--wui-overlay-005);
   }
 
   button > wui-icon {
-    width: 8px;
+    width: 14px;
     height: 14px;
   }
 

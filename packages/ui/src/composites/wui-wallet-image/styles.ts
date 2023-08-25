@@ -26,6 +26,10 @@ export default css`
     pointer-events: none;
   }
 
+  :host([name='Extension'])::after {
+    border: 1px solid var(--wui-color-accent-010);
+  }
+
   wui-icon[data-parent-size='inherit'] {
     width: 75%;
     height: 75%;

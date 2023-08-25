@@ -77,9 +77,9 @@ export class W3mAccountView extends LitElement {
     return html`
       <wui-flex
         flexDirection="column"
-        .padding=${['s', 's', 'xl', 's'] as const}
+        .padding=${['0', 's', 'm', 's'] as const}
         alignItems="center"
-        gap="xs"
+        gap="l"
       >
         <wui-avatar
           alt=${this.address}
@@ -99,7 +99,20 @@ export class W3mAccountView extends LitElement {
               @click=${this.onCopyAddress}
             ></wui-icon-link>
           </wui-flex>
-          <wui-text variant="paragraph-500" color="fg-200">${this.showBalance()}</wui-text>
+          <wui-flex gap="s" flexDirection="column" alignItems="center">
+            <wui-text variant="paragraph-500" color="fg-200">${this.showBalance()}</wui-text>
+            <wui-button
+              size="sm"
+              variant="shade"
+              @click=${() => {
+                CoreHelperUtil.openHref(`https://etherscan.io/address/${this.address}`, '_blank')
+              }}
+            >
+              <wui-icon size="sm" color="inherit" slot="iconLeft" name="compass"></wui-icon>
+              Block Explorer
+              <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
+            </wui-button>
+          </wui-flex>
         </wui-flex>
       </wui-flex>
 
