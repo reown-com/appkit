@@ -10,7 +10,7 @@ export default {
   args: {
     tabs: [
       { icon: 'mobile', label: 'Mobile' },
-      { icon: 'extension', label: 'Extension' },
+      { icon: 'extension', label: 'Browser' },
       { icon: 'desktop', label: 'Desktop' }
     ],
     onTabChange: _index => null
