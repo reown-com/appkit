@@ -103,7 +103,7 @@ export class W3mConnectView extends LitElement {
     }
     if (connector.type === 'INJECTED') {
       if (ConnectionController.checkInjectedInstalled()) {
-        return { tagLabel: 'installed', tagVariant: 'shade' } as const
+        return { tagLabel: 'installed', tagVariant: 'success' } as const
       }
     }
 

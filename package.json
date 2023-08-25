@@ -13,7 +13,7 @@
     "build:laboratory": "turbo run build:laboratory",
     "test": "turbo run test --parallel",
     "typecheck": "turbo run typecheck --parallel",
-    "lint": "eslint .",
+    "lint": "turbo run lint --parallel",
     "danger": "danger ci",
     "prettier": "prettier --check .",
     "clean": "rm -rf `find . -type d -name node_modules -o -name dist -o -name .next -o -name out`; rm package-lock.json",
@@ -34,7 +34,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "6.4.1",
     "@typescript-eslint/parser": "6.4.1",
-    "@types/react": "18.2.20",
+    "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "eslint": "8.47.0",
     "eslint-config-prettier": "9.0.0",

@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ui",
-  "version": "3.0.0-alpha.3",
+  "version": "3.0.0-alpha.4",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -11,7 +11,8 @@
     "build:clean": "rm -rf dist",
     "build": "npm run build:clean; tsc --build",
     "watch": "npm run build:clean; tsc --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "lit": "2.8.0",

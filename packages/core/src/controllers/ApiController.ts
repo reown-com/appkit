@@ -16,8 +16,8 @@ import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
 const api = new FetchUtil({ baseUrl: 'https://api.web3modal.com' })
-const entries = 24
-const recommendedEntries = 4
+const entries = '24'
+const recommendedEntries = '4'
 const sdkType = 'w3m'
 
 // -- Types --------------------------------------------- //
@@ -95,12 +95,15 @@ export const ApiController = {
   },
 
   async fetchRecommendedWallets() {
-    const { data } = await api.post<ApiGetWalletsResponse>({
+    const { includeWalletIds, excludeWalletIds } = OptionsController.state
+    const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
-      body: {
-        page: 1,
-        entries: recommendedEntries
+      params: {
+        page: '1',
+        entries: recommendedEntries,
+        include: includeWalletIds?.join(','),
+        exclude: excludeWalletIds?.join(',')
       }
     })
     const recent = StorageUtil.getRecentWallets()
@@ -110,17 +113,20 @@ export const ApiController = {
       [...recommendedImages, ...recentImages].map(id => ApiController._fetchWalletImage(id))
     )
     state.recommended = data
+    state.count = includeWalletIds?.length ?? 0
   },
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
-    const exclude = state.recommended.map(({ id }) => id)
-    const { data, count } = await api.post<ApiGetWalletsResponse>({
+    const { includeWalletIds, excludeWalletIds } = OptionsController.state
+    const exclude = [...state.recommended.map(({ id }) => id), ...(excludeWalletIds ?? [])]
+    const { data, count } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
-      body: {
-        page,
+      params: {
+        page: String(page),
         entries,
-        exclude: exclude.length ? exclude : undefined
+        include: includeWalletIds?.join(','),
+        exclude: exclude.join(',')
       }
     })
     await Promise.all([
@@ -128,19 +134,22 @@ export const ApiController = {
       CoreHelperUtil.wait(300)
     ])
     state.wallets = [...state.wallets, ...data]
-    state.count = count
+    state.count = count > state.count ? count : state.count
     state.page = page
   },
 
   async searchWallet({ search }: Pick<ApiGetWalletsRequest, 'search'>) {
+    const { includeWalletIds, excludeWalletIds } = OptionsController.state
     state.search = []
-    const { data } = await api.post<ApiGetWalletsResponse>({
+    const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
-      body: {
-        page: 1,
-        entries: 100,
-        search
+      params: {
+        page: '1',
+        entries: '100',
+        search,
+        include: includeWalletIds?.join(','),
+        exclude: excludeWalletIds?.join(',')
       }
     })
     await Promise.all([

@@ -17,11 +17,8 @@ import type {
   CaipNetwork,
   CaipNetworkId,
   ConnectionControllerClient,
-  NetworkControllerClient,
-  ProjectId,
-  SdkVersion,
-  ThemeMode,
-  ThemeVariables
+  LibraryOptions,
+  NetworkControllerClient
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
@@ -32,6 +29,7 @@ import {
   WALLET_CHOICE_KEY,
   WALLET_CONNECT_CONNECTOR_ID
 } from './utils/constants.js'
+import { getCaipDefaultChain } from './utils/helpers.js'
 import {
   ConnectorExplorerIds,
   ConnectorImageIds,
@@ -41,15 +39,14 @@ import {
 } from './utils/presets.js'
 
 // -- Types ---------------------------------------------------------------------
-export interface Web3ModalOptions {
+export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain'> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wagmiConfig: Config<any, any>
-  projectId: ProjectId
   chains?: Chain[]
-  _sdkVersion?: SdkVersion
-  themeMode?: ThemeMode
-  themeVariables?: ThemeVariables
+  defaultChain?: Chain
 }
+
+export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
 
 declare global {
   interface Window {
@@ -59,14 +56,14 @@ declare global {
 
 // -- Client --------------------------------------------------------------------
 export class Web3Modal extends Web3ModalScaffold {
-  public constructor(options: Web3ModalOptions) {
-    const { wagmiConfig, projectId, chains, _sdkVersion, themeMode, themeVariables } = options
+  public constructor(options: Web3ModalClientOptions) {
+    const { wagmiConfig, chains, defaultChain, _sdkVersion, ...w3mOptions } = options
 
     if (!wagmiConfig) {
       throw new Error('web3modal:constructor - wagmiConfig is undefined')
     }
 
-    if (!projectId) {
+    if (!w3mOptions.projectId) {
       throw new Error('web3modal:constructor - projectId is undefined')
     }
 
@@ -165,10 +162,9 @@ export class Web3Modal extends Web3ModalScaffold {
     super({
       networkControllerClient,
       connectionControllerClient,
-      projectId,
-      sdkVersion: _sdkVersion ?? `html-wagmi-${VERSION}`,
-      themeMode,
-      themeVariables
+      defaultChain: getCaipDefaultChain(defaultChain),
+      _sdkVersion: _sdkVersion ?? `html-wagmi-${VERSION}`,
+      ...w3mOptions
     })
 
     this.syncRequestedNetworks(chains)
@@ -181,7 +177,8 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   // -- Private -----------------------------------------------------------------
-  private syncRequestedNetworks(chains: Web3ModalOptions['chains']) {
+
+  private syncRequestedNetworks(chains: Web3ModalClientOptions['chains']) {
     const requestedCaipNetworks = chains?.map(
       chain =>
         ({
@@ -252,7 +249,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setBalance(balance.formatted, balance.symbol)
   }
 
-  private syncConnectors(connectors: Web3ModalOptions['wagmiConfig']['connectors']) {
+  private syncConnectors(connectors: Web3ModalClientOptions['wagmiConfig']['connectors']) {
     const w3mConnectors = connectors.map(
       ({ id, name }) =>
         ({

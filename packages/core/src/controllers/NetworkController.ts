@@ -13,6 +13,7 @@ export interface NetworkControllerClient {
 
 export interface NetworkControllerState {
   supportsAllNetworks: boolean
+  isDefaultCaipNetwork: boolean
   _client?: NetworkControllerClient
   caipNetwork?: CaipNetwork
   requestedCaipNetworks?: CaipNetwork[]
@@ -23,7 +24,8 @@ type StateKey = keyof NetworkControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<NetworkControllerState>({
-  supportsAllNetworks: true
+  supportsAllNetworks: true,
+  isDefaultCaipNetwork: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -50,6 +52,11 @@ export const NetworkController = {
     state.caipNetwork = caipNetwork
   },
 
+  setDefaultCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
+    state.caipNetwork = caipNetwork
+    state.isDefaultCaipNetwork = true
+  },
+
   setRequestedCaipNetworks(requestedNetworks: NetworkControllerState['requestedCaipNetworks']) {
     state.requestedCaipNetworks = requestedNetworks
   },
@@ -66,7 +73,9 @@ export const NetworkController = {
   },
 
   resetNetwork() {
-    state.caipNetwork = undefined
+    if (!state.isDefaultCaipNetwork) {
+      state.caipNetwork = undefined
+    }
     state.approvedCaipNetworkIds = undefined
     state.supportsAllNetworks = true
   }
