@@ -1,3 +1,4 @@
+import { ConnectionController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -72,7 +73,7 @@ export class W3mConnectingWidget extends LitElement {
         <wui-button
           variant="accent"
           .disabled=${!this.error && this.autoConnect}
-          @click=${this.onConnect}
+          @click=${this.onTryAgain.bind(this)}
         >
           <wui-icon color="inherit" slot="iconLeft" name="refresh"></wui-icon>
           Try again
@@ -99,6 +100,11 @@ export class W3mConnectingWidget extends LitElement {
       const retryButton = this.shadowRoot?.querySelector('wui-button') as HTMLElement
       animate(retryButton, { opacity: [0, 1] })
     }
+  }
+
+  private onTryAgain() {
+    ConnectionController.setWcError(false)
+    this.onConnect?.()
   }
 }
 
