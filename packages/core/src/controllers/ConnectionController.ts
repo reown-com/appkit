@@ -22,13 +22,16 @@ export interface ConnectionControllerState {
     href: string
     name: string
   }
+  wcError?: boolean
   recentWallet?: ApiWallet
 }
 
 type StateKey = keyof ConnectionControllerState
 
 // -- State --------------------------------------------- //
-const state = proxy<ConnectionControllerState>({})
+const state = proxy<ConnectionControllerState>({
+  wcError: false
+})
 
 // -- Controller ---------------------------------------- //
 export const ConnectionController = {
@@ -83,6 +86,10 @@ export const ConnectionController = {
 
   setWcLinking(wcLinking: ConnectionControllerState['wcLinking']) {
     state.wcLinking = wcLinking
+  },
+
+  setWcError(wcError: ConnectionControllerState['wcError']) {
+    state.wcError = wcError
   },
 
   setRecentWallet(wallet: ConnectionControllerState['recentWallet']) {
