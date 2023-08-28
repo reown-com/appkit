@@ -3,6 +3,7 @@ import { ModalController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
+import styles from './styles.js'
 
 // -- Helpers ------------------------------------------- //
 function headings() {
@@ -13,7 +14,7 @@ function headings() {
 
   return {
     Connect: 'Connect Wallet',
-    Account: 'Account',
+    Account: '',
     ConnectingExternal: name ?? 'Connect Wallet',
     ConnectingWalletConnect: name ?? 'WalletConnect',
     Networks: 'Choose Network',
@@ -27,6 +28,8 @@ function headings() {
 
 @customElement('w3m-header')
 export class W3mHeader extends LitElement {
+  public static override styles = [styles]
+
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
@@ -52,16 +55,12 @@ export class W3mHeader extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex
-        .padding=${['l', '2l', 'l', '2l'] as const}
-        justifyContent="space-between"
-        alignItems="center"
-      >
+      <wui-flex .padding=${this.getPadding()} justifyContent="space-between" alignItems="center">
         ${this.dynamicButtonTemplate()}
         <wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>
         <wui-icon-link icon="close" @click=${ModalController.close}></wui-icon-link>
       </wui-flex>
-      <wui-separator></wui-separator>
+      ${this.separatorTemplate()}
     `
   }
 
@@ -76,10 +75,27 @@ export class W3mHeader extends LitElement {
     }
 
     return html`<wui-icon-link
+      data-view=${RouterController.state.view}
       id="dynamic"
       icon="helpCircle"
       @click=${this.handleHelpClick}
     ></wui-icon-link>`
+  }
+
+  private separatorTemplate() {
+    if (RouterController.state.view !== 'Account') {
+      return html` <wui-separator></wui-separator>`
+    }
+
+    return null
+  }
+
+  private getPadding() {
+    if (RouterController.state.view !== 'Account') {
+      return ['l', '2l', 'l', '2l'] as const
+    }
+
+    return ['l', '2l', '0', '2l'] as const
   }
 
   private handleHelpClick() {
@@ -103,8 +119,10 @@ export class W3mHeader extends LitElement {
   private async onHistoryChange() {
     const { history } = RouterController.state
     const buttonEl = this.shadowRoot?.querySelector('#dynamic')
+    const opacity = history[0] && RouterController.state.view === 'Networks' ? 0 : 1
+
     if (history.length > 1 && !this.showBack && buttonEl) {
-      await animate(buttonEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
+      await animate(buttonEl, { opacity: [opacity, 0] }, { duration: 0.2 }).finished
       this.showBack = true
       animate(buttonEl, { opacity: [0, 1] }, { duration: 0.2 })
     } else if (history.length <= 1 && this.showBack && buttonEl) {

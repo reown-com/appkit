@@ -13,7 +13,7 @@ export default css`
     align-items: center;
     flex-wrap: wrap;
     gap: var(--wui-spacing-4xs);
-    padding: 3.5px !important;
+    padding: 3.75px !important;
   }
 
   :host::after {
@@ -29,8 +29,8 @@ export default css`
   }
 
   :host > wui-wallet-image {
-    width: 15px;
-    height: 15px;
-    border-radius: var(--wui-border-radius-4xs);
+    width: 14px;
+    height: 14px;
+    border-radius: var(--wui-border-radius-5xs);
   }
 `

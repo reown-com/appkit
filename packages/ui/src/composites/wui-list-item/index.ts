@@ -80,7 +80,7 @@ export class WuiListItem extends LitElement {
 
   public chevronTemplate() {
     if (this.chevron) {
-      return html`<wui-icon size="inherit" color="inherit" name="chevronRight"></wui-icon>`
+      return html`<wui-icon size="inherit" color="fg-200" name="chevronRight"></wui-icon>`
     }
 
     return null

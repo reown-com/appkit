@@ -3,9 +3,9 @@ import { css } from 'lit'
 export default css`
   :host {
     display: block;
-    width: 72px;
-    height: 72px;
-    border: 8px solid var(--wui-overlay-005);
+    width: 64px;
+    height: 64px;
+    outline: 8px solid var(--wui-overlay-005);
     border-radius: var(--wui-border-radius-3xl);
     overflow: hidden;
     position: relative;
@@ -38,7 +38,7 @@ export default css`
       var(--local-color-5)
     );
 
-    border: 8px solid var(--wui-avatar-border);
+    outline: 8px solid var(--wui-avatar-border);
     background: radial-gradient(
       75.29% 75.29% at 64.96% 24.36%,
       #fff 0.52%,
@@ -60,7 +60,7 @@ export default css`
   }
 
   :host([data-variant='default']) {
-    border: 8px solid var(--wui-avatar-border);
+    outline: 8px solid var(--wui-avatar-border);
     background: radial-gradient(
       75.29% 75.29% at 64.96% 24.36%,
       #fff 0.52%,

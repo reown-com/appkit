@@ -10,16 +10,16 @@ export default css`
       var(--wui-color-bg-300) 60%,
       var(--wui-color-bg-200) 100%
     );
-    background-size: 200%;
+    background-size: 250%;
     animation: shimmer 2.5s linear infinite reverse;
   }
 
   @keyframes shimmer {
     from {
-      background-position: -200% 0;
+      background-position: -250% 0;
     }
     to {
-      background-position: 200% 0;
+      background-position: 250% 0;
     }
   }
 `
