@@ -197,9 +197,14 @@ export class Web3Modal extends Web3ModalScaffold {
     const { chain } = getNetwork()
     this.resetAccount()
     if (isConnected && address && chain) {
-      const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
+      const { id, blockExplorers } = chain
+      const caipAddress: CaipAddress = `${NAMESPACE}:${id}:${address}`
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
+      if (blockExplorers?.default?.url) {
+        const url = `${blockExplorers.default.url}/address/${address}`
+        this.setAddressExplorerUrl(url)
+      }
       await Promise.all([
         this.syncProfile(address),
         this.syncBalance(address, chain),

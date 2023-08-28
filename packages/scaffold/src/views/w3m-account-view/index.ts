@@ -101,13 +101,7 @@ export class W3mAccountView extends LitElement {
           </wui-flex>
           <wui-flex gap="s" flexDirection="column" alignItems="center">
             <wui-text variant="paragraph-500" color="fg-200">${this.showBalance()}</wui-text>
-            <wui-button
-              size="sm"
-              variant="shade"
-              @click=${() => {
-                CoreHelperUtil.openHref(`https://etherscan.io/address/${this.address}`, '_blank')
-              }}
-            >
+            <wui-button size="sm" variant="shade" @click=${this.onExplorer.bind(this)}>
               <wui-icon size="sm" color="inherit" slot="iconLeft" name="compass"></wui-icon>
               Block Explorer
               <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
@@ -183,6 +177,13 @@ export class W3mAccountView extends LitElement {
     }
 
     return formattedBalance ? `${formattedBalance} ${this.balanceSymbol}` : '_._'
+  }
+
+  private onExplorer() {
+    const { addressExplorerUrl } = AccountController.state
+    if (addressExplorerUrl) {
+      CoreHelperUtil.openHref(addressExplorerUrl, '_blank')
+    }
   }
 }
 
