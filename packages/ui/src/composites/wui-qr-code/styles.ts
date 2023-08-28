@@ -11,7 +11,7 @@ export default css`
   }
 
   :host([data-theme='dark']) {
-    border-radius: var(--wui-border-radius-m);
+    border-radius: var(--wui-border-radius-l);
     background-color: var(--wui-color-inverse-100);
     box-shadow: 0 2px 5px var(--wui-color-inverse-000);
     padding: var(--wui-spacing-l);

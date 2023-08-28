@@ -12,6 +12,7 @@ export interface AccountControllerState {
   balanceSymbol?: string
   profileName?: string
   profileImage?: string
+  addressExplorerUrl?: string
 }
 
 type StateKey = keyof AccountControllerState
@@ -58,6 +59,10 @@ export const AccountController = {
     state.profileImage = profileImage
   },
 
+  setAddressExplorerUrl(explorerUrl: AccountControllerState['addressExplorerUrl']) {
+    state.addressExplorerUrl = explorerUrl
+  },
+
   resetAccount() {
     state.isConnected = false
     state.caipAddress = undefined
@@ -66,5 +71,6 @@ export const AccountController = {
     state.balanceSymbol = undefined
     state.profileName = undefined
     state.profileImage = undefined
+    state.addressExplorerUrl = undefined
   }
 }

@@ -27,7 +27,7 @@ export class W3mConnectingHeader extends LitElement {
   private generateTabs() {
     const tabs = this.platforms.map(platform => {
       if (platform === 'injected') {
-        return { label: 'Extension', icon: 'extension', platform: 'injected' } as const
+        return { label: 'Browser', icon: 'extension', platform: 'injected' } as const
       } else if (platform === 'mobile') {
         return { label: 'Mobile', icon: 'mobile', platform: 'mobile' } as const
       } else if (platform === 'qrcode') {
@@ -38,7 +38,7 @@ export class W3mConnectingHeader extends LitElement {
         return { label: 'Desktop', icon: 'desktop', platform: 'desktop' } as const
       }
 
-      return { label: 'Extension', icon: 'extension', platform: 'unsupported' } as const
+      return { label: 'Browser', icon: 'extension', platform: 'unsupported' } as const
     })
 
     this.platformTabs = tabs.map(({ platform }) => platform)

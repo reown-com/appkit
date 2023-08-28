@@ -62,6 +62,7 @@ export class W3mConnectingWcView extends LitElement {
         ModalController.close()
       }
     } catch {
+      ConnectionController.setWcError(true)
       if (CoreHelperUtil.isAllowedRetry(this.lastRetry)) {
         SnackController.showError('Declined')
         this.lastRetry = Date.now()

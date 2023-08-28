@@ -553,6 +553,7 @@ export const elementStyles = css`
     border: none;
     background-color: var(--wui-overlay-002);
     color: var(--wui-color-fg-200);
+    gap: var(--wui-spacing-xs);
   }
 
   button:active:enabled {
