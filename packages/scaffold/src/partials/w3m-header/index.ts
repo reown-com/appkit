@@ -69,10 +69,13 @@ export class W3mHeader extends LitElement {
       return null
     }
 
-    return html` <wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text> `
+    return html`<wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>`
   }
 
   private dynamicButtonTemplate() {
+    const { view } = RouterController.state
+    const isConnectHelp = view === 'Connect'
+
     if (this.showBack) {
       return html`<wui-icon-link
         id="dynamic"
@@ -82,10 +85,10 @@ export class W3mHeader extends LitElement {
     }
 
     return html`<wui-icon-link
-      data-view=${RouterController.state.view}
+      data-hidden=${!isConnectHelp}
       id="dynamic"
       icon="helpCircle"
-      @click=${this.handleHelpClick}
+      @click=${() => RouterController.push('WhatIsAWallet')}
     ></wui-icon-link>`
   }
 
@@ -105,14 +108,6 @@ export class W3mHeader extends LitElement {
     return ['l', '2l', '0', '2l'] as const
   }
 
-  private handleHelpClick() {
-    if (RouterController.state.view === 'Networks') {
-      RouterController.push('WhatIsANetwork')
-    } else {
-      RouterController.push('WhatIsAWallet')
-    }
-  }
-
   private async onViewChange(view: RouterControllerState['view']) {
     const headingEl = this.shadowRoot?.querySelector('wui-text')
     if (headingEl) {
@@ -126,10 +121,9 @@ export class W3mHeader extends LitElement {
   private async onHistoryChange() {
     const { history } = RouterController.state
     const buttonEl = this.shadowRoot?.querySelector('#dynamic')
-    const opacity = history[0] && RouterController.state.view === 'Networks' ? 0 : 1
 
     if (history.length > 1 && !this.showBack && buttonEl) {
-      await animate(buttonEl, { opacity: [opacity, 0] }, { duration: 0.2 }).finished
+      await animate(buttonEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
       this.showBack = true
       animate(buttonEl, { opacity: [0, 1] }, { duration: 0.2 })
     } else if (history.length <= 1 && this.showBack && buttonEl) {
