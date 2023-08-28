@@ -34,9 +34,8 @@ export class W3mConnectingWidget extends LitElement {
   public override render() {
     this.onShowRetry()
     const subLabel = this.error
-      ? `Connection can be declined
-    if a previous request is still active`
-      : `Accept connection request in the wallet`
+      ? 'Connection can be declined if a previous request is still active'
+      : 'Accept connection request in the wallet'
     const label = this.error ? `Connection declined` : `Continue in ${this.name}`
 
     return html`
@@ -50,7 +49,9 @@ export class W3mConnectingWidget extends LitElement {
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-wallet-image size="lg" imageSrc=${ifDefined(this.imageSrc)}></wui-wallet-image>
+
           ${this.error ? null : html`<wui-loading-thumbnail></wui-loading-thumbnail>`}
+
           <wui-icon-box
             backgroundColor="error-100"
             background="opaque"
@@ -62,9 +63,9 @@ export class W3mConnectingWidget extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text variant="paragraph-500" color=${this.error ? 'error-100' : 'fg-100'}
-            >${label}</wui-text
-          >
+          <wui-text variant="paragraph-500" color=${this.error ? 'error-100' : 'fg-100'}>
+            ${label}
+          </wui-text>
           <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
         </wui-flex>
 

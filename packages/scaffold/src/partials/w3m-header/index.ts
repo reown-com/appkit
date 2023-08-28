@@ -14,7 +14,7 @@ function headings() {
 
   return {
     Connect: 'Connect Wallet',
-    Account: '',
+    Account: undefined,
     ConnectingExternal: name ?? 'Connect Wallet',
     ConnectingWalletConnect: name ?? 'WalletConnect',
     Networks: 'Choose Network',
@@ -56,8 +56,7 @@ export class W3mHeader extends LitElement {
   public override render() {
     return html`
       <wui-flex .padding=${this.getPadding()} justifyContent="space-between" alignItems="center">
-        ${this.dynamicButtonTemplate()}
-        <wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>
+        ${this.dynamicButtonTemplate()} ${this.titleTemplate()}
         <wui-icon-link icon="close" @click=${ModalController.close}></wui-icon-link>
       </wui-flex>
       ${this.separatorTemplate()}
@@ -65,6 +64,14 @@ export class W3mHeader extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private titleTemplate() {
+    if (!this.heading) {
+      return null
+    }
+
+    return html` <wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text> `
+  }
+
   private dynamicButtonTemplate() {
     if (this.showBack) {
       return html`<wui-icon-link
@@ -83,15 +90,15 @@ export class W3mHeader extends LitElement {
   }
 
   private separatorTemplate() {
-    if (RouterController.state.view !== 'Account') {
-      return html` <wui-separator></wui-separator>`
+    if (!this.heading) {
+      return null
     }
 
-    return null
+    return html` <wui-separator></wui-separator>`
   }
 
   private getPadding() {
-    if (RouterController.state.view !== 'Account') {
+    if (this.heading) {
       return ['l', '2l', 'l', '2l'] as const
     }
 
