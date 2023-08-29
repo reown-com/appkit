@@ -16,6 +16,8 @@ export class W3mConnectingWidget extends LitElement {
 
   @property({ type: Boolean }) public error = false
 
+  @property({ type: Boolean }) public buffering = false
+
   @property() public name = 'Wallet'
 
   @property() public onConnect?: (() => void) | (() => Promise<void>) = undefined
@@ -37,7 +39,16 @@ export class W3mConnectingWidget extends LitElement {
     const subLabel = this.error
       ? 'Connection can be declined if a previous request is still active'
       : 'Accept connection request in the wallet'
-    const label = this.error ? `Connection declined` : `Continue in ${this.name}`
+
+    let label = `Continue in ${this.name}`
+
+    if (this.buffering) {
+      label = 'Connecting...'
+    }
+
+    if (this.error) {
+      label = 'Connection declined'
+    }
 
     return html`
       <wui-flex
@@ -72,7 +83,7 @@ export class W3mConnectingWidget extends LitElement {
 
         <wui-button
           variant="accent"
-          .disabled=${!this.error && this.autoConnect}
+          ?disabled=${!this.error && (this.autoConnect || this.buffering)}
           @click=${this.onTryAgain.bind(this)}
         >
           <wui-icon color="inherit" slot="iconLeft" name="refresh"></wui-icon>
@@ -103,8 +114,10 @@ export class W3mConnectingWidget extends LitElement {
   }
 
   private onTryAgain() {
-    ConnectionController.setWcError(false)
-    this.onConnect?.()
+    if (!this.buffering) {
+      ConnectionController.setWcError(false)
+      this.onConnect?.()
+    }
   }
 }
 

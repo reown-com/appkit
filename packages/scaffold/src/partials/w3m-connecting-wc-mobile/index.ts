@@ -1,11 +1,24 @@
 import { AssetUtil, ConnectionController, CoreHelperUtil } from '@web3modal/core'
 import { html } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { WcConnectingLitElement } from '../../utils/WcConnectingLitElement.js'
 
 @customElement('w3m-connecting-wc-mobile')
 export class W3mConnectingWcMobile extends WcConnectingLitElement {
+  // -- State & Properties -------------------------------- //
+  @state() private buffering = false
+
+  public constructor() {
+    super()
+    document.addEventListener('visibilitychange', this.onBuffering.bind(this))
+  }
+
+  public override disconnectedCallback() {
+    super.disconnectedCallback()
+    document.removeEventListener('visibilitychange', this.onBuffering.bind(this))
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.wallet) {
@@ -18,6 +31,7 @@ export class W3mConnectingWcMobile extends WcConnectingLitElement {
       <w3m-connecting-widget
         name=${this.wallet.name}
         imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet.image_id))}
+        .buffering=${this.buffering}
         .error=${Boolean(this.error)}
         .onConnect=${this.onConnect.bind(this)}
         .onCopyUri=${this.onCopyUri.bind(this)}
@@ -46,6 +60,13 @@ export class W3mConnectingWcMobile extends WcConnectingLitElement {
       } catch {
         this.error = true
       }
+    }
+  }
+
+  private onBuffering() {
+    if (document.visibilityState === 'visible' && !this.error) {
+      this.buffering = true
+      setTimeout(() => (this.buffering = false), 5000)
     }
   }
 }
