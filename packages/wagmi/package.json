@@ -21,6 +21,16 @@
       "types": "./dist/types/exports/vue.d.ts"
     }
   },
+  "typesVersions": {
+    "*": {
+      "react": [
+        "./dist/types/exports/react.d.ts"
+      ],
+      "vue": [
+        "./dist/types/exports/vue.d.ts"
+      ]
+    }
+  },
   "scripts": {
     "build:clean": "rm -rf dist",
     "build": "npm run build:clean; tsc --build",
