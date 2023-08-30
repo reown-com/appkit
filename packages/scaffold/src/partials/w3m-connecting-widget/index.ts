@@ -1,3 +1,4 @@
+import { ConnectionController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -14,6 +15,8 @@ export class W3mConnectingWidget extends LitElement {
   @property() imageSrc?: string = undefined
 
   @property({ type: Boolean }) public error = false
+
+  @property({ type: Boolean }) public buffering = false
 
   @property() public name = 'Wallet'
 
@@ -33,9 +36,19 @@ export class W3mConnectingWidget extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     this.onShowRetry()
-    const subLabelColor = this.error ? 'error-100' : 'fg-200'
-    const subLabel = this.error ? 'Connection declined' : 'Accept connection request in the wallet'
-    const label = `Continue in ${this.name}`
+    const subLabel = this.error
+      ? 'Connection can be declined if a previous request is still active'
+      : 'Accept connection request in the wallet'
+
+    let label = `Continue in ${this.name}`
+
+    if (this.buffering) {
+      label = 'Connecting...'
+    }
+
+    if (this.error) {
+      label = 'Connection declined'
+    }
 
     return html`
       <wui-flex
@@ -48,7 +61,9 @@ export class W3mConnectingWidget extends LitElement {
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-wallet-image size="lg" imageSrc=${ifDefined(this.imageSrc)}></wui-wallet-image>
+
           ${this.error ? null : html`<wui-loading-thumbnail></wui-loading-thumbnail>`}
+
           <wui-icon-box
             backgroundColor="error-100"
             background="opaque"
@@ -60,14 +75,16 @@ export class W3mConnectingWidget extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text variant="paragraph-500" color="fg-100">${label}</wui-text>
-          <wui-text variant="small-500" color=${subLabelColor}>${subLabel}</wui-text>
+          <wui-text variant="paragraph-500" color=${this.error ? 'error-100' : 'fg-100'}>
+            ${label}
+          </wui-text>
+          <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
         </wui-flex>
 
         <wui-button
           variant="accent"
-          .disabled=${!this.error && this.autoConnect}
-          @click=${this.onConnect}
+          ?disabled=${!this.error && (this.autoConnect || this.buffering)}
+          @click=${this.onTryAgain.bind(this)}
         >
           <wui-icon color="inherit" slot="iconLeft" name="refresh"></wui-icon>
           Try again
@@ -93,6 +110,13 @@ export class W3mConnectingWidget extends LitElement {
       this.showRetry = true
       const retryButton = this.shadowRoot?.querySelector('wui-button') as HTMLElement
       animate(retryButton, { opacity: [0, 1] })
+    }
+  }
+
+  private onTryAgain() {
+    if (!this.buffering) {
+      ConnectionController.setWcError(false)
+      this.onConnect?.()
     }
   }
 }

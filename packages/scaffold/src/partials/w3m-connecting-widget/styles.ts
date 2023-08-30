@@ -29,11 +29,16 @@ export default css`
 
   wui-icon-box {
     position: absolute;
-    right: -2px;
-    bottom: -2px;
+    right: calc(var(--wui-spacing-3xs) * -1);
+    bottom: calc(var(--wui-spacing-3xs) * -1);
     opacity: 0;
     transform: scale(0.5);
     transition: all var(--wui-ease-out-power-2) var(--wui-duration-lg);
+  }
+
+  wui-text[align='center'] {
+    width: 100%;
+    padding: 0px var(--wui-spacing-3xl);
   }
 
   [data-error='true'] wui-icon-box {

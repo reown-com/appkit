@@ -1,41 +1,13 @@
-import {
-  AssetUtil,
-  ConnectionController,
-  CoreHelperUtil,
-  RouterController,
-  SnackController,
-  ThemeController
-} from '@web3modal/core'
-import { LitElement, html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { AssetUtil, ConnectionController, ThemeController } from '@web3modal/core'
+import { html } from 'lit'
+import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { WcConnectingLitElement } from '../../utils/WcConnectingLitElement.js'
 import styles from './styles.js'
 
 @customElement('w3m-connecting-wc-qrcode')
-export class W3mConnectingWcQrcode extends LitElement {
+export class W3mConnectingWcQrcode extends WcConnectingLitElement {
   public static override styles = styles
-
-  // -- Members ------------------------------------------- //
-  private unsubscribe: (() => void)[] = []
-
-  private timeout?: ReturnType<typeof setTimeout> = undefined
-
-  private readonly wallet = RouterController.state.data?.wallet
-
-  // -- State & Properties -------------------------------- //
-  @state() private uri = ConnectionController.state.wcUri
-
-  @state() private ready = false
-
-  public constructor() {
-    super()
-    this.unsubscribe.push(ConnectionController.subscribeKey('wcUri', val => (this.uri = val)))
-  }
-
-  public override disconnectedCallback() {
-    this.unsubscribe.forEach(unsubscribe => unsubscribe())
-    clearTimeout(this.timeout)
-  }
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -80,17 +52,6 @@ export class W3mConnectingWcQrcode extends LitElement {
       imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet?.image_id))}
       alt=${ifDefined(alt)}
     ></wui-qr-code>`
-  }
-
-  private onCopyUri() {
-    try {
-      if (this.uri) {
-        CoreHelperUtil.copyToClopboard(this.uri)
-        SnackController.showSuccess('Link copied')
-      }
-    } catch {
-      SnackController.showError('Failed to copy')
-    }
   }
 }
 

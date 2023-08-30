@@ -32,24 +32,24 @@
     "examples/*"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "6.4.1",
-    "@typescript-eslint/parser": "6.4.1",
+    "@typescript-eslint/eslint-plugin": "6.5.0",
+    "@typescript-eslint/parser": "6.5.0",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
-    "eslint": "8.47.0",
+    "eslint": "8.48.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-require-extensions": "0.1.3",
     "lerna": "7.1.5",
     "prettier": "3.0.2",
-    "typescript": "5.1.6",
-    "vitest": "0.34.2",
+    "typescript": "5.2.2",
+    "vitest": "0.34.3",
     "vite": "4.4.9",
     "danger": "11.2.8",
     "vue": "3.3.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "turbo": "1.10.12",
-    "viem": "1.6.7",
+    "turbo": "1.10.13",
+    "viem": "1.8.1",
     "wagmi": "1.3.10"
   }
 }

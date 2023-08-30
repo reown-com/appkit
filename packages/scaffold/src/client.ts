@@ -138,6 +138,11 @@ export class Web3ModalScaffold {
   protected fetchIdentity: (typeof BlockchainApiController)['fetchIdentity'] = request =>
     BlockchainApiController.fetchIdentity(request)
 
+  protected setAddressExplorerUrl: (typeof AccountController)['setAddressExplorerUrl'] =
+    addressExplorerUrl => {
+      AccountController.setAddressExplorerUrl(addressExplorerUrl)
+    }
+
   // -- Private ------------------------------------------------------------------
   private initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)

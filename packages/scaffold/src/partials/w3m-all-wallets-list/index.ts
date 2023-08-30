@@ -11,6 +11,9 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { animate } from 'motion'
 import styles from './styles.js'
 
+// -- Helpers --------------------------------------------- //
+const PAGINATOR_ID = 'local-paginator'
+
 @customElement('w3m-all-wallets-list')
 export class W3mAllWalletsList extends LitElement {
   public static override styles = styles
@@ -53,11 +56,12 @@ export class W3mAllWalletsList extends LitElement {
       <wui-grid
         data-scroll=${!this.initial}
         .padding=${['0', 's', 's', 's'] as const}
-        gridTemplateColumns="repeat(4, 1fr)"
+        gridTemplateColumns="repeat(auto-fill, 76px)"
+        columnGap="xxs"
         rowGap="l"
-        columnGap="xs"
+        justifyContent="space-between"
       >
-        ${this.initial ? this.shimmerTemplate() : this.walletsTemplate()}
+        ${this.initial ? this.shimmerTemplate(16) : this.walletsTemplate()}
         ${this.paginationLoaderTemplate()}
       </wui-grid>
     `
@@ -74,9 +78,11 @@ export class W3mAllWalletsList extends LitElement {
     }
   }
 
-  private shimmerTemplate() {
-    return [...Array(16)].map(
-      () => html`<wui-card-select-loader type="wallet"></wui-card-select-loader>`
+  private shimmerTemplate(items: number, id?: string) {
+    return [...Array(items)].map(
+      () => html`
+        <wui-card-select-loader type="wallet" id=${ifDefined(id)}></wui-card-select-loader>
+      `
     )
   }
 
@@ -99,14 +105,14 @@ export class W3mAllWalletsList extends LitElement {
   private paginationLoaderTemplate() {
     const { wallets, recommended, count } = ApiController.state
     if (count === 0 || [...wallets, ...recommended].length < count) {
-      return html`<wui-loading-spinner color="accent-100"></wui-loading-spinner>`
+      return this.shimmerTemplate(4, PAGINATOR_ID)
     }
 
     return null
   }
 
   private createPaginationObserver() {
-    const loaderEl = this.shadowRoot?.querySelector('wui-loading-spinner')
+    const loaderEl = this.shadowRoot?.querySelector(`#${PAGINATOR_ID}`)
     if (loaderEl) {
       this.paginationObserver = new IntersectionObserver(([element]) => {
         if (element?.isIntersecting && !this.initial) {

@@ -491,18 +491,9 @@ export const elementStyles = css`
 
   button[data-variant='shade']:disabled,
   button[data-variant='accent']:disabled {
-    color: var(--wui-color-bg-300);
-    color: color-mix(
-      in srgb,
-      var(--wui-color-bg-300) var(--w3m-color-mix-percentage-65),
-      var(--w3m-color-mix)
-    );
-  }
-
-  button[data-variant='shade']:disabled,
-  button[data-variant='accent']:disabled {
     background-color: transparent;
     color: var(--wui-color-bg-300);
+    filter: grayscale(1);
   }
 
   button:disabled > wui-wallet-image,
@@ -553,6 +544,7 @@ export const elementStyles = css`
     border: none;
     background-color: var(--wui-overlay-002);
     color: var(--wui-color-fg-200);
+    gap: var(--wui-spacing-xs);
   }
 
   button:active:enabled {

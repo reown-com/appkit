@@ -3,6 +3,7 @@ import { ModalController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
+import styles from './styles.js'
 
 // -- Helpers ------------------------------------------- //
 function headings() {
@@ -13,7 +14,7 @@ function headings() {
 
   return {
     Connect: 'Connect Wallet',
-    Account: 'Account',
+    Account: undefined,
     ConnectingExternal: name ?? 'Connect Wallet',
     ConnectingWalletConnect: name ?? 'WalletConnect',
     Networks: 'Choose Network',
@@ -27,6 +28,8 @@ function headings() {
 
 @customElement('w3m-header')
 export class W3mHeader extends LitElement {
+  public static override styles = [styles]
+
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
@@ -52,21 +55,27 @@ export class W3mHeader extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex
-        .padding=${['l', '2l', 'l', '2l'] as const}
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        ${this.dynamicButtonTemplate()}
-        <wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>
+      <wui-flex .padding=${this.getPadding()} justifyContent="space-between" alignItems="center">
+        ${this.dynamicButtonTemplate()} ${this.titleTemplate()}
         <wui-icon-link icon="close" @click=${ModalController.close}></wui-icon-link>
       </wui-flex>
-      <wui-separator></wui-separator>
+      ${this.separatorTemplate()}
     `
   }
 
   // -- Private ------------------------------------------- //
+  private titleTemplate() {
+    if (!this.heading) {
+      return null
+    }
+
+    return html`<wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>`
+  }
+
   private dynamicButtonTemplate() {
+    const { view } = RouterController.state
+    const isConnectHelp = view === 'Connect'
+
     if (this.showBack) {
       return html`<wui-icon-link
         id="dynamic"
@@ -76,18 +85,27 @@ export class W3mHeader extends LitElement {
     }
 
     return html`<wui-icon-link
+      data-hidden=${!isConnectHelp}
       id="dynamic"
       icon="helpCircle"
-      @click=${this.handleHelpClick}
+      @click=${() => RouterController.push('WhatIsAWallet')}
     ></wui-icon-link>`
   }
 
-  private handleHelpClick() {
-    if (RouterController.state.view === 'Networks') {
-      RouterController.push('WhatIsANetwork')
-    } else {
-      RouterController.push('WhatIsAWallet')
+  private separatorTemplate() {
+    if (!this.heading) {
+      return null
     }
+
+    return html` <wui-separator></wui-separator>`
+  }
+
+  private getPadding() {
+    if (this.heading) {
+      return ['l', '2l', 'l', '2l'] as const
+    }
+
+    return ['l', '2l', '0', '2l'] as const
   }
 
   private async onViewChange(view: RouterControllerState['view']) {
@@ -103,6 +121,7 @@ export class W3mHeader extends LitElement {
   private async onHistoryChange() {
     const { history } = RouterController.state
     const buttonEl = this.shadowRoot?.querySelector('#dynamic')
+
     if (history.length > 1 && !this.showBack && buttonEl) {
       await animate(buttonEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
       this.showBack = true

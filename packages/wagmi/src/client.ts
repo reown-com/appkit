@@ -56,6 +56,8 @@ declare global {
 
 // -- Client --------------------------------------------------------------------
 export class Web3Modal extends Web3ModalScaffold {
+  private hasSyncedConnectedAccount = false
+
   public constructor(options: Web3ModalClientOptions) {
     const { wagmiConfig, chains, defaultChain, _sdkVersion, ...w3mOptions } = options
 
@@ -203,6 +205,7 @@ export class Web3Modal extends Web3ModalScaffold {
         this.syncBalance(address, chain),
         this.getApprovedCaipNetworksData()
       ])
+      this.hasSyncedConnectedAccount = true
     } else if (!isConnected) {
       this.resetWcConnection()
       this.resetNetwork()
@@ -219,7 +222,13 @@ export class Web3Modal extends Web3ModalScaffold {
       if (isConnected && address) {
         const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
         this.setCaipAddress(caipAddress)
-        await this.syncBalance(address, chain)
+        if (chain.blockExplorers?.default?.url) {
+          const url = `${chain.blockExplorers.default.url}/address/${address}`
+          this.setAddressExplorerUrl(url)
+        }
+        if (this.hasSyncedConnectedAccount) {
+          await this.syncBalance(address, chain)
+        }
       }
     }
   }

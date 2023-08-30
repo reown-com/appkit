@@ -27,6 +27,21 @@ export default css`
     transition: transform var(--wui-ease-out-power-2) var(--wui-duration-lg);
   }
 
+  button[data-active='true'] > wui-icon,
+  button[data-active='true'] > wui-text {
+    color: var(--wui-color-fg-100);
+  }
+
+  button[data-active='false'] > wui-icon,
+  button[data-active='false'] > wui-text {
+    color: var(--wui-color-fg-200);
+  }
+
+  button > wui-icon,
+  button > wui-text {
+    transition: all var(--wui-ease-out-power-2) var(--wui-duration-lg);
+  }
+
   button {
     width: 100px;
   }
@@ -34,5 +49,15 @@ export default css`
   button:hover:enabled,
   button:active:enabled {
     background-color: transparent !important;
+  }
+
+  button:hover > wui-icon,
+  button:active > wui-icon {
+    color: var(--wui-color-fg-125);
+  }
+
+  button:hover > wui-text,
+  button:active > wui-text {
+    color: var(--wui-color-fg-125);
   }
 `

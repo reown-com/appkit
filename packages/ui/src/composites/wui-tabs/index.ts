@@ -23,11 +23,9 @@ export class WuiTabs extends LitElement {
       const isActive = index === this.activeTab
 
       return html`
-        <button @click=${() => this.onTabClick(index)}>
-          <wui-icon size="xs" color=${isActive ? 'fg-100' : 'fg-200'} name=${tab.icon}></wui-icon>
-          <wui-text variant="small-600" color=${isActive ? 'fg-100' : 'fg-200'}>
-            ${tab.label}
-          </wui-text>
+        <button @click=${() => this.onTabClick(index)} data-active=${isActive}>
+          <wui-icon size="sm" color="inherit" name=${tab.icon}></wui-icon>
+          <wui-text variant="small-600" color="inherit"> ${tab.label} </wui-text>
         </button>
       `
     })
