@@ -116,7 +116,7 @@ export class W3mAccountView extends LitElement {
           iconVariant="overlay"
           icon="networkPlaceholder"
           imageSrc=${ifDefined(networkImage)}
-          ?chevron=${true}
+          ?chevron=${this.isMultiNetwork()}
           @click=${this.onNetworks.bind(this)}
         >
           <wui-text variant="paragraph-500" color="fg-100">
@@ -138,6 +138,12 @@ export class W3mAccountView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private isMultiNetwork() {
+    const { requestedCaipNetworks } = NetworkController.state
+
+    return requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
+  }
+
   private onCopyAddress() {
     try {
       if (this.address) {
@@ -150,7 +156,9 @@ export class W3mAccountView extends LitElement {
   }
 
   private onNetworks() {
-    RouterController.push('Networks')
+    if (this.isMultiNetwork()) {
+      RouterController.push('Networks')
+    }
   }
 
   private async onDisconnect() {
