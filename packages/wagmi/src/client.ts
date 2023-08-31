@@ -206,7 +206,7 @@ export class Web3Modal extends Web3ModalScaffold {
         this.getApprovedCaipNetworksData()
       ])
       this.hasSyncedConnectedAccount = true
-    } else if (!isConnected) {
+    } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.resetWcConnection()
       this.resetNetwork()
     }
