@@ -93,3 +93,11 @@ export interface BlockchainApiIdentityResponse {
   avatar: string
   name: string
 }
+
+// -- OptionsController Types ---------------------------------------------------
+export interface Token {
+  address: string
+  image?: string
+}
+
+export type Tokens = Record<CaipNetworkId, Token>

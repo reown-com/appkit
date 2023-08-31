@@ -34,6 +34,7 @@ export interface LibraryOptions {
   includeWalletIds?: OptionsControllerState['includeWalletIds']
   excludeWalletIds?: OptionsControllerState['excludeWalletIds']
   defaultChain?: NetworkControllerState['caipNetwork']
+  tokens?: OptionsControllerState['tokens']
   _sdkVersion: ApiControllerState['sdkVersion']
 }
 
@@ -159,6 +160,9 @@ export class Web3ModalScaffold {
     }
     if (options.defaultChain) {
       NetworkController.setDefaultCaipNetwork(options.defaultChain)
+    }
+    if (options.tokens) {
+      OptionsController.setTokens(options.tokens)
     }
   }
 

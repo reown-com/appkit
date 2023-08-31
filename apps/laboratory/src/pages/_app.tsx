@@ -46,7 +46,12 @@ const chains = [
 export const wagmiConfig = defaultWagmiConfig({ chains, projectId, appName: 'Web3Modal' })
 
 // 3. Create Web3Modal
-export const modal = createWeb3Modal({ wagmiConfig, projectId, chains })
+export const modal = createWeb3Modal({
+  wagmiConfig,
+  projectId,
+  chains,
+  tokens: { 1: { address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' } }
+})
 
 export default function App({ Component, pageProps }: AppProps) {
   const [ready, setReady] = useState(false)
