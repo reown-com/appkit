@@ -46,13 +46,7 @@ export const wagmiConfig = defaultWagmiConfig({ chains, projectId, appName: 'Web
 export const modal = createWeb3Modal({
   wagmiConfig,
   projectId,
-  chains,
-  featuredWalletIds: [
-    'c03dfee351b6fcc421b4494ea33b9d4b92a984f87aa76d1663bb28705e95034a',
-    '8a0ee50d1f22f6651afcae7eb4253e52a3310b90af5daef78a8c4929a9bb99d4',
-    '85db431492aa2e8672e93f4ea7acf10c88b97b867b0d373107af63dc4880f041',
-    '225affb176778569276e484e1b92637ad061b01e13a048b35a9d280c3b58970f'
-  ]
+  chains
 })
 
 export default function HomePage() {
