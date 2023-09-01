@@ -39,8 +39,8 @@ export class W3mConnectView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="xs">
-        ${this.recentTemplate()} ${this.featuredTemplate()} ${this.connectorsTemplate()}
-        ${this.dynamicTemplate()}
+        ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()} ${this.featuredTemplate()}
+        ${this.connectorsTemplate()} ${this.allWalletsTemplate()}
       </wui-flex>
     `
   }
@@ -86,8 +86,27 @@ export class W3mConnectView extends LitElement {
     )
   }
 
+  private walletConnectConnectorTemplate() {
+    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    const { tagLabel, tagVariant } = this.getTag(connector)
+
+    return html`
+      <wui-list-wallet
+        imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector.imageId))}
+        name=${connector.name ?? 'Unknown'}
+        @click=${() => this.onConnector(connector)}
+        tagLabel=${ifDefined(tagLabel)}
+        tagVariant=${ifDefined(tagVariant)}
+      >
+      </wui-list-wallet>
+    `
+  }
+
   private connectorsTemplate() {
     return this.connectors.map(connector => {
+      if (connector.type === 'WALLET_CONNECT') {
+        return null
+      }
       const { tagLabel, tagVariant } = this.getTag(connector)
 
       return html`
@@ -103,7 +122,7 @@ export class W3mConnectView extends LitElement {
     })
   }
 
-  private dynamicTemplate() {
+  private allWalletsTemplate() {
     if (CoreHelperUtil.isMobile()) {
       return null
     }
