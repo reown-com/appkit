@@ -46,21 +46,23 @@ export class W3mConnectView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private recentTemplate() {
-    const recent = StorageUtil.getRecentWallets()
+  private walletConnectConnectorTemplate() {
+    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    if (!connector) {
+      return null
+    }
+    const { tagLabel, tagVariant } = this.getTag(connector)
 
-    return recent.map(
-      wallet => html`
-        <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet.image_id))}
-          name=${wallet.name ?? 'Unknown'}
-          @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
-          tagLabel="recent"
-          tagVariant="shade"
-        >
-        </wui-list-wallet>
-      `
-    )
+    return html`
+      <wui-list-wallet
+        imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector.imageId))}
+        name=${connector.name ?? 'Unknown'}
+        @click=${() => this.onConnector(connector)}
+        tagLabel=${ifDefined(tagLabel)}
+        tagVariant=${ifDefined(tagVariant)}
+      >
+      </wui-list-wallet>
+    `
   }
 
   private featuredTemplate() {
@@ -86,20 +88,21 @@ export class W3mConnectView extends LitElement {
     )
   }
 
-  private walletConnectConnectorTemplate() {
-    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
-    const { tagLabel, tagVariant } = this.getTag(connector)
+  private recentTemplate() {
+    const recent = StorageUtil.getRecentWallets()
 
-    return html`
-      <wui-list-wallet
-        imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector.imageId))}
-        name=${connector.name ?? 'Unknown'}
-        @click=${() => this.onConnector(connector)}
-        tagLabel=${ifDefined(tagLabel)}
-        tagVariant=${ifDefined(tagVariant)}
-      >
-      </wui-list-wallet>
-    `
+    return recent.map(
+      wallet => html`
+        <wui-list-wallet
+          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet.image_id))}
+          name=${wallet.name ?? 'Unknown'}
+          @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
+          tagLabel="recent"
+          tagVariant="shade"
+        >
+        </wui-list-wallet>
+      `
+    )
   }
 
   private connectorsTemplate() {
