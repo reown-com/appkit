@@ -30,12 +30,15 @@ export class W3mAllWalletsList extends LitElement {
 
   @state() private recommended = ApiController.state.recommended
 
+  @state() private featured = ApiController.state.featured
+
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
         ApiController.subscribeKey('wallets', val => (this.wallets = val)),
-        ApiController.subscribeKey('recommended', val => (this.recommended = val))
+        ApiController.subscribeKey('recommended', val => (this.recommended = val)),
+        ApiController.subscribeKey('featured', val => (this.featured = val))
       ]
     )
   }
@@ -88,7 +91,7 @@ export class W3mAllWalletsList extends LitElement {
 
   private walletsTemplate() {
     const { walletImages } = AssetController.state
-    const wallets = [...this.recommended, ...this.wallets]
+    const wallets = [...this.featured, ...this.recommended, ...this.wallets]
 
     return wallets.map(
       wallet => html`
@@ -103,8 +106,8 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private paginationLoaderTemplate() {
-    const { wallets, recommended, count } = ApiController.state
-    if (count === 0 || [...wallets, ...recommended].length < count) {
+    const { wallets, recommended, featured, count } = ApiController.state
+    if (count === 0 || [...featured, ...wallets, ...recommended].length < count) {
       return this.shimmerTemplate(4, PAGINATOR_ID)
     }
 

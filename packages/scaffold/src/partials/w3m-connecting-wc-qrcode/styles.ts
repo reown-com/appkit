@@ -13,7 +13,7 @@ export default css`
   wui-shimmer {
     width: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: var(--wui-border-radius-m) !important;
+    border-radius: var(--wui-border-radius-l) !important;
   }
 
   wui-qr-code {

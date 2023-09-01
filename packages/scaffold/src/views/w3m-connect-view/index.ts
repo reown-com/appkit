@@ -1,5 +1,6 @@
 import type { Connector } from '@web3modal/core'
 import {
+  ApiController,
   AssetController,
   AssetUtil,
   ConnectionController,
@@ -35,7 +36,8 @@ export class W3mConnectView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="xs">
-        ${this.recentTemplate()} ${this.connectorsTemplate()} ${this.dynamicTemplate()}
+        ${this.recentTemplate()} ${this.featuredTemplate()} ${this.connectorsTemplate()}
+        ${this.dynamicTemplate()}
       </wui-flex>
     `
   }
@@ -52,6 +54,29 @@ export class W3mConnectView extends LitElement {
           @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
           tagLabel="recent"
           tagVariant="shade"
+        >
+        </wui-list-wallet>
+      `
+    )
+  }
+
+  private featuredTemplate() {
+    const { featured } = ApiController.state
+
+    if (!featured.length) {
+      return null
+    }
+
+    const recent = StorageUtil.getRecentWallets()
+    const recentIds = recent.map(wallet => wallet.id)
+    const featuredWallets = featured.filter(wallet => !recentIds.includes(wallet.id))
+
+    return featuredWallets.map(
+      wallet => html`
+        <wui-list-wallet
+          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet.image_id))}
+          name=${wallet.name ?? 'Unknown'}
+          @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
         >
         </wui-list-wallet>
       `

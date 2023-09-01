@@ -23,9 +23,7 @@ export class W3mModal extends LitElement {
   public constructor() {
     super()
     this.initializeTheming()
-    ApiController.fetchRecommendedWallets()
-    ApiController.fetchNetworkImages()
-    ApiController.fetchConnectorImages()
+    ApiController.prefetch()
     this.unsubscribe.push(
       ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose()))
     )

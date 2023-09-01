@@ -22,9 +22,11 @@ const sdkType = 'w3m'
 
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {
+  prefetchPromise?: Promise<unknown>
   sdkVersion: SdkVersion
   page: number
   count: number
+  featured: ApiWallet[]
   recommended: ApiWallet[]
   wallets: ApiWallet[]
   search: ApiWallet[]
@@ -37,6 +39,7 @@ const state = proxy<ApiControllerState>({
   sdkVersion: 'html-wagmi-undefined',
   page: 1,
   count: 0,
+  featured: [],
   recommended: [],
   wallets: [],
   search: []
@@ -94,8 +97,30 @@ export const ApiController = {
     await Promise.all((ids as string[]).map(id => ApiController._fetchConnectorImage(id)))
   },
 
+  async fetchFeaturedWallets() {
+    const { featuredWalletIds } = OptionsController.state
+    if (featuredWalletIds?.length) {
+      const { data } = await api.get<ApiGetWalletsResponse>({
+        path: '/getWallets',
+        headers: ApiController._getApiHeaders(),
+        params: {
+          page: '1',
+          entries: featuredWalletIds?.length
+            ? String(featuredWalletIds.length)
+            : recommendedEntries,
+          include: featuredWalletIds?.join(',')
+        }
+      })
+
+      const featuredImages = data.map(d => d.image_id)
+      await Promise.all(featuredImages.map(id => ApiController._fetchWalletImage(id)))
+      state.featured = data
+    }
+  },
+
   async fetchRecommendedWallets() {
-    const { includeWalletIds, excludeWalletIds } = OptionsController.state
+    const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
+    const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean)
     const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
@@ -103,7 +128,7 @@ export const ApiController = {
         page: '1',
         entries: recommendedEntries,
         include: includeWalletIds?.join(','),
-        exclude: excludeWalletIds?.join(',')
+        exclude: exclude?.join(',')
       }
     })
     const recent = StorageUtil.getRecentWallets()
@@ -117,8 +142,12 @@ export const ApiController = {
   },
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
-    const { includeWalletIds, excludeWalletIds } = OptionsController.state
-    const exclude = [...state.recommended.map(({ id }) => id), ...(excludeWalletIds ?? [])]
+    const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
+    const exclude = [
+      ...state.recommended.map(({ id }) => id),
+      ...(excludeWalletIds ?? []),
+      ...(featuredWalletIds ?? [])
+    ].filter(Boolean)
     const { data, count } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
@@ -157,5 +186,17 @@ export const ApiController = {
       CoreHelperUtil.wait(300)
     ])
     state.search = data
+  },
+
+  prefetch() {
+    state.prefetchPromise = Promise.race([
+      Promise.all([
+        ApiController.fetchFeaturedWallets(),
+        ApiController.fetchRecommendedWallets(),
+        ApiController.fetchNetworkImages(),
+        ApiController.fetchConnectorImages()
+      ]),
+      CoreHelperUtil.wait(3000)
+    ])
   }
 }
