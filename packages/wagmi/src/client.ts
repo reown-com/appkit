@@ -24,7 +24,6 @@ import type {
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
   ADD_CHAIN_METHOD,
-  INJECTED_CONNECTOR_ID,
   NAMESPACE,
   VERSION,
   WALLET_CHOICE_KEY,
@@ -132,17 +131,6 @@ export class Web3Modal extends Web3ModalScaffold {
         const connector = wagmiConfig.connectors.find(c => c.id === id)
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
-        }
-
-        const chainId = this.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
-
-        await connect({ connector, chainId })
-      },
-
-      connectInjected: async () => {
-        const connector = wagmiConfig.connectors.find(c => c.id === INJECTED_CONNECTOR_ID)
-        if (!connector) {
-          throw new Error('connectionControllerClient:connectInjected - connector is undefined')
         }
 
         const chainId = this.caipNetworkIdToNumber(this.getCaipNetwork()?.id)

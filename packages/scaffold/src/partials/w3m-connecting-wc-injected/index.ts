@@ -26,7 +26,7 @@ export class W3mConnectingWcInjected extends WcConnectingLitElement {
   private async onConnect() {
     try {
       this.error = false
-      await ConnectionController.connectInjected()
+      await ConnectionController.connectExternal('injected')
       ModalController.close()
     } catch {
       this.error = true
