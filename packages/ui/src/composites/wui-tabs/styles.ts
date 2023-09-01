@@ -18,12 +18,12 @@ export default css`
     top: 4px;
     left: 4px;
     display: block;
-    width: 100px;
+    width: var(--local-tab-width);
     height: 28px;
     border-radius: var(--wui-border-radius-3xl);
     background-color: var(--wui-overlay-002);
     box-shadow: inset 0 0 0 1px var(--wui-overlay-002);
-    transform: translateX(calc(var(--local-tab) * 100px));
+    transform: translateX(calc(var(--local-tab) * var(--local-tab-width)));
     transition: transform var(--wui-ease-out-power-2) var(--wui-duration-lg);
   }
 
@@ -43,7 +43,7 @@ export default css`
   }
 
   button {
-    width: 100px;
+    width: var(--local-tab-width);
   }
 
   button:hover:enabled,
