@@ -9,28 +9,48 @@ import styles from './styles.js'
 export class W3mConnectingWidget extends LitElement {
   public static override styles = styles
 
+  // -- Members ------------------------------------------- //
+  private unsubscribe: (() => void)[] = []
+
   // -- State & Properties -------------------------------- //
   @state() private showRetry = false
-
-  @property() imageSrc?: string = undefined
 
   @property({ type: Boolean }) public error = false
 
   @property({ type: Boolean }) public buffering = false
 
+  @property({ type: Boolean }) public autoConnect = true
+
+  @property() imageSrc?: string = undefined
+
   @property() public name = 'Wallet'
 
   @property() public onConnect?: (() => void) | (() => Promise<void>) = undefined
 
+  @property() public onRetry?: (() => void) | (() => Promise<void>) = undefined
+
   @property() public onCopyUri?: (() => void) | (() => Promise<void>) = undefined
 
-  @property({ type: Boolean }) public autoConnect = true
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      ConnectionController.subscribeKey('wcUri', () => {
+        if (this.onRetry) {
+          this.onConnect?.()
+        }
+      })
+    )
+  }
 
   public override firstUpdated() {
     if (this.autoConnect) {
       this.onConnect?.()
     }
     this.showRetry = !this.autoConnect
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //
@@ -116,7 +136,11 @@ export class W3mConnectingWidget extends LitElement {
   private onTryAgain() {
     if (!this.buffering) {
       ConnectionController.setWcError(false)
-      this.onConnect?.()
+      if (this.onRetry) {
+        this.onRetry?.()
+      } else {
+        this.onConnect?.()
+      }
     }
   }
 }

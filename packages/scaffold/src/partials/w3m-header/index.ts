@@ -65,10 +65,6 @@ export class W3mHeader extends LitElement {
 
   // -- Private ------------------------------------------- //
   private titleTemplate() {
-    if (!this.heading) {
-      return null
-    }
-
     return html`<wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>`
   }
 
