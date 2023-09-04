@@ -1,4 +1,4 @@
-import { ApiController, AssetController, AssetUtil, CoreHelperUtil } from '@web3modal/core'
+import { ApiController, AssetUtil, CoreHelperUtil } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -10,9 +10,6 @@ export class W3mGetWalletView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { walletImages } = AssetController.state
-    const walletImagesSrc = Object.values(walletImages).map(src => ({ src }))
-
     return html`
       <wui-flex flexDirection="column" padding="s" gap="xs">
         ${this.recommendedWalletsTemplate()}

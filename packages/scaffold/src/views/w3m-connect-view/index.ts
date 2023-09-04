@@ -1,7 +1,6 @@
 import type { Connector } from '@web3modal/core'
 import {
   ApiController,
-  AssetController,
   AssetUtil,
   ConnectionController,
   ConnectorController,
