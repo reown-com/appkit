@@ -32,7 +32,7 @@ export class WuiCardSelectLoader extends LitElement {
         ${networkSvg}`
     }
 
-    return html` <wui-shimmer width="56px" height="56px" borderRadius="xs"></wui-shimmer>`
+    return html`<wui-shimmer width="56px" height="56px" borderRadius="xs"></wui-shimmer>`
   }
 }
 

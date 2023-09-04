@@ -18,18 +18,18 @@ import type {
   CaipNetworkId,
   ConnectionControllerClient,
   LibraryOptions,
-  NetworkControllerClient
+  NetworkControllerClient,
+  Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
   ADD_CHAIN_METHOD,
-  INJECTED_CONNECTOR_ID,
   NAMESPACE,
   VERSION,
   WALLET_CHOICE_KEY,
   WALLET_CONNECT_CONNECTOR_ID
 } from './utils/constants.js'
-import { getCaipDefaultChain } from './utils/helpers.js'
+import { getCaipDefaultChain, getCaipTokens } from './utils/helpers.js'
 import {
   ConnectorExplorerIds,
   ConnectorImageIds,
@@ -39,11 +39,12 @@ import {
 } from './utils/presets.js'
 
 // -- Types ---------------------------------------------------------------------
-export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain'> {
+export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wagmiConfig: Config<any, any>
   chains?: Chain[]
   defaultChain?: Chain
+  tokens?: Record<number, Token>
 }
 
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
@@ -58,8 +59,10 @@ declare global {
 export class Web3Modal extends Web3ModalScaffold {
   private hasSyncedConnectedAccount = false
 
+  private options: Web3ModalClientOptions | undefined = undefined
+
   public constructor(options: Web3ModalClientOptions) {
-    const { wagmiConfig, chains, defaultChain, _sdkVersion, ...w3mOptions } = options
+    const { wagmiConfig, chains, defaultChain, _sdkVersion, tokens, ...w3mOptions } = options
 
     if (!wagmiConfig) {
       throw new Error('web3modal:constructor - wagmiConfig is undefined')
@@ -135,17 +138,6 @@ export class Web3Modal extends Web3ModalScaffold {
         await connect({ connector, chainId })
       },
 
-      connectInjected: async () => {
-        const connector = wagmiConfig.connectors.find(c => c.id === INJECTED_CONNECTOR_ID)
-        if (!connector) {
-          throw new Error('connectionControllerClient:connectInjected - connector is undefined')
-        }
-
-        const chainId = this.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
-
-        await connect({ connector, chainId })
-      },
-
       checkInjectedInstalled(ids) {
         if (!window?.ethereum) {
           return false
@@ -165,9 +157,12 @@ export class Web3Modal extends Web3ModalScaffold {
       networkControllerClient,
       connectionControllerClient,
       defaultChain: getCaipDefaultChain(defaultChain),
+      tokens: getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `html-wagmi-${VERSION}`,
       ...w3mOptions
     })
+
+    this.options = options
 
     this.syncRequestedNetworks(chains)
 
@@ -206,7 +201,7 @@ export class Web3Modal extends Web3ModalScaffold {
         this.getApprovedCaipNetworksData()
       ])
       this.hasSyncedConnectedAccount = true
-    } else if (!isConnected) {
+    } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.resetWcConnection()
       this.resetNetwork()
     }
@@ -254,7 +249,11 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncBalance(address: Address, chain: Chain) {
-    const balance = await fetchBalance({ address, chainId: chain.id })
+    const balance = await fetchBalance({
+      address,
+      chainId: chain.id,
+      token: this.options?.tokens?.[chain.id]?.address as Address
+    })
     this.setBalance(balance.formatted, balance.symbol)
   }
 

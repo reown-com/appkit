@@ -1,10 +1,12 @@
 *.log
 *.env
-npm-debug.log*
-node_modules
-package-lock.json
-src
 tests
-index.ts
+src
+exports
+node_modules
 .eslintrc.json
 .turbo
+package-lock.json
+tsconfig.tsbuildinfo
+tsconfig.json
+index.ts

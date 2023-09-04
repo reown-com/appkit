@@ -16,13 +16,13 @@ export class WcConnectingLitElement extends LitElement {
   protected timeout?: ReturnType<typeof setTimeout> = undefined
 
   // -- State & Properties -------------------------------- //
+  @property() public onRetry?: (() => void) | (() => Promise<void>) = undefined
+
   @state() protected uri = ConnectionController.state.wcUri
 
   @state() protected error = ConnectionController.state.wcError
 
   @state() protected ready = false
-
-  @property({ type: Boolean }) public multiPlatfrom = false
 
   public constructor() {
     super()

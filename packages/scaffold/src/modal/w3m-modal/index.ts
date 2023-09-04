@@ -1,9 +1,9 @@
 import { ApiController, ModalController, SnackController, ThemeController } from '@web3modal/core'
+import { UiHelperUtil, initializeTheming } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
 import styles from './styles.js'
-import { UiHelperUtil, initializeTheming } from '@web3modal/ui'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
@@ -23,9 +23,7 @@ export class W3mModal extends LitElement {
   public constructor() {
     super()
     this.initializeTheming()
-    ApiController.fetchRecommendedWallets()
-    ApiController.fetchNetworkImages()
-    ApiController.fetchConnectorImages()
+    ApiController.prefetch()
     this.unsubscribe.push(
       ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose()))
     )

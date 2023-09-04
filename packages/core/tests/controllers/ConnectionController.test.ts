@@ -13,7 +13,6 @@ const client: ConnectionControllerClient = {
   },
   disconnect: async () => Promise.resolve(),
   connectExternal: async _id => Promise.resolve(),
-  connectInjected: async () => Promise.resolve(),
   checkInjectedInstalled: _id => true
 }
 
@@ -52,10 +51,6 @@ describe('ConnectionController', () => {
     await ConnectionController.connectExternal(externalId)
   })
 
-  it('should not throw on connectInjected()', async () => {
-    await ConnectionController.connectInjected()
-  })
-
   it('should not throw on checkInjectedInstalled()', () => {
     ConnectionController.checkInjectedInstalled([externalId])
   })
@@ -67,7 +62,6 @@ describe('ConnectionController', () => {
   it('should not throw when optional methods are undefined', async () => {
     ConnectionController.setClient(partialClient)
     await ConnectionController.connectExternal(externalId)
-    await ConnectionController.connectInjected()
     ConnectionController.checkInjectedInstalled([externalId])
   })
 

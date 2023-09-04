@@ -21,6 +21,7 @@ export class W3mConnectingWcWeb extends WcConnectingLitElement {
         .error=${Boolean(this.error)}
         .onConnect=${this.onConnect.bind(this)}
         .onCopyUri=${this.onCopyUri.bind(this)}
+        .onRetry=${this.onRetry?.bind(this)}
         .autoConnect=${false}
       ></w3m-connecting-widget>
     `

@@ -7,6 +7,7 @@ describe('ApiController', () => {
     expect(ApiController.state).toEqual({
       page: 1,
       count: 0,
+      featured: [],
       recommended: [],
       wallets: [],
       search: [],

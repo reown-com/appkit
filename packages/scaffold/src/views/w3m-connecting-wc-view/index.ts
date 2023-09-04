@@ -122,28 +122,27 @@ export class W3mConnectingWcView extends LitElement {
   }
 
   private platformTemplate() {
-    const multiPlatform = this.platforms.length > 1
-
     if (!this.platform) {
       return null
     }
 
     switch (this.platform) {
       case 'injected':
-        return html`
-          <w3m-connecting-wc-injected .multiPlatfrom=${multiPlatform}></w3m-connecting-wc-injected>
-        `
+        return html`<w3m-connecting-wc-injected></w3m-connecting-wc-injected>`
       case 'desktop':
         return html`
-          <w3m-connecting-wc-desktop .multiPlatfrom=${multiPlatform}></w3m-connecting-wc-desktop>
+          <w3m-connecting-wc-desktop .onRetry=${() => this.initializeConnection(true)}>
+          </w3m-connecting-wc-desktop>
         `
       case 'web':
         return html`
-          <w3m-connecting-wc-web .multiPlatfrom=${multiPlatform}></w3m-connecting-wc-web>
+          <w3m-connecting-wc-web .onRetry=${() => this.initializeConnection(true)}>
+          </w3m-connecting-wc-web>
         `
       case 'mobile':
         return html`
-          <w3m-connecting-wc-mobile .multiPlatfrom=${multiPlatform}></w3m-connecting-wc-mobile>
+          <w3m-connecting-wc-mobile .onRetry=${() => this.initializeConnection(true)}>
+          </w3m-connecting-wc-mobile>
         `
       case 'qrcode':
         return html`<w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode>`

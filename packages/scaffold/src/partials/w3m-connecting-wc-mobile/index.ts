@@ -34,6 +34,7 @@ export class W3mConnectingWcMobile extends WcConnectingLitElement {
         .buffering=${this.buffering}
         .error=${Boolean(this.error)}
         .onConnect=${this.onConnect.bind(this)}
+        .onRetry=${this.onRetry?.bind(this)}
         .onCopyUri=${this.onCopyUri.bind(this)}
         .autoConnect=${false}
       ></w3m-connecting-widget>

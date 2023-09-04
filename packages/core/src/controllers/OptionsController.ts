@@ -1,12 +1,14 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
-import type { ProjectId } from '../utils/TypeUtils.js'
+import type { ProjectId, Tokens } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
   projectId: ProjectId
+  featuredWalletIds?: string[]
   includeWalletIds?: string[]
   excludeWalletIds?: string[]
+  tokens?: Tokens
 }
 
 type StateKey = keyof OptionsControllerState
@@ -34,5 +36,13 @@ export const OptionsController = {
 
   setExcludeWalletIds(excludeWalletIds: OptionsControllerState['excludeWalletIds']) {
     state.excludeWalletIds = excludeWalletIds
+  },
+
+  setFeaturedWalletIds(featuredWalletIds: OptionsControllerState['featuredWalletIds']) {
+    state.featuredWalletIds = featuredWalletIds
+  },
+
+  setTokens(tokens: OptionsControllerState['tokens']) {
+    state.tokens = tokens
   }
 }
