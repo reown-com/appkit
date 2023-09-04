@@ -17,7 +17,12 @@ export class WuiTabs extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.style.cssText = `--local-tab: ${this.activeTab};`
+    const isDense = this.tabs.length > 3
+
+    this.style.cssText = `
+      --local-tab: ${this.activeTab};
+      --local-tab-width: ${isDense ? '80px' : '100px'}
+    `
 
     return this.tabs.map((tab, index) => {
       const isActive = index === this.activeTab
@@ -25,7 +30,9 @@ export class WuiTabs extends LitElement {
       return html`
         <button @click=${() => this.onTabClick(index)} data-active=${isActive}>
           <wui-icon size="sm" color="inherit" name=${tab.icon}></wui-icon>
-          <wui-text variant="small-600" color="inherit"> ${tab.label} </wui-text>
+          <wui-text variant=${isDense ? 'tiny-600' : 'small-600'} color="inherit">
+            ${tab.label}
+          </wui-text>
         </button>
       `
     })

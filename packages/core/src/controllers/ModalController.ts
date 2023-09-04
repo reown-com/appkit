@@ -1,6 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
 import { AccountController } from './AccountController.js'
+import { ApiController } from './ApiController.js'
 import type { RouterControllerState } from './RouterController.js'
 import { RouterController } from './RouterController.js'
 
@@ -30,7 +31,9 @@ export const ModalController = {
     return subKey(state, key, callback)
   },
 
-  open(options?: ModalControllerArguments['open']) {
+  async open(options?: ModalControllerArguments['open']) {
+    await ApiController.state.prefetchPromise
+
     if (options?.view) {
       RouterController.reset(options.view)
     } else if (AccountController.state.isConnected) {

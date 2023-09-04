@@ -33,6 +33,7 @@ export interface LibraryOptions {
   themeVariables?: ThemeVariables
   includeWalletIds?: OptionsControllerState['includeWalletIds']
   excludeWalletIds?: OptionsControllerState['excludeWalletIds']
+  featuredWalletIds?: OptionsControllerState['featuredWalletIds']
   defaultChain?: NetworkControllerState['caipNetwork']
   tokens?: OptionsControllerState['tokens']
   _sdkVersion: ApiControllerState['sdkVersion']
@@ -147,22 +148,23 @@ export class Web3ModalScaffold {
   // -- Private ------------------------------------------------------------------
   private initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)
-    ConnectionController.setClient(options.connectionControllerClient)
+    NetworkController.setDefaultCaipNetwork(options.defaultChain)
+
     OptionsController.setProjectId(options.projectId)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
     OptionsController.setExcludeWalletIds(options.excludeWalletIds)
+    OptionsController.setFeaturedWalletIds(options.featuredWalletIds)
+    OptionsController.setTokens(options.tokens)
+
+    ConnectionController.setClient(options.connectionControllerClient)
+
     ApiController.setSdkVersion(options._sdkVersion)
+
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)
     }
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables)
-    }
-    if (options.defaultChain) {
-      NetworkController.setDefaultCaipNetwork(options.defaultChain)
-    }
-    if (options.tokens) {
-      OptionsController.setTokens(options.tokens)
     }
   }
 
