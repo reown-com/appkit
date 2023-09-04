@@ -50,4 +50,9 @@ export default css`
     width: 42px;
     height: 42px;
   }
+
+  wui-icon[data-parent-size='full'] {
+    width: 100%;
+    height: 100%;
+  }
 `

@@ -486,13 +486,13 @@ export const elementStyles = css`
 
   button:disabled {
     cursor: not-allowed;
-    background-color: var(--wui-overlay-010);
+    background-color: var(--wui-overlay-005);
   }
 
   button[data-variant='shade']:disabled,
   button[data-variant='accent']:disabled {
-    background-color: transparent;
-    color: var(--wui-color-bg-300);
+    background-color: var(--wui-overlay-010);
+    color: var(--wui-overlay-015);
     filter: grayscale(1);
   }
 
@@ -525,8 +525,8 @@ export const elementStyles = css`
   }
 
   button[data-variant='fill']:disabled {
-    color: var(--wui-color-fg-200);
-    background-color: var(--wui-overlay-020);
+    color: var(--wui-overlay-015);
+    background-color: var(--wui-overlay-015);
   }
 
   button[data-variant='shade'] {

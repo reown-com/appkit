@@ -19,7 +19,7 @@ export class W3mGetWalletView extends LitElement {
         <wui-list-wallet
           name="Explore all"
           showAllWallets
-          .walletImages=${walletImagesSrc}
+          walletIcon="allWallets"
           icon="externalLink"
           @click=${() => {
             CoreHelperUtil.openHref('https://walletconnect.com/explorer?type=wallet', '_blank')
@@ -35,7 +35,6 @@ export class W3mGetWalletView extends LitElement {
       wallet => html`
         <wui-list-wallet
           name=${wallet.name ?? 'Unknown'}
-          tagLabel="get wallet"
           tagVariant="main"
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet.image_id))}
           @click=${() => {

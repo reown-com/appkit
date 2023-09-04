@@ -15,6 +15,7 @@ export default {
   title: 'Composites/wui-chip',
   args: {
     variant: 'fill',
+    disabled: false,
     icon: 'externalLink',
     imageSrc: walletImagesOptions[3]?.src,
     href: externalLink
@@ -27,6 +28,9 @@ export default {
     icon: {
       options: iconOptions,
       control: { type: 'select' }
+    },
+    disabled: {
+      control: { type: 'boolean' }
     }
   }
 } as Component
@@ -37,6 +41,7 @@ export const Default: Component = {
       icon=${args.icon}
       variant=${args.variant}
       href=${args.href}
+      ?disabled=${args.disabled}
       .imageSrc=${args.imageSrc}
     ></wui-chip>`
 }

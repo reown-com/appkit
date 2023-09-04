@@ -11,6 +11,11 @@ export default css`
     overflow: hidden;
   }
 
+  a.disabled > wui-icon,
+  a.disabled > wui-image {
+    filter: grayscale(1);
+  }
+
   a[data-variant='fill'] {
     color: var(--wui-color-inverse-100);
     background-color: var(--wui-color-accent-100);
@@ -85,6 +90,12 @@ export default css`
 
   a[data-variant='transparent']:focus-visible {
     background-color: var(--wui-overlay-005);
+  }
+
+  a.disabled {
+    color: var(--wui-overlay-015);
+    background-color: var(--wui-overlay-015);
+    pointer-events: none;
   }
 
   @media (hover: hover) and (pointer: fine) {

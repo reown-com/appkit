@@ -26,18 +26,18 @@ export class WuiListWallet extends LitElement {
 
   @property() public icon?: IconType
 
+  @property() public walletIcon?: IconType
+
   @property({ type: Boolean }) public disabled = false
 
   @property({ type: Boolean }) public showAllWallets = false
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const textColor = this.disabled ? 'fg-300' : 'fg-100'
-
     return html`
       <button ?disabled=${this.disabled} ontouchstart>
         ${this.templateAllWallets()} ${this.templateWalletImage()}
-        <wui-text variant="paragraph-500" color=${textColor}>${this.name}</wui-text>
+        <wui-text variant="paragraph-500" color="inherit">${this.name}</wui-text>
         ${this.templateStatus()}
       </button>
     `
@@ -45,10 +45,10 @@ export class WuiListWallet extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateAllWallets() {
-    if (this.showAllWallets && this.walletImages) {
-      return html`
-        <wui-all-wallets-image .walletImages=${this.walletImages}> </wui-all-wallets-image>
-      `
+    if (this.showAllWallets && this.imageSrc) {
+      return html` <wui-all-wallets-image .imageeSrc=${this.imageSrc}> </wui-all-wallets-image> `
+    } else if (this.showAllWallets && this.walletIcon) {
+      return html` <wui-wallet-image .walletIcon=${this.walletIcon} size="sm"> </wui-wallet-image> `
     }
 
     return null

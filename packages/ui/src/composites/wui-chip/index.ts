@@ -17,6 +17,8 @@ export class WuiChip extends LitElement {
 
   @property() public imageSrc?: string = undefined
 
+  @property({ type: Boolean }) public disabled = false
+
   @property() public icon: IconType = 'externalLink'
 
   @property() public href = ''
@@ -26,7 +28,13 @@ export class WuiChip extends LitElement {
     const textVariant = this.variant === 'transparent' ? 'small-600' : 'paragraph-600'
 
     return html`
-      <a rel="noreferrer" target="_blank" href=${this.href} data-variant=${this.variant}>
+      <a
+        rel="noreferrer"
+        target="_blank"
+        href=${this.href}
+        class=${this.disabled ? 'disabled' : ''}
+        data-variant=${this.variant}
+      >
         ${this.imageTemplate()}
         <wui-text variant=${textVariant} color="inherit">
           ${UiHelperUtil.getHostName(this.href)}
