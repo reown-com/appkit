@@ -42,7 +42,9 @@ export class W3mConnectingWcQrcode extends WcConnectingLitElement {
   // -- Private ------------------------------------------- //
   private isReady() {
     if (!this.ready && this.uri) {
-      this.timeout = setTimeout(() => (this.ready = true), 250)
+      this.timeout = setTimeout(() => {
+        this.ready = true
+      }, 250)
     }
   }
 
