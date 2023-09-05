@@ -38,7 +38,7 @@ export default css`
 
   wui-text[align='center'] {
     width: 100%;
-    padding: 0px var(--wui-spacing-3xl);
+    padding: 0px var(--wui-spacing-l);
   }
 
   [data-error='true'] wui-icon-box {

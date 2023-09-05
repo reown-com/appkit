@@ -2,20 +2,30 @@ import { AssetUtil, ConnectionController, ThemeController } from '@web3modal/cor
 import { html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { WcConnectingLitElement } from '../../utils/WcConnectingLitElement.js'
+import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-connecting-wc-qrcode')
-export class W3mConnectingWcQrcode extends WcConnectingLitElement {
+export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   public static override styles = styles
+
+  public constructor() {
+    super()
+    window.addEventListener('resize', this.forceUpdate)
+  }
+
+  public override disconnectedCallback() {
+    super.disconnectedCallback()
+    window.removeEventListener('resize', this.forceUpdate)
+  }
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.isReady()
+    this.onRenderProxy()
 
     return html`
       <wui-flex padding="xl" flexDirection="column" gap="xl" alignItems="center">
-        <wui-shimmer borderRadius="l" width="100%"> ${this.qrCodeTenmplate()} </wui-shimmer>
+        <wui-shimmer borderRadius="l" width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
 
         <wui-text variant="paragraph-500" color="fg-100">
           Scan this QR Code with your phone
@@ -30,13 +40,15 @@ export class W3mConnectingWcQrcode extends WcConnectingLitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private isReady() {
+  private onRenderProxy() {
     if (!this.ready && this.uri) {
-      this.timeout = setTimeout(() => (this.ready = true), 250)
+      this.timeout = setTimeout(() => {
+        this.ready = true
+      }, 250)
     }
   }
 
-  private qrCodeTenmplate() {
+  private qrCodeTemplate() {
     if (!this.uri || !this.ready) {
       return null
     }
@@ -52,6 +64,10 @@ export class W3mConnectingWcQrcode extends WcConnectingLitElement {
       imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet?.image_id))}
       alt=${ifDefined(alt)}
     ></wui-qr-code>`
+  }
+
+  private forceUpdate = () => {
+    this.requestUpdate()
   }
 }
 

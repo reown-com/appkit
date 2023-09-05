@@ -1,36 +1,21 @@
-import { AssetUtil, ConnectionController, ModalController, RouterController } from '@web3modal/core'
-import { LitElement, html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+import { ConnectionController, ModalController } from '@web3modal/core'
+import { customElement } from 'lit/decorators.js'
+import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-external-view')
-export class W3mConnectingExternalView extends LitElement {
-  // -- Members ------------------------------------------- //
-  private readonly connector = RouterController.state.data?.connector
-
-  // -- State & Properties -------------------------------- //
-  @state() private error = false
-
-  // -- Render -------------------------------------------- //
-  public override render() {
+export class W3mConnectingExternalView extends W3mConnectingWidget {
+  public constructor() {
+    super()
     if (!this.connector) {
       throw new Error('w3m-connecting-view: No connector provided')
     }
-
-    const { name, imageId } = this.connector
-
-    return html`
-      <w3m-connecting-widget
-        name=${ifDefined(name)}
-        imageSrc=${ifDefined(AssetUtil.getConnectorImage(imageId))}
-        .error=${this.error}
-        .onConnect=${this.onConnect.bind(this)}
-      ></w3m-connecting-widget>
-    `
+    this.onConnect = this.onConnectProxy.bind(this)
+    this.onAutoConnect = this.onConnectProxy.bind(this)
+    this.isWalletConnect = false
   }
 
   // -- Private ------------------------------------------- //
-  private async onConnect() {
+  private async onConnectProxy() {
     try {
       this.error = false
       if (this.connector) {
