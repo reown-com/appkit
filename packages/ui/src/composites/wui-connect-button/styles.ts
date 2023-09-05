@@ -2,8 +2,8 @@ import { css } from 'lit'
 
 export default css`
   :host {
-    width: var(--local-width);
     position: relative;
+    display: block;
   }
 
   button {
