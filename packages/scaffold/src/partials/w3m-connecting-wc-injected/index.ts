@@ -10,6 +10,7 @@ export class W3mConnectingWcInjected extends W3mConnectingWidget {
       throw new Error('w3m-connecting-wc-injected: No wallet provided')
     }
     this.onConnect = this.onConnectProxy.bind(this)
+    this.onAutoConnect = this.onConnectProxy.bind(this)
   }
 
   // -- Private ------------------------------------------- //

@@ -10,7 +10,6 @@ export class W3mConnectingWcWeb extends W3mConnectingWidget {
       throw new Error('w3m-connecting-wc-web: No wallet provided')
     }
     this.onConnect = this.onConnectProxy.bind(this)
-    this.onRender = () => null
     this.secondaryBtnLabel = 'Open'
     this.secondaryLabel = 'Open and continue in a new browser tab'
     this.secondaryBtnIcon = 'externalLink'

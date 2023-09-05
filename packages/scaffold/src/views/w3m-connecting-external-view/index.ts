@@ -10,6 +10,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       throw new Error('w3m-connecting-view: No connector provided')
     }
     this.onConnect = this.onConnectProxy.bind(this)
+    this.onAutoConnect = this.onConnectProxy.bind(this)
   }
 
   // -- Private ------------------------------------------- //

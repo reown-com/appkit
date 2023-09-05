@@ -40,6 +40,8 @@ export class W3mConnectingWidget extends LitElement {
 
   protected onRender?: (() => void) | (() => Promise<void>) = undefined
 
+  protected onAutoConnect?: (() => void) | (() => Promise<void>) = undefined
+
   // -- State & Properties -------------------------------- //
   @state() protected uri = ConnectionController.state.wcUri
 
@@ -64,11 +66,8 @@ export class W3mConnectingWidget extends LitElement {
   }
 
   public override firstUpdated() {
-    const autoConnect = !this.onRender
-    if (autoConnect) {
-      this.onConnect?.()
-    }
-    this.showRetry = !autoConnect
+    this.onAutoConnect?.()
+    this.showRetry = !this.onAutoConnect
   }
 
   public override disconnectedCallback() {
