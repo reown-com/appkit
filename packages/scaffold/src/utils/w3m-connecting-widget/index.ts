@@ -20,15 +20,7 @@ export class W3mConnectingWidget extends LitElement {
 
   protected readonly connector = RouterController.state.data?.connector
 
-  protected unsubscribe: (() => void)[] = []
-
   protected timeout?: ReturnType<typeof setTimeout> = undefined
-
-  protected imageSrc =
-    AssetUtil.getWalletImage(this.wallet?.image_id) ??
-    AssetUtil.getConnectorImage(this.connector?.imageId)
-
-  protected name = this.wallet?.name ?? this.connector?.name ?? 'Wallet'
 
   protected secondaryBtnLabel = 'Try again'
 
@@ -41,6 +33,16 @@ export class W3mConnectingWidget extends LitElement {
   protected onRender?: (() => void) | (() => Promise<void>) = undefined
 
   protected onAutoConnect?: (() => void) | (() => Promise<void>) = undefined
+
+  private unsubscribe: (() => void)[] = []
+
+  private imageSrc =
+    AssetUtil.getWalletImage(this.wallet?.image_id) ??
+    AssetUtil.getConnectorImage(this.connector?.imageId)
+
+  private name = this.wallet?.name ?? this.connector?.name ?? 'Wallet'
+
+  private isRetrying = false
 
   // -- State & Properties -------------------------------- //
   @state() protected uri = ConnectionController.state.wcUri
@@ -59,7 +61,13 @@ export class W3mConnectingWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ConnectionController.subscribeKey('wcUri', val => (this.uri = val)),
+        ConnectionController.subscribeKey('wcUri', val => {
+          this.uri = val
+          if (this.isRetrying && this.onRetry) {
+            this.isRetrying = false
+            this.onConnect?.()
+          }
+        }),
         ConnectionController.subscribeKey('wcError', val => (this.error = val))
       ]
     )
@@ -161,6 +169,7 @@ export class W3mConnectingWidget extends LitElement {
     if (!this.buffering) {
       ConnectionController.setWcError(false)
       if (this.onRetry) {
+        this.isRetrying = true
         this.onRetry?.()
       } else {
         this.onConnect?.()
