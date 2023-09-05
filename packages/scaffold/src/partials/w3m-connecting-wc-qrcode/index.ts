@@ -2,11 +2,11 @@ import { AssetUtil, ConnectionController, ThemeController } from '@web3modal/cor
 import { html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { WcConnectingLitElement } from '../../utils/WcConnectingLitElement.js'
+import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-connecting-wc-qrcode')
-export class W3mConnectingWcQrcode extends WcConnectingLitElement {
+export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   public static override styles = styles
 
   public constructor() {
@@ -21,7 +21,7 @@ export class W3mConnectingWcQrcode extends WcConnectingLitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.isReady()
+    this.onRenderProxy()
 
     return html`
       <wui-flex padding="xl" flexDirection="column" gap="xl" alignItems="center">
@@ -40,7 +40,7 @@ export class W3mConnectingWcQrcode extends WcConnectingLitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private isReady() {
+  private onRenderProxy() {
     if (!this.ready && this.uri) {
       this.timeout = setTimeout(() => {
         this.ready = true

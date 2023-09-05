@@ -1,6 +1,6 @@
 import { ConnectionController, ModalController } from '@web3modal/core'
 import { customElement } from 'lit/decorators.js'
-import { W3mConnectingWidget } from '../w3m-connecting-wc-super/index.js'
+import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-wc-injected')
 export class W3mConnectingWcInjected extends W3mConnectingWidget {
