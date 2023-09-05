@@ -180,7 +180,7 @@ export class W3mConnectingWidget extends LitElement {
   }
 
   // -- Protected ----------------------------------------- //
-  private onCopyUri() {
+  protected onCopyUri() {
     try {
       if (this.uri) {
         CoreHelperUtil.copyToClopboard(this.uri)
