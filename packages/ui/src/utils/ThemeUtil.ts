@@ -529,6 +529,10 @@ export const elementStyles = css`
     background-color: var(--wui-overlay-015);
   }
 
+  button[data-variant='fill']:disabled > wui-icon {
+    color: var(--wui-overlay-015);
+  }
+
   button[data-variant='shade'] {
     color: var(--wui-color-fg-200);
   }
