@@ -1,7 +1,6 @@
 import type { Connector } from '@web3modal/core'
 import {
   ApiController,
-  AssetController,
   AssetUtil,
   ConnectionController,
   ConnectorController,
@@ -130,14 +129,11 @@ export class W3mConnectView extends LitElement {
       return null
     }
 
-    const { walletImages } = AssetController.state
-    const walletImagesSrc = Object.values(walletImages).map(src => ({ src }))
-
     return html`
       <wui-list-wallet
         name="All Wallets"
+        walletIcon="allWallets"
         showAllWallets
-        .walletImages=${walletImagesSrc}
         @click=${this.onAllWallets.bind(this)}
       ></wui-list-wallet>
     `
