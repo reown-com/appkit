@@ -28,7 +28,7 @@ export class WuiConnectButton extends LitElement {
       <button
         data-size=${this.size}
         ?disabled=${this.disabled}
-        class=${this.loading ? 'loading' : ''}
+        class=${this.loading && 'loading'}
         ontouchstart
       >
         ${this.loadingTemplate()}
@@ -40,13 +40,11 @@ export class WuiConnectButton extends LitElement {
   }
 
   public loadingTemplate() {
-    if (this.loading) {
-      return html`<svg viewBox="25 25 50 50">
-        <circle r="20" cy="50" cx="50"></circle>
-      </svg>`
+    if (!this.loading) {
+      return null
     }
 
-    return html``
+    return html`<wui-loading-spinner size=${this.size} color="accent-100"></wui-loading-spinner>`
   }
 }
 

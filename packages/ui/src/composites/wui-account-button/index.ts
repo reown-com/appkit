@@ -29,7 +29,7 @@ export class WuiAccountButton extends LitElement {
     return html`
       <button ?disabled=${this.disabled}>
         ${this.balanceTemplate()}
-        <wui-flex gap="xxs" alignItems="center" class=${this.balance ? '' : 'noBalance'}>
+        <wui-flex gap="xxs" alignItems="center" class=${this.balance ? undefined : 'noBalance'}>
           <wui-avatar
             .imageSrc=${this.avatarSrc}
             alt=${this.address}

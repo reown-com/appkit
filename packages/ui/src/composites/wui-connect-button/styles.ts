@@ -69,52 +69,22 @@ export default css`
     padding-left: var(--wui-spacing-3xs);
   }
 
-  button.loading > wui-text,
-  button.loading > wui-loading-spinner {
+  button.loading > wui-text {
     color: var(--wui-color-accent-100);
   }
 
-  svg {
+  wui-loading-spinner {
     width: 14px;
     height: 14px;
-    animation: rotate 2s linear infinite;
-    transition: all var(--wui-ease-in-power-3) var(--wui-duration-lg);
   }
 
-  button[data-size='sm'] > svg {
+  wui-loading-spinner::slotted(svg) {
+    width: 10px !important;
+    height: 10px !important;
+  }
+
+  button[data-size='sm'] > wui-loading-spinner {
     width: 12px;
     height: 12px;
-  }
-
-  circle {
-    fill: none;
-    stroke: var(--wui-color-accent-100);
-    stroke-width: 8px;
-    stroke-dasharray: 1, 124;
-    stroke-dashoffset: 0;
-    stroke-linecap: round;
-    animation: dash 1.5s ease-in-out infinite;
-  }
-
-  @keyframes rotate {
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  @keyframes dash {
-    0% {
-      stroke-dasharray: 1, 124;
-      stroke-dashoffset: 0;
-    }
-
-    50% {
-      stroke-dasharray: 90, 124;
-      stroke-dashoffset: -35;
-    }
-
-    100% {
-      stroke-dashoffset: -125;
-    }
   }
 `
