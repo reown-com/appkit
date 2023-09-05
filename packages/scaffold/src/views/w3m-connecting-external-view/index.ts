@@ -11,6 +11,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     }
     this.onConnect = this.onConnectProxy.bind(this)
     this.onAutoConnect = this.onConnectProxy.bind(this)
+    this.isWalletConnect = false
   }
 
   // -- Private ------------------------------------------- //

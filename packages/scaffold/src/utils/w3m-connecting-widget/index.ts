@@ -34,6 +34,8 @@ export class W3mConnectingWidget extends LitElement {
 
   protected onAutoConnect?: (() => void) | (() => Promise<void>) = undefined
 
+  protected isWalletConnect = true
+
   private unsubscribe: (() => void)[] = []
 
   private imageSrc =
@@ -104,7 +106,7 @@ export class W3mConnectingWidget extends LitElement {
 
     return html`
       <wui-flex
-        ?data-error=${this.error}
+        data-error=${ifDefined(this.error)}
         data-retry=${this.showRetry}
         flexDirection="column"
         alignItems="center"
@@ -143,7 +145,7 @@ export class W3mConnectingWidget extends LitElement {
         </wui-button>
       </wui-flex>
 
-      ${this.onCopyUri
+      ${this.isWalletConnect
         ? html`
             <wui-flex .padding=${['0', 'xl', 'xl', 'xl'] as const}>
               <wui-button variant="fullWidth" @click=${this.onCopyUri}>
@@ -178,7 +180,7 @@ export class W3mConnectingWidget extends LitElement {
   }
 
   // -- Protected ----------------------------------------- //
-  protected onCopyUri() {
+  private onCopyUri() {
     try {
       if (this.uri) {
         CoreHelperUtil.copyToClopboard(this.uri)
