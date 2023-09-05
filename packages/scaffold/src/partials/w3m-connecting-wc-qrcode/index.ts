@@ -15,6 +15,7 @@ export class W3mConnectingWcQrcode extends WcConnectingLitElement {
   }
 
   public override disconnectedCallback() {
+    super.disconnectedCallback()
     window.removeEventListener('resize', this.forceUpdate)
   }
 

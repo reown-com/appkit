@@ -1,4 +1,5 @@
 import { ConnectionController } from '@web3modal/core'
+import type { IconType } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -24,6 +25,12 @@ export class W3mConnectingWidget extends LitElement {
   @property() imageSrc?: string = undefined
 
   @property() public name = 'Wallet'
+
+  @property() public secondaryBtnLabel = 'Try again'
+
+  @property() public secondaryBtnIcon: IconType = 'refresh'
+
+  @property() public secondaryLabel = 'Accept connection request in the wallet'
 
   @property() public onConnect?: (() => void) | (() => Promise<void>) = undefined
 
@@ -58,7 +65,7 @@ export class W3mConnectingWidget extends LitElement {
     this.onShowRetry()
     const subLabel = this.error
       ? 'Connection can be declined if a previous request is still active'
-      : 'Accept connection request in the wallet'
+      : this.secondaryLabel
 
     let label = `Continue in ${this.name}`
 
@@ -106,8 +113,8 @@ export class W3mConnectingWidget extends LitElement {
           ?disabled=${!this.error && (this.autoConnect || this.buffering)}
           @click=${this.onTryAgain.bind(this)}
         >
-          <wui-icon color="inherit" slot="iconLeft" name="refresh"></wui-icon>
-          Try again
+          <wui-icon color="inherit" slot="iconLeft" name=${this.secondaryBtnIcon}></wui-icon>
+          ${this.secondaryBtnLabel}
         </wui-button>
       </wui-flex>
 

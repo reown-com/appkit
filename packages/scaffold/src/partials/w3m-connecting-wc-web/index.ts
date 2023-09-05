@@ -12,11 +12,12 @@ export class W3mConnectingWcWeb extends WcConnectingLitElement {
       throw new Error('w3m-connecting-wc-web: No wallet provided')
     }
 
-    this.isReady()
-
     return html`
       <w3m-connecting-widget
         name=${this.wallet.name}
+        secondaryBtnLabel="Open"
+        secondaryLabel="Open and continue in a new browser tab"
+        secondaryBtnIcon="externalLink"
         imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet.image_id))}
         .error=${Boolean(this.error)}
         .onConnect=${this.onConnect.bind(this)}
@@ -28,15 +29,6 @@ export class W3mConnectingWcWeb extends WcConnectingLitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private isReady() {
-    if (!this.ready && this.uri) {
-      this.timeout = setTimeout(() => {
-        this.ready = true
-        this.onConnect()
-      }, 250)
-    }
-  }
-
   private onConnect() {
     if (this.wallet?.webapp_link && this.uri) {
       try {
