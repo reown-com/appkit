@@ -9,9 +9,14 @@ type Component = Meta<WuiLoadingSpinner>
 export default {
   title: 'Components/wui-loading-spinner',
   args: {
-    color: 'accent-100'
+    color: 'accent-100',
+    size: 'lg'
   },
   argTypes: {
+    size: {
+      options: ['sm', 'md', 'lg'],
+      control: { type: 'select' }
+    },
     color: {
       options: colorOptions,
       control: { type: 'select' }
@@ -20,5 +25,7 @@ export default {
 } as Component
 
 export const Default: Component = {
-  render: args => html` <wui-loading-spinner color=${args.color}></wui-loading-spinner> `
+  render: args => html`
+    <wui-loading-spinner size=${args.size} color=${args.color}></wui-loading-spinner>
+  `
 }
