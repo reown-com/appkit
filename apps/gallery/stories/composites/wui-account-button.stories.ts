@@ -9,16 +9,23 @@ type Component = Meta<WuiAccountButton>
 export default {
   title: 'Composites/wui-account-button',
   args: {
+    disabled: false,
     networkSrc: networkImageSrc,
     avatarSrc: avatarImageSrc,
     address,
     balance: '0.527 ETH'
+  },
+  argTypes: {
+    disabled: {
+      control: { type: 'boolean' }
+    }
   }
 } as Component
 
 export const Default: Component = {
   render: args =>
     html`<wui-account-button
+      ?disabled=${args.disabled}
       .networkSrc=${args.networkSrc}
       .avatarSrc=${args.avatarSrc}
       .balance=${args.balance}
