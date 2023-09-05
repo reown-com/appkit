@@ -1,35 +1,23 @@
-import { AssetUtil, ConnectionController, CoreHelperUtil } from '@web3modal/core'
-import { html } from 'lit'
+import { ConnectionController, CoreHelperUtil } from '@web3modal/core'
 import { customElement } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
-import { WcConnectingLitElement } from '../../utils/WcConnectingLitElement.js'
+import { W3mConnectingWidget } from '../w3m-connecting-wc-super/index.js'
 
 @customElement('w3m-connecting-wc-web')
-export class W3mConnectingWcWeb extends WcConnectingLitElement {
-  // -- Render -------------------------------------------- //
-  public override render() {
+export class W3mConnectingWcWeb extends W3mConnectingWidget {
+  public constructor() {
+    super()
     if (!this.wallet) {
       throw new Error('w3m-connecting-wc-web: No wallet provided')
     }
-
-    return html`
-      <w3m-connecting-widget
-        name=${this.wallet.name}
-        secondaryBtnLabel="Open"
-        secondaryLabel="Open and continue in a new browser tab"
-        secondaryBtnIcon="externalLink"
-        imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet.image_id))}
-        .error=${Boolean(this.error)}
-        .onConnect=${this.onConnect.bind(this)}
-        .onCopyUri=${this.onCopyUri.bind(this)}
-        .onRetry=${this.onRetry?.bind(this)}
-        .autoConnect=${false}
-      ></w3m-connecting-widget>
-    `
+    this.onConnect = this.onConnectProxy.bind(this)
+    this.onRender = () => null
+    this.secondaryBtnLabel = 'Open'
+    this.secondaryLabel = 'Open and continue in a new browser tab'
+    this.secondaryBtnIcon = 'externalLink'
   }
 
   // -- Private ------------------------------------------- //
-  private onConnect() {
+  private onConnectProxy() {
     if (this.wallet?.webapp_link && this.uri) {
       try {
         this.error = false

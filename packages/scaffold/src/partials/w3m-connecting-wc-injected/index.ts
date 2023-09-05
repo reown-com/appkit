@@ -1,29 +1,19 @@
-import { AssetUtil, ConnectionController, ModalController } from '@web3modal/core'
-import { html } from 'lit'
+import { ConnectionController, ModalController } from '@web3modal/core'
 import { customElement } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
-import { WcConnectingLitElement } from '../../utils/WcConnectingLitElement.js'
+import { W3mConnectingWidget } from '../w3m-connecting-wc-super/index.js'
 
 @customElement('w3m-connecting-wc-injected')
-export class W3mConnectingWcInjected extends WcConnectingLitElement {
-  // -- Render -------------------------------------------- //
-  public override render() {
+export class W3mConnectingWcInjected extends W3mConnectingWidget {
+  public constructor() {
+    super()
     if (!this.wallet) {
       throw new Error('w3m-connecting-wc-injected: No wallet provided')
     }
-
-    return html`
-      <w3m-connecting-widget
-        name=${this.wallet.name}
-        imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet.image_id))}
-        .error=${Boolean(this.error)}
-        .onConnect=${this.onConnect.bind(this)}
-      ></w3m-connecting-widget>
-    `
+    this.onConnect = this.onConnectProxy.bind(this)
   }
 
   // -- Private ------------------------------------------- //
-  private async onConnect() {
+  private async onConnectProxy() {
     try {
       this.error = false
       await ConnectionController.connectExternal('injected')

@@ -1,43 +1,29 @@
-import { AssetUtil, ConnectionController, CoreHelperUtil } from '@web3modal/core'
-import { html } from 'lit'
+import { ConnectionController, CoreHelperUtil } from '@web3modal/core'
 import { customElement } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
-import { WcConnectingLitElement } from '../../utils/WcConnectingLitElement.js'
+import { W3mConnectingWidget } from '../w3m-connecting-wc-super/index.js'
 
 @customElement('w3m-connecting-wc-desktop')
-export class W3mConnectingWcDesktop extends WcConnectingLitElement {
-  // -- Render -------------------------------------------- //
-  public override render() {
+export class W3mConnectingWcDesktop extends W3mConnectingWidget {
+  public constructor() {
+    super()
     if (!this.wallet) {
       throw new Error('w3m-connecting-wc-desktop: No wallet provided')
     }
-
-    this.isReady()
-
-    return html`
-      <w3m-connecting-widget
-        imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet.image_id))}
-        name=${this.wallet.name}
-        .error=${Boolean(this.error)}
-        .onConnect=${this.onConnect.bind(this)}
-        .onCopyUri=${this.onCopyUri.bind(this)}
-        .onRetry=${this.onRetry?.bind(this)}
-        .autoConnect=${false}
-      ></w3m-connecting-widget>
-    `
+    this.onConnect = this.onConnectProxy.bind(this)
+    this.onRender = this.onRenderProxy.bind(this)
   }
 
   // -- Private ------------------------------------------- //
-  private isReady() {
+  private onRenderProxy() {
     if (!this.ready && this.uri) {
+      this.ready = true
       this.timeout = setTimeout(() => {
-        this.ready = true
-        this.onConnect()
+        this.onConnect?.()
       }, 250)
     }
   }
 
-  private onConnect() {
+  private onConnectProxy() {
     if (this.wallet?.desktop_link && this.uri) {
       try {
         this.error = false
