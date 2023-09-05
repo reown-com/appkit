@@ -30,11 +30,7 @@ export default css`
   }
 
   button[data-size='md'] {
-    padding: 9px var(--wui-spacing-l) 9px var(--wui-spacing-s);
-  }
-
-  button[data-size='md'] + wui-text {
-    padding-left: var(--wui-spacing-3xs);
+    padding: 9px var(--wui-spacing-l) 9px var(--wui-spacing-l);
   }
 
   wui-loading-spinner {
