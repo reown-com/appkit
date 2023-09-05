@@ -155,6 +155,7 @@ export const spacingOptions: SpacingType[] = [
 ]
 
 export const iconOptions: IconType[] = [
+  'allWallets',
   'apple',
   'arrowBottom',
   'arrowLeft',

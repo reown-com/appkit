@@ -7,6 +7,7 @@ export default css`
     width: 100%;
     background-color: var(--wui-overlay-002);
     border-radius: var(--wui-border-radius-xs);
+    color: var(--wui-color-fg-100);
   }
 
   button > wui-text:nth-child(2) {
@@ -16,6 +17,11 @@ export default css`
 
   wui-icon {
     color: var(--wui-color-fg-200) !important;
+  }
+
+  button:disabled {
+    background-color: var(--wui-overlay-015);
+    color: var(--wui-overlay-015);
   }
 
   button:disabled > wui-tag {

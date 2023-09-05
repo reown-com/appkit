@@ -35,7 +35,8 @@ export default css`
   }
 
   button:disabled {
-    color: var(--wui-color-fg-300);
+    background-color: var(--wui-overlay-015);
+    color: var(--wui-overlay-015);
   }
 
   button[data-loading='true'] > wui-icon {
