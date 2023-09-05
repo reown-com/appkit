@@ -53,7 +53,7 @@ export const ConnectorImageIds = {
   [SAFE_CONNECTOR_ID]: '461db637-8616-43ce-035a-d89b8a1d5800',
   [LEDGER_CONNECTOR_ID]: '54a1aa77-d202-4f8d-0fb2-5d2bb6db0300',
   [WALLET_CONNECT_CONNECTOR_ID]: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400',
-  [INJECTED_CONNECTOR_ID]: 'b2e6085e-8306-47fd-1a87-14bbd434f400'
+  [INJECTED_CONNECTOR_ID]: '7d2c8e5c-116b-46c4-3e9f-cdd8b2657400'
 } as Record<string, string>
 
 export const ConnectorExplorerIds = {

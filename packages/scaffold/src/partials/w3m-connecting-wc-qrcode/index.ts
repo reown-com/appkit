@@ -9,13 +9,22 @@ import styles from './styles.js'
 export class W3mConnectingWcQrcode extends WcConnectingLitElement {
   public static override styles = styles
 
+  public constructor() {
+    super()
+    window.addEventListener('resize', this.forceUpdate)
+  }
+
+  public override disconnectedCallback() {
+    window.removeEventListener('resize', this.forceUpdate)
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.isReady()
 
     return html`
       <wui-flex padding="xl" flexDirection="column" gap="xl" alignItems="center">
-        <wui-shimmer borderRadius="l" width="100%"> ${this.qrCodeTenmplate()} </wui-shimmer>
+        <wui-shimmer borderRadius="l" width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
 
         <wui-text variant="paragraph-500" color="fg-100">
           Scan this QR Code with your phone
@@ -36,7 +45,7 @@ export class W3mConnectingWcQrcode extends WcConnectingLitElement {
     }
   }
 
-  private qrCodeTenmplate() {
+  private qrCodeTemplate() {
     if (!this.uri || !this.ready) {
       return null
     }
@@ -52,6 +61,10 @@ export class W3mConnectingWcQrcode extends WcConnectingLitElement {
       imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet?.image_id))}
       alt=${ifDefined(alt)}
     ></wui-qr-code>`
+  }
+
+  private forceUpdate = () => {
+    this.requestUpdate()
   }
 }
 
