@@ -1,16 +1,16 @@
-import { AssetUtil, ConnectionController, CoreHelperUtil } from '@web3modal/core'
-import { html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
-import { WcConnectingLitElement } from '../../utils/WcConnectingLitElement.js'
+import { ConnectionController, CoreHelperUtil } from '@web3modal/core'
+import { customElement } from 'lit/decorators.js'
+import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-wc-mobile')
-export class W3mConnectingWcMobile extends WcConnectingLitElement {
-  // -- State & Properties -------------------------------- //
-  @state() private buffering = false
-
+export class W3mConnectingWcMobile extends W3mConnectingWidget {
   public constructor() {
     super()
+    if (!this.wallet) {
+      throw new Error('w3m-connecting-wc-mobile: No wallet provided')
+    }
+    this.onConnect = this.onConnectProxy.bind(this)
+    this.onRender = this.onRenderProxy.bind(this)
     document.addEventListener('visibilitychange', this.onBuffering.bind(this))
   }
 
@@ -19,37 +19,15 @@ export class W3mConnectingWcMobile extends WcConnectingLitElement {
     document.removeEventListener('visibilitychange', this.onBuffering.bind(this))
   }
 
-  // -- Render -------------------------------------------- //
-  public override render() {
-    if (!this.wallet) {
-      throw new Error('w3m-connecting-wc-mobile: No wallet provided')
-    }
-
-    this.isReady()
-
-    return html`
-      <w3m-connecting-widget
-        name=${this.wallet.name}
-        imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet.image_id))}
-        .buffering=${this.buffering}
-        .error=${Boolean(this.error)}
-        .onConnect=${this.onConnect.bind(this)}
-        .onRetry=${this.onRetry?.bind(this)}
-        .onCopyUri=${this.onCopyUri.bind(this)}
-        .autoConnect=${false}
-      ></w3m-connecting-widget>
-    `
-  }
-
   // -- Private ------------------------------------------- //
-  private isReady() {
+  private onRenderProxy() {
     if (!this.ready && this.uri) {
       this.ready = true
-      this.onConnect()
+      this.onConnect?.()
     }
   }
 
-  private onConnect() {
+  private onConnectProxy() {
     if (this.wallet?.mobile_link && this.uri) {
       try {
         this.error = false

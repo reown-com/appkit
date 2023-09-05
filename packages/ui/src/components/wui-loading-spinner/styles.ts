@@ -5,9 +5,22 @@ export default css`
     display: flex;
   }
 
-  svg {
+  :host([data-size='sm']) > svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  :host([data-size='md']) > svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  :host([data-size='lg']) > svg {
     width: 24px;
     height: 24px;
+  }
+
+  svg {
     animation: rotate 2s linear infinite;
     transition: all var(--wui-ease-in-power-3) var(--wui-duration-lg);
   }
@@ -20,6 +33,14 @@ export default css`
     stroke-dashoffset: 0;
     stroke-linecap: round;
     animation: dash 1.5s ease-in-out infinite;
+  }
+
+  :host([data-size='md']) > svg > circle {
+    stroke-width: 6px;
+  }
+
+  :host([data-size='sm']) > svg > circle {
+    stroke-width: 8px;
   }
 
   @keyframes rotate {

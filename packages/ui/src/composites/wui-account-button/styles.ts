@@ -12,6 +12,25 @@ export default css`
     gap: var(--wui-spacing-xs);
     padding: var(--wui-spacing-3xs) var(--wui-spacing-xs) var(--wui-spacing-3xs)
       var(--wui-spacing-xs);
+    border: 1px solid var(--wui-overlay-005);
+  }
+
+  button:disabled {
+    background: var(--wui-overlay-015);
+  }
+
+  button:disabled > wui-text {
+    color: var(--wui-overlay-015);
+  }
+
+  button:disabled > wui-flex > wui-text {
+    color: var(--wui-overlay-015);
+  }
+
+  button:disabled > wui-image,
+  button:disabled > wui-icon-box,
+  button:disabled > wui-flex > wui-avatar {
+    filter: grayscale(1);
   }
 
   button:has(wui-image) {
@@ -19,27 +38,49 @@ export default css`
       var(--wui-spacing-xs);
   }
 
+  wui-text {
+    color: var(--wui-color-fg-100);
+  }
+
+  wui-flex > wui-text {
+    color: var(--wui-color-fg-200);
+    transition: all var(--wui-ease-out-power-1) var(--wui-duration-lg);
+  }
+
   wui-image,
   wui-icon-box {
     border-radius: var(--wui-border-radius-3xl);
     width: 24px;
     height: 24px;
-  }
-
-  wui-icon-box {
-    border: 1px solid var(--wui-overlay-010);
+    outline: 2px solid var(--wui-overlay-005);
   }
 
   wui-flex {
     border-radius: var(--wui-border-radius-3xl);
-    border: 1px solid var(--wui-overlay-010);
-    background: var(--wui-color-accent-100);
+    border: 1px solid var(--wui-overlay-005);
+    background: var(--wui-overlay-005);
     padding: 4px var(--wui-spacing-m) 4px var(--wui-spacing-xxs);
+  }
+
+  wui-flex.noBalance {
+    border-radius: 0px;
+    border: none;
+    background: transparent;
   }
 
   wui-avatar {
     width: 20px;
     height: 20px;
-    border: 2px solid var(--wui-color-accent-080);
+    outline: 2px solid var(--wui-overlay-010);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    button:hover:enabled > wui-flex > wui-text {
+      color: var(--wui-color-fg-175);
+    }
+
+    button:active:enabled > wui-flex > wui-text {
+      color: var(--wui-color-fg-175);
+    }
   }
 `

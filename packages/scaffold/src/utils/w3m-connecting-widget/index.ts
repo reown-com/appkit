@@ -1,64 +1,98 @@
-import { ConnectionController } from '@web3modal/core'
+import {
+  AssetUtil,
+  ConnectionController,
+  CoreHelperUtil,
+  RouterController,
+  SnackController
+} from '@web3modal/core'
+import type { IconType } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement, property, state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { animate } from 'motion'
 import styles from './styles.js'
 
-@customElement('w3m-connecting-widget')
 export class W3mConnectingWidget extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
+  protected readonly wallet = RouterController.state.data?.wallet
+
+  protected readonly connector = RouterController.state.data?.connector
+
+  protected timeout?: ReturnType<typeof setTimeout> = undefined
+
+  protected secondaryBtnLabel = 'Try again'
+
+  protected secondaryBtnIcon: IconType = 'refresh'
+
+  protected secondaryLabel = 'Accept connection request in the wallet'
+
+  protected onConnect?: (() => void) | (() => Promise<void>) = undefined
+
+  protected onRender?: (() => void) | (() => Promise<void>) = undefined
+
+  protected onAutoConnect?: (() => void) | (() => Promise<void>) = undefined
+
+  protected isWalletConnect = true
+
   private unsubscribe: (() => void)[] = []
 
+  private imageSrc =
+    AssetUtil.getWalletImage(this.wallet?.image_id) ??
+    AssetUtil.getConnectorImage(this.connector?.imageId)
+
+  private name = this.wallet?.name ?? this.connector?.name ?? 'Wallet'
+
+  private isRetrying = false
+
   // -- State & Properties -------------------------------- //
+  @state() protected uri = ConnectionController.state.wcUri
+
+  @state() protected error = ConnectionController.state.wcError
+
+  @state() protected ready = false
+
   @state() private showRetry = false
 
-  @property({ type: Boolean }) public error = false
-
-  @property({ type: Boolean }) public buffering = false
-
-  @property({ type: Boolean }) public autoConnect = true
-
-  @property() imageSrc?: string = undefined
-
-  @property() public name = 'Wallet'
-
-  @property() public onConnect?: (() => void) | (() => Promise<void>) = undefined
+  @state() public buffering = false
 
   @property() public onRetry?: (() => void) | (() => Promise<void>) = undefined
-
-  @property() public onCopyUri?: (() => void) | (() => Promise<void>) = undefined
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectionController.subscribeKey('wcUri', () => {
-        if (this.onRetry) {
-          this.onConnect?.()
-        }
-      })
+      ...[
+        ConnectionController.subscribeKey('wcUri', val => {
+          this.uri = val
+          if (this.isRetrying && this.onRetry) {
+            this.isRetrying = false
+            this.onConnect?.()
+          }
+        }),
+        ConnectionController.subscribeKey('wcError', val => (this.error = val))
+      ]
     )
   }
 
   public override firstUpdated() {
-    if (this.autoConnect) {
-      this.onConnect?.()
-    }
-    this.showRetry = !this.autoConnect
+    this.onAutoConnect?.()
+    this.showRetry = !this.onAutoConnect
   }
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    clearTimeout(this.timeout)
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
+    this.onRender?.()
     this.onShowRetry()
+
     const subLabel = this.error
       ? 'Connection can be declined if a previous request is still active'
-      : 'Accept connection request in the wallet'
+      : this.secondaryLabel
 
     let label = `Continue in ${this.name}`
 
@@ -72,7 +106,7 @@ export class W3mConnectingWidget extends LitElement {
 
     return html`
       <wui-flex
-        data-error=${this.error}
+        data-error=${ifDefined(this.error)}
         data-retry=${this.showRetry}
         flexDirection="column"
         alignItems="center"
@@ -103,15 +137,15 @@ export class W3mConnectingWidget extends LitElement {
 
         <wui-button
           variant="accent"
-          ?disabled=${!this.error && (this.autoConnect || this.buffering)}
+          ?disabled=${!this.error && (!this.onRender || this.buffering)}
           @click=${this.onTryAgain.bind(this)}
         >
-          <wui-icon color="inherit" slot="iconLeft" name="refresh"></wui-icon>
-          Try again
+          <wui-icon color="inherit" slot="iconLeft" name=${this.secondaryBtnIcon}></wui-icon>
+          ${this.secondaryBtnLabel}
         </wui-button>
       </wui-flex>
 
-      ${this.onCopyUri
+      ${this.isWalletConnect
         ? html`
             <wui-flex .padding=${['0', 'xl', 'xl', 'xl'] as const}>
               <wui-button variant="fullWidth" @click=${this.onCopyUri}>
@@ -137,16 +171,23 @@ export class W3mConnectingWidget extends LitElement {
     if (!this.buffering) {
       ConnectionController.setWcError(false)
       if (this.onRetry) {
+        this.isRetrying = true
         this.onRetry?.()
       } else {
         this.onConnect?.()
       }
     }
   }
-}
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'w3m-connecting-widget': W3mConnectingWidget
+  // -- Protected ----------------------------------------- //
+  protected onCopyUri() {
+    try {
+      if (this.uri) {
+        CoreHelperUtil.copyToClopboard(this.uri)
+        SnackController.showSuccess('Link copied')
+      }
+    } catch {
+      SnackController.showError('Failed to copy')
+    }
   }
 }

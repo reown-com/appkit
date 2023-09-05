@@ -301,7 +301,7 @@ function createRootStyles(themeVariables: ThemeVariables) {
         var(--w3m-color-mix) var(--w3m-color-mix-strength),
         var(--wui-icon-box-bg-error-base-100)
       );
-      --wui-icon-box-bg-blue-100: color-mix(
+      --wui-icon-box-bg-accent-100: color-mix(
         in srgb,
         var(--w3m-color-mix) var(--w3m-color-mix-strength),
         var(--wui-icon-box-bg-blue-base-100)

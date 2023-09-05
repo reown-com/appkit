@@ -20,20 +20,22 @@ export class WuiAccountButton extends LitElement {
 
   @property() public balance?: string = undefined
 
+  @property({ type: Boolean }) public disabled = false
+
   @property() public address = ''
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button>
+      <button ?disabled=${this.disabled}>
         ${this.balanceTemplate()}
-        <wui-flex gap="xxs" alignItems="center">
+        <wui-flex gap="xxs" alignItems="center" class=${this.balance ? undefined : 'noBalance'}>
           <wui-avatar
             .imageSrc=${this.avatarSrc}
             alt=${this.address}
             address=${this.address}
           ></wui-avatar>
-          <wui-text variant="paragraph-600" color="inverse-100">
+          <wui-text variant="paragraph-600" color="inherit">
             ${UiHelperUtil.getTruncateAddress(this.address, 4)}
           </wui-text>
         </wui-flex>
@@ -57,7 +59,7 @@ export class WuiAccountButton extends LitElement {
 
       return html`
         ${networkElement}
-        <wui-text variant="paragraph-600" color="fg-100"> ${this.balance} </wui-text>
+        <wui-text variant="paragraph-600" color="inherit"> ${this.balance} </wui-text>
       `
     }
 
