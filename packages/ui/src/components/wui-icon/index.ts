@@ -53,8 +53,10 @@ import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder.js'
 import { walletSvg } from '../../assets/svg/wallet.js'
 import { walletConnectSvg } from '../../assets/svg/walletconnect.js'
 import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
+import { allWalletsSvg } from '../../assets/svg/all-wallets.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
+  allWallets: allWalletsSvg,
   apple: appleSvg,
   arrowBottom: arrowBottomSvg,
   arrowLeft: arrowLeftSvg,

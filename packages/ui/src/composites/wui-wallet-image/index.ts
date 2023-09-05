@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { BorderRadiusType, SizeType } from '../../utils/TypesUtil.js'
+import type { BorderRadiusType, IconType, SizeType } from '../../utils/TypesUtil.js'
 import styles from './styles.js'
 
 @customElement('wui-wallet-image')
@@ -16,6 +16,8 @@ export class WuiWalletImage extends LitElement {
   @property() public name = ''
 
   @property() public imageSrc?: string
+
+  @property() public walletIcon?: IconType
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -39,6 +41,13 @@ export class WuiWalletImage extends LitElement {
   private templateVisual() {
     if (this.imageSrc) {
       return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image>`
+    } else if (this.walletIcon) {
+      return html`<wui-icon
+        data-parent-size="full"
+        size="md"
+        color="inherit"
+        name=${this.walletIcon}
+      ></wui-icon>`
     }
 
     return html`<wui-icon
