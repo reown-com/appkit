@@ -17,8 +17,8 @@
       "dependsOn": ["build", "^build:laboratory"],
       "outputs": ["out/**", ".next/**", "!.next/cache/**"]
     },
-    "build:example": {
-      "dependsOn": ["build", "^build:example"],
+    "build:examples": {
+      "dependsOn": ["build", "^build:examples"],
       "outputs": ["dist/**"]
     },
     "typecheck": {

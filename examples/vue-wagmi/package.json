@@ -4,7 +4,7 @@
   "version": "3.0.0-alpha.5",
   "scripts": {
     "dev:example": "vite --port 3002",
-    "build:example": "vite build"
+    "build:examples": "vite build"
   },
   "dependencies": {
     "@web3modal/wagmi": "3.0.0-alpha.5"
