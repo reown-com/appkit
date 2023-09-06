@@ -8,6 +8,7 @@ import { VERSION } from '../src/utils/constants.js'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
+
 type OpenOptions = Parameters<Web3Modal['open']>[0]
 
 type ThemeModeOptions = Parameters<Web3Modal['setThemeMode']>[0]
@@ -34,6 +35,8 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 
   return modal
 }
+
+export { defaultWagmiConfig } from '../src/utils/defaultWagmiReactConfig.js'
 
 // -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalTheme() {
@@ -86,5 +89,3 @@ export function useWeb3Modal() {
 
   return { open, close }
 }
-
-export { defaultWagmiConfig } from '../src/utils/defaultWagmiReactConfig.js'
