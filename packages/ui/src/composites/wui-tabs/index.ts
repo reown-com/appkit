@@ -50,7 +50,7 @@ export class WuiTabs extends LitElement {
       this.buttons = [...this.shadowRoot.querySelectorAll('button')]
       setTimeout(() => {
         this.animateTabs(0, true)
-      }, 0.1)
+      }, 0)
     }
   }
 
