@@ -28,13 +28,14 @@ export default css`
   }
 
   :host([data-type='flex'])::before {
-    transform: translateX(calc(var(--local-tab) * var(--local-tab-width) / 1.85));
+    left: 3px;
+    transform: translateX(calc((var(--local-tab) * 34px) + (var(--local-tab) * 4px)));
   }
 
   :host([data-type='flex']) {
     display: flex;
-    padding: 0px 12px;
-    gap: 28px;
+    padding: 0px 0px 0px 12px;
+    gap: 4px;
   }
 
   :host([data-type='flex']) > button > wui-text {
@@ -64,7 +65,7 @@ export default css`
   }
 
   :host([data-type='flex']) > button {
-    width: 20px;
+    width: 34px;
     position: relative;
     display: flex;
     justify-content: flex-start;
