@@ -1,5 +1,6 @@
 'use client'
 
+import type { W3mAccountButton, W3mConnectButton } from '@web3modal/scaffold'
 import { useEffect, useState } from 'react'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
@@ -8,13 +9,23 @@ import { VERSION } from '../src/utils/constants.js'
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
 type OpenOptions = Parameters<Web3Modal['open']>[0]
+
 type ThemeModeOptions = Parameters<Web3Modal['setThemeMode']>[0]
+
 type ThemeVariablesOptions = Parameters<Web3Modal['setThemeVariables']>[0]
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'w3m-connect-button': Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
+      'w3m-account-button': Pick<W3mAccountButton, 'disabled'>
+    }
+  }
+}
 
 // -- Setup -------------------------------------------------------------------
 let modal: Web3Modal | undefined = undefined
 
-// -- Lib ---------------------------------------------------------------------
 export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
     modal = new Web3Modal({ ...options, _sdkVersion: `react-wagmi-${VERSION}` })
@@ -23,6 +34,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
   return modal
 }
 
+// -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalTheme() {
   if (!modal) {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalTheme" hook')

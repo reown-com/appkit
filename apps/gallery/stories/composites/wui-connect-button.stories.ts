@@ -9,17 +9,12 @@ export default {
   title: 'Composites/wui-connect-button',
   args: {
     size: 'md',
-    disabled: false,
-    loading: false,
-    text: 'Connect Wallet'
+    loading: false
   },
   argTypes: {
     size: {
       options: ['sm', 'md'],
       control: { type: 'select' }
-    },
-    disabled: {
-      control: { type: 'boolean' }
     },
     loading: {
       control: { type: 'boolean' }
@@ -28,11 +23,9 @@ export default {
 } as Component
 
 export const Default: Component = {
-  render: args =>
-    html`<wui-connect-button
-      size=${args.size}
-      ?loading=${args.loading}
-      ?disabled=${args.disabled}
-      text=${args.text}
-    ></wui-connect-button>`
+  render: args => html`
+    <wui-connect-button size=${args.size} ?loading=${args.loading}>
+      ${args.loading ? 'Connecting...' : 'Connect Wallet'}
+    </wui-connect-button>
+  `
 }
