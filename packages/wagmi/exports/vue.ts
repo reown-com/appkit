@@ -3,8 +3,7 @@ import type {
   ThemeVariables,
   W3mAccountButton,
   W3mButton,
-  W3mConnectButton,
-  W3mNetworkButton
+  W3mConnectButton
 } from '@web3modal/scaffold'
 import { onUnmounted, ref } from 'vue'
 import type { Web3ModalOptions } from '../src/client.js'
