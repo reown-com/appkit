@@ -11,12 +11,11 @@ export default {
   args: {
     imageSrc: networkImageSrc,
     name: 'Ethereum',
-    variant: 'fill'
+    disabled: false
   },
   argTypes: {
-    variant: {
-      options: ['fill', 'shade'],
-      control: { type: 'select' }
+    disabled: {
+      control: { type: 'boolean' }
     }
   }
 } as Component
@@ -24,8 +23,8 @@ export default {
 export const Default: Component = {
   render: args =>
     html`<wui-network-button
+      ?disabled=${args.disabled}
       .imageSrc=${args.imageSrc}
-      variant=${args.variant}
       name=${args.name}
     ></wui-network-button>`
 }
