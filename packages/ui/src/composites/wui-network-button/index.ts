@@ -22,7 +22,9 @@ export class WuiNetworkButton extends LitElement {
     return html`
       <button ?disabled=${this.disabled}>
         ${this.visualTemplate()}
-        <wui-text variant="paragraph-600" color="inherit"> ${this.name} </wui-text>
+        <wui-text variant="paragraph-600" color="inherit">
+          <slot></slot>
+        </wui-text>
       </button>
     `
   }

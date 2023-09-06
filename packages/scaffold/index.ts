@@ -1,4 +1,8 @@
+export * from './src/modal/w3m-account-button/index.js'
+export * from './src/modal/w3m-button/index.js'
+export * from './src/modal/w3m-connect-button/index.js'
 export * from './src/modal/w3m-modal/index.js'
+export * from './src/modal/w3m-network-button/index.js'
 export * from './src/modal/w3m-router/index.js'
 
 export * from './src/views/w3m-account-view/index.js'
