@@ -1,6 +1,6 @@
 'use client'
 
-import type { W3mAccountButton, W3mConnectButton } from '@web3modal/scaffold'
+import type { W3mAccountButton, W3mConnectButton, W3mNetworkButton } from '@web3modal/scaffold'
 import { useEffect, useState } from 'react'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
@@ -19,6 +19,7 @@ declare global {
     interface IntrinsicElements {
       'w3m-connect-button': Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
       'w3m-account-button': Pick<W3mAccountButton, 'disabled' | 'balance'>
+      'w3m-network-button': Pick<W3mNetworkButton, 'variant'>
     }
   }
 }

@@ -10,7 +10,6 @@ export default {
   title: 'Composites/wui-network-button',
   args: {
     imageSrc: networkImageSrc,
-    name: 'Ethereum',
     variant: 'fill'
   },
   argTypes: {
@@ -23,9 +22,7 @@ export default {
 
 export const Default: Component = {
   render: args =>
-    html`<wui-network-button
-      .imageSrc=${args.imageSrc}
-      variant=${args.variant}
-      name=${args.name}
-    ></wui-network-button>`
+    html`<wui-network-button .imageSrc=${args.imageSrc} variant=${args.variant}>
+      Ethereum
+    </wui-network-button>`
 }

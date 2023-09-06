@@ -22,8 +22,6 @@ export class W3mAccountButton extends LitElement {
 
   @property() public balance?: 'show' | 'hide' = 'show'
 
-  @state() private open = ModalController.state.open
-
   @state() private address = AccountController.state.address
 
   @state() private balanceVal = AccountController.state.balance
@@ -41,7 +39,6 @@ export class W3mAccountButton extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ModalController.subscribeKey('open', val => (this.open = val)),
         AccountController.subscribe(val => {
           if (val.isConnected) {
             this.address = val.address
@@ -82,11 +79,7 @@ export class W3mAccountButton extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onClick() {
-    if (this.open) {
-      ModalController.close()
-    } else {
-      ModalController.open()
-    }
+    ModalController.open()
   }
 }
 

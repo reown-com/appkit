@@ -14,8 +14,6 @@ export class WuiNetworkButton extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public imageSrc?: string = undefined
 
-  @property() public name = 'Unknown'
-
   @property() public variant: Exclude<ButtonType, 'accent' | 'fullwidth'> = 'fill'
 
   // -- Render -------------------------------------------- //
@@ -23,7 +21,9 @@ export class WuiNetworkButton extends LitElement {
     return html`
       <button data-variant=${this.variant}>
         ${this.visualTemplate()}
-        <wui-text variant="paragraph-600" color="inherit"> ${this.name} </wui-text>
+        <wui-text variant="paragraph-600" color="inherit">
+          <slot></slot>
+        </wui-text>
       </button>
     `
   }
