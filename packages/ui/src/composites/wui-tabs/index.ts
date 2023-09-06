@@ -74,12 +74,8 @@ export class WuiTabs extends LitElement {
     const activeBtnTextBounds = activeBtnText?.getBoundingClientRect()
 
     if (passiveBtn && passiveBtnText && !initialAnimation) {
-      animate(passiveBtnText, { opacity: 0 }, { duration: initialAnimation ? 0 : 0.25 })
-      animate(
-        passiveBtn,
-        { width: `20px` },
-        { duration: initialAnimation ? 0 : 0.25, delay: initialAnimation ? 0 : 0.05 }
-      )
+      animate(passiveBtnText, { opacity: 0 }, { duration: 0.25 })
+      animate(passiveBtn, { width: `20px` }, { duration: 0.25, delay: 0.05 })
     }
 
     if (activeBtn && activeBtnBounds && activeBtnTextBounds && activeBtnText) {
