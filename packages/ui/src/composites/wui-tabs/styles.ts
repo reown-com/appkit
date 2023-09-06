@@ -28,17 +28,19 @@ export default css`
   }
 
   :host([data-type='flex'])::before {
-    transform: translateX(calc(var(--local-tab) * var(--local-tab-width) / 2.02));
+    transform: translateX(calc(var(--local-tab) * var(--local-tab-width) / 1.85));
   }
 
   :host([data-type='flex']) {
     display: flex;
-    padding: 0px 4px;
+    padding: 0px 12px;
+    gap: 28px;
   }
 
-  :host([data-type='flex']) > button[data-active='true'] > wui-text {
-    animation-name: fadein;
-    animation-duration: 0.5s;
+  :host([data-type='flex']) > button > wui-text {
+    position: absolute;
+    left: 18px;
+    opacity: 0;
   }
 
   button[data-active='true'] > wui-icon,
@@ -62,12 +64,10 @@ export default css`
   }
 
   :host([data-type='flex']) > button {
-    width: var(--local-dense-tab-width);
-    padding: 0px 16px;
-  }
-
-  :host([data-type='flex']) > button[data-active='true'] {
-    min-width: 105px;
+    width: 20px;
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
   }
 
   button:hover:enabled,
@@ -83,27 +83,5 @@ export default css`
   button:hover > wui-text,
   button:active > wui-text {
     color: var(--wui-color-fg-125);
-  }
-
-  @keyframes fadein {
-    from {
-      opacity: 0;
-      transform: translateX(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0px);
-    }
-  }
-
-  @keyframes fadeout {
-    from {
-      opacity: 1;
-      transform: translateX(0px);
-    }
-    to {
-      opacity: 0;
-      transform: translateX(-10px);
-    }
   }
 `
