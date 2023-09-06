@@ -137,7 +137,7 @@ export class W3mConnectingWidget extends LitElement {
 
         <wui-button
           variant="accent"
-          ?disabled=${!this.error && (!this.onRender || this.buffering)}
+          ?disabled=${!this.error && this.buffering}
           @click=${this.onTryAgain.bind(this)}
         >
           <wui-icon color="inherit" slot="iconLeft" name=${this.secondaryBtnIcon}></wui-icon>
