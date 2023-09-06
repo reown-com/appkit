@@ -17,12 +17,15 @@ export class WuiTabs extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const isDense = this.tabs.length > 3
+    const dense = this.tabs.length > 3
 
     this.style.cssText = `
       --local-tab: ${this.activeTab};
-      --local-tab-width: ${isDense ? '80px' : '100px'}
+      --local-tab-width: 100px;
+      --local-dense-tab-width: max-content;
     `
+
+    this.dataset['type'] = dense ? 'flex' : 'block'
 
     return this.tabs.map((tab, index) => {
       const isActive = index === this.activeTab
@@ -30,9 +33,7 @@ export class WuiTabs extends LitElement {
       return html`
         <button @click=${() => this.onTabClick(index)} data-active=${isActive}>
           <wui-icon size="sm" color="inherit" name=${tab.icon}></wui-icon>
-          <wui-text variant=${isDense ? 'tiny-600' : 'small-600'} color="inherit">
-            ${tab.label}
-          </wui-text>
+          ${this.showLabel(tab, dense, isActive)}
         </button>
       `
     })
@@ -42,6 +43,19 @@ export class WuiTabs extends LitElement {
   private onTabClick(index: number) {
     this.activeTab = index
     this.onTabChange(index)
+  }
+
+  private showLabel(tab: { icon: IconType; label: string }, dense: boolean, isActive: boolean) {
+    if (!dense) {
+      return html`<wui-text variant="small-600" color="inherit"> ${tab.label}</wui-text>`
+    }
+    if (dense) {
+      if (isActive) {
+        return html`<wui-text variant="small-600" color="inherit"> ${tab.label}</wui-text>`
+      }
+    }
+
+    return null
   }
 }
 
