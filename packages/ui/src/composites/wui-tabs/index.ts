@@ -3,6 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { IconType } from '../../utils/TypesUtil.js'
 import styles from './styles.js'
+import { animate } from 'motion'
 
 @customElement('wui-tabs')
 export class WuiTabs extends LitElement {
@@ -13,16 +14,24 @@ export class WuiTabs extends LitElement {
 
   @property() public onTabChange: (index: number) => void = () => null
 
+  @property({ type: Array }) public buttons: HTMLButtonElement[] = []
+
   @state() public activeTab = 0
+
+  @state() public localTabWidth = '100px'
+
+  @state() public isDense = false
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const isDense = this.tabs.length > 3
+    this.isDense = this.tabs.length > 3
 
     this.style.cssText = `
       --local-tab: ${this.activeTab};
-      --local-tab-width: ${isDense ? '80px' : '100px'}
+      --local-tab-width: ${this.localTabWidth};
     `
+
+    this.dataset['type'] = this.isDense ? 'flex' : 'block'
 
     return this.tabs.map((tab, index) => {
       const isActive = index === this.activeTab
@@ -30,18 +39,62 @@ export class WuiTabs extends LitElement {
       return html`
         <button @click=${() => this.onTabClick(index)} data-active=${isActive}>
           <wui-icon size="sm" color="inherit" name=${tab.icon}></wui-icon>
-          <wui-text variant=${isDense ? 'tiny-600' : 'small-600'} color="inherit">
-            ${tab.label}
-          </wui-text>
+          <wui-text variant="small-600" color="inherit">${tab.label}</wui-text>
         </button>
       `
     })
   }
 
+  override firstUpdated() {
+    if (this.shadowRoot && this.isDense) {
+      this.buttons = [...this.shadowRoot.querySelectorAll('button')]
+      setTimeout(() => {
+        this.animateTabs(0, true)
+      }, 0)
+    }
+  }
+
   // -- Private ------------------------------------------- //
   private onTabClick(index: number) {
+    if (this.buttons) {
+      this.animateTabs(index, false)
+    }
     this.activeTab = index
     this.onTabChange(index)
+  }
+
+  private animateTabs(index: number, initialAnimation: boolean) {
+    const passiveBtn = this.buttons[this.activeTab]
+    const activeBtn = this.buttons[index]
+
+    const passiveBtnText = passiveBtn?.querySelector('wui-text')
+    const activeBtnText = activeBtn?.querySelector('wui-text')
+
+    const activeBtnBounds = activeBtn?.getBoundingClientRect()
+    const activeBtnTextBounds = activeBtnText?.getBoundingClientRect()
+
+    if (passiveBtn && passiveBtnText && !initialAnimation) {
+      animate(passiveBtnText, { opacity: 0 }, { duration: 0.25 })
+      animate(passiveBtn, { width: `20px` }, { duration: 0.25, delay: 0.05 })
+    }
+
+    if (activeBtn && activeBtnBounds && activeBtnTextBounds && activeBtnText) {
+      this.localTabWidth = `${Math.round(
+        activeBtnBounds.width + activeBtnTextBounds.width + 6 + 12
+      )}px`
+
+      animate(
+        activeBtn,
+        { width: `${activeBtnBounds.width + activeBtnTextBounds.width + 6}px` },
+        { duration: initialAnimation ? 0 : 0.5, delay: initialAnimation ? 0 : 0.1 }
+      )
+
+      animate(
+        activeBtnText,
+        { opacity: 1 },
+        { duration: initialAnimation ? 0 : 0.25, delay: initialAnimation ? 0 : 0.15 }
+      )
+    }
   }
 }
 

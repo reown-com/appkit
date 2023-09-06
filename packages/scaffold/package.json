@@ -17,8 +17,7 @@
   "dependencies": {
     "@web3modal/core": "3.0.0-alpha.5",
     "@web3modal/ui": "3.0.0-alpha.5",
-    "lit": "2.8.0",
-    "motion": "10.16.2"
+    "lit": "2.8.0"
   },
   "keywords": [
     "web3",
