@@ -1,6 +1,6 @@
 {
   "name": "@apps/laboratory",
-  "version": "3.0.0-alpha.5",
+  "version": "3.0.0-73ed03f2",
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
@@ -13,7 +13,7 @@
     "@emotion/styled": "11.11.0",
     "@sentry/browser": "7.67.0",
     "@sentry/react": "7.67.0",
-    "@web3modal/wagmi": "3.0.0-alpha.5",
+    "@web3modal/wagmi": "3.0.0-73ed03f2",
     "framer-motion": "10.16.4",
     "next": "13.4.19",
     "react-icons": "4.10.1",
