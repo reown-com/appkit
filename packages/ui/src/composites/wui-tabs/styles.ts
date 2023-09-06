@@ -27,6 +27,22 @@ export default css`
     transition: transform var(--wui-ease-out-power-2) var(--wui-duration-lg);
   }
 
+  :host([data-type='flex'])::before {
+    transform: translateX(calc(var(--local-tab) * var(--local-tab-width) / 1.85));
+  }
+
+  :host([data-type='flex']) {
+    display: flex;
+    padding: 0px 12px;
+    gap: 28px;
+  }
+
+  :host([data-type='flex']) > button > wui-text {
+    position: absolute;
+    left: 18px;
+    opacity: 0;
+  }
+
   button[data-active='true'] > wui-icon,
   button[data-active='true'] > wui-text {
     color: var(--wui-color-fg-100);
@@ -39,11 +55,19 @@ export default css`
 
   button > wui-icon,
   button > wui-text {
+    pointer-events: none;
     transition: all var(--wui-ease-out-power-2) var(--wui-duration-lg);
   }
 
   button {
     width: var(--local-tab-width);
+  }
+
+  :host([data-type='flex']) > button {
+    width: 20px;
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
   }
 
   button:hover:enabled,
