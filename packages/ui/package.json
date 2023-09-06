@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "lit": "2.8.0",
+    "motion": "10.16.2",
     "qrcode": "1.5.3"
   },
   "devDependencies": {
