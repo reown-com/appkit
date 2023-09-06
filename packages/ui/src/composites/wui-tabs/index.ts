@@ -29,7 +29,6 @@ export class WuiTabs extends LitElement {
     this.style.cssText = `
       --local-tab: ${this.activeTab};
       --local-tab-width: ${this.localTabWidth};
-      --local-dense-tab-width: max-content;
     `
 
     this.dataset['type'] = this.isDense ? 'flex' : 'block'
@@ -38,14 +37,9 @@ export class WuiTabs extends LitElement {
       const isActive = index === this.activeTab
 
       return html`
-        <button
-          style="{{width:
-          20px}}"
-          @click=${() => this.onTabClick(index)}
-          data-active=${isActive}
-        >
+        <button @click=${() => this.onTabClick(index)} data-active=${isActive}>
           <wui-icon size="sm" color="inherit" name=${tab.icon}></wui-icon>
-          <wui-text variant="small-600" color="inherit"> ${tab.label}</wui-text>
+          <wui-text variant="small-600" color="inherit">${tab.label}</wui-text>
         </button>
       `
     })
