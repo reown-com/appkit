@@ -125,6 +125,6 @@ export const CoreHelperUtil = {
       formattedBalance = balance
     }
 
-    return formattedBalance ? `${formattedBalance} ${symbol}` : '_._'
+    return formattedBalance ? `${formattedBalance} ${symbol}` : '0.0000'
   }
 }

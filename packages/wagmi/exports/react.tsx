@@ -18,7 +18,7 @@ declare global {
   namespace JSX {
     interface IntrinsicElements {
       'w3m-connect-button': Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
-      'w3m-account-button': Pick<W3mAccountButton, 'disabled'>
+      'w3m-account-button': Pick<W3mAccountButton, 'disabled' | 'balance'>
     }
   }
 }

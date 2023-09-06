@@ -18,13 +18,15 @@ export class W3mAccountButton extends LitElement {
   private readonly networkImages = AssetController.state.networkImages
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Boolean }) disabled?: WuiAccountButton['disabled'] = false
+  @property({ type: Boolean }) public disabled?: WuiAccountButton['disabled'] = false
+
+  @property() public balance?: 'show' | 'hide' = 'show'
 
   @state() private open = ModalController.state.open
 
   @state() private address = AccountController.state.address
 
-  @state() private balance = AccountController.state.balance
+  @state() private balanceVal = AccountController.state.balance
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
@@ -41,11 +43,13 @@ export class W3mAccountButton extends LitElement {
       ...[
         ModalController.subscribeKey('open', val => (this.open = val)),
         AccountController.subscribe(val => {
-          this.address = val.address
-          this.balance = val.balance
-          this.profileName = val.profileName
-          this.profileImage = val.profileImage
-          this.balanceSymbol = val.balanceSymbol
+          if (val.isConnected) {
+            this.address = val.address
+            this.balanceVal = val.balance
+            this.profileName = val.profileName
+            this.profileImage = val.profileImage
+            this.balanceSymbol = val.balanceSymbol
+          }
         }),
         NetworkController.subscribeKey('caipNetwork', val => (this.network = val))
       ]
@@ -59,6 +63,7 @@ export class W3mAccountButton extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const networkImage = this.networkImages[this.network?.imageId ?? '']
+    const showBalance = this.balance === 'show'
 
     return html`
       <wui-account-button
@@ -66,7 +71,9 @@ export class W3mAccountButton extends LitElement {
         address=${ifDefined(this.profileName ?? this.address)}
         networkSrc=${ifDefined(networkImage)}
         avatarSrc=${ifDefined(this.profileImage)}
-        balance=${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}
+        balance=${showBalance
+          ? CoreHelperUtil.formatBalance(this.balanceVal, this.balanceSymbol)
+          : ''}
         @click=${this.onClick.bind(this)}
       >
       </wui-account-button>
