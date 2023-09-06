@@ -30,8 +30,8 @@ const modal = useWeb3Modal()
 
 <template>
   <w3m-button />
-  <w3m-connect-button />
   <w3m-network-button />
+  <w3m-connect-button />
   <w3m-account-button />
 
   <button @click="modal.open()">Open Connect Modal</button>
