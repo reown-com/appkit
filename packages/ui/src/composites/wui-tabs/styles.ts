@@ -28,13 +28,12 @@ export default css`
   }
 
   :host([data-type='flex'])::before {
-    transform: translateX(calc(var(--local-tab) * var(--local-tab-width) / 2.05));
+    transform: translateX(calc(var(--local-tab) * var(--local-tab-width) / 2.02));
   }
 
   :host([data-type='flex']) {
     display: flex;
-    padding: 0px 20px;
-    gap: 32px;
+    padding: 0px 4px;
   }
 
   :host([data-type='flex']) > button[data-active='true'] > wui-text {
@@ -64,6 +63,11 @@ export default css`
 
   :host([data-type='flex']) > button {
     width: var(--local-dense-tab-width);
+    padding: 0px 16px;
+  }
+
+  :host([data-type='flex']) > button[data-active='true'] {
+    min-width: 105px;
   }
 
   button:hover:enabled,
