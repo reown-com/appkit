@@ -15,8 +15,6 @@ export class W3mNetworkButton extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property() public variant?: WuiNetworkButton['variant'] = 'fill'
-
   @state() private networkImages = AssetController.state.networkImages
 
   @state() private network = NetworkController.state.caipNetwork
