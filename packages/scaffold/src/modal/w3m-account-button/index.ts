@@ -46,6 +46,12 @@ export class W3mAccountButton extends LitElement {
             this.profileName = val.profileName
             this.profileImage = val.profileImage
             this.balanceSymbol = val.balanceSymbol
+          } else {
+            this.address = ''
+            this.balanceVal = ''
+            this.profileName = ''
+            this.profileImage = ''
+            this.balanceSymbol = ''
           }
         }),
         NetworkController.subscribeKey('caipNetwork', val => (this.network = val))

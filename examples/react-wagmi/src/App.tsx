@@ -32,6 +32,8 @@ export default function App() {
     <WagmiConfig config={wagmiConfig}>
       <w3m-connect-button />
       <w3m-network-button />
+      <w3m-account-button />
+      <w3m-button />
 
       <button onClick={() => modal.open()}>Connect Wallet</button>
       <button onClick={() => modal.open({ view: 'Networks' })}>Choose Network</button>
