@@ -20,12 +20,10 @@ export function ConnectButton() {
     }
   }
 
-  return isConnected ? (
+  return (
     <>
-      <w3m-account-button />
-      <Button onClick={() => onSignMessage()}>Sign Message</Button>
+      <w3m-button />
+      {isConnected ? <Button onClick={() => onSignMessage()}>Sign Message</Button> : null}
     </>
-  ) : (
-    <w3m-connect-button />
   )
 }

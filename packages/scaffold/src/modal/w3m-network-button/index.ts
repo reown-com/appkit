@@ -1,4 +1,9 @@
-import { AssetController, ModalController, NetworkController } from '@web3modal/core'
+import {
+  AccountController,
+  AssetController,
+  ModalController,
+  NetworkController
+} from '@web3modal/core'
 import type { WuiNetworkButton } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
@@ -9,18 +14,24 @@ export class W3mNetworkButton extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
-  private readonly networkImages = AssetController.state.networkImages
-
   // -- State & Properties -------------------------------- //
   @property() public variant?: WuiNetworkButton['variant'] = 'fill'
 
+  @state() private networkImages = AssetController.state.networkImages
+
   @state() private network = NetworkController.state.caipNetwork
+
+  @state() private connected = AccountController.state.isConnected
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
     this.unsubscribe.push(
-      NetworkController.subscribeKey('caipNetwork', val => (this.network = val))
+      ...[
+        NetworkController.subscribeKey('caipNetwork', val => (this.network = val)),
+        AccountController.subscribeKey('isConnected', val => (this.connected = val)),
+        AssetController.subscribeNetworkImages(val => (this.networkImages = { ...val }))
+      ]
     )
   }
 
@@ -34,7 +45,7 @@ export class W3mNetworkButton extends LitElement {
 
     return html`
       <wui-network-button imageSrc=${ifDefined(networkImage)} @click=${this.onClick.bind(this)}>
-        ${this.network?.name}
+        ${this.network?.name ?? (this.connected ? 'Unknown Network' : 'Select Network')}
       </wui-network-button>
     `
   }
