@@ -2,8 +2,7 @@ import { createWeb3Modal, defaultWagmiConfig, useWeb3Modal } from '@web3modal/wa
 import { WagmiConfig } from 'wagmi'
 import { arbitrum, mainnet } from 'wagmi/chains'
 
-// 1. Get projectId
-// @ts-expect-error
+// @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
 if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
