@@ -21,8 +21,7 @@ export default {
 
 export const Default: Component = {
   render: args =>
-    html`<wui-network-button
-      ?disabled=${args.disabled}
-      .imageSrc=${args.imageSrc}
-    ></wui-network-button>`
+    html`<wui-network-button ?disabled=${args.disabled} .imageSrc=${args.imageSrc}
+      >Ethereum</wui-network-button
+    >`
 }

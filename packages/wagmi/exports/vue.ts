@@ -3,7 +3,8 @@ import type {
   ThemeVariables,
   W3mAccountButton,
   W3mButton,
-  W3mConnectButton
+  W3mConnectButton,
+  W3mNetworkButton
 } from '@web3modal/scaffold'
 import { onUnmounted, ref } from 'vue'
 import type { Web3ModalOptions } from '../src/client.js'
@@ -24,6 +25,7 @@ declare module '@vue/runtime-core' {
     W3mConnectButton: Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
     W3mAccountButton: Pick<W3mAccountButton, 'disabled' | 'balance'>
     W3mButton: Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
+    W3mNetworkButton: Pick<W3mNetworkButton, 'disabled'>
   }
 }
 

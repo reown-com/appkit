@@ -4,8 +4,9 @@ import {
   ModalController,
   NetworkController
 } from '@web3modal/core'
+import type { WuiNetworkButton } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { customElement, property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-network-button')
@@ -14,6 +15,8 @@ export class W3mNetworkButton extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
+  @property({ type: Boolean }) public disabled?: WuiNetworkButton['disabled'] = false
+
   @state() private networkImages = AssetController.state.networkImages
 
   @state() private network = NetworkController.state.caipNetwork
@@ -41,7 +44,11 @@ export class W3mNetworkButton extends LitElement {
     const networkImage = this.networkImages[this.network?.imageId ?? '']
 
     return html`
-      <wui-network-button imageSrc=${ifDefined(networkImage)} @click=${this.onClick.bind(this)}>
+      <wui-network-button
+        .disabled=${Boolean(this.disabled)}
+        imageSrc=${ifDefined(networkImage)}
+        @click=${this.onClick.bind(this)}
+      >
         ${this.network?.name ?? (this.connected ? 'Unknown Network' : 'Select Network')}
       </wui-network-button>
     `
