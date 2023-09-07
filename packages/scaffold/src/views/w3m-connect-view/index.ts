@@ -39,8 +39,7 @@ export class W3mConnectView extends LitElement {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="xs">
         ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()} ${this.featuredTemplate()}
-        ${this.recommendedMobileTemplate()} ${this.connectorsTemplate()}
-        ${this.allWalletsTemplate()}
+        ${this.recommendedTemplate()} ${this.connectorsTemplate()} ${this.allWalletsTemplate()}
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
     `
@@ -109,10 +108,16 @@ export class W3mConnectView extends LitElement {
       if (connector.type === 'WALLET_CONNECT') {
         return null
       }
-      const { tagLabel, tagVariant } = this.getTag(connector)
+      let tagLabel = undefined
+      let tagVariant = undefined
 
-      if (connector.type === 'INJECTED' && tagLabel !== 'installed') {
-        return null
+      if (connector.type === 'INJECTED') {
+        const isInstalled = ConnectionController.checkInjectedInstalled()
+        if (!isInstalled) {
+          return null
+        }
+        tagLabel = 'installed'
+        tagVariant = 'success' as const
       }
 
       return html`
@@ -141,10 +146,7 @@ export class W3mConnectView extends LitElement {
     `
   }
 
-  private recommendedMobileTemplate() {
-    if (!CoreHelperUtil.isMobile()) {
-      return null
-    }
+  private recommendedTemplate() {
     const { recommended, featured } = ApiController.state
     if (!recommended.length || featured.length) {
       return null
@@ -163,16 +165,6 @@ export class W3mConnectView extends LitElement {
     )
   }
 
-  private getTag(connector: Connector) {
-    if (connector.type === 'INJECTED') {
-      if (ConnectionController.checkInjectedInstalled()) {
-        return { tagLabel: 'installed', tagVariant: 'success' } as const
-      }
-    }
-
-    return { tagLabel: undefined, tagVariant: undefined }
-  }
-
   private onConnector(connector: Connector) {
     if (connector.type === 'WALLET_CONNECT') {
       if (CoreHelperUtil.isMobile()) {
@@ -188,11 +180,9 @@ export class W3mConnectView extends LitElement {
   private filterOutRecentWallets(wallets: ApiWallet[]) {
     const recent = StorageUtil.getRecentWallets()
     const recentIds = recent.map(wallet => wallet.id)
-    const filteredWallets = wallets.filter(
-      wallet => !recentIds.includes(wallet.id) && wallet.mobile_link?.length
-    )
+    const filtered = wallets.filter(wallet => !recentIds.includes(wallet.id))
 
-    return filteredWallets
+    return filtered
   }
 }
 

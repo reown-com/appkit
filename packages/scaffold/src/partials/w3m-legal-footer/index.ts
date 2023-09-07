@@ -25,6 +25,7 @@ export class W3mLegalFooter extends LitElement {
     `
   }
 
+  // -- Private ------------------------------------------- //
   private andTemplate() {
     const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
 
