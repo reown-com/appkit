@@ -93,7 +93,7 @@ export class W3mHeader extends LitElement {
       return null
     }
 
-    return html` <wui-separator></wui-separator>`
+    return html`<wui-separator></wui-separator>`
   }
 
   private getPadding() {

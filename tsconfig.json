@@ -23,7 +23,8 @@
     "noPropertyAccessFromIndexSignature": true,
     "noUncheckedIndexedAccess": true,
     "verbatimModuleSyntax": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "incremental": true
   },
   "exclude": ["node_modules", "dist", "types", "out", ".next", ".turbo"]
 }

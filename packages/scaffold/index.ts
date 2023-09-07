@@ -27,6 +27,7 @@ export * from './src/partials/w3m-connecting-wc-unsupported/index.js'
 export * from './src/partials/w3m-connecting-wc-web/index.js'
 export * from './src/partials/w3m-header/index.js'
 export * from './src/partials/w3m-help-widget/index.js'
+export * from './src/partials/w3m-legal-footer/index.js'
 export * from './src/partials/w3m-snackbar/index.js'
 
 export { Web3ModalScaffold } from './src/client.js'

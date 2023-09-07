@@ -1,9 +1,9 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconType, IWalletImage, TagLabelType, TagType } from '../../utils/TypesUtil.js'
-import '../../components/wui-text/index.js'
 import '../../components/wui-icon/index.js'
+import '../../components/wui-text/index.js'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import type { IconType, IWalletImage, TagType } from '../../utils/TypesUtil.js'
 import '../wui-all-wallets-image/index.js'
 import '../wui-tag/index.js'
 import '../wui-wallet-image/index.js'
@@ -20,7 +20,7 @@ export class WuiListWallet extends LitElement {
 
   @property() public name = ''
 
-  @property() public tagLabel?: TagLabelType
+  @property() public tagLabel?: string
 
   @property() public tagVariant?: TagType
 
