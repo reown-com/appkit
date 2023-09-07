@@ -36,6 +36,8 @@ export interface LibraryOptions {
   featuredWalletIds?: OptionsControllerState['featuredWalletIds']
   defaultChain?: NetworkControllerState['caipNetwork']
   tokens?: OptionsControllerState['tokens']
+  termsConditionsUrl?: OptionsControllerState['termsConditionsUrl']
+  privacyPolicyUrl?: OptionsControllerState['privacyPolicyUrl']
   _sdkVersion: ApiControllerState['sdkVersion']
 }
 
@@ -155,6 +157,8 @@ export class Web3ModalScaffold {
     OptionsController.setExcludeWalletIds(options.excludeWalletIds)
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds)
     OptionsController.setTokens(options.tokens)
+    OptionsController.setTermsConditionsUrl(options.termsConditionsUrl)
+    OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
 
     ConnectionController.setClient(options.connectionControllerClient)
 

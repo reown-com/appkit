@@ -11,8 +11,8 @@ export default css`
   input {
     width: 100%;
     border-radius: var(--wui-border-radius-xxs);
-    border: 1px solid var(--wui-overlay-005);
-    background: var(--wui-overlay-005);
+    border: 1px solid var(--wui-gray-glass-005);
+    background: var(--wui-gray-glass-005);
     font-size: var(--wui-font-size-paragraph);
     font-weight: var(--wui-font-weight-regular);
     letter-spacing: var(--wui-letter-spacing-paragraph);
@@ -23,8 +23,8 @@ export default css`
 
   input:disabled {
     cursor: not-allowed;
-    border: 1px solid var(--wui-overlay-010);
-    background: var(--wui-overlay-015);
+    border: 1px solid var(--wui-gray-glass-010);
+    background: var(--wui-gray-glass-015);
   }
 
   input:disabled::placeholder,
@@ -38,7 +38,7 @@ export default css`
 
   input:focus:enabled {
     transition: all var(--wui-ease-out-power-2) var(--wui-duration-sm);
-    background-color: var(--wui-overlay-010);
+    background-color: var(--wui-gray-glass-010);
     border: 1px solid var(--wui-color-accent-100);
     -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
     -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
@@ -46,7 +46,7 @@ export default css`
   }
 
   input:hover:enabled {
-    background-color: var(--wui-overlay-010);
+    background-color: var(--wui-gray-glass-010);
   }
 
   wui-icon {

@@ -18,6 +18,7 @@ import {
 } from '@chakra-ui/react'
 import MixColorInput from '../components/Theming/MixColorInput'
 import AccentColorInput from '../components/Theming/AccentColorInput'
+import BorderRadiusInput from '../components/Theming/BorderRadiusInput'
 
 export default function Header() {
   const { colorMode, toggleColorMode } = useColorMode()
@@ -37,6 +38,9 @@ export default function Header() {
               </Flex>
               <Flex gridGap="4" flexDirection="column">
                 <AccentColorInput />
+              </Flex>
+              <Flex gridGap="4" flexDirection="column">
+                <BorderRadiusInput />
               </Flex>
             </Flex>
           </DrawerBody>

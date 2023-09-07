@@ -7,7 +7,7 @@ export default css`
     align-items: center;
     position: relative;
     overflow: hidden;
-    background-color: var(--wui-overlay-020);
+    background-color: var(--wui-gray-glass-020);
     background-color: color-mix(in srgb, var(--local-bg-value) var(--local-bg-mix), transparent);
     border-radius: var(--local-border-radius);
     border: var(--local-border);

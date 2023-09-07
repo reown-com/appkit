@@ -9,6 +9,8 @@ export interface OptionsControllerState {
   includeWalletIds?: string[]
   excludeWalletIds?: string[]
   tokens?: Tokens
+  termsConditionsUrl?: string
+  privacyPolicyUrl?: string
 }
 
 type StateKey = keyof OptionsControllerState
@@ -44,5 +46,13 @@ export const OptionsController = {
 
   setTokens(tokens: OptionsControllerState['tokens']) {
     state.tokens = tokens
+  },
+
+  setTermsConditionsUrl(termsConditionsUrl: OptionsControllerState['termsConditionsUrl']) {
+    state.termsConditionsUrl = termsConditionsUrl
+  },
+
+  setPrivacyPolicyUrl(privacyPolicyUrl: OptionsControllerState['privacyPolicyUrl']) {
+    state.privacyPolicyUrl = privacyPolicyUrl
   }
 }

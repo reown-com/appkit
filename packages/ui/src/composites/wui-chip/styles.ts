@@ -2,7 +2,7 @@ import { css } from 'lit'
 
 export default css`
   a {
-    border: 1px solid var(--wui-overlay-010);
+    border: 1px solid var(--wui-gray-glass-010);
     border-radius: var(--wui-border-radius-3xl);
   }
 
@@ -23,7 +23,7 @@ export default css`
 
   a[data-variant='shade'] {
     background-color: transparent;
-    background-color: var(--wui-overlay-010);
+    background-color: var(--wui-gray-glass-010);
     color: var(--wui-color-fg-200);
   }
 
@@ -61,7 +61,7 @@ export default css`
   }
 
   a[data-variant='shade'] > wui-image {
-    border: 1px solid var(--wui-overlay-010);
+    border: 1px solid var(--wui-gray-glass-010);
   }
 
   a[data-variant='fill'] > wui-icon,
@@ -85,16 +85,16 @@ export default css`
   }
 
   a[data-variant='shade']:focus-visible {
-    background-color: var(--wui-overlay-015);
+    background-color: var(--wui-gray-glass-015);
   }
 
   a[data-variant='transparent']:focus-visible {
-    background-color: var(--wui-overlay-005);
+    background-color: var(--wui-gray-glass-005);
   }
 
   a.disabled {
-    color: var(--wui-overlay-015);
-    background-color: var(--wui-overlay-015);
+    color: var(--wui-gray-glass-015);
+    background-color: var(--wui-gray-glass-015);
     pointer-events: none;
   }
 
@@ -104,11 +104,11 @@ export default css`
     }
 
     a[data-variant='shade']:hover {
-      background-color: var(--wui-overlay-015);
+      background-color: var(--wui-gray-glass-015);
     }
 
     a[data-variant='transparent']:hover {
-      background-color: var(--wui-overlay-005);
+      background-color: var(--wui-gray-glass-005);
     }
   }
 
@@ -117,10 +117,10 @@ export default css`
   }
 
   a[data-variant='shade']:active {
-    background-color: var(--wui-overlay-020);
+    background-color: var(--wui-gray-glass-020);
   }
 
   a[data-variant='transparent']:active {
-    background-color: var(--wui-overlay-010);
+    background-color: var(--wui-gray-glass-010);
   }
 `

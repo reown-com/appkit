@@ -14,6 +14,7 @@ interface ThemeStoreState {
   mixColorStrength: number
   mixColor?: string
   accentColor?: string
+  borderRadius: string
   themeVariables: ThemeVariables
 }
 
@@ -21,6 +22,7 @@ const state = proxy<ThemeStoreState>({
   mixColorStrength: 0,
   mixColor: undefined,
   accentColor: undefined,
+  borderRadius: '4px',
   themeVariables: {}
 })
 
@@ -40,6 +42,11 @@ export const ThemeStore = {
   setAccentColor(value: ThemeStoreState['accentColor']) {
     state.accentColor = value
     modal.setThemeVariables({ '--w3m-accent': value })
+  },
+
+  setBorderRadius(value: ThemeStoreState['borderRadius']) {
+    state.borderRadius = value
+    modal.setThemeVariables({ '--w3m-border-radius-master': value })
   },
 
   setThemeVariables(value: ThemeStoreState['themeVariables']) {

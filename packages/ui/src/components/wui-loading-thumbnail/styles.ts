@@ -17,8 +17,6 @@ export default css`
     fill: none;
     stroke: var(--wui-color-accent-100);
     stroke-width: 4px;
-    stroke-dasharray: 116, 245;
-    stroke-dashoffset: 360;
     stroke-linecap: round;
     animation: dash 1s linear infinite;
   }

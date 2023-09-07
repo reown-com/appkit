@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import { danger, fail, message, warn } from 'danger'
 import corePackageJson from './packages/core/package.json' assert { type: 'json' }
+import { VERSION as WAGMI_PACKAGE_VERSION } from './packages/wagmi/src/utils/constants'
 
 // -- Constants ---------------------------------------------------------------
 const TYPE_COMMENT = `// -- Types --------------------------------------------- //`
@@ -242,17 +243,9 @@ async function checkClientPackages() {
 checkClientPackages()
 
 // -- Check sdkVersion ------------------------------------------------------------
-async function checkSdkVersion() {
-  const wagmiConstantsPath = 'packages/wagmi/src/utils/constants.ts'
-  const wagmiConstants = all_files.find(f => f.includes(wagmiConstantsPath))
-
-  if (wagmiConstants) {
-    const diff = await diffForFile(wagmiConstants)
-    if (!diff?.after.includes(`VERSION = '${corePackageJson.version}'`)) {
-      fail(`VERSION in ${wagmiConstantsPath} does not match latest packages/core version`)
-    }
-  } else {
-    warn(`No version updates in ${wagmiConstantsPath} file`)
+function checkSdkVersion() {
+  if (WAGMI_PACKAGE_VERSION !== corePackageJson.version) {
+    fail(`VERSION in wagmi/utils/constants does't match core package.json version`)
   }
 }
 checkSdkVersion()

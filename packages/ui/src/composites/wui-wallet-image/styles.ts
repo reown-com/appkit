@@ -5,7 +5,7 @@ export default css`
     position: relative;
     border-radius: inherit;
     overflow: hidden;
-    background: var(--wui-overlay-002);
+    background-color: var(--wui-gray-glass-002);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,12 +22,20 @@ export default css`
     left: 0;
     right: 0;
     border-radius: inherit;
-    border: 1px solid var(--wui-overlay-010);
+    border: 1px solid var(--wui-gray-glass-010);
     pointer-events: none;
   }
 
   :host([name='Extension'])::after {
-    border: 1px solid var(--wui-color-accent-010);
+    border: 1px solid var(--wui-accent-glass-010);
+  }
+
+  :host([data-wallet-icon='allWallets']) {
+    background-color: var(--wui-all-wallets-bg-100);
+  }
+
+  :host([data-wallet-icon='allWallets'])::after {
+    border: 1px solid var(--wui-accent-glass-010);
   }
 
   wui-icon[data-parent-size='inherit'] {

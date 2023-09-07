@@ -7,24 +7,24 @@ export default css`
 
   button {
     border-radius: var(--wui-border-radius-3xl);
-    background: var(--wui-overlay-002);
+    background: var(--wui-gray-glass-002);
     display: flex;
     gap: var(--wui-spacing-xs);
     padding: var(--wui-spacing-3xs) var(--wui-spacing-xs) var(--wui-spacing-3xs)
       var(--wui-spacing-xs);
-    border: 1px solid var(--wui-overlay-005);
+    border: 1px solid var(--wui-gray-glass-005);
   }
 
   button:disabled {
-    background: var(--wui-overlay-015);
+    background: var(--wui-gray-glass-015);
   }
 
   button:disabled > wui-text {
-    color: var(--wui-overlay-015);
+    color: var(--wui-gray-glass-015);
   }
 
   button:disabled > wui-flex > wui-text {
-    color: var(--wui-overlay-015);
+    color: var(--wui-gray-glass-015);
   }
 
   button:disabled > wui-image,
@@ -52,13 +52,13 @@ export default css`
     border-radius: var(--wui-border-radius-3xl);
     width: 24px;
     height: 24px;
-    outline: 2px solid var(--wui-overlay-005);
+    outline: 2px solid var(--wui-gray-glass-005);
   }
 
   wui-flex {
     border-radius: var(--wui-border-radius-3xl);
-    border: 1px solid var(--wui-overlay-005);
-    background: var(--wui-overlay-005);
+    border: 1px solid var(--wui-gray-glass-005);
+    background: var(--wui-gray-glass-005);
     padding: 4px var(--wui-spacing-m) 4px var(--wui-spacing-xxs);
   }
 
@@ -71,7 +71,7 @@ export default css`
   wui-avatar {
     width: 20px;
     height: 20px;
-    outline: 2px solid var(--wui-overlay-010);
+    outline: 2px solid var(--wui-gray-glass-010);
   }
 
   @media (hover: hover) and (pointer: fine) {

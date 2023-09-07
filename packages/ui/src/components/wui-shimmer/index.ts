@@ -19,7 +19,7 @@ export class WuiShimmer extends LitElement {
     this.style.cssText = `
       width: ${this.width};
       height: ${this.height};
-      border-radius: ${`var(--wui-border-radius-${this.borderRadius})`};
+      border-radius: ${`clamp(0px,var(--wui-border-radius-${this.borderRadius}), 40px)`};
     `
 
     return html`<slot></slot>`
