@@ -42,6 +42,7 @@ export class W3mConnectView extends LitElement {
         ${this.recommendedMobileTemplate()} ${this.connectorsTemplate()}
         ${this.allWalletsTemplate()}
       </wui-flex>
+      <w3m-legal-footer></w3m-legal-footer>
     `
   }
 
