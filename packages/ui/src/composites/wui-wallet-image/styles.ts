@@ -5,7 +5,7 @@ export default css`
     position: relative;
     border-radius: inherit;
     overflow: hidden;
-    background: var(--wui-overlay-002);
+    background-color: var(--wui-overlay-002);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -27,6 +27,14 @@ export default css`
   }
 
   :host([name='Extension'])::after {
+    border: 1px solid var(--wui-color-accent-010);
+  }
+
+  :host([data-wallet-icon='allWallets']) {
+    background-color: var(--wui-all-wallets-bg-100);
+  }
+
+  :host([data-wallet-icon='allWallets'])::after {
     border: 1px solid var(--wui-color-accent-010);
   }
 
