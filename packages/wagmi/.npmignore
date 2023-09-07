@@ -1,12 +1,12 @@
 *.log
 *.env
+dist/esm/tsconfig.tsbuildinfo
+.eslintrc.json
+.turbo
 tests
 src
 exports
 node_modules
-.eslintrc.json
-.turbo
 package-lock.json
-tsconfig.tsbuildinfo
 tsconfig.json
 index.ts
