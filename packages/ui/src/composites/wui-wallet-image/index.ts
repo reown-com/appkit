@@ -34,6 +34,10 @@ export class WuiWalletImage extends LitElement {
        --local-size: var(--wui-wallet-image-size-${this.size});
    `
 
+    if (this.walletIcon) {
+      this.dataset['walletIcon'] = this.walletIcon
+    }
+
     return html` ${this.templateVisual()}`
   }
 
@@ -43,7 +47,7 @@ export class WuiWalletImage extends LitElement {
       return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image>`
     } else if (this.walletIcon) {
       return html`<wui-icon
-        data-parent-size="full"
+        data-parent-size="md"
         size="md"
         color="inherit"
         name=${this.walletIcon}

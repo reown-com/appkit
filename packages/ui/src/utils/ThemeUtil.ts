@@ -173,6 +173,8 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-icon-box-bg-success-100: var(--wui-icon-box-bg-success-base-100);
       --wui-icon-box-bg-inverse-100: var(--wui-icon-box-bg-inverse-base-100);
 
+      --wui-all-wallets-bg-100: var(--wui-all-wallets-bg-base-100);
+
       --wui-avatar-border: var(--wui-avatar-border-base);
 
       --wui-box-shadow-blue: rgba(71, 161, 255, 0.16);
@@ -317,6 +319,12 @@ function createRootStyles(themeVariables: ThemeVariables) {
         var(--wui-icon-box-bg-inverse-base-100)
       );
 
+      --wui-all-wallets-bg-100: color-mix(
+        in srgb,
+        var(--w3m-color-mix) var(--w3m-color-mix-strength),
+        var(--wui-all-wallets-bg-base-100)
+      );
+
       --wui-avatar-border: color-mix(
         in srgb,
         var(--w3m-color-mix) var(--w3m-color-mix-strength),
@@ -366,6 +374,8 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-icon-box-bg-blue-base-100: #20303f;
       --wui-icon-box-bg-success-base-100: #1f3a28;
       --wui-icon-box-bg-inverse-base-100: #243240;
+
+      --wui-all-wallets-bg-base-100: #222b35;
 
       --wui-avatar-border-base: #252525;
 
@@ -420,6 +430,8 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-icon-box-bg-blue-base-100: #d9ecfb;
       --wui-icon-box-bg-success-base-100: #daf0e4;
       --wui-icon-box-bg-inverse-base-100: #dcecfc;
+
+      --wui-all-wallets-bg-base-100: #c1dfde;
 
       --wui-avatar-border-base: #f3f4f4;
 

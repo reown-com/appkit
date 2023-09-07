@@ -9,7 +9,7 @@ export default css`
     row-gap: var(--wui-spacing-xs);
     padding: var(--wui-spacing-xs) 10px;
     background-color: var(--wui-overlay-002);
-    border-radius: var(--wui-border-radius-xs);
+    border-radius: clamp(0px, var(--wui-border-radius-xs), 20px);
     position: relative;
   }
 

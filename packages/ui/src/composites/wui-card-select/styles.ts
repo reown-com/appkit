@@ -7,7 +7,7 @@ export default css`
     row-gap: var(--wui-spacing-xs);
     padding: var(--wui-spacing-xs) var(--wui-spacing-0);
     background-color: var(--wui-overlay-002);
-    border-radius: var(--wui-border-radius-xs);
+    border-radius: clamp(0px, var(--wui-border-radius-xs), 20px);
   }
 
   button > wui-text {
