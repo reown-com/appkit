@@ -100,7 +100,9 @@ export class W3mAccountView extends LitElement {
             ></wui-icon-link>
           </wui-flex>
           <wui-flex gap="s" flexDirection="column" alignItems="center">
-            <wui-text variant="paragraph-500" color="fg-200">${this.showBalance()}</wui-text>
+            <wui-text variant="paragraph-500" color="fg-200">
+              ${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}
+            </wui-text>
             <wui-button size="sm" variant="shade" @click=${this.onExplorer.bind(this)}>
               <wui-icon size="sm" color="inherit" slot="iconLeft" name="compass"></wui-icon>
               Block Explorer
@@ -171,20 +173,6 @@ export class W3mAccountView extends LitElement {
     } finally {
       this.disconecting = false
     }
-  }
-
-  private showBalance() {
-    let formattedBalance = undefined
-
-    if (this.balance === '0.0') {
-      formattedBalance = '0'
-    } else if (typeof this.balance === 'string' && this.balance.length > 6) {
-      formattedBalance = this.balance.substring(0, 6)
-    } else if (typeof this.balance === 'string') {
-      formattedBalance = this.balance
-    }
-
-    return formattedBalance ? `${formattedBalance} ${this.balanceSymbol}` : '_._'
   }
 
   private onExplorer() {

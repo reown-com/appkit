@@ -73,27 +73,29 @@ export class WuiTabs extends LitElement {
     const activeBtnBounds = activeBtn?.getBoundingClientRect()
     const activeBtnTextBounds = activeBtnText?.getBoundingClientRect()
 
-    if (passiveBtn && passiveBtnText && !initialAnimation) {
+    if (passiveBtn && passiveBtnText && !initialAnimation && index !== this.activeTab) {
       animate(passiveBtnText, { opacity: 0 }, { duration: 0.25 })
-      animate(passiveBtn, { width: `20px` }, { duration: 0.25, delay: 0.05 })
+      animate(passiveBtn, { width: '34px' }, { duration: 0.5 })
     }
 
     if (activeBtn && activeBtnBounds && activeBtnTextBounds && activeBtnText) {
-      this.localTabWidth = `${Math.round(
-        activeBtnBounds.width + activeBtnTextBounds.width + 6 + 12
-      )}px`
+      if (index !== this.activeTab || initialAnimation) {
+        this.localTabWidth = `${
+          Math.round(activeBtnBounds.width + activeBtnTextBounds.width) + 6
+        }px`
 
-      animate(
-        activeBtn,
-        { width: `${activeBtnBounds.width + activeBtnTextBounds.width + 6}px` },
-        { duration: initialAnimation ? 0 : 0.5, delay: initialAnimation ? 0 : 0.1 }
-      )
+        animate(
+          activeBtn,
+          { width: `${activeBtnBounds.width + activeBtnTextBounds.width}px` },
+          { duration: initialAnimation ? 0 : 0.5 }
+        )
 
-      animate(
-        activeBtnText,
-        { opacity: 1 },
-        { duration: initialAnimation ? 0 : 0.25, delay: initialAnimation ? 0 : 0.15 }
-      )
+        animate(
+          activeBtnText,
+          { opacity: 1 },
+          { duration: initialAnimation ? 0 : 0.25, delay: initialAnimation ? 0 : 0.05 }
+        )
+      }
     }
   }
 }

@@ -12,6 +12,24 @@ export default css`
     padding: var(--wui-spacing-2xs) var(--wui-spacing-s) var(--wui-spacing-2xs)
       var(--wui-spacing-xs);
     border: 1px solid var(--wui-overlay-010);
+    background-color: var(--wui-overlay-005);
+    color: var(--wui-color-fg-100);
+  }
+
+  button:disabled {
+    border: 1px solid var(--wui-overlay-005);
+    background-color: var(--wui-overlay-015);
+    color: var(--wui-overlay-015);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    button:hover:enabled {
+      background-color: var(--wui-overlay-010);
+    }
+
+    button:active:enabled {
+      background-color: var(--wui-overlay-015);
+    }
   }
 
   wui-image,
@@ -19,9 +37,6 @@ export default css`
     border-radius: var(--wui-border-radius-3xl);
     width: 24px;
     height: 24px;
-  }
-
-  wui-icon-box {
-    border: 1px solid var(--wui-overlay-010);
+    outline: 2px solid var(--wui-overlay-005);
   }
 `

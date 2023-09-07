@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { mainnet, arbitrum } from '@wagmi/core/chains'
-import { createWeb3Modal, useWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/vue'
+import { arbitrum, mainnet } from '@wagmi/core/chains'
+import { createWeb3Modal, defaultWagmiConfig, useWeb3Modal } from '@web3modal/wagmi/vue'
 
-// 1. Get projectId
+// @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
 if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
@@ -20,7 +20,7 @@ createWeb3Modal({
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00BB7F',
-    '--w3m-color-mix-strength': 40
+    '--w3m-color-mix-strength': 20
   }
 })
 
@@ -29,6 +29,11 @@ const modal = useWeb3Modal()
 </script>
 
 <template>
+  <w3m-button />
+  <w3m-network-button />
+  <w3m-connect-button />
+  <w3m-account-button />
+
   <button @click="modal.open()">Open Connect Modal</button>
   <button @click="modal.open({ view: 'Networks' })">Open Network Modal</button>
 </template>
