@@ -3,7 +3,8 @@ import {
   ConnectionController,
   CoreHelperUtil,
   RouterController,
-  SnackController
+  SnackController,
+  ThemeController
 } from '@web3modal/core'
 import type { IconType } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -116,7 +117,7 @@ export class W3mConnectingWidget extends LitElement {
         <wui-flex justifyContent="center" alignItems="center">
           <wui-wallet-image size="lg" imageSrc=${ifDefined(this.imageSrc)}></wui-wallet-image>
 
-          ${this.error ? null : html`<wui-loading-thumbnail></wui-loading-thumbnail>`}
+          ${this.error ? null : this.loaderTemplate()}
 
           <wui-icon-box
             backgroundColor="error-100"
@@ -177,6 +178,13 @@ export class W3mConnectingWidget extends LitElement {
         this.onConnect?.()
       }
     }
+  }
+
+  private loaderTemplate() {
+    const borderRadiusMaster = ThemeController.state.themeVariables['--w3m-border-radius-master']
+    const radius = borderRadiusMaster ? parseInt(borderRadiusMaster.replace('px', ''), 10) : 4
+
+    return html`<wui-loading-thumbnail radius=${radius * 4}></wui-loading-thumbnail>`
   }
 
   // -- Protected ----------------------------------------- //

@@ -6,9 +6,12 @@ import { html } from 'lit'
 type Component = Meta<WuiLoadingThumbnail>
 
 export default {
-  title: 'Components/wui-loading-thumbnail'
+  title: 'Components/wui-loading-thumbnail',
+  args: {
+    radius: 36
+  }
 } as Component
 
 export const Default: Component = {
-  render: () => html` <wui-loading-thumbnail></wui-loading-thumbnail>`
+  render: args => html` <wui-loading-thumbnail radius=${args.radius}></wui-loading-thumbnail>`
 }

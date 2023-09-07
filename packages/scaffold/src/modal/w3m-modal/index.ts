@@ -80,6 +80,12 @@ export class W3mModal extends LitElement {
   }
 
   private onScrollLock() {
+    const { body } = document
+    const { innerHeight: viewportHeight } = window
+    const scrollHeight = body?.scrollHeight
+
+    const scrollbarGutter = scrollHeight > viewportHeight ? 'scrollbar-gutter: stable;' : ''
+
     const styleTag = document.createElement('style')
     styleTag.dataset['w3m'] = SCROLL_LOCK
     styleTag.textContent = `
@@ -87,7 +93,7 @@ export class W3mModal extends LitElement {
         touch-action: none;
         overflow: hidden;
         overscroll-behavior: contain;
-        scrollbar-gutter: stable;
+       ${scrollbarGutter}
       }
     `
     document.head.appendChild(styleTag)
