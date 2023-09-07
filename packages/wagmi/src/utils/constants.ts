@@ -19,4 +19,4 @@ export const BLOCKCHAIN_HTTP_API = 'https://rpc.walletconnect.com'
 export const BLOCKCHAIN_WSS_API = 'wss://rpc.walletconnect.com'
 
 // DO NOT REMOVE, SHOULD MATCH CORE PACKAGE VERSION
-export const VERSION = '3.0.0-alpha.5'
+export const VERSION = '3.0.0-924c61f0'
