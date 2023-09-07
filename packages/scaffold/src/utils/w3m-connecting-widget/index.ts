@@ -126,6 +126,7 @@ export class W3mConnectingWidget extends LitElement {
             icon="close"
             size="sm"
             border
+            borderColor="wui-color-bg-125"
           ></wui-icon-box>
         </wui-flex>
 

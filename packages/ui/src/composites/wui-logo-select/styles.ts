@@ -8,7 +8,7 @@ export default css`
   button {
     width: 50px;
     height: 50px;
-    background: var(--wui-overlay-002);
+    background: var(--wui-overlay-gray-002);
     border-radius: var(--wui-border-radius-xs);
   }
 `

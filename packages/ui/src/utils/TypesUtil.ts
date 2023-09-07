@@ -219,3 +219,5 @@ export interface ThemeVariables {
 }
 
 export type TagLabelType = 'installed' | 'qr code' | 'recent' | 'get wallet' | 'all'
+
+export type IconBoxBorderType = 'wui-color-bg-125' | 'wui-overlay-accent-010'

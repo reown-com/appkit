@@ -10,6 +10,6 @@ export default css`
 
   button:disabled {
     background-color: transparent;
-    color: var(--wui-overlay-015);
+    color: var(--wui-overlay-gray-015);
   }
 `

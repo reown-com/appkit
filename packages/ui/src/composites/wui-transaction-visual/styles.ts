@@ -8,7 +8,7 @@ export default css`
     position: relative;
     width: 40px;
     height: 40px;
-    border: 1px solid var(--wui-overlay-005);
+    border: 1px solid var(--wui-overlay-gray-005);
     border-radius: var(--wui-border-radius-3xl);
   }
 

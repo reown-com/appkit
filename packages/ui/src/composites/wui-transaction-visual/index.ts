@@ -51,6 +51,7 @@ export class WuiTransactionVisual extends LitElement {
         background="opaque"
         .icon=${icon}
         ?border=${true}
+        borderColor="wui-color-bg-125"
       ></wui-icon-box>
     `
   }

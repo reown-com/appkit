@@ -5,7 +5,7 @@ export default css`
     column-gap: var(--wui-spacing-s);
     padding: 11px 18px 11px var(--wui-spacing-s);
     width: 100%;
-    background-color: var(--wui-overlay-002);
+    background-color: var(--wui-overlay-gray-002);
     border-radius: var(--wui-border-radius-xs);
     color: var(--wui-color-fg-250);
   }
@@ -17,16 +17,16 @@ export default css`
   button > wui-image {
     width: 32px;
     height: 32px;
-    outline: 2px solid var(--wui-overlay-005);
+    outline: 2px solid var(--wui-overlay-gray-005);
     border-radius: var(--wui-border-radius-3xl);
   }
 
   button > wui-icon-box[data-variant='blue'] {
-    outline: 2px solid var(--wui-color-accent-005);
+    outline: 2px solid var(--wui-overlay-accent-005);
   }
 
   button > wui-icon-box[data-variant='overlay'] {
-    outline: 2px solid var(--wui-overlay-005);
+    outline: 2px solid var(--wui-overlay-gray-005);
   }
 
   button > wui-icon {
@@ -35,8 +35,8 @@ export default css`
   }
 
   button:disabled {
-    background-color: var(--wui-overlay-015);
-    color: var(--wui-overlay-015);
+    background-color: var(--wui-overlay-gray-015);
+    color: var(--wui-overlay-gray-015);
   }
 
   button[data-loading='true'] > wui-icon {

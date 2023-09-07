@@ -5,7 +5,7 @@ export default css`
     display: block;
     width: 64px;
     height: 64px;
-    outline: 8px solid var(--wui-overlay-005);
+    outline: 8px solid var(--wui-overlay-gray-005);
     border-radius: var(--wui-border-radius-3xl);
     overflow: hidden;
     position: relative;

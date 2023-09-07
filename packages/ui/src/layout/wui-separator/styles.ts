@@ -6,7 +6,7 @@ export default css`
     display: flex;
     width: 100%;
     height: 1px;
-    background-color: var(--wui-overlay-005);
+    background-color: var(--wui-overlay-gray-005);
     justify-content: center;
     align-items: center;
   }
