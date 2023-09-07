@@ -218,3 +218,5 @@ export interface ThemeVariables {
   '--w3m-border-radius-master'?: string
   '--w3m-z-index'?: string
 }
+
+export type IconBoxBorderType = 'wui-color-bg-125' | 'wui-overlay-accent-010'

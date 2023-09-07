@@ -138,12 +138,16 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-color-blue-015: var(--wui-color-accent-base-015);
 
       --wui-color-accent-100: var(--wui-color-accent-base-100);
-      --wui-color-accent-090: var(--wui-color-accent-base-100);
+      --wui-color-accent-090: var(--wui-color-accent-base-090);
       --wui-color-accent-080: var(--wui-color-accent-base-080);
-      --wui-color-accent-020: var(--wui-color-accent-base-020);
-      --wui-color-accent-015: var(--wui-color-accent-base-015);
-      --wui-color-accent-010: var(--wui-color-accent-base-010);
-      --wui-color-accent-005: var(--wui-color-accent-base-005);
+
+      --wui-accent-glass-090: var(--wui-accent-glass-base-090);
+      --wui-accent-glass-080: var(--wui-accent-glass-base-080);
+      --wui-accent-glass-020: var(--wui-accent-glass-base-020);
+      --wui-accent-glass-015: var(--wui-accent-glass-base-015);
+      --wui-accent-glass-010: var(--wui-accent-glass-base-010);
+      --wui-accent-glass-005: var(--wui-accent-glass-base-005);
+      --wui-accent-glass-002: var(--wui-accent-glass-base-002);
 
       --wui-color-fg-100: var(--wui-color-fg-base-100);
       --wui-color-fg-125: var(--wui-color-fg-base-125);
@@ -190,10 +194,17 @@ function createRootStyles(themeVariables: ThemeVariables) {
         var(--wui-color-accent-base-100) 80%,
         var(--w3m-default)
       );
-      --wui-color-accent-020: color-mix(in srgb, var(--wui-color-accent-base-100) 20%, transparent);
-      --wui-color-accent-015: color-mix(in srgb, var(--wui-color-accent-base-100) 15%, transparent);
-      --wui-color-accent-010: color-mix(in srgb, var(--wui-color-accent-base-100) 10%, transparent);
-      --wui-color-accent-005: color-mix(in srgb, var(--wui-color-accent-base-100) 5%, transparent);
+
+      --wui-color-accent-090: color-mix(in srgb, var(--wui-color-accent-base-100) 90%, transparent);
+      --wui-color-accent-080: color-mix(in srgb, var(--wui-color-accent-base-100) 80%, transparent);
+
+      --wui-accent-glass-090: color-mix(in srgb, var(--wui-color-accent-base-100) 90%, transparent);
+      --wui-accent-glass-080: color-mix(in srgb, var(--wui-color-accent-base-100) 80%, transparent);
+      --wui-accent-glass-020: color-mix(in srgb, var(--wui-color-accent-base-100) 20%, transparent);
+      --wui-accent-glass-015: color-mix(in srgb, var(--wui-color-accent-base-100) 15%, transparent);
+      --wui-accent-glass-010: color-mix(in srgb, var(--wui-color-accent-base-100) 10%, transparent);
+      --wui-accent-glass-005: color-mix(in srgb, var(--wui-color-accent-base-100) 5%, transparent);
+      --wui-color-accent-002: color-mix(in srgb, var(--wui-color-accent-base-100) 2%, transparent);
 
       --wui-color-fg-100: color-mix(
         in srgb,
@@ -342,10 +353,14 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-color-accent-base-100: var(--w3m-accent);
       --wui-color-accent-base-090: #59aaff;
       --wui-color-accent-base-080: #6cb4ff;
-      --wui-color-accent-base-020: rgba(71, 161, 255, 0.2);
-      --wui-color-accent-base-015: rgba(71, 161, 255, 0.15);
-      --wui-color-accent-base-010: rgba(71, 161, 255, 0.1);
-      --wui-color-accent-base-005: rgba(71, 161, 255, 0.05);
+
+      --wui-accent-glass-base-090: rgba(71, 161, 255, 0.9);
+      --wui-accent-glass-base-080: rgba(71, 161, 255, 0.8);
+      --wui-accent-glass-base-020: rgba(71, 161, 255, 0.2);
+      --wui-accent-glass-base-015: rgba(71, 161, 255, 0.15);
+      --wui-accent-glass-base-010: rgba(71, 161, 255, 0.1);
+      --wui-accent-glass-base-005: rgba(71, 161, 255, 0.05);
+      --wui-accent-glass-base-002: rgba(71, 161, 255, 0.02);
 
       --wui-color-fg-base-100: #e4e7e7;
       --wui-color-fg-base-125: #d0d5d5;
@@ -379,13 +394,16 @@ function createRootStyles(themeVariables: ThemeVariables) {
 
       --wui-avatar-border-base: #252525;
 
-      --wui-overlay-002: rgba(255, 255, 255, 0.02);
-      --wui-overlay-005: rgba(255, 255, 255, 0.05);
-      --wui-overlay-010: rgba(255, 255, 255, 0.1);
-      --wui-overlay-015: rgba(255, 255, 255, 0.15);
-      --wui-overlay-020: rgba(255, 255, 255, 0.2);
-      --wui-overlay-025: rgba(255, 255, 255, 0.25);
-      --wui-overlay-030: rgba(255, 255, 255, 0.3);
+      --wui-gray-glass-001: rgba(255, 255, 255, 0.01);
+      --wui-gray-glass-002: rgba(255, 255, 255, 0.02);
+      --wui-gray-glass-005: rgba(255, 255, 255, 0.05);
+      --wui-gray-glass-010: rgba(255, 255, 255, 0.1);
+      --wui-gray-glass-015: rgba(255, 255, 255, 0.15);
+      --wui-gray-glass-020: rgba(255, 255, 255, 0.2);
+      --wui-gray-glass-025: rgba(255, 255, 255, 0.25);
+      --wui-gray-glass-030: rgba(255, 255, 255, 0.3);
+      --wui-gray-glass-060: rgba(255, 255, 255, 0.6);
+      --wui-gray-glass-080: rgba(255, 255, 255, 0.8);
     }
 
     [data-wui-theme='light'] {
@@ -398,10 +416,14 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-color-accent-base-100: var(--w3m-accent);
       --wui-color-accent-base-090: #2d7dd2;
       --wui-color-accent-base-080: #2978cc;
-      --wui-color-accent-base-020: rgba(51, 150, 255, 0.2);
-      --wui-color-accent-base-015: rgba(51, 150, 255, 0.15);
-      --wui-color-accent-base-010: rgba(51, 150, 255, 0.1);
-      --wui-color-accent-base-005: rgba(51, 150, 255, 0.05);
+
+      --wui-accent-glass-base-090: rgba(51, 150, 255, 0.9);
+      --wui-accent-glass-base-080: rgba(51, 150, 255, 0.8);
+      --wui-accent-glass-base-020: rgba(51, 150, 255, 0.2);
+      --wui-accent-glass-base-015: rgba(51, 150, 255, 0.15);
+      --wui-accent-glass-base-010: rgba(51, 150, 255, 0.1);
+      --wui-accent-glass-base-005: rgba(51, 150, 255, 0.05);
+      --wui-accent-glass-base-002: rgba(51, 150, 255, 0.02);
 
       --wui-color-fg-base-100: #141414;
       --wui-color-fg-base-125: #2d3131;
@@ -431,17 +453,20 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-icon-box-bg-success-base-100: #daf0e4;
       --wui-icon-box-bg-inverse-base-100: #dcecfc;
 
-      --wui-all-wallets-bg-base-100: #c1dfde;
+      --wui-all-wallets-bg-base-100: #e8f1fa;
 
       --wui-avatar-border-base: #f3f4f4;
 
-      --wui-overlay-002: rgba(0, 0, 0, 0.02);
-      --wui-overlay-005: rgba(0, 0, 0, 0.05);
-      --wui-overlay-010: rgba(0, 0, 0, 0.1);
-      --wui-overlay-015: rgba(0, 0, 0, 0.15);
-      --wui-overlay-020: rgba(0, 0, 0, 0.2);
-      --wui-overlay-025: rgba(0, 0, 0, 0.25);
-      --wui-overlay-030: rgba(0, 0, 0, 0.3);
+      --wui-gray-glass-001: rgba(0, 0, 0, 0.01);
+      --wui-gray-glass-002: rgba(0, 0, 0, 0.02);
+      --wui-gray-glass-005: rgba(0, 0, 0, 0.05);
+      --wui-gray-glass-010: rgba(0, 0, 0, 0.1);
+      --wui-gray-glass-015: rgba(0, 0, 0, 0.15);
+      --wui-gray-glass-020: rgba(0, 0, 0, 0.2);
+      --wui-gray-glass-025: rgba(0, 0, 0, 0.25);
+      --wui-gray-glass-030: rgba(0, 0, 0, 0.3);
+      --wui-gray-glass-060: rgba(0, 0, 0, 0.6);
+      --wui-gray-glass-080: rgba(0, 0, 0, 0.8);
     }
   `
 }
@@ -483,12 +508,12 @@ export const elementStyles = css`
 
   @media (hover: hover) and (pointer: fine) {
     button:hover:enabled {
-      background-color: var(--wui-overlay-005);
+      background-color: var(--wui-gray-glass-005);
     }
 
     button:active:enabled {
       transition: all var(--wui-ease-out-power-2) var(--wui-duration-sm);
-      background-color: var(--wui-overlay-010);
+      background-color: var(--wui-gray-glass-010);
     }
 
     button[data-variant='fill']:hover:enabled {
@@ -498,13 +523,13 @@ export const elementStyles = css`
 
   button:disabled {
     cursor: not-allowed;
-    background-color: var(--wui-overlay-005);
+    background-color: var(--wui-gray-glass-005);
   }
 
   button[data-variant='shade']:disabled,
   button[data-variant='accent']:disabled {
-    background-color: var(--wui-overlay-010);
-    color: var(--wui-overlay-015);
+    background-color: var(--wui-gray-glass-010);
+    color: var(--wui-gray-glass-015);
     filter: grayscale(1);
   }
 
@@ -521,7 +546,7 @@ export const elementStyles = css`
   button:focus-visible,
   a:focus-visible {
     border: 1px solid var(--wui-color-accent-100);
-    background-color: var(--wui-overlay-005);
+    background-color: var(--wui-gray-glass-005);
     -webkit-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
     -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
     box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
@@ -537,12 +562,12 @@ export const elementStyles = css`
   }
 
   button[data-variant='fill']:disabled {
-    color: var(--wui-overlay-015);
-    background-color: var(--wui-overlay-015);
+    color: var(--wui-gray-glass-015);
+    background-color: var(--wui-gray-glass-015);
   }
 
   button[data-variant='fill']:disabled > wui-icon {
-    color: var(--wui-overlay-015);
+    color: var(--wui-gray-glass-015);
   }
 
   button[data-variant='shade'] {
@@ -558,18 +583,18 @@ export const elementStyles = css`
     border-radius: var(--wui-border-radius-xs);
     height: 56px;
     border: none;
-    background-color: var(--wui-overlay-002);
+    background-color: var(--wui-gray-glass-002);
     color: var(--wui-color-fg-200);
     gap: var(--wui-spacing-xs);
   }
 
   button:active:enabled {
-    background-color: var(--wui-overlay-010);
+    background-color: var(--wui-gray-glass-010);
   }
 
   button[data-variant='fill']:active:enabled {
     background-color: var(--wui-color-accent-080);
-    border: 1px solid var(--wui-overlay-010);
+    border: 1px solid var(--wui-gray-glass-010);
   }
 
   input {

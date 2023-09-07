@@ -8,12 +8,12 @@ export default css`
   }
 
   :host([data-variant='main']) {
-    background-color: var(--wui-color-accent-015);
+    background-color: var(--wui-accent-glass-015);
     color: var(--wui-color-accent-100);
   }
 
   :host([data-variant='shade']) {
-    background-color: var(--wui-overlay-010);
+    background-color: var(--wui-gray-glass-010);
     color: var(--wui-color-fg-200);
   }
 

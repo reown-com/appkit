@@ -15,6 +15,7 @@ import type {
   FlexWrapType,
   GridContentType,
   GridItemsType,
+  IconBoxBorderType,
   IconType,
   LogoType,
   PlacementType,
@@ -258,5 +259,10 @@ export const tagOptions: TagType[] = ['main', 'shade', 'error', 'success']
 export const accountEntryOptions: AccountEntryType[] = ['icon', 'image']
 
 export const themeOptions: ThemeType[] = ['dark', 'light']
+
+export const iconBoxBorderOptions: IconBoxBorderType[] = [
+  'wui-color-bg-125',
+  'wui-overlay-accent-010'
+]
 
 export const tagLabelOptions = ['get wallet', 'installed', 'qr code', 'recent']

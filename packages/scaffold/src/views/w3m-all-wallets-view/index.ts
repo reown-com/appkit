@@ -43,6 +43,8 @@ export class W3mAllWalletsView extends LitElement {
           backgroundcolor="accent-100"
           icon="qrCode"
           background="transparent"
+          border
+          borderColor="wui-overlay-accent-010"
           @click=${this.onWalletConnectQr.bind(this)}
         ></wui-icon-box>
       `

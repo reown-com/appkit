@@ -2,7 +2,13 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { BackgroundType, ColorType, IconType, SizeType } from '../../utils/TypesUtil.js'
+import type {
+  BackgroundType,
+  ColorType,
+  IconBoxBorderType,
+  IconType,
+  SizeType
+} from '../../utils/TypesUtil.js'
 import styles from './styles.js'
 
 @customElement('wui-icon-box')
@@ -19,6 +25,8 @@ export class WuiIconBox extends LitElement {
   @property() public background: BackgroundType = 'transparent'
 
   @property({ type: Boolean }) public border? = false
+
+  @property() public borderColor?: IconBoxBorderType = 'wui-color-bg-125'
 
   @property() public icon: IconType = 'copy'
 
@@ -57,7 +65,7 @@ export class WuiIconBox extends LitElement {
        --local-bg-mix: ${isColorChange ? `100%` : bgMix};
        --local-border-radius: var(--wui-border-radius-${borderRadius});
        --local-size: var(--wui-icon-box-size-${this.size});
-       --local-border: 2px solid ${this.border ? `var(--wui-color-bg-125)` : `transparent`}
+       --local-border: 2px solid ${this.border ? `var(--${this.borderColor})` : `transparent`}
    `
 
     return html` <wui-icon color=${this.iconColor} size=${iconSize} name=${this.icon}></wui-icon> `
