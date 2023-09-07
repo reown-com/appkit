@@ -1,4 +1,11 @@
-import type { ThemeMode, ThemeVariables } from '@web3modal/scaffold'
+import type {
+  ThemeMode,
+  ThemeVariables,
+  W3mAccountButton,
+  W3mButton,
+  W3mConnectButton,
+  W3mNetworkButton
+} from '@web3modal/scaffold'
 import { onUnmounted, ref } from 'vue'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
@@ -6,14 +13,25 @@ import { VERSION } from '../src/utils/constants.js'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
+
 type OpenOptions = Parameters<Web3Modal['open']>[0]
+
 type ThemeModeOptions = Parameters<Web3Modal['setThemeMode']>[0]
+
 type ThemeVariablesOptions = Parameters<Web3Modal['setThemeVariables']>[0]
+
+declare module '@vue/runtime-core' {
+  export interface ComponentCustomProperties {
+    W3mConnectButton: Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
+    W3mAccountButton: Pick<W3mAccountButton, 'disabled' | 'balance'>
+    W3mButton: Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
+    W3mNetworkButton: Pick<W3mNetworkButton, 'disabled'>
+  }
+}
 
 // -- Setup -------------------------------------------------------------------
 let modal: Web3Modal | undefined = undefined
 
-// -- Lib ---------------------------------------------------------------------
 export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
     modal = new Web3Modal({ ...options, _sdkVersion: `vue-wagmi-${VERSION}` })
@@ -22,6 +40,9 @@ export function createWeb3Modal(options: Web3ModalOptions) {
   return modal
 }
 
+export { defaultWagmiConfig } from '../src/utils/defaultWagmiCoreConfig.js'
+
+// -- Composites --------------------------------------------------------------
 export function useWeb3ModalTheme() {
   if (!modal) {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalTheme" hook')
@@ -73,5 +94,3 @@ export function useWeb3Modal() {
     close
   })
 }
-
-export { defaultWagmiConfig } from '../src/utils/defaultWagmiCoreConfig.js'

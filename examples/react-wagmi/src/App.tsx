@@ -2,7 +2,7 @@ import { createWeb3Modal, defaultWagmiConfig, useWeb3Modal } from '@web3modal/wa
 import { WagmiConfig } from 'wagmi'
 import { arbitrum, mainnet } from 'wagmi/chains'
 
-// 1. Get projectId
+// @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
 if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
@@ -20,7 +20,7 @@ createWeb3Modal({
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00DCFF',
-    '--w3m-color-mix-strength': 50
+    '--w3m-color-mix-strength': 20
   }
 })
 
@@ -30,8 +30,13 @@ export default function App() {
 
   return (
     <WagmiConfig config={wagmiConfig}>
-      <button onClick={() => modal.open()}>Open Connect Modal</button>
-      <button onClick={() => modal.open({ view: 'Networks' })}>Open Network Modal</button>
+      <w3m-button />
+      <w3m-network-button />
+      <w3m-connect-button />
+      <w3m-account-button />
+
+      <button onClick={() => modal.open()}>Connect Wallet</button>
+      <button onClick={() => modal.open({ view: 'Networks' })}>Choose Network</button>
     </WagmiConfig>
   )
 }

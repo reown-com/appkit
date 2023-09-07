@@ -3,7 +3,6 @@ import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ButtonType } from '../../utils/TypesUtil.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
 
@@ -14,16 +13,16 @@ export class WuiNetworkButton extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public imageSrc?: string = undefined
 
-  @property() public name = 'Unknown'
-
-  @property() public variant: Exclude<ButtonType, 'accent' | 'fullwidth'> = 'fill'
+  @property({ type: Boolean }) public disabled = false
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button data-variant=${this.variant}>
+      <button ?disabled=${this.disabled}>
         ${this.visualTemplate()}
-        <wui-text variant="paragraph-600" color="inherit"> ${this.name} </wui-text>
+        <wui-text variant="paragraph-600" color="inherit">
+          <slot></slot>
+        </wui-text>
       </button>
     `
   }
@@ -38,7 +37,7 @@ export class WuiNetworkButton extends LitElement {
       <wui-icon-box
         size="sm"
         iconColor="inverse-100"
-        backgroundColor="accent-100"
+        backgroundColor="fg-100"
         icon="networkPlaceholder"
       ></wui-icon-box>
     `

@@ -1,3 +1,4 @@
+import { subscribe as sub } from 'valtio'
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
 
@@ -22,6 +23,10 @@ const state = proxy<AssetControllerState>({
 // -- Controller ---------------------------------------- //
 export const AssetController = {
   state,
+
+  subscribeNetworkImages(callback: (value: AssetControllerState['networkImages']) => void) {
+    return sub(state.networkImages, () => callback(state.networkImages))
+  },
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: AssetControllerState[K]) => void) {
     return subKey(state, key, callback)

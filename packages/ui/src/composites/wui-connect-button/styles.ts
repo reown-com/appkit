@@ -69,10 +69,6 @@ export default css`
     padding-left: var(--wui-spacing-3xs);
   }
 
-  button.loading > wui-text {
-    color: var(--wui-color-accent-100);
-  }
-
   wui-loading-spinner {
     width: 14px;
     height: 14px;

@@ -112,5 +112,19 @@ export const CoreHelperUtil = {
     })
 
     return Promise.race([imagePromise, CoreHelperUtil.wait(2000)])
+  },
+
+  formatBalance(balance: string | undefined, symbol: string | undefined) {
+    let formattedBalance = undefined
+
+    if (balance === '0.0') {
+      formattedBalance = '0'
+    } else if (typeof balance === 'string' && balance.length > 6) {
+      formattedBalance = balance.substring(0, 6)
+    } else if (typeof balance === 'string') {
+      formattedBalance = balance
+    }
+
+    return formattedBalance ? `${formattedBalance} ${symbol}` : '0.0000'
   }
 }
