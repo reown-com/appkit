@@ -145,8 +145,8 @@ export class W3mConnectView extends LitElement {
     if (!CoreHelperUtil.isMobile()) {
       return null
     }
-    const { recommended } = ApiController.state
-    if (!recommended.length) {
+    const { recommended, featured } = ApiController.state
+    if (!recommended.length || featured.length) {
       return null
     }
     const [first, second] = this.filterOutRecentWallets(recommended)
