@@ -10,7 +10,6 @@ export default {
   title: 'Composites/wui-network-button',
   args: {
     imageSrc: networkImageSrc,
-    name: 'Ethereum',
     disabled: false
   },
   argTypes: {
@@ -25,6 +24,5 @@ export const Default: Component = {
     html`<wui-network-button
       ?disabled=${args.disabled}
       .imageSrc=${args.imageSrc}
-      name=${args.name}
     ></wui-network-button>`
 }

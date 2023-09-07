@@ -13,8 +13,6 @@ export class WuiNetworkButton extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public imageSrc?: string = undefined
 
-  @property() public name = 'Unknown'
-
   @property({ type: Boolean }) public disabled = false
 
   // -- Render -------------------------------------------- //
