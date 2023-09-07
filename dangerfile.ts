@@ -14,6 +14,7 @@ const PRIVATE_COMMENT = `// -- Private -----------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
 const updated_files = [...modified_files, ...created_files]
 const all_files = [...updated_files, ...created_files, ...deleted_files]
+const core_package_json = all_files.find(f => f.includes('packages/core/package.json'))
 
 // -- Dependency Checks -------------------------------------------------------
 async function checkPackageJsons() {
@@ -245,14 +246,14 @@ checkClientPackages()
 async function checkSdkVersion() {
   const wagmiConstantsPath = 'packages/wagmi/src/utils/constants.ts'
   const wagmiConstants = all_files.find(f => f.includes(wagmiConstantsPath))
+  const diffCorePackageJson = core_package_json ? await diffForFile(core_package_json) : undefined
 
-  if (wagmiConstants) {
-    const diff = await diffForFile(wagmiConstants)
-    if (!diff?.after.includes(`VERSION = '${corePackageJson.version}'`)) {
+  if (!wagmiConstants) {
+    fail(`${wagmiConstantsPath} doesn't exist`)
+  } else if (diffCorePackageJson) {
+    if (!wagmiConstants.includes(`VERSION = '${corePackageJson.version}'`)) {
       fail(`VERSION in ${wagmiConstantsPath} does not match latest packages/core version`)
     }
-  } else {
-    warn(`No version updates in ${wagmiConstantsPath} file`)
   }
 }
 checkSdkVersion()
