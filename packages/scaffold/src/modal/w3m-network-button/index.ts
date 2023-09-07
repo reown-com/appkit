@@ -15,7 +15,7 @@ export class W3mNetworkButton extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property() public variant?: WuiNetworkButton['variant'] = 'fill'
+  @property({ type: Boolean }) public disabled?: WuiNetworkButton['disabled'] = false
 
   @state() private networkImages = AssetController.state.networkImages
 
@@ -44,7 +44,11 @@ export class W3mNetworkButton extends LitElement {
     const networkImage = this.networkImages[this.network?.imageId ?? '']
 
     return html`
-      <wui-network-button imageSrc=${ifDefined(networkImage)} @click=${this.onClick.bind(this)}>
+      <wui-network-button
+        .disabled=${Boolean(this.disabled)}
+        imageSrc=${ifDefined(networkImage)}
+        @click=${this.onClick.bind(this)}
+      >
         ${this.network?.name ?? (this.connected ? 'Unknown Network' : 'Select Network')}
       </wui-network-button>
     `

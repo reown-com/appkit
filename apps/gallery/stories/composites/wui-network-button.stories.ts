@@ -10,19 +10,18 @@ export default {
   title: 'Composites/wui-network-button',
   args: {
     imageSrc: networkImageSrc,
-    variant: 'fill'
+    disabled: false
   },
   argTypes: {
-    variant: {
-      options: ['fill', 'shade'],
-      control: { type: 'select' }
+    disabled: {
+      control: { type: 'boolean' }
     }
   }
 } as Component
 
 export const Default: Component = {
   render: args =>
-    html`<wui-network-button .imageSrc=${args.imageSrc} variant=${args.variant}>
-      Ethereum
-    </wui-network-button>`
+    html`<wui-network-button ?disabled=${args.disabled} .imageSrc=${args.imageSrc}
+      >Ethereum</wui-network-button
+    >`
 }
