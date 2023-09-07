@@ -121,7 +121,7 @@ export const ApiController = {
   async fetchRecommendedWallets() {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
     const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean)
-    const { data } = await api.get<ApiGetWalletsResponse>({
+    const { data, count } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       headers: ApiController._getApiHeaders(),
       params: {
@@ -138,7 +138,7 @@ export const ApiController = {
       [...recommendedImages, ...recentImages].map(id => ApiController._fetchWalletImage(id))
     )
     state.recommended = data
-    state.count = includeWalletIds?.length ?? 0
+    state.count = count ?? 0
   },
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {

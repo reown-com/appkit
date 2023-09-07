@@ -217,5 +217,3 @@ export interface ThemeVariables {
   '--w3m-border-radius-master'?: string
   '--w3m-z-index'?: string
 }
-
-export type TagLabelType = 'installed' | 'qr code' | 'recent' | 'get wallet' | 'all'
