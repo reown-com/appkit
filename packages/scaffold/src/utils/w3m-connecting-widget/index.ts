@@ -184,7 +184,7 @@ export class W3mConnectingWidget extends LitElement {
     const borderRadiusMaster = ThemeController.state.themeVariables['--w3m-border-radius-master']
     const radius = borderRadiusMaster ? parseInt(borderRadiusMaster.replace('px', ''), 10) : 4
 
-    return html`<wui-loading-thumbnail radius=${radius * 4}></wui-loading-thumbnail>`
+    return html`<wui-loading-thumbnail radius=${radius * 9}></wui-loading-thumbnail>`
   }
 
   // -- Protected ----------------------------------------- //
