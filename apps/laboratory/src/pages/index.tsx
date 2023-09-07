@@ -46,8 +46,7 @@ export const wagmiConfig = defaultWagmiConfig({ chains, projectId, appName: 'Web
 export const modal = createWeb3Modal({
   wagmiConfig,
   projectId,
-  chains,
-  defaultChain: zora
+  chains
 })
 
 export default function HomePage() {

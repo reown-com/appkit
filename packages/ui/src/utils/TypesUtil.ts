@@ -3,6 +3,7 @@ export type ColorType =
   | 'error-100'
   | 'fg-100'
   | 'fg-200'
+  | 'fg-250'
   | 'fg-300'
   | 'inherit'
   | 'inverse-000'
@@ -217,5 +218,3 @@ export interface ThemeVariables {
   '--w3m-border-radius-master'?: string
   '--w3m-z-index'?: string
 }
-
-export type TagLabelType = 'installed' | 'qr code' | 'recent' | 'get wallet' | 'all'

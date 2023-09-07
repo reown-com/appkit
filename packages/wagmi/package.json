@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wagmi",
-  "version": "3.0.0-73ed03f2",
+  "version": "3.0.0-924c61f0",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -33,14 +33,14 @@
   },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "npm run build:clean; tsc --build",
+    "build": "npm run build:clean; tsc --build; rm dist/esm/tsconfig.tsbuildinfo",
     "watch": "npm run build:clean; tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/polyfills": "3.0.0-73ed03f2",
-    "@web3modal/scaffold": "3.0.0-73ed03f2"
+    "@web3modal/polyfills": "3.0.0-924c61f0",
+    "@web3modal/scaffold": "3.0.0-924c61f0"
   },
   "peerDependencies": {
     "@wagmi/core": ">=1",
