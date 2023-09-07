@@ -1,6 +1,6 @@
 *.log
 *.env
-dist/esm/tsconfig.tsbuildinfo
+tsconfig.tsbuildinfo
 .eslintrc.json
 .turbo
 tests
