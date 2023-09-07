@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import { danger, fail, message, warn } from 'danger'
 import corePackageJson from './packages/core/package.json' assert { type: 'json' }
+import { VERSION as WAGMI_PACKAGE_VERSION } from './packages/wagmi/src/utils/constants'
 
 // -- Constants ---------------------------------------------------------------
 const TYPE_COMMENT = `// -- Types --------------------------------------------- //`
@@ -14,7 +15,6 @@ const PRIVATE_COMMENT = `// -- Private -----------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
 const updated_files = [...modified_files, ...created_files]
 const all_files = [...updated_files, ...created_files, ...deleted_files]
-const core_package_json = all_files.find(f => f.includes('packages/core/package.json'))
 
 // -- Dependency Checks -------------------------------------------------------
 async function checkPackageJsons() {
@@ -243,17 +243,9 @@ async function checkClientPackages() {
 checkClientPackages()
 
 // -- Check sdkVersion ------------------------------------------------------------
-async function checkSdkVersion() {
-  const wagmiConstantsPath = 'packages/wagmi/src/utils/constants.ts'
-  const wagmiConstants = all_files.find(f => f.includes(wagmiConstantsPath))
-  const diffCorePackageJson = core_package_json ? await diffForFile(core_package_json) : undefined
-
-  if (!wagmiConstants) {
-    fail(`${wagmiConstantsPath} doesn't exist`)
-  } else if (diffCorePackageJson) {
-    if (!wagmiConstants.includes(`VERSION = '${corePackageJson.version}'`)) {
-      fail(`VERSION in ${wagmiConstantsPath} does not match latest packages/core version`)
-    }
+function checkSdkVersion() {
+  if (WAGMI_PACKAGE_VERSION !== corePackageJson.version) {
+    fail(`VERSION in wagmi/utils/constants does't match core package.json version`)
   }
 }
 checkSdkVersion()
