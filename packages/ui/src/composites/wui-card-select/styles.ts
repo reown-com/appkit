@@ -6,7 +6,7 @@ export default css`
     width: 76px;
     row-gap: var(--wui-spacing-xs);
     padding: var(--wui-spacing-xs) var(--wui-spacing-0);
-    background-color: var(--wui-overlay-gray-002);
+    background-color: var(--wui-gray-glass-002);
     border-radius: clamp(0px, var(--wui-border-radius-xs), 20px);
   }
 
@@ -20,20 +20,20 @@ export default css`
   }
 
   button:disabled > wui-text {
-    color: var(--wui-overlay-gray-015);
+    color: var(--wui-gray-glass-015);
   }
 
   [data-selected='true'] {
-    background-color: var(--wui-overlay-accent-020);
+    background-color: var(--wui-accent-glass-020);
   }
 
   @media (hover: hover) and (pointer: fine) {
     [data-selected='true']:hover:enabled {
-      background-color: var(--wui-overlay-accent-015);
+      background-color: var(--wui-accent-glass-015);
     }
   }
 
   [data-selected='true']:active:enabled {
-    background-color: var(--wui-overlay-accent-010);
+    background-color: var(--wui-accent-glass-010);
   }
 `

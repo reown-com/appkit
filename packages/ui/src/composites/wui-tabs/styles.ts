@@ -3,7 +3,7 @@ import { css } from 'lit'
 export default css`
   :host {
     display: inline-flex;
-    background-color: var(--wui-overlay-gray-002);
+    background-color: var(--wui-gray-glass-002);
     border-radius: var(--wui-border-radius-3xl);
     padding: var(--wui-spacing-3xs);
     position: relative;
@@ -21,8 +21,8 @@ export default css`
     width: var(--local-tab-width);
     height: 28px;
     border-radius: var(--wui-border-radius-3xl);
-    background-color: var(--wui-overlay-gray-002);
-    box-shadow: inset 0 0 0 1px var(--wui-overlay-gray-002);
+    background-color: var(--wui-gray-glass-002);
+    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-002);
     transform: translateX(calc(var(--local-tab) * var(--local-tab-width)));
     transition: transform var(--wui-ease-out-power-2) var(--wui-duration-lg);
   }

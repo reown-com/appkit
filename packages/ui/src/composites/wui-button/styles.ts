@@ -7,12 +7,12 @@ export default css`
   }
 
   button {
-    border: 1px solid var(--wui-overlay-gray-010);
+    border: 1px solid var(--wui-gray-glass-010);
     border-radius: var(--wui-border-radius-m);
   }
 
   button:disabled {
-    border: 1px solid var(--wui-overlay-gray-010);
+    border: 1px solid var(--wui-gray-glass-010);
   }
 
   button[data-size='sm'] {

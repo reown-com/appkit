@@ -18,7 +18,7 @@ export default css`
     width: 100%;
     height: 100%;
     z-index: 1;
-    fill: var(--wui-overlay-gray-002);
+    fill: var(--wui-gray-glass-002);
   }
 
   svg > path {
@@ -31,7 +31,7 @@ export default css`
     height: 100%;
     -webkit-clip-path: var(--local-path);
     clip-path: var(--local-path);
-    background: var(--wui-overlay-gray-002);
+    background: var(--wui-gray-glass-002);
   }
 
   wui-icon {

@@ -26,7 +26,7 @@ export class WuiNetworkImage extends LitElement {
     const isLg = this.size === 'lg'
     this.style.cssText = `
       --local-stroke: ${
-        this.selected ? 'var(--wui-color-accent-100)' : 'var(--wui-overlay-gray-010)'
+        this.selected ? 'var(--wui-color-accent-100)' : 'var(--wui-gray-glass-010)'
       };
       --local-path: ${isLg ? 'var(--wui-path-network-lg)' : 'var(--wui-path-network)'};
       --local-width: ${isLg ? '86px' : '48px'};
