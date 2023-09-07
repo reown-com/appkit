@@ -334,10 +334,11 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-color-accent-base-100: var(--w3m-accent);
       --wui-color-accent-base-090: #59aaff;
       --wui-color-accent-base-080: #6cb4ff;
-      --wui-color-accent-base-020: rgba(71, 161, 255, 0.2);
-      --wui-color-accent-base-015: rgba(71, 161, 255, 0.15);
-      --wui-color-accent-base-010: rgba(71, 161, 255, 0.1);
-      --wui-color-accent-base-005: rgba(71, 161, 255, 0.05);
+
+      --wui-overlay-accent-base-020: rgba(71, 161, 255, 0.2);
+      --wui-overlay-accent-base-015: rgba(71, 161, 255, 0.15);
+      --wui-overlay-accent-base-010: rgba(71, 161, 255, 0.1);
+      --wui-overlay-accent-base-005: rgba(71, 161, 255, 0.05);
 
       --wui-color-fg-base-100: #e4e7e7;
       --wui-color-fg-base-125: #d0d5d5;
