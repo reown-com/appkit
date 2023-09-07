@@ -1,6 +1,5 @@
 *.log
 *.env
-tsconfig.tsbuildinfo
 .eslintrc.json
 .turbo
 tests

@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "npm run build:clean; tsc --build",
+    "build": "npm run build:clean; tsc --build; rm dist/esm/tsconfig.tsbuildinfo",
     "watch": "npm run build:clean; tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
