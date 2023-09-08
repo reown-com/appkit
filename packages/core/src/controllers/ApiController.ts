@@ -6,8 +6,8 @@ import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
-  ApiWallet,
-  SdkVersion
+  SdkVersion,
+  WcWallet
 } from '../utils/TypeUtils.js'
 import { AssetController } from './AssetController.js'
 import { ConnectorController } from './ConnectorController.js'
@@ -26,10 +26,10 @@ export interface ApiControllerState {
   sdkVersion: SdkVersion
   page: number
   count: number
-  featured: ApiWallet[]
-  recommended: ApiWallet[]
-  wallets: ApiWallet[]
-  search: ApiWallet[]
+  featured: WcWallet[]
+  recommended: WcWallet[]
+  wallets: WcWallet[]
+  search: WcWallet[]
 }
 
 type StateKey = keyof ApiControllerState

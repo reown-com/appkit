@@ -59,7 +59,7 @@ export class W3mNetworksView extends LitElement {
       network => html`
         <wui-card-select
           .selected=${this.caipNetwork?.id === network.id}
-          imageSrc=${ifDefined(AssetUtil.getNetworkImage(network.imageId))}
+          imageSrc=${ifDefined(AssetUtil.getNetworkImage(network))}
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}

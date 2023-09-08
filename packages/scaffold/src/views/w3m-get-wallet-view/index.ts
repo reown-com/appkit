@@ -3,6 +3,8 @@ import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+const EXPLORER = 'https://walletconnect.com/explorer'
+
 @customElement('w3m-get-wallet-view')
 export class W3mGetWalletView extends LitElement {
   // -- Members ------------------------------------------- //
@@ -33,9 +35,9 @@ export class W3mGetWalletView extends LitElement {
         <wui-list-wallet
           name=${wallet.name ?? 'Unknown'}
           tagVariant="main"
-          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet.image_id))}
+          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           @click=${() => {
-            CoreHelperUtil.openHref(wallet.homepage, '_blank')
+            CoreHelperUtil.openHref(wallet.homepage ?? EXPLORER, '_blank')
           }}
         ></wui-list-wallet>
       `
