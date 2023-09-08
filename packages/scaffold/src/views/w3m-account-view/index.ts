@@ -90,7 +90,9 @@ export class W3mAccountView extends LitElement {
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
             <wui-text variant="large-600" color="fg-100">
-              ${this.profileName ?? UiHelperUtil.getTruncateAddress(this.address, 4)}
+              ${this.profileName
+                ? UiHelperUtil.getTruncateString(this.profileName, 8, true)
+                : UiHelperUtil.getTruncateString(this.address, 4)}
             </wui-text>
             <wui-icon-link
               size="md"

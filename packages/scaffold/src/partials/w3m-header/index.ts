@@ -1,5 +1,5 @@
 import type { RouterControllerState } from '@web3modal/core'
-import { ModalController, RouterController } from '@web3modal/core'
+import { ConnectionController, ModalController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { animate } from 'motion'
@@ -36,6 +36,8 @@ export class W3mHeader extends LitElement {
   // -- State & Properties --------------------------------- //
   @state() private heading = headings()[RouterController.state.view]
 
+  @state() private buffering = false
+
   @state() private showBack = false
 
   public constructor() {
@@ -44,6 +46,9 @@ export class W3mHeader extends LitElement {
       RouterController.subscribeKey('view', val => {
         this.onViewChange(val)
         this.onHistoryChange()
+      }),
+      ConnectionController.subscribeKey('buffering', val => {
+        this.onBufferChange(val)
       })
     )
   }
@@ -57,7 +62,11 @@ export class W3mHeader extends LitElement {
     return html`
       <wui-flex .padding=${this.getPadding()} justifyContent="space-between" alignItems="center">
         ${this.dynamicButtonTemplate()} ${this.titleTemplate()}
-        <wui-icon-link icon="close" @click=${ModalController.close}></wui-icon-link>
+        <wui-icon-link
+          ?disabled=${this.buffering}
+          icon="close"
+          @click=${ModalController.close}
+        ></wui-icon-link>
       </wui-flex>
       ${this.separatorTemplate()}
     `
@@ -76,6 +85,7 @@ export class W3mHeader extends LitElement {
       return html`<wui-icon-link
         id="dynamic"
         icon="chevronLeft"
+        ?disabled=${ConnectionController.state.buffering}
         @click=${RouterController.goBack}
       ></wui-icon-link>`
     }
@@ -127,6 +137,10 @@ export class W3mHeader extends LitElement {
       this.showBack = false
       animate(buttonEl, { opacity: [0, 1] }, { duration: 0.2 })
     }
+  }
+
+  private onBufferChange(val: boolean) {
+    this.buffering = val
   }
 }
 

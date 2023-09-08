@@ -22,8 +22,12 @@ export const UiHelperUtil = {
     return newUrl.hostname
   },
 
-  getTruncateAddress(address: string, chars: number) {
-    return `${address.substring(0, chars)}...${address.substring(address.length - chars)}`
+  getTruncateString(string: string, chars: number, truncateStart = false) {
+    if (truncateStart) {
+      return `${string.substring(0, chars)}...`
+    }
+
+    return `${string.substring(0, chars)}...${string.substring(string.length - chars)}`
   },
 
   generateAvatarColors(address: string) {

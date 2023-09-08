@@ -13,12 +13,22 @@ export default {
       { icon: 'extension', label: 'Browser' },
       { icon: 'desktop', label: 'Desktop' }
     ],
-    onTabChange: _index => null
+    onTabChange: _index => null,
+    disabled: false
   },
 
-  argTypes: {}
+  argTypes: {
+    disabled: {
+      control: { type: 'boolean' }
+    }
+  }
 } as Component
 
 export const Default: Component = {
-  render: args => html`<wui-tabs .tabs=${args.tabs} .onTabChange=${args.onTabChange}></wui-tabs>`
+  render: args =>
+    html`<wui-tabs
+      .tabs=${args.tabs}
+      ?disabled=${args.disabled}
+      .onTabChange=${args.onTabChange}
+    ></wui-tabs>`
 }
