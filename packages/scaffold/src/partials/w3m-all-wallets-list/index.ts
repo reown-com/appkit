@@ -99,16 +99,15 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private paginationLoaderTemplate() {
-    const walletAmountRow = window.innerWidth < 352 ? 3 : 4
-
     const { wallets, recommended, featured, count } = ApiController.state
-
+    const columns = window.innerWidth < 352 ? 3 : 4
     const currentWallets = wallets.length + recommended.length
-    const minimumRows = Math.ceil(currentWallets / walletAmountRow)
-    const loadingCount = minimumRows * walletAmountRow - currentWallets + walletAmountRow
+    const minimumRows = Math.ceil(currentWallets / columns)
+    let shimmerCount = minimumRows * columns - currentWallets + columns
+    shimmerCount -= wallets.length ? featured.length % columns : 0
 
     if (count === 0 || [...featured, ...wallets, ...recommended].length < count) {
-      return this.shimmerTemplate(loadingCount, PAGINATOR_ID)
+      return this.shimmerTemplate(shimmerCount, PAGINATOR_ID)
     }
 
     return null
