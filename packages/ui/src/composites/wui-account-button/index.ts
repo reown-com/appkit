@@ -45,7 +45,7 @@ export class WuiAccountButton extends LitElement {
           <wui-text variant="paragraph-600" color="inherit">
             ${UiHelperUtil.getTruncateString(
               this.address,
-              this.isProfileName ? 8 : 4,
+              8,
               this.isProfileName ? 'end' : 'middle'
             )}
           </wui-text>
