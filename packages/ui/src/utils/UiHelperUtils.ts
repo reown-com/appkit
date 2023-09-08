@@ -24,14 +24,20 @@ export const UiHelperUtil = {
 
   getTruncateString(string: string, chars: number, truncate: TruncateType) {
     if (truncate === 'end') {
-      return `${string.substring(0, chars)}...`
+      if (string.length > chars + 3) {
+        return `${string.substring(0, chars)}...`
+      }
+
+      return string
     } else if (truncate === 'start') {
-      return `...${string.substring(string.length - chars)}`
-    } else if (truncate === 'middle') {
-      return `${string.substring(0, chars)}...${string.substring(string.length - chars)}`
+      if (string.length > chars + 3) {
+        return `...${string.substring(string.length - chars)}`
+      }
+
+      return string
     }
 
-    return null
+    return `${string.substring(0, chars)}...${string.substring(string.length - chars)}`
   },
 
   generateAvatarColors(address: string) {
