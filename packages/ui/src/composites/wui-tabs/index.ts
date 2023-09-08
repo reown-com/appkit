@@ -16,6 +16,8 @@ export class WuiTabs extends LitElement {
 
   @property({ type: Array }) public buttons: HTMLButtonElement[] = []
 
+  @property({ type: Boolean }) public disabled = false
+
   @state() public activeTab = 0
 
   @state() public localTabWidth = '100px'
@@ -37,7 +39,11 @@ export class WuiTabs extends LitElement {
       const isActive = index === this.activeTab
 
       return html`
-        <button @click=${() => this.onTabClick(index)} data-active=${isActive}>
+        <button
+          ?disabled=${this.disabled}
+          @click=${() => this.onTabClick(index)}
+          data-active=${isActive}
+        >
           <wui-icon size="sm" color="inherit" name=${tab.icon}></wui-icon>
           <wui-text variant="small-600" color="inherit">${tab.label}</wui-text>
         </button>

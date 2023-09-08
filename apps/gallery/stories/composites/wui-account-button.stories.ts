@@ -13,10 +13,14 @@ export default {
     networkSrc: networkImageSrc,
     avatarSrc: avatarImageSrc,
     address,
-    balance: '0.527 ETH'
+    balance: '0.527 ETH',
+    isProfileName: false
   },
   argTypes: {
     disabled: {
+      control: { type: 'boolean' }
+    },
+    isProfileName: {
       control: { type: 'boolean' }
     }
   }
@@ -26,6 +30,7 @@ export const Default: Component = {
   render: args =>
     html`<wui-account-button
       ?disabled=${args.disabled}
+      ?isProfileName=${args.isProfileName}
       .networkSrc=${args.networkSrc}
       .avatarSrc=${args.avatarSrc}
       .balance=${args.balance}
