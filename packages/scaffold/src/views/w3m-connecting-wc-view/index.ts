@@ -92,12 +92,12 @@ export class W3mConnectingWcView extends LitElement {
 
     const { connectors } = ConnectorController.state
     const { mobile_link, desktop_link, webapp_link, injected } = this.wallet
-    const injectedIds = injected?.map(({ injected_id }) => injected_id) ?? []
+    const injectedIds = injected?.map(({ injected_id }) => injected_id).filter(Boolean) ?? []
     const isInjected = injectedIds.length
     const isMobileWc = mobile_link
     const isWebWc = webapp_link
     const isInjectedConnector = connectors.find(c => c.type === 'INJECTED')
-    const isInjectedInstalled = ConnectionController.checkInjectedInstalled(injectedIds)
+    const isInjectedInstalled = ConnectionController.checkInjectedInstalled(injectedIds as string[])
     const isInjectedWc = isInjected && isInjectedInstalled && isInjectedConnector
     const isDesktopWc = desktop_link && !CoreHelperUtil.isMobile()
 

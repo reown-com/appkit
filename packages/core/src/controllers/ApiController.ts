@@ -112,8 +112,8 @@ export const ApiController = {
         }
       })
 
-      const featuredImages = data.map(d => d.image_id)
-      await Promise.all(featuredImages.map(id => ApiController._fetchWalletImage(id)))
+      const images = data.map(d => d.image_id).filter(Boolean)
+      await Promise.all((images as string[]).map(id => ApiController._fetchWalletImage(id)))
       state.featured = data
     }
   },
@@ -132,10 +132,12 @@ export const ApiController = {
       }
     })
     const recent = StorageUtil.getRecentWallets()
-    const recommendedImages = data.map(d => d.image_id)
-    const recentImages = recent.map(r => r.image_id)
+    const recommendedImages = data.map(d => d.image_id).filter(Boolean)
+    const recentImages = recent.map(r => r.image_id).filter(Boolean)
     await Promise.all(
-      [...recommendedImages, ...recentImages].map(id => ApiController._fetchWalletImage(id))
+      ([...recommendedImages, ...recentImages] as string[]).map(id =>
+        ApiController._fetchWalletImage(id)
+      )
     )
     state.recommended = data
     state.count = count ?? 0
@@ -158,8 +160,9 @@ export const ApiController = {
         exclude: exclude.join(',')
       }
     })
+    const images = data.map(w => w.image_id).filter(Boolean)
     await Promise.all([
-      ...data.map(({ image_id }) => ApiController._fetchWalletImage(image_id)),
+      (images as string[]).map(id => ApiController._fetchWalletImage(id)),
       CoreHelperUtil.wait(300)
     ])
     state.wallets = [...state.wallets, ...data]
@@ -181,8 +184,9 @@ export const ApiController = {
         exclude: excludeWalletIds?.join(',')
       }
     })
+    const images = data.map(w => w.image_id).filter(Boolean)
     await Promise.all([
-      ...data.map(({ image_id }) => ApiController._fetchWalletImage(image_id)),
+      (images as string[]).map(id => ApiController._fetchWalletImage(id)),
       CoreHelperUtil.wait(300)
     ])
     state.search = data
