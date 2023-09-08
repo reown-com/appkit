@@ -122,10 +122,6 @@ export class W3mConnectingWcView extends LitElement {
   }
 
   private platformTemplate() {
-    if (!this.platform) {
-      return null
-    }
-
     switch (this.platform) {
       case 'injected':
         return html`<w3m-connecting-wc-injected></w3m-connecting-wc-injected>`
