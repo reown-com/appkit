@@ -9,6 +9,6 @@
     "apps/*",
     "examples/*"
   ],
-  "version": "3.0.0-31553f77",
+  "version": "3.0.0-alpha.6",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
