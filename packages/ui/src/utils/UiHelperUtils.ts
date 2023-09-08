@@ -24,13 +24,13 @@ export const UiHelperUtil = {
 
   getTruncateString(string: string, chars: number, truncate: TruncateType) {
     if (truncate === 'end') {
-      if (string.length > chars + 3) {
+      if (string.length > chars + 6) {
         return `${string.substring(0, chars)}...`
       }
 
       return string
     } else if (truncate === 'start') {
-      if (string.length > chars + 3) {
+      if (string.length > chars + 6) {
         return `...${string.substring(string.length - chars)}`
       }
 
