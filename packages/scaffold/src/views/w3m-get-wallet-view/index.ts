@@ -1,13 +1,12 @@
-import { ApiController, AssetUtil, CoreHelperUtil } from '@web3modal/core'
+import { ApiController, AssetUtil, CoreHelperUtil, OptionsController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+const EXPLORER = 'https://walletconnect.com/explorer'
+
 @customElement('w3m-get-wallet-view')
 export class W3mGetWalletView extends LitElement {
-  // -- Members ------------------------------------------- //
-  private recommendedWallets = ApiController.state.recommended
-
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -28,14 +27,18 @@ export class W3mGetWalletView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private recommendedWalletsTemplate() {
-    return this.recommendedWallets.map(
+    const { recommended, featured } = ApiController.state
+    const { customWallets } = OptionsController.state
+    const wallets = [...featured, ...(customWallets ?? []), ...recommended].slice(0, 4)
+
+    return wallets.map(
       wallet => html`
         <wui-list-wallet
           name=${wallet.name ?? 'Unknown'}
           tagVariant="main"
-          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet.image_id))}
+          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           @click=${() => {
-            CoreHelperUtil.openHref(wallet.homepage, '_blank')
+            CoreHelperUtil.openHref(wallet.homepage ?? EXPLORER, '_blank')
           }}
         ></wui-list-wallet>
       `

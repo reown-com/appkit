@@ -38,6 +38,7 @@ export interface LibraryOptions {
   tokens?: OptionsControllerState['tokens']
   termsConditionsUrl?: OptionsControllerState['termsConditionsUrl']
   privacyPolicyUrl?: OptionsControllerState['privacyPolicyUrl']
+  customWallets?: OptionsControllerState['customWallets']
   _sdkVersion: ApiControllerState['sdkVersion']
 }
 
@@ -159,6 +160,7 @@ export class Web3ModalScaffold {
     OptionsController.setTokens(options.tokens)
     OptionsController.setTermsConditionsUrl(options.termsConditionsUrl)
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
+    OptionsController.setCustomWallets(options.customWallets)
 
     ConnectionController.setClient(options.connectionControllerClient)
 

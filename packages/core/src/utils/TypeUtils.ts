@@ -39,21 +39,22 @@ export type CaipNamespaces = Record<
 export type SdkVersion = `${'html' | 'react' | 'vue'}-wagmi-${string}`
 
 // -- ApiController Types -------------------------------------------------------
-export interface ApiWallet {
+export interface WcWallet {
   id: string
   name: string
-  homepage: string
-  image_id: string
-  order: number
-  mobile_link: string | null
-  desktop_link: string | null
-  webapp_link: string | null
-  app_store: string | null
-  play_store: string | null
-  injected:
+  homepage?: string
+  image_id?: string
+  image_url?: string
+  order?: number
+  mobile_link?: string | null
+  desktop_link?: string | null
+  webapp_link?: string | null
+  app_store?: string | null
+  play_store?: string | null
+  injected?:
     | {
-        namespace: string
-        injected_id: string
+        namespace?: string
+        injected_id?: string
       }[]
     | null
 }
@@ -67,7 +68,7 @@ export interface ApiGetWalletsRequest {
 }
 
 export interface ApiGetWalletsResponse {
-  data: ApiWallet[]
+  data: WcWallet[]
   count: number
 }
 

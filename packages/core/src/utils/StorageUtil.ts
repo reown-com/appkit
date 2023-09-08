@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import type { ApiWallet } from './TypeUtils.js'
+import type { WcWallet } from './TypeUtils.js'
 
 // -- Helpers -----------------------------------------------------------------
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE'
@@ -36,7 +36,7 @@ export const StorageUtil = {
     }
   },
 
-  setWeb3ModalRecent(wallet: ApiWallet) {
+  setWeb3ModalRecent(wallet: WcWallet) {
     try {
       const recentWallets = StorageUtil.getRecentWallets()
       const exists = recentWallets.find(w => w.id === wallet.id)
@@ -52,7 +52,7 @@ export const StorageUtil = {
     }
   },
 
-  getRecentWallets(): ApiWallet[] {
+  getRecentWallets(): WcWallet[] {
     try {
       const recent = localStorage.getItem(W3M_RECENT)
 
