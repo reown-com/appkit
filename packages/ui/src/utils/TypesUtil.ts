@@ -220,3 +220,5 @@ export interface ThemeVariables {
 }
 
 export type IconBoxBorderType = 'wui-color-bg-125' | 'wui-accent-glass-010'
+
+export type TruncateType = 'start' | 'middle' | 'end'

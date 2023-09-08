@@ -1,4 +1,5 @@
-import { ConnectionController, type Platform } from '@web3modal/core'
+import { ConnectionController } from '@web3modal/core'
+import type { Platform } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 
@@ -19,9 +20,7 @@ export class W3mConnectingHeader extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectionController.subscribeKey('buffering', val => {
-        this.onBufferChange(val)
-      })
+      ConnectionController.subscribeKey('buffering', val => (this.buffering = val))
     )
   }
 
@@ -72,10 +71,6 @@ export class W3mConnectingHeader extends LitElement {
     if (tab) {
       this.onSelectPlatfrom?.(tab)
     }
-  }
-
-  private onBufferChange(val: boolean) {
-    this.buffering = val
   }
 }
 

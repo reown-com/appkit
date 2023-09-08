@@ -8,6 +8,7 @@ import { UiHelperUtil } from '../../utils/UiHelperUtils.js'
 import '../wui-avatar/index.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('wui-account-button')
 export class WuiAccountButton extends LitElement {
@@ -22,23 +23,31 @@ export class WuiAccountButton extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
+  @property({ type: Boolean }) public isProfileName = false
+
   @property() public address = ''
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const isEns = this.address.endsWith('.eth')
-
     return html`
       <button ?disabled=${this.disabled}>
         ${this.balanceTemplate()}
-        <wui-flex gap="xxs" alignItems="center" class=${!this.balance && 'noBalance'}>
+        <wui-flex
+          gap="xxs"
+          alignItems="center"
+          class=${ifDefined(this.balance ? undefined : 'local-no-balance')}
+        >
           <wui-avatar
             .imageSrc=${this.avatarSrc}
             alt=${this.address}
             address=${this.address}
           ></wui-avatar>
           <wui-text variant="paragraph-600" color="inherit">
-            ${UiHelperUtil.getTruncateString(this.address, isEns ? 8 : 4, isEns)}
+            ${UiHelperUtil.getTruncateString(
+              this.address,
+              this.isProfileName ? 8 : 4,
+              this.isProfileName ? 'end' : 'middle'
+            )}
           </wui-text>
         </wui-flex>
       </button>

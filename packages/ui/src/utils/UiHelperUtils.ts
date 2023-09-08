@@ -1,5 +1,5 @@
 /* eslint-disable no-bitwise */
-import type { SpacingType, ThemeType } from './TypesUtil.js'
+import type { SpacingType, ThemeType, TruncateType } from './TypesUtil.js'
 
 export const UiHelperUtil = {
   getSpacingStyles(spacing: SpacingType | SpacingType[], index: number) {
@@ -22,12 +22,16 @@ export const UiHelperUtil = {
     return newUrl.hostname
   },
 
-  getTruncateString(string: string, chars: number, truncateStart = false) {
-    if (truncateStart) {
+  getTruncateString(string: string, chars: number, truncate: TruncateType) {
+    if (truncate === 'end') {
       return `${string.substring(0, chars)}...`
+    } else if (truncate === 'start') {
+      return `...${string.substring(string.length - chars)}`
+    } else if (truncate === 'middle') {
+      return `${string.substring(0, chars)}...${string.substring(string.length - chars)}`
     }
 
-    return `${string.substring(0, chars)}...${string.substring(string.length - chars)}`
+    return null
   },
 
   generateAvatarColors(address: string) {

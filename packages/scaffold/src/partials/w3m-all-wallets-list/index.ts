@@ -59,7 +59,6 @@ export class W3mAllWalletsList extends LitElement {
       <wui-grid
         data-scroll=${!this.initial}
         .padding=${['0', 's', 's', 's'] as const}
-        gridTemplateColumns="repeat(auto-fill, 76px)"
         columnGap="xxs"
         rowGap="l"
         justifyContent="space-between"
@@ -106,13 +105,7 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private paginationLoaderTemplate() {
-    let walletAmountRow = 4
-
-    if (window.innerWidth === 430) {
-      walletAmountRow = 5
-    } else if (window.innerWidth < 348) {
-      walletAmountRow = 3
-    }
+    const walletAmountRow = window.innerWidth < 352 ? 3 : 4
 
     const { wallets, recommended, featured, count } = ApiController.state
 

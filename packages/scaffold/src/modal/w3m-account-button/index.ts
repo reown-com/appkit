@@ -72,6 +72,7 @@ export class W3mAccountButton extends LitElement {
       <wui-account-button
         .disabled=${Boolean(this.disabled)}
         address=${ifDefined(this.profileName ?? this.address)}
+        isProfileName=${Boolean(this.profileName)}
         networkSrc=${ifDefined(networkImage)}
         avatarSrc=${ifDefined(this.profileImage)}
         balance=${showBalance

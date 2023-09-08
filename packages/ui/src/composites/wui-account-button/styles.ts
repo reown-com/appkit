@@ -62,7 +62,7 @@ export default css`
     padding: 4px var(--wui-spacing-m) 4px var(--wui-spacing-xxs);
   }
 
-  wui-flex.noBalance {
+  wui-flex.local-no-balance {
     border-radius: 0px;
     border: none;
     background: transparent;

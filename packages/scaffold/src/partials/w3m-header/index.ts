@@ -47,9 +47,7 @@ export class W3mHeader extends LitElement {
         this.onViewChange(val)
         this.onHistoryChange()
       }),
-      ConnectionController.subscribeKey('buffering', val => {
-        this.onBufferChange(val)
-      })
+      ConnectionController.subscribeKey('buffering', val => (this.buffering = val))
     )
   }
 
@@ -85,7 +83,7 @@ export class W3mHeader extends LitElement {
       return html`<wui-icon-link
         id="dynamic"
         icon="chevronLeft"
-        ?disabled=${ConnectionController.state.buffering}
+        ?disabled=${this.buffering}
         @click=${RouterController.goBack}
       ></wui-icon-link>`
     }
@@ -137,10 +135,6 @@ export class W3mHeader extends LitElement {
       this.showBack = false
       animate(buttonEl, { opacity: [0, 1] }, { duration: 0.2 })
     }
-  }
-
-  private onBufferChange(val: boolean) {
-    this.buffering = val
   }
 }
 
