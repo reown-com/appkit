@@ -8,7 +8,6 @@ import { UiHelperUtil } from '../../utils/UiHelperUtils.js'
 import '../wui-avatar/index.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('wui-account-button')
 export class WuiAccountButton extends LitElement {
