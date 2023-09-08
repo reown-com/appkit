@@ -1,7 +1,5 @@
-console.log('helloooo')
-
 import { arbitrum, mainnet } from 'https://esm.sh/@wagmi/core/chains'
-import { createWeb3Modal, defaultWagmiConfig } from 'https://esm.sh/@web3modal/wagmi@canary'
+import { createWeb3Modal, defaultWagmiConfig } from 'https://esm.sh/@web3modal/wagmi@3.0.0-71f1d976'
 
 // 1. Create projectId
 const projectId = 'YOUR_PROJECT_ID'

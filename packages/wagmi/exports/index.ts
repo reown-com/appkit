@@ -3,7 +3,7 @@ import { Web3Modal } from '../src/client.js'
 import { VERSION } from '../src/utils/constants.js'
 
 export type { Web3ModalOptions } from '../src/client.js'
-export { defaultWagmiConfig as defaultConfig } from '../src/utils/defaultWagmiCoreConfig.js'
+export { defaultWagmiConfig } from '../src/utils/defaultWagmiCoreConfig.js'
 export { walletConnectProvider } from '../src/utils/provider.js'
 
 export function createWeb3Modal(options: Web3ModalOptions) {
