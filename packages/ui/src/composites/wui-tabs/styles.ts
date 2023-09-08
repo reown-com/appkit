@@ -54,6 +54,21 @@ export default css`
     color: var(--wui-color-fg-200);
   }
 
+  button[data-active='true']:disabled,
+  button[data-active='false']:disabled {
+    background-color: transparent;
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  button[data-active='true']:disabled > wui-text {
+    color: var(--wui-color-fg-200);
+  }
+
+  button[data-active='false']:disabled > wui-text {
+    color: var(--wui-color-fg-300);
+  }
+
   button > wui-icon,
   button > wui-text {
     pointer-events: none;
@@ -76,13 +91,13 @@ export default css`
     background-color: transparent !important;
   }
 
-  button:hover > wui-icon,
-  button:active > wui-icon {
+  button:hover:enabled > wui-icon,
+  button:active:enabled > wui-icon {
     color: var(--wui-color-fg-125);
   }
 
-  button:hover > wui-text,
-  button:active > wui-text {
+  button:hover:enabled > wui-text,
+  button:active:enabled > wui-text {
     color: var(--wui-color-fg-125);
   }
 `

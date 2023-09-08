@@ -32,6 +32,7 @@ describe('ConnectionController', () => {
 
     expect(ConnectionController.state).toEqual({
       wcError: false,
+      buffering: false,
       _client: ConnectionController._getClient()
     })
   })

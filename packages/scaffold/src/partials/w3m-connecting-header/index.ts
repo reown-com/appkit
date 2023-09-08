@@ -1,16 +1,32 @@
+import { ConnectionController } from '@web3modal/core'
 import type { Platform } from '@web3modal/core'
 import { LitElement, html } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { customElement, property, state } from 'lit/decorators.js'
 
 @customElement('w3m-connecting-header')
 export class W3mConnectingHeader extends LitElement {
   // -- Members ------------------------------------------- //
   private platformTabs: Platform[] = []
 
+  private unsubscribe: (() => void)[] = []
+
   // -- State & Properties -------------------------------- //
   @property({ type: Array }) public platforms: Platform[] = []
 
   @property() public onSelectPlatfrom?: (platform: Platform) => void = undefined
+
+  @state() private buffering = false
+
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      ConnectionController.subscribeKey('buffering', val => (this.buffering = val))
+    )
+  }
+
+  disconnectCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -18,7 +34,11 @@ export class W3mConnectingHeader extends LitElement {
 
     return html`
       <wui-flex justifyContent="center" .padding=${['l', '0', '0', '0'] as const}>
-        <wui-tabs .tabs=${tabs} .onTabChange=${this.onTabChange.bind(this)}></wui-tabs>
+        <wui-tabs
+          ?disabled=${this.buffering}
+          .tabs=${tabs}
+          .onTabChange=${this.onTabChange.bind(this)}
+        ></wui-tabs>
       </wui-flex>
     `
   }

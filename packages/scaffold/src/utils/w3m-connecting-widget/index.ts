@@ -70,7 +70,8 @@ export class W3mConnectingWidget extends LitElement {
             this.onConnect?.()
           }
         }),
-        ConnectionController.subscribeKey('wcError', val => (this.error = val))
+        ConnectionController.subscribeKey('wcError', val => (this.error = val)),
+        ConnectionController.subscribeKey('buffering', val => (this.buffering = val))
       ]
     )
   }
