@@ -28,6 +28,7 @@ export default css`
     animation-fill-mode: backwards;
     animation-timing-function: var(--wui-ease-out-power-2);
     outline: none;
+    backdrop-filter: blur(20px);
   }
 
   @media (max-width: 430px) {
