@@ -2,7 +2,6 @@ import { ApiController, ModalController, SnackController, ThemeController } from
 import { UiHelperUtil, initializeTheming } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { animate } from 'motion'
 import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //
@@ -66,7 +65,11 @@ export class W3mModal extends LitElement {
 
   private async onClose() {
     this.onScrollUnlock()
-    await animate(this, { opacity: [1, 0] }, { duration: 0.2 }).finished
+    await this.animate([{ opacity: 1 }, { opacity: 0 }], {
+      duration: 200,
+      easing: 'ease',
+      fill: 'forwards'
+    }).finished
     SnackController.hide()
     this.open = false
     this.onRemoveKeyboardListener()
@@ -75,7 +78,11 @@ export class W3mModal extends LitElement {
   private async onOpen() {
     this.onScrollLock()
     this.open = true
-    await animate(this, { opacity: [0, 1] }, { duration: 0.2 }).finished
+    await this.animate([{ opacity: 0 }, { opacity: 1 }], {
+      duration: 200,
+      easing: 'ease',
+      fill: 'forwards'
+    }).finished
     this.onAddKeyboardListener()
   }
 

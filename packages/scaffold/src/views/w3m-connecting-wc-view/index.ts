@@ -11,7 +11,6 @@ import {
 } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { animate } from 'motion'
 
 @customElement('w3m-connecting-wc-view')
 export class W3mConnectingWcView extends LitElement {
@@ -166,9 +165,17 @@ export class W3mConnectingWcView extends LitElement {
   private async onSelectPlatform(platform: Platform) {
     const container = this.shadowRoot?.querySelector('div')
     if (container) {
-      await animate(container, { opacity: [1, 0] }, { duration: 0.2 }).finished
+      await container.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: 200,
+        fill: 'forwards',
+        easing: 'ease'
+      }).finished
       this.platform = platform
-      animate(container, { opacity: [0, 1] }, { duration: 0.2 })
+      container.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 200,
+        fill: 'forwards',
+        easing: 'ease'
+      })
     }
   }
 }
