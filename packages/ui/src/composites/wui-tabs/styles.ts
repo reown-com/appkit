@@ -25,7 +25,6 @@ export default css`
     box-shadow: inset 0 0 0 1px var(--wui-gray-glass-002);
     transform: translateX(calc(var(--local-tab) * var(--local-tab-width)));
     transition: transform var(--wui-ease-out-power-2) var(--wui-duration-lg);
-    will-change: transform;
   }
 
   :host([data-type='flex'])::before {
@@ -43,9 +42,6 @@ export default css`
     position: absolute;
     left: 18px;
     opacity: 0;
-    will-change: opacity;
-    -webkit-backface-visibility: hidden;
-    -webkit-transform: translate(0px, 0px);
   }
 
   button[data-active='true'] > wui-icon,
