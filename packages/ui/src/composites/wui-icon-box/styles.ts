@@ -8,12 +8,17 @@ export default css`
     position: relative;
     overflow: hidden;
     background-color: var(--wui-gray-glass-020);
-    background-color: color-mix(in srgb, var(--local-bg-value) var(--local-bg-mix), transparent);
     border-radius: var(--local-border-radius);
     border: var(--local-border);
     width: var(--local-size);
     height: var(--local-size);
     min-height: var(--local-size);
     min-width: var(--local-size);
+  }
+
+  @supports (background: color-mix(in srgb, white 50%, black)) {
+    :host {
+      background-color: color-mix(in srgb, var(--local-bg-value) var(--local-bg-mix), transparent);
+    }
   }
 `
