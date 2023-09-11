@@ -14,7 +14,13 @@ export class WuiImage extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html`<img crossorigin="anonymous" src=${this.src} alt=${this.alt} decoding="async" />`
+    return html`<img
+      crossorigin="anonymous"
+      src=${this.src}
+      alt=${this.alt}
+      decoding="async"
+      loading="lazy"
+    />`
   }
 }
 
