@@ -1,12 +1,10 @@
 import type {
-  ThemeMode,
-  ThemeVariables,
   W3mAccountButton,
   W3mButton,
   W3mConnectButton,
   W3mNetworkButton
 } from '@web3modal/scaffold'
-import { onUnmounted, ref } from 'vue'
+import { onUnmounted, reactive, ref } from 'vue'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { VERSION } from '../src/utils/constants.js'
@@ -56,8 +54,8 @@ export function useWeb3ModalTheme() {
     modal?.setThemeVariables(themeVariables)
   }
 
-  const themeMode = ref<ThemeMode>(modal.getThemeMode())
-  const themeVariables = ref<ThemeVariables>(modal.getThemeVariables())
+  const themeMode = ref(modal.getThemeMode())
+  const themeVariables = ref(modal.getThemeVariables())
 
   const unsubscribe = modal?.subscribeTheme(state => {
     themeMode.value = state.themeMode
@@ -89,7 +87,7 @@ export function useWeb3Modal() {
     await modal?.close()
   }
 
-  return ref({
+  return reactive({
     open,
     close
   })

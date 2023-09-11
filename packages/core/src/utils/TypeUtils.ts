@@ -102,3 +102,16 @@ export interface Token {
 }
 
 export type Tokens = Record<CaipNetworkId, Token>
+
+export type CustomWallet = Pick<
+  WcWallet,
+  | 'id'
+  | 'name'
+  | 'homepage'
+  | 'image_url'
+  | 'mobile_link'
+  | 'desktop_link'
+  | 'webapp_link'
+  | 'app_store'
+  | 'play_store'
+>
