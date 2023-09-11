@@ -2,7 +2,6 @@ import { css } from 'lit'
 
 export default css`
   :host {
-    display: block;
     top: 0;
     bottom: 0;
     left: 0;
@@ -17,15 +16,13 @@ export default css`
     justify-content: center;
   }
 
-  @media (max-height: 700px) {
+  @media (max-height: 700px) and (min-width: 431px) {
     :host {
-      display: flex;
       align-items: flex-start;
-      justify-content: center;
     }
 
     ::slotted(wui-card) {
-      margin: 24px 0px;
+      margin: var(--wui-spacing-xxl) 0px;
     }
   }
 `

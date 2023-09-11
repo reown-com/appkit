@@ -49,6 +49,17 @@
     "viem": ">=1",
     "vue": ">=3"
   },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
   "keywords": [
     "web3",
     "crypto",

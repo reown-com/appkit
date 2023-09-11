@@ -10,11 +10,11 @@ export class W3mConnectButton extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property() size?: WuiConnectButton['size'] = 'md'
+  @property() public size?: WuiConnectButton['size'] = 'md'
 
-  @property() label? = 'Connect Wallet'
+  @property() public label? = 'Connect Wallet'
 
-  @property() loadingLabel? = 'Connecting...'
+  @property() public loadingLabel? = 'Connecting...'
 
   @state() private open = ModalController.state.open
 
