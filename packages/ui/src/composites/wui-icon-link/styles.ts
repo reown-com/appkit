@@ -7,12 +7,6 @@ export default css`
     padding: var(--wui-spacing-2xs);
   }
 
-  @media (max-width: 700px) {
-    button {
-      padding: var(--wui-spacing-s);
-    }
-  }
-
   button > wui-icon {
     pointer-events: none;
   }

@@ -2,7 +2,7 @@ import { css } from 'lit'
 
 export default css`
   wui-grid {
-    max-height: clamp(420px, calc(80vh), 500px);
+    max-height: clamp(360px, 400px, 80vh);
     overflow: scroll;
     scrollbar-width: none;
     grid-auto-rows: min-content;
