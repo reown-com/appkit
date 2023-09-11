@@ -5,7 +5,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head />
-      <body>
+      <body style={{ minHeight: '100vh' }}>
         <ColorModeScript initialColorMode="system" />
         <Main />
         <NextScript />

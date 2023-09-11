@@ -44,9 +44,7 @@ export class WuiTabs extends LitElement {
           data-active=${isActive}
         >
           <wui-icon size="sm" color="inherit" name=${tab.icon}></wui-icon>
-          <wui-text style="{{opacity:" 0;}} variant="small-600" color="inherit"
-            >${tab.label}</wui-text
-          >
+          <wui-text variant="small-600" color="inherit"> ${tab.label} </wui-text>
         </button>
       `
     })
