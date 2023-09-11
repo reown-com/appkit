@@ -10,7 +10,6 @@ import type { IconType } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { animate } from 'motion'
 import styles from './styles.js'
 
 export class W3mConnectingWidget extends LitElement {
@@ -165,7 +164,10 @@ export class W3mConnectingWidget extends LitElement {
     if (this.error && !this.showRetry) {
       this.showRetry = true
       const retryButton = this.shadowRoot?.querySelector('wui-button') as HTMLElement
-      animate(retryButton, { opacity: [0, 1] })
+      retryButton.animate([{ opacity: 0 }, { opacity: 1 }], {
+        fill: 'forwards',
+        easing: 'ease'
+      })
     }
   }
 

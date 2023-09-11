@@ -182,8 +182,10 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-avatar-border: var(--wui-avatar-border-base);
 
       --wui-box-shadow-blue: rgba(71, 161, 255, 0.16);
+    }
 
-      @supports (background: color-mix(in srgb, white 50%, black)) {
+    @supports (background: color-mix(in srgb, white 50%, black)) {
+      :root {
         --wui-box-shadow-blue: color-mix(in srgb, var(--wui-color-accent-100) 16%, transparent);
 
         --wui-color-accent-090: color-mix(
