@@ -100,6 +100,7 @@ export class W3mModal extends LitElement {
         touch-action: none;
         overflow: hidden;
         overscroll-behavior: contain;
+        min-height: 100vh;
        ${scrollbarGutter}
       }
     `
