@@ -1,7 +1,6 @@
 import { SnackController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { animate } from 'motion'
 import styles from './styles.js'
 
 // -- Helpers ------------------------------------------- //
@@ -64,10 +63,30 @@ export class W3mSnackBar extends LitElement {
   private onOpen() {
     clearTimeout(this.timeout)
     if (this.open) {
-      animate(this, { opacity: [0, 1], x: ['-50%', '-50%'], scale: [0.85, 1] }, { duration: 0.15 })
+      this.animate(
+        [
+          { opacity: 0, transform: 'translateX(-50%) scale(0.85)' },
+          { opacity: 1, transform: 'translateX(-50%) scale(1)' }
+        ],
+        {
+          duration: 150,
+          fill: 'forwards',
+          easing: 'ease'
+        }
+      )
       this.timeout = setTimeout(() => SnackController.hide(), 2500)
     } else {
-      animate(this, { opacity: [1, 0], x: ['-50%', '-50%'], scale: [1, 0.85] }, { duration: 0.15 })
+      this.animate(
+        [
+          { opacity: 1, transform: 'translateX(-50%) scale(1)' },
+          { opacity: 0, transform: 'translateX(-50%) scale(0.85)' }
+        ],
+        {
+          duration: 150,
+          fill: 'forwards',
+          easing: 'ease'
+        }
+      )
     }
   }
 }
