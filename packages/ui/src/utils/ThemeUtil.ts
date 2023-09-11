@@ -182,165 +182,204 @@ function createRootStyles(themeVariables: ThemeVariables) {
       --wui-avatar-border: var(--wui-avatar-border-base);
 
       --wui-box-shadow-blue: rgba(71, 161, 255, 0.16);
-      --wui-box-shadow-blue: color-mix(in srgb, var(--wui-color-accent-100) 16%, transparent);
 
-      --wui-color-accent-090: color-mix(
-        in srgb,
-        var(--wui-color-accent-base-100) 90%,
-        var(--w3m-default)
-      );
-      --wui-color-accent-080: color-mix(
-        in srgb,
-        var(--wui-color-accent-base-100) 80%,
-        var(--w3m-default)
-      );
+      @supports (background: color-mix(in srgb, white 50%, black)) {
+        --wui-box-shadow-blue: color-mix(in srgb, var(--wui-color-accent-100) 16%, transparent);
 
-      --wui-color-accent-090: color-mix(in srgb, var(--wui-color-accent-base-100) 90%, transparent);
-      --wui-color-accent-080: color-mix(in srgb, var(--wui-color-accent-base-100) 80%, transparent);
+        --wui-color-accent-090: color-mix(
+          in srgb,
+          var(--wui-color-accent-base-100) 90%,
+          var(--w3m-default)
+        );
+        --wui-color-accent-080: color-mix(
+          in srgb,
+          var(--wui-color-accent-base-100) 80%,
+          var(--w3m-default)
+        );
 
-      --wui-accent-glass-090: color-mix(in srgb, var(--wui-color-accent-base-100) 90%, transparent);
-      --wui-accent-glass-080: color-mix(in srgb, var(--wui-color-accent-base-100) 80%, transparent);
-      --wui-accent-glass-020: color-mix(in srgb, var(--wui-color-accent-base-100) 20%, transparent);
-      --wui-accent-glass-015: color-mix(in srgb, var(--wui-color-accent-base-100) 15%, transparent);
-      --wui-accent-glass-010: color-mix(in srgb, var(--wui-color-accent-base-100) 10%, transparent);
-      --wui-accent-glass-005: color-mix(in srgb, var(--wui-color-accent-base-100) 5%, transparent);
-      --wui-color-accent-002: color-mix(in srgb, var(--wui-color-accent-base-100) 2%, transparent);
+        --wui-color-accent-090: color-mix(
+          in srgb,
+          var(--wui-color-accent-base-100) 90%,
+          transparent
+        );
+        --wui-color-accent-080: color-mix(
+          in srgb,
+          var(--wui-color-accent-base-100) 80%,
+          transparent
+        );
 
-      --wui-color-fg-100: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-fg-base-100)
-      );
-      --wui-color-fg-125: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-fg-base-125)
-      );
-      --wui-color-fg-150: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-fg-base-150)
-      );
-      --wui-color-fg-175: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-fg-base-175)
-      );
-      --wui-color-fg-200: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-fg-base-200)
-      );
-      --wui-color-fg-225: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-fg-base-225)
-      );
-      --wui-color-fg-250: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-fg-base-250)
-      );
-      --wui-color-fg-275: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-fg-base-275)
-      );
-      --wui-color-fg-300: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-fg-base-300)
-      );
+        --wui-accent-glass-090: color-mix(
+          in srgb,
+          var(--wui-color-accent-base-100) 90%,
+          transparent
+        );
+        --wui-accent-glass-080: color-mix(
+          in srgb,
+          var(--wui-color-accent-base-100) 80%,
+          transparent
+        );
+        --wui-accent-glass-020: color-mix(
+          in srgb,
+          var(--wui-color-accent-base-100) 20%,
+          transparent
+        );
+        --wui-accent-glass-015: color-mix(
+          in srgb,
+          var(--wui-color-accent-base-100) 15%,
+          transparent
+        );
+        --wui-accent-glass-010: color-mix(
+          in srgb,
+          var(--wui-color-accent-base-100) 10%,
+          transparent
+        );
+        --wui-accent-glass-005: color-mix(
+          in srgb,
+          var(--wui-color-accent-base-100) 5%,
+          transparent
+        );
+        --wui-color-accent-002: color-mix(
+          in srgb,
+          var(--wui-color-accent-base-100) 2%,
+          transparent
+        );
 
-      --wui-color-bg-100: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-bg-base-100)
-      );
-      --wui-color-bg-125: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-bg-base-125)
-      );
-      --wui-color-bg-150: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-bg-base-150)
-      );
-      --wui-color-bg-175: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-bg-base-175)
-      );
-      --wui-color-bg-200: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-bg-base-200)
-      );
-      --wui-color-bg-225: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-bg-base-225)
-      );
-      --wui-color-bg-250: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-bg-base-250)
-      );
-      --wui-color-bg-275: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-bg-base-275)
-      );
-      --wui-color-bg-300: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-bg-base-300)
-      );
+        --wui-color-fg-100: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-fg-base-100)
+        );
+        --wui-color-fg-125: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-fg-base-125)
+        );
+        --wui-color-fg-150: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-fg-base-150)
+        );
+        --wui-color-fg-175: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-fg-base-175)
+        );
+        --wui-color-fg-200: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-fg-base-200)
+        );
+        --wui-color-fg-225: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-fg-base-225)
+        );
+        --wui-color-fg-250: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-fg-base-250)
+        );
+        --wui-color-fg-275: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-fg-base-275)
+        );
+        --wui-color-fg-300: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-fg-base-300)
+        );
 
-      --wui-color-success-100: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-success-base-100)
-      );
-      --wui-color-error-100: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-color-error-base-100)
-      );
+        --wui-color-bg-100: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-bg-base-100)
+        );
+        --wui-color-bg-125: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-bg-base-125)
+        );
+        --wui-color-bg-150: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-bg-base-150)
+        );
+        --wui-color-bg-175: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-bg-base-175)
+        );
+        --wui-color-bg-200: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-bg-base-200)
+        );
+        --wui-color-bg-225: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-bg-base-225)
+        );
+        --wui-color-bg-250: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-bg-base-250)
+        );
+        --wui-color-bg-275: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-bg-base-275)
+        );
+        --wui-color-bg-300: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-bg-base-300)
+        );
 
-      --wui-icon-box-bg-error-100: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-icon-box-bg-error-base-100)
-      );
-      --wui-icon-box-bg-accent-100: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-icon-box-bg-blue-base-100)
-      );
-      --wui-icon-box-bg-success-100: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-icon-box-bg-success-base-100)
-      );
-      --wui-icon-box-bg-inverse-100: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-icon-box-bg-inverse-base-100)
-      );
+        --wui-color-success-100: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-success-base-100)
+        );
+        --wui-color-error-100: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-color-error-base-100)
+        );
 
-      --wui-all-wallets-bg-100: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-all-wallets-bg-base-100)
-      );
+        --wui-icon-box-bg-error-100: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-icon-box-bg-error-base-100)
+        );
+        --wui-icon-box-bg-accent-100: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-icon-box-bg-blue-base-100)
+        );
+        --wui-icon-box-bg-success-100: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-icon-box-bg-success-base-100)
+        );
+        --wui-icon-box-bg-inverse-100: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-icon-box-bg-inverse-base-100)
+        );
 
-      --wui-avatar-border: color-mix(
-        in srgb,
-        var(--w3m-color-mix) var(--w3m-color-mix-strength),
-        var(--wui-avatar-border-base)
-      );
+        --wui-all-wallets-bg-100: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-all-wallets-bg-base-100)
+        );
+
+        --wui-avatar-border: color-mix(
+          in srgb,
+          var(--w3m-color-mix) var(--w3m-color-mix-strength),
+          var(--wui-avatar-border-base)
+        );
+      }
     }
 
     [data-wui-theme='dark'] {
