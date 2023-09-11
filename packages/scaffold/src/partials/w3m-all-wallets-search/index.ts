@@ -1,10 +1,5 @@
-import type { ApiWallet } from '@web3modal/core'
-import {
-  ApiController,
-  AssetController,
-  ConnectorController,
-  RouterController
-} from '@web3modal/core'
+import type { WcWallet } from '@web3modal/core'
+import { ApiController, AssetUtil, ConnectorController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -43,7 +38,6 @@ export class W3mAllWalletsSearch extends LitElement {
 
   private walletsTemplate() {
     const { search } = ApiController.state
-    const { walletImages } = AssetController.state
 
     if (!search.length) {
       return html`
@@ -70,7 +64,7 @@ export class W3mAllWalletsSearch extends LitElement {
         ${search.map(
           wallet => html`
             <wui-card-select
-              imageSrc=${ifDefined(walletImages[wallet.image_id])}
+              imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
               type="wallet"
               name=${wallet.name}
               @click=${() => this.onConnectWallet(wallet)}
@@ -81,7 +75,7 @@ export class W3mAllWalletsSearch extends LitElement {
     `
   }
 
-  private onConnectWallet(wallet: ApiWallet) {
+  private onConnectWallet(wallet: WcWallet) {
     const { connectors } = ConnectorController.state
     const connector = connectors.find(({ explorerId }) => explorerId === wallet.id)
     if (connector) {

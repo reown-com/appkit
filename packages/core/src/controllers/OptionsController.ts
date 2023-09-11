@@ -1,6 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
-import type { ProjectId, Tokens } from '../utils/TypeUtils.js'
+import type { ProjectId, Tokens, WcWallet } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
@@ -9,6 +9,7 @@ export interface OptionsControllerState {
   includeWalletIds?: string[]
   excludeWalletIds?: string[]
   tokens?: Tokens
+  customWallets?: WcWallet[]
   termsConditionsUrl?: string
   privacyPolicyUrl?: string
 }
@@ -54,5 +55,9 @@ export const OptionsController = {
 
   setPrivacyPolicyUrl(privacyPolicyUrl: OptionsControllerState['privacyPolicyUrl']) {
     state.privacyPolicyUrl = privacyPolicyUrl
+  },
+
+  setCustomWallets(customWallets: OptionsControllerState['customWallets']) {
+    state.customWallets = customWallets
   }
 }

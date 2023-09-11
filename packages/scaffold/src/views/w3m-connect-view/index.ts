@@ -1,10 +1,11 @@
-import type { ApiWallet, Connector } from '@web3modal/core'
+import type { Connector, WcWallet } from '@web3modal/core'
 import {
   ApiController,
   AssetUtil,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
+  OptionsController,
   RouterController,
   StorageUtil
 } from '@web3modal/core'
@@ -39,7 +40,8 @@ export class W3mConnectView extends LitElement {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="xs">
         ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()} ${this.featuredTemplate()}
-        ${this.recommendedTemplate()} ${this.connectorsTemplate()} ${this.allWalletsTemplate()}
+        ${this.customTemplate()} ${this.recommendedTemplate()} ${this.connectorsTemplate()}
+        ${this.allWalletsTemplate()}
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
     `
@@ -57,7 +59,7 @@ export class W3mConnectView extends LitElement {
 
     return html`
       <wui-list-wallet
-        imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector.imageId))}
+        imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
         name=${connector.name ?? 'Unknown'}
         @click=${() => this.onConnector(connector)}
         tagLabel="qr code"
@@ -65,6 +67,25 @@ export class W3mConnectView extends LitElement {
       >
       </wui-list-wallet>
     `
+  }
+
+  private customTemplate() {
+    const { customWallets } = OptionsController.state
+    if (!customWallets?.length) {
+      return null
+    }
+    const wallets = this.filterOutRecentWallets(customWallets)
+
+    return wallets.map(
+      wallet => html`
+        <wui-list-wallet
+          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
+          name=${wallet.name ?? 'Unknown'}
+          @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
+        >
+        </wui-list-wallet>
+      `
+    )
   }
 
   private featuredTemplate() {
@@ -77,7 +98,7 @@ export class W3mConnectView extends LitElement {
     return wallets.map(
       wallet => html`
         <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet.image_id))}
+          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           name=${wallet.name ?? 'Unknown'}
           @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
         >
@@ -92,7 +113,7 @@ export class W3mConnectView extends LitElement {
     return recent.map(
       wallet => html`
         <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet.image_id))}
+          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           name=${wallet.name ?? 'Unknown'}
           @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
           tagLabel="recent"
@@ -122,7 +143,7 @@ export class W3mConnectView extends LitElement {
 
       return html`
         <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector.imageId))}
+          imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
           name=${connector.name ?? 'Unknown'}
           @click=${() => this.onConnector(connector)}
           tagLabel=${ifDefined(tagLabel)}
@@ -148,7 +169,8 @@ export class W3mConnectView extends LitElement {
 
   private recommendedTemplate() {
     const { recommended, featured } = ApiController.state
-    if (!recommended.length || featured.length) {
+    const { customWallets } = OptionsController.state
+    if (!recommended.length || featured.length || customWallets?.length) {
       return null
     }
     const [first, second] = this.filterOutRecentWallets(recommended)
@@ -156,7 +178,7 @@ export class W3mConnectView extends LitElement {
     return [first, second].map(
       wallet => html`
         <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet?.image_id))}
+          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           name=${wallet?.name ?? 'Unknown'}
           @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
         >
@@ -177,7 +199,7 @@ export class W3mConnectView extends LitElement {
     }
   }
 
-  private filterOutRecentWallets(wallets: ApiWallet[]) {
+  private filterOutRecentWallets(wallets: WcWallet[]) {
     const recent = StorageUtil.getRecentWallets()
     const recentIds = recent.map(wallet => wallet.id)
     const filtered = wallets.filter(wallet => !recentIds.includes(wallet.id))

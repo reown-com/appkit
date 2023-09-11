@@ -262,7 +262,7 @@ export const themeOptions: ThemeType[] = ['dark', 'light']
 
 export const iconBoxBorderOptions: IconBoxBorderType[] = [
   'wui-color-bg-125',
-  'wui-overlay-accent-010'
+  'wui-accent-glass-010'
 ]
 
 export const tagLabelOptions = ['get wallet', 'installed', 'qr code', 'recent']

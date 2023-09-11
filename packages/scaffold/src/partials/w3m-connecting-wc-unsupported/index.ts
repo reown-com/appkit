@@ -23,7 +23,7 @@ export class W3mConnectingWcUnsupported extends LitElement {
       >
         <wui-wallet-image
           size="lg"
-          imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet.image_id))}
+          imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet))}
         ></wui-wallet-image>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xxs">
@@ -33,21 +33,31 @@ export class W3mConnectingWcUnsupported extends LitElement {
           </wui-text>
         </wui-flex>
 
-        <wui-button size="sm" variant="fill" @click=${this.onDownload}>
-          <wui-icon color="inherit" slot="iconRight" name="externalLink"></wui-icon>
-          Download
-        </wui-button>
+        ${this.downloadBtnTemplate()}
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
-  private onDownload() {
+  private downloadBtnTemplate() {
     if (!this.wallet) {
       throw new Error('w3m-connecting-wc-unsupported:onDownload No wallet provided')
     }
+    const { homepage } = this.wallet
+    if (!homepage) {
+      return null
+    }
 
-    CoreHelperUtil.openHref(this.wallet.homepage, '_blank')
+    return html`
+      <wui-button
+        size="sm"
+        variant="fill"
+        @click=${() => CoreHelperUtil.openHref(homepage, '_blank')}
+      >
+        <wui-icon color="inherit" slot="iconRight" name="externalLink"></wui-icon>
+        Download
+      </wui-button>
+    `
   }
 }
 

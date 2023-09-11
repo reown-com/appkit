@@ -2,7 +2,7 @@ import { css } from 'lit'
 
 export default css`
   wui-flex {
-    max-height: 420px;
+    max-height: clamp(420px, calc(80vh), 500px);
     overflow: scroll;
     scrollbar-width: none;
   }

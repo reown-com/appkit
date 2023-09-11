@@ -2,10 +2,17 @@ import { css } from 'lit'
 
 export default css`
   wui-grid {
-    max-height: 360px;
+    max-height: clamp(420px, calc(80vh), 500px);
     overflow: scroll;
     scrollbar-width: none;
     grid-auto-rows: min-content;
+    grid-template-columns: repeat(auto-fill, 76px);
+  }
+
+  @media (max-width: 435px) {
+    wui-grid {
+      grid-template-columns: repeat(auto-fill, 77px);
+    }
   }
 
   wui-grid[data-scroll='false'] {

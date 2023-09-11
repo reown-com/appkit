@@ -8,6 +8,7 @@ import { UiHelperUtil } from '../../utils/UiHelperUtils.js'
 import '../wui-avatar/index.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('wui-account-button')
 export class WuiAccountButton extends LitElement {
@@ -22,6 +23,8 @@ export class WuiAccountButton extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
+  @property({ type: Boolean }) public isProfileName = false
+
   @property() public address = ''
 
   // -- Render -------------------------------------------- //
@@ -29,14 +32,22 @@ export class WuiAccountButton extends LitElement {
     return html`
       <button ?disabled=${this.disabled}>
         ${this.balanceTemplate()}
-        <wui-flex gap="xxs" alignItems="center" class=${this.balance ? undefined : 'noBalance'}>
+        <wui-flex
+          gap="xxs"
+          alignItems="center"
+          class=${ifDefined(this.balance ? undefined : 'local-no-balance')}
+        >
           <wui-avatar
             .imageSrc=${this.avatarSrc}
             alt=${this.address}
             address=${this.address}
           ></wui-avatar>
           <wui-text variant="paragraph-600" color="inherit">
-            ${UiHelperUtil.getTruncateAddress(this.address, 4)}
+            ${UiHelperUtil.getTruncateString(
+              this.address,
+              8,
+              this.isProfileName ? 'end' : 'middle'
+            )}
           </wui-text>
         </wui-flex>
       </button>

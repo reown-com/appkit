@@ -17,7 +17,7 @@ export default css`
     justify-content: center;
   }
 
-  @media (max-height: 500px) {
+  @media (max-height: 700px) {
     :host {
       display: flex;
       align-items: flex-start;

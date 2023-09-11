@@ -44,8 +44,10 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
 
   private onBuffering() {
     if (document.visibilityState === 'visible' && !this.error) {
-      this.buffering = true
-      setTimeout(() => (this.buffering = false), 5000)
+      ConnectionController.setBuffering(true)
+      setTimeout(() => {
+        ConnectionController.setBuffering(false)
+      }, 5000)
     }
   }
 }

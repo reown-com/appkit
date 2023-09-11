@@ -1,6 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
-import type { ApiWallet, CaipNetwork, Connector } from '../utils/TypeUtils.js'
+import type { CaipNetwork, Connector, WcWallet } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
 export interface RouterControllerState {
@@ -18,7 +18,7 @@ export interface RouterControllerState {
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
-    wallet?: ApiWallet
+    wallet?: WcWallet
     network?: CaipNetwork
   }
 }

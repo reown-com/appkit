@@ -2,7 +2,7 @@ import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
-import type { ApiWallet } from '../utils/TypeUtils.js'
+import type { WcWallet } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectionControllerClient {
@@ -22,14 +22,16 @@ export interface ConnectionControllerState {
     name: string
   }
   wcError?: boolean
-  recentWallet?: ApiWallet
+  recentWallet?: WcWallet
+  buffering: boolean
 }
 
 type StateKey = keyof ConnectionControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ConnectionControllerState>({
-  wcError: false
+  wcError: false,
+  buffering: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -89,6 +91,10 @@ export const ConnectionController = {
 
   setRecentWallet(wallet: ConnectionControllerState['recentWallet']) {
     state.recentWallet = wallet
+  },
+
+  setBuffering(buffering: ConnectionControllerState['buffering']) {
+    state.buffering = buffering
   },
 
   async disconnect() {

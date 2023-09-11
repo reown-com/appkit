@@ -1,10 +1,5 @@
-import type { ApiWallet } from '@web3modal/core'
-import {
-  ApiController,
-  AssetController,
-  ConnectorController,
-  RouterController
-} from '@web3modal/core'
+import type { WcWallet } from '@web3modal/core'
+import { ApiController, AssetUtil, ConnectorController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -59,7 +54,6 @@ export class W3mAllWalletsList extends LitElement {
       <wui-grid
         data-scroll=${!this.initial}
         .padding=${['0', 's', 's', 's'] as const}
-        gridTemplateColumns="repeat(auto-fill, 76px)"
         columnGap="xxs"
         rowGap="l"
         justifyContent="space-between"
@@ -90,13 +84,12 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private walletsTemplate() {
-    const { walletImages } = AssetController.state
     const wallets = [...this.featured, ...this.recommended, ...this.wallets]
 
     return wallets.map(
       wallet => html`
         <wui-card-select
-          imageSrc=${ifDefined(walletImages[wallet.image_id])}
+          imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           type="wallet"
           name=${wallet.name}
           @click=${() => this.onConnectWallet(wallet)}
@@ -107,8 +100,14 @@ export class W3mAllWalletsList extends LitElement {
 
   private paginationLoaderTemplate() {
     const { wallets, recommended, featured, count } = ApiController.state
+    const columns = window.innerWidth < 352 ? 3 : 4
+    const currentWallets = wallets.length + recommended.length
+    const minimumRows = Math.ceil(currentWallets / columns)
+    let shimmerCount = minimumRows * columns - currentWallets + columns
+    shimmerCount -= wallets.length ? featured.length % columns : 0
+
     if (count === 0 || [...featured, ...wallets, ...recommended].length < count) {
-      return this.shimmerTemplate(4, PAGINATOR_ID)
+      return this.shimmerTemplate(shimmerCount, PAGINATOR_ID)
     }
 
     return null
@@ -129,7 +128,7 @@ export class W3mAllWalletsList extends LitElement {
     }
   }
 
-  private onConnectWallet(wallet: ApiWallet) {
+  private onConnectWallet(wallet: WcWallet) {
     const { connectors } = ConnectorController.state
     const connector = connectors.find(({ explorerId }) => explorerId === wallet.id)
     if (connector) {
