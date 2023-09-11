@@ -70,7 +70,7 @@ export class WuiTabs extends LitElement {
     this.onTabChange(index)
   }
 
-  private async animateTabs(index: number, initialAnimation: boolean) {
+  private animateTabs(index: number, initialAnimation: boolean) {
     const passiveBtn = this.buttons[this.activeTab]
     const activeBtn = this.buttons[index]
 
