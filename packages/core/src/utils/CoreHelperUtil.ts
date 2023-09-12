@@ -13,6 +13,18 @@ export const CoreHelperUtil = {
     return false
   },
 
+  isAndroid() {
+    const ua = navigator.userAgent.toLowerCase()
+
+    return CoreHelperUtil.isMobile() && ua.includes('android')
+  },
+
+  isIos() {
+    const ua = navigator.userAgent.toLowerCase()
+
+    return CoreHelperUtil.isMobile() && (ua.includes('iphone') || ua.includes('ipad'))
+  },
+
   isClient() {
     return typeof window !== 'undefined'
   },
