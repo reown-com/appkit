@@ -162,7 +162,7 @@ export const ApiController = {
     })
     const images = data.map(w => w.image_id).filter(Boolean)
     await Promise.allSettled([
-      (images as string[]).map(id => ApiController._fetchWalletImage(id)),
+      ...(images as string[]).map(id => ApiController._fetchWalletImage(id)),
       CoreHelperUtil.wait(300)
     ])
     state.wallets = [...state.wallets, ...data]
@@ -186,7 +186,7 @@ export const ApiController = {
     })
     const images = data.map(w => w.image_id).filter(Boolean)
     await Promise.allSettled([
-      (images as string[]).map(id => ApiController._fetchWalletImage(id)),
+      ...(images as string[]).map(id => ApiController._fetchWalletImage(id)),
       CoreHelperUtil.wait(300)
     ])
     state.search = data
