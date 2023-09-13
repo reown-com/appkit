@@ -169,6 +169,10 @@ async function checkCorePackage() {
     if (diff?.added.includes('@web3modal/core/')) {
       fail(`${f} should use relative imports instead of direct package access`)
     }
+
+    if (diff?.added.includes("'valtio'")) {
+      fail(`${f} is importing valtio, but should use valtio/vanilla`)
+    }
   }
 
   if (created_core_controllers.length && !created_core_controllers_tests.length) {

@@ -1,6 +1,5 @@
-import { subscribe as sub } from 'valtio'
 import { subscribeKey as subKey } from 'valtio/utils'
-import { proxy } from 'valtio/vanilla'
+import { proxy, subscribe as sub } from 'valtio/vanilla'
 
 // -- Types --------------------------------------------- //
 export interface AssetControllerState {
