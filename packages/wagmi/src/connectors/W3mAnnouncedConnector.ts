@@ -4,6 +4,8 @@ import { InjectedConnector } from '@wagmi/core/connectors/injected'
 
 // -- Helpers ----------------------------------------------------------
 const ANNOUNCE_EVENT = 'eip6963:announceProvider'
+const REQUEST_EVENT = 'eip6963:requestProvider'
+let provider: WindowProvider | undefined = undefined
 
 // -- Types ------------------------------------------------------------
 interface Info {
@@ -33,8 +35,6 @@ export class W3mAnnouncedConnector extends InjectedConnector {
 
   override readonly name = 'w3mAnnounced'
 
-  #provider?: WindowProvider
-
   #wallets = new Set<Wallet>()
 
   public constructor(config: Config) {
@@ -42,15 +42,10 @@ export class W3mAnnouncedConnector extends InjectedConnector {
       chains: config.chains,
       options: {
         shimDisconnect: true,
-        getProvider: () => {
-          if (!this.#provider) {
-            throw new ConnectorNotFoundError()
-          }
-
-          return this.#provider
-        }
+        getProvider: () => provider
       }
     })
+    this.listenForWallets()
   }
 
   // -- Wagmi Methods ---------------------------------------------------
@@ -60,22 +55,27 @@ export class W3mAnnouncedConnector extends InjectedConnector {
     if (!wallet?.provider) {
       throw new ConnectorNotFoundError()
     }
-    this.#provider = wallet.provider
+    provider = wallet.provider
 
     return super.connect(options)
   }
 
   public override async disconnect() {
     await super.disconnect()
-    this.#provider = undefined
+    provider = undefined
   }
 
   // -- Custom Methods --------------------------------------------------
   public listenForWallets() {
+    if (typeof window === 'undefined') {
+      return
+    }
+
     window.addEventListener(ANNOUNCE_EVENT, (event: CustomEventInit<Wallet>) => {
       if (event.detail) {
         this.#wallets.add(event.detail)
       }
     })
+    window.dispatchEvent(new Event(REQUEST_EVENT))
   }
 }
