@@ -21,6 +21,7 @@
     "new-version": "lerna version --no-git-tag-version --exact",
     "pre-publish": "turbo lint typecheck prettier test --parallel; npm run new-version; npm install; turbo run build;",
     "publish:latest": "lerna exec -- npm publish --no-private --access public --tag latest",
+    "publish:beta": "lerna exec -- npm publish --no-private --access public --tag beta",
     "publish:canary": "lerna exec -- npm publish --no-private --access public --tag canary"
   },
   "workspaces": [
@@ -40,7 +41,7 @@
     "eslint": "8.49.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-require-extensions": "0.1.3",
-    "lerna": "7.2.0",
+    "lerna": "7.3.0",
     "prettier": "3.0.3",
     "typescript": "5.2.2",
     "vitest": "0.34.4",
@@ -50,7 +51,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "turbo": "1.10.13",
-    "viem": "1.10.9",
+    "viem": "1.10.12",
     "wagmi": "1.4.1"
   }
 }
