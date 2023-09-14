@@ -1,6 +1,6 @@
 {
   "name": "@apps/laboratory",
-  "version": "3.0.0-alpha.9",
+  "version": "3.0.0-beta.1",
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
@@ -11,9 +11,9 @@
     "@chakra-ui/react": "2.8.1",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
-    "@sentry/browser": "7.68.0",
-    "@sentry/react": "7.68.0",
-    "@web3modal/wagmi": "3.0.0-alpha.9",
+    "@sentry/browser": "7.69.0",
+    "@sentry/react": "7.69.0",
+    "@web3modal/wagmi": "3.0.0-beta.1",
     "framer-motion": "10.16.4",
     "next": "13.4.19",
     "react-icons": "4.11.0",

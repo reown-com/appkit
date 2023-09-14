@@ -1,7 +1,6 @@
 import type {
   ApiControllerState,
   ConnectionControllerClient,
-  ModalControllerArguments,
   NetworkControllerClient,
   NetworkControllerState,
   OptionsControllerState,
@@ -47,6 +46,10 @@ export interface ScaffoldOptions extends LibraryOptions {
   connectionControllerClient: ConnectionControllerClient
 }
 
+export interface OpenOptions {
+  view: 'Account' | 'Connect' | 'Networks'
+}
+
 // -- Client --------------------------------------------------------------------
 export class Web3ModalScaffold {
   private initPromise?: Promise<void> = undefined
@@ -57,7 +60,7 @@ export class Web3ModalScaffold {
   }
 
   // -- Public -------------------------------------------------------------------
-  public async open(options?: ModalControllerArguments['open']) {
+  public async open(options?: OpenOptions) {
     await this.initOrContinue()
     ModalController.open(options)
   }

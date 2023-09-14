@@ -87,6 +87,7 @@ export const ConnectionController = {
 
   setWcError(wcError: ConnectionControllerState['wcError']) {
     state.wcError = wcError
+    state.buffering = false
   },
 
   setRecentWallet(wallet: ConnectionControllerState['recentWallet']) {
