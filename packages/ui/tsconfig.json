@@ -3,6 +3,7 @@
   "include": ["index.ts", "src", "../../global.d.ts"],
   "compilerOptions": {
     "outDir": "./dist/_types",
-    "declaration": true
+    "declaration": true,
+    "lib": ["DOM", "ES2022", "DOM.Iterable"]
   }
 }

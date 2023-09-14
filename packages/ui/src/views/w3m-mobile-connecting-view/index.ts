@@ -34,11 +34,19 @@ export class W3mMobileConnectingView extends LitElement {
     const nativeUrl = mobile?.native
     const universalUrl = mobile?.universal
 
-    if (nativeUrl && !forceUniversalUrl) {
-      const href = CoreUtil.formatNativeUrl(nativeUrl, uri, name)
-      CoreUtil.openHref(href, '_self')
+    const isInTGWebApp =
+      Object.hasOwn(window, 'TelegramWebviewProxy') || Object.hasOwn(window, 'Telegram')
+
+    let href = ''
+    if (nativeUrl && !forceUniversalUrl && !isInTGWebApp) {
+      href = CoreUtil.formatNativeUrl(nativeUrl, uri, name)
     } else if (universalUrl) {
-      const href = CoreUtil.formatUniversalUrl(universalUrl, uri, name)
+      href = CoreUtil.formatUniversalUrl(universalUrl, uri, name)
+    }
+
+    if (isInTGWebApp && href) {
+      CoreUtil.openHref(href, '_blank')
+    } else {
       CoreUtil.openHref(href, '_self')
     }
   }
