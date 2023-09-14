@@ -11,10 +11,29 @@ export class W3mNetworkSwitchView extends LitElement {
   // -- Members ------------------------------------------- //
   private network = RouterController.state.data?.network
 
+  private unsubscribe: (() => void)[] = []
+
   // -- State & Properties -------------------------------- //
   @state() private showRetry = false
 
   @state() public error = false
+
+  @state() private currentNetwork = NetworkController.state.caipNetwork
+
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      NetworkController.subscribeKey('caipNetwork', val => {
+        if (val?.id !== this.currentNetwork?.id) {
+          RouterController.goBack()
+        }
+      })
+    )
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
 
   public override firstUpdated() {
     this.onSwitchNetwork()
@@ -94,7 +113,6 @@ export class W3mNetworkSwitchView extends LitElement {
       this.error = false
       if (this.network) {
         await NetworkController.switchActiveNetwork(this.network)
-        RouterController.goBack()
       }
     } catch {
       this.error = true
