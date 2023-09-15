@@ -81,7 +81,7 @@ export interface ThemeVariables {
   '--w3m-color-mix-strength'?: number
   '--w3m-font-size-master'?: string
   '--w3m-border-radius-master'?: string
-  '--w3m-z-index'?: string
+  '--w3m-z-index'?: number
 }
 
 // -- BlockchainApiController Types ---------------------------------------------
