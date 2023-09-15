@@ -1,24 +1,24 @@
-import { BsFillSunFill, BsFillMoonFill } from 'react-icons/bs'
-import { FaMagic } from 'react-icons/fa'
 import {
   Box,
   Container,
-  Flex,
-  Icon,
-  Link,
-  Text,
-  useColorMode,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
+  Flex,
+  Icon,
+  Link,
+  Text,
+  useColorMode,
   useDisclosure
 } from '@chakra-ui/react'
-import MixColorInput from '../components/Theming/MixColorInput'
+import { BsFillMoonFill, BsFillSunFill } from 'react-icons/bs'
+import { FaMagic } from 'react-icons/fa'
 import AccentColorInput from '../components/Theming/AccentColorInput'
 import BorderRadiusInput from '../components/Theming/BorderRadiusInput'
+import MixColorInput from '../components/Theming/MixColorInput'
 
 export default function Header() {
   const { colorMode, toggleColorMode } = useColorMode()
@@ -47,7 +47,7 @@ export default function Header() {
         </DrawerContent>
       </Drawer>
 
-      <Box borderBottom={'1px'}>
+      <Box borderBottom={'1px'} zIndex={2} position="relative">
         <Container maxW="container.xl" padding={'4'}>
           <Flex justify={['flex-end', 'space-between']} alignItems={'center'}>
             <Text fontSize={'lg'} fontWeight={'bold'} display={['none', 'block']}>

@@ -1,6 +1,11 @@
 import { css } from 'lit'
 
 export default css`
+  :host {
+    z-index: var(--w3m-z-index);
+    position: relative;
+  }
+
   @keyframes zoom-in {
     0% {
       transform: scale(0.95) translateY(0);
