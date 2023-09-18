@@ -15,10 +15,11 @@ export interface ConfigOptions {
 }
 
 export function defaultWagmiConfig({ projectId, chains, appName }: ConfigOptions) {
-  const { publicClient } = configureChains(chains, [
-    walletConnectProvider({ projectId }),
-    publicProvider()
-  ])
+  const { publicClient } = configureChains(
+    chains,
+    [walletConnectProvider({ projectId }), publicProvider()],
+    { retryCount: 1, stallTimeout: 3000 }
+  )
 
   return createConfig({
     autoConnect: true,
