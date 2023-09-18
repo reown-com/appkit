@@ -1,6 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
 import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtils.js'
+import { PublicStateController } from './PublicStateController.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -50,10 +51,12 @@ export const NetworkController = {
 
   setCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
     state.caipNetwork = caipNetwork
+    PublicStateController.set({ selectedNetworkId: caipNetwork?.id })
   },
 
   setDefaultCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
     state.caipNetwork = caipNetwork
+    PublicStateController.set({ selectedNetworkId: caipNetwork?.id })
     state.isDefaultCaipNetwork = true
   },
 
