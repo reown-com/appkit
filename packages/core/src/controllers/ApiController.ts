@@ -111,7 +111,7 @@ export const ApiController = {
           include: featuredWalletIds?.join(',')
         }
       })
-
+      data.sort((a, b) => featuredWalletIds.indexOf(a.id) - featuredWalletIds.indexOf(b.id))
       const images = data.map(d => d.image_id).filter(Boolean)
       await Promise.allSettled((images as string[]).map(id => ApiController._fetchWalletImage(id)))
       state.featured = data
