@@ -1,4 +1,4 @@
-import type { CaipNetwork, Tokens } from '@web3modal/scaffold'
+import type { CaipNetwork, CaipNetworkId, Tokens } from '@web3modal/scaffold'
 import type { Web3ModalClientOptions } from '../client.js'
 import { NAMESPACE } from './constants.js'
 import { NetworkImageIds } from './presets.js'
