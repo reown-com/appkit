@@ -2,7 +2,7 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import type { CaipNetworkId } from '../utils/TypeUtils.js'
 
 // -- State --------------------------------------------- //
-interface PublicStateControllerState {
+export interface PublicStateControllerState {
   open: boolean
   selectedNetworkId?: CaipNetworkId
 }

@@ -27,3 +27,7 @@ export function getCaipTokens(tokens?: Web3ModalClientOptions['tokens']) {
 
   return caipTokens
 }
+
+export function caipNetworkIdToNumber(caipnetworkId?: CaipNetworkId) {
+  return caipnetworkId ? Number(caipnetworkId.split(':')[1]) : undefined
+}
