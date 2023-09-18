@@ -1,6 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
-import type { CaipNetworkId, CustomWallet, ProjectId, Tokens } from '../utils/TypeUtils.js'
+import type { CustomWallet, ProjectId, Tokens } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
@@ -9,7 +9,6 @@ export interface OptionsControllerState {
   includeWalletIds?: string[]
   excludeWalletIds?: string[]
   tokens?: Tokens
-  chainImages?: Record<CaipNetworkId, string>
   customWallets?: CustomWallet[]
   termsConditionsUrl?: string
   privacyPolicyUrl?: string

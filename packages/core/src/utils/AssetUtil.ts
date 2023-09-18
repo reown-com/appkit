@@ -15,6 +15,10 @@ export const AssetUtil = {
   },
 
   getNetworkImage(network?: CaipNetwork) {
+    if (network?.imageUrl) {
+      return network?.imageUrl
+    }
+
     if (network?.imageId) {
       return AssetController.state.networkImages[network.imageId]
     }

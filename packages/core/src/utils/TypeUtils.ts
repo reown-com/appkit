@@ -6,6 +6,7 @@ export interface CaipNetwork {
   id: CaipNetworkId
   name?: string
   imageId?: string
+  imageUrl?: string
 }
 
 export interface LinkingRecord {
