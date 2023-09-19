@@ -4,6 +4,7 @@ import type {
   NetworkControllerClient,
   NetworkControllerState,
   OptionsControllerState,
+  PublicStateControllerState,
   ThemeControllerState,
   ThemeMode,
   ThemeVariables
@@ -18,6 +19,7 @@ import {
   ModalController,
   NetworkController,
   OptionsController,
+  PublicStateController,
   ThemeController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
@@ -90,6 +92,14 @@ export class Web3ModalScaffold {
 
   public subscribeTheme(callback: (newState: ThemeControllerState) => void) {
     return ThemeController.subscribe(callback)
+  }
+
+  public getState() {
+    return { ...PublicStateController.state }
+  }
+
+  public subscribeState(callback: (newState: PublicStateControllerState) => void) {
+    return PublicStateController.subscribe(callback)
   }
 
   // -- Protected ----------------------------------------------------------------

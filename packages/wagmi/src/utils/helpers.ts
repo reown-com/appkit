@@ -1,4 +1,4 @@
-import type { CaipNetwork, Tokens } from '@web3modal/scaffold'
+import type { CaipNetwork, CaipNetworkId, Tokens } from '@web3modal/scaffold'
 import type { Web3ModalClientOptions } from '../client.js'
 import { NAMESPACE } from './constants.js'
 import { NetworkImageIds } from './presets.js'
@@ -26,4 +26,8 @@ export function getCaipTokens(tokens?: Web3ModalClientOptions['tokens']) {
   })
 
   return caipTokens
+}
+
+export function caipNetworkIdToNumber(caipnetworkId?: CaipNetworkId) {
+  return caipnetworkId ? Number(caipnetworkId.split(':')[1]) : undefined
 }

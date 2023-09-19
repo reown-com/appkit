@@ -14,9 +14,5 @@ export const ADD_CHAIN_METHOD = 'wallet_addEthereumChain'
 
 export const WALLET_CHOICE_KEY = 'wagmi.wallet'
 
-export const BLOCKCHAIN_HTTP_API = 'https://rpc.walletconnect.com'
-
-export const BLOCKCHAIN_WSS_API = 'wss://rpc.walletconnect.com'
-
 // DO NOT REMOVE, SHOULD MATCH CORE PACKAGE VERSION
-export const VERSION = '3.0.0-beta.2'
+export const VERSION = '3.0.0-beta.3'

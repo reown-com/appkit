@@ -19,6 +19,7 @@ import type {
   ConnectionControllerClient,
   LibraryOptions,
   NetworkControllerClient,
+  PublicStateControllerState,
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
@@ -29,7 +30,7 @@ import {
   WALLET_CHOICE_KEY,
   WALLET_CONNECT_CONNECTOR_ID
 } from './utils/constants.js'
-import { getCaipDefaultChain, getCaipTokens } from './utils/helpers.js'
+import { caipNetworkIdToNumber, getCaipDefaultChain, getCaipTokens } from './utils/helpers.js'
 import {
   ConnectorExplorerIds,
   ConnectorImageIds,
@@ -44,6 +45,7 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   wagmiConfig: Config<any, any>
   chains?: Chain[]
   defaultChain?: Chain
+  chainImages?: Record<number, string>
   tokens?: Record<number, Token>
 }
 
@@ -55,6 +57,11 @@ declare global {
   }
 }
 
+// @ts-expect-error: Overriden state type is correct
+interface Web3ModalState extends PublicStateControllerState {
+  selectedNetworkId: number | undefined
+}
+
 // -- Client --------------------------------------------------------------------
 export class Web3Modal extends Web3ModalScaffold {
   private hasSyncedConnectedAccount = false
@@ -62,7 +69,8 @@ export class Web3Modal extends Web3ModalScaffold {
   private options: Web3ModalClientOptions | undefined = undefined
 
   public constructor(options: Web3ModalClientOptions) {
-    const { wagmiConfig, chains, defaultChain, _sdkVersion, tokens, ...w3mOptions } = options
+    const { wagmiConfig, chains, defaultChain, tokens, chainImages, _sdkVersion, ...w3mOptions } =
+      options
 
     if (!wagmiConfig) {
       throw new Error('web3modal:constructor - wagmiConfig is undefined')
@@ -78,7 +86,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        const chainId = this.caipNetworkIdToNumber(caipNetwork?.id)
+        const chainId = caipNetworkIdToNumber(caipNetwork?.id)
         if (chainId) {
           await switchNetwork({ chainId })
         }
@@ -122,7 +130,7 @@ export class Web3Modal extends Web3ModalScaffold {
           }
         })
 
-        const chainId = this.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        const chainId = caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
         await connect({ connector, chainId })
       },
@@ -133,7 +141,7 @@ export class Web3Modal extends Web3ModalScaffold {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
 
-        const chainId = this.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        const chainId = caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
         await connect({ connector, chainId })
       },
@@ -164,24 +172,49 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.options = options
 
-    this.syncRequestedNetworks(chains)
+    this.syncRequestedNetworks(chains, chainImages)
 
     this.syncConnectors(wagmiConfig.connectors)
 
     watchAccount(() => this.syncAccount())
 
-    watchNetwork(() => this.syncNetwork())
+    watchNetwork(() => this.syncNetwork(chainImages))
+  }
+
+  // -- Public ------------------------------------------------------------------
+
+  // @ts-expect-error: Overriden state type is correct
+  public override getState() {
+    const state = super.getState()
+
+    return {
+      ...state,
+      selectedNetworkId: caipNetworkIdToNumber(state.selectedNetworkId)
+    }
+  }
+
+  // @ts-expect-error: Overriden state type is correct
+  public override subscribeState(callback: (state: Web3ModalState) => void) {
+    return super.subscribeState(state =>
+      callback({
+        ...state,
+        selectedNetworkId: caipNetworkIdToNumber(state.selectedNetworkId)
+      })
+    )
   }
 
   // -- Private -----------------------------------------------------------------
-
-  private syncRequestedNetworks(chains: Web3ModalClientOptions['chains']) {
+  private syncRequestedNetworks(
+    chains: Web3ModalClientOptions['chains'],
+    chainImages?: Web3ModalClientOptions['chainImages']
+  ) {
     const requestedCaipNetworks = chains?.map(
       chain =>
         ({
           id: `${NAMESPACE}:${chain.id}`,
           name: chain.name,
-          imageId: NetworkImageIds[chain.id]
+          imageId: NetworkImageIds[chain.id],
+          imageUrl: chainImages?.[chain.id]
         }) as CaipNetwork
     )
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
@@ -207,13 +240,18 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async syncNetwork() {
+  private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
     const { address, isConnected } = getAccount()
     const { chain } = getNetwork()
     if (chain) {
       const chainId = String(chain.id)
       const caipChainId: CaipNetworkId = `${NAMESPACE}:${chainId}`
-      this.setCaipNetwork({ id: caipChainId, name: chain.name, imageId: NetworkImageIds[chain.id] })
+      this.setCaipNetwork({
+        id: caipChainId,
+        name: chain.name,
+        imageId: NetworkImageIds[chain.id],
+        imageUrl: chainImages?.[chain.id]
+      })
       if (isConnected && address) {
         const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
         this.setCaipAddress(caipAddress)
@@ -269,9 +307,5 @@ export class Web3Modal extends Web3ModalScaffold {
         }) as const
     )
     this.setConnectors(w3mConnectors ?? [])
-  }
-
-  private caipNetworkIdToNumber(caipnetworkId?: CaipNetworkId) {
-    return caipnetworkId ? Number(caipnetworkId.split(':')[1]) : undefined
   }
 }

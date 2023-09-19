@@ -2,6 +2,7 @@ import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
 import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
+import { PublicStateController } from './PublicStateController.js'
 import type { RouterControllerState } from './RouterController.js'
 import { RouterController } from './RouterController.js'
 
@@ -42,9 +43,11 @@ export const ModalController = {
       RouterController.reset('Connect')
     }
     state.open = true
+    PublicStateController.set({ open: true })
   },
 
   close() {
     state.open = false
+    PublicStateController.set({ open: false })
   }
 }

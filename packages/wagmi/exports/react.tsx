@@ -95,3 +95,23 @@ export function useWeb3Modal() {
 
   return { open, close }
 }
+
+export function useWeb3ModalState() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" hook')
+  }
+
+  const [state, setState] = useState(modal.getState())
+
+  useEffect(() => {
+    const unsubscribe = modal?.subscribeState(newState => {
+      setState({ ...newState })
+    })
+
+    return () => {
+      unsubscribe?.()
+    }
+  }, [])
+
+  return state
+}

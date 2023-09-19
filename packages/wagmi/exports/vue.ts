@@ -66,7 +66,7 @@ export function useWeb3ModalTheme() {
     unsubscribe?.()
   })
 
-  return ref({
+  return reactive({
     setThemeMode,
     setThemeVariables,
     themeMode,
@@ -91,4 +91,22 @@ export function useWeb3Modal() {
     open,
     close
   })
+}
+
+export function useWeb3ModalState() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" composable')
+  }
+
+  const state = ref(modal.getState())
+
+  const unsubscribe = modal?.subscribeState(newState => {
+    state.value = { ...newState }
+  })
+
+  onUnmounted(() => {
+    unsubscribe?.()
+  })
+
+  return state
 }
