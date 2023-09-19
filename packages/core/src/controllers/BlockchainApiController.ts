@@ -1,3 +1,4 @@
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import type {
   BlockchainApiIdentityRequest,
@@ -6,7 +7,8 @@ import type {
 import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
-const api = new FetchUtil({ baseUrl: 'https://rpc.walletconnect.com' })
+const baseUrl = CoreHelperUtil.getBlockchainApiUrl()
+const api = new FetchUtil({ baseUrl })
 
 // -- Controller ---------------------------------------- //
 export const BlockchainApiController = {
