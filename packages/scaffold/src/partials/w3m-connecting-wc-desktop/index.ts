@@ -19,7 +19,7 @@ export class W3mConnectingWcDesktop extends W3mConnectingWidget {
       this.ready = true
       this.timeout = setTimeout(() => {
         this.onConnect?.()
-      }, 250)
+      }, 200)
     }
   }
 

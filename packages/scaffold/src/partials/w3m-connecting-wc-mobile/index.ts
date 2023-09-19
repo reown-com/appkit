@@ -25,7 +25,7 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
       this.ready = true
       this.timeout = setTimeout(() => {
         this.onConnect?.()
-      }, 250)
+      }, 200)
     }
   }
 
