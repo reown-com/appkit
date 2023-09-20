@@ -4,7 +4,6 @@ export default css`
   :host {
     overflow-x: hidden;
     overflow-y: auto;
-    background-color: var(--wui-cover);
     display: flex;
     align-items: center;
     justify-content: center;

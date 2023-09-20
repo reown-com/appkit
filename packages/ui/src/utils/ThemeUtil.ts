@@ -148,7 +148,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-inverse-100: #fff;
         --wui-color-inverse-000: #000;
 
-        --wui-cover: rgba(0, 0, 0, 0.5);
+        --wui-cover: rgba(0, 0, 0, 0.3);
 
         --wui-color-blue-100: var(--wui-color-blue-base-100);
         --wui-color-blue-015: var(--wui-color-accent-base-015);

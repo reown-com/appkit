@@ -13,6 +13,7 @@ export default css`
     bottom: 0;
     pointer-events: none;
     opacity: 0;
+    background-color: var(--wui-cover);
   }
 
   @keyframes zoom-in {
