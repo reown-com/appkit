@@ -3,10 +3,15 @@ import { css } from 'lit'
 export default css`
   :host {
     z-index: var(--w3m-z-index);
-    position: relative;
     display: block;
     backface-visibility: hidden;
     will-change: opacity;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
   }
 
   @keyframes zoom-in {

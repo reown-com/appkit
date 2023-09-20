@@ -92,7 +92,9 @@ export class W3mModal extends LitElement {
         touch-action: none;
         overflow: hidden;
         overscroll-behavior: contain;
-        min-height: 100vh;
+      }
+      w3m-modal {
+        pointer-events: auto;
       }
     `
     document.head.appendChild(styleTag)
