@@ -98,15 +98,18 @@ export function useWeb3ModalState() {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" composable')
   }
 
-  const state = ref(modal.getState())
+  const initial = modal.getState()
+  const open = ref(initial.open)
+  const selectedNetworkId = ref(initial.selectedNetworkId)
 
-  const unsubscribe = modal?.subscribeState(newState => {
-    state.value = { ...newState }
+  const unsubscribe = modal?.subscribeState(next => {
+    open.value = next.open
+    selectedNetworkId.value = next.selectedNetworkId
   })
 
   onUnmounted(() => {
     unsubscribe?.()
   })
 
-  return state
+  return reactive({ open, selectedNetworkId })
 }
