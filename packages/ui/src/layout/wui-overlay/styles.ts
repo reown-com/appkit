@@ -13,6 +13,8 @@ export default css`
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100vw;
+    height: 100vh;
   }
 
   @media (max-height: 700px) and (min-width: 431px) {
