@@ -23,9 +23,7 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
   private onRenderProxy() {
     if (!this.ready && this.uri) {
       this.ready = true
-      this.timeout = setTimeout(() => {
-        this.onConnect?.()
-      }, 200)
+      this.onConnect?.()
     }
   }
 
