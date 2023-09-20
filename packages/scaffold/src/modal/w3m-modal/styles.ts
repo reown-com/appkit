@@ -4,6 +4,9 @@ export default css`
   :host {
     z-index: var(--w3m-z-index);
     position: relative;
+    display: block;
+    backface-visibility: hidden;
+    will-change: opacity;
   }
 
   @keyframes zoom-in {
