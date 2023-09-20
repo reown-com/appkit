@@ -37,13 +37,13 @@ export class W3mModal extends LitElement {
   public override render() {
     return this.open
       ? html`
-          <wui-overlay @click=${this.onOverlayClick.bind(this)}>
+          <wui-flex @click=${this.onOverlayClick.bind(this)}>
             <wui-card role="alertdialog" aria-modal="true" tabindex="0">
               <w3m-header></w3m-header>
               <w3m-router></w3m-router>
               <w3m-snackbar></w3m-snackbar>
             </wui-card>
-          </wui-overlay>
+          </wui-flex>
         `
       : null
   }

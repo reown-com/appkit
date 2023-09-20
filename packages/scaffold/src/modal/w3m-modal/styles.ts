@@ -46,8 +46,28 @@ export default css`
     outline: none;
   }
 
+  wui-flex {
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (max-height: 700px) and (min-width: 431px) {
+    wui-flex {
+      align-items: flex-start;
+    }
+
+    wui-card {
+      margin: var(--wui-spacing-xxl) 0px;
+    }
+  }
+
   @media (max-width: 430px) {
-    wui-overlay {
+    wui-flex {
       align-items: flex-end;
     }
 

@@ -42,7 +42,6 @@ export * from './src/composites/wui-wallet-image/index.js'
 
 export * from './src/layout/wui-flex/index.js'
 export * from './src/layout/wui-grid/index.js'
-export * from './src/layout/wui-overlay/index.js'
 export * from './src/layout/wui-separator/index.js'
 
 export { initializeTheming, setColorTheme, setThemeVariables } from './src/utils/ThemeUtil.js'
