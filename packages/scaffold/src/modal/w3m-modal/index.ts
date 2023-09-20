@@ -37,13 +37,13 @@ export class W3mModal extends LitElement {
   public override render() {
     return this.open
       ? html`
-          <wui-overlay @click=${this.onOverlayClick.bind(this)}>
+          <wui-flex @click=${this.onOverlayClick.bind(this)}>
             <wui-card role="alertdialog" aria-modal="true" tabindex="0">
               <w3m-header></w3m-header>
               <w3m-router></w3m-router>
               <w3m-snackbar></w3m-snackbar>
             </wui-card>
-          </wui-overlay>
+          </wui-flex>
         `
       : null
   }
@@ -79,18 +79,13 @@ export class W3mModal extends LitElement {
     await this.animate([{ opacity: 0 }, { opacity: 1 }], {
       duration: 200,
       easing: 'ease',
-      fill: 'forwards'
+      fill: 'forwards',
+      delay: 300
     }).finished
     this.onAddKeyboardListener()
   }
 
   private onScrollLock() {
-    const { body } = document
-    const { innerHeight: viewportHeight } = window
-    const scrollHeight = body?.scrollHeight
-
-    const scrollbarGutter = scrollHeight > viewportHeight ? 'scrollbar-gutter: stable;' : ''
-
     const styleTag = document.createElement('style')
     styleTag.dataset['w3m'] = SCROLL_LOCK
     styleTag.textContent = `
@@ -98,8 +93,9 @@ export class W3mModal extends LitElement {
         touch-action: none;
         overflow: hidden;
         overscroll-behavior: contain;
-        min-height: 100vh;
-       ${scrollbarGutter}
+      }
+      w3m-modal {
+        pointer-events: auto;
       }
     `
     document.head.appendChild(styleTag)
