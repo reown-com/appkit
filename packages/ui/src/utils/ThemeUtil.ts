@@ -546,6 +546,7 @@ export const resetStyles = css`
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
     font-family: var(--wui-font-family);
+    backface-visibility: hidden;
   }
 `
 
