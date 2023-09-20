@@ -4,14 +4,12 @@ export default css`
   :host {
     overflow-x: hidden;
     overflow-y: auto;
-    background-color: var(--wui-cover);
+    background-color: rgba(0, 0, 0, 0.3);
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
     height: 100%;
-    backface-visibility: hidden;
-    will-change: opacity;
   }
 
   @media (max-height: 700px) and (min-width: 431px) {
