@@ -6,12 +6,13 @@ export default css`
     display: block;
     backface-visibility: hidden;
     will-change: opacity;
-    width: 100vw;
-    height: 100vh;
     position: fixed;
     top: 0;
     left: 0;
+    right: 0;
+    bottom: 0;
     pointer-events: none;
+    opacity: 0;
   }
 
   @keyframes zoom-in {
@@ -36,6 +37,7 @@ export default css`
     max-width: 360px;
     width: 100%;
     position: relative;
+    animation-delay: 0.3s;
     animation-duration: 0.2s;
     animation-name: zoom-in;
     animation-fill-mode: backwards;

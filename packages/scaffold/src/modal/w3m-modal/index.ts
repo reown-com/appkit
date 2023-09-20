@@ -79,7 +79,8 @@ export class W3mModal extends LitElement {
     await this.animate([{ opacity: 0 }, { opacity: 1 }], {
       duration: 200,
       easing: 'ease',
-      fill: 'forwards'
+      fill: 'forwards',
+      delay: 300
     }).finished
     this.onAddKeyboardListener()
   }
