@@ -10,6 +10,8 @@ export default css`
     justify-content: center;
     width: 100%;
     height: 100%;
+    backface-visibility: hidden;
+    will-change: opacity;
   }
 
   @media (max-height: 700px) and (min-width: 431px) {
