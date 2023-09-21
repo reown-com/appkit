@@ -1,4 +1,4 @@
-import type { Address, Chain, Config } from '@wagmi/core'
+import type { Address, Chain, Config, WindowProvider } from '@wagmi/core'
 import {
   connect,
   disconnect,
@@ -25,12 +25,20 @@ import type {
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
   ADD_CHAIN_METHOD,
+  EIP6963_ANNOUNCE_EVENT,
+  EIP6963_REQUEST_EVENT,
+  INJECTED_CONNECTOR_ID,
   NAMESPACE,
   VERSION,
   WALLET_CHOICE_KEY,
   WALLET_CONNECT_CONNECTOR_ID
 } from './utils/constants.js'
-import { caipNetworkIdToNumber, getCaipDefaultChain, getCaipTokens } from './utils/helpers.js'
+import {
+  caipNetworkIdToNumber,
+  getCaipDefaultChain,
+  getCaipTokens,
+  getDefaultWindowProvider
+} from './utils/helpers.js'
 import {
   ConnectorExplorerIds,
   ConnectorImageIds,
@@ -60,6 +68,18 @@ declare global {
 // @ts-expect-error: Overriden state type is correct
 interface Web3ModalState extends PublicStateControllerState {
   selectedNetworkId: number | undefined
+}
+
+interface Info {
+  uuid: string
+  name: string
+  icon: string
+  rdns: string
+}
+
+interface Wallet {
+  info: Info
+  provider: WindowProvider
 }
 
 // -- Client --------------------------------------------------------------------
@@ -135,10 +155,15 @@ export class Web3Modal extends Web3ModalScaffold {
         await connect({ connector, chainId })
       },
 
-      connectExternal: async id => {
+      connectExternal: async (id, provider) => {
         const connector = wagmiConfig.connectors.find(c => c.id === id)
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
+        }
+        if (provider) {
+          connector.options.getProvider = () => provider
+        } else if (id === INJECTED_CONNECTOR_ID) {
+          connector.options.getProvider = () => getDefaultWindowProvider()
         }
 
         const chainId = caipNetworkIdToNumber(this.getCaipNetwork()?.id)
@@ -175,6 +200,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncRequestedNetworks(chains, chainImages)
 
     this.syncConnectors(wagmiConfig.connectors)
+    this.listenConnectors()
 
     watchAccount(() => this.syncAccount())
 
@@ -307,5 +333,23 @@ export class Web3Modal extends Web3ModalScaffold {
         }) as const
     )
     this.setConnectors(w3mConnectors ?? [])
+  }
+
+  private listenConnectors() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener(EIP6963_ANNOUNCE_EVENT, (event: CustomEventInit<Wallet>) => {
+        if (event.detail) {
+          const { info, provider } = event.detail
+          this.addConnector({
+            id: INJECTED_CONNECTOR_ID,
+            type: 'ANNOUNCED',
+            imageUrl: info.icon,
+            name: info.name,
+            provider
+          })
+        }
+      })
+      window.dispatchEvent(new Event(EIP6963_REQUEST_EVENT))
+    }
   }
 }

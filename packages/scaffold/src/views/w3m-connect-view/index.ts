@@ -132,7 +132,7 @@ export class W3mConnectView extends LitElement {
       let tagLabel = undefined
       let tagVariant = undefined
 
-      if (connector.type === 'INJECTED') {
+      if (['INJECTED', 'ANNOUNCED'].includes(connector.type)) {
         const isInstalled = ConnectionController.checkInjectedInstalled()
         if (!isInstalled) {
           return null

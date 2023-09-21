@@ -8,7 +8,7 @@ import type { WcWallet } from '../utils/TypeUtils.js'
 export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
   disconnect: () => Promise<void>
-  connectExternal?: (id: string) => Promise<void>
+  connectExternal?: (id: string, provider?: unknown) => Promise<void>
   checkInjectedInstalled?: (ids?: string[]) => boolean
 }
 
@@ -64,8 +64,8 @@ export const ConnectionController = {
     })
   },
 
-  async connectExternal(id: string) {
-    await this._getClient().connectExternal?.(id)
+  async connectExternal(id: string, provider?: unknown) {
+    await this._getClient().connectExternal?.(id, provider)
   },
 
   checkInjectedInstalled(ids?: string[]) {

@@ -14,5 +14,9 @@ export const ADD_CHAIN_METHOD = 'wallet_addEthereumChain'
 
 export const WALLET_CHOICE_KEY = 'wagmi.wallet'
 
+export const EIP6963_ANNOUNCE_EVENT = 'eip6963:announceProvider'
+
+export const EIP6963_REQUEST_EVENT = 'eip6963:requestProvider'
+
 // DO NOT REMOVE, SHOULD MATCH CORE PACKAGE VERSION
 export const VERSION = '3.0.0-beta.4'

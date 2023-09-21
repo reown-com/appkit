@@ -19,7 +19,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     try {
       this.error = false
       if (this.connector) {
-        await ConnectionController.connectExternal(this.connector.id)
+        await ConnectionController.connectExternal(this.connector.id, this.connector?.provider)
         ModalController.close()
       }
     } catch {
