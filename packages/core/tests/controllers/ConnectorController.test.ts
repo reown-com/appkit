@@ -25,7 +25,7 @@ describe('ConnectorController', () => {
   })
 
   it('should update state correctly on removeConnector()', () => {
-    ConnectorController.removeConnectorById('external')
+    ConnectorController.removeConnectorByType('EXTERNAL')
     expect(ConnectorController.state.connectors).toEqual([walletConnectConnector])
   })
 })

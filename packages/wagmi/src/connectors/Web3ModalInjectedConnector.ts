@@ -34,7 +34,7 @@ export class Web3ModalInjectedConnector extends InjectedConnector {
   #eip6963Wallet?: EIP6963Wallet = undefined
 
   public constructor(config: Config) {
-    super({ chains: config.chains })
+    super({ chains: config.chains, options: { shimDisconnect: true } })
     this.#defaultProvider = this.options.getProvider()
   }
 
