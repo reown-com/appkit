@@ -8,6 +8,8 @@ export const SAFE_CONNECTOR_ID = 'safe'
 
 export const LEDGER_CONNECTOR_ID = 'ledger'
 
+export const METAMASK_PROVIDER_ID = 'isMetaMask'
+
 export const NAMESPACE = 'eip155'
 
 export const ADD_CHAIN_METHOD = 'wallet_addEthereumChain'

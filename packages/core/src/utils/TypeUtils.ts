@@ -27,6 +27,7 @@ export type Connector = {
   imageId?: string
   explorerId?: string
   imageUrl?: string
+  info?: unknown
   provider?: unknown
 }
 

@@ -39,9 +39,9 @@ export class W3mConnectView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="xs">
-        ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()} ${this.featuredTemplate()}
-        ${this.customTemplate()} ${this.recommendedTemplate()} ${this.connectorsTemplate()}
-        ${this.allWalletsTemplate()}
+        ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()}
+        ${this.installedTemplate()} ${this.featuredTemplate()} ${this.customTemplate()}
+        ${this.recommendedTemplate()} ${this.connectorsTemplate()} ${this.allWalletsTemplate()}
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
     `
@@ -124,21 +124,32 @@ export class W3mConnectView extends LitElement {
     )
   }
 
+  private installedTemplate() {
+    return this.connectors.map(connector => {
+      const isAnnounced = connector.type === 'ANNOUNCED'
+      const isInjectedInstalled =
+        connector.type === 'INJECTED' && ConnectionController.checkInjectedInstalled()
+      if (isAnnounced || isInjectedInstalled) {
+        return html`
+          <wui-list-wallet
+            imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
+            name=${connector.name ?? 'Unknown'}
+            @click=${() => this.onConnector(connector)}
+            tagLabel="installed"
+            tagVariant="success"
+          >
+          </wui-list-wallet>
+        `
+      }
+
+      return null
+    })
+  }
+
   private connectorsTemplate() {
     return this.connectors.map(connector => {
-      if (connector.type === 'WALLET_CONNECT') {
+      if (['WALLET_CONNECT', 'INJECTED', 'ANNOUNCED'].includes(connector.type)) {
         return null
-      }
-      let tagLabel = undefined
-      let tagVariant = undefined
-
-      if (['INJECTED', 'ANNOUNCED'].includes(connector.type)) {
-        const isInstalled = ConnectionController.checkInjectedInstalled()
-        if (!isInstalled) {
-          return null
-        }
-        tagLabel = 'installed'
-        tagVariant = 'success' as const
       }
 
       return html`
@@ -146,8 +157,6 @@ export class W3mConnectView extends LitElement {
           imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
           name=${connector.name ?? 'Unknown'}
           @click=${() => this.onConnector(connector)}
-          tagLabel=${ifDefined(tagLabel)}
-          tagVariant=${ifDefined(tagVariant)}
         >
         </wui-list-wallet>
       `

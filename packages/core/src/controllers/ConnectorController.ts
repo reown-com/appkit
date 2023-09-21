@@ -1,6 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
-import type { Connector } from '../utils/TypeUtils.js'
+import type { Connector, ConnectorType } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectorControllerState {
@@ -30,7 +30,7 @@ export const ConnectorController = {
     state.connectors.push(connector)
   },
 
-  removeConnectorById(connectorId: Connector['id']) {
-    state.connectors = state.connectors.filter(c => c.id !== connectorId)
+  removeConnectorByType(type: ConnectorType) {
+    state.connectors = state.connectors.filter(c => c.type !== type)
   }
 }

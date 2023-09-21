@@ -23,22 +23,19 @@ import type {
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
+import type { Web3ModalInjectedConnector } from './connectors/Web3ModalInjectedConnector.js'
 import {
   ADD_CHAIN_METHOD,
   EIP6963_ANNOUNCE_EVENT,
   EIP6963_REQUEST_EVENT,
   INJECTED_CONNECTOR_ID,
+  METAMASK_PROVIDER_ID,
   NAMESPACE,
   VERSION,
   WALLET_CHOICE_KEY,
   WALLET_CONNECT_CONNECTOR_ID
 } from './utils/constants.js'
-import {
-  caipNetworkIdToNumber,
-  getCaipDefaultChain,
-  getCaipTokens,
-  getDefaultWindowProvider
-} from './utils/helpers.js'
+import { caipNetworkIdToNumber, getCaipDefaultChain, getCaipTokens } from './utils/helpers.js'
 import {
   ConnectorExplorerIds,
   ConnectorImageIds,
@@ -155,17 +152,15 @@ export class Web3Modal extends Web3ModalScaffold {
         await connect({ connector, chainId })
       },
 
-      connectExternal: async (id, provider) => {
+      connectExternal: async ({ id, provider, info }) => {
         const connector = wagmiConfig.connectors.find(c => c.id === id)
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
-        if (provider) {
-          connector.options.getProvider = () => provider
-        } else if (id === INJECTED_CONNECTOR_ID) {
-          connector.options.getProvider = () => getDefaultWindowProvider()
+        if (provider && info) {
+          // @ts-expect-error Exists on Web3ModalInjctedConnector
+          connector.setEip6963Wallet?.({ provider, info })
         }
-
         const chainId = caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
         await connect({ connector, chainId })
@@ -200,7 +195,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncRequestedNetworks(chains, chainImages)
 
     this.syncConnectors(wagmiConfig.connectors)
-    this.listenConnectors()
+    this.listenConnectors(wagmiConfig.connectors)
 
     watchAccount(() => this.syncAccount())
 
@@ -335,18 +330,26 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setConnectors(w3mConnectors ?? [])
   }
 
-  private listenConnectors() {
-    if (typeof window !== 'undefined') {
+  private listenConnectors(connectors: Web3ModalClientOptions['wagmiConfig']['connectors']) {
+    // @ts-expect-error Exists on Web3ModalInjectedConnector
+    const connector: Web3ModalInjectedConnector = connectors.find(c => c.isEip6963 === true)
+
+    if (typeof window !== 'undefined' && connector) {
       window.addEventListener(EIP6963_ANNOUNCE_EVENT, (event: CustomEventInit<Wallet>) => {
         if (event.detail) {
           const { info, provider } = event.detail
+          if (provider[METAMASK_PROVIDER_ID]) {
+            this.removeConnectorByType('INJECTED')
+          }
           this.addConnector({
             id: INJECTED_CONNECTOR_ID,
             type: 'ANNOUNCED',
             imageUrl: info.icon,
             name: info.name,
-            provider
+            provider,
+            info
           })
+          connector.isAuthorized({ info, provider })
         }
       })
       window.dispatchEvent(new Event(EIP6963_REQUEST_EVENT))
