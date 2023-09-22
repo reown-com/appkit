@@ -153,10 +153,6 @@ export class Web3ModalScaffold {
     ConnectorController.addConnector(connector)
   }
 
-  protected removeConnectorByType: (typeof ConnectorController)['removeConnectorByType'] = type => {
-    ConnectorController.removeConnectorByType(type)
-  }
-
   protected resetWcConnection: (typeof ConnectionController)['resetWcConnection'] = () => {
     ConnectionController.resetWcConnection()
   }

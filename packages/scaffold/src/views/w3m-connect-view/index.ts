@@ -40,8 +40,9 @@ export class W3mConnectView extends LitElement {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="xs">
         ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()}
-        ${this.installedTemplate()} ${this.featuredTemplate()} ${this.customTemplate()}
-        ${this.recommendedTemplate()} ${this.connectorsTemplate()} ${this.allWalletsTemplate()}
+        ${this.installedTemplate()} ${this.browserWalletTemplate()} ${this.featuredTemplate()}
+        ${this.customTemplate()} ${this.recommendedTemplate()} ${this.connectorsTemplate()}
+        ${this.allWalletsTemplate()}
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
     `
@@ -127,9 +128,28 @@ export class W3mConnectView extends LitElement {
   private installedTemplate() {
     return this.connectors.map(connector => {
       const isAnnounced = connector.type === 'ANNOUNCED'
+      if (isAnnounced) {
+        return html`
+          <wui-list-wallet
+            imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
+            name=${connector.name ?? 'Unknown'}
+            @click=${() => this.onConnector(connector)}
+            tagLabel="installed"
+            tagVariant="success"
+          >
+          </wui-list-wallet>
+        `
+      }
+
+      return null
+    })
+  }
+
+  private browserWalletTemplate() {
+    return this.connectors.map(connector => {
       const isInjectedInstalled =
         connector.type === 'INJECTED' && ConnectionController.checkInjectedInstalled()
-      if (isAnnounced || isInjectedInstalled) {
+      if (isInjectedInstalled) {
         return html`
           <wui-list-wallet
             imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
