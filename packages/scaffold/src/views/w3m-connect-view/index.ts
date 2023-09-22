@@ -201,12 +201,17 @@ export class W3mConnectView extends LitElement {
   private recommendedTemplate() {
     const { recommended, featured } = ApiController.state
     const { customWallets } = OptionsController.state
-    if (!recommended.length || featured.length || customWallets?.length) {
+    const { connectors } = ConnectorController.state
+    const recent = StorageUtil.getRecentWallets()
+    const announced = connectors.filter(c => c.type === 'ANNOUNCED')
+    if (!recommended.length) {
       return null
     }
-    const [first, second] = this.filterOutRecentWallets(recommended)
+    const other = featured?.length + (customWallets?.length ?? 0) + announced.length + recent.length
+    const maxRecommended = Math.max(0, 2 - other)
+    const wallets = this.filterOutRecentWallets(recommended).slice(0, maxRecommended)
 
-    return [first, second].map(
+    return wallets.map(
       wallet => html`
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
