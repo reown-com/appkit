@@ -207,8 +207,10 @@ export class W3mConnectView extends LitElement {
     if (!recommended.length) {
       return null
     }
-    const other = featured?.length + (customWallets?.length ?? 0) + announced.length + recent.length
-    const maxRecommended = Math.max(0, 2 - other)
+    const featuredLength = featured?.length ?? 0
+    const customLength = customWallets?.length ?? 0
+    const overrideLength = featuredLength + customLength + announced.length + recent.length
+    const maxRecommended = Math.max(0, 2 - overrideLength)
     const wallets = this.filterOutRecentWallets(recommended).slice(0, maxRecommended)
 
     return wallets.map(
