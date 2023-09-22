@@ -40,7 +40,6 @@ export class Web3ModalInjectedConnector extends InjectedConnector {
 
   // -- Wagmi Methods ---------------------------------------------------
   public override async connect(options: ConnectOptions) {
-    this.options.getProvider = () => this.#eip6963Wallet?.provider ?? this.#defaultProvider
     const data = await super.connect(options)
     if (this.#eip6963Wallet) {
       this.storage?.setItem(connectedRdnsKey, this.#eip6963Wallet.info.rdns)
@@ -53,7 +52,6 @@ export class Web3ModalInjectedConnector extends InjectedConnector {
     await super.disconnect()
     this.storage?.removeItem(connectedRdnsKey)
     this.#eip6963Wallet = undefined
-    this.options.getProvider = () => this.#defaultProvider
   }
 
   public override async isAuthorized(eip6963Wallet?: EIP6963Wallet) {
@@ -63,10 +61,13 @@ export class Web3ModalInjectedConnector extends InjectedConnector {
         return true
       }
       this.#eip6963Wallet = eip6963Wallet
-      this.options.getProvider = () => eip6963Wallet.provider ?? this.#defaultProvider
     }
 
     return super.isAuthorized()
+  }
+
+  public override async getProvider() {
+    return Promise.resolve(this.#eip6963Wallet?.provider ?? this.#defaultProvider)
   }
 
   // -- Extended Methods ------------------------------------------------

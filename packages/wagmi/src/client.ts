@@ -197,7 +197,6 @@ export class Web3Modal extends Web3ModalScaffold {
     this.listenConnectors(wagmiConfig.connectors)
 
     watchAccount(() => this.syncAccount())
-
     watchNetwork(() => this.syncNetwork(chainImages))
   }
 
@@ -263,6 +262,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
     const { address, isConnected } = getAccount()
     const { chain } = getNetwork()
+
     if (chain) {
       const chainId = String(chain.id)
       const caipChainId: CaipNetworkId = `${NAMESPACE}:${chainId}`
