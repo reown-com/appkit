@@ -1,4 +1,4 @@
-import { arbitrum, mainnet } from 'https://esm.sh/@wagmi/core/chains?bundle'
+import { arbitrum, mainnet } from 'https://esm.sh/@wagmi/core@1/chains'
 import { createWeb3Modal, defaultWagmiConfig } from 'https://esm.sh/@web3modal/wagmi@beta?bundle'
 
 // 1. Create projectId

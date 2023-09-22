@@ -10,14 +10,17 @@
   "exports": {
     ".": {
       "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js",
       "types": "./dist/types/exports/index.d.ts"
     },
     "./react": {
       "import": "./dist/esm/exports/react.js",
+      "default": "./dist/esm/exports/react.js",
       "types": "./dist/types/exports/react.d.ts"
     },
     "./vue": {
       "import": "./dist/esm/exports/vue.js",
+      "default": "./dist/esm/exports/vue.js",
       "types": "./dist/types/exports/vue.d.ts"
     }
   },
@@ -59,6 +62,11 @@
     "vue": {
       "optional": true
     }
+  },
+  "optionalDependencies": {
+    "react": ">=17",
+    "react-dom": ">=17",
+    "vue": ">=3"
   },
   "keywords": [
     "web3",
