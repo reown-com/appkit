@@ -50,11 +50,10 @@ export class Web3ModalInjectedConnector extends InjectedConnector {
   }
 
   public override async disconnect() {
+    await super.disconnect()
     this.storage?.removeItem(connectedRdnsKey)
     this.#eip6963Wallet = undefined
     this.options.getProvider = () => this.#defaultProvider
-
-    return super.disconnect()
   }
 
   public override async isAuthorized(eip6963Wallet?: EIP6963Wallet) {

@@ -29,7 +29,6 @@ import {
   EIP6963_ANNOUNCE_EVENT,
   EIP6963_REQUEST_EVENT,
   INJECTED_CONNECTOR_ID,
-  METAMASK_PROVIDER_ID,
   NAMESPACE,
   VERSION,
   WALLET_CHOICE_KEY,
@@ -338,9 +337,6 @@ export class Web3Modal extends Web3ModalScaffold {
       window.addEventListener(EIP6963_ANNOUNCE_EVENT, (event: CustomEventInit<Wallet>) => {
         if (event.detail) {
           const { info, provider } = event.detail
-          if (provider[METAMASK_PROVIDER_ID]) {
-            this.removeConnectorByType('INJECTED')
-          }
           this.addConnector({
             id: INJECTED_CONNECTOR_ID,
             type: 'ANNOUNCED',

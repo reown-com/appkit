@@ -164,13 +164,15 @@ export class W3mConnectView extends LitElement {
   }
 
   private allWalletsTemplate() {
+    const roundedCount = Math.floor(ApiController.state.count / 10) * 10
+
     return html`
       <wui-list-wallet
         name="All Wallets"
         walletIcon="allWallets"
         showAllWallets
         @click=${() => RouterController.push('AllWallets')}
-        tagLabel=${`${ApiController.state.count}+`}
+        tagLabel=${`${roundedCount}+`}
         tagVariant="shade"
       ></wui-list-wallet>
     `
