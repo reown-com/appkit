@@ -27,6 +27,10 @@ export const AssetUtil = {
   },
 
   getConnectorImage(connector?: Connector) {
+    if (connector?.imageUrl) {
+      return connector.imageUrl
+    }
+
     if (connector?.imageId) {
       return AssetController.state.connectorImages[connector.imageId]
     }

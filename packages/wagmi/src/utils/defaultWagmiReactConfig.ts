@@ -8,7 +8,7 @@ import { publicProvider } from 'wagmi/providers/public'
 import type { ConfigOptions } from './defaultWagmiCoreConfig.js'
 import { walletConnectProvider } from './provider.js'
 
-export function defaultWagmiConfig({ projectId, chains, appName }: ConfigOptions) {
+export function defaultWagmiConfig({ projectId, chains, metadata }: ConfigOptions) {
   const { publicClient } = configureChains(chains, [
     walletConnectProvider({ projectId }),
     publicProvider()
@@ -17,9 +17,9 @@ export function defaultWagmiConfig({ projectId, chains, appName }: ConfigOptions
   return createConfig({
     autoConnect: true,
     connectors: [
-      new WalletConnectConnector({ chains, options: { projectId, showQrModal: false } }),
+      new WalletConnectConnector({ chains, options: { projectId, showQrModal: false, metadata } }),
       new InjectedConnector({ chains, options: { shimDisconnect: true } }),
-      new CoinbaseWalletConnector({ chains, options: { appName } })
+      new CoinbaseWalletConnector({ chains, options: { appName: metadata?.name ?? 'Unknown' } })
     ],
     publicClient
   })

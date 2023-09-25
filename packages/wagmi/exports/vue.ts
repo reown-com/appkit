@@ -38,8 +38,6 @@ export function createWeb3Modal(options: Web3ModalOptions) {
   return modal
 }
 
-export { defaultWagmiConfig } from '../src/utils/defaultWagmiCoreConfig.js'
-
 // -- Composites --------------------------------------------------------------
 export function useWeb3ModalTheme() {
   if (!modal) {
@@ -113,3 +111,7 @@ export function useWeb3ModalState() {
 
   return reactive({ open, selectedNetworkId })
 }
+
+// -- Universal Exports -------------------------------------------------------
+export { EIP6963Connector } from '../src/connectors/EIP6963Connector.js'
+export { defaultWagmiConfig } from '../src/utils/defaultWagmiCoreConfig.js'

@@ -16,7 +16,13 @@ if (!projectId) {
 
 // 2. Create wagmiConfig
 const chains = [mainnet, arbitrum]
-const wagmiConfig = defaultWagmiConfig({ chains, projectId, appName: 'Web3Modal' })
+const wagmiConfig = defaultWagmiConfig({
+  chains,
+  projectId,
+  metadata: {
+    name: 'Web3Modal React Example'
+  }
+})
 
 // 3. Create modal
 createWeb3Modal({

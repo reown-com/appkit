@@ -1,4 +1,4 @@
-import type { Address, Chain, Config } from '@wagmi/core'
+import type { Address, Chain, Config, WindowProvider } from '@wagmi/core'
 import {
   connect,
   disconnect,
@@ -17,14 +17,19 @@ import type {
   CaipNetwork,
   CaipNetworkId,
   ConnectionControllerClient,
+  Connector,
   LibraryOptions,
   NetworkControllerClient,
   PublicStateControllerState,
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
+import type { EIP6963Connector } from './connectors/EIP6963Connector.js'
 import {
   ADD_CHAIN_METHOD,
+  EIP6963_ANNOUNCE_EVENT,
+  EIP6963_CONNECTOR_ID,
+  EIP6963_REQUEST_EVENT,
   NAMESPACE,
   VERSION,
   WALLET_CHOICE_KEY,
@@ -60,6 +65,18 @@ declare global {
 // @ts-expect-error: Overriden state type is correct
 interface Web3ModalState extends PublicStateControllerState {
   selectedNetworkId: number | undefined
+}
+
+interface Info {
+  uuid: string
+  name: string
+  icon: string
+  rdns: string
+}
+
+interface Wallet {
+  info: Info
+  provider: WindowProvider
 }
 
 // -- Client --------------------------------------------------------------------
@@ -135,12 +152,15 @@ export class Web3Modal extends Web3ModalScaffold {
         await connect({ connector, chainId })
       },
 
-      connectExternal: async id => {
+      connectExternal: async ({ id, provider, info }) => {
         const connector = wagmiConfig.connectors.find(c => c.id === id)
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
-
+        if (provider && info && connector.id === EIP6963_CONNECTOR_ID) {
+          // @ts-expect-error Exists on EIP6963Connector
+          connector.setEip6963Wallet?.({ provider, info })
+        }
         const chainId = caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
         await connect({ connector, chainId })
@@ -175,9 +195,9 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncRequestedNetworks(chains, chainImages)
 
     this.syncConnectors(wagmiConfig.connectors)
+    this.listenConnectors(wagmiConfig.connectors)
 
     watchAccount(() => this.syncAccount())
-
     watchNetwork(() => this.syncNetwork(chainImages))
   }
 
@@ -243,6 +263,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
     const { address, isConnected } = getAccount()
     const { chain } = getNetwork()
+
     if (chain) {
       const chainId = String(chain.id)
       const caipChainId: CaipNetworkId = `${NAMESPACE}:${chainId}`
@@ -258,6 +279,8 @@ export class Web3Modal extends Web3ModalScaffold {
         if (chain.blockExplorers?.default?.url) {
           const url = `${chain.blockExplorers.default.url}/address/${address}`
           this.setAddressExplorerUrl(url)
+        } else {
+          this.setAddressExplorerUrl(undefined)
         }
         if (this.hasSyncedConnectedAccount) {
           await this.syncBalance(address, chain)
@@ -296,16 +319,39 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private syncConnectors(connectors: Web3ModalClientOptions['wagmiConfig']['connectors']) {
-    const w3mConnectors = connectors.map(
-      ({ id, name }) =>
-        ({
+    const w3mConnectors: Connector[] = []
+    connectors.forEach(({ id, name }) => {
+      if (id !== EIP6963_CONNECTOR_ID) {
+        w3mConnectors.push({
           id,
           explorerId: ConnectorExplorerIds[id],
           imageId: ConnectorImageIds[id],
           name: ConnectorNamesMap[id] ?? name,
           type: ConnectorTypesMap[id] ?? 'EXTERNAL'
-        }) as const
-    )
-    this.setConnectors(w3mConnectors ?? [])
+        })
+      }
+    })
+    this.setConnectors(w3mConnectors)
+  }
+
+  private listenConnectors(connectors: Web3ModalClientOptions['wagmiConfig']['connectors']) {
+    const connector = connectors.find(c => c.id === EIP6963_CONNECTOR_ID) as EIP6963Connector
+    if (typeof window !== 'undefined' && connector) {
+      window.addEventListener(EIP6963_ANNOUNCE_EVENT, (event: CustomEventInit<Wallet>) => {
+        if (event.detail) {
+          const { info, provider } = event.detail
+          this.addConnector({
+            id: EIP6963_CONNECTOR_ID,
+            type: 'EIP6963',
+            imageUrl: info.icon,
+            name: info.name,
+            provider,
+            info
+          })
+          connector.isAuthorized({ info, provider })
+        }
+      })
+      window.dispatchEvent(new Event(EIP6963_REQUEST_EVENT))
+    }
   }
 }
