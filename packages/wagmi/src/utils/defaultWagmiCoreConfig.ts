@@ -30,7 +30,6 @@ export function defaultWagmiConfig({ projectId, chains, metadata }: ConfigOption
     autoConnect: true,
     connectors: [
       new WalletConnectConnector({ chains, options: { projectId, showQrModal: false, metadata } }),
-      // Ilja: new EIP6963Connector({ chains }),
       new InjectedConnector({ chains, options: { shimDisconnect: true } }),
       new CoinbaseWalletConnector({ chains, options: { appName: metadata?.name ?? 'Unknown' } })
     ],
