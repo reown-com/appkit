@@ -144,6 +144,8 @@ export class W3mConnectView extends LitElement {
   }
 
   private injectedTemplate() {
+    const announced = this.connectors.find(c => c.type === 'EIP6963')
+
     return this.connectors.map(connector => {
       if (connector.type !== 'INJECTED') {
         return null
@@ -154,8 +156,8 @@ export class W3mConnectView extends LitElement {
           imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
           name=${connector.name ?? 'Unknown'}
           @click=${() => this.onConnector(connector)}
-          tagLabel="installed"
-          tagVariant="success"
+          tagLabel=${ifDefined(announced ? undefined : 'installed')}
+          tagVariant=${ifDefined(announced ? undefined : 'success')}
         >
         </wui-list-wallet>
       `

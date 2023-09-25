@@ -12,6 +12,10 @@ import { walletConnectProvider } from './provider.js'
 export interface ConfigOptions {
   metadata?: {
     name?: string
+    description?: string
+    url?: string
+    icons?: string[]
+    verifyUrl?: string
   }
   projectId: string
   chains: Chain[]

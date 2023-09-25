@@ -10,19 +10,19 @@
   ],
   "exports": {
     ".": {
+      "types": "./dist/types/exports/index.d.ts",
       "import": "./dist/esm/exports/index.js",
-      "default": "./dist/esm/exports/index.js",
-      "types": "./dist/types/exports/index.d.ts"
+      "default": "./dist/esm/exports/index.js"
     },
     "./react": {
+      "types": "./dist/types/exports/react.d.ts",
       "import": "./dist/esm/exports/react.js",
-      "default": "./dist/esm/exports/react.js",
-      "types": "./dist/types/exports/react.d.ts"
+      "default": "./dist/esm/exports/react.js"
     },
     "./vue": {
+      "types": "./dist/types/exports/vue.d.ts",
       "import": "./dist/esm/exports/vue.js",
-      "default": "./dist/esm/exports/vue.js",
-      "types": "./dist/types/exports/vue.d.ts"
+      "default": "./dist/esm/exports/vue.js"
     }
   },
   "typesVersions": {

@@ -279,6 +279,8 @@ export class Web3Modal extends Web3ModalScaffold {
         if (chain.blockExplorers?.default?.url) {
           const url = `${chain.blockExplorers.default.url}/address/${address}`
           this.setAddressExplorerUrl(url)
+        } else {
+          this.setAddressExplorerUrl(undefined)
         }
         if (this.hasSyncedConnectedAccount) {
           await this.syncBalance(address, chain)
