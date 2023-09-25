@@ -1,10 +1,5 @@
 import { Center, VStack, useColorMode } from '@chakra-ui/react'
-import {
-  createWeb3Modal,
-  defaultWagmiConfig,
-  useWeb3ModalTheme,
-  EIP6963Connector
-} from '@web3modal/wagmi/react'
+import { createWeb3Modal, defaultWagmiConfig, useWeb3ModalTheme } from '@web3modal/wagmi/react'
 import { useEffect, useState } from 'react'
 import { WagmiConfig } from 'wagmi'
 import {
