@@ -1,6 +1,7 @@
 import type { ConnectorType } from '@web3modal/scaffold'
 import {
   COINBASE_CONNECTOR_ID,
+  EIP6963_CONNECTOR_ID,
   INJECTED_CONNECTOR_ID,
   LEDGER_CONNECTOR_ID,
   SAFE_CONNECTOR_ID,
@@ -72,5 +73,6 @@ export const ConnectorNamesMap = {
 
 export const ConnectorTypesMap = {
   [INJECTED_CONNECTOR_ID]: 'INJECTED',
-  [WALLET_CONNECT_CONNECTOR_ID]: 'WALLET_CONNECT'
+  [WALLET_CONNECT_CONNECTOR_ID]: 'WALLET_CONNECT',
+  [EIP6963_CONNECTOR_ID]: 'EIP6963'
 } as Record<string, ConnectorType>

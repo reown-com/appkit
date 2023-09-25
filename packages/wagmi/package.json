@@ -5,7 +5,8 @@
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "!tsconfig.tsbuildinfo"
   ],
   "exports": {
     ".": {
@@ -36,7 +37,7 @@
   },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "npm run build:clean; tsc --build; rm dist/esm/tsconfig.tsbuildinfo",
+    "build": "npm run build:clean; tsc --build",
     "watch": "npm run build:clean; tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"

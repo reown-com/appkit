@@ -26,8 +26,10 @@ interface Config {
 }
 
 // -- Connector --------------------------------------------------------
-export class Web3ModalInjectedConnector extends InjectedConnector {
-  public isEip6963 = true
+export class EIP6963Connector extends InjectedConnector {
+  override readonly id = 'eip6963'
+
+  override readonly name = 'EIP6963'
 
   #defaultProvider?: WindowProvider = undefined
 

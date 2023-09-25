@@ -8,7 +8,7 @@ export const SAFE_CONNECTOR_ID = 'safe'
 
 export const LEDGER_CONNECTOR_ID = 'ledger'
 
-export const METAMASK_PROVIDER_ID = 'isMetaMask'
+export const EIP6963_CONNECTOR_ID = 'eip6963'
 
 export const NAMESPACE = 'eip155'
 

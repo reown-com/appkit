@@ -2,7 +2,6 @@ import type { Connector, WcWallet } from '@web3modal/core'
 import {
   ApiController,
   AssetUtil,
-  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
@@ -40,7 +39,7 @@ export class W3mConnectView extends LitElement {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="xs">
         ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()}
-        ${this.installedTemplate()} ${this.browserWalletTemplate()} ${this.featuredTemplate()}
+        ${this.announcedTemplate()} ${this.injectedTemplate()} ${this.featuredTemplate()}
         ${this.customTemplate()} ${this.recommendedTemplate()} ${this.connectorsTemplate()}
         ${this.allWalletsTemplate()}
       </wui-flex>
@@ -125,50 +124,47 @@ export class W3mConnectView extends LitElement {
     )
   }
 
-  private installedTemplate() {
+  private announcedTemplate() {
     return this.connectors.map(connector => {
-      const isAnnounced = connector.type === 'ANNOUNCED'
-      if (isAnnounced) {
-        return html`
-          <wui-list-wallet
-            imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-            name=${connector.name ?? 'Unknown'}
-            @click=${() => this.onConnector(connector)}
-            tagLabel="installed"
-            tagVariant="success"
-          >
-          </wui-list-wallet>
-        `
+      if (connector.type !== 'EIP6963') {
+        return null
       }
 
-      return null
+      return html`
+        <wui-list-wallet
+          imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
+          name=${connector.name ?? 'Unknown'}
+          @click=${() => this.onConnector(connector)}
+          tagLabel="installed"
+          tagVariant="success"
+        >
+        </wui-list-wallet>
+      `
     })
   }
 
-  private browserWalletTemplate() {
+  private injectedTemplate() {
     return this.connectors.map(connector => {
-      const isInjectedInstalled =
-        connector.type === 'INJECTED' && ConnectionController.checkInjectedInstalled()
-      if (isInjectedInstalled) {
-        return html`
-          <wui-list-wallet
-            imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-            name=${connector.name ?? 'Unknown'}
-            @click=${() => this.onConnector(connector)}
-            tagLabel="installed"
-            tagVariant="success"
-          >
-          </wui-list-wallet>
-        `
+      if (connector.type !== 'INJECTED') {
+        return null
       }
 
-      return null
+      return html`
+        <wui-list-wallet
+          imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
+          name=${connector.name ?? 'Unknown'}
+          @click=${() => this.onConnector(connector)}
+          tagLabel="installed"
+          tagVariant="success"
+        >
+        </wui-list-wallet>
+      `
     })
   }
 
   private connectorsTemplate() {
     return this.connectors.map(connector => {
-      if (['WALLET_CONNECT', 'INJECTED', 'ANNOUNCED'].includes(connector.type)) {
+      if (['WALLET_CONNECT', 'INJECTED', 'EIP6963'].includes(connector.type)) {
         return null
       }
 
@@ -203,13 +199,13 @@ export class W3mConnectView extends LitElement {
     const { customWallets } = OptionsController.state
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
-    const announced = connectors.filter(c => c.type === 'ANNOUNCED')
+    const eip6963 = connectors.filter(c => c.type === 'EIP6963')
     if (!recommended.length) {
       return null
     }
     const featuredLength = featured?.length ?? 0
     const customLength = customWallets?.length ?? 0
-    const overrideLength = featuredLength + customLength + announced.length + recent.length
+    const overrideLength = featuredLength + customLength + eip6963.length + recent.length
     const maxRecommended = Math.max(0, 2 - overrideLength)
     const wallets = this.filterOutRecentWallets(recommended).slice(0, maxRecommended)
 

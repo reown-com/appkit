@@ -17,18 +17,19 @@ import type {
   CaipNetwork,
   CaipNetworkId,
   ConnectionControllerClient,
+  Connector,
   LibraryOptions,
   NetworkControllerClient,
   PublicStateControllerState,
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import type { Web3ModalInjectedConnector } from './connectors/Web3ModalInjectedConnector.js'
+import type { EIP6963Connector } from './connectors/EIP6963Connector.js'
 import {
   ADD_CHAIN_METHOD,
   EIP6963_ANNOUNCE_EVENT,
+  EIP6963_CONNECTOR_ID,
   EIP6963_REQUEST_EVENT,
-  INJECTED_CONNECTOR_ID,
   NAMESPACE,
   VERSION,
   WALLET_CHOICE_KEY,
@@ -156,8 +157,8 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!connector) {
           throw new Error('connectionControllerClient:connectExternal - connector is undefined')
         }
-        if (provider && info) {
-          // @ts-expect-error Exists on Web3ModalInjctedConnector
+        if (provider && info && connector.id === EIP6963_CONNECTOR_ID) {
+          // @ts-expect-error Exists on EIP6963Connector
           connector.setEip6963Wallet?.({ provider, info })
         }
         const chainId = caipNetworkIdToNumber(this.getCaipNetwork()?.id)
@@ -316,30 +317,30 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private syncConnectors(connectors: Web3ModalClientOptions['wagmiConfig']['connectors']) {
-    const w3mConnectors = connectors.map(
-      ({ id, name }) =>
-        ({
+    const w3mConnectors: Connector[] = []
+    connectors.forEach(({ id, name }) => {
+      if (id !== EIP6963_CONNECTOR_ID) {
+        w3mConnectors.push({
           id,
           explorerId: ConnectorExplorerIds[id],
           imageId: ConnectorImageIds[id],
           name: ConnectorNamesMap[id] ?? name,
           type: ConnectorTypesMap[id] ?? 'EXTERNAL'
-        }) as const
-    )
-    this.setConnectors(w3mConnectors ?? [])
+        })
+      }
+    })
+    this.setConnectors(w3mConnectors)
   }
 
   private listenConnectors(connectors: Web3ModalClientOptions['wagmiConfig']['connectors']) {
-    // @ts-expect-error Exists on Web3ModalInjectedConnector
-    const connector: Web3ModalInjectedConnector = connectors.find(c => c.isEip6963 === true)
-
+    const connector = connectors.find(c => c.id === EIP6963_CONNECTOR_ID) as EIP6963Connector
     if (typeof window !== 'undefined' && connector) {
       window.addEventListener(EIP6963_ANNOUNCE_EVENT, (event: CustomEventInit<Wallet>) => {
         if (event.detail) {
           const { info, provider } = event.detail
           this.addConnector({
-            id: INJECTED_CONNECTOR_ID,
-            type: 'ANNOUNCED',
+            id: EIP6963_CONNECTOR_ID,
+            type: 'EIP6963',
             imageUrl: info.icon,
             name: info.name,
             provider,

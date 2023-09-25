@@ -5,11 +5,12 @@
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "!tsconfig.tsbuildinfo"
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "npm run build:clean; tsc --build; rm dist/esm/tsconfig.tsbuildinfo",
+    "build": "npm run build:clean",
     "watch": "npm run build:clean; tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"

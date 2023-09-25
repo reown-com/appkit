@@ -40,7 +40,13 @@ const chains = [
   celo,
   aurora
 ]
-export const wagmiConfig = defaultWagmiConfig({ chains, projectId, appName: 'Web3Modal' })
+export const wagmiConfig = defaultWagmiConfig({
+  chains,
+  projectId,
+  metadata: {
+    name: 'Web3Modal'
+  }
+})
 
 // 3. Create Web3Modal
 export const modal = createWeb3Modal({
