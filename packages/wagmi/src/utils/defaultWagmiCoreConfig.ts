@@ -6,7 +6,6 @@ import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { InjectedConnector } from '@wagmi/core/connectors/injected'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { publicProvider } from '@wagmi/core/providers/public'
-import { EIP6963Connector } from '../connectors/EIP6963Connector.js'
 import { walletConnectProvider } from './provider.js'
 
 export interface ConfigOptions {
@@ -30,8 +29,8 @@ export function defaultWagmiConfig({ projectId, chains, metadata }: ConfigOption
   return createConfig({
     autoConnect: true,
     connectors: [
-      new WalletConnectConnector({ chains, options: { projectId, showQrModal: false } }),
-      new EIP6963Connector({ chains }),
+      new WalletConnectConnector({ chains, options: { projectId, showQrModal: false, metadata } }),
+      // Ilja: new EIP6963Connector({ chains }),
       new InjectedConnector({ chains, options: { shimDisconnect: true } }),
       new CoinbaseWalletConnector({ chains, options: { appName: metadata?.name ?? 'Unknown' } })
     ],
