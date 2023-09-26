@@ -2,7 +2,6 @@ import { ApiController, ModalController, SnackController, ThemeController } from
 import { UiHelperUtil, initializeTheming } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { animate } from 'motion'
 import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //
@@ -38,13 +37,13 @@ export class W3mModal extends LitElement {
   public override render() {
     return this.open
       ? html`
-          <wui-overlay @click=${this.onOverlayClick.bind(this)}>
+          <wui-flex @click=${this.onOverlayClick.bind(this)}>
             <wui-card role="alertdialog" aria-modal="true" tabindex="0">
               <w3m-header></w3m-header>
               <w3m-router></w3m-router>
               <w3m-snackbar></w3m-snackbar>
             </wui-card>
-          </wui-overlay>
+          </wui-flex>
         `
       : null
   }
@@ -58,15 +57,17 @@ export class W3mModal extends LitElement {
 
   private initializeTheming() {
     const { themeVariables, themeMode } = ThemeController.state
-    initializeTheming(themeVariables, themeMode)
-
     const defaultThemeMode = UiHelperUtil.getColorTheme(themeMode)
-    ThemeController.setThemeMode(defaultThemeMode)
+    initializeTheming(themeVariables, defaultThemeMode)
   }
 
   private async onClose() {
     this.onScrollUnlock()
-    await animate(this, { opacity: [1, 0] }, { duration: 0.2 }).finished
+    await this.animate([{ opacity: 1 }, { opacity: 0 }], {
+      duration: 200,
+      easing: 'ease',
+      fill: 'forwards'
+    }).finished
     SnackController.hide()
     this.open = false
     this.onRemoveKeyboardListener()
@@ -75,17 +76,16 @@ export class W3mModal extends LitElement {
   private async onOpen() {
     this.onScrollLock()
     this.open = true
-    await animate(this, { opacity: [0, 1] }, { duration: 0.2 }).finished
+    await this.animate([{ opacity: 0 }, { opacity: 1 }], {
+      duration: 200,
+      easing: 'ease',
+      fill: 'forwards',
+      delay: 300
+    }).finished
     this.onAddKeyboardListener()
   }
 
   private onScrollLock() {
-    const { body } = document
-    const { innerHeight: viewportHeight } = window
-    const scrollHeight = body?.scrollHeight
-
-    const scrollbarGutter = scrollHeight > viewportHeight ? 'scrollbar-gutter: stable;' : ''
-
     const styleTag = document.createElement('style')
     styleTag.dataset['w3m'] = SCROLL_LOCK
     styleTag.textContent = `
@@ -93,7 +93,9 @@ export class W3mModal extends LitElement {
         touch-action: none;
         overflow: hidden;
         overscroll-behavior: contain;
-       ${scrollbarGutter}
+      }
+      w3m-modal {
+        pointer-events: auto;
       }
     `
     document.head.appendChild(styleTag)

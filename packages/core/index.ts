@@ -43,6 +43,9 @@ export type { OptionsControllerState } from './src/controllers/OptionsController
 
 export { BlockchainApiController } from './src/controllers/BlockchainApiController.js'
 
+export { PublicStateController } from './src/controllers/PublicStateController.js'
+export type { PublicStateControllerState } from './src/controllers/PublicStateController.js'
+
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from './src/utils/AssetUtil.js'
 export { ConstantsUtil } from './src/utils/ConstantsUtil.js'

@@ -42,8 +42,6 @@ export function createWeb3Modal(options: Web3ModalOptions) {
   return modal
 }
 
-export { defaultWagmiConfig } from '../src/utils/defaultWagmiReactConfig.js'
-
 // -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalTheme() {
   if (!modal) {
@@ -95,3 +93,27 @@ export function useWeb3Modal() {
 
   return { open, close }
 }
+
+export function useWeb3ModalState() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" hook')
+  }
+
+  const [state, setState] = useState(modal.getState())
+
+  useEffect(() => {
+    const unsubscribe = modal?.subscribeState(newState => {
+      setState({ ...newState })
+    })
+
+    return () => {
+      unsubscribe?.()
+    }
+  }, [])
+
+  return state
+}
+
+// -- Universal Exports -------------------------------------------------------
+export { EIP6963Connector } from '../src/connectors/EIP6963Connector.js'
+export { defaultWagmiConfig } from '../src/utils/defaultWagmiReactConfig.js'

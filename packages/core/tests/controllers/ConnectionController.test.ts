@@ -49,7 +49,7 @@ describe('ConnectionController', () => {
   })
 
   it('should not throw on connectExternal()', async () => {
-    await ConnectionController.connectExternal(externalId)
+    await ConnectionController.connectExternal({ id: externalId })
   })
 
   it('should not throw on checkInjectedInstalled()', () => {
@@ -62,7 +62,7 @@ describe('ConnectionController', () => {
 
   it('should not throw when optional methods are undefined', async () => {
     ConnectionController.setClient(partialClient)
-    await ConnectionController.connectExternal(externalId)
+    await ConnectionController.connectExternal({ id: externalId })
     ConnectionController.checkInjectedInstalled([externalId])
   })
 

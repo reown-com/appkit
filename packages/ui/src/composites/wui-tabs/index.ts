@@ -3,7 +3,6 @@ import { customElement, property, state } from 'lit/decorators.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { IconType } from '../../utils/TypesUtil.js'
 import styles from './styles.js'
-import { animate } from 'motion'
 
 @customElement('wui-tabs')
 export class WuiTabs extends LitElement {
@@ -45,7 +44,7 @@ export class WuiTabs extends LitElement {
           data-active=${isActive}
         >
           <wui-icon size="sm" color="inherit" name=${tab.icon}></wui-icon>
-          <wui-text variant="small-600" color="inherit">${tab.label}</wui-text>
+          <wui-text variant="small-600" color="inherit"> ${tab.label} </wui-text>
         </button>
       `
     })
@@ -80,8 +79,17 @@ export class WuiTabs extends LitElement {
     const activeBtnTextBounds = activeBtnText?.getBoundingClientRect()
 
     if (passiveBtn && passiveBtnText && !initialAnimation && index !== this.activeTab) {
-      animate(passiveBtnText, { opacity: 0 }, { duration: 0.25 })
-      animate(passiveBtn, { width: '34px' }, { duration: 0.5 })
+      passiveBtnText.animate([{ opacity: 0 }], {
+        duration: 200,
+        easing: 'ease',
+        fill: 'forwards'
+      })
+
+      passiveBtn.animate([{ width: `34px` }], {
+        duration: 500,
+        easing: 'ease',
+        fill: 'forwards'
+      })
     }
 
     if (activeBtn && activeBtnBounds && activeBtnTextBounds && activeBtnText) {
@@ -90,17 +98,18 @@ export class WuiTabs extends LitElement {
           Math.round(activeBtnBounds.width + activeBtnTextBounds.width) + 6
         }px`
 
-        animate(
-          activeBtn,
-          { width: `${activeBtnBounds.width + activeBtnTextBounds.width}px` },
-          { duration: initialAnimation ? 0 : 0.5 }
-        )
+        activeBtn.animate([{ width: `${activeBtnBounds.width + activeBtnTextBounds.width}px` }], {
+          duration: initialAnimation ? 0 : 500,
+          fill: 'forwards',
+          easing: 'ease'
+        })
 
-        animate(
-          activeBtnText,
-          { opacity: 1 },
-          { duration: initialAnimation ? 0 : 0.25, delay: initialAnimation ? 0 : 0.05 }
-        )
+        activeBtnText.animate([{ opacity: 1 }], {
+          duration: initialAnimation ? 0 : 250,
+          delay: initialAnimation ? 0 : 50,
+          fill: 'forwards',
+          easing: 'ease'
+        })
       }
     }
   }

@@ -1,5 +1,5 @@
 import { subscribeKey as subKey } from 'valtio/utils'
-import { proxy } from 'valtio/vanilla'
+import { proxy, ref } from 'valtio/vanilla'
 import type { Connector } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
@@ -23,14 +23,10 @@ export const ConnectorController = {
   },
 
   setConnectors(connectors: ConnectorControllerState['connectors']) {
-    state.connectors = connectors
+    state.connectors = connectors.map(c => ref(c))
   },
 
   addConnector(connector: Connector) {
-    state.connectors.push(connector)
-  },
-
-  removeConnectorById(connectorId: Connector['id']) {
-    state.connectors = state.connectors.filter(c => c.id !== connectorId)
+    state.connectors.push(ref(connector))
   }
 }

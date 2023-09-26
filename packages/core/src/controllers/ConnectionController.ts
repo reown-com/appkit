@@ -2,13 +2,19 @@ import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
-import type { WcWallet } from '../utils/TypeUtils.js'
+import type { Connector, WcWallet } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
+export interface ConnectExternalOptions {
+  id: Connector['id']
+  provider?: Connector['provider']
+  info?: Connector['info']
+}
+
 export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
   disconnect: () => Promise<void>
-  connectExternal?: (id: string) => Promise<void>
+  connectExternal?: (options: ConnectExternalOptions) => Promise<void>
   checkInjectedInstalled?: (ids?: string[]) => boolean
 }
 
@@ -64,8 +70,8 @@ export const ConnectionController = {
     })
   },
 
-  async connectExternal(id: string) {
-    await this._getClient().connectExternal?.(id)
+  async connectExternal(options: ConnectExternalOptions) {
+    await this._getClient().connectExternal?.(options)
   },
 
   checkInjectedInstalled(ids?: string[]) {
@@ -87,6 +93,7 @@ export const ConnectionController = {
 
   setWcError(wcError: ConnectionControllerState['wcError']) {
     state.wcError = wcError
+    state.buffering = false
   },
 
   setRecentWallet(wallet: ConnectionControllerState['recentWallet']) {

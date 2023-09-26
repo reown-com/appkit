@@ -14,7 +14,7 @@ export class WuiImage extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html`<img crossorigin="anonymous" src=${this.src} alt=${this.alt} />`
+    return html`<img src=${this.src} alt=${this.alt} />`
   }
 }
 

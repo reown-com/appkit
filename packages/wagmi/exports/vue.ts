@@ -1,12 +1,10 @@
 import type {
-  ThemeMode,
-  ThemeVariables,
   W3mAccountButton,
   W3mButton,
   W3mConnectButton,
   W3mNetworkButton
 } from '@web3modal/scaffold'
-import { onUnmounted, ref } from 'vue'
+import { onUnmounted, reactive, ref } from 'vue'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { VERSION } from '../src/utils/constants.js'
@@ -40,8 +38,6 @@ export function createWeb3Modal(options: Web3ModalOptions) {
   return modal
 }
 
-export { defaultWagmiConfig } from '../src/utils/defaultWagmiCoreConfig.js'
-
 // -- Composites --------------------------------------------------------------
 export function useWeb3ModalTheme() {
   if (!modal) {
@@ -56,8 +52,8 @@ export function useWeb3ModalTheme() {
     modal?.setThemeVariables(themeVariables)
   }
 
-  const themeMode = ref<ThemeMode>(modal.getThemeMode())
-  const themeVariables = ref<ThemeVariables>(modal.getThemeVariables())
+  const themeMode = ref(modal.getThemeMode())
+  const themeVariables = ref(modal.getThemeVariables())
 
   const unsubscribe = modal?.subscribeTheme(state => {
     themeMode.value = state.themeMode
@@ -68,7 +64,7 @@ export function useWeb3ModalTheme() {
     unsubscribe?.()
   })
 
-  return ref({
+  return reactive({
     setThemeMode,
     setThemeVariables,
     themeMode,
@@ -89,8 +85,33 @@ export function useWeb3Modal() {
     await modal?.close()
   }
 
-  return ref({
+  return reactive({
     open,
     close
   })
 }
+
+export function useWeb3ModalState() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" composable')
+  }
+
+  const initial = modal.getState()
+  const open = ref(initial.open)
+  const selectedNetworkId = ref(initial.selectedNetworkId)
+
+  const unsubscribe = modal?.subscribeState(next => {
+    open.value = next.open
+    selectedNetworkId.value = next.selectedNetworkId
+  })
+
+  onUnmounted(() => {
+    unsubscribe?.()
+  })
+
+  return reactive({ open, selectedNetworkId })
+}
+
+// -- Universal Exports -------------------------------------------------------
+export { EIP6963Connector } from '../src/connectors/EIP6963Connector.js'
+export { defaultWagmiConfig } from '../src/utils/defaultWagmiCoreConfig.js'

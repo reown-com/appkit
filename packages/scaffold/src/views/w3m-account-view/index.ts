@@ -105,11 +105,8 @@ export class W3mAccountView extends LitElement {
             <wui-text variant="paragraph-500" color="fg-200">
               ${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}
             </wui-text>
-            <wui-button size="sm" variant="shade" @click=${this.onExplorer.bind(this)}>
-              <wui-icon size="sm" color="inherit" slot="iconLeft" name="compass"></wui-icon>
-              Block Explorer
-              <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
-            </wui-button>
+
+            ${this.explorerBtnTemplate()}
           </wui-flex>
         </wui-flex>
       </wui-flex>
@@ -142,6 +139,22 @@ export class W3mAccountView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private explorerBtnTemplate() {
+    const { addressExplorerUrl } = AccountController.state
+
+    if (!addressExplorerUrl) {
+      return null
+    }
+
+    return html`
+      <wui-button size="sm" variant="shade" @click=${this.onExplorer.bind(this)}>
+        <wui-icon size="sm" color="inherit" slot="iconLeft" name="compass"></wui-icon>
+        Block Explorer
+        <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
+      </wui-button>
+    `
+  }
+
   private isMultiNetwork() {
     const { requestedCaipNetworks } = NetworkController.state
 

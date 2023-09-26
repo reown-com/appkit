@@ -1,4 +1,10 @@
-import { createWeb3Modal, defaultWagmiConfig, useWeb3Modal } from '@web3modal/wagmi/react'
+import {
+  createWeb3Modal,
+  defaultWagmiConfig,
+  useWeb3Modal,
+  useWeb3ModalState,
+  useWeb3ModalTheme
+} from '@web3modal/wagmi/react'
 import { WagmiConfig } from 'wagmi'
 import { arbitrum, mainnet } from 'wagmi/chains'
 
@@ -10,7 +16,13 @@ if (!projectId) {
 
 // 2. Create wagmiConfig
 const chains = [mainnet, arbitrum]
-const wagmiConfig = defaultWagmiConfig({ chains, projectId, appName: 'Web3Modal' })
+const wagmiConfig = defaultWagmiConfig({
+  chains,
+  projectId,
+  metadata: {
+    name: 'Web3Modal React Example'
+  }
+})
 
 // 3. Create modal
 createWeb3Modal({
@@ -27,6 +39,8 @@ createWeb3Modal({
 export default function App() {
   // 4. Use modal hook
   const modal = useWeb3Modal()
+  const state = useWeb3ModalState()
+  const theme = useWeb3ModalTheme()
 
   return (
     <WagmiConfig config={wagmiConfig}>
@@ -37,6 +51,8 @@ export default function App() {
 
       <button onClick={() => modal.open()}>Connect Wallet</button>
       <button onClick={() => modal.open({ view: 'Networks' })}>Choose Network</button>
+      <pre>{JSON.stringify(state, null, 2)}</pre>
+      <pre>{JSON.stringify(theme, null, 2)}</pre>
     </WagmiConfig>
   )
 }

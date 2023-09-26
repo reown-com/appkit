@@ -2,7 +2,6 @@ import type { RouterControllerState } from '@web3modal/core'
 import { ConnectionController, ModalController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { animate } from 'motion'
 import styles from './styles.js'
 
 // -- Helpers ------------------------------------------- //
@@ -116,9 +115,17 @@ export class W3mHeader extends LitElement {
     const headingEl = this.shadowRoot?.querySelector('wui-text')
     if (headingEl) {
       const preset = headings()[view]
-      await animate(headingEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
+      await headingEl.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: 200,
+        fill: 'forwards',
+        easing: 'ease'
+      }).finished
       this.heading = preset
-      animate(headingEl, { opacity: [0, 1] }, { duration: 0.2 })
+      headingEl.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 200,
+        fill: 'forwards',
+        easing: 'ease'
+      })
     }
   }
 
@@ -127,13 +134,29 @@ export class W3mHeader extends LitElement {
     const buttonEl = this.shadowRoot?.querySelector('#dynamic')
 
     if (history.length > 1 && !this.showBack && buttonEl) {
-      await animate(buttonEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
+      await buttonEl.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: 200,
+        fill: 'forwards',
+        easing: 'ease'
+      }).finished
       this.showBack = true
-      animate(buttonEl, { opacity: [0, 1] }, { duration: 0.2 })
+      buttonEl.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 200,
+        fill: 'forwards',
+        easing: 'ease'
+      })
     } else if (history.length <= 1 && this.showBack && buttonEl) {
-      await animate(buttonEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
+      await buttonEl.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: 200,
+        fill: 'forwards',
+        easing: 'ease'
+      }).finished
       this.showBack = false
-      animate(buttonEl, { opacity: [0, 1] }, { duration: 0.2 })
+      buttonEl.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 200,
+        fill: 'forwards',
+        easing: 'ease'
+      })
     }
   }
 }

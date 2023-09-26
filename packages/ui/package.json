@@ -1,28 +1,28 @@
 {
   "name": "@web3modal/ui",
-  "version": "3.0.0-alpha.6",
+  "version": "3.0.0-beta.5",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "!tsconfig.tsbuildinfo"
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "npm run build:clean; tsc --build; rm dist/esm/tsconfig.tsbuildinfo",
+    "build": "npm run build:clean; tsc --build",
     "watch": "npm run build:clean; tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "lit": "2.8.0",
-    "motion": "10.16.2",
     "qrcode": "1.5.3"
   },
   "devDependencies": {
     "@types/qrcode": "1.5.2",
     "eslint-plugin-lit": "1.9.1",
-    "eslint-plugin-wc": "1.5.0"
+    "eslint-plugin-wc": "2.0.3"
   },
   "keywords": [
     "web3",

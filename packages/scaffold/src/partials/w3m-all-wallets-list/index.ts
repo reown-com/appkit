@@ -3,7 +3,6 @@ import { ApiController, AssetUtil, ConnectorController, RouterController } from 
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { animate } from 'motion'
 import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //
@@ -69,9 +68,17 @@ export class W3mAllWalletsList extends LitElement {
     const gridEl = this.shadowRoot?.querySelector('wui-grid')
     if (this.initial && gridEl) {
       await ApiController.fetchWallets({ page: 1 })
-      await animate(gridEl, { opacity: [1, 0] }, { duration: 0.2 }).finished
+      await gridEl.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: 200,
+        fill: 'forwards',
+        easing: 'ease'
+      }).finished
       this.initial = false
-      animate(gridEl, { opacity: [0, 1] }, { duration: 0.2 })
+      gridEl.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 200,
+        fill: 'forwards',
+        easing: 'ease'
+      })
     }
   }
 

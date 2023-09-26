@@ -2,7 +2,6 @@ import type { RouterControllerState } from '@web3modal/core'
 import { RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
-import { animate } from 'motion'
 import styles from './styles.js'
 
 @customElement('w3m-router')
@@ -30,7 +29,11 @@ export class W3mRouter extends LitElement {
     this.resizeObserver = new ResizeObserver(async ([content]) => {
       const height = `${content?.contentRect.height}px`
       if (this.prevHeight !== '0px') {
-        await animate(this, { height: [this.prevHeight, height] }, { duration: 0.15 }).finished
+        await this.animate([{ height: this.prevHeight }, { height }], {
+          duration: 150,
+          easing: 'ease',
+          fill: 'forwards'
+        }).finished
         this.style.height = 'auto'
       }
       this.prevHeight = height
@@ -84,10 +87,23 @@ export class W3mRouter extends LitElement {
       xOut = 10
       xIn = -10
     }
+
     this.prevHistoryLength = history.length
-    await animate(this, { opacity: [1, 0], x: [0, xOut] }, { duration: 0.15 }).finished
+    await this.animate(
+      [
+        { opacity: 1, transform: 'translateX(0px)' },
+        { opacity: 0, transform: `translateX(${xOut}px)` }
+      ],
+      { duration: 150, easing: 'ease', fill: 'forwards' }
+    ).finished
     this.view = newView
-    animate(this, { opacity: [0, 1], x: [xIn, 0] }, { duration: 0.15, delay: 0.05 })
+    await this.animate(
+      [
+        { opacity: 0, transform: `translateX(${xIn}px)` },
+        { opacity: 1, transform: 'translateX(0px)' }
+      ],
+      { duration: 150, easing: 'ease', fill: 'forwards', delay: 50 }
+    ).finished
   }
 
   private getWrapper() {

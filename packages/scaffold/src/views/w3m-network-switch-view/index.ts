@@ -2,7 +2,6 @@ import { AssetUtil, NetworkController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { animate } from 'motion'
 import styles from './styles.js'
 
 @customElement('w3m-network-switch-view')
@@ -12,10 +11,29 @@ export class W3mNetworkSwitchView extends LitElement {
   // -- Members ------------------------------------------- //
   private network = RouterController.state.data?.network
 
+  private unsubscribe: (() => void)[] = []
+
   // -- State & Properties -------------------------------- //
   @state() private showRetry = false
 
   @state() public error = false
+
+  @state() private currentNetwork = NetworkController.state.caipNetwork
+
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      NetworkController.subscribeKey('caipNetwork', val => {
+        if (val?.id !== this.currentNetwork?.id) {
+          RouterController.goBack()
+        }
+      })
+    )
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
 
   public override firstUpdated() {
     this.onSwitchNetwork()
@@ -83,7 +101,10 @@ export class W3mNetworkSwitchView extends LitElement {
     if (this.error && !this.showRetry) {
       this.showRetry = true
       const retryButton = this.shadowRoot?.querySelector('wui-button') as HTMLElement
-      animate(retryButton, { opacity: [0, 1] })
+      retryButton.animate([{ opacity: 0 }, { opacity: 1 }], {
+        fill: 'forwards',
+        easing: 'ease'
+      })
     }
   }
 

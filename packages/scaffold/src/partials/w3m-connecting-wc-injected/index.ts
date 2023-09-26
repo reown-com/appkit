@@ -17,7 +17,7 @@ export class W3mConnectingWcInjected extends W3mConnectingWidget {
   private async onConnectProxy() {
     try {
       this.error = false
-      await ConnectionController.connectExternal('injected')
+      await ConnectionController.connectExternal({ id: 'injected' })
       ModalController.close()
     } catch {
       this.error = true

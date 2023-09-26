@@ -43,7 +43,8 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
   }
 
   private onBuffering() {
-    if (document.visibilityState === 'visible' && !this.error) {
+    const isIos = CoreHelperUtil.isIos()
+    if (document?.visibilityState === 'visible' && !this.error && isIos) {
       ConnectionController.setBuffering(true)
       setTimeout(() => {
         ConnectionController.setBuffering(false)

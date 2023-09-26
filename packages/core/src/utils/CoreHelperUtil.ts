@@ -13,6 +13,18 @@ export const CoreHelperUtil = {
     return false
   },
 
+  isAndroid() {
+    const ua = navigator.userAgent.toLowerCase()
+
+    return CoreHelperUtil.isMobile() && ua.includes('android')
+  },
+
+  isIos() {
+    const ua = navigator.userAgent.toLowerCase()
+
+    return CoreHelperUtil.isMobile() && (ua.includes('iphone') || ua.includes('ipad'))
+  },
+
   isClient() {
     return typeof window !== 'undefined'
   },
@@ -126,5 +138,28 @@ export const CoreHelperUtil = {
     }
 
     return formattedBalance ? `${formattedBalance} ${symbol}` : '0.0000'
+  },
+
+  isRestrictedRegion() {
+    try {
+      const { timeZone } = new Intl.DateTimeFormat().resolvedOptions()
+      const capTimeZone = timeZone.toUpperCase()
+
+      return ConstantsUtil.RESTRICTED_TIMEZONES.includes(capTimeZone)
+    } catch {
+      return false
+    }
+  },
+
+  getApiUrl() {
+    return CoreHelperUtil.isRestrictedRegion()
+      ? 'https://api.web3modal.org'
+      : 'https://api.web3modal.com'
+  },
+
+  getBlockchainApiUrl() {
+    return CoreHelperUtil.isRestrictedRegion()
+      ? 'https://rpc.walletconnect.org'
+      : 'https://rpc.walletconnect.com'
   }
 }

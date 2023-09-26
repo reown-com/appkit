@@ -15,8 +15,9 @@ import { NetworkController } from './NetworkController.js'
 import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
-const api = new FetchUtil({ baseUrl: 'https://api.web3modal.com' })
-const entries = '24'
+const baseUrl = CoreHelperUtil.getApiUrl()
+const api = new FetchUtil({ baseUrl })
+const entries = '40'
 const recommendedEntries = '4'
 const sdkType = 'w3m'
 
@@ -87,14 +88,14 @@ export const ApiController = {
     const { requestedCaipNetworks } = NetworkController.state
     const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean)
     if (ids) {
-      await Promise.all((ids as string[]).map(id => ApiController._fetchNetworkImage(id)))
+      await Promise.allSettled((ids as string[]).map(id => ApiController._fetchNetworkImage(id)))
     }
   },
 
   async fetchConnectorImages() {
     const { connectors } = ConnectorController.state
     const ids = connectors.map(({ imageId }) => imageId).filter(Boolean)
-    await Promise.all((ids as string[]).map(id => ApiController._fetchConnectorImage(id)))
+    await Promise.allSettled((ids as string[]).map(id => ApiController._fetchConnectorImage(id)))
   },
 
   async fetchFeaturedWallets() {
@@ -111,9 +112,9 @@ export const ApiController = {
           include: featuredWalletIds?.join(',')
         }
       })
-
+      data.sort((a, b) => featuredWalletIds.indexOf(a.id) - featuredWalletIds.indexOf(b.id))
       const images = data.map(d => d.image_id).filter(Boolean)
-      await Promise.all((images as string[]).map(id => ApiController._fetchWalletImage(id)))
+      await Promise.allSettled((images as string[]).map(id => ApiController._fetchWalletImage(id)))
       state.featured = data
     }
   },
@@ -134,7 +135,7 @@ export const ApiController = {
     const recent = StorageUtil.getRecentWallets()
     const recommendedImages = data.map(d => d.image_id).filter(Boolean)
     const recentImages = recent.map(r => r.image_id).filter(Boolean)
-    await Promise.all(
+    await Promise.allSettled(
       ([...recommendedImages, ...recentImages] as string[]).map(id =>
         ApiController._fetchWalletImage(id)
       )
@@ -161,8 +162,8 @@ export const ApiController = {
       }
     })
     const images = data.map(w => w.image_id).filter(Boolean)
-    await Promise.all([
-      (images as string[]).map(id => ApiController._fetchWalletImage(id)),
+    await Promise.allSettled([
+      ...(images as string[]).map(id => ApiController._fetchWalletImage(id)),
       CoreHelperUtil.wait(300)
     ])
     state.wallets = [...state.wallets, ...data]
@@ -185,8 +186,8 @@ export const ApiController = {
       }
     })
     const images = data.map(w => w.image_id).filter(Boolean)
-    await Promise.all([
-      (images as string[]).map(id => ApiController._fetchWalletImage(id)),
+    await Promise.allSettled([
+      ...(images as string[]).map(id => ApiController._fetchWalletImage(id)),
       CoreHelperUtil.wait(300)
     ])
     state.search = data
@@ -194,7 +195,7 @@ export const ApiController = {
 
   prefetch() {
     state.prefetchPromise = Promise.race([
-      Promise.all([
+      Promise.allSettled([
         ApiController.fetchFeaturedWallets(),
         ApiController.fetchRecommendedWallets(),
         ApiController.fetchNetworkImages(),

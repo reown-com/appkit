@@ -1,6 +1,6 @@
 {
   "name": "@apps/laboratory",
-  "version": "3.0.0-alpha.6",
+  "version": "3.0.0-beta.5",
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
@@ -8,14 +8,14 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@chakra-ui/react": "2.8.0",
+    "@chakra-ui/react": "2.8.1",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
-    "@sentry/browser": "7.68.0",
-    "@sentry/react": "7.68.0",
-    "@web3modal/wagmi": "3.0.0-alpha.6",
+    "@sentry/browser": "7.70.0",
+    "@sentry/react": "7.70.0",
+    "@web3modal/wagmi": "3.0.0-beta.5",
     "framer-motion": "10.16.4",
-    "next": "13.4.19",
+    "next": "13.5.2",
     "react-icons": "4.11.0",
     "valtio": "1.11.2"
   }

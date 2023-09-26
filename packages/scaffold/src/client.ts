@@ -1,10 +1,10 @@
 import type {
   ApiControllerState,
   ConnectionControllerClient,
-  ModalControllerArguments,
   NetworkControllerClient,
   NetworkControllerState,
   OptionsControllerState,
+  PublicStateControllerState,
   ThemeControllerState,
   ThemeMode,
   ThemeVariables
@@ -19,6 +19,7 @@ import {
   ModalController,
   NetworkController,
   OptionsController,
+  PublicStateController,
   ThemeController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
@@ -47,6 +48,10 @@ export interface ScaffoldOptions extends LibraryOptions {
   connectionControllerClient: ConnectionControllerClient
 }
 
+export interface OpenOptions {
+  view: 'Account' | 'Connect' | 'Networks'
+}
+
 // -- Client --------------------------------------------------------------------
 export class Web3ModalScaffold {
   private initPromise?: Promise<void> = undefined
@@ -57,7 +62,7 @@ export class Web3ModalScaffold {
   }
 
   // -- Public -------------------------------------------------------------------
-  public async open(options?: ModalControllerArguments['open']) {
+  public async open(options?: OpenOptions) {
     await this.initOrContinue()
     ModalController.open(options)
   }
@@ -87,6 +92,14 @@ export class Web3ModalScaffold {
 
   public subscribeTheme(callback: (newState: ThemeControllerState) => void) {
     return ThemeController.subscribe(callback)
+  }
+
+  public getState() {
+    return { ...PublicStateController.state }
+  }
+
+  public subscribeState(callback: (newState: PublicStateControllerState) => void) {
+    return PublicStateController.subscribe(callback)
   }
 
   // -- Protected ----------------------------------------------------------------
@@ -136,6 +149,10 @@ export class Web3ModalScaffold {
     ConnectorController.setConnectors(connectors)
   }
 
+  protected addConnector: (typeof ConnectorController)['addConnector'] = connector => {
+    ConnectorController.addConnector(connector)
+  }
+
   protected resetWcConnection: (typeof ConnectionController)['resetWcConnection'] = () => {
     ConnectionController.resetWcConnection()
   }
@@ -178,7 +195,7 @@ export class Web3ModalScaffold {
     if (!this.initPromise && !isInitialized && CoreHelperUtil.isClient()) {
       isInitialized = true
       this.initPromise = new Promise<void>(async resolve => {
-        await Promise.all([import('@web3modal/ui'), import('./modal/w3m-modal')])
+        await Promise.all([import('@web3modal/ui'), import('./modal/w3m-modal/index.js')])
         const modal = document.createElement('w3m-modal')
         document.body.insertAdjacentElement('beforeend', modal)
         resolve()
