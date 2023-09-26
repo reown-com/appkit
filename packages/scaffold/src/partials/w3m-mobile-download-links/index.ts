@@ -28,11 +28,21 @@ export class W3mMobileDownloadLinks extends LitElement {
         <wui-separator></wui-separator>
 
         <wui-flex gap="xs">
-          <wui-list-item variant="icon" icon="appStore" iconVariant="square">
+          <wui-list-item
+            variant="icon"
+            icon="appStore"
+            iconVariant="square"
+            @click=${this.onAppStore.bind(this)}
+          >
             <wui-text variant="paragraph-500" color="fg-100">App Store</wui-text>
           </wui-list-item>
 
-          <wui-list-item variant="icon" icon="playStore" iconVariant="square">
+          <wui-list-item
+            variant="icon"
+            icon="playStore"
+            iconVariant="square"
+            @click=${this.onPlayStore.bind(this)}
+          >
             <wui-text variant="paragraph-500" color="fg-100">Play Store</wui-text>
           </wui-list-item>
         </wui-flex>
@@ -43,7 +53,13 @@ export class W3mMobileDownloadLinks extends LitElement {
       return html`
         <wui-separator></wui-separator>
 
-        <wui-list-item variant="icon" icon="appStore" iconVariant="square" chevron>
+        <wui-list-item
+          variant="icon"
+          icon="appStore"
+          iconVariant="square"
+          chevron
+          @click=${this.onAppStore.bind(this)}
+        >
           <wui-text variant="paragraph-500" color="fg-100">Get the app</wui-text>
         </wui-list-item>
       `
@@ -53,7 +69,13 @@ export class W3mMobileDownloadLinks extends LitElement {
       return html`
         <wui-separator></wui-separator>
 
-        <wui-list-item variant="icon" icon="playStore" iconVariant="square" chevron>
+        <wui-list-item
+          variant="icon"
+          icon="playStore"
+          iconVariant="square"
+          chevron
+          @click=${this.onPlayStore.bind(this)}
+        >
           <wui-text variant="paragraph-500" color="fg-100">Get the app</wui-text>
         </wui-list-item>
       `
@@ -62,6 +84,19 @@ export class W3mMobileDownloadLinks extends LitElement {
     this.style.display = 'none'
 
     return null
+  }
+
+  // -- Private ------------------------------------------- //
+  private onAppStore() {
+    if (this.wallet?.app_store) {
+      CoreHelperUtil.openHref(this.wallet.app_store, '_blank')
+    }
+  }
+
+  private onPlayStore() {
+    if (this.wallet?.play_store) {
+      CoreHelperUtil.openHref(this.wallet.play_store, '_blank')
+    }
   }
 }
 
