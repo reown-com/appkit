@@ -10,6 +10,10 @@ export default css`
     color: var(--wui-color-fg-250);
   }
 
+  button[data-iconvariant='square'] {
+    padding: 9px 18px 9px 9px;
+  }
+
   button > wui-flex {
     flex: 1;
   }
@@ -21,6 +25,11 @@ export default css`
     border-radius: var(--wui-border-radius-3xl);
   }
 
+  button > wui-icon {
+    width: 36px;
+    height: 36px;
+  }
+
   button > wui-icon-box[data-variant='blue'] {
     outline: 2px solid var(--wui-accent-glass-005);
   }
@@ -29,7 +38,7 @@ export default css`
     outline: 2px solid var(--wui-gray-glass-005);
   }
 
-  button > wui-icon {
+  button > wui-icon:last-child {
     width: 14px;
     height: 14px;
   }

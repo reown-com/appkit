@@ -1,5 +1,6 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-loading-spinner/index.js'
@@ -19,7 +20,7 @@ export class WuiListItem extends LitElement {
 
   @property() public variant: AccountEntryType = 'icon'
 
-  @property() public iconVariant?: 'blue' | 'overlay'
+  @property() public iconVariant?: 'blue' | 'overlay' | 'square'
 
   @property({ type: Boolean }) public disabled = false
 
@@ -37,6 +38,7 @@ export class WuiListItem extends LitElement {
       <button
         ?disabled=${this.loading ? true : Boolean(this.disabled)}
         data-loading=${this.loading}
+        data-iconvariant=${ifDefined(this.iconVariant)}
         ontouchstart
       >
         ${this.loadingTemplate()} ${this.visualTemplate()}
@@ -52,6 +54,8 @@ export class WuiListItem extends LitElement {
   public visualTemplate() {
     if (this.variant === 'image' && this.imageSrc) {
       return html`<wui-image src=${this.imageSrc} alt=${this.alt ?? 'list item'}></wui-image>`
+    } else if (this.iconVariant === 'square' && this.icon && this.variant === 'icon') {
+      return html`<wui-icon name=${this.icon}></wui-icon>`
     } else if (this.variant === 'icon' && this.icon && this.iconVariant) {
       const color = this.iconVariant === 'blue' ? 'accent-100' : 'fg-200'
 
