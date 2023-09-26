@@ -1,7 +1,5 @@
 #### 📚 [Documentation](https://docs.walletconnect.com/2.0/web3modal/about)
 
-#### 🔎 [Examples](https://github.com/WalletConnect/web3modal-examples)
-
 #### 🔗 [Website](https://web3modal.com)
 
 # Web3Modal
