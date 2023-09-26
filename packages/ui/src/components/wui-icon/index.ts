@@ -6,6 +6,8 @@ import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil.js'
 import styles from './styles.js'
 
 // -- Svg's-------------------------------- //
+import { allWalletsSvg } from '../../assets/svg/all-wallets.js'
+import { appStoreSvg } from '../../assets/svg/app-store.js'
 import { appleSvg } from '../../assets/svg/apple.js'
 import { arrowBottomSvg } from '../../assets/svg/arrow-bottom.js'
 import { arrowLeftSvg } from '../../assets/svg/arrow-left.js'
@@ -40,6 +42,7 @@ import { mobileSvg } from '../../assets/svg/mobile.js'
 import { networkPlaceholderSvg } from '../../assets/svg/network-placeholder.js'
 import { nftPlaceholderSvg } from '../../assets/svg/nftPlaceholder.js'
 import { offSvg } from '../../assets/svg/off.js'
+import { playStoreSvg } from '../../assets/svg/play-store.js'
 import { qrCodeIcon } from '../../assets/svg/qr-code.js'
 import { refreshSvg } from '../../assets/svg/refresh.js'
 import { searchSvg } from '../../assets/svg/search.js'
@@ -53,10 +56,10 @@ import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder.js'
 import { walletSvg } from '../../assets/svg/wallet.js'
 import { walletConnectSvg } from '../../assets/svg/walletconnect.js'
 import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
-import { allWalletsSvg } from '../../assets/svg/all-wallets.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   allWallets: allWalletsSvg,
+  appStore: appStoreSvg,
   apple: appleSvg,
   arrowBottom: arrowBottomSvg,
   arrowLeft: arrowLeftSvg,
@@ -91,6 +94,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   networkPlaceholder: networkPlaceholderSvg,
   nftPlaceholder: nftPlaceholderSvg,
   off: offSvg,
+  playStore: playStoreSvg,
   qrCode: qrCodeIcon,
   refresh: refreshSvg,
   search: searchSvg,

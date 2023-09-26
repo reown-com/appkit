@@ -35,6 +35,8 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
           <wui-icon size="sm" color="inherit" slot="iconLeft" name="copy"></wui-icon>
           Copy Link
         </wui-button>
+
+        <w3m-mobile-download-links></w3m-mobile-download-links>
       </wui-flex>
     `
   }
