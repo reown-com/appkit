@@ -136,7 +136,7 @@ export class W3mConnectingWcView extends LitElement {
         `
       case 'mobile':
         return html`
-          <w3m-connecting-wc-mobile .onRetry=${() => this.initializeConnection(true)}>
+          <w3m-connecting-wc-mobile isMobile .onRetry=${() => this.initializeConnection(true)}>
           </w3m-connecting-wc-mobile>
         `
       case 'qrcode':

@@ -56,6 +56,8 @@ export class W3mConnectingWidget extends LitElement {
 
   @state() public buffering = false
 
+  @property({ type: Boolean }) public isMobile = false
+
   @property() public onRetry?: (() => void) | (() => Promise<void>) = undefined
 
   public constructor() {
@@ -155,6 +157,9 @@ export class W3mConnectingWidget extends LitElement {
               </wui-button>
             </wui-flex>
           `
+        : null}
+      ${this.isMobile
+        ? html`<w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>`
         : null}
     `
   }

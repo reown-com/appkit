@@ -1,4 +1,5 @@
 import type { WcWallet } from '@web3modal/core'
+import { CoreHelperUtil } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -13,11 +14,16 @@ export class W3mMobileDownloadLinks extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.wallet) {
+      this.style.display = 'none'
+
       return null
     }
     const { app_store, play_store } = this.wallet
+    const isMobile = CoreHelperUtil.isMobile()
+    const isIos = CoreHelperUtil.isIos()
+    const isAndroid = CoreHelperUtil.isAndroid()
 
-    if (app_store && play_store) {
+    if (app_store && play_store && !isMobile) {
       return html`
         <wui-separator></wui-separator>
 
@@ -33,7 +39,7 @@ export class W3mMobileDownloadLinks extends LitElement {
       `
     }
 
-    if (app_store) {
+    if (app_store && !isAndroid) {
       return html`
         <wui-separator></wui-separator>
 
@@ -43,7 +49,7 @@ export class W3mMobileDownloadLinks extends LitElement {
       `
     }
 
-    if (play_store) {
+    if (play_store && !isIos) {
       return html`
         <wui-separator></wui-separator>
 
@@ -52,6 +58,8 @@ export class W3mMobileDownloadLinks extends LitElement {
         </wui-list-item>
       `
     }
+
+    this.style.display = 'none'
 
     return null
   }
