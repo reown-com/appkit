@@ -36,7 +36,13 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
           Copy Link
         </wui-button>
 
-        <w3m-mobile-download-links></w3m-mobile-download-links>
+        ${this.wallet?.app_store || this.wallet?.play_store
+          ? html`<w3m-mobile-download-links
+              appStore=${ifDefined(this.wallet.app_store)}
+              playStore=${ifDefined(this.wallet.play_store)}
+            >
+            </w3m-mobile-download-links>`
+          : null}
       </wui-flex>
     `
   }
