@@ -36,6 +36,8 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
           Copy Link
         </wui-button>
       </wui-flex>
+
+      <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
     `
   }
 

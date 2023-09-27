@@ -83,6 +83,7 @@ export type GridItemsType = 'center' | 'end' | 'start' | 'stretch'
 
 export type IconType =
   | 'allWallets'
+  | 'appStore'
   | 'apple'
   | 'arrowBottom'
   | 'arrowLeft'
@@ -117,6 +118,7 @@ export type IconType =
   | 'networkPlaceholder'
   | 'nftPlaceholder'
   | 'off'
+  | 'playStore'
   | 'qrCode'
   | 'refresh'
   | 'search'

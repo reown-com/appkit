@@ -35,10 +35,10 @@
     "examples/*"
   ],
   "devDependencies": {
-    "@types/react": "18.2.22",
-    "@types/react-dom": "18.2.7",
-    "@typescript-eslint/eslint-plugin": "6.7.2",
-    "@typescript-eslint/parser": "6.7.2",
+    "@typescript-eslint/eslint-plugin": "6.7.3",
+    "@typescript-eslint/parser": "6.7.3",
+    "@types/react": "18.2.23",
+    "@types/react-dom": "18.2.8",
     "@walletconnect/ethereum-provider": "2.10.1",
     "danger": "11.3.0",
     "eslint": "8.50.0",

@@ -51,6 +51,7 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   chains?: Chain[]
   defaultChain?: Chain
   chainImages?: Record<number, string>
+  connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
 }
 
@@ -86,8 +87,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private options: Web3ModalClientOptions | undefined = undefined
 
   public constructor(options: Web3ModalClientOptions) {
-    const { wagmiConfig, chains, defaultChain, tokens, chainImages, _sdkVersion, ...w3mOptions } =
-      options
+    const { wagmiConfig, chains, defaultChain, tokens, _sdkVersion, ...w3mOptions } = options
 
     if (!wagmiConfig) {
       throw new Error('web3modal:constructor - wagmiConfig is undefined')
@@ -192,13 +192,13 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.options = options
 
-    this.syncRequestedNetworks(chains, chainImages)
+    this.syncRequestedNetworks(chains)
 
     this.syncConnectors(wagmiConfig.connectors)
     this.listenConnectors(wagmiConfig.connectors)
 
     watchAccount(() => this.syncAccount())
-    watchNetwork(() => this.syncNetwork(chainImages))
+    watchNetwork(() => this.syncNetwork())
   }
 
   // -- Public ------------------------------------------------------------------
@@ -224,17 +224,14 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   // -- Private -----------------------------------------------------------------
-  private syncRequestedNetworks(
-    chains: Web3ModalClientOptions['chains'],
-    chainImages?: Web3ModalClientOptions['chainImages']
-  ) {
+  private syncRequestedNetworks(chains: Web3ModalClientOptions['chains']) {
     const requestedCaipNetworks = chains?.map(
       chain =>
         ({
           id: `${NAMESPACE}:${chain.id}`,
           name: chain.name,
           imageId: NetworkImageIds[chain.id],
-          imageUrl: chainImages?.[chain.id]
+          imageUrl: this.options?.chainImages?.[chain.id]
         }) as CaipNetwork
     )
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
@@ -260,7 +257,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
+  private async syncNetwork() {
     const { address, isConnected } = getAccount()
     const { chain } = getNetwork()
 
@@ -271,7 +268,7 @@ export class Web3Modal extends Web3ModalScaffold {
         id: caipChainId,
         name: chain.name,
         imageId: NetworkImageIds[chain.id],
-        imageUrl: chainImages?.[chain.id]
+        imageUrl: this.options?.chainImages?.[chain.id]
       })
       if (isConnected && address) {
         const caipAddress: CaipAddress = `${NAMESPACE}:${chain.id}:${address}`
@@ -326,6 +323,7 @@ export class Web3Modal extends Web3ModalScaffold {
           id,
           explorerId: ConnectorExplorerIds[id],
           imageId: ConnectorImageIds[id],
+          imageUrl: this.options?.connectorImages?.[id],
           name: ConnectorNamesMap[id] ?? name,
           type: ConnectorTypesMap[id] ?? 'EXTERNAL'
         })
@@ -343,7 +341,7 @@ export class Web3Modal extends Web3ModalScaffold {
           this.addConnector({
             id: EIP6963_CONNECTOR_ID,
             type: 'EIP6963',
-            imageUrl: info.icon,
+            imageUrl: info.icon ?? this.options?.connectorImages?.[EIP6963_CONNECTOR_ID],
             name: info.name,
             provider,
             info
