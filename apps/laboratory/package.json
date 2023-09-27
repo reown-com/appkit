@@ -13,6 +13,7 @@
     "@emotion/styled": "11.11.0",
     "@sentry/browser": "7.70.0",
     "@sentry/react": "7.70.0",
+    "@web3modal/ethers-5": "3.0.0-beta.5",
     "@web3modal/wagmi": "3.0.0-beta.5",
     "framer-motion": "10.16.4",
     "next": "13.5.2",

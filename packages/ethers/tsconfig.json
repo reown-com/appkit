@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./dist/esm",
+    "declarationDir": "./dist/types",
+    "baseUrl": "../../",
+    // https://github.com/microsoft/TypeScript/issues/48212
+    "paths": {
+      "@wagmi/core": ["node_modules/@wagmi/core/dist"],
+      "@wagmi/core/*": ["node_modules/@wagmi/core/dist/*"]
+    }
+  },
+  "extends": "../../tsconfig.json",
+  "include": ["exports", "src"]
+}

@@ -1,7 +1,7 @@
 import { Button, useToast } from '@chakra-ui/react'
 import { useAccount, useSignMessage } from 'wagmi'
 
-export function ConnectButton() {
+export function WagmiConnectButton() {
   const toast = useToast()
   const { isConnected } = useAccount()
   const { signMessageAsync } = useSignMessage({ message: 'Hello Web3Modal!' })
