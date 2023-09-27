@@ -2,6 +2,7 @@ import type { Connector, WcWallet } from '@web3modal/core'
 import {
   ApiController,
   AssetUtil,
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
@@ -148,6 +149,9 @@ export class W3mConnectView extends LitElement {
 
     return this.connectors.map(connector => {
       if (connector.type !== 'INJECTED') {
+        return null
+      }
+      if (!ConnectionController.checkInjectedInstalled()) {
         return null
       }
 

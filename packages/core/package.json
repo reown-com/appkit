@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/core",
-  "version": "3.0.0-beta.5",
+  "version": "3.0.2",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",

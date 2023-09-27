@@ -1,6 +1,7 @@
-#### 📚 [Documentation](https://docs.walletconnect.com/2.0/web3modal/about)
+> [!NOTE]
+> Looking for v2? [switch the branch](https://github.com/WalletConnect/web3modal/tree/V2).
 
-#### 🔎 [Examples](https://github.com/WalletConnect/web3modal-examples)
+#### 📚 [Documentation](https://docs.walletconnect.com/2.0/web3modal/about)
 
 #### 🔗 [Website](https://web3modal.com)
 
