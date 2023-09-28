@@ -1,4 +1,5 @@
 import { proxy } from 'valtio/vanilla'
+import { modal } from '../pages/library/wagmi'
 
 interface ThemeVariables {
   '--w3m-font-family'?: string
