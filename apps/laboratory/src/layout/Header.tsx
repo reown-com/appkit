@@ -10,7 +10,6 @@ import {
   Flex,
   Icon,
   Link,
-  Text,
   useColorMode,
   useDisclosure
 } from '@chakra-ui/react'
