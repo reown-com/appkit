@@ -1,4 +1,10 @@
-import { ApiController, ModalController, SnackController, ThemeController } from '@web3modal/core'
+import {
+  ApiController,
+  EventsController,
+  ModalController,
+  SnackController,
+  ThemeController
+} from '@web3modal/core'
 import { UiHelperUtil, initializeTheming } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
@@ -26,6 +32,7 @@ export class W3mModal extends LitElement {
     this.unsubscribe.push(
       ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose()))
     )
+    EventsController.sendEvent({ type: 'SYSTEM', name: 'MODAL_LOADED' })
   }
 
   public override disconnectedCallback() {

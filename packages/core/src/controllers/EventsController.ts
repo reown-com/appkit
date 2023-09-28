@@ -2,7 +2,7 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import type { Event } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
-type EventsControllerState = Event
+export type EventsControllerState = Event
 
 // -- State --------------------------------------------- //
 const state = proxy<EventsControllerState>({} as EventsControllerState)

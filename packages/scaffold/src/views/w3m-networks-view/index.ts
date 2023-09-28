@@ -1,5 +1,11 @@
 import type { CaipNetwork } from '@web3modal/core'
-import { AccountController, AssetUtil, NetworkController, RouterController } from '@web3modal/core'
+import {
+  AccountController,
+  AssetUtil,
+  EventsController,
+  NetworkController,
+  RouterController
+} from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -36,7 +42,7 @@ export class W3mNetworksView extends LitElement {
         <wui-text variant="small-500" color="fg-300" align="center">
           Your connected wallet may not support some of the networks available for this dApp
         </wui-text>
-        <wui-link @click=${() => RouterController.push('WhatIsANetwork')}>
+        <wui-link @click=${this.onNetworkHelp.bind(this)}>
           <wui-icon size="xs" color="accent-100" slot="iconLeft" name="helpCircle"></wui-icon>
           What is a network
         </wui-link>
@@ -45,6 +51,11 @@ export class W3mNetworksView extends LitElement {
   }
 
   // Private Methods ------------------------------------- //
+  private onNetworkHelp() {
+    EventsController.sendEvent({ type: 'CLICK', name: 'NETWORK_HELP' })
+    RouterController.push('WhatIsANetwork')
+  }
+
   private networksTemplate() {
     const { approvedCaipNetworkIds, requestedCaipNetworks, supportsAllNetworks } =
       NetworkController.state

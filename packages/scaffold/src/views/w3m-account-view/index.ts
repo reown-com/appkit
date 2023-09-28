@@ -3,6 +3,7 @@ import {
   AssetController,
   ConnectionController,
   CoreHelperUtil,
+  EventsController,
   ModalController,
   NetworkController,
   RouterController,
@@ -181,6 +182,7 @@ export class W3mAccountView extends LitElement {
   private async onDisconnect() {
     try {
       this.disconecting = true
+      EventsController.sendEvent({ type: 'CLICK', name: 'DISCONNECT' })
       await ConnectionController.disconnect()
       ModalController.close()
     } catch {

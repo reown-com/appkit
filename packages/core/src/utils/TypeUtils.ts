@@ -135,30 +135,44 @@ export type Event =
       name: 'MODAL_CLOSE'
     }
   | {
-      type: 'VIEW'
+      type: 'CLICK'
       name: 'ALL_WALLETS'
     }
   | {
-      type: 'ACTION'
+      type: 'CLICK'
       name: 'SELECT_WALLET'
+      data: {
+        name: string
+        connector: ConnectorType
+      }
     }
   | {
       type: 'SYSTEM'
       name: 'CONNECTION_SUCCESS'
+      data: {
+        method: 'qrcode' | 'linking'
+      }
     }
   | {
       type: 'SYSTEM'
       name: 'CONNECTION_REJECTED'
+      data: {
+        message: string
+      }
     }
   | {
-      type: 'ACTION'
+      type: 'CLICK'
       name: 'DISCONNECT'
     }
   | {
-      type: 'VIEW'
-      name: 'HELP'
+      type: 'CLICK'
+      name: 'WALLET_HELP'
     }
   | {
-      type: 'VIEW'
+      type: 'CLICK'
+      name: 'NETWORK_HELP'
+    }
+  | {
+      type: 'CLICK'
       name: 'GET_WALLET'
     }

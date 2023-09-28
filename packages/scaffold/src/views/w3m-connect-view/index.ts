@@ -5,6 +5,7 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
+  EventsController,
   OptionsController,
   RouterController,
   StorageUtil
@@ -193,7 +194,7 @@ export class W3mConnectView extends LitElement {
         name="All Wallets"
         walletIcon="allWallets"
         showAllWallets
-        @click=${() => RouterController.push('AllWallets')}
+        @click=${this.onAllWallets.bind(this)}
         tagLabel=${`${roundedCount}+`}
         tagVariant="shade"
       ></wui-list-wallet>
@@ -245,6 +246,11 @@ export class W3mConnectView extends LitElement {
     const filtered = wallets.filter(wallet => !recentIds.includes(wallet.id))
 
     return filtered
+  }
+
+  private onAllWallets() {
+    EventsController.sendEvent({ type: 'CLICK', name: 'ALL_WALLETS' })
+    RouterController.push('AllWallets')
   }
 }
 
