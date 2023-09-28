@@ -78,7 +78,7 @@ export class W3mConnectView extends LitElement {
     if (!customWallets?.length) {
       return null
     }
-    const wallets = this.filterOutRecentWallets(customWallets)
+    const wallets = this.filterOutDuplicateWallets(customWallets)
 
     return wallets.map(
       wallet => html`
@@ -97,7 +97,7 @@ export class W3mConnectView extends LitElement {
     if (!featured.length) {
       return null
     }
-    const wallets = this.filterOutRecentWallets(featured)
+    const wallets = this.filterOutDuplicateWallets(featured)
 
     return wallets.map(
       wallet => html`
@@ -215,7 +215,7 @@ export class W3mConnectView extends LitElement {
 
     const overrideLength = eip6963.length + recent.length
     const maxRecommended = Math.max(0, 2 - overrideLength)
-    const wallets = this.filterOutRecentWallets(recommended).slice(0, maxRecommended)
+    const wallets = this.filterOutDuplicateWallets(recommended).slice(0, maxRecommended)
 
     return wallets.map(
       wallet => html`
@@ -241,7 +241,7 @@ export class W3mConnectView extends LitElement {
     }
   }
 
-  private filterOutRecentWallets(wallets: WcWallet[]) {
+  private filterOutDuplicateWallets(wallets: WcWallet[]) {
     const recent = StorageUtil.getRecentWallets()
     const recentIds = recent.map(wallet => wallet.id)
     const filtered = wallets.filter(wallet => !recentIds.includes(wallet.id))
