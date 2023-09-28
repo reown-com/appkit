@@ -209,12 +209,11 @@ export class W3mConnectView extends LitElement {
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
     const eip6963 = connectors.filter(c => c.type === 'EIP6963')
-    if (!recommended.length) {
+    if (!recommended.length || featured.length || customWallets?.length) {
       return null
     }
-    const featuredLength = featured?.length ?? 0
-    const customLength = customWallets?.length ?? 0
-    const overrideLength = featuredLength + customLength + eip6963.length + recent.length
+
+    const overrideLength = eip6963.length + recent.length
     const maxRecommended = Math.max(0, 2 - overrideLength)
     const wallets = this.filterOutRecentWallets(recommended).slice(0, maxRecommended)
 
@@ -256,12 +255,6 @@ export class W3mConnectView extends LitElement {
   }
 
   private onConnectWallet(wallet: WcWallet) {
-    EventsController.sendEvent({
-      type: 'CLICK',
-      name: 'SELECT_WALLET',
-      data: { name: wallet.name, connector: 'WALLET_CONNECT', view: 'Home' }
-    })
-
     RouterController.push('ConnectingWalletConnect', { wallet })
   }
 }

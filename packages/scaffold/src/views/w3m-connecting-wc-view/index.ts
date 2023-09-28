@@ -1,4 +1,4 @@
-import type { Platform } from '@web3modal/core'
+import type { BaseError, Platform } from '@web3modal/core'
 import {
   ConnectionController,
   ConnectorController,
@@ -65,8 +65,7 @@ export class W3mConnectingWcView extends LitElement {
       EventsController.sendEvent({
         type: 'SYSTEM',
         name: 'CONNECT_ERROR',
-        // @ts-expect-error Error can have message
-        data: { message: error?.message ?? 'Unknown' }
+        data: { message: (error as BaseError)?.message ?? 'Unknown' }
       })
       ConnectionController.setWcError(true)
       if (CoreHelperUtil.isAllowedRetry(this.lastRetry)) {

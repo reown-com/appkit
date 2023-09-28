@@ -1,3 +1,4 @@
+import type { BaseError } from '@web3modal/core'
 import { ConnectionController, EventsController, ModalController } from '@web3modal/core'
 import { customElement } from 'lit/decorators.js'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
@@ -26,8 +27,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       EventsController.sendEvent({
         type: 'SYSTEM',
         name: 'CONNECT_ERROR',
-        // @ts-expect-error Error can have message
-        data: { message: error?.message ?? 'Unknown' }
+        data: { message: (error as BaseError)?.message ?? 'Unknown' }
       })
       this.error = true
     }
