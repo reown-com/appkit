@@ -14,7 +14,7 @@ export class WuiCardSelect extends LitElement {
 
   // -- State & Properties -------------------------------- //
 
-  @property() public name = 'unknown'
+  @property() public name = 'Unknown'
 
   @property() public type: CardSelectType = 'wallet'
 

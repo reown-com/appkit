@@ -144,18 +144,19 @@ export type Event =
       data: {
         name: string
         connector: ConnectorType
+        view: 'Home' | 'AllWallets' | 'Search'
       }
     }
   | {
       type: 'SYSTEM'
-      name: 'CONNECTION_SUCCESS'
+      name: 'CONNECT_SUCCESS'
       data: {
         method: 'qrcode' | 'linking'
       }
     }
   | {
       type: 'SYSTEM'
-      name: 'CONNECTION_REJECTED'
+      name: 'CONNECT_ERROR'
       data: {
         message: string
       }
@@ -163,6 +164,14 @@ export type Event =
   | {
       type: 'CLICK'
       name: 'DISCONNECT'
+    }
+  | {
+      type: 'SYSTEM'
+      name: 'DISCONNECT_SUCCESS'
+    }
+  | {
+      type: 'SYSTEM'
+      name: 'DISCONNECT_ERROR'
     }
   | {
       type: 'CLICK'

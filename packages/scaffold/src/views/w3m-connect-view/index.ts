@@ -54,7 +54,9 @@ export class W3mConnectView extends LitElement {
     if (CoreHelperUtil.isMobile()) {
       return null
     }
+
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+
     if (!connector) {
       return null
     }
@@ -83,7 +85,7 @@ export class W3mConnectView extends LitElement {
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           name=${wallet.name ?? 'Unknown'}
-          @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
+          @click=${() => this.onConnectWallet(wallet)}
         >
         </wui-list-wallet>
       `
@@ -102,7 +104,7 @@ export class W3mConnectView extends LitElement {
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           name=${wallet.name ?? 'Unknown'}
-          @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
+          @click=${() => this.onConnectWallet(wallet)}
         >
         </wui-list-wallet>
       `
@@ -117,7 +119,7 @@ export class W3mConnectView extends LitElement {
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           name=${wallet.name ?? 'Unknown'}
-          @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
+          @click=${() => this.onConnectWallet(wallet)}
           tagLabel="recent"
           tagVariant="shade"
         >
@@ -221,7 +223,7 @@ export class W3mConnectView extends LitElement {
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           name=${wallet?.name ?? 'Unknown'}
-          @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
+          @click=${() => this.onConnectWallet(wallet)}
         >
         </wui-list-wallet>
       `
@@ -251,6 +253,16 @@ export class W3mConnectView extends LitElement {
   private onAllWallets() {
     EventsController.sendEvent({ type: 'CLICK', name: 'ALL_WALLETS' })
     RouterController.push('AllWallets')
+  }
+
+  private onConnectWallet(wallet: WcWallet) {
+    EventsController.sendEvent({
+      type: 'CLICK',
+      name: 'SELECT_WALLET',
+      data: { name: wallet.name, connector: 'WALLET_CONNECT', view: 'Home' }
+    })
+
+    RouterController.push('ConnectingWalletConnect', { wallet })
   }
 }
 
