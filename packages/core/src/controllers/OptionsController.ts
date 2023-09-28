@@ -12,6 +12,7 @@ export interface OptionsControllerState {
   customWallets?: CustomWallet[]
   termsConditionsUrl?: string
   privacyPolicyUrl?: string
+  enableAnalytics?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -59,5 +60,9 @@ export const OptionsController = {
 
   setCustomWallets(customWallets: OptionsControllerState['customWallets']) {
     state.customWallets = customWallets
+  },
+
+  setEnableAnalytics(enableAnalytics: OptionsControllerState['enableAnalytics']) {
+    state.enableAnalytics = enableAnalytics
   }
 }

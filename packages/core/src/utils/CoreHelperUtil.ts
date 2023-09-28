@@ -161,5 +161,11 @@ export const CoreHelperUtil = {
     return CoreHelperUtil.isRestrictedRegion()
       ? 'https://rpc.walletconnect.org'
       : 'https://rpc.walletconnect.com'
+  },
+
+  getAnalyticsUrl() {
+    return CoreHelperUtil.isRestrictedRegion()
+      ? 'https://analytics-api-cf-workers-staging.walletconnect-v1-bridge.workers.dev'
+      : 'https://analytics-api-cf-workers-staging.walletconnect-v1-bridge.workers.dev'
   }
 }
