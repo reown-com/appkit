@@ -1,4 +1,4 @@
-import { AssetUtil, CoreHelperUtil, RouterController } from '@web3modal/core'
+import { AssetUtil, CoreHelperUtil, EventsController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -8,12 +8,23 @@ export class W3mConnectingWcUnsupported extends LitElement {
   // -- Members ------------------------------------------- //
   private readonly wallet = RouterController.state.data?.wallet
 
-  // -- Render -------------------------------------------- //
-  public override render() {
+  public constructor() {
+    super()
     if (!this.wallet) {
       throw new Error('w3m-connecting-wc-unsupported: No wallet provided')
     }
+    EventsController.sendEvent({
+      type: 'SYSTEM',
+      name: 'SELECT_WALLET',
+      data: {
+        name: this.wallet.name,
+        platform: 'injected'
+      }
+    })
+  }
 
+  // -- Render -------------------------------------------- //
+  public override render() {
     return html`
       <wui-flex
         flexDirection="column"
@@ -29,7 +40,7 @@ export class W3mConnectingWcUnsupported extends LitElement {
         <wui-flex flexDirection="column" alignItems="center" gap="xxs">
           <wui-text variant="paragraph-500" color="fg-100">Not Detected</wui-text>
           <wui-text variant="small-500" color="fg-200" align="center">
-            Download and install ${this.wallet.name} to continue
+            Download and install ${this.wallet?.name} to continue
           </wui-text>
         </wui-flex>
 
