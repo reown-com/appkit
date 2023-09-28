@@ -38,8 +38,8 @@ export const EventsController = {
     }
   },
 
-  _sendAnalyticsEvent(event: EventsControllerState) {
-    if (excluded.includes(event.event.name)) {
+  _sendAnalyticsEvent(payload: EventsControllerState) {
+    if (excluded.includes(payload.event.name)) {
       return
     }
 
@@ -51,12 +51,12 @@ export const EventsController = {
           url: window.location.href,
           domain: window.location.hostname,
           product: 'WEB3MODAL',
-          timestamp: event.timestamp,
-          props: event.event
+          timestamp: payload.timestamp,
+          props: payload.event
         }
       })
     } catch {
-      // Silently fail
+      // Fail silently
     }
   },
 
