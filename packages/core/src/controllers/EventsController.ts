@@ -2,10 +2,19 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import type { Event } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
-export type EventsControllerState = Event
+export interface EventsControllerState {
+  timestamp: number
+  event: Event
+}
 
 // -- State --------------------------------------------- //
-const state = proxy<EventsControllerState>({} as EventsControllerState)
+const state = proxy<EventsControllerState>({
+  timestamp: Date.now(),
+  event: {
+    type: 'SYSTEM',
+    name: 'MODAL_CREATED'
+  }
+})
 
 // -- Controller ---------------------------------------- //
 export const EventsController = {
@@ -15,7 +24,8 @@ export const EventsController = {
     return sub(state, () => callback(state))
   },
 
-  sendEvent(event: EventsControllerState) {
-    Object.assign(state, event)
+  sendEvent(event: EventsControllerState['event']) {
+    state.timestamp = Date.now()
+    state.event = event
   }
 }

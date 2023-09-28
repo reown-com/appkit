@@ -4,7 +4,7 @@ import type {
   W3mConnectButton,
   W3mNetworkButton
 } from '@web3modal/scaffold'
-import { onUnmounted, reactive, ref } from 'vue'
+import { onUnmounted, reactive } from 'vue'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { VERSION } from '../src/utils/constants.js'
@@ -52,24 +52,20 @@ export function useWeb3ModalTheme() {
     modal?.setThemeVariables(themeVariables)
   }
 
-  const themeMode = ref(modal.getThemeMode())
-  const themeVariables = ref(modal.getThemeVariables())
-
+  const theme = reactive({
+    themeMode: modal.getThemeMode(),
+    themeVariables: modal.getThemeVariables()
+  })
   const unsubscribe = modal?.subscribeTheme(state => {
-    themeMode.value = state.themeMode
-    themeVariables.value = state.themeVariables
+    theme.themeMode = state.themeMode
+    theme.themeVariables = state.themeVariables
   })
 
   onUnmounted(() => {
     unsubscribe?.()
   })
 
-  return reactive({
-    setThemeMode,
-    setThemeVariables,
-    themeMode,
-    themeVariables
-  })
+  return { setThemeMode, setThemeVariables, theme }
 }
 
 export function useWeb3Modal() {
@@ -96,20 +92,35 @@ export function useWeb3ModalState() {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" composable')
   }
 
-  const initial = modal.getState()
-  const open = ref(initial.open)
-  const selectedNetworkId = ref(initial.selectedNetworkId)
-
+  const state = reactive(modal.getState())
   const unsubscribe = modal?.subscribeState(next => {
-    open.value = next.open
-    selectedNetworkId.value = next.selectedNetworkId
+    state.open = next.open
+    state.selectedNetworkId = next.selectedNetworkId
   })
 
   onUnmounted(() => {
     unsubscribe?.()
   })
 
-  return reactive({ open, selectedNetworkId })
+  return state
+}
+
+export function useWeb3ModalEvents() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalEvents" composable')
+  }
+
+  const event = reactive(modal.getEvent())
+  const unsubscribe = modal?.subscribeEvents(next => {
+    event.event = next.event
+    event.timestamp = next.timestamp
+  })
+
+  onUnmounted(() => {
+    unsubscribe?.()
+  })
+
+  return event
 }
 
 // -- Universal Exports -------------------------------------------------------

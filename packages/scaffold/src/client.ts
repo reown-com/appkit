@@ -1,6 +1,7 @@
 import type {
   ApiControllerState,
   ConnectionControllerClient,
+  EventsControllerState,
   NetworkControllerClient,
   NetworkControllerState,
   OptionsControllerState,
@@ -16,6 +17,7 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
+  EventsController,
   ModalController,
   NetworkController,
   OptionsController,
@@ -100,6 +102,14 @@ export class Web3ModalScaffold {
 
   public subscribeState(callback: (newState: PublicStateControllerState) => void) {
     return PublicStateController.subscribe(callback)
+  }
+
+  public getEvent() {
+    return { ...EventsController.state }
+  }
+
+  public subscribeEvents(callback: (newEvent: EventsControllerState) => void) {
+    return EventsController.subscribe(callback)
   }
 
   // -- Protected ----------------------------------------------------------------

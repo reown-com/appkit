@@ -135,6 +135,10 @@ export type CustomWallet = Pick<
 export type Event =
   | {
       type: 'SYSTEM'
+      name: 'MODAL_CREATED'
+    }
+  | {
+      type: 'SYSTEM'
       name: 'MODAL_LOADED'
     }
   | {
