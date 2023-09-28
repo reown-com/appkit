@@ -4,6 +4,7 @@ import {
   ConnectorController,
   ConstantsUtil,
   CoreHelperUtil,
+  EventsController,
   ModalController,
   RouterController,
   SnackController,
@@ -60,7 +61,13 @@ export class W3mConnectingWcView extends LitElement {
         this.storeWalletConnectDeeplink()
         ModalController.close()
       }
-    } catch {
+    } catch (error) {
+      EventsController.sendEvent({
+        type: 'SYSTEM',
+        name: 'CONNECT_ERROR',
+        // @ts-expect-error Error can have message
+        data: { message: error?.message ?? 'Unknown' }
+      })
       ConnectionController.setWcError(true)
       if (CoreHelperUtil.isAllowedRetry(this.lastRetry)) {
         SnackController.showError('Declined')
