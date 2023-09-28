@@ -119,3 +119,46 @@ export type CustomWallet = Pick<
   | 'app_store'
   | 'play_store'
 >
+
+// -- EventsController Types ----------------------------------------------------
+export type Event =
+  | {
+      type: 'SYSTEM'
+      name: 'MODAL_LOADED'
+    }
+  | {
+      type: 'SYSTEM'
+      name: 'MODAL_OPEN'
+    }
+  | {
+      type: 'SYSTEM'
+      name: 'MODAL_CLOSE'
+    }
+  | {
+      type: 'VIEW'
+      name: 'ALL_WALLETS'
+    }
+  | {
+      type: 'ACTION'
+      name: 'SELECT_WALLET'
+    }
+  | {
+      type: 'SYSTEM'
+      name: 'CONNECTION_SUCCESS'
+    }
+  | {
+      type: 'SYSTEM'
+      name: 'CONNECTION_REJECTED'
+    }
+  | {
+      type: 'ACTION'
+      name: 'DISCONNECT'
+    }
+  | {
+      type: 'VIEW'
+      name: 'HELP'
+    }
+  | {
+      type: 'VIEW'
+      name: 'GET_WALLET'
+    }
