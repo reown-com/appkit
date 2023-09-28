@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { VERSION } from '../src/utils/constants.js'
+import { ProviderController } from '../src/store/index.js'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
@@ -43,6 +44,51 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 }
 
 // -- Hooks -------------------------------------------------------------------
+export function useWeb3ModalProvider() {
+  const [provider, setProvider] = useState(ProviderController.state.provider)
+  const [providerType, setProviderType] = useState(ProviderController.state.providerType)
+
+  useEffect(() => {
+    const unsubscribe = ProviderController.subscribe(state => {
+      setProvider(state.provider)
+      setProviderType(state.providerType)
+    })
+
+    return () => {
+      unsubscribe?.()
+    }
+  }, [])
+
+  return {
+    provider,
+    providerType
+  }
+}
+
+export function useWeb3ModalAccount() {
+  const [address, setAddress] = useState(ProviderController.state.address)
+  const [isConnected, setIsConnected] = useState(ProviderController.state.isConnected)
+  const [chainId, setChainId] = useState(ProviderController.state.chainId)
+
+  useEffect(() => {
+    const unsubscribe = ProviderController.subscribe(state => {
+      setAddress(state.address)
+      setIsConnected(state.isConnected)
+      setChainId(state.chainId)
+    })
+
+    return () => {
+      unsubscribe?.()
+    }
+  }, [])
+
+  return {
+    address,
+    isConnected,
+    chainId
+  }
+}
+
 export function useWeb3ModalTheme() {
   if (!modal) {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalTheme" hook')

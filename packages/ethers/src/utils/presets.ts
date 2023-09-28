@@ -131,6 +131,88 @@ export const NetworkBlockExplorerUrls = {
   1313161554: 'https://explorer.aurora.dev'
 } as Record<string, string>
 
+export const networkCurrenySymbols = {
+  // Ethereum
+  1: 'ETH',
+  // Arbitrum
+  42161: 'ETH',
+  // Avalanche
+  43114: 'AVAX',
+  // Binance Smart Chain
+  56: 'BNB',
+  // Fantom
+  250: 'FTM',
+  // Optimism
+  10: 'ETH',
+  // Polygon
+  137: 'MATIC',
+  // Gnosis
+  100: 'xDAI',
+  // EVMos
+  9001: 'EVMOS',
+  // ZkSync
+  324: 'ETH',
+  // Filecoin
+  314: 'FIL',
+  // Iotx
+  4689: 'IOTX',
+  // Metis,
+  1088: 'METIS',
+  // Moonbeam
+  1284: 'GLMR',
+  // Moonriver
+  1285: 'MOVR',
+  // Zora
+  7777777: 'ETH',
+  // Celo
+  42220: 'CELO',
+  // Base
+  8453: 'BASE',
+  // Aurora
+  1313161554: 'ETH'
+} as Record<string, string>
+
+export const NetworkRPCUrls = {
+  // Ethereum
+  1: 'https://cloudflare-eth.com',
+  // Arbitrum
+  42161: 'https://arb1.arbitrum.io/rpc',
+  // Avalanche
+  43114: 'https://api.avax.network/ext/bc/C/rpc',
+  // Binance Smart Chain
+  56: 'https://rpc.ankr.com/bsc',
+  // Fantom
+  250: 'https://rpc.ankr.com/fantom',
+  // Optimism
+  10: 'https://mainnet.optimism.io',
+  // Polygon
+  137: 'https://polygon-rpc.com',
+  // Gnosis
+  100: 'https://rpc.gnosischain.com',
+  // EVMos
+  9001: 'https://eth.bd.evmos.org:8545',
+  // ZkSync
+  324: 'https://mainnet.era.zksync.io',
+  // Filecoin
+  314: 'https://api.node.glif.io/rpc/v1',
+  // Iotx
+  4689: 'https://babel-api.mainnet.iotex.io',
+  // Metis,
+  1088: 'https://andromeda.metis.io/?owner=1088',
+  // Moonbeam
+  1284: 'https://moonbeam.public.blastapi.io',
+  // Moonriver
+  1285: 'https://moonriver.public.blastapi.io',
+  // Zora
+  7777777: 'https://rpc.zora.energy',
+  // Celo
+  42220: 'https://forno.celo.org',
+  // Base
+  8453: 'https://mainnet.base.org',
+  // Aurora
+  1313161554: 'https://mainnet.aurora.dev'
+} as Record<string, string>
+
 export const ConnectorImageIds = {
   [COINBASE_CONNECTOR_ID]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
   [SAFE_CONNECTOR_ID]: '461db637-8616-43ce-035a-d89b8a1d5800',

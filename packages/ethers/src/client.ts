@@ -15,7 +15,6 @@ import {
   INJECTED_CONNECTOR_ID,
   NAMESPACE,
   VERSION,
-  WALLET_CHOICE_KEY,
   WALLET_CONNECT_CONNECTOR_ID
 } from './utils/constants.js'
 import type EthereumProvider from '@walletconnect/ethereum-provider'
@@ -27,11 +26,12 @@ import {
   ConnectorTypesMap,
   NetworkBlockExplorerUrls,
   NetworkImageIds,
-  NetworkNames
+  NetworkNames,
+  NetworkRPCUrls,
+  networkCurrenySymbols
 } from './utils/presets.js'
 import type { Address, ProviderType } from './utils/types.js'
-import { utils } from 'ethers'
-import type { ConnectExternalOptions } from 'packages/core/dist/types/src/controllers/ConnectionController.js'
+import { ethers, utils } from 'ethers'
 import { ProviderController } from './store/index.js'
 
 // -- Types ---------------------------------------------------------------------
@@ -59,8 +59,6 @@ interface Web3ModalState extends PublicStateControllerState {
 // -- Client --------------------------------------------------------------------
 export class Web3Modal extends Web3ModalScaffold {
   private hasSyncedConnectedAccount = false
-
-  private options: Web3ModalClientOptions | undefined = undefined
 
   public constructor(options: Web3ModalClientOptions) {
     const { ethersConfig, chains, defaultChain, tokens, chainImages, _sdkVersion, ...w3mOptions } =
@@ -91,7 +89,7 @@ export class Web3Modal extends Web3ModalScaffold {
         supportsAllNetworks: boolean
       }> {
         return new Promise(resolve => {
-          const walletChoice = localStorage.getItem(WALLET_CHOICE_KEY)
+          const walletChoice = localStorage.getItem('WALLET_ID')
           if (walletChoice?.includes(WALLET_CONNECT_CONNECTOR_ID)) {
             const connector = ethersConfig.walletConnect
             if (!connector) {
@@ -141,7 +139,7 @@ export class Web3Modal extends Web3ModalScaffold {
         })
       },
 
-      connectExternal: async ({ id }: ConnectExternalOptions) => {
+      connectExternal: async ({ id }) => {
         if (id === INJECTED_CONNECTOR_ID) {
           const injectedProvider = ethersConfig.injected
           if (!injectedProvider) {
@@ -191,8 +189,6 @@ export class Web3Modal extends Web3ModalScaffold {
       _sdkVersion: _sdkVersion ?? `html-wagmi-${VERSION}`,
       ...w3mOptions
     })
-
-    this.options = options
 
     ProviderController.subscribeKey('address', () => {
       this.syncAccount()
@@ -262,14 +258,20 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private setInjectedProvider(config: ProviderType) {
-    const injectedProvider = config.injected?.provider
+  private async setInjectedProvider(config: ProviderType) {
+    const injectedProvider = config.injected
+
     if (injectedProvider) {
-      ProviderController.setAddress(injectedProvider._state.accounts[0] as Address)
-      ProviderController.setChainId(Number(injectedProvider.networkVersion))
-      ProviderController.setProviderType('injected')
-      ProviderController.setProvider(config.injected)
-      ProviderController.setIsConnected(true)
+      const signer = injectedProvider.getSigner()
+      const chainId = await signer.getChainId()
+      const address = await signer.getAddress()
+      if (address && chainId) {
+        ProviderController.setAddress(address as Address)
+        ProviderController.setChainId(chainId)
+        ProviderController.setProviderType('injected')
+        ProviderController.setProvider(config.injected)
+        ProviderController.setIsConnected(true)
+      }
     }
   }
 
@@ -281,6 +283,11 @@ export class Web3Modal extends Web3ModalScaffold {
       if (walletId === WALLET_CONNECT_CONNECTOR_ID) {
         this.setWalletConnectProvider(config)
       }
+
+      walletConnectProvider.on('disconnect', () => {
+        localStorage.removeItem('WALLET_ID')
+        ProviderController.reset()
+      })
     }
   }
 
@@ -292,6 +299,13 @@ export class Web3Modal extends Web3ModalScaffold {
       if (walletId === INJECTED_CONNECTOR_ID) {
         this.setInjectedProvider(config)
       }
+
+      injectedProvider.on('accountsChanged', accounts => {
+        if (accounts.length === 0) {
+          localStorage.removeItem('WALLET_ID')
+          ProviderController.reset()
+        }
+      })
     }
   }
 
@@ -348,31 +362,44 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private async syncProfile(address: Address) {
     const provider = ProviderController.state.provider
-    const chainId = ProviderController.state.chainId
-    if (provider && chainId === 1) {
-      const name = await provider.lookupAddress(address)
-      const avatar = await provider.getAvatar(address)
-      if (name) {
-        this.setProfileName(name)
-      }
-      if (avatar) {
-        this.setProfileImage(avatar)
+    if (provider) {
+      try {
+        const name = await provider.lookupAddress(address)
+        const avatar = await provider.getAvatar(address)
+        if (name) {
+          this.setProfileName(name)
+        }
+        if (avatar) {
+          this.setProfileImage(avatar)
+        }
+      } catch (error) {
+        console.log(error)
       }
     }
   }
 
   private async syncBalance(address: Address) {
-    const provider = ProviderController.state.provider
     const chainId = ProviderController.state.chainId
-    if (provider && chainId) {
-      const balance = await provider.getBalance(address)
-      const formattedBalance = utils.formatEther(balance)
-      this.setBalance(formattedBalance, 'ETH')
+    if (chainId) {
+      const networkRpcUrl = NetworkRPCUrls[chainId]
+      const networkName = NetworkNames[chainId]
+      const networkCurreny = networkCurrenySymbols[chainId]
+
+      if (networkRpcUrl && networkName && networkCurreny) {
+        const JsonRpcProvider = new ethers.providers.JsonRpcProvider(NetworkRPCUrls[chainId], {
+          chainId,
+          name: networkName
+        })
+        if (JsonRpcProvider) {
+          const balance = await JsonRpcProvider.getBalance(address)
+          const formattedBalance = utils.formatEther(balance)
+          this.setBalance(formattedBalance, networkCurreny)
+        }
+      }
     }
   }
 
   private async switchNetwork(chainId: number) {
-    ProviderController.setChainId(chainId)
     const provider = ProviderController.state.provider
     const providerType = ProviderController.state.providerType
     if (providerType === WALLET_CONNECT_CONNECTOR_ID) {
@@ -382,6 +409,7 @@ export class Web3Modal extends Web3ModalScaffold {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: `0x${chainId.toString(16)}` }]
         })
+        ProviderController.setChainId(chainId)
       }
     } else if (providerType === INJECTED_CONNECTOR_ID) {
       const injectedProvider = provider
@@ -389,6 +417,7 @@ export class Web3Modal extends Web3ModalScaffold {
         await injectedProvider.send('wallet_switchEthereumChain', [
           { chainId: `0x${chainId.toString(16)}` }
         ])
+        ProviderController.setChainId(chainId)
       }
     }
   }

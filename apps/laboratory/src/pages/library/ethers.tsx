@@ -11,7 +11,7 @@ async function initializeWeb3Modal() {
   }
 
   const ethersConfig = await defaultEthersConfig({ projectId })
-  const chains = [1, 42161]
+  const chains = [1, 42161, 137, 43114, 56, 10, 100, 324, 7777777, 8453, 42220, 1313161554]
   createWeb3Modal({ ethersConfig, chains, projectId })
 }
 

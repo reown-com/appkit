@@ -1,3 +1,4 @@
+import { NetworkController } from '../controllers/NetworkController.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipAddress, LinkingRecord } from './TypeUtils.js'
 
@@ -161,5 +162,9 @@ export const CoreHelperUtil = {
     return CoreHelperUtil.isRestrictedRegion()
       ? 'https://rpc.walletconnect.org'
       : 'https://rpc.walletconnect.com'
+  },
+
+  getCaipNetwork() {
+    return NetworkController.state.caipNetwork
   }
 }

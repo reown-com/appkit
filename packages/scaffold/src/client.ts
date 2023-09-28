@@ -72,6 +72,8 @@ export class Web3ModalScaffold {
     ModalController.close()
   }
 
+  // Theme
+
   public getThemeMode() {
     return ThemeController.state.themeMode
   }

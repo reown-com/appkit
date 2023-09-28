@@ -12,7 +12,8 @@ export async function defaultEthersConfig({ projectId }: ConfigOptions) {
   const walletConnectProviderOptions: EthereumProviderOptions = {
     projectId,
     showQrModal: false,
-    chains: [1, 42161]
+    chains: [1],
+    optionalChains: [42161, 137, 43114, 56, 10, 100, 324, 7777777, 8453, 42220, 1313161554]
   }
 
   const walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions)

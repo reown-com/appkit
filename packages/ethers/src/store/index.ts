@@ -1,7 +1,7 @@
 import type { ethers } from 'ethers'
 
 import { subscribeKey as subKey } from 'valtio/utils'
-import { proxy, ref } from 'valtio/vanilla'
+import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { Address } from '../utils/types.js'
 
 // -- Types --------------------------------------------- //
@@ -29,6 +29,10 @@ export const ProviderController = {
   state,
   subscribeKey<K extends StateKey>(key: K, callback: (value: ProviderControllerState[K]) => void) {
     return subKey(state, key, callback)
+  },
+
+  subscribe(callback: (newState: ProviderControllerState) => void) {
+    return sub(state, () => callback(state))
   },
 
   setProvider(provider: ProviderControllerState['provider']) {

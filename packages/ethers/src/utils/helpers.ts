@@ -1,17 +1,17 @@
 import type { CaipNetwork, CaipNetworkId, Tokens } from '@web3modal/scaffold'
 import type { Web3ModalClientOptions } from '../client.js'
 import { NAMESPACE } from './constants.js'
-import { NetworkImageIds } from './presets.js'
+import { NetworkImageIds, NetworkNames } from './presets.js'
 
-export function getCaipDefaultChain(chain?: Web3ModalClientOptions['defaultChain']) {
+export function getCaipDefaultChain(chain?: number) {
   if (!chain) {
     return undefined
   }
 
   return {
-    id: `${NAMESPACE}:${chain.id}`,
-    name: chain.name,
-    imageId: NetworkImageIds[chain.id]
+    id: `${NAMESPACE}:${chain}`,
+    name: NetworkNames[chain],
+    imageId: NetworkImageIds[chain]
   } as CaipNetwork
 }
 
