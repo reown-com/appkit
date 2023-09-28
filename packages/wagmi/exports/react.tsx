@@ -114,6 +114,26 @@ export function useWeb3ModalState() {
   return state
 }
 
+export function useWeb3ModalEvents() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" hook')
+  }
+
+  const [event, setEvents] = useState(modal.getEvent())
+
+  useEffect(() => {
+    const unsubscribe = modal?.subscribeEvents(newEvent => {
+      setEvents({ ...newEvent })
+    })
+
+    return () => {
+      unsubscribe?.()
+    }
+  }, [])
+
+  return event
+}
+
 // -- Universal Exports -------------------------------------------------------
 export { EIP6963Connector } from '../src/connectors/EIP6963Connector.js'
 export { defaultWagmiConfig } from '../src/utils/defaultWagmiReactConfig.js'
