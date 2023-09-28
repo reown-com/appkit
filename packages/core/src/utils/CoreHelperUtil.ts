@@ -1,4 +1,3 @@
-import { NetworkController } from '../controllers/NetworkController.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipAddress, LinkingRecord } from './TypeUtils.js'
 
