@@ -162,9 +162,5 @@ export const CoreHelperUtil = {
     return CoreHelperUtil.isRestrictedRegion()
       ? 'https://rpc.walletconnect.org'
       : 'https://rpc.walletconnect.com'
-  },
-
-  getCaipNetwork() {
-    return NetworkController.state.caipNetwork
   }
 }
