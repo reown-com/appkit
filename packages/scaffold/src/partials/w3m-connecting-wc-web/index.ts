@@ -1,4 +1,4 @@
-import { ConnectionController, CoreHelperUtil } from '@web3modal/core'
+import { ConnectionController, CoreHelperUtil, EventsController } from '@web3modal/core'
 import { customElement } from 'lit/decorators.js'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
@@ -13,6 +13,11 @@ export class W3mConnectingWcWeb extends W3mConnectingWidget {
     this.secondaryBtnLabel = 'Open'
     this.secondaryLabel = 'Open and continue in a new browser tab'
     this.secondaryBtnIcon = 'externalLink'
+    EventsController.sendEvent({
+      type: 'SYSTEM',
+      name: 'SELECT_WALLET',
+      data: { name: this.wallet.name, platform: 'web' }
+    })
   }
 
   // -- Private ------------------------------------------- //

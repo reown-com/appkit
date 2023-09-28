@@ -12,6 +12,11 @@ export class W3mConnectingWcInjected extends W3mConnectingWidget {
     }
     this.onConnect = this.onConnectProxy.bind(this)
     this.onAutoConnect = this.onConnectProxy.bind(this)
+    EventsController.sendEvent({
+      type: 'SYSTEM',
+      name: 'SELECT_WALLET',
+      data: { name: this.wallet.name, platform: 'injected' }
+    })
   }
 
   // -- Private ------------------------------------------- //

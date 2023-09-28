@@ -1,4 +1,4 @@
-import { ConnectionController, CoreHelperUtil } from '@web3modal/core'
+import { ConnectionController, CoreHelperUtil, EventsController } from '@web3modal/core'
 import { customElement } from 'lit/decorators.js'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
@@ -12,6 +12,11 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
     this.onConnect = this.onConnectProxy.bind(this)
     this.onRender = this.onRenderProxy.bind(this)
     document.addEventListener('visibilitychange', this.onBuffering.bind(this))
+    EventsController.sendEvent({
+      type: 'SYSTEM',
+      name: 'SELECT_WALLET',
+      data: { name: this.wallet.name, platform: 'mobile' }
+    })
   }
 
   public override disconnectedCallback() {

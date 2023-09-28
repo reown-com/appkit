@@ -16,7 +16,14 @@ export interface LinkingRecord {
 
 export type ProjectId = string
 
-export type Platform = 'mobile' | 'desktop' | 'injected' | 'web' | 'qrcode' | 'unsupported'
+export type Platform =
+  | 'mobile'
+  | 'desktop'
+  | 'injected'
+  | 'web'
+  | 'qrcode'
+  | 'unsupported'
+  | 'external'
 
 export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'EIP6963'
 
@@ -143,12 +150,11 @@ export type Event =
       name: 'ALL_WALLETS'
     }
   | {
-      type: 'CLICK'
+      type: 'SYSTEM'
       name: 'SELECT_WALLET'
       data: {
         name: string
-        connector: ConnectorType
-        view: 'Home' | 'AllWallets' | 'Search'
+        platform: Platform
       }
     }
   | {

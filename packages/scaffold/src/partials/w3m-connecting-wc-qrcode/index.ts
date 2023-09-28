@@ -1,4 +1,4 @@
-import { AssetUtil, ConnectionController, ThemeController } from '@web3modal/core'
+import { AssetUtil, ConnectionController, EventsController, ThemeController } from '@web3modal/core'
 import { html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -12,6 +12,11 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   public constructor() {
     super()
     window.addEventListener('resize', this.forceUpdate)
+    EventsController.sendEvent({
+      type: 'SYSTEM',
+      name: 'SELECT_WALLET',
+      data: { name: this.wallet?.name ?? 'WalletConnect', platform: 'qrcode' }
+    })
   }
 
   public override disconnectedCallback() {
