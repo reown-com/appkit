@@ -130,7 +130,7 @@ export class W3mConnectView extends LitElement {
 
   private announcedTemplate() {
     return this.connectors.map(connector => {
-      if (connector.type !== 'EIP6963') {
+      if (connector.type !== 'ANNOUNCED') {
         return null
       }
 
@@ -148,7 +148,7 @@ export class W3mConnectView extends LitElement {
   }
 
   private injectedTemplate() {
-    const announced = this.connectors.find(c => c.type === 'EIP6963')
+    const announced = this.connectors.find(c => c.type === 'ANNOUNCED')
 
     return this.connectors.map(connector => {
       if (connector.type !== 'INJECTED') {
@@ -173,7 +173,7 @@ export class W3mConnectView extends LitElement {
 
   private connectorsTemplate() {
     return this.connectors.map(connector => {
-      if (['WALLET_CONNECT', 'INJECTED', 'EIP6963'].includes(connector.type)) {
+      if (['WALLET_CONNECT', 'INJECTED', 'ANNOUNCED'].includes(connector.type)) {
         return null
       }
 
@@ -208,7 +208,7 @@ export class W3mConnectView extends LitElement {
     const { customWallets } = OptionsController.state
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
-    const eip6963 = connectors.filter(c => c.type === 'EIP6963')
+    const eip6963 = connectors.filter(c => c.type === 'ANNOUNCED')
     if (!recommended.length || featured.length || customWallets?.length) {
       return null
     }

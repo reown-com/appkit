@@ -167,7 +167,7 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       checkInstalled: ids => {
-        const eip6963Connectors = this.getConnectors().filter(c => c.type === 'EIP6963')
+        const eip6963Connectors = this.getConnectors().filter(c => c.type === 'ANNOUNCED')
         const injectedConnector = this.getConnectors().find(c => c.type === 'INJECTED')
 
         if (eip6963Connectors.length) {
@@ -358,7 +358,7 @@ export class Web3Modal extends Web3ModalScaffold {
           const { info, provider } = event.detail
           this.addConnector({
             id: EIP6963_CONNECTOR_ID,
-            type: 'EIP6963',
+            type: 'ANNOUNCED',
             imageUrl: info.icon ?? this.options?.connectorImages?.[EIP6963_CONNECTOR_ID],
             name: info.name,
             provider,
