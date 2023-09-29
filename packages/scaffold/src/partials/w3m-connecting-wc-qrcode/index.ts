@@ -36,10 +36,10 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
           Scan this QR Code with your phone
         </wui-text>
 
-        <wui-button variant="fullWidth" @click=${this.onCopyUri}>
-          <wui-icon size="sm" color="inherit" slot="iconLeft" name="copy"></wui-icon>
+        <wui-link @click=${this.onCopyUri} color="fg-200">
+          <wui-icon size="sm" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
           Copy Link
-        </wui-button>
+        </wui-link>
       </wui-flex>
 
       <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
