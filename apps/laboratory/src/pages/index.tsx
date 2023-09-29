@@ -55,7 +55,8 @@ export const wagmiConfig = defaultWagmiConfig({
 export const modal = createWeb3Modal({
   wagmiConfig,
   projectId,
-  chains
+  chains,
+  enableAnalytics: true
 })
 
 export default function HomePage() {

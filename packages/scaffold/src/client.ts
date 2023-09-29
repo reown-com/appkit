@@ -42,6 +42,7 @@ export interface LibraryOptions {
   termsConditionsUrl?: OptionsControllerState['termsConditionsUrl']
   privacyPolicyUrl?: OptionsControllerState['privacyPolicyUrl']
   customWallets?: OptionsControllerState['customWallets']
+  enableAnalytics?: OptionsControllerState['enableAnalytics']
   _sdkVersion: ApiControllerState['sdkVersion']
 }
 
@@ -191,6 +192,7 @@ export class Web3ModalScaffold {
     OptionsController.setTermsConditionsUrl(options.termsConditionsUrl)
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
     OptionsController.setCustomWallets(options.customWallets)
+    OptionsController.setEnableAnalytics(options.enableAnalytics)
 
     ConnectionController.setClient(options.connectionControllerClient)
 

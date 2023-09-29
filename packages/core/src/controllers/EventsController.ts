@@ -39,7 +39,7 @@ export const EventsController = {
   },
 
   _sendAnalyticsEvent(payload: EventsControllerState) {
-    if (excluded.includes(payload.data.event)) {
+    if (excluded.includes(payload.data.event) || typeof window === 'undefined') {
       return
     }
 
