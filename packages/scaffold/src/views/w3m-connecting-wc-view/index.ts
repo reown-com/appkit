@@ -87,7 +87,7 @@ export class W3mConnectingWcView extends LitElement {
       type: 'track',
       event: 'CONNECT_SUCCESS',
       properties: {
-        method: wcLinking ? 'linking' : 'qrcode'
+        method: wcLinking ? 'mobile' : 'qrcode'
       }
     })
   }

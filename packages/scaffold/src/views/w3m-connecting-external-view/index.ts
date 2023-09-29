@@ -35,6 +35,11 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       if (this.connector) {
         await ConnectionController.connectExternal(this.connector)
         ModalController.close()
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_SUCCESS',
+          properties: { method: 'external' }
+        })
       }
     } catch (error) {
       EventsController.sendEvent({
