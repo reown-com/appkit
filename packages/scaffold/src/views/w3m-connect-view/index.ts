@@ -204,12 +204,12 @@ export class W3mConnectView extends LitElement {
   }
 
   private recommendedTemplate() {
-    const { recommended, featured } = ApiController.state
-    const { customWallets } = OptionsController.state
+    const { recommended } = ApiController.state
+    const { customWallets, featuredWalletIds } = OptionsController.state
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
     const eip6963 = connectors.filter(c => c.type === 'ANNOUNCED')
-    if (!recommended.length || featured.length || customWallets?.length) {
+    if (featuredWalletIds || customWallets || !recommended.length) {
       return null
     }
 
@@ -242,9 +242,13 @@ export class W3mConnectView extends LitElement {
   }
 
   private filterOutDuplicateWallets(wallets: WcWallet[]) {
+    const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
     const recentIds = recent.map(wallet => wallet.id)
-    const filtered = wallets.filter(wallet => !recentIds.includes(wallet.id))
+    const rdnsIds = connectors.map(c => c.info?.rdns).filter(Boolean)
+    const filtered = wallets.filter(
+      wallet => !recentIds.includes(wallet.id) && !rdnsIds.includes(wallet.rdns ?? undefined)
+    )
 
     return filtered
   }
