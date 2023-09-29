@@ -35,13 +35,15 @@ export class FetchUtil {
     return response.blob()
   }
 
-  public async post({ body, headers, ...args }: PostArguments) {
+  public async post<T>({ body, headers, ...args }: PostArguments) {
     const url = this.createUrl(args)
-    await fetch(url, {
+    const response = await fetch(url, {
       method: 'POST',
       headers,
       body: body ? JSON.stringify(body) : undefined
     })
+
+    return response.json() as T
   }
 
   public async put<T>({ body, headers, ...args }: PostArguments) {

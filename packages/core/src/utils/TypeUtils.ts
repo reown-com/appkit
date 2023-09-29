@@ -167,7 +167,7 @@ export type Event =
       type: 'track'
       event: 'CONNECT_SUCCESS'
       properties: {
-        method: 'qrcode' | 'linking'
+        method: 'qrcode' | 'linking' | 'external'
       }
     }
   | {

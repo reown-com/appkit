@@ -57,7 +57,7 @@ export class W3mConnectingWcView extends LitElement {
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.connectWalletConnect()
         await ConnectionController.state.wcPromise
-        this.storeWalletConnectDeeplink()
+        this.finalizeConnection()
         ModalController.close()
       }
     } catch (error) {
@@ -75,7 +75,7 @@ export class W3mConnectingWcView extends LitElement {
     }
   }
 
-  private storeWalletConnectDeeplink() {
+  private finalizeConnection() {
     const { wcLinking, recentWallet } = ConnectionController.state
     if (wcLinking) {
       StorageUtil.setWalletConnectDeepLink(wcLinking)
@@ -83,6 +83,13 @@ export class W3mConnectingWcView extends LitElement {
     if (recentWallet) {
       StorageUtil.setWeb3ModalRecent(recentWallet)
     }
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'CONNECT_SUCCESS',
+      properties: {
+        method: wcLinking ? 'linking' : 'qrcode'
+      }
+    })
   }
 
   private determinePlatforms() {

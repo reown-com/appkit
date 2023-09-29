@@ -43,8 +43,8 @@ export const EventsController = {
       return
     }
 
-    try {
-      api.post({
+    api
+      .post({
         path: '/event',
         headers: EventsController._getApiHeaders(),
         body: {
@@ -55,9 +55,9 @@ export const EventsController = {
           props: payload.data
         }
       })
-    } catch {
-      // Fail silently
-    }
+      .catch(_error => {
+        // Silent error handling
+      })
   },
 
   sendEvent(data: EventsControllerState['data']) {
