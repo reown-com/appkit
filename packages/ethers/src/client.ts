@@ -186,7 +186,7 @@ export class Web3Modal extends Web3ModalScaffold {
       connectionControllerClient,
       defaultChain: getCaipDefaultChain(defaultChain),
       tokens: getCaipTokens(tokens),
-      _sdkVersion: _sdkVersion ?? `html-wagmi-${VERSION}`,
+      _sdkVersion: _sdkVersion ?? `html-ethers-${VERSION}`,
       ...w3mOptions
     })
 
@@ -250,11 +250,11 @@ export class Web3Modal extends Web3ModalScaffold {
   private setWalletConnectProvider(config: ProviderType) {
     const walletConnectProvider = config.walletConnect?.provider as EthereumProvider
     if (walletConnectProvider) {
-      ProviderController.setAddress(walletConnectProvider.accounts[0] as Address)
       ProviderController.setChainId(walletConnectProvider.chainId)
       ProviderController.setProviderType('walletConnect')
       ProviderController.setProvider(config.walletConnect)
       ProviderController.setIsConnected(true)
+      ProviderController.setAddress(walletConnectProvider.accounts[0] as Address)
     }
   }
 
@@ -266,11 +266,11 @@ export class Web3Modal extends Web3ModalScaffold {
       const chainId = await signer.getChainId()
       const address = await signer.getAddress()
       if (address && chainId) {
-        ProviderController.setAddress(address as Address)
         ProviderController.setChainId(chainId)
         ProviderController.setProviderType('injected')
         ProviderController.setProvider(config.injected)
         ProviderController.setIsConnected(true)
+        ProviderController.setAddress(address as Address)
       }
     }
   }
@@ -312,12 +312,15 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncAccount() {
     const address = ProviderController.state.address
     const chainId = ProviderController.state.chainId
-    const isConnected = ProviderController.state.chainId
+    const isConnected = ProviderController.state.isConnected
+
     this.resetAccount()
 
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${NAMESPACE}:${chainId}:${address}`
-      this.setIsConnected(Boolean(address))
+
+      this.setIsConnected(isConnected)
+
       this.setCaipAddress(caipAddress)
       await Promise.all([
         this.syncProfile(address),
@@ -373,7 +376,7 @@ export class Web3Modal extends Web3ModalScaffold {
           this.setProfileImage(avatar)
         }
       } catch (error) {
-        console.log(error)
+        /* Handle error */
       }
     }
   }

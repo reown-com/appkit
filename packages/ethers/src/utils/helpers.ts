@@ -31,15 +31,3 @@ export function getCaipTokens(tokens?: Web3ModalClientOptions['tokens']) {
 export function caipNetworkIdToNumber(caipnetworkId?: CaipNetworkId) {
   return caipnetworkId ? Number(caipnetworkId.split(':')[1]) : undefined
 }
-
-// export function getDefaultWindowProvider() {
-//   if (typeof window === 'undefined') {
-//     return undefined
-//   }
-//   const ethereum = (window as unknown as { ethereum?: ethers.providers.Web3Provider }).ethereum
-//   if (ethereum?.providers) {
-//     return ethereum.providers[0]
-//   }
-
-//   return ethereum
-// }

@@ -37,7 +37,7 @@ let modal: Web3Modal | undefined = undefined
 
 export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
-    modal = new Web3Modal({ ...options, _sdkVersion: `react-wagmi-${VERSION}` })
+    modal = new Web3Modal({ ...options, _sdkVersion: `react-ethers-${VERSION}` })
   }
 
   return modal

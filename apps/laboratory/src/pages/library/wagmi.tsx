@@ -51,17 +51,17 @@ export const wagmiConfig = defaultWagmiConfig({
   }
 })
 
-// 3. Create Web3Modal
-export const modal = createWeb3Modal({
-  wagmiConfig,
-  projectId,
-  chains
-})
-
 export default function Wagmi() {
   const [ready, setReady] = useState(false)
   const { colorMode } = useColorMode()
   const { setThemeMode } = useWeb3ModalTheme()
+
+  // 3. Create Web3Modal
+  createWeb3Modal({
+    wagmiConfig,
+    projectId,
+    chains
+  })
 
   useEffect(() => {
     setReady(true)

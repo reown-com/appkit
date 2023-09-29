@@ -6,5 +6,5 @@ export type { Web3ModalOptions } from '../src/client.js'
 export { defaultEthersConfig } from '../src/utils/defaultEthersCoreConfig.js'
 
 export function createWeb3Modal(options: Web3ModalOptions) {
-  return new Web3Modal({ ...options, _sdkVersion: `html-wagmi-${VERSION}` })
+  return new Web3Modal({ ...options, _sdkVersion: `html-ethers-${VERSION}` })
 }

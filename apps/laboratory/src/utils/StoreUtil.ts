@@ -1,5 +1,4 @@
 import { proxy } from 'valtio/vanilla'
-import { modal } from '../pages/library/wagmi'
 
 interface ThemeVariables {
   '--w3m-font-family'?: string
@@ -31,26 +30,21 @@ export const ThemeStore = {
 
   setMixColorStrength(value: ThemeStoreState['mixColorStrength']) {
     state.mixColorStrength = value
-    modal.setThemeVariables({ '--w3m-color-mix-strength': value })
   },
 
   setMixColor(value: ThemeStoreState['mixColor']) {
     state.mixColor = value
-    modal.setThemeVariables({ '--w3m-color-mix': value })
   },
 
   setAccentColor(value: ThemeStoreState['accentColor']) {
     state.accentColor = value
-    modal.setThemeVariables({ '--w3m-accent': value })
   },
 
   setBorderRadius(value: ThemeStoreState['borderRadius']) {
     state.borderRadius = value
-    modal.setThemeVariables({ '--w3m-border-radius-master': value })
   },
 
   setThemeVariables(value: ThemeStoreState['themeVariables']) {
     state.themeVariables = value
-    modal.setThemeVariables(value)
   }
 }
