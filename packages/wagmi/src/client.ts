@@ -166,16 +166,31 @@ export class Web3Modal extends Web3ModalScaffold {
         await connect({ connector, chainId })
       },
 
-      checkInjectedInstalled(ids) {
-        if (!window?.ethereum) {
-          return false
+      checkInstalled: ids => {
+        const eip6963Connectors = this.getConnectors().filter(c => c.type === 'EIP6963')
+        const injectedConnector = this.getConnectors().find(c => c.type === 'INJECTED')
+
+        if (eip6963Connectors.length) {
+          // @ts-expect-error rdns exists on EIP6963Connector info
+          const installed = ids?.some(id => eip6963Connectors.some(c => c.info?.rdns === id))
+          if (installed) {
+            return true
+          }
         }
 
-        if (!ids) {
-          return Boolean(window.ethereum)
+        if (injectedConnector) {
+          if (!window?.ethereum) {
+            return false
+          }
+
+          if (!ids) {
+            return Boolean(window.ethereum)
+          }
+
+          return ids.some(id => Boolean(window.ethereum?.[String(id)]))
         }
 
-        return ids.some(id => Boolean(window.ethereum?.[String(id)]))
+        return false
       },
 
       disconnect
@@ -341,7 +356,7 @@ export class Web3Modal extends Web3ModalScaffold {
       window.addEventListener(EIP6963_ANNOUNCE_EVENT, (event: CustomEventInit<Wallet>) => {
         if (event.detail) {
           const { info, provider } = event.detail
-          super.addConnector({
+          this.addConnector({
             id: EIP6963_CONNECTOR_ID,
             type: 'EIP6963',
             imageUrl: info.icon ?? this.options?.connectorImages?.[EIP6963_CONNECTOR_ID],

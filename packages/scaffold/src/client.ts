@@ -163,6 +163,9 @@ export class Web3ModalScaffold {
     ConnectorController.addConnector(connector)
   }
 
+  protected getConnectors: (typeof ConnectorController)['getConnectors'] = () =>
+    ConnectorController.getConnectors()
+
   protected resetWcConnection: (typeof ConnectionController)['resetWcConnection'] = () => {
     ConnectionController.resetWcConnection()
   }

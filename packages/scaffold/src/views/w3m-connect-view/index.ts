@@ -154,7 +154,7 @@ export class W3mConnectView extends LitElement {
       if (connector.type !== 'INJECTED') {
         return null
       }
-      if (!ConnectionController.checkInjectedInstalled()) {
+      if (!ConnectionController.checkInstalled()) {
         return null
       }
 

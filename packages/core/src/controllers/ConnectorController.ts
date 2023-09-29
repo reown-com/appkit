@@ -28,5 +28,9 @@ export const ConnectorController = {
 
   addConnector(connector: Connector) {
     state.connectors.push(ref(connector))
+  },
+
+  getConnectors() {
+    return state.connectors
   }
 }
