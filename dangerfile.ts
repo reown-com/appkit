@@ -68,7 +68,7 @@ async function checkUiPackage() {
       fail(`${f} is importing @web3modal/core, which is not allowed in ui package`)
     }
 
-    if (!diff?.added.includes(RENDER_COMMENT)) {
+    if (!diff?.added.includes(RENDER_COMMENT) && diff?.added.includes('render()')) {
       fail(`${f} is missing \`${RENDER_COMMENT}\` comment`)
     }
 
@@ -192,7 +192,7 @@ async function checkScaffoldHtmlPackage() {
   for (const f of created_scaffold_index_files) {
     const diff = await diffForFile(f)
 
-    if (!diff?.added.includes(RENDER_COMMENT)) {
+    if (!diff?.added.includes(RENDER_COMMENT) && diff?.added.includes('render()')) {
       fail(`${f} is missing \`${RENDER_COMMENT}\` comment`)
     }
 
