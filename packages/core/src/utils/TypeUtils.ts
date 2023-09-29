@@ -19,7 +19,7 @@ export type ProjectId = string
 export type Platform =
   | 'mobile'
   | 'desktop'
-  | 'injected'
+  | 'browser'
   | 'web'
   | 'qrcode'
   | 'unsupported'

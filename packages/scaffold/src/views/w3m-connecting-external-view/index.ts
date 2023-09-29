@@ -4,8 +4,8 @@ import { customElement } from 'lit/decorators.js'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 const platformMap = {
-  INJECTED: 'injected',
-  EIP6963: 'injected'
+  INJECTED: 'browser',
+  ANNOUNCED: 'browser'
 } as Record<ConnectorType, Platform>
 
 @customElement('w3m-connecting-external-view')

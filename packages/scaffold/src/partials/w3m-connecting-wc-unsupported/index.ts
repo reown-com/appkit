@@ -16,10 +16,7 @@ export class W3mConnectingWcUnsupported extends LitElement {
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
-      properties: {
-        name: this.wallet.name,
-        platform: 'injected'
-      }
+      properties: { name: this.wallet.name, platform: 'browser' }
     })
   }
 

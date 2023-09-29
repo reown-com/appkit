@@ -3,19 +3,19 @@ import { ConnectionController, EventsController, ModalController } from '@web3mo
 import { customElement } from 'lit/decorators.js'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
-@customElement('w3m-connecting-wc-injected')
-export class W3mConnectingWcInjected extends W3mConnectingWidget {
+@customElement('w3m-connecting-wc-browser')
+export class W3mConnectingWcBrowser extends W3mConnectingWidget {
   public constructor() {
     super()
     if (!this.wallet) {
-      throw new Error('w3m-connecting-wc-injected: No wallet provided')
+      throw new Error('w3m-connecting-wc-browser: No wallet provided')
     }
     this.onConnect = this.onConnectProxy.bind(this)
     this.onAutoConnect = this.onConnectProxy.bind(this)
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
-      properties: { name: this.wallet.name, platform: 'injected' }
+      properties: { name: this.wallet.name, platform: 'browser' }
     })
   }
 
@@ -38,6 +38,6 @@ export class W3mConnectingWcInjected extends W3mConnectingWidget {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-connecting-wc-injected': W3mConnectingWcInjected
+    'w3m-connecting-wc-browser': W3mConnectingWcBrowser
   }
 }

@@ -1,7 +1,6 @@
 import type { BaseError, Platform } from '@web3modal/core'
 import {
   ConnectionController,
-  ConnectorController,
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
@@ -95,20 +94,19 @@ export class W3mConnectingWcView extends LitElement {
       return
     }
 
-    const { connectors } = ConnectorController.state
-    const { mobile_link, desktop_link, webapp_link, injected } = this.wallet
-    const injectedIds = injected?.map(({ injected_id }) => injected_id).filter(Boolean) ?? []
-    const isInjected = injectedIds.length
+    const { mobile_link, desktop_link, webapp_link, injected, rdns } = this.wallet
+    const injectedIds = injected?.map(({ injected_id }) => injected_id).filter(Boolean) as string[]
+    const browserIds = [rdns, ...injectedIds].filter(Boolean) as string[]
+    const isBrowser = browserIds.length
     const isMobileWc = mobile_link
     const isWebWc = webapp_link
-    const isInjectedConnector = connectors.find(c => c.type === 'INJECTED')
-    const isInjectedInstalled = ConnectionController.checkInstalled(injectedIds as string[])
-    const isInjectedWc = isInjected && isInjectedInstalled && isInjectedConnector
+    const isBrowserInstalled = ConnectionController.checkInstalled(browserIds)
+    const isBrowserWc = isBrowser && isBrowserInstalled
     const isDesktopWc = desktop_link && !CoreHelperUtil.isMobile()
 
     // Populate all preferences
-    if (isInjectedWc) {
-      this.platforms.push('injected')
+    if (isBrowserWc) {
+      this.platforms.push('browser')
     }
     if (isMobileWc) {
       this.platforms.push(CoreHelperUtil.isMobile() ? 'mobile' : 'qrcode')
@@ -119,7 +117,7 @@ export class W3mConnectingWcView extends LitElement {
     if (isDesktopWc) {
       this.platforms.push('desktop')
     }
-    if (!isInjectedWc && isInjected) {
+    if (!isBrowserWc && isBrowser) {
       this.platforms.push('unsupported')
     }
 
@@ -128,8 +126,8 @@ export class W3mConnectingWcView extends LitElement {
 
   private platformTemplate() {
     switch (this.platform) {
-      case 'injected':
-        return html`<w3m-connecting-wc-injected></w3m-connecting-wc-injected>`
+      case 'browser':
+        return html`<w3m-connecting-wc-browser></w3m-connecting-wc-browser>`
       case 'desktop':
         return html`
           <w3m-connecting-wc-desktop .onRetry=${() => this.initializeConnection(true)}>
