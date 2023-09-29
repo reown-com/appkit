@@ -13,9 +13,9 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
     super()
     window.addEventListener('resize', this.forceUpdate)
     EventsController.sendEvent({
-      type: 'SYSTEM',
-      name: 'SELECT_WALLET',
-      data: { name: this.wallet?.name ?? 'WalletConnect', platform: 'qrcode' }
+      type: 'track',
+      event: 'SELECT_WALLET',
+      properties: { name: this.wallet?.name ?? 'WalletConnect', platform: 'qrcode' }
     })
   }
 

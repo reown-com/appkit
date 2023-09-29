@@ -14,9 +14,9 @@ export class W3mConnectingWcUnsupported extends LitElement {
       throw new Error('w3m-connecting-wc-unsupported: No wallet provided')
     }
     EventsController.sendEvent({
-      type: 'SYSTEM',
-      name: 'SELECT_WALLET',
-      data: {
+      type: 'track',
+      event: 'SELECT_WALLET',
+      properties: {
         name: this.wallet.name,
         platform: 'injected'
       }

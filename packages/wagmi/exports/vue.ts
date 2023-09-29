@@ -115,7 +115,7 @@ export function useWeb3ModalEvents() {
 
   const event = reactive(modal.getEvent())
   const unsubscribe = modal?.subscribeEvents(next => {
-    event.event = next.event
+    event.data = next.data
     event.timestamp = next.timestamp
   })
 

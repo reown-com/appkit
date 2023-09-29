@@ -32,7 +32,7 @@ export class W3mModal extends LitElement {
     this.unsubscribe.push(
       ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose()))
     )
-    EventsController.sendEvent({ type: 'SYSTEM', name: 'MODAL_LOADED' })
+    EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
   }
 
   public override disconnectedCallback() {

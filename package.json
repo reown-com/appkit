@@ -44,7 +44,7 @@
     "lerna": "7.3.0",
     "prettier": "3.0.3",
     "typescript": "5.2.2",
-    "vitest": "0.34.5",
+    "vitest": "0.34.6",
     "vite": "4.4.9",
     "danger": "11.3.0",
     "vue": "3.3.4",

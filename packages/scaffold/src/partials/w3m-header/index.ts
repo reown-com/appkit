@@ -76,7 +76,7 @@ export class W3mHeader extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onWalletHelp() {
-    EventsController.sendEvent({ type: 'CLICK', name: 'WALLET_HELP' })
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_WALLET_HELP' })
     RouterController.push('WhatIsAWallet')
   }
 

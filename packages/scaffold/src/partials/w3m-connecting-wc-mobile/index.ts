@@ -13,9 +13,9 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
     this.onRender = this.onRenderProxy.bind(this)
     document.addEventListener('visibilitychange', this.onBuffering.bind(this))
     EventsController.sendEvent({
-      type: 'SYSTEM',
-      name: 'SELECT_WALLET',
-      data: { name: this.wallet.name, platform: 'mobile' }
+      type: 'track',
+      event: 'SELECT_WALLET',
+      properties: { name: this.wallet.name, platform: 'mobile' }
     })
   }
 

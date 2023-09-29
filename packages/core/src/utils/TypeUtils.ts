@@ -66,6 +66,7 @@ export interface WcWallet {
   webapp_link?: string | null
   app_store?: string | null
   play_store?: string | null
+  rdns?: string | null
   injected?:
     | {
         namespace?: string
@@ -132,70 +133,67 @@ export type CustomWallet = Pick<
 >
 
 // -- EventsController Types ----------------------------------------------------
+
 export type Event =
   | {
-      type: 'SYSTEM'
-      name: 'MODAL_CREATED'
+      type: 'track'
+      event: 'MODAL_CREATED'
     }
   | {
-      type: 'SYSTEM'
-      name: 'MODAL_LOADED'
+      type: 'track'
+      event: 'MODAL_LOADED'
     }
   | {
-      type: 'SYSTEM'
-      name: 'MODAL_OPEN'
+      type: 'track'
+      event: 'MODAL_OPEN'
     }
   | {
-      type: 'SYSTEM'
-      name: 'MODAL_CLOSE'
+      type: 'track'
+      event: 'MODAL_CLOSE'
     }
   | {
-      type: 'CLICK'
-      name: 'ALL_WALLETS'
+      type: 'track'
+      event: 'CLICK_ALL_WALLETS'
     }
   | {
-      type: 'SYSTEM'
-      name: 'SELECT_WALLET'
-      data: {
+      type: 'track'
+      event: 'SELECT_WALLET'
+      properties: {
         name: string
         platform: Platform
       }
     }
   | {
-      type: 'SYSTEM'
-      name: 'CONNECT_SUCCESS'
-      data: {
+      type: 'track'
+      event: 'CONNECT_SUCCESS'
+      properties: {
         method: 'qrcode' | 'linking'
       }
     }
   | {
-      type: 'SYSTEM'
-      name: 'CONNECT_ERROR'
-      data: {
+      type: 'track'
+      event: 'CONNECT_ERROR'
+      properties: {
         message: string
       }
     }
   | {
-      type: 'CLICK'
-      name: 'DISCONNECT'
+      type: 'track'
+      event: 'DISCONNECT_SUCCESS'
     }
   | {
-      type: 'SYSTEM'
-      name: 'DISCONNECT_SUCCESS'
+      type: 'track'
+      event: 'DISCONNECT_ERROR'
     }
   | {
-      type: 'SYSTEM'
-      name: 'DISCONNECT_ERROR'
+      type: 'track'
+      event: 'CLICK_WALLET_HELP'
     }
   | {
-      type: 'CLICK'
-      name: 'WALLET_HELP'
+      type: 'track'
+      event: 'CLICK_NETWORK_HELP'
     }
   | {
-      type: 'CLICK'
-      name: 'NETWORK_HELP'
-    }
-  | {
-      type: 'CLICK'
-      name: 'GET_WALLET'
+      type: 'track'
+      event: 'CLICK_GET_WALLET'
     }

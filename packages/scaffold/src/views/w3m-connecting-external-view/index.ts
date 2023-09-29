@@ -16,9 +16,9 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       throw new Error('w3m-connecting-view: No connector provided')
     }
     EventsController.sendEvent({
-      type: 'SYSTEM',
-      name: 'SELECT_WALLET',
-      data: {
+      type: 'track',
+      event: 'SELECT_WALLET',
+      properties: {
         name: this.connector.name ?? 'Unknown',
         platform: platformMap[this.connector.type] ?? 'external'
       }
@@ -38,9 +38,9 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       }
     } catch (error) {
       EventsController.sendEvent({
-        type: 'SYSTEM',
-        name: 'CONNECT_ERROR',
-        data: { message: (error as BaseError)?.message ?? 'Unknown' }
+        type: 'track',
+        event: 'CONNECT_ERROR',
+        properties: { message: (error as BaseError)?.message ?? 'Unknown' }
       })
       this.error = true
     }

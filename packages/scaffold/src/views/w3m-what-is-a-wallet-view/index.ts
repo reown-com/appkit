@@ -42,7 +42,7 @@ export class W3mWhatIsAWalletView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onGetWallet() {
-    EventsController.sendEvent({ type: 'CLICK', name: 'GET_WALLET' })
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_GET_WALLET' })
     RouterController.push('GetWallet')
   }
 }

@@ -12,15 +12,15 @@ const excluded = ['MODAL_CREATED']
 // -- Types --------------------------------------------- //
 export interface EventsControllerState {
   timestamp: number
-  event: Event
+  data: Event
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<EventsControllerState>({
   timestamp: Date.now(),
-  event: {
-    type: 'SYSTEM',
-    name: 'MODAL_CREATED'
+  data: {
+    type: 'track',
+    event: 'MODAL_CREATED'
   }
 })
 
@@ -39,7 +39,7 @@ export const EventsController = {
   },
 
   _sendAnalyticsEvent(payload: EventsControllerState) {
-    if (excluded.includes(payload.event.name)) {
+    if (excluded.includes(payload.data.event)) {
       return
     }
 
@@ -52,7 +52,7 @@ export const EventsController = {
           domain: window.location.hostname,
           product: 'WEB3MODAL',
           timestamp: payload.timestamp,
-          props: payload.event
+          props: payload.data
         }
       })
     } catch {
@@ -60,9 +60,9 @@ export const EventsController = {
     }
   },
 
-  sendEvent(event: EventsControllerState['event']) {
+  sendEvent(data: EventsControllerState['data']) {
     state.timestamp = Date.now()
-    state.event = event
+    state.data = data
     if (OptionsController.state.enableAnalytics) {
       EventsController._sendAnalyticsEvent(state)
     }

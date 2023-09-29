@@ -63,9 +63,9 @@ export class W3mConnectingWcView extends LitElement {
       }
     } catch (error) {
       EventsController.sendEvent({
-        type: 'SYSTEM',
-        name: 'CONNECT_ERROR',
-        data: { message: (error as BaseError)?.message ?? 'Unknown' }
+        type: 'track',
+        event: 'CONNECT_ERROR',
+        properties: { message: (error as BaseError)?.message ?? 'Unknown' }
       })
       ConnectionController.setWcError(true)
       if (CoreHelperUtil.isAllowedRetry(this.lastRetry)) {

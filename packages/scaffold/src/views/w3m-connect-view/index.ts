@@ -250,7 +250,7 @@ export class W3mConnectView extends LitElement {
   }
 
   private onAllWallets() {
-    EventsController.sendEvent({ type: 'CLICK', name: 'ALL_WALLETS' })
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_ALL_WALLETS' })
     RouterController.push('AllWallets')
   }
 

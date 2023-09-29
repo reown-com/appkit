@@ -52,7 +52,7 @@ export class W3mNetworksView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private onNetworkHelp() {
-    EventsController.sendEvent({ type: 'CLICK', name: 'NETWORK_HELP' })
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORK_HELP' })
     RouterController.push('WhatIsANetwork')
   }
 

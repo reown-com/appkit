@@ -182,12 +182,11 @@ export class W3mAccountView extends LitElement {
   private async onDisconnect() {
     try {
       this.disconecting = true
-      EventsController.sendEvent({ type: 'CLICK', name: 'DISCONNECT' })
       await ConnectionController.disconnect()
-      EventsController.sendEvent({ type: 'SYSTEM', name: 'DISCONNECT_SUCCESS' })
+      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
       ModalController.close()
     } catch {
-      EventsController.sendEvent({ type: 'SYSTEM', name: 'DISCONNECT_ERROR' })
+      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')
     } finally {
       this.disconecting = false

@@ -45,12 +45,12 @@ export const ModalController = {
     }
     state.open = true
     PublicStateController.set({ open: true })
-    EventsController.sendEvent({ type: 'SYSTEM', name: 'MODAL_OPEN' })
+    EventsController.sendEvent({ type: 'track', event: 'MODAL_OPEN' })
   },
 
   close() {
     state.open = false
     PublicStateController.set({ open: false })
-    EventsController.sendEvent({ type: 'SYSTEM', name: 'MODAL_CLOSE' })
+    EventsController.sendEvent({ type: 'track', event: 'MODAL_CLOSE' })
   }
 }

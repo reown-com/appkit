@@ -14,9 +14,9 @@ export class W3mConnectingWcWeb extends W3mConnectingWidget {
     this.secondaryLabel = 'Open and continue in a new browser tab'
     this.secondaryBtnIcon = 'externalLink'
     EventsController.sendEvent({
-      type: 'SYSTEM',
-      name: 'SELECT_WALLET',
-      data: { name: this.wallet.name, platform: 'web' }
+      type: 'track',
+      event: 'SELECT_WALLET',
+      properties: { name: this.wallet.name, platform: 'web' }
     })
   }
 

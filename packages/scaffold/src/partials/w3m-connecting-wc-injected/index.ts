@@ -13,9 +13,9 @@ export class W3mConnectingWcInjected extends W3mConnectingWidget {
     this.onConnect = this.onConnectProxy.bind(this)
     this.onAutoConnect = this.onConnectProxy.bind(this)
     EventsController.sendEvent({
-      type: 'SYSTEM',
-      name: 'SELECT_WALLET',
-      data: { name: this.wallet.name, platform: 'injected' }
+      type: 'track',
+      event: 'SELECT_WALLET',
+      properties: { name: this.wallet.name, platform: 'injected' }
     })
   }
 
@@ -27,9 +27,9 @@ export class W3mConnectingWcInjected extends W3mConnectingWidget {
       ModalController.close()
     } catch (error) {
       EventsController.sendEvent({
-        type: 'SYSTEM',
-        name: 'CONNECT_ERROR',
-        data: { message: (error as BaseError)?.message ?? 'Unknown' }
+        type: 'track',
+        event: 'CONNECT_ERROR',
+        properties: { message: (error as BaseError)?.message ?? 'Unknown' }
       })
       this.error = true
     }
