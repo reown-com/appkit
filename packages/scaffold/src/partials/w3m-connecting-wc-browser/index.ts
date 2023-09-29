@@ -1,5 +1,10 @@
 import type { BaseError } from '@web3modal/core'
-import { ConnectionController, EventsController, ModalController } from '@web3modal/core'
+import {
+  ConnectionController,
+  ConnectorController,
+  EventsController,
+  ModalController
+} from '@web3modal/core'
 import { customElement } from 'lit/decorators.js'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
@@ -23,7 +28,16 @@ export class W3mConnectingWcBrowser extends W3mConnectingWidget {
   private async onConnectProxy() {
     try {
       this.error = false
-      await ConnectionController.connectExternal({ id: 'injected' })
+      const { connectors } = ConnectorController.state
+      const announcedConnector = connectors.find(
+        c => c.type === 'ANNOUNCED' && c.info?.rdns === this.wallet?.rdns
+      )
+      const injectedConnector = connectors.find(c => c.type === 'INJECTED')
+      if (announcedConnector) {
+        await ConnectionController.connectExternal(announcedConnector)
+      } else if (injectedConnector) {
+        await ConnectionController.connectExternal(injectedConnector)
+      }
       ModalController.close()
     } catch (error) {
       EventsController.sendEvent({

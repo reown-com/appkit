@@ -171,7 +171,6 @@ export class Web3Modal extends Web3ModalScaffold {
         const injectedConnector = this.getConnectors().find(c => c.type === 'INJECTED')
 
         if (eip6963Connectors.length) {
-          // @ts-expect-error rdns exists on EIP6963Connector info
           const installed = ids?.some(id => eip6963Connectors.some(c => c.info?.rdns === id))
           if (installed) {
             return true
