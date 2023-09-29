@@ -7,7 +7,7 @@ import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { AccountEntryType, IconType } from '../../utils/TypesUtil.js'
+import type { AccountEntryType, IconType } from '../../utils/TypeUtil.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
 

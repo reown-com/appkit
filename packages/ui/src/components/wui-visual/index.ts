@@ -15,7 +15,7 @@ import { nounSvg } from '../../assets/visual/noun.js'
 import { profileSvg } from '../../assets/visual/profile.js'
 import { systemSvg } from '../../assets/visual/system.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { VisualType } from '../../utils/TypesUtil.js'
+import type { VisualType } from '../../utils/TypeUtil.js'
 import styles from './styles.js'
 
 // -- Svg's-------------------------------- //

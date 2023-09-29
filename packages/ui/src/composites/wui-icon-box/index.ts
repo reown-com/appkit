@@ -8,7 +8,7 @@ import type {
   IconBoxBorderType,
   IconType,
   SizeType
-} from '../../utils/TypesUtil.js'
+} from '../../utils/TypeUtil.js'
 import styles from './styles.js'
 
 @customElement('wui-icon-box')

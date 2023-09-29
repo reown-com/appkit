@@ -10,7 +10,7 @@ import type {
   FlexShrinkType,
   FlexWrapType,
   SpacingType
-} from '../../utils/TypesUtil.js'
+} from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtils.js'
 import styles from './styles.js'
 

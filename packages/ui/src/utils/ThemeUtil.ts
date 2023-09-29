@@ -1,5 +1,5 @@
 import { css, unsafeCSS } from 'lit'
-import type { ThemeType, ThemeVariables } from './TypesUtil.js'
+import type { ThemeType, ThemeVariables } from './TypeUtil.js'
 
 // -- Utilities ---------------------------------------------------------------
 

@@ -5,7 +5,7 @@ import { networkLgSvg } from '../../assets/svg/networkLg.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { SizeType } from '../../utils/TypesUtil.js'
+import type { SizeType } from '../../utils/TypeUtil.js'
 import styles from './styles.js'
 
 @customElement('wui-network-image')

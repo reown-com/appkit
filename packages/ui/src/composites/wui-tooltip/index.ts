@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { PlacementType } from '../../utils/TypesUtil.js'
+import type { PlacementType } from '../../utils/TypeUtil.js'
 import styles from './styles.js'
 
 @customElement('wui-tooltip')

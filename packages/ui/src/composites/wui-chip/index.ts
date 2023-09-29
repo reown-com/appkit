@@ -4,7 +4,7 @@ import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ChipType, IconType } from '../../utils/TypesUtil.js'
+import type { ChipType, IconType } from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtils.js'
 import styles from './styles.js'
 

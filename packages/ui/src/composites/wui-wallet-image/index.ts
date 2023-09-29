@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { BorderRadiusType, IconType, SizeType } from '../../utils/TypesUtil.js'
+import type { BorderRadiusType, IconType, SizeType } from '../../utils/TypeUtil.js'
 import styles from './styles.js'
 
 @customElement('wui-wallet-image')

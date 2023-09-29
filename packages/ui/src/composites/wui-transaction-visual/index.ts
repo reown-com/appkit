@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-image/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { TransactionIconType, TransactionType } from '../../utils/TypesUtil.js'
+import type { TransactionIconType, TransactionType } from '../../utils/TypeUtil.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
 
