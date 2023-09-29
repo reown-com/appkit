@@ -31,3 +31,10 @@ export function getCaipTokens(tokens?: Web3ModalClientOptions['tokens']) {
 export function caipNetworkIdToNumber(caipnetworkId?: CaipNetworkId) {
   return caipnetworkId ? Number(caipnetworkId.split(':')[1]) : undefined
 }
+
+export function hexStringToNumber(value: string) {
+  const string = value.startsWith('0x') ? value.slice(2) : value
+  const number = parseInt(string, 16)
+
+  return number
+}

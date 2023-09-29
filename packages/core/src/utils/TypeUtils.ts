@@ -42,7 +42,7 @@ export type CaipNamespaces = Record<
 
 export type SdkVersion =
   | `${'html' | 'react' | 'vue'}-wagmi-${string}`
-  | `${'html' | 'react' | 'vue'}-ethers-${string}`
+  | `${'html' | 'react' | 'vue'}-ethers-5-${string}`
 
 // -- ApiController Types -------------------------------------------------------
 export interface WcWallet {

@@ -14,11 +14,11 @@ export const NAMESPACE = 'eip155'
 
 export const ADD_CHAIN_METHOD = 'wallet_addEthereumChain'
 
-export const WALLET_CHOICE_KEY = 'wagmi.wallet'
-
 export const EIP6963_ANNOUNCE_EVENT = 'eip6963:announceProvider'
 
 export const EIP6963_REQUEST_EVENT = 'eip6963:requestProvider'
+
+export const WALLET_ID = '@w3m/wallet_id'
 
 // DO NOT REMOVE, SHOULD MATCH CORE PACKAGE VERSION
 export const VERSION = '3.0.2'

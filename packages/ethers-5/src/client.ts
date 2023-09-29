@@ -15,10 +15,16 @@ import {
   INJECTED_CONNECTOR_ID,
   NAMESPACE,
   VERSION,
-  WALLET_CONNECT_CONNECTOR_ID
+  WALLET_CONNECT_CONNECTOR_ID,
+  WALLET_ID
 } from './utils/constants.js'
 import type EthereumProvider from '@walletconnect/ethereum-provider'
-import { caipNetworkIdToNumber, getCaipDefaultChain, getCaipTokens } from './utils/helpers.js'
+import {
+  caipNetworkIdToNumber,
+  getCaipDefaultChain,
+  getCaipTokens,
+  hexStringToNumber
+} from './utils/helpers.js'
 import {
   ConnectorExplorerIds,
   ConnectorImageIds,
@@ -89,7 +95,8 @@ export class Web3Modal extends Web3ModalScaffold {
         supportsAllNetworks: boolean
       }> {
         return new Promise(resolve => {
-          const walletChoice = localStorage.getItem('WALLET_ID')
+          const walletChoice = localStorage.getItem(WALLET_ID)
+
           if (walletChoice?.includes(WALLET_CONNECT_CONNECTOR_ID)) {
             const connector = ethersConfig.walletConnect
             if (!connector) {
@@ -135,7 +142,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
         await walletConnectProvider.connect().then(() => {
           this.setWalletConnectProvider(ethersConfig)
-          window?.localStorage.setItem('WALLET_ID', WALLET_CONNECT_CONNECTOR_ID)
         })
       },
 
@@ -148,7 +154,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
           await injectedProvider.send('eth_requestAccounts', []).then(() => {
             this.setInjectedProvider(ethersConfig)
-            window?.localStorage.setItem('WALLET_ID', id)
           })
         }
       },
@@ -172,10 +177,10 @@ export class Web3Modal extends Web3ModalScaffold {
         if (providerType === WALLET_CONNECT_CONNECTOR_ID) {
           const walletConnectProvider = provider?.provider as EthereumProvider
           await walletConnectProvider.disconnect()
-          localStorage.removeItem('WALLET_ID')
+          localStorage.removeItem(WALLET_ID)
           ProviderController.reset()
         } else if (providerType === INJECTED_CONNECTOR_ID) {
-          localStorage.removeItem('WALLET_ID')
+          localStorage.removeItem(WALLET_ID)
           ProviderController.reset()
         }
       }
@@ -186,7 +191,7 @@ export class Web3Modal extends Web3ModalScaffold {
       connectionControllerClient,
       defaultChain: getCaipDefaultChain(defaultChain),
       tokens: getCaipTokens(tokens),
-      _sdkVersion: _sdkVersion ?? `html-ethers-${VERSION}`,
+      _sdkVersion: _sdkVersion ?? `html-ethers-5-${VERSION}`,
       ...w3mOptions
     })
 
@@ -248,6 +253,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private setWalletConnectProvider(config: ProviderType) {
+    window?.localStorage.setItem(WALLET_ID, WALLET_CONNECT_CONNECTOR_ID)
     const walletConnectProvider = config.walletConnect?.provider as EthereumProvider
     if (walletConnectProvider) {
       ProviderController.setChainId(walletConnectProvider.chainId)
@@ -259,6 +265,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async setInjectedProvider(config: ProviderType) {
+    window?.localStorage.setItem(WALLET_ID, INJECTED_CONNECTOR_ID)
     const injectedProvider = config.injected
 
     if (injectedProvider) {
@@ -277,7 +284,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private watchWalletConnect(config: ProviderType) {
     const walletConnectProvider = config.walletConnect?.provider as EthereumProvider
-    const walletId = localStorage.getItem('WALLET_ID')
+    const walletId = localStorage.getItem(WALLET_ID)
 
     if (walletConnectProvider) {
       if (walletId === WALLET_CONNECT_CONNECTOR_ID) {
@@ -285,15 +292,28 @@ export class Web3Modal extends Web3ModalScaffold {
       }
 
       walletConnectProvider.on('disconnect', () => {
-        localStorage.removeItem('WALLET_ID')
+        localStorage.removeItem(WALLET_ID)
         ProviderController.reset()
+      })
+
+      walletConnectProvider.on('accountsChanged', accounts => {
+        if (accounts.length > 0) {
+          this.setWalletConnectProvider(config)
+        }
+      })
+
+      walletConnectProvider.on('chainChanged', chainId => {
+        if (chainId) {
+          const chain = hexStringToNumber(chainId)
+          ProviderController.setChainId(chain)
+        }
       })
     }
   }
 
   private watchInjected(config: ProviderType) {
     const injectedProvider = config.injected?.provider as EthereumProvider
-    const walletId = localStorage.getItem('WALLET_ID')
+    const walletId = localStorage.getItem(WALLET_ID)
 
     if (injectedProvider) {
       if (walletId === INJECTED_CONNECTOR_ID) {
@@ -302,8 +322,17 @@ export class Web3Modal extends Web3ModalScaffold {
 
       injectedProvider.on('accountsChanged', accounts => {
         if (accounts.length === 0) {
-          localStorage.removeItem('WALLET_ID')
+          localStorage.removeItem(WALLET_ID)
           ProviderController.reset()
+        } else {
+          ProviderController.setAddress(accounts[0] as Address)
+        }
+      })
+
+      injectedProvider.on('chainChanged', chainId => {
+        if (chainId) {
+          const chain = hexStringToNumber(chainId)
+          ProviderController.setChainId(chain)
         }
       })
     }
@@ -405,6 +434,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private async switchNetwork(chainId: number) {
     const provider = ProviderController.state.provider
     const providerType = ProviderController.state.providerType
+
     if (providerType === WALLET_CONNECT_CONNECTOR_ID) {
       const walletConnectProvider = provider?.provider as EthereumProvider
       if (walletConnectProvider) {

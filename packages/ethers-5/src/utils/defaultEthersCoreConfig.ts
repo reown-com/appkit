@@ -4,16 +4,22 @@ import { ethers } from 'ethers'
 import type { EthereumProviderOptions } from 'node_modules/@walletconnect/ethereum-provider/dist/types/EthereumProvider.js'
 import type { ProviderType } from './types.js'
 
+type ArrayOneOrMore<T> = {
+  0: T
+} & T[]
+
 export interface ConfigOptions {
   projectId: string
+  chains?: number[]
+  optionalChains: ArrayOneOrMore<number>
 }
 
-export async function defaultEthersConfig({ projectId }: ConfigOptions) {
+export async function defaultEthersConfig({ projectId, chains, optionalChains }: ConfigOptions) {
   const walletConnectProviderOptions: EthereumProviderOptions = {
     projectId,
     showQrModal: false,
-    chains: [1],
-    optionalChains: [42161, 137, 43114, 56, 10, 100, 324, 7777777, 8453, 42220, 1313161554]
+    chains,
+    optionalChains
   }
 
   const walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions)

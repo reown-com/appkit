@@ -6,7 +6,7 @@
     "packages/scaffold",
     "packages/polyfills",
     "packages/wagmi",
-    "packages/ethers",
+    "packages/ethers-5",
     "apps/*",
     "examples/*"
   ],
