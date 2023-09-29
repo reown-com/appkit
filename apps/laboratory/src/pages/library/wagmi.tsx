@@ -1,5 +1,5 @@
-import { Center, Text, VStack, useColorMode } from '@chakra-ui/react'
-import { createWeb3Modal, defaultWagmiConfig, useWeb3ModalTheme } from '@web3modal/wagmi/react'
+import { Center, Text, VStack } from '@chakra-ui/react'
+import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { useEffect, useState } from 'react'
 import { WagmiConfig } from 'wagmi'
 import {
@@ -54,8 +54,8 @@ export const wagmiConfig = defaultWagmiConfig({
 export default function Wagmi() {
   const [ready, setReady] = useState(false)
 
+  // 3. Create Web3Modal
   if (wagmiConfig && chains && projectId) {
-    // 3. Create Web3Modal
     createWeb3Modal({
       wagmiConfig,
       projectId,
