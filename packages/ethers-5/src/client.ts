@@ -438,11 +438,35 @@ export class Web3Modal extends Web3ModalScaffold {
     if (providerType === WALLET_CONNECT_CONNECTOR_ID) {
       const walletConnectProvider = provider?.provider as EthereumProvider
       if (walletConnectProvider) {
-        await walletConnectProvider.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: `0x${chainId.toString(16)}` }]
-        })
-        ProviderController.setChainId(chainId)
+        try {
+          await walletConnectProvider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: `0x${chainId.toString(16)}` }]
+          })
+          ProviderController.setChainId(chainId)
+        } catch (switchError) {
+          console.log(switchError)
+
+          if (switchError.code === 4902 || switchError.code === 5000) {
+            await walletConnectProvider.request({
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainId: `0x${chainId.toString(16)}`,
+                  rpcUrls: [NetworkRPCUrls[chainId]],
+                  chainName: NetworkNames[chainId],
+                  nativeCurrency: {
+                    name: networkCurrenySymbols[chainId],
+                    decimals: 18,
+                    symbol: networkCurrenySymbols[chainId]
+                  },
+                  blockExplorerUrls: [NetworkBlockExplorerUrls[chainId]],
+                  iconUrls: [NetworkImageIds[chainId]]
+                }
+              ]
+            })
+          }
+        }
       }
     } else if (providerType === INJECTED_CONNECTOR_ID) {
       const injectedProvider = provider
