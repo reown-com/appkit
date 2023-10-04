@@ -129,15 +129,16 @@ export const CoreHelperUtil = {
   formatBalance(balance: string | undefined, symbol: string | undefined) {
     let formattedBalance = undefined
 
-    if (balance === '0.0') {
+    if (balance === '0') {
       formattedBalance = '0'
-    } else if (typeof balance === 'string' && balance.length > 6) {
-      formattedBalance = balance.substring(0, 6)
     } else if (typeof balance === 'string') {
-      formattedBalance = balance
+      const number = Number(balance)
+      if (number) {
+        formattedBalance = number.toString().match(/^-?\d+(?:\.\d{0,3})?/u)?.[0]
+      }
     }
 
-    return formattedBalance ? `${formattedBalance} ${symbol}` : '0.0000'
+    return formattedBalance ? `${formattedBalance} ${symbol}` : '0.000'
   },
 
   isRestrictedRegion() {
