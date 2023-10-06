@@ -12,6 +12,7 @@ import type {
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import {
   ADD_CHAIN_METHOD,
+  COINBASE_CONNECTOR_ID,
   INJECTED_CONNECTOR_ID,
   NAMESPACE,
   VERSION,
@@ -60,6 +61,10 @@ declare global {
 // @ts-expect-error: Overriden state type is correct
 interface Web3ModalState extends PublicStateControllerState {
   selectedNetworkId: number | undefined
+}
+
+interface CoinbaseProvider extends EthereumProvider {
+  _addresses?: string[]
 }
 
 // -- Client --------------------------------------------------------------------
@@ -147,13 +152,20 @@ export class Web3Modal extends Web3ModalScaffold {
 
       connectExternal: async ({ id }) => {
         if (id === INJECTED_CONNECTOR_ID) {
-          const injectedProvider = ethersConfig.injected
-          if (!injectedProvider) {
+          const provider = ethersConfig.injected
+          if (!provider) {
             throw new Error('connectionControllerClient:connectInjected - connector is undefined')
           }
-
-          await injectedProvider.send('eth_requestAccounts', []).then(() => {
+          await provider.send('eth_requestAccounts', []).then(() => {
             this.setInjectedProvider(ethersConfig)
+          })
+        } else if (id === COINBASE_CONNECTOR_ID) {
+          const provider = ethersConfig.coinbase
+          if (!provider) {
+            throw new Error('connectionControllerClient:connectCoinbase - connector is undefined')
+          }
+          await provider.send('eth_requestAccounts', []).then(() => {
+            this.setCoinbaseProvider(ethersConfig)
           })
         }
       },
@@ -180,6 +192,9 @@ export class Web3Modal extends Web3ModalScaffold {
           localStorage.removeItem(WALLET_ID)
           ProviderController.reset()
         } else if (providerType === INJECTED_CONNECTOR_ID) {
+          localStorage.removeItem(WALLET_ID)
+          ProviderController.reset()
+        } else if (providerType === COINBASE_CONNECTOR_ID) {
           localStorage.removeItem(WALLET_ID)
           ProviderController.reset()
         }
@@ -210,6 +225,10 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (ethersConfig.injected) {
       this.watchInjected(ethersConfig)
+    }
+
+    if (ethersConfig.coinbase) {
+      this.watchCoinbase(ethersConfig)
     }
   }
 
@@ -282,6 +301,24 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
+  private async setCoinbaseProvider(config: ProviderType) {
+    window?.localStorage.setItem(WALLET_ID, COINBASE_CONNECTOR_ID)
+    const coinbaseProvider = config.coinbase
+
+    if (coinbaseProvider) {
+      const signer = coinbaseProvider.getSigner()
+      const chainId = await signer.getChainId()
+      const address = await signer.getAddress()
+      if (address && chainId) {
+        ProviderController.setChainId(chainId)
+        ProviderController.setProviderType('coinbaseWallet')
+        ProviderController.setProvider(config.coinbase)
+        ProviderController.setIsConnected(true)
+        ProviderController.setAddress(address as Address)
+      }
+    }
+  }
+
   private watchWalletConnect(config: ProviderType) {
     const walletConnectProvider = config.walletConnect?.provider as EthereumProvider
     const walletId = localStorage.getItem(WALLET_ID)
@@ -331,7 +368,39 @@ export class Web3Modal extends Web3ModalScaffold {
 
       injectedProvider.on('chainChanged', chainId => {
         if (chainId) {
-          const chain = hexStringToNumber(chainId)
+          const chain = typeof chainId === 'string' ? hexStringToNumber(chainId) : Number(chainId)
+          ProviderController.setChainId(chain)
+        }
+      })
+    }
+  }
+
+  private watchCoinbase(config: ProviderType) {
+    const coinbaseProvider = config.coinbase?.provider as CoinbaseProvider
+    const walletId = localStorage.getItem(WALLET_ID)
+
+    if (coinbaseProvider) {
+      if (walletId === COINBASE_CONNECTOR_ID) {
+        if (coinbaseProvider._addresses && coinbaseProvider._addresses?.length > 0) {
+          this.setCoinbaseProvider(config)
+        } else {
+          localStorage.removeItem(WALLET_ID)
+          ProviderController.reset()
+        }
+      }
+
+      coinbaseProvider.on('accountsChanged', accounts => {
+        if (accounts.length === 0) {
+          localStorage.removeItem(WALLET_ID)
+          ProviderController.reset()
+        } else {
+          ProviderController.setAddress(accounts[0] as Address)
+        }
+      })
+
+      coinbaseProvider.on('chainChanged', chainId => {
+        if (chainId && walletId === COINBASE_CONNECTOR_ID) {
+          const chain = Number(chainId)
           ProviderController.setChainId(chain)
         }
       })
@@ -393,20 +462,14 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncProfile(address: Address) {
-    const provider = ProviderController.state.provider
-    if (provider) {
-      try {
-        const name = await provider.lookupAddress(address)
-        const avatar = await provider.getAvatar(address)
-        if (name) {
-          this.setProfileName(name)
-        }
-        if (avatar) {
-          this.setProfileImage(avatar)
-        }
-      } catch (error) {
-        /* Handle error */
-      }
+    const ensProvider = new ethers.providers.InfuraProvider('mainnet')
+    const name = await ensProvider.lookupAddress(address)
+    const avatar = await ensProvider.getAvatar(address)
+    if (name) {
+      this.setProfileName(name)
+    }
+    if (avatar) {
+      this.setProfileImage(avatar)
     }
   }
 
@@ -444,9 +507,8 @@ export class Web3Modal extends Web3ModalScaffold {
             params: [{ chainId: `0x${chainId.toString(16)}` }]
           })
           ProviderController.setChainId(chainId)
-        } catch (switchError) {
-          console.log(switchError)
-
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (switchError: any) {
           if (switchError.code === 4902 || switchError.code === 5000) {
             await walletConnectProvider.request({
               method: 'wallet_addEthereumChain',
@@ -471,10 +533,58 @@ export class Web3Modal extends Web3ModalScaffold {
     } else if (providerType === INJECTED_CONNECTOR_ID) {
       const injectedProvider = provider
       if (injectedProvider) {
-        await injectedProvider.send('wallet_switchEthereumChain', [
-          { chainId: `0x${chainId.toString(16)}` }
-        ])
-        ProviderController.setChainId(chainId)
+        try {
+          await injectedProvider.send('wallet_switchEthereumChain', [
+            { chainId: `0x${chainId.toString(16)}` }
+          ])
+          ProviderController.setChainId(chainId)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (switchError: any) {
+          if (switchError.code === 4902 || switchError.code === 5000) {
+            await injectedProvider.send('wallet_addEthereumChain', [
+              {
+                chainId: `0x${chainId.toString(16)}`,
+                rpcUrls: [NetworkRPCUrls[chainId]],
+                chainName: NetworkNames[chainId],
+                nativeCurrency: {
+                  name: networkCurrenySymbols[chainId],
+                  decimals: 18,
+                  symbol: networkCurrenySymbols[chainId]
+                },
+                blockExplorerUrls: [NetworkBlockExplorerUrls[chainId]],
+                iconUrls: [NetworkImageIds[chainId]]
+              }
+            ])
+          }
+        }
+      }
+    } else if (providerType === COINBASE_CONNECTOR_ID) {
+      const coinbaseProvider = provider
+      if (coinbaseProvider) {
+        try {
+          await coinbaseProvider.send('wallet_switchEthereumChain', [
+            { chainId: `0x${chainId.toString(16)}` }
+          ])
+          ProviderController.setChainId(chainId)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (switchError: any) {
+          if (switchError.code === 4902 || switchError.code === 5000) {
+            await coinbaseProvider.send('wallet_addEthereumChain', [
+              {
+                chainId: `0x${chainId.toString(16)}`,
+                rpcUrls: [NetworkRPCUrls[chainId]],
+                chainName: NetworkNames[chainId],
+                nativeCurrency: {
+                  name: networkCurrenySymbols[chainId],
+                  decimals: 18,
+                  symbol: networkCurrenySymbols[chainId]
+                },
+                blockExplorerUrls: [NetworkBlockExplorerUrls[chainId]],
+                iconUrls: [NetworkImageIds[chainId]]
+              }
+            ])
+          }
+        }
       }
     }
   }
@@ -504,6 +614,16 @@ export class Web3Modal extends Web3ModalScaffold {
           imageId: ConnectorImageIds[INJECTED_CONNECTOR_ID],
           name: ConnectorNamesMap[INJECTED_CONNECTOR_ID],
           type: connectorType
+        })
+      }
+
+      if (config.coinbase) {
+        w3mConnectors.push({
+          id: COINBASE_CONNECTOR_ID,
+          explorerId: ConnectorExplorerIds[COINBASE_CONNECTOR_ID],
+          imageId: ConnectorImageIds[COINBASE_CONNECTOR_ID],
+          name: ConnectorNamesMap[COINBASE_CONNECTOR_ID],
+          type: 'EXTERNAL'
         })
       }
 
