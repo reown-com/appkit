@@ -26,7 +26,8 @@ function headings() {
     AllWallets: 'All Wallets',
     WhatIsANetwork: 'What is a network?',
     WhatIsAWallet: 'What is a wallet?',
-    GetWallet: 'Get a Wallet'
+    GetWallet: 'Get a Wallet',
+    Downloads: name ? `Get ${name}` : 'Downloads'
   }
 }
 
