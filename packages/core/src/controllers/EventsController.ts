@@ -38,26 +38,24 @@ export const EventsController = {
     }
   },
 
-  _sendAnalyticsEvent(payload: EventsControllerState) {
-    if (excluded.includes(payload.data.event) || typeof window === 'undefined') {
-      return
-    }
-
-    api
-      .post({
+  async _sendAnalyticsEvent(payload: EventsControllerState) {
+    try {
+      if (excluded.includes(payload.data.event) || typeof window === 'undefined') {
+        return
+      }
+      await api.post({
         path: '/event',
         headers: EventsController._getApiHeaders(),
         body: {
           url: window.location.href,
           domain: window.location.hostname,
-          product: 'WEB3MODAL',
           timestamp: payload.timestamp,
           props: payload.data
         }
       })
-      .catch(_error => {
-        // Silent error handling
-      })
+    } catch {
+      // Catch silently
+    }
   },
 
   sendEvent(data: EventsControllerState['data']) {

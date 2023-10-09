@@ -165,7 +165,7 @@ export const CoreHelperUtil = {
 
   getAnalyticsUrl() {
     return CoreHelperUtil.isRestrictedRegion()
-      ? 'https://analytics-api-cf-workers-staging.walletconnect-v1-bridge.workers.dev'
-      : 'https://analytics-api-cf-workers-staging.walletconnect-v1-bridge.workers.dev'
+      ? 'https://pulse.walletconnect.org'
+      : 'https://pulse.walletconnect.com'
   }
 }
