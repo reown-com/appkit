@@ -1,5 +1,5 @@
 /* eslint-disable no-bitwise */
-import type { SpacingType, ThemeType, TruncateType } from './TypeUtil.js'
+import type { SpacingType, ThemeType, TruncateOptions } from './TypeUtil.js'
 
 export const UiHelperUtil = {
   getSpacingStyles(spacing: SpacingType | SpacingType[], index: number) {
@@ -22,8 +22,7 @@ export const UiHelperUtil = {
     return newUrl.hostname
   },
 
-  // eslint-disable-next-line max-params
-  getTruncateString(string: string, charsStart: number, charsEnd: number, truncate: TruncateType) {
+  getTruncateString({ string, charsStart, charsEnd, truncate }: TruncateOptions) {
     if (string.length <= charsStart + charsEnd) {
       return string
     }
