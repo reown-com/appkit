@@ -3,12 +3,7 @@ import { proxy } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
-import type {
-  ApiGetWalletsRequest,
-  ApiGetWalletsResponse,
-  SdkVersion,
-  WcWallet
-} from '../utils/TypeUtils.js'
+import type { ApiGetWalletsRequest, ApiGetWalletsResponse, WcWallet } from '../utils/TypeUtils.js'
 import { AssetController } from './AssetController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { NetworkController } from './NetworkController.js'
@@ -23,7 +18,6 @@ const recommendedEntries = '4'
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {
   prefetchPromise?: Promise<unknown>
-  sdkVersion: SdkVersion
   page: number
   count: number
   featured: WcWallet[]
@@ -36,7 +30,6 @@ type StateKey = keyof ApiControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ApiControllerState>({
-  sdkVersion: 'html-wagmi-undefined',
   page: 1,
   count: 0,
   featured: [],

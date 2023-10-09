@@ -1,5 +1,4 @@
 import type {
-  ApiControllerState,
   ConnectionControllerClient,
   EventsControllerState,
   NetworkControllerClient,
@@ -42,7 +41,7 @@ export interface LibraryOptions {
   privacyPolicyUrl?: OptionsControllerState['privacyPolicyUrl']
   customWallets?: OptionsControllerState['customWallets']
   enableAnalytics?: OptionsControllerState['enableAnalytics']
-  _sdkVersion: ApiControllerState['sdkVersion']
+  _sdkVersion: OptionsControllerState['sdkVersion']
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
