@@ -74,6 +74,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-what-is-a-network-view></w3m-what-is-a-network-view>`
       case 'GetWallet':
         return html`<w3m-get-wallet-view></w3m-get-wallet-view>`
+      case 'Downloads':
+        return html`<w3m-downloads-view></w3m-downloads-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

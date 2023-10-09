@@ -1,5 +1,5 @@
 import type { WcWallet } from '@web3modal/core'
-import { CoreHelperUtil } from '@web3modal/core'
+import { CoreHelperUtil, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -18,17 +18,18 @@ export class W3mMobileDownloadLinks extends LitElement {
 
       return null
     }
-    const { name, app_store, play_store } = this.wallet
+    const { name, app_store, play_store, desktop_link, webapp_link } = this.wallet
     const isMobile = CoreHelperUtil.isMobile()
     const isIos = CoreHelperUtil.isIos()
     const isAndroid = CoreHelperUtil.isAndroid()
+    const isMultiple = [app_store, play_store, desktop_link, webapp_link].filter(Boolean).length > 1
 
-    if (app_store && play_store && !isMobile) {
+    if (isMultiple && !isMobile) {
       return html`
         <wui-cta-button
           label=${`Don't have ${name}?`}
           buttonLabel="Get"
-          @click=${() => console.log('blagh')}
+          @click=${() => RouterController.push('Downloads', { wallet: this.wallet })}
         ></wui-cta-button>
       `
     }
