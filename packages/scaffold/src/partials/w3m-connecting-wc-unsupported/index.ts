@@ -1,4 +1,4 @@
-import { AssetUtil, CoreHelperUtil, EventsController, RouterController } from '@web3modal/core'
+import { AssetUtil, EventsController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -26,7 +26,7 @@ export class W3mConnectingWcUnsupported extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', '3xl', 'xl'] as const}
+        .padding=${['3xl', 'xl', 'xl', 'xl'] as const}
         gap="xl"
       >
         <wui-wallet-image
@@ -34,37 +34,10 @@ export class W3mConnectingWcUnsupported extends LitElement {
           imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet))}
         ></wui-wallet-image>
 
-        <wui-flex flexDirection="column" alignItems="center" gap="xxs">
-          <wui-text variant="paragraph-500" color="fg-100">Not Detected</wui-text>
-          <wui-text variant="small-500" color="fg-200" align="center">
-            Download and install ${this.wallet?.name} to continue
-          </wui-text>
-        </wui-flex>
-
-        ${this.downloadBtnTemplate()}
+        <wui-text variant="paragraph-500" color="fg-100">Not Detected</wui-text>
       </wui-flex>
-    `
-  }
 
-  // -- Private ------------------------------------------- //
-  private downloadBtnTemplate() {
-    if (!this.wallet) {
-      throw new Error('w3m-connecting-wc-unsupported:onDownload No wallet provided')
-    }
-    const { homepage } = this.wallet
-    if (!homepage) {
-      return null
-    }
-
-    return html`
-      <wui-button
-        size="sm"
-        variant="fill"
-        @click=${() => CoreHelperUtil.openHref(homepage, '_blank')}
-      >
-        <wui-icon color="inherit" slot="iconRight" name="externalLink"></wui-icon>
-        Download
-      </wui-button>
+      <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
     `
   }
 }

@@ -18,66 +18,38 @@ export class W3mMobileDownloadLinks extends LitElement {
 
       return null
     }
-    const { app_store, play_store } = this.wallet
+    const { name, app_store, play_store } = this.wallet
     const isMobile = CoreHelperUtil.isMobile()
     const isIos = CoreHelperUtil.isIos()
     const isAndroid = CoreHelperUtil.isAndroid()
 
     if (app_store && play_store && !isMobile) {
       return html`
-        <wui-separator></wui-separator>
-
-        <wui-flex gap="xs">
-          <wui-list-item
-            variant="icon"
-            icon="appStore"
-            iconVariant="square"
-            @click=${this.onAppStore.bind(this)}
-          >
-            <wui-text variant="paragraph-500" color="fg-100">App Store</wui-text>
-          </wui-list-item>
-
-          <wui-list-item
-            variant="icon"
-            icon="playStore"
-            iconVariant="square"
-            @click=${this.onPlayStore.bind(this)}
-          >
-            <wui-text variant="paragraph-500" color="fg-100">Play Store</wui-text>
-          </wui-list-item>
-        </wui-flex>
+        <wui-cta-button
+          label=${`Don't have ${name}?`}
+          buttonLabel="Get"
+          @click=${() => console.log('blagh')}
+        ></wui-cta-button>
       `
     }
 
-    if (app_store && !isAndroid) {
+    if (app_store && isIos) {
       return html`
-        <wui-separator></wui-separator>
-
-        <wui-list-item
-          variant="icon"
-          icon="appStore"
-          iconVariant="square"
-          chevron
+        <wui-cta-button
+          label=${`Don't have ${name}?`}
+          buttonLabel="Get"
           @click=${this.onAppStore.bind(this)}
-        >
-          <wui-text variant="paragraph-500" color="fg-100">Get the app</wui-text>
-        </wui-list-item>
+        ></wui-cta-button>
       `
     }
 
-    if (play_store && !isIos) {
+    if (play_store && isAndroid) {
       return html`
-        <wui-separator></wui-separator>
-
-        <wui-list-item
-          variant="icon"
-          icon="playStore"
-          iconVariant="square"
-          chevron
+        <wui-cta-button
+          label=${`Don't have ${name}?`}
+          buttonLabel="Get"
           @click=${this.onPlayStore.bind(this)}
-        >
-          <wui-text variant="paragraph-500" color="fg-100">Get the app</wui-text>
-        </wui-list-item>
+        ></wui-cta-button>
       `
     }
 

@@ -112,7 +112,7 @@ export class W3mConnectingWidget extends LitElement {
         data-retry=${this.showRetry}
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', '3xl', 'xl'] as const}
+        .padding=${['3xl', 'xl', 'xl', 'xl'] as const}
         gap="xl"
       >
         <wui-flex justifyContent="center" alignItems="center">
@@ -158,9 +158,8 @@ export class W3mConnectingWidget extends LitElement {
             </wui-flex>
           `
         : null}
-      ${this.isMobile
-        ? html`<w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>`
-        : null}
+
+      <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
     `
   }
 
