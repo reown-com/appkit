@@ -22,19 +22,20 @@ export const UiHelperUtil = {
     return newUrl.hostname
   },
 
-  getTruncateString(string: string, chars: number, truncate: TruncateType) {
-    if (string.length <= chars) {
+  // eslint-disable-next-line max-params
+  getTruncateString(string: string, charsStart: number, charsEnd: number, truncate: TruncateType) {
+    if (string.length <= charsStart + charsEnd) {
       return string
     }
 
     if (truncate === 'end') {
-      return `${string.substring(0, chars)}...`
+      return `${string.substring(0, charsStart)}...`
     } else if (truncate === 'start') {
-      return `...${string.substring(string.length - chars)}`
+      return `...${string.substring(string.length - charsEnd)}`
     }
 
-    return `${string.substring(0, Math.floor(chars / 2))}...${string.substring(
-      string.length - Math.floor(chars / 2)
+    return `${string.substring(0, Math.floor(charsStart))}...${string.substring(
+      string.length - Math.floor(charsEnd)
     )}`
   },
 
