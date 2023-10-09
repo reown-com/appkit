@@ -12,7 +12,6 @@ import type {
 } from '@web3modal/core'
 import {
   AccountController,
-  ApiController,
   BlockchainApiController,
   ConnectionController,
   ConnectorController,
@@ -193,10 +192,9 @@ export class Web3ModalScaffold {
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setEnableAnalytics(options.enableAnalytics)
+    OptionsController.setSdkVersion(options._sdkVersion)
 
     ConnectionController.setClient(options.connectionControllerClient)
-
-    ApiController.setSdkVersion(options._sdkVersion)
 
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)

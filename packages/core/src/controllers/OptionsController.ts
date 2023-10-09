@@ -1,6 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
-import type { CustomWallet, ProjectId, Tokens } from '../utils/TypeUtils.js'
+import type { CustomWallet, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
@@ -13,13 +13,17 @@ export interface OptionsControllerState {
   termsConditionsUrl?: string
   privacyPolicyUrl?: string
   enableAnalytics?: boolean
+  sdkType: 'w3m'
+  sdkVersion: SdkVersion
 }
 
 type StateKey = keyof OptionsControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<OptionsControllerState>({
-  projectId: ''
+  projectId: '',
+  sdkType: 'w3m',
+  sdkVersion: 'html-wagmi-undefined'
 })
 
 // -- Controller ---------------------------------------- //
@@ -64,5 +68,9 @@ export const OptionsController = {
 
   setEnableAnalytics(enableAnalytics: OptionsControllerState['enableAnalytics']) {
     state.enableAnalytics = enableAnalytics
+  },
+
+  setSdkVersion(sdkVersion: OptionsControllerState['sdkVersion']) {
+    state.sdkVersion = sdkVersion
   }
 }

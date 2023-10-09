@@ -19,7 +19,6 @@ const baseUrl = CoreHelperUtil.getApiUrl()
 const api = new FetchUtil({ baseUrl })
 const entries = '40'
 const recommendedEntries = '4'
-const sdkType = 'w3m'
 
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {
@@ -54,15 +53,13 @@ export const ApiController = {
     return subKey(state, key, callback)
   },
 
-  setSdkVersion(sdkVersion: ApiControllerState['sdkVersion']) {
-    state.sdkVersion = sdkVersion
-  },
-
   _getApiHeaders() {
+    const { projectId, sdkType, sdkVersion } = OptionsController.state
+
     return {
-      'x-project-id': OptionsController.state.projectId,
+      'x-project-id': projectId,
       'x-sdk-type': sdkType,
-      'x-sdk-version': state.sdkVersion
+      'x-sdk-version': sdkVersion
     }
   },
 

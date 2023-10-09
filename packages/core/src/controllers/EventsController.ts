@@ -33,8 +33,12 @@ export const EventsController = {
   },
 
   _getApiHeaders() {
+    const { projectId, sdkType, sdkVersion } = OptionsController.state
+
     return {
-      'x-project-id': OptionsController.state.projectId
+      'x-project-id': projectId,
+      'x-sdk-type': sdkType,
+      'x-sdk-version': sdkVersion
     }
   },
 
