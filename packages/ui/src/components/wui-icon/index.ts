@@ -20,6 +20,7 @@ import { chevronBottomSvg } from '../../assets/svg/chevron-bottom.js'
 import { chevronLeftSvg } from '../../assets/svg/chevron-left.js'
 import { chevronRightSvg } from '../../assets/svg/chevron-right.js'
 import { chevronTopSvg } from '../../assets/svg/chevron-top.js'
+import { chromeStoreSvg } from '../../assets/svg/chrome-store.js'
 import { clockSvg } from '../../assets/svg/clock.js'
 import { closeSvg } from '../../assets/svg/close.js'
 import { coinPlaceholderSvg } from '../../assets/svg/coinPlaceholder.js'
@@ -61,6 +62,7 @@ import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   allWallets: allWalletsSvg,
   appStore: appStoreSvg,
+  chromeStore: chromeStoreSvg,
   apple: appleSvg,
   arrowBottom: arrowBottomSvg,
   arrowLeft: arrowLeftSvg,

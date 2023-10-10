@@ -66,6 +66,7 @@ export interface WcWallet {
   webapp_link?: string | null
   app_store?: string | null
   play_store?: string | null
+  chrome_store?: string | null
   rdns?: string | null
   injected?:
     | {

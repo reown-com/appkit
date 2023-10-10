@@ -19,11 +19,11 @@ export class W3mMobileDownloadLinks extends LitElement {
 
       return null
     }
-    const { name, app_store, play_store, homepage } = this.wallet
+    const { name, app_store, play_store, chrome_store, homepage } = this.wallet
     const isMobile = CoreHelperUtil.isMobile()
     const isIos = CoreHelperUtil.isIos()
     const isAndroid = CoreHelperUtil.isAndroid()
-    const isMultiple = [app_store, play_store, homepage].filter(Boolean).length > 1
+    const isMultiple = [app_store, play_store, homepage, chrome_store].filter(Boolean).length > 1
     const shortName = UiHelperUtil.getTruncateString({
       string: name,
       charsStart: 12,
