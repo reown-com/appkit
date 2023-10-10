@@ -48,7 +48,7 @@ export const EventsController = {
         return
       }
       await api.post({
-        path: '/event',
+        path: '/e',
         headers: EventsController._getApiHeaders(),
         body: {
           url: window.location.href,

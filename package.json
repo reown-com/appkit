@@ -34,10 +34,10 @@
     "examples/*"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "6.7.4",
-    "@typescript-eslint/parser": "6.7.4",
-    "@types/react": "18.2.25",
-    "@types/react-dom": "18.2.11",
+    "@typescript-eslint/eslint-plugin": "6.7.5",
+    "@typescript-eslint/parser": "6.7.5",
+    "@types/react": "18.2.27",
+    "@types/react-dom": "18.2.12",
     "eslint": "8.51.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-require-extensions": "0.1.3",
