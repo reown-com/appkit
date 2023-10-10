@@ -40,6 +40,9 @@ export class WuiIconBox extends LitElement {
       case 'md':
         iconSize = 'md'
         break
+      case 'mdl':
+        iconSize = 'mdl'
+        break
       case 'sm':
         iconSize = 'xs'
         break

@@ -20,7 +20,7 @@ export class WuiListItem extends LitElement {
 
   @property() public variant: AccountEntryType = 'icon'
 
-  @property() public iconVariant?: 'blue' | 'overlay' | 'square'
+  @property() public iconVariant?: 'blue' | 'overlay' | 'square' | 'square-blue'
 
   @property({ type: Boolean }) public disabled = false
 
@@ -57,7 +57,8 @@ export class WuiListItem extends LitElement {
     } else if (this.iconVariant === 'square' && this.icon && this.variant === 'icon') {
       return html`<wui-icon name=${this.icon}></wui-icon>`
     } else if (this.variant === 'icon' && this.icon && this.iconVariant) {
-      const color = this.iconVariant === 'blue' ? 'accent-100' : 'fg-200'
+      const color = ['blue', 'square-blue'].includes(this.iconVariant) ? 'accent-100' : 'fg-200'
+      const size = this.iconVariant === 'square-blue' ? 'mdl' : 'md'
 
       return html`
         <wui-icon-box
@@ -66,7 +67,7 @@ export class WuiListItem extends LitElement {
           background="transparent"
           iconColor=${color}
           backgroundColor=${color}
-          size="md"
+          size=${size}
         ></wui-icon-box>
       `
     }

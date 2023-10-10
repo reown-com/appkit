@@ -10,8 +10,9 @@ export default css`
     color: var(--wui-color-fg-250);
   }
 
-  button[data-iconvariant='square'] {
-    padding: 9px 18px 9px 9px;
+  button[data-iconvariant='square'],
+  button[data-iconvariant='square-blue'] {
+    padding: 6px 18px 6px 9px;
   }
 
   button > wui-flex {
@@ -36,6 +37,26 @@ export default css`
 
   button > wui-icon-box[data-variant='overlay'] {
     outline: 2px solid var(--wui-gray-glass-005);
+  }
+
+  button > wui-icon-box[data-variant='square-blue'] {
+    border-radius: var(--wui-border-radius-3xs);
+    position: relative;
+    border: none;
+    width: 36px;
+    height: 36px;
+  }
+
+  button > wui-icon-box[data-variant='square-blue']::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: inherit;
+    border: 1px solid var(--wui-accent-glass-010);
+    pointer-events: none;
   }
 
   button > wui-icon:last-child {

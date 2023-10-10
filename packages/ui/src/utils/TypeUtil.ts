@@ -26,7 +26,7 @@ export type TextType =
 
 export type TextAlign = 'center' | 'left' | 'right'
 
-export type SizeType = 'inherit' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs'
+export type SizeType = 'inherit' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs'
 
 export type SpacingType =
   | '0'
