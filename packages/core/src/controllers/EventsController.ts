@@ -1,7 +1,7 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
-import type { Event } from '../utils/TypeUtils.js'
+import type { Event } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //

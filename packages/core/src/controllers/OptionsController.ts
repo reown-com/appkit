@@ -1,6 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
-import type { CustomWallet, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtils.js'
+import type { CustomWallet, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {

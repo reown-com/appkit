@@ -11,7 +11,7 @@ import type {
   FlexWrapType,
   SpacingType
 } from '../../utils/TypeUtil.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtils.js'
+import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import styles from './styles.js'
 
 @customElement('wui-flex')

@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../../components/wui-image/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtils.js'
+import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import styles from './styles.js'
 
 @customElement('wui-avatar')

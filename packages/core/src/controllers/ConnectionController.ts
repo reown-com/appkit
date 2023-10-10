@@ -2,7 +2,7 @@ import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
-import type { Connector, WcWallet } from '../utils/TypeUtils.js'
+import type { Connector, WcWallet } from '../utils/TypeUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {

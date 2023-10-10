@@ -46,6 +46,7 @@ export * from './src/layout/wui-grid/index.js'
 export * from './src/layout/wui-separator/index.js'
 
 export { initializeTheming, setColorTheme, setThemeVariables } from './src/utils/ThemeUtil.js'
-export { UiHelperUtil } from './src/utils/UiHelperUtils.js'
+export { UiHelperUtil } from './src/utils/UiHelperUtil.js'
+export { customElement } from './src/utils/WebComponentsUtil.js'
 
 export type { IconType, VisualType } from './src/utils/TypeUtil.js'
