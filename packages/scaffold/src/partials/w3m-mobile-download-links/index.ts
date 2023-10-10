@@ -41,6 +41,16 @@ export class W3mMobileDownloadLinks extends LitElement {
       `
     }
 
+    if (!isMultiple && homepage) {
+      return html`
+        <wui-cta-button
+          label=${`Don't have ${shortName}?`}
+          buttonLabel="Get"
+          @click=${this.onHomePage.bind(this)}
+        ></wui-cta-button>
+      `
+    }
+
     if (app_store && isIos) {
       return html`
         <wui-cta-button
@@ -76,6 +86,12 @@ export class W3mMobileDownloadLinks extends LitElement {
   private onPlayStore() {
     if (this.wallet?.play_store) {
       CoreHelperUtil.openHref(this.wallet.play_store, '_blank')
+    }
+  }
+
+  private onHomePage() {
+    if (this.wallet?.homepage) {
+      CoreHelperUtil.openHref(this.wallet.homepage, '_blank')
     }
   }
 }
