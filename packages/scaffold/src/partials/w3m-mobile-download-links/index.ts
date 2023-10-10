@@ -1,5 +1,6 @@
 import type { WcWallet } from '@web3modal/core'
 import { CoreHelperUtil, RouterController } from '@web3modal/core'
+import { UiHelperUtil } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -18,16 +19,22 @@ export class W3mMobileDownloadLinks extends LitElement {
 
       return null
     }
-    const { name, app_store, play_store, desktop_link, webapp_link } = this.wallet
+    const { name, app_store, play_store, homepage } = this.wallet
     const isMobile = CoreHelperUtil.isMobile()
     const isIos = CoreHelperUtil.isIos()
     const isAndroid = CoreHelperUtil.isAndroid()
-    const isMultiple = [app_store, play_store, desktop_link, webapp_link].filter(Boolean).length > 1
+    const isMultiple = [app_store, play_store, homepage].filter(Boolean).length > 1
+    const shortName = UiHelperUtil.getTruncateString({
+      string: name,
+      charsStart: 12,
+      charsEnd: 0,
+      truncate: 'end'
+    })
 
     if (isMultiple && !isMobile) {
       return html`
         <wui-cta-button
-          label=${`Don't have ${name}?`}
+          label=${`Don't have ${shortName}?`}
           buttonLabel="Get"
           @click=${() => RouterController.push('Downloads', { wallet: this.wallet })}
         ></wui-cta-button>
@@ -37,7 +44,7 @@ export class W3mMobileDownloadLinks extends LitElement {
     if (app_store && isIos) {
       return html`
         <wui-cta-button
-          label=${`Don't have ${name}?`}
+          label=${`Don't have ${shortName}?`}
           buttonLabel="Get"
           @click=${this.onAppStore.bind(this)}
         ></wui-cta-button>
@@ -47,7 +54,7 @@ export class W3mMobileDownloadLinks extends LitElement {
     if (play_store && isAndroid) {
       return html`
         <wui-cta-button
-          label=${`Don't have ${name}?`}
+          label=${`Don't have ${shortName}?`}
           buttonLabel="Get"
           @click=${this.onPlayStore.bind(this)}
         ></wui-cta-button>
