@@ -12,6 +12,7 @@ export type ProviderType = {
   injected?: ethers.providers.Web3Provider
   walletConnect?: ethers.providers.Web3Provider
   coinbase?: ethers.providers.Web3Provider
+  EIP6963?: boolean
 }
 
 export type ExternalProvider = {

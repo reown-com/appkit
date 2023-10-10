@@ -13,9 +13,15 @@ export interface ConfigOptions {
   projectId: string
   chains?: number[]
   optionalChains: ArrayOneOrMore<number>
+  enableEIP6963?: boolean
 }
 
-export async function defaultEthersConfig({ projectId, chains, optionalChains }: ConfigOptions) {
+export async function defaultEthersConfig({
+  projectId,
+  chains,
+  optionalChains,
+  enableEIP6963
+}: ConfigOptions) {
   const walletConnectProviderOptions: EthereumProviderOptions = {
     projectId,
     showQrModal: false,
@@ -44,6 +50,10 @@ export async function defaultEthersConfig({ projectId, chains, optionalChains }:
 
   if (window.ethereum) {
     providers.injected = new ethers.providers.Web3Provider(window.ethereum, 'any')
+  }
+
+  if (enableEIP6963) {
+    providers.EIP6963 = true
   }
 
   return providers

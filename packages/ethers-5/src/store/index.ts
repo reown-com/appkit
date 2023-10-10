@@ -5,12 +5,18 @@ import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { Address } from '../utils/types.js'
 
 // -- Types --------------------------------------------- //
+
+interface EIP6963Provider {
+  name: string
+  provider: ethers.providers.Web3Provider
+}
 export interface ProviderControllerState {
   provider?: ethers.providers.Web3Provider
-  providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet'
+  providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963'
   address?: Address
   chainId?: number
   isConnected: boolean
+  EIP6963Providers: EIP6963Provider[]
 }
 
 type StateKey = keyof ProviderControllerState
@@ -21,7 +27,8 @@ const state = proxy<ProviderControllerState>({
   providerType: undefined,
   address: undefined,
   chainId: undefined,
-  isConnected: false
+  isConnected: false,
+  EIP6963Providers: []
 })
 
 // -- Controller ---------------------------------------- //
@@ -55,6 +62,10 @@ export const ProviderController = {
 
   setIsConnected(isConnected: ProviderControllerState['isConnected']) {
     state.isConnected = isConnected
+  },
+
+  add6963Provider(provider: EIP6963Provider) {
+    state.EIP6963Providers.push(provider)
   },
 
   reset() {
