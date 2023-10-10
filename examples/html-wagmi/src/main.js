@@ -1,8 +1,11 @@
-import { arbitrum, mainnet } from 'https://esm.sh/@wagmi/core@1/chains'
-import { createWeb3Modal, defaultWagmiConfig } from 'https://esm.sh/@web3modal/wagmi@beta?bundle'
+import { arbitrum, mainnet } from '@wagmi/core/chains'
+import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi'
 
-// 1. Create projectId
-const projectId = 'YOUR_PROJECT_ID'
+// @ts-expect-error 1. Get projectId
+const projectId = import.meta.env.VITE_PROJECT_ID
+if (!projectId) {
+  throw new Error('VITE_PROJECT_ID is not set')
+}
 
 // 2. Create wagmiConfig
 const chains = [mainnet, arbitrum]
@@ -10,7 +13,10 @@ const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
   metadata: {
-    name: 'Web3Modal HTML Example'
+    name: 'Html Example',
+    description: 'Html Example',
+    url: 'https://web3modal.com',
+    icons: ['https://avatars.githubusercontent.com/u/37784886']
   }
 })
 

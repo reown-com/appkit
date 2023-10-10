@@ -3,14 +3,15 @@ import {
   AssetController,
   ConnectionController,
   CoreHelperUtil,
+  EventsController,
   ModalController,
   NetworkController,
   RouterController,
   SnackController
 } from '@web3modal/core'
-import { UiHelperUtil } from '@web3modal/ui'
+import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 
@@ -91,8 +92,18 @@ export class W3mAccountView extends LitElement {
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
             <wui-text variant="large-600" color="fg-100">
               ${this.profileName
-                ? UiHelperUtil.getTruncateString(this.profileName, 20, 'end')
-                : UiHelperUtil.getTruncateString(this.address, 8, 'middle')}
+                ? UiHelperUtil.getTruncateString({
+                    string: this.profileName,
+                    charsStart: 20,
+                    charsEnd: 0,
+                    truncate: 'end'
+                  })
+                : UiHelperUtil.getTruncateString({
+                    string: this.address,
+                    charsStart: 4,
+                    charsEnd: 6,
+                    truncate: 'middle'
+                  })}
             </wui-text>
             <wui-icon-link
               size="md"
@@ -117,7 +128,7 @@ export class W3mAccountView extends LitElement {
           iconVariant="overlay"
           icon="networkPlaceholder"
           imageSrc=${ifDefined(networkImage)}
-          ?chevron=${this.isMultiNetwork()}
+          ?chevron=${this.isAllowedNetworkSwitch()}
           @click=${this.onNetworks.bind(this)}
         >
           <wui-text variant="paragraph-500" color="fg-100">
@@ -155,10 +166,12 @@ export class W3mAccountView extends LitElement {
     `
   }
 
-  private isMultiNetwork() {
+  private isAllowedNetworkSwitch() {
     const { requestedCaipNetworks } = NetworkController.state
+    const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
+    const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 
-    return requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
+    return isMultiNetwork || !isValidNetwork
   }
 
   private onCopyAddress() {
@@ -173,7 +186,7 @@ export class W3mAccountView extends LitElement {
   }
 
   private onNetworks() {
-    if (this.isMultiNetwork()) {
+    if (this.isAllowedNetworkSwitch()) {
       RouterController.push('Networks')
     }
   }
@@ -182,8 +195,10 @@ export class W3mAccountView extends LitElement {
     try {
       this.disconecting = true
       await ConnectionController.disconnect()
+      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
       ModalController.close()
     } catch {
+      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')
     } finally {
       this.disconecting = false

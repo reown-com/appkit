@@ -6,8 +6,9 @@ import {
   NetworkController
 } from '@web3modal/core'
 import type { WuiAccountButton } from '@web3modal/ui'
+import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement, property, state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-account-button')

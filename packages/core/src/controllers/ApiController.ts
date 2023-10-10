@@ -3,12 +3,7 @@ import { proxy } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
-import type {
-  ApiGetWalletsRequest,
-  ApiGetWalletsResponse,
-  SdkVersion,
-  WcWallet
-} from '../utils/TypeUtils.js'
+import type { ApiGetWalletsRequest, ApiGetWalletsResponse, WcWallet } from '../utils/TypeUtil.js'
 import { AssetController } from './AssetController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { NetworkController } from './NetworkController.js'
@@ -19,12 +14,10 @@ const baseUrl = CoreHelperUtil.getApiUrl()
 const api = new FetchUtil({ baseUrl })
 const entries = '40'
 const recommendedEntries = '4'
-const sdkType = 'w3m'
 
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {
   prefetchPromise?: Promise<unknown>
-  sdkVersion: SdkVersion
   page: number
   count: number
   featured: WcWallet[]
@@ -37,7 +30,6 @@ type StateKey = keyof ApiControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ApiControllerState>({
-  sdkVersion: 'html-wagmi-undefined',
   page: 1,
   count: 0,
   featured: [],
@@ -54,15 +46,13 @@ export const ApiController = {
     return subKey(state, key, callback)
   },
 
-  setSdkVersion(sdkVersion: ApiControllerState['sdkVersion']) {
-    state.sdkVersion = sdkVersion
-  },
-
   _getApiHeaders() {
+    const { projectId, sdkType, sdkVersion } = OptionsController.state
+
     return {
-      'x-project-id': OptionsController.state.projectId,
+      'x-project-id': projectId,
       'x-sdk-type': sdkType,
-      'x-sdk-version': state.sdkVersion
+      'x-sdk-version': sdkVersion
     }
   },
 

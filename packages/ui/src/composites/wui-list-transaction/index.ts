@@ -1,9 +1,10 @@
 import { html, LitElement } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { TransactionType } from '../../utils/TypesUtil.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtils.js'
+import type { TransactionType } from '../../utils/TypeUtil.js'
+import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-transaction-visual/index.js'
 import styles from './styles.js'
 

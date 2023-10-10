@@ -1,5 +1,6 @@
+import { customElement } from '@web3modal/ui'
 import { html, LitElement } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import styles from './styles'
 
 @customElement('gallery-container')

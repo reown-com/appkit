@@ -1,11 +1,12 @@
 import { html, LitElement } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import { networkSvg } from '../../assets/svg/network.js'
 import { networkLgSvg } from '../../assets/svg/networkLg.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { SizeType } from '../../utils/TypesUtil.js'
+import type { SizeType } from '../../utils/TypeUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 @customElement('wui-network-image')

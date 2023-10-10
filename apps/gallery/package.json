@@ -1,6 +1,6 @@
 {
   "name": "@apps/gallery",
-  "version": "3.0.2",
+  "version": "3.1.0",
   "private": true,
   "main": "index.js",
   "scripts": {
@@ -9,17 +9,17 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/ui": "3.0.2",
-    "lit": "2.8.0",
-    "storybook": "7.4.5"
+    "@web3modal/ui": "3.1.0",
+    "lit": "3.0.0",
+    "storybook": "7.4.6"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "7.4.5",
-    "@storybook/addon-links": "7.4.5",
-    "@storybook/blocks": "7.4.5",
-    "@storybook/theming": "7.4.5",
-    "@storybook/web-components": "7.4.5",
-    "@storybook/web-components-vite": "7.4.5",
+    "@storybook/addon-essentials": "7.4.6",
+    "@storybook/addon-links": "7.4.6",
+    "@storybook/blocks": "7.4.6",
+    "@storybook/theming": "7.4.6",
+    "@storybook/web-components": "7.4.6",
+    "@storybook/web-components-vite": "7.4.6",
     "file-system-cache": "2.4.4"
   }
 }

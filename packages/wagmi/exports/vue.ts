@@ -52,9 +52,8 @@ export function useWeb3ModalTheme() {
     modal?.setThemeVariables(themeVariables)
   }
 
-  const themeMode = ref(modal.getThemeMode())
   const themeVariables = ref(modal.getThemeVariables())
-
+  const themeMode = ref(modal.getThemeMode())
   const unsubscribe = modal?.subscribeTheme(state => {
     themeMode.value = state.themeMode
     themeVariables.value = state.themeVariables
@@ -64,12 +63,12 @@ export function useWeb3ModalTheme() {
     unsubscribe?.()
   })
 
-  return reactive({
+  return {
     setThemeMode,
     setThemeVariables,
     themeMode,
     themeVariables
-  })
+  }
 }
 
 export function useWeb3Modal() {
@@ -96,20 +95,35 @@ export function useWeb3ModalState() {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" composable')
   }
 
-  const initial = modal.getState()
-  const open = ref(initial.open)
-  const selectedNetworkId = ref(initial.selectedNetworkId)
-
+  const state = reactive(modal.getState())
   const unsubscribe = modal?.subscribeState(next => {
-    open.value = next.open
-    selectedNetworkId.value = next.selectedNetworkId
+    state.open = next.open
+    state.selectedNetworkId = next.selectedNetworkId
   })
 
   onUnmounted(() => {
     unsubscribe?.()
   })
 
-  return reactive({ open, selectedNetworkId })
+  return state
+}
+
+export function useWeb3ModalEvents() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalEvents" composable')
+  }
+
+  const event = reactive(modal.getEvent())
+  const unsubscribe = modal?.subscribeEvents(next => {
+    event.data = next.data
+    event.timestamp = next.timestamp
+  })
+
+  onUnmounted(() => {
+    unsubscribe?.()
+  })
+
+  return event
 }
 
 // -- Universal Exports -------------------------------------------------------

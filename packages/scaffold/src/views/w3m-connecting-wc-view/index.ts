@@ -1,16 +1,17 @@
-import type { Platform } from '@web3modal/core'
+import type { BaseError, Platform } from '@web3modal/core'
 import {
   ConnectionController,
-  ConnectorController,
   ConstantsUtil,
   CoreHelperUtil,
+  EventsController,
   ModalController,
   RouterController,
   SnackController,
   StorageUtil
 } from '@web3modal/core'
+import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { state } from 'lit/decorators.js'
 
 @customElement('w3m-connecting-wc-view')
 export class W3mConnectingWcView extends LitElement {
@@ -57,10 +58,15 @@ export class W3mConnectingWcView extends LitElement {
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.connectWalletConnect()
         await ConnectionController.state.wcPromise
-        this.storeWalletConnectDeeplink()
+        this.finalizeConnection()
         ModalController.close()
       }
-    } catch {
+    } catch (error) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'CONNECT_ERROR',
+        properties: { message: (error as BaseError)?.message ?? 'Unknown' }
+      })
       ConnectionController.setWcError(true)
       if (CoreHelperUtil.isAllowedRetry(this.lastRetry)) {
         SnackController.showError('Declined')
@@ -70,7 +76,7 @@ export class W3mConnectingWcView extends LitElement {
     }
   }
 
-  private storeWalletConnectDeeplink() {
+  private finalizeConnection() {
     const { wcLinking, recentWallet } = ConnectionController.state
     if (wcLinking) {
       StorageUtil.setWalletConnectDeepLink(wcLinking)
@@ -78,6 +84,13 @@ export class W3mConnectingWcView extends LitElement {
     if (recentWallet) {
       StorageUtil.setWeb3ModalRecent(recentWallet)
     }
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'CONNECT_SUCCESS',
+      properties: {
+        method: wcLinking ? 'mobile' : 'qrcode'
+      }
+    })
   }
 
   private determinePlatforms() {
@@ -89,20 +102,19 @@ export class W3mConnectingWcView extends LitElement {
       return
     }
 
-    const { connectors } = ConnectorController.state
-    const { mobile_link, desktop_link, webapp_link, injected } = this.wallet
-    const injectedIds = injected?.map(({ injected_id }) => injected_id).filter(Boolean) ?? []
-    const isInjected = injectedIds.length
+    const { mobile_link, desktop_link, webapp_link, injected, rdns } = this.wallet
+    const injectedIds = injected?.map(({ injected_id }) => injected_id).filter(Boolean) as string[]
+    const browserIds = rdns ? [rdns] : injectedIds ?? []
+    const isBrowser = browserIds.length
     const isMobileWc = mobile_link
     const isWebWc = webapp_link
-    const isInjectedConnector = connectors.find(c => c.type === 'INJECTED')
-    const isInjectedInstalled = ConnectionController.checkInjectedInstalled(injectedIds as string[])
-    const isInjectedWc = isInjected && isInjectedInstalled && isInjectedConnector
+    const isBrowserInstalled = ConnectionController.checkInstalled(browserIds)
+    const isBrowserWc = isBrowser && isBrowserInstalled
     const isDesktopWc = desktop_link && !CoreHelperUtil.isMobile()
 
     // Populate all preferences
-    if (isInjectedWc) {
-      this.platforms.push('injected')
+    if (isBrowserWc) {
+      this.platforms.push('browser')
     }
     if (isMobileWc) {
       this.platforms.push(CoreHelperUtil.isMobile() ? 'mobile' : 'qrcode')
@@ -113,7 +125,7 @@ export class W3mConnectingWcView extends LitElement {
     if (isDesktopWc) {
       this.platforms.push('desktop')
     }
-    if (!isInjectedWc && isInjected) {
+    if (!isBrowserWc && isBrowser) {
       this.platforms.push('unsupported')
     }
 
@@ -122,8 +134,8 @@ export class W3mConnectingWcView extends LitElement {
 
   private platformTemplate() {
     switch (this.platform) {
-      case 'injected':
-        return html`<w3m-connecting-wc-injected></w3m-connecting-wc-injected>`
+      case 'browser':
+        return html`<w3m-connecting-wc-browser></w3m-connecting-wc-browser>`
       case 'desktop':
         return html`
           <w3m-connecting-wc-desktop .onRetry=${() => this.initializeConnection(true)}>

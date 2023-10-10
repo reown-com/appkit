@@ -1,5 +1,3 @@
-<!-- Test: npx http-server -->
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -8,14 +6,12 @@
     <title>Html Wagmi Example</title>
   </head>
   <body>
-    <w3m-button></w3m-button>
-    <w3m-network-button></w3m-network-button>
-    <w3m-connect-button></w3m-connect-button>
-    <w3m-account-button></w3m-account-button>
-
-    <button id="open-connect-modal">Open Connect Modal</button>
-    <button id="open-network-modal">Open Network Modal</button>
-
-    <script src="main.js" type="module"></script>
+    <div id="app">
+      <button id="open-connect-modal">Open Modal</button>
+      <button id="open-network-modal">Open Networks</button>
+      <w3m-button></w3m-button>
+      <w3m-network-button> </w3m-network-button>
+    </div>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>

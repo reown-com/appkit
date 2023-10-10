@@ -1,6 +1,6 @@
 import type {
-  ApiControllerState,
   ConnectionControllerClient,
+  EventsControllerState,
   NetworkControllerClient,
   NetworkControllerState,
   OptionsControllerState,
@@ -11,11 +11,11 @@ import type {
 } from '@web3modal/core'
 import {
   AccountController,
-  ApiController,
   BlockchainApiController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
+  EventsController,
   ModalController,
   NetworkController,
   OptionsController,
@@ -40,7 +40,8 @@ export interface LibraryOptions {
   termsConditionsUrl?: OptionsControllerState['termsConditionsUrl']
   privacyPolicyUrl?: OptionsControllerState['privacyPolicyUrl']
   customWallets?: OptionsControllerState['customWallets']
-  _sdkVersion: ApiControllerState['sdkVersion']
+  enableAnalytics?: OptionsControllerState['enableAnalytics']
+  _sdkVersion: OptionsControllerState['sdkVersion']
 }
 
 export interface ScaffoldOptions extends LibraryOptions {
@@ -102,6 +103,14 @@ export class Web3ModalScaffold {
     return PublicStateController.subscribe(callback)
   }
 
+  public getEvent() {
+    return { ...EventsController.state }
+  }
+
+  public subscribeEvents(callback: (newEvent: EventsControllerState) => void) {
+    return EventsController.subscribe(callback)
+  }
+
   // -- Protected ----------------------------------------------------------------
   protected setIsConnected: (typeof AccountController)['setIsConnected'] = isConnected => {
     AccountController.setIsConnected(isConnected)
@@ -153,6 +162,9 @@ export class Web3ModalScaffold {
     ConnectorController.addConnector(connector)
   }
 
+  protected getConnectors: (typeof ConnectorController)['getConnectors'] = () =>
+    ConnectorController.getConnectors()
+
   protected resetWcConnection: (typeof ConnectionController)['resetWcConnection'] = () => {
     ConnectionController.resetWcConnection()
   }
@@ -178,10 +190,10 @@ export class Web3ModalScaffold {
     OptionsController.setTermsConditionsUrl(options.termsConditionsUrl)
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
     OptionsController.setCustomWallets(options.customWallets)
+    OptionsController.setEnableAnalytics(options.enableAnalytics)
+    OptionsController.setSdkVersion(options._sdkVersion)
 
     ConnectionController.setClient(options.connectionControllerClient)
-
-    ApiController.setSdkVersion(options._sdkVersion)
 
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)

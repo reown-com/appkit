@@ -16,9 +16,16 @@ export interface LinkingRecord {
 
 export type ProjectId = string
 
-export type Platform = 'mobile' | 'desktop' | 'injected' | 'web' | 'qrcode' | 'unsupported'
+export type Platform =
+  | 'mobile'
+  | 'desktop'
+  | 'browser'
+  | 'web'
+  | 'qrcode'
+  | 'unsupported'
+  | 'external'
 
-export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'EIP6963'
+export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUNCED'
 
 export type Connector = {
   id: string
@@ -27,7 +34,7 @@ export type Connector = {
   imageId?: string
   explorerId?: string
   imageUrl?: string
-  info?: unknown
+  info?: { rdns?: string }
   provider?: unknown
 }
 
@@ -42,6 +49,10 @@ export type CaipNamespaces = Record<
 
 export type SdkVersion = `${'html' | 'react' | 'vue'}-wagmi-${string}`
 
+export interface BaseError {
+  message?: string
+}
+
 // -- ApiController Types -------------------------------------------------------
 export interface WcWallet {
   id: string
@@ -55,6 +66,8 @@ export interface WcWallet {
   webapp_link?: string | null
   app_store?: string | null
   play_store?: string | null
+  chrome_store?: string | null
+  rdns?: string | null
   injected?:
     | {
         namespace?: string
@@ -119,3 +132,69 @@ export type CustomWallet = Pick<
   | 'app_store'
   | 'play_store'
 >
+
+// -- EventsController Types ----------------------------------------------------
+
+export type Event =
+  | {
+      type: 'track'
+      event: 'MODAL_CREATED'
+    }
+  | {
+      type: 'track'
+      event: 'MODAL_LOADED'
+    }
+  | {
+      type: 'track'
+      event: 'MODAL_OPEN'
+    }
+  | {
+      type: 'track'
+      event: 'MODAL_CLOSE'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_ALL_WALLETS'
+    }
+  | {
+      type: 'track'
+      event: 'SELECT_WALLET'
+      properties: {
+        name: string
+        platform: Platform
+      }
+    }
+  | {
+      type: 'track'
+      event: 'CONNECT_SUCCESS'
+      properties: {
+        method: 'qrcode' | 'mobile' | 'external' | 'browser'
+      }
+    }
+  | {
+      type: 'track'
+      event: 'CONNECT_ERROR'
+      properties: {
+        message: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'DISCONNECT_SUCCESS'
+    }
+  | {
+      type: 'track'
+      event: 'DISCONNECT_ERROR'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_WALLET_HELP'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_NETWORK_HELP'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_GET_WALLET'
+    }

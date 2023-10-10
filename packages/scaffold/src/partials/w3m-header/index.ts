@@ -1,7 +1,13 @@
 import type { RouterControllerState } from '@web3modal/core'
-import { ConnectionController, ModalController, RouterController } from '@web3modal/core'
+import {
+  ConnectionController,
+  EventsController,
+  ModalController,
+  RouterController
+} from '@web3modal/core'
+import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 
 // -- Helpers ------------------------------------------- //
@@ -21,7 +27,8 @@ function headings() {
     AllWallets: 'All Wallets',
     WhatIsANetwork: 'What is a network?',
     WhatIsAWallet: 'What is a wallet?',
-    GetWallet: 'Get a Wallet'
+    GetWallet: 'Get a Wallet',
+    Downloads: name ? `Get ${name}` : 'Downloads'
   }
 }
 
@@ -70,6 +77,11 @@ export class W3mHeader extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private onWalletHelp() {
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_WALLET_HELP' })
+    RouterController.push('WhatIsAWallet')
+  }
+
   private titleTemplate() {
     return html`<wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>`
   }
@@ -91,7 +103,7 @@ export class W3mHeader extends LitElement {
       data-hidden=${!isConnectHelp}
       id="dynamic"
       icon="helpCircle"
-      @click=${() => RouterController.push('WhatIsAWallet')}
+      @click=${this.onWalletHelp.bind(this)}
     ></wui-icon-link>`
   }
 

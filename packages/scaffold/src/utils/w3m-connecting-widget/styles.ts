@@ -50,11 +50,11 @@ export default css`
     animation: shake 250ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   }
 
-  [data-retry='false'] wui-button {
+  [data-retry='false'] wui-link {
     display: none;
   }
 
-  [data-retry='true'] wui-button {
+  [data-retry='true'] wui-link {
     display: block;
     opacity: 1;
   }

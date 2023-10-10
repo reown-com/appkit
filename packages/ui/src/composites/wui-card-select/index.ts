@@ -1,9 +1,10 @@
 import { html, LitElement } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { CardSelectType } from '../../utils/TypesUtil.js'
+import type { CardSelectType } from '../../utils/TypeUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-network-image/index.js'
 import '../wui-wallet-image/index.js'
 import styles from './styles.js'
@@ -14,7 +15,7 @@ export class WuiCardSelect extends LitElement {
 
   // -- State & Properties -------------------------------- //
 
-  @property() public name = 'unknown'
+  @property() public name = 'Unknown'
 
   @property() public type: CardSelectType = 'wallet'
 

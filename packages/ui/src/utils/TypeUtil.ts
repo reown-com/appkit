@@ -26,7 +26,7 @@ export type TextType =
 
 export type TextAlign = 'center' | 'left' | 'right'
 
-export type SizeType = 'inherit' | 'lg' | 'md' | 'sm' | 'xs' | 'xxs'
+export type SizeType = 'inherit' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs'
 
 export type SpacingType =
   | '0'
@@ -84,6 +84,7 @@ export type GridItemsType = 'center' | 'end' | 'start' | 'stretch'
 export type IconType =
   | 'allWallets'
   | 'appStore'
+  | 'chromeStore'
   | 'apple'
   | 'arrowBottom'
   | 'arrowLeft'
@@ -224,3 +225,10 @@ export interface ThemeVariables {
 export type IconBoxBorderType = 'wui-color-bg-125' | 'wui-accent-glass-010'
 
 export type TruncateType = 'start' | 'middle' | 'end'
+
+export type TruncateOptions = {
+  string: string
+  charsStart: number
+  charsEnd: number
+  truncate: TruncateType
+}

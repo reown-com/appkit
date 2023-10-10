@@ -1,7 +1,8 @@
 import type { WcWallet } from '@web3modal/core'
-import { CoreHelperUtil } from '@web3modal/core'
+import { CoreHelperUtil, RouterController } from '@web3modal/core'
+import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import styles from './styles.js'
 
 @customElement('w3m-mobile-download-links')
@@ -18,66 +19,55 @@ export class W3mMobileDownloadLinks extends LitElement {
 
       return null
     }
-    const { app_store, play_store } = this.wallet
+    const { name, app_store, play_store, chrome_store, homepage } = this.wallet
     const isMobile = CoreHelperUtil.isMobile()
     const isIos = CoreHelperUtil.isIos()
     const isAndroid = CoreHelperUtil.isAndroid()
+    const isMultiple = [app_store, play_store, homepage, chrome_store].filter(Boolean).length > 1
+    const shortName = UiHelperUtil.getTruncateString({
+      string: name,
+      charsStart: 12,
+      charsEnd: 0,
+      truncate: 'end'
+    })
 
-    if (app_store && play_store && !isMobile) {
+    if (isMultiple && !isMobile) {
       return html`
-        <wui-separator></wui-separator>
-
-        <wui-flex gap="xs">
-          <wui-list-item
-            variant="icon"
-            icon="appStore"
-            iconVariant="square"
-            @click=${this.onAppStore.bind(this)}
-          >
-            <wui-text variant="paragraph-500" color="fg-100">App Store</wui-text>
-          </wui-list-item>
-
-          <wui-list-item
-            variant="icon"
-            icon="playStore"
-            iconVariant="square"
-            @click=${this.onPlayStore.bind(this)}
-          >
-            <wui-text variant="paragraph-500" color="fg-100">Play Store</wui-text>
-          </wui-list-item>
-        </wui-flex>
+        <wui-cta-button
+          label=${`Don't have ${shortName}?`}
+          buttonLabel="Get"
+          @click=${() => RouterController.push('Downloads', { wallet: this.wallet })}
+        ></wui-cta-button>
       `
     }
 
-    if (app_store && !isAndroid) {
+    if (!isMultiple && homepage) {
       return html`
-        <wui-separator></wui-separator>
+        <wui-cta-button
+          label=${`Don't have ${shortName}?`}
+          buttonLabel="Get"
+          @click=${this.onHomePage.bind(this)}
+        ></wui-cta-button>
+      `
+    }
 
-        <wui-list-item
-          variant="icon"
-          icon="appStore"
-          iconVariant="square"
-          chevron
+    if (app_store && isIos) {
+      return html`
+        <wui-cta-button
+          label=${`Don't have ${shortName}?`}
+          buttonLabel="Get"
           @click=${this.onAppStore.bind(this)}
-        >
-          <wui-text variant="paragraph-500" color="fg-100">Get the app</wui-text>
-        </wui-list-item>
+        ></wui-cta-button>
       `
     }
 
-    if (play_store && !isIos) {
+    if (play_store && isAndroid) {
       return html`
-        <wui-separator></wui-separator>
-
-        <wui-list-item
-          variant="icon"
-          icon="playStore"
-          iconVariant="square"
-          chevron
+        <wui-cta-button
+          label=${`Don't have ${shortName}?`}
+          buttonLabel="Get"
           @click=${this.onPlayStore.bind(this)}
-        >
-          <wui-text variant="paragraph-500" color="fg-100">Get the app</wui-text>
-        </wui-list-item>
+        ></wui-cta-button>
       `
     }
 
@@ -96,6 +86,12 @@ export class W3mMobileDownloadLinks extends LitElement {
   private onPlayStore() {
     if (this.wallet?.play_store) {
       CoreHelperUtil.openHref(this.wallet.play_store, '_blank')
+    }
+  }
+
+  private onHomePage() {
+    if (this.wallet?.homepage) {
+      CoreHelperUtil.openHref(this.wallet.homepage, '_blank')
     }
   }
 }

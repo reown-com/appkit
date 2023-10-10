@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ui",
-  "version": "3.0.2",
+  "version": "3.1.0",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -16,7 +16,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "lit": "2.8.0",
+    "lit": "3.0.0",
     "qrcode": "1.5.3"
   },
   "devDependencies": {

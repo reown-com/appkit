@@ -1,8 +1,9 @@
 import { html, LitElement } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { IWalletImage } from '../../utils/TypesUtil.js'
+import type { IWalletImage } from '../../utils/TypeUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-wallet-image/index.js'
 import styles from './styles.js'
 
