@@ -5,9 +5,9 @@ import {
   SnackController,
   ThemeController
 } from '@web3modal/core'
-import { UiHelperUtil, initializeTheming } from '@web3modal/ui'
+import { UiHelperUtil, customElement, initializeTheming } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //

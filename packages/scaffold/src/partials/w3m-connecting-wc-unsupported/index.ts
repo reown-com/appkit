@@ -1,6 +1,6 @@
 import { AssetUtil, EventsController, RouterController } from '@web3modal/core'
+import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connecting-wc-unsupported')

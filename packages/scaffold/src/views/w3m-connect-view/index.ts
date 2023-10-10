@@ -10,8 +10,9 @@ import {
   RouterController,
   StorageUtil
 } from '@web3modal/core'
+import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 

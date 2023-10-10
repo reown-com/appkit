@@ -1,6 +1,6 @@
 import { AssetUtil, ConnectionController, EventsController, ThemeController } from '@web3modal/core'
+import { customElement } from '@web3modal/ui'
 import { html } from 'lit'
-import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 import styles from './styles.js'

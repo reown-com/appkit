@@ -1,7 +1,8 @@
 import type { Platform } from '@web3modal/core'
 import { ConnectionController } from '@web3modal/core'
+import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement, property, state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 
 @customElement('w3m-connecting-header')
 export class W3mConnectingHeader extends LitElement {

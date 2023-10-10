@@ -1,8 +1,9 @@
 import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { ColorType, IconType, SizeType } from '../../utils/TypeUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 // -- Svg's-------------------------------- //

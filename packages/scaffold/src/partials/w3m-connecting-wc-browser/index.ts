@@ -5,7 +5,7 @@ import {
   EventsController,
   ModalController
 } from '@web3modal/core'
-import { customElement } from 'lit/decorators.js'
+import { customElement } from '@web3modal/ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-wc-browser')

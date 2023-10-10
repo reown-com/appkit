@@ -1,6 +1,6 @@
 import type { BaseError, ConnectorType, Platform } from '@web3modal/core'
 import { ConnectionController, EventsController, ModalController } from '@web3modal/core'
-import { customElement } from 'lit/decorators.js'
+import { customElement } from '@web3modal/ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 const platformMap = {

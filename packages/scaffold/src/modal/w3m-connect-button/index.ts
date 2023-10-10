@@ -1,7 +1,8 @@
 import { ModalController } from '@web3modal/core'
 import type { WuiConnectButton } from '@web3modal/ui'
+import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement, property, state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-button')

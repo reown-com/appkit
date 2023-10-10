@@ -1,8 +1,8 @@
 import type { WcWallet } from '@web3modal/core'
 import { CoreHelperUtil, RouterController } from '@web3modal/core'
-import { UiHelperUtil } from '@web3modal/ui'
+import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import styles from './styles.js'
 
 @customElement('w3m-mobile-download-links')
