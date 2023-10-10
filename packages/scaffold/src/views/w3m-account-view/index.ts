@@ -128,7 +128,7 @@ export class W3mAccountView extends LitElement {
           iconVariant="overlay"
           icon="networkPlaceholder"
           imageSrc=${ifDefined(networkImage)}
-          ?chevron=${this.isMultiNetwork()}
+          ?chevron=${this.isAllowedNetworkSwitch()}
           @click=${this.onNetworks.bind(this)}
         >
           <wui-text variant="paragraph-500" color="fg-100">
@@ -166,10 +166,12 @@ export class W3mAccountView extends LitElement {
     `
   }
 
-  private isMultiNetwork() {
+  private isAllowedNetworkSwitch() {
     const { requestedCaipNetworks } = NetworkController.state
+    const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
+    const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 
-    return requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
+    return isMultiNetwork || !isValidNetwork
   }
 
   private onCopyAddress() {
@@ -184,7 +186,7 @@ export class W3mAccountView extends LitElement {
   }
 
   private onNetworks() {
-    if (this.isMultiNetwork()) {
+    if (this.isAllowedNetworkSwitch()) {
       RouterController.push('Networks')
     }
   }
