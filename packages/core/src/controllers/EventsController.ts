@@ -51,6 +51,7 @@ export const EventsController = {
         path: '/e',
         headers: EventsController._getApiHeaders(),
         body: {
+          eventId: CoreHelperUtil.getUUID(),
           url: window.location.href,
           domain: window.location.hostname,
           timestamp: payload.timestamp,
