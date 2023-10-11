@@ -11,13 +11,11 @@ import { VERSION } from '@web3modal/utils'
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
 
-declare module '@vue/runtime-core' {
-  export interface ComponentCustomProperties {
-    W3mConnectButton: Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
-    W3mAccountButton: Pick<W3mAccountButton, 'disabled' | 'balance'>
-    W3mButton: Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
-    W3mNetworkButton: Pick<W3mNetworkButton, 'disabled'>
-  }
+export interface ComponentCustomProperties {
+  W3mConnectButton: Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
+  W3mAccountButton: Pick<W3mAccountButton, 'disabled' | 'balance'>
+  W3mButton: Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
+  W3mNetworkButton: Pick<W3mNetworkButton, 'disabled'>
 }
 
 // -- Setup -------------------------------------------------------------------
