@@ -20,16 +20,7 @@ import {
   NAMESPACE,
   VERSION,
   WALLET_CONNECT_CONNECTOR_ID,
-  WALLET_ID
-} from './utils/constants.js'
-import type EthereumProvider from '@walletconnect/ethereum-provider'
-import {
-  caipNetworkIdToNumber,
-  getCaipDefaultChain,
-  getCaipTokens,
-  hexStringToNumber
-} from './utils/helpers.js'
-import {
+  WALLET_ID,
   ConnectorExplorerIds,
   ConnectorImageIds,
   ConnectorNamesMap,
@@ -39,7 +30,14 @@ import {
   NetworkNames,
   NetworkRPCUrls,
   networkCurrenySymbols
-} from './utils/presets.js'
+} from '@web3modal/utils'
+import type EthereumProvider from '@walletconnect/ethereum-provider'
+import {
+  caipNetworkIdToNumber,
+  getEthersCaipDefaultChain,
+  getCaipTokens,
+  hexStringToNumber
+} from '@web3modal/utils'
 import type { Address, ProviderType } from './utils/types.js'
 import { ethers, utils } from 'ethers'
 import { ProviderController } from './store/index.js'
@@ -231,7 +229,7 @@ export class Web3Modal extends Web3ModalScaffold {
     super({
       networkControllerClient,
       connectionControllerClient,
-      defaultChain: getCaipDefaultChain(defaultChain),
+      defaultChain: getEthersCaipDefaultChain(defaultChain),
       tokens: getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `html-ethers-5-${VERSION}`,
       ...w3mOptions
@@ -615,6 +613,8 @@ export class Web3Modal extends Web3ModalScaffold {
                 }
               ]
             })
+          } else {
+            throw new Error('Chain is not supported')
           }
         }
       }
@@ -643,6 +643,8 @@ export class Web3Modal extends Web3ModalScaffold {
                 iconUrls: [NetworkImageIds[chainId]]
               }
             ])
+          } else {
+            throw new Error('Chain is not supported')
           }
         }
       }
@@ -672,6 +674,8 @@ export class Web3Modal extends Web3ModalScaffold {
                 iconUrls: [NetworkImageIds[chainId]]
               }
             ])
+          } else {
+            throw new Error('Chain is not supported')
           }
         }
       }

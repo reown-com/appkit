@@ -33,17 +33,14 @@ import {
   NAMESPACE,
   VERSION,
   WALLET_CHOICE_KEY,
-  WALLET_CONNECT_CONNECTOR_ID
-} from './utils/constants.js'
-import { caipNetworkIdToNumber, getCaipDefaultChain, getCaipTokens } from './utils/helpers.js'
-import {
+  WALLET_CONNECT_CONNECTOR_ID,
   ConnectorExplorerIds,
   ConnectorImageIds,
   ConnectorNamesMap,
   ConnectorTypesMap,
   NetworkImageIds
-} from './utils/presets.js'
-
+} from '@web3modal/utils'
+import { caipNetworkIdToNumber, getWagmiCaipDefaultChain, getCaipTokens } from '@web3modal/utils'
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -184,7 +181,7 @@ export class Web3Modal extends Web3ModalScaffold {
     super({
       networkControllerClient,
       connectionControllerClient,
-      defaultChain: getCaipDefaultChain(defaultChain),
+      defaultChain: getWagmiCaipDefaultChain(defaultChain),
       tokens: getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `html-wagmi-${VERSION}`,
       ...w3mOptions

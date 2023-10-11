@@ -4,9 +4,12 @@
     "packages/ui",
     "packages/core",
     "packages/scaffold",
+    "packages/scaffold-react",
+    "packages/scaffold-vue",
     "packages/polyfills",
     "packages/wagmi",
     "packages/ethers-5",
+    "packages/utils",
     "apps/*",
     "examples/*"
   ],

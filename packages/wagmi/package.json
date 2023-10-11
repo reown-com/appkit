@@ -44,7 +44,10 @@
   },
   "dependencies": {
     "@web3modal/polyfills": "3.0.2",
-    "@web3modal/scaffold": "3.0.2"
+    "@web3modal/scaffold": "3.0.2",
+    "@web3modal/scaffold-react": "3.0.2",
+    "@web3modal/scaffold-vue": "3.0.2",
+    "@web3modal/utils": "3.0.2"
   },
   "peerDependencies": {
     "@wagmi/core": ">=1",

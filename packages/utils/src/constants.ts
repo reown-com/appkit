@@ -18,7 +18,4 @@ export const EIP6963_ANNOUNCE_EVENT = 'eip6963:announceProvider'
 
 export const EIP6963_REQUEST_EVENT = 'eip6963:requestProvider'
 
-export const WALLET_ID = '@w3m/wallet_id'
-
-// DO NOT REMOVE, SHOULD MATCH CORE PACKAGE VERSION
 export const VERSION = '3.0.2'

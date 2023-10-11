@@ -1,6 +1,6 @@
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
-import { VERSION } from '../src/utils/constants.js'
+import { VERSION } from '@web3modal/utils'
 
 export type { Web3ModalOptions } from '../src/client.js'
 export { defaultEthersConfig } from '../src/utils/defaultEthersCoreConfig.js'

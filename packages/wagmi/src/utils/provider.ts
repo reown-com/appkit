@@ -1,6 +1,6 @@
 import type { Chain, ChainProviderFn } from '@wagmi/core'
 import { CoreHelperUtil } from '@web3modal/scaffold'
-import { NAMESPACE } from './constants.js'
+import { NAMESPACE } from '@web3modal/utils'
 
 // -- Helpers ------------------------------------------------------------------
 const RPC_URL = CoreHelperUtil.getBlockchainApiUrl()
