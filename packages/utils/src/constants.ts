@@ -18,4 +18,4 @@ export const EIP6963_ANNOUNCE_EVENT = 'eip6963:announceProvider'
 
 export const EIP6963_REQUEST_EVENT = 'eip6963:requestProvider'
 
-export const VERSION = '3.0.2'
+export const VERSION = '3.1.0'

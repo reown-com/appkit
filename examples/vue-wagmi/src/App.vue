@@ -4,6 +4,7 @@ import {
   createWeb3Modal,
   defaultWagmiConfig,
   useWeb3Modal,
+  useWeb3ModalEvents,
   useWeb3ModalState,
   useWeb3ModalTheme
 } from '@web3modal/wagmi/vue'
@@ -39,7 +40,8 @@ createWeb3Modal({
 // 4. Use modal composable
 const modal = useWeb3Modal()
 const state = useWeb3ModalState()
-const theme = useWeb3ModalTheme()
+const { setThemeMode, themeMode, themeVariables } = useWeb3ModalTheme()
+const events = useWeb3ModalEvents()
 </script>
 
 <template>
@@ -50,6 +52,8 @@ const theme = useWeb3ModalTheme()
 
   <button @click="modal.open()">Open Connect Modal</button>
   <button @click="modal.open({ view: 'Networks' })">Open Network Modal</button>
+  <button @click="setThemeMode(themeMode === 'dark' ? 'light' : 'dark')">Toggle Theme Mode</button>
   <pre>{{ JSON.stringify(state, null, 2) }}</pre>
-  <pre>{{ JSON.stringify(theme, null, 2) }}</pre>
+  <pre>{{ JSON.stringify({ themeMode, themeVariables }, null, 2) }}</pre>
+  <pre>{{ JSON.stringify(events, null, 2) }}</pre>
 </template>

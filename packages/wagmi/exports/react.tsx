@@ -36,7 +36,8 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 }
 
 // -- Hooks -------------------------------------------------------------------
-export { useWeb3ModalTheme, useWeb3Modal, useWeb3ModalState } from '@web3modal/scaffold-react'
+export { useWeb3ModalTheme, useWeb3Modal, useWeb3ModalState, useWeb3ModalEvents } from '@web3modal/scaffold-react'
+
 
 // -- Universal Exports -------------------------------------------------------
 export { EIP6963Connector } from '../src/connectors/EIP6963Connector.js'

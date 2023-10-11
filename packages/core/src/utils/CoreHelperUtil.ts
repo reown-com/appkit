@@ -1,5 +1,5 @@
 import { ConstantsUtil } from './ConstantsUtil.js'
-import type { CaipAddress, LinkingRecord } from './TypeUtils.js'
+import type { CaipAddress, LinkingRecord } from './TypeUtil.js'
 
 export const CoreHelperUtil = {
   isMobile() {
@@ -129,15 +129,16 @@ export const CoreHelperUtil = {
   formatBalance(balance: string | undefined, symbol: string | undefined) {
     let formattedBalance = undefined
 
-    if (balance === '0.0') {
-      formattedBalance = '0'
-    } else if (typeof balance === 'string' && balance.length > 6) {
-      formattedBalance = balance.substring(0, 6)
+    if (balance === '0') {
+      formattedBalance = '0.000'
     } else if (typeof balance === 'string') {
-      formattedBalance = balance
+      const number = Number(balance)
+      if (number) {
+        formattedBalance = number.toString().match(/^-?\d+(?:\.\d{0,3})?/u)?.[0]
+      }
     }
 
-    return formattedBalance ? `${formattedBalance} ${symbol}` : '0.0000'
+    return formattedBalance ? `${formattedBalance} ${symbol}` : '0.000'
   },
 
   isRestrictedRegion() {
@@ -161,5 +162,24 @@ export const CoreHelperUtil = {
     return CoreHelperUtil.isRestrictedRegion()
       ? 'https://rpc.walletconnect.org'
       : 'https://rpc.walletconnect.com'
+  },
+
+  getAnalyticsUrl() {
+    return CoreHelperUtil.isRestrictedRegion()
+      ? 'https://pulse.walletconnect.org'
+      : 'https://pulse.walletconnect.com'
+  },
+
+  getUUID() {
+    if (crypto?.randomUUID) {
+      return crypto.randomUUID()
+    }
+
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/gu, c => {
+      const r = (Math.random() * 16) | 0
+      const v = c === 'x' ? r : (r & 0x3) | 0x8
+
+      return v.toString(16)
+    })
   }
 }

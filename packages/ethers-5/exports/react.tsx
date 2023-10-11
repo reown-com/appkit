@@ -83,7 +83,7 @@ export function useWeb3ModalAccount() {
   }
 }
 
-export { useWeb3ModalTheme, useWeb3Modal, useWeb3ModalState } from '@web3modal/scaffold-react'
+export { useWeb3ModalTheme, useWeb3Modal, useWeb3ModalState, useWeb3ModalEvents } from '@web3modal/scaffold-react'
 
 // -- Universal Exports -------------------------------------------------------
 export { defaultEthersConfig } from '../src/utils/defaultEthersReactConfig.js'

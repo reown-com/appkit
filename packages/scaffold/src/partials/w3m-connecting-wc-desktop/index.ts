@@ -1,5 +1,5 @@
-import { ConnectionController, CoreHelperUtil } from '@web3modal/core'
-import { customElement } from 'lit/decorators.js'
+import { ConnectionController, CoreHelperUtil, EventsController } from '@web3modal/core'
+import { customElement } from '@web3modal/ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-wc-desktop')
@@ -11,6 +11,11 @@ export class W3mConnectingWcDesktop extends W3mConnectingWidget {
     }
     this.onConnect = this.onConnectProxy.bind(this)
     this.onRender = this.onRenderProxy.bind(this)
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SELECT_WALLET',
+      properties: { name: this.wallet.name, platform: 'desktop' }
+    })
   }
 
   // -- Private ------------------------------------------- //

@@ -1,8 +1,9 @@
 import { html, LitElement } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
+import type { ColorType, SizeType } from '../../utils/TypeUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
-import type { ColorType, SizeType } from '../../utils/TypesUtil.js'
 
 @customElement('wui-loading-spinner')
 export class WuiLoadingSpinner extends LitElement {

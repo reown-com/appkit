@@ -5,12 +5,14 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
+  EventsController,
   OptionsController,
   RouterController,
   StorageUtil
 } from '@web3modal/core'
+import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 
@@ -53,7 +55,9 @@ export class W3mConnectView extends LitElement {
     if (CoreHelperUtil.isMobile()) {
       return null
     }
+
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+
     if (!connector) {
       return null
     }
@@ -75,14 +79,14 @@ export class W3mConnectView extends LitElement {
     if (!customWallets?.length) {
       return null
     }
-    const wallets = this.filterOutRecentWallets(customWallets)
+    const wallets = this.filterOutDuplicateWallets(customWallets)
 
     return wallets.map(
       wallet => html`
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           name=${wallet.name ?? 'Unknown'}
-          @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
+          @click=${() => this.onConnectWallet(wallet)}
         >
         </wui-list-wallet>
       `
@@ -94,14 +98,14 @@ export class W3mConnectView extends LitElement {
     if (!featured.length) {
       return null
     }
-    const wallets = this.filterOutRecentWallets(featured)
+    const wallets = this.filterOutDuplicateWallets(featured)
 
     return wallets.map(
       wallet => html`
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           name=${wallet.name ?? 'Unknown'}
-          @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
+          @click=${() => this.onConnectWallet(wallet)}
         >
         </wui-list-wallet>
       `
@@ -116,7 +120,7 @@ export class W3mConnectView extends LitElement {
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           name=${wallet.name ?? 'Unknown'}
-          @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
+          @click=${() => this.onConnectWallet(wallet)}
           tagLabel="recent"
           tagVariant="shade"
         >
@@ -127,7 +131,7 @@ export class W3mConnectView extends LitElement {
 
   private announcedTemplate() {
     return this.connectors.map(connector => {
-      if (connector.type !== 'EIP6963') {
+      if (connector.type !== 'ANNOUNCED') {
         return null
       }
 
@@ -145,13 +149,13 @@ export class W3mConnectView extends LitElement {
   }
 
   private injectedTemplate() {
-    const announced = this.connectors.find(c => c.type === 'EIP6963')
+    const announced = this.connectors.find(c => c.type === 'ANNOUNCED')
 
     return this.connectors.map(connector => {
       if (connector.type !== 'INJECTED') {
         return null
       }
-      if (!ConnectionController.checkInjectedInstalled()) {
+      if (!ConnectionController.checkInstalled()) {
         return null
       }
 
@@ -170,7 +174,7 @@ export class W3mConnectView extends LitElement {
 
   private connectorsTemplate() {
     return this.connectors.map(connector => {
-      if (['WALLET_CONNECT', 'INJECTED', 'EIP6963'].includes(connector.type)) {
+      if (['WALLET_CONNECT', 'INJECTED', 'ANNOUNCED'].includes(connector.type)) {
         return null
       }
 
@@ -193,7 +197,7 @@ export class W3mConnectView extends LitElement {
         name="All Wallets"
         walletIcon="allWallets"
         showAllWallets
-        @click=${() => RouterController.push('AllWallets')}
+        @click=${this.onAllWallets.bind(this)}
         tagLabel=${`${roundedCount}+`}
         tagVariant="shade"
       ></wui-list-wallet>
@@ -201,26 +205,25 @@ export class W3mConnectView extends LitElement {
   }
 
   private recommendedTemplate() {
-    const { recommended, featured } = ApiController.state
-    const { customWallets } = OptionsController.state
+    const { recommended } = ApiController.state
+    const { customWallets, featuredWalletIds } = OptionsController.state
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
-    const eip6963 = connectors.filter(c => c.type === 'EIP6963')
-    if (!recommended.length) {
+    const eip6963 = connectors.filter(c => c.type === 'ANNOUNCED')
+    if (featuredWalletIds || customWallets || !recommended.length) {
       return null
     }
-    const featuredLength = featured?.length ?? 0
-    const customLength = customWallets?.length ?? 0
-    const overrideLength = featuredLength + customLength + eip6963.length + recent.length
+
+    const overrideLength = eip6963.length + recent.length
     const maxRecommended = Math.max(0, 2 - overrideLength)
-    const wallets = this.filterOutRecentWallets(recommended).slice(0, maxRecommended)
+    const wallets = this.filterOutDuplicateWallets(recommended).slice(0, maxRecommended)
 
     return wallets.map(
       wallet => html`
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           name=${wallet?.name ?? 'Unknown'}
-          @click=${() => RouterController.push('ConnectingWalletConnect', { wallet })}
+          @click=${() => this.onConnectWallet(wallet)}
         >
         </wui-list-wallet>
       `
@@ -239,12 +242,25 @@ export class W3mConnectView extends LitElement {
     }
   }
 
-  private filterOutRecentWallets(wallets: WcWallet[]) {
+  private filterOutDuplicateWallets(wallets: WcWallet[]) {
+    const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
     const recentIds = recent.map(wallet => wallet.id)
-    const filtered = wallets.filter(wallet => !recentIds.includes(wallet.id))
+    const rdnsIds = connectors.map(c => c.info?.rdns).filter(Boolean)
+    const filtered = wallets.filter(
+      wallet => !recentIds.includes(wallet.id) && !rdnsIds.includes(wallet.rdns ?? undefined)
+    )
 
     return filtered
+  }
+
+  private onAllWallets() {
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_ALL_WALLETS' })
+    RouterController.push('AllWallets')
+  }
+
+  private onConnectWallet(wallet: WcWallet) {
+    RouterController.push('ConnectingWalletConnect', { wallet })
   }
 }
 

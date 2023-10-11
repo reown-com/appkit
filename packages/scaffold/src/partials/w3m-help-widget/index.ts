@@ -1,6 +1,7 @@
 import type { VisualType } from '@web3modal/ui'
+import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 
 type Data = {
   images: VisualType[]

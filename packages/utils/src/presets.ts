@@ -238,5 +238,5 @@ export const ConnectorNamesMap = {
 export const ConnectorTypesMap = {
   [INJECTED_CONNECTOR_ID]: 'INJECTED',
   [WALLET_CONNECT_CONNECTOR_ID]: 'WALLET_CONNECT',
-  [EIP6963_CONNECTOR_ID]: 'EIP6963'
+  [EIP6963_CONNECTOR_ID]: 'ANNOUNCED'
 } as Record<string, ConnectorType>

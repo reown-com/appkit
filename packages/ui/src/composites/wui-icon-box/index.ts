@@ -1,5 +1,5 @@
 import { html, LitElement } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type {
@@ -8,7 +8,8 @@ import type {
   IconBoxBorderType,
   IconType,
   SizeType
-} from '../../utils/TypesUtil.js'
+} from '../../utils/TypeUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 @customElement('wui-icon-box')
@@ -39,6 +40,9 @@ export class WuiIconBox extends LitElement {
         break
       case 'md':
         iconSize = 'md'
+        break
+      case 'mdl':
+        iconSize = 'mdl'
         break
       case 'sm':
         iconSize = 'xs'

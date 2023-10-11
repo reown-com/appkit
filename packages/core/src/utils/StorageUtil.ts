@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import type { WcWallet } from './TypeUtils.js'
+import type { WcWallet } from './TypeUtil.js'
 
 // -- Helpers -----------------------------------------------------------------
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE'

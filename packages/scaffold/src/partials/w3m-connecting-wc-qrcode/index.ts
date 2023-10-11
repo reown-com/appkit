@@ -1,6 +1,6 @@
-import { AssetUtil, ConnectionController, ThemeController } from '@web3modal/core'
+import { AssetUtil, ConnectionController, EventsController, ThemeController } from '@web3modal/core'
+import { customElement } from '@web3modal/ui'
 import { html } from 'lit'
-import { customElement } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 import styles from './styles.js'
@@ -12,6 +12,11 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   public constructor() {
     super()
     window.addEventListener('resize', this.forceUpdate)
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SELECT_WALLET',
+      properties: { name: this.wallet?.name ?? 'WalletConnect', platform: 'qrcode' }
+    })
   }
 
   public override disconnectedCallback() {
@@ -31,10 +36,10 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
           Scan this QR Code with your phone
         </wui-text>
 
-        <wui-button variant="fullWidth" @click=${this.onCopyUri}>
-          <wui-icon size="sm" color="inherit" slot="iconLeft" name="copy"></wui-icon>
+        <wui-link @click=${this.onCopyUri} color="fg-200">
+          <wui-icon size="sm" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
           Copy Link
-        </wui-button>
+        </wui-link>
       </wui-flex>
 
       <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>

@@ -2,6 +2,7 @@ import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
 import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
+import { EventsController } from './EventsController.js'
 import { PublicStateController } from './PublicStateController.js'
 import type { RouterControllerState } from './RouterController.js'
 import { RouterController } from './RouterController.js'
@@ -44,10 +45,12 @@ export const ModalController = {
     }
     state.open = true
     PublicStateController.set({ open: true })
+    EventsController.sendEvent({ type: 'track', event: 'MODAL_OPEN' })
   },
 
   close() {
     state.open = false
     PublicStateController.set({ open: false })
+    EventsController.sendEvent({ type: 'track', event: 'MODAL_CLOSE' })
   }
 }

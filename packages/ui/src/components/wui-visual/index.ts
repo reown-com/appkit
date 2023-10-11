@@ -1,6 +1,6 @@
 import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import { browserSvg } from '../../assets/visual/browser.js'
 import { daoSvg } from '../../assets/visual/dao.js'
 import { defiSvg } from '../../assets/visual/defi.js'
@@ -15,7 +15,8 @@ import { nounSvg } from '../../assets/visual/noun.js'
 import { profileSvg } from '../../assets/visual/profile.js'
 import { systemSvg } from '../../assets/visual/system.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { VisualType } from '../../utils/TypesUtil.js'
+import type { VisualType } from '../../utils/TypeUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 // -- Svg's-------------------------------- //

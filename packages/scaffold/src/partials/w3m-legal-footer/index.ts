@@ -1,6 +1,6 @@
 import { OptionsController } from '@web3modal/core'
+import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement } from 'lit/decorators.js'
 import styles from './styles.js'
 
 @customElement('w3m-legal-footer')

@@ -1,8 +1,9 @@
 import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ColorType, IconType, SizeType } from '../../utils/TypesUtil.js'
+import type { ColorType, IconType, SizeType } from '../../utils/TypeUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 // -- Svg's-------------------------------- //
@@ -19,6 +20,7 @@ import { chevronBottomSvg } from '../../assets/svg/chevron-bottom.js'
 import { chevronLeftSvg } from '../../assets/svg/chevron-left.js'
 import { chevronRightSvg } from '../../assets/svg/chevron-right.js'
 import { chevronTopSvg } from '../../assets/svg/chevron-top.js'
+import { chromeStoreSvg } from '../../assets/svg/chrome-store.js'
 import { clockSvg } from '../../assets/svg/clock.js'
 import { closeSvg } from '../../assets/svg/close.js'
 import { coinPlaceholderSvg } from '../../assets/svg/coinPlaceholder.js'
@@ -60,6 +62,7 @@ import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   allWallets: allWalletsSvg,
   appStore: appStoreSvg,
+  chromeStore: chromeStoreSvg,
   apple: appleSvg,
   arrowBottom: arrowBottomSvg,
   arrowLeft: arrowLeftSvg,

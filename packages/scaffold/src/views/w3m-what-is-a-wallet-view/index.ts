@@ -1,6 +1,6 @@
-import { RouterController } from '@web3modal/core'
+import { EventsController, RouterController } from '@web3modal/core'
+import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement } from 'lit/decorators.js'
 
 const data = [
   {
@@ -32,12 +32,18 @@ export class W3mWhatIsAWalletView extends LitElement {
         gap="xl"
       >
         <w3m-help-widget .data=${data}></w3m-help-widget>
-        <wui-button variant="fill" size="sm" @click=${() => RouterController.push('GetWallet')}>
+        <wui-button variant="fill" size="sm" @click=${this.onGetWallet.bind(this)}>
           <wui-icon color="inherit" slot="iconLeft" name="wallet"></wui-icon>
           Get a Wallet
         </wui-button>
       </wui-flex>
     `
+  }
+
+  // -- Private ------------------------------------------- //
+  private onGetWallet() {
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_GET_WALLET' })
+    RouterController.push('GetWallet')
   }
 }
 

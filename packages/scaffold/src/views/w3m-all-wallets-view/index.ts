@@ -1,6 +1,7 @@
 import { CoreHelperUtil, RouterController } from '@web3modal/core'
+import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { state } from 'lit/decorators.js'
 
 @customElement('w3m-all-wallets-view')
 export class W3mAllWalletsView extends LitElement {

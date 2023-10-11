@@ -81,3 +81,21 @@ export function useWeb3ModalState() {
 
   return reactive({ open, selectedNetworkId })
 }
+
+export function useWeb3ModalEvents() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalEvents" composable')
+  }
+
+  const event = reactive(modal.getEvent())
+  const unsubscribe = modal?.subscribeEvents(next => {
+    event.data = next.data
+    event.timestamp = next.timestamp
+  })
+
+  onUnmounted(() => {
+    unsubscribe?.()
+  })
+
+  return event
+}

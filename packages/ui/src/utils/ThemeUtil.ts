@@ -1,5 +1,5 @@
 import { css, unsafeCSS } from 'lit'
-import type { ThemeType, ThemeVariables } from './TypesUtil.js'
+import type { ThemeType, ThemeVariables } from './TypeUtil.js'
 
 // -- Utilities ---------------------------------------------------------------
 
@@ -112,6 +112,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-icon-size-xs: 12px;
         --wui-icon-size-sm: 14px;
         --wui-icon-size-md: 16px;
+        --wui-icon-size-mdl: 18px;
         --wui-icon-size-lg: 20px;
 
         --wui-wallet-image-size-inherit: inherit;

@@ -59,7 +59,8 @@ export default function Wagmi() {
     createWeb3Modal({
       wagmiConfig,
       projectId,
-      chains
+      chains,
+      enableAnalytics: true
     })
   }
 

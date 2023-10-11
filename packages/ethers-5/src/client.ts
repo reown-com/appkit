@@ -199,13 +199,15 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       },
 
-      checkInjectedInstalled(ids) {
-        if (!window?.ethereum) {
-          return false
-        }
-
+      checkInstalled(ids) {
         if (!ids) {
           return Boolean(window.ethereum)
+        }
+
+        if (ethersConfig.injected) {
+          if (!window?.ethereum) {
+            return false
+          }
         }
 
         return ids.some(id => Boolean(window.ethereum?.[String(id)]))
@@ -759,21 +761,25 @@ export class Web3Modal extends Web3ModalScaffold {
           const { info, provider } = event.detail
           const eip6963Provider = provider as unknown as ExternalProvider
           const web3provider = new ethers.providers.Web3Provider(eip6963Provider)
+          const type = ConnectorTypesMap[EIP6963_CONNECTOR_ID]
 
-          this.addConnector({
-            id: EIP6963_CONNECTOR_ID,
-            type: 'EIP6963',
-            imageUrl: info.icon,
-            name: info.name,
-            provider: web3provider,
-            info
-          })
-          const name = info.name
-          const eip6963ProviderObj = {
-            name,
-            provider: web3provider
+          if (type) {
+            this.addConnector({
+              id: EIP6963_CONNECTOR_ID,
+              type,
+              imageUrl: info.icon,
+              name: info.name,
+              provider: web3provider,
+              info
+            })
+
+            const name = info.name
+            const eip6963ProviderObj = {
+              name,
+              provider: web3provider
+            }
+            ProviderController.add6963Provider(eip6963ProviderObj)
           }
-          ProviderController.add6963Provider(eip6963ProviderObj)
         }
       })
       window.dispatchEvent(new Event(EIP6963_REQUEST_EVENT))

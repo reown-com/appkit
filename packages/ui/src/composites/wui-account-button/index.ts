@@ -1,14 +1,15 @@
 import { html, LitElement } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtils.js'
+import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-avatar/index.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('wui-account-button')
 export class WuiAccountButton extends LitElement {
@@ -43,11 +44,12 @@ export class WuiAccountButton extends LitElement {
             address=${this.address}
           ></wui-avatar>
           <wui-text variant="paragraph-600" color="inherit">
-            ${UiHelperUtil.getTruncateString(
-              this.address,
-              8,
-              this.isProfileName ? 'end' : 'middle'
-            )}
+            ${UiHelperUtil.getTruncateString({
+              string: this.address,
+              charsStart: this.isProfileName ? 18 : 4,
+              charsEnd: this.isProfileName ? 0 : 6,
+              truncate: this.isProfileName ? 'end' : 'middle'
+            })}
           </wui-text>
         </wui-flex>
       </button>

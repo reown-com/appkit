@@ -16,7 +16,7 @@ export default css`
   }
 
   button[data-size='sm'] {
-    padding: 6.75px 10px 7.25px;
+    padding: 6px 12px;
   }
 
   ::slotted(*) {

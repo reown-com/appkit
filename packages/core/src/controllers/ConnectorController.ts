@@ -1,6 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
-import type { Connector } from '../utils/TypeUtils.js'
+import type { Connector } from '../utils/TypeUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectorControllerState {
@@ -28,5 +28,9 @@ export const ConnectorController = {
 
   addConnector(connector: Connector) {
     state.connectors.push(ref(connector))
+  },
+
+  getConnectors() {
+    return state.connectors
   }
 }
