@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import { danger, fail, message, warn } from 'danger'
 import corePackageJson from './packages/core/package.json' assert { type: 'json' }
-import { VERSION as WAGMI_PACKAGE_VERSION } from './packages/wagmi/src/utils/constants'
+import { VERSION as WAGMI_PACKAGE_VERSION } from './packages/utils/src/constants'
 
 // -- Constants ---------------------------------------------------------------
 const TYPE_COMMENT = `// -- Types --------------------------------------------- //`
