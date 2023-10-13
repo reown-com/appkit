@@ -1,6 +1,6 @@
 {
   "name": "@apps/gallery",
-  "version": "3.1.0",
+  "version": "3.2.0-af87294",
   "private": true,
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/ui": "3.1.0",
+    "@web3modal/ui": "3.2.0-af87294",
     "lit": "3.0.0",
     "storybook": "7.4.6"
   },
