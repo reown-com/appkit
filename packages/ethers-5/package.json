@@ -53,7 +53,7 @@
     "valtio": "1.11.2"
   },
   "peerDependencies": {
-    "ethers": "^5.0.0",
+    "ethers": ">=5.0.0 <6.0.0",
     "react": ">=17",
     "react-dom": ">=17",
     "vue": ">=3"
