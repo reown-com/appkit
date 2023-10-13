@@ -1,6 +1,6 @@
 import type { CaipNetwork } from '@web3modal/scaffold'
 import type { Chain } from '@wagmi/core'
-import { NAMESPACE, NetworkImageIds } from '@web3modal/utils'
+import { ConstantsUtil, PresetsUtil } from '@web3modal/utils'
 
 export function getCaipDefaultChain(chain?: Chain) {
   if (!chain) {
@@ -8,8 +8,8 @@ export function getCaipDefaultChain(chain?: Chain) {
   }
 
   return {
-    id: `${NAMESPACE}:${chain.id}`,
+    id: `${ConstantsUtil.NAMESPACE}:${chain.id}`,
     name: chain.name,
-    imageId: NetworkImageIds[chain.id]
+    imageId: PresetsUtil.NetworkImageIds[chain.id]
   } as CaipNetwork
 }

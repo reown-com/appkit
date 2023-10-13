@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import { danger, fail, message, warn } from 'danger'
 import corePackageJson from './packages/core/package.json' assert { type: 'json' }
-import { VERSION as PACKAGE_VERSION } from './packages/utils/src/constants'
+import { ConstantsUtil } from '@web3modal/utils'
 
 // -- Constants ---------------------------------------------------------------
 const TYPE_COMMENT = `// -- Types --------------------------------------------- //`
@@ -10,6 +10,7 @@ const CONTROLLER_COMMENT = `// -- Controller -----------------------------------
 const RENDER_COMMENT = `// -- Render -------------------------------------------- //`
 const STATE_PROPERTIES_COMMENT = `// -- State & Properties -------------------------------- //`
 const PRIVATE_COMMENT = `// -- Private ------------------------------------------- //`
+const PACKAGE_VERSION = ConstantsUtil.VERSION
 
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git

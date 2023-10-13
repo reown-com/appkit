@@ -1,7 +1,7 @@
 import { Center, Text, VStack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { NetworksButton } from '../../components/NetworksButton'
-import { createWeb3Modal, defaultEthersConfig } from '@web3modal/ethers-5/react'
+import { createWeb3Modal, defaultConfig } from '@web3modal/ethers-5/react'
 import { EthersConnectButton } from '../../components/EthersConnectButton'
 
 async function initializeWeb3Modal() {
@@ -11,7 +11,7 @@ async function initializeWeb3Modal() {
   }
   const chains = [1, 42161, 137, 43114, 56, 10, 100, 324, 7777777, 8453, 42220, 1313161554]
 
-  const ethersConfig = await defaultEthersConfig({
+  const ethersConfig = await defaultConfig({
     projectId,
     chains: [1],
     optionalChains: [42161, 137, 43114, 56, 10, 100, 324, 7777777, 8453, 42220, 1313161554]

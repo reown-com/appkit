@@ -19,10 +19,6 @@
     "@web3modal/polyfills": "3.2.0-af87294",
     "@web3modal/scaffold": "3.2.0-af87294"
   },
-  "peerDependencies": {
-    "@wagmi/core": ">=1",
-    "ethers": "5.7.2"
-  },
   "keywords": [
     "web3",
     "crypto",

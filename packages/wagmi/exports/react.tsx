@@ -3,7 +3,7 @@
 import { getWeb3Modal } from '@web3modal/scaffold-react'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
-import { VERSION } from '@web3modal/utils'
+import { ConstantsUtil } from '@web3modal/utils'
 import type { Web3ModalScaffold } from '@web3modal/scaffold'
 
 // -- Types -------------------------------------------------------------------
@@ -16,7 +16,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
     modal = new Web3Modal({
       ...options,
-      _sdkVersion: `react-wagmi-${VERSION}`
+      _sdkVersion: `react-wagmi-${ConstantsUtil.VERSION}`
     }) as Web3ModalScaffold
     getWeb3Modal(modal)
   }

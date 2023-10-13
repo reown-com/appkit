@@ -2,8 +2,8 @@
 
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
-import { VERSION } from '@web3modal/utils'
-import { ProviderController } from '../src/store/index.js'
+import { ConstantsUtil } from '@web3modal/utils'
+import { ProviderController } from '../src/controllers/ProviderController.js'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
 import type { Web3ModalScaffold } from '@web3modal/scaffold'
 import { useSnapshot } from 'valtio'
@@ -18,7 +18,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
     modal = new Web3Modal({
       ...options,
-      _sdkVersion: `react-ethers-5-${VERSION}`
+      _sdkVersion: `react-ethers-5-${ConstantsUtil.VERSION}`
     }) as Web3ModalScaffold
   }
   getWeb3Modal(modal)
@@ -61,4 +61,4 @@ export {
 } from '@web3modal/scaffold-react'
 
 // -- Universal Exports -------------------------------------------------------
-export { defaultEthersConfig } from '../src/utils/defaultEthersReactConfig.js'
+export { defaultConfig } from '../src/utils/defaultConfig.js'

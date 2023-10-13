@@ -1,7 +1,7 @@
 import { getWeb3Modal } from '@web3modal/scaffold-vue'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
-import { VERSION } from '@web3modal/utils'
+import { ConstantsUtil } from '@web3modal/utils'
 import type { Web3ModalScaffold } from '@web3modal/scaffold'
 
 // -- Types -------------------------------------------------------------------
@@ -12,7 +12,10 @@ let modal: Web3ModalScaffold | undefined = undefined
 
 export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
-    modal = new Web3Modal({ ...options, _sdkVersion: `vue-wagmi-${VERSION}` }) as Web3ModalScaffold
+    modal = new Web3Modal({
+      ...options,
+      _sdkVersion: `vue-wagmi-${ConstantsUtil.VERSION}`
+    }) as Web3ModalScaffold
     getWeb3Modal(modal)
   }
 

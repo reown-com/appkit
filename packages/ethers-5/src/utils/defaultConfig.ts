@@ -16,7 +16,7 @@ export interface ConfigOptions {
   enableEIP6963?: boolean
 }
 
-export async function defaultEthersConfig({
+export async function defaultConfig({
   projectId,
   chains,
   optionalChains,
