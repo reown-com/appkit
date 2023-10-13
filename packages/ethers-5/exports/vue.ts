@@ -1,35 +1,52 @@
-import type {
-  W3mAccountButton,
-  W3mButton,
-  W3mConnectButton,
-  W3mNetworkButton
-} from '@web3modal/scaffold'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { VERSION } from '@web3modal/utils'
-
+import type { Web3ModalScaffold } from '@web3modal/scaffold'
+import { getWeb3Modal } from '@web3modal/scaffold-vue'
+import { useSnapshot } from 'valtio'
+import { ProviderController } from '../src/store/index.js'
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
 
-export interface ComponentCustomProperties {
-  W3mConnectButton: Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
-  W3mAccountButton: Pick<W3mAccountButton, 'disabled' | 'balance'>
-  W3mButton: Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
-  W3mNetworkButton: Pick<W3mNetworkButton, 'disabled'>
-}
-
 // -- Setup -------------------------------------------------------------------
-let modal: Web3Modal | undefined = undefined
+let modal: Web3ModalScaffold | undefined = undefined
 
 export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
-    modal = new Web3Modal({ ...options, _sdkVersion: `vue-wagmi-${VERSION}` })
+    modal = new Web3Modal({ ...options, _sdkVersion: `vue-wagmi-${VERSION}` }) as Web3ModalScaffold
+    getWeb3Modal(modal)
   }
 
   return modal
 }
 
 // -- Composites --------------------------------------------------------------
+export function useWeb3ModalProvider() {
+  const state = useSnapshot(ProviderController.state)
+
+  const provider = state.provider
+  const providerType = state.providerType
+
+  return {
+    provider,
+    providerType
+  }
+}
+
+export function useWeb3ModalAccount() {
+  const state = useSnapshot(ProviderController.state)
+
+  const address = state.address
+  const isConnected = state.isConnected
+  const chainId = state.chainId
+
+  return {
+    address,
+    isConnected,
+    chainId
+  }
+}
+
 export {
   useWeb3ModalTheme,
   useWeb3Modal,

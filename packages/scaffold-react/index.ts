@@ -1,5 +1,11 @@
 import type { Web3ModalScaffold } from '@web3modal/scaffold'
 import { useEffect, useState } from 'react'
+import type {
+  W3mAccountButton,
+  W3mButton,
+  W3mConnectButton,
+  W3mNetworkButton
+} from '@web3modal/scaffold'
 
 type OpenOptions = Parameters<Web3ModalScaffold['open']>[0]
 
@@ -7,7 +13,24 @@ type ThemeModeOptions = Parameters<Web3ModalScaffold['setThemeMode']>[0]
 
 type ThemeVariablesOptions = Parameters<Web3ModalScaffold['setThemeVariables']>[0]
 
-const modal: Web3ModalScaffold | undefined = undefined
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'w3m-connect-button': Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
+      'w3m-account-button': Pick<W3mAccountButton, 'disabled' | 'balance'>
+      'w3m-button': Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
+      'w3m-network-button': Pick<W3mNetworkButton, 'disabled'>
+    }
+  }
+}
+
+let modal: Web3ModalScaffold | undefined = undefined
+
+export function getWeb3Modal(web3modal: Web3ModalScaffold) {
+  if (web3modal) {
+    modal = web3modal
+  }
+}
 
 export function useWeb3ModalTheme() {
   if (!modal) {

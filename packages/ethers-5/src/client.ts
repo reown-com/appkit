@@ -20,27 +20,26 @@ import {
   NAMESPACE,
   VERSION,
   WALLET_CONNECT_CONNECTOR_ID,
-  WALLET_ID,
   ConnectorExplorerIds,
   ConnectorImageIds,
   ConnectorNamesMap,
   ConnectorTypesMap,
-  NetworkBlockExplorerUrls,
-  NetworkImageIds,
-  NetworkNames,
-  NetworkRPCUrls,
-  networkCurrenySymbols
+  NetworkImageIds
 } from '@web3modal/utils'
+
 import type EthereumProvider from '@walletconnect/ethereum-provider'
-import {
-  caipNetworkIdToNumber,
-  getEthersCaipDefaultChain,
-  getCaipTokens,
-  hexStringToNumber
-} from '@web3modal/utils'
+import { caipNetworkIdToNumber, getCaipTokens } from '@web3modal/utils'
 import type { Address, ProviderType } from './utils/types.js'
 import { ethers, utils } from 'ethers'
 import { ProviderController } from './store/index.js'
+import { getCaipDefaultChain, hexStringToNumber } from './utils/helpers.js'
+import {
+  NetworkNames,
+  NetworkBlockExplorerUrls,
+  networkCurrenySymbols,
+  NetworkRPCUrls
+} from './utils/presets.js'
+import { WALLET_ID } from './utils/constants.js'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -231,7 +230,7 @@ export class Web3Modal extends Web3ModalScaffold {
     super({
       networkControllerClient,
       connectionControllerClient,
-      defaultChain: getEthersCaipDefaultChain(defaultChain),
+      defaultChain: getCaipDefaultChain(defaultChain),
       tokens: getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `html-ethers-5-${VERSION}`,
       ...w3mOptions

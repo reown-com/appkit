@@ -49,7 +49,8 @@
     "@web3modal/scaffold": "3.1.0",
     "@web3modal/scaffold-react": "3.1.0",
     "@web3modal/scaffold-vue": "3.1.0",
-    "@web3modal/utils": "3.1.0"
+    "@web3modal/utils": "3.1.0",
+    "valtio": "1.11.2"
   },
   "peerDependencies": {
     "ethers": "5.7.2",

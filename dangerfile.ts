@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import { danger, fail, message, warn } from 'danger'
 import corePackageJson from './packages/core/package.json' assert { type: 'json' }
-import { VERSION as WAGMI_PACKAGE_VERSION } from './packages/utils/src/constants'
+import { VERSION as PACKAGE_VERSION } from './packages/utils/src/constants'
 
 // -- Constants ---------------------------------------------------------------
 const TYPE_COMMENT = `// -- Types --------------------------------------------- //`
@@ -248,7 +248,7 @@ checkClientPackages()
 
 // -- Check sdkVersion ------------------------------------------------------------
 function checkSdkVersion() {
-  if (WAGMI_PACKAGE_VERSION !== corePackageJson.version) {
+  if (PACKAGE_VERSION !== corePackageJson.version) {
     fail(`VERSION in wagmi/utils/constants does't match core package.json version`)
   }
 }

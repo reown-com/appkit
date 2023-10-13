@@ -1,57 +1,37 @@
 'use client'
 
-import type {
-  W3mAccountButton,
-  W3mButton,
-  W3mConnectButton,
-  W3mNetworkButton
-} from '@web3modal/scaffold'
-import { useEffect, useState } from 'react'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { VERSION } from '@web3modal/utils'
 import { ProviderController } from '../src/store/index.js'
+import { getWeb3Modal } from '@web3modal/scaffold-react'
+import type { Web3ModalScaffold } from '@web3modal/scaffold'
+import { useSnapshot } from 'valtio'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'w3m-connect-button': Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
-      'w3m-account-button': Pick<W3mAccountButton, 'disabled' | 'balance'>
-      'w3m-button': Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
-      'w3m-network-button': Pick<W3mNetworkButton, 'disabled'>
-    }
-  }
-}
-
 // -- Setup -------------------------------------------------------------------
-let modal: Web3Modal | undefined = undefined
+let modal: Web3ModalScaffold | undefined = undefined
 
 export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
-    modal = new Web3Modal({ ...options, _sdkVersion: `react-ethers-5-${VERSION}` })
+    modal = new Web3Modal({
+      ...options,
+      _sdkVersion: `react-ethers-5-${VERSION}`
+    }) as Web3ModalScaffold
   }
+  getWeb3Modal(modal)
 
   return modal
 }
 
 // -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalProvider() {
-  const [provider, setProvider] = useState(ProviderController.state.provider)
-  const [providerType, setProviderType] = useState(ProviderController.state.providerType)
+  const state = useSnapshot(ProviderController.state)
 
-  useEffect(() => {
-    const unsubscribe = ProviderController.subscribe(state => {
-      setProvider(state.provider)
-      setProviderType(state.providerType)
-    })
-
-    return () => {
-      unsubscribe?.()
-    }
-  }, [])
+  const provider = state.provider
+  const providerType = state.providerType
 
   return {
     provider,
@@ -60,21 +40,11 @@ export function useWeb3ModalProvider() {
 }
 
 export function useWeb3ModalAccount() {
-  const [address, setAddress] = useState(ProviderController.state.address)
-  const [isConnected, setIsConnected] = useState(ProviderController.state.isConnected)
-  const [chainId, setChainId] = useState(ProviderController.state.chainId)
+  const state = useSnapshot(ProviderController.state)
 
-  useEffect(() => {
-    const unsubscribe = ProviderController.subscribe(state => {
-      setAddress(state.address)
-      setIsConnected(state.isConnected)
-      setChainId(state.chainId)
-    })
-
-    return () => {
-      unsubscribe?.()
-    }
-  }, [])
+  const address = state.address
+  const isConnected = state.isConnected
+  const chainId = state.chainId
 
   return {
     address,

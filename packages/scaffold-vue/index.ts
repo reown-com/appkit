@@ -1,5 +1,11 @@
 import type { Web3ModalScaffold } from '@web3modal/scaffold'
 import { onUnmounted, reactive, ref } from 'vue'
+import type {
+  W3mAccountButton,
+  W3mButton,
+  W3mConnectButton,
+  W3mNetworkButton
+} from '@web3modal/scaffold'
 
 type OpenOptions = Parameters<Web3ModalScaffold['open']>[0]
 
@@ -7,7 +13,22 @@ type ThemeModeOptions = Parameters<Web3ModalScaffold['setThemeMode']>[0]
 
 type ThemeVariablesOptions = Parameters<Web3ModalScaffold['setThemeVariables']>[0]
 
-const modal: Web3ModalScaffold | undefined = undefined
+declare module '@vue/runtime-core' {
+  export interface ComponentCustomProperties {
+    W3mConnectButton: Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
+    W3mAccountButton: Pick<W3mAccountButton, 'disabled' | 'balance'>
+    W3mButton: Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
+    W3mNetworkButton: Pick<W3mNetworkButton, 'disabled'>
+  }
+}
+
+let modal: Web3ModalScaffold | undefined = undefined
+
+export function getWeb3Modal(web3modal: Web3ModalScaffold) {
+  if (web3modal) {
+    modal = web3modal
+  }
+}
 
 export function useWeb3ModalTheme() {
   if (!modal) {

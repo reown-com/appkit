@@ -1,8 +1,8 @@
 import type { CaipNetwork } from '@web3modal/scaffold'
-import { NAMESPACE } from '../constants.js'
-import { NetworkImageIds, NetworkNames } from '../presets.js'
+import { NAMESPACE, NetworkImageIds } from '@web3modal/utils'
+import { NetworkNames } from './presets.js'
 
-export function getEthersCaipDefaultChain(chain?: number) {
+export function getCaipDefaultChain(chain?: number) {
   if (!chain) {
     return undefined
   }
