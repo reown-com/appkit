@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import { danger, fail, message, warn } from 'danger'
 import corePackageJson from './packages/core/package.json' assert { type: 'json' }
-import { ConstantsUtil } from '@web3modal/utils'
+import { ConstantsUtil } from './packages/utils'
 
 // -- Constants ---------------------------------------------------------------
 const TYPE_COMMENT = `// -- Types --------------------------------------------- //`
