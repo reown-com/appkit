@@ -27,12 +27,14 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 export function useWeb3ModalProvider() {
   const state = useSnapshot(ProviderController.state)
 
-  const provider = state.provider
-  const providerType = state.providerType
+  const walletProvider = state.provider
+  const walletProviderType = state.providerType
+  const signer = walletProvider?.getSigner()
 
   return {
-    provider,
-    providerType
+    walletProvider,
+    walletProviderType,
+    signer
   }
 }
 

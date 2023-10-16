@@ -42,9 +42,6 @@ const modal = useWeb3Modal()
 const state = useWeb3ModalState()
 const { setThemeMode, themeMode, themeVariables } = useWeb3ModalTheme()
 const events = useWeb3ModalEvents()
-
-console.log(themeMode)
-console.log(state.open)
 </script>
 
 <template>

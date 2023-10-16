@@ -86,7 +86,7 @@ export class Web3Modal extends Web3ModalScaffold {
       tokens,
       chainImages,
       _sdkVersion,
-      enableEIP6963,
+      enableEIP6963 = true,
       ...w3mOptions
     } = options
 
@@ -590,12 +590,13 @@ export class Web3Modal extends Web3ModalScaffold {
         } catch (switchError: any) {
           if (
             switchError.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-            switchError.code === ERROR_CODE_DEFAULT
+            switchError.code === ERROR_CODE_DEFAULT ||
+            switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
           ) {
             await addEthereumChain(
               WalletConnectProvider,
               chainId,
-              ConstantsUtil.INJECTED_CONNECTOR_ID
+              ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
             )
           } else {
             throw new Error('Chain is not supported')
@@ -614,7 +615,8 @@ export class Web3Modal extends Web3ModalScaffold {
         } catch (switchError: any) {
           if (
             switchError.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-            switchError.code === ERROR_CODE_DEFAULT
+            switchError.code === ERROR_CODE_DEFAULT ||
+            switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
           ) {
             await addEthereumChain(InjectedProvider, chainId, ConstantsUtil.INJECTED_CONNECTOR_ID)
           } else {
@@ -635,7 +637,8 @@ export class Web3Modal extends Web3ModalScaffold {
         } catch (switchError: any) {
           if (
             switchError.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-            switchError.code === ERROR_CODE_DEFAULT
+            switchError.code === ERROR_CODE_DEFAULT ||
+            switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
           ) {
             await addEthereumChain(EIP6963Provider, chainId, ConstantsUtil.INJECTED_CONNECTOR_ID)
           } else {
@@ -655,7 +658,8 @@ export class Web3Modal extends Web3ModalScaffold {
         } catch (switchError: any) {
           if (
             switchError.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-            switchError.code === ERROR_CODE_DEFAULT
+            switchError.code === ERROR_CODE_DEFAULT ||
+            switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
           ) {
             await addEthereumChain(CoinbaseProvider, chainId, ConstantsUtil.INJECTED_CONNECTOR_ID)
           }
@@ -691,19 +695,19 @@ export class Web3Modal extends Web3ModalScaffold {
           type: connectorType
         })
       }
-
-      if (config.coinbase) {
-        w3mConnectors.push({
-          id: ConstantsUtil.COINBASE_CONNECTOR_ID,
-          explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
-          imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
-          name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_CONNECTOR_ID],
-          type: 'EXTERNAL'
-        })
-      }
-
-      this.setConnectors(w3mConnectors)
     }
+
+    if (config.coinbase) {
+      w3mConnectors.push({
+        id: ConstantsUtil.COINBASE_CONNECTOR_ID,
+        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
+        imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
+        name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_CONNECTOR_ID],
+        type: 'EXTERNAL'
+      })
+    }
+
+    this.setConnectors(w3mConnectors)
   }
 
   private listenConnectors(enableEIP6963: boolean) {

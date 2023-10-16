@@ -20,7 +20,7 @@ export async function defaultConfig({
   projectId,
   chains,
   optionalChains,
-  enableEIP6963
+  enableEIP6963 = true
 }: ConfigOptions) {
   const walletConnectProviderOptions: EthereumProviderOptions = {
     projectId,
@@ -28,8 +28,6 @@ export async function defaultConfig({
     chains,
     optionalChains
   }
-
-  const walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions)
 
   const providers: ProviderType = {}
 
@@ -46,7 +44,10 @@ export async function defaultConfig({
 
   providers.coinbase = new ethers.providers.Web3Provider(coinbaseProvider, 'any')
 
-  providers.walletConnect = new ethers.providers.Web3Provider(walletConnectProvider, 'any')
+  if (window) {
+    const walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions)
+    providers.walletConnect = new ethers.providers.Web3Provider(walletConnectProvider, 'any')
+  }
 
   if (window.ethereum) {
     providers.injected = new ethers.providers.Web3Provider(window.ethereum, 'any')

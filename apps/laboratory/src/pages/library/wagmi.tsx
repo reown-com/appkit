@@ -51,18 +51,15 @@ export const wagmiConfig = defaultWagmiConfig({
   }
 })
 
+createWeb3Modal({
+  wagmiConfig,
+  projectId,
+  chains,
+  enableAnalytics: true
+})
+
 export default function Wagmi() {
   const [ready, setReady] = useState(false)
-
-  // 3. Create Web3Modal
-  if (wagmiConfig && chains && projectId) {
-    createWeb3Modal({
-      wagmiConfig,
-      projectId,
-      chains,
-      enableAnalytics: true
-    })
-  }
 
   useEffect(() => {
     setReady(true)

@@ -1,15 +1,13 @@
 import { Button, useToast } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers-5/react'
+import { useWeb3ModalAccount, useWeb3ModalSigner } from '@web3modal/ethers-5/react'
 
 export function EthersConnectButton() {
   const toast = useToast()
   const { isConnected } = useWeb3ModalAccount()
-  const { provider } = useWeb3ModalProvider()
+  const { signer } = useWeb3ModalSigner()
 
   async function onSignMessage() {
     try {
-      const signer = provider?.getSigner()
-
       const signature = await signer?.signMessage('Hello Web3Modal Ethers')
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch {
