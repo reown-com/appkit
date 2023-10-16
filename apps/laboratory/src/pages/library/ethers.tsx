@@ -8,11 +8,11 @@ async function initializeWeb3Modal() {
   if (!projectId) {
     throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
   }
-  const chains = [0, 1, 42161, 137, 43114, 56, 10, 100, 324, 7777777, 8453, 42220, 1313161554]
+  const chains = [1, 42161, 137, 43114, 56, 10, 100, 324, 7777777, 8453, 42220, 1313161554]
 
   const ethersConfig = await defaultConfig({
     projectId,
-    optionalChains: chains
+    optionalChains: [1, 42161, 137, 43114, 56, 10, 100, 324, 7777777, 8453, 42220, 1313161554]
   })
 
   createWeb3Modal({ ethersConfig, chains, projectId, enableAnalytics: true })
