@@ -5,21 +5,20 @@ import { Web3Modal } from '../src/client.js'
 import { ConstantsUtil } from '@web3modal/utils'
 import { ProviderController } from '../src/controllers/ProviderController.js'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
-import type { Web3ModalScaffold } from '@web3modal/scaffold'
 import { useSnapshot } from 'valtio'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
 
 // -- Setup -------------------------------------------------------------------
-let modal: Web3ModalScaffold | undefined = undefined
+let modal: Web3Modal | undefined = undefined
 
 export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
     modal = new Web3Modal({
       ...options,
       _sdkVersion: `react-ethers-5-${ConstantsUtil.VERSION}`
-    }) as Web3ModalScaffold
+    })
   }
   getWeb3Modal(modal)
 

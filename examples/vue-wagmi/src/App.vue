@@ -45,10 +45,10 @@ const events = useWeb3ModalEvents()
 </script>
 
 <template>
-  {{ themeMode }}
-  {{ state.open }}
   <w3m-button />
   <w3m-network-button />
+  <w3m-connect-button />
+  <w3m-account-button />
 
   <button @click="modal.open()">Open Connect Modal</button>
   <button @click="modal.open({ view: 'Networks' })">Open Network Modal</button>

@@ -1,7 +1,7 @@
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { ConstantsUtil } from '@web3modal/utils'
-import type { Web3ModalScaffold } from '@web3modal/scaffold'
+
 import { getWeb3Modal } from '@web3modal/scaffold-vue'
 import { useSnapshot } from 'valtio'
 import { ProviderController } from '../src/controllers/ProviderController.js'
@@ -9,14 +9,14 @@ import { ProviderController } from '../src/controllers/ProviderController.js'
 export type { Web3ModalOptions } from '../src/client.js'
 
 // -- Setup -------------------------------------------------------------------
-let modal: Web3ModalScaffold | undefined = undefined
+let modal: Web3Modal | undefined = undefined
 
 export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
     modal = new Web3Modal({
       ...options,
       _sdkVersion: `vue-ethers-5-${ConstantsUtil.VERSION}`
-    }) as Web3ModalScaffold
+    })
     getWeb3Modal(modal)
   }
 

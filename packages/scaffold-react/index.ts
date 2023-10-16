@@ -26,9 +26,10 @@ declare global {
 
 let modal: Web3ModalScaffold | undefined = undefined
 
-export function getWeb3Modal(web3modal: Web3ModalScaffold) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getWeb3Modal(web3modal: any) {
   if (web3modal) {
-    modal = web3modal
+    modal = web3modal as Web3ModalScaffold
   }
 }
 
