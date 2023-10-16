@@ -2,6 +2,7 @@ import { Center, Text, VStack } from '@chakra-ui/react'
 import { NetworksButton } from '../../components/NetworksButton'
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers-5/react'
 import { EthersConnectButton } from '../../components/EthersConnectButton'
+import { useEffect, useState } from 'react'
 
 async function initializeWeb3Modal() {
   const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
@@ -18,10 +19,15 @@ async function initializeWeb3Modal() {
   createWeb3Modal({ ethersConfig, chains, projectId, enableAnalytics: true })
 }
 
-initializeWeb3Modal()
-
 export default function Ethers() {
-  return (
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    initializeWeb3Modal()
+    setReady(true)
+  }, [])
+
+  return ready ? (
     <>
       <Center paddingTop={10}>
         <Text fontSize="xl" fontWeight={700}>
@@ -35,5 +41,5 @@ export default function Ethers() {
         </VStack>
       </Center>
     </>
-  )
+  ) : null
 }
