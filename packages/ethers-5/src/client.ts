@@ -12,7 +12,7 @@ import type {
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/utils'
 
-import type EthereumProvider from '@walletconnect/ethereum-provider'
+import EthereumProvider from '@walletconnect/ethereum-provider'
 
 import type { Address, ProviderType } from './utils/types.js'
 import { ethers, utils } from 'ethers'
@@ -34,6 +34,7 @@ import {
   ERROR_CODE_UNRECOGNIZED_CHAIN_ID,
   WALLET_ID
 } from './utils/constants.js'
+import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -70,6 +71,11 @@ interface Wallet {
   provider: ethers.providers.Web3Provider
 }
 
+interface IEIP6963Provider {
+  name: string
+  provider: ethers.providers.Web3Provider
+}
+
 interface ExternalProvider extends EthereumProvider {
   _addresses?: string[]
 }
@@ -79,6 +85,18 @@ export class Web3Modal extends Web3ModalScaffold {
   private hasSyncedConnectedAccount = false
 
   private hasSyncedEIP6963Connectors = false
+
+  private EIP6963Providers: IEIP6963Provider[] = []
+
+  private walletConnectProvider?: EthereumProvider
+
+  private ethersWalletConnectProvider?: ethers.providers.Web3Provider
+
+  private walletConnectProviderInitPromise?: Promise<void>
+
+  private projectId: string
+
+  private chains?: number[]
 
   public constructor(options: Web3ModalClientOptions) {
     const {
@@ -100,11 +118,9 @@ export class Web3Modal extends Web3ModalScaffold {
       throw new Error('web3modal:constructor - projectId is undefined')
     }
 
-    if (!ethersConfig.walletConnect) {
-      throw new Error('web3modal:constructor - WalletConnectConnector is required')
-    }
-
     const networkControllerClient: NetworkControllerClient = {
+      getWalletConnectProvider: async () => await this.getWalletConnectProvider(),
+
       switchCaipNetwork: async caipNetwork => {
         const chainId = HelpersUtil.caipNetworkIdToNumber(caipNetwork?.id)
         if (chainId) {
@@ -112,38 +128,39 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       },
 
-      getApprovedCaipNetworksData(): Promise<{
+      async getApprovedCaipNetworksData(): Promise<{
         approvedCaipNetworkIds: `${string}:${string}`[] | undefined
         supportsAllNetworks: boolean
       }> {
-        return new Promise(resolve => {
+        return new Promise(async resolve => {
           const walletChoice = localStorage.getItem(WALLET_ID)
 
           if (walletChoice?.includes(ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)) {
-            const connector = ethersConfig.walletConnect
-            if (!connector) {
-              throw new Error(
-                'networkControllerClient:getApprovedCaipNetworks - connector is undefined'
-              )
-            }
-            const ns = (ethersConfig.walletConnect?.provider as EthereumProvider).signer?.session
-              ?.namespaces
-            const nsMethods = ns?.[ConstantsUtil.NAMESPACE]?.methods
-            const nsChains = ns?.[ConstantsUtil.NAMESPACE]?.chains
+            if (this.getWalletConnectProvider) {
+              const provider = await this.getWalletConnectProvider()
+              if (!provider) {
+                throw new Error(
+                  'networkControllerClient:getApprovedCaipNetworks - connector is undefined'
+                )
+              }
+              const ns = (provider?.provider as EthereumProvider).signer?.session?.namespaces
+              const nsMethods = ns?.[ConstantsUtil.NAMESPACE]?.methods
+              const nsChains = ns?.[ConstantsUtil.NAMESPACE]?.chains
 
-            const result = {
-              supportsAllNetworks: nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD) ?? false,
-              approvedCaipNetworkIds: nsChains as CaipNetworkId[] | undefined
-            }
+              const result = {
+                supportsAllNetworks: nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD) ?? false,
+                approvedCaipNetworkIds: nsChains as CaipNetworkId[] | undefined
+              }
 
-            resolve(result)
-          } else {
-            const result = {
-              approvedCaipNetworkIds: undefined,
-              supportsAllNetworks: true
-            }
+              resolve(result)
+            } else {
+              const result = {
+                approvedCaipNetworkIds: undefined,
+                supportsAllNetworks: true
+              }
 
-            resolve(result)
+              resolve(result)
+            }
           }
         })
       }
@@ -151,7 +168,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const connectionControllerClient: ConnectionControllerClient = {
       connectWalletConnect: async onUri => {
-        const connector = ethersConfig.walletConnect
+        const connector = await this.getWalletConnectProvider()
         if (!connector) {
           throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
         }
@@ -163,7 +180,7 @@ export class Web3Modal extends Web3ModalScaffold {
         })
 
         await WalletConnectProvider.connect()
-        this.setWalletConnectProvider(ethersConfig)
+        await this.setWalletConnectProvider()
       },
 
       connectExternal: async ({ id, info, provider }) => {
@@ -228,6 +245,11 @@ export class Web3Modal extends Web3ModalScaffold {
       ...w3mOptions
     })
 
+    this.projectId = w3mOptions.projectId
+    this.chains = chains
+
+    this.createProvider()
+
     ProviderController.subscribeKey('address', () => {
       this.syncAccount()
     })
@@ -243,8 +265,6 @@ export class Web3Modal extends Web3ModalScaffold {
       this.listenConnectors(enableEIP6963)
       this.privateCheckActive6963Provider()
     }
-
-    this.watchWalletConnect(ethersConfig)
 
     if (ethersConfig.injected) {
       this.watchInjected(ethersConfig)
@@ -277,6 +297,34 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   // -- Private -----------------------------------------------------------------
+  private createProvider() {
+    if (!this.walletConnectProviderInitPromise && typeof window !== 'undefined') {
+      this.walletConnectProviderInitPromise = this.initWalletConnectProvider()
+    }
+
+    return this.walletConnectProviderInitPromise
+  }
+
+  private async initWalletConnectProvider() {
+    const walletConnectProviderOptions: EthereumProviderOptions = {
+      projectId: this.projectId,
+      showQrModal: false,
+      chains: [0],
+      optionalChains: this.chains
+    }
+    this.walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions)
+    this.ethersWalletConnectProvider = new ethers.providers.Web3Provider(this.walletConnectProvider)
+    await this.watchWalletConnect()
+  }
+
+  private async getWalletConnectProvider() {
+    if (!this.ethersWalletConnectProvider) {
+      await this.createProvider()
+    }
+
+    return this.ethersWalletConnectProvider
+  }
+
   private syncRequestedNetworks(
     chains: Web3ModalClientOptions['chains'],
     chainImages?: Web3ModalClientOptions['chainImages']
@@ -296,8 +344,7 @@ export class Web3Modal extends Web3ModalScaffold {
   privateCheckActive6963Provider() {
     const currentActiveWallet = window?.localStorage.getItem(WALLET_ID)
     if (currentActiveWallet) {
-      const EIP6963Provider = ProviderController.state.EIP6963Providers
-      const currentProvider = EIP6963Provider.find(
+      const currentProvider = this.EIP6963Providers.find(
         provider => provider.name === currentActiveWallet
       )
       if (currentProvider) {
@@ -306,13 +353,14 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private setWalletConnectProvider(config: ProviderType) {
+  private async setWalletConnectProvider() {
     window?.localStorage.setItem(WALLET_ID, ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)
-    const WalletConnectProvider = config.walletConnect?.provider as EthereumProvider
+    const provider = await this.getWalletConnectProvider()
+    const WalletConnectProvider = provider?.provider as EthereumProvider
     if (WalletConnectProvider) {
       ProviderController.setChainId(WalletConnectProvider.chainId)
       ProviderController.setProviderType('walletConnect')
-      ProviderController.setProvider(config.walletConnect)
+      ProviderController.setProvider(provider)
       ProviderController.setIsConnected(true)
       ProviderController.setAddress(WalletConnectProvider.accounts[0] as Address)
     }
@@ -372,13 +420,14 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private watchWalletConnect(config: ProviderType) {
-    const WalletConnectProvider = config.walletConnect?.provider as EthereumProvider
+  private async watchWalletConnect() {
+    const provider = await this.getWalletConnectProvider()
+    const WalletConnectProvider = provider?.provider as EthereumProvider
     const walletId = localStorage.getItem(WALLET_ID)
 
     if (WalletConnectProvider) {
       if (walletId === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-        this.setWalletConnectProvider(config)
+        await this.setWalletConnectProvider()
       }
 
       WalletConnectProvider.on('disconnect', () => {
@@ -386,9 +435,9 @@ export class Web3Modal extends Web3ModalScaffold {
         ProviderController.reset()
       })
 
-      WalletConnectProvider.on('accountsChanged', accounts => {
+      WalletConnectProvider.on('accountsChanged', async accounts => {
         if (accounts.length > 0) {
-          this.setWalletConnectProvider(config)
+          await this.setWalletConnectProvider()
         }
       })
 
@@ -673,28 +722,27 @@ export class Web3Modal extends Web3ModalScaffold {
   private syncConnectors(config: ProviderType) {
     const w3mConnectors: Connector[] = []
 
-    if (config.walletConnect) {
-      const connectorType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]
-      if (connectorType) {
-        w3mConnectors.push({
-          id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
-          explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-          imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-          name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-          type: connectorType
-        })
-      }
+    const connectorType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]
+    if (connectorType) {
+      w3mConnectors.push({
+        id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
+        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+        imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+        name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+        type: connectorType
+      })
     }
 
     if (config.injected) {
-      const connectorType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.INJECTED_CONNECTOR_ID]
-      if (connectorType) {
+      const injectedConnectorType =
+        PresetsUtil.ConnectorTypesMap[ConstantsUtil.INJECTED_CONNECTOR_ID]
+      if (injectedConnectorType) {
         w3mConnectors.push({
           id: ConstantsUtil.INJECTED_CONNECTOR_ID,
           explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.INJECTED_CONNECTOR_ID],
           imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.INJECTED_CONNECTOR_ID],
           name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.INJECTED_CONNECTOR_ID],
-          type: connectorType
+          type: injectedConnectorType
         })
       }
     }
@@ -722,7 +770,6 @@ export class Web3Modal extends Web3ModalScaffold {
             const eip6963Provider = provider as unknown as ExternalProvider
             const web3provider = new ethers.providers.Web3Provider(eip6963Provider)
             const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
-
             if (type) {
               this.addConnector({
                 id: ConstantsUtil.EIP6963_CONNECTOR_ID,
@@ -737,7 +784,8 @@ export class Web3Modal extends Web3ModalScaffold {
                 name: info.name,
                 provider: web3provider
               }
-              ProviderController.add6963Provider(eip6963ProviderObj)
+
+              this.EIP6963Providers.push(eip6963ProviderObj)
             }
           }
         }

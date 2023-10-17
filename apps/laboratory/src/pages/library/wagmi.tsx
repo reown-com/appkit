@@ -16,7 +16,7 @@ import {
   zkSync,
   zora
 } from 'wagmi/chains'
-import { WagmiConnectButton } from '../../components/WagmiConnectButton'
+import { WagmiConnectButton } from '../../components/Wagmi/WagmiConnectButton'
 import { NetworksButton } from '../../components/NetworksButton'
 
 // 1. Get projectId

@@ -1,32 +1,15 @@
 import '@web3modal/polyfills'
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import { ethers } from 'ethers'
-import type { EthereumProviderOptions } from 'node_modules/@walletconnect/ethereum-provider/dist/types/EthereumProvider.js'
 import type { ExternalProvider, ProviderType } from './types.js'
 import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk'
 
-type ArrayOneOrMore<T> = {
-  0: T
-} & T[]
-
 export interface ConfigOptions {
-  projectId: string
-  chains?: number[]
-  optionalChains: ArrayOneOrMore<number>
   enableEIP6963?: boolean
 }
 
-export async function defaultConfig({
-  projectId,
-  chains,
-  optionalChains,
-  enableEIP6963 = true
-}: ConfigOptions) {
-  const walletConnectProviderOptions: EthereumProviderOptions = {
-    projectId,
-    showQrModal: false,
-    chains,
-    optionalChains
+export function defaultConfig(options: ConfigOptions = {}): ProviderType | undefined {
+  if (typeof window === 'undefined') {
+    return undefined
   }
 
   const providers: ProviderType = {}
@@ -44,16 +27,11 @@ export async function defaultConfig({
 
   providers.coinbase = new ethers.providers.Web3Provider(coinbaseProvider, 'any')
 
-  if (window) {
-    const walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions)
-    providers.walletConnect = new ethers.providers.Web3Provider(walletConnectProvider, 'any')
-  }
-
   if (window.ethereum) {
     providers.injected = new ethers.providers.Web3Provider(window.ethereum, 'any')
   }
 
-  if (enableEIP6963) {
+  if (options.enableEIP6963) {
     providers.EIP6963 = true
   }
 
