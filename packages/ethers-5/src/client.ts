@@ -78,6 +78,8 @@ interface ExternalProvider extends EthereumProvider {
 export class Web3Modal extends Web3ModalScaffold {
   private hasSyncedConnectedAccount = false
 
+  private hasSyncedEIP6963Connectors = false
+
   public constructor(options: Web3ModalClientOptions) {
     const {
       ethersConfig,
@@ -715,7 +717,7 @@ export class Web3Modal extends Web3ModalScaffold {
       window.addEventListener(
         ConstantsUtil.EIP6963_ANNOUNCE_EVENT,
         (event: CustomEventInit<Wallet>) => {
-          if (event.detail) {
+          if (event.detail && !this.hasSyncedEIP6963Connectors) {
             const { info, provider } = event.detail
             const eip6963Provider = provider as unknown as ExternalProvider
             const web3provider = new ethers.providers.Web3Provider(eip6963Provider)
@@ -741,6 +743,7 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       )
       window.dispatchEvent(new Event(ConstantsUtil.EIP6963_REQUEST_EVENT))
+      this.hasSyncedEIP6963Connectors = true
     }
   }
 }
