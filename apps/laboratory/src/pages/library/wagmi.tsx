@@ -18,6 +18,7 @@ import {
 } from 'wagmi/chains'
 import { WagmiConnectButton } from '../../components/Wagmi/WagmiConnectButton'
 import { NetworksButton } from '../../components/NetworksButton'
+import { ThemeStore } from '../../utils/StoreUtil'
 
 // 1. Get projectId
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
@@ -51,12 +52,14 @@ export const wagmiConfig = defaultWagmiConfig({
   }
 })
 
-createWeb3Modal({
+const modal = createWeb3Modal({
   wagmiConfig,
   projectId,
   chains,
   enableAnalytics: true
 })
+
+ThemeStore.setModal(modal)
 
 export default function Wagmi() {
   const [ready, setReady] = useState(false)

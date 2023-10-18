@@ -2,6 +2,7 @@ import { Center, Text, VStack } from '@chakra-ui/react'
 import { NetworksButton } from '../../components/NetworksButton'
 import { EthersConnectButton } from '../../components/Ethers/EthersConnectButton'
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers-5/react'
+import { ThemeStore } from '../../utils/StoreUtil'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {
@@ -9,12 +10,14 @@ if (!projectId) {
 }
 const chains = [1, 42161, 137, 43114, 56, 10, 100, 324, 7777777, 8453, 42220, 1313161554]
 
-createWeb3Modal({
+const modal = createWeb3Modal({
   ethersConfig: defaultConfig(),
   chains,
   projectId,
   enableAnalytics: true
 })
+
+ThemeStore.setModal(modal)
 
 export default function Ethers() {
   return (
