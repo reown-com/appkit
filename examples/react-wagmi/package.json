@@ -1,13 +1,13 @@
 {
   "name": "@examples/react-wagmi",
   "private": true,
-  "version": "3.2.0-e4fde44",
+  "version": "3.2.0-e34faf1",
   "scripts": {
     "dev:example": "vite --port 3001",
     "build:examples": "vite build"
   },
   "dependencies": {
-    "@web3modal/wagmi": "3.2.0-e4fde44"
+    "@web3modal/wagmi": "3.2.0-e34faf1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "4.1.0"
