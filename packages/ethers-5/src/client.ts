@@ -38,12 +38,11 @@ import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
-  ethersConfig: ProviderType
+  ethersConfig?: ProviderType
   chains?: number[]
   defaultChain?: number
   chainImages?: Record<number, string>
   tokens?: Record<number, Token>
-  enableEIP6963?: boolean
 }
 
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
@@ -99,16 +98,8 @@ export class Web3Modal extends Web3ModalScaffold {
   private chains?: number[]
 
   public constructor(options: Web3ModalClientOptions) {
-    const {
-      ethersConfig,
-      chains,
-      defaultChain,
-      tokens,
-      chainImages,
-      _sdkVersion,
-      enableEIP6963 = true,
-      ...w3mOptions
-    } = options
+    const { ethersConfig, chains, defaultChain, tokens, chainImages, _sdkVersion, ...w3mOptions } =
+      options
 
     if (!ethersConfig) {
       throw new Error('web3modal:constructor - ethersConfig is undefined')
@@ -203,6 +194,7 @@ export class Web3Modal extends Web3ModalScaffold {
             throw new Error('connectionControllerClient:connectCoinbase - connector is undefined')
           }
           await CoinbaseProvider.send('eth_requestAccounts', [])
+
           this.setCoinbaseProvider(ethersConfig)
         }
       },
@@ -224,14 +216,13 @@ export class Web3Modal extends Web3ModalScaffold {
       disconnect: async () => {
         const provider = ProviderController.state.provider
         const providerType = ProviderController.state.providerType
+        localStorage.removeItem(WALLET_ID)
+        ProviderController.reset()
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider?.provider as EthereumProvider
           await WalletConnectProvider.disconnect()
-          localStorage.removeItem(WALLET_ID)
-          ProviderController.reset()
-        } else {
-          localStorage.removeItem(WALLET_ID)
-          ProviderController.reset()
+        } else if (provider) {
+          provider.emit('disconnect')
         }
       }
     }
@@ -261,16 +252,18 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncRequestedNetworks(chains, chainImages)
     this.syncConnectors(ethersConfig)
 
-    if (enableEIP6963) {
-      this.listenConnectors(enableEIP6963)
-      this.privateCheckActive6963Provider()
+    if (ethersConfig.EIP6963) {
+      if (typeof window !== 'undefined') {
+        this.listenConnectors(ethersConfig.EIP6963)
+        this.checkActive6963Provider()
+      }
     }
 
     if (ethersConfig.injected) {
-      this.watchInjected(ethersConfig)
+      this.checkActiveInjectedProvider(ethersConfig)
     }
     if (ethersConfig.coinbase) {
-      this.watchCoinbase(ethersConfig)
+      this.checkActiveCoinbaseProvider(ethersConfig)
     }
   }
 
@@ -309,12 +302,11 @@ export class Web3Modal extends Web3ModalScaffold {
     const walletConnectProviderOptions: EthereumProviderOptions = {
       projectId: this.projectId,
       showQrModal: false,
-      chains: [0],
-      optionalChains: this.chains
+      optionalChains: this.chains ? [0, ...this.chains] : [0]
     }
     this.walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions)
     this.ethersWalletConnectProvider = new ethers.providers.Web3Provider(this.walletConnectProvider)
-    await this.watchWalletConnect()
+    await this.checkActiveWalletConnectProvider()
   }
 
   private async getWalletConnectProvider() {
@@ -341,7 +333,48 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
   }
 
-  privateCheckActive6963Provider() {
+  private async checkActiveWalletConnectProvider() {
+    const provider = await this.getWalletConnectProvider()
+    const WalletConnectProvider = provider?.provider as EthereumProvider
+    const walletId = localStorage.getItem(WALLET_ID)
+
+    if (WalletConnectProvider) {
+      if (walletId === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
+        await this.setWalletConnectProvider()
+      }
+    }
+  }
+
+  private checkActiveInjectedProvider(config: ProviderType) {
+    const InjectedProvider = config.injected?.provider as EthereumProvider
+    const walletId = localStorage.getItem(WALLET_ID)
+
+    if (InjectedProvider) {
+      if (walletId === ConstantsUtil.INJECTED_CONNECTOR_ID) {
+        this.setInjectedProvider(config)
+        this.watchInjected(config)
+      }
+    }
+  }
+
+  private checkActiveCoinbaseProvider(config: ProviderType) {
+    const CoinbaseProvider = config.coinbase?.provider as ExternalProvider
+    const walletId = localStorage.getItem(WALLET_ID)
+
+    if (CoinbaseProvider) {
+      if (walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
+        if (CoinbaseProvider._addresses && CoinbaseProvider._addresses?.length > 0) {
+          this.setCoinbaseProvider(config)
+          this.watchCoinbase(config)
+        } else {
+          localStorage.removeItem(WALLET_ID)
+          ProviderController.reset()
+        }
+      }
+    }
+  }
+
+  private checkActive6963Provider() {
     const currentActiveWallet = window?.localStorage.getItem(WALLET_ID)
     if (currentActiveWallet) {
       const currentProvider = this.EIP6963Providers.find(
@@ -363,6 +396,7 @@ export class Web3Modal extends Web3ModalScaffold {
       ProviderController.setProvider(provider)
       ProviderController.setIsConnected(true)
       ProviderController.setAddress(WalletConnectProvider.accounts[0] as Address)
+      this.watchWalletConnect()
     }
   }
 
@@ -380,6 +414,7 @@ export class Web3Modal extends Web3ModalScaffold {
         ProviderController.setProvider(config.injected)
         ProviderController.setIsConnected(true)
         ProviderController.setAddress(address as Address)
+        this.watchCoinbase(config)
       }
     }
   }
@@ -416,6 +451,7 @@ export class Web3Modal extends Web3ModalScaffold {
         ProviderController.setProvider(config.coinbase)
         ProviderController.setIsConnected(true)
         ProviderController.setAddress(address as Address)
+        this.watchCoinbase(config)
       }
     }
   }
@@ -423,115 +459,144 @@ export class Web3Modal extends Web3ModalScaffold {
   private async watchWalletConnect() {
     const provider = await this.getWalletConnectProvider()
     const WalletConnectProvider = provider?.provider as EthereumProvider
-    const walletId = localStorage.getItem(WALLET_ID)
 
-    if (WalletConnectProvider) {
-      if (walletId === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
+    function disconnectHandler() {
+      localStorage.removeItem(WALLET_ID)
+      ProviderController.reset()
+
+      WalletConnectProvider.removeListener('disconnect', disconnectHandler)
+      WalletConnectProvider.removeListener('accountsChanged', accountsChangedHandler)
+      WalletConnectProvider.removeListener('chainChanged', chainChangedHandler)
+    }
+
+    function chainChangedHandler(chainId: string) {
+      if (chainId) {
+        const chain = hexStringToNumber(chainId)
+        ProviderController.setChainId(chain)
+      }
+    }
+
+    const accountsChangedHandler = async (accounts: string[]) => {
+      if (accounts.length > 0) {
         await this.setWalletConnectProvider()
       }
+    }
 
-      WalletConnectProvider.on('disconnect', () => {
-        localStorage.removeItem(WALLET_ID)
-        ProviderController.reset()
-      })
-
-      WalletConnectProvider.on('accountsChanged', async accounts => {
-        if (accounts.length > 0) {
-          await this.setWalletConnectProvider()
-        }
-      })
-
-      WalletConnectProvider.on('chainChanged', chainId => {
-        if (chainId) {
-          const chain = hexStringToNumber(chainId)
-          ProviderController.setChainId(chain)
-        }
-      })
+    if (WalletConnectProvider) {
+      WalletConnectProvider.on('disconnect', disconnectHandler)
+      WalletConnectProvider.on('accountsChanged', accountsChangedHandler)
+      WalletConnectProvider.on('chainChanged', chainChangedHandler)
     }
   }
 
   private watchInjected(config: ProviderType) {
-    const InjectedProvider = config.injected?.provider as EthereumProvider
-    const walletId = localStorage.getItem(WALLET_ID)
+    const provider = config.injected
+    const InjectedProvider = provider?.provider as EthereumProvider
 
-    if (InjectedProvider) {
-      if (walletId === ConstantsUtil.INJECTED_CONNECTOR_ID) {
-        this.setInjectedProvider(config)
+    function disconnectHandler() {
+      localStorage.removeItem(WALLET_ID)
+      ProviderController.reset()
+
+      InjectedProvider.removeListener('disconnect', disconnectHandler)
+      InjectedProvider.removeListener('accountsChanged', accountsChangedHandler)
+      InjectedProvider.removeListener('chainChanged', chainChangedHandler)
+    }
+
+    function accountsChangedHandler(accounts: string[]) {
+      if (accounts.length === 0) {
+        localStorage.removeItem(WALLET_ID)
+        ProviderController.reset()
+      } else {
+        ProviderController.setAddress(accounts[0] as Address)
       }
+    }
 
-      InjectedProvider.on('accountsChanged', accounts => {
-        if (accounts.length === 0) {
-          localStorage.removeItem(WALLET_ID)
-          ProviderController.reset()
-        } else {
-          ProviderController.setAddress(accounts[0] as Address)
-        }
-      })
+    function chainChangedHandler(chainId: string) {
+      if (chainId) {
+        const chain = typeof chainId === 'string' ? hexStringToNumber(chainId) : Number(chainId)
+        ProviderController.setChainId(chain)
+      }
+    }
 
-      InjectedProvider.on('chainChanged', chainId => {
-        if (chainId) {
-          const chain = typeof chainId === 'string' ? hexStringToNumber(chainId) : Number(chainId)
-          ProviderController.setChainId(chain)
-        }
-      })
+    if (InjectedProvider && provider) {
+      provider.on('disconnect', disconnectHandler)
+      InjectedProvider.on('disconnect', disconnectHandler)
+      InjectedProvider.on('accountsChanged', accountsChangedHandler)
+      InjectedProvider.on('chainChanged', chainChangedHandler)
     }
   }
 
   private watchEIP6963(provider: ethers.providers.Web3Provider) {
     const EIP6963Provider = provider.provider as ExternalProvider
-    if (EIP6963Provider) {
-      EIP6963Provider.on('accountsChanged', accounts => {
-        if (accounts.length === 0) {
-          localStorage.removeItem(WALLET_ID)
-          ProviderController.reset()
-        } else {
-          ProviderController.setAddress(accounts[0] as Address)
-        }
-      })
 
-      EIP6963Provider.on('disconnect', () => {
+    function disconnectHandler() {
+      localStorage.removeItem(WALLET_ID)
+      ProviderController.reset()
+
+      EIP6963Provider.removeListener('disconnect', disconnectHandler)
+      EIP6963Provider.removeListener('accountsChanged', accountsChangedHandler)
+      EIP6963Provider.removeListener('chainChanged', chainChangedHandler)
+    }
+
+    function accountsChangedHandler(accounts: string[]) {
+      if (accounts.length === 0) {
         localStorage.removeItem(WALLET_ID)
         ProviderController.reset()
-      })
+      } else {
+        ProviderController.setAddress(accounts[0] as Address)
+      }
+    }
 
-      EIP6963Provider.on('chainChanged', chainId => {
-        if (chainId) {
-          const chain = typeof chainId === 'string' ? hexStringToNumber(chainId) : Number(chainId)
-          ProviderController.setChainId(chain)
-        }
-      })
+    function chainChangedHandler(chainId: string) {
+      if (chainId) {
+        const chain = typeof chainId === 'string' ? hexStringToNumber(chainId) : Number(chainId)
+        ProviderController.setChainId(chain)
+      }
+    }
+
+    if (EIP6963Provider) {
+      provider.on('disconnect', disconnectHandler)
+      EIP6963Provider.on('disconnect', disconnectHandler)
+      EIP6963Provider.on('accountsChanged', accountsChangedHandler)
+      EIP6963Provider.on('chainChanged', chainChangedHandler)
     }
   }
 
   private watchCoinbase(config: ProviderType) {
-    const CoinbaseProvider = config.coinbase?.provider as ExternalProvider
+    const provider = config.coinbase
+    const CoinbaseProvider = provider?.provider as ExternalProvider
     const walletId = localStorage.getItem(WALLET_ID)
 
-    if (CoinbaseProvider) {
-      if (walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
-        if (CoinbaseProvider._addresses && CoinbaseProvider._addresses?.length > 0) {
-          this.setCoinbaseProvider(config)
-        } else {
-          localStorage.removeItem(WALLET_ID)
-          ProviderController.reset()
-        }
+    function disconnectHandler() {
+      localStorage.removeItem(WALLET_ID)
+      ProviderController.reset()
+
+      CoinbaseProvider.removeListener('disconnect', disconnectHandler)
+      CoinbaseProvider.removeListener('accountsChanged', accountsChangedHandler)
+      CoinbaseProvider.removeListener('chainChanged', chainChangedHandler)
+    }
+
+    function accountsChangedHandler(accounts: string[]) {
+      if (accounts.length === 0) {
+        localStorage.removeItem(WALLET_ID)
+        ProviderController.reset()
+      } else {
+        ProviderController.setAddress(accounts[0] as Address)
       }
+    }
 
-      CoinbaseProvider.on('accountsChanged', accounts => {
-        if (accounts.length === 0) {
-          localStorage.removeItem(WALLET_ID)
-          ProviderController.reset()
-        } else {
-          ProviderController.setAddress(accounts[0] as Address)
-        }
-      })
+    function chainChangedHandler(chainId: string) {
+      if (chainId && walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
+        const chain = Number(chainId)
+        ProviderController.setChainId(chain)
+      }
+    }
 
-      CoinbaseProvider.on('chainChanged', chainId => {
-        if (chainId && walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
-          const chain = Number(chainId)
-          ProviderController.setChainId(chain)
-        }
-      })
+    if (CoinbaseProvider && provider) {
+      provider.on('disconnect', disconnectHandler)
+      CoinbaseProvider.on('disconnect', disconnectHandler)
+      CoinbaseProvider.on('accountsChanged', accountsChangedHandler)
+      CoinbaseProvider.on('chainChanged', chainChangedHandler)
     }
   }
 
