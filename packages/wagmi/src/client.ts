@@ -334,31 +334,33 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setConnectors(w3mConnectors)
   }
 
+  private eip6963EventHandler(connector: EIP6963Connector, event: CustomEventInit<Wallet>) {
+    if (event.detail) {
+      const { info, provider } = event.detail
+      this.addConnector({
+        id: ConstantsUtil.EIP6963_CONNECTOR_ID,
+        type: 'ANNOUNCED',
+        imageUrl: info.icon ?? this.options?.connectorImages?.[ConstantsUtil.EIP6963_CONNECTOR_ID],
+        name: info.name,
+        provider,
+        info
+      })
+      connector.isAuthorized({ info, provider })
+    }
+  }
+
   private listenConnectors(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
     const connector = wagmiConfig.connectors.find(
       c => c.id === ConstantsUtil.EIP6963_CONNECTOR_ID
     ) as EIP6963Connector
 
     if (typeof window !== 'undefined' && connector) {
-      window.addEventListener(
-        ConstantsUtil.EIP6963_ANNOUNCE_EVENT,
-        (event: CustomEventInit<Wallet>) => {
-          if (event.detail) {
-            const { info, provider } = event.detail
-            this.addConnector({
-              id: ConstantsUtil.EIP6963_CONNECTOR_ID,
-              type: 'ANNOUNCED',
-              imageUrl:
-                info.icon ?? this.options?.connectorImages?.[ConstantsUtil.EIP6963_CONNECTOR_ID],
-              name: info.name,
-              provider,
-              info
-            })
-            connector.isAuthorized({ info, provider })
-          }
-        }
-      )
+      const handler = this.eip6963EventHandler.bind(this, connector)
+      window.addEventListener(ConstantsUtil.EIP6963_ANNOUNCE_EVENT, handler)
       window.dispatchEvent(new Event(ConstantsUtil.EIP6963_REQUEST_EVENT))
+      setTimeout(() => {
+        window.removeEventListener(ConstantsUtil.EIP6963_ANNOUNCE_EVENT, handler)
+      }, 100)
     }
   }
 }

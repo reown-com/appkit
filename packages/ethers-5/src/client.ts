@@ -86,8 +86,6 @@ interface ExternalProvider extends EthereumProvider {
 export class Web3Modal extends Web3ModalScaffold {
   private hasSyncedConnectedAccount = false
 
-  private hasSyncedEIP6963Connectors = false
-
   private EIP6963Providers: IEIP6963Provider[] = []
 
   private walletConnectProvider?: EthereumProvider
@@ -866,38 +864,40 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setConnectors(w3mConnectors)
   }
 
+  private eip6963EventHandler(event: CustomEventInit<Wallet>) {
+    if (event.detail) {
+      const { info, provider } = event.detail
+      const eip6963Provider = provider as unknown as ExternalProvider
+      const web3provider = new ethers.providers.Web3Provider(eip6963Provider)
+      const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
+      if (type) {
+        this.addConnector({
+          id: ConstantsUtil.EIP6963_CONNECTOR_ID,
+          type,
+          imageUrl: info.icon,
+          name: info.name,
+          provider: web3provider,
+          info
+        })
+
+        const eip6963ProviderObj = {
+          name: info.name,
+          provider: web3provider
+        }
+
+        this.EIP6963Providers.push(eip6963ProviderObj)
+      }
+    }
+  }
+
   private listenConnectors(enableEIP6963: boolean) {
     if (typeof window !== 'undefined' && enableEIP6963) {
-      window.addEventListener(
-        ConstantsUtil.EIP6963_ANNOUNCE_EVENT,
-        (event: CustomEventInit<Wallet>) => {
-          if (event.detail && !this.hasSyncedEIP6963Connectors) {
-            const { info, provider } = event.detail
-            const eip6963Provider = provider as unknown as ExternalProvider
-            const web3provider = new ethers.providers.Web3Provider(eip6963Provider)
-            const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
-            if (type) {
-              this.addConnector({
-                id: ConstantsUtil.EIP6963_CONNECTOR_ID,
-                type,
-                imageUrl: info.icon,
-                name: info.name,
-                provider: web3provider,
-                info
-              })
-
-              const eip6963ProviderObj = {
-                name: info.name,
-                provider: web3provider
-              }
-
-              this.EIP6963Providers.push(eip6963ProviderObj)
-            }
-          }
-        }
-      )
+      const handler = this.eip6963EventHandler.bind(this)
+      window.addEventListener(ConstantsUtil.EIP6963_ANNOUNCE_EVENT, handler)
       window.dispatchEvent(new Event(ConstantsUtil.EIP6963_REQUEST_EVENT))
-      this.hasSyncedEIP6963Connectors = true
+      setTimeout(() => {
+        window.removeEventListener(ConstantsUtil.EIP6963_ANNOUNCE_EVENT, handler)
+      }, 100)
     }
   }
 }
