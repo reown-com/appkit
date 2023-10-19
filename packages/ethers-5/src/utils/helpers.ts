@@ -7,7 +7,7 @@ import {
   networkCurrenySymbols
 } from './presets.js'
 import type { ethers } from 'ethers'
-import type EthereumProvider from 'node_modules/@walletconnect/ethereum-provider/dist/types/EthereumProvider.js'
+import EthereumProvider from '@walletconnect/ethereum-provider'
 
 export function getCaipDefaultChain(chain?: number) {
   if (!chain) {

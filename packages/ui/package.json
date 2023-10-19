@@ -20,7 +20,7 @@
     "qrcode": "1.5.3"
   },
   "devDependencies": {
-    "@types/qrcode": "1.5.2",
+    "@types/qrcode": "1.5.4",
     "eslint-plugin-lit": "1.9.1",
     "eslint-plugin-wc": "2.0.4"
   },
