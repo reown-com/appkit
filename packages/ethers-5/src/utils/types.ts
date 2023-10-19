@@ -12,6 +12,7 @@ export type ProviderType = {
   injected?: ethers.providers.Web3Provider
   coinbase?: ethers.providers.Web3Provider
   EIP6963?: boolean
+  metadata: Metadata
 }
 
 export type ExternalProvider = {
@@ -28,4 +29,11 @@ export type ExternalProvider = {
     callback: (error: unknown, response: unknown) => void
   ) => void
   request?: (request: { method: string; params?: unknown[] }) => Promise<unknown>
+}
+
+export type Metadata = {
+  name: string
+  description: string
+  url: string
+  icons: string[]
 }

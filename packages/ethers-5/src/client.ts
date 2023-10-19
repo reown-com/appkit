@@ -14,9 +14,12 @@ import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/utils'
 
 import EthereumProvider from '@walletconnect/ethereum-provider'
 
-import type { Address, ProviderType } from './utils/types.js'
+import type { Address, Metadata, ProviderType } from './utils/types.js'
 import { ethers, utils } from 'ethers'
-import { ProviderController } from './controllers/ProviderController.js'
+import {
+  ProviderController,
+  type ProviderControllerState
+} from './controllers/ProviderController.js'
 import {
   addEthereumChain,
   getCaipDefaultChain,
@@ -38,7 +41,7 @@ import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
-  ethersConfig?: ProviderType
+  ethersConfig: ProviderType
   chains?: number[]
   defaultChain?: number
   chainImages?: Record<number, string>
@@ -96,6 +99,8 @@ export class Web3Modal extends Web3ModalScaffold {
   private projectId: string
 
   private chains?: number[]
+
+  private metadata?: Metadata
 
   public constructor(options: Web3ModalClientOptions) {
     const { ethersConfig, chains, defaultChain, tokens, chainImages, _sdkVersion, ...w3mOptions } =
@@ -236,6 +241,8 @@ export class Web3Modal extends Web3ModalScaffold {
       ...w3mOptions
     })
 
+    this.metadata = ethersConfig.metadata
+
     this.projectId = w3mOptions.projectId
     this.chains = chains
 
@@ -289,6 +296,34 @@ export class Web3Modal extends Web3ModalScaffold {
     )
   }
 
+  public getAddress() {
+    return ProviderController.state.address
+  }
+
+  public getChaindId() {
+    return ProviderController.state.chainId
+  }
+
+  public getIsConnected() {
+    return ProviderController.state.isConnected
+  }
+
+  public getWalletProvider() {
+    return ProviderController.state.provider
+  }
+
+  public getWalletProviderType() {
+    return ProviderController.state.providerType
+  }
+
+  public getSigner() {
+    return ProviderController.state.provider?.getSigner()
+  }
+
+  public subscribeProvider(callback: (newState: ProviderControllerState) => void) {
+    return ProviderController.subscribe(callback)
+  }
+
   // -- Private -----------------------------------------------------------------
   private createProvider() {
     if (!this.walletConnectProviderInitPromise && typeof window !== 'undefined') {
@@ -302,7 +337,13 @@ export class Web3Modal extends Web3ModalScaffold {
     const walletConnectProviderOptions: EthereumProviderOptions = {
       projectId: this.projectId,
       showQrModal: false,
-      optionalChains: this.chains ? [0, ...this.chains] : [0]
+      optionalChains: this.chains ? [0, ...this.chains] : [0],
+      metadata: {
+        name: this.metadata ? this.metadata.name : '',
+        description: this.metadata ? this.metadata.description : '',
+        url: this.metadata ? this.metadata.url : '',
+        icons: this.metadata ? this.metadata.icons : ['']
+      }
     }
     this.walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions)
     this.ethersWalletConnectProvider = new ethers.providers.Web3Provider(this.walletConnectProvider)

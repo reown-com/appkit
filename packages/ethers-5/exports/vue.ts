@@ -24,7 +24,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 }
 
 // -- Composites --------------------------------------------------------------
-export function useWeb3ModalProvider() {
+export function useWeb3ModalSigner() {
   const state = useSnapshot(ProviderController.state)
 
   const walletProvider = state.provider

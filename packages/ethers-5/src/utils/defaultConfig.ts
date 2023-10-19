@@ -1,21 +1,22 @@
 import '@web3modal/polyfills'
 import { ethers } from 'ethers'
-import type { ExternalProvider, ProviderType } from './types.js'
+import type { ExternalProvider, Metadata, ProviderType } from './types.js'
 import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk'
 
 export interface ConfigOptions {
   enableEIP6963?: boolean
   enableInjected?: boolean
   enableCoinbase?: boolean
+  metadata: Metadata
 }
 
-export function defaultConfig(options: ConfigOptions = {}): ProviderType | undefined {
-  const { enableEIP6963 = true, enableInjected = true, enableCoinbase = true } = options
+export function defaultConfig(options: ConfigOptions) {
+  const { enableEIP6963 = true, enableInjected = true, enableCoinbase = true, metadata } = options
 
   let injectedProvider: ethers.providers.Web3Provider | undefined = undefined
   let coinbaseProvider: ethers.providers.Web3Provider | undefined = undefined
 
-  const providers: ProviderType = {}
+  const providers: ProviderType = { metadata }
 
   function getInjectedProvider() {
     if (injectedProvider) {
@@ -49,8 +50,8 @@ export function defaultConfig(options: ConfigOptions = {}): ProviderType | undef
     }
 
     const coinbaseWallet = new CoinbaseWalletSDK({
-      appName: 'Web3Modal',
-      appLogoUrl: 'https://avatars.githubusercontent.com/u/37784886',
+      appName: metadata.name,
+      appLogoUrl: metadata.icons[0],
       darkMode: false
     })
 
