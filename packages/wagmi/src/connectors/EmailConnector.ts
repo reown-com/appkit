@@ -36,9 +36,15 @@ export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProvider
 
   async isAuthorized() {}
 
-  onAccountsChanged() {}
+  onAccountsChanged() {
+    // IMPLEMENT
+  }
 
-  onChainChanged() {}
+  onChainChanged() {
+    // IMPLEMENT
+  }
 
-  onDisconnect() {}
+  onDisconnect() {
+    // IMPLEMENT
+  }
 }
