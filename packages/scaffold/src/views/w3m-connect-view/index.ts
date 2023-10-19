@@ -41,16 +41,25 @@ export class W3mConnectView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="xs">
-        ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()}
-        ${this.announcedTemplate()} ${this.injectedTemplate()} ${this.featuredTemplate()}
-        ${this.customTemplate()} ${this.recommendedTemplate()} ${this.connectorsTemplate()}
-        ${this.allWalletsTemplate()}
+        ${this.emailConnectorTemplate()} ${this.walletConnectConnectorTemplate()}
+        ${this.recentTemplate()} ${this.announcedTemplate()} ${this.injectedTemplate()}
+        ${this.featuredTemplate()} ${this.customTemplate()} ${this.recommendedTemplate()}
+        ${this.connectorsTemplate()} ${this.allWalletsTemplate()}
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
     `
   }
 
   // -- Private ------------------------------------------- //
+  private emailConnectorTemplate() {
+    return html`
+      <form>
+        <wui-email-input></wui-email-input>
+      </form>
+      <wui-separator text="or"></wui-separator>
+    `
+  }
+
   private walletConnectConnectorTemplate() {
     if (CoreHelperUtil.isMobile()) {
       return null

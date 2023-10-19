@@ -47,7 +47,8 @@
     "@web3modal/scaffold": "3.2.0-e34faf1",
     "@web3modal/scaffold-react": "3.2.0-e34faf1",
     "@web3modal/scaffold-vue": "3.2.0-e34faf1",
-    "@web3modal/utils": "3.2.0-e34faf1"
+    "@web3modal/utils": "3.2.0-e34faf1",
+    "@web3modal/smart-account": "3.2.0-e34faf1"
   },
   "peerDependencies": {
     "@wagmi/core": ">=1",
