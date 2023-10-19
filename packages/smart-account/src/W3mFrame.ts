@@ -2,8 +2,10 @@ import { z } from 'zod'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
 
+// -- Helpers ----------------------------------------------------------------
 const zErrorPayload = z.object({ message: z.string() })
 
+// -- Sdk --------------------------------------------------------------------
 export class W3mFrame {
   private iframe: HTMLIFrameElement | null = null
 
@@ -20,7 +22,7 @@ export class W3mFrame {
     this.iframe = iframe
   }
 
-  // -- Networks ---------------------------------------------------------------
+  // -- Networks --------------------------------------------------------------
   get networks(): Record<number, W3mFrameTypes.Network> {
     return {
       1: {
@@ -35,7 +37,7 @@ export class W3mFrame {
     }
   }
 
-  // -- Constants --------------------------------------------------------------
+  // -- Constants -------------------------------------------------------------
   public constants = {
     SECURE_SITE: 'http://localhost:3010',
     APP_EVENT_KEY: '@w3m-app/',
@@ -59,7 +61,7 @@ export class W3mFrame {
     FRAME_SIGN_OUT_ERROR: '@w3m-frame/SIGN_OUT_ERROR'
   } as const
 
-  // -- Schema -----------------------------------------------------------------
+  // -- Schema ----------------------------------------------------------------
   public schema = {
     // App Schema
     appEvent: z
@@ -129,7 +131,7 @@ export class W3mFrame {
       )
   }
 
-  // -- Events -----------------------------------------------------------------
+  // -- Events ----------------------------------------------------------------
   public events = {
     onFrameEvent: (callback: (event: W3mFrameTypes.FrameEvent) => void) => {
       window.addEventListener('message', ({ data }) => {
