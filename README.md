@@ -1,11 +1,6 @@
 # Web3Modal
 A single Web3 / Ethereum provider solution for all Wallets
 
-## Branch name will be changed
-
-We will change the `master` branch to `main` on Dec 15, 2022.
-After the branch policy change, please check your local or forked repository settings.
-
 ## Introduction
 
 Web3Modal is an easy-to-use library to help developers add support for multiple providers in their apps with a simple customizable configuration.
