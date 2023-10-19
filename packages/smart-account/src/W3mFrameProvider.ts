@@ -2,8 +2,8 @@ import { W3mFrame } from './W3mFrame.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
 
 // -- Resolver --------------------------------------------------------
-interface Resolver {
-  resolve: (value?: unknown) => void
+interface Resolver<T> {
+  resolve: (value: T) => void
   reject: (reason?: unknown) => void
 }
 
@@ -11,11 +11,11 @@ interface Resolver {
 export class W3mFrameProvider {
   private w3mFrame: W3mFrame
 
-  private connectEmailResolver: Resolver | undefined = undefined
+  private connectEmailResolver: Resolver<undefined> | undefined = undefined
 
-  private connectOtpResolver: Resolver | undefined = undefined
+  private connectOtpResolver: Resolver<undefined> | undefined = undefined
 
-  private connectResolver: Resolver | undefined = undefined
+  private connectResolver: Resolver<{ address: string }> | undefined = undefined
 
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId)
@@ -39,7 +39,7 @@ export class W3mFrameProvider {
     })
   }
 
-  // -- Methods --------------------------------------------------------
+  // -- Extended Methods ------------------------------------------------
   public async connectEmail(email: string) {
     this.w3mFrame.events.postAppEvent({
       type: this.w3mFrame.constants.APP_CONNECT_EMAIL,
@@ -62,17 +62,22 @@ export class W3mFrameProvider {
     })
   }
 
+  // -- Provider Methods ------------------------------------------------
   public async connect() {
     this.w3mFrame.events.postAppEvent({ type: this.w3mFrame.constants.APP_GET_USER })
 
-    return new Promise((resolve, reject) => {
+    return new Promise<{ address: string }>((resolve, reject) => {
       this.connectResolver = { resolve, reject }
     })
   }
 
+  public async request() {
+    // IMPLEMENT
+  }
+
   // -- Handlers -- -----------------------------------------------------
   private onConnectEmailSuccess() {
-    this.connectEmailResolver?.resolve()
+    this.connectEmailResolver?.resolve(undefined)
   }
 
   private onConnectEmailError(
@@ -82,7 +87,7 @@ export class W3mFrameProvider {
   }
 
   private onConnectOtpSuccess() {
-    this.connectOtpResolver?.resolve()
+    this.connectOtpResolver?.resolve(undefined)
   }
 
   private onConnectOtpError(
