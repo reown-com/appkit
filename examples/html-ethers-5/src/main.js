@@ -11,7 +11,16 @@ const chains = [1, 42161]
 
 // 3. Create modal
 const modal = createWeb3Modal({
-  ethersConfig: defaultConfig(),
+  ethersConfig: defaultConfig({
+    metadata: {
+      name: 'Web3Modal',
+      description: 'Web3Modal Laboratory',
+      url: 'https://web3modal.com',
+      icons: ['https://avatars.githubusercontent.com/u/37784886']
+    },
+    coinbaseDefaultChainId: 1,
+    coinbaseRpcUrl: 'https://cloudflare-eth.com'
+  }),
   projectId,
   chains,
   themeMode: 'light'

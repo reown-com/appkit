@@ -7,11 +7,20 @@ export interface ConfigOptions {
   enableEIP6963?: boolean
   enableInjected?: boolean
   enableCoinbase?: boolean
+  coinbaseRpcUrl?: string
+  coinbaseDefaultChainId?: number
   metadata: Metadata
 }
 
 export function defaultConfig(options: ConfigOptions) {
-  const { enableEIP6963 = true, enableInjected = true, enableCoinbase = true, metadata } = options
+  const {
+    enableEIP6963 = true,
+    enableInjected = true,
+    enableCoinbase = true,
+    metadata,
+    coinbaseDefaultChainId,
+    coinbaseRpcUrl
+  } = options
 
   let injectedProvider: ethers.providers.Web3Provider | undefined = undefined
   let coinbaseProvider: ethers.providers.Web3Provider | undefined = undefined
@@ -56,8 +65,8 @@ export function defaultConfig(options: ConfigOptions) {
     })
 
     const coinbaseWalletProvider = coinbaseWallet.makeWeb3Provider(
-      'https://cloudflare-eth.com',
-      1
+      coinbaseRpcUrl,
+      coinbaseDefaultChainId
     ) as unknown as ExternalProvider
 
     coinbaseProvider = new ethers.providers.Web3Provider(coinbaseWalletProvider, 'any')
@@ -69,7 +78,7 @@ export function defaultConfig(options: ConfigOptions) {
     providers.injected = getInjectedProvider()
   }
 
-  if (enableCoinbase) {
+  if (enableCoinbase && coinbaseRpcUrl && coinbaseDefaultChainId) {
     providers.coinbase = getCoinbaseProvider()
   }
 
