@@ -1,5 +1,5 @@
 import { Button, useToast } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalSigner } from '@web3modal/ethers-5/react'
+import { useWeb3ModalAccount, useWeb3ModalSigner } from '@web3modal/ethers5/react'
 
 export function EthersConnectButton() {
   const toast = useToast()

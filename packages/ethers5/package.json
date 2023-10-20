@@ -1,5 +1,5 @@
 {
-  "name": "@web3modal/ethers-5",
+  "name": "@web3modal/ethers5",
   "version": "3.2.0-f9b3ed8",
   "type": "module",
   "main": "./dist/esm/exports/index.js",

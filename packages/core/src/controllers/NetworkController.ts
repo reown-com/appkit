@@ -10,8 +10,6 @@ export interface NetworkControllerClient {
     approvedCaipNetworkIds: NetworkControllerState['approvedCaipNetworkIds']
     supportsAllNetworks: NetworkControllerState['supportsAllNetworks']
   }>
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-explicit-any
-  getWalletConnectProvider?: () => Promise<any | undefined>
 }
 
 export interface NetworkControllerState {

@@ -7,8 +7,8 @@ export interface ConfigOptions {
   enableEIP6963?: boolean
   enableInjected?: boolean
   enableCoinbase?: boolean
-  coinbaseRpcUrl?: string
-  coinbaseDefaultChainId?: number
+  rpcUrl?: string
+  defaultChainId?: number
   metadata: Metadata
 }
 
@@ -18,8 +18,8 @@ export function defaultConfig(options: ConfigOptions) {
     enableInjected = true,
     enableCoinbase = true,
     metadata,
-    coinbaseDefaultChainId,
-    coinbaseRpcUrl
+    rpcUrl,
+    defaultChainId
   } = options
 
   let injectedProvider: ethers.providers.Web3Provider | undefined = undefined
@@ -54,10 +54,6 @@ export function defaultConfig(options: ConfigOptions) {
       return undefined
     }
 
-    if (!window.ethereum) {
-      return undefined
-    }
-
     const coinbaseWallet = new CoinbaseWalletSDK({
       appName: metadata.name,
       appLogoUrl: metadata.icons[0],
@@ -65,8 +61,8 @@ export function defaultConfig(options: ConfigOptions) {
     })
 
     const coinbaseWalletProvider = coinbaseWallet.makeWeb3Provider(
-      coinbaseRpcUrl,
-      coinbaseDefaultChainId
+      rpcUrl,
+      defaultChainId
     ) as unknown as ExternalProvider
 
     coinbaseProvider = new ethers.providers.Web3Provider(coinbaseWalletProvider, 'any')
@@ -78,7 +74,7 @@ export function defaultConfig(options: ConfigOptions) {
     providers.injected = getInjectedProvider()
   }
 
-  if (enableCoinbase && coinbaseRpcUrl && coinbaseDefaultChainId) {
+  if (enableCoinbase && rpcUrl && defaultChainId) {
     providers.coinbase = getCoinbaseProvider()
   }
 

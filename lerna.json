@@ -9,7 +9,7 @@
     "packages/polyfills",
     "packages/smart-account",
     "packages/wagmi",
-    "packages/ethers-5",
+    "packages/ethers5",
     "packages/utils",
     "apps/*",
     "examples/*"

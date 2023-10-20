@@ -5,7 +5,7 @@ import {
   useWeb3ModalEvents,
   useWeb3ModalState,
   useWeb3ModalTheme
-} from '@web3modal/ethers-5/react'
+} from '@web3modal/ethers5/react'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -16,18 +16,20 @@ if (!projectId) {
 // 2. Set chains
 const chains = [1, 42161]
 
+const ethersConfig = defaultConfig({
+  metadata: {
+    name: 'Web3Modal',
+    description: 'Web3Modal Laboratory',
+    url: 'https://web3modal.com',
+    icons: ['https://avatars.githubusercontent.com/u/37784886']
+  },
+  defaultChainId: 1,
+  rpcUrl: 'https://cloudflare-eth.com'
+})
+
 // 3. Create modal
 createWeb3Modal({
-  ethersConfig: defaultConfig({
-    metadata: {
-      name: 'Web3Modal',
-      description: 'Web3Modal Laboratory',
-      url: 'https://web3modal.com',
-      icons: ['https://avatars.githubusercontent.com/u/37784886']
-    },
-    coinbaseDefaultChainId: 1,
-    coinbaseRpcUrl: 'https://cloudflare-eth.com'
-  }),
+  ethersConfig,
   chains,
   projectId,
   enableAnalytics: true,

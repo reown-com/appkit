@@ -1,10 +1,12 @@
+'use client'
+
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { ConstantsUtil } from '@web3modal/utils'
-
-import { getWeb3Modal } from '@web3modal/scaffold-vue'
-import { useSnapshot } from 'valtio'
 import { ProviderController } from '../src/controllers/ProviderController.js'
+import { getWeb3Modal } from '@web3modal/scaffold-react'
+import { useSnapshot } from 'valtio'
+
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
 
@@ -15,15 +17,15 @@ export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
     modal = new Web3Modal({
       ...options,
-      _sdkVersion: `vue-ethers-5-${ConstantsUtil.VERSION}`
+      _sdkVersion: `react-ethers5-${ConstantsUtil.VERSION}`
     })
-    getWeb3Modal(modal)
   }
+  getWeb3Modal(modal)
 
   return modal
 }
 
-// -- Composites --------------------------------------------------------------
+// -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalSigner() {
   const state = useSnapshot(ProviderController.state)
 
@@ -57,7 +59,7 @@ export {
   useWeb3Modal,
   useWeb3ModalState,
   useWeb3ModalEvents
-} from '@web3modal/scaffold-vue'
+} from '@web3modal/scaffold-react'
 
 // -- Universal Exports -------------------------------------------------------
 export { defaultConfig } from '../src/utils/defaultConfig.js'

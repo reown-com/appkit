@@ -8,8 +8,8 @@ export function getCaipDefaultChain(chain?: Chain) {
   }
 
   return {
-    id: `${ConstantsUtil.NAMESPACE}:${chain.id}`,
+    id: `${ConstantsUtil.EIP155}:${chain.id}`,
     name: chain.name,
-    imageId: PresetsUtil.NetworkImageIds[chain.id]
+    imageId: PresetsUtil.EIP155NetworkImageIds[chain.id]
   } as CaipNetwork
 }

@@ -1,10 +1,10 @@
 import type { CaipNetwork } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/utils'
 import {
-  NetworkBlockExplorerUrls,
-  NetworkNames,
-  NetworkRPCUrls,
-  networkCurrenySymbols
+  EIP155NetworkBlockExplorerUrls,
+  EIP155NetworkNames,
+  EIP155NetworkRPCUrls,
+  EIP155NetworkCurrenySymbols
 } from './presets.js'
 import type { ethers } from 'ethers'
 import EthereumProvider from '@walletconnect/ethereum-provider'
@@ -15,9 +15,9 @@ export function getCaipDefaultChain(chain?: number) {
   }
 
   return {
-    id: `${ConstantsUtil.NAMESPACE}:${chain}`,
-    name: NetworkNames[chain],
-    imageId: PresetsUtil.NetworkImageIds[chain]
+    id: `${ConstantsUtil.EIP155}:${chain}`,
+    name: EIP155NetworkNames[chain],
+    imageId: PresetsUtil.EIP155NetworkImageIds[chain]
   } as CaipNetwork
 }
 
@@ -44,15 +44,15 @@ export async function addEthereumChain(
       params: [
         {
           chainId: numberToHexString(chainId),
-          rpcUrls: [NetworkRPCUrls[chainId]],
-          chainName: NetworkNames[chainId],
+          rpcUrls: [EIP155NetworkRPCUrls[chainId]],
+          chainName: EIP155NetworkNames[chainId],
           nativeCurrency: {
-            name: networkCurrenySymbols[chainId],
+            name: EIP155NetworkCurrenySymbols[chainId],
             decimals: 18,
-            symbol: networkCurrenySymbols[chainId]
+            symbol: EIP155NetworkCurrenySymbols[chainId]
           },
-          blockExplorerUrls: [NetworkBlockExplorerUrls[chainId]],
-          iconUrls: [PresetsUtil.NetworkImageIds[chainId]]
+          blockExplorerUrls: [EIP155NetworkBlockExplorerUrls[chainId]],
+          iconUrls: [PresetsUtil.EIP155NetworkImageIds[chainId]]
         }
       ]
     })
@@ -61,15 +61,15 @@ export async function addEthereumChain(
     await providerWeb3.send('wallet_addEthereumChain', [
       {
         chainId: numberToHexString(chainId),
-        rpcUrls: [NetworkRPCUrls[chainId]],
-        chainName: NetworkNames[chainId],
+        rpcUrls: [EIP155NetworkRPCUrls[chainId]],
+        chainName: EIP155NetworkNames[chainId],
         nativeCurrency: {
-          name: networkCurrenySymbols[chainId],
+          name: EIP155NetworkCurrenySymbols[chainId],
           decimals: 18,
-          symbol: networkCurrenySymbols[chainId]
+          symbol: EIP155NetworkCurrenySymbols[chainId]
         },
-        blockExplorerUrls: [NetworkBlockExplorerUrls[chainId]],
-        iconUrls: [PresetsUtil.NetworkImageIds[chainId]]
+        blockExplorerUrls: [EIP155NetworkBlockExplorerUrls[chainId]],
+        iconUrls: [PresetsUtil.EIP155NetworkImageIds[chainId]]
       }
     ])
   }

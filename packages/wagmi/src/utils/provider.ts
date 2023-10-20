@@ -68,7 +68,7 @@ export function walletConnectProvider<C extends Chain = Chain>({
       return null
     }
 
-    const baseHttpUrl = `${RPC_URL}/v1/?chainId=${ConstantsUtil.NAMESPACE}:${chain.id}&projectId=${projectId}`
+    const baseHttpUrl = `${RPC_URL}/v1/?chainId=${ConstantsUtil.EIP155}:${chain.id}&projectId=${projectId}`
 
     return {
       chain: {
