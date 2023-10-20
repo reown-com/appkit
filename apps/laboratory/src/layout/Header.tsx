@@ -10,7 +10,6 @@ import {
   Flex,
   Icon,
   Link,
-  Text,
   useColorMode,
   useDisclosure
 } from '@chakra-ui/react'
@@ -19,6 +18,7 @@ import { FaMagic } from 'react-icons/fa'
 import AccentColorInput from '../components/Theming/AccentColorInput'
 import BorderRadiusInput from '../components/Theming/BorderRadiusInput'
 import MixColorInput from '../components/Theming/MixColorInput'
+import NextLink from 'next/link'
 
 export default function Header() {
   const { colorMode, toggleColorMode } = useColorMode()
@@ -50,9 +50,15 @@ export default function Header() {
       <Box borderBottom={'1px'} zIndex={2} position="relative">
         <Container maxW="container.xl" padding={'4'}>
           <Flex justify={['flex-end', 'space-between']} alignItems={'center'}>
-            <Text fontSize={'lg'} fontWeight={'bold'} display={['none', 'block']}>
+            <Link
+              as={NextLink}
+              href="/"
+              fontSize={'lg'}
+              fontWeight={'bold'}
+              display={['none', 'block']}
+            >
               Web3Modal Lab
-            </Text>
+            </Link>
             <Flex gridGap={4} alignItems={'center'}>
               <Link isExternal href="https://github.com/WalletConnect/web3modal">
                 GitHub

@@ -47,7 +47,9 @@ export type CaipNamespaces = Record<
   }
 >
 
-export type SdkVersion = `${'html' | 'react' | 'vue'}-wagmi-${string}`
+export type SdkVersion =
+  | `${'html' | 'react' | 'vue'}-wagmi-${string}`
+  | `${'html' | 'react' | 'vue'}-ethers5-${string}`
 
 export interface BaseError {
   message?: string

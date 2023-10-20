@@ -1,138 +1,35 @@
 'use client'
 
-import type {
-  W3mAccountButton,
-  W3mButton,
-  W3mConnectButton,
-  W3mNetworkButton
-} from '@web3modal/scaffold'
-import { useEffect, useState } from 'react'
+import { getWeb3Modal } from '@web3modal/scaffold-react'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
-import { VERSION } from '../src/utils/constants.js'
+import { ConstantsUtil } from '@web3modal/utils'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
-
-type OpenOptions = Parameters<Web3Modal['open']>[0]
-
-type ThemeModeOptions = Parameters<Web3Modal['setThemeMode']>[0]
-
-type ThemeVariablesOptions = Parameters<Web3Modal['setThemeVariables']>[0]
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'w3m-connect-button': Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
-      'w3m-account-button': Pick<W3mAccountButton, 'disabled' | 'balance'>
-      'w3m-button': Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
-      'w3m-network-button': Pick<W3mNetworkButton, 'disabled'>
-    }
-  }
-}
 
 // -- Setup -------------------------------------------------------------------
 let modal: Web3Modal | undefined = undefined
 
 export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
-    modal = new Web3Modal({ ...options, _sdkVersion: `react-wagmi-${VERSION}` })
+    modal = new Web3Modal({
+      ...options,
+      _sdkVersion: `react-wagmi-${ConstantsUtil.VERSION}`
+    })
+    getWeb3Modal(modal)
   }
 
   return modal
 }
 
 // -- Hooks -------------------------------------------------------------------
-export function useWeb3ModalTheme() {
-  if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalTheme" hook')
-  }
-
-  function setThemeMode(themeMode: ThemeModeOptions) {
-    modal?.setThemeMode(themeMode)
-  }
-
-  function setThemeVariables(themeVariables: ThemeVariablesOptions) {
-    modal?.setThemeVariables(themeVariables)
-  }
-
-  const [themeMode, setInternalThemeMode] = useState(modal.getThemeMode())
-  const [themeVariables, setInternalThemeVariables] = useState(modal.getThemeVariables())
-
-  useEffect(() => {
-    const unsubscribe = modal?.subscribeTheme(state => {
-      setInternalThemeMode(state.themeMode)
-      setInternalThemeVariables(state.themeVariables)
-    })
-
-    return () => {
-      unsubscribe?.()
-    }
-  }, [])
-
-  return {
-    themeMode,
-    themeVariables,
-    setThemeMode,
-    setThemeVariables
-  }
-}
-
-export function useWeb3Modal() {
-  if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3Modal" hook')
-  }
-
-  async function open(options?: OpenOptions) {
-    await modal?.open(options)
-  }
-
-  async function close() {
-    await modal?.close()
-  }
-
-  return { open, close }
-}
-
-export function useWeb3ModalState() {
-  if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" hook')
-  }
-
-  const [state, setState] = useState(modal.getState())
-
-  useEffect(() => {
-    const unsubscribe = modal?.subscribeState(newState => {
-      setState({ ...newState })
-    })
-
-    return () => {
-      unsubscribe?.()
-    }
-  }, [])
-
-  return state
-}
-
-export function useWeb3ModalEvents() {
-  if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalState" hook')
-  }
-
-  const [event, setEvents] = useState(modal.getEvent())
-
-  useEffect(() => {
-    const unsubscribe = modal?.subscribeEvents(newEvent => {
-      setEvents({ ...newEvent })
-    })
-
-    return () => {
-      unsubscribe?.()
-    }
-  }, [])
-
-  return event
-}
+export {
+  useWeb3ModalTheme,
+  useWeb3Modal,
+  useWeb3ModalState,
+  useWeb3ModalEvents
+} from '@web3modal/scaffold-react'
 
 // -- Universal Exports -------------------------------------------------------
 export { EIP6963Connector } from '../src/connectors/EIP6963Connector.js'

@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import { danger, fail, message, warn } from 'danger'
 import corePackageJson from './packages/core/package.json' assert { type: 'json' }
-import { VERSION as WAGMI_PACKAGE_VERSION } from './packages/wagmi/src/utils/constants'
+import { ConstantsUtil } from './packages/utils/src/ConstantsUtil'
 
 // -- Constants ---------------------------------------------------------------
 const TYPE_COMMENT = `// -- Types --------------------------------------------- //`
@@ -10,6 +10,7 @@ const CONTROLLER_COMMENT = `// -- Controller -----------------------------------
 const RENDER_COMMENT = `// -- Render -------------------------------------------- //`
 const STATE_PROPERTIES_COMMENT = `// -- State & Properties -------------------------------- //`
 const PRIVATE_COMMENT = `// -- Private ------------------------------------------- //`
+const PACKAGE_VERSION = ConstantsUtil.VERSION
 
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
@@ -248,8 +249,8 @@ checkClientPackages()
 
 // -- Check sdkVersion ------------------------------------------------------------
 function checkSdkVersion() {
-  if (WAGMI_PACKAGE_VERSION !== corePackageJson.version) {
-    fail(`VERSION in wagmi/utils/constants does't match core package.json version`)
+  if (PACKAGE_VERSION !== corePackageJson.version) {
+    fail(`VERSION in utils/constants does't match core package.json version`)
   }
 }
 checkSdkVersion()

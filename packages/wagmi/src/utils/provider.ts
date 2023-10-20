@@ -1,6 +1,6 @@
 import type { Chain, ChainProviderFn } from '@wagmi/core'
 import { CoreHelperUtil } from '@web3modal/scaffold'
-import { NAMESPACE } from './constants.js'
+import { ConstantsUtil } from '@web3modal/utils'
 
 // -- Helpers ------------------------------------------------------------------
 const RPC_URL = CoreHelperUtil.getBlockchainApiUrl()
@@ -68,7 +68,7 @@ export function walletConnectProvider<C extends Chain = Chain>({
       return null
     }
 
-    const baseHttpUrl = `${RPC_URL}/v1/?chainId=${NAMESPACE}:${chain.id}&projectId=${projectId}`
+    const baseHttpUrl = `${RPC_URL}/v1/?chainId=${ConstantsUtil.EIP155}:${chain.id}&projectId=${projectId}`
 
     return {
       chain: {
