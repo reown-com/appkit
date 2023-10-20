@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/smart-account",
-  "version": "3.2.0-e34faf1",
+  "version": "3.2.0-f9b3ed8",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
