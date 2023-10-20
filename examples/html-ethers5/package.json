@@ -1,5 +1,5 @@
 {
-  "name": "@examples/html-ethers-5",
+  "name": "@examples/html-ethers5",
   "private": true,
   "version": "3.2.0-f9b3ed8",
   "scripts": {
@@ -7,6 +7,6 @@
     "build:examples": "vite build"
   },
   "dependencies": {
-    "@web3modal/ethers-5": "3.2.0-f9b3ed8"
+    "@web3modal/ethers5": "3.2.0-f9b3ed8"
   }
 }

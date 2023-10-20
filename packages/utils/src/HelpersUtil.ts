@@ -12,7 +12,7 @@ export const HelpersUtil = {
 
     const caipTokens: Tokens = {}
     Object.entries(tokens).forEach(([id, token]) => {
-      caipTokens[`${ConstantsUtil.NAMESPACE}:${id}`] = token
+      caipTokens[`${ConstantsUtil.EIP155}:${id}`] = token
     })
 
     return caipTokens

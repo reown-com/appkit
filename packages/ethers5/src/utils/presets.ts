@@ -1,4 +1,4 @@
-export const NetworkNames = {
+export const EIP155NetworkNames = {
   // Ethereum
   1: 'Ethereum',
   // Arbitrum
@@ -39,7 +39,7 @@ export const NetworkNames = {
   1313161554: 'Aurora'
 } as Record<string, string>
 
-export const NetworkBlockExplorerUrls = {
+export const EIP155NetworkBlockExplorerUrls = {
   // Ethereum
   1: 'https://etherscan.io',
   // Arbitrum
@@ -80,7 +80,7 @@ export const NetworkBlockExplorerUrls = {
   1313161554: 'https://explorer.aurora.dev'
 } as Record<string, string>
 
-export const networkCurrenySymbols = {
+export const EIP155NetworkCurrenySymbols = {
   // Ethereum
   1: 'ETH',
   // Arbitrum
@@ -121,7 +121,7 @@ export const networkCurrenySymbols = {
   1313161554: 'ETH'
 } as Record<string, string>
 
-export const NetworkRPCUrls = {
+export const EIP155NetworkRPCUrls = {
   // Ethereum
   1: 'https://cloudflare-eth.com',
   // Arbitrum

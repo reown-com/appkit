@@ -106,8 +106,8 @@ export class Web3Modal extends Web3ModalScaffold {
           }
           const provider = await connector.getProvider()
           const ns = provider.signer?.session?.namespaces
-          const nsMethods = ns?.[ConstantsUtil.NAMESPACE]?.methods
-          const nsChains = ns?.[ConstantsUtil.NAMESPACE]?.chains
+          const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
+          const nsChains = ns?.[ConstantsUtil.EIP155]?.chains
 
           return {
             supportsAllNetworks: nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD),
@@ -230,9 +230,9 @@ export class Web3Modal extends Web3ModalScaffold {
     const requestedCaipNetworks = chains?.map(
       chain =>
         ({
-          id: `${ConstantsUtil.NAMESPACE}:${chain.id}`,
+          id: `${ConstantsUtil.EIP155}:${chain.id}`,
           name: chain.name,
-          imageId: PresetsUtil.NetworkImageIds[chain.id],
+          imageId: PresetsUtil.EIP155NetworkImageIds[chain.id],
           imageUrl: this.options?.chainImages?.[chain.id]
         }) as CaipNetwork
     )
@@ -244,7 +244,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const { chain } = getNetwork()
     this.resetAccount()
     if (isConnected && address && chain) {
-      const caipAddress: CaipAddress = `${ConstantsUtil.NAMESPACE}:${chain.id}:${address}`
+      const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chain.id}:${address}`
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
       await Promise.all([
@@ -265,15 +265,15 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (chain) {
       const chainId = String(chain.id)
-      const caipChainId: CaipNetworkId = `${ConstantsUtil.NAMESPACE}:${chainId}`
+      const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chainId}`
       this.setCaipNetwork({
         id: caipChainId,
         name: chain.name,
-        imageId: PresetsUtil.NetworkImageIds[chain.id],
+        imageId: PresetsUtil.EIP155NetworkImageIds[chain.id],
         imageUrl: this.options?.chainImages?.[chain.id]
       })
       if (isConnected && address) {
-        const caipAddress: CaipAddress = `${ConstantsUtil.NAMESPACE}:${chain.id}:${address}`
+        const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chain.id}:${address}`
         this.setCaipAddress(caipAddress)
         if (chain.blockExplorers?.default?.url) {
           const url = `${chain.blockExplorers.default.url}/address/${address}`
@@ -291,7 +291,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncProfile(address: Address) {
     try {
       const { name, avatar } = await this.fetchIdentity({
-        caipChainId: `${ConstantsUtil.NAMESPACE}:${mainnet.id}`,
+        caipChainId: `${ConstantsUtil.EIP155}:${mainnet.id}`,
         address
       })
       this.setProfileName(name)
@@ -337,15 +337,20 @@ export class Web3Modal extends Web3ModalScaffold {
   private eip6963EventHandler(connector: EIP6963Connector, event: CustomEventInit<Wallet>) {
     if (event.detail) {
       const { info, provider } = event.detail
-      this.addConnector({
-        id: ConstantsUtil.EIP6963_CONNECTOR_ID,
-        type: 'ANNOUNCED',
-        imageUrl: info.icon ?? this.options?.connectorImages?.[ConstantsUtil.EIP6963_CONNECTOR_ID],
-        name: info.name,
-        provider,
-        info
-      })
-      connector.isAuthorized({ info, provider })
+      const connectors = this.getConnectors()
+      const existingConnector = connectors.find(c => c.name === info.name)
+      if (!existingConnector) {
+        this.addConnector({
+          id: ConstantsUtil.EIP6963_CONNECTOR_ID,
+          type: 'ANNOUNCED',
+          imageUrl:
+            info.icon ?? this.options?.connectorImages?.[ConstantsUtil.EIP6963_CONNECTOR_ID],
+          name: info.name,
+          provider,
+          info
+        })
+        connector.isAuthorized({ info, provider })
+      }
     }
   }
 
@@ -358,9 +363,6 @@ export class Web3Modal extends Web3ModalScaffold {
       const handler = this.eip6963EventHandler.bind(this, connector)
       window.addEventListener(ConstantsUtil.EIP6963_ANNOUNCE_EVENT, handler)
       window.dispatchEvent(new Event(ConstantsUtil.EIP6963_REQUEST_EVENT))
-      setTimeout(() => {
-        window.removeEventListener(ConstantsUtil.EIP6963_ANNOUNCE_EVENT, handler)
-      }, 100)
     }
   }
 }

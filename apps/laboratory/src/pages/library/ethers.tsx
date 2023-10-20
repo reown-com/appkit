@@ -1,7 +1,7 @@
 import { Center, Text, VStack } from '@chakra-ui/react'
 import { NetworksButton } from '../../components/NetworksButton'
 import { EthersConnectButton } from '../../components/Ethers/EthersConnectButton'
-import { createWeb3Modal, defaultConfig } from '@web3modal/ethers-5/react'
+import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
@@ -18,8 +18,8 @@ const modal = createWeb3Modal({
       url: 'https://web3modal.com',
       icons: ['https://avatars.githubusercontent.com/u/37784886']
     },
-    coinbaseDefaultChainId: 1,
-    coinbaseRpcUrl: 'https://cloudflare-eth.com'
+    defaultChainId: 1,
+    rpcUrl: 'https://cloudflare-eth.com'
   }),
   chains,
   projectId,
