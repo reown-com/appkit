@@ -45,6 +45,7 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   chains?: number[]
   defaultChain?: number
   chainImages?: Record<number, string>
+  connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
 }
 
@@ -99,6 +100,8 @@ export class Web3Modal extends Web3ModalScaffold {
   private chains?: number[]
 
   private metadata?: Metadata
+
+  private options: Web3ModalClientOptions | undefined = undefined
 
   public constructor(options: Web3ModalClientOptions) {
     const { ethersConfig, chains, defaultChain, tokens, chainImages, _sdkVersion, ...w3mOptions } =
@@ -229,6 +232,8 @@ export class Web3Modal extends Web3ModalScaffold {
       _sdkVersion: _sdkVersion ?? `html-ethers5-${ConstantsUtil.VERSION}`,
       ...w3mOptions
     })
+
+    this.options = options
 
     this.metadata = ethersConfig.metadata
 
@@ -826,6 +831,7 @@ export class Web3Modal extends Web3ModalScaffold {
         id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
         explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
         imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+        imageUrl: this.options?.connectorImages?.[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
         name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
         type: connectorType
       })
@@ -839,6 +845,7 @@ export class Web3Modal extends Web3ModalScaffold {
           id: ConstantsUtil.INJECTED_CONNECTOR_ID,
           explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.INJECTED_CONNECTOR_ID],
           imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.INJECTED_CONNECTOR_ID],
+          imageUrl: this.options?.connectorImages?.[ConstantsUtil.INJECTED_CONNECTOR_ID],
           name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.INJECTED_CONNECTOR_ID],
           type: injectedConnectorType
         })
@@ -850,6 +857,7 @@ export class Web3Modal extends Web3ModalScaffold {
         id: ConstantsUtil.COINBASE_CONNECTOR_ID,
         explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
         imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.COINBASE_CONNECTOR_ID],
+        imageUrl: this.options?.connectorImages?.[ConstantsUtil.COINBASE_CONNECTOR_ID],
         name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.COINBASE_CONNECTOR_ID],
         type: 'EXTERNAL'
       })
@@ -871,7 +879,8 @@ export class Web3Modal extends Web3ModalScaffold {
           this.addConnector({
             id: ConstantsUtil.EIP6963_CONNECTOR_ID,
             type,
-            imageUrl: info.icon,
+            imageUrl:
+              info.icon ?? this.options?.connectorImages?.[ConstantsUtil.EIP6963_CONNECTOR_ID],
             name: info.name,
             provider: web3provider,
             info
