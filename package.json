@@ -21,6 +21,7 @@
     "new-version": "lerna version --no-git-tag-version --exact",
     "pre-publish": "turbo lint typecheck prettier test --parallel; npm run new-version; npm install; turbo run build;",
     "publish:latest": "lerna exec -- npm publish --no-private --access public --tag latest",
+    "publish:alpha": "lerna exec -- npm publish --no-private --access public --tag alpha",
     "publish:beta": "lerna exec -- npm publish --no-private --access public --tag beta",
     "publish:canary": "lerna exec -- npm publish --no-private --access public --tag canary"
   },
