@@ -27,7 +27,9 @@ export default function Header() {
   const { isOpen, onClose, onOpen } = useDisclosure()
 
   useEffect(() => {
-    ThemeStore.state.modal.setThemeMode(colorMode)
+    if (ThemeStore.state.modal) {
+      ThemeStore.state.modal.setThemeMode(colorMode)
+    }
   }, [colorMode])
 
   return (
