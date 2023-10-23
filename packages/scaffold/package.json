@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/scaffold",
-  "version": "3.2.0-alpha.1",
+  "version": "3.2.0-fe5bf5e",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -16,8 +16,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/core": "3.2.0-alpha.1",
-    "@web3modal/ui": "3.2.0-alpha.1",
+    "@web3modal/core": "3.2.0-fe5bf5e",
+    "@web3modal/ui": "3.2.0-fe5bf5e",
     "lit": "3.0.0"
   },
   "keywords": [
