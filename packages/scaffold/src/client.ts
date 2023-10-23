@@ -1,5 +1,6 @@
 import type {
   ConnectionControllerClient,
+  SiweControllerClient,
   EventsControllerState,
   NetworkControllerClient,
   NetworkControllerState,
@@ -20,7 +21,8 @@ import {
   NetworkController,
   OptionsController,
   PublicStateController,
-  ThemeController
+  ThemeController,
+  SiweController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 
@@ -47,6 +49,7 @@ export interface LibraryOptions {
 export interface ScaffoldOptions extends LibraryOptions {
   networkControllerClient: NetworkControllerClient
   connectionControllerClient: ConnectionControllerClient
+  siweControllerClient: SiweControllerClient
 }
 
 export interface OpenOptions {
@@ -194,6 +197,10 @@ export class Web3ModalScaffold {
     OptionsController.setSdkVersion(options._sdkVersion)
 
     ConnectionController.setClient(options.connectionControllerClient)
+
+    if (options.siweControllerClient) {
+      SiweController.setSiweClient(options.siweControllerClient)
+    }
 
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)
