@@ -18,7 +18,7 @@ export class W3mFrameProvider {
   private connectResolver: Resolver<{ address: string }> | undefined = undefined
 
   public constructor(projectId: string) {
-    this.w3mFrame = new W3mFrame(projectId)
+    this.w3mFrame = new W3mFrame(projectId, true)
     this.w3mFrame.events.onFrameEvent(event => {
       switch (event.type) {
         case this.w3mFrame.constants.FRAME_CONNECT_EMAIL_SUCCESS:

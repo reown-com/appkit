@@ -13,13 +13,17 @@ export class W3mFrame {
 
   private rpcUrl = W3mFrameHelpers.getBlockchainApiUrl()
 
-  public constructor(projectId: string) {
+  public constructor(projectId: string, isAppClient = false) {
     this.projectId = projectId
-    const iframe = document.createElement('iframe')
-    iframe.src = this.constants.SECURE_SITE
-    iframe.style.display = 'none'
-    document.body.appendChild(iframe)
-    this.iframe = iframe
+
+    // Create iframe only when sdk is initialised from dapp / web3modal
+    if (isAppClient) {
+      const iframe = document.createElement('iframe')
+      iframe.src = this.constants.SECURE_SITE
+      iframe.style.display = 'none'
+      document.body.appendChild(iframe)
+      this.iframe = iframe
+    }
   }
 
   // -- Networks --------------------------------------------------------------

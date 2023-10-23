@@ -197,6 +197,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncRequestedNetworks(chains)
 
     this.syncConnectors(wagmiConfig)
+    this.syncEmailConnector(wagmiConfig)
     this.listenConnectors(wagmiConfig)
 
     watchAccount(() => this.syncAccount())
@@ -320,7 +321,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private syncConnectors(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
     const w3mConnectors: Connector[] = []
     wagmiConfig.connectors.forEach(({ id, name }) => {
-      if (id !== ConstantsUtil.EIP6963_CONNECTOR_ID) {
+      if (![ConstantsUtil.EIP6963_CONNECTOR_ID, ConstantsUtil.EMAIL_CONNECTOR_ID].includes(id)) {
         w3mConnectors.push({
           id,
           explorerId: PresetsUtil.ConnectorExplorerIds[id],
@@ -332,6 +333,19 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     })
     this.setConnectors(w3mConnectors)
+  }
+
+  private async syncEmailConnector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
+    const emailConnector = wagmiConfig.connectors.find(({ id }) => id === 'w3mEmail')
+    if (emailConnector) {
+      const provider = await emailConnector.getProvider()
+      this.addConnector({
+        id: ConstantsUtil.EMAIL_CONNECTOR_ID,
+        type: 'EMAIL',
+        name: 'Email',
+        provider
+      })
+    }
   }
 
   private eip6963EventHandler(connector: EIP6963Connector, event: CustomEventInit<Wallet>) {

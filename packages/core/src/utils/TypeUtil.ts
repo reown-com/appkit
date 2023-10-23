@@ -25,7 +25,7 @@ export type Platform =
   | 'unsupported'
   | 'external'
 
-export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUNCED' | 'SMART'
+export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUNCED' | 'EMAIL'
 
 export type Connector = {
   id: string

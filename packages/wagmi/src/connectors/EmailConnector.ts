@@ -14,11 +14,13 @@ export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProvider
 
   readonly ready = true
 
-  private provider: W3mFrameProvider
+  private provider: W3mFrameProvider = {} as W3mFrameProvider
 
   public constructor(config: { chains?: Chain[]; options: W3mFrameProviderOptions }) {
     super(config)
-    this.provider = new W3mFrameProvider(config.options.projectId)
+    if (typeof window !== 'undefined') {
+      this.provider = new W3mFrameProvider(config.options.projectId)
+    }
   }
 
   async getProvider() {

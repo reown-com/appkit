@@ -52,6 +52,12 @@ export class W3mConnectView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private emailConnectorTemplate() {
+    const connector = this.connectors.find(c => c.type === 'EMAIL')
+
+    if (!connector) {
+      return null
+    }
+
     return html`
       <form>
         <wui-email-input></wui-email-input>
@@ -183,7 +189,7 @@ export class W3mConnectView extends LitElement {
 
   private connectorsTemplate() {
     return this.connectors.map(connector => {
-      if (['WALLET_CONNECT', 'INJECTED', 'ANNOUNCED'].includes(connector.type)) {
+      if (['WALLET_CONNECT', 'INJECTED', 'ANNOUNCED', 'EMAIL'].includes(connector.type)) {
         return null
       }
 
