@@ -20,6 +20,8 @@ export class W3mFrameProvider {
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
     this.w3mFrame.events.onFrameEvent(event => {
+      console.log('💻 received', event)
+
       switch (event.type) {
         case this.w3mFrame.constants.FRAME_CONNECT_EMAIL_SUCCESS:
           return this.onConnectEmailSuccess()

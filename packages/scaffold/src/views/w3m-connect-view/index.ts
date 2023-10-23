@@ -14,6 +14,8 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { ref, createRef } from 'lit/directives/ref.js'
+import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
 
 @customElement('w3m-connect-view')
@@ -23,8 +25,12 @@ export class W3mConnectView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
+  private formRef: Ref<HTMLFormElement> = createRef()
+
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
+
+  @state() private email = ''
 
   public constructor() {
     super()
@@ -35,6 +41,14 @@ export class W3mConnectView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
+
+  public override firstUpdated() {
+    this.formRef.value?.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        this.onSubmitEmail(event)
+      }
+    })
   }
 
   // -- Render -------------------------------------------- //
@@ -59,8 +73,9 @@ export class W3mConnectView extends LitElement {
     }
 
     return html`
-      <form>
-        <wui-email-input></wui-email-input>
+      <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
+        <wui-email-input @inputChange=${this.onEmailInputChange.bind(this)}></wui-email-input>
+        <input type="submit" hidden />
       </form>
       <wui-separator text="or"></wui-separator>
     `
@@ -245,6 +260,7 @@ export class W3mConnectView extends LitElement {
     )
   }
 
+  // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
     if (connector.type === 'WALLET_CONNECT') {
       if (CoreHelperUtil.isMobile()) {
@@ -276,6 +292,23 @@ export class W3mConnectView extends LitElement {
 
   private onConnectWallet(wallet: WcWallet) {
     RouterController.push('ConnectingWalletConnect', { wallet })
+  }
+
+  private onEmailInputChange(event: CustomEvent) {
+    this.email = event.detail
+  }
+
+  private async onSubmitEmail(event: Event) {
+    try {
+      event.preventDefault()
+      const emailConnector = ConnectorController.state.connectors.find(c => c.type === 'EMAIL')
+      if (emailConnector?.provider) {
+        // @ts-expect-error - Exists on email provider
+        await emailConnector.provider.connectEmail(this.email)
+      }
+    } catch {
+      console.error('error')
+    }
   }
 }
 
