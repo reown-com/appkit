@@ -81,7 +81,7 @@ export class WuiTabs extends LitElement {
 
     if (passiveBtn && passiveBtnText && !initialAnimation && index !== this.activeTab) {
       passiveBtnText.animate([{ opacity: 0 }], {
-        duration: 200,
+        duration: 50,
         easing: 'ease',
         fill: 'forwards'
       })
@@ -106,8 +106,8 @@ export class WuiTabs extends LitElement {
         })
 
         activeBtnText.animate([{ opacity: 1 }], {
-          duration: initialAnimation ? 0 : 250,
-          delay: initialAnimation ? 0 : 50,
+          duration: initialAnimation ? 0 : 125,
+          delay: initialAnimation ? 0 : 200,
           fill: 'forwards',
           easing: 'ease'
         })
