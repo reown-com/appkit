@@ -19,10 +19,18 @@ import AccentColorInput from '../components/Theming/AccentColorInput'
 import BorderRadiusInput from '../components/Theming/BorderRadiusInput'
 import MixColorInput from '../components/Theming/MixColorInput'
 import NextLink from 'next/link'
+import { useEffect } from 'react'
+import { ThemeStore } from '../utils/StoreUtil'
 
 export default function Header() {
   const { colorMode, toggleColorMode } = useColorMode()
   const { isOpen, onClose, onOpen } = useDisclosure()
+
+  useEffect(() => {
+    if (ThemeStore.state.modal) {
+      ThemeStore.state.modal.setThemeMode(colorMode)
+    }
+  }, [colorMode])
 
   return (
     <>

@@ -151,6 +151,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
         --wui-cover: rgba(0, 0, 0, 0.3);
 
+        --wui-color-modal-bg: var(--wui-color-modal-bg-base);
+
         --wui-color-blue-100: var(--wui-color-blue-base-100);
         --wui-color-blue-015: var(--wui-color-accent-base-015);
 
@@ -203,6 +205,12 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
       @supports (background: color-mix(in srgb, white 50%, black)) {
         :root {
+          --wui-color-modal-bg: color-mix(
+            in srgb,
+            var(--w3m-color-mix) var(--w3m-color-mix-strength),
+            var(--wui-color-modal-bg-base)
+          );
+
           --wui-box-shadow-blue: color-mix(in srgb, var(--wui-color-accent-100) 16%, transparent);
 
           --wui-color-accent-090: color-mix(
@@ -407,6 +415,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --w3m-accent: ${unsafeCSS(themeVariables?.['--w3m-accent'] || '#47a1ff')};
         --w3m-default: #fff;
 
+        --wui-color-modal-bg-base: #191a1a;
+
         --wui-color-blue-base-100: #47a1ff;
 
         --wui-color-accent-base-100: var(--w3m-accent);
@@ -470,6 +480,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --w3m-color-mix: ${unsafeCSS(themeVariables?.['--w3m-color-mix'] || '#000')};
         --w3m-accent: ${unsafeCSS(themeVariables?.['--w3m-accent'] || '#3396ff')};
         --w3m-default: #000;
+
+        --wui-color-modal-bg-base: #fff;
 
         --wui-color-blue-base-100: #3396ff;
 
