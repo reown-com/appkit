@@ -16,9 +16,15 @@ export class W3mFrameProvider {
 
   private connectOtpResolver: Resolver<undefined> | undefined = undefined
 
-  private connectResolver: Resolver<{ address: string; email: string }> | undefined = undefined
+  private connectResolver:
+    | Resolver<{ address: string; email: string; chainId: number }>
+    | undefined = undefined
+
+  private disconnectResolver: Resolver<undefined> | undefined = undefined
 
   private isConnectedResolver: Resolver<{ isConnected: boolean }> | undefined = undefined
+
+  private getChainIdResolver: Resolver<{ chainId: number }> | undefined = undefined
 
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
@@ -43,6 +49,14 @@ export class W3mFrameProvider {
           return this.onIsConnectedSuccess(event)
         case W3mFrameConstants.FRAME_IS_CONNECTED_ERROR:
           return this.onIsConnectedError(event)
+        case W3mFrameConstants.FRAME_GET_CHAIN_ID_SUCCESS:
+          return this.onGetChainIdSuccess(event)
+        case W3mFrameConstants.FRAME_GET_CHAIN_ID_ERROR:
+          return this.onGetChainIdError(event)
+        case W3mFrameConstants.FRAME_SIGN_OUT_SUCCESS:
+          return this.onSignOutSuccess()
+        case W3mFrameConstants.FRAME_SIGN_OUT_ERROR:
+          return this.onSignOutError(event)
         default:
           return null
       }
@@ -51,6 +65,8 @@ export class W3mFrameProvider {
 
   // -- Extended Methods ------------------------------------------------
   public async connectEmail(email: string) {
+    await this.w3mFrame.frameLoadPromise
+
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_CONNECT_EMAIL,
       payload: { email }
@@ -62,6 +78,8 @@ export class W3mFrameProvider {
   }
 
   public async connectOtp(otp: string) {
+    await this.w3mFrame.frameLoadPromise
+
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_CONNECT_OTP,
       payload: { otp }
@@ -73,6 +91,8 @@ export class W3mFrameProvider {
   }
 
   public async isConnected() {
+    await this.w3mFrame.frameLoadPromise
+
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_IS_CONNECTED })
 
     return new Promise<{ isConnected: boolean }>((resolve, reject) => {
@@ -80,12 +100,34 @@ export class W3mFrameProvider {
     })
   }
 
+  public async getChainId() {
+    await this.w3mFrame.frameLoadPromise
+
+    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_GET_CHAIN_ID })
+
+    return new Promise<{ chainId: number }>((resolve, reject) => {
+      this.getChainIdResolver = { resolve, reject }
+    })
+  }
+
   // -- Provider Methods ------------------------------------------------
   public async connect() {
+    await this.w3mFrame.frameLoadPromise
+
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_GET_USER })
 
-    return new Promise<{ address: string; email: string }>((resolve, reject) => {
+    return new Promise<{ address: string; email: string; chainId: number }>((resolve, reject) => {
       this.connectResolver = { resolve, reject }
+    })
+  }
+
+  public async disconnect() {
+    await this.w3mFrame.frameLoadPromise
+
+    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_SIGN_OUT })
+
+    return new Promise((resolve, reject) => {
+      this.disconnectResolver = { resolve, reject }
     })
   }
 
@@ -136,5 +178,27 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/IS_CONNECTED_ERROR' }>
   ) {
     this.isConnectedResolver?.reject(event.payload.message)
+  }
+
+  private onGetChainIdSuccess(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_CHAIN_ID_SUCCESS' }>
+  ) {
+    this.getChainIdResolver?.resolve(event.payload)
+  }
+
+  private onGetChainIdError(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_CHAIN_ID_ERROR' }>
+  ) {
+    this.getChainIdResolver?.reject(event.payload.message)
+  }
+
+  private onSignOutSuccess() {
+    this.disconnectResolver?.resolve(undefined)
+  }
+
+  private onSignOutError(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SIGN_OUT_ERROR' }>
+  ) {
+    this.disconnectResolver?.reject(event.payload.message)
   }
 }

@@ -28,20 +28,19 @@ export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProvider
   }
 
   async connect() {
-    const { address } = await this.provider.connect()
+    const { address, chainId } = await this.provider.connect()
 
     return {
       account: address as `0x${string}`,
-      // IMPLEMENT: Return propper chain id and if it is supported or not
       chain: {
-        id: 1,
+        id: chainId,
         unsupported: this.isChainUnsupported(1)
       }
     }
   }
 
   async disconnect() {
-    // IMPLEMENT
+    await this.provider.disconnect()
   }
 
   async getAccount() {
@@ -51,16 +50,18 @@ export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProvider
   }
 
   async getChainId() {
-    // IMPLEMENT
-    return Promise.resolve(1)
+    const { chainId } = await this.provider.getChainId()
+
+    return chainId
   }
 
   async getWalletClient() {
-    // IMPLEMENT
+    const { address, chainId } = await this.provider.connect()
+
     return Promise.resolve(
       createWalletClient({
-        account: '0x000' as `0x${string}`,
-        chain: { id: 1 } as Chain,
+        account: address as `0x${string}`,
+        chain: { id: chainId } as Chain,
         transport: custom(this.provider)
       })
     )

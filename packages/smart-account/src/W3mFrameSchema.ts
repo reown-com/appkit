@@ -57,7 +57,7 @@ export const W3mFrameSchema = {
     .or(
       z.object({
         type: zType('FRAME_GET_USER_SUCCESS'),
-        payload: z.object({ address: z.string(), email: z.string().email() })
+        payload: z.object({ address: z.string(), email: z.string().email(), chainId: z.number() })
       })
     )
 

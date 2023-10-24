@@ -11,16 +11,37 @@ export class W3mFrame {
 
   private rpcUrl = W3mFrameHelpers.getBlockchainApiUrl()
 
+  public frameLoadPromise: Promise<void>
+
+  public frameLoadPromiseResolver:
+    | {
+        resolve: (value: undefined) => void
+        reject: (reason?: unknown) => void
+      }
+    | undefined
+
   public constructor(projectId: string, isAppClient = false) {
     this.projectId = projectId
+    this.frameLoadPromise = new Promise((resolve, reject) => {
+      this.frameLoadPromiseResolver = { resolve, reject }
+    })
 
     // Create iframe only when sdk is initialised from dapp / web3modal
     if (isAppClient) {
+      this.frameLoadPromise = new Promise((resolve, reject) => {
+        this.frameLoadPromiseResolver = { resolve, reject }
+      })
       const iframe = document.createElement('iframe')
       iframe.src = W3mFrameConstants.SECURE_SITE
       iframe.style.display = 'none'
       document.body.appendChild(iframe)
       this.iframe = iframe
+      this.iframe.onload = () => {
+        this.frameLoadPromiseResolver?.resolve(undefined)
+      }
+      this.iframe.onerror = () => {
+        this.frameLoadPromiseResolver?.reject()
+      }
     }
   }
 
