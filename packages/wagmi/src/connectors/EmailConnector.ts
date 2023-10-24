@@ -45,8 +45,9 @@ export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProvider
   }
 
   async getAccount() {
-    // IMPLEMENT
-    return Promise.resolve('0x000' as `0x${string}`)
+    const { address } = await this.provider.connect()
+
+    return address as `0x${string}`
   }
 
   async getChainId() {

@@ -1,9 +1,7 @@
-import { z } from 'zod'
+import { W3mFrameConstants } from './W3mFrameConstants.js'
+import { W3mFrameSchema } from './W3mFrameSchema.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
-
-// -- Helpers ----------------------------------------------------------------
-const zErrorPayload = z.object({ message: z.string() })
 
 // -- Sdk --------------------------------------------------------------------
 export class W3mFrame {
@@ -19,7 +17,7 @@ export class W3mFrame {
     // Create iframe only when sdk is initialised from dapp / web3modal
     if (isAppClient) {
       const iframe = document.createElement('iframe')
-      iframe.src = this.constants.SECURE_SITE
+      iframe.src = W3mFrameConstants.SECURE_SITE
       iframe.style.display = 'none'
       document.body.appendChild(iframe)
       this.iframe = iframe
@@ -41,136 +39,24 @@ export class W3mFrame {
     }
   }
 
-  // -- Constants -------------------------------------------------------------
-  public constants = {
-    SECURE_SITE: 'http://localhost:3010',
-    APP_EVENT_KEY: '@w3m-app/',
-    FRAME_EVENT_KEY: '@w3m-frame/',
-
-    APP_SWITCH_NETWORK: '@w3m-app/SWITCH_NETWORK',
-    APP_CONNECT_EMAIL: '@w3m-app/CONNECT_EMAIL',
-    APP_CONNECT_OTP: '@w3m-app/CONNECT_OTP',
-    APP_GET_USER: '@w3m-app/GET_USER',
-    APP_SIGN_OUT: '@w3m-app/SIGN_OUT',
-    APP_IS_CONNECTED: '@w3m-app/IS_CONNECTED',
-
-    FRAME_SWITCH_NETWORK_ERROR: '@w3m-frame/SWITCH_NETWORK_ERROR',
-    FRAME_SWITCH_NETWORK_SUCCESS: '@w3m-frame/SWITCH_NETWORK_SUCCESS',
-    FRAME_CONNECT_EMAIL_ERROR: '@w3m-frame/CONNECT_EMAIL_ERROR',
-    FRAME_CONNECT_EMAIL_SUCCESS: '@w3m-frame/CONNECT_EMAIL_SUCCESS',
-    FRAME_CONNECT_OTP_SUCCESS: '@w3m-frame/CONNECT_OTP_SUCCESS',
-    FRAME_CONNECT_OTP_ERROR: '@w3m-frame/CONNECT_OTP_ERROR',
-    FRAME_GET_USER_SUCCESS: '@w3m-frame/GET_USER_SUCCESS',
-    FRAME_GET_USER_ERROR: '@w3m-frame/GET_USER_ERROR',
-    FRAME_SIGN_OUT_SUCCESS: '@w3m-frame/SIGN_OUT_SUCCESS',
-    FRAME_SIGN_OUT_ERROR: '@w3m-frame/SIGN_OUT_ERROR',
-    FRAME_IS_CONNECTED_SUCCESS: '@w3m-frame/IS_CONNECTED_SUCCESS',
-    FRAME_IS_CONNECTED_ERROR: '@w3m-frame/IS_CONNECTED_ERROR'
-  } as const
-
-  // -- Schema ----------------------------------------------------------------
-  public schema = {
-    // App Schema
-    appEvent: z
-      .object({
-        type: z.literal(this.constants.APP_SWITCH_NETWORK),
-        payload: z.object({
-          chainId: z.number()
-        })
-      })
-      .or(
-        z.object({
-          type: z.literal(this.constants.APP_CONNECT_EMAIL),
-          payload: z.object({
-            email: z.string().email()
-          })
-        })
-      )
-      .or(
-        z.object({
-          type: z.literal(this.constants.APP_CONNECT_OTP),
-          payload: z.object({
-            otp: z.string()
-          })
-        })
-      )
-      .or(z.object({ type: z.literal(this.constants.APP_GET_USER) }))
-      .or(z.object({ type: z.literal(this.constants.APP_SIGN_OUT) }))
-      .or(z.object({ type: z.literal(this.constants.APP_IS_CONNECTED) })),
-
-    // Frame Schema
-    frameEvent: z
-      .object({
-        type: z.literal(this.constants.FRAME_SWITCH_NETWORK_ERROR),
-        payload: zErrorPayload
-      })
-      .or(z.object({ type: z.literal(this.constants.FRAME_SWITCH_NETWORK_SUCCESS) }))
-      .or(
-        z.object({
-          type: z.literal(this.constants.FRAME_CONNECT_EMAIL_ERROR),
-          payload: zErrorPayload
-        })
-      )
-      .or(z.object({ type: z.literal(this.constants.FRAME_CONNECT_EMAIL_SUCCESS) }))
-      .or(
-        z.object({
-          type: z.literal(this.constants.FRAME_CONNECT_OTP_ERROR),
-          payload: zErrorPayload
-        })
-      )
-      .or(z.object({ type: z.literal(this.constants.FRAME_CONNECT_OTP_SUCCESS) }))
-      .or(
-        z.object({
-          type: z.literal(this.constants.FRAME_GET_USER_SUCCESS),
-          payload: z.object({
-            address: z.string()
-          })
-        })
-      )
-      .or(
-        z.object({
-          type: z.literal(this.constants.FRAME_GET_USER_ERROR),
-          payload: zErrorPayload
-        })
-      )
-      .or(z.object({ type: z.literal(this.constants.FRAME_SIGN_OUT_SUCCESS) }))
-      .or(
-        z.object({ type: z.literal(this.constants.FRAME_SIGN_OUT_ERROR), payload: zErrorPayload })
-      )
-      .or(
-        z.object({
-          type: z.literal(this.constants.FRAME_IS_CONNECTED_SUCCESS),
-          payload: z.object({
-            isConnected: z.boolean()
-          })
-        })
-      )
-      .or(
-        z.object({
-          type: z.literal(this.constants.FRAME_IS_CONNECTED_ERROR),
-          payload: zErrorPayload
-        })
-      )
-  }
-
   // -- Events ----------------------------------------------------------------
   public events = {
     onFrameEvent: (callback: (event: W3mFrameTypes.FrameEvent) => void) => {
       window.addEventListener('message', ({ data }) => {
-        if (!data.type?.includes(this.constants.FRAME_EVENT_KEY)) {
+        if (!data.type?.includes(W3mFrameConstants.FRAME_EVENT_KEY)) {
           return
         }
-        const frameEvent = this.schema.frameEvent.parse(data)
+        const frameEvent = W3mFrameSchema.frameEvent.parse(data)
         callback(frameEvent)
       })
     },
 
     onAppEvent: (callback: (event: W3mFrameTypes.AppEvent) => void) => {
       window.addEventListener('message', ({ data }) => {
-        if (!data.type?.includes(this.constants.APP_EVENT_KEY)) {
+        if (!data.type?.includes(W3mFrameConstants.APP_EVENT_KEY)) {
           return
         }
-        const appEvent = this.schema.appEvent.parse(data)
+        const appEvent = W3mFrameSchema.appEvent.parse(data)
         callback(appEvent)
       })
     },

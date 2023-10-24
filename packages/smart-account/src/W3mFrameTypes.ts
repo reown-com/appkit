@@ -1,10 +1,10 @@
 import { z } from 'zod'
-import type { W3mFrame } from './W3mFrame.js'
+import { W3mFrameSchema } from './W3mFrameSchema.js'
 
 export namespace W3mFrameTypes {
-  export type AppEvent = z.infer<W3mFrame['schema']['appEvent']>
+  export type AppEvent = z.infer<typeof W3mFrameSchema.appEvent>
 
-  export type FrameEvent = z.infer<W3mFrame['schema']['frameEvent']>
+  export type FrameEvent = z.infer<typeof W3mFrameSchema.frameEvent>
 
   export interface Network {
     rpcUrl: string
