@@ -5,7 +5,7 @@ import { state } from 'lit/decorators.js'
 import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
-import { SnackController } from '@web3modal/core'
+import { SnackController, RouterController } from '@web3modal/core'
 
 @customElement('w3m-email-login-widget')
 export class W3mEmailLoginWidget extends LitElement {
@@ -67,8 +67,9 @@ export class W3mEmailLoginWidget extends LitElement {
       event.preventDefault()
       const emailConnector = ConnectorController.state.connectors.find(c => c.type === 'EMAIL')
       if (emailConnector?.provider) {
+        RouterController.push('ConfirmEmail', { email: this.email })
         // @ts-expect-error - Exists on email provider
-        await emailConnector.provider.connectEmail(this.email)
+        // await emailConnector.provider.connectEmail(this.email)
       }
     } catch {
       SnackController.showError('Unable to login')

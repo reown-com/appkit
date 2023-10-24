@@ -28,7 +28,8 @@ function headings() {
     WhatIsANetwork: 'What is a network?',
     WhatIsAWallet: 'What is a wallet?',
     GetWallet: 'Get a Wallet',
-    Downloads: name ? `Get ${name}` : 'Downloads'
+    Downloads: name ? `Get ${name}` : 'Downloads',
+    ConfirmEmail: 'Confirm Email'
   }
 }
 

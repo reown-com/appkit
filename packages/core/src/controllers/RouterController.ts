@@ -16,11 +16,13 @@ export interface RouterControllerState {
     | 'WhatIsANetwork'
     | 'GetWallet'
     | 'Downloads'
+    | 'ConfirmEmail'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
     wallet?: WcWallet
     network?: CaipNetwork
+    email?: string
   }
 }
 
