@@ -1,7 +1,7 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { RouterController } from '@web3modal/core'
+import { RouterController, SnackController } from '@web3modal/core'
 
 // -- Helpers ------------------------------------------- //
 const OTP_LENGTH = 6
@@ -56,7 +56,7 @@ export class W3mConfirmEmailView extends LitElement {
         await this.emailConnecotr.provider.connect()
       }
     } catch {
-      console.error('onOtpInputChange submit error')
+      SnackController.showError('Invalid otp')
     }
   }
 }

@@ -23,6 +23,7 @@ export class W3mFrameProvider {
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
     this.w3mFrame.events.onFrameEvent(event => {
+      // eslint-disable-next-line no-console
       console.log('💻 received', event)
 
       switch (event.type) {
