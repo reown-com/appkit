@@ -1,6 +1,6 @@
 import type {
   ConnectionControllerClient,
-  SiweControllerClient,
+  SIWEControllerClient,
   EventsControllerState,
   NetworkControllerClient,
   NetworkControllerState,
@@ -8,7 +8,8 @@ import type {
   PublicStateControllerState,
   ThemeControllerState,
   ThemeMode,
-  ThemeVariables
+  ThemeVariables,
+  SIWEControllerClientState
 } from '@web3modal/core'
 import {
   AccountController,
@@ -22,7 +23,7 @@ import {
   OptionsController,
   PublicStateController,
   ThemeController,
-  SiweController
+  SIWEController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 
@@ -49,7 +50,7 @@ export interface LibraryOptions {
 export interface ScaffoldOptions extends LibraryOptions {
   networkControllerClient: NetworkControllerClient
   connectionControllerClient: ConnectionControllerClient
-  siweControllerClient: SiweControllerClient
+  siweControllerClient?: SIWEControllerClient
 }
 
 export interface OpenOptions {
@@ -180,6 +181,34 @@ export class Web3ModalScaffold {
       AccountController.setAddressExplorerUrl(addressExplorerUrl)
     }
 
+  protected setSIWENonce: (typeof SIWEController)['setNonce'] = nonce => {
+    SIWEController.setNonce(nonce)
+  }
+
+  protected setSIWESession: (typeof SIWEController)['setSession'] = session => {
+    SIWEController.setSession(session)
+  }
+
+  protected setSIWEStatus: (typeof SIWEController)['setStatus'] = status => {
+    SIWEController.setStatus(status)
+  }
+
+  protected setSIWEMessage: (typeof SIWEController)['setMessage'] = message => {
+    SIWEController.setMessage(message)
+  }
+
+  public subscribeSIWEState(callback: (newState: SIWEControllerClientState) => void) {
+    return SIWEController.subscribe(callback)
+  }
+
+  protected getSIWENonce = () => SIWEController.state.nonce
+
+  protected getSIWESession = () => SIWEController.state.session
+
+  protected getSIWEStatus = () => SIWEController.state.status
+
+  protected getSIWEMessage = () => SIWEController.state.message
+
   // -- Private ------------------------------------------------------------------
   private initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)
@@ -199,7 +228,7 @@ export class Web3ModalScaffold {
     ConnectionController.setClient(options.connectionControllerClient)
 
     if (options.siweControllerClient) {
-      SiweController.setSiweClient(options.siweControllerClient)
+      SIWEController.setSIWEClient(options.siweControllerClient)
     }
 
     if (options.themeMode) {

@@ -23,13 +23,11 @@ export type {
   ConnectionControllerState
 } from './src/controllers/ConnectionController.js'
 
-export { SiweController } from './src/controllers/SiweController.js'
+export { SIWEController } from './src/controllers/SIWEController.js'
 export type {
-  SiweControllerClient,
-  SiweControllerClientState,
-  CreateSiweMessageArgs,
-  VerifySiweMessageArgs
-} from './src/controllers/SiweController.js'
+  SIWEControllerClient,
+  SIWEControllerClientState
+} from './src/controllers/SIWEController.js'
 
 export { ConnectorController } from './src/controllers/ConnectorController.js'
 export type { ConnectorControllerState } from './src/controllers/ConnectorController.js'

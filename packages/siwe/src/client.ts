@@ -1,37 +1,34 @@
-import type {
-  CreateSiweMessageArgs,
-  VerifySiweMessageArgs,
-  SiweControllerClient,
-  PublicStateControllerState,
-  SiweControllerClientState
+import {
+  type CreateSIWEMessageArgs,
+  type VerifySIWEMessageArgs,
+  type SIWEControllerClient
 } from '@web3modal/core'
-import { Web3ModalScaffold, type ScaffoldOptions } from '@web3modal/scaffold'
 
 // -- Types ---------------------------------------------------------------------
-export interface Web3ModalSiweClientOptions extends ScaffoldOptions {
-  siweConfig: SiweControllerClient
+export interface Web3ModalSIWEClientOptions {
+  siweConfig: SIWEControllerClient
 }
 
-export type Web3ModalState = PublicStateControllerState & SiweControllerClientState
-
 // -- Client --------------------------------------------------------------------
-export class Web3ModalSiwe extends Web3ModalScaffold {
-  private options: Web3ModalSiweClientOptions | undefined = undefined
+export class Web3ModalSIWEClient {
+  private options: Web3ModalSIWEClientOptions
 
-  public constructor(options: Web3ModalSiweClientOptions) {
-    const { siweConfig, ...w3mOptions } = options
+  public client: SIWEControllerClient
 
-    const siweControllerClient: SiweControllerClient = {
+  public constructor(options: Web3ModalSIWEClientOptions) {
+    this.options = options
+
+    this.client = {
       getNonce: async () => {
-        const nonce = await siweConfig.getNonce()
+        const nonce = await this.options.siweConfig.getNonce()
         if (!nonce) {
           throw new Error('siweControllerClient:getNonce - nonce is undefined')
         }
 
         return nonce
       },
-      createMessage: (args: CreateSiweMessageArgs) => {
-        const message = siweConfig.createMessage(args)
+      createMessage: (args: CreateSIWEMessageArgs) => {
+        const message = this.options.siweConfig.createMessage(args)
 
         if (!message) {
           throw new Error('siweControllerClient:createMessage - message is undefined')
@@ -40,8 +37,8 @@ export class Web3ModalSiwe extends Web3ModalScaffold {
         return message
       },
 
-      verifyMessage: async (args: VerifySiweMessageArgs) => {
-        const isValid = await siweConfig.verifyMessage(args)
+      verifyMessage: async (args: VerifySIWEMessageArgs) => {
+        const isValid = await this.options.siweConfig.verifyMessage(args)
 
         if (!isValid) {
           throw new Error('siweControllerClient:createMessage - message is not valid')
@@ -51,32 +48,14 @@ export class Web3ModalSiwe extends Web3ModalScaffold {
       },
 
       getSession: async () => {
-        const session = await siweConfig.getSession()
+        const session = await this.options.siweConfig.getSession()
         if (!session) {
           throw new Error('siweControllerClient:getSession - session is undefined')
         }
 
         return session
       },
-      signOut: async () => siweConfig.signOut()
+      signOut: async () => await this.options.siweConfig.signOut()
     }
-
-    super({
-      ...w3mOptions,
-      siweControllerClient
-    })
-
-    this.options = options
-  }
-
-  // -- Public ------------------------------------------------------------------
-  public override getState() {
-    const state = super.getState()
-
-    return state
-  }
-
-  public override subscribeState(callback: (state: Web3ModalState) => void) {
-    return super.subscribeState(state => callback(state))
   }
 }

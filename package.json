@@ -35,6 +35,7 @@
     "packages/wagmi",
     "packages/ethers5",
     "packages/utils",
+    "packages/siwe",
     "apps/*",
     "examples/*"
   ],

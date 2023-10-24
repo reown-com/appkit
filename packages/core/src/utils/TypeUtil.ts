@@ -200,3 +200,31 @@ export type Event =
       type: 'track'
       event: 'CLICK_GET_WALLET'
     }
+
+// -- SIWEController Types ---------------------------------------------------
+
+export interface SIWESession {
+  address: string
+  chainId: number
+}
+
+export interface CreateSIWEMessageArgs {
+  nonce: string
+  address: string
+  chainId: number
+}
+
+export interface VerifySIWEMessageArgs {
+  message: string
+  signature: string
+}
+
+// eslint-disable-next-line no-shadow
+export enum SIWEStatus {
+  UNINITIALIZED = 'uninitialized',
+  READY = 'ready',
+  LOADING = 'loading',
+  SUCCESS = 'success',
+  REJECTED = 'rejected',
+  ERROR = 'error'
+}

@@ -1,38 +1,18 @@
 import { subscribeKey as subKey } from 'valtio/utils'
-import { proxy } from 'valtio/vanilla'
+import { proxy, subscribe as sub } from 'valtio/vanilla'
+import type {
+  CreateSIWEMessageArgs,
+  SIWESession,
+  VerifySIWEMessageArgs
+} from '../utils/TypeUtil.js'
 
-// -- Types --------------------------------------------- //
-export interface SIWESession {
-  address: string
-  chainId: number
-}
+import { SIWEStatus } from '../utils/TypeUtil.js'
 
-export interface CreateSiweMessageArgs {
-  nonce: string
-  address: string
-  chainId: number
-}
-
-export interface VerifySiweMessageArgs {
-  message: string
-  signature: string
-}
-
-// eslint-disable-next-line no-shadow
-export enum StatusState {
-  UNINITIALIZED = 'uninitialized',
-  READY = 'ready',
-  LOADING = 'loading',
-  SUCCESS = 'success',
-  REJECTED = 'rejected',
-  ERROR = 'error'
-}
-
-export interface SiweControllerClient {
+export interface SIWEControllerClient {
   // -- Required --------------------------------------------- //
   getNonce: () => Promise<string>
-  createMessage: (args: CreateSiweMessageArgs) => string
-  verifyMessage: (args: VerifySiweMessageArgs) => Promise<boolean>
+  createMessage: (args: CreateSIWEMessageArgs) => string
+  verifyMessage: (args: VerifySIWEMessageArgs) => Promise<boolean>
   getSession: () => Promise<SIWESession | null>
   signOut: () => Promise<boolean>
 
@@ -54,50 +34,54 @@ export interface SiweControllerClient {
   onSignOut?: () => void
 }
 
-export interface SiweControllerClientState {
-  _client?: SiweControllerClient
+export interface SIWEControllerClientState {
+  _client?: SIWEControllerClient
   nonce?: string
   session?: SIWESession
   message?: string
-  status: StatusState
+  status: SIWEStatus
 }
 
-type StateKey = keyof SiweControllerClientState
+type StateKey = keyof SIWEControllerClientState
 
 // -- State --------------------------------------------- //
-const state = proxy<SiweControllerClientState>({
-  status: StatusState.UNINITIALIZED
+const state = proxy<SIWEControllerClientState>({
+  status: SIWEStatus.UNINITIALIZED
 })
 
 // -- Controller ---------------------------------------- //
-export const SiweController = {
+export const SIWEController = {
   state,
 
   subscribeKey<K extends StateKey>(
     key: K,
-    callback: (value: SiweControllerClientState[K]) => void
+    callback: (value: SIWEControllerClientState[K]) => void
   ) {
     return subKey(state, key, callback)
   },
 
-  setSiweClient(client: SiweControllerClientState['_client']) {
-    state._client = client
-    state.status = StatusState.READY
+  subscribe(callback: (newState: SIWEControllerClientState) => void) {
+    return sub(state, () => callback(state))
   },
 
-  setNonce(nonce: SiweControllerClientState['nonce']) {
+  setSIWEClient(client: SIWEControllerClientState['_client']) {
+    state._client = client
+    state.status = SIWEStatus.READY
+  },
+
+  setNonce(nonce: SIWEControllerClientState['nonce']) {
     state.nonce = nonce
   },
 
-  setStatus(status: SiweControllerClientState['status']) {
+  setStatus(status: SIWEControllerClientState['status']) {
     state.status = status
   },
 
-  setMessage(message: SiweControllerClientState['message']) {
+  setMessage(message: SIWEControllerClientState['message']) {
     state.message = message
   },
 
-  setSession(session: SiweControllerClientState['session']) {
+  setSession(session: SIWEControllerClientState['session']) {
     state.session = session
   }
 }

@@ -51,6 +51,7 @@
   },
   "peerDependencies": {
     "@wagmi/core": ">=1",
+    "@web3modal/siwe": "3.2.0-alpha.1",
     "react": ">=17",
     "react-dom": ">=17",
     "viem": ">=1",

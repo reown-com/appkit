@@ -21,9 +21,11 @@ import type {
   LibraryOptions,
   NetworkControllerClient,
   PublicStateControllerState,
+  SIWEControllerClient,
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
+import { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type { EIP6963Connector } from './connectors/EIP6963Connector.js'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/utils'
 import { getCaipDefaultChain } from './utils/helpers.js'
@@ -32,6 +34,7 @@ import { WALLET_CHOICE_KEY } from './utils/constants.js'
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wagmiConfig: Config<any, any>
+  siweConfig?: SIWEControllerClient
   chains?: Chain[]
   defaultChain?: Chain
   chainImages?: Record<number, string>
@@ -71,7 +74,8 @@ export class Web3Modal extends Web3ModalScaffold {
   private options: Web3ModalClientOptions | undefined = undefined
 
   public constructor(options: Web3ModalClientOptions) {
-    const { wagmiConfig, chains, defaultChain, tokens, _sdkVersion, ...w3mOptions } = options
+    const { wagmiConfig, siweConfig, chains, defaultChain, tokens, _sdkVersion, ...w3mOptions } =
+      options
 
     if (!wagmiConfig) {
       throw new Error('web3modal:constructor - wagmiConfig is undefined')
@@ -183,9 +187,16 @@ export class Web3Modal extends Web3ModalScaffold {
       disconnect
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    let siweControllerClient: SIWEControllerClient | undefined = undefined
+    if (siweConfig) {
+      siweControllerClient = new Web3ModalSIWEClient({ siweConfig }).client
+    }
+
     super({
       networkControllerClient,
       connectionControllerClient,
+      siweControllerClient,
       defaultChain: getCaipDefaultChain(defaultChain),
       tokens: HelpersUtil.getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `html-wagmi-${ConstantsUtil.VERSION}`,
