@@ -17,6 +17,8 @@ export class W3mFrameProvider {
 
   private connectResolver: Resolver<{ address: string }> | undefined = undefined
 
+  private isConnectedResolver: Resolver<{ isConnected: boolean }> | undefined = undefined
+
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
     this.w3mFrame.events.onFrameEvent(event => {
@@ -35,6 +37,10 @@ export class W3mFrameProvider {
           return this.onConnectSuccess(event)
         case this.w3mFrame.constants.FRAME_GET_USER_ERROR:
           return this.onConnectError(event)
+        case this.w3mFrame.constants.FRAME_IS_CONNECTED_SUCCESS:
+          return this.onIsConnectedSuccess(event)
+        case this.w3mFrame.constants.FRAME_IS_CONNECTED_ERROR:
+          return this.onIsConnectedError(event)
         default:
           return null
       }
@@ -61,6 +67,14 @@ export class W3mFrameProvider {
 
     return new Promise((resolve, reject) => {
       this.connectOtpResolver = { resolve, reject }
+    })
+  }
+
+  public async isConnected() {
+    this.w3mFrame.events.postAppEvent({ type: this.w3mFrame.constants.APP_IS_CONNECTED })
+
+    return new Promise<{ isConnected: boolean }>((resolve, reject) => {
+      this.isConnectedResolver = { resolve, reject }
     })
   }
 
@@ -108,5 +122,17 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_USER_ERROR' }>
   ) {
     this.connectResolver?.reject(event.payload.message)
+  }
+
+  private onIsConnectedSuccess(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/IS_CONNECTED_SUCCESS' }>
+  ) {
+    this.isConnectedResolver?.resolve(event.payload)
+  }
+
+  private onIsConnectedError(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/IS_CONNECTED_ERROR' }>
+  ) {
+    this.isConnectedResolver?.reject(event.payload.message)
   }
 }

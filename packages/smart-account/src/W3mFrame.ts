@@ -52,6 +52,7 @@ export class W3mFrame {
     APP_CONNECT_OTP: '@w3m-app/CONNECT_OTP',
     APP_GET_USER: '@w3m-app/GET_USER',
     APP_SIGN_OUT: '@w3m-app/SIGN_OUT',
+    APP_IS_CONNECTED: '@w3m-app/IS_CONNECTED',
 
     FRAME_SWITCH_NETWORK_ERROR: '@w3m-frame/SWITCH_NETWORK_ERROR',
     FRAME_SWITCH_NETWORK_SUCCESS: '@w3m-frame/SWITCH_NETWORK_SUCCESS',
@@ -62,7 +63,9 @@ export class W3mFrame {
     FRAME_GET_USER_SUCCESS: '@w3m-frame/GET_USER_SUCCESS',
     FRAME_GET_USER_ERROR: '@w3m-frame/GET_USER_ERROR',
     FRAME_SIGN_OUT_SUCCESS: '@w3m-frame/SIGN_OUT_SUCCESS',
-    FRAME_SIGN_OUT_ERROR: '@w3m-frame/SIGN_OUT_ERROR'
+    FRAME_SIGN_OUT_ERROR: '@w3m-frame/SIGN_OUT_ERROR',
+    FRAME_IS_CONNECTED_SUCCESS: '@w3m-frame/IS_CONNECTED_SUCCESS',
+    FRAME_IS_CONNECTED_ERROR: '@w3m-frame/IS_CONNECTED_ERROR'
   } as const
 
   // -- Schema ----------------------------------------------------------------
@@ -92,7 +95,8 @@ export class W3mFrame {
         })
       )
       .or(z.object({ type: z.literal(this.constants.APP_GET_USER) }))
-      .or(z.object({ type: z.literal(this.constants.APP_SIGN_OUT) })),
+      .or(z.object({ type: z.literal(this.constants.APP_SIGN_OUT) }))
+      .or(z.object({ type: z.literal(this.constants.APP_IS_CONNECTED) })),
 
     // Frame Schema
     frameEvent: z
@@ -132,6 +136,20 @@ export class W3mFrame {
       .or(z.object({ type: z.literal(this.constants.FRAME_SIGN_OUT_SUCCESS) }))
       .or(
         z.object({ type: z.literal(this.constants.FRAME_SIGN_OUT_ERROR), payload: zErrorPayload })
+      )
+      .or(
+        z.object({
+          type: z.literal(this.constants.FRAME_IS_CONNECTED_SUCCESS),
+          payload: z.object({
+            isConnected: z.boolean()
+          })
+        })
+      )
+      .or(
+        z.object({
+          type: z.literal(this.constants.FRAME_IS_CONNECTED_ERROR),
+          payload: zErrorPayload
+        })
       )
   }
 

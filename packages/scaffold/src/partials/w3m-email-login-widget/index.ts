@@ -58,7 +58,7 @@ export class W3mEmailLoginWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private onEmailInputChange(event: CustomEvent) {
+  private onEmailInputChange(event: CustomEvent<string>) {
     this.email = event.detail
   }
 
@@ -67,9 +67,9 @@ export class W3mEmailLoginWidget extends LitElement {
       event.preventDefault()
       const emailConnector = ConnectorController.state.connectors.find(c => c.type === 'EMAIL')
       if (emailConnector?.provider) {
-        RouterController.push('ConfirmEmail', { email: this.email })
         // @ts-expect-error - Exists on email provider
-        // await emailConnector.provider.connectEmail(this.email)
+        await emailConnector.provider.connectEmail(this.email)
+        RouterController.push('ConfirmEmail', { email: this.email, connector: emailConnector })
       }
     } catch {
       SnackController.showError('Unable to login')

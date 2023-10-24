@@ -3,12 +3,17 @@ import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { RouterController } from '@web3modal/core'
 
+// -- Helpers ------------------------------------------- //
+const OTP_LENGTH = 6
+
 @customElement('w3m-confirm-email-view')
 export class W3mConfirmEmailView extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
   protected readonly email = RouterController.state.data?.email
+
+  protected readonly emailConnecotr = RouterController.state.data?.connector
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -30,7 +35,7 @@ export class W3mConfirmEmailView extends LitElement {
 
         <wui-text variant="small-500" color="fg-200">The code expires in 10 minutes</wui-text>
 
-        <wui-otp length="6"></wui-otp>
+        <wui-otp dissabled length="6" @inputChange=${this.onOtpInputChange.bind(this)}></wui-otp>
 
         <wui-flex alignItems="center">
           <wui-text variant="small-500" color="fg-200">Didn't receive it?</wui-text>
@@ -41,6 +46,19 @@ export class W3mConfirmEmailView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private async onOtpInputChange(event: CustomEvent<string>) {
+    try {
+      const otp = event.detail
+      if (this.emailConnecotr?.type === 'EMAIL' && otp.length === OTP_LENGTH) {
+        // @ts-expect-error - Exists on email provider
+        await this.emailConnecotr.provider.connectOtp(otp)
+        // @ts-expect-error - Exists on email provider
+        await this.emailConnecotr.provider.connect()
+      }
+    } catch {
+      console.error('onOtpInputChange submit error')
+    }
+  }
 }
 
 declare global {

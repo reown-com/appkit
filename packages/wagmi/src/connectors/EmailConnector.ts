@@ -66,7 +66,9 @@ export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProvider
   }
 
   async isAuthorized() {
-    return Promise.resolve(false)
+    const { isConnected } = await this.provider.isConnected()
+
+    return isConnected
   }
 
   onAccountsChanged() {
