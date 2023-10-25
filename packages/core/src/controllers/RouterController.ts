@@ -16,7 +16,8 @@ export interface RouterControllerState {
     | 'WhatIsANetwork'
     | 'GetWallet'
     | 'Downloads'
-    | 'ConfirmEmail'
+    | 'EmailVerifyOtp'
+    | 'EmailVerifyDevice'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

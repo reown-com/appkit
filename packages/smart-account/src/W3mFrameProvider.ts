@@ -65,24 +65,18 @@ export class W3mFrameProvider {
   }
 
   // -- Extended Methods ------------------------------------------------
-  public async connectEmail(email: string) {
+  public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     await this.w3mFrame.frameLoadPromise
-    this.w3mFrame.events.postAppEvent({
-      type: W3mFrameConstants.APP_CONNECT_EMAIL,
-      payload: { email }
-    })
+    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_CONNECT_EMAIL, payload })
 
-    return new Promise((resolve, reject) => {
+    return new Promise<W3mFrameTypes.Responses['FrameConnectEmailResponse']>((resolve, reject) => {
       this.connectEmailResolver = { resolve, reject }
     })
   }
 
-  public async connectOtp(otp: string) {
+  public async connectOtp(payload: W3mFrameTypes.Requests['AppConnectOtpRequest']) {
     await this.w3mFrame.frameLoadPromise
-    this.w3mFrame.events.postAppEvent({
-      type: W3mFrameConstants.APP_CONNECT_OTP,
-      payload: { otp }
-    })
+    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_CONNECT_OTP, payload })
 
     return new Promise((resolve, reject) => {
       this.connectOtpResolver = { resolve, reject }
@@ -93,7 +87,7 @@ export class W3mFrameProvider {
     await this.w3mFrame.frameLoadPromise
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_IS_CONNECTED })
 
-    return new Promise<{ isConnected: boolean }>((resolve, reject) => {
+    return new Promise<W3mFrameTypes.Responses['FrameIsConnectedResponse']>((resolve, reject) => {
       this.isConnectedResolver = { resolve, reject }
     })
   }
@@ -102,7 +96,7 @@ export class W3mFrameProvider {
     await this.w3mFrame.frameLoadPromise
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_GET_CHAIN_ID })
 
-    return new Promise<{ chainId: number }>((resolve, reject) => {
+    return new Promise<W3mFrameTypes.Responses['FrameGetChainIdResponse']>((resolve, reject) => {
       this.getChainIdResolver = { resolve, reject }
     })
   }
@@ -112,7 +106,7 @@ export class W3mFrameProvider {
     await this.w3mFrame.frameLoadPromise
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_GET_USER })
 
-    return new Promise<{ address: string; email: string; chainId: number }>((resolve, reject) => {
+    return new Promise<W3mFrameTypes.Responses['FrameGetUserResponse']>((resolve, reject) => {
       this.connectResolver = { resolve, reject }
     })
   }

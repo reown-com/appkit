@@ -1,3 +1,5 @@
+import type { W3mFrameProvider } from '@web3modal/smart-account'
+
 export type CaipAddress = `${string}:${string}:${string}`
 
 export type CaipNetworkId = `${string}:${string}`
@@ -27,30 +29,20 @@ export type Platform =
 
 export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUNCED' | 'EMAIL'
 
-export type Connector =
-  | {
-      id: string
-      type: ConnectorType
-      name?: string
-      imageId?: string
-      explorerId?: string
-      imageUrl?: string
-      info?: { rdns?: string }
-      provider?: unknown
-    }
-  | {
-      id: string
-      type: 'EMAIL'
-      name?: string
-      imageId?: string
-      explorerId?: string
-      imageUrl?: string
-      info?: { rdns?: string }
-      provider?: {
-        connectEmail: (email: string) => Promise<void>
-        connectOtp: (otp: string) => Promise<void>
-      }
-    }
+export type Connector = {
+  id: string
+  type: ConnectorType
+  name?: string
+  imageId?: string
+  explorerId?: string
+  imageUrl?: string
+  info?: { rdns?: string }
+  provider?: unknown
+}
+
+export interface EmailConnector extends Connector {
+  provider: W3mFrameProvider
+}
 
 export type CaipNamespaces = Record<
   string,

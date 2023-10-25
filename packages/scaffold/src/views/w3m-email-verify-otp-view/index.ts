@@ -6,25 +6,26 @@ import {
   SnackController,
   ModalController,
   EventsController,
-  ConnectionController
+  ConnectionController,
+  ConnectorController
 } from '@web3modal/core'
 
 // -- Helpers ------------------------------------------- //
 const OTP_LENGTH = 6
 
-@customElement('w3m-confirm-email-view')
-export class W3mConfirmEmailView extends LitElement {
+@customElement('w3m-email-verify-otp-view')
+export class W3mEmailVerifyOtpView extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
   protected readonly email = RouterController.state.data?.email
 
-  protected readonly emailConnecotr = RouterController.state.data?.connector
+  protected readonly emailConnecotr = ConnectorController.getEmailConnector()
 
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.email) {
-      throw new Error('w3m-confirm-email-view: No email provided')
+      throw new Error('w3m-email-verify-otp-view: No email provided')
     }
 
     return html`
@@ -55,9 +56,8 @@ export class W3mConfirmEmailView extends LitElement {
   private async onOtpInputChange(event: CustomEvent<string>) {
     try {
       const otp = event.detail
-      if (this.emailConnecotr?.type === 'EMAIL' && otp.length === OTP_LENGTH) {
-        // @ts-expect-error - Exists on email provider
-        await this.emailConnecotr.provider.connectOtp(otp)
+      if (this.emailConnecotr && otp.length === OTP_LENGTH) {
+        await this.emailConnecotr.provider.connectOtp({ otp })
         await ConnectionController.connectExternal(this.emailConnecotr)
         ModalController.close()
         EventsController.sendEvent({
@@ -74,6 +74,6 @@ export class W3mConfirmEmailView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-confirm-email-view': W3mConfirmEmailView
+    'w3m-email-verify-otp-view': W3mEmailVerifyOtpView
   }
 }
