@@ -20,7 +20,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
       - name: install
-        run: npm install
+        run: npm ci
       - name: build
         run: npm run build
         env:
@@ -45,7 +45,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
       - name: install
-        run: npm install
+        run: npm ci
       - name: check
         run: npm run ${{ matrix.style-command }}
         env:
@@ -63,6 +63,6 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
       - name: install
-        run: npm install
+        run: npm ci
       - name: test
         run: npm run test
