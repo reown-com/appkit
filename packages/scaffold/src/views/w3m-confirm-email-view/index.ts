@@ -1,7 +1,13 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { RouterController, SnackController } from '@web3modal/core'
+import {
+  RouterController,
+  SnackController,
+  ModalController,
+  EventsController,
+  ConnectionController
+} from '@web3modal/core'
 
 // -- Helpers ------------------------------------------- //
 const OTP_LENGTH = 6
@@ -52,11 +58,16 @@ export class W3mConfirmEmailView extends LitElement {
       if (this.emailConnecotr?.type === 'EMAIL' && otp.length === OTP_LENGTH) {
         // @ts-expect-error - Exists on email provider
         await this.emailConnecotr.provider.connectOtp(otp)
-        // @ts-expect-error - Exists on email provider
-        await this.emailConnecotr.provider.connect()
+        await ConnectionController.connectExternal(this.emailConnecotr)
+        ModalController.close()
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_SUCCESS',
+          properties: { method: 'email' }
+        })
       }
-    } catch {
-      SnackController.showError('Invalid otp')
+    } catch (error) {
+      SnackController.showError((error as Error)?.message)
     }
   }
 }

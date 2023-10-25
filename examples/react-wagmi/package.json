@@ -3,7 +3,7 @@
   "private": true,
   "version": "3.2.0-3411f8a",
   "scripts": {
-    "dev:example": "vite --port 3001",
+    "dev:example": "vite --port 3002",
     "build:examples": "vite build"
   },
   "dependencies": {

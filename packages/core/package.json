@@ -17,7 +17,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "valtio": "1.11.2"
+    "valtio": "1.11.3"
   },
   "keywords": [
     "web3",

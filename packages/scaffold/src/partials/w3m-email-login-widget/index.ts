@@ -71,8 +71,8 @@ export class W3mEmailLoginWidget extends LitElement {
         await emailConnector.provider.connectEmail(this.email)
         RouterController.push('ConfirmEmail', { email: this.email, connector: emailConnector })
       }
-    } catch {
-      SnackController.showError('Unable to login')
+    } catch (error) {
+      SnackController.showError((error as Error)?.message)
     }
   }
 }
