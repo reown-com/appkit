@@ -219,16 +219,6 @@ export interface SIWEVerifyMessageArgs {
   signature: string
 }
 
-// eslint-disable-next-line no-shadow
-export enum SIWEStatus {
-  UNINITIALIZED = 'uninitialized',
-  READY = 'ready',
-  LOADING = 'loading',
-  SUCCESS = 'success',
-  REJECTED = 'rejected',
-  ERROR = 'error'
-}
-
 export interface SIWEClientMethods {
   getNonce: () => Promise<string>
   createMessage: (args: SIWECreateMessageArgs) => string

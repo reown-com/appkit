@@ -1,7 +1,16 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { SIWEClientMethods, SIWESession } from '../utils/TypeUtil.js'
-import { SIWEStatus } from '../utils/TypeUtil.js'
+
+// eslint-disable-next-line no-shadow
+export enum SIWEStatus {
+  UNINITIALIZED = 'uninitialized',
+  READY = 'ready',
+  LOADING = 'loading',
+  SUCCESS = 'success',
+  REJECTED = 'rejected',
+  ERROR = 'error'
+}
 
 export interface SIWEControllerClient extends SIWEClientMethods {
   options: {

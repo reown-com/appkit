@@ -7,6 +7,7 @@
     "packages/scaffold-react",
     "packages/scaffold-vue",
     "packages/polyfills",
+    "packages/siwe",
     "packages/wagmi",
     "packages/ethers5",
     "packages/utils",
