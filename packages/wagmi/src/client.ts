@@ -21,15 +21,15 @@ import type {
   LibraryOptions,
   NetworkControllerClient,
   PublicStateControllerState,
-  SIWEControllerClient,
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import { Web3ModalSIWEClient } from '@web3modal/siwe'
+import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type { EIP6963Connector } from './connectors/EIP6963Connector.js'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/utils'
 import { getCaipDefaultChain } from './utils/helpers.js'
 import { WALLET_CHOICE_KEY } from './utils/constants.js'
+
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -187,15 +187,10 @@ export class Web3Modal extends Web3ModalScaffold {
       disconnect
     }
 
-    let siweControllerClient: SIWEControllerClient | undefined = undefined
-    if (siweConfig) {
-      siweControllerClient = siweConfig
-    }
-
     super({
       networkControllerClient,
       connectionControllerClient,
-      siweControllerClient,
+      siweControllerClient: siweConfig,
       defaultChain: getCaipDefaultChain(defaultChain),
       tokens: HelpersUtil.getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `html-wagmi-${ConstantsUtil.VERSION}`,
