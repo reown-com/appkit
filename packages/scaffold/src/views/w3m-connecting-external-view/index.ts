@@ -2,8 +2,8 @@ import type { BaseError, ConnectorType, Platform } from '@web3modal/core'
 import {
   ConnectionController,
   EventsController,
-  ModalController,
-  RouterController
+  RouterController,
+  StorageUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
@@ -38,7 +38,9 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     try {
       this.error = false
       if (this.connector) {
-        ConnectionController.setWalletImageUrl(this.connector.imageUrl)
+        if (this.connector.imageUrl) {
+          StorageUtil.setImageUrl(this.connector.imageUrl)
+        }
         await ConnectionController.connectExternal(this.connector)
         // ModalController.close()
         RouterController.push('ConnectingSiwe')

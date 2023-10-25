@@ -1,10 +1,4 @@
-import {
-  ConnectionController,
-  CoreHelperUtil,
-  OptionsController,
-  RouterController,
-  StorageUtil
-} from '@web3modal/core'
+import { CoreHelperUtil, OptionsController, RouterController, StorageUtil } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -21,8 +15,6 @@ export class W3mConnectingSiweView extends LitElement {
 
   @state() private dappName = OptionsController.state.metadata?.name
 
-  @state() private walletImageUrl = ConnectionController.state.walletImageUrl
-
   public constructor() {
     super()
 
@@ -37,12 +29,6 @@ export class W3mConnectingSiweView extends LitElement {
         if (metadata?.name) {
           this.dappName = metadata.name
         }
-      }),
-
-      ConnectionController.subscribeKey('walletImageUrl', url => {
-        if (url) {
-          this.walletImageUrl = url
-        }
       })
     )
   }
@@ -50,11 +36,13 @@ export class W3mConnectingSiweView extends LitElement {
   // -- Render -------------------------------------------- //
 
   public override render() {
+    const imageUrl = StorageUtil.getImageUrl()
+
     return html`
       <wui-flex justifyContent="center" .padding=${['2xl', '0', 'xxl', '0'] as const}>
         <w3m-connecting-siwe
           .dappImageSrc=${this.dappIcons ? this.dappIcons[0] : undefined}
-          .walletImageSrc=${this.walletImageUrl ?? undefined}
+          .walletImageSrc=${imageUrl ?? undefined}
         ></w3m-connecting-siwe>
       </wui-flex>
       <wui-flex

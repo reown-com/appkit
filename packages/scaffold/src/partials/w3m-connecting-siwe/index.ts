@@ -1,4 +1,4 @@
-import { WuiVisualThumbnail, customElement } from '@web3modal/ui'
+import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import styles from './styles.js'
