@@ -2,6 +2,7 @@ import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { SIWEClientMethods, SIWESession } from '../utils/TypeUtil.js'
 
+// -- Types --------------------------------------------- //
 // eslint-disable-next-line no-shadow
 export enum SIWEStatus {
   UNINITIALIZED = 'uninitialized',
