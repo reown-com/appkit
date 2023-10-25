@@ -1,5 +1,5 @@
 export const W3mFrameConstants = {
-  SECURE_SITE: 'https://secure-web3modal-git-feat-iframe-sdk-walletconnect1.vercel.app',
+  SECURE_SITE: 'http://localhost:3010',
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
 
