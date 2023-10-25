@@ -236,6 +236,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.options = options
 
     this.metadata = ethersConfig.metadata
+    this.setMetadata(this.metadata)
 
     this.projectId = w3mOptions.projectId
     this.chains = chains

@@ -1,16 +1,60 @@
-import { CoreHelperUtil, RouterController } from '@web3modal/core'
+import {
+  ConnectionController,
+  CoreHelperUtil,
+  OptionsController,
+  RouterController,
+  StorageUtil
+} from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
 
 @customElement('w3m-connecting-siwe-view')
 export class W3mConnectingSiweView extends LitElement {
+  // -- Members -------------------------------------------- //
+  private usubscribe: (() => void)[] = []
+
+  // -- State & Properties --------------------------------- //
+  @state() private dappIcons = OptionsController.state.metadata?.icons
+
+  @state() private dappUrl = OptionsController.state.metadata?.url
+
+  @state() private dappName = OptionsController.state.metadata?.name
+
+  @state() private walletImageUrl = ConnectionController.state.walletImageUrl
+
+  public constructor() {
+    super()
+
+    this.usubscribe.push(
+      OptionsController.subscribeKey('metadata', metadata => {
+        if (metadata?.icons) {
+          this.dappIcons = metadata.icons
+        }
+        if (metadata?.url) {
+          this.dappUrl = metadata.url
+        }
+        if (metadata?.name) {
+          this.dappName = metadata.name
+        }
+      }),
+
+      ConnectionController.subscribeKey('walletImageUrl', url => {
+        if (url) {
+          this.walletImageUrl = url
+        }
+      })
+    )
+  }
+
   // -- Render -------------------------------------------- //
+
   public override render() {
     return html`
       <wui-flex justifyContent="center" .padding=${['2xl', '0', 'xxl', '0'] as const}>
         <w3m-connecting-siwe
-          dappImageSrc="https://explorer-api.walletconnect.com/v3/logo/lg/bff9cf1f-df19-42ce-f62a-87f04df13c00?projectId=2f05ae7f1116030fde2d36508f472bfb"
-          walletImageSrc="https://explorer-api.walletconnect.com/v3/logo/lg/5195e9db-94d8-4579-6f11-ef553be95100?projectId=2f05ae7f1116030fde2d36508f472bfb"
+          .dappImageSrc=${this.dappIcons ? this.dappIcons[0] : undefined}
+          .walletImageSrc=${this.walletImageUrl ?? undefined}
         ></w3m-connecting-siwe>
       </wui-flex>
       <wui-flex
@@ -19,22 +63,17 @@ export class W3mConnectingSiweView extends LitElement {
         justifyContent="space-between"
       >
         <wui-text variant="paragraph-500" align="center" color="fg-100"
-          >Uniswap wants to connect to your wallet</wui-text
+          >${this.dappName ?? 'Dapp'} wants to connect to your wallet</wui-text
         >
       </wui-flex>
-      <wui-flex .padding=${['0', '0', 'l', '0'] as const} justifyContent="center">
-        <wui-button size="sm" variant="accentBg" @click=${this.onDappLink.bind(this)}>
-          https://app.uniswap.org
-          <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
-        </wui-button>
-      </wui-flex>
+      ${this.urlTemplate()}
       <wui-flex
         .padding=${['0', '3xl', 'l', '3xl'] as const}
         gap="s"
         justifyContent="space-between"
       >
         <wui-text variant="small-400" align="center" color="fg-200"
-          >Sign this message to prove you owns this wallet and to continue</wui-text
+          >Sign this message to prove you own this wallet and to continue</wui-text
         >
       </wui-flex>
       <wui-flex .padding=${['l', 'xl', 'xl', 'xl'] as const} gap="s" justifyContent="space-between">
@@ -49,8 +88,23 @@ export class W3mConnectingSiweView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private urlTemplate() {
+    if (this.dappUrl) {
+      return html`<wui-flex .padding=${['0', '0', 'l', '0'] as const} justifyContent="center">
+        <wui-button size="sm" variant="accentBg" @click=${this.onDappLink.bind(this)}>
+          ${this.dappUrl}
+          <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
+        </wui-button>
+      </wui-flex>`
+    }
+
+    return null
+  }
+
   private onDappLink() {
-    CoreHelperUtil.openHref('https://app.uniswap.org', '_blank')
+    if (this.dappUrl) {
+      CoreHelperUtil.openHref(this.dappUrl, '_blank')
+    }
   }
 
   private onSign() {

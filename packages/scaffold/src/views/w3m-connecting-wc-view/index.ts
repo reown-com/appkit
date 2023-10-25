@@ -1,10 +1,11 @@
 import type { BaseError, Platform } from '@web3modal/core'
 import {
+  AssetUtil,
   ConnectionController,
+  ConnectorController,
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
-  ModalController,
   RouterController,
   SnackController,
   StorageUtil
@@ -57,9 +58,18 @@ export class W3mConnectingWcView extends LitElement {
       const { wcPairingExpiry } = ConnectionController.state
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
         ConnectionController.connectWalletConnect()
+        if (this.wallet) {
+          ConnectionController.setWalletImageUrl(AssetUtil.getWalletImage(this.wallet))
+        } else {
+          const connectors = ConnectorController.state.connectors
+          const connector = connectors.find(c => c.type === 'WALLET_CONNECT')
+          ConnectionController.setWalletImageUrl(AssetUtil.getConnectorImage(connector))
+        }
+
         await ConnectionController.state.wcPromise
         this.finalizeConnection()
-        ModalController.close()
+        // ModalController.close()
+        RouterController.push('ConnectingSiwe')
       }
     } catch (error) {
       EventsController.sendEvent({
@@ -78,6 +88,7 @@ export class W3mConnectingWcView extends LitElement {
 
   private finalizeConnection() {
     const { wcLinking, recentWallet } = ConnectionController.state
+
     if (wcLinking) {
       StorageUtil.setWalletConnectDeepLink(wcLinking)
     }

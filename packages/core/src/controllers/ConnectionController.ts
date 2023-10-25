@@ -30,6 +30,7 @@ export interface ConnectionControllerState {
   wcError?: boolean
   recentWallet?: WcWallet
   buffering: boolean
+  walletImageUrl?: string
 }
 
 type StateKey = keyof ConnectionControllerState
@@ -102,6 +103,10 @@ export const ConnectionController = {
 
   setBuffering(buffering: ConnectionControllerState['buffering']) {
     state.buffering = buffering
+  },
+
+  setWalletImageUrl(walletImageUrl: ConnectionControllerState['walletImageUrl']) {
+    state.walletImageUrl = walletImageUrl
   },
 
   async disconnect() {

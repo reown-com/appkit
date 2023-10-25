@@ -194,6 +194,8 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.options = options
 
+    this.createMetadata(wagmiConfig)
+
     this.syncRequestedNetworks(chains)
 
     this.syncConnectors(wagmiConfig)
@@ -226,6 +228,15 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   // -- Private -----------------------------------------------------------------
+  private createMetadata(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
+    const walletConnectConnector = wagmiConfig.connectors.find(
+      c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
+    )
+    if (walletConnectConnector) {
+      this.setMetadata(walletConnectConnector.options.metadata)
+    }
+  }
+
   private syncRequestedNetworks(chains: Web3ModalClientOptions['chains']) {
     const requestedCaipNetworks = chains?.map(
       chain =>

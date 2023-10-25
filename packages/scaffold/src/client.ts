@@ -41,6 +41,7 @@ export interface LibraryOptions {
   privacyPolicyUrl?: OptionsControllerState['privacyPolicyUrl']
   customWallets?: OptionsControllerState['customWallets']
   enableAnalytics?: OptionsControllerState['enableAnalytics']
+  metadata?: OptionsControllerState['metadata']
   _sdkVersion: OptionsControllerState['sdkVersion']
 }
 
@@ -176,6 +177,10 @@ export class Web3ModalScaffold {
     addressExplorerUrl => {
       AccountController.setAddressExplorerUrl(addressExplorerUrl)
     }
+
+  protected setMetadata(metadata: OptionsControllerState['metadata']) {
+    OptionsController.setMetadata(metadata)
+  }
 
   // -- Private ------------------------------------------------------------------
   private initControllers(options: ScaffoldOptions) {

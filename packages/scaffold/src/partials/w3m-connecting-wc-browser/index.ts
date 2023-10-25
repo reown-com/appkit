@@ -3,7 +3,7 @@ import {
   ConnectionController,
   ConnectorController,
   EventsController,
-  ModalController
+  RouterController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
@@ -38,7 +38,8 @@ export class W3mConnectingWcBrowser extends W3mConnectingWidget {
       } else if (injectedConnector) {
         await ConnectionController.connectExternal(injectedConnector)
       }
-      ModalController.close()
+      // ModalController.close()
+      RouterController.push('ConnectingSiwe')
       EventsController.sendEvent({
         type: 'track',
         event: 'CONNECT_SUCCESS',

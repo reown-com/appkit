@@ -23,7 +23,7 @@ export class WuiVisualThumbnail extends LitElement {
     --local-border-radius: ${this.borderRadiusFull ? '1000px' : '20px'};
 `
 
-    return html` ${this.templateVisual()}`
+    return html`${this.templateVisual()}`
   }
 
   // -- Private ------------------------------------------- //
