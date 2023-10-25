@@ -34,7 +34,7 @@ import { WALLET_CHOICE_KEY } from './utils/constants.js'
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wagmiConfig: Config<any, any>
-  siweConfig?: SIWEControllerClient
+  siweConfig?: Web3ModalSIWEClient
   chains?: Chain[]
   defaultChain?: Chain
   chainImages?: Record<number, string>
@@ -187,10 +187,9 @@ export class Web3Modal extends Web3ModalScaffold {
       disconnect
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     let siweControllerClient: SIWEControllerClient | undefined = undefined
     if (siweConfig) {
-      siweControllerClient = new Web3ModalSIWEClient({ siweConfig }).client
+      siweControllerClient = siweConfig
     }
 
     super({

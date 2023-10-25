@@ -1,37 +1,17 @@
 import { subscribeKey as subKey } from 'valtio/utils'
-import { proxy, subscribe as sub } from 'valtio/vanilla'
-import type {
-  CreateSIWEMessageArgs,
-  SIWESession,
-  VerifySIWEMessageArgs
-} from '../utils/TypeUtil.js'
-
+import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
+import type { SIWEClientMethods, SIWESession } from '../utils/TypeUtil.js'
 import { SIWEStatus } from '../utils/TypeUtil.js'
 
-export interface SIWEControllerClient {
-  // -- Required --------------------------------------------- //
-  getNonce: () => Promise<string>
-  createMessage: (args: CreateSIWEMessageArgs) => string
-  verifyMessage: (args: VerifySIWEMessageArgs) => Promise<boolean>
-  getSession: () => Promise<SIWESession | null>
-  signOut: () => Promise<boolean>
-
-  // -- Optional --------------------------------------------- //
-
-  // Defaults true
-  enabled?: boolean
-  // In milliseconds, defaults to 5 minutes
-  nonceRefetchInterval?: number
-  // In milliseconds, defaults to 5 minutes
-  sessionRefetchInterval?: number
-  // Defaults true
-  signOutOnDisconnect?: boolean
-  // Defaults true
-  signOutOnAccountChange?: boolean
-  // Defaults true
-  signOutOnNetworkChange?: boolean
-  onSignIn?: (session?: SIWESession) => void
-  onSignOut?: () => void
+export interface SIWEControllerClient extends SIWEClientMethods {
+  options: {
+    enabled: boolean
+    nonceRefetchIntervalMs: number
+    sessionRefetchIntervalMs: number
+    signOutOnDisconnect: boolean
+    signOutOnAccountChange: boolean
+    signOutOnNetworkChange: boolean
+  }
 }
 
 export interface SIWEControllerClientState {
@@ -64,8 +44,16 @@ export const SIWEController = {
     return sub(state, () => callback(state))
   },
 
-  setSIWEClient(client: SIWEControllerClientState['_client']) {
-    state._client = client
+  _getClient() {
+    if (!state._client) {
+      throw new Error('SIWEController client not set')
+    }
+
+    return state._client
+  },
+
+  setSIWEClient(client: SIWEControllerClient) {
+    state._client = ref(client)
     state.status = SIWEStatus.READY
   },
 

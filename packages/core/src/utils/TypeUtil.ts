@@ -208,13 +208,13 @@ export interface SIWESession {
   chainId: number
 }
 
-export interface CreateSIWEMessageArgs {
+export interface SIWECreateMessageArgs {
   nonce: string
   address: string
   chainId: number
 }
 
-export interface VerifySIWEMessageArgs {
+export interface SIWEVerifyMessageArgs {
   message: string
   signature: string
 }
@@ -227,4 +227,29 @@ export enum SIWEStatus {
   SUCCESS = 'success',
   REJECTED = 'rejected',
   ERROR = 'error'
+}
+
+export interface SIWEClientMethods {
+  getNonce: () => Promise<string>
+  createMessage: (args: SIWECreateMessageArgs) => string
+  verifyMessage: (args: SIWEVerifyMessageArgs) => Promise<boolean>
+  getSession: () => Promise<SIWESession | null>
+  signOut: () => Promise<boolean>
+  onSignIn?: (session?: SIWESession) => void
+  onSignOut?: () => void
+}
+
+export interface SIWEConfig extends SIWEClientMethods {
+  // Defaults to true
+  enabled?: boolean
+  // In milliseconds, defaults to 5 minutes
+  nonceRefetchIntervalMs?: number
+  // In milliseconds, defaults to 5 minutes
+  sessionRefetchIntervalMs?: number
+  // Defaults to true
+  signOutOnDisconnect?: boolean
+  // Defaults to true
+  signOutOnAccountChange?: boolean
+  // Defaults to true
+  signOutOnNetworkChange?: boolean
 }
