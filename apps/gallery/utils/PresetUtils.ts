@@ -236,7 +236,7 @@ export const placementOptions: PlacementType[] = ['top', 'right', 'bottom', 'lef
 
 export const chipOptions: ChipType[] = ['fill', 'transparent', 'shade']
 
-export const buttonOptions: ButtonType[] = ['fill', 'accent', 'shade']
+export const buttonOptions: ButtonType[] = ['fill', 'accent', 'shade', 'fullWidth', 'accentBg']
 
 export const transactionOptions: TransactionType[] = [
   'bought',
