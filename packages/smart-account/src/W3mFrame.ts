@@ -47,17 +47,17 @@ export class W3mFrame {
 
   // -- Networks --------------------------------------------------------------
   get networks(): Record<number, W3mFrameTypes.Network> {
-    return {
-      1: {
-        rpcUrl: `${this.rpcUrl}/v1/?chainId=eip155:1&projectId=${this.projectId}`,
-        chainId: 1
-      },
-
-      11155111: {
-        rpcUrl: `${this.rpcUrl}/v1/?chainId=eip155:11155111&projectId=${this.projectId}`,
-        chainId: 11155111
+    const data = [
+      1, 5, 11155111, 10, 420, 42161, 421613, 137, 80001, 42220, 1313161554, 1313161555, 56, 97,
+      43114, 43113, 324, 280, 100, 8453, 84531, 7777777, 999
+    ].map(id => ({
+      [id]: {
+        rpcUrl: `${this.rpcUrl}/v1/?chainId=eip155:${id}&projectId=${this.projectId}`,
+        chainId: id
       }
-    }
+    }))
+
+    return Object.assign({}, ...data)
   }
 
   // -- Events ----------------------------------------------------------------
@@ -84,12 +84,17 @@ export class W3mFrame {
 
     postAppEvent: (event: W3mFrameTypes.AppEvent) => {
       if (!this.iframe?.contentWindow) {
-        throw new Error('W3mFrameUtil: iframe is not set')
+        throw new Error('W3mFrame: iframe is not set')
       }
+      W3mFrameSchema.appEvent.parse(event)
       this.iframe.contentWindow.postMessage(event, '*')
     },
 
     postFrameEvent: (event: W3mFrameTypes.FrameEvent) => {
+      if (!parent) {
+        throw new Error('W3mFrame: parent is not set')
+      }
+      W3mFrameSchema.frameEvent.parse(event)
       parent.postMessage(event, '*')
     }
   }

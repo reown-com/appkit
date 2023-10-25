@@ -2,29 +2,30 @@ import { W3mFrame } from './W3mFrame.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
 import { W3mFrameConstants } from './W3mFrameConstants.js'
 
-// -- Resolver --------------------------------------------------------
-interface Resolver<T> {
-  resolve: (value: T) => void
-  reject: (reason?: unknown) => void
-}
+// -- Types -----------------------------------------------------------
+type Resolver<T> = { resolve: (value: T) => void; reject: (reason?: unknown) => void } | undefined
+type ConnectEmailResolver = Resolver<W3mFrameTypes.Responses['FrameConnectEmailResponse']>
+type ConnectOtpResolver = Resolver<undefined>
+type ConnectResolver = Resolver<W3mFrameTypes.Responses['FrameGetUserResponse']>
+type DisconnectResolver = Resolver<undefined>
+type IsConnectedResolver = Resolver<W3mFrameTypes.Responses['FrameIsConnectedResponse']>
+type GetChainIdResolver = Resolver<W3mFrameTypes.Responses['FrameGetChainIdResponse']>
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
   private w3mFrame: W3mFrame
 
-  private connectEmailResolver: Resolver<undefined> | undefined = undefined
+  private connectEmailResolver: ConnectEmailResolver = undefined
 
-  private connectOtpResolver: Resolver<undefined> | undefined = undefined
+  private connectOtpResolver: ConnectOtpResolver | undefined = undefined
 
-  private connectResolver:
-    | Resolver<{ address: string; email: string; chainId: number }>
-    | undefined = undefined
+  private connectResolver: ConnectResolver = undefined
 
-  private disconnectResolver: Resolver<undefined> | undefined = undefined
+  private disconnectResolver: DisconnectResolver = undefined
 
-  private isConnectedResolver: Resolver<{ isConnected: boolean }> | undefined = undefined
+  private isConnectedResolver: IsConnectedResolver = undefined
 
-  private getChainIdResolver: Resolver<{ chainId: number }> | undefined = undefined
+  private getChainIdResolver: GetChainIdResolver = undefined
 
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
@@ -34,7 +35,7 @@ export class W3mFrameProvider {
 
       switch (event.type) {
         case W3mFrameConstants.FRAME_CONNECT_EMAIL_SUCCESS:
-          return this.onConnectEmailSuccess()
+          return this.onConnectEmailSuccess(event)
         case W3mFrameConstants.FRAME_CONNECT_EMAIL_ERROR:
           return this.onConnectEmailError(event)
         case W3mFrameConstants.FRAME_CONNECT_OTP_SUCCESS:
@@ -66,7 +67,6 @@ export class W3mFrameProvider {
   // -- Extended Methods ------------------------------------------------
   public async connectEmail(email: string) {
     await this.w3mFrame.frameLoadPromise
-
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_CONNECT_EMAIL,
       payload: { email }
@@ -79,7 +79,6 @@ export class W3mFrameProvider {
 
   public async connectOtp(otp: string) {
     await this.w3mFrame.frameLoadPromise
-
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_CONNECT_OTP,
       payload: { otp }
@@ -92,7 +91,6 @@ export class W3mFrameProvider {
 
   public async isConnected() {
     await this.w3mFrame.frameLoadPromise
-
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_IS_CONNECTED })
 
     return new Promise<{ isConnected: boolean }>((resolve, reject) => {
@@ -102,7 +100,6 @@ export class W3mFrameProvider {
 
   public async getChainId() {
     await this.w3mFrame.frameLoadPromise
-
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_GET_CHAIN_ID })
 
     return new Promise<{ chainId: number }>((resolve, reject) => {
@@ -113,7 +110,6 @@ export class W3mFrameProvider {
   // -- Provider Methods ------------------------------------------------
   public async connect() {
     await this.w3mFrame.frameLoadPromise
-
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_GET_USER })
 
     return new Promise<{ address: string; email: string; chainId: number }>((resolve, reject) => {
@@ -123,7 +119,6 @@ export class W3mFrameProvider {
 
   public async disconnect() {
     await this.w3mFrame.frameLoadPromise
-
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_SIGN_OUT })
 
     return new Promise((resolve, reject) => {
@@ -136,8 +131,10 @@ export class W3mFrameProvider {
   }
 
   // -- Promise Handlers ------------------------------------------------
-  private onConnectEmailSuccess() {
-    this.connectEmailResolver?.resolve(undefined)
+  private onConnectEmailSuccess(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_EMAIL_SUCCESS' }>
+  ) {
+    this.connectEmailResolver?.resolve(event.payload)
   }
 
   private onConnectEmailError(
