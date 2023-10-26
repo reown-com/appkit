@@ -28,6 +28,7 @@ import type { EIP6963Connector } from './connectors/EIP6963Connector.js'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/utils'
 import { getCaipDefaultChain } from './utils/helpers.js'
 import { WALLET_CHOICE_KEY } from './utils/constants.js'
+
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -95,7 +96,14 @@ export class Web3Modal extends Web3ModalScaffold {
 
       async getApprovedCaipNetworksData() {
         const walletChoice = localStorage.getItem(WALLET_CHOICE_KEY)
-        if (walletChoice?.includes(ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)) {
+        if (walletChoice?.includes(ConstantsUtil.EMAIL_CONNECTOR_ID)) {
+          return {
+            supportsAllNetworks: false,
+            approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(
+              id => `${ConstantsUtil.EIP155}:${id}`
+            ) as CaipNetworkId[]
+          }
+        } else if (walletChoice?.includes(ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)) {
           const connector = wagmiConfig.connectors.find(
             c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
           )
@@ -111,7 +119,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
           return {
             supportsAllNetworks: nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD),
-            approvedCaipNetworkIds: nsChains as CaipNetworkId[]
+            approvedCaipNetworkIds: nsChains
           }
         }
 
