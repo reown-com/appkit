@@ -23,7 +23,7 @@ export type {
   ConnectionControllerState
 } from './src/controllers/ConnectionController.js'
 
-export { SIWEController, SIWEStatus } from './src/controllers/SIWEController.js'
+export { SIWEController } from './src/controllers/SIWEController.js'
 export type {
   SIWEControllerClient,
   SIWEControllerClientState

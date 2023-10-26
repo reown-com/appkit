@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { SIWEController, SIWEStatus, type SIWEControllerClient } from '../../index.js'
+import { SIWEController } from '../../index.js'
 
 // -- Mocks -------------------------------------------------------------
 const session = { address: '0x', chainId: 1 }
-const client: SIWEControllerClient = {
+const client = {
   options: {
     enabled: true,
     nonceRefetchIntervalMs: 60000,
@@ -30,7 +30,7 @@ describe('SIWEController', () => {
 
     const state = SIWEController.state
     expect(state._client).toBe(client)
-    expect(state.status).toBe(SIWEStatus.READY)
+    expect(state.status).toBe('ready')
   })
 
   it('should set nonce and update status', () => {
@@ -41,10 +41,10 @@ describe('SIWEController', () => {
   })
 
   it('should set status', () => {
-    SIWEController.setStatus(SIWEStatus.SUCCESS)
+    SIWEController.setStatus('success')
 
     const state = SIWEController.state
-    expect(state.status).toBe(SIWEStatus.SUCCESS)
+    expect(state.status).toBe('success')
   })
 
   it('should set message', () => {

@@ -3,16 +3,6 @@ import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { SIWEClientMethods, SIWESession } from '../utils/TypeUtil.js'
 
 // -- Types --------------------------------------------- //
-// eslint-disable-next-line no-shadow
-export enum SIWEStatus {
-  UNINITIALIZED = 'uninitialized',
-  READY = 'ready',
-  LOADING = 'loading',
-  SUCCESS = 'success',
-  REJECTED = 'rejected',
-  ERROR = 'error'
-}
-
 export interface SIWEControllerClient extends SIWEClientMethods {
   options: {
     enabled: boolean
@@ -29,14 +19,14 @@ export interface SIWEControllerClientState {
   nonce?: string
   session?: SIWESession
   message?: string
-  status: SIWEStatus
+  status: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
 }
 
 type StateKey = keyof SIWEControllerClientState
 
 // -- State --------------------------------------------- //
 const state = proxy<SIWEControllerClientState>({
-  status: SIWEStatus.UNINITIALIZED
+  status: 'uninitialized'
 })
 
 // -- Controller ---------------------------------------- //
@@ -64,7 +54,7 @@ export const SIWEController = {
 
   setSIWEClient(client: SIWEControllerClient) {
     state._client = ref(client)
-    state.status = SIWEStatus.READY
+    state.status = 'ready'
   },
 
   setNonce(nonce: SIWEControllerClientState['nonce']) {
