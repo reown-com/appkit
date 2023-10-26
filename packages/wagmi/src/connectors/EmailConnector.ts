@@ -1,7 +1,7 @@
 import type { Chain } from '@wagmi/core'
 import { Connector } from '@wagmi/core'
 import { W3mFrameProvider } from '@web3modal/smart-account'
-import { createWalletClient, custom } from 'viem'
+import { createWalletClient, custom, SwitchChainError } from 'viem'
 
 interface W3mFrameProviderOptions {
   projectId: string
@@ -36,6 +36,20 @@ export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProvider
         id: chainId,
         unsupported: this.isChainUnsupported(1)
       }
+    }
+  }
+
+  override async switchChain(chainId: number) {
+    try {
+      const chain = this.chains.find(c => c.id === chainId)
+      if (!chain) {
+        throw new SwitchChainError(new Error('chain not found on connector.'))
+      }
+      await this.provider.switchNetowrk(chainId)
+
+      return chain
+    } catch (error) {
+      throw new SwitchChainError(error as Error)
     }
   }
 

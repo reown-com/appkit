@@ -10,7 +10,7 @@ function zType<K extends keyof typeof W3mFrameConstants>(key: K) {
 
 // -- Responses --------------------------------------------------------------
 export const AppSwitchNetworkRequest = z.object({ chainId: z.number() })
-export const AppConnectEmailRequest = z.object({ email: z.string().email(), chainId: z.number() })
+export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
 export const FrameConnectEmailResponse = z.object({
   action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])

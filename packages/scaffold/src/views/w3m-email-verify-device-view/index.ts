@@ -26,7 +26,28 @@ export class W3mEmailVerifyDeviceView extends LitElement {
       throw new Error('w3m-email-verify-device-view: No email provided')
     }
 
-    return html`<wui-flex> TODO </wui-flex>`
+    return html`
+      <wui-flex
+        flexDirection="column"
+        alignItems="center"
+        .padding=${['l', '0', 'l', '0'] as const}
+        gap="l"
+      >
+        <wui-text variant="paragraph-500" color="fg-100">
+          Register this device to continue
+        </wui-text>
+
+        <wui-flex flexDirection="column" alignItems="center">
+          <wui-text variant="small-500" color="fg-200">Check the instructions sent to</wui-text>
+          <wui-text variant="paragraph-600" color="fg-100">${this.email}</wui-text>
+        </wui-flex>
+
+        <wui-flex alignItems="center">
+          <wui-text variant="small-500" color="fg-200">Didn't receive it?</wui-text>
+          <wui-link>Resend code</wui-link>
+        </wui-flex>
+      </wui-flex>
+    `
   }
 
   // -- Private ------------------------------------------- //

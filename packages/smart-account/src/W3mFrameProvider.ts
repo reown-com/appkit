@@ -11,6 +11,7 @@ type ConnectResolver = Resolver<W3mFrameTypes.Responses['FrameGetUserResponse']>
 type DisconnectResolver = Resolver<undefined>
 type IsConnectedResolver = Resolver<W3mFrameTypes.Responses['FrameIsConnectedResponse']>
 type GetChainIdResolver = Resolver<W3mFrameTypes.Responses['FrameGetChainIdResponse']>
+type SwitchChainResolver = Resolver<undefined>
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
@@ -29,6 +30,8 @@ export class W3mFrameProvider {
   private isConnectedResolver: IsConnectedResolver = undefined
 
   private getChainIdResolver: GetChainIdResolver = undefined
+
+  private switchChainResolver: SwitchChainResolver = undefined
 
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
@@ -65,6 +68,10 @@ export class W3mFrameProvider {
           return this.onSignOutSuccess()
         case W3mFrameConstants.FRAME_SIGN_OUT_ERROR:
           return this.onSignOutError(event)
+        case W3mFrameConstants.FRAME_SWITCH_NETWORK_SUCCESS:
+          return this.onSwitchChainSuccess()
+        case W3mFrameConstants.FRAME_SWITCH_NETWORK_ERROR:
+          return this.onSwitchChainError(event)
         default:
           return null
       }
@@ -124,6 +131,18 @@ export class W3mFrameProvider {
 
     return new Promise<W3mFrameTypes.Responses['FrameGetUserResponse']>((resolve, reject) => {
       this.connectResolver = { resolve, reject }
+    })
+  }
+
+  public async switchNetowrk(chainId: number) {
+    await this.w3mFrame.frameLoadPromise
+    this.w3mFrame.events.postAppEvent({
+      type: W3mFrameConstants.APP_SWITCH_NETWORK,
+      payload: { chainId }
+    })
+
+    return new Promise((resolve, reject) => {
+      this.switchChainResolver = { resolve, reject }
     })
   }
 
@@ -217,5 +236,15 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SIGN_OUT_ERROR' }>
   ) {
     this.disconnectResolver?.reject(event.payload.message)
+  }
+
+  private onSwitchChainSuccess() {
+    this.switchChainResolver?.resolve(undefined)
+  }
+
+  private onSwitchChainError(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SWITCH_NETWORK_ERROR' }>
+  ) {
+    this.switchChainResolver?.reject(event.payload.message)
   }
 }
