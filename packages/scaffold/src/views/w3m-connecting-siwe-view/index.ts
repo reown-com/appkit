@@ -4,7 +4,7 @@ import { LitElement, html } from 'lit'
 
 @customElement('w3m-connecting-siwe-view')
 export class W3mConnectingSiweView extends LitElement {
-  // -- State & Properties --------------------------------- //
+  // -- Members ------------------------------------------- //
   private readonly dappUrl = OptionsController.state.metadata?.url
 
   private readonly dappName = OptionsController.state.metadata?.name

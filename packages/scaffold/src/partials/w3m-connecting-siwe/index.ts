@@ -1,6 +1,5 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-
 import styles from './styles.js'
 import { OptionsController, StorageUtil } from '@web3modal/core'
 
@@ -8,7 +7,7 @@ import { OptionsController, StorageUtil } from '@web3modal/core'
 export class W3mConnectingSiwe extends LitElement {
   public static override styles = styles
 
-  // -- State & Properties -------------------------------- //
+  // -- Members ------------------------------------------- //
   private readonly dappImageUrl = OptionsController.state.metadata?.icons
 
   private readonly walletImageUrl = StorageUtil.getConnectedWalletImageUrl()

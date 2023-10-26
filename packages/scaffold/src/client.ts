@@ -178,10 +178,6 @@ export class Web3ModalScaffold {
       AccountController.setAddressExplorerUrl(addressExplorerUrl)
     }
 
-  protected setMetadata(metadata: OptionsControllerState['metadata']) {
-    OptionsController.setMetadata(metadata)
-  }
-
   // -- Private ------------------------------------------------------------------
   private initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)
