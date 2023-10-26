@@ -56,10 +56,11 @@ export const RouterController = {
     state.history = [view]
   },
 
-  replace(view: RouterControllerState['view']) {
+  replace(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
     if (state.history.length > 1 && state.history.at(-1) !== view) {
       state.view = view
       state.history[state.history.length - 1] = view
+      state.data = data
     }
   },
 

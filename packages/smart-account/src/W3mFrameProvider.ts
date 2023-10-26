@@ -5,6 +5,7 @@ import { W3mFrameConstants } from './W3mFrameConstants.js'
 // -- Types -----------------------------------------------------------
 type Resolver<T> = { resolve: (value: T) => void; reject: (reason?: unknown) => void } | undefined
 type ConnectEmailResolver = Resolver<W3mFrameTypes.Responses['FrameConnectEmailResponse']>
+type ConnectDeviceResolver = Resolver<undefined>
 type ConnectOtpResolver = Resolver<undefined>
 type ConnectResolver = Resolver<W3mFrameTypes.Responses['FrameGetUserResponse']>
 type DisconnectResolver = Resolver<undefined>
@@ -16,6 +17,8 @@ export class W3mFrameProvider {
   private w3mFrame: W3mFrame
 
   private connectEmailResolver: ConnectEmailResolver = undefined
+
+  private connectDeviceResolver: ConnectDeviceResolver = undefined
 
   private connectOtpResolver: ConnectOtpResolver | undefined = undefined
 
@@ -38,6 +41,10 @@ export class W3mFrameProvider {
           return this.onConnectEmailSuccess(event)
         case W3mFrameConstants.FRAME_CONNECT_EMAIL_ERROR:
           return this.onConnectEmailError(event)
+        case W3mFrameConstants.FRAME_CONNECT_DEVICE_SUCCESS:
+          return this.onConnectDeviceSuccess()
+        case W3mFrameConstants.FRAME_CONNECT_DEVICE_ERROR:
+          return this.onConnectDeviceError(event)
         case W3mFrameConstants.FRAME_CONNECT_OTP_SUCCESS:
           return this.onConnectOtpSuccess()
         case W3mFrameConstants.FRAME_CONNECT_OTP_ERROR:
@@ -71,6 +78,15 @@ export class W3mFrameProvider {
 
     return new Promise<W3mFrameTypes.Responses['FrameConnectEmailResponse']>((resolve, reject) => {
       this.connectEmailResolver = { resolve, reject }
+    })
+  }
+
+  public async connectDevice() {
+    await this.w3mFrame.frameLoadPromise
+    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_CONNECT_DEVICE })
+
+    return new Promise((resolve, reject) => {
+      this.connectDeviceResolver = { resolve, reject }
     })
   }
 
@@ -135,6 +151,16 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_EMAIL_ERROR' }>
   ) {
     this.connectEmailResolver?.reject(event.payload.message)
+  }
+
+  private onConnectDeviceSuccess() {
+    this.connectDeviceResolver?.resolve(undefined)
+  }
+
+  private onConnectDeviceError(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_DEVICE_ERROR' }>
+  ) {
+    this.connectDeviceResolver?.reject(event.payload.message)
   }
 
   private onConnectOtpSuccess() {

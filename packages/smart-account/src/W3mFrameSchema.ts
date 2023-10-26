@@ -30,6 +30,8 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_CONNECT_EMAIL'), payload: AppConnectEmailRequest }))
 
+    .or(z.object({ type: zType('APP_CONNECT_DEVICE') }))
+
     .or(z.object({ type: zType('APP_CONNECT_OTP'), payload: AppConnectOtpRequest }))
 
     .or(z.object({ type: zType('APP_GET_USER') }))
@@ -55,6 +57,10 @@ export const W3mFrameSchema = {
     .or(z.object({ type: zType('FRAME_CONNECT_OTP_ERROR'), payload: zError }))
 
     .or(z.object({ type: zType('FRAME_CONNECT_OTP_SUCCESS') }))
+
+    .or(z.object({ type: zType('FRAME_CONNECT_DEVICE_ERROR'), payload: zError }))
+
+    .or(z.object({ type: zType('FRAME_CONNECT_DEVICE_SUCCESS') }))
 
     .or(z.object({ type: zType('FRAME_GET_USER_ERROR'), payload: zError }))
 

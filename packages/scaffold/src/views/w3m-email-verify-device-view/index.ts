@@ -12,13 +12,29 @@ export class W3mEmailVerifyDeviceView extends LitElement {
 
   protected readonly emailConnecotr = ConnectorController.getEmailConnector()
 
+  public constructor() {
+    super()
+    this.listenForDeviceApproval()
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.email) {
       throw new Error('w3m-email-verify-device-view: No email provided')
     }
+    if (!this.emailConnecotr) {
+      throw new Error('w3m-email-verify-device-view: No email provided')
+    }
 
-    return html` <wui-flex> TODO </wui-flex> `
+    return html`<wui-flex> TODO </wui-flex>`
+  }
+
+  // -- Private ------------------------------------------- //
+  private async listenForDeviceApproval() {
+    if (this.emailConnecotr) {
+      await this.emailConnecotr.provider.connectDevice()
+      RouterController.replace('EmailVerifyOtp', { email: this.email })
+    }
   }
 }
 
