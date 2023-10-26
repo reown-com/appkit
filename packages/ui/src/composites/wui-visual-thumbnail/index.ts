@@ -11,7 +11,7 @@ export class WuiVisualThumbnail extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public imageSrc?: string
+  @property() public imageSrc?: string | null
 
   @property() public alt?: string
 

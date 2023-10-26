@@ -4,7 +4,7 @@ import type { WcWallet } from './TypeUtil.js'
 // -- Helpers -----------------------------------------------------------------
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE'
 const W3M_RECENT = '@w3m/recent'
-const W3M_IMAGE_URL = '@3m/image_url'
+const W3M_CONNECTED_WALLET_IMAGE_URL = '@w3m/connected_wallet_image_url'
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
@@ -65,11 +65,21 @@ export const StorageUtil = {
     return []
   },
 
-  setImageUrl(imageUrl: string) {
-    localStorage.setItem(W3M_IMAGE_URL, imageUrl)
+  setConnectedWalletImageUrl(imageUrl: string) {
+    try {
+      localStorage.setItem(W3M_CONNECTED_WALLET_IMAGE_URL, imageUrl)
+    } catch {
+      console.info('Unable to set Connected Wallet Image Url')
+    }
   },
 
-  getImageUrl() {
-    return localStorage.getItem(W3M_IMAGE_URL)
+  getConnectedWalletImageUrl() {
+    try {
+      return localStorage.getItem(W3M_CONNECTED_WALLET_IMAGE_URL)
+    } catch {
+      console.info('Unable to set Connected Wallet Image Url')
+    }
+
+    return undefined
   }
 }

@@ -2,15 +2,16 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import styles from './styles.js'
+import { OptionsController, StorageUtil } from '@web3modal/core'
 
 @customElement('w3m-connecting-siwe')
 export class W3mConnectingSiwe extends LitElement {
   public static override styles = styles
 
   // -- State & Properties -------------------------------- //
-  @property() public dappImageSrc?: string
+  @property({ type: Array }) private dappImageUrl = OptionsController.state.metadata?.icons
 
-  @property() public walletImageSrc?: string
+  @property() private walletImageUrl = StorageUtil.getConnectedWalletImageUrl()
 
   public override firstUpdated() {
     const visuals = this.shadowRoot?.querySelectorAll('wui-visual-thumbnail')
@@ -28,9 +29,9 @@ export class W3mConnectingSiwe extends LitElement {
     return html`
       <wui-visual-thumbnail
         ?borderRadiusFull=${true}
-        .imageSrc=${this.dappImageSrc}
+        .imageSrc=${this.dappImageUrl?.[0]}
       ></wui-visual-thumbnail>
-      <wui-visual-thumbnail .imageSrc=${this.walletImageSrc}></wui-visual-thumbnail>
+      <wui-visual-thumbnail .imageSrc=${this.walletImageUrl}></wui-visual-thumbnail>
     `
   }
 

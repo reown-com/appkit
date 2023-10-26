@@ -1,49 +1,20 @@
 import { CoreHelperUtil, OptionsController, RouterController, StorageUtil } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 
 @customElement('w3m-connecting-siwe-view')
 export class W3mConnectingSiweView extends LitElement {
-  // -- Members -------------------------------------------- //
-  private usubscribe: (() => void)[] = []
-
   // -- State & Properties --------------------------------- //
-  @state() private dappIcons = OptionsController.state.metadata?.icons
+  @property() private dappUrl = OptionsController.state.metadata?.url
 
-  @state() private dappUrl = OptionsController.state.metadata?.url
-
-  @state() private dappName = OptionsController.state.metadata?.name
-
-  public constructor() {
-    super()
-
-    this.usubscribe.push(
-      OptionsController.subscribeKey('metadata', metadata => {
-        if (metadata?.icons) {
-          this.dappIcons = metadata.icons
-        }
-        if (metadata?.url) {
-          this.dappUrl = metadata.url
-        }
-        if (metadata?.name) {
-          this.dappName = metadata.name
-        }
-      })
-    )
-  }
+  @property() private dappName = OptionsController.state.metadata?.name
 
   // -- Render -------------------------------------------- //
-
   public override render() {
-    const imageUrl = StorageUtil.getImageUrl()
-
     return html`
       <wui-flex justifyContent="center" .padding=${['2xl', '0', 'xxl', '0'] as const}>
-        <w3m-connecting-siwe
-          .dappImageSrc=${this.dappIcons ? this.dappIcons[0] : undefined}
-          .walletImageSrc=${imageUrl ?? undefined}
-        ></w3m-connecting-siwe>
+        <w3m-connecting-siwe></w3m-connecting-siwe>
       </wui-flex>
       <wui-flex
         .padding=${['0', '4xl', 'l', '4xl'] as const}

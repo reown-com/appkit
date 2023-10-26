@@ -39,10 +39,12 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       this.error = false
       if (this.connector) {
         if (this.connector.imageUrl) {
-          StorageUtil.setImageUrl(this.connector.imageUrl)
+          StorageUtil.setConnectedWalletImageUrl(this.connector.imageUrl)
         }
         await ConnectionController.connectExternal(this.connector)
         // ModalController.close()
+
+        // TEMPORARY FOR TESTING
         RouterController.push('ConnectingSiwe')
         EventsController.sendEvent({
           type: 'track',

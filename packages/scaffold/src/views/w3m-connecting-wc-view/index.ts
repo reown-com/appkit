@@ -61,20 +61,22 @@ export class W3mConnectingWcView extends LitElement {
         if (this.wallet) {
           const url = AssetUtil.getWalletImage(this.wallet)
           if (url) {
-            StorageUtil.setImageUrl(url)
+            StorageUtil.setConnectedWalletImageUrl(url)
           }
         } else {
           const connectors = ConnectorController.state.connectors
           const connector = connectors.find(c => c.type === 'WALLET_CONNECT')
           const url = AssetUtil.getConnectorImage(connector)
           if (url) {
-            StorageUtil.setImageUrl(url)
+            StorageUtil.setConnectedWalletImageUrl(url)
           }
         }
 
         await ConnectionController.state.wcPromise
         this.finalizeConnection()
         // ModalController.close()
+
+        // TEMPORARY FOR TESTING
         RouterController.push('ConnectingSiwe')
       }
     } catch (error) {

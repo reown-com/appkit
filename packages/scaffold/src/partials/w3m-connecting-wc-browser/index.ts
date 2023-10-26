@@ -39,6 +39,8 @@ export class W3mConnectingWcBrowser extends W3mConnectingWidget {
         await ConnectionController.connectExternal(injectedConnector)
       }
       // ModalController.close()
+
+      // TEMPORARY FOR TESTING
       RouterController.push('ConnectingSiwe')
       EventsController.sendEvent({
         type: 'track',
