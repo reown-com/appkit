@@ -1,6 +1,6 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { property } from 'lit/decorators.js'
+
 import styles from './styles.js'
 import { OptionsController, StorageUtil } from '@web3modal/core'
 
