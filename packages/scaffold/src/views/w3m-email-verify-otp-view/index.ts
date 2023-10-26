@@ -9,6 +9,7 @@ import {
   ConnectionController,
   ConnectorController
 } from '@web3modal/core'
+import { state } from 'lit/decorators.js'
 
 // -- Helpers ------------------------------------------- //
 const OTP_LENGTH = 6
@@ -21,6 +22,9 @@ export class W3mEmailVerifyOtpView extends LitElement {
   protected readonly email = RouterController.state.data?.email
 
   protected readonly emailConnecotr = ConnectorController.getEmailConnector()
+
+  // -- State & Properties -------------------------------- //
+  @state() private loading = false
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -42,7 +46,13 @@ export class W3mEmailVerifyOtpView extends LitElement {
 
         <wui-text variant="small-500" color="fg-200">The code expires in 10 minutes</wui-text>
 
-        <wui-otp dissabled length="6" @inputChange=${this.onOtpInputChange.bind(this)}></wui-otp>
+        ${this.loading
+          ? html`<wui-loading-spinner size="lg" color="accent-100"></wui-loading-spinner></wui-link>`
+          : html`<wui-otp
+              dissabled
+              length="6"
+              @inputChange=${this.onOtpInputChange.bind(this)}
+            ></wui-otp>`}
 
         <wui-flex alignItems="center">
           <wui-text variant="small-500" color="fg-200">Didn't receive it?</wui-text>
@@ -55,19 +65,24 @@ export class W3mEmailVerifyOtpView extends LitElement {
   // -- Private ------------------------------------------- //
   private async onOtpInputChange(event: CustomEvent<string>) {
     try {
-      const otp = event.detail
-      if (this.emailConnecotr && otp.length === OTP_LENGTH) {
-        await this.emailConnecotr.provider.connectOtp({ otp })
-        await ConnectionController.connectExternal(this.emailConnecotr)
-        ModalController.close()
-        EventsController.sendEvent({
-          type: 'track',
-          event: 'CONNECT_SUCCESS',
-          properties: { method: 'email' }
-        })
+      if (!this.loading) {
+        const otp = event.detail
+        if (this.emailConnecotr && otp.length === OTP_LENGTH) {
+          this.loading = true
+          await this.emailConnecotr.provider.connectOtp({ otp })
+          await ConnectionController.connectExternal(this.emailConnecotr)
+          ModalController.close()
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'CONNECT_SUCCESS',
+            properties: { method: 'email' }
+          })
+        }
       }
     } catch (error) {
-      SnackController.showError((error as Error)?.message)
+      const message = typeof error === 'string' ? error : (error as Error)?.message
+      SnackController.showError(message)
+      this.loading = false
     }
   }
 }

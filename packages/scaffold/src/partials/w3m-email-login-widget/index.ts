@@ -21,6 +21,8 @@ export class W3mEmailLoginWidget extends LitElement {
 
   @state() private email = ''
 
+  @state() private loading = false
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -43,6 +45,7 @@ export class W3mEmailLoginWidget extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const connector = this.connectors.find(c => c.type === 'EMAIL')
+    const isSubmit = !this.loading && this.email.length > 3
 
     if (!connector) {
       return null
@@ -50,7 +53,27 @@ export class W3mEmailLoginWidget extends LitElement {
 
     return html`
       <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
-        <wui-email-input @inputChange=${this.onEmailInputChange.bind(this)}></wui-email-input>
+        <wui-email-input
+          .disabled=${this.loading}
+          @inputChange=${this.onEmailInputChange.bind(this)}
+        >
+        </wui-email-input>
+
+        ${isSubmit
+          ? html`
+              <wui-icon-link
+                size="sm"
+                icon="chevronRight"
+                iconcolor="accent-100"
+                @click=${this.onSubmitEmail.bind(this)}
+              >
+              </wui-icon-link>
+            `
+          : null}
+        ${this.loading
+          ? html`<wui-loading-spinner size="lg" color="accent-100"></wui-loading-spinner>`
+          : null}
+
         <input type="submit" hidden />
       </form>
       <wui-separator text="or"></wui-separator>
@@ -64,18 +87,23 @@ export class W3mEmailLoginWidget extends LitElement {
 
   private async onSubmitEmail(event: Event) {
     try {
-      event.preventDefault()
-      const emailConnector = ConnectorController.getEmailConnector()
-      if (emailConnector) {
-        const { action } = await emailConnector.provider.connectEmail({ email: this.email })
-        if (action === 'VERIFY_OTP') {
-          RouterController.push('EmailVerifyOtp', { email: this.email })
-        } else if (action === 'VERIFY_DEVICE') {
-          RouterController.push('EmailVerifyDevice', { email: this.email })
+      if (!this.loading) {
+        this.loading = true
+        event.preventDefault()
+        const emailConnector = ConnectorController.getEmailConnector()
+        if (emailConnector) {
+          const { action } = await emailConnector.provider.connectEmail({ email: this.email })
+          if (action === 'VERIFY_OTP') {
+            RouterController.push('EmailVerifyOtp', { email: this.email })
+          } else if (action === 'VERIFY_DEVICE') {
+            RouterController.push('EmailVerifyDevice', { email: this.email })
+          }
         }
       }
     } catch (error) {
       SnackController.showError((error as Error)?.message)
+    } finally {
+      this.loading = false
     }
   }
 }

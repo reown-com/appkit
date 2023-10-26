@@ -13,5 +13,18 @@ export default css`
   form {
     width: 100%;
     display: block;
+    position: relative;
+  }
+
+  wui-icon-link {
+    position: absolute;
+    right: var(--wui-spacing-xs);
+    top: 11px;
+  }
+
+  wui-loading-spinner {
+    position: absolute;
+    right: var(--wui-spacing-1xs);
+    top: var(--wui-spacing-m);
   }
 `
