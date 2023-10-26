@@ -41,15 +41,18 @@ const chains = [
   celo,
   aurora
 ]
+
+const metadata = {
+  name: 'Web3Modal',
+  description: 'Web3Modal Laboratory',
+  url: 'https://web3modal.com',
+  icons: ['https://avatars.githubusercontent.com/u/37784886']
+}
+
 export const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
-  metadata: {
-    name: 'Web3Modal',
-    description: 'Web3Modal Laboratory',
-    url: 'https://web3modal.com',
-    icons: ['https://avatars.githubusercontent.com/u/37784886']
-  }
+  metadata
 })
 
 const modal = createWeb3Modal({
@@ -57,12 +60,7 @@ const modal = createWeb3Modal({
   projectId,
   chains,
   enableAnalytics: true,
-  metadata: {
-    name: 'Web3Modal',
-    description: 'Web3Modal Laboratory',
-    url: 'https://web3modal.com',
-    icons: ['https://avatars.githubusercontent.com/u/37784886']
-  }
+  metadata
 })
 
 ThemeStore.setModal(modal)

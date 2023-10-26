@@ -1,14 +1,13 @@
 import { CoreHelperUtil, OptionsController, RouterController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { property } from 'lit/decorators.js'
 
 @customElement('w3m-connecting-siwe-view')
 export class W3mConnectingSiweView extends LitElement {
   // -- State & Properties --------------------------------- //
-  @property() private dappUrl = OptionsController.state.metadata?.url
+  private readonly dappUrl = OptionsController.state.metadata?.url
 
-  @property() private dappName = OptionsController.state.metadata?.name
+  private readonly dappName = OptionsController.state.metadata?.name
 
   // -- Render -------------------------------------------- //
   public override render() {

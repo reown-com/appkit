@@ -10,20 +10,23 @@ if (!projectId) {
 }
 const chains = [1, 42161, 137, 43114, 56, 10, 100, 324, 7777777, 8453, 42220, 1313161554]
 
+const metadata = {
+  name: 'Web3Modal',
+  description: 'Web3Modal Laboratory',
+  url: 'https://web3modal.com',
+  icons: ['https://avatars.githubusercontent.com/u/37784886']
+}
+
 const modal = createWeb3Modal({
   ethersConfig: defaultConfig({
-    metadata: {
-      name: 'Web3Modal',
-      description: 'Web3Modal Laboratory',
-      url: 'https://web3modal.com',
-      icons: ['https://avatars.githubusercontent.com/u/37784886']
-    },
+    metadata,
     defaultChainId: 1,
     rpcUrl: 'https://cloudflare-eth.com'
   }),
   chains,
   projectId,
-  enableAnalytics: true
+  enableAnalytics: true,
+  metadata
 })
 
 ThemeStore.setModal(modal)

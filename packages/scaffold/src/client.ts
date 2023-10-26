@@ -200,6 +200,10 @@ export class Web3ModalScaffold {
 
     ConnectionController.setClient(options.connectionControllerClient)
 
+    if (options.metadata) {
+      OptionsController.setMetadata(options.metadata)
+    }
+
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)
     }

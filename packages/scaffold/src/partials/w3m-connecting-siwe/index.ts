@@ -9,9 +9,9 @@ export class W3mConnectingSiwe extends LitElement {
   public static override styles = styles
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Array }) private dappImageUrl = OptionsController.state.metadata?.icons
+  private readonly dappImageUrl = OptionsController.state.metadata?.icons
 
-  @property() private walletImageUrl = StorageUtil.getConnectedWalletImageUrl()
+  private readonly walletImageUrl = StorageUtil.getConnectedWalletImageUrl()
 
   public override firstUpdated() {
     const visuals = this.shadowRoot?.querySelectorAll('wui-visual-thumbnail')

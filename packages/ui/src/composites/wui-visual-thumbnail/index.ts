@@ -19,9 +19,7 @@ export class WuiVisualThumbnail extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.style.cssText = `
-    --local-border-radius: ${this.borderRadiusFull ? '1000px' : '20px'};
-`
+    this.style.cssText = `--local-border-radius: ${this.borderRadiusFull ? '1000px' : '20px'};`
 
     return html`${this.templateVisual()}`
   }
