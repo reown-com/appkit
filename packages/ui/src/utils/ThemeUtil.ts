@@ -77,6 +77,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-border-radius-l: calc(var(--w3m-border-radius-master) * 9);
         --wui-border-radius-3xl: calc(var(--w3m-border-radius-master) * 20);
 
+        --wui-font-weight-light: 400;
         --wui-font-weight-regular: 500;
         --wui-font-weight-medium: 600;
         --wui-font-weight-bold: 700;
@@ -100,7 +101,9 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-spacing-2l: 18px;
         --wui-spacing-xl: 20px;
         --wui-spacing-xxl: 24px;
+        --wui-spacing-2xl: 32px;
         --wui-spacing-3xl: 40px;
+        --wui-spacing-4xl: 90px;
 
         --wui-icon-box-size-xs: 20px;
         --wui-icon-box-size-sm: 24px;
@@ -199,6 +202,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-all-wallets-bg-100: var(--wui-all-wallets-bg-base-100);
 
         --wui-avatar-border: var(--wui-avatar-border-base);
+
+        --wui-thumbnail-border: var(--wui-thumbnail-border-base);
 
         --wui-box-shadow-blue: rgba(71, 161, 255, 0.16);
       }
@@ -406,6 +411,12 @@ function createRootStyles(themeVariables?: ThemeVariables) {
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
             var(--wui-avatar-border-base)
           );
+
+          --wui-thumbnail-border: color-mix(
+            in srgb,
+            var(--w3m-color-mix) var(--w3m-color-mix-strength),
+            var(--wui-thumbnail-border-base)
+          );
         }
       }
     `,
@@ -462,6 +473,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-all-wallets-bg-base-100: #222b35;
 
         --wui-avatar-border-base: #252525;
+
+        --wui-thumbnail-border-base: #252525;
 
         --wui-gray-glass-001: rgba(255, 255, 255, 0.01);
         --wui-gray-glass-002: rgba(255, 255, 255, 0.02);
@@ -529,6 +542,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
         --wui-avatar-border-base: #f3f4f4;
 
+        --wui-thumbnail-border-base: #eaefef;
+
         --wui-gray-glass-001: rgba(0, 0, 0, 0.01);
         --wui-gray-glass-002: rgba(0, 0, 0, 0.02);
         --wui-gray-glass-005: rgba(0, 0, 0, 0.05);
@@ -592,6 +607,14 @@ export const elementStyles = css`
     button[data-variant='fill']:hover:enabled {
       background-color: var(--wui-color-accent-090);
     }
+
+    button[data-variant='accentBg']:hover:enabled {
+      background: var(--wui-accent-glass-015);
+    }
+
+    button[data-variant='accentBg']:active:enabled {
+      background: var(--wui-accent-glass-020);
+    }
   }
 
   button:disabled {
@@ -600,7 +623,8 @@ export const elementStyles = css`
   }
 
   button[data-variant='shade']:disabled,
-  button[data-variant='accent']:disabled {
+  button[data-variant='accent']:disabled,
+  button[data-variant='accentBg']:disabled {
     background-color: var(--wui-gray-glass-010);
     color: var(--wui-gray-glass-015);
     filter: grayscale(1);
@@ -647,8 +671,14 @@ export const elementStyles = css`
     color: var(--wui-color-fg-200);
   }
 
-  button[data-variant='accent'] {
+  button[data-variant='accent'],
+  button[data-variant='accentBg'] {
     color: var(--wui-color-accent-100);
+  }
+
+  button[data-variant='accentBg'] {
+    background: var(--wui-accent-glass-010);
+    border: 1px solid var(--wui-accent-glass-010);
   }
 
   button[data-variant='fullWidth'] {

@@ -9,6 +9,7 @@ export interface RouterControllerState {
     | 'Connect'
     | 'ConnectingExternal'
     | 'ConnectingWalletConnect'
+    | 'ConnectingSiwe'
     | 'Networks'
     | 'SwitchNetwork'
     | 'AllWallets'
