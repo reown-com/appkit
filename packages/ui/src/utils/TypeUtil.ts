@@ -19,6 +19,7 @@ export type TextType =
   | 'paragraph-500'
   | 'paragraph-600'
   | 'paragraph-700'
+  | 'small-400'
   | 'small-500'
   | 'small-600'
   | 'tiny-500'
@@ -31,7 +32,9 @@ export type SizeType = 'inherit' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs'
 export type SpacingType =
   | '0'
   | '1xs'
+  | '2xl'
   | '3xl'
+  | '4xl'
   | '3xs'
   | '4xs'
   | 'l'
@@ -163,7 +166,7 @@ export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 
 export type ChipType = 'fill' | 'shade' | 'transparent'
 
-export type ButtonType = 'accent' | 'fill' | 'shade' | 'fullWidth'
+export type ButtonType = 'accent' | 'fill' | 'shade' | 'fullWidth' | 'accentBg'
 
 export type TransactionType =
   | 'bought'

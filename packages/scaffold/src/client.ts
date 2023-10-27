@@ -41,6 +41,7 @@ export interface LibraryOptions {
   privacyPolicyUrl?: OptionsControllerState['privacyPolicyUrl']
   customWallets?: OptionsControllerState['customWallets']
   enableAnalytics?: OptionsControllerState['enableAnalytics']
+  metadata?: OptionsControllerState['metadata']
   _sdkVersion: OptionsControllerState['sdkVersion']
 }
 
@@ -194,6 +195,10 @@ export class Web3ModalScaffold {
     OptionsController.setSdkVersion(options._sdkVersion)
 
     ConnectionController.setClient(options.connectionControllerClient)
+
+    if (options.metadata) {
+      OptionsController.setMetadata(options.metadata)
+    }
 
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)

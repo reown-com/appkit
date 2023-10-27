@@ -39,6 +39,7 @@ export * from './src/composites/wui-tabs/index.js'
 export * from './src/composites/wui-tag/index.js'
 export * from './src/composites/wui-tooltip/index.js'
 export * from './src/composites/wui-transaction-visual/index.js'
+export * from './src/composites/wui-visual-thumbnail/index.js'
 export * from './src/composites/wui-wallet-image/index.js'
 
 export * from './src/layout/wui-flex/index.js'

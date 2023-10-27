@@ -9,6 +9,7 @@ export default css`
   button {
     border: 1px solid var(--wui-gray-glass-010);
     border-radius: var(--wui-border-radius-m);
+    width: var(--local-width);
   }
 
   button:disabled {
