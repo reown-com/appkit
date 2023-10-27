@@ -6,6 +6,7 @@ import {
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
+  ModalController,
   RouterController,
   SnackController,
   StorageUtil
@@ -74,10 +75,7 @@ export class W3mConnectingWcView extends LitElement {
 
         await ConnectionController.state.wcPromise
         this.finalizeConnection()
-        // ModalController.close()
-
-        // TEMPORARY FOR TESTING
-        RouterController.push('ConnectingSiwe')
+        ModalController.close()
       }
     } catch (error) {
       EventsController.sendEvent({
