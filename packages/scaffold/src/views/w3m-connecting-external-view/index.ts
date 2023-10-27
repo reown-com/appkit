@@ -3,7 +3,6 @@ import {
   ConnectionController,
   EventsController,
   ModalController,
-  RouterController,
   StorageUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'

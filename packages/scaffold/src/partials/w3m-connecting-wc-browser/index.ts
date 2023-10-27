@@ -3,8 +3,7 @@ import {
   ConnectionController,
   ConnectorController,
   EventsController,
-  ModalController,
-  RouterController
+  ModalController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
