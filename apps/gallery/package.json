@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@web3modal/ui": "3.2.0",
-    "lit": "3.0.0",
+    "lit": "3.0.1",
     "storybook": "7.5.1"
   },
   "devDependencies": {

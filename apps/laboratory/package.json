@@ -11,12 +11,12 @@
     "@chakra-ui/react": "2.8.1",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
-    "@sentry/browser": "7.75.0",
-    "@sentry/react": "7.75.0",
+    "@sentry/browser": "7.76.0",
+    "@sentry/react": "7.76.0",
     "@web3modal/ethers5": "3.2.0",
     "@web3modal/wagmi": "3.2.0",
     "framer-motion": "10.16.4",
-    "next": "13.5.6",
+    "next": "14.0.0",
     "react-icons": "4.11.0",
     "valtio": "1.11.3"
   }

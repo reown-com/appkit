@@ -42,7 +42,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "6.9.0",
     "@typescript-eslint/parser": "6.9.0",
-    "@types/react": "18.2.31",
+    "@types/react": "18.2.33",
     "@types/react-dom": "18.2.14",
     "eslint": "8.52.0",
     "eslint-config-prettier": "9.0.0",
@@ -58,7 +58,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "turbo": "1.10.16",
-    "viem": "1.16.6",
+    "viem": "1.18.0",
     "wagmi": "1.4.5"
   }
 }

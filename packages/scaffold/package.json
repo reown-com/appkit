@@ -18,10 +18,10 @@
   "dependencies": {
     "@web3modal/core": "3.2.0",
     "@web3modal/ui": "3.2.0",
-    "lit": "3.0.0"
+    "lit": "3.0.1"
   },
   "devDependencies": {
-    "@web3modal/smart-account": "3.2.0-ba2f407"
+    "@web3modal/smart-account": "3.2.0"
   },
   "keywords": [
     "web3",
