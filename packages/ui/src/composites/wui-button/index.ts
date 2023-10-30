@@ -17,6 +17,8 @@ export class WuiButton extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
+  @property({ type: Boolean }) public fullWidth = false
+
   @property({ type: Boolean }) public loading = false
 
   @property() public variant: ButtonType = 'fill'
@@ -24,7 +26,7 @@ export class WuiButton extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
-    --local-width: ${this.variant === 'fullWidth' ? '100%' : 'auto'};
+    --local-width: ${this.fullWidth ? '100%' : 'auto'};
     --local-opacity-100: ${this.loading ? 0 : 1};
     --local-opacity-000: ${this.loading ? 1 : 0};`
     const textVariant = this.size === 'md' ? 'paragraph-600' : 'small-600'

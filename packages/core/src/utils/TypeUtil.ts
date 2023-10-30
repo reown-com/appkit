@@ -61,6 +61,13 @@ export interface BaseError {
   message?: string
 }
 
+export type Metadata = {
+  name: string
+  description: string
+  url: string
+  icons: string[]
+}
+
 // -- ApiController Types -------------------------------------------------------
 export interface WcWallet {
   id: string

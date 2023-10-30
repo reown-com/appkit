@@ -22,6 +22,7 @@ function headings() {
     Account: undefined,
     ConnectingExternal: name ?? 'Connect Wallet',
     ConnectingWalletConnect: name ?? 'WalletConnect',
+    ConnectingSiwe: 'Sign In',
     Networks: 'Choose Network',
     SwitchNetwork: networkName ?? 'Switch Network',
     AllWallets: 'All Wallets',
@@ -79,6 +80,8 @@ export class W3mHeader extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+
+  // Tempory added to test connecting with SIWE, replace with 'WhatIsAWallet' again when approved
   private onWalletHelp() {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_WALLET_HELP' })
     RouterController.push('WhatIsAWallet')

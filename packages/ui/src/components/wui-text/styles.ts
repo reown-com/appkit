@@ -35,6 +35,7 @@ export default css`
     letter-spacing: var(--wui-letter-spacing-paragraph);
   }
 
+  .wui-font-small-400,
   .wui-font-small-500,
   .wui-font-small-600 {
     font-size: var(--wui-font-size-small);
@@ -52,6 +53,10 @@ export default css`
     font-size: var(--wui-font-size-micro);
     letter-spacing: var(--wui-letter-spacing-micro);
     text-transform: uppercase;
+  }
+
+  .wui-font-small-400 {
+    font-weight: var(--wui-font-weight-light);
   }
 
   .wui-font-large-700,
