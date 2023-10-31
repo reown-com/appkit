@@ -12,7 +12,7 @@ type DisconnectResolver = Resolver<undefined>
 type IsConnectedResolver = Resolver<W3mFrameTypes.Responses['FrameIsConnectedResponse']>
 type GetChainIdResolver = Resolver<W3mFrameTypes.Responses['FrameGetChainIdResponse']>
 type SwitchChainResolver = Resolver<undefined>
-type RequestResolver = Resolver<W3mFrameTypes.RPCResponse>
+type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
@@ -34,7 +34,7 @@ export class W3mFrameProvider {
 
   private switchChainResolver: SwitchChainResolver = undefined
 
-  private requestResolver: RequestResolver = undefined
+  private rpcRequestResolver: RpcRequestResolver = undefined
 
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
@@ -75,6 +75,12 @@ export class W3mFrameProvider {
           return this.onSwitchChainSuccess()
         case W3mFrameConstants.FRAME_SWITCH_NETWORK_ERROR:
           return this.onSwitchChainError(event)
+        case W3mFrameConstants.FRAME_RPC_PERSONAL_SIGN_SUCCESS:
+        case W3mFrameConstants.FRAME_RPC_ETH_SEND_TRANSACTION_SUCCESS:
+          return this.onRpcRequestSuccess(event)
+        case W3mFrameConstants.FRAME_RPC_PERSONAL_SIGN_ERROR:
+        case W3mFrameConstants.FRAME_RPC_ETH_SEND_TRANSACTION_ERROR:
+          return this.onRpcRequestError(event)
         default:
           return null
       }
@@ -178,7 +184,7 @@ export class W3mFrameProvider {
     }
 
     return new Promise<W3mFrameTypes.RPCResponse>((resolve, reject) => {
-      this.requestResolver = { resolve, reject }
+      this.rpcRequestResolver = { resolve, reject }
     })
   }
 
@@ -269,5 +275,13 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SWITCH_NETWORK_ERROR' }>
   ) {
     this.switchChainResolver?.reject(event.payload.message)
+  }
+
+  private onRpcRequestSuccess(event: { payload: W3mFrameTypes.RPCResponse }) {
+    this.rpcRequestResolver?.resolve(event.payload)
+  }
+
+  private onRpcRequestError(event: { payload: { message: string } }) {
+    this.rpcRequestResolver?.reject(event.payload.message)
   }
 }
