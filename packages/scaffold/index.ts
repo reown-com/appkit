@@ -19,6 +19,7 @@ export * from './src/views/w3m-what-is-a-network-view/index.js'
 export * from './src/views/w3m-what-is-a-wallet-view/index.js'
 export * from './src/views/w3m-email-verify-otp-view/index.js'
 export * from './src/views/w3m-email-verify-device-view/index.js'
+export * from './src/views/w3m-approve-transaction-view/index.js'
 
 export * from './src/partials/w3m-all-wallets-list/index.js'
 export * from './src/partials/w3m-all-wallets-search/index.js'

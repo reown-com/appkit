@@ -83,6 +83,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-email-verify-otp-view></w3m-email-verify-otp-view>`
       case 'EmailVerifyDevice':
         return html`<w3m-email-verify-device-view></w3m-email-verify-device-view>`
+      case 'ApproveTransaction':
+        return html`<w3m-approve-transaction-view></w3m-approve-transaction-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

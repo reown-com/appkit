@@ -31,7 +31,8 @@ function headings() {
     GetWallet: 'Get a Wallet',
     Downloads: name ? `Get ${name}` : 'Downloads',
     EmailVerifyOtp: 'Confirm Email',
-    EmailVerifyDevice: 'Confirm Device'
+    EmailVerifyDevice: 'Confirm Device',
+    ApproveTransaction: 'Approve Transaction'
   }
 }
 
@@ -94,8 +95,9 @@ export class W3mHeader extends LitElement {
   private dynamicButtonTemplate() {
     const { view } = RouterController.state
     const isConnectHelp = view === 'Connect'
+    const isApproveTransaction = view === 'ApproveTransaction'
 
-    if (this.showBack) {
+    if (this.showBack && !isApproveTransaction) {
       return html`<wui-icon-link
         id="dynamic"
         icon="chevronLeft"

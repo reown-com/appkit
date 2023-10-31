@@ -19,6 +19,7 @@ export interface RouterControllerState {
     | 'Downloads'
     | 'EmailVerifyOtp'
     | 'EmailVerifyDevice'
+    | 'ApproveTransaction'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

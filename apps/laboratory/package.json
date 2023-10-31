@@ -16,7 +16,7 @@
     "@web3modal/ethers5": "3.2.0",
     "@web3modal/wagmi": "3.2.0",
     "framer-motion": "10.16.4",
-    "next": "14.0.0",
+    "next": "14.0.1",
     "react-icons": "4.11.0",
     "valtio": "1.11.3"
   }

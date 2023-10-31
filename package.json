@@ -40,8 +40,8 @@
     "examples/*"
   ],
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "6.9.0",
-    "@typescript-eslint/parser": "6.9.0",
+    "@typescript-eslint/eslint-plugin": "6.9.1",
+    "@typescript-eslint/parser": "6.9.1",
     "@types/react": "18.2.33",
     "@types/react-dom": "18.2.14",
     "eslint": "8.52.0",
@@ -58,7 +58,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "turbo": "1.10.16",
-    "viem": "1.18.0",
+    "viem": "1.18.1",
     "wagmi": "1.4.5"
   }
 }
