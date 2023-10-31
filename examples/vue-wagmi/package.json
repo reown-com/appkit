@@ -1,13 +1,13 @@
 {
   "name": "@examples/vue-wagmi",
   "private": true,
-  "version": "3.3.0-39125fb",
+  "version": "3.3.0-4df4ae5",
   "scripts": {
     "dev:example": "vite --port 3003",
     "build:examples": "vite build"
   },
   "dependencies": {
-    "@web3modal/wagmi": "3.3.0-39125fb"
+    "@web3modal/wagmi": "3.3.0-4df4ae5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "4.4.0"
