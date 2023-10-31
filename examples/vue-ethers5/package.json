@@ -1,13 +1,13 @@
 {
   "name": "@examples/vue-ethers5",
   "private": true,
-  "version": "3.2.0",
+  "version": "3.3.0-39125fb",
   "scripts": {
     "dev:example": "vite --port 3013",
     "build:examples": "vite build"
   },
   "dependencies": {
-    "@web3modal/ethers5": "3.2.0"
+    "@web3modal/ethers5": "3.3.0-39125fb"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "4.4.0"
