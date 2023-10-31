@@ -188,6 +188,12 @@ export class W3mFrameProvider {
     })
   }
 
+  public onRpcRequest(callback: (request: unknown) => void) {
+    this.w3mFrame.events.onAppEvent(event => {
+      callback(event)
+    })
+  }
+
   // -- Promise Handlers ------------------------------------------------
   private onConnectEmailSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_EMAIL_SUCCESS' }>

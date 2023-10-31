@@ -25,6 +25,7 @@ import type {
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { EIP6963Connector } from './connectors/EIP6963Connector.js'
+import type { EmailConnector } from './connectors/EmailConnector.js'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/utils'
 import { getCaipDefaultChain } from './utils/helpers.js'
 import { WALLET_CHOICE_KEY } from './utils/constants.js'
@@ -206,7 +207,8 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.syncConnectors(wagmiConfig)
     this.syncEmailConnector(wagmiConfig)
-    this.listenConnectors(wagmiConfig)
+    this.listenEIP6963Connector(wagmiConfig)
+    this.listenEmailConnector(wagmiConfig)
 
     watchAccount(() => this.syncAccount())
     watchNetwork(() => this.syncNetwork())
@@ -376,7 +378,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private listenConnectors(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
+  private listenEIP6963Connector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
     const connector = wagmiConfig.connectors.find(
       c => c.id === ConstantsUtil.EIP6963_CONNECTOR_ID
     ) as EIP6963Connector
@@ -385,6 +387,18 @@ export class Web3Modal extends Web3ModalScaffold {
       const handler = this.eip6963EventHandler.bind(this, connector)
       window.addEventListener(ConstantsUtil.EIP6963_ANNOUNCE_EVENT, handler)
       window.dispatchEvent(new Event(ConstantsUtil.EIP6963_REQUEST_EVENT))
+    }
+  }
+
+  private async listenEmailConnector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
+    const connector = wagmiConfig.connectors.find(
+      c => c.id === ConstantsUtil.EMAIL_CONNECTOR_ID
+    ) as EmailConnector
+
+    if (typeof window !== 'undefined' && connector) {
+      const provider = await connector.getProvider()
+      // eslint-disable-next-line
+      provider.onRpcRequest(data => console.log(data))
     }
   }
 }
