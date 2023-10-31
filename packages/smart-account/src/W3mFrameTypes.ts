@@ -7,7 +7,10 @@ import {
   FrameConnectEmailResponse,
   FrameGetChainIdResponse,
   FrameGetUserResponse,
-  FrameIsConnectedResponse
+  FrameIsConnectedResponse,
+  RpcPersonalSignRequest,
+  RpcResponse,
+  RpcEthSendTransactionRequest
 } from './W3mFrameSchema.js'
 
 export namespace W3mFrameTypes {
@@ -32,4 +35,10 @@ export namespace W3mFrameTypes {
     rpcUrl: string
     chainId: number
   }
+
+  export type RPCRequest =
+    | z.infer<typeof RpcPersonalSignRequest>
+    | z.infer<typeof RpcEthSendTransactionRequest>
+
+  export type RPCResponse = z.infer<typeof RpcResponse>
 }

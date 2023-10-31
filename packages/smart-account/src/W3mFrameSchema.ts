@@ -22,9 +22,34 @@ export const FrameGetUserResponse = z.object({
 })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
+export const RpcRequest = z.object({ id: z.number(), jsonrpc: z.string() })
+export const RpcResponse = z.object({ id: z.number(), jsonrpc: z.string(), result: z.string() })
+export const RpcPersonalSignRequest = RpcRequest.merge(
+  z.object({
+    method: z.literal('personal_sign'),
+    params: z.tuple([z.string(), z.string()])
+  })
+)
+export const RpcEthSendTransactionRequest = RpcRequest.merge(
+  z.object({
+    method: z.literal('eth_sendTransaction'),
+    params: z.array(
+      z.object({
+        from: z.string(),
+        data: z.string(),
+        to: z.optional(z.string()),
+        gas: z.optional(z.string()),
+        gasPrice: z.optional(z.string()),
+        value: z.optional(z.string()),
+        nonce: z.optional(z.optional(z.string()))
+      })
+    )
+  })
+)
 
 export const W3mFrameSchema = {
   // -- App Events -----------------------------------------------------------
+
   appEvent: z
     .object({ type: zType('APP_SWITCH_NETWORK'), payload: AppSwitchNetworkRequest })
 
@@ -40,7 +65,16 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_IS_CONNECTED') }))
 
-    .or(z.object({ type: zType('APP_GET_CHAIN_ID') })),
+    .or(z.object({ type: zType('APP_GET_CHAIN_ID') }))
+
+    .or(z.object({ type: zType('APP_RPC_PERSONAL_SIGN'), payload: RpcPersonalSignRequest }))
+
+    .or(
+      z.object({
+        type: zType('APP_RPC_ETH_SEND_TRANSACTION'),
+        payload: RpcEthSendTransactionRequest
+      })
+    ),
 
   // -- Frame Events ---------------------------------------------------------
   frameEvent: z
@@ -77,4 +111,12 @@ export const W3mFrameSchema = {
     .or(z.object({ type: zType('FRAME_GET_CHAIN_ID_ERROR'), payload: zError }))
 
     .or(z.object({ type: zType('FRAME_GET_CHAIN_ID_SUCCESS'), payload: FrameGetChainIdResponse }))
+
+    .or(z.object({ type: zType('FRAME_RPC_PERSONAL_SIGN_ERROR'), payload: zError }))
+
+    .or(z.object({ type: zType('FRAME_RPC_PERSONAL_SIGN_SUCCESS'), payload: RpcResponse }))
+
+    .or(z.object({ type: zType('FRAME_RPC_ETH_SEND_TRANSACTION_ERROR'), payload: zError }))
+
+    .or(z.object({ type: zType('FRAME_RPC_ETH_SEND_TRANSACTION_SUCCESS'), payload: RpcResponse }))
 }

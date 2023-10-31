@@ -12,6 +12,7 @@ type DisconnectResolver = Resolver<undefined>
 type IsConnectedResolver = Resolver<W3mFrameTypes.Responses['FrameIsConnectedResponse']>
 type GetChainIdResolver = Resolver<W3mFrameTypes.Responses['FrameGetChainIdResponse']>
 type SwitchChainResolver = Resolver<undefined>
+type RequestResolver = Resolver<W3mFrameTypes.RPCResponse>
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
@@ -32,6 +33,8 @@ export class W3mFrameProvider {
   private getChainIdResolver: GetChainIdResolver = undefined
 
   private switchChainResolver: SwitchChainResolver = undefined
+
+  private requestResolver: RequestResolver = undefined
 
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
@@ -155,8 +158,28 @@ export class W3mFrameProvider {
     })
   }
 
-  public async request() {
-    // IMPLEMENT
+  public async request(req: W3mFrameTypes.RPCRequest) {
+    await this.w3mFrame.frameLoadPromise
+    switch (req.method) {
+      case 'personal_sign':
+        this.w3mFrame.events.postAppEvent({
+          type: W3mFrameConstants.APP_RPC_PERSONAL_SIGN,
+          payload: req
+        })
+        break
+      case 'eth_sendTransaction':
+        this.w3mFrame.events.postAppEvent({
+          type: W3mFrameConstants.APP_RPC_ETH_SEND_TRANSACTION,
+          payload: req
+        })
+        break
+      default:
+        throw new Error('W3mFrameProvider: unsupported method')
+    }
+
+    return new Promise<W3mFrameTypes.RPCResponse>((resolve, reject) => {
+      this.requestResolver = { resolve, reject }
+    })
   }
 
   // -- Promise Handlers ------------------------------------------------
