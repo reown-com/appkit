@@ -399,6 +399,8 @@ export class Web3Modal extends Web3ModalScaffold {
       const provider = await connector.getProvider()
       // eslint-disable-next-line
       provider.onRpcRequest(data => console.log(data))
+      // eslint-disable-next-line
+      provider.onRpcResponse(data => console.log(data))
     }
   }
 }

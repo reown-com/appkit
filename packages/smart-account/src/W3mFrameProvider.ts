@@ -190,7 +190,17 @@ export class W3mFrameProvider {
 
   public onRpcRequest(callback: (request: unknown) => void) {
     this.w3mFrame.events.onAppEvent(event => {
-      callback(event)
+      if (event.type.includes(W3mFrameConstants.RPC_METHOD_KEY)) {
+        callback(event)
+      }
+    })
+  }
+
+  public onRpcResponse(callback: (request: unknown) => void) {
+    this.w3mFrame.events.onFrameEvent(event => {
+      if (event.type.includes(W3mFrameConstants.RPC_METHOD_KEY)) {
+        callback(event)
+      }
     })
   }
 

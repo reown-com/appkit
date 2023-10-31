@@ -2,6 +2,7 @@ export const W3mFrameConstants = {
   SECURE_SITE: 'https://secure-web3modal-7l564rslr-walletconnect1.vercel.app',
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
+  RPC_METHOD_KEY: '_RPC_',
 
   APP_SWITCH_NETWORK: '@w3m-app/SWITCH_NETWORK',
   APP_CONNECT_EMAIL: '@w3m-app/CONNECT_EMAIL',
