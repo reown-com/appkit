@@ -75,11 +75,9 @@ export class W3mFrameProvider {
           return this.onSwitchChainSuccess()
         case W3mFrameConstants.FRAME_SWITCH_NETWORK_ERROR:
           return this.onSwitchChainError(event)
-        case W3mFrameConstants.FRAME_RPC_PERSONAL_SIGN_SUCCESS:
-        case W3mFrameConstants.FRAME_RPC_ETH_SEND_TRANSACTION_SUCCESS:
+        case W3mFrameConstants.FRAME_RPC_REQUEST_SUCCESS:
           return this.onRpcRequestSuccess(event)
-        case W3mFrameConstants.FRAME_RPC_PERSONAL_SIGN_ERROR:
-        case W3mFrameConstants.FRAME_RPC_ETH_SEND_TRANSACTION_ERROR:
+        case W3mFrameConstants.FRAME_RPC_REQUEST_ERROR:
           return this.onRpcRequestError(event)
         default:
           return null
@@ -293,11 +291,15 @@ export class W3mFrameProvider {
     this.switchChainResolver?.reject(event.payload.message)
   }
 
-  private onRpcRequestSuccess(event: { payload: W3mFrameTypes.RPCResponse }) {
+  private onRpcRequestSuccess(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/RPC_REQUEST_SUCCESS' }>
+  ) {
     this.rpcRequestResolver?.resolve(event.payload)
   }
 
-  private onRpcRequestError(event: { payload: { message: string } }) {
+  private onRpcRequestError(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/RPC_REQUEST_ERROR' }>
+  ) {
     this.rpcRequestResolver?.reject(event.payload.message)
   }
 }

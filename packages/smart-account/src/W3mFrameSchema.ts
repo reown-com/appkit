@@ -112,11 +112,7 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('FRAME_GET_CHAIN_ID_SUCCESS'), payload: FrameGetChainIdResponse }))
 
-    .or(z.object({ type: zType('FRAME_RPC_PERSONAL_SIGN_ERROR'), payload: zError }))
+    .or(z.object({ type: zType('FRAME_RPC_REQUEST_ERROR'), payload: zError }))
 
-    .or(z.object({ type: zType('FRAME_RPC_PERSONAL_SIGN_SUCCESS'), payload: RpcResponse }))
-
-    .or(z.object({ type: zType('FRAME_RPC_ETH_SEND_TRANSACTION_ERROR'), payload: zError }))
-
-    .or(z.object({ type: zType('FRAME_RPC_ETH_SEND_TRANSACTION_SUCCESS'), payload: RpcResponse }))
+    .or(z.object({ type: zType('FRAME_RPC_REQUEST_SUCCESS'), payload: RpcResponse }))
 }
