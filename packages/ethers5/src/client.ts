@@ -11,6 +11,7 @@ import type {
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
+import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/utils'
 
 import EthereumProvider from '@walletconnect/ethereum-provider'
@@ -37,6 +38,7 @@ import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   ethersConfig: ProviderType
+  siweConfig?: Web3ModalSIWEClient
   chains?: Chain[]
   defaultChain?: Chain
   chainImages?: Record<number, string>
@@ -99,8 +101,16 @@ export class Web3Modal extends Web3ModalScaffold {
   private options: Web3ModalClientOptions | undefined = undefined
 
   public constructor(options: Web3ModalClientOptions) {
-    const { ethersConfig, chains, defaultChain, tokens, chainImages, _sdkVersion, ...w3mOptions } =
-      options
+    const {
+      ethersConfig,
+      siweConfig,
+      chains,
+      defaultChain,
+      tokens,
+      chainImages,
+      _sdkVersion,
+      ...w3mOptions
+    } = options
 
     if (!ethersConfig) {
       throw new Error('web3modal:constructor - ethersConfig is undefined')
@@ -216,12 +226,27 @@ export class Web3Modal extends Web3ModalScaffold {
         } else if (provider) {
           provider.emit('disconnect')
         }
+      },
+
+      signMessage: async (message: string) => {
+        const connector = ProviderController.state.provider
+        if (!connector) {
+          throw new Error('connectionControllerClient:signMessage - connector is undefined')
+        }
+
+        const signer = connector.getSigner()
+        if (!signer) {
+          throw new Error('connectionControllerClient:signMessage - signer is undefined')
+        }
+
+        return signer.signMessage(message)
       }
     }
 
     super({
       networkControllerClient,
       connectionControllerClient,
+      siweControllerClient: siweConfig,
       defaultChain: getCaipDefaultChain(defaultChain),
       tokens: HelpersUtil.getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `html-ethers5-${ConstantsUtil.VERSION}`,

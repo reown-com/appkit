@@ -1,4 +1,14 @@
-import { CoreHelperUtil, OptionsController, RouterController } from '@web3modal/core'
+import {
+  AccountController,
+  ConnectionController,
+  CoreHelperUtil,
+  ModalController,
+  NetworkController,
+  OptionsController,
+  RouterController,
+  SIWEController
+} from '@web3modal/core'
+import { HelpersUtil } from '@web3modal/utils'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 
@@ -65,8 +75,42 @@ export class W3mConnectingSiweView extends LitElement {
     }
   }
 
-  private onSign() {
-    // Add sign logic
+  private async onSign() {
+    try {
+      const siweClient = SIWEController._getClient()
+      SIWEController.setStatus('loading')
+      const nonce = await siweClient.getNonce()
+      const { address } = AccountController.state
+      if (!address) {
+        throw new Error('An address is required to create a SIWE message.')
+      }
+      const chainId = HelpersUtil.caipNetworkIdToNumber(NetworkController.state.caipNetwork?.id)
+      if (!chainId) {
+        throw new Error('A chainId is required to create a SIWE message.')
+      }
+      const message = siweClient.createMessage({ address, nonce, chainId })
+      const signature = await ConnectionController.signMessage(message)
+
+      const isValid = await siweClient.verifyMessage({ message, signature })
+      if (!isValid) {
+        throw new Error('Error verifying SIWE signature')
+      }
+
+      const session = await siweClient.getSession()
+      if (!session) {
+        throw new Error('Error verifying SIWE signature')
+      }
+      if (siweClient.onSignIn) {
+        siweClient.onSignIn(session)
+      }
+
+      SIWEController.setStatus('success')
+      ModalController.close()
+
+      return session
+    } catch (error) {
+      return SIWEController.setStatus('error')
+    }
   }
 
   private onCancel() {

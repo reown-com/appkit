@@ -184,7 +184,29 @@ export class Web3Modal extends Web3ModalScaffold {
         return false
       },
 
-      disconnect
+      disconnect,
+
+      signMessage: async (message: string) => {
+        const connector = wagmiConfig.connectors.find(
+          c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
+        )
+        if (!connector) {
+          throw new Error('connectionControllerClient:signMessage - connector is undefined')
+        }
+
+        const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+        if (!chainId) {
+          throw new Error('connectionControllerClient:signMessage - chainId is undefined')
+        }
+
+        const signer = await connector.getWalletClient()
+
+        if (!signer) {
+          throw new Error('connectionControllerClient:signMessage - provider is undefined')
+        }
+
+        return signer.signMessage({ message })
+      }
     }
 
     super({

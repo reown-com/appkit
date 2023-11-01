@@ -60,10 +60,6 @@ export class Web3ModalSIWEClient {
   async verifyMessage(args: SIWEVerifyMessageArgs) {
     const isValid = await this.methods.verifyMessage(args)
 
-    if (!isValid) {
-      throw new Error('siweControllerClient:createMessage - message is not valid')
-    }
-
     return isValid
   }
 
