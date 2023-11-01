@@ -8,9 +8,7 @@ import type {
 
 import { ConstantsUtil } from './utils/ConstantsUtil.js'
 
-// -- Types --------------------------------------------- //
-
-// -- Client --------------------------------------------------------------------
+// -- Client -------------------------------------------------------------------- //
 export class Web3ModalSIWEClient {
   public options: SIWEControllerClient['options']
 
