@@ -46,6 +46,10 @@ jobs:
           cache-dependency-path: 'package-lock.json'
       - name: install
         run: npm ci
+      - name: build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
       - name: check
         run: npm run ${{ matrix.style-command }}
         env:
