@@ -1,3 +1,4 @@
+/* eslint-disable max-depth */
 import type {
   CaipAddress,
   CaipNetwork,
@@ -14,7 +15,7 @@ import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/utils'
 
 import EthereumProvider from '@walletconnect/ethereum-provider'
 
-import type { Address, Metadata, ProviderType } from './utils/types.js'
+import type { Address, Chain, Metadata, ProviderType } from './utils/types.js'
 import { ethers, utils } from 'ethers'
 import {
   ProviderController,
@@ -27,12 +28,6 @@ import {
   numberToHexString
 } from './utils/helpers.js'
 import {
-  EIP155NetworkNames,
-  EIP155NetworkBlockExplorerUrls,
-  EIP155NetworkCurrenySymbols,
-  EIP155NetworkRPCUrls
-} from './utils/presets.js'
-import {
   ERROR_CODE_DEFAULT,
   ERROR_CODE_UNRECOGNIZED_CHAIN_ID,
   WALLET_ID
@@ -42,8 +37,8 @@ import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   ethersConfig: ProviderType
-  chains?: number[]
-  defaultChain?: number
+  chains?: Chain[]
+  defaultChain?: Chain
   chainImages?: Record<number, string>
   connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
@@ -97,7 +92,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private projectId: string
 
-  private chains?: number[]
+  private chains?: Chain[]
 
   private metadata?: Metadata
 
@@ -331,7 +326,14 @@ export class Web3Modal extends Web3ModalScaffold {
     const walletConnectProviderOptions: EthereumProviderOptions = {
       projectId: this.projectId,
       showQrModal: false,
-      optionalChains: this.chains ? [0, ...this.chains] : [0],
+      rpcMap: this.chains
+        ? this.chains.reduce<Record<number, string>>((map, chain) => {
+            map[chain.chainId] = chain.rpcUrl
+
+            return map
+          }, {})
+        : ({} as Record<number, string>),
+      optionalChains: this.chains ? [0, ...this.chains.map(chain => chain.chainId)] : [0],
       metadata: {
         name: this.metadata ? this.metadata.name : '',
         description: this.metadata ? this.metadata.description : '',
@@ -359,10 +361,10 @@ export class Web3Modal extends Web3ModalScaffold {
     const requestedCaipNetworks = chains?.map(
       chain =>
         ({
-          id: `${ConstantsUtil.EIP155}:${chain}`,
-          name: EIP155NetworkNames[chain],
-          imageId: PresetsUtil.EIP155NetworkImageIds[chain],
-          imageUrl: chainImages?.[chain]
+          id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
+          name: chain.name,
+          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+          imageUrl: chainImages?.[chain.chainId]
         }) as CaipNetwork
     )
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
@@ -664,26 +666,30 @@ export class Web3Modal extends Web3ModalScaffold {
     const address = ProviderController.state.address
     const chainId = ProviderController.state.chainId
     const isConnected = ProviderController.state.isConnected
-    if (chainId) {
-      const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chainId}`
+    if (this.chains) {
+      const chain = this.chains.find(c => c.chainId === chainId)
 
-      this.setCaipNetwork({
-        id: caipChainId,
-        name: EIP155NetworkNames[chainId],
-        imageId: PresetsUtil.EIP155NetworkImageIds[chainId],
-        imageUrl: chainImages?.[chainId]
-      })
-      if (isConnected && address) {
-        const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
-        this.setCaipAddress(caipAddress)
-        if (EIP155NetworkBlockExplorerUrls[chainId]) {
-          const url = `${EIP155NetworkBlockExplorerUrls[chainId]}/address/${address}`
-          this.setAddressExplorerUrl(url)
-        } else {
-          this.setAddressExplorerUrl(undefined)
-        }
-        if (this.hasSyncedConnectedAccount) {
-          await this.syncBalance(address)
+      if (chain) {
+        const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chain.chainId}`
+
+        this.setCaipNetwork({
+          id: caipChainId,
+          name: chain.name,
+          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+          imageUrl: chainImages?.[chain.chainId]
+        })
+        if (isConnected && address) {
+          const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
+          this.setCaipAddress(caipAddress)
+          if (chain.explorerUrl) {
+            const url = `${chain.explorerUrl}/address/${address}`
+            this.setAddressExplorerUrl(url)
+          } else {
+            this.setAddressExplorerUrl(undefined)
+          }
+          if (this.hasSyncedConnectedAccount) {
+            await this.syncBalance(address)
+          }
         }
       }
     }
@@ -703,23 +709,18 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private async syncBalance(address: Address) {
     const chainId = ProviderController.state.chainId
-    if (chainId) {
-      const networkRpcUrl = EIP155NetworkRPCUrls[chainId]
-      const networkName = EIP155NetworkNames[chainId]
-      const networkCurreny = EIP155NetworkCurrenySymbols[chainId]
+    if (chainId && this.chains) {
+      const chain = this.chains.find(c => c.chainId === chainId)
 
-      if (networkRpcUrl && networkName && networkCurreny) {
-        const JsonRpcProvider = new ethers.providers.JsonRpcProvider(
-          EIP155NetworkRPCUrls[chainId],
-          {
-            chainId,
-            name: networkName
-          }
-        )
+      if (chain) {
+        const JsonRpcProvider = new ethers.providers.JsonRpcProvider(chain.rpcUrl, {
+          chainId,
+          name: chain.name
+        })
         if (JsonRpcProvider) {
           const balance = await JsonRpcProvider.getBalance(address)
           const formattedBalance = utils.formatEther(balance)
-          this.setBalance(formattedBalance, networkCurreny)
+          this.setBalance(formattedBalance, chain.currency)
         }
       }
     }
@@ -728,94 +729,97 @@ export class Web3Modal extends Web3ModalScaffold {
   private async switchNetwork(chainId: number) {
     const provider = ProviderController.state.provider
     const providerType = ProviderController.state.providerType
+    if (this.chains) {
+      const chain = this.chains.find(c => c.chainId === chainId)
 
-    if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-      const WalletConnectProvider = provider?.provider as EthereumProvider
+      if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID && chain) {
+        const WalletConnectProvider = provider?.provider as EthereumProvider
 
-      if (WalletConnectProvider) {
-        try {
-          await WalletConnectProvider.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: numberToHexString(chainId) }]
-          })
+        if (WalletConnectProvider) {
+          try {
+            await WalletConnectProvider.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: numberToHexString(chain.chainId) }]
+            })
 
-          ProviderController.setChainId(chainId)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (switchError: any) {
-          if (
-            switchError.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-            switchError.code === ERROR_CODE_DEFAULT ||
-            switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-          ) {
-            await addEthereumChain(
-              WalletConnectProvider,
-              chainId,
-              ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
-            )
-          } else {
-            throw new Error('Chain is not supported')
+            ProviderController.setChainId(chainId)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } catch (switchError: any) {
+            if (
+              switchError.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+              switchError.code === ERROR_CODE_DEFAULT ||
+              switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+            ) {
+              await addEthereumChain(
+                WalletConnectProvider,
+                chain,
+                ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
+              )
+            } else {
+              throw new Error('Chain is not supported')
+            }
           }
         }
-      }
-    } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID) {
-      const InjectedProvider = provider
-      if (InjectedProvider) {
-        try {
-          await InjectedProvider.send('wallet_switchEthereumChain', [
-            { chainId: numberToHexString(chainId) }
-          ])
-          ProviderController.setChainId(chainId)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (switchError: any) {
-          if (
-            switchError.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-            switchError.code === ERROR_CODE_DEFAULT ||
-            switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-          ) {
-            await addEthereumChain(InjectedProvider, chainId, ConstantsUtil.INJECTED_CONNECTOR_ID)
-          } else {
-            throw new Error('Chain is not supported')
+      } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID && chain) {
+        const InjectedProvider = provider
+        if (InjectedProvider) {
+          try {
+            await InjectedProvider.send('wallet_switchEthereumChain', [
+              { chainId: numberToHexString(chain.chainId) }
+            ])
+            ProviderController.setChainId(chain.chainId)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } catch (switchError: any) {
+            if (
+              switchError.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+              switchError.code === ERROR_CODE_DEFAULT ||
+              switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+            ) {
+              await addEthereumChain(InjectedProvider, chain, ConstantsUtil.INJECTED_CONNECTOR_ID)
+            } else {
+              throw new Error('Chain is not supported')
+            }
           }
         }
-      }
-    } else if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID) {
-      const EIP6963Provider = provider
+      } else if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID && chain) {
+        const EIP6963Provider = provider
 
-      if (EIP6963Provider) {
-        try {
-          await EIP6963Provider.send('wallet_switchEthereumChain', [
-            { chainId: numberToHexString(chainId) }
-          ])
-          ProviderController.setChainId(chainId)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (switchError: any) {
-          if (
-            switchError.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-            switchError.code === ERROR_CODE_DEFAULT ||
-            switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-          ) {
-            await addEthereumChain(EIP6963Provider, chainId, ConstantsUtil.INJECTED_CONNECTOR_ID)
-          } else {
-            throw new Error('Chain is not supported')
+        if (EIP6963Provider) {
+          try {
+            await EIP6963Provider.send('wallet_switchEthereumChain', [
+              { chainId: numberToHexString(chain.chainId) }
+            ])
+            ProviderController.setChainId(chain.chainId)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } catch (switchError: any) {
+            if (
+              switchError.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+              switchError.code === ERROR_CODE_DEFAULT ||
+              switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+            ) {
+              await addEthereumChain(EIP6963Provider, chain, ConstantsUtil.INJECTED_CONNECTOR_ID)
+            } else {
+              throw new Error('Chain is not supported')
+            }
           }
         }
-      }
-    } else if (providerType === ConstantsUtil.COINBASE_CONNECTOR_ID) {
-      const CoinbaseProvider = provider
-      if (CoinbaseProvider) {
-        try {
-          await CoinbaseProvider.send('wallet_switchEthereumChain', [
-            { chainId: numberToHexString(chainId) }
-          ])
-          ProviderController.setChainId(chainId)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (switchError: any) {
-          if (
-            switchError.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-            switchError.code === ERROR_CODE_DEFAULT ||
-            switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-          ) {
-            await addEthereumChain(CoinbaseProvider, chainId, ConstantsUtil.INJECTED_CONNECTOR_ID)
+      } else if (providerType === ConstantsUtil.COINBASE_CONNECTOR_ID && chain) {
+        const CoinbaseProvider = provider
+        if (CoinbaseProvider) {
+          try {
+            await CoinbaseProvider.send('wallet_switchEthereumChain', [
+              { chainId: numberToHexString(chain.chainId) }
+            ])
+            ProviderController.setChainId(chain.chainId)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } catch (switchError: any) {
+            if (
+              switchError.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+              switchError.code === ERROR_CODE_DEFAULT ||
+              switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+            ) {
+              await addEthereumChain(CoinbaseProvider, chain, ConstantsUtil.INJECTED_CONNECTOR_ID)
+            }
           }
         }
       }

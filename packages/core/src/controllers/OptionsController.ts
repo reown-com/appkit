@@ -1,6 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
-import type { CustomWallet, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
+import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
@@ -15,6 +15,7 @@ export interface OptionsControllerState {
   enableAnalytics?: boolean
   sdkType: 'w3m'
   sdkVersion: SdkVersion
+  metadata?: Metadata
 }
 
 type StateKey = keyof OptionsControllerState
@@ -72,5 +73,9 @@ export const OptionsController = {
 
   setSdkVersion(sdkVersion: OptionsControllerState['sdkVersion']) {
     state.sdkVersion = sdkVersion
+  },
+
+  setMetadata(metadata: OptionsControllerState['metadata']) {
+    state.metadata = metadata
   }
 }

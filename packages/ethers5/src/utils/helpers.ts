@@ -1,23 +1,18 @@
 import type { CaipNetwork } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/utils'
-import {
-  EIP155NetworkBlockExplorerUrls,
-  EIP155NetworkNames,
-  EIP155NetworkRPCUrls,
-  EIP155NetworkCurrenySymbols
-} from './presets.js'
 import type { ethers } from 'ethers'
 import EthereumProvider from '@walletconnect/ethereum-provider'
+import type { Chain } from './types.js'
 
-export function getCaipDefaultChain(chain?: number) {
+export function getCaipDefaultChain(chain?: Chain) {
   if (!chain) {
     return undefined
   }
 
   return {
-    id: `${ConstantsUtil.EIP155}:${chain}`,
-    name: EIP155NetworkNames[chain],
-    imageId: PresetsUtil.EIP155NetworkImageIds[chain]
+    id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
+    name: chain.name,
+    imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId]
   } as CaipNetwork
 }
 
@@ -34,7 +29,7 @@ export function numberToHexString(value: number) {
 
 export async function addEthereumChain(
   provider: ethers.providers.Web3Provider | EthereumProvider,
-  chainId: number,
+  chain: Chain,
   id: string
 ) {
   if (id === 'walletConnect') {
@@ -43,16 +38,16 @@ export async function addEthereumChain(
       method: 'wallet_addEthereumChain',
       params: [
         {
-          chainId: numberToHexString(chainId),
-          rpcUrls: [EIP155NetworkRPCUrls[chainId]],
-          chainName: EIP155NetworkNames[chainId],
+          chainId: numberToHexString(chain.chainId),
+          rpcUrls: chain.rpcUrl,
+          chainName: chain.name,
           nativeCurrency: {
-            name: EIP155NetworkCurrenySymbols[chainId],
+            name: chain.currency,
             decimals: 18,
-            symbol: EIP155NetworkCurrenySymbols[chainId]
+            symbol: chain.currency
           },
-          blockExplorerUrls: [EIP155NetworkBlockExplorerUrls[chainId]],
-          iconUrls: [PresetsUtil.EIP155NetworkImageIds[chainId]]
+          blockExplorerUrls: chain.explorerUrl,
+          iconUrls: [PresetsUtil.EIP155NetworkImageIds[chain.chainId]]
         }
       ]
     })
@@ -60,16 +55,16 @@ export async function addEthereumChain(
     const providerWeb3 = provider as ethers.providers.Web3Provider
     await providerWeb3.send('wallet_addEthereumChain', [
       {
-        chainId: numberToHexString(chainId),
-        rpcUrls: [EIP155NetworkRPCUrls[chainId]],
-        chainName: EIP155NetworkNames[chainId],
+        chainId: numberToHexString(chain.chainId),
+        rpcUrls: chain.rpcUrl,
+        chainName: chain.name,
         nativeCurrency: {
-          name: EIP155NetworkCurrenySymbols[chainId],
+          name: chain.currency,
           decimals: 18,
-          symbol: EIP155NetworkCurrenySymbols[chainId]
+          symbol: chain.currency
         },
-        blockExplorerUrls: [EIP155NetworkBlockExplorerUrls[chainId]],
-        iconUrls: [PresetsUtil.EIP155NetworkImageIds[chainId]]
+        blockExplorerUrls: chain.explorerUrl,
+        iconUrls: [PresetsUtil.EIP155NetworkImageIds[chain.chainId]]
       }
     ])
   }

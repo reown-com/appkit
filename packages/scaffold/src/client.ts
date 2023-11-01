@@ -44,6 +44,7 @@ export interface LibraryOptions {
   privacyPolicyUrl?: OptionsControllerState['privacyPolicyUrl']
   customWallets?: OptionsControllerState['customWallets']
   enableAnalytics?: OptionsControllerState['enableAnalytics']
+  metadata?: OptionsControllerState['metadata']
   _sdkVersion: OptionsControllerState['sdkVersion']
 }
 
@@ -229,6 +230,9 @@ export class Web3ModalScaffold {
 
     if (options.siweControllerClient) {
       SIWEController.setSIWEClient(options.siweControllerClient)
+    }
+    if (options.metadata) {
+      OptionsController.setMetadata(options.metadata)
     }
 
     if (options.themeMode) {
