@@ -1,7 +1,7 @@
 import { css } from 'lit'
 
 export default css`
-  wui-flex {
+  :host > wui-flex:first-child {
     height: 500px;
     overflow: scroll;
     scrollbar-width: none;

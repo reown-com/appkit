@@ -9,6 +9,7 @@ export type ColorType =
   | 'inverse-000'
   | 'inverse-100'
   | 'success-100'
+  | 'glass-005'
 
 export type TextType =
   | 'large-500'
@@ -183,7 +184,7 @@ export type TransactionIconType = 'arrowBottom' | 'arrowTop' | 'swapVertical' | 
 
 export type CardSelectType = 'network' | 'wallet'
 
-export type BackgroundType = 'opaque' | 'transparent'
+export type BackgroundType = 'opaque' | 'gray' |  'transparent'
 
 export type TagType = 'main' | 'shade' | 'error' | 'success'
 
