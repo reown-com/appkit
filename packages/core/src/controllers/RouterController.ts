@@ -17,6 +17,7 @@ export interface RouterControllerState {
     | 'WhatIsANetwork'
     | 'GetWallet'
     | 'Downloads'
+    | 'Transactions'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

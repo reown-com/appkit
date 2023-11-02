@@ -8,8 +8,8 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-transaction-visual/index.js'
 import styles from './styles.js'
 
-@customElement('wui-list-transaction')
-export class WuiListTransaction extends LitElement {
+@customElement('wui-transaction-list-item')
+export class WuiTransactionListItem extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
@@ -48,6 +48,6 @@ export class WuiListTransaction extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-list-transaction': WuiListTransaction
+    'wui-transaction-list-item': WuiTransactionListItem
   }
 }

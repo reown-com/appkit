@@ -1,14 +1,14 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-list-transaction'
-import type { WuiListTransaction } from '@web3modal/ui/src/composites/wui-list-transaction'
+import '@web3modal/ui/src/composites/wui-transaction-list-item'
+import type { WuiTransactionListItem } from '@web3modal/ui/src/composites/wui-transaction-list-item'
 import { html } from 'lit'
 import '../../components/gallery-container'
 import { transactionOptions } from '../../utils/PresetUtils'
 
-type Component = Meta<WuiListTransaction>
+type Component = Meta<WuiTransactionListItem>
 
 export default {
-  title: 'Composites/wui-list-transaction',
+  title: 'Composites/wui-transaction-list-item',
   args: {
     type: 'bought',
     disabled: false,
@@ -28,13 +28,13 @@ export default {
 export const Default: Component = {
   render: args =>
     html` <gallery-container width="336">
-      <wui-list-transaction
+      <wui-transaction-list-item
         type=${args.type}
         .date=${args.date}
         imageSrc=${args.imageSrc}
         transactionDetail=${args.transactionDetail}
         ?disabled=${args.disabled}
       >
-      </wui-list-transaction>
+      </wui-transaction-list-item>
     </gallery-container>`
 }
