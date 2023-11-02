@@ -1,13 +1,11 @@
 import { css } from 'lit'
 
 export default css`
-  button {
+  :host > wui-flex:first-child {
+    align-items: center;
     column-gap: var(--wui-spacing-s);
     padding: 7px var(--wui-spacing-l) 7px var(--wui-spacing-xs);
     width: 100%;
-    background-color: var(--wui-gray-glass-002);
-    border-radius: var(--wui-border-radius-xs);
-    color: var(--wui-color-fg-250);
   }
 
   wui-transaction-visual {

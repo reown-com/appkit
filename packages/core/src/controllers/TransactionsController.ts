@@ -1,17 +1,21 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
+// import response from './response.json'
+import { BlockchainApiController } from './BlockchainApiController'
 
 // -- Types --------------------------------------------- //
 export interface TransactionsControllerState {
  transactions: any[]
  loading: boolean
  empty: boolean
+ next: string
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<TransactionsControllerState>({
   transactions: [],
   loading: false,
-  empty: false
+  empty: false,
+  next: ""
 })
 
 type StateKey = keyof TransactionsControllerState
@@ -24,12 +28,20 @@ export const TransactionsController = {
     return sub(state, () => callback(state))
   },
 
-  fetchTransactions(){
+  async fetchTransactions(){
     state.loading = true
-    setTimeout(() => {
+    await BlockchainApiController.fetchTransactions({
+      account: "0xf5B035287c1465F29C7e08FbB5c3b8a4975Bf831",
+      projectId: "c6f78092df3710d5a3008ed92eb8b170"
+    }).then(response => {
       state.loading = false
-      state.transactions = []
+      state.transactions = response.data
+      state.empty = response.data.length === 0
+      state.next = response.next
+    }).catch(error => {
+      state.loading = false
       state.empty = true
-    }, 1000)
+      console.log(error)
+    })
   }
 }

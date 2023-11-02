@@ -121,6 +121,67 @@ export interface BlockchainApiIdentityResponse {
   name: string
 }
 
+export interface BlockchainApiTransactionsRequest {
+  account: string
+  projectId: string
+  cursor?: string
+}
+
+export interface BlockchainApiTransactionsResponse {
+  data: Array<Transaction>
+  next: string
+}
+
+export interface Transaction {
+  id: string
+  metadata: Metadata
+  transfers: TransactionTransfer[]
+}
+
+export interface TransactionMetadata {
+  operationType: string
+  hash: string
+  minedAt: string
+  sentFrom: string
+  sentTo: string
+  status: string
+  nonce: number
+}
+
+export interface TransactionTransfer {
+  fungible_info: any
+  nft_info: TransactionNftInfo
+  direction: string
+  quantity: TransactionQuantity
+  value: any
+  price: any
+}
+
+export interface TransactionNftInfo {
+  name: string
+  content: TransactionContent
+}
+
+export interface TransactionContent {
+  preview: TransactionPreview
+  detail: TransactionDetail
+}
+
+export interface TransactionPreview {
+  url: string
+  content_type: any
+}
+
+export interface TransactionDetail {
+  url: string
+  content_type: any
+}
+
+export interface TransactionQuantity {
+  numeric: string
+}
+
+
 // -- OptionsController Types ---------------------------------------------------
 export interface Token {
   address: string

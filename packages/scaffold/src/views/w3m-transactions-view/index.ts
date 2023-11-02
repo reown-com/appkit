@@ -53,12 +53,7 @@ export class W3mTransactionsView extends LitElement {
   // -- Private ------------------------------------------- //
   private templateTransactions() {
     return this.transactions.map((transaction) => html`
-      <wui-transaction-list-item
-        type=${transaction.type}
-        imageSrc=${transaction.imageSrc}
-        date=${transaction.date}
-        transactionDetail=${"+5 ETH"}
-      ></wui-transaction-list-item>
+      <wui-transaction-list-item .transaction=${transaction}></wui-transaction-list-item>
     `)
   }
  

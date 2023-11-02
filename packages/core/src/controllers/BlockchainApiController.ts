@@ -1,6 +1,8 @@
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import type {
+  BlockchainApiTransactionsRequest,
+  BlockchainApiTransactionsResponse,
   BlockchainApiIdentityRequest,
   BlockchainApiIdentityResponse
 } from '../utils/TypeUtil.js'
@@ -18,6 +20,14 @@ export const BlockchainApiController = {
       params: {
         chainId: caipChainId,
         projectId: OptionsController.state.projectId
+      }
+    })
+  },
+  fetchTransactions({ account, projectId, cursor }: BlockchainApiTransactionsRequest) {
+    return api.get<BlockchainApiTransactionsResponse>({
+      path: `/v1/account/${account}/history?projectId=${projectId}`,
+      params: {
+        cursor
       }
     })
   }
