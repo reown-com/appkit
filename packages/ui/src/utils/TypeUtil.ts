@@ -171,6 +171,7 @@ export type ButtonType = 'accent' | 'fill' | 'shade' | 'fullWidth' | 'accentBg'
 
 export type TransactionType =
   | 'approve' // in
+  | 'bought' 
   | 'borrow' //
   | 'burn' //
   | 'cancel' //

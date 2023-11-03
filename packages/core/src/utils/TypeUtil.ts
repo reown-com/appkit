@@ -149,12 +149,18 @@ export interface TransactionMetadata {
 }
 
 export interface TransactionTransfer {
-  fungible_info?: any
+  fungible_info?: {
+    name: string
+    symbol: string
+    icon?: {
+      url: string
+    }
+  }
   nft_info?: TransactionNftInfo
   direction: string
   quantity: TransactionQuantity
-  value?: any
-  price?: any
+  value?: number
+  price?: number
 }
 
 export interface TransactionNftInfo {
@@ -169,12 +175,12 @@ export interface TransactionContent {
 
 export interface TransactionPreview {
   url: string
-  content_type?: any
+  content_type?: null
 }
 
 export interface TransactionDetail {
   url: string
-  content_type?: any
+  content_type?: null
 }
 
 export interface TransactionQuantity {
