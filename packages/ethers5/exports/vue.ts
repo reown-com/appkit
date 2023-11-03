@@ -1,10 +1,11 @@
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { ConstantsUtil } from '@web3modal/utils'
-
 import { getWeb3Modal } from '@web3modal/scaffold-vue'
 import { useSnapshot } from 'valtio'
 import { ProviderController } from '../src/controllers/ProviderController.js'
+import EthereumProvider from '@walletconnect/ethereum-provider'
+import { WALLET_ID } from '../src/utils/constants.js'
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
 
@@ -45,10 +46,26 @@ export function useWeb3ModalAccount() {
   const isConnected = state.isConnected
   const chainId = state.chainId
 
+  const provider = state.provider
+  const providerType = state.providerType
+
+  async function disconnect() {
+    localStorage.removeItem(WALLET_ID)
+    ProviderController.reset()
+
+    if (providerType === 'injected' || providerType === 'eip6963') {
+      provider?.emit('disconnect')
+    } else {
+      const ethersProvider = provider?.provider as EthereumProvider
+      await ethersProvider.disconnect()
+    }
+  }
+
   return {
     address,
     isConnected,
-    chainId
+    chainId,
+    disconnect
   }
 }
 
