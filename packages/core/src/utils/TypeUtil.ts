@@ -181,7 +181,6 @@ export interface TransactionQuantity {
   numeric: string
 }
 
-
 // -- OptionsController Types ---------------------------------------------------
 export interface Token {
   address: string

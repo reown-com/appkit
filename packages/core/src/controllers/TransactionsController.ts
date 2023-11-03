@@ -4,10 +4,10 @@ import { BlockchainApiController } from './BlockchainApiController'
 
 // -- Types --------------------------------------------- //
 export interface TransactionsControllerState {
- transactions: any[]
- loading: boolean
- empty: boolean
- next: string
+  transactions: any[]
+  loading: boolean
+  empty: boolean
+  next: string
 }
 
 // -- State --------------------------------------------- //
@@ -15,7 +15,7 @@ const state = proxy<TransactionsControllerState>({
   transactions: [],
   loading: false,
   empty: false,
-  next: ""
+  next: ''
 })
 
 type StateKey = keyof TransactionsControllerState
@@ -28,20 +28,22 @@ export const TransactionsController = {
     return sub(state, () => callback(state))
   },
 
-  async fetchTransactions(){
+  async fetchTransactions() {
     state.loading = true
     await BlockchainApiController.fetchTransactions({
-      account: "0xf5B035287c1465F29C7e08FbB5c3b8a4975Bf831",
-      projectId: "c6f78092df3710d5a3008ed92eb8b170"
-    }).then(response => {
-      state.loading = false
-      state.transactions = response.data
-      state.empty = response.data.length === 0
-      state.next = response.next
-    }).catch(error => {
-      state.loading = false
-      state.empty = true
-      console.log(error)
+      account: '0xf5B035287c1465F29C7e08FbB5c3b8a4975Bf831',
+      projectId: 'c6f78092df3710d5a3008ed92eb8b170'
     })
+      .then(response => {
+        state.loading = false
+        state.transactions = response.data
+        state.empty = response.data.length === 0
+        state.next = response.next
+      })
+      .catch(error => {
+        state.loading = false
+        state.empty = true
+        console.log(error)
+      })
   }
 }

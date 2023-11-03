@@ -61,7 +61,8 @@ export class WuiIconBox extends LitElement {
        --local-bg-value: ${
          isColorChange
            ? `var(--wui-icon-box-bg-${this.backgroundColor})`
-           : isGray ? `var(--wui-gray-${this.backgroundColor})`
+           : isGray
+           ? `var(--wui-gray-${this.backgroundColor})`
            : `var(--wui-color-${this.backgroundColor})`
        };
        --local-bg-mix: ${isColorChange || isGray ? `100%` : bgMix};

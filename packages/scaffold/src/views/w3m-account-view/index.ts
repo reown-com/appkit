@@ -141,9 +141,7 @@ export class W3mAccountView extends LitElement {
           ?chevron=${true}
           @click=${this.onTransactions.bind(this)}
         >
-          <wui-text variant="paragraph-500" color="fg-100">
-            Transactions
-          </wui-text>
+          <wui-text variant="paragraph-500" color="fg-100"> Transactions </wui-text>
         </wui-list-item>
         <wui-list-item
           variant="icon"
@@ -200,7 +198,7 @@ export class W3mAccountView extends LitElement {
       RouterController.push('Networks')
     }
   }
-  
+
   private onTransactions() {
     RouterController.push('Transactions')
   }

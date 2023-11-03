@@ -170,38 +170,32 @@ export type ChipType = 'fill' | 'shade' | 'transparent'
 export type ButtonType = 'accent' | 'fill' | 'shade' | 'fullWidth' | 'accentBg'
 
 export type TransactionType =
-  | "approve" // in
-  | "borrow" // 
-  | "burn" // 
-  | "cancel" // 
-  | "claim" // 
-  | "deploy"
-  | "deposit"
-  | "execute"
-  | "mint"
-  | "receive"
-  | "repay"
-  | "send" // out
-  | "stake" 
-  | "trade" // swap horizontal
-  | "unstake"
-  | "withdraw" // out
+  | 'approve' // in
+  | 'borrow' //
+  | 'burn' //
+  | 'cancel' //
+  | 'claim' //
+  | 'deploy'
+  | 'deposit'
+  | 'execute'
+  | 'mint'
+  | 'receive'
+  | 'repay'
+  | 'send' // out
+  | 'stake'
+  | 'trade' // swap horizontal
+  | 'unstake'
+  | 'withdraw' // out
 
-export type TransactionStatus =
-  | "confirmed"
-  | "failed"
-  | "pending"
+export type TransactionStatus = 'confirmed' | 'failed' | 'pending'
 
-export type TransactionDirection =
-  | "in"
-  | "out"
-  | "self"
+export type TransactionDirection = 'in' | 'out' | 'self'
 
 export type TransactionIconType = 'arrowBottom' | 'arrowTop' | 'swapVertical' | 'swapHorizontal'
 
 export type CardSelectType = 'network' | 'wallet'
 
-export type BackgroundType = 'opaque' | 'gray' |  'transparent'
+export type BackgroundType = 'opaque' | 'gray' | 'transparent'
 
 export type TagType = 'main' | 'shade' | 'error' | 'success'
 

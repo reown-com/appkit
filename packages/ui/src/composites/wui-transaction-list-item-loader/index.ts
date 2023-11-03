@@ -13,10 +13,7 @@ export class WuiTransactionListItemLoader extends LitElement {
   public override render() {
     return html`
       <wui-flex>
-        <wui-shimmer
-          width="40px"
-          height="40px"
-        ></wui-shimmer>
+        <wui-shimmer width="40px" height="40px"></wui-shimmer>
         <wui-flex flexDirection="column" gap="3xs">
           <wui-shimmer width="40%" height="18px" borderRadius="3xs"></wui-shimmer>
           <wui-shimmer width="60%" height="20px" borderRadius="3xs"></wui-shimmer>
