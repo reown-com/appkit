@@ -132,9 +132,13 @@ export interface BlockchainApiTransactionsResponse {
   next: string
 }
 
+export type TransactionStatus = 'confirmed' | 'failed' | 'pending'
+
+export type TransactionDirection = 'in' | 'out' | 'self'
+
 export interface Transaction {
   id: string
-  metadata: Metadata
+  metadata: TransactionMetadata
   transfers: TransactionTransfer[]
 }
 
@@ -144,7 +148,7 @@ export interface TransactionMetadata {
   minedAt: string
   sentFrom: string
   sentTo: string
-  status: string
+  status: TransactionStatus
   nonce: number
 }
 
@@ -157,7 +161,7 @@ export interface TransactionTransfer {
     }
   }
   nft_info?: TransactionNftInfo
-  direction: string
+  direction: TransactionDirection
   quantity: TransactionQuantity
   value?: number
   price?: number

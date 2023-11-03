@@ -8,6 +8,14 @@ export default css`
     width: 100%;
   }
 
+  :host > wui-flex:first-child wui-text:nth-child(1) {
+    text-transform: capitalize;
+  }
+
+  :host > wui-flex:first-child wui-text:nth-child(2) {
+    text-transform: uppercase;
+  }
+
   wui-transaction-visual {
     width: 40px;
     height: 40px;
@@ -15,17 +23,5 @@ export default css`
 
   wui-flex {
     flex: 1;
-  }
-
-  button > wui-flex > wui-text:nth-child(1) {
-    text-transform: capitalize;
-  }
-
-  button > wui-flex > wui-text:nth-child(2) {
-    text-transform: uppercase;
-  }
-
-  button:disabled {
-    color: var(--wui-color-fg-300);
   }
 `

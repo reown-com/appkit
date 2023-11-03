@@ -170,27 +170,23 @@ export type ChipType = 'fill' | 'shade' | 'transparent'
 export type ButtonType = 'accent' | 'fill' | 'shade' | 'fullWidth' | 'accentBg'
 
 export type TransactionType =
-  | 'approve' // in
-  | 'bought' 
-  | 'borrow' //
-  | 'burn' //
-  | 'cancel' //
-  | 'claim' //
+  | 'approve'
+  | 'bought'
+  | 'borrow'
+  | 'burn'
+  | 'cancel'
+  | 'claim'
   | 'deploy'
   | 'deposit'
   | 'execute'
   | 'mint'
   | 'receive'
   | 'repay'
-  | 'send' // out
+  | 'send'
   | 'stake'
-  | 'trade' // swap horizontal
+  | 'trade'
   | 'unstake'
-  | 'withdraw' // out
-
-export type TransactionStatus = 'confirmed' | 'failed' | 'pending'
-
-export type TransactionDirection = 'in' | 'out' | 'self'
+  | 'withdraw'
 
 export type TransactionIconType = 'arrowBottom' | 'arrowTop' | 'swapVertical' | 'swapHorizontal'
 

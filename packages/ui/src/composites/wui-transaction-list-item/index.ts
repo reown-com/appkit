@@ -16,28 +16,26 @@ export class WuiTransactionListItem extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: Object }) public transaction?: Transaction
 
-  @property() public type: TransactionType = 'bought'
-
   @property() public transactionDetail = ''
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (!this.transaction) return null
+    if (!this.transaction) {
+      return null
+    }
 
     // todo(enes): refactor and handle all possible cases
-    const isSent = this.type === 'nftSent' || this.type === 'cryptoSent'
-    const isNFT = this.transaction.transfers?.some(transfer => !!transfer.nft_info)
-    const isFungible = this.transaction.transfers?.some(transfer => !!transfer.fungible_info)
-    const transfer = this.transaction.transfers?.[0]
+    const isNFT = this.transaction.transfers?.every(transfer => !!transfer.nft_info)
+    const isFungible = this.transaction.transfers?.every(transfer => !!transfer.fungible_info)
+    const transfer = this.transaction?.transfers?.[0]
     const haveMultipleTransfers = this.transaction.transfers?.length > 1
     const imageURL = transfer?.nft_info?.content?.preview?.url
-    const title = isSent ? 'Sent' : this.type
 
     let description = ''
     if (isNFT) {
-      description = transfer?.nft_info.name || ''
+      description = transfer?.nft_info?.name || '-'
     } else if (isFungible) {
-      description = transfer?.fungible_info?.symbol
+      description = transfer?.fungible_info?.symbol || '-'
     } else {
     }
 
@@ -46,9 +44,13 @@ export class WuiTransactionListItem extends LitElement {
 
     return html`
       <wui-flex>
-        <wui-transaction-visual type=${this.type} imageSrc=${imageURL}></wui-transaction-visual>
+        <wui-transaction-visual 
+          .transfer=${transfer}
+          .transaction=${this.transaction}
+          imageSrc=${imageURL}
+        ></wui-transaction-visual>
         <wui-flex flexDirection="column" gap="3xs">
-          <wui-text variant="paragraph-600" color="fg-100">${title}</wui-text>
+          <wui-text variant="paragraph-600" color="fg-100">${this.transaction.metadata.operationType}</wui-text>
           <wui-text variant="small-500" color="fg-200">${description}</wui-text>
         </wui-flex>
         <wui-text variant="micro-700" color="fg-300">${formattedDate}</wui-text>

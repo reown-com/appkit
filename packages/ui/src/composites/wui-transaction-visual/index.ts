@@ -6,66 +6,126 @@ import type { TransactionIconType, TransactionType } from '../../utils/TypeUtil.
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
+import type { Transaction, TransactionStatus, TransactionTransfer } from '@web3modal/core'
 
 // -- Helpers -------------------------------- //
-const outgoing: TransactionType[] = ['withdrawed', 'buy', 'cryptoSent', 'nftSent']
-const incoming: TransactionType[] = ['deposited', 'received', 'bought', 'minted']
-const nft: TransactionType[] = ['minted', 'bought', 'nftSent']
-const currency: TransactionType[] = ['deposited', 'withdrawed', 'cryptoSent', 'buy', 'received']
+const nft: TransactionType[] = ['approve', 'bought', 'borrow']
+const both: TransactionType[] = [
+  'approve',
+  'bought',
+  'borrow',
+  'burn',
+  'cancel',
+  'deploy',
+  'claim',
+  'deposit',
+  'execute',
+  'mint',
+  'send',
+  'stake',
+  'trade',
+  'unstake',
+  'withdraw'
+]
 
 @customElement('wui-transaction-visual')
 export class WuiTransactionVisual extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public type: TransactionType = 'buy'
+  @property() public transfer?: TransactionTransfer
+
+  @property() public transaction?: Transaction
 
   @property() public imageSrc?: string
 
   // -- Render -------------------------------------------- //
   public override render() {
-    let color: 'accent-100' | 'error-100' | 'success-100' | 'inverse-100' = 'accent-100'
-    let icon: TransactionIconType = 'arrowTop'
-
-    if (outgoing.includes(this.type)) {
-      color = 'accent-100'
-      icon = 'arrowTop'
-    } else if (incoming.includes(this.type) && nft.includes(this.type)) {
-      color = 'success-100'
-      icon = 'arrowBottom'
-    } else if (incoming.includes(this.type) && currency.includes(this.type)) {
-      color = 'success-100'
-      icon = 'arrowBottom'
-    } else {
-      color = 'accent-100'
-      icon = 'swapVertical'
-    }
-
-    this.dataset['type'] = this.type
-
     return html`
       ${this.templateVisual()}
-      <wui-icon-box
-        size="xs"
-        iconColor=${color}
-        backgroundColor=${color}
-        background="opaque"
-        .icon=${icon}
-        ?border=${true}
-        borderColor="wui-color-bg-125"
-      ></wui-icon-box>
+      ${this.templateIcon()}
     `
   }
 
   // -- Private ------------------------------------------- //
   private templateVisual() {
+    if (!this.transaction) {
+      return null
+    }
+    
+    const isNFT = this.transaction.transfers.every(transfer => !!transfer.nft_info)
+    const isFT = this.transaction.transfers.every(transfer => !!transfer.fungible_info)
+
+    let imageURL = null
+    if (this.transfer && isNFT) {
+      imageURL = this.transfer?.nft_info?.content?.preview?.url
+    } else if (this.transfer && isFT) {
+      imageURL = this.transfer?.fungible_info?.icon?.url
+    }
+
     if (this.imageSrc) {
       return html`<wui-image src=${this.imageSrc} alt=${this.type}></wui-image>`
-    } else if (nft.includes(this.type)) {
+    } else if (isNFT) {
       return html`<wui-icon size="inherit" color="fg-200" name="nftPlaceholder"></wui-icon>`
     }
 
     return html`<wui-icon size="inherit" color="fg-200" name="coinPlaceholder"></wui-icon>`
+  }
+  
+  private templateIcon() {
+    if (!this.transfer || !this.transaction) {
+      return null
+    }
+
+    const type = this.transaction?.metadata.operationType
+    const status = this.transaction?.metadata.status
+    
+    let color: 'accent-100' | 'error-100' | 'success-100' | 'inverse-100' = 'accent-100'
+    let icon: TransactionIconType | null
+
+    if (type === "trade"){
+      icon = "swapHorizontal"
+    } else if (this.transfer.direction) {
+      switch (this.transfer.direction) {
+        case "in":
+          icon = "arrowBottom"
+          break
+        case "out":
+          icon = "arrowTop"
+          break
+        default:
+          break
+      }
+    }
+
+    if (status) {
+      switch (status) {
+        case 'confirmed':
+          color = 'success-100'
+          break
+        case 'failed':
+          color = 'error-100'
+          break
+        case 'pending':
+          color = 'inverse-100'
+          break
+        default:
+          break
+      }
+    }
+    
+
+    return html`
+      <wui-icon-box
+          size="xs"
+          iconColor=${color}
+          backgroundColor=${color}
+          background="opaque"
+          .icon=${icon}
+          ?border=${true}
+          borderColor="wui-color-bg-125"
+        ></wui-icon-box>
+    `
   }
 }
 

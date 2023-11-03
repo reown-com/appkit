@@ -12,12 +12,6 @@ export default css`
     border-radius: var(--wui-border-radius-3xl);
   }
 
-  :host([data-type='minted']),
-  :host([data-type='nftSent']),
-  :host([data-type='bought']) {
-    border-radius: var(--wui-border-radius-xs);
-  }
-
   wui-image {
     display: block;
     border-radius: inherit;
