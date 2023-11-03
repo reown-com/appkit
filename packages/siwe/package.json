@@ -1,5 +1,5 @@
 {
-  "name": "@web3modal/wagmi",
+  "name": "@web3modal/siwe",
   "version": "3.2.0",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -13,26 +13,6 @@
       "types": "./dist/types/exports/index.d.ts",
       "import": "./dist/esm/exports/index.js",
       "default": "./dist/esm/exports/index.js"
-    },
-    "./react": {
-      "types": "./dist/types/exports/react.d.ts",
-      "import": "./dist/esm/exports/react.js",
-      "default": "./dist/esm/exports/react.js"
-    },
-    "./vue": {
-      "types": "./dist/types/exports/vue.d.ts",
-      "import": "./dist/esm/exports/vue.js",
-      "default": "./dist/esm/exports/vue.js"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "react": [
-        "./dist/types/exports/react.d.ts"
-      ],
-      "vue": [
-        "./dist/types/exports/vue.d.ts"
-      ]
     }
   },
   "scripts": {
@@ -43,21 +23,11 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/polyfills": "3.2.0",
-    "@web3modal/scaffold": "3.2.0",
-    "@web3modal/scaffold-react": "3.2.0",
-    "@web3modal/scaffold-vue": "3.2.0",
-    "@web3modal/utils": "3.2.0"
-  },
-  "devDependencies": {
-    "@web3modal/siwe": "3.2.0"
+    "@web3modal/core": "3.2.0"
   },
   "peerDependencies": {
-    "@wagmi/core": ">=1",
-    "@web3modal/siwe": "*",
     "react": ">=17",
     "react-dom": ">=17",
-    "viem": ">=1",
     "vue": ">=3"
   },
   "peerDependenciesMeta": {
@@ -69,13 +39,9 @@
     },
     "vue": {
       "optional": true
-    },
-    "@web3modal/siwe": {
-      "optional": true
     }
   },
   "optionalDependencies": {
-    "@web3modal/siwe": "*",
     "react": ">=17",
     "react-dom": ">=17",
     "vue": ">=3"
@@ -87,7 +53,8 @@
     "web3modal",
     "walletconnect",
     "lit",
-    "webcomponents"
+    "webcomponents",
+    "siwe"
   ],
   "author": "WalletConnect <walletconnect.com>",
   "license": "Apache-2.0",
