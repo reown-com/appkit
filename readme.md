@@ -3,6 +3,8 @@
 
 #### 📚 [Documentation](https://docs.walletconnect.com/2.0/web3modal/about)
 
+#### 🧪 [Laboratory](https://lab.web3modal.com)
+
 #### 🔗 [Website](https://web3modal.com)
 
 # Web3Modal
