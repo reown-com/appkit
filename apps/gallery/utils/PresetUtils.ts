@@ -238,17 +238,29 @@ export const chipOptions: ChipType[] = ['fill', 'transparent', 'shade']
 
 export const buttonOptions: ButtonType[] = ['fill', 'accent', 'shade', 'fullWidth', 'accentBg']
 
-export const transactionOptions: TransactionType[] = [
+export const transactionTypeOptions: TransactionType[] = [
+  'approve',
   'bought',
-  'buy',
-  'deposited',
-  'minted',
-  'received',
-  'nftSent',
-  'cryptoSent',
-  'swapped',
-  'withdrawed'
+  'borrow',
+  'burn',
+  'cancel',
+  'claim',
+  'deploy',
+  'deposit',
+  'execute',
+  'mint',
+  'receive',
+  'repay',
+  'send',
+  'stake',
+  'trade',
+  'unstake',
+  'withdraw'
 ]
+
+export const transactionDirectionOptions: TransactionType[] = ['', 'in', 'out']
+
+export const transactionStatusOptions: TransactionType[] = ['confirmed', 'pending', 'failed']
 
 export const cardSelectOptions: CardSelectType[] = ['network', 'wallet']
 

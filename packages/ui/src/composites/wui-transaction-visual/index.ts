@@ -2,40 +2,26 @@ import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-image/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { TransactionIconType } from '../../utils/TypeUtil.js'
+import type { TransactionIconType, TransactionType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
-import type { Transaction, TransactionTransfer } from '@web3modal/core'
-
-// -- Helpers -------------------------------- //
-// const nft: TransactionType[] = ['approve', 'bought', 'borrow']
-// const both: TransactionType[] = [
-//   'approve',
-//   'bought',
-//   'borrow',
-//   'burn',
-//   'cancel',
-//   'deploy',
-//   'claim',
-//   'deposit',
-//   'execute',
-//   'mint',
-//   'send',
-//   'stake',
-//   'trade',
-//   'unstake',
-//   'withdraw'
-// ]
+import type { TransactionDirection, TransactionStatus } from '@web3modal/core'
 
 @customElement('wui-transaction-visual')
 export class WuiTransactionVisual extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public transfer?: TransactionTransfer
+  @property() public type?: TransactionType
 
-  @property() public transaction?: Transaction
+  @property() public status?: TransactionStatus
+
+  @property() public direction?: TransactionDirection
+
+  @property({ type: Boolean }) public isNFT?: boolean
+
+  @property() public imageURL?: string
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -44,23 +30,9 @@ export class WuiTransactionVisual extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateVisual() {
-    if (!this.transaction) {
-      return null
-    }
-
-    const isNFT = this.transaction.transfers.every(transfer => !!transfer.nft_info)
-    const isFT = this.transaction.transfers.every(transfer => !!transfer.fungible_info)
-
-    let imageURL = null
-    if (this.transfer && isNFT) {
-      imageURL = this.transfer?.nft_info?.content?.preview?.url
-    } else if (this.transfer && isFT) {
-      imageURL = this.transfer?.fungible_info?.icon?.url
-    }
-
-    if (imageURL) {
-      return html`<wui-image src=${imageURL} alt="Transaction image"></wui-image>`
-    } else if (isNFT) {
+    if (this.imageURL) {
+      return html`<wui-image src=${this.imageURL} alt="Transaction image"></wui-image>`
+    } else if (this.isNFT) {
       return html`<wui-icon size="inherit" color="fg-200" name="nftPlaceholder"></wui-icon>`
     }
 
@@ -68,20 +40,13 @@ export class WuiTransactionVisual extends LitElement {
   }
 
   private templateIcon() {
-    if (!this.transfer || !this.transaction) {
-      return null
-    }
-
-    const type = this.transaction?.metadata.operationType
-    const status = this.transaction?.metadata.status
-
     let color: 'accent-100' | 'error-100' | 'success-100' | 'inverse-100' = 'accent-100'
     let icon: TransactionIconType | null = null
 
-    if (type === 'trade') {
+    if (this.type === 'trade') {
       icon = 'swapHorizontal'
-    } else if (this.transfer.direction) {
-      switch (this.transfer.direction) {
+    } else if (this.direction) {
+      switch (this.direction) {
         case 'in':
           icon = 'arrowBottom'
           break
@@ -93,8 +58,8 @@ export class WuiTransactionVisual extends LitElement {
       }
     }
 
-    if (status) {
-      switch (status) {
+    if (this.status) {
+      switch (this.status) {
         case 'confirmed':
           color = 'success-100'
           break

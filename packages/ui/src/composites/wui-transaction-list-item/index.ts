@@ -1,68 +1,47 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-text/index.js'
-import type { Transaction } from '@web3modal/core'
+import type { TransactionDirection, TransactionStatus } from '@web3modal/core'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-transaction-visual/index.js'
 import styles from './styles.js'
-
-const FLOAT_FIXED_VALUE = 6
+import type { TransactionType } from '../../utils/TypeUtil.js'
 
 @customElement('wui-transaction-list-item')
 export class WuiTransactionListItem extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Object }) public transaction?: Transaction
+  @property() public type?: TransactionType
 
-  @property() public transactionDetail = ''
+  @property() public description?: string
+
+  @property() public status?: TransactionStatus
+
+  @property() public direction?: TransactionDirection
+
+  @property() public imageURL?: string
+
+  @property({ type: Boolean }) public isNFT?: boolean
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (!this.transaction) {
-      return null
-    }
-
-    // todo(enes): refactor and handle all possible cases
-    const haveTransfer = this.transaction.transfers?.length > 0
-    const isNFT = haveTransfer && this.transaction.transfers?.every(transfer => !!transfer.nft_info)
-    const isFungible =
-      haveTransfer && this.transaction.transfers?.every(transfer => !!transfer.fungible_info)
-    const transfer = this.transaction?.transfers?.[0]
-    const quantity = this.getQuantityFixedValue(transfer?.quantity.numeric)
-
-    let description = ''
-    if (isNFT) {
-      description = transfer?.nft_info?.name || '-'
-    } else if (isFungible) {
-      description = [quantity, transfer?.fungible_info?.symbol].join(' ').trim() || '-'
-    } else {
-      description = this.transaction?.metadata?.status || '-'
-    }
-
     return html`
       <wui-flex>
         <wui-transaction-visual
-          .transfer=${transfer}
-          .transaction=${this.transaction}
+          status=${this.status}
+          direction=${this.direction}
+          type=${this.type}
+          isNFT=${this.isNFT}
+          imageURL=${this.imageURL}
         ></wui-transaction-visual>
         <wui-flex flexDirection="column" gap="3xs">
-          <wui-text variant="paragraph-600" color="fg-100"
-            >${this.transaction.metadata.operationType}</wui-text
-          >
-          <wui-text variant="small-500" color="fg-200"><span>${description}</span></wui-text>
+          <wui-text variant="paragraph-600" color="fg-100">${this.type}</wui-text>
+          <wui-text variant="small-500" color="fg-200"><span>${this.description}</span></wui-text>
         </wui-flex>
       </wui-flex>
     `
-  }
-
-  // -- Private ------------------------------------------- //
-  private getQuantityFixedValue(value: string | undefined) {
-    if (!value) return null
-
-    const parsetValue = parseFloat(value)
-    return parsetValue.toFixed(FLOAT_FIXED_VALUE)
   }
 }
 
