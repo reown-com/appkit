@@ -24,11 +24,11 @@ export const BlockchainApiController = {
     })
   },
   fetchTransactions({ account, projectId, cursor }: BlockchainApiTransactionsRequest) {
+    const queryParams = cursor ? { cursor } : {}
+    
     return api.get<BlockchainApiTransactionsResponse>({
       path: `/v1/account/${account}/history?projectId=${projectId}`,
-      params: {
-        cursor
-      }
+      params: queryParams
     })
   }
 }

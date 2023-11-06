@@ -40,9 +40,6 @@ export class WuiTransactionListItem extends LitElement {
       description = this.transaction?.metadata?.status || '-'
     }
 
-    const minedDate = new Date(this.transaction.metadata.minedAt)
-    const formattedDate = UiHelperUtil.getFormattedDate(minedDate)
-
     return html`
       <wui-flex>
         <wui-transaction-visual 
@@ -52,9 +49,8 @@ export class WuiTransactionListItem extends LitElement {
         ></wui-transaction-visual>
         <wui-flex flexDirection="column" gap="3xs">
           <wui-text variant="paragraph-600" color="fg-100">${this.transaction.metadata.operationType}</wui-text>
-          <wui-text variant="small-500" color="fg-200">${description}</wui-text>
+          <wui-text variant="small-500" color="fg-200"><span>${description}</span></wui-text>
         </wui-flex>
-        <wui-text variant="micro-700" color="fg-300">${formattedDate}</wui-text>
       </wui-flex>
     `
   }

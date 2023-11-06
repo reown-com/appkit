@@ -24,4 +24,19 @@ export default css`
   wui-flex {
     flex: 1;
   }
+
+  :host wui-flex wui-flex {
+    overflow: hidden;
+  }
+
+  :host wui-text:last-child {
+    overflow: hidden;
+  }
+
+  :host wui-text > span {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
 `

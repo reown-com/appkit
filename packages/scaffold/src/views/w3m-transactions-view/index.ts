@@ -21,6 +21,8 @@ export class W3mTransactionsView extends LitElement {
 
   @state() private empty = TransactionsController.state.empty
 
+  @state() private next = TransactionsController.state.next
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
@@ -30,20 +32,24 @@ export class W3mTransactionsView extends LitElement {
           this.transactions = val.transactions
           this.loading = val.loading
           this.empty = val.empty
+          this.next = val.next
         })
       ]
     )
   }
 
   public override firstUpdated() {
-    this.fetchTransactions()
-    this.createPaginationObserver()
+    if (this.transactions.length === 0){
+      this.fetchTransactions()
+      this.createPaginationObserver()
+    }
   }
 
   public override updated() {
+    this.paginationObserver?.disconnect(); 
+
     const lastItem = this.shadowRoot?.querySelector(`#${PAGINATOR_ID}`)
     if (lastItem) {
-      this.paginationObserver?.disconnect(); 
       this.paginationObserver?.observe(lastItem);
     }
   }
@@ -68,10 +74,11 @@ export class W3mTransactionsView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateTransactions() {
+    console.log("loader", this.transactions.length - 1, this.next)
     return this.transactions.map(
       (transaction, index) => html`
         <wui-transaction-list-item
-          id=${index === this.transactions.length - 1 ? PAGINATOR_ID : ''}
+          id=${index === this.transactions.length - 1 && this.next !== null ? PAGINATOR_ID : ''}
          .transaction=${transaction}
         ></wui-transaction-list-item>
       `

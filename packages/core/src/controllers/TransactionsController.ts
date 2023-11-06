@@ -9,7 +9,7 @@ export interface TransactionsControllerState {
   transactions: any[]
   loading: boolean
   empty: boolean
-  next: string
+  next: string | null
 }
 
 // -- State --------------------------------------------- //
@@ -17,7 +17,7 @@ const state = proxy<TransactionsControllerState>({
   transactions: [],
   loading: false,
   empty: false,
-  next: ''
+  next: null
 })
 
 // -- Controller ---------------------------------------- //
