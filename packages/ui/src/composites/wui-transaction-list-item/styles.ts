@@ -12,10 +12,6 @@ export default css`
     text-transform: capitalize;
   }
 
-  :host > wui-flex:first-child wui-text:nth-child(2) {
-    text-transform: uppercase;
-  }
-
   wui-transaction-visual {
     width: 40px;
     height: 40px;

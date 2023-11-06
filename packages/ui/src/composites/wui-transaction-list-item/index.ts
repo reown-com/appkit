@@ -7,6 +7,8 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-transaction-visual/index.js'
 import styles from './styles.js'
 
+const FLOAT_FIXED_VALUE = 6
+
 @customElement('wui-transaction-list-item')
 export class WuiTransactionListItem extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
@@ -23,16 +25,18 @@ export class WuiTransactionListItem extends LitElement {
     }
 
     // todo(enes): refactor and handle all possible cases
-    const isNFT = this.transaction.transfers?.every(transfer => !!transfer.nft_info)
-    const isFungible = this.transaction.transfers?.every(transfer => !!transfer.fungible_info)
+    const haveTransfer = this.transaction.transfers?.length > 0
+    const isNFT = haveTransfer && this.transaction.transfers?.every(transfer => !!transfer.nft_info)
+    const isFungible =
+      haveTransfer && this.transaction.transfers?.every(transfer => !!transfer.fungible_info)
     const transfer = this.transaction?.transfers?.[0]
-    // const haveMultipleTransfers = this.transaction.transfers?.length > 1
+    const quantity = this.getQuantityFixedValue(transfer?.quantity.numeric)
 
     let description = ''
     if (isNFT) {
       description = transfer?.nft_info?.name || '-'
     } else if (isFungible) {
-      description = transfer?.fungible_info?.symbol || '-'
+      description = [quantity, transfer?.fungible_info?.symbol].join(' ').trim() || '-'
     } else {
       description = this.transaction?.metadata?.status || '-'
     }
@@ -51,6 +55,14 @@ export class WuiTransactionListItem extends LitElement {
         </wui-flex>
       </wui-flex>
     `
+  }
+
+  // -- Private ------------------------------------------- //
+  private getQuantityFixedValue(value: string | undefined) {
+    if (!value) return null
+
+    const parsetValue = parseFloat(value)
+    return parsetValue.toFixed(FLOAT_FIXED_VALUE)
   }
 }
 
