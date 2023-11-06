@@ -7,7 +7,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiTransactionListItemLoader>
 
 export default {
-  title: 'Composites/wui-transaction-list-item-loader',
+  title: 'Composites/wui-transaction-list-item-loader'
 } as Component
 
 export const Default: Component = {
