@@ -1,12 +1,12 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-// import response from './response.json'
-import { BlockchainApiController } from './BlockchainApiController'
-import { OptionsController } from './OptionsController'
-import { AccountController } from './AccountController'
+import { BlockchainApiController } from './BlockchainApiController.js'
+import { OptionsController } from './OptionsController.js'
+import { AccountController } from './AccountController.js'
+import type { Transaction } from '../utils/TypeUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface TransactionsControllerState {
-  transactions: any[]
+  transactions: Transaction[]
   loading: boolean
   empty: boolean
   next: string | null
@@ -32,13 +32,14 @@ export const TransactionsController = {
     const projectId = OptionsController.state.projectId
     const accountAddress = AccountController.state.address
 
-    // todo(enes): handle empty account address
-    if (!accountAddress || !projectId) return
+    if (!projectId || !accountAddress) {
+      throw new Error("Transactions can't be fetched without a projectId and an accountAddress")
+    }
 
     state.loading = true
     await BlockchainApiController.fetchTransactions({
       account: accountAddress,
-      projectId: projectId,
+      projectId,
       cursor: state.next
     })
       .then(response => {
@@ -47,10 +48,9 @@ export const TransactionsController = {
         state.empty = response.data.length === 0
         state.next = response.next
       })
-      .catch(error => {
+      .catch(() => {
         state.loading = false
         state.empty = true
-        console.log(error)
       })
   }
 }

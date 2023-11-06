@@ -62,14 +62,16 @@ export class WuiIconBox extends LitElement {
       (this.backgroundColor === 'error-100' && isOpaque) ||
       (this.backgroundColor === 'inverse-100' && isOpaque)
 
+    let bgValueVariable = `var(--wui-color-${this.backgroundColor})`
+
+    if (isColorChange) {
+      bgValueVariable = `var(--wui-icon-box-bg-${this.backgroundColor})`
+    } else if (isGray) {
+      bgValueVariable = `var(--wui-gray-${this.backgroundColor})`
+    }
+
     this.style.cssText = `
-       --local-bg-value: ${
-         isColorChange
-           ? `var(--wui-icon-box-bg-${this.backgroundColor})`
-           : isGray
-           ? `var(--wui-gray-${this.backgroundColor})`
-           : `var(--wui-color-${this.backgroundColor})`
-       };
+       --local-bg-value: ${bgValueVariable};
        --local-bg-mix: ${isColorChange || isGray ? `100%` : bgMix};
        --local-border-radius: var(--wui-border-radius-${borderRadius});
        --local-size: var(--wui-icon-box-size-${this.size});

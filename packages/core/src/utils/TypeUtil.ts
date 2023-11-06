@@ -128,7 +128,7 @@ export interface BlockchainApiTransactionsRequest {
 }
 
 export interface BlockchainApiTransactionsResponse {
-  data: Array<Transaction>
+  data: Transaction[]
   next: string
 }
 

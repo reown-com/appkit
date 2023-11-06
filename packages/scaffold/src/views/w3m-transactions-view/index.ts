@@ -2,7 +2,12 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { EventsController, TransactionsController, type Transaction } from '@web3modal/core'
+import {
+  EventsController,
+  TransactionsController,
+  type Transaction,
+  type TransactionTransfer
+} from '@web3modal/core'
 
 const PAGINATOR_ID = 'last-transaction'
 const FLOAT_FIXED_VALUE = 6
@@ -71,7 +76,6 @@ export class W3mTransactionsView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateTransactions() {
-    // todo(enes): refactor and handle all possible cases
     return this.transactions.map((transaction, index) => {
       const { description, direction, isNFT, imageURL, status, type } =
         this.getTransactionListItemProps(transaction)
@@ -144,31 +148,19 @@ export class W3mTransactionsView extends LitElement {
 
   private getTransactionListItemProps(transaction: Transaction) {
     const haveTransfer = transaction.transfers?.length > 0
-    const isNFT = haveTransfer && transaction.transfers?.every(transfer => !!transfer.nft_info)
+    const isNFT =
+      haveTransfer && transaction.transfers?.every(transfer => Boolean(transfer.nft_info))
     const isFungible =
-      haveTransfer && transaction.transfers?.every(transfer => !!transfer.fungible_info)
+      haveTransfer && transaction.transfers?.every(transfer => Boolean(transfer.fungible_info))
     const transfer = transaction?.transfers?.[0]
-    const quantity = this.getQuantityFixedValue(transfer?.quantity.numeric)
+    const status = transaction.metadata?.status
 
-    let imageURL = null
-    if (transfer && isNFT) {
-      imageURL = transfer?.nft_info?.content?.preview?.url
-    } else if (transfer && isNFT) {
-      imageURL = transfer?.fungible_info?.icon?.url
-    }
-
-    let description = ''
-    if (isNFT) {
-      description = transfer?.nft_info?.name || '-'
-    } else if (isFungible) {
-      description = [quantity, transfer?.fungible_info?.symbol].join(' ').trim() || '-'
-    } else {
-      description = transaction?.metadata?.status || '-'
-    }
+    const description = this.getDescription(isNFT, isFungible, transfer)
+    const imageURL = this.getImageURL(transfer, isNFT, isFungible)
 
     return {
       direction: transfer?.direction,
-      description,
+      description: description || status,
       isNFT,
       imageURL,
       type: transaction.metadata?.operationType,
@@ -176,10 +168,45 @@ export class W3mTransactionsView extends LitElement {
     }
   }
 
+  private getImageURL(
+    transfer: TransactionTransfer | undefined,
+    isNFT: boolean,
+    isFungible: boolean
+  ) {
+    let imageURL = null
+    if (transfer && isNFT) {
+      imageURL = transfer?.nft_info?.content?.preview?.url
+    } else if (transfer && isFungible) {
+      imageURL = transfer?.fungible_info?.icon?.url
+    }
+
+    return imageURL
+  }
+
+  private getDescription(
+    isNFT: boolean,
+    isFungible: boolean,
+    transfer: TransactionTransfer | undefined
+  ) {
+    const quantity = this.getQuantityFixedValue(transfer?.quantity.numeric)
+
+    let description = ''
+    if (isNFT) {
+      description = transfer?.nft_info?.name || '-'
+    } else if (isFungible) {
+      description = [quantity, transfer?.fungible_info?.symbol].join(' ').trim() || '-'
+    }
+
+    return description
+  }
+
   private getQuantityFixedValue(value: string | undefined) {
-    if (!value) return null
+    if (!value) {
+      return null
+    }
 
     const parsetValue = parseFloat(value)
+
     return parsetValue.toFixed(FLOAT_FIXED_VALUE)
   }
 }
