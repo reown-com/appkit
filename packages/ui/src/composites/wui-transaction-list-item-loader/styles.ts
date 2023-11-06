@@ -8,6 +8,7 @@ export default css`
   }
 
   wui-flex {
+    display: flex;
     flex: 1;
   }
 `
