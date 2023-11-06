@@ -277,6 +277,14 @@ export type Event =
       type: 'track'
       event: 'CLICK_GET_WALLET'
     }
+  | {
+      type: 'track'
+      event: 'CLICK_TRANSACTIONS'
+    }
+  | {
+      type: 'track'
+      event: 'LOAD_MORE_TRANSACTIONS'
+    }
 
 // -- SIWEController Types ---------------------------------------------------
 

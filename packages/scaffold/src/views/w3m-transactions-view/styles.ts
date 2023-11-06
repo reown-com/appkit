@@ -6,8 +6,4 @@ export default css`
     overflow: scroll;
     scrollbar-width: none;
   }
-
-  wui-flex::-webkit-scrollbar {
-    display: none;
-  }
 `

@@ -37,6 +37,7 @@ export class WuiTransactionListItem extends LitElement {
     } else if (isFungible) {
       description = transfer?.fungible_info?.symbol || '-'
     } else {
+      description = this.transaction?.metadata?.status || '-'
     }
 
     const minedDate = new Date(this.transaction.metadata.minedAt)

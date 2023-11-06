@@ -1,9 +1,10 @@
-import { CoreHelperUtil, RouterController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { TransactionsController } from '@web3modal/core'
+import { EventsController, TransactionsController } from '@web3modal/core'
+
+const PAGINATOR_ID = 'last-transaction'
 
 @customElement('w3m-transactions-view')
 export class W3mTransactionsView extends LitElement {
@@ -11,6 +12,8 @@ export class W3mTransactionsView extends LitElement {
 
   // -- State & Properties -------------------------------- //
   private unsubscribe: (() => void)[] = []
+
+  private paginationObserver?: IntersectionObserver = undefined
 
   @state() private transactions = TransactionsController.state.transactions
 
@@ -33,7 +36,16 @@ export class W3mTransactionsView extends LitElement {
   }
 
   public override firstUpdated() {
-    this.initialFetch()
+    this.fetchTransactions()
+    this.createPaginationObserver()
+  }
+
+  public override updated() {
+    const lastItem = this.shadowRoot?.querySelector(`#${PAGINATOR_ID}`)
+    if (lastItem) {
+      this.paginationObserver?.disconnect(); 
+      this.paginationObserver?.observe(lastItem);
+    }
   }
 
   public override disconnectedCallback() {
@@ -44,11 +56,12 @@ export class W3mTransactionsView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="s">
-        ${this.loading
-          ? this.templateLoading()
-          : this.empty
+        ${this.empty
           ? this.templateEmpty()
           : this.templateTransactions()}
+          ${this.loading
+          ? this.templateLoading()
+          :null}
       </wui-flex>
     `
   }
@@ -56,8 +69,11 @@ export class W3mTransactionsView extends LitElement {
   // -- Private ------------------------------------------- //
   private templateTransactions() {
     return this.transactions.map(
-      transaction => html`
-        <wui-transaction-list-item .transaction=${transaction}></wui-transaction-list-item>
+      (transaction, index) => html`
+        <wui-transaction-list-item
+          id=${index === this.transactions.length - 1 ? PAGINATOR_ID : ''}
+         .transaction=${transaction}
+        ></wui-transaction-list-item>
       `
     )
   }
@@ -100,8 +116,19 @@ export class W3mTransactionsView extends LitElement {
       .map(() => html` <wui-transaction-list-item-loader></wui-transaction-list-item-loader> `)
   }
 
+  private createPaginationObserver() {
+    this.paginationObserver = new IntersectionObserver(([element]) => {
+      if (element?.isIntersecting && !this.loading) {
+        this.fetchTransactions()
+        EventsController.sendEvent({ type: 'track', event: 'LOAD_MORE_TRANSACTIONS' })
+      }
+    }, {
+    })
+  }
+  
+
   // Private Methods ------------------------------------- //
-  private async initialFetch() {
+  private async fetchTransactions() {
     await TransactionsController.fetchTransactions()
   }
 }

@@ -18,8 +18,6 @@ const state = proxy<TransactionsControllerState>({
   next: ''
 })
 
-type StateKey = keyof TransactionsControllerState
-
 // -- Controller ---------------------------------------- //
 export const TransactionsController = {
   state,
@@ -30,13 +28,15 @@ export const TransactionsController = {
 
   async fetchTransactions() {
     state.loading = true
+    // todo(enes): get account and project id dynamically
     await BlockchainApiController.fetchTransactions({
       account: '0xf5B035287c1465F29C7e08FbB5c3b8a4975Bf831',
-      projectId: 'c6f78092df3710d5a3008ed92eb8b170'
+      projectId: 'c6f78092df3710d5a3008ed92eb8b170',
+      cursor: state.next
     })
       .then(response => {
         state.loading = false
-        state.transactions = response.data
+        state.transactions = [...state.transactions, ...response.data]
         state.empty = response.data.length === 0
         state.next = response.next
       })

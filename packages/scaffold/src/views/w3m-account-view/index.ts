@@ -201,6 +201,7 @@ export class W3mAccountView extends LitElement {
   }
 
   private onTransactions() {
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_TRANSACTIONS' })
     RouterController.push('Transactions')
   }
 
