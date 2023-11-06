@@ -29,12 +29,12 @@ export const TransactionsController = {
   },
 
   async fetchTransactions() {
-  const projectId = OptionsController.state.projectId
-  const accountAddress = AccountController.state.address
+    const projectId = OptionsController.state.projectId
+    const accountAddress = AccountController.state.address
 
-  // todo(enes): handle empty account address
-    if(!accountAddress || !projectId) return
-    
+    // todo(enes): handle empty account address
+    if (!accountAddress || !projectId) return
+
     state.loading = true
     await BlockchainApiController.fetchTransactions({
       account: accountAddress,

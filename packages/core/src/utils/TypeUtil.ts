@@ -124,7 +124,7 @@ export interface BlockchainApiIdentityResponse {
 export interface BlockchainApiTransactionsRequest {
   account: string
   projectId: string
-  cursor: string| null
+  cursor: string | null
 }
 
 export interface BlockchainApiTransactionsResponse {

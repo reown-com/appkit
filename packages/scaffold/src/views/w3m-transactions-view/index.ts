@@ -39,18 +39,18 @@ export class W3mTransactionsView extends LitElement {
   }
 
   public override firstUpdated() {
-    if (this.transactions.length === 0){
+    if (this.transactions.length === 0) {
       this.fetchTransactions()
       this.createPaginationObserver()
     }
   }
 
   public override updated() {
-    this.paginationObserver?.disconnect(); 
+    this.paginationObserver?.disconnect()
 
     const lastItem = this.shadowRoot?.querySelector(`#${PAGINATOR_ID}`)
     if (lastItem) {
-      this.paginationObserver?.observe(lastItem);
+      this.paginationObserver?.observe(lastItem)
     }
   }
 
@@ -62,24 +62,20 @@ export class W3mTransactionsView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="s">
-        ${this.empty
-          ? this.templateEmpty()
-          : this.templateTransactions()}
-          ${this.loading
-          ? this.templateLoading()
-          :null}
+        ${this.empty ? this.templateEmpty() : this.templateTransactions()}
+        ${this.loading ? this.templateLoading() : null}
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
   private templateTransactions() {
-    console.log("loader", this.transactions.length - 1, this.next)
+    console.log('loader', this.transactions.length - 1, this.next)
     return this.transactions.map(
       (transaction, index) => html`
         <wui-transaction-list-item
           id=${index === this.transactions.length - 1 && this.next !== null ? PAGINATOR_ID : ''}
-         .transaction=${transaction}
+          .transaction=${transaction}
         ></wui-transaction-list-item>
       `
     )
@@ -129,10 +125,8 @@ export class W3mTransactionsView extends LitElement {
         this.fetchTransactions()
         EventsController.sendEvent({ type: 'track', event: 'LOAD_MORE_TRANSACTIONS' })
       }
-    }, {
-    })
+    }, {})
   }
-  
 
   // Private Methods ------------------------------------- //
   private async fetchTransactions() {

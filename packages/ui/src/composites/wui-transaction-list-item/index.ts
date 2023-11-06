@@ -42,13 +42,15 @@ export class WuiTransactionListItem extends LitElement {
 
     return html`
       <wui-flex>
-        <wui-transaction-visual 
+        <wui-transaction-visual
           .transfer=${transfer}
           .transaction=${this.transaction}
           imageSrc=${imageURL}
         ></wui-transaction-visual>
         <wui-flex flexDirection="column" gap="3xs">
-          <wui-text variant="paragraph-600" color="fg-100">${this.transaction.metadata.operationType}</wui-text>
+          <wui-text variant="paragraph-600" color="fg-100"
+            >${this.transaction.metadata.operationType}</wui-text
+          >
           <wui-text variant="small-500" color="fg-200"><span>${description}</span></wui-text>
         </wui-flex>
       </wui-flex>

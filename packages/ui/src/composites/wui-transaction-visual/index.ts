@@ -41,10 +41,7 @@ export class WuiTransactionVisual extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html`
-      ${this.templateVisual()}
-      ${this.templateIcon()}
-    `
+    return html` ${this.templateVisual()} ${this.templateIcon()} `
   }
 
   // -- Private ------------------------------------------- //
@@ -52,7 +49,7 @@ export class WuiTransactionVisual extends LitElement {
     if (!this.transaction) {
       return null
     }
-    
+
     const isNFT = this.transaction.transfers.every(transfer => !!transfer.nft_info)
     const isFT = this.transaction.transfers.every(transfer => !!transfer.fungible_info)
 
@@ -71,7 +68,7 @@ export class WuiTransactionVisual extends LitElement {
 
     return html`<wui-icon size="inherit" color="fg-200" name="coinPlaceholder"></wui-icon>`
   }
-  
+
   private templateIcon() {
     if (!this.transfer || !this.transaction) {
       return null
@@ -79,19 +76,19 @@ export class WuiTransactionVisual extends LitElement {
 
     const type = this.transaction?.metadata.operationType
     const status = this.transaction?.metadata.status
-    
+
     let color: 'accent-100' | 'error-100' | 'success-100' | 'inverse-100' = 'accent-100'
     let icon: TransactionIconType | null
 
-    if (type === "trade"){
-      icon = "swapHorizontal"
+    if (type === 'trade') {
+      icon = 'swapHorizontal'
     } else if (this.transfer.direction) {
       switch (this.transfer.direction) {
-        case "in":
-          icon = "arrowBottom"
+        case 'in':
+          icon = 'arrowBottom'
           break
-        case "out":
-          icon = "arrowTop"
+        case 'out':
+          icon = 'arrowTop'
           break
         default:
           break
@@ -113,18 +110,17 @@ export class WuiTransactionVisual extends LitElement {
           break
       }
     }
-    
 
     return html`
       <wui-icon-box
-          size="xs"
-          iconColor=${color}
-          backgroundColor=${color}
-          background="opaque"
-          .icon=${icon}
-          ?border=${true}
-          borderColor="wui-color-bg-125"
-        ></wui-icon-box>
+        size="xs"
+        iconColor=${color}
+        backgroundColor=${color}
+        background="opaque"
+        .icon=${icon}
+        ?border=${true}
+        borderColor="wui-color-bg-125"
+      ></wui-icon-box>
     `
   }
 }
