@@ -1,6 +1,8 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 // import response from './response.json'
 import { BlockchainApiController } from './BlockchainApiController'
+import { OptionsController } from './OptionsController'
+import { AccountController } from './AccountController'
 
 // -- Types --------------------------------------------- //
 export interface TransactionsControllerState {
@@ -27,11 +29,16 @@ export const TransactionsController = {
   },
 
   async fetchTransactions() {
+  const projectId = OptionsController.state.projectId
+  const accountAddress = AccountController.state.address
+
+  // todo(enes): handle empty account address
+    if(!accountAddress || !projectId) return
+    
     state.loading = true
-    // todo(enes): get account and project id dynamically
     await BlockchainApiController.fetchTransactions({
-      account: '0xf5B035287c1465F29C7e08FbB5c3b8a4975Bf831',
-      projectId: 'c6f78092df3710d5a3008ed92eb8b170',
+      account: accountAddress,
+      projectId: projectId,
       cursor: state.next
     })
       .then(response => {
