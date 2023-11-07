@@ -314,8 +314,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   public async disconnect() {
-    const provider = ProviderController.state.provider
-    const providerType = ProviderController.state.providerType
+    const { provider, providerType } = ProviderController.state
     localStorage.removeItem(WALLET_ID)
     ProviderController.reset()
 
