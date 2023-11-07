@@ -313,6 +313,19 @@ export class Web3Modal extends Web3ModalScaffold {
     return ProviderController.subscribe(callback)
   }
 
+  public async disconnect() {
+    const { provider, providerType } = ProviderController.state
+    localStorage.removeItem(WALLET_ID)
+    ProviderController.reset()
+
+    if (providerType === 'injected' || providerType === 'eip6963') {
+      provider?.emit('disconnect')
+    } else {
+      const ethersProvider = provider?.provider as EthereumProvider
+      await ethersProvider.disconnect()
+    }
+  }
+
   // -- Private -----------------------------------------------------------------
   private createProvider() {
     if (!this.walletConnectProviderInitPromise && typeof window !== 'undefined') {

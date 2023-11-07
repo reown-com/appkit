@@ -1,7 +1,6 @@
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { ConstantsUtil } from '@web3modal/utils'
-
 import { getWeb3Modal } from '@web3modal/scaffold-vue'
 import { useSnapshot } from 'valtio'
 import { ProviderController } from '../src/controllers/ProviderController.js'
@@ -35,6 +34,16 @@ export function useWeb3ModalSigner() {
     walletProvider,
     walletProviderType,
     signer
+  }
+}
+
+export function useDisconnect() {
+  async function disconnect() {
+    await modal?.disconnect()
+  }
+
+  return {
+    disconnect
   }
 }
 
