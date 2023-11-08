@@ -23,7 +23,8 @@ import {
   OptionsController,
   PublicStateController,
   ThemeController,
-  SIWEController
+  SIWEController,
+  RouterController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 
@@ -202,13 +203,7 @@ export class Web3ModalScaffold {
     return SIWEController.subscribe(callback)
   }
 
-  protected getSIWENonce = () => SIWEController.state.nonce
-
-  protected getSIWESession = () => SIWEController.state.session
-
-  protected getSIWEStatus = () => SIWEController.state.status
-
-  protected getSIWEMessage = () => SIWEController.state.message
+  protected getSiweClient = () => SIWEController.state._client
 
   // -- Private ------------------------------------------------------------------
   private initControllers(options: ScaffoldOptions) {
@@ -228,8 +223,35 @@ export class Web3ModalScaffold {
 
     ConnectionController.setClient(options.connectionControllerClient)
 
+    console.log({ siweCtrl: options.siweControllerClient })
     if (options.siweControllerClient) {
-      SIWEController.setSIWEClient(options.siweControllerClient)
+      console.log({ controller: options.siweControllerClient })
+      const siweClient = options.siweControllerClient
+      SIWEController.setSIWEClient(siweClient)
+      const currentAccount = AccountController.state.caipAddress
+      console.log({ currentAccount })
+      RouterController.push('ConnectingSiwe')
+      /*
+       * AccountController.subscribeKey('address', async newAccount => {
+       *   console.log({ currentAccount, newAccount })
+       *   if (currentAccount && currentAccount !== newAccount) {
+       *     await siweClient.signOut()
+       *     RouterController.push('ConnectingSiwe')
+       *   }
+       * })
+       */
+
+      /*
+       * Const currentNetwork = NetworkController.state.caipNetwork
+       * console.log({ currentNetwork })
+       * NetworkController.subscribeKey('caipNetwork', async newCaipNetwork => {
+       *   console.log({ currentNetwork, newCaipNetwork })
+       *   if (currentNetwork && currentNetwork?.id !== newCaipNetwork?.id) {
+       *     await siweClient.signOut()
+       *     RouterController.push('ConnectingSiwe')
+       *   }
+       * })
+       */
     }
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
@@ -252,6 +274,26 @@ export class Web3ModalScaffold {
         document.body.insertAdjacentElement('beforeend', modal)
         resolve()
       })
+      const siweClient = this.getSiweClient()
+      if (siweClient?.options?.enabled) {
+        try {
+          const session = await siweClient.getSession()
+          console.log({ session })
+          if (!session) {
+            return this.initPromise
+          }
+          const address = AccountController.state.caipAddress
+          if (!address) {
+            AccountController.setCaipAddress(`eip155:${session.chainId}:${session.address}`)
+            NetworkController.setCaipNetwork({
+              id: `eip155:${session.chainId}`
+            })
+          }
+          console.log({ session })
+        } catch (error) {
+          console.log('no session')
+        }
+      }
     }
 
     return this.initPromise

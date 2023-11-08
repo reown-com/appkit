@@ -3,7 +3,7 @@ import { NetworksButton } from '../../components/NetworksButton'
 import { EthersConnectButton } from '../../components/Ethers/EthersConnectButton'
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
 import { SiweMessage } from 'siwe'
-import { getCsrfToken, getSession, signIn, signOut } from 'next-auth/react'
+import { getCsrfToken, getSession, signIn, signOut, useSession } from 'next-auth/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import {
   arbitrum,
@@ -94,7 +94,9 @@ const siweConfig = createSIWEConfig({
   },
   signOut: async () => {
     try {
-      await signOut()
+      await signOut({
+        redirect: false
+      })
 
       return true
     } catch (error) {
@@ -118,7 +120,10 @@ const modal = createWeb3Modal({
 
 ThemeStore.setModal(modal)
 
-export default function Ethers() {
+export default function EthersSiwe() {
+  const { data, status } = useSession()
+  const session = data as unknown as SIWESession
+
   return (
     <>
       <Center paddingTop={10}>
@@ -128,6 +133,12 @@ export default function Ethers() {
       </Center>
       <Center h="65vh">
         <VStack gap={4}>
+          <Text>SIWE Status: {status}</Text>
+          {session && (
+            <Text>
+              SIWE Account: eip155:{session.chainId}:{session.address}
+            </Text>
+          )}
           <EthersConnectButton />
           <NetworksButton />
         </VStack>

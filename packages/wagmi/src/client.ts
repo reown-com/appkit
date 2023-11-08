@@ -2,6 +2,7 @@ import type { Address, Chain, Config, WindowProvider } from '@wagmi/core'
 import {
   connect,
   disconnect,
+  signMessage,
   fetchBalance,
   fetchEnsAvatar,
   fetchEnsName,
@@ -186,27 +187,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
       disconnect,
 
-      signMessage: async (message: string) => {
-        const connector = wagmiConfig.connectors.find(
-          c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
-        )
-        if (!connector) {
-          throw new Error('connectionControllerClient:signMessage - connector is undefined')
-        }
-
-        const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
-        if (!chainId) {
-          throw new Error('connectionControllerClient:signMessage - chainId is undefined')
-        }
-
-        const signer = await connector.getWalletClient()
-
-        if (!signer) {
-          throw new Error('connectionControllerClient:signMessage - provider is undefined')
-        }
-
-        return signer.signMessage({ message })
-      }
+      signMessage: async message => signMessage({ message })
     }
 
     super({

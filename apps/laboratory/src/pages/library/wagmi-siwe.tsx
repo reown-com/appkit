@@ -1,10 +1,10 @@
-import { Center, CheckboxGroup, Text, VStack } from '@chakra-ui/react'
+'use client'
+import { Center, Text, VStack } from '@chakra-ui/react'
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { useEffect, useState } from 'react'
 import { WagmiConfig } from 'wagmi'
-import { disconnect } from '@wagmi/core'
 import { SiweMessage } from 'siwe'
-import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
+import { getCsrfToken, signIn, signOut, getSession, useSession } from 'next-auth/react'
 import {
   arbitrum,
   aurora,
@@ -22,8 +22,8 @@ import {
 import { WagmiConnectButton } from '../../components/Wagmi/WagmiConnectButton'
 import { NetworksButton } from '../../components/NetworksButton'
 import { ThemeStore } from '../../utils/StoreUtil'
-import type { SIWESession } from '@web3modal/core'
-import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs } from '@web3modal/core'
+import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@web3modal/core'
+import { createSIWEConfig } from '@web3modal/siwe'
 
 // 1. Get projectId
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
@@ -60,71 +60,78 @@ export const wagmiConfig = defaultWagmiConfig({
   metadata
 })
 
+const siweConfig = createSIWEConfig({
+  createMessage: ({ nonce, address, chainId }: SIWECreateMessageArgs) =>
+    new SiweMessage({
+      version: '1',
+      domain: window.location.host,
+      uri: window.location.origin,
+      address,
+      chainId,
+      nonce,
+      // Human-readable ASCII assertion that the user will sign, and it must not contain `\n`.
+      statement: 'Sign in With Ethereum.'
+    }).prepareMessage(),
+  getNonce: async () => {
+    const nonce = await getCsrfToken()
+    if (!nonce) {
+      throw new Error('Failed to get nonce!')
+    }
+
+    return nonce
+  },
+  getSession: async () => {
+    const session = await getSession()
+    if (!session) {
+      throw new Error('Failed to get session!')
+    }
+
+    const { address, chainId } = session as unknown as SIWESession
+
+    return { address, chainId }
+  },
+  verifyMessage: async ({ message, signature }: SIWEVerifyMessageArgs) => {
+    try {
+      const success = await signIn('credentials', {
+        message,
+        redirect: false,
+        signature,
+        callbackUrl: '/protected'
+      })
+
+      return Boolean(success?.ok)
+    } catch (error) {
+      return false
+    }
+  },
+  signOut: async () => {
+    try {
+      await signOut({
+        redirect: false
+      })
+
+      return true
+    } catch (error) {
+      return false
+    }
+  }
+})
+
 const modal = createWeb3Modal({
   wagmiConfig,
   projectId,
   chains,
   enableAnalytics: true,
   metadata,
-  siweConfig: {
-    createMessage: ({ nonce, address, chainId }: SIWECreateMessageArgs) =>
-      new SiweMessage({
-        version: '1',
-        domain: window.location.host,
-        uri: window.location.origin,
-        address,
-        chainId,
-        nonce,
-        // Human-readable ASCII assertion that the user will sign, and it must not contain `\n`.
-        statement: 'Sign in With Ethereum.'
-      }).prepareMessage(),
-    getNonce: async () => {
-      const nonce = await getCsrfToken()
-      if (!nonce) {
-        throw new Error('Failed to get nonce!')
-      }
-
-      return nonce
-    },
-    getSession: async () => {
-      const session = await getSession()
-      if (!session) {
-        throw new Error('Failed to get session!')
-      }
-
-      return session as unknown as SIWESession
-    },
-    verifyMessage: async ({ message, signature }: SIWEVerifyMessageArgs) => {
-      try {
-        const success = await signIn('credentials', {
-          message,
-          redirect: false,
-          signature,
-          callbackUrl: '/protected'
-        })
-
-        return Boolean(success?.ok)
-      } catch (error) {
-        return false
-      }
-    },
-    signOut: async () => {
-      try {
-        await signOut()
-        await disconnect()
-
-        return true
-      } catch (error) {
-        return false
-      }
-    }
-  }
+  siweConfig
 })
 
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
   const [ready, setReady] = useState(false)
+  const { data, status } = useSession()
+  const session = data as unknown as SIWESession
 
   useEffect(() => {
     setReady(true)
@@ -139,6 +146,12 @@ export default function Wagmi() {
       </Center>
       <Center h="65vh">
         <VStack gap={4}>
+          <Text>SIWE Status: {status}</Text>
+          {session && (
+            <Text>
+              SIWE Account: eip155:{session.chainId}:{session.address}
+            </Text>
+          )}
           <WagmiConnectButton />
           <NetworksButton />
         </VStack>

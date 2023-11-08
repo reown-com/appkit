@@ -40,10 +40,11 @@ export default async function auth(req: any, res: any) {
           const siwe = new SiweMessage(credentials.message)
           const url = new URL(nextAuthUrl)
 
+          const nonce = await getCsrfToken({ req })
           const result = await siwe.verify({
             signature: credentials?.signature || '',
             domain: url.host,
-            nonce: await getCsrfToken({ req })
+            nonce
           })
 
           if (result.success) {
@@ -54,6 +55,9 @@ export default async function auth(req: any, res: any) {
 
           return null
         } catch (e) {
+          // TODO: handle error case
+          console.log(e)
+
           return null
         }
       }

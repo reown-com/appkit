@@ -11,6 +11,7 @@ import {
 import { HelpersUtil } from '@web3modal/utils'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
 
 @customElement('w3m-connecting-siwe-view')
 export class W3mConnectingSiweView extends LitElement {
@@ -18,6 +19,8 @@ export class W3mConnectingSiweView extends LitElement {
   private readonly dappUrl = OptionsController.state.metadata?.url
 
   private readonly dappName = OptionsController.state.metadata?.name
+
+  @state() private isSigning = false
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -48,8 +51,14 @@ export class W3mConnectingSiweView extends LitElement {
         <wui-button size="md" ?fullwidth=${true} variant="shade" @click=${this.onCancel.bind(this)}>
           Cancel
         </wui-button>
-        <wui-button size="md" ?fullwidth=${true} variant="fill" @click=${this.onSign.bind(this)}>
-          Sign
+        <wui-button
+          size="md"
+          ?fullwidth=${true}
+          variant="fill"
+          @click=${this.onSign.bind(this)}
+          ?loading=${this.isSigning}
+        >
+          ${this.isSigning ? 'Signing...' : 'Sign'}
         </wui-button>
       </wui-flex>
     `
@@ -76,6 +85,7 @@ export class W3mConnectingSiweView extends LitElement {
   }
 
   private async onSign() {
+    this.isSigning = true
     try {
       const siweClient = SIWEController._getClient()
       SIWEController.setStatus('loading')
@@ -110,11 +120,13 @@ export class W3mConnectingSiweView extends LitElement {
       return session
     } catch (error) {
       return SIWEController.setStatus('error')
+    } finally {
+      this.isSigning = false
     }
   }
 
   private onCancel() {
-    RouterController.goBack()
+    RouterController.push('Connect')
   }
 }
 declare global {

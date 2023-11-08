@@ -219,12 +219,16 @@ export class Web3Modal extends Web3ModalScaffold {
         const provider = ProviderController.state.provider
         const providerType = ProviderController.state.providerType
         localStorage.removeItem(WALLET_ID)
+
         ProviderController.reset()
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider?.provider as EthereumProvider
           await WalletConnectProvider.disconnect()
         } else if (provider) {
           provider.emit('disconnect')
+        }
+        if (siweConfig?.options?.signOutOnDisconnect) {
+          await siweConfig.signOut()
         }
       },
 
@@ -239,7 +243,9 @@ export class Web3Modal extends Web3ModalScaffold {
           throw new Error('connectionControllerClient:signMessage - signer is undefined')
         }
 
-        return signer.signMessage(message)
+        const signature = await signer.signMessage(message)
+
+        return signature
       }
     }
 
