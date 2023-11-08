@@ -6,9 +6,7 @@ import type { Transaction } from '../utils/TypeUtil.js'
 import { DateUtil } from '@web3modal/utils'
 
 // -- Types --------------------------------------------- //
-type TransactionByYearMap = {
-  [key: number]: Transaction[]
-}
+type TransactionByYearMap = Record<number, Transaction[]>
 
 export interface TransactionsControllerState {
   transactions: Transaction[]
@@ -86,9 +84,10 @@ export const TransactionsController = {
 
   filterSpamTransactions(transactions: Transaction[]) {
     return transactions.filter(transaction => {
-      const isAllSpam = transaction.transfers.every(transfer => {
-        return transfer.nft_info?.flags.is_spam === true
-      })
+      const isAllSpam = transaction.transfers.every(
+        transfer => transfer.nft_info?.flags.is_spam === true
+      )
+
       return !isAllSpam
     })
   }

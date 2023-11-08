@@ -188,6 +188,7 @@ export type TransactionType =
   | 'unstake'
   | 'withdraw'
 
+// eslint-disable-next-line no-shadow
 export enum TransactionTypePastTense {
   'approve' = 'approved',
   'bought' = 'bought',

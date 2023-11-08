@@ -189,30 +189,6 @@ export class W3mTransactionsView extends LitElement {
     const imageURL = this.getImageURL(transfer, isNFT, isFungible)
     const secondImageURL = this.getImageURL(secondTransfer, isNFT, isFungible)
 
-    /**
-     *
-     * done
-     * [] -> show status as description
-     * [nft_info, nft_info] -> nft -> show nft info in one line
-     * [fungible_info, fungible_info]
-     *  -> fungible ->
-     *    if type trade, show swap description,
-     *    if type send, show quantity-symbol -> destination
-     *    else show only one
-     * [nft_info, fungible_info] -> nft -> show nft info in one line
-     * [fungible_info, nft_info] -> nft -> show nft info in one line
-     * [fungible_info] -> fungible -> show numeric and symbol
-     * [nft_info] -> nft -> show nft info in one line
-     *
-     * to handle
-     *
-     * As a result:
-     * If all nft, show nft info in one line
-     * If all fungible and have more than one transfer, make conditional rendering:
-     *   type is trade, show swap description
-     *   type is send, item to destination
-     */
-
     return {
       date,
       direction: transfer?.direction,
@@ -227,7 +203,7 @@ export class W3mTransactionsView extends LitElement {
 
   private getTransactionGroupTitle(year: string) {
     const currentYear = DateUtil.getYear()
-    const isCurrentYear = parseInt(year) === currentYear
+    const isCurrentYear = parseInt(year, 16) === currentYear
     const groupTitle = isCurrentYear ? 'This Year' : year
 
     return groupTitle
@@ -263,22 +239,22 @@ export class W3mTransactionsView extends LitElement {
     }
 
     if (haveMultipleTransfers) {
-      let des1 = this.getTransferDescription(tr1)
-      let des2 = this.getTransferDescription(tr2)
+      let firstDescription = this.getTransferDescription(tr1)
+      let secondDescription = this.getTransferDescription(tr2)
 
       if (type === 'receive' && isFungible) {
-        des1 = transaction.metadata.sentFrom
+        firstDescription = transaction.metadata.sentFrom
       }
       if (type === 'send' && isFungible) {
-        des2 = transaction.metadata.sentTo
+        secondDescription = transaction.metadata.sentTo
       }
 
-      return [des1, des2]
+      return [firstDescription, secondDescription]
     }
 
-    let des1 = this.getTransferDescription(tr1)
+    const firstDescription = this.getTransferDescription(tr1)
 
-    return [des1]
+    return [firstDescription]
   }
 
   private getTransferDescription(transfer?: TransactionTransfer) {
@@ -304,9 +280,9 @@ export class W3mTransactionsView extends LitElement {
 
     const quantity = this.getQuantityFixedValue(transfer?.quantity.numeric)
 
-    let str = [quantity, transfer?.fungible_info?.symbol].join(' ').trim()
+    const description = [quantity, transfer?.fungible_info?.symbol].join(' ').trim()
 
-    return str
+    return description
   }
 
   private getQuantityFixedValue(value: string | undefined) {
