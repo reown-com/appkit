@@ -36,8 +36,8 @@ export class W3mFrame {
       iframe.src = W3mFrameConstants.SECURE_SITE
       iframe.style.position = 'fixed'
       iframe.style.zIndex = '999999'
-      // iframe.style.display = 'none'
-      // iframe.style.opacity = '0'
+      iframe.style.display = 'none'
+      iframe.style.opacity = '0'
       document.body.appendChild(iframe)
       this.iframe = iframe
       this.iframe.onload = () => {
