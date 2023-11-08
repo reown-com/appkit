@@ -30,7 +30,7 @@ function headings() {
     WhatIsAWallet: 'What is a wallet?',
     GetWallet: 'Get a Wallet',
     Downloads: name ? `Get ${name}` : 'Downloads',
-    Transactions: 'Recent Transactions'
+    Transactions: 'Activity'
   }
 }
 

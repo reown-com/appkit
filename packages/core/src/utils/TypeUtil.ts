@@ -170,6 +170,11 @@ export interface TransactionTransfer {
 export interface TransactionNftInfo {
   name?: string
   content?: TransactionContent
+  flags: TransactionNftInfoFlags
+}
+
+export interface TransactionNftInfoFlags {
+  is_spam: boolean
 }
 
 export interface TransactionContent {

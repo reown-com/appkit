@@ -8,9 +8,10 @@ import {
   type Transaction,
   type TransactionTransfer
 } from '@web3modal/core'
+import { DateUtil } from '@web3modal/utils'
 
 const PAGINATOR_ID = 'last-transaction'
-const FLOAT_FIXED_VALUE = 6
+const FLOAT_FIXED_VALUE = 3
 
 @customElement('w3m-transactions-view')
 export class W3mTransactionsView extends LitElement {
@@ -22,6 +23,8 @@ export class W3mTransactionsView extends LitElement {
   private paginationObserver?: IntersectionObserver = undefined
 
   @state() private transactions = TransactionsController.state.transactions
+
+  @state() private transactionsByYear = TransactionsController.state.transactionsByYear
 
   @state() private loading = TransactionsController.state.loading
 
@@ -36,6 +39,7 @@ export class W3mTransactionsView extends LitElement {
       ...[
         TransactionsController.subscribe(val => {
           this.transactions = val.transactions
+          this.transactionsByYear = val.transactionsByYear
           this.loading = val.loading
           this.empty = val.empty
           this.next = val.next
@@ -68,27 +72,52 @@ export class W3mTransactionsView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="s">
-        ${this.empty ? this.templateEmpty() : this.templateTransactions()}
+        ${this.empty ? this.templateEmpty() : this.templateTransactionsByYear()}
         ${this.loading ? this.templateLoading() : null}
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
-  private templateTransactions() {
-    return this.transactions.map((transaction, index) => {
-      const { description, direction, isNFT, imageURL, status, type } =
+  private templateTransactionsByYear() {
+    const sortedYearKeys = Object.keys(this.transactionsByYear).sort().reverse()
+
+    return sortedYearKeys.map(year => {
+      const groupTitle = this.getTransactionGroupTitle(year)
+
+      return html`
+        <wui-flex flexDirection="column" gap="sm">
+          <wui-flex
+            flexDirection="row"
+            .padding=${['xxs', 's', 'xxs', 's'] as const}
+            alignItems="center"
+          >
+            <wui-text variant="paragraph-500" color="fg-100">${groupTitle}</wui-text>
+          </wui-flex>
+          <wui-flex flexDirection="column" gap="xs">
+            ${this.templateTransactions(this.transactionsByYear[year])}
+          </wui-flex>
+        </wui-flex>
+      `
+    })
+  }
+
+  private templateTransactions(transactions: Transaction[]) {
+    return transactions.map((transaction, index) => {
+      const { date, descriptions, direction, isNFT, imageURL, secondImageURL, status, type } =
         this.getTransactionListItemProps(transaction)
 
       return html`
         <wui-transaction-list-item
           id=${index === this.transactions.length - 1 && this.next !== null ? PAGINATOR_ID : ''}
           type=${type}
-          description=${description}
+          .description=${descriptions}
           status=${status}
           direction=${direction}
           imageURL=${imageURL}
+          secondImageURL=${secondImageURL}
           isNFT=${isNFT}
+          date=${date}
         ></wui-transaction-list-item>
       `
     })
@@ -149,23 +178,59 @@ export class W3mTransactionsView extends LitElement {
   private getTransactionListItemProps(transaction: Transaction) {
     const haveTransfer = transaction.transfers?.length > 0
     const isNFT =
-      haveTransfer && transaction.transfers?.every(transfer => Boolean(transfer.nft_info))
+      haveTransfer && transaction.transfers?.some(transfer => Boolean(transfer.nft_info))
     const isFungible =
       haveTransfer && transaction.transfers?.every(transfer => Boolean(transfer.fungible_info))
     const transfer = transaction?.transfers?.[0]
-    const status = transaction.metadata?.status
+    const secondTransfer = transaction?.transfers?.[1]
+    const date = DateUtil.getRalativeDateFromNow(transaction?.metadata?.minedAt)
 
-    const description = this.getDescription(isNFT, isFungible, transfer)
+    const descriptions = this.getDescription(transaction)
     const imageURL = this.getImageURL(transfer, isNFT, isFungible)
+    const secondImageURL = this.getImageURL(secondTransfer, isNFT, isFungible)
+
+    /**
+     *
+     * done
+     * [] -> show status as description
+     * [nft_info, nft_info] -> nft -> show nft info in one line
+     * [fungible_info, fungible_info]
+     *  -> fungible ->
+     *    if type trade, show swap description,
+     *    if type send, show quantity-symbol -> destination
+     *    else show only one
+     * [nft_info, fungible_info] -> nft -> show nft info in one line
+     * [fungible_info, nft_info] -> nft -> show nft info in one line
+     * [fungible_info] -> fungible -> show numeric and symbol
+     * [nft_info] -> nft -> show nft info in one line
+     *
+     * to handle
+     *
+     * As a result:
+     * If all nft, show nft info in one line
+     * If all fungible and have more than one transfer, make conditional rendering:
+     *   type is trade, show swap description
+     *   type is send, item to destination
+     */
 
     return {
+      date,
       direction: transfer?.direction,
-      description: description || status,
+      descriptions,
       isNFT,
       imageURL,
-      type: transaction.metadata?.operationType,
-      status: transaction.metadata?.status
+      secondImageURL,
+      status: transaction.metadata?.status,
+      type: transaction.metadata?.operationType
     }
+  }
+
+  private getTransactionGroupTitle(year: string) {
+    const currentYear = DateUtil.getYear()
+    const isCurrentYear = parseInt(year) === currentYear
+    const groupTitle = isCurrentYear ? 'This Year' : year
+
+    return groupTitle
   }
 
   private getImageURL(
@@ -183,21 +248,65 @@ export class W3mTransactionsView extends LitElement {
     return imageURL
   }
 
-  private getDescription(
-    isNFT: boolean,
-    isFungible: boolean,
-    transfer: TransactionTransfer | undefined
-  ) {
-    const quantity = this.getQuantityFixedValue(transfer?.quantity.numeric)
+  private getDescription(transaction: Transaction) {
+    const type = transaction.metadata?.operationType
 
+    const transfers = transaction.transfers
+    const haveTransfer = transaction.transfers?.length > 0
+    const haveMultipleTransfers = transaction.transfers?.length > 1
+    const isFungible = haveTransfer && transfers?.every(transfer => Boolean(transfer.fungible_info))
+    const tr1 = transfers?.[0]
+    const tr2 = transfers?.[1]
+
+    if (!haveTransfer) {
+      return [transaction.metadata.status]
+    }
+
+    if (haveMultipleTransfers) {
+      let des1 = this.getTransferDescription(tr1)
+      let des2 = this.getTransferDescription(tr2)
+
+      if (type === 'receive' && isFungible) {
+        des1 = transaction.metadata.sentFrom
+      }
+      if (type === 'send' && isFungible) {
+        des2 = transaction.metadata.sentTo
+      }
+
+      return [des1, des2]
+    }
+
+    let des1 = this.getTransferDescription(tr1)
+
+    return [des1]
+  }
+
+  private getTransferDescription(transfer?: TransactionTransfer) {
     let description = ''
-    if (isNFT) {
+
+    if (!transfer) {
+      return description
+    }
+
+    if (transfer?.nft_info) {
       description = transfer?.nft_info?.name || '-'
-    } else if (isFungible) {
-      description = [quantity, transfer?.fungible_info?.symbol].join(' ').trim() || '-'
+    } else if (transfer?.fungible_info) {
+      description = this.getValueSymbolString(transfer) || '-'
     }
 
     return description
+  }
+
+  private getValueSymbolString(transfer?: TransactionTransfer) {
+    if (!transfer) {
+      return null
+    }
+
+    const quantity = this.getQuantityFixedValue(transfer?.quantity.numeric)
+
+    let str = [quantity, transfer?.fungible_info?.symbol].join(' ').trim()
+
+    return str
   }
 
   private getQuantityFixedValue(value: string | undefined) {

@@ -3,10 +3,16 @@ import { BlockchainApiController } from './BlockchainApiController.js'
 import { OptionsController } from './OptionsController.js'
 import { AccountController } from './AccountController.js'
 import type { Transaction } from '../utils/TypeUtil.js'
+import { DateUtil } from '@web3modal/utils'
 
 // -- Types --------------------------------------------- //
+type TransactionByYearMap = {
+  [key: number]: Transaction[]
+}
+
 export interface TransactionsControllerState {
   transactions: Transaction[]
+  transactionsByYear: TransactionByYearMap
   loading: boolean
   empty: boolean
   next: string | null
@@ -15,6 +21,7 @@ export interface TransactionsControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<TransactionsControllerState>({
   transactions: [],
+  transactionsByYear: {},
   loading: false,
   empty: false,
   next: null
@@ -44,7 +51,14 @@ export const TransactionsController = {
     })
       .then(response => {
         state.loading = false
-        state.transactions = [...state.transactions, ...response.data]
+
+        const nonSpamTransactions = this.filterSpamTransactions(response.data)
+
+        state.transactions = [...state.transactions, ...nonSpamTransactions]
+        state.transactionsByYear = this.groupTransactionsByYear(
+          state.transactionsByYear,
+          nonSpamTransactions
+        )
         state.empty = response.data.length === 0
         state.next = response.next
       })
@@ -52,5 +66,30 @@ export const TransactionsController = {
         state.loading = false
         state.empty = true
       })
+  },
+  groupTransactionsByYear(
+    transactionsMap: TransactionByYearMap = {},
+    transactions: Transaction[] = []
+  ) {
+    const grouped: TransactionByYearMap = transactionsMap
+
+    transactions.forEach(transaction => {
+      const year = DateUtil.getYear(transaction.metadata.minedAt)
+      if (!grouped[year]) {
+        grouped[year] = []
+      }
+      grouped[year]?.push(transaction)
+    })
+
+    return grouped
+  },
+
+  filterSpamTransactions(transactions: Transaction[]) {
+    return transactions.filter(transaction => {
+      const isAllSpam = transaction.transfers.every(transfer => {
+        return transfer.nft_info?.flags.is_spam === true
+      })
+      return !isAllSpam
+    })
   }
 }

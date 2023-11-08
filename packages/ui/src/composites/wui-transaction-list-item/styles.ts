@@ -25,8 +25,16 @@ export default css`
     overflow: hidden;
   }
 
-  :host wui-text:last-child {
+  :host .description-container wui-text span {
+    word-break: break-all;
+  }
+
+  :host .description-container wui-text {
     overflow: hidden;
+  }
+
+  :host .description-separator-icon {
+    margin: 0px 6px;
   }
 
   :host wui-text > span {

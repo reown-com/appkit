@@ -28,4 +28,25 @@ export default css`
     bottom: 0;
     transform: translate(20%, 20%);
   }
+
+  .swap-images-container {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  .swap-images-container wui-image:first-child {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    top: 0;
+    left: 0%;
+    clip-path: inset(0px calc(50% + 2px) 0px 0%);
+  }
+
+  .swap-images-container wui-image:last-child {
+    clip-path: inset(0px 0px 0px calc(50% + 2px));
+  }
 `

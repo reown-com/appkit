@@ -23,6 +23,8 @@ export class WuiTransactionVisual extends LitElement {
 
   @property() public imageURL?: string
 
+  @property() public secondImageURL?: string
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html` ${this.templateVisual()} ${this.templateIcon()} `
@@ -30,7 +32,19 @@ export class WuiTransactionVisual extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateVisual() {
-    if (this.imageURL) {
+    const isTrade = this.type === 'trade'
+    const haveAnyImage = this.imageURL || this.secondImageURL
+
+    if (isTrade && haveAnyImage) {
+      return html`<div class="swap-images-container">
+        ${this.imageURL
+          ? html`<wui-image src=${this.imageURL} alt="Transaction image"></wui-image>`
+          : null}
+        ${this.secondImageURL
+          ? html`<wui-image src=${this.secondImageURL} alt="Transaction image"></wui-image>`
+          : null}
+      </div>`
+    } else if (this.imageURL) {
       return html`<wui-image src=${this.imageURL} alt="Transaction image"></wui-image>`
     } else if (this.isNFT) {
       return html`<wui-icon size="inherit" color="fg-200" name="nftPlaceholder"></wui-icon>`
