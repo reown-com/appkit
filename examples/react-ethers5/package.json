@@ -10,6 +10,6 @@
     "@web3modal/ethers5": "3.3.0-4df4ae5"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "4.1.0"
+    "@vitejs/plugin-react": "4.1.1"
   }
 }

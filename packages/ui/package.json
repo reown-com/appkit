@@ -16,11 +16,11 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "lit": "3.0.1",
+    "lit": "3.0.2",
     "qrcode": "1.5.3"
   },
   "devDependencies": {
-    "@types/qrcode": "1.5.4",
+    "@types/qrcode": "1.5.5",
     "eslint-plugin-lit": "1.10.1",
     "eslint-plugin-wc": "2.0.4"
   },
