@@ -83,7 +83,7 @@ export class W3mTransactionsView extends LitElement {
     const sortedYearKeys = Object.keys(this.transactionsByYear).sort().reverse()
 
     return sortedYearKeys.map(year => {
-      const yearInt = parseInt(year, 16)
+      const yearInt = parseInt(year, 10)
       const groupTitle = this.getTransactionGroupTitle(yearInt)
       const transactions = this.transactionsByYear[yearInt]
 
