@@ -402,9 +402,15 @@ export class Web3Modal extends Web3ModalScaffold {
     if (typeof window !== 'undefined' && connector) {
       const provider = await connector.getProvider()
       // eslint-disable-next-line
-      provider.onRpcRequest(data => console.log(data))
+      provider.onRpcRequest(data => {
+        // TODO: Trigger Ui Here
+        console.log(data)
+      })
       // eslint-disable-next-line
-      provider.onRpcResponse(data => console.log(data))
+      provider.onRpcResponse(data => {
+        // TODO: Trigger Ui / Close Here
+        console.log(data)
+      })
     }
   }
 }
