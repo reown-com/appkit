@@ -6,6 +6,7 @@ describe('TransactionsController', () => {
   it('should have valid default state', () => {
     expect(TransactionsController.state).toEqual({
       transactions: [],
+      transactionsByYear: {},
       loading: false,
       empty: false,
       next: null
