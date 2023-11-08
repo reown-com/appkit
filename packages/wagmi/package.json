@@ -51,7 +51,7 @@
     "@web3modal/utils": "3.3.0-e39005b"
   },
   "devDependencies": {
-    "@web3modal/siwe": "3.2.0"
+    "@web3modal/siwe": "3.3.0-e39005b"
   },
   "peerDependencies": {
     "@wagmi/core": ">=1",
