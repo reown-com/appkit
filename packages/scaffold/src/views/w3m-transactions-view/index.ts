@@ -83,8 +83,14 @@ export class W3mTransactionsView extends LitElement {
     const sortedYearKeys = Object.keys(this.transactionsByYear).sort().reverse()
 
     return sortedYearKeys.map(year => {
-      const groupTitle = this.getTransactionGroupTitle(year)
-
+      const yearInt = parseInt(year, 16)
+      const groupTitle = this.getTransactionGroupTitle(yearInt)
+      const transactions = this.transactionsByYear[yearInt]
+ 
+      if (!transactions) {
+        return null
+      }
+      
       return html`
         <wui-flex flexDirection="column" gap="sm">
           <wui-flex
@@ -95,7 +101,7 @@ export class W3mTransactionsView extends LitElement {
             <wui-text variant="paragraph-500" color="fg-100">${groupTitle}</wui-text>
           </wui-flex>
           <wui-flex flexDirection="column" gap="xs">
-            ${this.templateTransactions(this.transactionsByYear[year])}
+            ${this.templateTransactions(transactions)}
           </wui-flex>
         </wui-flex>
       `
@@ -201,9 +207,9 @@ export class W3mTransactionsView extends LitElement {
     }
   }
 
-  private getTransactionGroupTitle(year: string) {
+  private getTransactionGroupTitle(year: number) {
     const currentYear = DateUtil.getYear()
-    const isCurrentYear = parseInt(year, 16) === currentYear
+    const isCurrentYear = year === currentYear
     const groupTitle = isCurrentYear ? 'This Year' : year
 
     return groupTitle
