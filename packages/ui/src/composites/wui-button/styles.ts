@@ -31,7 +31,11 @@ export default css`
   }
 
   button[data-size='md'] {
-    padding: 9px var(--wui-spacing-l) 9px var(--wui-spacing-l);
+    padding: 8.2px var(--wui-spacing-l) 9px var(--wui-spacing-l);
+  }
+
+  button[data-size='md']:has(slot(name="iconLeft")) {
+    padding: 8.2px var(--wui-spacing-l) 9px 0px;
   }
 
   wui-loading-spinner {
