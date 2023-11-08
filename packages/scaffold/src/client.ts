@@ -223,35 +223,21 @@ export class Web3ModalScaffold {
 
     ConnectionController.setClient(options.connectionControllerClient)
 
-    console.log({ siweCtrl: options.siweControllerClient })
     if (options.siweControllerClient) {
-      console.log({ controller: options.siweControllerClient })
       const siweClient = options.siweControllerClient
       SIWEController.setSIWEClient(siweClient)
-      const currentAccount = AccountController.state.caipAddress
-      console.log({ currentAccount })
       RouterController.push('ConnectingSiwe')
-      /*
-       * AccountController.subscribeKey('address', async newAccount => {
-       *   console.log({ currentAccount, newAccount })
-       *   if (currentAccount && currentAccount !== newAccount) {
-       *     await siweClient.signOut()
-       *     RouterController.push('ConnectingSiwe')
-       *   }
-       * })
-       */
 
-      /*
-       * Const currentNetwork = NetworkController.state.caipNetwork
-       * console.log({ currentNetwork })
-       * NetworkController.subscribeKey('caipNetwork', async newCaipNetwork => {
-       *   console.log({ currentNetwork, newCaipNetwork })
-       *   if (currentNetwork && currentNetwork?.id !== newCaipNetwork?.id) {
-       *     await siweClient.signOut()
-       *     RouterController.push('ConnectingSiwe')
-       *   }
-       * })
-       */
+      AccountController.subscribeKey('caipAddress', async caipAddress => {
+        const previousAccountState = AccountController.state.history.snapshots.find(
+          account => account.caipAddress && account.caipAddress !== caipAddress
+        )
+        const previousCaipAddress = previousAccountState?.caipAddress
+        if (previousCaipAddress && previousCaipAddress !== caipAddress) {
+          await siweClient.signOut()
+          ModalController.open({ view: 'ConnectingSiwe' })
+        }
+      })
     }
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
@@ -278,20 +264,22 @@ export class Web3ModalScaffold {
       if (siweClient?.options?.enabled) {
         try {
           const session = await siweClient.getSession()
-          console.log({ session })
-          if (!session) {
-            return this.initPromise
-          }
-          const address = AccountController.state.caipAddress
-          if (!address) {
-            AccountController.setCaipAddress(`eip155:${session.chainId}:${session.address}`)
-            NetworkController.setCaipNetwork({
-              id: `eip155:${session.chainId}`
-            })
-          }
-          console.log({ session })
+
+          AccountController.subscribe(async newAccountState => {
+            const { isConnected } = newAccountState
+            if (session && !isConnected) {
+              await siweClient.signOut()
+            } else if (isConnected && !session) {
+              ModalController.open({ view: 'ConnectingSiwe' })
+            }
+          })
         } catch (error) {
-          console.log('no session')
+          // No session but wallet is connected
+          AccountController.subscribeKey('isConnected', async isConnected => {
+            if (isConnected) {
+              return ModalController.open({ view: 'ConnectingSiwe' })
+            }
+          })
         }
       }
     }

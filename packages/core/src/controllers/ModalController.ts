@@ -38,7 +38,7 @@ export const ModalController = {
 
     if (options?.view) {
       RouterController.reset(options.view)
-    } else if (AccountController.state.isConnected) {
+    } else if (AccountController.state.value.isConnected) {
       RouterController.reset('Account')
     } else {
       RouterController.reset('Connect')

@@ -90,7 +90,7 @@ export class W3mConnectingSiweView extends LitElement {
       const siweClient = SIWEController._getClient()
       SIWEController.setStatus('loading')
       const nonce = await siweClient.getNonce()
-      const { address } = AccountController.state
+      const { address } = AccountController.state.value
       if (!address) {
         throw new Error('An address is required to create a SIWE message.')
       }
@@ -102,6 +102,7 @@ export class W3mConnectingSiweView extends LitElement {
       const signature = await ConnectionController.signMessage(message)
 
       const isValid = await siweClient.verifyMessage({ message, signature })
+
       if (!isValid) {
         throw new Error('Error verifying SIWE signature')
       }

@@ -1,4 +1,3 @@
-'use client'
 import { Center, Text, VStack } from '@chakra-ui/react'
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { useEffect, useState } from 'react'

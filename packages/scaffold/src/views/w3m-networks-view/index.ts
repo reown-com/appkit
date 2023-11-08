@@ -82,7 +82,7 @@ export class W3mNetworksView extends LitElement {
   }
 
   private async onSwitchNetwork(network: CaipNetwork) {
-    const { isConnected } = AccountController.state
+    const { isConnected } = AccountController.state.value
     const { approvedCaipNetworkIds, supportsAllNetworks, caipNetwork } = NetworkController.state
 
     if (isConnected && caipNetwork?.id !== network.id) {

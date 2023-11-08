@@ -15,7 +15,7 @@ export class W3mNetworkButton extends LitElement {
 
   @state() private network = NetworkController.state.caipNetwork
 
-  @state() private connected = AccountController.state.isConnected
+  @state() private connected = AccountController.state.value.isConnected
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
