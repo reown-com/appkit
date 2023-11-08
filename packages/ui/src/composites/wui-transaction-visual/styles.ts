@@ -1,43 +1,50 @@
 import { css } from 'lit'
 
 export default css`
-  :host {
+  :host > wui-flex {
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
     width: 40px;
     height: 40px;
-    border: 1px solid var(--wui-gray-glass-005);
-    border-radius: var(--wui-border-radius-3xl);
+    outline: 1px solid var(--wui-gray-glass-005);
+    outline-offset: -1px;
+    border-radius: var(--local-border-radius);
   }
 
-  wui-image {
+  :host > wui-flex wui-image {
     display: block;
-    border-radius: inherit;
+    border-radius: var(--local-border-radius);
+    z-index: -1;
   }
 
-  wui-icon {
+  :host wui-icon {
     width: 20px;
     height: 20px;
   }
 
-  wui-icon-box {
+  :host wui-icon-box {
     position: absolute;
     right: 0;
     bottom: 0;
     transform: translate(20%, 20%);
   }
 
-  .swap-images-container {
+  :host .swap-images-container {
     position: relative;
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    border-radius: var(--local-border-radius);
     overflow: hidden;
   }
 
-  .swap-images-container wui-image:first-child {
+  :host .swap-images-container.nft,
+  :host wui-image.nft {
+    border-radius: calc(var(--local-border-radius) - 1px);
+  }
+
+  :host .swap-images-container wui-image:first-child {
     position: absolute;
     width: 40px;
     height: 40px;
@@ -46,7 +53,7 @@ export default css`
     clip-path: inset(0px calc(50% + 2px) 0px 0%);
   }
 
-  .swap-images-container wui-image:last-child {
+  :host .swap-images-container wui-image:last-child {
     clip-path: inset(0px 0px 0px calc(50% + 2px));
   }
 `

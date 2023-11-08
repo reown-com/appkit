@@ -19,7 +19,7 @@ export default {
       'https://uploads-ssl.webflow.com/61fe6bb74158b468a1112105/61fe8900148b6e6ee7c2c4e4_Profile%20Pic_Smoker-p-500.jpeg',
     status: 'confirmed',
     direction: 'in',
-    description: '+8 SOCKS',
+    descriptions: ['+8 SOCKS'],
     isNFT: false
   },
   argTypes: {
@@ -53,7 +53,7 @@ export const Default: Component = {
         .isNFT=${args.isNFT}
         status=${args.status}
         direction=${args.direction}
-        description=${args.description}
+        .descriptions=${args.descriptions}
       ></wui-transaction-list-item>
     </gallery-container>`
 }

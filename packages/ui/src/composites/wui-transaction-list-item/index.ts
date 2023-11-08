@@ -15,7 +15,7 @@ export class WuiTransactionListItem extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public type: TransactionType = 'approve'
 
-  @property() public description?: string[]
+  @property() public descriptions?: string[]
 
   @property() public date?: string
 
@@ -31,8 +31,8 @@ export class WuiTransactionListItem extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const firstDesc = this.description?.[0]
-    const secondDesc = this.description?.[1]
+    const firstDesc = this.descriptions?.[0]
+    const secondDesc = this.descriptions?.[1]
 
     return html`
       <wui-flex>
@@ -40,7 +40,7 @@ export class WuiTransactionListItem extends LitElement {
           status=${this.status}
           direction=${this.direction}
           type=${this.type}
-          isNFT=${this.isNFT}
+          .isNFT=${this.isNFT}
           imageURL=${this.imageURL}
           secondImageURL=${this.secondImageURL}
         ></wui-transaction-visual>
