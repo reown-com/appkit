@@ -38,8 +38,6 @@ export class WuiTransactionVisual extends LitElement {
     const haveAnyImage = this.imageURL || this.secondImageURL
 
     if (isTrade && haveAnyImage) {
-      console.log('isTrade', isTrade, this.isNFT)
-
       return html`<div class="swap-images-container ${this.isNFT ? 'nft' : ''}">
         ${this.imageURL
           ? html`<wui-image src=${this.imageURL} alt="Transaction image"></wui-image>`
@@ -67,6 +65,12 @@ export class WuiTransactionVisual extends LitElement {
 
     if (this.type === 'trade') {
       icon = 'swapHorizontal'
+    } else if (this.type === 'approve') {
+      icon = 'checkmark'
+    } else if (this.type === 'cancel') {
+      icon = 'close'
+    } else if (this.type === 'burn' || this.type === 'execute' || this.type === 'deploy') {
+      icon = null
     } else if (this.direction) {
       switch (this.direction) {
         case 'in':
@@ -102,7 +106,7 @@ export class WuiTransactionVisual extends LitElement {
 
     return html`
       <wui-icon-box
-        size="xs"
+        size="2xs"
         iconColor=${color}
         backgroundColor=${color}
         background="opaque"

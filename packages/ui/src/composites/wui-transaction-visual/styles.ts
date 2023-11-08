@@ -11,6 +11,7 @@ export default css`
     outline: 1px solid var(--wui-gray-glass-005);
     outline-offset: -1px;
     border-radius: var(--local-border-radius);
+    background-color: var(--wui-gray-glass-005);
   }
 
   :host > wui-flex wui-image {
@@ -41,7 +42,7 @@ export default css`
 
   :host .swap-images-container.nft,
   :host wui-image.nft {
-    border-radius: calc(var(--local-border-radius) - 1px);
+    border-radius: var(--local-border-radius);
   }
 
   :host .swap-images-container wui-image:first-child {

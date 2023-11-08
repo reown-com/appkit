@@ -2,16 +2,12 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import {
-  EventsController,
-  TransactionsController,
-  type Transaction,
-  type TransactionTransfer
-} from '@web3modal/core'
-import { DateUtil } from '@web3modal/utils'
+import { EventsController, TransactionsController, type Transaction } from '@web3modal/core'
+import { DateUtil, TransactionUtil } from '@web3modal/utils'
 
+// -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'last-transaction'
-const FLOAT_FIXED_VALUE = 3
+const LOADING_ITEM_COUNT = 7
 
 @customElement('w3m-transactions-view')
 export class W3mTransactionsView extends LitElement {
@@ -72,8 +68,9 @@ export class W3mTransactionsView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="s">
-        ${this.empty ? this.templateEmpty() : this.templateTransactionsByYear()}
+        ${this.empty ? null : this.templateTransactionsByYear()}
         ${this.loading ? this.templateLoading() : null}
+        ${!this.loading && this.empty ? this.templateEmpty() : null}
       </wui-flex>
     `
   }
@@ -84,7 +81,7 @@ export class W3mTransactionsView extends LitElement {
 
     return sortedYearKeys.map(year => {
       const yearInt = parseInt(year, 10)
-      const groupTitle = this.getTransactionGroupTitle(yearInt)
+      const groupTitle = TransactionUtil.getTransactionGroupTitle(yearInt)
       const transactions = this.transactionsByYear[yearInt]
 
       if (!transactions) {
@@ -95,10 +92,10 @@ export class W3mTransactionsView extends LitElement {
         <wui-flex flexDirection="column" gap="sm">
           <wui-flex
             flexDirection="row"
-            .padding=${['xxs', 's', 'xxs', 's'] as const}
+            .padding=${['xs', 's', 's', 's'] as const}
             alignItems="center"
           >
-            <wui-text variant="paragraph-500" color="fg-100">${groupTitle}</wui-text>
+            <wui-text variant="paragraph-500" color="fg-200">${groupTitle}</wui-text>
           </wui-flex>
           <wui-flex flexDirection="column" gap="xs">
             ${this.templateTransactions(transactions)}
@@ -162,7 +159,7 @@ export class W3mTransactionsView extends LitElement {
   }
 
   private templateLoading() {
-    return Array(5)
+    return Array(LOADING_ITEM_COUNT)
       .fill(null)
       .map(() => html` <wui-transaction-list-item-loader></wui-transaction-list-item-loader> `)
   }
@@ -184,16 +181,16 @@ export class W3mTransactionsView extends LitElement {
   private getTransactionListItemProps(transaction: Transaction) {
     const haveTransfer = transaction.transfers?.length > 0
     const isNFT =
-      haveTransfer && transaction.transfers?.some(transfer => Boolean(transfer.nft_info))
+      haveTransfer && transaction.transfers?.every(transfer => Boolean(transfer.nft_info))
     const isFungible =
       haveTransfer && transaction.transfers?.every(transfer => Boolean(transfer.fungible_info))
     const transfer = transaction?.transfers?.[0]
     const secondTransfer = transaction?.transfers?.[1]
     const date = DateUtil.getRalativeDateFromNow(transaction?.metadata?.minedAt)
 
-    const descriptions = this.getDescription(transaction)
-    const imageURL = this.getImageURL(transfer, isNFT, isFungible)
-    const secondImageURL = this.getImageURL(secondTransfer, isNFT, isFungible)
+    const descriptions = TransactionUtil.getTransactionDescriptions(transaction)
+    const imageURL = TransactionUtil.getTransactionImageURL(transfer, isNFT, isFungible)
+    const secondImageURL = TransactionUtil.getTransactionImageURL(secondTransfer, isNFT, isFungible)
 
     return {
       date,
@@ -205,100 +202,6 @@ export class W3mTransactionsView extends LitElement {
       status: transaction.metadata?.status,
       type: transaction.metadata?.operationType
     }
-  }
-
-  private getTransactionGroupTitle(year: number) {
-    const currentYear = DateUtil.getYear()
-    const isCurrentYear = year === currentYear
-    const groupTitle = isCurrentYear ? 'This Year' : year
-
-    return groupTitle
-  }
-
-  private getImageURL(
-    transfer: TransactionTransfer | undefined,
-    isNFT: boolean,
-    isFungible: boolean
-  ) {
-    let imageURL = null
-    if (transfer && isNFT) {
-      imageURL = transfer?.nft_info?.content?.preview?.url
-    } else if (transfer && isFungible) {
-      imageURL = transfer?.fungible_info?.icon?.url
-    }
-
-    return imageURL
-  }
-
-  private getDescription(transaction: Transaction) {
-    const type = transaction.metadata?.operationType
-
-    const transfers = transaction.transfers
-    const haveTransfer = transaction.transfers?.length > 0
-    const haveMultipleTransfers = transaction.transfers?.length > 1
-    const isFungible = haveTransfer && transfers?.every(transfer => Boolean(transfer.fungible_info))
-    const tr1 = transfers?.[0]
-    const tr2 = transfers?.[1]
-
-    if (!haveTransfer) {
-      return [transaction.metadata.status]
-    }
-
-    if (haveMultipleTransfers) {
-      let firstDescription = this.getTransferDescription(tr1)
-      let secondDescription = this.getTransferDescription(tr2)
-
-      if (type === 'receive' && isFungible) {
-        firstDescription = transaction.metadata.sentFrom
-      }
-      if (type === 'send' && isFungible) {
-        secondDescription = transaction.metadata.sentTo
-      }
-
-      return [firstDescription, secondDescription]
-    }
-
-    const firstDescription = this.getTransferDescription(tr1)
-
-    return [firstDescription]
-  }
-
-  private getTransferDescription(transfer?: TransactionTransfer) {
-    let description = ''
-
-    if (!transfer) {
-      return description
-    }
-
-    if (transfer?.nft_info) {
-      description = transfer?.nft_info?.name || '-'
-    } else if (transfer?.fungible_info) {
-      description = this.getValueSymbolString(transfer) || '-'
-    }
-
-    return description
-  }
-
-  private getValueSymbolString(transfer?: TransactionTransfer) {
-    if (!transfer) {
-      return null
-    }
-
-    const quantity = this.getQuantityFixedValue(transfer?.quantity.numeric)
-
-    const description = [quantity, transfer?.fungible_info?.symbol].join(' ').trim()
-
-    return description
-  }
-
-  private getQuantityFixedValue(value: string | undefined) {
-    if (!value) {
-      return null
-    }
-
-    const parsetValue = parseFloat(value)
-
-    return parsetValue.toFixed(FLOAT_FIXED_VALUE)
   }
 }
 

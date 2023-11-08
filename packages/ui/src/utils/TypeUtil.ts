@@ -193,7 +193,7 @@ export enum TransactionTypePastTense {
   'approve' = 'approved',
   'bought' = 'bought',
   'borrow' = 'borrowed',
-  'burn' = 'burned',
+  'burn' = 'burnt',
   'cancel' = 'canceled',
   'claim' = 'claimed',
   'deploy' = 'deployed',
@@ -203,13 +203,20 @@ export enum TransactionTypePastTense {
   'receive' = 'received',
   'repay' = 'repaid',
   'send' = 'sent',
+  'sell' = 'sold',
   'stake' = 'staked',
-  'trade' = 'traded',
+  'trade' = 'swapped',
   'unstake' = 'unstaked',
-  'withdraw' = 'withdrew'
+  'withdraw' = 'withdrawn'
 }
 
-export type TransactionIconType = 'arrowBottom' | 'arrowTop' | 'swapVertical' | 'swapHorizontal'
+export type TransactionIconType =
+  | 'arrowBottom'
+  | 'arrowTop'
+  | 'swapVertical'
+  | 'swapHorizontal'
+  | 'checkmark'
+  | 'close'
 
 export type CardSelectType = 'network' | 'wallet'
 
