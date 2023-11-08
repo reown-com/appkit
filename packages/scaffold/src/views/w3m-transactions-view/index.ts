@@ -86,11 +86,11 @@ export class W3mTransactionsView extends LitElement {
       const yearInt = parseInt(year, 16)
       const groupTitle = this.getTransactionGroupTitle(yearInt)
       const transactions = this.transactionsByYear[yearInt]
- 
+
       if (!transactions) {
         return null
       }
-      
+
       return html`
         <wui-flex flexDirection="column" gap="sm">
           <wui-flex

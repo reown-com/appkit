@@ -27,7 +27,7 @@ export const DateUtil = {
   getYear(date: string = new Date().toISOString()) {
     return dayjs(date).year()
   },
-  
+
   getRalativeDateFromNow(date: string) {
     return dayjs(date).fromNow(true)
   }
