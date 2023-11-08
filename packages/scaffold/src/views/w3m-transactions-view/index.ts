@@ -112,7 +112,7 @@ export class W3mTransactionsView extends LitElement {
     return transactions.map((transaction, index) => {
       const { date, descriptions, direction, isNFT, imageURL, secondImageURL, status, type } =
         this.getTransactionListItemProps(transaction)
-        
+
       return html`
         <wui-transaction-list-item
           id=${index === this.transactions.length - 1 && this.next !== null ? PAGINATOR_ID : ''}

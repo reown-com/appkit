@@ -28,10 +28,8 @@ export class WuiTransactionVisual extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `--local-border-radius: ${this.isNFT ? '14px' : '50%'};`
-    
-    return html`<wui-flex>
-      ${this.templateVisual()} ${this.templateIcon()}
-    </wui-flex>`
+
+    return html`<wui-flex> ${this.templateVisual()} ${this.templateIcon()} </wui-flex>`
   }
 
   // -- Private ------------------------------------------- //
@@ -40,9 +38,9 @@ export class WuiTransactionVisual extends LitElement {
     const haveAnyImage = this.imageURL || this.secondImageURL
 
     if (isTrade && haveAnyImage) {
-      console.log("isTrade", isTrade, this.isNFT)
-      
-      return html`<div class="swap-images-container ${this.isNFT ? "nft": ""}">
+      console.log('isTrade', isTrade, this.isNFT)
+
+      return html`<div class="swap-images-container ${this.isNFT ? 'nft' : ''}">
         ${this.imageURL
           ? html`<wui-image src=${this.imageURL} alt="Transaction image"></wui-image>`
           : null}
@@ -51,7 +49,11 @@ export class WuiTransactionVisual extends LitElement {
           : null}
       </div>`
     } else if (this.imageURL) {
-      return html`<wui-image src=${this.imageURL} class="${this.isNFT ? "nft": ""}" alt="Transaction image"></wui-image>`
+      return html`<wui-image
+        src=${this.imageURL}
+        class="${this.isNFT ? 'nft' : ''}"
+        alt="Transaction image"
+      ></wui-image>`
     } else if (this.isNFT) {
       return html`<wui-icon size="inherit" color="fg-200" name="nftPlaceholder"></wui-icon>`
     }
