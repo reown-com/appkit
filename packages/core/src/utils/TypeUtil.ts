@@ -154,8 +154,8 @@ export interface TransactionMetadata {
 
 export interface TransactionTransfer {
   fungible_info?: {
-    name: string
-    symbol: string
+    name?: string
+    symbol?: string
     icon?: {
       url: string
     }

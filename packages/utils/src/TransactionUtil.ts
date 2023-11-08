@@ -1,7 +1,7 @@
 import { type Transaction, type TransactionTransfer } from '@web3modal/core'
 import { UiHelperUtil } from '@web3modal/ui'
-import type { TransactionType } from '@web3modal/ui/dist/types/src/utils/TypeUtil.js'
 import { DateUtil } from './DateUtil.js'
+import type { TransactionType } from '@web3modal/ui/src/utils/TypeUtil.js'
 
 // -- Helpers --------------------------------------------- //
 const FLOAT_FIXED_VALUE = 3
