@@ -9,6 +9,8 @@ export class W3mApproveTransactionView extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
+  private resizeObserver?: ResizeObserver = undefined
+
   private unsubscribe: (() => void)[] = []
 
   private iframe = document.getElementById('w3m-iframe') as HTMLIFrameElement
@@ -29,18 +31,22 @@ export class W3mApproveTransactionView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    this.resizeObserver?.unobserve(window.document.body)
   }
 
   public override firstUpdated() {
-    const blueprint = this.renderRoot.querySelector('div')
-    const data = blueprint?.getBoundingClientRect()
-    const dimensions = data ?? { width: 0, height: 0, left: 0, top: 0 }
     this.iframe.style.display = 'block'
-    this.iframe.style.width = `${dimensions.width}px`
-    this.iframe.style.height = `${dimensions.height}px`
-    this.iframe.style.left = `${dimensions.left}px`
-    this.iframe.style.top = `${dimensions.top}px`
-    this.ready = true
+    const blueprint = this.renderRoot.querySelector('div')
+    this.resizeObserver = new ResizeObserver(() => {
+      const data = blueprint?.getBoundingClientRect()
+      const dimensions = data ?? { left: 0, top: 0, width: 0, height: 0 }
+      this.iframe.style.width = `${dimensions.width}px`
+      this.iframe.style.height = `${dimensions.height}px`
+      this.iframe.style.left = `${dimensions.left}px`
+      this.iframe.style.top = `${dimensions.top}px`
+      this.ready = true
+    })
+    this.resizeObserver.observe(window.document.body)
   }
 
   // -- Render -------------------------------------------- //
