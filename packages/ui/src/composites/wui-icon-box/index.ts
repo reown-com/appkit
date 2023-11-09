@@ -33,23 +33,7 @@ export class WuiIconBox extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    let iconSize: SizeType = 'xxs'
-    switch (this.size) {
-      case 'lg':
-        iconSize = 'md'
-        break
-      case 'md':
-        iconSize = 'sm'
-        break
-      case 'mdl':
-        iconSize = 'md'
-        break
-      case 'sm':
-        iconSize = 'sm'
-        break
-      default:
-        iconSize = 'xxs'
-    }
+    let iconSize: SizeType = this.size || 'xxs'
 
     const isLg = this.size === 'lg'
     const bgMix = isLg ? '12%' : '16%'
