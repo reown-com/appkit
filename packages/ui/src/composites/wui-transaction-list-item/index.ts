@@ -57,10 +57,10 @@ export class WuiTransactionListItem extends LitElement {
             ${secondDesc
               ? html`
                   <wui-icon
-                        class="description-separator-icon"
-                        size="xxs"
-                        name="arrowRight"
-                      ></wui-icon>
+                    class="description-separator-icon"
+                    size="xxs"
+                    name="arrowRight"
+                  ></wui-icon>
                   <wui-text variant="small-400" color="fg-200">
                     <span>${secondDesc}</span>
                   </wui-text>

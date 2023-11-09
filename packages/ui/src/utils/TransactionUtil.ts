@@ -13,9 +13,7 @@ export const TransactionUtil = {
 
     return groupTitle
   },
-  getTransactionImageURL(
-    transfer: TransactionTransfer | undefined
-  ) {
+  getTransactionImageURL(transfer: TransactionTransfer | undefined) {
     let imageURL = null
     const isNFT = Boolean(transfer?.nft_info)
     const isFungible = Boolean(transfer?.fungible_info)
@@ -74,13 +72,13 @@ export const TransactionUtil = {
     }
 
     if (haveMultipleTransfers) {
-      if (type === "mint") {
-        if(isAllNFT) {
+      if (type === 'mint') {
+        if (isAllNFT) {
           const multipleNFTDescription = `${transfers.length} (${transfers.length})`
 
           return [multipleNFTDescription]
         }
-        
+
         return [firstDescription]
       }
 
