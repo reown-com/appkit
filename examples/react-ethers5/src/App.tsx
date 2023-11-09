@@ -14,21 +14,22 @@ if (!projectId) {
 }
 
 // 2. Set chains
-const mainnet = {
-  chainId: 1,
-  name: 'Ethereum',
-  currency: 'ETH',
-  explorerUrl: 'https://etherscan.io',
-  rpcUrl: 'https://cloudflare-eth.com'
-}
-
-const arbitrum = {
-  chainId: 42161,
-  name: 'Arbitrum',
-  currency: 'ETH',
-  explorerUrl: 'https://arbiscan.io',
-  rpcUrl: 'https://arb1.arbitrum.io/rpc'
-}
+const chains = [
+  {
+    chainId: 1,
+    name: 'Ethereum',
+    currency: 'ETH',
+    explorerUrl: 'https://etherscan.io',
+    rpcUrl: 'https://cloudflare-eth.com'
+  },
+  {
+    chainId: 42161,
+    name: 'Arbitrum',
+    currency: 'ETH',
+    explorerUrl: 'https://arbiscan.io',
+    rpcUrl: 'https://arb1.arbitrum.io/rpc'
+  }
+]
 
 const ethersConfig = defaultConfig({
   metadata: {
@@ -44,7 +45,7 @@ const ethersConfig = defaultConfig({
 // 3. Create modal
 createWeb3Modal({
   ethersConfig,
-  chains: [mainnet, arbitrum],
+  chains,
   projectId,
   enableAnalytics: true,
   themeMode: 'light',
