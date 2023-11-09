@@ -36,7 +36,6 @@ export class WuiIconBox extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const iconSize = this.iconSize || this.size
-    
     const isLg = this.size === 'lg'
     const bgMix = isLg ? '12%' : '16%'
     const borderRadius = isLg ? 'xxs' : '3xl'
