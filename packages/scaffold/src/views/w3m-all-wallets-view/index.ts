@@ -37,6 +37,7 @@ export class W3mAllWalletsView extends LitElement {
       return html`
         <wui-icon-box
           size="lg"
+          iconSize="xl"
           iconColor="accent-100"
           backgroundColor="accent-100"
           icon="qrCode"

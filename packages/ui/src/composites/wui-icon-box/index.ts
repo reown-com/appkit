@@ -23,6 +23,8 @@ export class WuiIconBox extends LitElement {
 
   @property() public iconColor: ColorType = 'accent-100'
 
+  @property() public iconSize?: Exclude<SizeType, 'inherit' | 'xxs'>
+
   @property() public background: BackgroundType = 'transparent'
 
   @property({ type: Boolean }) public border? = false
@@ -33,8 +35,8 @@ export class WuiIconBox extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    let iconSize: SizeType = this.size || 'xxs'
-
+    const iconSize = this.iconSize || this.size
+    
     const isLg = this.size === 'lg'
     const bgMix = isLg ? '12%' : '16%'
     const borderRadius = isLg ? 'xxs' : '3xl'
