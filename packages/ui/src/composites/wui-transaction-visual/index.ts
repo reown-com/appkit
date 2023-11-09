@@ -106,7 +106,7 @@ export class WuiTransactionVisual extends LitElement {
 
     return html`
       <wui-icon-box
-        size="2xs"
+        size="xxs"
         iconColor=${color}
         backgroundColor=${color}
         background="opaque"

@@ -105,7 +105,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-spacing-3xl: 40px;
         --wui-spacing-4xl: 90px;
 
-        --wui-icon-box-size-2xs: 14px;
+        --wui-icon-box-size-xxs: 14px;
         --wui-icon-box-size-xs: 20px;
         --wui-icon-box-size-sm: 24px;
         --wui-icon-box-size-md: 32px;
