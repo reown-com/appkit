@@ -26,6 +26,7 @@
     "publish:canary": "npm run build; lerna exec -- npm publish --no-private --access public --tag canary"
   },
   "workspaces": [
+    "packages/common",
     "packages/ui",
     "packages/core",
     "packages/scaffold",

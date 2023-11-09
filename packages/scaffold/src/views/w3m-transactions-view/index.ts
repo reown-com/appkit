@@ -1,9 +1,9 @@
-import { customElement } from '@web3modal/ui'
+import { DateUtil, type Transaction } from '@web3modal/common'
+import { EventsController, TransactionsController } from '@web3modal/core'
+import { TransactionUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { EventsController, TransactionsController, type Transaction } from '@web3modal/core'
-import { DateUtil, TransactionUtil } from '@web3modal/utils'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'last-transaction'
@@ -13,11 +13,12 @@ const LOADING_ITEM_COUNT = 7
 export class W3mTransactionsView extends LitElement {
   public static override styles = styles
 
-  // -- State & Properties -------------------------------- //
+  // -- Members -------------------------------- //
   private unsubscribe: (() => void)[] = []
 
   private paginationObserver?: IntersectionObserver = undefined
 
+  // -- State & Properties -------------------------------- //
   @state() private transactions = TransactionsController.state.transactions
 
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
@@ -186,7 +187,7 @@ export class W3mTransactionsView extends LitElement {
       haveTransfer && transaction.transfers?.every(transfer => Boolean(transfer.fungible_info))
     const transfer = transaction?.transfers?.[0]
     const secondTransfer = transaction?.transfers?.[1]
-    const date = DateUtil.getRalativeDateFromNow(transaction?.metadata?.minedAt)
+    const date = DateUtil.getRelativeDateFromNow(transaction?.metadata?.minedAt)
 
     const descriptions = TransactionUtil.getTransactionDescriptions(transaction)
     const imageURL = TransactionUtil.getTransactionImageURL(transfer, isNFT, isFungible)

@@ -1,6 +1,7 @@
 {
   "npmClient": "npm",
   "packages": [
+    "packages/common",
     "packages/ui",
     "packages/core",
     "packages/scaffold",

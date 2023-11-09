@@ -2,11 +2,11 @@ import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-image/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { TransactionIconType, TransactionType } from '../../utils/TypeUtil.js'
+import { type TransactionDirection, type TransactionStatus } from '@web3modal/common'
+import { type TransactionIconType, type TransactionType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
-import type { TransactionDirection, TransactionStatus } from '@web3modal/core'
 
 @customElement('wui-transaction-visual')
 export class WuiTransactionVisual extends LitElement {

@@ -1,9 +1,8 @@
+import { DateUtil, type Transaction } from '@web3modal/common'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { OptionsController } from './OptionsController.js'
 import { AccountController } from './AccountController.js'
-import type { Transaction } from '../utils/TypeUtil.js'
-import { DateUtil } from '@web3modal/utils'
 
 // -- Types --------------------------------------------- //
 type TransactionByYearMap = Record<number, Transaction[]>

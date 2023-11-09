@@ -1,12 +1,12 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-text/index.js'
-import type { TransactionDirection, TransactionStatus } from '@web3modal/core'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-transaction-visual/index.js'
 import styles from './styles.js'
-import { TransactionTypePastTense, type TransactionType } from '../../utils/TypeUtil.js'
+import { type TransactionType, TransactionTypePastTense } from '../../utils/TypeUtil.js'
+import { type TransactionStatus, type TransactionDirection } from '@web3modal/common'
 
 @customElement('wui-transaction-list-item')
 export class WuiTransactionListItem extends LitElement {
