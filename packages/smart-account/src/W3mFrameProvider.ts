@@ -1,7 +1,6 @@
 import { W3mFrame } from './W3mFrame.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
 import { W3mFrameConstants } from './W3mFrameConstants.js'
-import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 
 // -- Types -----------------------------------------------------------
 type Resolver<T> = { resolve: (value: T) => void; reject: (reason?: unknown) => void } | undefined
@@ -13,7 +12,7 @@ type DisconnectResolver = Resolver<undefined>
 type IsConnectedResolver = Resolver<W3mFrameTypes.Responses['FrameIsConnectedResponse']>
 type GetChainIdResolver = Resolver<W3mFrameTypes.Responses['FrameGetChainIdResponse']>
 type SwitchChainResolver = Resolver<undefined>
-type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse['result']>
+type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
@@ -166,13 +165,6 @@ export class W3mFrameProvider {
   public async request(req: W3mFrameTypes.RPCRequest) {
     await this.w3mFrame.frameLoadPromise
 
-    if (!req.id) {
-      req.id = W3mFrameHelpers.getRequestId()
-    }
-    if (!req.jsonrpc) {
-      req.jsonrpc = '2.0'
-    }
-
     switch (req.method) {
       case 'personal_sign':
         this.w3mFrame.events.postAppEvent({
@@ -190,7 +182,7 @@ export class W3mFrameProvider {
         throw new Error('W3mFrameProvider: unsupported method')
     }
 
-    return new Promise<W3mFrameTypes.RPCResponse['result']>((resolve, reject) => {
+    return new Promise<W3mFrameTypes.RPCResponse>((resolve, reject) => {
       this.rpcRequestResolver = { resolve, reject }
     })
   }
@@ -303,7 +295,7 @@ export class W3mFrameProvider {
   private onRpcRequestSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/RPC_REQUEST_SUCCESS' }>
   ) {
-    this.rpcRequestResolver?.resolve(event.payload.result)
+    this.rpcRequestResolver?.resolve(event.payload)
   }
 
   private onRpcRequestError(
