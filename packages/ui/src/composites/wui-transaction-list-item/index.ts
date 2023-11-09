@@ -56,13 +56,11 @@ export class WuiTransactionListItem extends LitElement {
               : null}
             ${secondDesc
               ? html`
-                  ${this.isNFT
-                    ? null
-                    : html`<wui-icon
+                  <wui-icon
                         class="description-separator-icon"
                         size="xxs"
                         name="arrowRight"
-                      ></wui-icon>`}
+                      ></wui-icon>
                   <wui-text variant="small-400" color="fg-200">
                     <span>${secondDesc}</span>
                   </wui-text>

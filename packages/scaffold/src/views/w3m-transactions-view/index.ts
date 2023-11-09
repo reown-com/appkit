@@ -182,16 +182,14 @@ export class W3mTransactionsView extends LitElement {
   private getTransactionListItemProps(transaction: Transaction) {
     const haveTransfer = transaction.transfers?.length > 0
     const isNFT =
-      haveTransfer && transaction.transfers?.every(transfer => Boolean(transfer.nft_info))
-    const isFungible =
-      haveTransfer && transaction.transfers?.every(transfer => Boolean(transfer.fungible_info))
+      haveTransfer && transaction.transfers?.some(transfer => Boolean(transfer.nft_info))
     const transfer = transaction?.transfers?.[0]
     const secondTransfer = transaction?.transfers?.[1]
     const date = DateUtil.getRelativeDateFromNow(transaction?.metadata?.minedAt)
 
     const descriptions = TransactionUtil.getTransactionDescriptions(transaction)
-    const imageURL = TransactionUtil.getTransactionImageURL(transfer, isNFT, isFungible)
-    const secondImageURL = TransactionUtil.getTransactionImageURL(secondTransfer, isNFT, isFungible)
+    const imageURL = TransactionUtil.getTransactionImageURL(transfer)
+    const secondImageURL = TransactionUtil.getTransactionImageURL(secondTransfer)
 
     return {
       date,
