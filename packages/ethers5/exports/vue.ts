@@ -1,10 +1,8 @@
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { ConstantsUtil } from '@web3modal/utils'
-
 import { getWeb3Modal } from '@web3modal/scaffold-vue'
-import { ProviderController } from '../src/controllers/ProviderController.js'
-import { onUnmounted, reactive, ref } from 'vue'
+import { onUnmounted, ref } from 'vue'
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
 
@@ -33,7 +31,7 @@ export function useWeb3ModalSigner() {
   const walletProviderType = ref(modal.getWalletProviderType())
   const signer = ref(walletProvider.value?.getSigner())
 
-  const unsubscribe = ProviderController.subscribe(state => {
+  const unsubscribe = modal.subscribeProvider(state => {
     walletProvider.value = state.provider
     walletProviderType.value = state.providerType
     signer.value = walletProvider.value?.getSigner()
@@ -43,11 +41,11 @@ export function useWeb3ModalSigner() {
     unsubscribe?.()
   })
 
-  return reactive({
+  return {
     walletProvider,
     walletProviderType,
     signer
-  })
+  }
 }
 
 export function useWeb3ModalAccount() {
@@ -59,7 +57,7 @@ export function useWeb3ModalAccount() {
   const isConnected = ref(modal.getIsConnected())
   const chainId = ref(modal.getChainId())
 
-  const unsubscribe = ProviderController.subscribe(state => {
+  const unsubscribe = modal.subscribeProvider(state => {
     address.value = state.address
     isConnected.value = state.isConnected
     chainId.value = state.chainId
@@ -69,11 +67,11 @@ export function useWeb3ModalAccount() {
     unsubscribe?.()
   })
 
-  return reactive({
+  return {
     address,
     isConnected,
     chainId
-  })
+  }
 }
 
 export {

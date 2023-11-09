@@ -20,10 +20,10 @@
     "clean": "rm -rf `find . -type d -name node_modules -o -name dist -o -name .next -o -name out`; rm package-lock.json",
     "new-version": "lerna version --no-git-tag-version --exact",
     "pre-publish": "turbo lint typecheck prettier test --parallel; npm run new-version; npm install; turbo run build;",
-    "publish:latest": "turbo run build lerna exec -- npm publish --no-private --access public --tag latest",
-    "publish:alpha": "turbo run build lerna exec -- npm publish --no-private --access public --tag alpha",
-    "publish:beta": "turbo run build lerna exec -- npm publish --no-private --access public --tag beta",
-    "publish:canary": "turbo run build lerna exec -- npm publish --no-private --access public --tag canary"
+    "publish:latest": "npm run build; lerna exec -- npm publish --no-private --access public --tag latest",
+    "publish:alpha": "npm run build; lerna exec -- npm publish --no-private --access public --tag alpha",
+    "publish:beta": "npm run build; lerna exec -- npm publish --no-private --access public --tag beta",
+    "publish:canary": "npm run build; lerna exec -- npm publish --no-private --access public --tag canary"
   },
   "workspaces": [
     "packages/ui",

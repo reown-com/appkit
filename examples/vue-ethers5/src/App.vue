@@ -1,11 +1,13 @@
 <script lang="ts" setup>
+import { useWeb3ModalSigner } from '@web3modal/ethers5/vue'
 import {
   createWeb3Modal,
   defaultConfig,
   useWeb3Modal,
   useWeb3ModalEvents,
   useWeb3ModalState,
-  useWeb3ModalTheme
+  useWeb3ModalTheme,
+  useWeb3ModalAccount
 } from '@web3modal/ethers5/vue'
 
 // @ts-expect-error 1. Get projectId
@@ -15,7 +17,22 @@ if (!projectId) {
 }
 
 // 2. Set chains
-const chains = [1, 42161]
+const chains = [
+  {
+    chainId: 1,
+    name: 'Ethereum',
+    currency: 'ETH',
+    explorerUrl: 'https://etherscan.io',
+    rpcUrl: 'https://cloudflare-eth.com'
+  },
+  {
+    chainId: 42161,
+    name: 'Arbitrum',
+    currency: 'ETH',
+    explorerUrl: 'https://arbiscan.io',
+    rpcUrl: 'https://arb1.arbitrum.io/rpc'
+  }
+]
 
 const ethersConfig = defaultConfig({
   metadata: {
@@ -45,6 +62,8 @@ const modal = useWeb3Modal()
 const state = useWeb3ModalState()
 const { setThemeMode, themeMode, themeVariables } = useWeb3ModalTheme()
 const events = useWeb3ModalEvents()
+const { address, chainId, isConnected } = useWeb3ModalAccount()
+const { signer } = useWeb3ModalSigner()
 </script>
 
 <template>
@@ -56,7 +75,9 @@ const events = useWeb3ModalEvents()
   <button @click="modal.open()">Open Connect Modal</button>
   <button @click="modal.open({ view: 'Networks' })">Open Network Modal</button>
   <button @click="setThemeMode(themeMode === 'dark' ? 'light' : 'dark')">Toggle Theme Mode</button>
+  <button @click="signer?.signMessage('hello')">Get Address</button>
   <pre>{{ JSON.stringify(state, null, 2) }}</pre>
+  <pre>{{ JSON.stringify({ address, chainId, isConnected }, null, 2) }}</pre>
   <pre>{{ JSON.stringify({ themeMode, themeVariables }, null, 2) }}</pre>
   <pre>{{ JSON.stringify(events, null, 2) }}</pre>
 </template>

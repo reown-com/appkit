@@ -14,7 +14,22 @@ if (!projectId) {
 }
 
 // 2. Set chains
-const chains = [1, 42161]
+const chains = [
+  {
+    chainId: 1,
+    name: 'Ethereum',
+    currency: 'ETH',
+    explorerUrl: 'https://etherscan.io',
+    rpcUrl: 'https://cloudflare-eth.com'
+  },
+  {
+    chainId: 42161,
+    name: 'Arbitrum',
+    currency: 'ETH',
+    explorerUrl: 'https://arbiscan.io',
+    rpcUrl: 'https://arb1.arbitrum.io/rpc'
+  }
+]
 
 const ethersConfig = defaultConfig({
   metadata: {
