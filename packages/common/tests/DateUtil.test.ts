@@ -11,6 +11,6 @@ describe('DateUtil', () => {
     expect(DateUtil.getYear()).toEqual(year)
   })
   it('should return relative time for one hour ago', () => {
-    expect(DateUtil.getRelativeDateFromNow(oneHourAgo)).toEqual("1 hr")
+    expect(DateUtil.getRelativeDateFromNow(oneHourAgo)).toEqual('1 hr')
   })
 })
