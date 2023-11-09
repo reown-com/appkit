@@ -48,6 +48,16 @@ export function useWeb3ModalSigner() {
   }
 }
 
+export function useDisconnect() {
+  async function disconnect() {
+    await modal?.disconnect()
+  }
+
+  return {
+    disconnect
+  }
+}
+
 export function useWeb3ModalAccount() {
   if (!modal) {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalAccount" composition')
