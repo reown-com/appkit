@@ -1,12 +1,12 @@
 {
   "name": "@examples/html-ethers5",
   "private": true,
-  "version": "3.3.0-3ea01d7a",
+  "version": "3.3.0-5ccf4c52",
   "scripts": {
     "dev:example": "vite --port 3011",
     "build:examples": "vite build"
   },
   "dependencies": {
-    "@web3modal/ethers5": "3.3.0-3ea01d7a"
+    "@web3modal/ethers5": "3.3.0-5ccf4c52"
   }
 }
