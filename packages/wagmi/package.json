@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wagmi",
-  "version": "3.3.0-05720c44",
+  "version": "3.3.0-9195db78",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -43,12 +43,12 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/polyfills": "3.3.0-05720c44",
-    "@web3modal/scaffold": "3.3.0-05720c44",
-    "@web3modal/scaffold-react": "3.3.0-05720c44",
-    "@web3modal/scaffold-vue": "3.3.0-05720c44",
-    "@web3modal/smart-account": "3.3.0-05720c44",
-    "@web3modal/utils": "3.3.0-05720c44"
+    "@web3modal/polyfills": "3.3.0-9195db78",
+    "@web3modal/scaffold": "3.3.0-9195db78",
+    "@web3modal/scaffold-react": "3.3.0-9195db78",
+    "@web3modal/scaffold-vue": "3.3.0-9195db78",
+    "@web3modal/smart-account": "3.3.0-9195db78",
+    "@web3modal/utils": "3.3.0-9195db78"
   },
   "devDependencies": {
     "@web3modal/siwe": "3.3.0-37e8aca5"
