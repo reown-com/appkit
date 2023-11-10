@@ -96,5 +96,13 @@ export const TransactionsController = {
 
       return !isAllSpam
     })
+  },
+
+  resetTransactions() {
+    state.transactions = []
+    state.transactionsByYear = {}
+    state.loading = false
+    state.empty = false
+    state.next = undefined
   }
 }

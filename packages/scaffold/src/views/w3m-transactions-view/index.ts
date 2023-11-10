@@ -49,17 +49,12 @@ export class W3mTransactionsView extends LitElement {
   public override firstUpdated() {
     if (this.transactions.length === 0) {
       this.fetchTransactions()
-      this.createPaginationObserver()
     }
+    this.createPaginationObserver()
   }
 
   public override updated() {
-    this.paginationObserver?.disconnect()
-
-    const lastItem = this.shadowRoot?.querySelector(`#${PAGINATOR_ID}`)
-    if (lastItem) {
-      this.paginationObserver?.observe(lastItem)
-    }
+    this.setPaginationObserver()
   }
 
   public override disconnectedCallback() {
@@ -81,7 +76,8 @@ export class W3mTransactionsView extends LitElement {
   private templateTransactionsByYear() {
     const sortedYearKeys = Object.keys(this.transactionsByYear).sort().reverse()
 
-    return sortedYearKeys.map(year => {
+    return sortedYearKeys.map((year, index) => {
+      const isLastGroup = index === sortedYearKeys.length - 1
       const yearInt = parseInt(year, 10)
       const groupTitle = TransactionUtil.getTransactionGroupTitle(yearInt)
       const transactions = this.transactionsByYear[yearInt]
@@ -93,28 +89,29 @@ export class W3mTransactionsView extends LitElement {
       return html`
         <wui-flex flexDirection="column" gap="sm">
           <wui-flex
+            alignItems="center"
             flexDirection="row"
             .padding=${['xs', 's', 's', 's'] as const}
-            alignItems="center"
           >
             <wui-text variant="paragraph-500" color="fg-200">${groupTitle}</wui-text>
           </wui-flex>
           <wui-flex flexDirection="column" gap="xs">
-            ${this.templateTransactions(transactions)}
+            ${this.templateTransactions(transactions, isLastGroup)}
           </wui-flex>
         </wui-flex>
       `
     })
   }
 
-  private templateTransactions(transactions: Transaction[]) {
+  private templateTransactions(transactions: Transaction[], isLastGroup: boolean) {
     return transactions.map((transaction, index) => {
       const { date, descriptions, direction, isNFT, imageURL, secondImageURL, status, type } =
         this.getTransactionListItemProps(transaction)
+      const isLastTransaction = isLastGroup && index === transactions.length - 1
 
       return html`
         <wui-transaction-list-item
-          id=${index === transactions.length - 1 && this.next ? PAGINATOR_ID : ''}
+          id=${isLastTransaction && this.next ? PAGINATOR_ID : ''}
           type=${type}
           .descriptions=${descriptions}
           status=${status}
@@ -173,9 +170,18 @@ export class W3mTransactionsView extends LitElement {
         EventsController.sendEvent({ type: 'track', event: 'LOAD_MORE_TRANSACTIONS' })
       }
     }, {})
+    this.setPaginationObserver()
   }
 
-  // Private Methods ------------------------------------- //
+  private setPaginationObserver() {
+    this.paginationObserver?.disconnect()
+
+    const lastItem = this.shadowRoot?.querySelector(`#${PAGINATOR_ID}`)
+    if (lastItem) {
+      this.paginationObserver?.observe(lastItem)
+    }
+  }
+
   private async fetchTransactions() {
     await TransactionsController.fetchTransactions()
   }
