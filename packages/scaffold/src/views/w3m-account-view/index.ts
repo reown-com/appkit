@@ -137,8 +137,8 @@ export class W3mAccountView extends LitElement {
         </wui-list-item>
         <wui-list-item
           iconVariant="blue"
-          icon="swapHorizontal"
-          iconSize="14"
+          icon="swapHorizontalBold"
+          iconSize="sm"
           ?chevron=${true}
           @click=${this.onTransactions.bind(this)}
         >

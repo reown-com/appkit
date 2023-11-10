@@ -61,16 +61,16 @@ export class WuiTransactionVisual extends LitElement {
 
   private templateIcon() {
     let color: 'accent-100' | 'error-100' | 'success-100' | 'inverse-100' = 'accent-100'
-    let icon: TransactionIconType | null = null
+    let icon: TransactionIconType | undefined
 
     if (this.type === 'trade') {
-      icon = 'swapHorizontal'
+      icon = 'swapHorizontalBold'
     } else if (this.type === 'approve') {
       icon = 'checkmark'
     } else if (this.type === 'cancel') {
       icon = 'close'
     } else if (this.type === 'burn' || this.type === 'execute' || this.type === 'deploy') {
-      icon = null
+      icon = undefined
     } else if (this.direction) {
       switch (this.direction) {
         case 'in':

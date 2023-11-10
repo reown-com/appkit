@@ -128,6 +128,7 @@ export type IconType =
   | 'refresh'
   | 'search'
   | 'swapHorizontal'
+  | 'swapHorizontalBold'
   | 'swapVertical'
   | 'telegram'
   | 'twitch'
@@ -214,7 +215,7 @@ export type TransactionIconType =
   | 'arrowBottom'
   | 'arrowTop'
   | 'swapVertical'
-  | 'swapHorizontal'
+  | 'swapHorizontalBold'
   | 'checkmark'
   | 'close'
 
