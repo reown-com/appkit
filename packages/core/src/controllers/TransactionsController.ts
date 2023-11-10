@@ -46,23 +46,22 @@ export const TransactionsController = {
     state.loading = true
 
     try {
-      await BlockchainApiController.fetchTransactions({
+      const response = await BlockchainApiController.fetchTransactions({
         account: accountAddress,
         projectId,
         cursor: state.next
-      }).then(response => {
-        state.loading = false
-
-        const nonSpamTransactions = this.filterSpamTransactions(response.data)
-
-        state.transactions = [...state.transactions, ...nonSpamTransactions]
-        state.transactionsByYear = this.groupTransactionsByYear(
-          state.transactionsByYear,
-          nonSpamTransactions
-        )
-        state.empty = response.data.length === 0
-        state.next = response.next ? response.next : undefined
       })
+
+      const nonSpamTransactions = this.filterSpamTransactions(response.data)
+
+      state.loading = false
+      state.transactions = [...state.transactions, ...nonSpamTransactions]
+      state.transactionsByYear = this.groupTransactionsByYear(
+        state.transactionsByYear,
+        nonSpamTransactions
+      )
+      state.empty = response.data.length === 0
+      state.next = response.next ? response.next : undefined
     } catch (error) {
       EventsController.sendEvent({ type: 'track', event: 'ERROR_FETCH_TRANSACTIONS' })
       SnackController.showError('Failed to fetch transactions')
