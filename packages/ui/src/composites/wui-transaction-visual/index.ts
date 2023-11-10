@@ -1,16 +1,15 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import '../../components/wui-image/index.js'
-import { resetStyles } from '../../utils/ThemeUtil.js'
-import { type TransactionDirection, type TransactionStatus } from '@web3modal/common'
-import { type TransactionIconType, type TransactionType } from '../../utils/TypeUtil.js'
+import type { TransactionDirection, TransactionStatus } from '@web3modal/common'
+import type { TransactionIconType, TransactionType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
+import '../../components/wui-image/index.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
 
 @customElement('wui-transaction-visual')
 export class WuiTransactionVisual extends LitElement {
-  public static override styles = [resetStyles, styles]
+  public static override styles = [styles]
 
   // -- State & Properties -------------------------------- //
   @property() public type?: TransactionType
@@ -63,7 +62,7 @@ export class WuiTransactionVisual extends LitElement {
 
   private templateIcon() {
     let color: 'accent-100' | 'error-100' | 'success-100' | 'inverse-100' = 'accent-100'
-    let icon: TransactionIconType | undefined
+    let icon: TransactionIconType | undefined = undefined
 
     if (this.type === 'trade') {
       icon = 'swapHorizontalBold'

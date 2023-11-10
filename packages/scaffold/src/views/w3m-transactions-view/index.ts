@@ -1,4 +1,5 @@
-import { DateUtil, type Transaction } from '@web3modal/common'
+import { DateUtil } from '@web3modal/common'
+import type { Transaction } from '@web3modal/common'
 import { EventsController, TransactionsController } from '@web3modal/core'
 import { TransactionUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'

@@ -1,5 +1,6 @@
-import { DateUtil, type TransactionTransfer, type Transaction } from '@web3modal/common'
-import { type TransactionType } from './TypeUtil.js'
+import { DateUtil } from '@web3modal/common'
+import type { TransactionTransfer, Transaction } from '@web3modal/common'
+import type { TransactionType } from './TypeUtil.js'
 import { UiHelperUtil } from './UiHelperUtil.js'
 
 // -- Helpers --------------------------------------------- //
@@ -13,6 +14,7 @@ export const TransactionUtil = {
 
     return groupTitle
   },
+
   getTransactionImageURL(transfer: TransactionTransfer | undefined) {
     let imageURL = null
     const isNFT = Boolean(transfer?.nft_info)
@@ -26,6 +28,7 @@ export const TransactionUtil = {
 
     return imageURL
   },
+
   getTransactionDescriptions(transaction: Transaction) {
     const type = transaction.metadata?.operationType as TransactionType
 
@@ -89,6 +92,7 @@ export const TransactionUtil = {
 
     return [firstDescription]
   },
+
   getTransferDescription(transfer?: TransactionTransfer) {
     let description = ''
 
@@ -104,6 +108,7 @@ export const TransactionUtil = {
 
     return description
   },
+
   getFungibleTransferDescription(transfer?: TransactionTransfer) {
     if (!transfer) {
       return null
@@ -114,6 +119,7 @@ export const TransactionUtil = {
 
     return description
   },
+
   getQuantityFixedValue(value: string | undefined) {
     if (!value) {
       return null

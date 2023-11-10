@@ -17,7 +17,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/common": "3.2.0",
+    "@web3modal/common": "3.2.1",
     "valtio": "1.11.2"
   },
   "keywords": [

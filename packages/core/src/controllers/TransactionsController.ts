@@ -1,4 +1,5 @@
-import { DateUtil, type Transaction } from '@web3modal/common'
+import { DateUtil } from '@web3modal/common'
+import type { Transaction } from '@web3modal/common'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { OptionsController } from './OptionsController.js'
