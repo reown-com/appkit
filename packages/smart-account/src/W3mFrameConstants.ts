@@ -1,5 +1,5 @@
 export const W3mFrameConstants = {
-  SECURE_SITE: 'http://localhost:3010',
+  SECURE_SITE: 'http://localhost:3010/sdk',
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
   RPC_METHOD_KEY: 'RPC_',
