@@ -3,13 +3,14 @@ import { property } from 'lit/decorators.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import { type TransactionType, TransactionTypePastTense } from '../../utils/TypeUtil.js'
 import type { TransactionStatus, TransactionDirection } from '@web3modal/common'
+import { resetStyles } from '../../utils/ThemeUtil.js'
 import '../../components/wui-text/index.js'
 import '../wui-transaction-visual/index.js'
 import styles from './styles.js'
 
 @customElement('wui-transaction-list-item')
 export class WuiTransactionListItem extends LitElement {
-  public static override styles = [styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public type: TransactionType = 'approve'

@@ -1,12 +1,13 @@
 import { html, LitElement } from 'lit'
 import { customElement } from '../../utils/WebComponentsUtil.js'
+import { resetStyles } from '../../utils/ThemeUtil.js'
 import '../../components/wui-text/index.js'
 import '../wui-transaction-visual/index.js'
 import styles from './styles.js'
 
 @customElement('wui-transaction-list-item-loader')
 export class WuiTransactionListItemLoader extends LitElement {
-  public static override styles = [styles]
+  public static override styles = [resetStyles, styles]
 
   // -- Render -------------------------------------------- //
   public override render() {

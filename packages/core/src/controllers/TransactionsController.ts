@@ -4,6 +4,8 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { OptionsController } from './OptionsController.js'
 import { AccountController } from './AccountController.js'
+import { EventsController } from './EventsController.js'
+import { SnackController } from './SnackController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionByYearMap = Record<number, Transaction[]>
@@ -42,12 +44,13 @@ export const TransactionsController = {
     }
 
     state.loading = true
-    await BlockchainApiController.fetchTransactions({
-      account: accountAddress,
-      projectId,
-      cursor: state.next
-    })
-      .then(response => {
+
+    try {
+      await BlockchainApiController.fetchTransactions({
+        account: accountAddress,
+        projectId,
+        cursor: state.next
+      }).then(response => {
         state.loading = false
 
         const nonSpamTransactions = this.filterSpamTransactions(response.data)
@@ -60,11 +63,14 @@ export const TransactionsController = {
         state.empty = response.data.length === 0
         state.next = response.next ? response.next : undefined
       })
-      .catch(() => {
-        state.loading = false
-        state.empty = true
-      })
+    } catch (error) {
+      EventsController.sendEvent({ type: 'track', event: 'ERROR_FETCH_TRANSACTIONS' })
+      SnackController.showError('Failed to fetch transactions')
+      state.loading = false
+      state.empty = true
+    }
   },
+
   groupTransactionsByYear(
     transactionsMap: TransactionByYearMap = {},
     transactions: Transaction[] = []

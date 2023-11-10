@@ -226,6 +226,10 @@ export type Event =
     }
   | {
       type: 'track'
+      event: 'ERROR_FETCH_TRANSACTIONS'
+    }
+  | {
+      type: 'track'
       event: 'LOAD_MORE_TRANSACTIONS'
     }
 
