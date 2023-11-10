@@ -60,23 +60,22 @@ export class W3mApproveTransactionView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onShowIframe() {
+    const isMobile = window.innerWidth <= 430
     this.iframe.animate(
       [
-        { opacity: 0, transform: 'scale(.95)' },
-        { opacity: 1, transform: 'scale(1)' }
+        { opacity: 0, transform: isMobile ? 'translateY(50px)' : 'scale(.95)' },
+        { opacity: 1, transform: isMobile ? 'translateY(0)' : 'scale(1)' }
       ],
       { duration: 200, easing: 'ease', fill: 'forwards', delay: 300 }
     )
   }
 
   private async onHideIframe() {
-    await this.iframe.animate(
-      [
-        { opacity: 1, transform: 'scale(1)' },
-        { opacity: 0, transform: 'scale(.95)' }
-      ],
-      { duration: 200, easing: 'ease', fill: 'forwards' }
-    ).finished
+    await this.iframe.animate([{ opacity: 1 }, { opacity: 0 }], {
+      duration: 200,
+      easing: 'ease',
+      fill: 'forwards'
+    }).finished
     this.iframe.style.display = 'none'
   }
 }
