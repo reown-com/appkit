@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/common",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -20,13 +20,10 @@
     "dayjs": "1.11.10"
   },
   "keywords": [
+    "utils",
+    "types",
     "web3",
-    "crypto",
-    "ethereum",
-    "web3modal",
-    "walletconnect",
-    "lit",
-    "webcomponents"
+    "web3modal"
   ],
   "author": "WalletConnect <walletconnect.com>",
   "license": "Apache-2.0",

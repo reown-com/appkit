@@ -31,9 +31,6 @@ export class WuiTransactionListItem extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const firstDesc = this.descriptions?.[0]
-    const secondDesc = this.descriptions?.[1]
-
     return html`
       <wui-flex>
         <wui-transaction-visual
@@ -49,28 +46,38 @@ export class WuiTransactionListItem extends LitElement {
             >${TransactionTypePastTense[this.type]}</wui-text
           >
           <wui-flex class="description-container">
-            ${firstDesc
-              ? html`<wui-text variant="small-500" color="fg-200">
-                  <span>${firstDesc}</span>
-                </wui-text>`
-              : null}
-            ${secondDesc
-              ? html`
-                  <wui-icon
-                    class="description-separator-icon"
-                    size="xxs"
-                    name="arrowRight"
-                  ></wui-icon>
-                  <wui-text variant="small-400" color="fg-200">
-                    <span>${secondDesc}</span>
-                  </wui-text>
-                `
-              : null}
+            ${this.templateDescription()} ${this.templateSecondDescription()}
           </wui-flex>
         </wui-flex>
         <wui-text variant="micro-700" color="fg-300"><span>${this.date}</span></wui-text>
       </wui-flex>
     `
+  }
+
+  // -- Private ------------------------------------------- //
+  private templateDescription() {
+    const description = this.descriptions?.[0]
+
+    return description
+      ? html`
+          <wui-text variant="small-500" color="fg-200">
+            <span>${description}</span>
+          </wui-text>
+        `
+      : null
+  }
+
+  private templateSecondDescription() {
+    const description = this.descriptions?.[1]
+
+    return description
+      ? html`
+          <wui-icon class="description-separator-icon" size="xxs" name="arrowRight"></wui-icon>
+          <wui-text variant="small-400" color="fg-200">
+            <span>${description}</span>
+          </wui-text>
+        `
+      : null
   }
 }
 

@@ -113,7 +113,7 @@ export class W3mTransactionsView extends LitElement {
 
       return html`
         <wui-transaction-list-item
-          id=${index === this.transactions.length - 1 && this.next !== null ? PAGINATOR_ID : ''}
+          id=${index === transactions.length - 1 && this.next ? PAGINATOR_ID : ''}
           type=${type}
           .descriptions=${descriptions}
           status=${status}

@@ -126,12 +126,12 @@ export interface BlockchainApiIdentityResponse {
 export interface BlockchainApiTransactionsRequest {
   account: string
   projectId: string
-  cursor: string | null
+  cursor?: string
 }
 
 export interface BlockchainApiTransactionsResponse {
   data: Transaction[]
-  next: string
+  next: string | null
 }
 
 // -- OptionsController Types ---------------------------------------------------

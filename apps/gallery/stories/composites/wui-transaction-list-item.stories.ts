@@ -5,6 +5,7 @@ import { html } from 'lit'
 import '../../components/gallery-container'
 import {
   transactionDirectionOptions,
+  transactionImageSrc,
   transactionStatusOptions,
   transactionTypeOptions
 } from '../../utils/PresetUtils'
@@ -15,8 +16,7 @@ export default {
   title: 'Composites/wui-transaction-list-item',
   args: {
     type: 'approve',
-    imageURL:
-      'https://uploads-ssl.webflow.com/61fe6bb74158b468a1112105/61fe8900148b6e6ee7c2c4e4_Profile%20Pic_Smoker-p-500.jpeg',
+    imageURL: transactionImageSrc,
     status: 'confirmed',
     direction: 'in',
     descriptions: ['+8 SOCKS'],

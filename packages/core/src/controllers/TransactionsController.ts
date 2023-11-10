@@ -12,7 +12,7 @@ export interface TransactionsControllerState {
   transactionsByYear: TransactionByYearMap
   loading: boolean
   empty: boolean
-  next: string | null
+  next?: string
 }
 
 // -- State --------------------------------------------- //
@@ -21,7 +21,7 @@ const state = proxy<TransactionsControllerState>({
   transactionsByYear: {},
   loading: false,
   empty: false,
-  next: null
+  next: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -57,7 +57,7 @@ export const TransactionsController = {
           nonSpamTransactions
         )
         state.empty = response.data.length === 0
-        state.next = response.next
+        state.next = response.next ? response.next : undefined
       })
       .catch(() => {
         state.loading = false

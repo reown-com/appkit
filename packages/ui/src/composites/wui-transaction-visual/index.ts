@@ -27,7 +27,9 @@ export class WuiTransactionVisual extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.style.cssText = `--local-border-radius: ${this.isNFT ? '14px' : '50%'};`
+    this.style.cssText = `--local-border-radius: ${
+      this.isNFT ? 'var(--wui-border-radius-xxs)' : 'var(--wui-border-radius-s)'
+    };`
 
     return html`<wui-flex> ${this.templateVisual()} ${this.templateIcon()} </wui-flex>`
   }

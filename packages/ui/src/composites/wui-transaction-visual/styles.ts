@@ -20,19 +20,19 @@ export default css`
     z-index: -1;
   }
 
-  :host wui-icon {
+  wui-icon {
     width: 20px;
     height: 20px;
   }
 
-  :host wui-icon-box {
+  wui-icon-box {
     position: absolute;
     right: 0;
     bottom: 0;
     transform: translate(20%, 20%);
   }
 
-  :host .swap-images-container {
+  .swap-images-container {
     position: relative;
     width: 40px;
     height: 40px;
@@ -40,12 +40,12 @@ export default css`
     overflow: hidden;
   }
 
-  :host .swap-images-container.nft,
-  :host wui-image.nft {
+  .swap-images-container.nft,
+  wui-image.nft {
     border-radius: var(--local-border-radius);
   }
 
-  :host .swap-images-container wui-image:first-child {
+  .swap-images-container wui-image:first-child {
     position: absolute;
     width: 40px;
     height: 40px;
@@ -54,7 +54,7 @@ export default css`
     clip-path: inset(0px calc(50% + 2px) 0px 0%);
   }
 
-  :host .swap-images-container wui-image:last-child {
+  .swap-images-container wui-image:last-child {
     clip-path: inset(0px 0px 0px calc(50% + 2px));
   }
 `
