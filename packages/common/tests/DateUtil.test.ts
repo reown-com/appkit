@@ -1,16 +1,28 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { DateUtil } from '../src/utils/DateUtil.js'
 
-const date = new Date()
-const year = new Date().getFullYear()
-const oneHourAgo = new Date(date.setHours(date.getHours() - 1)).toISOString()
+const fakeDateTime = new Date(2023, 1, 1, 12)
+const fakeDateTimeOneHourAgo = new Date(2023, 1, 1, 11)
 
 // -- Tests --------------------------------------------------------------------
 describe('DateUtil', () => {
-  it('should return this year', () => {
-    expect(DateUtil.getYear()).toEqual(year)
+  beforeEach(() => {
+    vi.useFakeTimers()
   })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('should return this year as expected', () => {
+    vi.setSystemTime(fakeDateTime)
+
+    expect(DateUtil.getYear()).toEqual(2023)
+  })
+
   it('should return relative time for one hour ago', () => {
-    expect(DateUtil.getRelativeDateFromNow(oneHourAgo)).toEqual('1 hr')
+    vi.setSystemTime(fakeDateTime)
+
+    expect(DateUtil.getRelativeDateFromNow(fakeDateTimeOneHourAgo.getTime())).toEqual('1 hr')
   })
 })
