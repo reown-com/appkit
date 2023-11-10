@@ -25,22 +25,29 @@ export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
 export const RpcResponse = z.string()
 export const RpcPersonalSignRequest = z.object({
   method: z.literal('personal_sign'),
-  params: z.tuple([z.string(), z.string()])
+  params: z.array(z.any())
 })
-
 export const RpcEthSendTransactionRequest = z.object({
   method: z.literal('eth_sendTransaction'),
-  params: z.array(
-    z.object({
-      from: z.string(),
-      data: z.string(),
-      to: z.optional(z.string()),
-      gas: z.optional(z.string()),
-      gasPrice: z.optional(z.string()),
-      value: z.optional(z.string()),
-      nonce: z.optional(z.optional(z.string()))
-    })
-  )
+  params: z.array(z.any())
+})
+export const RpcEthAccountsRequest = z.object({
+  method: z.literal('eth_accounts')
+})
+export const RpcGetBalance = z.object({
+  method: z.literal('eth_getBalance'),
+  params: z.array(z.any())
+})
+export const RpcEthEstimateGas = z.object({
+  method: z.literal('eth_estimateGas'),
+  params: z.array(z.any())
+})
+export const RpcEthGasPrice = z.object({
+  method: z.literal('eth_gasPrice')
+})
+export const RpcEthSignTypedDataV4 = z.object({
+  method: z.literal('eth_signTypedData_v4'),
+  params: z.array(z.any())
 })
 
 export const W3mFrameSchema = {
@@ -70,8 +77,22 @@ export const W3mFrameSchema = {
         type: zType('APP_RPC_ETH_SEND_TRANSACTION'),
         payload: RpcEthSendTransactionRequest
       })
-    ),
+    )
 
+    .or(z.object({ type: zType('APP_RPC_ETH_ACCOUNTS'), payload: RpcEthAccountsRequest }))
+
+    .or(z.object({ type: zType('APP_RPC_ETH_GET_BALANCE'), payload: RpcGetBalance }))
+
+    .or(z.object({ type: zType('APP_RPC_ETH_ESTIMATE_GAS'), payload: RpcEthEstimateGas }))
+
+    .or(z.object({ type: zType('APP_RPC_ETH_GAS_PRICE'), payload: RpcEthGasPrice }))
+
+    .or(
+      z.object({
+        type: zType('APP_RPC_ETH_ETH_SIGN_TYPED_DATA_V4'),
+        payload: RpcEthSignTypedDataV4
+      })
+    ),
   // -- Frame Events ---------------------------------------------------------
   frameEvent: z
     .object({ type: zType('FRAME_SWITCH_NETWORK_ERROR'), payload: zError })
