@@ -9,7 +9,7 @@ export class W3mApproveTransactionView extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
-  private resizeObserver?: ResizeObserver = undefined
+  private bodyObserver?: ResizeObserver = undefined
 
   private unsubscribe: (() => void)[] = []
 
@@ -31,22 +31,22 @@ export class W3mApproveTransactionView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
-    this.resizeObserver?.unobserve(window.document.body)
+    this.bodyObserver?.unobserve(window.document.body)
   }
 
   public override firstUpdated() {
     this.iframe.style.display = 'block'
     const blueprint = this.renderRoot.querySelector('div')
-    this.resizeObserver = new ResizeObserver(() => {
+    this.bodyObserver = new ResizeObserver(() => {
       const data = blueprint?.getBoundingClientRect()
       const dimensions = data ?? { left: 0, top: 0, width: 0, height: 0 }
       this.iframe.style.width = `${dimensions.width}px`
-      this.iframe.style.height = `${dimensions.height}px`
+      this.iframe.style.height = `${dimensions.height - 50}px`
       this.iframe.style.left = `${dimensions.left}px`
       this.iframe.style.top = `${dimensions.top}px`
       this.ready = true
     })
-    this.resizeObserver.observe(window.document.body)
+    this.bodyObserver.observe(window.document.body)
   }
 
   // -- Render -------------------------------------------- //
@@ -55,7 +55,7 @@ export class W3mApproveTransactionView extends LitElement {
       this.onShowIframe()
     }
 
-    return html`<div></div>`
+    return html`<div data-ready=${this.ready}></div>`
   }
 
   // -- Private ------------------------------------------- //
