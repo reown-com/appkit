@@ -23,13 +23,5 @@ export const W3mFrameHelpers = {
     } catch {
       return false
     }
-  },
-
-  getRequestId() {
-    const entropy = 3
-    const date = Date.now() * 10 ** entropy
-    const extra = Math.floor(Math.random() * 10 ** entropy)
-
-    return date + extra
   }
 }

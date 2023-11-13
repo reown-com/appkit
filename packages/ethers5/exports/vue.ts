@@ -2,8 +2,7 @@ import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { ConstantsUtil } from '@web3modal/utils'
 import { getWeb3Modal } from '@web3modal/scaffold-vue'
-import { useSnapshot } from 'valtio'
-import { ProviderController } from '../src/controllers/ProviderController.js'
+import { onUnmounted, ref } from 'vue'
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
 
@@ -24,11 +23,23 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 
 // -- Composites --------------------------------------------------------------
 export function useWeb3ModalSigner() {
-  const state = useSnapshot(ProviderController.state)
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalSigner" composition')
+  }
 
-  const walletProvider = state.provider
-  const walletProviderType = state.providerType
-  const signer = walletProvider?.getSigner()
+  const walletProvider = ref(modal.getWalletProvider())
+  const walletProviderType = ref(modal.getWalletProviderType())
+  const signer = ref(walletProvider.value?.getSigner())
+
+  const unsubscribe = modal.subscribeProvider(state => {
+    walletProvider.value = state.provider
+    walletProviderType.value = state.providerType
+    signer.value = walletProvider.value?.getSigner()
+  })
+
+  onUnmounted(() => {
+    unsubscribe?.()
+  })
 
   return {
     walletProvider,
@@ -48,11 +59,23 @@ export function useDisconnect() {
 }
 
 export function useWeb3ModalAccount() {
-  const state = useSnapshot(ProviderController.state)
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalAccount" composition')
+  }
 
-  const address = state.address
-  const isConnected = state.isConnected
-  const chainId = state.chainId
+  const address = ref(modal.getAddress())
+  const isConnected = ref(modal.getIsConnected())
+  const chainId = ref(modal.getChainId())
+
+  const unsubscribe = modal.subscribeProvider(state => {
+    address.value = state.address
+    isConnected.value = state.isConnected
+    chainId.value = state.chainId
+  })
+
+  onUnmounted(() => {
+    unsubscribe?.()
+  })
 
   return {
     address,

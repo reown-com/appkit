@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/polyfills",
-  "version": "3.3.0-e39005b",
+  "version": "3.3.0-9195db78",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
