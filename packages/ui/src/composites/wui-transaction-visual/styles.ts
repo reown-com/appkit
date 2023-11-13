@@ -22,8 +22,7 @@ export default css`
   :host > wui-flex wui-image,
   .swap-images-container,
   .swap-images-container.nft,
-  wui-image.nft
-   {
+  wui-image.nft {
     border-top-left-radius: var(--local-left-border-radius);
     border-top-right-radius: var(--local-right-border-radius);
     border-bottom-left-radius: var(--local-left-border-radius);

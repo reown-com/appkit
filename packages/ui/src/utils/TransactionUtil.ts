@@ -131,12 +131,12 @@ export const TransactionUtil = {
   },
 
   getTransactionTransferTokenType(transfer?: TransactionTransfer) {
-    if(Boolean(transfer?.fungible_info)){
-      return "FUNGIBLE"
-    } else if (Boolean(transfer?.nft_info)) {
-      return "NFT"
-    } else {
-      return null
+    if (transfer?.fungible_info) {
+      return 'FUNGIBLE'
+    } else if (transfer?.nft_info) {
+      return 'NFT'
     }
+
+    return null
   }
 }
