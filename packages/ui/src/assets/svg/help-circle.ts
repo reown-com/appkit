@@ -7,7 +7,7 @@ export const helpCircleSvg = svg`<svg fill="none" viewBox="0 0 16 16">
   />
   <path
     fill="currentColor"
-    fill-rule="evenodd"
+    fillRule="evenodd"
     d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6a6 6 0 1 0 0 12A6 6 0 0 0 8 2Z"
     clip-rule="evenodd"
   />

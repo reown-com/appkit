@@ -15,7 +15,7 @@ export const defiSvg = svg`<svg fill="none" viewBox="0 0 60 60">
     />
     <path
       fill="#fff"
-      fill-rule="evenodd"
+      fillRule="evenodd"
       d="M49.5 19a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0Z"
       clip-rule="evenodd"
     />
