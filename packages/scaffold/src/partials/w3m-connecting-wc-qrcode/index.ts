@@ -37,8 +37,8 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
         </wui-text>
 
         <wui-link @click=${this.onCopyUri} color="fg-200">
-          <wui-icon size="sm" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
-          Copy Link
+          <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
+          Copy link
         </wui-link>
       </wui-flex>
 

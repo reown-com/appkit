@@ -11,7 +11,7 @@ export class WuiLoadingSpinner extends LitElement {
 
   @property() public color: ColorType = 'accent-100'
 
-  @property() public size: Exclude<SizeType, 'inherit' | 'xs' | 'xxs'> = 'lg'
+  @property() public size: Exclude<SizeType, 'inherit' | 'xl' | 'xs' | 'xxs'> = 'lg'
 
   // -- Render -------------------------------------------- //
   public override render() {

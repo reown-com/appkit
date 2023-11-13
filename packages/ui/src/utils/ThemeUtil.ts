@@ -109,6 +109,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-icon-box-size-sm: 24px;
         --wui-icon-box-size-md: 32px;
         --wui-icon-box-size-lg: 40px;
+        --wui-icon-box-size-xl: 64px;
 
         --wui-icon-size-inherit: inherit;
         --wui-icon-size-xxs: 10px;
@@ -117,6 +118,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-icon-size-md: 16px;
         --wui-icon-size-mdl: 18px;
         --wui-icon-size-lg: 20px;
+        --wui-icon-size-xl: 28px;
 
         --wui-wallet-image-size-inherit: inherit;
         --wui-wallet-image-size-sm: 40px;

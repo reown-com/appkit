@@ -31,7 +31,7 @@ function headings() {
     GetWallet: 'Get a Wallet',
     Downloads: name ? `Get ${name}` : 'Downloads',
     EmailVerifyOtp: 'Confirm Email',
-    EmailVerifyDevice: 'Confirm Device',
+    EmailVerifyDevice: '',
     ApproveTransaction: 'Approve Transaction'
   }
 }
@@ -115,7 +115,7 @@ export class W3mHeader extends LitElement {
   }
 
   private separatorTemplate() {
-    if (!this.heading) {
+    if (!this.heading || RouterController.state.view === 'EmailVerifyDevice') {
       return null
     }
 

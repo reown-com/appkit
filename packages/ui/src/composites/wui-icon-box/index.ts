@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
@@ -17,7 +18,7 @@ export class WuiIconBox extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: Exclude<SizeType, 'inherit' | 'xxs'> = 'md'
+  @property() public size: Exclude<SizeType, 'xxs'> = 'md'
 
   @property() public backgroundColor: ColorType = 'accent-100'
 
@@ -47,12 +48,17 @@ export class WuiIconBox extends LitElement {
       case 'sm':
         iconSize = 'xs'
         break
+      case 'xl':
+        iconSize = 'xl'
+        break
       default:
         iconSize = 'xxs'
     }
     const isLg = this.size === 'lg'
+    const isXl = this.size === 'xl'
+
     const bgMix = isLg ? '12%' : '16%'
-    const borderRadius = isLg ? 'xxs' : '3xl'
+    const borderRadius = isLg ? 'xxs' : isXl ? 's' : '3xl'
     const isOpaque = this.background === 'opaque'
     const isColorChange =
       (this.backgroundColor === 'accent-100' && isOpaque) ||
