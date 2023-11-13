@@ -10,14 +10,24 @@ export default css`
     height: 40px;
     outline: 1px solid var(--wui-gray-glass-005);
     outline-offset: -1px;
-    border-radius: var(--local-border-radius);
     background-color: var(--wui-gray-glass-005);
   }
 
   :host > wui-flex wui-image {
     display: block;
-    border-radius: var(--local-border-radius);
     z-index: -1;
+  }
+
+  :host > wui-flex,
+  :host > wui-flex wui-image,
+  .swap-images-container,
+  .swap-images-container.nft,
+  wui-image.nft
+   {
+    border-top-left-radius: var(--local-left-border-radius);
+    border-top-right-radius: var(--local-right-border-radius);
+    border-bottom-left-radius: var(--local-left-border-radius);
+    border-bottom-right-radius: var(--local-right-border-radius);
   }
 
   wui-icon {
@@ -36,13 +46,7 @@ export default css`
     position: relative;
     width: 40px;
     height: 40px;
-    border-radius: var(--local-border-radius);
     overflow: hidden;
-  }
-
-  .swap-images-container.nft,
-  wui-image.nft {
-    border-radius: var(--local-border-radius);
   }
 
   .swap-images-container wui-image:first-child {

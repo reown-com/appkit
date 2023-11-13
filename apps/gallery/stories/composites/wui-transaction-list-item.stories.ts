@@ -16,22 +16,23 @@ export default {
   title: 'Composites/wui-transaction-list-item',
   args: {
     type: 'approve',
-    imageURL: transactionImageSrc,
+    images: [
+      {
+        type: 'NFT',
+        url: transactionImageSrc
+      }
+    ],
     status: 'confirmed',
     direction: 'in',
-    descriptions: ['+8 SOCKS'],
-    isNFT: false
+    descriptions: ['+8 SOCKS']
   },
   argTypes: {
     type: {
       options: transactionTypeOptions,
       control: { type: 'select' }
     },
-    isNFT: {
-      control: { type: 'boolean' }
-    },
-    imageURL: {
-      control: { type: 'text' }
+    images: {
+      control: { type: 'array' }
     },
     status: {
       options: transactionStatusOptions,
@@ -49,10 +50,9 @@ export const Default: Component = {
     html` <gallery-container width="336">
       <wui-transaction-list-item
         type=${args.type}
-        imageURL=${args.imageURL}
-        .isNFT=${args.isNFT}
         status=${args.status}
         direction=${args.direction}
+        .images=${args.images}
         .descriptions=${args.descriptions}
       ></wui-transaction-list-item>
     </gallery-container>`

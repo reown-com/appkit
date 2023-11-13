@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import { type TransactionType, TransactionTypePastTense } from '../../utils/TypeUtil.js'
-import type { TransactionStatus, TransactionDirection } from '@web3modal/common'
+import type { TransactionStatus, TransactionDirection, TransactionImage } from '@web3modal/common'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import '../../components/wui-text/index.js'
 import '../wui-transaction-visual/index.js'
@@ -23,11 +23,7 @@ export class WuiTransactionListItem extends LitElement {
 
   @property() public direction?: TransactionDirection
 
-  @property() public imageURL?: string
-
-  @property() public secondImageURL?: string
-
-  @property({ type: Boolean }) public isNFT?: boolean
+  @property() public images: TransactionImage[] = []
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -37,9 +33,7 @@ export class WuiTransactionListItem extends LitElement {
           status=${this.status}
           direction=${this.direction}
           type=${this.type}
-          .isNFT=${this.isNFT}
-          imageURL=${this.imageURL}
-          secondImageURL=${this.secondImageURL}
+          .images=${this.images}
         ></wui-transaction-visual>
         <wui-flex flexDirection="column" gap="3xs">
           <wui-text variant="paragraph-600" color="fg-100"

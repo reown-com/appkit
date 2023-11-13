@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import type { TransactionDirection, TransactionStatus } from '@web3modal/common'
+import type { TransactionDirection, TransactionImage, TransactionStatus } from '@web3modal/common'
 import type { TransactionIconType, TransactionType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../../components/wui-image/index.js'
@@ -18,42 +18,53 @@ export class WuiTransactionVisual extends LitElement {
 
   @property() public direction?: TransactionDirection
 
-  @property({ type: Boolean }) public isNFT?: boolean
+  @property() public images: TransactionImage[] = []
 
-  @property() public imageURL?: string
-
-  @property() public secondImageURL?: string
+  @property() public secondImage: TransactionImage = {
+    type: undefined,
+    url: ''
+  }
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.style.cssText = `--local-border-radius: ${
-      this.isNFT ? 'var(--wui-border-radius-xxs)' : 'var(--wui-border-radius-s)'
-    };`
+    const firstImage = this.images[0]
+    const secondImage = this.images[1]
+
+    const isLeftNFT = firstImage?.type === 'NFT'
+    const isRightNFT = secondImage?.url ? secondImage.type === 'NFT' : isLeftNFT
+
+    const leftRadius = isLeftNFT ? 'var(--wui-border-radius-xxs)' : 'var(--wui-border-radius-s)'
+    const rightRadius = isRightNFT ? 'var(--wui-border-radius-xxs)' : 'var(--wui-border-radius-s)'
+
+    this.style.cssText = `
+    --local-left-border-radius: ${leftRadius};
+    --local-right-border-radius: ${rightRadius};
+    `
 
     return html`<wui-flex> ${this.templateVisual()} ${this.templateIcon()} </wui-flex>`
   }
 
   // -- Private ------------------------------------------- //
   private templateVisual() {
-    const isTrade = this.type === 'trade'
-    const haveAnyImage = this.imageURL || this.secondImageURL
+    const firstImage = this.images[0]
+    const firstImageType = firstImage?.type
+    const secondImage = this.images[1]
 
-    if (isTrade && haveAnyImage) {
-      return html`<div class="swap-images-container ${this.isNFT ? 'nft' : ''}">
-        ${this.imageURL
-          ? html`<wui-image src=${this.imageURL} alt="Transaction image"></wui-image>`
+    const isTrade = this.type === 'trade'
+    const haveTwoImages = firstImage?.url && secondImage?.url
+
+    if (isTrade || haveTwoImages) {
+      return html`<div class="swap-images-container">
+        ${firstImage?.url
+          ? html`<wui-image src=${firstImage.url} alt="Transaction image"></wui-image>`
           : null}
-        ${this.secondImageURL
-          ? html`<wui-image src=${this.secondImageURL} alt="Transaction image"></wui-image>`
+        ${secondImage?.url
+          ? html`<wui-image src=${secondImage.url} alt="Transaction image"></wui-image>`
           : null}
       </div>`
-    } else if (this.imageURL) {
-      return html`<wui-image
-        src=${this.imageURL}
-        class="${this.isNFT ? 'nft' : ''}"
-        alt="Transaction image"
-      ></wui-image>`
-    } else if (this.isNFT) {
+    } else if (firstImage?.url) {
+      return html`<wui-image src=${firstImage.url} alt="Transaction image"></wui-image>`
+    } else if (firstImageType === 'NFT') {
       return html`<wui-icon size="inherit" color="fg-200" name="nftPlaceholder"></wui-icon>`
     }
 

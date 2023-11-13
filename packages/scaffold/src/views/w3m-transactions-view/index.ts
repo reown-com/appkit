@@ -1,5 +1,5 @@
 import { DateUtil } from '@web3modal/common'
-import type { Transaction } from '@web3modal/common'
+import type { Transaction, TransactionTransfer } from '@web3modal/common'
 import { EventsController, TransactionsController } from '@web3modal/core'
 import { TransactionUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -105,21 +105,19 @@ export class W3mTransactionsView extends LitElement {
 
   private templateTransactions(transactions: Transaction[], isLastGroup: boolean) {
     return transactions.map((transaction, index) => {
-      const { date, descriptions, direction, isNFT, imageURL, secondImageURL, status, type } =
+      const { date, descriptions, direction, images, status, type } =
         this.getTransactionListItemProps(transaction)
       const isLastTransaction = isLastGroup && index === transactions.length - 1
 
       return html`
         <wui-transaction-list-item
-          id=${isLastTransaction && this.next ? PAGINATOR_ID : ''}
-          type=${type}
-          .descriptions=${descriptions}
-          status=${status}
-          direction=${direction}
-          imageURL=${imageURL}
-          secondImageURL=${secondImageURL}
-          .isNFT=${isNFT}
           date=${date}
+          direction=${direction}
+          id=${isLastTransaction && this.next ? PAGINATOR_ID : ''}
+          status=${status}
+          type=${type}
+          .images=${images}
+          .descriptions=${descriptions}
         ></wui-transaction-list-item>
       `
     })
@@ -187,24 +185,27 @@ export class W3mTransactionsView extends LitElement {
   }
 
   private getTransactionListItemProps(transaction: Transaction) {
-    const haveTransfer = transaction.transfers?.length > 0
-    const isNFT =
-      haveTransfer && transaction.transfers?.some(transfer => Boolean(transfer.nft_info))
+    const date = DateUtil.getRelativeDateFromNow(transaction?.metadata?.minedAt)
+    const descriptions = TransactionUtil.getTransactionDescriptions(transaction)
+
     const transfer = transaction?.transfers?.[0]
     const secondTransfer = transaction?.transfers?.[1]
-    const date = DateUtil.getRelativeDateFromNow(transaction?.metadata?.minedAt)
-
-    const descriptions = TransactionUtil.getTransactionDescriptions(transaction)
-    const imageURL = TransactionUtil.getTransactionImageURL(transfer)
-    const secondImageURL = TransactionUtil.getTransactionImageURL(secondTransfer)
+    const images = [
+      {
+        type: TransactionUtil.getTransactionTransferTokenType(transfer),
+        url: TransactionUtil.getTransactionImageURL(transfer)
+      },
+      {
+        type: TransactionUtil.getTransactionTransferTokenType(secondTransfer),
+        url: TransactionUtil.getTransactionImageURL(secondTransfer)
+      }
+    ]
 
     return {
       date,
       direction: transfer?.direction,
       descriptions,
-      isNFT,
-      imageURL,
-      secondImageURL,
+      images,
       status: transaction.metadata?.status,
       type: transaction.metadata?.operationType
     }

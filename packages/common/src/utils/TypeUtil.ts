@@ -2,6 +2,11 @@ export type TransactionStatus = 'confirmed' | 'failed' | 'pending'
 
 export type TransactionDirection = 'in' | 'out' | 'self'
 
+export type TransactionImage = {
+  type: 'FUNGIBLE' | 'NFT' | undefined
+  url: string
+}
+
 export interface Transaction {
   id: string
   metadata: TransactionMetadata

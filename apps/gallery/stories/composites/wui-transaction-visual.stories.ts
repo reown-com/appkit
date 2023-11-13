@@ -19,18 +19,20 @@ export default {
     imageURL: transactionImageSrc,
     status: 'confirmed',
     direction: 'in',
-    isNFT: false
+    images: [
+      {
+        type: 'NFT',
+        url: transactionImageSrc
+      }
+    ]
   },
   argTypes: {
     type: {
       options: transactionTypeOptions,
       control: { type: 'select' }
     },
-    isNFT: {
-      control: { type: 'boolean' }
-    },
-    imageURL: {
-      control: { type: 'text' }
+    images: {
+      control: { type: 'array' }
     },
     status: {
       options: transactionStatusOptions,
@@ -47,8 +49,7 @@ export const Default: Component = {
   render: args =>
     html`<wui-transaction-visual
       type=${args.type}
-      imageURL=${args.imageURL}
-      .isNFT=${args.isNFT}
+      images=${args.images}
       status=${args.status}
       direction=${args.direction}
     ></wui-transaction-visual>`

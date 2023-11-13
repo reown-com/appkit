@@ -128,5 +128,15 @@ export const TransactionUtil = {
     const parsedValue = parseFloat(value)
 
     return parsedValue.toFixed(FLOAT_FIXED_VALUE)
+  },
+
+  getTransactionTransferTokenType(transfer?: TransactionTransfer) {
+    if(Boolean(transfer?.fungible_info)){
+      return "FUNGIBLE"
+    } else if (Boolean(transfer?.nft_info)) {
+      return "NFT"
+    } else {
+      return null
+    }
   }
 }
