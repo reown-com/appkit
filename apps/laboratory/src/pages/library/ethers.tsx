@@ -53,7 +53,9 @@ const modal = createWeb3Modal({
   chains,
   projectId,
   enableAnalytics: true,
-  metadata
+  metadata,
+  termsConditionsUrl: 'https://walletconnect.com/terms',
+  privacyPolicyUrl: 'https://walletconnect.com/privacy'
 })
 
 ThemeStore.setModal(modal)

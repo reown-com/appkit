@@ -16,7 +16,7 @@ export class WuiInputText extends LitElement {
   public inputElementRef = createRef<HTMLInputElement>()
 
   // -- State & Properties -------------------------------- //
-  @property() public size: Exclude<SizeType, 'inherit' | 'lg' | 'xs' | 'xxs'> = 'md'
+  @property() public size: Exclude<SizeType, 'inherit' | 'xl' | 'lg' | 'xs' | 'xxs'> = 'md'
 
   @property() public icon?: IconType
 

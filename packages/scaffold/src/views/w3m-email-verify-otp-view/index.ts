@@ -40,11 +40,11 @@ export class W3mEmailVerifyOtpView extends LitElement {
         gap="l"
       >
         <wui-flex flexDirection="column" alignItems="center">
-          <wui-text variant="paragraph-500" color="fg-100"> Enter the code we sent to </wui-text>
-          <wui-text variant="paragraph-600" color="fg-100">${this.email}</wui-text>
+          <wui-text variant="paragraph-400" color="fg-100"> Enter the code we sent to </wui-text>
+          <wui-text variant="paragraph-500" color="fg-100">${this.email}</wui-text>
         </wui-flex>
 
-        <wui-text variant="small-500" color="fg-200">The code expires in 10 minutes</wui-text>
+        <wui-text variant="small-400" color="fg-200">The code expires in 10 minutes</wui-text>
 
         ${this.loading
           ? html`<wui-loading-spinner size="lg" color="accent-100"></wui-loading-spinner></wui-link>`
@@ -55,7 +55,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
             ></wui-otp>`}
 
         <wui-flex alignItems="center">
-          <wui-text variant="small-500" color="fg-200">Didn't receive it?</wui-text>
+          <wui-text variant="small-400" color="fg-200">Didn't receive it?</wui-text>
           <wui-link>Resend code</wui-link>
         </wui-flex>
       </wui-flex>

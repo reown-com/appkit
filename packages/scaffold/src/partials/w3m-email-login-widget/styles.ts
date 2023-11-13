@@ -14,6 +14,7 @@ export default css`
     width: 100%;
     display: block;
     position: relative;
+    padding-bottom: var(--wui-spacing-m);
   }
 
   wui-icon-link {
