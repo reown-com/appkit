@@ -1,6 +1,6 @@
 import { DateUtil } from '@web3modal/common'
 import type { Transaction } from '@web3modal/common'
-import { EventsController, TransactionsController } from '@web3modal/core'
+import { AccountController, EventsController, TransactionsController } from '@web3modal/core'
 import { TransactionUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -20,6 +20,8 @@ export class W3mTransactionsView extends LitElement {
   private paginationObserver?: IntersectionObserver = undefined
 
   // -- State & Properties -------------------------------- //
+  @state() private address: string | undefined = AccountController.state.address
+
   @state() private transactions = TransactionsController.state.transactions
 
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
@@ -35,6 +37,15 @@ export class W3mTransactionsView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
+        AccountController.subscribe(val => {
+          if (val.isConnected) {
+            if (this.address !== val.address) {
+              this.address = val.address
+              TransactionsController.resetTransactions()
+              TransactionsController.fetchTransactions(val.address)
+            }
+          }
+        }),
         TransactionsController.subscribe(val => {
           this.transactions = val.transactions
           this.transactionsByYear = val.transactionsByYear

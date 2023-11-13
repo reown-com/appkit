@@ -34,9 +34,9 @@ export const TransactionsController = {
     return sub(state, () => callback(state))
   },
 
-  async fetchTransactions() {
+  async fetchTransactions(address?: string) {
     const projectId = OptionsController.state.projectId
-    const accountAddress = AccountController.state.address
+    const accountAddress = address || AccountController.state.address
 
     if (!projectId || !accountAddress) {
       throw new Error("Transactions can't be fetched without a projectId and an accountAddress")
@@ -52,14 +52,15 @@ export const TransactionsController = {
       })
 
       const nonSpamTransactions = this.filterSpamTransactions(response.data)
+      const filteredTransactions = [...state.transactions, ...nonSpamTransactions]
 
       state.loading = false
-      state.transactions = [...state.transactions, ...nonSpamTransactions]
+      state.transactions = filteredTransactions
       state.transactionsByYear = this.groupTransactionsByYear(
         state.transactionsByYear,
         nonSpamTransactions
       )
-      state.empty = response.data.length === 0
+      state.empty = filteredTransactions.length === 0
       state.next = response.next ? response.next : undefined
     } catch (error) {
       EventsController.sendEvent({ type: 'track', event: 'ERROR_FETCH_TRANSACTIONS' })
