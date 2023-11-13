@@ -23,8 +23,7 @@ import {
   OptionsController,
   PublicStateController,
   ThemeController,
-  SIWEController,
-  RouterController
+  SIWEController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 
@@ -226,7 +225,6 @@ export class Web3ModalScaffold {
     if (options.siweControllerClient) {
       const siweClient = options.siweControllerClient
       SIWEController.setSIWEClient(siweClient)
-      RouterController.push('ConnectingSiwe')
 
       AccountController.subscribeKey('caipAddress', async caipAddress => {
         const previousAccountState = AccountController.state.history.snapshots.find(
@@ -275,9 +273,9 @@ export class Web3ModalScaffold {
           })
         } catch (error) {
           // No session but wallet is connected
-          AccountController.subscribeKey('isConnected', async isConnected => {
+          AccountController.subscribeKey('isConnected', isConnected => {
             if (isConnected) {
-              return ModalController.open({ view: 'ConnectingSiwe' })
+              ModalController.open({ view: 'ConnectingSiwe' })
             }
           })
         }

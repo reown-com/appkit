@@ -101,7 +101,7 @@ export class W3mConnectingWcView extends LitElement {
     if (recentWallet) {
       StorageUtil.setWeb3ModalRecent(recentWallet)
     }
-    // RouterController.push('ConnectingSiwe')
+
     EventsController.sendEvent({
       type: 'track',
       event: 'CONNECT_SUCCESS',

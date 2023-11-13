@@ -221,14 +221,15 @@ export class Web3Modal extends Web3ModalScaffold {
         localStorage.removeItem(WALLET_ID)
 
         ProviderController.reset()
+        if (siweConfig?.options?.signOutOnDisconnect) {
+          await siweConfig.signOut()
+        }
+
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider?.provider as EthereumProvider
           await WalletConnectProvider.disconnect()
         } else if (provider) {
           provider.emit('disconnect')
-        }
-        if (siweConfig?.options?.signOutOnDisconnect) {
-          await siweConfig.signOut()
         }
       },
 

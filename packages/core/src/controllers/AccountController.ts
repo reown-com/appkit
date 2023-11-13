@@ -1,5 +1,5 @@
 import { proxyWithHistory, subscribeKey as subKey } from 'valtio/utils'
-import { proxy, subscribe as sub } from 'valtio/vanilla'
+import { subscribe as sub } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import type { CaipAddress } from '../utils/TypeUtil.js'
 
