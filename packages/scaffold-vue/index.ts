@@ -56,12 +56,12 @@ export function useWeb3ModalTheme() {
     unsubscribe?.()
   })
 
-  return reactive({
+  return {
     setThemeMode,
     setThemeVariables,
     themeMode,
     themeVariables
-  })
+  }
 }
 
 export function useWeb3Modal() {

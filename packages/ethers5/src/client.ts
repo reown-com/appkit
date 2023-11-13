@@ -345,6 +345,19 @@ export class Web3Modal extends Web3ModalScaffold {
     return ProviderController.subscribe(callback)
   }
 
+  public async disconnect() {
+    const { provider, providerType } = ProviderController.state
+    localStorage.removeItem(WALLET_ID)
+    ProviderController.reset()
+
+    if (providerType === 'injected' || providerType === 'eip6963') {
+      provider?.emit('disconnect')
+    } else {
+      const ethersProvider = provider?.provider as EthereumProvider
+      await ethersProvider.disconnect()
+    }
+  }
+
   // -- Private -----------------------------------------------------------------
   private createProvider() {
     if (!this.walletConnectProviderInitPromise && typeof window !== 'undefined') {
@@ -374,7 +387,10 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     }
     this.walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions)
-    this.ethersWalletConnectProvider = new ethers.providers.Web3Provider(this.walletConnectProvider)
+    this.ethersWalletConnectProvider = new ethers.providers.Web3Provider(
+      this.walletConnectProvider,
+      'any'
+    )
     await this.checkActiveWalletConnectProvider()
   }
 
@@ -909,7 +925,7 @@ export class Web3Modal extends Web3ModalScaffold {
       const existingConnector = connectors.find(c => c.name === info.name)
       if (!existingConnector) {
         const eip6963Provider = provider as unknown as ExternalProvider
-        const web3provider = new ethers.providers.Web3Provider(eip6963Provider)
+        const web3provider = new ethers.providers.Web3Provider(eip6963Provider, 'any')
         const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
         if (type) {
           this.addConnector({
