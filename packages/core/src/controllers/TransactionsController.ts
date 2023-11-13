@@ -1,4 +1,3 @@
-import { DateUtil } from '@web3modal/common'
 import type { Transaction } from '@web3modal/common'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { BlockchainApiController } from './BlockchainApiController.js'
@@ -77,7 +76,7 @@ export const TransactionsController = {
     const grouped: TransactionByYearMap = transactionsMap
 
     transactions.forEach(transaction => {
-      const year = DateUtil.getYear(transaction.metadata.minedAt)
+      const year = new Date(transaction.metadata.minedAt).getFullYear()
       if (!grouped[year]) {
         grouped[year] = []
       }
