@@ -49,7 +49,11 @@ export const RpcEthSignTypedDataV4 = z.object({
   method: z.literal('eth_signTypedData_v4'),
   params: z.array(z.any())
 })
-export const FrameSession = z.any()
+export const FrameSession = z.object({
+  STORE_KEY_PRIVATE_KEY: z.any(),
+  STORE_KEY_PUBLIC_JWK: z.any(),
+  rt: z.string()
+})
 
 export const W3mFrameSchema = {
   // -- App Events -----------------------------------------------------------

@@ -1,9 +1,7 @@
 import { W3mFrame } from './W3mFrame.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
 import { W3mFrameConstants } from './W3mFrameConstants.js'
-
-// -- Helpers ---------------------------------------------------------
-const FRAME_SESSION_KEY = '@w3m/frame-session-key'
+import { createW3mFrameStorage } from './W3mFrameStorage.js'
 
 // -- Types -----------------------------------------------------------
 type Resolver<T> = { resolve: (value: T) => void; reject: (reason?: unknown) => void } | undefined
@@ -20,6 +18,8 @@ type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
   private w3mFrame: W3mFrame
+
+  private w3mStorage: ReturnType<typeof createW3mFrameStorage>
 
   private connectEmailResolver: ConnectEmailResolver = undefined
 
@@ -41,6 +41,7 @@ export class W3mFrameProvider {
 
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
+    this.w3mStorage = createW3mFrameStorage('Web3ModalAuthDB', 'Web3ModalAuth')
     this.w3mFrame.events.onFrameEvent(event => {
       // eslint-disable-next-line no-console
       console.log('💻 received', event)
@@ -120,10 +121,10 @@ export class W3mFrameProvider {
 
   public async isConnected() {
     await this.w3mFrame.frameLoadPromise
-    const session = this.getFrameSession()
+    // Send session here - TODO
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_IS_CONNECTED,
-      payload: session
+      payload: undefined
     })
 
     return new Promise<W3mFrameTypes.Responses['FrameIsConnectedResponse']>((resolve, reject) => {
@@ -165,7 +166,7 @@ export class W3mFrameProvider {
   public async disconnect() {
     await this.w3mFrame.frameLoadPromise
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_SIGN_OUT })
-    this.deleteFrameSession()
+    // Delete session here - TODO
 
     return new Promise((resolve, reject) => {
       this.disconnectResolver = { resolve, reject }
@@ -314,25 +315,16 @@ export class W3mFrameProvider {
     this.rpcRequestResolver?.reject(event.payload.message)
   }
 
-  private onSessionUpdate(
+  private async onSessionUpdate(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SESSION_UPDATE' }>
   ) {
-    this.setFrameSession(event.payload)
-  }
-
-  // -- Private Methods ------------------------------------------------
-  private setFrameSession(session: string) {
-    // We should persist in indexDB
-    localStorage.setItem(FRAME_SESSION_KEY, session)
-  }
-
-  private getFrameSession() {
-    // We should get from indexDB
-    return localStorage.getItem(FRAME_SESSION_KEY) ?? undefined
-  }
-
-  private deleteFrameSession() {
-    // We should remove from indexDB
-    return localStorage.removeItem(FRAME_SESSION_KEY)
+    const session = event.payload
+    if (session) {
+      await Promise.all([
+        this.w3mStorage.setItem('STORE_KEY_PRIVATE_KEY', session.STORE_KEY_PRIVATE_KEY),
+        this.w3mStorage.setItem('STORE_KEY_PUBLIC_JWK', session.STORE_KEY_PUBLIC_JWK),
+        this.w3mStorage.setItem('rt', session.rt)
+      ])
+    }
   }
 }
