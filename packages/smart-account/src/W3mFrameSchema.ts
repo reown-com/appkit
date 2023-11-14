@@ -49,6 +49,7 @@ export const RpcEthSignTypedDataV4 = z.object({
   method: z.literal('eth_signTypedData_v4'),
   params: z.array(z.any())
 })
+export const FrameSession = z.string()
 
 export const W3mFrameSchema = {
   // -- App Events -----------------------------------------------------------
@@ -66,7 +67,7 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_SIGN_OUT') }))
 
-    .or(z.object({ type: zType('APP_IS_CONNECTED') }))
+    .or(z.object({ type: zType('APP_IS_CONNECTED'), payload: z.optional(FrameSession) }))
 
     .or(z.object({ type: zType('APP_GET_CHAIN_ID') }))
 
@@ -132,4 +133,6 @@ export const W3mFrameSchema = {
     .or(z.object({ type: zType('FRAME_RPC_REQUEST_ERROR'), payload: zError }))
 
     .or(z.object({ type: zType('FRAME_RPC_REQUEST_SUCCESS'), payload: RpcResponse }))
+
+    .or(z.object({ type: zType('FRAME_SESSION_UPDATE'), payload: FrameSession }))
 }

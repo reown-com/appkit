@@ -2,6 +2,9 @@ import { W3mFrame } from './W3mFrame.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
 import { W3mFrameConstants } from './W3mFrameConstants.js'
 
+// -- Helpers ---------------------------------------------------------
+const FRAME_SESSION_KEY = '@w3m/frame-session-key'
+
 // -- Types -----------------------------------------------------------
 type Resolver<T> = { resolve: (value: T) => void; reject: (reason?: unknown) => void } | undefined
 type ConnectEmailResolver = Resolver<W3mFrameTypes.Responses['FrameConnectEmailResponse']>
@@ -79,6 +82,8 @@ export class W3mFrameProvider {
           return this.onRpcRequestSuccess(event)
         case W3mFrameConstants.FRAME_RPC_REQUEST_ERROR:
           return this.onRpcRequestError(event)
+        case W3mFrameConstants.FRAME_SESSION_UPDATE:
+          return this.onSessionUpdate(event)
         default:
           return null
       }
@@ -115,7 +120,11 @@ export class W3mFrameProvider {
 
   public async isConnected() {
     await this.w3mFrame.frameLoadPromise
-    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_IS_CONNECTED })
+    const session = this.getFrameSession()
+    this.w3mFrame.events.postAppEvent({
+      type: W3mFrameConstants.APP_IS_CONNECTED,
+      payload: session
+    })
 
     return new Promise<W3mFrameTypes.Responses['FrameIsConnectedResponse']>((resolve, reject) => {
       this.isConnectedResolver = { resolve, reject }
@@ -156,6 +165,7 @@ export class W3mFrameProvider {
   public async disconnect() {
     await this.w3mFrame.frameLoadPromise
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_SIGN_OUT })
+    this.deleteFrameSession()
 
     return new Promise((resolve, reject) => {
       this.disconnectResolver = { resolve, reject }
@@ -302,5 +312,24 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/RPC_REQUEST_ERROR' }>
   ) {
     this.rpcRequestResolver?.reject(event.payload.message)
+  }
+
+  private onSessionUpdate(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SESSION_UPDATE' }>
+  ) {
+    this.setFrameSession(event.payload)
+  }
+
+  // -- Private Methods ------------------------------------------------
+  private setFrameSession(session: string) {
+    localStorage.setItem(FRAME_SESSION_KEY, session)
+  }
+
+  private getFrameSession() {
+    return localStorage.getItem(FRAME_SESSION_KEY) ?? undefined
+  }
+
+  private deleteFrameSession() {
+    return localStorage.removeItem(FRAME_SESSION_KEY)
   }
 }
