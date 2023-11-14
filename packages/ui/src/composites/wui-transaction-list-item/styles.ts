@@ -21,26 +21,41 @@ export default css`
     flex: 1;
   }
 
-  :host wui-flex wui-flex {
+  wui-flex wui-flex {
     overflow: hidden;
   }
 
-  :host .description-container wui-text span {
+  .description-container wui-text span {
     word-break: break-all;
   }
 
-  :host .description-container wui-text {
+  .description-container wui-text {
     overflow: hidden;
   }
 
-  :host .description-separator-icon {
+  .description-separator-icon {
     margin: 0px 6px;
   }
 
-  :host wui-text > span {
+  wui-text > span {
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
+  }
+
+  .badge {
+    background-color: var(--wui-gray-glass-010);
+    border-radius: var(--wui-border-radius-8xs);
+    color: var(--dark-foreground-150);
+    font-size: var(--wui-font-size-micro);
+    letter-spacing: var(--wui-letter-spacing-micro);
+    text-transform: uppercase;
+    padding: 0 calc(var(--wui-spacing-xxs) * 0.5);
+    font-size: var(--wui-font-size-micro08);
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `

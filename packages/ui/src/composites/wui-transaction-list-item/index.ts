@@ -13,6 +13,8 @@ export class WuiTransactionListItem extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
+  @property() public badgeText?: string
+
   @property() public type: TransactionType = 'approve'
 
   @property() public descriptions?: string[]
@@ -39,9 +41,16 @@ export class WuiTransactionListItem extends LitElement {
           .images=${this.images}
         ></wui-transaction-visual>
         <wui-flex flexDirection="column" gap="3xs">
-          <wui-text variant="paragraph-600" color="fg-100">
-            ${TransactionTypePastTense[this.type]}
-          </wui-text>
+          <wui-flex alignItems="center" gap="xxs">
+            <wui-text variant="paragraph-600" color="fg-100">
+              ${TransactionTypePastTense[this.type]}
+            </wui-text>
+            ${this.badgeText
+              ? html`<wui-text variant="mini-700" color="fg-150" class="badge">
+                  ${this.badgeText}
+                </wui-text>`
+              : null}
+          </wui-flex>
           <wui-flex class="description-container">
             ${this.templateDescription()} ${this.templateSecondDescription()}
           </wui-flex>

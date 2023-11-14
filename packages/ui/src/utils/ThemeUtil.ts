@@ -61,12 +61,14 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
         --wui-font-family: var(--w3m-font-family);
 
+        --wui-font-size-micro08: calc(var(--w3m-font-size-master) * 0.8);
         --wui-font-size-micro: var(--w3m-font-size-master);
         --wui-font-size-tiny: calc(var(--w3m-font-size-master) * 1.2);
         --wui-font-size-small: calc(var(--w3m-font-size-master) * 1.4);
         --wui-font-size-paragraph: calc(var(--w3m-font-size-master) * 1.6);
         --wui-font-size-large: calc(var(--w3m-font-size-master) * 2);
 
+        --wui-border-radius-8xs: calc(var(--w3m-border-radius-master) * 0.5);
         --wui-border-radius-5xs: var(--w3m-border-radius-master);
         --wui-border-radius-4xs: calc(var(--w3m-border-radius-master) * 1.5);
         --wui-border-radius-3xs: calc(var(--w3m-border-radius-master) * 2);
