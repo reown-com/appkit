@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ui",
-  "version": "3.3.0-9195db78",
+  "version": "3.4.0-fae0d49f",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
