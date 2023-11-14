@@ -322,14 +322,17 @@ export class W3mFrameProvider {
 
   // -- Private Methods ------------------------------------------------
   private setFrameSession(session: string) {
+    // We should persist in indexDB
     localStorage.setItem(FRAME_SESSION_KEY, session)
   }
 
   private getFrameSession() {
+    // We should get from indexDB
     return localStorage.getItem(FRAME_SESSION_KEY) ?? undefined
   }
 
   private deleteFrameSession() {
+    // We should remove from indexDB
     return localStorage.removeItem(FRAME_SESSION_KEY)
   }
 }
