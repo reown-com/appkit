@@ -23,6 +23,8 @@ export class WuiIconBox extends LitElement {
 
   @property() public iconColor: ColorType = 'accent-100'
 
+  @property() public iconSize?: Exclude<SizeType, 'inherit' | 'xxs'>
+
   @property() public background: BackgroundType = 'transparent'
 
   @property({ type: Boolean }) public border? = false
@@ -33,26 +35,11 @@ export class WuiIconBox extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    let iconSize: SizeType = 'xxs'
-    switch (this.size) {
-      case 'lg':
-        iconSize = 'lg'
-        break
-      case 'md':
-        iconSize = 'md'
-        break
-      case 'mdl':
-        iconSize = 'mdl'
-        break
-      case 'sm':
-        iconSize = 'xs'
-        break
-      default:
-        iconSize = 'xxs'
-    }
+    const iconSize = this.iconSize || this.size
     const isLg = this.size === 'lg'
     const bgMix = isLg ? '12%' : '16%'
     const borderRadius = isLg ? 'xxs' : '3xl'
+    const isGray = this.background === 'gray'
     const isOpaque = this.background === 'opaque'
     const isColorChange =
       (this.backgroundColor === 'accent-100' && isOpaque) ||
@@ -60,13 +47,17 @@ export class WuiIconBox extends LitElement {
       (this.backgroundColor === 'error-100' && isOpaque) ||
       (this.backgroundColor === 'inverse-100' && isOpaque)
 
+    let bgValueVariable = `var(--wui-color-${this.backgroundColor})`
+
+    if (isColorChange) {
+      bgValueVariable = `var(--wui-icon-box-bg-${this.backgroundColor})`
+    } else if (isGray) {
+      bgValueVariable = `var(--wui-gray-${this.backgroundColor})`
+    }
+
     this.style.cssText = `
-       --local-bg-value: ${
-         isColorChange
-           ? `var(--wui-icon-box-bg-${this.backgroundColor})`
-           : `var(--wui-color-${this.backgroundColor})`
-       };
-       --local-bg-mix: ${isColorChange ? `100%` : bgMix};
+       --local-bg-value: ${bgValueVariable};
+       --local-bg-mix: ${isColorChange || isGray ? `100%` : bgMix};
        --local-border-radius: var(--wui-border-radius-${borderRadius});
        --local-size: var(--wui-icon-box-size-${this.size});
        --local-border: ${this.borderColor === 'wui-color-bg-125' ? `2px` : `1px`} solid ${

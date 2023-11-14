@@ -2,23 +2,44 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-transaction-visual'
 import type { WuiTransactionVisual } from '@web3modal/ui/src/composites/wui-transaction-visual'
 import { html } from 'lit'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { transactionOptions } from '../../utils/PresetUtils'
+import {
+  transactionDirectionOptions,
+  transactionTypeOptions,
+  transactionStatusOptions,
+  transactionImageSrc
+} from '../../utils/PresetUtils'
 
 type Component = Meta<WuiTransactionVisual>
 
 export default {
   title: 'Composites/wui-transaction-visual',
   args: {
-    type: 'bought',
-    imageSrc:
-      'https://uploads-ssl.webflow.com/61fe6bb74158b468a1112105/61fe8900148b6e6ee7c2c4e4_Profile%20Pic_Smoker-p-500.jpeg'
+    type: 'approve',
+    imageURL: transactionImageSrc,
+    status: 'confirmed',
+    direction: 'in',
+    images: [
+      {
+        type: 'NFT',
+        url: transactionImageSrc
+      }
+    ]
   },
-
   argTypes: {
     type: {
-      options: transactionOptions,
+      options: transactionTypeOptions,
+      control: { type: 'select' }
+    },
+    images: {
+      control: { type: 'array' }
+    },
+    status: {
+      options: transactionStatusOptions,
+      control: { type: 'select' }
+    },
+    direction: {
+      options: transactionDirectionOptions,
       control: { type: 'select' }
     }
   }
@@ -28,6 +49,8 @@ export const Default: Component = {
   render: args =>
     html`<wui-transaction-visual
       type=${args.type}
-      imageSrc=${ifDefined(args.imageSrc)}
+      images=${args.images}
+      status=${args.status}
+      direction=${args.direction}
     ></wui-transaction-visual>`
 }
