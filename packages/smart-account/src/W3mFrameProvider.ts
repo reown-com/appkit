@@ -121,10 +121,10 @@ export class W3mFrameProvider {
 
   public async isConnected() {
     await this.w3mFrame.frameLoadPromise
-    // Send session here - TODO
+    const session = await this.getW3mDbAuthSession()
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_IS_CONNECTED,
-      payload: undefined
+      payload: session
     })
 
     return new Promise<W3mFrameTypes.Responses['FrameIsConnectedResponse']>((resolve, reject) => {
@@ -165,8 +165,8 @@ export class W3mFrameProvider {
 
   public async disconnect() {
     await this.w3mFrame.frameLoadPromise
+    await this.deleteW3mDbAuthSession()
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_SIGN_OUT })
-    // Delete session here - TODO
 
     return new Promise((resolve, reject) => {
       this.disconnectResolver = { resolve, reject }
@@ -320,11 +320,40 @@ export class W3mFrameProvider {
   ) {
     const session = event.payload
     if (session) {
-      await Promise.all([
-        this.w3mStorage.setItem('STORE_KEY_PRIVATE_KEY', session.STORE_KEY_PRIVATE_KEY),
-        this.w3mStorage.setItem('STORE_KEY_PUBLIC_JWK', session.STORE_KEY_PUBLIC_JWK),
-        this.w3mStorage.setItem('rt', session.rt)
-      ])
+      await this.setW3mDbAuthSession(session)
     }
+  }
+
+  // -- Private Methods ------------------------------------------------
+  private async setW3mDbAuthSession(session: W3mFrameTypes.FrameSessionType) {
+    const { DB_PRIVATE_KEY, DB_PUBLIC_JWK, DB_RT } = W3mFrameConstants
+    await Promise.all([
+      this.w3mStorage.setItem(DB_PRIVATE_KEY, session.STORE_KEY_PRIVATE_KEY),
+      this.w3mStorage.setItem(DB_PUBLIC_JWK, session.STORE_KEY_PUBLIC_JWK),
+      this.w3mStorage.setItem(DB_RT, session.rt)
+    ])
+  }
+
+  private async getW3mDbAuthSession() {
+    const { DB_PRIVATE_KEY, DB_PUBLIC_JWK, DB_RT } = W3mFrameConstants
+    const [STORE_KEY_PRIVATE_KEY, STORE_KEY_PUBLIC_JWK, rt] = await Promise.all([
+      this.w3mStorage.getItem(DB_PRIVATE_KEY),
+      this.w3mStorage.getItem(DB_PUBLIC_JWK),
+      this.w3mStorage.getItem(DB_RT)
+    ])
+    if (STORE_KEY_PRIVATE_KEY && STORE_KEY_PUBLIC_JWK && rt) {
+      return { STORE_KEY_PRIVATE_KEY, STORE_KEY_PUBLIC_JWK, rt } as W3mFrameTypes.FrameSessionType
+    }
+
+    return undefined
+  }
+
+  private async deleteW3mDbAuthSession() {
+    const { DB_PRIVATE_KEY, DB_PUBLIC_JWK, DB_RT } = W3mFrameConstants
+    await Promise.all([
+      this.w3mStorage.removeItem(DB_PRIVATE_KEY),
+      this.w3mStorage.removeItem(DB_PUBLIC_JWK),
+      this.w3mStorage.removeItem(DB_RT)
+    ])
   }
 }

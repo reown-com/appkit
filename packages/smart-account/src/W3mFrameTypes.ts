@@ -10,7 +10,8 @@ import {
   FrameIsConnectedResponse,
   RpcPersonalSignRequest,
   RpcResponse,
-  RpcEthSendTransactionRequest
+  RpcEthSendTransactionRequest,
+  FrameSession
 } from './W3mFrameSchema.js'
 
 export namespace W3mFrameTypes {
@@ -41,4 +42,6 @@ export namespace W3mFrameTypes {
     | z.infer<typeof RpcEthSendTransactionRequest>
 
   export type RPCResponse = z.infer<typeof RpcResponse>
+
+  export type FrameSessionType = z.infer<typeof FrameSession>
 }
