@@ -20,7 +20,7 @@ const LOADING_ITEM_COUNT = 7
 export class W3mTransactionsView extends LitElement {
   public static override styles = styles
 
-  // -- Members -------------------------------- //
+  // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
   private paginationObserver?: IntersectionObserver = undefined
@@ -213,8 +213,8 @@ export class W3mTransactionsView extends LitElement {
 
   private templateLoading() {
     return Array(LOADING_ITEM_COUNT)
-      .fill(null)
-      .map(() => html` <wui-transaction-list-item-loader></wui-transaction-list-item-loader> `)
+      .fill(html` <wui-transaction-list-item-loader></wui-transaction-list-item-loader> `)
+      .map(item => item)
   }
 
   private createPaginationObserver() {
