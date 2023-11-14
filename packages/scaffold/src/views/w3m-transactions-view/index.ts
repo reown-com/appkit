@@ -1,10 +1,16 @@
 import { DateUtil } from '@web3modal/common'
 import type { Transaction } from '@web3modal/common'
-import { AccountController, EventsController, TransactionsController } from '@web3modal/core'
+import {
+  AccountController,
+  EventsController,
+  OptionsController,
+  TransactionsController
+} from '@web3modal/core'
 import { TransactionUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import type { TransactionType } from '@web3modal/ui/src/utils/TypeUtil.js'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'last-transaction'
@@ -59,7 +65,7 @@ export class W3mTransactionsView extends LitElement {
 
   public override firstUpdated() {
     if (this.transactions.length === 0) {
-      this.fetchTransactions()
+      TransactionsController.fetchTransactions(this.address)
     }
     this.createPaginationObserver()
   }
@@ -114,12 +120,13 @@ export class W3mTransactionsView extends LitElement {
     })
   }
 
-  private templateTransactions(transactions: Transaction[], isLastGroup: boolean) {
-    return transactions.map((transaction, index) => {
-      const { date, descriptions, direction, images, status, type } =
-        this.getTransactionListItemProps(transaction)
-      const isLastTransaction = isLastGroup && index === transactions.length - 1
+  private templateRenderTransaction(transaction: Transaction, isLastTransaction: boolean) {
+    const { date, descriptions, direction, isAllNFT, images, status, transfers, type } =
+      this.getTransactionListItemProps(transaction)
+    const haveMultipleTransfers = transfers?.length > 1
+    const haveTwoTransfers = transfers?.length === 2
 
+    if (haveTwoTransfers && !isAllNFT) {
       return html`
         <wui-transaction-list-item
           date=${date}
@@ -131,6 +138,44 @@ export class W3mTransactionsView extends LitElement {
           .descriptions=${descriptions}
         ></wui-transaction-list-item>
       `
+    }
+
+    if (haveMultipleTransfers) {
+      return transfers.map((transfer, index) => {
+        const description = TransactionUtil.getTransferDescription(transfer)
+        const isLastTransfer = isLastTransaction && index === transfers.length - 1
+
+        return html` <wui-transaction-list-item
+          date=${date}
+          direction=${transfer.direction}
+          id=${isLastTransfer && this.next ? PAGINATOR_ID : ''}
+          status=${status}
+          type=${type}
+          onlyDirectionIcon=${true}
+          .images=${[images?.[index]]}
+          .descriptions=${[description]}
+        ></wui-transaction-list-item>`
+      })
+    }
+
+    return html`
+      <wui-transaction-list-item
+        date=${date}
+        direction=${direction}
+        id=${isLastTransaction && this.next ? PAGINATOR_ID : ''}
+        status=${status}
+        type=${type}
+        .images=${images}
+        .descriptions=${descriptions}
+      ></wui-transaction-list-item>
+    `
+  }
+
+  private templateTransactions(transactions: Transaction[], isLastGroup: boolean) {
+    return transactions.map((transaction, index) => {
+      const isLastTransaction = isLastGroup && index === transactions.length - 1
+
+      return html`${this.templateRenderTransaction(transaction, isLastTransaction)}`
     })
   }
 
@@ -173,10 +218,20 @@ export class W3mTransactionsView extends LitElement {
   }
 
   private createPaginationObserver() {
+    const { projectId } = OptionsController.state
+
     this.paginationObserver = new IntersectionObserver(([element]) => {
       if (element?.isIntersecting && !this.loading) {
-        this.fetchTransactions()
-        EventsController.sendEvent({ type: 'track', event: 'LOAD_MORE_TRANSACTIONS' })
+        TransactionsController.fetchTransactions(this.address)
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'LOAD_MORE_TRANSACTIONS',
+          properties: {
+            address: this.address,
+            projectId,
+            cursor: this.next
+          }
+        })
       }
     }, {})
     this.setPaginationObserver()
@@ -191,34 +246,25 @@ export class W3mTransactionsView extends LitElement {
     }
   }
 
-  private async fetchTransactions() {
-    await TransactionsController.fetchTransactions()
-  }
-
   private getTransactionListItemProps(transaction: Transaction) {
     const date = DateUtil.getRelativeDateFromNow(transaction?.metadata?.minedAt)
     const descriptions = TransactionUtil.getTransactionDescriptions(transaction)
 
+    const transfers = transaction?.transfers
     const transfer = transaction?.transfers?.[0]
-    const secondTransfer = transaction?.transfers?.[1]
-    const images = [
-      {
-        type: TransactionUtil.getTransactionTransferTokenType(transfer),
-        url: TransactionUtil.getTransactionImageURL(transfer)
-      },
-      {
-        type: TransactionUtil.getTransactionTransferTokenType(secondTransfer),
-        url: TransactionUtil.getTransactionImageURL(secondTransfer)
-      }
-    ]
+    const isAllNFT =
+      Boolean(transfer) && transaction?.transfers?.every(item => Boolean(item.nft_info))
+    const images = TransactionUtil.getTransactionImages(transfers)
 
     return {
       date,
       direction: transfer?.direction,
       descriptions,
+      isAllNFT,
       images,
       status: transaction.metadata?.status,
-      type: transaction.metadata?.operationType
+      transfers,
+      type: transaction.metadata?.operationType as TransactionType
     }
   }
 }

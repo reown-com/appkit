@@ -227,10 +227,20 @@ export type Event =
   | {
       type: 'track'
       event: 'ERROR_FETCH_TRANSACTIONS'
+      properties: {
+        address: string
+        projectId: string
+        cursor: string | undefined
+      }
     }
   | {
       type: 'track'
       event: 'LOAD_MORE_TRANSACTIONS'
+      properties: {
+        address: string | undefined
+        projectId: string
+        cursor: string | undefined
+      }
     }
 
 // -- SIWEController Types ---------------------------------------------------

@@ -18,6 +18,8 @@ export class WuiTransactionVisual extends LitElement {
 
   @property() public direction?: TransactionDirection
 
+  @property() public onlyDirectionIcon?: boolean
+
   @property() public images: TransactionImage[] = []
 
   @property() public secondImage: TransactionImage = {
@@ -27,8 +29,7 @@ export class WuiTransactionVisual extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const firstImage = this.images[0]
-    const secondImage = this.images[1]
+    const [firstImage, secondImage] = this.images
 
     const isLeftNFT = firstImage?.type === 'NFT'
     const isRightNFT = secondImage?.url ? secondImage.type === 'NFT' : isLeftNFT
@@ -46,14 +47,11 @@ export class WuiTransactionVisual extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateVisual() {
-    const firstImage = this.images[0]
+    const [firstImage, secondImage] = this.images
     const firstImageType = firstImage?.type
-    const secondImage = this.images[1]
+    const haveTwoImages = this.images.length === 2
 
-    const isTrade = this.type === 'trade'
-    const haveTwoImages = firstImage?.url && secondImage?.url
-
-    if (isTrade || haveTwoImages) {
+    if (haveTwoImages && (firstImage?.url || secondImage?.url)) {
       return html`<div class="swap-images-container">
         ${firstImage?.url
           ? html`<wui-image src=${firstImage.url} alt="Transaction image"></wui-image>`
@@ -75,41 +73,10 @@ export class WuiTransactionVisual extends LitElement {
     let color: 'accent-100' | 'error-100' | 'success-100' | 'inverse-100' = 'accent-100'
     let icon: TransactionIconType | undefined = undefined
 
-    if (this.type === 'trade') {
-      icon = 'swapHorizontalBold'
-    } else if (this.type === 'approve') {
-      icon = 'checkmark'
-    } else if (this.type === 'cancel') {
-      icon = 'close'
-    } else if (this.type === 'burn' || this.type === 'execute' || this.type === 'deploy') {
-      icon = undefined
-    } else if (this.direction) {
-      switch (this.direction) {
-        case 'in':
-          icon = 'arrowBottom'
-          break
-        case 'out':
-          icon = 'arrowTop'
-          break
-        default:
-          break
-      }
-    }
+    icon = this.getIcon()
 
     if (this.status) {
-      switch (this.status) {
-        case 'confirmed':
-          color = 'success-100'
-          break
-        case 'failed':
-          color = 'error-100'
-          break
-        case 'pending':
-          color = 'inverse-100'
-          break
-        default:
-          break
-      }
+      color = this.getStatusColor()
     }
 
     if (!icon) {
@@ -127,6 +94,46 @@ export class WuiTransactionVisual extends LitElement {
         borderColor="wui-color-bg-125"
       ></wui-icon-box>
     `
+  }
+
+  private getDirectionIcon() {
+    switch (this.direction) {
+      case 'in':
+        return 'arrowBottom'
+      case 'out':
+        return 'arrowTop'
+      default:
+        return undefined
+    }
+  }
+
+  private getIcon() {
+    if (this.onlyDirectionIcon) {
+      return this.getDirectionIcon()
+    }
+
+    if (this.type === 'trade') {
+      return 'swapHorizontalBold'
+    } else if (this.type === 'approve') {
+      return 'checkmark'
+    } else if (this.type === 'cancel') {
+      return 'close'
+    }
+
+    return this.getDirectionIcon()
+  }
+
+  private getStatusColor() {
+    switch (this.status) {
+      case 'confirmed':
+        return 'success-100'
+      case 'failed':
+        return 'error-100'
+      case 'pending':
+        return 'inverse-100'
+      default:
+        return 'accent-100'
+    }
   }
 }
 

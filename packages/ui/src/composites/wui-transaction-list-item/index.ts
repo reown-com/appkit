@@ -19,6 +19,8 @@ export class WuiTransactionListItem extends LitElement {
 
   @property() public date?: string
 
+  @property() public onlyDirectionIcon?: boolean = false
+
   @property() public status?: TransactionStatus
 
   @property() public direction?: TransactionDirection
@@ -33,12 +35,13 @@ export class WuiTransactionListItem extends LitElement {
           status=${this.status}
           direction=${this.direction}
           type=${this.type}
+          onlyDirectionIcon=${this.onlyDirectionIcon}
           .images=${this.images}
         ></wui-transaction-visual>
         <wui-flex flexDirection="column" gap="3xs">
-          <wui-text variant="paragraph-600" color="fg-100"
-            >${TransactionTypePastTense[this.type]}</wui-text
-          >
+          <wui-text variant="paragraph-600" color="fg-100">
+            ${TransactionTypePastTense[this.type]}
+          </wui-text>
           <wui-flex class="description-container">
             ${this.templateDescription()} ${this.templateSecondDescription()}
           </wui-flex>

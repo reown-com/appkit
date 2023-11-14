@@ -5,6 +5,8 @@ import { UiHelperUtil } from './UiHelperUtil.js'
 
 // -- Helpers --------------------------------------------- //
 const FLOAT_FIXED_VALUE = 3
+const plusTypes: TransactionType[] = ['receive', 'deposit', 'borrow', 'claim']
+const minusTypes: TransactionType[] = ['withdraw', 'repay', 'burn']
 
 export const TransactionUtil = {
   getTransactionGroupTitle(year: number) {
@@ -13,6 +15,30 @@ export const TransactionUtil = {
     const groupTitle = isCurrentYear ? 'This Year' : year
 
     return groupTitle
+  },
+
+  getTransactionImages(transfers: TransactionTransfer[]) {
+    const [transfer, secondTransfer] = transfers
+    const isAllNFT = Boolean(transfer) && transfers?.every(item => Boolean(item.nft_info))
+    const haveMultipleTransfers = transfers?.length > 1
+    const haveTwoTransfers = transfers?.length === 2
+
+    if (haveTwoTransfers && !isAllNFT) {
+      return [this.getTransactionImage(transfer), this.getTransactionImage(secondTransfer)]
+    }
+
+    if (haveMultipleTransfers) {
+      return transfers.map(item => this.getTransactionImage(item))
+    }
+
+    return [this.getTransactionImage(transfer)]
+  },
+
+  getTransactionImage(transfer?: TransactionTransfer) {
+    return {
+      type: TransactionUtil.getTransactionTransferTokenType(transfer),
+      url: TransactionUtil.getTransactionImageURL(transfer)
+    }
   },
 
   getTransactionImageURL(transfer: TransactionTransfer | undefined) {
@@ -29,16 +55,24 @@ export const TransactionUtil = {
     return imageURL
   },
 
+  getTransactionTransferTokenType(transfer?: TransactionTransfer) {
+    if (transfer?.fungible_info) {
+      return 'FUNGIBLE'
+    } else if (transfer?.nft_info) {
+      return 'NFT'
+    }
+
+    return null
+  },
+
   getTransactionDescriptions(transaction: Transaction) {
     const type = transaction.metadata?.operationType as TransactionType
 
     const transfers = transaction.transfers
     const haveTransfer = transaction.transfers?.length > 0
-    const isAllNFT = haveTransfer && transfers?.every(transfer => Boolean(transfer.nft_info))
     const haveMultipleTransfers = transaction.transfers?.length > 1
     const isFungible = haveTransfer && transfers?.every(transfer => Boolean(transfer.fungible_info))
-    const firstTransfer = transfers?.[0]
-    const secondTransfer = transfers?.[1]
+    const [firstTransfer, secondTransfer] = transfers
 
     let firstDescription = this.getTransferDescription(firstTransfer)
     let secondDescription = this.getTransferDescription(secondTransfer)
@@ -66,29 +100,18 @@ export const TransactionUtil = {
       return [transaction.metadata.status]
     }
 
-    let prefix = ''
-    if (type === 'receive' || type === 'deposit') {
-      prefix = '+'
+    if (haveMultipleTransfers) {
+      return transfers.map(item => this.getTransferDescription(item))
     }
-    if (type === 'withdraw' || type === 'repay' || type === 'burn') {
+
+    let prefix = ''
+    if (plusTypes.includes(type)) {
+      prefix = '+'
+    } else if (minusTypes.includes(type)) {
       prefix = '-'
     }
 
-    if (haveMultipleTransfers) {
-      if (type === 'mint') {
-        if (isAllNFT) {
-          const multipleNFTDescription = `${transfers.length} (${transfers.length})`
-
-          return [multipleNFTDescription]
-        }
-
-        return [firstDescription]
-      }
-
-      return [firstDescription, secondDescription]
-    }
-
-    firstDescription = `${prefix}${firstDescription}`
+    firstDescription = prefix.concat(firstDescription)
 
     return [firstDescription]
   },
@@ -128,15 +151,5 @@ export const TransactionUtil = {
     const parsedValue = parseFloat(value)
 
     return parsedValue.toFixed(FLOAT_FIXED_VALUE)
-  },
-
-  getTransactionTransferTokenType(transfer?: TransactionTransfer) {
-    if (transfer?.fungible_info) {
-      return 'FUNGIBLE'
-    } else if (transfer?.nft_info) {
-      return 'NFT'
-    }
-
-    return null
   }
 }

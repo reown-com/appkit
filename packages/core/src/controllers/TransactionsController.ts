@@ -2,7 +2,6 @@ import type { Transaction } from '@web3modal/common'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { OptionsController } from './OptionsController.js'
-import { AccountController } from './AccountController.js'
 import { EventsController } from './EventsController.js'
 import { SnackController } from './SnackController.js'
 
@@ -14,7 +13,7 @@ export interface TransactionsControllerState {
   transactionsByYear: TransactionByYearMap
   loading: boolean
   empty: boolean
-  next?: string
+  next: string | undefined
 }
 
 // -- State --------------------------------------------- //
@@ -34,9 +33,8 @@ export const TransactionsController = {
     return sub(state, () => callback(state))
   },
 
-  async fetchTransactions(address?: string) {
-    const projectId = OptionsController.state.projectId
-    const accountAddress = address || AccountController.state.address
+  async fetchTransactions(accountAddress?: string) {
+    const { projectId } = OptionsController.state
 
     if (!projectId || !accountAddress) {
       throw new Error("Transactions can't be fetched without a projectId and an accountAddress")
@@ -63,7 +61,15 @@ export const TransactionsController = {
       state.empty = filteredTransactions.length === 0
       state.next = response.next ? response.next : undefined
     } catch (error) {
-      EventsController.sendEvent({ type: 'track', event: 'ERROR_FETCH_TRANSACTIONS' })
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'ERROR_FETCH_TRANSACTIONS',
+        properties: {
+          address: accountAddress,
+          projectId,
+          cursor: state.next
+        }
+      })
       SnackController.showError('Failed to fetch transactions')
       state.loading = false
       state.empty = true
