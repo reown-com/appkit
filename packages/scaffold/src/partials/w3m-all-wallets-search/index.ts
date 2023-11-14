@@ -45,8 +45,8 @@ export class W3mAllWalletsSearch extends LitElement {
         <wui-flex justifyContent="center" alignItems="center" gap="s" flexDirection="column">
           <wui-icon-box
             size="lg"
-            iconcolor="fg-200"
-            backgroundcolor="fg-300"
+            iconColor="fg-200"
+            backgroundColor="fg-300"
             icon="wallet"
             background="transparent"
           ></wui-icon-box>

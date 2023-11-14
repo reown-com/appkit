@@ -3,6 +3,7 @@ import { proxy, ref } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type { Connector, WcWallet } from '../utils/TypeUtil.js'
+import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -84,6 +85,7 @@ export const ConnectionController = {
     state.wcPromise = undefined
     state.wcLinking = undefined
     state.recentWallet = undefined
+    TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
   },
 
