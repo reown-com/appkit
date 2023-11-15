@@ -28,3 +28,17 @@ NEXT_PUBLIC_PROJECT_ID="your_project_id"
 ```zsh
 VITE_PROJECT_ID="your_project_id"
 ```
+
+# Releasing new versions
+
+1. Run `npm outdated` and update dependencies
+2. Run `npm install` and verify if everything still works correctly
+3. Merge your feature branch into `V3`
+4. Create a new branch from `V3` and name it with the version tag
+5. Run `npm run pre-publish` and set new custom version
+6. Update version in `ConstantsUtil` in `@web3modal/utils` to the correct version
+7. Create a new `PR` with Release Notes and merge into `V3`
+8. Checkout `V3` and run `npm run publish:latest`
+9. Draft a new release in GitHub and create new tag
+10. Click on `Generate Change` and only leave the link with difference. Paste in your changelog from PR.
+11. Check `Set as the last release` and publish release.
