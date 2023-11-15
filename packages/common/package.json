@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/common",
-  "version": "3.4.0-87282324",
+  "version": "3.4.0-330d1560",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
