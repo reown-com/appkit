@@ -31,10 +31,10 @@ VITE_PROJECT_ID="your_project_id"
 
 # Releasing new versions
 
-1. Merge your feature branch into `V3`
-2. Create a new branch from `V3` and name it with the version tag
-3. Run `npm outdated` and update dependencies
-4. Run `npm install` and verify if everything still works correctly
+1. Run `npm outdated` and update dependencies
+2. Run `npm install` and verify if everything still works correctly
+3. Merge your feature branch into `V3`
+4. Create a new branch from `V3` and name it with the version tag
 5. Run `npm run pre-publish` and set new custom version
 6. Update version in `ConstantsUtil` in `@web3modal/utils` to the correct version
 7. Create a new `PR` with Release Notes and merge into `V3`
