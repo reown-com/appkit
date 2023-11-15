@@ -1,4 +1,5 @@
 import type { W3mFrameProvider } from '@web3modal/smart-account'
+import type { Transaction } from '@web3modal/common'
 
 export type CaipAddress = `${string}:${string}:${string}`
 
@@ -127,6 +128,17 @@ export interface BlockchainApiIdentityResponse {
   name: string
 }
 
+export interface BlockchainApiTransactionsRequest {
+  account: string
+  projectId: string
+  cursor?: string
+}
+
+export interface BlockchainApiTransactionsResponse {
+  data: Transaction[]
+  next: string | null
+}
+
 // -- OptionsController Types ---------------------------------------------------
 export interface Token {
   address: string
@@ -212,6 +224,28 @@ export type Event =
   | {
       type: 'track'
       event: 'CLICK_GET_WALLET'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_TRANSACTIONS'
+    }
+  | {
+      type: 'track'
+      event: 'ERROR_FETCH_TRANSACTIONS'
+      properties: {
+        address: string
+        projectId: string
+        cursor: string | undefined
+      }
+    }
+  | {
+      type: 'track'
+      event: 'LOAD_MORE_TRANSACTIONS'
+      properties: {
+        address: string | undefined
+        projectId: string
+        cursor: string | undefined
+      }
     }
 
 // -- SIWEController Types ---------------------------------------------------

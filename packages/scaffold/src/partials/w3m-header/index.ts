@@ -33,6 +33,7 @@ function headings() {
     EmailVerifyOtp: 'Confirm Email',
     EmailVerifyDevice: '',
     ApproveTransaction: 'Approve Transaction'
+    Transactions: 'Activity'
   }
 }
 

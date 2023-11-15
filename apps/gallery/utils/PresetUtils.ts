@@ -134,6 +134,9 @@ export const networkImageSrc =
 export const avatarImageSrc =
   'https://i.seadn.io/gcs/files/007a5af0d93d561f87c8d026ddd5179e.png?auto=format&dpr=1&w=1000'
 
+export const transactionImageSrc =
+  'https://uploads-ssl.webflow.com/61fe6bb74158b468a1112105/61fe8900148b6e6ee7c2c4e4_Profile%20Pic_Smoker-p-500.jpeg'
+
 export const externalLink = 'https://www.fireblocks.com'
 
 export const address = '0xDBbD65026a07cFbFa1aa92744E4D69951686077d'
@@ -240,17 +243,29 @@ export const chipOptions: ChipType[] = ['fill', 'transparent', 'shade']
 
 export const buttonOptions: ButtonType[] = ['fill', 'accent', 'shade', 'fullWidth', 'accentBg']
 
-export const transactionOptions: TransactionType[] = [
+export const transactionTypeOptions: TransactionType[] = [
+  'approve',
   'bought',
-  'buy',
-  'deposited',
-  'minted',
-  'received',
-  'nftSent',
-  'cryptoSent',
-  'swapped',
-  'withdrawed'
+  'borrow',
+  'burn',
+  'cancel',
+  'claim',
+  'deploy',
+  'deposit',
+  'execute',
+  'mint',
+  'receive',
+  'repay',
+  'send',
+  'stake',
+  'trade',
+  'unstake',
+  'withdraw'
 ]
+
+export const transactionDirectionOptions: TransactionType[] = ['', 'in', 'out']
+
+export const transactionStatusOptions: TransactionType[] = ['confirmed', 'pending', 'failed']
 
 export const cardSelectOptions: CardSelectType[] = ['network', 'wallet']
 

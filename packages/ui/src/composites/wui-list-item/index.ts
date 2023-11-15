@@ -7,7 +7,7 @@ import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { AccountEntryType, IconType } from '../../utils/TypeUtil.js'
+import type { AccountEntryType, IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
@@ -18,6 +18,8 @@ export class WuiListItem extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @property() public icon?: IconType
+
+  @property() public iconSize?: SizeType
 
   @property() public variant: AccountEntryType = 'icon'
 
@@ -60,11 +62,13 @@ export class WuiListItem extends LitElement {
     } else if (this.variant === 'icon' && this.icon && this.iconVariant) {
       const color = ['blue', 'square-blue'].includes(this.iconVariant) ? 'accent-100' : 'fg-200'
       const size = this.iconVariant === 'square-blue' ? 'mdl' : 'md'
+      const iconSize = this.iconSize ? this.iconSize : size
 
       return html`
         <wui-icon-box
           data-variant=${this.iconVariant}
           icon=${this.icon}
+          iconSize=${iconSize}
           background="transparent"
           iconColor=${color}
           backgroundColor=${color}

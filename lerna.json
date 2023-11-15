@@ -1,6 +1,7 @@
 {
   "npmClient": "npm",
   "packages": [
+    "packages/common",
     "packages/ui",
     "packages/core",
     "packages/scaffold",
@@ -15,6 +16,6 @@
     "apps/*",
     "examples/*"
   ],
-  "version": "3.4.0-0c7ed050",
+  "version": "3.3.1",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
