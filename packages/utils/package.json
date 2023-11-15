@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/utils",
-  "version": "3.3.1",
+  "version": "3.4.0-f7422a30",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -16,8 +16,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/polyfills": "3.3.1",
-    "@web3modal/scaffold": "3.3.1"
+    "@web3modal/polyfills": "3.4.0-f7422a30",
+    "@web3modal/scaffold": "3.4.0-f7422a30"
   },
   "keywords": [
     "web3",

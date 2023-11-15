@@ -32,7 +32,7 @@ function headings() {
     Downloads: name ? `Get ${name}` : 'Downloads',
     EmailVerifyOtp: 'Confirm Email',
     EmailVerifyDevice: '',
-    ApproveTransaction: 'Approve Transaction'
+    ApproveTransaction: 'Approve Transaction',
     Transactions: 'Activity'
   }
 }
