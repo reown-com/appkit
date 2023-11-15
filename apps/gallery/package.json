@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@web3modal/ui": "3.4.0-f7422a30",
-    "lit": "3.0.0",
-    "storybook": "7.5.0"
+    "lit": "3.0.2",
+    "storybook": "7.5.3"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "7.5.3",
