@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/core",
-  "version": "3.4.0-582768dd",
+  "version": "3.4.0-7da5cccb",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -17,7 +17,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/common": "3.4.0-582768dd",
+    "@web3modal/common": "3.4.0-7da5cccb",
     "valtio": "1.12.0"
   },
   "keywords": [
