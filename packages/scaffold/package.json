@@ -21,7 +21,7 @@
     "lit": "3.0.2"
   },
   "devDependencies": {
-    "@web3modal/smart-account": "3.4.0-0c7ed050"
+    "@web3modal/smart-account": "3.3.1"
   },
   "keywords": [
     "web3",
