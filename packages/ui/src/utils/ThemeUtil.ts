@@ -160,7 +160,6 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-modal-bg: var(--wui-color-modal-bg-base);
 
         --wui-color-blue-100: var(--wui-color-blue-base-100);
-        --wui-color-blue-015: var(--wui-color-accent-base-015);
 
         --wui-color-accent-100: var(--wui-color-accent-base-100);
         --wui-color-accent-090: var(--wui-color-accent-base-090);
