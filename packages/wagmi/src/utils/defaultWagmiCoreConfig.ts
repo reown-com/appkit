@@ -1,6 +1,6 @@
 import '@web3modal/polyfills'
 
-import type { Chain } from '@wagmi/core'
+import type { Chain, Connector } from '@wagmi/core'
 import { configureChains, createConfig } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { InjectedConnector } from '@wagmi/core/connectors/injected'
@@ -11,6 +11,8 @@ import { EmailConnector } from '../connectors/EmailConnector.js'
 import { walletConnectProvider } from './provider.js'
 
 export interface ConfigOptions {
+  projectId: string
+  chains: Chain[]
   metadata?: {
     name?: string
     description?: string
@@ -18,25 +20,51 @@ export interface ConfigOptions {
     icons?: string[]
     verifyUrl?: string
   }
-  projectId: string
-  chains: Chain[]
+  useInjectedWallets?: boolean
+  useEip6963Wallets?: boolean
+  useCoinbaseWallet?: boolean
+  useEmailWallet?: boolean
 }
 
-export function defaultWagmiConfig({ projectId, chains, metadata }: ConfigOptions) {
+export function defaultWagmiConfig({
+  projectId,
+  chains,
+  metadata,
+  useInjectedWallets,
+  useCoinbaseWallet,
+  useEip6963Wallets,
+  useEmailWallet
+}: ConfigOptions) {
   const { publicClient } = configureChains(chains, [
     walletConnectProvider({ projectId }),
     publicProvider()
   ])
 
+  const connectors: Connector[] = [
+    new WalletConnectConnector({ chains, options: { projectId, showQrModal: false, metadata } })
+  ]
+
+  if (useInjectedWallets !== false) {
+    connectors.push(new InjectedConnector({ chains, options: { shimDisconnect: true } }))
+  }
+
+  if (useEmailWallet !== false) {
+    connectors.push(new EmailConnector({ chains, options: { projectId } }))
+  }
+
+  if (useEip6963Wallets !== false) {
+    connectors.push(new EIP6963Connector({ chains }))
+  }
+
+  if (useCoinbaseWallet !== false) {
+    connectors.push(
+      new CoinbaseWalletConnector({ chains, options: { appName: metadata?.name ?? 'Unknown' } })
+    )
+  }
+
   return createConfig({
     autoConnect: true,
-    connectors: [
-      new EmailConnector({ chains, options: { projectId } }),
-      new WalletConnectConnector({ chains, options: { projectId, showQrModal: false, metadata } }),
-      new EIP6963Connector({ chains }),
-      new InjectedConnector({ chains, options: { shimDisconnect: true } }),
-      new CoinbaseWalletConnector({ chains, options: { appName: metadata?.name ?? 'Unknown' } })
-    ],
+    connectors,
     publicClient
   })
 }
