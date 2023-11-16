@@ -9,7 +9,8 @@ import type {
   ThemeControllerState,
   ThemeMode,
   ThemeVariables,
-  SIWEControllerClientState
+  SIWEControllerClientState,
+  ModalControllerState
 } from '@web3modal/core'
 import {
   AccountController,
@@ -76,6 +77,10 @@ export class Web3ModalScaffold {
   public async close() {
     await this.initOrContinue()
     ModalController.close()
+  }
+
+  public setLoading(loading: ModalControllerState['loading']) {
+    ModalController.setLoading(loading)
   }
 
   public getThemeMode() {

@@ -396,17 +396,16 @@ export class Web3Modal extends Web3ModalScaffold {
     ) as EmailConnector
 
     if (typeof window !== 'undefined' && connector) {
+      super.setLoading(true)
       const provider = await connector.getProvider()
-      provider.onRpcRequest(data => {
-        // eslint-disable-next-line
-        console.log(data)
+      provider.onRpcRequest(() => {
         super.open({ view: 'ApproveTransaction' })
       })
-
-      provider.onRpcResponse(data => {
-        // eslint-disable-next-line
-        console.log(data)
+      provider.onRpcResponse(() => {
         super.close()
+      })
+      provider.onIsConnected(() => {
+        super.setLoading(false)
       })
     }
   }

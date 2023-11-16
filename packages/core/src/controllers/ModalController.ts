@@ -1,5 +1,5 @@
 import { subscribeKey as subKey } from 'valtio/utils'
-import { proxy } from 'valtio/vanilla'
+import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
 import { EventsController } from './EventsController.js'
@@ -9,6 +9,7 @@ import { RouterController } from './RouterController.js'
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
+  loading: boolean
   open: boolean
 }
 
@@ -22,12 +23,17 @@ type StateKey = keyof ModalControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ModalControllerState>({
+  loading: false,
   open: false
 })
 
 // -- Controller ---------------------------------------- //
 export const ModalController = {
   state,
+
+  subscribe(callback: (newState: ModalControllerState) => void) {
+    return sub(state, () => callback(state))
+  },
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: ModalControllerState[K]) => void) {
     return subKey(state, key, callback)
@@ -52,5 +58,9 @@ export const ModalController = {
     state.open = false
     PublicStateController.set({ open: false })
     EventsController.sendEvent({ type: 'track', event: 'MODAL_CLOSE' })
+  },
+
+  setLoading(loading: ModalControllerState['loading']) {
+    state.loading = loading
   }
 }
