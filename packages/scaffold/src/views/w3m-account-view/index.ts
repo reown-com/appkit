@@ -123,6 +123,12 @@ export class W3mAccountView extends LitElement {
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
+        <wui-notice-card
+          label="Enjoy all your wallet potential"
+          description="Switch to a Non Custodial Wallet in a minute"
+          icon="wallet"
+        ></wui-notice-card>
+
         <wui-list-item
           .variant=${networkImage ? 'image' : 'icon'}
           iconVariant="overlay"

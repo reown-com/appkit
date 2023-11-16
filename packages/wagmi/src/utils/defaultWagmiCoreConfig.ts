@@ -20,20 +20,20 @@ export interface ConfigOptions {
     icons?: string[]
     verifyUrl?: string
   }
-  useInjectedWallets?: boolean
-  useEip6963Wallets?: boolean
-  useCoinbaseWallet?: boolean
-  useEmailWallet?: boolean
+  enableInjected?: boolean
+  enableEIP6963?: boolean
+  enableCoinbase?: boolean
+  enableEmail?: boolean
 }
 
 export function defaultWagmiConfig({
   projectId,
   chains,
   metadata,
-  useInjectedWallets,
-  useCoinbaseWallet,
-  useEip6963Wallets,
-  useEmailWallet
+  enableInjected,
+  enableCoinbase,
+  enableEIP6963,
+  enableEmail
 }: ConfigOptions) {
   const { publicClient } = configureChains(chains, [
     walletConnectProvider({ projectId }),
@@ -44,19 +44,19 @@ export function defaultWagmiConfig({
     new WalletConnectConnector({ chains, options: { projectId, showQrModal: false, metadata } })
   ]
 
-  if (useInjectedWallets !== false) {
+  if (enableInjected !== false) {
     connectors.push(new InjectedConnector({ chains, options: { shimDisconnect: true } }))
   }
 
-  if (useEmailWallet !== false) {
+  if (enableEmail !== false) {
     connectors.push(new EmailConnector({ chains, options: { projectId } }))
   }
 
-  if (useEip6963Wallets !== false) {
+  if (enableEIP6963 !== false) {
     connectors.push(new EIP6963Connector({ chains }))
   }
 
-  if (useCoinbaseWallet !== false) {
+  if (enableCoinbase !== false) {
     connectors.push(
       new CoinbaseWalletConnector({ chains, options: { appName: metadata?.name ?? 'Unknown' } })
     )
