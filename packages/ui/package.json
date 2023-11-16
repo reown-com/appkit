@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ui",
-  "version": "3.4.0-7da5cccb",
+  "version": "3.4.0-5414e506",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -16,12 +16,12 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "lit": "3.0.2",
+    "lit": "3.1.0",
     "qrcode": "1.5.3"
   },
   "devDependencies": {
     "@types/qrcode": "1.5.5",
-    "@web3modal/common": "3.4.0-7da5cccb",
+    "@web3modal/common": "3.4.0-5414e506",
     "eslint-plugin-lit": "1.10.1",
     "eslint-plugin-wc": "2.0.4"
   },
