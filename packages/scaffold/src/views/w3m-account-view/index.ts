@@ -7,7 +7,8 @@ import {
   ModalController,
   NetworkController,
   RouterController,
-  SnackController
+  SnackController,
+  ConnectorController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -23,6 +24,8 @@ export class W3mAccountView extends LitElement {
   private usubscribe: (() => void)[] = []
 
   private readonly networkImages = AssetController.state.networkImages
+
+  private readonly connectors = ConnectorController.state.connectors
 
   // -- State & Properties --------------------------------- //
   @state() private address = AccountController.state.address
@@ -123,11 +126,7 @@ export class W3mAccountView extends LitElement {
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
-        <wui-notice-card
-          label="Enjoy all your wallet potential"
-          description="Switch to a Non Custodial Wallet in a minute"
-          icon="wallet"
-        ></wui-notice-card>
+        ${this.emailCardTemplate()}
 
         <wui-list-item
           .variant=${networkImage ? 'image' : 'icon'}
@@ -165,6 +164,21 @@ export class W3mAccountView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private emailCardTemplate() {
+    const isEmail = this.connectors.find(c => c.type === 'EMAIL')
+    if (!isEmail) {
+      return null
+    }
+
+    return html`
+      <wui-notice-card
+        label="Enjoy all your wallet potential"
+        description="Switch to a Non Custodial Wallet in a minute"
+        icon="wallet"
+      ></wui-notice-card>
+    `
+  }
+
   private explorerBtnTemplate() {
     const { addressExplorerUrl } = AccountController.state
 
