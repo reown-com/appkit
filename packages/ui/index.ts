@@ -53,5 +53,4 @@ export { UiHelperUtil } from './src/utils/UiHelperUtil.js'
 export { TransactionUtil } from './src/utils/TransactionUtil.js'
 export { customElement } from './src/utils/WebComponentsUtil.js'
 
-// export * from './src/utils/JSXTypeUtil.js'
 export type { IconType, VisualType } from './src/utils/TypeUtil.js'

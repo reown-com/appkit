@@ -51,56 +51,56 @@ import type { WuiSeparator } from '../layout/wui-separator/index.js'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CustomElement<E> = Partial<E & { children?: any; onClick: any }>
 
-// declare global {
-//   namespace JSX {
-//     interface IntrinsicElements {
-//       'wui-card': CustomElement<WuiCard>
-//       'wui-icon': CustomElement<WuiIcon>
-//       'wui-image': CustomElement<WuiImage>
-//       'wui-loading-hexagon': CustomElement<WuiLoadingHexagon>
-//       'wui-loading-spinner': CustomElement<WuiLoadingSpinner>
-//       'wui-loading-thumbnail': CustomElement<WuiLoadingThumbnail>
-//       'wui-shimmer': CustomElement<WuiShimmer>
-//       'wui-text': CustomElement<WuiText>
-//       'wui-visual': CustomElement<WuiVisual>
-//       'wui-account-button': CustomElement<WuiAccountButton>
-//       'wui-all-wallets-image': CustomElement<WuiAllWalletsImage>
-//       'wui-avatar': CustomElement<WuiAvatar>
-//       'wui-button': CustomElement<WuiButton>
-//       'wui-card-select-loader': CustomElement<WuiCardSelectLoader>
-//       'wui-card-select': CustomElement<WuiCardSelect>
-//       'wui-chip': CustomElement<WuiChip>
-//       'wui-connect-button': CustomElement<WuiConnectButton>
-//       'wui-cta-button': CustomElement<WuiCtaButton>
-//       'wui-email-input': CustomElement<WuiEmailInput>
-//       'wui-icon-box': CustomElement<WuiIconBox>
-//       'wui-icon-link': CustomElement<WuiIconLink>
-//       'wui-input-element': CustomElement<WuiInputElement>
-//       'wui-input-numeric': CustomElement<WuiInputNumeric>
-//       'wui-input-text': CustomElement<WuiInputText>
-//       'wui-link': CustomElement<WuiLink>
-//       'wui-list-item': CustomElement<WuiListItem>
-//       'wui-transaction-list-item': CustomElement<WuiTransactionListItem>
-//       'wui-transaction-list-item-loader': CustomElement<WuiTransactionListItemLoader>
-//       'wui-list-wallet': CustomElement<WuiListWallet>
-//       'wui-logo-select': CustomElement<WuiLogoSelect>
-//       'wui-logo': CustomElement<WuiLogo>
-//       'wui-network-button': CustomElement<WuiNetworkButton>
-//       'wui-network-image': CustomElement<WuiNetworkImage>
-//       'wui-otp': CustomElement<WuiOtp>
-//       'wui-qr-code': CustomElement<WuiQrCode>
-//       'wui-search-bar': CustomElement<WuiSearchBar>
-//       'wui-snackbar': CustomElement<WuiSnackbar>
-//       'wui-tabs': CustomElement<WuiTabs>
-//       'wui-tag': CustomElement<WuiTag>
-//       'wui-tooltip': CustomElement<WuiTooltip>
-//       'wui-transaction-visual': CustomElement<WuiTransactionVisual>
-//       'wui-visual-thumbnail': CustomElement<WuiVisualThumbnail>
-//       'wui-wallet-image': CustomElement<WuiWalletImage>
-//       'wui-flex': CustomElement<WuiFlex>
-//       'wui-grid': CustomElement<WuiGrid>
-//       'wui-separator': CustomElement<WuiSeparator>
-//       'wui-notice-card': CustomElement<WuiNoticeCard>
-//     }
-//   }
-// }
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'wui-card': CustomElement<WuiCard>
+      'wui-icon': CustomElement<WuiIcon>
+      'wui-image': CustomElement<WuiImage>
+      'wui-loading-hexagon': CustomElement<WuiLoadingHexagon>
+      'wui-loading-spinner': CustomElement<WuiLoadingSpinner>
+      'wui-loading-thumbnail': CustomElement<WuiLoadingThumbnail>
+      'wui-shimmer': CustomElement<WuiShimmer>
+      'wui-text': CustomElement<WuiText>
+      'wui-visual': CustomElement<WuiVisual>
+      'wui-account-button': CustomElement<WuiAccountButton>
+      'wui-all-wallets-image': CustomElement<WuiAllWalletsImage>
+      'wui-avatar': CustomElement<WuiAvatar>
+      'wui-button': CustomElement<WuiButton>
+      'wui-card-select-loader': CustomElement<WuiCardSelectLoader>
+      'wui-card-select': CustomElement<WuiCardSelect>
+      'wui-chip': CustomElement<WuiChip>
+      'wui-connect-button': CustomElement<WuiConnectButton>
+      'wui-cta-button': CustomElement<WuiCtaButton>
+      'wui-email-input': CustomElement<WuiEmailInput>
+      'wui-icon-box': CustomElement<WuiIconBox>
+      'wui-icon-link': CustomElement<WuiIconLink>
+      'wui-input-element': CustomElement<WuiInputElement>
+      'wui-input-numeric': CustomElement<WuiInputNumeric>
+      'wui-input-text': CustomElement<WuiInputText>
+      'wui-link': CustomElement<WuiLink>
+      'wui-list-item': CustomElement<WuiListItem>
+      'wui-transaction-list-item': CustomElement<WuiTransactionListItem>
+      'wui-transaction-list-item-loader': CustomElement<WuiTransactionListItemLoader>
+      'wui-list-wallet': CustomElement<WuiListWallet>
+      'wui-logo-select': CustomElement<WuiLogoSelect>
+      'wui-logo': CustomElement<WuiLogo>
+      'wui-network-button': CustomElement<WuiNetworkButton>
+      'wui-network-image': CustomElement<WuiNetworkImage>
+      'wui-otp': CustomElement<WuiOtp>
+      'wui-qr-code': CustomElement<WuiQrCode>
+      'wui-search-bar': CustomElement<WuiSearchBar>
+      'wui-snackbar': CustomElement<WuiSnackbar>
+      'wui-tabs': CustomElement<WuiTabs>
+      'wui-tag': CustomElement<WuiTag>
+      'wui-tooltip': CustomElement<WuiTooltip>
+      'wui-transaction-visual': CustomElement<WuiTransactionVisual>
+      'wui-visual-thumbnail': CustomElement<WuiVisualThumbnail>
+      'wui-wallet-image': CustomElement<WuiWalletImage>
+      'wui-flex': CustomElement<WuiFlex>
+      'wui-grid': CustomElement<WuiGrid>
+      'wui-separator': CustomElement<WuiSeparator>
+      'wui-notice-card': CustomElement<WuiNoticeCard>
+    }
+  }
+}

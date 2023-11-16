@@ -8,7 +8,8 @@ import {
   NetworkController,
   RouterController,
   SnackController,
-  ConnectorController
+  ConnectorController,
+  ConstantsUtil
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -172,6 +173,7 @@ export class W3mAccountView extends LitElement {
 
     return html`
       <wui-notice-card
+        @click=${this.onGoToSecureSite.bind(this)}
         label="Enjoy all your wallet potential"
         description="Switch to a Non Custodial Wallet in a minute"
         icon="wallet"
@@ -244,6 +246,10 @@ export class W3mAccountView extends LitElement {
     if (addressExplorerUrl) {
       CoreHelperUtil.openHref(addressExplorerUrl, '_blank')
     }
+  }
+
+  private onGoToSecureSite() {
+    CoreHelperUtil.openHref(ConstantsUtil.SECURE_SITE_DASHBOARD, '_blank')
   }
 }
 

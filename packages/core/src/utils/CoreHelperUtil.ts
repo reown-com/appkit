@@ -111,7 +111,13 @@ export const CoreHelperUtil = {
   },
 
   openHref(href: string, target: '_blank' | '_self') {
-    window.open(href, target, 'noreferrer noopener')
+    const a = document.createElement('a')
+    a.href = href
+    if (target === '_blank') {
+      a.setAttribute('target', '_blank')
+      a.setAttribute('rel', 'noopener noreferrer')
+    }
+    a.click()
   },
 
   async preloadImage(src: string) {
