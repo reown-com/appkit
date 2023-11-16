@@ -86,10 +86,6 @@ export class Web3Modal extends Web3ModalScaffold {
       throw new Error('web3modal:constructor - projectId is undefined')
     }
 
-    if (!wagmiConfig.connectors.find(c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)) {
-      throw new Error('web3modal:constructor - WalletConnectConnector is required')
-    }
-
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         const chainId = HelpersUtil.caipNetworkIdToNumber(caipNetwork?.id)

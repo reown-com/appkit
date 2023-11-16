@@ -18,16 +18,21 @@ export function defaultWagmiConfig({
   enableInjected,
   enableCoinbase,
   enableEIP6963,
-  enableEmail
+  enableEmail,
+  enableWalletConnect
 }: ConfigOptions) {
   const { publicClient } = configureChains(chains, [
     walletConnectProvider({ projectId }),
     publicProvider()
   ])
 
-  const connectors: Connector[] = [
-    new WalletConnectConnector({ chains, options: { projectId, showQrModal: false, metadata } })
-  ]
+  const connectors: Connector[] = []
+
+  if (enableWalletConnect !== false) {
+    connectors.push(
+      new WalletConnectConnector({ chains, options: { projectId, showQrModal: false, metadata } })
+    )
+  }
 
   if (enableInjected !== false) {
     connectors.push(new InjectedConnector({ chains, options: { shimDisconnect: true } }))

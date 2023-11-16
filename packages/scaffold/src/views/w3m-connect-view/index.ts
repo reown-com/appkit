@@ -59,7 +59,6 @@ export class W3mConnectView extends LitElement {
     }
 
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
-
     if (!connector) {
       return null
     }
@@ -96,6 +95,10 @@ export class W3mConnectView extends LitElement {
   }
 
   private featuredTemplate() {
+    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    if (!connector) {
+      return null
+    }
     const { featured } = ApiController.state
     if (!featured.length) {
       return null
@@ -192,6 +195,11 @@ export class W3mConnectView extends LitElement {
   }
 
   private allWalletsTemplate() {
+    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    if (!connector) {
+      return null
+    }
+
     const roundedCount = Math.floor(ApiController.state.count / 10) * 10
 
     return html`
@@ -207,6 +215,10 @@ export class W3mConnectView extends LitElement {
   }
 
   private recommendedTemplate() {
+    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    if (!connector) {
+      return null
+    }
     const { recommended } = ApiController.state
     const { customWallets, featuredWalletIds } = OptionsController.state
     const { connectors } = ConnectorController.state
