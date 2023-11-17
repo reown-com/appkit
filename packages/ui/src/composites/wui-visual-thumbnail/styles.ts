@@ -7,7 +7,7 @@ export default css`
     align-items: center;
     width: 64px;
     height: 64px;
-    outline: 8px solid var(--wui-thumbnail-border);
+    box-shadow: 0 0 0 8px var(--wui-thumbnail-border);
     border-radius: var(--local-border-radius);
     overflow: hidden;
   }

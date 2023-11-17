@@ -22,7 +22,7 @@ export default css`
   button > wui-image {
     width: 32px;
     height: 32px;
-    outline: 2px solid var(--wui-gray-glass-005);
+    box-shadow: 0 0 0 2px var(--wui-gray-glass-005);
     border-radius: var(--wui-border-radius-3xl);
   }
 
@@ -32,11 +32,11 @@ export default css`
   }
 
   button > wui-icon-box[data-variant='blue'] {
-    outline: 2px solid var(--wui-accent-glass-005);
+    box-shadow: 0 0 0 2px var(--wui-accent-glass-005);
   }
 
   button > wui-icon-box[data-variant='overlay'] {
-    outline: 2px solid var(--wui-gray-glass-005);
+    box-shadow: 0 0 0 2px var(--wui-gray-glass-005);
   }
 
   button > wui-icon-box[data-variant='square-blue'] {
