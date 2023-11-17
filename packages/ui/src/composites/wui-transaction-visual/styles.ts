@@ -8,8 +8,7 @@ export default css`
     position: relative;
     width: 40px;
     height: 40px;
-    outline: 1px solid var(--wui-gray-glass-005);
-    outline-offset: -1px;
+    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-005);
     background-color: var(--wui-gray-glass-005);
   }
 

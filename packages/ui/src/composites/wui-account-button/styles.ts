@@ -52,7 +52,7 @@ export default css`
     border-radius: var(--wui-border-radius-3xl);
     width: 24px;
     height: 24px;
-    outline: 2px solid var(--wui-gray-glass-005);
+    box-shadow: 0 0 0 2px var(--wui-gray-glass-005);
   }
 
   wui-flex {
@@ -71,7 +71,7 @@ export default css`
   wui-avatar {
     width: 20px;
     height: 20px;
-    outline: 2px solid var(--wui-gray-glass-010);
+    box-shadow: 0 0 0 2px var(--wui-accent-glass-010);
   }
 
   @media (hover: hover) and (pointer: fine) {

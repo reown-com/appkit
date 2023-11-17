@@ -3,8 +3,7 @@ import { css } from 'lit'
 export default css`
   :host {
     display: block;
-    outline: 1px solid var(--wui-gray-glass-005);
-    outline-offset: -1px;
+    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-005);
     background: linear-gradient(
       120deg,
       var(--wui-color-bg-200) 5%,
