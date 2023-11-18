@@ -5,6 +5,7 @@ import nextAuth from 'next-auth'
 import credentialsProvider from 'next-auth/providers/credentials'
 import { getCsrfToken } from 'next-auth/react'
 import { SiweMessage } from 'siwe'
+import { ethers } from 'ethers'
 
 declare module 'next-auth' {
   interface Session extends SIWESession {
@@ -48,13 +49,19 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
           }
           const siwe = new SiweMessage(credentials.message)
           const url = new URL(nextAuthUrl)
+          const provider = new ethers.providers.InfuraProvider(siwe.chainId)
 
           const nonce = await getCsrfToken({ req: { headers: req.headers } })
-          const result = await siwe.verify({
-            signature: credentials?.signature || '',
-            domain: url.host,
-            nonce
-          })
+          const result = await siwe.verify(
+            {
+              signature: credentials?.signature || '',
+              domain: url.host,
+              nonce
+            },
+            {
+              provider
+            }
+          )
 
           if (result.success) {
             return {
