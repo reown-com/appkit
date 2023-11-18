@@ -209,9 +209,9 @@ export class Web3Modal extends Web3ModalScaffold {
         ProviderController.reset()
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider
-          await (WalletConnectProvider as EthereumProvider).disconnect()
+          await (WalletConnectProvider as unknown  as EthereumProvider).disconnect()
         }
-        //  Handle disconnect
+        provider?.emit('disconnect')
       }
     }
 
@@ -311,9 +311,9 @@ export class Web3Modal extends Web3ModalScaffold {
     ProviderController.reset()
 
     if (providerType === 'injected' || providerType === 'eip6963') {
-      // Handle disconnect
+      provider?.emit('disconnect')
     } else {
-      await (provider as EthereumProvider).disconnect()
+      await (provider as unknown  as EthereumProvider).disconnect()
     }
   }
 
@@ -405,7 +405,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private checkActiveCoinbaseProvider(config: ProviderType) {
-    const CoinbaseProvider = config.coinbase as ExternalProvider
+    const CoinbaseProvider = config.coinbase as unknown  as ExternalProvider
     const walletId = localStorage.getItem(WALLET_ID)
 
     if (CoinbaseProvider) {
@@ -439,7 +439,7 @@ export class Web3Modal extends Web3ModalScaffold {
     if (WalletConnectProvider) {
       ProviderController.setChainId(WalletConnectProvider.chainId)
       ProviderController.setProviderType('walletConnect')
-      ProviderController.setProvider(WalletConnectProvider as Provider)
+      ProviderController.setProvider(WalletConnectProvider as unknown as Provider)
       ProviderController.setIsConnected(true)
       ProviderController.setAddress(WalletConnectProvider.accounts[0] as Address)
       this.watchWalletConnect()
@@ -728,7 +728,7 @@ export class Web3Modal extends Web3ModalScaffold {
       const chain = this.chains.find(c => c.chainId === chainId)
 
       if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID && chain) {
-        const WalletConnectProvider = provider as EthereumProvider
+        const WalletConnectProvider = provider as unknown  as EthereumProvider
 
         if (WalletConnectProvider) {
           try {
@@ -746,7 +746,7 @@ export class Web3Modal extends Web3ModalScaffold {
               switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
               await addEthereumChain(
-                WalletConnectProvider as Provider,
+                WalletConnectProvider as unknown  as Provider,
                 chain
               )
             } else {

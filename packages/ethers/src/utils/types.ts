@@ -38,6 +38,7 @@ export interface Provider {
   request:<T>(args: RequestArguments) => Promise<T>
   on:<T>(event: string , listener: (data: T) => void)=>void
   removeListener:<T>(event: string , listener: (data: T) => void)=>void
+  emit:(event: string)=>void
 }
 
 export type Metadata = {
