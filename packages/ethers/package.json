@@ -1,5 +1,5 @@
 {
-  "name": "@web3modal/ethers5",
+  "name": "@web3modal/ethers",
   "version": "3.3.2",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -52,14 +52,14 @@
     "@web3modal/utils": "3.3.2",
     "valtio": "1.11.2"
   },
-  "devDependencies": {
-    "ethers": "5.7.2"
-  },
   "peerDependencies": {
-    "ethers": ">=5.0.0 <6.0.0",
+    "ethers": ">=6.0.0",
     "react": ">=17",
     "react-dom": ">=17",
     "vue": ">=3"
+  },
+  "devDependencies": {
+    "ethers": "6.8.1"
   },
   "peerDependenciesMeta": {
     "react": {
