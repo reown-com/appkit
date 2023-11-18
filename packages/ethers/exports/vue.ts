@@ -14,7 +14,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
     modal = new Web3Modal({
       ...options,
-      _sdkVersion: `vue-ethers5-${ConstantsUtil.VERSION}`
+      _sdkVersion: `vue-ethers-${ConstantsUtil.VERSION}`
     })
     getWeb3Modal(modal)
   }

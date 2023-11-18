@@ -18,7 +18,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
     modal = new Web3Modal({
       ...options,
-      _sdkVersion: `react-ethers5-${ConstantsUtil.VERSION}`
+      _sdkVersion: `react-ethers-${ConstantsUtil.VERSION}`
     })
   }
   getWeb3Modal(modal)
