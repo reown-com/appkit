@@ -55,6 +55,9 @@ export type { EventsControllerState } from './src/controllers/EventsController.j
 export { TransactionsController } from './src/controllers/TransactionsController.js'
 export type { TransactionsControllerState } from './src/controllers/TransactionsController.js'
 
+export { SwapApiController } from './src/controllers/SwapApiController.js'
+export type { SwapApiControllerState } from './src/controllers/SwapApiController.js'
+
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from './src/utils/AssetUtil.js'
 export { ConstantsUtil } from './src/utils/ConstantsUtil.js'

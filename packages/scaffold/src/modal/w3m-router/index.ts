@@ -117,6 +117,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-wallet-receive-view></w3m-wallet-receive-view>`
       case 'WalletCompatibleNetworks':
         return html`<w3m-wallet-compatible-networks-view></w3m-wallet-compatible-networks-view>`
+      case 'Swap':
+        return html`<w3m-swap-view></w3m-swap-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

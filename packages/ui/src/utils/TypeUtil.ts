@@ -144,6 +144,7 @@ export type IconType =
   | 'swapHorizontal'
   | 'swapHorizontalBold'
   | 'swapHorizontalMedium'
+  | 'swapHorizontalRoundedBold'
   | 'swapVertical'
   | 'telegram'
   | 'twitch'

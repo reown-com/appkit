@@ -325,6 +325,9 @@ export type Event =
         network: string
       }
     }
+  | {
+      event: 'CLICK_SWAP'
+    }
 
 // Onramp Types
 export type DestinationWallet = {
