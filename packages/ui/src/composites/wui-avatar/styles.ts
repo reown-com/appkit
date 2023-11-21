@@ -5,8 +5,8 @@ export default css`
     display: block;
     width: 64px;
     height: 64px;
-    outline: 8px solid var(--wui-gray-glass-005);
     border-radius: var(--wui-border-radius-3xl);
+    box-shadow: 0 0 0 8px var(--wui-gray-glass-005);
     overflow: hidden;
     position: relative;
   }
@@ -50,7 +50,7 @@ export default css`
   }
 
   :host([data-variant='generated']) {
-    outline: 8px solid var(--wui-avatar-border);
+    box-shadow: 0 0 0 8px var(--wui-gray-glass-005);
     background: radial-gradient(
       75.29% 75.29% at 64.96% 24.36%,
       #fff 0.52%,
@@ -63,7 +63,7 @@ export default css`
   }
 
   :host([data-variant='default']) {
-    outline: 8px solid var(--wui-avatar-border);
+    box-shadow: 0 0 0 8px var(--wui-gray-glass-005);
     background: radial-gradient(
       75.29% 75.29% at 64.96% 24.36%,
       #fff 0.52%,
