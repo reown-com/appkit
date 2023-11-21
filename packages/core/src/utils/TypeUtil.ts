@@ -5,6 +5,14 @@ export type CaipAddress = `${string}:${string}:${string}`
 
 export type CaipNetworkId = `${string}:${string}`
 
+export type CaipNetworkCoinbaseNetwork =
+  | 'Ethereum'
+  | 'Arbitrum One'
+  | 'Polygon'
+  | 'Avalanche'
+  | 'OP Mainnet'
+  | 'Celo'
+
 export interface CaipNetwork {
   id: CaipNetworkId
   name?: string
