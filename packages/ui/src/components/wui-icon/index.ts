@@ -50,6 +50,7 @@ import { refreshSvg } from '../../assets/svg/refresh.js'
 import { searchSvg } from '../../assets/svg/search.js'
 import { swapHorizontalSvg } from '../../assets/svg/swapHorizontal.js'
 import { swapHorizontalBoldSvg } from '../../assets/svg/swapHorizontalBold.js'
+import { swapHorizontalRoundedBoldSvg } from '../../assets/svg/swapHorizontalRoundedBold.js'
 import { swapVerticalSvg } from '../../assets/svg/swapVertical.js'
 import { telegramSvg } from '../../assets/svg/telegram.js'
 import { twitchSvg } from '../../assets/svg/twitch.js'
@@ -104,6 +105,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   search: searchSvg,
   swapHorizontal: swapHorizontalSvg,
   swapHorizontalBold: swapHorizontalBoldSvg,
+  swapHorizontalRoundedBold: swapHorizontalRoundedBoldSvg,
   swapVertical: swapVerticalSvg,
   telegram: telegramSvg,
   twitch: twitchSvg,

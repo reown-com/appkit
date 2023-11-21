@@ -145,6 +145,15 @@ export class W3mAccountView extends LitElement {
           <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
         </wui-list-item>
         <wui-list-item
+          iconVariant="blue"
+          icon="swapHorizontalRoundedBold"
+          iconSize="sm"
+          ?chevron=${true}
+          @click=${this.onSwap.bind(this)}
+        >
+          <wui-text variant="paragraph-500" color="fg-100">Swap</wui-text>
+        </wui-list-item>
+        <wui-list-item
           variant="icon"
           iconVariant="overlay"
           icon="disconnect"
@@ -203,6 +212,11 @@ export class W3mAccountView extends LitElement {
   private onTransactions() {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_TRANSACTIONS' })
     RouterController.push('Transactions')
+  }
+
+  private onSwap() {
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_SWAP' })
+    RouterController.push('Swap')
   }
 
   private async onDisconnect() {

@@ -129,6 +129,7 @@ export type IconType =
   | 'search'
   | 'swapHorizontal'
   | 'swapHorizontalBold'
+  | 'swapHorizontalRoundedBold'
   | 'swapVertical'
   | 'telegram'
   | 'twitch'

@@ -242,6 +242,10 @@ export type Event =
         cursor: string | undefined
       }
     }
+  | {
+      type: 'track'
+      event: 'CLICK_SWAP'
+    }
 
 // -- SIWEController Types ---------------------------------------------------
 
