@@ -1,6 +1,6 @@
 {
   "name": "@apps/laboratory",
-  "version": "3.4.0-e3959a31",
+  "version": "3.4.0-8e2a7695",
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
@@ -11,12 +11,12 @@
     "@chakra-ui/react": "2.8.2",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
-    "@sentry/browser": "7.80.1",
-    "@sentry/react": "7.80.1",
-    "@web3modal/ethers5": "3.4.0-e3959a31",
-    "@web3modal/wagmi": "3.4.0-e3959a31",
+    "@sentry/browser": "7.81.1",
+    "@sentry/react": "7.81.1",
+    "@web3modal/ethers5": "3.4.0-8e2a7695",
+    "@web3modal/wagmi": "3.4.0-8e2a7695",
     "framer-motion": "10.16.5",
-    "next": "14.0.2",
+    "next": "14.0.3",
     "react-icons": "4.12.0",
     "valtio": "1.12.0"
   }

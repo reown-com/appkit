@@ -1,4 +1,4 @@
-import type { W3mFrameProvider } from '@web3modal/smart-account'
+import type { W3mFrameProvider } from '@web3modal/frame-wallet'
 import type { Transaction } from '@web3modal/common'
 
 export type CaipAddress = `${string}:${string}:${string}`

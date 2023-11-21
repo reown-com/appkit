@@ -8,7 +8,7 @@
     "packages/scaffold-react",
     "packages/scaffold-vue",
     "packages/polyfills",
-    "packages/smart-account",
+    "packages/frame-wallet",
     "packages/utils",
     "packages/siwe",
     "packages/wagmi",
@@ -16,6 +16,6 @@
     "apps/*",
     "examples/*"
   ],
-  "version": "3.4.0-e3959a31",
+  "version": "3.4.0-8e2a7695",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
