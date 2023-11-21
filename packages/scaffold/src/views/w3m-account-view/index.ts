@@ -18,6 +18,15 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 
+import { initOnRamp } from '@coinbase/cbpay-js'
+import type { CBPayInstanceType } from '@coinbase/cbpay-js'
+
+const coinbaseAppID = process.env['NEXT_PUBLIC_COINBASE_APP_ID']!
+console.log({ coinbaseAppID })
+if (!coinbaseAppID) {
+  throw new Error('NEXT_PUBLIC_COINBASE_APP_ID is not set')
+}
+
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
   public static override styles = styles
@@ -37,6 +46,8 @@ export class W3mAccountView extends LitElement {
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
   @state() private network = NetworkController.state.caipNetwork
+
+  @state() private onrampInstance: CBPayInstanceType | null = null
 
   @state() private disconecting = false
 
@@ -68,6 +79,33 @@ export class W3mAccountView extends LitElement {
     this.usubscribe.forEach(unsubscribe => unsubscribe())
   }
 
+  public override firstUpdated() {
+    initOnRamp(
+      {
+        appId: coinbaseAppID,
+        widgetParameters: {
+          destinationWallets: [
+            {
+              address: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA63',
+              blockchains: ['ethereum']
+            }
+          ]
+        },
+        experienceLoggedIn: 'popup',
+        experienceLoggedOut: 'popup',
+        closeOnExit: true,
+        closeOnSuccess: true
+      },
+      (_, instance) => {
+        this.onrampInstance = instance
+      }
+    )
+
+    return () => {
+      this.onrampInstance?.destroy()
+    }
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.address) {
@@ -88,7 +126,6 @@ export class W3mAccountView extends LitElement {
           address=${this.address}
           imageSrc=${ifDefined(this.profileImage === null ? undefined : this.profileImage)}
         ></wui-avatar>
-
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
             <wui-text variant="large-600" color="fg-100">
@@ -138,6 +175,15 @@ export class W3mAccountView extends LitElement {
           <wui-text variant="paragraph-500" color="fg-100">
             ${this.network?.name ?? 'Unknown'}
           </wui-text>
+        </wui-list-item>
+        <wui-list-item
+          iconVariant="blue"
+          icon="swapHorizontalBold"
+          iconSize="sm"
+          ?chevron=${true}
+          @click=${this.handleClickPay.bind(this)}
+        >
+          <wui-text variant="paragraph-500" color="fg-100">Pay with Coinbase</wui-text>
         </wui-list-item>
         <wui-list-item
           iconVariant="blue"
@@ -202,6 +248,10 @@ export class W3mAccountView extends LitElement {
         <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
       </wui-list-item>
     `
+  }
+
+  private handleClickPay() {
+    this.onrampInstance?.open()
   }
 
   private explorerBtnTemplate() {
