@@ -1,4 +1,4 @@
-# DOM Tags
+# GSC20 DOM Tags
 
 <p>This section is a key of the DOM elements used for internal E2E testing</p>
 <p>Accessible with `data-testid`</p>
