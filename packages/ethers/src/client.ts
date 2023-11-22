@@ -12,16 +12,19 @@ import type {
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-
 import EthereumProvider from '@walletconnect/ethereum-provider'
-
-import type { Address, Metadata, Provider, ProviderType } from './utils/types.js'
+import type {
+  Address,
+  Metadata,
+  Provider,
+  ProviderType,
+  Chain
+} from '@web3modal/scaffold-utils/ethers'
 import { formatEther, JsonRpcProvider, InfuraProvider } from 'ethers'
 import {
   ProviderController,
   type ProviderControllerState
 } from './controllers/ProviderController.js'
-import { addEthereumChain } from './utils/helpers.js'
 import {
   ERROR_CODE_DEFAULT,
   ERROR_CODE_UNRECOGNIZED_CHAIN_ID,
@@ -29,7 +32,8 @@ import {
   getCaipDefaultChain,
   hexStringToNumber,
   numberToHexString,
-  type Chain
+  addEthereumChain,
+  getUserInfo
 } from '@web3modal/scaffold-utils/ethers'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
@@ -149,12 +153,10 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const connectionControllerClient: ConnectionControllerClient = {
       connectWalletConnect: async onUri => {
-        const provider = await this.getWalletConnectProvider()
-        if (!provider) {
+        const WalletConnectProvider = await this.getWalletConnectProvider()
+        if (!WalletConnectProvider) {
           throw new Error('connectionControllerClient:getWalletConnectUri - provider is undefined')
         }
-
-        const WalletConnectProvider = provider
 
         WalletConnectProvider.on('display_uri', (uri: string) => {
           onUri(uri)
@@ -227,7 +229,7 @@ export class Web3Modal extends Web3ModalScaffold {
       connectionControllerClient,
       defaultChain: getCaipDefaultChain(defaultChain),
       tokens: HelpersUtil.getCaipTokens(tokens),
-      _sdkVersion: _sdkVersion ?? `html-ethers5-${ConstantsUtil.VERSION}`,
+      _sdkVersion: _sdkVersion ?? `html-ethers-${ConstantsUtil.VERSION}`,
       ...w3mOptions
     })
 
@@ -325,13 +327,6 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   // -- Private -----------------------------------------------------------------
-  private async getUserInfo(provider: Provider) {
-    const chainId = Number(await provider.request<string | number>({ method: 'eth_chainId' }))
-    const [address] = await provider.request<string[]>({ method: 'eth_accounts' })
-
-    return { chainId, address }
-  }
-
   private createProvider() {
     if (!this.walletConnectProviderInitPromise && typeof window !== 'undefined') {
       this.walletConnectProviderInitPromise = this.initWalletConnectProvider()
@@ -458,7 +453,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const InjectedProvider = config.injected
 
     if (InjectedProvider) {
-      const { address, chainId } = await this.getUserInfo(InjectedProvider)
+      const { address, chainId } = await getUserInfo(InjectedProvider)
       if (address && chainId) {
         ProviderController.setChainId(chainId)
         ProviderController.setProviderType('injected')
@@ -474,7 +469,7 @@ export class Web3Modal extends Web3ModalScaffold {
     window?.localStorage.setItem(WALLET_ID, name)
 
     if (provider) {
-      const { address, chainId } = await this.getUserInfo(provider)
+      const { address, chainId } = await getUserInfo(provider)
       if (address && chainId) {
         ProviderController.setChainId(chainId)
         ProviderController.setProviderType('eip6963')
@@ -491,7 +486,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const CoinbaseProvider = config.coinbase
 
     if (CoinbaseProvider) {
-      const { address, chainId } = await this.getUserInfo(CoinbaseProvider)
+      const { address, chainId } = await getUserInfo(CoinbaseProvider)
       if (address && chainId) {
         ProviderController.setChainId(chainId)
         ProviderController.setProviderType('coinbaseWallet')

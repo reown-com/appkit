@@ -25,7 +25,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 // -- Composites --------------------------------------------------------------
 export function useWeb3ModalProvider() {
   if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalSigner" composition')
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalProvider" composition')
   }
 
   const walletProvider = ref(modal.getWalletProvider())

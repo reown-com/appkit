@@ -6,6 +6,7 @@ import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { ProviderController } from '../src/controllers/ProviderController.js'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
 import { useSnapshot } from 'valtio'
+import { ethers } from 'ethers'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
@@ -29,14 +30,12 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 export function useWeb3ModalSigner() {
   const state = useSnapshot(ProviderController.state)
 
-  const walletProvider = state.provider
+  const walletProvider = state.provider as ethers.providers.ExternalProvider | undefined
   const walletProviderType = state.providerType
-  const signer = walletProvider?.getSigner()
 
   return {
     walletProvider,
-    walletProviderType,
-    signer
+    walletProviderType
   }
 }
 

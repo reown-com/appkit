@@ -1,13 +1,10 @@
-import type { ethers } from 'ethers'
-
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import type { Address } from '../utils/types.js'
-
+import type { Address, Provider } from '@web3modal/scaffold-utils/ethers'
 // -- Types --------------------------------------------- //
 
 export interface ProviderControllerState {
-  provider?: ethers.providers.Web3Provider
+  provider?: Provider
   providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963'
   address?: Address
   chainId?: number

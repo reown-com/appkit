@@ -1,6 +1,5 @@
 import '@web3modal/polyfills'
-import { ethers } from 'ethers'
-import type { ExternalProvider, Metadata, ProviderType } from './types.js'
+import type { Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/ethers'
 import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk'
 
 export interface ConfigOptions {
@@ -22,8 +21,8 @@ export function defaultConfig(options: ConfigOptions) {
     defaultChainId
   } = options
 
-  let injectedProvider: ethers.providers.Web3Provider | undefined = undefined
-  let coinbaseProvider: ethers.providers.Web3Provider | undefined = undefined
+  let injectedProvider: Provider | undefined = undefined
+  let coinbaseProvider: Provider | undefined = undefined
 
   const providers: ProviderType = { metadata }
 
@@ -40,7 +39,8 @@ export function defaultConfig(options: ConfigOptions) {
       return undefined
     }
 
-    injectedProvider = new ethers.providers.Web3Provider(window.ethereum, 'any')
+    //  @ts-expect-error window.ethereum satisfies Provider
+    injectedProvider = window.ethereum
 
     return injectedProvider
   }
@@ -60,12 +60,7 @@ export function defaultConfig(options: ConfigOptions) {
       darkMode: false
     })
 
-    const coinbaseWalletProvider = coinbaseWallet.makeWeb3Provider(
-      rpcUrl,
-      defaultChainId
-    ) as unknown as ExternalProvider
-
-    coinbaseProvider = new ethers.providers.Web3Provider(coinbaseWalletProvider, 'any')
+    coinbaseProvider = coinbaseWallet.makeWeb3Provider(rpcUrl, defaultChainId)
 
     return coinbaseProvider
   }
