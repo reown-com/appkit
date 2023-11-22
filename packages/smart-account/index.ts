@@ -1,1 +1,1 @@
-export const test = 'test'
+export { createSafeSmartAccount } from './src/SafeSmaA.js'

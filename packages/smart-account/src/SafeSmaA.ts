@@ -9,14 +9,18 @@ import type {
   CreateSafeSmartAccountArgs
 } from './SafeSmaATypes.js'
 import {
-  SAFE_ADDRESSES_MAP,
   getAccountAddress,
   generateSafeMessageMessage,
   adjustVInSignature,
   SignTransactionNotSupportedBySafeSmartAccount,
-  EIP712_SAFE_OPERATION_TYPE,
   getAccountInitCode
 } from './SafeSmaAUtil.js'
+import {
+  SAFE_ADDRESSES_MAP,
+  EIP712_SAFE_OPERATION_TYPE,
+  SAFE_VERSION,
+  ENTRY_POINT
+} from './SafeSmaAConst.js'
 
 // -- Account --------------------------------------------------------------------------------------
 export async function createSafeSmartAccount<
@@ -24,29 +28,16 @@ export async function createSafeSmartAccount<
   TChain extends Chain | undefined = Chain | undefined
 >(
   client: Client<TTransport, TChain>,
-  {
-    ownerAddress,
-    ownerSignMessage,
-    ownerSignTypedData,
-    safeVersion,
-    entryPoint,
-    addModuleLibAddress: _addModuleLibAddress,
-    safe4337ModuleAddress: _safe4337ModuleAddress,
-    safeProxyFactoryAddress: _safeProxyFactoryAddress,
-    safeSingletonAddress: _safeSingletonAddress,
-    saltNonce = 0n
-  }: CreateSafeSmartAccountArgs
+  { ownerAddress, ownerSignMessage, ownerSignTypedData }: CreateSafeSmartAccountArgs
 ): Promise<PrivateKeySafeSmartAccount<TTransport, TChain>> {
+  const saltNonce = 0n
   const chainId = (await getChainId(client)) as SmartAccountEnabledChain
+  const safeData = SAFE_ADDRESSES_MAP[SAFE_VERSION][chainId]
 
-  const addModuleLibAddress: Address =
-    _addModuleLibAddress ?? SAFE_ADDRESSES_MAP[safeVersion][chainId].ADD_MODULES_LIB_ADDRESS
-  const safe4337ModuleAddress: Address =
-    _safe4337ModuleAddress ?? SAFE_ADDRESSES_MAP[safeVersion][chainId].SAFE_4337_MODULE_ADDRESS
-  const safeProxyFactoryAddress: Address =
-    _safeProxyFactoryAddress ?? SAFE_ADDRESSES_MAP[safeVersion][chainId].SAFE_PROXY_FACTORY_ADDRESS
-  const safeSingletonAddress: Address =
-    _safeSingletonAddress ?? SAFE_ADDRESSES_MAP[safeVersion][chainId].SAFE_SINGLETON_ADDRESS
+  const addModuleLibAddress = safeData.ADD_MODULES_LIB_ADDRESS
+  const safe4337ModuleAddress = safeData.SAFE_4337_MODULE_ADDRESS
+  const safeProxyFactoryAddress = safeData.SAFE_PROXY_FACTORY_ADDRESS
+  const safeSingletonAddress = safeData.SAFE_SINGLETON_ADDRESS
 
   const accountAddress = await getAccountAddress<TTransport, TChain>({
     client,
@@ -115,12 +106,12 @@ export async function createSafeSmartAccount<
     ...account,
     client,
     publicKey: accountAddress,
-    entryPoint,
+    entryPoint: ENTRY_POINT,
     source: 'privateKeySafeSmartAccount',
     async getNonce() {
       return getAccountNonce(client, {
         sender: accountAddress,
-        entryPoint
+        entryPoint: ENTRY_POINT
       })
     },
     async signUserOperation(userOperation) {
@@ -143,7 +134,7 @@ export async function createSafeSmartAccount<
               callGasLimit: userOperation.callGasLimit,
               maxFeePerGas: userOperation.maxFeePerGas,
               maxPriorityFeePerGas: userOperation.maxPriorityFeePerGas,
-              entryPoint
+              entryPoint: ENTRY_POINT
             }
           })
         }
