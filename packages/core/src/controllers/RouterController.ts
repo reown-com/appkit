@@ -37,6 +37,7 @@ export interface RouterControllerState {
     | 'WhatIsAWallet'
     | 'WhatIsABuy'
     | 'Swap'
+    | 'SwapSelectToken'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
