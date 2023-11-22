@@ -12,8 +12,8 @@ export default {
   args: {
     name: 'Ethereum',
     symbol: 'ETH',
-    price: '2.000',
-    amount: '0.8',
+    price: '$1,740.72',
+    amount: '0.867',
     imageSrc: networkImageSrc
   },
   argTypes: {}

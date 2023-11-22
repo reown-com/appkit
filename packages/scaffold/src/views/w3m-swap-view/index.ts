@@ -3,6 +3,8 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { SwapApiController } from '@web3modal/core'
+import { EventsController } from '@web3modal/core'
+import { RouterController } from '@web3modal/core'
 
 const tokenFrom = 'ETH'
 const tokenTo = ''
@@ -136,7 +138,9 @@ export class W3mSwapView extends LitElement {
 
   private templateTokenSelectButton(network: string) {
     if (!network) {
-      return html` <wui-button size="md" variant="accentBg">Select token</wui-button>`
+      return html` <wui-button size="md" variant="accentBg" @click=${this.onSelectToken.bind(this)}>
+        Select token
+      </wui-button>`
     }
 
     const networkElement = this.networkSrc
@@ -158,6 +162,11 @@ export class W3mSwapView extends LitElement {
         </button>
       </div>
     `
+  }
+
+  private onSelectToken() {
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_SELECT_TOKEN_TO_SWAP' })
+    RouterController.push('SwapSelectToken')
   }
 }
 
