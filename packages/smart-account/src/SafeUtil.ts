@@ -21,20 +21,20 @@ import type {
   TypedData,
   TypedDataDefinition
 } from 'viem'
-import { privateKeyToAccount, toAccount } from 'viem/accounts'
+import { toAccount } from 'viem/accounts'
 import { getBytecode, getChainId, readContract } from 'viem/actions'
 import type { SmartAccount } from 'permissionless/accounts'
 import { getAccountNonce } from 'permissionless'
 
 // -- Types ----------------------------------------------------------------------------------------
-export type SafeVersion = '1.4.1'
+type SafeVersion = '1.4.1'
 
-export type PrivateKeySafeSmartAccount<
+type PrivateKeySafeSmartAccount<
   transport extends Transport = Transport,
   chain extends Chain | undefined = Chain | undefined
 > = SmartAccount<'privateKeySafeSmartAccount', transport, chain>
 
-export class SignTransactionNotSupportedBySafeSmartAccount extends BaseError {
+class SignTransactionNotSupportedBySafeSmartAccount extends BaseError {
   override name = 'SignTransactionNotSupportedBySafeSmartAccount'
   constructor({ docsPath }: { docsPath?: string } = {}) {
     super(
@@ -50,10 +50,10 @@ export class SignTransactionNotSupportedBySafeSmartAccount extends BaseError {
   }
 }
 
-export type SmartAccountEnabledChain = 5 | 11155111
+type SmartAccountEnabledChain = 5 | 11155111
 
-// -- Helpers --------------------------------------------------------------------------------------
-export const EIP712_SAFE_OPERATION_TYPE = {
+// -- Constants ------------------------------------------------------------------------------------
+const EIP712_SAFE_OPERATION_TYPE = {
   SafeOp: [
     { type: 'address', name: 'safe' },
     { type: 'bytes', name: 'callData' },
@@ -345,17 +345,16 @@ async function getAccountAddress<
   })
 }
 
-/**
- * @description Creates an Simple Account from a private key.
- * @returns A Private Key Simple Account.
- */
+// -- Account --------------------------------------------------------------------------------------
 export async function privateKeyToSafeSmartAccount<
   TTransport extends Transport = Transport,
   TChain extends Chain | undefined = Chain | undefined
 >(
   client: Client<TTransport, TChain>,
   {
-    privateKey,
+    ownerAddress,
+    ownerSignMessage,
+    ownerSignTypedData,
     safeVersion,
     entryPoint,
     addModuleLibAddress: _addModuleLibAddress,
@@ -364,7 +363,9 @@ export async function privateKeyToSafeSmartAccount<
     safeSingletonAddress: _safeSingletonAddress,
     saltNonce = 0n
   }: {
-    privateKey: Hex
+    ownerAddress: Hex
+    ownerSignMessage: (args: unknown) => Promise<string>
+    ownerSignTypedData: (args: unknown) => Promise<string>
     safeVersion: SafeVersion
     entryPoint: Address
     addModuleLibAddress?: Address
@@ -374,8 +375,6 @@ export async function privateKeyToSafeSmartAccount<
     saltNonce?: bigint
   }
 ): Promise<PrivateKeySafeSmartAccount<TTransport, TChain>> {
-  const privateKeyAccount = privateKeyToAccount(privateKey)
-
   const chainId = (await getChainId(client)) as SmartAccountEnabledChain
 
   const addModuleLibAddress: Address =
@@ -389,7 +388,7 @@ export async function privateKeyToSafeSmartAccount<
 
   const accountAddress = await getAccountAddress<TTransport, TChain>({
     client,
-    owner: privateKeyAccount.address,
+    owner: ownerAddress,
     addModuleLibAddress,
     safe4337ModuleAddress,
     safeProxyFactoryAddress,
@@ -420,7 +419,7 @@ export async function privateKeyToSafeSmartAccount<
 
       return adjustVInSignature(
         'eth_sign',
-        await privateKeyAccount.signMessage({
+        await ownerSignMessage({
           message: {
             raw: toBytes(messageHash)
           }
@@ -433,7 +432,7 @@ export async function privateKeyToSafeSmartAccount<
     async signTypedData(typedData) {
       return adjustVInSignature(
         'eth_signTypedData',
-        await privateKeyAccount.signTypedData({
+        await ownerSignTypedData({
           domain: {
             chainId,
             verifyingContract: accountAddress
@@ -465,8 +464,8 @@ export async function privateKeyToSafeSmartAccount<
     async signUserOperation(userOperation) {
       const signatures = [
         {
-          signer: privateKeyAccount.address,
-          data: await privateKeyAccount.signTypedData({
+          signer: ownerAddress,
+          data: await ownerSignTypedData({
             domain: {
               chainId,
               verifyingContract: safe4337ModuleAddress
@@ -509,7 +508,7 @@ export async function privateKeyToSafeSmartAccount<
       }
 
       return getAccountInitCode({
-        owner: privateKeyAccount.address,
+        owner: ownerAddress,
         addModuleLibAddress,
         safe4337ModuleAddress,
         safeProxyFactoryAddress,
