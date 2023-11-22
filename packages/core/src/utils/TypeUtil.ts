@@ -246,6 +246,10 @@ export type Event =
       type: 'track'
       event: 'CLICK_SWAP'
     }
+  | {
+      type: 'track'
+      event: 'CLICK_SELECT_TOKEN_TO_SWAP'
+    }
 
 // -- SIWEController Types ---------------------------------------------------
 

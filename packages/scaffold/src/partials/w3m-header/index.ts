@@ -31,7 +31,8 @@ function headings() {
     GetWallet: 'Get a Wallet',
     Downloads: name ? `Get ${name}` : 'Downloads',
     Transactions: 'Activity',
-    Swap: 'Swap'
+    Swap: 'Swap',
+    SwapSelectToken: 'Select Token'
   }
 }
 
