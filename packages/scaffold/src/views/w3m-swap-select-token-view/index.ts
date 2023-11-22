@@ -1,8 +1,6 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { SwapApiController } from '@web3modal/core'
 
 const yourItems = [
   {
@@ -127,37 +125,9 @@ const popularItems = [
 @customElement('w3m-swap-select-token-view')
 export class W3mSwapSelectTokenView extends LitElement {
   public static override styles = styles
-
-  // -- State & Properties -------------------------------- //
-  @state() private loading = SwapApiController.state.loading
-
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
-  }
-
-  private getInputElement(el: HTMLElement) {
-    if (el.shadowRoot?.querySelector('input')) {
-      return el.shadowRoot.querySelector('input')
-    }
-
-    return null
-  }
-
-  private handleInput(e: InputEvent) {
-    const inputElement = e.target as HTMLElement
-    const input = this.getInputElement(inputElement)
-
-    if (input) {
-      const inputValue = input.value
-      SwapApiController.setSourceTokenAmount(inputValue)
-    }
-  }
-
-  private onSwap() {
-    const amount = SwapApiController.state.sourceTokenAmount
-    // eslint-disable-next-line no-console
-    console.log({ amount })
   }
 
   // -- Render -------------------------------------------- //
