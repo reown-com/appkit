@@ -11,7 +11,7 @@ import type {
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/utils'
+import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 
 import EthereumProvider from '@walletconnect/ethereum-provider'
 
@@ -31,7 +31,7 @@ import {
   ERROR_CODE_DEFAULT,
   ERROR_CODE_UNRECOGNIZED_CHAIN_ID,
   WALLET_ID
-} from './utils/constants.js'
+} from '@web3modal/scaffold-utils/ethers'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
 

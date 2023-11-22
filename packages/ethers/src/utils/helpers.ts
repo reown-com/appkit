@@ -1,5 +1,5 @@
 import type { CaipNetwork } from '@web3modal/scaffold'
-import { ConstantsUtil, PresetsUtil } from '@web3modal/utils'
+import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import type { Chain, Provider } from './types.js'
 
 export function getCaipDefaultChain(chain?: Chain) {

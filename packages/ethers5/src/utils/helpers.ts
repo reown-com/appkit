@@ -1,5 +1,5 @@
 import type { CaipNetwork } from '@web3modal/scaffold'
-import { ConstantsUtil, PresetsUtil } from '@web3modal/utils'
+import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import type { ethers } from 'ethers'
 import EthereumProvider from '@walletconnect/ethereum-provider'
 import type { Chain } from './types.js'

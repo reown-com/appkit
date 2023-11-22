@@ -1,0 +1,1 @@
+export { WALLET_ID, ERROR_CODE_UNRECOGNIZED_CHAIN_ID, ERROR_CODE_DEFAULT } from './constants.js'
