@@ -12,7 +12,7 @@ const api = new FetchUtil({ baseUrl })
 // -- Controller ---------------------------------------- //
 export const CoinbaseApiController = {
   fetchTransactions({ pageKey, pageSize, accountAddress }: CoinbaseApiTransactionsRequest) {
-    return api.get2<CoinbaseApiTransactionsResponse>({
+    return api.get<CoinbaseApiTransactionsResponse>({
       path: `api/v1/buy/user/${accountAddress}/transactions?pageKey=${pageKey}&pageSize=${pageSize}`,
       headers: {
         'Cbpay-App-Id': process.env['NEXT_PUBLIC_COINBASE_APP_ID'] ?? '',
