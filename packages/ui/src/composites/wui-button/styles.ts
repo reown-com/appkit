@@ -10,6 +10,7 @@ export default css`
     border: 1px solid var(--wui-gray-glass-010);
     border-radius: var(--wui-border-radius-m);
     width: var(--local-width);
+    white-space: nowrap;
   }
 
   button:disabled {
