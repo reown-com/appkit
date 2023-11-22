@@ -69,7 +69,7 @@ export class W3mSwapView extends LitElement {
           ${this.templateReplaceTokensButton()}
         </wui-flex>
         <wui-flex .padding=${['xs', 's', 's', 's'] as const}>
-          <wui-button variant="fullWidth" @click=${this.onSwap.bind(this)}>
+          <wui-button class="action-button" variant="fullWidth" @click=${this.onSwap.bind(this)}>
             Enter amount
           </wui-button>
         </wui-flex>

@@ -11,6 +11,17 @@ export default css`
     position: absolute;
   }
 
+  .action-button {
+    width: 100%;
+    border-radius: var(--wui-border-radius-xs);
+  }
+
+  .action-button button {
+    width: 100%;
+    height: 48px;
+    border-radius: var(--wui-border-radius-xs);
+  }
+
   .swap-inputs-container {
     position: relative;
   }
@@ -32,7 +43,7 @@ export default css`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: var(--4XS, 10px);
+    gap: var(--4XS, 10px);w
     width: 40px;
     height: 40px;
     padding: var(--5XS, 8px);
