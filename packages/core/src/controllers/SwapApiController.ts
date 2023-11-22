@@ -7,26 +7,51 @@ import { AccountController } from './AccountController.js'
 
 // -- Types --------------------------------------------- //
 export interface SwapApiControllerState {
-  sourceTokenAddress?: `0x${string}`
-  toTokenAddress?: `0x${string}`
+  sourceToken?: TokenInfo
+  toToken?: TokenInfo
   sourceTokenAmount?: string
   slippage?: number
   disableEstimate?: boolean
   allowPartialFill?: boolean
   loading?: boolean
+  tokens?: Record<string, TokenInfo>
+}
+
+export interface TokenInfo {
+  address: `0x${string}`
+  symbol: string
+  name: string
+  decimals: number
+  logoURI: string
+  domainVersion?: string
+  eip2612?: boolean
+  isFoT?: boolean
+  tags?: string[]
+}
+
+interface ApproveCallDataResponse {
+  data: string
+  gasPrice: string
+  to: string
+  value: string
+}
+
+interface TokenList {
+  tokens: Record<string, TokenInfo>
 }
 
 type StateKey = keyof SwapApiControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<SwapApiControllerState>({
-  sourceTokenAddress: undefined,
-  toTokenAddress: undefined,
+  sourceToken: undefined,
+  toToken: undefined,
   sourceTokenAmount: undefined,
   slippage: 1,
   disableEstimate: false,
   allowPartialFill: false,
-  loading: false
+  loading: false,
+  tokens: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -37,9 +62,8 @@ export const SwapApiController = {
     return subKey(state, key, callback)
   },
 
-  _getApi() {
-    const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
-    const baseUrl = CoreHelperUtil.get1inchApiUrl(chainId)
+  _get1inchApi() {
+    const baseUrl = 'http://localhost:8787'
 
     return new FetchUtil({ baseUrl })
   },
@@ -52,23 +76,23 @@ export const SwapApiController = {
 
     return {
       fromAddress: address,
-      sourceTokenAddress: state.sourceTokenAddress,
-      toTokenAddress: state.toTokenAddress,
+      sourceTokenAddress: state.sourceToken?.address,
+      toTokenAddress: state.toToken?.address,
       sourceTokenAmount: state.sourceTokenAmount,
-      slippage: state.slippage
+      slippage: state.slippage?.toString()
     }
   },
 
-  setSourceTokenAddress(sourceTokenAddress: `0x${string}`) {
-    state.sourceTokenAddress = sourceTokenAddress
+  setSourceToken(sourceToken: TokenInfo) {
+    state.sourceToken = sourceToken
   },
 
   setSourceTokenAmount(swapFromAmount: string) {
     state.sourceTokenAmount = swapFromAmount
   },
 
-  setToTokenAddress(toTokenAddress: `0x${string}`) {
-    state.toTokenAddress = toTokenAddress
+  setToToken(toToken: TokenInfo) {
+    state.toToken = toToken
   },
 
   setSlippage(slippage: number) {
@@ -79,33 +103,81 @@ export const SwapApiController = {
     state.loading = isLoading
   },
 
-  async swap(isFusion?: boolean) {
-    const api = this._getApi()
-    const path = `${api.baseUrl}/${isFusion ? 'fusion' : 'swap'}`
-    const body = this._getSwapParams()
+  switchTokens() {
+    const newToToken = state.sourceToken
+    const newSourceToken = state.toToken
+    state.sourceToken = newSourceToken
+    state.toToken = newToToken
 
-    const swapTransactionRes = await api.post({
+    return { newToToken, newSourceToken }
+  },
+
+  async getSwapCalldata() {
+    const api = this._get1inchApi()
+    const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
+
+    const path = `${api.baseUrl}/${chainId}/swap`
+    const params = this._getSwapParams()
+
+    const swapTransactionRes = await api.get({
       path,
-      body
+      params
     })
 
     return swapTransactionRes
   },
 
-  async hasTokenAllowance() {
-    const api = this._getApi()
-    const path = `${api.baseUrl}/approve/allowance`
+  async getSwapApprovalCalldata() {
+    const api = this._get1inchApi()
+    const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
+    const path = `${api.baseUrl}/${chainId}/approve/transaction`
+    const { sourceTokenAddress, sourceTokenAmount } = this._getSwapParams()
+
+    const res = await api.get<ApproveCallDataResponse>({
+      path,
+      params: {
+        tokenAddress: sourceTokenAddress,
+        amount: sourceTokenAmount
+      }
+    })
+
+    return res
+  },
+
+  async getTokenList() {
+    if (!state.tokens) {
+      const api = this._get1inchApi()
+      const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
+      const path = `${api.baseUrl}/${chainId}/tokens`
+
+      const res = await api.get<TokenList>({
+        path
+      })
+
+      state.tokens = res.tokens
+    }
+
+    return state.tokens
+  },
+
+  async getTokenAllowance() {
+    const api = this._get1inchApi()
+    const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
+    const path = `${api.baseUrl}/${chainId}/approve/allowance`
     const { sourceTokenAddress, fromAddress, sourceTokenAmount } = this._getSwapParams()
 
-    const res = await api.post<{ allowance: string }>({
+    const res = await api.get<{ allowance: string }>({
       path,
-      body: { sourceTokenAddress, fromAddress }
+      params: { tokenAddress: sourceTokenAddress, walletAddress: fromAddress }
     })
 
     if (res?.allowance && sourceTokenAmount) {
-      return BigInt(res.allowance) >= BigInt(sourceTokenAmount)
+      return {
+        hasEnoughAllowance: BigInt(res.allowance) >= BigInt(sourceTokenAmount),
+        allowance: res?.allowance
+      }
     }
 
-    return false
+    return { hasEnoughAllowance: false, allowance: '0' }
   }
 }
