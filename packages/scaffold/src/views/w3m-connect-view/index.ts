@@ -190,7 +190,9 @@ export class W3mConnectView extends LitElement {
   }
 
   private allWalletsTemplate() {
-    const roundedCount = Math.floor(ApiController.state.count / 10) * 10
+    const rawCount = ApiController.state.count
+    const roundedCount = rawCount < 10 ? rawCount : Math.floor(rawCount / 10) * 10
+    const tagLabel = rawCount > roundedCount ? `${roundedCount}+` : rawCount
 
     return html`
       <wui-list-wallet
@@ -198,7 +200,7 @@ export class W3mConnectView extends LitElement {
         walletIcon="allWallets"
         showAllWallets
         @click=${this.onAllWallets.bind(this)}
-        tagLabel=${`${roundedCount}+`}
+        tagLabel=${tagLabel}
         tagVariant="shade"
       ></wui-list-wallet>
     `
