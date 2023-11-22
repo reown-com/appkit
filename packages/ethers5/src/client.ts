@@ -20,22 +20,14 @@ import type {
   Metadata,
   ProviderType,
   Chain,
-  Provider
+  Provider,
+  EthersStoreUtilState
 } from '@web3modal/scaffold-utils/ethers'
 import { ethers, utils } from 'ethers'
 import {
-  ProviderController,
-  type ProviderControllerState
-} from './controllers/ProviderController.js'
-import {
-  ERROR_CODE_DEFAULT,
-  ERROR_CODE_UNRECOGNIZED_CHAIN_ID,
-  WALLET_ID,
-  getCaipDefaultChain,
-  hexStringToNumber,
-  numberToHexString,
-  addEthereumChain,
-  getUserInfo
+  EthersConstantsUtil,
+  EthersHelpersUtil,
+  EthersStoreUtil
 } from '@web3modal/scaffold-utils/ethers'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 
@@ -123,7 +115,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
       getApprovedCaipNetworksData: async () =>
         new Promise(async resolve => {
-          const walletChoice = localStorage.getItem(WALLET_ID)
+          const walletChoice = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
           if (walletChoice?.includes(ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)) {
             const provider = await this.getWalletConnectProvider()
             if (!provider) {
@@ -213,10 +205,10 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       disconnect: async () => {
-        const provider = ProviderController.state.provider
-        const providerType = ProviderController.state.providerType
-        localStorage.removeItem(WALLET_ID)
-        ProviderController.reset()
+        const provider = EthersStoreUtil.state.provider
+        const providerType = EthersStoreUtil.state.providerType
+        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        EthersStoreUtil.reset()
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider
           await (WalletConnectProvider as unknown as EthereumProvider).disconnect()
@@ -229,7 +221,7 @@ export class Web3Modal extends Web3ModalScaffold {
     super({
       networkControllerClient,
       connectionControllerClient,
-      defaultChain: getCaipDefaultChain(defaultChain),
+      defaultChain: EthersHelpersUtil.getCaipDefaultChain(defaultChain),
       tokens: HelpersUtil.getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `html-ethers5-${ConstantsUtil.VERSION}`,
       ...w3mOptions
@@ -244,11 +236,11 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.createProvider()
 
-    ProviderController.subscribeKey('address', () => {
+    EthersStoreUtil.subscribeKey('address', () => {
       this.syncAccount()
     })
 
-    ProviderController.subscribeKey('chainId', () => {
+    EthersStoreUtil.subscribeKey('chainId', () => {
       this.syncNetwork(chainImages)
     })
 
@@ -293,33 +285,33 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   public getAddress() {
-    return ProviderController.state.address
+    return EthersStoreUtil.state.address
   }
 
   public getChainId() {
-    return ProviderController.state.chainId
+    return EthersStoreUtil.state.chainId
   }
 
   public getIsConnected() {
-    return ProviderController.state.isConnected
+    return EthersStoreUtil.state.isConnected
   }
 
   public getWalletProvider() {
-    return ProviderController.state.provider
+    return EthersStoreUtil.state.provider
   }
 
   public getWalletProviderType() {
-    return ProviderController.state.providerType
+    return EthersStoreUtil.state.providerType
   }
 
-  public subscribeProvider(callback: (newState: ProviderControllerState) => void) {
-    return ProviderController.subscribe(callback)
+  public subscribeProvider(callback: (newState: EthersStoreUtilState) => void) {
+    return EthersStoreUtil.subscribe(callback)
   }
 
   public async disconnect() {
-    const { provider, providerType } = ProviderController.state
-    localStorage.removeItem(WALLET_ID)
-    ProviderController.reset()
+    const { provider, providerType } = EthersStoreUtil.state
+    localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+    EthersStoreUtil.reset()
 
     if (providerType === 'injected' || providerType === 'eip6963') {
       provider?.emit('disconnect')
@@ -386,7 +378,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private async checkActiveWalletConnectProvider() {
     const WalletConnectProvider = await this.getWalletConnectProvider()
-    const walletId = localStorage.getItem(WALLET_ID)
+    const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
 
     if (WalletConnectProvider) {
       if (walletId === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
@@ -397,7 +389,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private checkActiveInjectedProvider(config: ProviderType) {
     const InjectedProvider = config.injected
-    const walletId = localStorage.getItem(WALLET_ID)
+    const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
 
     if (InjectedProvider) {
       if (walletId === ConstantsUtil.INJECTED_CONNECTOR_ID) {
@@ -409,7 +401,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private checkActiveCoinbaseProvider(config: ProviderType) {
     const CoinbaseProvider = config.coinbase as unknown as ExternalProvider
-    const walletId = localStorage.getItem(WALLET_ID)
+    const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
 
     if (CoinbaseProvider) {
       if (walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
@@ -417,15 +409,15 @@ export class Web3Modal extends Web3ModalScaffold {
           this.setCoinbaseProvider(config)
           this.watchCoinbase(config)
         } else {
-          localStorage.removeItem(WALLET_ID)
-          ProviderController.reset()
+          localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+          EthersStoreUtil.reset()
         }
       }
     }
   }
 
   private checkActive6963Provider() {
-    const currentActiveWallet = window?.localStorage.getItem(WALLET_ID)
+    const currentActiveWallet = window?.localStorage.getItem(EthersConstantsUtil.WALLET_ID)
     if (currentActiveWallet) {
       const currentProvider = this.EIP6963Providers.find(
         provider => provider.name === currentActiveWallet
@@ -437,63 +429,66 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async setWalletConnectProvider() {
-    window?.localStorage.setItem(WALLET_ID, ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)
+    window?.localStorage.setItem(
+      EthersConstantsUtil.WALLET_ID,
+      ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
+    )
     const WalletConnectProvider = await this.getWalletConnectProvider()
     if (WalletConnectProvider) {
-      ProviderController.setChainId(WalletConnectProvider.chainId)
-      ProviderController.setProviderType('walletConnect')
-      ProviderController.setProvider(WalletConnectProvider as unknown as Provider)
-      ProviderController.setIsConnected(true)
-      ProviderController.setAddress(WalletConnectProvider.accounts[0] as Address)
+      EthersStoreUtil.setChainId(WalletConnectProvider.chainId)
+      EthersStoreUtil.setProviderType('walletConnect')
+      EthersStoreUtil.setProvider(WalletConnectProvider as unknown as Provider)
+      EthersStoreUtil.setIsConnected(true)
+      EthersStoreUtil.setAddress(WalletConnectProvider.accounts[0] as Address)
       this.watchWalletConnect()
     }
   }
 
   private async setInjectedProvider(config: ProviderType) {
-    window?.localStorage.setItem(WALLET_ID, ConstantsUtil.INJECTED_CONNECTOR_ID)
+    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.INJECTED_CONNECTOR_ID)
     const InjectedProvider = config.injected
 
     if (InjectedProvider) {
-      const { address, chainId } = await getUserInfo(InjectedProvider)
+      const { address, chainId } = await EthersHelpersUtil.getUserInfo(InjectedProvider)
       if (address && chainId) {
-        ProviderController.setChainId(chainId)
-        ProviderController.setProviderType('injected')
-        ProviderController.setProvider(config.injected)
-        ProviderController.setIsConnected(true)
-        ProviderController.setAddress(address as Address)
+        EthersStoreUtil.setChainId(chainId)
+        EthersStoreUtil.setProviderType('injected')
+        EthersStoreUtil.setProvider(config.injected)
+        EthersStoreUtil.setIsConnected(true)
+        EthersStoreUtil.setAddress(address as Address)
         this.watchCoinbase(config)
       }
     }
   }
 
   private async setEIP6963Provider(provider: Provider, name: string) {
-    window?.localStorage.setItem(WALLET_ID, name)
+    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, name)
 
     if (provider) {
-      const { address, chainId } = await getUserInfo(provider)
+      const { address, chainId } = await EthersHelpersUtil.getUserInfo(provider)
       if (address && chainId) {
-        ProviderController.setChainId(chainId)
-        ProviderController.setProviderType('eip6963')
-        ProviderController.setProvider(provider)
-        ProviderController.setIsConnected(true)
-        ProviderController.setAddress(address as Address)
+        EthersStoreUtil.setChainId(chainId)
+        EthersStoreUtil.setProviderType('eip6963')
+        EthersStoreUtil.setProvider(provider)
+        EthersStoreUtil.setIsConnected(true)
+        EthersStoreUtil.setAddress(address as Address)
         this.watchEIP6963(provider)
       }
     }
   }
 
   private async setCoinbaseProvider(config: ProviderType) {
-    window?.localStorage.setItem(WALLET_ID, ConstantsUtil.COINBASE_CONNECTOR_ID)
+    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.COINBASE_CONNECTOR_ID)
     const CoinbaseProvider = config.coinbase
 
     if (CoinbaseProvider) {
-      const { address, chainId } = await getUserInfo(CoinbaseProvider)
+      const { address, chainId } = await EthersHelpersUtil.getUserInfo(CoinbaseProvider)
       if (address && chainId) {
-        ProviderController.setChainId(chainId)
-        ProviderController.setProviderType('coinbaseWallet')
-        ProviderController.setProvider(config.coinbase)
-        ProviderController.setIsConnected(true)
-        ProviderController.setAddress(address as Address)
+        EthersStoreUtil.setChainId(chainId)
+        EthersStoreUtil.setProviderType('coinbaseWallet')
+        EthersStoreUtil.setProvider(config.coinbase)
+        EthersStoreUtil.setIsConnected(true)
+        EthersStoreUtil.setAddress(address as Address)
         this.watchCoinbase(config)
       }
     }
@@ -503,8 +498,8 @@ export class Web3Modal extends Web3ModalScaffold {
     const WalletConnectProvider = await this.getWalletConnectProvider()
 
     function disconnectHandler() {
-      localStorage.removeItem(WALLET_ID)
-      ProviderController.reset()
+      localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+      EthersStoreUtil.reset()
 
       WalletConnectProvider?.removeListener('disconnect', disconnectHandler)
       WalletConnectProvider?.removeListener('accountsChanged', accountsChangedHandler)
@@ -513,8 +508,8 @@ export class Web3Modal extends Web3ModalScaffold {
 
     function chainChangedHandler(chainId: string) {
       if (chainId) {
-        const chain = hexStringToNumber(chainId)
-        ProviderController.setChainId(chain)
+        const chain = EthersHelpersUtil.hexStringToNumber(chainId)
+        EthersStoreUtil.setChainId(chain)
       }
     }
 
@@ -535,8 +530,8 @@ export class Web3Modal extends Web3ModalScaffold {
     const InjectedProvider = config.injected
 
     function disconnectHandler() {
-      localStorage.removeItem(WALLET_ID)
-      ProviderController.reset()
+      localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+      EthersStoreUtil.reset()
 
       InjectedProvider?.removeListener('disconnect', disconnectHandler)
       InjectedProvider?.removeListener('accountsChanged', accountsChangedHandler)
@@ -545,17 +540,20 @@ export class Web3Modal extends Web3ModalScaffold {
 
     function accountsChangedHandler(accounts: string[]) {
       if (accounts.length === 0) {
-        localStorage.removeItem(WALLET_ID)
-        ProviderController.reset()
+        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        EthersStoreUtil.reset()
       } else {
-        ProviderController.setAddress(accounts[0] as Address)
+        EthersStoreUtil.setAddress(accounts[0] as Address)
       }
     }
 
     function chainChangedHandler(chainId: string) {
       if (chainId) {
-        const chain = typeof chainId === 'string' ? hexStringToNumber(chainId) : Number(chainId)
-        ProviderController.setChainId(chain)
+        const chain =
+          typeof chainId === 'string'
+            ? EthersHelpersUtil.hexStringToNumber(chainId)
+            : Number(chainId)
+        EthersStoreUtil.setChainId(chain)
       }
     }
 
@@ -568,8 +566,8 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private watchEIP6963(provider: Provider) {
     function disconnectHandler() {
-      localStorage.removeItem(WALLET_ID)
-      ProviderController.reset()
+      localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+      EthersStoreUtil.reset()
 
       provider.removeListener('disconnect', disconnectHandler)
       provider.removeListener('accountsChanged', accountsChangedHandler)
@@ -578,17 +576,20 @@ export class Web3Modal extends Web3ModalScaffold {
 
     function accountsChangedHandler(accounts: string[]) {
       if (accounts.length === 0) {
-        localStorage.removeItem(WALLET_ID)
-        ProviderController.reset()
+        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        EthersStoreUtil.reset()
       } else {
-        ProviderController.setAddress(accounts[0] as Address)
+        EthersStoreUtil.setAddress(accounts[0] as Address)
       }
     }
 
     function chainChangedHandler(chainId: string) {
       if (chainId) {
-        const chain = typeof chainId === 'string' ? hexStringToNumber(chainId) : Number(chainId)
-        ProviderController.setChainId(chain)
+        const chain =
+          typeof chainId === 'string'
+            ? EthersHelpersUtil.hexStringToNumber(chainId)
+            : Number(chainId)
+        EthersStoreUtil.setChainId(chain)
       }
     }
 
@@ -599,11 +600,11 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private watchCoinbase(config: ProviderType) {
     const CoinbaseProvider = config.coinbase
-    const walletId = localStorage.getItem(WALLET_ID)
+    const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
 
     function disconnectHandler() {
-      localStorage.removeItem(WALLET_ID)
-      ProviderController.reset()
+      localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+      EthersStoreUtil.reset()
 
       CoinbaseProvider?.removeListener('disconnect', disconnectHandler)
       CoinbaseProvider?.removeListener('accountsChanged', accountsChangedHandler)
@@ -612,17 +613,17 @@ export class Web3Modal extends Web3ModalScaffold {
 
     function accountsChangedHandler(accounts: string[]) {
       if (accounts.length === 0) {
-        localStorage.removeItem(WALLET_ID)
-        ProviderController.reset()
+        localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
+        EthersStoreUtil.reset()
       } else {
-        ProviderController.setAddress(accounts[0] as Address)
+        EthersStoreUtil.setAddress(accounts[0] as Address)
       }
     }
 
     function chainChangedHandler(chainId: string) {
       if (chainId && walletId === ConstantsUtil.COINBASE_CONNECTOR_ID) {
         const chain = Number(chainId)
-        ProviderController.setChainId(chain)
+        EthersStoreUtil.setChainId(chain)
       }
     }
 
@@ -634,9 +635,9 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncAccount() {
-    const address = ProviderController.state.address
-    const chainId = ProviderController.state.chainId
-    const isConnected = ProviderController.state.isConnected
+    const address = EthersStoreUtil.state.address
+    const chainId = EthersStoreUtil.state.chainId
+    const isConnected = EthersStoreUtil.state.isConnected
 
     this.resetAccount()
 
@@ -659,9 +660,9 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
-    const address = ProviderController.state.address
-    const chainId = ProviderController.state.chainId
-    const isConnected = ProviderController.state.isConnected
+    const address = EthersStoreUtil.state.address
+    const chainId = EthersStoreUtil.state.chainId
+    const isConnected = EthersStoreUtil.state.isConnected
     if (this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId)
 
@@ -704,7 +705,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncBalance(address: Address) {
-    const chainId = ProviderController.state.chainId
+    const chainId = EthersStoreUtil.state.chainId
     if (chainId && this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId)
 
@@ -723,8 +724,8 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async switchNetwork(chainId: number) {
-    const provider = ProviderController.state.provider
-    const providerType = ProviderController.state.providerType
+    const provider = EthersStoreUtil.state.provider
+    const providerType = EthersStoreUtil.state.providerType
     if (this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId)
 
@@ -735,18 +736,22 @@ export class Web3Modal extends Web3ModalScaffold {
           try {
             await WalletConnectProvider.request({
               method: 'wallet_switchEthereumChain',
-              params: [{ chainId: numberToHexString(chain.chainId) }]
+              params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
             })
 
-            ProviderController.setChainId(chainId)
+            EthersStoreUtil.setChainId(chainId)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (switchError: any) {
             if (
-              switchError.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-              switchError.code === ERROR_CODE_DEFAULT ||
-              switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+              switchError.code === EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+              switchError.code === EthersConstantsUtil.ERROR_CODE_DEFAULT ||
+              switchError?.data?.originalError?.code ===
+                EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
-              await addEthereumChain(WalletConnectProvider as unknown as Provider, chain)
+              await EthersHelpersUtil.addEthereumChain(
+                WalletConnectProvider as unknown as Provider,
+                chain
+              )
             } else {
               throw new Error('Chain is not supported')
             }
@@ -758,17 +763,18 @@ export class Web3Modal extends Web3ModalScaffold {
           try {
             await InjectedProvider.request({
               method: 'wallet_switchEthereumChain',
-              params: [{ chainId: numberToHexString(chain.chainId) }]
+              params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
             })
-            ProviderController.setChainId(chain.chainId)
+            EthersStoreUtil.setChainId(chain.chainId)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (switchError: any) {
             if (
-              switchError.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-              switchError.code === ERROR_CODE_DEFAULT ||
-              switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+              switchError.code === EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+              switchError.code === EthersConstantsUtil.ERROR_CODE_DEFAULT ||
+              switchError?.data?.originalError?.code ===
+                EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
-              await addEthereumChain(InjectedProvider, chain)
+              await EthersHelpersUtil.addEthereumChain(InjectedProvider, chain)
             } else {
               throw new Error('Chain is not supported')
             }
@@ -781,17 +787,18 @@ export class Web3Modal extends Web3ModalScaffold {
           try {
             await EIP6963Provider.request({
               method: 'wallet_switchEthereumChain',
-              params: [{ chainId: numberToHexString(chain.chainId) }]
+              params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
             })
-            ProviderController.setChainId(chain.chainId)
+            EthersStoreUtil.setChainId(chain.chainId)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (switchError: any) {
             if (
-              switchError.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-              switchError.code === ERROR_CODE_DEFAULT ||
-              switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+              switchError.code === EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+              switchError.code === EthersConstantsUtil.ERROR_CODE_DEFAULT ||
+              switchError?.data?.originalError?.code ===
+                EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
-              await addEthereumChain(EIP6963Provider, chain)
+              await EthersHelpersUtil.addEthereumChain(EIP6963Provider, chain)
             } else {
               throw new Error('Chain is not supported')
             }
@@ -803,17 +810,18 @@ export class Web3Modal extends Web3ModalScaffold {
           try {
             await CoinbaseProvider.request({
               method: 'wallet_switchEthereumChain',
-              params: [{ chainId: numberToHexString(chain.chainId) }]
+              params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
             })
-            ProviderController.setChainId(chain.chainId)
+            EthersStoreUtil.setChainId(chain.chainId)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (switchError: any) {
             if (
-              switchError.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-              switchError.code === ERROR_CODE_DEFAULT ||
-              switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+              switchError.code === EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+              switchError.code === EthersConstantsUtil.ERROR_CODE_DEFAULT ||
+              switchError?.data?.originalError?.code ===
+                EthersConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
-              await addEthereumChain(CoinbaseProvider, chain)
+              await EthersHelpersUtil.addEthereumChain(CoinbaseProvider, chain)
             }
           }
         }
