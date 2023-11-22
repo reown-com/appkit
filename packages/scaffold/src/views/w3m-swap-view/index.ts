@@ -38,6 +38,14 @@ export class W3mSwapView extends LitElement {
 
   @state() private caipNetworkId = NetworkController.state.caipNetwork?.id
 
+  @state() private detailsOpen = false
+
+  @state() private fromInputFocus = false
+
+  @state() private toInputFocus = false
+
+  @state() private networkSrc?: string
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
@@ -159,26 +167,22 @@ export class W3mSwapView extends LitElement {
   // -- Private ------------------------------------------- //
   private templateSwap() {
     return html`
-      <wui-flex flexDirection="column" gap="sm">
-        <wui-flex
-          flexDirection="column"
-          alignItems="center"
-          gap="xs"
-          .padding=${['xs', 's', 's', 's'] as const}
-          class="swap-inputs-container"
-        >
-          ${this.templateTokenInput('sourceToken', this.sourceToken)}
-          ${this.templateTokenInput('toToken', this.toToken)} ${this.templateReplaceTokensButton()}
+      <wui-flex flexDirection="column" gap="s">
+        <wui-flex flexDirection="column" alignItems="center" gap="xs" class="swap-inputs-container">
+          ${this.templateTokenInput(
+            tokenFrom,
+            this.fromInputFocus,
+            this.onFromInputFocus.bind(this)
+          )}
+          ${this.templateTokenInput(tokenTo, this.toInputFocus, this.onToInputFocus.bind(this))}
+          ${this.templateReplaceTokensButton()}
         </wui-flex>
-        <wui-flex flexDirection="column" .padding=${['xs', 's', 's', 's'] as const}>
-          <wui-text variant="paragraph-500" color="error-100">${this.swapErrorMessage}</wui-text>
-
-          <wui-button
-            class="action-button"
-            variant="fullWidth"
-            @click=${this.hasAllowance ? () => this.onSwap() : () => this.onApprove()}
-          >
-            ${this.actionButtonLabel}
+        <wui-flex flexDirection="column" alignItems="center" gap="xs" class="details-container">
+          ${this.templateDetails()}
+        </wui-flex>
+        <wui-flex gap="xs">
+          <wui-button class="action-button" variant="fullWidth" @click=${this.onSwap.bind(this)}>
+            Enter amount
           </wui-button>
         </wui-flex>
       </wui-flex>
@@ -235,8 +239,14 @@ export class W3mSwapView extends LitElement {
     </wui-flex>`
   }
 
-  private templateTokenInput(target: Target, token?: TokenInfo) {
-    return html`<wui-flex justifyContent="space-between" gap="sm" class="swap-input">
+  private templateTokenInput(network: string, focused: boolean, onFocus: (state: boolean) => void) {
+    return html`<wui-flex
+      justifyContent="space-between"
+      gap="sm"
+      class="swap-input ${focused ? 'focus' : ''}"
+      @focusin=${() => onFocus(true)}
+      @focusout=${() => onFocus(false)}
+    >
       <wui-flex flex="1">
         <wui-input-text
           @input=${this.onInputChange.bind(this)}
@@ -280,11 +290,68 @@ export class W3mSwapView extends LitElement {
     `
   }
 
-  private onSelectToken(target: Target) {
+  private templateDetails() {
+    return html`
+      <wui-flex flexDirection="column" class="details-accordion">
+        <button @click=${this.toggleDetails.bind(this)}>
+          <wui-flex justifyContent="space-between" .padding=${['0', 'xs', '0', 'xs']}>
+            <wui-flex justifyContent="flex-start" flexGrow="1" gap="xs">
+              <wui-text variant="small-400" color="fg-100">1 ETH = 5,700.05 1INCH</wui-text>
+              <wui-text variant="small-400" color="fg-200">$2,003.62</wui-text>
+            </wui-flex>
+            <wui-icon name="chevronBottom"> </wui-icon>
+          </wui-flex>
+        </button>
+        ${this.detailsOpen
+          ? html`<wui-flex flexDirection="column" gap="xs" class="details-content-container">
+              <wui-flex flexDirection="column" gap="xs">
+                <wui-flex justifyContent="space-between" class="details-row">
+                  <wui-text variant="small-400" color="fg-140">Network cost</wui-text>
+                  <wui-flex>
+                    <wui-text variant="small-400" color="fg-200">$5.3836</wui-text>
+                    <wui-text variant="small-400" color="fg-100">15.4007 1INCH</wui-text>
+                  </wui-flex>
+                </wui-flex>
+              </wui-flex>
+              <wui-flex flexDirection="column" gap="xs">
+                <wui-flex justifyContent="space-between" class="details-row">
+                  <wui-text variant="small-400" color="fg-150">Service fee</wui-text>
+                  <wui-flex>
+                    <wui-text variant="small-400" color="fg-200">Free</wui-text>
+                  </wui-flex>
+                </wui-flex>
+              </wui-flex>
+              <wui-flex flexDirection="column" gap="xs">
+                <wui-flex justifyContent="space-between" class="details-row">
+                  <wui-text variant="small-400" color="fg-150"
+                    >Fee is paid to Ethereum Network to process your transaction. This must be paid
+                    in ETH. Learn more</wui-text
+                  >
+                </wui-flex>
+              </wui-flex>
+            </wui-flex>`
+          : null}
+      </wui-flex>
+    `
+  }
+
+  private onSelectToken() {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_SELECT_TOKEN_TO_SWAP' })
     RouterController.push('SwapSelectToken', {
       target
     })
+  }
+
+  private onFromInputFocus(state: boolean) {
+    this.fromInputFocus = state
+  }
+
+  private onToInputFocus(state: boolean) {
+    this.toInputFocus = state
+  }
+
+  private toggleDetails() {
+    this.detailsOpen = !this.detailsOpen
   }
 }
 

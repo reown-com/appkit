@@ -43,12 +43,12 @@ export default css`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: var(--4XS, 10px);w
-    width: 40px;
+    gap: var(--wui-spacing-1xs);
     height: 40px;
-    padding: var(--5XS, 8px);
+    width: 40px;
+    padding: var(--wui-spacing-xs);
     border: none;
-    border-radius: var(--3XS, 12px);
+    border-radius: var(--wui-border-radius-xxs);
     background: var(--wui-gray-glass-005);
   }
 
@@ -70,6 +70,11 @@ export default css`
     width: 100%;
     box-sizing: border-box;
     position: relative;
+    transition: background 0.2s linear;
+  }
+
+  .swap-input.focus {
+    background: var(--wui-gray-glass-005);
   }
 
   .swap-input input {
@@ -119,5 +124,44 @@ export default css`
 
   .token-select-button-container button:hover {
     background: var(--wui-gray-glass-005);
+  }
+
+  .details-container {
+  }
+
+  .details-container > wui-flex {
+    background: var(--wui-gray-glass-002);
+    border-radius: var(--wui-border-radius-xxs);
+    width: 100%;
+  }
+
+  .details-container > wui-flex > button {
+    border: none;
+    background: none;
+    padding: var(--wui-spacing-s);
+    border-radius: var(--wui-border-radius-xxs);
+    transition: background 0.2s linear;
+  }
+
+  .details-container > wui-flex > button:hover {
+    background: var(--wui-gray-glass-002);
+  }
+
+  .details-content-container {
+    padding: var(--wui-spacing-1xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .details-content-container > wui-flex {
+    width: 100%;
+  }
+
+  .details-row {
+    width: 100%;
+    padding: var(--wui-spacing-s) var(--wui-spacing-xl);
+    border-radius: var(--wui-border-radius-xxs);
+    background: var(--wui-gray-glass-002);
   }
 `
