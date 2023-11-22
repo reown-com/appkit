@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import type { ethers } from 'ethers'
 
 export interface IEthersConfig {
   providers: ProviderType
@@ -36,12 +36,4 @@ export type Metadata = {
   description: string
   url: string
   icons: string[]
-}
-
-export type Chain = {
-  rpcUrl: string
-  explorerUrl: string
-  currency: string
-  name: string
-  chainId: number
 }

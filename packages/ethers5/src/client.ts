@@ -15,22 +15,21 @@ import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-uti
 
 import EthereumProvider from '@walletconnect/ethereum-provider'
 
-import type { Address, Chain, Metadata, ProviderType } from './utils/types.js'
+import type { Address, Metadata, ProviderType } from './utils/types.js'
 import { ethers, utils } from 'ethers'
 import {
   ProviderController,
   type ProviderControllerState
 } from './controllers/ProviderController.js'
-import {
-  addEthereumChain,
-  getCaipDefaultChain,
-  hexStringToNumber,
-  numberToHexString
-} from './utils/helpers.js'
+import { addEthereumChain } from './utils/helpers.js'
 import {
   ERROR_CODE_DEFAULT,
   ERROR_CODE_UNRECOGNIZED_CHAIN_ID,
-  WALLET_ID
+  WALLET_ID,
+  getCaipDefaultChain,
+  hexStringToNumber,
+  numberToHexString,
+  type Chain
 } from '@web3modal/scaffold-utils/ethers'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 

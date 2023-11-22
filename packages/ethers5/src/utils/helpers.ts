@@ -1,31 +1,7 @@
-import type { CaipNetwork } from '@web3modal/scaffold'
-import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
-import type { ethers } from 'ethers'
 import EthereumProvider from '@walletconnect/ethereum-provider'
-import type { Chain } from './types.js'
-
-export function getCaipDefaultChain(chain?: Chain) {
-  if (!chain) {
-    return undefined
-  }
-
-  return {
-    id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
-    name: chain.name,
-    imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId]
-  } as CaipNetwork
-}
-
-export function hexStringToNumber(value: string) {
-  const string = value.startsWith('0x') ? value.slice(2) : value
-  const number = parseInt(string, 16)
-
-  return number
-}
-
-export function numberToHexString(value: number) {
-  return `0x${value.toString(16)}`
-}
+import { PresetsUtil } from '@web3modal/scaffold-utils'
+import { numberToHexString, type Chain } from '@web3modal/scaffold-utils/ethers'
+import type { ethers } from 'ethers'
 
 export async function addEthereumChain(
   provider: ethers.providers.Web3Provider | EthereumProvider,
