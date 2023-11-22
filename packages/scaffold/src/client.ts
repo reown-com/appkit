@@ -202,8 +202,6 @@ export class Web3ModalScaffold {
     return SIWEController.subscribe(callback)
   }
 
-  protected getSiweClient = () => SIWEController.state._client
-
   // -- Private ------------------------------------------------------------------
   private initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)
@@ -231,8 +229,8 @@ export class Web3ModalScaffold {
           account => account.caipAddress && account.caipAddress !== caipAddress
         )
         const previousCaipAddress = previousAccountState?.caipAddress
-        if (previousCaipAddress && previousCaipAddress !== caipAddress) {
-          await siweClient.signOut()
+        if (previousCaipAddress && caipAddress && previousCaipAddress !== caipAddress) {
+          await SIWEController.signOut()
           ModalController.open({ view: 'ConnectingSiwe' })
         }
       })
@@ -258,20 +256,22 @@ export class Web3ModalScaffold {
         document.body.insertAdjacentElement('beforeend', modal)
         resolve()
       })
-      const siweClient = this.getSiweClient()
-      if (siweClient?.options?.enabled) {
-        try {
-          const session = await siweClient.getSession()
 
-          AccountController.subscribe(async newAccountState => {
+      let unsubscribeFromAccountState: (() => void) | undefined = undefined
+      if (SIWEController.state.isSiweEnabled) {
+        try {
+          const session = await SIWEController.getSession()
+
+          unsubscribeFromAccountState = AccountController.subscribe(async newAccountState => {
             const { isConnected } = newAccountState
             if (session && !isConnected) {
-              await siweClient.signOut()
+              await SIWEController.signOut()
             } else if (isConnected && !session) {
               ModalController.open({ view: 'ConnectingSiwe' })
             }
           })
         } catch (error) {
+          unsubscribeFromAccountState?.()
           // No session but wallet is connected
           AccountController.subscribeKey('isConnected', isConnected => {
             if (isConnected) {

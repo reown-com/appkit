@@ -13,20 +13,20 @@ declare module 'next-auth' {
   }
 }
 
-const nextAuthSecret = process.env['NEXTAUTH_SECRET']
-const nextAuthUrl = process.env.NEXTAUTH_URL
-
 /*
  * For more information on each option (and a full list of options) go to
  * https://next-auth.js.org/configuration/options
  */
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
+  const nextAuthSecret = process.env['NEXTAUTH_SECRET']
+  const nextAuthUrl = process.env['NEXTAUTH_URL']
   if (!nextAuthUrl) {
     throw new Error('NEXTAUTH_URL is not set')
   }
   if (!nextAuthSecret) {
     throw new Error('NEXTAUTH_SECRET is not set')
   }
+
   const providers = [
     credentialsProvider({
       name: 'Ethereum',

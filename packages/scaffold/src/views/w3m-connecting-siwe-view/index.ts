@@ -87,9 +87,8 @@ export class W3mConnectingSiweView extends LitElement {
   private async onSign() {
     this.isSigning = true
     try {
-      const siweClient = SIWEController._getClient()
       SIWEController.setStatus('loading')
-      const nonce = await siweClient.getNonce()
+      const nonce = await SIWEController.getNonce()
       const { address } = AccountController.state.value
       if (!address) {
         throw new Error('An address is required to create a SIWE message.')
@@ -98,21 +97,21 @@ export class W3mConnectingSiweView extends LitElement {
       if (!chainId) {
         throw new Error('A chainId is required to create a SIWE message.')
       }
-      const message = siweClient.createMessage({ address, nonce, chainId })
+      const message = SIWEController.createMessage({ address, nonce, chainId })
       const signature = await ConnectionController.signMessage(message)
 
-      const isValid = await siweClient.verifyMessage({ message, signature })
+      const isValid = await SIWEController.verifyMessage({ message, signature })
 
       if (!isValid) {
         throw new Error('Error verifying SIWE signature')
       }
 
-      const session = await siweClient.getSession()
+      const session = await SIWEController.getSession()
       if (!session) {
         throw new Error('Error verifying SIWE signature')
       }
-      if (siweClient.onSignIn) {
-        siweClient.onSignIn(session)
+      if (SIWEController.onSignIn) {
+        SIWEController.onSignIn(session)
       }
 
       SIWEController.setStatus('success')
