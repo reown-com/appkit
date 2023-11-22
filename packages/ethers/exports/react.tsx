@@ -6,7 +6,7 @@ import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { EthersStoreUtil } from '@web3modal/scaffold-utils/ethers'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
 import { useSnapshot } from 'valtio'
-import { ethers } from 'ethers'
+import type { Eip1193Provider } from 'ethers'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
@@ -18,7 +18,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
     modal = new Web3Modal({
       ...options,
-      _sdkVersion: `react-ethers5-${ConstantsUtil.VERSION}`
+      _sdkVersion: `react-ethers-${ConstantsUtil.VERSION}`
     })
   }
   getWeb3Modal(modal)
@@ -27,10 +27,10 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 }
 
 // -- Hooks -------------------------------------------------------------------
-export function useWeb3ModalSigner() {
+export function useWeb3ModalProvider() {
   const state = useSnapshot(EthersStoreUtil.state)
 
-  const walletProvider = state.provider as ethers.providers.ExternalProvider | undefined
+  const walletProvider = state.provider as Eip1193Provider | undefined
   const walletProviderType = state.providerType
 
   return {

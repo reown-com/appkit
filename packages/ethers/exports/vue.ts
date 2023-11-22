@@ -2,8 +2,8 @@ import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/scaffold-vue'
-import type { ethers } from 'ethers'
 import { onUnmounted, ref } from 'vue'
+import type { Eip1193Provider } from 'ethers'
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
 
@@ -14,7 +14,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
     modal = new Web3Modal({
       ...options,
-      _sdkVersion: `vue-ethers5-${ConstantsUtil.VERSION}`
+      _sdkVersion: `vue-ethers-${ConstantsUtil.VERSION}`
     })
     getWeb3Modal(modal)
   }
@@ -28,13 +28,11 @@ export function useWeb3ModalProvider() {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalProvider" composition')
   }
 
-  const walletProvider = ref(
-    modal.getWalletProvider() as ethers.providers.ExternalProvider | undefined
-  )
+  const walletProvider = ref(modal.getWalletProvider())
   const walletProviderType = ref(modal.getWalletProviderType())
 
   const unsubscribe = modal.subscribeProvider(state => {
-    walletProvider.value = state.provider as ethers.providers.ExternalProvider | undefined
+    walletProvider.value = state.provider as Eip1193Provider | undefined
     walletProviderType.value = state.providerType
   })
 
