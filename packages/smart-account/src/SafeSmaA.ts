@@ -1,13 +1,18 @@
-import { encodeFunctionData, hashTypedData, toBytes } from 'viem'
-import type { Address, Chain, Client, Transport } from 'viem'
+import {
+  encodeFunctionData,
+  hashTypedData,
+  toBytes,
+  http,
+  createPublicClient,
+  encodePacked
+} from 'viem'
+import type { Address, Chain, Transport, Hex } from 'viem'
 import { toAccount } from 'viem/accounts'
-import { getBytecode, getChainId } from 'viem/actions'
+import { getBytecode } from 'viem/actions'
 import { getAccountNonce } from 'permissionless'
-import type {
-  PrivateKeySafeSmartAccount,
-  SmartAccountEnabledChain,
-  CreateSafeSmartAccountArgs
-} from './SafeSmaATypes.js'
+import { sepolia } from 'viem/chains'
+import type { PrivateKeySafeSmartAccount, CreateSafeSmartAccountArgs } from './SafeSmaATypes.js'
+import { createPimlicoBundlerClient } from 'permissionless/clients/pimlico'
 import {
   getAccountAddress,
   generateSafeMessageMessage,
@@ -22,25 +27,54 @@ import {
   ENTRY_POINT
 } from './SafeSmaAConst.js'
 
+// -- Helpers --------------------------------------------------------------------------------------
+const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+const pimlicoKey = process.env['NEXT_PUBLIC_PIMLICO_KEY']
+const supportedChains = { 11155111: sepolia }
+
 // -- Account --------------------------------------------------------------------------------------
 export async function createSafeSmartAccount<
   TTransport extends Transport = Transport,
   TChain extends Chain | undefined = Chain | undefined
->(
-  client: Client<TTransport, TChain>,
-  { ownerAddress, ownerSignMessage, ownerSignTypedData }: CreateSafeSmartAccountArgs
-): Promise<PrivateKeySafeSmartAccount<TTransport, TChain>> {
-  const saltNonce = 0n
-  const chainId = (await getChainId(client)) as SmartAccountEnabledChain
-  const safeData = SAFE_ADDRESSES_MAP[SAFE_VERSION][chainId]
+>({
+  chainId,
+  ownerAddress,
+  ownerSignMessage,
+  ownerSignTypedData
+}: CreateSafeSmartAccountArgs): Promise<
+  PrivateKeySafeSmartAccount<TTransport, TChain> | undefined
+> {
+  const chain = supportedChains[chainId]
 
+  if (!chain) {
+    return undefined
+  }
+
+  const pimlicoBundlerTransport = http(
+    `https://api.pimlico.io/v1/${chain.name}/rpc?apikey=${pimlicoKey}`,
+    { retryDelay: 1000 }
+  )
+
+  const walletConnectTransport = http(
+    `https://rpc.walletconnect.com/v1/?chainId=EIP155:${chain.id}&projectId=${projectId}`,
+    { retryDelay: 1000 }
+  )
+
+  const publicClient = createPublicClient({
+    chain,
+    transport: walletConnectTransport
+  })
+
+  const saltNonce = 0n
+  const safeData = SAFE_ADDRESSES_MAP[SAFE_VERSION]
   const addModuleLibAddress = safeData.ADD_MODULES_LIB_ADDRESS
   const safe4337ModuleAddress = safeData.SAFE_4337_MODULE_ADDRESS
   const safeProxyFactoryAddress = safeData.SAFE_PROXY_FACTORY_ADDRESS
   const safeSingletonAddress = safeData.SAFE_SINGLETON_ADDRESS
+  const multiSendCallOnlyAddress = safeData.MULTI_SEND_CALL_ONLY_ADDRESS
 
   const accountAddress = await getAccountAddress<TTransport, TChain>({
-    client,
+    client: publicClient,
     owner: ownerAddress,
     addModuleLibAddress,
     safe4337ModuleAddress,
@@ -104,12 +138,12 @@ export async function createSafeSmartAccount<
 
   return {
     ...account,
-    client,
+    client: publicClient,
     publicKey: accountAddress,
     entryPoint: ENTRY_POINT,
     source: 'privateKeySafeSmartAccount',
     async getNonce() {
-      return getAccountNonce(client, {
+      return getAccountNonce(publicClient, {
         sender: accountAddress,
         entryPoint: ENTRY_POINT
       })
@@ -152,7 +186,7 @@ export async function createSafeSmartAccount<
       return signatureBytes
     },
     async getInitCode() {
-      const contractCode = await getBytecode(client, {
+      const contractCode = await getBytecode(publicClient, {
         address: accountAddress
       })
 
@@ -174,7 +208,61 @@ export async function createSafeSmartAccount<
       throw new Error("Safe account doesn't support account deployment")
     },
 
-    async encodeCallData({ to, value, data }) {
+    async encodeCallData(args) {
+      let to: Address | undefined = undefined
+      let value: bigint | undefined = undefined
+      let data: Hex | undefined = undefined
+
+      if (Array.isArray(args)) {
+        const argsArray = args as {
+          to: Address
+          value: bigint
+          data: Hex
+        }[]
+
+        to = multiSendCallOnlyAddress
+        value = 0n
+        data = encodeFunctionData({
+          abi: [
+            {
+              inputs: [
+                {
+                  internalType: 'bytes',
+                  name: 'transactions',
+                  type: 'bytes'
+                }
+              ],
+              name: 'multiSend',
+              outputs: [],
+              stateMutability: 'payable',
+              type: 'function'
+            }
+          ],
+          functionName: 'multiSend',
+          args: [
+            `0x${argsArray
+              .map(argItem => {
+                const datBytes = toBytes(argItem.data)
+
+                return encodePacked(
+                  ['uint8', 'address', 'uint256', 'uint256', 'bytes'],
+                  [0, argItem.to, argItem.value, BigInt(datBytes.length), argItem.data]
+                ).slice(2)
+              })
+              .join('')}`
+          ]
+        })
+      } else {
+        const singleTransaction = args as {
+          to: Address
+          value: bigint
+          data: Hex
+        }
+        to = singleTransaction.to
+        data = singleTransaction.data
+        value = singleTransaction.value
+      }
+
       return Promise.resolve(
         encodeFunctionData({
           abi: [

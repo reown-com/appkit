@@ -1,6 +1,7 @@
 import type { Chain } from '@wagmi/core'
 import { Connector } from '@wagmi/core'
 import { W3mFrameProvider } from '@web3modal/frame-wallet'
+import { createSafeSmartAccount } from '@web3modal/smart-account'
 import { createWalletClient, custom, SwitchChainError } from 'viem'
 
 interface W3mFrameProviderOptions {
@@ -16,6 +17,8 @@ export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProvider
 
   private provider: W3mFrameProvider = {} as W3mFrameProvider
 
+  private smartAccount?: ReturnType<typeof createSafeSmartAccount> = undefined
+
   public constructor(config: { chains?: Chain[]; options: W3mFrameProviderOptions }) {
     super(config)
     if (typeof window !== 'undefined') {
@@ -29,6 +32,9 @@ export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProvider
 
   async connect() {
     const { address, chainId } = await this.provider.connect()
+    this.smartAccount = createSafeSmartAccount({
+      ownerAddress: address as `0x${string}`
+    })
 
     return {
       account: address as `0x${string}`,

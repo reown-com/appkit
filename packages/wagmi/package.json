@@ -47,7 +47,9 @@
     "@web3modal/scaffold": "3.4.0-8e2a7695",
     "@web3modal/scaffold-react": "3.4.0-8e2a7695",
     "@web3modal/scaffold-vue": "3.4.0-8e2a7695",
-    "@web3modal/utils": "3.4.0-8e2a7695"
+    "@web3modal/utils": "3.4.0-8e2a7695",
+    "@web3modal/frame-wallet": "3.4.0-8e2a7695",
+    "@web3modal/smart-account": "3.4.0-8e2a7695"
   },
   "devDependencies": {
     "@web3modal/siwe": "3.3.1"

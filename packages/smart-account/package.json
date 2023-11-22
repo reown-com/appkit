@@ -16,7 +16,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "permissionless": "0.0.0-main.20231120T173047",
+    "permissionless": "0.0.0-main.20231122T112449",
     "viem": ">=1"
   },
   "keywords": [
