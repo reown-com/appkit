@@ -115,6 +115,7 @@ export class Web3Modal extends Web3ModalScaffold {
           }
           const provider = await connector.getProvider()
           const ns = provider.signer?.session?.namespaces
+          console.log({ signer: provider.signer })
           const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
           const nsChains = ns?.[ConstantsUtil.EIP155]?.chains
 

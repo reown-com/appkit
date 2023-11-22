@@ -20,6 +20,7 @@ export interface RouterControllerState {
     | 'Transactions'
     | 'Swap'
     | 'SwapSelectToken'
+    | 'PreviewSwap'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

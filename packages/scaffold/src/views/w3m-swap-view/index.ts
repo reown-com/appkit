@@ -306,7 +306,7 @@ export class W3mSwapView extends LitElement {
           ? html`<wui-flex flexDirection="column" gap="xs" class="details-content-container">
               <wui-flex flexDirection="column" gap="xs">
                 <wui-flex justifyContent="space-between" class="details-row">
-                  <wui-text variant="small-400" color="fg-140">Network cost</wui-text>
+                  <wui-text variant="small-400" color="fg-150">Network cost</wui-text>
                   <wui-flex>
                     <wui-text variant="small-400" color="fg-200">$5.3836</wui-text>
                     <wui-text variant="small-400" color="fg-100">15.4007 1INCH</wui-text>
@@ -333,6 +333,10 @@ export class W3mSwapView extends LitElement {
           : null}
       </wui-flex>
     `
+  }
+
+  private onSwap() {
+    RouterController.push('PreviewSwap')
   }
 
   private onSelectToken() {

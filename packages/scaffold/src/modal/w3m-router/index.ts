@@ -85,6 +85,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-swap-view></w3m-swap-view>`
       case 'SwapSelectToken':
         return html`<w3m-swap-select-token-view></w3m-swap-select-token-view>`
+      case 'PreviewSwap':
+        return html`<w3m-preview-swap-view></w3m-preview-swap-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

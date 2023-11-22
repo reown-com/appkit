@@ -130,6 +130,7 @@ export class Web3Modal extends Web3ModalScaffold {
               )
             }
             const ns = (provider?.provider as EthereumProvider).signer?.session?.namespaces
+            console.log({ signer: ns })
             const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
             const nsChains = ns?.[ConstantsUtil.EIP155]?.chains
 
