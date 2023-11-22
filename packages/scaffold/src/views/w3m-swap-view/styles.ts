@@ -43,7 +43,7 @@ export default css`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: var(--4XS, 10px);w
+    gap: var(--4XS, 10px);
     width: 40px;
     height: 40px;
     padding: var(--5XS, 8px);
