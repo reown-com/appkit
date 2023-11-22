@@ -44,7 +44,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
           StorageUtil.setConnectedWalletImageUrl(this.connector.imageUrl)
         }
         await ConnectionController.connectExternal(this.connector)
-        
+
         if (SIWEController.state._client) {
           RouterController.push('ConnectingSiwe')
         } else {

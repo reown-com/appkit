@@ -9,7 +9,7 @@ export default css`
     overflow: hidden;
     background-color: var(--wui-gray-glass-020);
     border-radius: var(--local-border-radius);
-    border: var(--local-border);
+    box-shadow: 0 0 0 1px var(--local-border);
     width: var(--local-size);
     height: var(--local-size);
     min-height: var(--local-size);
