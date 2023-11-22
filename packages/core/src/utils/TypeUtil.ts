@@ -148,6 +148,30 @@ export interface BlockchainApiTransactionsResponse {
   next: string | null
 }
 
+export interface CoinbaseApiTransactionsRequest {
+  pageSize: number
+  pageKey: string
+  accountAddress: string
+}
+
+export interface CoinbaseApiTransactionsResponse {
+  transactions: CoinbaseTransaction[]
+  next_page_key: string
+  total_count: number
+}
+
+export interface CoinbaseAmount {
+  value: string
+  currency: string
+}
+
+export interface CoinbaseTransaction {
+  status: string
+  purchaseCurrency: string
+  purchaseNetwork: string
+  paymentTotal: CoinbaseAmount
+}
+
 // -- OptionsController Types ---------------------------------------------------
 export interface Token {
   address: string

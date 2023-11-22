@@ -1,6 +1,7 @@
 import type { Transaction } from '@web3modal/common'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { BlockchainApiController } from './BlockchainApiController.js'
+import { CoinbaseApiController } from './CoinbaseApiController.js'
 import { OptionsController } from './OptionsController.js'
 import { EventsController } from './EventsController.js'
 import { SnackController } from './SnackController.js'
@@ -48,6 +49,14 @@ export const TransactionsController = {
         projectId,
         cursor: state.next
       })
+
+      const coinbaseResponse = await CoinbaseApiController.fetchTransactions({
+        accountAddress,
+        pageKey: '',
+        pageSize: 25
+      })
+
+      console.log('coinbaseResponse', coinbaseResponse)
 
       const nonSpamTransactions = this.filterSpamTransactions(response.data)
       const filteredTransactions = [...state.transactions, ...nonSpamTransactions]

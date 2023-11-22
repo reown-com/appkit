@@ -170,6 +170,11 @@ export const CoreHelperUtil = {
       : 'https://pulse.walletconnect.com'
   },
 
+  getCoinbaseApiUrl() {
+    // change to a web3modal url that proxies to https://pay.coinbase.com/api/
+    return 'http://localhost:3002'
+  },
+
   getUUID() {
     if (crypto?.randomUUID) {
       return crypto.randomUUID()

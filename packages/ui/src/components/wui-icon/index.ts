@@ -26,6 +26,7 @@ import { closeSvg } from '../../assets/svg/close.js'
 import { coinPlaceholderSvg } from '../../assets/svg/coinPlaceholder.js'
 import { compassSvg } from '../../assets/svg/compass.js'
 import { copySvg } from '../../assets/svg/copy.js'
+import { addSvg } from '../../assets/svg/add.js'
 import { cursorSvg } from '../../assets/svg/cursor.js'
 import { desktopSvg } from '../../assets/svg/desktop.js'
 import { disconnectSvg } from '../../assets/svg/disconnect.js'
@@ -63,6 +64,7 @@ import { walletConnectSvg } from '../../assets/svg/walletconnect.js'
 import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
+  add: addSvg,
   allWallets: allWalletsSvg,
   appStore: appStoreSvg,
   chromeStore: chromeStoreSvg,
