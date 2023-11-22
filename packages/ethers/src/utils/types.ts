@@ -30,15 +30,15 @@ export type ExternalProvider = {
 }
 
 export interface RequestArguments {
-  readonly method: string;
-  readonly params?: readonly unknown[] | object;
+  readonly method: string
+  readonly params?: readonly unknown[] | object
 }
 
 export interface Provider {
-  request:<T>(args: RequestArguments) => Promise<T>
-  on:<T>(event: string , listener: (data: T) => void)=>void
-  removeListener:<T>(event: string , listener: (data: T) => void)=>void
-  emit:(event: string)=>void
+  request: <T>(args: RequestArguments) => Promise<T>
+  on: <T>(event: string, listener: (data: T) => void) => void
+  removeListener: <T>(event: string, listener: (data: T) => void) => void
+  emit: (event: string) => void
 }
 
 export type Metadata = {

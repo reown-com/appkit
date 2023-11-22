@@ -166,23 +166,31 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       //  @ts-expect-error TODO expected types in arguments are incomplete
-      connectExternal: async ({ id, info, provider }:{id: string, info: Info, provider: Provider}) => {
+      connectExternal: async ({
+        id,
+        info,
+        provider
+      }: {
+        id: string
+        info: Info
+        provider: Provider
+      }) => {
         if (id === ConstantsUtil.INJECTED_CONNECTOR_ID) {
           const InjectedProvider = ethersConfig.injected
           if (!InjectedProvider) {
             throw new Error('connectionControllerClient:connectInjected - provider is undefined')
           }
-          await InjectedProvider.request({method: 'eth_requestAccounts'})
+          await InjectedProvider.request({ method: 'eth_requestAccounts' })
           this.setInjectedProvider(ethersConfig)
         } else if (id === ConstantsUtil.EIP6963_CONNECTOR_ID && info && provider) {
-          await provider.request({method: 'eth_requestAccounts'})
+          await provider.request({ method: 'eth_requestAccounts' })
           this.setEIP6963Provider(provider, info.name)
         } else if (id === ConstantsUtil.COINBASE_CONNECTOR_ID) {
           const CoinbaseProvider = ethersConfig.coinbase
           if (!CoinbaseProvider) {
             throw new Error('connectionControllerClient:connectCoinbase - connector is undefined')
           }
-          await CoinbaseProvider.request({method: 'eth_requestAccounts'})
+          await CoinbaseProvider.request({ method: 'eth_requestAccounts' })
 
           this.setCoinbaseProvider(ethersConfig)
         }
@@ -209,7 +217,7 @@ export class Web3Modal extends Web3ModalScaffold {
         ProviderController.reset()
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider
-          await (WalletConnectProvider as unknown  as EthereumProvider).disconnect()
+          await (WalletConnectProvider as unknown as EthereumProvider).disconnect()
         }
         provider?.emit('disconnect')
       }
@@ -313,16 +321,16 @@ export class Web3Modal extends Web3ModalScaffold {
     if (providerType === 'injected' || providerType === 'eip6963') {
       provider?.emit('disconnect')
     } else {
-      await (provider as unknown  as EthereumProvider).disconnect()
+      await (provider as unknown as EthereumProvider).disconnect()
     }
   }
 
   // -- Private -----------------------------------------------------------------
-  private async getUserInfo(provider: Provider){
-    const chainId = Number(await provider.request<string | number>({method: 'eth_chainId'}))
-    const [address] = await provider.request<string[]>({method: 'eth_accounts'})
+  private async getUserInfo(provider: Provider) {
+    const chainId = Number(await provider.request<string | number>({ method: 'eth_chainId' }))
+    const [address] = await provider.request<string[]>({ method: 'eth_accounts' })
 
-    return {chainId, address}
+    return { chainId, address }
   }
 
   private createProvider() {
@@ -405,7 +413,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private checkActiveCoinbaseProvider(config: ProviderType) {
-    const CoinbaseProvider = config.coinbase as unknown  as ExternalProvider
+    const CoinbaseProvider = config.coinbase as unknown as ExternalProvider
     const walletId = localStorage.getItem(WALLET_ID)
 
     if (CoinbaseProvider) {
@@ -728,7 +736,7 @@ export class Web3Modal extends Web3ModalScaffold {
       const chain = this.chains.find(c => c.chainId === chainId)
 
       if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID && chain) {
-        const WalletConnectProvider = provider as unknown  as EthereumProvider
+        const WalletConnectProvider = provider as unknown as EthereumProvider
 
         if (WalletConnectProvider) {
           try {
@@ -745,10 +753,7 @@ export class Web3Modal extends Web3ModalScaffold {
               switchError.code === ERROR_CODE_DEFAULT ||
               switchError?.data?.originalError?.code === ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
-              await addEthereumChain(
-                WalletConnectProvider as unknown  as Provider,
-                chain
-              )
+              await addEthereumChain(WalletConnectProvider as unknown as Provider, chain)
             } else {
               throw new Error('Chain is not supported')
             }

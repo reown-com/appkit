@@ -25,10 +25,7 @@ export function numberToHexString(value: number) {
   return `0x${value.toString(16)}`
 }
 
-export async function addEthereumChain(
-  provider: Provider,
-  chain: Chain
-) {
+export async function addEthereumChain(provider: Provider, chain: Chain) {
   await provider.request({
     method: 'wallet_addEthereumChain',
     params: [
