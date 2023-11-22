@@ -8,10 +8,10 @@ export function EthersConnectButton() {
 
   async function onSignMessage() {
     try {
-      if(!walletProvider){
-        throw Error("user is disconnected")
+      if (!walletProvider) {
+        throw Error('user is disconnected')
       }
-      const signer = await (new BrowserProvider(walletProvider).getSigner())
+      const signer = await new BrowserProvider(walletProvider).getSigner()
       const signature = await signer?.signMessage('Hello Web3Modal Ethers')
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch {
