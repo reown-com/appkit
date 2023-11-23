@@ -97,6 +97,7 @@ export type IconType =
   | 'arrowTop'
   | 'browser'
   | 'checkmark'
+  | 'checkmarkBold'
   | 'chevronBottom'
   | 'chevronLeft'
   | 'chevronRight'

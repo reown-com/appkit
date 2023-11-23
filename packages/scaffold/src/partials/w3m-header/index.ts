@@ -33,6 +33,7 @@ function headings() {
     Transactions: 'Activity',
     Swap: 'Swap',
     SwapSelectToken: 'Select Token',
+    SwapSelectNetwork: 'Select Network',
     PreviewSwap: 'Preview Swap'
   }
 }

@@ -60,6 +60,7 @@ import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder.js'
 import { walletSvg } from '../../assets/svg/wallet.js'
 import { walletConnectSvg } from '../../assets/svg/walletconnect.js'
 import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
+import { checkmarkBoldSvg } from '../../assets/svg/checkmark-bold.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   allWallets: allWalletsSvg,
@@ -72,6 +73,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   arrowTop: arrowTopSvg,
   browser: browserSvg,
   checkmark: checkmarkSvg,
+  checkmarkBold: checkmarkBoldSvg,
   chevronBottom: chevronBottomSvg,
   chevronLeft: chevronLeftSvg,
   chevronRight: chevronRightSvg,
