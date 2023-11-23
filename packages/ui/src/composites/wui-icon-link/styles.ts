@@ -2,9 +2,9 @@ import { css } from 'lit'
 
 export default css`
   button {
-    border-radius: var(--wui-border-radius-xxs);
+    border-radius: var(--local-border-radius);
     color: var(--wui-color-fg-100);
-    padding: var(--wui-spacing-2xs);
+    padding: var(--local-padding);
   }
 
   @media (max-width: 700px) {

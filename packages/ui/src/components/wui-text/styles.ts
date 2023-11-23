@@ -2,7 +2,7 @@ import { css } from 'lit'
 
 export default css`
   :host {
-    display: flex !important;
+    display: inline-flex !important;
   }
 
   slot {
@@ -26,6 +26,13 @@ export default css`
   .wui-font-large-700 {
     font-size: var(--wui-font-size-large);
     letter-spacing: var(--wui-letter-spacing-large);
+  }
+
+  .wui-font-2xl-500,
+  .wui-font-2xl-600,
+  .wui-font-2xl-700 {
+    font-size: var(--wui-font-size-2xl);
+    letter-spacing: var(--wui-letter-spacing-2xl);
   }
 
   .wui-font-paragraph-500,

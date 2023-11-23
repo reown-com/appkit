@@ -15,6 +15,9 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 
+// -- Constants ----------------------------------------- //
+const tabs = [{ label: 'Tokens' }, { label: 'NFTs' }, { label: 'Activity' }]
+
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
   public static override styles = styles
@@ -122,38 +125,59 @@ export class W3mAccountView extends LitElement {
         </wui-flex>
       </wui-flex>
 
-      <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
-        <wui-list-item
-          .variant=${networkImage ? 'image' : 'icon'}
-          iconVariant="overlay"
-          icon="networkPlaceholder"
-          imageSrc=${ifDefined(networkImage)}
-          ?chevron=${this.isAllowedNetworkSwitch()}
-          @click=${this.onNetworks.bind(this)}
-        >
-          <wui-text variant="paragraph-500" color="fg-100">
-            ${this.network?.name ?? 'Unknown'}
-          </wui-text>
-        </wui-list-item>
-        <wui-list-item
-          iconVariant="blue"
-          icon="swapHorizontalBold"
-          iconSize="sm"
-          ?chevron=${true}
-          @click=${this.onTransactions.bind(this)}
-        >
-          <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
-        </wui-list-item>
-        <wui-list-item
-          variant="icon"
-          iconVariant="overlay"
-          icon="disconnect"
-          ?chevron=${false}
-          .loading=${this.disconecting}
-          @click=${this.onDisconnect.bind(this)}
-        >
-          <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
-        </wui-list-item>
+      <wui-flex flexDirection="column" gap="m">
+        <wui-flex .padding=${['0', 'xl', '0', 'xl']} gap="1xs" class="account-links">
+          <wui-flex size="lg">
+            <wui-icon color="accent-100" name="wallet2"></wui-icon>
+          </wui-flex>
+          <wui-flex size="lg">
+            <wui-icon color="accent-100" name="recycleHorizontal"></wui-icon>
+          </wui-flex>
+          <wui-flex size="lg">
+            <wui-icon color="accent-100" name="arrowBottomCircle"></wui-icon>
+          </wui-flex>
+          <wui-flex size="lg">
+            <wui-icon color="accent-100" name="send"></wui-icon>
+          </wui-flex>
+        </wui-flex>
+
+        <wui-flex .padding=${['0', 'xl', '0', 'xl']}>
+          <wui-tabs .tabs=${tabs}></wui-tabs>
+        </wui-flex>
+
+        <wui-flex flexDirection="column" gap="xs" .padding=${['0', 'xl', 'xl', 'xl'] as const}>
+          <wui-list-item
+            .variant=${networkImage ? 'image' : 'icon'}
+            iconVariant="overlay"
+            icon="networkPlaceholder"
+            imageSrc=${ifDefined(networkImage)}
+            ?chevron=${this.isAllowedNetworkSwitch()}
+            @click=${this.onNetworks.bind(this)}
+          >
+            <wui-text variant="paragraph-500" color="fg-100">
+              ${this.network?.name ?? 'Unknown'}
+            </wui-text>
+          </wui-list-item>
+          <wui-list-item
+            iconVariant="blue"
+            icon="swapHorizontalBold"
+            iconSize="sm"
+            ?chevron=${true}
+            @click=${this.onTransactions.bind(this)}
+          >
+            <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
+          </wui-list-item>
+          <wui-list-item
+            variant="icon"
+            iconVariant="overlay"
+            icon="disconnect"
+            ?chevron=${false}
+            .loading=${this.disconecting}
+            @click=${this.onDisconnect.bind(this)}
+          >
+            <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
+          </wui-list-item>
+        </wui-flex>
       </wui-flex>
     `
   }

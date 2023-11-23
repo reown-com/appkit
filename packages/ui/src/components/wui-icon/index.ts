@@ -8,6 +8,7 @@ import styles from './styles.js'
 
 // -- Svg's-------------------------------- //
 import { allWalletsSvg } from '../../assets/svg/all-wallets.js'
+import { arrowBottomCircleSvg } from '../../assets/svg/arrow-bottom-circle.js'
 import { appStoreSvg } from '../../assets/svg/app-store.js'
 import { appleSvg } from '../../assets/svg/apple.js'
 import { arrowBottomSvg } from '../../assets/svg/arrow-bottom.js'
@@ -48,6 +49,7 @@ import { playStoreSvg } from '../../assets/svg/play-store.js'
 import { qrCodeIcon } from '../../assets/svg/qr-code.js'
 import { refreshSvg } from '../../assets/svg/refresh.js'
 import { searchSvg } from '../../assets/svg/search.js'
+import { sendSvg } from '../../assets/svg/send.js'
 import { swapHorizontalSvg } from '../../assets/svg/swapHorizontal.js'
 import { swapHorizontalBoldSvg } from '../../assets/svg/swapHorizontalBold.js'
 import { swapVerticalSvg } from '../../assets/svg/swapVertical.js'
@@ -59,9 +61,12 @@ import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder.js'
 import { walletSvg } from '../../assets/svg/wallet.js'
 import { walletConnectSvg } from '../../assets/svg/walletconnect.js'
 import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
+import { recycleHorizontalSvg } from '../../assets/svg/recycle-horizontal.js'
+import { wallet2Svg } from '../../assets/svg/wallet2.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   allWallets: allWalletsSvg,
+  arrowBottomCircle: arrowBottomCircleSvg,
   appStore: appStoreSvg,
   chromeStore: chromeStoreSvg,
   apple: appleSvg,
@@ -100,8 +105,10 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   off: offSvg,
   playStore: playStoreSvg,
   qrCode: qrCodeIcon,
+  recycleHorizontal: recycleHorizontalSvg,
   refresh: refreshSvg,
   search: searchSvg,
+  send: sendSvg,
   swapHorizontal: swapHorizontalSvg,
   swapHorizontalBold: swapHorizontalBoldSvg,
   swapVertical: swapVerticalSvg,
@@ -110,6 +117,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   twitter: twitterSvg,
   twitterIcon: twitterIconSvg,
   wallet: walletSvg,
+  wallet2: wallet2Svg,
   walletConnect: walletConnectSvg,
   walletPlaceholder: walletPlaceholderSvg,
   warningCircle: warningCircleSvg
