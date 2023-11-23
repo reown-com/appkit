@@ -250,7 +250,11 @@ export class W3mAccountView extends LitElement {
     }
   }
 
-  private onGoToSecureSite() {
+  private async onGoToSecureSite() {
+    const isEmail = this.connectors.find(c => c.type === 'EMAIL')
+    // @ts-expect-error Method exists on email provider
+    await isEmail?.provider.activateSmartAccount()
+
     CoreHelperUtil.openHref(ConstantsUtil.SECURE_SITE_DASHBOARD, '_blank')
   }
 }

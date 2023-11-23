@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/siwe",
-  "version": "3.4.0-hw-22c2424d",
+  "version": "3.4.0-hw-ae905beb",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -23,7 +23,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/core": "3.4.0-hw-22c2424d"
+    "@web3modal/core": "3.4.0-hw-ae905beb"
   },
   "peerDependencies": {
     "react": ">=17",
