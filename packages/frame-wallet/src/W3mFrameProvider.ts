@@ -12,7 +12,9 @@ type ConnectResolver = Resolver<W3mFrameTypes.Responses['FrameGetUserResponse']>
 type DisconnectResolver = Resolver<undefined>
 type IsConnectedResolver = Resolver<W3mFrameTypes.Responses['FrameIsConnectedResponse']>
 type GetChainIdResolver = Resolver<W3mFrameTypes.Responses['FrameGetChainIdResponse']>
-type SwitchChainResolver = Resolver<undefined>
+type SwitchChainResolver = Resolver<
+  W3mFrameTypes.Responses['FrameSwitchNetworkSuccessResponse'] | undefined
+>
 type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>
 
 // -- Provider --------------------------------------------------------
@@ -76,7 +78,7 @@ export class W3mFrameProvider {
         case W3mFrameConstants.FRAME_SIGN_OUT_ERROR:
           return this.onSignOutError(event)
         case W3mFrameConstants.FRAME_SWITCH_NETWORK_SUCCESS:
-          return this.onSwitchChainSuccess()
+          return this.onSwitchChainSuccess(event)
         case W3mFrameConstants.FRAME_SWITCH_NETWORK_ERROR:
           return this.onSwitchChainError(event)
         case W3mFrameConstants.FRAME_RPC_REQUEST_SUCCESS:
@@ -158,9 +160,11 @@ export class W3mFrameProvider {
       payload: { chainId }
     })
 
-    return new Promise((resolve, reject) => {
-      this.switchChainResolver = { resolve, reject }
-    })
+    return new Promise<W3mFrameTypes.Responses['FrameSwitchNetworkSuccessResponse'] | undefined>(
+      (resolve, reject) => {
+        this.switchChainResolver = { resolve, reject }
+      }
+    )
   }
 
   public async disconnect() {
@@ -301,8 +305,10 @@ export class W3mFrameProvider {
     this.disconnectResolver?.reject(event.payload.message)
   }
 
-  private onSwitchChainSuccess() {
-    this.switchChainResolver?.resolve(undefined)
+  private onSwitchChainSuccess(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SWITCH_NETWORK_SUCCESS' }>
+  ) {
+    this.switchChainResolver?.resolve(event.payload)
   }
 
   private onSwitchChainError(
