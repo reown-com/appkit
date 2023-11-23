@@ -14,10 +14,10 @@ export function Web3jsConnectButton() {
       }
 
       const web3 = new Web3(walletProvider)
-      const msg = web3.utils.toHex("Hello Web3Modal Web3js")
+      const msg = web3.utils.toHex('Hello Web3Modal Web3js')
 
-      const signature = await web3.eth.personal.sign(msg, address, "")
-  
+      const signature = await web3.eth.personal.sign(msg, address, '')
+
       toast({ title: 'Success', description: signature, status: 'success', isClosable: true })
     } catch {
       toast({
