@@ -54,7 +54,8 @@ export const textOptions: TextType[] = [
   'paragraph-700',
   'large-500',
   'large-600',
-  'large-700'
+  'large-700',
+  '2xl-700'
 ]
 
 export const textAlignOptions: TextAlign[] = ['center', 'left', 'right']

@@ -1,16 +1,16 @@
 import {
   AccountController,
   ConnectionController,
-  ConstantsUtil,
   CoreHelperUtil,
   EventsController,
   ModalController,
   NetworkController,
   RouterController,
   SnackController,
-  StorageUtil,
   ConstantsUtil,
   AssetUtil
+  ConnectorController,
+  StorageUtil
 } from '@web3modal/core'
 import type { CaipNetworkCoinbaseNetwork } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
@@ -22,7 +22,10 @@ import styles from './styles.js'
 import { initOnRamp } from '@coinbase/cbpay-js'
 import type { CBPayInstanceType } from '@coinbase/cbpay-js'
 
+// -- Constants ----------------------------------------- //
 const coinbaseAppID = process.env['NEXT_PUBLIC_COINBASE_APP_ID']
+
+const tabs = [{ label: 'Tokens' }, { label: 'NFTs' }, { label: 'Activity' }]
 
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
@@ -181,6 +184,61 @@ export class W3mAccountView extends LitElement {
         >
           <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
         </wui-list-item>
+      </wui-flex>
+
+      <wui-flex flexDirection="column" gap="m">
+        <wui-flex .padding=${['0', 'xl', '0', 'xl']} gap="1xs" class="account-links">
+          <wui-flex size="lg">
+            <wui-icon color="accent-100" name="wallet2"></wui-icon>
+          </wui-flex>
+          <wui-flex size="lg">
+            <wui-icon color="accent-100" name="recycleHorizontal"></wui-icon>
+          </wui-flex>
+          <wui-flex size="lg">
+            <wui-icon color="accent-100" name="arrowBottomCircle"></wui-icon>
+          </wui-flex>
+          <wui-flex size="lg">
+            <wui-icon color="accent-100" name="send"></wui-icon>
+          </wui-flex>
+        </wui-flex>
+
+        <wui-flex .padding=${['0', 'xl', '0', 'xl']}>
+          <wui-tabs .tabs=${tabs}></wui-tabs>
+        </wui-flex>
+
+        <wui-flex flexDirection="column" gap="xs" .padding=${['0', 'xl', 'xl', 'xl'] as const}>
+          <wui-list-item
+            .variant=${networkImage ? 'image' : 'icon'}
+            iconVariant="overlay"
+            icon="networkPlaceholder"
+            imageSrc=${ifDefined(networkImage)}
+            ?chevron=${this.isAllowedNetworkSwitch()}
+            @click=${this.onNetworks.bind(this)}
+          >
+            <wui-text variant="paragraph-500" color="fg-100">
+              ${this.network?.name ?? 'Unknown'}
+            </wui-text>
+          </wui-list-item>
+          <wui-list-item
+            iconVariant="blue"
+            icon="swapHorizontalBold"
+            iconSize="sm"
+            ?chevron=${true}
+            @click=${this.onTransactions.bind(this)}
+          >
+            <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
+          </wui-list-item>
+          <wui-list-item
+            variant="icon"
+            iconVariant="overlay"
+            icon="disconnect"
+            ?chevron=${false}
+            .loading=${this.disconecting}
+            @click=${this.onDisconnect.bind(this)}
+          >
+            <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
+          </wui-list-item>
+        </wui-flex>
       </wui-flex>
     `
   }

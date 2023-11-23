@@ -24,13 +24,16 @@ export class WuiTabs extends LitElement {
 
   @state() public isDense = false
 
+  @state() public tabWidth?: number = 320
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.isDense = this.tabs.length > 3
 
     this.style.cssText = `
       --local-tab: ${this.activeTab};
-      --local-tab-width: ${this.localTabWidth};
+      --local-tabs-width: ${this.tabWidth}px;
+      --local-tab-count: ${this.tabs.length};
     `
 
     this.dataset['type'] = this.isDense ? 'flex' : 'block'
@@ -44,7 +47,9 @@ export class WuiTabs extends LitElement {
           @click=${() => this.onTabClick(index)}
           data-active=${isActive}
         >
-          <wui-icon size="xs" color="inherit" name=${tab.icon}></wui-icon>
+          ${tab.icon
+            ? html`<wui-icon size="xs" color="inherit" name=${tab.icon}></wui-icon>`
+            : null}
           <wui-text variant="small-600" color="inherit"> ${tab.label} </wui-text>
         </button>
       `
