@@ -9,7 +9,7 @@ export function WagmiConnectButton() {
   async function onSignMessage() {
     try {
       const signature = await signMessageAsync()
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast({ title: 'Success', description: signature, status: 'success', isClosable: true })
     } catch {
       toast({
         title: 'Error',

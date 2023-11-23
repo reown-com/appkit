@@ -23,6 +23,15 @@ export default function HomePage() {
         >
           V3 with Ethers
         </Link>
+        <Link
+          as={NextLink}
+          href="/library/web3js"
+          padding={4}
+          border={'1px solid #D70040'}
+          borderRadius="xl"
+        >
+          V3 with Web3js
+        </Link>
       </VStack>
     </Center>
   )

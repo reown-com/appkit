@@ -1,0 +1,99 @@
+{
+  "name": "@web3modal/web3js",
+  "version": "3.3.2",
+  "type": "module",
+  "main": "./dist/esm/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
+  "files": [
+    "dist",
+    "!tsconfig.tsbuildinfo"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./react": {
+      "types": "./dist/types/exports/react.d.ts",
+      "import": "./dist/esm/exports/react.js",
+      "default": "./dist/esm/exports/react.js"
+    },
+    "./vue": {
+      "types": "./dist/types/exports/vue.d.ts",
+      "import": "./dist/esm/exports/vue.js",
+      "default": "./dist/esm/exports/vue.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "react": [
+        "./dist/types/exports/react.d.ts"
+      ],
+      "vue": [
+        "./dist/types/exports/vue.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build": "npm run build:clean; tsc --build",
+    "watch": "npm run build:clean; tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "dependencies": {
+    "@coinbase/wallet-sdk": "3.7.2",
+    "@walletconnect/ethereum-provider": "2.10.5",
+    "@web3modal/polyfills": "3.3.2",
+    "@web3modal/scaffold": "3.3.2",
+    "@web3modal/scaffold-react": "3.3.2",
+    "@web3modal/scaffold-vue": "3.3.2",
+    "@web3modal/scaffold-utils": "3.3.2",
+    "valtio": "1.11.2"
+  },
+  "devDependencies": {
+    "web3": "4.2.2"
+  },
+  "peerDependencies": {
+    "web3": ">=4.0.0",
+    "react": ">=17",
+    "react-dom": ">=17",
+    "vue": ">=3"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
+  "optionalDependencies": {
+    "react": ">=17",
+    "react-dom": ">=17",
+    "vue": ">=3"
+  },
+  "keywords": [
+    "web3",
+    "crypto",
+    "ethereum",
+    "web3modal",
+    "walletconnect",
+    "lit",
+    "webcomponents"
+  ],
+  "author": "WalletConnect <walletconnect.com>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/web3modal/web3modal",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/web3modal/web3modal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/web3modal/web3modal/issues"
+  }
+}

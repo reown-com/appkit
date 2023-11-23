@@ -53,6 +53,7 @@ export type SdkVersion =
   | `${'html' | 'react' | 'vue'}-wagmi-${string}`
   | `${'html' | 'react' | 'vue'}-ethers5-${string}`
   | `${'html' | 'react' | 'vue'}-ethers-${string}`
+  | `${'html' | 'react' | 'vue'}-web3js-${string}`
 
 export interface BaseError {
   message?: string

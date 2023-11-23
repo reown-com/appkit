@@ -39,6 +39,7 @@
     "packages/wagmi",
     "packages/ethers",
     "packages/ethers5",
+    "packages/web3js",
     "apps/*",
     "examples/*"
   ],
