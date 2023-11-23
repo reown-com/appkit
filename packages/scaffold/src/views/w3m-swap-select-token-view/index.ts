@@ -1,7 +1,7 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { RouterController, SwapApiController } from '@web3modal/core'
+import { ConnectionController, RouterController, SwapApiController } from '@web3modal/core'
 import type { TokenInfo } from '@web3modal/core/src/controllers/SwapApiController.js'
 import { state } from 'lit/decorators.js'
 
@@ -17,12 +17,12 @@ export class W3mSwapSelectTokenView extends LitElement {
   }
 
   private onSelectToken(token: TokenInfo) {
-    console.log({ targetToken: this.targetToken })
     if (this.targetToken === 'sourceToken') {
       SwapApiController.setSourceToken(token)
     } else {
       SwapApiController.setToToken(token)
     }
+    SwapApiController.getTokenSwapInfo()
     RouterController.goBack()
   }
 
@@ -57,8 +57,11 @@ export class W3mSwapSelectTokenView extends LitElement {
               <wui-token-list-item
                 name=${tokenInfo.name}
                 symbol=${tokenInfo.symbol}
-                price=${`$${tokenInfo.decimals}`}
-                amount=${tokenInfo.balance}
+                price=${0}
+                amount=${ConnectionController.formatUnits(
+                  BigInt(tokenInfo.balance),
+                  tokenInfo.decimals
+                )}
                 imageSrc=${tokenInfo.logoURI}
                 @click=${() => this.onSelectToken(tokenInfo)}
               >
@@ -76,8 +79,8 @@ export class W3mSwapSelectTokenView extends LitElement {
               <wui-token-list-item
                 name=${tokenInfo.name}
                 symbol=${tokenInfo.symbol}
-                price=${tokenInfo.decimals}
-                amount=${10}
+                price=${0}
+                amount=${0}
                 imageSrc=${tokenInfo.logoURI}
                 @click=${() => this.onSelectToken(tokenInfo)}
               >

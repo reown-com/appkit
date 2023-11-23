@@ -6,7 +6,8 @@ import {
   SwapApiController,
   EventsController,
   RouterController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  NetworkController
 } from '@web3modal/core'
 import type { TokenInfo } from '@web3modal/core/src/controllers/SwapApiController.js'
 type Target = 'sourceToken' | 'toToken'
@@ -17,6 +18,8 @@ export class W3mSwapView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
+  @state() private initialLoading = SwapApiController.state.initialLoading
+
   @state() private loading = SwapApiController.state.loading
 
   @state() private sourceToken = SwapApiController.state.sourceToken
@@ -25,21 +28,47 @@ export class W3mSwapView extends LitElement {
 
   @state() private swapErrorMessage = SwapApiController.state.swapErrorMessage
 
+  @state() private hasAllowance = SwapApiController.state.hasAllowance
+
   @state() private sourceTokenAmount = SwapApiController.state.sourceTokenAmount ?? ''
 
   @state() private toTokenAmount = SwapApiController.state.toTokenAmount ?? ''
 
+  @state() private caipNetworkId = NetworkController.state.caipNetwork?.id
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
-    SwapApiController.getTokenList()
-    SwapApiController.getMyTokensWithBalance()
+
+    NetworkController.subscribeKey('caipNetwork', newCaipNetwork => {
+      if (this.caipNetworkId !== newCaipNetwork?.id) {
+        this.caipNetworkId = newCaipNetwork?.id
+        SwapApiController.setSourceToken(undefined)
+        SwapApiController.setToToken(undefined)
+        if (!this.initialLoading) {
+          SwapApiController.getMyTokensWithBalance({ forceRefetch: true })
+          SwapApiController.getTokenList({ forceRefetch: true })
+        }
+      }
+    })
 
     this.unsubscribe.push(
       ...[
         SwapApiController.subscribe(newState => {
+          if (this.loading !== newState.loading) {
+            this.loading = newState.loading
+          }
+          if (this.initialLoading !== newState.initialLoading) {
+            this.initialLoading = newState.initialLoading
+          }
           if (this.sourceTokenAmount !== newState.sourceTokenAmount) {
             this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
+          }
+          if (newState.sourceTokenAddress) {
+            this.sourceToken = newState.sourceToken
+          }
+          if (newState.toTokenAddress) {
+            this.toToken = newState.toToken
           }
           if (this.toTokenAmount !== newState.toTokenAmount) {
             this.toTokenAmount = newState.toTokenAmount ?? ''
@@ -50,9 +79,19 @@ export class W3mSwapView extends LitElement {
           if (this.swapErrorMessage !== newState.swapErrorMessage) {
             this.swapErrorMessage = newState.swapErrorMessage
           }
+          if (this.hasAllowance !== newState.hasAllowance) {
+            this.hasAllowance = newState.hasAllowance
+          }
         })
       ]
     )
+  }
+
+  public override firstUpdated() {
+    if (!this.initialLoading) {
+      SwapApiController.getMyTokensWithBalance()
+      SwapApiController.getTokenList()
+    }
   }
 
   public override disconnectedCallback() {
@@ -70,33 +109,46 @@ export class W3mSwapView extends LitElement {
   private onInputChange(event: InputEvent) {
     const inputElement = event.target as HTMLElement
     const input = this.getInputElement(inputElement)
+    SwapApiController.clearError()
     if (input) {
       SwapApiController.setSourceTokenAmount(input.value)
-      this.onDebouncedGetSwapCalldata(input.value)
+      this.onDebouncedGetSwapCalldata()
     }
   }
 
   private onDebouncedGetSwapCalldata = CoreHelperUtil.debounce(async () => {
-    if (this.sourceToken?.address && this.toToken?.address) {
-      const swapCalldata = await SwapApiController.getSwapCalldata()
-      // This.toTokenAmount = swapCalldata.toAmount
-      console.log({ swapCalldata })
-    }
+    await SwapApiController.getTokenSwapInfo()
   })
 
   private async onSwap() {
     await SwapApiController.swapTokens()
   }
 
+  private async onApprove() {
+    await SwapApiController.approveSwapTokens()
+  }
+
   private onSwitchTokens() {
     SwapApiController.switchTokens()
+  }
+
+  private get actionButtonLabel(): string {
+    if (!this.toToken || !this.sourceToken) {
+      return 'Pick tokens'
+    }
+
+    if (!this.toTokenAmount || !this.sourceTokenAmount) {
+      return 'Enter Amount'
+    }
+
+    return this.hasAllowance ? 'Swap' : 'Approve'
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="s">
-        ${this.loading ? this.templateLoading() : this.templateSwap()}
+        ${this.initialLoading ? this.templateLoading() : this.templateSwap()}
       </wui-flex>
     `
   }
@@ -118,8 +170,12 @@ export class W3mSwapView extends LitElement {
         <wui-flex flexDirection="column" .padding=${['xs', 's', 's', 's'] as const}>
           <wui-text variant="paragraph-500" color="error-100">${this.swapErrorMessage}</wui-text>
 
-          <wui-button class="action-button" variant="fullWidth" @click=${this.onSwap.bind(this)}>
-            Enter amount
+          <wui-button
+            class="action-button"
+            variant="fullWidth"
+            @click=${this.hasAllowance ? () => this.onSwap() : () => this.onApprove()}
+          >
+            ${this.actionButtonLabel}
           </wui-button>
         </wui-flex>
       </wui-flex>
@@ -169,7 +225,7 @@ export class W3mSwapView extends LitElement {
         ?border=${true}
         borderColor="wui-color-bg-125"
       ></wui-icon-box>
-      <wui-text align="center" variant="paragraph-500" color="fg-100">Swaping</wui-text>
+      <wui-text align="center" variant="paragraph-500" color="fg-100">Loading</wui-text>
       <wui-loading-hexagon></wui-loading-hexagon>
     </wui-flex>`
   }
@@ -180,6 +236,7 @@ export class W3mSwapView extends LitElement {
         <wui-input-text
           @input=${this.onInputChange.bind(this)}
           .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
+          ?disabled=${this.loading && target === 'toToken'}
         />
       </wui-flex>
       ${this.templateTokenSelectButton(target, token)}

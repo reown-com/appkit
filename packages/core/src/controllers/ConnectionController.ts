@@ -19,6 +19,7 @@ export interface ConnectionControllerClient {
   parseTransaction: (calldata: `0x${string}`) => unknown
   sendTransaction: (args: SendTransactionArgs) => Promise<{ hash: `0x${string}` }>
   parseUnits: (value: string, decimals: number) => bigint
+  formatUnits: (value: bigint, decimals: number) => string
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>
   checkInstalled?: (ids?: string[]) => boolean
 }
@@ -85,6 +86,10 @@ export const ConnectionController = {
 
   parseUnits(value: string, decimals: number) {
     return this._getClient().parseUnits(value, decimals)
+  },
+
+  formatUnits(value: bigint, decimals: number) {
+    return this._getClient().formatUnits(value, decimals)
   },
 
   async sendTransaction(args: SendTransactionArgs) {
