@@ -2,14 +2,19 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { SwapApiController } from '@web3modal/core'
-import { EventsController } from '@web3modal/core'
-import { RouterController } from '@web3modal/core'
+import {
+  SwapApiController,
+  EventsController,
+  RouterController,
+  CoreHelperUtil
+} from '@web3modal/core'
 import type { TokenInfo } from '@web3modal/core/src/controllers/SwapApiController.js'
 type Target = 'sourceToken' | 'toToken'
 @customElement('w3m-swap-view')
 export class W3mSwapView extends LitElement {
   public static override styles = styles
+
+  private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
   @state() private loading = SwapApiController.state.loading
@@ -18,11 +23,40 @@ export class W3mSwapView extends LitElement {
 
   @state() private toToken = SwapApiController.state.toToken
 
+  @state() private swapErrorMessage = SwapApiController.state.swapErrorMessage
+
+  @state() private sourceTokenAmount = SwapApiController.state.sourceTokenAmount ?? ''
+
+  @state() private toTokenAmount = SwapApiController.state.toTokenAmount ?? ''
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
-
     SwapApiController.getTokenList()
+    SwapApiController.getMyTokensWithBalance()
+
+    this.unsubscribe.push(
+      ...[
+        SwapApiController.subscribe(newState => {
+          if (this.sourceTokenAmount !== newState.sourceTokenAmount) {
+            this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
+          }
+          if (this.toTokenAmount !== newState.toTokenAmount) {
+            this.toTokenAmount = newState.toTokenAmount ?? ''
+          }
+          if (this.sourceToken?.address !== newState.sourceToken?.address) {
+            this.sourceToken = newState.sourceToken
+          }
+          if (this.swapErrorMessage !== newState.swapErrorMessage) {
+            this.swapErrorMessage = newState.swapErrorMessage
+          }
+        })
+      ]
+    )
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe?.())
   }
 
   private getInputElement(el: HTMLElement) {
@@ -33,26 +67,29 @@ export class W3mSwapView extends LitElement {
     return null
   }
 
-  private handleInput(e: InputEvent) {
-    const inputElement = e.target as HTMLElement
+  private onInputChange(event: InputEvent) {
+    const inputElement = event.target as HTMLElement
     const input = this.getInputElement(inputElement)
-
     if (input) {
-      const inputValue = input.value
-      SwapApiController.setSourceTokenAmount(inputValue)
+      SwapApiController.setSourceTokenAmount(input.value)
+      this.onDebouncedGetSwapCalldata(input.value)
     }
   }
 
-  private onSwap() {
-    const amount = SwapApiController.state.sourceTokenAmount
-    // eslint-disable-next-line no-console
-    console.log({ amount })
+  private onDebouncedGetSwapCalldata = CoreHelperUtil.debounce(async () => {
+    if (this.sourceToken?.address && this.toToken?.address) {
+      const swapCalldata = await SwapApiController.getSwapCalldata()
+      // This.toTokenAmount = swapCalldata.toAmount
+      console.log({ swapCalldata })
+    }
+  })
+
+  private async onSwap() {
+    await SwapApiController.swapTokens()
   }
 
   private onSwitchTokens() {
-    const { newSourceToken, newToToken } = SwapApiController.switchTokens()
-    this.sourceToken = newSourceToken
-    this.toToken = newToToken
+    SwapApiController.switchTokens()
   }
 
   // -- Render -------------------------------------------- //
@@ -75,10 +112,12 @@ export class W3mSwapView extends LitElement {
           .padding=${['xs', 's', 's', 's'] as const}
           class="swap-inputs-container"
         >
-          ${this.templateTokenInput(this.sourceToken, 'sourceToken')}
-          ${this.templateTokenInput(this.toToken, 'toToken')} ${this.templateReplaceTokensButton()}
+          ${this.templateTokenInput('sourceToken', this.sourceToken)}
+          ${this.templateTokenInput('toToken', this.toToken)} ${this.templateReplaceTokensButton()}
         </wui-flex>
-        <wui-flex .padding=${['xs', 's', 's', 's'] as const}>
+        <wui-flex flexDirection="column" .padding=${['xs', 's', 's', 's'] as const}>
+          <wui-text variant="paragraph-500" color="error-100">${this.swapErrorMessage}</wui-text>
+
           <wui-button class="action-button" variant="fullWidth" @click=${this.onSwap.bind(this)}>
             Enter amount
           </wui-button>
@@ -135,16 +174,19 @@ export class W3mSwapView extends LitElement {
     </wui-flex>`
   }
 
-  private templateTokenInput(token?: TokenInfo, target?: Target) {
+  private templateTokenInput(target: Target, token?: TokenInfo) {
     return html`<wui-flex justifyContent="space-between" gap="sm" class="swap-input">
       <wui-flex flex="1">
-        <input type="number" @input=${(e: InputEvent) => this.handleInput(e)} />
+        <wui-input-text
+          @input=${this.onInputChange.bind(this)}
+          .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
+        />
       </wui-flex>
-      ${this.templateTokenSelectButton(token, target)}
+      ${this.templateTokenSelectButton(target, token)}
     </wui-flex> `
   }
 
-  private templateTokenSelectButton(token?: TokenInfo, target?: Target) {
+  private templateTokenSelectButton(target: Target, token?: TokenInfo) {
     if (!token) {
       return html` <wui-button
         size="md"
@@ -156,7 +198,7 @@ export class W3mSwapView extends LitElement {
     }
 
     const tokenElement = token.logoURI
-      ? html`<wui-image src=${token.logoURI}></wui-image>`
+      ? html`<wui-image width="40" height="40" src=${token.logoURI}></wui-image>`
       : html`
           <wui-icon-box
             size="sm"
@@ -167,7 +209,7 @@ export class W3mSwapView extends LitElement {
         `
 
     return html`
-      <div class="token-select-button-container">
+      <div class="token-select-button-container" @click=${() => this.onSelectToken(target)}>
         <button class="token-select-button">
           ${tokenElement}
           <wui-text variant="paragraph-600" color="fg-100">${token.symbol}</wui-text>
@@ -176,7 +218,7 @@ export class W3mSwapView extends LitElement {
     `
   }
 
-  private onSelectToken(target?: Target) {
+  private onSelectToken(target: Target) {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_SELECT_TOKEN_TO_SWAP' })
     RouterController.push('SwapSelectToken', {
       target

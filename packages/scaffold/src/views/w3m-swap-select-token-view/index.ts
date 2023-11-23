@@ -5,39 +5,6 @@ import { RouterController, SwapApiController } from '@web3modal/core'
 import type { TokenInfo } from '@web3modal/core/src/controllers/SwapApiController.js'
 import { state } from 'lit/decorators.js'
 
-const yourItems = [
-  {
-    name: 'Ethereum',
-    symbol: 'ETH',
-    price: '3,324.34',
-    value: '0.854'
-  },
-  {
-    name: 'Avalanche',
-    symbol: 'AVAX',
-    price: '2,543.12',
-    value: '0.723'
-  },
-  {
-    name: 'Bitcoin',
-    symbol: 'BTC',
-    price: '47,892.56',
-    value: '0.654'
-  },
-  {
-    name: 'Cardano',
-    symbol: 'ADA',
-    price: '2.34',
-    value: '0.345'
-  },
-  {
-    name: 'Ripple',
-    symbol: 'XRP',
-    price: '1.23',
-    value: '0.456'
-  }
-]
-
 @customElement('w3m-swap-select-token-view')
 export class W3mSwapSelectTokenView extends LitElement {
   public static override styles = styles
@@ -50,6 +17,7 @@ export class W3mSwapSelectTokenView extends LitElement {
   }
 
   private onSelectToken(token: TokenInfo) {
+    console.log({ targetToken: this.targetToken })
     if (this.targetToken === 'sourceToken') {
       SwapApiController.setSourceToken(token)
     } else {
@@ -83,14 +51,16 @@ export class W3mSwapSelectTokenView extends LitElement {
           <wui-text variant="paragraph-500" color="fg-200">Your tokens</wui-text>
         </wui-flex>
         <wui-flex flexDirection="column" gap="1xs">
-          ${yourItems.map(
-            item => html`
+          ${SwapApiController.state.myTokensWithBalance &&
+          Object.values(SwapApiController.state.myTokensWithBalance).map(
+            tokenInfo => html`
               <wui-token-list-item
-                name=${item.name}
-                symbol=${item.symbol}
-                price=${`$${item.price}`}
-                amount=${item.value}
-                imageSrc="https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b"
+                name=${tokenInfo.name}
+                symbol=${tokenInfo.symbol}
+                price=${`$${tokenInfo.decimals}`}
+                amount=${tokenInfo.balance}
+                imageSrc=${tokenInfo.logoURI}
+                @click=${() => this.onSelectToken(tokenInfo)}
               >
               </wui-token-list-item>
             `

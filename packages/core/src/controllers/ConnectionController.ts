@@ -2,7 +2,7 @@ import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
-import type { Connector, WcWallet } from '../utils/TypeUtil.js'
+import type { Connector, SendTransactionArgs, WcWallet } from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
@@ -15,6 +15,10 @@ export interface ConnectExternalOptions {
 export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
   disconnect: () => Promise<void>
+  signMessage: (message: string) => Promise<`0x${string}`>
+  parseTransaction: (calldata: `0x${string}`) => unknown
+  sendTransaction: (args: SendTransactionArgs) => Promise<{ hash: `0x${string}` }>
+  parseUnits: (value: string, decimals: number) => bigint
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>
   checkInstalled?: (ids?: string[]) => boolean
 }
@@ -73,6 +77,18 @@ export const ConnectionController = {
 
   async connectExternal(options: ConnectExternalOptions) {
     await this._getClient().connectExternal?.(options)
+  },
+
+  async signMessage(message: string) {
+    return this._getClient().signMessage(message)
+  },
+
+  parseUnits(value: string, decimals: number) {
+    return this._getClient().parseUnits(value, decimals)
+  },
+
+  async sendTransaction(args: SendTransactionArgs) {
+    return this._getClient().sendTransaction(args)
   },
 
   checkInstalled(ids?: string[]) {

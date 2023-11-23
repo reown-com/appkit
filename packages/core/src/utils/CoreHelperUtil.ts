@@ -191,9 +191,5 @@ export const CoreHelperUtil = {
 
       return v.toString(16)
     })
-  },
-
-  get1inchSwapApiUrl(chainId: number) {
-    return `https://api.1inch.dev/swap/v5.2/${chainId}`
   }
 }
