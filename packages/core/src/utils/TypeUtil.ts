@@ -168,8 +168,12 @@ export interface CoinbaseAmount {
 export interface CoinbaseTransaction {
   status: string
   purchaseCurrency: string
-  purchaseNetwork: string
-  paymentTotal: CoinbaseAmount
+  purchase_network: string
+  payment_total: CoinbaseAmount
+  payment_subtotal: CoinbaseAmount
+  created_at: string
+  purchase_currency: string
+  transaction_id: string
 }
 
 // -- OptionsController Types ---------------------------------------------------

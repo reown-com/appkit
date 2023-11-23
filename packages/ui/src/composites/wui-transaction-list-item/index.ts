@@ -41,7 +41,7 @@ export class WuiTransactionListItem extends LitElement {
         ></wui-transaction-visual>
         <wui-flex flexDirection="column" gap="3xs">
           <wui-text variant="paragraph-600" color="fg-100">
-            ${TransactionTypePastTense[this.type]}
+            ${TransactionTypePastTense[this.type] || this.type}
           </wui-text>
           <wui-flex class="description-container">
             ${this.templateDescription()} ${this.templateSecondDescription()}

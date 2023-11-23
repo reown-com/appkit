@@ -4,12 +4,25 @@ import { BlockchainApiController } from './BlockchainApiController.js'
 import { OptionsController } from './OptionsController.js'
 import { EventsController } from './EventsController.js'
 import { SnackController } from './SnackController.js'
+import type { CoinbaseTransaction } from '../utils/TypeUtil.js'
+import { CoinbaseApiController } from './CoinbaseApiController.js'
 
 // -- Types --------------------------------------------- //
-type TransactionByYearMap = Record<number, Transaction[]>
+export type GroupedTransaction =
+  | {
+      type: 'zerion'
+      value: Transaction
+    }
+  | {
+      type: 'coinbase'
+      value: CoinbaseTransaction
+    }
+
+type TransactionByYearMap = Record<number, GroupedTransaction[]>
 
 export interface TransactionsControllerState {
   transactions: Transaction[]
+  coinbaseTransactions: CoinbaseTransaction[]
   transactionsByYear: TransactionByYearMap
   loading: boolean
   empty: boolean
@@ -19,6 +32,7 @@ export interface TransactionsControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<TransactionsControllerState>({
   transactions: [],
+  coinbaseTransactions: [],
   transactionsByYear: {},
   loading: false,
   empty: false,
@@ -49,6 +63,12 @@ export const TransactionsController = {
         cursor: state.next
       })
 
+      const coinbaseResponse = await CoinbaseApiController.fetchTransactions({
+        accountAddress,
+        pageKey: '',
+        pageSize: 25
+      })
+
       const nonSpamTransactions = this.filterSpamTransactions(response.data)
       const filteredTransactions = [...state.transactions, ...nonSpamTransactions]
 
@@ -57,6 +77,10 @@ export const TransactionsController = {
       state.transactionsByYear = this.groupTransactionsByYear(
         state.transactionsByYear,
         nonSpamTransactions
+      )
+      state.transactionsByYear = this.groupCoinbaseTransactionsByYear(
+        state.transactionsByYear,
+        coinbaseResponse.transactions
       )
       state.empty = filteredTransactions.length === 0
       state.next = response.next ? response.next : undefined
@@ -87,7 +111,30 @@ export const TransactionsController = {
       if (!grouped[year]) {
         grouped[year] = []
       }
-      grouped[year]?.push(transaction)
+      grouped[year]?.push({
+        type: 'zerion',
+        value: transaction
+      })
+    })
+
+    return grouped
+  },
+
+  groupCoinbaseTransactionsByYear(
+    transactionsMap: TransactionByYearMap = {},
+    transactions: CoinbaseTransaction[] = []
+  ) {
+    const grouped: TransactionByYearMap = transactionsMap
+
+    transactions.forEach(transaction => {
+      const year = new Date(transaction.created_at).getFullYear()
+      if (!grouped[year]) {
+        grouped[year] = []
+      }
+      grouped[year]?.push({
+        type: 'coinbase',
+        value: transaction
+      })
     })
 
     return grouped

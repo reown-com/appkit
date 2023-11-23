@@ -4,13 +4,15 @@ import {
   AccountController,
   EventsController,
   OptionsController,
-  TransactionsController
+  TransactionsController,
+  type CoinbaseTransaction
 } from '@web3modal/core'
 import { TransactionUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import type { TransactionType } from '@web3modal/ui/src/utils/TypeUtil.js'
+import type { GroupedTransaction } from '@web3modal/core/dist/types/src/controllers/TransactionsController.js'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'last-transaction'
@@ -29,6 +31,8 @@ export class W3mTransactionsView extends LitElement {
   @state() private address: string | undefined = AccountController.state.address
 
   @state() private transactions = TransactionsController.state.transactions
+
+  @state() private coinbaseTransactions = TransactionsController.state.coinbaseTransactions
 
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
 
@@ -120,6 +124,24 @@ export class W3mTransactionsView extends LitElement {
     })
   }
 
+  private templateRenderCoinbaseTransaction(
+    transaction: CoinbaseTransaction,
+    isLastTransaction: boolean
+  ) {
+    const date = DateUtil.getRelativeDateFromNow(transaction.created_at)
+
+    return html`
+      <wui-transaction-list-item
+        date=${date}
+        type=${`${transaction.payment_total.value} ${transaction.payment_total.currency}`}
+        id=${isLastTransaction && this.next ? PAGINATOR_ID : ''}
+        status=${transaction.status}
+        .images=${[]}
+        .descriptions=${[transaction.payment_method]}
+      ></wui-transaction-list-item>
+    `
+  }
+
   private templateRenderTransaction(transaction: Transaction, isLastTransaction: boolean) {
     const { date, descriptions, direction, isAllNFT, images, status, transfers, type } =
       this.getTransactionListItemProps(transaction)
@@ -171,11 +193,14 @@ export class W3mTransactionsView extends LitElement {
     `
   }
 
-  private templateTransactions(transactions: Transaction[], isLastGroup: boolean) {
+  private templateTransactions(transactions: GroupedTransaction[], isLastGroup: boolean) {
     return transactions.map((transaction, index) => {
       const isLastTransaction = isLastGroup && index === transactions.length - 1
 
-      return html`${this.templateRenderTransaction(transaction, isLastTransaction)}`
+      if (transaction.type === 'coinbase') {
+        return this.templateRenderCoinbaseTransaction(transaction.value, isLastTransaction)
+      }
+      return html`${this.templateRenderTransaction(transaction.value, isLastTransaction)}`
     })
   }
 
