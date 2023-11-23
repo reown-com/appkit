@@ -46,10 +46,9 @@ export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProvider
         throw new SwitchChainError(new Error('chain not found on connector.'))
       }
       const user = await this.provider.switchNetowrk(chainId)
-      const address = await this.getAccount()
-      if (user?.smartAccountAddress && user.smartAccountAddress !== address) {
+      if (user) {
         this.emit('change', {
-          account: user.smartAccountAddress as `0x${string}`
+          account: (user.smartAccountAddress ?? user.address) as `0x${string}`
         })
       }
 
