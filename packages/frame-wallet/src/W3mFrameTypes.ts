@@ -12,7 +12,8 @@ import {
   RpcResponse,
   RpcEthSendTransactionRequest,
   FrameSwitchNetworkSuccessResponse,
-  FrameSession
+  FrameSession,
+  FrameSmartAccountActivateSuccessResponse
 } from './W3mFrameSchema.js'
 
 export namespace W3mFrameTypes {
@@ -32,6 +33,9 @@ export namespace W3mFrameTypes {
     FrameGetUserResponse: z.infer<typeof FrameGetUserResponse>
     FrameIsConnectedResponse: z.infer<typeof FrameIsConnectedResponse>
     FrameSwitchNetworkSuccessResponse: z.infer<typeof FrameSwitchNetworkSuccessResponse>
+    FrameSmartAccountActivateSuccessResponse: z.infer<
+      typeof FrameSmartAccountActivateSuccessResponse
+    >
   }
 
   export interface Network {

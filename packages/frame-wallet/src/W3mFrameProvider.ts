@@ -15,6 +15,9 @@ type GetChainIdResolver = Resolver<W3mFrameTypes.Responses['FrameGetChainIdRespo
 type SwitchChainResolver = Resolver<
   W3mFrameTypes.Responses['FrameSwitchNetworkSuccessResponse'] | undefined
 >
+type SmartAccountActivateResolver = Resolver<
+  W3mFrameTypes.Responses['FrameSmartAccountActivateSuccessResponse']
+>
 type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>
 
 // -- Provider --------------------------------------------------------
@@ -38,6 +41,8 @@ export class W3mFrameProvider {
   private getChainIdResolver: GetChainIdResolver = undefined
 
   private switchChainResolver: SwitchChainResolver = undefined
+
+  private smartAccountActivateResolver: SmartAccountActivateResolver = undefined
 
   private rpcRequestResolver: RpcRequestResolver = undefined
 
@@ -87,6 +92,10 @@ export class W3mFrameProvider {
           return this.onRpcRequestError(event)
         case W3mFrameConstants.FRAME_SESSION_UPDATE:
           return this.onSessionUpdate(event)
+        case W3mFrameConstants.FRAME_SMART_ACCOUNT_ACTIVATE_SUCCESS:
+          return this.onSmartAccountActivateSuccess(event)
+        case W3mFrameConstants.FRAME_SMART_ACCOUNT_ACTIVATE_ERROR:
+          return this.onSmartAccountActivateError(event)
         default:
           return null
       }
@@ -141,6 +150,19 @@ export class W3mFrameProvider {
     return new Promise<W3mFrameTypes.Responses['FrameGetChainIdResponse']>((resolve, reject) => {
       this.getChainIdResolver = { resolve, reject }
     })
+  }
+
+  public async activateSmartAccount() {
+    await this.w3mFrame.frameLoadPromise
+    this.w3mFrame.events.postAppEvent({
+      type: W3mFrameConstants.APP_SMART_ACCOUNT_ACTIVATE
+    })
+
+    return new Promise<W3mFrameTypes.Responses['FrameSmartAccountActivateSuccessResponse']>(
+      (resolve, reject) => {
+        this.smartAccountActivateResolver = { resolve, reject }
+      }
+    )
   }
 
   // -- Provider Methods ------------------------------------------------
@@ -336,6 +358,18 @@ export class W3mFrameProvider {
     if (session) {
       await this.setW3mDbAuthSession(session)
     }
+  }
+
+  private onSmartAccountActivateSuccess(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SMART_ACCOUNT_ACTIVATE_SUCCESS' }>
+  ) {
+    this.smartAccountActivateResolver?.resolve(event.payload)
+  }
+
+  private onSmartAccountActivateError(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SMART_ACCOUNT_ACTIVATE_ERROR' }>
+  ) {
+    this.smartAccountActivateResolver?.reject(event.payload.message)
   }
 
   // -- Private Methods ------------------------------------------------

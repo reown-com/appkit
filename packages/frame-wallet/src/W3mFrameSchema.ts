@@ -63,6 +63,13 @@ export const FrameSwitchNetworkSuccessResponse = z.object({
   smartAccountAddress: z.optional(z.string()),
   isSmartAccountActivated: z.optional(z.boolean())
 })
+export const FrameSmartAccountActivateSuccessResponse = z.object({
+  address: z.string(),
+  email: z.string().email(),
+  chainId: z.number(),
+  smartAccountAddress: z.optional(z.string()),
+  isSmartAccountActivated: z.optional(z.boolean())
+})
 
 export const W3mFrameSchema = {
   // -- App Events -----------------------------------------------------------
@@ -106,7 +113,9 @@ export const W3mFrameSchema = {
         type: zType('APP_RPC_ETH_ETH_SIGN_TYPED_DATA_V4'),
         payload: RpcEthSignTypedDataV4
       })
-    ),
+    )
+    .or(z.object({ type: zType('APP_SMART_ACCOUNT_ACTIVATE') })),
+
   // -- Frame Events ---------------------------------------------------------
   frameEvent: z
     .object({ type: zType('FRAME_SWITCH_NETWORK_ERROR'), payload: zError })
@@ -153,4 +162,13 @@ export const W3mFrameSchema = {
     .or(z.object({ type: zType('FRAME_RPC_REQUEST_SUCCESS'), payload: RpcResponse }))
 
     .or(z.object({ type: zType('FRAME_SESSION_UPDATE'), payload: FrameSession }))
+
+    .or(z.object({ type: zType('FRAME_SMART_ACCOUNT_ACTIVATE_ERROR'), payload: zError }))
+
+    .or(
+      z.object({
+        type: zType('FRAME_SMART_ACCOUNT_ACTIVATE_SUCCESS'),
+        payload: FrameSmartAccountActivateSuccessResponse
+      })
+    )
 }
