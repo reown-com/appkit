@@ -14,7 +14,8 @@ import {
   optimism,
   polygon,
   zkSync,
-  zora
+  zora,
+  sepolia
 } from 'wagmi/chains'
 import { WagmiConnectButton } from '../../components/Wagmi/WagmiConnectButton'
 import { NetworksButton } from '../../components/NetworksButton'
@@ -39,7 +40,8 @@ const chains = [
   zora,
   base,
   celo,
-  aurora
+  aurora,
+  sepolia
 ]
 
 const metadata = {

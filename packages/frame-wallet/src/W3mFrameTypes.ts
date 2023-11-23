@@ -11,6 +11,7 @@ import {
   RpcPersonalSignRequest,
   RpcResponse,
   RpcEthSendTransactionRequest,
+  FrameSwitchNetworkSuccessResponse,
   FrameSession
 } from './W3mFrameSchema.js'
 
@@ -30,6 +31,7 @@ export namespace W3mFrameTypes {
     FrameGetChainIdResponse: z.infer<typeof FrameGetChainIdResponse>
     FrameGetUserResponse: z.infer<typeof FrameGetUserResponse>
     FrameIsConnectedResponse: z.infer<typeof FrameIsConnectedResponse>
+    FrameSwitchNetworkSuccessResponse: z.infer<typeof FrameSwitchNetworkSuccessResponse>
   }
 
   export interface Network {

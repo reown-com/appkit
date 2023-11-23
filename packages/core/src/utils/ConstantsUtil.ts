@@ -5,8 +5,7 @@ export const ConstantsUtil = {
 
   ONE_SEC_MS: 1_000,
 
-  SECURE_SITE_DASHBOARD:
-    'https://secure-web3modal-git-preview-3-walletconnect1.vercel.app/dashboard',
+  SECURE_SITE_DASHBOARD: 'http://localhost:3010/dashboard',
 
   RESTRICTED_TIMEZONES: [
     'ASIA/SHANGHAI',

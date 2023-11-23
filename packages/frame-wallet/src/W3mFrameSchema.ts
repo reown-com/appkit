@@ -18,7 +18,9 @@ export const FrameConnectEmailResponse = z.object({
 export const FrameGetUserResponse = z.object({
   address: z.string(),
   email: z.string().email(),
-  chainId: z.number()
+  chainId: z.number(),
+  smartAccountAddress: z.optional(z.string()),
+  isSmartAccountActivated: z.optional(z.boolean())
 })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
@@ -53,6 +55,10 @@ export const FrameSession = z.object({
   STORE_KEY_PRIVATE_KEY: z.any(),
   STORE_KEY_PUBLIC_JWK: z.any(),
   rt: z.string()
+})
+export const FrameSwitchNetworkSuccessResponse = z.object({
+  smartAccountAddress: z.optional(z.string()),
+  isSmartAccountActivated: z.optional(z.boolean())
 })
 
 export const W3mFrameSchema = {
@@ -102,7 +108,12 @@ export const W3mFrameSchema = {
   frameEvent: z
     .object({ type: zType('FRAME_SWITCH_NETWORK_ERROR'), payload: zError })
 
-    .or(z.object({ type: zType('FRAME_SWITCH_NETWORK_SUCCESS') }))
+    .or(
+      z.object({
+        type: zType('FRAME_SWITCH_NETWORK_SUCCESS'),
+        payload: z.optional(FrameSwitchNetworkSuccessResponse)
+      })
+    )
 
     .or(z.object({ type: zType('FRAME_CONNECT_EMAIL_ERROR'), payload: zError }))
 
