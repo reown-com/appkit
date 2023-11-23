@@ -57,6 +57,9 @@ export const FrameSession = z.object({
   rt: z.string()
 })
 export const FrameSwitchNetworkSuccessResponse = z.object({
+  address: z.string(),
+  email: z.string().email(),
+  chainId: z.number(),
   smartAccountAddress: z.optional(z.string()),
   isSmartAccountActivated: z.optional(z.boolean())
 })
