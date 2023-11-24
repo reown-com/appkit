@@ -13,12 +13,18 @@ const client: ConnectionControllerClient = {
   },
   disconnect: async () => Promise.resolve(),
   connectExternal: async _id => Promise.resolve(),
-  checkInstalled: _id => true
+  checkInstalled: _id => true,
+  parseUnits: value => BigInt(value),
+  formatUnits: value => value.toString(),
+  sendTransaction: () => Promise.resolve({ hash: '0x' })
 }
 
 const partialClient: ConnectionControllerClient = {
   connectWalletConnect: async () => Promise.resolve(),
-  disconnect: async () => Promise.resolve()
+  disconnect: async () => Promise.resolve(),
+  parseUnits: value => BigInt(value),
+  formatUnits: value => value.toString(),
+  sendTransaction: () => Promise.resolve({ hash: '0x' })
 }
 
 // -- Tests --------------------------------------------------------------------

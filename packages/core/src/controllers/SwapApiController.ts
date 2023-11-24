@@ -10,6 +10,7 @@ import { ConnectionController } from './ConnectionController.js'
 // -- Types --------------------------------------------- //
 export interface SwapApiControllerState {
   initialLoading?: boolean
+  isTransactionPending?: boolean
   sourceToken?: TokenInfo
   sourceTokenAddress?: `0x${string}`
   toToken?: TokenInfo
@@ -43,6 +44,7 @@ export interface TokenInfo {
 
 export interface TokenInfoWithBalance extends TokenInfo {
   balance: string
+  price: string
 }
 
 interface TransactionData {
@@ -102,7 +104,8 @@ const state = proxy<SwapApiControllerState>({
   tokens: undefined,
   foundTokens: undefined,
   myTokensWithBalance: undefined,
-  swapErrorMessage: undefined
+  swapErrorMessage: undefined,
+  isTransactionPending: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -172,6 +175,14 @@ export const SwapApiController = {
 
   clearFoundTokens() {
     state.foundTokens = undefined
+  },
+
+  clearTokens() {
+    state.tokens = undefined
+  },
+
+  clearMyTokens() {
+    state.myTokensWithBalance = undefined
   },
 
   clearError() {
@@ -349,20 +360,43 @@ export const SwapApiController = {
       {}
     )
 
+    const tokenAddresses = Object.keys(nonEmptyBalances)
+
+    if (!tokenAddresses?.length) {
+      state.initialLoading = false
+
+      return undefined
+    }
+
     const tokensPath = `${api.baseUrl}/token/v1.2/${chainId}/custom`
-    const tokens = await api.get<Record<string, TokenInfo>>({
-      path: tokensPath,
-      params: {
-        addresses: Object.keys(nonEmptyBalances).join(',')
-      }
-    })
+    const tokensSpotPricePath = `${api.baseUrl}/price/v1.1/${chainId}`
+
+    const [tokens, tokensPrice] = await Promise.all([
+      api.get<Record<string, TokenInfo>>({
+        path: tokensPath,
+        params: {
+          addresses: tokenAddresses.join(',')
+        }
+      }),
+      api.post<Record<string, string>>({
+        path: tokensSpotPricePath,
+        body: {
+          tokens: tokenAddresses,
+          currency: 'USD'
+        },
+        headers: {
+          'content-type': 'application/json'
+        }
+      })
+    ])
 
     const mergedTokensWithBalances = Object.entries(tokens).reduce<
       Record<string, TokenInfoWithBalance>
     >((mergedTokens, [tokenAddress, tokenInfo], i) => {
       mergedTokens[tokenAddress] = {
         ...tokenInfo,
-        balance: balances[tokenAddress] ?? '0'
+        balance: balances[tokenAddress] ?? '0',
+        price: tokensPrice[tokenAddress] ?? '0'
       }
       if (i === 0) {
         this.setSourceToken(tokenInfo)
@@ -400,6 +434,7 @@ export const SwapApiController = {
   },
 
   async swapTokens() {
+    state.isTransactionPending = true
     const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
 
     const { fromAddress } = this._getSwapParams()
@@ -415,10 +450,14 @@ export const SwapApiController = {
           gasPrice: BigInt(state.swapTransaction.gasPrice),
           value: BigInt(state.swapTransaction.value)
         })
+
+        await this.getMyTokensWithBalance({ forceRefetch: true })
       } catch (error: unknown) {
         if (error instanceof Error) {
           state.swapErrorMessage = error.message
         }
+      } finally {
+        state.isTransactionPending = false
       }
     }
   },

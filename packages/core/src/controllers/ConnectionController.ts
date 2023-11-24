@@ -15,9 +15,7 @@ export interface ConnectExternalOptions {
 export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
   disconnect: () => Promise<void>
-  signMessage: (message: string) => Promise<`0x${string}`>
-  parseTransaction: (calldata: `0x${string}`) => unknown
-  sendTransaction: (args: SendTransactionArgs) => Promise<{ hash: `0x${string}` }>
+  sendTransaction: (args: SendTransactionArgs) => Promise<{ hash?: string }>
   parseUnits: (value: string, decimals: number) => bigint
   formatUnits: (value: bigint, decimals: number) => string
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>
@@ -78,10 +76,6 @@ export const ConnectionController = {
 
   async connectExternal(options: ConnectExternalOptions) {
     await this._getClient().connectExternal?.(options)
-  },
-
-  async signMessage(message: string) {
-    return this._getClient().signMessage(message)
   },
 
   parseUnits(value: string, decimals: number) {

@@ -47,9 +47,11 @@ export class W3mSwapSelectTokenView extends LitElement {
   private templateListTokens() {
     return html`
       <wui-flex class="token-list" flexDirection="column">
-        <wui-flex justifyContent="flex-start" padding="s">
+        ${SwapApiController.state.myTokensWithBalance &&
+        html`<wui-flex justifyContent="flex-start" padding="s">
           <wui-text variant="paragraph-500" color="fg-200">Your tokens</wui-text>
-        </wui-flex>
+        </wui-flex>`}
+
         <wui-flex flexDirection="column" gap="1xs">
           ${SwapApiController.state.myTokensWithBalance &&
           Object.values(SwapApiController.state.myTokensWithBalance).map(
@@ -57,7 +59,7 @@ export class W3mSwapSelectTokenView extends LitElement {
               <wui-token-list-item
                 name=${tokenInfo.name}
                 symbol=${tokenInfo.symbol}
-                price=${0}
+                price=${tokenInfo.price}
                 amount=${ConnectionController.formatUnits(
                   BigInt(tokenInfo.balance),
                   tokenInfo.decimals
@@ -79,8 +81,6 @@ export class W3mSwapSelectTokenView extends LitElement {
               <wui-token-list-item
                 name=${tokenInfo.name}
                 symbol=${tokenInfo.symbol}
-                price=${0}
-                amount=${0}
                 imageSrc=${tokenInfo.logoURI}
                 @click=${() => this.onSelectToken(tokenInfo)}
               >

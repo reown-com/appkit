@@ -10,9 +10,9 @@ import {
   switchNetwork,
   watchAccount,
   watchNetwork,
-  signMessage,
   sendTransaction,
-  prepareSendTransaction
+  prepareSendTransaction,
+  waitForTransaction
 } from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import type {
@@ -32,7 +32,7 @@ import type { EIP6963Connector } from './connectors/EIP6963Connector.js'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/utils'
 import { getCaipDefaultChain } from './utils/helpers.js'
 import { WALLET_CHOICE_KEY } from './utils/constants.js'
-import { formatUnits, parseTransaction, parseUnits } from 'viem'
+import { formatUnits, parseUnits } from 'viem'
 import type { SendTransactionArgs } from '@web3modal/core'
 
 // -- Types ---------------------------------------------------------------------
@@ -191,8 +191,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
       disconnect,
 
-      signMessage: (message: string) => signMessage({ message }),
-
       sendTransaction: async ({
         data,
         to,
@@ -213,10 +211,12 @@ export class Web3Modal extends Web3ModalScaffold {
           type: 'legacy'
         })
 
-        return await sendTransaction(preparedTransaction)
-      },
+        const tx = await sendTransaction(preparedTransaction)
 
-      parseTransaction: (calldata: `0x${string}`) => parseTransaction(calldata),
+        await waitForTransaction({ chainId, hash: tx.hash, timeout: 25000 })
+
+        return tx
+      },
 
       parseUnits,
 

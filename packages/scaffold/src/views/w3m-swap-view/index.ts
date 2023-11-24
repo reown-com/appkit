@@ -20,6 +20,8 @@ export class W3mSwapView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private initialLoading = SwapApiController.state.initialLoading
 
+  @state() private isTransactionPending = SwapApiController.state.isTransactionPending
+
   @state() private loading = SwapApiController.state.loading
 
   @state() private sourceToken = SwapApiController.state.sourceToken
@@ -45,6 +47,8 @@ export class W3mSwapView extends LitElement {
         this.caipNetworkId = newCaipNetwork?.id
         SwapApiController.setSourceToken(undefined)
         SwapApiController.setToToken(undefined)
+        SwapApiController.clearMyTokens()
+        SwapApiController.clearTokens()
         if (!this.initialLoading) {
           SwapApiController.getMyTokensWithBalance({ forceRefetch: true })
           SwapApiController.getTokenList({ forceRefetch: true })
@@ -61,6 +65,7 @@ export class W3mSwapView extends LitElement {
           if (this.initialLoading !== newState.initialLoading) {
             this.initialLoading = newState.initialLoading
           }
+          this.isTransactionPending = newState.isTransactionPending
           if (this.sourceTokenAmount !== newState.sourceTokenAmount) {
             this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
           }
@@ -148,7 +153,9 @@ export class W3mSwapView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="s">
-        ${this.initialLoading ? this.templateLoading() : this.templateSwap()}
+        ${this.initialLoading || this.isTransactionPending
+          ? this.templateLoading()
+          : this.templateSwap()}
       </wui-flex>
     `
   }
@@ -225,7 +232,9 @@ export class W3mSwapView extends LitElement {
         ?border=${true}
         borderColor="wui-color-bg-125"
       ></wui-icon-box>
-      <wui-text align="center" variant="paragraph-500" color="fg-100">Loading</wui-text>
+      <wui-text align="center" variant="paragraph-500" color="fg-100"
+        >${this.isTransactionPending ? 'Pending' : 'Loading'}</wui-text
+      >
       <wui-loading-hexagon></wui-loading-hexagon>
     </wui-flex>`
   }
