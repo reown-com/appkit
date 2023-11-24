@@ -164,6 +164,8 @@ export class W3mSwapView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateSwap() {
+    const haveNoTokenSelected = !this.toToken || !this.sourceToken
+
     return html`
       <wui-flex flexDirection="column" gap="s">
         <wui-flex flexDirection="column" alignItems="center" gap="xs" class="swap-inputs-container">
@@ -174,9 +176,17 @@ export class W3mSwapView extends LitElement {
           ${this.templateDetails()}
         </wui-flex>
         <wui-flex gap="xs">
-          <wui-button class="action-button" variant="fullWidth" @click=${this.onSwap.bind(this)}>
-            Enter amount
-          </wui-button>
+          ${haveNoTokenSelected
+            ? html` <wui-button disabled class="action-button" @click=${this.onSwap.bind(this)}>
+                Select token
+              </wui-button>`
+            : html` <wui-button
+                class="action-button"
+                variant="fullWidth"
+                @click=${this.onSwap.bind(this)}
+              >
+                Preview swap
+              </wui-button>`}
         </wui-flex>
       </wui-flex>
     `
