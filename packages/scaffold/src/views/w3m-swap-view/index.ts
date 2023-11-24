@@ -49,10 +49,7 @@ export class W3mSwapView extends LitElement {
         SwapApiController.setToToken(undefined)
         SwapApiController.clearMyTokens()
         SwapApiController.clearTokens()
-        if (!this.initialLoading) {
-          SwapApiController.getMyTokensWithBalance({ forceRefetch: true })
-          SwapApiController.getTokenList({ forceRefetch: true })
-        }
+        SwapApiController.getTokenList({ forceRefetch: true })
       }
     })
 
@@ -94,7 +91,6 @@ export class W3mSwapView extends LitElement {
 
   public override firstUpdated() {
     if (!this.initialLoading) {
-      SwapApiController.getMyTokensWithBalance()
       SwapApiController.getTokenList()
     }
   }

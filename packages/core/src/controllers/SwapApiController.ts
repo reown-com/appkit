@@ -334,6 +334,10 @@ export const SwapApiController = {
   },
 
   async getMyTokensWithBalance(options?: { forceRefetch?: boolean }) {
+    if (state.initialLoading) {
+      return state.myTokensWithBalance
+    }
+
     if (state.myTokensWithBalance && !options?.forceRefetch) {
       return state.myTokensWithBalance
     }
