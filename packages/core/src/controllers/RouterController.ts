@@ -25,6 +25,7 @@ export interface RouterControllerState {
     connector?: Connector
     wallet?: WcWallet
     network?: CaipNetwork
+    target?: 'sourceToken' | 'toToken'
   }
 }
 

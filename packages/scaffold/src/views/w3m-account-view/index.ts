@@ -20,7 +20,7 @@ export class W3mAccountView extends LitElement {
   public static override styles = styles
 
   // -- Members -------------------------------------------- //
-  private usubscribe: (() => void)[] = []
+  private unsubscribe: (() => void)[] = []
 
   private readonly networkImages = AssetController.state.networkImages
 
@@ -41,7 +41,7 @@ export class W3mAccountView extends LitElement {
 
   public constructor() {
     super()
-    this.usubscribe.push(
+    this.unsubscribe.push(
       ...[
         AccountController.subscribe(val => {
           if (val.address) {
@@ -64,7 +64,7 @@ export class W3mAccountView extends LitElement {
   }
 
   public override disconnectedCallback() {
-    this.usubscribe.forEach(unsubscribe => unsubscribe())
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //

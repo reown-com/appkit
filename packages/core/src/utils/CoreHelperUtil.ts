@@ -191,11 +191,5 @@ export const CoreHelperUtil = {
 
       return v.toString(16)
     })
-  },
-
-  get1inchApiUrl(chainId: number) {
-    return CoreHelperUtil.isRestrictedRegion()
-      ? `https://swap.walletconnect.org/${chainId}`
-      : `https://swap.walletconnect.com/${chainId}`
   }
 }

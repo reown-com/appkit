@@ -16,5 +16,25 @@ export const ConstantsUtil = {
     'ASIA/MACAO',
     'ASIA/BEIJING',
     'ASIA/HARBIN'
+  ],
+
+  POPULAR_TOKENS: [
+    'ETH',
+    'UNI',
+    '1INCH',
+    'AAVE',
+    'GNO',
+    'WBTC',
+    'DAI',
+    'WETH',
+    'USDC',
+    'USDT',
+    'ARB',
+    'BAL',
+    'BICO',
+    'CRV',
+    'ENS',
+    'MATIC',
+    'OP'
   ]
 }
