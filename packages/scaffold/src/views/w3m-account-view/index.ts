@@ -100,7 +100,7 @@ export class W3mAccountView extends LitElement {
         alignItems="center"
         gap="l"
       >
-        <wui-avatar
+          <wui-avatar
           alt=${this.address}
           address=${this.address}
           imageSrc=${ifDefined(this.profileImage === null ? undefined : this.profileImage)}
@@ -130,10 +130,9 @@ export class W3mAccountView extends LitElement {
             ></wui-icon-link>
           </wui-flex>
           <wui-flex gap="s" flexDirection="column" alignItems="center">
-            <wui-text variant="paragraph-500" color="fg-200">
+            <wui-text variant="2xl-500" color="fg-100">
               ${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}
             </wui-text>
-            ${this.explorerBtnTemplate()}
           </wui-flex>
         </wui-flex>
       </wui-flex>
