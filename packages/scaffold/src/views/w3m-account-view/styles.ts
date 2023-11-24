@@ -21,6 +21,39 @@ export default css`
     max-height: 200px;
   }
 
+  .account-button {
+    width: auto;
+    height. 48px;
+    padding: var(--wui-spacing-xs);
+    padding-right: var(--wui-spacing-s);
+    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-002);
+    border-radius: 24px;
+  }
+
+  .account-button:hover {
+    background-color: var(--wui-gray-glass-005);
+  }
+
+  .avatar-container {
+    position: relative;
+  }
+
+  wui-avatar.avatar {
+    width: 32px;
+    height: 32px;
+    box-shadow: 0 0 0 2px var(--wui-gray-glass-005);
+  }
+
+  wui-avatar.network-avatar {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    left: 100%;
+    top: 100%;
+    transform: translate(-75%, -75%);
+    box-shadow: 0 0 0 2px var(--wui-gray-glass-005);
+  }
+
   .account-links {
     display: flex;
     justify-content: space-between;
