@@ -50,6 +50,9 @@ export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProvider
         this.emit('change', {
           account: (user.smartAccountAddress ?? user.address) as `0x${string}`
         })
+        const id = chain.id
+        const unsupported = this.isChainUnsupported(id)
+        this.emit('change', { chain: { id, unsupported } })
       }
 
       return chain

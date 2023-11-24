@@ -183,7 +183,7 @@ export class W3mAccountView extends LitElement {
               @click=${this.onActivateSmartAccount.bind(this)}
               label="Activate smart account"
               description="Activate your smart account to enjoy all the features of your wallet"
-              icon="wallet"
+              icon="mail"
             ></wui-notice-card>
           `
         : null}
