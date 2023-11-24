@@ -8,6 +8,7 @@ import type {
   LibraryOptions,
   NetworkControllerClient,
   PublicStateControllerState,
+  SendTransactionArgs,
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
@@ -261,6 +262,38 @@ export class Web3Modal extends Web3ModalScaffold {
         })
 
         return signature as `0x${string}`
+      },
+
+      parseUnits: (value: string, decimals: number) =>
+        ethers.utils.parseUnits(value, decimals).toBigInt(),
+
+      formatUnits: (value: bigint, decimals: number) => ethers.utils.formatUnits(value, decimals),
+
+      sendTransaction: async ({
+        address,
+        chainId,
+        data,
+        gasPrice,
+        to,
+        value,
+        gas
+      }: SendTransactionArgs) => {
+        const provider = ProviderController.state.provider
+        const signer = provider?.getSigner()
+
+        const tx = await signer?.sendTransaction({
+          chainId,
+          data,
+          from: address,
+          gasPrice,
+          value,
+          to,
+          gasLimit: gas
+        })
+
+        await tx?.wait()
+
+        return { hash: tx?.hash }
       }
     }
 

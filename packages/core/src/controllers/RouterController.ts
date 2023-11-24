@@ -45,6 +45,7 @@ export interface RouterControllerState {
     network?: CaipNetwork
     email?: string
     newEmail?: string
+    target?: 'sourceToken' | 'toToken'
   }
 }
 

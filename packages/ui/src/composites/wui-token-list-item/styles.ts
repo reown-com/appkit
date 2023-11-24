@@ -2,6 +2,7 @@ import { css } from 'lit'
 
 export default css`
   :host > wui-flex {
+    cursor: pointer;
     column-gap: var(--wui-spacing-s);
     padding: var(--wui-spacing-s);
     padding-right: var(--wui-spacing-l);
