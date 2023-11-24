@@ -46,6 +46,10 @@ export class W3mFrameProvider {
 
   private rpcRequestResolver: RpcRequestResolver = undefined
 
+  public isSmartAccountActivated = false
+
+  public isSmartAccount = false
+
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
     this.w3mStorage = createW3mFrameStorage('Web3ModalAuthDB', 'Web3ModalAuth')
@@ -284,6 +288,8 @@ export class W3mFrameProvider {
   private onConnectSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_USER_SUCCESS' }>
   ) {
+    this.isSmartAccountActivated = Boolean(event.payload.isSmartAccountActivated)
+    this.isSmartAccount = Boolean(event.payload.smartAccountAddress)
     this.connectResolver?.resolve(event.payload)
   }
 
@@ -330,6 +336,8 @@ export class W3mFrameProvider {
   private onSwitchChainSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SWITCH_NETWORK_SUCCESS' }>
   ) {
+    this.isSmartAccountActivated = Boolean(event.payload?.isSmartAccountActivated)
+    this.isSmartAccount = Boolean(event.payload?.smartAccountAddress)
     this.switchChainResolver?.resolve(event.payload)
   }
 

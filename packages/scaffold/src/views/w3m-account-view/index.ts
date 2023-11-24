@@ -168,12 +168,25 @@ export class W3mAccountView extends LitElement {
   // -- Private ------------------------------------------- //
   private emailCardTemplate() {
     const type = StorageUtil.getConnectedConnector()
-    const isEmail = this.connectors.find(c => c.type === 'EMAIL')
-    if (!isEmail || type !== 'EMAIL') {
+    const emailConnector = this.connectors.find(c => c.type === 'EMAIL')
+    if (!emailConnector || type !== 'EMAIL') {
       return null
     }
+    // @ts-expect-error Exists
+    const { isSmartAccountActivated, isSmartAccount } = emailConnector.provider
+    const showSmartAccountActivate = isSmartAccount && !isSmartAccountActivated
 
     return html`
+      ${showSmartAccountActivate
+        ? html`
+            <wui-notice-card
+              @click=${this.onActivateSmartAccount.bind(this)}
+              label="Activate smart account"
+              description="Activate your smart account to enjoy all the features of your wallet"
+              icon="wallet"
+            ></wui-notice-card>
+          `
+        : null}
       <wui-notice-card
         @click=${this.onGoToSecureSite.bind(this)}
         label="Enjoy all your wallet potential"
@@ -250,12 +263,14 @@ export class W3mAccountView extends LitElement {
     }
   }
 
-  private async onGoToSecureSite() {
-    const isEmail = this.connectors.find(c => c.type === 'EMAIL')
-    // @ts-expect-error Method exists on email provider
-    await isEmail?.provider.activateSmartAccount()
-
+  private onGoToSecureSite() {
     CoreHelperUtil.openHref(ConstantsUtil.SECURE_SITE_DASHBOARD, '_blank')
+  }
+
+  private async onActivateSmartAccount() {
+    const emailConnector = this.connectors.find(c => c.type === 'EMAIL')
+    // @ts-expect-error Method exists on email provider
+    await emailConnector?.provider.activateSmartAccount()
   }
 }
 
