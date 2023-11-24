@@ -9,7 +9,9 @@ import {
   CoreHelperUtil,
   NetworkController
 } from '@web3modal/core'
+
 type Target = 'sourceToken' | 'toToken'
+
 @customElement('w3m-swap-view')
 export class W3mSwapView extends LitElement {
   public static override styles = styles
@@ -38,12 +40,6 @@ export class W3mSwapView extends LitElement {
   @state() private caipNetworkId = NetworkController.state.caipNetwork?.id
 
   @state() private detailsOpen = false
-
-  @state() private fromInputFocus = false
-
-  @state() private toInputFocus = false
-
-  @state() private networkSrc?: string
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -117,7 +113,9 @@ export class W3mSwapView extends LitElement {
   private onInputChange(event: InputEvent) {
     const inputElement = event.target as HTMLElement
     const input = this.getInputElement(inputElement)
+
     SwapApiController.clearError()
+
     if (input) {
       SwapApiController.setSourceTokenAmount(input.value)
       this.onDebouncedGetSwapCalldata()
@@ -126,7 +124,7 @@ export class W3mSwapView extends LitElement {
 
   private onDebouncedGetSwapCalldata = CoreHelperUtil.debounce(async () => {
     await SwapApiController.getTokenSwapInfo()
-  })
+  }, 2000)
 
   private async onSwap() {
     await SwapApiController.swapTokens()
@@ -238,6 +236,7 @@ export class W3mSwapView extends LitElement {
       .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
       ?disabled=${this.loading && target === 'toToken'}
       .onSelectToken=${this.onSelectToken.bind(target)}
+      .onChange=${this.onInputChange.bind(this)}
     ></wui-swap-input>`
   }
 
