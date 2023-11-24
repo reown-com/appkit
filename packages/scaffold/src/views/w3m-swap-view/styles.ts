@@ -57,35 +57,6 @@ export default css`
     cursor: pointer;
   }
 
-  .token-select-button-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .token-select-button-container button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--wui-spacing-xxs);
-    padding: var(--wui-spacing-xs);
-    height: 40px;
-    border: none;
-    border-radius: 80px;
-    background: var(--wui-gray-glass-002);
-    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-002);
-    cursor: pointer;
-    transition: background 0.2s linear;
-  }
-
-  .token-select-button-container button:hover {
-    background: var(--wui-gray-glass-005);
-  }
-
-  .details-container {
-  }
-
   .details-container > wui-flex {
     background: var(--wui-gray-glass-002);
     border-radius: var(--wui-border-radius-xxs);

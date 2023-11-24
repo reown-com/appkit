@@ -9,6 +9,7 @@ import {
   CoreHelperUtil,
   NetworkController
 } from '@web3modal/core'
+import type { TokenInfo } from '@web3modal/core/src/controllers/SwapApiController.js'
 
 type Target = 'sourceToken' | 'toToken'
 
@@ -166,8 +167,8 @@ export class W3mSwapView extends LitElement {
     return html`
       <wui-flex flexDirection="column" gap="s">
         <wui-flex flexDirection="column" alignItems="center" gap="xs" class="swap-inputs-container">
-          ${this.templateTokenInput('sourceToken')} ${this.templateTokenInput('toToken')}
-          ${this.templateReplaceTokensButton()}
+          ${this.templateTokenInput('sourceToken', this.sourceToken)}
+          ${this.templateTokenInput('toToken', this.toToken)} ${this.templateReplaceTokensButton()}
         </wui-flex>
         <wui-flex flexDirection="column" alignItems="center" gap="xs" class="details-container">
           ${this.templateDetails()}
@@ -231,12 +232,13 @@ export class W3mSwapView extends LitElement {
     </wui-flex>`
   }
 
-  private templateTokenInput(target: Target) {
+  private templateTokenInput(target: Target, token: TokenInfo | undefined) {
     return html`<wui-swap-input
       .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
       ?disabled=${this.loading && target === 'toToken'}
-      .onSelectToken=${this.onSelectToken.bind(target)}
       .onChange=${this.onInputChange.bind(this)}
+      target=${target}
+      .token=${token}
     ></wui-swap-input>`
   }
 
@@ -273,10 +275,10 @@ export class W3mSwapView extends LitElement {
               </wui-flex>
               <wui-flex flexDirection="column" gap="xs">
                 <wui-flex justifyContent="space-between" class="details-row">
-                  <wui-text variant="small-400" color="fg-150"
-                    >Fee is paid to Ethereum Network to process your transaction. This must be paid
-                    in ETH. Learn more</wui-text
-                  >
+                  <wui-text variant="small-400" color="fg-150">
+                    Fee is paid to Ethereum Network to process your transaction. This must be paid
+                    in ETH. Learn more
+                  </wui-text>
                 </wui-flex>
               </wui-flex>
             </wui-flex>`
