@@ -26,6 +26,7 @@ export type TextType =
   | 'small-600'
   | 'tiny-500'
   | 'tiny-600'
+  | '2xl-500'
 
 export type TextAlign = 'center' | 'left' | 'right'
 

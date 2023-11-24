@@ -28,6 +28,12 @@ export class WuiTransactionListItem extends LitElement {
 
   @property({ type: Array }) public images: TransactionImage[] = []
 
+  @property() public price: TransactionImage[] = []
+
+  @property() public amount: TransactionImage[] = []
+
+  @property() public symbol: TransactionImage[] = []
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -47,7 +53,12 @@ export class WuiTransactionListItem extends LitElement {
             ${this.templateDescription()} ${this.templateSecondDescription()}
           </wui-flex>
         </wui-flex>
-        <wui-text variant="micro-700" color="fg-300"><span>${this.date}</span></wui-text>
+        <wui-flex flexDirection="column" alignItems="flex-end" gap="xs">
+          <wui-text variant="small-500" color="success-100"><span>+$${this.price}</span></wui-text>
+          <wui-text variant="small-500" color="fg-300"
+            ><span>${this.amount} ${this.symbol}</span></wui-text
+          >
+        </wui-flex>
       </wui-flex>
     `
   }

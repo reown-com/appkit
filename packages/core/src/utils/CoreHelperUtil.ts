@@ -141,6 +141,25 @@ export const CoreHelperUtil = {
     return formattedBalance ? `${formattedBalance} ${symbol}` : `0.000 ${symbol}`
   },
 
+  formatBalance2(balance: string | undefined, symbol: string | undefined) {
+    let formattedBalance = undefined
+
+    if (balance === '0') {
+      formattedBalance = '0'
+    } else if (typeof balance === 'string') {
+      const number = Number(balance)
+      if (number) {
+        formattedBalance = number.toString().match(/^-?\d+(?:\.\d{0,3})?/u)?.[0]
+      }
+    }
+
+    return {
+      value: formattedBalance ? `${formattedBalance}` : '0',
+      rest: formattedBalance === '0' ? '000' : '',
+      symbol
+    }
+  },
+
   isRestrictedRegion() {
     try {
       const { timeZone } = new Intl.DateTimeFormat().resolvedOptions()
