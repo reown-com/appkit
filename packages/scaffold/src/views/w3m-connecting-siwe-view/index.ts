@@ -89,7 +89,7 @@ export class W3mConnectingSiweView extends LitElement {
     try {
       SIWEController.setStatus('loading')
       const nonce = await SIWEController.getNonce()
-      const { address } = AccountController.state.value
+      const { address } = AccountController.state
       if (!address) {
         throw new Error('An address is required to create a SIWE message.')
       }

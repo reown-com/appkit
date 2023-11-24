@@ -223,17 +223,6 @@ export class Web3ModalScaffold {
     if (options.siweControllerClient) {
       const siweClient = options.siweControllerClient
       SIWEController.setSIWEClient(siweClient)
-
-      AccountController.subscribeKey('caipAddress', async caipAddress => {
-        const previousAccountState = AccountController.state.history.snapshots.find(
-          account => account.caipAddress && account.caipAddress !== caipAddress
-        )
-        const previousCaipAddress = previousAccountState?.caipAddress
-        if (previousCaipAddress && caipAddress && previousCaipAddress !== caipAddress) {
-          await SIWEController.signOut()
-          ModalController.open({ view: 'ConnectingSiwe' })
-        }
-      })
     }
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
@@ -256,30 +245,6 @@ export class Web3ModalScaffold {
         document.body.insertAdjacentElement('beforeend', modal)
         resolve()
       })
-
-      let unsubscribeFromAccountState: (() => void) | undefined = undefined
-      if (SIWEController.state.isSiweEnabled) {
-        try {
-          const session = await SIWEController.getSession()
-
-          unsubscribeFromAccountState = AccountController.subscribe(async newAccountState => {
-            const { isConnected } = newAccountState
-            if (session && !isConnected) {
-              await SIWEController.signOut()
-            } else if (isConnected && !session) {
-              ModalController.open({ view: 'ConnectingSiwe' })
-            }
-          })
-        } catch (error) {
-          unsubscribeFromAccountState?.()
-          // No session but wallet is connected
-          AccountController.subscribeKey('isConnected', isConnected => {
-            if (isConnected) {
-              ModalController.open({ view: 'ConnectingSiwe' })
-            }
-          })
-        }
-      }
     }
 
     return this.initPromise

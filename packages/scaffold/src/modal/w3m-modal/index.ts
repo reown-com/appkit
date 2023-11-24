@@ -1,7 +1,9 @@
 import {
+  AccountController,
   ApiController,
   EventsController,
   ModalController,
+  SIWEController,
   SnackController,
   ThemeController
 } from '@web3modal/core'
@@ -25,14 +27,54 @@ export class W3mModal extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private open = ModalController.state.open
 
+  @state() private caipAddress = AccountController.state.address
+
+  @state() private isSiweEnabled = SIWEController.state.isSiweEnabled
+
   public constructor() {
     super()
     this.initializeTheming()
     ApiController.prefetch()
     this.unsubscribe.push(
-      ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose()))
+      ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
+      SIWEController.subscribeKey('isSiweEnabled', isEnabled => {
+        this.isSiweEnabled = isEnabled
+      }),
+      AccountController.subscribe(async newState => {
+        const { isConnected, caipAddress: newCaipAddress } = newState
+        if (
+          this.isSiweEnabled &&
+          isConnected &&
+          this.caipAddress &&
+          newCaipAddress &&
+          this.caipAddress !== newCaipAddress
+        ) {
+          this.caipAddress = newCaipAddress
+          await SIWEController.signOut()
+          ModalController.open({ view: 'ConnectingSiwe' })
+        }
+
+        try {
+          const session = await SIWEController.getSession()
+          if (session && !isConnected) {
+            await SIWEController.signOut()
+          } else if (isConnected && !session) {
+            ModalController.open({ view: 'ConnectingSiwe' })
+          }
+        } catch (error) {
+          if (isConnected) {
+            ModalController.open({ view: 'ConnectingSiwe' })
+          }
+        }
+      })
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
+  }
+
+  protected override firstUpdated() {
+    AccountController.subscribeKey('caipAddress', newCaipAddress => {
+      this.caipAddress = newCaipAddress
+    })
   }
 
   public override disconnectedCallback() {

@@ -26,7 +26,7 @@ export class W3mTransactionsView extends LitElement {
   private paginationObserver?: IntersectionObserver = undefined
 
   // -- State & Properties -------------------------------- //
-  @state() private address: string | undefined = AccountController.state.value.address
+  @state() private address: string | undefined = AccountController.state.address
 
   @state() private transactions = TransactionsController.state.transactions
 

@@ -1,5 +1,5 @@
-import { proxyWithHistory, subscribeKey as subKey } from 'valtio/utils'
-import { subscribe as sub } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/utils'
+import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import type { CaipAddress } from '../utils/TypeUtil.js'
 
@@ -18,7 +18,7 @@ export interface AccountControllerState {
 type StateKey = keyof AccountControllerState
 
 // -- State --------------------------------------------- //
-const state = proxyWithHistory<AccountControllerState>({
+const state = proxy<AccountControllerState>({
   isConnected: false
 })
 
@@ -27,50 +27,50 @@ export const AccountController = {
   state,
 
   subscribe(callback: (newState: AccountControllerState) => void) {
-    return sub(state, () => callback(state.value))
+    return sub(state, () => callback(state))
   },
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: AccountControllerState[K]) => void) {
-    return subKey(state.value, key, callback)
+    return subKey(state, key, callback)
   },
 
   setIsConnected(isConnected: AccountControllerState['isConnected']) {
-    state.value.isConnected = isConnected
+    state.isConnected = isConnected
   },
 
   setCaipAddress(caipAddress: AccountControllerState['caipAddress']) {
-    state.value.caipAddress = caipAddress
-    state.value.address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
+    state.caipAddress = caipAddress
+    state.address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
   },
 
   setBalance(
     balance: AccountControllerState['balance'],
     balanceSymbol: AccountControllerState['balanceSymbol']
   ) {
-    state.value.balance = balance
-    state.value.balanceSymbol = balanceSymbol
+    state.balance = balance
+    state.balanceSymbol = balanceSymbol
   },
 
   setProfileName(profileName: AccountControllerState['profileName']) {
-    state.value.profileName = profileName
+    state.profileName = profileName
   },
 
   setProfileImage(profileImage: AccountControllerState['profileImage']) {
-    state.value.profileImage = profileImage
+    state.profileImage = profileImage
   },
 
   setAddressExplorerUrl(explorerUrl: AccountControllerState['addressExplorerUrl']) {
-    state.value.addressExplorerUrl = explorerUrl
+    state.addressExplorerUrl = explorerUrl
   },
 
   resetAccount() {
-    state.value.isConnected = false
-    state.value.caipAddress = undefined
-    state.value.address = undefined
-    state.value.balance = undefined
-    state.value.balanceSymbol = undefined
-    state.value.profileName = undefined
-    state.value.profileImage = undefined
-    state.value.addressExplorerUrl = undefined
+    state.isConnected = false
+    state.caipAddress = undefined
+    state.address = undefined
+    state.balance = undefined
+    state.balanceSymbol = undefined
+    state.profileName = undefined
+    state.profileImage = undefined
+    state.addressExplorerUrl = undefined
   }
 }

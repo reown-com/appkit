@@ -25,15 +25,15 @@ export class W3mAccountView extends LitElement {
   private readonly networkImages = AssetController.state.networkImages
 
   // -- State & Properties --------------------------------- //
-  @state() private address = AccountController.state.value.address
+  @state() private address = AccountController.state.address
 
-  @state() private profileImage = AccountController.state.value.profileImage
+  @state() private profileImage = AccountController.state.profileImage
 
-  @state() private profileName = AccountController.state.value.profileName
+  @state() private profileName = AccountController.state.profileName
 
-  @state() private balance = AccountController.state.value.balance
+  @state() private balance = AccountController.state.balance
 
-  @state() private balanceSymbol = AccountController.state.value.balanceSymbol
+  @state() private balanceSymbol = AccountController.state.balanceSymbol
 
   @state() private network = NetworkController.state.caipNetwork
 
@@ -160,7 +160,7 @@ export class W3mAccountView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private explorerBtnTemplate() {
-    const { addressExplorerUrl } = AccountController.state.value
+    const { addressExplorerUrl } = AccountController.state
 
     if (!addressExplorerUrl) {
       return null
@@ -220,7 +220,7 @@ export class W3mAccountView extends LitElement {
   }
 
   private onExplorer() {
-    const { addressExplorerUrl } = AccountController.state.value
+    const { addressExplorerUrl } = AccountController.state
     if (addressExplorerUrl) {
       CoreHelperUtil.openHref(addressExplorerUrl, '_blank')
     }

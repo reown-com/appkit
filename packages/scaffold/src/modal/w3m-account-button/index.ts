@@ -23,15 +23,15 @@ export class W3mAccountButton extends LitElement {
 
   @property() public balance?: 'show' | 'hide' = 'show'
 
-  @state() private address = AccountController.state.value.address
+  @state() private address = AccountController.state.address
 
-  @state() private balanceVal = AccountController.state.value.balance
+  @state() private balanceVal = AccountController.state.balance
 
-  @state() private balanceSymbol = AccountController.state.value.balanceSymbol
+  @state() private balanceSymbol = AccountController.state.balanceSymbol
 
-  @state() private profileName = AccountController.state.value.profileName
+  @state() private profileName = AccountController.state.profileName
 
-  @state() private profileImage = AccountController.state.value.profileImage
+  @state() private profileImage = AccountController.state.profileImage
 
   @state() private network = NetworkController.state.caipNetwork
 

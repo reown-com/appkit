@@ -22,7 +22,7 @@ export class W3mButton extends LitElement {
 
   @property() public loadingLabel?: W3mConnectButton['loadingLabel'] = undefined
 
-  @state() private isAccount = AccountController.state.value.isConnected
+  @state() private isAccount = AccountController.state.isConnected
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
