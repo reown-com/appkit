@@ -59,6 +59,12 @@ export class W3mSwapView extends LitElement {
 
     this.unsubscribe.push(
       ...[
+        SwapApiController.subscribeKey('sourceToken', newSourceToken => {
+          this.sourceToken = newSourceToken
+        }),
+        SwapApiController.subscribeKey('toToken', newToToken => {
+          this.toToken = newToToken
+        }),
         SwapApiController.subscribe(newState => {
           if (this.loading !== newState.loading) {
             this.loading = newState.loading
@@ -70,17 +76,8 @@ export class W3mSwapView extends LitElement {
           if (this.sourceTokenAmount !== newState.sourceTokenAmount) {
             this.sourceTokenAmount = newState.sourceTokenAmount ?? ''
           }
-          if (newState.sourceTokenAddress) {
-            this.sourceToken = newState.sourceToken
-          }
-          if (newState.toTokenAddress) {
-            this.toToken = newState.toToken
-          }
           if (this.toTokenAmount !== newState.toTokenAmount) {
             this.toTokenAmount = newState.toTokenAmount ?? ''
-          }
-          if (this.sourceToken?.address !== newState.sourceToken?.address) {
-            this.sourceToken = newState.sourceToken
           }
           if (this.swapErrorMessage !== newState.swapErrorMessage) {
             this.swapErrorMessage = newState.swapErrorMessage
@@ -153,6 +150,8 @@ export class W3mSwapView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    console.log('tokens:', this.sourceToken, this.toToken)
+
     return html`
       <wui-flex flexDirection="column" padding="s" gap="s">
         ${this.initialLoading || this.isTransactionPending

@@ -12,9 +12,7 @@ export interface SwapApiControllerState {
   initialLoading?: boolean
   isTransactionPending?: boolean
   sourceToken?: TokenInfo
-  sourceTokenAddress?: `0x${string}`
   toToken?: TokenInfo
-  toTokenAddress?: `0x${string}`
   toTokenAmount?: string
   swapTransaction?: TransactionData
   swapApproval?: SwapApprovalData
@@ -89,10 +87,6 @@ type StateKey = keyof SwapApiControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<SwapApiControllerState>({
-  sourceToken: undefined,
-  sourceTokenAddress: undefined,
-  toToken: undefined,
-  toTokenAddress: undefined,
   hasAllowance: false,
   toTokenAmount: undefined,
   sourceTokenAmount: undefined,
@@ -143,7 +137,6 @@ export const SwapApiController = {
 
   setSourceToken(sourceToken?: TokenInfo) {
     state.sourceToken = sourceToken
-    state.sourceTokenAddress = sourceToken?.address
   },
 
   setSourceTokenAmount(swapFromAmount: string) {
@@ -152,7 +145,6 @@ export const SwapApiController = {
 
   setToToken(toToken?: TokenInfo) {
     state.toToken = toToken
-    state.toTokenAddress = toToken?.address
   },
 
   setSlippage(slippage: number) {
