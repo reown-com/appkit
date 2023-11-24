@@ -4,7 +4,6 @@ import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import {
   SwapApiController,
-  EventsController,
   RouterController,
   CoreHelperUtil,
   NetworkController
@@ -150,8 +149,6 @@ export class W3mSwapView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    console.log('tokens:', this.sourceToken, this.toToken)
-
     return html`
       <wui-flex flexDirection="column" padding="s" gap="s">
         ${this.initialLoading || this.isTransactionPending
@@ -184,7 +181,7 @@ export class W3mSwapView extends LitElement {
                 variant="fullWidth"
                 @click=${this.onSwap.bind(this)}
               >
-                Preview swap
+                Swap
               </wui-button>`}
         </wui-flex>
       </wui-flex>
@@ -241,11 +238,11 @@ export class W3mSwapView extends LitElement {
     </wui-flex>`
   }
 
-  private templateTokenInput(target: Target, token: TokenInfo | undefined) {
+  private templateTokenInput(target: Target, token?: TokenInfo) {
     return html`<wui-swap-input
       .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
       ?disabled=${this.loading && target === 'toToken'}
-      .onChange=${this.onInputChange.bind(this)}
+      @input=${this.onInputChange.bind(this)}
       target=${target}
       .token=${token}
     ></wui-swap-input>`
@@ -298,21 +295,6 @@ export class W3mSwapView extends LitElement {
 
   private onPreviewSwap() {
     RouterController.push('PreviewSwap')
-  }
-
-  private onSelectToken(target: Target) {
-    EventsController.sendEvent({ type: 'track', event: 'CLICK_SELECT_TOKEN_TO_SWAP' })
-    RouterController.push('SwapSelectToken', {
-      target
-    })
-  }
-
-  private onFromInputFocus(state: boolean) {
-    this.fromInputFocus = state
-  }
-
-  private onToInputFocus(state: boolean) {
-    this.toInputFocus = state
   }
 
   private toggleDetails() {

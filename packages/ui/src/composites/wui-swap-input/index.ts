@@ -7,6 +7,7 @@ import '../wui-transaction-visual/index.js'
 import { EventsController, RouterController } from '@web3modal/core'
 import styles from './styles.js'
 import type { TokenInfo } from '@web3modal/core/dist/types/src/controllers/SwapApiController.js'
+import { createRef } from 'lit/directives/ref.js'
 
 type Target = 'sourceToken' | 'toToken'
 
@@ -15,7 +16,7 @@ export class WuiSwapInput extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public focused: boolean = false
+  @property() public focused = false
 
   @property() public value?: string
 
@@ -23,14 +24,12 @@ export class WuiSwapInput extends LitElement {
 
   @property() public target: Target = 'sourceToken'
 
-  @property() public token: TokenInfo | undefined
+  @property() public token?: TokenInfo
 
-  @property() public onChange?: (event: InputEvent) => void
+  public inputElementRef = createRef<HTMLInputElement>()
 
   // -- Render -------------------------------------------- //
   public override render() {
-    console.log('swap-input', this.token, this.target)
-
     return html`
       <wui-flex class="${this.focused ? 'focus' : ''}" justifyContent="space-between">
         <wui-flex flex="1" class="swap-input">
@@ -39,6 +38,7 @@ export class WuiSwapInput extends LitElement {
             @focusout=${() => this.onFocusChange(false)}
             .value=${this.value}
             ?disabled=${this.disabled}
+            @input=${this.dispatchInputChangeEvent.bind(this)}
           />
         </wui-flex>
         ${this.templateTokenSelectButton()}
@@ -79,11 +79,21 @@ export class WuiSwapInput extends LitElement {
     this.focused = state
   }
 
-  private onSelectToken(target: Target) {
+  private onSelectToken() {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_SELECT_TOKEN_TO_SWAP' })
     RouterController.push('SwapSelectToken', {
       target: this.target
     })
+  }
+
+  private dispatchInputChangeEvent() {
+    this.dispatchEvent(
+      new CustomEvent('inputChange', {
+        detail: this.inputElementRef.value?.value,
+        bubbles: true,
+        composed: true
+      })
+    )
   }
 }
 
