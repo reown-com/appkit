@@ -57,49 +57,6 @@ export default css`
     cursor: pointer;
   }
 
-  .swap-input {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--wui-gray-glass-002);
-    border: 1px solid var(--wui-gray-glass-002);
-    border-radius: var(--wui-border-radius-s);
-    padding: var(--wui-spacing-xl);
-    padding-right: var(--wui-spacing-s);
-    width: 100%;
-    box-sizing: border-box;
-    position: relative;
-    transition: background 0.2s linear;
-  }
-
-  .swap-input.focus {
-    background: var(--wui-gray-glass-005);
-  }
-
-  .swap-input input {
-    background: none;
-    border: none;
-    height: 48px;
-    width: 100%;
-    font-size: 32px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 130%;
-    letter-spacing: -1.28px;
-    outline: none;
-  }
-
-  .swap-input input:focus-visible {
-    outline: none;
-  }
-
-  .swap-input input::-webkit-outer-spin-button,
-  .swap-input input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
   .token-select-button-container {
     display: flex;
     flex-direction: column;
