@@ -188,7 +188,7 @@ export class W3mAccountView extends LitElement {
 
       <wui-flex flexDirection="column" gap="m">
         <wui-flex .padding=${['0', 'xl', '0', 'xl']} gap="1xs" class="account-links">
-          <wui-flex size="lg">
+          <wui-flex size="lg" @click=${this.handleClickPay.bind(this)}>
             <wui-icon color="accent-100" name="wallet2"></wui-icon>
           </wui-flex>
           <wui-flex size="lg">
@@ -207,37 +207,7 @@ export class W3mAccountView extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" gap="xs" .padding=${['0', 'xl', 'xl', 'xl'] as const}>
-          <wui-list-item
-            .variant=${networkImage ? 'image' : 'icon'}
-            iconVariant="overlay"
-            icon="networkPlaceholder"
-            imageSrc=${ifDefined(networkImage)}
-            ?chevron=${this.isAllowedNetworkSwitch()}
-            @click=${this.onNetworks.bind(this)}
-          >
-            <wui-text variant="paragraph-500" color="fg-100">
-              ${this.network?.name ?? 'Unknown'}
-            </wui-text>
-          </wui-list-item>
-          <wui-list-item
-            iconVariant="blue"
-            icon="swapHorizontalBold"
-            iconSize="sm"
-            ?chevron=${true}
-            @click=${this.onTransactions.bind(this)}
-          >
-            <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
-          </wui-list-item>
-          <wui-list-item
-            variant="icon"
-            iconVariant="overlay"
-            icon="disconnect"
-            ?chevron=${false}
-            .loading=${this.disconecting}
-            @click=${this.onDisconnect.bind(this)}
-          >
-            <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
-          </wui-list-item>
+          <w3m-transactions-view></w3m-transactions-view>
         </wui-flex>
       </wui-flex>
     `

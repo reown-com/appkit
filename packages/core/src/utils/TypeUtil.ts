@@ -171,6 +171,7 @@ export interface CoinbaseTransaction {
   purchase_network: string
   payment_total: CoinbaseAmount
   payment_subtotal: CoinbaseAmount
+  purchase_amount: CoinbaseAmount
   created_at: string
   purchase_currency: string
   transaction_id: string

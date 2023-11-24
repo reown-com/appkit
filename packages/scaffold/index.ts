@@ -5,6 +5,7 @@ export * from './src/modal/w3m-modal/index.js'
 export * from './src/modal/w3m-network-button/index.js'
 export * from './src/modal/w3m-router/index.js'
 
+export * from './src/views/w3m-account-settings-view/index.js'
 export * from './src/views/w3m-account-view/index.js'
 export * from './src/views/w3m-all-wallets-view/index.js'
 export * from './src/views/w3m-connect-view/index.js'

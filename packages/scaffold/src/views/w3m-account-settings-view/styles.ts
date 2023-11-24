@@ -5,20 +5,8 @@ export default css`
     width: 100%;
   }
 
-  :host > wui-flex:first-child {
-    transform: translateY(calc(var(--wui-spacing-xxs) * -1));
-  }
-
   wui-icon-link {
     margin-right: calc(var(--wui-icon-box-size-md) * -1);
-  }
-
-  wui-notice-card {
-    margin-bottom: var(--wui-spacing-3xs);
-  }
-
-  w3m-transactions-view {
-    max-height: 200px;
   }
 
   .account-links {

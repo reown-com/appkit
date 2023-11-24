@@ -5,7 +5,8 @@ import {
   EventsController,
   OptionsController,
   TransactionsController,
-  type CoinbaseTransaction
+  type CoinbaseTransaction,
+  AssetController
 } from '@web3modal/core'
 import { TransactionUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -31,8 +32,6 @@ export class W3mTransactionsView extends LitElement {
   @state() private address: string | undefined = AccountController.state.address
 
   @state() private transactions = TransactionsController.state.transactions
-
-  @state() private coinbaseTransactions = TransactionsController.state.coinbaseTransactions
 
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
 
@@ -85,7 +84,7 @@ export class W3mTransactionsView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" padding="s" gap="s">
+      <wui-flex flexDirection="column" gap="s">
         ${this.empty ? null : this.templateTransactionsByYear()}
         ${this.loading ? this.templateLoading() : null}
         ${!this.loading && this.empty ? this.templateEmpty() : null}
@@ -128,16 +127,16 @@ export class W3mTransactionsView extends LitElement {
     transaction: CoinbaseTransaction,
     isLastTransaction: boolean
   ) {
-    const date = DateUtil.getRelativeDateFromNow(transaction.created_at)
-
     return html`
       <wui-transaction-list-item
-        date=${date}
-        type=${`${transaction.payment_total.value} ${transaction.payment_total.currency}`}
+        type=${`Received ${transaction.purchase_amount.currency}`}
         id=${isLastTransaction && this.next ? PAGINATOR_ID : ''}
         status=${transaction.status}
-        .images=${[]}
-        .descriptions=${[transaction.payment_method]}
+        price=${transaction.payment_total.value}
+        symbol=${transaction.purchase_amount.currency}
+        amount=${transaction.purchase_amount.value}
+        .images=${[AssetController.state.tokenImages[transaction.purchase_amount.currency]]}
+        .descriptions=${['From Coinbase Pay']}
       ></wui-transaction-list-item>
     `
   }
