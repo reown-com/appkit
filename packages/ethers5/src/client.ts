@@ -238,9 +238,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
         const signature = await provider.request({
           method: 'personal_sign',
-          params: {
-            message
-          }
+          params: [message, EthersStoreUtil.state.address]
         })
 
         return signature as `0x${string}`
@@ -485,7 +483,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType('injected')
         EthersStoreUtil.setProvider(config.injected)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(address as Address)
+        EthersStoreUtil.setAddress(ethers.utils.getAddress(address) as Address)
         this.watchCoinbase(config)
       }
     }
@@ -501,7 +499,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType('eip6963')
         EthersStoreUtil.setProvider(provider)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(address as Address)
+        EthersStoreUtil.setAddress(ethers.utils.getAddress(address) as Address)
         this.watchEIP6963(provider)
       }
     }
@@ -518,7 +516,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType('coinbaseWallet')
         EthersStoreUtil.setProvider(config.coinbase)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(address as Address)
+        EthersStoreUtil.setAddress(ethers.utils.getAddress(address) as Address)
         this.watchCoinbase(config)
       }
     }

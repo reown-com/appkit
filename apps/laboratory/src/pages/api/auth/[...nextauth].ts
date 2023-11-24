@@ -49,8 +49,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
           }
           const siwe = new SiweMessage(credentials.message)
           const url = new URL(nextAuthUrl)
-          const provider = new ethers.providers.InfuraProvider(siwe.chainId)
-
+          const provider = new ethers.InfuraProvider(siwe.chainId)
           const nonce = await getCsrfToken({ req: { headers: req.headers } })
           const result = await siwe.verify(
             {
