@@ -332,6 +332,10 @@ export type Event =
       type: 'track'
       event: 'CLICK_SELECT_TOKEN_TO_SWAP'
     }
+  | {
+      type: 'track'
+      event: 'CLICK_SELECT_NETWORK_TO_SWAP'
+    }
 
 // Onramp Types
 export type DestinationWallet = {

@@ -54,7 +54,9 @@ function headings() {
     WalletReceive: 'Receive',
     WalletCompatibleNetworks: 'Compatible Networks',
     Swap: 'Swap',
-    SwapSelectToken: 'Select Token'
+    SwapSelectToken: 'Select Token',
+    SwapSelectNetwork: 'Select Network',
+    PreviewSwap: 'Preview Swap'
   }
 }
 

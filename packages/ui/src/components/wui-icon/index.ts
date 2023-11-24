@@ -71,6 +71,7 @@ import { bankSvg } from '../../assets/svg/bank.js'
 import { cardSvg } from '../../assets/svg/card.js'
 import { plusSvg } from '../../assets/svg/plus.js'
 import { cursorTransparentSvg } from '../../assets/svg/cursor-transparent.js'
+import { checkmarkBoldSvg } from '../../assets/svg/checkmark-bold.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   add: addSvg,
@@ -86,6 +87,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   browser: browserSvg,
   card: cardSvg,
   checkmark: checkmarkSvg,
+  checkmarkBold: checkmarkBoldSvg,
   chevronBottom: chevronBottomSvg,
   chevronLeft: chevronLeftSvg,
   chevronRight: chevronRightSvg,

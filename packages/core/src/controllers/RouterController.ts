@@ -38,6 +38,8 @@ export interface RouterControllerState {
     | 'WhatIsABuy'
     | 'Swap'
     | 'SwapSelectToken'
+    | 'SwapSelectNetwork'
+    | 'PreviewSwap'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

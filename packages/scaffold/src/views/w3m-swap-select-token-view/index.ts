@@ -5,6 +5,8 @@ import { ConnectionController, RouterController, SwapApiController } from '@web3
 import type { TokenInfo } from '@web3modal/core/src/controllers/SwapApiController.js'
 import { state } from 'lit/decorators.js'
 
+import { EventsController } from '@web3modal/core'
+
 @customElement('w3m-swap-select-token-view')
 export class W3mSwapSelectTokenView extends LitElement {
   public static override styles = styles
@@ -39,7 +41,18 @@ export class W3mSwapSelectTokenView extends LitElement {
   private templateSearchInput() {
     return html`
       <wui-flex gap="xs">
-        <wui-input-text size="sm" placeholder="Search token" icon="search"></wui-input-text>
+        <wui-input-text
+          class="network-search-input"
+          size="sm"
+          placeholder="Search token"
+          icon="search"
+        ></wui-input-text>
+        <button @click=${this.onSelectNetwork.bind(this)} class="select-network-button" gap="xs">
+          <wui-image
+            src="https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b"
+          ></wui-image>
+          <wui-icon name="chevronBottom" color="fg-200" size="xs"></wui-icon>
+        </button>
       </wui-flex>
     `
   }
@@ -52,7 +65,7 @@ export class W3mSwapSelectTokenView extends LitElement {
           <wui-text variant="paragraph-500" color="fg-200">Your tokens</wui-text>
         </wui-flex>`}
 
-        <wui-flex flexDirection="column" gap="1xs">
+        <wui-flex flexDirection="column" gap="xs">
           ${SwapApiController.state.myTokensWithBalance &&
           Object.values(SwapApiController.state.myTokensWithBalance).map(
             tokenInfo => html`
@@ -90,6 +103,11 @@ export class W3mSwapSelectTokenView extends LitElement {
         </wui-flex>
       </wui-flex>
     `
+  }
+
+  private onSelectNetwork() {
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_SELECT_NETWORK_TO_SWAP' })
+    RouterController.push('SwapSelectNetwork')
   }
 }
 

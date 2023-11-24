@@ -10,7 +10,9 @@ import {
   NetworkController
 } from '@web3modal/core'
 import type { TokenInfo } from '@web3modal/core/src/controllers/SwapApiController.js'
+
 type Target = 'sourceToken' | 'toToken'
+
 @customElement('w3m-swap-view')
 export class W3mSwapView extends LitElement {
   public static override styles = styles
@@ -37,6 +39,8 @@ export class W3mSwapView extends LitElement {
   @state() private toTokenAmount = SwapApiController.state.toTokenAmount ?? ''
 
   @state() private caipNetworkId = NetworkController.state.caipNetwork?.id
+
+  @state() private detailsOpen = false
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -110,7 +114,9 @@ export class W3mSwapView extends LitElement {
   private onInputChange(event: InputEvent) {
     const inputElement = event.target as HTMLElement
     const input = this.getInputElement(inputElement)
+
     SwapApiController.clearError()
+
     if (input) {
       SwapApiController.setSourceTokenAmount(input.value)
       this.onDebouncedGetSwapCalldata()
@@ -119,7 +125,7 @@ export class W3mSwapView extends LitElement {
 
   private onDebouncedGetSwapCalldata = CoreHelperUtil.debounce(async () => {
     await SwapApiController.getTokenSwapInfo()
-  })
+  }, 2000)
 
   private async onSwap() {
     await SwapApiController.swapTokens()
@@ -158,28 +164,29 @@ export class W3mSwapView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateSwap() {
+    const haveNoTokenSelected = !this.toToken || !this.sourceToken
+
     return html`
-      <wui-flex flexDirection="column" gap="sm">
-        <wui-flex
-          flexDirection="column"
-          alignItems="center"
-          gap="xs"
-          .padding=${['xs', 's', 's', 's'] as const}
-          class="swap-inputs-container"
-        >
+      <wui-flex flexDirection="column" gap="s">
+        <wui-flex flexDirection="column" alignItems="center" gap="xs" class="swap-inputs-container">
           ${this.templateTokenInput('sourceToken', this.sourceToken)}
           ${this.templateTokenInput('toToken', this.toToken)} ${this.templateReplaceTokensButton()}
         </wui-flex>
-        <wui-flex flexDirection="column" .padding=${['xs', 's', 's', 's'] as const}>
-          <wui-text variant="paragraph-500" color="error-100">${this.swapErrorMessage}</wui-text>
-
-          <wui-button
-            class="action-button"
-            variant="fullWidth"
-            @click=${this.hasAllowance ? () => this.onSwap() : () => this.onApprove()}
-          >
-            ${this.actionButtonLabel}
-          </wui-button>
+        <wui-flex flexDirection="column" alignItems="center" gap="xs" class="details-container">
+          ${this.templateDetails()}
+        </wui-flex>
+        <wui-flex gap="xs">
+          ${haveNoTokenSelected
+            ? html` <wui-button disabled class="action-button" @click=${this.onSwap.bind(this)}>
+                Select token
+              </wui-button>`
+            : html` <wui-button
+                class="action-button"
+                variant="fullWidth"
+                @click=${this.onSwap.bind(this)}
+              >
+                Preview swap
+              </wui-button>`}
         </wui-flex>
       </wui-flex>
     `
@@ -235,49 +242,63 @@ export class W3mSwapView extends LitElement {
     </wui-flex>`
   }
 
-  private templateTokenInput(target: Target, token?: TokenInfo) {
-    return html`<wui-flex justifyContent="space-between" gap="sm" class="swap-input">
-      <wui-flex flex="1">
-        <wui-input-text
-          @input=${this.onInputChange.bind(this)}
-          .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
-          ?disabled=${this.loading && target === 'toToken'}
-        />
-      </wui-flex>
-      ${this.templateTokenSelectButton(target, token)}
-    </wui-flex> `
+  private templateTokenInput(target: Target, token: TokenInfo | undefined) {
+    return html`<wui-swap-input
+      .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
+      ?disabled=${this.loading && target === 'toToken'}
+      .onChange=${this.onInputChange.bind(this)}
+      target=${target}
+      .token=${token}
+    ></wui-swap-input>`
   }
 
-  private templateTokenSelectButton(target: Target, token?: TokenInfo) {
-    if (!token) {
-      return html` <wui-button
-        size="md"
-        variant="accentBg"
-        @click=${() => this.onSelectToken(target)}
-      >
-        Select token
-      </wui-button>`
-    }
-
-    const tokenElement = token.logoURI
-      ? html`<wui-image width="40" height="40" src=${token.logoURI}></wui-image>`
-      : html`
-          <wui-icon-box
-            size="sm"
-            iconColor="fg-200"
-            backgroundColor="fg-300"
-            icon="networkPlaceholder"
-          ></wui-icon-box>
-        `
-
+  private templateDetails() {
     return html`
-      <div class="token-select-button-container" @click=${() => this.onSelectToken(target)}>
-        <button class="token-select-button">
-          ${tokenElement}
-          <wui-text variant="paragraph-600" color="fg-100">${token.symbol}</wui-text>
+      <wui-flex flexDirection="column" class="details-accordion">
+        <button @click=${this.toggleDetails.bind(this)}>
+          <wui-flex justifyContent="space-between" .padding=${['0', 'xs', '0', 'xs']}>
+            <wui-flex justifyContent="flex-start" flexGrow="1" gap="xs">
+              <wui-text variant="small-400" color="fg-100">1 ETH = 5,700.05 1INCH</wui-text>
+              <wui-text variant="small-400" color="fg-200">$2,003.62</wui-text>
+            </wui-flex>
+            <wui-icon name="chevronBottom"> </wui-icon>
+          </wui-flex>
         </button>
-      </div>
+        ${this.detailsOpen
+          ? html`<wui-flex flexDirection="column" gap="xs" class="details-content-container">
+              <wui-flex flexDirection="column" gap="xs">
+                <wui-flex justifyContent="space-between" class="details-row">
+                  <wui-text variant="small-400" color="fg-150">Network cost</wui-text>
+                  <wui-flex>
+                    <wui-text variant="small-400" color="fg-200">$5.3836</wui-text>
+                    <wui-text variant="small-400" color="fg-100">15.4007 1INCH</wui-text>
+                  </wui-flex>
+                </wui-flex>
+              </wui-flex>
+              <wui-flex flexDirection="column" gap="xs">
+                <wui-flex justifyContent="space-between" class="details-row">
+                  <wui-text variant="small-400" color="fg-150">Service fee</wui-text>
+                  <wui-flex>
+                    <wui-text variant="small-400" color="fg-200">Free</wui-text>
+                  </wui-flex>
+                </wui-flex>
+              </wui-flex>
+              <wui-flex flexDirection="column" gap="xs">
+                <wui-flex justifyContent="space-between" class="details-row">
+                  <wui-text variant="small-400" color="fg-150">
+                    Fee is paid to Ethereum Network to process your transaction. This must be paid
+                    in ETH. Learn more
+                  </wui-text>
+                </wui-flex>
+              </wui-flex>
+            </wui-flex>`
+          : null}
+      </wui-flex>
     `
+  }
+
+  private onPreviewSwap() {
+    RouterController.push('PreviewSwap')
   }
 
   private onSelectToken(target: Target) {
@@ -285,6 +306,18 @@ export class W3mSwapView extends LitElement {
     RouterController.push('SwapSelectToken', {
       target
     })
+  }
+
+  private onFromInputFocus(state: boolean) {
+    this.fromInputFocus = state
+  }
+
+  private onToInputFocus(state: boolean) {
+    this.toInputFocus = state
+  }
+
+  private toggleDetails() {
+    this.detailsOpen = !this.detailsOpen
   }
 }
 

@@ -166,6 +166,7 @@ export const SwapApiController = {
   switchTokens() {
     const newSourceToken = state.toToken
     const newToToken = state.sourceToken
+
     this.setSourceToken(newSourceToken)
     this.setToToken(newToToken)
 

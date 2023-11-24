@@ -4,12 +4,17 @@ export default css`
   :host > wui-flex {
     cursor: pointer;
     column-gap: var(--wui-spacing-s);
-    padding: var(--wui-spacing-s);
+    padding: var(--wui-spacing-xs);
     padding-right: var(--wui-spacing-l);
     width: 100%;
-    background-color: var(--wui-gray-glass-002);
+    background-color: transparent;
     border-radius: var(--wui-border-radius-xs);
     color: var(--wui-color-fg-250);
+    transition: background-color 0.2s linear;
+  }
+
+  :host > wui-flex:hover {
+    background-color: var(--wui-gray-glass-002);
   }
 
   :host > wui-flex > wui-flex {
