@@ -8,9 +8,10 @@
     "packages/scaffold-react",
     "packages/scaffold-vue",
     "packages/polyfills",
-    "packages/utils",
+    "packages/scaffold-utils",
     "packages/siwe",
     "packages/wagmi",
+    "packages/ethers",
     "packages/ethers5",
     "apps/*",
     "examples/*"

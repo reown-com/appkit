@@ -1,7 +1,7 @@
 import { Center, Text, VStack } from '@chakra-ui/react'
 import { NetworksButton } from '../../components/NetworksButton'
 import { EthersConnectButton } from '../../components/Ethers/EthersConnectButton'
-import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
+import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import {
   arbitrum,

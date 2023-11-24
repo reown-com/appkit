@@ -22,5 +22,8 @@
     "react-icons": "4.11.0",
     "siwe": "2.1.4",
     "valtio": "1.11.2"
+  },
+  "devDependencies": {
+    "ethers": "6.8.1"
   }
 }

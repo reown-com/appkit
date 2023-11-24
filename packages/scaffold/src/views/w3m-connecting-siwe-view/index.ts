@@ -8,7 +8,7 @@ import {
   RouterController,
   SIWEController
 } from '@web3modal/core'
-import { HelpersUtil } from '@web3modal/utils'
+import { HelpersUtil } from '@web3modal/scaffold-utils'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
