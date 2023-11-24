@@ -7,7 +7,8 @@ import {
   ModalController,
   NetworkController,
   RouterController,
-  SnackController
+  SnackController,
+  SwapApiController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -59,8 +60,17 @@ export class W3mAccountView extends LitElement {
         if (val?.id) {
           this.network = val
         }
+
+        if (this.network?.id !== val?.id) {
+          SwapApiController.clearMyTokens()
+          SwapApiController.getMyTokensWithBalance({ forceRefetch: true })
+        }
       })
     )
+  }
+
+  public override firstUpdated() {
+    SwapApiController.getMyTokensWithBalance()
   }
 
   public override disconnectedCallback() {
