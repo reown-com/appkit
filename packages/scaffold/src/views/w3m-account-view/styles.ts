@@ -23,11 +23,18 @@ export default css`
 
   .account-button {
     width: auto;
-    height. 48px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--wui-spacing-s);
+    height: 48px;
     padding: var(--wui-spacing-xs);
     padding-right: var(--wui-spacing-s);
     box-shadow: inset 0 0 0 1px var(--wui-gray-glass-002);
+    background-color: var(--wui-gray-glass-002);
     border-radius: 24px;
+    transaction: background-color 0.2s linear;
   }
 
   .account-button:hover {

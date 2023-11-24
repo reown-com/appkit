@@ -129,6 +129,7 @@ export class W3mAccountView extends LitElement {
               @click=${this.onCopyAddress}
             ></wui-icon-link>
           </wui-flex>
+
           <wui-flex gap="s" flexDirection="column" alignItems="center">
             <wui-text variant="2xl-500" color="fg-100">
               ${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}
@@ -299,65 +300,8 @@ export class W3mAccountView extends LitElement {
       }
     )
   }
-
-  private explorerBtnTemplate() {
-    const { addressExplorerUrl } = AccountController.state
-
-    if (!addressExplorerUrl) {
-      return null
-    }
-
-    return html`
-      <wui-button size="sm" variant="shade" @click=${this.onExplorer.bind(this)}>
-        <wui-icon size="sm" color="inherit" slot="iconLeft" name="compass"></wui-icon>
-        Block Explorer
-        <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
-      </wui-button>
-    `
-  }
-
-  private isAllowedNetworkSwitch() {
-    const { requestedCaipNetworks } = NetworkController.state
-    const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
-    const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
-
-    return isMultiNetwork || !isValidNetwork
-  }
-
-  private onCopyAddress() {
-    try {
-      if (this.address) {
-        CoreHelperUtil.copyToClopboard(this.address)
-        SnackController.showSuccess('Address copied')
-      }
-    } catch {
-      SnackController.showError('Failed to copy')
-    }
-  }
-
-  private onNetworks() {
-    if (this.isAllowedNetworkSwitch()) {
-      RouterController.push('Networks')
-    }
-  }
-
-  private onTransactions() {
-    EventsController.sendEvent({ type: 'track', event: 'CLICK_TRANSACTIONS' })
-    RouterController.push('Transactions')
-  }
-
-  private async onDisconnect() {
-    try {
-      this.disconecting = true
-      await ConnectionController.disconnect()
-      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
-      ModalController.close()
-    } catch {
-      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
-      SnackController.showError('Failed to disconnect')
-    } finally {
-      this.disconecting = false
-    }
+  private onAccountSettings() {
+    RouterController.push('AccountSettings')
   }
 
   private onExplorer() {

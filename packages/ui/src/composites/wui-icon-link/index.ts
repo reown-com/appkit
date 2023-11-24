@@ -25,8 +25,8 @@ export class WuiIconLink extends LitElement {
     const padding = this.size === 'lg' ? '--wui-spacing-1xs' : '--wui-spacing-2xs'
 
     this.style.cssText = `
-    --local-border-radius: ${borderRadius};
-    --local-padding: ${padding};
+    --local-border-radius: var(${borderRadius});
+    --local-padding: var(${padding});
 `
 
     return html`
