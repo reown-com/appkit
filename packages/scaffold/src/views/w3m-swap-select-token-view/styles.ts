@@ -48,7 +48,7 @@ export default css`
     justify-content: center;
     gap: var(--wui-spacing-xs);
     box-shadow: inset 0 0 0 1px var(--wui-gray-glass-005);
-    background-color: var(--wui-gray-glass-002);
+    background-color: transparent;
     border-radius: var(--wui-border-radius-xxs);
     padding: var(--wui-spacing-xs);
     align-items: center;
@@ -56,7 +56,7 @@ export default css`
   }
 
   .select-network-button:hover {
-    background-color: var(--wui-gray-glass-005);
+    background-color: var(--wui-gray-glass-002);
   }
 
   .select-network-button > wui-image {

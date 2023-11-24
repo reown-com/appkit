@@ -65,7 +65,7 @@ export class W3mSwapSelectTokenView extends LitElement {
           <wui-text variant="paragraph-500" color="fg-200">Your tokens</wui-text>
         </wui-flex>`}
 
-        <wui-flex flexDirection="column" gap="1xs">
+        <wui-flex flexDirection="column" gap="xs">
           ${SwapApiController.state.myTokensWithBalance &&
           Object.values(SwapApiController.state.myTokensWithBalance).map(
             tokenInfo => html`
