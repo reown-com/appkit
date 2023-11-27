@@ -1,5 +1,7 @@
 import {
   AccountController,
+  ConnectionController,
+  ModalController,
   OptionsController,
   RouterController,
   SIWEController
@@ -72,9 +74,14 @@ export class W3mConnectingSiweView extends LitElement {
     }
   }
 
-  private onCancel() {
+  private async onCancel() {
     const { isConnected } = AccountController.state
-    RouterController.push(isConnected ? 'Account' : 'Connect')
+    if (isConnected) {
+      await ConnectionController.disconnect()
+      ModalController.close()
+    } else {
+      RouterController.push('Connect')
+    }
   }
 }
 declare global {
