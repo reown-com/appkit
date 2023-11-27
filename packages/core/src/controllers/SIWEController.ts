@@ -9,6 +9,7 @@ import type {
 
 // -- Types --------------------------------------------- //
 export interface SIWEControllerClient extends SIWEClientMethods {
+  signIn: () => Promise<SIWESession>
   options: {
     enabled: boolean
     nonceRefetchIntervalMs: number
@@ -90,6 +91,13 @@ export const SIWEController = {
     const isValid = await client.verifyMessage(args)
 
     return isValid
+  },
+
+  async signIn() {
+    const client = this._getClient()
+    const session = await client.signIn()
+
+    return session
   },
 
   async signOut() {

@@ -12,7 +12,7 @@
     "build:clean": "rm -rf dist",
     "build": "npm run build:clean; tsc --build",
     "watch": "npm run build:clean; tsc --watch",
-    "typecheck": "tsc --build --clean && tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {

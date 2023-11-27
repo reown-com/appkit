@@ -1,14 +1,9 @@
 import {
-  AccountController,
-  ConnectionController,
   CoreHelperUtil,
-  ModalController,
-  NetworkController,
   OptionsController,
   RouterController,
   SIWEController
 } from '@web3modal/core'
-import { HelpersUtil } from '@web3modal/scaffold-utils'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -88,34 +83,8 @@ export class W3mConnectingSiweView extends LitElement {
     this.isSigning = true
     try {
       SIWEController.setStatus('loading')
-      const nonce = await SIWEController.getNonce()
-      const { address } = AccountController.state
-      if (!address) {
-        throw new Error('An address is required to create a SIWE message.')
-      }
-      const chainId = HelpersUtil.caipNetworkIdToNumber(NetworkController.state.caipNetwork?.id)
-      if (!chainId) {
-        throw new Error('A chainId is required to create a SIWE message.')
-      }
-      const message = SIWEController.createMessage({ address, nonce, chainId })
-      const signature = await ConnectionController.signMessage(message)
-
-      const isValid = await SIWEController.verifyMessage({ message, signature })
-
-      if (!isValid) {
-        throw new Error('Error verifying SIWE signature')
-      }
-
-      const session = await SIWEController.getSession()
-      if (!session) {
-        throw new Error('Error verifying SIWE signature')
-      }
-      if (SIWEController.onSignIn) {
-        SIWEController.onSignIn(session)
-      }
-
+      const session = await SIWEController.signIn()
       SIWEController.setStatus('success')
-      ModalController.close()
 
       return session
     } catch (error) {

@@ -23,7 +23,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/core": "3.3.2"
+    "@web3modal/core": "3.3.2",
+    "@web3modal/scaffold-utils": "3.3.2"
   },
   "peerDependencies": {
     "react": ">=17",
