@@ -1,5 +1,5 @@
 import {
-  CoreHelperUtil,
+  AccountController,
   OptionsController,
   RouterController,
   SIWEController
@@ -11,8 +11,6 @@ import { state } from 'lit/decorators.js'
 @customElement('w3m-connecting-siwe-view')
 export class W3mConnectingSiweView extends LitElement {
   // -- Members ------------------------------------------- //
-  private readonly dappUrl = OptionsController.state.metadata?.url
-
   private readonly dappName = OptionsController.state.metadata?.name
 
   @state() private isSigning = false
@@ -32,7 +30,6 @@ export class W3mConnectingSiweView extends LitElement {
           >${this.dappName ?? 'Dapp'} wants to connect to your wallet</wui-text
         >
       </wui-flex>
-      ${this.urlTemplate()}
       <wui-flex
         .padding=${['0', '3xl', 'l', '3xl'] as const}
         gap="s"
@@ -60,25 +57,6 @@ export class W3mConnectingSiweView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private urlTemplate() {
-    if (this.dappUrl) {
-      return html`<wui-flex .padding=${['0', '0', 'l', '0'] as const} justifyContent="center">
-        <wui-button size="sm" variant="accentBg" @click=${this.onDappLink.bind(this)}>
-          ${this.dappUrl}
-          <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
-        </wui-button>
-      </wui-flex>`
-    }
-
-    return null
-  }
-
-  private onDappLink() {
-    if (this.dappUrl) {
-      CoreHelperUtil.openHref(this.dappUrl, '_blank')
-    }
-  }
-
   private async onSign() {
     this.isSigning = true
     try {
@@ -95,7 +73,8 @@ export class W3mConnectingSiweView extends LitElement {
   }
 
   private onCancel() {
-    RouterController.push('Connect')
+    const { isConnected } = AccountController.state
+    RouterController.push(isConnected ? 'Account' : 'Connect')
   }
 }
 declare global {
