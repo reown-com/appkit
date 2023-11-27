@@ -27,7 +27,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 }
 
 // -- Hooks -------------------------------------------------------------------
-export function useWeb3ModalSigner() {
+export function useWeb3ModalProvider() {
   const state = useSnapshot(EthersStoreUtil.state)
 
   const walletProvider = state.provider as ethers.providers.ExternalProvider | undefined
