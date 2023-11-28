@@ -4,7 +4,8 @@ import {
   ModalController,
   OptionsController,
   RouterController,
-  SIWEController
+  SIWEController,
+  SnackController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -68,6 +69,8 @@ export class W3mConnectingSiweView extends LitElement {
 
       return session
     } catch (error) {
+      SnackController.showError('Signature declined')
+
       return SIWEController.setStatus('error')
     } finally {
       this.isSigning = false
