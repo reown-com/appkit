@@ -1,8 +1,10 @@
 import {
   AccountController,
   ApiController,
+  ConnectionController,
   EventsController,
   ModalController,
+  RouterController,
   SIWEController,
   SnackController,
   ThemeController
@@ -11,6 +13,7 @@ import { UiHelperUtil, customElement, initializeTheming } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import type { AccountControllerState } from '@web3modal/core'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
@@ -40,33 +43,7 @@ export class W3mModal extends LitElement {
       SIWEController.subscribeKey('isSiweEnabled', isEnabled => {
         this.isSiweEnabled = isEnabled
       }),
-      AccountController.subscribe(async newState => {
-        const { isConnected, caipAddress: newCaipAddress } = newState
-        if (
-          this.isSiweEnabled &&
-          isConnected &&
-          this.caipAddress &&
-          newCaipAddress &&
-          this.caipAddress !== newCaipAddress
-        ) {
-          this.caipAddress = newCaipAddress
-          await SIWEController.signOut()
-          ModalController.open({ view: 'ConnectingSiwe' })
-        }
-
-        try {
-          const session = await SIWEController.getSession()
-          if (session && !isConnected) {
-            await SIWEController.signOut()
-          } else if (isConnected && !session) {
-            ModalController.open({ view: 'ConnectingSiwe' })
-          }
-        } catch (error) {
-          if (isConnected) {
-            ModalController.open({ view: 'ConnectingSiwe' })
-          }
-        }
-      })
+      AccountController.subscribe(newAccountState => this.onNewAccountState(newAccountState))
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
   }
@@ -98,8 +75,11 @@ export class W3mModal extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private onOverlayClick(event: PointerEvent) {
+  private async onOverlayClick(event: PointerEvent) {
     if (event.target === event.currentTarget) {
+      if (this.isSiweEnabled && SIWEController.state.status !== 'success') {
+        await ConnectionController.disconnect()
+      }
       ModalController.close()
     }
   }
@@ -180,6 +160,44 @@ export class W3mModal extends LitElement {
   private onRemoveKeyboardListener() {
     this.abortController?.abort()
     this.abortController = undefined
+  }
+
+  private async onNewAccountState(newState: AccountControllerState) {
+    const { isConnected, caipAddress: newCaipAddress } = newState
+    if (
+      this.isSiweEnabled &&
+      isConnected &&
+      this.caipAddress &&
+      newCaipAddress &&
+      this.caipAddress !== newCaipAddress
+    ) {
+      await SIWEController.signOut()
+      this.onSiweNavigation()
+      this.caipAddress = newCaipAddress
+    }
+
+    try {
+      const session = await SIWEController.getSession()
+      if (session && !isConnected) {
+        await SIWEController.signOut()
+      } else if (isConnected && !session) {
+        this.onSiweNavigation()
+      }
+    } catch (error) {
+      if (isConnected) {
+        this.onSiweNavigation()
+      }
+    }
+  }
+
+  private onSiweNavigation() {
+    if (this.open) {
+      RouterController.push('ConnectingSiwe')
+    } else {
+      ModalController.open({
+        view: 'ConnectingSiwe'
+      })
+    }
   }
 }
 

@@ -73,6 +73,7 @@ export const SIWEController = {
     const session = await client.getSession()
     if (session) {
       this.setSession(session)
+      this.setStatus('success')
     }
 
     return session
@@ -103,6 +104,7 @@ export const SIWEController = {
   async signOut() {
     const client = this._getClient()
     await client.signOut()
+    this.setStatus('ready')
     client.onSignOut?.()
   },
 

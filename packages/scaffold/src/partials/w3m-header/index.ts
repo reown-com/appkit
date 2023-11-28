@@ -3,7 +3,8 @@ import {
   ConnectionController,
   EventsController,
   ModalController,
-  RouterController
+  RouterController,
+  SIWEController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -71,7 +72,7 @@ export class W3mHeader extends LitElement {
         <wui-icon-link
           ?disabled=${this.buffering}
           icon="close"
-          @click=${ModalController.close}
+          @click=${this.onClose.bind(this)}
         ></wui-icon-link>
       </wui-flex>
       ${this.separatorTemplate()}
@@ -84,6 +85,13 @@ export class W3mHeader extends LitElement {
   private onWalletHelp() {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_WALLET_HELP' })
     RouterController.push('WhatIsAWallet')
+  }
+
+  private async onClose() {
+    if (SIWEController.state.isSiweEnabled && SIWEController.state.status !== 'success') {
+      await ConnectionController.disconnect()
+    }
+    ModalController.close()
   }
 
   private titleTemplate() {
@@ -99,7 +107,7 @@ export class W3mHeader extends LitElement {
         id="dynamic"
         icon="chevronLeft"
         ?disabled=${this.buffering}
-        @click=${RouterController.goBack}
+        @click=${this.onGoBack.bind(this)}
       ></wui-icon-link>`
     }
 
@@ -148,7 +156,6 @@ export class W3mHeader extends LitElement {
   private async onHistoryChange() {
     const { history } = RouterController.state
     const buttonEl = this.shadowRoot?.querySelector('#dynamic')
-
     if (history.length > 1 && !this.showBack && buttonEl) {
       await buttonEl.animate([{ opacity: 1 }, { opacity: 0 }], {
         duration: 200,
@@ -173,6 +180,23 @@ export class W3mHeader extends LitElement {
         fill: 'forwards',
         easing: 'ease'
       })
+    }
+  }
+
+  private onGoBack() {
+    const historyLength = RouterController.state.history?.length
+    if (historyLength >= 1) {
+      const historyWithoutConnectingExternal = RouterController.state.history.filter(
+        view => view !== 'ConnectingExternal'
+      )
+      const lastRoute = historyWithoutConnectingExternal[historyLength - 1]
+      if (lastRoute) {
+        RouterController.push(lastRoute)
+      } else {
+        RouterController.goBack()
+      }
+    } else {
+      RouterController.goBack()
     }
   }
 }
