@@ -145,11 +145,17 @@ export default function Wagmi() {
       </Center>
       <Center h="65vh">
         <VStack gap={4}>
-          <Text>SIWE Status: {status}</Text>
+          <Text>Status: {status}</Text>
           {session && (
-            <Text>
-              SIWE Account: eip155:{session.chainId}:{session.address}
-            </Text>
+            <>
+              <Text>Network: eip155:{session.chainId}</Text>
+              <VStack>
+                <Text>Address:</Text>
+                <Text isTruncated={true} fontSize="sm">
+                  {session.address}
+                </Text>
+              </VStack>
+            </>
           )}
           <WagmiConnectButton />
           <NetworksButton />
