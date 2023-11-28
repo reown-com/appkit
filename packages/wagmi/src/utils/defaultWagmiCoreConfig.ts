@@ -21,14 +21,14 @@ export interface ConfigOptions {
   chains: Chain[]
 }
 
-export function defaultWagmiConfig({ projectId, chains, metadata }: ConfigOptions) {
+export function defaultWagmiConfig({ projectId, chains, metadata, autoConnect = true }: ConfigOptions) {
   const { publicClient } = configureChains(chains, [
     walletConnectProvider({ projectId }),
     publicProvider()
   ])
 
   return createConfig({
-    autoConnect: true,
+    autoConnect,
     connectors: [
       new WalletConnectConnector({ chains, options: { projectId, showQrModal: false, metadata } }),
       new EIP6963Connector({ chains }),
