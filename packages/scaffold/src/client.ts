@@ -224,6 +224,7 @@ export class Web3ModalScaffold {
       const siweClient = options.siweControllerClient
       SIWEController.setSIWEClient(siweClient)
     }
+
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
     }
