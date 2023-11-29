@@ -21,7 +21,12 @@ import type {
   Chain,
   EthersStoreUtilState
 } from '@web3modal/scaffold-utils/ethers'
-import { formatEther, JsonRpcProvider, InfuraProvider } from 'ethers'
+import {
+  formatEther,
+  JsonRpcProvider,
+  InfuraProvider,
+  getAddress as getOriginalAddress
+} from 'ethers'
 import {
   EthersConstantsUtil,
   EthersHelpersUtil,
@@ -283,7 +288,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   public getAddress() {
-    return EthersStoreUtil.state.address
+    return getOriginalAddress(EthersStoreUtil.state.address as string)
   }
 
   public getChainId() {
@@ -454,7 +459,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType('injected')
         EthersStoreUtil.setProvider(config.injected)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(address as Address)
+        EthersStoreUtil.setAddress(getOriginalAddress(address) as Address)
         this.watchCoinbase(config)
       }
     }
@@ -470,7 +475,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType('eip6963')
         EthersStoreUtil.setProvider(provider)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(address as Address)
+        EthersStoreUtil.setAddress(getOriginalAddress(address) as Address)
         this.watchEIP6963(provider)
       }
     }
@@ -487,7 +492,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType('coinbaseWallet')
         EthersStoreUtil.setProvider(config.coinbase)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(address as Address)
+        EthersStoreUtil.setAddress(getOriginalAddress(address) as Address)
         this.watchCoinbase(config)
       }
     }
@@ -538,11 +543,12 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     function accountsChangedHandler(accounts: string[]) {
-      if (accounts.length === 0) {
+      const currentAccount = accounts?.[0]
+      if (currentAccount) {
+        EthersStoreUtil.setAddress(getOriginalAddress(currentAccount) as Address)
+      } else {
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
-      } else {
-        EthersStoreUtil.setAddress(accounts[0] as Address)
       }
     }
 
@@ -574,11 +580,12 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     function accountsChangedHandler(accounts: string[]) {
-      if (accounts.length === 0) {
+      const currentAccount = accounts?.[0]
+      if (currentAccount) {
+        EthersStoreUtil.setAddress(getOriginalAddress(currentAccount) as Address)
+      } else {
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
-      } else {
-        EthersStoreUtil.setAddress(accounts[0] as Address)
       }
     }
 
@@ -613,11 +620,12 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     function accountsChangedHandler(accounts: string[]) {
-      if (accounts.length === 0) {
+      const currentAccount = accounts?.[0]
+      if (currentAccount) {
+        EthersStoreUtil.setAddress(getOriginalAddress(currentAccount) as Address)
+      } else {
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
-      } else {
-        EthersStoreUtil.setAddress(accounts[0] as Address)
       }
     }
 

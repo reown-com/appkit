@@ -238,7 +238,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
         const signature = await provider.request({
           method: 'personal_sign',
-          params: [message, EthersStoreUtil.state.address]
+          params: [message, this.getAddress()]
         })
 
         return signature as `0x${string}`
@@ -313,7 +313,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   public getAddress() {
-    return EthersStoreUtil.state.address
+    return ethers.utils.getAddress(EthersStoreUtil.state.address as string)
   }
 
   public getChainId() {
@@ -567,11 +567,12 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     function accountsChangedHandler(accounts: string[]) {
-      if (accounts.length === 0) {
+      const currentAccount = accounts?.[0]
+      if (currentAccount) {
+        EthersStoreUtil.setAddress(ethers.utils.getAddress(currentAccount) as Address)
+      } else {
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
-      } else {
-        EthersStoreUtil.setAddress(accounts[0] as Address)
       }
     }
 
@@ -603,11 +604,12 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     function accountsChangedHandler(accounts: string[]) {
-      if (accounts.length === 0) {
+      const currentAccount = accounts?.[0]
+      if (currentAccount) {
+        EthersStoreUtil.setAddress(ethers.utils.getAddress(currentAccount) as Address)
+      } else {
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
-      } else {
-        EthersStoreUtil.setAddress(accounts[0] as Address)
       }
     }
 
