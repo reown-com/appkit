@@ -15,6 +15,7 @@ export interface ConnectExternalOptions {
 export interface ConnectionControllerClient {
   connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
   disconnect: () => Promise<void>
+  signMessage: (message: string) => Promise<string>
   connectExternal?: (options: ConnectExternalOptions) => Promise<void>
   checkInstalled?: (ids?: string[]) => boolean
 }
@@ -73,6 +74,10 @@ export const ConnectionController = {
 
   async connectExternal(options: ConnectExternalOptions) {
     await this._getClient().connectExternal?.(options)
+  },
+
+  async signMessage(message: string) {
+    return this._getClient().signMessage(message)
   },
 
   checkInstalled(ids?: string[]) {

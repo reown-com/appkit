@@ -8,5 +8,6 @@ export default css`
     pointer-events: none;
     top: 11px;
     left: 50%;
+    width: max-content;
   }
 `

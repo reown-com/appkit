@@ -57,12 +57,16 @@
   },
   "peerDependencies": {
     "ethers": ">=5.0.0 <6.0.0",
+    "@web3modal/siwe": "*",
     "react": ">=17",
     "react-dom": ">=17",
     "vue": ">=3"
   },
   "peerDependenciesMeta": {
     "react": {
+      "optional": true
+    },
+    "@web3modal/siwe": {
       "optional": true
     },
     "react-dom": {
@@ -74,6 +78,7 @@
   },
   "optionalDependencies": {
     "react": ">=17",
+    "@web3modal/siwe": "3.4.0",
     "react-dom": ">=17",
     "vue": ">=3"
   },
