@@ -184,17 +184,8 @@ export class W3mHeader extends LitElement {
   }
 
   private onGoBack() {
-    const historyLength = RouterController.state.history?.length
-    if (historyLength >= 1) {
-      const historyWithoutConnectingExternal = RouterController.state.history.filter(
-        view => view !== 'ConnectingExternal'
-      )
-      const lastRoute = historyWithoutConnectingExternal[historyLength - 1]
-      if (lastRoute) {
-        RouterController.push(lastRoute)
-      } else {
-        RouterController.goBack()
-      }
+    if (RouterController.state.view === 'ConnectingSiwe') {
+      RouterController.push('Connect')
     } else {
       RouterController.goBack()
     }

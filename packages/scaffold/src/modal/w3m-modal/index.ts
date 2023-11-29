@@ -48,12 +48,6 @@ export class W3mModal extends LitElement {
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
   }
 
-  protected override firstUpdated() {
-    AccountController.subscribeKey('caipAddress', newCaipAddress => {
-      this.caipAddress = newCaipAddress
-    })
-  }
-
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     this.onRemoveKeyboardListener()
@@ -77,11 +71,15 @@ export class W3mModal extends LitElement {
   // -- Private ------------------------------------------- //
   private async onOverlayClick(event: PointerEvent) {
     if (event.target === event.currentTarget) {
-      if (this.isSiweEnabled && SIWEController.state.status !== 'success') {
-        await ConnectionController.disconnect()
-      }
-      ModalController.close()
+      await this.handleClose()
     }
+  }
+
+  private async handleClose() {
+    if (this.isSiweEnabled && SIWEController.state.status !== 'success') {
+      await ConnectionController.disconnect()
+    }
+    ModalController.close()
   }
 
   private initializeTheming() {
@@ -145,7 +143,7 @@ export class W3mModal extends LitElement {
       'keydown',
       event => {
         if (event.key === 'Escape') {
-          ModalController.close()
+          this.handleClose()
         } else if (event.key === 'Tab') {
           const { tagName } = event.target as HTMLElement
           if (tagName && !tagName.includes('W3M-') && !tagName.includes('WUI-')) {
@@ -164,28 +162,28 @@ export class W3mModal extends LitElement {
 
   private async onNewAccountState(newState: AccountControllerState) {
     const { isConnected, caipAddress: newCaipAddress } = newState
-    if (
-      this.isSiweEnabled &&
-      isConnected &&
-      this.caipAddress &&
-      newCaipAddress &&
-      this.caipAddress !== newCaipAddress
-    ) {
-      await SIWEController.signOut()
-      this.onSiweNavigation()
-      this.caipAddress = newCaipAddress
-    }
 
-    try {
-      const session = await SIWEController.getSession()
-      if (session && !isConnected) {
-        await SIWEController.signOut()
-      } else if (isConnected && !session) {
-        this.onSiweNavigation()
+    if (this.isSiweEnabled) {
+      if (isConnected && !this.caipAddress) {
+        this.caipAddress = newCaipAddress
       }
-    } catch (error) {
-      if (isConnected) {
+      if (isConnected && newCaipAddress && this.caipAddress !== newCaipAddress) {
+        await SIWEController.signOut()
         this.onSiweNavigation()
+        this.caipAddress = newCaipAddress
+      }
+
+      try {
+        const session = await SIWEController.getSession()
+        if (session && !isConnected) {
+          await SIWEController.signOut()
+        } else if (isConnected && !session) {
+          this.onSiweNavigation()
+        }
+      } catch (error) {
+        if (isConnected) {
+          this.onSiweNavigation()
+        }
       }
     }
   }
