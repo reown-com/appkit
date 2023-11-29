@@ -5,6 +5,7 @@
     "packages/ui",
     "packages/core",
     "packages/scaffold",
+    "packages/scaffold-utils",
     "packages/scaffold-react",
     "packages/scaffold-vue",
     "packages/polyfills",
@@ -12,10 +13,11 @@
     "packages/utils",
     "packages/siwe",
     "packages/wagmi",
+    "packages/ethers",
     "packages/ethers5",
     "apps/*",
     "examples/*"
   ],
-  "version": "3.4.0-7f62a20e",
+  "version": "3.4.0",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }

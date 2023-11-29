@@ -100,4 +100,8 @@ export default css`
   button:active:enabled > wui-text {
     color: var(--wui-color-fg-125);
   }
+
+  button {
+    border-radius: var(--wui-border-radius-3xl);
+  }
 `

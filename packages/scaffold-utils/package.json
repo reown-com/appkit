@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/utils",
-  "version": "3.4.0-7f62a20e",
+  "name": "@web3modal/scaffold-utils",
+  "version": "3.4.0",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -8,6 +8,25 @@
     "dist",
     "!tsconfig.tsbuildinfo"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "default": "./dist/esm/index.js"
+    },
+    "./ethers": {
+      "types": "./dist/types/src/ethers/index.d.ts",
+      "import": "./dist/esm/src/ethers/index.js",
+      "default": "./dist/esm/src/ethers/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "ethers": [
+        "./dist/types/src/ethers/index.d.ts"
+      ]
+    }
+  },
   "scripts": {
     "build:clean": "rm -rf dist",
     "build": "npm run build:clean; tsc --build",
@@ -16,8 +35,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/polyfills": "3.4.0-7f62a20e",
-    "@web3modal/scaffold": "3.4.0-7f62a20e"
+    "@web3modal/polyfills": "3.4.0",
+    "@web3modal/scaffold": "3.4.0"
   },
   "keywords": [
     "web3",

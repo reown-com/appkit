@@ -37,6 +37,6 @@ export default css`
     border-radius: var(--wui-border-radius-3xl);
     width: 24px;
     height: 24px;
-    outline: 2px solid var(--wui-gray-glass-005);
+    box-shadow: 0 0 0 2px var(--wui-gray-glass-005);
   }
 `

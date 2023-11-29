@@ -1,7 +1,8 @@
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
-import { ConstantsUtil } from '@web3modal/utils'
+import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/scaffold-vue'
+import type { ethers } from 'ethers'
 import { onUnmounted, ref } from 'vue'
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
@@ -22,19 +23,19 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 }
 
 // -- Composites --------------------------------------------------------------
-export function useWeb3ModalSigner() {
+export function useWeb3ModalProvider() {
   if (!modal) {
-    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalSigner" composition')
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalProvider" composition')
   }
 
-  const walletProvider = ref(modal.getWalletProvider())
+  const walletProvider = ref(
+    modal.getWalletProvider() as ethers.providers.ExternalProvider | undefined
+  )
   const walletProviderType = ref(modal.getWalletProviderType())
-  const signer = ref(walletProvider.value?.getSigner())
 
   const unsubscribe = modal.subscribeProvider(state => {
-    walletProvider.value = state.provider
+    walletProvider.value = state.provider as ethers.providers.ExternalProvider | undefined
     walletProviderType.value = state.providerType
-    signer.value = walletProvider.value?.getSigner()
   })
 
   onUnmounted(() => {
@@ -43,8 +44,7 @@ export function useWeb3ModalSigner() {
 
   return {
     walletProvider,
-    walletProviderType,
-    signer
+    walletProviderType
   }
 }
 

@@ -2,10 +2,11 @@
 
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
-import { ConstantsUtil } from '@web3modal/utils'
-import { ProviderController } from '../src/controllers/ProviderController.js'
+import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import { EthersStoreUtil } from '@web3modal/scaffold-utils/ethers'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
 import { useSnapshot } from 'valtio'
+import { ethers } from 'ethers'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
@@ -26,17 +27,15 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 }
 
 // -- Hooks -------------------------------------------------------------------
-export function useWeb3ModalSigner() {
-  const state = useSnapshot(ProviderController.state)
+export function useWeb3ModalProvider() {
+  const state = useSnapshot(EthersStoreUtil.state)
 
-  const walletProvider = state.provider
+  const walletProvider = state.provider as ethers.providers.ExternalProvider | undefined
   const walletProviderType = state.providerType
-  const signer = walletProvider?.getSigner()
 
   return {
     walletProvider,
-    walletProviderType,
-    signer
+    walletProviderType
   }
 }
 
@@ -51,7 +50,7 @@ export function useDisconnect() {
 }
 
 export function useWeb3ModalAccount() {
-  const state = useSnapshot(ProviderController.state)
+  const state = useSnapshot(EthersStoreUtil.state)
 
   const address = state.address
   const isConnected = state.isConnected

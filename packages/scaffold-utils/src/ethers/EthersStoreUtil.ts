@@ -1,23 +1,20 @@
-import type { ethers } from 'ethers'
-
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import type { Address } from '../utils/types.js'
-
+import type { Address, Provider } from './EthersTypesUtil.js'
 // -- Types --------------------------------------------- //
 
-export interface ProviderControllerState {
-  provider?: ethers.providers.Web3Provider
+export interface EthersStoreUtilState {
+  provider?: Provider
   providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963'
   address?: Address
   chainId?: number
   isConnected: boolean
 }
 
-type StateKey = keyof ProviderControllerState
+type StateKey = keyof EthersStoreUtilState
 
 // -- State --------------------------------------------- //
-const state = proxy<ProviderControllerState>({
+const state = proxy<EthersStoreUtilState>({
   provider: undefined,
   providerType: undefined,
   address: undefined,
@@ -25,36 +22,36 @@ const state = proxy<ProviderControllerState>({
   isConnected: false
 })
 
-// -- Controller ---------------------------------------- //
-export const ProviderController = {
+// -- StoreUtil ---------------------------------------- //
+export const EthersStoreUtil = {
   state,
-  subscribeKey<K extends StateKey>(key: K, callback: (value: ProviderControllerState[K]) => void) {
+  subscribeKey<K extends StateKey>(key: K, callback: (value: EthersStoreUtilState[K]) => void) {
     return subKey(state, key, callback)
   },
 
-  subscribe(callback: (newState: ProviderControllerState) => void) {
+  subscribe(callback: (newState: EthersStoreUtilState) => void) {
     return sub(state, () => callback(state))
   },
 
-  setProvider(provider: ProviderControllerState['provider']) {
+  setProvider(provider: EthersStoreUtilState['provider']) {
     if (provider) {
       state.provider = ref(provider)
     }
   },
 
-  setProviderType(providerType: ProviderControllerState['providerType']) {
+  setProviderType(providerType: EthersStoreUtilState['providerType']) {
     state.providerType = providerType
   },
 
-  setAddress(address: ProviderControllerState['address']) {
+  setAddress(address: EthersStoreUtilState['address']) {
     state.address = address
   },
 
-  setChainId(chainId: ProviderControllerState['chainId']) {
+  setChainId(chainId: EthersStoreUtilState['chainId']) {
     state.chainId = chainId
   },
 
-  setIsConnected(isConnected: ProviderControllerState['isConnected']) {
+  setIsConnected(isConnected: EthersStoreUtilState['isConnected']) {
     state.isConnected = isConnected
   },
 

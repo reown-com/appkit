@@ -17,7 +17,7 @@ export default css`
   }
 
   :host([data-theme='light']) {
-    outline: 1px solid var(--wui-color-bg-125);
+    box-shadow: 0 0 0 1px var(--wui-color-bg-125);
     background-color: var(--wui-color-bg-125);
   }
 
