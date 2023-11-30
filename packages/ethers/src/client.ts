@@ -35,6 +35,7 @@ import {
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
 import { W3mFrameProvider } from '@web3modal/smart-account'
+import type { CombinedProvider } from 'packages/scaffold-utils/dist/types/src/ethers'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -214,7 +215,7 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       disconnect: async () => {
-        const provider = EthersStoreUtil.state.provider as Provider
+        const provider = EthersStoreUtil.state.provider
         const providerType = EthersStoreUtil.state.providerType
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
@@ -333,11 +334,12 @@ export class Web3Modal extends Web3ModalScaffold {
     EthersStoreUtil.reset()
 
     if (providerType === 'injected' || providerType === 'eip6963') {
-      const typedProvider: Provider = provider as Provider
-      typedProvider?.emit('disconnect')
+      provider?.emit('disconnect')
     } else {
-      const typedProvider: EthereumProvider = provider as unknown as EthereumProvider
-      await typedProvider.disconnect()
+      const walletConnectProvider = provider as unknown as EthereumProvider
+      if (walletConnectProvider) {
+        await walletConnectProvider.disconnect()
+      }
     }
   }
 
@@ -475,7 +477,7 @@ export class Web3Modal extends Web3ModalScaffold {
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType('injected')
-        EthersStoreUtil.setProvider(config.injected as unknown as Provider)
+        EthersStoreUtil.setProvider(config.injected)
         EthersStoreUtil.setIsConnected(true)
         EthersStoreUtil.setAddress(getOriginalAddress(address) as Address)
         this.watchCoinbase(config)
@@ -491,7 +493,7 @@ export class Web3Modal extends Web3ModalScaffold {
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType('eip6963')
-        EthersStoreUtil.setProvider(provider as unknown as Provider)
+        EthersStoreUtil.setProvider(provider)
         EthersStoreUtil.setIsConnected(true)
         EthersStoreUtil.setAddress(getOriginalAddress(address) as Address)
         this.watchEIP6963(provider)
@@ -508,7 +510,7 @@ export class Web3Modal extends Web3ModalScaffold {
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType('coinbaseWallet')
-        EthersStoreUtil.setProvider(config.coinbase as unknown as Provider)
+        EthersStoreUtil.setProvider(config.coinbase)
         EthersStoreUtil.setIsConnected(true)
         EthersStoreUtil.setAddress(getOriginalAddress(address) as Address)
         this.watchCoinbase(config)
@@ -524,7 +526,7 @@ export class Web3Modal extends Web3ModalScaffold {
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType(ConstantsUtil.EMAIL_CONNECTOR_ID as 'w3mEmail')
-        EthersStoreUtil.setProvider(this.emailProvider as unknown as W3mFrameProvider)
+        EthersStoreUtil.setProvider(this.emailProvider as unknown as CombinedProvider)
         EthersStoreUtil.setIsConnected(true)
         EthersStoreUtil.setAddress(address as Address)
         this.watchEmail()
@@ -812,7 +814,7 @@ export class Web3Modal extends Web3ModalScaffold {
           }
         }
       } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID && chain) {
-        const InjectedProvider = provider as unknown as Provider
+        const InjectedProvider = provider
         if (InjectedProvider) {
           try {
             await InjectedProvider.request({
@@ -835,7 +837,7 @@ export class Web3Modal extends Web3ModalScaffold {
           }
         }
       } else if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID && chain) {
-        const EIP6963Provider = provider as unknown as Provider
+        const EIP6963Provider = provider
 
         if (EIP6963Provider) {
           try {
@@ -859,7 +861,7 @@ export class Web3Modal extends Web3ModalScaffold {
           }
         }
       } else if (providerType === ConstantsUtil.COINBASE_CONNECTOR_ID && chain) {
-        const CoinbaseProvider = provider as unknown as Provider
+        const CoinbaseProvider = provider
         if (CoinbaseProvider) {
           try {
             await CoinbaseProvider.request({

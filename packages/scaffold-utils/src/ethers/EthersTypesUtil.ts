@@ -1,3 +1,5 @@
+import type { W3mFrameProvider } from '@web3modal/smart-account'
+
 export interface IEthersConfig {
   providers: ProviderType
   defaultChain?: number
@@ -32,6 +34,8 @@ export type Metadata = {
   url: string
   icons: string[]
 }
+
+export type CombinedProvider = W3mFrameProvider & Provider
 
 export type Chain = {
   rpcUrl: string

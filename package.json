@@ -37,7 +37,6 @@
     "packages/polyfills",
     "packages/smart-account",
     "packages/siwe",
-    "packages/smart-account",
     "packages/wagmi",
     "packages/ethers",
     "packages/ethers5",
