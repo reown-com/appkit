@@ -1,11 +1,12 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { Address, Provider } from './EthersTypesUtil.js'
+import type { W3mFrameProvider } from '@web3modal/smart-account'
 // -- Types --------------------------------------------- //
 
 export interface EthersStoreUtilState {
-  provider?: Provider
-  providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963'
+  provider?: Provider | W3mFrameProvider
+  providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
   address?: Address
   chainId?: number
   isConnected: boolean

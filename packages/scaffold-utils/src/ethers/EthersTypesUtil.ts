@@ -9,6 +9,7 @@ export type Address = `0x${string}`
 export type ProviderType = {
   injected?: Provider
   coinbase?: Provider
+  email?: boolean
   EIP6963?: boolean
   metadata: Metadata
 }

@@ -50,6 +50,7 @@
     "@web3modal/scaffold-react": "3.4.0",
     "@web3modal/scaffold-utils": "3.4.0",
     "@web3modal/scaffold-vue": "3.4.0",
+    "@web3modal/smart-account": "3.4.0",
     "valtio": "1.11.2"
   },
   "peerDependencies": {

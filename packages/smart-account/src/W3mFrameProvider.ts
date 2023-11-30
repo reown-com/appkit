@@ -42,6 +42,7 @@ export class W3mFrameProvider {
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
     this.w3mStorage = createW3mFrameStorage('Web3ModalAuthDB', 'Web3ModalAuth')
+
     this.w3mFrame.events.onFrameEvent(event => {
       // eslint-disable-next-line no-console
       console.log('💻 received', event)
@@ -151,7 +152,7 @@ export class W3mFrameProvider {
     })
   }
 
-  public async switchNetowrk(chainId: number) {
+  public async switchNetwork(chainId: number) {
     await this.w3mFrame.frameLoadPromise
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_SWITCH_NETWORK,
@@ -178,6 +179,12 @@ export class W3mFrameProvider {
 
     switch (req.method) {
       case 'personal_sign':
+        this.w3mFrame.events.postAppEvent({
+          type: W3mFrameConstants.APP_RPC_PERSONAL_SIGN,
+          payload: req
+        })
+        break
+      case 'eth_accounts':
         this.w3mFrame.events.postAppEvent({
           type: W3mFrameConstants.APP_RPC_PERSONAL_SIGN,
           payload: req
