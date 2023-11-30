@@ -17,7 +17,6 @@ export const FrameConnectEmailResponse = z.object({
 })
 export const FrameGetUserResponse = z.object({
   address: z.string(),
-  email: z.string().email(),
   chainId: z.number()
 })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })

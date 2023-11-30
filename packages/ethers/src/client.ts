@@ -21,7 +21,12 @@ import type {
   Chain,
   EthersStoreUtilState
 } from '@web3modal/scaffold-utils/ethers'
-import { formatEther, JsonRpcProvider, InfuraProvider, ethers } from 'ethers'
+import {
+  formatEther,
+  JsonRpcProvider,
+  InfuraProvider,
+  getAddress as getOriginalAddress
+} from 'ethers'
 import {
   EthersConstantsUtil,
   EthersHelpersUtil,
@@ -209,17 +214,20 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       disconnect: async () => {
-        const provider = EthersStoreUtil.state.provider
+        const provider = EthersStoreUtil.state.provider as Provider
         const providerType = EthersStoreUtil.state.providerType
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider
           await (WalletConnectProvider as unknown as EthereumProvider).disconnect()
-        } else if (providerType === ConstantsUtil.EMAIL_CONNECTOR_ID) {
+          provider?.emit('disconnect')
+          // eslint-disable-next-line no-negated-condition
+        } else if (providerType !== ConstantsUtil.EMAIL_CONNECTOR_ID) {
+          provider?.emit('disconnect')
+        } else {
           this.emailProvider?.disconnect()
         }
-        provider?.emit('disconnect')
       }
     }
 
@@ -295,7 +303,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   public getAddress() {
-    return EthersStoreUtil.state.address
+    return getOriginalAddress(EthersStoreUtil.state.address as string)
   }
 
   public getChainId() {
@@ -320,13 +328,16 @@ export class Web3Modal extends Web3ModalScaffold {
 
   public async disconnect() {
     const { provider, providerType } = EthersStoreUtil.state
+
     localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
     EthersStoreUtil.reset()
 
     if (providerType === 'injected' || providerType === 'eip6963') {
-      provider?.emit('disconnect')
+      const typedProvider: Provider = provider as Provider
+      typedProvider?.emit('disconnect')
     } else {
-      await (provider as unknown as EthereumProvider).disconnect()
+      const typedProvider: EthereumProvider = provider as unknown as EthereumProvider
+      await typedProvider.disconnect()
     }
   }
 
@@ -464,9 +475,9 @@ export class Web3Modal extends Web3ModalScaffold {
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType('injected')
-        EthersStoreUtil.setProvider(config.injected)
+        EthersStoreUtil.setProvider(config.injected as unknown as Provider)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(address as Address)
+        EthersStoreUtil.setAddress(getOriginalAddress(address) as Address)
         this.watchCoinbase(config)
       }
     }
@@ -480,9 +491,9 @@ export class Web3Modal extends Web3ModalScaffold {
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType('eip6963')
-        EthersStoreUtil.setProvider(provider)
+        EthersStoreUtil.setProvider(provider as unknown as Provider)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(address as Address)
+        EthersStoreUtil.setAddress(getOriginalAddress(address) as Address)
         this.watchEIP6963(provider)
       }
     }
@@ -497,9 +508,9 @@ export class Web3Modal extends Web3ModalScaffold {
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType('coinbaseWallet')
-        EthersStoreUtil.setProvider(config.coinbase)
+        EthersStoreUtil.setProvider(config.coinbase as unknown as Provider)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(address as Address)
+        EthersStoreUtil.setAddress(getOriginalAddress(address) as Address)
         this.watchCoinbase(config)
       }
     }
@@ -513,7 +524,7 @@ export class Web3Modal extends Web3ModalScaffold {
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType(ConstantsUtil.EMAIL_CONNECTOR_ID as 'w3mEmail')
-        EthersStoreUtil.setProvider(this.emailProvider)
+        EthersStoreUtil.setProvider(this.emailProvider as unknown as W3mFrameProvider)
         EthersStoreUtil.setIsConnected(true)
         EthersStoreUtil.setAddress(address as Address)
         this.watchEmail()
@@ -566,11 +577,12 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     function accountsChangedHandler(accounts: string[]) {
-      if (accounts.length === 0) {
+      const currentAccount = accounts?.[0]
+      if (currentAccount) {
+        EthersStoreUtil.setAddress(getOriginalAddress(currentAccount) as Address)
+      } else {
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
-      } else {
-        EthersStoreUtil.setAddress(accounts[0] as Address)
       }
     }
 
@@ -602,11 +614,12 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     function accountsChangedHandler(accounts: string[]) {
-      if (accounts.length === 0) {
+      const currentAccount = accounts?.[0]
+      if (currentAccount) {
+        EthersStoreUtil.setAddress(getOriginalAddress(currentAccount) as Address)
+      } else {
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
-      } else {
-        EthersStoreUtil.setAddress(accounts[0] as Address)
       }
     }
 
@@ -641,11 +654,12 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     function accountsChangedHandler(accounts: string[]) {
-      if (accounts.length === 0) {
+      const currentAccount = accounts?.[0]
+      if (currentAccount) {
+        EthersStoreUtil.setAddress(getOriginalAddress(currentAccount) as Address)
+      } else {
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
-      } else {
-        EthersStoreUtil.setAddress(accounts[0] as Address)
       }
     }
 

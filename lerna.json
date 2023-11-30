@@ -10,7 +10,6 @@
     "packages/scaffold-vue",
     "packages/polyfills",
     "packages/smart-account",
-    "packages/utils",
     "packages/siwe",
     "packages/wagmi",
     "packages/ethers",
@@ -18,6 +17,6 @@
     "apps/*",
     "examples/*"
   ],
-  "version": "3.4.0",
+  "version": "3.4.0-7c9b36dd",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }

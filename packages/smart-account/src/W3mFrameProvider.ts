@@ -184,12 +184,6 @@ export class W3mFrameProvider {
           payload: req
         })
         break
-      case 'eth_accounts':
-        this.w3mFrame.events.postAppEvent({
-          type: W3mFrameConstants.APP_RPC_PERSONAL_SIGN,
-          payload: req
-        })
-        break
       case 'eth_sendTransaction':
         this.w3mFrame.events.postAppEvent({
           type: W3mFrameConstants.APP_RPC_ETH_SEND_TRANSACTION,

@@ -8,6 +8,7 @@ import {
   EventsController,
   ModalController,
   RouterController,
+  SIWEController,
   SnackController,
   StorageUtil
 } from '@web3modal/core'
@@ -75,7 +76,11 @@ export class W3mConnectingWcView extends LitElement {
 
         await ConnectionController.state.wcPromise
         this.finalizeConnection()
-        ModalController.close()
+        if (SIWEController.state.isSiweEnabled) {
+          RouterController.push('ConnectingSiwe')
+        } else {
+          ModalController.close()
+        }
       }
     } catch (error) {
       EventsController.sendEvent({
@@ -101,6 +106,7 @@ export class W3mConnectingWcView extends LitElement {
     if (recentWallet) {
       StorageUtil.setWeb3ModalRecent(recentWallet)
     }
+
     EventsController.sendEvent({
       type: 'track',
       event: 'CONNECT_SUCCESS',
