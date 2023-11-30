@@ -7,6 +7,7 @@
     "build:examples": "vite build"
   },
   "dependencies": {
-    "@web3modal/ethers5": "3.4.0-7f62a20e"
+    "@web3modal/ethers5": "3.4.0-7f62a20e",
+    "ethers": "5.7.2"
   }
 }

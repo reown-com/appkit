@@ -2,6 +2,7 @@ import type { Address, Chain, Config, WindowProvider } from '@wagmi/core'
 import {
   connect,
   disconnect,
+  signMessage,
   fetchBalance,
   fetchEnsAvatar,
   fetchEnsName,
@@ -27,7 +28,7 @@ import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type { EIP6963Connector } from './connectors/EIP6963Connector.js'
 import type { EmailConnector } from './connectors/EmailConnector.js'
-import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/utils'
+import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import { getCaipDefaultChain } from './utils/helpers.js'
 import { WALLET_CHOICE_KEY } from './utils/constants.js'
 
@@ -188,7 +189,14 @@ export class Web3Modal extends Web3ModalScaffold {
         return false
       },
 
-      disconnect
+      disconnect: async () => {
+        await disconnect()
+        if (siweConfig?.options?.signOutOnDisconnect) {
+          await siweConfig.signOut()
+        }
+      },
+
+      signMessage: async message => signMessage({ message })
     }
 
     super({

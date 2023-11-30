@@ -13,13 +13,15 @@ const client: ConnectionControllerClient = {
     await Promise.resolve()
   },
   disconnect: async () => Promise.resolve(),
+  signMessage: async (message: string) => Promise.resolve(message),
   connectExternal: async _id => Promise.resolve(),
   checkInstalled: _id => true
 }
 
 const partialClient: ConnectionControllerClient = {
   connectWalletConnect: async () => Promise.resolve(),
-  disconnect: async () => Promise.resolve()
+  disconnect: async () => Promise.resolve(),
+  signMessage: async (message: string) => Promise.resolve(message)
 }
 
 // -- Tests --------------------------------------------------------------------

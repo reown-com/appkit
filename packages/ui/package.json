@@ -20,9 +20,9 @@
     "qrcode": "1.5.3"
   },
   "devDependencies": {
-    "@types/qrcode": "1.5.5",
+    "@types/qrcode": "1.5.4",
     "@web3modal/common": "3.4.0-7f62a20e",
-    "eslint-plugin-lit": "1.10.1",
+    "eslint-plugin-lit": "1.9.1",
     "eslint-plugin-wc": "2.0.4"
   },
   "keywords": [

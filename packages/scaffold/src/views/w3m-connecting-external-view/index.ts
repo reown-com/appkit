@@ -3,6 +3,8 @@ import {
   ConnectionController,
   EventsController,
   ModalController,
+  RouterController,
+  SIWEController,
   StorageUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
@@ -42,7 +44,12 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
           StorageUtil.setConnectedWalletImageUrl(this.connector.imageUrl)
         }
         await ConnectionController.connectExternal(this.connector)
-        ModalController.close()
+
+        if (SIWEController.state.isSiweEnabled) {
+          RouterController.push('ConnectingSiwe')
+        } else {
+          ModalController.close()
+        }
 
         EventsController.sendEvent({
           type: 'track',
