@@ -443,7 +443,9 @@ export class Web3Modal extends Web3ModalScaffold {
       EthersStoreUtil.setProviderType('walletConnect')
       EthersStoreUtil.setProvider(WalletConnectProvider as unknown as Provider)
       EthersStoreUtil.setIsConnected(true)
-      EthersStoreUtil.setAddress(WalletConnectProvider.accounts[0] as Address)
+      const address = WalletConnectProvider.accounts?.[0]
+      const originalAddress = address ? (getOriginalAddress(address) as Address) : undefined
+      EthersStoreUtil.setAddress(originalAddress)
       this.watchWalletConnect()
     }
   }

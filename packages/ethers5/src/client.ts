@@ -313,7 +313,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   public getAddress() {
-    return ethers.utils.getAddress(EthersStoreUtil.state.address as string)
+    return utils.getAddress(EthersStoreUtil.state.address as string)
   }
 
   public getChainId() {
@@ -467,7 +467,9 @@ export class Web3Modal extends Web3ModalScaffold {
       EthersStoreUtil.setProviderType('walletConnect')
       EthersStoreUtil.setProvider(WalletConnectProvider as unknown as Provider)
       EthersStoreUtil.setIsConnected(true)
-      EthersStoreUtil.setAddress(WalletConnectProvider.accounts[0] as Address)
+      const address = WalletConnectProvider.accounts?.[0]
+      const originalAddress = address ? (utils.getAddress(address) as Address) : undefined
+      EthersStoreUtil.setAddress(originalAddress)
       this.watchWalletConnect()
     }
   }
@@ -483,7 +485,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType('injected')
         EthersStoreUtil.setProvider(config.injected)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(ethers.utils.getAddress(address) as Address)
+        EthersStoreUtil.setAddress(utils.getAddress(address) as Address)
         this.watchCoinbase(config)
       }
     }
@@ -499,7 +501,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType('eip6963')
         EthersStoreUtil.setProvider(provider)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(ethers.utils.getAddress(address) as Address)
+        EthersStoreUtil.setAddress(utils.getAddress(address) as Address)
         this.watchEIP6963(provider)
       }
     }
@@ -516,7 +518,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType('coinbaseWallet')
         EthersStoreUtil.setProvider(config.coinbase)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(ethers.utils.getAddress(address) as Address)
+        EthersStoreUtil.setAddress(utils.getAddress(address) as Address)
         this.watchCoinbase(config)
       }
     }
@@ -569,7 +571,7 @@ export class Web3Modal extends Web3ModalScaffold {
     function accountsChangedHandler(accounts: string[]) {
       const currentAccount = accounts?.[0]
       if (currentAccount) {
-        EthersStoreUtil.setAddress(ethers.utils.getAddress(currentAccount) as Address)
+        EthersStoreUtil.setAddress(utils.getAddress(currentAccount) as Address)
       } else {
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
@@ -606,7 +608,7 @@ export class Web3Modal extends Web3ModalScaffold {
     function accountsChangedHandler(accounts: string[]) {
       const currentAccount = accounts?.[0]
       if (currentAccount) {
-        EthersStoreUtil.setAddress(ethers.utils.getAddress(currentAccount) as Address)
+        EthersStoreUtil.setAddress(utils.getAddress(currentAccount) as Address)
       } else {
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
