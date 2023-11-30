@@ -287,8 +287,15 @@ export class Web3Modal extends Web3ModalScaffold {
     )
   }
 
+  public setAddress(address?: string) {
+    const originalAddress = address ? (getOriginalAddress(address) as Address) : undefined
+    EthersStoreUtil.setAddress(originalAddress)
+  }
+
   public getAddress() {
-    return getOriginalAddress(EthersStoreUtil.state.address as string)
+    const { address } = EthersStoreUtil.state
+
+    return address ? getOriginalAddress(address) : undefined
   }
 
   public getChainId() {
@@ -443,9 +450,7 @@ export class Web3Modal extends Web3ModalScaffold {
       EthersStoreUtil.setProviderType('walletConnect')
       EthersStoreUtil.setProvider(WalletConnectProvider as unknown as Provider)
       EthersStoreUtil.setIsConnected(true)
-      const address = WalletConnectProvider.accounts?.[0]
-      const originalAddress = address ? (getOriginalAddress(address) as Address) : undefined
-      EthersStoreUtil.setAddress(originalAddress)
+      this.setAddress(WalletConnectProvider.accounts?.[0])
       this.watchWalletConnect()
     }
   }
@@ -461,7 +466,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType('injected')
         EthersStoreUtil.setProvider(config.injected)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(getOriginalAddress(address) as Address)
+        this.setAddress(address)
         this.watchCoinbase(config)
       }
     }
@@ -477,7 +482,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType('eip6963')
         EthersStoreUtil.setProvider(provider)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(getOriginalAddress(address) as Address)
+        this.setAddress(address)
         this.watchEIP6963(provider)
       }
     }
@@ -494,7 +499,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType('coinbaseWallet')
         EthersStoreUtil.setProvider(config.coinbase)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(getOriginalAddress(address) as Address)
+        this.setAddress(address)
         this.watchCoinbase(config)
       }
     }
