@@ -46,6 +46,8 @@ export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProvider
         throw new SwitchChainError(new Error('chain not found on connector.'))
       }
       await this.provider.switchNetowrk(chainId)
+      const unsupported = this.isChainUnsupported(chainId)
+      this.emit('change', { chain: { id: chainId, unsupported } })
 
       return chain
     } catch (error) {
