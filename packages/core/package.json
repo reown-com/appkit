@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@web3modal/common": "3.4.0-7c9b36dd",
-    "valtio": "1.12.0"
+    "valtio": "1.12.1"
   },
   "keywords": [
     "web3",

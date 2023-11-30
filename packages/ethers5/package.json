@@ -50,7 +50,7 @@
     "@web3modal/scaffold-react": "3.4.0-7c9b36dd",
     "@web3modal/scaffold-utils": "3.4.0-7c9b36dd",
     "@web3modal/scaffold-vue": "3.4.0-7c9b36dd",
-    "valtio": "1.11.2"
+    "valtio": "1.12.1"
   },
   "devDependencies": {
     "ethers": "5.7.2"
