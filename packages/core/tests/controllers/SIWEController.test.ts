@@ -4,6 +4,7 @@ import { SIWEController } from '../../index.js'
 // -- Mocks -------------------------------------------------------------
 const session = { address: '0x', chainId: 1 }
 const client = {
+  signIn: () => Promise.resolve(session),
   options: {
     enabled: true,
     nonceRefetchIntervalMs: 60000,

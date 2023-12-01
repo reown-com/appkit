@@ -2,6 +2,7 @@ import type { Address, Chain, Config, WindowProvider } from '@wagmi/core'
 import {
   connect,
   disconnect,
+  signMessage,
   fetchBalance,
   fetchEnsAvatar,
   fetchEnsName,
@@ -184,7 +185,14 @@ export class Web3Modal extends Web3ModalScaffold {
         return false
       },
 
-      disconnect
+      disconnect: async () => {
+        await disconnect()
+        if (siweConfig?.options?.signOutOnDisconnect) {
+          await siweConfig.signOut()
+        }
+      },
+
+      signMessage: async message => signMessage({ message })
     }
 
     super({

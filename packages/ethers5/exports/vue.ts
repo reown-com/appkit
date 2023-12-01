@@ -68,7 +68,7 @@ export function useWeb3ModalAccount() {
   const chainId = ref(modal.getChainId())
 
   const unsubscribe = modal.subscribeProvider(state => {
-    address.value = state.address
+    address.value = state.address as string
     isConnected.value = state.isConnected
     chainId.value = state.chainId
   })
