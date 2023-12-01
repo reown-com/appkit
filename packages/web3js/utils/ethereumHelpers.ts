@@ -5,7 +5,7 @@ import Web3 from 'web3'
 export const ethereumHelpers: EthereumHelpers = {
   getAddress: address => address,
   getENS: async (address: string) => {
-    let rpc = 'https://eth.public-rpc.com/'
+    const rpc = 'https://eth.public-rpc.com/'
     const web3 = new Web3(rpc)
     const namehash = await web3.eth.call({
       // ENS: Reverse Registrar
@@ -36,9 +36,7 @@ export const ethereumHelpers: EthereumHelpers = {
       })
     ) as string | undefined
   },
-  getAvatar: async () => {
-    return undefined
-  },
+  getAvatar: () => undefined,
   getBalance: async ({ address, chain }: { address: string; chain: Chain }) => {
     const web3 = new Web3(chain.rpcUrl)
     const balance = await web3.eth.getBalance(address)

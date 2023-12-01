@@ -34,7 +34,7 @@ import type { Eip1193Provider } from 'ethers'
 export type EthereumHelpers = {
   getAddress: (address: string) => string
   getENS: (address: string) => Promise<string | undefined>
-  getAvatar: (address: string) => Promise<string | undefined>
+  getAvatar: (address: string) => Promise<string | undefined> | undefined
   getBalance: ({ chain, address }: { chain: Chain; address: string }) => Promise<string>
 }
 
