@@ -1,7 +1,7 @@
 import type { Web3ModalOptions } from '@web3modal/connectors'
 import { Web3Modal } from '@web3modal/connectors'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { ethereumHelpers } from '../utils/ethereumHelpers'
+import { ethereumHelpers } from '../utils/ethereumHelpers.js'
 
 export type { Web3ModalOptions } from '@web3modal/connectors'
 export { defaultConfig } from '@web3modal/connectors'

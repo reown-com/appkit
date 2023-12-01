@@ -8,10 +8,12 @@ export const ethereumHelpers: EthereumHelpers = {
   getAddress: utils.getAddress,
   getENS: async (address: string) => {
     const name = await ensProvider.lookupAddress(address)
+
     return name as string | undefined
   },
   getAvatar: async (address: string) => {
     const avatar = await ensProvider.getAvatar(address)
+
     return avatar as string | undefined
   },
   getBalance: async ({ chain, address }: { chain: Chain; address: string }) => {
@@ -20,6 +22,7 @@ export const ethereumHelpers: EthereumHelpers = {
       name: chain.name
     })
     const balance = await JsonRpcProvider.getBalance(address)
+
     return utils.formatEther(balance)
   }
 }
