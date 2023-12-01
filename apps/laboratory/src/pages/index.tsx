@@ -25,6 +25,9 @@ export default function HomePage() {
         >
           V3 SIWE & Ethers
         </Link>
+      </VStack>
+      <VStack gap={4}>
+        <Heading>Web3js</Heading>
         <Link href="/library/web3js" padding={4} border={'1px solid #D70040'} borderRadius="xl">
           V3 with Web3js
         </Link>
