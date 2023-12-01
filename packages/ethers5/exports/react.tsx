@@ -5,7 +5,7 @@ import { Web3Modal } from '@web3modal/connectors'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { EthersStoreUtil } from '@web3modal/scaffold-utils/ethers'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
-import { ethereumHelpers } from '../utils/ethersHelpers'
+import { ethereumHelpers } from '../utils/ethersHelpers.js'
 import { useSnapshot } from 'valtio'
 import { ethers } from 'ethers'
 

@@ -2,7 +2,7 @@ import type { Web3ModalOptions } from '@web3modal/connectors'
 import { Web3Modal } from '@web3modal/connectors'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/scaffold-vue'
-import { ethereumHelpers } from '../utils/ethersHelpers'
+import { ethereumHelpers } from '../utils/ethersHelpers.js'
 import type { ethers } from 'ethers'
 import { onUnmounted, ref } from 'vue'
 // -- Types -------------------------------------------------------------------
