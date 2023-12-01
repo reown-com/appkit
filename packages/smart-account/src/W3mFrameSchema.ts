@@ -49,9 +49,7 @@ export const RpcEthSignTypedDataV4 = z.object({
   params: z.array(z.any())
 })
 export const FrameSession = z.object({
-  STORE_KEY_PRIVATE_KEY: z.any(),
-  STORE_KEY_PUBLIC_JWK: z.any(),
-  rt: z.string()
+  token: z.string()
 })
 
 export const W3mFrameSchema = {

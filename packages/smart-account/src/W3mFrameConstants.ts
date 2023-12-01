@@ -3,10 +3,9 @@ export const W3mFrameConstants = {
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
   RPC_METHOD_KEY: 'RPC_',
+  STORAGE_KEY: '@w3m-storage/',
 
-  DB_PRIVATE_KEY: 'STORE_KEY_PRIVATE_KEY',
-  DB_PUBLIC_JWK: 'STORE_KEY_PUBLIC_JWK',
-  DB_RT: 'rt',
+  SESSION_TOKEN_KEY: 'SESSION_TOKEN_KEY',
 
   APP_SWITCH_NETWORK: '@w3m-app/SWITCH_NETWORK',
   APP_CONNECT_EMAIL: '@w3m-app/CONNECT_EMAIL',
