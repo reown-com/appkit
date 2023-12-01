@@ -31,6 +31,14 @@ export default function HomePage() {
         <Link href="/library/web3js" padding={4} border={'1px solid #D70040'} borderRadius="xl">
           V3 with Web3js
         </Link>
+        <Link
+          href="/library/web3js-siwe"
+          padding={4}
+          border={'1px solid #D70040'}
+          borderRadius="xl"
+        >
+          V3 SIWE & Web3js
+        </Link>
       </VStack>
     </Center>
   )
