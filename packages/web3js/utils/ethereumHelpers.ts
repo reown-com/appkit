@@ -1,9 +1,9 @@
 import type { EthereumHelpers } from 'packages/connectors'
 import type { Chain } from '@web3modal/scaffold-utils/ethers'
-import Web3 from 'web3'
+import Web3, { utils } from 'web3'
 
 export const ethereumHelpers: EthereumHelpers = {
-  getAddress: address => address,
+  getAddress: (address: string) => utils.toChecksumAddress(address),
   getENS: async (address: string) => {
     const rpc = 'https://eth.public-rpc.com/'
     const web3 = new Web3(rpc)
