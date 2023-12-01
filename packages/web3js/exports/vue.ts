@@ -1,10 +1,12 @@
-import type { Web3ModalOptions } from '../src/client.js'
-import { Web3Modal } from '../src/client.js'
+import type { Web3ModalOptions } from '@web3modal/connectors'
+import { Web3Modal } from '@web3modal/connectors'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/scaffold-vue'
 import { onUnmounted, ref } from 'vue'
+import { ethereumHelpers } from '../utils/ethereumHelpers.js'
+
 // -- Types -------------------------------------------------------------------
-export type { Web3ModalOptions } from '../src/client.js'
+export type { Web3ModalOptions } from '@web3modal/connectors'
 
 // -- Setup -------------------------------------------------------------------
 let modal: Web3Modal | undefined = undefined
@@ -13,7 +15,8 @@ export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
     modal = new Web3Modal({
       ...options,
-      _sdkVersion: `vue-web3js-${ConstantsUtil.VERSION}`
+      _sdkVersion: `vue-web3js-${ConstantsUtil.VERSION}`,
+      ethereumHelpers
     })
     getWeb3Modal(modal)
   }
@@ -89,4 +92,4 @@ export {
 } from '@web3modal/scaffold-vue'
 
 // -- Universal Exports -------------------------------------------------------
-export { defaultConfig } from '../src/utils/defaultConfig.js'
+export { defaultConfig } from '@web3modal/connectors'

@@ -35,6 +35,7 @@
     "packages/scaffold-react",
     "packages/scaffold-vue",
     "packages/polyfills",
+    "packages/connectors",
     "packages/siwe",
     "packages/wagmi",
     "packages/ethers",

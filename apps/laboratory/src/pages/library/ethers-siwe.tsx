@@ -106,7 +106,7 @@ const siweConfig = createSIWEConfig({
 })
 
 const modal = createWeb3Modal({
-  ethersConfig: defaultConfig({
+  connectorsConfig: defaultConfig({
     metadata,
     defaultChainId: 1,
     rpcUrl: 'https://cloudflare-eth.com'

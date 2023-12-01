@@ -45,7 +45,7 @@ const metadata = {
 }
 
 const modal = createWeb3Modal({
-  web3Config: defaultConfig({
+  connectorsConfig: defaultConfig({
     metadata,
     defaultChainId: 1,
     rpcUrl: 'https://cloudflare-eth.com'

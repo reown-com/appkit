@@ -9,6 +9,7 @@
     "packages/scaffold-react",
     "packages/scaffold-vue",
     "packages/polyfills",
+    "packages/connectors",
     "packages/scaffold-utils",
     "packages/siwe",
     "packages/wagmi",

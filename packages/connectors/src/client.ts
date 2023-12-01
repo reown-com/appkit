@@ -11,17 +11,15 @@ import type {
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-
 import EthereumProvider from '@walletconnect/ethereum-provider'
-
+import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type {
   Address,
   Metadata,
+  Provider,
   ProviderType,
   Chain,
-  Provider,
   EthersStoreUtilState
 } from '@web3modal/scaffold-utils/ethers'
 import {
@@ -30,10 +28,19 @@ import {
   EthersStoreUtil
 } from '@web3modal/scaffold-utils/ethers'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
+import type { Eip1193Provider } from 'ethers'
 
 // -- Types ---------------------------------------------------------------------
+export type EthereumHelpers = {
+  getAddress: (address: string)=>string
+  getENS:(address: string)=>Promise<string | undefined>
+  getAvatar:(address: string)=>Promise<string | undefined>
+  getBalance: ({ chain, address }: {chain: Chain, address: string})=>Promise<string>
+}
+
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
-  ethersConfig: ProviderType
+  ethereumHelpers: EthereumHelpers
+  connectorsConfig: ProviderType
   siweConfig?: Web3ModalSIWEClient
   chains?: Chain[]
   defaultChain?: Chain
@@ -42,7 +49,7 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   tokens?: Record<number, Token>
 }
 
-export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
+export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion' | 'ethereumHelpers'>
 
 declare global {
   interface Window {
@@ -80,6 +87,8 @@ interface ExternalProvider extends EthereumProvider {
 export class Web3Modal extends Web3ModalScaffold {
   private hasSyncedConnectedAccount = false
 
+  private ethereumHelpers: EthereumHelpers
+
   private EIP6963Providers: IEIP6963Provider[] = []
 
   private walletConnectProvider?: EthereumProvider
@@ -95,19 +104,11 @@ export class Web3Modal extends Web3ModalScaffold {
   private options: Web3ModalClientOptions | undefined = undefined
 
   public constructor(options: Web3ModalClientOptions) {
-    const {
-      ethersConfig,
-      siweConfig,
-      chains,
-      defaultChain,
-      tokens,
-      chainImages,
-      _sdkVersion,
-      ...w3mOptions
-    } = options
+    const { siweConfig, ethereumHelpers, connectorsConfig, chains, defaultChain, tokens, chainImages, _sdkVersion, ...w3mOptions } =
+      options
 
-    if (!ethersConfig) {
-      throw new Error('web3modal:constructor - ethersConfig is undefined')
+    if (!connectorsConfig) {
+      throw new Error('web3modal:constructor - connectorsConfig is undefined')
     }
 
     if (!w3mOptions.projectId) {
@@ -129,7 +130,7 @@ export class Web3Modal extends Web3ModalScaffold {
             const provider = await this.getWalletConnectProvider()
             if (!provider) {
               throw new Error(
-                'networkControllerClient:getApprovedCaipNetworks - provider is undefined'
+                'networkControllerClient:getApprovedCaipNetworks - connector is undefined'
               )
             }
             const ns = provider.signer?.session?.namespaces
@@ -179,23 +180,23 @@ export class Web3Modal extends Web3ModalScaffold {
         provider: Provider
       }) => {
         if (id === ConstantsUtil.INJECTED_CONNECTOR_ID) {
-          const InjectedProvider = ethersConfig.injected
+          const InjectedProvider = connectorsConfig.injected
           if (!InjectedProvider) {
             throw new Error('connectionControllerClient:connectInjected - provider is undefined')
           }
           await InjectedProvider.request({ method: 'eth_requestAccounts' })
-          this.setInjectedProvider(ethersConfig)
+          this.setInjectedProvider(connectorsConfig)
         } else if (id === ConstantsUtil.EIP6963_CONNECTOR_ID && info && provider) {
           await provider.request({ method: 'eth_requestAccounts' })
           this.setEIP6963Provider(provider, info.name)
         } else if (id === ConstantsUtil.COINBASE_CONNECTOR_ID) {
-          const CoinbaseProvider = ethersConfig.coinbase
+          const CoinbaseProvider = connectorsConfig.coinbase
           if (!CoinbaseProvider) {
             throw new Error('connectionControllerClient:connectCoinbase - connector is undefined')
           }
           await CoinbaseProvider.request({ method: 'eth_requestAccounts' })
 
-          this.setCoinbaseProvider(ethersConfig)
+          this.setCoinbaseProvider(connectorsConfig)
         }
       },
 
@@ -204,7 +205,7 @@ export class Web3Modal extends Web3ModalScaffold {
           return Boolean(window.ethereum)
         }
 
-        if (ethersConfig.injected) {
+        if (connectorsConfig.injected) {
           if (!window?.ethereum) {
             return false
           }
@@ -224,11 +225,10 @@ export class Web3Modal extends Web3ModalScaffold {
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider
           await (WalletConnectProvider as unknown as EthereumProvider).disconnect()
-        } else if (provider) {
-          provider.emit('disconnect')
         }
+        provider?.emit('disconnect')
       },
-
+      
       signMessage: async (message: string) => {
         const provider = EthersStoreUtil.state.provider
         if (!provider) {
@@ -250,13 +250,15 @@ export class Web3Modal extends Web3ModalScaffold {
       siweControllerClient: siweConfig,
       defaultChain: EthersHelpersUtil.getCaipDefaultChain(defaultChain),
       tokens: HelpersUtil.getCaipTokens(tokens),
-      _sdkVersion: _sdkVersion ?? `html-ethers5-${ConstantsUtil.VERSION}`,
+      _sdkVersion: _sdkVersion ?? `html-ethers-${ConstantsUtil.VERSION}`,
       ...w3mOptions
     })
 
+    this.ethereumHelpers = ethereumHelpers
+    
     this.options = options
 
-    this.metadata = ethersConfig.metadata
+    this.metadata = connectorsConfig.metadata
 
     this.projectId = w3mOptions.projectId
     this.chains = chains
@@ -272,20 +274,20 @@ export class Web3Modal extends Web3ModalScaffold {
     })
 
     this.syncRequestedNetworks(chains, chainImages)
-    this.syncConnectors(ethersConfig)
+    this.syncConnectors(connectorsConfig)
 
-    if (ethersConfig.EIP6963) {
+    if (connectorsConfig.EIP6963) {
       if (typeof window !== 'undefined') {
-        this.listenConnectors(ethersConfig.EIP6963)
+        this.listenConnectors(connectorsConfig.EIP6963)
         this.checkActive6963Provider()
       }
     }
 
-    if (ethersConfig.injected) {
-      this.checkActiveInjectedProvider(ethersConfig)
+    if (connectorsConfig.injected) {
+      this.checkActiveInjectedProvider(connectorsConfig)
     }
-    if (ethersConfig.coinbase) {
-      this.checkActiveCoinbaseProvider(ethersConfig)
+    if (connectorsConfig.coinbase) {
+      this.checkActiveCoinbaseProvider(connectorsConfig)
     }
   }
 
@@ -312,14 +314,14 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   public setAddress(address?: string) {
-    const originalAddress = address ? (utils.getAddress(address) as Address) : undefined
+    const originalAddress = address ? (this.ethereumHelpers.getAddress(address) as Address) : undefined
     EthersStoreUtil.setAddress(originalAddress)
   }
 
   public getAddress() {
     const { address } = EthersStoreUtil.state
 
-    return address ? utils.getAddress(address) : address
+    return address ? this.ethereumHelpers.getAddress(address) : undefined
   }
 
   public getChainId() {
@@ -331,7 +333,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   public getWalletProvider() {
-    return EthersStoreUtil.state.provider
+    return EthersStoreUtil.state.provider as Eip1193Provider | undefined
   }
 
   public getWalletProviderType() {
@@ -383,6 +385,7 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     }
     this.walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions)
+
     await this.checkActiveWalletConnectProvider()
   }
 
@@ -529,15 +532,15 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async watchWalletConnect() {
-    const WalletConnectProvider = await this.getWalletConnectProvider()
+    const provider = await this.getWalletConnectProvider()
 
     function disconnectHandler() {
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
 
-      WalletConnectProvider?.removeListener('disconnect', disconnectHandler)
-      WalletConnectProvider?.removeListener('accountsChanged', accountsChangedHandler)
-      WalletConnectProvider?.removeListener('chainChanged', chainChangedHandler)
+      provider?.removeListener('disconnect', disconnectHandler)
+      provider?.removeListener('accountsChanged', accountsChangedHandler)
+      provider?.removeListener('chainChanged', chainChangedHandler)
     }
 
     function chainChangedHandler(chainId: string) {
@@ -553,29 +556,30 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     }
 
-    if (WalletConnectProvider) {
-      WalletConnectProvider.on('disconnect', disconnectHandler)
-      WalletConnectProvider.on('accountsChanged', accountsChangedHandler)
-      WalletConnectProvider.on('chainChanged', chainChangedHandler)
+    if (provider) {
+      provider.on('disconnect', disconnectHandler)
+      provider.on('accountsChanged', accountsChangedHandler)
+      provider.on('chainChanged', chainChangedHandler)
     }
   }
 
   private watchInjected(config: ProviderType) {
-    const InjectedProvider = config.injected
+    const provider = config.injected
+    const getAddress = this.ethereumHelpers.getAddress
 
     function disconnectHandler() {
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
 
-      InjectedProvider?.removeListener('disconnect', disconnectHandler)
-      InjectedProvider?.removeListener('accountsChanged', accountsChangedHandler)
-      InjectedProvider?.removeListener('chainChanged', chainChangedHandler)
+      provider?.removeListener('disconnect', disconnectHandler)
+      provider?.removeListener('accountsChanged', accountsChangedHandler)
+      provider?.removeListener('chainChanged', chainChangedHandler)
     }
 
     function accountsChangedHandler(accounts: string[]) {
       const currentAccount = accounts?.[0]
       if (currentAccount) {
-        EthersStoreUtil.setAddress(utils.getAddress(currentAccount) as Address)
+        EthersStoreUtil.setAddress(getAddress(currentAccount) as Address)
       } else {
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
@@ -592,14 +596,16 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     }
 
-    if (InjectedProvider) {
-      InjectedProvider.on('disconnect', disconnectHandler)
-      InjectedProvider.on('accountsChanged', accountsChangedHandler)
-      InjectedProvider.on('chainChanged', chainChangedHandler)
+    if (provider) {
+      provider.on('disconnect', disconnectHandler)
+      provider.on('accountsChanged', accountsChangedHandler)
+      provider.on('chainChanged', chainChangedHandler)
     }
   }
 
   private watchEIP6963(provider: Provider) {
+    const getAddress = this.ethereumHelpers.getAddress
+    
     function disconnectHandler() {
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
@@ -612,7 +618,7 @@ export class Web3Modal extends Web3ModalScaffold {
     function accountsChangedHandler(accounts: string[]) {
       const currentAccount = accounts?.[0]
       if (currentAccount) {
-        EthersStoreUtil.setAddress(utils.getAddress(currentAccount) as Address)
+        EthersStoreUtil.setAddress(getAddress(currentAccount) as Address)
       } else {
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
@@ -629,30 +635,34 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     }
 
-    provider.on('disconnect', disconnectHandler)
-    provider.on('accountsChanged', accountsChangedHandler)
-    provider.on('chainChanged', chainChangedHandler)
+    if (provider) {
+      provider.on('disconnect', disconnectHandler)
+      provider.on('accountsChanged', accountsChangedHandler)
+      provider.on('chainChanged', chainChangedHandler)
+    }
   }
 
   private watchCoinbase(config: ProviderType) {
-    const CoinbaseProvider = config.coinbase
+    const provider = config.coinbase
     const walletId = localStorage.getItem(EthersConstantsUtil.WALLET_ID)
+    const getAddress = this.ethereumHelpers.getAddress
 
     function disconnectHandler() {
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()
 
-      CoinbaseProvider?.removeListener('disconnect', disconnectHandler)
-      CoinbaseProvider?.removeListener('accountsChanged', accountsChangedHandler)
-      CoinbaseProvider?.removeListener('chainChanged', chainChangedHandler)
+      provider?.removeListener('disconnect', disconnectHandler)
+      provider?.removeListener('accountsChanged', accountsChangedHandler)
+      provider?.removeListener('chainChanged', chainChangedHandler)
     }
 
     function accountsChangedHandler(accounts: string[]) {
-      if (accounts.length === 0) {
+      const currentAccount = accounts?.[0]
+      if (currentAccount) {
+        EthersStoreUtil.setAddress(getAddress(currentAccount) as Address)
+      } else {
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
-      } else {
-        EthersStoreUtil.setAddress(accounts[0] as Address)
       }
     }
 
@@ -663,10 +673,10 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     }
 
-    if (CoinbaseProvider) {
-      CoinbaseProvider.on('disconnect', disconnectHandler)
-      CoinbaseProvider.on('accountsChanged', accountsChangedHandler)
-      CoinbaseProvider.on('chainChanged', chainChangedHandler)
+    if (provider) {
+      provider.on('disconnect', disconnectHandler)
+      provider.on('accountsChanged', accountsChangedHandler)
+      provider.on('chainChanged', chainChangedHandler)
     }
   }
 
@@ -729,9 +739,9 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncProfile(address: Address) {
-    const ensProvider = new ethers.providers.InfuraProvider('mainnet')
-    const name = await ensProvider.lookupAddress(address)
-    const avatar = await ensProvider.getAvatar(address)
+    const name = await this.ethereumHelpers.getENS(address)
+    const avatar = await this.ethereumHelpers.getAvatar(address)
+
     if (name) {
       this.setProfileName(name)
     }
@@ -746,15 +756,8 @@ export class Web3Modal extends Web3ModalScaffold {
       const chain = this.chains.find(c => c.chainId === chainId)
 
       if (chain) {
-        const JsonRpcProvider = new ethers.providers.JsonRpcProvider(chain.rpcUrl, {
-          chainId,
-          name: chain.name
-        })
-        if (JsonRpcProvider) {
-          const balance = await JsonRpcProvider.getBalance(address)
-          const formattedBalance = utils.formatEther(balance)
-          this.setBalance(formattedBalance, chain.currency)
-        }
+        const formattedBalance = await this.ethereumHelpers.getBalance({ chain, address })
+        this.setBalance(formattedBalance, chain.currency)
       }
     }
   }

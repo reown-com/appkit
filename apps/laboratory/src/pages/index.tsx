@@ -26,7 +26,6 @@ export default function HomePage() {
           V3 SIWE & Ethers
         </Link>
         <Link
-          as={NextLink}
           href="/library/web3js"
           padding={4}
           border={'1px solid #D70040'}
