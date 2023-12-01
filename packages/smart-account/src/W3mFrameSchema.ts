@@ -72,29 +72,18 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_GET_CHAIN_ID') }))
 
-    .or(z.object({ type: zType('APP_RPC_PERSONAL_SIGN'), payload: RpcPersonalSignRequest }))
-
     .or(
       z.object({
-        type: zType('APP_RPC_ETH_SEND_TRANSACTION'),
-        payload: RpcEthSendTransactionRequest
-      })
-    )
-
-    .or(z.object({ type: zType('APP_RPC_ETH_ACCOUNTS'), payload: RpcEthAccountsRequest }))
-
-    .or(z.object({ type: zType('APP_RPC_ETH_GET_BALANCE'), payload: RpcGetBalance }))
-
-    .or(z.object({ type: zType('APP_RPC_ETH_ESTIMATE_GAS'), payload: RpcEthEstimateGas }))
-
-    .or(z.object({ type: zType('APP_RPC_ETH_GAS_PRICE'), payload: RpcEthGasPrice }))
-
-    .or(
-      z.object({
-        type: zType('APP_RPC_ETH_ETH_SIGN_TYPED_DATA_V4'),
-        payload: RpcEthSignTypedDataV4
+        type: zType('APP_RPC_REQUEST'),
+        payload: RpcPersonalSignRequest.or(RpcEthSendTransactionRequest)
+          .or(RpcEthAccountsRequest)
+          .or(RpcGetBalance)
+          .or(RpcEthEstimateGas)
+          .or(RpcEthGasPrice)
+          .or(RpcEthSignTypedDataV4)
       })
     ),
+
   // -- Frame Events ---------------------------------------------------------
   frameEvent: z
     .object({ type: zType('FRAME_SWITCH_NETWORK_ERROR'), payload: zError })

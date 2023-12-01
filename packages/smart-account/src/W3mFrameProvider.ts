@@ -173,22 +173,10 @@ export class W3mFrameProvider {
   public async request(req: W3mFrameTypes.RPCRequest) {
     await this.w3mFrame.frameLoadPromise
 
-    switch (req.method) {
-      case 'personal_sign':
-        this.w3mFrame.events.postAppEvent({
-          type: W3mFrameConstants.APP_RPC_PERSONAL_SIGN,
-          payload: req
-        })
-        break
-      case 'eth_sendTransaction':
-        this.w3mFrame.events.postAppEvent({
-          type: W3mFrameConstants.APP_RPC_ETH_SEND_TRANSACTION,
-          payload: req
-        })
-        break
-      default:
-        throw new Error('W3mFrameProvider: unsupported method')
-    }
+    this.w3mFrame.events.postAppEvent({
+      type: W3mFrameConstants.APP_RPC_REQUEST,
+      payload: req
+    })
 
     return new Promise<W3mFrameTypes.RPCResponse>((resolve, reject) => {
       this.rpcRequestResolver = { resolve, reject }
