@@ -1,6 +1,6 @@
 {
   "name": "@apps/laboratory",
-  "version": "3.4.0-7c9b36dd",
+  "version": "3.4.0-d911c005",
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
@@ -13,9 +13,9 @@
     "@emotion/styled": "11.11.0",
     "@sentry/browser": "7.83.0",
     "@sentry/react": "7.83.0",
-    "@web3modal/ethers": "3.4.0-7c9b36dd",
-    "@web3modal/ethers5": "3.4.0-7c9b36dd",
-    "@web3modal/wagmi": "3.4.0-7c9b36dd",
+    "@web3modal/ethers": "3.4.0-d911c005",
+    "@web3modal/ethers5": "3.4.0-d911c005",
+    "@web3modal/wagmi": "3.4.0-d911c005",
     "framer-motion": "10.16.8",
     "next": "14.0.3",
     "next-auth": "4.24.5",
