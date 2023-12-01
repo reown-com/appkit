@@ -7,5 +7,9 @@ export type { Web3ModalOptions } from '@web3modal/connectors'
 export { defaultConfig } from '@web3modal/connectors'
 
 export function createWeb3Modal(options: Web3ModalOptions) {
-  return new Web3Modal({ ...options, _sdkVersion: `html-ethers-${ConstantsUtil.VERSION}`, ethereumHelpers })
+  return new Web3Modal({
+    ...options,
+    _sdkVersion: `html-ethers-${ConstantsUtil.VERSION}`,
+    ethereumHelpers
+  })
 }

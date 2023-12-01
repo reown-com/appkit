@@ -32,10 +32,10 @@ import type { Eip1193Provider } from 'ethers'
 
 // -- Types ---------------------------------------------------------------------
 export type EthereumHelpers = {
-  getAddress: (address: string)=>string
-  getENS:(address: string)=>Promise<string | undefined>
-  getAvatar:(address: string)=>Promise<string | undefined>
-  getBalance: ({ chain, address }: {chain: Chain, address: string})=>Promise<string>
+  getAddress: (address: string) => string
+  getENS: (address: string) => Promise<string | undefined>
+  getAvatar: (address: string) => Promise<string | undefined>
+  getBalance: ({ chain, address }: { chain: Chain; address: string }) => Promise<string>
 }
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -104,8 +104,17 @@ export class Web3Modal extends Web3ModalScaffold {
   private options: Web3ModalClientOptions | undefined = undefined
 
   public constructor(options: Web3ModalClientOptions) {
-    const { siweConfig, ethereumHelpers, connectorsConfig, chains, defaultChain, tokens, chainImages, _sdkVersion, ...w3mOptions } =
-      options
+    const {
+      siweConfig,
+      ethereumHelpers,
+      connectorsConfig,
+      chains,
+      defaultChain,
+      tokens,
+      chainImages,
+      _sdkVersion,
+      ...w3mOptions
+    } = options
 
     if (!connectorsConfig) {
       throw new Error('web3modal:constructor - connectorsConfig is undefined')
@@ -228,7 +237,7 @@ export class Web3Modal extends Web3ModalScaffold {
         }
         provider?.emit('disconnect')
       },
-      
+
       signMessage: async (message: string) => {
         const provider = EthersStoreUtil.state.provider
         if (!provider) {
@@ -255,7 +264,7 @@ export class Web3Modal extends Web3ModalScaffold {
     })
 
     this.ethereumHelpers = ethereumHelpers
-    
+
     this.options = options
 
     this.metadata = connectorsConfig.metadata
@@ -314,7 +323,9 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   public setAddress(address?: string) {
-    const originalAddress = address ? (this.ethereumHelpers.getAddress(address) as Address) : undefined
+    const originalAddress = address
+      ? (this.ethereumHelpers.getAddress(address) as Address)
+      : undefined
     EthersStoreUtil.setAddress(originalAddress)
   }
 
@@ -605,7 +616,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private watchEIP6963(provider: Provider) {
     const getAddress = this.ethereumHelpers.getAddress
-    
+
     function disconnectHandler() {
       localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
       EthersStoreUtil.reset()

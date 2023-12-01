@@ -1,10 +1,10 @@
-import type { EthereumHelpers } from "packages/connectors";
+import type { EthereumHelpers } from 'packages/connectors'
 import type { Chain } from '@web3modal/scaffold-utils/ethers'
-import Web3 from "web3";
+import Web3 from 'web3'
 
 export const ethereumHelpers: EthereumHelpers = {
-  getAddress: (address)=>address,
-  getENS: async (address: string)=>{
+  getAddress: address => address,
+  getENS: async (address: string) => {
     let rpc = 'https://eth.public-rpc.com/'
     const web3 = new Web3(rpc)
     const namehash = await web3.eth.call({
@@ -19,7 +19,7 @@ export const ethereumHelpers: EthereumHelpers = {
         [address]
       )
     })
-  
+
     return web3.eth.abi.decodeParameter(
       'string',
       await web3.eth.call({
@@ -36,13 +36,13 @@ export const ethereumHelpers: EthereumHelpers = {
       })
     ) as string | undefined
   },
-  getAvatar: async()=>{
+  getAvatar: async () => {
     return undefined
   },
-  getBalance: async ({ address, chain }: { address: string, chain: Chain })=>{
+  getBalance: async ({ address, chain }: { address: string; chain: Chain }) => {
     const web3 = new Web3(chain.rpcUrl)
     const balance = await web3.eth.getBalance(address)
-  
+
     return web3.utils.fromWei(Number(balance), 'ether')
   }
 }
