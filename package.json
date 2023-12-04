@@ -35,7 +35,7 @@
     "packages/scaffold-react",
     "packages/scaffold-vue",
     "packages/polyfills",
-    "packages/smart-account",
+    "packages/wallet",
     "packages/siwe",
     "packages/wagmi",
     "packages/ethers",
