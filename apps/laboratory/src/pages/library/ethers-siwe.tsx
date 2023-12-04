@@ -135,12 +135,15 @@ export default function EthersSiwe() {
         <VStack gap={4}>
           <Text>SIWE Status: {status}</Text>
           {session && (
-            <VStack>
-              <Text>SIWE Account:</Text>
-              <Text>
-                eip155:{session.chainId}:{session.address}
-              </Text>
-            </VStack>
+            <>
+              <Text>Network: eip155:{session.chainId}</Text>
+              <VStack>
+                <Text>Address:</Text>
+                <Text isTruncated={true} fontSize="sm">
+                  {session.address}
+                </Text>
+              </VStack>
+            </>
           )}
           <EthersConnectButton />
           <NetworksButton />
