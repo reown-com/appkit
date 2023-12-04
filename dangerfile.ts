@@ -268,3 +268,15 @@ function checkSdkVersion() {
   }
 }
 checkSdkVersion()
+
+// -- Check left over development constants ---------------------------------------
+async function checkDevelopmentConstants() {
+  for (const f of updated_files) {
+    const diff = await diffForFile(f)
+
+    if (diff?.added.includes('localhost:')) {
+      fail(`${f} uses localhost: which is likely a mistake`)
+    }
+  }
+}
+checkDevelopmentConstants()
