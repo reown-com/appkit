@@ -10,6 +10,6 @@
     "@web3modal/wagmi": "3.4.0-b83aa635"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "4.5.0"
+    "@vitejs/plugin-vue": "4.5.1"
   }
 }

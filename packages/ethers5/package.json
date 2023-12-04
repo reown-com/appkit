@@ -77,7 +77,7 @@
     }
   },
   "optionalDependencies": {
-    "@web3modal/siwe": "3.4.0-b83aa635",
+    "@web3modal/siwe": "*",
     "react": ">=17",
     "react-dom": ">=17",
     "vue": ">=3"
