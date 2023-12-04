@@ -50,7 +50,7 @@ export function defaultWagmiConfig({
   }
 
   // Dissabled by default
-  if (enableEmail !== false) {
+  if (enableEmail === true) {
     connectors.push(new EmailConnector({ chains, options: { projectId } }))
   }
 
