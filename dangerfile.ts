@@ -131,17 +131,17 @@ async function checkUiPackage() {
   }
 
   if (
-    (created_ui_components_index_ts.length && !jsx_index_diff?.added.includes('src/components')) ||
+    (created_ui_components_index_ts.length && !jsx_index_diff?.added.includes('../components')) ||
     !jsx_index_diff?.added.includes('src/components')
   ) {
     fail('New components were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
-  if (created_ui_composites_index_ts.length && !jsx_index_diff?.added.includes('src/composites')) {
+  if (created_ui_composites_index_ts.length && !jsx_index_diff?.added.includes('../composites')) {
     fail('New composites were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
-  if (created_ui_layout_index_ts.length && !jsx_index_diff?.added.includes('src/layout')) {
+  if (created_ui_layout_index_ts.length && !jsx_index_diff?.added.includes('../layout')) {
     fail('New layout components were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
