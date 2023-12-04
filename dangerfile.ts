@@ -114,34 +114,34 @@ async function checkUiPackage() {
   const ui_index_diff = ui_index ? await diffForFile(ui_index) : undefined
   const jsx_index = modified_files.find(f => f.includes('ui/utils/JSXTypesUtil.ts'))
   const jsx_index_diff = jsx_index ? await diffForFile(jsx_index) : undefined
-  const created_ui_components_ts = created_ui_components.filter(f => f.endsWith('.ts'))
-  const created_ui_composites_ts = created_ui_composites.filter(f => f.endsWith('.ts'))
-  const created_ui_layout_ts = created_ui_layout.filter(f => f.endsWith('.ts'))
+  const created_ui_components_index_ts = created_ui_components.filter(f => f.endsWith('index.ts'))
+  const created_ui_composites_index_ts = created_ui_composites.filter(f => f.endsWith('index.ts'))
+  const created_ui_layout_index_ts = created_ui_layout.filter(f => f.endsWith('index.ts'))
 
-  if (created_ui_components_ts.length && !ui_index_diff?.added.includes('src/components')) {
+  if (created_ui_components_index_ts.length && !ui_index_diff?.added.includes('src/components')) {
     fail('New components were added, but not exported in ui/index.ts')
   }
 
-  if (created_ui_composites_ts.length && !ui_index_diff?.added.includes('src/composites')) {
+  if (created_ui_composites_index_ts.length && !ui_index_diff?.added.includes('src/composites')) {
     fail('New composites were added, but not exported in ui/index.ts')
   }
 
-  if (created_ui_layout_ts.length && !ui_index_diff?.added.includes('src/layout')) {
+  if (created_ui_layout_index_ts.length && !ui_index_diff?.added.includes('src/layout')) {
     fail('New layout components were added, but not exported in ui/index.ts')
   }
 
   if (
-    (created_ui_components_ts.length && !jsx_index_diff?.added.includes('src/components')) ||
+    (created_ui_components_index_ts.length && !jsx_index_diff?.added.includes('src/components')) ||
     !jsx_index_diff?.added.includes('src/components')
   ) {
     fail('New components were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
-  if (created_ui_composites_ts.length && !jsx_index_diff?.added.includes('src/composites')) {
+  if (created_ui_composites_index_ts.length && !jsx_index_diff?.added.includes('src/composites')) {
     fail('New composites were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
-  if (created_ui_layout_ts.length && !jsx_index_diff?.added.includes('src/layout')) {
+  if (created_ui_layout_index_ts.length && !jsx_index_diff?.added.includes('src/layout')) {
     fail('New layout components were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
