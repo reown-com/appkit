@@ -99,6 +99,8 @@ export class W3mEmailLoginWidget extends LitElement {
           } else if (action === 'VERIFY_DEVICE') {
             RouterController.push('EmailVerifyDevice', { email: this.email })
           }
+        } else {
+          throw new Error('w3m-email-login-widget: Email connector not found')
         }
       }
     } catch (error) {
