@@ -25,19 +25,8 @@ export class W3mNetworkSwitchView extends LitElement {
 
   @state() public error = false
 
-  @state() private currentNetwork = NetworkController.state.caipNetwork
-
   public constructor() {
     super()
-    this.unsubscribe.push(
-      NetworkController.subscribeKey('caipNetwork', _val => {
-        // if (val?.id !== this.currentNetwork?.id) {
-        //   if (!SIWEController.state.isSiweEnabled) {
-        //     RouterController.goBack()
-        //   }
-        // }
-      })
-    )
   }
 
   public override disconnectedCallback() {
