@@ -10,11 +10,11 @@ export default css`
 
   input {
     width: 100%;
-    border-radius: var(--wui-border-radius-xxs);
+    border-radius: var(--wui-border-radius-xs);
     border: 1px solid var(--wui-gray-glass-005);
     background: var(--wui-gray-glass-005);
     font-size: var(--wui-font-size-paragraph);
-    font-weight: var(--wui-font-weight-regular);
+    font-weight: var(--wui-font-weight-light);
     letter-spacing: var(--wui-letter-spacing-paragraph);
     color: var(--wui-color-fg-100);
     transition: all var(--wui-ease-inout-power-1) var(--wui-duration-lg);
@@ -73,11 +73,11 @@ export default css`
   }
 
   wui-icon + .wui-size-md {
-    padding: 15px var(--wui-spacing-m) var(--wui-spacing-l) 42px;
+    padding: 15px var(--wui-spacing-m) var(--wui-spacing-l) var(--wui-spacing-3xl);
   }
 
   wui-icon[data-input='md'] {
-    left: var(--wui-spacing-m);
+    left: var(--wui-spacing-l);
   }
 
   input:placeholder-shown ~ ::slotted(wui-input-element),

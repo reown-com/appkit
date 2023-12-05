@@ -13,9 +13,9 @@ export interface OptionsControllerState {
   termsConditionsUrl?: string
   privacyPolicyUrl?: string
   enableAnalytics?: boolean
+  metadata?: Metadata
   sdkType: 'w3m'
   sdkVersion: SdkVersion
-  metadata?: Metadata
 }
 
 type StateKey = keyof OptionsControllerState

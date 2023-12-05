@@ -12,8 +12,11 @@ import styles from './styles.js'
 export class WuiInputText extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
+  // -- Members ------------------------------------------- //
+  public inputElementRef = createRef<HTMLInputElement>()
+
   // -- State & Properties -------------------------------- //
-  @property() public size: Exclude<SizeType, 'inherit' | 'lg' | 'xs' | 'xxs'> = 'md'
+  @property() public size: Exclude<SizeType, 'inherit' | 'xl' | 'lg' | 'xs' | 'xxs'> = 'md'
 
   @property() public icon?: IconType
 
@@ -24,8 +27,6 @@ export class WuiInputText extends LitElement {
   @property() public type: InputType = 'text'
 
   @property() public keyHint?: HTMLInputElement['enterKeyHint']
-
-  public inputElementRef = createRef<HTMLInputElement>()
 
   // -- Render -------------------------------------------- //
   public override render() {
