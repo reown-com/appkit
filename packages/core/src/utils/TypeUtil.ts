@@ -243,6 +243,22 @@ export type Event =
         cursor: string | undefined
       }
     }
+  | {
+      type: 'track'
+      event: 'CLICK_SIGN_SIWE_MESSAGE'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_CANCEL_SIWE'
+    }
+  | {
+      type: 'track'
+      event: 'SIWE_AUTH_SUCCESS'
+    }
+  | {
+      type: 'track'
+      event: 'SIWE_AUTH_ERROR'
+    }
 
 // -- SIWEController Types ---------------------------------------------------
 

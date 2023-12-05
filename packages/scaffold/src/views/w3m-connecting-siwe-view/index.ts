@@ -1,6 +1,7 @@
 import {
   AccountController,
   ConnectionController,
+  EventsController,
   ModalController,
   OptionsController,
   RouterController,
@@ -63,16 +64,29 @@ export class W3mConnectingSiweView extends LitElement {
   // -- Private ------------------------------------------- //
   private async onSign() {
     this.isSigning = true
+    EventsController.sendEvent({
+      event: 'CLICK_SIGN_SIWE_MESSAGE',
+      type: 'track'
+    })
     try {
       SIWEController.setStatus('loading')
       const session = await SIWEController.signIn()
       SIWEController.setStatus('success')
+      EventsController.sendEvent({
+        event: 'SIWE_AUTH_SUCCESS',
+        type: 'track'
+      })
 
       return session
     } catch (error) {
       SnackController.showError('Signature declined')
 
-      return SIWEController.setStatus('error')
+      SIWEController.setStatus('error')
+
+      return EventsController.sendEvent({
+        event: 'SIWE_AUTH_ERROR',
+        type: 'track'
+      })
     } finally {
       this.isSigning = false
     }
@@ -86,6 +100,10 @@ export class W3mConnectingSiweView extends LitElement {
     } else {
       RouterController.push('Connect')
     }
+    EventsController.sendEvent({
+      event: 'CLICK_CANCEL_SIWE',
+      type: 'track'
+    })
   }
 }
 declare global {
