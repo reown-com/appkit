@@ -21,6 +21,7 @@ Your on-ramp to web3 multichain. Web3Modal is a versatile library that makes it 
 
 ```zsh
 NEXT_PUBLIC_PROJECT_ID="your_project_id"
+NEXTAUTH_SECRET="your_session_secret"
 ```
 
 2. In each of the `examples` create `.env.local` file with following contents

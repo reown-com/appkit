@@ -1,9 +1,15 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import type { SIWEClientMethods, SIWESession } from '../utils/TypeUtil.js'
+import type {
+  SIWEClientMethods,
+  SIWESession,
+  SIWECreateMessageArgs,
+  SIWEVerifyMessageArgs
+} from '../utils/TypeUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface SIWEControllerClient extends SIWEClientMethods {
+  signIn: () => Promise<SIWESession>
   options: {
     enabled: boolean
     nonceRefetchIntervalMs: number
@@ -20,13 +26,15 @@ export interface SIWEControllerClientState {
   session?: SIWESession
   message?: string
   status: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
+  isSiweEnabled?: boolean
 }
 
 type StateKey = keyof SIWEControllerClientState
 
 // -- State --------------------------------------------- //
 const state = proxy<SIWEControllerClientState>({
-  status: 'uninitialized'
+  status: 'uninitialized',
+  isSiweEnabled: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -52,9 +60,68 @@ export const SIWEController = {
     return state._client
   },
 
+  async getNonce() {
+    const client = this._getClient()
+    const nonce = await client.getNonce()
+    this.setNonce(nonce)
+
+    return nonce
+  },
+
+  async getSession() {
+    const client = this._getClient()
+    const session = await client.getSession()
+    if (session) {
+      this.setSession(session)
+      this.setStatus('success')
+    }
+
+    return session
+  },
+
+  createMessage(args: SIWECreateMessageArgs) {
+    const client = this._getClient()
+    const message = client.createMessage(args)
+    this.setMessage(message)
+
+    return message
+  },
+
+  async verifyMessage(args: SIWEVerifyMessageArgs) {
+    const client = this._getClient()
+    const isValid = await client.verifyMessage(args)
+
+    return isValid
+  },
+
+  async signIn() {
+    const client = this._getClient()
+    const session = await client.signIn()
+
+    return session
+  },
+
+  async signOut() {
+    const client = this._getClient()
+    await client.signOut()
+    this.setStatus('ready')
+    client.onSignOut?.()
+  },
+
+  onSignIn(args: SIWESession) {
+    const client = this._getClient()
+    client.onSignIn?.(args)
+  },
+
+  onSignOut() {
+    const client = this._getClient()
+    client.onSignOut?.()
+  },
+
   setSIWEClient(client: SIWEControllerClient) {
     state._client = ref(client)
     state.status = 'ready'
+    state.isSiweEnabled = client.options.enabled
   },
 
   setNonce(nonce: SIWEControllerClientState['nonce']) {

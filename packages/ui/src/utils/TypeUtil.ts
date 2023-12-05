@@ -17,6 +17,7 @@ export type TextType =
   | 'large-700'
   | 'micro-600'
   | 'micro-700'
+  | 'paragraph-400'
   | 'paragraph-500'
   | 'paragraph-600'
   | 'paragraph-700'
@@ -28,7 +29,7 @@ export type TextType =
 
 export type TextAlign = 'center' | 'left' | 'right'
 
-export type SizeType = 'inherit' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs'
+export type SizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs'
 
 export type SpacingType =
   | '0'
@@ -134,6 +135,7 @@ export type IconType =
   | 'twitch'
   | 'twitter'
   | 'twitterIcon'
+  | 'verify'
   | 'wallet'
   | 'walletConnect'
   | 'walletPlaceholder'

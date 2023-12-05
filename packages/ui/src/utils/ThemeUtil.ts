@@ -110,6 +110,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-icon-box-size-sm: 24px;
         --wui-icon-box-size-md: 32px;
         --wui-icon-box-size-lg: 40px;
+        --wui-icon-box-size-xl: 64px;
 
         --wui-icon-size-inherit: inherit;
         --wui-icon-size-xxs: 10px;
@@ -159,7 +160,6 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-modal-bg: var(--wui-color-modal-bg-base);
 
         --wui-color-blue-100: var(--wui-color-blue-base-100);
-        --wui-color-blue-015: var(--wui-color-accent-base-015);
 
         --wui-color-accent-100: var(--wui-color-accent-base-100);
         --wui-color-accent-090: var(--wui-color-accent-base-090);

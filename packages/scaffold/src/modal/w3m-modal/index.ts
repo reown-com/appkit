@@ -1,7 +1,11 @@
 import {
+  AccountController,
   ApiController,
+  ConnectionController,
   EventsController,
   ModalController,
+  RouterController,
+  SIWEController,
   SnackController,
   ThemeController
 } from '@web3modal/core'
@@ -9,6 +13,7 @@ import { UiHelperUtil, customElement, initializeTheming } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import type { AccountControllerState } from '@web3modal/core'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
@@ -25,12 +30,20 @@ export class W3mModal extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private open = ModalController.state.open
 
+  @state() private caipAddress = AccountController.state.address
+
+  @state() private isSiweEnabled = SIWEController.state.isSiweEnabled
+
   public constructor() {
     super()
     this.initializeTheming()
     ApiController.prefetch()
     this.unsubscribe.push(
-      ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose()))
+      ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
+      SIWEController.subscribeKey('isSiweEnabled', isEnabled => {
+        this.isSiweEnabled = isEnabled
+      }),
+      AccountController.subscribe(newAccountState => this.onNewAccountState(newAccountState))
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
   }
@@ -56,10 +69,17 @@ export class W3mModal extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private onOverlayClick(event: PointerEvent) {
+  private async onOverlayClick(event: PointerEvent) {
     if (event.target === event.currentTarget) {
-      ModalController.close()
+      await this.handleClose()
     }
+  }
+
+  private async handleClose() {
+    if (this.isSiweEnabled && SIWEController.state.status !== 'success') {
+      await ConnectionController.disconnect()
+    }
+    ModalController.close()
   }
 
   private initializeTheming() {
@@ -123,7 +143,7 @@ export class W3mModal extends LitElement {
       'keydown',
       event => {
         if (event.key === 'Escape') {
-          ModalController.close()
+          this.handleClose()
         } else if (event.key === 'Tab') {
           const { tagName } = event.target as HTMLElement
           if (tagName && !tagName.includes('W3M-') && !tagName.includes('WUI-')) {
@@ -138,6 +158,44 @@ export class W3mModal extends LitElement {
   private onRemoveKeyboardListener() {
     this.abortController?.abort()
     this.abortController = undefined
+  }
+
+  private async onNewAccountState(newState: AccountControllerState) {
+    const { isConnected, caipAddress: newCaipAddress } = newState
+
+    if (this.isSiweEnabled) {
+      if (isConnected && !this.caipAddress) {
+        this.caipAddress = newCaipAddress
+      }
+      if (isConnected && newCaipAddress && this.caipAddress !== newCaipAddress) {
+        await SIWEController.signOut()
+        this.onSiweNavigation()
+        this.caipAddress = newCaipAddress
+      }
+
+      try {
+        const session = await SIWEController.getSession()
+        if (session && !isConnected) {
+          await SIWEController.signOut()
+        } else if (isConnected && !session) {
+          this.onSiweNavigation()
+        }
+      } catch (error) {
+        if (isConnected) {
+          this.onSiweNavigation()
+        }
+      }
+    }
+  }
+
+  private onSiweNavigation() {
+    if (this.open) {
+      RouterController.push('ConnectingSiwe')
+    } else {
+      ModalController.open({
+        view: 'ConnectingSiwe'
+      })
+    }
   }
 }
 

@@ -5,8 +5,15 @@ import type {
   SIWEConfig,
   SIWEClientMethods
 } from '@web3modal/core'
+import {
+  AccountController,
+  NetworkController,
+  ModalController,
+  ConnectionController
+} from '@web3modal/core'
 
 import { ConstantsUtil } from './utils/ConstantsUtil.js'
+import { HelpersUtil } from '@web3modal/scaffold-utils'
 
 // -- Client -------------------------------------------------------------------- //
 export class Web3ModalSIWEClient {
@@ -60,10 +67,6 @@ export class Web3ModalSIWEClient {
   async verifyMessage(args: SIWEVerifyMessageArgs) {
     const isValid = await this.methods.verifyMessage(args)
 
-    if (!isValid) {
-      throw new Error('siweControllerClient:createMessage - message is not valid')
-    }
-
     return isValid
   }
 
@@ -72,6 +75,38 @@ export class Web3ModalSIWEClient {
     if (!session) {
       throw new Error('siweControllerClient:getSession - session is undefined')
     }
+
+    return session
+  }
+
+  async signIn() {
+    const nonce = await this.methods.getNonce()
+    const { address } = AccountController.state
+    if (!address) {
+      throw new Error('An address is required to create a SIWE message.')
+    }
+    const chainId = HelpersUtil.caipNetworkIdToNumber(NetworkController.state.caipNetwork?.id)
+    if (!chainId) {
+      throw new Error('A chainId is required to create a SIWE message.')
+    }
+    const message = this.methods.createMessage({ address, nonce, chainId })
+    const signature = await ConnectionController.signMessage(message)
+
+    const isValid = await this.methods.verifyMessage({ message, signature })
+
+    if (!isValid) {
+      throw new Error('Error verifying SIWE signature')
+    }
+
+    const session = await this.methods.getSession()
+    if (!session) {
+      throw new Error('Error verifying SIWE signature')
+    }
+    if (this.methods.onSignIn) {
+      this.methods.onSignIn(session)
+    }
+
+    ModalController.close()
 
     return session
   }
