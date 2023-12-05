@@ -1,4 +1,4 @@
-import type { W3mFrameProvider } from '@web3modal/smart-account'
+import type { W3mFrameProvider } from '@web3modal/wallet'
 
 export interface IEthersConfig {
   providers: ProviderType

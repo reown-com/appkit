@@ -4,7 +4,7 @@ export const ethSvg = svg`<svg fill="none" viewBox="0 0 60 60">
     <rect width="60" height="60" fill="#987DE8" rx="30" />
     <path
       fill="#fff"
-      fillRule="evenodd"
+      fill-rule="evenodd"
       d="m15.48 28.37 11.97-19.3a3 3 0 0 1 5.1 0l11.97 19.3a6 6 0 0 1 .9 3.14v.03a6 6 0 0 1-1.16 3.56L33.23 50.2a4 4 0 0 1-6.46 0L15.73 35.1a6 6 0 0 1-1.15-3.54v-.03a6 6 0 0 1 .9-3.16Z"
       clip-rule="evenodd"
     />

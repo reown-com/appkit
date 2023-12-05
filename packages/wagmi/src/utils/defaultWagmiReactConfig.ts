@@ -28,6 +28,7 @@ export function defaultWagmiConfig({
 
   const connectors: Connector[] = []
 
+  // Enabled by default
   if (enableWalletConnect !== false) {
     connectors.push(
       new WalletConnectConnector({ chains, options: { projectId, showQrModal: false, metadata } })
@@ -38,10 +39,6 @@ export function defaultWagmiConfig({
     connectors.push(new InjectedConnector({ chains, options: { shimDisconnect: true } }))
   }
 
-  if (enableEmail !== false) {
-    connectors.push(new EmailConnector({ chains, options: { projectId } }))
-  }
-
   if (enableEIP6963 !== false) {
     connectors.push(new EIP6963Connector({ chains }))
   }
@@ -50,6 +47,11 @@ export function defaultWagmiConfig({
     connectors.push(
       new CoinbaseWalletConnector({ chains, options: { appName: metadata?.name ?? 'Unknown' } })
     )
+  }
+
+  // Dissabled by default
+  if (enableEmail === true) {
+    connectors.push(new EmailConnector({ chains, options: { projectId } }))
   }
 
   return createConfig({

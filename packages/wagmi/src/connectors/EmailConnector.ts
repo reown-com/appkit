@@ -1,6 +1,6 @@
 import type { Chain } from '@wagmi/core'
 import { Connector } from '@wagmi/core'
-import { W3mFrameProvider } from '@web3modal/smart-account'
+import { W3mFrameProvider } from '@web3modal/wallet'
 import { createWalletClient, custom, SwitchChainError } from 'viem'
 
 interface W3mFrameProviderOptions {

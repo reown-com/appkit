@@ -12,7 +12,7 @@ export const defiAltSvg = svg`<svg fill="none" viewBox="0 0 60 60">
     />
     <path
       fill="#fff"
-      fillRule="evenodd"
+      fill-rule="evenodd"
       d="M35.5 27a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0Z"
       clip-rule="evenodd"
     />

@@ -11,6 +11,11 @@ import {
   RpcPersonalSignRequest,
   RpcResponse,
   RpcEthSendTransactionRequest,
+  RpcEthSignTypedDataV4,
+  RpcEthAccountsRequest,
+  RpcEthEstimateGas,
+  RpcEthGasPrice,
+  RpcGetBalance,
   FrameSession
 } from './W3mFrameSchema.js'
 
@@ -40,6 +45,11 @@ export namespace W3mFrameTypes {
   export type RPCRequest =
     | z.infer<typeof RpcPersonalSignRequest>
     | z.infer<typeof RpcEthSendTransactionRequest>
+    | z.infer<typeof RpcEthSignTypedDataV4>
+    | z.infer<typeof RpcEthAccountsRequest>
+    | z.infer<typeof RpcEthEstimateGas>
+    | z.infer<typeof RpcEthGasPrice>
+    | z.infer<typeof RpcGetBalance>
 
   export type RPCResponse = z.infer<typeof RpcResponse>
 

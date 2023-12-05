@@ -1,6 +1,5 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
 import {
   RouterController,
   SnackController,
@@ -16,8 +15,6 @@ const OTP_LENGTH = 6
 
 @customElement('w3m-email-verify-otp-view')
 export class W3mEmailVerifyOtpView extends LitElement {
-  public static override styles = styles
-
   // -- Members ------------------------------------------- //
   protected readonly email = RouterController.state.data?.email
 

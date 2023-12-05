@@ -1,7 +1,7 @@
 import { W3mFrame } from './W3mFrame.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
 import { W3mFrameConstants } from './W3mFrameConstants.js'
-import { createW3mFrameStorage } from './W3mFrameStorage.js'
+import { W3mFrameStorage } from './W3mFrameStorage.js'
 
 // -- Types -----------------------------------------------------------
 type Resolver<T> = { resolve: (value: T) => void; reject: (reason?: unknown) => void } | undefined
@@ -18,8 +18,6 @@ type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
   private w3mFrame: W3mFrame
-
-  private w3mStorage: ReturnType<typeof createW3mFrameStorage>
 
   private connectEmailResolver: ConnectEmailResolver = undefined
 
@@ -41,8 +39,6 @@ export class W3mFrameProvider {
 
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
-    this.w3mStorage = createW3mFrameStorage('Web3ModalAuthDB', 'Web3ModalAuth')
-
     this.w3mFrame.events.onFrameEvent(event => {
       // eslint-disable-next-line no-console
       console.log('💻 received', event)
@@ -122,10 +118,10 @@ export class W3mFrameProvider {
 
   public async isConnected() {
     await this.w3mFrame.frameLoadPromise
-    const session = await this.getW3mDbAuthSession()
+    const token = this.getSessionToken()
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_IS_CONNECTED,
-      payload: session
+      payload: token ? { token } : undefined
     })
 
     return new Promise<W3mFrameTypes.Responses['FrameIsConnectedResponse']>((resolve, reject) => {
@@ -166,7 +162,7 @@ export class W3mFrameProvider {
 
   public async disconnect() {
     await this.w3mFrame.frameLoadPromise
-    await this.deleteW3mDbAuthSession()
+    this.deleteSessionToken()
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_SIGN_OUT })
 
     return new Promise((resolve, reject) => {
@@ -177,22 +173,10 @@ export class W3mFrameProvider {
   public async request(req: W3mFrameTypes.RPCRequest) {
     await this.w3mFrame.frameLoadPromise
 
-    switch (req.method) {
-      case 'personal_sign':
-        this.w3mFrame.events.postAppEvent({
-          type: W3mFrameConstants.APP_RPC_PERSONAL_SIGN,
-          payload: req
-        })
-        break
-      case 'eth_sendTransaction':
-        this.w3mFrame.events.postAppEvent({
-          type: W3mFrameConstants.APP_RPC_ETH_SEND_TRANSACTION,
-          payload: req
-        })
-        break
-      default:
-        throw new Error('W3mFrameProvider: unsupported method')
-    }
+    this.w3mFrame.events.postAppEvent({
+      type: W3mFrameConstants.APP_RPC_REQUEST,
+      payload: req
+    })
 
     return new Promise<W3mFrameTypes.RPCResponse>((resolve, reject) => {
       this.rpcRequestResolver = { resolve, reject }
@@ -324,45 +308,25 @@ export class W3mFrameProvider {
     this.rpcRequestResolver?.reject(event.payload.message)
   }
 
-  private async onSessionUpdate(
+  private onSessionUpdate(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SESSION_UPDATE' }>
   ) {
-    const session = event.payload
-    if (session) {
-      await this.setW3mDbAuthSession(session)
+    const { payload } = event
+    if (payload) {
+      this.setSessionToken(payload.token)
     }
   }
 
   // -- Private Methods ------------------------------------------------
-  private async setW3mDbAuthSession(session: W3mFrameTypes.FrameSessionType) {
-    const { DB_PRIVATE_KEY, DB_PUBLIC_JWK, DB_RT } = W3mFrameConstants
-    await Promise.all([
-      this.w3mStorage.setItem(DB_PRIVATE_KEY, session.STORE_KEY_PRIVATE_KEY),
-      this.w3mStorage.setItem(DB_PUBLIC_JWK, session.STORE_KEY_PUBLIC_JWK),
-      this.w3mStorage.setItem(DB_RT, session.rt)
-    ])
+  private setSessionToken(token: string) {
+    W3mFrameStorage.set(W3mFrameConstants.SESSION_TOKEN_KEY, token)
   }
 
-  private async getW3mDbAuthSession() {
-    const { DB_PRIVATE_KEY, DB_PUBLIC_JWK, DB_RT } = W3mFrameConstants
-    const [STORE_KEY_PRIVATE_KEY, STORE_KEY_PUBLIC_JWK, rt] = await Promise.all([
-      this.w3mStorage.getItem(DB_PRIVATE_KEY),
-      this.w3mStorage.getItem(DB_PUBLIC_JWK),
-      this.w3mStorage.getItem(DB_RT)
-    ])
-    if (STORE_KEY_PRIVATE_KEY && STORE_KEY_PUBLIC_JWK && rt) {
-      return { STORE_KEY_PRIVATE_KEY, STORE_KEY_PUBLIC_JWK, rt } as W3mFrameTypes.FrameSessionType
-    }
-
-    return undefined
+  private getSessionToken() {
+    return W3mFrameStorage.get(W3mFrameConstants.SESSION_TOKEN_KEY)
   }
 
-  private async deleteW3mDbAuthSession() {
-    const { DB_PRIVATE_KEY, DB_PUBLIC_JWK, DB_RT } = W3mFrameConstants
-    await Promise.all([
-      this.w3mStorage.removeItem(DB_PRIVATE_KEY),
-      this.w3mStorage.removeItem(DB_PUBLIC_JWK),
-      this.w3mStorage.removeItem(DB_RT)
-    ])
+  private deleteSessionToken() {
+    W3mFrameStorage.delete(W3mFrameConstants.SESSION_TOKEN_KEY)
   }
 }

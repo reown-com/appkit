@@ -19,10 +19,6 @@ declare module 'next-auth' {
  */
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
   const nextAuthSecret = process.env['NEXTAUTH_SECRET']
-  const nextAuthUrl = process.env['NEXTAUTH_URL']
-  if (!nextAuthUrl) {
-    throw new Error('NEXTAUTH_URL is not set')
-  }
   if (!nextAuthSecret) {
     throw new Error('NEXTAUTH_SECRET is not set')
   }
@@ -48,13 +44,11 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             throw new Error('SiweMessage is undefined')
           }
           const siwe = new SiweMessage(credentials.message)
-          const url = new URL(nextAuthUrl)
           const provider = new ethers.InfuraProvider(siwe.chainId)
           const nonce = await getCsrfToken({ req: { headers: req.headers } })
           const result = await siwe.verify(
             {
               signature: credentials?.signature || '',
-              domain: url.host,
               nonce
             },
             {
