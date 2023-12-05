@@ -73,7 +73,7 @@ export default css`
   }
 
   wui-icon + .wui-size-md {
-    padding: 15px var(--wui-spacing-m) var(--wui-spacing-l) 40px;
+    padding: 15px var(--wui-spacing-m) var(--wui-spacing-l) var(--wui-spacing-3xl);
   }
 
   wui-icon[data-input='md'] {

@@ -53,7 +53,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
 
         <wui-flex alignItems="center">
           <wui-text variant="small-400" color="fg-200">Didn't receive it?</wui-text>
-          <wui-link>Resend code</wui-link>
+          <wui-link>TODO: Resend code</wui-link>
         </wui-flex>
       </wui-flex>
     `

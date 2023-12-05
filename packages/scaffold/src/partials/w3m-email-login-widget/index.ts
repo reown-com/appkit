@@ -46,7 +46,7 @@ export class W3mEmailLoginWidget extends LitElement {
   public override render() {
     const multipleConnectors = this.connectors.length > 1
     const connector = this.connectors.find(c => c.type === 'EMAIL')
-    const isSubmit = !this.loading && this.email.length > 3
+    const showSubmit = !this.loading && this.email.length > 3
 
     if (!connector) {
       return null
@@ -60,7 +60,7 @@ export class W3mEmailLoginWidget extends LitElement {
         >
         </wui-email-input>
 
-        ${isSubmit
+        ${showSubmit
           ? html`
               <wui-icon-link
                 size="sm"
@@ -88,20 +88,23 @@ export class W3mEmailLoginWidget extends LitElement {
 
   private async onSubmitEmail(event: Event) {
     try {
-      if (!this.loading) {
-        this.loading = true
-        event.preventDefault()
-        const emailConnector = ConnectorController.getEmailConnector()
-        if (emailConnector) {
-          const { action } = await emailConnector.provider.connectEmail({ email: this.email })
-          if (action === 'VERIFY_OTP') {
-            RouterController.push('EmailVerifyOtp', { email: this.email })
-          } else if (action === 'VERIFY_DEVICE') {
-            RouterController.push('EmailVerifyDevice', { email: this.email })
-          }
-        } else {
-          throw new Error('w3m-email-login-widget: Email connector not found')
-        }
+      if (this.loading) {
+        return
+      }
+
+      this.loading = true
+      event.preventDefault()
+      const emailConnector = ConnectorController.getEmailConnector()
+
+      if (!emailConnector) {
+        throw new Error('w3m-email-login-widget: Email connector not found')
+      }
+
+      const { action } = await emailConnector.provider.connectEmail({ email: this.email })
+      if (action === 'VERIFY_OTP') {
+        RouterController.push('EmailVerifyOtp', { email: this.email })
+      } else if (action === 'VERIFY_DEVICE') {
+        RouterController.push('EmailVerifyDevice', { email: this.email })
       }
     } catch (error) {
       SnackController.showError((error as Error)?.message)

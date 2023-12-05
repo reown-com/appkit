@@ -17,7 +17,7 @@ export class WuiOtp extends LitElement {
 
   private numerics: WuiInputNumeric[] = []
 
-  private valueArr: string[] = [...Array(this.length)].map(() => '')
+  private valueArr: string[] = Array.from({ length: this.length }).map(() => '')
 
   public override firstUpdated() {
     const numericElements = this.shadowRoot?.querySelectorAll<WuiInputNumeric>('wui-input-numeric')
@@ -30,7 +30,7 @@ export class WuiOtp extends LitElement {
   public override render() {
     return html`
       <wui-flex gap="xxs">
-        ${[...Array(this.length)].map(
+        ${Array.from({ length: this.length }).map(
           (_, index: number) => html`
             <wui-input-numeric
               @input=${(e: InputEvent) => this.handleInput(e, index)}

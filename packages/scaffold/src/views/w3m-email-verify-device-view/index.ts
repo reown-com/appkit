@@ -10,7 +10,7 @@ export class W3mEmailVerifyDeviceView extends LitElement {
   // -- Members ------------------------------------------- //
   protected readonly email = RouterController.state.data?.email
 
-  protected readonly emailConnecotr = ConnectorController.getEmailConnector()
+  protected readonly emailConnector = ConnectorController.getEmailConnector()
 
   public constructor() {
     super()
@@ -22,7 +22,7 @@ export class W3mEmailVerifyDeviceView extends LitElement {
     if (!this.email) {
       throw new Error('w3m-email-verify-device-view: No email provided')
     }
-    if (!this.emailConnecotr) {
+    if (!this.emailConnector) {
       throw new Error('w3m-email-verify-device-view: No email provided')
     }
 
@@ -62,8 +62,8 @@ export class W3mEmailVerifyDeviceView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private async listenForDeviceApproval() {
-    if (this.emailConnecotr) {
-      await this.emailConnecotr.provider.connectDevice()
+    if (this.emailConnector) {
+      await this.emailConnector.provider.connectDevice()
       RouterController.replace('EmailVerifyOtp', { email: this.email })
     }
   }
