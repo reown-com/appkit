@@ -49,7 +49,7 @@ export const RouterController = {
   push(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
     if (view !== state.view) {
       state.view = view
-      state.history = [...state.history, view]
+      state.history.push(view)
       state.data = data
     }
   },
@@ -69,9 +69,8 @@ export const RouterController = {
 
   goBack() {
     if (state.history.length > 1) {
-      const prevHistory = [...state.history.slice(0, -1)]
-      const [last] = prevHistory.slice(-1)
-      state.history = prevHistory
+      state.history.pop()
+      const [last] = state.history.slice(-1)
       if (last) {
         state.view = last
       }
