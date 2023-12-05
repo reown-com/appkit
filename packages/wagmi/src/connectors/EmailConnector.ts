@@ -3,10 +3,17 @@ import { Connector } from '@wagmi/core'
 import { W3mFrameProvider } from '@web3modal/wallet'
 import { createWalletClient, custom, SwitchChainError } from 'viem'
 
+// -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
   projectId: string
 }
 
+interface Config {
+  chains?: Chain[]
+  options: W3mFrameProviderOptions
+}
+
+// -- Connector ------------------------------------------------------------------------------------
 export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProviderOptions> {
   readonly id = 'w3mEmail'
 
@@ -16,7 +23,7 @@ export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProvider
 
   private provider: W3mFrameProvider = {} as W3mFrameProvider
 
-  public constructor(config: { chains?: Chain[]; options: W3mFrameProviderOptions }) {
+  public constructor(config: Config) {
     super(config)
     if (typeof window !== 'undefined') {
       this.provider = new W3mFrameProvider(config.options.projectId)
@@ -51,7 +58,10 @@ export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProvider
 
       return chain
     } catch (error) {
-      throw new SwitchChainError(error as Error)
+      if (error instanceof Error) {
+        throw new SwitchChainError(error)
+      }
+      throw error
     }
   }
 
