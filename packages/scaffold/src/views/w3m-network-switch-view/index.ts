@@ -1,4 +1,10 @@
-import { AssetUtil, NetworkController, RouterController, SIWEController } from '@web3modal/core'
+import {
+  AssetUtil,
+  ModalController,
+  NetworkController,
+  RouterController,
+  SIWEController
+} from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -24,12 +30,12 @@ export class W3mNetworkSwitchView extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      NetworkController.subscribeKey('caipNetwork', val => {
-        if (val?.id !== this.currentNetwork?.id) {
-          if (!SIWEController.state.isSiweEnabled) {
-            RouterController.goBack()
-          }
-        }
+      NetworkController.subscribeKey('caipNetwork', _val => {
+        // if (val?.id !== this.currentNetwork?.id) {
+        //   if (!SIWEController.state.isSiweEnabled) {
+        //     RouterController.goBack()
+        //   }
+        // }
       })
     )
   }
@@ -117,7 +123,11 @@ export class W3mNetworkSwitchView extends LitElement {
       if (this.network) {
         await NetworkController.switchActiveNetwork(this.network)
         if (!SIWEController.state.isSiweEnabled) {
-          RouterController.goBack()
+          if (RouterController.state.history.length > 1) {
+            RouterController.goBack()
+          } else {
+            ModalController.close()
+          }
         }
       }
     } catch {

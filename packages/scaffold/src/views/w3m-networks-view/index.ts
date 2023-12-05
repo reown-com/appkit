@@ -3,6 +3,7 @@ import {
   AccountController,
   AssetUtil,
   EventsController,
+  ModalController,
   NetworkController,
   RouterController
 } from '@web3modal/core'
@@ -84,12 +85,17 @@ export class W3mNetworksView extends LitElement {
   private async onSwitchNetwork(network: CaipNetwork) {
     const { isConnected } = AccountController.state
     const { approvedCaipNetworkIds, supportsAllNetworks, caipNetwork } = NetworkController.state
-
+    const { history, data } = RouterController.state
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
         await NetworkController.switchActiveNetwork(network)
+        if (history.length > 1) {
+          RouterController.goBack()
+        } else {
+          ModalController.close()
+        }
       } else if (supportsAllNetworks) {
-        RouterController.push('SwitchNetwork', { network })
+        RouterController.replace('SwitchNetwork', { ...data, network })
       }
     } else if (!isConnected) {
       NetworkController.setCaipNetwork(network)
