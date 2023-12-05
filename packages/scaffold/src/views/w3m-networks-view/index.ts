@@ -3,7 +3,6 @@ import {
   AccountController,
   AssetUtil,
   EventsController,
-  ModalController,
   NetworkController,
   RouterController
 } from '@web3modal/core'
