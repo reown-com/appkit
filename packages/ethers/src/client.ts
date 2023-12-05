@@ -35,7 +35,7 @@ import {
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
 import { W3mFrameProvider } from '@web3modal/wallet'
-import type { CombinedProvider } from 'packages/scaffold-utils/dist/types/src/ethers'
+import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
