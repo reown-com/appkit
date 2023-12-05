@@ -43,6 +43,7 @@ export function setThemeVariables(themeVariables: ThemeVariables) {
 function createRootStyles(themeVariables?: ThemeVariables) {
   return {
     core: css`
+      @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
       :root {
         --w3m-color-mix-strength: ${unsafeCSS(
           themeVariables?.['--w3m-color-mix-strength']
@@ -51,7 +52,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         )};
         --w3m-font-family: ${unsafeCSS(
           themeVariables?.['--w3m-font-family'] ||
-            '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif'
+            '-apple-system, "Inter", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;'
         )};
         --w3m-font-size-master: ${unsafeCSS(themeVariables?.['--w3m-font-size-master'] || '10px')};
         --w3m-border-radius-master: ${unsafeCSS(
