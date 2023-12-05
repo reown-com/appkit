@@ -18,7 +18,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
   // -- Members ------------------------------------------- //
   protected readonly email = RouterController.state.data?.email
 
-  protected readonly emailConnecotr = ConnectorController.getEmailConnector()
+  protected readonly emailConnector = ConnectorController.getEmailConnector()
 
   // -- State & Properties -------------------------------- //
   @state() private loading = false
@@ -64,10 +64,10 @@ export class W3mEmailVerifyOtpView extends LitElement {
     try {
       if (!this.loading) {
         const otp = event.detail
-        if (this.emailConnecotr && otp.length === OTP_LENGTH) {
+        if (this.emailConnector && otp.length === OTP_LENGTH) {
           this.loading = true
-          await this.emailConnecotr.provider.connectOtp({ otp })
-          await ConnectionController.connectExternal(this.emailConnecotr)
+          await this.emailConnector.provider.connectOtp({ otp })
+          await ConnectionController.connectExternal(this.emailConnector)
           ModalController.close()
           EventsController.sendEvent({
             type: 'track',

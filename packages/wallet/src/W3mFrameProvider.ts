@@ -148,7 +148,7 @@ export class W3mFrameProvider {
     })
   }
 
-  public async switchNetowrk(chainId: number) {
+  public async switchNetwork(chainId: number) {
     await this.w3mFrame.frameLoadPromise
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_SWITCH_NETWORK,
