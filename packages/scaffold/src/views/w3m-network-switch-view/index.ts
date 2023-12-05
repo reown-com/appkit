@@ -1,15 +1,10 @@
-import {
-  AssetUtil,
-  ModalController,
-  NetworkController,
-  RouterController,
-  SIWEController
-} from '@web3modal/core'
+import { AssetUtil, NetworkController, RouterController, SIWEController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { goBackOrCloseModal } from '../../utils/goBackOrCloseModal.js'
 
 @customElement('w3m-network-switch-view')
 export class W3mNetworkSwitchView extends LitElement {
@@ -112,11 +107,7 @@ export class W3mNetworkSwitchView extends LitElement {
       if (this.network) {
         await NetworkController.switchActiveNetwork(this.network)
         if (!SIWEController.state.isSiweEnabled) {
-          if (RouterController.state.history.length > 1) {
-            RouterController.goBack()
-          } else {
-            ModalController.close()
-          }
+          goBackOrCloseModal()
         }
       }
     } catch {
