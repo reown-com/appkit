@@ -12,7 +12,7 @@ export function EthersConnectButton() {
         throw Error('user is disconnected')
       }
       const provider = new BrowserProvider(walletProvider)
-      const signer = new JsonRpcSigner(provider, address)
+      const signer = new JsonRpcSigner(provider, address as `0x${string}`)
       const signature = await signer?.signMessage('Hello Web3Modal Ethers')
 
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
