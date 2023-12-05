@@ -55,7 +55,8 @@ export default css`
     text-transform: uppercase;
   }
 
-  .wui-font-small-400 {
+  .wui-font-small-400,
+  .wui-font-paragraph-400 {
     font-weight: var(--wui-font-weight-light);
   }
 

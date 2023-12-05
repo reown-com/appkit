@@ -3,7 +3,8 @@ import {
   ConnectionController,
   EventsController,
   ModalController,
-  RouterController
+  RouterController,
+  SIWEController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -30,6 +31,9 @@ function headings() {
     WhatIsAWallet: 'What is a wallet?',
     GetWallet: 'Get a Wallet',
     Downloads: name ? `Get ${name}` : 'Downloads',
+    EmailVerifyOtp: 'Confirm Email',
+    EmailVerifyDevice: '',
+    ApproveTransaction: 'Approve Transaction',
     Transactions: 'Activity'
   }
 }
@@ -71,7 +75,7 @@ export class W3mHeader extends LitElement {
         <wui-icon-link
           ?disabled=${this.buffering}
           icon="close"
-          @click=${ModalController.close}
+          @click=${this.onClose.bind(this)}
         ></wui-icon-link>
       </wui-flex>
       ${this.separatorTemplate()}
@@ -86,6 +90,13 @@ export class W3mHeader extends LitElement {
     RouterController.push('WhatIsAWallet')
   }
 
+  private async onClose() {
+    if (SIWEController.state.isSiweEnabled && SIWEController.state.status !== 'success') {
+      await ConnectionController.disconnect()
+    }
+    ModalController.close()
+  }
+
   private titleTemplate() {
     return html`<wui-text variant="paragraph-700" color="fg-100">${this.heading}</wui-text>`
   }
@@ -93,13 +104,14 @@ export class W3mHeader extends LitElement {
   private dynamicButtonTemplate() {
     const { view } = RouterController.state
     const isConnectHelp = view === 'Connect'
+    const isApproveTransaction = view === 'ApproveTransaction'
 
-    if (this.showBack) {
+    if (this.showBack && !isApproveTransaction) {
       return html`<wui-icon-link
         id="dynamic"
         icon="chevronLeft"
         ?disabled=${this.buffering}
-        @click=${RouterController.goBack}
+        @click=${this.onGoBack.bind(this)}
       ></wui-icon-link>`
     }
 
@@ -112,7 +124,7 @@ export class W3mHeader extends LitElement {
   }
 
   private separatorTemplate() {
-    if (!this.heading) {
+    if (!this.heading || RouterController.state.view === 'EmailVerifyDevice') {
       return null
     }
 
@@ -148,7 +160,6 @@ export class W3mHeader extends LitElement {
   private async onHistoryChange() {
     const { history } = RouterController.state
     const buttonEl = this.shadowRoot?.querySelector('#dynamic')
-
     if (history.length > 1 && !this.showBack && buttonEl) {
       await buttonEl.animate([{ opacity: 1 }, { opacity: 0 }], {
         duration: 200,
@@ -173,6 +184,14 @@ export class W3mHeader extends LitElement {
         fill: 'forwards',
         easing: 'ease'
       })
+    }
+  }
+
+  private onGoBack() {
+    if (RouterController.state.view === 'ConnectingSiwe') {
+      RouterController.push('Connect')
+    } else {
+      RouterController.goBack()
     }
   }
 }

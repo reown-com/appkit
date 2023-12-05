@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
-import type { WcWallet } from './TypeUtil.js'
+import type { WcWallet, ConnectorType } from './TypeUtil.js'
 
 // -- Helpers -----------------------------------------------------------------
 const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE'
 const W3M_RECENT = '@w3m/recent'
 const W3M_CONNECTED_WALLET_IMAGE_URL = '@w3m/connected_wallet_image_url'
+const W3M_CONNECTED_CONNECTOR = '@w3m/connected_connector'
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
@@ -78,6 +79,24 @@ export const StorageUtil = {
       return localStorage.getItem(W3M_CONNECTED_WALLET_IMAGE_URL)
     } catch {
       console.info('Unable to set Connected Wallet Image Url')
+    }
+
+    return undefined
+  },
+
+  setConnectedConnector(connectorType: ConnectorType) {
+    try {
+      localStorage.setItem(W3M_CONNECTED_CONNECTOR, connectorType)
+    } catch {
+      console.info('Unable to set Connected Connector')
+    }
+  },
+
+  getConnectedConnector() {
+    try {
+      return localStorage.getItem(W3M_CONNECTED_CONNECTOR) as ConnectorType
+    } catch {
+      console.info('Unable to get Connected Connector')
     }
 
     return undefined

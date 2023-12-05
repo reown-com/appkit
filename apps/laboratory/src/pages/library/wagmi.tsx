@@ -52,7 +52,8 @@ const metadata = {
 export const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
-  metadata
+  metadata,
+  enableEmail: true
 })
 
 const modal = createWeb3Modal({
@@ -60,7 +61,9 @@ const modal = createWeb3Modal({
   projectId,
   chains,
   enableAnalytics: true,
-  metadata
+  metadata,
+  termsConditionsUrl: 'https://walletconnect.com/terms',
+  privacyPolicyUrl: 'https://walletconnect.com/privacy'
 })
 
 ThemeStore.setModal(modal)

@@ -13,7 +13,7 @@ export class WuiConnectButton extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: Exclude<SizeType, 'inherit' | 'lg' | 'xs' | 'xxs'> = 'md'
+  @property() public size: Exclude<SizeType, 'inherit' | 'xl' | 'lg' | 'xs' | 'xxs'> = 'md'
 
   @property({ type: Boolean }) public loading = false
 

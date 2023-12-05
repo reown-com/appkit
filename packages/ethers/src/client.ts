@@ -21,7 +21,12 @@ import type {
   Chain,
   EthersStoreUtilState
 } from '@web3modal/scaffold-utils/ethers'
-import { formatEther, JsonRpcProvider, InfuraProvider } from 'ethers'
+import {
+  formatEther,
+  JsonRpcProvider,
+  InfuraProvider,
+  getAddress as getOriginalAddress
+} from 'ethers'
 import {
   EthersConstantsUtil,
   EthersHelpersUtil,
@@ -29,6 +34,8 @@ import {
 } from '@web3modal/scaffold-utils/ethers'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
+import { W3mFrameProvider } from '@web3modal/wallet'
+import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -91,6 +98,8 @@ export class Web3Modal extends Web3ModalScaffold {
   private metadata?: Metadata
 
   private options: Web3ModalClientOptions | undefined = undefined
+
+  private emailProvider?: W3mFrameProvider
 
   public constructor(options: Web3ModalClientOptions) {
     const { ethersConfig, chains, defaultChain, tokens, chainImages, _sdkVersion, ...w3mOptions } =
@@ -186,6 +195,8 @@ export class Web3Modal extends Web3ModalScaffold {
           await CoinbaseProvider.request({ method: 'eth_requestAccounts' })
 
           this.setCoinbaseProvider(ethersConfig)
+        } else if (id === ConstantsUtil.EMAIL_CONNECTOR_ID) {
+          this.setEmailProvider()
         }
       },
 
@@ -211,8 +222,13 @@ export class Web3Modal extends Web3ModalScaffold {
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider
           await (WalletConnectProvider as unknown as EthereumProvider).disconnect()
+          provider?.emit('disconnect')
+          // eslint-disable-next-line no-negated-condition
+        } else if (providerType !== ConstantsUtil.EMAIL_CONNECTOR_ID) {
+          provider?.emit('disconnect')
+        } else {
+          this.emailProvider?.disconnect()
         }
-        provider?.emit('disconnect')
       }
     }
 
@@ -252,6 +268,11 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     }
 
+    if (ethersConfig.email) {
+      this.syncEmailConnector(w3mOptions.projectId)
+      this.listenEmailConnector()
+    }
+
     if (ethersConfig.injected) {
       this.checkActiveInjectedProvider(ethersConfig)
     }
@@ -282,8 +303,15 @@ export class Web3Modal extends Web3ModalScaffold {
     )
   }
 
+  public setAddress(address?: string) {
+    const originalAddress = address ? (getOriginalAddress(address) as Address) : undefined
+    EthersStoreUtil.setAddress(originalAddress)
+  }
+
   public getAddress() {
-    return EthersStoreUtil.state.address
+    const { address } = EthersStoreUtil.state
+
+    return address ? getOriginalAddress(address) : undefined
   }
 
   public getChainId() {
@@ -308,13 +336,17 @@ export class Web3Modal extends Web3ModalScaffold {
 
   public async disconnect() {
     const { provider, providerType } = EthersStoreUtil.state
+
     localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
     EthersStoreUtil.reset()
 
     if (providerType === 'injected' || providerType === 'eip6963') {
       provider?.emit('disconnect')
     } else {
-      await (provider as unknown as EthereumProvider).disconnect()
+      const walletConnectProvider = provider as unknown as EthereumProvider
+      if (walletConnectProvider) {
+        await walletConnectProvider.disconnect()
+      }
     }
   }
 
@@ -438,7 +470,7 @@ export class Web3Modal extends Web3ModalScaffold {
       EthersStoreUtil.setProviderType('walletConnect')
       EthersStoreUtil.setProvider(WalletConnectProvider as unknown as Provider)
       EthersStoreUtil.setIsConnected(true)
-      EthersStoreUtil.setAddress(WalletConnectProvider.accounts[0] as Address)
+      this.setAddress(WalletConnectProvider.accounts?.[0])
       this.watchWalletConnect()
     }
   }
@@ -454,7 +486,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType('injected')
         EthersStoreUtil.setProvider(config.injected)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(address as Address)
+        this.setAddress(address)
         this.watchCoinbase(config)
       }
     }
@@ -470,7 +502,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType('eip6963')
         EthersStoreUtil.setProvider(provider)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(address as Address)
+        this.setAddress(address)
         this.watchEIP6963(provider)
       }
     }
@@ -487,8 +519,24 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType('coinbaseWallet')
         EthersStoreUtil.setProvider(config.coinbase)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(address as Address)
+        this.setAddress(address)
         this.watchCoinbase(config)
+      }
+    }
+  }
+
+  private async setEmailProvider() {
+    window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.EMAIL_CONNECTOR_ID)
+
+    if (this.emailProvider) {
+      const { address, chainId } = await this.emailProvider.connect()
+      if (address && chainId) {
+        EthersStoreUtil.setChainId(chainId)
+        EthersStoreUtil.setProviderType(ConstantsUtil.EMAIL_CONNECTOR_ID as 'w3mEmail')
+        EthersStoreUtil.setProvider(this.emailProvider as unknown as CombinedProvider)
+        EthersStoreUtil.setIsConnected(true)
+        EthersStoreUtil.setAddress(address as Address)
+        this.watchEmail()
       }
     }
   }
@@ -538,11 +586,12 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     function accountsChangedHandler(accounts: string[]) {
-      if (accounts.length === 0) {
+      const currentAccount = accounts?.[0]
+      if (currentAccount) {
+        EthersStoreUtil.setAddress(getOriginalAddress(currentAccount) as Address)
+      } else {
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
-      } else {
-        EthersStoreUtil.setAddress(accounts[0] as Address)
       }
     }
 
@@ -574,11 +623,12 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     function accountsChangedHandler(accounts: string[]) {
-      if (accounts.length === 0) {
+      const currentAccount = accounts?.[0]
+      if (currentAccount) {
+        EthersStoreUtil.setAddress(getOriginalAddress(currentAccount) as Address)
+      } else {
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
-      } else {
-        EthersStoreUtil.setAddress(accounts[0] as Address)
       }
     }
 
@@ -613,11 +663,12 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     function accountsChangedHandler(accounts: string[]) {
-      if (accounts.length === 0) {
+      const currentAccount = accounts?.[0]
+      if (currentAccount) {
+        EthersStoreUtil.setAddress(getOriginalAddress(currentAccount) as Address)
+      } else {
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
-      } else {
-        EthersStoreUtil.setAddress(accounts[0] as Address)
       }
     }
 
@@ -632,6 +683,17 @@ export class Web3Modal extends Web3ModalScaffold {
       provider.on('disconnect', disconnectHandler)
       provider.on('accountsChanged', accountsChangedHandler)
       provider.on('chainChanged', chainChangedHandler)
+    }
+  }
+
+  private watchEmail() {
+    if (this.emailProvider) {
+      this.emailProvider.onRpcRequest(() => {
+        super.open({ view: 'ApproveTransaction' })
+      })
+      this.emailProvider.onRpcResponse(() => {
+        super.close()
+      })
     }
   }
 
@@ -826,6 +888,15 @@ export class Web3Modal extends Web3ModalScaffold {
             }
           }
         }
+      } else if (providerType === ConstantsUtil.EMAIL_CONNECTOR_ID) {
+        if (this.emailProvider && chain?.chainId) {
+          try {
+            await this.emailProvider?.switchNetwork(chain?.chainId)
+            EthersStoreUtil.setChainId(chain.chainId)
+          } catch {
+            throw new Error('Switching chain failed')
+          }
+        }
       }
     }
   }
@@ -872,6 +943,32 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     this.setConnectors(w3mConnectors)
+  }
+
+  private async syncEmailConnector(projectId: string) {
+    if (typeof window !== 'undefined') {
+      this.emailProvider = new W3mFrameProvider(projectId)
+      super.setLoading(true)
+      const isConnected = await this.emailProvider.isConnected()
+      if (isConnected) {
+        this.setEmailProvider()
+      }
+    }
+
+    this.addConnector({
+      id: ConstantsUtil.EMAIL_CONNECTOR_ID,
+      type: 'EMAIL',
+      name: 'Email',
+      provider: this.emailProvider
+    })
+  }
+
+  private listenEmailConnector() {
+    if (this.emailProvider) {
+      this.emailProvider.onIsConnected(() => {
+        super.setLoading(false)
+      })
+    }
   }
 
   private eip6963EventHandler(event: CustomEventInit<Wallet>) {

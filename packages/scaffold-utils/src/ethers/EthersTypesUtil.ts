@@ -1,3 +1,5 @@
+import type { W3mFrameProvider } from '@web3modal/wallet'
+
 export interface IEthersConfig {
   providers: ProviderType
   defaultChain?: number
@@ -9,6 +11,7 @@ export type Address = `0x${string}`
 export type ProviderType = {
   injected?: Provider
   coinbase?: Provider
+  email?: boolean
   EIP6963?: boolean
   metadata: Metadata
 }
@@ -31,6 +34,8 @@ export type Metadata = {
   url: string
   icons: string[]
 }
+
+export type CombinedProvider = W3mFrameProvider & Provider
 
 export type Chain = {
   rpcUrl: string

@@ -17,6 +17,8 @@ export class WuiOtp extends LitElement {
 
   private numerics: WuiInputNumeric[] = []
 
+  private valueArr: string[] = Array.from({ length: this.length }).map(() => '')
+
   public override firstUpdated() {
     const numericElements = this.shadowRoot?.querySelectorAll<WuiInputNumeric>('wui-input-numeric')
     if (numericElements) {
@@ -28,7 +30,7 @@ export class WuiOtp extends LitElement {
   public override render() {
     return html`
       <wui-flex gap="xxs">
-        ${[...Array(this.length)].map(
+        ${Array.from({ length: this.length }).map(
           (_, index: number) => html`
             <wui-input-numeric
               @input=${(e: InputEvent) => this.handleInput(e, index)}
@@ -54,12 +56,15 @@ export class WuiOtp extends LitElement {
         const isValid = UiHelperUtil.isNumber(inputValue)
         if (isValid && e.data) {
           input.value = e.data
+          this.valueArr[index] = e.data
           this.focusInputField('next', index)
         } else {
           input.value = ''
+          this.valueArr[index] = ''
         }
       }
     }
+    this.dispatchInputChangeEvent()
   }
 
   private handleKeyDown = (e: KeyboardEvent, index: number) => {
@@ -94,6 +99,7 @@ export class WuiOtp extends LitElement {
           this.focusInputField('prev', index)
         } else {
           input.value = ''
+          this.valueArr[index] = ''
         }
         break
       case 'Backspace':
@@ -101,6 +107,7 @@ export class WuiOtp extends LitElement {
           this.focusInputField('prev', index)
         } else {
           input.value = ''
+          this.valueArr[index] = ''
         }
         break
       default:
@@ -112,6 +119,7 @@ export class WuiOtp extends LitElement {
     const isValid = value && UiHelperUtil.isNumber(value)
     if (isValid) {
       input.value = value
+      this.valueArr[index] = value
       const inputString = inputValue.substring(1)
       if (index + 1 < this.length && inputString.length) {
         const nextNumeric = this.numerics[index + 1]
@@ -124,6 +132,7 @@ export class WuiOtp extends LitElement {
       }
     } else {
       input.value = ''
+      this.valueArr[index] = ''
     }
   }
 
@@ -152,6 +161,18 @@ export class WuiOtp extends LitElement {
     }
 
     return null
+  }
+
+  // -- Private ------------------------------------------- //
+  private dispatchInputChangeEvent() {
+    const value = this.valueArr.join('')
+    this.dispatchEvent(
+      new CustomEvent('inputChange', {
+        detail: value,
+        bubbles: true,
+        composed: true
+      })
+    )
   }
 }
 
