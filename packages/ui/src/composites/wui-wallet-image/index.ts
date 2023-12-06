@@ -40,8 +40,8 @@ export class WuiWalletImage extends LitElement {
       this.dataset['walletIcon'] = this.walletIcon
     }
 
-    return html` <div>
-      <wui-flex>
+    return html`<div>
+      <wui-flex justifyContent="center" alignItems="center">
         ${this.templateVisual()}
         <wui-flex>
           <wui-icon-box
