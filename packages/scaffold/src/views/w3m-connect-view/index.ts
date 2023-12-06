@@ -203,7 +203,7 @@ export class W3mConnectView extends LitElement {
     const rawCount = ApiController.state.count
     const roundedCount = rawCount < 10 ? rawCount : Math.floor(rawCount / 10) * 10
     const tagLabel = roundedCount < rawCount ? `${roundedCount}+` : `${roundedCount}`
-    
+
     return html`
       <wui-list-wallet
         name="All Wallets"
