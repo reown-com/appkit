@@ -1,6 +1,7 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
+import '../../composites/wui-icon-box/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { IconType, IWalletImage, TagType } from '../../utils/TypeUtil.js'
@@ -29,12 +30,16 @@ export class WuiListWallet extends LitElement {
 
   @property() public walletIcon?: IconType
 
+  @property() public imageBadge?: IconType
+
   @property({ type: Boolean }) public disabled = false
 
   @property({ type: Boolean }) public showAllWallets = false
 
   // -- Render -------------------------------------------- //
   public override render() {
+    console.log(this.showAllWallets, this.imageSrc)
+
     return html`
       <button ?disabled=${this.disabled} ontouchstart>
         ${this.templateAllWallets()} ${this.templateWalletImage()}

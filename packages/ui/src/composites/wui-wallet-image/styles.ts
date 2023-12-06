@@ -3,6 +3,9 @@ import { css } from 'lit'
 export default css`
   :host {
     position: relative;
+  }
+
+  :host > div {
     border-radius: inherit;
     overflow: hidden;
     background-color: var(--wui-gray-glass-002);
@@ -14,7 +17,7 @@ export default css`
     border-radius: var(--local-border-radius);
   }
 
-  :host::after {
+  :host > div::after {
     content: '';
     position: absolute;
     top: 0;
@@ -26,15 +29,15 @@ export default css`
     pointer-events: none;
   }
 
-  :host([name='Extension'])::after {
+  :host([name='Extension']) > div::after {
     border: 1px solid var(--wui-accent-glass-010);
   }
 
-  :host([data-wallet-icon='allWallets']) {
+  :host([data-wallet-icon='allWallets']) > div {
     background-color: var(--wui-all-wallets-bg-100);
   }
 
-  :host([data-wallet-icon='allWallets'])::after {
+  :host([data-wallet-icon='allWallets']) > div::after {
     border: 1px solid var(--wui-accent-glass-010);
   }
 
@@ -62,5 +65,18 @@ export default css`
   wui-icon[data-parent-size='full'] {
     width: 100%;
     height: 100%;
+  }
+
+  :host > div > wui-flex > wui-flex {
+    padding: 3px;
+    position: absolute;
+    overflow: hidden;
+    right: -3px;
+    bottom: -3px;
+    transform: translate(0%, 0%);
+    background: var(--dark-background-150, #1e1f1f);
+    border-radius: 50%;
+    z-index: 2;
+    display: flex;
   }
 `

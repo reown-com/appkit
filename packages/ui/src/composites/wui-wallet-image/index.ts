@@ -5,6 +5,7 @@ import '../../components/wui-image/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { BorderRadiusType, IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
+import '../wui-icon-box/index.js'
 import styles from './styles.js'
 
 @customElement('wui-wallet-image')
@@ -39,7 +40,21 @@ export class WuiWalletImage extends LitElement {
       this.dataset['walletIcon'] = this.walletIcon
     }
 
-    return html` ${this.templateVisual()}`
+    return html` <div>
+      <wui-flex>
+        ${this.templateVisual()}
+        <wui-flex>
+          <wui-icon-box
+            size="xxs"
+            iconSize="xxs"
+            iconcolor="success-100"
+            backgroundcolor="success-100"
+            icon="checkmark"
+            background="opaque"
+          ></wui-icon-box>
+        </wui-flex>
+      </wui-flex>
+    </div>`
   }
 
   // -- Private ------------------------------------------- //
