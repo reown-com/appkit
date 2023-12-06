@@ -43,7 +43,7 @@ export function setThemeVariables(themeVariables: ThemeVariables) {
 function createRootStyles(themeVariables?: ThemeVariables) {
   return {
     core: css`
-      @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap');
       :root {
         --w3m-color-mix-strength: ${unsafeCSS(
           themeVariables?.['--w3m-color-mix-strength']
