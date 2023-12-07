@@ -19,16 +19,6 @@ export default css`
     color: var(--wui-color-fg-200) !important;
   }
 
-  wui-icon-box {
-    position: absolute;
-  }
-
-  wui-all-wallets-image,
-  wui-wallet-image {
-    position: relative;
-    left: var(--wui-spacing-xs);
-  }
-
   button:disabled {
     background-color: var(--wui-gray-glass-015);
     color: var(--wui-gray-glass-015);
