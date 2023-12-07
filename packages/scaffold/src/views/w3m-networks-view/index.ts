@@ -89,9 +89,9 @@ export class W3mNetworksView extends LitElement {
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
         await NetworkController.switchActiveNetwork(network)
-        RouterUtil.goBackOrCloseModal()
+        RouterUtil.navigateAfterNetworkSwitch()
       } else if (supportsAllNetworks) {
-        RouterController.replace('SwitchNetwork', { ...data, network })
+        RouterController.push('SwitchNetwork', { ...data, network })
       }
     } else if (!isConnected) {
       NetworkController.setCaipNetwork(network)

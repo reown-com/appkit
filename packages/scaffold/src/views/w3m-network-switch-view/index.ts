@@ -112,7 +112,7 @@ export class W3mNetworkSwitchView extends LitElement {
       if (this.network) {
         await NetworkController.switchActiveNetwork(this.network)
         if (!SIWEController.state.isSiweEnabled) {
-          RouterUtil.goBackOrCloseModal()
+          RouterUtil.navigateAfterNetworkSwitch()
         }
       }
     } catch {

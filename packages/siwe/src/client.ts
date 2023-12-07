@@ -8,8 +8,8 @@ import type {
 import {
   AccountController,
   NetworkController,
-  ModalController,
-  ConnectionController
+  ConnectionController,
+  RouterUtil
 } from '@web3modal/core'
 
 import { ConstantsUtil } from './utils/ConstantsUtil.js'
@@ -106,7 +106,10 @@ export class Web3ModalSIWEClient {
       this.methods.onSignIn(session)
     }
 
-    ModalController.close()
+    // ModalController.close()
+
+    // Navigate to the page before network select
+    RouterUtil.navigateAfterNetworkSwitch()
 
     return session
   }
