@@ -106,9 +106,6 @@ export class Web3ModalSIWEClient {
       this.methods.onSignIn(session)
     }
 
-    // ModalController.close()
-
-    // Navigate to the page before network select
     RouterUtil.navigateAfterNetworkSwitch()
 
     return session
