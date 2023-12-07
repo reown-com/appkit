@@ -72,12 +72,11 @@ export class WuiWalletImage extends LitElement {
     if (this.installed) {
       return html`
         <wui-icon-box
-          size="xxs"
+          size="xs"
           iconSize="xxs"
           iconcolor="success-100"
           backgroundcolor="success-100"
           icon="checkmark"
-          border
           background="opaque"
         ></wui-icon-box>
       `

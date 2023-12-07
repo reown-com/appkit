@@ -70,15 +70,12 @@ export default css`
   }
 
   :host > wui-icon-box {
-    padding: 2px;
     position: absolute;
     overflow: hidden;
-    right: -2px;
+    right: -1px;
     bottom: -2px;
-    transform: translate(0%, 0%);
-    background: var(--dark-background-150, #1e1f1f);
-    border-radius: 50%;
     z-index: 1;
-    display: flex;
+    border: 2px solid var(--wui-color-bg-base-150, #1e1f1f);
+    padding: 1px;
   }
 `
