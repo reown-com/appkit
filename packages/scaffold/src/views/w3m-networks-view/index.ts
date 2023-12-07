@@ -4,13 +4,13 @@ import {
   AssetUtil,
   EventsController,
   NetworkController,
-  RouterController
+  RouterController,
+  RouterUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { goBackOrCloseModal } from '../../utils/goBackOrCloseModal.js'
 
 @customElement('w3m-networks-view')
 export class W3mNetworksView extends LitElement {
@@ -89,7 +89,7 @@ export class W3mNetworksView extends LitElement {
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
         await NetworkController.switchActiveNetwork(network)
-        goBackOrCloseModal()
+        RouterUtil.goBackOrCloseModal()
       } else if (supportsAllNetworks) {
         RouterController.replace('SwitchNetwork', { ...data, network })
       }
