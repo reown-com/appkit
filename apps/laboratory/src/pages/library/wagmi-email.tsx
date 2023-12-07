@@ -52,7 +52,8 @@ const metadata = {
 export const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
-  metadata
+  metadata,
+  enableEmail: true
 })
 
 const modal = createWeb3Modal({
@@ -78,7 +79,7 @@ export default function Wagmi() {
     <WagmiConfig config={wagmiConfig}>
       <Center paddingTop={10}>
         <Text fontSize="xl" fontWeight={700}>
-          Wagmi default
+          Wagmi with email
         </Text>
       </Center>
       <Center h="65vh">

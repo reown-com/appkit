@@ -6,16 +6,24 @@ export default function HomePage() {
       <VStack gap={4}>
         <Heading>Wagmi</Heading>
         <Link href="/library/wagmi" padding={4} border={'1px solid #47a1ff'} borderRadius="xl">
-          V3 with Wagmi
+          Default
         </Link>
         <Link href="/library/wagmi-siwe" padding={4} border={'1px solid #47a1ff'} borderRadius="xl">
-          V3 SIWE & Wagmi
+          SIWE
+        </Link>
+        <Link
+          href="/library/wagmi-email"
+          padding={4}
+          border={'1px solid #47a1ff'}
+          borderRadius="xl"
+        >
+          Email
         </Link>
       </VStack>
       <VStack gap={4}>
         <Heading>Ethers</Heading>
         <Link href="/library/ethers" padding={4} border={'1px solid #26D962'} borderRadius="xl">
-          V3 with Ethers
+          Default
         </Link>
         <Link
           href="/library/ethers-siwe"
@@ -23,7 +31,15 @@ export default function HomePage() {
           border={'1px solid #26D962'}
           borderRadius="xl"
         >
-          V3 SIWE & Ethers
+          SIWE
+        </Link>
+        <Link
+          href="/library/ethers-email"
+          padding={4}
+          border={'1px solid #26D962'}
+          borderRadius="xl"
+        >
+          Email
         </Link>
       </VStack>
     </Center>
