@@ -65,7 +65,7 @@ export default function Ethers() {
     <>
       <Center paddingTop={10}>
         <Text fontSize="xl" fontWeight={700}>
-          V3 with Ethers
+          Ethers default
         </Text>
       </Center>
       <Center h="65vh">
