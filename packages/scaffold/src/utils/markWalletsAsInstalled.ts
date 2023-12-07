@@ -19,7 +19,6 @@ export function markWalletsAsInstalled(wallets: WcWallet[]) {
     installed: Boolean(wallet.rdns) && Boolean(installedConnectors[wallet.rdns ?? ''])
   }))
 
-  console.log(walletsWithInstalled)
   const sortedWallets = walletsWithInstalled.sort(
     (a, b) => Number(b.installed) - Number(a.installed)
   )
