@@ -92,18 +92,34 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private walletsTemplate() {
-    const wallets = [...this.featured, ...this.recommended, ...this.wallets]
     const { connectors } = ConnectorController.state
-    const announcedConnectors = connectors.filter(c => c.type === 'ANNOUNCED')
+    const installedConnectors = connectors
+      .filter(c => c.type === 'ANNOUNCED')
+      .reduce<Record<string, boolean>>((acum, val) => {
+        if (!val.info?.rdns) {
+          return acum
+        }
+        acum[val.info.rdns] = true
 
-    return wallets.map(
+        return acum
+      }, {})
+    const wallets = [...this.featured, ...this.recommended, ...this.wallets]
+    const walletsWithInstalled: (WcWallet & { installed: boolean })[] = wallets.map(wallet => ({
+      ...wallet,
+      installed: Boolean(wallet.rdns) && Boolean(installedConnectors[wallet.rdns ?? ''])
+    }))
+    const sortedWallets = walletsWithInstalled.sort(
+      (a, b) => Number(b.installed) - Number(a.installed)
+    )
+
+    return sortedWallets.map(
       wallet => html`
         <wui-card-select
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           type="wallet"
           name=${wallet.name}
           @click=${() => this.onConnectWallet(wallet)}
-          .installed=${announcedConnectors.some(connector => connector.info?.rdns === wallet.rdns)}
+          .installed=${wallet.installed}
         ></wui-card-select>
       `
     )
