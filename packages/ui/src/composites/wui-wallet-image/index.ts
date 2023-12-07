@@ -21,6 +21,8 @@ export class WuiWalletImage extends LitElement {
 
   @property() public walletIcon?: IconType
 
+  @property({ type: Boolean }) public installed = false
+
   // -- Render -------------------------------------------- //
   public override render() {
     let borderRadius: BorderRadiusType = 'xxs'
@@ -43,17 +45,7 @@ export class WuiWalletImage extends LitElement {
     return html`<div>
       <wui-flex justifyContent="center" alignItems="center">
         ${this.templateVisual()}
-        <wui-flex>
-          <wui-icon-box
-            size="xxs"
-            iconSize="xxs"
-            iconcolor="success-100"
-            backgroundcolor="success-100"
-            icon="checkmark"
-            background="opaque"
-          ></wui-icon-box>
-        </wui-flex>
-      </wui-flex>
+        ${this.templateInstalledBadge()}
     </div>`
   }
 
@@ -76,6 +68,23 @@ export class WuiWalletImage extends LitElement {
       color="inherit"
       name="walletPlaceholder"
     ></wui-icon>`
+  }
+  private templateInstalledBadge() {
+    if (this.installed) {
+      return html`<wui-flex>
+        <wui-icon-box
+          size="xxs"
+          iconSize="xxs"
+          iconcolor="success-100"
+          backgroundcolor="success-100"
+          icon="checkmark"
+          background="opaque"
+        ></wui-icon-box>
+      </wui-flex>
+    </wui-flex>`
+    }
+
+    return null
   }
 }
 

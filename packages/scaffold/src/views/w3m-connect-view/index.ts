@@ -143,10 +143,10 @@ export class W3mConnectView extends LitElement {
       return html`
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-          imageBadge="checkmark"
           name=${connector.name ?? 'Unknown'}
           @click=${() => this.onConnector(connector)}
           tagVariant="success"
+          installed=${true}
         >
         </wui-list-wallet>
       `
@@ -154,12 +154,11 @@ export class W3mConnectView extends LitElement {
   }
 
   private injectedTemplate() {
-    const announced = this.connectors.find(c => c.type === 'ANNOUNCED')
-
     return this.connectors.map(connector => {
       if (connector.type !== 'INJECTED') {
         return null
       }
+
       if (!ConnectionController.checkInstalled()) {
         return null
       }
@@ -167,7 +166,7 @@ export class W3mConnectView extends LitElement {
       return html`
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-          imageBadge=${ifDefined(announced ? undefined : 'checkmark')}
+          installed=${true}
           name=${connector.name ?? 'Unknown'}
           @click=${() => this.onConnector(connector)}
         >

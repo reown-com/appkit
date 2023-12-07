@@ -30,7 +30,7 @@ export class WuiListWallet extends LitElement {
 
   @property() public walletIcon?: IconType
 
-  @property() public imageBadge?: IconType
+  @property({ type: Boolean }) public installed = false
 
   @property({ type: Boolean }) public disabled = false
 
@@ -38,8 +38,6 @@ export class WuiListWallet extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    console.log(this.showAllWallets, this.imageSrc)
-
     return html`
       <button ?disabled=${this.disabled} ontouchstart>
         ${this.templateAllWallets()} ${this.templateWalletImage()}
@@ -66,6 +64,7 @@ export class WuiListWallet extends LitElement {
         size="sm"
         imageSrc=${this.imageSrc}
         name=${this.name}
+        .installed=${this.installed}
       ></wui-wallet-image>`
     } else if (!this.showAllWallets && !this.imageSrc) {
       return html`<wui-wallet-image size="sm" name=${this.name}></wui-wallet-image>`

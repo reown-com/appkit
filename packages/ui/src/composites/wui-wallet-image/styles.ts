@@ -68,15 +68,15 @@ export default css`
   }
 
   :host > div > wui-flex > wui-flex {
-    padding: 3px;
+    padding: 2px;
     position: absolute;
     overflow: hidden;
-    right: -3px;
-    bottom: -3px;
+    right: -2px;
+    bottom: -2px;
     transform: translate(0%, 0%);
     background: var(--dark-background-150, #1e1f1f);
     border-radius: 50%;
-    z-index: 2;
+    z-index: 1;
     display: flex;
   }
 `
