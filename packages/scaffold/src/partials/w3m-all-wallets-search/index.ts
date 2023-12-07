@@ -39,6 +39,24 @@ export class W3mAllWalletsSearch extends LitElement {
 
   private walletsTemplate() {
     const { search } = ApiController.state
+    const { connectors } = ConnectorController.state
+    const installedConnectors = connectors
+      .filter(c => c.type === 'ANNOUNCED')
+      .reduce<Record<string, boolean>>((acum, val) => {
+        if (!val.info?.rdns) {
+          return acum
+        }
+        acum[val.info.rdns] = true
+
+        return acum
+      }, {})
+    const walletsWithInstalled: (WcWallet & { installed: boolean })[] = search.map(wallet => ({
+      ...wallet,
+      installed: Boolean(wallet.rdns) && Boolean(installedConnectors[wallet.rdns ?? ''])
+    }))
+    const sortedWallets = walletsWithInstalled.sort(
+      (a, b) => Number(b.installed) - Number(a.installed)
+    )
 
     if (!search.length) {
       return html`
@@ -62,13 +80,14 @@ export class W3mAllWalletsSearch extends LitElement {
         rowGap="l"
         columnGap="xs"
       >
-        ${search.map(
+        ${sortedWallets.map(
           wallet => html`
             <wui-card-select
               imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
               type="wallet"
               name=${wallet.name}
               @click=${() => this.onConnectWallet(wallet)}
+              .installed=${wallet.installed}
             ></wui-card-select>
           `
         )}
