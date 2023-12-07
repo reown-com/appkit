@@ -44,8 +44,8 @@ export class WuiWalletImage extends LitElement {
 
     return html`<div>
       <wui-flex justifyContent="center" alignItems="center">
-        ${this.templateVisual()}
-        ${this.templateInstalledBadge()}
+        ${this.templateVisual()} ${this.templateInstalledBadge()}
+      </wui-flex>
     </div>`
   }
 
@@ -80,8 +80,7 @@ export class WuiWalletImage extends LitElement {
           icon="checkmark"
           background="opaque"
         ></wui-icon-box>
-      </wui-flex>
-    </wui-flex>`
+      </wui-flex>`
     }
 
     return null
