@@ -23,6 +23,8 @@ export class WuiWalletImage extends LitElement {
 
   @property({ type: Boolean }) public installed = false
 
+  @property() public badgeSize: SizeType = 'xs'
+
   // -- Render -------------------------------------------- //
   public override render() {
     let borderRadius: BorderRadiusType = 'xxs'
@@ -72,8 +74,8 @@ export class WuiWalletImage extends LitElement {
     if (this.installed) {
       return html`
         <wui-icon-box
-          size="xs"
-          iconSize="xxs"
+          size=${this.badgeSize}
+          iconSize=${this.badgeSize}
           iconcolor="success-100"
           backgroundcolor="success-100"
           icon="checkmark"

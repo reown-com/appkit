@@ -57,6 +57,7 @@ export class WuiCardSelect extends LitElement {
         imageSrc=${ifDefined(this.imageSrc)}
         name=${this.name}
         .installed=${this.installed}
+        badgeSize="sm"
       >
       </wui-wallet-image>
     `
