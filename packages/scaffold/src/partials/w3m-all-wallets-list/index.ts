@@ -93,6 +93,8 @@ export class W3mAllWalletsList extends LitElement {
 
   private walletsTemplate() {
     const wallets = [...this.featured, ...this.recommended, ...this.wallets]
+    const { connectors } = ConnectorController.state
+    const announcedConnectors = connectors.filter(c => c.type === 'ANNOUNCED')
 
     return wallets.map(
       wallet => html`
@@ -101,6 +103,7 @@ export class W3mAllWalletsList extends LitElement {
           type="wallet"
           name=${wallet.name}
           @click=${() => this.onConnectWallet(wallet)}
+          installed=${announcedConnectors.some(connector => connector.info?.rdns === wallet.rdns)}
         ></wui-card-select>
       `
     )
