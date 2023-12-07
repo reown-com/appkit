@@ -13,7 +13,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import type { TransactionType } from '@web3modal/ui/src/utils/TypeUtil.js'
-import type { GroupedTransaction } from '@web3modal/core/dist/types/src/controllers/TransactionsController.js'
+import type { GroupedTransaction } from '@web3modal/core/src/controllers/TransactionsController.js'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'last-transaction'
@@ -99,7 +99,6 @@ export class W3mTransactionsView extends LitElement {
     return sortedYearKeys.map((year, index) => {
       const isLastGroup = index === sortedYearKeys.length - 1
       const yearInt = parseInt(year, 10)
-      const groupTitle = TransactionUtil.getTransactionGroupTitle(yearInt)
       const transactions = this.transactionsByYear[yearInt]
 
       if (!transactions) {
