@@ -5,6 +5,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { markWalletsAsInstalled } from '../../utils/markWalletsAsInstalled.js'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'local-paginator'
@@ -92,27 +93,10 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private walletsTemplate() {
-    const { connectors } = ConnectorController.state
-    const installedConnectors = connectors
-      .filter(c => c.type === 'ANNOUNCED')
-      .reduce<Record<string, boolean>>((acum, val) => {
-        if (!val.info?.rdns) {
-          return acum
-        }
-        acum[val.info.rdns] = true
-
-        return acum
-      }, {})
     const wallets = [...this.featured, ...this.recommended, ...this.wallets]
-    const walletsWithInstalled: (WcWallet & { installed: boolean })[] = wallets.map(wallet => ({
-      ...wallet,
-      installed: Boolean(wallet.rdns) && Boolean(installedConnectors[wallet.rdns ?? ''])
-    }))
-    const sortedWallets = walletsWithInstalled.sort(
-      (a, b) => Number(b.installed) - Number(a.installed)
-    )
+    const walletsWithInstalled = markWalletsAsInstalled(wallets)
 
-    return sortedWallets.map(
+    return walletsWithInstalled.map(
       wallet => html`
         <wui-card-select
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}

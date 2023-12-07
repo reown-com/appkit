@@ -5,6 +5,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { markWalletsAsInstalled } from '../../utils/markWalletsAsInstalled.js'
 
 @customElement('w3m-all-wallets-search')
 export class W3mAllWalletsSearch extends LitElement {
@@ -39,24 +40,7 @@ export class W3mAllWalletsSearch extends LitElement {
 
   private walletsTemplate() {
     const { search } = ApiController.state
-    const { connectors } = ConnectorController.state
-    const installedConnectors = connectors
-      .filter(c => c.type === 'ANNOUNCED')
-      .reduce<Record<string, boolean>>((acum, val) => {
-        if (!val.info?.rdns) {
-          return acum
-        }
-        acum[val.info.rdns] = true
-
-        return acum
-      }, {})
-    const walletsWithInstalled: (WcWallet & { installed: boolean })[] = search.map(wallet => ({
-      ...wallet,
-      installed: Boolean(wallet.rdns) && Boolean(installedConnectors[wallet.rdns ?? ''])
-    }))
-    const sortedWallets = walletsWithInstalled.sort(
-      (a, b) => Number(b.installed) - Number(a.installed)
-    )
+    const wallets = markWalletsAsInstalled(search)
 
     if (!search.length) {
       return html`
@@ -80,7 +64,7 @@ export class W3mAllWalletsSearch extends LitElement {
         rowGap="l"
         columnGap="xs"
       >
-        ${sortedWallets.map(
+        ${wallets.map(
           wallet => html`
             <wui-card-select
               imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
