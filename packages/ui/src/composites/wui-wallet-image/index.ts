@@ -42,11 +42,10 @@ export class WuiWalletImage extends LitElement {
       this.dataset['walletIcon'] = this.walletIcon
     }
 
-    return html`<div>
-      <wui-flex justifyContent="center" alignItems="center">
-        ${this.templateVisual()} ${this.templateInstalledBadge()}
-      </wui-flex>
-    </div>`
+    return html`
+      <wui-flex justifyContent="center" alignItems="center"> ${this.templateVisual()} </wui-flex>
+      ${this.templateInstalledBadge()}
+    `
   }
 
   // -- Private ------------------------------------------- //
@@ -71,16 +70,17 @@ export class WuiWalletImage extends LitElement {
   }
   private templateInstalledBadge() {
     if (this.installed) {
-      return html`<wui-flex>
+      return html`
         <wui-icon-box
           size="xxs"
           iconSize="xxs"
           iconcolor="success-100"
           backgroundcolor="success-100"
           icon="checkmark"
+          border
           background="opaque"
         ></wui-icon-box>
-      </wui-flex>`
+      `
     }
 
     return null

@@ -3,21 +3,23 @@ import { css } from 'lit'
 export default css`
   :host {
     position: relative;
-  }
-
-  :host > div {
-    border-radius: inherit;
-    overflow: hidden;
     background-color: var(--wui-gray-glass-002);
     display: flex;
     justify-content: center;
     align-items: center;
     width: var(--local-size);
     height: var(--local-size);
+    border-radius: inherit;
     border-radius: var(--local-border-radius);
   }
 
-  :host > div::after {
+  :host > wui-flex {
+    overflow: hidden;
+    border-radius: inherit;
+    border-radius: var(--local-border-radius);
+  }
+
+  :host::after {
     content: '';
     position: absolute;
     top: 0;
@@ -29,15 +31,15 @@ export default css`
     pointer-events: none;
   }
 
-  :host([name='Extension']) > div::after {
+  :host([name='Extension'])::after {
     border: 1px solid var(--wui-accent-glass-010);
   }
 
-  :host([data-wallet-icon='allWallets']) > div {
+  :host([data-wallet-icon='allWallets']) {
     background-color: var(--wui-all-wallets-bg-100);
   }
 
-  :host([data-wallet-icon='allWallets']) > div::after {
+  :host([data-wallet-icon='allWallets'])::after {
     border: 1px solid var(--wui-accent-glass-010);
   }
 
@@ -67,7 +69,7 @@ export default css`
     height: 100%;
   }
 
-  :host > div > wui-flex > wui-flex {
+  :host > wui-icon-box {
     padding: 2px;
     position: absolute;
     overflow: hidden;
