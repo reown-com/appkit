@@ -8,7 +8,7 @@ export default css`
     width: 100%;
   }
 
-  :host > wui-flex:first-child wui-text:nth-child(1) {
+  :host > wui-flex:first-child wui-text:nth-child(2) {
     text-transform: capitalize;
   }
 
@@ -42,5 +42,9 @@ export default css`
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
+  }
+
+  :host wui-icon-box {
+    scale: 0.9;
   }
 `

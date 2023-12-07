@@ -1,11 +1,16 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
-import { type TransactionType, TransactionTypePastTense } from '../../utils/TypeUtil.js'
+import {
+  type TransactionType,
+  type TransactionIconType,
+  TransactionTypePastTense
+} from '../../utils/TypeUtil.js'
 import type { TransactionStatus, TransactionDirection, TransactionImage } from '@web3modal/common'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import '../../components/wui-text/index.js'
 import '../wui-transaction-visual/index.js'
+import '../wui-icon-box/index.js'
 import styles from './styles.js'
 
 @customElement('wui-transaction-list-item')
@@ -32,16 +37,18 @@ export class WuiTransactionListItem extends LitElement {
     return html`
       <wui-flex>
         <wui-transaction-visual
-          status=${this.status}
           direction=${this.direction}
           type=${this.type}
           onlyDirectionIcon=${this.onlyDirectionIcon}
           .images=${this.images}
         ></wui-transaction-visual>
         <wui-flex flexDirection="column" gap="3xs">
-          <wui-text variant="paragraph-600" color="fg-100">
-            ${TransactionTypePastTense[this.type]}
-          </wui-text>
+          <wui-flex flexDirection="row" alignItems="center" gap="3xs">
+            ${this.templateIcon()}
+            <wui-text variant="paragraph-600" color="fg-100">
+              ${TransactionTypePastTense[this.type]}
+            </wui-text>
+          </wui-flex>
           <wui-flex class="description-container">
             ${this.templateDescription()} ${this.templateSecondDescription()}
           </wui-flex>
@@ -75,6 +82,73 @@ export class WuiTransactionListItem extends LitElement {
           </wui-text>
         `
       : null
+  }
+
+  private templateIcon() {
+    let color: 'accent-100' | 'error-100' | 'success-100' | 'inverse-100' = 'accent-100'
+    let icon: TransactionIconType | undefined = undefined
+
+    icon = this.getIcon()
+
+    if (this.status) {
+      color = this.getStatusColor()
+    }
+
+    if (!icon) {
+      return null
+    }
+
+    return html`
+      <wui-icon-box
+        size="xs"
+        iconColor=${color}
+        backgroundColor=${color}
+        background="opaque"
+        icon=${icon}
+        ?border=${true}
+        borderColor="wui-color-bg-125"
+      ></wui-icon-box>
+    `
+  }
+
+  private getDirectionIcon() {
+    switch (this.direction) {
+      case 'in':
+        return 'arrowBottom'
+      case 'out':
+        return 'arrowTop'
+      default:
+        return undefined
+    }
+  }
+
+  private getIcon() {
+    if (this.onlyDirectionIcon) {
+      return this.getDirectionIcon()
+    }
+
+    if (this.type === 'trade') {
+      return 'swapHorizontalBold'
+    } else if (this.type === 'approve') {
+      return 'checkmark'
+    } else if (this.type === 'cancel') {
+      return 'close'
+    }
+
+    return this.getDirectionIcon()
+  }
+
+  private getStatusColor() {
+    switch (this.status) {
+      case 'confirmed':
+        return 'success-100'
+      case 'failed':
+        return 'error-100'
+      case 'pending':
+        return 'inverse-100'
+      default:
+        return 'accent-100'
+    }
   }
 }
 

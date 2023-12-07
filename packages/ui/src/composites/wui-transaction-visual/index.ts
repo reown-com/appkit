@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import type { TransactionDirection, TransactionImage, TransactionStatus } from '@web3modal/common'
-import type { TransactionIconType, TransactionType } from '../../utils/TypeUtil.js'
+import type { TransactionDirection, TransactionImage } from '@web3modal/common'
+import type { TransactionType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../../components/wui-image/index.js'
 import '../wui-icon-box/index.js'
@@ -13,8 +13,6 @@ export class WuiTransactionVisual extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @property() public type?: TransactionType
-
-  @property() public status?: TransactionStatus
 
   @property() public direction?: TransactionDirection
 
@@ -42,7 +40,7 @@ export class WuiTransactionVisual extends LitElement {
     --local-right-border-radius: ${rightRadius};
     `
 
-    return html`<wui-flex> ${this.templateVisual()} ${this.templateIcon()} </wui-flex>`
+    return html`<wui-flex> ${this.templateVisual()} ${this.templateNetwork()} </wui-flex>`
   }
 
   // -- Private ------------------------------------------- //
@@ -69,71 +67,9 @@ export class WuiTransactionVisual extends LitElement {
     return html`<wui-icon size="inherit" color="fg-200" name="coinPlaceholder"></wui-icon>`
   }
 
-  private templateIcon() {
-    let color: 'accent-100' | 'error-100' | 'success-100' | 'inverse-100' = 'accent-100'
-    let icon: TransactionIconType | undefined = undefined
-
-    icon = this.getIcon()
-
-    if (this.status) {
-      color = this.getStatusColor()
-    }
-
-    if (!icon) {
-      return null
-    }
-
-    return html`
-      <wui-icon-box
-        size="xxs"
-        iconColor=${color}
-        backgroundColor=${color}
-        background="opaque"
-        icon=${icon}
-        ?border=${true}
-        borderColor="wui-color-bg-125"
-      ></wui-icon-box>
-    `
-  }
-
-  private getDirectionIcon() {
-    switch (this.direction) {
-      case 'in':
-        return 'arrowBottom'
-      case 'out':
-        return 'arrowTop'
-      default:
-        return undefined
-    }
-  }
-
-  private getIcon() {
-    if (this.onlyDirectionIcon) {
-      return this.getDirectionIcon()
-    }
-
-    if (this.type === 'trade') {
-      return 'swapHorizontalBold'
-    } else if (this.type === 'approve') {
-      return 'checkmark'
-    } else if (this.type === 'cancel') {
-      return 'close'
-    }
-
-    return this.getDirectionIcon()
-  }
-
-  private getStatusColor() {
-    switch (this.status) {
-      case 'confirmed':
-        return 'success-100'
-      case 'failed':
-        return 'error-100'
-      case 'pending':
-        return 'inverse-100'
-      default:
-        return 'accent-100'
-    }
+  private templateNetwork() {
+    // Finish this
+    return html``
   }
 }
 
