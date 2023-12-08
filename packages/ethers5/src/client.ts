@@ -36,7 +36,7 @@ import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   ethersConfig: ProviderType
   siweConfig?: Web3ModalSIWEClient
-  chains?: Chain[]
+  chains: Chain[]
   defaultChain?: Chain
   chainImages?: Record<number, string>
   connectorImages?: Record<string, string>
@@ -89,7 +89,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private projectId: string
 
-  private chains?: Chain[]
+  private chains: Chain[]
 
   private metadata?: Metadata
 
@@ -375,7 +375,7 @@ export class Web3Modal extends Web3ModalScaffold {
             return map
           }, {})
         : ({} as Record<number, string>),
-      optionalChains: this.chains ? [0, ...this.chains.map(chain => chain.chainId)] : [0],
+      optionalChains: [...this.chains.map(chain => chain.chainId)] as [number],
       metadata: {
         name: this.metadata ? this.metadata.name : '',
         description: this.metadata ? this.metadata.description : '',
