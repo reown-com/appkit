@@ -1,5 +1,6 @@
-import type { Chain, WindowProvider } from '@wagmi/core'
+import { type Chain, type WindowProvider } from '@wagmi/core'
 import { InjectedConnector } from '@wagmi/core/connectors/injected'
+import { getAddress } from 'viem'
 
 // -- Helpers ----------------------------------------------------------
 const connectedRdnsKey = 'connectedRdns'
@@ -48,6 +49,16 @@ export class EIP6963Connector extends InjectedConnector {
     }
 
     return data
+  }
+
+  protected override onAccountsChanged = (accounts: string[]) => {
+    if (accounts.length === 0) {
+      this.storage?.removeItem(connectedRdnsKey)
+      this.emit('disconnect')
+    } else
+      this.emit('change', {
+        account: getAddress(accounts[0] as string)
+      })
   }
 
   public override async disconnect() {
