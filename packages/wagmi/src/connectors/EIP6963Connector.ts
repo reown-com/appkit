@@ -55,10 +55,11 @@ export class EIP6963Connector extends InjectedConnector {
     if (accounts.length === 0) {
       this.storage?.removeItem(connectedRdnsKey)
       this.emit('disconnect')
-    } else
+    } else if (accounts[0]) {
       this.emit('change', {
-        account: getAddress(accounts[0] as string)
+        account: getAddress(accounts[0])
       })
+    }
   }
 
   public override async disconnect() {
