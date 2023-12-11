@@ -21,6 +21,13 @@ export default css`
     max-height: 200px;
   }
 
+  .tab-content-container {
+    height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+  }
+
   .account-button {
     width: auto;
     border: none;

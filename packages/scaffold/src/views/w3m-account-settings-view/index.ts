@@ -37,7 +37,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private network = NetworkController.state.caipNetwork
 
-  @state() private disconecting = false
+  @state() private disconnecting = false
 
   public constructor() {
     super()
@@ -134,12 +134,22 @@ export class W3mAccountSettingsView extends LitElement {
               ${this.network?.name ?? 'Unknown'}
             </wui-text>
           </wui-list-item>
+
+          <wui-list-item
+            iconVariant="blue"
+            icon="swapHorizontalBold"
+            iconSize="sm"
+            ?chevron=${true}
+            @click=${this.onTransactions.bind(this)}
+          >
+            <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
+          </wui-list-item>
           <wui-list-item
             variant="icon"
             iconVariant="overlay"
             icon="disconnect"
             ?chevron=${false}
-            .loading=${this.disconecting}
+            .loading=${this.disconnecting}
             @click=${this.onDisconnect.bind(this)}
           >
             <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
@@ -150,6 +160,11 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private onTransactions() {
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_TRANSACTIONS' })
+    RouterController.push('Transactions')
+  }
+
   private explorerBtnTemplate() {
     const { addressExplorerUrl } = AccountController.state
 
@@ -193,7 +208,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   private async onDisconnect() {
     try {
-      this.disconecting = true
+      this.disconnecting = true
       await ConnectionController.disconnect()
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
       ModalController.close()
@@ -201,7 +216,7 @@ export class W3mAccountSettingsView extends LitElement {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')
     } finally {
-      this.disconecting = false
+      this.disconnecting = false
     }
   }
 

@@ -24,9 +24,13 @@ import { initOnRamp } from '@coinbase/cbpay-js'
 import type { CBPayInstanceType } from '@coinbase/cbpay-js'
 
 // -- Constants ----------------------------------------- //
+type TabID = 'tokens' | 'nfts' | 'activity'
 const coinbaseAppID = process.env['NEXT_PUBLIC_COINBASE_APP_ID']
-
-const tabs = [{ label: 'Tokens' }, { label: 'NFTs' }, { label: 'Activity' }]
+const tabs: Array<{ id: TabID; label: string }> = [
+  { id: 'tokens', label: 'Tokens' },
+  { id: 'nfts', label: 'NFTs' },
+  { id: 'activity', label: 'Activity' }
+]
 
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
@@ -49,6 +53,8 @@ export class W3mAccountView extends LitElement {
   @state() private network = NetworkController.state.caipNetwork
 
   @state() private onrampInstance: CBPayInstanceType | null = null
+
+  @state() private tab: 'tokens' | 'nfts' | 'activity' = 'tokens'
 
   @state() private disconnecting = false
 
@@ -185,6 +191,7 @@ export class W3mAccountView extends LitElement {
           <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
         </wui-list-item>
       </wui-flex>
+      ${this.emailCardTemplate()}
 
       <wui-flex flexDirection="column" gap="m">
         <wui-flex .padding=${['0', 'xl', '0', 'xl']} gap="1xs" class="account-links">
@@ -203,47 +210,28 @@ export class W3mAccountView extends LitElement {
         </wui-flex>
 
         <wui-flex .padding=${['0', 'xl', '0', 'xl']}>
-          <wui-tabs .tabs=${tabs}></wui-tabs>
+          <wui-tabs .tabs=${tabs} .onTabChange=${this.onTabChange.bind(this)}></wui-tabs>
         </wui-flex>
 
-        <wui-flex flexDirection="column" gap="xs" .padding=${['0', 'xl', 'xl', 'xl'] as const}>
-          <w3m-transactions-view></w3m-transactions-view>
+        <wui-flex
+          class="tab-content-container"
+          flexDirection="column"
+          gap="xs"
+          .padding=${['0', 'xl', 'xl', 'xl'] as const}
+        >
+          ${this.tab === 'tokens' ? html`<w3m-tokens-view></w3m-tokens-view>` : null}
+          ${this.tab === 'nfts' ? html`<w3m-nfts-view></w3m-nfts-view>` : null}
+          ${this.tab === 'activity' ? html`<w3m-transactions-view></w3m-transactions-view>` : null}
         </wui-flex>
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
-  private onTransactions() {
-    EventsController.sendEvent({ type: 'track', event: 'CLICK_TRANSACTIONS' })
-    RouterController.push('Transactions')
-  }
-
-  private async onDisconnect() {
-    try {
-      this.disconnecting = true
-      await ConnectionController.disconnect()
-      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
-      ModalController.close()
-    } catch {
-      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
-      SnackController.showError('Failed to disconnect')
-    } finally {
-      this.disconnecting = false
-    }
-  }
-
-  private isAllowedNetworkSwitch() {
-    const { requestedCaipNetworks } = NetworkController.state
-    const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
-    const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
-
-    return isMultiNetwork || !isValidNetwork
-  }
-
-  private onNetworks() {
-    if (this.isAllowedNetworkSwitch()) {
-      RouterController.push('Networks')
+  private onTabChange(index: number) {
+    const tab = tabs[index]
+    if (tab) {
+      this.tab = tab.id
     }
   }
 

@@ -148,6 +148,16 @@ export interface BlockchainApiTransactionsResponse {
   next: string | null
 }
 
+export interface BlockchainApiToken {
+  id: string
+  name: string
+  symbol: string
+}
+
+export interface BlockchainApiTokensResponse {
+  data: Array<BlockchainApiToken>
+}
+
 export interface CoinbaseApiTransactionsRequest {
   pageSize: number
   pageKey: string
