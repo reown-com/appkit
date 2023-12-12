@@ -40,7 +40,7 @@ export class W3mNetworksView extends LitElement {
       <wui-separator></wui-separator>
 
       <wui-flex padding="s" flexDirection="column" gap="m" alignItems="center">
-        <wui-text variant="small-500" color="fg-300" align="center">
+        <wui-text variant="small-400" color="fg-300" align="center">
           Your connected wallet may not support some of the networks available for this dApp
         </wui-text>
         <wui-link @click=${this.onNetworkHelp.bind(this)}>
