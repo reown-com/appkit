@@ -777,6 +777,7 @@ export class Web3Modal extends Web3ModalScaffold {
             this.setAddressExplorerUrl(undefined)
           }
           if (this.hasSyncedConnectedAccount) {
+            await this.syncProfile(address)
             await this.syncBalance(address)
           }
         }
@@ -785,14 +786,22 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncProfile(address: Address) {
-    const ensProvider = new InfuraProvider('mainnet')
-    const name = await ensProvider.lookupAddress(address)
-    const avatar = await ensProvider.getAvatar(address)
-    if (name) {
-      this.setProfileName(name)
-    }
-    if (avatar) {
-      this.setProfileImage(avatar)
+    const chainId = EthersStoreUtil.state.chainId
+
+    if (chainId === 1) {
+      const ensProvider = new InfuraProvider('mainnet')
+      const name = await ensProvider.lookupAddress(address)
+      const avatar = await ensProvider.getAvatar(address)
+
+      if (name) {
+        this.setProfileName(name)
+      }
+      if (avatar) {
+        this.setProfileImage(avatar)
+      }
+    } else {
+      this.setProfileName(null)
+      this.setProfileImage(null)
     }
   }
 

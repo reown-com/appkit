@@ -267,7 +267,7 @@ export class Web3Modal extends Web3ModalScaffold {
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
       await Promise.all([
-        this.syncProfile(address),
+        this.syncProfile(address, chain),
         this.syncBalance(address, chain),
         this.getApprovedCaipNetworksData()
       ])
@@ -301,25 +301,26 @@ export class Web3Modal extends Web3ModalScaffold {
           this.setAddressExplorerUrl(undefined)
         }
         if (this.hasSyncedConnectedAccount) {
+          await this.syncProfile(address, chain)
           await this.syncBalance(address, chain)
         }
       }
     }
   }
 
-  private async syncProfile(address: Address) {
+  private async syncProfile(address: Address, chain: Chain) {
     try {
       const { name, avatar } = await this.fetchIdentity({
-        caipChainId: `${ConstantsUtil.EIP155}:${mainnet.id}`,
+        caipChainId: `${ConstantsUtil.EIP155}:${chain.id}`,
         address
       })
       this.setProfileName(name)
       this.setProfileImage(avatar)
     } catch {
-      const profileName = await fetchEnsName({ address, chainId: mainnet.id })
+      const profileName = await fetchEnsName({ address, chainId: chain.id })
       if (profileName) {
         this.setProfileName(profileName)
-        const profileImage = await fetchEnsAvatar({ name: profileName, chainId: mainnet.id })
+        const profileImage = await fetchEnsAvatar({ name: profileName, chainId: chain.id })
         if (profileImage) {
           this.setProfileImage(profileImage)
         }
