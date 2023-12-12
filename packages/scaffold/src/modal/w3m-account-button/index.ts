@@ -1,6 +1,7 @@
 import {
   AccountController,
   AssetController,
+  AssetUtil,
   CoreHelperUtil,
   ModalController,
   NetworkController
@@ -66,7 +67,7 @@ export class W3mAccountButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const networkImage = this.networkImages[this.network?.imageId ?? '']
+    const networkImage = AssetUtil.getNetworkImage(this.network)
     const showBalance = this.balance === 'show'
 
     return html`
