@@ -47,7 +47,6 @@ createWeb3Modal({
   ethersConfig,
   chains,
   projectId,
-  enableAnalytics: true,
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00DCFF',
