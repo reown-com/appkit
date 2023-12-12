@@ -1,6 +1,5 @@
 import {
   AccountController,
-  AssetController,
   AssetUtil,
   CoreHelperUtil,
   ModalController,
@@ -16,8 +15,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 export class W3mAccountButton extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
-
-  private readonly networkImages = AssetController.state.networkImages
 
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled?: WuiAccountButton['disabled'] = false

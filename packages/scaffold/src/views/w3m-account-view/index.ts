@@ -1,6 +1,5 @@
 import {
   AccountController,
-  AssetController,
   ConnectionController,
   CoreHelperUtil,
   EventsController,
@@ -25,8 +24,6 @@ export class W3mAccountView extends LitElement {
 
   // -- Members -------------------------------------------- //
   private usubscribe: (() => void)[] = []
-
-  private readonly networkImages = AssetController.state.networkImages
 
   private readonly connectors = ConnectorController.state.connectors
 
