@@ -312,6 +312,7 @@ export class Web3Modal extends Web3ModalScaffold {
     if (chain.id !== mainnet.id) {
       this.setProfileName(null)
       this.setProfileImage(null)
+
       return
     }
 
