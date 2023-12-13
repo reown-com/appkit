@@ -1,13 +1,14 @@
 import { Center, Text, VStack } from '@chakra-ui/react'
-import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
-import { useEffect, useState } from 'react'
-import { WagmiConfig } from 'wagmi'
+import { NetworksButton } from '../../components/NetworksButton'
+import { EthersConnectButton } from '../../components/Ethers/EthersConnectButton'
+import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
+import { ThemeStore } from '../../utils/StoreUtil'
 import {
   arbitrum,
   aurora,
   avalanche,
   base,
-  bsc,
+  binanceSmartChain,
   celo,
   gnosis,
   mainnet,
@@ -15,24 +16,18 @@ import {
   polygon,
   zkSync,
   zora
-} from 'wagmi/chains'
-import { WagmiConnectButton } from '../../components/Wagmi/WagmiConnectButton'
-import { NetworksButton } from '../../components/NetworksButton'
-import { ThemeStore } from '../../utils/StoreUtil'
+} from '../../utils/ChainsUtil'
 
-// 1. Get projectId
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
-
-// 2. Create wagmiConfig
 const chains = [
   mainnet,
   arbitrum,
   polygon,
   avalanche,
-  bsc,
+  binanceSmartChain,
   optimism,
   gnosis,
   zkSync,
@@ -49,17 +44,15 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 }
 
-export const wagmiConfig = defaultWagmiConfig({
-  chains,
-  projectId,
-  metadata,
-  enableEmail: true
-})
-
 const modal = createWeb3Modal({
-  wagmiConfig,
-  projectId,
+  ethersConfig: defaultConfig({
+    metadata,
+    defaultChainId: 1,
+    rpcUrl: 'https://cloudflare-eth.com',
+    enableEmail: true
+  }),
   chains,
+  projectId,
   enableAnalytics: true,
   metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
@@ -68,26 +61,20 @@ const modal = createWeb3Modal({
 
 ThemeStore.setModal(modal)
 
-export default function Wagmi() {
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    setReady(true)
-  }, [])
-
-  return ready ? (
-    <WagmiConfig config={wagmiConfig}>
+export default function Ethers() {
+  return (
+    <>
       <Center paddingTop={10}>
         <Text fontSize="xl" fontWeight={700}>
-          Wagmi default
+          Ethers with email
         </Text>
       </Center>
       <Center h="65vh">
         <VStack gap={4}>
-          <WagmiConnectButton />
+          <EthersConnectButton />
           <NetworksButton />
         </VStack>
       </Center>
-    </WagmiConfig>
-  ) : null
+    </>
+  )
 }

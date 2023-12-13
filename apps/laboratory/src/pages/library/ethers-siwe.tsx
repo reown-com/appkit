@@ -128,7 +128,7 @@ export default function EthersSiwe() {
     <>
       <Center paddingTop={10}>
         <Text fontSize="xl" fontWeight={700}>
-          V3 with SIWE & Ethers
+          Ethers with SIWE
         </Text>
       </Center>
       <Center h="65vh">
