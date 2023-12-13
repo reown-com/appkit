@@ -52,8 +52,7 @@ const metadata = {
 export const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
-  metadata,
-  enableEmail: true
+  metadata
 })
 
 const modal = createWeb3Modal({

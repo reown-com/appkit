@@ -2,75 +2,90 @@
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build:clean": {
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**"],
+      "cache": false
     },
     "build:polyfills": {
       "outputs": ["dist/**"],
-      "dependsOn": ["build:clean"]
+      "dependsOn": ["^build:clean"],
+      "cache": false
     },
     "build:common": {
       "outputs": ["dist/**"],
-      "dependsOn": ["build:clean"]
+      "dependsOn": ["^build:clean"],
+      "cache": false
     },
     "build:core": {
       "outputs": ["dist/**"],
-      "dependsOn": ["build:polyfills", "build:common"]
+      "dependsOn": ["^build:polyfills", "^build:common"],
+      "cache": false
     },
     "build:ui": {
       "outputs": ["dist/**"],
-      "dependsOn": ["build:polyfills", "build:common"]
+      "dependsOn": ["^build:polyfills", "^build:common"],
+      "cache": false
     },
     "build:wallet": {
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**"],
+      "cache": false
     },
     "build:scaffold": {
       "outputs": ["dist/**"],
-      "dependsOn": ["build:core", "build:ui", "build:wallet"]
+      "dependsOn": ["^build:core", "^build:ui", "^build:wallet"],
+      "cache": false
     },
     "build:scaffold-utils": {
       "outputs": ["dist/**"],
-      "dependsOn": ["build:scaffold"]
+      "dependsOn": ["^build:scaffold"],
+      "cache": false
     },
     "build:scaffold-react": {
       "outputs": ["dist/**"],
-      "dependsOn": ["build:scaffold-utils"]
+      "dependsOn": ["^build:scaffold-utils"],
+      "cache": false
     },
     "build:scaffold-vue": {
       "outputs": ["dist/**"],
-      "dependsOn": ["build:scaffold-utils"]
+      "dependsOn": ["^build:scaffold-utils"],
+      "cache": false
     },
     "build:siwe": {
       "outputs": ["dist/**"],
-      "dependsOn": ["build:scaffold-utils"]
+      "dependsOn": ["^build:core", "^build:scaffold-utils"],
+      "cache": false
     },
     "build": {
       "outputs": ["dist/**"],
       "dependsOn": [
-        "build:polyfills",
-        "build:wallet",
-        "build:siwe",
-        "build:scaffold",
-        "build:scaffold-utils",
-        "build:scaffold-react",
-        "build:scaffold-vue"
-      ]
+        "^build:polyfills",
+        "^build:wallet",
+        "^build:siwe",
+        "^build:scaffold",
+        "^build:scaffold-utils",
+        "^build:scaffold-react",
+        "^build:scaffold-vue"
+      ],
+      "cache": false
     },
     "watch": {
-      "dependsOn": ["build"],
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },
     "build:gallery": {
       "outputs": ["out/**"],
-      "dependsOn": ["build"]
+      "dependsOn": ["^build"],
+      "cache": false
     },
     "build:laboratory": {
       "outputs": ["out/**", ".next/**", "!.next/cache/**"],
-      "dependsOn": ["build"]
+      "dependsOn": ["^build"],
+      "cache": false
     },
     "build:examples": {
       "outputs": ["dist/**"],
-      "dependsOn": ["build"]
+      "dependsOn": ["^build"],
+      "cache": false
     },
     "typecheck": {
       "cache": false
