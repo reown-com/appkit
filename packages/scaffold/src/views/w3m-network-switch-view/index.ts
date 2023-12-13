@@ -1,4 +1,10 @@
-import { AssetUtil, NetworkController, RouterController, SIWEController } from '@web3modal/core'
+import {
+  AssetUtil,
+  NetworkController,
+  RouterController,
+  SIWEController,
+  RouterUtil
+} from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -19,19 +25,8 @@ export class W3mNetworkSwitchView extends LitElement {
 
   @state() public error = false
 
-  @state() private currentNetwork = NetworkController.state.caipNetwork
-
   public constructor() {
     super()
-    this.unsubscribe.push(
-      NetworkController.subscribeKey('caipNetwork', val => {
-        if (val?.id !== this.currentNetwork?.id) {
-          if (!SIWEController.state.isSiweEnabled) {
-            RouterController.goBack()
-          }
-        }
-      })
-    )
   }
 
   public override disconnectedCallback() {
@@ -117,7 +112,7 @@ export class W3mNetworkSwitchView extends LitElement {
       if (this.network) {
         await NetworkController.switchActiveNetwork(this.network)
         if (!SIWEController.state.isSiweEnabled) {
-          RouterController.goBack()
+          RouterUtil.navigateAfterNetworkSwitch()
         }
       }
     } catch {
