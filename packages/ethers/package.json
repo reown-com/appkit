@@ -53,12 +53,14 @@
     "valtio": "1.11.2"
   },
   "peerDependencies": {
+    "@web3modal/siwe": "*",
     "ethers": ">=6.0.0",
     "react": ">=17",
     "react-dom": ">=17",
     "vue": ">=3"
   },
   "devDependencies": {
+    "@web3modal/siwe": "*",
     "ethers": "6.9.0"
   },
   "peerDependenciesMeta": {
@@ -70,9 +72,13 @@
     },
     "vue": {
       "optional": true
+    },
+    "@web3modal/siwe": {
+      "optional": true
     }
   },
   "optionalDependencies": {
+    "@web3modal/siwe": "*",
     "react": ">=17",
     "react-dom": ">=17",
     "vue": ">=3"

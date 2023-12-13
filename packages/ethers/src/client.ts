@@ -13,6 +13,7 @@ import type {
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import EthereumProvider from '@walletconnect/ethereum-provider'
+import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import type {
   Address,
   Metadata,
@@ -40,6 +41,7 @@ import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   ethersConfig: ProviderType
+  siweConfig?: Web3ModalSIWEClient
   chains?: Chain[]
   defaultChain?: Chain
   chainImages?: Record<number, string>
@@ -102,8 +104,16 @@ export class Web3Modal extends Web3ModalScaffold {
   private emailProvider?: W3mFrameProvider
 
   public constructor(options: Web3ModalClientOptions) {
-    const { ethersConfig, chains, defaultChain, tokens, chainImages, _sdkVersion, ...w3mOptions } =
-      options
+    const {
+      ethersConfig,
+      siweConfig,
+      chains,
+      defaultChain,
+      tokens,
+      chainImages,
+      _sdkVersion,
+      ...w3mOptions
+    } = options
 
     if (!ethersConfig) {
       throw new Error('web3modal:constructor - ethersConfig is undefined')
@@ -219,6 +229,9 @@ export class Web3Modal extends Web3ModalScaffold {
         const providerType = EthersStoreUtil.state.providerType
         localStorage.removeItem(EthersConstantsUtil.WALLET_ID)
         EthersStoreUtil.reset()
+        if (siweConfig?.options?.signOutOnDisconnect) {
+          await siweConfig.signOut()
+        }
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider
           await (WalletConnectProvider as unknown as EthereumProvider).disconnect()
@@ -229,12 +242,28 @@ export class Web3Modal extends Web3ModalScaffold {
         } else {
           this.emailProvider?.disconnect()
         }
+        provider?.emit('disconnect')
+      },
+
+      signMessage: async (message: string) => {
+        const provider = EthersStoreUtil.state.provider
+        if (!provider) {
+          throw new Error('connectionControllerClient:signMessage - provider is undefined')
+        }
+
+        const signature = await provider.request({
+          method: 'personal_sign',
+          params: [message, this.getAddress()]
+        })
+
+        return signature as `0x${string}`
       }
     }
 
     super({
       networkControllerClient,
       connectionControllerClient,
+      siweControllerClient: siweConfig,
       defaultChain: EthersHelpersUtil.getCaipDefaultChain(defaultChain),
       tokens: HelpersUtil.getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `html-ethers-${ConstantsUtil.VERSION}`,
