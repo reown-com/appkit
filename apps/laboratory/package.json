@@ -21,7 +21,7 @@
     "next-auth": "4.24.5",
     "react-icons": "4.12.0",
     "siwe": "2.1.4",
-    "valtio": "1.12.1"
+    "valtio": "1.11.2"
   },
   "devDependencies": {
     "ethers": "6.9.0"

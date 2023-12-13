@@ -61,16 +61,16 @@
       "persistent": true
     },
     "build:gallery": {
-      "dependsOn": ["^build"],
-      "outputs": ["out/**"]
+      "outputs": ["out/**"],
+      "dependsOn": ["^build"]
     },
     "build:laboratory": {
-      "dependsOn": ["^build"],
-      "outputs": ["out/**", ".next/**", "!.next/cache/**"]
+      "outputs": ["out/**", ".next/**", "!.next/cache/**"],
+      "dependsOn": ["^build"]
     },
     "build:examples": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**"],
+      "dependsOn": ["^build"]
     },
     "typecheck": {
       "cache": false
