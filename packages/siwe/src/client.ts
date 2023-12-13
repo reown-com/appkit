@@ -91,9 +91,7 @@ export class Web3ModalSIWEClient {
     }
     const message = this.methods.createMessage({ address, nonce, chainId })
     const signature = await ConnectionController.signMessage(message)
-
     const isValid = await this.methods.verifyMessage({ message, signature })
-
     if (!isValid) {
       throw new Error('Error verifying SIWE signature')
     }
