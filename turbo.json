@@ -57,13 +57,16 @@
     "build": {
       "outputs": ["dist/**"],
       "dependsOn": [
+        "^build:common",
+        "^build:core",
         "^build:polyfills",
-        "^build:wallet",
-        "^build:siwe",
         "^build:scaffold",
         "^build:scaffold-utils",
         "^build:scaffold-react",
-        "^build:scaffold-vue"
+        "^build:scaffold-vue",
+        "^build:siwe",
+        "^build:ui",
+        "^build:wallet"
       ],
       "cache": false
     },
