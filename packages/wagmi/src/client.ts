@@ -10,7 +10,8 @@ import {
   getNetwork,
   switchNetwork,
   watchAccount,
-  watchNetwork
+  watchNetwork,
+  mainnet
 } from '@wagmi/core'
 import type {
   CaipAddress,
@@ -308,6 +309,12 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncProfile(address: Address, chain: Chain) {
+    if (chain.id !== mainnet.id) {
+      this.setProfileName(null)
+      this.setProfileImage(null)
+      return
+    }
+
     try {
       const { name, avatar } = await this.fetchIdentity({
         caipChainId: `${ConstantsUtil.EIP155}:${chain.id}`,
