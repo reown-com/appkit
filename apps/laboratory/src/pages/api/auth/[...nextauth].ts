@@ -1,6 +1,5 @@
 import type { SIWESession } from '@web3modal/core'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import type { DefaultSession } from 'next-auth'
 import nextAuth from 'next-auth'
 import credentialsProvider from 'next-auth/providers/credentials'
 import { getCsrfToken } from 'next-auth/react'
@@ -9,7 +8,8 @@ import { ethers } from 'ethers'
 
 declare module 'next-auth' {
   interface Session extends SIWESession {
-    user?: DefaultSession['user']
+    address: string
+    chainId: number
   }
 }
 
@@ -21,6 +21,10 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
   const nextAuthSecret = process.env['NEXTAUTH_SECRET']
   if (!nextAuthSecret) {
     throw new Error('NEXTAUTH_SECRET is not set')
+  }
+  const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+  if (!projectId) {
+    throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
   }
 
   const providers = [
@@ -44,16 +48,16 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             throw new Error('SiweMessage is undefined')
           }
           const siwe = new SiweMessage(credentials.message)
-          const provider = new ethers.InfuraProvider(siwe.chainId)
+          const provider = new ethers.JsonRpcProvider(
+            `https://rpc.walletconnect.com/v1?chainId=eip155:${siwe.chainId}&projectId=${projectId}`
+          )
           const nonce = await getCsrfToken({ req: { headers: req.headers } })
           const result = await siwe.verify(
             {
               signature: credentials?.signature || '',
               nonce
             },
-            {
-              provider
-            }
+            { provider }
           )
 
           if (result.success) {
@@ -79,11 +83,11 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
 
   return await nextAuth(req, res, {
     // https://next-auth.js.org/configuration/providers/oauth
+    secret: nextAuthSecret,
     providers,
     session: {
       strategy: 'jwt'
     },
-    secret: nextAuthSecret,
     callbacks: {
       session({ session, token }) {
         if (!token.sub) {
@@ -91,7 +95,6 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         }
 
         const [, chainId, address] = token.sub.split(':')
-
         if (chainId && address) {
           session.address = address
           session.chainId = parseInt(chainId, 10)
