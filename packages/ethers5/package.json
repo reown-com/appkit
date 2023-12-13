@@ -53,6 +53,7 @@
     "valtio": "1.12.1"
   },
   "devDependencies": {
+    "@web3modal/siwe": "*",
     "ethers": "5.7.2"
   },
   "peerDependencies": {
