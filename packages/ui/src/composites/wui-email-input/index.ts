@@ -14,12 +14,17 @@ export class WuiEmailInput extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public errorMessage?: string
 
+  @property({ type: Boolean }) public disabled = false
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-input-text placeholder="Email" icon="mail" size="md">
-        <wui-icon size="inherit" color="fg-100" name="chevronRight"></wui-icon>
-      </wui-input-text>
+      <wui-input-text
+        placeholder="Email"
+        icon="mail"
+        size="md"
+        .disabled=${this.disabled}
+      ></wui-input-text>
       ${this.templateError()}
     `
   }

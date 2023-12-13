@@ -12,4 +12,8 @@ export default css`
   wui-icon-link {
     margin-right: calc(var(--wui-icon-box-size-md) * -1);
   }
+
+  wui-notice-card {
+    margin-bottom: var(--wui-spacing-3xs);
+  }
 `

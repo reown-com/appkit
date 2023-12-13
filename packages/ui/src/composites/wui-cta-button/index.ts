@@ -27,10 +27,10 @@ export class WuiCtaButton extends LitElement {
         alignItems="center"
         .padding=${['1xs', '2l', '1xs', '2l'] as const}
       >
-        <wui-text variant="paragraph-500" colo="fg-200">${this.label}</wui-text>
+        <wui-text variant="paragraph-500" color="fg-200">${this.label}</wui-text>
         <wui-button size="sm" variant="accent">
           ${this.buttonLabel}
-          <wui-icon size="sm" color="inherit" slot="iconRight" name="chevronRight"></wui-icon>
+          <wui-icon size="xs" color="inherit" slot="iconRight" name="chevronRight"></wui-icon>
         </wui-button>
       </wui-flex>
     `

@@ -1,11 +1,12 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import type { Address, Provider } from './EthersTypesUtil.js'
+import type { Address, CombinedProvider, Provider } from './EthersTypesUtil.js'
+
 // -- Types --------------------------------------------- //
 
 export interface EthersStoreUtilState {
-  provider?: Provider
-  providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963'
+  provider?: Provider | CombinedProvider
+  providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
   address?: Address
   chainId?: number
   isConnected: boolean

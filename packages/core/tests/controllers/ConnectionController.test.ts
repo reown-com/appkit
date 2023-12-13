@@ -5,6 +5,7 @@ import { ConnectionController } from '../../index.js'
 // -- Setup --------------------------------------------------------------------
 const walletConnectUri = 'wc://uri?=123'
 const externalId = 'coinbaseWallet'
+const type = 'EMAIL'
 
 const client: ConnectionControllerClient = {
   connectWalletConnect: async onUri => {
@@ -51,7 +52,7 @@ describe('ConnectionController', () => {
   })
 
   it('should not throw on connectExternal()', async () => {
-    await ConnectionController.connectExternal({ id: externalId })
+    await ConnectionController.connectExternal({ id: externalId, type })
   })
 
   it('should not throw on checkInstalled()', () => {
@@ -64,7 +65,7 @@ describe('ConnectionController', () => {
 
   it('should not throw when optional methods are undefined', async () => {
     ConnectionController.setClient(partialClient)
-    await ConnectionController.connectExternal({ id: externalId })
+    await ConnectionController.connectExternal({ id: externalId, type })
     ConnectionController.checkInstalled([externalId])
   })
 

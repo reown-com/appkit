@@ -13,7 +13,7 @@ export class WuiButton extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: Exclude<SizeType, 'inherit' | 'lg' | 'xs' | 'xxs'> = 'md'
+  @property() public size: Exclude<SizeType, 'inherit' | 'xl' | 'lg' | 'xs' | 'xxs'> = 'md'
 
   @property({ type: Boolean }) public disabled = false
 
@@ -22,6 +22,10 @@ export class WuiButton extends LitElement {
   @property({ type: Boolean }) public loading = false
 
   @property() public variant: ButtonType = 'fill'
+
+  @property({ type: Boolean }) private hasIconLeft = false
+
+  @property({ type: Boolean }) private hasIconRight = false
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -34,18 +38,28 @@ export class WuiButton extends LitElement {
     return html`
       <button
         data-variant=${this.variant}
+        data-icon-left=${this.hasIconLeft}
+        data-icon-right=${this.hasIconRight}
         data-size=${this.size}
         ?disabled=${this.disabled || this.loading}
         ontouchstart
       >
         ${this.loadingTemplate()}
-        <slot name="iconLeft"></slot>
+        <slot name="iconLeft" @slotchange=${() => this.handleSlotLeftChange()}></slot>
         <wui-text variant=${textVariant} color="inherit">
           <slot></slot>
         </wui-text>
-        <slot name="iconRight"></slot>
+        <slot name="iconRight" @slotchange=${() => this.handleSlotRightChange()}></slot>
       </button>
     `
+  }
+
+  public handleSlotLeftChange() {
+    this.hasIconLeft = true
+  }
+
+  public handleSlotRightChange() {
+    this.hasIconRight = true
   }
 
   public loadingTemplate() {

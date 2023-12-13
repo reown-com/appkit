@@ -53,7 +53,9 @@ const modal = createWeb3Modal({
   chains,
   projectId,
   enableAnalytics: true,
-  metadata
+  metadata,
+  termsConditionsUrl: 'https://walletconnect.com/terms',
+  privacyPolicyUrl: 'https://walletconnect.com/privacy'
 })
 
 ThemeStore.setModal(modal)
@@ -63,7 +65,7 @@ export default function Ethers() {
     <>
       <Center paddingTop={10}>
         <Text fontSize="xl" fontWeight={700}>
-          V3 with Ethers
+          Ethers default
         </Text>
       </Center>
       <Center h="65vh">

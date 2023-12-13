@@ -60,7 +60,9 @@ const modal = createWeb3Modal({
   projectId,
   chains,
   enableAnalytics: true,
-  metadata
+  metadata,
+  termsConditionsUrl: 'https://walletconnect.com/terms',
+  privacyPolicyUrl: 'https://walletconnect.com/privacy'
 })
 
 ThemeStore.setModal(modal)
@@ -76,7 +78,7 @@ export default function Wagmi() {
     <WagmiConfig config={wagmiConfig}>
       <Center paddingTop={10}>
         <Text fontSize="xl" fontWeight={700}>
-          V3 with Wagmi
+          Wagmi default
         </Text>
       </Center>
       <Center h="65vh">

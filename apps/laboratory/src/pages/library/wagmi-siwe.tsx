@@ -140,7 +140,7 @@ export default function Wagmi() {
     <WagmiConfig config={wagmiConfig}>
       <Center paddingTop={10}>
         <Text fontSize="xl" fontWeight={700}>
-          V3 with SIWE and wagmi
+          Wagmi with SIWE
         </Text>
       </Center>
       <Center h="65vh">

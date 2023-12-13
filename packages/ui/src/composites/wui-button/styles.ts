@@ -17,7 +17,17 @@ export default css`
   }
 
   button[data-size='sm'] {
-    padding: 6px 12px;
+    padding: var(--wui-spacing-xxs) var(--wui-spacing-s);
+  }
+
+  button[data-size='sm'][data-icon-left='true'] {
+    padding: var(--wui-spacing-xxs) var(--wui-spacing-s) var(--wui-spacing-xxs)
+      var(--wui-spacing-xs);
+  }
+
+  button[data-size='sm'][data-icon-right='true'] {
+    padding: var(--wui-spacing-xxs) var(--wui-spacing-xs) var(--wui-spacing-xxs)
+      var(--wui-spacing-s);
   }
 
   ::slotted(*) {
@@ -31,7 +41,15 @@ export default css`
   }
 
   button[data-size='md'] {
-    padding: 9px var(--wui-spacing-l) 9px var(--wui-spacing-l);
+    padding: 8.2px var(--wui-spacing-l) 9px var(--wui-spacing-l);
+  }
+
+  button[data-size='md'][data-icon-left='true'] {
+    padding: 8.2px var(--wui-spacing-l) 9px var(--wui-spacing-s);
+  }
+
+  button[data-size='md'][data-icon-right='true'] {
+    padding: 8.2px var(--wui-spacing-s) 9px var(--wui-spacing-l);
   }
 
   wui-loading-spinner {

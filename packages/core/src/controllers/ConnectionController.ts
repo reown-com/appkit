@@ -8,6 +8,7 @@ import { TransactionsController } from './TransactionsController.js'
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
   id: Connector['id']
+  type: Connector['type']
   provider?: Connector['provider']
   info?: Connector['info']
 }
@@ -74,6 +75,7 @@ export const ConnectionController = {
 
   async connectExternal(options: ConnectExternalOptions) {
     await this._getClient().connectExternal?.(options)
+    StorageUtil.setConnectedConnector(options.type)
   },
 
   async signMessage(message: string) {

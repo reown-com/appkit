@@ -1,3 +1,4 @@
+import type { W3mFrameProvider } from '@web3modal/wallet'
 import type { Transaction } from '@web3modal/common'
 
 export type CaipAddress = `${string}:${string}:${string}`
@@ -27,7 +28,7 @@ export type Platform =
   | 'unsupported'
   | 'external'
 
-export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUNCED'
+export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUNCED' | 'EMAIL'
 
 export type Connector = {
   id: string
@@ -38,6 +39,10 @@ export type Connector = {
   imageUrl?: string
   info?: { rdns?: string }
   provider?: unknown
+}
+
+export interface EmailConnector extends Connector {
+  provider: W3mFrameProvider
 }
 
 export type CaipNamespaces = Record<
@@ -191,7 +196,7 @@ export type Event =
       type: 'track'
       event: 'CONNECT_SUCCESS'
       properties: {
-        method: 'qrcode' | 'mobile' | 'external' | 'browser'
+        method: 'qrcode' | 'mobile' | 'external' | 'browser' | 'email'
       }
     }
   | {

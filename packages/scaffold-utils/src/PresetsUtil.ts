@@ -71,6 +71,56 @@ export const PresetsUtil = {
   ConnectorTypesMap: {
     [ConstantsUtil.INJECTED_CONNECTOR_ID]: 'INJECTED',
     [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'WALLET_CONNECT',
-    [ConstantsUtil.EIP6963_CONNECTOR_ID]: 'ANNOUNCED'
-  } as Record<string, ConnectorType>
+    [ConstantsUtil.EIP6963_CONNECTOR_ID]: 'ANNOUNCED',
+    [ConstantsUtil.EMAIL_CONNECTOR_ID]: 'EMAIL'
+  } as Record<string, ConnectorType>,
+
+  WalletConnectRpcChainIds: [
+    // Ethereum
+    1,
+    // Ethereum Goerli
+    5,
+    // Ethereum Sepolia
+    11155111,
+    // Optimism
+    10,
+    // Optimism Goerli
+    420,
+    // Arbitrum
+    42161,
+    // Arbitrum Goerli
+    421613,
+    // Polygon
+    137,
+    // Polygon Mumbai
+    80001,
+    // Celo Mainnet
+    42220,
+    // Aurora
+    1313161554,
+    // Aurora Testnet
+    1313161555,
+    // Binance Smart Chain
+    56,
+    // Binance Smart Chain Testnet
+    97,
+    // Avalanche C-Chain
+    43114,
+    // Avalanche Fuji Testnet
+    43113,
+    // Gnosis Chain
+    100,
+    // Base
+    8453,
+    // Base Goerli
+    84531,
+    // Zora
+    7777777,
+    // Zora Goerli
+    999,
+    // ZkSync Era Mainnet
+    324,
+    // ZkSync Era Testnet
+    280
+  ]
 }

@@ -31,6 +31,9 @@ function headings() {
     WhatIsAWallet: 'What is a wallet?',
     GetWallet: 'Get a Wallet',
     Downloads: name ? `Get ${name}` : 'Downloads',
+    EmailVerifyOtp: 'Confirm Email',
+    EmailVerifyDevice: '',
+    ApproveTransaction: 'Approve Transaction',
     Transactions: 'Activity'
   }
 }
@@ -101,8 +104,9 @@ export class W3mHeader extends LitElement {
   private dynamicButtonTemplate() {
     const { view } = RouterController.state
     const isConnectHelp = view === 'Connect'
+    const isApproveTransaction = view === 'ApproveTransaction'
 
-    if (this.showBack) {
+    if (this.showBack && !isApproveTransaction) {
       return html`<wui-icon-link
         id="dynamic"
         icon="chevronLeft"
@@ -120,7 +124,7 @@ export class W3mHeader extends LitElement {
   }
 
   private separatorTemplate() {
-    if (!this.heading) {
+    if (!this.heading || RouterController.state.view === 'EmailVerifyDevice') {
       return null
     }
 

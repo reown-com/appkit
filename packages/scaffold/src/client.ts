@@ -9,7 +9,8 @@ import type {
   ThemeControllerState,
   ThemeMode,
   ThemeVariables,
-  SIWEControllerClientState
+  SIWEControllerClientState,
+  ModalControllerState
 } from '@web3modal/core'
 import {
   AccountController,
@@ -55,7 +56,7 @@ export interface ScaffoldOptions extends LibraryOptions {
 }
 
 export interface OpenOptions {
-  view: 'Account' | 'Connect' | 'Networks'
+  view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction'
 }
 
 // -- Client --------------------------------------------------------------------
@@ -76,6 +77,10 @@ export class Web3ModalScaffold {
   public async close() {
     await this.initOrContinue()
     ModalController.close()
+  }
+
+  public setLoading(loading: ModalControllerState['loading']) {
+    ModalController.setLoading(loading)
   }
 
   public getThemeMode() {

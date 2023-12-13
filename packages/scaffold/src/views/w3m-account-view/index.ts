@@ -7,7 +7,10 @@ import {
   ModalController,
   NetworkController,
   RouterController,
-  SnackController
+  SnackController,
+  ConnectorController,
+  ConstantsUtil,
+  StorageUtil
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -23,6 +26,8 @@ export class W3mAccountView extends LitElement {
   private usubscribe: (() => void)[] = []
 
   private readonly networkImages = AssetController.state.networkImages
+
+  private readonly connectors = ConnectorController.state.connectors
 
   // -- State & Properties --------------------------------- //
   @state() private address = AccountController.state.address
@@ -123,6 +128,8 @@ export class W3mAccountView extends LitElement {
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
+        ${this.emailCardTemplate()}
+
         <wui-list-item
           .variant=${networkImage ? 'image' : 'icon'}
           iconVariant="overlay"
@@ -159,6 +166,23 @@ export class W3mAccountView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private emailCardTemplate() {
+    const type = StorageUtil.getConnectedConnector()
+    const isEmail = this.connectors.find(c => c.type === 'EMAIL')
+    if (!isEmail || type !== 'EMAIL') {
+      return null
+    }
+
+    return html`
+      <wui-notice-card
+        @click=${this.onGoToSecureSite.bind(this)}
+        label="Enjoy all your wallet potential"
+        description="Switch to a Non Custodial Wallet in a minute"
+        icon="wallet"
+      ></wui-notice-card>
+    `
+  }
+
   private explorerBtnTemplate() {
     const { addressExplorerUrl } = AccountController.state
 
@@ -224,6 +248,10 @@ export class W3mAccountView extends LitElement {
     if (addressExplorerUrl) {
       CoreHelperUtil.openHref(addressExplorerUrl, '_blank')
     }
+  }
+
+  private onGoToSecureSite() {
+    CoreHelperUtil.openHref(ConstantsUtil.SECURE_SITE_DASHBOARD, '_blank')
   }
 }
 

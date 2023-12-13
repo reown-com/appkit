@@ -55,6 +55,7 @@ import { telegramSvg } from '../../assets/svg/telegram.js'
 import { twitchSvg } from '../../assets/svg/twitch.js'
 import { twitterSvg } from '../../assets/svg/twitter.js'
 import { twitterIconSvg } from '../../assets/svg/twitterIcon.js'
+import { verifySvg } from '../../assets/svg/verify.js'
 import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder.js'
 import { walletSvg } from '../../assets/svg/wallet.js'
 import { walletConnectSvg } from '../../assets/svg/walletconnect.js'
@@ -109,6 +110,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   twitch: twitchSvg,
   twitter: twitterSvg,
   twitterIcon: twitterIconSvg,
+  verify: verifySvg,
   wallet: walletSvg,
   walletConnect: walletConnectSvg,
   walletPlaceholder: walletPlaceholderSvg,
