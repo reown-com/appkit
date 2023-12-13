@@ -2,8 +2,9 @@
   "compilerOptions": {
     "composite": true,
     "outDir": "./dist/esm",
-    "declarationDir": "./dist/types"
+    "declarationDir": "./dist/types",
+    "baseUrl": "../../"
   },
   "extends": "../../tsconfig.json",
-  "include": ["exports", "src", "connectors"]
+  "include": ["exports", "src"]
 }
