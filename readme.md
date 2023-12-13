@@ -18,14 +18,18 @@ Your on-ramp to web3 multichain. Web3Modal is a versatile library that makes it 
 # Dev setup
 
 1. Create `apps/laboratory/env.local` file with following contents
+
 ```zsh
 NEXT_PUBLIC_PROJECT_ID="your_project_id"
 NEXTAUTH_SECRET="your_session_secret"
 ```
+
 2. In each of the `examples` create `.env.local` file with following contents
+
 ```zsh
 VITE_PROJECT_ID="your_project_id"
 ```
+
 3. Run `npm run watch` to build and watch for file changes in a separate tab
 4. Run gallery, laboratory or examples in a separate tab i.e. `npm run laboratory`
 
