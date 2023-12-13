@@ -8,17 +8,10 @@
     "dist",
     "!tsconfig.tsbuildinfo"
   ],
-  "exports": {
-    ".": {
-      "types": "./dist/types/exports/index.d.ts",
-      "import": "./dist/esm/exports/index.js",
-      "default": "./dist/esm/exports/index.js"
-    }
-  },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "npm run build:clean; tsc --build",
-    "watch": "npm run build:clean; tsc --watch",
+    "build:siwe": "tsc --build",
+    "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },

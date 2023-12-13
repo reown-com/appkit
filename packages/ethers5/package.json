@@ -37,8 +37,8 @@
   },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "npm run build:clean; tsc --build",
-    "watch": "npm run build:clean; tsc --watch",
+    "build": "tsc --build",
+    "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
@@ -53,7 +53,8 @@
     "valtio": "1.12.1"
   },
   "devDependencies": {
-    "ethers": "5.7.2"
+    "ethers": "5.7.2",
+    "@web3modal/siwe": "3.5.0-alpha.2"
   },
   "peerDependencies": {
     "@web3modal/siwe": "*",

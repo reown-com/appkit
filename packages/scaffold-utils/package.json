@@ -2,35 +2,35 @@
   "name": "@web3modal/scaffold-utils",
   "version": "3.5.0-alpha.2",
   "type": "module",
-  "main": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
+  "main": "./dist/esm/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
   "files": [
     "dist",
     "!tsconfig.tsbuildinfo"
   ],
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "default": "./dist/esm/index.js"
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
     },
     "./ethers": {
-      "types": "./dist/types/src/ethers/index.d.ts",
-      "import": "./dist/esm/src/ethers/index.js",
-      "default": "./dist/esm/src/ethers/index.js"
+      "types": "./dist/types/exports/ethers.d.ts",
+      "import": "./dist/esm/exports/ethers.js",
+      "default": "./dist/esm/exports/ethers.js"
     }
   },
   "typesVersions": {
     "*": {
       "ethers": [
-        "./dist/types/src/ethers/index.d.ts"
+        "./dist/types/exports/ethers.d.ts"
       ]
     }
   },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "npm run build:clean; tsc --build",
-    "watch": "npm run build:clean; tsc --watch",
+    "build:scaffold-utils": "tsc --build",
+    "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
