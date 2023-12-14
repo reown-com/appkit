@@ -173,8 +173,12 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(uri)
         })
 
-        await WalletConnectProvider.connect()
-        await this.setWalletConnectProvider()
+        try {
+          await WalletConnectProvider.connect()
+          await this.setWalletConnectProvider()
+        } catch (error) {
+          EthersStoreUtil.setError(error)
+        }
       },
 
       //  @ts-expect-error TODO expected types in arguments are incomplete
