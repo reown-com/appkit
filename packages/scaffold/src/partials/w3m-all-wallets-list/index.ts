@@ -117,6 +117,10 @@ export class W3mAllWalletsList extends LitElement {
     let shimmerCount = minimumRows * columns - currentWallets + columns
     shimmerCount -= wallets.length ? featured.length % columns : 0
 
+    if (count === 0 && featured.length > 0) {
+      return null
+    }
+
     if (count === 0 || [...featured, ...wallets, ...recommended].length < count) {
       return this.shimmerTemplate(shimmerCount, PAGINATOR_ID)
     }

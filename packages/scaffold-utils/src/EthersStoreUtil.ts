@@ -26,6 +26,7 @@ const state = proxy<EthersStoreUtilState>({
 // -- StoreUtil ---------------------------------------- //
 export const EthersStoreUtil = {
   state,
+
   subscribeKey<K extends StateKey>(key: K, callback: (value: EthersStoreUtilState[K]) => void) {
     return subKey(state, key, callback)
   },
