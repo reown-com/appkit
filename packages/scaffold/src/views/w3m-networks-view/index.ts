@@ -4,7 +4,8 @@ import {
   AssetUtil,
   EventsController,
   NetworkController,
-  RouterController
+  RouterController,
+  RouterUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -84,12 +85,13 @@ export class W3mNetworksView extends LitElement {
   private async onSwitchNetwork(network: CaipNetwork) {
     const { isConnected } = AccountController.state
     const { approvedCaipNetworkIds, supportsAllNetworks, caipNetwork } = NetworkController.state
-
+    const { data } = RouterController.state
     if (isConnected && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
         await NetworkController.switchActiveNetwork(network)
+        RouterUtil.navigateAfterNetworkSwitch()
       } else if (supportsAllNetworks) {
-        RouterController.push('SwitchNetwork', { network })
+        RouterController.push('SwitchNetwork', { ...data, network })
       }
     } else if (!isConnected) {
       NetworkController.setCaipNetwork(network)

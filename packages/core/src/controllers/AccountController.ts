@@ -10,8 +10,8 @@ export interface AccountControllerState {
   address?: string
   balance?: string
   balanceSymbol?: string
-  profileName?: string
-  profileImage?: string
+  profileName?: string | null
+  profileImage?: string | null
   addressExplorerUrl?: string
 }
 

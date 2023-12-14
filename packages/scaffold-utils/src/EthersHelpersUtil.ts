@@ -1,5 +1,6 @@
 import type { CaipNetwork } from '@web3modal/scaffold'
-import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
+import { ConstantsUtil } from './ConstantsUtil.js'
+import { PresetsUtil } from './PresetsUtil.js'
 import type { Chain, Provider } from './EthersTypesUtil.js'
 
 export const EthersHelpersUtil = {
