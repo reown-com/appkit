@@ -53,7 +53,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
 
         <wui-flex alignItems="center">
           <wui-text variant="small-400" color="fg-200">Didn't receive it?</wui-text>
-          <wui-link>TODO: Resend code</wui-link>
+          <wui-link @click=${this.onResendCode.bind(this)}>Resend code</wui-link>
         </wui-flex>
       </wui-flex>
     `
@@ -79,6 +79,24 @@ export class W3mEmailVerifyOtpView extends LitElement {
     } catch (error) {
       const message = typeof error === 'string' ? error : (error as Error)?.message
       SnackController.showError(message)
+      this.loading = false
+    }
+  }
+
+  private async onResendCode() {
+    try {
+      if (!this.loading) {
+        const emailConnector = ConnectorController.getEmailConnector()
+        if (!emailConnector || !this.email) {
+          throw new Error('w3m-email-login-widget: Unable to resend email')
+        }
+        this.loading = true
+        await emailConnector.provider.connectEmail({ email: this.email })
+        SnackController.showSuccess('New Email sent')
+      }
+    } catch (error) {
+      SnackController.showError((error as Error)?.message)
+    } finally {
       this.loading = false
     }
   }
