@@ -405,13 +405,26 @@ export class Web3Modal extends Web3ModalScaffold {
         icons: this.metadata ? this.metadata.icons : ['']
       }
     }
-    this.walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions)
-    await this.checkActiveWalletConnectProvider()
+    try {
+      this.walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions)
+    } catch (error) {
+      EthersStoreUtil.setError(error)
+    }
+
+    try {
+      await this.checkActiveWalletConnectProvider()
+    } catch (error) {
+      EthersStoreUtil.setError(error)
+    }
   }
 
   private async getWalletConnectProvider() {
     if (!this.walletConnectProvider) {
-      await this.createProvider()
+      try {
+        await this.createProvider()
+      } catch (error) {
+        EthersStoreUtil.setError(error)
+      }
     }
 
     return this.walletConnectProvider
@@ -706,11 +719,15 @@ export class Web3Modal extends Web3ModalScaffold {
       this.setIsConnected(isConnected)
 
       this.setCaipAddress(caipAddress)
-      await Promise.all([
-        this.syncProfile(address),
-        this.syncBalance(address),
-        this.getApprovedCaipNetworksData()
-      ])
+      try {
+        await Promise.all([
+          this.syncProfile(address),
+          this.syncBalance(address),
+          this.getApprovedCaipNetworksData()
+        ])
+      } catch (error) {
+        EthersStoreUtil.setError(error)
+      }
       this.hasSyncedConnectedAccount = true
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.resetWcConnection()
@@ -782,9 +799,13 @@ export class Web3Modal extends Web3ModalScaffold {
           name: chain.name
         })
         if (JsonRpcProvider) {
-          const balance = await JsonRpcProvider.getBalance(address)
-          const formattedBalance = utils.formatEther(balance)
-          this.setBalance(formattedBalance, chain.currency)
+          try {
+            const balance = await JsonRpcProvider.getBalance(address)
+            const formattedBalance = utils.formatEther(balance)
+            this.setBalance(formattedBalance, chain.currency)
+          } catch (error) {
+            EthersStoreUtil.setError(error)
+          }
         }
       }
     }
