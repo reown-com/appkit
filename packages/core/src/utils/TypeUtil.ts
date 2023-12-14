@@ -125,8 +125,8 @@ export interface BlockchainApiIdentityRequest {
 }
 
 export interface BlockchainApiIdentityResponse {
-  avatar: string
-  name: string
+  avatar: string | null
+  name: string | null
 }
 
 export interface BlockchainApiTransactionsRequest {

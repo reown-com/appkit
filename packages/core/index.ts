@@ -63,5 +63,6 @@ export { AssetUtil } from './src/utils/AssetUtil.js'
 export { ConstantsUtil } from './src/utils/ConstantsUtil.js'
 export { CoreHelperUtil } from './src/utils/CoreHelperUtil.js'
 export { StorageUtil } from './src/utils/StorageUtil.js'
+export { RouterUtil } from './src/utils/RouterUtil.js'
 
 export type * from './src/utils/TypeUtil.js'
