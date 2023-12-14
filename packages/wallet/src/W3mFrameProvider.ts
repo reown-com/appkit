@@ -143,9 +143,9 @@ export class W3mFrameProvider {
   }
 
   // -- Provider Methods ------------------------------------------------
-  public async connect() {
+  public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
     await this.w3mFrame.frameLoadPromise
-    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_GET_USER })
+    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_GET_USER, payload })
 
     return new Promise<W3mFrameTypes.Responses['FrameGetUserResponse']>((resolve, reject) => {
       this.connectResolver = { resolve, reject }
