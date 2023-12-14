@@ -18,13 +18,13 @@ export class WuiIconBox extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: Exclude<SizeType, 'xxs'> = 'md'
+  @property() public size: SizeType = 'md'
 
   @property() public backgroundColor: ColorType = 'accent-100'
 
   @property() public iconColor: ColorType = 'accent-100'
 
-  @property() public iconSize?: Exclude<SizeType, 'inherit' | 'xxs'>
+  @property() public iconSize?: Exclude<SizeType, 'inherit'>
 
   @property() public background: BackgroundType = 'transparent'
 

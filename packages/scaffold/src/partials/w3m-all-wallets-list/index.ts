@@ -5,6 +5,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { markWalletsAsInstalled } from '../../utils/markWalletsAsInstalled.js'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'local-paginator'
@@ -93,14 +94,16 @@ export class W3mAllWalletsList extends LitElement {
 
   private walletsTemplate() {
     const wallets = [...this.featured, ...this.recommended, ...this.wallets]
+    const walletsWithInstalled = markWalletsAsInstalled(wallets)
 
-    return wallets.map(
+    return walletsWithInstalled.map(
       wallet => html`
         <wui-card-select
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           type="wallet"
           name=${wallet.name}
           @click=${() => this.onConnectWallet(wallet)}
+          .installed=${wallet.installed}
         ></wui-card-select>
       `
     )
