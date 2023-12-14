@@ -127,7 +127,11 @@ export class Web3Modal extends Web3ModalScaffold {
       switchCaipNetwork: async caipNetwork => {
         const chainId = HelpersUtil.caipNetworkIdToNumber(caipNetwork?.id)
         if (chainId) {
-          await this.switchNetwork(chainId)
+          try {
+            await this.switchNetwork(chainId)
+          } catch (error) {
+            EthersStoreUtil.setError(error)
+          }
         }
       },
 
@@ -196,19 +200,31 @@ export class Web3Modal extends Web3ModalScaffold {
           if (!InjectedProvider) {
             throw new Error('connectionControllerClient:connectInjected - provider is undefined')
           }
-          await InjectedProvider.request({ method: 'eth_requestAccounts' })
-          this.setInjectedProvider(ethersConfig)
+          try {
+            await InjectedProvider.request({ method: 'eth_requestAccounts' })
+            this.setInjectedProvider(ethersConfig)
+          } catch (error) {
+            EthersStoreUtil.setError(error)
+          }
         } else if (id === ConstantsUtil.EIP6963_CONNECTOR_ID && info && provider) {
-          await provider.request({ method: 'eth_requestAccounts' })
-          this.setEIP6963Provider(provider, info.name)
+          try {
+            await provider.request({ method: 'eth_requestAccounts' })
+            this.setEIP6963Provider(provider, info.name)
+          } catch (error) {
+            EthersStoreUtil.setError(error)
+          }
         } else if (id === ConstantsUtil.COINBASE_CONNECTOR_ID) {
           const CoinbaseProvider = ethersConfig.coinbase
           if (!CoinbaseProvider) {
             throw new Error('connectionControllerClient:connectCoinbase - connector is undefined')
           }
-          await CoinbaseProvider.request({ method: 'eth_requestAccounts' })
 
-          this.setCoinbaseProvider(ethersConfig)
+          try {
+            await CoinbaseProvider.request({ method: 'eth_requestAccounts' })
+            this.setCoinbaseProvider(ethersConfig)
+          } catch (error) {
+            EthersStoreUtil.setError(error)
+          }
         } else if (id === ConstantsUtil.EMAIL_CONNECTOR_ID) {
           this.setEmailProvider()
         }
@@ -345,6 +361,10 @@ export class Web3Modal extends Web3ModalScaffold {
     const { address } = EthersStoreUtil.state
 
     return address ? getOriginalAddress(address) : undefined
+  }
+
+  public getError() {
+    return EthersStoreUtil.state.error
   }
 
   public getChainId() {
