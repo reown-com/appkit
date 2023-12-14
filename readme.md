@@ -30,6 +30,9 @@ NEXTAUTH_SECRET="your_session_secret"
 VITE_PROJECT_ID="your_project_id"
 ```
 
+3. Run `npm run watch` to build and watch for file changes in a separate tab
+4. Run gallery, laboratory or examples in a separate tab i.e. `npm run laboratory`
+
 # Releasing new versions
 
 1. Run `npm outdated` and update dependencies

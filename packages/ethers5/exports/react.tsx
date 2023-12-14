@@ -28,10 +28,10 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 
 // -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalProvider() {
-  const state = useSnapshot(EthersStoreUtil.state)
+  const { provider, providerType } = useSnapshot(EthersStoreUtil.state)
 
-  const walletProvider = state.provider as ethers.providers.ExternalProvider | undefined
-  const walletProviderType = state.providerType
+  const walletProvider = provider as ethers.providers.ExternalProvider | undefined
+  const walletProviderType = providerType
 
   return {
     walletProvider,
@@ -50,11 +50,7 @@ export function useDisconnect() {
 }
 
 export function useWeb3ModalAccount() {
-  const state = useSnapshot(EthersStoreUtil.state)
-
-  const address = state.address
-  const isConnected = state.isConnected
-  const chainId = state.chainId
+  const { address, isConnected, chainId } = useSnapshot(EthersStoreUtil.state)
 
   return {
     address,

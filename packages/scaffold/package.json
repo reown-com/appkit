@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/scaffold",
-  "version": "3.5.0",
+  "version": "3.5.0-6a05dc24",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -10,18 +10,18 @@
   ],
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "npm run build:clean; tsc --build",
-    "watch": "npm run build:clean; tsc --watch",
+    "build:scaffold": "tsc --build",
+    "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/core": "3.5.0",
-    "@web3modal/ui": "3.5.0",
+    "@web3modal/core": "3.5.0-6a05dc24",
+    "@web3modal/ui": "3.5.0-6a05dc24",
     "lit": "3.1.0"
   },
   "devDependencies": {
-    "@web3modal/wallet": "3.5.0"
+    "@web3modal/wallet": "3.5.0-6a05dc24"
   },
   "keywords": [
     "web3",

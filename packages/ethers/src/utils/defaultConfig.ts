@@ -23,7 +23,9 @@ export function defaultConfig(options: ConfigOptions) {
     defaultChainId
   } = options
 
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   let injectedProvider: Provider | undefined = undefined
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   let coinbaseProvider: Provider | undefined = undefined
 
   const providers: ProviderType = { metadata }
