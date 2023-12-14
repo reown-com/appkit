@@ -125,8 +125,8 @@ export interface BlockchainApiIdentityRequest {
 }
 
 export interface BlockchainApiIdentityResponse {
-  avatar: string
-  name: string
+  avatar: string | null
+  name: string | null
 }
 
 export interface BlockchainApiTransactionsRequest {
@@ -247,6 +247,22 @@ export type Event =
         projectId: string
         cursor: string | undefined
       }
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_SIGN_SIWE_MESSAGE'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_CANCEL_SIWE'
+    }
+  | {
+      type: 'track'
+      event: 'SIWE_AUTH_SUCCESS'
+    }
+  | {
+      type: 'track'
+      event: 'SIWE_AUTH_ERROR'
     }
 
 // -- SIWEController Types ---------------------------------------------------

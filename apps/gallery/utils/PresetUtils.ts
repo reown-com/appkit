@@ -26,7 +26,8 @@ import type {
   ThemeType,
   TransactionType,
   VisualType
-} from '@web3modal/ui/src/utils/TypesUtil'
+} from '@web3modal/ui/src/utils/TypeUtil'
+import type { TransactionStatus, TransactionDirection } from '@web3modal/common'
 
 export const colorOptions: ColorType[] = [
   'accent-100',
@@ -263,9 +264,9 @@ export const transactionTypeOptions: TransactionType[] = [
   'withdraw'
 ]
 
-export const transactionDirectionOptions: TransactionType[] = ['', 'in', 'out']
+export const transactionDirectionOptions: TransactionDirection[] = ['in', 'out']
 
-export const transactionStatusOptions: TransactionType[] = ['confirmed', 'pending', 'failed']
+export const transactionStatusOptions: TransactionStatus[] = ['confirmed', 'pending', 'failed']
 
 export const cardSelectOptions: CardSelectType[] = ['network', 'wallet']
 

@@ -8,8 +8,8 @@ import type {
 import {
   AccountController,
   NetworkController,
-  ModalController,
-  ConnectionController
+  ConnectionController,
+  RouterUtil
 } from '@web3modal/core'
 
 import { ConstantsUtil } from './utils/ConstantsUtil.js'
@@ -91,9 +91,7 @@ export class Web3ModalSIWEClient {
     }
     const message = this.methods.createMessage({ address, nonce, chainId })
     const signature = await ConnectionController.signMessage(message)
-
     const isValid = await this.methods.verifyMessage({ message, signature })
-
     if (!isValid) {
       throw new Error('Error verifying SIWE signature')
     }
@@ -106,7 +104,7 @@ export class Web3ModalSIWEClient {
       this.methods.onSignIn(session)
     }
 
-    ModalController.close()
+    RouterUtil.navigateAfterNetworkSwitch()
 
     return session
   }

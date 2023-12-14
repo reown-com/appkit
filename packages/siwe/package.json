@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/siwe",
-  "version": "3.5.0-alpha.1",
+  "version": "3.5.0-6a05dc24",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -8,23 +8,16 @@
     "dist",
     "!tsconfig.tsbuildinfo"
   ],
-  "exports": {
-    ".": {
-      "types": "./dist/types/exports/index.d.ts",
-      "import": "./dist/esm/exports/index.js",
-      "default": "./dist/esm/exports/index.js"
-    }
-  },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "npm run build:clean; tsc --build",
-    "watch": "npm run build:clean; tsc --watch",
+    "build:siwe": "tsc --build",
+    "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/core": "3.5.0-alpha.1",
-    "@web3modal/scaffold-utils": "3.5.0-alpha.1"
+    "@web3modal/core": "3.5.0-6a05dc24",
+    "@web3modal/scaffold-utils": "3.5.0-6a05dc24"
   },
   "peerDependencies": {
     "react": ">=17",

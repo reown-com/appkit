@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/ethers5",
-  "version": "3.5.0-alpha.1",
+  "version": "3.5.0-6a05dc24",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -37,22 +37,23 @@
   },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build": "npm run build:clean; tsc --build",
-    "watch": "npm run build:clean; tsc --watch",
+    "build": "tsc --build",
+    "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "3.7.2",
     "@walletconnect/ethereum-provider": "2.10.6",
-    "@web3modal/polyfills": "3.5.0-alpha.1",
-    "@web3modal/scaffold": "3.5.0-alpha.1",
-    "@web3modal/scaffold-react": "3.5.0-alpha.1",
-    "@web3modal/scaffold-utils": "3.5.0-alpha.1",
-    "@web3modal/scaffold-vue": "3.5.0-alpha.1",
-    "valtio": "1.12.1"
+    "@web3modal/polyfills": "3.5.0-6a05dc24",
+    "@web3modal/scaffold": "3.5.0-6a05dc24",
+    "@web3modal/scaffold-react": "3.5.0-6a05dc24",
+    "@web3modal/scaffold-utils": "3.5.0-6a05dc24",
+    "@web3modal/scaffold-vue": "3.5.0-6a05dc24",
+    "valtio": "1.11.2"
   },
   "devDependencies": {
+    "@web3modal/siwe": "*",
     "ethers": "5.7.2"
   },
   "peerDependencies": {
@@ -77,7 +78,7 @@
     }
   },
   "optionalDependencies": {
-    "@web3modal/siwe": "*",
+    "@web3modal/siwe": "3.5.0-6a05dc24",
     "react": ">=17",
     "react-dom": ">=17",
     "vue": ">=3"

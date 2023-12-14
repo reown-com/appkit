@@ -13,9 +13,7 @@ import type {
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-
 import EthereumProvider from '@walletconnect/ethereum-provider'
-
 import type {
   Address,
   Metadata,
@@ -730,14 +728,22 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncProfile(address: Address) {
-    const ensProvider = new ethers.providers.InfuraProvider('mainnet')
-    const name = await ensProvider.lookupAddress(address)
-    const avatar = await ensProvider.getAvatar(address)
-    if (name) {
-      this.setProfileName(name)
-    }
-    if (avatar) {
-      this.setProfileImage(avatar)
+    const chainId = EthersStoreUtil.state.chainId
+
+    if (chainId === 1) {
+      const ensProvider = new ethers.providers.InfuraProvider('mainnet')
+      const name = await ensProvider.lookupAddress(address)
+      const avatar = await ensProvider.getAvatar(address)
+
+      if (name) {
+        this.setProfileName(name)
+      }
+      if (avatar) {
+        this.setProfileImage(avatar)
+      }
+    } else {
+      this.setProfileName(null)
+      this.setProfileImage(null)
     }
   }
 

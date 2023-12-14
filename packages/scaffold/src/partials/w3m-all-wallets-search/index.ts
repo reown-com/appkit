@@ -5,6 +5,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { markWalletsAsInstalled } from '../../utils/markWalletsAsInstalled.js'
 
 @customElement('w3m-all-wallets-search')
 export class W3mAllWalletsSearch extends LitElement {
@@ -39,6 +40,7 @@ export class W3mAllWalletsSearch extends LitElement {
 
   private walletsTemplate() {
     const { search } = ApiController.state
+    const wallets = markWalletsAsInstalled(search)
 
     if (!search.length) {
       return html`
@@ -62,13 +64,14 @@ export class W3mAllWalletsSearch extends LitElement {
         rowGap="l"
         columnGap="xs"
       >
-        ${search.map(
+        ${wallets.map(
           wallet => html`
             <wui-card-select
               imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
               type="wallet"
               name=${wallet.name}
               @click=${() => this.onConnectWallet(wallet)}
+              .installed=${wallet.installed}
             ></wui-card-select>
           `
         )}
