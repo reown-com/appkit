@@ -6,6 +6,8 @@ export const W3mFrameConstants = {
   STORAGE_KEY: '@w3m-storage/',
 
   SESSION_TOKEN_KEY: 'SESSION_TOKEN_KEY',
+  EMAIL_LOGIN_USED_KEY: 'EMAIL_LOGIN_USED_KEY',
+  
 
   APP_SWITCH_NETWORK: '@w3m-app/SWITCH_NETWORK',
   APP_CONNECT_EMAIL: '@w3m-app/CONNECT_EMAIL',

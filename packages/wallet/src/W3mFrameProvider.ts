@@ -89,6 +89,10 @@ export class W3mFrameProvider {
   }
 
   // -- Extended Methods ------------------------------------------------
+  public getLoginEmailUsed() {
+    return Boolean(W3mFrameStorage.get(W3mFrameConstants.EMAIL_LOGIN_USED_KEY))
+  }
+
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     await this.w3mFrame.frameLoadPromise
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_CONNECT_EMAIL, payload })
@@ -212,6 +216,7 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_EMAIL_SUCCESS' }>
   ) {
     this.connectEmailResolver?.resolve(event.payload)
+    W3mFrameStorage.set(W3mFrameConstants.EMAIL_LOGIN_USED_KEY, 'true')
   }
 
   private onConnectEmailError(
@@ -278,6 +283,7 @@ export class W3mFrameProvider {
 
   private onSignOutSuccess() {
     this.disconnectResolver?.resolve(undefined)
+    W3mFrameStorage.delete(W3mFrameConstants.EMAIL_LOGIN_USED_KEY)
   }
 
   private onSignOutError(
