@@ -13,9 +13,7 @@ import type {
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-
 import EthereumProvider from '@walletconnect/ethereum-provider'
-
 import type {
   Address,
   Metadata,
