@@ -177,12 +177,8 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(uri)
         })
 
-        try {
-          await WalletConnectProvider.connect()
-          await this.setWalletConnectProvider()
-        } catch (error) {
-          EthersStoreUtil.setError(error)
-        }
+        await WalletConnectProvider.connect()
+        await this.setWalletConnectProvider()
       },
 
       //  @ts-expect-error TODO expected types in arguments are incomplete
@@ -435,17 +431,10 @@ export class Web3Modal extends Web3ModalScaffold {
         icons: this.metadata ? this.metadata.icons : ['']
       }
     }
-    try {
-      this.walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions)
-    } catch (error) {
-      EthersStoreUtil.setError(error)
-    }
 
-    try {
-      await this.checkActiveWalletConnectProvider()
-    } catch (error) {
-      EthersStoreUtil.setError(error)
-    }
+    this.walletConnectProvider = await EthereumProvider.init(walletConnectProviderOptions)
+
+    await this.checkActiveWalletConnectProvider()
   }
 
   private async getWalletConnectProvider() {
@@ -779,15 +768,13 @@ export class Web3Modal extends Web3ModalScaffold {
       this.setIsConnected(isConnected)
 
       this.setCaipAddress(caipAddress)
-      try {
-        await Promise.all([
-          this.syncProfile(address),
-          this.syncBalance(address),
-          this.getApprovedCaipNetworksData()
-        ])
-      } catch (error) {
-        EthersStoreUtil.setError(error)
-      }
+
+      await Promise.all([
+        this.syncProfile(address),
+        this.syncBalance(address),
+        this.getApprovedCaipNetworksData()
+      ])
+
       this.hasSyncedConnectedAccount = true
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
       this.resetWcConnection()
@@ -821,12 +808,8 @@ export class Web3Modal extends Web3ModalScaffold {
             this.setAddressExplorerUrl(undefined)
           }
           if (this.hasSyncedConnectedAccount) {
-            try {
-              await this.syncProfile(address)
-              await this.syncBalance(address)
-            } catch (error) {
-              EthersStoreUtil.setError(error)
-            }
+            await this.syncProfile(address)
+            await this.syncBalance(address)
           }
         }
       }
@@ -864,13 +847,9 @@ export class Web3Modal extends Web3ModalScaffold {
           name: chain.name
         })
         if (jsonRpcProvider) {
-          try {
-            const balance = await jsonRpcProvider.getBalance(address)
-            const formattedBalance = formatEther(balance)
-            this.setBalance(formattedBalance, chain.currency)
-          } catch (error) {
-            EthersStoreUtil.setError(error)
-          }
+          const balance = await jsonRpcProvider.getBalance(address)
+          const formattedBalance = formatEther(balance)
+          this.setBalance(formattedBalance, chain.currency)
         }
       }
     }
