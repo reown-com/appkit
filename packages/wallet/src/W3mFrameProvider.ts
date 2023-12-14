@@ -2,6 +2,7 @@ import { W3mFrame } from './W3mFrame.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
 import { W3mFrameConstants } from './W3mFrameConstants.js'
 import { W3mFrameStorage } from './W3mFrameStorage.js'
+import { CoreHelperUtil } from '@web3modal/core'
 
 // -- Types -----------------------------------------------------------
 type Resolver<T> = { resolve: (value: T) => void; reject: (reason?: unknown) => void } | undefined
@@ -95,6 +96,14 @@ export class W3mFrameProvider {
 
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     await this.w3mFrame.frameLoadPromise
+    const lastEmailLoginTime = W3mFrameStorage.get(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME)
+    if (lastEmailLoginTime) {
+      const difference = CoreHelperUtil.getTimeDifferenceMs(Number(lastEmailLoginTime))
+      if (difference < 60_000) {
+        const cooldownSec = Math.ceil((60_000 - difference) / 1000)
+        throw new Error(`Please try again after ${cooldownSec} seconds`)
+      }
+    }
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_CONNECT_EMAIL, payload })
 
     return new Promise<W3mFrameTypes.Responses['FrameConnectEmailResponse']>((resolve, reject) => {
@@ -216,7 +225,7 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_EMAIL_SUCCESS' }>
   ) {
     this.connectEmailResolver?.resolve(event.payload)
-    W3mFrameStorage.set(W3mFrameConstants.EMAIL_LOGIN_USED_KEY, 'true')
+    W3mFrameStorage.set(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME, Date.now().toString())
   }
 
   private onConnectEmailError(
@@ -237,6 +246,8 @@ export class W3mFrameProvider {
 
   private onConnectOtpSuccess() {
     this.connectOtpResolver?.resolve(undefined)
+    W3mFrameStorage.set(W3mFrameConstants.EMAIL_LOGIN_USED_KEY, 'true')
+    W3mFrameStorage.delete(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME)
   }
 
   private onConnectOtpError(

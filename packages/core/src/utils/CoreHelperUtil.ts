@@ -181,5 +181,9 @@ export const CoreHelperUtil = {
 
       return v.toString(16)
     })
+  },
+
+  getTimeDifferenceMs(deadlineMs: number) {
+    return Date.now() - deadlineMs
   }
 }
