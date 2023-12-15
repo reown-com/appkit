@@ -173,7 +173,7 @@ export class W3mAccountView extends LitElement {
 
     return html`
       <wui-notice-card
-        @click=${this.onGoToSecureSite.bind(this)}
+        @click=${this.onGoToUpgradeView.bind(this)}
         label="Upgrade your wallet"
         description="Transition to a non-custodial wallet"
         icon="wallet"
@@ -248,8 +248,8 @@ export class W3mAccountView extends LitElement {
     }
   }
 
-  private onGoToSecureSite() {
-    CoreHelperUtil.openHref(ConstantsUtil.SECURE_SITE_DASHBOARD, '_blank')
+  private onGoToUpgradeView() {
+    RouterController.push('UpgradeWallet')
   }
 }
 
