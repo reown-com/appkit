@@ -5,4 +5,8 @@ export default css`
     height: 64px;
     width: 64px;
   }
+
+  #w3m-resend-section {
+    height: 56px;
+  }
 `

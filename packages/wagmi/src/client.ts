@@ -414,6 +414,8 @@ export class Web3Modal extends Web3ModalScaffold {
     if (typeof window !== 'undefined' && connector) {
       super.setLoading(true)
       const provider = await connector.getProvider()
+      const isLoginEmailUsed = provider.getLoginEmailUsed()
+      super.setLoading(isLoginEmailUsed)
       provider.onRpcRequest(() => {
         super.open({ view: 'ApproveTransaction' })
       })

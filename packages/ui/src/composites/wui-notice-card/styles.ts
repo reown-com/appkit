@@ -6,6 +6,7 @@ export default css`
   }
 
   button {
+    width: 100%;
     display: block;
     padding-top: var(--wui-spacing-l);
     padding-bottom: var(--wui-spacing-l);

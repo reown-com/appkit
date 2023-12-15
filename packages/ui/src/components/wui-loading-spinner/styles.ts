@@ -11,13 +11,18 @@ export default css`
   }
 
   :host([data-size='md']) > svg {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
   }
 
   :host([data-size='lg']) > svg {
     width: 24px;
     height: 24px;
+  }
+
+  :host([data-size='xl']) > svg {
+    width: 32px;
+    height: 32px;
   }
 
   svg {

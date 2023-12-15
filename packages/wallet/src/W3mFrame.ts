@@ -45,7 +45,7 @@ export class W3mFrame {
         this.frameLoadPromiseResolver?.resolve(undefined)
       }
       this.iframe.onerror = () => {
-        this.frameLoadPromiseResolver?.reject()
+        this.frameLoadPromiseResolver?.reject('Unable to load email login dependency')
       }
     }
   }
