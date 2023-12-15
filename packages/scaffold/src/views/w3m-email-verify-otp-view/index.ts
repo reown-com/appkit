@@ -77,8 +77,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
         }
       }
     } catch (error) {
-      const message = typeof error === 'string' ? error : (error as Error)?.message
-      SnackController.showError(message)
+      SnackController.showError(error)
       this.loading = false
     }
   }
@@ -95,7 +94,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
         SnackController.showSuccess('New Email sent')
       }
     } catch (error) {
-      SnackController.showError((error as Error)?.message)
+      SnackController.showError(error)
     } finally {
       this.loading = false
     }

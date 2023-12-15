@@ -185,5 +185,18 @@ export const CoreHelperUtil = {
 
   getTimeDifferenceMs(deadlineMs: number) {
     return Date.now() - deadlineMs
+  },
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  parseError(error: any): string {
+    if (typeof error === 'string') {
+      return error
+    } else if (typeof error?.issues[0]?.message === 'string') {
+      return error.issues[0].message
+    } else if (error instanceof Error) {
+      return error.message
+    }
+
+    return 'Unknown error'
   }
 }

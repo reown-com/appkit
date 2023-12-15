@@ -107,7 +107,7 @@ export class W3mEmailLoginWidget extends LitElement {
         RouterController.push('EmailVerifyDevice', { email: this.email })
       }
     } catch (error) {
-      SnackController.showError((error as Error)?.message)
+      SnackController.showError(error)
     } finally {
       this.loading = false
     }
