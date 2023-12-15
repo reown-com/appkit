@@ -63,9 +63,26 @@ export class W3mNetworksView extends LitElement {
       NetworkController.state
     const approvedIds = approvedCaipNetworkIds
     const requested = requestedCaipNetworks
+    const approvedIndexMap: Record<string, number> = {}
+    if (requested && approvedIds) {
+      approvedIds.forEach((id, index) => {
+        approvedIndexMap[id] = index
+      })
 
-    if (approvedIds?.length) {
-      requested?.sort((a, b) => approvedIds.indexOf(b.id) - approvedIds.indexOf(a.id))
+      requested.sort((a, b) => {
+        const indexA = approvedIndexMap[a.id]
+        const indexB = approvedIndexMap[b.id]
+
+        if (indexA !== undefined && indexB !== undefined) {
+          return indexA - indexB
+        } else if (indexA !== undefined) {
+          return -1
+        } else if (indexB !== undefined) {
+          return 1
+        }
+
+        return 0
+      })
     }
 
     return requested?.map(
