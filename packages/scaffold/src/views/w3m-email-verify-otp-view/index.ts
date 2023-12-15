@@ -9,12 +9,15 @@ import {
   ConnectorController
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
+import styles from './styles.js'
 
 // -- Helpers ------------------------------------------- //
 const OTP_LENGTH = 6
 
 @customElement('w3m-email-verify-otp-view')
 export class W3mEmailVerifyOtpView extends LitElement {
+  public static override styles = styles
+
   // -- Members ------------------------------------------- //
   protected readonly email = RouterController.state.data?.email
 
@@ -44,7 +47,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
         <wui-text variant="small-400" color="fg-200">The code expires in 10 minutes</wui-text>
 
         ${this.loading
-          ? html`<wui-loading-spinner size="xl" color="accent-100"></wui-loading-spinner></wui-link>`
+          ? html`<wui-loading-spinner size="xl" color="accent-100"></wui-loading-spinner>`
           : html`<wui-otp
               dissabled
               length="6"

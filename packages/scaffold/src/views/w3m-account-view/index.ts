@@ -88,7 +88,7 @@ export class W3mAccountView extends LitElement {
         <wui-avatar
           alt=${this.address}
           address=${this.address}
-          imageSrc=${ifDefined(this.profileImage)}
+          imageSrc=${ifDefined(this.profileImage === null ? undefined : this.profileImage)}
         ></wui-avatar>
 
         <wui-flex flexDirection="column" alignItems="center">
