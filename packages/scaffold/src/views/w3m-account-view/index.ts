@@ -39,10 +39,6 @@ export class W3mAccountView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private balance = AccountController.state.balance
-
-  @state() private balanceSymbol = AccountController.state.balanceSymbol
-
   @state() private network = NetworkController.state.caipNetwork
 
   @state() private onrampInstance: CBPayInstanceType | null = null
@@ -58,8 +54,6 @@ export class W3mAccountView extends LitElement {
             this.address = val.address
             this.profileImage = val.profileImage
             this.profileName = val.profileName
-            this.balance = val.balance
-            this.balanceSymbol = val.balanceSymbol
           } else {
             ModalController.close()
           }
@@ -128,6 +122,7 @@ export class W3mAccountView extends LitElement {
             ></wui-icon-link>
           </wui-flex>
         </wui-flex>
+        ${this.explorerBtnTemplate()}
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
@@ -362,14 +357,6 @@ export class W3mAccountView extends LitElement {
         <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
       </wui-button>
     `
-  }
-
-  private onExplorer() {
-    RouterController.push('AccountSettings')
-  }
-
-  private onAccountSettings() {
-    RouterController.push('AccountSettings')
   }
 
   private onExplorer() {

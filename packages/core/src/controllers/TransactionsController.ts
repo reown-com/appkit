@@ -4,7 +4,7 @@ import { OptionsController } from './OptionsController.js'
 import { EventsController } from './EventsController.js'
 import { SnackController } from './SnackController.js'
 import type { CoinbaseTransaction } from '../utils/TypeUtil.js'
-import { CoinbaseApiController } from './CoinbaseApiController.js'
+// import { CoinbaseApiController } from './CoinbaseApiController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 
 // -- Types --------------------------------------------- //
@@ -63,11 +63,11 @@ export const TransactionsController = {
         cursor: state.next
       })
 
-      const coinbaseResponse = await CoinbaseApiController.fetchTransactions({
-        accountAddress,
-        pageKey: '',
-        pageSize: 25
-      })
+      // const coinbaseResponse = await CoinbaseApiController.fetchTransactions({
+      //   accountAddress,
+      //   pageKey: '',
+      //   pageSize: 25
+      // })
 
       const nonSpamTransactions = this.filterSpamTransactions(response.data)
       const filteredTransactions = [...state.transactions, ...nonSpamTransactions]
