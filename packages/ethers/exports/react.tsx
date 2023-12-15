@@ -59,6 +59,14 @@ export function useWeb3ModalAccount() {
   }
 }
 
+export function useWeb3ModalError() {
+  const { error } = useSnapshot(EthersStoreUtil.state)
+
+  return {
+    error
+  }
+}
+
 export {
   useWeb3ModalTheme,
   useWeb3Modal,
