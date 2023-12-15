@@ -1,14 +1,13 @@
 import {
   AccountController,
-  ConnectionController,
+  ConstantsUtil,
   CoreHelperUtil,
   ModalController,
   NetworkController,
   RouterController,
-  SnackController,
-  ConstantsUtil,
-  AssetUtil
+  AssetUtil,
   StorageUtil,
+  ConnectorController,
   EventsController,
   ConnectionController,
   SnackController
@@ -24,13 +23,7 @@ import { initOnRamp } from '@coinbase/cbpay-js'
 import type { CBPayInstanceType } from '@coinbase/cbpay-js'
 
 // -- Constants ----------------------------------------- //
-type TabID = 'tokens' | 'nfts' | 'activity'
 const coinbaseAppID = process.env['NEXT_PUBLIC_COINBASE_APP_ID']
-const tabs: Array<{ id: TabID; label: string }> = [
-  { id: 'tokens', label: 'Tokens' },
-  { id: 'nfts', label: 'NFTs' },
-  { id: 'activity', label: 'Activity' }
-]
 
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
@@ -53,8 +46,6 @@ export class W3mAccountView extends LitElement {
   @state() private network = NetworkController.state.caipNetwork
 
   @state() private onrampInstance: CBPayInstanceType | null = null
-
-  @state() private tab: 'tokens' | 'nfts' | 'activity' = 'tokens'
 
   @state() private disconnecting = false
 
@@ -107,7 +98,7 @@ export class W3mAccountView extends LitElement {
         alignItems="center"
         gap="l"
       >
-          <wui-avatar
+        <wui-avatar
           alt=${this.address}
           address=${this.address}
           imageSrc=${ifDefined(this.profileImage === null ? undefined : this.profileImage)}
@@ -193,45 +184,84 @@ export class W3mAccountView extends LitElement {
       </wui-flex>
       ${this.emailCardTemplate()}
 
-      <wui-flex flexDirection="column" gap="m">
-        <wui-flex .padding=${['0', 'xl', '0', 'xl']} gap="1xs" class="account-links">
-          <wui-flex size="lg" @click=${this.handleClickPay.bind(this)}>
-            <wui-icon color="accent-100" name="wallet2"></wui-icon>
-          </wui-flex>
-          <wui-flex size="lg">
-            <wui-icon color="accent-100" name="recycleHorizontal"></wui-icon>
-          </wui-flex>
-          <wui-flex size="lg">
-            <wui-icon color="accent-100" name="arrowBottomCircle"></wui-icon>
-          </wui-flex>
-          <wui-flex size="lg">
-            <wui-icon color="accent-100" name="send"></wui-icon>
-          </wui-flex>
-        </wui-flex>
+      <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
+        ${this.emailCardTemplate()}
 
-        <wui-flex .padding=${['0', 'xl', '0', 'xl']}>
-          <wui-tabs .tabs=${tabs} .onTabChange=${this.onTabChange.bind(this)}></wui-tabs>
-        </wui-flex>
-
-        <wui-flex
-          class="tab-content-container"
-          flexDirection="column"
-          gap="xs"
-          .padding=${['0', 'xl', 'xl', 'xl'] as const}
+        <wui-list-item
+          .variant=${networkImage ? 'image' : 'icon'}
+          iconVariant="overlay"
+          icon="networkPlaceholder"
+          imageSrc=${ifDefined(networkImage)}
+          @click=${this.onNetworks.bind(this)}
         >
-          ${this.tab === 'tokens' ? html`<w3m-tokens-view></w3m-tokens-view>` : null}
-          ${this.tab === 'nfts' ? html`<w3m-nfts-view></w3m-nfts-view>` : null}
-          ${this.tab === 'activity' ? html`<w3m-transactions-view></w3m-transactions-view>` : null}
-        </wui-flex>
+          <wui-text variant="paragraph-500" color="fg-100">
+            ${this.network?.name ?? 'Unknown'}
+          </wui-text>
+        </wui-list-item>
+        <wui-list-item
+          iconVariant="blue"
+          icon="add"
+          iconSize="lg"
+          .loading=${!this.onrampInstance}
+          ?chevron=${true}
+          @click=${this.handleClickPay.bind(this)}
+        >
+          <wui-text variant="paragraph-500" color="fg-100">Buy crypto</wui-text>
+        </wui-list-item>
+        <wui-list-item
+          iconVariant="blue"
+          icon="swapHorizontalBold"
+          iconSize="sm"
+          ?chevron=${true}
+          @click=${this.onTransactions.bind(this)}
+        >
+          <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
+        </wui-list-item>
+        <wui-list-item
+          variant="icon"
+          iconVariant="overlay"
+          icon="disconnect"
+          ?chevron=${false}
+          .loading=${this.disconnecting}
+          @click=${this.onDisconnect.bind(this)}
+        >
+          <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
+        </wui-list-item>
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
-  private onTabChange(index: number) {
-    const tab = tabs[index]
-    if (tab) {
-      this.tab = tab.id
+  private onTransactions() {
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_TRANSACTIONS' })
+    RouterController.push('Transactions')
+  }
+
+  private async onDisconnect() {
+    try {
+      this.disconnecting = true
+      await ConnectionController.disconnect()
+      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
+      ModalController.close()
+    } catch {
+      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
+      SnackController.showError('Failed to disconnect')
+    } finally {
+      this.disconnecting = false
+    }
+  }
+
+  private isAllowedNetworkSwitch() {
+    const { requestedCaipNetworks } = NetworkController.state
+    const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
+    const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
+
+    return isMultiNetwork || !isValidNetwork
+  }
+
+  private onNetworks() {
+    if (this.isAllowedNetworkSwitch()) {
+      RouterController.push('Networks')
     }
   }
 
@@ -321,6 +351,29 @@ export class W3mAccountView extends LitElement {
       }
     )
   }
+
+  private onCopyAddress() {}
+
+  private explorerBtnTemplate() {
+    const { addressExplorerUrl } = AccountController.state
+
+    if (!addressExplorerUrl) {
+      return null
+    }
+
+    return html`
+      <wui-button size="sm" variant="shade" @click=${this.onExplorer.bind(this)}>
+        <wui-icon size="sm" color="inherit" slot="iconLeft" name="compass"></wui-icon>
+        Block Explorer
+        <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
+      </wui-button>
+    `
+  }
+
+  private onExplorer() {
+    RouterController.push('AccountSettings')
+  }
+
   private onAccountSettings() {
     RouterController.push('AccountSettings')
   }

@@ -1,8 +1,4 @@
-import {
-  AccountController,
-  PortfolioTokenController,
-  type BlockchainApiToken
-} from '@web3modal/core'
+import { AccountController, PortfolioTokenController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -18,8 +14,6 @@ export class W3mTokensView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
-  private paginationObserver?: IntersectionObserver = undefined
-
   // -- State & Properties -------------------------------- //
   @state() private address: string | undefined = AccountController.state.address
 
@@ -28,8 +22,6 @@ export class W3mTokensView extends LitElement {
   @state() private loading = PortfolioTokenController.state.loading
 
   @state() private empty = PortfolioTokenController.state.empty
-
-  @state() private next = PortfolioTokenController.state.next
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -49,7 +41,6 @@ export class W3mTokensView extends LitElement {
           this.tokens = val.tokens
           this.loading = val.loading
           this.empty = val.empty
-          this.next = val.next
         })
       ]
     )

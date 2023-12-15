@@ -1,9 +1,7 @@
-import type { Transaction } from '@web3modal/common'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { OptionsController } from './OptionsController.js'
-import { EventsController } from './EventsController.js'
 import { SnackController } from './SnackController.js'
-import type { BlockchainApiToken, CoinbaseTransaction } from '../utils/TypeUtil.js'
+import type { BlockchainApiToken } from '../utils/TypeUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 
 // -- Types --------------------------------------------- //
@@ -53,15 +51,6 @@ export const PortfolioTokenController = {
       state.tokens = response.data
       state.empty = response.data.length === 0
     } catch (error) {
-      // EventsController.sendEvent({
-      //   type: 'track',
-      //   event: 'ERROR_FETCH_TRANSACTIONS',
-      //   properties: {
-      //     address: accountAddress,
-      //     projectId,
-      //     cursor: state.next
-      //   }
-      // })
       SnackController.showError('Failed to fetch tokens')
       state.loading = false
       state.empty = true
