@@ -84,6 +84,26 @@ export function useWeb3ModalAccount() {
   }
 }
 
+export function useWeb3ModalError() {
+  if (!modal) {
+    throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalError" composition')
+  }
+
+  const error = ref(modal.getError())
+
+  const unsubscribe = modal.subscribeProvider(state => {
+    error.value = state.error
+  })
+
+  onUnmounted(() => {
+    unsubscribe?.()
+  })
+
+  return {
+    error
+  }
+}
+
 export {
   useWeb3ModalTheme,
   useWeb3Modal,
