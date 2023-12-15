@@ -99,8 +99,8 @@ export class W3mFrameProvider {
     const lastEmailLoginTime = W3mFrameStorage.get(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME)
     if (lastEmailLoginTime) {
       const difference = CoreHelperUtil.getTimeDifferenceMs(Number(lastEmailLoginTime))
-      if (difference < 60_000) {
-        const cooldownSec = Math.ceil((60_000 - difference) / 1000)
+      if (difference < 30_000) {
+        const cooldownSec = Math.ceil((30_000 - difference) / 1000)
         throw new Error(`Please try again after ${cooldownSec} seconds`)
       }
     }

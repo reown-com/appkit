@@ -191,7 +191,7 @@ export const CoreHelperUtil = {
   parseError(error: any): string {
     if (typeof error === 'string') {
       return error
-    } else if (typeof error?.issues[0]?.message === 'string') {
+    } else if (typeof error?.issues?.[0]?.message === 'string') {
       return error.issues[0].message
     } else if (error instanceof Error) {
       return error.message

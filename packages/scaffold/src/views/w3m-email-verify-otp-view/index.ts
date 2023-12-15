@@ -44,7 +44,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
         <wui-text variant="small-400" color="fg-200">The code expires in 10 minutes</wui-text>
 
         ${this.loading
-          ? html`<wui-loading-spinner size="lg" color="accent-100"></wui-loading-spinner></wui-link>`
+          ? html`<wui-loading-spinner size="xl" color="accent-100"></wui-loading-spinner></wui-link>`
           : html`<wui-otp
               dissabled
               length="6"

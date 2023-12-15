@@ -72,7 +72,7 @@ export class W3mEmailLoginWidget extends LitElement {
             `
           : null}
         ${this.loading
-          ? html`<wui-loading-spinner size="lg" color="accent-100"></wui-loading-spinner>`
+          ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
           : null}
 
         <input type="submit" hidden />
