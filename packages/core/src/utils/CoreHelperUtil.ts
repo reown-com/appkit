@@ -183,10 +183,6 @@ export const CoreHelperUtil = {
     })
   },
 
-  getTimeDifferenceMs(deadlineMs: number) {
-    return Date.now() - deadlineMs
-  },
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   parseError(error: any): string {
     if (typeof error === 'string') {

@@ -16,7 +16,6 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/core": "3.6.0-alpha.0",
     "zod": "3.22.4"
   },
   "keywords": [
