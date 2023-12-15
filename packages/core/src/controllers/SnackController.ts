@@ -1,5 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface SnackControllerState {
@@ -31,8 +32,9 @@ export const SnackController = {
     state.open = true
   },
 
-  showError(message: SnackControllerState['message']) {
-    state.message = message
+  showError(message: unknown) {
+    const errorMessage = CoreHelperUtil.parseError(message)
+    state.message = errorMessage
     state.variant = 'error'
     state.open = true
   },

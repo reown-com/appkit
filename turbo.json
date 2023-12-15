@@ -7,22 +7,18 @@
     },
     "build:polyfills": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:clean"],
       "cache": false
     },
     "build:common": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:clean"],
       "cache": false
     },
     "build:core": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:polyfills", "^build:common"],
       "cache": false
     },
     "build:ui": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:polyfills", "^build:common"],
       "cache": false
     },
     "build:wallet": {
@@ -31,12 +27,12 @@
     },
     "build:scaffold": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:core", "^build:ui", "^build:wallet"],
+      "dependsOn": ["^build:common", "^build:core", "^build:ui", "^build:wallet"],
       "cache": false
     },
     "build:scaffold-utils": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:scaffold"],
+      "dependsOn": ["^build:polyfills", "^build:scaffold"],
       "cache": false
     },
     "build:scaffold-react": {

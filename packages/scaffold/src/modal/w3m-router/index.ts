@@ -87,6 +87,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-approve-transaction-view></w3m-approve-transaction-view>`
       case 'Transactions':
         return html`<w3m-transactions-view></w3m-transactions-view>`
+      case 'UpgradeWallet':
+        return html`<w3m-upgrade-wallet-view></w3m-upgrade-wallet-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }
