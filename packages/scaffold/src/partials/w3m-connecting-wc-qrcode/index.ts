@@ -35,11 +35,7 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
         <wui-text variant="paragraph-500" color="fg-100">
           Scan this QR Code with your phone
         </wui-text>
-
-        <wui-link @click=${this.onCopyUri} color="fg-200">
-          <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
-          Copy link
-        </wui-link>
+        ${this.copyTemplate()}
       </wui-flex>
 
       <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
@@ -65,13 +61,24 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
     ConnectionController.setWcLinking(undefined)
     ConnectionController.setRecentWallet(this.wallet)
 
-    return html`<wui-qr-code
+    return html` <wui-qr-code
       size=${size}
       theme=${ThemeController.state.themeMode}
       uri=${this.uri}
       imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet))}
       alt=${ifDefined(alt)}
     ></wui-qr-code>`
+  }
+
+  private copyTemplate() {
+    if (!this.uri || !this.ready) {
+      return null
+    }
+
+    return html`<wui-link @click=${this.onCopyUri} color="fg-200">
+      <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
+      Copy link
+    </wui-link>`
   }
 
   private forceUpdate = () => {
