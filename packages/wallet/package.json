@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wallet",
-  "version": "3.6.0-dd04125d",
+  "version": "3.6.0-99d939d6",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -16,7 +16,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/core": "3.6.0-dd04125d",
+    "@web3modal/core": "3.6.0-99d939d6",
     "zod": "3.22.4"
   },
   "keywords": [

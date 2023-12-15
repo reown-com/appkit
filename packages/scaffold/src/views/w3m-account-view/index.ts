@@ -8,7 +8,6 @@ import {
   RouterController,
   SnackController,
   ConnectorController,
-  ConstantsUtil,
   StorageUtil,
   AssetUtil
 } from '@web3modal/core'
