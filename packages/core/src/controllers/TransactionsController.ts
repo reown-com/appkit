@@ -78,10 +78,10 @@ export const TransactionsController = {
         state.transactionsByYear,
         nonSpamTransactions
       )
-      state.transactionsByYear = this.groupCoinbaseTransactionsByYear(
-        state.transactionsByYear,
-        coinbaseResponse.transactions
-      )
+      // state.transactionsByYear = this.groupCoinbaseTransactionsByYear(
+      //   state.transactionsByYear,
+      //   coinbaseResponse.transactions
+      // )
       state.empty = filteredTransactions.length === 0
       state.next = response.next ? response.next : undefined
     } catch (error) {

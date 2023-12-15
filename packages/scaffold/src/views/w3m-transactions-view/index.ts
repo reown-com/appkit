@@ -99,6 +99,7 @@ export class W3mTransactionsView extends LitElement {
     return sortedYearKeys.map((year, index) => {
       const isLastGroup = index === sortedYearKeys.length - 1
       const yearInt = parseInt(year, 10)
+      const groupTitle = TransactionUtil.getTransactionGroupTitle(yearInt)
       const transactions = this.transactionsByYear[yearInt]
 
       if (!transactions) {
