@@ -6,5 +6,6 @@ export default css`
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
+    padding: var(--wui-spacing-m);
   }
 `

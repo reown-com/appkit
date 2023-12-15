@@ -5,6 +5,7 @@ import { EventsController } from './EventsController.js'
 import { SnackController } from './SnackController.js'
 import type { CoinbaseTransaction } from '../utils/TypeUtil.js'
 import { CoinbaseApiController } from './CoinbaseApiController.js'
+import { BlockchainApiController } from './BlockchainApiController.js'
 
 // -- Types --------------------------------------------- //
 export type GroupedTransaction =
@@ -20,7 +21,7 @@ export type GroupedTransaction =
 type TransactionByYearMap = Record<number, GroupedTransaction[]>
 
 export interface TransactionsControllerState {
-  transactions: CoinbaseTransaction[]
+  transactions: Transaction[]
   coinbaseTransactions: CoinbaseTransaction[]
   transactionsByYear: TransactionByYearMap
   loading: boolean
@@ -56,33 +57,33 @@ export const TransactionsController = {
     state.loading = true
 
     try {
-      // const response = await BlockchainApiController.fetchTransactions({
-      //   account: accountAddress,
-      //   projectId,
-      //   cursor: state.next
-      // })
+      const response = await BlockchainApiController.fetchTransactions({
+        account: accountAddress,
+        projectId,
+        cursor: state.next
+      })
 
       const coinbaseResponse = await CoinbaseApiController.fetchTransactions({
         accountAddress,
-        pageKey: state.next || '',
+        pageKey: '',
         pageSize: 25
       })
 
-      // const nonSpamTransactions = this.filterSpamTransactions(response.data)
-      // const filteredTransactions = [...state.transactions, ...nonSpamTransactions]
+      const nonSpamTransactions = this.filterSpamTransactions(response.data)
+      const filteredTransactions = [...state.transactions, ...nonSpamTransactions]
 
       state.loading = false
-      state.transactions = coinbaseResponse.transactions
-      // state.transactionsByYear = this.groupTransactionsByYear(
-      //   state.transactionsByYear,
-      //   nonSpamTransactions
-      // )
+      state.transactions = filteredTransactions
+      state.transactionsByYear = this.groupTransactionsByYear(
+        state.transactionsByYear,
+        nonSpamTransactions
+      )
       state.transactionsByYear = this.groupCoinbaseTransactionsByYear(
         state.transactionsByYear,
         coinbaseResponse.transactions
       )
-      state.empty = coinbaseResponse.transactions.length === 0
-      state.next = coinbaseResponse.next_page_key ? coinbaseResponse.next_page_key : undefined
+      state.empty = filteredTransactions.length === 0
+      state.next = response.next ? response.next : undefined
     } catch (error) {
       EventsController.sendEvent({
         type: 'track',
