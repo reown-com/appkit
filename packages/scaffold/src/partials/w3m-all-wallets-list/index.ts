@@ -5,6 +5,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { markWalletsAsInstalled } from '../../utils/markWalletsAsInstalled.js'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'local-paginator'
@@ -93,14 +94,16 @@ export class W3mAllWalletsList extends LitElement {
 
   private walletsTemplate() {
     const wallets = [...this.featured, ...this.recommended, ...this.wallets]
+    const walletsWithInstalled = markWalletsAsInstalled(wallets)
 
-    return wallets.map(
+    return walletsWithInstalled.map(
       wallet => html`
         <wui-card-select
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           type="wallet"
           name=${wallet.name}
           @click=${() => this.onConnectWallet(wallet)}
+          .installed=${wallet.installed}
         ></wui-card-select>
       `
     )
@@ -113,6 +116,10 @@ export class W3mAllWalletsList extends LitElement {
     const minimumRows = Math.ceil(currentWallets / columns)
     let shimmerCount = minimumRows * columns - currentWallets + columns
     shimmerCount -= wallets.length ? featured.length % columns : 0
+
+    if (count === 0 && featured.length > 0) {
+      return null
+    }
 
     if (count === 0 || [...featured, ...wallets, ...recommended].length < count) {
       return this.shimmerTemplate(shimmerCount, PAGINATOR_ID)

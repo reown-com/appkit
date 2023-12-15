@@ -1,6 +1,5 @@
 import {
   AccountController,
-  AssetController,
   ConnectionController,
   CoreHelperUtil,
   EventsController,
@@ -10,7 +9,8 @@ import {
   SnackController,
   ConnectorController,
   ConstantsUtil,
-  StorageUtil
+  StorageUtil,
+  AssetUtil
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -24,8 +24,6 @@ export class W3mAccountView extends LitElement {
 
   // -- Members -------------------------------------------- //
   private usubscribe: (() => void)[] = []
-
-  private readonly networkImages = AssetController.state.networkImages
 
   private readonly connectors = ConnectorController.state.connectors
 
@@ -78,7 +76,7 @@ export class W3mAccountView extends LitElement {
       throw new Error('w3m-account-view: No account provided')
     }
 
-    const networkImage = this.networkImages[this.network?.imageId ?? '']
+    const networkImage = AssetUtil.getNetworkImage(this.network)
 
     return html`
       <wui-flex

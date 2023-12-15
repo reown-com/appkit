@@ -3,7 +3,6 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { ModalController } from '@web3modal/core'
-import { createRef, ref } from 'lit/directives/ref.js'
 
 @customElement('w3m-approve-transaction-view')
 export class W3mApproveTransactionView extends LitElement {
@@ -15,8 +14,6 @@ export class W3mApproveTransactionView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   private iframe = document.getElementById('w3m-iframe') as HTMLIFrameElement
-
-  private divRef = createRef<HTMLDivElement>()
 
   // -- State & Properties -------------------------------- //
   @state() ready = false
@@ -38,19 +35,15 @@ export class W3mApproveTransactionView extends LitElement {
   }
 
   public override firstUpdated() {
-    const safetySpacing = 2
     this.iframe.style.display = 'block'
-    if (this.divRef.value) {
-      this.divRef.value.style.height = `${this.iframe.offsetHeight + safetySpacing}px`
-    }
     const blueprint = this.renderRoot.querySelector('div')
     this.bodyObserver = new ResizeObserver(() => {
       const data = blueprint?.getBoundingClientRect()
       const dimensions = data ?? { left: 0, top: 0, width: 0, height: 0 }
       this.iframe.style.width = `${dimensions.width}px`
-      this.iframe.style.height = `${dimensions.height - safetySpacing}px`
+      this.iframe.style.height = `${dimensions.height}px`
       this.iframe.style.left = `${dimensions.left}px`
-      this.iframe.style.top = `${dimensions.top + safetySpacing / 2}px`
+      this.iframe.style.top = `${dimensions.top}px`
       this.ready = true
     })
     this.bodyObserver.observe(window.document.body)
@@ -62,7 +55,7 @@ export class W3mApproveTransactionView extends LitElement {
       this.onShowIframe()
     }
 
-    return html`<div ${ref(this.divRef)} data-ready=${this.ready}></div>`
+    return html`<div data-ready=${this.ready}></div>`
   }
 
   // -- Private ------------------------------------------- //

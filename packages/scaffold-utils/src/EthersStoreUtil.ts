@@ -9,6 +9,7 @@ export interface EthersStoreUtilState {
   providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
   address?: Address
   chainId?: number
+  error?: unknown
   isConnected: boolean
 }
 
@@ -26,6 +27,7 @@ const state = proxy<EthersStoreUtilState>({
 // -- StoreUtil ---------------------------------------- //
 export const EthersStoreUtil = {
   state,
+
   subscribeKey<K extends StateKey>(key: K, callback: (value: EthersStoreUtilState[K]) => void) {
     return subKey(state, key, callback)
   },
@@ -56,11 +58,16 @@ export const EthersStoreUtil = {
     state.isConnected = isConnected
   },
 
+  setError(error: EthersStoreUtilState['error']) {
+    state.error = error
+  },
+
   reset() {
     state.provider = undefined
     state.address = undefined
     state.chainId = undefined
     state.providerType = undefined
     state.isConnected = false
+    state.error = undefined
   }
 }

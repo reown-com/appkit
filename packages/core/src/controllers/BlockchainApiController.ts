@@ -23,6 +23,7 @@ export const BlockchainApiController = {
       }
     })
   },
+
   fetchTransactions({ account, projectId, cursor }: BlockchainApiTransactionsRequest) {
     const queryParams = cursor ? { cursor } : {}
 
