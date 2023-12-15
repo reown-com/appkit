@@ -5,6 +5,9 @@ import type {
   CoinbaseApiTransactionsResponse
 } from '../utils/TypeUtil.js'
 
+// -- Types --------------------------------------------- //
+// -- State --------------------------------------------- //
+
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getCoinbaseApiUrl()
 const api = new FetchUtil({ baseUrl })
