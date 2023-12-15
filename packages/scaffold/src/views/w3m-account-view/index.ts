@@ -174,8 +174,8 @@ export class W3mAccountView extends LitElement {
     return html`
       <wui-notice-card
         @click=${this.onGoToSecureSite.bind(this)}
-        label="Enjoy all your wallet potential"
-        description="Switch to a Non Custodial Wallet in a minute"
+        label="Upgrade your wallet"
+        description="Transition to a non-custodial wallet"
         icon="wallet"
       ></wui-notice-card>
     `
