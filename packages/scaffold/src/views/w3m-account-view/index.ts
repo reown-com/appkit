@@ -127,12 +127,6 @@ export class W3mAccountView extends LitElement {
               @click=${this.onCopyAddress}
             ></wui-icon-link>
           </wui-flex>
-
-          <wui-flex gap="s" flexDirection="column" alignItems="center">
-            <wui-text variant="2xl-500" color="fg-100">
-              ${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}
-            </wui-text>
-          </wui-flex>
         </wui-flex>
       </wui-flex>
 
