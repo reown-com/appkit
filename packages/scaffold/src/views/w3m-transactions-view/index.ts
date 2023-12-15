@@ -104,7 +104,7 @@ export class W3mTransactionsView extends LitElement {
       }
 
       return html`
-        <wui-flex flexDirection="column" gap="sm">
+        <wui-flex flexDirection="column" gap="s">
           <wui-flex
             alignItems="center"
             flexDirection="row"
@@ -130,11 +130,11 @@ export class W3mTransactionsView extends LitElement {
       return html`
         <wui-transaction-list-item
           date=${date}
-          direction=${direction}
+          .direction=${direction}
           id=${isLastTransaction && this.next ? PAGINATOR_ID : ''}
           status=${status}
           type=${type}
-          .images=${images}
+          images=${images}
           .descriptions=${descriptions}
         ></wui-transaction-list-item>
       `
@@ -151,8 +151,8 @@ export class W3mTransactionsView extends LitElement {
           id=${isLastTransfer && this.next ? PAGINATOR_ID : ''}
           status=${status}
           type=${type}
-          onlyDirectionIcon=${true}
-          .images=${[images?.[index]]}
+          .onlyDirectionIcon=${true}
+          images=${[images?.[index]]}
           .descriptions=${[description]}
         ></wui-transaction-list-item>`
       })
@@ -161,7 +161,7 @@ export class W3mTransactionsView extends LitElement {
     return html`
       <wui-transaction-list-item
         date=${date}
-        direction=${direction}
+        .direction=${direction}
         id=${isLastTransaction && this.next ? PAGINATOR_ID : ''}
         status=${status}
         type=${type}

@@ -8,6 +8,6 @@ export default css`
   a {
     text-decoration: none;
     color: var(--wui-color-fg-175);
-    font-weight: 600;
+    font-weight: 500;
   }
 `

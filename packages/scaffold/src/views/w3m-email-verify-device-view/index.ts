@@ -1,7 +1,8 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { RouterController, ConnectorController } from '@web3modal/core'
+import { RouterController, ConnectorController, SnackController } from '@web3modal/core'
+import { state } from 'lit/decorators.js'
 
 @customElement('w3m-email-verify-device-view')
 export class W3mEmailVerifyDeviceView extends LitElement {
@@ -16,6 +17,9 @@ export class W3mEmailVerifyDeviceView extends LitElement {
     super()
     this.listenForDeviceApproval()
   }
+
+  // -- State & Properties -------------------------------- //
+  @state() private loading = false
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -41,7 +45,7 @@ export class W3mEmailVerifyDeviceView extends LitElement {
             background="opaque"
           ></wui-icon-box>
         </wui-flex>
-        <wui-text variant="large-600" color="fg-100"> Register this device to continue </wui-text>
+        <wui-text variant="large-600" color="fg-100">Register this device to continue</wui-text>
         <wui-flex
           flexDirection="column"
           alignItems="center"
@@ -51,10 +55,16 @@ export class W3mEmailVerifyDeviceView extends LitElement {
           <wui-text variant="paragraph-600" color="fg-100">${this.email}</wui-text>
         </wui-flex>
 
-        <wui-flex alignItems="center" .padding=${['xxl', '0', '0', '0'] as const}>
+        <wui-flex alignItems="center" id="w3m-resend-section">
+          ${this.loading
+            ? html`<wui-loading-spinner size="xl" color="accent-100"></wui-loading-spinner>`
+            : html` <wui-link @click=${this.onResendCode.bind(this)}>Resend email</wui-link>`}
+        </wui-flex>
+
+        <wui-flex alignItems="center">
           <wui-text variant="paragraph-400" color="fg-200" align="center">
-            This is a quick one-time approval that will keep your account secure</wui-text
-          >
+            This is a quick one-time approval that will keep your account secure
+          </wui-text>
         </wui-flex>
       </wui-flex>
     `
@@ -65,6 +75,24 @@ export class W3mEmailVerifyDeviceView extends LitElement {
     if (this.emailConnector) {
       await this.emailConnector.provider.connectDevice()
       RouterController.replace('EmailVerifyOtp', { email: this.email })
+    }
+  }
+
+  private async onResendCode() {
+    try {
+      if (!this.loading) {
+        const emailConnector = ConnectorController.getEmailConnector()
+        if (!emailConnector || !this.email) {
+          throw new Error('w3m-email-login-widget: Unable to resend email')
+        }
+        this.loading = true
+        await emailConnector.provider.connectEmail({ email: this.email })
+        SnackController.showSuccess('New Email sent')
+      }
+    } catch (error) {
+      SnackController.showError(error)
+    } finally {
+      this.loading = false
     }
   }
 }

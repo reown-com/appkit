@@ -29,12 +29,13 @@ function headings() {
     AllWallets: 'All Wallets',
     WhatIsANetwork: 'What is a network?',
     WhatIsAWallet: 'What is a wallet?',
-    GetWallet: 'Get a Wallet',
+    GetWallet: 'Get a wallet',
     Downloads: name ? `Get ${name}` : 'Downloads',
     EmailVerifyOtp: 'Confirm Email',
     EmailVerifyDevice: '',
     ApproveTransaction: 'Approve Transaction',
-    Transactions: 'Activity'
+    Transactions: 'Activity',
+    UpgradeWallet: 'Upgrade your Wallet'
   }
 }
 

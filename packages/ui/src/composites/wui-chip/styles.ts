@@ -47,7 +47,7 @@ export default css`
 
   a[data-variant='fill']:has(wui-text:first-child),
   a[data-variant='shade']:has(wui-text:first-child) {
-    padding: 8.5px var(--wui-spacing-m) 9.5px var(--wui-spacing-m);
+    padding: 9px var(--wui-spacing-m) 9px var(--wui-spacing-m);
   }
 
   a[data-variant='fill'] > wui-image,

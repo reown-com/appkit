@@ -12,6 +12,7 @@ function zType<K extends keyof typeof W3mFrameConstants>(key: K) {
 export const AppSwitchNetworkRequest = z.object({ chainId: z.number() })
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
+export const AppGetUserRequest = z.object({ chainId: z.optional(z.number()) })
 export const FrameConnectEmailResponse = z.object({
   action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])
 })
@@ -64,7 +65,7 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_CONNECT_OTP'), payload: AppConnectOtpRequest }))
 
-    .or(z.object({ type: zType('APP_GET_USER') }))
+    .or(z.object({ type: zType('APP_GET_USER'), payload: z.optional(AppGetUserRequest) }))
 
     .or(z.object({ type: zType('APP_SIGN_OUT') }))
 

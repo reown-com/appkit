@@ -23,5 +23,9 @@ export const W3mFrameHelpers = {
     } catch {
       return false
     }
+  },
+
+  getTimeDifferenceMs(deadlineMs: number) {
+    return Date.now() - deadlineMs
   }
 }
