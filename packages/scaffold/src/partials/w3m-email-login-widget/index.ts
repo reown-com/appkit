@@ -60,7 +60,7 @@ export class W3mEmailLoginWidget extends LitElement {
         >
         </wui-email-input>
 
-        ${showSubmit
+        ${showSubmit && multipleConnectors
           ? html`
               <wui-icon-link
                 size="sm"
@@ -71,13 +71,25 @@ export class W3mEmailLoginWidget extends LitElement {
               </wui-icon-link>
             `
           : null}
-        ${this.loading
+        ${this.loading && multipleConnectors
           ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
           : null}
 
         <input type="submit" hidden />
       </form>
-      ${multipleConnectors ? html`<wui-separator text="or"></wui-separator>` : null}
+
+      ${multipleConnectors
+        ? html`<wui-separator text="or"></wui-separator>`
+        : html`<wui-button
+            size="md"
+            variant="fill"
+            fullWidth
+            @click=${this.onSubmitEmail.bind(this)}
+            .disabled=${!showSubmit}
+            .loading=${this.loading}
+          >
+            Continue
+          </wui-button>`}
     `
   }
 

@@ -53,7 +53,11 @@ export const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
   metadata,
-  enableEmail: true
+  enableEmail: true,
+  enableCoinbase: false,
+  enableEIP6963: false,
+  enableInjected: false,
+  enableWalletConnect: false
 })
 
 const modal = createWeb3Modal({
