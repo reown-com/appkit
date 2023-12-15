@@ -6,6 +6,7 @@ import type { TransactionStatus, TransactionDirection, TransactionImage } from '
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import '../../components/wui-text/index.js'
 import '../wui-transaction-visual/index.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 
 @customElement('wui-transaction-list-item')
@@ -15,27 +16,27 @@ export class WuiTransactionListItem extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public type: TransactionType = 'approve'
 
-  @property() public descriptions?: string[]
+  @property({ type: Array }) public descriptions?: string[]
 
   @property() public date?: string
 
-  @property() public onlyDirectionIcon?: boolean = false
+  @property({ type: Boolean }) public onlyDirectionIcon?: boolean = false
 
   @property() public status?: TransactionStatus
 
   @property() public direction?: TransactionDirection
 
-  @property() public images: TransactionImage[] = []
+  @property({ type: Array }) public images: TransactionImage[] = []
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
       <wui-flex>
         <wui-transaction-visual
-          status=${this.status}
-          direction=${this.direction}
+          .status=${this.status}
+          direction=${ifDefined(this.direction)}
           type=${this.type}
-          onlyDirectionIcon=${this.onlyDirectionIcon}
+          onlyDirectionIcon=${ifDefined(this.onlyDirectionIcon)}
           .images=${this.images}
         ></wui-transaction-visual>
         <wui-flex flexDirection="column" gap="3xs">
