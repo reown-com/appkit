@@ -25,6 +25,8 @@ export class WuiCardSelect extends LitElement {
 
   @property({ type: Boolean }) public selected?: boolean = false
 
+  @property({ type: Boolean }) public installed?: boolean = false
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -50,7 +52,13 @@ export class WuiCardSelect extends LitElement {
     }
 
     return html`
-      <wui-wallet-image size="md" imageSrc=${ifDefined(this.imageSrc)} name=${this.name}>
+      <wui-wallet-image
+        size="md"
+        imageSrc=${ifDefined(this.imageSrc)}
+        name=${this.name}
+        .installed=${this.installed}
+        badgeSize="sm"
+      >
       </wui-wallet-image>
     `
   }

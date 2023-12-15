@@ -1,6 +1,7 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
+import '../../composites/wui-icon-box/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { IconType, IWalletImage, TagType } from '../../utils/TypeUtil.js'
@@ -28,6 +29,8 @@ export class WuiListWallet extends LitElement {
   @property() public icon?: IconType
 
   @property() public walletIcon?: IconType
+
+  @property({ type: Boolean }) public installed = false
 
   @property({ type: Boolean }) public disabled = false
 
@@ -61,6 +64,7 @@ export class WuiListWallet extends LitElement {
         size="sm"
         imageSrc=${this.imageSrc}
         name=${this.name}
+        .installed=${this.installed}
       ></wui-wallet-image>`
     } else if (!this.showAllWallets && !this.imageSrc) {
       return html`<wui-wallet-image size="sm" name=${this.name}></wui-wallet-image>`
