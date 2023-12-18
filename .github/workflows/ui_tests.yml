@@ -1,0 +1,53 @@
+name: UI Tests
+
+on:
+  push:
+    branches: ['V3']
+    paths-ignore:
+      - '**.md'
+
+  pull_request:
+    branches: ['V3']
+    paths-ignore:
+      - '**.md'
+
+concurrency:
+  # Support push/pr as event types with different behaviors each:
+  # 1. push: queue up builds
+  # 2. pr: only allow one run per PR
+  group: ${{ github.workflow }}-${{ github.event.type }}${{ github.event.pull_request.number }}
+  # If there is already a workflow running for the same pull request, cancel it
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  ui_tests:
+    name: 'Playwright Tests'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: setup-node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+      - name: install
+        run: npm ci
+      - name: build
+        run: npm run build
+      - name: Install Playwright Browsers
+        working-directory: ./apps/laboratory/
+        run: npm run playwright:install
+      - name: Run Playwright tests
+        env:
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+        working-directory: ./apps/laboratory/
+        run: npm run playwright:test
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: ./apps/laboratory/playwright-report/
+          retention-days: 7

@@ -279,7 +279,7 @@ async function checkDevelopmentConstants() {
   for (const f of updated_files) {
     const diff = await diffForFile(f)
 
-    if (diff?.added.includes('localhost:')) {
+    if (diff?.added.includes('localhost:') && !diff?.added.includes('// Allow localhost')) {
       fail(`${f} uses localhost: which is likely a mistake`)
     }
   }
