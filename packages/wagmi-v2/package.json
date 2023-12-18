@@ -1,0 +1,103 @@
+{
+  "name": "@web3modal/wagmi",
+  "version": "3.6.0-alpha.0",
+  "type": "module",
+  "main": "./dist/esm/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
+  "files": [
+    "dist",
+    "!tsconfig.tsbuildinfo"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./react": {
+      "types": "./dist/types/exports/react.d.ts",
+      "import": "./dist/esm/exports/react.js",
+      "default": "./dist/esm/exports/react.js"
+    },
+    "./vue": {
+      "types": "./dist/types/exports/vue.d.ts",
+      "import": "./dist/esm/exports/vue.js",
+      "default": "./dist/esm/exports/vue.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "react": [
+        "./dist/types/exports/react.d.ts"
+      ],
+      "vue": [
+        "./dist/types/exports/vue.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build": "tsc --build",
+    "watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "dependencies": {
+    "@web3modal/polyfills": "3.6.0-alpha.0",
+    "@web3modal/scaffold": "3.6.0-alpha.0",
+    "@web3modal/scaffold-react": "3.6.0-alpha.0",
+    "@web3modal/scaffold-utils": "3.6.0-alpha.0",
+    "@web3modal/scaffold-vue": "3.6.0-alpha.0",
+    "@web3modal/wallet": "3.6.0-alpha.0"
+  },
+  "devDependencies": {
+    "@web3modal/siwe": "*"
+  },
+  "peerDependencies": {
+    "@wagmi/core": ">=1",
+    "@web3modal/siwe": "*",
+    "react": ">=17",
+    "react-dom": ">=17",
+    "viem": "2.0.0-beta.15",
+    "vue": ">=3"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    },
+    "@web3modal/siwe": {
+      "optional": true
+    }
+  },
+  "optionalDependencies": {
+    "@web3modal/siwe": "*",
+    "react": ">=17",
+    "react-dom": ">=17",
+    "vue": ">=3"
+  },
+  "keywords": [
+    "web3",
+    "crypto",
+    "ethereum",
+    "web3modal",
+    "walletconnect",
+    "lit",
+    "webcomponents"
+  ],
+  "author": "WalletConnect <walletconnect.com>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/web3modal/web3modal",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/web3modal/web3modal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/web3modal/web3modal/issues"
+  }
+}
