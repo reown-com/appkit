@@ -8,7 +8,6 @@ import {
   RouterController,
   SnackController,
   ConnectorController,
-  ConstantsUtil,
   StorageUtil,
   AssetUtil
 } from '@web3modal/core'
@@ -88,7 +87,7 @@ export class W3mAccountView extends LitElement {
         <wui-avatar
           alt=${this.address}
           address=${this.address}
-          imageSrc=${ifDefined(this.profileImage)}
+          imageSrc=${ifDefined(this.profileImage === null ? undefined : this.profileImage)}
         ></wui-avatar>
 
         <wui-flex flexDirection="column" alignItems="center">
@@ -173,9 +172,9 @@ export class W3mAccountView extends LitElement {
 
     return html`
       <wui-notice-card
-        @click=${this.onGoToSecureSite.bind(this)}
-        label="Enjoy all your wallet potential"
-        description="Switch to a Non Custodial Wallet in a minute"
+        @click=${this.onGoToUpgradeView.bind(this)}
+        label="Upgrade your wallet"
+        description="Transition to a non-custodial wallet"
         icon="wallet"
       ></wui-notice-card>
     `
@@ -248,8 +247,8 @@ export class W3mAccountView extends LitElement {
     }
   }
 
-  private onGoToSecureSite() {
-    CoreHelperUtil.openHref(ConstantsUtil.SECURE_SITE_DASHBOARD, '_blank')
+  private onGoToUpgradeView() {
+    RouterController.push('UpgradeWallet')
   }
 }
 

@@ -16,7 +16,8 @@ import {
   RpcEthEstimateGas,
   RpcEthGasPrice,
   RpcGetBalance,
-  FrameSession
+  FrameSession,
+  AppGetUserRequest
 } from './W3mFrameSchema.js'
 
 export namespace W3mFrameTypes {
@@ -28,6 +29,7 @@ export namespace W3mFrameTypes {
     AppConnectEmailRequest: z.infer<typeof AppConnectEmailRequest>
     AppConnectOtpRequest: z.infer<typeof AppConnectOtpRequest>
     AppSwitchNetworkRequest: z.infer<typeof AppSwitchNetworkRequest>
+    AppGetUserRequest: z.infer<typeof AppGetUserRequest>
   }
 
   export interface Responses {

@@ -18,11 +18,11 @@ export class WuiTransactionVisual extends LitElement {
 
   @property() public direction?: TransactionDirection
 
-  @property() public onlyDirectionIcon?: boolean
+  @property({ type: Boolean }) public onlyDirectionIcon?: boolean
 
-  @property() public images: TransactionImage[] = []
+  @property({ type: Array }) public images: TransactionImage[] = []
 
-  @property() public secondImage: TransactionImage = {
+  @property({ type: Object }) public secondImage: TransactionImage = {
     type: undefined,
     url: ''
   }

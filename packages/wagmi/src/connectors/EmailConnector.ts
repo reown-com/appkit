@@ -13,6 +13,10 @@ interface Config {
   options: W3mFrameProviderOptions
 }
 
+interface ConnectOptions {
+  chainId?: number
+}
+
 // -- Connector ------------------------------------------------------------------------------------
 export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProviderOptions> {
   readonly id = 'w3mEmail'
@@ -34,8 +38,8 @@ export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProvider
     return Promise.resolve(this.provider)
   }
 
-  async connect() {
-    const { address, chainId } = await this.provider.connect()
+  async connect(options: ConnectOptions = {}) {
+    const { address, chainId } = await this.provider.connect({ chainId: options.chainId })
 
     return {
       account: address as `0x${string}`,
