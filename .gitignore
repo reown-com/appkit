@@ -8,3 +8,4 @@ lerna-debug.log
 .env.local
 .env
 .turbo
+playwright-report/

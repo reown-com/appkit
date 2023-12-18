@@ -5,7 +5,11 @@
   "scripts": {
     "dev:laboratory": "next dev",
     "build:laboratory": "next build",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "playwright:start": "npm run dev:laboratory",
+    "playwright:install": "npx playwright install --with-deps",
+    "playwright:test": "npx playwright test",
+    "playwright:debug": "npx playwright test --debug"
   },
   "dependencies": {
     "@chakra-ui/react": "2.8.2",
@@ -24,6 +28,8 @@
     "valtio": "1.11.2"
   },
   "devDependencies": {
+    "@playwright/test": "1.40.1",
+    "dotenv": "16.3.1",
     "ethers": "6.9.0"
   }
 }
