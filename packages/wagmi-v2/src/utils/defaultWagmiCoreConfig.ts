@@ -1,14 +1,15 @@
 import '@web3modal/polyfills'
 
-import type { Chain, Connector } from '@wagmi/core'
-import { configureChains, createConfig } from '@wagmi/core'
+import type { Config, CreateConnectorFn } from '@wagmi/core'
+import { type Chain } from 'viem/chains'
+import { createConfig } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { InjectedConnector } from '@wagmi/core/connectors/injected'
 import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
-import { publicProvider } from '@wagmi/core/providers/public'
 import { EIP6963Connector } from '../connectors/EIP6963Connector.js'
 import { EmailConnector } from '../connectors/EmailConnector.js'
 import { walletConnectProvider } from './provider.js'
+import { createClient, http } from 'viem'
 
 export interface ConfigOptions {
   projectId: string
@@ -36,43 +37,46 @@ export function defaultWagmiConfig({
   enableEIP6963,
   enableEmail,
   enableWalletConnect
-}: ConfigOptions) {
-  const { publicClient } = configureChains(chains, [
-    walletConnectProvider({ projectId }),
-    publicProvider()
-  ])
+}: ConfigOptions): Config {
+  const connectors: CreateConnectorFn[] = []
 
-  const connectors: Connector[] = []
+  // // Enabled by default
+  // if (enableWalletConnect !== false) {
+  //   connectors.push(
+  //     new WalletConnectConnector({ chains, options: { projectId, showQrModal: false, metadata } })
+  //   )
+  // }
 
-  // Enabled by default
-  if (enableWalletConnect !== false) {
-    connectors.push(
-      new WalletConnectConnector({ chains, options: { projectId, showQrModal: false, metadata } })
-    )
-  }
+  // if (enableInjected !== false) {
+  //   connectors.push(new InjectedConnector({ chains, options: { shimDisconnect: true } }))
+  // }
 
-  if (enableInjected !== false) {
-    connectors.push(new InjectedConnector({ chains, options: { shimDisconnect: true } }))
-  }
+  // if (enableEIP6963 !== false) {
+  //   connectors.push(new EIP6963Connector({ chains }))
+  // }
 
-  if (enableEIP6963 !== false) {
-    connectors.push(new EIP6963Connector({ chains }))
-  }
+  // if (enableCoinbase !== false) {
+  //   connectors.push(
+  //     new CoinbaseWalletConnector({ chains, options: { appName: metadata?.name ?? 'Unknown' } })
+  //   )
+  // }
 
-  if (enableCoinbase !== false) {
-    connectors.push(
-      new CoinbaseWalletConnector({ chains, options: { appName: metadata?.name ?? 'Unknown' } })
-    )
-  }
-
-  // Dissabled by default
-  if (enableEmail === true) {
-    connectors.push(new EmailConnector({ chains, options: { projectId } }))
-  }
+  // // Dissabled by default
+  // if (enableEmail === true) {
+  //   connectors.push(new EmailConnector({ chains, options: { projectId } }))
+  // }
 
   return createConfig({
-    autoConnect: true,
+    chains: chains as [Chain, ...Chain[]],
+    client: ({ chain }) =>
+      createClient({
+        chain,
+        transport: http(
+          `https://rpc.walletconnect.com/v1/?chainId=${ConstantsUtil.EIP155}:${chain.id}&projectId=${projectId}`,
+          { retryDelay: 1000 }
+        )
+      }),
     connectors,
-    publicClient
+    multiInjectedProviderDiscovery: true
   })
 }

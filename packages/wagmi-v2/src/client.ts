@@ -1,17 +1,17 @@
-import type { Address, Chain, Config, WindowProvider } from '@wagmi/core'
+import { type Hex, type Chain, type EIP1193Provider } from 'viem' // TODO: THIS DOES NOT COVER 6963
+import { mainnet } from 'viem/chains'
 import {
   connect,
   disconnect,
   signMessage,
-  fetchBalance,
-  fetchEnsAvatar,
-  fetchEnsName,
+  getBalance,
+  getEnsAvatar,
+  getEnsName,
   getAccount,
-  getNetwork,
-  switchNetwork,
+  switchChain,
   watchAccount,
-  watchNetwork,
-  mainnet
+  type Config,
+  type GetAccountReturnType
 } from '@wagmi/core'
 import type {
   CaipAddress,
@@ -66,7 +66,7 @@ interface Info {
 
 interface Wallet {
   info: Info
-  provider: WindowProvider
+  provider: EIP1193Provider
 }
 
 // -- Client --------------------------------------------------------------------
@@ -74,6 +74,8 @@ export class Web3Modal extends Web3ModalScaffold {
   private hasSyncedConnectedAccount = false
 
   private options: Web3ModalClientOptions | undefined = undefined
+
+  private wagmiConfig: Web3ModalClientOptions['wagmiConfig']
 
   public constructor(options: Web3ModalClientOptions) {
     const { wagmiConfig, siweConfig, chains, defaultChain, tokens, _sdkVersion, ...w3mOptions } =
@@ -91,7 +93,7 @@ export class Web3Modal extends Web3ModalScaffold {
       switchCaipNetwork: async caipNetwork => {
         const chainId = HelpersUtil.caipNetworkIdToNumber(caipNetwork?.id)
         if (chainId) {
-          await switchNetwork({ chainId })
+          await switchChain(this.wagmiConfig, { chainId })
         }
       },
 
@@ -210,6 +212,7 @@ export class Web3Modal extends Web3ModalScaffold {
     })
 
     this.options = options
+    this.wagmiConfig = wagmiConfig
 
     this.syncRequestedNetworks(chains)
 
@@ -218,8 +221,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.listenEIP6963Connector(wagmiConfig)
     this.listenEmailConnector(wagmiConfig)
 
-    watchAccount(() => this.syncAccount())
-    watchNetwork(() => this.syncNetwork())
+    watchAccount(this.wagmiConfig, { onChange: () => this.syncAccount() })
   }
 
   // -- Public ------------------------------------------------------------------
@@ -258,10 +260,11 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
   }
 
-  private async syncAccount() {
-    const { address, isConnected } = getAccount()
-    const { chain } = getNetwork()
+  private async syncAccount({ address, isConnected, chainId }: GetAccountReturnType) {
+    const chain = this.wagmiConfig.chains.find((chain: Chain) => chain.id === chainId)
+
     this.resetAccount()
+    this.syncNetwork() // TODO: Check with Sven. Now network is synced when acc is synced.
     if (isConnected && address && chain) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chain.id}:${address}`
       this.setIsConnected(isConnected)
@@ -279,8 +282,8 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncNetwork() {
-    const { address, isConnected } = getAccount()
-    const { chain } = getNetwork()
+    const { address, isConnected, chainId } = getAccount(this.wagmiConfig)
+    const chain = this.wagmiConfig.chains.find((chain: Chain) => chain.id === chainId)
 
     if (chain) {
       const chainId = String(chain.id)
@@ -308,7 +311,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async syncProfile(address: Address, chain: Chain) {
+  private async syncProfile(address: Hex, chain: Chain) {
     if (chain.id !== mainnet.id) {
       this.setProfileName(null)
       this.setProfileImage(null)
@@ -324,10 +327,13 @@ export class Web3Modal extends Web3ModalScaffold {
       this.setProfileName(name)
       this.setProfileImage(avatar)
     } catch {
-      const profileName = await fetchEnsName({ address, chainId: chain.id })
+      const profileName = await getEnsName(this.wagmiConfig, { address, chainId: chain.id })
       if (profileName) {
         this.setProfileName(profileName)
-        const profileImage = await fetchEnsAvatar({ name: profileName, chainId: chain.id })
+        const profileImage = await getEnsAvatar(this.wagmiConfig, {
+          name: profileName,
+          chainId: chain.id
+        })
         if (profileImage) {
           this.setProfileImage(profileImage)
         }
@@ -335,11 +341,11 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async syncBalance(address: Address, chain: Chain) {
-    const balance = await fetchBalance({
+  private async syncBalance(address: Hex, chain: Chain) {
+    const balance = await getBalance(this.wagmiConfig, {
       address,
       chainId: chain.id,
-      token: this.options?.tokens?.[chain.id]?.address as Address
+      token: this.options?.tokens?.[chain.id]?.address as Hex
     })
     this.setBalance(balance.formatted, balance.symbol)
   }
@@ -409,7 +415,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private async listenEmailConnector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
     const connector = wagmiConfig.connectors.find(
       c => c.id === ConstantsUtil.EMAIL_CONNECTOR_ID
-    ) as EmailConnector
+    ) as EmailConnector | undefined
 
     if (typeof window !== 'undefined' && connector) {
       super.setLoading(true)

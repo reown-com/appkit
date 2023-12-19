@@ -2,7 +2,7 @@ import '@web3modal/polyfills'
 
 import { configureChains, createConfig } from 'wagmi'
 import type { Connector } from 'wagmi'
-import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
+import { coinbaseWallet } from 'wagmi/connectors'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 import { publicProvider } from 'wagmi/providers/public'

@@ -1,4 +1,5 @@
-import type { Chain, WindowProvider } from '@wagmi/core'
+import { type WindowProvider } from '@wagmi/core'
+import { type Chain } from 'wagmi/chains'
 import { InjectedConnector } from '@wagmi/core/connectors/injected'
 import { getAddress } from 'viem'
 

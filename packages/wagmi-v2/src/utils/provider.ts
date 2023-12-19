@@ -1,4 +1,5 @@
-import type { Chain, ChainProviderFn } from '@wagmi/core'
+import type { ChainProviderFn } from '@wagmi/core'
+import type { Chain } from 'viem/chains'
 import { CoreHelperUtil } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 
