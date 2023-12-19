@@ -23,11 +23,14 @@
     "@web3modal/ethers5": "3.6.0-32bf236a",
     "@web3modal/wagmi": "3.6.0-32bf236a",
     "framer-motion": "10.17.9",
+    "@tanstack/react-query": "^5.14.1",
     "next": "14.0.4",
     "next-auth": "4.24.5",
     "react-icons": "4.12.0",
     "siwe": "2.1.4",
-    "valtio": "1.11.2"
+    "valtio": "1.11.2",
+    "viem": "2.0.0-beta.15",
+    "wagmi": "2.0.0-beta.8"
   },
   "devDependencies": {
     "@mailsac/api": "1.0.5",

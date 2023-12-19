@@ -40,6 +40,7 @@
     "packages/wallet",
     "packages/siwe",
     "packages/wagmi",
+    "packages/wagmi-v2",
     "packages/ethers",
     "packages/ethers5",
     "apps/*",

@@ -210,7 +210,9 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncEmailConnector(wagmiConfig)
     this.listenEmailConnector(wagmiConfig)
 
-    watchAccount(this.wagmiConfig, { onChange: this.syncAccount })
+    watchAccount(this.wagmiConfig, {
+      onChange: accountData => this.syncAccount({ ...accountData, config: wagmiConfig })
+    })
   }
 
   // -- Public ------------------------------------------------------------------
@@ -249,8 +251,13 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
   }
 
-  private async syncAccount({ address, isConnected, chainId }: GetAccountReturnType) {
-    const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId)
+  private async syncAccount({
+    address,
+    isConnected,
+    chainId,
+    config
+  }: GetAccountReturnType & { config: Config }) {
+    const chain = config?.chains.find((c: Chain) => c.id === chainId)
 
     this.resetAccount()
     // TOD0: Check with Sven. Now network is synced when acc is synced.
