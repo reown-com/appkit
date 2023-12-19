@@ -9,6 +9,7 @@ import {
   SnackController,
   ConnectorController,
   StorageUtil,
+  ConstantsUtil,
   AssetUtil
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
@@ -166,7 +167,8 @@ export class W3mAccountView extends LitElement {
   private emailCardTemplate() {
     const type = StorageUtil.getConnectedConnector()
     const isEmail = this.connectors.find(c => c.type === 'EMAIL')
-    if (!isEmail || type !== 'EMAIL') {
+    const { origin } = location
+    if (!isEmail || type !== 'EMAIL' || origin.includes(ConstantsUtil.SECURE_SITE)) {
       return null
     }
 
