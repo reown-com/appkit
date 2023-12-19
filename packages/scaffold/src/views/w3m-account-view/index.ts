@@ -195,7 +195,7 @@ export class W3mAccountView extends LitElement {
         icon="mail"
         iconSize="sm"
         ?chevron=${true}
-        @click=${this.onTransactions.bind(this)}
+        @click=${this.onGoToUpdateEmail.bind(this)}
       >
         <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
       </wui-list-item>
@@ -270,7 +270,11 @@ export class W3mAccountView extends LitElement {
   }
 
   private onGoToUpgradeView() {
-    RouterController.push('UpgradeWallet')
+    RouterController.push('UpgradeEmailWallet')
+  }
+
+  private onGoToUpdateEmail() {
+    RouterController.push('UpdateEmailWallet')
   }
 }
 

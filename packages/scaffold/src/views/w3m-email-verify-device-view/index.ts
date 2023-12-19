@@ -34,7 +34,7 @@ export class W3mEmailVerifyDeviceView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        .padding=${['0', '3xl', 'xxl', '3xl'] as const}
+        .padding=${['0', '2xl', 'xxl', '2xl'] as const}
       >
         <wui-flex justifyContent="center" .padding=${['0', '0', 'xxl', '0'] as const}>
           <wui-icon-box

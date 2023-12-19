@@ -35,7 +35,8 @@ function headings() {
     EmailVerifyDevice: '',
     ApproveTransaction: 'Approve Transaction',
     Transactions: 'Activity',
-    UpgradeWallet: 'Upgrade your Wallet'
+    UpgradeEmailWallet: 'Upgrade your Wallet',
+    UpdateEmailWallet: 'Edit Email'
   }
 }
 

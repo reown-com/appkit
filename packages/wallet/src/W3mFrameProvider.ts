@@ -107,14 +107,7 @@ export class W3mFrameProvider {
 
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     await this.w3mFrame.frameLoadPromise
-    const lastEmailLoginTime = W3mFrameStorage.get(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME)
-    if (lastEmailLoginTime) {
-      const difference = W3mFrameHelpers.getTimeDifferenceMs(Number(lastEmailLoginTime))
-      if (difference < 30_000) {
-        const cooldownSec = Math.ceil((30_000 - difference) / 1000)
-        throw new Error(`Please try again after ${cooldownSec} seconds`)
-      }
-    }
+    W3mFrameHelpers.checkIfAllowedToTriggerEmail()
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_CONNECT_EMAIL, payload })
 
     return new Promise<W3mFrameTypes.Responses['FrameConnectEmailResponse']>((resolve, reject) => {
@@ -163,6 +156,7 @@ export class W3mFrameProvider {
 
   public async updateEmail(payload: W3mFrameTypes.Requests['AppUpdateEmail']) {
     await this.w3mFrame.frameLoadPromise
+    W3mFrameHelpers.checkIfAllowedToTriggerEmail()
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_UPDATE_EMAIL, payload })
 
     return new Promise((resolve, reject) => {
@@ -243,7 +237,7 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_EMAIL_SUCCESS' }>
   ) {
     this.connectEmailResolver?.resolve(event.payload)
-    W3mFrameStorage.set(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME, Date.now().toString())
+    this.setNewLastEmailLoginTime()
   }
 
   private onConnectEmailError(
@@ -356,11 +350,16 @@ export class W3mFrameProvider {
 
   private onUpdateEmailSuccess() {
     this.updateEmailResolver?.resolve(undefined)
+    this.setNewLastEmailLoginTime()
   }
 
   private onUpdateEmailError(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/UPDATE_EMAIL_ERROR' }>
   ) {
     this.updateEmailResolver?.reject(event.payload.message)
+  }
+
+  private setNewLastEmailLoginTime() {
+    W3mFrameStorage.set(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME, Date.now().toString())
   }
 }
