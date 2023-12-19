@@ -25,8 +25,6 @@ export class W3mAccountView extends LitElement {
   // -- Members -------------------------------------------- //
   private usubscribe: (() => void)[] = []
 
-  private readonly connectors = ConnectorController.state.connectors
-
   // -- State & Properties --------------------------------- //
   @state() private address = AccountController.state.address
 
