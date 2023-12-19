@@ -4,11 +4,9 @@ import type { Config, CreateConnectorFn } from '@wagmi/core'
 import { type Chain } from 'viem/chains'
 import { createConfig } from '@wagmi/core'
 
-// import { EIP6963Connector } from '../connectors/EIP6963Connector.js'
-
 import { createClient, http } from 'viem'
 import { coinbaseWallet, walletConnect, injected } from '@wagmi/connectors'
-import { emailConnector } from '../connectors/EmailConnectorv2'
+import { emailConnector } from '../connectors/EmailConnectorv2.js'
 
 export interface ConfigOptions {
   projectId: string
@@ -33,7 +31,6 @@ export function defaultWagmiConfig({
   metadata,
   enableInjected,
   enableCoinbase,
-  // enableEIP6963,
   enableEmail,
   enableWalletConnect
 }: ConfigOptions): Config {
@@ -47,10 +44,6 @@ export function defaultWagmiConfig({
   if (enableInjected !== false) {
     connectors.push(injected({ shimDisconnect: true }))
   }
-
-  // if (enableEIP6963 !== false) {
-  //   connectors.push(new EIP6963Connector({ chains }))
-  // }
 
   if (enableCoinbase !== false) {
     connectors.push(coinbaseWallet({ appName: metadata?.name ?? 'Unknown' }))
@@ -66,7 +59,8 @@ export function defaultWagmiConfig({
     client: ({ chain }) =>
       createClient({
         chain,
-        transport: http() // TODO: How do we add WC transport?
+        // TOD0: How to use WC transport? Do we need it for analytics?
+        transport: http()
       }),
     connectors,
     multiInjectedProviderDiscovery: true
