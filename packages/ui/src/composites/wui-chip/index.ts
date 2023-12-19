@@ -24,9 +24,13 @@ export class WuiChip extends LitElement {
 
   @property() public href = ''
 
+  @property() public text?: string = undefined
+
   // -- Render -------------------------------------------- //
   public override render() {
-    const textVariant = this.variant === 'transparent' ? 'small-600' : 'paragraph-600'
+    const isSmall =
+      this.variant === 'success' || this.variant === 'transparent' || this.variant === 'shadeSmall'
+    const textVariant = isSmall ? 'small-600' : 'paragraph-600'
 
     return html`
       <a
@@ -38,7 +42,7 @@ export class WuiChip extends LitElement {
       >
         ${this.imageTemplate()}
         <wui-text variant=${textVariant} color="inherit">
-          ${UiHelperUtil.getHostName(this.href)}
+          ${this.title ? this.title : UiHelperUtil.getHostName(this.href)}
         </wui-text>
         <wui-icon name=${this.icon} color="inherit" size="inherit"></wui-icon>
       </a>
