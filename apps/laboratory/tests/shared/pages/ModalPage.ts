@@ -14,7 +14,7 @@ export class ModalPage {
     await this.page.goto(this.baseURL)
   }
 
-  async getWalletConnectV2Uri() {
+  async copyConnectUriToClipboard() {
     await this.page.goto(this.baseURL)
     await this.connectButton.click()
     await this.page.getByText('WalletConnect').click()
