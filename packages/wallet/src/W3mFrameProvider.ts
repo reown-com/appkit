@@ -15,6 +15,7 @@ type IsConnectedResolver = Resolver<W3mFrameTypes.Responses['FrameIsConnectedRes
 type GetChainIdResolver = Resolver<W3mFrameTypes.Responses['FrameGetChainIdResponse']>
 type SwitchChainResolver = Resolver<undefined>
 type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>
+type UpdateEmailResolver = Resolver<undefined>
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
@@ -37,6 +38,8 @@ export class W3mFrameProvider {
   private switchChainResolver: SwitchChainResolver = undefined
 
   private rpcRequestResolver: RpcRequestResolver = undefined
+
+  private updateEmailResolver: UpdateEmailResolver = undefined
 
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
@@ -83,6 +86,10 @@ export class W3mFrameProvider {
           return this.onRpcRequestError(event)
         case W3mFrameConstants.FRAME_SESSION_UPDATE:
           return this.onSessionUpdate(event)
+        case W3mFrameConstants.FRAME_UPDATE_EMAIL_SUCCESS:
+          return this.onUpdateEmailSuccess()
+        case W3mFrameConstants.FRAME_UPDATE_EMAIL_ERROR:
+          return this.onUpdateEmailError(event)
         default:
           return null
       }
@@ -92,6 +99,10 @@ export class W3mFrameProvider {
   // -- Extended Methods ------------------------------------------------
   public getLoginEmailUsed() {
     return Boolean(W3mFrameStorage.get(W3mFrameConstants.EMAIL_LOGIN_USED_KEY))
+  }
+
+  public getEmail() {
+    return W3mFrameStorage.get(W3mFrameConstants.EMAIL)
   }
 
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
@@ -131,10 +142,9 @@ export class W3mFrameProvider {
 
   public async isConnected() {
     await this.w3mFrame.frameLoadPromise
-    const token = this.getSessionToken()
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_IS_CONNECTED,
-      payload: token ? { token } : undefined
+      payload: undefined
     })
 
     return new Promise<W3mFrameTypes.Responses['FrameIsConnectedResponse']>((resolve, reject) => {
@@ -148,6 +158,15 @@ export class W3mFrameProvider {
 
     return new Promise<W3mFrameTypes.Responses['FrameGetChainIdResponse']>((resolve, reject) => {
       this.getChainIdResolver = { resolve, reject }
+    })
+  }
+
+  public async updateEmail(payload: W3mFrameTypes.Requests['AppUpdateEmail']) {
+    await this.w3mFrame.frameLoadPromise
+    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_UPDATE_EMAIL, payload })
+
+    return new Promise((resolve, reject) => {
+      this.updateEmailResolver = { resolve, reject }
     })
   }
 
@@ -175,7 +194,6 @@ export class W3mFrameProvider {
 
   public async disconnect() {
     await this.w3mFrame.frameLoadPromise
-    this.deleteSessionToken()
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_SIGN_OUT })
 
     return new Promise((resolve, reject) => {
@@ -246,8 +264,6 @@ export class W3mFrameProvider {
 
   private onConnectOtpSuccess() {
     this.connectOtpResolver?.resolve(undefined)
-    W3mFrameStorage.set(W3mFrameConstants.EMAIL_LOGIN_USED_KEY, 'true')
-    W3mFrameStorage.delete(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME)
   }
 
   private onConnectOtpError(
@@ -259,6 +275,9 @@ export class W3mFrameProvider {
   private onConnectSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_USER_SUCCESS' }>
   ) {
+    W3mFrameStorage.set(W3mFrameConstants.EMAIL, event.payload.email)
+    W3mFrameStorage.set(W3mFrameConstants.EMAIL_LOGIN_USED_KEY, 'true')
+    W3mFrameStorage.delete(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME)
     this.connectResolver?.resolve(event.payload)
   }
 
@@ -295,6 +314,7 @@ export class W3mFrameProvider {
   private onSignOutSuccess() {
     this.disconnectResolver?.resolve(undefined)
     W3mFrameStorage.delete(W3mFrameConstants.EMAIL_LOGIN_USED_KEY)
+    W3mFrameStorage.delete(W3mFrameConstants.EMAIL)
   }
 
   private onSignOutError(
@@ -330,20 +350,17 @@ export class W3mFrameProvider {
   ) {
     const { payload } = event
     if (payload) {
-      this.setSessionToken(payload.token)
+      // Add When Implemented:  this.setSessionToken(payload.token)
     }
   }
 
-  // -- Private Methods ------------------------------------------------
-  private setSessionToken(token: string) {
-    W3mFrameStorage.set(W3mFrameConstants.SESSION_TOKEN_KEY, token)
+  private onUpdateEmailSuccess() {
+    this.updateEmailResolver?.resolve(undefined)
   }
 
-  private getSessionToken() {
-    return W3mFrameStorage.get(W3mFrameConstants.SESSION_TOKEN_KEY)
-  }
-
-  private deleteSessionToken() {
-    W3mFrameStorage.delete(W3mFrameConstants.SESSION_TOKEN_KEY)
+  private onUpdateEmailError(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/UPDATE_EMAIL_ERROR' }>
+  ) {
+    this.updateEmailResolver?.reject(event.payload.message)
   }
 }

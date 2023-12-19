@@ -126,7 +126,7 @@ export class W3mAccountView extends LitElement {
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
-        ${this.emailCardTemplate()}
+        ${this.emailCardTemplate()} ${this.emailBtnTemplate()}
 
         <wui-list-item
           .variant=${networkImage ? 'image' : 'icon'}
@@ -166,9 +166,9 @@ export class W3mAccountView extends LitElement {
   // -- Private ------------------------------------------- //
   private emailCardTemplate() {
     const type = StorageUtil.getConnectedConnector()
-    const isEmail = this.connectors.find(c => c.type === 'EMAIL')
+    const emailConnector = ConnectorController.getEmailConnector()
     const { origin } = location
-    if (!isEmail || type !== 'EMAIL' || origin.includes(ConstantsUtil.SECURE_SITE)) {
+    if (!emailConnector || type !== 'EMAIL' || origin.includes(ConstantsUtil.SECURE_SITE)) {
       return null
     }
 
@@ -179,6 +179,28 @@ export class W3mAccountView extends LitElement {
         description="Transition to a non-custodial wallet"
         icon="wallet"
       ></wui-notice-card>
+    `
+  }
+
+  private emailBtnTemplate() {
+    const type = StorageUtil.getConnectedConnector()
+    const emailConnector = ConnectorController.getEmailConnector()
+    if (!emailConnector || type !== 'EMAIL') {
+      return null
+    }
+    const email = emailConnector.provider.getEmail()
+
+    return html`
+      <wui-list-item
+        variant="icon"
+        iconVariant="overlay"
+        icon="mail"
+        iconSize="sm"
+        ?chevron=${true}
+        @click=${this.onTransactions.bind(this)}
+      >
+        <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
+      </wui-list-item>
     `
   }
 
