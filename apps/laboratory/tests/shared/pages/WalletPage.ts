@@ -6,22 +6,13 @@ import type { SessionParams } from '../types'
 export class WalletPage {
   private readonly baseURL = WALLET_URL
 
-  private readonly gotoAccounts: Locator
-
   private readonly gotoSessions: Locator
 
   private readonly gotoHome: Locator
 
-  private readonly gotoPairings: Locator
-
-  private readonly gotoSettings: Locator
-
   constructor(public readonly page: Page) {
-    this.gotoAccounts = this.page.getByTestId('accounts')
     this.gotoSessions = this.page.getByTestId('sessions')
     this.gotoHome = this.page.getByTestId('wc-connect')
-    this.gotoPairings = this.page.getByTestId('pairings')
-    this.gotoSettings = this.page.getByTestId('settings')
   }
 
   async load() {
