@@ -115,8 +115,8 @@ export class Web3Modal extends Web3ModalScaffold {
               'networkControllerClient:getApprovedCaipNetworks - connector is undefined'
             )
           }
-          const provider = await connector.getProvider()
-          const ns = provider.signer?.session?.namespaces
+          const provider: any = await connector.getProvider()
+          const ns = provider?.signer?.session?.namespaces
           const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
           const nsChains = ns?.[ConstantsUtil.EIP155]?.chains
 
@@ -139,16 +139,17 @@ export class Web3Modal extends Web3ModalScaffold {
           throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
         }
 
-        connector.on('message', event => {
+        connector.onMessage = event => {
           if (event.type === 'display_uri') {
             onUri(event.data as string)
-            connector.removeAllListeners()
+            // TODO: How to do this?
+            // connector.removeAllListeners()
           }
-        })
+        }
 
         const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
-        await connect({ connector, chainId })
+        await connect(this.wagmiConfig, { connector, chainId })
       },
 
       connectExternal: async ({ id, provider, info }) => {
@@ -162,7 +163,7 @@ export class Web3Modal extends Web3ModalScaffold {
         }
         const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
-        await connect({ connector, chainId })
+        await connect(this.wagmiConfig, { connector, chainId })
       },
 
       checkInstalled: ids => {
@@ -192,13 +193,13 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       disconnect: async () => {
-        await disconnect()
+        await disconnect(this.wagmiConfig)
         if (siweConfig?.options?.signOutOnDisconnect) {
           await siweConfig.signOut()
         }
       },
 
-      signMessage: async message => signMessage({ message })
+      signMessage: async message => signMessage(this.wagmiConfig, { message })
     }
 
     super({
@@ -221,7 +222,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.listenEIP6963Connector(wagmiConfig)
     this.listenEmailConnector(wagmiConfig)
 
-    watchAccount(this.wagmiConfig, { onChange: () => this.syncAccount() })
+    watchAccount(this.wagmiConfig, { onChange: this.syncAccount })
   }
 
   // -- Public ------------------------------------------------------------------
@@ -403,7 +404,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private listenEIP6963Connector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
     const connector = wagmiConfig.connectors.find(
       c => c.id === ConstantsUtil.EIP6963_CONNECTOR_ID
-    ) as EIP6963Connector
+    ) as EIP6963Connector | undefined
 
     if (typeof window !== 'undefined' && connector) {
       const handler = this.eip6963EventHandler.bind(this, connector)

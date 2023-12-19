@@ -1,5 +1,5 @@
 import type { CaipNetwork } from '@web3modal/scaffold'
-import type { Chain } from '@wagmi/core'
+import type { Chain } from 'viem/chains'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 
 export function getCaipDefaultChain(chain?: Chain) {
