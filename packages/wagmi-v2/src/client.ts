@@ -1,4 +1,4 @@
-import { type Hex, type Chain, type EIP1193Provider } from 'viem' // TODO: THIS DOES NOT COVER 6963
+import { type Hex, type Chain } from 'viem' // TODO: THIS DOES NOT COVER 6963
 import { mainnet } from 'viem/chains'
 import {
   connect,
@@ -26,11 +26,11 @@ import type {
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
-import type { EIP6963Connector } from './connectors/EIP6963Connector.js'
-import type { EmailConnector } from './connectors/EmailConnector.js'
+// import type { EIP6963Connector } from './connectors/EIP6963Connector.js'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import { getCaipDefaultChain } from './utils/helpers.js'
 import { WALLET_CHOICE_KEY } from './utils/constants.js'
+import type { W3mFrameProvider } from '@web3modal/wallet'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -57,17 +57,17 @@ interface Web3ModalState extends PublicStateControllerState {
   selectedNetworkId: number | undefined
 }
 
-interface Info {
-  uuid: string
-  name: string
-  icon: string
-  rdns: string
-}
+// interface Info {
+//   uuid: string
+//   name: string
+//   icon: string
+//   rdns: string
+// }
 
-interface Wallet {
-  info: Info
-  provider: EIP1193Provider
-}
+// interface Wallet {
+//   info: Info
+//   provider: EIP1193Provider
+// }
 
 // -- Client --------------------------------------------------------------------
 export class Web3Modal extends Web3ModalScaffold {
@@ -219,7 +219,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.syncConnectors(wagmiConfig)
     this.syncEmailConnector(wagmiConfig)
-    this.listenEIP6963Connector(wagmiConfig)
+    // this.listenEIP6963Connector(wagmiConfig)
     this.listenEmailConnector(wagmiConfig)
 
     watchAccount(this.wagmiConfig, { onChange: this.syncAccount })
@@ -381,46 +381,44 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private eip6963EventHandler(connector: EIP6963Connector, event: CustomEventInit<Wallet>) {
-    if (event.detail) {
-      const { info, provider } = event.detail
-      const connectors = this.getConnectors()
-      const existingConnector = connectors.find(c => c.name === info.name)
-      if (!existingConnector) {
-        this.addConnector({
-          id: ConstantsUtil.EIP6963_CONNECTOR_ID,
-          type: 'ANNOUNCED',
-          imageUrl:
-            info.icon ?? this.options?.connectorImages?.[ConstantsUtil.EIP6963_CONNECTOR_ID],
-          name: info.name,
-          provider,
-          info
-        })
-        connector.isAuthorized({ info, provider })
-      }
-    }
-  }
+  // private eip6963EventHandler(connector: EIP6963Connector, event: CustomEventInit<Wallet>) {
+  //   if (event.detail) {
+  //     const { info, provider } = event.detail
+  //     const connectors = this.getConnectors()
+  //     const existingConnector = connectors.find(c => c.name === info.name)
+  //     if (!existingConnector) {
+  //       this.addConnector({
+  //         id: ConstantsUtil.EIP6963_CONNECTOR_ID,
+  //         type: 'ANNOUNCED',
+  //         imageUrl:
+  //           info.icon ?? this.options?.connectorImages?.[ConstantsUtil.EIP6963_CONNECTOR_ID],
+  //         name: info.name,
+  //         provider,
+  //         info
+  //       })
+  //       connector.isAuthorized({ info, provider })
+  //     }
+  //   }
+  // }
 
-  private listenEIP6963Connector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
-    const connector = wagmiConfig.connectors.find(
-      c => c.id === ConstantsUtil.EIP6963_CONNECTOR_ID
-    ) as EIP6963Connector | undefined
+  // private listenEIP6963Connector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
+  //   const connector = wagmiConfig.connectors.find(
+  //     c => c.id === ConstantsUtil.EIP6963_CONNECTOR_ID
+  //   ) as EIP6963Connector | undefined
 
-    if (typeof window !== 'undefined' && connector) {
-      const handler = this.eip6963EventHandler.bind(this, connector)
-      window.addEventListener(ConstantsUtil.EIP6963_ANNOUNCE_EVENT, handler)
-      window.dispatchEvent(new Event(ConstantsUtil.EIP6963_REQUEST_EVENT))
-    }
-  }
+  //   if (typeof window !== 'undefined' && connector) {
+  //     const handler = this.eip6963EventHandler.bind(this, connector)
+  //     window.addEventListener(ConstantsUtil.EIP6963_ANNOUNCE_EVENT, handler)
+  //     window.dispatchEvent(new Event(ConstantsUtil.EIP6963_REQUEST_EVENT))
+  //   }
+  // }
 
   private async listenEmailConnector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
-    const connector = wagmiConfig.connectors.find(
-      c => c.id === ConstantsUtil.EMAIL_CONNECTOR_ID
-    ) as EmailConnector | undefined
+    const connector = wagmiConfig.connectors.find(c => c.id === ConstantsUtil.EMAIL_CONNECTOR_ID)
 
     if (typeof window !== 'undefined' && connector) {
       super.setLoading(true)
-      const provider = await connector.getProvider()
+      const provider = (await connector.getProvider()) as W3mFrameProvider
       const isLoginEmailUsed = provider.getLoginEmailUsed()
       super.setLoading(isLoginEmailUsed)
       provider.onRpcRequest(() => {

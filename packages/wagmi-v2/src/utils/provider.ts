@@ -12,27 +12,14 @@ interface Options {
 }
 
 // -- Provider -----------------------------------------------------------------
-export function walletConnectProvider<C extends Chain = Chain>({
-  projectId
-}: Options): ChainProviderFn<C> {
-  return function provider(chain) {
+export function walletConnectProvider({ projectId }: Options) {
+  return function provider(chain: Chain) {
     if (!PresetsUtil.WalletConnectRpcChainIds.includes(chain.id)) {
       return null
     }
 
     const baseHttpUrl = `${RPC_URL}/v1/?chainId=${ConstantsUtil.EIP155}:${chain.id}&projectId=${projectId}`
 
-    return {
-      chain: {
-        ...chain,
-        rpcUrls: {
-          ...chain.rpcUrls,
-          default: { http: [baseHttpUrl] }
-        }
-      } as C,
-      rpcUrls: {
-        http: [baseHttpUrl]
-      }
-    }
+    return http(baseHttpUrl)
   }
 }

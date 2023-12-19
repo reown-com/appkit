@@ -30,5 +30,6 @@ export {
 } from '@web3modal/scaffold-vue'
 
 // -- Universal Exports -------------------------------------------------------
-export { EIP6963Connector } from '../src/connectors/EIP6963Connector.js'
+
+//A export { EIP6963Connector } from '../src/connectors/EIP6963Connector.js'
 export { defaultWagmiConfig } from '../src/utils/defaultWagmiCoreConfig.js'
