@@ -36,7 +36,8 @@ function headings() {
     ApproveTransaction: 'Approve Transaction',
     Transactions: 'Activity',
     UpgradeEmailWallet: 'Upgrade your Wallet',
-    UpdateEmailWallet: 'Edit Email'
+    UpdateEmailWallet: 'Edit Email',
+    UpdateEmailWalletWaiting: undefined
   }
 }
 

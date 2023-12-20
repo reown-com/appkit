@@ -5,7 +5,7 @@ import { state } from 'lit/decorators.js'
 import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
-import { SnackController, RouterController } from '@web3modal/core'
+import { SnackController } from '@web3modal/core'
 
 @customElement('w3m-update-email-wallet-view')
 export class W3mUpdateEmailWalletView extends LitElement {
