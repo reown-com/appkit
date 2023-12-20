@@ -128,13 +128,13 @@ export class Web3Modal extends Web3ModalScaffold {
         if (!connector) {
           throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
         }
+        const provider = (await connector.getProvider()) as Awaited<
+          ReturnType<(typeof EthereumProvider)['init']>
+        >
 
-        connector.onMessage = event => {
-          if (event.type === 'display_uri') {
-            onUri(event.data as string)
-            // TOD0: How to do this? connector.removeAllListeners()
-          }
-        }
+        provider.on('display_uri', data => {
+          onUri(data)
+        })
 
         const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
 
