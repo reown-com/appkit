@@ -5,7 +5,7 @@ import { state } from 'lit/decorators.js'
 import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
-import { SnackController } from '@web3modal/core'
+import { SnackController, RouterController } from '@web3modal/core'
 
 @customElement('w3m-update-email-wallet-view')
 export class W3mUpdateEmailWalletView extends LitElement {
@@ -13,6 +13,8 @@ export class W3mUpdateEmailWalletView extends LitElement {
 
   // -- Members ------------------------------------------- //
   private formRef: Ref<HTMLFormElement> = createRef()
+
+  private initialValue = RouterController.state.data?.email ?? ''
 
   // -- State & Properties -------------------------------- //
   @state() private email = ''
@@ -29,12 +31,13 @@ export class W3mUpdateEmailWalletView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const showSubmit = !this.loading && this.email.length > 3
+    const showSubmit = !this.loading && this.email.length > 3 && this.email !== this.initialValue
 
     return html`
       <wui-flex flexDirection="column" padding="m" gap="m">
         <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
           <wui-email-input
+            value=${this.initialValue}
             .disabled=${this.loading}
             @inputChange=${this.onEmailInputChange.bind(this)}
           >
@@ -42,16 +45,22 @@ export class W3mUpdateEmailWalletView extends LitElement {
           <input type="submit" hidden />
         </form>
 
-        <wui-button
-          size="md"
-          variant="fill"
-          fullWidth
-          @click=${this.onSubmitEmail.bind(this)}
-          .disabled=${!showSubmit}
-          .loading=${this.loading}
-        >
-          Continue
-        </wui-button>
+        <wui-flex gap="s">
+          <wui-button size="md" variant="shade" fullWidth @click=${RouterController.goBack}>
+            Cancel
+          </wui-button>
+
+          <wui-button
+            size="md"
+            variant="fill"
+            fullWidth
+            @click=${this.onSubmitEmail.bind(this)}
+            .disabled=${!showSubmit}
+            .loading=${this.loading}
+          >
+            Save
+          </wui-button>
+        </wui-flex>
       </wui-flex>
     `
   }
@@ -76,11 +85,11 @@ export class W3mUpdateEmailWalletView extends LitElement {
       }
 
       await emailConnector.provider.updateEmail({ email: this.email })
+
       // TODO: Check if action was to redirect (i.e. email-sent)
       // Go to holding view
     } catch (error) {
       SnackController.showError(error)
-    } finally {
       this.loading = false
     }
   }

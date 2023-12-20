@@ -187,6 +187,9 @@ export class W3mAccountView extends LitElement {
       return null
     }
     const email = emailConnector.provider.getEmail()
+    if (!email) {
+      throw new Error('w3m-account-view: Email not found')
+    }
 
     return html`
       <wui-list-item
@@ -195,7 +198,7 @@ export class W3mAccountView extends LitElement {
         icon="mail"
         iconSize="sm"
         ?chevron=${true}
-        @click=${this.onGoToUpdateEmail.bind(this)}
+        @click=${() => this.onGoToUpdateEmail(email)}
       >
         <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
       </wui-list-item>
@@ -273,8 +276,8 @@ export class W3mAccountView extends LitElement {
     RouterController.push('UpgradeEmailWallet')
   }
 
-  private onGoToUpdateEmail() {
-    RouterController.push('UpdateEmailWallet')
+  private onGoToUpdateEmail(email: string) {
+    RouterController.push('UpdateEmailWallet', { email })
   }
 }
 
