@@ -340,7 +340,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private syncConnectors(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
     const w3mConnectors: Connector[] = []
-    console.log(wagmiConfig.connectors)
     wagmiConfig.connectors.forEach(({ id, name, type, icon }) => {
       if (![ConstantsUtil.EMAIL_CONNECTOR_ID].includes(id)) {
         w3mConnectors.push({
