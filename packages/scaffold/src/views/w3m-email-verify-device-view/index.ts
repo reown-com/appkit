@@ -48,7 +48,7 @@ export class W3mEmailVerifyDeviceView extends LitElement {
         <wui-flex flexDirection="column" alignItems="center" gap="s">
           <wui-flex flexDirection="column" alignItems="center">
             <wui-text variant="paragraph-400" color="fg-100">
-              Approve login the link we sent to
+              Approve the login link we sent to
             </wui-text>
             <wui-text variant="paragraph-400" color="fg-100"><b>${this.email}</b></wui-text>
           </wui-flex>
