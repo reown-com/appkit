@@ -18,6 +18,7 @@ export class ModalPage {
     await this.page.goto(this.baseURL)
     await this.connectButton.click()
     await this.page.getByText('WalletConnect').click()
+    await this.page.waitForTimeout(2000)
     await this.page.getByText('Copy link').click()
   }
 }

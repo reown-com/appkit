@@ -25,7 +25,7 @@ export class WalletPage {
     const isMac = process.platform === 'darwin'
     const modifier = isMac ? 'Meta' : 'Control'
     await this.page.keyboard.press(`${modifier}+KeyV`)
-    await this.page.screenshot({ path: './screenshots/wallet.png' });
+    await this.page.screenshot({ path: './screenshots/wallet.png' })
     await this.page.getByTestId('uri-connect-button').click()
   }
 
