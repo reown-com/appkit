@@ -186,10 +186,7 @@ export class W3mAccountView extends LitElement {
     if (!emailConnector || type !== 'EMAIL') {
       return null
     }
-    const email = emailConnector.provider.getEmail()
-    if (!email) {
-      throw new Error('w3m-account-view: Email not found')
-    }
+    const email = emailConnector.provider.getEmail() ?? ''
 
     return html`
       <wui-list-item
