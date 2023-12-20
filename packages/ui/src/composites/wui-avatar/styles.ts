@@ -3,8 +3,8 @@ import { css } from 'lit'
 export default css`
   :host {
     display: block;
-    width: 64px;
-    height: 64px;
+    width: var(--wui-icon-box-size-xl);
+    height: var(--wui-icon-box-size-xl);
     border-radius: var(--wui-border-radius-3xl);
     box-shadow: 0 0 0 8px var(--wui-gray-glass-005);
     overflow: hidden;
