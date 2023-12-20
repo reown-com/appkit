@@ -71,11 +71,9 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   }
 
   private copyTemplate() {
-    if (!this.uri || !this.ready) {
-      return null
-    }
+    const inactive = !this.uri || !this.ready
 
-    return html`<wui-link @click=${this.onCopyUri} color="fg-200">
+    return html`<wui-link .disabled=${inactive} @click=${this.onCopyUri} color="fg-200">
       <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
       Copy link
     </wui-link>`
