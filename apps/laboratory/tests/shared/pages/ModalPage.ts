@@ -18,8 +18,6 @@ export class ModalPage {
     await this.page.goto(this.baseURL)
     await this.connectButton.click()
     await this.page.getByText('WalletConnect').click()
-    // It appears that sometimes we
-    // enable this button before we have the link
     await this.page.waitForTimeout(2000)
     await this.page.getByText('Copy link').click()
   }
