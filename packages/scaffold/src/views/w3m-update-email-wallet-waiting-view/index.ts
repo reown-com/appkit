@@ -27,7 +27,7 @@ export class W3mUpdateEmailWalletWaitingView extends LitElement {
       throw new Error('w3m-update-email-wallet-waiting-view: No email provided')
     }
     if (!this.emailConnector) {
-      throw new Error('w3m-update-email-wallet-waiting-view: No email provided')
+      throw new Error('w3m-update-email-wallet-waiting-view: No email connector provided')
     }
 
     return html`

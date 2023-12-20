@@ -27,7 +27,7 @@ export class W3mEmailVerifyDeviceView extends LitElement {
       throw new Error('w3m-email-verify-device-view: No email provided')
     }
     if (!this.emailConnector) {
-      throw new Error('w3m-email-verify-device-view: No email provided')
+      throw new Error('w3m-email-verify-device-view: No email connector provided')
     }
 
     return html`
