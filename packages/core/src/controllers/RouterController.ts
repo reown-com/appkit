@@ -25,6 +25,9 @@ export interface RouterControllerState {
     | 'UpgradeEmailWallet'
     | 'UpdateEmailWallet'
     | 'UpdateEmailWalletWaiting'
+    | 'UpgradeWallet'
+    | 'OnRampProviders'
+    | 'OnRampActivity'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

@@ -10,7 +10,8 @@ import {
   ConnectorController,
   EventsController,
   ConnectionController,
-  SnackController
+  SnackController,
+  CoinbaseApiController
 } from '@web3modal/core'
 import type { CaipNetworkCoinbaseNetwork } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
@@ -191,11 +192,10 @@ export class W3mAccountView extends LitElement {
           iconVariant="blue"
           icon="add"
           iconSize="lg"
-          .loading=${!this.onrampInstance}
           ?chevron=${true}
           @click=${this.handleClickPay.bind(this)}
         >
-          <wui-text variant="paragraph-500" color="fg-100">Buy crypto</wui-text>
+          <wui-text variant="paragraph-500" color="fg-100">Buy</wui-text>
         </wui-list-item>
         <wui-list-item
           iconVariant="blue"
@@ -295,7 +295,7 @@ export class W3mAccountView extends LitElement {
   }
 
   private handleClickPay() {
-    this.onrampInstance?.open()
+    RouterController.push('OnRampActivity')
   }
 
   private initializeOnRamp() {

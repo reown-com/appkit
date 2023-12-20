@@ -24,6 +24,7 @@ export type TextType =
   | 'small-400'
   | 'small-500'
   | 'small-600'
+  | 'tiny-400'
   | 'tiny-500'
   | 'tiny-600'
   | '2xl-500'
