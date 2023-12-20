@@ -25,7 +25,6 @@ export class WalletPage {
     const isMac = process.platform === 'darwin'
     const modifier = isMac ? 'Meta' : 'Control'
     await this.page.keyboard.press(`${modifier}+KeyV`)
-    await this.page.screenshot({ path: './screenshots/wallet.png' })
     await this.page.getByTestId('uri-connect-button').click()
   }
 
@@ -36,13 +35,13 @@ export class WalletPage {
    * @param accept - accept or reject the session
    */
   async handleSessionProposal(opts: SessionParams) {
-    const meh = opts.accept ? `approve` : `reject`
-    await this.page.getByTestId(`session-${meh}-button`).focus()
+    const variant = opts.accept ? `approve` : `reject`
+    await this.page.getByTestId(`session-${variant}-button`).focus()
     await this.page.keyboard.press('Space')
   }
 
   async handleRequest({ accept }: { accept: boolean }) {
-    const meh = accept ? `approve` : `reject`
-    await this.page.getByTestId(`request-button-${meh}`).click()
+    const variant = accept ? `approve` : `reject`
+    await this.page.getByTestId(`request-button-${variant}`).click()
   }
 }
