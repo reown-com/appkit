@@ -341,14 +341,14 @@ export class Web3Modal extends Web3ModalScaffold {
   private syncConnectors(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
     const w3mConnectors: Connector[] = []
     console.log(wagmiConfig.connectors)
-    wagmiConfig.connectors.forEach(({ name, type, icon }) => {
-      if (![ConstantsUtil.EMAIL_CONNECTOR_ID].includes(type)) {
+    wagmiConfig.connectors.forEach(({ id, name, type, icon }) => {
+      if (![ConstantsUtil.EMAIL_CONNECTOR_ID].includes(id)) {
         w3mConnectors.push({
-          id: type,
-          explorerId: PresetsUtil.ConnectorExplorerIds[type],
-          imageId: PresetsUtil.ConnectorImageIds[type],
-          imageUrl: this.options?.connectorImages?.[type] ?? icon,
-          name: PresetsUtil.ConnectorNamesMap[type] ?? name,
+          id,
+          explorerId: PresetsUtil.ConnectorExplorerIds[id],
+          imageUrl: this.options?.connectorImages?.[id] ?? icon,
+          name: PresetsUtil.ConnectorNamesMap[id] ?? name,
+          imageId: PresetsUtil.ConnectorImageIds[type] ?? PresetsUtil.ConnectorImageIds[id],
           type: PresetsUtil.ConnectorTypesMap[type] ?? 'EXTERNAL'
         })
       }
