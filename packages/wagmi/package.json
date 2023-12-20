@@ -1,5 +1,5 @@
 {
-  "name": "@web3modal/wagmi-v2",
+  "name": "@web3modal/wagmi",
   "version": "3.6.0-alpha.0",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
