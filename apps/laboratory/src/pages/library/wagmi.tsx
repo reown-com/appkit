@@ -1,4 +1,5 @@
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { WagmiConfig } from 'wagmi'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
