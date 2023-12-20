@@ -4,8 +4,8 @@ import styles from './styles.js'
 import { RouterController, ConnectorController, SnackController } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 
-@customElement('w3m-email-verify-device-view')
-export class W3mEmailVerifyDeviceView extends LitElement {
+@customElement('w3m-update-email-wallet-waiting-view')
+export class W3mUpdateEmailWalletWaitingView extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
@@ -15,7 +15,7 @@ export class W3mEmailVerifyDeviceView extends LitElement {
 
   public constructor() {
     super()
-    this.listenForDeviceApproval()
+    this.listenForEmailUpdateApproval()
   }
 
   // -- State & Properties -------------------------------- //
@@ -24,10 +24,10 @@ export class W3mEmailVerifyDeviceView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.email) {
-      throw new Error('w3m-email-verify-device-view: No email provided')
+      throw new Error('w3m-update-email-wallet-waiting-view: No email provided')
     }
     if (!this.emailConnector) {
-      throw new Error('w3m-email-verify-device-view: No email provided')
+      throw new Error('w3m-update-email-wallet-waiting-view: No email provided')
     }
 
     return html`
@@ -45,36 +45,31 @@ export class W3mEmailVerifyDeviceView extends LitElement {
             background="opaque"
           ></wui-icon-box>
         </wui-flex>
-        <wui-text variant="large-600" color="fg-100">Register this device to continue</wui-text>
-        <wui-flex
-          flexDirection="column"
-          alignItems="center"
-          .padding=${['s', '0', '0', '0'] as const}
-        >
-          <wui-text variant="paragraph-400" color="fg-200">Check the instructions sent to</wui-text>
-          <wui-text variant="paragraph-600" color="fg-100">${this.email}</wui-text>
-        </wui-flex>
+
+        <wui-text variant="paragraph-400" color="fg-100">
+          Approve login the link we sent to
+        </wui-text>
+        <wui-text variant="paragraph-400" color="fg-100">${this.email}</wui-text>
+
+        <wui-text variant="paragraph-400" color="fg-200" align="center">
+          You will receive then an approval request on your former mail to confirm the new one
+        </wui-text>
 
         <wui-flex alignItems="center" id="w3m-resend-section">
           ${this.loading
             ? html`<wui-loading-spinner size="xl" color="accent-100"></wui-loading-spinner>`
             : html` <wui-link @click=${this.onResendCode.bind(this)}>Resend email</wui-link>`}
         </wui-flex>
-
-        <wui-flex alignItems="center">
-          <wui-text variant="paragraph-400" color="fg-200" align="center">
-            This is a quick one-time approval that will keep your account secure
-          </wui-text>
-        </wui-flex>
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
-  private async listenForDeviceApproval() {
+  private async listenForEmailUpdateApproval() {
     if (this.emailConnector) {
-      await this.emailConnector.provider.connectDevice()
-      RouterController.replace('EmailVerifyOtp', { email: this.email })
+      await this.emailConnector.provider.awaitUpdateEmail()
+      RouterController.replace('Account')
+      SnackController.showSuccess('Email updated')
     }
   }
 
@@ -82,10 +77,10 @@ export class W3mEmailVerifyDeviceView extends LitElement {
     try {
       if (!this.loading) {
         if (!this.emailConnector || !this.email) {
-          throw new Error('w3m-email-login-widget: Unable to resend email')
+          throw new Error('w3m-update-email-wallet-waiting-view: Unable to resend email')
         }
         this.loading = true
-        await this.emailConnector.provider.connectEmail({ email: this.email })
+        await this.emailConnector.provider.updateEmail({ email: this.email })
         SnackController.showSuccess('New Email sent')
       }
     } catch (error) {
@@ -98,6 +93,6 @@ export class W3mEmailVerifyDeviceView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-email-verify-device-view': W3mEmailVerifyDeviceView
+    'w3m-update-email-wallet-waiting-view': W3mUpdateEmailWalletWaitingView
   }
 }

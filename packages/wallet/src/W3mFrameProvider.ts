@@ -16,6 +16,7 @@ type GetChainIdResolver = Resolver<W3mFrameTypes.Responses['FrameGetChainIdRespo
 type SwitchChainResolver = Resolver<undefined>
 type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>
 type UpdateEmailResolver = Resolver<undefined>
+type AwaitUpdateEmailResolver = Resolver<W3mFrameTypes.Responses['FrameAwaitUpdateEmailResponse']>
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
@@ -40,6 +41,8 @@ export class W3mFrameProvider {
   private rpcRequestResolver: RpcRequestResolver = undefined
 
   private updateEmailResolver: UpdateEmailResolver = undefined
+
+  private awaitUpdateEmailResolver: AwaitUpdateEmailResolver = undefined
 
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
@@ -90,6 +93,10 @@ export class W3mFrameProvider {
           return this.onUpdateEmailSuccess()
         case W3mFrameConstants.FRAME_UPDATE_EMAIL_ERROR:
           return this.onUpdateEmailError(event)
+        case W3mFrameConstants.FRAME_AWAIT_UPDATE_EMAIL_SUCCESS:
+          return this.onAwaitUpdateEmailSuccess(event)
+        case W3mFrameConstants.FRAME_AWAIT_UPDATE_EMAIL_ERROR:
+          return this.onAwaitUpdateEmailError(event)
         default:
           return null
       }
@@ -162,6 +169,17 @@ export class W3mFrameProvider {
     return new Promise((resolve, reject) => {
       this.updateEmailResolver = { resolve, reject }
     })
+  }
+
+  public async awaitUpdateEmail() {
+    await this.w3mFrame.frameLoadPromise
+    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_AWAIT_UPDATE_EMAIL })
+
+    return new Promise<W3mFrameTypes.Responses['FrameAwaitUpdateEmailResponse']>(
+      (resolve, reject) => {
+        this.awaitUpdateEmailResolver = { resolve, reject }
+      }
+    )
   }
 
   // -- Provider Methods ------------------------------------------------
@@ -359,6 +377,19 @@ export class W3mFrameProvider {
     this.updateEmailResolver?.reject(event.payload.message)
   }
 
+  private onAwaitUpdateEmailSuccess(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/AWAIT_UPDATE_EMAIL_SUCCESS' }>
+  ) {
+    this.awaitUpdateEmailResolver?.resolve(event.payload)
+  }
+
+  private onAwaitUpdateEmailError(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/AWAIT_UPDATE_EMAIL_ERROR' }>
+  ) {
+    this.awaitUpdateEmailResolver?.reject(event.payload.message)
+  }
+
+  // -- Private Methods -------------------------------------------------
   private setNewLastEmailLoginTime() {
     W3mFrameStorage.set(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME, Date.now().toString())
   }
