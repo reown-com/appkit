@@ -1,3 +1,5 @@
+const SECURE_SITE = 'https://secure.web3modal.com'
+
 export const ConstantsUtil = {
   FOUR_MINUTES_MS: 240_000,
 
@@ -5,9 +7,11 @@ export const ConstantsUtil = {
 
   ONE_SEC_MS: 1_000,
 
-  SECURE_SITE_DASHBOARD: 'https://secure.web3modal.com/dashboard',
+  SECURE_SITE,
 
-  SECURE_SITE_FAVICON: 'https://secure.web3modal.com/images/favicon.png',
+  SECURE_SITE_DASHBOARD: `${SECURE_SITE}/dashboard`,
+
+  SECURE_SITE_FAVICON: `${SECURE_SITE}/images/favicon.png`,
 
   RESTRICTED_TIMEZONES: [
     'ASIA/SHANGHAI',
