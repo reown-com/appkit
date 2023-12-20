@@ -18,6 +18,8 @@ export class WuiOnRampProviderItem extends LitElement {
 
   @property() public label: string = ''
 
+  @property() public imageURL: string = ''
+
   @property() public feeRange = ''
 
   @property() public onClick: (() => void) | null = null
@@ -26,10 +28,7 @@ export class WuiOnRampProviderItem extends LitElement {
   public override render() {
     return html`
       <button ?disabled=${this.onClick} ontouchstart>
-        <wui-image
-          class="provider-image"
-          src="https://avatar.vercel.sh/andrew.svg?size=50&text=AG"
-        ></wui-image>
+        <wui-image class="provider-image" src=${this.imageURL}></wui-image>
         <wui-flex flexDirection="column" gap="4xs">
           <wui-text variant="paragraph-500" color="fg-100">${this.label}</wui-text>
           <wui-text variant="tiny-500" color="fg-100">

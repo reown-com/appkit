@@ -13,11 +13,16 @@ type ProviderOption = {
   label: string
   name: Provider
   feeRange: string
-  url: string
+  imageURL: string
 }
 
 const onRampProviders: Array<ProviderOption> = [
-  { label: 'Coinbase', name: 'coinbase', feeRange: '1-2%', url: '' }
+  {
+    label: 'Coinbase',
+    name: 'coinbase',
+    feeRange: '1-2%',
+    imageURL: 'https://2wula1angr9l0q9u.public.blob.vercel-storage.com/coinbase.png'
+  }
 ]
 
 @customElement('w3m-onramp-providers-view')
@@ -65,6 +70,7 @@ export class W3mOnRampProvidersView extends LitElement {
       provider => html`
         <wui-onramp-provider-item
           label=${provider.label}
+          imageURL=${provider.imageURL}
           feeRange=${provider.feeRange}
           @click=${() => {
             this.onClickProvider(provider)
