@@ -22,6 +22,8 @@ export class WuiOnRampProviderItem extends LitElement {
 
   @property() public feeRange = ''
 
+  @property() public loading: boolean = false
+
   @property() public onClick: (() => void) | null = null
 
   // -- Render -------------------------------------------- //
@@ -36,7 +38,9 @@ export class WuiOnRampProviderItem extends LitElement {
             ${this.feeRange}
           </wui-text>
         </wui-flex>
-        <wui-icon name="chevronRight" color="fg-300"></wui-icon>
+        ${this.loading
+          ? html`<wui-loading-spinner color="fg-200" size="md"></wui-loading-spinner>`
+          : html`<wui-icon name="chevronRight" color="fg-300"></wui-icon>`}
       </button>
     `
   }

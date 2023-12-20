@@ -67,9 +67,9 @@ const api = new FetchUtil({ baseUrl })
 
 // -- Controller ---------------------------------------- //
 export const CoinbaseApiController = {
-  fetchTransactions({ pageKey, pageSize }: CoinbaseApiTransactionsRequest) {
+  fetchTransactions({ accountAddress, pageKey, pageSize }: CoinbaseApiTransactionsRequest) {
     return api.get<CoinbaseApiTransactionsResponse>({
-      path: `api/v1/buy/user/0x63755B7B300228254FB7d16321eCD3B87f98ca2a/transactions?pageKey=${pageKey}&pageSize=${pageSize}`,
+      path: `api/v1/buy/user/${accountAddress}/transactions?pageKey=${pageKey}&pageSize=${pageSize}`,
       headers: {
         'Cbpay-App-Id': process.env['NEXT_PUBLIC_COINBASE_APP_ID'] ?? '',
         'Cbpay-Api-Key': process.env['NEXT_PUBLIC_COINBASE_API_KEY'] ?? ''
@@ -90,7 +90,7 @@ export const CoinbaseApiController = {
       'destinationWallets',
       JSON.stringify([
         {
-          address: '0xf5B035287c1465F29C7e08FbB5c3b8a4975Bf831',
+          address: otherParams.partnerUserId,
           blockchains: ['ethereum'],
           assets: ['USDC']
         }

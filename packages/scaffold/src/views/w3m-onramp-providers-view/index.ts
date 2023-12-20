@@ -2,7 +2,8 @@ import {
   CoinbaseApiController,
   CoreHelperUtil,
   type CoinbaseTransaction,
-  RouterController
+  RouterController,
+  AccountController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -13,6 +14,7 @@ type ProviderOption = {
   label: string
   name: Provider
   feeRange: string
+  url: string
   imageURL: string
 }
 
@@ -21,6 +23,7 @@ const onRampProviders: Array<ProviderOption> = [
     label: 'Coinbase',
     name: 'coinbase',
     feeRange: '1-2%',
+    url: '',
     imageURL: 'https://2wula1angr9l0q9u.public.blob.vercel-storage.com/coinbase.png'
   }
 ]
@@ -29,7 +32,7 @@ const onRampProviders: Array<ProviderOption> = [
 export class W3mOnRampProvidersView extends LitElement {
   @state() private providers = onRampProviders
 
-  @state() private selectedProvider: Provider = ''
+  @state() private selectedProvider: Provider | null = null
 
   @state() private coinbaseTransactions: CoinbaseTransaction[] = []
   @state() private coinbaseTransactionsInitialized: boolean = false
@@ -72,6 +75,7 @@ export class W3mOnRampProvidersView extends LitElement {
           label=${provider.label}
           imageURL=${provider.imageURL}
           feeRange=${provider.feeRange}
+          .loading=${this.selectedProvider === provider.name}
           @click=${() => {
             this.onClickProvider(provider)
           }}
@@ -96,22 +100,28 @@ export class W3mOnRampProvidersView extends LitElement {
   }
 
   private getCoinbaseOnRampURL() {
+    const address = AccountController.state.address
+
+    if (!address) {
+      throw new Error('No address found')
+    }
+
     return CoinbaseApiController.generateOnRampURL({
       appId: process.env['NEXT_PUBLIC_COINBASE_APP_ID'] ?? '',
-      destinationWallets: [
-        {
-          address: '0xf5B035287c1465F29C7e08FbB5c3b8a4975Bf831',
-          blockchains: ['ethereum'],
-          assets: ['USDC']
-        }
-      ],
-      partnerUserId: '0xf5B035287c1465F29C7e08FbB5c3b8a4975Bf831'
+      destinationWallets: [{ address, blockchains: ['ethereum'], assets: ['USDC'] }],
+      partnerUserId: address
     })
   }
 
   private async initializeCoinbaseTransactions() {
+    const address = AccountController.state.address
+
+    if (!address) {
+      throw new Error('No address found')
+    }
+
     const coinbaseResponse = await CoinbaseApiController.fetchTransactions({
-      accountAddress: '',
+      accountAddress: address,
       pageSize: 2,
       pageKey: ''
     })
@@ -123,8 +133,14 @@ export class W3mOnRampProvidersView extends LitElement {
   }
 
   private async fetchTransactions() {
+    const address = AccountController.state.address
+
+    if (!address) {
+      throw new Error('No address found')
+    }
+
     const coinbaseResponse = await CoinbaseApiController.fetchTransactions({
-      accountAddress: '',
+      accountAddress: address,
       pageSize: 2,
       pageKey: ''
     })
@@ -139,9 +155,10 @@ export class W3mOnRampProvidersView extends LitElement {
       clearInterval(this.intervalId!)
       console.log('New transaction detected:', newTransactions)
       // todo: redirect to onramp activity page
-      RouterController.push('OnRampActivity')
-    } else if (this.startTime && Date.now() - this.startTime >= 30_000) {
       RouterController.goBack()
+    } else if (this.startTime && Date.now() - this.startTime >= 10_000) {
+      RouterController.replace('OnRampActivity')
+      this.selectedProvider = null
       console.log('Clearing interval:', newTransactions)
       clearInterval(this.intervalId!)
     }

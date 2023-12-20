@@ -1,6 +1,5 @@
 import {
   AccountController,
-  ConstantsUtil,
   CoreHelperUtil,
   ModalController,
   NetworkController,
@@ -10,21 +9,15 @@ import {
   ConnectorController,
   EventsController,
   ConnectionController,
-  SnackController,
-  CoinbaseApiController
+  SnackController
 } from '@web3modal/core'
-import type { CaipNetworkCoinbaseNetwork } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 
-import { initOnRamp } from '@coinbase/cbpay-js'
 import type { CBPayInstanceType } from '@coinbase/cbpay-js'
-
-// -- Constants ----------------------------------------- //
-const coinbaseAppID = process.env['NEXT_PUBLIC_COINBASE_APP_ID']
 
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
@@ -63,7 +56,6 @@ export class W3mAccountView extends LitElement {
       NetworkController.subscribeKey('caipNetwork', val => {
         if (val?.id) {
           this.network = val
-          this.initializeOnRamp()
         }
       })
     )
@@ -72,10 +64,6 @@ export class W3mAccountView extends LitElement {
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     this.onrampInstance?.destroy()
-  }
-
-  public override firstUpdated() {
-    this.initializeOnRamp()
   }
 
   // -- Render -------------------------------------------- //
@@ -298,50 +286,16 @@ export class W3mAccountView extends LitElement {
     RouterController.push('OnRampProviders')
   }
 
-  private initializeOnRamp() {
-    const networkName = this.network?.name
-    const address = this.address
-
-    if (!coinbaseAppID) {
-      throw new Error('NEXT_PUBLIC_COINBASE_APP_ID is not set')
-    }
-
-    if (!networkName || !address) {
-      return
-    }
-
-    const coinbaseChainName =
-      ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP?.[networkName as CaipNetworkCoinbaseNetwork]
-
-    if (this.onrampInstance) {
-      this.onrampInstance.destroy()
-    }
-
-    initOnRamp(
-      {
-        appId: coinbaseAppID,
-        widgetParameters: {
-          destinationWallets: [
-            {
-              address,
-              blockchains: [coinbaseChainName],
-              assets: ['USDC']
-            }
-          ],
-          partnerUserId: address
-        },
-        experienceLoggedIn: 'popup',
-        experienceLoggedOut: 'popup',
-        closeOnExit: true,
-        closeOnSuccess: true
-      },
-      (_, instance) => {
-        this.onrampInstance = instance
+  private onCopyAddress() {
+    try {
+      if (this.address) {
+        CoreHelperUtil.copyToClopboard(this.address)
+        SnackController.showSuccess('Address copied')
       }
-    )
+    } catch {
+      SnackController.showError('Failed to copy')
+    }
   }
-
-  private onCopyAddress() {}
 
   private explorerBtnTemplate() {
     const { addressExplorerUrl } = AccountController.state

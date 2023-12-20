@@ -1,5 +1,10 @@
 import { DateUtil } from '@web3modal/common'
-import { CoinbaseApiController, type CoinbaseTransaction, RouterController } from '@web3modal/core'
+import {
+  CoinbaseApiController,
+  type CoinbaseTransaction,
+  RouterController,
+  AccountController
+} from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -46,8 +51,14 @@ export class W3mOnRampActivityView extends LitElement {
   }
 
   private async fetchCoinbaseTransactions() {
+    const address = AccountController.state.address
+
+    if (!address) {
+      throw new Error('No address found')
+    }
+
     const coinbaseResponse = await CoinbaseApiController.fetchTransactions({
-      accountAddress: '',
+      accountAddress: address,
       pageSize: 15,
       pageKey: ''
     })
