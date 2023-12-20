@@ -13,7 +13,7 @@ export const AppSwitchNetworkRequest = z.object({ chainId: z.number() })
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
 export const AppGetUserRequest = z.object({ chainId: z.optional(z.number()) })
-export const AppUpdateEmail = z.object({ email: z.string().email() })
+export const AppUpdateEmailRequest = z.object({ email: z.string().email() })
 export const FrameConnectEmailResponse = z.object({
   action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])
 })
@@ -24,6 +24,7 @@ export const FrameGetUserResponse = z.object({
 })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
+export const FrameAwaitUpdateEmailResponse = z.object({ email: z.string().email() })
 export const RpcResponse = z.string()
 export const RpcPersonalSignRequest = z.object({
   method: z.literal('personal_sign'),
@@ -87,7 +88,9 @@ export const W3mFrameSchema = {
       })
     )
 
-    .or(z.object({ type: zType('APP_UPDATE_EMAIL'), payload: AppUpdateEmail })),
+    .or(z.object({ type: zType('APP_UPDATE_EMAIL'), payload: AppUpdateEmailRequest }))
+
+    .or(z.object({ type: zType('APP_AWAIT_UPDATE_EMAIL') })),
 
   // -- Frame Events ---------------------------------------------------------
   frameEvent: z
@@ -134,4 +137,13 @@ export const W3mFrameSchema = {
     .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_ERROR'), payload: zError }))
 
     .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_SUCCESS') }))
+
+    .or(z.object({ type: zType('FRAME_AWAIT_UPDATE_EMAIL_ERROR'), payload: zError }))
+
+    .or(
+      z.object({
+        type: zType('FRAME_AWAIT_UPDATE_EMAIL_SUCCESS'),
+        payload: FrameAwaitUpdateEmailResponse
+      })
+    )
 }

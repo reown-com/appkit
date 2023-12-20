@@ -18,7 +18,8 @@ import {
   RpcGetBalance,
   FrameSession,
   AppGetUserRequest,
-  AppUpdateEmail
+  AppUpdateEmailRequest,
+  FrameAwaitUpdateEmailResponse
 } from './W3mFrameSchema.js'
 
 export namespace W3mFrameTypes {
@@ -31,7 +32,7 @@ export namespace W3mFrameTypes {
     AppConnectOtpRequest: z.infer<typeof AppConnectOtpRequest>
     AppSwitchNetworkRequest: z.infer<typeof AppSwitchNetworkRequest>
     AppGetUserRequest: z.infer<typeof AppGetUserRequest>
-    AppUpdateEmail: z.infer<typeof AppUpdateEmail>
+    AppUpdateEmailRequest: z.infer<typeof AppUpdateEmailRequest>
   }
 
   export interface Responses {
@@ -39,6 +40,7 @@ export namespace W3mFrameTypes {
     FrameGetChainIdResponse: z.infer<typeof FrameGetChainIdResponse>
     FrameGetUserResponse: z.infer<typeof FrameGetUserResponse>
     FrameIsConnectedResponse: z.infer<typeof FrameIsConnectedResponse>
+    FrameAwaitUpdateEmailResponse: z.infer<typeof FrameAwaitUpdateEmailResponse>
   }
 
   export interface Network {

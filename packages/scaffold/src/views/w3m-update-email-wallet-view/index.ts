@@ -85,9 +85,7 @@ export class W3mUpdateEmailWalletView extends LitElement {
       }
 
       await emailConnector.provider.updateEmail({ email: this.email })
-
-      // TODO: Check if action was to redirect (i.e. email-sent)
-      // Go to holding view
+      RouterController.replace('UpdateEmailWalletWaiting', { email: this.email })
     } catch (error) {
       SnackController.showError(error)
       this.loading = false

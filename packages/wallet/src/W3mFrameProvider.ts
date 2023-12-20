@@ -154,7 +154,7 @@ export class W3mFrameProvider {
     })
   }
 
-  public async updateEmail(payload: W3mFrameTypes.Requests['AppUpdateEmail']) {
+  public async updateEmail(payload: W3mFrameTypes.Requests['AppUpdateEmailRequest']) {
     await this.w3mFrame.frameLoadPromise
     W3mFrameHelpers.checkIfAllowedToTriggerEmail()
     this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_UPDATE_EMAIL, payload })
