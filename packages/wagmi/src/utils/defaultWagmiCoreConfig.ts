@@ -66,9 +66,7 @@ export function defaultWagmiConfig({
       createClient({
         chain,
         // TOD0: How to use WC transport? Do we need it for analytics?
-        transport: http(
-          `https://rpc.walletconnect.com/v1/?chainId=EIP155:${chain.id}&projectId=${projectId}`
-        )
+        transport: http()
       }),
     connectors,
     multiInjectedProviderDiscovery: enableEIP6963 !== false
