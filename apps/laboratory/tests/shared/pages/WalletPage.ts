@@ -6,12 +6,9 @@ import type { SessionParams } from '../types'
 export class WalletPage {
   private readonly baseURL = WALLET_URL
 
-  private readonly gotoSessions: Locator
-
   private readonly gotoHome: Locator
 
   constructor(public readonly page: Page) {
-    this.gotoSessions = this.page.getByTestId('sessions')
     this.gotoHome = this.page.getByTestId('wc-connect')
   }
 
@@ -28,15 +25,8 @@ export class WalletPage {
     const isMac = process.platform === 'darwin'
     const modifier = isMac ? 'Meta' : 'Control'
     await this.page.keyboard.press(`${modifier}+KeyV`)
-
+    await this.page.screenshot({ path: './screenshots/wallet.png' });
     await this.page.getByTestId('uri-connect-button').click()
-  }
-
-  async disconnect() {
-    await this.gotoSessions.click()
-    const sessionCard = this.page.getByTestId('session-card').first()
-    await sessionCard.getByTestId('session-icon').click()
-    await this.page.getByTestId('session-delete-button').click()
   }
 
   /**
