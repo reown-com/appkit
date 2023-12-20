@@ -6,7 +6,7 @@ import { createConfig } from '@wagmi/core'
 
 import { createClient, http } from 'viem'
 import { coinbaseWallet, walletConnect, injected } from '@wagmi/connectors'
-import { emailConnector } from '../connectors/EmailConnectorv2.js'
+import { emailConnector } from '../connectors/EmailConnector.js'
 
 export interface ConfigOptions {
   projectId: string
