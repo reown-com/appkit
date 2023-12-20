@@ -32,7 +32,8 @@ export function defaultWagmiConfig({
   enableInjected,
   enableCoinbase,
   enableEmail,
-  enableWalletConnect
+  enableWalletConnect,
+  enableEIP6963
 }: ConfigOptions): Config {
   const connectors: CreateConnectorFn[] = []
 
@@ -46,7 +47,12 @@ export function defaultWagmiConfig({
   }
 
   if (enableCoinbase !== false) {
-    connectors.push(coinbaseWallet({ appName: metadata?.name ?? 'Unknown' }))
+    connectors.push(
+      coinbaseWallet({
+        appName: metadata?.name ?? 'Unknown',
+        appLogoUrl: metadata?.icons[0] ?? 'Unknown'
+      })
+    )
   }
 
   // Dissabled by default
@@ -60,9 +66,11 @@ export function defaultWagmiConfig({
       createClient({
         chain,
         // TOD0: How to use WC transport? Do we need it for analytics?
-        transport: http()
+        transport: http(
+          `https://rpc.walletconnect.com/v1/?chainId=EIP155:${chain.id}&projectId=${projectId}`
+        )
       }),
     connectors,
-    multiInjectedProviderDiscovery: true
+    multiInjectedProviderDiscovery: enableEIP6963 !== false
   })
 }

@@ -10,6 +10,8 @@ import {
   custom
 } from 'viem'
 
+import { ConstantsUtil } from '@web3modal/scaffold-utils'
+
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
   projectId: string
@@ -41,8 +43,8 @@ export function emailConnector(parameters: EmailParameters) {
   }
 
   return createConnector<W3mFrameProvider, Properties>(config => ({
-    id: 'emailConnector',
-    name: 'emailConnector',
+    id: ConstantsUtil.EMAIL_CONNECTOR_ID,
+    name: 'Web3Modal Email',
     type: emailConnector.type,
     async connect(options: ConnectOptions = {}) {
       const provider = await this.getProvider()

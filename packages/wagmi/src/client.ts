@@ -156,7 +156,7 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       checkInstalled: ids => {
-        const eip6963Connectors = this.getConnectors().filter(c => c.type === 'ANNOUNCED')
+        const eip6963Connectors = this.getConnectors().filter(c => c.type === 'EXTERNAL')
         const injectedConnector = this.getConnectors().find(c => c.type === 'INJECTED')
 
         if (!ids) {
@@ -349,7 +349,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private syncConnectors(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
     const w3mConnectors: Connector[] = []
     wagmiConfig.connectors.forEach(({ id, name }) => {
-      if (![ConstantsUtil.EIP6963_CONNECTOR_ID, ConstantsUtil.EMAIL_CONNECTOR_ID].includes(id)) {
+      if (![ConstantsUtil.EMAIL_CONNECTOR_ID].includes(id)) {
         w3mConnectors.push({
           id,
           explorerId: PresetsUtil.ConnectorExplorerIds[id],

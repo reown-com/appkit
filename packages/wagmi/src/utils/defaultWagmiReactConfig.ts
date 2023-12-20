@@ -6,6 +6,7 @@ import { createConfig } from '@wagmi/core'
 
 import { createClient, http } from 'viem'
 import { coinbaseWallet, walletConnect, injected } from '@wagmi/connectors'
+import { emailConnector } from '../connectors/EmailConnectorv2.js'
 
 export interface ConfigOptions {
   projectId: string
@@ -30,7 +31,9 @@ export function defaultWagmiConfig({
   metadata,
   enableInjected,
   enableCoinbase,
-  enableWalletConnect
+  enableWalletConnect,
+  enableEmail,
+  enableEIP6963
 }: ConfigOptions): Config {
   const connectors: CreateConnectorFn[] = []
 
@@ -47,6 +50,11 @@ export function defaultWagmiConfig({
     connectors.push(coinbaseWallet({ appName: metadata?.name ?? 'Unknown' }))
   }
 
+  // Dissabled by default
+  if (enableEmail === true) {
+    connectors.push(emailConnector({ chains, options: { projectId } }))
+  }
+
   return createConfig({
     chains: chains as [Chain, ...Chain[]],
     client: ({ chain }) =>
@@ -55,6 +63,6 @@ export function defaultWagmiConfig({
         transport: http()
       }),
     connectors,
-    multiInjectedProviderDiscovery: true
+    multiInjectedProviderDiscovery: enableEIP6963 !== false
   })
 }
