@@ -287,9 +287,7 @@ export class W3mFrameProvider {
   private onConnectSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_USER_SUCCESS' }>
   ) {
-    W3mFrameStorage.set(W3mFrameConstants.EMAIL, event.payload.email)
-    W3mFrameStorage.set(W3mFrameConstants.EMAIL_LOGIN_USED_KEY, 'true')
-    W3mFrameStorage.delete(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME)
+    this.setEmailLoginSuccess(event.payload.email)
     this.connectResolver?.resolve(event.payload)
   }
 
@@ -380,6 +378,7 @@ export class W3mFrameProvider {
   private onAwaitUpdateEmailSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/AWAIT_UPDATE_EMAIL_SUCCESS' }>
   ) {
+    this.setEmailLoginSuccess(event.payload.email)
     this.awaitUpdateEmailResolver?.resolve(event.payload)
   }
 
@@ -392,5 +391,11 @@ export class W3mFrameProvider {
   // -- Private Methods -------------------------------------------------
   private setNewLastEmailLoginTime() {
     W3mFrameStorage.set(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME, Date.now().toString())
+  }
+
+  private setEmailLoginSuccess(email: string) {
+    W3mFrameStorage.set(W3mFrameConstants.EMAIL, email)
+    W3mFrameStorage.set(W3mFrameConstants.EMAIL_LOGIN_USED_KEY, 'true')
+    W3mFrameStorage.delete(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME)
   }
 }
