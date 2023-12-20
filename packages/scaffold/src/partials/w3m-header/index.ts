@@ -127,7 +127,7 @@ export class W3mHeader extends LitElement {
   }
 
   private separatorTemplate() {
-    if (!this.heading || RouterController.state.view === 'EmailVerifyDevice') {
+    if (!this.heading) {
       return null
     }
 

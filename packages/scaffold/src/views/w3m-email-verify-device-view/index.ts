@@ -34,37 +34,37 @@ export class W3mEmailVerifyDeviceView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        .padding=${['0', '2xl', 'xxl', '2xl'] as const}
+        .padding=${['xxl', 's', 'xxl', 's'] as const}
+        gap="l"
       >
-        <wui-flex justifyContent="center" .padding=${['0', '0', 'xxl', '0'] as const}>
-          <wui-icon-box
-            size="xl"
-            iconcolor="accent-100"
-            backgroundcolor="accent-100"
-            icon="verify"
-            background="opaque"
-          ></wui-icon-box>
-        </wui-flex>
-        <wui-text variant="large-600" color="fg-100">Register this device to continue</wui-text>
-        <wui-flex
-          flexDirection="column"
-          alignItems="center"
-          .padding=${['s', '0', '0', '0'] as const}
-        >
-          <wui-text variant="paragraph-400" color="fg-200">Check the instructions sent to</wui-text>
-          <wui-text variant="paragraph-600" color="fg-100">${this.email}</wui-text>
-        </wui-flex>
+        <wui-icon-box
+          size="xl"
+          iconcolor="accent-100"
+          backgroundcolor="accent-100"
+          icon="verify"
+          background="opaque"
+        ></wui-icon-box>
 
-        <wui-flex alignItems="center" id="w3m-resend-section">
-          ${this.loading
-            ? html`<wui-loading-spinner size="xl" color="accent-100"></wui-loading-spinner>`
-            : html` <wui-link @click=${this.onResendCode.bind(this)}>Resend email</wui-link>`}
-        </wui-flex>
+        <wui-flex flexDirection="column" alignItems="center" gap="s">
+          <wui-flex flexDirection="column" alignItems="center">
+            <wui-text variant="paragraph-400" color="fg-100">
+              Approve login the link we sent to
+            </wui-text>
+            <wui-text variant="paragraph-400" color="fg-100"><b>${this.email}</b></wui-text>
+          </wui-flex>
 
-        <wui-flex alignItems="center">
-          <wui-text variant="paragraph-400" color="fg-200" align="center">
-            This is a quick one-time approval that will keep your account secure
+          <wui-text variant="small-400" color="fg-200" align="center">
+            The code expires in 20 minutes
           </wui-text>
+
+          <wui-flex alignItems="center" id="w3m-resend-section">
+            <wui-text variant="small-400" color="fg-100" align="center">
+              Didn't receive it?
+            </wui-text>
+            <wui-link @click=${this.onResendCode.bind(this)} .disabled=${this.loading}>
+              Resend email
+            </wui-link>
+          </wui-flex>
         </wui-flex>
       </wui-flex>
     `
