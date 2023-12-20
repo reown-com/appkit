@@ -12,7 +12,7 @@ export default css`
 
   button > wui-text {
     color: var(--wui-color-fg-100);
-    max-width: 64px;
+    max-width: var(--wui-icon-box-size-xl);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

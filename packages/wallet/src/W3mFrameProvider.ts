@@ -360,7 +360,7 @@ export class W3mFrameProvider {
   ) {
     const { payload } = event
     if (payload) {
-      // Add When Implemented:  this.setSessionToken(payload.token)
+      // Ilja TODO: this.setSessionToken(payload.token)
     }
   }
 
