@@ -32,12 +32,12 @@ function headings() {
     GetWallet: 'Get a wallet',
     Downloads: name ? `Get ${name}` : 'Downloads',
     EmailVerifyOtp: 'Confirm Email',
-    EmailVerifyDevice: '',
+    EmailVerifyDevice: 'Register Device',
     ApproveTransaction: 'Approve Transaction',
     Transactions: 'Activity',
     UpgradeEmailWallet: 'Upgrade your Wallet',
     UpdateEmailWallet: 'Edit Email',
-    UpdateEmailWalletWaiting: undefined
+    UpdateEmailWalletWaiting: 'Approve Email'
   }
 }
 
