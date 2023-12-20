@@ -1,10 +1,5 @@
 import { DateUtil } from '@web3modal/common'
-import {
-  CoinbaseApiController,
-  type CoinbaseTransaction,
-  RouterController,
-  AccountController
-} from '@web3modal/core'
+import { CoinbaseApiController, type CoinbaseTransaction, AccountController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
