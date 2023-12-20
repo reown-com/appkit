@@ -26,7 +26,7 @@ export type EmailParameters = {
   options: W3mFrameProviderOptions
 }
 
-emailConnector.type = 'email' as const
+emailConnector.type = 'w3mEmail' as const
 export function emailConnector(parameters: EmailParameters) {
   type Properties = {
     connect(opts: ConnectOptions): Promise<{
