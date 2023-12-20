@@ -236,12 +236,15 @@ export class W3mConnectView extends LitElement {
     const { customWallets, featuredWalletIds } = OptionsController.state
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
+    const injected = connectors.filter(c => c.type === 'INJECTED')
     const eip6963 = connectors.filter(c => c.type === 'ANNOUNCED')
     if (featuredWalletIds || customWallets || !recommended.length) {
       return null
     }
 
-    const overrideLength = eip6963.length + recent.length
+    // EIP6963 wallets are no longer serialized as ANNOUNCED in wagmiv2.
+    const eip6963Amount = eip6963.length || Math.max(0, injected.length - 1)
+    const overrideLength = eip6963Amount + recent.length
     const maxRecommended = Math.max(0, 2 - overrideLength)
     const wallets = this.filterOutDuplicateWallets(recommended).slice(0, maxRecommended)
 

@@ -156,18 +156,10 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       checkInstalled: ids => {
-        const eip6963Connectors = this.getConnectors().filter(c => c.type === 'EXTERNAL')
         const injectedConnector = this.getConnectors().find(c => c.type === 'INJECTED')
 
         if (!ids) {
           return Boolean(window.ethereum)
-        }
-
-        if (eip6963Connectors.length) {
-          const installed = ids.some(id => eip6963Connectors.some(c => c.info?.rdns === id))
-          if (installed) {
-            return true
-          }
         }
 
         if (injectedConnector) {
