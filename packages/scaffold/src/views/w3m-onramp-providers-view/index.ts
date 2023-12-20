@@ -134,8 +134,8 @@ export class W3mOnRampProvidersView extends LitElement {
       console.log('New transaction detected:', newTransactions)
       // todo: redirect to onramp activity page
       RouterController.push('OnRampActivity')
-    } else if (this.startTime && Date.now() - this.startTime >= 10000) {
-      RouterController.push('OnRampActivity')
+    } else if (this.startTime && Date.now() - this.startTime >= 30_000) {
+      RouterController.goBack()
       console.log('Clearing interval:', newTransactions)
       clearInterval(this.intervalId!)
     }
@@ -151,10 +151,6 @@ export class W3mOnRampProvidersView extends LitElement {
     } catch (error) {
       console.error(error)
     }
-  }
-
-  private onTransactionDetect() {
-    RouterController.push('Networks')
   }
 }
 

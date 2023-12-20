@@ -295,7 +295,7 @@ export class W3mAccountView extends LitElement {
   }
 
   private handleClickPay() {
-    RouterController.push('OnRampActivity')
+    RouterController.push('OnRampProviders')
   }
 
   private initializeOnRamp() {
