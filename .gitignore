@@ -9,3 +9,4 @@ lerna-debug.log
 .env
 .turbo
 playwright-report/
+screenshots/

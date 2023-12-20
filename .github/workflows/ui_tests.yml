@@ -23,7 +23,7 @@ jobs:
   ui_tests:
     name: 'Playwright Tests'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -50,4 +50,10 @@ jobs:
         with:
           name: playwright-report
           path: ./apps/laboratory/playwright-report/
+          retention-days: 7
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: screenshots
+          path: ./apps/laboratory/screenshots/
           retention-days: 7
