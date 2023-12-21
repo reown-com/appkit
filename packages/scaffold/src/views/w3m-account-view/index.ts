@@ -9,7 +9,8 @@ import {
   ConnectorController,
   EventsController,
   ConnectionController,
-  SnackController
+  SnackController,
+  ConstantsUtil
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
