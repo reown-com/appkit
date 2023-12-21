@@ -126,7 +126,6 @@ export class W3mOnRampProvidersView extends LitElement {
       pageKey: ''
     })
 
-    console.log('LOG: initializing...')
     this.coinbaseTransactions = coinbaseResponse.transactions
     this.coinbaseTransactionsInitialized = true
     this.intervalId = setInterval(() => this.watchCoinbaseTransactions(), 10000)
@@ -153,13 +152,10 @@ export class W3mOnRampProvidersView extends LitElement {
 
     if (newTransactions.length > 0) {
       clearInterval(this.intervalId!)
-      console.log('New transaction detected:', newTransactions)
-      // todo: redirect to onramp activity page
-      RouterController.goBack()
-    } else if (this.startTime && Date.now() - this.startTime >= 10_000) {
       RouterController.replace('OnRampActivity')
+    } else if (this.startTime && Date.now() - this.startTime >= 30_000) {
+      RouterController.goBack()
       this.selectedProvider = null
-      console.log('Clearing interval:', newTransactions)
       clearInterval(this.intervalId!)
     }
   }
