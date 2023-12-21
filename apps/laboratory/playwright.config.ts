@@ -2,9 +2,10 @@ import { defineConfig, devices } from '@playwright/test'
 import { LOCAL_LABS_URL } from './tests/shared/constants'
 
 import { config } from 'dotenv'
+import type { ModalFixture } from './tests/shared/fixtures/w3m-fixture'
 config({ path: './.env.local' })
 
-export default defineConfig({
+export default defineConfig<ModalFixture>({
   testDir: './tests',
 
   fullyParallel: true,
@@ -30,13 +31,23 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
+      name: 'chromium/wagmi',
+      use: { ...devices['Desktop Chrome'], variant: 'wagmi' }
     },
 
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] }
+      name: 'firefox/wagmi',
+      use: { ...devices['Desktop Firefox'], variant: 'wagmi' }
+    },
+
+    {
+      name: 'chromium/ethers',
+      use: { ...devices['Desktop Chrome'], variant: 'ethers' }
+    },
+
+    {
+      name: 'firefox/ethers',
+      use: { ...devices['Desktop Firefox'], variant: 'ethers' }
     }
   ],
 

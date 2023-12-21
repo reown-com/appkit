@@ -1,21 +1,24 @@
 import type { Locator, Page } from '@playwright/test'
-import { LOCAL_LABS_URL } from '../constants'
+import { BASE_URL } from '../constants'
 
 export class ModalPage {
-  private readonly baseURL = LOCAL_LABS_URL
+  private readonly baseURL = BASE_URL
 
   private readonly connectButton: Locator
 
-  constructor(public readonly page: Page) {
+  constructor(
+    public readonly page: Page,
+    public readonly variant: string
+  ) {
     this.connectButton = this.page.getByText('Connect Wallet')
   }
 
   async load() {
-    await this.page.goto(this.baseURL)
+    await this.page.goto(`${this.baseURL}${this.variant}/`)
   }
 
   async copyConnectUriToClipboard() {
-    await this.page.goto(this.baseURL)
+    await this.page.goto(`${this.baseURL}${this.variant}/`)
     await this.connectButton.click()
     await this.page.getByText('WalletConnect').click()
     await this.page.waitForTimeout(2000)
