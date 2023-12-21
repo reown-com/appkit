@@ -30,7 +30,7 @@ export class WuiOnRampProviderItem extends LitElement {
   public override render() {
     return html`
       <button ?disabled=${this.onClick} ontouchstart>
-        <wui-image class="provider-image" src=${this.imageURL}></wui-image>
+        <wui-visual name="coinbase" class="provider-image"></wui-visual>
         <wui-flex flexDirection="column" gap="4xs">
           <wui-text variant="paragraph-500" color="fg-100">${this.label}</wui-text>
           <wui-text variant="tiny-500" color="fg-100">

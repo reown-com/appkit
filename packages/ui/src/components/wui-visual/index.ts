@@ -18,6 +18,7 @@ import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { VisualType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
+import { coinbaseSvg } from '../../assets/svg/coinbase.js'
 
 // -- Svg's-------------------------------- //
 const svgOptions: Record<VisualType, TemplateResult<2>> = {
@@ -33,7 +34,8 @@ const svgOptions: Record<VisualType, TemplateResult<2>> = {
   nft: nftSvg,
   noun: nounSvg,
   profile: profileSvg,
-  system: systemSvg
+  system: systemSvg,
+  coinbase: coinbaseSvg
 }
 
 @customElement('wui-visual')
