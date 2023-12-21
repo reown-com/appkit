@@ -340,8 +340,13 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private syncConnectors(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
     const w3mConnectors: Connector[] = []
+
+    const coinbaseConnector = wagmiConfig.connectors.find(c => c.id === 'com.coinbase.wallet')
+
     wagmiConfig.connectors.forEach(({ id, name, type, icon }) => {
-      if (![ConstantsUtil.EMAIL_CONNECTOR_ID].includes(id)) {
+      const shouldSkip =
+        (coinbaseConnector && id === 'coinbaseWalletSDK') || ConstantsUtil.EMAIL_CONNECTOR_ID === id
+      if (!shouldSkip) {
         w3mConnectors.push({
           id,
           explorerId: PresetsUtil.ConnectorExplorerIds[id],

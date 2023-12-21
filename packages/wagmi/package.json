@@ -43,12 +43,12 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/polyfills": "3.6.0-alpha.0",
-    "@web3modal/scaffold": "3.6.0-alpha.0",
-    "@web3modal/scaffold-react": "3.6.0-alpha.0",
-    "@web3modal/scaffold-utils": "3.6.0-alpha.0",
-    "@web3modal/scaffold-vue": "3.6.0-alpha.0",
-    "@web3modal/wallet": "3.6.0-alpha.0",
+    "@web3modal/polyfills": "3.6.0-8b4be6c6",
+    "@web3modal/scaffold": "3.6.0-8b4be6c6",
+    "@web3modal/scaffold-react": "3.6.0-8b4be6c6",
+    "@web3modal/scaffold-utils": "3.6.0-8b4be6c6",
+    "@web3modal/scaffold-vue": "3.6.0-8b4be6c6",
+    "@web3modal/wallet": "3.6.0-8b4be6c6",
     "@tanstack/react-query": "5.14.1",
     "@wagmi/connectors": "4.0.0-beta.9",
     "@wagmi/core": "2.0.0-beta.9",
