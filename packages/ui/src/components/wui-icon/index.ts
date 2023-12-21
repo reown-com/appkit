@@ -66,24 +66,29 @@ import { walletConnectSvg } from '../../assets/svg/walletconnect.js'
 import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
 import { recycleHorizontalSvg } from '../../assets/svg/recycle-horizontal.js'
 import { wallet2Svg } from '../../assets/svg/wallet2.js'
+import { bankSvg } from '../../assets/svg/bank.js'
+import { cardSvg } from '../../assets/svg/card.js'
+import { plusSvg } from '../../assets/svg/plus.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   add: addSvg,
   allWallets: allWalletsSvg,
   arrowBottomCircle: arrowBottomCircleSvg,
   appStore: appStoreSvg,
-  chromeStore: chromeStoreSvg,
   apple: appleSvg,
   arrowBottom: arrowBottomSvg,
   arrowLeft: arrowLeftSvg,
   arrowRight: arrowRightSvg,
   arrowTop: arrowTopSvg,
+  bank: bankSvg,
   browser: browserSvg,
+  card: cardSvg,
   checkmark: checkmarkSvg,
   chevronBottom: chevronBottomSvg,
   chevronLeft: chevronLeftSvg,
   chevronRight: chevronRightSvg,
   chevronTop: chevronTopSvg,
+  chromeStore: chromeStoreSvg,
   clock: clockSvg,
   close: closeSvg,
   compass: compassSvg,
@@ -108,6 +113,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   nftPlaceholder: nftPlaceholderSvg,
   off: offSvg,
   playStore: playStoreSvg,
+  plus: plusSvg,
   qrCode: qrCodeIcon,
   recycleHorizontal: recycleHorizontalSvg,
   refresh: refreshSvg,

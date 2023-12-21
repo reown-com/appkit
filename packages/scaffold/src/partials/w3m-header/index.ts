@@ -44,7 +44,8 @@ function headings() {
     UpdateEmailWalletWaiting: 'Approve Email',
     UpgradeWallet: 'Upgrade Wallet',
     OnRampProviders: 'Choose Provider',
-    OnRampActivity: 'Activity'
+    OnRampActivity: 'Activity',
+    WhatIsABuy: 'What is Buy?'
   }
 }
 

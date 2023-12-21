@@ -17,8 +17,9 @@ import { systemSvg } from '../../assets/visual/system.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { VisualType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
+import { coinbaseSvg } from '../../assets/visual/coinbase.js'
+import { onrampCardSvg } from '../../assets/visual/onramp-card.js'
 import styles from './styles.js'
-import { coinbaseSvg } from '../../assets/svg/coinbase.js'
 
 // -- Svg's-------------------------------- //
 const svgOptions: Record<VisualType, TemplateResult<2>> = {
@@ -35,7 +36,8 @@ const svgOptions: Record<VisualType, TemplateResult<2>> = {
   noun: nounSvg,
   profile: profileSvg,
   system: systemSvg,
-  coinbase: coinbaseSvg
+  coinbase: coinbaseSvg,
+  onrampCard: onrampCardSvg
 }
 
 @customElement('wui-visual')

@@ -28,6 +28,7 @@ export interface RouterControllerState {
     | 'UpgradeWallet'
     | 'OnRampProviders'
     | 'OnRampActivity'
+    | 'WhatIsABuy'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

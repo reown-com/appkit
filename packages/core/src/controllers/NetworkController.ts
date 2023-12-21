@@ -64,6 +64,37 @@ export const NetworkController = {
     state.requestedCaipNetworks = requestedNetworks
   },
 
+  getRequestedCaipNetworks() {
+    const { approvedCaipNetworkIds, requestedCaipNetworks } = state
+
+    const approvedIds = approvedCaipNetworkIds
+    const requestedNetworks = requestedCaipNetworks
+    const approvedIndexMap: Record<string, number> = {}
+
+    if (requestedNetworks && approvedIds) {
+      approvedIds.forEach((id, index) => {
+        approvedIndexMap[id] = index
+      })
+
+      requestedNetworks.sort((a, b) => {
+        const indexA = approvedIndexMap[a.id]
+        const indexB = approvedIndexMap[b.id]
+
+        if (indexA !== undefined && indexB !== undefined) {
+          return indexA - indexB
+        } else if (indexA !== undefined) {
+          return -1
+        } else if (indexB !== undefined) {
+          return 1
+        }
+
+        return 0
+      })
+    }
+
+    return requestedNetworks
+  },
+
   async getApprovedCaipNetworksData() {
     const data = await this._getClient().getApprovedCaipNetworksData()
     state.supportsAllNetworks = data.supportsAllNetworks

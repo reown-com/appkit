@@ -1,4 +1,4 @@
-import { OptionsController } from '@web3modal/core'
+import { OptionsController, RouterController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
@@ -19,30 +19,30 @@ export class W3mOnRampProvidersFooter extends LitElement {
       <wui-flex
         .padding=${['m', 's', 's', 's'] as const}
         flexDirection="column"
-        gap="s"
+        alignItems="center"
         justifyContent="center"
+        gap="s"
       >
         <wui-text color="fg-250" variant="small-400" align="center">
           We work with the best providers to fit your buyer needs, region, and to get you the lowest
           fees
         </wui-text>
+
         ${this.whatIsBuyTemplate()}
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
-
   private whatIsBuyTemplate() {
-    const { termsConditionsUrl } = OptionsController.state
-    if (!termsConditionsUrl) {
-      return null
-    }
+    return html` <wui-link @click=${this.onWhatIsBuy.bind(this)}>
+      <wui-icon size="xs" color="accent-100" slot="iconLeft" name="helpCircle"></wui-icon>
+      What is Buy
+    </wui-link>`
+  }
 
-    return html`<a href=${termsConditionsUrl}>
-      <wui-icon name="helpCircle" color="accent-100"></wui-icon>
-      <wui-text variant="small-600" color="accent-100">What is Buy</wui-text></a
-    >`
+  private onWhatIsBuy() {
+    RouterController.push('WhatIsABuy')
   }
 }
 
