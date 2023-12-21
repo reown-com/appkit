@@ -53,6 +53,7 @@ export class W3mButton extends LitElement {
             size=${ifDefined(this.size)}
             label=${ifDefined(this.label)}
             loadingLabel=${ifDefined(this.loadingLabel)}
+            data-testid="connect-button"
           ></w3m-connect-button>
         `
   }
