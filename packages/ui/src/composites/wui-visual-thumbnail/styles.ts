@@ -5,8 +5,8 @@ export default css`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 64px;
-    height: 64px;
+    width: var(--wui-icon-box-size-xl);
+    height: var(--wui-icon-box-size-xl);
     box-shadow: 0 0 0 8px var(--wui-thumbnail-border);
     border-radius: var(--local-border-radius);
     overflow: hidden;

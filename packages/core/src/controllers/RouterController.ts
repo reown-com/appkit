@@ -21,7 +21,9 @@ export interface RouterControllerState {
     | 'EmailVerifyDevice'
     | 'ApproveTransaction'
     | 'Transactions'
-    | 'UpgradeWallet'
+    | 'UpgradeEmailWallet'
+    | 'UpdateEmailWallet'
+    | 'UpdateEmailWalletWaiting'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
