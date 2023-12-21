@@ -116,54 +116,6 @@ export class W3mAccountView extends LitElement {
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
-        ${this.emailCardTemplate()} ${this.emailBtnTemplate()}
-
-        <wui-list-item
-          .variant=${networkImage ? 'image' : 'icon'}
-          iconVariant="overlay"
-          icon="networkPlaceholder"
-          imageSrc=${ifDefined(networkImage)}
-          @click=${this.onNetworks.bind(this)}
-          data-testid="w3m-account-select-network"
-        >
-          <wui-text variant="paragraph-500" color="fg-100">
-            ${this.network?.name ?? 'Unknown'}
-          </wui-text>
-        </wui-list-item>
-        <wui-list-item
-          iconVariant="blue"
-          icon="add"
-          iconSize="lg"
-          .loading=${!this.onrampInstance}
-          ?chevron=${true}
-          @click=${this.handleClickPay.bind(this)}
-        >
-          <wui-text variant="paragraph-500" color="fg-100">Buy crypto</wui-text>
-        </wui-list-item>
-        <wui-list-item
-          iconVariant="blue"
-          icon="swapHorizontalBold"
-          iconSize="sm"
-          ?chevron=${true}
-          @click=${this.onTransactions.bind(this)}
-        >
-          <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
-        </wui-list-item>
-        <wui-list-item
-          variant="icon"
-          iconVariant="overlay"
-          icon="disconnect"
-          ?chevron=${false}
-          .loading=${this.disconnecting}
-          @click=${this.onDisconnect.bind(this)}
-          data-testid="disconnect-button"
-        >
-          <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
-        </wui-list-item>
-      </wui-flex>
-      ${this.emailCardTemplate()}
-
-      <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
         ${this.emailCardTemplate()}
 
         <wui-list-item
