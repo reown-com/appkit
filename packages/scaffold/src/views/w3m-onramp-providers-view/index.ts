@@ -3,11 +3,13 @@ import {
   CoreHelperUtil,
   type CoinbaseTransaction,
   RouterController,
-  AccountController
+  AccountController,
+  ConstantsUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
+import { generateOnRampURL } from '@coinbase/cbpay-js'
 
 type Provider = 'coinbase' | 'moonpay' | 'stripe' | 'paypal'
 type ProviderOption = {
@@ -106,8 +108,8 @@ export class W3mOnRampProvidersView extends LitElement {
       throw new Error('No address found')
     }
 
-    return CoinbaseApiController.generateOnRampURL({
-      appId: process.env['NEXT_PUBLIC_COINBASE_APP_ID'] ?? '',
+    return generateOnRampURL({
+      appId: ConstantsUtil.WC_COINBASE_ONRAMP_APP_ID,
       destinationWallets: [{ address, blockchains: ['ethereum'], assets: ['USDC'] }],
       partnerUserId: address
     })
