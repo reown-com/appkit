@@ -23,16 +23,6 @@ export class W3mWhatIsABuyView extends LitElement {
             funds in your wallet to trade</wui-text
           >
         </wui-flex>
-        <wui-button
-          variant="fill"
-          size="sm"
-          @click=${() => {
-            CoreHelperUtil.openHref('https://ethereum.org/en/developers/docs/networks/', '_blank')
-          }}
-        >
-          <wui-icon color="inherit" slot="iconLeft" name="plus"></wui-icon>
-          Buy
-        </wui-button>
       </wui-flex>
     `
   }
