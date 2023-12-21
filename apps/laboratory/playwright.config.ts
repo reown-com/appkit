@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test'
-import { LOCAL_LABS_URL } from './tests/shared/constants'
+import { BASE_URL } from './tests/shared/constants'
 
 import { config } from 'dotenv'
 import type { ModalFixture } from './tests/shared/fixtures/w3m-fixture'
@@ -20,7 +20,7 @@ export default defineConfig<ModalFixture>({
 
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: LOCAL_LABS_URL,
+    baseURL: BASE_URL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -32,29 +32,29 @@ export default defineConfig<ModalFixture>({
   projects: [
     {
       name: 'chromium/wagmi',
-      use: { ...devices['Desktop Chrome'], variant: 'wagmi' }
+      use: { ...devices['Desktop Chrome'], library: 'wagmi' }
     },
 
     {
       name: 'firefox/wagmi',
-      use: { ...devices['Desktop Firefox'], variant: 'wagmi' }
+      use: { ...devices['Desktop Firefox'], library: 'wagmi' }
     },
 
     {
       name: 'chromium/ethers',
-      use: { ...devices['Desktop Chrome'], variant: 'ethers' }
+      use: { ...devices['Desktop Chrome'], library: 'ethers' }
     },
 
     {
       name: 'firefox/ethers',
-      use: { ...devices['Desktop Firefox'], variant: 'ethers' }
+      use: { ...devices['Desktop Firefox'], library: 'ethers' }
     }
   ],
 
   /* Run your local dev server before starting the tests */
   webServer: {
     command: 'npm run playwright:start',
-    url: LOCAL_LABS_URL,
+    url: BASE_URL,
     reuseExistingServer: !process.env['CI']
   }
 })

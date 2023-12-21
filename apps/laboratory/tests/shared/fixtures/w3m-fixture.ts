@@ -6,14 +6,14 @@ import { ModalValidator } from '../validators/ModalValidator'
 export interface ModalFixture {
   modalPage: ModalPage
   modalValidator: ModalValidator
-  variant: string
+  library: string
 }
 
 // M -> test Modal
 export const testM = base.extend<ModalFixture>({
-  variant: ['wagmi', { option: true }],
-  modalPage: async ({ page, variant }, use) => {
-    const modalPage = new ModalPage(page, variant)
+  library: ['wagmi', { option: true }],
+  modalPage: async ({ page, library }, use) => {
+    const modalPage = new ModalPage(page, library)
     await modalPage.load()
     await use(modalPage)
   },
