@@ -185,11 +185,9 @@ export class W3mBuyInProgressView extends LitElement {
     })
 
     if (newTransactions.length > 0) {
-      // When found a new TX
       clearInterval(this.intervalId!)
       RouterController.replace('OnRampActivity')
     } else if (this.startTime && Date.now() - this.startTime >= 40_000) {
-      // When cannot found a new TX in 40secs
       this.error = true
       clearInterval(this.intervalId!)
     }

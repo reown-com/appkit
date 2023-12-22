@@ -12,4 +12,8 @@ export default css`
     align-items: center;
     justify-content: flex-start;
   }
+
+  wui-transaction-list-item-loader {
+    width: 100%;
+  }
 `
