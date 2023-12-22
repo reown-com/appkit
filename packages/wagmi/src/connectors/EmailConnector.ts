@@ -40,6 +40,7 @@ export function emailConnector(parameters: EmailParameters) {
     getWalletClient(): Promise<WalletClient>
     isAuthorized(): Promise<boolean>
     chains: readonly [Chain, ...Chain[]]
+    provider?: W3mFrameProvider
   }
 
   return createConnector<W3mFrameProvider, Properties>(config => ({
@@ -70,9 +71,12 @@ export function emailConnector(parameters: EmailParameters) {
 
       return [address as Address]
     },
-
     async getProvider() {
-      return Promise.resolve(new W3mFrameProvider(parameters.options.projectId))
+      if (!this.provider) {
+        this.provider = new W3mFrameProvider(parameters.options.projectId)
+      }
+
+      return Promise.resolve(this.provider)
     },
     async getChainId() {
       const provider: W3mFrameProvider = await this.getProvider()
