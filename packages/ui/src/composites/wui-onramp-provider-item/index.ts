@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import { AssetUtil, NetworkController } from '@web3modal/core'
+import { AssetUtil, NetworkController, type OnRampProvider } from '@web3modal/core'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
@@ -18,9 +18,9 @@ export class WuiOnRampProviderItem extends LitElement {
 
   @property() color: ColorType = 'inherit'
 
-  @property() public label: string = ''
+  @property() public name?: OnRampProvider['name']
 
-  @property() public imageURL: string = ''
+  @property() public label: string = ''
 
   @property() public feeRange = ''
 
@@ -32,7 +32,7 @@ export class WuiOnRampProviderItem extends LitElement {
   public override render() {
     return html`
       <button ?disabled=${this.onClick} ontouchstart>
-        <wui-visual name="coinbase" class="provider-image"></wui-visual>
+        <wui-visual name=${this.name} class="provider-image"></wui-visual>
         <wui-flex flexDirection="column">
           <wui-text variant="paragraph-500" color="fg-100">${this.label}</wui-text>
           <wui-flex alignItems="center" justifyContent="flex-start" gap="l">

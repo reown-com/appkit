@@ -1,62 +1,37 @@
 import {
-  CoinbaseApiController,
   CoreHelperUtil,
-  type CoinbaseTransaction,
-  RouterController,
   AccountController,
-  ConstantsUtil
+  ConstantsUtil,
+  OnRampController,
+  type OnRampProvider,
+  RouterController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { generateOnRampURL } from '@coinbase/cbpay-js'
 
-type Provider = 'coinbase' | 'moonpay' | 'stripe' | 'paypal'
-type ProviderOption = {
-  label: string
-  name: Provider
-  feeRange: string
-  url: string
-  imageURL: string
-}
-
-const onRampProviders: Array<ProviderOption> = [
-  {
-    label: 'Coinbase',
-    name: 'coinbase',
-    feeRange: '1-2%',
-    url: '',
-    imageURL: 'https://2wula1angr9l0q9u.public.blob.vercel-storage.com/coinbase.png'
-  }
-]
-
 @customElement('w3m-onramp-providers-view')
 export class W3mOnRampProvidersView extends LitElement {
-  @state() private providers = onRampProviders
+  private unsubscribe: (() => void)[] = []
 
-  @state() private selectedProvider: Provider | null = null
-
-  @state() private coinbaseTransactions: CoinbaseTransaction[] = []
-  @state() private coinbaseTransactionsInitialized: boolean = false
-
-  @state() private intervalId: NodeJS.Timeout | null = null
-  @state() private startTime: number | null = null
+  @state() private providers: OnRampProvider[] = OnRampController.state.providers.map(provider => {
+    if (provider.name === 'coinbase') {
+      provider.url = this.getCoinbaseOnRampURL()
+      return provider
+    }
+    return provider
+  })
 
   public constructor() {
     super()
-    this.providers = this.providers.map(provider => {
-      if (provider.name === 'coinbase') {
-        provider.url = this.getCoinbaseOnRampURL()
-        return provider
-      }
-      return provider
-    })
-  }
-
-  public override disconnectedCallback() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId)
-    }
+    this.unsubscribe.push(
+      ...[
+        OnRampController.subscribeKey('providers', val => {
+          this.providers = val
+        })
+      ]
+    )
   }
 
   // -- Render -------------------------------------------- //
@@ -71,13 +46,12 @@ export class W3mOnRampProvidersView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onRampProvidersTemplate() {
-    return onRampProviders.map(
+    return this.providers.map(
       provider => html`
         <wui-onramp-provider-item
           label=${provider.label}
-          imageURL=${provider.imageURL}
+          name=${provider.name}
           feeRange=${provider.feeRange}
-          .loading=${this.selectedProvider === provider.name}
           @click=${() => {
             this.onClickProvider(provider)
           }}
@@ -86,19 +60,10 @@ export class W3mOnRampProvidersView extends LitElement {
     )
   }
 
-  private onClickProvider(provider: ProviderOption) {
-    this.selectedProvider = provider.name
-    CoreHelperUtil.openHref(provider.url, '_blank')
-
-    switch (provider.name) {
-      case 'coinbase':
-        this.startTime = Date.now()
-        this.initializeCoinbaseTransactions()
-        break
-
-      default:
-        break
-    }
+  private onClickProvider(provider: OnRampProvider) {
+    OnRampController.setSelectedProvider(provider)
+    RouterController.push('BuyInProgress')
+    CoreHelperUtil.openHref(provider.url, 'popupWindow', 'width=600,height=800,scrollbars=yes')
   }
 
   private getCoinbaseOnRampURL() {
@@ -113,65 +78,6 @@ export class W3mOnRampProvidersView extends LitElement {
       destinationWallets: [{ address, blockchains: ['ethereum'], assets: ['USDC'] }],
       partnerUserId: address
     })
-  }
-
-  private async initializeCoinbaseTransactions() {
-    const address = AccountController.state.address
-
-    if (!address) {
-      throw new Error('No address found')
-    }
-
-    const coinbaseResponse = await CoinbaseApiController.fetchTransactions({
-      accountAddress: address,
-      pageSize: 2,
-      pageKey: ''
-    })
-
-    this.coinbaseTransactions = coinbaseResponse.transactions
-    this.coinbaseTransactionsInitialized = true
-    this.intervalId = setInterval(() => this.watchCoinbaseTransactions(), 10000)
-  }
-
-  private async fetchTransactions() {
-    const address = AccountController.state.address
-
-    if (!address) {
-      throw new Error('No address found')
-    }
-
-    const coinbaseResponse = await CoinbaseApiController.fetchTransactions({
-      accountAddress: address,
-      pageSize: 2,
-      pageKey: ''
-    })
-
-    const newTransactions = coinbaseResponse.transactions.filter(transaction => {
-      return !this.coinbaseTransactions.some(
-        existingTransaction => existingTransaction.created_at === transaction.created_at
-      )
-    })
-
-    if (newTransactions.length > 0) {
-      clearInterval(this.intervalId!)
-      RouterController.replace('OnRampActivity')
-    } else if (this.startTime && Date.now() - this.startTime >= 30_000) {
-      RouterController.goBack()
-      this.selectedProvider = null
-      clearInterval(this.intervalId!)
-    }
-  }
-
-  private async watchCoinbaseTransactions() {
-    try {
-      if (!this.coinbaseTransactionsInitialized) {
-        console.log('LOG: not initialized yet...')
-        return
-      }
-      await this.fetchTransactions()
-    } catch (error) {
-      console.error(error)
-    }
   }
 }
 

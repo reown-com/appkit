@@ -110,8 +110,8 @@ export const CoreHelperUtil = {
     }
   },
 
-  openHref(href: string, target: '_blank' | '_self') {
-    window.open(href, target, 'noreferrer noopener')
+  openHref(href: string, target: '_blank' | '_self' | 'popupWindow', features?: string) {
+    window.open(href, target, features || 'noreferrer noopener')
   },
 
   async preloadImage(src: string) {

@@ -101,6 +101,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-onramp-activity-view></w3m-onramp-activity-view>`
       case 'WhatIsABuy':
         return html`<w3m-what-is-a-buy-view></w3m-what-is-a-buy-view>`
+      case 'BuyInProgress':
+        return html`<w3m-buy-in-progress-view></w3m-buy-in-progress-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

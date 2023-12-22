@@ -129,6 +129,11 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-wallet-image-size-md: 56px;
         --wui-wallet-image-size-lg: 80px;
 
+        --wui-visual-size-size-inherit: inherit;
+        --wui-visual-size-sm: 40px;
+        --wui-visual-size-md: 55px;
+        --wui-visual-size-lg: 80px;
+
         --wui-box-size-md: 100px;
         --wui-box-size-lg: 120px;
 

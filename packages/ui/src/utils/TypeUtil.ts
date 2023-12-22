@@ -169,6 +169,8 @@ export type VisualType =
   | 'profile'
   | 'system'
 
+export type VisualSize = 'sm' | 'md' | 'lg'
+
 export type LogoType =
   | 'apple'
   | 'discord'

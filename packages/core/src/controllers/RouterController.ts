@@ -29,6 +29,7 @@ export interface RouterControllerState {
     | 'OnRampProviders'
     | 'OnRampActivity'
     | 'WhatIsABuy'
+    | 'BuyInProgress'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

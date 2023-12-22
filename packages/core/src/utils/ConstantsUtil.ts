@@ -1,5 +1,14 @@
 const SECURE_SITE = 'https://secure.web3modal.com'
 
+export const ONRAMP_PROVIDERS = [
+  {
+    label: 'Coinbase',
+    name: 'coinbase',
+    feeRange: '1-2%',
+    url: ''
+  }
+]
+
 export const ConstantsUtil = {
   FOUR_MINUTES_MS: 240_000,
 

@@ -15,7 +15,7 @@ import { nounSvg } from '../../assets/visual/noun.js'
 import { profileSvg } from '../../assets/visual/profile.js'
 import { systemSvg } from '../../assets/visual/system.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { VisualType } from '../../utils/TypeUtil.js'
+import type { VisualSize, VisualType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import { coinbaseSvg } from '../../assets/visual/coinbase.js'
 import { onrampCardSvg } from '../../assets/visual/onramp-card.js'
@@ -47,8 +47,14 @@ export class WuiVisual extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public name: VisualType = 'browser'
 
+  @property() public size: VisualSize = 'md'
+
   // -- Render -------------------------------------------- //
   public override render() {
+    this.style.cssText = `
+       --local-size: var(--wui-visual-size-${this.size});
+   `
+
     return html`${svgOptions[this.name]}`
   }
 }
