@@ -29,7 +29,7 @@ import type { WuiTransactionListItem } from '../composites/wui-transaction-list-
 import type { WuiTransactionListItemLoader } from '../composites/wui-transaction-list-item-loader/index.js'
 import type { WuiListAccordion } from '../composites/wui-list-accordion/index.js'
 import type { WuiListContent } from '../composites/wui-list-content/index.js'
-
+import type { WuiListWallet } from '../composites/wui-list-wallet/index.js'
 import type { WuiListWalletTransaction } from '../composites/wui-list-wallet-transaction/index.js'
 import type { WuiLogoSelect } from '../composites/wui-logo-select/index.js'
 import type { WuiLogo } from '../composites/wui-logo/index.js'
@@ -85,6 +85,7 @@ declare global {
       'wui-list-accordion': CustomElement<WuiListAccordion>
       'wui-list-content': CustomElement<WuiListContent>
       'wui-list-item': CustomElement<WuiListItem>
+      'wui-list-wallet': CustomElement<WuiListWallet>
       'wui-list-wallet-transaction': CustomElement<WuiListWalletTransaction>
       'wui-transaction-list-item': CustomElement<WuiTransactionListItem>
       'wui-transaction-list-item-loader': CustomElement<WuiTransactionListItemLoader>
