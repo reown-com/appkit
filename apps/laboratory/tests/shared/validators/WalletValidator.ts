@@ -21,7 +21,7 @@ export class WalletValidator {
     await expect(this.page.getByTestId('session-card')).not.toBeVisible()
   }
 
-  async expectRecievedSign({ chainName = 'Ethereum' }) {
+  async expectReceivedSign({ chainName = 'Ethereum' }) {
     await expect(this.page.getByTestId('session-approve-button')).toBeVisible()
     await expect(this.page.getByTestId('request-details-chain')).toHaveText(chainName)
   }
