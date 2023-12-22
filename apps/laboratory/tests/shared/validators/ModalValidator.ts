@@ -15,10 +15,4 @@ export class ModalValidator {
   async expectAcceptedSign() {
     await expect(this.page.getByText('Success')).toBeVisible()
   }
-
-  async expectRejectedSign() {
-    await this.page.waitForTimeout(4000)
-    await this.page.screenshot({ path: 'failure.png' })
-    await expect(this.page.getByText('Error')).toBeVisible()
-  }
 }
