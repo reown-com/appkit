@@ -87,10 +87,10 @@ export function EthersConnectButton() {
       <w3m-button />
       {isConnected ? (
         <>
-          <Button data-testid="sign-message-button" onClick={() => onSignMessage()}>
+          <Button data-testid="sign-message-button" onClick={onSignMessage}>
             Sign Message
           </Button>
-          <Button data-testid="sign-typed-data-button" onClick={() => onSignTypedData()}>
+          <Button data-testid="sign-typed-data-button" onClick={onSignTypedData}>
             Sign Typed Data
           </Button>
           {walletProviderType === 'w3mEmail' ? <EthersTransactionButton /> : null}

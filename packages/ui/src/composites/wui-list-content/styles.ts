@@ -12,13 +12,13 @@ export default css`
   }
 
   wui-image {
-    width: 20px;
-    height: 20px;
+    width: var(--wui-icon-size-lg);
+    height: var(--wui-icon-size-lg);
     border-radius: var(--wui-border-radius-3xl);
   }
 
   wui-icon {
-    width: 20px;
-    height: 20px;
+    width: var(--wui-icon-size-lg);
+    height: var(--wui-icon-size-lg);
   }
 `

@@ -72,12 +72,12 @@ export default css`
   }
 
   a[data-variant='fill'] > wui-image {
-    border: 1px solid var(--wui-color-accent-090);
+    box-shadow: inset 0 0 0 1px var(--wui-color-accent-090);
   }
 
   a[data-variant='shade'] > wui-image,
   a[data-variant='shadeSmall'] > wui-image {
-    border: 1px solid var(--wui-gray-glass-010);
+    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-010);
   }
 
   a[data-variant='fill'] > wui-icon,

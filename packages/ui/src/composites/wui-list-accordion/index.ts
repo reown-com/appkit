@@ -1,5 +1,5 @@
 import { html, LitElement } from 'lit'
-import { property, state } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
@@ -18,13 +18,13 @@ export class WuiListAccordion extends LitElement {
 
   @property() public overflowedContent = ''
 
-  @state() public toggled = false
+  public toggled = false
 
-  @state() public enableAccordion = false
+  public enableAccordion = false
 
-  @state() public scrollElement?: Element = undefined
+  public scrollElement?: Element = undefined
 
-  @state() public scrollHeightElement = 0
+  public scrollHeightElement = 0
 
   public override firstUpdated() {
     setTimeout(() => {
@@ -36,6 +36,7 @@ export class WuiListAccordion extends LitElement {
         if (scrollHeight && scrollHeight > MAX_HEIGHT) {
           this.enableAccordion = true
           this.scrollHeightElement = scrollHeight
+          this.requestUpdate()
         }
       }
     }, 0)
@@ -46,7 +47,7 @@ export class WuiListAccordion extends LitElement {
     return html`
       <button ontouchstart @click=${() => this.onClick()}>
         <wui-flex justifyContent="space-between" alignItems="center">
-          <wui-text variant="paragraph-500" color="fg-100"> ${this.textTitle}</wui-text>
+          <wui-text variant="paragraph-500" color="fg-100">${this.textTitle}</wui-text>
           ${this.chevronTemplate()}
         </wui-flex>
         <div
@@ -68,6 +69,8 @@ export class WuiListAccordion extends LitElement {
     const icon = this.shadowRoot?.querySelector('wui-icon')
     if (this.enableAccordion) {
       this.toggled = !this.toggled
+      this.requestUpdate()
+
       if (this.scrollElement) {
         this.scrollElement.animate(
           [
@@ -96,6 +99,7 @@ export class WuiListAccordion extends LitElement {
       }
     }
   }
+
   public chevronTemplate() {
     if (this.enableAccordion) {
       return html` <wui-icon color="fg-100" size="sm" name="chevronBottom"></wui-icon>`
