@@ -154,6 +154,7 @@ export class W3mAccountView extends LitElement {
           ?chevron=${false}
           .loading=${this.disconecting}
           @click=${this.onDisconnect.bind(this)}
+          data-testid="disconnect-button"
         >
           <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
         </wui-list-item>

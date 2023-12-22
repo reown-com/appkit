@@ -10,7 +10,7 @@ export class ModalPage {
     public readonly page: Page,
     public readonly library: string
   ) {
-    this.connectButton = this.page.getByText('Connect Wallet')
+    this.connectButton = this.page.getByTestId('connect-button')
   }
 
   async load() {
@@ -23,5 +23,14 @@ export class ModalPage {
     await this.page.getByTestId('wallet-selector-walletconnect').click()
     await this.page.waitForTimeout(2000)
     await this.page.getByTestId('copy-wc2-uri').click()
+  }
+
+  async disconnect() {
+    await this.page.getByTestId('account-button').click()
+    await this.page.getByTestId('disconnect-button').click()
+  }
+
+  async sign() {
+    await this.page.getByTestId('sign-message-button').click()
   }
 }

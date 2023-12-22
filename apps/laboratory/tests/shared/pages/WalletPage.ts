@@ -36,12 +36,15 @@ export class WalletPage {
    */
   async handleSessionProposal(opts: SessionParams) {
     const variant = opts.accept ? `approve` : `reject`
+    await this.page.getByTestId(`session-${variant}-button`).isEnabled()
     await this.page.getByTestId(`session-${variant}-button`).focus()
     await this.page.keyboard.press('Space')
   }
 
   async handleRequest({ accept }: { accept: boolean }) {
     const variant = accept ? `approve` : `reject`
-    await this.page.getByTestId(`request-button-${variant}`).click()
+    await this.page.getByTestId(`session-${variant}-button`).isEnabled()
+    await this.page.getByTestId(`session-${variant}-button`).focus()
+    await this.page.keyboard.press('Space')
   }
 }
