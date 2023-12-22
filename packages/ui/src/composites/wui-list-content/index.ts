@@ -22,14 +22,12 @@ export class WuiListContent extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ontouchstart>
-        <wui-flex justifyContent="space-between" alignItems="center">
-          <wui-text variant="paragraph-500" color=${this.textValue ? 'fg-200' : 'fg-100'}>
-            ${this.textTitle}
-          </wui-text>
-          ${this.templateContent()}
-        </wui-flex>
-      </button>
+      <wui-flex justifyContent="space-between" alignItems="center">
+        <wui-text variant="paragraph-500" color=${this.textValue ? 'fg-200' : 'fg-100'}>
+          ${this.textTitle}
+        </wui-text>
+        ${this.templateContent()}
+      </wui-flex>
     `
   }
 

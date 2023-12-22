@@ -36,15 +36,15 @@ export class W3mApproveTransactionView extends LitElement {
 
   public override firstUpdated() {
     const verticalPadding = 10
-    const horizontalPadding = 24
+
     this.iframe.style.display = 'block'
     const blueprint = this.renderRoot.querySelector('div')
     this.bodyObserver = new ResizeObserver(() => {
       const data = blueprint?.getBoundingClientRect()
       const dimensions = data ?? { left: 0, top: 0, width: 0, height: 0 }
-      this.iframe.style.width = `${dimensions.width - horizontalPadding}px`
+      this.iframe.style.width = `${dimensions.width}px`
       this.iframe.style.height = `${dimensions.height - verticalPadding}px`
-      this.iframe.style.left = `${dimensions.left + horizontalPadding / 2}px`
+      this.iframe.style.left = `${dimensions.left}px`
       this.iframe.style.top = `${dimensions.top + verticalPadding / 2}px`
       this.ready = true
     })

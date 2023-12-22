@@ -44,7 +44,7 @@ export class WuiListAccordion extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ontouchstart>
+      <button ontouchstart @click=${() => this.onClick()}>
         <wui-flex justifyContent="space-between" alignItems="center">
           <wui-text variant="paragraph-500" color="fg-100"> ${this.textTitle}</wui-text>
           ${this.chevronTemplate()}
@@ -52,7 +52,6 @@ export class WuiListAccordion extends LitElement {
         <div
           data-active=${this.enableAccordion ? Boolean(this.toggled) : true}
           class="overflowedContent"
-          @click=${() => this.onClick()}
         >
           <div class="heightContent">
             <wui-text variant="paragraph-400" color="fg-200">
@@ -66,6 +65,7 @@ export class WuiListAccordion extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onClick() {
+    const icon = this.shadowRoot?.querySelector('wui-icon')
     if (this.enableAccordion) {
       this.toggled = !this.toggled
       if (this.scrollElement) {
@@ -73,6 +73,19 @@ export class WuiListAccordion extends LitElement {
           [
             { maxHeight: this.toggled ? `${MAX_HEIGHT}px` : `${this.scrollHeightElement}px` },
             { maxHeight: this.toggled ? `${this.scrollHeightElement}px` : `${MAX_HEIGHT}px` }
+          ],
+          {
+            duration: 300,
+            fill: 'forwards',
+            easing: 'ease'
+          }
+        )
+      }
+      if (icon) {
+        icon.animate(
+          [
+            { transform: this.toggled ? `rotate(0deg)` : `rotate(180deg)` },
+            { transform: this.toggled ? `rotate(180deg)` : `rotate(0deg)` }
           ],
           {
             duration: 300,

@@ -25,26 +25,24 @@ export class WuiListWalletTransaction extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ontouchstart>
-        <wui-flex justifyContent="space-between" alignItems="center">
-          <wui-text variant="paragraph-500" color="fg-200">Sending</wui-text>
-          <wui-flex gap="xs" alignItems="center">
-            <wui-text variant="paragraph-400" color="fg-100">
-              ${this.amount} ${this.networkCurreny}
-            </wui-text>
-            ${this.templateNetworkVisual()}
-          </wui-flex>
+      <wui-flex justifyContent="space-between" alignItems="center">
+        <wui-text variant="paragraph-500" color="fg-200">Sending</wui-text>
+        <wui-flex gap="xs" alignItems="center">
+          <wui-text variant="paragraph-400" color="fg-100">
+            ${this.amount} ${this.networkCurreny}
+          </wui-text>
+          ${this.templateNetworkVisual()}
         </wui-flex>
-        <wui-flex justifyContent="space-between" alignItems="center">
-          <wui-text variant="paragraph-500" color="fg-200">To</wui-text>
-          <wui-chip
-            icon="externalLink"
-            variant="shadeSmall"
-            href=${this.receiverAddress}
-            title=${this.receiverAddress}
-          ></wui-chip>
-        </wui-flex>
-      </button>
+      </wui-flex>
+      <wui-flex justifyContent="space-between" alignItems="center">
+        <wui-text variant="paragraph-500" color="fg-200">To</wui-text>
+        <wui-chip
+          icon="externalLink"
+          variant="shadeSmall"
+          href=${this.receiverAddress}
+          title=${this.receiverAddress}
+        ></wui-chip>
+      </wui-flex>
     `
   }
 

@@ -1,7 +1,8 @@
 import { css } from 'lit'
 
 export default css`
-  button {
+  :host {
+    display: flex;
     column-gap: var(--wui-spacing-s);
     padding: 17px 18px 17px var(--wui-spacing-m);
     width: 100%;

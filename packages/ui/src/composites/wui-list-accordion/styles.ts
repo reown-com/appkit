@@ -26,6 +26,7 @@ export default css`
     right: 0;
     bottom: 0;
     background: linear-gradient(to top, rgb(42, 42, 42), transparent);
+    border-radius: var(--wui-border-radius-xs);
   }
 
   .heightContent {
