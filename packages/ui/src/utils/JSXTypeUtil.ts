@@ -29,7 +29,7 @@ import type { WuiTransactionListItem } from '../composites/wui-transaction-list-
 import type { WuiTransactionListItemLoader } from '../composites/wui-transaction-list-item-loader/index.js'
 import type { WuiListAccordion } from '../composites/wui-list-accordion/index.js'
 import type { WuiListContent } from '../composites/wui-list-content/index.js'
-import type { WuiListWallet } from '../composites/wui-list-wallet/index.js'
+
 import type { WuiListWalletTransaction } from '../composites/wui-list-wallet-transaction/index.js'
 import type { WuiLogoSelect } from '../composites/wui-logo-select/index.js'
 import type { WuiLogo } from '../composites/wui-logo/index.js'
