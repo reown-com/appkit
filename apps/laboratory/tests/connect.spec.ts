@@ -15,11 +15,9 @@ testMW.afterEach(async ({ modalPage, modalValidator, walletValidator }) => {
   await walletValidator.expectDisconnected()
 })
 
-testMW('it should sign',
-  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({})
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
-  }
-)
+testMW('it should sign', async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+  await modalPage.sign()
+  await walletValidator.expectReceivedSign({})
+  await walletPage.handleRequest({ accept: true })
+  await modalValidator.expectAcceptedSign()
+})
