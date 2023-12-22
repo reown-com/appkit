@@ -27,7 +27,10 @@ import type { WuiLink } from '../composites/wui-link/index.js'
 import type { WuiListItem } from '../composites/wui-list-item/index.js'
 import type { WuiTransactionListItem } from '../composites/wui-transaction-list-item/index.js'
 import type { WuiTransactionListItemLoader } from '../composites/wui-transaction-list-item-loader/index.js'
+import type { WuiListAccordion } from '../composites/wui-list-accordion/index.js'
+import type { WuiListContent } from '../composites/wui-list-content/index.js'
 import type { WuiListWallet } from '../composites/wui-list-wallet/index.js'
+import type { WuiListWalletTransaction } from '../composites/wui-list-wallet-transaction/index.js'
 import type { WuiLogoSelect } from '../composites/wui-logo-select/index.js'
 import type { WuiLogo } from '../composites/wui-logo/index.js'
 import type { WuiNetworkButton } from '../composites/wui-network-button/index.js'
@@ -79,10 +82,12 @@ declare global {
       'wui-input-numeric': CustomElement<WuiInputNumeric>
       'wui-input-text': CustomElement<WuiInputText>
       'wui-link': CustomElement<WuiLink>
+      'wui-list-accordion': CustomElement<WuiListAccordion>
+      'wui-list-content': CustomElement<WuiListContent>
       'wui-list-item': CustomElement<WuiListItem>
+      'wui-list-wallet-transaction': CustomElement<WuiListWalletTransaction>
       'wui-transaction-list-item': CustomElement<WuiTransactionListItem>
       'wui-transaction-list-item-loader': CustomElement<WuiTransactionListItemLoader>
-      'wui-list-wallet': CustomElement<WuiListWallet>
       'wui-logo-select': CustomElement<WuiLogoSelect>
       'wui-logo': CustomElement<WuiLogo>
       'wui-network-button': CustomElement<WuiNetworkButton>
