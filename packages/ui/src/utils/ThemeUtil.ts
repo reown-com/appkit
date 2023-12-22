@@ -468,6 +468,17 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-success-base-100: #26d962;
         --wui-color-error-base-100: #f25a67;
 
+        --wui-success-glass-001: rgba(38, 217, 98, 0.01);
+        --wui-success-glass-002: rgba(38, 217, 98, 0.02);
+        --wui-success-glass-005: rgba(38, 217, 98, 0.05);
+        --wui-success-glass-010: rgba(38, 217, 98, 0.1);
+        --wui-success-glass-015: rgba(38, 217, 98, 0.15);
+        --wui-success-glass-020: rgba(38, 217, 98, 0.2);
+        --wui-success-glass-025: rgba(38, 217, 98, 0.25);
+        --wui-success-glass-030: rgba(38, 217, 98, 0.3);
+        --wui-success-glass-060: rgba(38, 217, 98, 0.6);
+        --wui-success-glass-080: rgba(38, 217, 98, 0.8);
+
         --wui-icon-box-bg-error-base-100: #3c2426;
         --wui-icon-box-bg-blue-base-100: #20303f;
         --wui-icon-box-bg-success-base-100: #1f3a28;
@@ -535,6 +546,17 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
         --wui-color-success-base-100: #26b562;
         --wui-color-error-base-100: #f05142;
+
+        --wui-success-glass-001: rgba(38, 181, 98, 0.01);
+        --wui-success-glass-002: rgba(38, 181, 98, 0.02);
+        --wui-success-glass-005: rgba(38, 181, 98, 0.05);
+        --wui-success-glass-010: rgba(38, 181, 98, 0.1);
+        --wui-success-glass-015: rgba(38, 181, 98, 0.15);
+        --wui-success-glass-020: rgba(38, 181, 98, 0.2);
+        --wui-success-glass-025: rgba(38, 181, 98, 0.25);
+        --wui-success-glass-030: rgba(38, 181, 98, 0.3);
+        --wui-success-glass-060: rgba(38, 181, 98, 0.6);
+        --wui-success-glass-080: rgba(38, 181, 98, 0.8);
 
         --wui-icon-box-bg-error-base-100: #f4dfdd;
         --wui-icon-box-bg-blue-base-100: #d9ecfb;
