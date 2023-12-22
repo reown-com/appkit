@@ -83,9 +83,9 @@ declare global {
       'wui-input-text': CustomElement<WuiInputText>
       'wui-link': CustomElement<WuiLink>
       'wui-list-item': CustomElement<WuiListItem>
-      'wui-list-wallet': CustomElement<WuiListWallet>
       'wui-transaction-list-item': CustomElement<WuiTransactionListItem>
       'wui-transaction-list-item-loader': CustomElement<WuiTransactionListItemLoader>
+      'wui-list-wallet': CustomElement<WuiListWallet>
       'wui-logo-select': CustomElement<WuiLogoSelect>
       'wui-logo': CustomElement<WuiLogo>
       'wui-network-button': CustomElement<WuiNetworkButton>
