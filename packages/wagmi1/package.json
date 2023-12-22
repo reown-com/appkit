@@ -50,14 +50,17 @@
     "@web3modal/scaffold-vue": "3.6.0-32bf236a"
   },
   "devDependencies": {
-    "@web3modal/siwe": "*"
+    "@web3modal/siwe": "*",
+    "@wagmi/core": "1.4.12",
+    "@wagmi/connectors": "3.1.10",
+    "viem": "1.20.3"
   },
   "peerDependencies": {
-    "@wagmi/core": ">=1 <2",
+    "@wagmi/core": ">=1.0.0 <2.0.0",
     "@web3modal/siwe": "*",
     "react": ">=17",
     "react-dom": ">=17",
-    "viem": ">=1 <2",
+    "viem": ">=1.0.0 <2.0.0",
     "vue": ">=3"
   },
   "peerDependenciesMeta": {
