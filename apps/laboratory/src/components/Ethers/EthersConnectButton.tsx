@@ -44,7 +44,7 @@ export function EthersConnectButton() {
       const signer = new JsonRpcSigner(provider, address)
       const signature = await signer?.signMessage('Hello Web3Modal Ethers')
 
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast({ title: 'Success', description: signature, status: 'success', isClosable: true })
     } catch {
       toast({
         title: 'Error',
@@ -87,8 +87,12 @@ export function EthersConnectButton() {
       <w3m-button />
       {isConnected ? (
         <>
-          <Button onClick={() => onSignMessage()}>Sign Message</Button>
-          <Button onClick={() => onSignTypedData()}>Sign Typed Data</Button>
+          <Button data-testid="sign-message-button" onClick={() => onSignMessage()}>
+            Sign Message
+          </Button>
+          <Button data-testid="sign-typed-data-button" onClick={() => onSignTypedData()}>
+            Sign Typed Data
+          </Button>
           {walletProviderType === 'w3mEmail' ? <EthersTransactionButton /> : null}
         </>
       ) : null}

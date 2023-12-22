@@ -33,7 +33,9 @@ export function EthersTransactionButton() {
   return (
     <>
       <>
-        <Button onClick={() => onSendTransaction()}>Send Transaction</Button>
+        <Button data-test-id="sign-transaction-button" onClick={() => onSendTransaction()}>
+          Send Transaction
+        </Button>
       </>
     </>
   )

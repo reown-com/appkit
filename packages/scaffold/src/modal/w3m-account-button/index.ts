@@ -78,6 +78,7 @@ export class W3mAccountButton extends LitElement {
           ? CoreHelperUtil.formatBalance(this.balanceVal, this.balanceSymbol)
           : ''}
         @click=${this.onClick.bind(this)}
+        data-testid="account-button"
       >
       </wui-account-button>
     `

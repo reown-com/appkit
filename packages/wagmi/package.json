@@ -47,8 +47,7 @@
     "@web3modal/scaffold": "3.6.0-229eeee",
     "@web3modal/scaffold-react": "3.6.0-229eeee",
     "@web3modal/scaffold-utils": "3.6.0-229eeee",
-    "@web3modal/scaffold-vue": "3.6.0-229eeee",
-    "@web3modal/wallet": "3.6.0-229eeee"
+    "@web3modal/scaffold-vue": "3.6.0-229eeee"
   },
   "devDependencies": {
     "@web3modal/siwe": "*"

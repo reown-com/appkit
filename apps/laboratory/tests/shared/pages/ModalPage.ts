@@ -1,24 +1,36 @@
 import type { Locator, Page } from '@playwright/test'
-import { LOCAL_LABS_URL } from '../constants'
+import { BASE_URL } from '../constants'
 
 export class ModalPage {
-  private readonly baseURL = LOCAL_LABS_URL
+  private readonly baseURL = BASE_URL
 
   private readonly connectButton: Locator
 
-  constructor(public readonly page: Page) {
-    this.connectButton = this.page.getByText('Connect Wallet')
+  constructor(
+    public readonly page: Page,
+    public readonly library: string
+  ) {
+    this.connectButton = this.page.getByTestId('connect-button')
   }
 
   async load() {
-    await this.page.goto(this.baseURL)
+    await this.page.goto(`${this.baseURL}library/${this.library}/`)
   }
 
   async copyConnectUriToClipboard() {
-    await this.page.goto(this.baseURL)
+    await this.page.goto(`${this.baseURL}library/${this.library}/`)
     await this.connectButton.click()
-    await this.page.getByText('WalletConnect').click()
+    await this.page.getByTestId('wallet-selector-walletconnect').click()
     await this.page.waitForTimeout(2000)
-    await this.page.getByText('Copy link').click()
+    await this.page.getByTestId('copy-wc2-uri').click()
+  }
+
+  async disconnect() {
+    await this.page.getByTestId('account-button').click()
+    await this.page.getByTestId('disconnect-button').click()
+  }
+
+  async sign() {
+    await this.page.getByTestId('sign-message-button').click()
   }
 }

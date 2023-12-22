@@ -13,4 +13,16 @@ export class WalletValidator {
     await this.gotoSessions.click()
     await expect(this.page.getByTestId('session-card')).toBeVisible()
   }
+
+  async expectDisconnected() {
+    await this.page.waitForTimeout(1000)
+    await this.page.reload()
+    await this.gotoSessions.click()
+    await expect(this.page.getByTestId('session-card')).not.toBeVisible()
+  }
+
+  async expectReceivedSign({ chainName = 'Ethereum' }) {
+    await expect(this.page.getByTestId('session-approve-button')).toBeVisible()
+    await expect(this.page.getByTestId('request-details-chain')).toHaveText(chainName)
+  }
 }
