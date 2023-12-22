@@ -78,5 +78,15 @@ export const RouterController = {
         state.view = last
       }
     }
+  },
+
+  goBackToIndex(historyIndex: number) {
+    if (state.history.length > 1) {
+      state.history = state.history.slice(0, historyIndex + 1)
+      const [last] = state.history.slice(-1)
+      if (last) {
+        state.view = last
+      }
+    }
   }
 }
