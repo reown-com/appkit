@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@web3modal/common": "3.6.0-8b4be6c6",
+    "@web3modal/wallet": "3.6.0-8b4be6c6",
     "valtio": "1.11.2"
   },
   "keywords": [
