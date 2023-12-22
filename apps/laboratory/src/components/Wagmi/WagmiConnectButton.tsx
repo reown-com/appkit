@@ -48,7 +48,7 @@ export function WagmiConnectButton() {
   async function onSignMessage() {
     try {
       const signature = await signMessageAsync()
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast({ title: 'Success', description: signature, status: 'success', isClosable: true })
     } catch {
       toast({
         title: 'Error',
@@ -67,7 +67,7 @@ export function WagmiConnectButton() {
         primaryType: 'Mail',
         types
       })
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast({ title: 'Success', description: signature, status: 'success', isClosable: true })
     } catch {
       toast({
         title: 'Error',
@@ -83,8 +83,12 @@ export function WagmiConnectButton() {
       <w3m-button />
       {isConnected ? (
         <>
-          <Button onClick={() => onSignMessage()}>Sign Message</Button>
-          <Button onClick={() => onSignTypedData()}>Sign Typed Data</Button>
+          <Button onClick={() => onSignMessage()} data-testid="sign-message-button">
+            Sign Message
+          </Button>
+          <Button onClick={() => onSignTypedData()} data-testid="sign-typed-data-button">
+            Sign Typed Data
+          </Button>
         </>
       ) : null}
     </>
