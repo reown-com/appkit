@@ -55,10 +55,7 @@ export class WuiOnRampActivityItem extends LitElement {
 
   private imageTemplate() {
     return html`<wui-flex class="purchase-image-container">
-      <wui-image
-        class="provider-image"
-        src="https://avatar.vercel.sh/andrew.svg?size=50&text=AG"
-      ></wui-image>
+      <wui-image src="https://avatar.vercel.sh/andrew.svg?size=50&text=AG"></wui-image>
       ${this.completed ? null : this.boughtIconTemplate()}
     </wui-flex>`
   }
