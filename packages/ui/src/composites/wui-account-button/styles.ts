@@ -76,7 +76,7 @@ export default css`
 
   @media (max-width: 450px) {
     button {
-      gap: 0;
+      gap: 0px;
     }
     wui-image,
     wui-icon-box,
