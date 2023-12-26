@@ -74,7 +74,7 @@ export default css`
     box-shadow: 0 0 0 2px var(--wui-accent-glass-010);
   }
 
-  @media (max-width: 450px) {
+  @media (max-width: 500px) {
     button {
       gap: 0px;
     }
