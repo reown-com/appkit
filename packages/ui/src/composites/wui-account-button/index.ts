@@ -31,13 +31,12 @@ export class WuiAccountButton extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled}>
+      <button
+        ?disabled=${this.disabled}
+        class=${ifDefined(this.balance ? undefined : 'local-no-balance')}
+      >
         ${this.balanceTemplate()}
-        <wui-flex
-          gap="xxs"
-          alignItems="center"
-          class=${ifDefined(this.balance ? undefined : 'local-no-balance')}
-        >
+        <wui-flex gap="xxs" alignItems="center">
           <wui-avatar
             .imageSrc=${this.avatarSrc}
             alt=${this.address}
