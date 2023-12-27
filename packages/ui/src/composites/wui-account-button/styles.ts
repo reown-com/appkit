@@ -83,6 +83,7 @@ export default css`
     button > wui-text {
       visibility: hidden;
       width: 0px;
+      height: 0px;
     }
     button > wui-flex {
       border-radius: 0px;
