@@ -77,6 +77,7 @@ export default css`
   @media (max-width: 500px) {
     button {
       gap: 0px;
+      padding: var(--wui-spacing-3xs) var(--wui-spacing-xs) !important;
     }
     wui-image,
     wui-icon-box,
@@ -89,6 +90,7 @@ export default css`
       border-radius: 0px;
       border: none;
       background: transparent;
+      padding: 0px;
     }
   }
 
