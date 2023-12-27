@@ -49,8 +49,8 @@ export class W3mButton extends LitElement {
           <w3m-account-button
             .disabled=${Boolean(this.disabled)}
             balance=${ifDefined(this.balance)}
-            charsStart=${ifDefined(this.charsStart)}
-            charsEnd=${ifDefined(this.charsEnd)}
+            .charsStart=${ifDefined(this.charsStart)}
+            .charsEnd=${ifDefined(this.charsEnd)}
           >
           </w3m-account-button>
         `
