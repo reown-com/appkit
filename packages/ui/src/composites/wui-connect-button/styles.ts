@@ -69,6 +69,13 @@ export default css`
     padding-left: var(--wui-spacing-3xs);
   }
 
+  @media (max-width: 700px) {
+    button[data-size='md'] {
+      height: 32px;
+      padding: 5px 12px;
+    }
+  }
+
   wui-loading-spinner {
     width: 14px;
     height: 14px;
