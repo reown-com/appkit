@@ -26,6 +26,24 @@ export class W3mEmailVerifyOtpView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private loading = false
 
+  @state() private timeoutTimeLeft = 30
+
+  private OTPTimeout: NodeJS.Timeout | undefined
+
+  public override firstUpdated() {
+    this.OTPTimeout = setInterval(() => {
+      if (this.timeoutTimeLeft > 0) {
+        this.timeoutTimeLeft -= 1
+      } else {
+        clearInterval(this.OTPTimeout)
+      }
+    }, 1000)
+  }
+
+  public override disconnectedCallback() {
+    clearTimeout(this.OTPTimeout)
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.email) {
@@ -56,7 +74,11 @@ export class W3mEmailVerifyOtpView extends LitElement {
 
         <wui-flex alignItems="center">
           <wui-text variant="small-400" color="fg-200">Didn't receive it?</wui-text>
-          <wui-link @click=${this.onResendCode.bind(this)}>Resend code</wui-link>
+          <wui-link
+            @click=${this.onResendCode.bind(this)}
+            .disabled=${Boolean(this.timeoutTimeLeft)}
+            >Resend ${this.timeoutTimeLeft > 0 ? `in ${this.timeoutTimeLeft}s` : 'Code'}</wui-link
+          >
         </wui-flex>
       </wui-flex>
     `
@@ -87,7 +109,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
 
   private async onResendCode() {
     try {
-      if (!this.loading) {
+      if (!this.loading && !this.timeoutTimeLeft) {
         const emailConnector = ConnectorController.getEmailConnector()
         if (!emailConnector || !this.email) {
           throw new Error('w3m-email-login-widget: Unable to resend email')
