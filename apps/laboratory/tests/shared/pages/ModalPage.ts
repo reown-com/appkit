@@ -33,4 +33,11 @@ export class ModalPage {
   async sign() {
     await this.page.getByTestId('sign-message-button').click()
   }
+
+  async switchNetwork(network: string) {
+    await this.page.getByTestId('account-button').click()
+    await this.page.getByTestId('w3m-account-select-network').click()
+    await this.page.getByTestId(`w3m-network-switch-${network}`).click()
+    await this.page.getByTestId(`w3m-header-close`).click()
+  }
 }

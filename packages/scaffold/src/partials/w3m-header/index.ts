@@ -79,6 +79,7 @@ export class W3mHeader extends LitElement {
           ?disabled=${this.buffering}
           icon="close"
           @click=${this.onClose.bind(this)}
+          data-testid="w3m-header-close"
         ></wui-icon-link>
       </wui-flex>
       ${this.separatorTemplate()}

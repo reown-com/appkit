@@ -94,6 +94,7 @@ export class W3mNetworksView extends LitElement {
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
           .disabled=${!supportsAllNetworks && !approvedIds?.includes(network.id)}
+          data-testid=${`w3m-network-switch-${network.name ?? network.id}`}
         ></wui-card-select>
       `
     )
