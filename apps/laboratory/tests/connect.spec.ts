@@ -29,7 +29,8 @@ testMW(
     await walletValidator.expectReceivedSign({})
     await walletPage.handleRequest({ accept: false })
     await modalValidator.expectRejectedSign()
-  })
+  }
+)
 
 testMW(
   'it should switch networks and sign',
