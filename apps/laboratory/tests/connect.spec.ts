@@ -21,3 +21,13 @@ testMW('it should sign', async ({ modalPage, walletPage, modalValidator, walletV
   await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAcceptedSign()
 })
+
+testMW(
+  'it should reject sign',
+  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+    await modalPage.sign()
+    await walletValidator.expectReceivedSign({})
+    await walletPage.handleRequest({ accept: false })
+    await modalValidator.expectRejectedSign()
+  }
+)
