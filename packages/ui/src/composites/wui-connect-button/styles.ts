@@ -69,7 +69,7 @@ export default css`
     padding-left: var(--wui-spacing-3xs);
   }
 
-  @media (max-width: 700px) {
+  @media (max-width: 500px) {
     button[data-size='md'] {
       height: 32px;
       padding: 5px 12px;

@@ -78,6 +78,7 @@ export default css`
     button {
       gap: 0px;
       padding: var(--wui-spacing-3xs) var(--wui-spacing-xs) !important;
+      height: 32px;
     }
     wui-image,
     wui-icon-box,
