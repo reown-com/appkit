@@ -35,6 +35,7 @@ export class WuiOtp extends LitElement {
             <wui-input-numeric
               @input=${(e: InputEvent) => this.handleInput(e, index)}
               @keydown=${(e: KeyboardEvent) => this.handleKeyDown(e, index)}
+              .disabled=${index > 0}
             >
             </wui-input-numeric>
           `
@@ -65,6 +66,12 @@ export class WuiOtp extends LitElement {
       }
     }
     this.dispatchInputChangeEvent()
+  }
+
+  private shouldInputBeEnabled = (index: number) => {
+    const previousInputs = this.valueArr.slice(0, index)
+
+    return previousInputs.every(input => input !== '')
   }
 
   private handleKeyDown = (e: KeyboardEvent, index: number) => {
@@ -139,9 +146,13 @@ export class WuiOtp extends LitElement {
   private focusInputField = (dir: 'next' | 'prev', index: number) => {
     if (dir === 'next') {
       const nextIndex = index + 1
+      if (!this.shouldInputBeEnabled(nextIndex)) {
+        return
+      }
       const numeric = this.numerics[nextIndex < this.length ? nextIndex : index]
       const input = numeric ? this.getInputElement(numeric) : undefined
       if (input) {
+        input.disabled = false
         input.focus()
       }
     }
