@@ -50,6 +50,8 @@ export class W3mEmailVerifyOtpView extends LitElement {
       throw new Error('w3m-email-verify-otp-view: No email provided')
     }
 
+    const isResendDisabled = Boolean(this.timeoutTimeLeft)
+
     return html`
       <wui-flex
         flexDirection="column"
@@ -74,10 +76,8 @@ export class W3mEmailVerifyOtpView extends LitElement {
 
         <wui-flex alignItems="center">
           <wui-text variant="small-400" color="fg-200">Didn't receive it?</wui-text>
-          <wui-link
-            @click=${this.onResendCode.bind(this)}
-            .disabled=${Boolean(this.timeoutTimeLeft)}
-            >Resend ${this.timeoutTimeLeft > 0 ? `in ${this.timeoutTimeLeft}s` : 'Code'}</wui-link
+          <wui-link @click=${this.onResendCode.bind(this)} .disabled=${isResendDisabled}
+            >Resend ${isResendDisabled ? `in ${this.timeoutTimeLeft}s` : 'Code'}</wui-link
           >
         </wui-flex>
       </wui-flex>
@@ -116,7 +116,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
         }
         this.loading = true
         await emailConnector.provider.connectEmail({ email: this.email })
-        SnackController.showSuccess('New Email sent')
+        SnackController.showSuccess('Code email resent')
       }
     } catch (error) {
       SnackController.showError(error)
