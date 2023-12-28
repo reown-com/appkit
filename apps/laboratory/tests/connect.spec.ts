@@ -35,7 +35,15 @@ testMW(
 testMW(
   'it should switch networks and sign',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    const targetChain = 'Polygon'
+    let targetChain = 'Polygon'
+    await modalPage.switchNetwork(targetChain)
+    await modalPage.sign()
+    await walletValidator.expectReceivedSign({ chainName: targetChain })
+    await walletPage.handleRequest({ accept: true })
+    await modalValidator.expectAcceptedSign()
+
+    // Switch to Ethereum
+    targetChain = 'Ethereum'
     await modalPage.switchNetwork(targetChain)
     await modalPage.sign()
     await walletValidator.expectReceivedSign({ chainName: targetChain })
