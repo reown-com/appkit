@@ -2,6 +2,7 @@ import { Button, useToast } from '@chakra-ui/react'
 import { useAccount, useNetwork, useSignMessage, useSignTypedData } from 'wagmi'
 import { WagmiTransactionButton } from './WagmiTransactionButton'
 import { useEffect, useState } from 'react'
+import { SigningFailedToastTitle, SigningSucceededToastTitle } from '../../constants'
 
 // Example data
 
@@ -59,10 +60,15 @@ export function WagmiConnectButton() {
   async function onSignMessage() {
     try {
       const signature = await signMessageAsync()
-      toast({ title: 'Success', description: signature, status: 'success', isClosable: true })
+      toast({
+        title: SigningSucceededToastTitle,
+        description: signature,
+        status: 'success',
+        isClosable: true
+      })
     } catch {
       toast({
-        title: 'Error',
+        title: SigningFailedToastTitle,
         description: 'Failed to sign message',
         status: 'error',
         isClosable: true
