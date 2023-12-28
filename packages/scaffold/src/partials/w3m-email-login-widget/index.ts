@@ -6,6 +6,7 @@ import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
 import { SnackController, RouterController } from '@web3modal/core'
+import { z } from 'zod'
 
 @customElement('w3m-email-login-widget')
 export class W3mEmailLoginWidget extends LitElement {
@@ -22,6 +23,8 @@ export class W3mEmailLoginWidget extends LitElement {
   @state() private email = ''
 
   @state() private loading = false
+
+  @state() private error = ''
 
   public constructor() {
     super()
@@ -57,6 +60,7 @@ export class W3mEmailLoginWidget extends LitElement {
         <wui-email-input
           .disabled=${this.loading}
           @inputChange=${this.onEmailInputChange.bind(this)}
+          .errorMessage=${this.error}
         >
         </wui-email-input>
 
@@ -85,6 +89,7 @@ export class W3mEmailLoginWidget extends LitElement {
   // -- Private ------------------------------------------- //
   private onEmailInputChange(event: CustomEvent<string>) {
     this.email = event.detail
+    this.error = ''
   }
 
   private async onSubmitEmail(event: Event) {
@@ -92,7 +97,12 @@ export class W3mEmailLoginWidget extends LitElement {
       if (this.loading) {
         return
       }
+      const { success: isEmailValid } = z.string().email().safeParse(this.email)
+      if (!isEmailValid) {
+        this.error = 'Invalid email. Try again'
 
+        return
+      }
       this.loading = true
       event.preventDefault()
       const emailConnector = ConnectorController.getEmailConnector()
@@ -100,7 +110,6 @@ export class W3mEmailLoginWidget extends LitElement {
       if (!emailConnector) {
         throw new Error('w3m-email-login-widget: Email connector not found')
       }
-
       const { action } = await emailConnector.provider.connectEmail({ email: this.email })
       if (action === 'VERIFY_OTP') {
         RouterController.push('EmailVerifyOtp', { email: this.email })
