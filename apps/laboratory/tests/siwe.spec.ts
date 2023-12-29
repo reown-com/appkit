@@ -7,8 +7,7 @@ testMWSiwe.beforeEach(async ({ modalPage, walletPage }) => {
   await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
 })
 
-testMWSiwe.afterEach(async ({ modalPage, modalValidator, walletValidator }) => {
-  await modalPage.disconnect()
+testMWSiwe.afterEach(async ({ modalValidator, walletValidator }) => {
   await modalValidator.expectDisconnected()
   await walletValidator.expectDisconnected()
 })
@@ -22,5 +21,18 @@ testMWSiwe(
     await modalValidator.expectAuthenticated()
     await modalValidator.expectConnected()
     await walletValidator.expectConnected()
+    await modalPage.disconnect()
+  }
+)
+
+testMWSiwe(
+  'it should reject sign in with ethereum',
+  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+    await modalPage.promptSiwe()
+    await walletValidator.expectReceivedSign({})
+    await walletPage.handleRequest({ accept: false })
+    await modalValidator.expectSignatureDeclined()
+    await modalPage.cancelSiwe()
+    await modalValidator.expectUnauthenticated()
   }
 )

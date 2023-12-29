@@ -13,7 +13,7 @@ export interface ModalFixture {
 export const testM = base.extend<ModalFixture>({
   library: ['wagmi', { option: true }],
   modalPage: async ({ page, library }, use) => {
-    const modalPage = new ModalPage(page, library, false)
+    const modalPage = new ModalPage(page, library, 'default')
     await modalPage.load()
     await use(modalPage)
   },
@@ -25,7 +25,7 @@ export const testM = base.extend<ModalFixture>({
 export const testMSiwe = base.extend<ModalFixture>({
   library: ['wagmi', { option: true }],
   modalPage: async ({ page, library }, use) => {
-    const modalPage = new ModalPage(page, library, true)
+    const modalPage = new ModalPage(page, library, 'siwe')
     await modalPage.load()
     await use(modalPage)
   },

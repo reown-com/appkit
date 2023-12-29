@@ -1,6 +1,8 @@
 import type { Locator, Page } from '@playwright/test'
 import { BASE_URL } from '../constants'
 
+export type ModalFlavor = 'default' | 'siwe'
+
 export class ModalPage {
   private readonly baseURL = BASE_URL
 
@@ -10,12 +12,13 @@ export class ModalPage {
   constructor(
     public readonly page: Page,
     public readonly library: string,
-    public readonly siwe: boolean
+    public readonly flavor: ModalFlavor
   ) {
     this.connectButton = this.page.getByTestId('connect-button')
-    this.url = this.siwe
-      ? `${this.baseURL}library/${this.library}-siwe/`
-      : `${this.baseURL}library/${this.library}/`
+    this.url =
+      flavor === 'siwe'
+        ? `${this.baseURL}library/${this.library}-siwe/`
+        : `${this.baseURL}library/${this.library}/`
   }
 
   async load() {
@@ -41,6 +44,10 @@ export class ModalPage {
 
   async promptSiwe() {
     await this.page.getByTestId('w3m-connecting-siwe-sign').click()
+  }
+
+  async cancelSiwe() {
+    await this.page.getByTestId('w3m-connecting-siwe-cancel').click()
   }
 
   async switchNetwork(network: string) {

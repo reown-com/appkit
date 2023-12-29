@@ -10,7 +10,19 @@ export class ModalValidator {
   }
 
   async expectAuthenticated() {
-    await expect(this.page.getByTestId('w3m-authentication-status')).toContainText('authenticated')
+    await expect(this.page.getByTestId('w3m-authentication-status')).toContainText(
+      'Status: authenticated'
+    )
+  }
+
+  async expectUnauthenticated() {
+    await expect(this.page.getByTestId('w3m-authentication-status')).toContainText(
+      'Status: unauthenticated'
+    )
+  }
+
+  async expectSignatureDeclined() {
+    await expect(this.page.getByText('Signature declined')).toBeVisible()
   }
 
   async expectDisconnected() {
