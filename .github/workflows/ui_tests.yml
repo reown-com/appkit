@@ -36,7 +36,7 @@ jobs:
           cache-dependency-path: 'package-lock.json'
       - name: Get installed Playwright version
         id: playwright-version
-        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
+        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['apps/laboratory']['devDependencies']['@playwright/test'])")" >> $GITHUB_ENV
       - name: Cache playwright binaries
         uses: actions/cache@v3
         id: playwright-cache
