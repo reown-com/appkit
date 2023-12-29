@@ -70,9 +70,9 @@ export class W3mEmailVerifyOtpView extends LitElement {
 
         <wui-flex alignItems="center">
           <wui-text variant="small-400" color="fg-200">Didn't receive it?</wui-text>
-          <wui-link @click=${this.onResendCode.bind(this)} .disabled=${isResendDisabled}
-            >Resend ${isResendDisabled ? `in ${this.timeoutTimeLeft}s` : 'Code'}</wui-link
-          >
+          <wui-link @click=${this.onResendCode.bind(this)} .disabled=${isResendDisabled}>
+            Resend ${isResendDisabled ? `in ${this.timeoutTimeLeft}s` : 'Code'}
+          </wui-link>
         </wui-flex>
       </wui-flex>
     `
@@ -80,6 +80,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private startOTPTimeout() {
+    this.timeoutTimeLeft = 30
     this.OTPTimeout = setInterval(() => {
       if (this.timeoutTimeLeft > 0) {
         this.timeoutTimeLeft -= 1
@@ -119,9 +120,9 @@ export class W3mEmailVerifyOtpView extends LitElement {
           throw new Error('w3m-email-login-widget: Unable to resend email')
         }
         this.loading = true
+        this.startOTPTimeout()
         await emailConnector.provider.connectEmail({ email: this.email })
         SnackController.showSuccess('Code email resent')
-        this.startOTPTimeout()
       }
     } catch (error) {
       SnackController.showError(error)
