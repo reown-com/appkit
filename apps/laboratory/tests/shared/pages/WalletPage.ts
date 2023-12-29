@@ -24,6 +24,7 @@ export class WalletPage {
     // Paste clipboard
     const isMac = process.platform === 'darwin'
     const modifier = isMac ? 'Meta' : 'Control'
+    await this.page.waitForTimeout(1000)
     await this.page.keyboard.press(`${modifier}+KeyV`)
     await this.page.getByTestId('uri-connect-button').click()
   }

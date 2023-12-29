@@ -1,4 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
+import { expect } from '@playwright/test'
 import { BASE_URL } from '../constants'
 
 export type ModalFlavor = 'default' | 'siwe'
@@ -29,8 +30,19 @@ export class ModalPage {
     await this.page.goto(this.url)
     await this.connectButton.click()
     await this.page.getByTestId('wallet-selector-walletconnect').click()
-    await this.page.waitForTimeout(2000)
-    await this.page.getByTestId('copy-wc2-uri').click()
+    await expect
+      .poll(
+        async () => {
+          await this.page.getByTestId('copy-wc2-uri').click()
+
+          return await this.page.evaluate('navigator.clipboard.readText()')
+        },
+        {
+          message: 'Ensure WC URI is set',
+          timeout: 5000
+        }
+      )
+      .toContain('wc')
   }
 
   async disconnect() {

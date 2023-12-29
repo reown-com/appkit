@@ -9,12 +9,12 @@ export default defineConfig<ModalFixture>({
   testDir: './tests',
 
   fullyParallel: true,
-  retries: process.env['CI'] ? 2 : 0,
-  workers: process.env['CI'] ? 1 : undefined,
+  retries: process.env['CI'] ? 0 : 0,
+  workers: process.env['CI'] ? 4 : 1,
   reporter: [['list'], ['html']],
 
   expect: {
-    timeout: (process.env['CI'] ? 60 : 15) * 1000
+    timeout: 5 * 1000
   },
   timeout: 60 * 1000,
 
