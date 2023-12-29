@@ -5,20 +5,25 @@ export class ModalPage {
   private readonly baseURL = BASE_URL
 
   private readonly connectButton: Locator
+  private readonly url: string
 
   constructor(
     public readonly page: Page,
-    public readonly library: string
+    public readonly library: string,
+    public readonly siwe: boolean
   ) {
     this.connectButton = this.page.getByTestId('connect-button')
+    this.url = this.siwe
+      ? `${this.baseURL}library/${this.library}-siwe/`
+      : `${this.baseURL}library/${this.library}/`
   }
 
   async load() {
-    await this.page.goto(`${this.baseURL}library/${this.library}/`)
+    await this.page.goto(this.url)
   }
 
   async copyConnectUriToClipboard() {
-    await this.page.goto(`${this.baseURL}library/${this.library}/`)
+    await this.page.goto(this.url)
     await this.connectButton.click()
     await this.page.getByTestId('wallet-selector-walletconnect').click()
     await this.page.waitForTimeout(2000)
@@ -32,6 +37,10 @@ export class ModalPage {
 
   async sign() {
     await this.page.getByTestId('sign-message-button').click()
+  }
+
+  async promptSiwe() {
+    await this.page.getByTestId('w3m-connecting-siwe-sign').click()
   }
 
   async switchNetwork(network: string) {
