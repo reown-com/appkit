@@ -9,12 +9,12 @@ export default defineConfig<ModalFixture>({
   testDir: './tests',
 
   fullyParallel: true,
-  retries: process.env['CI'] ? 2 : 0,
-  workers: process.env['CI'] ? 1 : undefined,
+  retries: 0,
+  workers: 2,
   reporter: [['list'], ['html']],
 
   expect: {
-    timeout: (process.env['CI'] ? 60 : 15) * 1000
+    timeout: 30 * 1000
   },
   timeout: 60 * 1000,
 
@@ -25,7 +25,7 @@ export default defineConfig<ModalFixture>({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
 
-    video: process.env['CI'] ? 'off' : 'on-first-retry'
+    video: 'retain-on-failure'
   },
 
   /* Configure projects for major browsers */

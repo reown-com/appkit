@@ -67,6 +67,12 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
+          name: videos
+          path: ./apps/laboratory/test-results/
+          retention-days: 7
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
           name: screenshots
           path: ./apps/laboratory/screenshots/
           retention-days: 7

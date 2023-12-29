@@ -19,12 +19,17 @@ export class WalletPage {
   async connect() {
     await this.gotoHome.click()
 
+    await this.page.waitForTimeout(3000)
+
     await this.page.getByTestId('uri-input').click()
 
     // Paste clipboard
     const isMac = process.platform === 'darwin'
     const modifier = isMac ? 'Meta' : 'Control'
     await this.page.keyboard.press(`${modifier}+KeyV`)
+
+    await this.page.waitForTimeout(2000)
+
     await this.page.getByTestId('uri-connect-button').click()
   }
 

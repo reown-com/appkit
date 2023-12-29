@@ -15,10 +15,14 @@ export class WalletValidator {
   }
 
   async expectDisconnected() {
-    await this.page.waitForTimeout(1000)
-    await this.page.reload()
-    await this.gotoSessions.click()
-    await expect(this.page.getByTestId('session-card')).not.toBeVisible()
+    await expect.poll(async () => {
+      await this.page.reload()
+      await this.gotoSessions.click()
+      return await this.page.getByTestId('session-card').isVisible()
+    }, {
+      message: 'All sessions should be disconnected',
+      timeout: 15000,
+    }).toBe(false)
   }
 
   async expectReceivedSign({ chainName = 'Ethereum' }) {
