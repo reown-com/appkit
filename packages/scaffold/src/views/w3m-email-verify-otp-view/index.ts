@@ -31,13 +31,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
   private OTPTimeout: NodeJS.Timeout | undefined
 
   public override firstUpdated() {
-    this.OTPTimeout = setInterval(() => {
-      if (this.timeoutTimeLeft > 0) {
-        this.timeoutTimeLeft -= 1
-      } else {
-        clearInterval(this.OTPTimeout)
-      }
-    }, 1000)
+    this.startOTPTimeout()
   }
 
   public override disconnectedCallback() {
@@ -85,6 +79,16 @@ export class W3mEmailVerifyOtpView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private startOTPTimeout() {
+    this.OTPTimeout = setInterval(() => {
+      if (this.timeoutTimeLeft > 0) {
+        this.timeoutTimeLeft -= 1
+      } else {
+        clearInterval(this.OTPTimeout)
+      }
+    }, 1000)
+  }
+
   private async onOtpInputChange(event: CustomEvent<string>) {
     try {
       if (!this.loading) {
@@ -117,6 +121,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
         this.loading = true
         await emailConnector.provider.connectEmail({ email: this.email })
         SnackController.showSuccess('Code email resent')
+        this.startOTPTimeout()
       }
     } catch (error) {
       SnackController.showError(error)
