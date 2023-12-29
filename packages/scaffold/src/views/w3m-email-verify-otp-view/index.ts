@@ -120,8 +120,8 @@ export class W3mEmailVerifyOtpView extends LitElement {
           throw new Error('w3m-email-login-widget: Unable to resend email')
         }
         this.loading = true
-        this.startOTPTimeout()
         await emailConnector.provider.connectEmail({ email: this.email })
+        this.startOTPTimeout()
         SnackController.showSuccess('Code email resent')
       }
     } catch (error) {
