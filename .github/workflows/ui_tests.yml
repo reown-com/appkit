@@ -34,12 +34,22 @@ jobs:
           node-version: 18.x
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
+      - name: Get installed Playwright version
+        id: playwright-version
+        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
+      - name: Cache playwright binaries
+        uses: actions/cache@v3
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
       - name: install
         run: npm ci
       - name: build
         run: npm run build
       - name: Install Playwright Browsers
-        working-directory: ./apps/laboratory/
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npm run playwright:install
       - name: Run Playwright tests
         env:
