@@ -15,6 +15,7 @@ export class WalletValidator {
   }
 
   async expectDisconnected() {
+    // There is an issue in ethers where the `.disconnect` might not be done
     await this.page.waitForTimeout(2000)
     await this.page.reload()
     await this.gotoSessions.click()

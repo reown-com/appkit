@@ -30,6 +30,7 @@ export class ModalPage {
     await this.page.goto(this.url)
     await this.connectButton.click()
     await this.page.getByTestId('wallet-selector-walletconnect').click()
+    // There is an issue in the modal where the URI might not be set
     await expect
       .poll(
         async () => {

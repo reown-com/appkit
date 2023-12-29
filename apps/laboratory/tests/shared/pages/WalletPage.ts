@@ -24,6 +24,7 @@ export class WalletPage {
     // Paste clipboard
     const isMac = process.platform === 'darwin'
     const modifier = isMac ? 'Meta' : 'Control'
+    // There is an issue in the wallet where the connect modal might not be ready
     await this.page.waitForTimeout(1000)
     await this.page.keyboard.press(`${modifier}+KeyV`)
     await this.page.getByTestId('uri-connect-button').click()
