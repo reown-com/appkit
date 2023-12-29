@@ -1,7 +1,7 @@
 import type { Locator, Page } from '@playwright/test'
 import { BASE_URL } from '../constants'
 
-export type ModalFlavor = 'default' | 'siwe'
+export type ModalFlavor = 'default' | 'siwe' | 'email'
 
 export class ModalPage {
   private readonly baseURL = BASE_URL
@@ -16,8 +16,8 @@ export class ModalPage {
   ) {
     this.connectButton = this.page.getByTestId('connect-button')
     this.url =
-      flavor === 'siwe'
-        ? `${this.baseURL}library/${this.library}-siwe/`
+      flavor !== 'default'
+        ? `${this.baseURL}library/${this.library}-${this.flavor}/`
         : `${this.baseURL}library/${this.library}/`
   }
 
@@ -31,6 +31,22 @@ export class ModalPage {
     await this.page.getByTestId('wallet-selector-walletconnect').click()
     await this.page.waitForTimeout(2000)
     await this.page.getByTestId('copy-wc2-uri').click()
+  }
+
+  async loginWithEmail(email: string) {
+    await this.page.goto(this.url)
+    await this.connectButton.click()
+    await this.page.getByTestId('wui-email-input').locator('input').focus()
+    await this.page.getByTestId('wui-email-input').locator('input').fill(email)
+    await this.page.getByTestId('wui-email-input').locator('input').press('Enter')
+  }
+
+  async enterOTP(otp: string) {
+    const splitted = otp.split('')
+    for (let i = 0; i < splitted.length; i++) {
+      await this.page.getByTestId('wui-otp-input').locator('input').nth(i).focus()
+      await this.page.getByTestId('wui-otp-input').locator('input').nth(i).fill(splitted[i]!)
+    }
   }
 
   async disconnect() {

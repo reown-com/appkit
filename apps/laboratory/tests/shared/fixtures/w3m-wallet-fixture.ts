@@ -1,4 +1,4 @@
-import { testM as base, testMSiwe as siwe } from './w3m-fixture'
+import { testM as base, testMSiwe as siwe, testMEmail as email } from './w3m-fixture'
 import { WalletPage } from '../pages/WalletPage'
 import { WalletValidator } from '../validators/WalletValidator'
 
