@@ -22,7 +22,8 @@ concurrency:
 jobs:
   ui_tests:
     name: 'Playwright Tests'
-    runs-on: ubuntu-latest
+    runs-on:
+      group: ubuntu-runners
     timeout-minutes: 10
     steps:
       - name: checkout
