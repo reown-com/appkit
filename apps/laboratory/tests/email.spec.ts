@@ -25,7 +25,6 @@ testMEmail.beforeEach(async ({ modalPage, context, modalValidator }) => {
 
   await modalPage.enterOTP(otp)
   await modalValidator.expectConnected()
-  
 })
 
 testMEmail('it should sign', async ({ modalPage, modalValidator }) => {

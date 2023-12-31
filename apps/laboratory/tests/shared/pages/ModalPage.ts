@@ -59,7 +59,10 @@ export class ModalPage {
   }
 
   async appoveSign() {
-    await this.page.frameLocator('#w3m-iframe').getByRole('button', { name: 'Sign', exact: true }).click()
+    await this.page
+      .frameLocator('#w3m-iframe')
+      .getByRole('button', { name: 'Sign', exact: true })
+      .click()
   }
 
   async promptSiwe() {

@@ -4,7 +4,7 @@ export class Email {
   private readonly mailsac: Mailsac<any>
   private messageCount: any
   constructor(public readonly apiKey: string) {
-    this.mailsac = new Mailsac({ headers: {  "Mailsac-Key": apiKey } })
+    this.mailsac = new Mailsac({ headers: { 'Mailsac-Key': apiKey } })
     this.messageCount = undefined
   }
 
@@ -20,7 +20,7 @@ export class Email {
       }, 15000)
     })
 
-    const messagePoll = new Promise((resolve) => {
+    const messagePoll = new Promise(resolve => {
       const interval = setInterval(async () => {
         const messages = await this.mailsac.messages.listMessages(email)
         if (messages.data.length > this.messageCount) {
