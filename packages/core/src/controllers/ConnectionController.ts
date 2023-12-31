@@ -74,7 +74,9 @@ export const ConnectionController = {
   },
 
   async connectExternal(options: ConnectExternalOptions) {
+    console.log('ConnectionController: Connecting external', options)
     await this._getClient().connectExternal?.(options)
+    console.log('ConnectionController: Connected external', options)
     StorageUtil.setConnectedConnector(options.type)
   },
 

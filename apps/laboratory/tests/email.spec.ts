@@ -3,7 +3,8 @@ import { DeviceRegistrationPage } from './shared/pages/DeviceRegistrationPage'
 import { Email } from './shared/utils/email'
 
 testMEmail.beforeEach(async ({ modalPage, context, modalValidator }) => {
-  const tempEmail = `web3modal@mailsac.com` // TODO: we pay per user so need to improve this
+  // This is prone to collissions and will be improved later
+  const tempEmail = `web3modal@mailsac.com`
   const email = new Email(process.env['MAILSAC_API_KEY']!)
   await email.deleteAllMessages(tempEmail)
   await modalPage.loginWithEmail(tempEmail)
