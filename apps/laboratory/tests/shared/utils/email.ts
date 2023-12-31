@@ -17,7 +17,7 @@ export class Email {
     const timeout = new Promise((_, reject) => {
       setTimeout(() => {
         reject('timeout')
-      }, 25000)
+      }, 15000)
     })
 
     const messagePoll = new Promise((resolve) => {
@@ -26,7 +26,7 @@ export class Email {
         if (messages.data.length > this.messageCount) {
           clearInterval(interval)
           this.messageCount = messages.data.length
-          const message = messages.data[messages.data.length - 1] as EmailMessage
+          const message = messages.data[0] as EmailMessage
           return resolve(message)
         }
       }, 500)
@@ -37,8 +37,20 @@ export class Email {
 
   async getCodeFromEmail(email: string, messageId: string) {
     const result = await this.mailsac.messages.getBodyPlainText(email, messageId)
-    const regex = /\d{3}\s?\d{3}/
-    const match = result.data.match(regex)
+
+    if (result.data.includes('Approve this login')) {
+      // Get the register.web3modal.com device registration URL
+      const regex = /https:\/\/register.*/
+      const match = result.data.match(regex)
+      if (match) {
+        return match[0]
+      } else {
+        throw new Error('No url found in email: ' + result.data)
+      }
+    }
+
+    const otpRegex = /\d{3}\s?\d{3}/
+    const match = result.data.match(otpRegex)
     if (match) {
       return match[0].replace(/\s/g, '')
     } else {

@@ -58,6 +58,10 @@ export class ModalPage {
     await this.page.getByTestId('sign-message-button').click()
   }
 
+  async appoveSign() {
+    await this.page.frameLocator('#w3m-iframe').getByRole('button', { name: 'Sign', exact: true }).click()
+  }
+
   async promptSiwe() {
     await this.page.getByTestId('w3m-connecting-siwe-sign').click()
   }
