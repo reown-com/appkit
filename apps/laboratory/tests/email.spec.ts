@@ -2,9 +2,14 @@ import { testMEmail } from './shared/fixtures/w3m-fixture'
 import { DeviceRegistrationPage } from './shared/pages/DeviceRegistrationPage'
 import { Email } from './shared/utils/email'
 
+// Prevent collissions by using a semi-random reserved Mailsac email
+const AVAILABLE_MAILSAC_ADDRESSES = 10
+
 testMEmail.beforeEach(async ({ modalPage, context, modalValidator }) => {
   // This is prone to collissions and will be improved later
-  const tempEmail = `web3modal@mailsac.com`
+  const tempEmail = `web3modal${Math.floor(
+    Math.random() * AVAILABLE_MAILSAC_ADDRESSES
+  )}@mailsac.com`
   const email = new Email(process.env['MAILSAC_API_KEY']!)
   await email.deleteAllMessages(tempEmail)
   await modalPage.loginWithEmail(tempEmail)
