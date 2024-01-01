@@ -17,9 +17,9 @@ export class ModalPage {
   ) {
     this.connectButton = this.page.getByTestId('connect-button')
     this.url =
-      flavor !== 'default'
-        ? `${this.baseURL}library/${this.library}-${this.flavor}/`
-        : `${this.baseURL}library/${this.library}/`
+      flavor === 'default'
+        ? `${this.baseURL}library/${this.library}/`
+        : `${this.baseURL}library/${this.library}-${this.flavor}/`
   }
 
   async load() {
@@ -44,9 +44,15 @@ export class ModalPage {
 
   async enterOTP(otp: string) {
     const splitted = otp.split('')
-    for (let i = 0; i < splitted.length; i++) {
+    for (let i = 0; i < splitted.length; i = +1) {
+      const digit = splitted[i]
+      if (!digit) {
+        throw new Error('Invalid OTP')
+      }
+      /* eslint-disable no-await-in-loop */
       await this.page.getByTestId('wui-otp-input').locator('input').nth(i).focus()
-      await this.page.getByTestId('wui-otp-input').locator('input').nth(i).fill(splitted[i]!)
+      /* eslint-disable no-await-in-loop */
+      await this.page.getByTestId('wui-otp-input').locator('input').nth(i).fill(digit)
     }
 
     await expect(this.page.getByText('Confirm Email')).not.toBeVisible()

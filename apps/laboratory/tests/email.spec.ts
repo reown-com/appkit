@@ -10,22 +10,34 @@ testMEmail.beforeEach(async ({ modalPage, context, modalValidator }) => {
   const tempEmail = `web3modal${Math.floor(
     Math.random() * AVAILABLE_MAILSAC_ADDRESSES
   )}@mailsac.com`
-  const email = new Email(process.env['MAILSAC_API_KEY']!)
+  const mailsacApiKey = process.env['MAILSAC_API_KEY']
+  if (!mailsacApiKey) {
+    throw new Error('MAILSAC_API_KEY is not set')
+  }
+  const email = new Email(mailsacApiKey)
   await email.deleteAllMessages(tempEmail)
   await modalPage.loginWithEmail(tempEmail)
 
-  let latestMessage: any = await email.getNewMessage(tempEmail)
+  let latestMessage = await email.getNewMessage(tempEmail)
   let messageId = latestMessage._id
+
+  if (!messageId) {
+    throw new Error('No messageId found')
+  }
+
   let otp = await email.getCodeFromEmail(tempEmail, messageId)
 
   if (otp.length !== 6) {
-    // device registration
+    // We got a device registration link so let's register first
     const drp = new DeviceRegistrationPage(await context.newPage(), otp)
     drp.load()
     await drp.approveDevice()
 
     latestMessage = await email.getNewMessage(tempEmail)
     messageId = latestMessage._id
+    if (!messageId) {
+      throw new Error('No messageId found')
+    }
     otp = await email.getCodeFromEmail(tempEmail, messageId)
   }
 

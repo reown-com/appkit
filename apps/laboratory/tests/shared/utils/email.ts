@@ -2,31 +2,33 @@ import { Mailsac, type EmailMessage } from '@mailsac/api'
 
 export class Email {
   private readonly mailsac: Mailsac<any>
-  private messageCount: any
+  private messageCount: number
   constructor(public readonly apiKey: string) {
     this.mailsac = new Mailsac({ headers: { 'Mailsac-Key': apiKey } })
-    this.messageCount = undefined
+    this.messageCount = 0
   }
 
   async deleteAllMessages(email: string) {
     this.messageCount = 0
+
     return await this.mailsac.messages.deleteAllMessages(email)
   }
 
   async getNewMessage(email: string) {
-    const timeout = new Promise((_, reject) => {
+    const timeout: Promise<EmailMessage> = new Promise((_, reject) => {
       setTimeout(() => {
-        reject('timeout')
+        return reject(new Error('Timeout waiting for email'))
       }, 15000)
     })
 
-    const messagePoll = new Promise(resolve => {
+    const messagePoll: Promise<EmailMessage> = new Promise(resolve => {
       const interval = setInterval(async () => {
         const messages = await this.mailsac.messages.listMessages(email)
         if (messages.data.length > this.messageCount) {
           clearInterval(interval)
           this.messageCount = messages.data.length
           const message = messages.data[0] as EmailMessage
+
           return resolve(message)
         }
       }, 500)
@@ -40,21 +42,21 @@ export class Email {
 
     if (result.data.includes('Approve this login')) {
       // Get the register.web3modal.com device registration URL
-      const regex = /https:\/\/register.*/
+      const regex = /https:\/\/register.*/u
       const match = result.data.match(regex)
       if (match) {
         return match[0]
-      } else {
-        throw new Error('No url found in email: ' + result.data)
       }
+
+      throw new Error(`No url found in email: ${result.data}`)
     }
 
-    const otpRegex = /\d{3}\s?\d{3}/
+    const otpRegex = /\d{3}\s?\d{3}/u
     const match = result.data.match(otpRegex)
     if (match) {
-      return match[0].replace(/\s/g, '')
-    } else {
-      throw new Error('No code found in email: ' + result.data)
+      return match[0].replace(/\s/gu, '')
     }
+
+    throw new Error(`No code found in email: ${result.data}`)
   }
 }
