@@ -1,4 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
+import { expect } from '@playwright/test'
 import { BASE_URL } from '../constants'
 
 export type ModalFlavor = 'default' | 'siwe' | 'email'
@@ -47,6 +48,8 @@ export class ModalPage {
       await this.page.getByTestId('wui-otp-input').locator('input').nth(i).focus()
       await this.page.getByTestId('wui-otp-input').locator('input').nth(i).fill(splitted[i]!)
     }
+
+    await expect(this.page.getByText('Confirm Email')).not.toBeVisible()
   }
 
   async disconnect() {
@@ -59,6 +62,10 @@ export class ModalPage {
   }
 
   async appoveSign() {
+    await expect(
+      this.page.frameLocator('#w3m-iframe').getByText('requests a signature')
+    ).toBeVisible()
+    await this.page.waitForTimeout(2000)
     await this.page
       .frameLocator('#w3m-iframe')
       .getByRole('button', { name: 'Sign', exact: true })
