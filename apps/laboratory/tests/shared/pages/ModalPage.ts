@@ -44,7 +44,7 @@ export class ModalPage {
 
   async enterOTP(otp: string) {
     const splitted = otp.split('')
-    for (let i = 0; i < splitted.length; i = +1) {
+    for (let i = 0; i < splitted.length; i =+ 1) {
       const digit = splitted[i]
       if (!digit) {
         throw new Error('Invalid OTP')
