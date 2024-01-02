@@ -6,7 +6,8 @@ import {
   ModalController,
   EventsController,
   ConnectionController,
-  ConnectorController
+  ConnectorController,
+  CoreHelperUtil
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -28,6 +29,8 @@ export class W3mEmailVerifyOtpView extends LitElement {
   @state() private loading = false
 
   @state() private timeoutTimeLeft = W3mFrameHelpers.getTimeToNextEmailLogin()
+
+  @state() private error = ''
 
   private OTPTimeout: NodeJS.Timeout | undefined
 
@@ -63,11 +66,18 @@ export class W3mEmailVerifyOtpView extends LitElement {
 
         ${this.loading
           ? html`<wui-loading-spinner size="xl" color="accent-100"></wui-loading-spinner>`
-          : html`<wui-otp
-              dissabled
-              length="6"
-              @inputChange=${this.onOtpInputChange.bind(this)}
-            ></wui-otp>`}
+          : html` <wui-flex flexDirection="column" alignItems="center" gap="xs">
+              <wui-otp
+                dissabled
+                length="6"
+                @inputChange=${this.onOtpInputChange.bind(this)}
+              ></wui-otp>
+              ${this.error
+                ? html`<wui-text variant="small-400" color="error-100"
+                    >${this.error}. Try Again</wui-text
+                  >`
+                : null}
+            </wui-flex>`}
 
         <wui-flex alignItems="center">
           <wui-text variant="small-400" color="fg-200">Didn't receive it?</wui-text>
@@ -107,7 +117,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
         }
       }
     } catch (error) {
-      SnackController.showError(error)
+      this.error = CoreHelperUtil.parseError(error)
       this.loading = false
     }
   }

@@ -1,4 +1,4 @@
-import { ConnectorController } from '@web3modal/core'
+import { ConnectorController, CoreHelperUtil } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -111,7 +111,8 @@ export class W3mEmailLoginWidget extends LitElement {
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      if (error?.message?.includes('Invalid email')) {
+      const parsedError = CoreHelperUtil.parseError(error)
+      if (parsedError?.includes('Invalid email')) {
         this.error = 'Invalid email. Try again.'
       } else {
         SnackController.showError(error)
