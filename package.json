@@ -45,10 +45,10 @@
     "examples/*"
   ],
   "devDependencies": {
-    "@types/react": "18.2.45",
+    "@types/react": "18.2.46",
     "@types/react-dom": "18.2.18",
-    "@typescript-eslint/eslint-plugin": "6.15.0",
-    "@typescript-eslint/parser": "6.15.0",
+    "@typescript-eslint/eslint-plugin": "6.17.0",
+    "@typescript-eslint/parser": "6.17.0",
     "danger": "11.3.1",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
@@ -59,10 +59,10 @@
     "react-dom": "18.2.0",
     "turbo": "1.11.2",
     "typescript": "5.3.3",
-    "viem": "1.20.3",
+    "viem": "1.21.4",
     "vite": "5.0.10",
-    "vitest": "1.1.0",
-    "vue": "3.3.13",
+    "vitest": "1.1.1",
+    "vue": "3.4.3",
     "wagmi": "1.4.12"
   }
 }
