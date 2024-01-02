@@ -10,6 +10,7 @@ import {
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { W3mFrameHelpers } from '@web3modal/wallet'
 
 // -- Helpers ------------------------------------------- //
 const OTP_LENGTH = 6
@@ -26,7 +27,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private loading = false
 
-  @state() private timeoutTimeLeft = 30
+  @state() private timeoutTimeLeft = W3mFrameHelpers.getTimeToNextEmailLogin()
 
   private OTPTimeout: NodeJS.Timeout | undefined
 
@@ -80,10 +81,9 @@ export class W3mEmailVerifyOtpView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private startOTPTimeout() {
-    this.timeoutTimeLeft = 30
     this.OTPTimeout = setInterval(() => {
       if (this.timeoutTimeLeft > 0) {
-        this.timeoutTimeLeft -= 1
+        this.timeoutTimeLeft = W3mFrameHelpers.getTimeToNextEmailLogin()
       } else {
         clearInterval(this.OTPTimeout)
       }

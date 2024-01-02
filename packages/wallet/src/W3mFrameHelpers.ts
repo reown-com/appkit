@@ -37,5 +37,17 @@ export const W3mFrameHelpers = {
         throw new Error(`Please try again after ${cooldownSec} seconds`)
       }
     }
+  },
+
+  getTimeToNextEmailLogin() {
+    const lastEmailLoginTime = W3mFrameStorage.get(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME)
+    if (lastEmailLoginTime) {
+      const difference = Date.now() - Number(lastEmailLoginTime)
+      if (difference < 30_000) {
+        return Math.ceil((30_000 - difference) / 1000)
+      }
+    }
+
+    return 0
   }
 }
