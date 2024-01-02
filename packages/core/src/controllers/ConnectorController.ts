@@ -34,6 +34,10 @@ export const ConnectorController = {
     return state.connectors.find(c => c.type === 'EMAIL') as EmailConnector | undefined
   },
 
+  getAnnouncedConnectorRdns() {
+    return state.connectors.filter(c => c.type === 'ANNOUNCED').map(c => c.info?.rdns)
+  },
+
   getConnectors() {
     return state.connectors
   }
