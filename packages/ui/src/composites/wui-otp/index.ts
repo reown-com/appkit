@@ -24,6 +24,7 @@ export class WuiOtp extends LitElement {
     if (numericElements) {
       this.numerics = Array.from(numericElements)
     }
+    this.numerics[0]?.focus()
   }
 
   // -- Render -------------------------------------------- //
