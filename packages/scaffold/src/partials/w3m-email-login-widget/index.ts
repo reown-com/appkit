@@ -109,6 +109,7 @@ export class W3mEmailLoginWidget extends LitElement {
       } else if (action === 'VERIFY_DEVICE') {
         RouterController.push('EmailVerifyDevice', { email: this.email })
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error?.validation === 'email') {
         this.error = 'Invalid email. Try again'
