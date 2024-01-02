@@ -1,4 +1,4 @@
-import { proxy, subscribe as sub } from 'valtio/vanilla'
+import { proxy, subscribe as sub, snapshot } from 'valtio/vanilla'
 import type { ThemeMode, ThemeVariables } from '../utils/TypeUtil.js'
 
 // -- Types --------------------------------------------- //
@@ -27,5 +27,9 @@ export const ThemeController = {
 
   setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
     state.themeVariables = { ...state.themeVariables, ...themeVariables }
+  },
+
+  getSnapshot() {
+    return snapshot(state)
   }
 }
