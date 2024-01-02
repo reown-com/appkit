@@ -6,7 +6,6 @@ import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
 import { SnackController, RouterController } from '@web3modal/core'
-import { z } from 'zod'
 
 @customElement('w3m-email-login-widget')
 export class W3mEmailLoginWidget extends LitElement {
@@ -97,12 +96,6 @@ export class W3mEmailLoginWidget extends LitElement {
       if (this.loading) {
         return
       }
-      const { success: isEmailValid } = z.string().email().safeParse(this.email)
-      if (!isEmailValid) {
-        this.error = 'Invalid email. Try again'
-
-        return
-      }
       this.loading = true
       event.preventDefault()
       const emailConnector = ConnectorController.getEmailConnector()
@@ -116,8 +109,12 @@ export class W3mEmailLoginWidget extends LitElement {
       } else if (action === 'VERIFY_DEVICE') {
         RouterController.push('EmailVerifyDevice', { email: this.email })
       }
-    } catch (error) {
-      SnackController.showError(error)
+    } catch (error: any) {
+      if (error?.validation === 'email') {
+        this.error = 'Invalid email. Try again'
+      } else {
+        SnackController.showError(error)
+      }
     } finally {
       this.loading = false
     }
