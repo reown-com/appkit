@@ -111,8 +111,8 @@ export class W3mEmailLoginWidget extends LitElement {
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      if (error?.validation === 'email') {
-        this.error = 'Invalid email. Try again'
+      if (error?.message?.includes('Invalid email')) {
+        this.error = 'Invalid email. Try again.'
       } else {
         SnackController.showError(error)
       }
