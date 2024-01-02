@@ -70,6 +70,7 @@ export class W3mConnectView extends LitElement {
         @click=${() => this.onConnector(connector)}
         tagLabel="qr code"
         tagVariant="main"
+        data-testid="wallet-selector-walletconnect"
       >
       </wui-list-wallet>
     `
@@ -214,6 +215,7 @@ export class W3mConnectView extends LitElement {
         @click=${this.onAllWallets.bind(this)}
         tagLabel=${tagLabel}
         tagVariant="shade"
+        data-testid="all-wallets"
       ></wui-list-wallet>
     `
   }

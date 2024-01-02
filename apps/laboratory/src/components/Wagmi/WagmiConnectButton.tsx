@@ -1,13 +1,10 @@
 import { Button, useToast } from '@chakra-ui/react'
-import { useAccount, useSignMessage, useSignTypedData } from 'wagmi'
+import { useAccount, useNetwork, useSignMessage, useSignTypedData } from 'wagmi'
+import { WagmiTransactionButton } from './WagmiTransactionButton'
+import { useEffect, useState } from 'react'
+import { SigningFailedToastTitle, SigningSucceededToastTitle } from '../../constants'
 
 // Example data
-const domain = {
-  name: 'Ether Mail',
-  version: '1',
-  chainId: 1,
-  verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
-} as const
 
 const types = {
   Person: [
@@ -37,21 +34,41 @@ const message = {
 export function WagmiConnectButton() {
   const toast = useToast()
   const { isConnected } = useAccount()
+  const { chain } = useNetwork()
   const { signMessageAsync } = useSignMessage({ message: 'Hello Web3Modal!' })
+  const domain = {
+    name: 'Ether Mail',
+    version: '1',
+    chainId: chain?.id,
+    verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
+  } as const
+
   const { signTypedDataAsync } = useSignTypedData({
     domain,
     message,
     primaryType: 'Mail',
     types
   })
+  const [connector, setConnector] = useState<string | null>(null)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setConnector(localStorage.getItem('@w3m/connected_connector'))
+    }, 0)
+  }, [isConnected])
 
   async function onSignMessage() {
     try {
       const signature = await signMessageAsync()
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast({
+        title: SigningSucceededToastTitle,
+        description: signature,
+        status: 'success',
+        isClosable: true
+      })
     } catch {
       toast({
-        title: 'Error',
+        title: SigningFailedToastTitle,
         description: 'Failed to sign message',
         status: 'error',
         isClosable: true
@@ -67,7 +84,7 @@ export function WagmiConnectButton() {
         primaryType: 'Mail',
         types
       })
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast({ title: 'Success', description: signature, status: 'success', isClosable: true })
     } catch {
       toast({
         title: 'Error',
@@ -83,8 +100,13 @@ export function WagmiConnectButton() {
       <w3m-button />
       {isConnected ? (
         <>
-          <Button onClick={() => onSignMessage()}>Sign Message</Button>
-          <Button onClick={() => onSignTypedData()}>Sign Typed Data</Button>
+          <Button data-testid="sign-message-button" onClick={onSignMessage}>
+            Sign Message
+          </Button>
+          <Button data-testid="sign-typed-data-button" onClick={onSignTypedData}>
+            Sign Typed Data
+          </Button>
+          {connector === 'EMAIL' ? <WagmiTransactionButton /> : null}
         </>
       ) : null}
     </>

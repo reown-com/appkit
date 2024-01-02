@@ -21,6 +21,7 @@ import {
 } from '../../utils/ChainsUtil'
 import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from '@web3modal/core'
 import { createSIWEConfig } from '@web3modal/siwe'
+import { TestIdSiweAuthenticationStatus } from '../../constants'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {
@@ -133,7 +134,7 @@ export default function EthersSiwe() {
       </Center>
       <Center h="65vh">
         <VStack gap={4}>
-          <Text>SIWE Status: {status}</Text>
+          <Text data-testid={TestIdSiweAuthenticationStatus}>SIWE Status: {status}</Text>
           {session && (
             <>
               <Text>Network: eip155:{session.chainId}</Text>
