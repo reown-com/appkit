@@ -21,7 +21,9 @@ export interface RouterControllerState {
     | 'EmailVerifyDevice'
     | 'ApproveTransaction'
     | 'Transactions'
-    | 'UpgradeWallet'
+    | 'UpgradeEmailWallet'
+    | 'UpdateEmailWallet'
+    | 'UpdateEmailWalletWaiting'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
@@ -71,6 +73,16 @@ export const RouterController = {
   goBack() {
     if (state.history.length > 1) {
       state.history.pop()
+      const [last] = state.history.slice(-1)
+      if (last) {
+        state.view = last
+      }
+    }
+  },
+
+  goBackToIndex(historyIndex: number) {
+    if (state.history.length > 1) {
+      state.history = state.history.slice(0, historyIndex + 1)
       const [last] = state.history.slice(-1)
       if (last) {
         state.view = last

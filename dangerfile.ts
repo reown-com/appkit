@@ -278,8 +278,9 @@ checkSdkVersion()
 async function checkDevelopmentConstants() {
   for (const f of updated_files) {
     const diff = await diffForFile(f)
+    const fileContent = await danger.github.utils.fileContents(f)
 
-    if (diff?.added.includes('localhost:')) {
+    if (diff?.added.includes('localhost:') && !fileContent.includes('// Allow localhost')) {
       fail(`${f} uses localhost: which is likely a mistake`)
     }
   }

@@ -9,6 +9,7 @@ import {
   SnackController,
   ConnectorController,
   StorageUtil,
+  ConstantsUtil,
   AssetUtil
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
@@ -23,8 +24,6 @@ export class W3mAccountView extends LitElement {
 
   // -- Members -------------------------------------------- //
   private usubscribe: (() => void)[] = []
-
-  private readonly connectors = ConnectorController.state.connectors
 
   // -- State & Properties --------------------------------- //
   @state() private address = AccountController.state.address
@@ -125,7 +124,7 @@ export class W3mAccountView extends LitElement {
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
-        ${this.emailCardTemplate()}
+        ${this.emailCardTemplate()} ${this.emailBtnTemplate()}
 
         <wui-list-item
           .variant=${networkImage ? 'image' : 'icon'}
@@ -134,6 +133,7 @@ export class W3mAccountView extends LitElement {
           imageSrc=${ifDefined(networkImage)}
           ?chevron=${this.isAllowedNetworkSwitch()}
           @click=${this.onNetworks.bind(this)}
+          data-testid="w3m-account-select-network"
         >
           <wui-text variant="paragraph-500" color="fg-100">
             ${this.network?.name ?? 'Unknown'}
@@ -155,6 +155,7 @@ export class W3mAccountView extends LitElement {
           ?chevron=${false}
           .loading=${this.disconecting}
           @click=${this.onDisconnect.bind(this)}
+          data-testid="disconnect-button"
         >
           <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
         </wui-list-item>
@@ -165,8 +166,9 @@ export class W3mAccountView extends LitElement {
   // -- Private ------------------------------------------- //
   private emailCardTemplate() {
     const type = StorageUtil.getConnectedConnector()
-    const isEmail = this.connectors.find(c => c.type === 'EMAIL')
-    if (!isEmail || type !== 'EMAIL') {
+    const emailConnector = ConnectorController.getEmailConnector()
+    const { origin } = location
+    if (!emailConnector || type !== 'EMAIL' || origin.includes(ConstantsUtil.SECURE_SITE)) {
       return null
     }
 
@@ -177,6 +179,28 @@ export class W3mAccountView extends LitElement {
         description="Transition to a non-custodial wallet"
         icon="wallet"
       ></wui-notice-card>
+    `
+  }
+
+  private emailBtnTemplate() {
+    const type = StorageUtil.getConnectedConnector()
+    const emailConnector = ConnectorController.getEmailConnector()
+    if (!emailConnector || type !== 'EMAIL') {
+      return null
+    }
+    const email = emailConnector.provider.getEmail() ?? ''
+
+    return html`
+      <wui-list-item
+        variant="icon"
+        iconVariant="overlay"
+        icon="mail"
+        iconSize="sm"
+        ?chevron=${true}
+        @click=${() => this.onGoToUpdateEmail(email)}
+      >
+        <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
+      </wui-list-item>
     `
   }
 
@@ -248,7 +272,11 @@ export class W3mAccountView extends LitElement {
   }
 
   private onGoToUpgradeView() {
-    RouterController.push('UpgradeWallet')
+    RouterController.push('UpgradeEmailWallet')
+  }
+
+  private onGoToUpdateEmail(email: string) {
+    RouterController.push('UpdateEmailWallet', { email })
   }
 }
 

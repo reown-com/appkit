@@ -16,6 +16,8 @@ export class WuiEmailInput extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
+  @property() public value?: string
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -24,6 +26,7 @@ export class WuiEmailInput extends LitElement {
         icon="mail"
         size="md"
         .disabled=${this.disabled}
+        .value=${this.value}
       ></wui-input-text>
       ${this.templateError()}
     `

@@ -62,13 +62,30 @@ export class W3mNetworksView extends LitElement {
     const { approvedCaipNetworkIds, requestedCaipNetworks, supportsAllNetworks } =
       NetworkController.state
     const approvedIds = approvedCaipNetworkIds
-    const requested = requestedCaipNetworks
+    const requestedNetworks = requestedCaipNetworks
+    const approvedIndexMap: Record<string, number> = {}
+    if (requestedNetworks && approvedIds) {
+      approvedIds.forEach((id, index) => {
+        approvedIndexMap[id] = index
+      })
 
-    if (approvedIds?.length) {
-      requested?.sort((a, b) => approvedIds.indexOf(b.id) - approvedIds.indexOf(a.id))
+      requestedNetworks.sort((a, b) => {
+        const indexA = approvedIndexMap[a.id]
+        const indexB = approvedIndexMap[b.id]
+
+        if (indexA !== undefined && indexB !== undefined) {
+          return indexA - indexB
+        } else if (indexA !== undefined) {
+          return -1
+        } else if (indexB !== undefined) {
+          return 1
+        }
+
+        return 0
+      })
     }
 
-    return requested?.map(
+    return requestedNetworks?.map(
       network => html`
         <wui-card-select
           .selected=${this.caipNetwork?.id === network.id}
@@ -77,6 +94,7 @@ export class W3mNetworksView extends LitElement {
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
           .disabled=${!supportsAllNetworks && !approvedIds?.includes(network.id)}
+          data-testid=${`w3m-network-switch-${network.name ?? network.id}`}
         ></wui-card-select>
       `
     )

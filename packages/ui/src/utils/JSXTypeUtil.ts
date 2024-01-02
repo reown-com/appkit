@@ -43,6 +43,9 @@ import type { WuiTransactionVisual } from '../composites/wui-transaction-visual/
 import type { WuiVisualThumbnail } from '../composites/wui-visual-thumbnail/index.js'
 import type { WuiWalletImage } from '../composites/wui-wallet-image/index.js'
 import type { WuiNoticeCard } from '../composites/wui-notice-card/index.js'
+import type { WuiListAccordion } from '../composites/wui-list-accordion/index.js'
+import type { WuiListContent } from '../composites/wui-list-content/index.js'
+import type { WuiListWalletTransaction } from '../composites/wui-list-wallet-transaction/index.js'
 
 import type { WuiFlex } from '../layout/wui-flex/index.js'
 import type { WuiGrid } from '../layout/wui-grid/index.js'
@@ -101,6 +104,9 @@ declare global {
       'wui-grid': CustomElement<WuiGrid>
       'wui-separator': CustomElement<WuiSeparator>
       'wui-notice-card': CustomElement<WuiNoticeCard>
+      'wui-list-accordion': CustomElement<WuiListAccordion>
+      'wui-list-content': CustomElement<WuiListContent>
+      'wui-list-wallet-transaction': CustomElement<WuiListWalletTransaction>
     }
   }
 }

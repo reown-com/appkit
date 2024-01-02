@@ -32,10 +32,12 @@ function headings() {
     GetWallet: 'Get a wallet',
     Downloads: name ? `Get ${name}` : 'Downloads',
     EmailVerifyOtp: 'Confirm Email',
-    EmailVerifyDevice: '',
+    EmailVerifyDevice: 'Register Device',
     ApproveTransaction: 'Approve Transaction',
     Transactions: 'Activity',
-    UpgradeWallet: 'Upgrade your Wallet'
+    UpgradeEmailWallet: 'Upgrade your Wallet',
+    UpdateEmailWallet: 'Edit Email',
+    UpdateEmailWalletWaiting: 'Approve Email'
   }
 }
 
@@ -77,6 +79,7 @@ export class W3mHeader extends LitElement {
           ?disabled=${this.buffering}
           icon="close"
           @click=${this.onClose.bind(this)}
+          data-testid="w3m-header-close"
         ></wui-icon-link>
       </wui-flex>
       ${this.separatorTemplate()}
@@ -125,7 +128,7 @@ export class W3mHeader extends LitElement {
   }
 
   private separatorTemplate() {
-    if (!this.heading || RouterController.state.view === 'EmailVerifyDevice') {
+    if (!this.heading) {
       return null
     }
 

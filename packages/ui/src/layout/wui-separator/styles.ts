@@ -14,6 +14,6 @@ export default css`
   :host > wui-text {
     position: absolute;
     padding: 0px 10px;
-    background-color: var(--wui-color-bg-125);
+    background-color: var(--wui-color-modal-bg);
   }
 `
