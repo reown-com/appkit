@@ -74,6 +74,24 @@ export default css`
     box-shadow: 0 0 0 2px var(--wui-accent-glass-010);
   }
 
+  @media (max-width: 500px) {
+    button {
+      gap: 0px;
+    }
+    wui-image,
+    wui-icon-box,
+    button > wui-text {
+      visibility: hidden;
+      width: 0px;
+      height: 0px;
+    }
+    button > wui-flex {
+      border-radius: 0px;
+      border: none;
+      background: transparent;
+    }
+  }
+
   @media (hover: hover) and (pointer: fine) {
     button:hover:enabled > wui-flex > wui-text {
       color: var(--wui-color-fg-175);
