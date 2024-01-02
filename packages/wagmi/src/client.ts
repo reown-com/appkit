@@ -365,10 +365,6 @@ export class Web3Modal extends Web3ModalScaffold {
     const emailConnector = wagmiConfig.connectors.find(({ id }) => id === 'w3mEmail')
     if (emailConnector) {
       const provider = await emailConnector.getProvider()
-      provider.syncTheme({
-        themeMode: this.options?.themeMode,
-        themeVariables: this.options?.themeVariables
-      })
       this.addConnector({
         id: ConstantsUtil.EMAIL_CONNECTOR_ID,
         type: 'EMAIL',
