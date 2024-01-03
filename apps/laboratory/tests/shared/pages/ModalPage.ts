@@ -72,7 +72,7 @@ export class ModalPage {
     await this.page.getByTestId('sign-message-button').click()
   }
 
-  async appoveSign() {
+  async approveSign() {
     await expect(
       this.page.frameLocator('#w3m-iframe').getByText('requests a signature')
     ).toBeVisible()

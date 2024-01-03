@@ -52,6 +52,6 @@ testMEmail.beforeEach(async ({ modalPage, context, modalValidator }) => {
 testMEmail('it should sign', async ({ modalPage, modalValidator }) => {
   testMEmail.skip(modalPage.library === 'wagmi', 'Tests are flaky on wagmi')
   await modalPage.sign()
-  await modalPage.appoveSign()
+  await modalPage.approveSign()
   await modalValidator.expectAcceptedSign()
 })
