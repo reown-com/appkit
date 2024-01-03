@@ -19,7 +19,8 @@ import {
   FrameSession,
   AppGetUserRequest,
   AppUpdateEmailRequest,
-  FrameAwaitUpdateEmailResponse
+  FrameAwaitUpdateEmailResponse,
+  AppSyncThemeRequest
 } from './W3mFrameSchema.js'
 
 export namespace W3mFrameTypes {
@@ -33,6 +34,7 @@ export namespace W3mFrameTypes {
     AppSwitchNetworkRequest: z.infer<typeof AppSwitchNetworkRequest>
     AppGetUserRequest: z.infer<typeof AppGetUserRequest>
     AppUpdateEmailRequest: z.infer<typeof AppUpdateEmailRequest>
+    AppSyncThemeRequest: z.infer<typeof AppSyncThemeRequest>
   }
 
   export interface Responses {

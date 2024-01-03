@@ -21,3 +21,33 @@ testMW('it should sign', async ({ modalPage, walletPage, modalValidator, walletV
   await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAcceptedSign()
 })
+
+testMW(
+  'it should reject sign',
+  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+    await modalPage.sign()
+    await walletValidator.expectReceivedSign({})
+    await walletPage.handleRequest({ accept: false })
+    await modalValidator.expectRejectedSign()
+  }
+)
+
+testMW(
+  'it should switch networks and sign',
+  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+    let targetChain = 'Polygon'
+    await modalPage.switchNetwork(targetChain)
+    await modalPage.sign()
+    await walletValidator.expectReceivedSign({ chainName: targetChain })
+    await walletPage.handleRequest({ accept: true })
+    await modalValidator.expectAcceptedSign()
+
+    // Switch to Ethereum
+    targetChain = 'Ethereum'
+    await modalPage.switchNetwork(targetChain)
+    await modalPage.sign()
+    await walletValidator.expectReceivedSign({ chainName: targetChain })
+    await walletPage.handleRequest({ accept: true })
+    await modalValidator.expectAcceptedSign()
+  }
+)

@@ -14,7 +14,7 @@ export default defineConfig<ModalFixture>({
   reporter: [['list'], ['html']],
 
   expect: {
-    timeout: (process.env['CI'] ? 60 : 5) * 1000
+    timeout: (process.env['CI'] ? 60 : 15) * 1000
   },
   timeout: 60 * 1000,
 

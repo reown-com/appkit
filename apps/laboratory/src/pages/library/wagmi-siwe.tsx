@@ -23,6 +23,7 @@ import { NetworksButton } from '../../components/NetworksButton'
 import { ThemeStore } from '../../utils/StoreUtil'
 import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@web3modal/core'
 import { createSIWEConfig } from '@web3modal/siwe'
+import { TestIdSiweAuthenticationStatus } from '../../constants'
 
 // 1. Get projectId
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
@@ -145,7 +146,7 @@ export default function Wagmi() {
       </Center>
       <Center h="65vh">
         <VStack gap={4}>
-          <Text>Status: {status}</Text>
+          <Text data-testid={TestIdSiweAuthenticationStatus}>Status: {status}</Text>
           {session && (
             <>
               <Text>Network: eip155:{session.chainId}</Text>
