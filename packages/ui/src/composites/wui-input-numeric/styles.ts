@@ -50,8 +50,9 @@ export default css`
     -moz-box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
     box-shadow: 0px 0px 0px 4px var(--wui-box-shadow-blue);
   }
-
-  input:hover:enabled {
-    background-color: var(--wui-gray-glass-010);
+  @media (hover: hover) and (pointer: fine) {
+    input:hover:enabled {
+      background-color: var(--wui-gray-glass-010);
+    }
   }
 `

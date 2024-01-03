@@ -62,7 +62,7 @@ export default css`
     padding: 4px var(--wui-spacing-m) 4px var(--wui-spacing-xxs);
   }
 
-  wui-flex.local-no-balance {
+  button.local-no-balance {
     border-radius: 0px;
     border: none;
     background: transparent;
@@ -77,6 +77,8 @@ export default css`
   @media (max-width: 500px) {
     button {
       gap: 0px;
+      padding: var(--wui-spacing-3xs) var(--wui-spacing-xs) !important;
+      height: 32px;
     }
     wui-image,
     wui-icon-box,
@@ -85,10 +87,11 @@ export default css`
       width: 0px;
       height: 0px;
     }
-    button > wui-flex {
+    button {
       border-radius: 0px;
       border: none;
       background: transparent;
+      padding: 0px;
     }
   }
 

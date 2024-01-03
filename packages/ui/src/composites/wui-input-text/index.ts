@@ -53,7 +53,7 @@ export class WuiInputText extends LitElement {
     if (this.icon) {
       return html`<wui-icon
         data-input=${this.size}
-        size="md"
+        size="sm"
         color="inherit"
         name=${this.icon}
       ></wui-icon>`
