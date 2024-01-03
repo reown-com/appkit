@@ -75,7 +75,9 @@ export class W3mOnRampProvidersView extends LitElement {
 
     return generateOnRampURL({
       appId: ConstantsUtil.WC_COINBASE_ONRAMP_APP_ID,
-      destinationWallets: [{ address, blockchains: ['ethereum'], assets: ['USDC'] }],
+      destinationWallets: [
+        { address, blockchains: ['ethereum', 'avalanche-c-chain', 'polygon'], assets: ['USDC'] }
+      ],
       partnerUserId: address
     })
   }
