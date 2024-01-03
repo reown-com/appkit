@@ -109,11 +109,11 @@ export class W3mEmailVerifyOtpView extends LitElement {
           console.log('w3m-email-verify-otp-view: Connecting with OTP', otp)
           await this.emailConnector.provider.connectOtp({ otp })
           console.log('w3m-email-verify-otp-view: Connected with OTP', otp)
-          const bazooka = setTimeout(() => {
-            console.log('closing modal')
-            ModalController.close()
-            console.log('closed modal')
-          }, 5000)
+          // const bazooka = setTimeout(() => {
+          //   console.log('closing modal')
+          //   ModalController.close()
+          //   console.log('closed modal')
+          // }, 5000)
 
           await ConnectionController.connectExternal(this.emailConnector)
           console.log('closing modal')
@@ -124,7 +124,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
             event: 'CONNECT_SUCCESS',
             properties: { method: 'email' }
           })
-          clearTimeout(bazooka)
+          // clearTimeout(bazooka)
         }
       }
     } catch (error) {
