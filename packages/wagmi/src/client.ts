@@ -158,9 +158,7 @@ export class Web3Modal extends Web3ModalScaffold {
           // @ts-expect-error Exists on EIP6963Connector
           connector.setEip6963Wallet?.({ provider, info })
         }
-        console.log('connectionControllerClient:connectExternal - connecting', connector)
         const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
-        console.log('connectionControllerClient:connectExternal - chainId', chainId)
 
         await connect({ connector, chainId })
       },

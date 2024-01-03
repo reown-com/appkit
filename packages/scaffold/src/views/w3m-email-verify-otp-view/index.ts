@@ -106,25 +106,14 @@ export class W3mEmailVerifyOtpView extends LitElement {
         const otp = event.detail
         if (this.emailConnector && otp.length === OTP_LENGTH) {
           this.loading = true
-          console.log('w3m-email-verify-otp-view: Connecting with OTP', otp)
           await this.emailConnector.provider.connectOtp({ otp })
-          console.log('w3m-email-verify-otp-view: Connected with OTP', otp)
-          // const bazooka = setTimeout(() => {
-          //   console.log('closing modal')
-          //   ModalController.close()
-          //   console.log('closed modal')
-          // }, 5000)
-
           await ConnectionController.connectExternal(this.emailConnector)
-          console.log('closing modal')
           ModalController.close()
-          console.log('sending event')
           EventsController.sendEvent({
             type: 'track',
             event: 'CONNECT_SUCCESS',
             properties: { method: 'email' }
           })
-          // clearTimeout(bazooka)
         }
       }
     } catch (error) {
