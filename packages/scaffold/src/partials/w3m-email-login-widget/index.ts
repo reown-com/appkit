@@ -1,4 +1,4 @@
-import { ConnectorController } from '@web3modal/core'
+import { ConnectorController, CoreHelperUtil } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -22,6 +22,8 @@ export class W3mEmailLoginWidget extends LitElement {
   @state() private email = ''
 
   @state() private loading = false
+
+  @state() private error = ''
 
   public constructor() {
     super()
@@ -57,10 +59,11 @@ export class W3mEmailLoginWidget extends LitElement {
         <wui-email-input
           .disabled=${this.loading}
           @inputChange=${this.onEmailInputChange.bind(this)}
+          .errorMessage=${this.error}
         >
         </wui-email-input>
 
-        ${showSubmit && multipleConnectors
+        ${showSubmit
           ? html`
               <wui-icon-link
                 size="sm"
@@ -71,31 +74,21 @@ export class W3mEmailLoginWidget extends LitElement {
               </wui-icon-link>
             `
           : null}
-        ${this.loading && multipleConnectors
+        ${this.loading
           ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
           : null}
 
         <input type="submit" hidden />
       </form>
 
-      ${multipleConnectors
-        ? html`<wui-separator text="or"></wui-separator>`
-        : html`<wui-button
-            size="md"
-            variant="fill"
-            fullWidth
-            @click=${this.onSubmitEmail.bind(this)}
-            .disabled=${!showSubmit}
-            .loading=${this.loading}
-          >
-            Continue
-          </wui-button>`}
+      ${multipleConnectors ? html`<wui-separator text="or"></wui-separator>` : null}
     `
   }
 
   // -- Private ------------------------------------------- //
   private onEmailInputChange(event: CustomEvent<string>) {
     this.email = event.detail
+    this.error = ''
   }
 
   private async onSubmitEmail(event: Event) {
@@ -103,7 +96,6 @@ export class W3mEmailLoginWidget extends LitElement {
       if (this.loading) {
         return
       }
-
       this.loading = true
       event.preventDefault()
       const emailConnector = ConnectorController.getEmailConnector()
@@ -111,15 +103,20 @@ export class W3mEmailLoginWidget extends LitElement {
       if (!emailConnector) {
         throw new Error('w3m-email-login-widget: Email connector not found')
       }
-
       const { action } = await emailConnector.provider.connectEmail({ email: this.email })
       if (action === 'VERIFY_OTP') {
         RouterController.push('EmailVerifyOtp', { email: this.email })
       } else if (action === 'VERIFY_DEVICE') {
         RouterController.push('EmailVerifyDevice', { email: this.email })
       }
-    } catch (error) {
-      SnackController.showError(error)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      const parsedError = CoreHelperUtil.parseError(error)
+      if (parsedError?.includes('Invalid email')) {
+        this.error = 'Invalid email. Try again.'
+      } else {
+        SnackController.showError(error)
+      }
     } finally {
       this.loading = false
     }

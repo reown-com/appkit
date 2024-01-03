@@ -156,7 +156,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-inverse-100: #fff;
         --wui-color-inverse-000: #000;
 
-        --wui-cover: rgba(0, 0, 0, 0.3);
+        --wui-cover: rgba(20, 20, 20, 0.8);
 
         --wui-color-modal-bg: var(--wui-color-modal-bg-base);
 

@@ -28,16 +28,19 @@ export class WuiAccountButton extends LitElement {
 
   @property() public address = ''
 
+  @property() public charsStart = 4
+
+  @property() public charsEnd = 6
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled}>
+      <button
+        ?disabled=${this.disabled}
+        class=${ifDefined(this.balance ? undefined : 'local-no-balance')}
+      >
         ${this.balanceTemplate()}
-        <wui-flex
-          gap="xxs"
-          alignItems="center"
-          class=${ifDefined(this.balance ? undefined : 'local-no-balance')}
-        >
+        <wui-flex gap="xxs" alignItems="center">
           <wui-avatar
             .imageSrc=${this.avatarSrc}
             alt=${this.address}
@@ -46,8 +49,8 @@ export class WuiAccountButton extends LitElement {
           <wui-text variant="paragraph-600" color="inherit">
             ${UiHelperUtil.getTruncateString({
               string: this.address,
-              charsStart: this.isProfileName ? 18 : 4,
-              charsEnd: this.isProfileName ? 0 : 6,
+              charsStart: this.isProfileName ? 18 : this.charsStart,
+              charsEnd: this.isProfileName ? 0 : this.charsEnd,
               truncate: this.isProfileName ? 'end' : 'middle'
             })}
           </wui-text>
