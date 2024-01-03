@@ -48,6 +48,7 @@ export class ModalPage {
 
   async enterOTP(otp: string) {
     const splitted = otp.split('')
+    // eslint-disable-next-line no-plusplus
     for (let i = 0; i < splitted.length; i++) {
       const digit = splitted[i]
       if (!digit) {

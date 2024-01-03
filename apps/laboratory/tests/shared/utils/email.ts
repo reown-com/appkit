@@ -1,6 +1,7 @@
 import { Mailsac, type EmailMessage } from '@mailsac/api'
 
 export class Email {
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   private readonly mailsac: Mailsac<any>
   private messageCount: number
   constructor(public readonly apiKey: string) {
@@ -15,22 +16,26 @@ export class Email {
   }
 
   async getNewMessage(email: string) {
-    const timeout: Promise<EmailMessage> = new Promise((_, reject) => {
-      setTimeout(() => {
-        return reject(new Error('Timeout waiting for email'))
-      }, 15000)
+    const timeout = new Promise<EmailMessage>((_, reject) => {
+      setTimeout(() => reject(new Error('Timeout waiting for email')), 15000)
     })
 
-    const messagePoll: Promise<EmailMessage> = new Promise(resolve => {
+    const messagePoll = new Promise<EmailMessage>(resolve => {
       const interval = setInterval(async () => {
         const messages = await this.mailsac.messages.listMessages(email)
-        if (messages.data.length > this.messageCount) {
+        if (messages.data.length > 0 && messages.data.length > this.messageCount) {
           clearInterval(interval)
           this.messageCount = messages.data.length
-          const message = messages.data[0] as EmailMessage
+          const message = messages.data[0]
+
+          if (!message) {
+            throw new Error('No message found')
+          }
 
           return resolve(message)
         }
+
+        return undefined
       }, 500)
     })
 
