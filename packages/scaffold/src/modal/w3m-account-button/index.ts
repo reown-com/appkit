@@ -21,6 +21,10 @@ export class W3mAccountButton extends LitElement {
 
   @property() public balance?: 'show' | 'hide' = 'show'
 
+  @property() public charsStart?: WuiAccountButton['charsStart'] = 4
+
+  @property() public charsEnd?: WuiAccountButton['charsEnd'] = 6
+
   @state() private address = AccountController.state.address
 
   @state() private balanceVal = AccountController.state.balance
@@ -79,6 +83,8 @@ export class W3mAccountButton extends LitElement {
           : ''}
         @click=${this.onClick.bind(this)}
         data-testid="account-button"
+        .charsStart=${this.charsStart}
+        .charsEnd=${this.charsEnd}
       >
       </wui-account-button>
     `
