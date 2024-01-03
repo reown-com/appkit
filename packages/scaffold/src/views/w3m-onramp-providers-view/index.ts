@@ -4,7 +4,8 @@ import {
   ConstantsUtil,
   OnRampController,
   type OnRampProvider,
-  RouterController
+  RouterController,
+  NetworkController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -68,15 +69,21 @@ export class W3mOnRampProvidersView extends LitElement {
 
   private getCoinbaseOnRampURL() {
     const address = AccountController.state.address
+    const network = NetworkController.state.caipNetwork
 
     if (!address) {
       throw new Error('No address found')
     }
 
+    if (!network) {
+      throw new Error('No network found')
+    }
+
     return generateOnRampURL({
       appId: ConstantsUtil.WC_COINBASE_ONRAMP_APP_ID,
+      defaultNetwork: network.name,
       destinationWallets: [
-        { address, blockchains: ['ethereum', 'avalanche-c-chain', 'polygon'], assets: ['USDC'] }
+        { address, blockchains: ConstantsUtil.WC_COINBASE_PAY_SDK_CHAINS, assets: ['USDC'] }
       ],
       partnerUserId: address
     })

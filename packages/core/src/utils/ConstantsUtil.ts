@@ -42,6 +42,15 @@ export const ConstantsUtil = {
    * Network name to Coinbase Pay SDK chain name map object
    * @see supported chain names on Coinbase for Pay SDK: https://github.com/coinbase/cbpay-js/blob/d4bda2c05c4d5917c8db6a05476b603546046394/src/types/onramp.ts
    */
+  WC_COINBASE_PAY_SDK_CHAINS: [
+    'ethereum',
+    'arbitrum',
+    'polygon',
+    'avalanche-c-chain',
+    'optimism',
+    'celo'
+  ],
+
   WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP: {
     Ethereum: 'ethereum',
     'Arbitrum One': 'arbitrum',
