@@ -1,9 +1,9 @@
-import { DateUtil } from '@web3modal/common'
+import { DateUtil, type Transaction } from '@web3modal/common'
 import {
-  CoinbaseApiController,
-  type CoinbaseTransaction,
   AccountController,
-  OnRampController
+  OnRampController,
+  BlockchainApiController,
+  OptionsController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -25,10 +25,9 @@ export class W3mOnRampActivityView extends LitElement {
 
   @state() protected loading = false
 
-  @state() private coinbaseTransactions: CoinbaseTransaction[] = []
+  @state() private coinbaseTransactions: Transaction[] = []
 
   public constructor() {
-    console.log('W3mOnRampActivityView')
     super()
     this.unsubscribe.push(
       ...[
@@ -51,27 +50,29 @@ export class W3mOnRampActivityView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onRampActivitiesTemplate() {
-    return this.coinbaseTransactions.map(transaction => {
-      const date = DateUtil.getRelativeDateFromNow(transaction.created_at)
+    return this.coinbaseTransactions?.map(transaction => {
+      const date = DateUtil.getRelativeDateFromNow(transaction.metadata.minedAt)
+      const transfer = transaction.transfers[0]
+      const fungibleInfo = transfer?.fungible_info
+
+      if (!fungibleInfo) return null
 
       return html`
         <wui-onramp-activity-item
           label="Bought"
-          .completed=${transaction.status === 'ONRAMP_TRANSACTION_STATUS_SUCCESS'}
-          .inProgress=${transaction.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'}
-          .failed=${transaction.status === 'ONRAMP_TRANSACTION_STATUS_FAILED'}
-          purchaseCurrency=${transaction.purchase_amount.currency}
-          purchaseValue=${transaction.purchase_amount.value}
+          .completed=${transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_SUCCESS'}
+          .inProgress=${transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'}
+          .failed=${transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_FAILED'}
+          purchaseCurrency=${fungibleInfo.symbol}
+          purchaseValue=${transfer.quantity.numeric}
           date=${date}
-          feeRange=${transaction.payment_total}
         ></wui-onramp-activity-item>
       `
     })
   }
 
   private async fetchTransactions() {
-    const provider = OnRampController.state.selectedProvider?.name
-    console.log('provider', provider)
+    const provider = 'coinbase'
 
     if (provider === 'coinbase') {
       await this.fetchCoinbaseTransactions()
@@ -80,21 +81,26 @@ export class W3mOnRampActivityView extends LitElement {
 
   private async fetchCoinbaseTransactions() {
     const address = AccountController.state.address
+    const projectId = OptionsController.state.projectId
 
     if (!address) {
       throw new Error('No address found')
     }
 
+    if (!projectId) {
+      throw new Error('No projectId found')
+    }
+
     this.loading = true
 
-    const coinbaseResponse = await CoinbaseApiController.fetchTransactions({
-      accountAddress: address,
-      pageSize: 15,
-      pageKey: ''
+    const coinbaseResponse = await BlockchainApiController.fetchTransactions({
+      account: address,
+      onramp: 'coinbase',
+      projectId
     })
 
     this.loading = false
-    this.coinbaseTransactions = coinbaseResponse.transactions
+    this.coinbaseTransactions = coinbaseResponse.data || []
   }
 
   private templateLoading() {

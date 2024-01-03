@@ -141,6 +141,7 @@ export interface BlockchainApiTransactionsRequest {
   account: string
   projectId: string
   cursor?: string
+  onramp?: 'coinbase'
 }
 
 export interface BlockchainApiTransactionsResponse {

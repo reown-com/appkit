@@ -1,3 +1,8 @@
+export type CoinbaseTransactionStatus =
+  | 'ONRAMP_TRANSACTION_STATUS_SUCCESS'
+  | 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
+  | 'ONRAMP_TRANSACTION_STATUS_FAILED'
+
 export type TransactionStatus = 'confirmed' | 'failed' | 'pending'
 
 export type TransactionDirection = 'in' | 'out' | 'self'
@@ -19,7 +24,7 @@ export interface TransactionMetadata {
   minedAt: string
   sentFrom: string
   sentTo: string
-  status: TransactionStatus
+  status: TransactionStatus | CoinbaseTransactionStatus
   nonce: number
 }
 
