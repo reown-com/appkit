@@ -17,6 +17,7 @@ type SwitchChainResolver = Resolver<undefined>
 type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>
 type UpdateEmailResolver = Resolver<undefined>
 type AwaitUpdateEmailResolver = Resolver<W3mFrameTypes.Responses['FrameAwaitUpdateEmailResponse']>
+type SyncThemeResolver = Resolver<undefined>
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
@@ -43,6 +44,8 @@ export class W3mFrameProvider {
   private updateEmailResolver: UpdateEmailResolver = undefined
 
   private awaitUpdateEmailResolver: AwaitUpdateEmailResolver = undefined
+
+  private syncThemeResolver: SyncThemeResolver = undefined
 
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
@@ -97,6 +100,10 @@ export class W3mFrameProvider {
           return this.onAwaitUpdateEmailSuccess(event)
         case W3mFrameConstants.FRAME_AWAIT_UPDATE_EMAIL_ERROR:
           return this.onAwaitUpdateEmailError(event)
+        case W3mFrameConstants.FRAME_SYNC_THEME_SUCCESS:
+          return this.onSyncThemeSuccess()
+        case W3mFrameConstants.FRAME_SYNC_THEME_ERROR:
+          return this.onSyncThemeError(event)
         default:
           return null
       }
@@ -180,6 +187,15 @@ export class W3mFrameProvider {
         this.awaitUpdateEmailResolver = { resolve, reject }
       }
     )
+  }
+
+  public async syncTheme(payload: W3mFrameTypes.Requests['AppSyncThemeRequest']) {
+    await this.w3mFrame.frameLoadPromise
+    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_SYNC_THEME, payload })
+
+    return new Promise((resolve, reject) => {
+      this.syncThemeResolver = { resolve, reject }
+    })
   }
 
   // -- Provider Methods ------------------------------------------------
@@ -386,6 +402,16 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/AWAIT_UPDATE_EMAIL_ERROR' }>
   ) {
     this.awaitUpdateEmailResolver?.reject(event.payload.message)
+  }
+
+  private onSyncThemeSuccess() {
+    this.syncThemeResolver?.resolve(undefined)
+  }
+
+  private onSyncThemeError(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SYNC_THEME_ERROR' }>
+  ) {
+    this.syncThemeResolver?.reject(event.payload.message)
   }
 
   // -- Private Methods -------------------------------------------------
