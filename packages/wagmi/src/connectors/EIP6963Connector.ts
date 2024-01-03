@@ -74,10 +74,18 @@ export class EIP6963Connector extends InjectedConnector {
       if (!eip6963Wallet || connectedEIP6963Rdns !== eip6963Wallet.info.rdns) {
         return true
       }
-      this.#eip6963Wallet = eip6963Wallet
     }
 
-    return super.isAuthorized()
+    if (
+      (eip6963Wallet && eip6963Wallet.provider._state?.isUnlocked === undefined) ||
+      (eip6963Wallet && eip6963Wallet.provider._state?.isUnlocked)
+    ) {
+      this.#eip6963Wallet = eip6963Wallet
+
+      return super.isAuthorized()
+    }
+
+    return false
   }
 
   public override async getProvider() {
