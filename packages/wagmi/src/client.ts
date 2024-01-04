@@ -352,7 +352,7 @@ export class Web3Modal extends Web3ModalScaffold {
           explorerId: PresetsUtil.ConnectorExplorerIds[id],
           imageUrl: this.options?.connectorImages?.[id] ?? icon,
           name: PresetsUtil.ConnectorNamesMap[id] ?? name,
-          imageId: PresetsUtil.ConnectorImageIds[type] ?? PresetsUtil.ConnectorImageIds[id],
+          imageId: PresetsUtil.ConnectorImageIds[id],
           type: PresetsUtil.ConnectorTypesMap[type] ?? 'EXTERNAL'
         })
       }
