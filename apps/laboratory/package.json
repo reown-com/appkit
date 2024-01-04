@@ -30,6 +30,7 @@
   "devDependencies": {
     "@playwright/test": "1.40.1",
     "dotenv": "16.3.1",
-    "ethers": "6.9.0"
+    "ethers": "6.9.0",
+    "@mailsac/api": "1.0.5"
   }
 }

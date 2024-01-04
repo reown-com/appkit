@@ -3,14 +3,14 @@ import { BASE_URL } from './tests/shared/constants'
 
 import { config } from 'dotenv'
 import type { ModalFixture } from './tests/shared/fixtures/w3m-fixture'
-config({ path: './.env.local' })
+config({ path: './.env' })
 
 export default defineConfig<ModalFixture>({
   testDir: './tests',
 
   fullyParallel: true,
-  retries: process.env['CI'] ? 2 : 0,
-  workers: process.env['CI'] ? 1 : undefined,
+  retries: 0,
+  workers: 1,
   reporter: [['list'], ['html']],
 
   expect: {
