@@ -1,5 +1,5 @@
 import { Button, useToast } from '@chakra-ui/react'
-import { useAccount, useNetwork, useSignMessage, useSignTypedData } from 'wagmi'
+import { useAccount, useSignMessage, useSignTypedData } from 'wagmi'
 import { WagmiTransactionButton } from './WagmiTransactionButton'
 import { useEffect, useState } from 'react'
 import { SigningFailedToastTitle, SigningSucceededToastTitle } from '../../constants'
@@ -33,8 +33,7 @@ const message = {
 // Component
 export function WagmiConnectButton() {
   const toast = useToast()
-  const { chain } = useNetwork()
-  const { isConnected } = useAccount()
+  const { isConnected, chainId } = useAccount()
   const { signMessageAsync } = useSignMessage()
   const { signTypedDataAsync } = useSignTypedData()
   const [connector, setConnector] = useState<string | null>(null)
@@ -42,7 +41,7 @@ export function WagmiConnectButton() {
   const domain = {
     name: 'Ether Mail',
     version: '1',
-    chainId: chain?.id,
+    chainId,
     verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
   } as const
 
