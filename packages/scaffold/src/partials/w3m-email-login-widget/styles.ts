@@ -24,7 +24,7 @@ export default css`
   wui-icon-link,
   wui-loading-spinner {
     position: absolute;
-    top: 50%;
+    top: 20px;
     transform: translateY(-50%);
   }
 

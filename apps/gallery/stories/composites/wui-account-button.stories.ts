@@ -14,7 +14,9 @@ export default {
     avatarSrc: avatarImageSrc,
     address,
     balance: '0.527 ETH',
-    isProfileName: false
+    isProfileName: false,
+    charsStart: 4,
+    charsEnd: 6
   },
   argTypes: {
     disabled: {
@@ -35,5 +37,7 @@ export const Default: Component = {
       .avatarSrc=${args.avatarSrc}
       .balance=${args.balance}
       address=${args.address}
+      .charsStart=${args.charsStart}
+      .charsEnd=${args.charsEnd}
     ></wui-account-button>`
 }
