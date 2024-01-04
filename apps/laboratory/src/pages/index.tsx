@@ -42,6 +42,12 @@ export default function HomePage() {
           Email
         </Link>
       </VStack>
+      <VStack gap={4}>
+        <Heading>Solana</Heading>
+        <Link href="/library/solana" padding={4} border={'1px solid #69ef96'} borderRadius="xl">
+          Default
+        </Link>
+      </VStack>
     </Center>
   )
 }

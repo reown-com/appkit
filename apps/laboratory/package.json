@@ -20,6 +20,7 @@
     "@web3modal/ethers": "3.6.0-0dbdeb8c",
     "@web3modal/ethers5": "3.6.0-0dbdeb8c",
     "@web3modal/wagmi": "3.6.0-0dbdeb8c",
+    "@web3modal/solana": "3.6.0-0dbdeb8c",
     "framer-motion": "10.16.16",
     "next": "14.0.4",
     "next-auth": "4.24.5",

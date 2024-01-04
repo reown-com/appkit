@@ -41,10 +41,12 @@
     "packages/wagmi",
     "packages/ethers",
     "packages/ethers5",
+    "packages/solana",
     "apps/*",
     "examples/*"
   ],
   "devDependencies": {
+    "@solana/web3.js": "^1.87.6",
     "@types/react": "18.2.46",
     "@types/react-dom": "18.2.18",
     "@typescript-eslint/eslint-plugin": "6.17.0",
