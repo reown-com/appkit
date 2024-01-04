@@ -71,10 +71,16 @@ export class EIP6963Connector extends InjectedConnector {
   public override async isAuthorized(eip6963Wallet?: EIP6963Wallet) {
     const connectedEIP6963Rdns = this.storage?.getItem(connectedRdnsKey)
     if (connectedEIP6963Rdns) {
-      if (!eip6963Wallet || connectedEIP6963Rdns !== eip6963Wallet.info.rdns) {
-        return true
+      if (this.#eip6963Wallet && connectedEIP6963Rdns === this.#eip6963Wallet.info.rdns) {
+        const provider = this.#eip6963Wallet.provider
+        const accounts = await provider.request({ method: 'eth_accounts' })
+        if (accounts.length) {
+          return true
+        }
       }
-      this.#eip6963Wallet = eip6963Wallet
+      if (eip6963Wallet) {
+        this.#eip6963Wallet = eip6963Wallet
+      }
     }
 
     return super.isAuthorized()
