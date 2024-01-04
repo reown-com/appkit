@@ -1,6 +1,6 @@
 import '@web3modal/polyfills'
 
-import type { Chain, Connector } from '@wagmi/core'
+import type { Chain, Config, Connector } from '@wagmi/core'
 import { configureChains, createConfig } from '@wagmi/core'
 import { CoinbaseWalletConnector } from '@wagmi/core/connectors/coinbaseWallet'
 import { InjectedConnector } from '@wagmi/core/connectors/injected'
@@ -9,6 +9,7 @@ import { publicProvider } from '@wagmi/core/providers/public'
 import { EIP6963Connector } from '../connectors/EIP6963Connector.js'
 import { EmailConnector } from '../connectors/EmailConnector.js'
 import { walletConnectProvider } from './provider.js'
+import type { FallbackTransport, PublicClient } from 'viem'
 
 export interface ConfigOptions {
   projectId: string
@@ -27,6 +28,8 @@ export interface ConfigOptions {
   enableWalletConnect?: boolean
 }
 
+export type WCDefaultWagmiConfig = Config<PublicClient<FallbackTransport, Chain>>
+
 export function defaultWagmiConfig({
   projectId,
   chains,
@@ -36,7 +39,7 @@ export function defaultWagmiConfig({
   enableEIP6963,
   enableEmail,
   enableWalletConnect
-}: ConfigOptions) {
+}: ConfigOptions): WCDefaultWagmiConfig {
   const { publicClient } = configureChains(chains, [
     walletConnectProvider({ projectId }),
     publicProvider()

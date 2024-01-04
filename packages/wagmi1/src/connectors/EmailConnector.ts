@@ -1,4 +1,4 @@
-import type { Chain } from '@wagmi/core'
+import type { Chain, WalletClient } from '@wagmi/core'
 import { Connector } from '@wagmi/core'
 import { W3mFrameProvider } from '@web3modal/wallet'
 import { createWalletClient, custom, SwitchChainError } from 'viem'
@@ -85,7 +85,7 @@ export class EmailConnector extends Connector<W3mFrameProvider, W3mFrameProvider
     return chainId
   }
 
-  async getWalletClient() {
+  async getWalletClient(): Promise<WalletClient> {
     const { address, chainId } = await this.provider.connect()
 
     return Promise.resolve(
