@@ -7,7 +7,8 @@
     "build:examples": "vite build"
   },
   "dependencies": {
-    "@web3modal/wagmi": "3.6.0-32bf236a"
+    "@web3modal/wagmi": "3.6.0-32bf236a",
+    "@tanstack/react-query": "5.14.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "4.2.1"
