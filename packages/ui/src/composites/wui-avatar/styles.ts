@@ -5,7 +5,7 @@ export default css`
     display: block;
     width: var(--wui-icon-box-size-xl);
     height: var(--wui-icon-box-size-xl);
-    border-radius: var(--wui-border-radius-3xl);
+    border-radius: 100px;
     box-shadow: 0 0 0 8px var(--wui-gray-glass-005);
     overflow: hidden;
     position: relative;
