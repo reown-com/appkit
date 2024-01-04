@@ -51,6 +51,8 @@ export const ConstantsUtil = {
     'celo'
   ],
 
+  WC_COINBASE_PAY_SDK_FALLBACK_CHAIN: 'ethereum',
+
   WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP: {
     Ethereum: 'ethereum',
     'Arbitrum One': 'arbitrum',
@@ -62,3 +64,6 @@ export const ConstantsUtil = {
 
   WC_COINBASE_ONRAMP_APP_ID: 'bf18c88d-495a-463b-b249-0b9d3656cf5e'
 }
+
+export type CoinbasePaySDKChainNameValues =
+  keyof typeof ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP

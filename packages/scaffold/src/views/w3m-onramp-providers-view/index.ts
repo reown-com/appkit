@@ -11,6 +11,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { generateOnRampURL } from '@coinbase/cbpay-js'
+import type { CoinbasePaySDKChainNameValues } from '@web3modal/core/src/utils/ConstantsUtil'
 
 @customElement('w3m-onramp-providers-view')
 export class W3mOnRampProvidersView extends LitElement {
@@ -75,13 +76,18 @@ export class W3mOnRampProvidersView extends LitElement {
       throw new Error('No address found')
     }
 
-    if (!network) {
+    if (!network?.name) {
       throw new Error('No network found')
     }
 
+    const defaultNetwork =
+      ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP[
+        network.name as CoinbasePaySDKChainNameValues
+      ] ?? ConstantsUtil.WC_COINBASE_PAY_SDK_FALLBACK_CHAIN
+
     return generateOnRampURL({
       appId: ConstantsUtil.WC_COINBASE_ONRAMP_APP_ID,
-      defaultNetwork: network.name,
+      defaultNetwork: defaultNetwork,
       destinationWallets: [
         { address, blockchains: ConstantsUtil.WC_COINBASE_PAY_SDK_CHAINS, assets: ['USDC'] }
       ],
