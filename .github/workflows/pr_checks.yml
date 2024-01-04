@@ -13,7 +13,6 @@ concurrency:
   # If there is already a workflow running for the same pull request, cancel it
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
