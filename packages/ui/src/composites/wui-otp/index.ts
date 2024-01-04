@@ -30,7 +30,7 @@ export class WuiOtp extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex gap="xxs">
+      <wui-flex gap="xxs" data-testid="wui-otp-input">
         ${Array.from({ length: this.length }).map(
           (_, index: number) => html`
             <wui-input-numeric
