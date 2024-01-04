@@ -1,23 +1,7 @@
 name: UI Tests
 
 on:
-  push:
-    branches: ['V3']
-    paths-ignore:
-      - '**.md'
-
-  pull_request:
-    branches: ['V3']
-    paths-ignore:
-      - '**.md'
-
-concurrency:
-  # Support push/pr as event types with different behaviors each:
-  # 1. push: queue up builds
-  # 2. pr: only allow one run per PR
-  group: ${{ github.workflow }}-${{ github.event.type }}${{ github.event.pull_request.number }}
-  # If there is already a workflow running for the same pull request, cancel it
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  workflow_call:
 
 jobs:
   ui_tests:
