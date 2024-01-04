@@ -1,19 +1,20 @@
 import {
   AccountController,
-  CoinbaseApiController,
   ConnectionController,
   CoreHelperUtil,
   OnRampController,
   RouterController,
   SnackController,
   ThemeController,
-  type CoinbaseTransaction
+  BlockchainApiController,
+  OptionsController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles'
+import type { Transaction } from '@web3modal/common'
 
 @customElement('w3m-buy-in-progress-view')
 export class W3mBuyInProgressView extends LitElement {
@@ -35,7 +36,7 @@ export class W3mBuyInProgressView extends LitElement {
 
   @state() private error = false
 
-  @state() private coinbaseTransactions: CoinbaseTransaction[] = []
+  @state() private coinbaseTransactions: Transaction[] = []
 
   @state() private coinbaseTransactionsInitialized: boolean = false
 
@@ -138,18 +139,22 @@ export class W3mBuyInProgressView extends LitElement {
 
   private async initializeCoinbaseTransactions() {
     const address = AccountController.state.address
+    const projectId = OptionsController.state.projectId
 
     if (!address) {
       throw new Error('No address found')
     }
+    if (!address) {
+      throw new Error('No address found')
+    }
 
-    const coinbaseResponse = await CoinbaseApiController.fetchTransactions({
-      accountAddress: address,
-      pageSize: 2,
-      pageKey: ''
+    const coinbaseResponse = await BlockchainApiController.fetchTransactions({
+      account: address,
+      onramp: 'coinbase',
+      projectId
     })
 
-    this.coinbaseTransactions = coinbaseResponse.transactions
+    this.coinbaseTransactions = coinbaseResponse.data
     this.coinbaseTransactionsInitialized = true
     this.intervalId = setInterval(() => this.watchCoinbaseTransactions(), 10000)
   }
@@ -167,20 +172,21 @@ export class W3mBuyInProgressView extends LitElement {
 
   private async fetchCoinbaseTransactions() {
     const address = AccountController.state.address
+    const projectId = OptionsController.state.projectId
 
     if (!address) {
       throw new Error('No address found')
     }
 
-    const coinbaseResponse = await CoinbaseApiController.fetchTransactions({
-      accountAddress: address,
-      pageSize: 2,
-      pageKey: ''
+    const coinbaseResponse = await BlockchainApiController.fetchTransactions({
+      account: address,
+      onramp: 'coinbase',
+      projectId
     })
 
-    const newTransactions = coinbaseResponse.transactions.filter(transaction => {
+    const newTransactions = coinbaseResponse.data.filter(transaction => {
       return !this.coinbaseTransactions.some(
-        existingTransaction => existingTransaction.created_at === transaction.created_at
+        existingTransaction => existingTransaction.metadata.minedAt === transaction.metadata.minedAt
       )
     })
 

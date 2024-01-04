@@ -52,8 +52,6 @@ export type { OptionsControllerState } from './src/controllers/OptionsController
 
 export { BlockchainApiController } from './src/controllers/BlockchainApiController.js'
 
-export { CoinbaseApiController } from './src/controllers/CoinbaseApiController.js'
-
 export { PublicStateController } from './src/controllers/PublicStateController.js'
 export type { PublicStateControllerState } from './src/controllers/PublicStateController.js'
 
