@@ -15,6 +15,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
     if (!modal) {
         modal = new Web3Modal({
             ...options as ScaffoldOptions,
+            defaultChain: undefined,
             _sdkVersion: `react-solana-${ConstantsUtil.VERSION}`
         })
     }
