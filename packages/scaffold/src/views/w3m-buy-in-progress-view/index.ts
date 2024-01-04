@@ -193,7 +193,7 @@ export class W3mBuyInProgressView extends LitElement {
     if (newTransactions.length > 0) {
       clearInterval(this.intervalId!)
       RouterController.replace('OnRampActivity')
-    } else if (this.startTime && Date.now() - this.startTime >= 40_000) {
+    } else if (this.startTime && Date.now() - this.startTime >= 180_000) {
       this.error = true
       clearInterval(this.intervalId!)
     }
