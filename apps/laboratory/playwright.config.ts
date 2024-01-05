@@ -48,6 +48,16 @@ export default defineConfig<ModalFixture>({
     {
       name: 'firefox/ethers',
       use: { ...devices['Desktop Firefox'], library: 'ethers' }
+    },
+
+    {
+      name: 'chromium/solana',
+      use: { ...devices['Desktop Chrome'], library: 'solana' }
+    },
+
+    {
+      name: 'firefox/solana',
+      use: { ...devices['Desktop Firefox'], library: 'solana' }
     }
   ],
 
