@@ -1,3 +1,4 @@
+// Loosely copied from https://gist.github.com/musatov/4fc2cdf6d3a8d984d4de6c233aee1836
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
