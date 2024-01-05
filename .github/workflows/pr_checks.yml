@@ -77,19 +77,7 @@ jobs:
       - name: install
         run: npm ci
       - name: test
-        id: test
-        run: echo "TEST_OUTPUT=$(npm run test)\n" >> $GITHUB_OUTPUT
-      - name: truncate
-        id: truncate
-        env:
-          TEST_OUTPUT: ${{ steps.test.outputs.TEST_OUTPUT }}
-        run: echo "TRUNCATED_TEST_OUTPUT=$(echo $TEST_OUTPUT | tail -n 8)\n" >> $GITHUB_OUTPUT
-      - name: coverage
-        env:
-          TRUNCATED_TEST_OUTPUT: steps.truncate.outputs.TRUNCATED_TEST_OUTPUT
-        run: |
-          echo "### Coverage Report :rocket:" >> $GITHUB_STEP_SUMMARY
-          echo "$TRUNCATED_TEST_OUTPUT" >> $GITHUB_STEP_SUMMARY
+        run: npm run test
       - uses: actions/upload-artifact@v4
         with:
           name: coverage
