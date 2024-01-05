@@ -77,7 +77,7 @@ jobs:
       - name: install
         run: npm ci
       - name: test
-        run: npm run test
+        run: npm run test | tail -n 8 >> $GITHUB_STEP_SUMMARY
       - uses: actions/upload-artifact@v4
         with:
           name: coverage
