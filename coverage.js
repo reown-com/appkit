@@ -1,12 +1,11 @@
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'url'
 // Params
 const pathToPreviousReport = process.argv[2]
 
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Functions
 /**
@@ -31,12 +30,11 @@ function readPreviousCoverageSummary(pathToReport) {
  * @returns
  * */
 function getAllPathsForPackagesSummaries() {
-  const getDirectories = (source) =>
+  const getDirectories = source =>
     fs
       .readdirSync(source, { withFileTypes: true })
-      .filter((dirent) => dirent.isDirectory())
-      .map((dirent) => dirent.name)
-
+      .filter(dirent => dirent.isDirectory())
+      .map(dirent => dirent.name)
 
   const appsPath = path.join(__dirname, 'apps')
   const appsNames = getDirectories(appsPath)
@@ -44,7 +42,7 @@ function getAllPathsForPackagesSummaries() {
   const appsSummaries = appsNames.reduce((summary, appName) => {
     return {
       ...summary,
-      [appName]: path.join(appsPath, appName, 'coverage', 'coverage-summary.json'),
+      [appName]: path.join(appsPath, appName, 'coverage', 'coverage-summary.json')
     }
   }, {})
 
@@ -54,7 +52,7 @@ function getAllPathsForPackagesSummaries() {
   const packagesSummaries = packageNames.reduce((summary, packageName) => {
     return {
       ...summary,
-      [packageName]: path.join(packagesPath, packageName, 'coverage', 'coverage-summary.json'),
+      [packageName]: path.join(packagesPath, packageName, 'coverage', 'coverage-summary.json')
     }
   }, {})
 
@@ -76,7 +74,7 @@ function readSummaryPerPackageAndCreateJoinedSummaryReportWithTotal(packagesSumm
 
         const { total } = summary
 
-        Object.keys(report.total).forEach((key) => {
+        Object.keys(report.total).forEach(key => {
           if (total[key]) {
             total[key].total += report.total[key].total
             total[key].covered += report.total[key].covered
@@ -91,7 +89,7 @@ function readSummaryPerPackageAndCreateJoinedSummaryReportWithTotal(packagesSumm
 
       return summary
     },
-    { total: {} },
+    { total: {} }
   )
 }
 
@@ -107,13 +105,13 @@ function creteDiffCoverageReport(currCoverage, prevCoverage = {}) {
     const prevPackageCoverage = prevCoverage[packageName]
     if (prevPackageCoverage) {
       const coverageKeys = ['lines', 'statements', 'functions', 'branches']
-      coverageKeys.forEach((key) => {
+      coverageKeys.forEach(key => {
         const prevPct = prevPackageCoverage[key]?.pct || 0
         const currPct = currPackageCoverage[key]?.pct || 0
 
         currPackageCoverage[key] = {
           ...currPackageCoverage[key],
-          pctDiff: (parseFloat(currPct) - parseFloat(prevPct)).toFixed(2),
+          pctDiff: (parseFloat(currPct) - parseFloat(prevPct)).toFixed(2)
         }
       })
     }
@@ -152,8 +150,8 @@ function createCoverageReportForVisualRepresentation(coverageReport) {
         lines: formatPtcWithDiff(lines.pct, lines.pctDiff),
         statements: formatPtcWithDiff(statements.pct, statements.pctDiff),
         functions: formatPtcWithDiff(functions.pct, functions.pctDiff),
-        branches: formatPtcWithDiff(branches.pct, branches.pctDiff),
-      },
+        branches: formatPtcWithDiff(branches.pct, branches.pctDiff)
+      }
     }
   }, {})
 }
@@ -174,7 +172,7 @@ function writeCoverageReportToFile(coverageReport) {
 
   fs.writeFileSync(
     `coverage/coverage-total.${createDateTimeSuffix()}.json`,
-    JSON.stringify(coverageReport, null, 2),
+    JSON.stringify(coverageReport, null, 2)
   )
 }
 
