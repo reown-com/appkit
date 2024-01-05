@@ -53,11 +53,11 @@
     "@web3modal/siwe": "*"
   },
   "peerDependencies": {
-    "@wagmi/core": ">=1",
+    "@wagmi/core": ">=1 <2",
     "@web3modal/siwe": "*",
     "react": ">=17",
     "react-dom": ">=17",
-    "viem": ">=1",
+    "viem": ">=1 <2",
     "vue": ">=3"
   },
   "peerDependenciesMeta": {
