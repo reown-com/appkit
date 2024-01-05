@@ -1,12 +1,15 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": [
+    "prettier",
+    "@typescript-eslint"
+  ],
   "extends": [
     "eslint:all",
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:@typescript-eslint/strict-type-checked",
-    "prettier"
+    "plugin:prettier/recommended"
   ],
   "parserOptions": {
     "project": ["tsconfig.json"]

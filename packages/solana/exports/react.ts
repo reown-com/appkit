@@ -2,7 +2,6 @@
 
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
-import type { ScaffoldOptions } from '@web3modal/scaffold'
 
 import { Web3Modal } from '../src/client.js'
 
@@ -14,7 +13,7 @@ let modal: Web3Modal | undefined = undefined
 export function createWeb3Modal(options: Web3ModalOptions) {
     if (!modal) {
         modal = new Web3Modal({
-            ...options as ScaffoldOptions,
+            ...options,
             defaultChain: undefined,
             _sdkVersion: `react-solana-${ConstantsUtil.VERSION}`
         })

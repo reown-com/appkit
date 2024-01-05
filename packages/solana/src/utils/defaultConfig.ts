@@ -1,6 +1,12 @@
 import '@web3modal/polyfills'
 import type { Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/ethers'
 
+declare global {
+    interface Window {
+        solana?: Record<string, unknown>
+    }
+}
+
 export interface ConfigOptions {
     enableInjected?: boolean
     rpcUrl?: string
