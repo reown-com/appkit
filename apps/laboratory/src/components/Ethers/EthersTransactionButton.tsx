@@ -17,9 +17,8 @@ export function EthersTransactionButton() {
       const signer = new JsonRpcSigner(provider, address)
       const tx = await signer.sendTransaction({
         to: vitalikEthAddress,
-        value: ethers.parseUnits('0.1', 'gwei')
+        value: ethers.parseUnits('0.001', 'gwei')
       })
-
       toast({ title: 'Succcess', description: tx.blockHash, status: 'success', isClosable: true })
     } catch {
       toast({
