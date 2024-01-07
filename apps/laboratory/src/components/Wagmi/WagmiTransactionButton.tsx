@@ -12,7 +12,7 @@ export function WagmiTransactionButton() {
     value: parseEther('0.0001', 'gwei')
   })
 
-  const { sendTransaction, isLoading, data, error, reset } = useSendTransaction(config)
+  const { sendTransaction, data, error, reset } = useSendTransaction(config)
 
   const onSendTransaction = useCallback(() => {
     if (prepareError) {
