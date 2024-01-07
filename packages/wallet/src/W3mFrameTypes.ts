@@ -16,11 +16,13 @@ import {
   RpcEthEstimateGas,
   RpcEthGasPrice,
   RpcGetBalance,
+  RpcEthBlockNumber,
   FrameSession,
   AppGetUserRequest,
   AppUpdateEmailRequest,
   FrameAwaitUpdateEmailResponse,
-  AppSyncThemeRequest
+  AppSyncThemeRequest,
+  RpcEthChainId
 } from './W3mFrameSchema.js'
 
 export namespace W3mFrameTypes {
@@ -58,6 +60,8 @@ export namespace W3mFrameTypes {
     | z.infer<typeof RpcEthEstimateGas>
     | z.infer<typeof RpcEthGasPrice>
     | z.infer<typeof RpcGetBalance>
+    | z.infer<typeof RpcEthBlockNumber>
+    | z.infer<typeof RpcEthChainId>
 
   export type RPCResponse = z.infer<typeof RpcResponse>
 
