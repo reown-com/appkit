@@ -56,6 +56,11 @@ export const RpcEthSignTypedDataV4 = z.object({
   method: z.literal('eth_signTypedData_v4'),
   params: z.array(z.any())
 })
+export const RpcEthGetTransactionByHash = z.object({
+  method: z.literal('eth_getTransactionByHash'),
+  params: z.array(z.any())
+})
+
 export const RpcEthBlockNumber = z.object({
   method: z.literal('eth_blockNumber')
 })
@@ -99,6 +104,7 @@ export const W3mFrameSchema = {
           .or(RpcEthSignTypedDataV4)
           .or(RpcEthBlockNumber)
           .or(RpcEthChainId)
+          .or(RpcEthGetTransactionByHash)
       })
     )
 
