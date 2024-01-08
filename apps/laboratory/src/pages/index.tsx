@@ -7,11 +7,11 @@ import {
   StackDivider,
   Box,
   Text,
-  Button
+  Button,
+  Link
 } from '@chakra-ui/react'
 import { IoArrowForward } from 'react-icons/io5'
 import { wagmiSdkOptions, ethersSdkOptions } from '../utils/DataUtil'
-import Link from 'next/link'
 
 export default function HomePage() {
   return (
