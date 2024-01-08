@@ -9,6 +9,7 @@ import {
   Text,
   Button
 } from '@chakra-ui/react'
+import { IoArrowForward } from 'react-icons/io5'
 import { wagmiSdkOptions, ethersSdkOptions } from '../utils/DataUtil'
 import Link from 'next/link'
 
@@ -34,7 +35,7 @@ export default function HomePage() {
                     </Text>
                   </Box>
                   <Link href={option.link}>
-                    <Button>Go</Button>
+                    <Button rightIcon={<IoArrowForward />}>Go</Button>
                   </Link>
                 </Stack>
               </Box>
@@ -62,7 +63,7 @@ export default function HomePage() {
                     </Text>
                   </Box>
                   <Link href={option.link}>
-                    <Button>Go</Button>
+                    <Button rightIcon={<IoArrowForward />}>Go</Button>
                   </Link>
                 </Stack>
               </Box>
