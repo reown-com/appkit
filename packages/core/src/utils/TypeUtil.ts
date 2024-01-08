@@ -292,6 +292,10 @@ export type Event =
       type: 'track'
       event: 'EMAIL_EDIT'
     }
+  | {
+      type: 'track'
+      event: 'EMAIL_UPGRADE_FROM_MODAL'
+    }
 
 // -- SIWEController Types ---------------------------------------------------
 
