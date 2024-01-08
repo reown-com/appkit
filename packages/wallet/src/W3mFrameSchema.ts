@@ -56,6 +56,14 @@ export const RpcEthSignTypedDataV4 = z.object({
   method: z.literal('eth_signTypedData_v4'),
   params: z.array(z.any())
 })
+export const RpcEthBlockNumber = z.object({
+  method: z.literal('eth_blockNumber')
+})
+
+export const RpcEthChainId = z.object({
+  method: z.literal('eth_chainId')
+})
+
 export const FrameSession = z.object({
   token: z.string()
 })
@@ -89,6 +97,8 @@ export const W3mFrameSchema = {
           .or(RpcEthEstimateGas)
           .or(RpcEthGasPrice)
           .or(RpcEthSignTypedDataV4)
+          .or(RpcEthBlockNumber)
+          .or(RpcEthChainId)
       })
     )
 

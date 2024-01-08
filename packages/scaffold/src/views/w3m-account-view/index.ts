@@ -272,6 +272,7 @@ export class W3mAccountView extends LitElement {
   }
 
   private onGoToUpgradeView() {
+    EventsController.sendEvent({ type: 'track', event: 'EMAIL_UPGRADE_FROM_MODAL' })
     RouterController.push('UpgradeEmailWallet')
   }
 
