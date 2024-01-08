@@ -1,46 +1,17 @@
-import { Center, Text, VStack } from '@chakra-ui/react'
+import { Center, Text } from '@chakra-ui/react'
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { useEffect, useState } from 'react'
 import { WagmiConfig } from 'wagmi'
-import {
-  arbitrum,
-  aurora,
-  avalanche,
-  base,
-  bsc,
-  celo,
-  gnosis,
-  mainnet,
-  optimism,
-  polygon,
-  zkSync,
-  zora
-} from 'wagmi/chains'
-import { WagmiConnectButton } from '../../components/Wagmi/WagmiConnectButton'
-import { NetworksButton } from '../../components/NetworksButton'
+import { Web3ModalButtons } from '../../components/Web3ModalButtons'
+import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
+import { WagmiConstantsUtil } from '../../utils/WagmiConstants'
 
 // 1. Get projectId
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
-
-// 2. Create wagmiConfig
-const chains = [
-  mainnet,
-  arbitrum,
-  polygon,
-  avalanche,
-  bsc,
-  optimism,
-  gnosis,
-  zkSync,
-  zora,
-  base,
-  celo,
-  aurora
-]
 
 const metadata = {
   name: 'Web3Modal',
@@ -50,7 +21,7 @@ const metadata = {
 }
 
 export const wagmiConfig = defaultWagmiConfig({
-  chains,
+  chains: WagmiConstantsUtil.chains,
   projectId,
   metadata
 })
@@ -58,7 +29,7 @@ export const wagmiConfig = defaultWagmiConfig({
 const modal = createWeb3Modal({
   wagmiConfig,
   projectId,
-  chains,
+  chains: WagmiConstantsUtil.chains,
   enableAnalytics: true,
   metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
@@ -81,12 +52,8 @@ export default function Wagmi() {
           Wagmi default
         </Text>
       </Center>
-      <Center h="65vh">
-        <VStack gap={4}>
-          <WagmiConnectButton />
-          <NetworksButton />
-        </VStack>
-      </Center>
+      <Web3ModalButtons />
+      <WagmiTests />
     </WagmiConfig>
   ) : null
 }

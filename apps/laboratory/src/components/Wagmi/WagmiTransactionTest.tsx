@@ -4,8 +4,7 @@ import { usePrepareSendTransaction, useSendTransaction } from 'wagmi'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useCallback, useEffect } from 'react'
 
-// Component
-export function WagmiTransactionButton() {
+export function WagmiTransactionTest() {
   const toast = useToast()
   const { config, error: prepareError } = usePrepareSendTransaction({
     to: vitalikEthAddress,
@@ -47,14 +46,12 @@ export function WagmiTransactionButton() {
   }, [data, error])
 
   return (
-    <>
-      <Button
-        data-test-id="sign-transaction-button"
-        onClick={onSendTransaction}
-        disabled={!sendTransaction}
-      >
-        Send Transaction
-      </Button>
-    </>
+    <Button
+      data-test-id="sign-transaction-button"
+      onClick={onSendTransaction}
+      disabled={!sendTransaction}
+    >
+      Send Transaction
+    </Button>
   )
 }

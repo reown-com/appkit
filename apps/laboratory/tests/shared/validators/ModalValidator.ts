@@ -1,6 +1,9 @@
 import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
-import { SigningFailedToastTitle, SigningSucceededToastTitle } from '../../../src/constants'
+import {
+  SigningFailedToastTitle,
+  SigningSucceededToastTitle
+} from '../../../src/utils/ConstantsUtil'
 
 export class ModalValidator {
   constructor(public readonly page: Page) {}

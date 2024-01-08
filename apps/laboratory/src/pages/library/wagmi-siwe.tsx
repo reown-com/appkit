@@ -4,48 +4,19 @@ import { useEffect, useState } from 'react'
 import { WagmiConfig } from 'wagmi'
 import { SiweMessage } from 'siwe'
 import { getCsrfToken, signIn, signOut, getSession, useSession } from 'next-auth/react'
-import {
-  arbitrum,
-  aurora,
-  avalanche,
-  base,
-  bsc,
-  celo,
-  gnosis,
-  mainnet,
-  optimism,
-  polygon,
-  zkSync,
-  zora
-} from 'wagmi/chains'
-import { WagmiConnectButton } from '../../components/Wagmi/WagmiConnectButton'
-import { NetworksButton } from '../../components/NetworksButton'
+import { Web3ModalButtons } from '../../components/Web3ModalButtons'
+import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@web3modal/core'
 import { createSIWEConfig } from '@web3modal/siwe'
-import { TestIdSiweAuthenticationStatus } from '../../constants'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { WagmiConstantsUtil } from '../../utils/WagmiConstants'
 
 // 1. Get projectId
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
-
-// 2. Create wagmiConfig
-const chains = [
-  mainnet,
-  arbitrum,
-  polygon,
-  avalanche,
-  bsc,
-  optimism,
-  gnosis,
-  zkSync,
-  zora,
-  base,
-  celo,
-  aurora
-]
 
 const metadata = {
   name: 'Web3Modal',
@@ -55,7 +26,7 @@ const metadata = {
 }
 
 export const wagmiConfig = defaultWagmiConfig({
-  chains,
+  chains: WagmiConstantsUtil.chains,
   projectId,
   metadata
 })
@@ -120,7 +91,7 @@ const siweConfig = createSIWEConfig({
 const modal = createWeb3Modal({
   wagmiConfig,
   projectId,
-  chains,
+  chains: WagmiConstantsUtil.chains,
   enableAnalytics: true,
   metadata,
   siweConfig
@@ -144,9 +115,10 @@ export default function Wagmi() {
           Wagmi with SIWE
         </Text>
       </Center>
+      <Web3ModalButtons />
       <Center h="65vh">
         <VStack gap={4}>
-          <Text data-testid={TestIdSiweAuthenticationStatus}>Status: {status}</Text>
+          <Text data-testid={ConstantsUtil.TestIdSiweAuthenticationStatus}>Status: {status}</Text>
           {session && (
             <>
               <Text>Network: eip155:{session.chainId}</Text>
@@ -158,10 +130,9 @@ export default function Wagmi() {
               </VStack>
             </>
           )}
-          <WagmiConnectButton />
-          <NetworksButton />
         </VStack>
       </Center>
+      <WagmiTests />
     </WagmiConfig>
   ) : null
 }
