@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/core",
-  "version": "3.6.0-2aeae674",
+  "version": "3.6.0-8fb8efba",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -17,8 +17,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/common": "3.6.0-2aeae674",
-    "@web3modal/wallet": "3.6.0-2aeae674",
+    "@web3modal/common": "3.6.0-8fb8efba",
+    "@web3modal/wallet": "3.6.0-8fb8efba",
     "valtio": "1.11.2"
   },
   "keywords": [
