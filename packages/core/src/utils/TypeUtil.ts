@@ -264,6 +264,34 @@ export type Event =
       type: 'track'
       event: 'SIWE_AUTH_ERROR'
     }
+  | {
+      type: 'track'
+      event: 'EMAIL_LOGIN_SELECTED'
+    }
+  | {
+      type: 'track'
+      event: 'EMAIL_SUBMITTED'
+    }
+  | {
+      type: 'track'
+      event: 'DEVICE_REGISTERED_FOR_EMAIL'
+    }
+  | {
+      type: 'track'
+      event: 'EMAIL_VERIFICATION_CODE_SENT'
+    }
+  | {
+      type: 'track'
+      event: 'EMAIL_VERIFICATION_CODE_PASS'
+    }
+  | {
+      type: 'track'
+      event: 'EMAIL_VERIFICATION_CODE_FAIL'
+    }
+  | {
+      type: 'track'
+      event: 'EMAIL_EDIT'
+    }
 
 // -- SIWEController Types ---------------------------------------------------
 
