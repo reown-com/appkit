@@ -14,6 +14,10 @@ export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
 export const AppGetUserRequest = z.object({ chainId: z.optional(z.number()) })
 export const AppUpdateEmailRequest = z.object({ email: z.string().email() })
+export const AppSyncThemeRequest = z.object({
+  themeMode: z.optional(z.enum(['light', 'dark'])),
+  themeVariables: z.optional(z.record(z.string(), z.string().or(z.number())))
+})
 export const FrameConnectEmailResponse = z.object({
   action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])
 })
@@ -90,7 +94,9 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_UPDATE_EMAIL'), payload: AppUpdateEmailRequest }))
 
-    .or(z.object({ type: zType('APP_AWAIT_UPDATE_EMAIL') })),
+    .or(z.object({ type: zType('APP_AWAIT_UPDATE_EMAIL') }))
+
+    .or(z.object({ type: zType('APP_SYNC_THEME'), payload: AppSyncThemeRequest })),
 
   // -- Frame Events ---------------------------------------------------------
   frameEvent: z
@@ -146,4 +152,8 @@ export const W3mFrameSchema = {
         payload: FrameAwaitUpdateEmailResponse
       })
     )
+
+    .or(z.object({ type: zType('FRAME_SYNC_THEME_ERROR'), payload: zError }))
+
+    .or(z.object({ type: zType('FRAME_SYNC_THEME_SUCCESS') }))
 }

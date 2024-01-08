@@ -5,6 +5,14 @@ on:
     branches:
       - V3
 
+concurrency:
+  # Support push/pr as event types with different behaviors each:
+  # 1. push: queue up builds
+  # 2. pr: only allow one run per PR
+  group: ${{ github.workflow }}-${{ github.event.type }}${{ github.event.pull_request.number }}
+  # If there is already a workflow running for the same pull request, cancel it
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -70,3 +78,7 @@ jobs:
         run: npm ci
       - name: test
         run: npm run test
+
+  ui-test:
+    uses: ./.github/workflows/ui_tests.yml
+    secrets: inherit

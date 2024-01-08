@@ -1,29 +1,13 @@
 name: UI Tests
 
 on:
-  push:
-    branches: ['V3']
-    paths-ignore:
-      - '**.md'
-
-  pull_request:
-    branches: ['V3']
-    paths-ignore:
-      - '**.md'
-
-concurrency:
-  # Support push/pr as event types with different behaviors each:
-  # 1. push: queue up builds
-  # 2. pr: only allow one run per PR
-  group: ${{ github.workflow }}-${{ github.event.type }}${{ github.event.pull_request.number }}
-  # If there is already a workflow running for the same pull request, cancel it
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  workflow_call:
 
 jobs:
   ui_tests:
     name: 'Playwright Tests'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -55,6 +39,7 @@ jobs:
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
+          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
           CI: true
         working-directory: ./apps/laboratory/
         run: npm run playwright:test
