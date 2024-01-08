@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/siwe",
-  "version": "3.5.5",
+  "version": "3.6.0-36d0a6c",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -16,8 +16,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/core": "3.5.5",
-    "@web3modal/scaffold-utils": "3.5.5"
+    "@web3modal/core": "3.6.0-36d0a6c",
+    "@web3modal/scaffold-utils": "3.6.0-36d0a6c"
   },
   "peerDependencies": {
     "react": ">=17",
