@@ -1,4 +1,3 @@
-import { Center, Text } from '@chakra-ui/react'
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { useEffect, useState } from 'react'
 import { WagmiConfig } from 'wagmi'
@@ -47,11 +46,6 @@ export default function Wagmi() {
 
   return ready ? (
     <WagmiConfig config={wagmiConfig}>
-      <Center paddingTop={10}>
-        <Text fontSize="xl" fontWeight={700}>
-          Wagmi default
-        </Text>
-      </Center>
       <Web3ModalButtons />
       <WagmiTests />
     </WagmiConfig>

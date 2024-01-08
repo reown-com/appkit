@@ -1,16 +1,14 @@
-import { Center, Text, VStack } from '@chakra-ui/react'
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
-import { useEffect, useState } from 'react'
 import { WagmiConfig } from 'wagmi'
 import { SiweMessage } from 'siwe'
-import { getCsrfToken, signIn, signOut, getSession, useSession } from 'next-auth/react'
+import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@web3modal/core'
 import { createSIWEConfig } from '@web3modal/siwe'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiConstantsUtil } from '../../utils/WagmiConstants'
+import { SiweData } from '../../components/Siwe/SiweData'
 
 // 1. Get projectId
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
@@ -100,39 +98,11 @@ const modal = createWeb3Modal({
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
-  const [ready, setReady] = useState(false)
-  const { data, status } = useSession()
-  const session = data as unknown as SIWESession
-
-  useEffect(() => {
-    setReady(true)
-  }, [])
-
-  return ready ? (
+  return (
     <WagmiConfig config={wagmiConfig}>
-      <Center paddingTop={10}>
-        <Text fontSize="xl" fontWeight={700}>
-          Wagmi with SIWE
-        </Text>
-      </Center>
       <Web3ModalButtons />
-      <Center h="65vh">
-        <VStack gap={4}>
-          <Text data-testid={ConstantsUtil.TestIdSiweAuthenticationStatus}>Status: {status}</Text>
-          {session && (
-            <>
-              <Text>Network: eip155:{session.chainId}</Text>
-              <VStack>
-                <Text>Address:</Text>
-                <Text isTruncated={true} fontSize="sm">
-                  {session.address}
-                </Text>
-              </VStack>
-            </>
-          )}
-        </VStack>
-      </Center>
+      <SiweData />
       <WagmiTests />
     </WagmiConfig>
-  ) : null
+  )
 }
