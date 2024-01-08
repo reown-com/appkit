@@ -80,7 +80,7 @@ jobs:
         run: npm run test
       - name: summary
         id: summary
-        run: echo "COVERAGE_SUMMARY=$(node run ./scripts/coverage-summary.js)" >> "$GITHUB_OUTPUT"
+        run: echo "COVERAGE_SUMMARY=$(npm run coverage:summary)" >> "$GITHUB_OUTPUT"
       - uses: LouisBrunner/checks-action@v1.6.1
         if: always()
         with:
