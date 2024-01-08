@@ -749,8 +749,11 @@ export class Web3Modal extends Web3ModalScaffold {
       this.emailProvider.onRpcRequest(() => {
         super.open({ view: 'ApproveTransaction' })
       })
-      this.emailProvider.onRpcResponse(() => {
-        super.close()
+      this.emailProvider.onRpcResponse(response => {
+        // @ts-expect-error: Overriden state type is correct
+        if (!response?.keepAlive) {
+          super.close()
+        }
       })
       this.emailProvider.onIsConnected(() => {
         super.setLoading(false)
