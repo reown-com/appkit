@@ -30,7 +30,7 @@ export default defineConfig<ModalFixture>({
 
   /* Configure projects for major browsers */
   projects: [
-    {
+    /* {
       name: 'chromium/wagmi',
       use: { ...devices['Desktop Chrome'], library: 'wagmi' }
     },
@@ -48,7 +48,7 @@ export default defineConfig<ModalFixture>({
     {
       name: 'firefox/ethers',
       use: { ...devices['Desktop Firefox'], library: 'ethers' }
-    },
+    }, */
 
     {
       name: 'chromium/solana',

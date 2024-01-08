@@ -90,6 +90,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         const chainId = HelpersUtil.caipNetworkIdToNumber(caipNetwork?.id)
+
         if (chainId) {
           await switchNetwork({ chainId })
         }

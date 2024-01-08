@@ -237,6 +237,7 @@ export class W3mConnectView extends LitElement {
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
     const eip6963 = connectors.filter(c => c.type === 'ANNOUNCED')
+
     if (featuredWalletIds || customWallets || !recommended.length) {
       return null
     }

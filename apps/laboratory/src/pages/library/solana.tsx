@@ -1,15 +1,20 @@
 import { Center, Text, VStack } from '@chakra-ui/react'
 import { createWeb3Modal, defaultSolanaConfig } from '@web3modal/solana/react'
 
-import { SolanaConnectButton } from '../../components/Solana/SolanaConnectButton'
 import { ThemeStore } from '../../utils/StoreUtil'
+import { NetworksButton } from '../../components/NetworksButton'
+import {
+  solana
+} from '../../utils/ChainsUtil'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
 
-const chains: never[] = []
+const chains = [
+  solana
+]
 
 const metadata = {
   name: 'Web3Modal',
@@ -21,7 +26,8 @@ const metadata = {
 export const solanaConfig = defaultSolanaConfig({
   chains,
   projectId,
-  metadata
+  metadata,
+  EIP6963: true
 })
 
 const modal = createWeb3Modal({
@@ -46,7 +52,8 @@ export default function Solana() {
       </Center>
       <Center h="65vh">
         <VStack gap={4}>
-          <SolanaConnectButton />
+          <w3m-connect-button />
+          <NetworksButton />
         </VStack>
       </Center>
     </>

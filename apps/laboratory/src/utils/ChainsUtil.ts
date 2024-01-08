@@ -93,3 +93,11 @@ export const aurora = {
   explorerUrl: 'https://explorer.aurora.dev',
   rpcUrl: 'https://mainnet.aurora.dev'
 }
+
+export const solana = {
+  chainId: 1,
+  name: 'Solana',
+  currency: 'SOL',
+  explorerUrl: 'https://solscan.io/',
+  rpcUrl: 'https://api.mainnet-beta.solana.com'
+}

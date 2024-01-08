@@ -1,13 +1,15 @@
 import '@web3modal/polyfills'
-import type { Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/ethers'
+import type { Chain, Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/solana'
 
 declare global {
     interface Window {
-        solana?: Record<string, unknown>
+        originalSolana?: Record<string, unknown>
     }
 }
 
 export interface ConfigOptions {
+    projectId?: string
+    chains: Chain[]
     enableInjected?: boolean
     rpcUrl?: string
     defaultChainId?: number
@@ -22,7 +24,7 @@ export function defaultSolanaConfig(options: ConfigOptions) {
 
     let injectedProvider: Provider | undefined = undefined
 
-    const providers: ProviderType = { metadata }
+    const providers: ProviderType = { metadata, EIP6963: true }
 
     function getInjectedProvider() {
         if (injectedProvider) {
@@ -33,12 +35,12 @@ export function defaultSolanaConfig(options: ConfigOptions) {
             return undefined
         }
 
-        if (!window.solana) {
+        if (!window.originalSolana) {
             return undefined
         }
 
         //  @ts-expect-error window.ethereum satisfies Provider
-        injectedProvider = window.solana
+        injectedProvider = window.originalSolana
 
         return injectedProvider
     }
