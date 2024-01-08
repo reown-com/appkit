@@ -6,6 +6,14 @@ export const mainnet = {
   rpcUrl: 'https://cloudflare-eth.com'
 }
 
+export const sepolia = {
+  chainId: 11155111,
+  name: 'Sepolia',
+  currency: 'SEP',
+  explorerUrl: 'https://sepolia.etherscan.io',
+  rpcUrl: 'https://rpc.sepolia.org'
+}
+
 export const arbitrum = {
   chainId: 42161,
   name: 'Arbitrum',

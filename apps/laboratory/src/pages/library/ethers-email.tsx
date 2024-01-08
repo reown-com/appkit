@@ -15,7 +15,8 @@ import {
   optimism,
   polygon,
   zkSync,
-  zora
+  zora,
+  sepolia
 } from '../../utils/ChainsUtil'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
@@ -24,6 +25,7 @@ if (!projectId) {
 }
 const chains = [
   mainnet,
+  sepolia,
   arbitrum,
   polygon,
   avalanche,
