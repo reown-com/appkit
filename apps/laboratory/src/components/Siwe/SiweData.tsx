@@ -43,7 +43,7 @@ export function SiweData() {
               Session Network
             </Heading>
             <Text pt="2" fontSize="sm">
-              {`eip155:${session.chainId}`}
+              {`eip155:${session?.chainId}`}
             </Text>
           </Box>
 
@@ -52,7 +52,7 @@ export function SiweData() {
               Session Network Address
             </Heading>
             <Text isTruncated pt="2" fontSize="sm">
-              {session.address}
+              {session?.address}
             </Text>
           </Box>
         </Stack>
