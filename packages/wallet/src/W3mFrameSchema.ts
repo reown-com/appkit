@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { boolean, z } from 'zod'
 import { W3mFrameConstants } from './W3mFrameConstants.js'
 
 // -- Helpers ----------------------------------------------------------------
@@ -152,7 +152,13 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('FRAME_RPC_REQUEST_ERROR'), payload: zError }))
 
-    .or(z.object({ type: zType('FRAME_RPC_REQUEST_SUCCESS'), payload: RpcResponse }))
+    .or(
+      z.object({
+        type: zType('FRAME_RPC_REQUEST_SUCCESS'),
+        payload: RpcResponse,
+        keepAlive: boolean().optional().default(false)
+      })
+    )
 
     .or(z.object({ type: zType('FRAME_SESSION_UPDATE'), payload: FrameSession }))
 
