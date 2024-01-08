@@ -81,12 +81,12 @@ jobs:
         run: npm run test
       - name: summary
         id: summary
-        run: echo "COVERAGE_SUMMARY=$(npm run coverage:summary)" >> "$GITHUB_OUTPUT"
+        run: echo "COVERAGE_SUMMARY=$(npm run coverage:summary | tail -n 1)" >> "$GITHUB_OUTPUT"
       - uses: LouisBrunner/checks-action@v1.6.1
         if: always()
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          check_id: test
+          name: coverage
           conclusion: ${{ job.status }}
           output: |
             {"summary":"${{ steps.summary.outputs.COVERAGE_SUMMARY }}"}
