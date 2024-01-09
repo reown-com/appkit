@@ -1,17 +1,18 @@
-import { Button, useToast } from '@chakra-ui/react'
+import { Button, useToast, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import { parseEther } from 'viem'
-import { usePrepareSendTransaction, useSendTransaction } from 'wagmi'
+import { usePrepareSendTransaction, useSendTransaction, useNetwork } from 'wagmi'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useCallback, useEffect } from 'react'
+import { sepolia } from 'wagmi/chains'
 
 export function WagmiTransactionTest() {
   const toast = useToast()
+  const { chain } = useNetwork()
   const { config, error: prepareError } = usePrepareSendTransaction({
     to: vitalikEthAddress,
     value: parseEther('0.0001', 'gwei')
   })
-
-  const { sendTransaction, data, error, reset } = useSendTransaction(config)
+  const { sendTransaction, data, error, reset, isLoading } = useSendTransaction(config)
 
   const onSendTransaction = useCallback(() => {
     if (prepareError) {
@@ -45,13 +46,34 @@ export function WagmiTransactionTest() {
     reset()
   }, [data, error])
 
-  return (
-    <Button
-      data-test-id="sign-transaction-button"
-      onClick={onSendTransaction}
-      disabled={!sendTransaction}
-    >
-      Send Transaction
-    </Button>
+  return chain?.id === sepolia.id ? (
+    <Stack direction={['column', 'column', 'row']}>
+      <Button
+        data-test-id="sign-transaction-button"
+        onClick={onSendTransaction}
+        disabled={!sendTransaction}
+        isDisabled={isLoading}
+      >
+        Send Transaction to Vitalik
+      </Button>
+
+      <Spacer />
+
+      <Link isExternal href="https://sepoliafaucet.com">
+        <Button variant="outline" colorScheme="blue" isDisabled={isLoading}>
+          Sepolia Faucet 1
+        </Button>
+      </Link>
+
+      <Link isExternal href="https://www.infura.io/faucet/sepolia">
+        <Button variant="outline" colorScheme="orange" isDisabled={isLoading}>
+          Sepolia Faucet 2
+        </Button>
+      </Link>
+    </Stack>
+  ) : (
+    <Text fontSize="md" color="yellow">
+      Switch to Sepolia Ethereum Testnet to test this feature
+    </Text>
   )
 }

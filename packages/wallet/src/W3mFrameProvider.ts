@@ -13,7 +13,7 @@ type ConnectResolver = Resolver<W3mFrameTypes.Responses['FrameGetUserResponse']>
 type DisconnectResolver = Resolver<undefined>
 type IsConnectedResolver = Resolver<W3mFrameTypes.Responses['FrameIsConnectedResponse']>
 type GetChainIdResolver = Resolver<W3mFrameTypes.Responses['FrameGetChainIdResponse']>
-type SwitchChainResolver = Resolver<undefined>
+type SwitchChainResolver = Resolver<W3mFrameTypes.Responses['FrameSwitchNetworkResponse']>
 type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>
 type UpdateEmailResolver = Resolver<undefined>
 type AwaitUpdateEmailResolver = Resolver<W3mFrameTypes.Responses['FrameAwaitUpdateEmailResponse']>
@@ -83,7 +83,7 @@ export class W3mFrameProvider {
         case W3mFrameConstants.FRAME_SIGN_OUT_ERROR:
           return this.onSignOutError(event)
         case W3mFrameConstants.FRAME_SWITCH_NETWORK_SUCCESS:
-          return this.onSwitchChainSuccess()
+          return this.onSwitchChainSuccess(event)
         case W3mFrameConstants.FRAME_SWITCH_NETWORK_ERROR:
           return this.onSwitchChainError(event)
         case W3mFrameConstants.FRAME_RPC_REQUEST_SUCCESS:
@@ -200,8 +200,12 @@ export class W3mFrameProvider {
 
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
+    const chainId = payload?.chainId ?? this.getLastUsedChainId() ?? 1
     await this.w3mFrame.frameLoadPromise
-    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_GET_USER, payload })
+    this.w3mFrame.events.postAppEvent({
+      type: W3mFrameConstants.APP_GET_USER,
+      payload: { chainId }
+    })
 
     return new Promise<W3mFrameTypes.Responses['FrameGetUserResponse']>((resolve, reject) => {
       this.connectResolver = { resolve, reject }
@@ -215,7 +219,7 @@ export class W3mFrameProvider {
       payload: { chainId }
     })
 
-    return new Promise((resolve, reject) => {
+    return new Promise<W3mFrameTypes.Responses['FrameSwitchNetworkResponse']>((resolve, reject) => {
       this.switchChainResolver = { resolve, reject }
     })
   }
@@ -261,6 +265,9 @@ export class W3mFrameProvider {
   public onIsConnected(callback: () => void) {
     this.w3mFrame.events.onFrameEvent(event => {
       if (event.type === W3mFrameConstants.FRAME_IS_CONNECTED_SUCCESS) {
+        if (!event.payload.isConnected) {
+          this.deleteEmailLoginCache()
+        }
         callback()
       }
     })
@@ -304,6 +311,7 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_USER_SUCCESS' }>
   ) {
     this.setEmailLoginSuccess(event.payload.email)
+    this.setLastUsedChainId(event.payload.chainId)
     this.connectResolver?.resolve(event.payload)
   }
 
@@ -328,6 +336,7 @@ export class W3mFrameProvider {
   private onGetChainIdSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/GET_CHAIN_ID_SUCCESS' }>
   ) {
+    this.setLastUsedChainId(event.payload.chainId)
     this.getChainIdResolver?.resolve(event.payload)
   }
 
@@ -339,8 +348,7 @@ export class W3mFrameProvider {
 
   private onSignOutSuccess() {
     this.disconnectResolver?.resolve(undefined)
-    W3mFrameStorage.delete(W3mFrameConstants.EMAIL_LOGIN_USED_KEY)
-    W3mFrameStorage.delete(W3mFrameConstants.EMAIL)
+    this.deleteEmailLoginCache()
   }
 
   private onSignOutError(
@@ -349,8 +357,11 @@ export class W3mFrameProvider {
     this.disconnectResolver?.reject(event.payload.message)
   }
 
-  private onSwitchChainSuccess() {
-    this.switchChainResolver?.resolve(undefined)
+  private onSwitchChainSuccess(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SWITCH_NETWORK_SUCCESS' }>
+  ) {
+    this.setLastUsedChainId(event.payload.chainId)
+    this.switchChainResolver?.resolve(event.payload)
   }
 
   private onSwitchChainError(
@@ -423,5 +434,19 @@ export class W3mFrameProvider {
     W3mFrameStorage.set(W3mFrameConstants.EMAIL, email)
     W3mFrameStorage.set(W3mFrameConstants.EMAIL_LOGIN_USED_KEY, 'true')
     W3mFrameStorage.delete(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME)
+  }
+
+  private deleteEmailLoginCache() {
+    W3mFrameStorage.delete(W3mFrameConstants.EMAIL_LOGIN_USED_KEY)
+    W3mFrameStorage.delete(W3mFrameConstants.EMAIL)
+    W3mFrameStorage.delete(W3mFrameConstants.LAST_USED_CHAIN_KEY)
+  }
+
+  private setLastUsedChainId(chainId: number) {
+    W3mFrameStorage.set(W3mFrameConstants.LAST_USED_CHAIN_KEY, `${chainId}`)
+  }
+
+  private getLastUsedChainId() {
+    return Number(W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY))
   }
 }
