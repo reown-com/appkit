@@ -2,6 +2,39 @@ name: UI Tests
 
 on:
   workflow_call:
+    inputs:
+      branch:
+        description: 'The branch to use'
+        default: 'V3'
+        required: false
+        type: string
+      base-url:
+        description: 'The web3modal lab url'
+        default: 'http://localhost:3000/'
+        required: false
+        type: string
+      wallet-url:
+        description: 'The wallet url'
+        default: 'https://react-wallet.walletconnect.com/'
+        required: false
+        type: string
+      command:
+        description: 'The test command to run'
+        default: 'playwright:test'
+        required: false
+        type: string
+      skip-playwright-webserver:
+        description: 'Skip setting up a local test server'
+        default: false
+        required: false
+        type: boolean
+    secrets:
+      NEXT_PUBLIC_PROJECT_ID:
+        required: true
+      TESTS_NEXTAUTH_SECRET:
+        required: false
+      TESTS_MAILSEC_API_KEY:
+        required: false
 
 jobs:
   ui_tests:
@@ -10,7 +43,10 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          repository: WalletConnect/web3modal
+          ref: ${{ inputs.branch }}
       - name: setup-node
         uses: actions/setup-node@v3
         with:
@@ -35,14 +71,20 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         working-directory: ./apps/laboratory/
         run: npm run playwright:install
+      - name: print playright config
+        run: cat ./playwright.config.ts
+        working-directory: ./apps/laboratory/
       - name: Run Playwright tests
         env:
+          BASE_URL: ${{ inputs.base-url }}
+          WALLET_URL: ${{ inputs.wallet-url }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
           MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
           CI: true
         working-directory: ./apps/laboratory/
-        run: npm run playwright:test
+        run: npm run ${{ inputs.command }}
       - uses: actions/upload-artifact@v3
         if: always()
         with:
