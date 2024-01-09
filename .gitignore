@@ -11,3 +11,4 @@ lerna-debug.log
 playwright-report/
 screenshots/
 coverage
+test-results
