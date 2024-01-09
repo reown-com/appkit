@@ -5,6 +5,8 @@ import { config } from 'dotenv'
 import type { ModalFixture } from './tests/shared/fixtures/w3m-fixture'
 config({ path: './.env' })
 
+console.log('BASE_URL', BASE_URL)
+
 export default defineConfig<ModalFixture>({
   testDir: './tests',
 
@@ -51,11 +53,11 @@ export default defineConfig<ModalFixture>({
     }
   ],
   /* Run your local dev server before starting the tests */
-  webServer: process.env['SKIP_PLAYWRIGHT_WEBSERVER'] === 'true'
+  webServer: process.env['SKIP_PLAYWRIGHT_WEBSERVER'] == 'true'
     ? undefined
     : {
         command: 'npm run playwright:start',
         url: BASE_URL,
-        reuseExistingServer: !process.env['CI']
+        reuseExistingServer: true
       }
 })
