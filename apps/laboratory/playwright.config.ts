@@ -50,11 +50,12 @@ export default defineConfig<ModalFixture>({
       use: { ...devices['Desktop Firefox'], library: 'ethers' }
     }
   ],
-
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'npm run playwright:start',
-    url: BASE_URL,
-    reuseExistingServer: !process.env['CI']
-  }
+  webServer: process.env['SKIP_PLAYWRIGHT_WEBSERVER']
+    ? undefined
+    : {
+        command: 'npm run playwright:start',
+        url: BASE_URL,
+        reuseExistingServer: !process.env['CI']
+      }
 })
