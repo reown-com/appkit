@@ -1,47 +1,76 @@
-import { Center, Heading, Link, VStack } from '@chakra-ui/react'
+import {
+  Heading,
+  Card,
+  CardHeader,
+  CardBody,
+  Stack,
+  StackDivider,
+  Box,
+  Text,
+  Button,
+  Link
+} from '@chakra-ui/react'
+import { IoArrowForward } from 'react-icons/io5'
+import { wagmiSdkOptions, ethersSdkOptions } from '../utils/DataUtil'
 
 export default function HomePage() {
   return (
-    <Center h="80vh" gap={12}>
-      <VStack gap={4}>
-        <Heading>Wagmi</Heading>
-        <Link href="/library/wagmi" padding={4} border={'1px solid #47a1ff'} borderRadius="xl">
-          Default
-        </Link>
-        <Link href="/library/wagmi-siwe" padding={4} border={'1px solid #47a1ff'} borderRadius="xl">
-          SIWE
-        </Link>
-        <Link
-          href="/library/wagmi-email"
-          padding={4}
-          border={'1px solid #47a1ff'}
-          borderRadius="xl"
-        >
-          Email
-        </Link>
-      </VStack>
-      <VStack gap={4}>
-        <Heading>Ethers</Heading>
-        <Link href="/library/ethers" padding={4} border={'1px solid #26D962'} borderRadius="xl">
-          Default
-        </Link>
-        <Link
-          href="/library/ethers-siwe"
-          padding={4}
-          border={'1px solid #26D962'}
-          borderRadius="xl"
-        >
-          SIWE
-        </Link>
-        <Link
-          href="/library/ethers-email"
-          padding={4}
-          border={'1px solid #26D962'}
-          borderRadius="xl"
-        >
-          Email
-        </Link>
-      </VStack>
-    </Center>
+    <>
+      <Card marginTop={20}>
+        <CardHeader>
+          <Heading size="md">Wagmi</Heading>
+        </CardHeader>
+
+        <CardBody>
+          <Stack divider={<StackDivider />} spacing="4">
+            {wagmiSdkOptions.map(option => (
+              <Box key={option.link}>
+                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                  <Box>
+                    <Heading size="xs" textTransform="uppercase">
+                      {option.title}
+                    </Heading>
+                    <Text pt="2" fontSize="sm">
+                      {option.description}
+                    </Text>
+                  </Box>
+                  <Link href={option.link}>
+                    <Button rightIcon={<IoArrowForward />}>Go</Button>
+                  </Link>
+                </Stack>
+              </Box>
+            ))}
+          </Stack>
+        </CardBody>
+      </Card>
+
+      <Card marginTop={10} marginBottom={10}>
+        <CardHeader>
+          <Heading size="md">Ethers</Heading>
+        </CardHeader>
+
+        <CardBody>
+          <Stack divider={<StackDivider />} spacing="4">
+            {ethersSdkOptions.map(option => (
+              <Box key={option.link}>
+                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                  <Box>
+                    <Heading size="xs" textTransform="uppercase">
+                      {option.title}
+                    </Heading>
+                    <Text pt="2" fontSize="sm">
+                      {option.description}
+                    </Text>
+                  </Box>
+                  <Link href={option.link}>
+                    <Button rightIcon={<IoArrowForward />}>Go</Button>
+                  </Link>
+                </Stack>
+              </Box>
+            ))}
+          </Stack>
+        </CardBody>
+      </Card>
+    </>
   )
 }

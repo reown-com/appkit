@@ -1,5 +1,4 @@
 import { Center, Text, VStack } from '@chakra-ui/react'
-import { NetworksButton } from '../../components/NetworksButton'
 import { EthersConnectButton } from '../../components/Ethers/EthersConnectButton'
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
 import { SiweMessage } from 'siwe'
@@ -21,7 +20,7 @@ import {
 } from '../../utils/ChainsUtil'
 import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from '@web3modal/core'
 import { createSIWEConfig } from '@web3modal/siwe'
-import { TestIdSiweAuthenticationStatus } from '../../constants'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {
@@ -134,7 +133,9 @@ export default function EthersSiwe() {
       </Center>
       <Center h="65vh">
         <VStack gap={4}>
-          <Text data-testid={TestIdSiweAuthenticationStatus}>SIWE Status: {status}</Text>
+          <Text data-testid={ConstantsUtil.TestIdSiweAuthenticationStatus}>
+            SIWE Status: {status}
+          </Text>
           {session && (
             <>
               <Text>Network: eip155:{session.chainId}</Text>
@@ -147,7 +148,7 @@ export default function EthersSiwe() {
             </>
           )}
           <EthersConnectButton />
-          <NetworksButton />
+          <w3m-network-button />
         </VStack>
       </Center>
     </>

@@ -3,7 +3,7 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/rea
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
 import { EthersTransactionButton } from './EthersTransactionButton'
 import type { TypedDataField } from 'ethers'
-import { SigningFailedToastTitle, SigningSucceededToastTitle } from '../../constants'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
 
 // Example data
 const types: Record<string, TypedDataField[]> = {
@@ -46,14 +46,14 @@ export function EthersConnectButton() {
       const signature = await signer?.signMessage('Hello Web3Modal Ethers')
 
       toast({
-        title: SigningSucceededToastTitle,
+        title: ConstantsUtil.SigningSucceededToastTitle,
         description: signature,
         status: 'success',
         isClosable: true
       })
     } catch {
       toast({
-        title: SigningFailedToastTitle,
+        title: ConstantsUtil.SigningFailedToastTitle,
         description: 'Failed to sign message',
         status: 'error',
         isClosable: true

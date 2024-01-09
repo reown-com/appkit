@@ -1,5 +1,4 @@
 import { Center, Text, VStack } from '@chakra-ui/react'
-import { NetworksButton } from '../../components/NetworksButton'
 import { EthersConnectButton } from '../../components/Ethers/EthersConnectButton'
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 import { ThemeStore } from '../../utils/StoreUtil'
@@ -72,7 +71,7 @@ export default function Ethers() {
       <Center h="65vh">
         <VStack gap={4}>
           <EthersConnectButton />
-          <NetworksButton />
+          <w3m-network-button />
         </VStack>
       </Center>
     </>
