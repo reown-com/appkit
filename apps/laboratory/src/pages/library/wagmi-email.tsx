@@ -5,33 +5,21 @@ import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { WagmiConstantsUtil } from '../../utils/WagmiConstants'
-
-// 1. Get projectId
-const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
-if (!projectId) {
-  throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
-}
-
-const metadata = {
-  name: 'Web3Modal',
-  description: 'Web3Modal Laboratory',
-  url: 'https://web3modal.com',
-  icons: ['https://avatars.githubusercontent.com/u/37784886']
-}
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
 
 export const wagmiConfig = defaultWagmiConfig({
   chains: WagmiConstantsUtil.chains,
-  projectId,
-  metadata,
+  projectId: ConstantsUtil.ProjectId,
+  metadata: ConstantsUtil.Metadata,
   enableEmail: true
 })
 
 const modal = createWeb3Modal({
   wagmiConfig,
-  projectId,
+  projectId: ConstantsUtil.ProjectId,
   chains: WagmiConstantsUtil.chains,
   enableAnalytics: true,
-  metadata,
+  metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy'
 })
