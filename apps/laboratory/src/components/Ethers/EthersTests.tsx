@@ -2,6 +2,7 @@ import { useWeb3ModalAccount } from '@web3modal/ethers/react'
 import { EthersSignMessageTest } from './EthersSignMessageTest'
 import { EthersSignTypedDataTest } from './EthersSignTypedDataTest'
 import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
+import { EthersTransactionTest } from './EthersTransactionTest'
 
 export function EthersTests() {
   const { isConnected } = useWeb3ModalAccount()
@@ -32,6 +33,7 @@ export function EthersTests() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               Sign Transaction
             </Heading>
+            <EthersTransactionTest />
           </Box>
         </Stack>
       </CardBody>
