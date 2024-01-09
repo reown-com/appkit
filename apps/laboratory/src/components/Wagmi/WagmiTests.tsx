@@ -16,21 +16,21 @@ export function WagmiTests() {
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4">
           <Box>
-            <Heading size="xs" textTransform="uppercase">
+            <Heading size="xs" textTransform="uppercase" pb="2">
               Sign Message
             </Heading>
             <WagmiSignMessageTest />
           </Box>
 
           <Box>
-            <Heading size="xs" textTransform="uppercase">
+            <Heading size="xs" textTransform="uppercase" pb="2">
               Sign Typed Data
             </Heading>
             <WagmiSignTypedDataTest />
           </Box>
 
           <Box>
-            <Heading size="xs" textTransform="uppercase">
+            <Heading size="xs" textTransform="uppercase" pb="2">
               Sign Transaction
             </Heading>
             <WagmiTransactionTest />

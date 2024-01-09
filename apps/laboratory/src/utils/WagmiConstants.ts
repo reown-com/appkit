@@ -10,7 +10,8 @@ import {
   optimism,
   polygon,
   zkSync,
-  zora
+  zora,
+  sepolia
 } from 'wagmi/chains'
 
 export const WagmiConstantsUtil = {
@@ -26,6 +27,7 @@ export const WagmiConstantsUtil = {
     zora,
     base,
     celo,
-    aurora
+    aurora,
+    sepolia
   ]
 }
