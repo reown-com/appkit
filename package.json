@@ -13,7 +13,7 @@
     "build:gallery": "turbo run build:clean; turbo run build:gallery",
     "build:laboratory": "turbo run build:clean; turbo run build:laboratory",
     "build:examples": "turbo run build:clean; turbo run build:examples",
-    "test": "turbo run test",
+    "test": "turbo run test; node ./coverage.js",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
     "danger": "danger ci",

@@ -10,3 +10,4 @@ lerna-debug.log
 .turbo
 playwright-report/
 screenshots/
+coverage
