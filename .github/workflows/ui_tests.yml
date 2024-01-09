@@ -2,6 +2,13 @@ name: UI Tests
 
 on:
   workflow_call:
+    secrets:
+      NEXT_PUBLIC_PROJECT_ID:
+        required: true
+      TESTS_NEXTAUTH_SECRET:
+        required: true
+      TESTS_MAILSEC_API_KEY:
+        required: true
 
 jobs:
   ui_tests:
