@@ -199,7 +199,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.options = options
 
     this.syncConnectors(solanaConfig)
-    this.listenConnectors(solanaConfig.EIP6963)
+    this.listenConnectors(solanaConfig.EIP6963 || false)
   }
 
   public setAddress(address?: string) {
