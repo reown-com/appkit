@@ -1,6 +1,6 @@
 import { Button, useToast, Stack, Link, Text, Spacer } from '@chakra-ui/react'
-import { parseEther } from 'viem'
-import { usePrepareSendTransaction, useSendTransaction, useNetwork } from 'wagmi'
+import { parseGwei } from 'viem'
+import { usePrepareSendTransaction, useSendTransaction, useNetwork, useAccount } from 'wagmi'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useCallback, useEffect } from 'react'
 import { sepolia } from 'wagmi/chains'
@@ -8,9 +8,12 @@ import { sepolia } from 'wagmi/chains'
 export function WagmiTransactionTest() {
   const toast = useToast()
   const { chain } = useNetwork()
+  const { status } = useAccount()
   const { config, error: prepareError } = usePrepareSendTransaction({
     to: vitalikEthAddress,
-    value: parseEther('0.0001', 'gwei')
+    value: parseGwei('0.0001'),
+    maxFeePerGas: parseGwei('100'),
+    maxPriorityFeePerGas: parseGwei('100')
   })
   const { sendTransaction, data, error, reset, isLoading } = useSendTransaction(config)
 
@@ -46,7 +49,7 @@ export function WagmiTransactionTest() {
     reset()
   }, [data, error])
 
-  return chain?.id === sepolia.id ? (
+  return chain?.id === sepolia.id && status === 'connected' ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="sign-transaction-button"
