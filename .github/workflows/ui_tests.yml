@@ -8,6 +8,21 @@ on:
         default: 'V3'
         required: false
         type: string
+      base-url:
+        description: 'The web3modal lab url'
+        default: 'http://localhost:3000/'
+        required: false
+        type: string
+      wallet-url:
+        description: 'The wallet url'
+        default: 'https://react-wallet.walletconnect.com/'
+        required: false
+        type: string
+      skip-playwright-webserver:
+        description: 'Skip setting up a local test server'
+        default: false
+        required: false
+        type: boolean
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
         required: true
@@ -53,6 +68,9 @@ jobs:
         run: npm run playwright:install
       - name: Run Playwright tests
         env:
+          BASE_URL: ${{ inputs.base-url }}
+          WALLET_URL: ${{ inputs.wallet-url }}
+          SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
           MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
