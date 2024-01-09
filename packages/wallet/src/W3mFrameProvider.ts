@@ -264,10 +264,7 @@ export class W3mFrameProvider {
 
   public onIsConnected(callback: () => void) {
     this.w3mFrame.events.onFrameEvent(event => {
-      if (event.type === W3mFrameConstants.FRAME_IS_CONNECTED_SUCCESS) {
-        if (!event.payload.isConnected) {
-          this.deleteEmailLoginCache()
-        }
+      if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
         callback()
       }
     })
@@ -324,6 +321,9 @@ export class W3mFrameProvider {
   private onIsConnectedSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/IS_CONNECTED_SUCCESS' }>
   ) {
+    if (!event.payload.isConnected) {
+      this.deleteEmailLoginCache()
+    }
     this.isConnectedResolver?.resolve(event.payload)
   }
 
