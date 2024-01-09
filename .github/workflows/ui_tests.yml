@@ -74,6 +74,7 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
           MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
+          DEBUG: pw:webserver
           CI: true
         working-directory: ./apps/laboratory/
         run: npm run playwright:test
