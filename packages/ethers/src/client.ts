@@ -753,7 +753,7 @@ export class Web3Modal extends Web3ModalScaffold {
         const ALLOWED_METHODS = ['eth_blockNumber', 'eth_estimateGas', 'eth_getTransactionByHash']
         const IGNORED_METHODS = ['eth_chainId']
         if (
-          !ALLOWED_METHODS.includes(payload.method) ||
+          !ALLOWED_METHODS.includes(payload.method) &&
           !IGNORED_METHODS.includes(payload.method)
         ) {
           super.open({ view: 'ApproveTransaction' })
