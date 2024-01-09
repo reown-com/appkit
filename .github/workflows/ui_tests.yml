@@ -24,8 +24,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-        repository: WalletConnect/web3modal
-        ref: ${{ inputs.branch }}
+        with:
+          repository: WalletConnect/web3modal
+          ref: ${{ inputs.branch }}
       - name: setup-node
         uses: actions/setup-node@v3
         with:
