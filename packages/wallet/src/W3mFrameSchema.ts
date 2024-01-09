@@ -28,6 +28,7 @@ export const FrameGetUserResponse = z.object({
 })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
+export const FrameSwitchNetworkResponse = z.object({ chainId: z.number() })
 export const FrameAwaitUpdateEmailResponse = z.object({ email: z.string().email() })
 export const RpcResponse = z.string()
 export const RpcPersonalSignRequest = z.object({
@@ -118,7 +119,9 @@ export const W3mFrameSchema = {
   frameEvent: z
     .object({ type: zType('FRAME_SWITCH_NETWORK_ERROR'), payload: zError })
 
-    .or(z.object({ type: zType('FRAME_SWITCH_NETWORK_SUCCESS') }))
+    .or(
+      z.object({ type: zType('FRAME_SWITCH_NETWORK_SUCCESS'), payload: FrameSwitchNetworkResponse })
+    )
 
     .or(z.object({ type: zType('FRAME_CONNECT_EMAIL_ERROR'), payload: zError }))
 
