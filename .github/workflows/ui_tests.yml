@@ -2,6 +2,12 @@ name: UI Tests
 
 on:
   workflow_call:
+    inputs:
+      branch:
+        description: 'The branch to use'
+        default: 'V3'
+        required: false
+        type: string
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
         required: true
@@ -17,7 +23,9 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        repository: WalletConnect/web3modal
+        ref: ${{ inputs.branch }}
       - name: setup-node
         uses: actions/setup-node@v3
         with:

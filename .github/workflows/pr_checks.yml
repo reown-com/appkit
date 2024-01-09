@@ -88,3 +88,5 @@ jobs:
   ui-test:
     uses: ./.github/workflows/ui_tests.yml
     secrets: inherit
+    with:
+      branch: ${{ github.ref_name }}
