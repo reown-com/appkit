@@ -14,6 +14,7 @@ export interface ConfigOptions {
     rpcUrl?: string
     defaultChainId?: number
     metadata: Metadata
+    EIP6963?: boolean
 }
 
 export function defaultSolanaConfig(options: ConfigOptions) {
