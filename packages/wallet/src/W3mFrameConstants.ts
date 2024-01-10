@@ -1,5 +1,6 @@
 export const W3mFrameConstants = {
-  SECURE_SITE_SDK: 'https://secure.web3modal.com/sdk',
+  // SECURE_SITE_SDK: 'https://secure.web3modal.com/sdk',
+  SECURE_SITE_SDK: 'http://localhost:3010/sdk',
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
   RPC_METHOD_KEY: 'RPC_',
@@ -50,3 +51,8 @@ export const W3mFrameConstants = {
   FRAME_SYNC_THEME_SUCCESS: '@w3m-frame/SYNC_THEME_SUCCESS',
   FRAME_SYNC_THEME_ERROR: '@w3m-frame/SYNC_THEME_ERROR'
 } as const
+
+export const W3mFrameRpcConstants = {
+  SAFE_RPC_METHODS: ['eth_blockNumber', 'eth_estimateGas', 'eth_getTransactionByHash'],
+  IGNORED_RPC_METHODS: ['eth_chainId']
+}

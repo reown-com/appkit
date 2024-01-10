@@ -35,7 +35,7 @@ import {
 } from '@web3modal/scaffold-utils/ethers'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
-import { W3mFrameProvider, type W3mFrameTypes } from '@web3modal/wallet'
+import { W3mFrameRpcConstants, W3mFrameProvider, type W3mFrameTypes } from '@web3modal/wallet'
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
 
 // -- Types ---------------------------------------------------------------------
@@ -750,11 +750,9 @@ export class Web3Modal extends Web3ModalScaffold {
         const req = request as W3mFrameTypes.AppEvent & { payload?: unknown }
         const payload = req.payload as W3mFrameTypes.RPCRequest
         // We only open the modal if it's not a safe (auto-approve) or ignored method
-        const ALLOWED_METHODS = ['eth_blockNumber', 'eth_estimateGas', 'eth_getTransactionByHash']
-        const IGNORED_METHODS = ['eth_chainId']
         if (
-          !ALLOWED_METHODS.includes(payload.method) &&
-          !IGNORED_METHODS.includes(payload.method)
+          !W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(payload.method) &&
+          !W3mFrameRpcConstants.IGNORED_RPC_METHODS.includes(payload.method)
         ) {
           super.open({ view: 'ApproveTransaction' })
         }
