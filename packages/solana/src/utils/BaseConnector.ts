@@ -332,6 +332,7 @@ export class BaseConnector {
     params: ClusterRequestMethods[Method]['params']
   ): Promise<ClusterRequestMethods[Method]['returns']> {
     const cluster = SolStoreUtil.getCluster()
+    console.log(`cluster in request cluster`, cluster);
     const { endpoint } = cluster
     const res: { result: ClusterRequestMethods[Method]['returns'] } = await fetch(endpoint, {
       method: 'post',

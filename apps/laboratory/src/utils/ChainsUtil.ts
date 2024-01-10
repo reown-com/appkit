@@ -103,7 +103,7 @@ export const sepolia = {
 }
 
 export const solana = {
-  chainId: 1,
+  chainId: 1399811149,
   name: 'Solana',
   currency: 'SOL',
   explorerUrl: 'https://solscan.io/',

@@ -183,7 +183,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
   public async connect() {
     const chosenCluster = SolStoreUtil.getCluster()
     const clusterId = `solana:${chosenCluster.id}`
-    console.log(`cluster`, chosenCluster);
+    console.log(`chosen cluster`, chosenCluster);
 
     const solanaNamespace = {
       solana: {
@@ -199,13 +199,12 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     const provider = await UniversalProviderFactory.getProvider()
 
     return new Promise<string>((resolve, reject) => {
-      /* provider.on('display_uri', (uri: string) => {
-        if (this.qrcode)
-          importW3mModalCtrl().then(ModalCtrl => {
-            ModalCtrl.open({ uri, standaloneChains: [clusterId] })
-          })
+      provider.on('display_uri', (uri: string) => {
+        if (this.qrcode) {
+          // TODO: show QR code
+        }
         else resolve(uri)
-      })*/
+      })
       provider
         .connect({
           pairingTopic: undefined,

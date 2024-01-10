@@ -205,7 +205,7 @@ export class Web3Modal extends Web3ModalScaffold {
         url: 'http://localhost:3000'
       },
       autoconnect: true,
-      qrcode: true
+      qrcode: false
     })
 
     SolStoreUtil.subscribeKey('address', () => {
