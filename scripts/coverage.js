@@ -37,7 +37,7 @@ function getAllPathsForPackagesSummaries() {
       .filter(dirent => dirent.isDirectory())
       .map(dirent => dirent.name)
 
-  const appsPath = path.join(__dirname, 'apps')
+  const appsPath = path.join(__dirname, '..', 'apps')
   const appsNames = getDirectories(appsPath)
 
   const appsSummaries = appsNames.reduce((summary, appName) => {
@@ -47,7 +47,7 @@ function getAllPathsForPackagesSummaries() {
     }
   }, {})
 
-  const packagesPath = path.join(__dirname, 'packages')
+  const packagesPath = path.join(__dirname, '..', 'packages')
   const packageNames = getDirectories(packagesPath)
 
   const packagesSummaries = packageNames.reduce((summary, packageName) => {
@@ -165,7 +165,7 @@ function writeCoverageReportToFile(coverageReport) {
     }-${date.getDate()}_${date.getHours()}-${date.getMinutes()}`
   }
 
-  const dir = path.join(__dirname, 'coverage')
+  const dir = path.join(__dirname, '..', 'coverage')
 
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir)
