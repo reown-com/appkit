@@ -1,4 +1,4 @@
-export default [
+export const abi = [
   { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
   {
     inputs: [{ internalType: 'address', name: '', type: 'address' }],
@@ -36,3 +36,5 @@ export default [
     type: 'function'
   }
 ]
+
+export const address = '0xed2671343dad40fe7fea57d8b0de1369f9dba956'

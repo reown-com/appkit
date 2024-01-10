@@ -9,9 +9,7 @@ import {
 } from 'wagmi'
 import { useCallback, useEffect } from 'react'
 import { sepolia } from 'wagmi/chains'
-import DonutAbi from './DonutAbi'
-
-const TEST_CONTRACT = '0xed2671343dad40fe7fea57d8b0de1369f9dba956'
+import { abi, address } from '../../utils/DonutContract'
 
 export function WagmiMintTest() {
   const toast = useToast()
@@ -23,13 +21,13 @@ export function WagmiMintTest() {
     isLoading: donutsQueryLoading,
     isRefetching: donutsQueryRefetching
   } = useContractRead({
-    abi: DonutAbi,
-    address: TEST_CONTRACT,
+    abi,
+    address,
     functionName: 'getBalance'
   })
   const { config, error: prepareError } = usePrepareContractWrite({
-    abi: DonutAbi,
-    address: TEST_CONTRACT,
+    abi,
+    address,
     functionName: 'purchase',
     value: parseEther('0.0003'),
     args: [1]
