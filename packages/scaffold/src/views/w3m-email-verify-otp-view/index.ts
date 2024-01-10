@@ -107,6 +107,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
         if (this.emailConnector && otp.length === OTP_LENGTH) {
           this.loading = true
           await this.emailConnector.provider.connectOtp({ otp })
+          EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
           await ConnectionController.connectExternal(this.emailConnector)
           ModalController.close()
           EventsController.sendEvent({
@@ -117,6 +118,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
         }
       }
     } catch (error) {
+      EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_FAIL' })
       this.error = CoreHelperUtil.parseError(error)
       this.loading = false
     }
@@ -131,6 +133,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
         }
         this.loading = true
         await emailConnector.provider.connectEmail({ email: this.email })
+        EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_SENT' })
         this.startOTPTimeout()
         SnackController.showSuccess('Code email resent')
       }

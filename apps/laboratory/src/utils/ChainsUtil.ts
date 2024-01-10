@@ -94,6 +94,14 @@ export const aurora = {
   rpcUrl: 'https://mainnet.aurora.dev'
 }
 
+export const sepolia = {
+  chainId: 11155111,
+  name: 'Sepolia',
+  currency: 'ETH',
+  explorerUrl: 'https://sepolia.etherscan.io',
+  rpcUrl: 'https://rpc.sepolia.org'
+}
+
 export const solana = {
   chainId: 1,
   name: 'Solana',

@@ -1,6 +1,6 @@
 {
   "name": "@apps/laboratory",
-  "version": "3.6.0-0dbdeb8c",
+  "version": "3.6.0-eb1021c6",
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
@@ -15,13 +15,13 @@
     "@chakra-ui/react": "2.8.2",
     "@emotion/react": "11.11.3",
     "@emotion/styled": "11.11.0",
-    "@sentry/browser": "7.91.0",
-    "@sentry/react": "7.91.0",
-    "@web3modal/ethers": "3.6.0-0dbdeb8c",
-    "@web3modal/ethers5": "3.6.0-0dbdeb8c",
-    "@web3modal/wagmi": "3.6.0-0dbdeb8c",
-    "@web3modal/solana": "3.6.0-0dbdeb8c",
-    "framer-motion": "10.16.16",
+    "@sentry/browser": "7.92.0",
+    "@sentry/react": "7.92.0",
+    "@web3modal/ethers": "3.6.0-eb1021c6",
+    "@web3modal/ethers5": "3.6.0-eb1021c6",
+    "@web3modal/wagmi": "3.6.0-eb1021c6",
+    "@web3modal/solana": "3.6.0-eb1021c6",
+    "framer-motion": "10.17.9",
     "next": "14.0.4",
     "next-auth": "4.24.5",
     "react-icons": "4.12.0",
@@ -29,9 +29,9 @@
     "valtio": "1.11.2"
   },
   "devDependencies": {
+    "@mailsac/api": "1.0.5",
     "@playwright/test": "1.40.1",
     "dotenv": "16.3.1",
-    "ethers": "6.9.0",
-    "@mailsac/api": "1.0.5"
+    "ethers": "6.9.0"
   }
 }

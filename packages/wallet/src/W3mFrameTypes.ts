@@ -16,11 +16,14 @@ import {
   RpcEthEstimateGas,
   RpcEthGasPrice,
   RpcGetBalance,
+  RpcEthBlockNumber,
   FrameSession,
   AppGetUserRequest,
   AppUpdateEmailRequest,
   FrameAwaitUpdateEmailResponse,
-  AppSyncThemeRequest
+  AppSyncThemeRequest,
+  RpcEthChainId,
+  FrameSwitchNetworkResponse
 } from './W3mFrameSchema.js'
 
 export namespace W3mFrameTypes {
@@ -43,6 +46,7 @@ export namespace W3mFrameTypes {
     FrameGetUserResponse: z.infer<typeof FrameGetUserResponse>
     FrameIsConnectedResponse: z.infer<typeof FrameIsConnectedResponse>
     FrameAwaitUpdateEmailResponse: z.infer<typeof FrameAwaitUpdateEmailResponse>
+    FrameSwitchNetworkResponse: z.infer<typeof FrameSwitchNetworkResponse>
   }
 
   export interface Network {
@@ -58,6 +62,8 @@ export namespace W3mFrameTypes {
     | z.infer<typeof RpcEthEstimateGas>
     | z.infer<typeof RpcEthGasPrice>
     | z.infer<typeof RpcGetBalance>
+    | z.infer<typeof RpcEthBlockNumber>
+    | z.infer<typeof RpcEthChainId>
 
   export type RPCResponse = z.infer<typeof RpcResponse>
 
