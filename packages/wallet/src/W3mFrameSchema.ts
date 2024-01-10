@@ -50,7 +50,7 @@ export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
 export const FrameSwitchNetworkResponse = z.object({ chainId: z.number() })
 export const FrameAwaitUpdateEmailResponse = z.object({ email: z.string().email() })
-export const RpcResponse = z.string().or(GetTransactionByHashResponse)
+export const RpcResponse = z.any()
 export const RpcPersonalSignRequest = z.object({
   method: z.literal('personal_sign'),
   params: z.array(z.any())
