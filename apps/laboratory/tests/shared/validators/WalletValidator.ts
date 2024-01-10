@@ -16,8 +16,7 @@ export class WalletValidator {
     await this.page.waitForTimeout(1000)
     const isVercelPreview = (await this.vercelPreview.count()) > 0
     if (isVercelPreview) {
-      // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-      await this.vercelPreview.evaluate((iframe: any) => iframe.remove())
+      await this.vercelPreview.evaluate((iframe: HTMLIFrameElement) => iframe.remove())
     }
   }
 
