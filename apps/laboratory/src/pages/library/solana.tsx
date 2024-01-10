@@ -2,15 +2,11 @@ import { Center, Text, VStack } from '@chakra-ui/react'
 import { createWeb3Modal, defaultSolanaConfig } from '@web3modal/solana/react'
 
 import { ThemeStore } from '../../utils/StoreUtil'
-import {
-  solana
-} from '../../utils/ChainsUtil'
-import { Web3ModalButtons } from "../../components/Web3ModalButtons";
+import { solana, solanaDevnet, solanaTestnet } from '../../utils/ChainsUtil'
+import { Web3ModalButtons } from '../../components/Web3ModalButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 
-const chains = [
-  solana
-]
+const chains = [solana, solanaTestnet, solanaDevnet]
 
 export const solanaConfig = defaultSolanaConfig({
   chains,
@@ -26,7 +22,7 @@ const modal = createWeb3Modal({
   chains,
   enableAnalytics: false,
   termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
+  privacyPolicyUrl: 'https://walletconnect.com/privacy'
 })
 
 ThemeStore.setModal(modal)

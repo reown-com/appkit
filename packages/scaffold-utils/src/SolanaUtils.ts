@@ -1,5 +1,6 @@
 import type { W3mFrameProvider } from '@web3modal/wallet'
 import type { CaipNetwork } from '@web3modal/scaffold'
+import { PublicKey } from '@solana/web3.js'
 
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
@@ -52,12 +53,256 @@ export type Chain = {
   chainId: number
 }
 
+export enum Tag {
+  Uninitialized = 0,
+  ActiveOffer = 1,
+  CancelledOffer = 2,
+  AcceptedOffer = 3,
+  FavouriteDomain = 4,
+  FixedPriceOffer = 5,
+  AcceptedFixedPriceOffer = 6,
+  CancelledFixedPriceOffer = 7
+}
+
+export interface Status {
+  Ok: null
+}
+
+export interface Meta {
+  err: null
+  fee: number
+  innerInstructions: TransactionInstruction[]
+  logMessages: string[]
+  postBalances: number[]
+  postTokenBalances: number[]
+  preBalances: number[]
+  preTokenBalances: number[]
+  rewards: null
+  status: Status
+}
+
+interface TransactionInstruction {
+  accounts: number[]
+  data: string
+  programIdIndex: number
+}
+
+export interface TransactionElement {
+  meta: Meta
+  transaction: TransactionTransaction
+}
+
+export interface TransactionTransaction {
+  message: Message
+  signatures: string[]
+}
+
+export interface Transaction {
+  message: Message
+  signatures: string[]
+}
+
+export interface TransactionResult {
+  meta: Meta
+  slot: number
+  transaction: Transaction
+}
+
+export interface Message {
+  accountKeys: string[]
+  header: Header
+  instructions: Instruction[]
+  recentBlockhash: string
+}
+
+export interface Header {
+  numReadonlySignedAccounts: number
+  numReadonlyUnsignedAccounts: number
+  numRequiredSignatures: number
+}
+
+export interface Instruction {
+  accounts: number[]
+  data: string
+  programIdIndex: number
+}
+
+export interface BlockResult {
+  blockHeight: number
+  blockTime: null
+  blockhash: string
+  parentSlot: number
+  previousBlockhash: string
+  transactions: TransactionElement[]
+}
+
+export interface AccountInfo {
+  data: string[]
+  executable: boolean
+  lamports: number
+  owner: string
+  rentEpoch: number
+}
+
+export type FilterObject =
+  | {
+      memcmp: {
+        offset: number
+        bytes: string
+        encoding?: string
+      }
+    }
+  | { dataSize: number }
+
+export interface TransactionInstructionRq {
+  programId: string
+  data: string
+  keys: { isSigner: boolean; isWritable: boolean; pubkey: string }[]
+}
+
+export interface RequestMethods {
+  solana_signMessage: {
+    params: {
+      message: string
+      pubkey: string
+    }
+    returns: {
+      signature: string
+    }
+  }
+  solana_signTransaction: {
+    params: {
+      feePayer: string
+      instructions: TransactionInstructionRq[]
+      recentBlockhash: string
+      signatures?: { pubkey: string; signature: string }[]
+    }
+    returns: {
+      signature: string
+    }
+  }
+  signMessage: {
+    params: {
+      message: Uint8Array
+      format: string
+    }
+    returns: {
+      signature: string
+    } | null
+  }
+
+  signTransaction: {
+    params: {
+      // Serialized transaction
+      message: string
+    }
+    returns: {
+      serialize: () => string
+    } | null
+  }
+}
+
+export interface TransactionArgs {
+  transfer: {
+    params: {
+      to: string
+      amountInLamports: number
+      feePayer: 'from' | 'to'
+    }
+  }
+  program: {
+    params: {
+      programId: string
+      isWritableSender: boolean
+      data: Record<string, unknown>
+    }
+  }
+}
+
+export type TransactionType = keyof TransactionArgs
+
+export interface ClusterRequestMethods {
+  sendTransaction: {
+    // Signed, serialized transaction
+    params: string[]
+    returns: string
+  }
+
+  getFeeForMessage: {
+    params: [string]
+    returns: number
+  }
+
+  getBlock: {
+    params: [number]
+    returns: BlockResult | null
+  }
+
+  getBalance: {
+    params: [string, { commitment: 'processed' }]
+    returns: {
+      value: number
+    }
+  }
+
+  getProgramAccounts: {
+    params: [
+      string,
+      {
+        filters?: FilterObject[]
+        encoding: 'base58' | 'base64' | 'jsonParsed'
+        withContext?: boolean
+      }
+    ]
+    returns: {
+      value: { account: AccountInfo }[]
+    }
+  }
+
+  getAccountInfo: {
+    params: [string, { encoding: 'base58' | 'base64' | 'jsonParsed' }] | [string]
+    returns?: {
+      value: AccountInfo | null
+    }
+  }
+
+  getTransaction: {
+    params: [
+      string,
+      { encoding: 'base58' | 'base64' | 'jsonParsed'; commitment: 'confirmed' | 'finalized' }
+    ]
+    returns: TransactionResult | null
+  }
+
+  getLatestBlockhash: {
+    params: [{ commitment?: string }]
+    returns: {
+      value: {
+        blockhash: string
+      }
+    }
+  }
+}
+
+export interface ClusterSubscribeRequestMethods {
+  signatureSubscribe: {
+    params: string[]
+    returns: Transaction
+  }
+  signatureUnsubscribe: {
+    params: number[]
+    returns: unknown
+  }
+}
+
 // -- Store--------------------------------------------- //
 export interface SolStoreUtilState {
   provider?: Provider | CombinedProvider
   providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
   address?: Address
   chainId?: number
+  currentChain?: Chain
+  requestId?: number
   error?: unknown
   isConnected: boolean
 }
@@ -69,10 +314,10 @@ const state = proxy<SolStoreUtilState>({
   provider: undefined,
   providerType: undefined,
   address: undefined,
+  currentChain: undefined,
   chainId: undefined,
   isConnected: false
 })
-
 
 export const SolStoreUtil = {
   state,
@@ -111,6 +356,22 @@ export const SolStoreUtil = {
     state.error = error
   },
 
+  getCluster() {
+    const chain = state.currentChain as Chain
+    return {
+      name: chain.name,
+      id: chain.chainId,
+      endpoint: chain.rpcUrl
+    }
+  },
+
+  getNewRequestId() {
+    const curId = state.requestId ?? 0
+    state.requestId = curId + 1
+
+    return state.requestId
+  },
+
   reset() {
     state.provider = undefined
     state.address = undefined
@@ -123,6 +384,32 @@ export const SolStoreUtil = {
 
 // -- Constants --------------------------------------------- //
 export const SolConstantsUtil = {
+  HASH_PREFIX: 'SPL Name Service',
+
+  NAME_OFFERS_ID: new PublicKey('85iDfUvr3HJyLM2zcq5BXSiDvUWfw6cSE1FfNBo8Ap29'),
+
+  /**
+   * The `.sol` TLD
+   */
+  ROOT_DOMAIN_ACCOUNT: new PublicKey('58PwtjSDuFHuUkYjH9BYnnQKHfwo9reZhC2zMJv9JPkx'),
+
+  /**
+   * The Solana Name Service program ID
+   */
+  NAME_PROGRAM_ID: new PublicKey('namesLPneVptA9Z5rqUDD9tMTWEJwofgaYwp8cawRkX'),
+
+  /**
+   * The reverse look up class
+   */
+  REVERSE_LOOKUP_CLASS: new PublicKey('33m47vH6Eav6jr5Ry86XjhRft2jRBLDnDgPSHoquXi2Z'),
+  TOKEN_PROGRAM_ID: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
+
+  /**
+   * Mainnet program ID
+   */
+  NAME_TOKENIZER_ID: new PublicKey('nftD3vbNkNqfj2Sd3HZwbpw4BxxKWr4AjGb9X38JeZk'),
+  MINT_PREFIX: Buffer.from('tokenized_name'),
+
   WALLET_ID: '@w3m/wallet_id',
   ERROR_CODE_UNRECOGNIZED_CHAIN_ID: 4902,
   ERROR_CODE_DEFAULT: 5000
