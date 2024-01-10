@@ -38,7 +38,7 @@ export function WagmiTests() {
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
-              Mint Token
+              Purchase a Crypto Donut
             </Heading>
             <WagmiMintTest />
           </Box>

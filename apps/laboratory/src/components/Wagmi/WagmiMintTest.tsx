@@ -1,4 +1,4 @@
-import { Button, useToast, Stack, Link, Text, Spacer, Box } from '@chakra-ui/react'
+import { Button, useToast, Stack, Link, Text, Spacer, Flex } from '@chakra-ui/react'
 import { parseEther } from 'viem'
 import {
   useContractWrite,
@@ -20,7 +20,8 @@ export function WagmiMintTest() {
   const {
     data: donutsOwned,
     refetch: fetchDonutsOwned,
-    isLoading: donutsQueryLoading
+    isLoading: donutsQueryLoading,
+    isRefetching: donutsQueryRefetching
   } = useContractRead({
     abi: DonutAbi,
     address: TEST_CONTRACT,
@@ -76,18 +77,16 @@ export function WagmiMintTest() {
         disabled={!write}
         isDisabled={isLoading}
       >
-        Purchase a crypto donut
+        Purchase
       </Button>
-      <Box>
-        {donutsQueryLoading ? (
-          <Text>Fetching donuts...</Text>
-        ) : (
-          <>
-            <Text>Crypto donuts left:</Text>
-            <Text>{donutsOwned?.toString()}</Text>
-          </>
-        )}
-      </Box>
+      {donutsQueryLoading || donutsQueryRefetching ? (
+        <Text>Fetching donuts...</Text>
+      ) : (
+        <Flex alignItems="center">
+          <Text marginRight="5px">Crypto donuts left:</Text>
+          <Text>{donutsOwned?.toString()}</Text>
+        </Flex>
+      )}
       <Spacer />
 
       <Link isExternal href="https://sepoliafaucet.com">
