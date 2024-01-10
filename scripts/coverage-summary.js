@@ -45,4 +45,4 @@ async function readFirstAlphabeticallyDescendingFile(directory) {
   throw new Error('No files found in directory')
 }
 
-printCoverageSummary().then(res => console.log(res))
+printCoverageSummary().then(console.log) 
