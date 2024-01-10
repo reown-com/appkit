@@ -2,7 +2,7 @@ import { Button, useToast, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
 import { vitalikEthAddress } from '../../utils/DataUtil'
-import { sepolia } from '../../utils/ChainsUtil'
+import { mainnet, sepolia } from '../../utils/ChainsUtil'
 import { useState } from 'react'
 
 export function EthersTransactionTest() {
@@ -20,7 +20,7 @@ export function EthersTransactionTest() {
       const provider = new BrowserProvider(walletProvider, chainId)
       const signer = new JsonRpcSigner(provider, address)
       const tx = await signer.sendTransaction({
-        to: vitalikEthAddress,
+        to: '0x13302Eb0aD9Af2F847119dC4Ac632fFe196d0B0f',
         value: ethers.parseUnits('0.0001', 'gwei'),
         maxFeePerGas: ethers.parseUnits('100', 'gwei'),
         maxPriorityFeePerGas: ethers.parseUnits('100', 'gwei')
@@ -38,7 +38,7 @@ export function EthersTransactionTest() {
     }
   }
 
-  return chainId === sepolia.chainId && address ? (
+  return chainId === mainnet.chainId && address ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="sign-transaction-button"
