@@ -21,6 +21,7 @@ export class WalletPage {
   async connect() {
     const isVercelPreview = (await this.vercelPreview.count()) > 0
     if (isVercelPreview) {
+      // eslint-disable-next-line  @typescript-eslint/no-explicit-any
       await this.vercelPreview.evaluate((iframe: any) => iframe.remove())
     }
     await this.gotoHome.click()
