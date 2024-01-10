@@ -74,6 +74,7 @@ jobs:
           BASE_URL: ${{ inputs.base-url }}
           WALLET_URL: ${{ inputs.wallet-url }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
           MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
           DEBUG: pw:webserver
