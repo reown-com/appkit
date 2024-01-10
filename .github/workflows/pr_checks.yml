@@ -78,6 +78,12 @@ jobs:
         run: npm ci
       - name: test
         run: npm run test
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: |
+            packages/core/coverage/
+            packages/common/coverage/
 
   ui-test:
     uses: ./.github/workflows/ui_tests.yml

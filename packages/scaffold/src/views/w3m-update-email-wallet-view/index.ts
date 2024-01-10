@@ -5,7 +5,7 @@ import { state } from 'lit/decorators.js'
 import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
-import { SnackController, RouterController } from '@web3modal/core'
+import { SnackController, RouterController, EventsController } from '@web3modal/core'
 
 @customElement('w3m-update-email-wallet-view')
 export class W3mUpdateEmailWalletView extends LitElement {
@@ -85,6 +85,7 @@ export class W3mUpdateEmailWalletView extends LitElement {
       }
 
       await emailConnector.provider.updateEmail({ email: this.email })
+      EventsController.sendEvent({ type: 'track', event: 'EMAIL_EDIT' })
       RouterController.replace('UpdateEmailWalletWaiting', { email: this.email })
     } catch (error) {
       SnackController.showError(error)
