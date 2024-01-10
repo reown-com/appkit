@@ -9,6 +9,26 @@ function zType<K extends keyof typeof W3mFrameConstants>(key: K) {
 }
 
 // -- Responses --------------------------------------------------------------
+export const GetTransactionByHashResponse = z.object({
+  accessList: z.array(z.string()),
+  blockHash: z.string().nullable(),
+  blockNumber: z.string().nullable(),
+  chainId: z.string(),
+  from: z.string(),
+  gas: z.string(),
+  hash: z.string(),
+  input: z.string().nullable(),
+  maxFeePerGas: z.string(),
+  maxPriorityFeePerGas: z.string(),
+  nonce: z.string(),
+  r: z.string(),
+  s: z.string(),
+  to: z.string(),
+  transactionIndex: z.string().nullable(),
+  type: z.string(),
+  v: z.string(),
+  value: z.string()
+})
 export const AppSwitchNetworkRequest = z.object({ chainId: z.number() })
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
@@ -30,7 +50,7 @@ export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
 export const FrameSwitchNetworkResponse = z.object({ chainId: z.number() })
 export const FrameAwaitUpdateEmailResponse = z.object({ email: z.string().email() })
-export const RpcResponse = z.string()
+export const RpcResponse = z.string().or(GetTransactionByHashResponse)
 export const RpcPersonalSignRequest = z.object({
   method: z.literal('personal_sign'),
   params: z.array(z.any())
