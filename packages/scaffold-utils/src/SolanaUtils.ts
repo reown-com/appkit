@@ -146,12 +146,12 @@ export interface AccountInfo {
 
 export type FilterObject =
   | {
-      memcmp: {
-        offset: number
-        bytes: string
-        encoding?: string
-      }
+    memcmp: {
+      offset: number
+      bytes: string
+      encoding?: string
     }
+  }
   | { dataSize: number }
 
 export interface TransactionInstructionRq {
@@ -297,9 +297,10 @@ export interface ClusterSubscribeRequestMethods {
 
 // -- Store--------------------------------------------- //
 export interface SolStoreUtilState {
+  projectId: string
   provider?: Provider | CombinedProvider
   providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
-  address?: Address
+  address?: Address | ''
   chainId?: number
   currentChain?: Chain
   requestId?: number
@@ -311,6 +312,7 @@ type StateKey = keyof SolStoreUtilState
 
 // -- State --------------------------------------------- //
 const state = proxy<SolStoreUtilState>({
+  projectId: '',
   provider: undefined,
   providerType: undefined,
   address: undefined,
@@ -340,7 +342,15 @@ export const SolStoreUtil = {
     state.providerType = providerType
   },
 
-  setAddress(address: SolStoreUtilState['address']) {
+  getProjectId() {
+    return state.projectId
+  },
+
+  setProjectId(projectId: string) {
+    state.projectId = projectId
+  },
+
+  setAddress(address: SolStoreUtilState['address'] | '') {
     state.address = address
   },
 
@@ -354,6 +364,10 @@ export const SolStoreUtil = {
 
   setError(error: SolStoreUtilState['error']) {
     state.error = error
+  },
+
+  setCurrentChain(chain: Chain) {
+    state.currentChain = chain
   },
 
   getCluster() {
@@ -385,31 +399,25 @@ export const SolStoreUtil = {
 // -- Constants --------------------------------------------- //
 export const SolConstantsUtil = {
   HASH_PREFIX: 'SPL Name Service',
-
   NAME_OFFERS_ID: new PublicKey('85iDfUvr3HJyLM2zcq5BXSiDvUWfw6cSE1FfNBo8Ap29'),
-
   /**
    * The `.sol` TLD
    */
   ROOT_DOMAIN_ACCOUNT: new PublicKey('58PwtjSDuFHuUkYjH9BYnnQKHfwo9reZhC2zMJv9JPkx'),
-
   /**
    * The Solana Name Service program ID
    */
   NAME_PROGRAM_ID: new PublicKey('namesLPneVptA9Z5rqUDD9tMTWEJwofgaYwp8cawRkX'),
-
   /**
    * The reverse look up class
    */
   REVERSE_LOOKUP_CLASS: new PublicKey('33m47vH6Eav6jr5Ry86XjhRft2jRBLDnDgPSHoquXi2Z'),
   TOKEN_PROGRAM_ID: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
-
   /**
    * Mainnet program ID
    */
   NAME_TOKENIZER_ID: new PublicKey('nftD3vbNkNqfj2Sd3HZwbpw4BxxKWr4AjGb9X38JeZk'),
   MINT_PREFIX: Buffer.from('tokenized_name'),
-
   WALLET_ID: '@w3m/wallet_id',
   ERROR_CODE_UNRECOGNIZED_CHAIN_ID: 4902,
   ERROR_CODE_DEFAULT: 5000

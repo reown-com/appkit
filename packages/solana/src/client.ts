@@ -1,3 +1,4 @@
+import { BN } from 'bn.js'
 import type { WindowProvider } from '@wagmi/core'
 import type {
   CaipNetworkId,
@@ -24,6 +25,7 @@ import EthereumProvider from '@walletconnect/ethereum-provider'
 import { SolStoreUtil, SolHelpersUtil, SolConstantsUtil } from '@web3modal/scaffold-utils/solana'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
+import { WalletConnectConnector } from './utils/WalletConnectConnector'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
@@ -191,7 +193,20 @@ export class Web3Modal extends Web3ModalScaffold {
     this.projectId = w3mOptions.projectId
     this.chains = chains
     this.options = options
-    this.Connector = new Connector()
+    SolStoreUtil.setProjectId(options.projectId)
+    SolStoreUtil.setCurrentChain(chains[0] as Chain)
+
+    this.Connector = new WalletConnectConnector({
+      relayerRegion: 'wss://relay.walletconnect.com',
+      metadata: {
+        description: 'Test app for solib',
+        name: 'Test Solib dApp',
+        icons: ['https://avatars.githubusercontent.com/u/37784886'],
+        url: 'http://localhost:3000'
+      },
+      autoconnect: true,
+      qrcode: true
+    })
 
     SolStoreUtil.subscribeKey('address', () => {
       this.syncAccount()
@@ -261,10 +276,10 @@ export class Web3Modal extends Web3ModalScaffold {
       showQrModal: false,
       rpcMap: this.chains
         ? this.chains.reduce<Record<number, string>>((map, chain) => {
-            map[chain.chainId] = chain.rpcUrl
+          map[chain.chainId] = chain.rpcUrl
 
-            return map
-          }, {})
+          return map
+        }, {})
         : ({} as Record<number, string>),
       optionalChains: [...this.chains.map(chain => chain.chainId)] as [number],
       metadata: {
@@ -422,10 +437,7 @@ export class Web3Modal extends Web3ModalScaffold {
     if (chainId && this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId)
       if (chain) {
-        const balance = (await this.Connector.requestCluster('getBalance', [
-          address,
-          { commitment: 'processed' }
-        ])) ?? { value: 0 }
+        const balance = await this.Connector.getBalance(address) ?? { value: new BN('0') }
 
         const formatted = `${balance.value} sol`
         console.log(`formatted balance`, formatted)
@@ -474,7 +486,7 @@ export class Web3Modal extends Web3ModalScaffold {
               switchError.code === SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
               switchError.code === SolConstantsUtil.ERROR_CODE_DEFAULT ||
               switchError?.data?.originalError?.code ===
-                SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+              SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
               await SolHelpersUtil.addSolanaChain(
                 WalletConnectProvider as unknown as Provider,
@@ -500,7 +512,7 @@ export class Web3Modal extends Web3ModalScaffold {
               switchError.code === SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
               switchError.code === SolConstantsUtil.ERROR_CODE_DEFAULT ||
               switchError?.data?.originalError?.code ===
-                SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+              SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
               await SolHelpersUtil.addSolanaChain(InjectedProvider, chain)
             } else {
@@ -524,7 +536,7 @@ export class Web3Modal extends Web3ModalScaffold {
               switchError.code === SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
               switchError.code === SolConstantsUtil.ERROR_CODE_DEFAULT ||
               switchError?.data?.originalError?.code ===
-                SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+              SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
               await SolHelpersUtil.addSolanaChain(EIP6963Provider, chain)
             } else {
@@ -547,7 +559,7 @@ export class Web3Modal extends Web3ModalScaffold {
               switchError.code === SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
               switchError.code === SolConstantsUtil.ERROR_CODE_DEFAULT ||
               switchError?.data?.originalError?.code ===
-                SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+              SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
             ) {
               await SolHelpersUtil.addSolanaChain(CoinbaseProvider, chain)
             }
@@ -581,9 +593,19 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private listenConnectors() {
+  private async listenConnectors() {
     if (typeof window !== 'undefined') {
-      this.Connector
+      const res = await this.Connector.connect()
+      console.log(`response`, res);
+      /* this.addConnector({
+        id: 'WALLET_CONNECT',
+        type,
+        imageUrl:
+          info.icon ?? this.options?.connectorImages?.[ConstantsUtil.EIP6963_CONNECTOR_ID],
+        name: info.name,
+        provider,
+        info
+      }) */
       /* const handler = this.eip6963EventHandler.bind(this)
       window.addEventListener(ConstantsUtil.EIP6963_ANNOUNCE_EVENT, handler)
       window.dispatchEvent(new Event(ConstantsUtil.EIP6963_REQUEST_EVENT)) */
