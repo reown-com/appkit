@@ -11,7 +11,7 @@
     "playwright:test": "npx playwright test",
     "playwright:test:wallet": "npx playwright test --grep connect.spec.ts",
     "playwright:debug": "npx playwright test --debug",
-    "playwright:debug:wallet": "npx playwright test --grep connect.spec.ts"
+    "playwright:debug:wallet": "npx playwright test --debug --grep connect.spec.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "2.8.2",

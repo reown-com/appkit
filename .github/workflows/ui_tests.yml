@@ -71,9 +71,6 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         working-directory: ./apps/laboratory/
         run: npm run playwright:install
-      - name: print playright config
-        run: cat ./playwright.config.ts
-        working-directory: ./apps/laboratory/
       - name: Run Playwright tests
         env:
           BASE_URL: ${{ inputs.base-url }}
