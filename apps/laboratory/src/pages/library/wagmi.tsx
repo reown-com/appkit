@@ -1,66 +1,24 @@
-import { Center, Text, VStack } from '@chakra-ui/react'
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { useEffect, useState } from 'react'
 import { WagmiConfig } from 'wagmi'
-import {
-  arbitrum,
-  aurora,
-  avalanche,
-  base,
-  bsc,
-  celo,
-  gnosis,
-  mainnet,
-  optimism,
-  polygon,
-  zkSync,
-  zora
-} from 'wagmi/chains'
-import { WagmiConnectButton } from '../../components/Wagmi/WagmiConnectButton'
-import { NetworksButton } from '../../components/NetworksButton'
+import { Web3ModalButtons } from '../../components/Web3ModalButtons'
+import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
-
-// 1. Get projectId
-const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
-if (!projectId) {
-  throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
-}
-
-// 2. Create wagmiConfig
-const chains = [
-  mainnet,
-  arbitrum,
-  polygon,
-  avalanche,
-  bsc,
-  optimism,
-  gnosis,
-  zkSync,
-  zora,
-  base,
-  celo,
-  aurora
-]
-
-const metadata = {
-  name: 'Web3Modal',
-  description: 'Web3Modal Laboratory',
-  url: 'https://web3modal.com',
-  icons: ['https://avatars.githubusercontent.com/u/37784886']
-}
+import { WagmiConstantsUtil } from '../../utils/WagmiConstants'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
 
 export const wagmiConfig = defaultWagmiConfig({
-  chains,
-  projectId,
-  metadata
+  chains: WagmiConstantsUtil.chains,
+  projectId: ConstantsUtil.ProjectId,
+  metadata: ConstantsUtil.Metadata
 })
 
 const modal = createWeb3Modal({
   wagmiConfig,
-  projectId,
-  chains,
+  projectId: ConstantsUtil.ProjectId,
+  chains: WagmiConstantsUtil.chains,
   enableAnalytics: true,
-  metadata,
+  metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy'
 })
@@ -76,17 +34,8 @@ export default function Wagmi() {
 
   return ready ? (
     <WagmiConfig config={wagmiConfig}>
-      <Center paddingTop={10}>
-        <Text fontSize="xl" fontWeight={700}>
-          Wagmi default
-        </Text>
-      </Center>
-      <Center h="65vh">
-        <VStack gap={4}>
-          <WagmiConnectButton />
-          <NetworksButton />
-        </VStack>
-      </Center>
+      <Web3ModalButtons />
+      <WagmiTests />
     </WagmiConfig>
   ) : null
 }

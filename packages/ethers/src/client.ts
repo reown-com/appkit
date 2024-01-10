@@ -587,8 +587,8 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (this.emailProvider) {
       const { address, chainId } = await this.emailProvider.connect()
+      super.setLoading(false)
       if (address && chainId) {
-        super.setLoading(false)
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType(ConstantsUtil.EMAIL_CONNECTOR_ID as 'w3mEmail')
         EthersStoreUtil.setProvider(this.emailProvider as unknown as CombinedProvider)
@@ -1032,8 +1032,11 @@ export class Web3Modal extends Web3ModalScaffold {
       const isLoginEmailUsed = this.emailProvider.getLoginEmailUsed()
       super.setLoading(isLoginEmailUsed)
       const isConnected = await this.emailProvider.isConnected()
+
       if (isConnected) {
         this.setEmailProvider()
+      } else {
+        super.setLoading(false)
       }
     }
   }
