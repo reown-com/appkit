@@ -14,7 +14,7 @@ export class WalletValidator {
     await this.page.reload()
     await this.page.getByTestId('wc-connect').isVisible()
     await this.page.waitForTimeout(1000)
-    const isVercelPreview = await this.vercelPreview.count() > 0
+    const isVercelPreview = (await this.vercelPreview.count()) > 0
     if (isVercelPreview) {
       await this.vercelPreview.evaluate((iframe: any) => iframe.remove())
     }

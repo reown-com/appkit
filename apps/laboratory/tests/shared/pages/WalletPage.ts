@@ -19,7 +19,7 @@ export class WalletPage {
   }
 
   async connect() {
-    const isVercelPreview = await this.vercelPreview.count() > 0
+    const isVercelPreview = (await this.vercelPreview.count()) > 0
     if (isVercelPreview) {
       await this.vercelPreview.evaluate((iframe: any) => iframe.remove())
     }
