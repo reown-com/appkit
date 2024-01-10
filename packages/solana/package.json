@@ -39,9 +39,12 @@
     "@web3modal/scaffold": "3.6.0-0dbdeb8c",
     "@web3modal/scaffold-react": "3.6.0-0dbdeb8c",
     "@web3modal/scaffold-utils": "3.6.0-0dbdeb8c",
-    "@web3modal/scaffold-vue": "3.6.0-0dbdeb8c"
+    "@web3modal/scaffold-vue": "3.6.0-0dbdeb8c",
+    "bn.js": "^5.2.1",
+    "bs58": "^5.0.0"
   },
   "devDependencies": {
+    "@types/bn.js": "^5.1.5",
     "@web3modal/siwe": "*"
   },
   "peerDependencies": {

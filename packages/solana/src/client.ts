@@ -6,26 +6,27 @@ import type {
   NetworkControllerClient,
   Token,
   ScaffoldOptions,
-  Connector
+  Connector,
+  CaipAddress,
+  CaipNetwork
 } from '@web3modal/scaffold'
 import type {
   ProviderType,
   Metadata,
   Chain,
   Provider,
-  Address
+  Address,
 } from '@web3modal/scaffold-utils/solana'
-
-import EthereumProvider from '@walletconnect/ethereum-provider'
+import type { Connector as IConnector } from './utils/BaseConnector'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
+import type { Web3ModalSIWEClient } from '@web3modal/siwe'
+import EthereumProvider from '@walletconnect/ethereum-provider'
 import {
   SolStoreUtil,
   SolHelpersUtil,
   SolConstantsUtil
 } from '@web3modal/scaffold-utils/solana'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
-import type { Web3ModalSIWEClient } from '@web3modal/siwe'
-
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -50,18 +51,15 @@ interface Wallet {
   provider: WindowProvider
 }
 
-interface IEIP6963Provider {
-  name: string
-  provider: any
-}
-
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
 
 // -- Client --------------------------------------------------------------------
 export class Web3Modal extends Web3ModalScaffold {
-  private walletConnectProvider?: EthereumProvider
+  private hasSyncedConnectedAccount = false
 
-  private EIP6963Providers: IEIP6963Provider[] = []
+  private Connector: IConnector
+
+  private walletConnectProvider?: EthereumProvider
 
   private walletConnectProviderInitPromise?: Promise<void>
 
@@ -74,7 +72,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private metadata?: Metadata
 
   public constructor(options: Web3ModalClientOptions) {
-    const { solanaConfig, chains, tokens, _sdkVersion, ...w3mOptions } = options
+    const { solanaConfig, chains, tokens, _sdkVersion, chainImages, ...w3mOptions } = options
 
     if (!solanaConfig) {
       throw new Error('web3modal:constructor - solanaConfig is undefined')
@@ -197,9 +195,19 @@ export class Web3Modal extends Web3ModalScaffold {
     this.projectId = w3mOptions.projectId
     this.chains = chains
     this.options = options
+    this.Connector = new Connector()
 
+
+    SolStoreUtil.subscribeKey('address', () => {
+      this.syncAccount()
+    })
+
+    SolStoreUtil.subscribeKey('chainId', () => {
+      this.syncNetwork(chainImages)
+    })
+    this.syncRequestedNetworks(chains, chainImages)
     this.syncConnectors(solanaConfig)
-    this.listenConnectors(solanaConfig.EIP6963 || false)
+    this.listenConnectors()
   }
 
   public setAddress(address?: string) {
@@ -209,12 +217,11 @@ export class Web3Modal extends Web3ModalScaffold {
 
   public getAddress() {
     const { address } = SolStoreUtil.state
-
     return address ? SolStoreUtil.state.address as Address : address
   }
 
   // -- Private -----------------------------------------------------------------
-  private syncConnectors(solanaConfig: ProviderType/* , wagmiConfig: Web3ModalClientOptions['wagmiConfig'] */) {
+  private syncConnectors(solanaConfig: ProviderType) {
     const w3mConnectors: Connector[] = []
     const connectorType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]
     if (connectorType) {
@@ -242,18 +249,6 @@ export class Web3Modal extends Web3ModalScaffold {
         })
       }
     }
-    /*  wagmiConfig.connectors.forEach(({ id, name }) => {
-       if (![ConstantsUtil.EIP6963_CONNECTOR_ID, ConstantsUtil.EMAIL_CONNECTOR_ID].includes(id)) {
-         w3mConnectors.push({
-           id,
-           explorerId: PresetsUtil.ConnectorExplorerIds[id],
-           imageId: PresetsUtil.ConnectorImageIds[id],
-           imageUrl: this.options?.connectorImages?.[id],
-           name: PresetsUtil.ConnectorNamesMap[id] ?? name,
-           type: PresetsUtil.ConnectorTypesMap[id] ?? 'EXTERNAL'
-         })
-       }
-     }) */
     this.setConnectors(w3mConnectors)
   }
 
@@ -359,6 +354,103 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     return this.walletConnectProvider
+  }
+
+  private async syncAccount() {
+    const address = SolStoreUtil.state.address
+    const chainId = SolStoreUtil.state.chainId
+    const isConnected = SolStoreUtil.state.isConnected
+
+    this.resetAccount()
+
+    if (isConnected && address && chainId) {
+      const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
+
+      this.setIsConnected(isConnected)
+
+      this.setCaipAddress(caipAddress)
+
+      await Promise.all([
+        this.syncProfile(address),
+        this.syncBalance(address),
+        this.getApprovedCaipNetworksData()
+      ])
+
+      this.hasSyncedConnectedAccount = true
+    } else if (!isConnected && this.hasSyncedConnectedAccount) {
+      this.resetWcConnection()
+      this.resetNetwork()
+    }
+  }
+
+  private async syncProfile(address: Address) {
+    this.setProfileName(null)
+    this.setProfileImage(null)
+  }
+
+  private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
+    const address = SolStoreUtil.state.address
+    const chainId = SolStoreUtil.state.chainId
+    const isConnected = SolStoreUtil.state.isConnected
+    if (this.chains) {
+      const chain = this.chains.find(c => c.chainId === chainId)
+
+      if (chain) {
+        const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chain.chainId}`
+
+        this.setCaipNetwork({
+          id: caipChainId,
+          name: chain.name,
+          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+          imageUrl: chainImages?.[chain.chainId]
+        })
+        if (isConnected && address) {
+          const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
+          this.setCaipAddress(caipAddress)
+          if (chain.explorerUrl) {
+            const url = `${chain.explorerUrl}/address/${address}`
+            this.setAddressExplorerUrl(url)
+          } else {
+            this.setAddressExplorerUrl(undefined)
+          }
+          if (this.hasSyncedConnectedAccount) {
+            await this.syncProfile(address)
+            await this.syncBalance(address)
+          }
+        }
+      }
+    }
+  }
+
+  private async syncBalance(address: string) {
+    const chainId = SolStoreUtil.state.chainId
+    if (chainId && this.chains) {
+      const chain = this.chains.find(c => c.chainId === chainId)
+      if (chain) {
+        const balance = await this.Connector.requestCluster('getBalance', [address, { commitment: 'processed' }]) ?? { value: 0 }
+
+        const formatted = `${balance.value} sol`
+        console.log(`formatted balance`, formatted);
+
+        this.setBalance(balance.value.toString(), chain.currency)
+      }
+    }
+  }
+
+  private syncRequestedNetworks(
+    chains: Web3ModalClientOptions['chains'],
+    chainImages?: Web3ModalClientOptions['chainImages']
+  ) {
+    const requestedCaipNetworks = chains?.map(
+      chain =>
+        ({
+          id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
+          name: chain.name,
+          imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
+          imageUrl: chainImages?.[chain.chainId]
+        }) as CaipNetwork
+    )
+    this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
   }
 
   private async switchNetwork(chainId: number) {
@@ -470,8 +562,10 @@ export class Web3Modal extends Web3ModalScaffold {
   private eip6963EventHandler(event: CustomEventInit<Wallet>) {
     if (event.detail) {
       const { info, provider } = event.detail
+      console.log(`provider`, provider);
+      console.log(`info`, info);
       const connectors = this.getConnectors()
-      const existingConnector = connectors.find(c => c.name === info.name)
+      const existingConnector = connectors.find((c) => c.name === info.name)
       if (!existingConnector) {
         const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
         if (type) {
@@ -484,23 +578,17 @@ export class Web3Modal extends Web3ModalScaffold {
             provider,
             info
           })
-
-          const eip6963ProviderObj = {
-            name: info.name,
-            provider
-          }
-
-          this.EIP6963Providers.push(eip6963ProviderObj)
         }
       }
     }
   }
 
-  private listenConnectors(enableEIP6963: boolean) {
-    if (typeof window !== 'undefined' && enableEIP6963) {
-      const handler = this.eip6963EventHandler.bind(this)
+  private listenConnectors() {
+    if (typeof window !== 'undefined') {
+      this.Connector
+      /* const handler = this.eip6963EventHandler.bind(this)
       window.addEventListener(ConstantsUtil.EIP6963_ANNOUNCE_EVENT, handler)
-      window.dispatchEvent(new Event(ConstantsUtil.EIP6963_REQUEST_EVENT))
+      window.dispatchEvent(new Event(ConstantsUtil.EIP6963_REQUEST_EVENT)) */
     }
   }
 }

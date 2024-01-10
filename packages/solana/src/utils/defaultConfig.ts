@@ -14,7 +14,6 @@ export interface ConfigOptions {
     rpcUrl?: string
     defaultChainId?: number
     metadata: Metadata
-    EIP6963?: boolean
 }
 
 export function defaultSolanaConfig(options: ConfigOptions) {
@@ -25,7 +24,7 @@ export function defaultSolanaConfig(options: ConfigOptions) {
 
     let injectedProvider: Provider | undefined = undefined
 
-    const providers: ProviderType = { metadata, EIP6963: true }
+    const providers: ProviderType = { metadata }
 
     function getInjectedProvider() {
         if (injectedProvider) {

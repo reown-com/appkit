@@ -4,7 +4,7 @@ import { createWeb3Modal, defaultSolanaConfig } from '@web3modal/solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { NetworksButton } from '../../components/NetworksButton'
 import {
-  solana
+  solana, solanaDevnet, solanaTestnet
 } from '../../utils/ChainsUtil'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
@@ -13,7 +13,9 @@ if (!projectId) {
 }
 
 const chains = [
-  solana
+  solana,
+  solanaTestnet,
+  solanaDevnet
 ]
 
 const metadata = {
@@ -27,7 +29,6 @@ export const solanaConfig = defaultSolanaConfig({
   chains,
   projectId,
   metadata,
-  EIP6963: true
 })
 
 const modal = createWeb3Modal({
