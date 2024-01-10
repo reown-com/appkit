@@ -12,7 +12,7 @@ import type {
   FilterObject,
   RequestMethods,
   TransactionArgs,
-  TransactionType,
+  TransactionType
 } from '@web3modal/scaffold-utils/solana'
 import { SolConstantsUtil, SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 import { registerListener, unregisterListener } from './clusterFactory'
@@ -219,13 +219,20 @@ export class BaseConnector {
 
   public async performReverseLookup(address: string) {
     const hashedReverseLookup = getHashedName(address)
-    const reverseLookupAccount = await getNameAccountKey(hashedReverseLookup, SolConstantsUtil.REVERSE_LOOKUP_CLASS)
+    const reverseLookupAccount = await getNameAccountKey(
+      hashedReverseLookup,
+      SolConstantsUtil.REVERSE_LOOKUP_CLASS
+    )
 
     const account = await this.getAccount(reverseLookupAccount.toBase58(), 'base64')
 
     if (account) {
       const dataBuffer = Buffer.from(String(account.data[0]), 'base64')
-      const deserialized = borsh.deserializeUnchecked(NameRegistry.schema, NameRegistry, dataBuffer) as { data: any }
+      const deserialized = borsh.deserializeUnchecked(
+        NameRegistry.schema,
+        NameRegistry,
+        dataBuffer
+      ) as { data: any }
 
       deserialized.data = dataBuffer.slice(96)
 
@@ -258,7 +265,11 @@ export class BaseConnector {
   public async getAddressFromDomain(domain: string) {
     const hashed = getHashedName(domain.replace('.sol', ''))
 
-    const nameAccountKey = await getNameAccountKey(hashed, undefined, SolConstantsUtil.ROOT_DOMAIN_ACCOUNT)
+    const nameAccountKey = await getNameAccountKey(
+      hashed,
+      undefined,
+      SolConstantsUtil.ROOT_DOMAIN_ACCOUNT
+    )
     const ownerDataRaw = await this.getAccount(nameAccountKey.toBase58(), 'base64')
 
     if (!ownerDataRaw) return null
@@ -315,7 +326,6 @@ export class BaseConnector {
       unregisterListener(id)
     }
   }
-
 
   public async requestCluster<Method extends keyof ClusterRequestMethods>(
     method: Method,

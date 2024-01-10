@@ -1,10 +1,13 @@
 import { proxy } from 'valtio/vanilla'
 import { Transaction } from '@solana/web3.js'
-import type { ClusterSubscribeRequestMethods } from '@web3modal/scaffold-utils/solana';
+import type { ClusterSubscribeRequestMethods } from '@web3modal/scaffold-utils/solana'
 import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 import { waitForOpenConnection } from './websocket'
 
-type Listeners = Record<number, { callback: (params: Transaction | number) => void; method: string; id: number }>
+type Listeners = Record<
+  number,
+  { callback: (params: Transaction | number) => void; method: string; id: number }
+>
 let socket: WebSocket | undefined = undefined
 const listeners: Listeners = proxy<Listeners>({})
 const subIdToReqId: Record<number, number> = proxy<Record<number, number>>({})
@@ -16,7 +19,11 @@ export async function setSocket() {
   await waitForOpenConnection(socket)
 
   socket.onmessage = ev => {
-    const data = JSON.parse(ev.data) as { id: number, result: number, params: { subscription: number, result: number } }
+    const data = JSON.parse(ev.data) as {
+      id: number
+      result: number
+      params: { subscription: number; result: number }
+    }
 
     /*
      * If request is a subscribtion init notification

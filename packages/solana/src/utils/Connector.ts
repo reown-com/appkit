@@ -3,10 +3,7 @@ import { PublicKey } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { Connector } from './BaseConnector'
 import { BaseConnector } from './BaseConnector'
-import type {
-  TransactionArgs,
-  TransactionType,
-} from '@web3modal/scaffold-utils/solana'
+import type { TransactionArgs, TransactionType } from '@web3modal/scaffold-utils/solana'
 import { UniversalProviderFactory } from '../utils/universalProvider'
 import { getAddress, getCluster, getProjectId, setAddress } from '../store'
 import { Buffer } from 'buffer'

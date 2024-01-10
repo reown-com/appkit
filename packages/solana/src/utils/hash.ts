@@ -25,7 +25,10 @@ export async function getNameAccountKey(
   if (nameParent) seeds.push(nameParent.toBuffer())
   else seeds.push(Buffer.alloc(32))
 
-  const [nameAccountKey] = await PublicKey.findProgramAddress(seeds, SolConstantsUtil.NAME_PROGRAM_ID)
+  const [nameAccountKey] = await PublicKey.findProgramAddress(
+    seeds,
+    SolConstantsUtil.NAME_PROGRAM_ID
+  )
 
   return nameAccountKey
 }

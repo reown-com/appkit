@@ -11,7 +11,7 @@ import {
   Link
 } from '@chakra-ui/react'
 import { IoArrowForward } from 'react-icons/io5'
-import {wagmiSdkOptions, ethersSdkOptions, solanaSdkOptions} from '../utils/DataUtil'
+import { wagmiSdkOptions, ethersSdkOptions, solanaSdkOptions } from '../utils/DataUtil'
 
 export default function HomePage() {
   return (

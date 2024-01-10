@@ -127,7 +127,6 @@ export interface Instruction {
   programIdIndex: number
 }
 
-
 export interface BlockResult {
   blockHeight: number
   blockTime: null
@@ -147,12 +146,12 @@ export interface AccountInfo {
 
 export type FilterObject =
   | {
-    memcmp: {
-      offset: number
-      bytes: string
-      encoding?: string
+      memcmp: {
+        offset: number
+        bytes: string
+        encoding?: string
+      }
     }
-  }
   | { dataSize: number }
 
 export interface TransactionInstructionRq {
@@ -319,7 +318,6 @@ const state = proxy<SolStoreUtilState>({
   chainId: undefined,
   isConnected: false
 })
-
 
 export const SolStoreUtil = {
   state,

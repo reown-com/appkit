@@ -1,1 +1,1 @@
-export const WALLET_CHOICE_KEY = 'solana.wallet';
+export const WALLET_CHOICE_KEY = 'solana.wallet'
