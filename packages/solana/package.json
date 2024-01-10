@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/solana",
-  "version": "3.6.0-0dbdeb8c",
+  "version": "3.6.0-eb1021c6",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -35,11 +35,11 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/polyfills": "3.6.0-0dbdeb8c",
-    "@web3modal/scaffold": "3.6.0-0dbdeb8c",
-    "@web3modal/scaffold-react": "3.6.0-0dbdeb8c",
-    "@web3modal/scaffold-utils": "3.6.0-0dbdeb8c",
-    "@web3modal/scaffold-vue": "3.6.0-0dbdeb8c"
+    "@web3modal/polyfills": "3.6.0-eb1021c6",
+    "@web3modal/scaffold": "3.6.0-eb1021c6",
+    "@web3modal/scaffold-react": "3.6.0-eb1021c6",
+    "@web3modal/scaffold-utils": "3.6.0-eb1021c6",
+    "@web3modal/scaffold-vue": "3.6.0-eb1021c6"
   },
   "devDependencies": {
     "@web3modal/siwe": "*"
@@ -64,7 +64,7 @@
     }
   },
   "optionalDependencies": {
-    "@web3modal/siwe": "3.6.0-17c0eb03",
+    "@web3modal/siwe": "3.6.0-eb1021c6",
     "react": ">=17",
     "react-dom": ">=17",
     "vue": ">=3"

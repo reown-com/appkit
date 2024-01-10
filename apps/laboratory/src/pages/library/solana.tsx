@@ -2,40 +2,29 @@ import { Center, Text, VStack } from '@chakra-ui/react'
 import { createWeb3Modal, defaultSolanaConfig } from '@web3modal/solana/react'
 
 import { ThemeStore } from '../../utils/StoreUtil'
-import { NetworksButton } from '../../components/NetworksButton'
 import {
   solana
 } from '../../utils/ChainsUtil'
-
-const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
-if (!projectId) {
-  throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
-}
+import { Web3ModalButtons } from "../../components/Web3ModalButtons";
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
 
 const chains = [
   solana
 ]
 
-const metadata = {
-  name: 'Web3Modal',
-  description: 'Web3Modal Laboratory',
-  url: 'https://web3modal.com',
-  icons: ['https://avatars.githubusercontent.com/u/37784886']
-}
-
 export const solanaConfig = defaultSolanaConfig({
   chains,
-  projectId,
-  metadata,
+  projectId: ConstantsUtil.ProjectId,
+  metadata: ConstantsUtil.Metadata,
   EIP6963: true
 })
 
 const modal = createWeb3Modal({
   solanaConfig,
-  projectId,
+  projectId: ConstantsUtil.ProjectId,
+  metadata: ConstantsUtil.Metadata,
   chains,
   enableAnalytics: false,
-  metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
 })
@@ -52,8 +41,7 @@ export default function Solana() {
       </Center>
       <Center h="65vh">
         <VStack gap={4}>
-          <w3m-connect-button />
-          <NetworksButton />
+          <Web3ModalButtons />
         </VStack>
       </Center>
     </>

@@ -53,3 +53,11 @@ export const ethersSdkOptions = [
     description: 'Configuration usign ethers and implementing email login'
   }
 ]
+
+export const solanaSdkOptions = [
+  {
+    title: 'Default',
+    link: '/library/solana',
+    description: 'Basic configuration using solana as a driving library'
+  }
+]
