@@ -11,7 +11,7 @@ import { useCallback, useEffect } from 'react'
 import { sepolia } from 'wagmi/chains'
 import { abi, address } from '../../utils/DonutContract'
 
-export function WagmiMintTest() {
+export function WagmiWriteContractTest() {
   const toast = useToast()
   const { chain } = useNetwork()
   const { status } = useAccount()
@@ -75,7 +75,7 @@ export function WagmiMintTest() {
         disabled={!write}
         isDisabled={isLoading}
       >
-        Purchase
+        Purchase crypto donut
       </Button>
       {donutsQueryLoading || donutsQueryRefetching ? (
         <Text>Fetching donuts...</Text>

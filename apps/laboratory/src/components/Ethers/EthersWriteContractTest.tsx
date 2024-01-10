@@ -6,7 +6,7 @@ import { useState } from 'react'
 
 import { abi, address as donutAddress } from '../../utils/DonutContract'
 
-export function EthersMintTest() {
+export function EthersWriteContractTest() {
   const toast = useToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
@@ -43,7 +43,7 @@ export function EthersMintTest() {
         onClick={onSendTransaction}
         isDisabled={loading}
       >
-        Purchase
+        Purchase crypto donut
       </Button>
 
       <Spacer />

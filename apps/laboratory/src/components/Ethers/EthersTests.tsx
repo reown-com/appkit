@@ -3,7 +3,7 @@ import { EthersSignMessageTest } from './EthersSignMessageTest'
 import { EthersSignTypedDataTest } from './EthersSignTypedDataTest'
 import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
 import { EthersTransactionTest } from './EthersTransactionTest'
-import { EthersMintTest } from './EthersMintTest'
+import { EthersWriteContractTest } from './EthersWriteContractTest'
 
 export function EthersTests() {
   const { isConnected } = useWeb3ModalAccount()
@@ -38,9 +38,9 @@ export function EthersTests() {
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
-              Purchase a Crypto Donut
+              Contract Write
             </Heading>
-            <EthersMintTest />
+            <EthersWriteContractTest />
           </Box>
         </Stack>
       </CardBody>
