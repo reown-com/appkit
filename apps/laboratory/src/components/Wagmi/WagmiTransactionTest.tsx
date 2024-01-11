@@ -44,7 +44,7 @@ export function WagmiTransactionTest() {
     if (prepareError) {
       toast({
         title: 'Error',
-        description: 'Error estimating gas costs',
+        description: 'Not enough funds for transaction',
         status: 'error',
         isClosable: true
       })
