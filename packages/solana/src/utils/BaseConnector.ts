@@ -20,7 +20,9 @@ import { getHashedName, getNameAccountKey } from './hash'
 import { FavouriteDomain, NameRegistry } from './nameService'
 
 export interface Connector {
-  isAvailable: () => boolean
+  id: string
+  name: string
+  ready: boolean
   getConnectorName: () => string
   disconnect: () => Promise<void>
   connect: () => Promise<string>

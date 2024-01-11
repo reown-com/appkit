@@ -141,7 +141,6 @@ export class W3mConnectView extends LitElement {
       if (connector.type !== 'ANNOUNCED') {
         return null
       }
-
       return html`
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}

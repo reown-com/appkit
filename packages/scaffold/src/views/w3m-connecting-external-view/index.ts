@@ -19,6 +19,7 @@ const platformMap = {
 export class W3mConnectingExternalView extends W3mConnectingWidget {
   public constructor() {
     super()
+    console.log(`W3mConnectingExternalView`, this.connector);
     if (!this.connector) {
       throw new Error('w3m-connecting-view: No connector provided')
     }
@@ -46,8 +47,10 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
         await ConnectionController.connectExternal(this.connector)
 
         if (SIWEController.state.isSiweEnabled) {
+          console.log(`SIWEController.state.isSiweEnabled`);
           RouterController.push('ConnectingSiwe')
         } else {
+          console.log(`ModalController.close()`);
           ModalController.close()
         }
 

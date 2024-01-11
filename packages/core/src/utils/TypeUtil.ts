@@ -87,11 +87,11 @@ export interface WcWallet {
   chrome_store?: string | null
   rdns?: string | null
   injected?:
-    | {
-        namespace?: string
-        injected_id?: string
-      }[]
-    | null
+  | {
+    namespace?: string
+    injected_id?: string
+  }[]
+  | null
 }
 
 export interface ApiGetWalletsRequest {
@@ -166,137 +166,137 @@ export type CustomWallet = Pick<
 
 export type Event =
   | {
-      type: 'track'
-      event: 'MODAL_CREATED'
-    }
+    type: 'track'
+    event: 'MODAL_CREATED'
+  }
   | {
-      type: 'track'
-      event: 'MODAL_LOADED'
-    }
+    type: 'track'
+    event: 'MODAL_LOADED'
+  }
   | {
-      type: 'track'
-      event: 'MODAL_OPEN'
-    }
+    type: 'track'
+    event: 'MODAL_OPEN'
+  }
   | {
-      type: 'track'
-      event: 'MODAL_CLOSE'
-    }
+    type: 'track'
+    event: 'MODAL_CLOSE'
+  }
   | {
-      type: 'track'
-      event: 'CLICK_ALL_WALLETS'
-    }
+    type: 'track'
+    event: 'CLICK_ALL_WALLETS'
+  }
   | {
-      type: 'track'
-      event: 'SELECT_WALLET'
-      properties: {
-        name: string
-        platform: Platform
-      }
+    type: 'track'
+    event: 'SELECT_WALLET'
+    properties: {
+      name: string
+      platform: Platform
     }
+  }
   | {
-      type: 'track'
-      event: 'CONNECT_SUCCESS'
-      properties: {
-        method: 'qrcode' | 'mobile' | 'external' | 'browser' | 'email'
-      }
+    type: 'track'
+    event: 'CONNECT_SUCCESS'
+    properties: {
+      method: 'qrcode' | 'mobile' | 'external' | 'browser' | 'email'
     }
+  }
   | {
-      type: 'track'
-      event: 'CONNECT_ERROR'
-      properties: {
-        message: string
-      }
+    type: 'track'
+    event: 'CONNECT_ERROR'
+    properties: {
+      message: string
     }
+  }
   | {
-      type: 'track'
-      event: 'DISCONNECT_SUCCESS'
-    }
+    type: 'track'
+    event: 'DISCONNECT_SUCCESS'
+  }
   | {
-      type: 'track'
-      event: 'DISCONNECT_ERROR'
-    }
+    type: 'track'
+    event: 'DISCONNECT_ERROR'
+  }
   | {
-      type: 'track'
-      event: 'CLICK_WALLET_HELP'
-    }
+    type: 'track'
+    event: 'CLICK_WALLET_HELP'
+  }
   | {
-      type: 'track'
-      event: 'CLICK_NETWORK_HELP'
-    }
+    type: 'track'
+    event: 'CLICK_NETWORK_HELP'
+  }
   | {
-      type: 'track'
-      event: 'CLICK_GET_WALLET'
-    }
+    type: 'track'
+    event: 'CLICK_GET_WALLET'
+  }
   | {
-      type: 'track'
-      event: 'CLICK_TRANSACTIONS'
-    }
+    type: 'track'
+    event: 'CLICK_TRANSACTIONS'
+  }
   | {
-      type: 'track'
-      event: 'ERROR_FETCH_TRANSACTIONS'
-      properties: {
-        address: string
-        projectId: string
-        cursor: string | undefined
-      }
+    type: 'track'
+    event: 'ERROR_FETCH_TRANSACTIONS'
+    properties: {
+      address: string
+      projectId: string
+      cursor: string | undefined
     }
+  }
   | {
-      type: 'track'
-      event: 'LOAD_MORE_TRANSACTIONS'
-      properties: {
-        address: string | undefined
-        projectId: string
-        cursor: string | undefined
-      }
+    type: 'track'
+    event: 'LOAD_MORE_TRANSACTIONS'
+    properties: {
+      address: string | undefined
+      projectId: string
+      cursor: string | undefined
     }
+  }
   | {
-      type: 'track'
-      event: 'CLICK_SIGN_SIWE_MESSAGE'
-    }
+    type: 'track'
+    event: 'CLICK_SIGN_SIWE_MESSAGE'
+  }
   | {
-      type: 'track'
-      event: 'CLICK_CANCEL_SIWE'
-    }
+    type: 'track'
+    event: 'CLICK_CANCEL_SIWE'
+  }
   | {
-      type: 'track'
-      event: 'SIWE_AUTH_SUCCESS'
-    }
+    type: 'track'
+    event: 'SIWE_AUTH_SUCCESS'
+  }
   | {
-      type: 'track'
-      event: 'SIWE_AUTH_ERROR'
-    }
+    type: 'track'
+    event: 'SIWE_AUTH_ERROR'
+  }
   | {
-      type: 'track'
-      event: 'EMAIL_LOGIN_SELECTED'
-    }
+    type: 'track'
+    event: 'EMAIL_LOGIN_SELECTED'
+  }
   | {
-      type: 'track'
-      event: 'EMAIL_SUBMITTED'
-    }
+    type: 'track'
+    event: 'EMAIL_SUBMITTED'
+  }
   | {
-      type: 'track'
-      event: 'DEVICE_REGISTERED_FOR_EMAIL'
-    }
+    type: 'track'
+    event: 'DEVICE_REGISTERED_FOR_EMAIL'
+  }
   | {
-      type: 'track'
-      event: 'EMAIL_VERIFICATION_CODE_SENT'
-    }
+    type: 'track'
+    event: 'EMAIL_VERIFICATION_CODE_SENT'
+  }
   | {
-      type: 'track'
-      event: 'EMAIL_VERIFICATION_CODE_PASS'
-    }
+    type: 'track'
+    event: 'EMAIL_VERIFICATION_CODE_PASS'
+  }
   | {
-      type: 'track'
-      event: 'EMAIL_VERIFICATION_CODE_FAIL'
-    }
+    type: 'track'
+    event: 'EMAIL_VERIFICATION_CODE_FAIL'
+  }
   | {
-      type: 'track'
-      event: 'EMAIL_EDIT'
-    }
+    type: 'track'
+    event: 'EMAIL_EDIT'
+  }
   | {
-      type: 'track'
-      event: 'EMAIL_UPGRADE_FROM_MODAL'
-    }
+    type: 'track'
+    event: 'EMAIL_UPGRADE_FROM_MODAL'
+  }
 
 // -- SIWEController Types ---------------------------------------------------
 

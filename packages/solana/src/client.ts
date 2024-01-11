@@ -1,5 +1,5 @@
 import { BN } from 'bn.js'
-import type { WindowProvider } from '@wagmi/core'
+import { EventsController } from '@web3modal/core'
 import type {
   CaipNetworkId,
   ConnectionControllerClient,
@@ -9,7 +9,8 @@ import type {
   ScaffoldOptions,
   Connector,
   CaipAddress,
-  CaipNetwork
+  CaipNetwork,
+  ConnectorType
 } from '@web3modal/scaffold'
 import type {
   ProviderType,
@@ -26,6 +27,8 @@ import { SolStoreUtil, SolHelpersUtil, SolConstantsUtil } from '@web3modal/scaff
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { WalletConnectConnector } from './utils/WalletConnectConnector'
+import { PhantomConnector } from './utils/phantom'
+import { walletsImages } from './utils/walletsImages'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
@@ -37,18 +40,6 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   tokens?: Record<number, Token>
 }
 
-interface Info {
-  uuid: string
-  name: string
-  icon: string
-  rdns: string
-}
-
-interface Wallet {
-  info: Info
-  provider: WindowProvider
-}
-
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
 
 // -- Client --------------------------------------------------------------------
@@ -57,6 +48,8 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private Connector: IConnector
 
+  private PhantomConnector: PhantomConnector
+
   private walletConnectProvider?: EthereumProvider
 
   private walletConnectProviderInitPromise?: Promise<void>
@@ -64,8 +57,6 @@ export class Web3Modal extends Web3ModalScaffold {
   private projectId: string
 
   private chains: Chain[]
-
-  private options: Web3ModalClientOptions | undefined = undefined
 
   private metadata?: Metadata
 
@@ -192,21 +183,22 @@ export class Web3Modal extends Web3ModalScaffold {
     this.metadata = solanaConfig.metadata
     this.projectId = w3mOptions.projectId
     this.chains = chains
-    this.options = options
     SolStoreUtil.setProjectId(options.projectId)
     SolStoreUtil.setCurrentChain(chains[0] as Chain)
 
     this.Connector = new WalletConnectConnector({
       relayerRegion: 'wss://relay.walletconnect.com',
       metadata: {
-        description: 'Test app for solib',
-        name: 'Test Solib dApp',
+        description: 'Solana in Wallet Connect',
+        name: 'Wallet Connect',
         icons: ['https://avatars.githubusercontent.com/u/37784886'],
         url: 'http://localhost:3000'
       },
       autoconnect: true,
       qrcode: false
     })
+
+    this.PhantomConnector = new PhantomConnector()
 
     SolStoreUtil.subscribeKey('address', () => {
       this.syncAccount()
@@ -216,7 +208,7 @@ export class Web3Modal extends Web3ModalScaffold {
       this.syncNetwork(chainImages)
     })
     this.syncRequestedNetworks(chains, chainImages)
-    this.syncConnectors(solanaConfig)
+    this.syncConnectors()
     this.listenConnectors()
   }
 
@@ -231,33 +223,33 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   // -- Private -----------------------------------------------------------------
-  private syncConnectors(solanaConfig: ProviderType) {
+  private async syncConnectors() {
     const w3mConnectors: Connector[] = []
-    const connectorType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]
-    if (connectorType) {
-      w3mConnectors.push({
-        id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
-        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-        imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-        imageUrl: this.options?.connectorImages?.[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-        name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-        type: connectorType
-      })
-    }
 
-    if (solanaConfig.injected) {
-      const injectedConnectorType =
-        PresetsUtil.ConnectorTypesMap[ConstantsUtil.INJECTED_CONNECTOR_ID]
-      if (injectedConnectorType) {
-        w3mConnectors.push({
-          id: ConstantsUtil.INJECTED_CONNECTOR_ID,
-          explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.INJECTED_CONNECTOR_ID],
-          imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.INJECTED_CONNECTOR_ID],
-          imageUrl: this.options?.connectorImages?.[ConstantsUtil.INJECTED_CONNECTOR_ID],
-          name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.INJECTED_CONNECTOR_ID],
-          type: injectedConnectorType
-        })
+    const connectorType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID] as ConnectorType
+    w3mConnectors.push({
+      id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
+      explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+      type: connectorType,
+      imageUrl: 'https://avatars.githubusercontent.com/u/37784886',
+      name: this.Connector.name,
+      provider: await this.getWalletConnectProvider(),
+      info: {
+        rdns: ''
       }
+    })
+
+    if (window.solana) {
+      w3mConnectors.push({
+        id: this.PhantomConnector.id,
+        type: 'ANNOUNCED',
+        imageUrl: walletsImages['phantom'],
+        name: this.PhantomConnector.name,
+        provider: await this.PhantomConnector.getProvider(),
+        info: {
+          rdns: 'app.phantom',
+        }
+      })
     }
     this.setConnectors(w3mConnectors)
   }
@@ -569,46 +561,25 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private eip6963EventHandler(event: CustomEventInit<Wallet>) {
-    if (event.detail) {
-      const { info, provider } = event.detail
-      console.log(`provider`, provider)
-      console.log(`info`, info)
-      const connectors = this.getConnectors()
-      const existingConnector = connectors.find(c => c.name === info.name)
-      if (!existingConnector) {
-        const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
-        if (type) {
-          this.addConnector({
-            id: ConstantsUtil.EIP6963_CONNECTOR_ID,
-            type,
-            imageUrl:
-              info.icon ?? this.options?.connectorImages?.[ConstantsUtil.EIP6963_CONNECTOR_ID],
-            name: info.name,
-            provider,
-            info
+  private async connectedWalletHandler(method: string) {
+    if (method === 'external') {
+      if (window.solana) {
+        const addresss = await this.PhantomConnector.connect()
+          .catch((err) => {
+            console.log(`err`, err);
           })
-        }
+        this.setAddress(addresss)
       }
     }
   }
 
   private async listenConnectors() {
     if (typeof window !== 'undefined') {
-      const res = await this.Connector.connect()
-      console.log(`response`, res);
-      /* this.addConnector({
-        id: 'WALLET_CONNECT',
-        type,
-        imageUrl:
-          info.icon ?? this.options?.connectorImages?.[ConstantsUtil.EIP6963_CONNECTOR_ID],
-        name: info.name,
-        provider,
-        info
-      }) */
-      /* const handler = this.eip6963EventHandler.bind(this)
-      window.addEventListener(ConstantsUtil.EIP6963_ANNOUNCE_EVENT, handler)
-      window.dispatchEvent(new Event(ConstantsUtil.EIP6963_REQUEST_EVENT)) */
+      EventsController.subscribe((state) => {
+        if (state.data.event === 'CONNECT_SUCCESS') {
+          this.connectedWalletHandler(state.data.properties.method)
+        }
+      })
     }
   }
 }

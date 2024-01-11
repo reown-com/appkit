@@ -4,6 +4,7 @@ import type { Chain, Metadata, Provider, ProviderType } from '@web3modal/scaffol
 declare global {
   interface Window {
     originalSolana?: Record<string, unknown>
+    solana?: Record<string, any>
   }
 }
 

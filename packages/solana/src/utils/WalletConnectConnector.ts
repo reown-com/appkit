@@ -39,6 +39,9 @@ async function loadW3mModal() {
 } */
 
 export class WalletConnectConnector extends BaseConnector implements Connector {
+  id = 'WalletConnect'
+  name = 'WalletConnect'
+  ready = true
   protected provider: UniversalProvider | undefined
   protected qrcode: boolean
 
@@ -70,7 +73,6 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
 
     if (autoconnect)
       UniversalProviderFactory.getProvider().then(provider => {
-        console.log('Provider state', { provider })
         // (TODO update typing for provider)
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (provider.session?.namespaces['solana']?.accounts?.length) {
@@ -100,10 +102,6 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
 
   public override getConnectorName(): string {
     return WalletConnectConnector.connectorName
-  }
-
-  public isAvailable() {
-    return true
   }
 
   protected override async getProvider() {
@@ -183,7 +181,6 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
   public async connect() {
     const chosenCluster = SolStoreUtil.getCluster()
     const clusterId = `solana:${chosenCluster.id}`
-    console.log(`chosen cluster`, chosenCluster);
 
     const solanaNamespace = {
       solana: {
@@ -226,5 +223,9 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
           console.log(`catched: `, err);
         })
     })
+  }
+
+  public async onConnector() {
+    this.connect()
   }
 }
