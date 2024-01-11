@@ -48,4 +48,4 @@ VITE_PROJECT_ID="your_project_id"
 10. Click on `Generate Change` and only leave the link with difference. Paste in your changelog from PR.
 11. Check `Set as the last release` and publish release.
 12. Update Web3Modal for https://web3modal.com/ (https://github.com/WalletConnect/www-web3modal) and create a PR
-13. Update Web3Modal for https://app.web3inbox.com ()
+13. Update Web3Modal for https://app.web3inbox.com (https://github.com/WalletConnect/web3inbox) and create a PR
