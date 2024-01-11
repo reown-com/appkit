@@ -22,8 +22,8 @@ const modal = createWeb3Modal({
       id: 'react-wallet-v2',
       name: 'react-wallet-v2',
       homepage: 'https://react-wallet-v2-git-chore-2111-walletconnect1.vercel.app',
-      mobile_link: 'https://react-wallet-v2-git-chore-2111-walletconnect1.vercel.app',
-      desktop_link: 'https://react-wallet-v2-git-chore-2111-walletconnect1.vercel.app'
+      mobile_link: 'https://react-wallet.walletconnect.com',
+      desktop_link: 'https://react-wallet.walletconnect.com'
     }
   ]
 })
