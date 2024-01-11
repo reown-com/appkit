@@ -259,6 +259,7 @@ export class Web3ModalScaffold {
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)
     }
+
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables)
     }
