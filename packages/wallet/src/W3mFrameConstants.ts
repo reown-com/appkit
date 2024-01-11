@@ -53,3 +53,8 @@ export const W3mFrameConstants = {
   FRAME_SYNC_DAPP_DATA_SUCCESS: '@w3m-frame/SYNC_DAPP_DATA_SUCCESS',
   FRAME_SYNC_DAPP_DATA_ERROR: '@w3m-frame/SYNC_DAPP_DATA_ERROR'
 } as const
+
+export const W3mFrameRpcConstants = {
+  SAFE_RPC_METHODS: ['eth_blockNumber', 'eth_estimateGas', 'eth_getTransactionByHash'],
+  IGNORED_RPC_METHODS: ['eth_chainId']
+}
