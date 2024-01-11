@@ -20,7 +20,16 @@ const modal = createWeb3Modal({
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy'
+  privacyPolicyUrl: 'https://walletconnect.com/privacy',
+  customWallets: [
+    {
+      id: 'react-wallet-v2',
+      name: 'react-wallet-v2',
+      homepage: 'https://react-wallet-v2-git-chore-2111-walletconnect1.vercel.app',
+      mobile_link: 'https://react-wallet-v2-git-chore-2111-walletconnect1.vercel.app',
+      desktop_link: 'https://react-wallet-v2-git-chore-2111-walletconnect1.vercel.app'
+    }
+  ]
 })
 
 ThemeStore.setModal(modal)
