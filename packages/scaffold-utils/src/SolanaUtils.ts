@@ -445,27 +445,14 @@ export const SolHelpersUtil = {
   numberToHexString(value: number) {
     return `0x${value.toString(16)}`
   },
-  async getUserInfo(provider: Provider) {
-    const [address, chainId] = await Promise.all([
-      SolHelpersUtil.getAddress(provider),
-      SolHelpersUtil.getChainId(provider)
-    ])
-
-    return { chainId, address }
-  },
-  async getChainId(provider: Provider) {
-    const chainId = await provider.request<string | number>({ method: 'eth_chainId' })
-
-    return Number(chainId)
-  },
   async getAddress(provider: Provider) {
-    const [address] = await provider.request<string[]>({ method: 'eth_accounts' })
+    const [address] = await provider.request<string[]>({ method: 'getAccountInfo' })
 
     return address
   },
   async addSolanaChain(provider: Provider, chain: Chain) {
     await provider.request({
-      method: 'wallet_addEthereumChain',
+      method: 'wallet_addSolanaChain',
       params: [
         {
           chainId: SolHelpersUtil.numberToHexString(chain.chainId),
