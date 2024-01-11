@@ -38,6 +38,22 @@ export const AppSyncThemeRequest = z.object({
   themeMode: z.optional(z.enum(['light', 'dark'])),
   themeVariables: z.optional(z.record(z.string(), z.string().or(z.number())))
 })
+export const AppSyncDappDataRequest = z.object({
+  metadata: z
+    .object({
+      name: z.string(),
+      description: z.string(),
+      url: z.string(),
+      icons: z.array(z.string())
+    })
+    .optional(),
+  sdkVersion: z.string() as z.ZodType<
+    | `${'html' | 'react' | 'vue'}-wagmi-${string}`
+    | `${'html' | 'react' | 'vue'}-ethers5-${string}`
+    | `${'html' | 'react' | 'vue'}-ethers-${string}`
+  >,
+  projectId: z.string()
+})
 export const FrameConnectEmailResponse = z.object({
   action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])
 })
@@ -133,7 +149,9 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_AWAIT_UPDATE_EMAIL') }))
 
-    .or(z.object({ type: zType('APP_SYNC_THEME'), payload: AppSyncThemeRequest })),
+    .or(z.object({ type: zType('APP_SYNC_THEME'), payload: AppSyncThemeRequest }))
+
+    .or(z.object({ type: zType('APP_SYNC_DAPP_DATA'), payload: AppSyncDappDataRequest })),
 
   // -- Frame Events ---------------------------------------------------------
   frameEvent: z
@@ -195,4 +213,8 @@ export const W3mFrameSchema = {
     .or(z.object({ type: zType('FRAME_SYNC_THEME_ERROR'), payload: zError }))
 
     .or(z.object({ type: zType('FRAME_SYNC_THEME_SUCCESS') }))
+
+    .or(z.object({ type: zType('FRAME_SYNC_DAPP_DATA_ERROR'), payload: zError }))
+
+    .or(z.object({ type: zType('FRAME_SYNC_DAPP_DATA_SUCCESS') }))
 }
