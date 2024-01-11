@@ -168,7 +168,7 @@ export class W3mConnectingWidget extends LitElement {
     if (this.error && !this.showRetry) {
       this.showRetry = true
       const retryButton = this.shadowRoot?.querySelector('wui-button') as HTMLElement
-      retryButton.animate([{ opacity: 0 }, { opacity: 1 }], {
+      retryButton?.animate([{ opacity: 0 }, { opacity: 1 }], {
         fill: 'forwards',
         easing: 'ease'
       })
