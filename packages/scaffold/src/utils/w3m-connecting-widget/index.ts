@@ -166,6 +166,7 @@ export class W3mConnectingWidget extends LitElement {
   // -- Private ------------------------------------------- //
   private onShowRetry() {
     if (this.error && !this.showRetry) {
+      console.log(`show retry!`);
       this.showRetry = true
       const retryButton = this.shadowRoot?.querySelector('wui-button') as HTMLElement
       retryButton.animate([{ opacity: 0 }, { opacity: 1 }], {
@@ -188,6 +189,7 @@ export class W3mConnectingWidget extends LitElement {
   }
 
   private loaderTemplate() {
+    console.log(`loader template!`);
     const borderRadiusMaster = ThemeController.state.themeVariables['--w3m-border-radius-master']
     const radius = borderRadiusMaster ? parseInt(borderRadiusMaster.replace('px', ''), 10) : 4
 

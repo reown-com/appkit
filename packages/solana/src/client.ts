@@ -129,6 +129,25 @@ export class Web3Modal extends Web3ModalScaffold {
         await this.setWalletConnectProvider()
       },
 
+      connectExternal: async ({ id, provider, info }) => {
+        const connector = this.getConnectors().find(c => c.id === id)
+        if (!connector) {
+          throw new Error('connectionControllerClient:connectExternal - connector is undefined')
+        }
+        if (provider && info && connector.id === ConstantsUtil.EIP6963_CONNECTOR_ID) {
+          // @ts-expect-error Exists on EIP6963Connector
+          connector.setEip6963Wallet?.({ provider, info })
+        }
+        const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+
+        const addresss = await this.PhantomConnector.connect()
+          .catch((err) => {
+            console.log(`err`, err);
+          })
+        this.setAddress(addresss)
+        this.connectWalletHandler(connector, chainId)
+      },
+
       checkInstalled(ids) {
         if (!ids) {
           return Boolean(window.originalSolana)
@@ -209,7 +228,6 @@ export class Web3Modal extends Web3ModalScaffold {
     })
     this.syncRequestedNetworks(chains, chainImages)
     this.syncConnectors()
-    this.listenConnectors()
   }
 
   public setAddress(address?: string) {
@@ -561,25 +579,14 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async connectedWalletHandler(method: string) {
-    if (method === 'external') {
-      if (window.solana) {
-        const addresss = await this.PhantomConnector.connect()
-          .catch((err) => {
-            console.log(`err`, err);
-          })
-        this.setAddress(addresss)
-      }
-    }
-  }
-
-  private async listenConnectors() {
-    if (typeof window !== 'undefined') {
-      EventsController.subscribe((state) => {
-        if (state.data.event === 'CONNECT_SUCCESS') {
-          this.connectedWalletHandler(state.data.properties.method)
-        }
-      })
+  private async connectWalletHandler(connector: Connector, chainId?: number) {
+    if (connector.name === 'Phantom') {
+      const addresss = await this.PhantomConnector.connect()
+        .catch((err) => {
+          console.log(`err`, err);
+        })
+      this.setAddress(addresss)
+      console.log(`addresss`, addresss);
     }
   }
 }
