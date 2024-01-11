@@ -1,7 +1,10 @@
 import base58 from 'bs58'
+import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
+
 import type { Connector } from './BaseConnector'
 import { BaseConnector } from './BaseConnector'
-import { SolStoreUtil, type TransactionArgs, type TransactionType } from '@web3modal/scaffold-utils/solana'
+
+import  type { TransactionArgs, TransactionType } from '@web3modal/scaffold-utils/solana'
 
 export interface PhantomPublicKey {
   length: number

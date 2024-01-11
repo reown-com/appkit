@@ -3,6 +3,11 @@ import BN from 'bn.js'
 import base58 from 'bs58'
 import borsh from 'borsh'
 import { Buffer } from 'buffer'
+import { SolConstantsUtil, SolStoreUtil } from '@web3modal/scaffold-utils/solana'
+
+import { registerListener, unregisterListener } from '../utils/clusterFactory'
+import { getHashedName, getNameAccountKey } from '../utils/hash'
+import { FavouriteDomain, NameRegistry } from '../utils/nameService'
 
 import type {
   BlockResult,
@@ -14,10 +19,6 @@ import type {
   TransactionArgs,
   TransactionType
 } from '@web3modal/scaffold-utils/solana'
-import { SolConstantsUtil, SolStoreUtil } from '@web3modal/scaffold-utils/solana'
-import { registerListener, unregisterListener } from './clusterFactory'
-import { getHashedName, getNameAccountKey } from './hash'
-import { FavouriteDomain, NameRegistry } from './nameService'
 
 export interface Connector {
   id: string
@@ -145,13 +146,15 @@ export class BaseConnector {
     if (!address) return null
 
     const balance = await this.requestCluster('getBalance', [address, { commitment: 'processed' }])
+    /* @todo fix balance issue*/
+    console.log("balance", balance);
 
-    const formatted = currency === 'lamports' ? `${balance.value} lamports` : `${balance.value} sol`
+    const formatted = currency === 'lamports' ? `${balance?.value || 0} lamports` : `${balance?.value || 0} sol`
 
     return {
-      value: new BN(balance.value),
+      value: new BN(balance?.value || 0),
       formatted,
-      decimals: balance.value,
+      decimals: balance?.value || 0,
       symbol: currency
     }
   }

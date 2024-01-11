@@ -1,8 +1,9 @@
-import { useWeb3ModalAccount } from '@web3modal/ethers/react'
-import { EthersSignMessageTest } from '../Ethers/EthersSignMessageTest'
-import { EthersSignTypedDataTest } from '../Ethers/EthersSignTypedDataTest'
+import { useWeb3ModalAccount } from '@web3modal/solana/react'
 import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
-import { EthersTransactionTest } from '../Ethers/EthersTransactionTest'
+
+import { SolanaTransactionTest } from './SolanaTransactionTest'
+import { SolanaSignMessageTest } from "./SolanaSignMessageTest"
+import { SolanaSignTypedDataTest } from "./SolanaSignTypedDataTest"
 
 export function SolanaTests() {
   const { isConnected } = useWeb3ModalAccount()
@@ -19,21 +20,21 @@ export function SolanaTests() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               Sign Message
             </Heading>
-            <EthersSignMessageTest />
+            <SolanaSignMessageTest />
           </Box>
 
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Sign Typed Data
             </Heading>
-            <EthersSignTypedDataTest />
+            <SolanaSignTypedDataTest />
           </Box>
 
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Sign Transaction
             </Heading>
-            <EthersTransactionTest />
+            <SolanaTransactionTest />
           </Box>
         </Stack>
       </CardBody>

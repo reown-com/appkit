@@ -17,15 +17,15 @@ import type {
   Provider,
   Address
 } from '@web3modal/scaffold-utils/solana'
-import type { Connector as IConnector } from './utils/BaseConnector'
+import type { Connector as IConnector } from './connectors/BaseConnector'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import EthereumProvider from '@walletconnect/ethereum-provider'
 import { SolStoreUtil, SolHelpersUtil, SolConstantsUtil } from '@web3modal/scaffold-utils/solana'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import { WalletConnectConnector } from './utils/WalletConnectConnector'
-import { PhantomConnector } from './utils/phantom'
+import { WalletConnectConnector } from './connectors/WalletConnectConnector'
+import { PhantomConnector } from './connectors/phantom'
 import { walletsImages } from './utils/walletsImages'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -438,8 +438,10 @@ export class Web3Modal extends Web3ModalScaffold {
     if (chainId && this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId)
       if (chain) {
-        const balance = { value: '0' }// await this.PhantomConnector.getBalance(address) ?? { value: new BN('0') }
-        const formatted = `${balance.value} sol`
+        const balance = await this.WalletConnectConnector.getBalance(address) ?? { value: new BN('0') }
+        // const balance = { value: '0' }// await this.PhantomConnector.getBalance(address) ?? { value: new BN('0') }
+        // const formatted = `${balance.value} sol`
+        console.log(balance);
 
         this.setBalance(balance.value.toString(), chain.currency)
       }

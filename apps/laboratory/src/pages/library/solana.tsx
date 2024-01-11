@@ -1,4 +1,3 @@
-import { Center, Text, VStack } from '@chakra-ui/react'
 import { createWeb3Modal, defaultSolanaConfig } from '@web3modal/solana/react'
 
 import { ThemeStore } from '../../utils/StoreUtil'
@@ -30,21 +29,8 @@ ThemeStore.setModal(modal)
 export default function Solana() {
   return (
     <>
-      <Center paddingTop={10}>
-        <Text fontSize="xl" fontWeight={700}>
-          Solana default
-        </Text>
-      </Center>
-      <Center h="30vh">
-        <VStack gap={4}>
-          <Web3ModalButtons />
-        </VStack>
-      </Center >
-      <Center h="35vh">
-        <VStack gap={4}>
-          <SolanaTests />
-        </VStack>
-      </Center>
+        <Web3ModalButtons />
+        <SolanaTests />
     </>
   )
 }

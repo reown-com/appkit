@@ -1,7 +1,10 @@
 'use client'
 
+import { useSnapshot } from 'valtio'
+
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
+import { SolStoreUtil } from "@web3modal/scaffold-utils/solana"
 
 import { Web3Modal } from '../src/client.js'
 
@@ -23,6 +26,41 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 }
 
 // -- Hooks -------------------------------------------------------------------
+export function useWeb3ModalProvider() {
+  const { provider, providerType } = useSnapshot(SolStoreUtil.state)
+
+  const walletProvider = provider as any/*@todo add as provider type here*/ | undefined
+
+  console.log('solana wallet Provider = ', provider);
+  console.log('solana wallet Provider = ', useSnapshot(SolStoreUtil.state));
+  const walletProviderType = providerType
+
+  return {
+    walletProvider,
+    walletProviderType
+  }
+}
+
+export function useDisconnect() {
+  async function disconnect() {
+    await modal?.disconnect()
+  }
+
+  return {
+    disconnect
+  }
+}
+
+export function useWeb3ModalAccount() {
+  const { address, isConnected, chainId } = useSnapshot(SolStoreUtil.state)
+
+  return {
+    address,
+    isConnected,
+    chainId
+  }
+}
+
 export {
   useWeb3ModalTheme,
   useWeb3Modal,
@@ -31,3 +69,4 @@ export {
 } from '@web3modal/scaffold-react'
 
 export { defaultSolanaConfig } from '../src/utils/defaultConfig.js'
+

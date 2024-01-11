@@ -1,7 +1,8 @@
-import type { Transaction } from '@solana/web3.js'
-import type { Connector } from './BaseConnector'
-import type { RequestMethods } from '@web3modal/scaffold-utils/solana'
 import { InjectedConnector } from './InjectedConnector'
+
+import type { Transaction } from '@solana/web3.js'
+import type { RequestMethods } from '@web3modal/scaffold-utils/solana'
+import type { Connector } from './BaseConnector'
 
 export interface PhantomPublicKey {
   length: number
