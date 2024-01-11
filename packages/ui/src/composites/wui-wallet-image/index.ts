@@ -46,7 +46,6 @@ export class WuiWalletImage extends LitElement {
 
     return html`
       <wui-flex justifyContent="center" alignItems="center"> ${this.templateVisual()} </wui-flex>
-      ${this.templateInstalledBadge()}
     `
   }
 
@@ -69,22 +68,6 @@ export class WuiWalletImage extends LitElement {
       color="inherit"
       name="walletPlaceholder"
     ></wui-icon>`
-  }
-  private templateInstalledBadge() {
-    if (this.installed) {
-      return html`
-        <wui-icon-box
-          size=${this.badgeSize}
-          iconSize=${this.badgeSize}
-          iconcolor="success-100"
-          backgroundcolor="success-100"
-          icon="checkmark"
-          background="opaque"
-        ></wui-icon-box>
-      `
-    }
-
-    return null
   }
 }
 
