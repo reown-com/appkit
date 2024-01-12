@@ -419,7 +419,7 @@ export class Web3Modal extends Web3ModalScaffold {
           const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
           this.setCaipAddress(caipAddress)
           if (chain.explorerUrl) {
-            const url = `${chain.explorerUrl}/address/${address}`
+            const url = `${chain.explorerUrl}/account/${address}`
             this.setAddressExplorerUrl(url)
           } else {
             this.setAddressExplorerUrl(undefined)
