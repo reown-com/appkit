@@ -5,9 +5,12 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import type { W3mAccountButton } from '../w3m-account-button/index.js'
 import type { W3mConnectButton } from '../w3m-connect-button/index.js'
+import styles from './styles.js'
 
 @customElement('w3m-button')
 export class W3mButton extends LitElement {
+  public static override styles = styles
+
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
