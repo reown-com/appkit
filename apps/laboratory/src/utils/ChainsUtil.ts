@@ -106,7 +106,7 @@ export const solana = {
   chainId: 1399811149,
   name: 'Solana',
   currency: 'SOL',
-  explorerUrl: 'https://solscan.io/',
+  explorerUrl: 'https://solscan.io',
   rpcUrl: 'https://api.mainnet-beta.solana.com'
 }
 
@@ -114,7 +114,7 @@ export const solanaTestnet = {
   chainId: 2,
   name: 'Solana Testnet',
   currency: 'SOL',
-  explorerUrl: 'https://solscan.io/',
+  explorerUrl: 'https://solscan.io',
   rpcUrl: 'https://api.testnet.solana.com'
 }
 
@@ -122,6 +122,6 @@ export const solanaDevnet = {
   chainId: 3,
   name: 'Solana Devnet',
   currency: 'SOL',
-  explorerUrl: 'https://solscan.io/',
+  explorerUrl: 'https://solscan.io',
   rpcUrl: 'https://api.devnet.solana.com'
 }
