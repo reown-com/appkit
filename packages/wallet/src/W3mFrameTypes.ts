@@ -23,7 +23,9 @@ import {
   FrameAwaitUpdateEmailResponse,
   AppSyncThemeRequest,
   RpcEthChainId,
-  FrameSwitchNetworkResponse
+  FrameSwitchNetworkResponse,
+  AppSyncDappDataRequest,
+  RpcEthGetTransactionByHash
 } from './W3mFrameSchema.js'
 
 export namespace W3mFrameTypes {
@@ -38,6 +40,7 @@ export namespace W3mFrameTypes {
     AppGetUserRequest: z.infer<typeof AppGetUserRequest>
     AppUpdateEmailRequest: z.infer<typeof AppUpdateEmailRequest>
     AppSyncThemeRequest: z.infer<typeof AppSyncThemeRequest>
+    AppSyncDappDataRequest: z.infer<typeof AppSyncDappDataRequest>
   }
 
   export interface Responses {
@@ -64,6 +67,7 @@ export namespace W3mFrameTypes {
     | z.infer<typeof RpcGetBalance>
     | z.infer<typeof RpcEthBlockNumber>
     | z.infer<typeof RpcEthChainId>
+    | z.infer<typeof RpcEthGetTransactionByHash>
 
   export type RPCResponse = z.infer<typeof RpcResponse>
 
