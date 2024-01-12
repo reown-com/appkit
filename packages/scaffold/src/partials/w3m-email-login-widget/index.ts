@@ -48,7 +48,6 @@ export class W3mEmailLoginWidget extends LitElement {
   public override render() {
     const multipleConnectors = this.connectors.length > 1
     const connector = this.connectors.find(c => c.type === 'EMAIL')
-    const showSubmit = !this.loading && this.email.length > 3
 
     if (!connector) {
       return null
@@ -64,21 +63,7 @@ export class W3mEmailLoginWidget extends LitElement {
         >
         </wui-email-input>
 
-        ${showSubmit
-          ? html`
-              <wui-icon-link
-                size="sm"
-                icon="chevronRight"
-                iconcolor="accent-100"
-                @click=${this.onSubmitEmail.bind(this)}
-              >
-              </wui-icon-link>
-            `
-          : null}
-        ${this.loading
-          ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
-          : null}
-
+        ${this.submitButtonTemplate()}${this.loadingTemplate()}${this.alphaWarningTemplate()}
         <input type="submit" hidden />
       </form>
 
@@ -87,6 +72,36 @@ export class W3mEmailLoginWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private alphaWarningTemplate() {
+    const showAlphaWarning = true
+
+    return showAlphaWarning
+      ? html`<wui-tag color="fg-250" align="center" variant="main">Alpha</wui-tag>`
+      : null
+  }
+
+  private submitButtonTemplate() {
+    const showSubmit = !this.loading && this.email.length > 3
+
+    return showSubmit
+      ? html`
+          <wui-icon-link
+            size="sm"
+            icon="chevronRight"
+            iconcolor="accent-100"
+            @click=${this.onSubmitEmail.bind(this)}
+          >
+          </wui-icon-link>
+        `
+      : null
+  }
+
+  private loadingTemplate() {
+    return this.loading
+      ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
+      : null
+  }
+
   private onEmailInputChange(event: CustomEvent<string>) {
     this.email = event.detail
     this.error = ''
