@@ -22,10 +22,10 @@ export function EthersTransactionTest() {
       const tx = await signer.sendTransaction({
         to: vitalikEthAddress,
         value: ethers.parseUnits('0.0001', 'gwei'),
-        maxFeePerGas: ethers.parseUnits('100', 'gwei'),
-        maxPriorityFeePerGas: ethers.parseUnits('100', 'gwei')
+        maxFeePerGas: ethers.parseUnits('200', 'gwei'),
+        maxPriorityFeePerGas: ethers.parseUnits('200', 'gwei')
       })
-      toast({ title: 'Succcess', description: tx.blockHash, status: 'success', isClosable: true })
+      toast({ title: 'Succcess', description: tx.hash, status: 'success', isClosable: true })
     } catch {
       toast({
         title: 'Error',

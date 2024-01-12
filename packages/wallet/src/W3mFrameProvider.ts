@@ -1,6 +1,6 @@
 import { W3mFrame } from './W3mFrame.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
-import { W3mFrameConstants } from './W3mFrameConstants.js'
+import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
 import { W3mFrameStorage } from './W3mFrameStorage.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 
@@ -251,6 +251,10 @@ export class W3mFrameProvider {
 
   public async request(req: W3mFrameTypes.RPCRequest) {
     await this.w3mFrame.frameLoadPromise
+
+    if (W3mFrameRpcConstants.GET_CHAIN_ID === req.method) {
+      return this.getLastUsedChainId()
+    }
 
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_RPC_REQUEST,

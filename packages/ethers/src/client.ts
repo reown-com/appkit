@@ -749,11 +749,8 @@ export class Web3Modal extends Web3ModalScaffold {
       this.emailProvider.onRpcRequest(request => {
         const req = request as W3mFrameTypes.AppEvent & { payload?: unknown }
         const payload = req.payload as W3mFrameTypes.RPCRequest
-        // We only open the modal if it's not a safe (auto-approve) or ignored method
-        if (
-          !W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(payload.method) &&
-          !W3mFrameRpcConstants.IGNORED_RPC_METHODS.includes(payload.method)
-        ) {
+        // We only open the modal if it's not a safe (auto-approve)
+        if (!W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(payload.method)) {
           super.open({ view: 'ApproveTransaction' })
         }
       })
