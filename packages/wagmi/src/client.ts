@@ -28,8 +28,11 @@ import type {
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-import { getCaipDefaultChain } from './utils/helpers.js'
-import { WALLET_CHOICE_KEY } from './utils/constants.js'
+import {
+  getCaipDefaultChain,
+  getEmailCaipNetworks,
+  getWalletConnectCaipNetworks
+} from './utils/helpers.js'
 import type { W3mFrameProvider } from '@web3modal/wallet'
 
 // -- Types ---------------------------------------------------------------------
@@ -86,34 +89,17 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       async getApprovedCaipNetworksData() {
-        const walletChoice = localStorage.getItem(WALLET_CHOICE_KEY)
-        if (walletChoice?.includes(ConstantsUtil.EMAIL_CONNECTOR_ID)) {
-          return {
-            supportsAllNetworks: false,
-            approvedCaipNetworkIds: PresetsUtil.WalletConnectRpcChainIds.map(
-              id => `${ConstantsUtil.EIP155}:${id}`
-            ) as CaipNetworkId[]
-          }
-        } else if (walletChoice?.includes(ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)) {
+        const connections = new Map(wagmiConfig.state.connections)
+        const connection = connections.get(wagmiConfig.state.current || '')
+
+        if (connection?.connector?.id === ConstantsUtil.EMAIL_CONNECTOR_ID) {
+          return getEmailCaipNetworks()
+        } else if (connection?.connector?.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const connector = wagmiConfig.connectors.find(
             c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
           )
-          if (!connector) {
-            throw new Error(
-              'networkControllerClient:getApprovedCaipNetworks - connector is undefined'
-            )
-          }
-          const provider = (await connector.getProvider()) as Awaited<
-            ReturnType<(typeof EthereumProvider)['init']>
-          >
-          const ns = provider?.signer?.session?.namespaces
-          const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
-          const nsChains = ns?.[ConstantsUtil.EIP155]?.chains as CaipNetworkId[]
 
-          return {
-            supportsAllNetworks: Boolean(nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD)),
-            approvedCaipNetworkIds: nsChains
-          }
+          return getWalletConnectCaipNetworks(connector)
         }
 
         return { approvedCaipNetworkIds: undefined, supportsAllNetworks: true }
