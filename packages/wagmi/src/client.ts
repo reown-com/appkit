@@ -400,8 +400,6 @@ export class Web3Modal extends Web3ModalScaffold {
       c => c.id === ConstantsUtil.EIP6963_CONNECTOR_ID
     ) as EIP6963Connector
 
-    console.log(`connector`, connector);
-
     if (typeof window !== 'undefined' && connector) {
       const handler = this.eip6963EventHandler.bind(this, connector)
       window.addEventListener(ConstantsUtil.EIP6963_ANNOUNCE_EVENT, handler)

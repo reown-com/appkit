@@ -418,7 +418,7 @@ export const SolConstantsUtil = {
    */
   NAME_TOKENIZER_ID: new PublicKey('nftD3vbNkNqfj2Sd3HZwbpw4BxxKWr4AjGb9X38JeZk'),
   MINT_PREFIX: Buffer.from('tokenized_name'),
-  WALLET_ID: '@w3m/wallet_id',
+  WALLET_ID: '@w3m/solana_wallet',
   ERROR_CODE_UNRECOGNIZED_CHAIN_ID: 4902,
   ERROR_CODE_DEFAULT: 5000
 }
