@@ -3,7 +3,7 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/rea
 
 import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
 import { vitalikEthAddress } from '../../utils/DataUtil'
-import { sepolia } from '../../utils/ChainsUtil'
+import { solanaTestnet } from '../../utils/ChainsUtil'
 import { useState } from 'react'
 
 export function SolanaTransactionTest() {
@@ -37,7 +37,7 @@ export function SolanaTransactionTest() {
     }
   }
 
-  return chainId === sepolia.chainId && address ? (
+  return chainId === solanaTestnet.chainId && address ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="sign-transaction-button"
@@ -49,21 +49,15 @@ export function SolanaTransactionTest() {
 
       <Spacer />
 
-      <Link isExternal href="https://sepoliafaucet.com">
+      <Link isExternal href="https://solfaucet.com/">
         <Button variant="outline" colorScheme="blue" isDisabled={loading}>
-          Sepolia Faucet 1
-        </Button>
-      </Link>
-
-      <Link isExternal href="https://www.infura.io/faucet/sepolia">
-        <Button variant="outline" colorScheme="orange" isDisabled={loading}>
-          Sepolia Faucet 2
+          Solana Faucet 1
         </Button>
       </Link>
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to Sepolia Ethereum Testnet to test this feature
+      Switch to Solana Testnet to test this feature
     </Text>
   )
 }
