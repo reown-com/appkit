@@ -134,7 +134,6 @@ export class Web3Modal extends Web3ModalScaffold {
         }
 
         // TODO: refactor order
-        SolStoreUtil.setIsConnected(true)
         const address = await this.PhantomConnector.connect()
         this.setInjectedProvider(provider as Provider, address)
       },

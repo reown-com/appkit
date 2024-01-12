@@ -4,7 +4,7 @@ import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 import type { Connector } from './BaseConnector'
 import { BaseConnector } from './BaseConnector'
 
-import  type { TransactionArgs, TransactionType } from '@web3modal/scaffold-utils/solana'
+import type { TransactionArgs, TransactionType } from '@web3modal/scaffold-utils/solana'
 
 export interface PhantomPublicKey {
   length: number
@@ -68,6 +68,7 @@ export class InjectedConnector extends BaseConnector implements Connector {
   public async connect() {
     const resp = await (await this.getProvider()).connect()
 
+    SolStoreUtil.setIsConnected(true)
     if (resp?.publicKey) {
       SolStoreUtil.setAddress(resp.publicKey.toString())
 
