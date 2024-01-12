@@ -36,17 +36,10 @@ export default css`
     right: var(--wui-spacing-m);
   }
 
-  wui-tag {
-    position: absolute;
-    top: var(--wui-spacing-s);
-    right: var(--wui-spacing-m);
-  }
-
-  wui-icon-link + wui-tag {
-    right: var(--wui-spacing-3xl);
-  }
-
-  wui-loading-spinner + wui-tag {
-    right: var(--wui-spacing-3xl);
+  .alphaBanner {
+    padding: 10px 12px 10px 10px;
+    border-radius: var(--wui-border-radius-s);
+    background: var(--wui-accent-glass-010);
+    margin-bottom: var(--wui-spacing-xxs);
   }
 `
