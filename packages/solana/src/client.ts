@@ -220,7 +220,10 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncRequestedNetworks(chains, chainImages)
     this.syncConnectors()
 
-    this.checkActiveInjectedProvider()
+    // TODO: remove timeout
+    setTimeout(() => {
+      this.checkActiveInjectedProvider()
+    }, 100)
   }
 
   public setAddress(address?: string) {
@@ -376,8 +379,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.resetAccount()
 
-    console.log(`sync account`);
-
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.INJECTED_CONNECTOR_ID}:${chainId}:${address}`
 
@@ -404,8 +405,6 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
-    console.log(`sync netwrok`);
-
     const address = SolStoreUtil.state.address
     const chainId = SolStoreUtil.state.chainId
     const isConnected = SolStoreUtil.state.isConnected
@@ -581,10 +580,14 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (walletId) {
       if (this.PhantomConnector) {
-        // TODO: refactor order
-        SolStoreUtil.setIsConnected(true)
-        const address = await this.PhantomConnector.connect()
-        this.setInjectedProvider(await this.PhantomConnector.getProvider(), address)
+        try {
+          // TODO: refactor order
+          SolStoreUtil.setIsConnected(true)
+          const address = await this.PhantomConnector.connect()
+          this.setInjectedProvider(await this.PhantomConnector.getProvider(), address)
+        } catch (error) {
+          SolStoreUtil.setError(error)
+        }
       }
     }
   }
