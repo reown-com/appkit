@@ -33,8 +33,7 @@ export const ConnectorController = {
     if (connector.id === 'w3mEmail') {
       const emailConnector = connector as EmailConnector
       const optionsState = snapshot(OptionsController.state) as typeof OptionsController.state
-
-      emailConnector.provider.syncDappData({
+      emailConnector?.provider?.syncDappData?.({
         metadata: optionsState.metadata,
         sdkVersion: optionsState.sdkVersion,
         projectId: optionsState.projectId
