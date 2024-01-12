@@ -65,6 +65,7 @@ import { alphaSvg } from '../../assets/svg/alpha.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   allWallets: allWalletsSvg,
+  alpha: alphaSvg,
   appStore: appStoreSvg,
   chromeStore: chromeStoreSvg,
   apple: appleSvg,
@@ -117,8 +118,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   wallet: walletSvg,
   walletConnect: walletConnectSvg,
   walletPlaceholder: walletPlaceholderSvg,
-  warningCircle: warningCircleSvg,
-  alpha: alphaSvg
+  warningCircle: warningCircleSvg
 }
 
 @customElement('wui-icon')
