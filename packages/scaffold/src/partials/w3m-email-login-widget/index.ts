@@ -54,6 +54,7 @@ export class W3mEmailLoginWidget extends LitElement {
     }
 
     return html`
+      ${this.alphaWarningTemplate()}
       <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
         <wui-email-input
           @focus=${this.onFocusEvent.bind(this)}
@@ -63,7 +64,7 @@ export class W3mEmailLoginWidget extends LitElement {
         >
         </wui-email-input>
 
-        ${this.submitButtonTemplate()}${this.loadingTemplate()}${this.alphaWarningTemplate()}
+        ${this.submitButtonTemplate()}${this.loadingTemplate()}
         <input type="submit" hidden />
       </form>
 
@@ -76,7 +77,20 @@ export class W3mEmailLoginWidget extends LitElement {
     const showAlphaWarning = true
 
     return showAlphaWarning
-      ? html`<wui-tag color="fg-250" align="center" variant="main">Alpha</wui-tag>`
+      ? html`
+          <wui-flex class="alphaBanner" gap="xs" alignItems="center" justifyContent="center">
+            <wui-icon-box
+              size="sm"
+              icon="alpha"
+              iconColor="accent-100"
+              background="opaque"
+              backgroundColor="accent-100"
+            ></wui-icon-box>
+            <wui-text variant="small-400" color="accent-100">
+              This is an alpha version to test before launch
+            </wui-text>
+          </wui-flex>
+        `
       : null
   }
 
