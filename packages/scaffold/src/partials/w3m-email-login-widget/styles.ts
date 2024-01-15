@@ -18,7 +18,6 @@ export default css`
     width: 100%;
     display: block;
     position: relative;
-    margin-bottom: var(--wui-spacing-m);
   }
 
   wui-icon-link,
