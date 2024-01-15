@@ -88,6 +88,7 @@ export type GridItemsType = 'center' | 'end' | 'start' | 'stretch'
 
 export type IconType =
   | 'allWallets'
+  | 'alpha'
   | 'appStore'
   | 'chromeStore'
   | 'apple'

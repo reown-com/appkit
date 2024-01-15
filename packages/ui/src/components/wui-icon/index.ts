@@ -61,9 +61,11 @@ import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder.js'
 import { walletSvg } from '../../assets/svg/wallet.js'
 import { walletConnectSvg } from '../../assets/svg/walletconnect.js'
 import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
+import { alphaSvg } from '../../assets/svg/alpha.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   allWallets: allWalletsSvg,
+  alpha: alphaSvg,
   appStore: appStoreSvg,
   chromeStore: chromeStoreSvg,
   apple: appleSvg,
