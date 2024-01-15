@@ -1,5 +1,5 @@
 export const W3mFrameConstants = {
-  SECURE_SITE_SDK: 'https://secure.web3modal.com/sdk',
+  SECURE_SITE_SDK: 'https://secure-web3modal-git-magic-preview-walletconnect1.vercel.app/sdk',
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
   RPC_METHOD_KEY: 'RPC_',

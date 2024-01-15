@@ -12,8 +12,8 @@ export function WagmiTransactionTest() {
   const { config, error: prepareError } = usePrepareSendTransaction({
     to: vitalikEthAddress,
     value: parseGwei('0.0001'),
-    maxFeePerGas: parseGwei('100'),
-    maxPriorityFeePerGas: parseGwei('100')
+    maxFeePerGas: parseGwei('200'),
+    maxPriorityFeePerGas: parseGwei('200')
   })
   const { sendTransaction, data, error, reset, isLoading } = useSendTransaction(config)
 
