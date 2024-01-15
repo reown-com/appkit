@@ -29,8 +29,8 @@
     "react-icons": "4.12.0",
     "siwe": "2.1.4",
     "valtio": "1.11.2",
-    "viem": "2.0.0-rc.0",
-    "wagmi": "2.0.0-rc.0"
+    "viem": "2.0.10",
+    "wagmi": "2.2.1"
   },
   "devDependencies": {
     "@mailsac/api": "1.0.5",
