@@ -4,7 +4,6 @@
     "outDir": "./dist/esm",
     "declarationDir": "./dist/types",
     "baseUrl": "../../"
-    // https://github.com/microsoft/TypeScript/issues/48212
   },
   "extends": "../../tsconfig.json",
   "include": ["exports", "src"]
