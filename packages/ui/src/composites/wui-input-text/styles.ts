@@ -24,7 +24,6 @@ export default css`
   input:disabled {
     cursor: not-allowed;
     border: 1px solid var(--wui-gray-glass-010);
-    background: var(--wui-gray-glass-015);
   }
 
   input:disabled::placeholder,
