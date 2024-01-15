@@ -3,9 +3,10 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/rea
 import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
 import { sepolia } from '../../utils/ChainsUtil'
 import { useState } from 'react'
-import { vitalikEthAddress } from '../../utils/DataUtil'
 
-export function EthersTransactionTest() {
+import { abi, address as donutAddress } from '../../utils/DonutContract'
+
+export function EthersWriteContractTest() {
   const toast = useToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
@@ -19,12 +20,9 @@ export function EthersTransactionTest() {
       }
       const provider = new BrowserProvider(walletProvider, chainId)
       const signer = new JsonRpcSigner(provider, address)
-      const tx = await signer.sendTransaction({
-        to: vitalikEthAddress,
-        value: ethers.parseUnits('0.0001', 'gwei'),
-        maxFeePerGas: ethers.parseUnits('200', 'gwei'),
-        maxPriorityFeePerGas: ethers.parseUnits('200', 'gwei')
-      })
+      const contract = new ethers.Contract(donutAddress, abi, signer)
+      // @ts-expect-error ethers types are correct
+      const tx = await contract.purchase(1, { value: ethers.parseEther('0.0003') })
       toast({ title: 'Succcess', description: tx.hash, status: 'success', isClosable: true })
     } catch {
       toast({
@@ -45,7 +43,7 @@ export function EthersTransactionTest() {
         onClick={onSendTransaction}
         isDisabled={loading}
       >
-        Send Transaction to Vitalik
+        Purchase crypto donut
       </Button>
 
       <Spacer />
