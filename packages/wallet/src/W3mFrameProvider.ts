@@ -1,6 +1,6 @@
 import { W3mFrame } from './W3mFrame.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
-import { W3mFrameConstants } from './W3mFrameConstants.js'
+import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
 import { W3mFrameStorage } from './W3mFrameStorage.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 
@@ -18,6 +18,7 @@ type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>
 type UpdateEmailResolver = Resolver<undefined>
 type AwaitUpdateEmailResolver = Resolver<W3mFrameTypes.Responses['FrameAwaitUpdateEmailResponse']>
 type SyncThemeResolver = Resolver<undefined>
+type SyncDappDataResolver = Resolver<undefined>
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
@@ -46,6 +47,8 @@ export class W3mFrameProvider {
   private awaitUpdateEmailResolver: AwaitUpdateEmailResolver = undefined
 
   private syncThemeResolver: SyncThemeResolver = undefined
+
+  private syncDappDataResolver: SyncDappDataResolver = undefined
 
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
@@ -104,6 +107,10 @@ export class W3mFrameProvider {
           return this.onSyncThemeSuccess()
         case W3mFrameConstants.FRAME_SYNC_THEME_ERROR:
           return this.onSyncThemeError(event)
+        case W3mFrameConstants.FRAME_SYNC_DAPP_DATA_SUCCESS:
+          return this.onSyncDappDataSuccess()
+        case W3mFrameConstants.FRAME_SYNC_DAPP_DATA_ERROR:
+          return this.onSyncDappDataError(event)
         default:
           return null
       }
@@ -198,6 +205,15 @@ export class W3mFrameProvider {
     })
   }
 
+  public async syncDappData(payload: W3mFrameTypes.Requests['AppSyncDappDataRequest']) {
+    await this.w3mFrame.frameLoadPromise
+    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_SYNC_DAPP_DATA, payload })
+
+    return new Promise((resolve, reject) => {
+      this.syncDappDataResolver = { resolve, reject }
+    })
+  }
+
   // -- Provider Methods ------------------------------------------------
   public async connect(payload?: W3mFrameTypes.Requests['AppGetUserRequest']) {
     const chainId = payload?.chainId ?? this.getLastUsedChainId() ?? 1
@@ -235,6 +251,10 @@ export class W3mFrameProvider {
 
   public async request(req: W3mFrameTypes.RPCRequest) {
     await this.w3mFrame.frameLoadPromise
+
+    if (W3mFrameRpcConstants.GET_CHAIN_ID === req.method) {
+      return this.getLastUsedChainId()
+    }
 
     this.w3mFrame.events.postAppEvent({
       type: W3mFrameConstants.APP_RPC_REQUEST,
@@ -423,6 +443,16 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SYNC_THEME_ERROR' }>
   ) {
     this.syncThemeResolver?.reject(event.payload.message)
+  }
+
+  private onSyncDappDataSuccess() {
+    this.syncDappDataResolver?.resolve(undefined)
+  }
+
+  private onSyncDappDataError(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SYNC_DAPP_DATA_ERROR' }>
+  ) {
+    this.syncDappDataResolver?.reject(event.payload.message)
   }
 
   // -- Private Methods -------------------------------------------------

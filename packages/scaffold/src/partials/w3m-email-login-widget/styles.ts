@@ -24,7 +24,7 @@ export default css`
   wui-icon-link,
   wui-loading-spinner {
     position: absolute;
-    top: 20px;
+    top: 22px;
     transform: translateY(-50%);
   }
 
@@ -34,5 +34,12 @@ export default css`
 
   wui-loading-spinner {
     right: var(--wui-spacing-m);
+  }
+
+  .alphaBanner {
+    padding: 10px 12px 10px 10px;
+    border-radius: var(--wui-border-radius-s);
+    background: var(--wui-accent-glass-010);
+    margin-bottom: var(--wui-spacing-xxs);
   }
 `
