@@ -42,6 +42,13 @@ export const UiHelperUtil = {
     const hash = address.toLowerCase().replace(/^0x/iu, '')
     const baseColor = hash.substring(0, 6)
     const rgbColor = this.hexToRgb(baseColor)
+    const masterBorderRadius = getComputedStyle(document.documentElement).getPropertyValue(
+      '--w3m-border-radius-master'
+    )
+    const radius = Number(masterBorderRadius?.replace('px', ''))
+    const edge = 100 - 3 * radius
+
+    const gradientCircle = `${edge}% ${edge}% at 65% 40%`
 
     const colors: string[] = []
 
@@ -56,6 +63,7 @@ export const UiHelperUtil = {
     --local-color-3: ${colors[2]};
     --local-color-4: ${colors[3]};
     --local-color-5: ${colors[4]};
+    --local-radial-circle: ${gradientCircle}
    `
   },
 
