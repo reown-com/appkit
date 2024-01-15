@@ -34,6 +34,7 @@ import {
   getWalletConnectCaipNetworks
 } from './utils/helpers.js'
 import type { W3mFrameProvider } from '@web3modal/wallet'
+import { ConstantsUtil as CoreConstants } from '@web3modal/core'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -327,11 +328,17 @@ export class Web3Modal extends Web3ModalScaffold {
   private syncConnectors(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
     const w3mConnectors: Connector[] = []
 
-    const coinbaseConnector = wagmiConfig.connectors.find(c => c.id === 'com.coinbase.wallet')
+    const coinbaseSDKId = ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
+
+    // Check if coinbase injected connector is present
+    const coinbaseConnector = wagmiConfig.connectors.find(
+      c => c.id === CoreConstants.CONNECTOR_RDNS_MAP[coinbaseSDKId]
+    )
 
     wagmiConfig.connectors.forEach(({ id, name, type, icon }) => {
+      // If coinbase injected connector is present, skip coinbase sdk connector.
       const shouldSkip =
-        (coinbaseConnector && id === 'coinbaseWalletSDK') || ConstantsUtil.EMAIL_CONNECTOR_ID === id
+        (coinbaseConnector && id === coinbaseSDKId) || ConstantsUtil.EMAIL_CONNECTOR_ID === id
       if (!shouldSkip) {
         w3mConnectors.push({
           id,
