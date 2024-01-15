@@ -94,6 +94,7 @@ export class W3mEmailVerifyOtpView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private startOTPTimeout() {
+    this.timeoutTimeLeft = W3mFrameHelpers.getTimeToNextEmailLogin()
     this.OTPTimeout = setInterval(() => {
       if (this.timeoutTimeLeft > 0) {
         this.timeoutTimeLeft = W3mFrameHelpers.getTimeToNextEmailLogin()
