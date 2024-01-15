@@ -7,9 +7,7 @@ import { sepolia } from 'wagmi/chains'
 
 const TEST_TX = {
   to: vitalikEthAddress as Address,
-  value: parseGwei('0.0001'),
-  maxFeePerGas: parseGwei('100'),
-  maxPriorityFeePerGas: parseGwei('100')
+  value: parseGwei('0.0001')
 }
 
 export function WagmiTransactionTest() {
@@ -56,6 +54,8 @@ export function WagmiTransactionTest() {
       })
     }
   }, [sendTransaction, prepareError])
+
+  console.log('gas', gas)
 
   return chain?.id === sepolia.id && status === 'connected' ? (
     <Stack direction={['column', 'column', 'row']}>
