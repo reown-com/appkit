@@ -72,8 +72,9 @@ export default css`
     padding: 15px var(--wui-spacing-m) var(--wui-spacing-l) var(--wui-spacing-m);
   }
 
-  wui-icon + .wui-size-md {
-    padding: 10.5px var(--wui-spacing-l) 10.5px 40px;
+  wui-icon + .wui-size-md,
+  wui-loading-spinner + .wui-size-md {
+    padding: 10.5px var(--wui-spacing-3xl) 10.5px 40px;
   }
 
   wui-icon[data-input='md'] {
