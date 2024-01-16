@@ -10,7 +10,8 @@ import {
   EventsController,
   ConnectionController,
   SnackController,
-  ConstantsUtil
+  ConstantsUtil,
+  OnRampController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -129,15 +130,7 @@ export class W3mAccountView extends LitElement {
             ${this.network?.name ?? 'Unknown'}
           </wui-text>
         </wui-list-item>
-        <wui-list-item
-          iconVariant="blue"
-          icon="add"
-          iconSize="lg"
-          ?chevron=${true}
-          @click=${this.handleClickPay.bind(this)}
-        >
-          <wui-text variant="paragraph-500" color="fg-100">Buy</wui-text>
-        </wui-list-item>
+        ${this.onrampTemplate()}
         <wui-list-item
           iconVariant="blue"
           icon="swapHorizontalBold"
@@ -162,6 +155,25 @@ export class W3mAccountView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private onrampTemplate() {
+    const { enabled } = OnRampController.state
+    if (!enabled) {
+      return null
+    }
+
+    return html`
+      <wui-list-item
+        iconVariant="blue"
+        icon="add"
+        iconSize="lg"
+        ?chevron=${true}
+        @click=${this.handleClickPay.bind(this)}
+      >
+        <wui-text variant="paragraph-500" color="fg-100">Buy</wui-text>
+      </wui-list-item>
+    `
+  }
+
   private onTransactions() {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_TRANSACTIONS' })
     RouterController.push('Transactions')

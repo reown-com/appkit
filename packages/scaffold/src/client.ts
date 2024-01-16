@@ -1,3 +1,4 @@
+import type { OnRampControllerState } from '@web3modal/core'
 import type {
   ConnectionControllerClient,
   SIWEControllerClient,
@@ -24,7 +25,8 @@ import {
   OptionsController,
   PublicStateController,
   ThemeController,
-  SIWEController
+  SIWEController,
+  OnRampController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 
@@ -46,6 +48,7 @@ export interface LibraryOptions {
   customWallets?: OptionsControllerState['customWallets']
   enableAnalytics?: OptionsControllerState['enableAnalytics']
   metadata?: OptionsControllerState['metadata']
+  enableOnramp?: OnRampControllerState['enabled']
   _sdkVersion: OptionsControllerState['sdkVersion']
 }
 
@@ -262,6 +265,10 @@ export class Web3ModalScaffold {
 
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables)
+    }
+
+    if (options.enableOnramp) {
+      OnRampController.setEnabled(Boolean(options.enableOnramp))
     }
   }
 

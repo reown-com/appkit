@@ -30,7 +30,8 @@ const modal = createWeb3Modal({
       desktop_link: 'https://react-wallet.walletconnect.com',
       webapp_link: 'https://react-wallet.walletconnect.com'
     }
-  ]
+  ],
+  enableOnramp: true
 })
 
 ThemeStore.setModal(modal)
