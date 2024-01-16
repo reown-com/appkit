@@ -55,8 +55,6 @@ export function WagmiTransactionTest() {
     }
   }, [sendTransaction, prepareError])
 
-  console.log('gas', gas)
-
   return chain?.id === sepolia.id && status === 'connected' ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
