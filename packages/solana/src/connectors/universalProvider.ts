@@ -1,7 +1,7 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 
-import type { WalletConnectAppMetadata } from '../connectors/WalletConnectConnector'
+import type { WalletConnectAppMetadata } from './WalletConnectConnector'
 
 const DEFAULT_LOGGER = 'error'
 
@@ -36,7 +36,7 @@ export class UniversalProviderFactory {
       logger: DEFAULT_LOGGER,
       relayUrl: UniversalProviderFactory.relayerRegion,
       projectId: UniversalProviderFactory.projectId,
-      metadata: UniversalProviderFactory.metadata
+      metadata: UniversalProviderFactory.metadata,
     })
 
     // Subscribe to session ping

@@ -103,7 +103,7 @@ export const sepolia = {
 }
 
 export const solana = {
-  chainId: 1399811149,
+  chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ',
   name: 'Solana',
   currency: 'SOL',
   explorerUrl: 'https://solscan.io',
@@ -111,7 +111,7 @@ export const solana = {
 }
 
 export const solanaTestnet = {
-  chainId: 2,
+  chainId: '2',
   name: 'Solana Testnet',
   currency: 'SOL',
   explorerUrl: 'https://solscan.io',
@@ -119,7 +119,7 @@ export const solanaTestnet = {
 }
 
 export const solanaDevnet = {
-  chainId: 3,
+  chainId: '3',
   name: 'Solana Devnet',
   currency: 'SOL',
   explorerUrl: 'https://solscan.io',

@@ -5,7 +5,7 @@ import type { Connector } from './BaseConnector'
 import { BaseConnector } from './BaseConnector'
 import type { Address, TransactionArgs, TransactionType } from '@web3modal/scaffold-utils/solana'
 import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
-import { UniversalProviderFactory } from '../utils/universalProvider'
+import { UniversalProviderFactory } from './universalProvider'
 import { Buffer } from 'buffer'
 
 export interface WalletConnectAppMetadata {
@@ -14,29 +14,6 @@ export interface WalletConnectAppMetadata {
   url: string
   icons: string[]
 }
-
-/* async function importW3mModalCtrl() {
-  try {
-    const web3modalCore = await import('@web3modal/core')
-
-    web3modalCore.ConfigCtrl.setConfig({
-      projectId: SolStoreUtil.getProjectId()
-    })
-
-    return web3modalCore.ModalCtrl
-  } catch {
-    throw new Error('No @web3modal/core module found. It is needed when using the qrcode option')
-  }
-}
-
-async function loadW3mModal() {
-  try {
-    await import('@web3modal/ui')
-    document.getElementsByTagName('body')[0]?.appendChild(document.createElement('w3m-modal'))
-  } catch {
-    throw new Error('No @web3modal/ui module found. It is needed when using the qrcode option')
-  }
-} */
 
 export class WalletConnectConnector extends BaseConnector implements Connector {
   id = 'WalletConnect'
@@ -62,8 +39,9 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
       projectId: SolStoreUtil.getProjectId(),
       relayerRegion,
       metadata,
-      qrcode: this.qrcode
+      qrcode: this.qrcode,
     })
+
     UniversalProviderFactory.getProvider().then(provider => {
       provider.on('session_delete', () => {
         delete provider.session?.namespaces['solana']
@@ -71,17 +49,15 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
       })
     })
 
-    if (autoconnect)
+    if (autoconnect) {
       UniversalProviderFactory.getProvider().then(provider => {
-        // (TODO update typing for provider)
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (provider.session?.namespaces['solana']?.accounts?.length) {
           const [defaultAccount] = provider.session.namespaces['solana'].accounts
-          console.log('Found accounts', defaultAccount)
           const address = defaultAccount?.split(':')[2] as Address
           SolStoreUtil.setAddress(address)
         }
       })
+    }
   }
 
   public static readonly connectorName = 'walletconnect'
@@ -104,7 +80,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     return WalletConnectConnector.connectorName
   }
 
-  protected override async getProvider() {
+  public override async getProvider() {
     const provider = await UniversalProviderFactory.getProvider()
 
     return provider
@@ -143,7 +119,6 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
       })),
       recentBlockhash: transaction.recentBlockhash ?? ''
     }
-
     console.log('Formatted transaction', transactionParams)
 
     const res = await this.request('solana_signTransaction', transactionParams)
@@ -178,7 +153,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
    * If `qrcode = false`, this will return the pairing URI used to generate the
    * QRCode.
    */
-  public async connect() {
+  public async connect(useURI?: boolean) {
     const chosenCluster = SolStoreUtil.getCluster()
     const clusterId = `solana:${chosenCluster.id}`
 
@@ -197,7 +172,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
 
     return new Promise<string>((resolve, reject) => {
       provider.on('display_uri', (uri: string) => {
-        if (this.qrcode) {
+        if (this.qrcode && !useURI) {
           // TODO: show QR code
         }
         else resolve(uri)
@@ -208,15 +183,13 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
           namespaces: solanaNamespace
         })
         .then(providerResult => {
-          console.log(`then: `, providerResult);
           if (!providerResult) throw new Error('Failed connection.')
+          console.log(`setting connected to true`);
+          SolStoreUtil.setIsConnected(true)
           // (TODO update typing for provider)
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           const address = providerResult.namespaces['solana']?.accounts[0]?.split(':')[2] as Address ?? null
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          console.log(`providerResult.namespaces['solana']`, providerResult.namespaces['solana']);
           if (address && this.qrcode) {
-            SolStoreUtil.setAddress(address)
             resolve(address)
           } else reject(new Error('Could not resolve address'))
         }).catch((err: Error) => {

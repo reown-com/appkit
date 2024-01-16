@@ -34,12 +34,12 @@ export function defaultSolanaConfig(options: ConfigOptions) {
       return undefined
     }
 
-    if (!window.originalSolana) {
+    if (!window.solana) {
       return undefined
     }
 
     //  @ts-expect-error window.ethereum satisfies Provider
-    injectedProvider = window.originalSolana
+    injectedProvider = window.solana
 
     return injectedProvider
   }

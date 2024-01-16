@@ -2,6 +2,7 @@ import type { W3mFrameProvider } from '@web3modal/wallet'
 import type { CaipNetwork } from '@web3modal/scaffold'
 import { PublicKey } from '@solana/web3.js'
 
+import UniversalProvider from '@walletconnect/universal-provider'
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { ConstantsUtil } from './ConstantsUtil.js'
@@ -50,7 +51,7 @@ export type Chain = {
   explorerUrl: string
   currency: string
   name: string
-  chainId: number
+  chainId: string
 }
 
 export enum Tag {
@@ -298,10 +299,10 @@ export interface ClusterSubscribeRequestMethods {
 // -- Store--------------------------------------------- //
 export interface SolStoreUtilState {
   projectId: string
-  provider?: Provider | CombinedProvider
+  provider?: Provider | CombinedProvider | UniversalProvider
   providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
   address?: Address | ''
-  chainId?: number
+  chainId?: string
   currentChain?: Chain
   requestId?: number
   error?: unknown
@@ -442,7 +443,7 @@ export const SolHelpersUtil = {
 
     return number
   },
-  numberToHexString(value: number) {
+  numberToHexString(value: number | string) {
     return `0x${value.toString(16)}`
   },
   async getAddress(provider: Provider) {

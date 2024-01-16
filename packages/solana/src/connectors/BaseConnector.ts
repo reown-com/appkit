@@ -147,7 +147,7 @@ export class BaseConnector {
 
     const balance = await this.requestCluster('getBalance', [address, { commitment: 'processed' }])
     /* @todo fix balance issue*/
-    console.log("balance", balance);
+    console.log("balance is ", balance);
 
     const formatted = currency === 'lamports' ? `${balance?.value || 0} lamports` : `${balance?.value || 0} sol`
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useSnapshot } from 'valtio'
+import { useEffect } from 'react'
 
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
@@ -31,8 +32,6 @@ export function useWeb3ModalProvider() {
 
   const walletProvider = provider as any/*@todo add as provider type here*/ | undefined
 
-  console.log('solana wallet Provider = ', provider);
-  console.log('solana wallet Provider = ', useSnapshot(SolStoreUtil.state));
   const walletProviderType = providerType
 
   return {
