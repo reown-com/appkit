@@ -306,6 +306,13 @@ export type Event =
       type: 'track'
       event: 'EMAIL_UPGRADE_FROM_MODAL'
     }
+  | {
+      type: 'track'
+      event: 'SWITCH_NETWORK'
+      properties: {
+        network: string
+      }
+    }
 
 // -- SIWEController Types ---------------------------------------------------
 
