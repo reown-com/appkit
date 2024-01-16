@@ -4,8 +4,7 @@ import type {
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,
   BlockchainApiIdentityRequest,
-  BlockchainApiIdentityResponse,
-  BlockchainApiTokensResponse
+  BlockchainApiIdentityResponse
 } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
 
@@ -22,24 +21,6 @@ export const BlockchainApiController = {
         chainId: caipChainId,
         projectId: OptionsController.state.projectId
       }
-    })
-  },
-
-  fetchTokens({ account, projectId, cursor }: BlockchainApiTransactionsRequest) {
-    const queryParams = cursor ? { cursor } : {}
-
-    return api.get<BlockchainApiTokensResponse>({
-      path: `/v1/account/${account}/portfolio?projectId=${projectId}`,
-      params: queryParams
-    })
-  },
-
-  fetchNFTs({ account, projectId, cursor }: BlockchainApiTransactionsRequest) {
-    const queryParams = cursor ? { cursor } : {}
-
-    return api.get<BlockchainApiTransactionsResponse>({
-      path: `/v1/account/${account}/history?projectId=${projectId}`,
-      params: queryParams
     })
   },
 

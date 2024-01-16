@@ -61,9 +61,6 @@ export type { EventsControllerState } from './src/controllers/EventsController.j
 export { TransactionsController } from './src/controllers/TransactionsController.js'
 export type { TransactionsControllerState } from './src/controllers/TransactionsController.js'
 
-export { PortfolioTokenController } from './src/controllers/PortfolioTokenController.js'
-export type { PortfolioTokenControllerState } from './src/controllers/PortfolioTokenController.js'
-
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from './src/utils/AssetUtil.js'
 export { ConstantsUtil } from './src/utils/ConstantsUtil.js'

@@ -149,16 +149,6 @@ export interface BlockchainApiTransactionsResponse {
   next: string | null
 }
 
-export interface BlockchainApiToken {
-  id: string
-  name: string
-  symbol: string
-}
-
-export interface BlockchainApiTokensResponse {
-  data: BlockchainApiToken[]
-}
-
 export interface CoinbaseApiTransactionsRequest {
   pageSize: number
   pageKey: string

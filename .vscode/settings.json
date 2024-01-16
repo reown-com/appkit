@@ -6,7 +6,7 @@
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "explorer.sortOrder": "type",
   "extensions.ignoreRecommendations": true,
-  // "files.autoSave": "onWindowChange",
+  "files.autoSave": "onWindowChange",
   "files.exclude": {
     "**/.DS_Store": true,
     "**/.git": true,
@@ -14,7 +14,8 @@
     "**/out": true,
     "**/dist": true,
     "**/.turbo": true,
-    "**/playwright-report": true
+    "**/playwright-report": true,
+    "**/coverage": true
   },
   "javascript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsdk": "node_modules/typescript/lib",
