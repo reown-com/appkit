@@ -15,11 +15,16 @@ export class WuiOtp extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: Number }) public length = 6
 
-  @state() valueArr: string[] = Array.from({ length: this.length }).map(() => '')
+  @property({ type: String }) public otp = ''
+
+  @state() values: string[] = Array.from({ length: this.length }).map(() => '')
 
   private numerics: WuiInputNumeric[] = []
 
   public override firstUpdated() {
+    if (this.otp) {
+      this.values = this.otp.split('')
+    }
     const numericElements = this.shadowRoot?.querySelectorAll<WuiInputNumeric>('wui-input-numeric')
     if (numericElements) {
       this.numerics = Array.from(numericElements)
@@ -37,6 +42,7 @@ export class WuiOtp extends LitElement {
               @input=${(e: InputEvent) => this.handleInput(e, index)}
               @keydown=${(e: KeyboardEvent) => this.handleKeyDown(e, index)}
               .disabled=${!this.shouldInputBeEnabled(index)}
+              .value=${this.values[index] || ''}
             >
             </wui-input-numeric>
           `
@@ -52,7 +58,7 @@ export class WuiOtp extends LitElement {
     if (input) {
       input.value = value
       // Need to update the whole reference else lit-html won't re-render
-      this.valueArr = this.valueArr.map((val, i) => (i === index ? value : val))
+      this.values = this.values.map((val, i) => (i === index ? value : val))
     }
   }
 
@@ -78,7 +84,7 @@ export class WuiOtp extends LitElement {
   }
 
   private shouldInputBeEnabled = (index: number) => {
-    const previousInputs = this.valueArr.slice(0, index)
+    const previousInputs = this.values.slice(0, index)
 
     return previousInputs.every(input => input !== '')
   }
@@ -182,7 +188,7 @@ export class WuiOtp extends LitElement {
 
   // -- Private ------------------------------------------- //
   private dispatchInputChangeEvent() {
-    const value = this.valueArr.join('')
+    const value = this.values.join('')
     this.dispatchEvent(
       new CustomEvent('inputChange', {
         detail: value,
