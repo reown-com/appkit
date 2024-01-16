@@ -1,13 +1,13 @@
 {
   "name": "@examples/react-ethers5",
   "private": true,
-  "version": "3.6.0-2c10ca76",
+  "version": "4.0.0-544a28f1",
   "scripts": {
     "dev:example": "vite --port 3012",
     "build:examples": "vite build"
   },
   "dependencies": {
-    "@web3modal/ethers5": "3.6.0-2c10ca76",
+    "@web3modal/ethers5": "4.0.0-544a28f1",
     "ethers": "5.7.2"
   },
   "devDependencies": {
