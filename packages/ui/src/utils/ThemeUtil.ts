@@ -481,7 +481,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
         --wui-icon-box-bg-error-base-100: #3c2426;
         --wui-icon-box-bg-blue-base-100: #20303f;
-        --wui-icon-box-bg-success-base-100: #1f3a28;
+        --wui-icon-box-bg-success-base-100: var(--wui-success-glass-015);
         --wui-icon-box-bg-inverse-base-100: #243240;
 
         --wui-all-wallets-bg-base-100: #222b35;

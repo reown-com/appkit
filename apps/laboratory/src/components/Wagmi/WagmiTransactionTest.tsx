@@ -1,5 +1,5 @@
 import { Button, useToast, Stack, Link, Text, Spacer } from '@chakra-ui/react'
-import { parseGwei } from 'viem'
+import { parseEther, parseGwei } from 'viem'
 import { usePrepareSendTransaction, useSendTransaction, useNetwork, useAccount } from 'wagmi'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useCallback, useEffect } from 'react'
@@ -11,9 +11,9 @@ export function WagmiTransactionTest() {
   const { status } = useAccount()
   const { config, error: prepareError } = usePrepareSendTransaction({
     to: vitalikEthAddress,
-    value: parseGwei('0.0001'),
-    maxFeePerGas: parseGwei('100'),
-    maxPriorityFeePerGas: parseGwei('100')
+    value: parseEther('0.0001'),
+    maxFeePerGas: parseGwei('200'),
+    maxPriorityFeePerGas: parseGwei('200')
   })
   const { sendTransaction, data, error, reset, isLoading } = useSendTransaction(config)
 

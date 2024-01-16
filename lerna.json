@@ -17,6 +17,6 @@
     "apps/*",
     "examples/*"
   ],
-  "version": "3.6.0-2c10ca76",
+  "version": "3.6.0-1f872ccc",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
