@@ -53,6 +53,7 @@ export class WuiOnRampActivityItem extends LitElement {
     `
   }
 
+  // -- Private ------------------------------------------- //
   private imageTemplate() {
     return html`<wui-flex class="purchase-image-container">
       <wui-image src="https://avatar.vercel.sh/andrew.svg?size=50&text=AG"></wui-image>

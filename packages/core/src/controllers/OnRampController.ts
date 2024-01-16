@@ -2,7 +2,7 @@ import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
 import { ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
 
-// -- Types ------------------.-------------------------- //
+// -- Types --------------------------------------------- //
 export type OnRampProviderOption = 'coinbase' | 'moonpay' | 'stripe' | 'paypal'
 
 export type OnRampProvider = {
