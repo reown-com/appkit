@@ -290,6 +290,7 @@ checkSdkVersion()
 async function checkDevelopmentConstants() {
   for (const f of updated_files) {
     if (f.includes('README.md') || f.includes('.yml')) {
+      // eslint-disable-next-line no-continue
       continue
     }
     const diff = await diffForFile(f)
