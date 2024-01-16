@@ -1,5 +1,5 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composite/wui-onramp-activity-item'
+import '@web3modal/ui/src/composites/wui-onramp-activity-item'
 import type { WuiOnRampActivityItem } from '@web3modal/ui/src/composites/wui-onramp-activity-item'
 import { html } from 'lit'
 import '../../components/gallery-container'
