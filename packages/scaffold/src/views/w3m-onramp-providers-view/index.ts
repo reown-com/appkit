@@ -20,8 +20,10 @@ export class W3mOnRampProvidersView extends LitElement {
   @state() private providers: OnRampProvider[] = OnRampController.state.providers.map(provider => {
     if (provider.name === 'coinbase') {
       provider.url = this.getCoinbaseOnRampURL()
+
       return provider
     }
+
     return provider
   })
 
@@ -87,7 +89,7 @@ export class W3mOnRampProvidersView extends LitElement {
 
     return generateOnRampURL({
       appId: ConstantsUtil.WC_COINBASE_ONRAMP_APP_ID,
-      defaultNetwork: defaultNetwork,
+      defaultNetwork,
       destinationWallets: [
         { address, blockchains: ConstantsUtil.WC_COINBASE_PAY_SDK_CHAINS, assets: ['USDC'] }
       ],

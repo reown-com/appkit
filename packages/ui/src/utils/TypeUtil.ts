@@ -169,6 +169,9 @@ export type VisualType =
   | 'onrampCard'
   | 'profile'
   | 'system'
+  | 'moonpay'
+  | 'stripe'
+  | 'paypal'
 
 export type VisualSize = 'sm' | 'md' | 'lg'
 

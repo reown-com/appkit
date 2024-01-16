@@ -50,12 +50,20 @@ export class W3mTokensView extends LitElement {
     if (this.tokens.length === 0) {
       PortfolioTokenController.fetchTokens(this.address)
     }
-    // this.createPaginationObserver()
+    /*
+     * IMPLEMENT
+     *
+     * this.createPaginationObserver()
+     */
   }
 
-  // public override updated() {
-  //   this.setPaginationObserver()
-  // }
+  /*
+   * IMPLEMENT
+   *
+   * public override updated() {
+   *   this.setPaginationObserver()
+   * }
+   */
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
@@ -75,13 +83,13 @@ export class W3mTokensView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateRenderTransaction() {
-    return this.tokens.map(token => {
-      return html`
+    return this.tokens.map(
+      token => html`
         <wui-flex>
           <wui-text> ${token.name} </wui-text>
         </wui-flex>
       `
-    })
+    )
   }
 
   private templateEmpty() {
@@ -122,34 +130,50 @@ export class W3mTokensView extends LitElement {
       .map(item => item)
   }
 
-  // private createPaginationObserver() {
-  //   const { projectId } = OptionsController.state
+  /*
+   * IMPLEMENT
+   *
+   * private createPaginationObserver() {
+   *   const { projectId } = OptionsController.state
+   */
 
-  //   this.paginationObserver = new IntersectionObserver(([element]) => {
-  //     if (element?.isIntersecting && !this.loading) {
-  //       TransactionsController.fetchTransactions(this.address)
-  //       EventsController.sendEvent({
-  //         type: 'track',
-  //         event: 'LOAD_MORE_TRANSACTIONS',
-  //         properties: {
-  //           address: this.address,
-  //           projectId,
-  //           cursor: this.next
-  //         }
-  //       })
-  //     }
-  //   }, {})
-  //   this.setPaginationObserver()
-  // }
+  /*
+   * IMPLEMENT
+   *
+   *   this.paginationObserver = new IntersectionObserver(([element]) => {
+   *     if (element?.isIntersecting && !this.loading) {
+   *       TransactionsController.fetchTransactions(this.address)
+   *       EventsController.sendEvent({
+   *         type: 'track',
+   *         event: 'LOAD_MORE_TRANSACTIONS',
+   *         properties: {
+   *           address: this.address,
+   *           projectId,
+   *           cursor: this.next
+   *         }
+   *       })
+   *     }
+   *   }, {})
+   *   this.setPaginationObserver()
+   * }
+   */
 
-  // private setPaginationObserver() {
-  //   this.paginationObserver?.disconnect()
+  /*
+   * IMPLEMENT
+   *
+   * private setPaginationObserver() {
+   *   this.paginationObserver?.disconnect()
+   */
 
-  //   const lastItem = this.shadowRoot?.querySelector(`#${PAGINATOR_ID}`)
-  //   if (lastItem) {
-  //     this.paginationObserver?.observe(lastItem)
-  //   }
-  // }
+  /*
+   * IMPLEMENT
+   *
+   *   const lastItem = this.shadowRoot?.querySelector(`#${PAGINATOR_ID}`)
+   *   if (lastItem) {
+   *     this.paginationObserver?.observe(lastItem)
+   *   }
+   * }
+   */
 }
 
 declare global {

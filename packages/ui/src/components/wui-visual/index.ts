@@ -18,6 +18,9 @@ import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { VisualSize, VisualType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import { coinbaseSvg } from '../../assets/visual/coinbase.js'
+import { moonpaySvg } from '../../assets/visual/moonpay.js'
+import { stripeSvg } from '../../assets/visual/stripe.js'
+import { paypalSvg } from '../../assets/visual/paypal.js'
 import { onrampCardSvg } from '../../assets/visual/onramp-card.js'
 import styles from './styles.js'
 
@@ -37,7 +40,10 @@ const svgOptions: Record<VisualType, TemplateResult<2>> = {
   profile: profileSvg,
   system: systemSvg,
   coinbase: coinbaseSvg,
-  onrampCard: onrampCardSvg
+  onrampCard: onrampCardSvg,
+  moonpay: moonpaySvg,
+  stripe: stripeSvg,
+  paypal: paypalSvg
 }
 
 @customElement('wui-visual')

@@ -13,7 +13,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles'
+import styles from './styles.js'
 import type { Transaction } from '@web3modal/common'
 
 @customElement('w3m-buy-in-progress-view')
@@ -38,7 +38,7 @@ export class W3mBuyInProgressView extends LitElement {
 
   @state() private coinbaseTransactions: Transaction[] = []
 
-  @state() private coinbaseTransactionsInitialized: boolean = false
+  @state() private coinbaseTransactionsInitialized = false
 
   @state() private intervalId: NodeJS.Timeout | null = null
 
@@ -68,12 +68,15 @@ export class W3mBuyInProgressView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    let label = this.error
-      ? 'Buy failed'
-      : this.selectedOnRampProvider
-        ? `Continue ${this.selectedOnRampProvider?.label} window`
-        : 'Continue in external window'
-    let subLabel = this.error ? 'Please try again' : 'We’ll notify you once your Buy is proceed'
+    let label = 'Continue in external window'
+
+    if (this.error) {
+      label = 'Buy failed'
+    } else if (this.selectedOnRampProvider) {
+      label = `Continue ${this.selectedOnRampProvider?.label} window`
+    }
+
+    const subLabel = this.error ? 'Please try again' : `We'll notify you once your Buy is proceed`
 
     return html`
       <wui-flex
@@ -86,10 +89,11 @@ export class W3mBuyInProgressView extends LitElement {
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-visual
-            name=${this.selectedOnRampProvider?.name}
+            name=${ifDefined(this.selectedOnRampProvider?.name)}
             size="lg"
             class="provider-image"
-          ></wui-visual>
+          >
+          </wui-visual>
 
           ${this.error ? null : this.loaderTemplate()}
 
@@ -125,7 +129,9 @@ export class W3mBuyInProgressView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private watchTransactions() {
-    if (!this.selectedOnRampProvider) return
+    if (!this.selectedOnRampProvider) {
+      return
+    }
 
     switch (this.selectedOnRampProvider.name) {
       case 'coinbase':
@@ -166,7 +172,7 @@ export class W3mBuyInProgressView extends LitElement {
       }
       await this.fetchCoinbaseTransactions()
     } catch (error) {
-      console.error(error)
+      SnackController.showError(error)
     }
   }
 
@@ -184,18 +190,20 @@ export class W3mBuyInProgressView extends LitElement {
       projectId
     })
 
-    const newTransactions = coinbaseResponse.data.filter(transaction => {
-      return !this.coinbaseTransactions.some(
-        existingTransaction => existingTransaction.metadata.minedAt === transaction.metadata.minedAt
-      )
-    })
+    const newTransactions = coinbaseResponse.data.filter(
+      transaction =>
+        !this.coinbaseTransactions.some(
+          existingTransaction =>
+            existingTransaction.metadata.minedAt === transaction.metadata.minedAt
+        )
+    )
 
-    if (newTransactions.length > 0) {
-      clearInterval(this.intervalId!)
+    if (newTransactions.length > 0 && this.intervalId) {
+      clearInterval(this.intervalId)
       RouterController.replace('OnRampActivity')
-    } else if (this.startTime && Date.now() - this.startTime >= 180_000) {
+    } else if (this.startTime && Date.now() - this.startTime >= 180_000 && this.intervalId) {
       this.error = true
-      clearInterval(this.intervalId!)
+      clearInterval(this.intervalId)
     }
   }
 
@@ -234,6 +242,7 @@ export class W3mBuyInProgressView extends LitElement {
     if (!this.selectedOnRampProvider?.url) {
       SnackController.showError('No link found')
       RouterController.goBack()
+
       return
     }
 

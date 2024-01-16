@@ -8,7 +8,7 @@ import { BlockchainApiController } from './BlockchainApiController.js'
 export type Token = { id: string; name: string; symbol: string }
 
 export interface PortfolioTokenControllerState {
-  tokens: Array<BlockchainApiToken>
+  tokens: BlockchainApiToken[]
   loading: boolean
   empty: boolean
   next: string | undefined
@@ -46,7 +46,6 @@ export const PortfolioTokenController = {
         cursor: state.next
       })
 
-      console.log('response', response)
       state.loading = false
       state.tokens = response.data
       state.empty = response.data.length === 0

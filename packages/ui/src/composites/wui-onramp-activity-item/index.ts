@@ -16,19 +16,19 @@ export class WuiOnRampActivityItem extends LitElement {
 
   @property() color: ColorType = 'inherit'
 
-  @property() public label: string = 'Bought'
+  @property() public label = 'Bought'
 
-  @property() public purchaseValue: string = ''
+  @property() public purchaseValue = ''
 
-  @property() public purchaseCurrency: string = ''
+  @property() public purchaseCurrency = ''
 
-  @property() public date: string = ''
+  @property() public date = ''
 
-  @property() public completed: boolean = false
+  @property() public completed = false
 
-  @property() public inProgress: boolean = false
+  @property() public inProgress = false
 
-  @property() public failed: boolean = false
+  @property() public failed = false
 
   @property() public onClick: (() => void) | null = null
 

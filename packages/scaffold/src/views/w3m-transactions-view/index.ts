@@ -199,6 +199,7 @@ export class W3mTransactionsView extends LitElement {
       if (transaction.type === 'coinbase') {
         return this.templateRenderCoinbaseTransaction(transaction.value, isLastTransaction)
       }
+
       return html`${this.templateRenderTransaction(transaction.value, isLastTransaction)}`
     })
   }

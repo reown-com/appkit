@@ -9,6 +9,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 // -- Helpers --------------------------------------------- //
 const LOADING_ITEM_COUNT = 7
@@ -55,7 +56,9 @@ export class W3mOnRampActivityView extends LitElement {
       const transfer = transaction.transfers[0]
       const fungibleInfo = transfer?.fungible_info
 
-      if (!fungibleInfo) return null
+      if (!fungibleInfo) {
+        return null
+      }
 
       return html`
         <wui-onramp-activity-item
@@ -63,7 +66,7 @@ export class W3mOnRampActivityView extends LitElement {
           .completed=${transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_SUCCESS'}
           .inProgress=${transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'}
           .failed=${transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_FAILED'}
-          purchaseCurrency=${fungibleInfo.symbol}
+          purchaseCurrency=${ifDefined(fungibleInfo.symbol)}
           purchaseValue=${transfer.quantity.numeric}
           date=${date}
         ></wui-onramp-activity-item>

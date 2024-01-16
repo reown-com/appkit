@@ -154,7 +154,7 @@ export const CoreHelperUtil = {
     }
 
     return {
-      value: formattedBalance ? `${formattedBalance}` : '0',
+      value: formattedBalance ?? '0',
       rest: formattedBalance === '0' ? '000' : '',
       symbol
     }

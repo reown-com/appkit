@@ -20,11 +20,11 @@ export class WuiOnRampProviderItem extends LitElement {
 
   @property() public name?: OnRampProvider['name']
 
-  @property() public label: string = ''
+  @property() public label = ''
 
   @property() public feeRange = ''
 
-  @property() public loading: boolean = false
+  @property() public loading = false
 
   @property() public onClick: (() => void) | null = null
 

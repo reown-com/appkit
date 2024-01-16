@@ -48,7 +48,7 @@ export const BlockchainApiController = {
 
     return api.get<BlockchainApiTransactionsResponse>({
       path: `/v1/account/${account}/history?projectId=${projectId}${
-        onramp ? '&onramp=' + onramp : ''
+        onramp ? `&onramp=${onramp}` : ''
       }`,
       params: queryParams
     })

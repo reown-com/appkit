@@ -156,7 +156,7 @@ export interface BlockchainApiToken {
 }
 
 export interface BlockchainApiTokensResponse {
-  data: Array<BlockchainApiToken>
+  data: BlockchainApiToken[]
 }
 
 export interface CoinbaseApiTransactionsRequest {
