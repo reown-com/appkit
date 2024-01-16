@@ -241,6 +241,7 @@ export class W3mAccountView extends LitElement {
 
   private onNetworks() {
     if (this.isAllowedNetworkSwitch()) {
+      EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORKS' })
       RouterController.push('Networks')
     }
   }

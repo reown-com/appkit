@@ -264,6 +264,10 @@ export type Event =
     }
   | {
       type: 'track'
+      event: 'CLICK_NETWORKS'
+    }
+  | {
+      type: 'track'
       event: 'SIWE_AUTH_SUCCESS'
     }
   | {
