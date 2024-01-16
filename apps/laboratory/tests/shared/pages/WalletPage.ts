@@ -7,9 +7,11 @@ export class WalletPage {
   private readonly baseURL = WALLET_URL
 
   private readonly gotoHome: Locator
+  private readonly vercelPreview: Locator
 
   constructor(public readonly page: Page) {
     this.gotoHome = this.page.getByTestId('wc-connect')
+    this.vercelPreview = this.page.locator('css=vercel-live-feedback')
   }
 
   async load() {
@@ -17,8 +19,11 @@ export class WalletPage {
   }
 
   async connect() {
+    const isVercelPreview = (await this.vercelPreview.count()) > 0
+    if (isVercelPreview) {
+      await this.vercelPreview.evaluate((iframe: HTMLIFrameElement) => iframe.remove())
+    }
     await this.gotoHome.click()
-
     await this.page.getByTestId('uri-input').click()
 
     // Paste clipboard

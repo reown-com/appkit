@@ -13,7 +13,8 @@
     "**/node_modules": true,
     "**/out": true,
     "**/dist": true,
-    "**/.turbo": true
+    "**/.turbo": true,
+    "**/playwright-report": true
   },
   "javascript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsdk": "node_modules/typescript/lib",

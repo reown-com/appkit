@@ -1,11 +1,8 @@
 import { Button, useToast } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
-import { EthersTransactionButton } from './EthersTransactionButton'
 import type { TypedDataField } from 'ethers'
-import { SigningFailedToastTitle, SigningSucceededToastTitle } from '../../constants'
 
-// Example data
 const types: Record<string, TypedDataField[]> = {
   Person: [
     { name: 'name', type: 'string' },
@@ -30,36 +27,10 @@ const message = {
   contents: 'Hello, Bob!'
 } as const
 
-// Component
-export function EthersConnectButton() {
+export function EthersSignTypedDataTest() {
   const toast = useToast()
-  const { isConnected, address, chainId } = useWeb3ModalAccount()
-  const { walletProvider, walletProviderType } = useWeb3ModalProvider()
-
-  async function onSignMessage() {
-    try {
-      if (!walletProvider || !address) {
-        throw Error('user is disconnected')
-      }
-      const provider = new BrowserProvider(walletProvider, chainId)
-      const signer = new JsonRpcSigner(provider, address)
-      const signature = await signer?.signMessage('Hello Web3Modal Ethers')
-
-      toast({
-        title: SigningSucceededToastTitle,
-        description: signature,
-        status: 'success',
-        isClosable: true
-      })
-    } catch {
-      toast({
-        title: SigningFailedToastTitle,
-        description: 'Failed to sign message',
-        status: 'error',
-        isClosable: true
-      })
-    }
-  }
+  const { address, chainId } = useWeb3ModalAccount()
+  const { walletProvider } = useWeb3ModalProvider()
 
   async function onSignTypedData() {
     try {
@@ -89,19 +60,8 @@ export function EthersConnectButton() {
   }
 
   return (
-    <>
-      <w3m-button />
-      {isConnected ? (
-        <>
-          <Button data-testid="sign-message-button" onClick={onSignMessage}>
-            Sign Message
-          </Button>
-          <Button data-testid="sign-typed-data-button" onClick={onSignTypedData}>
-            Sign Typed Data
-          </Button>
-          {walletProviderType === 'w3mEmail' ? <EthersTransactionButton /> : null}
-        </>
-      ) : null}
-    </>
+    <Button data-testid="sign-typed-data-button" onClick={onSignTypedData}>
+      Sign Typed Data
+    </Button>
   )
 }
