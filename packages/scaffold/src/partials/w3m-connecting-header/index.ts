@@ -39,7 +39,6 @@ export class W3mConnectingHeader extends LitElement {
           ?disabled=${this.buffering}
           .tabs=${tabs}
           .onTabChange=${this.onTabChange.bind(this)}
-          .tabWidth=${200}
         ></wui-tabs>
       </wui-flex>
     `

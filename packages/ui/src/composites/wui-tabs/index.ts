@@ -30,6 +30,7 @@ export class WuiTabs extends LitElement {
 
     this.style.cssText = `
       --local-tab: ${this.activeTab};
+      --local-tab-width: ${this.localTabWidth};
     `
 
     this.dataset['type'] = this.isDense ? 'flex' : 'block'
