@@ -175,10 +175,16 @@ export type Event =
   | {
       type: 'track'
       event: 'MODAL_OPEN'
+      properties: {
+        connected: boolean
+      }
     }
   | {
       type: 'track'
       event: 'MODAL_CLOSE'
+      properties: {
+        connected: boolean
+      }
     }
   | {
       type: 'track'
