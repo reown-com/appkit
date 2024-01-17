@@ -46,7 +46,7 @@ export class W3mConnectView extends LitElement {
 
         ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()}
         ${this.announcedTemplate()} ${this.injectedTemplate()} ${this.featuredTemplate()}
-        ${this.customTemplate()} ${this.recommendedTemplate()} ${this.connectorsTemplate()}
+        ${this.customTemplate()} ${this.recommendedTemplate()} ${this.externalTemplate()}
         ${this.allWalletsTemplate()}
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
@@ -156,8 +156,6 @@ export class W3mConnectView extends LitElement {
   }
 
   private injectedTemplate() {
-    const announced = this.connectors.find(c => c.type === 'ANNOUNCED')
-
     return this.connectors.map(connector => {
       if (connector.type !== 'INJECTED') {
         return null
@@ -170,7 +168,7 @@ export class W3mConnectView extends LitElement {
       return html`
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-          .installed=${Boolean(announced)}
+          .installed=${true}
           name=${connector.name ?? 'Unknown'}
           @click=${() => this.onConnector(connector)}
         >
@@ -179,7 +177,7 @@ export class W3mConnectView extends LitElement {
     })
   }
 
-  private connectorsTemplate() {
+  private externalTemplate() {
     const announcedRdns = ConnectorController.getAnnouncedConnectorRdns()
 
     return this.connectors.map(connector => {
@@ -236,12 +234,15 @@ export class W3mConnectView extends LitElement {
     const { customWallets, featuredWalletIds } = OptionsController.state
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
+    const injected = connectors.filter(c => c.type === 'INJECTED')
     const eip6963 = connectors.filter(c => c.type === 'ANNOUNCED')
     if (featuredWalletIds || customWallets || !recommended.length) {
       return null
     }
 
-    const overrideLength = eip6963.length + recent.length
+    // EIP6963 wallets are no longer serialized as ANNOUNCED in wagmiv2.
+    const eip6963Amount = eip6963.length || Math.max(0, injected.length - 1)
+    const overrideLength = eip6963Amount + recent.length
     const maxRecommended = Math.max(0, 2 - overrideLength)
     const wallets = this.filterOutDuplicateWallets(recommended).slice(0, maxRecommended)
 
@@ -274,9 +275,10 @@ export class W3mConnectView extends LitElement {
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
     const recentIds = recent.map(wallet => wallet.id)
-    const rdnsIds = connectors.map(c => c.info?.rdns).filter(Boolean)
     const filtered = wallets.filter(
-      wallet => !recentIds.includes(wallet.id) && !rdnsIds.includes(wallet.rdns ?? undefined)
+      wallet =>
+        !recentIds.includes(wallet.id) &&
+        !connectors.find(c => c.id === wallet.rdns || c?.info?.rdns === wallet.rdns)
     )
 
     return filtered

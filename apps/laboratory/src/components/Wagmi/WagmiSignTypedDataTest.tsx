@@ -1,5 +1,5 @@
 import { Button, useToast } from '@chakra-ui/react'
-import { useNetwork, useSignTypedData } from 'wagmi'
+import { useAccount, useSignTypedData } from 'wagmi'
 
 // Example data
 const types = {
@@ -28,7 +28,7 @@ const message = {
 
 export function WagmiSignTypedDataTest() {
   const toast = useToast()
-  const { chain } = useNetwork()
+  const { chain } = useAccount()
   const domain = {
     name: 'Ether Mail',
     version: '1',
@@ -36,12 +36,7 @@ export function WagmiSignTypedDataTest() {
     verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
   } as const
 
-  const { signTypedDataAsync } = useSignTypedData({
-    domain,
-    message,
-    primaryType: 'Mail',
-    types
-  })
+  const { signTypedDataAsync } = useSignTypedData()
 
   async function onSignTypedData() {
     try {

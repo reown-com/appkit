@@ -1,4 +1,6 @@
-import { getWeb3Modal } from '@web3modal/scaffold-vue'
+'use client'
+
+import { getWeb3Modal } from '@web3modal/scaffold-react'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
@@ -13,7 +15,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
   if (!modal) {
     modal = new Web3Modal({
       ...options,
-      _sdkVersion: `vue-wagmi-${ConstantsUtil.VERSION}`
+      _sdkVersion: `react-wagmi-${ConstantsUtil.VERSION}`
     })
     getWeb3Modal(modal)
   }
@@ -21,13 +23,14 @@ export function createWeb3Modal(options: Web3ModalOptions) {
   return modal
 }
 
-// -- Composites --------------------------------------------------------------
+// -- Hooks -------------------------------------------------------------------
 export {
   useWeb3ModalTheme,
   useWeb3Modal,
   useWeb3ModalState,
   useWeb3ModalEvents
-} from '@web3modal/scaffold-vue'
+} from '@web3modal/scaffold-react'
 
 // -- Universal Exports -------------------------------------------------------
-export { defaultWagmiConfig } from '../src/utils/defaultWagmiCoreConfig.js'
+export { EIP6963Connector } from '../src/connectors/EIP6963Connector.js'
+export { defaultWagmiConfig } from '../src/utils/defaultWagmiReactConfig.js'

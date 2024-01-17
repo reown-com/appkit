@@ -1,6 +1,6 @@
 {
   "name": "@apps/laboratory",
-  "version": "3.6.0-1f872ccc",
+  "version": "4.0.0-alpha.0",
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
@@ -19,15 +19,18 @@
     "@emotion/styled": "11.11.0",
     "@sentry/browser": "7.92.0",
     "@sentry/react": "7.92.0",
-    "@web3modal/ethers": "3.6.0-1f872ccc",
-    "@web3modal/ethers5": "3.6.0-1f872ccc",
-    "@web3modal/wagmi": "3.6.0-1f872ccc",
+    "@tanstack/react-query": "5.14.1",
+    "@web3modal/ethers": "4.0.0-alpha.0",
+    "@web3modal/ethers5": "4.0.0-alpha.0",
+    "@web3modal/wagmi": "4.0.0-alpha.0",
     "framer-motion": "10.17.9",
     "next": "14.0.4",
     "next-auth": "4.24.5",
     "react-icons": "4.12.0",
     "siwe": "2.1.4",
-    "valtio": "1.11.2"
+    "valtio": "1.11.2",
+    "viem": "2.0.10",
+    "wagmi": "2.2.1"
   },
   "devDependencies": {
     "@mailsac/api": "1.0.5",
