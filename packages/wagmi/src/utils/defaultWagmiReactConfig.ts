@@ -10,7 +10,7 @@ import { emailConnector } from '../connectors/EmailConnector.js'
 
 export interface ConfigOptions {
   projectId: string
-  chains: Chain[]
+  chains: [Chain, ...Chain[]]
   metadata: {
     name: string
     description: string

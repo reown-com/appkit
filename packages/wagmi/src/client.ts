@@ -41,7 +41,7 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wagmiConfig: Config<any, any>
   siweConfig?: Web3ModalSIWEClient
-  chains?: Chain[]
+  chains: [Chain, ...Chain[]]
   defaultChain?: Chain
   chainImages?: Record<number, string>
   connectorImages?: Record<string, string>
@@ -89,22 +89,23 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       },
 
-      async getApprovedCaipNetworksData() {
-        const connections = new Map(wagmiConfig.state.connections)
-        const connection = connections.get(wagmiConfig.state.current || '')
+      getApprovedCaipNetworksData: async () =>
+        new Promise(resolve => {
+          const connections = new Map(wagmiConfig.state.connections)
+          const connection = connections.get(wagmiConfig.state.current || '')
 
-        if (connection?.connector?.id === ConstantsUtil.EMAIL_CONNECTOR_ID) {
-          return getEmailCaipNetworks()
-        } else if (connection?.connector?.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-          const connector = wagmiConfig.connectors.find(
-            c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
-          )
+          if (connection?.connector?.id === ConstantsUtil.EMAIL_CONNECTOR_ID) {
+            resolve(getEmailCaipNetworks())
+          } else if (connection?.connector?.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
+            const connector = wagmiConfig.connectors.find(
+              c => c.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
+            )
 
-          return getWalletConnectCaipNetworks(connector)
-        }
+            resolve(getWalletConnectCaipNetworks(connector))
+          }
 
-        return { approvedCaipNetworkIds: undefined, supportsAllNetworks: true }
-      }
+          resolve({ approvedCaipNetworkIds: undefined, supportsAllNetworks: true })
+        })
     }
 
     const connectionControllerClient: ConnectionControllerClient = {
