@@ -1,12 +1,12 @@
 {
   "name": "@examples/html-wagmi",
   "private": true,
-  "version": "4.0.0-alpha.1",
+  "version": "4.0.0-alpha.0",
   "scripts": {
     "dev:example": "vite --port 3001",
     "build:examples": "vite build"
   },
   "dependencies": {
-    "@web3modal/wagmi": "4.0.0-alpha.1"
+    "@web3modal/wagmi": "4.0.0-alpha.0"
   }
 }

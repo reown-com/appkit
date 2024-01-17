@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wagmi1",
-  "version": "4.0.0-alpha.1",
+  "version": "4.0.0-alpha.0",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -43,11 +43,11 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/polyfills": "4.0.0-alpha.1",
-    "@web3modal/scaffold": "4.0.0-alpha.1",
-    "@web3modal/scaffold-react": "4.0.0-alpha.1",
-    "@web3modal/scaffold-utils": "4.0.0-alpha.1",
-    "@web3modal/scaffold-vue": "4.0.0-alpha.1"
+    "@web3modal/polyfills": "4.0.0-alpha.0",
+    "@web3modal/scaffold": "4.0.0-alpha.0",
+    "@web3modal/scaffold-react": "4.0.0-alpha.0",
+    "@web3modal/scaffold-utils": "4.0.0-alpha.0",
+    "@web3modal/scaffold-vue": "4.0.0-alpha.0"
   },
   "devDependencies": {
     "@wagmi/connectors": "3.1.10",
@@ -78,7 +78,7 @@
     }
   },
   "optionalDependencies": {
-    "@web3modal/siwe": "4.0.0-alpha.1",
+    "@web3modal/siwe": "4.0.0-alpha.0",
     "react": ">=17",
     "react-dom": ">=17",
     "vue": ">=3"
