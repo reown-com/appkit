@@ -213,7 +213,7 @@ export class Web3Modal extends Web3ModalScaffold {
     if (typeof window === 'object') {
       setTimeout(() => {
         this.checkActiveProviders()
-      }, 350)
+      }, 500)
     }
   }
 
@@ -289,19 +289,12 @@ export class Web3Modal extends Web3ModalScaffold {
     const chainId = SolStoreUtil.state.currentChain?.chainId
     const isConnected = SolStoreUtil.state.isConnected
 
-    console.log(`Sync account:`);
-    console.log(`address ${address}`);
-    console.log(`chainId: ${chainId}`);
-    console.log(`isConnected: ${isConnected}`);
     this.resetAccount()
 
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.INJECTED_CONNECTOR_ID}:${chainId}:${address}`
-
       this.setIsConnected(isConnected)
-
       this.setCaipAddress(caipAddress)
-
       await Promise.all([
         this.syncProfile(),
         this.syncBalance(address),
@@ -357,7 +350,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncBalance(address: string) {
     const chainId = SolStoreUtil.state.chainId
     if (chainId && this.chains) {
-      const chain = this.chains.find(c => c.chainId === chainId.split(':')[1])
+      const chain = this.chains.find(c => c.chainId === chainId)
       if (chain) {
         const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
         let balance
@@ -367,8 +360,6 @@ export class Web3Modal extends Web3ModalScaffold {
           balance = await this.PhantomConnector.getBalance(address) ?? { value: new BN('0') }
         }
         const formatted = `${balance.value} sol`
-        console.log(balance);
-
         this.setBalance(formatted, chain.currency)
       }
     }
@@ -533,8 +524,41 @@ export class Web3Modal extends Web3ModalScaffold {
         this.syncBalance(address),
         this.getApprovedCaipNetworksData()
       ])
-
+      this.watchInjected(provider)
       this.hasSyncedConnectedAccount = true
+    }
+  }
+
+  private watchInjected(provider: Provider) {
+    function disconnectHandler() {
+      localStorage.removeItem(SolConstantsUtil.WALLET_ID)
+      SolStoreUtil.reset()
+
+      provider?.removeListener('disconnect', disconnectHandler)
+      provider?.removeListener('accountsChanged', accountsChangedHandler)
+      provider?.removeListener('chainChanged', chainChangedHandler)
+    }
+
+    function accountsChangedHandler(accounts: string[]) {
+      const currentAccount = accounts?.[0]
+      if (currentAccount) {
+        SolStoreUtil.setAddress('')
+      } else {
+        localStorage.removeItem(SolConstantsUtil.WALLET_ID)
+        SolStoreUtil.reset()
+      }
+    }
+
+    function chainChangedHandler(chainId: string) {
+      if (chainId) {
+        SolStoreUtil.setChainId(chainId)
+      }
+    }
+
+    if (provider) {
+      provider.on('disconnect', disconnectHandler)
+      provider.on('accountsChanged', accountsChangedHandler)
+      provider.on('chainChanged', chainChangedHandler)
     }
   }
 }

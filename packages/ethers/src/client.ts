@@ -191,7 +191,6 @@ export class Web3Modal extends Web3ModalScaffold {
         info: Info
         provider: Provider
       }) => {
-        console.log(`call connect external`);
         if (id === ConstantsUtil.INJECTED_CONNECTOR_ID) {
           const InjectedProvider = ethersConfig.injected
           if (!InjectedProvider) {

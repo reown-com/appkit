@@ -3,6 +3,7 @@ import BN from 'bn.js'
 import base58 from 'bs58'
 import borsh from 'borsh'
 import { Buffer } from 'buffer'
+import { clusterApiUrl } from '@solana/web3.js'
 import { SolConstantsUtil, SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 
 import { registerListener, unregisterListener } from '../utils/clusterFactory'
@@ -337,7 +338,6 @@ export class BaseConnector {
     params: ClusterRequestMethods[Method]['params']
   ): Promise<ClusterRequestMethods[Method]['returns']> {
     const cluster = SolStoreUtil.getCluster()
-    console.log(`cluster in request cluster`, cluster);
     const { endpoint } = cluster
     const res: { result: ClusterRequestMethods[Method]['returns'] } = await fetch(endpoint, {
       method: 'post',
@@ -354,7 +354,7 @@ export class BaseConnector {
       .then(async httpRes => {
         const json = await httpRes.json()
 
-        console.log({ json })
+        console.log({ ...json })
 
         return json
       })

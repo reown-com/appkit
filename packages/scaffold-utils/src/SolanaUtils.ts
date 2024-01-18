@@ -240,7 +240,7 @@ export interface ClusterRequestMethods {
   }
 
   getBalance: {
-    params: [string, { commitment: 'processed' }]
+    params: [string, { commitment: 'processed' | 'finalized' }]
     returns: {
       value: number
     }
