@@ -3,7 +3,6 @@ import BN from 'bn.js'
 import base58 from 'bs58'
 import borsh from 'borsh'
 import { Buffer } from 'buffer'
-import { clusterApiUrl } from '@solana/web3.js'
 import { SolConstantsUtil, SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 
 import { registerListener, unregisterListener } from '../utils/clusterFactory'
@@ -42,12 +41,12 @@ export interface Connector {
     type: Type,
     params: TransactionArgs[Type]['params']
   ) => Promise<string>
-  getBalance: (requestedAddress?: string) => Promise<{
+  getBalance: (requestedAddress: string) => Promise<{
     formatted: string
     value: BN
     decimals: number
     symbol: string
-  } | null>
+  }>
   getTransaction: (
     transactionSignature: string
   ) => Promise<ClusterRequestMethods['getTransaction']['returns']>
@@ -142,21 +141,26 @@ export class BaseConnector {
     return this.subscribeToCluster('signatureSubscribe', [transactionSignature], callback)
   }
 
-  public async getBalance(requestedAddress?: string, currency: 'lamports' | 'sol' = 'sol') {
-    const address = requestedAddress ?? SolStoreUtil.state.address
-    if (!address) return null
+  public async getBalance(requestedAddress: string, currency: 'lamports' | 'sol' = 'sol') {
+    try {
+      const address = requestedAddress ?? SolStoreUtil.state.address
+      const balance = await this.requestCluster('getBalance', [address, { commitment: 'processed' }])
+      const formatted = currency === 'lamports' ? `${balance?.value || 0} lamports` : `${balance?.value || 0} sol`
 
-    const balance = await this.requestCluster('getBalance', [address, { commitment: 'processed' }])
-    /* @todo fix balance issue*/
-    console.log("balance is ", balance);
-
-    const formatted = currency === 'lamports' ? `${balance?.value || 0} lamports` : `${balance?.value || 0} sol`
-
-    return {
-      value: new BN(balance?.value || 0),
-      formatted,
-      decimals: balance?.value || 0,
-      symbol: currency
+      return {
+        value: new BN(balance.value),
+        formatted,
+        decimals: balance.value,
+        symbol: currency
+      }
+    } catch (err) {
+      SolStoreUtil.setError("Can't get balance")
+      return {
+        value: new BN(0),
+        formatted: '0 sol',
+        decimals: 0,
+        symbol: currency
+      }
     }
   }
 

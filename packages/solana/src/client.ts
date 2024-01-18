@@ -1,4 +1,3 @@
-import { BN } from 'bn.js'
 import type {
   CaipNetworkId,
   ConnectionControllerClient,
@@ -350,17 +349,16 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncBalance(address: string) {
     const chainId = SolStoreUtil.state.chainId
     if (chainId && this.chains) {
-      const chain = this.chains.find(c => c.chainId === chainId)
+      const chain = this.chains.find(c => c.chainId === (chainId.includes(':') ? chainId.split(':')[1] : chainId))
       if (chain) {
         const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
         let balance
         if (walletId === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-          balance = await this.WalletConnectConnector.getBalance(address) ?? { value: new BN('0') }
+          balance = await this.WalletConnectConnector.getBalance(address)
         } else {
-          balance = await this.PhantomConnector.getBalance(address) ?? { value: new BN('0') }
+          balance = await this.PhantomConnector.getBalance(address)
         }
-        const formatted = `${balance.value} sol`
-        this.setBalance(formatted, chain.currency)
+        this.setBalance(balance.formatted, chain.currency)
       }
     }
   }
