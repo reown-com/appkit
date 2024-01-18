@@ -50,8 +50,9 @@ export const PresetsUtil = {
     8453: '7289c336-3981-4081-c5f4-efc26ac64a00',
     // Aurora
     1313161554: '3ff73439-a619-4894-9262-4470c773a100',
-    // Ronin (2020 and 2021)
+    // Ronin Mainnet
     2020: 'b8101fc0-9c19-4b6f-ec65-f6dfff106e00',
+    // Saigon Testnet (a.k.a. Ronin)
     2021: 'b8101fc0-9c19-4b6f-ec65-f6dfff106e00'
   } as Record<string, string>,
 
