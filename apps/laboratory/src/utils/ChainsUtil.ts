@@ -111,7 +111,7 @@ export const solana = {
 }
 
 export const solanaTestnet = {
-  chainId: '2',
+  chainId: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K',
   name: 'Solana Testnet',
   currency: 'SOL',
   explorerUrl: 'https://solscan.io',
@@ -119,7 +119,7 @@ export const solanaTestnet = {
 }
 
 export const solanaDevnet = {
-  chainId: '3',
+  chainId: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K',
   name: 'Solana Devnet',
   currency: 'SOL',
   explorerUrl: 'https://solscan.io',
