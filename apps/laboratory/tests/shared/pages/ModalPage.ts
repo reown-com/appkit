@@ -34,6 +34,13 @@ export class ModalPage {
     await this.page.getByTestId('copy-wc2-uri').click()
   }
 
+  async clickWalletDeeplink() {
+    await this.page.goto(this.url)
+    await this.connectButton.click()
+    await this.page.getByTestId('wallet-selector-react-wallet-v2').click()
+    await this.page.getByTestId('tab-desktop').click()
+  }
+
   async loginWithEmail(email: string) {
     await this.page.goto(this.url)
     // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text

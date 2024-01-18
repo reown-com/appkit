@@ -1,82 +1,67 @@
+/* eslint-disable init-declarations */
+import type { BrowserContext } from '@playwright/test'
 import { DEFAULT_SESSION_PARAMS } from './shared/constants'
-import { testMW } from './shared/fixtures/w3m-wallet-fixture'
+import { testM } from './shared/fixtures/w3m-fixture'
+import { WalletPage } from './shared/pages/WalletPage'
+import { WalletValidator } from './shared/validators/WalletValidator'
 
-testMW.beforeEach(
-  async ({ modalPage, walletPage, modalValidator, walletValidator, browserName }) => {
-    console.log('browserName', browserName)
-    // Webkit cannot use clipboard.
-    if (browserName === 'webkit') {
-      return
-    }
-    await modalPage.copyConnectUriToClipboard()
-    await walletPage.connect()
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    await modalValidator.expectConnected()
-    await walletValidator.expectConnected()
-  }
-)
+let walletPage: WalletPage | undefined
+let walletValidator: WalletValidator | undefined
+let context: BrowserContext | undefined
 
-testMW.afterEach(async ({ modalPage, modalValidator, walletValidator, browserName }) => {
-  // Webkit cannot use clipboard.
-  if (browserName === 'webkit') {
-    return
-  }
-  await modalPage.disconnect()
-  await modalValidator.expectDisconnected()
-  await walletValidator.expectDisconnected()
+testM.beforeEach(async ({ modalPage, modalValidator, context: ctx }) => {
+  context = ctx
+  await doActionAndWaitForNewPage(modalPage.clickWalletDeeplink())
+  await walletPage?.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+  await modalValidator.expectConnected()
+  await walletValidator?.expectConnected()
 })
 
-testMW(
-  'it should sign',
-  async ({ modalPage, walletPage, modalValidator, walletValidator, browserName }) => {
-    // Webkit cannot use clipboard.
-    if (browserName === 'webkit') {
-      testMW.skip()
-      return
-    }
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({})
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
-  }
-)
+testM.afterEach(async ({ modalPage, modalValidator }) => {
+  await modalPage.disconnect()
+  await modalValidator.expectDisconnected()
+  await walletValidator?.expectDisconnected()
+})
 
-testMW(
-  'it should reject sign',
-  async ({ modalPage, walletPage, modalValidator, walletValidator, browserName }) => {
-    // Webkit cannot use clipboard.
-    if (browserName === 'webkit') {
-      testMW.skip()
-      return
-    }
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({})
-    await walletPage.handleRequest({ accept: false })
-    await modalValidator.expectRejectedSign()
-  }
-)
+testM('it should sign', async ({ modalPage, modalValidator }) => {
+  await doActionAndWaitForNewPage(modalPage.sign())
+  await walletValidator?.expectReceivedSign({})
+  await walletPage?.handleRequest({ accept: true })
+  await modalValidator.expectAcceptedSign()
+})
 
-testMW(
-  'it should switch networks and sign',
-  async ({ modalPage, walletPage, modalValidator, walletValidator, browserName }) => {
-    // Webkit cannot use clipboard.
-    if (browserName === 'webkit') {
-      testMW.skip()
-      return
-    }
-    let targetChain = 'Polygon'
-    await modalPage.switchNetwork(targetChain)
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: targetChain })
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
+testM('it should reject sign', async ({ modalPage, modalValidator }) => {
+  await doActionAndWaitForNewPage(modalPage.sign())
+  await walletValidator?.expectReceivedSign({})
+  await walletPage?.handleRequest({ accept: false })
+  await modalValidator.expectRejectedSign()
+})
 
-    // Switch to Ethereum
-    targetChain = 'Ethereum'
-    await modalPage.switchNetwork(targetChain)
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: targetChain })
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
+testM('it should switch networks and sign', async ({ modalPage, modalValidator }) => {
+  let targetChain = 'Polygon'
+  await modalPage.switchNetwork(targetChain)
+  await doActionAndWaitForNewPage(modalPage.sign())
+  await walletValidator?.expectReceivedSign({ chainName: targetChain })
+  await walletPage?.handleRequest({ accept: true })
+  await modalValidator.expectAcceptedSign()
+
+  // Switch to Ethereum
+  targetChain = 'Ethereum'
+  await modalPage.switchNetwork(targetChain)
+  await doActionAndWaitForNewPage(modalPage.sign())
+  await walletValidator?.expectReceivedSign({ chainName: targetChain })
+  await walletPage?.handleRequest({ accept: true })
+  await modalValidator.expectAcceptedSign()
+})
+
+async function doActionAndWaitForNewPage(action: Promise<void>) {
+  if (!context) {
+    throw new Error('Browser Context is undefined')
   }
-)
+  const pagePromise = context.waitForEvent('page')
+  await action
+  const newPage = await pagePromise
+  await newPage.waitForLoadState()
+  walletPage = new WalletPage(newPage)
+  walletValidator = new WalletValidator(walletPage.page)
+}
