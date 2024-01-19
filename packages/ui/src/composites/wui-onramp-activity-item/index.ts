@@ -1,4 +1,4 @@
-import { html, LitElement, type PropertyValueMap } from 'lit'
+import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
