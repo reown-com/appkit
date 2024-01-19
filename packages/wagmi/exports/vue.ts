@@ -2,6 +2,7 @@ import { getWeb3Modal } from '@web3modal/scaffold-vue'
 import type { Web3ModalOptions } from '../src/client.js'
 import { Web3Modal } from '../src/client.js'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import { reconnect } from '@wagmi/core'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
@@ -16,6 +17,10 @@ export function createWeb3Modal(options: Web3ModalOptions) {
       _sdkVersion: `vue-wagmi-${ConstantsUtil.VERSION}`
     })
     getWeb3Modal(modal)
+  }
+
+  if (options.reconnect) {
+    reconnect(options.wagmiConfig)
   }
 
   return modal
