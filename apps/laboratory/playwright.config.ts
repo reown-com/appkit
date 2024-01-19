@@ -10,7 +10,7 @@ export default defineConfig<ModalFixture>({
 
   fullyParallel: true,
   retries: 0,
-  workers: 3,
+  workers: 2,
   reporter: [['list'], ['html']],
 
   expect: {
