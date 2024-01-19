@@ -69,6 +69,7 @@ export class W3mOnRampActivityView extends LitElement {
           purchaseCurrency=${ifDefined(fungibleInfo.symbol)}
           purchaseValue=${transfer.quantity.numeric}
           date=${date}
+          icon=${ifDefined(fungibleInfo.icon?.url)}
         ></wui-onramp-activity-item>
       `
     })

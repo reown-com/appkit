@@ -1,4 +1,4 @@
-import { html, LitElement } from 'lit'
+import { html, LitElement, type PropertyValueMap } from 'lit'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
@@ -24,13 +24,15 @@ export class WuiOnRampActivityItem extends LitElement {
 
   @property() public date = ''
 
-  @property() public completed = false
+  @property({ type: Boolean }) public completed = false
 
-  @property() public inProgress = false
+  @property({ type: Boolean }) public inProgress = false
 
-  @property() public failed = false
+  @property({ type: Boolean }) public failed = false
 
   @property() public onClick: (() => void) | null = null
+
+  @property() public icon = 'https://avatar.vercel.sh/andrew.svg?size=50&text=AG'
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -56,7 +58,7 @@ export class WuiOnRampActivityItem extends LitElement {
   // -- Private ------------------------------------------- //
   private imageTemplate() {
     return html`<wui-flex class="purchase-image-container">
-      <wui-image src="https://avatar.vercel.sh/andrew.svg?size=50&text=AG"></wui-image>
+      <wui-image src=${this.icon}></wui-image>
       ${this.completed ? null : this.boughtIconTemplate()}
     </wui-flex>`
   }
