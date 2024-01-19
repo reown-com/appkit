@@ -12,11 +12,12 @@
     "packages/wallet",
     "packages/siwe",
     "packages/wagmi",
+    "packages/wagmi1",
     "packages/ethers",
     "packages/ethers5",
     "apps/*",
     "examples/*"
   ],
-  "version": "3.6.0-1f872ccc",
+  "version": "4.0.0-alpha.0",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
