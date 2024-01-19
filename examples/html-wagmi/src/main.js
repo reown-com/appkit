@@ -21,7 +21,13 @@ const wagmiConfig = defaultWagmiConfig({
 })
 
 // 3. Create modal
-const modal = createWeb3Modal({ wagmiConfig, projectId, chains, themeMode: 'light' })
+const modal = createWeb3Modal({
+  wagmiConfig,
+  projectId,
+  chains,
+  themeMode: 'light',
+  reconnect: true
+})
 
 // 4. Trigger modal programaticaly
 const openConnectModalBtn = document.getElementById('open-connect-modal')

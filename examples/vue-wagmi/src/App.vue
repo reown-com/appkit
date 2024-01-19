@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { arbitrum, mainnet } from '@wagmi/core/chains'
+import { arbitrum, mainnet, type Chain } from 'viem/chains'
 import {
   createWeb3Modal,
   defaultWagmiConfig,
@@ -16,7 +16,7 @@ if (!projectId) {
 }
 
 // 2. Create wagmiConfig
-const chains = [mainnet, arbitrum]
+const chains = [mainnet, arbitrum] as [Chain, ...Chain[]]
 const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
@@ -34,6 +34,7 @@ createWeb3Modal({
   wagmiConfig,
   projectId,
   chains,
+  reconnect: true,
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00BB7F',
