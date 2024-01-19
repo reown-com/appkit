@@ -26,7 +26,6 @@ testMWSiwe(
     // Webkit cannot use clipboard.
     if (browserName === 'webkit') {
       testMWSiwe.skip()
-
       return
     }
     await modalPage.promptSiwe()
@@ -45,7 +44,6 @@ testMWSiwe(
     // Webkit cannot use clipboard.
     if (browserName === 'webkit') {
       testMWSiwe.skip()
-
       return
     }
     await modalPage.promptSiwe()

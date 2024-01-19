@@ -3,6 +3,7 @@ import { testMW } from './shared/fixtures/w3m-wallet-fixture'
 
 testMW.beforeEach(
   async ({ modalPage, walletPage, modalValidator, walletValidator, browserName }) => {
+    console.log('browserName', browserName)
     // Webkit cannot use clipboard.
     if (browserName === 'webkit') {
       return
@@ -31,7 +32,6 @@ testMW(
     // Webkit cannot use clipboard.
     if (browserName === 'webkit') {
       testMW.skip()
-
       return
     }
     await modalPage.sign()
@@ -47,7 +47,6 @@ testMW(
     // Webkit cannot use clipboard.
     if (browserName === 'webkit') {
       testMW.skip()
-
       return
     }
     await modalPage.sign()
@@ -63,7 +62,6 @@ testMW(
     // Webkit cannot use clipboard.
     if (browserName === 'webkit') {
       testMW.skip()
-
       return
     }
     let targetChain = 'Polygon'

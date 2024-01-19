@@ -6,8 +6,12 @@ import {
   useWeb3ModalState,
   useWeb3ModalTheme
 } from '@web3modal/wagmi/react'
-import { WagmiConfig } from 'wagmi'
+import { WagmiProvider } from 'wagmi'
 import { arbitrum, mainnet } from 'wagmi/chains'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+// 0. Setup queryClient for WAGMIv2
+const queryClient = new QueryClient()
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -21,7 +25,11 @@ const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,
   metadata: {
-    name: 'Web3Modal React Example'
+    name: 'Web3Modal React Example',
+    description: 'Web3Modal React Example',
+    url: '',
+    icons: [],
+    verifyUrl: ''
   }
 })
 
@@ -45,20 +53,22 @@ export default function App() {
   const events = useWeb3ModalEvents()
 
   return (
-    <WagmiConfig config={wagmiConfig}>
-      <w3m-button />
-      <w3m-network-button />
-      <w3m-connect-button />
-      <w3m-account-button />
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <w3m-button />
+        <w3m-network-button />
+        <w3m-connect-button />
+        <w3m-account-button />
 
-      <button onClick={() => modal.open()}>Connect Wallet</button>
-      <button onClick={() => modal.open({ view: 'Networks' })}>Choose Network</button>
-      <button onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}>
-        Toggle Theme Mode
-      </button>
-      <pre>{JSON.stringify(state, null, 2)}</pre>
-      <pre>{JSON.stringify({ themeMode, themeVariables }, null, 2)}</pre>
-      <pre>{JSON.stringify(events, null, 2)}</pre>
-    </WagmiConfig>
+        <button onClick={() => modal.open()}>Connect Wallet</button>
+        <button onClick={() => modal.open({ view: 'Networks' })}>Choose Network</button>
+        <button onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}>
+          Toggle Theme Mode
+        </button>
+        <pre>{JSON.stringify(state, null, 2)}</pre>
+        <pre>{JSON.stringify({ themeMode, themeVariables }, null, 2)}</pre>
+        <pre>{JSON.stringify(events, null, 2)}</pre>
+      </QueryClientProvider>
+    </WagmiProvider>
   )
 }
