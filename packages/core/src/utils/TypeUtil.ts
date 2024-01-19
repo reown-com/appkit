@@ -106,6 +106,10 @@ export interface ApiGetWalletsResponse {
   count: number
 }
 
+export interface ApiGetAnalyticsFlagResponse {
+  isAnalyticsEnabled: boolean
+}
+
 export type ThemeMode = 'dark' | 'light'
 
 export interface ThemeVariables {
