@@ -56,6 +56,7 @@ export class W3mOnRampProvidersView extends LitElement {
           label=${provider.label}
           name=${provider.name}
           feeRange=${provider.feeRange}
+          .disabled=${!provider.url}
           @click=${() => {
             this.onClickProvider(provider)
           }}

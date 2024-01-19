@@ -4,7 +4,9 @@ import type {
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,
   BlockchainApiIdentityRequest,
-  BlockchainApiIdentityResponse
+  BlockchainApiIdentityResponse,
+  BlockchainApiOnrampRequest,
+  BlockchainApiOnrampResponse
 } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
 
@@ -32,6 +34,30 @@ export const BlockchainApiController = {
         onramp ? `&onramp=${onramp}` : ''
       }`,
       params: queryParams
+    })
+  },
+
+  fetchOnrampUrl({
+    destinationWallets,
+    partnerUserId,
+    defaultNetwork,
+    presetCryptoAmount,
+    presetFiatAmount,
+    defaultExperience,
+    handlingRequestedUrls,
+    projectId
+  }: BlockchainApiOnrampRequest & { projectId: string }) {
+    return api.post<BlockchainApiOnrampResponse>({
+      path: `/v1/generators/onrampurl?projectID=${projectId}`,
+      body: {
+        presetCryptoAmount,
+        presetFiatAmount,
+        defaultExperience,
+        handlingRequestedUrls,
+        destinationWallets,
+        partnerUserId,
+        defaultNetwork
+      }
     })
   }
 }

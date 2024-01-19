@@ -149,6 +149,25 @@ export interface BlockchainApiTransactionsResponse {
   next: string | null
 }
 
+export interface BlockchainApiOnrampRequest {
+  destinationWallets: {
+    address: `0x${string}`
+    blockchains?: string[]
+    assets?: string[]
+    supportedNetworks?: string[]
+  }
+  partnerUserId: string
+  defaultNetwork?: string
+  presetCryptoAmount?: number
+  presetFiatAmount?: number
+  defaultExperience?: 'send' | 'buy'
+  handlingRequestedUrls?: boolean
+}
+
+export interface BlockchainApiOnrampResponse {
+  url: string
+}
+
 export interface CoinbaseApiTransactionsRequest {
   pageSize: number
   pageKey: string
