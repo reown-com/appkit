@@ -32,5 +32,4 @@ export {
 } from '@web3modal/scaffold-react'
 
 // -- Universal Exports -------------------------------------------------------
-export { EIP6963Connector } from '../src/connectors/EIP6963Connector.js'
 export { defaultWagmiConfig } from '../src/utils/defaultWagmiReactConfig.js'

@@ -1,1 +1,1 @@
-export const WALLET_CHOICE_KEY = 'wagmi.wallet'
+export const WAGMI_STORE_KEY = 'wagmi.store'
