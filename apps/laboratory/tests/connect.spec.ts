@@ -5,56 +5,59 @@ import { testM } from './shared/fixtures/w3m-fixture'
 import { WalletPage } from './shared/pages/WalletPage'
 import { WalletValidator } from './shared/validators/WalletValidator'
 
-let walletPage: WalletPage | undefined
-let walletValidator: WalletValidator | undefined
-let context: BrowserContext | undefined
+let walletPage: WalletPage
+let walletValidator: WalletValidator
 
-testM.beforeEach(async ({ modalPage, modalValidator, context: ctx }) => {
-  context = ctx
-  await doActionAndWaitForNewPage(modalPage.clickWalletDeeplink())
-  await walletPage?.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+testM.beforeEach(async ({ modalPage, modalValidator, context }) => {
+  const page = await doActionAndWaitForNewPage(modalPage.clickWalletDeeplink(), context)
+  walletPage = new WalletPage(page)
+  walletValidator = new WalletValidator(walletPage.page)
+  await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
   await modalValidator.expectConnected()
-  await walletValidator?.expectConnected()
+  await walletValidator.expectConnected()
+  // Manually remove deeplink choice to avoid opening new page on every request
+  await modalPage.page.evaluate(`window.localStorage.setItem('WALLETCONNECT_DEEPLINK_CHOICE', '')`)
 })
 
 testM.afterEach(async ({ modalPage, modalValidator }) => {
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
-  await walletValidator?.expectDisconnected()
+  await walletValidator.expectDisconnected()
 })
 
 testM('it should sign', async ({ modalPage, modalValidator }) => {
-  await doActionAndWaitForNewPage(modalPage.sign())
-  await walletValidator?.expectReceivedSign({})
-  await walletPage?.handleRequest({ accept: true })
+  modalPage.sign()
+  await walletValidator.expectReceivedSign({})
+  await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAcceptedSign()
 })
 
 testM('it should reject sign', async ({ modalPage, modalValidator }) => {
-  await doActionAndWaitForNewPage(modalPage.sign())
-  await walletValidator?.expectReceivedSign({})
-  await walletPage?.handleRequest({ accept: false })
+  modalPage.sign()
+  await walletValidator.expectReceivedSign({})
+  await walletPage.handleRequest({ accept: false })
   await modalValidator.expectRejectedSign()
 })
 
 testM('it should switch networks and sign', async ({ modalPage, modalValidator }) => {
   let targetChain = 'Polygon'
   await modalPage.switchNetwork(targetChain)
-  await doActionAndWaitForNewPage(modalPage.sign())
-  await walletValidator?.expectReceivedSign({ chainName: targetChain })
-  await walletPage?.handleRequest({ accept: true })
+  await modalValidator.expectNetwork(targetChain)
+  modalPage.sign()
+  await walletValidator.expectReceivedSign({ chainName: targetChain })
+  await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAcceptedSign()
-
   // Switch to Ethereum
   targetChain = 'Ethereum'
   await modalPage.switchNetwork(targetChain)
-  await doActionAndWaitForNewPage(modalPage.sign())
-  await walletValidator?.expectReceivedSign({ chainName: targetChain })
-  await walletPage?.handleRequest({ accept: true })
+  await modalValidator.expectNetwork(targetChain)
+  modalPage.sign()
+  await walletValidator.expectReceivedSign({ chainName: targetChain })
+  await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAcceptedSign()
 })
 
-async function doActionAndWaitForNewPage(action: Promise<void>) {
+async function doActionAndWaitForNewPage(action: Promise<void>, context?: BrowserContext) {
   if (!context) {
     throw new Error('Browser Context is undefined')
   }
@@ -62,6 +65,6 @@ async function doActionAndWaitForNewPage(action: Promise<void>) {
   await action
   const newPage = await pagePromise
   await newPage.waitForLoadState()
-  walletPage = new WalletPage(newPage)
-  walletValidator = new WalletValidator(walletPage.page)
+
+  return newPage
 }

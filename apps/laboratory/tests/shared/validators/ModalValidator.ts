@@ -36,4 +36,10 @@ export class ModalValidator {
     // We use Chakra Toast and it's not quite straightforward to set the `data-testid` attribute on the toast element.
     await expect(this.page.getByText(ConstantsUtil.SigningFailedToastTitle)).toBeVisible()
   }
+
+  async expectNetwork(targetChain: string) {
+    await expect(this.page.getByTestId('network-button')).toContainText(targetChain, {
+      timeout: 10000
+    })
+  }
 }

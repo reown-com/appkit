@@ -45,6 +45,7 @@ export class W3mNetworkButton extends LitElement {
         .disabled=${Boolean(this.disabled || this.loading)}
         imageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
         @click=${this.onClick.bind(this)}
+        data-testId="network-button"
       >
         ${this.network?.name ?? (this.connected ? 'Unknown Network' : 'Select Network')}
       </wui-network-button>
