@@ -19,10 +19,6 @@ export function createWeb3Modal(options: Web3ModalOptions) {
     getWeb3Modal(modal)
   }
 
-  if (options.reconnect) {
-    reconnect(options.wagmiConfig)
-  }
-
   return modal
 }
 

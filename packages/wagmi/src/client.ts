@@ -12,7 +12,8 @@ import {
   switchChain,
   watchAccount,
   type Config,
-  type GetAccountReturnType
+  type GetAccountReturnType,
+  reconnect
 } from '@wagmi/core'
 import type {
   CaipAddress,
@@ -190,6 +191,10 @@ export class Web3Modal extends Web3ModalScaffold {
     this.syncConnectors(wagmiConfig)
     this.syncEmailConnector(wagmiConfig)
     this.listenEmailConnector(wagmiConfig)
+
+    if (options.reconnect) {
+      reconnect(wagmiConfig)
+    }
 
     watchAccount(this.wagmiConfig, {
       onChange: accountData => this.syncAccount({ ...accountData, config: wagmiConfig })
