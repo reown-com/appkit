@@ -4,11 +4,11 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 
 export function WagmiSignMessageTest() {
   const toast = useToast()
-  const { signMessageAsync } = useSignMessage({ message: 'Hello Web3Modal!' })
+  const { signMessageAsync } = useSignMessage()
 
   async function onSignMessage() {
     try {
-      const signature = await signMessageAsync()
+      const signature = await signMessageAsync({ message: 'Hello Web3Modal!' })
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
         description: signature,
