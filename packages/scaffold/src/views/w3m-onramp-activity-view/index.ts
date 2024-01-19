@@ -20,6 +20,7 @@ export class W3mOnRampActivityView extends LitElement {
 
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
+  private refetchTimeout: NodeJS.Timeout | undefined = undefined
 
   // -- State & Properties -------------------------------- //
   @state() protected selectedOnRampProvider = OnRampController.state.selectedProvider
@@ -34,7 +35,8 @@ export class W3mOnRampActivityView extends LitElement {
       ...[
         OnRampController.subscribeKey('selectedProvider', val => {
           this.selectedOnRampProvider = val
-        })
+        }),
+        () => clearTimeout(this.refetchTimeout)
       ]
     )
     this.fetchTransactions()
@@ -104,6 +106,33 @@ export class W3mOnRampActivityView extends LitElement {
 
     this.loading = false
     this.coinbaseTransactions = coinbaseResponse.data || []
+    this.refetchLoadingTransactions()
+  }
+
+  private refetchLoadingTransactions() {
+    const loadingTransactions = this.coinbaseTransactions.filter(
+      transaction => transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
+    )
+
+    if (loadingTransactions.length === 0) {
+      clearTimeout(this.refetchTimeout)
+
+      return
+    }
+
+    // Wait 2 seconds before refetching
+    this.refetchTimeout = setTimeout(async () => {
+      const address = AccountController.state.address
+      const projectId = OptionsController.state.projectId
+      const coinbaseResponse = await BlockchainApiController.fetchTransactions({
+        account: address as `0x${string}`,
+        onramp: 'coinbase',
+        projectId
+      })
+
+      this.coinbaseTransactions = coinbaseResponse.data || []
+      this.refetchLoadingTransactions()
+    }, 2000)
   }
 
   private templateLoading() {
