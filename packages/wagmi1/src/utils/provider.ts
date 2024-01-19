@@ -1,5 +1,4 @@
-import { http } from 'viem'
-import type { Chain } from 'viem/chains'
+import type { Chain, ChainProviderFn } from '@wagmi/core'
 import { CoreHelperUtil } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 
@@ -12,14 +11,27 @@ interface Options {
 }
 
 // -- Provider -----------------------------------------------------------------
-export function walletConnectProvider({ projectId }: Options) {
-  return function provider(chain: Chain) {
+export function walletConnectProvider<C extends Chain = Chain>({
+  projectId
+}: Options): ChainProviderFn<C> {
+  return function provider(chain) {
     if (!PresetsUtil.WalletConnectRpcChainIds.includes(chain.id)) {
       return null
     }
 
     const baseHttpUrl = `${RPC_URL}/v1/?chainId=${ConstantsUtil.EIP155}:${chain.id}&projectId=${projectId}`
 
-    return http(baseHttpUrl)
+    return {
+      chain: {
+        ...chain,
+        rpcUrls: {
+          ...chain.rpcUrls,
+          default: { http: [baseHttpUrl] }
+        }
+      } as C,
+      rpcUrls: {
+        http: [baseHttpUrl]
+      }
+    }
   }
 }
