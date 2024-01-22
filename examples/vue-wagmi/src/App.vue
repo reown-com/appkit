@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { arbitrum, mainnet } from 'viem/chains'
-import type { Chain } from 'viem/chains'
 import {
   createWeb3Modal,
   defaultWagmiConfig,
@@ -17,7 +16,7 @@ if (!projectId) {
 }
 
 // 2. Create wagmiConfig
-const chains = [mainnet, arbitrum] as [Chain, ...Chain[]]
+const chains = [mainnet, arbitrum]
 const wagmiConfig = defaultWagmiConfig({
   chains,
   projectId,

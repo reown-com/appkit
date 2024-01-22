@@ -1,7 +1,7 @@
 import '@web3modal/polyfills'
 
 import type { Config, CreateConfigParameters, CreateConnectorFn } from '@wagmi/core'
-import { type Chain } from 'viem/chains'
+import type { Chain } from 'viem/chains'
 import { createConfig } from '@wagmi/core'
 
 import { createClient, http } from 'viem'
@@ -14,7 +14,7 @@ export interface ConfigOptions
     'client' | 'chains' | 'connectors' | 'multiInjectedProviderDiscovery'
   > {
   projectId: string
-  chains: [Chain, ...Chain[]]
+  chains: Chain[]
   metadata: {
     name: string
     description: string
@@ -42,6 +42,10 @@ export function defaultWagmiConfig({
 }: ConfigOptions): Config {
   const connectors: CreateConnectorFn[] = []
 
+  if (!chains.length) {
+    throw new Error('No chains provided')
+  }
+
   // Enabled by default
   if (enableWalletConnect !== false) {
     connectors.push(walletConnect({ projectId, metadata, showQrModal: false }))
@@ -68,7 +72,7 @@ export function defaultWagmiConfig({
   const baseConfig = {
     ...wagmiConfig,
     client: ({ chain }: { chain: Chain }) => createClient({ chain, transport: http() }),
-    chains,
+    chains: chains as [Chain, ...Chain[]],
     connectors,
     multiInjectedProviderDiscovery: enableEIP6963 !== false
   } as CreateConfigParameters
