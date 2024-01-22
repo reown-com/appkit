@@ -21,6 +21,7 @@ export class W3mOnRampActivityView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
   private refetchTimeout: NodeJS.Timeout | undefined = undefined
+  private abortController: AbortController | undefined = undefined
 
   // -- State & Properties -------------------------------- //
   @state() protected selectedOnRampProvider = OnRampController.state.selectedProvider
@@ -36,7 +37,10 @@ export class W3mOnRampActivityView extends LitElement {
         OnRampController.subscribeKey('selectedProvider', val => {
           this.selectedOnRampProvider = val
         }),
-        () => clearTimeout(this.refetchTimeout)
+        () => {
+          this.abortController?.abort?.()
+          clearTimeout(this.refetchTimeout)
+        }
       ]
     )
     this.fetchTransactions()
@@ -120,6 +124,7 @@ export class W3mOnRampActivityView extends LitElement {
       return
     }
 
+    this.abortController = new AbortController()
     // Wait 2 seconds before refetching
     this.refetchTimeout = setTimeout(async () => {
       const address = AccountController.state.address
@@ -127,7 +132,8 @@ export class W3mOnRampActivityView extends LitElement {
       const coinbaseResponse = await BlockchainApiController.fetchTransactions({
         account: address as `0x${string}`,
         onramp: 'coinbase',
-        projectId
+        projectId,
+        signal: this.abortController?.signal
       })
 
       this.coinbaseTransactions = coinbaseResponse.data || []
