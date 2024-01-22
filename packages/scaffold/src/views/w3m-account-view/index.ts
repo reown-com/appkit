@@ -157,6 +157,7 @@ export class W3mAccountView extends LitElement {
   // -- Private ------------------------------------------- //
   private onrampTemplate() {
     const { enableOnramp } = OptionsController.state
+
     if (!enableOnramp) {
       return null
     }
