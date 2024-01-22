@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - V3
+      - V4
 
 concurrency:
   # Support push/pr as event types with different behaviors each:
