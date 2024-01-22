@@ -11,7 +11,7 @@ import {
   ConnectionController,
   SnackController,
   ConstantsUtil,
-  OnRampController
+  OptionsController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -156,8 +156,8 @@ export class W3mAccountView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onrampTemplate() {
-    const { enabled } = OnRampController.state
-    if (!enabled) {
+    const { enableOnramp } = OptionsController.state
+    if (!enableOnramp) {
       return null
     }
 

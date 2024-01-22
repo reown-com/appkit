@@ -16,7 +16,6 @@ export interface OnRampControllerState {
   providers: OnRampProvider[]
   selectedProvider: OnRampProvider | null
   error: string | null
-  enabled: boolean
 }
 
 type StateKey = keyof OnRampControllerState
@@ -25,8 +24,7 @@ type StateKey = keyof OnRampControllerState
 const state = proxy<OnRampControllerState>({
   providers: ONRAMP_PROVIDERS as OnRampProvider[],
   selectedProvider: null,
-  error: null,
-  enabled: false
+  error: null
 })
 
 // -- Controller ---------------------------------------- //
@@ -39,9 +37,5 @@ export const OnRampController = {
 
   setSelectedProvider(provider: OnRampProvider | null) {
     state.selectedProvider = provider
-  },
-
-  setEnabled(enabled: boolean) {
-    state.enabled = enabled
   }
 }
