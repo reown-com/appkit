@@ -15,7 +15,7 @@ export const PresetsUtil = {
     // Ethereum
     1: '692ed6ba-e569-459a-556a-776476829e00',
     // Arbitrum
-    42161: '05285431-aba4-4f99-e2ba-0f316edac500',
+    42161: '3bff954d-5cb0-47a0-9a23-d20192e74600',
     // Avalanche
     43114: '30c46e53-e989-45fb-4549-be3bd4eb3b00',
     // Binance Smart Chain
