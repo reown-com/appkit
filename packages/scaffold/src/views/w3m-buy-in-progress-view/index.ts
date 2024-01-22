@@ -73,10 +73,12 @@ export class W3mBuyInProgressView extends LitElement {
     if (this.error) {
       label = 'Buy failed'
     } else if (this.selectedOnRampProvider) {
-      label = `Continue ${this.selectedOnRampProvider?.label} window`
+      label = `Continue in ${this.selectedOnRampProvider?.label} window`
     }
 
-    const subLabel = this.error ? 'Please try again' : `We'll notify you once your Buy is proceed`
+    const subLabel = this.error
+      ? 'Please try again'
+      : `We’ll provide a confirmation once your Buy is processed`
 
     return html`
       <wui-flex

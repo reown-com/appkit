@@ -2,7 +2,7 @@ const SECURE_SITE = 'https://secure.web3modal.com'
 
 export const ONRAMP_PROVIDERS = [
   {
-    label: 'Coinbase',
+    label: 'Coinbase Pay',
     name: 'coinbase',
     feeRange: '1-2%',
     url: ''
