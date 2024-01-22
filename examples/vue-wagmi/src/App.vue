@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { arbitrum, mainnet, type Chain } from 'viem/chains'
+import { arbitrum, mainnet } from 'viem/chains'
+import type { Chain } from 'viem/chains'
 import {
   createWeb3Modal,
   defaultWagmiConfig,
