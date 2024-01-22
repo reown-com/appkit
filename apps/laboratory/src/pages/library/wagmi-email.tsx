@@ -20,7 +20,6 @@ export const wagmiConfig = defaultWagmiConfig({
 const modal = createWeb3Modal({
   wagmiConfig,
   projectId: ConstantsUtil.ProjectId,
-  chains: WagmiConstantsUtil.chains,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
