@@ -39,7 +39,7 @@ export function emailConnector(parameters: EmailParameters) {
     getChainId(): Promise<number>
     getWalletClient(): Promise<WalletClient>
     isAuthorized(): Promise<boolean>
-    chains: readonly [Chain, ...Chain[]]
+    chains: readonly Chain[]
     provider?: W3mFrameProvider
   }
 

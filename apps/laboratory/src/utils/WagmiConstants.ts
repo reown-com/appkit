@@ -12,7 +12,8 @@ import {
   zkSync,
   zora,
   sepolia
-} from 'wagmi/chains'
+} from 'viem/chains'
+import type { Chain } from 'viem/chains'
 
 export const WagmiConstantsUtil = {
   chains: [
@@ -29,5 +30,5 @@ export const WagmiConstantsUtil = {
     celo,
     aurora,
     sepolia
-  ]
+  ] as Chain[]
 }

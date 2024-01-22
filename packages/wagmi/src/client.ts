@@ -42,7 +42,7 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wagmiConfig: Config<any, any>
   siweConfig?: Web3ModalSIWEClient
-  chains: [Chain, ...Chain[]]
+  chains: Chain[]
   defaultChain?: Chain
   chainImages?: Record<number, string>
   connectorImages?: Record<string, string>
@@ -81,6 +81,10 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (!w3mOptions.projectId) {
       throw new Error('web3modal:constructor - projectId is undefined')
+    }
+
+    if (!chains.length) {
+      throw new Error('web3modal:constructor - chains is empty')
     }
 
     const networkControllerClient: NetworkControllerClient = {
