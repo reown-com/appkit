@@ -10,7 +10,7 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 const queryClient = new QueryClient()
 
 export const wagmiConfig = defaultWagmiConfig({
-  chains: [],
+  chains: WagmiConstantsUtil.chains,
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
   ssr: true
@@ -19,7 +19,7 @@ export const wagmiConfig = defaultWagmiConfig({
 const modal = createWeb3Modal({
   wagmiConfig,
   projectId: ConstantsUtil.ProjectId,
-  chains: [],
+  chains: WagmiConstantsUtil.chains,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',
