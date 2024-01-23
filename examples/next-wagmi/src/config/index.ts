@@ -4,8 +4,12 @@ import { mainnet, sepolia } from 'wagmi/chains'
 
 console.log('defaultWagmiConfig', typeof defaultWagmiConfig)
 
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
+
+if (!projectId) throw new Error('Project ID is not defined')
+
 export const config = defaultWagmiConfig({
-  projectId: 'bd4997ce3ede37c95770ba10a3804dad',
+  projectId,
   chains: [mainnet, sepolia],
   metadata: {
     name: 'My App',

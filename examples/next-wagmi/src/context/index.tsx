@@ -1,6 +1,6 @@
 'use client'
 
-import { config } from '@/config'
+import { config, projectId } from '@/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createWeb3Modal } from '@web3modal/wagmi/react'
 import React, { ReactNode } from 'react'
@@ -8,9 +8,11 @@ import { State, WagmiProvider } from 'wagmi'
 
 const queryClient = new QueryClient()
 
+if (!projectId) throw new Error('Project ID is not defined')
+
 createWeb3Modal({
   wagmiConfig: config,
-  projectId: 'bd4997ce3ede37c95770ba10a3804dad'
+  projectId
 })
 
 function ContextProvider({
