@@ -1,32 +1,28 @@
 import '@web3modal/polyfills'
 
-import type { Config, CreateConfigParameters, CreateConnectorFn } from '@wagmi/core'
-import { type Chain } from 'viem/chains'
-import { createConfig } from '@wagmi/core'
-
-import { createClient, http } from 'viem'
+import type { CreateConfigParameters, CreateConnectorFn } from '@wagmi/core'
+import { createConfig, http } from '@wagmi/core'
 import { coinbaseWallet, walletConnect, injected } from '@wagmi/connectors'
+
+import { createClient } from 'viem'
+
 import { emailConnector } from '../connectors/EmailConnector.js'
 
 export interface ConfigOptions
-  extends Omit<
-    CreateConfigParameters,
-    'client' | 'chains' | 'connectors' | 'multiInjectedProviderDiscovery'
-  > {
+  extends Omit<CreateConfigParameters, 'client' | 'connectors' | 'multiInjectedProviderDiscovery'> {
   projectId: string
-  chains: [Chain, ...Chain[]]
-  metadata: {
-    name: string
-    description: string
-    url: string
-    icons: string[]
-    verifyUrl: string
-  }
   enableInjected?: boolean
   enableEIP6963?: boolean
   enableCoinbase?: boolean
   enableEmail?: boolean
   enableWalletConnect?: boolean
+  metadata: {
+    name: string
+    description: string
+    url: string
+    icons: string[]
+    verifyUrl?: string
+  }
 }
 
 export function defaultWagmiConfig({
@@ -39,7 +35,7 @@ export function defaultWagmiConfig({
   enableWalletConnect,
   enableEIP6963,
   ...wagmiConfig
-}: ConfigOptions): Config {
+}: ConfigOptions) {
   const connectors: CreateConnectorFn[] = []
 
   // Enabled by default
@@ -67,10 +63,12 @@ export function defaultWagmiConfig({
 
   const baseConfig = {
     ...wagmiConfig,
-    client: ({ chain }: { chain: Chain }) => createClient({ chain, transport: http() }),
     chains,
     connectors,
-    multiInjectedProviderDiscovery: enableEIP6963 !== false
+    multiInjectedProviderDiscovery: enableEIP6963 !== false,
+    client({ chain }) {
+      return createClient({ chain, transport: http() })
+    }
   } as CreateConfigParameters
 
   return createConfig(baseConfig)

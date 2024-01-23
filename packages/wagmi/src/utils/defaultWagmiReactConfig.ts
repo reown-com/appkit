@@ -1,33 +1,13 @@
 import '@web3modal/polyfills'
 
-import type { Config, CreateConfigParameters, CreateConnectorFn } from '@wagmi/core'
-import { type Chain } from 'viem/chains'
-import { createConfig } from '@wagmi/core'
+import type { CreateConfigParameters, CreateConnectorFn } from 'wagmi'
+import { createConfig, http } from 'wagmi'
+import { coinbaseWallet, walletConnect, injected } from 'wagmi/connectors'
 
-import { createClient, http } from 'viem'
-import { coinbaseWallet, walletConnect, injected } from '@wagmi/connectors'
+import { createClient } from 'viem'
+
 import { emailConnector } from '../connectors/EmailConnector.js'
-
-export interface ConfigOptions
-  extends Omit<
-    CreateConfigParameters,
-    'client' | 'chains' | 'connectors' | 'multiInjectedProviderDiscovery'
-  > {
-  projectId: string
-  chains: [Chain, ...Chain[]]
-  metadata: {
-    name: string
-    description: string
-    url: string
-    icons: string[]
-    verifyUrl: string
-  }
-  enableInjected?: boolean
-  enableEIP6963?: boolean
-  enableCoinbase?: boolean
-  enableEmail?: boolean
-  enableWalletConnect?: boolean
-}
+import type { ConfigOptions } from './defaultWagmiCoreConfig.js'
 
 export function defaultWagmiConfig({
   projectId,
@@ -39,7 +19,7 @@ export function defaultWagmiConfig({
   enableEmail,
   enableEIP6963,
   ...wagmiConfig
-}: ConfigOptions): Config {
+}: ConfigOptions) {
   const connectors: CreateConnectorFn[] = []
 
   // Enabled by default
@@ -60,13 +40,15 @@ export function defaultWagmiConfig({
     connectors.push(emailConnector({ chains, options: { projectId } }))
   }
 
-  const baseConfig = {
+  const config = {
     ...wagmiConfig,
-    client: ({ chain }: { chain: Chain }) => createClient({ chain, transport: http() }),
     chains,
     connectors,
-    multiInjectedProviderDiscovery: enableEIP6963 !== false
+    multiInjectedProviderDiscovery: enableEIP6963 !== false,
+    client({ chain }) {
+      return createClient({ chain, transport: http() })
+    }
   } as CreateConfigParameters
 
-  return createConfig(baseConfig)
+  return createConfig(config)
 }

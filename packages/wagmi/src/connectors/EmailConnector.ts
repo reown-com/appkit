@@ -9,6 +9,7 @@ import {
   createWalletClient,
   custom
 } from 'viem'
+import type { CreateConfigParameters } from '@wagmi/core'
 
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 
@@ -22,7 +23,7 @@ interface ConnectOptions {
 }
 
 export type EmailParameters = {
-  chains?: Chain[]
+  chains?: CreateConfigParameters['chains']
   options: W3mFrameProviderOptions
 }
 
