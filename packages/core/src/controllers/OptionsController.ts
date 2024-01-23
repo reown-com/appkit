@@ -5,6 +5,7 @@ import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../u
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
   projectId: ProjectId
+  allWallets?: boolean | 'onlyMobile'
   featuredWalletIds?: string[]
   includeWalletIds?: string[]
   excludeWalletIds?: string[]
@@ -37,6 +38,10 @@ export const OptionsController = {
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
     state.projectId = projectId
+  },
+
+  setAllWallets(allWallets: OptionsControllerState['allWallets']) {
+    state.allWallets = allWallets
   },
 
   setIncludeWalletIds(includeWalletIds: OptionsControllerState['includeWalletIds']) {
