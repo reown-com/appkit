@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "@tanstack/react-query": "5.14.1",
-    "@web3modal/wagmi": "4.0.0-d610da8e"
+    "@web3modal/wagmi": "4.0.0-d610da8e",
+    "viem": "2.5.0",
+    "wagmi": "2.5.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "4.2.1"
