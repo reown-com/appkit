@@ -3,8 +3,8 @@ import { W3mEmailOtpWidget } from '../../utils/w3m-email-otp-widget/index.js'
 import type { OnOtpSubmitFn, OnOtpResendFn } from '../../utils/w3m-email-otp-widget/index.js'
 import { EventsController, ConnectionController, ModalController } from '@web3modal/core'
 
-@customElement('w3m-email-verify-otp-view')
-export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
+@customElement('w3m-update-email-primary-otp-view')
+export class W3mUpdateEmailPrimaryOtpView extends W3mEmailOtpWidget {
   public constructor() {
     super()
   }
@@ -39,6 +39,6 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-email-verify-otp-view': W3mEmailVerifyOtpView
+    'w3m-update-email-primary-otp-view': W3mUpdateEmailPrimaryOtpView
   }
 }

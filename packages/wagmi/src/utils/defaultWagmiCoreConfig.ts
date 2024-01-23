@@ -1,32 +1,26 @@
 import '@web3modal/polyfills'
 
-import type { Config, CreateConfigParameters, CreateConnectorFn } from '@wagmi/core'
-import { type Chain } from 'viem/chains'
-import { createConfig } from '@wagmi/core'
-
-import { createClient, http } from 'viem'
+import type { CreateConfigParameters, CreateConnectorFn } from '@wagmi/core'
+import { createConfig, http } from '@wagmi/core'
 import { coinbaseWallet, walletConnect, injected } from '@wagmi/connectors'
+
 import { emailConnector } from '../connectors/EmailConnector.js'
 
-export interface ConfigOptions
-  extends Omit<
-    CreateConfigParameters,
-    'client' | 'chains' | 'connectors' | 'multiInjectedProviderDiscovery'
-  > {
+export interface ConfigOptions {
+  chains: CreateConfigParameters['chains']
   projectId: string
-  chains: [Chain, ...Chain[]]
-  metadata: {
-    name: string
-    description: string
-    url: string
-    icons: string[]
-    verifyUrl: string
-  }
   enableInjected?: boolean
   enableEIP6963?: boolean
   enableCoinbase?: boolean
   enableEmail?: boolean
   enableWalletConnect?: boolean
+  metadata: {
+    name: string
+    description: string
+    url: string
+    icons: string[]
+    verifyUrl?: string
+  }
 }
 
 export function defaultWagmiConfig({
@@ -37,10 +31,11 @@ export function defaultWagmiConfig({
   enableCoinbase,
   enableEmail,
   enableWalletConnect,
-  enableEIP6963,
-  ...wagmiConfig
-}: ConfigOptions): Config {
+  enableEIP6963
+}: ConfigOptions) {
   const connectors: CreateConnectorFn[] = []
+  const transportsArr = chains.map(chain => [chain.id, http()])
+  const transports = Object.fromEntries(transportsArr)
 
   // Enabled by default
   if (enableWalletConnect !== false) {
@@ -62,16 +57,13 @@ export function defaultWagmiConfig({
 
   // Dissabled by default
   if (enableEmail === true) {
-    connectors.push(emailConnector({ chains, options: { projectId } }))
+    connectors.push(emailConnector({ chains: [...chains], options: { projectId } }))
   }
 
-  const baseConfig = {
-    ...wagmiConfig,
-    client: ({ chain }: { chain: Chain }) => createClient({ chain, transport: http() }),
+  return createConfig({
     chains,
     connectors,
-    multiInjectedProviderDiscovery: enableEIP6963 !== false
-  } as CreateConfigParameters
-
-  return createConfig(baseConfig)
+    multiInjectedProviderDiscovery: enableEIP6963 !== false,
+    transports
+  })
 }

@@ -40,7 +40,8 @@ function headings() {
     Transactions: 'Activity',
     UpgradeEmailWallet: 'Upgrade your Wallet',
     UpdateEmailWallet: 'Edit Email',
-    UpdateEmailWalletWaiting: 'Approve Email'
+    UpdateEmailPrimaryOtp: 'Confirm Current Email',
+    UpdateEmailSecondaryOtp: 'Confirm New Email'
   }
 }
 

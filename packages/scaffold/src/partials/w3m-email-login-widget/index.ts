@@ -86,9 +86,7 @@ export class W3mEmailLoginWidget extends LitElement {
               background="opaque"
               backgroundColor="accent-100"
             ></wui-icon-box>
-            <wui-text variant="small-400" color="accent-100">
-              This is an alpha version to test before launch
-            </wui-text>
+            <wui-text variant="small-400" color="accent-100">Email login is in alpha</wui-text>
           </wui-flex>
         `
       : null
