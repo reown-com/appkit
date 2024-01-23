@@ -1,14 +1,12 @@
 'use client'
 
 import { useSnapshot } from 'valtio'
-import { useEffect } from 'react'
 
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
 import { SolStoreUtil } from "@web3modal/scaffold-utils/solana"
 
 import { Web3Modal } from '../src/client.js'
-
 import type { Web3ModalOptions } from '../src/client.js'
 
 // -- Setup -------------------------------------------------------------------
