@@ -204,7 +204,7 @@ export class W3mConnectView extends LitElement {
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
     const { allWallets } = OptionsController.state
 
-    if (!connector || !allWallets) {
+    if (!connector || allWallets === false) {
       return null
     }
 
