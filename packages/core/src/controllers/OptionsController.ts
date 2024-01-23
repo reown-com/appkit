@@ -5,6 +5,8 @@ import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../u
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
   projectId: ProjectId
+  sdkType: 'w3m'
+  sdkVersion: SdkVersion
   featuredWalletIds?: string[]
   includeWalletIds?: string[]
   excludeWalletIds?: string[]
@@ -14,8 +16,7 @@ export interface OptionsControllerState {
   privacyPolicyUrl?: string
   enableAnalytics?: boolean
   metadata?: Metadata
-  sdkType: 'w3m'
-  sdkVersion: SdkVersion
+  enableOnramp?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -77,5 +78,9 @@ export const OptionsController = {
 
   setMetadata(metadata: OptionsControllerState['metadata']) {
     state.metadata = metadata
+  },
+
+  setOnrampEnabled(enableOnramp: OptionsControllerState['enableOnramp']) {
+    state.enableOnramp = enableOnramp
   }
 }
