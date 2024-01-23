@@ -42,7 +42,6 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wagmiConfig: Config<any, any>
   siweConfig?: Web3ModalSIWEClient
-  chains: [Chain, ...Chain[]]
   defaultChain?: Chain
   chainImages?: Record<number, string>
   connectorImages?: Record<string, string>
@@ -71,8 +70,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private wagmiConfig: Web3ModalClientOptions['wagmiConfig']
 
   public constructor(options: Web3ModalClientOptions) {
-    const { wagmiConfig, siweConfig, chains, defaultChain, tokens, _sdkVersion, ...w3mOptions } =
-      options
+    const { wagmiConfig, siweConfig, defaultChain, tokens, _sdkVersion, ...w3mOptions } = options
 
     if (!wagmiConfig) {
       throw new Error('web3modal:constructor - wagmiConfig is undefined')
@@ -185,7 +183,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.options = options
     this.wagmiConfig = wagmiConfig
 
-    this.syncRequestedNetworks(chains)
+    this.syncRequestedNetworks(wagmiConfig.chains)
 
     watchConnectors(this.wagmiConfig, {
       onChange: connectors => this.syncConnectors(connectors)
@@ -218,7 +216,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   // -- Private -----------------------------------------------------------------
-  private syncRequestedNetworks(chains: Web3ModalClientOptions['chains']) {
+  private syncRequestedNetworks(chains: Chain[]) {
     const requestedCaipNetworks = chains?.map(
       chain =>
         ({
