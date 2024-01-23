@@ -5,7 +5,7 @@ import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../u
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
   projectId: ProjectId
-  allWallets?: boolean | 'onlyMobile'
+  allWallets?: 'show' | 'hide' | 'onlyMobile'
   featuredWalletIds?: string[]
   includeWalletIds?: string[]
   excludeWalletIds?: string[]
