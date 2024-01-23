@@ -1,6 +1,4 @@
-import { type Hex, type Chain } from 'viem'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
-import { mainnet } from 'viem/chains'
 import {
   connect,
   disconnect,
@@ -10,10 +8,11 @@ import {
   getEnsName,
   getAccount,
   switchChain,
-  watchAccount,
-  type Config,
-  type GetAccountReturnType
+  watchAccount
 } from '@wagmi/core'
+import { mainnet } from '@wagmi/core/chains'
+import type { Chain } from '@wagmi/core/chains'
+import type { Config, GetAccountReturnType } from '@wagmi/core'
 import type {
   CaipAddress,
   CaipNetwork,
@@ -25,6 +24,7 @@ import type {
   PublicStateControllerState,
   Token
 } from '@web3modal/scaffold'
+import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
@@ -38,8 +38,7 @@ import { ConstantsUtil as CoreConstants } from '@web3modal/core'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  wagmiConfig: Config<any, any>
+  wagmiConfig: Config
   siweConfig?: Web3ModalSIWEClient
   defaultChain?: Chain
   chainImages?: Record<number, string>
@@ -182,7 +181,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.options = options
     this.wagmiConfig = wagmiConfig
 
-    this.syncRequestedNetworks(wagmiConfig.chains)
+    this.syncRequestedNetworks([...wagmiConfig.chains])
     this.syncConnectors(wagmiConfig)
     this.syncEmailConnector(wagmiConfig)
     this.listenEmailConnector(wagmiConfig)
@@ -234,7 +233,7 @@ export class Web3Modal extends Web3ModalScaffold {
     chainId,
     config
   }: GetAccountReturnType & { config: Config }) {
-    const chain = config?.chains.find((c: Chain) => c.id === chainId)
+    const chain = config?.chains.find(c => c.id === chainId)
 
     this.resetAccount()
     // TOD0: Check with Sven. Now network is synced when acc is synced.

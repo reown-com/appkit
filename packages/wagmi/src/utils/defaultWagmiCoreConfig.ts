@@ -1,10 +1,8 @@
 import '@web3modal/polyfills'
 
-import type { CreateConfigParameters, CreateConnectorFn } from '@wagmi/core'
+import type { CreateConfigParameters, CreateConnectorFn, Config } from '@wagmi/core'
 import { createConfig, http } from '@wagmi/core'
 import { coinbaseWallet, walletConnect, injected } from '@wagmi/connectors'
-
-import { createClient } from 'viem'
 
 import { emailConnector } from '../connectors/EmailConnector.js'
 
@@ -35,8 +33,10 @@ export function defaultWagmiConfig({
   enableWalletConnect,
   enableEIP6963,
   ...wagmiConfig
-}: ConfigOptions) {
+}: ConfigOptions): Config {
   const connectors: CreateConnectorFn[] = []
+  const transportsArr = chains.map(chain => [chain.id, http()])
+  const transports = Object.fromEntries(transportsArr)
 
   // Enabled by default
   if (enableWalletConnect !== false) {
@@ -58,7 +58,7 @@ export function defaultWagmiConfig({
 
   // Dissabled by default
   if (enableEmail === true) {
-    connectors.push(emailConnector({ chains, options: { projectId } }))
+    connectors.push(emailConnector({ chains: [...chains], options: { projectId } }))
   }
 
   const baseConfig = {
@@ -66,9 +66,7 @@ export function defaultWagmiConfig({
     chains,
     connectors,
     multiInjectedProviderDiscovery: enableEIP6963 !== false,
-    client({ chain }) {
-      return createClient({ chain, transport: http() })
-    }
+    transports
   } as CreateConfigParameters
 
   return createConfig(baseConfig)

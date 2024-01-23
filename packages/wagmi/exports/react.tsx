@@ -32,4 +32,4 @@ export {
 } from '@web3modal/scaffold-react'
 
 // -- Universal Exports -------------------------------------------------------
-export { defaultWagmiConfig } from '../src/utils/defaultWagmiReactConfig.js'
+export { defaultWagmiConfig } from '../src/utils/defaultWagmiCoreConfig.js'
