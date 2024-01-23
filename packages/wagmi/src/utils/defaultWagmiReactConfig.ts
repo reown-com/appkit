@@ -57,7 +57,7 @@ export function defaultWagmiConfig({
 
   // Dissabled by default
   if (enableEmail === true) {
-    // @ts-expect-error Yes
+    // @ts-expect-error Chain types overlap with core
     connectors.push(emailConnector({ chains: [...chains], options: { projectId } }))
   }
 
