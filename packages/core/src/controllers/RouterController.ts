@@ -23,7 +23,6 @@ export interface RouterControllerState {
     | 'Transactions'
     | 'UpgradeEmailWallet'
     | 'UpdateEmailWallet'
-    | 'UpdateEmailWalletWaiting'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

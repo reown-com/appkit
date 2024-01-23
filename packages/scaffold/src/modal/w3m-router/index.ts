@@ -91,8 +91,6 @@ export class W3mRouter extends LitElement {
         return html`<w3m-upgrade-wallet-view></w3m-upgrade-wallet-view>`
       case 'UpdateEmailWallet':
         return html`<w3m-update-email-wallet-view></w3m-update-email-wallet-view>`
-      case 'UpdateEmailWalletWaiting':
-        return html`<w3m-update-email-wallet-waiting-view></w3m-update-email-wallet-waiting-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }
