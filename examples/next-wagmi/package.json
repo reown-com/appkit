@@ -1,10 +1,10 @@
 {
-  "name": "next-wagmi",
-  "version": "0.1.0",
+  "name": "@examples/next-wagmi",
+  "version": "4.0.0-d610da8e",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build:examples": "next build",
     "start": "next start",
     "lint": "next lint"
   },
