@@ -23,6 +23,8 @@ export interface RouterControllerState {
     | 'Transactions'
     | 'UpgradeEmailWallet'
     | 'UpdateEmailWallet'
+    | 'UpdateEmailPrimaryOtp'
+    | 'UpdateEmailSecondaryOtp'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
