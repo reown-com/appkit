@@ -12,7 +12,7 @@ import {
 } from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import type { Chain } from '@wagmi/core/chains'
-import type { Config, GetAccountReturnType } from '@wagmi/core'
+import type { GetAccountReturnType } from '@wagmi/core'
 import type {
   CaipAddress,
   CaipNetwork,
@@ -35,10 +35,17 @@ import {
 } from './utils/helpers.js'
 import type { W3mFrameProvider } from '@web3modal/wallet'
 import { ConstantsUtil as CoreConstants } from '@web3modal/core'
+import { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
+import { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
 
 // -- Types ---------------------------------------------------------------------
-export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
-  wagmiConfig: Config
+export type CoreConfig = ReturnType<typeof coreConfig>
+export type ReactConfig = ReturnType<typeof reactConfig>
+type Config = CoreConfig | ReactConfig
+
+export interface Web3ModalClientOptions<C extends Config>
+  extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
+  wagmiConfig: C
   siweConfig?: Web3ModalSIWEClient
   defaultChain?: Chain
   chainImages?: Record<number, string>
@@ -46,13 +53,7 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   tokens?: Record<number, Token>
 }
 
-export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
-
-declare global {
-  interface Window {
-    ethereum?: Record<string, unknown>
-  }
-}
+export type Web3ModalOptions<C extends Config> = Omit<Web3ModalClientOptions<C>, '_sdkVersion'>
 
 // @ts-expect-error: Overriden state type is correct
 interface Web3ModalState extends PublicStateControllerState {
@@ -63,11 +64,11 @@ interface Web3ModalState extends PublicStateControllerState {
 export class Web3Modal extends Web3ModalScaffold {
   private hasSyncedConnectedAccount = false
 
-  private options: Web3ModalClientOptions | undefined = undefined
+  private options: Web3ModalClientOptions<CoreConfig> | undefined = undefined
 
-  private wagmiConfig: Web3ModalClientOptions['wagmiConfig']
+  private wagmiConfig: Web3ModalClientOptions<CoreConfig>['wagmiConfig']
 
-  public constructor(options: Web3ModalClientOptions) {
+  public constructor(options: Web3ModalClientOptions<CoreConfig>) {
     const { wagmiConfig, siweConfig, defaultChain, tokens, _sdkVersion, ...w3mOptions } = options
 
     if (!wagmiConfig) {
@@ -322,7 +323,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setBalance(balance.formatted, balance.symbol)
   }
 
-  private syncConnectors(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
+  private syncConnectors(wagmiConfig: Web3ModalClientOptions<CoreConfig>['wagmiConfig']) {
     const w3mConnectors: Connector[] = []
 
     const coinbaseSDKId = ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
@@ -350,7 +351,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setConnectors(w3mConnectors)
   }
 
-  private async syncEmailConnector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
+  private async syncEmailConnector(wagmiConfig: Web3ModalClientOptions<CoreConfig>['wagmiConfig']) {
     const emailConnector = wagmiConfig.connectors.find(({ id }) => id === 'w3mEmail')
     if (emailConnector) {
       const provider = await emailConnector.getProvider()
@@ -363,7 +364,9 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async listenEmailConnector(wagmiConfig: Web3ModalClientOptions['wagmiConfig']) {
+  private async listenEmailConnector(
+    wagmiConfig: Web3ModalClientOptions<CoreConfig>['wagmiConfig']
+  ) {
     const connector = wagmiConfig.connectors.find(c => c.id === ConstantsUtil.EMAIL_CONNECTOR_ID)
 
     if (typeof window !== 'undefined' && connector) {

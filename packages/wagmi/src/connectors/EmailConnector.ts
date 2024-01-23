@@ -3,7 +3,6 @@ import type { Chain } from '@wagmi/core/chains'
 import { W3mFrameProvider } from '@web3modal/wallet'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
-
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 
 // -- Types ----------------------------------------------------------------------------------------
