@@ -9,5 +9,8 @@
   "dependencies": {
     "@web3modal/ethers5": "4.0.0-d610da8e",
     "ethers": "5.7.2"
+  },
+  "devDependencies": {
+    "vite": "5.0.12"
   }
 }

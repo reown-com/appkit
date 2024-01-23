@@ -54,7 +54,10 @@
   },
   "devDependencies": {
     "@web3modal/siwe": "*",
-    "ethers": "5.7.2"
+    "ethers": "5.7.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "vue": "3.4.3"
   },
   "peerDependencies": {
     "@web3modal/siwe": "*",

@@ -61,7 +61,10 @@
     "@wagmi/connectors": "4.1.4",
     "@wagmi/core": "2.2.1",
     "@web3modal/siwe": "*",
-    "viem": "2.0.10"
+    "viem": "2.0.10",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "vue": "3.4.3"
   },
   "peerDependencies": {
     "@wagmi/connectors": ">=4.0.0",

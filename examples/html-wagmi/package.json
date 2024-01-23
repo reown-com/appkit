@@ -7,6 +7,11 @@
     "build:examples": "vite build"
   },
   "dependencies": {
-    "@web3modal/wagmi": "4.0.0-d610da8e"
+    "@web3modal/wagmi": "4.0.0-d610da8e",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "vite": "5.0.12"
   }
 }
