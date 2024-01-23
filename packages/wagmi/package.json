@@ -15,9 +15,14 @@
       "default": "./dist/esm/exports/index.js"
     },
     "./react": {
-      "types": "./dist/types/exports/react.d.ts",
-      "import": "./dist/esm/exports/react.js",
-      "default": "./dist/esm/exports/react.js"
+      "types": "./dist/types/exports/react/index.d.ts",
+      "import": "./dist/esm/exports/react/index.js",
+      "default": "./dist/esm/exports/react/index.js"
+    },
+    "./react/config": {
+      "types": "./dist/types/exports/react/config.d.ts",
+      "import": "./dist/esm/exports/react/config.js",
+      "default": "./dist/esm/exports/react/config.js"
     },
     "./vue": {
       "types": "./dist/types/exports/vue.d.ts",
@@ -28,7 +33,10 @@
   "typesVersions": {
     "*": {
       "react": [
-        "./dist/types/exports/react.d.ts"
+        "./dist/types/exports/react/index.d.ts"
+      ],
+      "react/config": [
+        "./dist/types/exports/react/config.d.ts"
       ],
       "vue": [
         "./dist/types/exports/vue.d.ts"

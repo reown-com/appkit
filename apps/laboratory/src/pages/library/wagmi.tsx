@@ -1,4 +1,5 @@
-import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
+import { createWeb3Modal } from '@web3modal/wagmi/react'
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { Web3ModalButtons } from '../../components/Web3ModalButtons'
@@ -12,8 +13,7 @@ const queryClient = new QueryClient()
 export const wagmiConfig = defaultWagmiConfig({
   chains: WagmiConstantsUtil.chains,
   projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata,
-  ssr: true
+  metadata: ConstantsUtil.Metadata
 })
 
 const modal = createWeb3Modal({

@@ -1,25 +1,25 @@
-import { createConfig, http, cookieStorage, createStorage } from 'wagmi'
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
+import { cookieStorage, createStorage } from 'wagmi'
 import { mainnet, sepolia } from 'wagmi/chains'
-import { injected, walletConnect } from 'wagmi/connectors'
 
-export const config = createConfig({
+console.log('defaultWagmiConfig', typeof defaultWagmiConfig)
+
+export const config = defaultWagmiConfig({
+  projectId: 'bd4997ce3ede37c95770ba10a3804dad',
   chains: [mainnet, sepolia],
-  connectors: [
-    injected(),
-    walletConnect({ projectId: 'bd4997ce3ede37c95770ba10a3804dad', showQrModal: false })
-  ],
+  metadata: {
+    name: 'My App',
+    description: 'My app description',
+    url: 'https://myapp.com',
+    icons: ['https://myapp.com/favicon.ico']
+  },
+  enableInjected: true,
+  enableWalletConnect: true,
+  enableEIP6963: true,
+  enableCoinbase: true,
+  enableEmail: true,
   storage: createStorage({
     storage: cookieStorage
   }),
-  ssr: true,
-  transports: {
-    [mainnet.id]: http(),
-    [sepolia.id]: http()
-  }
+  ssr: true
 })
-
-declare module 'wagmi' {
-  interface Register {
-    config: typeof config
-  }
-}
