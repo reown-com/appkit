@@ -36,6 +36,12 @@ const modal = createWeb3Modal({
       name: 'swift-web3wallet',
       homepage: 'https://walletconnect.com',
       mobile_link: 'walletapp'
+    },
+    {
+      id: 'flutter-web3wallet',
+      name: 'flutter-web3wallet',
+      homepage: 'https://walletconnect.com',
+      mobile_link: 'wcflutterwallet'
     }
   ]
 })
