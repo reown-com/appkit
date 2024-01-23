@@ -36,8 +36,8 @@ import {
 } from './utils/helpers.js'
 import type { W3mFrameProvider } from '@web3modal/wallet'
 import { ConstantsUtil as CoreConstants } from '@web3modal/core'
-import { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
-import { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
+import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
+import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
 
 // -- Types ---------------------------------------------------------------------
 export type CoreConfig = ReturnType<typeof coreConfig>
