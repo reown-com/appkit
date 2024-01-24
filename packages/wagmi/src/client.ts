@@ -8,7 +8,8 @@ import {
   getEnsName,
   getAccount,
   switchChain,
-  watchAccount
+  watchAccount,
+  watchConnectors
 } from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import type { Chain } from '@wagmi/core/chains'
@@ -35,8 +36,8 @@ import {
 } from './utils/helpers.js'
 import type { W3mFrameProvider } from '@web3modal/wallet'
 import { ConstantsUtil as CoreConstants } from '@web3modal/core'
-import { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
-import { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
+import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
+import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
 
 // -- Types ---------------------------------------------------------------------
 export type CoreConfig = ReturnType<typeof coreConfig>
@@ -183,10 +184,10 @@ export class Web3Modal extends Web3ModalScaffold {
     this.wagmiConfig = wagmiConfig
 
     this.syncRequestedNetworks([...wagmiConfig.chains])
-    this.syncConnectors(wagmiConfig)
-    this.syncEmailConnector(wagmiConfig)
-    this.listenEmailConnector(wagmiConfig)
 
+    watchConnectors(this.wagmiConfig, {
+      onChange: connectors => this.syncConnectors(connectors)
+    })
     watchAccount(this.wagmiConfig, {
       onChange: accountData => this.syncAccount({ ...accountData, config: wagmiConfig })
     })
@@ -323,17 +324,19 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setBalance(balance.formatted, balance.symbol)
   }
 
-  private syncConnectors(wagmiConfig: Web3ModalClientOptions<CoreConfig>['wagmiConfig']) {
+  private syncConnectors(
+    connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
+  ) {
     const w3mConnectors: Connector[] = []
 
     const coinbaseSDKId = ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
 
     // Check if coinbase injected connector is present
-    const coinbaseConnector = wagmiConfig.connectors.find(
+    const coinbaseConnector = connectors.find(
       c => c.id === CoreConstants.CONNECTOR_RDNS_MAP[coinbaseSDKId]
     )
 
-    wagmiConfig.connectors.forEach(({ id, name, type, icon }) => {
+    connectors.forEach(({ id, name, type, icon }) => {
       // If coinbase injected connector is present, skip coinbase sdk connector.
       const shouldSkip =
         (coinbaseConnector && id === coinbaseSDKId) || ConstantsUtil.EMAIL_CONNECTOR_ID === id
@@ -349,10 +352,13 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     })
     this.setConnectors(w3mConnectors)
+    this.syncEmailConnector(connectors)
   }
 
-  private async syncEmailConnector(wagmiConfig: Web3ModalClientOptions<CoreConfig>['wagmiConfig']) {
-    const emailConnector = wagmiConfig.connectors.find(({ id }) => id === 'w3mEmail')
+  private async syncEmailConnector(
+    connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
+  ) {
+    const emailConnector = connectors.find(({ id }) => id === ConstantsUtil.EMAIL_CONNECTOR_ID)
     if (emailConnector) {
       const provider = await emailConnector.getProvider()
       this.addConnector({
@@ -361,14 +367,13 @@ export class Web3Modal extends Web3ModalScaffold {
         name: 'Email',
         provider
       })
+      this.listenEmailConnector(emailConnector)
     }
   }
 
   private async listenEmailConnector(
-    wagmiConfig: Web3ModalClientOptions<CoreConfig>['wagmiConfig']
+    connector: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][number]
   ) {
-    const connector = wagmiConfig.connectors.find(c => c.id === ConstantsUtil.EMAIL_CONNECTOR_ID)
-
     if (typeof window !== 'undefined' && connector) {
       super.setLoading(true)
       const provider = (await connector.getProvider()) as W3mFrameProvider

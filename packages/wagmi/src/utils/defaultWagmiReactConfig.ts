@@ -6,7 +6,7 @@ import { coinbaseWallet, walletConnect, injected } from 'wagmi/connectors'
 
 import { emailConnector } from '../connectors/EmailConnector.js'
 
-export interface ConfigOptions {
+export type ConfigOptions = Partial<CreateConfigParameters> & {
   chains: CreateConfigParameters['chains']
   projectId: string
   enableInjected?: boolean
@@ -19,7 +19,6 @@ export interface ConfigOptions {
     description: string
     url: string
     icons: string[]
-    verifyUrl?: string
   }
 }
 
@@ -31,7 +30,8 @@ export function defaultWagmiConfig({
   enableCoinbase,
   enableEmail,
   enableWalletConnect,
-  enableEIP6963
+  enableEIP6963,
+  ...wagmiConfig
 }: ConfigOptions): Config {
   const connectors: CreateConnectorFn[] = []
   const transportsArr = chains.map(chain => [chain.id, http()])
@@ -63,8 +63,9 @@ export function defaultWagmiConfig({
 
   return createConfig({
     chains,
-    connectors,
     multiInjectedProviderDiscovery: enableEIP6963 !== false,
-    transports
+    transports,
+    ...wagmiConfig,
+    connectors
   })
 }
