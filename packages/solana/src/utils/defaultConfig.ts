@@ -6,6 +6,7 @@ declare global {
   interface Window {
     originalSolana?: Record<string, unknown>
     solana?: Record<string, any>
+    solflare?: Record<string, any>
   }
 }
 
