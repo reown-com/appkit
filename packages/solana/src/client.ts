@@ -17,15 +17,20 @@ import type {
   Address
 } from '@web3modal/scaffold-utils/solana'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
+import { WalletAdapterNetwork, type BaseMessageSignerWalletAdapter } from '@solana/wallet-adapter-base'
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
+import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
+import { Web3ModalScaffold } from '@web3modal/scaffold'
+import { WalletConnectWalletAdapter } from '@solana/wallet-adapter-walletconnect';
 import UniversalProvider from '@walletconnect/universal-provider'
 import EthereumProvider from '@walletconnect/ethereum-provider'
 import { SolStoreUtil, SolHelpersUtil, SolConstantsUtil } from '@web3modal/scaffold-utils/solana'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
-import { Web3ModalScaffold } from '@web3modal/scaffold'
+
 import { WalletConnectConnector } from './connectors/WalletConnectConnector'
 import { PhantomConnector } from './connectors/phantom'
-import { walletsImages } from './connectors/walletsImages'
 
+type AdapterKey = 'walletConnect' | 'phantom' | 'solflare'
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
   siweConfig?: Web3ModalSIWEClient
@@ -45,6 +50,8 @@ export class Web3Modal extends Web3ModalScaffold {
   private WalletConnectConnector: WalletConnectConnector
 
   private PhantomConnector: PhantomConnector
+
+  private walletAdapters: Record<AdapterKey, BaseMessageSignerWalletAdapter>;
 
   private chains: Chain[]
 
@@ -116,19 +123,26 @@ export class Web3Modal extends Web3ModalScaffold {
         WalletConnectProvider.on('display_uri', (uri: string) => {
           onUri(uri)
         })
-
         const address = await this.WalletConnectConnector.connect()
         this.setWalletConnectProvider(await this.WalletConnectConnector.getProvider(), address as Address)
       },
 
-      connectExternal: async ({ id, provider, info }) => {
-        const connector = this.getConnectors().find(c => c.id === id)
-        if (!connector) {
-          throw new Error('connectionControllerClient:connectExternal - connector is undefined')
+      connectExternal: async ({ id, info }) => {
+        switch (id) {
+          case 'Phantom': {
+            await this.walletAdapters.phantom.connect()
+            const address = this.walletAdapters.phantom.publicKey?.toString() as Address
+            this.setInjectedProvider(this.walletAdapters.phantom as unknown as Provider, address)
+            break
+          }
+          case 'Solflare': {
+            await this.walletAdapters.solflare.connect()
+            const address = this.walletAdapters.solflare.publicKey?.toString() as Address
+            this.setInjectedProvider(this.walletAdapters.solflare as unknown as Provider, address)
+            break
+          }
         }
 
-        const address = await this.PhantomConnector.connect()
-        this.setInjectedProvider(provider as Provider, address)
       },
 
       checkInstalled(ids) {
@@ -186,12 +200,22 @@ export class Web3Modal extends Web3ModalScaffold {
     SolStoreUtil.setProjectId(options.projectId)
     SolStoreUtil.setCurrentChain(chains[0] as Chain)
 
+    this.walletAdapters = {
+      phantom: new PhantomWalletAdapter(),
+      walletConnect: new WalletConnectWalletAdapter({
+        network: WalletAdapterNetwork.Mainnet, options: {
+          projectId: process.env['NEXT_PUBLIC_PROJECT_ID'],
+          relayUrl: 'wss://relay.walletconnect.com',
+        },
+      }),
+      solflare: new SolflareWalletAdapter()
+    }
     this.WalletConnectConnector = new WalletConnectConnector({
       relayerRegion: 'wss://relay.walletconnect.com',
       metadata: {
         description: 'Solana in Wallet Connect',
         name: 'Wallet Connect',
-        icons: [walletsImages.walletConnect],
+        icons: ['https://avatars.githubusercontent.com/u/37784886'],
         url: 'https://web3modal.com',
       },
       autoconnect: true,
@@ -217,7 +241,6 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   public setAddress(address?: Address) {
-    // const originalAddress = address ? (SolStoreUtil.state.address as Address) : undefined
     SolStoreUtil.setAddress(address ?? '')
   }
 
@@ -241,8 +264,9 @@ export class Web3Modal extends Web3ModalScaffold {
           break;
         }
         case ConstantsUtil.INJECTED_CONNECTOR_ID: {
-          const address = await this.PhantomConnector.connect()
-          this.setInjectedProvider(await this.PhantomConnector.getProvider(), address)
+          await this.walletAdapters.phantom.connect()
+          const address = this.walletAdapters.phantom.publicKey?.toString() as Address
+          this.setInjectedProvider(this.walletAdapters.phantom as unknown as Provider, address)
           break;
         }
       }
@@ -256,11 +280,12 @@ export class Web3Modal extends Web3ModalScaffold {
     const w3mConnectors: Connector[] = []
 
     const connectorType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID] as ConnectorType
+
     w3mConnectors.push({
       id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
       explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
       type: connectorType,
-      imageUrl: walletsImages['walletConnect'],
+      imageUrl: 'https://avatars.githubusercontent.com/u/37784886',
       name: this.WalletConnectConnector.name,
       provider: this.WalletConnectConnector.getProvider(),
       info: {
@@ -270,13 +295,25 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (window.solana) {
       w3mConnectors.push({
-        id: this.PhantomConnector.id,
+        id: this.walletAdapters.phantom.name,
         type: 'ANNOUNCED',
-        imageUrl: walletsImages['phantom'],
-        name: this.PhantomConnector.name,
-        provider: await this.PhantomConnector.getProvider(),
+        imageUrl: this.walletAdapters.phantom.icon,
+        name: this.walletAdapters.phantom.name,
+        provider: this.walletAdapters.phantom,
         info: {
           rdns: 'app.phantom',
+        }
+      })
+    }
+    if (window.solflare) {
+      w3mConnectors.push({
+        id: this.walletAdapters.solflare.name,
+        type: 'ANNOUNCED',
+        imageUrl: this.walletAdapters.solflare.icon,
+        name: this.walletAdapters.solflare.name,
+        provider: this.walletAdapters.solflare,
+        info: {
+          rdns: 'app.solflare',
         }
       })
     }
@@ -511,17 +548,11 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const chainId = SolStoreUtil.state.currentChain?.chainId
     if (address && chainId) {
+      SolStoreUtil.setIsConnected(true)
       SolStoreUtil.setChainId(chainId)
       SolStoreUtil.setProviderType('injected')
       SolStoreUtil.setProvider(provider)
-      SolStoreUtil.setIsConnected(true)
       this.setAddress(address)
-
-      await Promise.all([
-        this.syncProfile(),
-        this.syncBalance(address),
-        this.getApprovedCaipNetworksData()
-      ])
       this.watchInjected(provider)
       this.hasSyncedConnectedAccount = true
     }
