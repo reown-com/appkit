@@ -64,7 +64,13 @@ export class W3mTransactionsView extends LitElement {
   }
 
   public override firstUpdated() {
+    const prevNetwork = TransactionsController.state.prevChainInView
+    const currentNetwork = TransactionsController.state.chainInView
     if (this.transactions.length === 0) {
+      TransactionsController.fetchTransactions(this.address)
+    } else if (prevNetwork !== currentNetwork) {
+      TransactionsController.setPrevChainInView(TransactionsController.state.chainInView)
+      TransactionsController.resetTransactions()
       TransactionsController.fetchTransactions(this.address)
     }
     this.createPaginationObserver()

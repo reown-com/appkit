@@ -4,6 +4,7 @@ import { BlockchainApiController } from './BlockchainApiController.js'
 import { OptionsController } from './OptionsController.js'
 import { EventsController } from './EventsController.js'
 import { SnackController } from './SnackController.js'
+import { NetworkController } from './NetworkController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionByYearMap = Record<number, Transaction[]>
@@ -11,6 +12,8 @@ type TransactionByYearMap = Record<number, Transaction[]>
 export interface TransactionsControllerState {
   transactions: Transaction[]
   transactionsByYear: TransactionByYearMap
+  chainInView: string | undefined
+  prevChainInView: string | undefined
   loading: boolean
   empty: boolean
   next: string | undefined
@@ -20,6 +23,8 @@ export interface TransactionsControllerState {
 const state = proxy<TransactionsControllerState>({
   transactions: [],
   transactionsByYear: {},
+  chainInView: undefined,
+  prevChainInView: undefined,
   loading: false,
   empty: false,
   next: undefined
@@ -31,6 +36,14 @@ export const TransactionsController = {
 
   subscribe(callback: (newState: TransactionsControllerState) => void) {
     return sub(state, () => callback(state))
+  },
+
+  setChainInView(chainInView: TransactionsControllerState['chainInView']) {
+    state.chainInView = chainInView
+  },
+
+  setPrevChainInView(prevChainInView: TransactionsControllerState['prevChainInView']) {
+    state.prevChainInView = prevChainInView
   },
 
   async fetchTransactions(accountAddress?: string) {
@@ -50,13 +63,14 @@ export const TransactionsController = {
       })
 
       const nonSpamTransactions = this.filterSpamTransactions(response.data)
-      const filteredTransactions = [...state.transactions, ...nonSpamTransactions]
+      const sameChainTransactions = this.filterByConnectedChain(nonSpamTransactions)
+      const filteredTransactions = [...state.transactions, ...sameChainTransactions]
 
       state.loading = false
       state.transactions = filteredTransactions
       state.transactionsByYear = this.groupTransactionsByYear(
         state.transactionsByYear,
-        nonSpamTransactions
+        sameChainTransactions
       )
       state.empty = filteredTransactions.length === 0
       state.next = response.next ? response.next : undefined
@@ -101,6 +115,17 @@ export const TransactionsController = {
 
       return !isAllSpam
     })
+  },
+
+  filterByConnectedChain(transactions: Transaction[]) {
+    //TOD0 - This should filter by chain - fungible info is very unrelated
+    const chainName = NetworkController.state.caipNetwork?.name
+    const filteredTransactions = transactions.filter(
+      transaction =>
+        transaction.transfers[0]?.fungible_info?.name?.toLowerCase() === chainName?.toLowerCase()
+    )
+
+    return filteredTransactions
   },
 
   resetTransactions() {
