@@ -232,21 +232,18 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncAccount({
     address,
     isConnected,
-    chainId,
-    config
+    chainId
   }: GetAccountReturnType & { config: Config }) {
-    const chain = config?.chains.find(c => c.id === chainId)
-
     this.resetAccount()
     // TOD0: Check with Sven. Now network is synced when acc is synced.
     this.syncNetwork()
-    if (isConnected && address && chain) {
-      const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chain.id}:${address}`
+    if (isConnected && address && chainId) {
+      const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
       await Promise.all([
-        this.syncProfile(address, chain),
-        this.syncBalance(address, chain),
+        this.syncProfile(address, chainId),
+        this.syncBalance(address, chainId),
         this.getApprovedCaipNetworksData()
       ])
       this.hasSyncedConnectedAccount = true
@@ -268,8 +265,8 @@ export class Web3Modal extends Web3ModalScaffold {
         imageId: PresetsUtil.EIP155NetworkImageIds[chain.id],
         imageUrl: this.options?.chainImages?.[chain.id]
       })
-      if (isConnected && address) {
-        const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chain.id}:${address}`
+      if (isConnected && address && chainId) {
+        const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
         this.setCaipAddress(caipAddress)
         if (chain.blockExplorers?.default?.url) {
           const url = `${chain.blockExplorers.default.url}/address/${address}`
@@ -278,15 +275,15 @@ export class Web3Modal extends Web3ModalScaffold {
           this.setAddressExplorerUrl(undefined)
         }
         if (this.hasSyncedConnectedAccount) {
-          await this.syncProfile(address, chain)
-          await this.syncBalance(address, chain)
+          await this.syncProfile(address, chainId)
+          await this.syncBalance(address, chainId)
         }
       }
     }
   }
 
-  private async syncProfile(address: Hex, chain: Chain) {
-    if (chain.id !== mainnet.id) {
+  private async syncProfile(address: Hex, chainId: Chain['id']) {
+    if (chainId !== mainnet.id) {
       this.setProfileName(null)
       this.setProfileImage(null)
 
@@ -295,18 +292,18 @@ export class Web3Modal extends Web3ModalScaffold {
 
     try {
       const { name, avatar } = await this.fetchIdentity({
-        caipChainId: `${ConstantsUtil.EIP155}:${chain.id}`,
+        caipChainId: `${ConstantsUtil.EIP155}:${chainId}`,
         address
       })
       this.setProfileName(name)
       this.setProfileImage(avatar)
     } catch {
-      const profileName = await getEnsName(this.wagmiConfig, { address, chainId: chain.id })
+      const profileName = await getEnsName(this.wagmiConfig, { address, chainId })
       if (profileName) {
         this.setProfileName(profileName)
         const profileImage = await getEnsAvatar(this.wagmiConfig, {
           name: profileName,
-          chainId: chain.id
+          chainId
         })
         if (profileImage) {
           this.setProfileImage(profileImage)
@@ -315,11 +312,14 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async syncBalance(address: Hex, chain: Chain) {
+  private async syncBalance(address: Hex, chainId: number) {
+    const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId)
+
+    const id = chain?.id || this.options?.defaultChain?.id || this.wagmiConfig?.chains?.[0]?.id
     const balance = await getBalance(this.wagmiConfig, {
       address,
-      chainId: chain.id,
-      token: this.options?.tokens?.[chain.id]?.address as Hex
+      chainId: id,
+      token: this.options?.tokens?.[id]?.address as Hex
     })
     this.setBalance(balance.formatted, balance.symbol)
   }
