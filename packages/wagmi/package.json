@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/wagmi",
-  "version": "4.0.0-alpha.0",
+  "version": "4.0.0-d610da8e",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -15,9 +15,14 @@
       "default": "./dist/esm/exports/index.js"
     },
     "./react": {
-      "types": "./dist/types/exports/react.d.ts",
-      "import": "./dist/esm/exports/react.js",
-      "default": "./dist/esm/exports/react.js"
+      "types": "./dist/types/exports/react/index.d.ts",
+      "import": "./dist/esm/exports/react/index.js",
+      "default": "./dist/esm/exports/react/index.js"
+    },
+    "./react/config": {
+      "types": "./dist/types/exports/react/config.d.ts",
+      "import": "./dist/esm/exports/react/config.js",
+      "default": "./dist/esm/exports/react/config.js"
     },
     "./vue": {
       "types": "./dist/types/exports/vue.d.ts",
@@ -28,7 +33,10 @@
   "typesVersions": {
     "*": {
       "react": [
-        "./dist/types/exports/react.d.ts"
+        "./dist/types/exports/react/index.d.ts"
+      ],
+      "react/config": [
+        "./dist/types/exports/react/config.d.ts"
       ],
       "vue": [
         "./dist/types/exports/vue.d.ts"
@@ -43,17 +51,20 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/polyfills": "4.0.0-alpha.0",
-    "@web3modal/scaffold": "4.0.0-alpha.0",
-    "@web3modal/scaffold-react": "4.0.0-alpha.0",
-    "@web3modal/scaffold-utils": "4.0.0-alpha.0",
-    "@web3modal/scaffold-vue": "4.0.0-alpha.0"
+    "@web3modal/polyfills": "4.0.0-d610da8e",
+    "@web3modal/scaffold": "4.0.0-d610da8e",
+    "@web3modal/scaffold-react": "4.0.0-d610da8e",
+    "@web3modal/scaffold-utils": "4.0.0-d610da8e",
+    "@web3modal/scaffold-vue": "4.0.0-d610da8e"
   },
   "devDependencies": {
     "@wagmi/connectors": "4.1.4",
     "@wagmi/core": "2.2.1",
     "@web3modal/siwe": "*",
-    "viem": "2.0.10"
+    "viem": "2.0.10",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "vue": "3.4.3"
   },
   "peerDependencies": {
     "@wagmi/connectors": ">=4.0.0",
