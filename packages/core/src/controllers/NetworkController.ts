@@ -1,5 +1,5 @@
 import { subscribeKey as subKey } from 'valtio/utils'
-import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
+import { proxy, ref } from 'valtio/vanilla'
 import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil.js'
 import { PublicStateController } from './PublicStateController.js'
 import { TransactionsController } from './TransactionsController.js'
@@ -33,10 +33,6 @@ const state = proxy<NetworkControllerState>({
 // -- Controller ---------------------------------------- //
 export const NetworkController = {
   state,
-
-  subscribe(callback: (newState: NetworkControllerState) => void) {
-    return sub(state, () => callback(state))
-  },
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: NetworkControllerState[K]) => void) {
     return subKey(state, key, callback)

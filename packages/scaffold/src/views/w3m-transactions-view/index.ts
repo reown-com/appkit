@@ -28,6 +28,11 @@ export class W3mTransactionsView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private address: string | undefined = AccountController.state.address
 
+  @state() private isFirstUpdate = true
+
+  /** Keep track of the previous chain in chase the chain changes while the component is mounted */
+  @state() private chainInMemory: string | undefined
+
   @state() private transactions = TransactionsController.state.transactions
 
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
@@ -53,6 +58,12 @@ export class W3mTransactionsView extends LitElement {
           }
         }),
         TransactionsController.subscribe(val => {
+          if (val.chainInView !== this.chainInMemory && !this.isFirstUpdate) {
+            this.chainInMemory = val.chainInView
+            TransactionsController.resetTransactions()
+            TransactionsController.fetchTransactions(this.address)
+            TransactionsController.setPrevChainInView(val.chainInView)
+          }
           this.transactions = val.transactions
           this.transactionsByYear = val.transactionsByYear
           this.loading = val.loading
@@ -64,15 +75,19 @@ export class W3mTransactionsView extends LitElement {
   }
 
   public override firstUpdated() {
-    const prevNetwork = TransactionsController.state.prevChainInView
-    const currentNetwork = TransactionsController.state.chainInView
+    const prevChainInView = TransactionsController.state.prevChainInView
+    const chainInView = TransactionsController.state.chainInView
+    this.chainInMemory = chainInView
+
     if (this.transactions.length === 0) {
       TransactionsController.fetchTransactions(this.address)
-    } else if (prevNetwork !== currentNetwork) {
-      TransactionsController.setPrevChainInView(TransactionsController.state.chainInView)
+    } else if (prevChainInView !== chainInView) {
       TransactionsController.resetTransactions()
       TransactionsController.fetchTransactions(this.address)
     }
+    /* Prevent resetTransactions when coming back */
+    TransactionsController.setPrevChainInView(chainInView)
+    this.isFirstUpdate = false
     this.createPaginationObserver()
   }
 
