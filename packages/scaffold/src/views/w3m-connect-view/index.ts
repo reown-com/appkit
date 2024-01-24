@@ -204,11 +204,11 @@ export class W3mConnectView extends LitElement {
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
     const { allWallets } = OptionsController.state
 
-    if (!connector || allWallets === 'hide') {
+    if (!connector || allWallets === 'HIDE') {
       return null
     }
 
-    if (allWallets === 'onlyMobile' && !CoreHelperUtil.isMobile()) {
+    if (allWallets === 'ONLY_MOBILE' && !CoreHelperUtil.isMobile()) {
       return null
     }
 
