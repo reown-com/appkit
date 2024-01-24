@@ -1,12 +1,10 @@
-'use client'
-
 import { getWeb3Modal } from '@web3modal/scaffold-react'
-import type { Web3ModalOptions, ReactConfig } from '../src/client.js'
-import { Web3Modal } from '../src/client.js'
+import type { Web3ModalOptions, ReactConfig } from '../../src/client.js'
+import { Web3Modal } from '../../src/client.js'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 
 // -- Types -------------------------------------------------------------------
-export type { Web3ModalOptions } from '../src/client.js'
+export type { Web3ModalOptions } from '../../src/client.js'
 
 // -- Setup -------------------------------------------------------------------
 let modal: Web3Modal | undefined = undefined
@@ -28,6 +26,3 @@ export {
   useWeb3ModalState,
   useWeb3ModalEvents
 } from '@web3modal/scaffold-react'
-
-// -- Universal Exports -------------------------------------------------------
-export { defaultWagmiConfig } from '../src/utils/defaultWagmiReactConfig.js'
