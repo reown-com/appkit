@@ -16,7 +16,10 @@ type GetChainIdResolver = Resolver<W3mFrameTypes.Responses['FrameGetChainIdRespo
 type SwitchChainResolver = Resolver<W3mFrameTypes.Responses['FrameSwitchNetworkResponse']>
 type RpcRequestResolver = Resolver<W3mFrameTypes.RPCResponse>
 type UpdateEmailResolver = Resolver<undefined>
-type AwaitUpdateEmailResolver = Resolver<W3mFrameTypes.Responses['FrameAwaitUpdateEmailResponse']>
+type UpdateEmailPrimaryOtpResolver = Resolver<undefined>
+type UpdateEmailSecondaryOtpResolver = Resolver<
+  W3mFrameTypes.Responses['FrameUpdateEmailSecondaryOtpResolver']
+>
 type SyncThemeResolver = Resolver<undefined>
 type SyncDappDataResolver = Resolver<undefined>
 
@@ -44,7 +47,9 @@ export class W3mFrameProvider {
 
   private updateEmailResolver: UpdateEmailResolver = undefined
 
-  private awaitUpdateEmailResolver: AwaitUpdateEmailResolver = undefined
+  private updateEmailPrimaryOtpResolver: UpdateEmailPrimaryOtpResolver = undefined
+
+  private updateEmailSecondaryOtpResolver: UpdateEmailSecondaryOtpResolver = undefined
 
   private syncThemeResolver: SyncThemeResolver = undefined
 
@@ -99,10 +104,14 @@ export class W3mFrameProvider {
           return this.onUpdateEmailSuccess()
         case W3mFrameConstants.FRAME_UPDATE_EMAIL_ERROR:
           return this.onUpdateEmailError(event)
-        case W3mFrameConstants.FRAME_AWAIT_UPDATE_EMAIL_SUCCESS:
-          return this.onAwaitUpdateEmailSuccess(event)
-        case W3mFrameConstants.FRAME_AWAIT_UPDATE_EMAIL_ERROR:
-          return this.onAwaitUpdateEmailError(event)
+        case W3mFrameConstants.FRAME_UPDATE_EMAIL_PRIMARY_OTP_SUCCESS:
+          return this.onUpdateEmailPrimaryOtpSuccess()
+        case W3mFrameConstants.FRAME_UPDATE_EMAIL_PRIMARY_OTP_ERROR:
+          return this.onUpdateEmailPrimaryOtpError(event)
+        case W3mFrameConstants.FRAME_UPDATE_EMAIL_SECONDARY_OTP_SUCCESS:
+          return this.onUpdateEmailSecondaryOtpSuccess(event)
+        case W3mFrameConstants.FRAME_UPDATE_EMAIL_SECONDARY_OTP_ERROR:
+          return this.onUpdateEmailSecondaryOtpError(event)
         case W3mFrameConstants.FRAME_SYNC_THEME_SUCCESS:
           return this.onSyncThemeSuccess()
         case W3mFrameConstants.FRAME_SYNC_THEME_ERROR:
@@ -185,13 +194,32 @@ export class W3mFrameProvider {
     })
   }
 
-  public async awaitUpdateEmail() {
+  public async updateEmailPrimaryOtp(
+    payload: W3mFrameTypes.Requests['AppUpdateEmailPrimaryOtpRequest']
+  ) {
     await this.w3mFrame.frameLoadPromise
-    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_AWAIT_UPDATE_EMAIL })
+    this.w3mFrame.events.postAppEvent({
+      type: W3mFrameConstants.APP_UPDATE_EMAIL_PRIMARY_OTP,
+      payload
+    })
 
-    return new Promise<W3mFrameTypes.Responses['FrameAwaitUpdateEmailResponse']>(
+    return new Promise((resolve, reject) => {
+      this.updateEmailPrimaryOtpResolver = { resolve, reject }
+    })
+  }
+
+  public async updateEmailSecondaryOtp(
+    payload: W3mFrameTypes.Requests['AppUpdateEmailSecondaryOtpRequest']
+  ) {
+    await this.w3mFrame.frameLoadPromise
+    this.w3mFrame.events.postAppEvent({
+      type: W3mFrameConstants.APP_UPDATE_EMAIL_SECONDARY_OTP,
+      payload
+    })
+
+    return new Promise<W3mFrameTypes.Responses['FrameUpdateEmailSecondaryOtpResolver']>(
       (resolve, reject) => {
-        this.awaitUpdateEmailResolver = { resolve, reject }
+        this.updateEmailSecondaryOtpResolver = { resolve, reject }
       }
     )
   }
@@ -422,17 +450,34 @@ export class W3mFrameProvider {
     this.updateEmailResolver?.reject(event.payload.message)
   }
 
-  private onAwaitUpdateEmailSuccess(
-    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/AWAIT_UPDATE_EMAIL_SUCCESS' }>
-  ) {
-    this.setEmailLoginSuccess(event.payload.email)
-    this.awaitUpdateEmailResolver?.resolve(event.payload)
+  private onUpdateEmailPrimaryOtpSuccess() {
+    this.updateEmailPrimaryOtpResolver?.resolve(undefined)
   }
 
-  private onAwaitUpdateEmailError(
-    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/AWAIT_UPDATE_EMAIL_ERROR' }>
+  private onUpdateEmailPrimaryOtpError(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/UPDATE_EMAIL_PRIMARY_OTP_ERROR' }>
   ) {
-    this.awaitUpdateEmailResolver?.reject(event.payload.message)
+    this.updateEmailPrimaryOtpResolver?.reject(event.payload.message)
+  }
+
+  private onUpdateEmailSecondaryOtpSuccess(
+    event: Extract<
+      W3mFrameTypes.FrameEvent,
+      { type: '@w3m-frame/UPDATE_EMAIL_SECONDARY_OTP_SUCCESS' }
+    >
+  ) {
+    const { newEmail } = event.payload
+    this.setEmailLoginSuccess(newEmail)
+    this.updateEmailSecondaryOtpResolver?.resolve({ newEmail })
+  }
+
+  private onUpdateEmailSecondaryOtpError(
+    event: Extract<
+      W3mFrameTypes.FrameEvent,
+      { type: '@w3m-frame/UPDATE_EMAIL_SECONDARY_OTP_ERROR' }
+    >
+  ) {
+    this.updateEmailSecondaryOtpResolver?.reject(event.payload.message)
   }
 
   private onSyncThemeSuccess() {
