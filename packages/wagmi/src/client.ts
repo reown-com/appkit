@@ -184,6 +184,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.wagmiConfig = wagmiConfig
 
     this.syncRequestedNetworks([...wagmiConfig.chains])
+    this.syncConnectors([...wagmiConfig.connectors])
 
     watchConnectors(this.wagmiConfig, {
       onChange: connectors => this.syncConnectors(connectors)
