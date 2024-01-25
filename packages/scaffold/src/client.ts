@@ -36,6 +36,7 @@ export interface LibraryOptions {
   projectId: OptionsControllerState['projectId']
   themeMode?: ThemeMode
   themeVariables?: ThemeVariables
+  allWallets?: OptionsControllerState['allWallets']
   includeWalletIds?: OptionsControllerState['includeWalletIds']
   excludeWalletIds?: OptionsControllerState['excludeWalletIds']
   featuredWalletIds?: OptionsControllerState['featuredWalletIds']
@@ -235,6 +236,7 @@ export class Web3ModalScaffold {
     NetworkController.setDefaultCaipNetwork(options.defaultChain)
 
     OptionsController.setProjectId(options.projectId)
+    OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
     OptionsController.setExcludeWalletIds(options.excludeWalletIds)
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds)

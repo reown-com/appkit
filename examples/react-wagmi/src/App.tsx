@@ -1,6 +1,6 @@
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 import {
   createWeb3Modal,
-  defaultWagmiConfig,
   useWeb3Modal,
   useWeb3ModalEvents,
   useWeb3ModalState,
@@ -20,16 +20,14 @@ if (!projectId) {
 }
 
 // 2. Create wagmiConfig
-const chains = [mainnet, arbitrum]
 const wagmiConfig = defaultWagmiConfig({
-  chains,
+  chains: [mainnet, arbitrum],
   projectId,
   metadata: {
     name: 'Web3Modal React Example',
     description: 'Web3Modal React Example',
     url: '',
-    icons: [],
-    verifyUrl: ''
+    icons: []
   }
 })
 
@@ -37,7 +35,6 @@ const wagmiConfig = defaultWagmiConfig({
 createWeb3Modal({
   wagmiConfig,
   projectId,
-  chains,
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00DCFF',
