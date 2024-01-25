@@ -48,13 +48,13 @@ export class W3mEmailLoginWidget extends LitElement {
   public override render() {
     const multipleConnectors = this.connectors.length > 1
     const connector = this.connectors.find(c => c.type === 'EMAIL')
-    const showSubmit = !this.loading && this.email.length > 3
 
     if (!connector) {
       return null
     }
 
     return html`
+      ${this.alphaWarningTemplate()}
       <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
         <wui-email-input
           @focus=${this.onFocusEvent.bind(this)}
@@ -64,21 +64,7 @@ export class W3mEmailLoginWidget extends LitElement {
         >
         </wui-email-input>
 
-        ${showSubmit
-          ? html`
-              <wui-icon-link
-                size="sm"
-                icon="chevronRight"
-                iconcolor="accent-100"
-                @click=${this.onSubmitEmail.bind(this)}
-              >
-              </wui-icon-link>
-            `
-          : null}
-        ${this.loading
-          ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
-          : null}
-
+        ${this.submitButtonTemplate()}${this.loadingTemplate()}
         <input type="submit" hidden />
       </form>
 
@@ -87,6 +73,47 @@ export class W3mEmailLoginWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private alphaWarningTemplate() {
+    const showAlphaWarning = true
+
+    return showAlphaWarning
+      ? html`
+          <wui-flex class="alphaBanner" gap="xs" alignItems="center" justifyContent="center">
+            <wui-icon-box
+              size="sm"
+              icon="alpha"
+              iconColor="accent-100"
+              background="opaque"
+              backgroundColor="accent-100"
+            ></wui-icon-box>
+            <wui-text variant="small-400" color="accent-100">Email login is in alpha</wui-text>
+          </wui-flex>
+        `
+      : null
+  }
+
+  private submitButtonTemplate() {
+    const showSubmit = !this.loading && this.email.length > 3
+
+    return showSubmit
+      ? html`
+          <wui-icon-link
+            size="sm"
+            icon="chevronRight"
+            iconcolor="accent-100"
+            @click=${this.onSubmitEmail.bind(this)}
+          >
+          </wui-icon-link>
+        `
+      : null
+  }
+
+  private loadingTemplate() {
+    return this.loading
+      ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
+      : null
+  }
+
   private onEmailInputChange(event: CustomEvent<string>) {
     this.email = event.detail
     this.error = ''

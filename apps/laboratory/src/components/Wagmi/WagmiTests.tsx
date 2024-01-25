@@ -3,6 +3,7 @@ import { WagmiTransactionTest } from './WagmiTransactionTest'
 import { WagmiSignMessageTest } from './WagmiSignMessageTest'
 import { WagmiSignTypedDataTest } from './WagmiSignTypedDataTest'
 import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
+import { WagmiWriteContractTest } from './WagmiWriteContractTest'
 
 export function WagmiTests() {
   const { isConnected } = useAccount()
@@ -34,6 +35,12 @@ export function WagmiTests() {
               Sign Transaction
             </Heading>
             <WagmiTransactionTest />
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Contract Write
+            </Heading>
+            <WagmiWriteContractTest />
           </Box>
         </Stack>
       </CardBody>
