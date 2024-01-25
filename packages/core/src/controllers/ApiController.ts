@@ -3,7 +3,12 @@ import { proxy } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
-import type { ApiGetWalletsRequest, ApiGetWalletsResponse, WcWallet } from '../utils/TypeUtil.js'
+import type {
+  ApiGetAnalyticsConfigResponse,
+  ApiGetWalletsRequest,
+  ApiGetWalletsResponse,
+  WcWallet
+} from '../utils/TypeUtil.js'
 import { AssetController } from './AssetController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { NetworkController } from './NetworkController.js'
@@ -24,6 +29,7 @@ export interface ApiControllerState {
   recommended: WcWallet[]
   wallets: WcWallet[]
   search: WcWallet[]
+  isAnalyticsEnabled: boolean
 }
 
 type StateKey = keyof ApiControllerState
@@ -35,7 +41,8 @@ const state = proxy<ApiControllerState>({
   featured: [],
   recommended: [],
   wallets: [],
-  search: []
+  search: [],
+  isAnalyticsEnabled: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -184,14 +191,23 @@ export const ApiController = {
   },
 
   prefetch() {
-    state.prefetchPromise = Promise.race([
-      Promise.allSettled([
-        ApiController.fetchFeaturedWallets(),
-        ApiController.fetchRecommendedWallets(),
-        ApiController.fetchNetworkImages(),
-        ApiController.fetchConnectorImages()
-      ]),
-      CoreHelperUtil.wait(3000)
-    ])
+    const promises = [
+      ApiController.fetchFeaturedWallets(),
+      ApiController.fetchRecommendedWallets(),
+      ApiController.fetchNetworkImages(),
+      ApiController.fetchConnectorImages()
+    ]
+    if (OptionsController.state.enableAnalytics === undefined) {
+      promises.push(ApiController.fetchAnalyticsConfig())
+    }
+    state.prefetchPromise = Promise.race([Promise.allSettled(promises), CoreHelperUtil.wait(3000)])
+  },
+
+  async fetchAnalyticsConfig() {
+    const { isAnalyticsEnabled } = await api.get<ApiGetAnalyticsConfigResponse>({
+      path: '/getAnalyticsConfig',
+      headers: ApiController._getApiHeaders()
+    })
+    OptionsController.setEnableAnalytics(isAnalyticsEnabled)
   }
 }
