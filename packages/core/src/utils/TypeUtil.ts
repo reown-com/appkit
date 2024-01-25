@@ -106,7 +106,7 @@ export interface ApiGetWalletsResponse {
   count: number
 }
 
-export interface ApiGetAnalyticsFlagResponse {
+export interface ApiGetAnalyticsConfigResponse {
   isAnalyticsEnabled: boolean
 }
 

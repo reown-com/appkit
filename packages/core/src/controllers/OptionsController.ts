@@ -1,7 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy } from 'valtio/vanilla'
 import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
-import { ApiController } from './ApiController.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
@@ -69,11 +68,7 @@ export const OptionsController = {
   },
 
   setEnableAnalytics(enableAnalytics: OptionsControllerState['enableAnalytics']) {
-    if (enableAnalytics === undefined) {
-      state.enableAnalytics = ApiController.state.isAnalyticsEnabled
-    } else {
-      state.enableAnalytics = enableAnalytics
-    }
+    state.enableAnalytics = enableAnalytics
   },
 
   setSdkVersion(sdkVersion: OptionsControllerState['sdkVersion']) {
