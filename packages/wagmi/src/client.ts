@@ -258,18 +258,20 @@ export class Web3Modal extends Web3ModalScaffold {
     const { address, isConnected, chainId } = getAccount(this.wagmiConfig)
     const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId)
 
-    if (chain) {
-      const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chainId}`
+    if (chain || chainId) {
+      const name = chain?.name ?? chainId?.toString()
+      const id = Number(chain?.id ?? chainId)
+      const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${id}`
       this.setCaipNetwork({
         id: caipChainId,
-        name: chain.name,
-        imageId: PresetsUtil.EIP155NetworkImageIds[chain.id],
-        imageUrl: this.options?.chainImages?.[chain.id]
+        name,
+        imageId: PresetsUtil.EIP155NetworkImageIds[id],
+        imageUrl: this.options?.chainImages?.[id]
       })
       if (isConnected && address && chainId) {
-        const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
+        const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${id}:${address}`
         this.setCaipAddress(caipAddress)
-        if (chain.blockExplorers?.default?.url) {
+        if (chain?.blockExplorers?.default?.url) {
           const url = `${chain.blockExplorers.default.url}/address/${address}`
           this.setAddressExplorerUrl(url)
         } else {
