@@ -173,10 +173,12 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       signMessage: async (message: string) => {
+        console.log(`message`, message);
         const provider = SolStoreUtil.state.provider
         if (!provider) {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
+        console.log(`sign message`);
 
         const signature = await provider.request({
           method: 'personal_sign',
@@ -190,7 +192,7 @@ export class Web3Modal extends Web3ModalScaffold {
     super({
       networkControllerClient,
       connectionControllerClient,
-      defaultChain: chains[0],
+      defaultChain: chains[2],
       tokens: HelpersUtil.getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `html-solana-${ConstantsUtil.VERSION}`,
       ...w3mOptions
@@ -198,7 +200,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.chains = chains
     SolStoreUtil.setProjectId(options.projectId)
-    SolStoreUtil.setCurrentChain(chains[0] as Chain)
+    SolStoreUtil.setCurrentChain(chains[2] as Chain)
 
     this.walletAdapters = {
       phantom: new PhantomWalletAdapter(),
@@ -529,10 +531,12 @@ export class Web3Modal extends Web3ModalScaffold {
     )
     const namespaces = provider.namespaces as unknown as { solana: { chains: Array<string> } }
     if (namespaces) {
+      const chainId = SolStoreUtil.state.currentChain?.chainId
+
       SolStoreUtil.setIsConnected(true)
-      SolStoreUtil.setChainId(namespaces.solana.chains[0])
+      SolStoreUtil.setChainId(chainId)
       SolStoreUtil.setProviderType('walletConnect')
-      SolStoreUtil.setProvider(provider)
+      SolStoreUtil.setProvider(this.WalletConnectConnector as unknown as Provider)
       this.setAddress(address)
 
       await Promise.all([
