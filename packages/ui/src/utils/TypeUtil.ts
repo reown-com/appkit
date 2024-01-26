@@ -15,6 +15,7 @@ export type TextType =
   | 'large-500'
   | 'large-600'
   | 'large-700'
+  | 'medium-title-600'
   | 'micro-600'
   | 'micro-700'
   | 'paragraph-400'

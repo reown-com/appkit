@@ -21,6 +21,11 @@ export default css`
     color: var(--local-color);
   }
 
+  .wui-font-medium-title-600 {
+    font-size: var(--wui-font-size-medium-title);
+    letter-spacing: var(--wui-letter-spacing-medium-title);
+  }
+
   .wui-font-large-500,
   .wui-font-large-600,
   .wui-font-large-700 {
@@ -75,6 +80,7 @@ export default css`
     font-weight: var(--wui-font-weight-bold);
   }
 
+  .wui-font-medium-title-600,
   .wui-font-large-600,
   .wui-font-paragraph-600,
   .wui-font-small-600,

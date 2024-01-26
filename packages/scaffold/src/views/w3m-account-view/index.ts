@@ -96,7 +96,7 @@ export class W3mAccountView extends LitElement {
         ></wui-avatar>
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
-            <wui-text variant="large-600" color="fg-100">
+            <wui-text variant="medium-title-600" color="fg-100">
               ${this.profileName
                 ? UiHelperUtil.getTruncateString({
                     string: this.profileName,
@@ -107,7 +107,7 @@ export class W3mAccountView extends LitElement {
                 : UiHelperUtil.getTruncateString({
                     string: this.address,
                     charsStart: 4,
-                    charsEnd: 6,
+                    charsEnd: 4,
                     truncate: 'middle'
                   })}
             </wui-text>

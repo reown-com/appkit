@@ -67,6 +67,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-font-size-small: calc(var(--w3m-font-size-master) * 1.4);
         --wui-font-size-paragraph: calc(var(--w3m-font-size-master) * 1.6);
         --wui-font-size-large: calc(var(--w3m-font-size-master) * 2);
+        --wui-font-size-medium-title: calc(var(--w3m-font-size-master) * 2.4);
         --wui-font-size-2xl: calc(var(--w3m-font-size-master) * 4);
 
         --wui-border-radius-5xs: var(--w3m-border-radius-master);
@@ -85,6 +86,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-font-weight-bold: 700;
 
         --wui-letter-spacing-2xl: -1.6px;
+        --wui-letter-spacing-medium-title: -0.96px;
         --wui-letter-spacing-large: -0.8px;
         --wui-letter-spacing-paragraph: -0.64px;
         --wui-letter-spacing-small: -0.56px;
