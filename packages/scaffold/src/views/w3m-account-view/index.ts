@@ -133,6 +133,7 @@ export class W3mAccountView extends LitElement {
           iconVariant="overlay"
           icon="networkPlaceholder"
           imageSrc=${ifDefined(networkImage)}
+          ?chevron=${this.isAllowedNetworkSwitch()}
           @click=${this.onNetworks.bind(this)}
         >
           <wui-text variant="paragraph-500" color="fg-100">
