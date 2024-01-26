@@ -3,7 +3,7 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/rea
 
 import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
 import { vitalikEthAddress } from '../../utils/DataUtil'
-import { solanaTestnet } from '../../utils/ChainsUtil'
+import { solanaDevnet } from '../../utils/ChainsUtil'
 import { useState } from 'react'
 
 export function SolanaTransactionTest() {
@@ -37,14 +37,14 @@ export function SolanaTransactionTest() {
     }
   }
 
-  return chainId === solanaTestnet.chainId && address ? (
+  return chainId === solanaDevnet.chainId && address ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
         isDisabled={loading}
       >
-        Send Transaction to Vitalik
+        Send Transaction
       </Button>
 
       <Spacer />
@@ -57,7 +57,7 @@ export function SolanaTransactionTest() {
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to Solana Testnet to test this feature
+      Switch to Solana Devnet to test this feature
     </Text>
   )
 }

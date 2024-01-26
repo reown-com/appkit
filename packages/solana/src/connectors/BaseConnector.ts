@@ -145,10 +145,9 @@ export class BaseConnector {
     try {
       const address = requestedAddress ?? SolStoreUtil.state.address
       const balance = await this.requestCluster('getBalance', [address, { commitment: 'processed' }])
-      const formatted = currency === 'lamports' ? `${balance?.value || 0} lamports` : `${balance?.value || 0} sol`
-
+      const formatted = currency === 'lamports' ? `${balance?.value || 0} lamports` : `${(balance?.value || 0) / 1000000000} sol`
       return {
-        value: new BN(balance.value),
+        value: new BN(balance.value / 1000000000),
         formatted,
         decimals: balance.value,
         symbol: currency

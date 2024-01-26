@@ -397,7 +397,7 @@ export class Web3Modal extends Web3ModalScaffold {
         } else {
           balance = await this.PhantomConnector.getBalance(address)
         }
-        this.setBalance(balance.formatted, chain.currency)
+        this.setBalance(balance.value.toString(), chain.currency)
       }
     }
   }

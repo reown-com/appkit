@@ -10,7 +10,6 @@ export function SolanaSignMessageTest() {
   const { walletProvider } = useWeb3ModalProvider()
 
   async function onSignMessage() {
-    console.log("walletProvider", walletProvider)
     try {
       if (!walletProvider || !address) {
         throw Error('user is disconnected')

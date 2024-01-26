@@ -1,9 +1,7 @@
 import { Button, useToast } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
-import { BrowserProvider, JsonRpcSigner } from 'ethers'
-import type { TypedDataField } from 'ethers'
+import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
-const types: Record<string, TypedDataField[]> = {
+const types: Record<string, object> = {
   Person: [
     { name: 'name', type: 'string' },
     { name: 'wallet', type: 'address' }
@@ -37,7 +35,7 @@ export function SolanaSignTypedDataTest() {
       if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
-      const provider = new BrowserProvider(walletProvider, chainId)
+      /* const provider = new BrowserProvider(walletProvider, chainId)
       const signer = new JsonRpcSigner(provider, address)
       const domain = {
         name: 'Ether Mail',
@@ -48,7 +46,7 @@ export function SolanaSignTypedDataTest() {
 
       const signature = await signer?.signTypedData(domain, types, message)
 
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true }) */
     } catch {
       toast({
         title: 'Error',
