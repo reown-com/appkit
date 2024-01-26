@@ -49,7 +49,7 @@ export class WuiOnRampProviderItem extends LitElement {
         </wui-flex>
         ${this.loading
           ? html`<wui-loading-spinner color="fg-200" size="md"></wui-loading-spinner>`
-          : html`<wui-icon name="chevronRight" color="fg-300"></wui-icon>`}
+          : html`<wui-icon name="chevronRight" color="fg-200"></wui-icon>`}
       </button>
     `
   }
