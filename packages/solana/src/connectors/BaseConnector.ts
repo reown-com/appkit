@@ -79,8 +79,9 @@ export class BaseConnector {
     type: TransType,
     params: TransactionArgs[TransType]['params']
   ) {
+    console.log(`BEFORE!`);
     const transaction = new Transaction()
-
+    console.log(`AFTER!`);
     const fromAddress = SolStoreUtil.state.address
 
     if (!fromAddress) throw new Error('No address connected')

@@ -1,12 +1,12 @@
 import { Button, useToast, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
-import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
-import { vitalikEthAddress } from '../../utils/DataUtil'
 import { solanaDevnet } from '../../utils/ChainsUtil'
 import { useState } from 'react'
 
-export function SolanaTransactionTest() {
+const WALLECT_CONNECT_DEVNET_ADDRESS = '2yr4zgYEyWRqFrNym31X1oJ4NprJsXjATEQb5XnkFY8v'
+
+export function SolanaSendTransactionTest() {
   const toast = useToast()
   const { address, chainId } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
@@ -14,18 +14,20 @@ export function SolanaTransactionTest() {
 
   async function onSendTransaction() {
     try {
+      console.log(`address`, address);
       setLoading(true)
       if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
-      const provider = new BrowserProvider(walletProvider, chainId)
-      const signer = new JsonRpcSigner(provider, address)
-      const tx = await signer.sendTransaction({
-        to: vitalikEthAddress,
-        value: ethers.parseUnits('0.001', 'gwei')
-      })
+      const tx = await walletProvider.signAndSendTransaction('transfer',
+        {
+          to: WALLECT_CONNECT_DEVNET_ADDRESS,
+          amountInLamports: 100000000,
+          feePayer: 'to'
+        })
       toast({ title: 'Succcess', description: tx.blockHash, status: 'success', isClosable: true })
-    } catch {
+    } catch (err) {
+      console.log(`err`, err);
       toast({
         title: 'Error',
         description: 'Failed to sign transaction',
@@ -44,7 +46,7 @@ export function SolanaTransactionTest() {
         onClick={onSendTransaction}
         isDisabled={loading}
       >
-        Send Transaction
+        Sign and Send Transaction
       </Button>
 
       <Spacer />

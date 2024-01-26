@@ -103,6 +103,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     type: Type,
     params: TransactionArgs[Type]['params']
   ) {
+    console.log(`is it calls?`);
     const transaction = await this.constructTransaction(type, params)
     console.log('Made transaction', transaction)
 
