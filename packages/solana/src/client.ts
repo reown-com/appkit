@@ -1,3 +1,18 @@
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
+import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
+
+import { Web3ModalScaffold } from '@web3modal/scaffold'
+import { WalletConnectWalletAdapter } from '@solana/wallet-adapter-walletconnect';
+import UniversalProvider from '@walletconnect/universal-provider'
+import EthereumProvider from '@walletconnect/ethereum-provider'
+import { SolStoreUtil, SolHelpersUtil, SolConstantsUtil } from '@web3modal/scaffold-utils/solana'
+import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
+
+import { WalletConnectConnector } from './connectors/WalletConnectConnector'
+import { PhantomConnector } from './connectors/phantom'
+
+import type { PublicKey } from '@solana/web3.js'
 import type {
   CaipNetworkId,
   ConnectionControllerClient,
@@ -16,19 +31,8 @@ import type {
   Provider,
   Address
 } from '@web3modal/scaffold-utils/solana'
+import type {BaseMessageSignerWalletAdapter} from '@solana/wallet-adapter-base'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
-import { WalletAdapterNetwork, type BaseMessageSignerWalletAdapter } from '@solana/wallet-adapter-base'
-import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
-import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
-import { Web3ModalScaffold } from '@web3modal/scaffold'
-import { WalletConnectWalletAdapter } from '@solana/wallet-adapter-walletconnect';
-import UniversalProvider from '@walletconnect/universal-provider'
-import EthereumProvider from '@walletconnect/ethereum-provider'
-import { SolStoreUtil, SolHelpersUtil, SolConstantsUtil } from '@web3modal/scaffold-utils/solana'
-import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
-
-import { WalletConnectConnector } from './connectors/WalletConnectConnector'
-import { PhantomConnector } from './connectors/phantom'
 
 type AdapterKey = 'walletConnect' | 'phantom' | 'solflare'
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -68,7 +72,8 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        const chainId = HelpersUtil.caipNetworkIdToNumber(caipNetwork?.id)
+        const chainId = HelpersUtil.caipNetworkIdToString(caipNetwork?.id)
+        console.log("network controlller switch network ===== ", chainId)
         if (chainId) {
           try {
             await this.switchNetwork(chainId)
@@ -192,15 +197,18 @@ export class Web3Modal extends Web3ModalScaffold {
     super({
       networkControllerClient,
       connectionControllerClient,
-      defaultChain: chains[2],
+      defaultChain: SolHelpersUtil.getChain(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CHAIN_ID) : ''),
       tokens: HelpersUtil.getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `html-solana-${ConstantsUtil.VERSION}`,
       ...w3mOptions
     } as ScaffoldOptions)
 
+    console.log("default chain ============ ", SolHelpersUtil.getChain(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CHAIN_ID) : ''));
+    console.log("default chain ============ ", typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CHAIN_ID) : "No local storage")
+
     this.chains = chains
     SolStoreUtil.setProjectId(options.projectId)
-    SolStoreUtil.setCurrentChain(chains[2] as Chain)
+    SolStoreUtil.setCurrentChain(SolHelpersUtil.getChain(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CHAIN_ID) : ''))
 
     this.walletAdapters = {
       phantom: new PhantomWalletAdapter(),
@@ -418,12 +426,58 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
   }
 
-  private async switchNetwork(chainId: number) {
+  private async switchNetwork(chainId: string) {
     const provider = SolStoreUtil.state.provider
     const providerType = SolStoreUtil.state.providerType
+
     if (this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId)
 
+      if (chain) {
+        try {
+
+          switch (providerType) {
+
+            case ConstantsUtil.INJECTED_CONNECTOR_ID:
+              const InjectedProvider = provider
+              // console.log("providerType =========== ", providerType, chain.chainId, window.solana?.connect);
+              if (window.solana?.connect) {
+                await window.solana.connect(chain.chainId);
+              }
+              if (chain) {
+                // await this.disconnect()
+                SolStoreUtil.setChainId(chain.chainId)
+                localStorage.setItem(SolConstantsUtil.CHAIN_ID, chain.chainId))
+                await this.syncAccount()
+                await this.syncBalance()
+              }
+              break
+
+            case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
+              // console.log("wallet connect wallet")
+              if (chain) {
+                SolStoreUtil.setChainId(chain.chainId)
+                localStorage.setItem(SolConstantsUtil.CHAIN_ID, chain.chainId)
+                const WalletConnectProvider = provider as unknown as EthereumProvider
+                await WalletConnectProvider.request({
+                  method: 'wallet_switchSolanaChain',
+                  params: [{ chainId: chain.chainId }]
+                })
+                await this.syncAccount()
+                await this.syncBalance()
+              }
+              break
+
+            default:
+              console.log('Unrecognized Wallet')
+              break
+          }
+        } catch (error) {
+          console.log("switch network error", error)
+        }
+      }
+
+      /*
       if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID && chain) {
         const WalletConnectProvider = provider as unknown as EthereumProvider
 
@@ -521,6 +575,7 @@ export class Web3Modal extends Web3ModalScaffold {
           }
         }
       }
+      */
     }
   }
 
@@ -569,13 +624,14 @@ export class Web3Modal extends Web3ModalScaffold {
 
       provider?.removeListener('disconnect', disconnectHandler)
       provider?.removeListener('accountsChanged', accountsChangedHandler)
+      provider?.removeListener('connect', accountsChangedHandler)
       provider?.removeListener('chainChanged', chainChangedHandler)
     }
 
-    function accountsChangedHandler(accounts: string[]) {
-      const currentAccount = accounts?.[0]
+    function accountsChangedHandler(publicKey: PublicKey) {
+      const currentAccount: string = publicKey.toBase58();
       if (currentAccount) {
-        SolStoreUtil.setAddress('')
+        SolStoreUtil.setAddress(currentAccount)
       } else {
         localStorage.removeItem(SolConstantsUtil.WALLET_ID)
         SolStoreUtil.reset()
@@ -591,6 +647,7 @@ export class Web3Modal extends Web3ModalScaffold {
     if (provider) {
       provider.on('disconnect', disconnectHandler)
       provider.on('accountsChanged', accountsChangedHandler)
+      provider.on('connect', accountsChangedHandler)
       provider.on('chainChanged', chainChangedHandler)
     }
   }

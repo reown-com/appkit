@@ -420,12 +420,22 @@ export const SolConstantsUtil = {
   NAME_TOKENIZER_ID: new PublicKey('nftD3vbNkNqfj2Sd3HZwbpw4BxxKWr4AjGb9X38JeZk'),
   MINT_PREFIX: Buffer.from('tokenized_name'),
   WALLET_ID: '@w3m/solana_wallet',
+  CHAIN_ID: '@w3m/solana_chain',
   ERROR_CODE_UNRECOGNIZED_CHAIN_ID: 4902,
   ERROR_CODE_DEFAULT: 5000
 }
 
 // -- Helpers --------------------------------------------- //
 export const SolHelpersUtil = {
+  getChain(chains: Chain[], chainId) {
+    const chain = chains.find(chain => chain.chainId === chainId)
+    console.log(chain);
+    if (chain) {
+      return chain;
+    }
+    console.log('will return ', chains[0]);
+    return chains[0]
+  },
   getCaipDefaultChain(chain?: Chain) {
     if (!chain) {
       return undefined
