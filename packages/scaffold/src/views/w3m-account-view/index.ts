@@ -143,7 +143,7 @@ export class W3mAccountView extends LitElement {
         ${this.onrampTemplate()}
         <wui-list-item
           iconVariant="blue"
-          icon="swapHorizontalBold"
+          icon="swapHorizontalMedium"
           iconSize="sm"
           ?chevron=${true}
           @click=${this.onTransactions.bind(this)}
@@ -176,7 +176,6 @@ export class W3mAccountView extends LitElement {
       <wui-list-item
         iconVariant="blue"
         icon="add"
-        iconSize="lg"
         ?chevron=${true}
         @click=${this.handleClickPay.bind(this)}
       >
