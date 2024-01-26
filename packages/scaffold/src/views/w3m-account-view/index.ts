@@ -41,6 +41,10 @@ export class W3mAccountView extends LitElement {
 
   @state() private disconnecting = false
 
+  @state() private balance = AccountController.state.balance
+
+  @state() private balanceSymbol = AccountController.state.balanceSymbol
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -50,6 +54,8 @@ export class W3mAccountView extends LitElement {
             this.address = val.address
             this.profileImage = val.profileImage
             this.profileName = val.profileName
+            this.balance = val.balance
+            this.balanceSymbol = val.balanceSymbol
           } else {
             ModalController.close()
           }
@@ -112,6 +118,9 @@ export class W3mAccountView extends LitElement {
               @click=${this.onCopyAddress}
             ></wui-icon-link>
           </wui-flex>
+          <wui-text variant="paragraph-500" color="fg-200"
+            >${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}</wui-text
+          >
         </wui-flex>
         ${this.explorerBtnTemplate()}
       </wui-flex>
