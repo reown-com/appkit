@@ -35,5 +35,6 @@
   },
   "bugs": {
     "url": "https://github.com/web3modal/web3modal/issues"
-  }
+  },
+  "sideEffects": false
 }
