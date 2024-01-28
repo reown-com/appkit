@@ -78,7 +78,7 @@ export class W3mBuyInProgressView extends LitElement {
 
     const subLabel = this.error
       ? 'Buy can be declined from your side or due to and error on the provider app'
-      : `We’ll notify you once your Buy is proceed`
+      : `We’ll notify you once your Buy is processed`
 
     return html`
       <wui-flex
