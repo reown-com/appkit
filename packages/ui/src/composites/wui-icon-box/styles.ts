@@ -10,6 +10,7 @@ export default css`
     background-color: var(--wui-gray-glass-020);
     border-radius: var(--local-border-radius);
     border: var(--local-border);
+    box-sizing: content-box;
     width: var(--local-size);
     height: var(--local-size);
     min-height: var(--local-size);
