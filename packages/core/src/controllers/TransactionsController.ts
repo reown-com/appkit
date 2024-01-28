@@ -6,7 +6,8 @@ import { EventsController } from './EventsController.js'
 import { SnackController } from './SnackController.js'
 
 // -- Types --------------------------------------------- //
-type TransactionByYearMap = Record<number, Transaction[]>
+type TransactionByMonthMap = Record<number, Transaction[]>
+type TransactionByYearMap = Record<number, TransactionByMonthMap>
 
 export interface TransactionsControllerState {
   transactions: Transaction[]
@@ -54,7 +55,7 @@ export const TransactionsController = {
 
       state.loading = false
       state.transactions = filteredTransactions
-      state.transactionsByYear = this.groupTransactionsByYear(
+      state.transactionsByYear = this.groupTransactionsByYearAndMonth(
         state.transactionsByYear,
         nonSpamTransactions
       )
@@ -76,7 +77,7 @@ export const TransactionsController = {
     }
   },
 
-  groupTransactionsByYear(
+  groupTransactionsByYearAndMonth(
     transactionsMap: TransactionByYearMap = {},
     transactions: Transaction[] = []
   ) {
@@ -84,10 +85,14 @@ export const TransactionsController = {
 
     transactions.forEach(transaction => {
       const year = new Date(transaction.metadata.minedAt).getFullYear()
-      if (!grouped[year]) {
-        grouped[year] = []
+      const month = new Date(transaction.metadata.minedAt).getMonth()
+      const yearTransactions = grouped[year] ?? {}
+      const monthTransactions = yearTransactions[month] ?? []
+
+      grouped[year] = {
+        ...yearTransactions,
+        [month]: [...monthTransactions, transaction]
       }
-      grouped[year]?.push(transaction)
     })
 
     return grouped
