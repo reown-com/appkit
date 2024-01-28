@@ -255,7 +255,7 @@ export class W3mTransactionsView extends LitElement {
   }
 
   private getTransactionListItemProps(transaction: Transaction) {
-    const date = DateUtil.getRelativeDateFromNow(transaction?.metadata?.minedAt)
+    const date = DateUtil.formatDate(transaction?.metadata?.minedAt)
     const descriptions = TransactionUtil.getTransactionDescriptions(transaction)
 
     const transfers = transaction?.transfers
