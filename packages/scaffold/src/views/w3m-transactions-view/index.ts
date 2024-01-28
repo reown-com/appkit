@@ -111,7 +111,7 @@ export class W3mTransactionsView extends LitElement {
         }
 
         return html`
-          <wui-flex flexDirection="column" gap="s">
+          <wui-flex flexDirection="column">
             <wui-flex
               alignItems="center"
               flexDirection="row"
