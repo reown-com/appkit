@@ -158,7 +158,11 @@ export type FilterObject =
 export interface TransactionInstructionRq {
   programId: string
   data: string
-  keys: { isSigner: boolean; isWritable: boolean; pubkey: string }[]
+  keys: {
+    isSigner: boolean,
+    isWritable: boolean,
+    pubkey: string
+  }[]
 }
 
 export interface RequestMethods {
@@ -176,7 +180,10 @@ export interface RequestMethods {
       feePayer: string
       instructions: TransactionInstructionRq[]
       recentBlockhash: string
-      signatures?: { pubkey: string; signature: string }[]
+      signatures?: {
+        pubkey: string,
+        signature: string,
+      }[]
     }
     returns: {
       signature: string
@@ -270,7 +277,10 @@ export interface ClusterRequestMethods {
   getTransaction: {
     params: [
       string,
-      { encoding: 'base58' | 'base64' | 'jsonParsed'; commitment: 'confirmed' | 'finalized' }
+      {
+        encoding: 'base58' | 'base64' | 'jsonParsed',
+        commitment: 'confirmed' | 'finalized'
+      }
     ]
     returns: TransactionResult | null
   }
@@ -427,13 +437,12 @@ export const SolConstantsUtil = {
 
 // -- Helpers --------------------------------------------- //
 export const SolHelpersUtil = {
-  getChain(chains: Chain[], chainId) {
+  getChain(chains: Chain[], chainId: string) {
     const chain = chains.find(chain => chain.chainId === chainId)
-    console.log(chain);
+    console.log(chain)
     if (chain) {
-      return chain;
+      return chain
     }
-    console.log('will return ', chains[0]);
     return chains[0]
   },
   getCaipDefaultChain(chain?: Chain) {
