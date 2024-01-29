@@ -10,12 +10,14 @@ export class W3mUpdateEmailPrimaryOtpView extends W3mEmailOtpWidget {
   }
 
   // --  Private ------------------------------------------ //
+  override email = RouterController.state.data?.email
+
   override onOtpSubmit: OnOtpSubmitFn = async otp => {
     try {
       if (this.emailConnector) {
         await this.emailConnector.provider.updateEmailPrimaryOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
-        RouterController.replace('UpdateEmailSecondaryOtp', { email: this.email })
+        RouterController.replace('UpdateEmailSecondaryOtp', RouterController.state.data)
       }
     } catch (error) {
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_FAIL' })
@@ -24,7 +26,7 @@ export class W3mUpdateEmailPrimaryOtpView extends W3mEmailOtpWidget {
   }
 
   override onStartOver = () => {
-    RouterController.replace('UpdateEmailWallet')
+    RouterController.replace('UpdateEmailWallet', RouterController.state.data)
   }
 }
 

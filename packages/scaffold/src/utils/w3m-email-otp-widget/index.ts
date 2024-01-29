@@ -22,9 +22,6 @@ const OTP_LENGTH = 6
 export class W3mEmailOtpWidget extends LitElement {
   public static override styles = styles
 
-  // -- Members ------------------------------------------- //
-  protected readonly email = RouterController.state.data?.email
-
   // -- State & Properties -------------------------------- //
   @state() private loading = false
 
@@ -35,6 +32,8 @@ export class W3mEmailOtpWidget extends LitElement {
   private otp = ''
 
   private OTPTimeout: NodeJS.Timeout | undefined
+
+  public email = RouterController.state.data?.email
 
   public onOtpSubmit: OnOtpSubmitFn | undefined
 
