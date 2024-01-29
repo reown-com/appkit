@@ -5,6 +5,7 @@ import { solanaDevnet } from '../../utils/ChainsUtil'
 import { useState } from 'react'
 
 const WALLECT_CONNECT_DEVNET_ADDRESS = '2yr4zgYEyWRqFrNym31X1oJ4NprJsXjATEQb5XnkFY8v'
+const PHANTOM_DEVNET_ADDRESS = 'EmT8r4E8ZjoQgt8sXGbaWBRMKfUXsVT1wonoSnJZ4nBn'
 
 export function SolanaSendTransactionTest() {
   const toast = useToast()
@@ -14,14 +15,13 @@ export function SolanaSendTransactionTest() {
 
   async function onSendTransaction() {
     try {
-      console.log(`address`, address);
       setLoading(true)
       if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
       const tx = await walletProvider.signAndSendTransaction('transfer',
         {
-          to: WALLECT_CONNECT_DEVNET_ADDRESS,
+          to: PHANTOM_DEVNET_ADDRESS,
           amountInLamports: 100000000,
           feePayer: 'to'
         })
