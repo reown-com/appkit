@@ -7,4 +7,8 @@ export default css`
     overflow-x: hidden;
     scrollbar-width: none;
   }
+
+  :host > wui-flex:first-child::-webkit-scrollbar {
+    display: none;
+  }
 `
