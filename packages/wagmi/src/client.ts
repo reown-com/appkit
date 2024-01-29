@@ -34,7 +34,8 @@ import {
   getEmailCaipNetworks,
   getWalletConnectCaipNetworks
 } from './utils/helpers.js'
-import { type W3mFrameProvider, type W3mFrameTypes, W3mFrameHelpers } from '@web3modal/wallet'
+import { W3mFrameHelpers } from '@web3modal/wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
 import { ConstantsUtil as CoreConstants } from '@web3modal/core'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
