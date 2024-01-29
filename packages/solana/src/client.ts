@@ -1,10 +1,7 @@
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
 
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import { WalletConnectWalletAdapter } from '@solana/wallet-adapter-walletconnect'
-import UniversalProvider from '@walletconnect/universal-provider'
 import EthereumProvider from '@walletconnect/ethereum-provider'
 import { SolStoreUtil, SolHelpersUtil, SolConstantsUtil } from '@web3modal/scaffold-utils/solana'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
