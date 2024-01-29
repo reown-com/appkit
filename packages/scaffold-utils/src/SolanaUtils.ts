@@ -311,7 +311,7 @@ export interface SolStoreUtilState {
   projectId: string
   provider?: Provider | CombinedProvider | UniversalProvider
   providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
-  address?: Address | ''
+  address?: string
   chainId?: string
   currentChain?: Chain
   requestId?: number
@@ -361,7 +361,7 @@ export const SolStoreUtil = {
     state.projectId = projectId
   },
 
-  setAddress(address: SolStoreUtilState['address'] | '') {
+  setAddress(address: string) {
     state.address = address
   },
 
@@ -437,7 +437,7 @@ export const SolConstantsUtil = {
 
 // -- Helpers --------------------------------------------- //
 export const SolHelpersUtil = {
-  getChain(chains: Chain[], chainId: string) {
+  getChain(chains: Chain[], chainId: string | null) {
     const chain = chains.find(chain => chain.chainId === chainId)
     console.log(chain)
     if (chain) {

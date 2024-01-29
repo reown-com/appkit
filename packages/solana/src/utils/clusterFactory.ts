@@ -8,7 +8,11 @@ import type { ClusterSubscribeRequestMethods } from '@web3modal/scaffold-utils/s
 
 type Listeners = Record<
   number,
-  { callback: (params: Transaction | number) => void; method: string; id: number }
+  {
+    callback: (params: Transaction | number) => void,
+    method: string,
+    id: number
+  }
 >
 let socket: WebSocket | undefined = undefined
 const listeners: Listeners = proxy<Listeners>({})
@@ -24,7 +28,10 @@ export async function setSocket() {
     const data = JSON.parse(ev.data) as {
       id: number
       result: number
-      params: { subscription: number; result: number }
+      params: {
+        subscription: number,
+        result: number
+      }
     }
 
     /*

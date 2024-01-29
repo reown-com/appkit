@@ -7,7 +7,7 @@ export class FavouriteDomain {
   public tag: Tag
   public nameAccount: PublicKey
 
-  public constructor(obj: { tag: number; nameAccount: Uint8Array }) {
+  public constructor(obj: { tag: number, nameAccount: Uint8Array }) {
     this.tag = obj.tag as Tag
     this.nameAccount = new PublicKey(obj.nameAccount)
   }
@@ -32,7 +32,7 @@ export class NameRegistry {
   public class: PublicKey
   public data: Buffer | undefined
 
-  public constructor(obj: { parentName: Uint8Array; owner: Uint8Array; class: Uint8Array }) {
+  public constructor(obj: { parentName: Uint8Array, owner: Uint8Array, class: Uint8Array }) {
     this.parentName = new PublicKey(obj.parentName)
     this.owner = new PublicKey(obj.owner)
     this.class = new PublicKey(obj.class)

@@ -3,7 +3,7 @@ import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
 
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import { WalletConnectWalletAdapter } from '@solana/wallet-adapter-walletconnect';
+import { WalletConnectWalletAdapter } from '@solana/wallet-adapter-walletconnect'
 import UniversalProvider from '@walletconnect/universal-provider'
 import EthereumProvider from '@walletconnect/ethereum-provider'
 import { SolStoreUtil, SolHelpersUtil, SolConstantsUtil } from '@web3modal/scaffold-utils/solana'
@@ -33,6 +33,7 @@ import type {
 } from '@web3modal/scaffold-utils/solana'
 import type {BaseMessageSignerWalletAdapter} from '@solana/wallet-adapter-base'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
+import {address} from "@apps/gallery/utils/PresetUtils";
 
 type AdapterKey = 'walletConnect' | 'phantom' | 'solflare'
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -55,7 +56,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private PhantomConnector: PhantomConnector
 
-  private walletAdapters: Record<AdapterKey, BaseMessageSignerWalletAdapter>;
+  private walletAdapters: Record<AdapterKey, BaseMessageSignerWalletAdapter>
 
   private chains: Chain[]
 
@@ -91,6 +92,7 @@ export class Web3Modal extends Web3ModalScaffold {
               approvedCaipNetworkIds: undefined,
               supportsAllNetworks: true
             }
+            console.log(result)
             /* const provider = await this.WalletConnectConnector.getProvider()
             if (!provider) {
               throw new Error(
@@ -133,6 +135,7 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       connectExternal: async ({ id, info }) => {
+        console.log(id, info)
         switch (id) {
           case 'Phantom': {
             await this.walletAdapters.phantom.connect()
@@ -165,7 +168,7 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       disconnect: async () => {
-        const provider = SolStoreUtil.state.provider
+        const provider = SolStoreUtil.state.provider as Provider;
         const providerType = SolStoreUtil.state.providerType
         localStorage.removeItem(SolConstantsUtil.WALLET_ID)
         SolStoreUtil.reset()
@@ -178,12 +181,12 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       signMessage: async (message: string) => {
-        console.log(`message`, message);
+        console.log(`message`, message)
         const provider = SolStoreUtil.state.provider
         if (!provider) {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
-        console.log(`sign message`);
+        console.log(`sign message`)
 
         const signature = await provider.request({
           method: 'personal_sign',
@@ -203,12 +206,12 @@ export class Web3Modal extends Web3ModalScaffold {
       ...w3mOptions
     } as ScaffoldOptions)
 
-    console.log("default chain ============ ", SolHelpersUtil.getChain(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CHAIN_ID) : ''));
+    console.log("default chain ============ ", SolHelpersUtil.getChain(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CHAIN_ID) : ''))
     console.log("default chain ============ ", typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CHAIN_ID) : "No local storage")
 
     this.chains = chains
     SolStoreUtil.setProjectId(options.projectId)
-    SolStoreUtil.setCurrentChain(SolHelpersUtil.getChain(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CHAIN_ID) : ''))
+    SolStoreUtil.setCurrentChain(SolHelpersUtil.getChain(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CHAIN_ID) : '') as Chain)
 
     this.walletAdapters = {
       phantom: new PhantomWalletAdapter(),
@@ -260,7 +263,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   public disconnect() {
-    console.log(`disconnect hook triggers`);
+    console.log(`disconnect hook triggers`)
   }
 
   public async checkActiveProviders() {
@@ -271,13 +274,13 @@ export class Web3Modal extends Web3ModalScaffold {
         case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID: {
           const address = await this.WalletConnectConnector.connect(true)
           this.setWalletConnectProvider(await this.WalletConnectConnector.getProvider(), address as Address)
-          break;
+          break
         }
         case ConstantsUtil.INJECTED_CONNECTOR_ID: {
           await this.walletAdapters.phantom.connect()
           const address = this.walletAdapters.phantom.publicKey?.toString() as Address
           this.setInjectedProvider(this.walletAdapters.phantom as unknown as Provider, address)
-          break;
+          break
         }
       }
     } catch (error) {
@@ -440,16 +443,18 @@ export class Web3Modal extends Web3ModalScaffold {
 
             case ConstantsUtil.INJECTED_CONNECTOR_ID:
               const InjectedProvider = provider
-              // console.log("providerType =========== ", providerType, chain.chainId, window.solana?.connect);
-              if (window.solana?.connect) {
-                await window.solana.connect(chain.chainId);
+
+              console.log(InjectedProvider)
+
+              if (window.solana?.['connect']) {
+                window.solana?.['connect'](chain.chainId)
               }
               if (chain) {
                 // await this.disconnect()
                 SolStoreUtil.setChainId(chain.chainId)
-                localStorage.setItem(SolConstantsUtil.CHAIN_ID, chain.chainId))
+                localStorage.setItem(SolConstantsUtil.CHAIN_ID, chain.chainId)
                 await this.syncAccount()
-                await this.syncBalance()
+                await this.syncBalance(address)
               }
               break
 
@@ -464,7 +469,7 @@ export class Web3Modal extends Web3ModalScaffold {
                   params: [{ chainId: chain.chainId }]
                 })
                 await this.syncAccount()
-                await this.syncBalance()
+                await this.syncBalance(address)
               }
               break
 
@@ -629,7 +634,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     function accountsChangedHandler(publicKey: PublicKey) {
-      const currentAccount: string = publicKey.toBase58();
+      const currentAccount: string = publicKey.toBase58()
       if (currentAccount) {
         SolStoreUtil.setAddress(currentAccount)
       } else {

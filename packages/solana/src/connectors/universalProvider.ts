@@ -42,7 +42,7 @@ export class UniversalProviderFactory {
     // Subscribe to session ping
     UniversalProviderFactory.provider.on(
       'session_ping',
-      ({ id, topic }: { id: number; topic: string }) => {
+      ({ id, topic }: { id: number, topic: string }) => {
         console.log(id, topic)
       }
     )
@@ -50,7 +50,7 @@ export class UniversalProviderFactory {
     // Subscribe to session event
     UniversalProviderFactory.provider.on(
       'session_event',
-      ({ event, chainId }: { event: unknown; chainId: string }) => {
+      ({ event, chainId }: { event: unknown, chainId: string }) => {
         console.log(event, chainId)
       }
     )
@@ -58,7 +58,7 @@ export class UniversalProviderFactory {
     // Subscribe to session update
     UniversalProviderFactory.provider.on(
       'session_update',
-      ({ topic, params }: { topic: string; params: unknown }) => {
+      ({ topic, params }: { topic: string, params: unknown }) => {
         console.log(topic, params)
       }
     )
