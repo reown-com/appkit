@@ -1,4 +1,10 @@
-import { AccountController, AssetUtil, ModalController, NetworkController } from '@web3modal/core'
+import {
+  AccountController,
+  AssetUtil,
+  EventsController,
+  ModalController,
+  NetworkController
+} from '@web3modal/core'
 import type { WuiNetworkButton } from '@web3modal/ui'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -54,6 +60,7 @@ export class W3mNetworkButton extends LitElement {
   // -- Private ------------------------------------------- //
   private onClick() {
     if (!this.loading) {
+      EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORKS' })
       ModalController.open({ view: 'Networks' })
     }
   }

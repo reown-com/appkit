@@ -2,6 +2,7 @@ import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
 import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil.js'
 import { PublicStateController } from './PublicStateController.js'
+import { EventsController } from './EventsController.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -73,6 +74,13 @@ export const NetworkController = {
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
     await this._getClient().switchCaipNetwork(network)
     state.caipNetwork = network
+    if (network) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SWITCH_NETWORK',
+        properties: { network: network.id }
+      })
+    }
   },
 
   resetNetwork() {
