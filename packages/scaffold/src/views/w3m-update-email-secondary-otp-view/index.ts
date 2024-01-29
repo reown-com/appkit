@@ -23,11 +23,8 @@ export class W3mUpdateEmailSecondaryOtpView extends W3mEmailOtpWidget {
     }
   }
 
-  override onOtpResend: OnOtpResendFn = async email => {
-    if (this.emailConnector) {
-      await this.emailConnector.provider.connectEmail({ email })
-      EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_SENT' })
-    }
+  override onStartOver = () => {
+    RouterController.replace('UpdateEmailWallet')
   }
 }
 

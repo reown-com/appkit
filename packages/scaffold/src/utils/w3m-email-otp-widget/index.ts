@@ -13,6 +13,7 @@ import { W3mFrameHelpers } from '@web3modal/wallet'
 // -- Types --------------------------------------------- //
 export type OnOtpSubmitFn = (otp: string) => Promise<void>
 export type OnOtpResendFn = (email: string) => Promise<void>
+export type OnStartOverFn = () => void
 
 // -- Helpers ------------------------------------------- //
 const OTP_LENGTH = 6
@@ -39,6 +40,8 @@ export class W3mEmailOtpWidget extends LitElement {
 
   public onOtpResend: OnOtpResendFn | undefined
 
+  public onStartOver: OnStartOverFn | undefined
+
   public emailConnector = ConnectorController.getEmailConnector()
 
   public override firstUpdated() {
@@ -58,8 +61,8 @@ export class W3mEmailOtpWidget extends LitElement {
     if (!this.email) {
       throw new Error('w3m-email-otp-widget: No email provided')
     }
-
     const isResendDisabled = Boolean(this.timeoutTimeLeft)
+    const footerLabels = this.getFooterLabels(isResendDisabled)
 
     return html`
       <wui-flex
@@ -69,7 +72,7 @@ export class W3mEmailOtpWidget extends LitElement {
         gap="l"
       >
         <wui-flex flexDirection="column" alignItems="center">
-          <wui-text variant="paragraph-400" color="fg-100"> Enter the code we sent to </wui-text>
+          <wui-text variant="paragraph-400" color="fg-100">Enter the code we sent to</wui-text>
           <wui-text variant="paragraph-500" color="fg-100">${this.email}</wui-text>
         </wui-flex>
 
@@ -94,9 +97,9 @@ export class W3mEmailOtpWidget extends LitElement {
             </wui-flex>`}
 
         <wui-flex alignItems="center">
-          <wui-text variant="small-400" color="fg-200">Didn't receive it?</wui-text>
+          <wui-text variant="small-400" color="fg-200">${footerLabels.title}</wui-text>
           <wui-link @click=${this.onResendCode.bind(this)} .disabled=${isResendDisabled}>
-            Resend ${isResendDisabled ? `in ${this.timeoutTimeLeft}s` : 'Code'}
+            ${footerLabels.action}
           </wui-link>
         </wui-flex>
       </wui-flex>
@@ -132,22 +135,40 @@ export class W3mEmailOtpWidget extends LitElement {
 
   private async onResendCode() {
     try {
-      if (!this.loading && !this.timeoutTimeLeft) {
-        this.error = ''
-        this.otp = ''
-        const emailConnector = ConnectorController.getEmailConnector()
-        if (!emailConnector || !this.email) {
-          throw new Error('w3m-email-otp-widget: Unable to resend email')
+      if (this.onOtpResend) {
+        if (!this.loading && !this.timeoutTimeLeft) {
+          this.error = ''
+          this.otp = ''
+          const emailConnector = ConnectorController.getEmailConnector()
+          if (!emailConnector || !this.email) {
+            throw new Error('w3m-email-otp-widget: Unable to resend email')
+          }
+          this.loading = true
+          await this.onOtpResend(this.email)
+          this.startOTPTimeout()
+          SnackController.showSuccess('Code email resent')
         }
-        this.loading = true
-        await this.onOtpResend?.(this.email)
-        this.startOTPTimeout()
-        SnackController.showSuccess('Code email resent')
+      } else if (this.onStartOver) {
+        this.onStartOver()
       }
     } catch (error) {
       SnackController.showError(error)
     } finally {
       this.loading = false
+    }
+  }
+
+  private getFooterLabels(isResendDisabled: boolean) {
+    if (this.onStartOver) {
+      return {
+        title: 'Something wrong?',
+        action: `Try again ${isResendDisabled ? `in ${this.timeoutTimeLeft}s` : ''}`
+      }
+    }
+
+    return {
+      title: `Didn't receive it?`,
+      action: `Resend ${isResendDisabled ? `in ${this.timeoutTimeLeft}s` : 'Code'}`
     }
   }
 }
