@@ -317,14 +317,17 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private async syncBalance(address: Hex, chainId: number) {
     const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId)
+    if (chain) {
+      const balance = await getBalance(this.wagmiConfig, {
+        address,
+        chainId: chain.id,
+        token: this.options?.tokens?.[chain.id]?.address as Hex
+      })
+      this.setBalance(balance.formatted, balance.symbol)
 
-    const id = chain?.id || this.options?.defaultChain?.id || this.wagmiConfig?.chains?.[0]?.id
-    const balance = await getBalance(this.wagmiConfig, {
-      address,
-      chainId: id,
-      token: this.options?.tokens?.[id]?.address as Hex
-    })
-    this.setBalance(balance.formatted, balance.symbol)
+      return
+    }
+    this.setBalance(undefined, undefined)
   }
 
   private syncConnectors(
