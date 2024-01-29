@@ -30,7 +30,6 @@ import type {
 } from '@web3modal/scaffold-utils/solana'
 import type { BaseMessageSignerWalletAdapter } from '@solana/wallet-adapter-base'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
-import { address } from "@apps/gallery/utils/PresetUtils";
 
 type AdapterKey = 'phantom' | 'solflare'
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -453,7 +452,7 @@ export class Web3Modal extends Web3ModalScaffold {
                 SolStoreUtil.setChainId(chain.chainId)
                 localStorage.setItem(SolConstantsUtil.CHAIN_ID, chain.chainId)
                 await this.syncAccount()
-                await this.syncBalance(address)
+                await this.syncBalance(SolStoreUtil.state.address!)
               }
               break
 
@@ -468,7 +467,7 @@ export class Web3Modal extends Web3ModalScaffold {
                   params: [{ chainId: chain.chainId }]
                 })
                 await this.syncAccount()
-                await this.syncBalance(address)
+                await this.syncBalance(SolStoreUtil.state.address!)
               }
               break
 
