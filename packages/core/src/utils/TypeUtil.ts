@@ -142,6 +142,7 @@ export interface BlockchainApiTransactionsRequest {
   projectId: string
   cursor?: string
   onramp?: 'coinbase'
+  signal?: AbortSignal
 }
 
 export interface BlockchainApiTransactionsResponse {
