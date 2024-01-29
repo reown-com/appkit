@@ -1,6 +1,6 @@
 import { customElement } from '@web3modal/ui'
 import { W3mEmailOtpWidget } from '../../utils/w3m-email-otp-widget/index.js'
-import type { OnOtpSubmitFn, OnOtpResendFn } from '../../utils/w3m-email-otp-widget/index.js'
+import type { OnOtpSubmitFn } from '../../utils/w3m-email-otp-widget/index.js'
 import { EventsController, RouterController } from '@web3modal/core'
 
 @customElement('w3m-update-email-secondary-otp-view')
