@@ -86,6 +86,7 @@ export class W3mUpdateEmailWalletView extends LitElement {
 
       await emailConnector.provider.updateEmail({ email: this.email })
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_EDIT' })
+      RouterController.replace('UpdateEmailPrimaryOtp', { email: this.email })
     } catch (error) {
       SnackController.showError(error)
       this.loading = false

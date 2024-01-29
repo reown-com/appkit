@@ -1,7 +1,7 @@
 import { customElement } from '@web3modal/ui'
 import { W3mEmailOtpWidget } from '../../utils/w3m-email-otp-widget/index.js'
 import type { OnOtpSubmitFn, OnOtpResendFn } from '../../utils/w3m-email-otp-widget/index.js'
-import { EventsController, ConnectionController, ModalController } from '@web3modal/core'
+import { EventsController, RouterController } from '@web3modal/core'
 
 @customElement('w3m-update-email-primary-otp-view')
 export class W3mUpdateEmailPrimaryOtpView extends W3mEmailOtpWidget {
@@ -13,15 +13,9 @@ export class W3mUpdateEmailPrimaryOtpView extends W3mEmailOtpWidget {
   override onOtpSubmit: OnOtpSubmitFn = async otp => {
     try {
       if (this.emailConnector) {
-        await this.emailConnector.provider.connectOtp({ otp })
+        await this.emailConnector.provider.updateEmailPrimaryOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
-        await ConnectionController.connectExternal(this.emailConnector)
-        ModalController.close()
-        EventsController.sendEvent({
-          type: 'track',
-          event: 'CONNECT_SUCCESS',
-          properties: { method: 'email' }
-        })
+        RouterController.replace('UpdateEmailSecondaryOtp', { email: this.email })
       }
     } catch (error) {
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_FAIL' })
