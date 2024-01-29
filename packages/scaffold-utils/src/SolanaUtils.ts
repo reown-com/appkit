@@ -158,7 +158,11 @@ export type FilterObject =
 export interface TransactionInstructionRq {
   programId: string
   data: string
-  keys: { isSigner: boolean; isWritable: boolean; pubkey: string }[]
+  keys: {
+    isSigner: boolean,
+    isWritable: boolean,
+    pubkey: string
+  }[]
 }
 
 export interface RequestMethods {
@@ -176,7 +180,10 @@ export interface RequestMethods {
       feePayer: string
       instructions: TransactionInstructionRq[]
       recentBlockhash: string
-      signatures?: { pubkey: string; signature: string }[]
+      signatures?: {
+        pubkey: string,
+        signature: string,
+      }[]
     }
     returns: {
       signature: string
@@ -270,7 +277,10 @@ export interface ClusterRequestMethods {
   getTransaction: {
     params: [
       string,
-      { encoding: 'base58' | 'base64' | 'jsonParsed'; commitment: 'confirmed' | 'finalized' }
+      {
+        encoding: 'base58' | 'base64' | 'jsonParsed',
+        commitment: 'confirmed' | 'finalized'
+      }
     ]
     returns: TransactionResult | null
   }
@@ -301,7 +311,7 @@ export interface SolStoreUtilState {
   projectId: string
   provider?: Provider | CombinedProvider | UniversalProvider
   providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
-  address?: Address | ''
+  address?: string
   chainId?: string
   currentChain?: Chain
   requestId?: number
@@ -351,7 +361,7 @@ export const SolStoreUtil = {
     state.projectId = projectId
   },
 
-  setAddress(address: SolStoreUtilState['address'] | '') {
+  setAddress(address: string) {
     state.address = address
   },
 
@@ -427,10 +437,10 @@ export const SolConstantsUtil = {
 
 // -- Helpers --------------------------------------------- //
 export const SolHelpersUtil = {
-  getChain(chains: Chain[], chainId: string) {
+  getChain(chains: Chain[], chainId: string | null) {
     const chain = chains.find(chain => chain.chainId === chainId)
     if (chain) {
-      return chain;
+      return chain
     }
     return chains[0]
   },

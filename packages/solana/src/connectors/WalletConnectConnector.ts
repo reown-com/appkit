@@ -186,7 +186,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
         })
         .then(providerResult => {
           if (!providerResult) throw new Error('Failed connection.')
-          console.log(`setting connected to true`);
+          console.log(`setting connected to true`)
           SolStoreUtil.setIsConnected(true)
           // (TODO update typing for provider)
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -195,7 +195,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
             resolve(address)
           } else reject(new Error('Could not resolve address'))
         }).catch((err: Error) => {
-          console.log(`catched: `, err);
+          console.log(`catched: `, err)
         })
     })
   }

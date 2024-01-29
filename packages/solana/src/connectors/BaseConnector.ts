@@ -56,7 +56,7 @@ export interface Connector {
   ) => Promise<() => void>
   getSolDomainsFromPublicKey: (address: string) => Promise<string[]>
   getAddressFromDomain: (address: string) => Promise<string | null>
-  getFavoriteDomain: (address: string) => Promise<{ domain: PublicKey; reverse: string } | null>
+  getFavoriteDomain: (address: string) => Promise<{ domain: PublicKey, reverse: string } | null>
   getBlock: (slot: number) => Promise<BlockResult | null>
   getFeeForMessage: <Type extends TransactionType>(
     type: Type,
