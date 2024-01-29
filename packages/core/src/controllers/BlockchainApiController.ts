@@ -8,6 +8,18 @@ import type {
 } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
 
+type DestinationWallet = {
+  address: string
+  blockchains: string[]
+  assets: string[]
+}
+
+type GenerateOnRampT = {
+  destinationWallets: DestinationWallet[]
+  partnerUserId: string
+  defaultNetwork?: string
+}
+
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getBlockchainApiUrl()
 const api = new FetchUtil({ baseUrl })
@@ -40,5 +52,18 @@ export const BlockchainApiController = {
       params: queryParams,
       signal
     })
+  },
+
+  async generateOnRampURL({ destinationWallets, partnerUserId, defaultNetwork }: GenerateOnRampT) {
+    const response = await api.post<{ url: string }>({
+      path: `/v1/generators/onrampurl?projectId=${OptionsController.state.projectId}`,
+      body: {
+        destinationWallets,
+        defaultNetwork,
+        partnerUserId
+      }
+    })
+
+    return response.url
   }
 }

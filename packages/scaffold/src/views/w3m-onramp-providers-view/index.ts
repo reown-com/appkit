@@ -5,27 +5,19 @@ import {
   OnRampController,
   type OnRampProvider,
   RouterController,
-  NetworkController
+  NetworkController,
+  BlockchainApiController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import { generateOnRampURL } from '@coinbase/cbpay-js'
 import type { CoinbasePaySDKChainNameValues } from '@web3modal/core/src/utils/ConstantsUtil'
 
 @customElement('w3m-onramp-providers-view')
 export class W3mOnRampProvidersView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
-  @state() private providers: OnRampProvider[] = OnRampController.state.providers.map(provider => {
-    if (provider.name === 'coinbase') {
-      provider.url = this.getCoinbaseOnRampURL()
-
-      return provider
-    }
-
-    return provider
-  })
+  @state() private providers: OnRampProvider[] = OnRampController.state.providers
 
   public constructor() {
     super()
@@ -36,6 +28,23 @@ export class W3mOnRampProvidersView extends LitElement {
         })
       ]
     )
+  }
+
+  public override firstUpdated(): void {
+    const urlPromises = this.providers.map(async provider => {
+      if (provider.name === 'coinbase') {
+        return await this.getCoinbaseOnRampURL()
+      }
+
+      return Promise.resolve(provider?.url)
+    })
+
+    Promise.all(urlPromises).then(urls => {
+      this.providers = this.providers.map((provider, index) => ({
+        ...provider,
+        url: urls[index] as string
+      }))
+    })
   }
 
   // -- Render -------------------------------------------- //
@@ -59,6 +68,7 @@ export class W3mOnRampProvidersView extends LitElement {
           @click=${() => {
             this.onClickProvider(provider)
           }}
+          .disabled=${!provider.url}
         ></wui-onramp-provider-item>
       `
     )
@@ -70,7 +80,7 @@ export class W3mOnRampProvidersView extends LitElement {
     CoreHelperUtil.openHref(provider.url, 'popupWindow', 'width=600,height=800,scrollbars=yes')
   }
 
-  private getCoinbaseOnRampURL() {
+  private async getCoinbaseOnRampURL() {
     const address = AccountController.state.address
     const network = NetworkController.state.caipNetwork
 
@@ -87,8 +97,7 @@ export class W3mOnRampProvidersView extends LitElement {
         network.name as CoinbasePaySDKChainNameValues
       ] ?? ConstantsUtil.WC_COINBASE_PAY_SDK_FALLBACK_CHAIN
 
-    return generateOnRampURL({
-      appId: ConstantsUtil.WC_COINBASE_ONRAMP_APP_ID,
+    return await BlockchainApiController.generateOnRampURL({
       defaultNetwork,
       destinationWallets: [
         { address, blockchains: ConstantsUtil.WC_COINBASE_PAY_SDK_CHAINS, assets: ['USDC'] }

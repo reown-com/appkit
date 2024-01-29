@@ -190,7 +190,7 @@ export class Web3Modal extends Web3ModalScaffold {
       onChange: connectors => this.syncConnectors(connectors)
     })
     watchAccount(this.wagmiConfig, {
-      onChange: accountData => this.syncAccount({ ...accountData, config: wagmiConfig })
+      onChange: accountData => this.syncAccount({ ...accountData })
     })
   }
 

@@ -19,8 +19,6 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 
-import type { CBPayInstanceType } from '@coinbase/cbpay-js'
-
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
   public static override styles = styles
@@ -36,8 +34,6 @@ export class W3mAccountView extends LitElement {
   @state() private profileName = AccountController.state.profileName
 
   @state() private network = NetworkController.state.caipNetwork
-
-  @state() private onrampInstance: CBPayInstanceType | null = null
 
   @state() private disconnecting = false
 
@@ -71,7 +67,6 @@ export class W3mAccountView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
-    this.onrampInstance?.destroy()
   }
 
   // -- Render -------------------------------------------- //
