@@ -77,4 +77,8 @@ export default css`
     display: block;
     opacity: 1;
   }
+
+  wui-link {
+    padding: var(--wui-spacing-4xs) var(--wui-spacing-xxs);
+  }
 `

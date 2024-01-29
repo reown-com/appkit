@@ -53,6 +53,7 @@ import { searchSvg } from '../../assets/svg/search.js'
 import { sendSvg } from '../../assets/svg/send.js'
 import { swapHorizontalSvg } from '../../assets/svg/swapHorizontal.js'
 import { swapHorizontalBoldSvg } from '../../assets/svg/swapHorizontalBold.js'
+import { swapHorizontalMediumSvg } from '../../assets/svg/swapHorizontalMedium.js'
 import { swapVerticalSvg } from '../../assets/svg/swapVertical.js'
 import { telegramSvg } from '../../assets/svg/telegram.js'
 import { twitchSvg } from '../../assets/svg/twitch.js'
@@ -122,6 +123,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   search: searchSvg,
   send: sendSvg,
   swapHorizontal: swapHorizontalSvg,
+  swapHorizontalMedium: swapHorizontalMediumSvg,
   swapHorizontalBold: swapHorizontalBoldSvg,
   swapVertical: swapVerticalSvg,
   telegram: telegramSvg,

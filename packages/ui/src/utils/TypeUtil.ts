@@ -141,6 +141,7 @@ export type IconType =
   | 'send'
   | 'swapHorizontal'
   | 'swapHorizontalBold'
+  | 'swapHorizontalMedium'
   | 'swapVertical'
   | 'telegram'
   | 'twitch'

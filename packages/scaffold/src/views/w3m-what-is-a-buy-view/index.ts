@@ -1,4 +1,5 @@
 import { customElement } from '@web3modal/ui'
+import { RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 
 @customElement('w3m-what-is-a-buy-view')
@@ -22,6 +23,10 @@ export class W3mWhatIsABuyView extends LitElement {
             funds in your wallet to trade</wui-text
           >
         </wui-flex>
+        <wui-button @click=${RouterController.goBack}>
+          <wui-icon size="sm" color="inherit" name="add" slot="iconLeft"></wui-icon>
+          Buy
+        </wui-button>
       </wui-flex>
     `
   }

@@ -41,15 +41,15 @@ export class WuiOnRampProviderItem extends LitElement {
               ${this.feeRange}
             </wui-text>
             <wui-flex gap="xxs">
-              <wui-icon name="bank" size="xs"></wui-icon>
-              <wui-icon name="card" size="xs"></wui-icon>
+              <wui-icon name="bank" size="xs" color="fg-150"></wui-icon>
+              <wui-icon name="card" size="xs" color="fg-150"></wui-icon>
             </wui-flex>
             ${this.networksTemplate()}
           </wui-flex>
         </wui-flex>
         ${this.loading
           ? html`<wui-loading-spinner color="fg-200" size="md"></wui-loading-spinner>`
-          : html`<wui-icon name="chevronRight" color="fg-300"></wui-icon>`}
+          : html`<wui-icon name="chevronRight" color="fg-200" size="sm"></wui-icon>`}
       </button>
     `
   }
