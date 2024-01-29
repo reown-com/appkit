@@ -1,14 +1,8 @@
 import { createConnector, normalizeChainId } from '@wagmi/core'
+import type { Chain } from '@wagmi/core/chains'
 import { W3mFrameProvider } from '@web3modal/wallet'
-import {
-  type Address,
-  SwitchChainError,
-  getAddress,
-  type Chain,
-  type WalletClient,
-  createWalletClient,
-  custom
-} from 'viem'
+import { SwitchChainError, getAddress } from 'viem'
+import type { Address } from 'viem'
 
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 
@@ -26,27 +20,17 @@ export type EmailParameters = {
   options: W3mFrameProviderOptions
 }
 
-emailConnector.type = 'w3mEmail' as const
+// -- Connector ------------------------------------------------------------------------------------
 export function emailConnector(parameters: EmailParameters) {
   type Properties = {
-    connect(opts: ConnectOptions): Promise<{
-      accounts: Address[]
-      account: Address
-      chainId: number
-    }>
-    getProvider(): Promise<W3mFrameProvider>
-    disconnect(): Promise<void>
-    getChainId(): Promise<number>
-    getWalletClient(): Promise<WalletClient>
-    isAuthorized(): Promise<boolean>
-    chains: readonly [Chain, ...Chain[]]
     provider?: W3mFrameProvider
   }
 
   return createConnector<W3mFrameProvider, Properties>(config => ({
     id: ConstantsUtil.EMAIL_CONNECTOR_ID,
     name: 'Web3Modal Email',
-    type: emailConnector.type,
+    type: 'w3mEmail',
+
     async connect(options: ConnectOptions = {}) {
       const provider = await this.getProvider()
       const { address, chainId } = await provider.connect({ chainId: options.chainId })
@@ -90,15 +74,15 @@ export function emailConnector(parameters: EmailParameters) {
 
       return isConnected
     },
+
     async switchChain({ chainId }) {
       try {
-        const chain = this.chains.find(c => c.id === chainId)
+        const chain = config.chains.find(c => c.id === chainId)
         if (!chain) {
           throw new SwitchChainError(new Error('chain not found on connector.'))
         }
         const provider = await this.getProvider()
         await provider.switchNetwork(chainId)
-        // TOD0 check with ilja if we need unsupported flag
         config.emitter.emit('change', { chainId: normalizeChainId(chainId) })
 
         return chain
@@ -125,22 +109,10 @@ export function emailConnector(parameters: EmailParameters) {
       const accounts = await this.getAccounts()
       config.emitter.emit('connect', { accounts, chainId })
     },
+
     async onDisconnect(_error) {
       const provider = await this.getProvider()
       await provider.disconnect()
-    },
-    async getWalletClient() {
-      const provider = await this.getProvider()
-      const { address, chainId } = await provider.connect()
-
-      return Promise.resolve(
-        createWalletClient({
-          account: address as `0x${string}`,
-          chain: { id: chainId } as Chain,
-          transport: custom(provider)
-        })
-      )
-    },
-    chains: config.chains
+    }
   }))
 }

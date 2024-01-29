@@ -93,8 +93,10 @@ export class W3mRouter extends LitElement {
         return html`<w3m-upgrade-wallet-view></w3m-upgrade-wallet-view>`
       case 'UpdateEmailWallet':
         return html`<w3m-update-email-wallet-view></w3m-update-email-wallet-view>`
-      case 'UpdateEmailWalletWaiting':
-        return html`<w3m-update-email-wallet-waiting-view></w3m-update-email-wallet-waiting-view>`
+      case 'UpdateEmailPrimaryOtp':
+        return html`<w3m-update-email-primary-otp-view></w3m-update-email-primary-otp-view>`
+      case 'UpdateEmailSecondaryOtp':
+        return html`<w3m-update-email-secondary-otp-view></w3m-update-email-secondary-otp-view>`
       case 'OnRampProviders':
         return html`<w3m-onramp-providers-view></w3m-onramp-providers-view>`
       case 'OnRampActivity':

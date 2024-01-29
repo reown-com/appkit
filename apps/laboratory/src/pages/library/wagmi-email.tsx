@@ -1,4 +1,5 @@
-import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
+import { createWeb3Modal } from '@web3modal/wagmi/react'
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
@@ -14,13 +15,13 @@ export const wagmiConfig = defaultWagmiConfig({
   chains: WagmiConstantsUtil.chains,
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
-  enableEmail: true
+  enableEmail: true,
+  ssr: true
 })
 
 const modal = createWeb3Modal({
   wagmiConfig,
   projectId: ConstantsUtil.ProjectId,
-  chains: WagmiConstantsUtil.chains,
   enableAnalytics: true,
   metadata: ConstantsUtil.Metadata,
   termsConditionsUrl: 'https://walletconnect.com/terms',

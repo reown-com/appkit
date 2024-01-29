@@ -7,6 +7,7 @@ export interface OptionsControllerState {
   projectId: ProjectId
   sdkType: 'w3m'
   sdkVersion: SdkVersion
+  allWallets?: 'SHOW' | 'HIDE' | 'ONLY_MOBILE'
   featuredWalletIds?: string[]
   includeWalletIds?: string[]
   excludeWalletIds?: string[]
@@ -38,6 +39,10 @@ export const OptionsController = {
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
     state.projectId = projectId
+  },
+
+  setAllWallets(allWallets: OptionsControllerState['allWallets']) {
+    state.allWallets = allWallets
   },
 
   setIncludeWalletIds(includeWalletIds: OptionsControllerState['includeWalletIds']) {

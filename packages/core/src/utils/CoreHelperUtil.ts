@@ -138,7 +138,7 @@ export const CoreHelperUtil = {
       }
     }
 
-    return formattedBalance ? `${formattedBalance} ${symbol}` : `0.000 ${symbol}`
+    return formattedBalance ? `${formattedBalance} ${symbol ?? ''}` : '0.000'
   },
 
   formatBalance2(balance: string | undefined, symbol: string | undefined) {

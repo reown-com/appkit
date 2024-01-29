@@ -14,7 +14,6 @@ export default css`
 
   :host > wui-flex wui-image {
     display: block;
-    z-index: -1;
   }
 
   :host > wui-flex,
