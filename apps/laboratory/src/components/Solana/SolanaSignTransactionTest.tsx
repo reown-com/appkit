@@ -1,4 +1,4 @@
-import { Button, useToast, Stack, Link, Text, Spacer } from '@chakra-ui/react'
+import { Button, useToast, Stack, Text } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
 import { solanaDevnet } from '../../utils/ChainsUtil'
