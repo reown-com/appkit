@@ -21,7 +21,7 @@ export function SolanaSignMessageTest() {
           return new TextEncoder().encode(message)
         }
       }
-      const signature = await walletProvider.signMessage(generateMessage('Hello Web3Modal Solana'))
+      const signature = await walletProvider.signMessage(generateMessage('Hello from Web3Modal'))
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
         description: signature,

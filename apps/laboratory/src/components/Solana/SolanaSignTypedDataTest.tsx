@@ -1,33 +1,51 @@
+import type { Schema } from 'borsh';
+import { serialize } from 'borsh';
 import { Button, useToast } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
-const types: Record<string, object> = {
-  Person: [
-    { name: 'name', type: 'string' },
-    { name: 'wallet', type: 'address' }
-  ],
-  Mail: [
-    { name: 'from', type: 'Person' },
-    { name: 'to', type: 'Person' },
-    { name: 'contents', type: 'string' }
-  ]
+class Person {
+  name: string;
+  wallet: string;
+
+  constructor({ name, wallet }: { name: string, wallet: string }) {
+    this.name = name;
+    this.wallet = wallet;
+  }
 }
 
-const message = {
-  from: {
+class Mail {
+  from: Person;
+  to: Person;
+  contents: string;
+
+  constructor({ from, to, contents }: { from: Person, to: Person, contents: string }) {
+    this.from = from;
+    this.to = to;
+    this.contents = contents;
+  }
+}
+
+// Define the schema for Borsh serialization
+const schema: Schema = new Map<any, any>([
+  [Person, { kind: 'struct', fields: [['name', 'string'], ['wallet', 'string']] }],
+  [Mail, { kind: 'struct', fields: [['from', Person], ['to', Person], ['contents', 'string']] }]
+]);
+
+const message = new Mail({
+  from: new Person({
     name: 'Cow',
     wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
-  },
-  to: {
+  }),
+  to: new Person({
     name: 'Bob',
     wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
-  },
+  }),
   contents: 'Hello, Bob!'
-} as const
+});
 
 export function SolanaSignTypedDataTest() {
   const toast = useToast()
-  const { address, chainId } = useWeb3ModalAccount()
+  const { address } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
 
   async function onSignTypedData() {
@@ -35,19 +53,14 @@ export function SolanaSignTypedDataTest() {
       if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
-      /* const provider = new BrowserProvider(walletProvider, chainId)
-      const signer = new JsonRpcSigner(provider, address)
-      const domain = {
-        name: 'Ether Mail',
-        version: '1',
-        chainId,
-        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
-      } as const
 
-      const signature = await signer?.signTypedData(domain, types, message)
+      // Serialize the data
+      const serializedData = serialize(schema, message);
+      // Sign the serialized data
+      const signature = await walletProvider.signMessage(serializedData);
 
-      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true }) */
-    } catch {
+      toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
+    } catch (err) {
       toast({
         title: 'Error',
         description: 'Failed to sign message',

@@ -427,13 +427,11 @@ export const SolConstantsUtil = {
 
 // -- Helpers --------------------------------------------- //
 export const SolHelpersUtil = {
-  getChain(chains: Chain[], chainId) {
+  getChain(chains: Chain[], chainId: string) {
     const chain = chains.find(chain => chain.chainId === chainId)
-    console.log(chain);
     if (chain) {
       return chain;
     }
-    console.log('will return ', chains[0]);
     return chains[0]
   },
   getCaipDefaultChain(chain?: Chain) {

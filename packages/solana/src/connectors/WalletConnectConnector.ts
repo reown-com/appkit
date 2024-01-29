@@ -54,6 +54,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
         if (provider.session?.namespaces['solana']?.accounts?.length) {
           const [defaultAccount] = provider.session.namespaces['solana'].accounts
           const address = defaultAccount?.split(':')[2] as Address
+          SolStoreUtil.setIsConnected(true)
           SolStoreUtil.setAddress(address)
         }
       })
