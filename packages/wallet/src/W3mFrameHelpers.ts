@@ -51,5 +51,7 @@ export const W3mFrameHelpers = {
     }
 
     return 0
-  }
+  },
+
+  isClient: typeof window !== 'undefined'
 }
