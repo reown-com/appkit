@@ -1,5 +1,5 @@
 import {
-  CoreHelperUtil,
+  // CoreHelperUtil,
   AccountController,
   ConstantsUtil,
   OnRampController,
@@ -12,12 +12,16 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import type { CoinbasePaySDKChainNameValues } from '@web3modal/core/src/utils/ConstantsUtil'
+import { initOnRamp } from '@coinbase/cbpay-js'
+import type { CBPayInstanceType } from '@coinbase/cbpay-js'
 
 @customElement('w3m-onramp-providers-view')
 export class W3mOnRampProvidersView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   @state() private providers: OnRampProvider[] = OnRampController.state.providers
+
+  @state() private onrampInstance: CBPayInstanceType | null = null
 
   public constructor() {
     super()
@@ -45,6 +49,50 @@ export class W3mOnRampProvidersView extends LitElement {
         url: urls[index] || ''
       }))
     })
+
+    const address = AccountController.state.address
+    const network = NetworkController.state.caipNetwork
+
+    if (!address) {
+      throw new Error('No address found')
+    }
+
+    if (!network?.name) {
+      throw new Error('No network found')
+    }
+
+    const defaultNetwork =
+      ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP[
+        network.name as CoinbasePaySDKChainNameValues
+      ] ?? ConstantsUtil.WC_COINBASE_PAY_SDK_FALLBACK_CHAIN
+
+    initOnRamp(
+      {
+        appId: ConstantsUtil.WC_COINBASE_ONRAMP_APP_ID,
+        widgetParameters: {
+          destinationWallets: [
+            { address, blockchains: ConstantsUtil.WC_COINBASE_PAY_SDK_CHAINS, assets: ['USDC'] }
+          ],
+          defaultNetwork
+        },
+        experienceLoggedIn: 'popup',
+        experienceLoggedOut: 'popup',
+        closeOnExit: true,
+        closeOnSuccess: true,
+        onExit: () => {
+          alert('On Exit')
+        },
+        onSuccess: () => {
+          alert('On Success')
+        },
+        onEvent: metadata => {
+          console.log(metadata)
+        }
+      },
+      (_, instance) => {
+        this.onrampInstance = instance
+      }
+    )
   }
 
   // -- Render -------------------------------------------- //
@@ -77,7 +125,8 @@ export class W3mOnRampProvidersView extends LitElement {
   private onClickProvider(provider: OnRampProvider) {
     OnRampController.setSelectedProvider(provider)
     RouterController.push('BuyInProgress')
-    CoreHelperUtil.openHref(provider.url, 'popupWindow', 'width=600,height=800,scrollbars=yes')
+    // CoreHelperUtil.openHref(provider.url, 'popupWindow', 'width=600,height=800,scrollbars=yes')
+    this.onrampInstance?.open()
   }
 
   private async getCoinbaseOnRampURL() {
