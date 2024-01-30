@@ -15,7 +15,7 @@ export const PresetsUtil = {
     // Ethereum
     1: '692ed6ba-e569-459a-556a-776476829e00',
     // Arbitrum
-    42161: '600a9a04-c1b9-42ca-6785-9b4b6ff85200',
+    42161: '3bff954d-5cb0-47a0-9a23-d20192e74600',
     // Avalanche
     43114: '30c46e53-e989-45fb-4549-be3bd4eb3b00',
     // Binance Smart Chain
@@ -49,7 +49,11 @@ export const PresetsUtil = {
     // Base
     8453: '7289c336-3981-4081-c5f4-efc26ac64a00',
     // Aurora
-    1313161554: '3ff73439-a619-4894-9262-4470c773a100'
+    1313161554: '3ff73439-a619-4894-9262-4470c773a100',
+    // Ronin Mainnet
+    2020: 'b8101fc0-9c19-4b6f-ec65-f6dfff106e00',
+    // Saigon Testnet (a.k.a. Ronin)
+    2021: 'b8101fc0-9c19-4b6f-ec65-f6dfff106e00'
   } as Record<string, string>,
 
   ConnectorImageIds: {
