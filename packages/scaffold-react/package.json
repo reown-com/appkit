@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/scaffold-react",
-  "version": "4.0.0-bd5fd741",
+  "version": "4.0.0-648b6755",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -16,7 +16,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/scaffold": "4.0.0-bd5fd741"
+    "@web3modal/scaffold": "4.0.0-648b6755"
   },
   "peerDependencies": {
     "react": ">=17",
