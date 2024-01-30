@@ -24,16 +24,16 @@ export class WuiOnRampProviderItem extends LitElement {
 
   @property() public feeRange = ''
 
-  @property() public loading = false
+  @property({ type: Boolean }) public loading = false
 
   @property() public onClick: (() => void) | null = null
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.onClick} ontouchstart>
-        <wui-visual name=${this.name} class="provider-image"></wui-visual>
-        <wui-flex flexDirection="column">
+      <button ?disabled=${Boolean(this.onClick)} ontouchstart>
+        <wui-visual name=${ifDefined(this.name)} class="provider-image"></wui-visual>
+        <wui-flex flexDirection="column" gap="4xs">
           <wui-text variant="paragraph-500" color="fg-100">${this.label}</wui-text>
           <wui-flex alignItems="center" justifyContent="flex-start" gap="l">
             <wui-text variant="tiny-500" color="fg-100">
