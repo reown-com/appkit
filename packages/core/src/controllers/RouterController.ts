@@ -31,6 +31,7 @@ export interface RouterControllerState {
     wallet?: WcWallet
     network?: CaipNetwork
     email?: string
+    newEmail?: string
   }
 }
 
