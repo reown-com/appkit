@@ -58,5 +58,7 @@ export const W3mFrameHelpers = {
     const method = (request as { payload: W3mFrameTypes.RPCRequest })?.payload?.method
 
     return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
-  }
+  },
+
+  isClient: typeof window !== 'undefined'
 }

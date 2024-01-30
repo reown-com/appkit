@@ -35,7 +35,8 @@ import {
 } from '@web3modal/scaffold-utils/ethers'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
-import { W3mFrameProvider, type W3mFrameTypes, W3mFrameHelpers } from '@web3modal/wallet'
+import { W3mFrameProvider, W3mFrameHelpers } from '@web3modal/wallet'
+import type { W3mFrameTypes } from '@web3modal/wallet'
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
 
 // -- Types ---------------------------------------------------------------------
