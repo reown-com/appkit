@@ -114,6 +114,8 @@ export class Web3Modal extends Web3ModalScaffold {
             resolve(result)
           }
         })
+
+
     }
 
     const connectionControllerClient: ConnectionControllerClient = {
@@ -131,7 +133,6 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       connectExternal: async ({ id, info }) => {
-        console.log(id, info)
         switch (id) {
           case 'Phantom': {
             await this.walletAdapters.phantom.connect()
@@ -204,10 +205,24 @@ export class Web3Modal extends Web3ModalScaffold {
 
     console.log("default chain ============ ", SolHelpersUtil.getChain(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CHAIN_ID) : ''))
     console.log("default chain ============ ", typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CHAIN_ID) : "No local storage")
+    SolStoreUtil.subscribeKey('address', () => {
+      this.syncAccount()
+    })
+
+    SolStoreUtil.subscribeKey('chainId', () => {
+      this.syncNetwork(chainImages)
+    })
+
+    SolStoreUtil.subscribeKey('', () => {
+      this.syncNetwork(chainImages)
+    })
 
     this.chains = chains
     SolStoreUtil.setProjectId(options.projectId)
     SolStoreUtil.setCurrentChain(SolHelpersUtil.getChain(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CHAIN_ID) : '') as Chain)
+    SolStoreUtil.setChainId(SolHelpersUtil.getChain(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CHAIN_ID) : '').chainId)
+
+    this.syncNetwork(chainImages)
 
     this.walletAdapters = {
       phantom: new PhantomWalletAdapter(),
@@ -232,13 +247,6 @@ export class Web3Modal extends Web3ModalScaffold {
     })
     this.PhantomConnector = new PhantomConnector()
 
-    SolStoreUtil.subscribeKey('address', () => {
-      this.syncAccount()
-    })
-
-    SolStoreUtil.subscribeKey('chainId', () => {
-      this.syncNetwork(chainImages)
-    })
     this.syncRequestedNetworks(chains, chainImages)
     this.syncConnectors()
 
@@ -364,11 +372,14 @@ export class Web3Modal extends Web3ModalScaffold {
     const address = SolStoreUtil.state.address
     const chainId = SolStoreUtil.state.chainId
     const isConnected = SolStoreUtil.state.isConnected
+
+    console.log(`syncNetwork,this.chains`, this.chains);
     if (this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId)
-
+      console.log(`chainId`, chainId);
+      console.log(`syncNetwork, chain`, chain);
       if (chain) {
-        const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chain.chainId}`
+        const caipChainId: CaipNetworkId = `${chain.name}:${chain.chainId}`
 
         this.setCaipNetwork({
           id: caipChainId,
@@ -377,7 +388,7 @@ export class Web3Modal extends Web3ModalScaffold {
           imageUrl: chainImages?.[chain.chainId]
         })
         if (isConnected && address) {
-          const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
+          const caipAddress: CaipAddress = `${chainId as `${string}:${string}`}:${address}`
           this.setCaipAddress(caipAddress)
           if (chain.explorerUrl) {
             const url = `${chain.explorerUrl}/account/${address}`
@@ -398,6 +409,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const chainId = SolStoreUtil.state.chainId
     if (chainId && this.chains) {
       const chain = this.chains.find(c => c.chainId === (chainId.includes(':') ? chainId.split(':')[1] : chainId))
+      console.log(`chain in sync balance`, chain);
       if (chain) {
         const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
         let balance
@@ -418,7 +430,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const requestedCaipNetworks = chains?.map(
       chain =>
         ({
-          id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
+          id: `${chain.name}:${chain.chainId} `,
           name: chain.name,
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[chain.chainId]
@@ -428,39 +440,35 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async switchNetwork(chainId: string) {
+    console.log(`switchNetwork`);
     const provider = SolStoreUtil.state.provider
     const providerType = SolStoreUtil.state.providerType
 
     if (this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId)
-
+      console.log(`1 ] || this.chains`, this.chains);
+      console.log(`2 ] || chainId`, chainId);
       if (chain) {
         try {
+          SolStoreUtil.setChainId(chain.chainId)
+          localStorage.setItem(SolConstantsUtil.CHAIN_ID, chain.chainId)
 
           switch (providerType) {
 
             case ConstantsUtil.INJECTED_CONNECTOR_ID:
-              const InjectedProvider = provider
-
-              console.log(InjectedProvider)
-
               if (window.solana?.['connect']) {
                 window.solana?.['connect'](chain.chainId)
               }
               if (chain) {
                 // await this.disconnect()
-                SolStoreUtil.setChainId(chain.chainId)
-                localStorage.setItem(SolConstantsUtil.CHAIN_ID, chain.chainId)
                 await this.syncAccount()
                 await this.syncBalance(SolStoreUtil.state.address!)
               }
               break
 
             case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
-              // console.log("wallet connect wallet")
               if (chain) {
-                SolStoreUtil.setChainId(chain.chainId)
-                localStorage.setItem(SolConstantsUtil.CHAIN_ID, chain.chainId)
+
                 const WalletConnectProvider = provider as unknown as EthereumProvider
                 await WalletConnectProvider.request({
                   method: 'wallet_switchSolanaChain',
@@ -588,7 +596,6 @@ export class Web3Modal extends Web3ModalScaffold {
     SolStoreUtil.setChainId(chainId)
     SolStoreUtil.setProviderType('walletConnect')
     SolStoreUtil.setProvider(this.WalletConnectConnector as unknown as Provider)
-    console.log(`address`, address);
     this.setAddress(address)
 
     window?.localStorage.setItem(
@@ -606,6 +613,8 @@ export class Web3Modal extends Web3ModalScaffold {
     window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, ConstantsUtil.INJECTED_CONNECTOR_ID)
 
     const chainId = SolStoreUtil.state.currentChain?.chainId
+    console.log(`chainId`, chainId);
+    console.log(`address`, address);
     if (address && chainId) {
       SolStoreUtil.setIsConnected(true)
       SolStoreUtil.setChainId(chainId)

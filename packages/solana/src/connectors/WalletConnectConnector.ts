@@ -158,6 +158,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
   public async connect(useURI?: boolean) {
     const chosenCluster = SolStoreUtil.getCluster()
     const clusterId = `solana:${chosenCluster.id}`
+    console.log(`chosenCluster`, chosenCluster);
 
     const solanaNamespace = {
       solana: {
@@ -174,9 +175,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
 
     return new Promise<string>((resolve, reject) => {
       provider.on('display_uri', (uri: string) => {
-        if (this.qrcode && !useURI) {
-          // TODO: show QR code
-        }
+        if (this.qrcode && !useURI) { }
         else resolve(uri)
       })
       provider
@@ -186,8 +185,6 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
         })
         .then(providerResult => {
           if (!providerResult) throw new Error('Failed connection.')
-          console.log(`setting connected to true`)
-          SolStoreUtil.setIsConnected(true)
           // (TODO update typing for provider)
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           const address = providerResult.namespaces['solana']?.accounts[0]?.split(':')[2] as Address ?? null

@@ -5,7 +5,6 @@ import { PublicKey } from '@solana/web3.js'
 import UniversalProvider from '@walletconnect/universal-provider'
 import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import { ConstantsUtil } from './ConstantsUtil.js'
 import { PresetsUtil } from './PresetsUtil.js'
 
 // -- Types ---------------------------------------------- //
@@ -450,7 +449,7 @@ export const SolHelpersUtil = {
     }
 
     return {
-      id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
+      id: `${chain.name}:${chain.chainId}`,
       name: chain.name,
       imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId]
     } as CaipNetwork
@@ -474,7 +473,7 @@ export const SolHelpersUtil = {
       method: 'wallet_addSolanaChain',
       params: [
         {
-          chainId: SolHelpersUtil.numberToHexString(chain.chainId),
+          chainId: chain.chainId,
           rpcUrls: [chain.rpcUrl],
           chainName: chain.name,
           nativeCurrency: {

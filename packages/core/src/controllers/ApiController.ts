@@ -109,6 +109,17 @@ export const ApiController = {
     }
   },
 
+  getChains() {
+    const { caipNetwork } = NetworkController.state
+    if (caipNetwork?.id.toLocaleLowerCase().includes('solana')) {
+      // Because solana has same chain ids for devnet and testnet
+      return `solana:${caipNetwork?.id.split(':')[1]}`
+    }
+    else {
+      return caipNetwork?.id
+    }
+  },
+
   async fetchRecommendedWallets() {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
     const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean)
@@ -117,6 +128,7 @@ export const ApiController = {
       headers: ApiController._getApiHeaders(),
       params: {
         page: '1',
+        chains: this.getChains(),
         entries: recommendedEntries,
         include: includeWalletIds?.join(','),
         exclude: exclude?.join(',')
@@ -136,6 +148,7 @@ export const ApiController = {
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
+
     const exclude = [
       ...state.recommended.map(({ id }) => id),
       ...(excludeWalletIds ?? []),
@@ -147,6 +160,7 @@ export const ApiController = {
       params: {
         page: String(page),
         entries,
+        chains: this.getChains(),
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
       }
@@ -171,6 +185,7 @@ export const ApiController = {
         page: '1',
         entries: '100',
         search,
+        chains: this.getChains(),
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
       }
