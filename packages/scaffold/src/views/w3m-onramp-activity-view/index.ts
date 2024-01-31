@@ -22,6 +22,7 @@ export class W3mOnRampActivityView extends LitElement {
   private unsubscribe: (() => void)[] = []
   private refetchTimeout: NodeJS.Timeout | undefined = undefined
   private abortController: AbortController | undefined = undefined
+  private next: string | undefined = undefined
 
   // -- State & Properties -------------------------------- //
   @state() protected selectedOnRampProvider = OnRampController.state.selectedProvider
@@ -106,11 +107,13 @@ export class W3mOnRampActivityView extends LitElement {
     const coinbaseResponse = await BlockchainApiController.fetchTransactions({
       account: address,
       onramp: 'coinbase',
-      projectId
+      projectId,
+      cursor: this.next
     })
 
     this.loading = false
     this.coinbaseTransactions = coinbaseResponse.data || []
+    this.next = coinbaseResponse.next ?? undefined
     this.refetchLoadingTransactions()
   }
 
