@@ -46,6 +46,7 @@ import type { WuiNoticeCard } from '../composites/wui-notice-card/index.js'
 import type { WuiListAccordion } from '../composites/wui-list-accordion/index.js'
 import type { WuiListContent } from '../composites/wui-list-content/index.js'
 import type { WuiListWalletTransaction } from '../composites/wui-list-wallet-transaction/index.js'
+import type { WuiListNetwork } from '../composites/wui-list-network/index.js'
 
 import type { WuiFlex } from '../layout/wui-flex/index.js'
 import type { WuiGrid } from '../layout/wui-grid/index.js'
@@ -107,6 +108,7 @@ declare global {
       'wui-list-accordion': CustomElement<WuiListAccordion>
       'wui-list-content': CustomElement<WuiListContent>
       'wui-list-wallet-transaction': CustomElement<WuiListWalletTransaction>
+      'wui-list-network': CustomElement<WuiListNetwork>
     }
   }
 }

@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import { networkSvg } from '../../assets/svg/network.js'
+import { networkSvgMd } from '../../assets/svg/networkMd.js'
 import '../../components/wui-shimmer/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { CardSelectType } from '../../utils/TypeUtil.js'
@@ -30,7 +30,7 @@ export class WuiCardSelectLoader extends LitElement {
           height="54px"
           borderRadius="xs"
         ></wui-shimmer>
-        ${networkSvg}`
+        ${networkSvgMd}`
     }
 
     return html`<wui-shimmer width="56px" height="56px" borderRadius="xs"></wui-shimmer>`
