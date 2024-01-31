@@ -196,8 +196,8 @@ export const CoreHelperUtil = {
     return 'Unknown error'
   },
   sortRequestedNetworks(
-    approvedIds?: `${string}:${string}`[],
-    requestedNetworks?: CaipNetwork[]
+    approvedIds: `${string}:${string}`[] | undefined,
+    requestedNetworks: CaipNetwork[] = []
   ): CaipNetwork[] {
     const approvedIndexMap: Record<string, number> = {}
 
