@@ -163,7 +163,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-height-network-md: 54px;
         --wui-height-network-lg: 96px;
 
-        --wui-icon-size-network-sm: 10px;
+        --wui-icon-size-network-sm: 16px;
         --wui-icon-size-network-md: 24px;
         --wui-icon-size-network-lg: 42px;
 

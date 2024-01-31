@@ -28,12 +28,7 @@ export class W3mUnsupportedChainView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex
-        class="container"
-        flexDirection="column"
-        .padding=${['0', '0', '0', '0'] as const}
-        gap="0"
-      >
+      <wui-flex class="container" flexDirection="column" gap="0">
         <wui-flex
           class="container"
           flexDirection="column"
