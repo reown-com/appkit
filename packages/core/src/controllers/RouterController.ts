@@ -25,6 +25,7 @@ export interface RouterControllerState {
     | 'UpdateEmailWallet'
     | 'UpdateEmailPrimaryOtp'
     | 'UpdateEmailSecondaryOtp'
+    | 'UnsupportedChain'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
