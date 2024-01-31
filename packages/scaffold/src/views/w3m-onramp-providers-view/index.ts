@@ -80,13 +80,14 @@ export class W3mOnRampProvidersView extends LitElement {
         closeOnExit: true,
         closeOnSuccess: true,
         onExit: () => {
-          alert('On Exit')
+          console.log('ONRAMP EXIT')
         },
-        onSuccess: () => {
-          alert('On Success')
+        onSuccess: res => {
+          console.log('ONRAMP SUCCESS', res)
+          // RouterController.push('OnRampActivity')
         },
         onEvent: metadata => {
-          console.log(metadata)
+          console.log('ONRAMP EVENT', metadata)
         }
       },
       (_, instance) => {
