@@ -67,9 +67,7 @@ export class W3mTransactionsView extends LitElement {
   }
 
   public override firstUpdated() {
-    if (this.transactions.length === 0) {
-      TransactionsController.fetchTransactions(this.address)
-    }
+    TransactionsController.fetchTransactions(this.address)
     this.createPaginationObserver()
   }
 

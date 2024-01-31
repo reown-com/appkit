@@ -100,10 +100,25 @@ export const TransactionsController = {
       if (!grouped[year]) {
         grouped[year] = []
       }
-      grouped[year]?.push({
-        type: 'zerion',
-        value: transaction
-      })
+      if (
+        !grouped[year]?.find(
+          t =>
+            (t.value as Transaction)?.id === transaction.id ||
+            (t.value as CoinbaseTransaction).transaction_id === transaction.id
+        )
+      ) {
+        const yearTransactions = [...(grouped[year] as GroupedTransaction[])]
+        yearTransactions.push({
+          type: 'zerion',
+          value: transaction
+        })
+        grouped[year] = yearTransactions.sort((a, b) => {
+          const aDate = new Date((a.value as Transaction).metadata.minedAt)
+          const bDate = new Date((b.value as Transaction).metadata.minedAt)
+
+          return bDate.getTime() - aDate.getTime()
+        })
+      }
     })
 
     return grouped
