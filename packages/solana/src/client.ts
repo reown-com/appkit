@@ -132,7 +132,7 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setWalletConnectProvider(address as Address)
       },
 
-      connectExternal: async ({ id, info }) => {
+      connectExternal: async ({ id }) => {
         switch (id) {
           case 'Phantom': {
             await this.walletAdapters.phantom.connect()
@@ -213,14 +213,10 @@ export class Web3Modal extends Web3ModalScaffold {
       this.syncNetwork(chainImages)
     })
 
-    SolStoreUtil.subscribeKey('', () => {
-      this.syncNetwork(chainImages)
-    })
-
     this.chains = chains
     SolStoreUtil.setProjectId(options.projectId)
     SolStoreUtil.setCurrentChain(SolHelpersUtil.getChain(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CHAIN_ID) : '') as Chain)
-    SolStoreUtil.setChainId(SolHelpersUtil.getChain(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CHAIN_ID) : '').chainId)
+    SolStoreUtil.setChainId(SolHelpersUtil.getChain(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CHAIN_ID) : '')?.chainId)
 
     this.syncNetwork(chainImages)
 
@@ -373,11 +369,8 @@ export class Web3Modal extends Web3ModalScaffold {
     const chainId = SolStoreUtil.state.chainId
     const isConnected = SolStoreUtil.state.isConnected
 
-    console.log(`syncNetwork,this.chains`, this.chains);
     if (this.chains) {
       const chain = this.chains.find(c => c.chainId === chainId)
-      console.log(`chainId`, chainId);
-      console.log(`syncNetwork, chain`, chain);
       if (chain) {
         const caipChainId: CaipNetworkId = `${chain.name}:${chain.chainId}`
 
