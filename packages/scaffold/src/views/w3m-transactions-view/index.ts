@@ -54,7 +54,6 @@ export class W3mTransactionsView extends LitElement {
           }
         }),
         TransactionsController.subscribe(val => {
-          this.transactions = val.transactions
           this.transactionsByYear = val.transactionsByYear
           this.loading = val.loading
           this.empty = val.empty
