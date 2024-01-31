@@ -46,6 +46,7 @@ export * from './src/composites/wui-notice-card/index.js'
 export * from './src/composites/wui-list-accordion/index.js'
 export * from './src/composites/wui-list-content/index.js'
 export * from './src/composites/wui-list-wallet-transaction/index.js'
+export * from './src/composites/wui-list-network/index.js'
 
 export * from './src/layout/wui-flex/index.js'
 export * from './src/layout/wui-grid/index.js'

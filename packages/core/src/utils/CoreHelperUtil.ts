@@ -1,5 +1,5 @@
 import { ConstantsUtil } from './ConstantsUtil.js'
-import type { CaipAddress, LinkingRecord } from './TypeUtil.js'
+import type { CaipAddress, LinkingRecord, CaipNetwork } from './TypeUtil.js'
 
 export const CoreHelperUtil = {
   isMobile() {
@@ -194,5 +194,34 @@ export const CoreHelperUtil = {
     }
 
     return 'Unknown error'
+  },
+  sortRequestedNetworks(
+    approvedIds?: `${string}:${string}`[],
+    requestedNetworks?: CaipNetwork[]
+  ): CaipNetwork[] {
+    const approvedIndexMap: Record<string, number> = {}
+
+    if (requestedNetworks && approvedIds) {
+      approvedIds.forEach((id, index) => {
+        approvedIndexMap[id] = index
+      })
+
+      requestedNetworks.sort((a, b) => {
+        const indexA = approvedIndexMap[a.id]
+        const indexB = approvedIndexMap[b.id]
+
+        if (indexA !== undefined && indexB !== undefined) {
+          return indexA - indexB
+        } else if (indexA !== undefined) {
+          return -1
+        } else if (indexB !== undefined) {
+          return 1
+        }
+
+        return 0
+      })
+    }
+
+    return requestedNetworks
   }
 }
