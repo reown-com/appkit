@@ -24,7 +24,7 @@ export class FetchUtil {
 
   public async get<T>({ headers, signal, ...args }: RequestArguments) {
     const url = this.createUrl(args)
-    const response = await fetch(url, { method: 'GET', headers, signal })
+    const response = await fetch(url, { method: 'GET', headers, signal, cache: 'no-store' })
 
     return response.json() as T
   }
