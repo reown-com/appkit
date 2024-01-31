@@ -18,7 +18,7 @@ function readPreviousCoverageSummary(pathToReport) {
   if (!pathToReport) {
     console.warn('Previous coverage results were not provided.')
 
-    return null
+    return {}
   }
   // Read the JSON file
   const prevCoverage = JSON.parse(fs.readFileSync(pathToReport, 'utf8'))
@@ -81,18 +81,18 @@ function readSummaryPerPackageAndCreateJoinedSummaryReportWithTotal(packagesSumm
 
         const { total } = summary
 
-        Object.keys(report.total).forEach(key => {
+        Object.keys(report?.total).forEach(key => {
           if (total[key]) {
-            total[key].total += report.total[key].total
-            total[key].covered += report.total[key].covered
-            total[key].skipped += report.total[key].skipped
-            total[key].pct = Number(((total[key].covered / total[key].total) * 100).toFixed(2))
+            total[key].total += report?.total?.[key]?.total
+            total[key].covered += report?.total?.[key]?.covered
+            total[key].skipped += report?.total?.[key]?.skipped
+            total[key].pct = Number(((total[key]?.covered / total[key]?.total) * 100).toFixed(2))
           } else {
             total[key] = { ...report.total[key] }
           }
         })
 
-        return { ...summary, [packageName]: report.total, total }
+        return { ...summary, [packageName]: report?.total, total }
       }
 
       return summary
