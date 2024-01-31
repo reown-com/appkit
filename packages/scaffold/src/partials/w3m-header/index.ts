@@ -41,7 +41,8 @@ function headings() {
     UpgradeEmailWallet: 'Upgrade your Wallet',
     UpdateEmailWallet: 'Edit Email',
     UpdateEmailPrimaryOtp: 'Confirm Current Email',
-    UpdateEmailSecondaryOtp: 'Confirm New Email'
+    UpdateEmailSecondaryOtp: 'Confirm New Email',
+    UnsupportedChain: 'Switch Network'
   }
 }
 
