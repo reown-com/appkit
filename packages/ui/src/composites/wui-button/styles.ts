@@ -8,7 +8,7 @@ export default css`
 
   button {
     border: 1px solid var(--wui-gray-glass-010);
-    border-radius: var(--wui-border-radius-m);
+    border-radius: var(--local-border-radius);
     width: var(--local-width);
   }
 
@@ -16,6 +16,7 @@ export default css`
     border: 1px solid var(--wui-gray-glass-010);
   }
 
+  /* sm settings */
   button[data-size='sm'] {
     padding: var(--wui-spacing-xxs) var(--wui-spacing-s);
   }
@@ -30,16 +31,7 @@ export default css`
       var(--wui-spacing-s);
   }
 
-  ::slotted(*) {
-    transition: opacity 200ms ease-in-out;
-    opacity: var(--local-opacity-100);
-  }
-
-  button > wui-text {
-    transition: opacity 200ms ease-in-out;
-    opacity: var(--local-opacity-100);
-  }
-
+  /* md settings */
   button[data-size='md'] {
     padding: 8.2px var(--wui-spacing-l) 9px var(--wui-spacing-l);
   }
@@ -50,6 +42,29 @@ export default css`
 
   button[data-size='md'][data-icon-right='true'][data-icon-left='false'] {
     padding: 8.2px var(--wui-spacing-s) 9px var(--wui-spacing-l);
+  }
+
+  /* lg settings */
+  button[data-size='lg'] {
+    padding: var(--wui-spacing-m) var(--wui-spacing-2l);
+  }
+
+  button[data-size='lg'][data-icon-left='true'][data-icon-right='false'] {
+    padding-left: var(--wui-spacing-m);
+  }
+
+  button[data-size='lg'][data-icon-right='true'][data-icon-left='false'] {
+    padding-right: var(--wui-spacing-m);
+  }
+
+  button > wui-text {
+    transition: opacity 200ms ease-in-out;
+    opacity: var(--local-opacity-100);
+  }
+
+  ::slotted(*) {
+    transition: opacity 200ms ease-in-out;
+    opacity: var(--local-opacity-100);
   }
 
   wui-loading-spinner {

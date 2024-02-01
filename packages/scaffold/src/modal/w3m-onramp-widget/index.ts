@@ -152,7 +152,7 @@ export class W3mOnrampWidget extends LitElement {
           <wui-flex justifyContent="space-evenly" class="amounts-container" gap="xs">
             ${[100, 250, 500, 1000].map(
               amount =>
-                html`<wui-button variant="accentBg" size="md" fullWidth>${amount}</wui-button>`
+                html`<wui-button variant="shade" size="md" fullWidth>${`$ ${amount}`}</wui-button>`
             )}
           </wui-flex>
           ${this.templateButton()}
@@ -163,17 +163,35 @@ export class W3mOnrampWidget extends LitElement {
 
   private templateButton() {
     return this.connected
-      ? html`<wui-button @click=${this.onClick.bind(this)} variant="fill" fullWidth>
+      ? html`<wui-button
+          @click=${this.getQuotes.bind(this)}
+          variant="fill"
+          fullWidth
+          size="lg"
+          borderRadius="xs"
+        >
           Get quotes
         </wui-button>`
-      : html`<w3m-connect-button fullWidth></w3m-connect-button>`
+      : html`<wui-button
+          @click=${this.openModal.bind(this)}
+          variant="accentBg"
+          fullWidth
+          size="lg"
+          borderRadius="xs"
+        >
+          Connect wallet
+        </wui-button>`
   }
 
   // -- Private ------------------------------------------- //
-  private onClick() {
+  private getQuotes() {
     if (!this.loading) {
       ModalController.open({ view: 'OnRampProviders' })
     }
+  }
+
+  private openModal() {
+    ModalController.open({ view: 'Connect' })
   }
 }
 
