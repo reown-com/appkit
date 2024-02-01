@@ -152,7 +152,9 @@ export class W3mOnrampWidget extends LitElement {
           <wui-flex justifyContent="space-evenly" class="amounts-container" gap="xs">
             ${[100, 250, 500, 1000].map(
               amount =>
-                html`<wui-button variant="shade" size="md" fullWidth>${`$ ${amount}`}</wui-button>`
+                html`<wui-button variant="shade" size="xs" textVariant="paragraph-600" fullWidth
+                  >${`$ ${amount}`}</wui-button
+                >`
             )}
           </wui-flex>
           ${this.templateButton()}

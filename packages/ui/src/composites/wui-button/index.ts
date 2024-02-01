@@ -19,7 +19,7 @@ export class WuiButton extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: Exclude<SizeType, 'inherit' | 'xl' | 'xs' | 'xxs'> = 'md'
+  @property() public size: Exclude<SizeType, 'inherit' | 'xl' | 'xxs'> = 'md'
 
   @property({ type: Boolean }) public disabled = false
 
@@ -35,6 +35,8 @@ export class WuiButton extends LitElement {
 
   @property() public borderRadius: Exclude<BorderRadiusType, 'inherit' | 'xxs'> = 'm'
 
+  @property() public textVariant?: string
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
@@ -43,7 +45,8 @@ export class WuiButton extends LitElement {
     --local-opacity-000: ${this.loading ? 1 : 0};
     --local-border-radius: var(--wui-border-radius-${this.borderRadius});
     `
-    const textVariant = TEXT_VARIANT_BY_SIZE[this.size]
+
+    const textVariant = this.textVariant ?? TEXT_VARIANT_BY_SIZE[this.size]
 
     return html`
       <button

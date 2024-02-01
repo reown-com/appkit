@@ -16,6 +16,19 @@ export default css`
     border: 1px solid var(--wui-gray-glass-010);
   }
 
+  /* xs settings */
+  button[data-size='xs'] {
+    padding: var(--wui-spacing-xs) var(--wui-spacing-1xs);
+  }
+
+  button[data-size='xs'][data-icon-left='true'][data-icon-right='false'] {
+    padding-left: var(--wui-spacing-xxs);
+  }
+
+  button[data-size='xs'][data-icon-right='true'][data-icon-left='false'] {
+    padding-right: var(--wui-spacing-xxs);
+  }
+
   /* sm settings */
   button[data-size='sm'] {
     padding: var(--wui-spacing-xxs) var(--wui-spacing-s);
