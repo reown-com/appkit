@@ -10,7 +10,8 @@ describe('ApiController', () => {
       featured: [],
       recommended: [],
       wallets: [],
-      search: []
+      search: [],
+      isAnalyticsEnabled: false
     })
   })
 })

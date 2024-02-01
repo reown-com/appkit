@@ -99,27 +99,35 @@ export class W3mTransactionsView extends LitElement {
     return sortedYearKeys.map((year, index) => {
       const isLastGroup = index === sortedYearKeys.length - 1
       const yearInt = parseInt(year, 10)
-      const groupTitle = TransactionUtil.getTransactionGroupTitle(yearInt)
-      const transactions = this.transactionsByYear[yearInt]
 
-      if (!transactions) {
-        return null
-      }
+      const sortedMonthIndexes = new Array(12)
+        .fill(null)
+        .map((_, idx) => idx)
+        .reverse()
 
-      return html`
-        <wui-flex flexDirection="column" gap="s">
-          <wui-flex
-            alignItems="center"
-            flexDirection="row"
-            .padding=${['xs', 's', 's', 's'] as const}
-          >
-            <wui-text variant="paragraph-500" color="fg-200">${groupTitle}</wui-text>
+      return sortedMonthIndexes.map(month => {
+        const groupTitle = TransactionUtil.getTransactionGroupTitle(yearInt, month)
+        const transactions = this.transactionsByYear[yearInt]?.[month]
+
+        if (!transactions) {
+          return null
+        }
+
+        return html`
+          <wui-flex flexDirection="column">
+            <wui-flex
+              alignItems="center"
+              flexDirection="row"
+              .padding=${['xs', 's', 's', 's'] as const}
+            >
+              <wui-text variant="paragraph-500" color="fg-200">${groupTitle}</wui-text>
+            </wui-flex>
+            <wui-flex flexDirection="column" gap="xs">
+              ${this.templateTransactions(transactions, isLastGroup)}
+            </wui-flex>
           </wui-flex>
-          <wui-flex flexDirection="column" gap="xs">
-            ${this.templateTransactions(transactions, isLastGroup)}
-          </wui-flex>
-        </wui-flex>
-      `
+        `
+      })
     })
   }
 
@@ -272,7 +280,7 @@ export class W3mTransactionsView extends LitElement {
   }
 
   private getTransactionListItemProps(transaction: Transaction) {
-    const date = DateUtil.getRelativeDateFromNow(transaction?.metadata?.minedAt)
+    const date = DateUtil.formatDate(transaction?.metadata?.minedAt)
     const descriptions = TransactionUtil.getTransactionDescriptions(transaction)
 
     const transfers = transaction?.transfers
