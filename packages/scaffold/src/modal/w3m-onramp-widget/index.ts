@@ -29,6 +29,21 @@ type PurchaseCurrency = {
   networks: CoinbaseNetwork[]
 }
 
+const ICONS_BY_CURRENCY: Record<string, string> = {
+  USD: 'https://upload.wikimedia.org/wikipedia/commons/8/88/United-states_flag_icon_round.svg',
+  USDC: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Circle_USDC_Logo.svg/1024px-Circle_USDC_Logo.svg.png',
+  EUR: 'https://upload.wikimedia.org/wikipedia/commons/b/b7/Flag_of_Europe.svg',
+  GBP: 'https://upload.wikimedia.org/wikipedia/commons/a/ae/Flag_of_the_United_Kingdom.svg'
+}
+
+const PAYMENT_CURRENCY_SYMBOLS: Record<string, string> = {
+  USD: '$',
+  EUR: '€',
+  GBP: '£'
+}
+
+const BUY_PRESET_AMOUNTS = [100, 250, 500, 1000]
+
 @customElement('w3m-onramp-widget')
 export class W3mOnrampWidget extends LitElement {
   public static override styles = styles
@@ -46,6 +61,10 @@ export class W3mOnrampWidget extends LitElement {
   @state() private paymentCurrencies: PaymentCurrency[] = []
 
   @state() private purchaseCurrencies: PurchaseCurrency[] = []
+
+  @state() private selectedPaymentCurrency = this.paymentCurrencies[0]
+
+  @state() private selectedPurchaseCurrency = this.purchaseCurrencies[0]
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -112,48 +131,40 @@ export class W3mOnrampWidget extends LitElement {
         ]
       }
     ]
+
+    this.selectedPaymentCurrency = this.paymentCurrencies[0]
+    this.selectedPurchaseCurrency = this.purchaseCurrencies[0]
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
+    if (!this.selectedPaymentCurrency || !this.selectedPurchaseCurrency) {
+      return null
+    }
+
+    const purchaseCurrencies = this.purchaseCurrencies.map(this.formatPurchaseCurrency)
+    const paymentCurrencies = this.paymentCurrencies.map(this.formatPaymentCurrency)
+    const selectedPaymentCurrency = this.formatPaymentCurrency(this.selectedPaymentCurrency)
+    const selectedPurchaseCurrency = this.formatPurchaseCurrency(this.selectedPurchaseCurrency)
+
     return html`
       <wui-flex flexDirection="column" justifyContent="center" alignItems="center">
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-input-text type="number">
-            <wui-flex
-              class="currency-container"
-              justifyContent="space-between"
-              alignItems="center"
-              gap="xxs"
-            >
-              <wui-image
-                src=https://upload.wikimedia.org/wikipedia/commons/8/88/United-states_flag_icon_round.svg
-              ></wui-image>
-              <wui-text color="fg-100">
-                ${this.paymentCurrencies[0]?.id}
-              </wui-text>
-            </wui-flex>
-          </wui-input-text>
-          <wui-input-text type="number" size="md">
-            <wui-flex
-              class="currency-container"
-              justifyContent="space-between"
-              alignItems="center"
-              gap="xxs"
-            >
-              <wui-image
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Circle_USDC_Logo.svg/1024px-Circle_USDC_Logo.svg.png"
-              ></wui-image>
-              <wui-text color="fg-100">
-                ${this.purchaseCurrencies[0]?.symbol}
-              </wui-text>
-            </wui-flex>
-          </wui-input-text>
+          <wui-input-currency
+            .currencies=${paymentCurrencies}
+            .selectedCurrency=${selectedPaymentCurrency}
+          ></wui-input-currency>
+          <wui-input-currency
+            .currencies=${purchaseCurrencies}
+            .selectedCurrency=${selectedPurchaseCurrency}
+          ></wui-input-currency>
           <wui-flex justifyContent="space-evenly" class="amounts-container" gap="xs">
-            ${[100, 250, 500, 1000].map(
+            ${BUY_PRESET_AMOUNTS.map(
               amount =>
                 html`<wui-button variant="shade" size="xs" textVariant="paragraph-600" fullWidth
-                  >${`$ ${amount}`}</wui-button
+                  >${`${
+                    PAYMENT_CURRENCY_SYMBOLS[this.selectedPaymentCurrency.id] || ''
+                  } ${amount}`}</wui-button
                 >`
             )}
           </wui-flex>
@@ -194,6 +205,21 @@ export class W3mOnrampWidget extends LitElement {
 
   private openModal() {
     ModalController.open({ view: 'Connect' })
+  }
+
+  private formatPaymentCurrency(currency: PaymentCurrency) {
+    return {
+      name: currency.id,
+      symbol: currency.id,
+      icon: ICONS_BY_CURRENCY[currency.id] as string
+    }
+  }
+  private formatPurchaseCurrency(currency: PurchaseCurrency) {
+    return {
+      name: currency.name,
+      symbol: currency.symbol,
+      icon: ICONS_BY_CURRENCY[currency.symbol] as string
+    }
   }
 }
 
