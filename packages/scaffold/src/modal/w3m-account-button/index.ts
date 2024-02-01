@@ -5,6 +5,7 @@ import {
   ModalController,
   NetworkController
 } from '@web3modal/core'
+
 import type { WuiAccountButton } from '@web3modal/ui'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -37,6 +38,8 @@ export class W3mAccountButton extends LitElement {
 
   @state() private network = NetworkController.state.caipNetwork
 
+  @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
@@ -57,7 +60,8 @@ export class W3mAccountButton extends LitElement {
             this.balanceSymbol = ''
           }
         }),
-        NetworkController.subscribeKey('caipNetwork', val => (this.network = val))
+        NetworkController.subscribeKey('caipNetwork', val => (this.network = val)),
+        NetworkController.subscribeKey('isUnsupportedChain', val => (this.isUnsupportedChain = val))
       ]
     )
   }
@@ -74,6 +78,7 @@ export class W3mAccountButton extends LitElement {
     return html`
       <wui-account-button
         .disabled=${Boolean(this.disabled)}
+        .isUnsupportedChain=${this.isUnsupportedChain}
         address=${ifDefined(this.profileName ?? this.address)}
         ?isProfileName=${Boolean(this.profileName)}
         networkSrc=${ifDefined(networkImage)}
@@ -92,7 +97,11 @@ export class W3mAccountButton extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onClick() {
-    ModalController.open()
+    if (this.isUnsupportedChain) {
+      ModalController.open({ view: 'UnsupportedChain' })
+    } else {
+      ModalController.open()
+    }
   }
 }
 

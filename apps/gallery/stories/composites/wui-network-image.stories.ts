@@ -16,7 +16,7 @@ export default {
   },
   argTypes: {
     size: {
-      options: ['md', 'lg'],
+      options: ['sm', 'md', 'lg'],
       control: { type: 'select' }
     }
   }

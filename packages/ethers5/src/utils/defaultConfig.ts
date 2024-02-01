@@ -57,7 +57,8 @@ export function defaultConfig(options: ConfigOptions) {
     const coinbaseWallet = new CoinbaseWalletSDK({
       appName: metadata.name,
       appLogoUrl: metadata.icons[0],
-      darkMode: false
+      darkMode: false,
+      enableMobileWalletLink: true
     })
 
     coinbaseProvider = coinbaseWallet.makeWeb3Provider(rpcUrl, defaultChainId)

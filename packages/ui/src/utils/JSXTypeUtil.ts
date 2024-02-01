@@ -45,6 +45,7 @@ import type { WuiWalletImage } from '../composites/wui-wallet-image/index.js'
 import type { WuiNoticeCard } from '../composites/wui-notice-card/index.js'
 import type { WuiListAccordion } from '../composites/wui-list-accordion/index.js'
 import type { WuiListContent } from '../composites/wui-list-content/index.js'
+import type { WuiListNetwork } from '../composites/wui-list-network/index.js'
 import type { WuiListWalletTransaction } from '../composites/wui-list-wallet-transaction/index.js'
 import type { WuiOnRampActivityItem } from '../composites/wui-onramp-activity-item/index.js'
 import type { WuiOnRampProviderItem } from '../composites/wui-onramp-provider-item/index.js'
@@ -108,6 +109,7 @@ declare global {
       'wui-notice-card': CustomElement<WuiNoticeCard>
       'wui-list-accordion': CustomElement<WuiListAccordion>
       'wui-list-content': CustomElement<WuiListContent>
+      'wui-list-network': CustomElement<WuiListNetwork>
       'wui-list-wallet-transaction': CustomElement<WuiListWalletTransaction>
       'wui-onramp-activity-item': CustomElement<WuiOnRampActivityItem>
       'wui-onramp-provider-item': CustomElement<WuiOnRampProviderItem>

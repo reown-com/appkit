@@ -26,7 +26,7 @@ export interface RouterControllerState {
     | 'UpdateEmailWallet'
     | 'UpdateEmailPrimaryOtp'
     | 'UpdateEmailSecondaryOtp'
-    | 'UpgradeWallet'
+    | 'UnsupportedChain'
     | 'OnRampProviders'
     | 'OnRampActivity'
     | 'WhatIsABuy'
@@ -37,6 +37,7 @@ export interface RouterControllerState {
     wallet?: WcWallet
     network?: CaipNetwork
     email?: string
+    newEmail?: string
   }
 }
 
