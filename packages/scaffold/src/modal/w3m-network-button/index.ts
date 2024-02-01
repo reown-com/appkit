@@ -28,6 +28,8 @@ export class W3mNetworkButton extends LitElement {
 
   @state() private loading = ModalController.state.loading
 
+  @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
@@ -35,7 +37,8 @@ export class W3mNetworkButton extends LitElement {
       ...[
         NetworkController.subscribeKey('caipNetwork', val => (this.network = val)),
         AccountController.subscribeKey('isConnected', val => (this.connected = val)),
-        ModalController.subscribeKey('loading', val => (this.loading = val))
+        ModalController.subscribeKey('loading', val => (this.loading = val)),
+        NetworkController.subscribeKey('isUnsupportedChain', val => (this.isUnsupportedChain = val))
       ]
     )
   }
@@ -49,10 +52,13 @@ export class W3mNetworkButton extends LitElement {
     return html`
       <wui-network-button
         .disabled=${Boolean(this.disabled || this.loading)}
+        .isUnsupportedChain=${this.isUnsupportedChain}
         imageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
         @click=${this.onClick.bind(this)}
       >
-        ${this.network?.name ?? (this.connected ? 'Unknown Network' : 'Select Network')}
+        ${this.isUnsupportedChain
+          ? 'Switch Network'
+          : this.network?.name ?? (this.connected ? 'Unknown Network' : 'Select Network')}
       </wui-network-button>
     `
   }

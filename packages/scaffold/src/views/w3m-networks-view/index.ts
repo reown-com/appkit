@@ -2,6 +2,7 @@ import type { CaipNetwork } from '@web3modal/core'
 import {
   AccountController,
   AssetUtil,
+  CoreHelperUtil,
   EventsController,
   NetworkController,
   RouterController,
@@ -64,30 +65,13 @@ export class W3mNetworksView extends LitElement {
     const { approvedCaipNetworkIds, requestedCaipNetworks, supportsAllNetworks } =
       NetworkController.state
     const approvedIds = approvedCaipNetworkIds
-    const requestedNetworks = requestedCaipNetworks
-    const approvedIndexMap: Record<string, number> = {}
-    if (requestedNetworks && approvedIds) {
-      approvedIds.forEach((id, index) => {
-        approvedIndexMap[id] = index
-      })
 
-      requestedNetworks.sort((a, b) => {
-        const indexA = approvedIndexMap[a.id]
-        const indexB = approvedIndexMap[b.id]
+    const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
+      approvedCaipNetworkIds,
+      requestedCaipNetworks
+    )
 
-        if (indexA !== undefined && indexB !== undefined) {
-          return indexA - indexB
-        } else if (indexA !== undefined) {
-          return -1
-        } else if (indexB !== undefined) {
-          return 1
-        }
-
-        return 0
-      })
-    }
-
-    return requestedNetworks?.map(
+    return sortedNetworks?.map(
       network => html`
         <wui-card-select
           .selected=${this.caipNetwork?.id === network.id}
