@@ -1,8 +1,33 @@
-import { AccountController, ModalController, NetworkController } from '@web3modal/core'
+import { AccountController, ModalController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
+
+type CoinbaseNetwork = {
+  name: string
+  display_name: string
+  chain_id: string
+  contract_address: string
+}
+
+type PaymentLimits = {
+  id: string
+  min: string
+  max: string
+}
+
+type PaymentCurrency = {
+  id: string
+  payment_method_limits: PaymentLimits[]
+}
+
+type PurchaseCurrency = {
+  id: string
+  name: string
+  symbol: string
+  networks: CoinbaseNetwork[]
+}
 
 @customElement('w3m-onramp-widget')
 export class W3mOnrampWidget extends LitElement {
@@ -18,14 +43,15 @@ export class W3mOnrampWidget extends LitElement {
 
   @state() private loading = ModalController.state.loading
 
+  @state() private paymentCurrencies: PaymentCurrency[] = []
+
+  @state() private purchaseCurrencies: PurchaseCurrency[] = []
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
-        NetworkController.subscribeKey('caipNetwork', val => {
-          this.network = val
-        }),
         AccountController.subscribeKey('isConnected', val => {
           this.connected = val
         }),
@@ -42,6 +68,52 @@ export class W3mOnrampWidget extends LitElement {
     }
   }
 
+  public override firstUpdated() {
+    this.fetchOptions()
+  }
+
+  private fetchOptions() {
+    this.purchaseCurrencies = [
+      {
+        id: '2b92315d-eab7-5bef-84fa-089a131333f5',
+        name: 'USD Coin',
+        symbol: 'USDC',
+        networks: [
+          {
+            name: 'ethereum-mainnet',
+            display_name: 'Ethereum',
+            chain_id: '1',
+            contract_address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+          },
+          {
+            name: 'polygon-mainnet',
+            display_name: 'Polygon',
+            chain_id: '137',
+            contract_address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
+          }
+        ]
+      }
+    ]
+
+    this.paymentCurrencies = [
+      {
+        id: 'USD',
+        payment_method_limits: [
+          {
+            id: 'card',
+            min: '10.00',
+            max: '7500.00'
+          },
+          {
+            id: 'ach_bank_account',
+            min: '10.00',
+            max: '25000.00'
+          }
+        ]
+      }
+    ]
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -50,29 +122,39 @@ export class W3mOnrampWidget extends LitElement {
           <wui-input-text type="number">
             <wui-flex
               class="currency-container"
-              justifyContent="center"
+              justifyContent="space-between"
               alignItems="center"
               gap="xxs"
             >
               <wui-image
-                src="https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b"
+                src=https://upload.wikimedia.org/wikipedia/commons/8/88/United-states_flag_icon_round.svg
               ></wui-image>
-              EUR
+              <wui-text color="fg-100">
+                ${this.paymentCurrencies[0]?.id}
+              </wui-text>
             </wui-flex>
           </wui-input-text>
-          <wui-input-text type="number">
+          <wui-input-text type="number" size="md">
             <wui-flex
               class="currency-container"
-              justifyContent="center"
+              justifyContent="space-between"
               alignItems="center"
               gap="xxs"
             >
               <wui-image
-                src="https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Circle_USDC_Logo.svg/1024px-Circle_USDC_Logo.svg.png"
               ></wui-image>
-              ETH
+              <wui-text color="fg-100">
+                ${this.purchaseCurrencies[0]?.symbol}
+              </wui-text>
             </wui-flex>
           </wui-input-text>
+          <wui-flex justifyContent="space-evenly" class="amounts-container" gap="xs">
+            ${[100, 250, 500, 1000].map(
+              amount =>
+                html`<wui-button variant="accentBg" size="md" fullWidth>${amount}</wui-button>`
+            )}
+          </wui-flex>
           ${this.templateButton()}
         </wui-flex>
       </wui-flex>
@@ -84,7 +166,7 @@ export class W3mOnrampWidget extends LitElement {
       ? html`<wui-button @click=${this.onClick.bind(this)} variant="fill" fullWidth>
           Get quotes
         </wui-button>`
-      : html`<w3m-connect-button></w3m-connect-button>`
+      : html`<w3m-connect-button fullWidth></w3m-connect-button>`
   }
 
   // -- Private ------------------------------------------- //
