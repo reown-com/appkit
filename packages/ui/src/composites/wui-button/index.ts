@@ -9,6 +9,7 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 const TEXT_VARIANT_BY_SIZE = {
+  xs: 'small-600',
   sm: 'paragraph-600',
   md: 'small-600',
   mdl: 'small-600',
