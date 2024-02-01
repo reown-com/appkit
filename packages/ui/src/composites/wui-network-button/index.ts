@@ -14,6 +14,8 @@ export class WuiNetworkButton extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public imageSrc?: string = undefined
 
+  @property({ type: Boolean }) public isUnsupportedChain?: boolean = undefined
+
   @property({ type: Boolean }) public disabled = false
 
   // -- Render -------------------------------------------- //
@@ -30,6 +32,16 @@ export class WuiNetworkButton extends LitElement {
 
   // -- Private ------------------------------------------- //
   private visualTemplate() {
+    if (this.isUnsupportedChain) {
+      return html`
+        <wui-icon-box
+          size="sm"
+          iconColor="error-100"
+          backgroundColor="error-100"
+          icon="warningCircle"
+        ></wui-icon-box>
+      `
+    }
     if (this.imageSrc) {
       return html`<wui-image src=${this.imageSrc}></wui-image>`
     }

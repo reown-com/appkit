@@ -95,6 +95,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-update-email-primary-otp-view></w3m-update-email-primary-otp-view>`
       case 'UpdateEmailSecondaryOtp':
         return html`<w3m-update-email-secondary-otp-view></w3m-update-email-secondary-otp-view>`
+      case 'UnsupportedChain':
+        return html`<w3m-unsupported-chain-view></w3m-unsupported-chain-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }
