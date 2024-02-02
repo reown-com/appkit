@@ -184,6 +184,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.wagmiConfig = wagmiConfig
 
     this.syncRequestedNetworks([...wagmiConfig.chains])
+    this.syncConnectors([...wagmiConfig.connectors])
 
     watchConnectors(this.wagmiConfig, {
       onChange: connectors => this.syncConnectors(connectors)
@@ -257,18 +258,20 @@ export class Web3Modal extends Web3ModalScaffold {
     const { address, isConnected, chainId } = getAccount(this.wagmiConfig)
     const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId)
 
-    if (chain) {
-      const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${chainId}`
+    if (chain || chainId) {
+      const name = chain?.name ?? chainId?.toString()
+      const id = Number(chain?.id ?? chainId)
+      const caipChainId: CaipNetworkId = `${ConstantsUtil.EIP155}:${id}`
       this.setCaipNetwork({
         id: caipChainId,
-        name: chain.name,
-        imageId: PresetsUtil.EIP155NetworkImageIds[chain.id],
-        imageUrl: this.options?.chainImages?.[chain.id]
+        name,
+        imageId: PresetsUtil.EIP155NetworkImageIds[id],
+        imageUrl: this.options?.chainImages?.[id]
       })
       if (isConnected && address && chainId) {
-        const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
+        const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${id}:${address}`
         this.setCaipAddress(caipAddress)
-        if (chain.blockExplorers?.default?.url) {
+        if (chain?.blockExplorers?.default?.url) {
           const url = `${chain.blockExplorers.default.url}/address/${address}`
           this.setAddressExplorerUrl(url)
         } else {
@@ -314,29 +317,37 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private async syncBalance(address: Hex, chainId: number) {
     const chain = this.wagmiConfig.chains.find((c: Chain) => c.id === chainId)
+    if (chain) {
+      const balance = await getBalance(this.wagmiConfig, {
+        address,
+        chainId: chain.id,
+        token: this.options?.tokens?.[chain.id]?.address as Hex
+      })
+      this.setBalance(balance.formatted, balance.symbol)
 
-    const id = chain?.id || this.options?.defaultChain?.id || this.wagmiConfig?.chains?.[0]?.id
-    const balance = await getBalance(this.wagmiConfig, {
-      address,
-      chainId: id,
-      token: this.options?.tokens?.[id]?.address as Hex
-    })
-    this.setBalance(balance.formatted, balance.symbol)
+      return
+    }
+    this.setBalance(undefined, undefined)
   }
 
   private syncConnectors(
     connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
   ) {
+    const uniqueIds = new Set()
+    const filteredConnectors = connectors.filter(
+      item => !uniqueIds.has(item.id) && uniqueIds.add(item.id)
+    )
+
     const w3mConnectors: Connector[] = []
 
     const coinbaseSDKId = ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
 
     // Check if coinbase injected connector is present
-    const coinbaseConnector = connectors.find(
+    const coinbaseConnector = filteredConnectors.find(
       c => c.id === CoreConstants.CONNECTOR_RDNS_MAP[coinbaseSDKId]
     )
 
-    connectors.forEach(({ id, name, type, icon }) => {
+    filteredConnectors.forEach(({ id, name, type, icon }) => {
       // If coinbase injected connector is present, skip coinbase sdk connector.
       const shouldSkip =
         (coinbaseConnector && id === coinbaseSDKId) || ConstantsUtil.EMAIL_CONNECTOR_ID === id
@@ -352,7 +363,7 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     })
     this.setConnectors(w3mConnectors)
-    this.syncEmailConnector(connectors)
+    this.syncEmailConnector(filteredConnectors)
   }
 
   private async syncEmailConnector(

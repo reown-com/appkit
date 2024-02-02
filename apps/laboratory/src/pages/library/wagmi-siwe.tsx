@@ -15,7 +15,8 @@ const queryClient = new QueryClient()
 export const wagmiConfig = defaultWagmiConfig({
   chains: WagmiConstantsUtil.chains,
   projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata
+  metadata: ConstantsUtil.Metadata,
+  ssr: true
 })
 
 const modal = createWeb3Modal({

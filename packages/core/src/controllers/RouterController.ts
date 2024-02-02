@@ -25,12 +25,14 @@ export interface RouterControllerState {
     | 'UpdateEmailWallet'
     | 'UpdateEmailPrimaryOtp'
     | 'UpdateEmailSecondaryOtp'
+    | 'UnsupportedChain'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
     wallet?: WcWallet
     network?: CaipNetwork
     email?: string
+    newEmail?: string
   }
 }
 

@@ -106,6 +106,10 @@ export interface ApiGetWalletsResponse {
   count: number
 }
 
+export interface ApiGetAnalyticsConfigResponse {
+  isAnalyticsEnabled: boolean
+}
+
 export type ThemeMode = 'dark' | 'light'
 
 export interface ThemeVariables {
@@ -175,10 +179,16 @@ export type Event =
   | {
       type: 'track'
       event: 'MODAL_OPEN'
+      properties: {
+        connected: boolean
+      }
     }
   | {
       type: 'track'
       event: 'MODAL_CLOSE'
+      properties: {
+        connected: boolean
+      }
     }
   | {
       type: 'track'
@@ -258,6 +268,10 @@ export type Event =
     }
   | {
       type: 'track'
+      event: 'CLICK_NETWORKS'
+    }
+  | {
+      type: 'track'
       event: 'SIWE_AUTH_SUCCESS'
     }
   | {
@@ -295,6 +309,13 @@ export type Event =
   | {
       type: 'track'
       event: 'EMAIL_UPGRADE_FROM_MODAL'
+    }
+  | {
+      type: 'track'
+      event: 'SWITCH_NETWORK'
+      properties: {
+        network: string
+      }
     }
 
 // -- SIWEController Types ---------------------------------------------------

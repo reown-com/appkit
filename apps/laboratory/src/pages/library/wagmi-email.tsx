@@ -15,7 +15,8 @@ export const wagmiConfig = defaultWagmiConfig({
   chains: WagmiConstantsUtil.chains,
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
-  enableEmail: true
+  enableEmail: true,
+  ssr: true
 })
 
 const modal = createWeb3Modal({

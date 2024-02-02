@@ -1,4 +1,4 @@
-const SECURE_SITE = 'https://secure.web3modal.com'
+const SECURE_SITE = 'https://secure.walletconnect.com'
 
 export const ConstantsUtil = {
   FOUR_MINUTES_MS: 240_000,
