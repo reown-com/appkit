@@ -138,6 +138,25 @@ export class W3mConnectView extends LitElement {
     )
   }
 
+  private announcedTemplate() {
+    return this.connectors.map(connector => {
+      if (connector.type !== 'ANNOUNCED') {
+        return null
+      }
+
+      return html`
+        <wui-list-wallet
+          imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
+          name=${connector.name ?? 'Unknown'}
+          @click=${() => this.onConnector(connector)}
+          tagVariant="success"
+          .installed=${true}
+        >
+        </wui-list-wallet>
+      `
+    })
+  }
+
   private injectedTemplate() {
     return this.connectors.map(connector => {
       if (connector.type !== 'INJECTED') {
@@ -154,25 +173,6 @@ export class W3mConnectView extends LitElement {
           .installed=${true}
           name=${connector.name ?? 'Unknown'}
           @click=${() => this.onConnector(connector)}
-        >
-        </wui-list-wallet>
-      `
-    })
-  }
-
-  private announcedTemplate() {
-    return this.connectors.map(connector => {
-      if (connector.type !== 'ANNOUNCED') {
-        return null
-      }
-
-      return html`
-        <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-          name=${connector.name ?? 'Unknown'}
-          @click=${() => this.onConnector(connector)}
-          tagVariant="success"
-          .installed=${true}
         >
         </wui-list-wallet>
       `
