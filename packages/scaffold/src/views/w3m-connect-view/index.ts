@@ -253,13 +253,10 @@ export class W3mConnectView extends LitElement {
   }
 
   private filterOutDuplicateWallets(wallets: WcWallet[]) {
-    const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
     const recentIds = recent.map(wallet => wallet.id)
-    const rdnsIds = connectors.map(c => c.info?.rdns).filter(Boolean)
-    const filtered = wallets.filter(
-      wallet => !recentIds.includes(wallet.id) && !rdnsIds.includes(wallet.rdns ?? undefined)
-    )
+
+    const filtered = wallets.filter(wallet => !recentIds.includes(wallet.id))
 
     return filtered
   }
