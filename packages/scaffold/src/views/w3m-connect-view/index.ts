@@ -4,12 +4,12 @@ import {
   AssetUtil,
   ConnectionController,
   ConnectorController,
+  ConstantsUtil,
   CoreHelperUtil,
   EventsController,
   OptionsController,
   RouterController,
-  StorageUtil,
-  ConstantsUtil
+  StorageUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -79,9 +79,11 @@ export class W3mConnectView extends LitElement {
 
   private customTemplate() {
     const { customWallets } = OptionsController.state
+
     if (!customWallets?.length) {
       return null
     }
+
     const wallets = this.filterOutDuplicateWallets(customWallets)
 
     return wallets.map(
@@ -241,15 +243,16 @@ export class W3mConnectView extends LitElement {
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
     const injected = connectors.filter(c => c.type === 'INJECTED')
-    const eip6963 = connectors.filter(c => c.type === 'ANNOUNCED')
+    const filteredInjected = injected.filter(i => i.name !== 'Browser Wallet')
+
     if (featuredWalletIds || customWallets || !recommended.length) {
       return null
     }
 
-    // EIP6963 wallets are no longer serialized as ANNOUNCED in wagmiv2.
-    const eip6963Amount = eip6963.length || Math.max(0, injected.length - 1)
-    const overrideLength = eip6963Amount + recent.length
+    const overrideLength = filteredInjected.length + recent.length
+
     const maxRecommended = Math.max(0, 2 - overrideLength)
+
     const wallets = this.filterOutDuplicateWallets(recommended).slice(0, maxRecommended)
 
     return wallets.map(
@@ -278,14 +281,9 @@ export class W3mConnectView extends LitElement {
   }
 
   private filterOutDuplicateWallets(wallets: WcWallet[]) {
-    const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
     const recentIds = recent.map(wallet => wallet.id)
-    const filtered = wallets.filter(
-      wallet =>
-        !recentIds.includes(wallet.id) &&
-        !connectors.find(c => c.id === wallet.rdns || c?.info?.rdns === wallet.rdns)
-    )
+    const filtered = wallets.filter(wallet => !recentIds.includes(wallet.id))
 
     return filtered
   }
