@@ -1,8 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/utils'
-import { proxy, ref } from 'valtio/vanilla'
+import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil.js'
 import { PublicStateController } from './PublicStateController.js'
-import { TransactionsController } from './TransactionsController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 
@@ -37,6 +36,10 @@ const state = proxy<NetworkControllerState>({
 export const NetworkController = {
   state,
 
+  subscribe(callback: (newState: NetworkControllerState) => void) {
+    return sub(state, () => callback(state))
+  },
+
   subscribeKey<K extends StateKey>(key: K, callback: (value: NetworkControllerState[K]) => void) {
     return subKey(state, key, callback)
   },
@@ -54,9 +57,6 @@ export const NetworkController = {
   },
 
   setCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
-    TransactionsController.setPrevChainInView(TransactionsController.state.chainInView)
-    TransactionsController.setChainInView(caipNetwork?.name)
-
     state.caipNetwork = caipNetwork
     PublicStateController.set({ selectedNetworkId: caipNetwork?.id })
     this.checkIfSupportedNetwork()

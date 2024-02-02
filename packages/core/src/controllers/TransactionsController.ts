@@ -13,8 +13,7 @@ type TransactionByYearMap = Record<number, TransactionByMonthMap>
 export interface TransactionsControllerState {
   transactions: Transaction[]
   transactionsByYear: TransactionByYearMap
-  chainInView: string | undefined
-  prevChainInView: string | undefined
+  lastNetworkInView: string | undefined
   loading: boolean
   empty: boolean
   next: string | undefined
@@ -24,8 +23,7 @@ export interface TransactionsControllerState {
 const state = proxy<TransactionsControllerState>({
   transactions: [],
   transactionsByYear: {},
-  chainInView: undefined,
-  prevChainInView: undefined,
+  lastNetworkInView: undefined,
   loading: false,
   empty: false,
   next: undefined
@@ -39,12 +37,8 @@ export const TransactionsController = {
     return sub(state, () => callback(state))
   },
 
-  setChainInView(chainInView: TransactionsControllerState['chainInView']) {
-    state.chainInView = chainInView
-  },
-
-  setPrevChainInView(prevChainInView: TransactionsControllerState['prevChainInView']) {
-    state.prevChainInView = prevChainInView
+  setLastNetworkInView(lastNetworkInView: TransactionsControllerState['lastNetworkInView']) {
+    state.lastNetworkInView = lastNetworkInView
   },
 
   async fetchTransactions(accountAddress?: string) {
@@ -123,11 +117,9 @@ export const TransactionsController = {
   },
 
   filterByConnectedChain(transactions: Transaction[]) {
-    //TOD0 - This should filter by chain - fungible info is very unrelated
-    const chainName = NetworkController.state.caipNetwork?.name
+    const chainId = NetworkController.state.caipNetwork?.id
     const filteredTransactions = transactions.filter(
-      transaction =>
-        transaction.transfers[0]?.fungible_info?.name?.toLowerCase() === chainName?.toLowerCase()
+      transaction => transaction.metadata.chain === chainId
     )
 
     return filteredTransactions
@@ -136,6 +128,7 @@ export const TransactionsController = {
   resetTransactions() {
     state.transactions = []
     state.transactionsByYear = {}
+    state.lastNetworkInView = undefined
     state.loading = false
     state.empty = false
     state.next = undefined

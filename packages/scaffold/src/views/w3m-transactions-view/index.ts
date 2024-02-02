@@ -3,6 +3,7 @@ import type { Transaction } from '@web3modal/common'
 import {
   AccountController,
   EventsController,
+  NetworkController,
   OptionsController,
   TransactionsController
 } from '@web3modal/core'
@@ -28,13 +29,6 @@ export class W3mTransactionsView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private address: string | undefined = AccountController.state.address
 
-  @state() private isFirstUpdate = true
-
-  /** Keep track of the previous chain in chase the chain changes while the component is mounted */
-  @state() private chainInMemory: string | undefined
-
-  @state() private transactions = TransactionsController.state.transactions
-
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
 
   @state() private loading = TransactionsController.state.loading
@@ -57,14 +51,10 @@ export class W3mTransactionsView extends LitElement {
             }
           }
         }),
+        NetworkController.subscribe(() => {
+          this.updateTransactionView()
+        }),
         TransactionsController.subscribe(val => {
-          if (val.chainInView !== this.chainInMemory && !this.isFirstUpdate) {
-            this.chainInMemory = val.chainInView
-            TransactionsController.resetTransactions()
-            TransactionsController.fetchTransactions(this.address)
-            TransactionsController.setPrevChainInView(val.chainInView)
-          }
-          this.transactions = val.transactions
           this.transactionsByYear = val.transactionsByYear
           this.loading = val.loading
           this.empty = val.empty
@@ -75,19 +65,7 @@ export class W3mTransactionsView extends LitElement {
   }
 
   public override firstUpdated() {
-    const prevChainInView = TransactionsController.state.prevChainInView
-    const chainInView = TransactionsController.state.chainInView
-    this.chainInMemory = chainInView
-
-    if (this.transactions.length === 0) {
-      TransactionsController.fetchTransactions(this.address)
-    } else if (prevChainInView !== chainInView) {
-      TransactionsController.resetTransactions()
-      TransactionsController.fetchTransactions(this.address)
-    }
-    /* Prevent resetTransactions when coming back */
-    TransactionsController.setPrevChainInView(chainInView)
-    this.isFirstUpdate = false
+    this.updateTransactionView()
     this.createPaginationObserver()
   }
 
@@ -111,6 +89,17 @@ export class W3mTransactionsView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private updateTransactionView() {
+    const currentNetwork = NetworkController.state.caipNetwork?.id
+    const lastNetworkInView = TransactionsController.state.lastNetworkInView
+
+    if (lastNetworkInView !== currentNetwork) {
+      TransactionsController.resetTransactions()
+      TransactionsController.fetchTransactions(this.address)
+    }
+    TransactionsController.setLastNetworkInView(currentNetwork)
+  }
+
   private templateTransactionsByYear() {
     const sortedYearKeys = Object.keys(this.transactionsByYear).sort().reverse()
 
