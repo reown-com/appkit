@@ -109,6 +109,7 @@ export class W3mOnRampActivityView extends LitElement {
 
     this.loading = false
     this.coinbaseTransactions = coinbaseResponse.data || []
+    console.log('w3m-onramp-activity-view: coinbase transactions', this.coinbaseTransactions)
     this.refetchLoadingTransactions()
   }
 

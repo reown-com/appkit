@@ -1,9 +1,6 @@
 import { Stack, Card, CardHeader, Heading, CardBody, Box, StackDivider } from '@chakra-ui/react'
-import { useWeb3Modal } from '@web3modal/ethers/react'
 
 export function Web3ModalButtons() {
-  const modal = useWeb3Modal()
-
   return (
     <Card marginTop={20}>
       <CardHeader>
@@ -24,12 +21,6 @@ export function Web3ModalButtons() {
               Network Button
             </Heading>
             <w3m-network-button />
-          </Box>
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Open W3M Buy in progress
-            </Heading>
-            <button onClick={() => modal.open({ view: 'BuyInProgress' })}>Open</button>
           </Box>
         </Stack>
       </CardBody>
