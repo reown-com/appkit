@@ -12,7 +12,7 @@ const requestedCaipNetworks = [
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:42161'] as CaipNetworkId[]
 const switchNetworkEvent = {
   type: 'track',
-  event: 'MODAL_SWITCH_NETWORK',
+  event: 'SWITCH_NETWORK',
   properties: { network: caipNetwork.id }
 } as const
 
