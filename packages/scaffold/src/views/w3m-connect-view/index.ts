@@ -8,8 +8,7 @@ import {
   EventsController,
   OptionsController,
   RouterController,
-  StorageUtil,
-  ConstantsUtil
+  StorageUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
