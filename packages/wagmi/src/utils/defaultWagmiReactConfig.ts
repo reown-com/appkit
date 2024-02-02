@@ -50,7 +50,8 @@ export function defaultWagmiConfig({
     connectors.push(
       coinbaseWallet({
         appName: metadata?.name ?? 'Unknown',
-        appLogoUrl: metadata?.icons[0] ?? 'Unknown'
+        appLogoUrl: metadata?.icons[0] ?? 'Unknown',
+        enableMobileWalletLink: true
       })
     )
   }
