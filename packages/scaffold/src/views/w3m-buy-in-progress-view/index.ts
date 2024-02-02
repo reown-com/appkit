@@ -191,7 +191,8 @@ export class W3mBuyInProgressView extends LitElement {
       onramp: 'coinbase',
       projectId
     })
-    console.log('w3m-buy-in-progress: raw coinbase tx')
+    console.log('w3m-buy-in-progress: og coinbase txs', this.coinbaseTransactions)
+    console.log('w3m-buy-in-progress: new coinbase tx')
     console.log(coinbaseResponse.data)
 
     const newTransactions = coinbaseResponse.data.filter(
