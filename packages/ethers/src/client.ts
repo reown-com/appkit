@@ -1053,7 +1053,7 @@ export class Web3Modal extends Web3ModalScaffold {
       const connectors = this.getConnectors()
       const existingConnector = connectors.find(c => c.name === info.name)
       if (!existingConnector) {
-        const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.INJECTED_CONNECTOR_ID]
+        const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
         if (type) {
           this.addConnector({
             id: ConstantsUtil.EIP6963_CONNECTOR_ID,

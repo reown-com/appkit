@@ -4,6 +4,7 @@ import {
   AssetUtil,
   ConnectionController,
   ConnectorController,
+  ConstantsUtil,
   CoreHelperUtil,
   EventsController,
   OptionsController,
@@ -43,9 +44,10 @@ export class W3mConnectView extends LitElement {
       <wui-flex flexDirection="column" padding="s" gap="xs">
         <w3m-email-login-widget></w3m-email-login-widget>
 
-        ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()} ${this.injectedTemplate()}
-        ${this.featuredTemplate()} ${this.customTemplate()} ${this.recommendedTemplate()}
-        ${this.externalTemplate()} ${this.allWalletsTemplate()}
+        ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()}
+        ${this.announcedTemplate()} ${this.injectedTemplate()} ${this.featuredTemplate()}
+        ${this.customTemplate()} ${this.recommendedTemplate()} ${this.externalTemplate()}
+        ${this.allWalletsTemplate()}
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
     `
@@ -77,6 +79,7 @@ export class W3mConnectView extends LitElement {
 
   private customTemplate() {
     const { customWallets } = OptionsController.state
+
     if (!customWallets?.length) {
       return null
     }
@@ -157,9 +160,34 @@ export class W3mConnectView extends LitElement {
     })
   }
 
+  private announcedTemplate() {
+    return this.connectors.map(connector => {
+      if (connector.type !== 'ANNOUNCED') {
+        return null
+      }
+
+      return html`
+        <wui-list-wallet
+          imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
+          name=${connector.name ?? 'Unknown'}
+          @click=${() => this.onConnector(connector)}
+          tagVariant="success"
+          .installed=${true}
+        >
+        </wui-list-wallet>
+      `
+    })
+  }
+
   private externalTemplate() {
+    const announcedRdns = ConnectorController.getAnnouncedConnectorRdns()
+
     return this.connectors.map(connector => {
       if (['WALLET_CONNECT', 'INJECTED', 'ANNOUNCED', 'EMAIL'].includes(connector.type)) {
+        return null
+      }
+
+      if (announcedRdns.includes(ConstantsUtil.CONNECTOR_RDNS_MAP[connector.id])) {
         return null
       }
 
@@ -255,7 +283,6 @@ export class W3mConnectView extends LitElement {
   private filterOutDuplicateWallets(wallets: WcWallet[]) {
     const recent = StorageUtil.getRecentWallets()
     const recentIds = recent.map(wallet => wallet.id)
-
     const filtered = wallets.filter(wallet => !recentIds.includes(wallet.id))
 
     return filtered
