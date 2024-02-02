@@ -44,10 +44,9 @@ export class W3mConnectView extends LitElement {
       <wui-flex flexDirection="column" padding="s" gap="xs">
         <w3m-email-login-widget></w3m-email-login-widget>
 
-        ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()}
-        ${this.announcedTemplate()} ${this.injectedTemplate()} ${this.featuredTemplate()}
-        ${this.customTemplate()} ${this.recommendedTemplate()} ${this.externalTemplate()}
-        ${this.allWalletsTemplate()}
+        ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()} ${this.injectedTemplate()}
+        ${this.featuredTemplate()} ${this.customTemplate()} ${this.recommendedTemplate()}
+        ${this.externalTemplate()} ${this.allWalletsTemplate()}
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
     `
@@ -82,6 +81,7 @@ export class W3mConnectView extends LitElement {
     if (!customWallets?.length) {
       return null
     }
+
     const wallets = this.filterOutDuplicateWallets(customWallets)
 
     return wallets.map(
@@ -136,25 +136,6 @@ export class W3mConnectView extends LitElement {
     )
   }
 
-  private announcedTemplate() {
-    return this.connectors.map(connector => {
-      if (connector.type !== 'ANNOUNCED') {
-        return null
-      }
-
-      return html`
-        <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-          name=${connector.name ?? 'Unknown'}
-          @click=${() => this.onConnector(connector)}
-          tagVariant="success"
-          .installed=${true}
-        >
-        </wui-list-wallet>
-      `
-    })
-  }
-
   private injectedTemplate() {
     return this.connectors.map(connector => {
       if (connector.type !== 'INJECTED') {
@@ -178,14 +159,8 @@ export class W3mConnectView extends LitElement {
   }
 
   private externalTemplate() {
-    const announcedRdns = ConnectorController.getAnnouncedConnectorRdns()
-
     return this.connectors.map(connector => {
       if (['WALLET_CONNECT', 'INJECTED', 'ANNOUNCED', 'EMAIL'].includes(connector.type)) {
-        return null
-      }
-
-      if (announcedRdns.includes(ConstantsUtil.CONNECTOR_RDNS_MAP[connector.id])) {
         return null
       }
 
@@ -241,15 +216,16 @@ export class W3mConnectView extends LitElement {
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
     const injected = connectors.filter(c => c.type === 'INJECTED')
-    const eip6963 = connectors.filter(c => c.type === 'ANNOUNCED')
+    const filteredInjected = injected.filter(i => i.name !== 'Browser Wallet')
+
     if (featuredWalletIds || customWallets || !recommended.length) {
       return null
     }
 
-    // EIP6963 wallets are no longer serialized as ANNOUNCED in wagmiv2.
-    const eip6963Amount = eip6963.length || Math.max(0, injected.length - 1)
-    const overrideLength = eip6963Amount + recent.length
+    const overrideLength = filteredInjected.length + recent.length
+
     const maxRecommended = Math.max(0, 2 - overrideLength)
+
     const wallets = this.filterOutDuplicateWallets(recommended).slice(0, maxRecommended)
 
     return wallets.map(
@@ -281,10 +257,9 @@ export class W3mConnectView extends LitElement {
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
     const recentIds = recent.map(wallet => wallet.id)
+    const rdnsIds = connectors.map(c => c.info?.rdns).filter(Boolean)
     const filtered = wallets.filter(
-      wallet =>
-        !recentIds.includes(wallet.id) &&
-        !connectors.find(c => c.id === wallet.rdns || c?.info?.rdns === wallet.rdns)
+      wallet => !recentIds.includes(wallet.id) && !rdnsIds.includes(wallet.rdns ?? undefined)
     )
 
     return filtered
