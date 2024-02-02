@@ -181,7 +181,7 @@ export class W3mBuyInProgressView extends LitElement {
   private async fetchCoinbaseTransactions() {
     const address = AccountController.state.address
     const projectId = OptionsController.state.projectId
-
+    console.log('w3m-buy-in-progress: fetching coinbase txs')
     if (!address) {
       throw new Error('No address found')
     }
@@ -191,6 +191,8 @@ export class W3mBuyInProgressView extends LitElement {
       onramp: 'coinbase',
       projectId
     })
+    console.log('w3m-buy-in-progress: raw coinbase tx')
+    console.log(coinbaseResponse.data)
 
     const newTransactions = coinbaseResponse.data.filter(
       transaction =>
@@ -199,6 +201,9 @@ export class W3mBuyInProgressView extends LitElement {
             existingTransaction.metadata.minedAt === transaction.metadata.minedAt
         )
     )
+
+    console.log('w3m-buy-in-progress: new coinbase txs')
+    console.log(newTransactions, this.intervalId)
 
     if (newTransactions.length > 0 && this.intervalId) {
       clearInterval(this.intervalId)
