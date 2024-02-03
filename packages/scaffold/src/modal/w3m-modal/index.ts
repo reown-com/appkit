@@ -30,7 +30,7 @@ export class W3mModal extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private open = ModalController.state.open
 
-  @state() private caipAddress = AccountController.state.address
+  @state() private caipAddress = AccountController.state.caipAddress
 
   @state() private isSiweEnabled = SIWEController.state.isSiweEnabled
 
