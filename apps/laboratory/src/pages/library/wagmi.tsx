@@ -29,9 +29,9 @@ const modal = createWeb3Modal({
       id: 'react-wallet-v2',
       name: 'react-wallet-v2',
       homepage: 'https://react-wallet-v2-git-chore-2111-walletconnect1.vercel.app',
-      mobile_link: 'react-wallet-v2-git-chore-test-ws-canary-walletconnect1.vercel.app',
-      desktop_link: 'react-wallet-v2-git-chore-test-ws-canary-walletconnect1.vercel.app',
-      webapp_link: 'react-wallet-v2-git-chore-test-ws-canary-walletconnect1.vercel.app'
+      mobile_link: 'https://react-wallet-v2-git-chore-test-ws-canary-walletconnect1.vercel.app',
+      desktop_link: 'https://react-wallet-v2-git-chore-test-ws-canary-walletconnect1.vercel.app',
+      webapp_link: 'https://react-wallet-v2-git-chore-test-ws-canary-walletconnect1.vercel.app'
     }
   ]
 })
