@@ -53,14 +53,23 @@ export function SolanaSignTypedDataTest() {
       if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
-
+      console.log(`walletProvider`, walletProvider);
       // Serialize the data
       const serializedData = serialize(schema, message);
       // Sign the serialized data
-      const signature = await walletProvider.signMessage(serializedData);
+      console.log(`serializedData`, serializedData);
+      const signature = await walletProvider.request({
+        method: "signMessage",
+        params: {
+          message: serializedData,
+          display: "hex",
+        },
+      });
+      // const signature = await walletProvider.signMessage(serializedData);
 
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
+      console.log(`err`, err);
       toast({
         title: 'Error',
         description: 'Failed to sign message',

@@ -1,14 +1,9 @@
-import { PublicKey, SystemProgram, Transaction, TransactionInstruction } from '@solana/web3.js'
+import { PublicKey, SystemProgram, Transaction, TransactionInstruction, TransactionMessage, VersionedTransaction } from '@solana/web3.js'
 import BN from 'bn.js'
 import base58 from 'bs58'
 import borsh from 'borsh'
 import { Buffer } from 'buffer'
 import { SolConstantsUtil, SolStoreUtil } from '@web3modal/scaffold-utils/solana'
-
-import { registerListener, unregisterListener } from '../utils/clusterFactory'
-import { getHashedName, getNameAccountKey } from '../utils/hash'
-import { FavouriteDomain, NameRegistry } from '../utils/nameService'
-
 import type {
   BlockResult,
   AccountInfo,
@@ -19,6 +14,12 @@ import type {
   TransactionArgs,
   TransactionType
 } from '@web3modal/scaffold-utils/solana'
+
+import { registerListener, unregisterListener } from '../utils/clusterFactory'
+import { getHashedName, getNameAccountKey } from '../utils/hash'
+import { FavouriteDomain, NameRegistry } from '../utils/nameService'
+
+
 
 export interface Connector {
   id: string
@@ -79,9 +80,7 @@ export class BaseConnector {
     type: TransType,
     params: TransactionArgs[TransType]['params']
   ) {
-    console.log(`BEFORE!`);
     const transaction = new Transaction()
-    console.log(`AFTER!`);
     const fromAddress = SolStoreUtil.state.address
 
     if (!fromAddress) throw new Error('No address connected')
@@ -120,9 +119,39 @@ export class BaseConnector {
     return transaction
   }
 
-  public async sendTransaction(encodedTransaction: string) {
-    const signature = await this.requestCluster('sendTransaction', [encodedTransaction])
+  protected async constructVersionedTransaction(
+    params: TransactionArgs['transfer']['params']
+  ) {
+    const fromAddress = SolStoreUtil.state.address
+    if (!fromAddress) throw new Error('No address connected')
+    const fromPubkey = new PublicKey(fromAddress), toPubkey = new PublicKey(params.to)
 
+    const instructions = [
+      SystemProgram.transfer({
+        fromPubkey,
+        toPubkey,
+        lamports: params.amountInLamports
+      }),
+    ];
+
+    const response = await this.requestCluster('getLatestBlockhash', [{}])
+    const { blockhash: recentBlockhash } = response.value
+
+    const messageV0 = new TransactionMessage({
+      payerKey: fromPubkey,
+      recentBlockhash,
+      instructions,
+    }).compileToV0Message();
+
+    // make a versioned transaction
+    const transactionV0 = new VersionedTransaction(messageV0);
+    return transactionV0
+  }
+
+  public async sendTransaction(encodedTransaction: string) {
+    console.log(`sendTransaction`);
+    const signature = await this.requestCluster('sendTransaction', [encodedTransaction])
+    console.log(`signature`, signature);
     return signature
   }
 
@@ -148,9 +177,9 @@ export class BaseConnector {
       const balance = await this.requestCluster('getBalance', [address, { commitment: 'processed' }])
       const formatted = currency === 'lamports' ? `${balance?.value || 0} lamports` : `${(balance?.value || 0) / 1000000000} sol`
       return {
-        value: new BN(balance.value / 1000000000),
+        value: new BN(balance.value),
         formatted,
-        decimals: balance.value,
+        decimals: balance.value / 1000000000,
         symbol: currency
       }
     } catch (err) {

@@ -1,5 +1,6 @@
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
+import type { PublicKey } from '@solana/web3.js'
 
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import EthereumProvider from '@walletconnect/ethereum-provider'
@@ -9,7 +10,6 @@ import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-uti
 import { WalletConnectConnector } from './connectors/WalletConnectConnector'
 import { PhantomConnector } from './connectors/phantom'
 
-import type { PublicKey } from '@solana/web3.js'
 import type {
   CaipNetworkId,
   ConnectionControllerClient,
@@ -81,7 +81,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
       getApprovedCaipNetworksData: async () =>
         new Promise(async resolve => {
-          console.log("get approved caip network")
           const walletChoice = localStorage.getItem(SolConstantsUtil.WALLET_ID)
           if (walletChoice?.includes(ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)) {
             const result = {
@@ -282,10 +281,19 @@ export class Web3Modal extends Web3ModalScaffold {
           break;
         }
         case ConstantsUtil.INJECTED_CONNECTOR_ID: {
-          await this.walletAdapters.phantom.connect()
-          const address = this.walletAdapters.phantom.publicKey?.toString() as Address
-          this.setInjectedProvider(this.walletAdapters.phantom as unknown as Provider, address)
-          break
+          if (window.solflare) {
+            await this.walletAdapters.solflare.connect()
+            const address = this.walletAdapters.solflare.publicKey?.toString() as Address
+            this.setInjectedProvider(this.walletAdapters.solflare as unknown as Provider, address)
+            break
+          }
+          if (window.phantom) {
+            await this.walletAdapters.phantom.connect()
+            const address = this.walletAdapters.phantom.publicKey?.toString() as Address
+            this.setInjectedProvider(this.walletAdapters.phantom as unknown as Provider, address)
+            break
+          }
+
         }
       }
     } catch (error) {
@@ -341,7 +349,6 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncAccount() {
     const address = SolStoreUtil.state.address
     const chainId = SolStoreUtil.state.currentChain?.chainId
-    console.log("syncAccount", address, chainId)
     const isConnected = SolStoreUtil.state.isConnected
 
     this.resetAccount()
@@ -351,7 +358,7 @@ export class Web3Modal extends Web3ModalScaffold {
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
       await Promise.all([
-        // this.syncProfile(address),
+        this.syncProfile(address),
         this.syncBalance(address),
         this.getApprovedCaipNetworksData()
       ])
@@ -376,7 +383,6 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
-    console.log("syncNetwork")
     const address = SolStoreUtil.state.address
     const chainId = SolStoreUtil.state.chainId
     const caipChainId = SolStoreUtil.state.caipChainId
@@ -414,10 +420,11 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncBalance(address: string) {
-    const caipChainId = SolStoreUtil.state.caipChainId
-    if (caipChainId && this.chains) {
-      const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
-      console.log(`chain in sync balance`, chain);
+     // @todo add caip chain
+    // const caipChainId = SolStoreUtil.state.caipChainId
+    const chainId = SolStoreUtil.state.chainId
+    if (chainId && this.chains) {
+      const chain = this.chains.find(c => c.chainId === (chainId.includes(':') ? chainId.split(':')[1] : chainId))
       if (chain) {
         const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
         let balance
@@ -426,7 +433,7 @@ export class Web3Modal extends Web3ModalScaffold {
         } else {
           balance = await this.PhantomConnector.getBalance(address)
         }
-        this.setBalance(balance.value.toString(), chain.currency)
+        this.setBalance(balance.decimals.toString(), chain.currency)
       }
     }
   }
@@ -435,11 +442,10 @@ export class Web3Modal extends Web3ModalScaffold {
     chains: Web3ModalClientOptions['chains'],
     chainImages?: Web3ModalClientOptions['chainImages']
   ) {
-    console.log("syncRequestedNetworks", chains, chainImages)
     const requestedCaipNetworks = chains?.map(
       chain =>
         ({
-          id: `${chain.name}:${chain.chainId}`,
+          id: `${chain.name}:${chain.chainId} `,
           name: chain.name,
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[chain.chainId]
@@ -658,7 +664,6 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     function chainChangedHandler(chainId: string) {
-      console.log(chainId)
       if (chainId) {
         SolStoreUtil.setChainId(chainId)
       }
