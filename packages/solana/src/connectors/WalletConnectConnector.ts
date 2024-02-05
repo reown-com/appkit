@@ -100,13 +100,31 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     return signature
   }
 
+  public async signVersionedTransaction(
+    params: TransactionArgs['transfer']['params']
+  ) {
+    const transaction = await this.constructVersionedTransaction(params)
+    console.log(`transaction message`, transaction.message);
+    const transactionParams = {
+      feePayer: new PublicKey(SolStoreUtil.state.address as string).toBase58(),
+      instructions: transaction.message.compiledInstructions.map(instruction => ({
+        ...instruction,
+        data: base58.encode(instruction.data)
+      })),
+      recentBlockhash: transaction.message.recentBlockhash ?? ''
+    }
+    // @ts-ignore
+    const res = await this.request('solana_signTransaction', transactionParams)
+    console.log(`res to request`, res);
+
+    return base58.encode(transaction.serialize())
+  }
+
   public async signTransaction<Type extends keyof TransactionArgs>(
     type: Type,
     params: TransactionArgs[Type]['params']
   ) {
-    console.log(`is it calls?`);
     const transaction = await this.constructTransaction(type, params)
-    console.log('Made transaction', transaction)
 
     const transactionParams = {
       feePayer: transaction.feePayer?.toBase58() ?? '',
@@ -115,7 +133,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
         keys: instruction.keys.map(key => ({
           isWritable: key.isWritable,
           isSigner: key.isSigner,
-          pubkey: key.pubkey.toBase58()
+          pubkey: key.pubkey.toBase58(),
         })),
         programId: instruction.programId.toBase58()
       })),

@@ -1,5 +1,6 @@
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
+import type { PublicKey } from '@solana/web3.js'
 
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import EthereumProvider from '@walletconnect/ethereum-provider'
@@ -9,7 +10,6 @@ import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-uti
 import { WalletConnectConnector } from './connectors/WalletConnectConnector'
 import { PhantomConnector } from './connectors/phantom'
 
-import type { PublicKey } from '@solana/web3.js'
 import type {
   CaipNetworkId,
   ConnectionControllerClient,
@@ -279,10 +279,19 @@ export class Web3Modal extends Web3ModalScaffold {
           break;
         }
         case ConstantsUtil.INJECTED_CONNECTOR_ID: {
-          await this.walletAdapters.phantom.connect()
-          const address = this.walletAdapters.phantom.publicKey?.toString() as Address
-          this.setInjectedProvider(this.walletAdapters.phantom as unknown as Provider, address)
-          break
+          if (window.solflare) {
+            await this.walletAdapters.solflare.connect()
+            const address = this.walletAdapters.solflare.publicKey?.toString() as Address
+            this.setInjectedProvider(this.walletAdapters.solflare as unknown as Provider, address)
+            break
+          }
+          if (window.phantom) {
+            await this.walletAdapters.phantom.connect()
+            const address = this.walletAdapters.phantom.publicKey?.toString() as Address
+            this.setInjectedProvider(this.walletAdapters.phantom as unknown as Provider, address)
+            break
+          }
+
         }
       }
     } catch (error) {
@@ -402,7 +411,6 @@ export class Web3Modal extends Web3ModalScaffold {
     const chainId = SolStoreUtil.state.chainId
     if (chainId && this.chains) {
       const chain = this.chains.find(c => c.chainId === (chainId.includes(':') ? chainId.split(':')[1] : chainId))
-      console.log(`chain in sync balance`, chain);
       if (chain) {
         const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
         let balance
@@ -411,7 +419,7 @@ export class Web3Modal extends Web3ModalScaffold {
         } else {
           balance = await this.PhantomConnector.getBalance(address)
         }
-        this.setBalance(balance.value.toString(), chain.currency)
+        this.setBalance(balance.decimals.toString(), chain.currency)
       }
     }
   }
