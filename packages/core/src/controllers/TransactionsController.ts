@@ -6,7 +6,6 @@ import { SnackController } from './SnackController.js'
 import type { CoinbaseTransaction } from '../utils/TypeUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 
-// -- Types --------------------------------------------- //
 export type GroupedTransaction =
   | {
       type: 'zerion'
@@ -17,7 +16,9 @@ export type GroupedTransaction =
       value: CoinbaseTransaction
     }
 
-type TransactionByYearMap = Record<number, GroupedTransaction[]>
+// -- Types --------------------------------------------- //
+type TransactionByMonthMap = Record<number, GroupedTransaction[]>
+type TransactionByYearMap = Record<number, TransactionByMonthMap>
 
 export interface TransactionsControllerState {
   transactions: Transaction[]
@@ -67,7 +68,7 @@ export const TransactionsController = {
 
       state.loading = false
       state.transactions = filteredTransactions
-      state.transactionsByYear = this.groupTransactionsByYear(
+      state.transactionsByYear = this.groupTransactionsByYearAndMonth(
         state.transactionsByYear,
         nonSpamTransactions
       )
@@ -89,7 +90,7 @@ export const TransactionsController = {
     }
   },
 
-  groupTransactionsByYear(
+  groupTransactionsByYearAndMonth(
     transactionsMap: TransactionByYearMap = {},
     transactions: Transaction[] = []
   ) {
@@ -97,34 +98,20 @@ export const TransactionsController = {
 
     transactions.forEach(transaction => {
       const year = new Date(transaction.metadata.minedAt).getFullYear()
-      if (!grouped[year]) {
-        grouped[year] = []
-      }
-      if (
-        !grouped[year]?.find(
-          t =>
-            (t.value as Transaction)?.id === transaction.id ||
-            (t.value as CoinbaseTransaction).transaction_id === transaction.id
-        )
-      ) {
-        const yearTransactions = [...(grouped[year] as GroupedTransaction[])]
-        yearTransactions.push({
-          type: 'zerion',
-          value: transaction
-        })
-        grouped[year] = yearTransactions.sort((a, b) => {
-          const aDate = new Date((a.value as Transaction).metadata.minedAt)
-          const bDate = new Date((b.value as Transaction).metadata.minedAt)
+      const month = new Date(transaction.metadata.minedAt).getMonth()
+      const yearTransactions = grouped[year] ?? {}
+      const monthTransactions = yearTransactions[month] ?? []
 
-          return bDate.getTime() - aDate.getTime()
-        })
-      }
+      grouped[year] = {
+        ...yearTransactions,
+        [month]: [...monthTransactions, transaction]
+      } as GroupedTransaction
     })
 
     return grouped
   },
 
-  groupCoinbaseTransactionsByYear(
+  groupCoinbaseTransactionsByYearAndMonth(
     transactionsMap: TransactionByYearMap = {},
     transactions: CoinbaseTransaction[] = []
   ) {
@@ -132,13 +119,14 @@ export const TransactionsController = {
 
     transactions.forEach(transaction => {
       const year = new Date(transaction.created_at).getFullYear()
-      if (!grouped[year]) {
-        grouped[year] = []
-      }
-      grouped[year]?.push({
-        type: 'coinbase',
-        value: transaction
-      })
+      const month = new Date(transaction.created_at).getMonth()
+      const yearTransactions = grouped[year] ?? {}
+      const monthTransactions = yearTransactions[month] ?? []
+
+      grouped[year] = {
+        ...yearTransactions,
+        [month]: [...monthTransactions, transaction]
+      } as GroupedTransaction
     })
 
     return grouped

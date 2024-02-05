@@ -30,5 +30,9 @@ export const DateUtil = {
 
   getRelativeDateFromNow(date: string | number) {
     return dayjs(date).fromNow(true)
+  },
+
+  formatDate(date: string | number, format = 'DD MMM') {
+    return dayjs(date).format(format)
   }
 }

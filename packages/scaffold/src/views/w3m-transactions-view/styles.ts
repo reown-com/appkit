@@ -8,4 +8,8 @@ export default css`
     scrollbar-width: none;
     padding: var(--wui-spacing-m);
   }
+
+  :host > wui-flex:first-child::-webkit-scrollbar {
+    display: none;
+  }
 `

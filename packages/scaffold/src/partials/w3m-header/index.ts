@@ -43,7 +43,7 @@ function headings() {
     UpdateEmailWallet: 'Edit Email',
     UpdateEmailPrimaryOtp: 'Confirm Current Email',
     UpdateEmailSecondaryOtp: 'Confirm New Email',
-    UpgradeWallet: 'Upgrade Wallet',
+    UnsupportedChain: 'Switch Network',
     OnRampProviders: 'Choose Provider',
     OnRampActivity: 'Activity',
     WhatIsABuy: 'What is Buy?',
