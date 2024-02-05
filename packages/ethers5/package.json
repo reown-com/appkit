@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "3.9.1",
-    "@walletconnect/ethereum-provider": "2.11.0-canary-ws.0",
+    "@walletconnect/ethereum-provider": "2.11.0-canary-ws.1",
     "@web3modal/polyfills": "4.0.0-648b6755",
     "@web3modal/scaffold": "4.0.0-648b6755",
     "@web3modal/scaffold-react": "4.0.0-648b6755",
