@@ -118,6 +118,7 @@ export class W3mOnRampActivityView extends LitElement {
       transaction => transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
     )
 
+    console.log('w3m-onramp-activity-view: loadingTransactions', loadingTransactions)
     if (loadingTransactions.length === 0) {
       clearTimeout(this.refetchTimeout)
 
@@ -125,6 +126,7 @@ export class W3mOnRampActivityView extends LitElement {
     }
 
     // Wait 2 seconds before refetching
+    console.log('w3m-onramp-activity-view: refetchLoadingTransactions in 3s')
     this.refetchTimeout = setTimeout(async () => {
       const address = AccountController.state.address
       const projectId = OptionsController.state.projectId
@@ -133,7 +135,7 @@ export class W3mOnRampActivityView extends LitElement {
         onramp: 'coinbase',
         projectId
       })
-
+      console.log('w3m-onramp-activity-view: new txs', coinbaseResponse.data)
       this.coinbaseTransactions = coinbaseResponse.data || []
       this.refetchLoadingTransactions()
     }, 3000)
