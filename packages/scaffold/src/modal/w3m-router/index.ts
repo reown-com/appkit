@@ -102,9 +102,9 @@ export class W3mRouter extends LitElement {
       case 'OnRampActivity':
         return html`<w3m-onramp-activity-view></w3m-onramp-activity-view>`
       case 'OnRampTokenSelect':
-        return html`<w3m-onramp-tokens-view></w3m-onramp-tokens-view>`
+        return html`<w3m-onramp-token-select-view></w3m-onramp-token-select-view>`
       case 'OnRampFiatSelect':
-        return html`<w3m-onramp-currencies-view></w3m-onramp-currencies-view>`
+        return html`<w3m-onramp-fiat-select-view></w3m-onramp-fiat-select-view>`
       case 'WhatIsABuy':
         return html`<w3m-what-is-a-buy-view></w3m-what-is-a-buy-view>`
       case 'BuyInProgress':

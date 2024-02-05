@@ -47,7 +47,9 @@ function headings() {
     OnRampProviders: 'Choose Provider',
     OnRampActivity: 'Activity',
     WhatIsABuy: 'What is Buy?',
-    BuyInProgress: 'Buy'
+    BuyInProgress: 'Buy',
+    OnRampTokenSelect: 'Select Token',
+    OnRampFiatSelect: 'Select Currency'
   }
 }
 

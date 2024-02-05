@@ -13,8 +13,8 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 
-@customElement('w3m-onramp-tokens-view')
-export class W3mOnrampTokensView extends LitElement {
+@customElement('w3m-onramp-fiat-select-view')
+export class W3mOnrampFiatSelectView extends LitElement {
   public static override styles = styles
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
@@ -99,6 +99,6 @@ export class W3mOnrampTokensView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-onramp-tokens-view': W3mOnrampTokensView
+    'w3m-onramp-fiat-select-view': W3mOnrampFiatSelectView
   }
 }
