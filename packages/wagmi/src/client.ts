@@ -35,7 +35,7 @@ import {
   getWalletConnectCaipNetworks
 } from './utils/helpers.js'
 import { W3mFrameHelpers } from '@web3modal/wallet'
-import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
+import type { W3mFrameProvider } from '@web3modal/wallet'
 import { ConstantsUtil as CoreConstants } from '@web3modal/core'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
@@ -387,7 +387,7 @@ export class Web3Modal extends Web3ModalScaffold {
       const isLoginEmailUsed = provider.getLoginEmailUsed()
       super.setLoading(isLoginEmailUsed)
       provider.onRpcRequest(request => {
-        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request as W3mFrameTypes.AppEvent)) {
+        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
           super.open({ view: 'ApproveTransaction' })
         }
       })

@@ -36,7 +36,6 @@ import {
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
 import { W3mFrameProvider, W3mFrameHelpers } from '@web3modal/wallet'
-import type { W3mFrameTypes } from '@web3modal/wallet'
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
 
 // -- Types ---------------------------------------------------------------------
@@ -749,7 +748,7 @@ export class Web3Modal extends Web3ModalScaffold {
     if (this.emailProvider) {
       this.emailProvider.onRpcRequest(request => {
         // We only open the modal if it's not a safe (auto-approve)
-        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request as W3mFrameTypes.AppEvent)) {
+        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
           super.open({ view: 'ApproveTransaction' })
         }
       })
