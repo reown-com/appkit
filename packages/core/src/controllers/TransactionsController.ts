@@ -5,6 +5,7 @@ import { OptionsController } from './OptionsController.js'
 import { EventsController } from './EventsController.js'
 import { SnackController } from './SnackController.js'
 import { NetworkController } from './NetworkController.js'
+import type { CaipNetworkId } from '../utils/TypeUtil.js'
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<number, Transaction[]>
@@ -13,7 +14,7 @@ type TransactionByYearMap = Record<number, TransactionByMonthMap>
 export interface TransactionsControllerState {
   transactions: Transaction[]
   transactionsByYear: TransactionByYearMap
-  lastNetworkInView: string | undefined
+  lastNetworkInView: CaipNetworkId | undefined
   loading: boolean
   empty: boolean
   next: string | undefined

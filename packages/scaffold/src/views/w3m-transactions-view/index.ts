@@ -51,7 +51,7 @@ export class W3mTransactionsView extends LitElement {
             }
           }
         }),
-        NetworkController.subscribe(() => {
+        NetworkController.subscribeKey('caipNetwork', () => {
           this.updateTransactionView()
         }),
         TransactionsController.subscribe(val => {
