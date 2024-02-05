@@ -31,8 +31,6 @@ export class W3mTransactionsView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private address: string | undefined = AccountController.state.address
 
-  @state() private transactions = TransactionsController.state.transactions
-
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
 
   @state() private loading = TransactionsController.state.loading
@@ -56,7 +54,6 @@ export class W3mTransactionsView extends LitElement {
           }
         }),
         TransactionsController.subscribe(val => {
-          this.transactions = val.transactions
           this.transactionsByYear = val.transactionsByYear
           this.loading = val.loading
           this.empty = val.empty
@@ -67,9 +64,7 @@ export class W3mTransactionsView extends LitElement {
   }
 
   public override firstUpdated() {
-    if (this.transactions.length === 0) {
-      TransactionsController.fetchTransactions(this.address)
-    }
+    TransactionsController.fetchTransactions(this.address)
     this.createPaginationObserver()
   }
 

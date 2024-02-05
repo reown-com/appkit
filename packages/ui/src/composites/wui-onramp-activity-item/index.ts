@@ -32,7 +32,7 @@ export class WuiOnRampActivityItem extends LitElement {
 
   @property() public onClick: (() => void) | null = null
 
-  @property() public icon = 'https://avatar.vercel.sh/andrew.svg?size=50&text=AG'
+  @property() public icon = 'https://avatar.vercel.sh/andrew.svg?size=50&text=USDC'
 
   // -- Render -------------------------------------------- //
   public override render() {
