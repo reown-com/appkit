@@ -161,7 +161,7 @@ export class W3mBuyInProgressView extends LitElement {
       onramp: 'coinbase',
       projectId
     })
-
+    console.log('w3m-buy-in-progress: FIRST COINBASE REQUEST', coinbaseResponse.data)
     this.coinbaseTransactions = coinbaseResponse.data
     this.coinbaseTransactionsInitialized = true
     this.intervalId = setInterval(() => this.watchCoinbaseTransactions(), 10000)
@@ -191,6 +191,7 @@ export class W3mBuyInProgressView extends LitElement {
       onramp: 'coinbase',
       projectId
     })
+
     console.log('w3m-buy-in-progress: og coinbase txs', this.coinbaseTransactions)
     console.log('w3m-buy-in-progress: new coinbase tx')
     console.log(coinbaseResponse.data)
