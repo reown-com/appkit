@@ -449,13 +449,14 @@ export const SolHelpersUtil = {
     }
     return chains[0]
   },
-  getChainFromCaip(chains: Chain[], chainCaipId: CaipNetworkId | string) {
+  getChainFromCaip(chains: Chain[], chainCaipId: CaipNetworkId | string | undefined | null = ":") {
     const chainName: string = chainCaipId?.split(':')[0] ?? ""
-    const chainId: string = chainCaipId?.split(':')[1] ?? ""
+    const chainId: string = (chainCaipId?.split(':')[1] ?? "").replace(/\s/g, '')
 
-    const chain = chains.find(chain => chain.chainId === chainId.replace(/\s/g, '') && chain.name === chainName)
-    if (chain) {
-      return chain
+    const selectedChain = chains.find((chain) => chain.chainId === chainId && chain.name === chainName)
+
+    if (selectedChain) {
+      return selectedChain
     }
     return chains[0]
   },

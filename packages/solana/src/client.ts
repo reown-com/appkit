@@ -69,7 +69,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const networkControllerClient: NetworkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        console.log("switchCaipNetwork", caipNetwork)
         if (caipNetwork) {
           try {
             await this.switchNetwork(caipNetwork)
@@ -196,14 +195,12 @@ export class Web3Modal extends Web3ModalScaffold {
     super({
       networkControllerClient,
       connectionControllerClient,
-      defaultChain: SolHelpersUtil.getChainFromCaip(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''),
+      defaultChain: SolHelpersUtil.getChainFromCaip(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ""),
       tokens: HelpersUtil.getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `html-solana-${ConstantsUtil.VERSION}`,
       ...w3mOptions
     } as ScaffoldOptions)
 
-    console.log("default chain = ", SolHelpersUtil.getChainFromCaip(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''))
-    console.log("default chain ============ ", typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : "No local storage")
     SolStoreUtil.subscribeKey('address', () => {
       this.syncAccount()
     })
@@ -214,11 +211,10 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.chains = chains
     SolStoreUtil.setProjectId(options.projectId)
-    const chain = SolHelpersUtil.getChainFromCaip(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : '') as Chain;
+    const chain = SolHelpersUtil.getChainFromCaip(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : "") as Chain;
     SolStoreUtil.setCurrentChain(chain)
     SolStoreUtil.setChainId(chain?.chainId)
     SolStoreUtil.setCaipChainId(`${chain.name}:${chain.chainId}`)
-    console.log("default chain =", SolStoreUtil.getCluster())
 
     this.syncNetwork(chainImages)
 
@@ -371,10 +367,8 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncProfile(address: Address | string) {
-
-    const chainId = SolStoreUtil.state.chainId;
-    if (this.getAddress()) {
-      this.setProfileName(this.getAddress())
+    if (address) {
+      this.setProfileName(address)
     }
     else {
       this.setProfileImage(null)
@@ -399,10 +393,8 @@ export class Web3Modal extends Web3ModalScaffold {
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[chain.chainId]
         })
-        console.log("syncNetwork", chain)
         if (isConnected && address) {
           const caipAddress: CaipAddress = `${chainId as `${string}:${string}`}:${address}`
-          console.log("caipAddress", caipAddress)
           this.setCaipAddress(caipAddress)
           if (chain.explorerUrl) {
             const url = `${chain.explorerUrl}/account/${address}`
@@ -420,11 +412,9 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async syncBalance(address: string) {
-     // @todo add caip chain
-    // const caipChainId = SolStoreUtil.state.caipChainId
-    const chainId = SolStoreUtil.state.chainId
-    if (chainId && this.chains) {
-      const chain = this.chains.find(c => c.chainId === (chainId.includes(':') ? chainId.split(':')[1] : chainId))
+    const caipChainId = SolStoreUtil.state.caipChainId
+    if (caipChainId && this.chains) {
+      const chain  = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
       if (chain) {
         const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
         let balance
@@ -456,9 +446,12 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private async switchNetwork(caipNetwork: CaipNetwork) {
     const caipChainId = caipNetwork.id
+
     const provider = SolStoreUtil.state.provider
     const providerType = SolStoreUtil.state.providerType
-    const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
+
+    const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId ?? "")
+
     if (this.chains) {
       if (chain) {
 
@@ -628,8 +621,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     const chainId = SolStoreUtil.state.currentChain?.chainId
     const caipChainId = `${SolStoreUtil.state.currentChain?.name}:${chainId}`
-    console.log(`setInjectedProvider: chainId`, chainId, caipChainId);
-    console.log(`setInjectedProvider: address`, address);
+
     if (address && chainId) {
       SolStoreUtil.setIsConnected(true)
       SolStoreUtil.setChainId(chainId)
