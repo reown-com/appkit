@@ -1,10 +1,5 @@
-import {
-  ConnectionController,
-  CoreHelperUtil,
-  RouterController,
-  type Connector,
-  OnRampController
-} from '@web3modal/core'
+import { OnRampController, ModalController } from '@web3modal/core'
+import type { PurchaseCurrency } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -47,29 +42,26 @@ export class W3mOnrampTokensView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private currenciesTemplate() {
-    return this.currencies.map(currency => {
-      if (!ConnectionController.checkInstalled()) {
-        return null
-      }
-
-      return html`
-        <wui-list-wallet imageSrc=${''} .installed=${true} name=${currency.name ?? 'Unknown'}>
+    return this.currencies.map(
+      currency => html`
+        <wui-list-wallet
+          imageSrc=${''}
+          .installed=${true}
+          name=${currency.name ?? 'Unknown'}
+          @click=${() => this.selectCurrency(currency)}
+        >
         </wui-list-wallet>
       `
-    })
+    )
   }
 
-  // -- Private Methods ----------------------------------- //
-  private onConnector(connector: Connector) {
-    if (connector.type === 'WALLET_CONNECT') {
-      if (CoreHelperUtil.isMobile()) {
-        RouterController.push('AllWallets')
-      } else {
-        RouterController.push('ConnectingWalletConnect')
-      }
-    } else {
-      RouterController.push('ConnectingExternal', { connector })
+  private selectCurrency(currency: PurchaseCurrency) {
+    if (!currency) {
+      return
     }
+
+    OnRampController.setPurchaseCurrency(currency)
+    ModalController.close()
   }
 }
 
