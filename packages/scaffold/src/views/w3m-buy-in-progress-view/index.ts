@@ -196,12 +196,12 @@ export class W3mBuyInProgressView extends LitElement {
     console.log('w3m-buy-in-progress: new coinbase tx')
     console.log(coinbaseResponse.data)
 
-    const newTransactions = coinbaseResponse.data.length > this.coinbaseTransactions.length
+    const pendingTransactions = coinbaseResponse.data.filter(
+      tx => tx.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
+    )
 
     console.log('w3m-buy-in-progress: new coinbase txs')
-    console.log(newTransactions, this.intervalId)
-
-    if (newTransactions && this.intervalId) {
+    if (pendingTransactions.length && this.intervalId) {
       clearInterval(this.intervalId)
       RouterController.replace('OnRampActivity')
     } else if (this.startTime && Date.now() - this.startTime >= 180_000 && this.intervalId) {
