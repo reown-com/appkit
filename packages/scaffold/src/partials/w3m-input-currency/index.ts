@@ -66,7 +66,7 @@ export class W3mInputCurrency extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html` <wui-input-text type="number">
+    return html` <wui-input-text type="number" size="lg">
       ${this.selectedCurrency
         ? html` <wui-flex
             class="currency-container"
