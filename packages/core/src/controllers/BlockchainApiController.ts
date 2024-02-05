@@ -125,7 +125,9 @@ export const BlockchainApiController = {
   async generateOnRampURL({
     destinationWallets,
     partnerUserId,
-    defaultNetwork
+    defaultNetwork,
+    purchaseAmount,
+    paymentAmount
   }: GenerateOnRampUrlArgs) {
     const response = await api.post<{ url: string }>({
       path: `/v1/generators/onrampurl?projectId=${OptionsController.state.projectId}`,
@@ -133,7 +135,9 @@ export const BlockchainApiController = {
         destinationWallets,
         defaultNetwork,
         partnerUserId,
-        defaultExperience: 'buy'
+        defaultExperience: 'buy',
+        presetCryptoAmount: purchaseAmount,
+        presetFiatAmount: paymentAmount
       }
     })
 

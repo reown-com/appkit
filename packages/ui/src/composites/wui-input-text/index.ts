@@ -44,6 +44,7 @@ export class WuiInputText extends LitElement {
         placeholder=${this.placeholder}
         @input=${this.dispatchInputChangeEvent.bind(this)}
         value=${ifDefined(this.value)}
+        .value=${this.value || ''}
       />
       <slot></slot>`
   }

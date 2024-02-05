@@ -411,6 +411,8 @@ export type GenerateOnRampUrlArgs = {
   destinationWallets: DestinationWallet[]
   partnerUserId: string
   defaultNetwork?: string
+  purchaseAmount?: number
+  paymentAmount?: number
 }
 
 export type CoinbaseNetwork = {

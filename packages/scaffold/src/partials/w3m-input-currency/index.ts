@@ -31,6 +31,7 @@ export class W3mInputCurrency extends LitElement {
 
   // -- Properties & State ---------------------------------------- //
   @property({ type: String }) public type: 'Token' | 'Fiat' = 'Token'
+  @property({ type: Number }) public value = 0
   @state() public currencies: Currency[] | null = []
   @state() public selectedCurrency = this.currencies?.[0]
 
@@ -66,7 +67,7 @@ export class W3mInputCurrency extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html` <wui-input-text type="number" size="lg">
+    return html` <wui-input-text type="number" size="lg" value=${this.value}>
       ${this.selectedCurrency
         ? html` <wui-flex
             class="currency-container"

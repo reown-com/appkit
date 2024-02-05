@@ -20,6 +20,8 @@ export interface OnRampControllerState {
   paymentCurrency: PaymentCurrency | null
   purchaseCurrencies: PurchaseCurrency[]
   paymentCurrencies: PaymentCurrency[]
+  purchaseAmount: number | null
+  paymentAmount: number | null
   providers: OnRampProvider[]
   error: string | null
 }
@@ -34,7 +36,9 @@ const state = proxy<OnRampControllerState>({
   purchaseCurrency: null,
   paymentCurrency: null,
   purchaseCurrencies: [],
-  paymentCurrencies: []
+  paymentCurrencies: [],
+  purchaseAmount: null,
+  paymentAmount: null
 })
 
 // -- Controller ---------------------------------------- //
@@ -59,6 +63,14 @@ export const OnRampController = {
 
   setPaymentCurrency(currency: PaymentCurrency | null) {
     state.paymentCurrency = currency
+  },
+
+  setPurchaseAmount(amount: number | null) {
+    this.state.purchaseAmount = amount
+  },
+
+  setPaymentAmount(amount: number | null) {
+    this.state.paymentAmount = amount
   },
 
   async getAvailableCurrencies() {

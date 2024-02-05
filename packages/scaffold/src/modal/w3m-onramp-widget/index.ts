@@ -28,6 +28,8 @@ export class W3mOnrampWidget extends LitElement {
 
   @state() private paymentCurrency = OnRampController.state.paymentCurrency
 
+  @state() private paymentAmount = OnRampController.state.paymentAmount
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
@@ -39,8 +41,9 @@ export class W3mOnrampWidget extends LitElement {
         ModalController.subscribeKey('loading', val => {
           this.loading = val
         }),
-        OnRampController.subscribeKey('paymentCurrency', val => {
-          this.paymentCurrency = val
+        OnRampController.subscribe(val => {
+          this.paymentCurrency = val.paymentCurrency
+          this.paymentAmount = val.paymentAmount
         })
       ]
     )
@@ -57,12 +60,21 @@ export class W3mOnrampWidget extends LitElement {
     return html`
       <wui-flex flexDirection="column" justifyContent="center" alignItems="center">
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <w3m-input-currency type="Fiat"></w3m-input-currency>
+          <w3m-input-currency
+            type="Fiat"
+            @inputChange=${this.onPaymentAmountChange.bind(this)}
+            .value=${this.paymentAmount || 0}
+          ></w3m-input-currency>
           <w3m-input-currency type="Token"></w3m-input-currency>
           <wui-flex justifyContent="space-evenly" class="amounts-container" gap="xs">
             ${BUY_PRESET_AMOUNTS.map(
               amount =>
-                html`<wui-button variant="shade" size="xs" textVariant="paragraph-600" fullWidth
+                html`<wui-button
+                  variant=${this.paymentAmount === amount ? 'accentBg' : 'shade'}
+                  size="xs"
+                  textVariant="paragraph-600"
+                  fullWidth
+                  @click=${() => this.selectPresetAmount(amount)}
                   >${`${
                     PAYMENT_CURRENCY_SYMBOLS[this.paymentCurrency?.id || 'USD']
                   } ${amount}`}</wui-button
@@ -106,6 +118,14 @@ export class W3mOnrampWidget extends LitElement {
 
   private openModal() {
     ModalController.open({ view: 'Connect' })
+  }
+
+  private onPaymentAmountChange(event: CustomEvent<string>) {
+    OnRampController.setPaymentAmount(Number(event.detail))
+  }
+
+  private selectPresetAmount(amount: number) {
+    OnRampController.setPaymentAmount(amount)
   }
 }
 
