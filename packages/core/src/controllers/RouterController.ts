@@ -28,6 +28,8 @@ export interface RouterControllerState {
     | 'UpdateEmailSecondaryOtp'
     | 'UpgradeWallet'
     | 'OnRampProviders'
+    | 'OnRampTokenSelect'
+    | 'OnRampFiatSelect'
     | 'OnRampActivity'
     | 'WhatIsABuy'
     | 'BuyInProgress'

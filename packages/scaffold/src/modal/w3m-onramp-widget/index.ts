@@ -1,4 +1,4 @@
-import { AccountController, ModalController } from '@web3modal/core'
+import { AccountController, BlockchainApiController, ModalController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
@@ -16,47 +16,6 @@ const PAYMENT_CURRENCY_SYMBOLS: Record<string, string> = {
   USD: '$',
   EUR: '€',
   GBP: '£'
-}
-
-const MOCK_OPTIONS = {
-  purchaseCurrencies: [
-    {
-      id: '2b92315d-eab7-5bef-84fa-089a131333f5',
-      name: 'USD Coin',
-      symbol: 'USDC',
-      networks: [
-        {
-          name: 'ethereum-mainnet',
-          display_name: 'Ethereum',
-          chain_id: '1',
-          contract_address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
-        },
-        {
-          name: 'polygon-mainnet',
-          display_name: 'Polygon',
-          chain_id: '137',
-          contract_address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
-        }
-      ]
-    }
-  ],
-  paymentCurrencies: [
-    {
-      id: 'USD',
-      payment_method_limits: [
-        {
-          id: 'card',
-          min: '10.00',
-          max: '7500.00'
-        },
-        {
-          id: 'ach_bank_account',
-          min: '10.00',
-          max: '25000.00'
-        }
-      ]
-    }
-  ]
 }
 
 const BUY_PRESET_AMOUNTS = [100, 250, 500, 1000]
@@ -108,9 +67,9 @@ export class W3mOnrampWidget extends LitElement {
     this.fetchOptions()
   }
 
-  private fetchOptions() {
-    const { paymentCurrencies, purchaseCurrencies } = MOCK_OPTIONS
-    // BlockchainApiController.getOnrampOptions()
+  private async fetchOptions() {
+    const { paymentCurrencies, purchaseCurrencies } =
+      await BlockchainApiController.getOnrampOptions()
     this.paymentCurrencies = paymentCurrencies
     this.purchaseCurrencies = purchaseCurrencies
     this.selectedPaymentCurrency = this.paymentCurrencies[0]
@@ -134,10 +93,12 @@ export class W3mOnrampWidget extends LitElement {
           <w3m-input-currency
             .currencies=${paymentCurrencies}
             .selectedCurrency=${selectedPaymentCurrency}
+            type="Fiat"
           ></w3m-input-currency>
           <w3m-input-currency
             .currencies=${purchaseCurrencies}
             .selectedCurrency=${selectedPurchaseCurrency}
+            type="Token"
           ></w3m-input-currency>
           <wui-flex justifyContent="space-evenly" class="amounts-container" gap="xs">
             ${BUY_PRESET_AMOUNTS.map(

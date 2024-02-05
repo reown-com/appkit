@@ -2,6 +2,7 @@ import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { customElement } from '@web3modal/ui'
 import styles from './styles.js'
+import { ModalController } from '@web3modal/core'
 
 type Currency = {
   name: string
@@ -16,6 +17,7 @@ export class W3mInputCurrency extends LitElement {
   // -- Properties & State ---------------------------------------- //
   @property({ type: Array }) public currencies: Currency[] = []
   @property({ type: Object }) public selectedCurrency = this.currencies[0]
+  @property({ type: String }) public type: 'Token' | 'Fiat' = 'Token'
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -30,6 +32,7 @@ export class W3mInputCurrency extends LitElement {
           justifyContent="space-between"
           alignItems="center"
           gap="xxs"
+          @click=${() => ModalController.open({ view: `OnRamp${this.type}Select` })}
         >
           <wui-image src=${this.selectedCurrency.icon || ''}></wui-image>
           <wui-text color="fg-100"> ${this.selectedCurrency.symbol} </wui-text>
