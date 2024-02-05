@@ -161,7 +161,6 @@ export class W3mBuyInProgressView extends LitElement {
       onramp: 'coinbase',
       projectId
     })
-    console.log('w3m-buy-in-progress: FIRST COINBASE REQUEST', coinbaseResponse.data)
     this.coinbaseTransactions = coinbaseResponse.data
     this.coinbaseTransactionsInitialized = true
     this.intervalId = setInterval(() => this.watchCoinbaseTransactions(), 10000)
@@ -181,7 +180,6 @@ export class W3mBuyInProgressView extends LitElement {
   private async fetchCoinbaseTransactions() {
     const address = AccountController.state.address
     const projectId = OptionsController.state.projectId
-    console.log('w3m-buy-in-progress: fetching coinbase txs')
     if (!address) {
       throw new Error('No address found')
     }
@@ -192,15 +190,10 @@ export class W3mBuyInProgressView extends LitElement {
       projectId
     })
 
-    console.log('w3m-buy-in-progress: og coinbase txs', this.coinbaseTransactions)
-    console.log('w3m-buy-in-progress: new coinbase tx')
-    console.log(coinbaseResponse.data)
-
     const pendingTransactions = coinbaseResponse.data.filter(
       tx => tx.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
     )
 
-    console.log('w3m-buy-in-progress: new coinbase txs')
     if (pendingTransactions.length && this.intervalId) {
       clearInterval(this.intervalId)
       RouterController.replace('OnRampActivity')
