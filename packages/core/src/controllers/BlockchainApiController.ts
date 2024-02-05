@@ -13,7 +13,7 @@ import type {
 } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
 
-const MOCK_OPTIONS = {
+const DEFAULT_OPTIONS = {
   purchaseCurrencies: [
     {
       id: '2b92315d-eab7-5bef-84fa-089a131333f5',
@@ -155,7 +155,7 @@ export const BlockchainApiController = {
 
       return response
     } catch (e) {
-      return MOCK_OPTIONS
+      return DEFAULT_OPTIONS
     }
   },
 
