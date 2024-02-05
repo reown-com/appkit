@@ -6,10 +6,12 @@ import {
   ModalController,
   EventsController,
   ConnectionController,
-  ConnectorController
+  ConnectorController,
+  CoreHelperUtil
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { W3mFrameHelpers } from '@web3modal/wallet'
 
 // -- Helpers ------------------------------------------- //
 const OTP_LENGTH = 6
@@ -26,11 +28,29 @@ export class W3mEmailVerifyOtpView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private loading = false
 
+  @state() private timeoutTimeLeft = W3mFrameHelpers.getTimeToNextEmailLogin()
+
+  @state() private error = ''
+
+  private otp = ''
+
+  private OTPTimeout: NodeJS.Timeout | undefined
+
+  public override firstUpdated() {
+    this.startOTPTimeout()
+  }
+
+  public override disconnectedCallback() {
+    clearTimeout(this.OTPTimeout)
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.email) {
       throw new Error('w3m-email-verify-otp-view: No email provided')
     }
+
+    const isResendDisabled = Boolean(this.timeoutTimeLeft)
 
     return html`
       <wui-flex
@@ -48,28 +68,50 @@ export class W3mEmailVerifyOtpView extends LitElement {
 
         ${this.loading
           ? html`<wui-loading-spinner size="xl" color="accent-100"></wui-loading-spinner>`
-          : html`<wui-otp
-              dissabled
-              length="6"
-              @inputChange=${this.onOtpInputChange.bind(this)}
-            ></wui-otp>`}
+          : html` <wui-flex flexDirection="column" alignItems="center" gap="xs">
+              <wui-otp
+                dissabled
+                length="6"
+                @inputChange=${this.onOtpInputChange.bind(this)}
+                .otp=${this.otp}
+              ></wui-otp>
+              ${this.error
+                ? html`<wui-text variant="small-400" color="error-100"
+                    >${this.error}. Try Again</wui-text
+                  >`
+                : null}
+            </wui-flex>`}
 
         <wui-flex alignItems="center">
           <wui-text variant="small-400" color="fg-200">Didn't receive it?</wui-text>
-          <wui-link @click=${this.onResendCode.bind(this)}>Resend code</wui-link>
+          <wui-link @click=${this.onResendCode.bind(this)} .disabled=${isResendDisabled}>
+            Resend ${isResendDisabled ? `in ${this.timeoutTimeLeft}s` : 'Code'}
+          </wui-link>
         </wui-flex>
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
+  private startOTPTimeout() {
+    this.timeoutTimeLeft = W3mFrameHelpers.getTimeToNextEmailLogin()
+    this.OTPTimeout = setInterval(() => {
+      if (this.timeoutTimeLeft > 0) {
+        this.timeoutTimeLeft = W3mFrameHelpers.getTimeToNextEmailLogin()
+      } else {
+        clearInterval(this.OTPTimeout)
+      }
+    }, 1000)
+  }
+
   private async onOtpInputChange(event: CustomEvent<string>) {
     try {
       if (!this.loading) {
-        const otp = event.detail
-        if (this.emailConnector && otp.length === OTP_LENGTH) {
+        this.otp = event.detail
+        if (this.emailConnector && this.otp.length === OTP_LENGTH) {
           this.loading = true
-          await this.emailConnector.provider.connectOtp({ otp })
+          await this.emailConnector.provider.connectOtp({ otp: this.otp })
+          EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
           await ConnectionController.connectExternal(this.emailConnector)
           ModalController.close()
           EventsController.sendEvent({
@@ -80,21 +122,26 @@ export class W3mEmailVerifyOtpView extends LitElement {
         }
       }
     } catch (error) {
-      SnackController.showError(error)
+      EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_FAIL' })
+      this.error = CoreHelperUtil.parseError(error)
       this.loading = false
     }
   }
 
   private async onResendCode() {
     try {
-      if (!this.loading) {
+      if (!this.loading && !this.timeoutTimeLeft) {
+        this.error = ''
+        this.otp = ''
         const emailConnector = ConnectorController.getEmailConnector()
         if (!emailConnector || !this.email) {
           throw new Error('w3m-email-login-widget: Unable to resend email')
         }
         this.loading = true
         await emailConnector.provider.connectEmail({ email: this.email })
-        SnackController.showSuccess('New Email sent')
+        EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_SENT' })
+        this.startOTPTimeout()
+        SnackController.showSuccess('Code email resent')
       }
     } catch (error) {
       SnackController.showError(error)

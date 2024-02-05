@@ -277,6 +277,9 @@ checkSdkVersion()
 // -- Check left over development constants ---------------------------------------
 async function checkDevelopmentConstants() {
   for (const f of updated_files) {
+    if (f.includes('README.md') || f.includes('.yml')) {
+      continue
+    }
     const diff = await diffForFile(f)
     const fileContent = await danger.github.utils.fileContents(f)
 

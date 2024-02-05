@@ -1,5 +1,5 @@
 import { html, LitElement } from 'lit'
-import { property } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import '../../layout/wui-flex/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
@@ -15,26 +15,34 @@ export class WuiOtp extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: Number }) public length = 6
 
+  @property({ type: String }) public otp = ''
+
+  @state() values: string[] = Array.from({ length: this.length }).map(() => '')
+
   private numerics: WuiInputNumeric[] = []
 
-  private valueArr: string[] = Array.from({ length: this.length }).map(() => '')
-
   public override firstUpdated() {
+    if (this.otp) {
+      this.values = this.otp.split('')
+    }
     const numericElements = this.shadowRoot?.querySelectorAll<WuiInputNumeric>('wui-input-numeric')
     if (numericElements) {
       this.numerics = Array.from(numericElements)
     }
+    this.numerics[0]?.focus()
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex gap="xxs">
+      <wui-flex gap="xxs" data-testid="wui-otp-input">
         ${Array.from({ length: this.length }).map(
           (_, index: number) => html`
             <wui-input-numeric
               @input=${(e: InputEvent) => this.handleInput(e, index)}
               @keydown=${(e: KeyboardEvent) => this.handleKeyDown(e, index)}
+              .disabled=${!this.shouldInputBeEnabled(index)}
+              .value=${this.values[index] || ''}
             >
             </wui-input-numeric>
           `
@@ -44,6 +52,16 @@ export class WuiOtp extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private updateInput(element: HTMLInputElement, index: number, value: string) {
+    const numeric = this.numerics[index]
+    const input = element || (numeric ? this.getInputElement(numeric) : undefined)
+    if (input) {
+      input.value = value
+      // Need to update the whole reference else lit-html won't re-render
+      this.values = this.values.map((val, i) => (i === index ? value : val))
+    }
+  }
+
   private handleInput(e: InputEvent, index: number) {
     const inputElement = e.target as HTMLElement
     const input = this.getInputElement(inputElement)
@@ -55,16 +73,20 @@ export class WuiOtp extends LitElement {
       } else {
         const isValid = UiHelperUtil.isNumber(inputValue)
         if (isValid && e.data) {
-          input.value = e.data
-          this.valueArr[index] = e.data
+          this.updateInput(input, index, e.data)
           this.focusInputField('next', index)
         } else {
-          input.value = ''
-          this.valueArr[index] = ''
+          this.updateInput(input, index, '')
         }
       }
     }
     this.dispatchInputChangeEvent()
+  }
+
+  private shouldInputBeEnabled = (index: number) => {
+    const previousInputs = this.values.slice(0, index)
+
+    return previousInputs.every(input => input !== '')
   }
 
   private handleKeyDown = (e: KeyboardEvent, index: number) => {
@@ -98,16 +120,14 @@ export class WuiOtp extends LitElement {
         if (input.value === '') {
           this.focusInputField('prev', index)
         } else {
-          input.value = ''
-          this.valueArr[index] = ''
+          this.updateInput(input, index, '')
         }
         break
       case 'Backspace':
         if (input.value === '') {
           this.focusInputField('prev', index)
         } else {
-          input.value = ''
-          this.valueArr[index] = ''
+          this.updateInput(input, index, '')
         }
         break
       default:
@@ -118,8 +138,7 @@ export class WuiOtp extends LitElement {
     const value = inputValue[0]
     const isValid = value && UiHelperUtil.isNumber(value)
     if (isValid) {
-      input.value = value
-      this.valueArr[index] = value
+      this.updateInput(input, index, value)
       const inputString = inputValue.substring(1)
       if (index + 1 < this.length && inputString.length) {
         const nextNumeric = this.numerics[index + 1]
@@ -131,17 +150,21 @@ export class WuiOtp extends LitElement {
         this.focusInputField('next', index)
       }
     } else {
-      input.value = ''
-      this.valueArr[index] = ''
+      this.updateInput(input, index, '')
     }
   }
 
   private focusInputField = (dir: 'next' | 'prev', index: number) => {
     if (dir === 'next') {
       const nextIndex = index + 1
+      if (!this.shouldInputBeEnabled(nextIndex)) {
+        return
+      }
       const numeric = this.numerics[nextIndex < this.length ? nextIndex : index]
       const input = numeric ? this.getInputElement(numeric) : undefined
+
       if (input) {
+        input.disabled = false
         input.focus()
       }
     }
@@ -165,7 +188,7 @@ export class WuiOtp extends LitElement {
 
   // -- Private ------------------------------------------- //
   private dispatchInputChangeEvent() {
-    const value = this.valueArr.join('')
+    const value = this.values.join('')
     this.dispatchEvent(
       new CustomEvent('inputChange', {
         detail: value,

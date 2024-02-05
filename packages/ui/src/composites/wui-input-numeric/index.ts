@@ -10,6 +10,7 @@ export class WuiInputNumeric extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled = false
+  @property({ type: String }) public value = ''
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -19,6 +20,7 @@ export class WuiInputNumeric extends LitElement {
       inputmode="numeric"
       autofocus
       ?disabled=${this.disabled}
+      value=${this.value}
     /> `
   }
 }

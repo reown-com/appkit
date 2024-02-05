@@ -5,6 +5,14 @@ on:
     branches:
       - V3
 
+concurrency:
+  # Support push/pr as event types with different behaviors each:
+  # 1. push: queue up builds
+  # 2. pr: only allow one run per PR
+  group: ${{ github.workflow }}-${{ github.event.type }}${{ github.event.pull_request.number }}
+  # If there is already a workflow running for the same pull request, cancel it
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -69,4 +77,29 @@ jobs:
       - name: install
         run: npm ci
       - name: test
+        id: test
         run: npm run test
+      - name: summary
+        id: summary
+        run: echo "COVERAGE_SUMMARY=$(npm run coverage:summary | tail -n 1)" >> "$GITHUB_OUTPUT"
+      - uses: LouisBrunner/checks-action@v1.6.1
+        if: always()
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: coverage
+          conclusion: ${{ job.status }}
+          output: |
+            {"summary":"${{ steps.summary.outputs.COVERAGE_SUMMARY }}"}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: |
+            packages/core/coverage/
+            packages/common/coverage/
+
+  ui-test:
+    uses: ./.github/workflows/ui_tests.yml
+    secrets: inherit
+    with:
+      branch: ${{ github.ref }}

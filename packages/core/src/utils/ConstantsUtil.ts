@@ -24,5 +24,9 @@ export const ConstantsUtil = {
     'ASIA/MACAO',
     'ASIA/BEIJING',
     'ASIA/HARBIN'
-  ]
+  ],
+
+  CONNECTOR_RDNS_MAP: {
+    coinbaseWallet: 'com.coinbase.wallet'
+  } as Record<string, string>
 }

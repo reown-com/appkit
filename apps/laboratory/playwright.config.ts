@@ -3,14 +3,14 @@ import { BASE_URL } from './tests/shared/constants'
 
 import { config } from 'dotenv'
 import type { ModalFixture } from './tests/shared/fixtures/w3m-fixture'
-config({ path: './.env.local' })
+config({ path: './.env' })
 
 export default defineConfig<ModalFixture>({
   testDir: './tests',
 
   fullyParallel: true,
-  retries: process.env['CI'] ? 2 : 0,
-  workers: process.env['CI'] ? 1 : undefined,
+  retries: 0,
+  workers: 1,
   reporter: [['list'], ['html']],
 
   expect: {
@@ -25,7 +25,7 @@ export default defineConfig<ModalFixture>({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
 
-    video: process.env['CI'] ? 'off' : 'on-first-retry'
+    video: 'retain-on-failure'
   },
 
   /* Configure projects for major browsers */
@@ -48,6 +48,16 @@ export default defineConfig<ModalFixture>({
     {
       name: 'firefox/ethers',
       use: { ...devices['Desktop Firefox'], library: 'ethers' }
+    },
+
+    {
+      name: 'webkit/ethers',
+      use: { ...devices['Desktop Safari'], library: 'ethers' }
+    },
+
+    {
+      name: 'webkit/ethers',
+      use: { ...devices['Desktop Safari'], library: 'ethers' }
     }
   ],
 
@@ -55,6 +65,6 @@ export default defineConfig<ModalFixture>({
   webServer: {
     command: 'npm run playwright:start',
     url: BASE_URL,
-    reuseExistingServer: !process.env['CI']
+    reuseExistingServer: !process.env['CI'] || Boolean(process.env['SKIP_PLAYWRIGHT_WEBSERVER'])
   }
 })

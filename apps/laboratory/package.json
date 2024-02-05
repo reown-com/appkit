@@ -1,6 +1,6 @@
 {
   "name": "@apps/laboratory",
-  "version": "3.5.3",
+  "version": "3.5.7",
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
@@ -9,18 +9,20 @@
     "playwright:start": "npm run dev:laboratory",
     "playwright:install": "npx playwright install --with-deps",
     "playwright:test": "npx playwright test",
-    "playwright:debug": "npx playwright test --debug"
+    "playwright:test:wallet": "npx playwright test --grep connect.spec.ts",
+    "playwright:debug": "npx playwright test --debug",
+    "playwright:debug:wallet": "npx playwright test --debug --grep connect.spec.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "2.8.2",
-    "@emotion/react": "11.11.1",
+    "@emotion/react": "11.11.3",
     "@emotion/styled": "11.11.0",
-    "@sentry/browser": "7.89.0",
-    "@sentry/react": "7.89.0",
-    "@web3modal/ethers": "3.5.3",
-    "@web3modal/ethers5": "3.5.3",
-    "@web3modal/wagmi": "3.5.3",
-    "framer-motion": "10.16.16",
+    "@sentry/browser": "7.92.0",
+    "@sentry/react": "7.92.0",
+    "@web3modal/ethers": "3.5.7",
+    "@web3modal/ethers5": "3.5.7",
+    "@web3modal/wagmi": "3.5.7",
+    "framer-motion": "10.17.9",
     "next": "14.0.4",
     "next-auth": "4.24.5",
     "react-icons": "4.12.0",
@@ -28,6 +30,7 @@
     "valtio": "1.11.2"
   },
   "devDependencies": {
+    "@mailsac/api": "1.0.5",
     "@playwright/test": "1.40.1",
     "dotenv": "16.3.1",
     "ethers": "6.9.0"

@@ -52,7 +52,7 @@ export default css`
   :host([data-variant='generated']) {
     box-shadow: 0 0 0 8px var(--wui-gray-glass-005);
     background: radial-gradient(
-      75.29% 75.29% at 64.96% 24.36%,
+      var(--local-radial-circle),
       #fff 0.52%,
       var(--mixed-local-color-5) 31.25%,
       var(--mixed-local-color-3) 51.56%,

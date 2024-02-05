@@ -1,11 +1,11 @@
-import { ConnectorController } from '@web3modal/core'
+import { ConnectorController, CoreHelperUtil } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
-import { SnackController, RouterController } from '@web3modal/core'
+import { SnackController, RouterController, EventsController } from '@web3modal/core'
 
 @customElement('w3m-email-login-widget')
 export class W3mEmailLoginWidget extends LitElement {
@@ -22,6 +22,8 @@ export class W3mEmailLoginWidget extends LitElement {
   @state() private email = ''
 
   @state() private loading = false
+
+  @state() private error = ''
 
   public constructor() {
     super()
@@ -46,56 +48,77 @@ export class W3mEmailLoginWidget extends LitElement {
   public override render() {
     const multipleConnectors = this.connectors.length > 1
     const connector = this.connectors.find(c => c.type === 'EMAIL')
-    const showSubmit = !this.loading && this.email.length > 3
 
     if (!connector) {
       return null
     }
 
     return html`
+      ${this.alphaWarningTemplate()}
       <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
         <wui-email-input
+          @focus=${this.onFocusEvent.bind(this)}
           .disabled=${this.loading}
           @inputChange=${this.onEmailInputChange.bind(this)}
+          .errorMessage=${this.error}
         >
         </wui-email-input>
 
-        ${showSubmit && multipleConnectors
-          ? html`
-              <wui-icon-link
-                size="sm"
-                icon="chevronRight"
-                iconcolor="accent-100"
-                @click=${this.onSubmitEmail.bind(this)}
-              >
-              </wui-icon-link>
-            `
-          : null}
-        ${this.loading && multipleConnectors
-          ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
-          : null}
-
+        ${this.submitButtonTemplate()}${this.loadingTemplate()}
         <input type="submit" hidden />
       </form>
 
-      ${multipleConnectors
-        ? html`<wui-separator text="or"></wui-separator>`
-        : html`<wui-button
-            size="md"
-            variant="fill"
-            fullWidth
-            @click=${this.onSubmitEmail.bind(this)}
-            .disabled=${!showSubmit}
-            .loading=${this.loading}
-          >
-            Continue
-          </wui-button>`}
+      ${multipleConnectors ? html`<wui-separator text="or"></wui-separator>` : null}
     `
   }
 
   // -- Private ------------------------------------------- //
+  private alphaWarningTemplate() {
+    const showAlphaWarning = true
+
+    return showAlphaWarning
+      ? html`
+          <wui-flex class="alphaBanner" gap="xs" alignItems="center" justifyContent="center">
+            <wui-icon-box
+              size="sm"
+              icon="alpha"
+              iconColor="accent-100"
+              background="opaque"
+              backgroundColor="accent-100"
+            ></wui-icon-box>
+            <wui-text variant="small-400" color="accent-100">
+              This is an alpha version to test before launch
+            </wui-text>
+          </wui-flex>
+        `
+      : null
+  }
+
+  private submitButtonTemplate() {
+    const showSubmit = !this.loading && this.email.length > 3
+
+    return showSubmit
+      ? html`
+          <wui-icon-link
+            size="sm"
+            icon="chevronRight"
+            iconcolor="accent-100"
+            @click=${this.onSubmitEmail.bind(this)}
+          >
+          </wui-icon-link>
+        `
+      : null
+  }
+
+  private loadingTemplate() {
+    return this.loading
+      ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
+      : null
+  }
+
   private onEmailInputChange(event: CustomEvent<string>) {
     this.email = event.detail
+    this.error = ''
   }
 
   private async onSubmitEmail(event: Event) {
@@ -103,7 +126,6 @@ export class W3mEmailLoginWidget extends LitElement {
       if (this.loading) {
         return
       }
-
       this.loading = true
       event.preventDefault()
       const emailConnector = ConnectorController.getEmailConnector()
@@ -111,18 +133,29 @@ export class W3mEmailLoginWidget extends LitElement {
       if (!emailConnector) {
         throw new Error('w3m-email-login-widget: Email connector not found')
       }
-
       const { action } = await emailConnector.provider.connectEmail({ email: this.email })
+      EventsController.sendEvent({ type: 'track', event: 'EMAIL_SUBMITTED' })
       if (action === 'VERIFY_OTP') {
+        EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_SENT' })
         RouterController.push('EmailVerifyOtp', { email: this.email })
       } else if (action === 'VERIFY_DEVICE') {
         RouterController.push('EmailVerifyDevice', { email: this.email })
       }
-    } catch (error) {
-      SnackController.showError(error)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      const parsedError = CoreHelperUtil.parseError(error)
+      if (parsedError?.includes('Invalid email')) {
+        this.error = 'Invalid email. Try again.'
+      } else {
+        SnackController.showError(error)
+      }
     } finally {
       this.loading = false
     }
+  }
+
+  private onFocusEvent() {
+    EventsController.sendEvent({ type: 'track', event: 'EMAIL_LOGIN_SELECTED' })
   }
 }
 

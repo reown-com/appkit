@@ -10,5 +10,5 @@ export const ConstantsUtil = {
   ADD_CHAIN_METHOD: 'wallet_addEthereumChain',
   EIP6963_ANNOUNCE_EVENT: 'eip6963:announceProvider',
   EIP6963_REQUEST_EVENT: 'eip6963:requestProvider',
-  VERSION: '3.5.3'
+  VERSION: '3.5.7'
 }

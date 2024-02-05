@@ -8,7 +8,8 @@ import {
   EventsController,
   OptionsController,
   RouterController,
-  StorageUtil
+  StorageUtil,
+  ConstantsUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -147,7 +148,7 @@ export class W3mConnectView extends LitElement {
           name=${connector.name ?? 'Unknown'}
           @click=${() => this.onConnector(connector)}
           tagVariant="success"
-          installed=${true}
+          .installed=${true}
         >
         </wui-list-wallet>
       `
@@ -169,7 +170,7 @@ export class W3mConnectView extends LitElement {
       return html`
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-          installed=${Boolean(announced)}
+          .installed=${Boolean(announced)}
           name=${connector.name ?? 'Unknown'}
           @click=${() => this.onConnector(connector)}
         >
@@ -179,8 +180,14 @@ export class W3mConnectView extends LitElement {
   }
 
   private connectorsTemplate() {
+    const announcedRdns = ConnectorController.getAnnouncedConnectorRdns()
+
     return this.connectors.map(connector => {
       if (['WALLET_CONNECT', 'INJECTED', 'ANNOUNCED', 'EMAIL'].includes(connector.type)) {
+        return null
+      }
+
+      if (announcedRdns.includes(ConstantsUtil.CONNECTOR_RDNS_MAP[connector.id])) {
         return null
       }
 

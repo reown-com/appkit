@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
-import { SigningFailedToastTitle, SigningSucceededToastTitle } from '../../../src/constants'
+import { ConstantsUtil } from '../../../src/utils/ConstantsUtil'
 
 export class ModalValidator {
   constructor(public readonly page: Page) {}
@@ -10,14 +10,12 @@ export class ModalValidator {
   }
 
   async expectAuthenticated() {
-    await expect(this.page.getByTestId('w3m-authentication-status')).toContainText(
-      'Status: authenticated'
-    )
+    await expect(this.page.getByTestId('w3m-authentication-status')).toContainText('authenticated')
   }
 
   async expectUnauthenticated() {
     await expect(this.page.getByTestId('w3m-authentication-status')).toContainText(
-      'Status: unauthenticated'
+      'unauthenticated'
     )
   }
 
@@ -31,11 +29,11 @@ export class ModalValidator {
 
   async expectAcceptedSign() {
     // We use Chakra Toast and it's not quite straightforward to set the `data-testid` attribute on the toast element.
-    await expect(this.page.getByText(SigningSucceededToastTitle)).toBeVisible()
+    await expect(this.page.getByText(ConstantsUtil.SigningSucceededToastTitle)).toBeVisible()
   }
 
   async expectRejectedSign() {
     // We use Chakra Toast and it's not quite straightforward to set the `data-testid` attribute on the toast element.
-    await expect(this.page.getByText(SigningFailedToastTitle)).toBeVisible()
+    await expect(this.page.getByText(ConstantsUtil.SigningFailedToastTitle)).toBeVisible()
   }
 }

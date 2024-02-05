@@ -14,6 +14,8 @@ const RESTRICTED_TIMEZONES = [
   'ASIA/HARBIN'
 ]
 
+const EMAIL_MINIMUM_TIMEOUT = 30 * 1000
+
 export const W3mFrameHelpers = {
   getBlockchainApiUrl() {
     try {
@@ -32,10 +34,22 @@ export const W3mFrameHelpers = {
     const lastEmailLoginTime = W3mFrameStorage.get(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME)
     if (lastEmailLoginTime) {
       const difference = Date.now() - Number(lastEmailLoginTime)
-      if (difference < 30_000) {
-        const cooldownSec = Math.ceil((30_000 - difference) / 1000)
+      if (difference < EMAIL_MINIMUM_TIMEOUT) {
+        const cooldownSec = Math.ceil((EMAIL_MINIMUM_TIMEOUT - difference) / 1000)
         throw new Error(`Please try again after ${cooldownSec} seconds`)
       }
     }
+  },
+
+  getTimeToNextEmailLogin() {
+    const lastEmailLoginTime = W3mFrameStorage.get(W3mFrameConstants.LAST_EMAIL_LOGIN_TIME)
+    if (lastEmailLoginTime) {
+      const difference = Date.now() - Number(lastEmailLoginTime)
+      if (difference < EMAIL_MINIMUM_TIMEOUT) {
+        return Math.ceil((EMAIL_MINIMUM_TIMEOUT - difference) / 1000)
+      }
+    }
+
+    return 0
   }
 }

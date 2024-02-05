@@ -156,7 +156,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-inverse-100: #fff;
         --wui-color-inverse-000: #000;
 
-        --wui-cover: rgba(0, 0, 0, 0.3);
+        --wui-cover: rgba(20, 20, 20, 0.8);
 
         --wui-color-modal-bg: var(--wui-color-modal-bg-base);
 
@@ -481,7 +481,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
         --wui-icon-box-bg-error-base-100: #3c2426;
         --wui-icon-box-bg-blue-base-100: #20303f;
-        --wui-icon-box-bg-success-base-100: #1f3a28;
+        --wui-icon-box-bg-success-base-100: var(--wui-success-glass-015);
         --wui-icon-box-bg-inverse-base-100: #243240;
 
         --wui-all-wallets-bg-base-100: #222b35;

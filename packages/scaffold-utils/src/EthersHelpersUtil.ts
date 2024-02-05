@@ -48,14 +48,14 @@ export const EthersHelpersUtil = {
       params: [
         {
           chainId: EthersHelpersUtil.numberToHexString(chain.chainId),
-          rpcUrls: chain.rpcUrl,
+          rpcUrls: [chain.rpcUrl],
           chainName: chain.name,
           nativeCurrency: {
             name: chain.currency,
             decimals: 18,
             symbol: chain.currency
           },
-          blockExplorerUrls: chain.explorerUrl,
+          blockExplorerUrls: [chain.explorerUrl],
           iconUrls: [PresetsUtil.EIP155NetworkImageIds[chain.chainId]]
         }
       ]

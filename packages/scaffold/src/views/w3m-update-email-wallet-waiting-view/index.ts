@@ -88,7 +88,7 @@ export class W3mUpdateEmailWalletWaitingView extends LitElement {
         this.loading = true
         await this.emailConnector.provider.updateEmail({ email: this.email })
         this.listenForEmailUpdateApproval()
-        SnackController.showSuccess('New Email sent')
+        SnackController.showSuccess('Code email resent')
       }
     } catch (error) {
       SnackController.showError(error)

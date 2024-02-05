@@ -94,11 +94,33 @@ export class Web3ModalScaffold {
   public setThemeMode(themeMode: ThemeControllerState['themeMode']) {
     ThemeController.setThemeMode(themeMode)
     setColorTheme(ThemeController.state.themeMode)
+    try {
+      const emailConnector = ConnectorController.getEmailConnector()
+      if (emailConnector) {
+        emailConnector.provider.syncTheme({
+          themeMode: ThemeController.getSnapshot().themeMode
+        })
+      }
+    } catch {
+      // eslint-disable-next-line no-console
+      console.info('Unable to sync theme to email connector')
+    }
   }
 
   public setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
     ThemeController.setThemeVariables(themeVariables)
     setThemeVariables(ThemeController.state.themeVariables)
+    try {
+      const emailConnector = ConnectorController.getEmailConnector()
+      if (emailConnector) {
+        emailConnector.provider.syncTheme({
+          themeVariables: ThemeController.getSnapshot().themeVariables
+        })
+      }
+    } catch {
+      // eslint-disable-next-line no-console
+      console.info('Unable to sync theme to email connector')
+    }
   }
 
   public subscribeTheme(callback: (newState: ThemeControllerState) => void) {
@@ -237,6 +259,7 @@ export class Web3ModalScaffold {
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)
     }
+
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables)
     }
