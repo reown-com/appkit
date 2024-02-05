@@ -4,21 +4,14 @@ import type {
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,
   BlockchainApiIdentityRequest,
-  BlockchainApiIdentityResponse
+  BlockchainApiIdentityResponse,
+  GenerateOnRampUrlArgs,
+  GetQuoteArgs,
+  OnrampQuote,
+  PaymentCurrency,
+  PurchaseCurrency
 } from '../utils/TypeUtil.js'
 import { OptionsController } from './OptionsController.js'
-
-type DestinationWallet = {
-  address: string
-  blockchains: string[]
-  assets: string[]
-}
-
-type GenerateOnRampT = {
-  destinationWallets: DestinationWallet[]
-  partnerUserId: string
-  defaultNetwork?: string
-}
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getBlockchainApiUrl()
@@ -54,7 +47,11 @@ export const BlockchainApiController = {
     })
   },
 
-  async generateOnRampURL({ destinationWallets, partnerUserId, defaultNetwork }: GenerateOnRampT) {
+  async generateOnRampURL({
+    destinationWallets,
+    partnerUserId,
+    defaultNetwork
+  }: GenerateOnRampUrlArgs) {
     const response = await api.post<{ url: string }>({
       path: `/v1/generators/onrampurl?projectId=${OptionsController.state.projectId}`,
       body: {
@@ -65,5 +62,30 @@ export const BlockchainApiController = {
     })
 
     return response.url
+  },
+
+  async getOnrampOptions() {
+    const response = await api.get<{
+      paymentCurrencies: PaymentCurrency[]
+      purchaseCurrencies: PurchaseCurrency[]
+    }>({
+      path: `/v1/onramp/options?projectId=${OptionsController.state.projectId}`
+    })
+
+    return response
+  },
+
+  async getOnrampQuote({ purchaseCurrency, paymentCurrency, amount, network }: GetQuoteArgs) {
+    const response = await api.post<OnrampQuote>({
+      path: `/v1/onramp/quote?projectId=${OptionsController.state.projectId}`,
+      body: {
+        purchaseCurrency,
+        paymentCurrency,
+        amount,
+        network
+      }
+    })
+
+    return response
   }
 }
