@@ -29,7 +29,6 @@ export function SolanaSignMessageTest() {
         isClosable: true
       })
     } catch (err) {
-      console.log(`err`, err);
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
         description: 'Failed to sign message',

@@ -7,7 +7,8 @@ import { solanaDevnet } from '../../utils/ChainsUtil'
 
 const WALLECT_CONNECT_DEVNET_ADDRESS = '2yr4zgYEyWRqFrNym31X1oJ4NprJsXjATEQb5XnkFY8v'
 const PHANTOM_DEVNET_ADDRESS = 'EmT8r4E8ZjoQgt8sXGbaWBRMKfUXsVT1wonoSnJZ4nBn'
-const recipientAddress = new PublicKey(PHANTOM_DEVNET_ADDRESS);
+const SOLFLARE_TESTNET_ADDRESS = 'F8qUqmWTsi5gbZrCPXCRpeb4i6Fv8n3EQZCiBix7SBjd'
+const recipientAddress = new PublicKey(SOLFLARE_TESTNET_ADDRESS);
 const amountInLamports = 100000000;
 
 export function SolanaSendTransactionTest() {
@@ -47,9 +48,8 @@ export function SolanaSendTransactionTest() {
         const { blockhash } = await connection.getLatestBlockhash();
 
         transaction.recentBlockhash = blockhash;
-        const tx = await walletProvider.signTransaction(transaction)
 
-        signature = await walletProvider.sendTransaction(tx, connection)
+        signature = await walletProvider.sendTransaction(transaction, connection)
       }
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
@@ -103,11 +103,7 @@ export function SolanaSendTransactionTest() {
         // make a versioned transaction
         const transactionV0 = new VersionedTransaction(messageV0);
 
-        const tx = await walletProvider.signTransaction(transactionV0)
-        signature = tx.signatures[0]
-
-        const res = await walletProvider.sendTransaction(tx, connection)
-        console.log(`sent transa`, res);
+        signature = await walletProvider.sendTransaction(transactionV0, connection)
       }
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {

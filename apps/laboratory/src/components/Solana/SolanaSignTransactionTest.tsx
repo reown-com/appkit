@@ -81,7 +81,7 @@ export function SolanaSignTransactionTest() {
           feePayer: 'from'
         })
       } else {
-        const connection = new Connection("https://api.devnet.solana.com", 'finalized');
+        const connection = new Connection("https://api.devnet.solana.com", 'confirmed');
 
         const { blockhash } = await connection.getLatestBlockhash();
 
