@@ -1,5 +1,5 @@
 import type { W3mFrameProvider } from '@web3modal/wallet'
-import type { CaipNetwork } from '@web3modal/scaffold'
+import type { CaipNetwork, CaipNetworkId } from '@web3modal/scaffold'
 import { PublicKey } from '@solana/web3.js'
 
 import UniversalProvider from '@walletconnect/universal-provider'
@@ -312,6 +312,7 @@ export interface SolStoreUtilState {
   providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
   address?: string
   chainId?: string
+  caipChainId?: string
   currentChain?: Chain
   requestId?: number
   error?: unknown
@@ -328,6 +329,7 @@ const state = proxy<SolStoreUtilState>({
   address: undefined,
   currentChain: undefined,
   chainId: undefined,
+  caipChainId: undefined,
   isConnected: false
 })
 
@@ -366,6 +368,10 @@ export const SolStoreUtil = {
 
   setChainId(chainId: SolStoreUtilState['chainId']) {
     state.chainId = chainId
+  },
+
+  setCaipChainId(caipChainId: SolStoreUtilState['caipChainId']) {
+    state.caipChainId = caipChainId
   },
 
   setIsConnected(isConnected: SolStoreUtilState['isConnected']) {
@@ -429,7 +435,7 @@ export const SolConstantsUtil = {
   NAME_TOKENIZER_ID: new PublicKey('nftD3vbNkNqfj2Sd3HZwbpw4BxxKWr4AjGb9X38JeZk'),
   MINT_PREFIX: Buffer.from('tokenized_name'),
   WALLET_ID: '@w3m/solana_wallet',
-  CHAIN_ID: '@w3m/solana_chain',
+  CAIP_CHAIN_ID: '@w3m/solana_caip_chain',
   ERROR_CODE_UNRECOGNIZED_CHAIN_ID: 4902,
   ERROR_CODE_DEFAULT: 5000
 }
@@ -440,6 +446,17 @@ export const SolHelpersUtil = {
     const chain = chains.find(chain => chain.chainId === chainId)
     if (chain) {
       return chain
+    }
+    return chains[0]
+  },
+  getChainFromCaip(chains: Chain[], chainCaipId: CaipNetworkId | string | undefined | null = ":") {
+    const chainName: string = chainCaipId?.split(':')[0] ?? ""
+    const chainId: string = (chainCaipId?.split(':')[1] ?? "").replace(/\s/g, '')
+
+    const selectedChain = chains.find((chain) => chain.chainId === chainId && chain.name === chainName)
+
+    if (selectedChain) {
+      return selectedChain
     }
     return chains[0]
   },
