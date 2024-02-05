@@ -1,16 +1,8 @@
-import { AccountController, BlockchainApiController, ModalController } from '@web3modal/core'
+import { AccountController, ModalController, OnRampController } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
-import type { PaymentCurrency, PurchaseCurrency } from '@web3modal/core/src/utils/TypeUtil.js'
-
-const ICONS_BY_CURRENCY: Record<string, string> = {
-  USD: 'https://upload.wikimedia.org/wikipedia/commons/8/88/United-states_flag_icon_round.svg',
-  USDC: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Circle_USDC_Logo.svg/1024px-Circle_USDC_Logo.svg.png',
-  EUR: 'https://upload.wikimedia.org/wikipedia/commons/b/b7/Flag_of_Europe.svg',
-  GBP: 'https://upload.wikimedia.org/wikipedia/commons/a/ae/Flag_of_the_United_Kingdom.svg'
-}
 
 const PAYMENT_CURRENCY_SYMBOLS: Record<string, string> = {
   USD: '$',
@@ -34,13 +26,7 @@ export class W3mOnrampWidget extends LitElement {
 
   @state() private loading = ModalController.state.loading
 
-  @state() private paymentCurrencies: PaymentCurrency[] = []
-
-  @state() private purchaseCurrencies: PurchaseCurrency[] = []
-
-  @state() private selectedPaymentCurrency = this.paymentCurrencies[0]
-
-  @state() private selectedPurchaseCurrency = this.purchaseCurrencies[0]
+  @state() private paymentCurrency = OnRampController.state.paymentCurrency
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -52,6 +38,9 @@ export class W3mOnrampWidget extends LitElement {
         }),
         ModalController.subscribeKey('loading', val => {
           this.loading = val
+        }),
+        OnRampController.subscribeKey('paymentCurrency', val => {
+          this.paymentCurrency = val
         })
       ]
     )
@@ -63,49 +52,19 @@ export class W3mOnrampWidget extends LitElement {
     }
   }
 
-  public override firstUpdated() {
-    this.fetchOptions()
-  }
-
-  private async fetchOptions() {
-    const { paymentCurrencies, purchaseCurrencies } =
-      await BlockchainApiController.getOnrampOptions()
-    this.paymentCurrencies = paymentCurrencies
-    this.purchaseCurrencies = purchaseCurrencies
-    this.selectedPaymentCurrency = this.paymentCurrencies[0]
-    this.selectedPurchaseCurrency = this.purchaseCurrencies[0]
-  }
-
   // -- Render -------------------------------------------- //
   public override render() {
-    if (!this.selectedPaymentCurrency || !this.selectedPurchaseCurrency) {
-      return null
-    }
-
-    const purchaseCurrencies = this.purchaseCurrencies.map(this.formatPurchaseCurrency)
-    const paymentCurrencies = this.paymentCurrencies.map(this.formatPaymentCurrency)
-    const selectedPaymentCurrency = this.formatPaymentCurrency(this.selectedPaymentCurrency)
-    const selectedPurchaseCurrency = this.formatPurchaseCurrency(this.selectedPurchaseCurrency)
-
     return html`
       <wui-flex flexDirection="column" justifyContent="center" alignItems="center">
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <w3m-input-currency
-            .currencies=${paymentCurrencies}
-            .selectedCurrency=${selectedPaymentCurrency}
-            type="Fiat"
-          ></w3m-input-currency>
-          <w3m-input-currency
-            .currencies=${purchaseCurrencies}
-            .selectedCurrency=${selectedPurchaseCurrency}
-            type="Token"
-          ></w3m-input-currency>
+          <w3m-input-currency type="Fiat"></w3m-input-currency>
+          <w3m-input-currency type="Token"></w3m-input-currency>
           <wui-flex justifyContent="space-evenly" class="amounts-container" gap="xs">
             ${BUY_PRESET_AMOUNTS.map(
               amount =>
                 html`<wui-button variant="shade" size="xs" textVariant="paragraph-600" fullWidth
                   >${`${
-                    PAYMENT_CURRENCY_SYMBOLS[selectedPaymentCurrency.name] || ''
+                    PAYMENT_CURRENCY_SYMBOLS[this.paymentCurrency?.id || 'USD']
                   } ${amount}`}</wui-button
                 >`
             )}
@@ -147,21 +106,6 @@ export class W3mOnrampWidget extends LitElement {
 
   private openModal() {
     ModalController.open({ view: 'Connect' })
-  }
-
-  private formatPaymentCurrency(currency: PaymentCurrency) {
-    return {
-      name: currency.id,
-      symbol: currency.id,
-      icon: ICONS_BY_CURRENCY[currency.id]
-    }
-  }
-  private formatPurchaseCurrency(currency: PurchaseCurrency) {
-    return {
-      name: currency.name,
-      symbol: currency.symbol,
-      icon: ICONS_BY_CURRENCY[currency.symbol]
-    }
   }
 }
 
