@@ -1,4 +1,10 @@
-import { AccountController, AssetUtil, ModalController, NetworkController } from '@web3modal/core'
+import {
+  AccountController,
+  AssetUtil,
+  EventsController,
+  ModalController,
+  NetworkController
+} from '@web3modal/core'
 import type { WuiNetworkButton } from '@web3modal/ui'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -22,6 +28,8 @@ export class W3mNetworkButton extends LitElement {
 
   @state() private loading = ModalController.state.loading
 
+  @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
@@ -29,7 +37,8 @@ export class W3mNetworkButton extends LitElement {
       ...[
         NetworkController.subscribeKey('caipNetwork', val => (this.network = val)),
         AccountController.subscribeKey('isConnected', val => (this.connected = val)),
-        ModalController.subscribeKey('loading', val => (this.loading = val))
+        ModalController.subscribeKey('loading', val => (this.loading = val)),
+        NetworkController.subscribeKey('isUnsupportedChain', val => (this.isUnsupportedChain = val))
       ]
     )
   }
@@ -43,10 +52,13 @@ export class W3mNetworkButton extends LitElement {
     return html`
       <wui-network-button
         .disabled=${Boolean(this.disabled || this.loading)}
+        .isUnsupportedChain=${this.isUnsupportedChain}
         imageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
         @click=${this.onClick.bind(this)}
       >
-        ${this.network?.name ?? (this.connected ? 'Unknown Network' : 'Select Network')}
+        ${this.isUnsupportedChain
+          ? 'Switch Network'
+          : this.network?.name ?? (this.connected ? 'Unknown Network' : 'Select Network')}
       </wui-network-button>
     `
   }
@@ -54,6 +66,7 @@ export class W3mNetworkButton extends LitElement {
   // -- Private ------------------------------------------- //
   private onClick() {
     if (!this.loading) {
+      EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORKS' })
       ModalController.open({ view: 'Networks' })
     }
   }

@@ -21,8 +21,6 @@ export class W3mOnRampActivityView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
   private refetchTimeout: NodeJS.Timeout | undefined = undefined
-  private abortController: AbortController | undefined = undefined
-  private next: string | undefined = undefined
 
   // -- State & Properties -------------------------------- //
   @state() protected selectedOnRampProvider = OnRampController.state.selectedProvider
@@ -39,7 +37,6 @@ export class W3mOnRampActivityView extends LitElement {
           this.selectedOnRampProvider = val
         }),
         () => {
-          this.abortController?.abort?.()
           clearTimeout(this.refetchTimeout)
         }
       ]
@@ -107,13 +104,11 @@ export class W3mOnRampActivityView extends LitElement {
     const coinbaseResponse = await BlockchainApiController.fetchTransactions({
       account: address,
       onramp: 'coinbase',
-      projectId,
-      cursor: this.next
+      projectId
     })
 
     this.loading = false
     this.coinbaseTransactions = coinbaseResponse.data || []
-    this.next = coinbaseResponse.next ?? undefined
     this.refetchLoadingTransactions()
   }
 
@@ -128,7 +123,6 @@ export class W3mOnRampActivityView extends LitElement {
       return
     }
 
-    this.abortController = new AbortController()
     // Wait 2 seconds before refetching
     this.refetchTimeout = setTimeout(async () => {
       const address = AccountController.state.address
@@ -136,13 +130,11 @@ export class W3mOnRampActivityView extends LitElement {
       const coinbaseResponse = await BlockchainApiController.fetchTransactions({
         account: address as `0x${string}`,
         onramp: 'coinbase',
-        projectId,
-        signal: this.abortController?.signal
+        projectId
       })
-
       this.coinbaseTransactions = coinbaseResponse.data || []
       this.refetchLoadingTransactions()
-    }, 2000)
+    }, 3000)
   }
 
   private templateLoading() {

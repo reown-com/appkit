@@ -179,39 +179,6 @@ export class W3mAccountView extends LitElement {
     `
   }
 
-  private onTransactions() {
-    EventsController.sendEvent({ type: 'track', event: 'CLICK_TRANSACTIONS' })
-    RouterController.push('Transactions')
-  }
-
-  private async onDisconnect() {
-    try {
-      this.disconnecting = true
-      await ConnectionController.disconnect()
-      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
-      ModalController.close()
-    } catch {
-      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
-      SnackController.showError('Failed to disconnect')
-    } finally {
-      this.disconnecting = false
-    }
-  }
-
-  private isAllowedNetworkSwitch() {
-    const { requestedCaipNetworks } = NetworkController.state
-    const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
-    const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
-
-    return isMultiNetwork || !isValidNetwork
-  }
-
-  private onNetworks() {
-    if (this.isAllowedNetworkSwitch()) {
-      RouterController.push('Networks')
-    }
-  }
-
   private emailCardTemplate() {
     const type = StorageUtil.getConnectedConnector()
     const emailConnector = ConnectorController.getEmailConnector()
@@ -234,17 +201,6 @@ export class W3mAccountView extends LitElement {
     RouterController.push('OnRampProviders')
   }
 
-  private onCopyAddress() {
-    try {
-      if (this.address) {
-        CoreHelperUtil.copyToClopboard(this.address)
-        SnackController.showSuccess('Address copied')
-      }
-    } catch {
-      SnackController.showError('Failed to copy')
-    }
-  }
-
   private explorerBtnTemplate() {
     const { addressExplorerUrl } = AccountController.state
 
@@ -259,6 +215,51 @@ export class W3mAccountView extends LitElement {
         <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
       </wui-button>
     `
+  }
+
+  private isAllowedNetworkSwitch() {
+    const { requestedCaipNetworks } = NetworkController.state
+    const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
+    const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
+
+    return isMultiNetwork || !isValidNetwork
+  }
+
+  private onCopyAddress() {
+    try {
+      if (this.address) {
+        CoreHelperUtil.copyToClopboard(this.address)
+        SnackController.showSuccess('Address copied')
+      }
+    } catch {
+      SnackController.showError('Failed to copy')
+    }
+  }
+
+  private onNetworks() {
+    if (this.isAllowedNetworkSwitch()) {
+      EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORKS' })
+      RouterController.push('Networks')
+    }
+  }
+
+  private onTransactions() {
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_TRANSACTIONS' })
+    RouterController.push('Transactions')
+  }
+
+  private async onDisconnect() {
+    try {
+      this.disconnecting = true
+      await ConnectionController.disconnect()
+      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
+      ModalController.close()
+    } catch {
+      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
+      SnackController.showError('Failed to disconnect')
+    } finally {
+      this.disconnecting = false
+    }
   }
 
   private onExplorer() {

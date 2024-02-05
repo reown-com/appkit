@@ -14,7 +14,6 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import type { Transaction } from '@web3modal/common'
 
 @customElement('w3m-buy-in-progress-view')
 export class W3mBuyInProgressView extends LitElement {
@@ -35,10 +34,6 @@ export class W3mBuyInProgressView extends LitElement {
   @state() public buffering = false
 
   @state() private error = false
-
-  @state() private coinbaseTransactions: Transaction[] = []
-
-  @state() private coinbaseTransactionsInitialized = false
 
   @state() private intervalId: NodeJS.Timeout | null = null
 
@@ -146,32 +141,12 @@ export class W3mBuyInProgressView extends LitElement {
   }
 
   private async initializeCoinbaseTransactions() {
-    const address = AccountController.state.address
-    const projectId = OptionsController.state.projectId
-
-    if (!address) {
-      throw new Error('No address found')
-    }
-    if (!address) {
-      throw new Error('No address found')
-    }
-
-    const coinbaseResponse = await BlockchainApiController.fetchTransactions({
-      account: address,
-      onramp: 'coinbase',
-      projectId
-    })
-
-    this.coinbaseTransactions = coinbaseResponse.data
-    this.coinbaseTransactionsInitialized = true
+    await this.watchCoinbaseTransactions()
     this.intervalId = setInterval(() => this.watchCoinbaseTransactions(), 10000)
   }
 
   private async watchCoinbaseTransactions() {
     try {
-      if (!this.coinbaseTransactionsInitialized) {
-        return
-      }
       await this.fetchCoinbaseTransactions()
     } catch (error) {
       SnackController.showError(error)
@@ -181,7 +156,6 @@ export class W3mBuyInProgressView extends LitElement {
   private async fetchCoinbaseTransactions() {
     const address = AccountController.state.address
     const projectId = OptionsController.state.projectId
-
     if (!address) {
       throw new Error('No address found')
     }
@@ -192,20 +166,18 @@ export class W3mBuyInProgressView extends LitElement {
       projectId
     })
 
-    const newTransactions = coinbaseResponse.data.filter(
-      transaction =>
-        !this.coinbaseTransactions.some(
-          existingTransaction =>
-            existingTransaction.metadata.minedAt === transaction.metadata.minedAt
-        )
+    const pendingTransactions = coinbaseResponse.data.filter(
+      tx => tx.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
     )
 
-    if (newTransactions.length > 0 && this.intervalId) {
+    if (this.intervalId) {
       clearInterval(this.intervalId)
+    }
+
+    if (pendingTransactions.length) {
       RouterController.replace('OnRampActivity')
-    } else if (this.startTime && Date.now() - this.startTime >= 180_000 && this.intervalId) {
+    } else if (this.startTime && Date.now() - this.startTime >= 180_000) {
       this.error = true
-      clearInterval(this.intervalId)
     }
   }
 

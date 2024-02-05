@@ -135,7 +135,11 @@ async function checkUiPackage() {
     !jsx_index_diff?.added.includes('../components') &&
     !jsx_index_diff?.diff.includes('../components')
   ) {
-    fail('New components were added, but not exported in ui/utils/JSXTypeUtil.ts')
+    fail(
+      `New components were added, but not exported in ui/utils/JSXTypeUtil.ts: ${created_ui_components.join(
+        ', '
+      )}`
+    )
   }
 
   if (

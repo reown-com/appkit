@@ -33,6 +33,7 @@ export * from './src/views/w3m-upgrade-wallet-view/index.js'
 export * from './src/views/w3m-update-email-wallet-view/index.js'
 export * from './src/views/w3m-update-email-primary-otp-view/index.js'
 export * from './src/views/w3m-update-email-secondary-otp-view/index.js'
+export * from './src/views/w3m-unsupported-chain-view/index.js'
 
 export * from './src/partials/w3m-all-wallets-list/index.js'
 export * from './src/partials/w3m-all-wallets-search/index.js'

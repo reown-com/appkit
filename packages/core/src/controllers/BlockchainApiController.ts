@@ -132,7 +132,8 @@ export const BlockchainApiController = {
       body: {
         destinationWallets,
         defaultNetwork,
-        partnerUserId
+        partnerUserId,
+        defaultExperience: 'buy'
       }
     })
 
