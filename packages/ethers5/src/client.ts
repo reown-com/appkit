@@ -751,6 +751,10 @@ export class Web3Modal extends Web3ModalScaffold {
             await this.syncBalance(address)
           }
         }
+      } else if (isConnected) {
+        this.setCaipNetwork({
+          id: `${ConstantsUtil.EIP155}:${chainId}`
+        })
       }
     }
   }
