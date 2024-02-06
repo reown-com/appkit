@@ -12,7 +12,7 @@ const __dirname = path.dirname(__filename)
 /**
  * Reads the coverage-summary.{XXX}.json file and returns the parsed JSON object
  * @param {*} pathToReport
- * @returns {Object | null} parsed JSON object
+ * @returns {Object} parsed JSON object
  */
 function readPreviousCoverageSummary(pathToReport) {
   if (!pathToReport) {

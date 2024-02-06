@@ -1,5 +1,6 @@
 import { W3mFrameStorage } from './W3mFrameStorage.js'
-import { W3mFrameConstants } from './W3mFrameConstants.js'
+import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
+import type { W3mFrameTypes } from './W3mFrameTypes.js'
 
 const RESTRICTED_TIMEZONES = [
   'ASIA/SHANGHAI',
@@ -51,6 +52,12 @@ export const W3mFrameHelpers = {
     }
 
     return 0
+  },
+
+  checkIfRequestIsAllowed(request: unknown) {
+    const method = (request as { payload: W3mFrameTypes.RPCRequest })?.payload?.method
+
+    return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
   },
 
   isClient: typeof window !== 'undefined'
