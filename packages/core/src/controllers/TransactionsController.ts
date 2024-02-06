@@ -104,8 +104,8 @@ export const TransactionsController = {
 
       grouped[year] = {
         ...yearTransactions,
-        [month]: [...monthTransactions, transaction]
-      } as GroupedTransaction
+        [month]: [...monthTransactions, { type: 'zerion', value: transaction }]
+      }
     })
 
     return grouped
@@ -125,8 +125,8 @@ export const TransactionsController = {
 
       grouped[year] = {
         ...yearTransactions,
-        [month]: [...monthTransactions, transaction]
-      } as GroupedTransaction
+        [month]: [...monthTransactions, { type: 'coinbase', value: transaction }]
+      }
     })
 
     return grouped
