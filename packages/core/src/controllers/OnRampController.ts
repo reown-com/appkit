@@ -16,14 +16,15 @@ export type OnRampProvider = {
 
 export interface OnRampControllerState {
   selectedProvider: OnRampProvider | null
-  purchaseCurrency?: PurchaseCurrency
-  paymentCurrency?: PaymentCurrency
+  purchaseCurrency: PurchaseCurrency
+  paymentCurrency: PaymentCurrency
   purchaseCurrencies: PurchaseCurrency[]
   paymentCurrencies: PaymentCurrency[]
   purchaseAmount?: number
   paymentAmount?: number
   providers: OnRampProvider[]
   error: string | null
+  quotesLoading: boolean
 }
 
 type StateKey = keyof OnRampControllerState
@@ -47,14 +48,33 @@ const USDC_CURRENCY_DEFAULT = {
     }
   ]
 }
+
+const USD_CURRENCY_DEFAULT = {
+  id: 'USD',
+  payment_method_limits: [
+    {
+      id: 'card',
+      min: '10.00',
+      max: '7500.00'
+    },
+    {
+      id: 'ach_bank_account',
+      min: '10.00',
+      max: '25000.00'
+    }
+  ]
+}
+
 // -- State --------------------------------------------- //
 const state = proxy<OnRampControllerState>({
   providers: ONRAMP_PROVIDERS as OnRampProvider[],
   selectedProvider: null,
   error: null,
   purchaseCurrency: USDC_CURRENCY_DEFAULT,
+  paymentCurrency: USD_CURRENCY_DEFAULT,
   purchaseCurrencies: [USDC_CURRENCY_DEFAULT],
-  paymentCurrencies: []
+  paymentCurrencies: [],
+  quotesLoading: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -93,7 +113,21 @@ export const OnRampController = {
     const options = await BlockchainApiController.getOnrampOptions()
     state.purchaseCurrencies = options.purchaseCurrencies
     state.paymentCurrencies = options.paymentCurrencies
-    state.paymentCurrency = options.paymentCurrencies[0]
-    state.purchaseCurrency = options.purchaseCurrencies[0]
+    state.paymentCurrency = options.paymentCurrencies[0]!
+    state.purchaseCurrency = options.purchaseCurrencies[0]!
+  },
+
+  async getQuote() {
+    state.quotesLoading = true
+    const quote = await BlockchainApiController.getOnrampQuote({
+      purchaseCurrency: state.purchaseCurrency,
+      paymentCurrency: state.paymentCurrency,
+      amount: state.paymentAmount?.toString() || '0',
+      network: state.purchaseCurrency?.name
+    })
+    state.quotesLoading = false
+    state.purchaseAmount = Number(quote.purchaseAmount.amount)
+
+    return quote
   }
 }

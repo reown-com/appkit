@@ -446,12 +446,12 @@ export type PurchaseCurrency = {
 }
 
 export type OnrampQuote = {
-  payment_total: QuoteAmount
-  payment_subtotal: QuoteAmount
-  purchase_amount: QuoteAmount
-  coinbase_fee: QuoteAmount
-  network_fee: QuoteAmount
-  quote_id: string
+  paymentTotal: QuoteAmount
+  paymentSubtotal: QuoteAmount
+  purchaseAmount: QuoteAmount
+  coinbaseFee: QuoteAmount
+  networkFee: QuoteAmount
+  quoteId: string
 }
 
 export type GetQuoteArgs = {

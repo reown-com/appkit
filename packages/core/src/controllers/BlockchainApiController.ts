@@ -160,16 +160,28 @@ export const BlockchainApiController = {
   },
 
   async getOnrampQuote({ purchaseCurrency, paymentCurrency, amount, network }: GetQuoteArgs) {
-    const response = await api.post<OnrampQuote>({
-      path: `/v1/onramp/quote?projectId=${OptionsController.state.projectId}`,
-      body: {
-        purchaseCurrency,
-        paymentCurrency,
-        amount,
-        network
-      }
-    })
+    try {
+      const response = await api.post<OnrampQuote>({
+        path: `/v1/onramp/quote?projectId=${OptionsController.state.projectId}`,
+        body: {
+          purchaseCurrency,
+          paymentCurrency,
+          amount,
+          network
+        }
+      })
 
-    return response
+      return response
+    } catch (e) {
+      // Mocking response as 1:1 until endpoint is ready
+      return {
+        coinbaseFee: { amount, currency: paymentCurrency.id },
+        networkFee: { amount, currency: paymentCurrency.id },
+        paymentSubtotal: { amount, currency: paymentCurrency.id },
+        paymentTotal: { amount, currency: paymentCurrency.id },
+        purchaseAmount: { amount, currency: paymentCurrency.id },
+        quoteId: 'mocked-quote-id'
+      }
+    }
   }
 }

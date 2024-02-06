@@ -32,6 +32,8 @@ export class W3mOnrampWidget extends LitElement {
 
   @state() private purchaseAmount = OnRampController.state.purchaseAmount
 
+  @state() private quoteLoading = OnRampController.state.quotesLoading
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
@@ -47,6 +49,7 @@ export class W3mOnrampWidget extends LitElement {
           this.paymentCurrency = val.paymentCurrency
           this.paymentAmount = val.paymentAmount
           this.purchaseAmount = val.purchaseAmount
+          this.quoteLoading = val.quotesLoading
         })
       ]
     )
@@ -68,7 +71,11 @@ export class W3mOnrampWidget extends LitElement {
             @inputChange=${this.onPaymentAmountChange.bind(this)}
             .value=${this.paymentAmount || 0}
           ></w3m-input-currency>
-          <w3m-input-currency type="Token" .value=${this.purchaseAmount || 0}></w3m-input-currency>
+          <w3m-input-currency
+            type="Token"
+            .value=${this.purchaseAmount || 0}
+            .loading=${this.quoteLoading}
+          ></w3m-input-currency>
           <wui-flex justifyContent="space-evenly" class="amounts-container" gap="xs">
             ${BUY_PRESET_AMOUNTS.map(
               amount =>
@@ -123,14 +130,14 @@ export class W3mOnrampWidget extends LitElement {
     ModalController.open({ view: 'Connect' })
   }
 
-  private onPaymentAmountChange(event: CustomEvent<string>) {
+  private async onPaymentAmountChange(event: CustomEvent<string>) {
     OnRampController.setPaymentAmount(Number(event.detail))
-    // Fetch Quotes
-    OnRampController.setPurchaseAmount(Number(event.detail))
+    await OnRampController.getQuote()
   }
 
-  private selectPresetAmount(amount: number) {
+  private async selectPresetAmount(amount: number) {
     OnRampController.setPaymentAmount(amount)
+    await OnRampController.getQuote()
   }
 }
 
