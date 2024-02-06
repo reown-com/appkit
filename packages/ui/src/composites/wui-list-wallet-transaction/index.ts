@@ -41,7 +41,7 @@ export class WuiListWalletTransaction extends LitElement {
         <wui-chip
           icon="externalLink"
           variant="shadeSmall"
-          @click=${this.onExplorer.bind(this)}
+          href=${this.addressExplorerUrl}
           title=${this.receiverAddress}
         ></wui-chip>
       </wui-flex>
@@ -55,12 +55,6 @@ export class WuiListWalletTransaction extends LitElement {
     }
 
     return html`<wui-icon size="inherit" color="fg-200" name="networkPlaceholder"></wui-icon>`
-  }
-
-  private onExplorer() {
-    if (this.addressExplorerUrl) {
-      window.open(this.addressExplorerUrl, '_blank', 'noreferrer noopener')
-    }
   }
 }
 
