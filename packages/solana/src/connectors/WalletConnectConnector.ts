@@ -1,12 +1,11 @@
 import base58 from 'bs58'
-import { PublicKey } from '@solana/web3.js'
+import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { Connector } from './BaseConnector'
 import { BaseConnector } from './BaseConnector'
-import type { Address, TransactionArgs, TransactionType } from '@web3modal/scaffold-utils/solana'
+import type { Address } from '@web3modal/scaffold-utils/solana'
 import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 import { UniversalProviderFactory } from './universalProvider'
-import { Buffer } from 'buffer'
 
 export interface WalletConnectAppMetadata {
   name: string
@@ -87,12 +86,12 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     return provider
   }
 
-  public async signMessage(message: string) {
+  public async signMessage(message: Uint8Array) {
     const address = SolStoreUtil.state.address
     if (!address) throw new Error('No signer connected')
 
     const signedMessage = await this.request('solana_signMessage', {
-      message: base58.encode(new TextEncoder().encode(message)),
+      message: base58.encode(message),
       pubkey: address
     })
     const { signature } = signedMessage
@@ -100,11 +99,26 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     return signature
   }
 
+  /*  public async signVersionedTransaction(
+     params: TransactionArgs['transfer']['params']
+   ) {
+     const transaction = await this.constructVersionedTransaction(params)
+     const transactionParams = {
+       feePayer: new PublicKey(SolStoreUtil.state.address as string).toBase58(),
+       instructions: transaction.message.compiledInstructions.map(instruction => ({
+         ...instruction,
+         data: base58.encode(instruction.data)
+       })),
+       recentBlockhash: transaction.message.recentBlockhash ?? ''
+     }
+     // @ts-ignore
+     const res = await this.request('solana_signTransaction', transactionParams)
+ 
+     return { signatures: [base58.encode(transaction.serialize())] }
+   } */
   public async signVersionedTransaction(
-    params: TransactionArgs['transfer']['params']
+    transaction: VersionedTransaction
   ) {
-    const transaction = await this.constructVersionedTransaction(params)
-    console.log(`transaction message`, transaction.message);
     const transactionParams = {
       feePayer: new PublicKey(SolStoreUtil.state.address as string).toBase58(),
       instructions: transaction.message.compiledInstructions.map(instruction => ({
@@ -115,12 +129,11 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     }
     // @ts-ignore
     const res = await this.request('solana_signTransaction', transactionParams)
-    console.log(`res to request`, res);
 
-    return base58.encode(transaction.serialize())
+    return { signatures: [{ signature: base58.encode(transaction.serialize()) }] }
   }
 
-  public async signTransaction<Type extends keyof TransactionArgs>(
+  /* public async signTransaction<Type extends keyof TransactionArgs>(
     type: Type,
     params: TransactionArgs[Type]['params']
   ) {
@@ -154,14 +167,63 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     console.log({ res, validSig })
 
     return base58.encode(transaction.serialize())
+  } */
+
+  public async signTransaction(
+    transactionParam: Transaction | VersionedTransaction
+  ) {
+    const version = (transactionParam as VersionedTransaction).version
+    if (typeof version === 'number') {
+      return this.signVersionedTransaction(transactionParam as VersionedTransaction)
+    }
+    const transaction = transactionParam as Transaction
+    const transactionParams = {
+      feePayer: transaction.feePayer?.toBase58() ?? '',
+      instructions: transaction.instructions.map(instruction => ({
+        data: base58.encode(instruction.data),
+        keys: instruction.keys.map(key => ({
+          isWritable: key.isWritable,
+          isSigner: key.isSigner,
+          pubkey: key.pubkey.toBase58(),
+        })),
+        programId: instruction.programId.toBase58()
+      })),
+      recentBlockhash: transaction.recentBlockhash ?? ''
+    }
+
+    const res = await this.request('solana_signTransaction', transactionParams)
+    transaction.addSignature(
+      new PublicKey(SolStoreUtil.state.address ?? ''),
+      Buffer.from(base58.decode(res.signature))
+    )
+
+    const validSig = transaction.verifySignatures()
+
+    if (!validSig) throw new Error('Signature invalid.')
+
+    return { signatures: [{ signature: base58.encode(transaction.serialize()) }] }
+
   }
 
-  public async signAndSendTransaction<Type extends TransactionType>(
-    type: Type,
-    params: TransactionArgs[Type]['params']
-  ) {
-    return this.sendTransaction(await this.signTransaction(type, params))
+  public async sendTransaction(transaction: Transaction | VersionedTransaction) {
+    const { signatures } = await this.signTransaction(transaction)
+    const encodedTransaction = transaction.serialize().toString('base64')
+    await this.requestCluster('sendTransaction', [encodedTransaction])
+    return signatures[0]?.signature ?? ''
   }
+
+  // public async signAndSendTransaction<Type extends TransactionType>(
+  //   type: Type,
+  //   params: TransactionArgs[Type]['params']
+  // ) {
+  //   return this.sendTransaction(await this.signTransaction(type, params))
+  // }
+
+  /* public async signAndSendTransaction(
+    transaction: Transaction
+  ) {
+    return this.sendTransaction((await this.signTransaction(transaction)).signatures[0]?.signature!)
+  } */
 
   /**
    * Connect to user's wallet.
@@ -176,7 +238,6 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
   public async connect(useURI?: boolean) {
     const chosenCluster = SolStoreUtil.getCluster()
     const clusterId = `solana:${chosenCluster.id}`
-    console.log(`chosenCluster`, chosenCluster);
 
     const solanaNamespace = {
       solana: {

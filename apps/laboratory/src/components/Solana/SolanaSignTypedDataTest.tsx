@@ -1,6 +1,7 @@
 import type { Schema } from 'borsh';
 import { serialize } from 'borsh';
 import { Button, useToast } from '@chakra-ui/react'
+
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
 class Person {
@@ -53,19 +54,15 @@ export function SolanaSignTypedDataTest() {
       if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
-      console.log(`walletProvider`, walletProvider);
       // Serialize the data
       const serializedData = serialize(schema, message);
-      // Sign the serialized data
-      console.log(`serializedData`, serializedData);
-      const signature = await walletProvider.request({
-        method: "signMessage",
-        params: {
-          message: serializedData,
-          display: "hex",
-        },
-      });
-      // const signature = await walletProvider.signMessage(serializedData);
+
+      let signature
+      // Phantom exception because it treats serialized object as a transaction
+      if (walletProvider.name === 'Phantom') {
+        signature = await walletProvider.signMessage(new TextEncoder().encode(JSON.stringify(message)));
+      }
+      signature = await walletProvider.signMessage(serializedData);
 
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {

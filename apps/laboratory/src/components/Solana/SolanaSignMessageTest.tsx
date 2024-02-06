@@ -14,14 +14,8 @@ export function SolanaSignMessageTest() {
       if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
-      const generateMessage = (message: string) => {
-        if (walletProvider.id === "WalletConnect") {
-          return message
-        } else {
-          return new TextEncoder().encode(message)
-        }
-      }
-      const signature = await walletProvider.signMessage(generateMessage('Hello from Web3Modal'))
+      const encodedMessage = new TextEncoder().encode('Hello from Web3Modal')
+      const signature = await walletProvider.signMessage(encodedMessage)
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
         description: signature,

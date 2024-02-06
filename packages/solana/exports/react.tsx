@@ -49,11 +49,12 @@ export function useDisconnect() {
 }
 
 export function useWeb3ModalAccount() {
-  const { address, isConnected, chainId } = useSnapshot(SolStoreUtil.state)
+  const { address, isConnected, chainId, currentChain } = useSnapshot(SolStoreUtil.state)
 
   return {
     address,
     isConnected,
+    currentChain,
     chainId
   }
 }

@@ -28,20 +28,27 @@ export interface Connector {
   getConnectorName: () => string
   disconnect: () => Promise<void>
   connect: () => Promise<string>
-  signMessage: (message: string) => Promise<string>
-  signTransaction: <Type extends TransactionType>(
-    type: Type,
-    params: TransactionArgs[Type]['params']
-  ) => Promise<string>
-  sendTransaction: (encodedTransaction: string) => Promise<string>
+  signMessage: (message: Uint8Array) => Promise<string>
+  // signTransaction: <Type extends TransactionType>(
+  //   type: Type,
+  //   params: TransactionArgs[Type]['params']
+  // ) => Promise<string>
+  signTransaction: (
+    transaction: Transaction | VersionedTransaction
+  ) => Promise<{ signatures: Array<{ signature: string }> }>
+  // sendTransaction: (encodedTransaction: string) => Promise<string>
+  sendTransaction: (transaction: Transaction | VersionedTransaction) => Promise<string>
   getAccount: (
     requestedAddress?: string,
     encoding?: 'base58' | 'base64' | 'jsonParsed'
   ) => Promise<AccountInfo | null>
-  signAndSendTransaction: <Type extends TransactionType>(
-    type: Type,
-    params: TransactionArgs[Type]['params']
-  ) => Promise<string>
+  // signAndSendTransaction: <Type extends TransactionType>(
+  //   type: Type,
+  //   params: TransactionArgs[Type]['params']
+  // ) => Promise<string>
+  // signAndSendTransaction: (
+  //   transaction: Transaction
+  // ) => Promise<string>
   getBalance: (requestedAddress: string) => Promise<{
     formatted: string
     value: BN
@@ -69,6 +76,11 @@ export class BaseConnector {
   public getConnectorName() {
     return 'base'
   }
+
+  public get publicKey() {
+    return new PublicKey(SolStoreUtil.state.address ?? '')
+  }
+
   protected async getProvider(): Promise<{
     /* eslint-disable @typescript-eslint/no-explicit-any */
     request: (args: any) => any
@@ -148,12 +160,10 @@ export class BaseConnector {
     return transactionV0
   }
 
-  public async sendTransaction(encodedTransaction: string) {
-    console.log(`sendTransaction`);
+  /* public async sendTransaction(encodedTransaction: string) {
     const signature = await this.requestCluster('sendTransaction', [encodedTransaction])
-    console.log(`signature`, signature);
     return signature
-  }
+  } */
 
   public async getTransaction(transactionSignature: string) {
     const transaction = await this.requestCluster('getTransaction', [

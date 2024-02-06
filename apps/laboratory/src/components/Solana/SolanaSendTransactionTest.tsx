@@ -5,15 +5,13 @@ import { Connection, PublicKey, Transaction, TransactionMessage, VersionedTransa
 
 import { solanaDevnet } from '../../utils/ChainsUtil'
 
-const WALLECT_CONNECT_DEVNET_ADDRESS = '2yr4zgYEyWRqFrNym31X1oJ4NprJsXjATEQb5XnkFY8v'
-const PHANTOM_DEVNET_ADDRESS = 'EmT8r4E8ZjoQgt8sXGbaWBRMKfUXsVT1wonoSnJZ4nBn'
 const SOLFLARE_TESTNET_ADDRESS = 'F8qUqmWTsi5gbZrCPXCRpeb4i6Fv8n3EQZCiBix7SBjd'
 const recipientAddress = new PublicKey(SOLFLARE_TESTNET_ADDRESS);
 const amountInLamports = 100000000;
 
 export function SolanaSendTransactionTest() {
   const toast = useToast()
-  const { address, chainId } = useWeb3ModalAccount()
+  const { address, chainId, currentChain } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
 
@@ -24,33 +22,23 @@ export function SolanaSendTransactionTest() {
         throw Error('user is disconnected')
       }
 
-      let signature;
-      if (walletProvider.id === "WalletConnect") {
-        signature = await walletProvider.signAndSendTransaction('transfer',
-          {
-            to: WALLECT_CONNECT_DEVNET_ADDRESS,
-            amountInLamports: 100000000,
-            feePayer: 'from'
-          })
-      } else {
-        const connection = new Connection("https://api.devnet.solana.com", 'finalized');
+      const connection = new Connection(currentChain?.rpcUrl ?? "https://api.devnet.solana.com", 'recent');
 
-        // Create a new transaction
-        let transaction = new Transaction().add(
-          SystemProgram.transfer({
-            fromPubkey: walletProvider.publicKey,
-            toPubkey: recipientAddress,
-            lamports: amountInLamports,
-          })
-        );
-        transaction.feePayer = walletProvider.publicKey;
+      // Create a new transaction
+      let transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: walletProvider.publicKey,
+          toPubkey: recipientAddress,
+          lamports: amountInLamports,
+        })
+      );
+      transaction.feePayer = walletProvider.publicKey;
 
-        const { blockhash } = await connection.getLatestBlockhash();
+      const { blockhash } = await connection.getLatestBlockhash();
 
-        transaction.recentBlockhash = blockhash;
+      transaction.recentBlockhash = blockhash;
 
-        signature = await walletProvider.sendTransaction(transaction, connection)
-      }
+      const signature = await walletProvider.sendTransaction(transaction, connection)
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
       console.log(`err`, err);
@@ -72,39 +60,30 @@ export function SolanaSendTransactionTest() {
         throw Error('user is disconnected')
       }
 
-      let signature;
-      if (walletProvider.id === "WalletConnect") {
-        signature = await walletProvider.signAndSendTransaction('transfer',
-          {
-            to: PHANTOM_DEVNET_ADDRESS,
-            amountInLamports: 100000000,
-            feePayer: 'from'
-          })
-      } else {
-        const connection = new Connection("https://api.devnet.solana.com", 'finalized');
 
-        const { blockhash } = await connection.getLatestBlockhash();
+      const connection = new Connection(currentChain?.rpcUrl ?? "https://api.devnet.solana.com", 'recent');
 
-        const instructions = [
-          SystemProgram.transfer({
-            fromPubkey: walletProvider.publicKey,
-            toPubkey: recipientAddress,
-            lamports: amountInLamports,
-          }),
-        ];
+      const { blockhash } = await connection.getLatestBlockhash();
 
-        // create v0 compatible message
-        const messageV0 = new TransactionMessage({
-          payerKey: walletProvider.publicKey,
-          recentBlockhash: blockhash,
-          instructions,
-        }).compileToV0Message();
+      const instructions = [
+        SystemProgram.transfer({
+          fromPubkey: walletProvider.publicKey,
+          toPubkey: recipientAddress,
+          lamports: amountInLamports,
+        }),
+      ];
 
-        // make a versioned transaction
-        const transactionV0 = new VersionedTransaction(messageV0);
+      // create v0 compatible message
+      const messageV0 = new TransactionMessage({
+        payerKey: walletProvider.publicKey,
+        recentBlockhash: blockhash,
+        instructions,
+      }).compileToV0Message();
 
-        signature = await walletProvider.sendTransaction(transactionV0, connection)
-      }
+      // make a versioned transaction
+      const transactionV0 = new VersionedTransaction(messageV0);
+
+      const signature = await walletProvider.sendTransaction(transactionV0, connection)
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
       console.log(`err`, err);
