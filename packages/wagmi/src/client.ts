@@ -34,6 +34,7 @@ import {
   getEmailCaipNetworks,
   getWalletConnectCaipNetworks
 } from './utils/helpers.js'
+import { W3mFrameHelpers } from '@web3modal/wallet'
 import type { W3mFrameProvider } from '@web3modal/wallet'
 import { ConstantsUtil as CoreConstants } from '@web3modal/core'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
@@ -329,16 +330,21 @@ export class Web3Modal extends Web3ModalScaffold {
   private syncConnectors(
     connectors: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors']
   ) {
+    const uniqueIds = new Set()
+    const filteredConnectors = connectors.filter(
+      item => !uniqueIds.has(item.id) && uniqueIds.add(item.id)
+    )
+
     const w3mConnectors: Connector[] = []
 
     const coinbaseSDKId = ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
 
     // Check if coinbase injected connector is present
-    const coinbaseConnector = connectors.find(
+    const coinbaseConnector = filteredConnectors.find(
       c => c.id === CoreConstants.CONNECTOR_RDNS_MAP[coinbaseSDKId]
     )
 
-    connectors.forEach(({ id, name, type, icon }) => {
+    filteredConnectors.forEach(({ id, name, type, icon }) => {
       // If coinbase injected connector is present, skip coinbase sdk connector.
       const shouldSkip =
         (coinbaseConnector && id === coinbaseSDKId) || ConstantsUtil.EMAIL_CONNECTOR_ID === id
@@ -354,7 +360,7 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     })
     this.setConnectors(w3mConnectors)
-    this.syncEmailConnector(connectors)
+    this.syncEmailConnector(filteredConnectors)
   }
 
   private async syncEmailConnector(
@@ -381,8 +387,10 @@ export class Web3Modal extends Web3ModalScaffold {
       const provider = (await connector.getProvider()) as W3mFrameProvider
       const isLoginEmailUsed = provider.getLoginEmailUsed()
       super.setLoading(isLoginEmailUsed)
-      provider.onRpcRequest(() => {
-        super.open({ view: 'ApproveTransaction' })
+      provider.onRpcRequest(request => {
+        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
+          super.open({ view: 'ApproveTransaction' })
+        }
       })
       provider.onRpcResponse(() => {
         super.close()
