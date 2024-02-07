@@ -116,7 +116,10 @@ export const OnRampController = {
     state.paymentCurrencies = options.paymentCurrencies
     state.paymentCurrency = options.paymentCurrencies[0]!
     state.purchaseCurrency = options.purchaseCurrencies[0]!
-    await ApiController.fetchCurrencyImages()
+    await ApiController.fetchCurrencyImages(options.paymentCurrencies.map(currency => currency.id))
+    await ApiController.fetchTokenImages(
+      options.purchaseCurrencies.map(currency => currency.symbol)
+    )
   },
 
   async getQuote() {
