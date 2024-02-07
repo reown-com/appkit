@@ -22,10 +22,10 @@
     "prettier:format": "prettier --write .",
     "clean": "rm -rf `find . -type d -name node_modules -o -name dist -o -name .next -o -name out`; rm package-lock.json",
     "changeset": "changeset",
-    "publish:latest": "npm run build; npm publish --no-private --access public --tag latest",
-    "publish:alpha": "npm run build; npm publish --no-private --access public --tag alpha",
-    "publish:beta": "npm run build; npm publish --no-private --access public --tag beta",
-    "publish:canary": "npm run build; npm publish --no-private --access public --tag canary"
+    "publish:latest": "npm install; npm run build; changeset publish",
+    "publish:alpha": "npm install; npm run build; changeset publish --tag alpha",
+    "publish:beta": "npm install; npm run build; changeset publish --tag beta",
+    "publish:canary": "npm install; npm run build; changeset publish --tag canary"
   },
   "workspaces": [
     "packages/common",
