@@ -909,7 +909,6 @@ export class Web3Modal extends Web3ModalScaffold {
               params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
             })
             EthersStoreUtil.setChainId(chain.chainId)
-
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (switchError: any) {
             if (
@@ -934,7 +933,6 @@ export class Web3Modal extends Web3ModalScaffold {
               params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
             })
             EthersStoreUtil.setChainId(chain.chainId)
-
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (switchError: any) {
             if (
