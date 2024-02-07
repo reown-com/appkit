@@ -7,6 +7,7 @@ declare global {
     originalSolana?: Record<string, unknown>
     solana?: Record<string, any>
     solflare?: Record<string, any>
+    phantom?: Record<string, any>
   }
 }
 

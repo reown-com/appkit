@@ -8,7 +8,6 @@ import { SolStoreUtil, SolHelpersUtil, SolConstantsUtil } from '@web3modal/scaff
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector'
-import { PhantomConnector } from './connectors/phantom'
 
 import type {
   CaipNetworkId,
@@ -49,8 +48,6 @@ export class Web3Modal extends Web3ModalScaffold {
   private hasSyncedConnectedAccount = false
 
   private WalletConnectConnector: WalletConnectConnector
-
-  private PhantomConnector: PhantomConnector
 
   private walletAdapters: Record<AdapterKey, BaseMessageSignerWalletAdapter>
 
@@ -239,7 +236,6 @@ export class Web3Modal extends Web3ModalScaffold {
       autoconnect: true,
       qrcode: true
     })
-    this.PhantomConnector = new PhantomConnector()
 
     this.syncRequestedNetworks(chains, chainImages)
     this.syncConnectors()
@@ -414,15 +410,9 @@ export class Web3Modal extends Web3ModalScaffold {
   private async syncBalance(address: string) {
     const caipChainId = SolStoreUtil.state.caipChainId
     if (caipChainId && this.chains) {
-      const chain  = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
+      const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId)
       if (chain) {
-        const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
-        let balance
-        if (walletId === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-          balance = await this.WalletConnectConnector.getBalance(address)
-        } else {
-          balance = await this.PhantomConnector.getBalance(address)
-        }
+        const balance = await this.WalletConnectConnector.getBalance(address)
         this.setBalance(balance.decimals.toString(), chain.currency)
       }
     }

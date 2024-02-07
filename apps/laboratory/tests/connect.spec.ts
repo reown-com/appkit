@@ -17,7 +17,7 @@ testMW.afterEach(async ({ modalPage, modalValidator, walletValidator }) => {
 
 testMW('it should sign', async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
   await modalPage.sign()
-  await walletValidator.expectReceivedSign({})
+  await walletValidator.expectReceivedSign({ chainName: 'Solana' })
   await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAcceptedSign()
 })
@@ -26,7 +26,7 @@ testMW(
   'it should reject sign',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
     await modalPage.sign()
-    await walletValidator.expectReceivedSign({})
+    await walletValidator.expectReceivedSign({ chainName: 'Solana' })
     await walletPage.handleRequest({ accept: false })
     await modalValidator.expectRejectedSign()
   }
@@ -35,6 +35,14 @@ testMW(
 testMW(
   'it should switch networks and sign',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+    if (modalPage.library === 'solana') {
+      await modalPage.switchNetwork('Solana Testnet')
+      await modalPage.sign()
+      await walletValidator.expectReceivedSign({ chainName: 'Solana Testnet' })
+      await walletPage.handleRequest({ accept: true })
+      await modalValidator.expectAcceptedSign()
+      return
+    }
     let targetChain = 'Polygon'
     await modalPage.switchNetwork(targetChain)
     await modalPage.sign()
