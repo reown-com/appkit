@@ -5,9 +5,9 @@ import {
   EventsController,
   OptionsController,
   TransactionsController,
-  type CoinbaseTransaction,
   AssetController
 } from '@web3modal/core'
+import type { CoinbaseTransaction } from '@web3modal/core'
 import { TransactionUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
