@@ -116,10 +116,12 @@ export const OnRampController = {
     state.paymentCurrencies = options.paymentCurrencies
     state.paymentCurrency = options.paymentCurrencies[0] || USD_CURRENCY_DEFAULT
     state.purchaseCurrency = options.purchaseCurrencies[0] || USDC_CURRENCY_DEFAULT
-    await ApiController.fetchCurrencyImages(options.paymentCurrencies.map(currency => currency.id))
-    await ApiController.fetchTokenImages(
-      options.purchaseCurrencies.map(currency => currency.symbol)
-    )
+    await Promise.allSettled([
+      async () =>
+        ApiController.fetchCurrencyImages(options.paymentCurrencies.map(currency => currency.id)),
+      async () =>
+        ApiController.fetchTokenImages(options.purchaseCurrencies.map(currency => currency.symbol))
+    ])
   },
 
   async getQuote() {
