@@ -121,6 +121,7 @@ export class Web3Modal extends Web3ModalScaffold {
             await this.switchNetwork(chainId)
           } catch (error) {
             EthersStoreUtil.setError(error)
+            throw new Error('networkControllerClient:switchCaipNetwork - unable to switch chain')
           }
         }
       },
