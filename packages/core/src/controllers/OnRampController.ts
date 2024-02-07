@@ -3,6 +3,7 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
 import type { PurchaseCurrency, PaymentCurrency } from '../utils/TypeUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
+import { ApiController } from './ApiController.js'
 
 // -- Types --------------------------------------------- //
 export type OnRampProviderOption = 'coinbase' | 'moonpay' | 'stripe' | 'paypal'
@@ -115,6 +116,7 @@ export const OnRampController = {
     state.paymentCurrencies = options.paymentCurrencies
     state.paymentCurrency = options.paymentCurrencies[0]!
     state.purchaseCurrency = options.purchaseCurrencies[0]!
+    await ApiController.fetchCurrencyImages()
   },
 
   async getQuote() {

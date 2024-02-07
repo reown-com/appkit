@@ -1,9 +1,10 @@
-import { OnRampController, ModalController } from '@web3modal/core'
+import { OnRampController, ModalController, AssetController } from '@web3modal/core'
 import type { PaymentCurrency } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-onramp-fiat-select-view')
 export class W3mOnrampFiatSelectView extends LitElement {
@@ -15,14 +16,18 @@ export class W3mOnrampFiatSelectView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() public selectedCurrency = OnRampController.state.paymentCurrency
   @state() public currencies = OnRampController.state.paymentCurrencies
+  @state() private currencyImages = AssetController.state.currencyImages
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      OnRampController.subscribe(val => {
-        this.selectedCurrency = val.paymentCurrency
-        this.currencies = val.paymentCurrencies
-      })
+      ...[
+        OnRampController.subscribe(val => {
+          this.selectedCurrency = val.paymentCurrency
+          this.currencies = val.paymentCurrencies
+        }),
+        AssetController.subscribeKey('currencyImages', val => (this.currencyImages = val))
+      ]
     )
   }
 
@@ -45,7 +50,7 @@ export class W3mOnrampFiatSelectView extends LitElement {
     return this.currencies.map(
       currency => html`
         <wui-list-wallet
-          imageSrc=${''}
+          imageSrc=${ifDefined(this.currencyImages?.[currency.id])}
           .installed=${true}
           name=${currency.id ?? 'Unknown'}
           @click=${() => this.selectCurrency(currency)}

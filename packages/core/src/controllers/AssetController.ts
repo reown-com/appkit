@@ -7,6 +7,7 @@ export interface AssetControllerState {
   networkImages: Record<string, string>
   connectorImages: Record<string, string>
   tokenImages: Record<string, string>
+  currencyImages: Record<string, string>
 }
 
 type StateKey = keyof AssetControllerState
@@ -16,7 +17,8 @@ const state = proxy<AssetControllerState>({
   walletImages: {},
   networkImages: {},
   connectorImages: {},
-  tokenImages: {}
+  tokenImages: {},
+  currencyImages: {}
 })
 
 // -- Controller ---------------------------------------- //
@@ -45,5 +47,9 @@ export const AssetController = {
 
   setTokenImage(key: string, value: string) {
     state.tokenImages[key] = value
+  },
+
+  setCurrencyImage(key: string, value: string) {
+    state.currencyImages[key] = value
   }
 }

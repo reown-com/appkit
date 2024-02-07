@@ -13,6 +13,7 @@ import { AssetController } from './AssetController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { NetworkController } from './NetworkController.js'
 import { OptionsController } from './OptionsController.js'
+import { OnRampController } from './OnRampController.js'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
@@ -81,6 +82,12 @@ export const ApiController = {
     AssetController.setConnectorImage(imageId, URL.createObjectURL(blob))
   },
 
+  async _fetchCurrencyImage(countryCode: string) {
+    const imageUrl = `${api.baseUrl}/public/getCurrencyImage/${countryCode}`
+    const blob = await api.getBlob({ path: imageUrl, headers: ApiController._getApiHeaders() })
+    AssetController.setCurrencyImage(countryCode, URL.createObjectURL(blob))
+  },
+
   async fetchNetworkImages() {
     const { requestedCaipNetworks } = NetworkController.state
     const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean)
@@ -93,6 +100,13 @@ export const ApiController = {
     const { connectors } = ConnectorController.state
     const ids = connectors.map(({ imageId }) => imageId).filter(Boolean)
     await Promise.allSettled((ids as string[]).map(id => ApiController._fetchConnectorImage(id)))
+  },
+
+  async fetchCurrencyImages() {
+    const currencies = OnRampController.state.paymentCurrencies
+    await Promise.allSettled(
+      currencies.map(currency => ApiController._fetchCurrencyImage(currency.id))
+    )
   },
 
   async fetchFeaturedWallets() {
