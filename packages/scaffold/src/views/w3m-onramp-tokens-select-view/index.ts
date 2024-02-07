@@ -1,4 +1,4 @@
-import { OnRampController, ModalController } from '@web3modal/core'
+import { OnRampController, ModalController, AssetController } from '@web3modal/core'
 import type { PurchaseCurrency } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -14,15 +14,19 @@ export class W3mOnrampTokensView extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() public selectedCurrency = OnRampController.state.purchaseCurrencies
-  @state() public currencies = OnRampController.state.purchaseCurrencies
+  @state() public tokens = OnRampController.state.purchaseCurrencies
+  @state() private tokenImages = AssetController.state.tokenImages
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      OnRampController.subscribe(val => {
-        this.selectedCurrency = val.purchaseCurrencies
-        this.currencies = val.purchaseCurrencies
-      })
+      ...[
+        OnRampController.subscribe(val => {
+          this.selectedCurrency = val.purchaseCurrencies
+          this.tokens = val.purchaseCurrencies
+        }),
+        AssetController.subscribeKey('tokenImages', val => (this.tokenImages = val))
+      ]
     )
   }
 
@@ -42,20 +46,20 @@ export class W3mOnrampTokensView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private currenciesTemplate() {
-    return this.currencies.map(
-      currency => html`
+    return this.tokens.map(
+      token => html`
         <wui-list-wallet
-          imageSrc=${''}
+          imageSrc=${this.tokenImages?.[token.symbol] || ''}
           .installed=${true}
-          name=${currency.name ?? 'Unknown'}
-          @click=${() => this.selectCurrency(currency)}
+          name=${token.name ?? 'Unknown'}
+          @click=${() => this.selectToken(token)}
         >
         </wui-list-wallet>
       `
     )
   }
 
-  private selectCurrency(currency: PurchaseCurrency) {
+  private selectToken(currency: PurchaseCurrency) {
     if (!currency) {
       return
     }
