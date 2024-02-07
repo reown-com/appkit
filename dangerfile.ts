@@ -11,6 +11,7 @@ const RENDER_COMMENT = `// -- Render -------------------------------------------
 const STATE_PROPERTIES_COMMENT = `// -- State & Properties -------------------------------- //`
 const PRIVATE_COMMENT = `// -- Private ------------------------------------------- //`
 const PACKAGE_VERSION = ConstantsUtil.VERSION
+console.log(PACKAGE_VERSION, ConstantsUtil.VERSION)
 
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
