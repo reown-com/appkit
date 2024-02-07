@@ -131,6 +131,7 @@ export class Web3Modal extends Web3ModalScaffold {
             await this.switchNetwork(chainId)
           } catch (error) {
             EthersStoreUtil.setError(error)
+            throw new Error('networkControllerClient:switchCaipNetwork - unable to switch chain')
           }
         }
       },
@@ -908,6 +909,7 @@ export class Web3Modal extends Web3ModalScaffold {
               params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
             })
             EthersStoreUtil.setChainId(chain.chainId)
+
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (switchError: any) {
             if (
@@ -932,6 +934,7 @@ export class Web3Modal extends Web3ModalScaffold {
               params: [{ chainId: EthersHelpersUtil.numberToHexString(chain.chainId) }]
             })
             EthersStoreUtil.setChainId(chain.chainId)
+
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (switchError: any) {
             if (
