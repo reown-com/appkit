@@ -1,4 +1,4 @@
-import scaffoldUtilsPackageJson from '../package.json'
+import scaffoldUtilsPackageJson from '../package.json' assert { type: 'json' }
 
 export const ConstantsUtil = {
   WALLET_CONNECT_CONNECTOR_ID: 'walletConnect',
