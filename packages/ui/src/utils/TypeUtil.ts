@@ -150,7 +150,6 @@ export type IconType =
   | 'verify'
   | 'verifyFilled'
   | 'wallet'
-  | 'wallet2'
   | 'walletConnect'
   | 'walletPlaceholder'
   | 'warningCircle'

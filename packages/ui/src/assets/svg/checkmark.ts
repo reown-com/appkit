@@ -1,9 +1,16 @@
 import { svg } from 'lit'
 
-export const checkmarkSvg = svg`<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+export const checkmarkSvg = svg`<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="12"
+  height="12"
+  viewBox="0 0 12 12"
+  fill="none"
+>
   <path
     fill-rule="evenodd"
     clip-rule="evenodd"
     d="M10.537 2.34245C10.8997 2.64654 10.9471 3.187 10.6429 3.54959L5.61072 9.54757C5.45645 9.73144 5.23212 9.84222 4.99229 9.85295C4.75247 9.86368 4.51914 9.77337 4.34906 9.60401L1.40881 6.6761C1.07343 6.34213 1.07238 5.7996 1.40647 5.46433C1.74055 5.12906 2.28326 5.12801 2.61865 5.46198L4.89731 7.73108L9.32942 2.44834C9.63362 2.08576 10.1743 2.03835 10.537 2.34245Z"
-    fill="currentColor"/>
-</svg>`
+    fill="currentColor"
+  /></svg
+>`
