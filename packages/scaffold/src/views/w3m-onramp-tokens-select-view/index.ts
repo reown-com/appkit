@@ -4,6 +4,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-onramp-token-select-view')
 export class W3mOnrampTokensView extends LitElement {
@@ -48,13 +49,16 @@ export class W3mOnrampTokensView extends LitElement {
   private currenciesTemplate() {
     return this.tokens.map(
       token => html`
-        <wui-list-wallet
-          imageSrc=${this.tokenImages?.[token.symbol] || ''}
-          .installed=${true}
-          name=${token.name ?? 'Unknown'}
+        <wui-list-item
+          imageSrc=${ifDefined(this.tokenImages?.[token.symbol])}
           @click=${() => this.selectToken(token)}
+          variant="image"
         >
-        </wui-list-wallet>
+          <wui-flex gap="3xs" alignItems="center">
+            <wui-text variant="paragraph-500" color="fg-100">${token.name}</wui-text>
+            <wui-text variant="small-400" color="fg-200">${token.symbol}</wui-text>
+          </wui-flex>
+        </wui-list-item>
       `
     )
   }

@@ -49,13 +49,13 @@ export class W3mOnrampFiatSelectView extends LitElement {
   private currenciesTemplate() {
     return this.currencies.map(
       currency => html`
-        <wui-list-wallet
+        <wui-list-item
           imageSrc=${ifDefined(this.currencyImages?.[currency.id])}
-          .installed=${true}
-          name=${currency.id ?? 'Unknown'}
           @click=${() => this.selectCurrency(currency)}
+          variant="image"
         >
-        </wui-list-wallet>
+          <wui-text variant="small-400" color="fg-300">${currency.id}</wui-text>
+        </wui-list-item>
       `
     )
   }
