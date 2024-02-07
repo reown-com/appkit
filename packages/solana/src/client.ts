@@ -425,7 +425,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const requestedCaipNetworks = chains?.map(
       chain =>
         ({
-          id: `${chain.name}:${chain.chainId} `,
+          id: `${chain.name}:${chain.chainId}`,
           name: chain.name,
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[chain.chainId]
