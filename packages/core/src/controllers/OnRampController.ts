@@ -114,8 +114,8 @@ export const OnRampController = {
     const options = await BlockchainApiController.getOnrampOptions()
     state.purchaseCurrencies = options.purchaseCurrencies
     state.paymentCurrencies = options.paymentCurrencies
-    state.paymentCurrency = options.paymentCurrencies[0]!
-    state.purchaseCurrency = options.purchaseCurrencies[0]!
+    state.paymentCurrency = options.paymentCurrencies[0] || USD_CURRENCY_DEFAULT
+    state.purchaseCurrency = options.purchaseCurrencies[0] || USDC_CURRENCY_DEFAULT
     await ApiController.fetchCurrencyImages(options.paymentCurrencies.map(currency => currency.id))
     await ApiController.fetchTokenImages(
       options.purchaseCurrencies.map(currency => currency.symbol)
