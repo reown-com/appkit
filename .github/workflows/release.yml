@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.CHANGESETS_ACTION_TOKEN }}
 
       - name: Setup Node.js 16
         uses: actions/setup-node@v3
