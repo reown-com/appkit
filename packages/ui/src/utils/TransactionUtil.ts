@@ -75,12 +75,13 @@ export const TransactionUtil = {
   },
 
   getTransactionDescriptions(transaction: Transaction) {
-    const type = transaction.metadata?.operationType as TransactionType
+    const type = transaction?.metadata?.operationType as TransactionType
 
-    const transfers = transaction.transfers
-    const haveTransfer = transaction.transfers?.length > 0
-    const haveMultipleTransfers = transaction.transfers?.length > 1
-    const isFungible = haveTransfer && transfers?.every(transfer => Boolean(transfer.fungible_info))
+    const transfers = transaction?.transfers
+    const haveTransfer = transaction?.transfers?.length > 0
+    const haveMultipleTransfers = transaction?.transfers?.length > 1
+    const isFungible =
+      haveTransfer && transfers?.every(transfer => Boolean(transfer?.fungible_info))
     const [firstTransfer, secondTransfer] = transfers
 
     let firstDescription = this.getTransferDescription(firstTransfer)
@@ -91,13 +92,13 @@ export const TransactionUtil = {
 
       if (isSendOrReceive && isFungible) {
         firstDescription = UiHelperUtil.getTruncateString({
-          string: transaction.metadata.sentFrom,
+          string: transaction?.metadata.sentFrom,
           charsStart: 4,
           charsEnd: 6,
           truncate: 'middle'
         })
         secondDescription = UiHelperUtil.getTruncateString({
-          string: transaction.metadata.sentTo,
+          string: transaction?.metadata.sentTo,
           charsStart: 4,
           charsEnd: 6,
           truncate: 'middle'

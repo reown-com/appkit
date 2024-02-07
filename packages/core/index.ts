@@ -17,6 +17,9 @@ export type {
   NetworkControllerState
 } from './src/controllers/NetworkController.js'
 
+export { OnRampController } from './src/controllers/OnRampController.js'
+export type { OnRampControllerState, OnRampProvider } from './src/controllers/OnRampController.js'
+
 export { ConnectionController } from './src/controllers/ConnectionController.js'
 export type {
   ConnectionControllerClient,

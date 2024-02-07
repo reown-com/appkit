@@ -5,5 +5,8 @@
     "plugin:require-extensions/recommended",
     "../../.eslintrc.json"
   ],
-  "plugins": ["require-extensions"]
+  "plugins": ["require-extensions"],
+  "rules": {
+    "lit/attribute-value-entities": "off"
+  }
 }

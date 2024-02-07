@@ -5,6 +5,14 @@ export type CaipAddress = `${string}:${string}:${string}`
 
 export type CaipNetworkId = `${string}:${string}`
 
+export type CaipNetworkCoinbaseNetwork =
+  | 'Ethereum'
+  | 'Arbitrum One'
+  | 'Polygon'
+  | 'Avalanche'
+  | 'OP Mainnet'
+  | 'Celo'
+
 export interface CaipNetwork {
   id: CaipNetworkId
   name?: string
@@ -137,11 +145,42 @@ export interface BlockchainApiTransactionsRequest {
   account: string
   projectId: string
   cursor?: string
+  onramp?: 'coinbase'
+  signal?: AbortSignal
 }
 
 export interface BlockchainApiTransactionsResponse {
   data: Transaction[]
   next: string | null
+}
+
+export interface CoinbaseApiTransactionsRequest {
+  pageSize: number
+  pageKey: string
+  accountAddress: string
+}
+
+export interface CoinbaseApiTransactionsResponse {
+  transactions: CoinbaseTransaction[]
+  next_page_key: string
+  total_count: number
+}
+
+export interface CoinbaseAmount {
+  value: string
+  currency: string
+}
+
+export interface CoinbaseTransaction {
+  status: string
+  purchaseCurrency: string
+  purchase_network: string
+  payment_total: CoinbaseAmount
+  payment_subtotal: CoinbaseAmount
+  purchase_amount: CoinbaseAmount
+  created_at: string
+  purchase_currency: string
+  transaction_id: string
 }
 
 // -- OptionsController Types ---------------------------------------------------

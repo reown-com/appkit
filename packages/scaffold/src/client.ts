@@ -47,6 +47,7 @@ export interface LibraryOptions {
   customWallets?: OptionsControllerState['customWallets']
   enableAnalytics?: OptionsControllerState['enableAnalytics']
   metadata?: OptionsControllerState['metadata']
+  enableOnramp?: OptionsControllerState['enableOnramp']
   _sdkVersion: OptionsControllerState['sdkVersion']
 }
 
@@ -264,6 +265,10 @@ export class Web3ModalScaffold {
 
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables)
+    }
+
+    if (options.enableOnramp) {
+      OptionsController.setOnrampEnabled(Boolean(options.enableOnramp))
     }
   }
 
