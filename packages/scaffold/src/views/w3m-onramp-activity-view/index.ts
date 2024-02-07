@@ -3,7 +3,8 @@ import {
   AccountController,
   OnRampController,
   BlockchainApiController,
-  OptionsController
+  OptionsController,
+  AssetController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -29,6 +30,8 @@ export class W3mOnRampActivityView extends LitElement {
 
   @state() private coinbaseTransactions: Transaction[] = []
 
+  @state() private tokenImages = AssetController.state.tokenImages
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -36,6 +39,7 @@ export class W3mOnRampActivityView extends LitElement {
         OnRampController.subscribeKey('selectedProvider', val => {
           this.selectedOnRampProvider = val
         }),
+        AssetController.subscribeKey('tokenImages', val => (this.tokenImages = val)),
         () => {
           clearTimeout(this.refetchTimeout)
         }
@@ -64,6 +68,8 @@ export class W3mOnRampActivityView extends LitElement {
         return null
       }
 
+      const icon = fungibleInfo?.icon?.url || this.tokenImages?.[fungibleInfo.symbol || '']
+
       return html`
         <wui-onramp-activity-item
           label="Bought"
@@ -73,7 +79,7 @@ export class W3mOnRampActivityView extends LitElement {
           purchaseCurrency=${ifDefined(fungibleInfo.symbol)}
           purchaseValue=${transfer.quantity.numeric}
           date=${date}
-          icon=${ifDefined(fungibleInfo.icon?.url)}
+          icon=${ifDefined(icon)}
         ></wui-onramp-activity-item>
       `
     })
