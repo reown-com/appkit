@@ -66,7 +66,6 @@ import { walletSvg } from '../../assets/svg/wallet.js'
 import { walletConnectSvg } from '../../assets/svg/walletconnect.js'
 import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
 import { recycleHorizontalSvg } from '../../assets/svg/recycle-horizontal.js'
-import { wallet2Svg } from '../../assets/svg/wallet2.js'
 import { bankSvg } from '../../assets/svg/bank.js'
 import { cardSvg } from '../../assets/svg/card.js'
 import { plusSvg } from '../../assets/svg/plus.js'
@@ -133,7 +132,6 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   verify: verifySvg,
   verifyFilled: verifyFilledSvg,
   wallet: walletSvg,
-  wallet2: wallet2Svg,
   walletConnect: walletConnectSvg,
   walletPlaceholder: walletPlaceholderSvg,
   warningCircle: warningCircleSvg
