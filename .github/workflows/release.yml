@@ -23,7 +23,7 @@ jobs:
           node-version: 16
 
       - name: Install Dependencies
-        run: npm install
+        run: npm run clean && npm install
 
       - name: Create Release Pull Request
         uses: changesets/action@v1
