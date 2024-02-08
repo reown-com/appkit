@@ -7,7 +7,7 @@ import { DEVICES } from './tests/shared/constants/devices'
 config({ path: './.env' })
 
 const LIBRARIES = ['wagmi', 'ethers'] as const
-const PERMUTATIONS = DEVICES.flatMap((device) => LIBRARIES.map((library) => ({ device, library })))
+const PERMUTATIONS = DEVICES.flatMap(device => LIBRARIES.map(library => ({ device, library })))
 
 export default defineConfig<ModalFixture>({
   testDir: './tests',
