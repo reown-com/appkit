@@ -1,8 +1,10 @@
 import { html, LitElement } from 'lit'
 import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import { customElement } from '@web3modal/ui'
 import styles from './styles.js'
 import {
+  AssetController,
   ModalController,
   OnRampController,
   type PaymentCurrency,
@@ -12,14 +14,6 @@ import {
 type Currency = {
   name: string
   symbol: string
-  icon?: string
-}
-
-const ICONS_BY_CURRENCY: Record<string, string> = {
-  USD: 'https://upload.wikimedia.org/wikipedia/commons/8/88/United-states_flag_icon_round.svg',
-  USDC: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Circle_USDC_Logo.svg/1024px-Circle_USDC_Logo.svg.png',
-  EUR: 'https://upload.wikimedia.org/wikipedia/commons/b/b7/Flag_of_Europe.svg',
-  GBP: 'https://upload.wikimedia.org/wikipedia/commons/a/ae/Flag_of_the_United_Kingdom.svg'
 }
 
 @customElement('w3m-swap-input')
@@ -34,6 +28,8 @@ export class W3mInputCurrency extends LitElement {
   @property({ type: Number }) public value = 0
   @state() public currencies: Currency[] | null = []
   @state() public selectedCurrency = this.currencies?.[0]
+  @state() private currencyImages = AssetController.state.currencyImages
+  @state() private tokenImages = AssetController.state.tokenImages
 
   public constructor() {
     super()
@@ -56,6 +52,10 @@ export class W3mInputCurrency extends LitElement {
         } else {
           this.currencies = val.paymentCurrencies.map(this.formatPaymentCurrency)
         }
+      }),
+      AssetController.subscribe(val => {
+        this.currencyImages = { ...val.currencyImages }
+        this.tokenImages = { ...val.tokenImages }
       })
     )
   }
@@ -67,6 +67,9 @@ export class W3mInputCurrency extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const symbol = this.selectedCurrency?.symbol || ''
+    const image = this.currencyImages[symbol] || this.tokenImages[symbol]
+
     return html` <wui-input-text type="number" size="lg" value=${this.value}>
       ${this.selectedCurrency
         ? html` <wui-flex
@@ -76,7 +79,7 @@ export class W3mInputCurrency extends LitElement {
             gap="xxs"
             @click=${() => ModalController.open({ view: `OnRamp${this.type}Select` })}
           >
-            <wui-image src=${this.selectedCurrency.icon || ''}></wui-image>
+            <wui-image src=${ifDefined(image)}></wui-image>
             <wui-text color="fg-100"> ${this.selectedCurrency.symbol} </wui-text>
           </wui-flex>`
         : html`<wui-loading-spinner></wui-loading-spinner>`}
@@ -86,15 +89,13 @@ export class W3mInputCurrency extends LitElement {
   private formatPaymentCurrency(currency: PaymentCurrency) {
     return {
       name: currency.id,
-      symbol: currency.id,
-      icon: ICONS_BY_CURRENCY[currency.id]
+      symbol: currency.id
     }
   }
   private formatPurchaseCurrency(currency: PurchaseCurrency) {
     return {
       name: currency.name,
-      symbol: currency.symbol,
-      icon: ICONS_BY_CURRENCY[currency.symbol]
+      symbol: currency.symbol
     }
   }
 }

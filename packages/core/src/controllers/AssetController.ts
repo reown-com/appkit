@@ -33,6 +33,10 @@ export const AssetController = {
     return subKey(state, key, callback)
   },
 
+  subscribe(callback: (newState: AssetControllerState) => void) {
+    return sub(state, () => callback(state))
+  },
+
   setWalletImage(key: string, value: string) {
     state.walletImages[key] = value
   },

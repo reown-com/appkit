@@ -54,7 +54,7 @@ export class W3mOnrampFiatSelectView extends LitElement {
           @click=${() => this.selectCurrency(currency)}
           variant="image"
         >
-          <wui-text variant="small-400" color="fg-300">${currency.id}</wui-text>
+          <wui-text variant="paragraph-500" color="fg-100">${currency.id}</wui-text>
         </wui-list-item>
       `
     )
