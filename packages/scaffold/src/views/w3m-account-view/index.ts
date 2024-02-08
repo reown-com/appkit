@@ -130,6 +130,7 @@ export class W3mAccountView extends LitElement {
           imageSrc=${ifDefined(networkImage)}
           ?chevron=${this.isAllowedNetworkSwitch()}
           @click=${this.onNetworks.bind(this)}
+          data-testid="w3m-account-select-network"
         >
           <wui-text variant="paragraph-500" color="fg-100">
             ${this.network?.name ?? 'Unknown'}
