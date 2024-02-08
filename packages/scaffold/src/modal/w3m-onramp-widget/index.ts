@@ -66,16 +66,16 @@ export class W3mOnrampWidget extends LitElement {
     return html`
       <wui-flex flexDirection="column" justifyContent="center" alignItems="center">
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <w3m-input-currency
+          <w3m-swap-input
             type="Fiat"
             @inputChange=${this.onPaymentAmountChange.bind(this)}
             .value=${this.paymentAmount || 0}
-          ></w3m-input-currency>
-          <w3m-input-currency
+          ></w3m-swap-input>
+          <w3m-swap-input
             type="Token"
             .value=${this.purchaseAmount || 0}
             .loading=${this.quoteLoading}
-          ></w3m-input-currency>
+          ></w3m-swap-input>
           <wui-flex justifyContent="space-evenly" class="amounts-container" gap="xs">
             ${BUY_PRESET_AMOUNTS.map(
               amount =>

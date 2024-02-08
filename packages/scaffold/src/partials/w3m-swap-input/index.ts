@@ -22,7 +22,7 @@ const ICONS_BY_CURRENCY: Record<string, string> = {
   GBP: 'https://upload.wikimedia.org/wikipedia/commons/a/ae/Flag_of_the_United_Kingdom.svg'
 }
 
-@customElement('w3m-input-currency')
+@customElement('w3m-swap-input')
 export class W3mInputCurrency extends LitElement {
   public static override styles = styles
 
@@ -101,6 +101,6 @@ export class W3mInputCurrency extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-input-currency': W3mInputCurrency
+    'w3m-swap-input': W3mInputCurrency
   }
 }
