@@ -1,6 +1,7 @@
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
 import type { PublicKey } from '@solana/web3.js'
+import type UniversalProvider from '@walletconnect/universal-provider'
 
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import EthereumProvider from '@walletconnect/ethereum-provider'
@@ -69,6 +70,7 @@ export class Web3Modal extends Web3ModalScaffold {
         if (caipNetwork) {
           try {
             await this.switchNetwork(caipNetwork)
+            console.log(`switched!`);
           } catch (error) {
             SolStoreUtil.setError(error)
           }
@@ -353,11 +355,10 @@ export class Web3Modal extends Web3ModalScaffold {
       const caipAddress: CaipAddress = `${ConstantsUtil.INJECTED_CONNECTOR_ID}:${chainId}:${address}`
       this.setIsConnected(isConnected)
       this.setCaipAddress(caipAddress)
-      await Promise.all([
-        this.syncProfile(address),
-        this.syncBalance(address),
-        this.getApprovedCaipNetworksData()
-      ])
+      this.syncProfile(address),
+        await Promise.all([
+          this.syncBalance(address),
+        ])
 
       this.hasSyncedConnectedAccount = true
     } else if (!isConnected && this.hasSyncedConnectedAccount) {
@@ -366,7 +367,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async syncProfile(_address: Address | string) {
+  private syncProfile(_address: Address | string) {
     this.setProfileName(null)
     this.setProfileImage(null)
   }
@@ -452,17 +453,21 @@ export class Web3Modal extends Web3ModalScaffold {
               }
               this.setAddress(this.walletAdapters.phantom.publicKey?.toString())
               await this.syncAccount()
-              await this.syncBalance(SolStoreUtil.state.address!)
               break
 
             case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
-              const WalletConnectProvider = provider as unknown as EthereumProvider
-              await WalletConnectProvider.request({
+              const WalletConnectProvider = provider as unknown as WalletConnectConnector
+              const universalProvider = await WalletConnectProvider?.getProvider() as unknown as UniversalProvider
+              console.log(`chain.chainId`, chain.chainId);
+              console.log(`chain.rpc`, chain.rpcUrl);
+              console.log(`WalletConnectProvider`, universalProvider);
+              universalProvider.setDefaultChain('solana:' + chain.chainId, chain.rpcUrl)
+              /* await universalProvider.request({
                 method: 'wallet_switchSolanaChain',
-                params: [{ chainId: chain.chainId }]
-              })
+                params: [{ chainId: 'solana:' + chain.chainId, rpcUrl: chain.rpcUrl }]
+              }, 'solana:' + chain.chainId) */
+              // await universalProvider.connect({ namespaces: { chainId: 'solana:' + chain.chainId } })
               await this.syncAccount()
-              // await this.syncBalance(SolStoreUtil.state.address!)
               break
 
             default:

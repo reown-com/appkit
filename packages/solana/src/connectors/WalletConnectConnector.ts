@@ -5,7 +5,32 @@ import type { Connector } from './BaseConnector'
 import { BaseConnector } from './BaseConnector'
 import type { Address } from '@web3modal/scaffold-utils/solana'
 import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
+
 import { UniversalProviderFactory } from './universalProvider'
+
+export const solana = {
+  chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ',
+  name: 'Solana',
+  currency: 'SOL',
+  explorerUrl: 'https://solscan.io',
+  rpcUrl: 'https://rpc.walletconnect.com/v1?chainId=solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ&projectId=bbcbaddb9e8a1ae8f5f7c60f3e5a666e'
+}
+
+export const solanaTestnet = {
+  chainId: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K',
+  name: 'Solana Testnet',
+  currency: 'SOL',
+  explorerUrl: 'https://solscan.io',
+  rpcUrl: 'https://api.testnet.solana.com'
+}
+
+export const solanaDevnet = {
+  chainId: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K',
+  name: 'Solana Devnet',
+  currency: 'SOL',
+  explorerUrl: 'https://solscan.io',
+  rpcUrl: 'https://api.devnet.solana.com'
+}
 
 export interface WalletConnectAppMetadata {
   name: string
@@ -236,17 +261,21 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
    * QRCode.
    */
   public async connect(useURI?: boolean) {
-    const chosenCluster = SolStoreUtil.getCluster()
-    const clusterId = `solana:${chosenCluster.id}`
+    const chainsNamespaces = [
+      'solana:' + solana.chainId, 'solana:' + solanaTestnet.chainId, 'solana:' + solanaDevnet.chainId
+    ]
+    const rpcMap = {
+      ['solana:' + solana.chainId]: solana.rpcUrl,
+      ['solana:' + solanaTestnet.chainId]: solanaTestnet.rpcUrl,
+      ['solana:' + solanaDevnet.chainId]: solanaDevnet.rpcUrl
+    }
 
     const solanaNamespace = {
       solana: {
-        chains: [clusterId],
+        chains: [...chainsNamespaces],
         methods: ['solana_signMessage', 'solana_signTransaction'],
         events: [],
-        rpcMap: {
-          [clusterId]: chosenCluster.endpoint
-        }
+        rpcMap
       }
     }
 
