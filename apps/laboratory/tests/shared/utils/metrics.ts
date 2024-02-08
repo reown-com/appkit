@@ -1,17 +1,22 @@
-import { CloudWatch, PutMetricDataCommandInput } from '@aws-sdk/client-cloudwatch'
+import {
+  CloudWatch,
+  type MetricDatum,
+  type PutMetricDataCommandInput
+} from '@aws-sdk/client-cloudwatch'
 
+// eslint-disable-next-line func-style
 export const uploadCanaryResultsToCloudWatch = async (
   env: string,
   region: string,
   target: string,
   metricsPrefix: string,
   isTestPassed: boolean,
-  testDurationMs: number,
-  otherLatencies: object[]
+  testDurationMs: number
+  // eslint-disable-next-line max-params
 ) => {
   const cloudwatch = new CloudWatch({ region: 'eu-central-1' })
   const ts = new Date()
-  const metrics = [
+  const metrics: MetricDatum[] = [
     {
       MetricName: `${metricsPrefix}.success`,
       Dimensions: [
@@ -65,38 +70,16 @@ export const uploadCanaryResultsToCloudWatch = async (
     })
   }
 
-  const latencies = otherLatencies.map(metric => {
-    const metricName: string = Object.keys(metric)[0] as string
-    return {
-      MetricName: `${metricsPrefix}.${metricName}`,
-      Dimensions: [
-        {
-          Name: 'Target',
-          Value: target
-        },
-        {
-          Name: 'Region',
-          Value: region
-        }
-      ],
-      Unit: 'Milliseconds',
-      Value: metric[metricName],
-      Timestamp: ts
-    }
-  })
-
   const params: PutMetricDataCommandInput = {
-    MetricData: [...metrics, ...latencies],
+    MetricData: metrics,
     Namespace: `${env}_Canary_Web3Modal`
   }
 
   await new Promise<void>(resolve => {
-    cloudwatch.putMetricData(params, function (err: Error) {
+    cloudwatch.putMetricData(params, (err: Error) => {
       if (err) {
+        // eslint-disable-next-line no-console
         console.error('Failed to upload metrics to CloudWatch', err, err.stack)
-        // Swallow error as
-        // Test shouldn't fail despite CW failing
-        // we will report on missing metrics
       }
       resolve()
     })

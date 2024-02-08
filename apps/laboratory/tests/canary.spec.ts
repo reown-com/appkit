@@ -5,7 +5,7 @@ import { uploadCanaryResultsToCloudWatch } from './shared/utils/metrics'
 const ENV = process.env['ENV'] || 'dev'
 const REGION = process.env['REGION'] || 'eu-central-1'
 
-let startTime: number
+let startTime = 0
 
 testMW.beforeEach(
   async ({ modalPage, walletPage, modalValidator, walletValidator, browserName }) => {
@@ -47,14 +47,14 @@ testMW(
     await modalValidator.expectAcceptedSign()
 
     if (ENV !== 'dev') {
+      const duration: number = Date.now() - startTime
       await uploadCanaryResultsToCloudWatch(
         ENV,
         REGION,
         'https://lab.web3modal.com/',
         'HappyPath.sign',
         true,
-        Date.now() - startTime,
-        []
+        duration
       )
     }
   }
