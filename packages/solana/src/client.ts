@@ -242,12 +242,12 @@ export class Web3Modal extends Web3ModalScaffold {
       setTimeout(() => {
         this.checkActiveProviders()
       }, 500)
-      setTimeout(() => {
+      /*setTimeout(() => {
         alert(`
         ${window.phantom?.['solana']?.isPhantom ? 'Phantom is installed' : 'Phantom is not installed'}
         ${window.solflare?.['isSolflare'] ? 'Solflare is installed' : 'Solflare is not installed'}
         `)
-      }, 1500)
+      }, 1500) */
     }
   }
 
