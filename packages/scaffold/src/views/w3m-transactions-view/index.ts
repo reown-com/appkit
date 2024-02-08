@@ -4,13 +4,16 @@ import {
   AccountController,
   EventsController,
   OptionsController,
-  TransactionsController
+  TransactionsController,
+  AssetController
 } from '@web3modal/core'
+import type { CoinbaseTransaction } from '@web3modal/core'
 import { TransactionUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import type { TransactionType } from '@web3modal/ui/src/utils/TypeUtil.js'
+import type { GroupedTransaction } from '@web3modal/core/src/controllers/TransactionsController.js'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'last-transaction'
@@ -27,8 +30,6 @@ export class W3mTransactionsView extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() private address: string | undefined = AccountController.state.address
-
-  @state() private transactions = TransactionsController.state.transactions
 
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
 
@@ -53,7 +54,6 @@ export class W3mTransactionsView extends LitElement {
           }
         }),
         TransactionsController.subscribe(val => {
-          this.transactions = val.transactions
           this.transactionsByYear = val.transactionsByYear
           this.loading = val.loading
           this.empty = val.empty
@@ -64,9 +64,7 @@ export class W3mTransactionsView extends LitElement {
   }
 
   public override firstUpdated() {
-    if (this.transactions.length === 0) {
-      TransactionsController.fetchTransactions(this.address)
-    }
+    TransactionsController.fetchTransactions(this.address)
     this.createPaginationObserver()
   }
 
@@ -81,7 +79,7 @@ export class W3mTransactionsView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" padding="s" gap="s">
+      <wui-flex flexDirection="column" gap="s">
         ${this.empty ? null : this.templateTransactionsByYear()}
         ${this.loading ? this.templateLoading() : null}
         ${!this.loading && this.empty ? this.templateEmpty() : null}
@@ -126,6 +124,24 @@ export class W3mTransactionsView extends LitElement {
         `
       })
     })
+  }
+
+  private templateRenderCoinbaseTransaction(
+    transaction: CoinbaseTransaction,
+    isLastTransaction: boolean
+  ) {
+    return html`
+      <wui-transaction-list-item
+        type=${`Received ${transaction.purchase_amount.currency}`}
+        id=${isLastTransaction && this.next ? PAGINATOR_ID : ''}
+        status=${transaction.status}
+        price=${transaction.payment_total.value}
+        symbol=${transaction.purchase_amount.currency}
+        amount=${transaction.purchase_amount.value}
+        .images=${[AssetController.state.tokenImages[transaction.purchase_amount.currency]]}
+        .descriptions=${['From Coinbase Pay']}
+      ></wui-transaction-list-item>
+    `
   }
 
   private templateRenderTransaction(transaction: Transaction, isLastTransaction: boolean) {
@@ -179,11 +195,15 @@ export class W3mTransactionsView extends LitElement {
     `
   }
 
-  private templateTransactions(transactions: Transaction[], isLastGroup: boolean) {
+  private templateTransactions(transactions: GroupedTransaction[], isLastGroup: boolean) {
     return transactions.map((transaction, index) => {
       const isLastTransaction = isLastGroup && index === transactions.length - 1
 
-      return html`${this.templateRenderTransaction(transaction, isLastTransaction)}`
+      if (transaction.type === 'coinbase') {
+        return this.templateRenderCoinbaseTransaction(transaction.value, isLastTransaction)
+      }
+
+      return html`${this.templateRenderTransaction(transaction.value, isLastTransaction)}`
     })
   }
 

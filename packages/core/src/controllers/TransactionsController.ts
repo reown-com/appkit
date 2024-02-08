@@ -1,16 +1,28 @@
 import type { Transaction } from '@web3modal/common'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import { BlockchainApiController } from './BlockchainApiController.js'
 import { OptionsController } from './OptionsController.js'
 import { EventsController } from './EventsController.js'
 import { SnackController } from './SnackController.js'
+import type { CoinbaseTransaction } from '../utils/TypeUtil.js'
+import { BlockchainApiController } from './BlockchainApiController.js'
+
+export type GroupedTransaction =
+  | {
+      type: 'zerion'
+      value: Transaction
+    }
+  | {
+      type: 'coinbase'
+      value: CoinbaseTransaction
+    }
 
 // -- Types --------------------------------------------- //
-type TransactionByMonthMap = Record<number, Transaction[]>
+type TransactionByMonthMap = Record<number, GroupedTransaction[]>
 type TransactionByYearMap = Record<number, TransactionByMonthMap>
 
 export interface TransactionsControllerState {
   transactions: Transaction[]
+  coinbaseTransactions: CoinbaseTransaction[]
   transactionsByYear: TransactionByYearMap
   loading: boolean
   empty: boolean
@@ -20,6 +32,7 @@ export interface TransactionsControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<TransactionsControllerState>({
   transactions: [],
+  coinbaseTransactions: [],
   transactionsByYear: {},
   loading: false,
   empty: false,
@@ -91,7 +104,28 @@ export const TransactionsController = {
 
       grouped[year] = {
         ...yearTransactions,
-        [month]: [...monthTransactions, transaction]
+        [month]: [...monthTransactions, { type: 'zerion', value: transaction }]
+      }
+    })
+
+    return grouped
+  },
+
+  groupCoinbaseTransactionsByYearAndMonth(
+    transactionsMap: TransactionByYearMap = {},
+    transactions: CoinbaseTransaction[] = []
+  ) {
+    const grouped: TransactionByYearMap = transactionsMap
+
+    transactions.forEach(transaction => {
+      const year = new Date(transaction.created_at).getFullYear()
+      const month = new Date(transaction.created_at).getMonth()
+      const yearTransactions = grouped[year] ?? {}
+      const monthTransactions = yearTransactions[month] ?? []
+
+      grouped[year] = {
+        ...yearTransactions,
+        [month]: [...monthTransactions, { type: 'coinbase', value: transaction }]
       }
     })
 

@@ -57,9 +57,11 @@ export class WuiListItem extends LitElement {
   public visualTemplate() {
     if (this.variant === 'image' && this.imageSrc) {
       return html`<wui-image src=${this.imageSrc} alt=${this.alt ?? 'list item'}></wui-image>`
-    } else if (this.iconVariant === 'square' && this.icon && this.variant === 'icon') {
+    }
+    if (this.iconVariant === 'square' && this.icon && this.variant === 'icon') {
       return html`<wui-icon name=${this.icon}></wui-icon>`
-    } else if (this.variant === 'icon' && this.icon && this.iconVariant) {
+    }
+    if (this.variant === 'icon' && this.icon && this.iconVariant) {
       const color = ['blue', 'square-blue'].includes(this.iconVariant) ? 'accent-100' : 'fg-200'
       const size = this.iconVariant === 'square-blue' ? 'mdl' : 'md'
       const iconSize = this.iconSize ? this.iconSize : size

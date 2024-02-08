@@ -45,19 +45,16 @@ export function emailConnector(parameters: EmailParameters) {
         }
       }
     },
-
     async disconnect() {
       const provider = await this.getProvider()
       await provider.disconnect()
     },
-
     async getAccounts() {
       const provider = await this.getProvider()
       const { address } = await provider.connect()
 
       return [address as Address]
     },
-
     async getProvider() {
       if (!this.provider) {
         this.provider = new W3mFrameProvider(parameters.options.projectId)
@@ -65,14 +62,12 @@ export function emailConnector(parameters: EmailParameters) {
 
       return Promise.resolve(this.provider)
     },
-
     async getChainId() {
       const provider: W3mFrameProvider = await this.getProvider()
       const { chainId } = await provider.getChainId()
 
       return chainId
     },
-
     async isAuthorized() {
       const provider = await this.getProvider()
       const { isConnected } = await provider.isConnected()
@@ -98,7 +93,6 @@ export function emailConnector(parameters: EmailParameters) {
         throw error
       }
     },
-
     onAccountsChanged(accounts) {
       if (accounts.length === 0) {
         this.onDisconnect()
@@ -106,12 +100,10 @@ export function emailConnector(parameters: EmailParameters) {
         config.emitter.emit('change', { accounts: accounts.map(getAddress) })
       }
     },
-
     onChainChanged(chain) {
       const chainId = normalizeChainId(chain)
       config.emitter.emit('change', { chainId })
     },
-
     async onConnect(connectInfo) {
       const chainId = normalizeChainId(connectInfo.chainId)
       const accounts = await this.getAccounts()

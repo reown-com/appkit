@@ -64,7 +64,6 @@ export class W3mNetworksView extends LitElement {
   private networksTemplate() {
     const { approvedCaipNetworkIds, requestedCaipNetworks, supportsAllNetworks } =
       NetworkController.state
-    const approvedIds = approvedCaipNetworkIds
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -79,7 +78,7 @@ export class W3mNetworksView extends LitElement {
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
-          .disabled=${!supportsAllNetworks && !approvedIds?.includes(network.id)}
+          .disabled=${!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)}
           data-testid=${`w3m-network-switch-${network.name ?? network.id}`}
         ></wui-card-select>
       `

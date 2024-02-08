@@ -4,6 +4,7 @@ import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil.js'
 import { PublicStateController } from './PublicStateController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -66,6 +67,15 @@ export const NetworkController = {
 
   setRequestedCaipNetworks(requestedNetworks: NetworkControllerState['requestedCaipNetworks']) {
     state.requestedCaipNetworks = requestedNetworks
+  },
+
+  getRequestedCaipNetworks() {
+    const { approvedCaipNetworkIds, requestedCaipNetworks } = state
+
+    const approvedIds = approvedCaipNetworkIds
+    const requestedNetworks = requestedCaipNetworks
+
+    return CoreHelperUtil.sortRequestedNetworks(approvedIds, requestedNetworks)
   },
 
   async getApprovedCaipNetworksData() {
