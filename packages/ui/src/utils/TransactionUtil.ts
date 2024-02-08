@@ -43,7 +43,7 @@ export const TransactionUtil = {
     return [this.getTransactionImage(transfer)]
   },
 
-  getTransactionImage(transfer?: TransactionTransfer) {
+  getTransactionImage(transfer?: TransactionTransfer): TransactionImage {
     return {
       type: TransactionUtil.getTransactionTransferTokenType(transfer),
       url: TransactionUtil.getTransactionImageURL(transfer)
