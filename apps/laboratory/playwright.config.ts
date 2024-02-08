@@ -15,7 +15,9 @@ export default defineConfig<ModalFixture>({
   fullyParallel: true,
   retries: 0,
   workers: 1,
-  reporter: [['list'], ['html']],
+  reporter: process.env['CI']
+    ? [['list'], ['html', { open: 'never' }]]
+    : [['list'], ['html', { host: '0.0.0.0' }]],
 
   expect: {
     timeout: (process.env['CI'] ? 60 : 15) * 1000
