@@ -23,11 +23,13 @@ export class W3mInputCurrency extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
-  // -- Properties & State ---------------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property({ type: String }) public type: 'Token' | 'Fiat' = 'Token'
   @property({ type: Number }) public value = 0
   @state() public currencies: Currency[] | null = []
   @state() public selectedCurrency = this.currencies?.[0]
+
+  // -- Private ------------------------------------------- //
   @state() private currencyImages = AssetController.state.currencyImages
   @state() private tokenImages = AssetController.state.tokenImages
 
@@ -63,6 +65,10 @@ export class W3mInputCurrency extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
     OnRampController.getAvailableCurrencies()
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //

@@ -56,9 +56,7 @@ export class W3mOnrampWidget extends LitElement {
   }
 
   public override disconnectedCallback() {
-    for (const unsubscribe of this.unsubscribe) {
-      unsubscribe()
-    }
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //
