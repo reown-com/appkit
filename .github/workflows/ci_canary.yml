@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - V4
+      - feat/canary # TODO: Remove
 
 concurrency: ${{ github.workflow }}
 
