@@ -370,3 +370,64 @@ export interface SIWEConfig extends SIWEClientMethods {
   // Defaults to true
   signOutOnNetworkChange?: boolean
 }
+
+// Onramp Types
+export type DestinationWallet = {
+  address: string
+  blockchains: string[]
+  assets: string[]
+}
+
+export type GenerateOnRampUrlArgs = {
+  destinationWallets: DestinationWallet[]
+  partnerUserId: string
+  defaultNetwork?: string
+  purchaseAmount?: number
+  paymentAmount?: number
+}
+
+export type CoinbaseNetwork = {
+  name: string
+  display_name: string
+  chain_id: string
+  contract_address: string
+}
+
+export type PaymentLimits = {
+  id: string
+  min: string
+  max: string
+}
+
+export type PaymentCurrency = {
+  id: string
+  payment_method_limits: PaymentLimits[]
+}
+
+export type QuoteAmount = {
+  amount: string
+  currency: string
+}
+
+export type PurchaseCurrency = {
+  id: string
+  name: string
+  symbol: string
+  networks: CoinbaseNetwork[]
+}
+
+export type OnrampQuote = {
+  paymentTotal: QuoteAmount
+  paymentSubtotal: QuoteAmount
+  purchaseAmount: QuoteAmount
+  coinbaseFee: QuoteAmount
+  networkFee: QuoteAmount
+  quoteId: string
+}
+
+export type GetQuoteArgs = {
+  purchaseCurrency: PurchaseCurrency
+  paymentCurrency: PaymentCurrency
+  amount: string
+  network: string
+}

@@ -40,9 +40,6 @@ export class W3mOnRampActivityView extends LitElement {
           this.selectedOnRampProvider = val
         }),
         AssetController.subscribeKey('tokenImages', val => (this.tokenImages = val)),
-        TransactionsController.subscribe(val => {
-          this.coinbaseTransactions = val.coinbaseTransactions
-        }),
         () => {
           clearTimeout(this.refetchTimeout)
         }

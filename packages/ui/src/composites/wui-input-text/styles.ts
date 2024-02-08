@@ -80,10 +80,39 @@ export default css`
     left: var(--wui-spacing-l);
   }
 
+  .wui-size-lg {
+    padding: var(--wui-spacing-s) var(--wui-spacing-s) var(--wui-spacing-s) var(--wui-spacing-l);
+    letter-spacing: var(--wui-letter-spacing-medium-title);
+    font-size: var(--wui-font-size-medium-title);
+    font-weight: var(--wui-font-weight-light);
+    line-height: 130%;
+    color: var(--wui-color-fg-100);
+    height: 64px;
+  }
+
+  wui-icon + .wui-size-lg,
+  wui-loading-spinner + .wui-size-lg {
+    padding-left: 50px;
+  }
+
+  wui-icon[data-input='lg'] {
+    left: var(--wui-spacing-l);
+  }
+
   input:placeholder-shown ~ ::slotted(wui-input-element),
   input:placeholder-shown ~ ::slotted(wui-icon) {
     opacity: 0;
     pointer-events: none;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type='number'] {
+    -moz-appearance: textfield;
   }
 
   ::slotted(wui-input-element),

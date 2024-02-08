@@ -97,12 +97,18 @@ export class W3mOnRampProvidersView extends LitElement {
         network.name as CoinbasePaySDKChainNameValues
       ] ?? ConstantsUtil.WC_COINBASE_PAY_SDK_FALLBACK_CHAIN
 
+    const purchaseCurrency = OnRampController.state.purchaseCurrency
+    const assets = purchaseCurrency
+      ? [purchaseCurrency.symbol]
+      : OnRampController.state.purchaseCurrencies.map(currency => currency.symbol)
+
     return await BlockchainApiController.generateOnRampURL({
       defaultNetwork,
       destinationWallets: [
-        { address, blockchains: ConstantsUtil.WC_COINBASE_PAY_SDK_CHAINS, assets: ['USDC'] }
+        { address, blockchains: ConstantsUtil.WC_COINBASE_PAY_SDK_CHAINS, assets }
       ],
-      partnerUserId: address
+      partnerUserId: address,
+      purchaseAmount: OnRampController.state.purchaseAmount
     })
   }
 }
