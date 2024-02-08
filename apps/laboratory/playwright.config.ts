@@ -3,7 +3,11 @@ import { BASE_URL } from './tests/shared/constants'
 
 import { config } from 'dotenv'
 import type { ModalFixture } from './tests/shared/fixtures/w3m-fixture'
+import { DEVICES } from './tests/shared/constants/devices'
 config({ path: './.env' })
+
+const LIBRARIES = ['wagmi', 'ethers'] as const
+const PERMUTATIONS = DEVICES.flatMap((device) => LIBRARIES.map((library) => ({ device, library })))
 
 export default defineConfig<ModalFixture>({
   testDir: './tests',
@@ -29,37 +33,10 @@ export default defineConfig<ModalFixture>({
   },
 
   /* Configure projects for major browsers */
-  projects: [
-    {
-      name: 'chromium/wagmi',
-      use: { ...devices['Desktop Chrome'], library: 'wagmi' }
-    },
-
-    {
-      name: 'firefox/wagmi',
-      use: { ...devices['Desktop Firefox'], library: 'wagmi' }
-    },
-
-    {
-      name: 'chromium/ethers',
-      use: { ...devices['Desktop Chrome'], library: 'ethers' }
-    },
-
-    {
-      name: 'firefox/ethers',
-      use: { ...devices['Desktop Firefox'], library: 'ethers' }
-    },
-
-    {
-      name: 'webkit/ethers',
-      use: { ...devices['Desktop Safari'], library: 'ethers' }
-    },
-
-    {
-      name: 'webkit/ethers',
-      use: { ...devices['Desktop Safari'], library: 'ethers' }
-    }
-  ],
+  projects: PERMUTATIONS.map(({ device, library }) => ({
+    name: `${device}/${library}`,
+    use: { ...devices[device], library }
+  })),
 
   /* Run your local dev server before starting the tests */
   webServer: {
