@@ -137,7 +137,7 @@ export class W3mTransactionsView extends LitElement {
           id=${isLastTransaction && this.next ? PAGINATOR_ID : ''}
           status=${status}
           type=${type}
-          .images=${images as TransactionImage[]}
+          .images=${images}
           .descriptions=${descriptions}
         ></wui-transaction-list-item>
       `
