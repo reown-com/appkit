@@ -4,6 +4,8 @@ import { Button, useToast } from '@chakra-ui/react'
 
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
+const PHANTOM_DEVNET_ADDRESS = 'EmT8r4E8ZjoQgt8sXGbaWBRMKfUXsVT1wonoSnJZ4nBn'
+
 class Person {
   name: string;
   wallet: string;
@@ -35,11 +37,11 @@ const schema: Schema = new Map<any, any>([
 const message = new Mail({
   from: new Person({
     name: 'Cow',
-    wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+    wallet: PHANTOM_DEVNET_ADDRESS
   }),
   to: new Person({
     name: 'Bob',
-    wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+    wallet: PHANTOM_DEVNET_ADDRESS
   }),
   contents: 'Hello, Bob!'
 });

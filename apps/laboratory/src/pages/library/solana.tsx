@@ -29,8 +29,8 @@ ThemeStore.setModal(modal)
 export default function Solana() {
   return (
     <>
-        <Web3ModalButtons />
-        <SolanaTests />
+      <Web3ModalButtons />
+      <SolanaTests />
     </>
   )
 }

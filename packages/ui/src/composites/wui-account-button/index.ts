@@ -47,12 +47,12 @@ export class WuiAccountButton extends LitElement {
             address=${this.address}
           ></wui-avatar>
           <wui-text variant="paragraph-600" color="inherit">
-            ${UiHelperUtil.getTruncateString({
-              string: this.address,
-              charsStart: this.isProfileName ? 18 : this.charsStart,
-              charsEnd: this.isProfileName ? 0 : this.charsEnd,
-              truncate: this.isProfileName ? 'end' : 'middle'
-            })}
+            ${this.address && UiHelperUtil.getTruncateString({
+      string: this.address,
+      charsStart: this.isProfileName ? 18 : this.charsStart,
+      charsEnd: this.isProfileName ? 0 : this.charsEnd,
+      truncate: this.isProfileName ? 'end' : 'middle'
+    })}
           </wui-text>
         </wui-flex>
       </button>

@@ -173,12 +173,10 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       signMessage: async (message: string) => {
-        console.log(`message`, message)
         const provider = SolStoreUtil.state.provider
         if (!provider) {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
-        console.log(`sign message`)
 
         const signature = await provider.request({
           method: 'personal_sign',
@@ -244,6 +242,12 @@ export class Web3Modal extends Web3ModalScaffold {
       setTimeout(() => {
         this.checkActiveProviders()
       }, 500)
+      setTimeout(() => {
+        alert(`
+        ${window.phantom?.['solana']?.isPhantom ? 'Phantom is installed' : 'Phantom is not installed'}
+        ${window.solflare?.['isSolflare'] ? 'Solflare is installed' : 'Solflare is not installed'}
+        `)
+      }, 1500)
     }
   }
 
@@ -362,19 +366,13 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async syncProfile(address: Address | string) {
-    if (address) {
-      this.setProfileName(address)
-    }
-    else {
-      this.setProfileImage(null)
-    }
+  private async syncProfile(_address: Address | string) {
+    this.setProfileName(null)
     this.setProfileImage(null)
   }
 
   private async syncNetwork(chainImages?: Web3ModalClientOptions['chainImages']) {
     const address = SolStoreUtil.state.address
-    const chainId = SolStoreUtil.state.chainId
     const caipChainId = SolStoreUtil.state.caipChainId
     const isConnected = SolStoreUtil.state.isConnected
 
@@ -390,8 +388,6 @@ export class Web3Modal extends Web3ModalScaffold {
           imageUrl: chainImages?.[chain.chainId]
         })
         if (isConnected && address) {
-          const caipAddress: CaipAddress = `${chainId as `${string}:${string}`}:${address}`
-          this.setCaipAddress(caipAddress)
           if (chain.explorerUrl) {
             const url = `${chain.explorerUrl}/account/${address}`
             this.setAddressExplorerUrl(url)
@@ -444,22 +440,19 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (this.chains) {
       if (chain) {
-
         try {
           SolStoreUtil.setChainId(chain.chainId)
           SolStoreUtil.setCaipChainId(`${chain.name}:${chain.chainId}`)
           SolStoreUtil.setCurrentChain(chain)
           localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `${chain.name}:${chain.chainId}`)
-
           switch (providerType) {
-
             case ConstantsUtil.INJECTED_CONNECTOR_ID:
               if (window.solana?.['connect']) {
                 window.solana?.['connect'](chain.chainId)
               }
-              // await this.disconnect()
+              this.setAddress(this.walletAdapters.phantom.publicKey?.toString())
               await this.syncAccount()
-              // await this.syncBalance(SolStoreUtil.state.address!)
+              await this.syncBalance(SolStoreUtil.state.address!)
               break
 
             case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
