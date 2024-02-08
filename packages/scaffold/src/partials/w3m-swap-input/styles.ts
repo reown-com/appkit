@@ -4,6 +4,14 @@ export default css`
   :host {
     width: 100%;
   }
+
+  wui-loading-spinner {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+  }
+
   .currency-container {
     position: absolute;
     top: 50%;
