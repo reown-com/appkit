@@ -1,5 +1,5 @@
 import { DateUtil } from '@web3modal/common'
-import type { TransactionTransfer, Transaction } from '@web3modal/common'
+import type { TransactionTransfer, Transaction, TransactionImage } from '@web3modal/common'
 import type { TransactionType } from './TypeUtil.js'
 import { UiHelperUtil } from './UiHelperUtil.js'
 
@@ -26,7 +26,7 @@ export const TransactionUtil = {
     return groupTitle
   },
 
-  getTransactionImages(transfers: TransactionTransfer[]) {
+  getTransactionImages(transfers: TransactionTransfer[]): TransactionImage[] {
     const [transfer, secondTransfer] = transfers
     const isAllNFT = Boolean(transfer) && transfers?.every(item => Boolean(item.nft_info))
     const haveMultipleTransfers = transfers?.length > 1
@@ -51,7 +51,7 @@ export const TransactionUtil = {
   },
 
   getTransactionImageURL(transfer: TransactionTransfer | undefined) {
-    let imageURL = null
+    let imageURL = undefined
     const isNFT = Boolean(transfer?.nft_info)
     const isFungible = Boolean(transfer?.fungible_info)
 
@@ -64,14 +64,14 @@ export const TransactionUtil = {
     return imageURL
   },
 
-  getTransactionTransferTokenType(transfer?: TransactionTransfer) {
+  getTransactionTransferTokenType(transfer?: TransactionTransfer): 'FUNGIBLE' | 'NFT' | undefined {
     if (transfer?.fungible_info) {
       return 'FUNGIBLE'
     } else if (transfer?.nft_info) {
       return 'NFT'
     }
 
-    return null
+    return undefined
   },
 
   getTransactionDescriptions(transaction: Transaction) {
