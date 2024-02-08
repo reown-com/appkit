@@ -101,9 +101,15 @@ export const TransactionsController = {
       const yearTransactions = grouped[year] ?? {}
       const monthTransactions = yearTransactions[month] ?? []
 
+      if (monthTransactions.find(t => t.metadata.hash === transaction.metadata.hash)) {
+        return
+      }
+
       grouped[year] = {
         ...yearTransactions,
-        [month]: [...monthTransactions, transaction]
+        [month]: [...monthTransactions, transaction].sort(
+          (a, b) => new Date(b.metadata.minedAt).getTime() - new Date(a.metadata.minedAt).getTime()
+        )
       }
     })
 
