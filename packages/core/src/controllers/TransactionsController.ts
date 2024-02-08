@@ -101,7 +101,13 @@ export const TransactionsController = {
       const yearTransactions = grouped[year] ?? {}
       const monthTransactions = yearTransactions[month] ?? []
 
-      if (monthTransactions.find(t => t.metadata.hash === transaction.metadata.hash)) {
+      if (
+        monthTransactions.find(
+          t =>
+            t.metadata.hash === transaction.metadata.hash &&
+            t.metadata.status === transaction.metadata.status
+        )
+      ) {
         return
       }
 
