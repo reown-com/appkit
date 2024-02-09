@@ -6,6 +6,7 @@ import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { ColorType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
+import { ApiController } from '@web3modal/core'
 
 @customElement('wui-onramp-activity-item')
 export class WuiOnRampActivityItem extends LitElement {
@@ -32,9 +33,17 @@ export class WuiOnRampActivityItem extends LitElement {
 
   @property() public onClick: (() => void) | null = null
 
-  @property() public icon = 'https://avatar.vercel.sh/andrew.svg?size=50&text=USDC'
+  @property() public symbol = ''
+
+  @property() public icon?: string
 
   // -- Render -------------------------------------------- //
+  public override firstUpdated() {
+    if (!this.icon) {
+      this.fetchTokenImage()
+    }
+  }
+
   public override render() {
     return html`
       <wui-flex>
@@ -56,6 +65,9 @@ export class WuiOnRampActivityItem extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private async fetchTokenImage() {
+    await ApiController._fetchTokenImage(this.purchaseCurrency)
+  }
   private statusIconTemplate() {
     if (this.inProgress) {
       return null
@@ -76,8 +88,10 @@ export class WuiOnRampActivityItem extends LitElement {
   }
 
   private imageTemplate() {
+    const icon = this.icon || `https://avatar.vercel.sh/andrew.svg?size=50&text=${this.symbol}`
+
     return html`<wui-flex class="purchase-image-container">
-      <wui-image src=${this.icon}></wui-image>
+      <wui-image src=${icon}></wui-image>
     </wui-flex>`
   }
 
