@@ -36,7 +36,7 @@ export class W3mConnectingWcDesktop extends W3mConnectingWidget {
         const { redirect, href } = CoreHelperUtil.formatNativeUrl(desktop_link, this.uri)
         ConnectionController.setWcLinking({ name, href })
         ConnectionController.setRecentWallet(this.wallet)
-        CoreHelperUtil.openHref(redirect, '_self')
+        CoreHelperUtil.openHref(redirect, '_blank')
       } catch {
         this.error = true
       }

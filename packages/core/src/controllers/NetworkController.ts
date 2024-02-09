@@ -2,6 +2,9 @@ import { subscribeKey as subKey } from 'valtio/utils'
 import { proxy, ref } from 'valtio/vanilla'
 import type { CaipNetwork, CaipNetworkId } from '../utils/TypeUtil.js'
 import { PublicStateController } from './PublicStateController.js'
+import { EventsController } from './EventsController.js'
+import { ModalController } from './ModalController.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -15,6 +18,7 @@ export interface NetworkControllerClient {
 export interface NetworkControllerState {
   supportsAllNetworks: boolean
   isDefaultCaipNetwork: boolean
+  isUnsupportedChain?: boolean
   _client?: NetworkControllerClient
   caipNetwork?: CaipNetwork
   requestedCaipNetworks?: CaipNetwork[]
@@ -52,6 +56,7 @@ export const NetworkController = {
   setCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
     state.caipNetwork = caipNetwork
     PublicStateController.set({ selectedNetworkId: caipNetwork?.id })
+    this.checkIfSupportedNetwork()
   },
 
   setDefaultCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
@@ -64,6 +69,15 @@ export const NetworkController = {
     state.requestedCaipNetworks = requestedNetworks
   },
 
+  getRequestedCaipNetworks() {
+    const { approvedCaipNetworkIds, requestedCaipNetworks } = state
+
+    const approvedIds = approvedCaipNetworkIds
+    const requestedNetworks = requestedCaipNetworks
+
+    return CoreHelperUtil.sortRequestedNetworks(approvedIds, requestedNetworks)
+  },
+
   async getApprovedCaipNetworksData() {
     const data = await this._getClient().getApprovedCaipNetworksData()
     state.supportsAllNetworks = data.supportsAllNetworks
@@ -73,6 +87,23 @@ export const NetworkController = {
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
     await this._getClient().switchCaipNetwork(network)
     state.caipNetwork = network
+    if (network) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SWITCH_NETWORK',
+        properties: { network: network.id }
+      })
+    }
+  },
+
+  checkIfSupportedNetwork() {
+    state.isUnsupportedChain = !state.requestedCaipNetworks?.some(
+      network => network.id === state.caipNetwork?.id
+    )
+
+    if (state.isUnsupportedChain) {
+      this.showUnsupportedChainUI()
+    }
   },
 
   resetNetwork() {
@@ -81,5 +112,11 @@ export const NetworkController = {
     }
     state.approvedCaipNetworkIds = undefined
     state.supportsAllNetworks = true
+  },
+
+  showUnsupportedChainUI() {
+    setTimeout(() => {
+      ModalController.open({ view: 'UnsupportedChain' })
+    }, 300)
   }
 }

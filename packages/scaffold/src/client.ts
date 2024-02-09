@@ -36,6 +36,7 @@ export interface LibraryOptions {
   projectId: OptionsControllerState['projectId']
   themeMode?: ThemeMode
   themeVariables?: ThemeVariables
+  allWallets?: OptionsControllerState['allWallets']
   includeWalletIds?: OptionsControllerState['includeWalletIds']
   excludeWalletIds?: OptionsControllerState['excludeWalletIds']
   featuredWalletIds?: OptionsControllerState['featuredWalletIds']
@@ -46,6 +47,7 @@ export interface LibraryOptions {
   customWallets?: OptionsControllerState['customWallets']
   enableAnalytics?: OptionsControllerState['enableAnalytics']
   metadata?: OptionsControllerState['metadata']
+  enableOnramp?: OptionsControllerState['enableOnramp']
   _sdkVersion: OptionsControllerState['sdkVersion']
 }
 
@@ -235,6 +237,7 @@ export class Web3ModalScaffold {
     NetworkController.setDefaultCaipNetwork(options.defaultChain)
 
     OptionsController.setProjectId(options.projectId)
+    OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
     OptionsController.setExcludeWalletIds(options.excludeWalletIds)
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds)
@@ -259,8 +262,13 @@ export class Web3ModalScaffold {
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)
     }
+
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables)
+    }
+
+    if (options.enableOnramp) {
+      OptionsController.setOnrampEnabled(Boolean(options.enableOnramp))
     }
   }
 

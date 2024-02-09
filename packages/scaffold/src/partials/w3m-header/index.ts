@@ -24,6 +24,7 @@ function headings() {
   return {
     Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
     Account: undefined,
+    AccountSettings: undefined,
     ConnectingExternal: name ?? 'Connect Wallet',
     ConnectingWalletConnect: name ?? 'WalletConnect',
     ConnectingSiwe: 'Sign In',
@@ -40,7 +41,13 @@ function headings() {
     Transactions: 'Activity',
     UpgradeEmailWallet: 'Upgrade your Wallet',
     UpdateEmailWallet: 'Edit Email',
-    UpdateEmailWalletWaiting: 'Approve Email'
+    UpdateEmailPrimaryOtp: 'Confirm Current Email',
+    UpdateEmailSecondaryOtp: 'Confirm New Email',
+    UnsupportedChain: 'Switch Network',
+    OnRampProviders: 'Choose Provider',
+    OnRampActivity: 'Activity',
+    WhatIsABuy: 'What is Buy?',
+    BuyInProgress: 'Buy'
   }
 }
 

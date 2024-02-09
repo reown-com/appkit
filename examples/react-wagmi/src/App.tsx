@@ -1,13 +1,17 @@
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 import {
   createWeb3Modal,
-  defaultWagmiConfig,
   useWeb3Modal,
   useWeb3ModalEvents,
   useWeb3ModalState,
   useWeb3ModalTheme
 } from '@web3modal/wagmi/react'
-import { WagmiConfig } from 'wagmi'
+import { WagmiProvider } from 'wagmi'
 import { arbitrum, mainnet } from 'wagmi/chains'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+// 0. Setup queryClient for WAGMIv2
+const queryClient = new QueryClient()
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -16,12 +20,14 @@ if (!projectId) {
 }
 
 // 2. Create wagmiConfig
-const chains = [mainnet, arbitrum]
 const wagmiConfig = defaultWagmiConfig({
-  chains,
+  chains: [mainnet, arbitrum],
   projectId,
   metadata: {
-    name: 'Web3Modal React Example'
+    name: 'Web3Modal React Example',
+    description: 'Web3Modal React Example',
+    url: '',
+    icons: []
   }
 })
 
@@ -29,7 +35,6 @@ const wagmiConfig = defaultWagmiConfig({
 createWeb3Modal({
   wagmiConfig,
   projectId,
-  chains,
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00DCFF',
@@ -45,20 +50,22 @@ export default function App() {
   const events = useWeb3ModalEvents()
 
   return (
-    <WagmiConfig config={wagmiConfig}>
-      <w3m-button />
-      <w3m-network-button />
-      <w3m-connect-button />
-      <w3m-account-button />
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <w3m-button />
+        <w3m-network-button />
+        <w3m-connect-button />
+        <w3m-account-button />
 
-      <button onClick={() => modal.open()}>Connect Wallet</button>
-      <button onClick={() => modal.open({ view: 'Networks' })}>Choose Network</button>
-      <button onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}>
-        Toggle Theme Mode
-      </button>
-      <pre>{JSON.stringify(state, null, 2)}</pre>
-      <pre>{JSON.stringify({ themeMode, themeVariables }, null, 2)}</pre>
-      <pre>{JSON.stringify(events, null, 2)}</pre>
-    </WagmiConfig>
+        <button onClick={() => modal.open()}>Connect Wallet</button>
+        <button onClick={() => modal.open({ view: 'Networks' })}>Choose Network</button>
+        <button onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}>
+          Toggle Theme Mode
+        </button>
+        <pre>{JSON.stringify(state, null, 2)}</pre>
+        <pre>{JSON.stringify({ themeMode, themeVariables }, null, 2)}</pre>
+        <pre>{JSON.stringify(events, null, 2)}</pre>
+      </QueryClientProvider>
+    </WagmiProvider>
   )
 }

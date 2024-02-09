@@ -3,7 +3,11 @@ import { BASE_URL } from './tests/shared/constants'
 
 import { config } from 'dotenv'
 import type { ModalFixture } from './tests/shared/fixtures/w3m-fixture'
+import { DEVICES } from './tests/shared/constants/devices'
 config({ path: './.env' })
+
+const LIBRARIES = ['wagmi', 'ethers', 'solana'] as const
+const PERMUTATIONS = DEVICES.flatMap(device => LIBRARIES.map(library => ({ device, library })))
 
 export default defineConfig<ModalFixture>({
   testDir: './tests',
@@ -11,7 +15,9 @@ export default defineConfig<ModalFixture>({
   fullyParallel: true,
   retries: 0,
   workers: 1,
-  reporter: [['list'], ['html']],
+  reporter: process.env['CI']
+    ? [['list'], ['html', { open: 'never' }]]
+    : [['list'], ['html', { host: '0.0.0.0' }]],
 
   expect: {
     timeout: (process.env['CI'] ? 60 : 15) * 1000
@@ -25,46 +31,19 @@ export default defineConfig<ModalFixture>({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
 
-    video: process.env['CI'] ? 'off' : 'on-first-retry'
+    video: 'retain-on-failure'
   },
 
   /* Configure projects for major browsers */
-  projects: [
-    /* {
-      name: 'chromium/wagmi',
-      use: { ...devices['Desktop Chrome'], library: 'wagmi' }
-    },
-
-    {
-      name: 'firefox/wagmi',
-      use: { ...devices['Desktop Firefox'], library: 'wagmi' }
-    },
-
-    {
-      name: 'chromium/ethers',
-      use: { ...devices['Desktop Chrome'], library: 'ethers' }
-    },
-
-    {
-      name: 'firefox/ethers',
-      use: { ...devices['Desktop Firefox'], library: 'ethers' }
-    }, */
-
-    {
-      name: 'chromium/solana',
-      use: { ...devices['Desktop Chrome'], library: 'solana' }
-    },
-
-    {
-      name: 'firefox/solana',
-      use: { ...devices['Desktop Firefox'], library: 'solana' }
-    }
-  ],
+  projects: PERMUTATIONS.map(({ device, library }) => ({
+    name: `${device}/${library}`,
+    use: { ...devices[device], library }
+  })),
 
   /* Run your local dev server before starting the tests */
   webServer: {
     command: 'npm run playwright:start',
     url: BASE_URL,
-    reuseExistingServer: !process.env['CI']
+    reuseExistingServer: !process.env['CI'] || Boolean(process.env['SKIP_PLAYWRIGHT_WEBSERVER'])
   }
 })

@@ -1,6 +1,6 @@
 {
   "name": "@apps/laboratory",
-  "version": "3.6.0-eb1021c6",
+  "version": "4.0.1",
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
@@ -8,8 +8,12 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "playwright:start": "npm run dev:laboratory",
     "playwright:install": "npx playwright install --with-deps",
-    "playwright:test": "npx playwright test",
-    "playwright:debug": "npx playwright test --debug"
+    "playwright:test": "npx playwright test --grep-invert canary.spec.ts",
+    "playwright:test:wallet": "npx playwright test --grep connect.spec.ts",
+    "playwright:test:canary": "npx playwright test --grep canary.spec.ts",
+    "playwright:debug": "npx playwright test --debug --grep-invert canary.spec.ts",
+    "playwright:debug:wallet": "npx playwright test --debug --grep connect.spec.ts",
+    "playwright:debug:canary": "npx playwright test --debug --grep canary.spec.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "2.8.2",
@@ -17,18 +21,22 @@
     "@emotion/styled": "11.11.0",
     "@sentry/browser": "7.92.0",
     "@sentry/react": "7.92.0",
-    "@web3modal/ethers": "3.6.0-eb1021c6",
-    "@web3modal/ethers5": "3.6.0-eb1021c6",
-    "@web3modal/wagmi": "3.6.0-eb1021c6",
-    "@web3modal/solana": "3.6.0-eb1021c6",
+    "@web3modal/ethers": "4.0.1",
+    "@web3modal/ethers5": "4.0.1",
+    "@web3modal/wagmi": "4.0.1",
+    "@web3modal/solana": "4.0.1",
+    "@tanstack/react-query": "4.0.1",
     "framer-motion": "10.17.9",
     "next": "14.0.4",
     "next-auth": "4.24.5",
     "react-icons": "4.12.0",
     "siwe": "2.1.4",
-    "valtio": "1.11.2"
+    "valtio": "1.11.2",
+    "viem": "2.5.0",
+    "wagmi": "2.5.6"
   },
   "devDependencies": {
+    "@aws-sdk/client-cloudwatch": "3.509.0",
     "@mailsac/api": "1.0.5",
     "@playwright/test": "1.40.1",
     "dotenv": "16.3.1",

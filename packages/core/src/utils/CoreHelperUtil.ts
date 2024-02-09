@@ -1,5 +1,5 @@
 import { ConstantsUtil } from './ConstantsUtil.js'
-import type { CaipAddress, LinkingRecord } from './TypeUtil.js'
+import type { CaipAddress, LinkingRecord, CaipNetwork } from './TypeUtil.js'
 
 export const CoreHelperUtil = {
   isMobile() {
@@ -110,8 +110,8 @@ export const CoreHelperUtil = {
     }
   },
 
-  openHref(href: string, target: '_blank' | '_self') {
-    window.open(href, target, 'noreferrer noopener')
+  openHref(href: string, target: '_blank' | '_self' | 'popupWindow', features?: string) {
+    window.open(href, target, features || 'noreferrer noopener')
   },
 
   async preloadImage(src: string) {
@@ -138,7 +138,26 @@ export const CoreHelperUtil = {
       }
     }
 
-    return formattedBalance ? `${formattedBalance} ${symbol}` : `0.000 ${symbol}`
+    return formattedBalance ? `${formattedBalance} ${symbol ?? ''}` : '0.000'
+  },
+
+  formatBalance2(balance: string | undefined, symbol: string | undefined) {
+    let formattedBalance = undefined
+
+    if (balance === '0') {
+      formattedBalance = '0'
+    } else if (typeof balance === 'string') {
+      const number = Number(balance)
+      if (number) {
+        formattedBalance = number.toString().match(/^-?\d+(?:\.\d{0,3})?/u)?.[0]
+      }
+    }
+
+    return {
+      value: formattedBalance ?? '0',
+      rest: formattedBalance === '0' ? '000' : '',
+      symbol
+    }
   },
 
   isRestrictedRegion() {
@@ -194,5 +213,34 @@ export const CoreHelperUtil = {
     }
 
     return 'Unknown error'
+  },
+  sortRequestedNetworks(
+    approvedIds: `${string}:${string}`[] | undefined,
+    requestedNetworks: CaipNetwork[] = []
+  ): CaipNetwork[] {
+    const approvedIndexMap: Record<string, number> = {}
+
+    if (requestedNetworks && approvedIds) {
+      approvedIds.forEach((id, index) => {
+        approvedIndexMap[id] = index
+      })
+
+      requestedNetworks.sort((a, b) => {
+        const indexA = approvedIndexMap[a.id]
+        const indexB = approvedIndexMap[b.id]
+
+        if (indexA !== undefined && indexB !== undefined) {
+          return indexA - indexB
+        } else if (indexA !== undefined) {
+          return -1
+        } else if (indexB !== undefined) {
+          return 1
+        }
+
+        return 0
+      })
+    }
+
+    return requestedNetworks
   }
 }

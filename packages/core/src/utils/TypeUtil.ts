@@ -5,6 +5,14 @@ export type CaipAddress = `${string}:${string}:${string}`
 
 export type CaipNetworkId = `${string}:${string}`
 
+export type CaipNetworkCoinbaseNetwork =
+  | 'Ethereum'
+  | 'Arbitrum One'
+  | 'Polygon'
+  | 'Avalanche'
+  | 'OP Mainnet'
+  | 'Celo'
+
 export interface CaipNetwork {
   id: CaipNetworkId
   name?: string
@@ -87,11 +95,11 @@ export interface WcWallet {
   chrome_store?: string | null
   rdns?: string | null
   injected?:
-  | {
-    namespace?: string
-    injected_id?: string
-  }[]
-  | null
+    | {
+        namespace?: string
+        injected_id?: string
+      }[]
+    | null
 }
 
 export interface ApiGetWalletsRequest {
@@ -105,6 +113,10 @@ export interface ApiGetWalletsRequest {
 export interface ApiGetWalletsResponse {
   data: WcWallet[]
   count: number
+}
+
+export interface ApiGetAnalyticsConfigResponse {
+  isAnalyticsEnabled: boolean
 }
 
 export type ThemeMode = 'dark' | 'light'
@@ -134,11 +146,42 @@ export interface BlockchainApiTransactionsRequest {
   account: string
   projectId: string
   cursor?: string
+  onramp?: 'coinbase'
+  signal?: AbortSignal
 }
 
 export interface BlockchainApiTransactionsResponse {
   data: Transaction[]
   next: string | null
+}
+
+export interface CoinbaseApiTransactionsRequest {
+  pageSize: number
+  pageKey: string
+  accountAddress: string
+}
+
+export interface CoinbaseApiTransactionsResponse {
+  transactions: CoinbaseTransaction[]
+  next_page_key: string
+  total_count: number
+}
+
+export interface CoinbaseAmount {
+  value: string
+  currency: string
+}
+
+export interface CoinbaseTransaction {
+  status: string
+  purchaseCurrency: string
+  purchase_network: string
+  payment_total: CoinbaseAmount
+  payment_subtotal: CoinbaseAmount
+  purchase_amount: CoinbaseAmount
+  created_at: string
+  purchase_currency: string
+  transaction_id: string
 }
 
 // -- OptionsController Types ---------------------------------------------------
@@ -166,137 +209,154 @@ export type CustomWallet = Pick<
 
 export type Event =
   | {
-    type: 'track'
-    event: 'MODAL_CREATED'
-  }
-  | {
-    type: 'track'
-    event: 'MODAL_LOADED'
-  }
-  | {
-    type: 'track'
-    event: 'MODAL_OPEN'
-  }
-  | {
-    type: 'track'
-    event: 'MODAL_CLOSE'
-  }
-  | {
-    type: 'track'
-    event: 'CLICK_ALL_WALLETS'
-  }
-  | {
-    type: 'track'
-    event: 'SELECT_WALLET'
-    properties: {
-      name: string
-      platform: Platform
+      type: 'track'
+      event: 'MODAL_CREATED'
     }
-  }
   | {
-    type: 'track'
-    event: 'CONNECT_SUCCESS'
-    properties: {
-      method: 'qrcode' | 'mobile' | 'external' | 'browser' | 'email'
+      type: 'track'
+      event: 'MODAL_LOADED'
     }
-  }
   | {
-    type: 'track'
-    event: 'CONNECT_ERROR'
-    properties: {
-      message: string
+      type: 'track'
+      event: 'MODAL_OPEN'
+      properties: {
+        connected: boolean
+      }
     }
-  }
   | {
-    type: 'track'
-    event: 'DISCONNECT_SUCCESS'
-  }
-  | {
-    type: 'track'
-    event: 'DISCONNECT_ERROR'
-  }
-  | {
-    type: 'track'
-    event: 'CLICK_WALLET_HELP'
-  }
-  | {
-    type: 'track'
-    event: 'CLICK_NETWORK_HELP'
-  }
-  | {
-    type: 'track'
-    event: 'CLICK_GET_WALLET'
-  }
-  | {
-    type: 'track'
-    event: 'CLICK_TRANSACTIONS'
-  }
-  | {
-    type: 'track'
-    event: 'ERROR_FETCH_TRANSACTIONS'
-    properties: {
-      address: string
-      projectId: string
-      cursor: string | undefined
+      type: 'track'
+      event: 'MODAL_CLOSE'
+      properties: {
+        connected: boolean
+      }
     }
-  }
   | {
-    type: 'track'
-    event: 'LOAD_MORE_TRANSACTIONS'
-    properties: {
-      address: string | undefined
-      projectId: string
-      cursor: string | undefined
+      type: 'track'
+      event: 'CLICK_ALL_WALLETS'
     }
-  }
   | {
-    type: 'track'
-    event: 'CLICK_SIGN_SIWE_MESSAGE'
-  }
+      type: 'track'
+      event: 'SELECT_WALLET'
+      properties: {
+        name: string
+        platform: Platform
+      }
+    }
   | {
-    type: 'track'
-    event: 'CLICK_CANCEL_SIWE'
-  }
+      type: 'track'
+      event: 'CONNECT_SUCCESS'
+      properties: {
+        method: 'qrcode' | 'mobile' | 'external' | 'browser' | 'email'
+      }
+    }
   | {
-    type: 'track'
-    event: 'SIWE_AUTH_SUCCESS'
-  }
+      type: 'track'
+      event: 'CONNECT_ERROR'
+      properties: {
+        message: string
+      }
+    }
   | {
-    type: 'track'
-    event: 'SIWE_AUTH_ERROR'
-  }
+      type: 'track'
+      event: 'DISCONNECT_SUCCESS'
+    }
   | {
-    type: 'track'
-    event: 'EMAIL_LOGIN_SELECTED'
-  }
+      type: 'track'
+      event: 'DISCONNECT_ERROR'
+    }
   | {
-    type: 'track'
-    event: 'EMAIL_SUBMITTED'
-  }
+      type: 'track'
+      event: 'CLICK_WALLET_HELP'
+    }
   | {
-    type: 'track'
-    event: 'DEVICE_REGISTERED_FOR_EMAIL'
-  }
+      type: 'track'
+      event: 'CLICK_NETWORK_HELP'
+    }
   | {
-    type: 'track'
-    event: 'EMAIL_VERIFICATION_CODE_SENT'
-  }
+      type: 'track'
+      event: 'CLICK_GET_WALLET'
+    }
   | {
-    type: 'track'
-    event: 'EMAIL_VERIFICATION_CODE_PASS'
-  }
+      type: 'track'
+      event: 'CLICK_TRANSACTIONS'
+    }
   | {
-    type: 'track'
-    event: 'EMAIL_VERIFICATION_CODE_FAIL'
-  }
+      type: 'track'
+      event: 'ERROR_FETCH_TRANSACTIONS'
+      properties: {
+        address: string
+        projectId: string
+        cursor: string | undefined
+      }
+    }
   | {
-    type: 'track'
-    event: 'EMAIL_EDIT'
-  }
+      type: 'track'
+      event: 'LOAD_MORE_TRANSACTIONS'
+      properties: {
+        address: string | undefined
+        projectId: string
+        cursor: string | undefined
+      }
+    }
   | {
-    type: 'track'
-    event: 'EMAIL_UPGRADE_FROM_MODAL'
-  }
+      type: 'track'
+      event: 'CLICK_SIGN_SIWE_MESSAGE'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_CANCEL_SIWE'
+    }
+  | {
+      type: 'track'
+      event: 'CLICK_NETWORKS'
+    }
+  | {
+      type: 'track'
+      event: 'SIWE_AUTH_SUCCESS'
+    }
+  | {
+      type: 'track'
+      event: 'SIWE_AUTH_ERROR'
+    }
+  | {
+      type: 'track'
+      event: 'EMAIL_LOGIN_SELECTED'
+    }
+  | {
+      type: 'track'
+      event: 'EMAIL_SUBMITTED'
+    }
+  | {
+      type: 'track'
+      event: 'DEVICE_REGISTERED_FOR_EMAIL'
+    }
+  | {
+      type: 'track'
+      event: 'EMAIL_VERIFICATION_CODE_SENT'
+    }
+  | {
+      type: 'track'
+      event: 'EMAIL_VERIFICATION_CODE_PASS'
+    }
+  | {
+      type: 'track'
+      event: 'EMAIL_VERIFICATION_CODE_FAIL'
+    }
+  | {
+      type: 'track'
+      event: 'EMAIL_EDIT'
+    }
+  | {
+      type: 'track'
+      event: 'EMAIL_UPGRADE_FROM_MODAL'
+    }
+  | {
+      type: 'track'
+      event: 'SWITCH_NETWORK'
+      properties: {
+        network: string
+      }
+    }
 
 // -- SIWEController Types ---------------------------------------------------
 

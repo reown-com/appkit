@@ -12,3 +12,4 @@ playwright-report/
 screenshots/
 coverage
 test-results
+.vscode/*

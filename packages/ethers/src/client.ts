@@ -35,7 +35,7 @@ import {
 } from '@web3modal/scaffold-utils/ethers'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
-import { W3mFrameProvider } from '@web3modal/wallet'
+import { W3mFrameProvider, W3mFrameHelpers } from '@web3modal/wallet'
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
 
 // -- Types ---------------------------------------------------------------------
@@ -131,6 +131,7 @@ export class Web3Modal extends Web3ModalScaffold {
             await this.switchNetwork(chainId)
           } catch (error) {
             EthersStoreUtil.setError(error)
+            throw new Error('networkControllerClient:switchCaipNetwork - unable to switch chain')
           }
         }
       },
@@ -746,8 +747,11 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private watchEmail() {
     if (this.emailProvider) {
-      this.emailProvider.onRpcRequest(() => {
-        super.open({ view: 'ApproveTransaction' })
+      this.emailProvider.onRpcRequest(request => {
+        // We only open the modal if it's not a safe (auto-approve)
+        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
+          super.open({ view: 'ApproveTransaction' })
+        }
       })
       this.emailProvider.onRpcResponse(() => {
         super.close()
@@ -815,6 +819,10 @@ export class Web3Modal extends Web3ModalScaffold {
             await this.syncBalance(address)
           }
         }
+      } else if (isConnected) {
+        this.setCaipNetwork({
+          id: `${ConstantsUtil.EIP155}:${chainId}`
+        })
       }
     }
   }

@@ -1,6 +1,6 @@
 {
   "name": "web3modal",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,19 +13,19 @@
     "build:gallery": "turbo run build:clean; turbo run build:gallery",
     "build:laboratory": "turbo run build:clean; turbo run build:laboratory",
     "build:examples": "turbo run build:clean; turbo run build:examples",
-    "test": "turbo run test; node ./coverage.js",
+    "test": "turbo run test; node ./scripts/coverage.js",
+    "coverage:summary": "node ./scripts/coverage-summary.js",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
     "danger": "danger ci",
     "prettier": "prettier --check .",
     "prettier:format": "prettier --write .",
     "clean": "rm -rf `find . -type d -name node_modules -o -name dist -o -name .next -o -name out`; rm package-lock.json",
-    "new-version": "lerna version --no-git-tag-version --exact",
-    "pre-publish": "turbo lint typecheck prettier test; npm run new-version; npm install",
-    "publish:latest": "npm run build; lerna exec -- npm publish --no-private --access public --tag latest",
-    "publish:alpha": "npm run build; lerna exec -- npm publish --no-private --access public --tag alpha",
-    "publish:beta": "npm run build; lerna exec -- npm publish --no-private --access public --tag beta",
-    "publish:canary": "npm run build; lerna exec -- npm publish --no-private --access public --tag canary"
+    "changeset": "changeset",
+    "publish:latest": "npm install; npm run build; changeset publish",
+    "publish:alpha": "npm install; npm run build; changeset publish --tag alpha",
+    "publish:beta": "npm install; npm run build; changeset publish --tag beta",
+    "publish:canary": "npm install; npm run build; changeset publish --tag canary"
   },
   "workspaces": [
     "packages/common",
@@ -49,22 +49,17 @@
     "@types/react": "18.2.47",
     "@solana/web3.js": "^1.87.6",
     "@types/react-dom": "18.2.18",
+    "@changesets/changelog-github": "0.5.0",
+    "@changesets/cli": "2.27.1",
     "@typescript-eslint/eslint-plugin": "6.18.1",
     "@typescript-eslint/parser": "6.18.1",
     "danger": "11.3.1",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-require-extensions": "0.1.3",
-    "lerna": "8.0.2",
     "prettier": "3.1.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
     "turbo": "1.11.3",
     "typescript": "5.3.3",
-    "viem": "1.21.4",
-    "vite": "5.0.11",
-    "vitest": "1.1.3",
-    "vue": "3.4.6",
-    "wagmi": "1.4.12"
+    "vitest": "1.1.1"
   }
 }

@@ -15,6 +15,7 @@ export type TextType =
   | 'large-500'
   | 'large-600'
   | 'large-700'
+  | 'medium-title-600'
   | 'micro-600'
   | 'micro-700'
   | 'paragraph-400'
@@ -24,8 +25,10 @@ export type TextType =
   | 'small-400'
   | 'small-500'
   | 'small-600'
+  | 'tiny-400'
   | 'tiny-500'
   | 'tiny-600'
+  | '2xl-500'
 
 export type TextAlign = 'center' | 'left' | 'right'
 
@@ -87,7 +90,10 @@ export type GridContentType =
 export type GridItemsType = 'center' | 'end' | 'start' | 'stretch'
 
 export type IconType =
+  | 'add'
   | 'allWallets'
+  | 'arrowBottomCircle'
+  | 'alpha'
   | 'appStore'
   | 'chromeStore'
   | 'apple'
@@ -95,7 +101,9 @@ export type IconType =
   | 'arrowLeft'
   | 'arrowRight'
   | 'arrowTop'
+  | 'bank'
   | 'browser'
+  | 'card'
   | 'checkmark'
   | 'chevronBottom'
   | 'chevronLeft'
@@ -125,11 +133,15 @@ export type IconType =
   | 'nftPlaceholder'
   | 'off'
   | 'playStore'
+  | 'plus'
   | 'qrCode'
+  | 'recycleHorizontal'
   | 'refresh'
   | 'search'
+  | 'send'
   | 'swapHorizontal'
   | 'swapHorizontalBold'
+  | 'swapHorizontalMedium'
   | 'swapVertical'
   | 'telegram'
   | 'twitch'
@@ -144,6 +156,7 @@ export type IconType =
 
 export type VisualType =
   | 'browser'
+  | 'coinbase'
   | 'dao'
   | 'defi'
   | 'defiAlt'
@@ -154,8 +167,14 @@ export type VisualType =
   | 'network'
   | 'nft'
   | 'noun'
+  | 'onrampCard'
   | 'profile'
   | 'system'
+  | 'moonpay'
+  | 'stripe'
+  | 'paypal'
+
+export type VisualSize = 'sm' | 'md' | 'lg'
 
 export type LogoType =
   | 'apple'
