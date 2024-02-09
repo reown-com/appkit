@@ -2,7 +2,7 @@
 
 ## 4.0.1-9bc4a0c.0
 
-### Major Changes
+### Minor Changes
 
 - Added social login views/components, extended W3mFrameProvider
 
