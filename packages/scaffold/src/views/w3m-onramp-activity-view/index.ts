@@ -42,7 +42,10 @@ export class W3mOnRampActivityView extends LitElement {
         AssetController.subscribeKey('tokenImages', val => (this.tokenImages = val)),
         () => {
           clearTimeout(this.refetchTimeout)
-        }
+        },
+        TransactionsController.subscribe(val => {
+          this.coinbaseTransactions = { ...val.coinbaseTransactions }
+        })
       ]
     )
     this.fetchTransactions()
@@ -80,6 +83,7 @@ export class W3mOnRampActivityView extends LitElement {
           purchaseValue=${transfer.quantity.numeric}
           date=${date}
           icon=${ifDefined(icon)}
+          symbol=${ifDefined(fungibleInfo.symbol)}
         ></wui-onramp-activity-item>
       `
     })
