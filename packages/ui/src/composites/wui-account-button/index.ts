@@ -79,7 +79,7 @@ export class WuiAccountButton extends LitElement {
       `
     }
 
-    return html`<wui-text variant = "paragraph-600" color = "inherit" > No balance info < /wui-text>`
+    return html`<wui-text variant = "paragraph-600" color ="inherit">No balance info</wui-text>`
   }
 }
 

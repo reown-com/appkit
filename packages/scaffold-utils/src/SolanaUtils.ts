@@ -30,6 +30,11 @@ export interface RequestArguments {
 }
 
 export interface Provider {
+  isConnected: () => boolean
+  signAllTransactions: (txs: Transaction[]) => Promise<Transaction[]>
+  signTransaction: (tx: Transaction) => Promise<Transaction>
+  signMessage: (message: Uint8Array) => Promise<Uint8Array>
+  sendTransaction: (tx: Transaction) => Promise<Transaction>
   request: <T>(args: RequestArguments) => Promise<T>
   on: <T>(event: string, listener: (data: T) => void) => void
   removeListener: <T>(event: string, listener: (data: T) => void) => void

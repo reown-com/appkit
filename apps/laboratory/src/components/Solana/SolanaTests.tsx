@@ -1,4 +1,4 @@
-import { useWeb3ModalAccount } from '@web3modal/solana/react'
+import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
 
 import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
@@ -8,6 +8,7 @@ import { SolanaSignTypedDataTest } from "./SolanaSignTypedDataTest"
 
 export function SolanaTests() {
   const { isConnected } = useWeb3ModalAccount()
+  const { walletProviderType } = useWeb3ModalProvider()
 
   return isConnected ? (
     <Card marginTop={10} marginBottom={10}>
@@ -23,12 +24,7 @@ export function SolanaTests() {
             </Heading>
             <SolanaSignMessageTest />
           </Box>
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Sign Typed Data
-            </Heading>
-            <SolanaSignTypedDataTest />
-          </Box>
+          {walletProviderType !== 'injected' && <SolanaSignTypedDataTest />}
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Sign Transaction

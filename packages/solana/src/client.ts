@@ -4,12 +4,8 @@ import type { PublicKey } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import EthereumProvider from '@walletconnect/ethereum-provider'
 import { SolStoreUtil, SolHelpersUtil, SolConstantsUtil } from '@web3modal/scaffold-utils/solana'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
-
-import { WalletConnectConnector } from './connectors/WalletConnectConnector'
-
 import type {
   CaipNetworkId,
   ConnectionControllerClient,
@@ -28,6 +24,9 @@ import type {
   Provider,
   Address
 } from '@web3modal/scaffold-utils/solana'
+
+import { WalletConnectConnector } from './connectors/WalletConnectConnector'
+
 import type { BaseMessageSignerWalletAdapter } from '@solana/wallet-adapter-base'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 
@@ -168,7 +167,7 @@ export class Web3Modal extends Web3ModalScaffold {
         SolStoreUtil.reset()
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
           const WalletConnectProvider = provider
-          await (WalletConnectProvider as unknown as EthereumProvider).disconnect()
+          await (WalletConnectProvider as unknown as UniversalProvider).disconnect()
         } else if (provider) {
           provider.emit('disconnect')
         }
@@ -458,15 +457,7 @@ export class Web3Modal extends Web3ModalScaffold {
             case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
               const WalletConnectProvider = provider as unknown as WalletConnectConnector
               const universalProvider = await WalletConnectProvider?.getProvider() as unknown as UniversalProvider
-              console.log(`chain.chainId`, chain.chainId);
-              console.log(`chain.rpc`, chain.rpcUrl);
-              console.log(`WalletConnectProvider`, universalProvider);
               universalProvider.setDefaultChain('solana:' + chain.chainId, chain.rpcUrl)
-              /* await universalProvider.request({
-                method: 'wallet_switchSolanaChain',
-                params: [{ chainId: 'solana:' + chain.chainId, rpcUrl: chain.rpcUrl }]
-              }, 'solana:' + chain.chainId) */
-              // await universalProvider.connect({ namespaces: { chainId: 'solana:' + chain.chainId } })
               await this.syncAccount()
               break
 
@@ -614,6 +605,7 @@ export class Web3Modal extends Web3ModalScaffold {
       SolStoreUtil.setIsConnected(true)
       SolStoreUtil.setChainId(chainId)
       SolStoreUtil.setCaipChainId(caipChainId)
+      console.log(`set provider type: `, 'Injected');
       SolStoreUtil.setProviderType('injected')
       SolStoreUtil.setProvider(provider)
       this.setAddress(address)

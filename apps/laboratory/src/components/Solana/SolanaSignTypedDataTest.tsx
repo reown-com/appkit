@@ -1,6 +1,6 @@
 import type { Schema } from 'borsh';
 import { serialize } from 'borsh';
-import { Button, useToast } from '@chakra-ui/react'
+import { Box, Button, Heading, useToast } from '@chakra-ui/react'
 
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
@@ -79,8 +79,14 @@ export function SolanaSignTypedDataTest() {
   }
 
   return (
-    <Button data-testid="sign-typed-data-button" onClick={onSignTypedData}>
-      Sign Typed Data
-    </Button>
+    <Box>
+      <Heading size="xs" textTransform="uppercase" pb="2">
+        Sign Typed Data
+      </Heading>
+      <Button data-testid="sign-typed-data-button" onClick={onSignTypedData}>
+        Sign Typed Data
+      </Button>
+    </Box>
+
   )
 }
