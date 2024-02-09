@@ -35,7 +35,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/polyfills": "4.0.1",
+    "@web3modal/polyfills": "4.0.1-9bc4a0c.0",
     "@web3modal/scaffold": "4.0.1-9bc4a0c.0",
     "valtio": "1.11.2"
   },

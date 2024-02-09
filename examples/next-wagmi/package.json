@@ -1,6 +1,6 @@
 {
   "name": "@examples/next-wagmi",
-  "version": "4.0.2-9bc4a0c.0",
+  "version": "4.0.1-9bc4a0c.0",
   "private": true,
   "scripts": {
     "dev": "next dev",

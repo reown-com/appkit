@@ -1,6 +1,6 @@
 # @examples/react-wagmi
 
-## 4.0.2-9bc4a0c.0
+## 4.0.1-9bc4a0c.0
 
 ### Patch Changes
 
