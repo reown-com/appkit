@@ -17,9 +17,10 @@ export default css`
     top: 50%;
     transform: translateY(-50%);
     transition: all var(--wui-ease-in-power-2) var(--wui-duration-md);
-    right: 10px;
+    right: var(--wui-spacing-1xs);
     height: 40px;
-    padding: 8px 10px 8px 8px;
+    padding: var(--wui-spacing-xs) var(--wui-spacing-1xs) var(--wui-spacing-xs)
+      var(--wui-spacing-xs);
     min-width: 95px;
     border-radius: var(--FULL, 1000px);
     border: 1px solid var(--wui-gray-glass-002);
