@@ -1,5 +1,11 @@
 # @web3modal/ui
 
+## 4.0.2
+
+### Patch Changes
+
+- [#1899](https://github.com/WalletConnect/web3modal/pull/1899) [`42e97a0`](https://github.com/WalletConnect/web3modal/commit/42e97a04eb60090a821019ae80d62acacf35fc66) Thanks [@xzilja](https://github.com/xzilja)! - Reverted change that removed email update flow from account view
+
 ## 4.0.1
 
 ### Patch Changes
