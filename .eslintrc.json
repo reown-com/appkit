@@ -19,8 +19,9 @@
     "dist",
     ".next",
     ".turbo",
-    "examples",
-    "coverage"
+    "exbamples",
+    "coverage",
+    "changeset"
   ],
   "rules": {
     // Core
