@@ -2,7 +2,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { ModalController } from '@web3modal/core'
+import { ModalController, ConnectorController, ThemeController } from '@web3modal/core'
 
 @customElement('w3m-approve-transaction-view')
 export class W3mApproveTransactionView extends LitElement {
@@ -34,8 +34,10 @@ export class W3mApproveTransactionView extends LitElement {
     this.bodyObserver?.unobserve(window.document.body)
   }
 
-  public override firstUpdated() {
+  public override async firstUpdated() {
     const verticalPadding = 10
+
+    await this.syncTheme()
 
     this.iframe.style.display = 'block'
     const blueprint = this.renderRoot.querySelector('div')
@@ -79,6 +81,15 @@ export class W3mApproveTransactionView extends LitElement {
       fill: 'forwards'
     }).finished
     this.iframe.style.display = 'none'
+  }
+
+  private async syncTheme() {
+    const emailConnector = ConnectorController.getEmailConnector()
+    if (emailConnector) {
+      await emailConnector.provider.syncTheme({
+        themeVariables: ThemeController.getSnapshot().themeVariables
+      })
+    }
   }
 }
 

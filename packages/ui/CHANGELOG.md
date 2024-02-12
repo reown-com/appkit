@@ -1,5 +1,11 @@
 # @web3modal/ui
 
+## 4.0.3
+
+### Patch Changes
+
+- Tag email beta, Sync Theme For Secure Wallet, Use manual version in constants
+
 ## 4.0.2
 
 ### Patch Changes

@@ -93,7 +93,6 @@ export type IconType =
   | 'add'
   | 'allWallets'
   | 'arrowBottomCircle'
-  | 'alpha'
   | 'appStore'
   | 'chromeStore'
   | 'apple'
