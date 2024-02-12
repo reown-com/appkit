@@ -8,7 +8,9 @@ import { State, WagmiProvider } from 'wagmi'
 
 const queryClient = new QueryClient()
 
-if (!projectId) throw new Error('Project ID is not defined')
+if (!projectId) {
+  throw new Error('Project ID is not defined')
+}
 
 createWeb3Modal({
   wagmiConfig: config,
