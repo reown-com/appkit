@@ -13,6 +13,10 @@ export default css`
     justify-content: flex-start;
   }
 
+  :host > wui-flex > wui-flex {
+    width: 100%;
+  }
+
   wui-transaction-list-item-loader {
     width: 100%;
   }
