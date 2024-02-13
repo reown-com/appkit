@@ -1,7 +1,7 @@
-import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
-import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
+import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { PublicKey } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
+
 
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { SolStoreUtil, SolHelpersUtil, SolConstantsUtil } from '@web3modal/scaffold-utils/solana'
@@ -24,13 +24,11 @@ import type {
   Provider,
   Address
 } from '@web3modal/scaffold-utils/solana'
-
-import { WalletConnectConnector } from './connectors/WalletConnectConnector'
-
-import type { BaseMessageSignerWalletAdapter } from '@solana/wallet-adapter-base'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 
-type AdapterKey = 'phantom' | 'solflare'
+import { WalletConnectConnector } from './connectors/WalletConnectConnector'
+import { createWalletAdapters, type AdapterKey, syncInjectedWallets } from './connectors/walletAdapters'
+
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
   siweConfig?: Web3ModalSIWEClient
@@ -49,7 +47,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private WalletConnectConnector: WalletConnectConnector
 
-  private walletAdapters: Record<AdapterKey, BaseMessageSignerWalletAdapter>
+  private walletAdapters: Record<AdapterKey, BaseWalletAdapter>
 
   private chains: Chain[]
 
@@ -129,21 +127,9 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       connectExternal: async ({ id }) => {
-        switch (id) {
-          case 'Phantom': {
-            await this.walletAdapters.phantom.connect()
-            const address = this.walletAdapters.phantom.publicKey?.toString() as Address
-            this.setInjectedProvider(this.walletAdapters.phantom as unknown as Provider, address)
-            break
-          }
-          case 'Solflare': {
-            await this.walletAdapters.solflare.connect()
-            const address = this.walletAdapters.solflare.publicKey?.toString() as Address
-            this.setInjectedProvider(this.walletAdapters.solflare as unknown as Provider, address)
-            break
-          }
-        }
-
+        await this.walletAdapters[id.toLowerCase() as AdapterKey].connect()
+        const address = this.walletAdapters.phantom.publicKey?.toString() as Address
+        this.setInjectedProvider(this.walletAdapters.phantom as unknown as Provider, address)
       },
 
       checkInstalled(ids) {
@@ -214,16 +200,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.syncNetwork(chainImages)
 
-    this.walletAdapters = {
-      phantom: new PhantomWalletAdapter(),
-      /* walletConnect: new WalletConnectWalletAdapter({
-        network: WalletAdapterNetwork.Mainnet, options: {
-          projectId: process.env['NEXT_PUBLIC_PROJECT_ID'],
-          relayUrl: 'wss://relay.walletconnect.com',
-        },
-      }), */
-      solflare: new SolflareWalletAdapter()
-    }
+    this.walletAdapters = createWalletAdapters()
     this.WalletConnectConnector = new WalletConnectConnector({
       relayerRegion: 'wss://relay.walletconnect.com',
       metadata: {
@@ -243,7 +220,9 @@ export class Web3Modal extends Web3ModalScaffold {
       setTimeout(() => {
         this.checkActiveProviders()
       }, 500)
-      /*setTimeout(() => {
+      /*
+      Debugging for mobile
+      setTimeout(() => {
         alert(`
         ${window.phantom?.['solana']?.isPhantom ? 'Phantom is installed' : 'Phantom is not installed'}
         ${window.solflare?.['isSolflare'] ? 'Solflare is installed' : 'Solflare is not installed'}
@@ -290,6 +269,12 @@ export class Web3Modal extends Web3ModalScaffold {
             this.setInjectedProvider(this.walletAdapters.phantom as unknown as Provider, address)
             break
           }
+          if (window.trustWallet) {
+            await this.walletAdapters.trust.connect()
+            const address = this.walletAdapters.trust.publicKey?.toString() as Address
+            this.setInjectedProvider(this.walletAdapters.trust as unknown as Provider, address)
+            break
+          }
 
         }
       }
@@ -316,30 +301,8 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     })
 
-    if (window.solana) {
-      w3mConnectors.push({
-        id: this.walletAdapters.phantom.name,
-        type: 'ANNOUNCED',
-        imageUrl: this.walletAdapters.phantom.icon,
-        name: this.walletAdapters.phantom.name,
-        provider: this.walletAdapters.phantom,
-        info: {
-          rdns: 'app.phantom',
-        }
-      })
-    }
-    if (window.solflare) {
-      w3mConnectors.push({
-        id: this.walletAdapters.solflare.name,
-        type: 'ANNOUNCED',
-        imageUrl: this.walletAdapters.solflare.icon,
-        name: this.walletAdapters.solflare.name,
-        provider: this.walletAdapters.solflare,
-        info: {
-          rdns: 'app.solflare',
-        }
-      })
-    }
+    syncInjectedWallets(w3mConnectors, this.walletAdapters)
+
     this.setConnectors(w3mConnectors)
   }
 
