@@ -22,6 +22,8 @@ export class WuiListWalletTransaction extends LitElement {
 
   @property() public receiverAddress = ''
 
+  @property() public addressExplorerUrl = ''
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -39,7 +41,7 @@ export class WuiListWalletTransaction extends LitElement {
         <wui-chip
           icon="externalLink"
           variant="shadeSmall"
-          href=${this.receiverAddress}
+          href=${this.addressExplorerUrl}
           title=${this.receiverAddress}
         ></wui-chip>
       </wui-flex>

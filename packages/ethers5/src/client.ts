@@ -121,6 +121,7 @@ export class Web3Modal extends Web3ModalScaffold {
             await this.switchNetwork(chainId)
           } catch (error) {
             EthersStoreUtil.setError(error)
+            throw new Error('networkControllerClient:switchCaipNetwork - unable to switch chain')
           }
         }
       },
@@ -751,6 +752,10 @@ export class Web3Modal extends Web3ModalScaffold {
             await this.syncBalance(address)
           }
         }
+      } else if (isConnected) {
+        this.setCaipNetwork({
+          id: `${ConstantsUtil.EIP155}:${chainId}`
+        })
       }
     }
   }

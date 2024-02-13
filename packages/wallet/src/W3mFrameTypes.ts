@@ -20,10 +20,14 @@ import {
   FrameSession,
   AppGetUserRequest,
   AppUpdateEmailRequest,
-  FrameAwaitUpdateEmailResponse,
+  FrameUpdateEmailSecondaryOtpResolver,
+  AppUpdateEmailPrimaryOtpRequest,
+  AppUpdateEmailSecondaryOtpRequest,
   AppSyncThemeRequest,
   RpcEthChainId,
-  FrameSwitchNetworkResponse
+  FrameSwitchNetworkResponse,
+  AppSyncDappDataRequest,
+  RpcEthGetTransactionByHash
 } from './W3mFrameSchema.js'
 
 export namespace W3mFrameTypes {
@@ -38,6 +42,9 @@ export namespace W3mFrameTypes {
     AppGetUserRequest: z.infer<typeof AppGetUserRequest>
     AppUpdateEmailRequest: z.infer<typeof AppUpdateEmailRequest>
     AppSyncThemeRequest: z.infer<typeof AppSyncThemeRequest>
+    AppSyncDappDataRequest: z.infer<typeof AppSyncDappDataRequest>
+    AppUpdateEmailPrimaryOtpRequest: z.infer<typeof AppUpdateEmailPrimaryOtpRequest>
+    AppUpdateEmailSecondaryOtpRequest: z.infer<typeof AppUpdateEmailSecondaryOtpRequest>
   }
 
   export interface Responses {
@@ -45,7 +52,7 @@ export namespace W3mFrameTypes {
     FrameGetChainIdResponse: z.infer<typeof FrameGetChainIdResponse>
     FrameGetUserResponse: z.infer<typeof FrameGetUserResponse>
     FrameIsConnectedResponse: z.infer<typeof FrameIsConnectedResponse>
-    FrameAwaitUpdateEmailResponse: z.infer<typeof FrameAwaitUpdateEmailResponse>
+    FrameUpdateEmailSecondaryOtpResolver: z.infer<typeof FrameUpdateEmailSecondaryOtpResolver>
     FrameSwitchNetworkResponse: z.infer<typeof FrameSwitchNetworkResponse>
   }
 
@@ -64,6 +71,7 @@ export namespace W3mFrameTypes {
     | z.infer<typeof RpcGetBalance>
     | z.infer<typeof RpcEthBlockNumber>
     | z.infer<typeof RpcEthChainId>
+    | z.infer<typeof RpcEthGetTransactionByHash>
 
   export type RPCResponse = z.infer<typeof RpcResponse>
 

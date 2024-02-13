@@ -4,12 +4,12 @@ import {
   AssetUtil,
   ConnectionController,
   ConnectorController,
+  ConstantsUtil,
   CoreHelperUtil,
   EventsController,
   OptionsController,
   RouterController,
-  StorageUtil,
-  ConstantsUtil
+  StorageUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -46,7 +46,7 @@ export class W3mConnectView extends LitElement {
 
         ${this.walletConnectConnectorTemplate()} ${this.recentTemplate()}
         ${this.announcedTemplate()} ${this.injectedTemplate()} ${this.featuredTemplate()}
-        ${this.customTemplate()} ${this.recommendedTemplate()} ${this.connectorsTemplate()}
+        ${this.customTemplate()} ${this.recommendedTemplate()} ${this.externalTemplate()}
         ${this.allWalletsTemplate()}
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
@@ -79,9 +79,11 @@ export class W3mConnectView extends LitElement {
 
   private customTemplate() {
     const { customWallets } = OptionsController.state
+
     if (!customWallets?.length) {
       return null
     }
+
     const wallets = this.filterOutDuplicateWallets(customWallets)
 
     return wallets.map(
@@ -141,6 +143,7 @@ export class W3mConnectView extends LitElement {
       if (connector.type !== 'ANNOUNCED') {
         return null
       }
+
       return html`
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
@@ -155,8 +158,6 @@ export class W3mConnectView extends LitElement {
   }
 
   private injectedTemplate() {
-    const announced = this.connectors.find(c => c.type === 'ANNOUNCED')
-
     return this.connectors.map(connector => {
       if (connector.type !== 'INJECTED') {
         return null
@@ -169,7 +170,7 @@ export class W3mConnectView extends LitElement {
       return html`
         <wui-list-wallet
           imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-          .installed=${Boolean(announced)}
+          .installed=${true}
           name=${connector.name ?? 'Unknown'}
           @click=${() => this.onConnector(connector)}
         >
@@ -178,7 +179,7 @@ export class W3mConnectView extends LitElement {
     })
   }
 
-  private connectorsTemplate() {
+  private externalTemplate() {
     const announcedRdns = ConnectorController.getAnnouncedConnectorRdns()
 
     return this.connectors.map(connector => {
@@ -203,7 +204,13 @@ export class W3mConnectView extends LitElement {
 
   private allWalletsTemplate() {
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
-    if (!connector) {
+    const { allWallets } = OptionsController.state
+
+    if (!connector || allWallets === 'HIDE') {
+      return null
+    }
+
+    if (allWallets === 'ONLY_MOBILE' && !CoreHelperUtil.isMobile()) {
       return null
     }
 
@@ -235,14 +242,17 @@ export class W3mConnectView extends LitElement {
     const { customWallets, featuredWalletIds } = OptionsController.state
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
-    const eip6963 = connectors.filter(c => c.type === 'ANNOUNCED')
+    const injected = connectors.filter(c => c.type === 'INJECTED')
+    const filteredInjected = injected.filter(i => i.name !== 'Browser Wallet')
 
     if (featuredWalletIds || customWallets || !recommended.length) {
       return null
     }
 
-    const overrideLength = eip6963.length + recent.length
+    const overrideLength = filteredInjected.length + recent.length
+
     const maxRecommended = Math.max(0, 2 - overrideLength)
+
     const wallets = this.filterOutDuplicateWallets(recommended).slice(0, maxRecommended)
 
     return wallets.map(
@@ -271,13 +281,9 @@ export class W3mConnectView extends LitElement {
   }
 
   private filterOutDuplicateWallets(wallets: WcWallet[]) {
-    const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
     const recentIds = recent.map(wallet => wallet.id)
-    const rdnsIds = connectors.map(c => c.info?.rdns).filter(Boolean)
-    const filtered = wallets.filter(
-      wallet => !recentIds.includes(wallet.id) && !rdnsIds.includes(wallet.rdns ?? undefined)
-    )
+    const filtered = wallets.filter(wallet => !recentIds.includes(wallet.id))
 
     return filtered
   }

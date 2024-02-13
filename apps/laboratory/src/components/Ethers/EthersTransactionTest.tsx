@@ -1,9 +1,9 @@
 import { Button, useToast, Stack, Link, Text, Spacer } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
 import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
-import { vitalikEthAddress } from '../../utils/DataUtil'
 import { sepolia } from '../../utils/ChainsUtil'
 import { useState } from 'react'
+import { vitalikEthAddress } from '../../utils/DataUtil'
 
 export function EthersTransactionTest() {
   const toast = useToast()
@@ -21,9 +21,11 @@ export function EthersTransactionTest() {
       const signer = new JsonRpcSigner(provider, address)
       const tx = await signer.sendTransaction({
         to: vitalikEthAddress,
-        value: ethers.parseUnits('0.001', 'gwei')
+        value: ethers.parseUnits('0.0001', 'gwei'),
+        maxFeePerGas: ethers.parseUnits('200', 'gwei'),
+        maxPriorityFeePerGas: ethers.parseUnits('200', 'gwei')
       })
-      toast({ title: 'Succcess', description: tx.blockHash, status: 'success', isClosable: true })
+      toast({ title: 'Succcess', description: tx.hash, status: 'success', isClosable: true })
     } catch {
       toast({
         title: 'Error',

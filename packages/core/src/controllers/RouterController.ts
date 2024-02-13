@@ -6,30 +6,38 @@ import type { CaipNetwork, Connector, WcWallet } from '../utils/TypeUtil.js'
 export interface RouterControllerState {
   view:
     | 'Account'
+    | 'AccountSettings'
+    | 'AllWallets'
+    | 'ApproveTransaction'
+    | 'BuyInProgress'
     | 'Connect'
     | 'ConnectingExternal'
     | 'ConnectingWalletConnect'
     | 'ConnectingSiwe'
-    | 'Networks'
-    | 'SwitchNetwork'
-    | 'AllWallets'
-    | 'WhatIsAWallet'
-    | 'WhatIsANetwork'
-    | 'GetWallet'
     | 'Downloads'
     | 'EmailVerifyOtp'
     | 'EmailVerifyDevice'
-    | 'ApproveTransaction'
+    | 'GetWallet'
+    | 'Networks'
+    | 'OnRampProviders'
+    | 'OnRampActivity'
+    | 'SwitchNetwork'
     | 'Transactions'
-    | 'UpgradeEmailWallet'
+    | 'UnsupportedChain'
     | 'UpdateEmailWallet'
-    | 'UpdateEmailWalletWaiting'
+    | 'UpdateEmailPrimaryOtp'
+    | 'UpdateEmailSecondaryOtp'
+    | 'UpgradeEmailWallet'
+    | 'WhatIsABuy'
+    | 'WhatIsANetwork'
+    | 'WhatIsAWallet'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
     wallet?: WcWallet
     network?: CaipNetwork
     email?: string
+    newEmail?: string
   }
 }
 

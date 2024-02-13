@@ -20,12 +20,12 @@ export default css`
     padding: var(--wui-spacing-xxs) var(--wui-spacing-s);
   }
 
-  button[data-size='sm'][data-icon-left='true'] {
+  button[data-size='sm'][data-icon-left='true'][data-icon-right='false'] {
     padding: var(--wui-spacing-xxs) var(--wui-spacing-s) var(--wui-spacing-xxs)
       var(--wui-spacing-xs);
   }
 
-  button[data-size='sm'][data-icon-right='true'] {
+  button[data-size='sm'][data-icon-right='true'][data-icon-left='false'] {
     padding: var(--wui-spacing-xxs) var(--wui-spacing-xs) var(--wui-spacing-xxs)
       var(--wui-spacing-s);
   }
@@ -44,11 +44,11 @@ export default css`
     padding: 8.2px var(--wui-spacing-l) 9px var(--wui-spacing-l);
   }
 
-  button[data-size='md'][data-icon-left='true'] {
+  button[data-size='md'][data-icon-left='true'][data-icon-right='false'] {
     padding: 8.2px var(--wui-spacing-l) 9px var(--wui-spacing-s);
   }
 
-  button[data-size='md'][data-icon-right='true'] {
+  button[data-size='md'][data-icon-right='true'][data-icon-left='false'] {
     padding: 8.2px var(--wui-spacing-s) 9px var(--wui-spacing-l);
   }
 

@@ -1,16 +1,17 @@
 import {
   AccountController,
-  ConnectionController,
   CoreHelperUtil,
-  EventsController,
   ModalController,
   NetworkController,
   RouterController,
-  SnackController,
-  ConnectorController,
+  AssetUtil,
   StorageUtil,
+  ConnectorController,
+  EventsController,
+  ConnectionController,
+  SnackController,
   ConstantsUtil,
-  AssetUtil
+  OptionsController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -23,7 +24,7 @@ export class W3mAccountView extends LitElement {
   public static override styles = styles
 
   // -- Members -------------------------------------------- //
-  private usubscribe: (() => void)[] = []
+  private unsubscribe: (() => void)[] = []
 
   // -- State & Properties --------------------------------- //
   @state() private address = AccountController.state.address
@@ -32,17 +33,17 @@ export class W3mAccountView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
+  @state() private network = NetworkController.state.caipNetwork
+
+  @state() private disconnecting = false
+
   @state() private balance = AccountController.state.balance
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
-  @state() private network = NetworkController.state.caipNetwork
-
-  @state() private disconecting = false
-
   public constructor() {
     super()
-    this.usubscribe.push(
+    this.unsubscribe.push(
       ...[
         AccountController.subscribe(val => {
           if (val.address) {
@@ -65,7 +66,7 @@ export class W3mAccountView extends LitElement {
   }
 
   public override disconnectedCallback() {
-    this.usubscribe.forEach(unsubscribe => unsubscribe())
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //
@@ -79,7 +80,7 @@ export class W3mAccountView extends LitElement {
     return html`
       <wui-flex
         flexDirection="column"
-        .padding=${['0', 's', 'm', 's'] as const}
+        .padding=${['0', 'xl', 'm', 'xl'] as const}
         alignItems="center"
         gap="l"
       >
@@ -88,23 +89,22 @@ export class W3mAccountView extends LitElement {
           address=${this.address}
           imageSrc=${ifDefined(this.profileImage === null ? undefined : this.profileImage)}
         ></wui-avatar>
-
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
-            <wui-text variant="large-600" color="fg-100">
+            <wui-text variant="medium-title-600" color="fg-100">
               ${this.profileName
-        ? UiHelperUtil.getTruncateString({
-          string: this.profileName,
-          charsStart: 20,
-          charsEnd: 0,
-          truncate: 'end'
-        })
-        : UiHelperUtil.getTruncateString({
-          string: this.address,
-          charsStart: 4,
-          charsEnd: 6,
-          truncate: 'middle'
-        })}
+                ? UiHelperUtil.getTruncateString({
+                    string: this.profileName,
+                    charsStart: 20,
+                    charsEnd: 0,
+                    truncate: 'end'
+                  })
+                : UiHelperUtil.getTruncateString({
+                    string: this.address,
+                    charsStart: 4,
+                    charsEnd: 4,
+                    truncate: 'middle'
+                  })}
             </wui-text>
             <wui-icon-link
               size="md"
@@ -113,18 +113,15 @@ export class W3mAccountView extends LitElement {
               @click=${this.onCopyAddress}
             ></wui-icon-link>
           </wui-flex>
-          <wui-flex gap="s" flexDirection="column" alignItems="center">
-            <wui-text variant="paragraph-500" color="fg-200">
-              ${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}
-            </wui-text>
-
-            ${this.explorerBtnTemplate()}
-          </wui-flex>
+          <wui-text variant="paragraph-500" color="fg-200"
+            >${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}</wui-text
+          >
         </wui-flex>
+        ${this.explorerBtnTemplate()}
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
-        ${this.emailCardTemplate()} ${this.emailBtnTemplate()}
+        ${this.emailCardTemplate()}
 
         <wui-list-item
           .variant=${networkImage ? 'image' : 'icon'}
@@ -139,9 +136,10 @@ export class W3mAccountView extends LitElement {
             ${this.network?.name ?? 'Unknown'}
           </wui-text>
         </wui-list-item>
+        ${this.onrampTemplate()}
         <wui-list-item
           iconVariant="blue"
-          icon="swapHorizontalBold"
+          icon="swapHorizontalMedium"
           iconSize="sm"
           ?chevron=${true}
           @click=${this.onTransactions.bind(this)}
@@ -153,7 +151,7 @@ export class W3mAccountView extends LitElement {
           iconVariant="overlay"
           icon="disconnect"
           ?chevron=${false}
-          .loading=${this.disconecting}
+          .loading=${this.disconnecting}
           @click=${this.onDisconnect.bind(this)}
           data-testid="disconnect-button"
         >
@@ -164,6 +162,25 @@ export class W3mAccountView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private onrampTemplate() {
+    const { enableOnramp } = OptionsController.state
+
+    if (!enableOnramp) {
+      return null
+    }
+
+    return html`
+      <wui-list-item
+        iconVariant="blue"
+        icon="add"
+        ?chevron=${true}
+        @click=${this.handleClickPay.bind(this)}
+      >
+        <wui-text variant="paragraph-500" color="fg-100">Buy</wui-text>
+      </wui-list-item>
+    `
+  }
+
   private emailCardTemplate() {
     const type = StorageUtil.getConnectedConnector()
     const emailConnector = ConnectorController.getEmailConnector()
@@ -182,26 +199,8 @@ export class W3mAccountView extends LitElement {
     `
   }
 
-  private emailBtnTemplate() {
-    const type = StorageUtil.getConnectedConnector()
-    const emailConnector = ConnectorController.getEmailConnector()
-    if (!emailConnector || type !== 'EMAIL') {
-      return null
-    }
-    const email = emailConnector.provider.getEmail() ?? ''
-
-    return html`
-      <wui-list-item
-        variant="icon"
-        iconVariant="overlay"
-        icon="mail"
-        iconSize="sm"
-        ?chevron=${true}
-        @click=${() => this.onGoToUpdateEmail(email)}
-      >
-        <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
-      </wui-list-item>
-    `
+  private handleClickPay() {
+    RouterController.push('OnRampProviders')
   }
 
   private explorerBtnTemplate() {
@@ -241,6 +240,7 @@ export class W3mAccountView extends LitElement {
 
   private onNetworks() {
     if (this.isAllowedNetworkSwitch()) {
+      EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORKS' })
       RouterController.push('Networks')
     }
   }
@@ -252,7 +252,7 @@ export class W3mAccountView extends LitElement {
 
   private async onDisconnect() {
     try {
-      this.disconecting = true
+      this.disconnecting = true
       await ConnectionController.disconnect()
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
       ModalController.close()
@@ -260,7 +260,7 @@ export class W3mAccountView extends LitElement {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')
     } finally {
-      this.disconecting = false
+      this.disconnecting = false
     }
   }
 
@@ -274,10 +274,6 @@ export class W3mAccountView extends LitElement {
   private onGoToUpgradeView() {
     EventsController.sendEvent({ type: 'track', event: 'EMAIL_UPGRADE_FROM_MODAL' })
     RouterController.push('UpgradeEmailWallet')
-  }
-
-  private onGoToUpdateEmail(email: string) {
-    RouterController.push('UpdateEmailWallet', { email })
   }
 }
 

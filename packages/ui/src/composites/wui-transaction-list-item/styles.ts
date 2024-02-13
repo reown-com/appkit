@@ -4,7 +4,7 @@ export default css`
   :host > wui-flex:first-child {
     align-items: center;
     column-gap: var(--wui-spacing-s);
-    padding: 6.5px var(--wui-spacing-l) 6.5px var(--wui-spacing-xs);
+    padding: 6.5px var(--wui-spacing-xs) 6.5px var(--wui-spacing-xs);
     width: 100%;
   }
 

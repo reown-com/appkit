@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import { danger, fail, message, warn } from 'danger'
 import corePackageJson from './packages/core/package.json' assert { type: 'json' }
-import { ConstantsUtil } from './packages/scaffold-utils/src/ConstantsUtil'
+import coreScaffoldUtilsJson from './packages/scaffold-utils/package.json' assert { type: 'json' }
 
 // -- Constants ---------------------------------------------------------------
 const TYPE_COMMENT = `// -- Types --------------------------------------------- //`
@@ -10,7 +10,6 @@ const CONTROLLER_COMMENT = `// -- Controller -----------------------------------
 const RENDER_COMMENT = `// -- Render -------------------------------------------- //`
 const STATE_PROPERTIES_COMMENT = `// -- State & Properties -------------------------------- //`
 const PRIVATE_COMMENT = `// -- Private ------------------------------------------- //`
-const PACKAGE_VERSION = ConstantsUtil.VERSION
 
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
@@ -130,15 +129,31 @@ async function checkUiPackage() {
     fail('New layout components were added, but not exported in ui/index.ts')
   }
 
-  if (created_ui_components_index_ts.length && !jsx_index_diff?.added.includes('../components')) {
-    fail('New components were added, but not exported in ui/utils/JSXTypeUtil.ts')
+  if (
+    created_ui_components_index_ts.length &&
+    !jsx_index_diff?.added.includes('../components') &&
+    !jsx_index_diff?.diff.includes('../components')
+  ) {
+    fail(
+      `New components were added, but not exported in ui/utils/JSXTypeUtil.ts: ${created_ui_components.join(
+        ', '
+      )}`
+    )
   }
 
-  if (created_ui_composites_index_ts.length && !jsx_index_diff?.added.includes('../composites')) {
+  if (
+    created_ui_composites_index_ts.length &&
+    !jsx_index_diff?.added.includes('../composites') &&
+    !jsx_index_diff?.diff.includes('../composites')
+  ) {
     fail('New composites were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
-  if (created_ui_layout_index_ts.length && !jsx_index_diff?.added.includes('../layout')) {
+  if (
+    created_ui_layout_index_ts.length &&
+    !jsx_index_diff?.added.includes('../layout') &&
+    !jsx_index_diff?.diff.includes('../layout')
+  ) {
     fail('New layout components were added, but not exported in ui/utils/JSXTypeUtil.ts')
   }
 
@@ -268,7 +283,7 @@ checkClientPackages()
 
 // -- Check sdkVersion ------------------------------------------------------------
 function checkSdkVersion() {
-  if (PACKAGE_VERSION !== corePackageJson.version) {
+  if (coreScaffoldUtilsJson.version !== corePackageJson.version) {
     fail(`VERSION in utils/constants does't match core package.json version`)
   }
 }
@@ -277,7 +292,8 @@ checkSdkVersion()
 // -- Check left over development constants ---------------------------------------
 async function checkDevelopmentConstants() {
   for (const f of updated_files) {
-    if (f.includes('README.md')) {
+    if (f.includes('README.md') || f.includes('.yml')) {
+      // eslint-disable-next-line no-continue
       continue
     }
     const diff = await diffForFile(f)

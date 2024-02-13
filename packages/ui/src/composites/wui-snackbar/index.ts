@@ -24,10 +24,12 @@ export class WuiSnackbar extends LitElement {
   public override render() {
     return html`
       <wui-icon-box
-        size="xs"
+        size="sm"
+        iconSize="xs"
         iconColor=${this.iconColor}
         backgroundColor=${this.backgroundColor}
         icon=${this.icon}
+        background="opaque"
       ></wui-icon-box>
       <wui-text variant="paragraph-500" color="fg-100">${this.message}</wui-text>
     `

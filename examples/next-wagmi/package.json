@@ -1,0 +1,28 @@
+{
+  "name": "@examples/next-wagmi",
+  "version": "4.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build:examples": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "5.17.19",
+    "@web3modal/wagmi": "4.0.1",
+    "next": "14.1.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "viem": "2.5.0",
+    "wagmi": "2.5.6"
+  },
+  "devDependencies": {
+    "@types/node": "20.11.5",
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.0",
+    "eslint": "8.56.0",
+    "eslint-config-next": "14.1.0",
+    "typescript": "5.3.3"
+  }
+}
