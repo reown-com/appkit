@@ -1,9 +1,11 @@
-import { CoreHelperUtil, type CaipNetwork, type CaipNetworkId } from '@web3modal/scaffold'
-import type { Chain } from '@wagmi/core/chains'
+import { CoreHelperUtil } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
-import type { Connector } from '@wagmi/core'
 import { http } from 'viem'
+
+import type { CaipNetwork, CaipNetworkId } from '@web3modal/scaffold'
+import type { Chain } from '@wagmi/core/chains'
+import type { Connector } from '@wagmi/core'
 
 export function getCaipDefaultChain(chain?: Chain) {
   if (!chain) {
