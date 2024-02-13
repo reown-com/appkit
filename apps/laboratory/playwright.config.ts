@@ -14,7 +14,7 @@ export default defineConfig<ModalFixture>({
 
   fullyParallel: true,
   retries: 2,
-  workers: 3,
+  workers: 6,
   reporter: process.env['CI']
     ? [['list'], ['html', { open: 'never' }]]
     : [['list'], ['html', { host: '0.0.0.0' }]],

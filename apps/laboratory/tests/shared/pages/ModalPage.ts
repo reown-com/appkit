@@ -26,14 +26,6 @@ export class ModalPage {
     await this.page.goto(this.url)
   }
 
-  async copyConnectUriToClipboard() {
-    await this.page.goto(this.url)
-    await this.connectButton.click()
-    await this.page.getByTestId('wallet-selector-walletconnect').click()
-    await this.page.waitForTimeout(2000)
-    await this.page.getByTestId('copy-wc2-uri').click()
-  }
-
   async getConnectUri(): Promise<string> {
     await this.page.goto(this.url)
     await this.connectButton.click()
