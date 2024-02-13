@@ -35,7 +35,7 @@ testMW(
       return
     }
     await modalPage.sign()
-    await walletValidator.expectReceivedSign({chainName: DEFAULT_CHAIN_NAME})
+    await walletValidator.expectReceivedSign({ chainName: DEFAULT_CHAIN_NAME })
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
   }
@@ -51,7 +51,7 @@ testMW(
       return
     }
     await modalPage.sign()
-    await walletValidator.expectReceivedSign({chainName: DEFAULT_CHAIN_NAME})
+    await walletValidator.expectReceivedSign({ chainName: DEFAULT_CHAIN_NAME })
     await walletPage.handleRequest({ accept: false })
     await modalValidator.expectRejectedSign()
   }

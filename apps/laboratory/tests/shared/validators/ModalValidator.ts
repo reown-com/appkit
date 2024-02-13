@@ -30,7 +30,7 @@ export class ModalValidator {
   async expectAcceptedSign() {
     // We use Chakra Toast and it's not quite straightforward to set the `data-testid` attribute on the toast element.
     await expect(this.page.getByText(ConstantsUtil.SigningSucceededToastTitle)).toBeVisible({
-      timeout: 30*1000
+      timeout: 30 * 1000
     })
   }
 

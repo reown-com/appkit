@@ -18,7 +18,6 @@ export class WalletPage {
     await this.page.goto(this.baseURL)
   }
 
-
   /**
    * Connect by copy pasting URI from clipboard
    */
