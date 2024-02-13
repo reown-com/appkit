@@ -56,6 +56,16 @@ export function useDisconnect() {
   }
 }
 
+export function useSwitchNetwork() {
+  async function switchNetwork(chainId: number) {
+    await modal?.switchNetwork(chainId)
+  }
+
+  return {
+    switchNetwork
+  }
+}
+
 export function useWeb3ModalAccount() {
   if (!modal) {
     throw new Error('Please call "createWeb3Modal" before using "useWeb3ModalAccount" composition')
