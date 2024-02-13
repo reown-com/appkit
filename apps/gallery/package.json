@@ -12,7 +12,7 @@
     "@web3modal/common": "4.0.4",
     "@web3modal/ui": "4.0.4",
     "lit": "3.1.0",
-    "storybook": "7.6.7"
+    "storybook": "^7.6.15"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "7.6.7",
