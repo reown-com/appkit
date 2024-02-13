@@ -121,7 +121,7 @@ export class W3mAccountView extends LitElement {
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
-        ${this.emailCardTemplate()}
+        ${this.emailCardTemplate()} ${this.emailBtnTemplate()}
 
         <wui-list-item
           .variant=${networkImage ? 'image' : 'icon'}
@@ -193,7 +193,7 @@ export class W3mAccountView extends LitElement {
       <wui-notice-card
         @click=${this.onGoToUpgradeView.bind(this)}
         label="Upgrade your wallet"
-        description="Transition to a non-custodial wallet"
+        description="Transition to a self-custodial wallet"
         icon="wallet"
       ></wui-notice-card>
     `
@@ -216,6 +216,28 @@ export class W3mAccountView extends LitElement {
         Block Explorer
         <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
       </wui-button>
+    `
+  }
+
+  private emailBtnTemplate() {
+    const type = StorageUtil.getConnectedConnector()
+    const emailConnector = ConnectorController.getEmailConnector()
+    if (!emailConnector || type !== 'EMAIL') {
+      return null
+    }
+    const email = emailConnector.provider.getEmail() ?? ''
+
+    return html`
+      <wui-list-item
+        variant="icon"
+        iconVariant="overlay"
+        icon="mail"
+        iconSize="sm"
+        ?chevron=${true}
+        @click=${() => this.onGoToUpdateEmail(email)}
+      >
+        <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
+      </wui-list-item>
     `
   }
 
@@ -274,6 +296,10 @@ export class W3mAccountView extends LitElement {
   private onGoToUpgradeView() {
     EventsController.sendEvent({ type: 'track', event: 'EMAIL_UPGRADE_FROM_MODAL' })
     RouterController.push('UpgradeEmailWallet')
+  }
+
+  private onGoToUpdateEmail(email: string) {
+    RouterController.push('UpdateEmailWallet', { email })
   }
 }
 

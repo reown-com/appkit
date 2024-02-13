@@ -69,13 +69,11 @@ import { recycleHorizontalSvg } from '../../assets/svg/recycle-horizontal.js'
 import { bankSvg } from '../../assets/svg/bank.js'
 import { cardSvg } from '../../assets/svg/card.js'
 import { plusSvg } from '../../assets/svg/plus.js'
-import { alphaSvg } from '../../assets/svg/alpha.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   add: addSvg,
   allWallets: allWalletsSvg,
   arrowBottomCircle: arrowBottomCircleSvg,
-  alpha: alphaSvg,
   appStore: appStoreSvg,
   apple: appleSvg,
   arrowBottom: arrowBottomSvg,

@@ -31,7 +31,7 @@ export default css`
     right: var(--wui-spacing-m);
   }
 
-  .alphaBanner {
+  .betaBanner {
     padding: 10px 12px 10px 10px;
     border-radius: var(--wui-border-radius-s);
     background: var(--wui-accent-glass-010);
