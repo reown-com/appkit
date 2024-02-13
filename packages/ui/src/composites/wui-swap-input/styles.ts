@@ -8,13 +8,14 @@ export default css`
     align-items: center;
     background: var(--wui-gray-glass-002);
     border: 1px solid var(--wui-gray-glass-002);
-    border-radius: var(--wui-border-radius-s);
-    padding: var(--wui-spacing-xl);
-    padding-right: var(--wui-spacing-s);
+    border-radius: 24px;
+    padding: var(--wui-spacing-s);
+    padding-left: var(--wui-spacing-m);
     width: 100%;
     box-sizing: border-box;
     position: relative;
     transition: background 0.2s linear;
+    gap: var(--wui-spacing-l);
   }
 
   :host > wui-flex.focus {
@@ -53,6 +54,10 @@ export default css`
     line-height: 130%;
     letter-spacing: -1.28px;
     outline: none;
+  }
+
+  :host > wui-flex .swap-input input::placeholder {
+    color: var(--wui-color-fg-275);
   }
 
   :host > wui-flex .swap-input input:focus-visible {

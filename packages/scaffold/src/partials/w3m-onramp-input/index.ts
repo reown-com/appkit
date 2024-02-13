@@ -25,7 +25,7 @@ export class W3mOnrampInput extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: String }) public type: 'Token' | 'Fiat' = 'Token'
 
-  @property({ type: Number }) public value = 0
+  @property({ type: Number }) public value
 
   @state() public currencies: Currency[] | null = []
 
@@ -83,7 +83,7 @@ export class W3mOnrampInput extends LitElement {
     return html`
       <wui-swap-input
         .currency=${this.selectedCurrency}
-        .value=${this.value.toString()}
+        .value=${this.value?.toString()}
         .onSelect=${() => ModalController.open({ view: `OnRamp${this.type}Select` })}
         .type=${this.type}
       >

@@ -67,11 +67,11 @@ export class W3mOnrampWidget extends LitElement {
           <w3m-onramp-input
             type="Fiat"
             @inputChange=${this.onPaymentAmountChange.bind(this)}
-            .value=${this.paymentAmount || 0}
+            .value=${this.paymentAmount}
           ></w3m-onramp-input>
           <w3m-onramp-input
             type="Token"
-            .value=${this.purchaseAmount || 0}
+            .value=${this.purchaseAmount}
             .loading=${this.quoteLoading}
           ></w3m-onramp-input>
           <wui-flex justifyContent="space-evenly" class="amounts-container" gap="xs">

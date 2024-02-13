@@ -43,10 +43,11 @@ export class WuiSwapInput extends LitElement {
           <input
             @focusin=${() => this.onFocusChange(true)}
             @focusout=${() => this.onFocusChange(false)}
-            .value=${this.value || ''}
+            .value=${this.value}
             ?disabled=${this.disabled}
             @input=${this.dispatchInputChangeEvent.bind(this)}
             type="number"
+            placeholder="0"
           />
         </wui-flex>
         ${this.templateTokenSelectButton()}
