@@ -3,6 +3,7 @@ import type { Chain } from '@wagmi/core/chains'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 import type { Connector } from '@wagmi/core'
+import { http } from 'viem'
 
 export function getCaipDefaultChain(chain?: Chain) {
   if (!chain) {
@@ -42,14 +43,13 @@ export function getEmailCaipNetworks() {
   }
 }
 
-export function getWalletConnectRPCUrl({
-  chainId,
-  projectId
-}: {
-  chainId: number
-  projectId: string
-}) {
+export function getTransport({ chainId, projectId }: { chainId: number; projectId: string }) {
   const RPC_URL = CoreHelperUtil.getBlockchainApiUrl()
+  const supportedChains = Object.values(PresetsUtil.WalletConnectRpcChainIds)
 
-  return `${RPC_URL}/v1/?chainId=${ConstantsUtil.EIP155}:${chainId}&projectId=${projectId}`
+  if (!supportedChains.includes(chainId)) {
+    return http()
+  }
+
+  return http(`${RPC_URL}/v1/?chainId=${ConstantsUtil.EIP155}:${chainId}&projectId=${projectId}`)
 }

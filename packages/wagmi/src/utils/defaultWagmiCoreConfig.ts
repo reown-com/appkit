@@ -1,11 +1,11 @@
 import '@web3modal/polyfills'
 
 import type { CreateConfigParameters, CreateConnectorFn } from '@wagmi/core'
-import { createConfig, http } from '@wagmi/core'
+import { createConfig } from '@wagmi/core'
 import { coinbaseWallet, walletConnect, injected } from '@wagmi/connectors'
 
 import { emailConnector } from '../connectors/EmailConnector.js'
-import { getWalletConnectRPCUrl } from './helpers.js'
+import { getTransport } from './helpers.js'
 
 export type ConfigOptions = Partial<CreateConfigParameters> & {
   chains: CreateConfigParameters['chains']
@@ -37,7 +37,7 @@ export function defaultWagmiConfig({
   const connectors: CreateConnectorFn[] = []
   const transportsArr = chains.map(chain => [
     chain.id,
-    http(getWalletConnectRPCUrl({ chainId: chain.id, projectId }))
+    getTransport({ chainId: chain.id, projectId })
   ])
   const transports = Object.fromEntries(transportsArr)
 
