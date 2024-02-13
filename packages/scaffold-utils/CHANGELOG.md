@@ -1,5 +1,25 @@
 # @web3modal/scaffold-utils
 
+## 4.0.5
+
+### Patch Changes
+
+- [#1917](https://github.com/WalletConnect/web3modal/pull/1917) [`f79566c`](https://github.com/WalletConnect/web3modal/commit/f79566ca5119fa12795dd49fce01aea8e1a05d97) Thanks [@tomiir](https://github.com/tomiir)! - Replaces public url with blockchain api for supported networks
+
+- Updated dependencies [[`f79566c`](https://github.com/WalletConnect/web3modal/commit/f79566ca5119fa12795dd49fce01aea8e1a05d97)]:
+  - @web3modal/polyfills@4.0.5
+  - @web3modal/scaffold@4.0.5
+
+## 4.0.4
+
+### Patch Changes
+
+- Fix theming issue for email
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.0.4
+  - @web3modal/polyfills@4.0.4
+
 ## 4.0.3
 
 ### Patch Changes
