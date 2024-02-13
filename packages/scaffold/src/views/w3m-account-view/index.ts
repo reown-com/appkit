@@ -193,7 +193,7 @@ export class W3mAccountView extends LitElement {
       <wui-notice-card
         @click=${this.onGoToUpgradeView.bind(this)}
         label="Upgrade your wallet"
-        description="Transition to a non-custodial wallet"
+        description="Transition to a self-custodial wallet"
         icon="wallet"
       ></wui-notice-card>
     `
