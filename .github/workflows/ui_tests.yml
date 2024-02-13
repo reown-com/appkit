@@ -39,7 +39,7 @@ on:
 jobs:
   ui_tests:
     name: 'Playwright Tests'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-runners
     timeout-minutes: 15
     steps:
       - name: checkout
