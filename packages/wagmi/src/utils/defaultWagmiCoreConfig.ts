@@ -5,6 +5,7 @@ import { createConfig, http } from '@wagmi/core'
 import { coinbaseWallet, walletConnect, injected } from '@wagmi/connectors'
 
 import { emailConnector } from '../connectors/EmailConnector.js'
+import { getWalletConnectRPCUrl } from './helpers.js'
 
 export type ConfigOptions = Partial<CreateConfigParameters> & {
   chains: CreateConfigParameters['chains']
@@ -34,7 +35,10 @@ export function defaultWagmiConfig({
   ...wagmiConfig
 }: ConfigOptions) {
   const connectors: CreateConnectorFn[] = []
-  const transportsArr = chains.map(chain => [chain.id, http()])
+  const transportsArr = chains.map(chain => [
+    chain.id,
+    http(getWalletConnectRPCUrl({ chainId: chain.id, projectId }))
+  ])
   const transports = Object.fromEntries(transportsArr)
 
   // Enabled by default

@@ -1,4 +1,4 @@
-import type { CaipNetwork, CaipNetworkId } from '@web3modal/scaffold'
+import { CoreHelperUtil, type CaipNetwork, type CaipNetworkId } from '@web3modal/scaffold'
 import type { Chain } from '@wagmi/core/chains'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
@@ -40,4 +40,16 @@ export function getEmailCaipNetworks() {
       id => `${ConstantsUtil.EIP155}:${id}`
     ) as CaipNetworkId[]
   }
+}
+
+export function getWalletConnectRPCUrl({
+  chainId,
+  projectId
+}: {
+  chainId: number
+  projectId: string
+}) {
+  const RPC_URL = CoreHelperUtil.getBlockchainApiUrl()
+
+  return `${RPC_URL}/v1/?chainId=${ConstantsUtil.EIP155}:${chainId}&projectId=${projectId}`
 }
