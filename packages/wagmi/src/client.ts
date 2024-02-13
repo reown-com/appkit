@@ -384,9 +384,14 @@ export class Web3Modal extends Web3ModalScaffold {
   ) {
     if (typeof window !== 'undefined' && connector) {
       super.setLoading(true)
+
       const provider = (await connector.getProvider()) as W3mFrameProvider
       const isLoginEmailUsed = provider.getLoginEmailUsed()
       super.setLoading(isLoginEmailUsed)
+      if (isLoginEmailUsed) {
+        this.setIsConnected(false)
+      }
+
       provider.onRpcRequest(request => {
         if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
           super.open({ view: 'ApproveTransaction' })
@@ -396,6 +401,7 @@ export class Web3Modal extends Web3ModalScaffold {
         super.close()
       })
       provider.onIsConnected(() => {
+        this.setIsConnected(true)
         super.setLoading(false)
       })
     }
