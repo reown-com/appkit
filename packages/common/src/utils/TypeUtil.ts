@@ -9,7 +9,7 @@ export type TransactionDirection = 'in' | 'out' | 'self'
 
 export type TransactionImage = {
   type: 'FUNGIBLE' | 'NFT' | undefined
-  url: string
+  url: string | undefined
 }
 
 export interface Transaction {

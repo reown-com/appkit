@@ -1,5 +1,15 @@
 # @web3modal/siwe
 
+## 4.0.4
+
+### Patch Changes
+
+- Fix theming issue for email
+
+- Updated dependencies []:
+  - @web3modal/core@4.0.4
+  - @web3modal/scaffold-utils@4.0.4
+
 ## 4.0.3
 
 ### Patch Changes
