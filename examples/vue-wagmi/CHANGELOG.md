@@ -1,5 +1,14 @@
 # @examples/vue-wagmi
 
+## 4.0.4
+
+### Patch Changes
+
+- Fix theming issue for email
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.0.4
+
 ## 4.0.3
 
 ### Patch Changes
