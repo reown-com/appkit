@@ -31,6 +31,7 @@ testMW(
     // Webkit cannot use clipboard.
     if (browserName === 'webkit') {
       testMW.skip()
+
       return
     }
     await modalPage.sign()
@@ -65,7 +66,7 @@ testMW(
 
       return
     }
-    // until all namespaces are allowed
+    // Until all namespaces are allowed
     testMW.skip()
     let targetChain = 'Polygon'
     await modalPage.switchNetwork(targetChain)
