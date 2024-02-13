@@ -8,7 +8,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "playwright:start": "npm run dev:laboratory",
     "playwright:install": "npx playwright install --with-deps",
-    "playwright:test": "npx playwright test --grep-invert canary.spec.ts",
+    "playwright:test": "npx playwright test --grep 'connect.spec.ts|basic-tests.spec.ts|siwe.spec.ts'",
     "playwright:test:wallet": "npx playwright test --grep connect.spec.ts",
     "playwright:test:canary": "npx playwright test --grep canary.spec.ts",
     "playwright:debug": "npx playwright test --debug --grep-invert canary.spec.ts",

@@ -8,4 +8,4 @@ export const DEFAULT_SESSION_PARAMS: SessionParams = {
   optAccounts: ['1', '2'],
   accept: true
 }
-export const DEFAULT_CHAIN_NAME = process.env['DEFAULT_CHAIN_NAME'] || 'Sepolia'
+export const DEFAULT_CHAIN_NAME = process.env['DEFAULT_CHAIN_NAME'] || 'Ethereum'

@@ -12,9 +12,9 @@ const PERMUTATIONS = DEVICES.flatMap(device => LIBRARIES.map(library => ({ devic
 export default defineConfig<ModalFixture>({
   testDir: './tests',
 
-  fullyParallel: false,
-  retries: 3,
-  workers: 1,
+  fullyParallel: true,
+  retries: 2,
+  workers: 6,
   reporter: process.env['CI']
     ? [['list'], ['html', { open: 'never' }]]
     : [['list'], ['html', { host: '0.0.0.0' }]],

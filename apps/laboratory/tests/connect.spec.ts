@@ -66,8 +66,6 @@ testMW(
 
       return
     }
-    // Until all namespaces are allowed
-    testMW.skip()
     let targetChain = 'Polygon'
     await modalPage.switchNetwork(targetChain)
     await modalPage.sign()
@@ -76,7 +74,7 @@ testMW(
     await modalValidator.expectAcceptedSign()
 
     // Switch to Ethereum
-    targetChain = 'Sepolia'
+    targetChain = 'Ethereum'
     await modalPage.switchNetwork(targetChain)
     await modalPage.sign()
     await walletValidator.expectReceivedSign({ chainName: targetChain })
