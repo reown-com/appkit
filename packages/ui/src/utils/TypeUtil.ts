@@ -51,7 +51,7 @@ export type SpacingType =
   | 'xxl'
   | 'xxs'
 
-export type BorderRadiusType = Exclude<SpacingType, 'xl' | 'xxl'>
+export type BorderRadiusType = Exclude<SpacingType, '1xs' | 'xl' | 'xxl'> | 'xs'
 
 export type FlexDirectionType = 'column-reverse' | 'column' | 'row-reverse' | 'row'
 

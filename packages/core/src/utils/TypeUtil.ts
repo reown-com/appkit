@@ -154,35 +154,6 @@ export interface BlockchainApiTransactionsResponse {
   next: string | null
 }
 
-export interface CoinbaseApiTransactionsRequest {
-  pageSize: number
-  pageKey: string
-  accountAddress: string
-}
-
-export interface CoinbaseApiTransactionsResponse {
-  transactions: CoinbaseTransaction[]
-  next_page_key: string
-  total_count: number
-}
-
-export interface CoinbaseAmount {
-  value: string
-  currency: string
-}
-
-export interface CoinbaseTransaction {
-  status: string
-  purchaseCurrency: string
-  purchase_network: string
-  payment_total: CoinbaseAmount
-  payment_subtotal: CoinbaseAmount
-  purchase_amount: CoinbaseAmount
-  created_at: string
-  purchase_currency: string
-  transaction_id: string
-}
-
 // -- OptionsController Types ---------------------------------------------------
 export interface Token {
   address: string
@@ -398,4 +369,65 @@ export interface SIWEConfig extends SIWEClientMethods {
   signOutOnAccountChange?: boolean
   // Defaults to true
   signOutOnNetworkChange?: boolean
+}
+
+// Onramp Types
+export type DestinationWallet = {
+  address: string
+  blockchains: string[]
+  assets: string[]
+}
+
+export type GenerateOnRampUrlArgs = {
+  destinationWallets: DestinationWallet[]
+  partnerUserId: string
+  defaultNetwork?: string
+  purchaseAmount?: number
+  paymentAmount?: number
+}
+
+export type CoinbaseNetwork = {
+  name: string
+  display_name: string
+  chain_id: string
+  contract_address: string
+}
+
+export type PaymentLimits = {
+  id: string
+  min: string
+  max: string
+}
+
+export type PaymentCurrency = {
+  id: string
+  payment_method_limits: PaymentLimits[]
+}
+
+export type QuoteAmount = {
+  amount: string
+  currency: string
+}
+
+export type PurchaseCurrency = {
+  id: string
+  name: string
+  symbol: string
+  networks: CoinbaseNetwork[]
+}
+
+export type OnrampQuote = {
+  paymentTotal: QuoteAmount
+  paymentSubtotal: QuoteAmount
+  purchaseAmount: QuoteAmount
+  coinbaseFee: QuoteAmount
+  networkFee: QuoteAmount
+  quoteId: string
+}
+
+export type GetQuoteArgs = {
+  purchaseCurrency: PurchaseCurrency
+  paymentCurrency: PaymentCurrency
+  amount: string
+  network: string
 }

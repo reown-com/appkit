@@ -19,8 +19,10 @@ export interface RouterControllerState {
     | 'EmailVerifyDevice'
     | 'GetWallet'
     | 'Networks'
-    | 'OnRampProviders'
     | 'OnRampActivity'
+    | 'OnRampFiatSelect'
+    | 'OnRampProviders'
+    | 'OnRampTokenSelect'
     | 'SwitchNetwork'
     | 'Transactions'
     | 'UnsupportedChain'
@@ -28,9 +30,9 @@ export interface RouterControllerState {
     | 'UpdateEmailPrimaryOtp'
     | 'UpdateEmailSecondaryOtp'
     | 'UpgradeEmailWallet'
-    | 'WhatIsABuy'
     | 'WhatIsANetwork'
     | 'WhatIsAWallet'
+    | 'WhatIsABuy'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

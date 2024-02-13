@@ -1,10 +1,11 @@
-import type { Web3ModalScaffold } from '@web3modal/scaffold'
 import { onUnmounted, reactive, ref } from 'vue'
 import type {
   W3mAccountButton,
   W3mButton,
   W3mConnectButton,
-  W3mNetworkButton
+  W3mNetworkButton,
+  W3mOnrampWidget,
+  Web3ModalScaffold
 } from '@web3modal/scaffold'
 
 type OpenOptions = Parameters<Web3ModalScaffold['open']>[0]
@@ -19,6 +20,7 @@ declare module '@vue/runtime-core' {
     W3mAccountButton: Pick<W3mAccountButton, 'disabled' | 'balance'>
     W3mButton: Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
     W3mNetworkButton: Pick<W3mNetworkButton, 'disabled'>
+    W3mOnrampWidget: Pick<W3mOnrampWidget, 'disabled'>
   }
 }
 

@@ -1,5 +1,15 @@
 # @web3modal/scaffold-utils
 
+## 4.0.4
+
+### Patch Changes
+
+- Fix theming issue for email
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.0.4
+  - @web3modal/polyfills@4.0.4
+
 ## 4.0.3
 
 ### Patch Changes
