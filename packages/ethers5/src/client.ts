@@ -799,7 +799,7 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async switchNetwork(chainId: number) {
+  public async switchNetwork(chainId: number) {
     const provider = EthersStoreUtil.state.provider
     const providerType = EthersStoreUtil.state.providerType
     if (this.chains) {
