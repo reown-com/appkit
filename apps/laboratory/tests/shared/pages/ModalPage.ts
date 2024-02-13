@@ -34,6 +34,14 @@ export class ModalPage {
     await this.page.getByTestId('copy-wc2-uri').click()
   }
 
+  async getConnectUri(): Promise<string> {
+    await this.page.goto(this.url)
+    await this.connectButton.click()
+    await this.page.getByTestId('wallet-selector-walletconnect').click()
+    await this.page.waitForTimeout(1500)
+    return await this.page.getByTestId('wui-qr-code').getAttribute('uri') || ''
+  }
+
   async loginWithEmail(email: string) {
     await this.page.goto(this.url)
     // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text

@@ -18,6 +18,10 @@ export class WalletPage {
     await this.page.goto(this.baseURL)
   }
 
+
+  /**
+   * Connect by copy pasting URI from clipboard
+   */
   async connect() {
     const isVercelPreview = (await this.vercelPreview.count()) > 0
     if (isVercelPreview) {
@@ -30,6 +34,19 @@ export class WalletPage {
     const isMac = process.platform === 'darwin'
     const modifier = isMac ? 'Meta' : 'Control'
     await this.page.keyboard.press(`${modifier}+KeyV`)
+    await this.page.getByTestId('uri-connect-button').click()
+  }
+
+  /**
+   * Connect by inserting provided URI into the input element
+   */
+  async connectWithUri(uri: string) {
+    const isVercelPreview = (await this.vercelPreview.count()) > 0
+    if (isVercelPreview) {
+      await this.vercelPreview.evaluate((iframe: HTMLIFrameElement) => iframe.remove())
+    }
+    await this.gotoHome.click()
+    await this.page.getByTestId('uri-input').fill(uri)
     await this.page.getByTestId('uri-connect-button').click()
   }
 

@@ -1,4 +1,4 @@
-import { DEFAULT_SESSION_PARAMS } from './shared/constants'
+import { DEFAULT_CHAIN_NAME, DEFAULT_SESSION_PARAMS } from './shared/constants'
 import { testMW } from './shared/fixtures/w3m-wallet-fixture'
 
 testMW.beforeEach(
@@ -7,8 +7,8 @@ testMW.beforeEach(
     if (browserName === 'webkit') {
       return
     }
-    await modalPage.copyConnectUriToClipboard()
-    await walletPage.connect()
+    const uri = await modalPage.getConnectUri()
+    await walletPage.connectWithUri(uri)
     await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     await modalValidator.expectConnected()
     await walletValidator.expectConnected()
@@ -31,11 +31,10 @@ testMW(
     // Webkit cannot use clipboard.
     if (browserName === 'webkit') {
       testMW.skip()
-
       return
     }
     await modalPage.sign()
-    await walletValidator.expectReceivedSign({})
+    await walletValidator.expectReceivedSign({chainName: DEFAULT_CHAIN_NAME})
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
   }
@@ -51,7 +50,7 @@ testMW(
       return
     }
     await modalPage.sign()
-    await walletValidator.expectReceivedSign({})
+    await walletValidator.expectReceivedSign({chainName: DEFAULT_CHAIN_NAME})
     await walletPage.handleRequest({ accept: false })
     await modalValidator.expectRejectedSign()
   }
@@ -66,6 +65,8 @@ testMW(
 
       return
     }
+    // until all namespaces are allowed
+    testMW.skip()
     let targetChain = 'Polygon'
     await modalPage.switchNetwork(targetChain)
     await modalPage.sign()
@@ -74,7 +75,7 @@ testMW(
     await modalValidator.expectAcceptedSign()
 
     // Switch to Ethereum
-    targetChain = 'Ethereum'
+    targetChain = 'Sepolia'
     await modalPage.switchNetwork(targetChain)
     await modalPage.sign()
     await walletValidator.expectReceivedSign({ chainName: targetChain })
