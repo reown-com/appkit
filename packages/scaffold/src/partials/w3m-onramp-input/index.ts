@@ -1,6 +1,5 @@
 import { html, LitElement } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 import { customElement } from '@web3modal/ui'
 import styles from './styles.js'
 import {
@@ -16,8 +15,8 @@ type Currency = {
   symbol: string
 }
 
-@customElement('w3m-swap-input')
-export class W3mInputCurrency extends LitElement {
+@customElement('w3m-onramp-input')
+export class W3mOnrampInput extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
@@ -25,12 +24,16 @@ export class W3mInputCurrency extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @property({ type: String }) public type: 'Token' | 'Fiat' = 'Token'
+
   @property({ type: Number }) public value = 0
+
   @state() public currencies: Currency[] | null = []
+
   @state() public selectedCurrency = this.currencies?.[0]
 
   // -- Private ------------------------------------------- //
   @state() private currencyImages = AssetController.state.currencyImages
+
   @state() private tokenImages = AssetController.state.tokenImages
 
   public constructor() {
@@ -58,6 +61,10 @@ export class W3mInputCurrency extends LitElement {
       AssetController.subscribe(val => {
         this.currencyImages = { ...val.currencyImages }
         this.tokenImages = { ...val.tokenImages }
+        this.selectedCurrency =
+          this.type === 'Fiat'
+            ? this.formatPurchaseCurrency(OnRampController.state.purchaseCurrency)
+            : this.formatPaymentCurrency(OnRampController.state.paymentCurrency)
       })
     )
   }
@@ -73,41 +80,36 @@ export class W3mInputCurrency extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const symbol = this.selectedCurrency?.symbol || ''
-    const image = this.currencyImages[symbol] || this.tokenImages[symbol]
-
-    return html` <wui-input-text type="number" size="lg" value=${this.value}>
-      ${this.selectedCurrency
-        ? html` <wui-flex
-            class="currency-container"
-            justifyContent="space-between"
-            alignItems="center"
-            gap="xxs"
-            @click=${() => ModalController.open({ view: `OnRamp${this.type}Select` })}
-          >
-            <wui-image src=${ifDefined(image)}></wui-image>
-            <wui-text color="fg-100"> ${this.selectedCurrency.symbol} </wui-text>
-          </wui-flex>`
-        : html`<wui-loading-spinner></wui-loading-spinner>`}
-    </wui-input-text>`
+    return html`
+      <wui-swap-input
+        .currency=${this.selectedCurrency}
+        .value=${this.value.toString()}
+        .onSelect=${() => ModalController.open({ view: `OnRamp${this.type}Select` })}
+        .type=${this.type}
+      >
+      </wui-swap-input>
+    `
   }
 
   private formatPaymentCurrency(currency: PaymentCurrency) {
     return {
       name: currency.id,
-      symbol: currency.id
+      symbol: currency.id,
+      image: this?.currencyImages?.[currency.id]
     }
   }
+
   private formatPurchaseCurrency(currency: PurchaseCurrency) {
     return {
       name: currency.name,
-      symbol: currency.symbol
+      symbol: currency.symbol,
+      image: this?.tokenImages?.[currency.symbol]
     }
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-swap-input': W3mInputCurrency
+    'w3m-onramp-input': W3mOnrampInput
   }
 }
