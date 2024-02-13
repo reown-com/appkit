@@ -6,7 +6,7 @@ import '../../components/wui-text/index.js'
 import '../wui-transaction-visual/index.js'
 
 import styles from './styles.js'
-import { createRef } from 'lit/directives/ref.js'
+import { createRef, ref } from 'lit/directives/ref.js'
 
 type Target = 'sourceToken' | 'toToken'
 
@@ -41,6 +41,7 @@ export class WuiSwapInput extends LitElement {
       <wui-flex class="${this.focused ? 'focus' : ''}" justifyContent="space-between">
         <wui-flex flex="1" class="swap-input">
           <input
+            ${ref(this.inputElementRef)}
             @focusin=${() => this.onFocusChange(true)}
             @focusout=${() => this.onFocusChange(false)}
             .value=${this.value}

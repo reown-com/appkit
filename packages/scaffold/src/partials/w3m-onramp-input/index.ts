@@ -25,7 +25,7 @@ export class W3mOnrampInput extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: String }) public type: 'Token' | 'Fiat' = 'Token'
 
-  @property({ type: Number }) public value
+  @property({ type: Number }) public value?: number
 
   @state() public currencies: Currency[] | null = []
 
@@ -63,8 +63,8 @@ export class W3mOnrampInput extends LitElement {
         this.tokenImages = { ...val.tokenImages }
         this.selectedCurrency =
           this.type === 'Fiat'
-            ? this.formatPurchaseCurrency(OnRampController.state.purchaseCurrency)
-            : this.formatPaymentCurrency(OnRampController.state.paymentCurrency)
+            ? this.formatPaymentCurrency(OnRampController.state.paymentCurrency)
+            : this.formatPurchaseCurrency(OnRampController.state.purchaseCurrency)
       })
     )
   }

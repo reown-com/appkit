@@ -12,6 +12,10 @@ const PAYMENT_CURRENCY_SYMBOLS: Record<string, string> = {
 
 const BUY_PRESET_AMOUNTS = [100, 250, 500, 1000]
 
+const MIN_AMOUNT = 30
+
+const MAX_AMOUNT = 10000
+
 @customElement('w3m-onramp-widget')
 export class W3mOnrampWidget extends LitElement {
   public static override styles = styles
@@ -96,25 +100,40 @@ export class W3mOnrampWidget extends LitElement {
   }
 
   private templateButton() {
-    return this.connected
-      ? html`<wui-button
-          @click=${this.getQuotes.bind(this)}
-          variant="fill"
-          fullWidth
-          size="lg"
-          borderRadius="xs"
-        >
-          Get quotes
-        </wui-button>`
-      : html`<wui-button
-          @click=${this.openModal.bind(this)}
-          variant="accentBg"
-          fullWidth
-          size="lg"
-          borderRadius="xs"
-        >
-          Connect wallet
-        </wui-button>`
+    const error = this.validateAmount(this.paymentAmount || 0, this.paymentCurrency?.id || '')
+    if (!this.connected) {
+      return html`<wui-button
+        @click=${this.openModal.bind(this)}
+        variant="accentBg"
+        fullWidth
+        size="lg"
+        borderRadius="xs"
+      >
+        Connect wallet
+      </wui-button>`
+    }
+
+    if (error) {
+      return html`<wui-button
+        @click=${this.getQuotes.bind(this)}
+        variant="accent"
+        fullWidth
+        size="lg"
+        borderRadius="xs"
+        ?disabled=${true}
+      >
+        ${error}
+      </wui-button>`
+    }
+
+    return html`<wui-button
+      @click=${this.getQuotes.bind(this)}
+      fullWidth
+      size="lg"
+      borderRadius="xs"
+    >
+      Get quotes
+    </wui-button>`
   }
 
   // -- Private ------------------------------------------- //
@@ -136,6 +155,22 @@ export class W3mOnrampWidget extends LitElement {
   private async selectPresetAmount(amount: number) {
     OnRampController.setPaymentAmount(amount)
     await OnRampController.getQuote()
+  }
+
+  private validateAmount(amount: number, symbol: string): string | null {
+    if (!amount || amount === 0) {
+      return 'Enter an amount'
+    }
+
+    if (amount < MIN_AMOUNT) {
+      return `Buy ${symbol}${MIN_AMOUNT} minimum`
+    }
+
+    if (amount > MAX_AMOUNT) {
+      return `Buy ${symbol}${MAX_AMOUNT} maximum`
+    }
+
+    return null
   }
 }
 
