@@ -860,13 +860,14 @@ export class Web3Modal extends Web3ModalScaffold {
         if (jsonRpcProvider) {
           const balance = await jsonRpcProvider.getBalance(address)
           const formattedBalance = formatEther(balance)
+
           this.setBalance(formattedBalance, chain.currency)
         }
       }
     }
   }
 
-  private async switchNetwork(chainId: number) {
+  public async switchNetwork(chainId: number) {
     const provider = EthersStoreUtil.state.provider
     const providerType = EthersStoreUtil.state.providerType
     if (this.chains) {

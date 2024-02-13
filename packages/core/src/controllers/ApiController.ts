@@ -81,6 +81,18 @@ export const ApiController = {
     AssetController.setConnectorImage(imageId, URL.createObjectURL(blob))
   },
 
+  async _fetchCurrencyImage(countryCode: string) {
+    const imageUrl = `${api.baseUrl}/public/getCurrencyImage/${countryCode}`
+    const blob = await api.getBlob({ path: imageUrl, headers: ApiController._getApiHeaders() })
+    AssetController.setCurrencyImage(countryCode, URL.createObjectURL(blob))
+  },
+
+  async _fetchTokenImage(symbol: string) {
+    const imageUrl = `${api.baseUrl}/public/getTokenImage/${symbol}`
+    const blob = await api.getBlob({ path: imageUrl, headers: ApiController._getApiHeaders() })
+    AssetController.setTokenImage(symbol, URL.createObjectURL(blob))
+  },
+
   async fetchNetworkImages() {
     const { requestedCaipNetworks } = NetworkController.state
     const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean)
@@ -93,6 +105,16 @@ export const ApiController = {
     const { connectors } = ConnectorController.state
     const ids = connectors.map(({ imageId }) => imageId).filter(Boolean)
     await Promise.allSettled((ids as string[]).map(id => ApiController._fetchConnectorImage(id)))
+  },
+
+  async fetchCurrencyImages(currencies: string[] = []) {
+    await Promise.allSettled(
+      currencies.map(currency => ApiController._fetchCurrencyImage(currency))
+    )
+  },
+
+  async fetchTokenImages(tokens: string[] = []) {
+    await Promise.allSettled(tokens.map(token => ApiController._fetchTokenImage(token)))
   },
 
   async fetchFeaturedWallets() {

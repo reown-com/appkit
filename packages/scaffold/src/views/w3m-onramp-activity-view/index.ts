@@ -1,11 +1,12 @@
 import { DateUtil, type Transaction } from '@web3modal/common'
 import {
   AccountController,
+  AssetController,
   OnRampController,
-  BlockchainApiController,
-  OptionsController
+  OptionsController,
+  TransactionsController
 } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import { TransactionUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -27,7 +28,9 @@ export class W3mOnRampActivityView extends LitElement {
 
   @state() protected loading = false
 
-  @state() private coinbaseTransactions: Transaction[] = []
+  @state() private coinbaseTransactions = TransactionsController.state.coinbaseTransactions
+
+  @state() private tokenImages = AssetController.state.tokenImages
 
   public constructor() {
     super()
@@ -36,9 +39,13 @@ export class W3mOnRampActivityView extends LitElement {
         OnRampController.subscribeKey('selectedProvider', val => {
           this.selectedOnRampProvider = val
         }),
+        AssetController.subscribeKey('tokenImages', val => (this.tokenImages = val)),
         () => {
           clearTimeout(this.refetchTimeout)
-        }
+        },
+        TransactionsController.subscribe(val => {
+          this.coinbaseTransactions = { ...val.coinbaseTransactions }
+        })
       ]
     )
     this.fetchTransactions()
@@ -48,14 +55,14 @@ export class W3mOnRampActivityView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" padding="s" gap="xs">
-        ${this.loading ? this.templateLoading() : this.onRampActivitiesTemplate()}
+        ${this.loading ? this.templateLoading() : this.templateTransactionsByYear()}
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
-  private onRampActivitiesTemplate() {
-    return this.coinbaseTransactions?.map(transaction => {
+  private templateTransactions(transactions: Transaction[]) {
+    return transactions?.map(transaction => {
       const date = DateUtil.getRelativeDateFromNow(transaction.metadata.minedAt)
       const transfer = transaction.transfers[0]
       const fungibleInfo = transfer?.fungible_info
@@ -63,6 +70,8 @@ export class W3mOnRampActivityView extends LitElement {
       if (!fungibleInfo) {
         return null
       }
+
+      const icon = fungibleInfo?.icon?.url || this.tokenImages?.[fungibleInfo.symbol || '']
 
       return html`
         <wui-onramp-activity-item
@@ -73,9 +82,47 @@ export class W3mOnRampActivityView extends LitElement {
           purchaseCurrency=${ifDefined(fungibleInfo.symbol)}
           purchaseValue=${transfer.quantity.numeric}
           date=${date}
-          icon=${ifDefined(fungibleInfo.icon?.url)}
+          icon=${ifDefined(icon)}
+          symbol=${ifDefined(fungibleInfo.symbol)}
         ></wui-onramp-activity-item>
       `
+    })
+  }
+
+  private templateTransactionsByYear() {
+    const sortedYearKeys = Object.keys(this.coinbaseTransactions).sort().reverse()
+
+    return sortedYearKeys.map(year => {
+      const yearInt = parseInt(year, 10)
+
+      const sortedMonthIndexes = new Array(12)
+        .fill(null)
+        .map((_, idx) => idx)
+        .reverse()
+
+      return sortedMonthIndexes.map(month => {
+        const groupTitle = TransactionUtil.getTransactionGroupTitle(yearInt, month)
+        const transactions = this.coinbaseTransactions[yearInt]?.[month]
+
+        if (!transactions) {
+          return null
+        }
+
+        return html`
+          <wui-flex flexDirection="column">
+            <wui-flex
+              alignItems="center"
+              flexDirection="row"
+              .padding=${['xs', 's', 's', 's'] as const}
+            >
+              <wui-text variant="paragraph-500" color="fg-200">${groupTitle}</wui-text>
+            </wui-flex>
+            <wui-flex flexDirection="column" gap="xs">
+              ${this.templateTransactions(transactions)}
+            </wui-flex>
+          </wui-flex>
+        `
+      })
     })
   }
 
@@ -101,19 +148,16 @@ export class W3mOnRampActivityView extends LitElement {
 
     this.loading = true
 
-    const coinbaseResponse = await BlockchainApiController.fetchTransactions({
-      account: address,
-      onramp: 'coinbase',
-      projectId
-    })
+    await TransactionsController.fetchTransactions(address, 'coinbase')
 
     this.loading = false
-    this.coinbaseTransactions = coinbaseResponse.data || []
     this.refetchLoadingTransactions()
   }
 
   private refetchLoadingTransactions() {
-    const loadingTransactions = this.coinbaseTransactions.filter(
+    const today = new Date()
+    const currentMonthTxs = this.coinbaseTransactions[today.getFullYear()]?.[today.getMonth()] || []
+    const loadingTransactions = currentMonthTxs.filter(
       transaction => transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
     )
 
@@ -126,13 +170,7 @@ export class W3mOnRampActivityView extends LitElement {
     // Wait 2 seconds before refetching
     this.refetchTimeout = setTimeout(async () => {
       const address = AccountController.state.address
-      const projectId = OptionsController.state.projectId
-      const coinbaseResponse = await BlockchainApiController.fetchTransactions({
-        account: address as `0x${string}`,
-        onramp: 'coinbase',
-        projectId
-      })
-      this.coinbaseTransactions = coinbaseResponse.data || []
+      await TransactionsController.fetchTransactions(address, 'coinbase')
       this.refetchLoadingTransactions()
     }, 3000)
   }

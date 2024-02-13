@@ -1,19 +1,16 @@
 import { DateUtil } from '@web3modal/common'
-import type { Transaction } from '@web3modal/common'
+import type { Transaction, TransactionImage } from '@web3modal/common'
 import {
   AccountController,
   EventsController,
   OptionsController,
-  TransactionsController,
-  AssetController
+  TransactionsController
 } from '@web3modal/core'
-import type { CoinbaseTransaction } from '@web3modal/core'
 import { TransactionUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import type { TransactionType } from '@web3modal/ui/src/utils/TypeUtil.js'
-import type { GroupedTransaction } from '@web3modal/core/src/controllers/TransactionsController.js'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'last-transaction'
@@ -126,24 +123,6 @@ export class W3mTransactionsView extends LitElement {
     })
   }
 
-  private templateRenderCoinbaseTransaction(
-    transaction: CoinbaseTransaction,
-    isLastTransaction: boolean
-  ) {
-    return html`
-      <wui-transaction-list-item
-        type=${`Received ${transaction.purchase_amount.currency}`}
-        id=${isLastTransaction && this.next ? PAGINATOR_ID : ''}
-        status=${transaction.status}
-        price=${transaction.payment_total.value}
-        symbol=${transaction.purchase_amount.currency}
-        amount=${transaction.purchase_amount.value}
-        .images=${[AssetController.state.tokenImages[transaction.purchase_amount.currency]]}
-        .descriptions=${['From Coinbase Pay']}
-      ></wui-transaction-list-item>
-    `
-  }
-
   private templateRenderTransaction(transaction: Transaction, isLastTransaction: boolean) {
     const { date, descriptions, direction, isAllNFT, images, status, transfers, type } =
       this.getTransactionListItemProps(transaction)
@@ -176,7 +155,7 @@ export class W3mTransactionsView extends LitElement {
           status=${status}
           type=${type}
           .onlyDirectionIcon=${true}
-          .images=${[images?.[index]]}
+          .images=${[images[index]] as TransactionImage[]}
           .descriptions=${[description]}
         ></wui-transaction-list-item>`
       })
@@ -195,15 +174,11 @@ export class W3mTransactionsView extends LitElement {
     `
   }
 
-  private templateTransactions(transactions: GroupedTransaction[], isLastGroup: boolean) {
+  private templateTransactions(transactions: Transaction[], isLastGroup: boolean) {
     return transactions.map((transaction, index) => {
       const isLastTransaction = isLastGroup && index === transactions.length - 1
 
-      if (transaction.type === 'coinbase') {
-        return this.templateRenderCoinbaseTransaction(transaction.value, isLastTransaction)
-      }
-
-      return html`${this.templateRenderTransaction(transaction.value, isLastTransaction)}`
+      return html`${this.templateRenderTransaction(transaction, isLastTransaction)}`
     })
   }
 
