@@ -47,9 +47,8 @@ export function getEmailCaipNetworks() {
 
 export function getTransport({ chainId, projectId }: { chainId: number; projectId: string }) {
   const RPC_URL = CoreHelperUtil.getBlockchainApiUrl()
-  const supportedChains = Object.values(PresetsUtil.WalletConnectRpcChainIds)
 
-  if (!supportedChains.includes(chainId)) {
+  if (!PresetsUtil.WalletConnectRpcChainIds.includes(chainId)) {
     return http()
   }
 
