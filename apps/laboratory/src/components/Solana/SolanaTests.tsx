@@ -24,7 +24,7 @@ export function SolanaTests() {
             </Heading>
             <SolanaSignMessageTest />
           </Box>
-          {walletProviderType !== 'injected' && <SolanaSignTypedDataTest />}
+          {!walletProviderType?.includes('injected') && <SolanaSignTypedDataTest />}
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Sign Transaction

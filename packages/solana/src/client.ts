@@ -67,7 +67,6 @@ export class Web3Modal extends Web3ModalScaffold {
         if (caipNetwork) {
           try {
             await this.switchNetwork(caipNetwork)
-            console.log(`switched!`);
           } catch (error) {
             SolStoreUtil.setError(error)
           }
@@ -82,7 +81,6 @@ export class Web3Modal extends Web3ModalScaffold {
               approvedCaipNetworkIds: undefined,
               supportsAllNetworks: true
             }
-            console.log(result)
             /* const provider = await this.WalletConnectConnector.getProvider()
             if (!provider) {
               throw new Error(
@@ -127,9 +125,10 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       connectExternal: async ({ id }) => {
-        await this.walletAdapters[id.toLowerCase() as AdapterKey].connect()
-        const address = this.walletAdapters.phantom.publicKey?.toString() as Address
-        this.setInjectedProvider(this.walletAdapters.phantom as unknown as Provider, address)
+        const adapter = id === 'Trust' ? 'trustWallet' : id.toLocaleLowerCase() as AdapterKey
+        await this.walletAdapters[adapter].connect()
+        const address = this.walletAdapters[adapter].publicKey?.toString() as Address
+        this.setInjectedProvider(this.walletAdapters[adapter] as unknown as Provider, address, adapter)
       },
 
       checkInstalled(ids) {
@@ -183,21 +182,13 @@ export class Web3Modal extends Web3ModalScaffold {
       ...w3mOptions
     } as ScaffoldOptions)
 
-    SolStoreUtil.subscribeKey('address', () => {
-      this.syncAccount()
-    })
-
-    SolStoreUtil.subscribeKey('caipChainId', () => {
-      this.syncNetwork(chainImages)
-    })
-
     this.chains = chains
+    this.syncRequestedNetworks(chains, chainImages)
     SolStoreUtil.setProjectId(options.projectId)
     const chain = SolHelpersUtil.getChainFromCaip(chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : "") as Chain;
     SolStoreUtil.setCurrentChain(chain)
     SolStoreUtil.setChainId(chain?.chainId)
     SolStoreUtil.setCaipChainId(`${chain.name}:${chain.chainId}`)
-
     this.syncNetwork(chainImages)
 
     this.walletAdapters = createWalletAdapters()
@@ -213,8 +204,15 @@ export class Web3Modal extends Web3ModalScaffold {
       qrcode: true
     })
 
-    this.syncRequestedNetworks(chains, chainImages)
     this.syncConnectors()
+
+    SolStoreUtil.subscribeKey('address', () => {
+      this.syncAccount()
+    })
+
+    SolStoreUtil.subscribeKey('caipChainId', () => {
+      this.syncNetwork(chainImages)
+    })
 
     if (typeof window === 'object') {
       setTimeout(() => {
@@ -224,8 +222,8 @@ export class Web3Modal extends Web3ModalScaffold {
       Debugging for mobile
       setTimeout(() => {
         alert(`
-        ${window.phantom?.['solana']?.isPhantom ? 'Phantom is installed' : 'Phantom is not installed'}
-        ${window.solflare?.['isSolflare'] ? 'Solflare is installed' : 'Solflare is not installed'}
+          ${window.phantom?.['solana']?.isPhantom ? 'Phantom is installed' : 'Phantom is not installed'}
+          ${window.solflare?.['isSolflare'] ? 'Solflare is installed' : 'Solflare is not installed'}
         `)
       }, 1500) */
     }
@@ -248,34 +246,18 @@ export class Web3Modal extends Web3ModalScaffold {
     const walletId = localStorage.getItem(SolConstantsUtil.WALLET_ID)
 
     try {
-      switch (walletId) {
-        case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID: {
-          await this.WalletConnectConnector.connect(true)
-          const provider = await this.WalletConnectConnector.getProvider();
-          const accounts = await provider.enable();
-          this.setWalletConnectProvider(accounts[0] as Address)
-          break;
-        }
-        case ConstantsUtil.INJECTED_CONNECTOR_ID: {
-          if (window.solflare) {
-            await this.walletAdapters.solflare.connect()
-            const address = this.walletAdapters.solflare.publicKey?.toString() as Address
-            this.setInjectedProvider(this.walletAdapters.solflare as unknown as Provider, address)
-            break
-          }
-          if (window.phantom) {
-            await this.walletAdapters.phantom.connect()
-            const address = this.walletAdapters.phantom.publicKey?.toString() as Address
-            this.setInjectedProvider(this.walletAdapters.phantom as unknown as Provider, address)
-            break
-          }
-          if (window.trustWallet) {
-            await this.walletAdapters.trust.connect()
-            const address = this.walletAdapters.trust.publicKey?.toString() as Address
-            this.setInjectedProvider(this.walletAdapters.trust as unknown as Provider, address)
-            break
-          }
-
+      if (walletId === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
+        await this.WalletConnectConnector.connect(true)
+        const provider = await this.WalletConnectConnector.getProvider();
+        const accounts = await provider.enable();
+        this.setWalletConnectProvider(accounts[0] as Address)
+      } else {
+        const wallet = walletId?.split('_')[1] as AdapterKey
+        const adapter = this.walletAdapters[wallet]
+        if (window[wallet as keyof Window]) {
+          await adapter.connect()
+          const address = adapter.publicKey?.toString() as Address
+          this.setInjectedProvider(adapter as unknown as Provider, address, wallet)
         }
       }
     } catch (error) {
@@ -432,106 +414,6 @@ export class Web3Modal extends Web3ModalScaffold {
           console.log("switch network error", error)
         }
       }
-
-      /*
-      if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID && chain) {
-        const WalletConnectProvider = provider as unknown as EthereumProvider
-
-        if (WalletConnectProvider) {
-          try {
-            await WalletConnectProvider.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: SolHelpersUtil.numberToHexString(chain.chainId) }]
-            })
-
-            SolStoreUtil.setChainId(chainId)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (switchError: any) {
-            if (
-              switchError.code === SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-              switchError.code === SolConstantsUtil.ERROR_CODE_DEFAULT ||
-              switchError?.data?.originalError?.code ===
-              SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-            ) {
-              await SolHelpersUtil.addSolanaChain(
-                WalletConnectProvider as unknown as Provider,
-                chain
-              )
-            } else {
-              throw new Error('Chain is not supported')
-            }
-          }
-        }
-      } else if (providerType === ConstantsUtil.INJECTED_CONNECTOR_ID && chain) {
-        const InjectedProvider = provider
-        if (InjectedProvider) {
-          try {
-            await InjectedProvider.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: SolHelpersUtil.numberToHexString(chain.chainId) }]
-            })
-            SolStoreUtil.setChainId(chain.chainId)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (switchError: any) {
-            if (
-              switchError.code === SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-              switchError.code === SolConstantsUtil.ERROR_CODE_DEFAULT ||
-              switchError?.data?.originalError?.code ===
-              SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-            ) {
-              await SolHelpersUtil.addSolanaChain(InjectedProvider, chain)
-            } else {
-              throw new Error('Chain is not supported')
-            }
-          }
-        }
-      } else if (providerType === ConstantsUtil.EIP6963_CONNECTOR_ID && chain) {
-        const EIP6963Provider = provider
-
-        if (EIP6963Provider) {
-          try {
-            await EIP6963Provider.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: SolHelpersUtil.numberToHexString(chain.chainId) }]
-            })
-            SolStoreUtil.setChainId(chain.chainId)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (switchError: any) {
-            if (
-              switchError.code === SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-              switchError.code === SolConstantsUtil.ERROR_CODE_DEFAULT ||
-              switchError?.data?.originalError?.code ===
-              SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-            ) {
-              await SolHelpersUtil.addSolanaChain(EIP6963Provider, chain)
-            } else {
-              throw new Error('Chain is not supported')
-            }
-          }
-        }
-      } else if (providerType === ConstantsUtil.COINBASE_CONNECTOR_ID && chain) {
-        const CoinbaseProvider = provider
-        if (CoinbaseProvider) {
-          try {
-            await CoinbaseProvider.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: SolHelpersUtil.numberToHexString(chain.chainId) }]
-            })
-            SolStoreUtil.setChainId(chain.chainId)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (switchError: any) {
-            if (
-              switchError.code === SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-              switchError.code === SolConstantsUtil.ERROR_CODE_DEFAULT ||
-              switchError?.data?.originalError?.code ===
-              SolConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-            ) {
-              await SolHelpersUtil.addSolanaChain(CoinbaseProvider, chain)
-            }
-          }
-        }
-      }
-      */
     }
   }
 
@@ -558,8 +440,8 @@ export class Web3Modal extends Web3ModalScaffold {
     ])
   }
 
-  private async setInjectedProvider(provider: Provider, address: Address) {
-    window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, ConstantsUtil.INJECTED_CONNECTOR_ID)
+  private async setInjectedProvider(provider: Provider, address: Address, adapter: AdapterKey) {
+    window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, `${ConstantsUtil.INJECTED_CONNECTOR_ID}_${adapter}`)
 
     const chainId = SolStoreUtil.state.currentChain?.chainId
     const caipChainId = `${SolStoreUtil.state.currentChain?.name}:${chainId}`
@@ -568,8 +450,7 @@ export class Web3Modal extends Web3ModalScaffold {
       SolStoreUtil.setIsConnected(true)
       SolStoreUtil.setChainId(chainId)
       SolStoreUtil.setCaipChainId(caipChainId)
-      console.log(`set provider type: `, 'Injected');
-      SolStoreUtil.setProviderType('injected')
+      SolStoreUtil.setProviderType(`injected_${adapter}`)
       SolStoreUtil.setProvider(provider)
       this.setAddress(address)
       this.watchInjected(provider)

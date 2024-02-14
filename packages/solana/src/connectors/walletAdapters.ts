@@ -8,7 +8,8 @@ import { TrustWalletAdapter } from '@solana/wallet-adapter-trust'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 
 
-export type AdapterKey = 'phantom' | 'solflare' | 'trust' | 'backpack'
+export type AdapterKey = 'phantom' | 'solflare' | 'trustWallet' | 'backpack'
+export const supportedWallets: AdapterKey[] = ['phantom', 'solflare', 'trustWallet', 'backpack']
 
 export const createWalletAdapters = () => ({
   /* walletConnect: new WalletConnectWalletAdapter({
@@ -18,7 +19,7 @@ export const createWalletAdapters = () => ({
       },
   }), */
   phantom: new PhantomWalletAdapter(),
-  trust: new TrustWalletAdapter(),
+  trustWallet: new TrustWalletAdapter(),
   backpack: new BackpackWalletAdapter(),
   solflare: new SolflareWalletAdapter()
 })
@@ -35,24 +36,16 @@ declare global {
 }
 
 export const syncInjectedWallets = (w3mConnectors: Connector[], adapters: Record<AdapterKey, BaseWalletAdapter>) => {
-  const keysMap = {
-    phantom: 'phantom',
-    solflare: 'solflare',
-    trustWallet: 'trust',
-    backack: 'backpack',
-  } as Record<string, AdapterKey>
-
-  Object.keys(keysMap).map((wallet: string) => {
-    const adapterKey = keysMap[wallet as keyof typeof keysMap] as AdapterKey;
+  supportedWallets.map((wallet) => {
     if (window[wallet as keyof Window]) {
       w3mConnectors.push({
-        id: adapters[adapterKey].name,
+        id: adapters[wallet].name,
         type: 'ANNOUNCED',
-        imageUrl: adapters[adapterKey].icon,
-        name: adapters[adapterKey].name,
-        provider: adapters[adapterKey],
+        imageUrl: adapters[wallet].icon,
+        name: adapters[wallet].name,
+        provider: adapters[wallet],
         info: {
-          rdns: `app.${[keysMap[wallet]]}`,
+          rdns: `app.${wallet}`,
         }
       })
     }

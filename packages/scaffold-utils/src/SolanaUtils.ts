@@ -314,7 +314,7 @@ export interface ClusterSubscribeRequestMethods {
 export interface SolStoreUtilState {
   projectId: string
   provider?: Provider | CombinedProvider | UniversalProvider
-  providerType?: 'walletConnect' | 'injected' | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
+  providerType?: 'walletConnect' | `injected_${string}` | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
   address?: string
   chainId?: string
   caipChainId?: string
