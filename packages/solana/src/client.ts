@@ -81,6 +81,7 @@ export class Web3Modal extends Web3ModalScaffold {
               approvedCaipNetworkIds: undefined,
               supportsAllNetworks: true
             }
+            console.log(result)
             /* const provider = await this.WalletConnectConnector.getProvider()
             if (!provider) {
               throw new Error(
