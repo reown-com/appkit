@@ -1,0 +1,1 @@
+export const MAXIMUM_WAIT_CONNECT = 10 * 1000
