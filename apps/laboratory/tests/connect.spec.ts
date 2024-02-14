@@ -1,15 +1,13 @@
 import { DEFAULT_CHAIN_NAME, DEFAULT_SESSION_PARAMS } from './shared/constants'
 import { testMW } from './shared/fixtures/w3m-wallet-fixture'
 
-testMW.beforeEach(
-  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    const uri = await modalPage.getConnectUri()
-    await walletPage.connectWithUri(uri)
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    await modalValidator.expectConnected()
-    await walletValidator.expectConnected()
-  }
-)
+testMW.beforeEach(async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+  const uri = await modalPage.getConnectUri()
+  await walletPage.connectWithUri(uri)
+  await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+  await modalValidator.expectConnected()
+  await walletValidator.expectConnected()
+})
 
 testMW.afterEach(async ({ modalPage, modalValidator, walletValidator }) => {
   await modalPage.disconnect()
@@ -17,15 +15,12 @@ testMW.afterEach(async ({ modalPage, modalValidator, walletValidator }) => {
   await walletValidator.expectDisconnected()
 })
 
-testMW(
-  'it should sign',
-  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: DEFAULT_CHAIN_NAME })
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
-  }
-)
+testMW('it should sign', async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+  await modalPage.sign()
+  await walletValidator.expectReceivedSign({ chainName: DEFAULT_CHAIN_NAME })
+  await walletPage.handleRequest({ accept: true })
+  await modalValidator.expectAcceptedSign()
+})
 
 testMW(
   'it should reject sign',
