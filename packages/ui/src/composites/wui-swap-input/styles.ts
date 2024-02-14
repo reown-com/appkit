@@ -54,6 +54,7 @@ export default css`
     line-height: 130%;
     letter-spacing: -1.28px;
     outline: none;
+    color: var(--wui-color-fg-100);
   }
 
   :host > wui-flex .swap-input input::placeholder {

@@ -8,8 +8,6 @@ import '../wui-transaction-visual/index.js'
 import styles from './styles.js'
 import { createRef, ref } from 'lit/directives/ref.js'
 
-type Target = 'sourceToken' | 'toToken'
-
 type Currency = {
   name: string
   symbol: string
@@ -30,8 +28,6 @@ export class WuiSwapInput extends LitElement {
   @property() public onSelect?: () => void
 
   @property() public value?: string
-
-  @property() public target: Target = 'sourceToken'
 
   public inputElementRef = createRef<HTMLInputElement>()
 
