@@ -128,6 +128,7 @@ export class Web3Modal extends Web3ModalScaffold {
         const chainId = HelpersUtil.caipNetworkIdToNumber(caipNetwork?.id)
         if (chainId) {
           try {
+            EthersStoreUtil.setError(undefined);
             await this.switchNetwork(chainId)
           } catch (error) {
             EthersStoreUtil.setError(error)
@@ -198,6 +199,7 @@ export class Web3Modal extends Web3ModalScaffold {
             throw new Error('connectionControllerClient:connectInjected - provider is undefined')
           }
           try {
+            EthersStoreUtil.setError(undefined);
             await InjectedProvider.request({ method: 'eth_requestAccounts' })
             this.setInjectedProvider(ethersConfig)
           } catch (error) {
@@ -205,6 +207,7 @@ export class Web3Modal extends Web3ModalScaffold {
           }
         } else if (id === ConstantsUtil.EIP6963_CONNECTOR_ID && info && provider) {
           try {
+            EthersStoreUtil.setError(undefined);
             await provider.request({ method: 'eth_requestAccounts' })
             this.setEIP6963Provider(provider, info.name)
           } catch (error) {
@@ -217,6 +220,7 @@ export class Web3Modal extends Web3ModalScaffold {
           }
 
           try {
+            EthersStoreUtil.setError(undefined);
             await CoinbaseProvider.request({ method: 'eth_requestAccounts' })
             this.setCoinbaseProvider(ethersConfig)
           } catch (error) {
@@ -395,6 +399,7 @@ export class Web3Modal extends Web3ModalScaffold {
       const walletConnectProvider = provider as unknown as EthereumProvider
       if (walletConnectProvider) {
         try {
+          EthersStoreUtil.setError(undefined);
           await walletConnectProvider.disconnect()
         } catch (error) {
           EthersStoreUtil.setError(error)
@@ -440,6 +445,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private async getWalletConnectProvider() {
     if (!this.walletConnectProvider) {
       try {
+        EthersStoreUtil.setError(undefined);
         await this.createProvider()
       } catch (error) {
         EthersStoreUtil.setError(error)
