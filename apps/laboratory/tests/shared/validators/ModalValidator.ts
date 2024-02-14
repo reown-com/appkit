@@ -1,14 +1,16 @@
 import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { ConstantsUtil } from '../../../src/utils/ConstantsUtil'
-import { MAXIMUM_WAIT_CONNECT } from '../constants/timeouts'
+import { getMaximumWaitConnections } from '../utils/timeouts'
+
+const MAX_WAIT = getMaximumWaitConnections()
 
 export class ModalValidator {
   constructor(public readonly page: Page) {}
 
   async expectConnected() {
     await expect(this.page.getByTestId('account-button')).toBeVisible({
-      timeout: MAXIMUM_WAIT_CONNECT
+      timeout: MAX_WAIT
     })
   }
 
@@ -28,7 +30,7 @@ export class ModalValidator {
 
   async expectDisconnected() {
     await expect(this.page.getByTestId('account-button')).not.toBeVisible({
-      timeout: MAXIMUM_WAIT_CONNECT
+      timeout: MAX_WAIT
     })
   }
 

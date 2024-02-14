@@ -1,5 +1,8 @@
 import { expect } from '@playwright/test'
 import type { Locator, Page } from '@playwright/test'
+import { getMaximumWaitConnections } from '../utils/timeouts'
+
+const MAX_WAIT = getMaximumWaitConnections()
 
 export class WalletValidator {
   private readonly gotoSessions: Locator
@@ -10,16 +13,22 @@ export class WalletValidator {
 
   async expectConnected() {
     await this.gotoSessions.click()
-    await expect(this.page.getByTestId('session-card')).toBeVisible()
+    await expect(this.page.getByTestId('session-card')).toBeVisible({
+      timeout: MAX_WAIT
+    })
   }
 
   async expectDisconnected() {
     await this.gotoSessions.click()
-    await expect(this.page.getByTestId('session-card')).not.toBeVisible()
+    await expect(this.page.getByTestId('session-card')).not.toBeVisible({
+      timeout: MAX_WAIT
+    })
   }
 
   async expectReceivedSign({ chainName = 'Ethereum' }) {
-    await expect(this.page.getByTestId('session-approve-button')).toBeVisible()
+    await expect(this.page.getByTestId('session-approve-button')).toBeVisible({
+      timeout: MAX_WAIT
+    })
     await expect(this.page.getByTestId('request-details-chain')).toContainText(chainName)
   }
 }
