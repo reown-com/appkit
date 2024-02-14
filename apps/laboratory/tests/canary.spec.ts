@@ -14,8 +14,8 @@ testMW.beforeEach(
     if (browserName !== 'chromium' || modalPage.library !== 'ethers') {
       return
     }
-    await modalPage.copyConnectUriToClipboard()
-    await walletPage.connect()
+    const uri = await modalPage.getConnectUri()
+    await walletPage.connectWithUri(uri)
     await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     await modalValidator.expectConnected()
     await walletValidator.expectConnected()
