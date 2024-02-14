@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import type { Locator, Page } from '@playwright/test'
+import { expect, type Locator, type Page } from '@playwright/test'
 import { WALLET_URL } from '../constants'
 import type { SessionParams } from '../types'
 
@@ -40,16 +40,20 @@ export class WalletPage {
   async handleSessionProposal(opts: SessionParams) {
     const variant = opts.accept ? `approve` : `reject`
     // `.click` doesn't work here, so we use `.focus` and `Space`
-    await this.page.getByTestId(`session-${variant}-button`).isEnabled()
-    await this.page.getByTestId(`session-${variant}-button`).focus()
+    const btn = this.page.getByTestId(`session-${variant}-button`)
+    await btn.waitFor()
+    await expect(btn).toBeEnabled()
+    await btn.focus()
     await this.page.keyboard.press('Space')
   }
 
   async handleRequest({ accept }: { accept: boolean }) {
     const variant = accept ? `approve` : `reject`
     // `.click` doesn't work here, so we use `.focus` and `Space`
-    await this.page.getByTestId(`session-${variant}-button`).isEnabled()
-    await this.page.getByTestId(`session-${variant}-button`).focus()
+    const btn = this.page.getByTestId(`session-${variant}-button`)
+    await btn.waitFor()
+    await expect(btn).toBeEnabled()
+    await btn.focus()
     await this.page.keyboard.press('Space')
   }
 }
