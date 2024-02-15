@@ -7,16 +7,14 @@ const REGION = process.env['REGION'] || 'eu-central-1'
 
 let startTime = 0
 
-testMW.beforeEach(
-  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    startTime = Date.now()
-    const uri = await modalPage.getConnectUri()
-    await walletPage.connectWithUri(uri)
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    await modalValidator.expectConnected()
-    await walletValidator.expectConnected()
-  }
-)
+testMW.beforeEach(async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+  startTime = Date.now()
+  const uri = await modalPage.getConnectUri()
+  await walletPage.connectWithUri(uri)
+  await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+  await modalValidator.expectConnected()
+  await walletValidator.expectConnected()
+})
 
 testMW.afterEach(async ({ modalPage, modalValidator, walletValidator }) => {
   await modalPage.disconnect()
@@ -24,24 +22,21 @@ testMW.afterEach(async ({ modalPage, modalValidator, walletValidator }) => {
   await walletValidator.expectDisconnected()
 })
 
-testMW(
-  'it should sign',
-  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({})
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
+testMW('it should sign', async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+  await modalPage.sign()
+  await walletValidator.expectReceivedSign({})
+  await walletPage.handleRequest({ accept: true })
+  await modalValidator.expectAcceptedSign()
 
-    if (ENV !== 'dev') {
-      const duration: number = Date.now() - startTime
-      await uploadCanaryResultsToCloudWatch(
-        ENV,
-        REGION,
-        'https://lab.web3modal.com/',
-        'HappyPath.sign',
-        true,
-        duration
-      )
-    }
+  if (ENV !== 'dev') {
+    const duration: number = Date.now() - startTime
+    await uploadCanaryResultsToCloudWatch(
+      ENV,
+      REGION,
+      'https://lab.web3modal.com/',
+      'HappyPath.sign',
+      true,
+      duration
+    )
   }
-)
+})
