@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button, useToast, Stack, Text, Spacer } from '@chakra-ui/react'
-import { Connection, PublicKey, Transaction, TransactionMessage, VersionedTransaction, SystemProgram } from '@solana/web3.js';
+import { PublicKey, Transaction, TransactionMessage, VersionedTransaction, SystemProgram } from '@solana/web3.js';
 
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
@@ -14,8 +14,8 @@ const amountInLamports = 100000000;
 
 export function SolanaSignTransactionTest() {
   const toast = useToast()
-  const { address, chainId, currentChain } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
+  const { address, chainId } = useWeb3ModalAccount()
+  const { walletProvider, connection } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
 
   async function onSignTransaction() {
@@ -25,7 +25,6 @@ export function SolanaSignTransactionTest() {
         throw Error('user is disconnected')
       }
 
-      const connection = new Connection(currentChain?.rpcUrl ?? 'https://api.devnet.solana.com', 'recent');
       // Create a new transaction
       let transaction = new Transaction().add(
         SystemProgram.transfer({
@@ -36,6 +35,9 @@ export function SolanaSignTransactionTest() {
       );
       transaction.feePayer = walletProvider.publicKey;
 
+      if (!connection) {
+        throw ('no connection set')
+      }
       const { blockhash } = await connection.getLatestBlockhash();
 
       transaction.recentBlockhash = blockhash;
@@ -63,7 +65,9 @@ export function SolanaSignTransactionTest() {
         throw Error('user is disconnected')
       }
 
-      const connection = new Connection(currentChain?.rpcUrl ?? 'https://api.devnet.solana.com', 'recent');
+      if (!connection) {
+        throw ('no connection set')
+      }
       const { blockhash } = await connection.getLatestBlockhash();
       const instructions = [
         SystemProgram.transfer({

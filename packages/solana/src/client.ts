@@ -2,7 +2,7 @@ import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { PublicKey } from '@solana/web3.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 
-
+import { Connection } from '@solana/web3.js'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { SolStoreUtil, SolHelpersUtil, SolConstantsUtil } from '@web3modal/scaffold-utils/solana'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
@@ -46,7 +46,6 @@ export class Web3Modal extends Web3ModalScaffold {
   private hasSyncedConnectedAccount = false
 
   private WalletConnectConnector: WalletConnectConnector
-
   private walletAdapters: Record<AdapterKey, BaseWalletAdapter>
 
   private chains: Chain[]
@@ -204,7 +203,7 @@ export class Web3Modal extends Web3ModalScaffold {
       autoconnect: true,
       qrcode: true
     })
-
+    SolStoreUtil.setConnection(new Connection(chain.rpcUrl ?? 'https://api.devnet.solana.com', 'recent'));
     this.syncConnectors()
 
     SolStoreUtil.subscribeKey('address', () => {

@@ -1,6 +1,6 @@
 import type { W3mFrameProvider } from '@web3modal/wallet'
 import type { CaipNetwork, CaipNetworkId } from '@web3modal/scaffold'
-import { PublicKey } from '@solana/web3.js'
+import { Connection, PublicKey } from '@solana/web3.js'
 
 import UniversalProvider from '@walletconnect/universal-provider'
 import { subscribeKey as subKey } from 'valtio/utils'
@@ -321,6 +321,7 @@ export interface SolStoreUtilState {
   currentChain?: Chain
   requestId?: number
   error?: unknown
+  connection: Connection | null
   isConnected: boolean
 }
 
@@ -335,6 +336,7 @@ const state = proxy<SolStoreUtilState>({
   currentChain: undefined,
   chainId: undefined,
   caipChainId: undefined,
+  connection: null,
   isConnected: false
 })
 
@@ -369,6 +371,10 @@ export const SolStoreUtil = {
 
   setAddress(address: string) {
     state.address = address
+  },
+
+  setConnection(connection: Connection) {
+    state.connection = connection
   },
 
   setChainId(chainId: SolStoreUtilState['chainId']) {

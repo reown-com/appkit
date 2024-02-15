@@ -24,7 +24,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 
 // -- Hooks -------------------------------------------------------------------
 export function useWeb3ModalProvider() {
-  const { provider, providerType } = useSnapshot(SolStoreUtil.state)
+  const { provider, providerType, connection } = useSnapshot(SolStoreUtil.state)
 
   const walletProvider = provider as any
 
@@ -32,7 +32,8 @@ export function useWeb3ModalProvider() {
 
   return {
     walletProvider,
-    walletProviderType
+    walletProviderType,
+    connection
   }
 }
 
