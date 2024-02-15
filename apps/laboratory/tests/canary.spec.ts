@@ -2,7 +2,7 @@ import { DEFAULT_SESSION_PARAMS } from './shared/constants'
 import { testMW } from './shared/fixtures/w3m-wallet-fixture'
 import { uploadCanaryResultsToCloudWatch } from './shared/utils/metrics'
 
-const ENV = process.env['ENV'] || 'dev'
+const ENV = process.env['ENVIRONMENT'] || 'dev'
 const REGION = process.env['REGION'] || 'eu-central-1'
 
 let startTime = 0
