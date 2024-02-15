@@ -142,7 +142,7 @@ export class W3mBuyInProgressView extends LitElement {
 
   private async initializeCoinbaseTransactions() {
     await this.watchCoinbaseTransactions()
-    this.intervalId = setInterval(() => this.watchCoinbaseTransactions(), 10000)
+    this.intervalId = setInterval(() => this.watchCoinbaseTransactions(), 4000)
   }
 
   private async watchCoinbaseTransactions() {
@@ -166,11 +166,12 @@ export class W3mBuyInProgressView extends LitElement {
       projectId
     })
 
-    const pendingTransactions = coinbaseResponse.data.filter(
-      tx => tx.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
+    const newTransactions = coinbaseResponse.data.filter(
+      // @ts-expect-error - start time will always be set at this point
+      tx => new Date(tx.metadata.minedAt) > new Date(this.startTime)
     )
 
-    if (pendingTransactions.length && this.intervalId) {
+    if (newTransactions.length && this.intervalId) {
       clearInterval(this.intervalId)
       RouterController.replace('OnRampActivity')
     } else if (this.startTime && Date.now() - this.startTime >= 180_000 && this.intervalId) {
