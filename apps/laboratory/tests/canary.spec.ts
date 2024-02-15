@@ -8,12 +8,8 @@ const REGION = process.env['REGION'] || 'eu-central-1'
 let startTime = 0
 
 testMW.beforeEach(
-  async ({ modalPage, walletPage, modalValidator, walletValidator, browserName }) => {
+  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
     startTime = Date.now()
-    // Canary doesn't need all platforms
-    if (browserName !== 'chromium' || modalPage.library !== 'ethers') {
-      return
-    }
     const uri = await modalPage.getConnectUri()
     await walletPage.connectWithUri(uri)
     await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
@@ -22,11 +18,7 @@ testMW.beforeEach(
   }
 )
 
-testMW.afterEach(async ({ modalPage, modalValidator, walletValidator, browserName }) => {
-  // Canary doesn't need all platforms
-  if (browserName !== 'chromium' || modalPage.library !== 'ethers') {
-    return
-  }
+testMW.afterEach(async ({ modalPage, modalValidator, walletValidator }) => {
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
   await walletValidator.expectDisconnected()
@@ -34,13 +26,7 @@ testMW.afterEach(async ({ modalPage, modalValidator, walletValidator, browserNam
 
 testMW(
   'it should sign',
-  async ({ modalPage, walletPage, modalValidator, walletValidator, browserName }) => {
-    // Canary doesn't need all platforms
-    if (browserName !== 'chromium' || modalPage.library !== 'ethers') {
-      testMW.skip()
-
-      return
-    }
+  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
     await modalPage.sign()
     await walletValidator.expectReceivedSign({})
     await walletPage.handleRequest({ accept: true })
