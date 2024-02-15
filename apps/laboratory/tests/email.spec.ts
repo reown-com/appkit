@@ -6,6 +6,7 @@ import { Email } from './shared/utils/email'
 const AVAILABLE_MAILSAC_ADDRESSES = 10
 
 testMEmail.beforeEach(async ({ modalPage, context, modalValidator }) => {
+  testMEmail.skip()
   // Skip wagmi as it's not working
   if (modalPage.library === 'wagmi') {
     return

@@ -26,12 +26,13 @@ export class ModalPage {
     await this.page.goto(this.url)
   }
 
-  async copyConnectUriToClipboard() {
+  async getConnectUri(): Promise<string> {
     await this.page.goto(this.url)
     await this.connectButton.click()
     await this.page.getByTestId('wallet-selector-walletconnect').click()
-    await this.page.waitForTimeout(2000)
-    await this.page.getByTestId('copy-wc2-uri').click()
+    await this.page.waitForTimeout(1500)
+
+    return (await this.page.getByTestId('wui-qr-code').getAttribute('uri')) || ''
   }
 
   async loginWithEmail(email: string) {
