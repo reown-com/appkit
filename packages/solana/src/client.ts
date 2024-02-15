@@ -106,8 +106,6 @@ export class Web3Modal extends Web3ModalScaffold {
             resolve(result)
           }
         })
-
-
     }
 
     const connectionControllerClient: ConnectionControllerClient = {
@@ -200,11 +198,10 @@ export class Web3Modal extends Web3ModalScaffold {
         icons: ['https://avatars.githubusercontent.com/u/37784886'],
         url: 'https://web3modal.com',
       },
-      autoconnect: true,
+      autoconnect: false,
       qrcode: true
     })
     SolStoreUtil.setConnection(new Connection(chain.rpcUrl ?? 'https://api.devnet.solana.com', 'recent'));
-    this.syncConnectors()
 
     SolStoreUtil.subscribeKey('address', () => {
       this.syncAccount()
@@ -217,6 +214,7 @@ export class Web3Modal extends Web3ModalScaffold {
     if (typeof window === 'object') {
       setTimeout(() => {
         this.checkActiveProviders()
+        this.syncConnectors()
       }, 500)
       /*
       Debugging for mobile
@@ -270,7 +268,6 @@ export class Web3Modal extends Web3ModalScaffold {
     const w3mConnectors: Connector[] = []
 
     const connectorType = PresetsUtil.ConnectorTypesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID] as ConnectorType
-
     w3mConnectors.push({
       id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
       explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],

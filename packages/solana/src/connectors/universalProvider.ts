@@ -24,6 +24,7 @@ export class UniversalProviderFactory {
   }
 
   public static async getProvider() {
+    console.log(`called get provider`, UniversalProviderFactory.provider);
     if (!UniversalProviderFactory.provider) await UniversalProviderFactory.init()
     if (!UniversalProviderFactory.provider)
       throw new Error('Failed to initialize universal provider')

@@ -69,7 +69,6 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     UniversalProviderFactory.getProvider().then(provider => {
       provider.on('session_delete', () => {
         delete provider.session?.namespaces['solana']
-        SolStoreUtil.setAddress('')
       })
     })
 
