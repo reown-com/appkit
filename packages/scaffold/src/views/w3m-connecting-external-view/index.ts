@@ -54,7 +54,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
-          properties: { method: 'external' }
+          properties: { method: 'browser', name: this.connector.name || 'Unknown' }
         })
       }
     } catch (error) {

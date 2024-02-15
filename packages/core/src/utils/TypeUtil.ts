@@ -216,7 +216,8 @@ export type Event =
       type: 'track'
       event: 'CONNECT_SUCCESS'
       properties: {
-        method: 'qrcode' | 'mobile' | 'external' | 'browser' | 'email'
+        method: 'qrcode' | 'mobile' | 'browser' | 'email'
+        name: string
       }
     }
   | {
