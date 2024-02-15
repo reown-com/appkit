@@ -170,13 +170,11 @@ export class W3mBuyInProgressView extends LitElement {
       tx => tx.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
     )
 
-    if (this.intervalId) {
+    if (pendingTransactions.length && this.intervalId) {
       clearInterval(this.intervalId)
-    }
-
-    if (pendingTransactions.length) {
       RouterController.replace('OnRampActivity')
-    } else if (this.startTime && Date.now() - this.startTime >= 180_000) {
+    } else if (this.startTime && Date.now() - this.startTime >= 180_000 && this.intervalId) {
+      clearInterval(this.intervalId)
       this.error = true
     }
   }
