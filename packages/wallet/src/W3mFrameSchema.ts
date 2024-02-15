@@ -100,6 +100,16 @@ export const RpcEthGetTransactionByHash = z.object({
   params: z.array(z.any())
 })
 
+export const RpcEthSendUserOperation = z.object({
+  method: z.literal('eth_sendUserOperation'),
+  params: z.array(z.any())
+})
+
+export const RpcEthEstimateUserOperationGas = z.object({
+  method: z.literal('eth_estimateUserOperationGas'),
+  params: z.array(z.any())
+})
+
 export const RpcEthBlockNumber = z.object({
   method: z.literal('eth_blockNumber')
 })
@@ -144,6 +154,8 @@ export const W3mFrameSchema = {
           .or(RpcEthBlockNumber)
           .or(RpcEthChainId)
           .or(RpcEthGetTransactionByHash)
+          .or(RpcEthSendUserOperation)
+          .or(RpcEthEstimateUserOperationGas)
       })
     )
 
