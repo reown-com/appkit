@@ -28,6 +28,8 @@ export class ModalPage {
 
   assertDefined<T>(value: T | undefined | null): T {
     expect(value).toBeDefined()
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return value!
   }
 
