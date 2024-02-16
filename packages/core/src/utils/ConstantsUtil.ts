@@ -59,7 +59,8 @@ export const ConstantsUtil = {
     Polygon: 'polygon',
     Avalanche: 'avalanche-c-chain',
     'OP Mainnet': 'optimism',
-    Celo: 'celo'
+    Celo: 'celo',
+    Base: 'base'
   },
 
   WC_COINBASE_ONRAMP_APP_ID: 'bf18c88d-495a-463b-b249-0b9d3656cf5e'

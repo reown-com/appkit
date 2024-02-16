@@ -45,6 +45,7 @@ export class W3mOnRampActivityView extends LitElement {
           clearTimeout(this.refetchTimeout)
         },
         TransactionsController.subscribe(val => {
+          console.log('Coinbase Transactions updated', val.coinbaseTransactions)
           this.coinbaseTransactions = { ...val.coinbaseTransactions }
         })
       ]
@@ -158,9 +159,13 @@ export class W3mOnRampActivityView extends LitElement {
   private refetchLoadingTransactions() {
     const today = new Date()
     const currentMonthTxs = this.coinbaseTransactions[today.getFullYear()]?.[today.getMonth()] || []
+
+    console.log('Activity - Current month transactions', currentMonthTxs)
     const loadingTransactions = currentMonthTxs.filter(
       transaction => transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
     )
+
+    console.log('Activity - Loading Transactions', loadingTransactions)
 
     if (loadingTransactions.length === 0) {
       clearTimeout(this.refetchTimeout)
@@ -171,6 +176,7 @@ export class W3mOnRampActivityView extends LitElement {
     // Wait 2 seconds before refetching
     this.refetchTimeout = setTimeout(async () => {
       const address = AccountController.state.address
+      console.log('Refetching transactions')
       await TransactionsController.fetchTransactions(address, 'coinbase')
       this.refetchLoadingTransactions()
     }, 3000)
