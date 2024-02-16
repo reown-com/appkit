@@ -105,7 +105,7 @@ export const TransactionsController = {
         monthTransactions.find(
           t =>
             t.metadata.minedAt === transaction.metadata.minedAt ||
-            transaction.metadata.hash === t.metadata.hash
+            t.metadata.hash === transaction.metadata.hash
         )
       ) {
         return
