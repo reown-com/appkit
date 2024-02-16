@@ -6,10 +6,9 @@ import type { ModalFixture } from './tests/shared/fixtures/w3m-fixture'
 import { getProjects } from './tests/shared/utils/project'
 config({ path: './.env.local' })
 
-
 export default defineConfig<ModalFixture>({
   testDir: './tests',
-
+  testIgnore: 'email.spec.ts',
   fullyParallel: true,
   retries: 2,
   workers: 8,

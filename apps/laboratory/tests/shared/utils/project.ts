@@ -1,5 +1,5 @@
-import { devices } from "@playwright/test"
-import { getAvailableDevices } from "./device";
+import { devices } from '@playwright/test'
+import { getAvailableDevices } from './device'
 
 const availableDevices = getAvailableDevices()
 
@@ -10,41 +10,42 @@ const PERMUTATIONS = availableDevices.flatMap(device =>
 )
 
 interface CustomProperties {
-  testIgnore?: string,
+  testIgnore?: string
   testMatch?: string
 }
 
-export interface CustomProjectProperties {
-  [key: string] : CustomProperties
+export type CustomProjectProperties = {
+  [T in string]: CustomProperties
 }
 
 const customProjectProperties: CustomProjectProperties = {
-  'Desktop Chrome/wagmi' : {
+  'Desktop Chrome/wagmi': {
     testIgnore: 'email.spec.ts'
   },
-  'Desktop Firefox/wagmi' : {
+  'Desktop Firefox/wagmi': {
     testIgnore: 'email.spec.ts'
   },
-  'Desktop Safari/wagmi' : {
+  'Desktop Safari/wagmi': {
     testIgnore: 'email.spec.ts'
-  },
+  }
 }
 
 export interface Permutation {
-  device: string,
+  device: string
   library: string
 }
 
-export function getProjects(){
+export function getProjects() {
   return PERMUTATIONS.map(({ device, library }) => {
     let project = {
       name: `${device}/${library}`,
-      use: { ...devices[device], library },
+      use: { ...devices[device], library }
     }
     const props = customProjectProperties[project.name]
-    if(props){
-      project = {...project,...props}
+    if (props) {
+      project = { ...project, ...props }
     }
+
     return project
   })
 }
