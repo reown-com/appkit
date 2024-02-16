@@ -5,7 +5,8 @@ import {
   RouterController,
   ConnectorController,
   SnackController,
-  EventsController
+  EventsController,
+  CoreHelperUtil
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 
@@ -78,10 +79,15 @@ export class W3mEmailVerifyDeviceView extends LitElement {
   // -- Private ------------------------------------------- //
   private async listenForDeviceApproval() {
     if (this.emailConnector) {
-      await this.emailConnector.provider.connectDevice()
-      EventsController.sendEvent({ type: 'track', event: 'DEVICE_REGISTERED_FOR_EMAIL' })
-      EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_SENT' })
-      RouterController.replace('EmailVerifyOtp', { email: this.email })
+      try {
+        await this.emailConnector.provider.connectDevice()
+        EventsController.sendEvent({ type: 'track', event: 'DEVICE_REGISTERED_FOR_EMAIL' })
+        EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_SENT' })
+        RouterController.replace('EmailVerifyOtp', { email: this.email })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        RouterController.goBack()
+      }
     }
   }
 

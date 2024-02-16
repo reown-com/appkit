@@ -88,7 +88,7 @@ export class W3mEmailOtpWidget extends LitElement {
               ></wui-otp>
               ${this.error
                 ? html`
-                    <wui-text variant="small-400" color="error-100">
+                    <wui-text variant="small-400" align="center" color="error-100">
                       ${this.error}. Try Again
                     </wui-text>
                   `
