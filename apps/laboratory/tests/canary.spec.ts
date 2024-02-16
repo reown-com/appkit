@@ -8,7 +8,8 @@ const REGION = process.env['REGION'] || 'eu-central-1'
 let startTime = 0
 
 testMW.beforeEach(async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-  testMW.setTimeout(120_000) // give us extra time in a potentially slow canary deployment
+  // Give us extra time in a potentially slow canary deployment
+  testMW.setTimeout(120_000)
 
   startTime = Date.now()
   const uri = await modalPage.getConnectUri()
