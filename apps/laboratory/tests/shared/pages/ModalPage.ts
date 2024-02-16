@@ -26,13 +26,23 @@ export class ModalPage {
     await this.page.goto(this.url)
   }
 
+  assertDefined<T>(value: T | undefined | null): T {
+    expect(value).toBeDefined()
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return value!
+  }
+
   async getConnectUri(): Promise<string> {
     await this.page.goto(this.url)
     await this.connectButton.click()
     await this.page.getByTestId('wallet-selector-walletconnect').click()
-    await this.page.waitForTimeout(1500)
 
-    return (await this.page.getByTestId('wui-qr-code').getAttribute('uri')) || ''
+    // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
+    const qrCode = this.page.locator('wui-qr-code')
+    await expect(qrCode).toBeVisible()
+
+    return this.assertDefined(await qrCode.getAttribute('uri'))
   }
 
   async loginWithEmail(email: string) {

@@ -4,7 +4,7 @@ import { BASE_URL } from './tests/shared/constants'
 import { config } from 'dotenv'
 import type { ModalFixture } from './tests/shared/fixtures/w3m-fixture'
 import { getProjects } from './tests/shared/utils/project'
-config({ path: './.env' })
+config({ path: './.env.local' })
 
 
 export default defineConfig<ModalFixture>({

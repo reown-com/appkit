@@ -17,13 +17,7 @@ Your on-ramp to web3 multichain. Web3Modal is a versatile library that makes it 
 
 # Dev setup
 
-1. Create `apps/laboratory/env.local` file with following contents
-
-```zsh
-NEXT_PUBLIC_PROJECT_ID="your_project_id"
-NEXTAUTH_SECRET="your_session_secret"
-NEXTAUTH_URL=""
-```
+1. Create `apps/laboratory/.env.local` file using the template from `apps/laboratory/.env.example`
 
 2. In each of the `examples` create `.env.local` file with following contents
 
@@ -69,3 +63,7 @@ npm run changeset pre enter [tag]
 11. Check `Set as the last release` and publish release.
 12. Update Web3Modal for https://web3modal.com/ (https://github.com/WalletConnect/www-web3modal) and create a PR
 13. Update Web3Modal for https://app.web3inbox.com (https://github.com/WalletConnect/web3inbox) and create a PR
+
+### Running tests
+
+See <app/laboratory/tests/README.md>
