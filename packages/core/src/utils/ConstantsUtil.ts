@@ -48,7 +48,8 @@ export const ConstantsUtil = {
     'polygon',
     'avalanche-c-chain',
     'optimism',
-    'celo'
+    'celo',
+    'base'
   ],
 
   WC_COINBASE_PAY_SDK_FALLBACK_CHAIN: 'ethereum',
