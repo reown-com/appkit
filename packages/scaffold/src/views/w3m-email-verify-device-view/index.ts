@@ -5,8 +5,7 @@ import {
   RouterController,
   ConnectorController,
   SnackController,
-  EventsController,
-  CoreHelperUtil
+  EventsController
 } from '@web3modal/core'
 import { state } from 'lit/decorators.js'
 
