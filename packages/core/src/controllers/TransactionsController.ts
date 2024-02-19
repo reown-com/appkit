@@ -93,27 +93,19 @@ export const TransactionsController = {
     transactionsMap: TransactionByYearMap = {},
     transactions: Transaction[] = []
   ) {
-    const grouped: TransactionByYearMap = transactionsMap
-
+    const grouped = transactionsMap
     transactions.forEach(transaction => {
       const year = new Date(transaction.metadata.minedAt).getFullYear()
       const month = new Date(transaction.metadata.minedAt).getMonth()
       const yearTransactions = grouped[year] ?? {}
       const monthTransactions = yearTransactions[month] ?? []
 
-      if (
-        monthTransactions.find(
-          t =>
-            (t.metadata.hash && t.metadata.hash === transaction.metadata.hash) ||
-            t.metadata.minedAt === transaction.metadata.minedAt
-        )
-      ) {
-        return
-      }
+      // If there's a transaction with the same id, remove the old one
+      const newMonthTransactions = monthTransactions.filter(tx => tx.id !== transaction.id)
 
       grouped[year] = {
         ...yearTransactions,
-        [month]: [...monthTransactions, transaction].sort(
+        [month]: [...newMonthTransactions, transaction].sort(
           (a, b) => new Date(b.metadata.minedAt).getTime() - new Date(a.metadata.minedAt).getTime()
         )
       }
