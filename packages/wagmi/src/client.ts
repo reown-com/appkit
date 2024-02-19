@@ -391,7 +391,6 @@ export class Web3Modal extends Web3ModalScaffold {
       if (isLoginEmailUsed) {
         this.setIsConnected(false)
       }
-
       provider.onRpcRequest(request => {
         if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
           super.open({ view: 'ApproveTransaction' })
