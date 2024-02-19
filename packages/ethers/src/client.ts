@@ -762,6 +762,10 @@ export class Web3Modal extends Web3ModalScaffold {
       this.emailProvider.onRpcResponse(() => {
         super.close()
       })
+      this.emailProvider.onNotConnected(() => {
+        this.setIsConnected(false)
+        super.setLoading(false)
+      })
       this.emailProvider.onIsConnected(() => {
         super.setLoading(false)
       })
