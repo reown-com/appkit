@@ -6,8 +6,8 @@ testMWSiwe.beforeEach(async ({ modalPage, walletPage, browserName }) => {
   if (browserName === 'webkit') {
     return
   }
-  await modalPage.copyConnectUriToClipboard()
-  await walletPage.connect()
+  const uri = await modalPage.getConnectUri()
+  await walletPage.connectWithUri(uri)
   await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
 })
 
