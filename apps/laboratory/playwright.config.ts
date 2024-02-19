@@ -3,18 +3,21 @@ import { BASE_URL } from './tests/shared/constants'
 
 import { config } from 'dotenv'
 import type { ModalFixture } from './tests/shared/fixtures/w3m-fixture'
-import { DEVICES } from './tests/shared/constants/devices'
-config({ path: './.env' })
+import { getAvailableDevices } from './tests/shared/utils/device'
+config({ path: './.env.local' })
+const availableDevices = getAvailableDevices()
 
 const LIBRARIES = ['wagmi', 'ethers'] as const
-const PERMUTATIONS = DEVICES.flatMap(device => LIBRARIES.map(library => ({ device, library })))
+const PERMUTATIONS = availableDevices.flatMap(device =>
+  LIBRARIES.map(library => ({ device, library }))
+)
 
 export default defineConfig<ModalFixture>({
   testDir: './tests',
 
   fullyParallel: true,
-  retries: 0,
-  workers: 1,
+  retries: 2,
+  workers: 8,
   reporter: process.env['CI']
     ? [['list'], ['html', { open: 'never' }]]
     : [['list'], ['html', { host: '0.0.0.0' }]],
@@ -27,6 +30,9 @@ export default defineConfig<ModalFixture>({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: BASE_URL,
+
+    /* Take a screenshot when the test fails */
+    screenshot: 'only-on-failure',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

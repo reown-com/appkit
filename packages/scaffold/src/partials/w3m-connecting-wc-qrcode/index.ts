@@ -67,6 +67,7 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
       uri=${this.uri}
       imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet))}
       alt=${ifDefined(alt)}
+      data-testid="wui-qr-code"
     ></wui-qr-code>`
   }
 
