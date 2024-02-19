@@ -6,7 +6,7 @@ import { useCallback, useState } from 'react'
 import { sepolia } from 'wagmi/chains'
 
 const TEST_TX = {
-  to: '0xF7cC1A7125b308265Dba8203e9B2D2232FE2C87b' as Address,
+  to: vitalikEthAddress as Address,
   value: parseGwei('0.3')
 }
 
