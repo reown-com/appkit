@@ -93,31 +93,44 @@ export const TransactionsController = {
     transactionsMap: TransactionByYearMap = {},
     transactions: Transaction[] = []
   ) {
-    const grouped: TransactionByYearMap = transactionsMap
-
+    const grouped = transactionsMap
+    console.log('GROUPING TXS', transactions, transactionsMap)
     transactions.forEach(transaction => {
       const year = new Date(transaction.metadata.minedAt).getFullYear()
       const month = new Date(transaction.metadata.minedAt).getMonth()
       const yearTransactions = grouped[year] ?? {}
       const monthTransactions = yearTransactions[month] ?? []
 
-      if (
-        monthTransactions.find(
-          t =>
-            (t.metadata.hash && t.metadata.hash === transaction.metadata.hash) ||
-            t.metadata.minedAt === transaction.metadata.minedAt
-        )
-      ) {
+      const repeated = monthTransactions.find(
+        tx => tx.metadata.hash && tx.metadata.hash === transaction.metadata.hash
+      )
+      if (repeated) {
         return
+      }
+
+      let newMonthTransactions = [...monthTransactions]
+
+      const coinbaseTxsToUpdate = monthTransactions.filter(
+        tx =>
+          (tx.metadata.minedAt === transaction.metadata.minedAt &&
+            tx.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS' &&
+            transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_SUCCESS') ||
+          transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_FAILED'
+      )
+      if (coinbaseTxsToUpdate.length) {
+        newMonthTransactions = monthTransactions.filter(
+          tx => tx.metadata.minedAt !== transaction.metadata.minedAt
+        )
       }
 
       grouped[year] = {
         ...yearTransactions,
-        [month]: [...monthTransactions, transaction].sort(
+        [month]: [...newMonthTransactions, transaction].sort(
           (a, b) => new Date(b.metadata.minedAt).getTime() - new Date(a.metadata.minedAt).getTime()
         )
       }
     })
+    console.log('GROUPED', grouped)
 
     return grouped
   },
