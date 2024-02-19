@@ -166,17 +166,10 @@ export class W3mBuyInProgressView extends LitElement {
       projectId
     })
 
-    console.log('Coinbase respnose')
-    console.log(coinbaseResponse)
-
-    console.log('Date of first render', this.startTime)
-
     const newTransactions = coinbaseResponse.data.filter(
       // @ts-expect-error - start time will always be set at this point
       tx => new Date(tx.metadata.minedAt) > new Date(this.startTime)
     )
-
-    console.log('New transactions', newTransactions)
 
     if (newTransactions.length && this.intervalId) {
       clearInterval(this.intervalId)
