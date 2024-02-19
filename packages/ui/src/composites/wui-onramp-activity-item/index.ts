@@ -68,6 +68,7 @@ export class WuiOnRampActivityItem extends LitElement {
   private async fetchTokenImage() {
     await ApiController._fetchTokenImage(this.purchaseCurrency)
   }
+
   private statusIconTemplate() {
     if (this.inProgress) {
       return null

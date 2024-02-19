@@ -21,6 +21,7 @@ export class W3mOnRampActivityView extends LitElement {
 
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
+
   private refetchTimeout: NodeJS.Timeout | undefined = undefined
 
   // -- State & Properties -------------------------------- //
@@ -63,7 +64,7 @@ export class W3mOnRampActivityView extends LitElement {
   // -- Private ------------------------------------------- //
   private templateTransactions(transactions: Transaction[]) {
     return transactions?.map(transaction => {
-      const date = DateUtil.getRelativeDateFromNow(transaction.metadata.minedAt)
+      const date = DateUtil.formatDate(transaction?.metadata?.minedAt)
       const transfer = transaction.transfers[0]
       const fungibleInfo = transfer?.fungible_info
 
