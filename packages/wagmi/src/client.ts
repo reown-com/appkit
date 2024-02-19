@@ -387,6 +387,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
       const provider = (await connector.getProvider()) as W3mFrameProvider
       const isLoginEmailUsed = provider.getLoginEmailUsed()
+
       super.setLoading(isLoginEmailUsed)
       if (isLoginEmailUsed) {
         this.setIsConnected(false)
@@ -397,9 +398,16 @@ export class Web3Modal extends Web3ModalScaffold {
           super.open({ view: 'ApproveTransaction' })
         }
       })
+
       provider.onRpcResponse(() => {
         super.close()
       })
+
+      provider.onNotConnected(() => {
+        this.setIsConnected(false)
+        super.setLoading(false)
+      })
+
       provider.onIsConnected(() => {
         this.setIsConnected(true)
         super.setLoading(false)
