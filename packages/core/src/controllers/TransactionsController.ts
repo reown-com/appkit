@@ -102,7 +102,7 @@ export const TransactionsController = {
       const monthTransactions = yearTransactions[month] ?? []
 
       const repeated = monthTransactions.find(
-        tx => tx.metadata.hash && tx.metadata.hash === transaction.metadata.hash
+        tx => tx.id === transaction.id && tx.metadata.status === transaction.metadata.status
       )
       if (repeated) {
         return
@@ -112,7 +112,7 @@ export const TransactionsController = {
 
       const coinbaseTxToUpdate = monthTransactions.find(
         tx =>
-          tx.metadata.minedAt === transaction.metadata.minedAt &&
+          tx.id === transaction.id &&
           tx.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS' &&
           (transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_SUCCESS' ||
             transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_FAILED')
