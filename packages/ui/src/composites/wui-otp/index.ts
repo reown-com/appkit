@@ -40,6 +40,7 @@ export class WuiOtp extends LitElement {
           (_, index: number) => html`
             <wui-input-numeric
               @input=${(e: InputEvent) => this.handleInput(e, index)}
+              @click=${(e: MouseEvent) => this.selectInput(e)}
               @keydown=${(e: KeyboardEvent) => this.handleKeyDown(e, index)}
               .disabled=${!this.shouldInputBeEnabled(index)}
               .value=${this.values[index] || ''}
@@ -57,8 +58,17 @@ export class WuiOtp extends LitElement {
     const input = element || (numeric ? this.getInputElement(numeric) : undefined)
     if (input) {
       input.value = value
+
       // Need to update the whole reference else lit-html won't re-render
       this.values = this.values.map((val, i) => (i === index ? value : val))
+    }
+  }
+
+  private selectInput(e: MouseEvent) {
+    const targetElement = e.target as HTMLElement
+    if (targetElement) {
+      const inputElement = this.getInputElement(targetElement)
+      inputElement?.select()
     }
   }
 
@@ -136,6 +146,7 @@ export class WuiOtp extends LitElement {
 
   private handlePaste(input: HTMLInputElement, inputValue: string, index: number) {
     const value = inputValue[0]
+
     const isValid = value && UiHelperUtil.isNumber(value)
     if (isValid) {
       this.updateInput(input, index, value)
