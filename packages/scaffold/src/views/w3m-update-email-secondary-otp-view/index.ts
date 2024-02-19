@@ -17,7 +17,7 @@ export class W3mUpdateEmailSecondaryOtpView extends W3mEmailOtpWidget {
       if (this.emailConnector) {
         await this.emailConnector.provider.updateEmailSecondaryOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
-        RouterController.replace('Account', { email: this.email }, true)
+        RouterController.reset('Account')
       }
     } catch (error) {
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_FAIL' })
