@@ -26,6 +26,7 @@ export function WagmiWriteContractTest() {
     args: [1]
   })
   const { writeContract, reset, data, error, isPending } = useWriteContract()
+  const isConnected = status === 'connected'
 
   const onSendTransaction = useCallback(async () => {
     if (simulateError || !simulateData?.request) {
@@ -66,7 +67,7 @@ export function WagmiWriteContractTest() {
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={!simulateData?.request}
-        isDisabled={isPending}
+        isDisabled={isPending || !isConnected}
       >
         Purchase crypto donut
       </Button>

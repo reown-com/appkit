@@ -49,7 +49,7 @@ jobs:
           IMAGE_TAG: V4
         with:
           context: .
-          file: Dockerfile
+          file: Dockerfile.canary
           push: true
           tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
           cache-from: type=local,src=/tmp/.buildx-cache

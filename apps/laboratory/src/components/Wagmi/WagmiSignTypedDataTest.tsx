@@ -28,13 +28,14 @@ const message = {
 
 export function WagmiSignTypedDataTest() {
   const toast = useToast()
-  const { chain } = useAccount()
+  const { chain, status } = useAccount()
   const domain = {
     name: 'Ether Mail',
     version: '1',
     chainId: chain?.id,
     verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
   } as const
+  const isConnected = status === 'connected'
 
   const { signTypedDataAsync } = useSignTypedData()
 
@@ -58,7 +59,11 @@ export function WagmiSignTypedDataTest() {
   }
 
   return (
-    <Button data-testid="sign-typed-data-button" onClick={onSignTypedData}>
+    <Button
+      data-testid="sign-typed-data-button"
+      onClick={onSignTypedData}
+      isDisabled={!isConnected}
+    >
       Sign Typed Data
     </Button>
   )
