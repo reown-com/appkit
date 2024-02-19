@@ -110,14 +110,17 @@ export const TransactionsController = {
 
       let newMonthTransactions = [...monthTransactions]
 
-      const coinbaseTxsToUpdate = monthTransactions.filter(
+      const coinbaseTxToUpdate = monthTransactions.find(
         tx =>
           tx.metadata.minedAt === transaction.metadata.minedAt &&
           tx.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS' &&
           (transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_SUCCESS' ||
             transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_FAILED')
       )
-      if (coinbaseTxsToUpdate.length) {
+
+      console.log('COINBASE TX TO UPDATE', coinbaseTxToUpdate, transaction)
+
+      if (coinbaseTxToUpdate) {
         newMonthTransactions = monthTransactions.filter(
           tx => tx.metadata.minedAt !== transaction.metadata.minedAt
         )
