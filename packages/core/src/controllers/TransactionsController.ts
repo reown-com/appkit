@@ -94,37 +94,14 @@ export const TransactionsController = {
     transactions: Transaction[] = []
   ) {
     const grouped = transactionsMap
-    console.log('GROUPING TXS', transactions, transactionsMap)
     transactions.forEach(transaction => {
       const year = new Date(transaction.metadata.minedAt).getFullYear()
       const month = new Date(transaction.metadata.minedAt).getMonth()
       const yearTransactions = grouped[year] ?? {}
       const monthTransactions = yearTransactions[month] ?? []
 
-      const repeated = monthTransactions.find(
-        tx => tx.id === transaction.id && tx.metadata.status === transaction.metadata.status
-      )
-      if (repeated) {
-        return
-      }
-
-      let newMonthTransactions = [...monthTransactions]
-
-      const coinbaseTxToUpdate = monthTransactions.find(
-        tx =>
-          tx.id === transaction.id &&
-          tx.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS' &&
-          (transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_SUCCESS' ||
-            transaction.metadata.status === 'ONRAMP_TRANSACTION_STATUS_FAILED')
-      )
-
-      console.log('COINBASE TX TO UPDATE', coinbaseTxToUpdate, transaction)
-
-      if (coinbaseTxToUpdate) {
-        newMonthTransactions = monthTransactions.filter(
-          tx => tx.metadata.minedAt !== transaction.metadata.minedAt
-        )
-      }
+      // If there's a transaction with the same id, remove the old one
+      const newMonthTransactions = monthTransactions.filter(tx => tx.id !== transaction.id)
 
       grouped[year] = {
         ...yearTransactions,
@@ -133,7 +110,6 @@ export const TransactionsController = {
         )
       }
     })
-    console.log('GROUPED', grouped)
 
     return grouped
   },
