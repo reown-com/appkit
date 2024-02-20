@@ -153,14 +153,11 @@ export class W3mBuyInProgressView extends LitElement {
         throw new Error('No address found')
       }
 
-      console.log('Fetching transactions...')
       const coinbaseResponse = await BlockchainApiController.fetchTransactions({
         account: address,
         onramp: 'coinbase',
         projectId
       })
-
-      console.log('Coinbase transactions:', coinbaseResponse.data, 'Interval:', this.intervalId)
 
       const newTransactions = coinbaseResponse.data.filter(
         tx =>
@@ -168,8 +165,6 @@ export class W3mBuyInProgressView extends LitElement {
           new Date(tx.metadata.minedAt) > new Date(this.startTime) ||
           tx.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
       )
-
-      console.log('Found new transactions, should be redirecting...', newTransactions)
 
       if (newTransactions.length) {
         clearInterval(this.intervalId)
