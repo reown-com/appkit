@@ -61,6 +61,38 @@ describe('ApiController', () => {
     })
 
     // Cannot exactly recreate the object url
-    expect(AssetController.state.networkImages[imageId]).toMatch(/^blob:/u)
+    expect(AssetController.state.connectorImages[imageId]).toMatch(/^blob:/u)
+  })
+
+  it('should fetch currency image and update AssetController state correctly', async () => {
+    const countryCode = 'AR'
+    const image = 'image.jpg'
+    const blob = new Blob([image])
+    const fetchSpy = vi.spyOn(api, 'getBlob').mockResolvedValueOnce(blob)
+
+    await ApiController._fetchCurrencyImage(countryCode)
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: `${api.baseUrl}/public/getCurrencyImage/${countryCode}`,
+      headers: ApiController._getApiHeaders()
+    })
+
+    // Cannot exactly recreate the object url
+    expect(AssetController.state.currencyImages[countryCode]).toMatch(/^blob:/u)
+  })
+
+  it('should fetch token image and update AssetController state correctly', async () => {
+    const symbol = 'AR'
+    const image = 'image.jpg'
+    const blob = new Blob([image])
+    const fetchSpy = vi.spyOn(api, 'getBlob').mockResolvedValueOnce(blob)
+
+    await ApiController._fetchTokenImage(symbol)
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: `${api.baseUrl}/public/getTokenImage/${symbol}`,
+      headers: ApiController._getApiHeaders()
+    })
+
+    // Cannot exactly recreate the object url
+    expect(AssetController.state.tokenImages[symbol]).toMatch(/^blob:/u)
   })
 })
