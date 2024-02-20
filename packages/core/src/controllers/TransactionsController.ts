@@ -21,7 +21,7 @@ export interface TransactionsControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<TransactionsControllerState>({
   transactions: [],
-  coinbaseTransactions: [],
+  coinbaseTransactions: {},
   transactionsByYear: {},
   loading: false,
   empty: false,
@@ -97,6 +97,7 @@ export const TransactionsController = {
     transactions.forEach(transaction => {
       const year = new Date(transaction.metadata.minedAt).getFullYear()
       const month = new Date(transaction.metadata.minedAt).getMonth()
+
       const yearTransactions = grouped[year] ?? {}
       const monthTransactions = yearTransactions[month] ?? []
 
