@@ -111,4 +111,117 @@ describe('TransactionsController', () => {
       }
     })
   })
+
+  it('should update onramp transaction from pending to failed', async () => {
+    const { FAILED, IN_PROGRESS } = ONRAMP_TRANSACTIONS_RESPONSES_FEB
+    const accountAddress = FAILED.metadata.sentTo
+
+    // Manually clear state - vitest hooks are wiping state prematurely
+    TransactionsController.state.coinbaseTransactions = {}
+
+    const pendingResponse = {
+      data: [IN_PROGRESS] as Transaction[],
+      next: ''
+    }
+
+    const fetchTransactions = vi
+      .spyOn(BlockchainApiController, 'fetchTransactions')
+      .mockResolvedValue(pendingResponse)
+
+    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+
+    expect(fetchTransactions).toHaveBeenCalledWith({
+      account: accountAddress,
+      projectId,
+      onramp: 'coinbase',
+      cursor: undefined
+    })
+
+    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+      2024: {
+        1: [IN_PROGRESS]
+      }
+    })
+
+    // Update the transaction
+    const successResponse = {
+      data: [FAILED] as Transaction[],
+      next: ''
+    }
+
+    fetchTransactions.mockResolvedValue(successResponse)
+
+    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+
+    expect(fetchTransactions).toHaveBeenCalledWith({
+      account: accountAddress,
+      projectId,
+      onramp: 'coinbase',
+      cursor: undefined
+    })
+
+    // Transaction should be replaced
+    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+      2024: {
+        1: [FAILED]
+      }
+    })
+  })
+
+  it('should push new onramp transactions while updating old ones', async () => {
+    const { SUCCESS, IN_PROGRESS } = ONRAMP_TRANSACTIONS_RESPONSES_JAN
+    const accountAddress = SUCCESS.metadata.sentTo
+
+    // Manually clear state - vitest hooks are wiping state prematurely
+    TransactionsController.state.coinbaseTransactions = {}
+
+    const pendingResponse = {
+      data: [IN_PROGRESS] as Transaction[],
+      next: ''
+    }
+
+    const fetchTransactions = vi
+      .spyOn(BlockchainApiController, 'fetchTransactions')
+      .mockResolvedValue(pendingResponse)
+
+    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+
+    expect(fetchTransactions).toHaveBeenCalledWith({
+      account: accountAddress,
+      projectId,
+      onramp: 'coinbase',
+      cursor: undefined
+    })
+
+    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+      2024: {
+        0: [IN_PROGRESS]
+      }
+    })
+
+    // Update the transaction
+    const successResponse = {
+      data: [SUCCESS, ONRAMP_TRANSACTIONS_RESPONSES_FEB.IN_PROGRESS] as Transaction[],
+      next: ''
+    }
+
+    fetchTransactions.mockResolvedValue(successResponse)
+
+    await TransactionsController.fetchTransactions(accountAddress, 'coinbase')
+
+    expect(fetchTransactions).toHaveBeenCalledWith({
+      account: accountAddress,
+      projectId,
+      onramp: 'coinbase',
+      cursor: undefined
+    })
+
+    // Transaction should be replaced
+    expect(TransactionsController.state.coinbaseTransactions).toEqual({
+      2024: {
+        0: [SUCCESS],
+        1: [ONRAMP_TRANSACTIONS_RESPONSES_FEB.IN_PROGRESS]
+      }
+    })
+  })
 })
