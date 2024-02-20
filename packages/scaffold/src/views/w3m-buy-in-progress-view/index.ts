@@ -167,8 +167,10 @@ export class W3mBuyInProgressView extends LitElement {
     })
 
     const newTransactions = coinbaseResponse.data.filter(
-      // @ts-expect-error - start time will always be set at this point
-      tx => new Date(tx.metadata.minedAt) > new Date(this.startTime)
+      tx =>
+        // @ts-expect-error - start time will always be set at this point
+        new Date(tx.metadata.minedAt) > new Date(this.startTime) ||
+        tx.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
     )
 
     if (newTransactions.length && this.intervalId) {
