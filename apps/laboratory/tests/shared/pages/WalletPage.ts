@@ -3,6 +3,8 @@ import { expect, type Locator, type Page } from '@playwright/test'
 import { WALLET_URL } from '../constants'
 import type { SessionParams } from '../types'
 
+const WAIT_FOR_BUTTON_TIMEOUT = 10 * 1000
+
 export class WalletPage {
   private readonly baseURL = WALLET_URL
 
@@ -27,8 +29,17 @@ export class WalletPage {
       await this.vercelPreview.evaluate((iframe: HTMLIFrameElement) => iframe.remove())
     }
     await this.gotoHome.click()
-    await this.page.getByTestId('uri-input').fill(uri)
-    await this.page.getByTestId('uri-connect-button').click()
+    const input = this.page.getByTestId('uri-input')
+    await input.waitFor({
+      state: 'visible',
+      timeout: 5000
+    })
+    await input.fill(uri)
+    const connectButton = this.page.getByTestId('uri-connect-button')
+    await expect(connectButton).toBeEnabled({
+      timeout: 5000
+    })
+    await connectButton.click()
   }
 
   /**
@@ -41,7 +52,10 @@ export class WalletPage {
     const variant = opts.accept ? `approve` : `reject`
     // `.click` doesn't work here, so we use `.focus` and `Space`
     const btn = this.page.getByTestId(`session-${variant}-button`)
-    await btn.waitFor()
+    await btn.waitFor({
+      state: 'visible',
+      timeout: WAIT_FOR_BUTTON_TIMEOUT
+    })
     await expect(btn).toBeEnabled()
     await btn.focus()
     await this.page.keyboard.press('Space')
@@ -51,7 +65,10 @@ export class WalletPage {
     const variant = accept ? `approve` : `reject`
     // `.click` doesn't work here, so we use `.focus` and `Space`
     const btn = this.page.getByTestId(`session-${variant}-button`)
-    await btn.waitFor()
+    await btn.waitFor({
+      state: 'visible',
+      timeout: WAIT_FOR_BUTTON_TIMEOUT
+    })
     await expect(btn).toBeEnabled()
     await btn.focus()
     await this.page.keyboard.press('Space')

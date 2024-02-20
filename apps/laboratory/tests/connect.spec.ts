@@ -1,10 +1,14 @@
+import type { BrowserContext } from '@playwright/test'
 import { DEFAULT_CHAIN_NAME, DEFAULT_SESSION_PARAMS } from './shared/constants'
 import { testMW } from './shared/fixtures/w3m-wallet-fixture'
 
 testMW.beforeEach(async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+  const page = await doActionAndWaitForNewPage(modalPage.clickWalletDeeplink(), context)
+  /* Temp remove
   const uri = await modalPage.getConnectUri()
   await walletPage.connectWithUri(uri)
   await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+  */
   await modalValidator.expectConnected()
   await walletValidator.expectConnected()
 })
@@ -51,3 +55,15 @@ testMW(
     await modalValidator.expectAcceptedSign()
   }
 )
+
+async function doActionAndWaitForNewPage(action: Promise<void>, context?: BrowserContext) {
+  if (!context) {
+    throw new Error('Browser Context is undefined')
+  }
+  const pagePromise = context.waitForEvent('page')
+  await action
+  const newPage = await pagePromise
+  await newPage.waitForLoadState()
+
+  return newPage
+}

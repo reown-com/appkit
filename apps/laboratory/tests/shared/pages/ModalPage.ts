@@ -36,7 +36,12 @@ export class ModalPage {
   async getConnectUri(): Promise<string> {
     await this.page.goto(this.url)
     await this.connectButton.click()
-    await this.page.getByTestId('wallet-selector-walletconnect').click()
+    const connect = this.page.getByTestId('wallet-selector-walletconnect')
+    await connect.waitFor({
+      state: 'visible',
+      timeout: 5000
+    })
+    await connect.click()
 
     // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
     const qrCode = this.page.locator('wui-qr-code')
@@ -107,5 +112,12 @@ export class ModalPage {
     await this.page.getByTestId('w3m-account-select-network').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
     await this.page.getByTestId(`w3m-header-close`).click()
+  }
+
+  async clickWalletDeeplink() {
+    await this.page.goto(this.url)
+    await this.connectButton.click()
+    await this.page.getByTestId('wallet-selector-react-wallet-v2').click()
+    await this.page.getByTestId('tab-desktop').click()
   }
 }
