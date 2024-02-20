@@ -66,8 +66,7 @@ export const USD_CURRENCY_DEFAULT = {
   ]
 }
 
-// -- State --------------------------------------------- //
-const state = proxy<OnRampControllerState>({
+const defaultState = {
   providers: ONRAMP_PROVIDERS as OnRampProvider[],
   selectedProvider: null,
   error: null,
@@ -76,7 +75,10 @@ const state = proxy<OnRampControllerState>({
   purchaseCurrencies: [USDC_CURRENCY_DEFAULT],
   paymentCurrencies: [],
   quotesLoading: false
-})
+}
+
+// -- State --------------------------------------------- //
+const state = proxy<OnRampControllerState>(defaultState)
 
 // -- Controller ---------------------------------------- //
 export const OnRampController = {
@@ -128,11 +130,24 @@ export const OnRampController = {
       purchaseCurrency: state.purchaseCurrency,
       paymentCurrency: state.paymentCurrency,
       amount: state.paymentAmount?.toString() || '0',
-      network: state.purchaseCurrency?.name
+      network: state.purchaseCurrency?.symbol
     })
     state.quotesLoading = false
     state.purchaseAmount = Number(quote.purchaseAmount.amount)
 
     return quote
+  },
+
+  resetState() {
+    state.providers = ONRAMP_PROVIDERS as OnRampProvider[]
+    state.selectedProvider = null
+    state.error = null
+    state.purchaseCurrency = USDC_CURRENCY_DEFAULT
+    state.paymentCurrency = USD_CURRENCY_DEFAULT
+    state.purchaseCurrencies = [USDC_CURRENCY_DEFAULT]
+    state.paymentCurrencies = []
+    state.paymentAmount = undefined
+    state.purchaseAmount = undefined
+    state.quotesLoading = false
   }
 }
