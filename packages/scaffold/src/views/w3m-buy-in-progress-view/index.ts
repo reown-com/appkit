@@ -169,8 +169,9 @@ export class W3mBuyInProgressView extends LitElement {
           tx.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
       )
 
+      console.log('Found new transactions, should be redirecting...', newTransactions)
+
       if (newTransactions.length) {
-        console.log('Found new transactions, redirecting...', newTransactions)
         clearInterval(this.intervalId)
         RouterController.replace('OnRampActivity')
       } else if (this.startTime && Date.now() - this.startTime >= 180_000) {
