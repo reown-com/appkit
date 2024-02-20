@@ -1,5 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
-import { ApiController, AssetController } from '../../index.js'
+import {
+  ApiController,
+  AssetController,
+  ConnectorController,
+  NetworkController
+} from '../../index.js'
 import { api } from '../../src/controllers/ApiController.js'
 
 // -- Tests --------------------------------------------------------------------
@@ -94,5 +99,91 @@ describe('ApiController', () => {
 
     // Cannot exactly recreate the object url
     expect(AssetController.state.tokenImages[symbol]).toMatch(/^blob:/u)
+  })
+
+  it('should fetch network images ', async () => {
+    NetworkController.setRequestedCaipNetworks([
+      {
+        id: '155:1',
+        name: 'Ethereum Mainnet',
+        imageId: '12341'
+      },
+      {
+        id: '155:4',
+        name: 'Ethereum Rinkeby',
+        imageId: '12342'
+      },
+      {
+        id: '155:42',
+        name: 'Ethereum Kovan'
+      }
+    ])
+    const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
+    await ApiController.fetchNetworkImages()
+
+    // Does not call if imageId is not present
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
+  })
+
+  it('should fetch network images', async () => {
+    NetworkController.setRequestedCaipNetworks([
+      {
+        id: '155:1',
+        name: 'Ethereum Mainnet',
+        imageId: '12341'
+      },
+      {
+        id: '155:4',
+        name: 'Ethereum Rinkeby',
+        imageId: '12342'
+      },
+      // Should not fetch this
+      {
+        id: '155:42',
+        name: 'Ethereum Kovan'
+      }
+    ])
+    const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
+    await ApiController.fetchNetworkImages()
+
+    // Does not call if imageId is not present
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
+  })
+
+  it('should fetch connector images', async () => {
+    ConnectorController.setConnectors([
+      {
+        id: '12341',
+        name: 'MetaMask',
+        imageId: '12341',
+        type: 'INJECTED'
+      },
+      {
+        id: '12341',
+        name: 'RandomConnector',
+        type: 'INJECTED'
+      }
+    ])
+    const fetchSpy = vi.spyOn(ApiController, '_fetchConnectorImage').mockResolvedValue()
+    await ApiController.fetchConnectorImages()
+
+    // Does not call if imageId is not present
+    expect(fetchSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('should fetch currency images', async () => {
+    const currencies = ['USD', 'EUR']
+    const fetchSpy = vi.spyOn(ApiController, '_fetchCurrencyImage').mockResolvedValue()
+    await ApiController.fetchCurrencyImages(currencies)
+
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
+  })
+
+  it('should fetch token images', async () => {
+    const currencies = ['USDC', 'ETH']
+    const fetchSpy = vi.spyOn(ApiController, '_fetchCurrencyImage').mockResolvedValue()
+    await ApiController.fetchCurrencyImages(currencies)
+
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
   })
 })
