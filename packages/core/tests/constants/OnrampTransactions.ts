@@ -6,7 +6,7 @@ export const ONRAMP_TRANSACTIONS_RESPONSES_JAN = {
       hash: '0xbf5f116e0e77b304404ff873b527578d8c0a247732a50b0da174a533b669ab5b',
       minedAt: '2024-01-15T16:59:37.345Z',
       sentFrom: 'Coinbase',
-      sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA63',
+      sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA64',
       status: 'ONRAMP_TRANSACTION_STATUS_SUCCESS',
       nonce: 1,
       chain: 'eip155:137'
@@ -31,7 +31,7 @@ export const ONRAMP_TRANSACTIONS_RESPONSES_JAN = {
       hash: '',
       minedAt: '2024-01-15T16:59:37.345Z',
       sentFrom: 'Coinbase',
-      sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA63',
+      sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA64',
       status: 'ONRAMP_TRANSACTION_STATUS_FAILED',
       nonce: 1
     },
@@ -55,7 +55,7 @@ export const ONRAMP_TRANSACTIONS_RESPONSES_JAN = {
       hash: '',
       minedAt: '2024-01-15T16:59:37.345Z',
       sentFrom: 'Coinbase',
-      sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA63',
+      sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA64',
       status: 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS',
       nonce: 1
     },
@@ -82,7 +82,7 @@ export const ONRAMP_TRANSACTIONS_RESPONSES_FEB = {
       hash: '0xbf5f116e0e77b304404ff873b527578d8c0a247732a50b0da174a533b669ab5b',
       minedAt: '2024-02-15T16:59:37.345Z',
       sentFrom: 'Coinbase',
-      sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA63',
+      sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA64',
       status: 'ONRAMP_TRANSACTION_STATUS_SUCCESS',
       nonce: 1,
       chain: 'eip155:137'
@@ -107,7 +107,7 @@ export const ONRAMP_TRANSACTIONS_RESPONSES_FEB = {
       hash: '',
       minedAt: '2024-02-15T16:59:37.345Z',
       sentFrom: 'Coinbase',
-      sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA63',
+      sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA64',
       status: 'ONRAMP_TRANSACTION_STATUS_FAILED',
       nonce: 1
     },
@@ -131,7 +131,7 @@ export const ONRAMP_TRANSACTIONS_RESPONSES_FEB = {
       hash: '',
       minedAt: '2024-02-15T16:59:37.345Z',
       sentFrom: 'Coinbase',
-      sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA63',
+      sentTo: '0xf3ea39310011333095CFCcCc7c4Ad74034CABA64',
       status: 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS',
       nonce: 1
     },
