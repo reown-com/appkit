@@ -31,4 +31,36 @@ describe('ApiController', () => {
     // Cannot exactly recreate the object url
     expect(AssetController.state.walletImages[imageId]).toMatch(/^blob:/u)
   })
+
+  it('should fetch network image and update AssetController state correctly', async () => {
+    const imageId = '123'
+    const image = 'image.jpg'
+    const blob = new Blob([image])
+    const fetchSpy = vi.spyOn(api, 'getBlob').mockResolvedValueOnce(blob)
+
+    await ApiController._fetchNetworkImage(imageId)
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: `${api.baseUrl}/public/getAssetImage/${imageId}`,
+      headers: ApiController._getApiHeaders()
+    })
+
+    // Cannot exactly recreate the object url
+    expect(AssetController.state.networkImages[imageId]).toMatch(/^blob:/u)
+  })
+
+  it('should fetch connector image and update AssetController state correctly', async () => {
+    const imageId = '123'
+    const image = 'image.jpg'
+    const blob = new Blob([image])
+    const fetchSpy = vi.spyOn(api, 'getBlob').mockResolvedValueOnce(blob)
+
+    await ApiController._fetchConnectorImage(imageId)
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: `${api.baseUrl}/public/getAssetImage/${imageId}`,
+      headers: ApiController._getApiHeaders()
+    })
+
+    // Cannot exactly recreate the object url
+    expect(AssetController.state.networkImages[imageId]).toMatch(/^blob:/u)
+  })
 })
