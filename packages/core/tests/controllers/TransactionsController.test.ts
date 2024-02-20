@@ -59,6 +59,8 @@ describe('TransactionsController', () => {
   it('should update onramp transaction from pending to success', async () => {
     const { SUCCESS, IN_PROGRESS } = ONRAMP_TRANSACTIONS_RESPONSES_FEB
     const accountAddress = SUCCESS.metadata.sentTo
+
+    // Manually clear state - vitest hooks are wiping state prematurely
     TransactionsController.state.coinbaseTransactions = {}
 
     const pendingResponse = {
