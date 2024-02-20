@@ -5,9 +5,9 @@ import { testMW } from './shared/fixtures/w3m-wallet-fixture'
 testMW.beforeEach(async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
   const page = await doActionAndWaitForNewPage(modalPage.clickWalletDeeplink(), context)
   /* Temp remove
-  const uri = await modalPage.getConnectUri()
-  await walletPage.connectWithUri(uri)
-  await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+    const uri = await modalPage.getConnectUri()
+    await walletPage.connectWithUri(uri)
+    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
   */
   await modalValidator.expectConnected()
   await walletValidator.expectConnected()
