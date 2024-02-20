@@ -8,7 +8,8 @@ describe('AssetController', () => {
       walletImages: {},
       networkImages: {},
       connectorImages: {},
-      tokenImages: {}
+      tokenImages: {},
+      currencyImages: {}
     })
   })
 })
