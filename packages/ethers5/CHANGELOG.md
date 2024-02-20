@@ -1,5 +1,19 @@
 # @web3modal/ethers5
 
+## 4.0.6
+
+### Patch Changes
+
+- Email stability fixes
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.0.6
+  - @web3modal/scaffold@4.0.6
+  - @web3modal/scaffold-react@4.0.6
+  - @web3modal/scaffold-utils@4.0.6
+  - @web3modal/scaffold-vue@4.0.6
+  - @web3modal/siwe@4.0.6
+
 ## 4.0.5
 
 ### Patch Changes
