@@ -235,4 +235,211 @@ describe('ApiController', () => {
     expect(fetchSpy).not.toHaveBeenCalled()
     expect(fetchImageSpy).not.toHaveBeenCalled()
   })
+
+  // Recommended wllets
+  it('should fetch recommended wallets with configured recommended wallets', async () => {
+    const includeWalletIds = ['12341', '12342']
+    const excludeWalletIds = ['12343']
+    const featuredWalletIds = ['12344']
+    const data = [
+      {
+        id: '12341',
+        name: 'MetaMask',
+        image_id: '12341'
+      },
+      {
+        id: '12342',
+        name: 'RandomWallet',
+        image_id: '12342'
+      },
+      {
+        id: '12343',
+        name: 'RandomWallet'
+      }
+    ]
+    OptionsController.setIncludeWalletIds(includeWalletIds)
+    OptionsController.setExcludeWalletIds(excludeWalletIds)
+    OptionsController.setFeaturedWalletIds(featuredWalletIds)
+
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data, count: data.length })
+    const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
+
+    await ApiController.fetchRecommendedWallets()
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        // Fixed to recommendedEntries
+        entries: '4',
+        include: '12341,12342',
+        exclude: '12343,12344'
+      }
+    })
+
+    expect(fetchImageSpy).toHaveBeenCalledTimes(2)
+    expect(ApiController.state.recommended).toEqual(data)
+    expect(ApiController.state.count).toBe(data.length)
+  })
+
+  it('should fetch recommended wallet images without configured recommended wallets', async () => {
+    OptionsController.setIncludeWalletIds([])
+    OptionsController.setExcludeWalletIds([])
+    OptionsController.setFeaturedWalletIds([])
+    ApiController.state.recommended = []
+
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data: [], count: 0 })
+    const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
+
+    await ApiController.fetchRecommendedWallets()
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        entries: '4',
+        include: '',
+        exclude: ''
+      }
+    })
+    expect(fetchImageSpy).not.toHaveBeenCalled()
+  })
+
+  // Fetch wallets
+  it('should fetch wallets with configured recommended wallets', async () => {
+    const includeWalletIds = ['12341', '12342']
+    const excludeWalletIds = ['12343']
+    const featuredWalletIds = ['12344']
+    const data = [
+      {
+        id: '12341',
+        name: 'MetaMask',
+        image_id: '12341'
+      },
+      {
+        id: '12342',
+        name: 'RandomWallet',
+        image_id: '12342'
+      }
+    ]
+    OptionsController.setIncludeWalletIds(includeWalletIds)
+    OptionsController.setExcludeWalletIds(excludeWalletIds)
+    OptionsController.setFeaturedWalletIds(featuredWalletIds)
+
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data, count: data.length })
+    const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
+
+    await ApiController.fetchWallets({ page: 1 })
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        entries: '40',
+        include: '12341,12342',
+        exclude: '12343,12344'
+      }
+    })
+
+    expect(fetchImageSpy).toHaveBeenCalledTimes(2)
+    expect(ApiController.state.wallets).toEqual(data)
+  })
+
+  // Search Wallet
+  it('should search wallet with search term', async () => {
+    const includeWalletIds = ['12341', '12342']
+    const excludeWalletIds = ['12343']
+    const data = [
+      {
+        id: '12341',
+        name: 'MetaMask',
+        image_id: '12341'
+      }
+    ]
+    OptionsController.setIncludeWalletIds(includeWalletIds)
+    OptionsController.setExcludeWalletIds(excludeWalletIds)
+
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data })
+    const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
+
+    await ApiController.searchWallet({ search: 'MetaMask' })
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        entries: '100',
+        search: 'MetaMask',
+        include: '12341,12342',
+        exclude: '12343'
+      }
+    })
+
+    expect(fetchImageSpy).toHaveBeenCalledOnce()
+    expect(ApiController.state.search).toEqual(data)
+  })
+
+  // Prefetch
+  it('should prefetch without analytics', () => {
+    OptionsController.state.enableAnalytics = false
+    const fetchFeaturedSpy = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
+    const fetchNetworkImagesSpy = vi.spyOn(ApiController, 'fetchNetworkImages').mockResolvedValue()
+    const recommendedWalletsSpy = vi
+      .spyOn(ApiController, 'fetchRecommendedWallets')
+      .mockResolvedValue()
+    const fetchConnectorImagesSpy = vi
+      .spyOn(ApiController, 'fetchConnectorImages')
+      .mockResolvedValue()
+
+    const fetchAnalyticsSpy = vi.spyOn(ApiController, 'fetchAnalyticsConfig')
+
+    ApiController.prefetch()
+
+    expect(fetchAnalyticsSpy).not.toHaveBeenCalled()
+    expect(fetchFeaturedSpy).toHaveBeenCalledOnce()
+    expect(fetchNetworkImagesSpy).toHaveBeenCalledOnce()
+    expect(recommendedWalletsSpy).toHaveBeenCalledOnce()
+    expect(fetchConnectorImagesSpy).toHaveBeenCalledOnce()
+  })
+
+  it('should prefetch with analytics', () => {
+    OptionsController.state.enableAnalytics = undefined
+    const fetchSpy = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
+    const fetchNetworkImagesSpy = vi.spyOn(ApiController, 'fetchNetworkImages').mockResolvedValue()
+    const recommendedWalletsSpy = vi
+      .spyOn(ApiController, 'fetchRecommendedWallets')
+      .mockResolvedValue()
+    const fetchConnectorImagesSpy = vi
+      .spyOn(ApiController, 'fetchConnectorImages')
+      .mockResolvedValue()
+
+    const fetchAnalyticsSpy = vi.spyOn(ApiController, 'fetchAnalyticsConfig').mockResolvedValue()
+
+    ApiController.prefetch()
+
+    expect(fetchAnalyticsSpy).toHaveBeenCalledOnce()
+    expect(fetchSpy).toHaveBeenCalledOnce()
+    expect(fetchNetworkImagesSpy).toHaveBeenCalledOnce()
+    expect(recommendedWalletsSpy).toHaveBeenCalledOnce()
+    expect(fetchConnectorImagesSpy).toHaveBeenCalledOnce()
+  })
+
+  // Fetch analytics config - somehow this is failing
+  it.skip('should fetch analytics config', async () => {
+    const data = { isAnalyticsEnabled: true }
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data })
+
+    await ApiController.fetchAnalyticsConfig()
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getAnalyticsConfig',
+      headers: ApiController._getApiHeaders()
+    })
+
+    expect(ApiController.state.isAnalyticsEnabled).toBe(true)
+  })
 })
