@@ -48,6 +48,8 @@ describe('TransactionsController', () => {
       cursor: undefined
     })
 
+    expect(TransactionsController.state.transactions).toEqual([])
+    expect(TransactionsController.state.transactionsByYear).toEqual({})
     expect(TransactionsController.state.coinbaseTransactions).toEqual({
       2024: {
         0: [ONRAMP_TRANSACTIONS_RESPONSES_JAN.SUCCESS],
@@ -81,6 +83,8 @@ describe('TransactionsController', () => {
       cursor: undefined
     })
 
+    expect(TransactionsController.state.transactions).toEqual([])
+    expect(TransactionsController.state.transactionsByYear).toEqual({})
     expect(TransactionsController.state.coinbaseTransactions).toEqual({
       2024: {
         1: [IN_PROGRESS]
@@ -105,6 +109,8 @@ describe('TransactionsController', () => {
     })
 
     // Transaction should be replaced
+    expect(TransactionsController.state.transactions).toEqual([])
+    expect(TransactionsController.state.transactionsByYear).toEqual({})
     expect(TransactionsController.state.coinbaseTransactions).toEqual({
       2024: {
         1: [SUCCESS]
@@ -137,6 +143,8 @@ describe('TransactionsController', () => {
       cursor: undefined
     })
 
+    expect(TransactionsController.state.transactions).toEqual([])
+    expect(TransactionsController.state.transactionsByYear).toEqual({})
     expect(TransactionsController.state.coinbaseTransactions).toEqual({
       2024: {
         1: [IN_PROGRESS]
@@ -161,6 +169,8 @@ describe('TransactionsController', () => {
     })
 
     // Transaction should be replaced
+    expect(TransactionsController.state.transactions).toEqual([])
+    expect(TransactionsController.state.transactionsByYear).toEqual({})
     expect(TransactionsController.state.coinbaseTransactions).toEqual({
       2024: {
         1: [FAILED]
@@ -193,6 +203,8 @@ describe('TransactionsController', () => {
       cursor: undefined
     })
 
+    expect(TransactionsController.state.transactions).toEqual([])
+    expect(TransactionsController.state.transactionsByYear).toEqual({})
     expect(TransactionsController.state.coinbaseTransactions).toEqual({
       2024: {
         0: [IN_PROGRESS]
@@ -217,6 +229,8 @@ describe('TransactionsController', () => {
     })
 
     // Transaction should be replaced
+    expect(TransactionsController.state.transactions).toEqual([])
+    expect(TransactionsController.state.transactionsByYear).toEqual({})
     expect(TransactionsController.state.coinbaseTransactions).toEqual({
       2024: {
         0: [SUCCESS],
