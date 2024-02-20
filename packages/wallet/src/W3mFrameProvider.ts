@@ -318,6 +318,20 @@ export class W3mFrameProvider {
     })
   }
 
+  public onNotConnected(callback: () => void) {
+    this.w3mFrame.events.onFrameEvent(event => {
+      if (event.type === W3mFrameConstants.FRAME_IS_CONNECTED_ERROR) {
+        callback()
+      }
+      if (
+        event.type === W3mFrameConstants.FRAME_IS_CONNECTED_SUCCESS &&
+        !event.payload.isConnected
+      ) {
+        callback()
+      }
+    })
+  }
+
   // -- Promise Handlers ------------------------------------------------
   private onConnectEmailSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_EMAIL_SUCCESS' }>

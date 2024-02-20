@@ -29,10 +29,12 @@ export class WuiListAccordion extends LitElement {
   public override firstUpdated() {
     setTimeout(() => {
       const heightElement = this.shadowRoot?.querySelector('.heightContent')
+      const textElement = this.shadowRoot?.querySelector('.textContent')
 
-      if (heightElement) {
+      if (heightElement && textElement) {
         this.scrollElement = heightElement
-        const scrollHeight = heightElement?.scrollHeight
+        const scrollHeight = textElement?.scrollHeight
+
         if (scrollHeight && scrollHeight > MAX_HEIGHT) {
           this.enableAccordion = true
           this.scrollHeightElement = scrollHeight
@@ -55,7 +57,7 @@ export class WuiListAccordion extends LitElement {
           class="overflowedContent"
         >
           <div class="heightContent">
-            <wui-text variant="paragraph-400" color="fg-200">
+            <wui-text class="textContent" variant="paragraph-400" color="fg-200">
               <pre>${this.overflowedContent}</pre>
             </wui-text>
           </div>
