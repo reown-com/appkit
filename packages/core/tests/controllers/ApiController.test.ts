@@ -3,7 +3,8 @@ import {
   ApiController,
   AssetController,
   ConnectorController,
-  NetworkController
+  NetworkController,
+  OptionsController
 } from '../../index.js'
 import { api } from '../../src/controllers/ApiController.js'
 
@@ -185,5 +186,53 @@ describe('ApiController', () => {
     await ApiController.fetchCurrencyImages(currencies)
 
     expect(fetchSpy).toHaveBeenCalledTimes(2)
+  })
+
+  it('should fetch featured wallets with configured featured wallets', async () => {
+    const featuredWalletIds = ['12341', '12342']
+    const data = [
+      {
+        id: '12341',
+        name: 'MetaMask',
+        image_id: '12341'
+      },
+      {
+        id: '12342',
+        name: 'RandomWallet',
+        image_id: '12342'
+      },
+      {
+        id: '12343',
+        name: 'RandomWallet'
+      }
+    ]
+    OptionsController.setFeaturedWalletIds(featuredWalletIds)
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data })
+    const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
+    await ApiController.fetchFeaturedWallets()
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      headers: ApiController._getApiHeaders(),
+      params: {
+        page: '1',
+        entries: '2',
+        include: '12341,12342'
+      }
+    })
+
+    expect(fetchImageSpy).toHaveBeenCalledTimes(2)
+    expect(ApiController.state.featured).toEqual(data)
+  })
+
+  it('should not fetch featured wallets without configured featured wallets', async () => {
+    OptionsController.setFeaturedWalletIds([])
+    const fetchSpy = vi.spyOn(api, 'get')
+    const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
+
+    await ApiController.fetchFeaturedWallets()
+
+    expect(fetchSpy).not.toHaveBeenCalled()
+    expect(fetchImageSpy).not.toHaveBeenCalled()
   })
 })
