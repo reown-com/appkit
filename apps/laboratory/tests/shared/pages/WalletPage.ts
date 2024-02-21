@@ -3,8 +3,6 @@ import { expect, type Locator, type Page } from '@playwright/test'
 import { WALLET_URL } from '../constants'
 import type { SessionParams } from '../types'
 
-const WAIT_FOR_BUTTON_TIMEOUT = 10 * 1000
-
 export class WalletPage {
   private readonly baseURL = WALLET_URL
 
@@ -57,23 +55,19 @@ export class WalletPage {
   async handleSessionProposal(opts: SessionParams) {
     const variant = opts.accept ? `approve` : `reject`
     // `.click` doesn't work here, so we use `.focus` and `Space`
-    const btn = this.page.getByTestId(`session-${variant}-button`)
-    await btn.waitFor({
-      state: 'visible',
-      timeout: WAIT_FOR_BUTTON_TIMEOUT
-    })
-    await expect(btn).toBeEnabled()
-    await btn.focus()
-    await this.page.keyboard.press('Space')
+    await this.performRequestAction(variant)
   }
 
   async handleRequest({ accept }: { accept: boolean }) {
     const variant = accept ? `approve` : `reject`
     // `.click` doesn't work here, so we use `.focus` and `Space`
+    await this.performRequestAction(variant)
+  }
+
+  async performRequestAction(variant: string) {
     const btn = this.page.getByTestId(`session-${variant}-button`)
-    await btn.waitFor({
-      state: 'visible',
-      timeout: WAIT_FOR_BUTTON_TIMEOUT
+    await expect(btn, `Session ${variant} element should be visible`).toBeVisible({
+      timeout: 7000
     })
     await expect(btn).toBeEnabled()
     await btn.focus()
