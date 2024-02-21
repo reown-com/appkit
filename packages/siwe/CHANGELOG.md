@@ -1,5 +1,15 @@
 # @web3modal/siwe
 
+## 4.0.7
+
+### Patch Changes
+
+- Add eth_getBalance to list of allowed methods
+
+- Updated dependencies []:
+  - @web3modal/core@4.0.7
+  - @web3modal/scaffold-utils@4.0.7
+
 ## 4.0.6
 
 ### Patch Changes

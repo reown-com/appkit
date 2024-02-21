@@ -59,6 +59,11 @@ export const W3mFrameConstants = {
 } as const
 
 export const W3mFrameRpcConstants = {
-  SAFE_RPC_METHODS: ['eth_blockNumber', 'eth_estimateGas', 'eth_getTransactionByHash'],
+  SAFE_RPC_METHODS: [
+    'eth_blockNumber',
+    'eth_estimateGas',
+    'eth_getTransactionByHash',
+    'eth_getBalance'
+  ],
   GET_CHAIN_ID: 'eth_chainId'
 }

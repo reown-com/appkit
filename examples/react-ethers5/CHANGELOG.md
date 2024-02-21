@@ -1,5 +1,14 @@
 # @examples/react-ethers5
 
+## 4.0.7
+
+### Patch Changes
+
+- Add eth_getBalance to list of allowed methods
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.0.7
+
 ## 4.0.6
 
 ### Patch Changes
