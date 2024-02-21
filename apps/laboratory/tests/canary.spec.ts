@@ -1,4 +1,3 @@
-import { DEFAULT_SESSION_PARAMS } from './shared/constants'
 import { testConnectedMW } from './shared/fixtures/w3m-wallet-fixture'
 import { uploadCanaryResultsToCloudWatch } from './shared/utils/metrics'
 import { expectConnection } from './shared/utils/validation'
@@ -8,12 +7,11 @@ const REGION = process.env['REGION'] || 'eu-central-1'
 
 let startTime = 0
 
-testConnectedMW.beforeEach(async ({ walletPage, modalValidator, walletValidator }) => {
+testConnectedMW.beforeEach(async ({ modalValidator, walletValidator }) => {
   // Give us extra time in a potentially slow canary deployment
   testConnectedMW.setTimeout(120_000)
 
   startTime = Date.now()
-  await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
   await expectConnection(modalValidator, walletValidator)
 })
 

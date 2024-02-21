@@ -1,9 +1,7 @@
-import { DEFAULT_SESSION_PARAMS } from './shared/constants'
 import { testConnectedMWSiwe } from './shared/fixtures/w3m-wallet-fixture'
 import { expectConnection } from './shared/utils/validation'
 
-testConnectedMWSiwe.beforeEach(async ({ walletPage, walletValidator, modalValidator }) => {
-  await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+testConnectedMWSiwe.beforeEach(async ({ walletValidator, modalValidator }) => {
   await expectConnection(modalValidator, walletValidator)
 })
 
