@@ -172,11 +172,11 @@ export class W3mAccountView extends LitElement {
     return html`
       <wui-list-item
         iconVariant="blue"
-        icon="add"
+        icon="card"
         ?chevron=${true}
         @click=${this.handleClickPay.bind(this)}
       >
-        <wui-text variant="paragraph-500" color="fg-100">Buy</wui-text>
+        <wui-text variant="paragraph-500" color="fg-100">Buy crypto</wui-text>
       </wui-list-item>
     `
   }

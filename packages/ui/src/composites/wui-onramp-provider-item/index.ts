@@ -57,7 +57,7 @@ export class WuiOnRampProviderItem extends LitElement {
   // -- Private ------------------------------------------- //
   private networksTemplate() {
     const networks = NetworkController.getRequestedCaipNetworks()
-    const slicedNetworks = networks?.slice(0, 5)
+    const slicedNetworks = networks?.filter(network => network?.imageId)?.slice(0, 5)
 
     return html`
       <wui-flex class="networks">
