@@ -418,29 +418,25 @@ export class Web3Modal extends Web3ModalScaffold {
           SolStoreUtil.setCaipChainId(`${chain.name}:${chain.chainId}`)
           SolStoreUtil.setCurrentChain(chain)
           localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `${chain.name}:${chain.chainId}`)
-          switch (providerType) {
-            case ConstantsUtil.INJECTED_CONNECTOR_ID:
-              if (window.solana?.['connect']) {
-                window.solana?.['connect'](chain.chainId)
-              }
-              this.setAddress(this.walletAdapters.phantom.publicKey?.toString())
-              await this.syncAccount()
-              break
-
-            case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
-              const WalletConnectProvider = provider as unknown as WalletConnectConnector
-              const universalProvider = await WalletConnectProvider?.getProvider() as unknown as UniversalProvider
-
-              universalProvider.namespaces = this.WalletConnectConnector.generateNamespaces(chain.chainId)
-              universalProvider.connect({ pairingTopic: undefined, namespaces: universalProvider.namespaces }).then((providerResult) => {
-                console.log(`providerResult`, providerResult);
-              }).catch(err => console.log(`err`, err))
-              await this.syncAccount()
-              break
-            default:
-              console.log('Unrecognized Wallet')
-              break
+          if (providerType?.includes(ConstantsUtil.INJECTED_CONNECTOR_ID)) {
+            const provider = window[providerType.split('_')[1] as keyof Window].solana
+            await provider.connect(chain.chainId)
+            this.setAddress(this.walletAdapters.phantom.publicKey?.toString())
+            await this.syncAccount()
+            return
           }
+          if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
+            const WalletConnectProvider = provider as unknown as WalletConnectConnector
+            const universalProvider = await WalletConnectProvider?.getProvider() as unknown as UniversalProvider
+
+            universalProvider.namespaces = this.WalletConnectConnector.generateNamespaces(chain.chainId)
+            universalProvider.connect({ pairingTopic: undefined, namespaces: universalProvider.namespaces }).then((providerResult) => {
+              console.log(`providerResult`, providerResult);
+            }).catch(err => console.log(`err`, err))
+            await this.syncAccount()
+            return
+          }
+          console.log('Unrecognized Wallet')
         } catch (error) {
           console.log("switch network error", error)
         }
@@ -515,11 +511,13 @@ export class Web3Modal extends Web3ModalScaffold {
     }
 
     function chainChangedHandler(chainId: string) {
+      console.log(`chainChangedHandler`, chainId);
       if (chainId) {
         SolStoreUtil.setChainId(chainId)
       }
     }
 
+    console.log(`provider`, provider);
     if (provider) {
       provider.on('disconnect', disconnectHandler)
       provider.on('accountsChanged', accountsChangedHandler)
