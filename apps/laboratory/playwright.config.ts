@@ -11,8 +11,8 @@ export default defineConfig<ModalFixture>({
   testDir: './tests',
   testIgnore: 'email.spec.ts',
   fullyParallel: true,
-  retries: 2,
-  workers: getValue(8, 2),
+  retries: getValue(2, 1),
+  workers: getValue(8, 4),
   reporter: getValue(
     [['list'], ['html', { open: 'never' }]],
     [['list'], ['html', { host: '0.0.0.0' }]]
