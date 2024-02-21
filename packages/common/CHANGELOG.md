@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 4.0.6
+
+### Patch Changes
+
+- Email stability fixes
+
 ## 4.0.5
 
 ### Patch Changes

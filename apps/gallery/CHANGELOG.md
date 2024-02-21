@@ -1,5 +1,15 @@
 # @apps/gallery
 
+## 4.0.6
+
+### Patch Changes
+
+- Email stability fixes
+
+- Updated dependencies []:
+  - @web3modal/common@4.0.6
+  - @web3modal/ui@4.0.6
+
 ## 4.0.5
 
 ### Patch Changes
