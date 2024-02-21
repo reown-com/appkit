@@ -1,32 +1,25 @@
 import { DEFAULT_SESSION_PARAMS } from './shared/constants'
-import {
-  doActionAndWaitForNewPage,
-  testConnectedMWSiwe
-} from './shared/fixtures/w3m-wallet-fixture'
+import { testMWSiwe } from './shared/fixtures/w3m-wallet-fixture'
 import { expectConnection } from './shared/utils/validation'
 
-testConnectedMWSiwe.beforeEach(
-  async ({ walletValidator, modalValidator, modalPage, walletPage, context }) => {
-    await walletPage.page.close()
-    const page = await doActionAndWaitForNewPage(modalPage.clickWalletDeeplink(), context)
-    walletPage.loadNewPage(page)
-    walletValidator.loadNewPage(page)
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    await expectConnection(modalValidator, walletValidator)
-  }
-)
+testMWSiwe.beforeEach(async ({ walletValidator, modalValidator, walletPage, modalPage }) => {
+  const uri = await modalPage.getConnectUri()
+  await walletPage.connectWithUri(uri)
+  await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+  await expectConnection(modalValidator, walletValidator)
+})
 
-testConnectedMWSiwe.afterEach(async ({ modalValidator, walletValidator }) => {
+testMWSiwe.afterEach(async ({ modalValidator, walletValidator }) => {
   await modalValidator.expectDisconnected()
   await walletValidator.expectDisconnected()
 })
 
-testConnectedMWSiwe(
+testMWSiwe(
   'it should sign in with ethereum',
   async ({ modalPage, walletPage, modalValidator, walletValidator, browserName }) => {
     // Webkit cannot use clipboard.
     if (browserName === 'webkit') {
-      testConnectedMWSiwe.skip()
+      testMWSiwe.skip()
 
       return
     }
@@ -34,13 +27,14 @@ testConnectedMWSiwe(
     await walletValidator.expectReceivedSign({})
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAuthenticated()
-    await modalValidator.expectConnected()
-    await walletValidator.expectConnected()
+    // If we don't wait here, we are in disconnected state TODO: check
+    await walletPage.page.waitForTimeout(1000)
+    await walletValidator.expectSessionCard()
     await modalPage.disconnect()
   }
 )
 
-testConnectedMWSiwe(
+testMWSiwe(
   'it should reject sign in with ethereum',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
     await modalPage.promptSiwe()

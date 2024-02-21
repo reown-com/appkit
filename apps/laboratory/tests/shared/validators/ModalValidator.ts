@@ -9,7 +9,8 @@ export class ModalValidator {
   constructor(public readonly page: Page) {}
 
   async expectConnected() {
-    await expect(this.page.getByTestId('account-button')).toBeVisible({
+    // Siwe promp is over the account-button, on Firefox it does not appear as visible
+    await expect(this.page.getByTestId('account-button')).toBeAttached({
       timeout: MAX_WAIT
     })
   }

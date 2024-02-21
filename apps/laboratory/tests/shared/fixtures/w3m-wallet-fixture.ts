@@ -23,7 +23,7 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
     await use(walletValidator)
   }
 })
-export const testConnectedMWSiwe = siwe.extend<ModalWalletFixture>({
+export const testMWSiwe = siwe.extend<ModalWalletFixture>({
   walletPage: async ({ context }, use) => {
     const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
