@@ -44,7 +44,7 @@ export class W3mFrame {
 
           // Before appending, get the url and fetch the headers
           const url = new URL(iframe.src)
-          fetch(url, { method: 'HEAD' })
+          fetch(url.origin, { method: 'HEAD' })
             .then(response => {
               console.log('fetch response', response)
               console.log('fetch response headers', response.headers)
