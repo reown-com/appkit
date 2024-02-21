@@ -9,11 +9,11 @@
     "playwright:start": "npm run dev:laboratory",
     "playwright:install": "npx playwright install --with-deps",
     "playwright:test": "npx playwright test",
-    "playwright:test:wallet": "npx playwright test --grep wallet.spec.ts",
+    "playwright:test:wallet": "npx playwright test --grep 'connect-qr.spec.ts|wallet.spec.ts'",
     "playwright:test:siwe": "npx playwright test --grep siwe.spec.ts",
     "playwright:test:canary": "npx playwright test --grep canary.spec.ts --project='Desktop Chrome/wagmi'",
     "playwright:debug": "npx playwright test --debug",
-    "playwright:debug:wallet": "npx playwright test --debug --grep wallet.spec.ts",
+    "playwright:debug:wallet": "npx playwright test --debug 'connect-qr.spec.ts|wallet.spec.ts'",
     "playwright:debug:siwe": "npx playwright test --debug --grep siwe.spec.ts",
     "playwright:debug:canary": "npx playwright test --debug --grep canary.spec.ts --project='Desktop Chrome/wagmi'"
   },
