@@ -126,16 +126,25 @@ export const OnRampController = {
 
   async getQuote() {
     state.quotesLoading = true
-    const quote = await BlockchainApiController.getOnrampQuote({
-      purchaseCurrency: state.purchaseCurrency,
-      paymentCurrency: state.paymentCurrency,
-      amount: state.paymentAmount?.toString() || '0',
-      network: state.purchaseCurrency?.symbol
-    })
-    state.quotesLoading = false
-    state.purchaseAmount = Number(quote.purchaseAmount.amount)
+    try {
+      const quote = await BlockchainApiController.getOnrampQuote({
+        purchaseCurrency: state.purchaseCurrency,
+        paymentCurrency: state.paymentCurrency,
+        amount: state.paymentAmount?.toString() || '0',
+        network: state.purchaseCurrency?.symbol
+      })
+      state.quotesLoading = false
+      state.purchaseAmount = Number(quote.purchaseAmount.amount)
 
-    return quote
+      return quote
+    } catch (error) {
+      state.error = (error as Error).message
+      state.quotesLoading = false
+
+      return null
+    } finally {
+      state.quotesLoading = false
+    }
   },
 
   resetState() {

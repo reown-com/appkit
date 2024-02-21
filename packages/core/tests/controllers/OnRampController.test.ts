@@ -128,5 +128,21 @@ describe('OnRampController', () => {
     })
 
     expect(OnRampController.state.purchaseAmount).toEqual(100)
+    expect(OnRampController.state.quotesLoading).toEqual(false)
+  })
+
+  it('should set error when failing to get quotes', async () => {
+    OnRampController.resetState()
+    const error = new Error('Test error')
+    const getOnrampQuote = vi
+      .spyOn(BlockchainApiController, 'getOnrampQuote')
+      .mockRejectedValue(error)
+
+    const quote = await OnRampController.getQuote()
+
+    expect(quote).toEqual(null)
+    expect(getOnrampQuote).toHaveBeenCalled()
+    expect(OnRampController.state.error).toEqual(error.message)
+    expect(OnRampController.state.quotesLoading).toEqual(false)
   })
 })
