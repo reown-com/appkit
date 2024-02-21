@@ -12,6 +12,7 @@ export class WalletValidator {
   }
 
   async expectConnected() {
+    await expect(this.gotoSessions).toBeVisible()
     await this.gotoSessions.click()
     await expect(this.page.getByTestId('session-card')).toBeVisible({
       timeout: MAX_WAIT

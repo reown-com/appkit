@@ -4,6 +4,7 @@ import { BASE_URL } from './tests/shared/constants'
 import { config } from 'dotenv'
 import type { ModalFixture } from './tests/shared/fixtures/w3m-fixture'
 import { getProjects } from './tests/shared/utils/project'
+import { getValue } from './tests/shared/utils/config'
 config({ path: './.env.local' })
 
 export default defineConfig<ModalFixture>({
@@ -11,13 +12,13 @@ export default defineConfig<ModalFixture>({
   testIgnore: 'email.spec.ts',
   fullyParallel: true,
   retries: 2,
-  workers: 8,
-  reporter: process.env['CI']
-    ? [['list'], ['html', { open: 'never' }]]
-    : [['list'], ['html', { host: '0.0.0.0' }]],
-
+  workers: getValue(8, 2),
+  reporter: getValue(
+    [['list'], ['html', { open: 'never' }]],
+    [['list'], ['html', { host: '0.0.0.0' }]]
+  ),
   expect: {
-    timeout: (process.env['CI'] ? 60 : 15) * 1000
+    timeout: getValue(60, 15) * 1000
   },
   timeout: 60 * 1000,
 

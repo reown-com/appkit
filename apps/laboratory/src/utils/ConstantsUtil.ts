@@ -14,5 +14,15 @@ export const ConstantsUtil = {
     icons: ['https://avatars.githubusercontent.com/u/37784886'],
     verifyUrl: ''
   },
+  CustomWallets: [
+    {
+      id: 'react-wallet-v2',
+      name: 'react-wallet-v2',
+      homepage: 'https://react-wallet.walletconnect.com',
+      mobile_link: 'https://react-wallet.walletconnect.com',
+      desktop_link: 'https://react-wallet.walletconnect.com',
+      webapp_link: 'https://react-wallet.walletconnect.com'
+    }
+  ],
   ProjectId: projectId
 }
