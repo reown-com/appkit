@@ -32,20 +32,40 @@ export class W3mFrame {
         this.frameLoadPromiseResolver = { resolve, reject }
       })
       if (W3mFrameHelpers.isClient) {
-        const iframe = document.createElement('iframe')
-        iframe.id = 'w3m-iframe'
-        iframe.src = `${W3mFrameConstants.SECURE_SITE_SDK}?projectId=${projectId}`
-        iframe.style.position = 'fixed'
-        iframe.style.zIndex = '999999'
-        iframe.style.display = 'none'
-        iframe.style.opacity = '0'
-        iframe.style.borderRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
-        document.body.appendChild(iframe)
-        this.iframe = iframe
-        this.iframe.onload = () => {
-          this.frameLoadPromiseResolver?.resolve(undefined)
-        }
-        this.iframe.onerror = () => {
+        try {
+          const iframe = document.createElement('iframe')
+          iframe.id = 'w3m-iframe'
+          iframe.src = `${W3mFrameConstants.SECURE_SITE_SDK}?projectId=${projectId}`
+          iframe.style.position = 'fixed'
+          iframe.style.zIndex = '999999'
+          iframe.style.display = 'none'
+          iframe.style.opacity = '0'
+          iframe.style.borderRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
+
+          // Before appending, get the url and fetch the headers
+          const url = new URL(iframe.src)
+          fetch(url, { method: 'HEAD' })
+            .then(response => {
+              console.log('fetch response', response)
+            })
+            .catch(e => {
+              console.log('fetch error', e)
+            })
+
+          document.body.appendChild(iframe)
+          this.iframe = iframe
+          this.iframe.onload = () => {
+            this.frameLoadPromiseResolver?.resolve(undefined)
+          }
+          this.iframe.onerror = () => {
+            this.frameLoadPromiseResolver?.reject('Unable to load email login dependency')
+          }
+
+          this.iframe.onabort = () => {
+            this.frameLoadPromiseResolver?.reject('Unable to load email login dependency')
+          }
+        } catch (error) {
+          console.warn('Unable to load email login dependency', error)
           this.frameLoadPromiseResolver?.reject('Unable to load email login dependency')
         }
       }
