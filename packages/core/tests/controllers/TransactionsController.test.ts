@@ -9,7 +9,8 @@ describe('TransactionsController', () => {
       transactionsByYear: {},
       loading: false,
       empty: false,
-      next: undefined
+      next: undefined,
+      coinbaseTransactions: {}
     })
   })
 })
