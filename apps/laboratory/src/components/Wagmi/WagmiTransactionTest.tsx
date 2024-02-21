@@ -15,6 +15,7 @@ export function WagmiTransactionTest() {
   const { status, chain } = useAccount()
   const { data: gas, error: prepareError } = useEstimateGas(TEST_TX)
   const [isLoading, setLoading] = useState(false)
+  const isConnected = status === 'connected'
   const { sendTransaction } = useSendTransaction({
     mutation: {
       onSuccess: hash => {
@@ -61,7 +62,7 @@ export function WagmiTransactionTest() {
         data-test-id="sign-transaction-button"
         onClick={onSendTransaction}
         disabled={!sendTransaction}
-        isDisabled={isLoading}
+        isDisabled={isLoading || !isConnected}
       >
         Send Transaction to Vitalik
       </Button>

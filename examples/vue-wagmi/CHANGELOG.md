@@ -1,5 +1,14 @@
 # @examples/vue-wagmi
 
+## 4.0.6
+
+### Patch Changes
+
+- Email stability fixes
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.0.6
+
 ## 4.0.5
 
 ### Patch Changes

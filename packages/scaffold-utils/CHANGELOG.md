@@ -1,5 +1,15 @@
 # @web3modal/scaffold-utils
 
+## 4.0.6
+
+### Patch Changes
+
+- Email stability fixes
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.0.6
+  - @web3modal/scaffold@4.0.6
+
 ## 4.0.5
 
 ### Patch Changes
