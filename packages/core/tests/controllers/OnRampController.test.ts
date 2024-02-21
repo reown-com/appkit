@@ -118,6 +118,7 @@ describe('OnRampController', () => {
     OnRampController.setPaymentCurrency(paymentCurrencies[0]!)
 
     const quote = await OnRampController.getQuote()
+
     expect(quote).toEqual(mockQuote)
     expect(getOnrampQuote).toHaveBeenCalledWith({
       purchaseCurrency: purchaseCurrencies[0],
@@ -125,5 +126,7 @@ describe('OnRampController', () => {
       amount: '100',
       network: 'TEST'
     })
+
+    expect(OnRampController.state.purchaseAmount).toEqual(100)
   })
 })
