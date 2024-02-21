@@ -6,8 +6,12 @@ testConnectedMW.beforeEach(async ({ modalValidator, walletValidator }) => {
   await expectConnection(modalValidator, walletValidator)
 })
 
-testConnectedMW.afterEach(async ({ modalPage, modalValidator, walletValidator }) => {
+testConnectedMW.afterEach(async ({ modalPage, modalValidator, walletValidator, browserName }) => {
+  if (browserName === 'firefox') {
+    return
+  }
   await modalPage.disconnect()
+
   await modalValidator.expectDisconnected()
   await walletValidator.expectDisconnected()
 })

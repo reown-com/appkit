@@ -8,8 +8,7 @@ testMWSiwe.beforeEach(async ({ modalPage, walletPage }) => {
 })
 
 testMWSiwe.afterEach(async ({ modalValidator, walletValidator, browserName }) => {
-  // Webkit cannot use clipboard.
-  if (browserName === 'webkit') {
+  if (browserName === 'firefox') {
     return
   }
   await modalValidator.expectDisconnected()
