@@ -2,6 +2,7 @@ const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
+export const WALLET_URL = process.env['WALLET_URL'] || 'https://react-wallet.walletconnect.com/'
 
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
@@ -18,10 +19,10 @@ export const ConstantsUtil = {
     {
       id: 'react-wallet-v2',
       name: 'react-wallet-v2',
-      homepage: 'https://react-wallet.walletconnect.com',
-      mobile_link: 'https://react-wallet.walletconnect.com',
-      desktop_link: 'https://react-wallet.walletconnect.com',
-      webapp_link: 'https://react-wallet.walletconnect.com'
+      homepage: WALLET_URL,
+      mobile_link: WALLET_URL,
+      desktop_link: WALLET_URL,
+      webapp_link: WALLET_URL
     }
   ],
   ProjectId: projectId
