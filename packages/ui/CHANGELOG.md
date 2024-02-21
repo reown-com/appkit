@@ -1,5 +1,11 @@
 # @web3modal/ui
 
+## 4.0.7
+
+### Patch Changes
+
+- Add eth_getBalance to list of allowed methods
+
 ## 4.0.6
 
 ### Patch Changes

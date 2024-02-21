@@ -1,5 +1,14 @@
 # @examples/react-wagmi
 
+## 4.0.7
+
+### Patch Changes
+
+- Add eth_getBalance to list of allowed methods
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.0.7
+
 ## 4.0.6
 
 ### Patch Changes
