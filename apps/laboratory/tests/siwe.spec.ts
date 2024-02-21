@@ -1,16 +1,11 @@
 import { DEFAULT_SESSION_PARAMS } from './shared/constants'
 import { testConnectedMWSiwe } from './shared/fixtures/w3m-wallet-fixture'
+import { expectConnection } from './shared/utils/validation'
 
-testConnectedMWSiwe.beforeEach(
-  async ({ modalPage, walletPage, walletValidator, modalValidator }) => {
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    await modalValidator.expectConnected()
-    await walletValidator.expectConnected()
-    await modalPage.page.evaluate(
-      `window.localStorage.setItem('WALLETCONNECT_DEEPLINK_CHOICE', '')`
-    )
-  }
-)
+testConnectedMWSiwe.beforeEach(async ({ walletPage, walletValidator, modalValidator }) => {
+  await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+  await expectConnection(modalValidator, walletValidator)
+})
 
 testConnectedMWSiwe.afterEach(async ({ modalValidator, walletValidator }) => {
   await modalValidator.expectDisconnected()
