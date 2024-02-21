@@ -21,7 +21,7 @@ export interface TransactionsControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<TransactionsControllerState>({
   transactions: [],
-  coinbaseTransactions: [],
+  coinbaseTransactions: {},
   transactionsByYear: {},
   loading: false,
   empty: false,
