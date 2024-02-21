@@ -24,10 +24,9 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
   }
 })
 export const testConnectedMWSiwe = siwe.extend<ModalWalletFixture>({
-  walletPage: async ({ context, modalPage }, use) => {
-    const page = await doActionAndWaitForNewPage(modalPage.clickWalletDeeplink(), context)
-    const walletPage = new WalletPage(page)
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+  walletPage: async ({ context }, use) => {
+    const walletPage = new WalletPage(await context.newPage())
+    await walletPage.load()
     await use(walletPage)
   },
   walletValidator: async ({ walletPage }, use) => {
@@ -36,7 +35,7 @@ export const testConnectedMWSiwe = siwe.extend<ModalWalletFixture>({
   }
 })
 
-async function doActionAndWaitForNewPage(
+export async function doActionAndWaitForNewPage(
   action: Promise<void>,
   context?: BrowserContext
 ): Promise<Page> {

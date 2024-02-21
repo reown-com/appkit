@@ -5,9 +5,14 @@ import { getMaximumWaitConnections } from '../utils/timeouts'
 const MAX_WAIT = getMaximumWaitConnections()
 
 export class WalletValidator {
-  private readonly gotoSessions: Locator
+  private gotoSessions: Locator
 
-  constructor(public readonly page: Page) {
+  constructor(public page: Page) {
+    this.gotoSessions = this.page.getByTestId('sessions')
+  }
+
+  loadNewPage(page: Page) {
+    this.page = page
     this.gotoSessions = this.page.getByTestId('sessions')
   }
 

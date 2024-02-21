@@ -1,9 +1,20 @@
-import { testConnectedMWSiwe } from './shared/fixtures/w3m-wallet-fixture'
+import { DEFAULT_SESSION_PARAMS } from './shared/constants'
+import {
+  doActionAndWaitForNewPage,
+  testConnectedMWSiwe
+} from './shared/fixtures/w3m-wallet-fixture'
 import { expectConnection } from './shared/utils/validation'
 
-testConnectedMWSiwe.beforeEach(async ({ walletValidator, modalValidator }) => {
-  await expectConnection(modalValidator, walletValidator)
-})
+testConnectedMWSiwe.beforeEach(
+  async ({ walletValidator, modalValidator, modalPage, walletPage, context }) => {
+    await walletPage.page.close()
+    const page = await doActionAndWaitForNewPage(modalPage.clickWalletDeeplink(), context)
+    walletPage.loadNewPage(page)
+    walletValidator.loadNewPage(page)
+    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+    await expectConnection(modalValidator, walletValidator)
+  }
+)
 
 testConnectedMWSiwe.afterEach(async ({ modalValidator, walletValidator }) => {
   await modalValidator.expectDisconnected()

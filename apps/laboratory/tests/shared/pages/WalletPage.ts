@@ -8,16 +8,22 @@ const WAIT_FOR_BUTTON_TIMEOUT = 10 * 1000
 export class WalletPage {
   private readonly baseURL = WALLET_URL
 
-  private readonly gotoHome: Locator
-  private readonly vercelPreview: Locator
+  private gotoHome: Locator
+  private vercelPreview: Locator
 
-  constructor(public readonly page: Page) {
+  constructor(public page: Page) {
     this.gotoHome = this.page.getByTestId('wc-connect')
     this.vercelPreview = this.page.locator('css=vercel-live-feedback')
   }
 
   async load() {
     await this.page.goto(this.baseURL)
+  }
+
+  loadNewPage(page: Page) {
+    this.page = page
+    this.gotoHome = this.page.getByTestId('wc-connect')
+    this.vercelPreview = this.page.locator('css=vercel-live-feedback')
   }
 
   /**

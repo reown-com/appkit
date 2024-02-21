@@ -100,7 +100,9 @@ export class ModalPage {
   }
 
   async promptSiwe() {
-    await this.page.getByTestId('w3m-connecting-siwe-sign').click()
+    const siweSign = this.page.getByTestId('w3m-connecting-siwe-sign')
+    await expect(siweSign).toBeEnabled()
+    await siweSign.click()
   }
 
   async cancelSiwe() {
@@ -115,7 +117,6 @@ export class ModalPage {
   }
 
   async clickWalletDeeplink() {
-    await this.page.goto(this.url)
     await this.connectButton.click()
     await this.page.getByTestId('wallet-selector-react-wallet-v2').click()
     await this.page.getByTestId('tab-desktop').click()
