@@ -47,6 +47,9 @@ export class W3mFrame {
           fetch(url, { method: 'HEAD' })
             .then(response => {
               console.log('fetch response', response)
+              console.log('fetch response headers', response.headers)
+              console.log('Check CSP', response.headers.get('Content-Security-Policy'))
+              console.log('Check CSP', response.headers.get('content-security-policy'))
             })
             .catch(e => {
               console.log('fetch error', e)
