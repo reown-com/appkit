@@ -65,6 +65,7 @@ export class WalletPage {
   }
 
   async performRequestAction(variant: string) {
+    await this.page.waitForLoadState()
     const btn = this.page.getByTestId(`session-${variant}-button`)
     await expect(btn, `Session ${variant} element should be visible`).toBeVisible({
       timeout: 7000
