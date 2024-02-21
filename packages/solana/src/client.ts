@@ -22,12 +22,15 @@ import type {
   ProviderType,
   Chain,
   Provider,
-  Address
+  Address,
+  SolStoreUtilState
 } from '@web3modal/scaffold-utils/solana'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector'
 import { createWalletAdapters, type AdapterKey, syncInjectedWallets } from './connectors/walletAdapters'
+import { TrustWalletConnector } from './connectors/trustWallet'
+import { trustWalletIcon } from './connectors/trustWallet'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
@@ -46,6 +49,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private hasSyncedConnectedAccount = false
 
   private WalletConnectConnector: WalletConnectConnector
+  private TrustWalletConnector: TrustWalletConnector
   private walletAdapters: Record<AdapterKey, BaseWalletAdapter>
 
   private chains: Chain[]
@@ -123,7 +127,13 @@ export class Web3Modal extends Web3ModalScaffold {
       },
 
       connectExternal: async ({ id }) => {
-        const adapter = id === 'Trust' ? 'trustWallet' : id.toLocaleLowerCase() as AdapterKey
+        const adapter = id.toLocaleLowerCase()/*id === 'Trust' ? 'trustWallet' : id.toLocaleLowerCase()  */ as AdapterKey
+        if (id === 'trustWallet') {
+          const address = await this.TrustWalletConnector.connect()
+          this.setInjectedProvider(this.TrustWalletConnector as unknown as Provider, address, 'trustWallet' as AdapterKey)
+          return
+        }
+
         await this.walletAdapters[adapter].connect()
         const address = this.walletAdapters[adapter].publicKey?.toString() as Address
         this.setInjectedProvider(this.walletAdapters[adapter] as unknown as Provider, address, adapter)
@@ -201,6 +211,7 @@ export class Web3Modal extends Web3ModalScaffold {
       autoconnect: false,
       qrcode: true
     })
+    this.TrustWalletConnector = new TrustWalletConnector()
     SolStoreUtil.setConnection(new Connection(chain.rpcUrl ?? 'https://api.devnet.solana.com', 'recent'));
 
     SolStoreUtil.subscribeKey('address', () => {
@@ -250,6 +261,11 @@ export class Web3Modal extends Web3ModalScaffold {
         const accounts = await provider.enable();
         this.setWalletConnectProvider(accounts[0] as Address)
       } else {
+        if (walletId?.split('_')[1] === 'trustWallet') {
+          const address = await this.TrustWalletConnector.connect()
+          this.setInjectedProvider(this.TrustWalletConnector as unknown as Provider, address, 'trustWallet' as AdapterKey)
+          return
+        }
         const wallet = walletId?.split('_')[1] as AdapterKey
         const adapter = this.walletAdapters[wallet]
         if (window[wallet as keyof Window]) {
@@ -279,6 +295,21 @@ export class Web3Modal extends Web3ModalScaffold {
         rdns: ''
       }
     })
+
+    const provider = await this.TrustWalletConnector.getProvider()
+    if (window.trustWallet) {
+      w3mConnectors.push({
+        id: 'trustWallet',
+        explorerId: 'trustWallet',
+        type: 'INJECTED',
+        imageUrl: trustWalletIcon,
+        name: 'Trust Wallet',
+        provider: provider,
+        info: {
+          rdns: ''
+        }
+      })
+    }
 
     syncInjectedWallets(w3mConnectors, this.walletAdapters)
 
@@ -372,7 +403,7 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
   }
 
-  private async switchNetwork(caipNetwork: CaipNetwork) {
+  public async switchNetwork(caipNetwork: CaipNetwork) {
     const caipChainId = caipNetwork.id
 
     const provider = SolStoreUtil.state.provider
@@ -399,10 +430,13 @@ export class Web3Modal extends Web3ModalScaffold {
             case ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID:
               const WalletConnectProvider = provider as unknown as WalletConnectConnector
               const universalProvider = await WalletConnectProvider?.getProvider() as unknown as UniversalProvider
-              universalProvider.setDefaultChain('solana:' + chain.chainId, chain.rpcUrl)
+
+              universalProvider.namespaces = this.WalletConnectConnector.generateNamespaces(chain.chainId)
+              universalProvider.connect({ pairingTopic: undefined, namespaces: universalProvider.namespaces }).then((providerResult) => {
+                console.log(`providerResult`, providerResult);
+              }).catch(err => console.log(`err`, err))
               await this.syncAccount()
               break
-
             default:
               console.log('Unrecognized Wallet')
               break
@@ -412,6 +446,10 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       }
     }
+  }
+
+  public subscribeProvider(callback: (newState: SolStoreUtilState) => void) {
+    return SolStoreUtil.subscribe(callback)
   }
 
   private async setWalletConnectProvider(address: string) {

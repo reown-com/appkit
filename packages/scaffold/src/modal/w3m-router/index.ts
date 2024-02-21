@@ -54,7 +54,6 @@ export class W3mRouter extends LitElement {
 
   // -- Private ------------------------------------------- //
   private viewTemplate() {
-    console.log(`this.view`, this.view);
     switch (this.view) {
       case 'Connect':
         return html`<w3m-connect-view></w3m-connect-view>`

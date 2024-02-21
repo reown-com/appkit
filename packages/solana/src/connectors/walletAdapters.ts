@@ -4,12 +4,12 @@ import type {
 } from '@web3modal/scaffold'
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
-import { TrustWalletAdapter } from '@solana/wallet-adapter-trust'
+/* import { TrustWalletAdapter } from '@solana/wallet-adapter-trust' */
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 
 
-export type AdapterKey = 'phantom' | 'solflare' | 'trustWallet' | 'backpack'
-export const supportedWallets: AdapterKey[] = ['phantom', 'solflare', 'trustWallet', 'backpack']
+export type AdapterKey = 'phantom' | 'solflare' /* | 'trustWallet' */ | 'backpack'
+export const supportedWallets: AdapterKey[] = ['phantom', 'solflare'/* , 'trustWallet' */, 'backpack']
 
 export const createWalletAdapters = () => ({
   /* walletConnect: new WalletConnectWalletAdapter({
@@ -19,7 +19,7 @@ export const createWalletAdapters = () => ({
       },
   }), */
   phantom: new PhantomWalletAdapter(),
-  trustWallet: new TrustWalletAdapter(),
+  /* trustWallet: new TrustWalletAdapter(), */
   backpack: new BackpackWalletAdapter(),
   solflare: new SolflareWalletAdapter()
 })
@@ -30,7 +30,7 @@ declare global {
     solana?: Record<string, any>
     solflare?: Record<string, any>
     backpack?: Record<string, any>
-    trustWallet?: Record<string, any>
+    /* trustWallet?: Record<string, any> */
     phantom?: Record<string, any>
   }
 }

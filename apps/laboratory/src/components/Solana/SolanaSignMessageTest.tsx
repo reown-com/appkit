@@ -14,8 +14,20 @@ export function SolanaSignMessageTest() {
       if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
+
       const encodedMessage = new TextEncoder().encode('Hello from Web3Modal')
       const signature = await walletProvider.signMessage(encodedMessage)
+
+      // Backpack has specific signature format now
+      if (signature.signature) {
+        toast({
+          title: ConstantsUtil.SigningSucceededToastTitle,
+          description: signature.signature,
+          status: 'success',
+          isClosable: true
+        })
+        return
+      }
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
         description: signature,

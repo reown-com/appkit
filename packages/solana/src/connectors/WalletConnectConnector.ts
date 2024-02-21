@@ -231,8 +231,9 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
 
   public async sendTransaction(transaction: Transaction | VersionedTransaction) {
     const { signatures } = await this.signTransaction(transaction)
-    const encodedTransaction = transaction.serialize().toString('base64')
-    await this.requestCluster('sendTransaction', [encodedTransaction])
+    const signedTransaction = signatures[0]?.signature as string
+
+    await this.requestCluster('sendTransaction', [signedTransaction])
     return signatures[0]?.signature ?? ''
   }
 
@@ -259,24 +260,30 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
    * If `qrcode = false`, this will return the pairing URI used to generate the
    * QRCode.
    */
-  public async connect(useURI?: boolean) {
-    const chainsNamespaces = [
-      'solana:' + solana.chainId, 'solana:' + solanaTestnet.chainId, 'solana:' + solanaDevnet.chainId
-    ]
+  public generateNamespaces(chainId: string) {
     const rpcMap = {
       ['solana:' + solana.chainId]: solana.rpcUrl,
       ['solana:' + solanaTestnet.chainId]: solanaTestnet.rpcUrl,
       ['solana:' + solanaDevnet.chainId]: solanaDevnet.rpcUrl
     }
+    const chainsNamespaces = [
+      'solana:' + SolStoreUtil.state.chainId
+    ]
+    const rpc = {
+      [chainId]: rpcMap[chainId]!,
+    }
 
-    const solanaNamespace = {
+    return {
       solana: {
         chains: [...chainsNamespaces],
         methods: ['solana_signMessage', 'solana_signTransaction'],
         events: [],
-        rpcMap
+        rpcMap: rpc
       }
     }
+  }
+  public async connect(useURI?: boolean) {
+    const solanaNamespace = this.generateNamespaces(SolStoreUtil.state.chainId as string)
 
     const provider = await UniversalProviderFactory.getProvider()
 

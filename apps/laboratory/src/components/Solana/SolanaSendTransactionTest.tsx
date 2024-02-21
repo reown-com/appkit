@@ -5,8 +5,8 @@ import { PublicKey, Transaction, TransactionMessage, VersionedTransaction, Syste
 
 import { solanaDevnet } from '../../utils/ChainsUtil'
 
-const SOLFLARE_TESTNET_ADDRESS = 'F8qUqmWTsi5gbZrCPXCRpeb4i6Fv8n3EQZCiBix7SBjd'
-const recipientAddress = new PublicKey(SOLFLARE_TESTNET_ADDRESS);
+const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
+const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS);
 const amountInLamports = 100000000;
 
 export function SolanaSendTransactionTest() {
