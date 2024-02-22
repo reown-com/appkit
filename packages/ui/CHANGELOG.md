@@ -1,5 +1,11 @@
 # @web3modal/ui
 
+## 4.0.9
+
+### Patch Changes
+
+- Add all rpc methods + auto reject when modal closes
+
 ## 4.0.8
 
 ### Patch Changes
