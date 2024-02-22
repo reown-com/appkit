@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@web3modal/polyfills": "4.0.7",
-    "@web3modal/scaffold": "4.0.7",
+    "@web3modal/core": "4.0.7",
     "valtio": "1.11.2"
   },
   "keywords": [

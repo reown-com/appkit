@@ -21,8 +21,20 @@
     "@web3modal/ui": "4.0.7",
     "lit": "3.1.0"
   },
+  "peerDependencies": {
+    "@web3modal/siwe": ">=4"
+  },
   "devDependencies": {
-    "@web3modal/wallet": "4.0.7"
+    "@web3modal/wallet": "4.0.7",
+    "@web3modal/siwe": "4.0.7"
+  },
+  "peerDependenciesMeta": {
+    "@web3modal/siwe": {
+      "optional": true
+    }
+  },
+  "optionalDependencies": {
+    "@web3modal/siwe": "4.0.7"
   },
   "keywords": [
     "web3",

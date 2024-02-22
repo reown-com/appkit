@@ -5,12 +5,12 @@ import {
   ModalController,
   OptionsController,
   RouterController,
-  SIWEController,
   SnackController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
+import { SIWEController } from '../../../core/controller/SIWEController.js'
 
 @customElement('w3m-connecting-siwe-view')
 export class W3mConnectingSiweView extends LitElement {

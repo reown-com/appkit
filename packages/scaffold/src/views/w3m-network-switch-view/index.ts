@@ -1,8 +1,8 @@
 import {
   AssetUtil,
   NetworkController,
+  OptionsController,
   RouterController,
-  SIWEController,
   RouterUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
@@ -111,7 +111,7 @@ export class W3mNetworkSwitchView extends LitElement {
       this.error = false
       if (this.network) {
         await NetworkController.switchActiveNetwork(this.network)
-        if (!SIWEController.state.isSiweEnabled) {
+        if (!OptionsController.state.enableSIWE) {
           RouterUtil.navigateAfterNetworkSwitch()
         }
       }

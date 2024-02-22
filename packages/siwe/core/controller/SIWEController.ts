@@ -5,7 +5,7 @@ import type {
   SIWESession,
   SIWECreateMessageArgs,
   SIWEVerifyMessageArgs
-} from '../utils/TypeUtil.js'
+} from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
 export interface SIWEControllerClient extends SIWEClientMethods {
