@@ -1,5 +1,14 @@
 # @examples/vue-wagmi
 
+## 4.0.8
+
+### Patch Changes
+
+- [#1954](https://github.com/WalletConnect/web3modal/pull/1954) [`c3366e7`](https://github.com/WalletConnect/web3modal/commit/c3366e7211dba2f5c6d3377c9d9a77da5a52c0d8) Thanks [@tomiir](https://github.com/tomiir)! - Add support for eth_getBlockByNumber
+
+- Updated dependencies [[`c3366e7`](https://github.com/WalletConnect/web3modal/commit/c3366e7211dba2f5c6d3377c9d9a77da5a52c0d8)]:
+  - @web3modal/wagmi@4.0.8
+
 ## 4.0.8-f1845392.0
 
 ### Patch Changes
