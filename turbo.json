@@ -25,14 +25,14 @@
       "outputs": ["dist/**"],
       "cache": false
     },
-    "build:siwe": {
-      "outputs": ["dist/**"],
-      "dependsOn": ["^build:core", "^build:scaffold-utils"],
-      "cache": false
-    },
     "build:scaffold-utils": {
       "outputs": ["dist/**"],
       "dependsOn": ["^build:polyfills", "^build:scaffold"],
+      "cache": false
+    },
+    "build:siwe": {
+      "outputs": ["dist/**"],
+      "dependsOn": ["^build:core", "^build:scaffold-utils"],
       "cache": false
     },
     "build:scaffold": {
