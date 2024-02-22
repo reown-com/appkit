@@ -45,7 +45,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
         }
         await ConnectionController.connectExternal(this.connector)
 
-        if (OptionsController.state.enableSIWE) {
+        if (OptionsController.state.fix / siwe) {
           RouterController.push('ConnectingSiwe')
         } else {
           ModalController.close()
