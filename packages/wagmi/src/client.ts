@@ -376,6 +376,7 @@ export class Web3Modal extends Web3ModalScaffold {
         provider
       })
       this.listenEmailConnector(emailConnector)
+      this.listenModal(emailConnector)
     }
   }
 
@@ -387,23 +388,49 @@ export class Web3Modal extends Web3ModalScaffold {
 
       const provider = (await connector.getProvider()) as W3mFrameProvider
       const isLoginEmailUsed = provider.getLoginEmailUsed()
+
       super.setLoading(isLoginEmailUsed)
       if (isLoginEmailUsed) {
         this.setIsConnected(false)
       }
-
       provider.onRpcRequest(request => {
-        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-          super.open({ view: 'ApproveTransaction' })
+        if (W3mFrameHelpers.checkIfRequestExists(request)) {
+          if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
+            super.open({ view: 'ApproveTransaction' })
+          }
+        } else {
+          super.open()
+          setTimeout(() => {
+            this.showErrorMessage('This RPC method is not supported')
+          }, 300)
+          provider.rejectRpcRequest()
         }
       })
+
       provider.onRpcResponse(() => {
         super.close()
       })
+
+      provider.onNotConnected(() => {
+        this.setIsConnected(false)
+        super.setLoading(false)
+      })
+
       provider.onIsConnected(() => {
         this.setIsConnected(true)
         super.setLoading(false)
       })
     }
+  }
+
+  private async listenModal(
+    connector: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][number]
+  ) {
+    const provider = (await connector.getProvider()) as W3mFrameProvider
+    this.subscribeState(val => {
+      if (!val.open) {
+        provider.rejectRpcRequest()
+      }
+    })
   }
 }

@@ -602,6 +602,7 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setIsConnected(true)
         EthersStoreUtil.setAddress(address as Address)
         this.watchEmail()
+        this.watchModal()
       }
     }
   }
@@ -755,15 +756,37 @@ export class Web3Modal extends Web3ModalScaffold {
     if (this.emailProvider) {
       this.emailProvider.onRpcRequest(request => {
         // We only open the modal if it's not a safe (auto-approve)
-        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-          super.open({ view: 'ApproveTransaction' })
+        if (W3mFrameHelpers.checkIfRequestExists(request)) {
+          if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
+            super.open({ view: 'ApproveTransaction' })
+          }
+        } else {
+          this.emailProvider?.rejectRpcRequest()
+          super.open()
+          setTimeout(() => {
+            this.showErrorMessage('This RPC method is not supported')
+          }, 300)
         }
       })
       this.emailProvider.onRpcResponse(() => {
         super.close()
       })
+      this.emailProvider.onNotConnected(() => {
+        this.setIsConnected(false)
+        super.setLoading(false)
+      })
       this.emailProvider.onIsConnected(() => {
         super.setLoading(false)
+      })
+    }
+  }
+
+  private watchModal() {
+    if (this.emailProvider) {
+      this.subscribeState(val => {
+        if (!val.open) {
+          this.emailProvider?.rejectRpcRequest()
+        }
       })
     }
   }

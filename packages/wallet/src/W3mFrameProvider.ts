@@ -135,6 +135,10 @@ export class W3mFrameProvider {
     return W3mFrameStorage.get(W3mFrameConstants.EMAIL)
   }
 
+  public rejectRpcRequest() {
+    this.rpcRequestResolver?.reject()
+  }
+
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     await this.w3mFrame.frameLoadPromise
     W3mFrameHelpers.checkIfAllowedToTriggerEmail()
@@ -313,6 +317,20 @@ export class W3mFrameProvider {
   public onIsConnected(callback: () => void) {
     this.w3mFrame.events.onFrameEvent(event => {
       if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
+        callback()
+      }
+    })
+  }
+
+  public onNotConnected(callback: () => void) {
+    this.w3mFrame.events.onFrameEvent(event => {
+      if (event.type === W3mFrameConstants.FRAME_IS_CONNECTED_ERROR) {
+        callback()
+      }
+      if (
+        event.type === W3mFrameConstants.FRAME_IS_CONNECTED_SUCCESS &&
+        !event.payload.isConnected
+      ) {
         callback()
       }
     })

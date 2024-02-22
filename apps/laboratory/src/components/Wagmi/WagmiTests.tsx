@@ -1,4 +1,3 @@
-import { useAccount } from 'wagmi'
 import { WagmiTransactionTest } from './WagmiTransactionTest'
 import { WagmiSignMessageTest } from './WagmiSignMessageTest'
 import { WagmiSignTypedDataTest } from './WagmiSignTypedDataTest'
@@ -7,9 +6,7 @@ import { WagmiWriteContractTest } from './WagmiWriteContractTest'
 import { WagmiSendUSDCTest } from './WagmiSendUSDCTest'
 
 export function WagmiTests() {
-  const { isConnected } = useAccount()
-
-  return isConnected ? (
+  return (
     <Card marginTop={10} marginBottom={10}>
       <CardHeader>
         <Heading size="md">Test Interactions</Heading>
@@ -52,5 +49,5 @@ export function WagmiTests() {
         </Stack>
       </CardBody>
     </Card>
-  ) : null
+  )
 }
