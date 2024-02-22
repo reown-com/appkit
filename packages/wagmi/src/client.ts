@@ -36,7 +36,7 @@ import {
 } from './utils/helpers.js'
 import { W3mFrameHelpers } from '@web3modal/wallet'
 import type { W3mFrameProvider } from '@web3modal/wallet'
-import { ConstantsUtil as CoreConstants } from '@web3modal/core'
+import { ConstantsUtil as CoreConstants, ModalController, SnackController } from '@web3modal/core'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
 
@@ -376,6 +376,7 @@ export class Web3Modal extends Web3ModalScaffold {
         provider
       })
       this.listenEmailConnector(emailConnector)
+      this.listenModal(emailConnector)
     }
   }
 
@@ -393,8 +394,16 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setIsConnected(false)
       }
       provider.onRpcRequest(request => {
-        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-          super.open({ view: 'ApproveTransaction' })
+        if (W3mFrameHelpers.checkIfRequestExists(request)) {
+          if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
+            super.open({ view: 'ApproveTransaction' })
+          }
+        } else {
+          provider.rejectRpcRequest()
+          super.open()
+          setTimeout(() => {
+            SnackController.showError('This RPC method is not supported')
+          }, 300)
         }
       })
 
@@ -412,5 +421,16 @@ export class Web3Modal extends Web3ModalScaffold {
         super.setLoading(false)
       })
     }
+  }
+
+  private async listenModal(
+    connector: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][number]
+  ) {
+    const provider = (await connector.getProvider()) as W3mFrameProvider
+    ModalController.subscribeKey('open', val => {
+      if (!val) {
+        provider.rejectRpcRequest()
+      }
+    })
   }
 }
