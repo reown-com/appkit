@@ -1,6 +1,5 @@
 import { Button, useToast, Stack, Link, Text, Spacer, Input } from '@chakra-ui/react'
-import { parseGwei, type Address } from 'viem'
-import { useSendTransaction, useAccount, useWriteContract } from 'wagmi'
+import { useAccount, useWriteContract } from 'wagmi'
 import { useCallback, useState } from 'react'
 import { sepolia } from 'wagmi/chains'
 
@@ -49,8 +48,7 @@ export function WagmiSendUSDCTest() {
           isClosable: true
         })
       },
-      onError: error => {
-        console.log('error', error)
+      onError: () => {
         setLoading(false)
         toast({
           title: 'Error',
@@ -63,7 +61,6 @@ export function WagmiSendUSDCTest() {
   })
 
   const onSendTransaction = useCallback(() => {
-    console.log('sendTransaction', address, amount)
     setLoading(true)
     writeContract({
       abi: minTokenAbi,
