@@ -5,7 +5,7 @@ import { PublicKey, Transaction, TransactionMessage, VersionedTransaction, Syste
 
 import { solanaDevnet } from '../../utils/ChainsUtil'
 
-const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
+const PHANTOM_TESTNET_ADDRESS = 'EmT8r4E8ZjoQgt8sXGbaWBRMKfUXsVT1wonoSnJZ4nBn'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS);
 const amountInLamports = 100000000;
 

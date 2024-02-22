@@ -419,8 +419,7 @@ export class Web3Modal extends Web3ModalScaffold {
           SolStoreUtil.setCurrentChain(chain)
           localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `${chain.name}:${chain.chainId}`)
           if (providerType?.includes(ConstantsUtil.INJECTED_CONNECTOR_ID)) {
-            const provider = window[providerType.split('_')[1] as keyof Window].solana
-            await provider.connect(chain.chainId)
+            SolStoreUtil.setConnection(new Connection(chain.rpcUrl ?? 'https://api.devnet.solana.com', 'recent'))
             this.setAddress(this.walletAdapters.phantom.publicKey?.toString())
             await this.syncAccount()
             return
