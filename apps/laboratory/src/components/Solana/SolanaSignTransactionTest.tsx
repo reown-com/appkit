@@ -4,7 +4,7 @@ import { PublicKey, Transaction, TransactionMessage, VersionedTransaction, Syste
 
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
-import { solanaDevnet } from '../../utils/ChainsUtil'
+import { solana } from '../../utils/ChainsUtil'
 
 
 const PHANTOM_DEVNET_ADDRESS = 'EmT8r4E8ZjoQgt8sXGbaWBRMKfUXsVT1wonoSnJZ4nBn'
@@ -103,7 +103,20 @@ export function SolanaSignTransactionTest() {
       setLoading(false)
     }
   }
-  return chainId === solanaDevnet.chainId && address ? (
+
+  if (!address) {
+    return null;
+  }
+
+  if (chainId === solana.chainId) {
+    return (
+        <Text fontSize="md" color="yellow">
+          Switch to Solana Devnet or Testnet to test this feature
+        </Text>
+    )
+  }
+
+  return (
     <Stack direction={['column', 'column', 'row']} >
       <Button
         data-test-id="sign-transaction-button"
@@ -121,9 +134,5 @@ export function SolanaSignTransactionTest() {
         Sign Versioned Transaction
       </Button>
     </Stack>
-  ) : (
-    <Text fontSize="md" color="yellow">
-      Switch to Solana Devnet to test this feature
-    </Text>
   )
 }

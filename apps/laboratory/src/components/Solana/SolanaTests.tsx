@@ -5,6 +5,7 @@ import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
 import { SolanaSendTransactionTest } from './SolanaSendTransactionTest'
 import { SolanaSignMessageTest } from "./SolanaSignMessageTest"
 import { SolanaSignTypedDataTest } from "./SolanaSignTypedDataTest"
+import { solana } from "../../utils/ChainsUtil";
 
 export function SolanaTests() {
   const { isConnected, currentChain } = useWeb3ModalAccount()
@@ -25,15 +26,15 @@ export function SolanaTests() {
             <SolanaSignMessageTest />
           </Box>
           {!walletProviderType?.includes('injected') && <SolanaSignTypedDataTest />}
-          <Box>
-            {
-              currentChain?.name && (
+          {
+              currentChain?.chainId !== solana.chainId && (
+                  <Box>
                     <Text fontSize="md" color="yellow">
-                      Make sure your wallet chain is {currentChain?.name}
+                      Please ensure your wallet is connected to the {currentChain?.name}
                     </Text>
-                )
-            }
-          </Box>
+                  </Box>
+              )
+          }
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Sign Transaction

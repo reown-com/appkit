@@ -3,7 +3,7 @@ import { Button, useToast, Stack, Text, Spacer } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 import { PublicKey, Transaction, TransactionMessage, VersionedTransaction, SystemProgram } from '@solana/web3.js';
 
-import { solanaDevnet } from '../../utils/ChainsUtil'
+import { solana } from '../../utils/ChainsUtil'
 
 const PHANTOM_TESTNET_ADDRESS = 'EmT8r4E8ZjoQgt8sXGbaWBRMKfUXsVT1wonoSnJZ4nBn'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS);
@@ -99,29 +99,38 @@ export function SolanaSendTransactionTest() {
       setLoading(false)
     }
   }
-  return chainId === solanaDevnet.chainId && address ? (
-    <Stack direction={['column', 'column', 'row']}>
-      <Button
-        data-test-id="sign-transaction-button"
-        onClick={onSendTransaction}
-        isDisabled={loading}
-      >
-        Sign and Send Transaction
-      </Button>
 
-      <Spacer />
+  if (!address) {
+    return null;
+  }
 
-      <Button
-        data-test-id="sign-transaction-button"
-        onClick={onSendVersionedTransaction}
-        isDisabled={loading}
-      >
-        Sign and Send Versioned Transaction
-      </Button>
-    </Stack>
-  ) : (
-    <Text fontSize="md" color="yellow">
-      Switch to Solana Devnet to test this feature
-    </Text>
+  if (chainId === solana.chainId) {
+    return (
+        <Text fontSize="md" color="yellow">
+          Switch to Solana Devnet or Testnet to test this feature
+        </Text>
+    )
+  }
+
+  return (
+      <Stack direction={['column', 'column', 'row']}>
+        <Button
+            data-test-id="sign-transaction-button"
+            onClick={onSendTransaction}
+            isDisabled={loading}
+        >
+          Sign and Send Transaction
+        </Button>
+
+        <Spacer />
+
+        <Button
+            data-test-id="sign-transaction-button"
+            onClick={onSendVersionedTransaction}
+            isDisabled={loading}
+        >
+          Sign and Send Versioned Transaction
+        </Button>
+      </Stack>
   )
 }
