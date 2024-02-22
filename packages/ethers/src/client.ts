@@ -10,7 +10,6 @@ import type {
   PublicStateControllerState,
   Token
 } from '@web3modal/scaffold'
-import { ModalController, SnackController } from '@web3modal/core'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
 import EthereumProvider from '@walletconnect/ethereum-provider'
@@ -765,7 +764,7 @@ export class Web3Modal extends Web3ModalScaffold {
           this.emailProvider?.rejectRpcRequest()
           super.open()
           setTimeout(() => {
-            SnackController.showError('This RPC method is not supported')
+            this.showErrorMessage('This RPC method is not supported')
           }, 300)
         }
       })
@@ -784,8 +783,8 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private watchModal() {
     if (this.emailProvider) {
-      ModalController.subscribeKey('open', val => {
-        if (!val) {
+      this.subscribeState(val => {
+        if (!val.open) {
           this.emailProvider?.rejectRpcRequest()
         }
       })
