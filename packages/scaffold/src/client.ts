@@ -209,7 +209,7 @@ export class Web3ModalScaffold {
     if (options.siweControllerClient) {
       const { SIWEController } = await import('@web3modal/siwe')
 
-      OptionsController.setfix / siwe(true)
+      OptionsController.setIsSiweEnabled(true)
       SIWEController.setSIWEClient(options.siweControllerClient)
     }
 

@@ -32,7 +32,7 @@ export class W3mModal extends LitElement {
 
   @state() private caipAddress = AccountController.state.caipAddress
 
-  @state() private isSiweEnabled = OptionsController.state.fix / siwe
+  @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
 
   public constructor() {
     super()

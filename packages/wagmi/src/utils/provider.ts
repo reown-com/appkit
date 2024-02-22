@@ -1,5 +1,5 @@
 import { http } from '@wagmi/core'
-import type { Chain } from '@wagmi/core/chains'
+import type { Chain } from 'viem/chains'
 import { CoreHelperUtil } from '@web3modal/scaffold'
 import { ConstantsUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 

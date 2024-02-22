@@ -76,7 +76,7 @@ export class W3mConnectingWcView extends LitElement {
 
         await ConnectionController.state.wcPromise
         this.finalizeConnection()
-        if (OptionsController.state.fix / siwe) {
+        if (OptionsController.state.isSiweEnabled) {
           RouterController.push('ConnectingSiwe')
         } else {
           ModalController.close()

@@ -1,5 +1,5 @@
 import { createConnector, normalizeChainId } from '@wagmi/core'
-import type { Chain } from '@wagmi/core/chains'
+import type { Chain } from 'viem/chains'
 import { W3mFrameProvider } from '@web3modal/wallet'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'

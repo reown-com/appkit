@@ -111,7 +111,7 @@ export class W3mNetworkSwitchView extends LitElement {
       this.error = false
       if (this.network) {
         await NetworkController.switchActiveNetwork(this.network)
-        if (!OptionsController.state.fix / siwe) {
+        if (!OptionsController.state.isSiweEnabled) {
           RouterUtil.navigateAfterNetworkSwitch()
         }
       }

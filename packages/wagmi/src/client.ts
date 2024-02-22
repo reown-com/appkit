@@ -11,8 +11,8 @@ import {
   watchAccount,
   watchConnectors
 } from '@wagmi/core'
-import { mainnet } from '@wagmi/core/chains'
-import type { Chain } from '@wagmi/core/chains'
+import { mainnet } from 'viem/chains'
+import type { Chain } from 'viem/chains'
 import type { GetAccountReturnType } from '@wagmi/core'
 import type {
   CaipAddress,
