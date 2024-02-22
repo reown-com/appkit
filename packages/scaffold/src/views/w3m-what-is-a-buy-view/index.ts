@@ -14,14 +14,14 @@ export class W3mWhatIsABuyView extends LitElement {
         gap="xl"
       >
         <wui-visual name="onrampCard"></wui-visual>
-        <wui-flex flexDirection="column" gap="xs">
+        <wui-flex flexDirection="column" gap="xs" alignItems="center">
           <wui-text align="center" variant="paragraph-500" color="fg-100">
-            Buy assets to unlock your trade opportunities
+            Quickly and easily buy digital assets!
           </wui-text>
-          <wui-text align="center" variant="small-400" color="fg-200"
-            >With on-ram Buy, simply buy crypto with fiat via credit card or bank transfer and add
-            funds in your wallet to trade</wui-text
-          >
+          <wui-text align="center" variant="small-400" color="fg-200">
+            Simply select your preferred onramp provider and add digital assets to your account
+            using your credit card or bank transfer
+          </wui-text>
         </wui-flex>
         <wui-button @click=${RouterController.goBack}>
           <wui-icon size="sm" color="inherit" name="add" slot="iconLeft"></wui-icon>
