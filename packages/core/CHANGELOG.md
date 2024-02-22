@@ -1,5 +1,15 @@
 # @web3modal/core
 
+## 4.0.8-f1845392.0
+
+### Patch Changes
+
+- [#1954](https://github.com/WalletConnect/web3modal/pull/1954) [`4755109`](https://github.com/WalletConnect/web3modal/commit/475510962a92ea9f4388db1d08c979d99da18e54) Thanks [@tomiir](https://github.com/tomiir)! - Add support for eth_getBlockByNumber
+
+- Updated dependencies [[`4755109`](https://github.com/WalletConnect/web3modal/commit/475510962a92ea9f4388db1d08c979d99da18e54)]:
+  - @web3modal/wallet@4.0.8-f1845392.0
+  - @web3modal/common@4.0.8-f1845392.0
+
 ## 4.0.7
 
 ### Patch Changes

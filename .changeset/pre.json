@@ -25,5 +25,7 @@
     "@web3modal/wagmi": "4.0.7",
     "@web3modal/wallet": "4.0.7"
   },
-  "changesets": []
+  "changesets": [
+    "afraid-donkeys-lie"
+  ]
 }
