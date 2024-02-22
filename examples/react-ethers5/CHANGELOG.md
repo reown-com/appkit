@@ -1,5 +1,14 @@
 # @examples/react-ethers5
 
+## 4.0.9
+
+### Patch Changes
+
+- Add all rpc methods + auto reject when modal closes
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.0.9
+
 ## 4.0.8
 
 ### Patch Changes

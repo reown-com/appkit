@@ -1,5 +1,19 @@
 # @web3modal/wagmi
 
+## 4.0.9
+
+### Patch Changes
+
+- Add all rpc methods + auto reject when modal closes
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.0.9
+  - @web3modal/scaffold@4.0.9
+  - @web3modal/scaffold-react@4.0.9
+  - @web3modal/scaffold-utils@4.0.9
+  - @web3modal/scaffold-vue@4.0.9
+  - @web3modal/siwe@4.0.9
+
 ## 4.0.8
 
 ### Patch Changes
