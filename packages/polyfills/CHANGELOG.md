@@ -1,5 +1,17 @@
 # @web3modal/polyfills
 
+## 4.0.8
+
+### Patch Changes
+
+- [#1954](https://github.com/WalletConnect/web3modal/pull/1954) [`c3366e7`](https://github.com/WalletConnect/web3modal/commit/c3366e7211dba2f5c6d3377c9d9a77da5a52c0d8) Thanks [@tomiir](https://github.com/tomiir)! - Add support for eth_getBlockByNumber
+
+## 4.0.8-f1845392.0
+
+### Patch Changes
+
+- [#1954](https://github.com/WalletConnect/web3modal/pull/1954) [`4755109`](https://github.com/WalletConnect/web3modal/commit/475510962a92ea9f4388db1d08c979d99da18e54) Thanks [@tomiir](https://github.com/tomiir)! - Add support for eth_getBlockByNumber
+
 ## 4.0.7
 
 ### Patch Changes

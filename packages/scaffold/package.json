@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/scaffold",
-  "version": "4.0.7",
+  "version": "4.0.8",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -16,9 +16,9 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/common": "4.0.7",
-    "@web3modal/core": "4.0.7",
-    "@web3modal/ui": "4.0.7",
+    "@web3modal/common": "4.0.8",
+    "@web3modal/core": "4.0.8",
+    "@web3modal/ui": "4.0.8",
     "lit": "3.1.0"
   },
   "peerDependencies": {
