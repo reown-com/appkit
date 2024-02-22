@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 4.0.9
+
+### Patch Changes
+
+- Update safe method list
+
 ## 4.0.8
 
 ### Patch Changes
