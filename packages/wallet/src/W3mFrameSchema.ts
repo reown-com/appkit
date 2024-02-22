@@ -108,6 +108,11 @@ export const RpcEthChainId = z.object({
   method: z.literal('eth_chainId')
 })
 
+export const RpcEthGetBlockByNumber = z.object({
+  method: z.literal('eth_getBlockByNumber'),
+  params: z.array(z.any())
+})
+
 export const FrameSession = z.object({
   token: z.string()
 })
@@ -144,6 +149,7 @@ export const W3mFrameSchema = {
           .or(RpcEthBlockNumber)
           .or(RpcEthChainId)
           .or(RpcEthGetTransactionByHash)
+          .or(RpcEthGetBlockByNumber)
       })
     )
 
