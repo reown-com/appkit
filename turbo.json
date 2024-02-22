@@ -25,14 +25,14 @@
       "outputs": ["dist/**"],
       "cache": false
     },
-    "build:scaffold-utils": {
-      "outputs": ["dist/**"],
-      "dependsOn": ["^build:polyfills", "^build:scaffold"],
-      "cache": false
-    },
     "build:siwe": {
       "outputs": ["dist/**"],
       "dependsOn": ["^build:core", "^build:scaffold-utils"],
+      "cache": false
+    },
+    "build:scaffold-utils": {
+      "outputs": ["dist/**"],
+      "dependsOn": ["^build:polyfills", "^build:scaffold"],
       "cache": false
     },
     "build:scaffold": {
@@ -56,9 +56,9 @@
         "^build:common",
         "^build:core",
         "^build:polyfills",
-        "^build:scaffold-utils",
         "^build:scaffold",
         "^build:scaffold-react",
+        "^build:scaffold-utils",
         "^build:scaffold-vue",
         "^build:siwe",
         "^build:ui",
