@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, useToast, Stack, Text, Spacer } from '@chakra-ui/react'
+import { Button, useToast, Stack, Text, Spacer, Link } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 import { PublicKey, Transaction, TransactionMessage, VersionedTransaction, SystemProgram } from '@solana/web3.js';
 
@@ -121,9 +121,6 @@ export function SolanaSendTransactionTest() {
         >
           Sign and Send Transaction
         </Button>
-
-        <Spacer />
-
         <Button
             data-test-id="sign-transaction-button"
             onClick={onSendVersionedTransaction}
@@ -131,6 +128,13 @@ export function SolanaSendTransactionTest() {
         >
           Sign and Send Versioned Transaction
         </Button>
+        <Spacer />
+
+        <Link isExternal href="https://solfaucet.com/">
+          <Button variant="outline" colorScheme="blue">
+            Solana Faucet
+          </Button>
+        </Link>
       </Stack>
   )
 }
