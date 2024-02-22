@@ -140,7 +140,7 @@ export const ApiController = {
 
   getChains() {
     const { caipNetwork } = NetworkController.state
-    if (caipNetwork?.id.toLocaleLowerCase().includes('solana')) {
+    if (CoreHelperUtil.checkCaipNetwork(caipNetwork, 'solana')) {
       // Because solana has same chain ids for devnet and testnet
       return `solana:${caipNetwork?.id.split(':')[1]}`
     }
@@ -225,6 +225,13 @@ export const ApiController = {
       CoreHelperUtil.wait(300)
     ])
     state.search = data
+  },
+
+  async reFetchWallets() {
+    state.page = 1
+    state.wallets = []
+    await ApiController.fetchFeaturedWallets()
+    await ApiController.fetchRecommendedWallets()
   },
 
   prefetch() {

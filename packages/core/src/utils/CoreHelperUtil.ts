@@ -13,6 +13,10 @@ export const CoreHelperUtil = {
     return false
   },
 
+  checkCaipNetwork(network: CaipNetwork | undefined, networkName: string = "") {
+    return network?.id.toLocaleLowerCase().includes(networkName.toLowerCase())
+  },
+
   isAndroid() {
     const ua = window.navigator.userAgent.toLowerCase()
 

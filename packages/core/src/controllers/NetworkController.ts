@@ -5,6 +5,7 @@ import { PublicStateController } from './PublicStateController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { ApiController } from "./ApiController"
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -87,6 +88,9 @@ export const NetworkController = {
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
     await this._getClient().switchCaipNetwork(network)
     state.caipNetwork = network
+    if (ApiController && CoreHelperUtil.checkCaipNetwork(network, 'solana')) {
+      await ApiController.reFetchWallets()
+    }
     if (network) {
       EventsController.sendEvent({
         type: 'track',
