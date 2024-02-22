@@ -64,7 +64,11 @@ export const W3mFrameRpcConstants = {
     'eth_estimateGas',
     'eth_getTransactionByHash',
     'eth_getBalance',
-    'eth_getBlockByNumber'
+    'eth_getBlockByNumber',
+    'eth_gasPrice',
+    'eth_accounts',
+    'eth_blockNumber',
+    'eth_chainId'
   ],
   GET_CHAIN_ID: 'eth_chainId'
 }
