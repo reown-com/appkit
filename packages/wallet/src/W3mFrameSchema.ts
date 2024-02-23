@@ -69,43 +69,183 @@ export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
 export const FrameSwitchNetworkResponse = z.object({ chainId: z.number() })
 export const FrameUpdateEmailSecondaryOtpResolver = z.object({ newEmail: z.string().email() })
 export const RpcResponse = z.any()
-export const RpcPersonalSignRequest = z.object({
-  method: z.literal('personal_sign'),
-  params: z.array(z.any())
-})
-export const RpcEthSendTransactionRequest = z.object({
-  method: z.literal('eth_sendTransaction'),
-  params: z.array(z.any())
-})
+
 export const RpcEthAccountsRequest = z.object({
   method: z.literal('eth_accounts')
-})
-export const RpcGetBalance = z.object({
-  method: z.literal('eth_getBalance'),
-  params: z.array(z.any())
-})
-export const RpcEthEstimateGas = z.object({
-  method: z.literal('eth_estimateGas'),
-  params: z.array(z.any())
-})
-export const RpcEthGasPrice = z.object({
-  method: z.literal('eth_gasPrice')
-})
-export const RpcEthSignTypedDataV4 = z.object({
-  method: z.literal('eth_signTypedData_v4'),
-  params: z.array(z.any())
-})
-export const RpcEthGetTransactionByHash = z.object({
-  method: z.literal('eth_getTransactionByHash'),
-  params: z.array(z.any())
 })
 
 export const RpcEthBlockNumber = z.object({
   method: z.literal('eth_blockNumber')
 })
 
+export const RpcEthCall = z.object({
+  method: z.literal('eth_call'),
+  params: z.array(z.any())
+})
+
 export const RpcEthChainId = z.object({
   method: z.literal('eth_chainId')
+})
+
+export const RpcEthEstimateGas = z.object({
+  method: z.literal('eth_estimateGas'),
+  params: z.array(z.any())
+})
+
+export const RpcEthFeeHistory = z.object({
+  method: z.literal('eth_feeHistory'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGasPrice = z.object({
+  method: z.literal('eth_gasPrice')
+})
+
+export const RpcEthGetAccount = z.object({
+  method: z.literal('eth_getAccount'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetBalance = z.object({
+  method: z.literal('eth_getBalance'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetBlockyByHash = z.object({
+  method: z.literal('eth_getBlockByHash'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetBlockByNumber = z.object({
+  method: z.literal('eth_getBlockByNumber'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetBlockReceipts = z.object({
+  method: z.literal('eth_getBlockReceipts'),
+  params: z.array(z.any())
+})
+
+export const RcpEthGetBlockTransactionCountByHash = z.object({
+  method: z.literal('eth_getBlockTransactionCountByHash'),
+  params: z.array(z.any())
+})
+
+export const RcpEthGetBlockTransactionCountByNumber = z.object({
+  method: z.literal('eth_getBlockTransactionCountByNumber'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetCode = z.object({
+  method: z.literal('eth_getCode'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetFilter = z.object({
+  method: z.literal('eth_getFilterChanges'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetFilterLogs = z.object({
+  method: z.literal('eth_getFilterLogs'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetLogs = z.object({
+  method: z.literal('eth_getLogs'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetProof = z.object({
+  method: z.literal('eth_getProof'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetStorageAt = z.object({
+  method: z.literal('eth_getStorageAt'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetTransactionByBlockHashAndIndex = z.object({
+  method: z.literal('eth_getTransactionByBlockHashAndIndex'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetTransactionByBlockNumberAndIndex = z.object({
+  method: z.literal('eth_getTransactionByBlockNumberAndIndex'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetTransactionByHash = z.object({
+  method: z.literal('eth_getTransactionByHash'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetTransactionCount = z.object({
+  method: z.literal('eth_getTransactionCount'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetTransactionReceipt = z.object({
+  method: z.literal('eth_getTransactionReceipt'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetUncleCountByBlockHash = z.object({
+  method: z.literal('eth_getUncleCountByBlockHash'),
+  params: z.array(z.any())
+})
+
+export const RpcEthGetUncleCountByBlockNumber = z.object({
+  method: z.literal('eth_getUncleCountByBlockNumber'),
+  params: z.array(z.any())
+})
+
+export const RpcEthMaxPriorityFeePerGas = z.object({
+  method: z.literal('eth_maxPriorityFeePerGas')
+})
+
+export const RpcEthNewBlockFilter = z.object({
+  method: z.literal('eth_newBlockFilter')
+})
+
+export const RpcEthNewFilter = z.object({
+  method: z.literal('eth_newFilter'),
+  params: z.array(z.any())
+})
+
+export const RpcEthNewPendingTransactionFilter = z.object({
+  method: z.literal('eth_newPendingTransactionFilter')
+})
+
+export const RpcEthSendRawTransaction = z.object({
+  method: z.literal('eth_sendRawTransaction'),
+  params: z.array(z.any())
+})
+
+export const RpcEthSyncing = z.object({
+  method: z.literal('eth_syncing'),
+  params: z.array(z.any())
+})
+
+export const RpcUnistallFilter = z.object({
+  method: z.literal('eth_uninstallFilter'),
+  params: z.array(z.any())
+})
+
+export const RpcPersonalSignRequest = z.object({
+  method: z.literal('personal_sign'),
+  params: z.array(z.any())
+})
+
+export const RpcEthSignTypedDataV4 = z.object({
+  method: z.literal('eth_signTypedData_v4'),
+  params: z.array(z.any())
+})
+
+export const RpcEthSendTransactionRequest = z.object({
+  method: z.literal('eth_sendTransaction'),
+  params: z.array(z.any())
 })
 
 export const FrameSession = z.object({
@@ -137,13 +277,42 @@ export const W3mFrameSchema = {
         type: zType('APP_RPC_REQUEST'),
         payload: RpcPersonalSignRequest.or(RpcEthSendTransactionRequest)
           .or(RpcEthAccountsRequest)
-          .or(RpcGetBalance)
-          .or(RpcEthEstimateGas)
-          .or(RpcEthGasPrice)
-          .or(RpcEthSignTypedDataV4)
           .or(RpcEthBlockNumber)
+          .or(RpcEthCall)
           .or(RpcEthChainId)
+          .or(RpcEthEstimateGas)
+          .or(RpcEthFeeHistory)
+          .or(RpcEthGasPrice)
+          .or(RpcEthGetAccount)
+          .or(RpcEthGetBalance)
+          .or(RpcEthGetBlockyByHash)
+          .or(RpcEthGetBlockByNumber)
+          .or(RpcEthGetBlockReceipts)
+          .or(RcpEthGetBlockTransactionCountByHash)
+          .or(RcpEthGetBlockTransactionCountByNumber)
+          .or(RpcEthGetCode)
+          .or(RpcEthGetFilter)
+          .or(RpcEthGetFilterLogs)
+          .or(RpcEthGetLogs)
+          .or(RpcEthGetProof)
+          .or(RpcEthGetStorageAt)
+          .or(RpcEthGetTransactionByBlockHashAndIndex)
+          .or(RpcEthGetTransactionByBlockNumberAndIndex)
           .or(RpcEthGetTransactionByHash)
+          .or(RpcEthGetTransactionCount)
+          .or(RpcEthGetTransactionReceipt)
+          .or(RpcEthGetUncleCountByBlockHash)
+          .or(RpcEthGetUncleCountByBlockNumber)
+          .or(RpcEthMaxPriorityFeePerGas)
+          .or(RpcEthNewBlockFilter)
+          .or(RpcEthNewFilter)
+          .or(RpcEthNewPendingTransactionFilter)
+          .or(RpcEthSendRawTransaction)
+          .or(RpcEthSyncing)
+          .or(RpcUnistallFilter)
+          .or(RpcPersonalSignRequest)
+          .or(RpcEthSignTypedDataV4)
+          .or(RpcEthSendTransactionRequest)
       })
     )
 

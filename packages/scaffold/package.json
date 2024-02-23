@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/scaffold",
-  "version": "4.0.6",
+  "version": "4.0.9",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -16,13 +16,13 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/common": "4.0.6",
-    "@web3modal/core": "4.0.6",
-    "@web3modal/ui": "4.0.6",
+    "@web3modal/common": "4.0.9",
+    "@web3modal/core": "4.0.9",
+    "@web3modal/ui": "4.0.9",
     "lit": "3.1.0"
   },
   "devDependencies": {
-    "@web3modal/wallet": "4.0.6"
+    "@web3modal/wallet": "4.0.9"
   },
   "keywords": [
     "web3",
