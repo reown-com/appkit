@@ -21,7 +21,8 @@ import {
   NetworkController,
   OptionsController,
   PublicStateController,
-  ThemeController
+  ThemeController,
+  SnackController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 import type { SIWEControllerClient } from '@web3modal/siwe'
@@ -111,6 +112,14 @@ export class Web3ModalScaffold {
 
   public subscribeState(callback: (newState: PublicStateControllerState) => void) {
     return PublicStateController.subscribe(callback)
+  }
+
+  public showErrorMessage(message: string) {
+    SnackController.showError(message)
+  }
+
+  public showSuccessMessage(message: string) {
+    SnackController.showSuccess(message)
   }
 
   public getEvent() {

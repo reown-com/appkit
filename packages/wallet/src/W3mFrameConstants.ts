@@ -60,11 +60,41 @@ export const W3mFrameConstants = {
 
 export const W3mFrameRpcConstants = {
   SAFE_RPC_METHODS: [
+    'eth_accounts',
     'eth_blockNumber',
+    'eth_call',
+    'eth_chainId',
     'eth_estimateGas',
-    'eth_getTransactionByHash',
+    'eth_feeHistory',
+    'eth_gasPrice',
+    'eth_getAccount',
     'eth_getBalance',
-    'eth_getBlockByNumber'
+    'eth_getBlockByHash',
+    'eth_getBlockByNumber',
+    'eth_getBlockReceipts',
+    'eth_getBlockTransactionCountByHash',
+    'eth_getBlockTransactionCountByNumber',
+    'eth_getCode',
+    'eth_getFilterChanges',
+    'eth_getFilterLogs',
+    'eth_getLogs',
+    'eth_getProof',
+    'eth_getStorageAt',
+    'eth_getTransactionByBlockHashAndIndex',
+    'eth_getTransactionByBlockNumberAndIndex',
+    'eth_getTransactionByHash',
+    'eth_getTransactionCount',
+    'eth_getTransactionReceipt',
+    'eth_getUncleCountByBlockHash',
+    'eth_getUncleCountByBlockNumber',
+    'eth_maxPriorityFeePerGas',
+    'eth_newBlockFilter',
+    'eth_newFilter',
+    'eth_newPendingTransactionFilter',
+    'eth_sendRawTransaction',
+    'eth_syncing',
+    'eth_uninstallFilter'
   ],
+  NOT_SAFE_RPC_METHODS: ['personal_sign', 'eth_signTypedData_v4', 'eth_sendTransaction'],
   GET_CHAIN_ID: 'eth_chainId'
 }

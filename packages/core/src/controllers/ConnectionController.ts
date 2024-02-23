@@ -71,6 +71,7 @@ export const ConnectionController = {
       state.wcUri = uri
       state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
     })
+    StorageUtil.setConnectedConnector('WALLET_CONNECT')
   },
 
   async connectExternal(options: ConnectExternalOptions) {
