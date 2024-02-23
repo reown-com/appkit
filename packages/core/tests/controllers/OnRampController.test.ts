@@ -13,11 +13,11 @@ import {
   USD_CURRENCY_DEFAULT
 } from '../../src/controllers/OnRampController.js'
 
-const purchaseCurrencies: PurchaseCurrency[] = [
+const purchaseCurrencies: [PurchaseCurrency, ...PurchaseCurrency[]] = [
   { id: 'test-coin', symbol: 'TEST', name: 'Test Coin', networks: [] },
   { id: 'test-coin-2', symbol: 'TES2', name: 'Test Coin 2', networks: [] }
 ]
-const paymentCurrencies: PaymentCurrency[] = [
+const paymentCurrencies: [PaymentCurrency, ...PaymentCurrency[]] = [
   { id: 'test-currency', payment_method_limits: [] },
   { id: 'test-currency-2', payment_method_limits: [] }
 ]
@@ -114,8 +114,8 @@ describe('OnRampController', () => {
       .mockResolvedValue(mockQuote)
 
     OnRampController.setPaymentAmount(100)
-    OnRampController.setPurchaseCurrency(purchaseCurrencies[0]!)
-    OnRampController.setPaymentCurrency(paymentCurrencies[0]!)
+    OnRampController.setPurchaseCurrency(purchaseCurrencies[0])
+    OnRampController.setPaymentCurrency(paymentCurrencies[0])
 
     const quote = await OnRampController.getQuote()
 
