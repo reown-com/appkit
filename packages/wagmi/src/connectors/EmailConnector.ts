@@ -1,5 +1,4 @@
-import { createConnector, normalizeChainId } from '@wagmi/core'
-import type { Chain } from 'viem/chains'
+import { createConnector, normalizeChainId, type CreateConfigParameters } from '@wagmi/core'
 import { W3mFrameProvider } from '@web3modal/wallet'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
@@ -16,7 +15,7 @@ interface ConnectOptions {
 }
 
 export type EmailParameters = {
-  chains?: Chain[]
+  chains?: CreateConfigParameters['chains']
   options: W3mFrameProviderOptions
 }
 
