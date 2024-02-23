@@ -1,5 +1,15 @@
 # @apps/gallery
 
+## 4.0.10
+
+### Patch Changes
+
+- Add error state to wui-chip composite
+
+- Updated dependencies []:
+  - @web3modal/ui@4.0.10
+  - @web3modal/common@4.0.10
+
 ## 4.0.9
 
 ### Patch Changes
