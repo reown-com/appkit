@@ -33,7 +33,7 @@
     }
   },
   "optionalDependencies": {
-    "@web3modal/siwe": "4.0.9"
+    "@web3modal/siwe": "4.0.10"
   },
   "keywords": [
     "web3",
