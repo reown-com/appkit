@@ -6,6 +6,7 @@ import type {
   SIWECreateMessageArgs,
   SIWEVerifyMessageArgs
 } from '../utils/TypeUtils.js'
+import { OptionsController } from '@web3modal/core'
 
 // -- Types --------------------------------------------- //
 export interface SIWEControllerClient extends SIWEClientMethods {
@@ -121,7 +122,7 @@ export const SIWEController = {
   setSIWEClient(client: SIWEControllerClient) {
     state._client = ref(client)
     state.status = 'ready'
-    state.isSiweEnabled = client.options.enabled
+    OptionsController.setIsSiweEnabled(client.options.enabled)
   },
 
   setNonce(nonce: SIWEControllerClientState['nonce']) {
