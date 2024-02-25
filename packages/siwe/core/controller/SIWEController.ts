@@ -27,15 +27,13 @@ export interface SIWEControllerClientState {
   session?: SIWESession
   message?: string
   status: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
-  isSiweEnabled?: boolean
 }
 
 type StateKey = keyof SIWEControllerClientState
 
 // -- State --------------------------------------------- //
 const state = proxy<SIWEControllerClientState>({
-  status: 'uninitialized',
-  isSiweEnabled: false
+  status: 'uninitialized'
 })
 
 // -- Controller ---------------------------------------- //
