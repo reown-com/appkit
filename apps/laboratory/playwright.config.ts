@@ -4,7 +4,7 @@ import { BASE_URL } from './tests/shared/constants'
 import { config } from 'dotenv'
 import type { ModalFixture } from './tests/shared/fixtures/w3m-fixture'
 import { getAvailableDevices } from './tests/shared/utils/device'
-config({ path: './.env' })
+config({ path: './.env.local' })
 const availableDevices = getAvailableDevices()
 
 const LIBRARIES = ['wagmi', 'ethers', 'solana'] as const

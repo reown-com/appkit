@@ -246,7 +246,14 @@ export const logoOptions: LogoType[] = [
 
 export const placementOptions: PlacementType[] = ['top', 'right', 'bottom', 'left']
 
-export const chipOptions: ChipType[] = ['fill', 'transparent', 'shade', 'success', 'shadeSmall']
+export const chipOptions: ChipType[] = [
+  'fill',
+  'transparent',
+  'shade',
+  'success',
+  'shadeSmall',
+  'error'
+]
 
 export const buttonOptions: ButtonType[] = ['fill', 'accent', 'shade', 'fullWidth', 'accentBg']
 

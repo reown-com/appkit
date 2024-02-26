@@ -16,7 +16,7 @@ import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
-const api = new FetchUtil({ baseUrl })
+export const api = new FetchUtil({ baseUrl })
 const entries = '40'
 const recommendedEntries = '4'
 

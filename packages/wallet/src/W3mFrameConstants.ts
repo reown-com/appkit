@@ -59,6 +59,44 @@ export const W3mFrameConstants = {
 } as const
 
 export const W3mFrameRpcConstants = {
-  SAFE_RPC_METHODS: ['eth_blockNumber', 'eth_estimateGas', 'eth_getTransactionByHash'],
-  GET_CHAIN_ID: 'eth_chainId'
+  SAFE_RPC_METHODS: [
+    'eth_accounts',
+    'eth_blockNumber',
+    'eth_call',
+    'eth_chainId',
+    'eth_estimateGas',
+    'eth_feeHistory',
+    'eth_gasPrice',
+    'eth_getAccount',
+    'eth_getBalance',
+    'eth_getBlockByHash',
+    'eth_getBlockByNumber',
+    'eth_getBlockReceipts',
+    'eth_getBlockTransactionCountByHash',
+    'eth_getBlockTransactionCountByNumber',
+    'eth_getCode',
+    'eth_getFilterChanges',
+    'eth_getFilterLogs',
+    'eth_getLogs',
+    'eth_getProof',
+    'eth_getStorageAt',
+    'eth_getTransactionByBlockHashAndIndex',
+    'eth_getTransactionByBlockNumberAndIndex',
+    'eth_getTransactionByHash',
+    'eth_getTransactionCount',
+    'eth_getTransactionReceipt',
+    'eth_getUncleCountByBlockHash',
+    'eth_getUncleCountByBlockNumber',
+    'eth_maxPriorityFeePerGas',
+    'eth_newBlockFilter',
+    'eth_newFilter',
+    'eth_newPendingTransactionFilter',
+    'eth_sendRawTransaction',
+    'eth_syncing',
+    'eth_uninstallFilter'
+  ],
+  NOT_SAFE_RPC_METHODS: ['personal_sign', 'eth_signTypedData_v4', 'eth_sendTransaction'],
+  GET_CHAIN_ID: 'eth_chainId',
+  RPC_METHOD_NOT_ALLOWED_MESSAGE: 'Requested RPC call is not allowed',
+  RPC_METHOD_NOT_ALLOWED_UI_MESSAGE: 'Action not allowed'
 }
