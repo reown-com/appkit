@@ -28,7 +28,6 @@ const state = proxy<OptionsControllerState>({
   projectId: '',
   sdkType: 'w3m',
   sdkVersion: 'html-wagmi-undefined',
-  isSiweEnabled: false
 })
 
 // -- Controller ---------------------------------------- //
