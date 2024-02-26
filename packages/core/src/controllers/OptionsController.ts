@@ -27,7 +27,7 @@ type StateKey = keyof OptionsControllerState
 const state = proxy<OptionsControllerState>({
   projectId: '',
   sdkType: 'w3m',
-  sdkVersion: 'html-wagmi-undefined',
+  sdkVersion: 'html-wagmi-undefined'
 })
 
 // -- Controller ---------------------------------------- //
