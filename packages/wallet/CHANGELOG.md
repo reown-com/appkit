@@ -1,5 +1,11 @@
 # @web3modal/wallet
 
+## 4.0.10
+
+### Patch Changes
+
+- Add error state to wui-chip composite
+
 ## 4.0.9
 
 ### Patch Changes

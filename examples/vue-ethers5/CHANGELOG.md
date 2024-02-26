@@ -1,5 +1,14 @@
 # @examples/vue-ethers5
 
+## 4.0.10
+
+### Patch Changes
+
+- Add error state to wui-chip composite
+
+- Updated dependencies []:
+  - @web3modal/ethers5@4.0.10
+
 ## 4.0.9
 
 ### Patch Changes

@@ -25,7 +25,9 @@ export class WuiListAccordion extends LitElement {
   public override updated(changedProperties: Map<string | number | symbol, unknown>) {
     super.updated(changedProperties)
     if (changedProperties.has('textTitle') || changedProperties.has('overflowedContent')) {
-      this.checkHeight()
+      setTimeout(() => {
+        this.checkHeight()
+      }, 1)
     }
   }
 
