@@ -10,27 +10,37 @@ export class ModalValidator {
 
   async expectConnected() {
     const accountButton = this.page.locator('w3m-account-button')
-    await expect(accountButton).toBeAttached({
+    await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: MAX_WAIT
     })
   }
 
   async expectAuthenticated() {
-    await expect(this.page.getByTestId('w3m-authentication-status')).toContainText('authenticated')
+    await expect(
+      this.page.getByTestId('w3m-authentication-status'),
+      'Authentication status should be: authenticated'
+    ).toContainText('authenticated')
   }
 
   async expectUnauthenticated() {
-    await expect(this.page.getByTestId('w3m-authentication-status')).toContainText(
-      'unauthenticated'
-    )
+    await expect(
+      this.page.getByTestId('w3m-authentication-status'),
+      'Authentication status should be: unauthenticated'
+    ).toContainText('unauthenticated')
   }
 
   async expectSignatureDeclined() {
-    await expect(this.page.getByText('Signature declined')).toBeVisible()
+    await expect(
+      this.page.getByText('Signature declined'),
+      'Signature declined should be visible'
+    ).toBeVisible()
   }
 
   async expectDisconnected() {
-    await expect(this.page.getByTestId('account-button')).not.toBeVisible({
+    await expect(
+      this.page.getByTestId('account-button'),
+      'Account button should not be present'
+    ).not.toBeVisible({
       timeout: MAX_WAIT
     })
   }

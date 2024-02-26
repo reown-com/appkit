@@ -40,7 +40,7 @@ export class WalletPage {
     })
     await input.fill(uri)
     const connectButton = this.page.getByTestId('uri-connect-button')
-    await expect(connectButton).toBeEnabled({
+    await expect(connectButton, 'Connect button should be enabled').toBeEnabled({
       timeout: 5000
     })
     await connectButton.click()

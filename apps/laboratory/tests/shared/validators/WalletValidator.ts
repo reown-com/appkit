@@ -23,22 +23,34 @@ export class WalletValidator {
   }
 
   async expectSessionCard() {
-    await expect(this.page.getByTestId('session-card')).toBeVisible({
+    await expect(
+      this.page.getByTestId('session-card'),
+      'Session card should be visible'
+    ).toBeVisible({
       timeout: MAX_WAIT
     })
   }
 
   async expectDisconnected() {
     await this.gotoSessions.click()
-    await expect(this.page.getByTestId('session-card')).not.toBeVisible({
+    await expect(
+      this.page.getByTestId('session-card'),
+      'Session card should not be visible'
+    ).not.toBeVisible({
       timeout: MAX_WAIT
     })
   }
 
   async expectReceivedSign({ chainName = 'Ethereum' }) {
-    await expect(this.page.getByTestId('session-approve-button')).toBeVisible({
+    await expect(
+      this.page.getByTestId('session-approve-button'),
+      'Session approve button should be visible'
+    ).toBeVisible({
       timeout: MAX_WAIT
     })
-    await expect(this.page.getByTestId('request-details-chain')).toContainText(chainName)
+    await expect(
+      this.page.getByTestId('request-details-chain'),
+      'Request details should contain chain name'
+    ).toContainText(chainName)
   }
 }
