@@ -5,7 +5,6 @@ import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
 
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { StorageUtil } from '@web3modal/core'
 
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
@@ -35,8 +34,6 @@ export function emailConnector(parameters: EmailParameters) {
     async connect(options: ConnectOptions = {}) {
       const provider = await this.getProvider()
       const { address, chainId } = await provider.connect({ chainId: options.chainId })
-
-      await StorageUtil.getOrCreateMagicPublicKey()
 
       return {
         accounts: [address as Address],

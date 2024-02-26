@@ -57,5 +57,8 @@
     "turbo": "1.11.3",
     "typescript": "5.3.3",
     "vitest": "1.1.1"
+  },
+  "dependencies": {
+    "nanoid": "^5.0.6"
   }
 }
