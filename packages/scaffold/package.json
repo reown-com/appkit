@@ -25,7 +25,8 @@
     "@web3modal/siwe": ">=4"
   },
   "devDependencies": {
-    "@web3modal/wallet": "4.0.10"
+    "@web3modal/wallet": "4.0.10",
+    "@web3modal/siwe": "4.0.10"
   },
   "peerDependenciesMeta": {
     "@web3modal/siwe": {
