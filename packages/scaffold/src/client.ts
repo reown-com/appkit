@@ -49,6 +49,7 @@ export interface LibraryOptions {
   enableAnalytics?: OptionsControllerState['enableAnalytics']
   metadata?: OptionsControllerState['metadata']
   enableOnramp?: OptionsControllerState['enableOnramp']
+  allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
 }
 
@@ -256,6 +257,10 @@ export class Web3ModalScaffold {
 
     if (options.enableOnramp) {
       OptionsController.setOnrampEnabled(Boolean(options.enableOnramp))
+    }
+
+    if (options.allowUnsupportedChain) {
+      NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     }
   }
 
