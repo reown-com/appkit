@@ -20,6 +20,7 @@
     "@web3modal/common": "4.0.10",
     "@web3modal/wallet": "4.0.10",
     "idb": "^8.0.0",
+    "nanoid": "^5.0.6",
     "valtio": "1.11.2"
   },
   "devDependencies": {
