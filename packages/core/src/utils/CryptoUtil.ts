@@ -34,7 +34,6 @@ export const CryptoUtil = {
 
   async generateMagicKP() {
     const db = await this.getIndexedDB()
-    console.log('db?', db)
     const { subtle } = window.crypto
     // Export the public key, while keeping private key non-extractable
     const kp = await subtle.generateKey(EC_GEN_PARAMS, false, ['sign'])
@@ -46,7 +45,6 @@ export const CryptoUtil = {
   },
 
   async getOrCreateMagicPublicKey() {
-    console.log('getPublicKey')
     try {
       const db = await this.getIndexedDB()
       const storedKey = await db.get('keypairs', STORE_KEY_PUBLIC_JWK)
@@ -66,7 +64,6 @@ export const CryptoUtil = {
 
   async createJwt() {
     const publicJwk = await this.getOrCreateMagicPublicKey()
-
     if (!publicJwk) {
       console.info('unable to create public key or webcrypto is unsupported')
 
@@ -78,7 +75,6 @@ export const CryptoUtil = {
     const db = await this.getIndexedDB()
 
     const privateJwk = (await db.get('keypairs', STORE_KEY_PRIVATE_KEY)) as CryptoKey | undefined
-
     if (!privateJwk || !subtle) {
       console.info('unable to find private key or webcrypto unsupported')
 
@@ -100,7 +96,6 @@ export const CryptoUtil = {
       protected: this.strToUrlBase64(JSON.stringify(headers)),
       claims: this.strToUrlBase64(JSON.stringify(claims))
     }
-
     const data = this.strToUint8(`${jws.protected}.${jws.claims}`)
     const sigType = { name: ALGO_NAME, hash: { name: 'SHA-256' } }
 
@@ -117,7 +112,11 @@ export const CryptoUtil = {
   },
 
   binToUrlBase64(bin: string) {
-    return btoa(bin).replace(/\+/gu, '-').replace(/\//gu, '_').replace(/[=]+/gu, '')
+    return Buffer.from(bin, 'latin1')
+      .toString('base64')
+      .replace(/\+/gu, '-')
+      .replace(/\//gu, '_')
+      .replace(/[=]+/gu, '')
   },
 
   utf8ToBinaryString(str: string) {
