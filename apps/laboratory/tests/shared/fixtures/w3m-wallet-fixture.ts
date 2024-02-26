@@ -12,14 +12,11 @@ interface ModalWalletFixture {
 
 // MW -> test Modal + Wallet
 export const testConnectedMW = base.extend<ModalWalletFixture>({
-  walletPage: async ({ context, modalPage, browser }, use) => {
-    const newCtx = await browser.newContext()
-    const page = await doActionAndWaitForNewPage(modalPage.clickWalletDeeplink(), context, newCtx)
+  walletPage: async ({ context, modalPage }, use) => {
+    const page = await doActionAndWaitForNewPage(modalPage.clickWalletDeeplink(), context)
     const walletPage = new WalletPage(page)
     await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     await use(walletPage)
-    // Cleanup
-    await newCtx.close()
   },
   walletValidator: async ({ walletPage }, use) => {
     const walletValidator = new WalletValidator(walletPage.page)
@@ -27,13 +24,10 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
   }
 })
 export const testMWSiwe = siwe.extend<ModalWalletFixture>({
-  walletPage: async ({ browser }, use) => {
-    const newCtx = await browser.newContext()
-    const walletPage = new WalletPage(await newCtx.newPage())
+  walletPage: async ({ context }, use) => {
+    const walletPage = new WalletPage(await context.newPage())
     await walletPage.load()
     await use(walletPage)
-    // Cleanup
-    await newCtx.close()
   },
   walletValidator: async ({ walletPage }, use) => {
     const walletValidator = new WalletValidator(walletPage.page)
@@ -43,8 +37,7 @@ export const testMWSiwe = siwe.extend<ModalWalletFixture>({
 
 export async function doActionAndWaitForNewPage(
   action: Promise<void>,
-  context: BrowserContext,
-  newContext: BrowserContext
+  context: BrowserContext
 ): Promise<Page> {
   if (!context) {
     throw new Error('Browser Context is undefined')
@@ -52,14 +45,8 @@ export async function doActionAndWaitForNewPage(
   const pagePromise = context.waitForEvent('page')
   await action
   const newPage = await pagePromise
-  const url = newPage.url()
-  await newPage.close()
 
-  const createdPage = await newContext.newPage()
-  await createdPage.goto(url)
-  await createdPage.waitForLoadState()
-
-  return createdPage
+  return newPage
 }
 
 export { expect } from '@playwright/test'
