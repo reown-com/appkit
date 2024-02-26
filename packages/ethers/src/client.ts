@@ -35,7 +35,7 @@ import {
 } from '@web3modal/scaffold-utils/ethers'
 import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
-import { W3mFrameProvider, W3mFrameHelpers } from '@web3modal/wallet'
+import { W3mFrameProvider, W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
 
 // -- Types ---------------------------------------------------------------------
@@ -763,8 +763,11 @@ export class Web3Modal extends Web3ModalScaffold {
         } else {
           this.emailProvider?.rejectRpcRequest()
           super.open()
+          const method = W3mFrameHelpers.getRequestMethod(request)
+          // eslint-disable-next-line no-console
+          console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, { method })
           setTimeout(() => {
-            this.showErrorMessage('This RPC method is not supported')
+            this.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
           }, 300)
         }
       })
