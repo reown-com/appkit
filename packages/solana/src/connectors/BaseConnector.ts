@@ -29,26 +29,14 @@ export interface Connector {
   disconnect: () => Promise<void>
   connect: () => Promise<string>
   signMessage: (message: Uint8Array) => Promise<string>
-  // signTransaction: <Type extends TransactionType>(
-  //   type: Type,
-  //   params: TransactionArgs[Type]['params']
-  // ) => Promise<string>
   signTransaction: (
     transaction: Transaction | VersionedTransaction
-  ) => Promise<{ signatures: Array<{ signature: string }> }>
-  // sendTransaction: (encodedTransaction: string) => Promise<string>
+  ) => Promise<{ signatures: { signature: string }[] }>
   sendTransaction: (transaction: Transaction | VersionedTransaction) => Promise<string>
   getAccount: (
     requestedAddress?: string,
     encoding?: 'base58' | 'base64' | 'jsonParsed'
   ) => Promise<AccountInfo | null>
-  // signAndSendTransaction: <Type extends TransactionType>(
-  //   type: Type,
-  //   params: TransactionArgs[Type]['params']
-  // ) => Promise<string>
-  // signAndSendTransaction: (
-  //   transaction: Transaction
-  // ) => Promise<string>
   getBalance: (requestedAddress: string) => Promise<{
     formatted: string
     value: BN
@@ -95,7 +83,7 @@ export class BaseConnector {
     const transaction = new Transaction()
     const fromAddress = SolStoreUtil.state.address
 
-    if (!fromAddress) throw new Error('No address connected')
+    if (!fromAddress) { throw new Error('No address connected') }
     const fromPubkey = new PublicKey(fromAddress)
 
     if (type === 'transfer') {
@@ -121,7 +109,7 @@ export class BaseConnector {
         })
       )
       transaction.feePayer = fromPubkey
-    } else throw new Error(`No transaction configuration for type ${String(type)}`)
+    } else { throw new Error(`No transaction configuration for type ${String(type)}`) }
 
     const response = await this.requestCluster('getLatestBlockhash', [{}])
 
@@ -135,8 +123,8 @@ export class BaseConnector {
     params: TransactionArgs['transfer']['params']
   ) {
     const fromAddress = SolStoreUtil.state.address
-    if (!fromAddress) throw new Error('No address connected')
-    const fromPubkey = new PublicKey(fromAddress), toPubkey = new PublicKey(params.to)
+    if (!fromAddress) { throw new Error('No address connected') }
+    const fromPubkey = new PublicKey(fromAddress); const toPubkey = new PublicKey(params.to)
 
     const instructions = [
       SystemProgram.transfer({
@@ -155,15 +143,18 @@ export class BaseConnector {
       instructions,
     }).compileToV0Message();
 
-    // make a versioned transaction
+    // Make a versioned transaction
     const transactionV0 = new VersionedTransaction(messageV0);
+
     return transactionV0
   }
 
-  /* public async sendTransaction(encodedTransaction: string) {
-    const signature = await this.requestCluster('sendTransaction', [encodedTransaction])
-    return signature
-  } */
+  /*
+   * Public async sendTransaction(encodedTransaction: string) {
+   * const signature = await this.requestCluster('sendTransaction', [encodedTransaction])
+   * return signature
+   * } 
+   */
 
   public async getTransaction(transactionSignature: string) {
     const transaction = await this.requestCluster('getTransaction', [
@@ -186,6 +177,7 @@ export class BaseConnector {
       const address = requestedAddress ?? SolStoreUtil.state.address
       const balance = await this.requestCluster('getBalance', [address, { commitment: 'processed' }])
       const formatted = currency === 'lamports' ? `${balance?.value || 0} lamports` : `${(balance?.value || 0) / 1000000000} sol`
+
       return {
         value: new BN(balance.value),
         formatted,
@@ -194,6 +186,7 @@ export class BaseConnector {
       }
     } catch (err) {
       SolStoreUtil.setError("Can't get balance")
+
       return {
         value: new BN(0),
         formatted: '0 sol',
@@ -250,7 +243,7 @@ export class BaseConnector {
   ) {
     const address = nameAccountKey ?? SolStoreUtil.state.address
 
-    if (!address) throw new Error('No address supplied and none connected')
+    if (!address) { throw new Error('No address supplied and none connected') }
 
     const response = await this.requestCluster('getAccountInfo', [
       address,
@@ -259,7 +252,7 @@ export class BaseConnector {
       }
     ])
 
-    if (!response) throw new Error('Invalid name account provided')
+    if (!response) { throw new Error('Invalid name account provided') }
 
     const { value: nameAccount } = response
 
@@ -297,9 +290,7 @@ export class BaseConnector {
   public async getSolDomainsFromPublicKey(address: string): Promise<string[]> {
     const allDomainKeys = await this.getAllDomains(address)
     const allDomainNames = await Promise.all(
-      allDomainKeys.map(async (key: string) => {
-        return this.performReverseLookup(key)
-      })
+      allDomainKeys.map(async (key: string) => this.performReverseLookup(key))
     )
 
     return allDomainNames
@@ -321,7 +312,7 @@ export class BaseConnector {
     )
     const ownerDataRaw = await this.getAccount(nameAccountKey.toBase58(), 'base64')
 
-    if (!ownerDataRaw) return null
+    if (!ownerDataRaw) { return null }
 
     const ownerData = borsh.deserializeUnchecked(
       NameRegistry.schema,
@@ -342,7 +333,7 @@ export class BaseConnector {
 
     const favoriteDomainAccInfo = await this.getAccount(favKey.toBase58(), 'base64')
 
-    if (!favoriteDomainAccInfo) return null
+    if (!favoriteDomainAccInfo) { return null }
 
     const favoriteDomainData = borsh.deserialize(
       FavouriteDomain.schema,
@@ -367,7 +358,7 @@ export class BaseConnector {
   public async subscribeToCluster<Method extends keyof ClusterSubscribeRequestMethods>(
     method: Method,
     params: ClusterSubscribeRequestMethods[Method]['params'],
-    callback: (params: Transaction | number) => void
+    callback: (cb_params: Transaction | number) => void
   ) {
     const id = await registerListener(method, params, callback)
 
@@ -397,12 +388,7 @@ export class BaseConnector {
       .then(async httpRes => {
         const json = await httpRes.json()
 
-        console.log({ ...json })
-
         return json
-      })
-      .catch(err => {
-        console.error(`Failed to fetch ${endpoint}`, err)
       })
 
     return res.result

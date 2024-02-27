@@ -132,8 +132,8 @@ export class Web3Modal extends Web3ModalScaffold {
         if (id === 'trustWallet') {
           const address = await this.TrustWalletConnector.connect()
           this.setInjectedProvider(this.TrustWalletConnector as unknown as Provider, address, 'trustWallet' as AdapterKey)
-          
-return
+
+          return
         }
 
         await this.walletAdapters[adapter].connect()
@@ -247,8 +247,8 @@ return
 
   public getAddress() {
     const { address } = SolStoreUtil.state
-    
-return address ? (SolStoreUtil.state.address as Address) : address
+
+    return address ? (SolStoreUtil.state.address as Address) : address
   }
 
   public disconnect() {
@@ -268,8 +268,8 @@ return address ? (SolStoreUtil.state.address as Address) : address
         if (walletId?.split('_')[1] === 'trustWallet') {
           const address = await this.TrustWalletConnector.connect()
           this.setInjectedProvider(this.TrustWalletConnector as unknown as Provider, address, 'trustWallet' as AdapterKey)
-          
-return
+
+          return
         }
         const wallet = walletId?.split('_')[1] as AdapterKey
         const adapter = this.walletAdapters[wallet]
@@ -427,8 +427,8 @@ return
             SolStoreUtil.setConnection(new Connection(chain.rpcUrl ?? 'https://api.devnet.solana.com', 'recent'))
             this.setAddress(this.walletAdapters.phantom.publicKey?.toString())
             await this.syncAccount()
-            
-return
+
+            return
           }
           if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
             const WalletConnectProvider = provider as unknown as WalletConnectConnector
@@ -439,8 +439,8 @@ return
               console.log(`providerResult`, providerResult);
             }).catch(err => console.log(`err`, err))
             await this.syncAccount()
-            
-return
+
+            return
           }
           console.log('Unrecognized Wallet')
         } catch (error) {
@@ -457,7 +457,7 @@ return
   private async setWalletConnectProvider(address: string) {
     const chainId = SolStoreUtil.state.currentChain?.chainId
     const caipChainId = `${SolStoreUtil.state.currentChain?.name}:${SolStoreUtil.state.currentChain?.chainId}`
-    const chain = SolHelpersUtil.getChainFromCaip(this.chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : '')!;
+    const chain = SolHelpersUtil.getChainFromCaip(this.chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : '');
     SolStoreUtil.setIsConnected(true)
     SolStoreUtil.setChainId(chainId)
     SolStoreUtil.setCaipChainId(caipChainId)
@@ -477,7 +477,7 @@ return
     ])
   }
 
-  private async setInjectedProvider(provider: Provider, address: Address, adapter: AdapterKey) {
+  private setInjectedProvider(provider: Provider, address: Address, adapter: AdapterKey) {
     window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, `${ConstantsUtil.INJECTED_CONNECTOR_ID}_${adapter}`)
 
     const chainId = SolStoreUtil.state.currentChain?.chainId
