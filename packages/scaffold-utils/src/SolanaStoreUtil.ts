@@ -1,5 +1,5 @@
-import { proxy, ref, subscribe as sub } from 'valtio/esm/vanilla'
-import { subscribeKey as subKey } from 'valtio/esm/utils'
+import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/utils'
 import { Connection } from '@solana/web3.js'
 
 import UniversalProvider from '@walletconnect/universal-provider'

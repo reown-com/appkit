@@ -17,7 +17,8 @@ import type {
 
 import { registerListener, unregisterListener } from '../utils/clusterFactory'
 import { getHashedName, getNameAccountKey } from '../utils/hash'
-import { FavouriteDomain, NameRegistry } from '../utils/nameService'
+import { NameRegistry } from '../utils/nameService'
+import { FavouriteDomain } from '../utils/favouriteDomain'
 
 
 

@@ -1,6 +1,6 @@
 import { PresetsUtil } from './PresetsUtil.js'
 
-import type { CaipNetwork, CaipNetworkId } from "@web3modal/core"
+import type { CaipNetwork } from "@web3modal/core"
 import type { Chain, Provider } from './SolanaTypesUtil.js'
 
 export const SolHelpersUtil = {
@@ -12,9 +12,9 @@ export const SolHelpersUtil = {
 
         return chains[0]
     },
-    getChainFromCaip(chains: Chain[], chainCaipId: CaipNetworkId | string | undefined | null = ":") {
+    getChainFromCaip(chains: Chain[], chainCaipId: string | undefined | null = ":") {
         const chainName: string = chainCaipId?.split(':')[0] ?? ""
-        const chainId: string = (chainCaipId?.split(':')[1] ?? "").replace(/\s/g, '')
+        const chainId: string = (chainCaipId?.split(':')[1] ?? "").replace(/\s/ug, '')
 
         const selectedChain = chains.find((chain) => chain.chainId === chainId && chain.name === chainName)
 
