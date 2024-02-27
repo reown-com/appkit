@@ -8,6 +8,7 @@ import { getWeb3Modal } from '@web3modal/scaffold-react'
 import { useSnapshot } from 'valtio'
 import type { Eip1193Provider } from 'ethers'
 import { useAccount } from 'wagmi'
+import { useEffect, useState } from 'react'
 
 // -- Types -------------------------------------------------------------------
 export type { Web3ModalOptions } from '../src/client.js'
@@ -52,10 +53,23 @@ export function useDisconnect() {
 
 export function useAddress() {
   const { address } = useSnapshot(EthersStoreUtil.state)
-  const { address: wagmiAddress } = useAccount()
+  const [walletData, setWalletData] = useState()
+  const { address: wagmiAddress, connector } = useAccount()
+
+  useEffect(() => {
+    ;(async () => {
+      if (!connector) {
+        return
+      }
+      // @ts-expect-error if the pprovider exists then it will have session property
+      const walletInfo = (await connector.getProvider())?.session
+      setWalletData(walletInfo)
+    })()
+  }, [address, wagmiAddress])
 
   return {
-    address: wagmiAddress ?? address
+    address: wagmiAddress ?? address,
+    sessionInfo: walletData
   }
 }
 
