@@ -4,7 +4,7 @@ import type {
 } from '@web3modal/scaffold'
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
-/* Import { TrustWalletAdapter } from '@solana/wallet-adapter-trust' */
+import { TrustWalletAdapter } from '@solana/wallet-adapter-trust'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 
 
@@ -21,7 +21,7 @@ export const createWalletAdapters = () => ({
    * }), 
    */
   phantom: new PhantomWalletAdapter(),
-  /* TrustWallet: new TrustWalletAdapter(), */
+  trustWallet: new TrustWalletAdapter(),
   backpack: new BackpackWalletAdapter(),
   solflare: new SolflareWalletAdapter()
 })
