@@ -229,12 +229,22 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
 
   }
 
-  public async sendTransaction(transaction: Transaction | VersionedTransaction) {
-    const { signatures } = await this.signTransaction(transaction)
-    const signedTransaction = signatures[0]?.signature as string
-
-    await this.requestCluster('sendTransaction', [signedTransaction])
-    return signatures[0]?.signature ?? ''
+  public async sendTransaction(transactionParam: Transaction | VersionedTransaction) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const encodedTransaction = await this.signTransaction(transactionParam) as {
+          signatures: {
+            signature: string;
+          }[]
+        }
+        const signedTransaction = base58.decode(encodedTransaction.signatures[0]?.signature ?? '')
+        await SolStoreUtil.state.connection?.sendRawTransaction(signedTransaction);
+        return base58.encode(signedTransaction)
+      } catch (e) {
+        console.log(`error here`, e);
+      }
+    }
+    return ''
   }
 
   // public async signAndSendTransaction<Type extends TransactionType>(
