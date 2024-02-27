@@ -21,10 +21,10 @@ export class InjectedConnector extends BaseConnector implements Connector {
 
   public constructor(injectedWallet: string, id: string, name: string) {
     super()
-    if (!injectedWallet) throw new Error('Invalid path provided, should match window..*')
+    if (!injectedWallet) {throw new Error('Invalid path provided, should match window..*')}
     const walletPathSplit = injectedWallet.split('.')
     if (walletPathSplit[0] !== 'window')
-      throw new Error('Injected wallet path must start at window')
+      {throw new Error('Injected wallet path must start at window')}
     this.injectedWalletPath = injectedWallet
     this.id = id
     this.name = name
@@ -49,12 +49,12 @@ export class InjectedConnector extends BaseConnector implements Connector {
     if (typeof window !== 'undefined') {
       /* eslint-disable @typescript-eslint/no-explicit-any */
       const injectedWalletProvider = providerPath.reduce<any>((provider, accessor) => {
-        if (provider) return provider[accessor]
+        if (provider) {return provider[accessor]}
 
         return null
       }, window)
 
-      if (injectedWalletProvider) return Promise.resolve(injectedWalletProvider)
+      if (injectedWalletProvider) {return Promise.resolve(injectedWalletProvider)}
     }
 
     return Promise.resolve(null)
@@ -78,18 +78,18 @@ export class InjectedConnector extends BaseConnector implements Connector {
 
       return resp.publickey.toString()
     } else if (resp === true) {
-      const provider = await this.getProvider()
-      const pubkey = provider.pubkey || provider.publicKey
-      SolStoreUtil.setAddress(pubkey.toString())
+      const cProvider = await this.getProvider()
+      const publicKey = cProvider.pubkey || cProvider.publicKey
+      SolStoreUtil.setAddress(publicKey.toString())
 
-      return pubkey
+      return publicKey
     }
     if (provider.publicKey.toString().length) {
-      const provider = await this.getProvider()
-      const pubkey = provider.pubkey || provider.publicKey
-      SolStoreUtil.setAddress(pubkey.toString())
+      const cProvider = await this.getProvider()
+      const publicKey = cProvider.pubkey || cProvider.publicKey
+      SolStoreUtil.setAddress(publicKey.toString())
 
-      return provider.publicKey
+      return cProvider.publicKey
     }
 
     throw new Error('Failed to connect')
@@ -97,12 +97,11 @@ export class InjectedConnector extends BaseConnector implements Connector {
 
   public async signMessage(message: Uint8Array) {
     const signedMessage = await this.request('signMessage', {
-      // @ts-ignore
-      message: message,
+      message,
       format: 'utf8'
     })
 
-    if (!signedMessage) throw new Error(`Failed to sign message using ${this.getConnectorName()}`)
+    if (!signedMessage) {throw new Error(`Failed to sign message using ${this.getConnectorName()}`)}
 
     const { signature } = signedMessage
 
@@ -114,7 +113,10 @@ export class InjectedConnector extends BaseConnector implements Connector {
   ) {
     const signedTransaction = await (await this.getProvider()).signTransaction(transaction)
 
-    if (signedTransaction) return { signatures: [{ signature: base58.encode(signedTransaction.signature) }] }
+    if (signedTransaction) {
+
+      return { signatures: [{ signature: base58.encode(signedTransaction.signature) }] }
+    }
 
     throw new Error(`Could not sign transaction using ${this.getConnectorName()}`)
   }
@@ -123,6 +125,7 @@ export class InjectedConnector extends BaseConnector implements Connector {
     const { signatures } = await this.signTransaction(transaction)
     const encodedTransaction = transaction.serialize().toString('base64')
     await this.requestCluster('sendTransaction', [encodedTransaction])
+    
     return signatures[0]?.signature ?? ''
   }
 
@@ -131,6 +134,6 @@ export class InjectedConnector extends BaseConnector implements Connector {
     provider.on(...rest)
   }
   public async onConnector() {
-    this.connect()
+    await this.connect()
   }
 }

@@ -5,7 +5,7 @@ import { PublicStateController } from './PublicStateController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { ApiController } from "./ApiController"
+import { ApiController } from './ApiController.js'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {

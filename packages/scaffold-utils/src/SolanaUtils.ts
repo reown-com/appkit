@@ -168,6 +168,11 @@ export interface TransactionInstructionRq {
     pubkey: string
   }[]
 }
+interface VersionedInstractionRq {
+  data: string;
+  programIdIndex: number;
+  accountKeyIndexes: number[]
+}
 
 export interface RequestMethods {
   solana_signMessage: {
@@ -182,7 +187,7 @@ export interface RequestMethods {
   solana_signTransaction: {
     params: {
       feePayer: string
-      instructions: TransactionInstructionRq[]
+      instructions: TransactionInstructionRq[] | VersionedInstractionRq[]
       recentBlockhash: string
       signatures?: {
         pubkey: string,
@@ -315,7 +320,7 @@ export interface SolStoreUtilState {
   projectId: string
   provider?: Provider | CombinedProvider | UniversalProvider
   providerType?: 'walletConnect' | `injected_${string}` | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
-  address?: string
+  address: string
   chainId?: string
   caipChainId?: string
   currentChain?: Chain
@@ -398,7 +403,8 @@ export const SolStoreUtil = {
   },
 
   getCluster() {
-    const chain = state.currentChain as Chain
+    const chain = state.currentChain!
+
     return {
       name: chain.name,
       id: chain.chainId,
@@ -458,6 +464,7 @@ export const SolHelpersUtil = {
     if (chain) {
       return chain
     }
+
     return chains[0]
   },
   getChainFromCaip(chains: Chain[], chainCaipId: CaipNetworkId | string | undefined | null = ":") {
@@ -469,6 +476,7 @@ export const SolHelpersUtil = {
     if (selectedChain) {
       return selectedChain
     }
+
     return chains[0]
   },
   getCaipDefaultChain(chain?: Chain) {

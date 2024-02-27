@@ -144,9 +144,8 @@ export const ApiController = {
       // Because solana has same chain ids for devnet and testnet
       return `solana:${caipNetwork?.id.split(':')[1]}`
     }
-    else {
-      return caipNetwork?.id
-    }
+
+    return caipNetwork?.id
   },
 
   async fetchRecommendedWallets() {
