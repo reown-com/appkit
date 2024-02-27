@@ -10,8 +10,10 @@ export function getHashedName(name: string): Buffer {
   return Buffer.from(str, 'hex')
 }
 
-// @ts-expect-error this
-if (typeof window !== 'undefined') window.getHashedName = getHashedName
+if (typeof window !== 'undefined') {
+  // @ts-expect-error this
+  window.getHashedName = getHashedName
+}
 
 export async function getNameAccountKey(
   hashed_name: Buffer,
@@ -19,11 +21,19 @@ export async function getNameAccountKey(
   nameParent?: PublicKey
 ): Promise<PublicKey> {
   const seeds = [hashed_name]
-  if (nameClass) seeds.push(nameClass.toBuffer())
-  else seeds.push(Buffer.alloc(32))
+  if (nameClass) {
+    seeds.push(nameClass.toBuffer())
+  }
+  else {
+    seeds.push(Buffer.alloc(32))
+  }
 
-  if (nameParent) seeds.push(nameParent.toBuffer())
-  else seeds.push(Buffer.alloc(32))
+  if (nameParent) {
+    seeds.push(nameParent.toBuffer())
+  }
+  else {
+    seeds.push(Buffer.alloc(32))
+  }
 
   const [nameAccountKey] = await PublicKey.findProgramAddress(
     seeds,

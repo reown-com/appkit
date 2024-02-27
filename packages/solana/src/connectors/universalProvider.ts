@@ -24,9 +24,12 @@ export class UniversalProviderFactory {
   }
 
   public static async getProvider() {
-    if (!UniversalProviderFactory.provider) await UniversalProviderFactory.init()
-    if (!UniversalProviderFactory.provider)
-      throw new Error('Failed to initialize universal provider')
+    if (!UniversalProviderFactory.provider) {
+      await UniversalProviderFactory.init()
+    }
+    if (!UniversalProviderFactory.provider) {
+        throw new Error('Failed to initialize universal provider')
+    }
 
     return UniversalProviderFactory.provider
   }
@@ -40,28 +43,31 @@ export class UniversalProviderFactory {
     })
 
     // Subscribe to session ping
-    UniversalProviderFactory.provider.on(
-      'session_ping',
-      ({ id, topic }: { id: number, topic: string }) => {
-        console.log(id, topic)
-      }
-    )
-
-    // Subscribe to session event
-    UniversalProviderFactory.provider.on(
-      'session_event',
-      ({ event, chainId }: { event: unknown, chainId: string }) => {
-        console.log(event, chainId)
-      }
-    )
-
-    // Subscribe to session update
-    UniversalProviderFactory.provider.on(
-      'session_update',
-      ({ topic, params }: { topic: string, params: unknown }) => {
-        console.log(topic, params)
-      }
-    )
+    /*
+     *UniversalProviderFactory.provider.on(
+     *'session_ping',
+     *({ id, topic }: { id: number, topic: string }) => {
+     *  console.log(id, topic)
+     *}
+     *)
+     *
+     * // Subscribe to session event
+     *UniversalProviderFactory.provider.on(
+     *'session_event',
+     *({ event, chainId }: { event: unknown, chainId: string }) => {
+     *  console.log(event, chainId)
+     *}
+     *)
+     *
+     * // Subscribe to session update
+     *UniversalProviderFactory.provider.on(
+     *'session_update',
+     *({ topic, params }: { topic: string, params: unknown }) => {
+     *  console.log(topic, params)
+     *}
+     *)
+     *
+     */
 
     // Subscribe to session delete
     UniversalProviderFactory.provider.on('session_delete', () => {

@@ -398,7 +398,8 @@ export const SolStoreUtil = {
   },
 
   getCluster() {
-    const chain = state.currentChain as Chain
+    const chain = state.currentChain!
+    
     return {
       name: chain.name,
       id: chain.chainId,
@@ -458,7 +459,8 @@ export const SolHelpersUtil = {
     if (chain) {
       return chain
     }
-    return chains[0]
+    
+return chains[0]
   },
   getChainFromCaip(chains: Chain[], chainCaipId: CaipNetworkId | string | undefined | null = ":") {
     const chainName: string = chainCaipId?.split(':')[0] ?? ""
@@ -469,7 +471,8 @@ export const SolHelpersUtil = {
     if (selectedChain) {
       return selectedChain
     }
-    return chains[0]
+    
+return chains[0]
   },
   getCaipDefaultChain(chain?: Chain) {
     if (!chain) {

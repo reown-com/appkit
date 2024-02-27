@@ -10,23 +10,25 @@ export interface PhantomPublicKey {
 
 const TRUST_WALLET_PATH = `window.trustWallet.solana`
 
-/* declare global {
-  interface Window {
-    phantom?: {
-      solana: {
-        connect: () => Promise<{ publicKey: PhantomPublicKey }>
-        disconnect: () => Promise<void>
-        request: <Method extends keyof RequestMethods>(
-          params: RequestMethods[Method]['params']
-        ) => RequestMethods[Method]['returns']
-        signTransaction: (transaction: Transaction) => Promise<{
-          serialize: () => Uint8Array
-        }>
-        signMessage: (message: Uint8Array, format: string) => Promise<{ signature: Uint8Array }>
-      }
-    }
-  }
-} */
+/*
+ * Declare global {
+ * interface Window {
+ *  phantom?: {
+ *    solana: {
+ *      connect: () => Promise<{ publicKey: PhantomPublicKey }>
+ *      disconnect: () => Promise<void>
+ *      request: <Method extends keyof RequestMethods>(
+ *        params: RequestMethods[Method]['params']
+ *      ) => RequestMethods[Method]['returns']
+ *      signTransaction: (transaction: Transaction) => Promise<{
+ *        serialize: () => Uint8Array
+ *      }>
+ *      signMessage: (message: Uint8Array, format: string) => Promise<{ signature: Uint8Array }>
+ *    }
+ *  }
+ * }
+ * } 
+ */
 
 export class TrustWalletConnector extends InjectedConnector implements Connector {
   public constructor() {
