@@ -234,6 +234,14 @@ export class Web3Modal extends Web3ModalScaffold {
     SolStoreUtil.setAddress(address ?? '')
   }
 
+  public disconnect() {
+    const provider = SolStoreUtil.state.provider as Provider;
+
+    if (provider) {
+      provider.emit('disconnect')
+    }
+  }
+
   public getAddress() {
     const { address } = SolStoreUtil.state
 
