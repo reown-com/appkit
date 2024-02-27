@@ -149,7 +149,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     transaction: VersionedTransaction
   ) {
     const transactionParams = {
-      feePayer: new PublicKey(SolStoreUtil.state.address).toBase58(),
+      feePayer: new PublicKey(SolStoreUtil.state.address ?? "").toBase58(),
       instructions: transaction.message.compiledInstructions.map(instruction => ({
         ...instruction,
         data: base58.encode(instruction.data)
