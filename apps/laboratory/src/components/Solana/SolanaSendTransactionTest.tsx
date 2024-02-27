@@ -23,11 +23,11 @@ export function SolanaSendTransactionTest() {
       }
 
       if (!connection) {
-        throw ('no connection set')
+        throw Error('no connection set')
       }
 
       // Create a new transaction
-      let transaction = new Transaction().add(
+      const transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: walletProvider.publicKey,
           toPubkey: recipientAddress,
@@ -43,7 +43,6 @@ export function SolanaSendTransactionTest() {
       const signature = await walletProvider.sendTransaction(transaction, connection)
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
-      console.log(`err`, err);
       toast({
         title: 'Error',
         description: 'Failed to sign transaction',
@@ -63,7 +62,7 @@ export function SolanaSendTransactionTest() {
       }
 
       if (!connection) {
-        throw ('no connection set')
+        throw Error('no connection set')
       }
       const { blockhash } = await connection.getLatestBlockhash();
 
@@ -75,20 +74,19 @@ export function SolanaSendTransactionTest() {
         }),
       ];
 
-      // create v0 compatible message
+      // Create v0 compatible message
       const messageV0 = new TransactionMessage({
         payerKey: walletProvider.publicKey,
         recentBlockhash: blockhash,
         instructions,
       }).compileToV0Message();
 
-      // make a versioned transaction
+      // Make a versioned transaction
       const transactionV0 = new VersionedTransaction(messageV0);
 
       const signature = await walletProvider.sendTransaction(transactionV0, connection)
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
-      console.log(`err`, err);
       toast({
         title: 'Error',
         description: 'Failed to sign transaction',
@@ -106,35 +104,35 @@ export function SolanaSendTransactionTest() {
 
   if (chainId === solana.chainId) {
     return (
-        <Text fontSize="md" color="yellow">
-          Switch to Solana Devnet or Testnet to test this feature
-        </Text>
+      <Text fontSize="md" color="yellow">
+        Switch to Solana Devnet or Testnet to test this feature
+      </Text>
     )
   }
 
   return (
-      <Stack direction={['column', 'column', 'row']}>
-        <Button
-            data-test-id="sign-transaction-button"
-            onClick={onSendTransaction}
-            isDisabled={loading}
-        >
-          Sign and Send Transaction
-        </Button>
-        <Button
-            data-test-id="sign-transaction-button"
-            onClick={onSendVersionedTransaction}
-            isDisabled={loading}
-        >
-          Sign and Send Versioned Transaction
-        </Button>
-        <Spacer />
+    <Stack direction={['column', 'column', 'row']}>
+      <Button
+        data-test-id="sign-transaction-button"
+        onClick={onSendTransaction}
+        isDisabled={loading}
+      >
+        Sign and Send Transaction
+      </Button>
+      <Button
+        data-test-id="sign-transaction-button"
+        onClick={onSendVersionedTransaction}
+        isDisabled={loading}
+      >
+        Sign and Send Versioned Transaction
+      </Button>
+      <Spacer />
 
-        <Link isExternal href="https://solfaucet.com/">
-          <Button variant="outline" colorScheme="blue">
-            Solana Faucet
-          </Button>
-        </Link>
-      </Stack>
+      <Link isExternal href="https://solfaucet.com/">
+        <Button variant="outline" colorScheme="blue">
+          Solana Faucet
+        </Button>
+      </Link>
+    </Stack>
   )
 }

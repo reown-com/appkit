@@ -26,7 +26,7 @@ export function SolanaSignTransactionTest() {
       }
 
       // Create a new transaction
-      let transaction = new Transaction().add(
+      const transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: walletProvider.publicKey,
           toPubkey: recipientAddress,
@@ -36,7 +36,7 @@ export function SolanaSignTransactionTest() {
       transaction.feePayer = walletProvider.publicKey;
 
       if (!connection) {
-        throw ('no connection set')
+        throw Error('no connection set')
       }
       const { blockhash } = await connection.getLatestBlockhash();
 
@@ -46,7 +46,6 @@ export function SolanaSignTransactionTest() {
 
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
-      console.log(`err`, err);
       toast({
         title: 'Error',
         description: 'Failed to sign transaction',
@@ -66,7 +65,7 @@ export function SolanaSignTransactionTest() {
       }
 
       if (!connection) {
-        throw ('no connection set')
+        throw Error('no connection set')
       }
       const { blockhash } = await connection.getLatestBlockhash();
       const instructions = [
@@ -77,14 +76,14 @@ export function SolanaSignTransactionTest() {
         }),
       ];
 
-      // create v0 compatible message
+      // Create v0 compatible message
       const messageV0 = new TransactionMessage({
         payerKey: walletProvider.publicKey,
         recentBlockhash: blockhash,
         instructions,
       }).compileToV0Message();
 
-      // make a versioned transaction
+      // Make a versioned transaction
       const transactionV0 = new VersionedTransaction(messageV0);
 
       const tx = await walletProvider.signTransaction(transactionV0)
@@ -92,7 +91,6 @@ export function SolanaSignTransactionTest() {
 
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
-      console.log(`err`, err);
       toast({
         title: 'Error',
         description: 'Failed to sign transaction',
@@ -110,9 +108,9 @@ export function SolanaSignTransactionTest() {
 
   if (chainId === solana.chainId) {
     return (
-        <Text fontSize="md" color="yellow">
-          Switch to Solana Devnet or Testnet to test this feature
-        </Text>
+      <Text fontSize="md" color="yellow">
+        Switch to Solana Devnet or Testnet to test this feature
+      </Text>
     )
   }
 
@@ -126,9 +124,9 @@ export function SolanaSignTransactionTest() {
         Sign Transaction
       </Button>
       <Button
-          data-test-id="sign-transaction-button"
-          onClick={onSignVersionedTransaction}
-          isDisabled={loading}
+        data-test-id="sign-transaction-button"
+        onClick={onSignVersionedTransaction}
+        isDisabled={loading}
       >
         Sign Versioned Transaction
       </Button>

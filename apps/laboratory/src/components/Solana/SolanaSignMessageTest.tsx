@@ -26,6 +26,7 @@ export function SolanaSignMessageTest() {
           status: 'success',
           isClosable: true
         })
+
         return
       }
       toast({
