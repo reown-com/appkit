@@ -1,15 +1,29 @@
 import '@web3modal/polyfills'
+import type { Connection, Transaction, TransactionSignature } from '@solana/web3.js'
+import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
 
 import type { Chain, Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/solana'
 
+interface SolanaProvider {
+  connect: () => Promise<void>
+  disconnect: () => Promise<void>
+  isPhantom: boolean
+  request: () => void
+  signAllTransactions: (transactions: Transaction[]) => Promise<Transaction[]>
+  signAndSendAllTransactions: (transactions: Transaction[]) => Promise<TransactionSignature[]>
+  signAndSendTransaction: (transaction: Transaction, connection: Connection, options?: SendTransactionOptions) => Promise<TransactionSignature>
+  signMessage: (message: Uint8Array) => Promise<Uint8Array>
+  signTransaction: () => Promise<TransactionSignature>
+  sendTransaction: (transaction: Transaction, connection: Connection, options?: SendTransactionOptions) => Promise<TransactionSignature>
+}
 declare global {
   interface Window {
-    originalSolana?: Record<string, unknown>
-    solana?: Record<string, any>
-    solflare?: Record<string, any>
-    backpack?: Record<string, any>
-    trustWallet?: Record<string, any>
-    phantom?: Record<string, any>
+    originalSolana?: Record<string, unknown>,
+    solana?: SolanaProvider,
+    solflare?: { solana: SolanaProvider },
+    backpack?: { solana: SolanaProvider },
+    trustWallet?: { solana: SolanaProvider },
+    phantom?: { solana: SolanaProvider }
   }
 }
 
