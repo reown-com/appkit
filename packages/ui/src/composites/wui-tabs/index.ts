@@ -43,6 +43,7 @@ export class WuiTabs extends LitElement {
           ?disabled=${this.disabled}
           @click=${() => this.onTabClick(index)}
           data-active=${isActive}
+          data-testid="tab-${tab.label?.toLowerCase()}"
         >
           <wui-icon size="xs" color="inherit" name=${tab.icon}></wui-icon>
           <wui-text variant="small-600" color="inherit"> ${tab.label} </wui-text>
