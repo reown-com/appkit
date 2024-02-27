@@ -96,7 +96,8 @@ export class ModalPage {
 
   async approveSign() {
     await expect(
-      this.page.frameLocator('#w3m-iframe').getByText('requests a signature')
+      this.page.frameLocator('#w3m-iframe').getByText('requests a signature'),
+      'Web3Modal iframe should be visible'
     ).toBeVisible()
     await this.page.waitForTimeout(2000)
     await this.page
@@ -107,7 +108,7 @@ export class ModalPage {
 
   async promptSiwe() {
     const siweSign = this.page.getByTestId('w3m-connecting-siwe-sign')
-    await expect(siweSign).toBeEnabled()
+    await expect(siweSign, 'Siwe promp sign button should be enabled').toBeEnabled()
     await siweSign.click()
   }
 
