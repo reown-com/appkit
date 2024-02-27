@@ -6,11 +6,6 @@ import { Email } from './shared/utils/email'
 const AVAILABLE_MAILSAC_ADDRESSES = 10
 
 testMEmail.beforeEach(async ({ modalPage, context, modalValidator }) => {
-  testMEmail.skip()
-  // Skip wagmi as it's not working
-  if (modalPage.library === 'wagmi') {
-    return
-  }
   // This is prone to collissions and will be improved later
   const tempEmail = `web3modal${Math.floor(
     Math.random() * AVAILABLE_MAILSAC_ADDRESSES
