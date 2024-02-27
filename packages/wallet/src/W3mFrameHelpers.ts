@@ -54,8 +54,21 @@ export const W3mFrameHelpers = {
     return 0
   },
 
+  checkIfRequestExists(request: unknown) {
+    const method = this.getRequestMethod(request)
+
+    return (
+      W3mFrameRpcConstants.NOT_SAFE_RPC_METHODS.includes(method) ||
+      W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
+    )
+  },
+
+  getRequestMethod(request: unknown) {
+    return (request as { payload: W3mFrameTypes.RPCRequest })?.payload?.method
+  },
+
   checkIfRequestIsAllowed(request: unknown) {
-    const method = (request as { payload: W3mFrameTypes.RPCRequest })?.payload?.method
+    const method = this.getRequestMethod(request)
 
     return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
   },

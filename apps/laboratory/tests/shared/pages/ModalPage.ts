@@ -26,12 +26,28 @@ export class ModalPage {
     await this.page.goto(this.url)
   }
 
-  async copyConnectUriToClipboard() {
+  assertDefined<T>(value: T | undefined | null): T {
+    expect(value).toBeDefined()
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return value!
+  }
+
+  async getConnectUri(): Promise<string> {
     await this.page.goto(this.url)
     await this.connectButton.click()
-    await this.page.getByTestId('wallet-selector-walletconnect').click()
-    await this.page.waitForTimeout(2000)
-    await this.page.getByTestId('copy-wc2-uri').click()
+    const connect = this.page.getByTestId('wallet-selector-walletconnect')
+    await connect.waitFor({
+      state: 'visible',
+      timeout: 5000
+    })
+    await connect.click()
+
+    // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
+    const qrCode = this.page.locator('wui-qr-code')
+    await expect(qrCode).toBeVisible()
+
+    return this.assertDefined(await qrCode.getAttribute('uri'))
   }
 
   async loginWithEmail(email: string) {
@@ -64,8 +80,14 @@ export class ModalPage {
   }
 
   async disconnect() {
-    await this.page.getByTestId('account-button').click()
-    await this.page.getByTestId('disconnect-button').click()
+    const accountBtn = this.page.getByTestId('account-button')
+    await expect(accountBtn).toBeVisible()
+    await expect(accountBtn).toBeEnabled()
+    await accountBtn.click({ force: true })
+    const disconnectBtn = this.page.getByTestId('disconnect-button')
+    await expect(disconnectBtn).toBeVisible()
+    await expect(disconnectBtn).toBeEnabled()
+    await disconnectBtn.click({ force: true })
   }
 
   async sign() {
@@ -74,7 +96,8 @@ export class ModalPage {
 
   async approveSign() {
     await expect(
-      this.page.frameLocator('#w3m-iframe').getByText('requests a signature')
+      this.page.frameLocator('#w3m-iframe').getByText('requests a signature'),
+      'Web3Modal iframe should be visible'
     ).toBeVisible()
     await this.page.waitForTimeout(2000)
     await this.page
@@ -84,7 +107,9 @@ export class ModalPage {
   }
 
   async promptSiwe() {
-    await this.page.getByTestId('w3m-connecting-siwe-sign').click()
+    const siweSign = this.page.getByTestId('w3m-connecting-siwe-sign')
+    await expect(siweSign, 'Siwe promp sign button should be enabled').toBeEnabled()
+    await siweSign.click()
   }
 
   async cancelSiwe() {
@@ -96,5 +121,11 @@ export class ModalPage {
     await this.page.getByTestId('w3m-account-select-network').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
     await this.page.getByTestId(`w3m-header-close`).click()
+  }
+
+  async clickWalletDeeplink() {
+    await this.connectButton.click()
+    await this.page.getByTestId('wallet-selector-react-wallet-v2').click()
+    await this.page.getByTestId('tab-desktop').click()
   }
 }

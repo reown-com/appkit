@@ -1,30 +1,22 @@
-import { DEFAULT_SESSION_PARAMS } from './shared/constants'
-import { testMW } from './shared/fixtures/w3m-wallet-fixture'
+import { testConnectedMW } from './shared/fixtures/w3m-wallet-fixture'
 import { uploadCanaryResultsToCloudWatch } from './shared/utils/metrics'
+import { expectConnection } from './shared/utils/validation'
 
-const ENV = process.env['ENV'] || 'dev'
+const ENV = process.env['ENVIRONMENT'] || 'dev'
 const REGION = process.env['REGION'] || 'eu-central-1'
 
 let startTime = 0
 
-testMW.beforeEach(
-  async ({ modalPage, walletPage, modalValidator, walletValidator, browserName }) => {
-    startTime = Date.now()
-    // Canary doesn't need all platforms
-    if (browserName !== 'chromium' || modalPage.library !== 'ethers') {
-      return
-    }
-    await modalPage.copyConnectUriToClipboard()
-    await walletPage.connect()
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    await modalValidator.expectConnected()
-    await walletValidator.expectConnected()
-  }
-)
+testConnectedMW.beforeEach(async ({ modalValidator, walletValidator }) => {
+  // Give us extra time in a potentially slow canary deployment
+  testConnectedMW.setTimeout(120_000)
 
-testMW.afterEach(async ({ modalPage, modalValidator, walletValidator, browserName }) => {
-  // Canary doesn't need all platforms
-  if (browserName !== 'chromium' || modalPage.library !== 'ethers') {
+  startTime = Date.now()
+  await expectConnection(modalValidator, walletValidator)
+})
+
+testConnectedMW.afterEach(async ({ modalPage, modalValidator, walletValidator, browserName }) => {
+  if (browserName === 'firefox') {
     return
   }
   await modalPage.disconnect()
@@ -32,15 +24,9 @@ testMW.afterEach(async ({ modalPage, modalValidator, walletValidator, browserNam
   await walletValidator.expectDisconnected()
 })
 
-testMW(
+testConnectedMW(
   'it should sign',
-  async ({ modalPage, walletPage, modalValidator, walletValidator, browserName }) => {
-    // Canary doesn't need all platforms
-    if (browserName !== 'chromium' || modalPage.library !== 'ethers') {
-      testMW.skip()
-
-      return
-    }
+  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
     await modalPage.sign()
     await walletValidator.expectReceivedSign({})
     await walletPage.handleRequest({ accept: true })
