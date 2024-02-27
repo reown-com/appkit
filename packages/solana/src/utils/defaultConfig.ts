@@ -7,7 +7,6 @@ import type { Chain, Metadata, Provider, ProviderType } from '@web3modal/scaffol
 interface SolanaProvider {
   connect: () => Promise<void>
   disconnect: () => Promise<void>
-  isPhantom: boolean
   request: () => void
   signAllTransactions: (transactions: Transaction[]) => Promise<Transaction[]>
   signAndSendAllTransactions: (transactions: Transaction[]) => Promise<TransactionSignature[]>
@@ -15,7 +14,9 @@ interface SolanaProvider {
   signMessage: (message: Uint8Array) => Promise<Uint8Array>
   signTransaction: () => Promise<TransactionSignature>
   sendTransaction: (transaction: Transaction, connection: Connection, options?: SendTransactionOptions) => Promise<TransactionSignature>
+  [key: string]: object
 }
+
 declare global {
   interface Window {
     originalSolana?: Record<string, unknown>,

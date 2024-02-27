@@ -92,7 +92,13 @@ export const SolStoreUtil = {
     },
 
     getCluster() {
-        const chain = state.currentChain!
+        const chain = state.currentChain ?? {
+            chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ',
+            name: 'Solana',
+            currency: 'SOL',
+            explorerUrl: 'https://solscan.io',
+            rpcUrl: 'https://rpc.walletconnect.com/v1?chainId=solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ&projectId=bbcbaddb9e8a1ae8f5f7c60f3e5a666e'
+        }
 
         return {
             name: chain.name,
