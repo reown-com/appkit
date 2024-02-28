@@ -2,14 +2,13 @@ import '@web3modal/polyfills'
 
 import type { Chain, Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/solana'
 
-
 declare global {
   interface Window {
-    originalSolana?: Record<string, unknown>,
-    solana?: Provider,
-    solflare?: { solana: Provider },
-    backpack?: { solana: Provider },
-    trustWallet?: { solana: Provider },
+    originalSolana?: Record<string, unknown>
+    solana?: Provider
+    solflare?: { solana: Provider }
+    backpack?: { solana: Provider }
+    trustWallet?: { solana: Provider }
     phantom?: { solana: Provider }
   }
 }

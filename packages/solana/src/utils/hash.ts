@@ -23,15 +23,13 @@ export async function getNameAccountKey(
   const seeds = [hashed_name]
   if (nameClass) {
     seeds.push(nameClass.toBuffer())
-  }
-  else {
+  } else {
     seeds.push(Buffer.alloc(32))
   }
 
   if (nameParent) {
     seeds.push(nameParent.toBuffer())
-  }
-  else {
+  } else {
     seeds.push(Buffer.alloc(32))
   }
 

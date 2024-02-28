@@ -7,7 +7,7 @@ export class FavouriteDomain {
   public tag: Tag
   public nameAccount: PublicKey
 
-  public constructor(obj: { tag: number, nameAccount: Uint8Array }) {
+  public constructor(obj: { tag: number; nameAccount: Uint8Array }) {
     this.tag = obj.tag as Tag
     this.nameAccount = new PublicKey(obj.nameAccount)
   }
