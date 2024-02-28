@@ -217,15 +217,6 @@ export class Web3Modal extends Web3ModalScaffold {
         this.checkActiveProviders()
         this.syncConnectors()
       }, 500)
-      /*
-       *Debugging for mobile
-       *setTimeout(() => {
-       *  alert(`
-       *    ${window.phantom?.['solana']?.isPhantom ? 'Phantom is installed' : 'Phantom is not installed'}
-       *    ${window.solflare?.['isSolflare'] ? 'Solflare is installed' : 'Solflare is not installed'}
-       *  `)
-       *}, 1500) 
-       */
     }
   }
 
@@ -393,8 +384,9 @@ export class Web3Modal extends Web3ModalScaffold {
         SolStoreUtil.setCurrentChain(chain)
         localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `${chain.name}:${chain.chainId}`)
         if (providerType?.includes(ConstantsUtil.INJECTED_CONNECTOR_ID)) {
+          const wallet = providerType.split('_')[1] === 'Trust' ? 'trustWallet' : providerType.split('_')[1] as AdapterKey
           SolStoreUtil.setConnection(new Connection(chain.rpcUrl ?? 'https://api.devnet.solana.com', 'recent'))
-          this.setAddress(this.walletAdapters.phantom.publicKey?.toString())
+          this.setAddress(this.walletAdapters[wallet].publicKey?.toString())
           await this.syncAccount()
 
           return
