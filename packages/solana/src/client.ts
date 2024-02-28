@@ -397,7 +397,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
           const namespaces = this.WalletConnectConnector.generateNamespaces(chain.chainId)
           universalProvider.namespaces = namespaces
-          await universalProvider.connect({ namespaces })
+          await universalProvider.connect({ namespaces, skipPairing: true })
           await this.syncAccount()
         }
       }
