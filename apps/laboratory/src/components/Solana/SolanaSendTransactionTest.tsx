@@ -26,6 +26,11 @@ export function SolanaSendTransactionTest() {
         throw Error('no connection set')
       }
 
+      const balance = await connection.getBalance(walletProvider.publicKey);
+      if (balance < amountInLamports) {
+        throw Error('Not enough SOL in wallet');
+      }
+
       // Create a new transaction
       const transaction = new Transaction().add(
         SystemProgram.transfer({
@@ -45,7 +50,7 @@ export function SolanaSendTransactionTest() {
     } catch (err) {
       toast({
         title: 'Error',
-        description: 'Failed to sign transaction',
+        description: (err as Error).message,
         status: 'error',
         isClosable: true
       })
@@ -64,6 +69,12 @@ export function SolanaSendTransactionTest() {
       if (!connection) {
         throw Error('no connection set')
       }
+
+      const balance = await connection.getBalance(walletProvider.publicKey);
+      if (balance < amountInLamports) {
+        throw Error('Not enough SOL in wallet');
+      }
+
       const { blockhash } = await connection.getLatestBlockhash();
 
       const instructions = [
@@ -89,7 +100,7 @@ export function SolanaSendTransactionTest() {
     } catch (err) {
       toast({
         title: 'Error',
-        description: 'Failed to sign transaction',
+        description: (err as Error).message,
         status: 'error',
         isClosable: true
       })

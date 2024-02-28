@@ -74,34 +74,12 @@ export class Web3Modal extends Web3ModalScaffold {
 
       getApprovedCaipNetworksData: async () =>
         new Promise((resolve) => {
-          const walletChoice = localStorage.getItem(SolConstantsUtil.WALLET_ID)
-          if (walletChoice?.includes(ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)) {
-            /*
-             * Const provider = await this.WalletConnectConnector.getProvider()
-             * if (!provider) {
-             * throw new Error(
-             *  'networkControllerClient:getApprovedCaipNetworks - provider is undefined'
-             * )
-             * }
-             * const ns = provider.signer?.session?.namespaces
-             * const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
-             * const nsChains = ns?.[ConstantsUtil.EIP155]?.chains
-             * 
-             * const result = {
-             * supportsAllNetworks: nsMethods?.includes(ConstantsUtil.ADD_CHAIN_METHOD) ?? false,
-             * approvedCaipNetworkIds: nsChains as CaipNetworkId[] | undefined
-             * }
-             * 
-             * resolve(result) 
-             */
-          } else {
-            const result = {
-              approvedCaipNetworkIds: undefined,
-              supportsAllNetworks: true
-            }
-
-            resolve(result)
+          const result = {
+            approvedCaipNetworkIds: undefined,
+            supportsAllNetworks: true
           }
+
+          resolve(result)
         })
     }
 
@@ -373,7 +351,6 @@ export class Web3Modal extends Web3ModalScaffold {
   public async switchNetwork(caipNetwork: CaipNetwork) {
     const caipChainId = caipNetwork.id
 
-    const provider = SolStoreUtil.state.provider
     const providerType = SolStoreUtil.state.providerType
 
     const chain = SolHelpersUtil.getChainFromCaip(this.chains, caipChainId ?? "")
@@ -392,12 +369,11 @@ export class Web3Modal extends Web3ModalScaffold {
           return
         }
         if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
-          const WalletConnectProvider = provider as unknown as WalletConnectConnector
-          const universalProvider = await WalletConnectProvider?.getProvider() as unknown as UniversalProvider
+          const universalProvider = await this.WalletConnectConnector.getProvider()
 
           const namespaces = this.WalletConnectConnector.generateNamespaces(chain.chainId)
-          universalProvider.namespaces = namespaces
-          await universalProvider.connect({ namespaces, skipPairing: true })
+          SolStoreUtil.setConnection(new Connection(chain.rpcUrl ?? 'https://api.devnet.solana.com', 'recent'))
+          universalProvider.connect({ namespaces, pairingTopic: undefined })
           await this.syncAccount()
         }
       }
