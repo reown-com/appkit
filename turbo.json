@@ -37,12 +37,12 @@
     },
     "build:scaffold-react": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:scaffold-utils", "^build:scaffold", "^build:siwe"],
+      "dependsOn": ["^build:scaffold-utils", "^build:siwe"],
       "cache": false
     },
     "build:scaffold-vue": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:scaffold-utils", "^build:scaffold", "^build:siwe"],
+      "dependsOn": ["^build:scaffold-utils", "^build:siwe"],
       "cache": false
     },
     "build:siwe": {
