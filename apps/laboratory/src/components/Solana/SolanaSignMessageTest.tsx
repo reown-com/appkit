@@ -31,7 +31,7 @@ export function SolanaSignMessageTest() {
       }
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
-        description: (signature as Uint8Array),
+        description: signature as Uint8Array,
         status: 'success',
         isClosable: true
       })

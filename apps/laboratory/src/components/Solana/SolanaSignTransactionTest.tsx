@@ -1,16 +1,20 @@
 import { useState } from 'react'
 import { Button, useToast, Stack, Text, Spacer, Link } from '@chakra-ui/react'
-import { PublicKey, Transaction, TransactionMessage, VersionedTransaction, SystemProgram } from '@solana/web3.js';
+import {
+  PublicKey,
+  Transaction,
+  TransactionMessage,
+  VersionedTransaction,
+  SystemProgram
+} from '@solana/web3.js'
 
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
 
 import { solana } from '../../utils/ChainsUtil'
 
-
 const PHANTOM_DEVNET_ADDRESS = 'EmT8r4E8ZjoQgt8sXGbaWBRMKfUXsVT1wonoSnJZ4nBn'
-const recipientAddress = new PublicKey(PHANTOM_DEVNET_ADDRESS);
-const amountInLamports = 100000000;
-
+const recipientAddress = new PublicKey(PHANTOM_DEVNET_ADDRESS)
+const amountInLamports = 100000000
 
 export function SolanaSignTransactionTest() {
   const toast = useToast()
@@ -30,17 +34,17 @@ export function SolanaSignTransactionTest() {
         SystemProgram.transfer({
           fromPubkey: walletProvider.publicKey,
           toPubkey: recipientAddress,
-          lamports: amountInLamports,
+          lamports: amountInLamports
         })
-      );
-      transaction.feePayer = walletProvider.publicKey;
+      )
+      transaction.feePayer = walletProvider.publicKey
 
       if (!connection) {
         throw Error('no connection set')
       }
-      const { blockhash } = await connection.getLatestBlockhash();
+      const { blockhash } = await connection.getLatestBlockhash()
 
-      transaction.recentBlockhash = blockhash;
+      transaction.recentBlockhash = blockhash
       const tx = await walletProvider.signTransaction(transaction)
       const signature = tx.signatures[0]?.signature
 
@@ -67,24 +71,24 @@ export function SolanaSignTransactionTest() {
       if (!connection) {
         throw Error('no connection set')
       }
-      const { blockhash } = await connection.getLatestBlockhash();
+      const { blockhash } = await connection.getLatestBlockhash()
       const instructions = [
         SystemProgram.transfer({
           fromPubkey: walletProvider.publicKey,
           toPubkey: recipientAddress,
-          lamports: amountInLamports,
-        }),
-      ];
+          lamports: amountInLamports
+        })
+      ]
 
       // Create v0 compatible message
       const messageV0 = new TransactionMessage({
         payerKey: walletProvider.publicKey,
         recentBlockhash: blockhash,
-        instructions,
-      }).compileToV0Message();
+        instructions
+      }).compileToV0Message()
 
       // Make a versioned transaction
-      const transactionV0 = new VersionedTransaction(messageV0);
+      const transactionV0 = new VersionedTransaction(messageV0)
 
       const tx = await walletProvider.signTransaction(transactionV0)
       const signature = tx.signatures[0]?.signature
@@ -103,7 +107,7 @@ export function SolanaSignTransactionTest() {
   }
 
   if (!address) {
-    return null;
+    return null
   }
 
   if (chainId === solana.chainId) {
@@ -117,7 +121,7 @@ export function SolanaSignTransactionTest() {
   const supportV0Transactions = walletProvider.name !== 'WalletConnect'
 
   return (
-    <Stack direction={['column', 'column', 'row']} >
+    <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="sign-transaction-button"
         onClick={onSignTransaction}
@@ -125,15 +129,15 @@ export function SolanaSignTransactionTest() {
       >
         Sign Transaction
       </Button>
-      {
-        supportV0Transactions && <Button
+      {supportV0Transactions && (
+        <Button
           data-test-id="sign-transaction-button"
           onClick={onSignVersionedTransaction}
           isDisabled={loading}
         >
           Sign Versioned Transaction
         </Button>
-      }
+      )}
       <Spacer />
 
       <Link isExternal href="https://solfaucet.com/">

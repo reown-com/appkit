@@ -1,9 +1,22 @@
-import { PublicKey, SystemProgram, Transaction, TransactionInstruction, TransactionMessage, VersionedTransaction } from '@solana/web3.js'
+import {
+  PublicKey,
+  SystemProgram,
+  Transaction,
+  TransactionInstruction,
+  TransactionMessage,
+  VersionedTransaction
+} from '@solana/web3.js'
 import BN from 'bn.js'
 import base58 from 'bs58'
 import borsh from 'borsh'
 import { Buffer } from 'buffer'
 import { SolConstantsUtil, SolStoreUtil } from '@web3modal/scaffold-utils/solana'
+
+import { registerListener, unregisterListener } from '../utils/clusterFactory'
+import { getHashedName, getNameAccountKey } from '../utils/hash'
+import { NameRegistry } from '../utils/nameService'
+import { FavouriteDomain } from '../utils/favouriteDomain'
+
 import type {
   BlockResult,
   AccountInfo,
@@ -14,13 +27,6 @@ import type {
   TransactionArgs,
   TransactionType
 } from '@web3modal/scaffold-utils/solana'
-
-import { registerListener, unregisterListener } from '../utils/clusterFactory'
-import { getHashedName, getNameAccountKey } from '../utils/hash'
-import { NameRegistry } from '../utils/nameService'
-import { FavouriteDomain } from '../utils/favouriteDomain'
-
-
 
 export interface Connector {
   id: string
@@ -53,7 +59,7 @@ export interface Connector {
   ) => Promise<() => void>
   getSolDomainsFromPublicKey: (address: string) => Promise<string[]>
   getAddressFromDomain: (address: string) => Promise<string | null>
-  getFavoriteDomain: (address: string) => Promise<{ domain: PublicKey, reverse: string } | null>
+  getFavoriteDomain: (address: string) => Promise<{ domain: PublicKey; reverse: string } | null>
   getBlock: (slot: number) => Promise<BlockResult | null>
   getFeeForMessage: <Type extends TransactionType>(
     type: Type,
@@ -84,7 +90,9 @@ export class BaseConnector {
     const transaction = new Transaction()
     const fromAddress = SolStoreUtil.state.address
 
-    if (!fromAddress) { throw new Error('No address connected') }
+    if (!fromAddress) {
+      throw new Error('No address connected')
+    }
     const fromPubkey = new PublicKey(fromAddress)
 
     if (type === 'transfer') {
@@ -110,7 +118,9 @@ export class BaseConnector {
         })
       )
       transaction.feePayer = fromPubkey
-    } else { throw new Error(`No transaction configuration for type ${String(type)}`) }
+    } else {
+      throw new Error(`No transaction configuration for type ${String(type)}`)
+    }
 
     const response = await this.requestCluster('getLatestBlockhash', [{}])
 
@@ -120,20 +130,21 @@ export class BaseConnector {
     return transaction
   }
 
-  protected async constructVersionedTransaction(
-    params: TransactionArgs['transfer']['params']
-  ) {
+  protected async constructVersionedTransaction(params: TransactionArgs['transfer']['params']) {
     const fromAddress = SolStoreUtil.state.address
-    if (!fromAddress) { throw new Error('No address connected') }
-    const fromPubkey = new PublicKey(fromAddress); const toPubkey = new PublicKey(params.to)
+    if (!fromAddress) {
+      throw new Error('No address connected')
+    }
+    const fromPubkey = new PublicKey(fromAddress)
+    const toPubkey = new PublicKey(params.to)
 
     const instructions = [
       SystemProgram.transfer({
         fromPubkey,
         toPubkey,
         lamports: params.amountInLamports
-      }),
-    ];
+      })
+    ]
 
     const response = await this.requestCluster('getLatestBlockhash', [{}])
     const { blockhash: recentBlockhash } = response.value
@@ -141,11 +152,11 @@ export class BaseConnector {
     const messageV0 = new TransactionMessage({
       payerKey: fromPubkey,
       recentBlockhash,
-      instructions,
-    }).compileToV0Message();
+      instructions
+    }).compileToV0Message()
 
     // Make a versioned transaction
-    const transactionV0 = new VersionedTransaction(messageV0);
+    const transactionV0 = new VersionedTransaction(messageV0)
 
     return transactionV0
   }
@@ -154,7 +165,7 @@ export class BaseConnector {
    * Public async sendTransaction(encodedTransaction: string) {
    * const signature = await this.requestCluster('sendTransaction', [encodedTransaction])
    * return signature
-   * } 
+   * }
    */
 
   public async getTransaction(transactionSignature: string) {
@@ -176,8 +187,14 @@ export class BaseConnector {
   public async getBalance(requestedAddress: string, currency: 'lamports' | 'sol' = 'sol') {
     try {
       const address = requestedAddress ?? SolStoreUtil.state.address
-      const balance = await this.requestCluster('getBalance', [address, { commitment: 'processed' }])
-      const formatted = currency === 'lamports' ? `${balance?.value || 0} lamports` : `${(balance?.value || 0) / 1000000000} sol`
+      const balance = await this.requestCluster('getBalance', [
+        address,
+        { commitment: 'processed' }
+      ])
+      const formatted =
+        currency === 'lamports'
+          ? `${balance?.value || 0} lamports`
+          : `${(balance?.value || 0) / 1000000000} sol`
 
       return {
         value: new BN(balance.value),
@@ -244,7 +261,9 @@ export class BaseConnector {
   ) {
     const address = nameAccountKey ?? SolStoreUtil.state.address
 
-    if (!address) { throw new Error('No address supplied and none connected') }
+    if (!address) {
+      throw new Error('No address supplied and none connected')
+    }
 
     const response = await this.requestCluster('getAccountInfo', [
       address,
@@ -253,7 +272,9 @@ export class BaseConnector {
       }
     ])
 
-    if (!response) { throw new Error('Invalid name account provided') }
+    if (!response) {
+      throw new Error('Invalid name account provided')
+    }
 
     const { value: nameAccount } = response
 
@@ -313,7 +334,9 @@ export class BaseConnector {
     )
     const ownerDataRaw = await this.getAccount(nameAccountKey.toBase58(), 'base64')
 
-    if (!ownerDataRaw) { return null }
+    if (!ownerDataRaw) {
+      return null
+    }
 
     const ownerData = borsh.deserializeUnchecked(
       NameRegistry.schema,
@@ -334,7 +357,9 @@ export class BaseConnector {
 
     const favoriteDomainAccInfo = await this.getAccount(favKey.toBase58(), 'base64')
 
-    if (!favoriteDomainAccInfo) { return null }
+    if (!favoriteDomainAccInfo) {
+      return null
+    }
 
     const favoriteDomainData = borsh.deserialize(
       FavouriteDomain.schema,
@@ -385,12 +410,11 @@ export class BaseConnector {
       headers: {
         'Content-Type': 'application/json'
       }
-    })
-      .then(async httpRes => {
-        const json = await httpRes.json()
+    }).then(async httpRes => {
+      const json = await httpRes.json()
 
-        return json
-      })
+      return json
+    })
 
     return res.result
   }

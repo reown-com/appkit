@@ -1,5 +1,6 @@
-import type { Schema } from 'borsh'
 import { PublicKey } from '@solana/web3.js'
+
+import type { Schema } from 'borsh'
 
 export class NameRegistry {
   public parentName: PublicKey

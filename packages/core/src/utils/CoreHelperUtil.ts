@@ -13,7 +13,7 @@ export const CoreHelperUtil = {
     return false
   },
 
-  checkCaipNetwork(network: CaipNetwork | undefined, networkName = "") {
+  checkCaipNetwork(network: CaipNetwork | undefined, networkName = '') {
     return network?.id.toLocaleLowerCase().includes(networkName.toLowerCase())
   },
 
@@ -67,6 +67,7 @@ export const CoreHelperUtil = {
       function next() {
         func(...args)
       }
+
       if (timer) {
         clearTimeout(timer)
       }

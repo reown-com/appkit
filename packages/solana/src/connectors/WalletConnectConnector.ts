@@ -13,7 +13,8 @@ export const solana = {
   name: 'Solana',
   currency: 'SOL',
   explorerUrl: 'https://solscan.io',
-  rpcUrl: 'https://rpc.walletconnect.com/v1?chainId=solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ&projectId=bbcbaddb9e8a1ae8f5f7c60f3e5a666e'
+  rpcUrl:
+    'https://rpc.walletconnect.com/v1?chainId=solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ&projectId=bbcbaddb9e8a1ae8f5f7c60f3e5a666e'
 }
 
 export const solanaTestnet = {
@@ -63,7 +64,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
       projectId: SolStoreUtil.getProjectId(),
       relayerRegion,
       metadata,
-      qrcode: this.qrcode,
+      qrcode: this.qrcode
     })
 
     UniversalProviderFactory.getProvider().then(provider => {
@@ -76,7 +77,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
       UniversalProviderFactory.getProvider().then(provider => {
         if (provider.session?.namespaces['solana']?.accounts?.length) {
           const [defaultAccount] = provider.session.namespaces['solana'].accounts
-          const address = defaultAccount?.split(':')[2] ?? ""
+          const address = defaultAccount?.split(':')[2] ?? ''
           SolStoreUtil.setIsConnected(true)
           SolStoreUtil.setAddress(address)
         }
@@ -125,11 +126,9 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     return signature
   }
 
-  public async signVersionedTransaction(
-    transaction: VersionedTransaction
-  ) {
+  public async signVersionedTransaction(transaction: VersionedTransaction) {
     const transactionParams = {
-      feePayer: new PublicKey(SolStoreUtil.state.address ?? "").toBase58(),
+      feePayer: new PublicKey(SolStoreUtil.state.address ?? '').toBase58(),
       instructions: transaction.message.compiledInstructions.map(instruction => ({
         ...instruction,
         data: base58.encode(instruction.data)
@@ -141,9 +140,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     return { signatures: [{ signature: base58.encode(transaction.serialize()) }] }
   }
 
-  public async signTransaction(
-    transactionParam: Transaction | VersionedTransaction
-  ) {
+  public async signTransaction(transactionParam: Transaction | VersionedTransaction) {
     const version = (transactionParam as VersionedTransaction).version
     if (typeof version === 'number') {
       return this.signVersionedTransaction(transactionParam as VersionedTransaction)
@@ -156,7 +153,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
         keys: instruction.keys.map(key => ({
           isWritable: key.isWritable,
           isSigner: key.isSigner,
-          pubkey: key.pubkey.toBase58(),
+          pubkey: key.pubkey.toBase58()
         })),
         programId: instruction.programId.toBase58()
       })),
@@ -171,20 +168,21 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
 
     const validSig = transaction.verifySignatures()
 
-    if (!validSig) { throw new Error('Signature invalid.') }
+    if (!validSig) {
+      throw new Error('Signature invalid.')
+    }
 
     return { signatures: [{ signature: base58.encode(transaction.serialize()) }] }
-
   }
 
   public async sendTransaction(transactionParam: Transaction | VersionedTransaction) {
-    const encodedTransaction = await this.signTransaction(transactionParam) as {
+    const encodedTransaction = (await this.signTransaction(transactionParam)) as {
       signatures: {
-        signature: string;
+        signature: string
       }[]
     }
     const signedTransaction = base58.decode(encodedTransaction.signatures[0]?.signature ?? '')
-    await SolStoreUtil.state.connection?.sendRawTransaction(signedTransaction);
+    await SolStoreUtil.state.connection?.sendRawTransaction(signedTransaction)
 
     return base58.encode(signedTransaction)
   }
@@ -205,11 +203,9 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
       [`solana:${solanaTestnet.chainId}`]: solanaTestnet.rpcUrl,
       [`solana:${solanaDevnet.chainId}`]: solanaDevnet.rpcUrl
     }
-    const chainsNamespaces = [
-      `solana:${chainId}`
-    ]
+    const chainsNamespaces = [`solana:${chainId}`]
     const rpc = {
-      [chainId]: rpcMap[`solana:${chainId}`] ?? '',
+      [chainId]: rpcMap[`solana:${chainId}`] ?? ''
     }
 
     return {
@@ -239,11 +235,15 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
           namespaces: solanaNamespace
         })
         .then(providerResult => {
-          if (!providerResult) { throw new Error('Failed connection.') }
+          if (!providerResult) {
+            throw new Error('Failed connection.')
+          }
           const address = providerResult.namespaces['solana']?.accounts[0]?.split(':')[2] ?? null
           if (address && this.qrcode) {
             resolve(address)
-          } else { reject(new Error('Could not resolve address')) }
+          } else {
+            reject(new Error('Could not resolve address'))
+          }
         })
     })
   }

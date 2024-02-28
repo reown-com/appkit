@@ -1,5 +1,6 @@
-import type { Schema } from 'borsh'
 import { PublicKey } from '@solana/web3.js'
+
+import type { Schema } from 'borsh'
 import type { Tag } from '@web3modal/scaffold-utils/solana'
 
 // Class used solely for borsh deserialize function

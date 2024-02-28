@@ -3,13 +3,11 @@
 import { useSnapshot } from 'valtio'
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { getWeb3Modal } from '@web3modal/scaffold-react'
-import { SolStoreUtil } from "@web3modal/scaffold-utils/solana"
+import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 import { Web3Modal } from '../src/client.js'
-import type { Web3ModalOptions } from '../src/client.js'
 
-import type {
-  Provider
-} from '@web3modal/scaffold-utils/solana'
+import type { Web3ModalOptions } from '../src/client.js'
+import type { Provider } from '@web3modal/scaffold-utils/solana'
 
 // -- Setup -------------------------------------------------------------------
 let modal: Web3Modal | undefined = undefined
@@ -69,5 +67,5 @@ export {
   useWeb3ModalEvents
 } from '@web3modal/scaffold-react'
 
-export { defaultSolanaConfig } from '../src/utils/defaultConfig.js'
+export {defaultSolanaConfig} from '../src/utils/defaultConfig.js'
 

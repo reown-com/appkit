@@ -28,7 +28,7 @@ export class UniversalProviderFactory {
       await UniversalProviderFactory.init()
     }
     if (!UniversalProviderFactory.provider) {
-        throw new Error('Failed to initialize universal provider')
+      throw new Error('Failed to initialize universal provider')
     }
 
     return UniversalProviderFactory.provider
@@ -39,7 +39,7 @@ export class UniversalProviderFactory {
       logger: DEFAULT_LOGGER,
       relayUrl: UniversalProviderFactory.relayerRegion,
       projectId: UniversalProviderFactory.projectId,
-      metadata: UniversalProviderFactory.metadata,
+      metadata: UniversalProviderFactory.metadata
     })
 
     // Subscribe to session ping
