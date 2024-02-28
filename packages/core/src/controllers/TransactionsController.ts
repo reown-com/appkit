@@ -95,6 +95,8 @@ export const TransactionsController = {
       SnackController.showError('Failed to fetch transactions')
       state.loading = false
       state.empty = true
+
+      throw error
     }
   },
 
