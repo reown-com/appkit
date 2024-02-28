@@ -1,5 +1,6 @@
-import { DEVICES } from '../constants/devices'
+// TEMP import { DEVICES } from '../constants/devices'
 
 export function getAvailableDevices(): string[] {
-  return DEVICES
+  // TEMP return DEVICES
+  return ['Desktop Safari']
 }
