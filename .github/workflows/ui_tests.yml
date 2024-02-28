@@ -63,7 +63,6 @@ jobs:
         with:
           path: |
             ~/.cache/ms-playwright
-            /usr/bin/brave-browser
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('apps/laboratory/tests/shared/constants/devices.ts') }}
       - name: install
         run: npm ci
@@ -75,6 +74,11 @@ jobs:
         run: |
           sudo ./scripts/install-brave-browser.sh
           npm run playwright:install
+          cp -r /usr/bin/brave-browser ~/.cache/ms-playwright/brave-browser
+      - name: Copy Browser Cache
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: |
+          cp -r ~/.cache/ms-playwright/brave-browser /usr/bin/brave-browser
       - name: Run Playwright tests
         env:
           BASE_URL: ${{ inputs.base-url }}
