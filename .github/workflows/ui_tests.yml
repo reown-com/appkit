@@ -78,8 +78,8 @@ jobs:
       - name: Copy Browser Cache
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: |
-          sudo cp -r --remove-destination ~/.cache/ms-playwright/brave-browser /usr/bin/brave-browser
-          sudo chmod +x /usr/bin/brave-browser
+          sudo cp -r ~/.cache/ms-playwright/brave-browser ~/usr/bin/brave-browser
+          sudo chmod +x ~/usr/bin/brave-browser
       - name: Run Playwright tests
         env:
           BASE_URL: ${{ inputs.base-url }}
