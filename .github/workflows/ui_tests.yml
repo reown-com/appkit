@@ -63,7 +63,7 @@ jobs:
         with:
           path: |
             ~/.cache/ms-playwright
-            ~/usr/bin/brave-browser
+            /usr/bin/brave-browser
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('apps/laboratory/tests/shared/constants/devices.ts') }}
       - name: install
         run: npm ci
