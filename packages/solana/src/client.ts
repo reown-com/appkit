@@ -395,10 +395,10 @@ export class Web3Modal extends Web3ModalScaffold {
           const WalletConnectProvider = provider as unknown as WalletConnectConnector
           const universalProvider = await WalletConnectProvider?.getProvider() as unknown as UniversalProvider
 
-          universalProvider.namespaces = this.WalletConnectConnector.generateNamespaces(chain.chainId)
-          await universalProvider.connect({ pairingTopic: undefined, namespaces: universalProvider.namespaces })
+          const namespaces = this.WalletConnectConnector.generateNamespaces(chain.chainId)
+          universalProvider.namespaces = namespaces
+          await universalProvider.connect({ namespaces })
           await this.syncAccount()
-
         }
       }
     }
@@ -409,7 +409,7 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async setWalletConnectProvider(address: string) {
-    const caipChainId = `${SolStoreUtil.state.currentChain?.name}:${SolStoreUtil.state.currentChain?.chainId}`
+    const caipChainId = `${SolStoreUtil.state.currentChain?.name}: ${SolStoreUtil.state.currentChain?.chainId}`
     const chain = SolHelpersUtil.getChainFromCaip(this.chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : '');
     if (chain) {
       SolStoreUtil.setCurrentChain(chain)
@@ -436,7 +436,7 @@ export class Web3Modal extends Web3ModalScaffold {
     window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, `${ConstantsUtil.INJECTED_CONNECTOR_ID}_${adapter}`)
 
     const chainId = SolStoreUtil.state.currentChain?.chainId
-    const caipChainId = `${SolStoreUtil.state.currentChain?.name}:${chainId}`
+    const caipChainId = `${SolStoreUtil.state.currentChain?.name}: ${chainId}`
 
     if (address && chainId) {
       SolStoreUtil.setIsConnected(true)

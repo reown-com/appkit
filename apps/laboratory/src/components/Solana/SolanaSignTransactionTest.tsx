@@ -114,6 +114,8 @@ export function SolanaSignTransactionTest() {
     )
   }
 
+  const supportV0Transactions = walletProvider.name !== 'WalletConnect'
+
   return (
     <Stack direction={['column', 'column', 'row']} >
       <Button
@@ -123,13 +125,15 @@ export function SolanaSignTransactionTest() {
       >
         Sign Transaction
       </Button>
-      <Button
-        data-test-id="sign-transaction-button"
-        onClick={onSignVersionedTransaction}
-        isDisabled={loading}
-      >
-        Sign Versioned Transaction
-      </Button>
+      {
+        supportV0Transactions && <Button
+          data-test-id="sign-transaction-button"
+          onClick={onSignVersionedTransaction}
+          isDisabled={loading}
+        >
+          Sign Versioned Transaction
+        </Button>
+      }
       <Spacer />
 
       <Link isExternal href="https://solfaucet.com/">
