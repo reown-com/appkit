@@ -2,5 +2,5 @@
 
 export function getAvailableDevices(): string[] {
   // TEMP return DEVICES
-  return ['Desktop Safari']
+  return ['Desktop Brave']
 }
