@@ -41,14 +41,12 @@ export const SolHelpersUtil = {
 
         return number
     },
-    numberToHexString(value: number | string) {
-        return `0x${value.toString(16)}`
-    },
     async getAddress(provider: Provider) {
         const [address] = await provider.request<string[]>({ method: 'getAccountInfo' })
 
         return address
     },
+
     async addSolanaChain(provider: Provider, chain: Chain) {
         await provider.request({
             method: 'wallet_addSolanaChain',

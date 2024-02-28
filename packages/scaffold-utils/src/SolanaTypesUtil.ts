@@ -30,7 +30,10 @@ export interface Provider {
     emit: (event: string) => void
     connect: () => Promise<void>
     disconnect: () => Promise<void>
-    request: () => void
+    request: <T>(config: {
+        method: string,
+        params?: object
+    }) => Promise<T>
     signAllTransactions: (transactions: SolanaWeb3Transaction[]) => Promise<SolanaWeb3Transaction[]>
     signAndSendAllTransactions: (transactions: SolanaWeb3Transaction[]) => Promise<TransactionSignature[]>
     signAndSendTransaction: (transaction: SolanaWeb3Transaction, connection: Connection, options?: SendTransactionOptions) => Promise<TransactionSignature>
