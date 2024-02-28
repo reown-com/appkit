@@ -40,8 +40,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@web3modal/core": "4.0.10",
     "@web3modal/polyfills": "4.0.10",
-    "@web3modal/scaffold": "4.0.10",
     "valtio": "1.11.2"
   },
   "keywords": [

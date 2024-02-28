@@ -3,8 +3,8 @@ import {
   ConnectionController,
   EventsController,
   ModalController,
+  OptionsController,
   RouterController,
-  SIWEController,
   StorageUtil
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
@@ -45,7 +45,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
         }
         await ConnectionController.connectExternal(this.connector)
 
-        if (SIWEController.state.isSiweEnabled) {
+        if (OptionsController.state.isSiweEnabled) {
           RouterController.push('ConnectingSiwe')
         } else {
           ModalController.close()
