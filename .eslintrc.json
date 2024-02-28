@@ -19,8 +19,10 @@
     "dist",
     ".next",
     ".turbo",
-    "examples",
-    "coverage"
+    "exbamples",
+    "coverage",
+    ".changeset",
+    "playwright-report"
   ],
   "rules": {
     // Core

@@ -67,6 +67,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-font-size-small: calc(var(--w3m-font-size-master) * 1.4);
         --wui-font-size-paragraph: calc(var(--w3m-font-size-master) * 1.6);
         --wui-font-size-large: calc(var(--w3m-font-size-master) * 2);
+        --wui-font-size-medium-title: calc(var(--w3m-font-size-master) * 2.4);
+        --wui-font-size-2xl: calc(var(--w3m-font-size-master) * 4);
 
         --wui-border-radius-5xs: var(--w3m-border-radius-master);
         --wui-border-radius-4xs: calc(var(--w3m-border-radius-master) * 1.5);
@@ -83,6 +85,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-font-weight-medium: 600;
         --wui-font-weight-bold: 700;
 
+        --wui-letter-spacing-2xl: -1.6px;
+        --wui-letter-spacing-medium-title: -0.96px;
         --wui-letter-spacing-large: -0.8px;
         --wui-letter-spacing-paragraph: -0.64px;
         --wui-letter-spacing-small: -0.56px;
@@ -126,6 +130,11 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-wallet-image-size-sm: 40px;
         --wui-wallet-image-size-md: 56px;
         --wui-wallet-image-size-lg: 80px;
+
+        --wui-visual-size-size-inherit: inherit;
+        --wui-visual-size-sm: 40px;
+        --wui-visual-size-md: 55px;
+        --wui-visual-size-lg: 80px;
 
         --wui-box-size-md: 100px;
         --wui-box-size-lg: 120px;
@@ -495,6 +504,17 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-success-glass-060: rgba(38, 217, 98, 0.6);
         --wui-success-glass-080: rgba(38, 217, 98, 0.8);
 
+        --wui-error-glass-001: rgba(242, 90, 103, 0.01);
+        --wui-error-glass-002: rgba(242, 90, 103, 0.02);
+        --wui-error-glass-005: rgba(242, 90, 103, 0.05);
+        --wui-error-glass-010: rgba(242, 90, 103, 0.1);
+        --wui-error-glass-015: rgba(242, 90, 103, 0.15);
+        --wui-error-glass-020: rgba(242, 90, 103, 0.2);
+        --wui-error-glass-025: rgba(242, 90, 103, 0.25);
+        --wui-error-glass-030: rgba(242, 90, 103, 0.3);
+        --wui-error-glass-060: rgba(242, 90, 103, 0.6);
+        --wui-error-glass-080: rgba(242, 90, 103, 0.8);
+
         --wui-icon-box-bg-error-base-100: #3c2426;
         --wui-icon-box-bg-blue-base-100: #20303f;
         --wui-icon-box-bg-success-base-100: #1f3a28;
@@ -573,6 +593,17 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-success-glass-030: rgba(38, 181, 98, 0.3);
         --wui-success-glass-060: rgba(38, 181, 98, 0.6);
         --wui-success-glass-080: rgba(38, 181, 98, 0.8);
+
+        --wui-error-glass-001: rgba(240, 81, 66, 0.01);
+        --wui-error-glass-002: rgba(240, 81, 66, 0.02);
+        --wui-error-glass-005: rgba(240, 81, 66, 0.05);
+        --wui-error-glass-010: rgba(240, 81, 66, 0.1);
+        --wui-error-glass-015: rgba(240, 81, 66, 0.15);
+        --wui-error-glass-020: rgba(240, 81, 66, 0.2);
+        --wui-error-glass-025: rgba(240, 81, 66, 0.25);
+        --wui-error-glass-030: rgba(240, 81, 66, 0.3);
+        --wui-error-glass-060: rgba(240, 81, 66, 0.6);
+        --wui-error-glass-080: rgba(240, 81, 66, 0.8);
 
         --wui-icon-box-bg-error-base-100: #f4dfdd;
         --wui-icon-box-bg-blue-base-100: #d9ecfb;

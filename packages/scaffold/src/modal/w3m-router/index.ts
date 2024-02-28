@@ -71,6 +71,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-network-switch-view></w3m-network-switch-view>`
       case 'Account':
         return html`<w3m-account-view></w3m-account-view>`
+      case 'AccountSettings':
+        return html`<w3m-account-settings-view></w3m-account-settings-view>`
       case 'WhatIsAWallet':
         return html`<w3m-what-is-a-wallet-view></w3m-what-is-a-wallet-view>`
       case 'WhatIsANetwork':
@@ -97,6 +99,18 @@ export class W3mRouter extends LitElement {
         return html`<w3m-update-email-secondary-otp-view></w3m-update-email-secondary-otp-view>`
       case 'UnsupportedChain':
         return html`<w3m-unsupported-chain-view></w3m-unsupported-chain-view>`
+      case 'OnRampProviders':
+        return html`<w3m-onramp-providers-view></w3m-onramp-providers-view>`
+      case 'OnRampActivity':
+        return html`<w3m-onramp-activity-view></w3m-onramp-activity-view>`
+      case 'OnRampTokenSelect':
+        return html`<w3m-onramp-token-select-view></w3m-onramp-token-select-view>`
+      case 'OnRampFiatSelect':
+        return html`<w3m-onramp-fiat-select-view></w3m-onramp-fiat-select-view>`
+      case 'WhatIsABuy':
+        return html`<w3m-what-is-a-buy-view></w3m-what-is-a-buy-view>`
+      case 'BuyInProgress':
+        return html`<w3m-buy-in-progress-view></w3m-buy-in-progress-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

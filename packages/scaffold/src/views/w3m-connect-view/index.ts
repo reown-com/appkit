@@ -92,6 +92,7 @@ export class W3mConnectView extends LitElement {
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           name=${wallet.name ?? 'Unknown'}
           @click=${() => this.onConnectWallet(wallet)}
+          data-testid=${`wallet-selector-${wallet.id}`}
         >
         </wui-list-wallet>
       `

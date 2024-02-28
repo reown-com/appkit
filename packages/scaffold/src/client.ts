@@ -24,7 +24,8 @@ import {
   OptionsController,
   PublicStateController,
   ThemeController,
-  SIWEController
+  SIWEController,
+  SnackController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
 
@@ -47,6 +48,7 @@ export interface LibraryOptions {
   customWallets?: OptionsControllerState['customWallets']
   enableAnalytics?: OptionsControllerState['enableAnalytics']
   metadata?: OptionsControllerState['metadata']
+  enableOnramp?: OptionsControllerState['enableOnramp']
   _sdkVersion: OptionsControllerState['sdkVersion']
 }
 
@@ -95,33 +97,11 @@ export class Web3ModalScaffold {
   public setThemeMode(themeMode: ThemeControllerState['themeMode']) {
     ThemeController.setThemeMode(themeMode)
     setColorTheme(ThemeController.state.themeMode)
-    try {
-      const emailConnector = ConnectorController.getEmailConnector()
-      if (emailConnector) {
-        emailConnector.provider.syncTheme({
-          themeMode: ThemeController.getSnapshot().themeMode
-        })
-      }
-    } catch {
-      // eslint-disable-next-line no-console
-      console.info('Unable to sync theme to email connector')
-    }
   }
 
   public setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
     ThemeController.setThemeVariables(themeVariables)
     setThemeVariables(ThemeController.state.themeVariables)
-    try {
-      const emailConnector = ConnectorController.getEmailConnector()
-      if (emailConnector) {
-        emailConnector.provider.syncTheme({
-          themeVariables: ThemeController.getSnapshot().themeVariables
-        })
-      }
-    } catch {
-      // eslint-disable-next-line no-console
-      console.info('Unable to sync theme to email connector')
-    }
   }
 
   public subscribeTheme(callback: (newState: ThemeControllerState) => void) {
@@ -134,6 +114,14 @@ export class Web3ModalScaffold {
 
   public subscribeState(callback: (newState: PublicStateControllerState) => void) {
     return PublicStateController.subscribe(callback)
+  }
+
+  public showErrorMessage(message: string) {
+    SnackController.showError(message)
+  }
+
+  public showSuccessMessage(message: string) {
+    SnackController.showSuccess(message)
   }
 
   public getEvent() {
@@ -264,6 +252,10 @@ export class Web3ModalScaffold {
 
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables)
+    }
+
+    if (options.enableOnramp) {
+      OptionsController.setOnrampEnabled(Boolean(options.enableOnramp))
     }
   }
 

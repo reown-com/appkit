@@ -49,6 +49,16 @@ export function useDisconnect() {
   }
 }
 
+export function useSwitchNetwork() {
+  async function switchNetwork(chainId: number) {
+    await modal?.switchNetwork(chainId)
+  }
+
+  return {
+    switchNetwork
+  }
+}
+
 export function useWeb3ModalAccount() {
   const { address, isConnected, chainId } = useSnapshot(EthersStoreUtil.state)
 

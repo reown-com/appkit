@@ -39,7 +39,8 @@ on:
 jobs:
   ui_tests:
     name: 'Playwright Tests'
-    runs-on: ubuntu-latest
+    runs-on:
+      group: ubuntu-runners
     timeout-minutes: 15
     steps:
       - name: checkout
@@ -62,7 +63,7 @@ jobs:
         with:
           path: |
             ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('apps/laboratory/tests/shared/constants/devices.ts') }}
       - name: install
         run: npm ci
       - name: build

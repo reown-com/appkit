@@ -1,5 +1,5 @@
 import { DateUtil } from '@web3modal/common'
-import type { Transaction } from '@web3modal/common'
+import type { Transaction, TransactionImage } from '@web3modal/common'
 import {
   AccountController,
   EventsController,
@@ -80,7 +80,7 @@ export class W3mTransactionsView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" padding="s" gap="s">
+      <wui-flex flexDirection="column" gap="s">
         ${this.empty ? null : this.templateTransactionsByYear()}
         ${this.loading ? this.templateLoading() : null}
         ${!this.loading && this.empty ? this.templateEmpty() : null}
@@ -170,7 +170,7 @@ export class W3mTransactionsView extends LitElement {
           status=${status}
           type=${type}
           .onlyDirectionIcon=${true}
-          .images=${[images?.[index]]}
+          .images=${[images[index]] as TransactionImage[]}
           .descriptions=${[description]}
         ></wui-transaction-list-item>`
       })

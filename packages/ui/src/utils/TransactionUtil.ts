@@ -1,5 +1,5 @@
 import { DateUtil } from '@web3modal/common'
-import type { TransactionTransfer, Transaction } from '@web3modal/common'
+import type { TransactionTransfer, Transaction, TransactionImage } from '@web3modal/common'
 import type { TransactionType } from './TypeUtil.js'
 import { UiHelperUtil } from './UiHelperUtil.js'
 
@@ -26,7 +26,7 @@ export const TransactionUtil = {
     return groupTitle
   },
 
-  getTransactionImages(transfers: TransactionTransfer[]) {
+  getTransactionImages(transfers: TransactionTransfer[]): TransactionImage[] {
     const [transfer, secondTransfer] = transfers
     const isAllNFT = Boolean(transfer) && transfers?.every(item => Boolean(item.nft_info))
     const haveMultipleTransfers = transfers?.length > 1
@@ -43,7 +43,7 @@ export const TransactionUtil = {
     return [this.getTransactionImage(transfer)]
   },
 
-  getTransactionImage(transfer?: TransactionTransfer) {
+  getTransactionImage(transfer?: TransactionTransfer): TransactionImage {
     return {
       type: TransactionUtil.getTransactionTransferTokenType(transfer),
       url: TransactionUtil.getTransactionImageURL(transfer)
@@ -51,7 +51,7 @@ export const TransactionUtil = {
   },
 
   getTransactionImageURL(transfer: TransactionTransfer | undefined) {
-    let imageURL = null
+    let imageURL = undefined
     const isNFT = Boolean(transfer?.nft_info)
     const isFungible = Boolean(transfer?.fungible_info)
 
@@ -64,23 +64,24 @@ export const TransactionUtil = {
     return imageURL
   },
 
-  getTransactionTransferTokenType(transfer?: TransactionTransfer) {
+  getTransactionTransferTokenType(transfer?: TransactionTransfer): 'FUNGIBLE' | 'NFT' | undefined {
     if (transfer?.fungible_info) {
       return 'FUNGIBLE'
     } else if (transfer?.nft_info) {
       return 'NFT'
     }
 
-    return null
+    return undefined
   },
 
   getTransactionDescriptions(transaction: Transaction) {
-    const type = transaction.metadata?.operationType as TransactionType
+    const type = transaction?.metadata?.operationType as TransactionType
 
-    const transfers = transaction.transfers
-    const haveTransfer = transaction.transfers?.length > 0
-    const haveMultipleTransfers = transaction.transfers?.length > 1
-    const isFungible = haveTransfer && transfers?.every(transfer => Boolean(transfer.fungible_info))
+    const transfers = transaction?.transfers
+    const haveTransfer = transaction?.transfers?.length > 0
+    const haveMultipleTransfers = transaction?.transfers?.length > 1
+    const isFungible =
+      haveTransfer && transfers?.every(transfer => Boolean(transfer?.fungible_info))
     const [firstTransfer, secondTransfer] = transfers
 
     let firstDescription = this.getTransferDescription(firstTransfer)
@@ -91,13 +92,13 @@ export const TransactionUtil = {
 
       if (isSendOrReceive && isFungible) {
         firstDescription = UiHelperUtil.getTruncateString({
-          string: transaction.metadata.sentFrom,
+          string: transaction?.metadata.sentFrom,
           charsStart: 4,
           charsEnd: 6,
           truncate: 'middle'
         })
         secondDescription = UiHelperUtil.getTruncateString({
-          string: transaction.metadata.sentTo,
+          string: transaction?.metadata.sentTo,
           charsStart: 4,
           charsEnd: 6,
           truncate: 'middle'

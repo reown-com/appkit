@@ -21,6 +21,14 @@ export class WuiIconLink extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const borderRadius = this.size === 'lg' ? '--wui-border-radius-xs' : '--wui-border-radius-xxs'
+    const padding = this.size === 'lg' ? '--wui-spacing-1xs' : '--wui-spacing-2xs'
+
+    this.style.cssText = `
+    --local-border-radius: var(${borderRadius});
+    --local-padding: var(${padding});
+`
+
     return html`
       <button ?disabled=${this.disabled} ontouchstart>
         <wui-icon color=${this.iconColor} size=${this.size} name=${this.icon}></wui-icon>

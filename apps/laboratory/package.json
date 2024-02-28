@@ -1,6 +1,6 @@
 {
   "name": "@apps/laboratory",
-  "version": "4.0.0-648b6755",
+  "version": "4.0.10",
   "private": true,
   "scripts": {
     "dev:laboratory": "next dev",
@@ -9,9 +9,13 @@
     "playwright:start": "npm run dev:laboratory",
     "playwright:install": "npx playwright install --with-deps",
     "playwright:test": "npx playwright test",
-    "playwright:test:wallet": "npx playwright test --grep connect.spec.ts",
+    "playwright:test:wallet": "npx playwright test --grep 'connect-qr.spec.ts|wallet.spec.ts'",
+    "playwright:test:siwe": "npx playwright test --grep siwe.spec.ts",
+    "playwright:test:canary": "npx playwright test --grep canary.spec.ts --project='Desktop Chrome/wagmi'",
     "playwright:debug": "npx playwright test --debug",
-    "playwright:debug:wallet": "npx playwright test --debug --grep connect.spec.ts"
+    "playwright:debug:wallet": "npx playwright test --debug 'connect-qr.spec.ts|wallet.spec.ts'",
+    "playwright:debug:siwe": "npx playwright test --debug --grep siwe.spec.ts",
+    "playwright:debug:canary": "npx playwright test --debug --grep canary.spec.ts --project='Desktop Chrome/wagmi'"
   },
   "dependencies": {
     "@chakra-ui/react": "2.8.2",
@@ -20,9 +24,9 @@
     "@sentry/browser": "7.92.0",
     "@sentry/react": "7.92.0",
     "@tanstack/react-query": "5.17.19",
-    "@web3modal/ethers": "4.0.0-648b6755",
-    "@web3modal/ethers5": "4.0.0-648b6755",
-    "@web3modal/wagmi": "4.0.0-648b6755",
+    "@web3modal/ethers": "4.0.10",
+    "@web3modal/ethers5": "4.0.10",
+    "@web3modal/wagmi": "4.0.10",
     "framer-motion": "10.17.9",
     "next": "14.0.4",
     "next-auth": "4.24.5",
@@ -30,9 +34,10 @@
     "siwe": "2.1.4",
     "valtio": "1.11.2",
     "viem": "2.5.0",
-    "wagmi": "2.5.0"
+    "wagmi": "2.5.6"
   },
   "devDependencies": {
+    "@aws-sdk/client-cloudwatch": "3.509.0",
     "@mailsac/api": "1.0.5",
     "@playwright/test": "1.40.1",
     "dotenv": "16.3.1",

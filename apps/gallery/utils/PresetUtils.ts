@@ -54,7 +54,8 @@ export const textOptions: TextType[] = [
   'paragraph-700',
   'large-500',
   'large-600',
-  'large-700'
+  'large-700',
+  '2xl-500'
 ]
 
 export const textAlignOptions: TextAlign[] = ['center', 'left', 'right']
@@ -225,7 +226,11 @@ export const visualOptions: VisualType[] = [
   'nft',
   'noun',
   'profile',
-  'system'
+  'system',
+  'coinbase',
+  'stripe',
+  'moonpay',
+  'paypal'
 ]
 
 export const logoOptions: LogoType[] = [
@@ -241,7 +246,14 @@ export const logoOptions: LogoType[] = [
 
 export const placementOptions: PlacementType[] = ['top', 'right', 'bottom', 'left']
 
-export const chipOptions: ChipType[] = ['fill', 'transparent', 'shade', 'success', 'shadeSmall']
+export const chipOptions: ChipType[] = [
+  'fill',
+  'transparent',
+  'shade',
+  'success',
+  'shadeSmall',
+  'error'
+]
 
 export const buttonOptions: ButtonType[] = ['fill', 'accent', 'shade', 'fullWidth', 'accentBg']
 

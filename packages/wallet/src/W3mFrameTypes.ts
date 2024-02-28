@@ -15,8 +15,36 @@ import {
   RpcEthAccountsRequest,
   RpcEthEstimateGas,
   RpcEthGasPrice,
-  RpcGetBalance,
   RpcEthBlockNumber,
+  RpcEthGetTransactionByHash,
+  RpcEthGetBlockByNumber,
+  RpcEthCall,
+  RpcEthFeeHistory,
+  RpcEthGetAccount,
+  RpcEthGetBalance,
+  RpcEthGetBlockyByHash,
+  RpcUnistallFilter,
+  RpcEthSyncing,
+  RpcEthSendRawTransaction,
+  RpcEthNewPendingTransactionFilter,
+  RpcEthNewFilter,
+  RpcEthNewBlockFilter,
+  RpcEthMaxPriorityFeePerGas,
+  RpcEthGetUncleCountByBlockNumber,
+  RpcEthGetUncleCountByBlockHash,
+  RpcEthGetTransactionReceipt,
+  RpcEthGetTransactionCount,
+  RpcEthGetTransactionByBlockNumberAndIndex,
+  RpcEthGetTransactionByBlockHashAndIndex,
+  RpcEthGetStorageAt,
+  RpcEthGetProof,
+  RpcEthGetLogs,
+  RpcEthGetFilterLogs,
+  RpcEthGetFilter,
+  RpcEthGetCode,
+  RcpEthGetBlockTransactionCountByNumber,
+  RcpEthGetBlockTransactionCountByHash,
+  RpcEthGetBlockReceipts,
   FrameSession,
   AppGetUserRequest,
   AppUpdateEmailRequest,
@@ -26,8 +54,7 @@ import {
   AppSyncThemeRequest,
   RpcEthChainId,
   FrameSwitchNetworkResponse,
-  AppSyncDappDataRequest,
-  RpcEthGetTransactionByHash
+  AppSyncDappDataRequest
 } from './W3mFrameSchema.js'
 
 export namespace W3mFrameTypes {
@@ -62,16 +89,43 @@ export namespace W3mFrameTypes {
   }
 
   export type RPCRequest =
-    | z.infer<typeof RpcPersonalSignRequest>
-    | z.infer<typeof RpcEthSendTransactionRequest>
-    | z.infer<typeof RpcEthSignTypedDataV4>
     | z.infer<typeof RpcEthAccountsRequest>
-    | z.infer<typeof RpcEthEstimateGas>
-    | z.infer<typeof RpcEthGasPrice>
-    | z.infer<typeof RpcGetBalance>
     | z.infer<typeof RpcEthBlockNumber>
+    | z.infer<typeof RpcEthCall>
     | z.infer<typeof RpcEthChainId>
+    | z.infer<typeof RpcEthEstimateGas>
+    | z.infer<typeof RpcEthFeeHistory>
+    | z.infer<typeof RpcEthGasPrice>
+    | z.infer<typeof RpcEthGetAccount>
+    | z.infer<typeof RpcEthGetBalance>
+    | z.infer<typeof RpcEthGetBlockyByHash>
+    | z.infer<typeof RpcEthGetBlockByNumber>
+    | z.infer<typeof RpcEthGetBlockReceipts>
+    | z.infer<typeof RcpEthGetBlockTransactionCountByHash>
+    | z.infer<typeof RcpEthGetBlockTransactionCountByNumber>
+    | z.infer<typeof RpcEthGetCode>
+    | z.infer<typeof RpcEthGetFilter>
+    | z.infer<typeof RpcEthGetFilterLogs>
+    | z.infer<typeof RpcEthGetLogs>
+    | z.infer<typeof RpcEthGetProof>
+    | z.infer<typeof RpcEthGetStorageAt>
+    | z.infer<typeof RpcEthGetTransactionByBlockHashAndIndex>
+    | z.infer<typeof RpcEthGetTransactionByBlockNumberAndIndex>
     | z.infer<typeof RpcEthGetTransactionByHash>
+    | z.infer<typeof RpcEthGetTransactionCount>
+    | z.infer<typeof RpcEthGetTransactionReceipt>
+    | z.infer<typeof RpcEthGetUncleCountByBlockHash>
+    | z.infer<typeof RpcEthGetUncleCountByBlockNumber>
+    | z.infer<typeof RpcEthMaxPriorityFeePerGas>
+    | z.infer<typeof RpcEthNewBlockFilter>
+    | z.infer<typeof RpcEthNewFilter>
+    | z.infer<typeof RpcEthNewPendingTransactionFilter>
+    | z.infer<typeof RpcEthSendRawTransaction>
+    | z.infer<typeof RpcEthSyncing>
+    | z.infer<typeof RpcUnistallFilter>
+    | z.infer<typeof RpcPersonalSignRequest>
+    | z.infer<typeof RpcEthSignTypedDataV4>
+    | z.infer<typeof RpcEthSendTransactionRequest>
 
   export type RPCResponse = z.infer<typeof RpcResponse>
 
