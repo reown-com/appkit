@@ -1,4 +1,4 @@
-import type { ConnectorType } from '@web3modal/scaffold'
+import type { ConnectorType } from '@web3modal/core'
 import { ConstantsUtil } from './ConstantsUtil.js'
 
 export const PresetsUtil = {

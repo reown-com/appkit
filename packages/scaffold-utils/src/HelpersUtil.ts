@@ -1,4 +1,4 @@
-import type { CaipNetworkId, Tokens } from '@web3modal/scaffold'
+import type { CaipNetworkId, Tokens } from '@web3modal/core'
 import { ConstantsUtil } from './ConstantsUtil.js'
 
 export const HelpersUtil = {

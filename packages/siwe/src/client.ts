@@ -1,10 +1,11 @@
 import type {
   SIWECreateMessageArgs,
   SIWEVerifyMessageArgs,
-  SIWEControllerClient,
   SIWEConfig,
   SIWEClientMethods
-} from '@web3modal/core'
+} from '../core/utils/TypeUtils.js'
+import type { SIWEControllerClient } from '../core/controller/SIWEController.js'
+
 import {
   AccountController,
   NetworkController,
@@ -12,7 +13,7 @@ import {
   RouterUtil
 } from '@web3modal/core'
 
-import { ConstantsUtil } from './utils/ConstantsUtil.js'
+import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
 import { HelpersUtil } from '@web3modal/scaffold-utils'
 
 // -- Client -------------------------------------------------------------------- //
