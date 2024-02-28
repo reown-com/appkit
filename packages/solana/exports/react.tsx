@@ -67,5 +67,4 @@ export {
   useWeb3ModalEvents
 } from '@web3modal/scaffold-react'
 
-export {defaultSolanaConfig} from '../src/utils/defaultConfig.js'
-
+export { defaultSolanaConfig } from '../src/utils/defaultConfig.js'
