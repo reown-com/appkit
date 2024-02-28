@@ -207,10 +207,10 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
       [`solana:${solanaDevnet.chainId}`]: solanaDevnet.rpcUrl
     }
     const chainsNamespaces = [
-      `solana:${SolStoreUtil.state.chainId}`
+      `solana:${chainId}`
     ]
     const rpc = {
-      [chainId]: rpcMap[chainId] ?? '',
+      [chainId]: rpcMap[`solana:${chainId}`] ?? '',
     }
 
     return {
@@ -224,7 +224,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
   }
 
   public async connect(useURI?: boolean) {
-    const solanaNamespace = this.generateNamespaces(SolStoreUtil.state.chainId ?? '')
+    const solanaNamespace = this.generateNamespaces(SolStoreUtil.state.currentChain?.chainId ?? '')
 
     const provider = await UniversalProviderFactory.getProvider()
 

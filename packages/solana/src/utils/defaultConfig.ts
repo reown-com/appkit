@@ -4,7 +4,7 @@ import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
 
 import type { Chain, Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/solana'
 
-interface SolanaProvider {
+export interface SolanaProvider {
   connect: () => Promise<void>
   disconnect: () => Promise<void>
   request: () => void

@@ -71,10 +71,6 @@ export const SolStoreUtil = {
         state.connection = connection
     },
 
-    setChainId(chainId: SolStoreUtilState['chainId']) {
-        state.chainId = chainId
-    },
-
     setCaipChainId(caipChainId: SolStoreUtilState['caipChainId']) {
         state.caipChainId = caipChainId
     },

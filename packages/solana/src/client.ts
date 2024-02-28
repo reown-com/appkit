@@ -188,7 +188,6 @@ export class Web3Modal extends Web3ModalScaffold {
       SolStoreUtil.setCurrentChain(chain)
       SolStoreUtil.setCaipChainId(`${chain.name}:${chain.chainId}`)
     }
-    SolStoreUtil.setChainId(chain?.chainId)
     this.syncNetwork(chainImages)
 
     this.walletAdapters = createWalletAdapters()
@@ -390,7 +389,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (this.chains) {
       if (chain) {
-        SolStoreUtil.setChainId(chain.chainId)
         SolStoreUtil.setCaipChainId(`${chain.name}:${chain.chainId}`)
         SolStoreUtil.setCurrentChain(chain)
         localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `${chain.name}:${chain.chainId}`)
@@ -419,14 +417,12 @@ export class Web3Modal extends Web3ModalScaffold {
   }
 
   private async setWalletConnectProvider(address: string) {
-    const chainId = SolStoreUtil.state.currentChain?.chainId
     const caipChainId = `${SolStoreUtil.state.currentChain?.name}:${SolStoreUtil.state.currentChain?.chainId}`
     const chain = SolHelpersUtil.getChainFromCaip(this.chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : '');
     if (chain) {
       SolStoreUtil.setCurrentChain(chain)
     }
     SolStoreUtil.setIsConnected(true)
-    SolStoreUtil.setChainId(chainId)
     SolStoreUtil.setCaipChainId(caipChainId)
 
     SolStoreUtil.setProviderType('walletConnect')
@@ -452,7 +448,6 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (address && chainId) {
       SolStoreUtil.setIsConnected(true)
-      SolStoreUtil.setChainId(chainId)
       SolStoreUtil.setCaipChainId(caipChainId)
       SolStoreUtil.setProviderType(`injected_${adapter}`)
       SolStoreUtil.setProvider(provider)
@@ -470,7 +465,6 @@ export class Web3Modal extends Web3ModalScaffold {
       provider?.removeListener('disconnect', disconnectHandler)
       provider?.removeListener('accountsChanged', accountsChangedHandler)
       provider?.removeListener('connect', accountsChangedHandler)
-      provider?.removeListener('chainChanged', chainChangedHandler)
     }
 
     function accountsChangedHandler(publicKey: PublicKey) {
@@ -483,19 +477,11 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     }
 
-    function chainChangedHandler(chainId: string) {
-      // Console.log(`chainChangedHandler`, chainId);
-      if (chainId) {
-        SolStoreUtil.setChainId(chainId)
-      }
-    }
-
     // Console.log(`provider`, provider);
     if (provider) {
       provider.on('disconnect', disconnectHandler)
       provider.on('accountsChanged', accountsChangedHandler)
       provider.on('connect', accountsChangedHandler)
-      provider.on('chainChanged', chainChangedHandler)
     }
   }
 }
