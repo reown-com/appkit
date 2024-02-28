@@ -73,7 +73,7 @@ testMW(
             await walletValidator.expectReceivedSign({ chainName: 'Solana Testnet' })
             await walletPage.handleRequest({ accept: true })
             await modalValidator.expectAcceptedSign()
-            return
+            break
         }
         let targetChain = 'Polygon'
         await modalPage.switchNetwork(targetChain)
