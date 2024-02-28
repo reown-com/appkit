@@ -117,7 +117,7 @@ export class Web3Modal extends Web3ModalScaffold {
           }
         }
 
-        return ids.some(id => Boolean(window.solana?.[String(id)]))
+        return false
       },
 
       disconnect: async () => {

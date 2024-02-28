@@ -1,30 +1,16 @@
 import '@web3modal/polyfills'
-import type { Connection, Transaction, TransactionSignature } from '@solana/web3.js'
-import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
 
 import type { Chain, Metadata, Provider, ProviderType } from '@web3modal/scaffold-utils/solana'
 
-export interface SolanaProvider {
-  connect: () => Promise<void>
-  disconnect: () => Promise<void>
-  request: () => void
-  signAllTransactions: (transactions: Transaction[]) => Promise<Transaction[]>
-  signAndSendAllTransactions: (transactions: Transaction[]) => Promise<TransactionSignature[]>
-  signAndSendTransaction: (transaction: Transaction, connection: Connection, options?: SendTransactionOptions) => Promise<TransactionSignature>
-  signMessage: (message: Uint8Array) => Promise<Uint8Array>
-  signTransaction: () => Promise<TransactionSignature>
-  sendTransaction: (transaction: Transaction, connection: Connection, options?: SendTransactionOptions) => Promise<TransactionSignature>
-  [key: string]: object
-}
 
 declare global {
   interface Window {
     originalSolana?: Record<string, unknown>,
-    solana?: SolanaProvider,
-    solflare?: { solana: SolanaProvider },
-    backpack?: { solana: SolanaProvider },
-    trustWallet?: { solana: SolanaProvider },
-    phantom?: { solana: SolanaProvider }
+    solana?: Provider,
+    solflare?: { solana: Provider },
+    backpack?: { solana: Provider },
+    trustWallet?: { solana: Provider },
+    phantom?: { solana: Provider }
   }
 }
 
@@ -57,7 +43,6 @@ export function defaultSolanaConfig(options: ConfigOptions) {
       return undefined
     }
 
-    //  @ts-expect-error window.ethereum satisfies Provider
     injectedProvider = window.solana
 
     return injectedProvider

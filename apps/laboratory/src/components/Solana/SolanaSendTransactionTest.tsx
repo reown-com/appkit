@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Button, useToast, Stack, Text, Spacer, Link } from '@chakra-ui/react'
 import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
-import { PublicKey, Transaction, TransactionMessage, VersionedTransaction, SystemProgram } from '@solana/web3.js';
+import { PublicKey, Transaction, TransactionMessage, VersionedTransaction, SystemProgram, Connection } from '@solana/web3.js';
 
 import { solana } from '../../utils/ChainsUtil'
 
@@ -45,7 +45,7 @@ export function SolanaSendTransactionTest() {
 
       transaction.recentBlockhash = blockhash;
 
-      const signature = await walletProvider.sendTransaction(transaction, connection)
+      const signature = await walletProvider.sendTransaction(transaction, connection as Connection)
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
       toast({
@@ -95,7 +95,7 @@ export function SolanaSendTransactionTest() {
       // Make a versioned transaction
       const transactionV0 = new VersionedTransaction(messageV0);
 
-      const signature = await walletProvider.sendTransaction(transactionV0, connection)
+      const signature = await walletProvider.sendTransaction(transactionV0, connection as Connection)
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
       toast({

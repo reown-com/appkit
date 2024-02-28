@@ -8,7 +8,7 @@ import { Web3Modal } from '../src/client.js'
 import type { Web3ModalOptions } from '../src/client.js'
 
 import type {
-  Provider,
+  Provider
 } from '@web3modal/scaffold-utils/solana'
 
 // -- Setup -------------------------------------------------------------------

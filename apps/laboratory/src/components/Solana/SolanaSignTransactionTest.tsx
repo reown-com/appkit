@@ -42,7 +42,7 @@ export function SolanaSignTransactionTest() {
 
       transaction.recentBlockhash = blockhash;
       const tx = await walletProvider.signTransaction(transaction)
-      const signature = tx.signatures[0].signature
+      const signature = tx.signatures[0]?.signature
 
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {
@@ -87,7 +87,7 @@ export function SolanaSignTransactionTest() {
       const transactionV0 = new VersionedTransaction(messageV0);
 
       const tx = await walletProvider.signTransaction(transactionV0)
-      const signature = tx.signatures[0]
+      const signature = tx.signatures[0]?.signature
 
       toast({ title: 'Succcess', description: signature, status: 'success', isClosable: true })
     } catch (err) {

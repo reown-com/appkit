@@ -1,4 +1,6 @@
 import { W3mFrameProvider } from '@web3modal/wallet'
+import type { Connection, PublicKey, Transaction as SolanaWeb3Transaction, TransactionSignature, VersionedTransaction } from '@solana/web3.js'
+import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
 
 export interface ISolConfig {
     providers: ProviderType
@@ -21,14 +23,20 @@ export interface RequestArguments {
 
 export interface Provider {
     isConnected: () => boolean
-    signAllTransactions: (txs: Transaction[]) => Promise<Transaction[]>
-    signTransaction: (tx: Transaction) => Promise<Transaction>
-    signMessage: (message: Uint8Array) => Promise<Uint8Array>
-    sendTransaction: (tx: Transaction) => Promise<Transaction>
-    request: <T>(args: RequestArguments) => Promise<T>
+    publicKey: PublicKey
+    name: string
     on: <T>(event: string, listener: (data: T) => void) => void
     removeListener: <T>(event: string, listener: (data: T) => void) => void
     emit: (event: string) => void
+    connect: () => Promise<void>
+    disconnect: () => Promise<void>
+    request: () => void
+    signAllTransactions: (transactions: SolanaWeb3Transaction[]) => Promise<SolanaWeb3Transaction[]>
+    signAndSendAllTransactions: (transactions: SolanaWeb3Transaction[]) => Promise<TransactionSignature[]>
+    signAndSendTransaction: (transaction: SolanaWeb3Transaction, connection: Connection, options?: SendTransactionOptions) => Promise<TransactionSignature>
+    signMessage: (message: Uint8Array) => Promise<Uint8Array> | Promise<{ signature: Uint8Array }>
+    signTransaction: (transaction: SolanaWeb3Transaction | VersionedTransaction) => Promise<{ signatures: { signature: Uint8Array }[] }>
+    sendTransaction: (transaction: SolanaWeb3Transaction | VersionedTransaction, connection: Connection, options?: SendTransactionOptions) => Promise<TransactionSignature>
 }
 
 export type Metadata = {

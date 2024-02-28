@@ -19,10 +19,10 @@ export function SolanaSignMessageTest() {
       const signature = await walletProvider.signMessage(encodedMessage)
 
       // Backpack has specific signature format now
-      if (signature.signature) {
+      if ((signature as { signature: Uint8Array }).signature) {
         toast({
           title: ConstantsUtil.SigningSucceededToastTitle,
-          description: signature.signature,
+          description: (signature as { signature: Uint8Array }).signature,
           status: 'success',
           isClosable: true
         })
@@ -31,7 +31,7 @@ export function SolanaSignMessageTest() {
       }
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
-        description: signature,
+        description: (signature as Uint8Array),
         status: 'success',
         isClosable: true
       })
