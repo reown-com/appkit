@@ -26,7 +26,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 export function useWeb3ModalProvider() {
   const { provider, providerType, connection } = useSnapshot(SolStoreUtil.state)
 
-  const walletProvider = provider as any
+  const walletProvider = provider
 
   const walletProviderType = providerType
 
@@ -38,8 +38,8 @@ export function useWeb3ModalProvider() {
 }
 
 export function useDisconnect() {
-  async function disconnect() {
-    await modal?.disconnect()
+  function disconnect() {
+    modal?.disconnect()
   }
 
   return {
