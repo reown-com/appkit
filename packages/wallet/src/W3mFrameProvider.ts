@@ -22,6 +22,9 @@ type UpdateEmailSecondaryOtpResolver = Resolver<
 >
 type SyncThemeResolver = Resolver<undefined>
 type SyncDappDataResolver = Resolver<undefined>
+type SmartAccountEnabledNetworksResolver = Resolver<
+  W3mFrameTypes.Responses['FrameGetSmartAccountEnabledNetworksResponse']
+>
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
@@ -54,6 +57,8 @@ export class W3mFrameProvider {
   private syncThemeResolver: SyncThemeResolver = undefined
 
   private syncDappDataResolver: SyncDappDataResolver = undefined
+
+  private smartAccountEnabledNetworksResolver: SmartAccountEnabledNetworksResolver = undefined
 
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
@@ -120,6 +125,10 @@ export class W3mFrameProvider {
           return this.onSyncDappDataSuccess()
         case W3mFrameConstants.FRAME_SYNC_DAPP_DATA_ERROR:
           return this.onSyncDappDataError(event)
+        case W3mFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS:
+          return this.onSmartAccountEnabledNetworksSuccess(event)
+        case W3mFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR:
+          return this.onSmartAccountEnabledNetworksError(event)
         default:
           return null
       }
@@ -177,6 +186,19 @@ export class W3mFrameProvider {
     return new Promise<W3mFrameTypes.Responses['FrameIsConnectedResponse']>((resolve, reject) => {
       this.isConnectedResolver = { resolve, reject }
     })
+  }
+
+  public async getSmartAccountEnabledNetworks() {
+    await this.w3mFrame.frameLoadPromise
+    this.w3mFrame.events.postAppEvent({
+      type: W3mFrameConstants.APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS
+    })
+
+    return new Promise<W3mFrameTypes.Responses['FrameGetSmartAccountEnabledNetworksResponse']>(
+      (resolve, reject) => {
+        this.smartAccountEnabledNetworksResolver = { resolve, reject }
+      }
+    )
   }
 
   public async getChainId() {
@@ -516,6 +538,24 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SYNC_DAPP_DATA_ERROR' }>
   ) {
     this.syncDappDataResolver?.reject(event.payload.message)
+  }
+
+  private onSmartAccountEnabledNetworksSuccess(
+    event: Extract<
+      W3mFrameTypes.FrameEvent,
+      { type: '@w3m-frame/GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS' }
+    >
+  ) {
+    this.smartAccountEnabledNetworksResolver?.resolve(event.payload)
+  }
+
+  private onSmartAccountEnabledNetworksError(
+    event: Extract<
+      W3mFrameTypes.FrameEvent,
+      { type: '@w3m-frame/GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR' }
+    >
+  ) {
+    this.smartAccountEnabledNetworksResolver?.reject(event.payload.message)
   }
 
   // -- Private Methods -------------------------------------------------

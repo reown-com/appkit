@@ -117,7 +117,7 @@ export class W3mAccountView extends LitElement {
             >${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}</wui-text
           >
         </wui-flex>
-        ${this.explorerBtnTemplate()}
+        ${this.explorerBtnTemplate()} ${this.upgradeToSmartAccountTemplate()}
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
@@ -214,6 +214,22 @@ export class W3mAccountView extends LitElement {
       <wui-button size="sm" variant="shade" @click=${this.onExplorer.bind(this)}>
         <wui-icon size="sm" color="inherit" slot="iconLeft" name="compass"></wui-icon>
         Block Explorer
+        <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
+      </wui-button>
+    `
+  }
+
+  private upgradeToSmartAccountTemplate() {
+    const type = StorageUtil.getConnectedConnector()
+    const emailConnector = ConnectorController.getEmailConnector()
+    if (!emailConnector || type !== 'EMAIL') {
+      return null
+    }
+
+    return html`
+      <wui-button size="sm" variant="shade" @click=${() => console.log('Upgrade')}>
+        <wui-icon size="sm" color="inherit" slot="iconLeft" name="compass"></wui-icon>
+        Activate your smart account
         <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
       </wui-button>
     `

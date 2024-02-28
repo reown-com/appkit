@@ -68,6 +68,10 @@ export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
 export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
 export const FrameSwitchNetworkResponse = z.object({ chainId: z.number() })
 export const FrameUpdateEmailSecondaryOtpResolver = z.object({ newEmail: z.string().email() })
+export const FrameGetSmartAccountEnabledNetworksResponse = z.object({
+  smartAccountEnabledNetworks: z.array(z.number())
+})
+
 export const RpcResponse = z.any()
 
 export const RpcEthAccountsRequest = z.object({
@@ -271,6 +275,8 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_GET_CHAIN_ID') }))
 
+    .or(z.object({ type: zType('APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS') }))
+
     .or(
       z.object({
         type: zType('APP_RPC_REQUEST'),
@@ -403,4 +409,18 @@ export const W3mFrameSchema = {
     .or(z.object({ type: zType('FRAME_SYNC_DAPP_DATA_ERROR'), payload: zError }))
 
     .or(z.object({ type: zType('FRAME_SYNC_DAPP_DATA_SUCCESS') }))
+
+    .or(
+      z.object({
+        type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS'),
+        payload: FrameGetSmartAccountEnabledNetworksResponse
+      })
+    )
+
+    .or(
+      z.object({
+        type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR'),
+        payload: zError
+      })
+    )
 }
