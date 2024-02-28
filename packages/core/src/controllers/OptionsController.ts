@@ -15,6 +15,7 @@ export interface OptionsControllerState {
   customWallets?: CustomWallet[]
   termsConditionsUrl?: string
   privacyPolicyUrl?: string
+  isSiweEnabled?: boolean
   enableAnalytics?: boolean
   metadata?: Metadata
   enableOnramp?: boolean
@@ -71,6 +72,10 @@ export const OptionsController = {
 
   setCustomWallets(customWallets: OptionsControllerState['customWallets']) {
     state.customWallets = customWallets
+  },
+
+  setIsSiweEnabled(isSiweEnabled: OptionsControllerState['isSiweEnabled']) {
+    state.isSiweEnabled = isSiweEnabled
   },
 
   setEnableAnalytics(enableAnalytics: OptionsControllerState['enableAnalytics']) {
