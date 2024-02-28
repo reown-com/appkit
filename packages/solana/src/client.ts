@@ -21,7 +21,6 @@ import type {
   ProviderType,
   Chain,
   Provider,
-  Address,
   SolStoreUtilState
 } from '@web3modal/scaffold-utils/solana'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
@@ -116,15 +115,15 @@ export class Web3Modal extends Web3ModalScaffold {
           onUri(uri)
         })
         const address = await this.WalletConnectConnector.connect()
-        this.setWalletConnectProvider(address as Address)
+        this.setWalletConnectProvider(address)
       },
 
       connectExternal: async ({ id }) => {
         const adapter = id.toLocaleLowerCase() === 'Trust' ? 'trustWallet' : id.toLocaleLowerCase() as AdapterKey
 
         await this.walletAdapters[adapter].connect()
-        const address = this.walletAdapters[adapter].publicKey?.toString() as Address
-        this.setInjectedProvider(this.walletAdapters[adapter] as unknown as Provider, address, adapter)
+        const address = this.walletAdapters[adapter].publicKey?.toString()
+        this.setInjectedProvider(this.walletAdapters[adapter] as unknown as Provider, adapter, address)
       },
 
       checkInstalled(ids) {
@@ -167,7 +166,7 @@ export class Web3Modal extends Web3ModalScaffold {
           params: [message, this.getAddress()]
         })
 
-        return signature as `0x${string}`
+        return signature as string
       }
     }
 
@@ -235,7 +234,7 @@ export class Web3Modal extends Web3ModalScaffold {
   public getAddress() {
     const { address } = SolStoreUtil.state
 
-    return address ? (SolStoreUtil.state.address as Address) : address
+    return address ? (SolStoreUtil.state.address) : address
   }
 
   public async checkActiveProviders() {
@@ -246,14 +245,14 @@ export class Web3Modal extends Web3ModalScaffold {
         await this.WalletConnectConnector.connect(true)
         const provider = await this.WalletConnectConnector.getProvider();
         const accounts = await provider.enable();
-        this.setWalletConnectProvider(accounts[0] as Address)
+        this.setWalletConnectProvider(accounts[0])
       } else {
         const wallet = walletId?.split('_')[1] as AdapterKey
         const adapter = this.walletAdapters[wallet]
         if (window[wallet as keyof Window]) {
           await adapter.connect()
-          const address = adapter.publicKey?.toString() as Address
-          this.setInjectedProvider(adapter as unknown as Provider, address, wallet)
+          const address = adapter.publicKey?.toString()
+          this.setInjectedProvider(adapter as unknown as Provider, wallet, address)
         }
       }
     } catch (error) {
@@ -408,7 +407,7 @@ export class Web3Modal extends Web3ModalScaffold {
     return SolStoreUtil.subscribe(callback)
   }
 
-  private async setWalletConnectProvider(address: string) {
+  private async setWalletConnectProvider(address = "") {
     const caipChainId = `${SolStoreUtil.state.currentChain?.name}: ${SolStoreUtil.state.currentChain?.chainId}`
     const chain = SolHelpersUtil.getChainFromCaip(this.chains, typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : '');
     if (chain) {
@@ -432,7 +431,7 @@ export class Web3Modal extends Web3ModalScaffold {
     ])
   }
 
-  private setInjectedProvider(provider: Provider, address: Address, adapter: AdapterKey) {
+  private setInjectedProvider(provider: Provider, adapter: AdapterKey, address = "") {
     window?.localStorage.setItem(SolConstantsUtil.WALLET_ID, `${ConstantsUtil.INJECTED_CONNECTOR_ID}_${adapter}`)
 
     const chainId = SolStoreUtil.state.currentChain?.chainId
@@ -469,7 +468,6 @@ export class Web3Modal extends Web3ModalScaffold {
       }
     }
 
-    // Console.log(`provider`, provider);
     if (provider) {
       provider.on('disconnect', disconnectHandler)
       provider.on('accountsChanged', accountsChangedHandler)

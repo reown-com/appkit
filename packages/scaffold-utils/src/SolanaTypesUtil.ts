@@ -6,8 +6,6 @@ export interface ISolConfig {
     SSR?: boolean
 }
 
-export type Address = `0x${string}`
-
 export type ProviderType = {
     injected?: Provider
     coinbase?: Provider
