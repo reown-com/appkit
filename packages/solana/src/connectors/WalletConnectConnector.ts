@@ -5,7 +5,6 @@ import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 
 import { UniversalProviderFactory } from './universalProvider'
 
-import type { Address } from '@web3modal/scaffold-utils/solana'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { Connector } from './BaseConnector'
 
@@ -77,7 +76,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
       UniversalProviderFactory.getProvider().then(provider => {
         if (provider.session?.namespaces['solana']?.accounts?.length) {
           const [defaultAccount] = provider.session.namespaces['solana'].accounts
-          const address = defaultAccount?.split(':')[2] as Address
+          const address = defaultAccount?.split(':')[2] ?? ""
           SolStoreUtil.setIsConnected(true)
           SolStoreUtil.setAddress(address)
         }
@@ -241,7 +240,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
         })
         .then(providerResult => {
           if (!providerResult) { throw new Error('Failed connection.') }
-          const address = providerResult.namespaces['solana']?.accounts[0]?.split(':')[2] as Address ?? null
+          const address = providerResult.namespaces['solana']?.accounts[0]?.split(':')[2] ?? null
           if (address && this.qrcode) {
             resolve(address)
           } else { reject(new Error('Could not resolve address')) }

@@ -7,6 +7,10 @@ import { SolStoreUtil } from "@web3modal/scaffold-utils/solana"
 import { Web3Modal } from '../src/client.js'
 import type { Web3ModalOptions } from '../src/client.js'
 
+import type {
+  Provider,
+} from '@web3modal/scaffold-utils/solana'
+
 // -- Setup -------------------------------------------------------------------
 let modal: Web3Modal | undefined = undefined
 
@@ -26,7 +30,7 @@ export function createWeb3Modal(options: Web3ModalOptions) {
 export function useWeb3ModalProvider() {
   const { provider, providerType, connection } = useSnapshot(SolStoreUtil.state)
 
-  const walletProvider = provider as any
+  const walletProvider = provider as Provider
 
   const walletProviderType = providerType
 
@@ -38,8 +42,8 @@ export function useWeb3ModalProvider() {
 }
 
 export function useDisconnect() {
-  async function disconnect() {
-    await modal?.disconnect()
+  function disconnect() {
+    modal?.disconnect()
   }
 
   return {

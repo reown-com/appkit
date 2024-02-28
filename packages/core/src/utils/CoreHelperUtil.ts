@@ -13,7 +13,7 @@ export const CoreHelperUtil = {
     return false
   },
 
-  checkCaipNetwork(network: CaipNetwork | undefined, networkName: string = "") {
+  checkCaipNetwork(network: CaipNetwork | undefined, networkName = "") {
     return network?.id.toLocaleLowerCase().includes(networkName.toLowerCase())
   },
 
