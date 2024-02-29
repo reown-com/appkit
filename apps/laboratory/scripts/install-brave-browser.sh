@@ -1,6 +1,6 @@
 echo "Installing Brave Browser"
 
-touch /var/lib/man-db/auto-update
+echo "set man-db/auto-update false" | sudo debconf-communicate && sudo dpkg-reconfigure man-db
 
 curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
 
