@@ -27,7 +27,7 @@
     },
     "build:scaffold": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:common", "^build:core", "^build:ui", "^build:wallet"],
+      "dependsOn": ["^build:common", "^build:core", "^build:ui", "^build:wallet", "^build:siwe"],
       "cache": false
     },
     "build:scaffold-utils": {
@@ -37,12 +37,12 @@
     },
     "build:scaffold-react": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:scaffold-utils"],
+      "dependsOn": ["^build:scaffold-utils", "^build:scaffold", "^build:siwe"],
       "cache": false
     },
     "build:scaffold-vue": {
       "outputs": ["dist/**"],
-      "dependsOn": ["^build:scaffold-utils"],
+      "dependsOn": ["^build:scaffold-utils", "^build:scaffold", "^build:siwe"],
       "cache": false
     },
     "build:siwe": {

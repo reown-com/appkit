@@ -1,5 +1,19 @@
 # @web3modal/ethers
 
+## 4.0.11
+
+### Patch Changes
+
+- Analytics connection event improvements. Unsupported chain flag. Siwe package refactor. RPC improvements. UI improvements'
+
+- Updated dependencies []:
+  - @web3modal/polyfills@4.0.11
+  - @web3modal/scaffold@4.0.11
+  - @web3modal/scaffold-react@4.0.11
+  - @web3modal/scaffold-utils@4.0.11
+  - @web3modal/scaffold-vue@4.0.11
+  - @web3modal/siwe@4.0.11
+
 ## 4.0.10
 
 ### Patch Changes
