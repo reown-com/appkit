@@ -47,9 +47,6 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Desktop Firefox/wagmi': {
     testIgnore: 'email.spec.ts'
-  },
-  'Desktop Safari/wagmi': {
-    testIgnore: 'email.spec.ts'
   }
 }
 
