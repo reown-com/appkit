@@ -31,10 +31,6 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private balance = AccountController.state.balance
-
-  @state() private balanceSymbol = AccountController.state.balanceSymbol
-
   @state() private network = NetworkController.state.caipNetwork
 
   @state() private disconnecting = false
@@ -145,27 +141,6 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private onTransactions() {
-    EventsController.sendEvent({ type: 'track', event: 'CLICK_TRANSACTIONS' })
-    RouterController.push('Transactions')
-  }
-
-  private explorerBtnTemplate() {
-    const { addressExplorerUrl } = AccountController.state
-
-    if (!addressExplorerUrl) {
-      return null
-    }
-
-    return html`
-      <wui-button size="sm" variant="shade" @click=${this.onExplorer.bind(this)}>
-        <wui-icon size="sm" color="inherit" slot="iconLeft" name="compass"></wui-icon>
-        Block Explorer
-        <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
-      </wui-button>
-    `
-  }
-
   private isAllowedNetworkSwitch() {
     const { requestedCaipNetworks } = NetworkController.state
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
@@ -202,13 +177,6 @@ export class W3mAccountSettingsView extends LitElement {
       SnackController.showError('Failed to disconnect')
     } finally {
       this.disconnecting = false
-    }
-  }
-
-  private onExplorer() {
-    const { addressExplorerUrl } = AccountController.state
-    if (addressExplorerUrl) {
-      CoreHelperUtil.openHref(addressExplorerUrl, '_blank')
     }
   }
 }
