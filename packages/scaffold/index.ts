@@ -51,6 +51,8 @@ export * from './src/partials/w3m-mobile-download-links/index.js'
 export * from './src/partials/w3m-onramp-providers-footer/index.js'
 export * from './src/partials/w3m-snackbar/index.js'
 export * from './src/partials/w3m-email-login-widget/index.js'
+export * from './src/partials/w3m-account-default-widget/index.js'
+export * from './src/partials/w3m-account-wallet-features-widget/index.js'
 
 export { Web3ModalScaffold } from './src/client.js'
 export type { LibraryOptions, ScaffoldOptions } from './src/client.js'

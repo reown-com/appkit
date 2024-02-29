@@ -111,17 +111,11 @@ export class W3mAccountSettingsView extends LitElement {
               @click=${this.onCopyAddress}
             ></wui-icon-link>
           </wui-flex>
-          <wui-flex gap="s" flexDirection="column" alignItems="center">
-            <wui-text variant="paragraph-500" color="fg-200">
-              ${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}
-            </wui-text>
-            ${this.explorerBtnTemplate()}
-          </wui-flex>
         </wui-flex>
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="m">
-        <wui-flex flexDirection="column" gap="xs" .padding=${['0', 'xl', 'xl', 'xl'] as const}>
+        <wui-flex flexDirection="column" gap="xs" .padding=${['0', 'xl', 'm', 'xl'] as const}>
           <wui-list-item
             .variant=${networkImage ? 'image' : 'icon'}
             iconVariant="overlay"
@@ -133,16 +127,6 @@ export class W3mAccountSettingsView extends LitElement {
             <wui-text variant="paragraph-500" color="fg-100">
               ${this.network?.name ?? 'Unknown'}
             </wui-text>
-          </wui-list-item>
-
-          <wui-list-item
-            iconVariant="blue"
-            icon="swapHorizontalBold"
-            iconSize="sm"
-            ?chevron=${true}
-            @click=${this.onTransactions.bind(this)}
-          >
-            <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
           </wui-list-item>
           <wui-list-item
             variant="icon"

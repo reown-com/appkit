@@ -536,6 +536,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-gray-glass-030: rgba(255, 255, 255, 0.3);
         --wui-gray-glass-060: rgba(255, 255, 255, 0.6);
         --wui-gray-glass-080: rgba(255, 255, 255, 0.8);
+        --wui-gray-glass-090: rgba(255, 255, 255, 0.9);
       }
     `,
     dark: css`
@@ -626,6 +627,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-gray-glass-030: rgba(0, 0, 0, 0.3);
         --wui-gray-glass-060: rgba(0, 0, 0, 0.6);
         --wui-gray-glass-080: rgba(0, 0, 0, 0.8);
+        --wui-gray-glass-080: rgba(0, 0, 0, 0.9);
       }
     `
   }
