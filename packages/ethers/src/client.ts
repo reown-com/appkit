@@ -37,6 +37,7 @@ import type { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import type { Eip1193Provider } from 'ethers'
 import { W3mFrameProvider, W3mFrameHelpers } from '@web3modal/wallet'
 import type { CombinedProvider } from '@web3modal/scaffold-utils/ethers'
+import { AccountController } from '@web3modal/core'
 
 // -- Types ---------------------------------------------------------------------
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
@@ -600,7 +601,20 @@ export class Web3Modal extends Web3ModalScaffold {
         EthersStoreUtil.setProviderType(ConstantsUtil.EMAIL_CONNECTOR_ID as 'w3mEmail')
         EthersStoreUtil.setProvider(this.emailProvider as unknown as CombinedProvider)
         EthersStoreUtil.setIsConnected(true)
-        EthersStoreUtil.setAddress(address as Address)
+
+        const { smartAccountEnabledNetworks } =
+          await this.emailProvider.getSmartAccountEnabledNetworks()
+        if (smartAccountEnabledNetworks.includes(chainId)) {
+          const { address: smartAccountAddress, isDeployed } =
+            await this.emailProvider.initSmartAccount()
+          AccountController.setSmartAccountDeployed(isDeployed)
+          if (isDeployed) {
+            EthersStoreUtil.setAddress(smartAccountAddress as Address)
+          } else {
+            EthersStoreUtil.setAddress(address as Address)
+          }
+        }
+
         this.watchEmail()
         this.watchModal()
       }
