@@ -57,14 +57,9 @@ jobs:
       - name: Get installed Playwright version
         id: playwright-version
         run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['apps/laboratory']['devDependencies']['@playwright/test'])")" >> $GITHUB_ENV
-      - name: Update Brave pkg
+      - name: Update Brave Browser
         working-directory: ./apps/laboratory/
         run: sudo ./scripts/install-brave-browser.sh
-      - name: Install Brave
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: brave-browser
-          version: 1.0
       - name: Cache playwright binaries
         uses: actions/cache@v4
         id: playwright-cache
