@@ -36,7 +36,7 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Desktop Safari/solana': {
     testIgnore: /^(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)$/u
-  },
+  }
 }
 
 export interface Permutation {
