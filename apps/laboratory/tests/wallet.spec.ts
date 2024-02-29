@@ -19,10 +19,17 @@ testConnectedMW.afterEach(async ({ modalPage, modalValidator, walletValidator, b
 testConnectedMW(
   'it should sign',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: DEFAULT_CHAIN_NAME })
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
+    if (modalPage.library === 'solana') {
+      await modalPage.sign()
+      await walletValidator.expectReceivedSign({ chainName: 'Solana' })
+      await walletPage.handleRequest({ accept: true })
+      await modalValidator.expectAcceptedSign()
+    } else {
+      await modalPage.sign()
+      await walletValidator.expectReceivedSign({ chainName: DEFAULT_CHAIN_NAME })
+      await walletPage.handleRequest({ accept: true })
+      await modalValidator.expectAcceptedSign()
+    }
   }
 )
 
@@ -36,38 +43,8 @@ testConnectedMW(
   }
 )
 
-testMW(
-  'Solana: it should sign',
-  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: 'Solana' })
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
-  }
-)
-
 testConnectedMW(
   'it should switch networks and sign',
-  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    let targetChain = 'Polygon'
-    await modalPage.switchNetwork(targetChain)
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: targetChain })
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
-
-    // Switch to Ethereum
-    targetChain = 'Ethereum'
-    await modalPage.switchNetwork(targetChain)
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: targetChain })
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
-  }
-)
-
-testMW(
-  'Solana: it should switch networks and sign',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
     if (modalPage.library === 'solana') {
       await modalPage.switchNetwork('Solana Testnet')
@@ -75,21 +52,21 @@ testMW(
       await walletValidator.expectReceivedSign({ chainName: 'Solana Testnet' })
       await walletPage.handleRequest({ accept: true })
       await modalValidator.expectAcceptedSign()
-      break
-    }
-    let targetChain = 'Polygon'
-    await modalPage.switchNetwork(targetChain)
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: targetChain })
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
+    } else {
+      let targetChain = 'Polygon'
+      await modalPage.switchNetwork(targetChain)
+      await modalPage.sign()
+      await walletValidator.expectReceivedSign({ chainName: targetChain })
+      await walletPage.handleRequest({ accept: true })
+      await modalValidator.expectAcceptedSign()
 
-    // Switch to Ethereum
-    targetChain = 'Ethereum'
-    await modalPage.switchNetwork(targetChain)
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: targetChain })
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
+      // Switch to Ethereum
+      targetChain = 'Ethereum'
+      await modalPage.switchNetwork(targetChain)
+      await modalPage.sign()
+      await walletValidator.expectReceivedSign({ chainName: targetChain })
+      await walletPage.handleRequest({ accept: true })
+      await modalValidator.expectAcceptedSign()
+    }
   }
 )
