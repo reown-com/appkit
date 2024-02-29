@@ -29,13 +29,13 @@ const customProjectProperties: CustomProjectProperties = {
     testIgnore: 'email.spec.ts'
   },
   'Desktop Chrome/solana': {
-    testIgnore: /^(?!email\.spec\.ts$|siwe\.spec\.ts$|canary\.spec\.ts$).*/u
+    testIgnore: /^(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)$/u
   },
   'Desktop Firefox/solana': {
-    testIgnore: /^(?!email\.spec\.ts$|siwe\.spec\.ts$|canary\.spec\.ts$).*/u
+    testIgnore: /^(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)$/u
   },
   'Desktop Safari/solana': {
-    testIgnore: /^(?!email\.spec\.ts$|siwe\.spec\.ts$|canary\.spec\.ts$).*/u
+    testIgnore: /^(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)$/u
   },
 }
 
