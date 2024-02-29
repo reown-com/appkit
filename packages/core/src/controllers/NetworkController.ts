@@ -23,6 +23,7 @@ export interface NetworkControllerState {
   caipNetwork?: CaipNetwork
   requestedCaipNetworks?: CaipNetwork[]
   approvedCaipNetworkIds?: CaipNetworkId[]
+  allowUnsupportedChain?: boolean
 }
 
 type StateKey = keyof NetworkControllerState
@@ -56,7 +57,9 @@ export const NetworkController = {
   setCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
     state.caipNetwork = caipNetwork
     PublicStateController.set({ selectedNetworkId: caipNetwork?.id })
-    this.checkIfSupportedNetwork()
+    if (!this.state.allowUnsupportedChain) {
+      this.checkIfSupportedNetwork()
+    }
   },
 
   setDefaultCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
@@ -67,6 +70,10 @@ export const NetworkController = {
 
   setRequestedCaipNetworks(requestedNetworks: NetworkControllerState['requestedCaipNetworks']) {
     state.requestedCaipNetworks = requestedNetworks
+  },
+
+  setAllowUnsupportedChain(allowUnsupportedChain: NetworkControllerState['allowUnsupportedChain']) {
+    state.allowUnsupportedChain = allowUnsupportedChain
   },
 
   getRequestedCaipNetworks() {
