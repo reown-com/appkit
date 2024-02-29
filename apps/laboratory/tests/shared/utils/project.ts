@@ -10,7 +10,7 @@ const PERMUTATIONS = availableDevices.flatMap(device =>
 )
 
 interface CustomProperties {
-  testIgnore?: string | string[]
+  testIgnore?: string | RegExp
   testMatch?: string
 }
 
@@ -29,13 +29,13 @@ const customProjectProperties: CustomProjectProperties = {
     testIgnore: 'email.spec.ts'
   },
   'Desktop Chrome/solana': {
-    testIgnore: ['email.spec.ts', 'siwe.spec.ts', 'canary.spec.ts']
+    testIgnore: /^(?!email\.spec\.ts$|siwe\.spec\.ts$|canary\.spec\.ts$).*/u
   },
   'Desktop Firefox/solana': {
-    testIgnore: ['email.spec.ts', 'siwe.spec.ts', 'canary.spec.ts']
+    testIgnore: /^(?!email\.spec\.ts$|siwe\.spec\.ts$|canary\.spec\.ts$).*/u
   },
   'Desktop Safari/solana': {
-    testIgnore: ['email.spec.ts', 'siwe.spec.ts', 'canary.spec.ts']
+    testIgnore: /^(?!email\.spec\.ts$|siwe\.spec\.ts$|canary\.spec\.ts$).*/u
   },
 }
 
