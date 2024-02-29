@@ -111,7 +111,8 @@ export class W3mConnectingWcView extends LitElement {
       type: 'track',
       event: 'CONNECT_SUCCESS',
       properties: {
-        method: wcLinking ? 'mobile' : 'qrcode'
+        method: wcLinking ? 'mobile' : 'qrcode',
+        name: this.wallet?.name || 'Unknown'
       }
     })
   }

@@ -27,14 +27,7 @@ export interface LinkingRecord {
 
 export type ProjectId = string
 
-export type Platform =
-  | 'mobile'
-  | 'desktop'
-  | 'browser'
-  | 'web'
-  | 'qrcode'
-  | 'unsupported'
-  | 'external'
+export type Platform = 'mobile' | 'desktop' | 'browser' | 'web' | 'qrcode' | 'unsupported'
 
 export type ConnectorType = 'EXTERNAL' | 'WALLET_CONNECT' | 'INJECTED' | 'ANNOUNCED' | 'EMAIL'
 
@@ -216,7 +209,8 @@ export type Event =
       type: 'track'
       event: 'CONNECT_SUCCESS'
       properties: {
-        method: 'qrcode' | 'mobile' | 'external' | 'browser' | 'email'
+        method: 'qrcode' | 'mobile' | 'browser' | 'email'
+        name: string
       }
     }
   | {

@@ -1,4 +1,4 @@
-import type { BaseError, ConnectorType, Platform } from '@web3modal/core'
+import type { BaseError } from '@web3modal/core'
 import {
   ConnectionController,
   EventsController,
@@ -10,11 +10,6 @@ import {
 import { customElement } from '@web3modal/ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
-const platformMap = {
-  INJECTED: 'browser',
-  ANNOUNCED: 'browser'
-} as Record<ConnectorType, Platform>
-
 @customElement('w3m-connecting-external-view')
 export class W3mConnectingExternalView extends W3mConnectingWidget {
   public constructor() {
@@ -22,12 +17,13 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     if (!this.connector) {
       throw new Error('w3m-connecting-view: No connector provided')
     }
+
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
       properties: {
         name: this.connector.name ?? 'Unknown',
-        platform: platformMap[this.connector.type] ?? 'external'
+        platform: 'browser'
       }
     })
     this.onConnect = this.onConnectProxy.bind(this)
@@ -54,7 +50,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
-          properties: { method: 'external' }
+          properties: { method: 'browser', name: this.connector.name || 'Unknown' }
         })
       }
     } catch (error) {
