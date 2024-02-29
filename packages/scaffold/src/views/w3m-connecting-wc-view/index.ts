@@ -7,8 +7,8 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
+  OptionsController,
   RouterController,
-  SIWEController,
   SnackController,
   StorageUtil
 } from '@web3modal/core'
@@ -76,7 +76,7 @@ export class W3mConnectingWcView extends LitElement {
 
         await ConnectionController.state.wcPromise
         this.finalizeConnection()
-        if (SIWEController.state.isSiweEnabled) {
+        if (OptionsController.state.isSiweEnabled) {
           RouterController.push('ConnectingSiwe')
         } else {
           ModalController.close()

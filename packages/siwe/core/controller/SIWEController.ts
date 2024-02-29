@@ -5,7 +5,8 @@ import type {
   SIWESession,
   SIWECreateMessageArgs,
   SIWEVerifyMessageArgs
-} from '../utils/TypeUtil.js'
+} from '../utils/TypeUtils.js'
+import { OptionsController } from '@web3modal/core'
 
 // -- Types --------------------------------------------- //
 export interface SIWEControllerClient extends SIWEClientMethods {
@@ -26,15 +27,13 @@ export interface SIWEControllerClientState {
   session?: SIWESession
   message?: string
   status: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
-  isSiweEnabled?: boolean
 }
 
 type StateKey = keyof SIWEControllerClientState
 
 // -- State --------------------------------------------- //
 const state = proxy<SIWEControllerClientState>({
-  status: 'uninitialized',
-  isSiweEnabled: false
+  status: 'uninitialized'
 })
 
 // -- Controller ---------------------------------------- //
@@ -121,7 +120,7 @@ export const SIWEController = {
   setSIWEClient(client: SIWEControllerClient) {
     state._client = ref(client)
     state.status = 'ready'
-    state.isSiweEnabled = client.options.enabled
+    OptionsController.setIsSiweEnabled(client.options.enabled)
   },
 
   setNonce(nonce: SIWEControllerClientState['nonce']) {
