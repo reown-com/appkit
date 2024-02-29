@@ -5,6 +5,7 @@ const availableDevices = getAvailableDevices()
 
 const LIBRARIES = ['wagmi', 'ethers', 'solana'] as const
 
+
 const PERMUTATIONS = availableDevices.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
 )
@@ -12,6 +13,7 @@ const PERMUTATIONS = availableDevices.flatMap(device =>
 interface CustomProperties {
   testIgnore?: string | RegExp
   testMatch?: string
+  grep?: RegExp
 }
 
 export type CustomProjectProperties = {
@@ -29,13 +31,13 @@ const customProjectProperties: CustomProjectProperties = {
     testIgnore: 'email.spec.ts'
   },
   'Desktop Chrome/solana': {
-    testIgnore: /^(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)$/u
+    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)).*$/u
   },
   'Desktop Firefox/solana': {
-    testIgnore: /^(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)$/u
+    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)).*$/u
   },
   'Desktop Safari/solana': {
-    testIgnore: /^(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)$/u
+    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)).*$/u
   },
 }
 
