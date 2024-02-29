@@ -5,6 +5,7 @@ import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
 
 import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import { AccountController } from '@web3modal/core'
 
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
@@ -35,11 +36,21 @@ export function emailConnector(parameters: EmailParameters) {
       const provider = await this.getProvider()
       const { address, chainId } = await provider.connect({ chainId: options.chainId })
       const { smartAccountEnabledNetworks } = await provider.getSmartAccountEnabledNetworks()
-      console.log('smartAccountEnabledNetworks', smartAccountEnabledNetworks)
+
       if (smartAccountEnabledNetworks.includes(chainId)) {
-        console.log('initSmartAccount')
         const { address: smartAccountAddress, isDeployed } = await provider.initSmartAccount()
-        console.log('smartAccountAddress', smartAccountAddress, 'isDeployed', isDeployed)
+        AccountController.setSmartAccountDeployed(isDeployed)
+        if (isDeployed) {
+          return {
+            accounts: [smartAccountAddress as Address],
+            account: address as Address,
+            chainId,
+            chain: {
+              id: chainId,
+              unsuported: false
+            }
+          }
+        }
       }
 
       return {

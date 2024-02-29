@@ -13,6 +13,7 @@ export interface AccountControllerState {
   profileName?: string | null
   profileImage?: string | null
   addressExplorerUrl?: string
+  smartAccountDeployed?: boolean
 }
 
 type StateKey = keyof AccountControllerState
@@ -61,6 +62,10 @@ export const AccountController = {
 
   setAddressExplorerUrl(explorerUrl: AccountControllerState['addressExplorerUrl']) {
     state.addressExplorerUrl = explorerUrl
+  },
+
+  setSmartAccountDeployed(isDeployed: boolean) {
+    state.smartAccountDeployed = isDeployed
   },
 
   resetAccount() {
