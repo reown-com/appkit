@@ -1,5 +1,14 @@
 # @examples/vue-wagmi
 
+## 4.0.11
+
+### Patch Changes
+
+- Analytics connection event improvements. Unsupported chain flag. Siwe package refactor. RPC improvements. UI improvements'
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.0.11
+
 ## 4.0.10
 
 ### Patch Changes
