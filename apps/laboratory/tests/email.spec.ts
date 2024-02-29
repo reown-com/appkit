@@ -1,52 +1,61 @@
 import { testMEmail } from './shared/fixtures/w3m-fixture'
 import { DeviceRegistrationPage } from './shared/pages/DeviceRegistrationPage'
 import { Email } from './shared/utils/email'
-
-// Prevent collissions by using a semi-random reserved Mailsac email
 const AVAILABLE_MAILSAC_ADDRESSES = 10
 
-testMEmail.beforeEach(async ({ modalPage, context, modalValidator }) => {
-  // This is prone to collissions and will be improved later
-  const tempEmail = `web3modal${Math.floor(
-    Math.random() * AVAILABLE_MAILSAC_ADDRESSES
-  )}@mailsac.com`
-  const mailsacApiKey = process.env['MAILSAC_API_KEY']
-  if (!mailsacApiKey) {
-    throw new Error('MAILSAC_API_KEY is not set')
+const mailsacApiKey = process.env['MAILSAC_API_KEY']
+if (!mailsacApiKey) {
+  throw new Error('MAILSAC_API_KEY is not set')
+}
+
+testMEmail.beforeEach(async ({ modalPage, context, modalValidator }, testInfo) => {
+  const workerIndex = testInfo.workerIndex
+  if (workerIndex > AVAILABLE_MAILSAC_ADDRESSES - 1) {
+    throw new Error('No available Mailsac address')
   }
+  const tempEmail = `web3modal${workerIndex}@mailsac.com`
+
   const email = new Email(mailsacApiKey)
   await email.deleteAllMessages(tempEmail)
   await modalPage.loginWithEmail(tempEmail)
 
-  let latestMessage = await email.getNewMessage(tempEmail)
+  let latestMessage = await email.getNewMessageFromEmail(tempEmail)
   let messageId = latestMessage._id
 
   if (!messageId) {
     throw new Error('No messageId found')
   }
+  let emailBody = await email.getEmailBody(tempEmail, messageId)
+  let otp = ''
+  if (email.isApproveEmail(emailBody)) {
+    const url = email.getApproveUrlFromBody(emailBody)
 
-  let otp = await email.getCodeFromEmail(tempEmail, messageId)
+    await email.deleteAllMessages(tempEmail)
 
-  if (otp.length !== 6) {
-    // We got a device registration link so let's register first
-    const drp = new DeviceRegistrationPage(await context.newPage(), otp)
+    const drp = new DeviceRegistrationPage(await context.newPage(), url)
     drp.load()
     await drp.approveDevice()
+    await drp.close()
 
-    latestMessage = await email.getNewMessage(tempEmail)
+    latestMessage = await email.getNewMessageFromEmail(tempEmail)
     messageId = latestMessage._id
     if (!messageId) {
       throw new Error('No messageId found')
     }
-    otp = await email.getCodeFromEmail(tempEmail, messageId)
-  }
 
+    emailBody = await email.getEmailBody(tempEmail, messageId)
+    if (!email.isApproveEmail(emailBody)) {
+      otp = email.getOtpCodeFromBody(emailBody)
+    }
+  }
+  if (otp.length !== 6) {
+    otp = email.getOtpCodeFromBody(emailBody)
+  }
   await modalPage.enterOTP(otp)
   await modalValidator.expectConnected()
 })
 
 testMEmail('it should sign', async ({ modalPage, modalValidator }) => {
-  testMEmail.skip(modalPage.library === 'wagmi', 'Tests are flaky on wagmi')
   await modalPage.sign()
   await modalPage.approveSign()
   await modalValidator.expectAcceptedSign()

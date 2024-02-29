@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import type { Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 import { BASE_URL } from '../constants'
@@ -64,16 +65,19 @@ export class ModalPage {
 
   async enterOTP(otp: string) {
     const splitted = otp.split('')
+    // Remove empy space in OTP code 111 111
+    splitted.splice(3, 1)
+
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < splitted.length; i++) {
       const digit = splitted[i]
       if (!digit) {
         throw new Error('Invalid OTP')
       }
-      /* eslint-disable no-await-in-loop */
-      await this.page.getByTestId('wui-otp-input').locator('input').nth(i).focus()
-      /* eslint-disable no-await-in-loop */
-      await this.page.getByTestId('wui-otp-input').locator('input').nth(i).fill(digit)
+      const otpInput = this.page.getByTestId('wui-otp-input')
+      const wrapper = otpInput.locator('wui-input-numeric').nth(i)
+      await expect(wrapper).toBeVisible()
+      await wrapper.locator('input').fill(digit)
     }
 
     await expect(this.page.getByText('Confirm Email')).not.toBeVisible()
