@@ -41,6 +41,8 @@ export class W3mAccountView extends LitElement {
 
   @state() private balanceSymbol = AccountController.state.balanceSymbol
 
+  @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -52,6 +54,7 @@ export class W3mAccountView extends LitElement {
             this.profileName = val.profileName
             this.balance = val.balance
             this.balanceSymbol = val.balanceSymbol
+            this.smartAccountDeployed = val.smartAccountDeployed
           } else {
             ModalController.close()
           }
@@ -117,7 +120,8 @@ export class W3mAccountView extends LitElement {
             >${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}</wui-text
           >
         </wui-flex>
-        ${this.explorerBtnTemplate()} ${this.upgradeToSmartAccountTemplate()}
+        ${this.explorerBtnTemplate()}
+        <!-- ${this.upgradeToSmartAccountTemplate()} -->
       </wui-flex>
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
@@ -226,8 +230,16 @@ export class W3mAccountView extends LitElement {
       return null
     }
 
+    if (this.smartAccountDeployed) {
+      return null
+    }
+
     return html`
-      <wui-button size="sm" variant="shade" @click=${() => console.log('Upgrade')}>
+      <wui-button
+        size="sm"
+        variant="shade"
+        @click=${() => RouterController.push('UpgradeToSmartAccount')}
+      >
         <wui-icon size="sm" color="inherit" slot="iconLeft" name="compass"></wui-icon>
         Activate your smart account
         <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
