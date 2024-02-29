@@ -9,11 +9,12 @@ if (!mailsacApiKey) {
 }
 
 testMEmail.beforeEach(async ({ modalPage, context, modalValidator }, testInfo) => {
-  const workerIndex = testInfo.workerIndex
-  if (workerIndex > AVAILABLE_MAILSAC_ADDRESSES - 1) {
-    throw new Error('No available Mailsac address')
+  const index = testInfo.parallelIndex
+  const maxIndex = AVAILABLE_MAILSAC_ADDRESSES - 1
+  if (index > maxIndex) {
+    throw new Error(`No available Mailsac address. Requested index ${index}, maximum: ${maxIndex}`)
   }
-  const tempEmail = `web3modal${workerIndex}@mailsac.com`
+  const tempEmail = `web3modal${index}@mailsac.com`
 
   const email = new Email(mailsacApiKey)
   await email.deleteAllMessages(tempEmail)
