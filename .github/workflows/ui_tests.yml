@@ -57,13 +57,20 @@ jobs:
       - name: Get installed Playwright version
         id: playwright-version
         run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['apps/laboratory']['devDependencies']['@playwright/test'])")" >> $GITHUB_ENV
+      - name: Update Brave pkg
+        working-directory: ./apps/laboratory/
+        run: sudo ./scripts/install-brave-browser.sh
+      - name: Install Brave
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: brave-browser
+          version: 1.0
       - name: Cache playwright binaries
         uses: actions/cache@v4
         id: playwright-cache
         with:
           path: |
             ~/.cache/ms-playwright
-            ~/usr/bin/brave-browser
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('apps/laboratory/tests/shared/constants/devices.ts') }}
       - name: install
         run: npm ci
@@ -72,9 +79,7 @@ jobs:
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         working-directory: ./apps/laboratory/
-        run: |
-          sudo ./scripts/install-brave-browser.sh
-          npm run playwright:install
+        run: npm run playwright:install
       - name: Run Playwright tests
         env:
           BASE_URL: ${{ inputs.base-url }}
