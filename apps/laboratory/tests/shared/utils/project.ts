@@ -1,6 +1,7 @@
 import { devices } from '@playwright/test'
 import { getAvailableDevices } from './device'
 import { getValue } from './config'
+import { BRAVE_MACOS_PATH, BRAVE_UBUNTU_PATH } from '../constants/browsers'
 
 const availableDevices = getAvailableDevices()
 
@@ -26,26 +27,18 @@ export type CustomProjectProperties = {
   [T in string]: CustomProperties
 }
 
+const braveOptions: UseOptions = {
+  launchOptions: {
+    executablePath: getValue(BRAVE_UBUNTU_PATH, BRAVE_MACOS_PATH)
+  }
+}
+
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Brave/wagmi': {
-    useOptions: {
-      launchOptions: {
-        executablePath: getValue(
-          '/usr/bin/brave-browser',
-          '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser'
-        )
-      }
-    }
+    useOptions: braveOptions
   },
   'Desktop Brave/ethers': {
-    useOptions: {
-      launchOptions: {
-        executablePath: getValue(
-          '/usr/bin/brave-browser',
-          '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser'
-        )
-      }
-    }
+    useOptions: braveOptions
   },
   'Desktop Chrome/wagmi': {
     testIgnore: 'email.spec.ts'
