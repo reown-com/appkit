@@ -130,7 +130,7 @@ export class Web3ModalScaffold {
   }
 
   public getState() {
-    return { ...PublicStateController.state, loading: ModalController.state.loading }
+    return PublicStateController.state
   }
 
   public subscribeState(callback: (newState: PublicStateControllerState) => void) {
