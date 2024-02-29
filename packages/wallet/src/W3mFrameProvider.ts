@@ -25,6 +25,7 @@ type SyncDappDataResolver = Resolver<undefined>
 type SmartAccountEnabledNetworksResolver = Resolver<
   W3mFrameTypes.Responses['FrameGetSmartAccountEnabledNetworksResponse']
 >
+type InitSmartAccountResolver = Resolver<W3mFrameTypes.Responses['FrameInitSmartAccountResponse']>
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
@@ -59,6 +60,8 @@ export class W3mFrameProvider {
   private syncDappDataResolver: SyncDappDataResolver = undefined
 
   private smartAccountEnabledNetworksResolver: SmartAccountEnabledNetworksResolver = undefined
+
+  private initSmartAccountResolver: InitSmartAccountResolver = undefined
 
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
@@ -129,6 +132,11 @@ export class W3mFrameProvider {
           return this.onSmartAccountEnabledNetworksSuccess(event)
         case W3mFrameConstants.FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR:
           return this.onSmartAccountEnabledNetworksError(event)
+        case W3mFrameConstants.FRAME_INIT_SMART_ACCOUNT_SUCCESS:
+          return this.onInitSmartAccountSuccess(event)
+        case W3mFrameConstants.FRAME_INIT_SMART_ACCOUNT_ERROR:
+          return this.onInitSmartAccountError(event)
+
         default:
           return null
       }
@@ -186,19 +194,6 @@ export class W3mFrameProvider {
     return new Promise<W3mFrameTypes.Responses['FrameIsConnectedResponse']>((resolve, reject) => {
       this.isConnectedResolver = { resolve, reject }
     })
-  }
-
-  public async getSmartAccountEnabledNetworks() {
-    await this.w3mFrame.frameLoadPromise
-    this.w3mFrame.events.postAppEvent({
-      type: W3mFrameConstants.APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS
-    })
-
-    return new Promise<W3mFrameTypes.Responses['FrameGetSmartAccountEnabledNetworksResponse']>(
-      (resolve, reject) => {
-        this.smartAccountEnabledNetworksResolver = { resolve, reject }
-      }
-    )
   }
 
   public async getChainId() {
@@ -266,6 +261,30 @@ export class W3mFrameProvider {
     return new Promise((resolve, reject) => {
       this.syncDappDataResolver = { resolve, reject }
     })
+  }
+
+  public async getSmartAccountEnabledNetworks() {
+    await this.w3mFrame.frameLoadPromise
+    this.w3mFrame.events.postAppEvent({
+      type: W3mFrameConstants.APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS
+    })
+
+    return new Promise<W3mFrameTypes.Responses['FrameGetSmartAccountEnabledNetworksResponse']>(
+      (resolve, reject) => {
+        this.smartAccountEnabledNetworksResolver = { resolve, reject }
+      }
+    )
+  }
+
+  public async initSmartAccount() {
+    await this.w3mFrame.frameLoadPromise
+    this.w3mFrame.events.postAppEvent({ type: W3mFrameConstants.APP_INIT_SMART_ACCOUNT })
+
+    return new Promise<W3mFrameTypes.Responses['FrameInitSmartAccountResponse']>(
+      (resolve, reject) => {
+        this.initSmartAccountResolver = { resolve, reject }
+      }
+    )
   }
 
   // -- Provider Methods ------------------------------------------------
@@ -556,6 +575,18 @@ export class W3mFrameProvider {
     >
   ) {
     this.smartAccountEnabledNetworksResolver?.reject(event.payload.message)
+  }
+
+  private onInitSmartAccountSuccess(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/INIT_SMART_ACCOUNT_SUCCESS' }>
+  ) {
+    this.initSmartAccountResolver?.resolve(event.payload)
+  }
+
+  private onInitSmartAccountError(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/INIT_SMART_ACCOUNT_ERROR' }>
+  ) {
+    this.initSmartAccountResolver?.reject(event.payload.message)
   }
 
   // -- Private Methods -------------------------------------------------

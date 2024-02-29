@@ -34,6 +34,13 @@ export function emailConnector(parameters: EmailParameters) {
     async connect(options: ConnectOptions = {}) {
       const provider = await this.getProvider()
       const { address, chainId } = await provider.connect({ chainId: options.chainId })
+      const { smartAccountEnabledNetworks } = await provider.getSmartAccountEnabledNetworks()
+      console.log('smartAccountEnabledNetworks', smartAccountEnabledNetworks)
+      if (smartAccountEnabledNetworks.includes(chainId)) {
+        console.log('initSmartAccount')
+        const { address: smartAccountAddress, isDeployed } = await provider.initSmartAccount()
+        console.log('smartAccountAddress', smartAccountAddress, 'isDeployed', isDeployed)
+      }
 
       return {
         accounts: [address as Address],
