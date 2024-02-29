@@ -11,7 +11,7 @@ import {
   watchAccount,
   watchConnectors
 } from '@wagmi/core'
-import { mainnet } from '@wagmi/core/chains'
+import { mainnet } from 'viem/chains'
 import type { Chain } from '@wagmi/core/chains'
 import type { GetAccountReturnType } from '@wagmi/core'
 import type {
@@ -34,7 +34,7 @@ import {
   getEmailCaipNetworks,
   getWalletConnectCaipNetworks
 } from './utils/helpers.js'
-import { W3mFrameHelpers } from '@web3modal/wallet'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider } from '@web3modal/wallet'
 import { ConstantsUtil as CoreConstants } from '@web3modal/core'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
@@ -376,6 +376,7 @@ export class Web3Modal extends Web3ModalScaffold {
         provider
       })
       this.listenEmailConnector(emailConnector)
+      this.listenModal(emailConnector)
     }
   }
 
@@ -393,8 +394,19 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setIsConnected(false)
       }
       provider.onRpcRequest(request => {
-        if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
-          super.open({ view: 'ApproveTransaction' })
+        if (W3mFrameHelpers.checkIfRequestExists(request)) {
+          if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
+            super.open({ view: 'ApproveTransaction' })
+          }
+        } else {
+          super.open()
+          const method = W3mFrameHelpers.getRequestMethod(request)
+          // eslint-disable-next-line no-console
+          console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, { method })
+          setTimeout(() => {
+            this.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
+          }, 300)
+          provider.rejectRpcRequest()
         }
       })
 
@@ -412,5 +424,16 @@ export class Web3Modal extends Web3ModalScaffold {
         super.setLoading(false)
       })
     }
+  }
+
+  private async listenModal(
+    connector: Web3ModalClientOptions<CoreConfig>['wagmiConfig']['connectors'][number]
+  ) {
+    const provider = (await connector.getProvider()) as W3mFrameProvider
+    this.subscribeState(val => {
+      if (!val.open) {
+        provider.rejectRpcRequest()
+      }
+    })
   }
 }

@@ -35,7 +35,7 @@ export class W3mBuyInProgressView extends LitElement {
 
   @state() private error = false
 
-  @state() private intervalId: NodeJS.Timeout | null = null
+  @state() private intervalId?: NodeJS.Timeout
 
   @state() private startTime: number | null = null
 
@@ -142,40 +142,39 @@ export class W3mBuyInProgressView extends LitElement {
 
   private async initializeCoinbaseTransactions() {
     await this.watchCoinbaseTransactions()
-    this.intervalId = setInterval(() => this.watchCoinbaseTransactions(), 10000)
+    this.intervalId = setInterval(() => this.watchCoinbaseTransactions(), 4000)
   }
 
   private async watchCoinbaseTransactions() {
     try {
-      await this.fetchCoinbaseTransactions()
+      const address = AccountController.state.address
+      const projectId = OptionsController.state.projectId
+      if (!address) {
+        throw new Error('No address found')
+      }
+
+      const coinbaseResponse = await BlockchainApiController.fetchTransactions({
+        account: address,
+        onramp: 'coinbase',
+        projectId
+      })
+
+      const newTransactions = coinbaseResponse.data.filter(
+        tx =>
+          // @ts-expect-error - start time will always be set at this point
+          new Date(tx.metadata.minedAt) > new Date(this.startTime) ||
+          tx.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
+      )
+
+      if (newTransactions.length) {
+        clearInterval(this.intervalId)
+        RouterController.replace('OnRampActivity')
+      } else if (this.startTime && Date.now() - this.startTime >= 180_000) {
+        clearInterval(this.intervalId)
+        this.error = true
+      }
     } catch (error) {
       SnackController.showError(error)
-    }
-  }
-
-  private async fetchCoinbaseTransactions() {
-    const address = AccountController.state.address
-    const projectId = OptionsController.state.projectId
-    if (!address) {
-      throw new Error('No address found')
-    }
-
-    const coinbaseResponse = await BlockchainApiController.fetchTransactions({
-      account: address,
-      onramp: 'coinbase',
-      projectId
-    })
-
-    const pendingTransactions = coinbaseResponse.data.filter(
-      tx => tx.metadata.status === 'ONRAMP_TRANSACTION_STATUS_IN_PROGRESS'
-    )
-
-    if (pendingTransactions.length && this.intervalId) {
-      clearInterval(this.intervalId)
-      RouterController.replace('OnRampActivity')
-    } else if (this.startTime && Date.now() - this.startTime >= 180_000 && this.intervalId) {
-      clearInterval(this.intervalId)
-      this.error = true
     }
   }
 

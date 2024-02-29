@@ -10,7 +10,7 @@ describe('TransactionsController', () => {
       loading: false,
       empty: false,
       next: undefined,
-      coinbaseTransactions: []
+      coinbaseTransactions: {}
     })
   })
 })

@@ -15,19 +15,24 @@ export class WuiListAccordion extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @property() public textTitle = ''
-
   @property() public overflowedContent = ''
 
   public toggled = false
-
   public enableAccordion = false
-
   public scrollElement?: Element = undefined
-
   public scrollHeightElement = 0
 
-  public override firstUpdated() {
-    setTimeout(() => {
+  public override updated(changedProperties: Map<string | number | symbol, unknown>) {
+    super.updated(changedProperties)
+    if (changedProperties.has('textTitle') || changedProperties.has('overflowedContent')) {
+      setTimeout(() => {
+        this.checkHeight()
+      }, 1)
+    }
+  }
+
+  private checkHeight() {
+    this.updateComplete.then(() => {
       const heightElement = this.shadowRoot?.querySelector('.heightContent')
       const textElement = this.shadowRoot?.querySelector('.textContent')
 
@@ -41,7 +46,7 @@ export class WuiListAccordion extends LitElement {
           this.requestUpdate()
         }
       }
-    }, 0)
+    })
   }
 
   // -- Render -------------------------------------------- //
