@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { SIWEController } from '../../index.js'
+import { SIWEController } from '../../core/controller/SIWEController.js'
 
 // -- Mocks -------------------------------------------------------------
 const session = { address: '0x', chainId: 1 }
