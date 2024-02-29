@@ -1,7 +1,7 @@
 import { devices } from '@playwright/test'
 import { getAvailableDevices } from './device'
 import { getValue } from './config'
-import { BRAVE_MACOS_PATH, BRAVE_UBUNTU_PATH } from '../constants/browsers'
+import { getLocalBravePath, BRAVE_LINUX_PATH } from '../constants/browsers'
 
 const availableDevices = getAvailableDevices()
 
@@ -29,7 +29,7 @@ export type CustomProjectProperties = {
 
 const braveOptions: UseOptions = {
   launchOptions: {
-    executablePath: getValue(BRAVE_UBUNTU_PATH, BRAVE_MACOS_PATH)
+    executablePath: getValue(BRAVE_LINUX_PATH, getLocalBravePath())
   }
 }
 
