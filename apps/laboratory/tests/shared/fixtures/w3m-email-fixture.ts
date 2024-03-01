@@ -23,8 +23,7 @@ export const testMEmail = base.extend<ModalFixture>({
     await email.deleteAllMessages(tempEmail)
     await modalPage.loginWithEmail(tempEmail)
 
-    let latestMessage = await email.getNewMessageFromEmail(tempEmail)
-    let messageId = latestMessage._id
+    let messageId = await email.getLatestMessageId(tempEmail)
 
     if (!messageId) {
       throw new Error('No messageId found')
@@ -41,11 +40,7 @@ export const testMEmail = base.extend<ModalFixture>({
       await drp.approveDevice()
       await drp.close()
 
-      latestMessage = await email.getNewMessageFromEmail(tempEmail)
-      messageId = latestMessage._id
-      if (!messageId) {
-        throw new Error('No messageId found')
-      }
+      messageId = await email.getLatestMessageId(tempEmail)
 
       emailBody = await email.getEmailBody(tempEmail, messageId)
       if (!email.isApproveEmail(emailBody)) {

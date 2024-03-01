@@ -1,4 +1,4 @@
-import { Mailsac, type EmailMessage } from '@mailsac/api'
+import { Mailsac } from '@mailsac/api'
 const EMAIL_CHECK_TIMEOUT = 1000
 const MAX_EMAIL_CHECK = 10
 const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'
@@ -23,7 +23,7 @@ export class Email {
     })
   }
 
-  async getNewMessageFromEmail(email: string): Promise<EmailMessage> {
+  async getLatestMessageId(email: string): Promise<string> {
     let checks = 0
     /* eslint-disable no-await-in-loop */
     while (checks < MAX_EMAIL_CHECK) {
@@ -33,8 +33,12 @@ export class Email {
         if (!message) {
           throw new Error('No message found')
         }
+        const id = message._id
+        if (!id) {
+          throw new Error('Message ID not present')
+        }
 
-        return message
+        return id
       }
       await this.timeout(EMAIL_CHECK_TIMEOUT)
       checks += 1
