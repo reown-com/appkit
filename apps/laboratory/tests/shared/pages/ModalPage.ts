@@ -81,12 +81,12 @@ export class ModalPage {
 
   async disconnect() {
     const accountBtn = this.page.getByTestId('account-button')
-    await expect(accountBtn).toBeVisible()
-    await expect(accountBtn).toBeEnabled()
+    await expect(accountBtn, 'Account button should be visible').toBeVisible()
+    await expect(accountBtn, 'Account button should be enabled').toBeEnabled()
     await accountBtn.click({ force: true })
     const disconnectBtn = this.page.getByTestId('disconnect-button')
-    await expect(disconnectBtn).toBeVisible()
-    await expect(disconnectBtn).toBeEnabled()
+    await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
+    await expect(disconnectBtn, 'Disconnect button should be visible').toBeEnabled()
     await disconnectBtn.click({ force: true })
   }
 
@@ -108,7 +108,7 @@ export class ModalPage {
 
   async promptSiwe() {
     const siweSign = this.page.getByTestId('w3m-connecting-siwe-sign')
-    await expect(siweSign, 'Siwe promp sign button should be enabled').toBeEnabled()
+    await expect(siweSign, 'Siwe prompt sign button should be enabled').toBeEnabled()
     await siweSign.click()
   }
 

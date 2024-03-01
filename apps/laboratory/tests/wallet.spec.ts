@@ -41,14 +41,14 @@ testConnectedMW(
   'it should switch networks and sign',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
     const chains = modalPage.library === 'solana' ? ['Solana'] : ['Polygon', 'Ethereum']
-    const promises = chains.map(async (chainName) => {
-      await modalPage.switchNetwork(chainName);
-      await modalPage.sign();
-      await walletValidator.expectReceivedSign({ chainName });
-      await walletPage.handleRequest({ accept: true });
-      await modalValidator.expectAcceptedSign();
-    });
+    const promises = chains.map(async chainName => {
+      await modalPage.switchNetwork(chainName)
+      await modalPage.sign()
+      await walletValidator.expectReceivedSign({ chainName })
+      await walletPage.handleRequest({ accept: true })
+      await modalValidator.expectAcceptedSign()
+    })
 
-    await Promise.all(promises);
+    await Promise.all(promises)
   }
 )

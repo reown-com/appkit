@@ -78,10 +78,10 @@ export class WuiAccountButton extends LitElement {
         ? html`<wui-image src=${this.networkSrc}></wui-image>`
         : html`
             <wui-icon-box
-              size="sm"
-              iconColor="fg-200"
-              backgroundColor="fg-300"
-              icon="networkPlaceholder"
+                size="sm"
+                iconColor="fg-200"
+                backgroundColor="fg-300"
+                icon="networkPlaceholder"
             ></wui-icon-box>
           `
 
