@@ -1,1 +1,1 @@
-export const DEVICES = ['Desktop Chrome', 'Desktop Brave', 'Desktop Firefox']
+export const DEVICES = ['Desktop Firefox', 'Desktop Brave', 'Desktop Chrome']
