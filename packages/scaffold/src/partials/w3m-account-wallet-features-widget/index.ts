@@ -103,6 +103,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   // -- Private ------------------------------------------- //
 
   private activateAccountTemplate() {
+    // eslint-disable-next-line no-warning-comments
     // Todo: Check if SA is deployed
 
     return html` <wui-promo text="Activate your account"></wui-promo>`
