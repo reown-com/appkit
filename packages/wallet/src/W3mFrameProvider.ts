@@ -396,6 +396,16 @@ export class W3mFrameProvider {
     })
   }
 
+  public onInitSmartAccount(callback: (isDeployed: boolean) => void) {
+    this.w3mFrame.events.onFrameEvent(event => {
+      if (event.type === W3mFrameConstants.FRAME_INIT_SMART_ACCOUNT_SUCCESS) {
+        callback(event.payload.isDeployed)
+      } else if (event.type === W3mFrameConstants.FRAME_INIT_SMART_ACCOUNT_ERROR) {
+        callback(false)
+      }
+    })
+  }
+
   // -- Promise Handlers ------------------------------------------------
   private onConnectEmailSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_EMAIL_SUCCESS' }>
@@ -637,7 +647,7 @@ export class W3mFrameProvider {
   }
 
   private setLastUsedChainId(chainId: number) {
-    W3mFrameStorage.set(W3mFrameConstants.LAST_USED_CHAIN_KEY, `${chainId}`)
+    W3mFrameStorage.set(W3mFrameConstants.LAST_USED_CHAIN_KEY, String(chainId))
   }
 
   private getLastUsedChainId() {

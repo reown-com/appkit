@@ -197,6 +197,10 @@ export class Web3ModalScaffold {
       AccountController.setAddressExplorerUrl(addressExplorerUrl)
     }
 
+  protected setSmartAccountDeployed: (typeof AccountController)['setSmartAccountDeployed'] =
+    isDeployed => {
+      AccountController.setSmartAccountDeployed(isDeployed)
+    }
   // -- Private ------------------------------------------------------------------
   private async initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)
