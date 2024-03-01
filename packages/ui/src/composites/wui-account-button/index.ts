@@ -66,23 +66,23 @@ export class WuiAccountButton extends LitElement {
   private balanceTemplate() {
     if (this.isUnsupportedChain) {
       return html`
-        <wui-icon-box
-            size="sm"
-            iconColor="error-100"
-            backgroundColor="error-100"
-            icon="warningCircle"
-        ></wui-icon-box>
-        <wui-text variant="paragraph-600" color="inherit"> Switch Network</wui-text>`
+          <wui-icon-box
+                  size="sm"
+                  iconColor="error-100"
+                  backgroundColor="error-100"
+                  icon="warningCircle"
+          ></wui-icon-box>
+          <wui-text variant="paragraph-600" color="inherit"> Switch Network</wui-text>`
     }
     if (this.balance) {
       const networkElement = this.networkSrc
-        ? html`<wui-image src=${this.networkSrc}></wui-image>`
+        ? html` <wui-image src=${this.networkSrc}></wui-image>`
         : html`
             <wui-icon-box
-                size="sm"
-                iconColor="fg-200"
-                backgroundColor="fg-300"
-                icon="networkPlaceholder"
+              size="sm"
+              iconColor="fg-200"
+              backgroundColor="fg-300"
+              icon="networkPlaceholder"
             ></wui-icon-box>
           `
 

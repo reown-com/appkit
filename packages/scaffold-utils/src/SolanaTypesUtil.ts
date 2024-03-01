@@ -169,12 +169,12 @@ export interface AccountInfo {
 
 export type FilterObject =
   | {
-    memcmp: {
-      offset: number
-      bytes: string
-      encoding?: string
+      memcmp: {
+        offset: number
+        bytes: string
+        encoding?: string
+      }
     }
-  }
   | { dataSize: number }
 
 export interface TransactionInstructionRq {
@@ -324,12 +324,12 @@ export interface ClusterRequestMethods {
 }
 
 export interface ClusterSubscribeRequestMethods {
-  signatureSubscribe: {
-    params: string[]
-    returns: Transaction
-  }
-  signatureUnsubscribe: {
-    params: number[]
-    returns: unknown
-  }
+    signatureSubscribe: {
+        params: string[]
+        returns: Transaction
+    }
+    signatureUnsubscribe: {
+        params: number[]
+        returns: unknown
+    }
 }
