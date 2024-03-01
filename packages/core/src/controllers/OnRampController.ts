@@ -30,7 +30,7 @@ export interface OnRampControllerState {
 
 type StateKey = keyof OnRampControllerState
 
-const USDC_CURRENCY_DEFAULT = {
+export const USDC_CURRENCY_DEFAULT = {
   id: '2b92315d-eab7-5bef-84fa-089a131333f5',
   name: 'USD Coin',
   symbol: 'USDC',
@@ -50,7 +50,7 @@ const USDC_CURRENCY_DEFAULT = {
   ]
 }
 
-const USD_CURRENCY_DEFAULT = {
+export const USD_CURRENCY_DEFAULT = {
   id: 'USD',
   payment_method_limits: [
     {
@@ -66,8 +66,7 @@ const USD_CURRENCY_DEFAULT = {
   ]
 }
 
-// -- State --------------------------------------------- //
-const state = proxy<OnRampControllerState>({
+const defaultState = {
   providers: ONRAMP_PROVIDERS as OnRampProvider[],
   selectedProvider: null,
   error: null,
@@ -76,7 +75,10 @@ const state = proxy<OnRampControllerState>({
   purchaseCurrencies: [USDC_CURRENCY_DEFAULT],
   paymentCurrencies: [],
   quotesLoading: false
-})
+}
+
+// -- State --------------------------------------------- //
+const state = proxy<OnRampControllerState>(defaultState)
 
 // -- Controller ---------------------------------------- //
 export const OnRampController = {
@@ -124,15 +126,37 @@ export const OnRampController = {
 
   async getQuote() {
     state.quotesLoading = true
-    const quote = await BlockchainApiController.getOnrampQuote({
-      purchaseCurrency: state.purchaseCurrency,
-      paymentCurrency: state.paymentCurrency,
-      amount: state.paymentAmount?.toString() || '0',
-      network: state.purchaseCurrency?.name
-    })
-    state.quotesLoading = false
-    state.purchaseAmount = Number(quote.purchaseAmount.amount)
+    try {
+      const quote = await BlockchainApiController.getOnrampQuote({
+        purchaseCurrency: state.purchaseCurrency,
+        paymentCurrency: state.paymentCurrency,
+        amount: state.paymentAmount?.toString() || '0',
+        network: state.purchaseCurrency?.symbol
+      })
+      state.quotesLoading = false
+      state.purchaseAmount = Number(quote.purchaseAmount.amount)
 
-    return quote
+      return quote
+    } catch (error) {
+      state.error = (error as Error).message
+      state.quotesLoading = false
+
+      return null
+    } finally {
+      state.quotesLoading = false
+    }
+  },
+
+  resetState() {
+    state.providers = ONRAMP_PROVIDERS as OnRampProvider[]
+    state.selectedProvider = null
+    state.error = null
+    state.purchaseCurrency = USDC_CURRENCY_DEFAULT
+    state.paymentCurrency = USD_CURRENCY_DEFAULT
+    state.purchaseCurrencies = [USDC_CURRENCY_DEFAULT]
+    state.paymentCurrencies = []
+    state.paymentAmount = undefined
+    state.purchaseAmount = undefined
+    state.quotesLoading = false
   }
 }

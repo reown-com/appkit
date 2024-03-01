@@ -1,6 +1,6 @@
 {
   "name": "@web3modal/siwe",
-  "version": "4.0.9",
+  "version": "4.0.11",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -16,29 +16,16 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/core": "4.0.9",
-    "@web3modal/scaffold-utils": "4.0.9"
+    "@web3modal/core": "4.0.11",
+    "@web3modal/scaffold-utils": "4.0.11"
+  },
+  "devDependencies": {
+    "valtio": "1.11.2",
+    "lit": "3.1.0"
   },
   "peerDependencies": {
-    "react": ">=17",
-    "react-dom": ">=17",
-    "vue": ">=3"
-  },
-  "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    },
-    "react-dom": {
-      "optional": true
-    },
-    "vue": {
-      "optional": true
-    }
-  },
-  "optionalDependencies": {
-    "react": ">=17",
-    "react-dom": ">=17",
-    "vue": ">=3"
+    "valtio": ">=1 <2",
+    "lit": ">=3"
   },
   "keywords": [
     "web3",

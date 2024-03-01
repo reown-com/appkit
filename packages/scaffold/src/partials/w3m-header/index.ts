@@ -4,8 +4,8 @@ import {
   ConnectorController,
   EventsController,
   ModalController,
-  RouterController,
-  SIWEController
+  OptionsController,
+  RouterController
 } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -108,8 +108,11 @@ export class W3mHeader extends LitElement {
   }
 
   private async onClose() {
-    if (SIWEController.state.isSiweEnabled && SIWEController.state.status !== 'success') {
-      await ConnectionController.disconnect()
+    if (OptionsController.state.isSiweEnabled) {
+      const { SIWEController } = await import('@web3modal/siwe')
+      if (SIWEController.state.status !== 'success') {
+        await ConnectionController.disconnect()
+      }
     }
     ModalController.close()
   }

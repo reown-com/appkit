@@ -1,5 +1,27 @@
 # @apps/laboratory
 
+## 4.0.11
+
+### Patch Changes
+
+- Analytics connection event improvements. Unsupported chain flag. Siwe package refactor. RPC improvements. UI improvements'
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.0.11
+  - @web3modal/siwe@4.0.11
+  - @web3modal/wagmi@4.0.11
+
+## 4.0.10
+
+### Patch Changes
+
+- Add error state to wui-chip composite
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.0.10
+  - @web3modal/ethers5@4.0.10
+  - @web3modal/wagmi@4.0.10
+
 ## 4.0.9
 
 ### Patch Changes

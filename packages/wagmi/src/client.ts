@@ -11,7 +11,7 @@ import {
   watchAccount,
   watchConnectors
 } from '@wagmi/core'
-import { mainnet } from '@wagmi/core/chains'
+import { mainnet } from 'viem/chains'
 import type { Chain } from '@wagmi/core/chains'
 import type { GetAccountReturnType } from '@wagmi/core'
 import type {
@@ -34,7 +34,7 @@ import {
   getEmailCaipNetworks,
   getWalletConnectCaipNetworks
 } from './utils/helpers.js'
-import { W3mFrameHelpers } from '@web3modal/wallet'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider } from '@web3modal/wallet'
 import { ConstantsUtil as CoreConstants } from '@web3modal/core'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
@@ -400,8 +400,11 @@ export class Web3Modal extends Web3ModalScaffold {
           }
         } else {
           super.open()
+          const method = W3mFrameHelpers.getRequestMethod(request)
+          // eslint-disable-next-line no-console
+          console.error(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_MESSAGE, { method })
           setTimeout(() => {
-            this.showErrorMessage('This RPC method is not supported')
+            this.showErrorMessage(W3mFrameRpcConstants.RPC_METHOD_NOT_ALLOWED_UI_MESSAGE)
           }, 300)
           provider.rejectRpcRequest()
         }

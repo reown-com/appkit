@@ -1,5 +1,17 @@
 # @web3modal/common
 
+## 4.0.11
+
+### Patch Changes
+
+- Analytics connection event improvements. Unsupported chain flag. Siwe package refactor. RPC improvements. UI improvements'
+
+## 4.0.10
+
+### Patch Changes
+
+- Add error state to wui-chip composite
+
 ## 4.0.9
 
 ### Patch Changes

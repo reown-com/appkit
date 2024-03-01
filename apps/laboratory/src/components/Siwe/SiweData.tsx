@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
-import type { SIWESession } from '@web3modal/core'
+import type { SIWESession } from '@web3modal/siwe'
 
 export function SiweData() {
   const [ready, setReady] = useState(false)

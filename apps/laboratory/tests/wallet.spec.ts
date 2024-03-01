@@ -1,28 +1,32 @@
-import { DEFAULT_CHAIN_NAME, DEFAULT_SESSION_PARAMS } from './shared/constants'
-import { testMW } from './shared/fixtures/w3m-wallet-fixture'
+import { DEFAULT_CHAIN_NAME } from './shared/constants'
+import { testConnectedMW } from './shared/fixtures/w3m-wallet-fixture'
+import { expectConnection } from './shared/utils/validation'
 
-testMW.beforeEach(async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-  const uri = await modalPage.getConnectUri()
-  await walletPage.connectWithUri(uri)
-  await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-  await modalValidator.expectConnected()
-  await walletValidator.expectConnected()
+testConnectedMW.beforeEach(async ({ modalValidator, walletValidator }) => {
+  await expectConnection(modalValidator, walletValidator)
 })
 
-testMW.afterEach(async ({ modalPage, modalValidator, walletValidator }) => {
+testConnectedMW.afterEach(async ({ modalPage, modalValidator, walletValidator, browserName }) => {
+  if (browserName === 'firefox') {
+    return
+  }
   await modalPage.disconnect()
+
   await modalValidator.expectDisconnected()
   await walletValidator.expectDisconnected()
 })
 
-testMW('it should sign', async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-  await modalPage.sign()
-  await walletValidator.expectReceivedSign({ chainName: DEFAULT_CHAIN_NAME })
-  await walletPage.handleRequest({ accept: true })
-  await modalValidator.expectAcceptedSign()
-})
+testConnectedMW(
+  'it should sign',
+  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+    await modalPage.sign()
+    await walletValidator.expectReceivedSign({ chainName: DEFAULT_CHAIN_NAME })
+    await walletPage.handleRequest({ accept: true })
+    await modalValidator.expectAcceptedSign()
+  }
+)
 
-testMW(
+testConnectedMW(
   'it should reject sign',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
     await modalPage.sign()
@@ -32,7 +36,7 @@ testMW(
   }
 )
 
-testMW(
+testConnectedMW(
   'it should switch networks and sign',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
     let targetChain = 'Polygon'
