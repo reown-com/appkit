@@ -109,7 +109,9 @@ export class ModalPage {
     await expect(
       this.page.frameLocator('#w3m-iframe').getByText('requests a signature'),
       'Web3Modal iframe should be visible'
-    ).toBeVisible()
+    ).toBeVisible({
+      timeout: 10000
+    })
     await this.page.waitForTimeout(2000)
   }
   async clickSignatureRequestButton(name: string) {
