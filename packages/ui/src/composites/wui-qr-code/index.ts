@@ -28,7 +28,7 @@ export class WuiQrCode extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     this.dataset['theme'] = this.theme
-    this.dataset['clear'] = this.arenaClear
+    this.dataset['clear'] = this.arenaClear ? 'true' : 'false'
     this.style.cssText = `--local-size: ${this.size}px`
 
     return html`${this.templateVisual()} ${this.templateSvg()}`

@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/web-components'
 import '@web3modal/ui/src/composites/wui-compatible-network'
 import type { WuiCompatibleNetwork } from '@web3modal/ui/src/composites/wui-compatible-network'
 import { html } from 'lit'
-import { address, avatarImageSrc, networkImages } from '../../utils/PresetUtils'
+import { networkImages } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiCompatibleNetwork>
 

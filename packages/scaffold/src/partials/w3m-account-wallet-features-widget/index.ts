@@ -5,7 +5,7 @@ import {
   AssetUtil,
   RouterController
 } from '@web3modal/core'
-import { UiHelperUtil, customElement } from '@web3modal/ui'
+import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -27,8 +27,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private network = NetworkController.state.caipNetwork
 
-  @state() private balance = AccountController.state.balance
-
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -38,7 +36,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
             this.address = val.address
             this.profileImage = val.profileImage
             this.profileName = val.profileName
-            this.balance = val.balance
           } else {
             ModalController.close()
           }
