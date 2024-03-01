@@ -30,6 +30,7 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Safari/wagmi': {
     testIgnore: 'email.spec.ts'
   },
+  // Exclude email.spec.ts, siwe.spec.ts, and canary.spec.ts because in solana not yet implemented
   'Desktop Chrome/solana': {
     grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)).*$/u
   },
