@@ -65,11 +65,12 @@ export class WuiAccountButton extends LitElement {
   // -- Private ------------------------------------------- //
   private balanceTemplate() {
     if (this.isUnsupportedChain) {
-      return html` <wui-icon-box
-          size="sm"
-          iconColor="error-100"
-          backgroundColor="error-100"
-          icon="warningCircle"
+      return html`
+        <wui-icon-box
+            size="sm"
+            iconColor="error-100"
+            backgroundColor="error-100"
+            icon="warningCircle"
         ></wui-icon-box>
         <wui-text variant="paragraph-600" color="inherit"> Switch Network</wui-text>`
     }
