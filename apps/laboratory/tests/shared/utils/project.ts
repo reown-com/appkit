@@ -53,6 +53,9 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/solana': {
     grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)).*$/u
   },
+  'Desktop Brave/solana': {
+    grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)).*$/u
+  },
   'Desktop Firefox/solana': {
     grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)).*$/u
   },
