@@ -42,14 +42,24 @@ testConnectedMW(
   'it should switch networks and sign',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
     const chains = modalPage.library === 'solana' ? ['Solana'] : ['Polygon', 'Ethereum']
-    const promises = chains.map(async chainName => {
+
+    // Run them one after another
+    async function processChain(index: number) {
+      if (index >= chains.length) {
+        return
+      }
+
+      const chainName = chains[index] ?? DEFAULT_CHAIN_NAME
       await modalPage.switchNetwork(chainName)
       await modalPage.sign()
       await walletValidator.expectReceivedSign({ chainName })
       await walletPage.handleRequest({ accept: true })
       await modalValidator.expectAcceptedSign()
-    })
 
-    await Promise.all(promises)
+      await processChain(index + 1)
+    }
+
+    // Start processing from the first chain
+    await processChain(0)
   }
 )
