@@ -14,7 +14,7 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
         .padding=${['0', '0', 'l', '0'] as const}
       >
         ${this.onboardingTemplate()} ${this.buttonsTemplate()}
-        <wui-link @click=${() => console.log('TODO: link to documentation')}>
+        <wui-link>
           Learn more
           <wui-icon color="inherit" slot="iconRight" name="externalLink"></wui-icon>
         </wui-link>
@@ -52,9 +52,7 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
       <wui-button variant="accentBg" @click=${RouterController.goBack} size="lg" borderRadius="xs">
         Do it later
       </wui-button>
-      <wui-button @click=${() => console.log('continue')} size="lg" borderRadius="xs">
-        Continue
-      </wui-button>
+      <wui-button size="lg" borderRadius="xs"> Continue </wui-button>
     </wui-flex>`
   }
 }
