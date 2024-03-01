@@ -50,12 +50,12 @@ export class WuiAccountButton extends LitElement {
           ></wui-avatar>
           <wui-text variant="paragraph-600" color="inherit">
             ${this.address &&
-      UiHelperUtil.getTruncateString({
-        string: this.address,
-        charsStart: this.isProfileName ? 18 : this.charsStart,
-        charsEnd: this.isProfileName ? 0 : this.charsEnd,
-        truncate: this.isProfileName ? 'end' : 'middle'
-      })}
+            UiHelperUtil.getTruncateString({
+              string: this.address,
+              charsStart: this.isProfileName ? 18 : this.charsStart,
+              charsEnd: this.isProfileName ? 0 : this.charsEnd,
+              truncate: this.isProfileName ? 'end' : 'middle'
+            })}
           </wui-text>
         </wui-flex>
       </button>
@@ -75,19 +75,19 @@ export class WuiAccountButton extends LitElement {
     }
     if (this.balance) {
       const networkElement = this.networkSrc
-        ? html` <wui-image src=${this.networkSrc}></wui-image>`
+        ? html`<wui-image src=${this.networkSrc}></wui-image>`
         : html`
             <wui-icon-box
-              size="sm"
-              iconColor="fg-200"
-              backgroundColor="fg-300"
-              icon="networkPlaceholder"
+                size="sm"
+                iconColor="fg-200"
+                backgroundColor="fg-300"
+                icon="networkPlaceholder"
             ></wui-icon-box>
           `
 
       return html`
         ${networkElement}
-        <wui-text variant="paragraph-600" color="inherit"> ${this.balance} </wui-text>
+        <wui-text variant="paragraph-600" color="inherit"> ${this.balance}</wui-text>
       `
     }
 
