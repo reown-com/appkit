@@ -75,7 +75,7 @@ export class WuiAccountButton extends LitElement {
     }
     if (this.balance) {
       const networkElement = this.networkSrc
-        ? html` <wui-image src=${this.networkSrc}></wui-image>`
+        ? html`<wui-image src=${this.networkSrc}></wui-image>`
         : html`
             <wui-icon-box
               size="sm"
