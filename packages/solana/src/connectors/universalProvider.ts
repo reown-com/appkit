@@ -42,33 +42,6 @@ export class UniversalProviderFactory {
       metadata: UniversalProviderFactory.metadata
     })
 
-    // Subscribe to session ping
-    /*
-     *UniversalProviderFactory.provider.on(
-     *'session_ping',
-     *({ id, topic }: { id: number, topic: string }) => {
-     *  console.log(id, topic)
-     *}
-     *)
-     *
-     * // Subscribe to session event
-     *UniversalProviderFactory.provider.on(
-     *'session_event',
-     *({ event, chainId }: { event: unknown, chainId: string }) => {
-     *  console.log(event, chainId)
-     *}
-     *)
-     *
-     * // Subscribe to session update
-     *UniversalProviderFactory.provider.on(
-     *'session_update',
-     *({ topic, params }: { topic: string, params: unknown }) => {
-     *  console.log(topic, params)
-     *}
-     *)
-     *
-     */
-
     // Subscribe to session delete
     UniversalProviderFactory.provider.on('session_delete', () => {
       delete UniversalProviderFactory.provider?.session?.namespaces['solana']
