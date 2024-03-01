@@ -159,7 +159,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       </wui-flex>`
   }
 
-  // Private Methods ------------------------------------- //
+  // -- Private ------------------------------------------- //
   private onrampTemplate() {
     const { enableOnramp } = OptionsController.state
 

@@ -100,7 +100,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     </wui-flex>`
   }
 
-  // Private Methods ------------------------------------- //
+  // -- Private ------------------------------------------- //
 
   private activateAccountTemplate() {
     // Todo: Check if SA is deployed
