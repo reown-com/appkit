@@ -1,6 +1,6 @@
 import { Mailsac } from '@mailsac/api'
 const EMAIL_CHECK_TIMEOUT = 1000
-const MAX_EMAIL_CHECK = 10
+const MAX_EMAIL_CHECK = 16
 const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'
 const APPROVE_URL_REGEX = /https:\/\/register.*/u
 const OTP_CODE_REGEX = /\d{3}\s?\d{3}/u
