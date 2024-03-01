@@ -31,7 +31,7 @@ export function syncInjectedWallets(
         name: adapters[wallet].name,
         provider: adapters[wallet],
         info: {
-          rdns: `app.${wallet}`
+          rdns: adapters[wallet].rdns
         }
       })
     }
