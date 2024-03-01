@@ -64,7 +64,7 @@ export class W3mFrameProvider {
 
   private initSmartAccountResolver: InitSmartAccountResolver = undefined
 
-  private setPreferredAccount: SetPreferredAccountResolver = undefined
+  private setPreferredAccountResolver: SetPreferredAccountResolver = undefined
 
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
@@ -140,7 +140,7 @@ export class W3mFrameProvider {
         case W3mFrameConstants.FRAME_INIT_SMART_ACCOUNT_ERROR:
           return this.onInitSmartAccountError(event)
         case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_SUCCESS:
-          return this.onPreferSmartAccountSuccess()
+          return this.onPreferSmartAccountSuccess(event)
         case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_ERROR:
           return this.onPreferSmartAccountError()
 
@@ -292,6 +292,18 @@ export class W3mFrameProvider {
         this.initSmartAccountResolver = { resolve, reject }
       }
     )
+  }
+
+  public async setPreferredAccount(type: 'eoa' | 'smartAccount') {
+    await this.w3mFrame.frameLoadPromise
+    this.w3mFrame.events.postAppEvent({
+      type: W3mFrameConstants.APP_SET_PREFERRED_ACCOUNT,
+      payload: { type }
+    })
+
+    return new Promise((resolve, reject) => {
+      this.setPreferredAccountResolver = { resolve, reject }
+    })
   }
 
   // -- Provider Methods ------------------------------------------------
@@ -596,12 +608,15 @@ export class W3mFrameProvider {
     this.initSmartAccountResolver?.reject(event.payload.message)
   }
 
-  private onPreferSmartAccountSuccess() {
-    this.setPreferredAccount?.resolve(undefined)
+  private onPreferSmartAccountSuccess(
+    event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/SET_PREFERRED_ACCOUNT_SUCCESS' }>
+  ) {
+    this.persistPreferredAccount(event.payload.type as 'eoa' | 'smartAccount')
+    this.setPreferredAccountResolver?.resolve(undefined)
   }
 
   private onPreferSmartAccountError() {
-    this.setPreferredAccount?.reject()
+    this.setPreferredAccountResolver?.reject()
   }
 
   // -- Private Methods -------------------------------------------------
@@ -627,5 +642,9 @@ export class W3mFrameProvider {
 
   private getLastUsedChainId() {
     return Number(W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY))
+  }
+
+  private persistPreferredAccount(type: 'eoa' | 'smartAccount') {
+    W3mFrameStorage.set(W3mFrameConstants.PREFERRED_ACCOUNT_TYPE, type)
   }
 }

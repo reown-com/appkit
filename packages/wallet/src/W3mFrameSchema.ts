@@ -56,6 +56,8 @@ export const AppSyncDappDataRequest = z.object({
   >,
   projectId: z.string()
 })
+export const AppSetPreferredAccountRequest = z.object({ type: z.string() })
+
 export const FrameConnectEmailResponse = z.object({
   action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])
 })
@@ -75,6 +77,7 @@ export const FrameInitSmartAccountResponse = z.object({
   address: z.string(),
   isDeployed: z.boolean()
 })
+export const FrameSetPreferredAccountResponse = z.object({ type: z.string() })
 
 export const RpcResponse = z.any()
 
@@ -283,7 +286,9 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_INIT_SMART_ACCOUNT') }))
 
-    .or(z.object({ type: zType('APP_SET_PREFERRED_ACCOUNT') }))
+    .or(
+      z.object({ type: zType('APP_SET_PREFERRED_ACCOUNT'), payload: AppSetPreferredAccountRequest })
+    )
 
     .or(
       z.object({
@@ -439,6 +444,11 @@ export const W3mFrameSchema = {
       })
     )
     .or(z.object({ type: zType('FRAME_INIT_SMART_ACCOUNT_ERROR'), payload: zError }))
-    .or(z.object({ type: zType('FRAME_SET_PREFERRED_ACCOUNT_SUCCESS') }))
+    .or(
+      z.object({
+        type: zType('FRAME_SET_PREFERRED_ACCOUNT_SUCCESS'),
+        payload: FrameSetPreferredAccountResponse
+      })
+    )
     .or(z.object({ type: zType('FRAME_SET_PREFERRED_ACCOUNT_ERROR'), payload: zError }))
 }
