@@ -1,8 +1,9 @@
 import { testM as base, testMSiwe as siwe } from './w3m-fixture'
 import { WalletPage } from '../pages/WalletPage'
 import { WalletValidator } from '../validators/WalletValidator'
-import type { BrowserContext, Page } from '@playwright/test'
+
 import { DEFAULT_SESSION_PARAMS } from '../constants'
+import { doActionAndWaitForNewPage } from '../utils/actions'
 
 // Declare the types of fixtures to use
 interface ModalWalletFixture {
@@ -34,19 +35,5 @@ export const testMWSiwe = siwe.extend<ModalWalletFixture>({
     await use(walletValidator)
   }
 })
-
-export async function doActionAndWaitForNewPage(
-  action: Promise<void>,
-  context: BrowserContext
-): Promise<Page> {
-  if (!context) {
-    throw new Error('Browser Context is undefined')
-  }
-  const pagePromise = context.waitForEvent('page')
-  await action
-  const newPage = await pagePromise
-
-  return newPage
-}
 
 export { expect } from '@playwright/test'

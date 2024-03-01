@@ -35,18 +35,17 @@ const braveOptions: UseOptions = {
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Brave/wagmi': {
+    testIgnore: 'email.spec.ts',
     useOptions: braveOptions
   },
   'Desktop Brave/ethers': {
+    testIgnore: 'email.spec.ts',
     useOptions: braveOptions
   },
   'Desktop Chrome/wagmi': {
     testIgnore: 'email.spec.ts'
   },
   'Desktop Firefox/wagmi': {
-    testIgnore: 'email.spec.ts'
-  },
-  'Desktop Safari/wagmi': {
     testIgnore: 'email.spec.ts'
   }
 }
