@@ -23,10 +23,10 @@ import styles from './styles.js'
 export class W3mAccountDefaultWidget extends LitElement {
   public static override styles = styles
 
-  // -- Members -------------------------------------------- //
+  // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
-  // -- State & Properties --------------------------------- //
+  // -- State & Properties -------------------------------- //
   @state() private address = AccountController.state.address
 
   @state() private profileImage = AccountController.state.profileImage
@@ -159,7 +159,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       </wui-flex>`
   }
 
-  // -- Private ------------------------------------------- //
+  // Private Methods ------------------------------------- //
   private onrampTemplate() {
     const { enableOnramp } = OptionsController.state
 

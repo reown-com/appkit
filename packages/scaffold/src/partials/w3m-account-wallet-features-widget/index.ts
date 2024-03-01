@@ -15,10 +15,10 @@ import styles from './styles.js'
 export class W3mAccountWalletFeaturesWidget extends LitElement {
   public static override styles = styles
 
-  // -- Members -------------------------------------------- //
+  // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
-  // -- State & Properties --------------------------------- //
+  // -- State & Properties -------------------------------- //
   @state() private address = AccountController.state.address
 
   @state() private profileImage = AccountController.state.profileImage
@@ -100,7 +100,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     </wui-flex>`
   }
 
-  // -- Private ------------------------------------------- //
+  // Private Methods ------------------------------------- //
 
   private activateAccountTemplate() {
     // Todo: Check if SA is deployed
