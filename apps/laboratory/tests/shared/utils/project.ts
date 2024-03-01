@@ -10,9 +10,16 @@ const PERMUTATIONS = availableDevices.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
 )
 
+interface UseOptions {
+  launchOptions: {
+    executablePath: string
+  }
+}
+
 interface CustomProperties {
-  testIgnore?: string | RegExp
+  testIgnore?: string
   testMatch?: string
+  useOptions?: UseOptions
   grep?: RegExp
 }
 
@@ -20,7 +27,19 @@ export type CustomProjectProperties = {
   [T in string]: CustomProperties
 }
 
+const braveOptions: UseOptions = {
+  launchOptions: {
+    executablePath: getValue(BRAVE_LINUX_PATH, getLocalBravePath())
+  }
+}
+
 const customProjectProperties: CustomProjectProperties = {
+  'Desktop Brave/wagmi': {
+    useOptions: braveOptions
+  },
+  'Desktop Brave/ethers': {
+    useOptions: braveOptions
+  },
   'Desktop Chrome/wagmi': {
     testIgnore: 'email.spec.ts'
   },
@@ -49,13 +68,17 @@ export interface Permutation {
 
 export function getProjects() {
   return PERMUTATIONS.map(({ device, library }) => {
+    const deviceName = device === 'Desktop Brave' ? 'Desktop Chrome' : device
     let project = {
       name: `${device}/${library}`,
-      use: { ...devices[device], library }
+      use: { ...devices[deviceName], library }
     }
     const props = customProjectProperties[project.name]
     if (props) {
       project = { ...project, ...props }
+      if (props.useOptions) {
+        project.use = { ...project.use, ...props.useOptions }
+      }
     }
 
     return project
