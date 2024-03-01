@@ -187,12 +187,16 @@ export interface TransactionInstructionRq {
   }[]
 }
 
-interface VersionedInstractionRq {
+interface VersionedInstractionRequest {
   data: string
   programIdIndex: number
   accountKeyIndexes: number[]
 }
 
+/**
+ * Request methods to the solana RPC.
+ * @see {@link https://solana.com/docs/rpc/http}
+ */
 export interface RequestMethods {
   solana_signMessage: {
     params: {
@@ -206,7 +210,7 @@ export interface RequestMethods {
   solana_signTransaction: {
     params: {
       feePayer: string
-      instructions: TransactionInstructionRq[] | VersionedInstractionRq[]
+      instructions: TransactionInstructionRq[] | VersionedInstractionRequest[]
       recentBlockhash: string
       signatures?: {
         pubkey: string
