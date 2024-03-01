@@ -283,6 +283,8 @@ export const W3mFrameSchema = {
 
     .or(z.object({ type: zType('APP_INIT_SMART_ACCOUNT') }))
 
+    .or(z.object({ type: zType('APP_SET_PREFERRED_ACCOUNT') }))
+
     .or(
       z.object({
         type: zType('APP_RPC_REQUEST'),
@@ -437,4 +439,6 @@ export const W3mFrameSchema = {
       })
     )
     .or(z.object({ type: zType('FRAME_INIT_SMART_ACCOUNT_ERROR'), payload: zError }))
+    .or(z.object({ type: zType('FRAME_SET_PREFERRED_ACCOUNT_SUCCESS') }))
+    .or(z.object({ type: zType('FRAME_SET_PREFERRED_ACCOUNT_ERROR'), payload: zError }))
 }

@@ -592,7 +592,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
   private async initSmartAccount(
     chainId: number
-  ): Promise<{ isDeployed: boolean; address?: Address }> {
+  ): Promise<{ isDeployed: boolean; address?: string }> {
     if (!this.emailProvider) {
       return { isDeployed: false }
     }
@@ -620,7 +620,7 @@ export class Web3Modal extends Web3ModalScaffold {
         const { isDeployed, address: smartAccountAddress } = await this.initSmartAccount(chainId)
         AccountController.setSmartAccountDeployed(isDeployed)
         if (isDeployed && smartAccountAddress) {
-          EthersStoreUtil.setAddress(smartAccountAddress)
+          EthersStoreUtil.setAddress(smartAccountAddress as Address)
         } else {
           EthersStoreUtil.setAddress(address as Address)
         }

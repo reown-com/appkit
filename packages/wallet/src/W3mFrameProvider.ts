@@ -26,6 +26,7 @@ type SmartAccountEnabledNetworksResolver = Resolver<
   W3mFrameTypes.Responses['FrameGetSmartAccountEnabledNetworksResponse']
 >
 type InitSmartAccountResolver = Resolver<W3mFrameTypes.Responses['FrameInitSmartAccountResponse']>
+type SetPreferredAccountResolver = Resolver<undefined>
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
@@ -62,6 +63,8 @@ export class W3mFrameProvider {
   private smartAccountEnabledNetworksResolver: SmartAccountEnabledNetworksResolver = undefined
 
   private initSmartAccountResolver: InitSmartAccountResolver = undefined
+
+  private setPreferredAccount: SetPreferredAccountResolver = undefined
 
   public constructor(projectId: string) {
     this.w3mFrame = new W3mFrame(projectId, true)
@@ -136,6 +139,10 @@ export class W3mFrameProvider {
           return this.onInitSmartAccountSuccess(event)
         case W3mFrameConstants.FRAME_INIT_SMART_ACCOUNT_ERROR:
           return this.onInitSmartAccountError(event)
+        case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_SUCCESS:
+          return this.onPreferSmartAccountSuccess()
+        case W3mFrameConstants.FRAME_SET_PREFERRED_ACCOUNT_ERROR:
+          return this.onPreferSmartAccountError()
 
         default:
           return null
@@ -587,6 +594,14 @@ export class W3mFrameProvider {
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/INIT_SMART_ACCOUNT_ERROR' }>
   ) {
     this.initSmartAccountResolver?.reject(event.payload.message)
+  }
+
+  private onPreferSmartAccountSuccess() {
+    this.setPreferredAccount?.resolve(undefined)
+  }
+
+  private onPreferSmartAccountError() {
+    this.setPreferredAccount?.reject()
   }
 
   // -- Private Methods -------------------------------------------------
