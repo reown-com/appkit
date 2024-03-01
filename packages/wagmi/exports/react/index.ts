@@ -1,3 +1,5 @@
+'use client'
+
 import { getWeb3Modal } from '@web3modal/scaffold-react'
 import type { Web3ModalOptions, ReactConfig } from '../../src/client.js'
 import { Web3Modal } from '../../src/client.js'
