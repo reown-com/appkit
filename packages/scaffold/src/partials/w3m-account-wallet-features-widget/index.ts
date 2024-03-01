@@ -81,18 +81,19 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
         ?isprofilename=${Boolean(this.profileName)}
       ></wui-profile-button>
-      <wui-balance
-        dollars=${this.balance ? UiHelperUtil.splitBalance(this.balance)[0] : '0'}
-        pennies="${this.balance ? UiHelperUtil.splitBalance(this.balance)[1] : '00'}"
-      ></wui-balance>
+      <wui-balance dollars="0" pennies="00"></wui-balance>
       <wui-flex gap="s">
         <wui-tooltip-select
-          @click=${this.handleClickPay.bind(this)}
+          @click=${this.onBuyClick.bind(this)}
           text="Buy"
           icon="card"
         ></wui-tooltip-select>
         <wui-tooltip-select text="Convert" icon="recycleHorizontal"></wui-tooltip-select>
-        <wui-tooltip-select text="Receive" icon="arrowBottomCircle"></wui-tooltip-select>
+        <wui-tooltip-select
+          @click=${this.onReceiveClick.bind(this)}
+          text="Receive"
+          icon="arrowBottomCircle"
+        ></wui-tooltip-select>
         <wui-tooltip-select text="Send" icon="send"></wui-tooltip-select>
       </wui-flex>
 
@@ -113,8 +114,12 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     RouterController.push('AccountSettings')
   }
 
-  private handleClickPay() {
+  private onBuyClick() {
     RouterController.push('OnRampProviders')
+  }
+
+  private onReceiveClick() {
+    RouterController.push('Receive')
   }
 }
 

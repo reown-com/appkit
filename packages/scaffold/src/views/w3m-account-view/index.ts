@@ -1,4 +1,4 @@
-import { OptionsController } from '@web3modal/core'
+import { OptionsController, StorageUtil } from '@web3modal/core'
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 
@@ -6,8 +6,10 @@ import { LitElement, html } from 'lit'
 export class W3mAccountView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
+    const type = StorageUtil.getConnectedConnector()
+
     return html`
-      ${OptionsController.state.enableWalletFeatures
+      ${OptionsController.state.enableWalletFeatures && type === 'EMAIL'
         ? this.walletFeaturesTemplate()
         : this.defaultTemplate()}
     `

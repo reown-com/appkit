@@ -7,7 +7,9 @@ import {
   ModalController,
   NetworkController,
   RouterController,
-  SnackController
+  SnackController,
+  StorageUtil,
+  ConnectorController
 } from '@web3modal/core'
 import { UiHelperUtil, customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
@@ -110,6 +112,7 @@ export class W3mAccountSettingsView extends LitElement {
 
       <wui-flex flexDirection="column" gap="m">
         <wui-flex flexDirection="column" gap="xs" .padding=${['0', 'xl', 'm', 'xl'] as const}>
+          ${this.emailBtnTemplate()}
           <wui-list-item
             .variant=${networkImage ? 'image' : 'icon'}
             iconVariant="overlay"
@@ -156,6 +159,32 @@ export class W3mAccountSettingsView extends LitElement {
     } catch {
       SnackController.showError('Failed to copy')
     }
+  }
+
+  private emailBtnTemplate() {
+    const type = StorageUtil.getConnectedConnector()
+    const emailConnector = ConnectorController.getEmailConnector()
+    if (!emailConnector || type !== 'EMAIL') {
+      return null
+    }
+    const email = emailConnector.provider.getEmail() ?? ''
+
+    return html`
+      <wui-list-item
+        variant="icon"
+        iconVariant="overlay"
+        icon="mail"
+        iconSize="sm"
+        ?chevron=${true}
+        @click=${() => this.onGoToUpdateEmail(email)}
+      >
+        <wui-text variant="paragraph-500" color="fg-100">${email}</wui-text>
+      </wui-list-item>
+    `
+  }
+
+  private onGoToUpdateEmail(email: string) {
+    RouterController.push('UpdateEmailWallet', { email })
   }
 
   private onNetworks() {

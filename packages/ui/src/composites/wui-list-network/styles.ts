@@ -15,6 +15,11 @@ export default css`
     flex: 1;
   }
 
+  button[data-transparent='true'] {
+    pointer-events: none;
+    background-color: transparent;
+  }
+
   wui-icon {
     color: var(--wui-color-fg-200) !important;
   }
