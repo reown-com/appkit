@@ -5,7 +5,6 @@ const availableDevices = getAvailableDevices()
 
 const LIBRARIES = ['wagmi', 'ethers', 'solana'] as const
 
-
 const PERMUTATIONS = availableDevices.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
 )
@@ -58,7 +57,7 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Desktop Safari/solana': {
     grep: /^(?!.*(?:email\.spec\.ts|siwe\.spec\.ts|canary\.spec\.ts)).*$/u
-  },
+  }
 }
 
 export interface Permutation {
