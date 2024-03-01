@@ -10,6 +10,7 @@ declare global {
     backpack?: { solana: Provider }
     trustWallet?: { solana: Provider }
     phantom?: { solana: Provider }
+    getHashedName: (name: string) => Buffer
   }
 }
 

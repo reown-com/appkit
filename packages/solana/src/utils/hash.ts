@@ -11,7 +11,6 @@ export function getHashedName(name: string): Buffer {
 }
 
 if (typeof window !== 'undefined') {
-  // @ts-expect-error this
   window.getHashedName = getHashedName
 }
 
@@ -21,6 +20,7 @@ export async function getNameAccountKey(
   nameParent?: PublicKey
 ): Promise<PublicKey> {
   const seeds = [hashed_name]
+
   if (nameClass) {
     seeds.push(nameClass.toBuffer())
   } else {
