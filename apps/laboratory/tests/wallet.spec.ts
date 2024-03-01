@@ -30,8 +30,9 @@ testConnectedMW(
 testConnectedMW(
   'it should reject sign',
   async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
+    const chainName = modalPage.library === 'solana' ? 'Solana' : DEFAULT_CHAIN_NAME
     await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: DEFAULT_CHAIN_NAME })
+    await walletValidator.expectReceivedSign({ chainName })
     await walletPage.handleRequest({ accept: false })
     await modalValidator.expectRejectedSign()
   }
