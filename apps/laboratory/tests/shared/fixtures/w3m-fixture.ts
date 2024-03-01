@@ -34,16 +34,5 @@ export const testMSiwe = base.extend<ModalFixture>({
     await use(modalValidator)
   }
 })
-export const testMEmail = base.extend<ModalFixture>({
-  library: ['wagmi', { option: true }],
-  modalPage: async ({ page, library }, use) => {
-    const modalPage = new ModalPage(page, library, 'email')
-    await modalPage.load()
-    await use(modalPage)
-  },
-  modalValidator: async ({ modalPage }, use) => {
-    const modalValidator = new ModalValidator(modalPage.page)
-    await use(modalValidator)
-  }
-})
+
 export { expect } from '@playwright/test'
