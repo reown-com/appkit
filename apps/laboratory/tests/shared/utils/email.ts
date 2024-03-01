@@ -4,6 +4,7 @@ const MAX_EMAIL_CHECK = 10
 const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'
 const APPROVE_URL_REGEX = /https:\/\/register.*/u
 const OTP_CODE_REGEX = /\d{3}\s?\d{3}/u
+const AVAILABLE_MAILSAC_ADDRESSES = 10
 
 export class Email {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -67,5 +68,16 @@ export class Email {
     }
 
     throw new Error(`No code found in email: ${body}`)
+  }
+
+  getEmailAddressToUse(index: number): string {
+    const maxIndex = AVAILABLE_MAILSAC_ADDRESSES - 1
+    if (index > maxIndex) {
+      throw new Error(
+        `No available Mailsac address. Requested index ${index}, maximum: ${maxIndex}`
+      )
+    }
+
+    return `web3modal${index}@mailsac.com`
   }
 }
