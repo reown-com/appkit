@@ -45,6 +45,16 @@ export class ModalValidator {
     })
   }
 
+  async expectNetwork(network: string) {
+    const networkButton = this.page.locator('wui-network-button')
+    await expect(networkButton, `Network button should contain text ${network}`).toHaveText(
+      network,
+      {
+        timeout: 5000
+      }
+    )
+  }
+
   async expectAcceptedSign() {
     // We use Chakra Toast and it's not quite straightforward to set the `data-testid` attribute on the toast element.
     await expect(this.page.getByText(ConstantsUtil.SigningSucceededToastTitle)).toBeVisible({

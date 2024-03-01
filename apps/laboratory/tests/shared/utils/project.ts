@@ -1,7 +1,7 @@
 import { devices } from '@playwright/test'
 import { getAvailableDevices } from './device'
 import { getValue } from './config'
-import { BRAVE_LINUX_PATH, getLocalBravePath } from '../constants/browsers'
+import { getLocalBravePath, BRAVE_LINUX_PATH } from '../constants/browsers'
 
 const availableDevices = getAvailableDevices()
 
@@ -36,18 +36,17 @@ const braveOptions: UseOptions = {
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Brave/wagmi': {
+    testIgnore: 'email.spec.ts',
     useOptions: braveOptions
   },
   'Desktop Brave/ethers': {
+    testIgnore: 'email.spec.ts',
     useOptions: braveOptions
   },
   'Desktop Chrome/wagmi': {
     testIgnore: 'email.spec.ts'
   },
   'Desktop Firefox/wagmi': {
-    testIgnore: 'email.spec.ts'
-  },
-  'Desktop Safari/wagmi': {
     testIgnore: 'email.spec.ts'
   },
   // Exclude email.spec.ts, siwe.spec.ts, and canary.spec.ts because in solana not yet implemented
