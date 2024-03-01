@@ -324,12 +324,12 @@ export interface ClusterRequestMethods {
 }
 
 export interface ClusterSubscribeRequestMethods {
-    signatureSubscribe: {
-        params: string[]
-        returns: Transaction
-    }
-    signatureUnsubscribe: {
-        params: number[]
-        returns: unknown
-    }
+  signatureSubscribe: {
+    params: string[]
+    returns: Transaction
+  }
+  signatureUnsubscribe: {
+    params: number[]
+    returns: unknown
+  }
 }
