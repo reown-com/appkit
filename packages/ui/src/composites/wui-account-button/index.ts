@@ -75,13 +75,13 @@ export class WuiAccountButton extends LitElement {
     }
     if (this.balance) {
       const networkElement = this.networkSrc
-        ? html` <wui-image src=${this.networkSrc}></wui-image>`
+        ? html`<wui-image src=${this.networkSrc}></wui-image>`
         : html`
             <wui-icon-box
-              size="sm"
-              iconColor="fg-200"
-              backgroundColor="fg-300"
-              icon="networkPlaceholder"
+                size="sm"
+                iconColor="fg-200"
+                backgroundColor="fg-300"
+                icon="networkPlaceholder"
             ></wui-icon-box>
           `
 
