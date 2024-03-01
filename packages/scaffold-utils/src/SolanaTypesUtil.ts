@@ -169,12 +169,12 @@ export interface AccountInfo {
 
 export type FilterObject =
   | {
-      memcmp: {
-        offset: number
-        bytes: string
-        encoding?: string
-      }
+    memcmp: {
+      offset: number
+      bytes: string
+      encoding?: string
     }
+  }
   | { dataSize: number }
 
 export interface TransactionInstructionRq {
