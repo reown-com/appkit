@@ -1,6 +1,5 @@
 import type {
   ConnectionControllerClient,
-  SIWEControllerClient,
   EventsControllerState,
   NetworkControllerClient,
   NetworkControllerState,
@@ -9,7 +8,6 @@ import type {
   ThemeControllerState,
   ThemeMode,
   ThemeVariables,
-  SIWEControllerClientState,
   ModalControllerState
 } from '@web3modal/core'
 import {
@@ -24,10 +22,10 @@ import {
   OptionsController,
   PublicStateController,
   ThemeController,
-  SIWEController,
   SnackController
 } from '@web3modal/core'
 import { setColorTheme, setThemeVariables } from '@web3modal/ui'
+import type { SIWEControllerClient } from '@web3modal/siwe'
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
@@ -49,6 +47,7 @@ export interface LibraryOptions {
   enableAnalytics?: OptionsControllerState['enableAnalytics']
   metadata?: OptionsControllerState['metadata']
   enableOnramp?: OptionsControllerState['enableOnramp']
+  allowUnsupportedChain?: NetworkControllerState['allowUnsupportedChain']
   _sdkVersion: OptionsControllerState['sdkVersion']
 }
 
@@ -198,28 +197,8 @@ export class Web3ModalScaffold {
       AccountController.setAddressExplorerUrl(addressExplorerUrl)
     }
 
-  protected setSIWENonce: (typeof SIWEController)['setNonce'] = nonce => {
-    SIWEController.setNonce(nonce)
-  }
-
-  protected setSIWESession: (typeof SIWEController)['setSession'] = session => {
-    SIWEController.setSession(session)
-  }
-
-  protected setSIWEStatus: (typeof SIWEController)['setStatus'] = status => {
-    SIWEController.setStatus(status)
-  }
-
-  protected setSIWEMessage: (typeof SIWEController)['setMessage'] = message => {
-    SIWEController.setMessage(message)
-  }
-
-  public subscribeSIWEState(callback: (newState: SIWEControllerClientState) => void) {
-    return SIWEController.subscribe(callback)
-  }
-
   // -- Private ------------------------------------------------------------------
-  private initControllers(options: ScaffoldOptions) {
+  private async initControllers(options: ScaffoldOptions) {
     NetworkController.setClient(options.networkControllerClient)
     NetworkController.setDefaultCaipNetwork(options.defaultChain)
 
@@ -238,8 +217,9 @@ export class Web3ModalScaffold {
     ConnectionController.setClient(options.connectionControllerClient)
 
     if (options.siweControllerClient) {
-      const siweClient = options.siweControllerClient
-      SIWEController.setSIWEClient(siweClient)
+      const { SIWEController } = await import('@web3modal/siwe')
+
+      SIWEController.setSIWEClient(options.siweControllerClient)
     }
 
     if (options.metadata) {
@@ -256,6 +236,10 @@ export class Web3ModalScaffold {
 
     if (options.enableOnramp) {
       OptionsController.setOnrampEnabled(Boolean(options.enableOnramp))
+    }
+
+    if (options.allowUnsupportedChain) {
+      NetworkController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     }
   }
 

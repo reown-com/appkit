@@ -20,7 +20,7 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
-          properties: { method: 'email' }
+          properties: { method: 'email', name: this.emailConnector.name || 'Unknown' }
         })
       }
     } catch (error) {

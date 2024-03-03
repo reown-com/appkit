@@ -1,29 +1,23 @@
-import { defineConfig, devices } from '@playwright/test'
+import { defineConfig } from '@playwright/test'
 import { BASE_URL } from './tests/shared/constants'
 
 import { config } from 'dotenv'
 import type { ModalFixture } from './tests/shared/fixtures/w3m-fixture'
-import { getAvailableDevices } from './tests/shared/utils/device'
+import { getProjects } from './tests/shared/utils/project'
+import { getValue } from './tests/shared/utils/config'
 config({ path: './.env.local' })
-const availableDevices = getAvailableDevices()
-
-const LIBRARIES = ['wagmi', 'ethers'] as const
-const PERMUTATIONS = availableDevices.flatMap(device =>
-  LIBRARIES.map(library => ({ device, library }))
-)
 
 export default defineConfig<ModalFixture>({
   testDir: './tests',
-
   fullyParallel: true,
-  retries: 2,
-  workers: 8,
-  reporter: process.env['CI']
-    ? [['list'], ['html', { open: 'never' }]]
-    : [['list'], ['html', { host: '0.0.0.0' }]],
-
+  retries: getValue(2, 1),
+  workers: getValue(8, 4),
+  reporter: getValue(
+    [['list'], ['html', { open: 'never' }]],
+    [['list'], ['html', { host: '0.0.0.0' }]]
+  ),
   expect: {
-    timeout: (process.env['CI'] ? 60 : 15) * 1000
+    timeout: getValue(60, 15) * 1000
   },
   timeout: 60 * 1000,
 
@@ -41,10 +35,7 @@ export default defineConfig<ModalFixture>({
   },
 
   /* Configure projects for major browsers */
-  projects: PERMUTATIONS.map(({ device, library }) => ({
-    name: `${device}/${library}`,
-    use: { ...devices[device], library }
-  })),
+  projects: getProjects(),
 
   /* Run your local dev server before starting the tests */
   webServer: {

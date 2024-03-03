@@ -7,8 +7,8 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
+  OptionsController,
   RouterController,
-  SIWEController,
   SnackController,
   StorageUtil
 } from '@web3modal/core'
@@ -76,7 +76,7 @@ export class W3mConnectingWcView extends LitElement {
 
         await ConnectionController.state.wcPromise
         this.finalizeConnection()
-        if (SIWEController.state.isSiweEnabled) {
+        if (OptionsController.state.isSiweEnabled) {
           RouterController.push('ConnectingSiwe')
         } else {
           ModalController.close()
@@ -111,7 +111,8 @@ export class W3mConnectingWcView extends LitElement {
       type: 'track',
       event: 'CONNECT_SUCCESS',
       properties: {
-        method: wcLinking ? 'mobile' : 'qrcode'
+        method: wcLinking ? 'mobile' : 'qrcode',
+        name: this.wallet?.name || 'Unknown'
       }
     })
   }
