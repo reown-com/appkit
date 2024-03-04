@@ -4,8 +4,8 @@ import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 
-@customElement('w3m-compatible-networks-view')
-export class W3mCompatibleNetworksView extends LitElement {
+@customElement('w3m-wallet-compatible-networks-view')
+export class W3mWalletCompatibleNetworksView extends LitElement {
   public static override styles = styles
 
   // -- Render -------------------------------------------- //
@@ -16,8 +16,8 @@ export class W3mCompatibleNetworksView extends LitElement {
       gap="xs"
     >
       <wui-banner
-        text="Only send funds from these networks to be able receive them"
         icon="warningCircle"
+        text="You can only receive assets on these networks"
       ></wui-banner>
       ${this.networkTemplate()}
     </wui-flex>`
@@ -47,6 +47,6 @@ export class W3mCompatibleNetworksView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-compatible-networks-view': W3mCompatibleNetworksView
+    'w3m-wallet-compatible-networks-view': W3mWalletCompatibleNetworksView
   }
 }

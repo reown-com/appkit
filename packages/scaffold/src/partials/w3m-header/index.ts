@@ -50,8 +50,8 @@ function headings() {
     BuyInProgress: 'Buy',
     OnRampTokenSelect: 'Select Token',
     OnRampFiatSelect: 'Select Currency',
-    Receive: 'Receive',
-    CompatibleNetworks: 'Compatible Networks'
+    WalletReceive: 'Receive',
+    WalletCompatibleNetworks: 'Compatible Networks'
   }
 }
 

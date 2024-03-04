@@ -13,8 +13,8 @@ import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
 
-@customElement('w3m-receive-view')
-export class W3mReceiveView extends LitElement {
+@customElement('w3m-wallet-receive-view')
+export class W3mWalletReceiveView extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
@@ -36,7 +36,7 @@ export class W3mReceiveView extends LitElement {
             this.address = val.address
             this.profileName = val.profileName
           } else {
-            ModalController.close()
+            SnackController.showError('Account not found')
           }
         })
       ],
@@ -55,7 +55,7 @@ export class W3mReceiveView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.address) {
-      throw new Error('w3m-receive-view: No account provided')
+      throw new Error('w3m-wallet-receive-view: No account provided')
     }
 
     const networkImage = AssetUtil.getNetworkImage(this.network)
@@ -68,7 +68,7 @@ export class W3mReceiveView extends LitElement {
       <wui-chip-button
         @click=${this.onCopyClick.bind(this)}
         text=${UiHelperUtil.getTruncateString({
-          string: this.address ? this.address : '',
+          string: this.address ?? '',
           charsStart: this.profileName ? 18 : 4,
           charsEnd: this.profileName ? 0 : 4,
           truncate: this.profileName ? 'end' : 'middle'
@@ -102,25 +102,17 @@ export class W3mReceiveView extends LitElement {
   networkTemplate() {
     const networks = NetworkController.getRequestedCaipNetworks()
     const slicedNetworks = networks?.filter(network => network?.imageId)?.slice(0, 5)
-
-    const imagesArray: string[] = []
-
-    for (const network of slicedNetworks) {
-      const image = AssetUtil.getNetworkImage(network)
-      if (image) {
-        imagesArray.push(image)
-      }
-    }
+    const imagesArray = slicedNetworks.map(AssetUtil.getNetworkImage).filter(Boolean) as string[]
 
     return html`<wui-compatible-network
       @click=${this.onReceiveClick.bind(this)}
-      text="Only receive from networks"
+      text="Only receive assets on these networks"
       .networkImages=${imagesArray}
     ></wui-compatible-network>`
   }
 
   onReceiveClick() {
-    RouterController.push('CompatibleNetworks')
+    RouterController.push('WalletCompatibleNetworks')
   }
 
   onCopyClick() {
@@ -137,6 +129,6 @@ export class W3mReceiveView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-receive-view': W3mReceiveView
+    'w3m-wallet-receive-view': W3mWalletReceiveView
   }
 }

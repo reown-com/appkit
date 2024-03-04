@@ -53,7 +53,7 @@ export class W3mAccountDefaultWidget extends LitElement {
             this.balance = val.balance
             this.balanceSymbol = val.balanceSymbol
           } else {
-            ModalController.close()
+            SnackController.showError('Account not found')
           }
         })
       ],

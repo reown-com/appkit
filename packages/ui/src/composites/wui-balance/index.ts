@@ -15,7 +15,7 @@ export class WuiBalance extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html` <span>$${this.dollars}<span class="pennies">.${this.pennies}</span></span>`
+    return html`<span>$${this.dollars}<span class="pennies">.${this.pennies}</span></span>`
   }
 }
 

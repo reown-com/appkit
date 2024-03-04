@@ -10,6 +10,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 
 @customElement('w3m-account-wallet-features-widget')
 export class W3mAccountWalletFeaturesWidget extends LitElement {
@@ -59,8 +60,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       throw new Error('w3m-account-view: No account provided')
     }
 
-    const tabs = [{ label: 'Tokens', icon: '' }, { label: 'NFTs', icon: '' }, { label: 'Activity' }]
-
     const networkImage = AssetUtil.getNetworkImage(this.network)
 
     return html`<wui-flex
@@ -94,7 +93,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         <wui-tooltip-select text="Send" icon="send"></wui-tooltip-select>
       </wui-flex>
 
-      <wui-tabs localTabWidth="120px" .tabs=${tabs}></wui-tabs>
+      <wui-tabs localTabWidth="120px" .tabs=${ConstantsUtil.ACCOUNT_TABS}></wui-tabs>
     </wui-flex>`
   }
 
@@ -116,7 +115,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onReceiveClick() {
-    RouterController.push('Receive')
+    RouterController.push('WalletReceive')
   }
 }
 

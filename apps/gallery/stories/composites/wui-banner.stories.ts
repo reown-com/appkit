@@ -10,7 +10,7 @@ type Component = Meta<WuiBanner>
 export default {
   title: 'Composites/wui-banner',
   args: {
-    text: 'Only send funds from these networks to be able receive them',
+    text: 'You can only receive assets on these networks',
     icon: 'warningCircle'
   },
   argTypes: {
