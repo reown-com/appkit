@@ -10,7 +10,7 @@ export class WuiTabs extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Array }) public tabs: { icon?: IconType; label: string }[] = []
+  @property({ type: Array }) public tabs: { icon: IconType; label: string }[] = []
 
   @property() public onTabChange: (index: number) => void = () => null
 
@@ -24,16 +24,13 @@ export class WuiTabs extends LitElement {
 
   @state() public isDense = false
 
-  @state() public tabWidth?: number = 320
-
   // -- Render -------------------------------------------- //
   public override render() {
     this.isDense = this.tabs.length > 3
 
     this.style.cssText = `
       --local-tab: ${this.activeTab};
-      --local-tabs-width: ${this.tabWidth}px;
-      --local-tab-count: ${this.tabs.length};
+      --local-tab-width: ${this.localTabWidth};
     `
 
     this.dataset['type'] = this.isDense ? 'flex' : 'block'
@@ -46,10 +43,9 @@ export class WuiTabs extends LitElement {
           ?disabled=${this.disabled}
           @click=${() => this.onTabClick(index)}
           data-active=${isActive}
+          data-testid="tab-${tab.label?.toLowerCase()}"
         >
-          ${tab.icon
-            ? html`<wui-icon size="sm" color="inherit" name=${tab.icon}></wui-icon>`
-            : null}
+          <wui-icon size="xs" color="inherit" name=${tab.icon}></wui-icon>
           <wui-text variant="small-600" color="inherit"> ${tab.label} </wui-text>
         </button>
       `

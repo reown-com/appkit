@@ -2,12 +2,7 @@ import { css } from 'lit'
 
 export default css`
   :host {
-    --local-tab-width: calc(
-      calc(var(--local-tabs-width) - calc(var(--wui-spacing-3xs) * 2)) / var(--local-tab-count)
-    );
-    width: var(--local-tabs-width);
     display: inline-flex;
-    justify-content: space-between;
     background-color: var(--wui-gray-glass-002);
     border-radius: var(--wui-border-radius-3xl);
     padding: var(--wui-spacing-3xs);
@@ -28,8 +23,13 @@ export default css`
     border-radius: var(--wui-border-radius-3xl);
     background-color: var(--wui-gray-glass-002);
     box-shadow: inset 0 0 0 1px var(--wui-gray-glass-002);
-    left: calc(var(--local-tab) * (var(--local-tab-width)) + var(--wui-spacing-3xs));
-    transition: left var(--wui-ease-out-power-2) var(--wui-duration-lg);
+    transform: translateX(calc(var(--local-tab) * var(--local-tab-width)));
+    transition: transform var(--wui-ease-out-power-2) var(--wui-duration-lg);
+  }
+
+  :host([data-type='flex'])::before {
+    left: 3px;
+    transform: translateX(calc((var(--local-tab) * 34px) + (var(--local-tab) * 4px)));
   }
 
   :host([data-type='flex']) {
@@ -76,10 +76,7 @@ export default css`
   }
 
   button {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: var(--local-tab-width);
   }
 
   :host([data-type='flex']) > button {
