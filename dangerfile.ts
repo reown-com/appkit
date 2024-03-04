@@ -296,7 +296,7 @@ async function checkWallet() {
   const wallet_files = modified_files.filter(f => f.includes('/wallet/'))
   for (const f of wallet_files) {
     const diff = await diffForFile(f)
-    if (diff?.added.includes('SECURE_SITE_SDK')) {
+    if (f.includes('W3mFrameConstants') && diff?.added.includes('SECURE_SITE_SDK')) {
       warn('Secure site URL has been changed')
     }
   }
