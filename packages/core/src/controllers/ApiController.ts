@@ -140,6 +140,7 @@ export const ApiController = {
 
   getChain() {
     const { caipNetwork } = NetworkController.state
+
     if (CoreHelperUtil.checkCaipNetwork(caipNetwork, 'solana')) {
       // Because solana has same chain ids for devnet and testnet
       return `solana:${caipNetwork?.id.split(':')[1]}`
