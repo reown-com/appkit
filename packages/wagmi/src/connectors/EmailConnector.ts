@@ -8,6 +8,7 @@ import { ConstantsUtil } from '@web3modal/scaffold-utils'
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
   projectId: string
+  enableSmartAccounts?: boolean
 }
 
 interface ConnectOptions {
@@ -23,6 +24,7 @@ export type EmailParameters = {
 export function emailConnector(parameters: EmailParameters) {
   type Properties = {
     provider?: W3mFrameProvider
+    initSmartAccount: () => Promise<{ isDeployed: boolean; address?: Address }>
   }
 
   return createConnector<W3mFrameProvider, Properties>(config => ({
@@ -33,19 +35,15 @@ export function emailConnector(parameters: EmailParameters) {
     async connect(options: ConnectOptions = {}) {
       const provider = await this.getProvider()
       const { address, chainId } = await provider.connect({ chainId: options.chainId })
-      const { smartAccountEnabledNetworks } = await provider.getSmartAccountEnabledNetworks()
-
-      if (smartAccountEnabledNetworks.includes(chainId)) {
-        const { address: smartAccountAddress, isDeployed } = await provider.initSmartAccount()
-        if (isDeployed) {
-          return {
-            accounts: [smartAccountAddress as Address],
-            account: address as Address,
-            chainId,
-            chain: {
-              id: chainId,
-              unsuported: false
-            }
+      const { isDeployed, address: smartAccountAddress } = await this.initSmartAccount()
+      if (isDeployed && smartAccountAddress) {
+        return {
+          accounts: [smartAccountAddress],
+          account: smartAccountAddress,
+          chainId,
+          chain: {
+            id: chainId,
+            unsuported: false
           }
         }
       }
@@ -59,6 +57,20 @@ export function emailConnector(parameters: EmailParameters) {
           unsuported: false
         }
       }
+    },
+
+    async initSmartAccount() {
+      if (!parameters.options.enableSmartAccounts) {
+        return { isDeployed: false }
+      }
+      const provider = await this.getProvider()
+      const chainId = await this.getChainId()
+      const { smartAccountEnabledNetworks } = await provider.getSmartAccountEnabledNetworks()
+      if (smartAccountEnabledNetworks.includes(chainId)) {
+        return (await provider.initSmartAccount()) as { isDeployed: boolean; address?: Address }
+      }
+
+      return { isDeployed: false }
     },
 
     async disconnect() {

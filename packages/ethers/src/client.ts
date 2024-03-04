@@ -47,6 +47,7 @@ export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultCha
   chainImages?: Record<number, string>
   connectorImages?: Record<string, string>
   tokens?: Record<number, Token>
+  enableSmartAccounts?: boolean
 }
 
 export type Web3ModalOptions = Omit<Web3ModalClientOptions, '_sdkVersion'>
@@ -592,7 +593,7 @@ export class Web3Modal extends Web3ModalScaffold {
   private async initSmartAccount(
     chainId: number
   ): Promise<{ isDeployed: boolean; address?: string }> {
-    if (!this.emailProvider) {
+    if (!this.emailProvider || !this.options?.enableSmartAccounts) {
       return { isDeployed: false }
     }
     const { smartAccountEnabledNetworks } =
