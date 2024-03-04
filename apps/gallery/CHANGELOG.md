@@ -1,5 +1,15 @@
 # @apps/gallery
 
+## 4.0.13
+
+### Patch Changes
+
+- Fix secure site url
+
+- Updated dependencies []:
+  - @web3modal/common@4.0.13
+  - @web3modal/ui@4.0.13
+
 ## 4.0.12
 
 ### Patch Changes

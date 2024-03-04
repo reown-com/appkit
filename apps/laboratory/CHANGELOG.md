@@ -1,5 +1,16 @@
 # @apps/laboratory
 
+## 4.0.13
+
+### Patch Changes
+
+- Fix secure site url
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.0.13
+  - @web3modal/siwe@4.0.13
+  - @web3modal/wagmi@4.0.13
+
 ## 4.0.12
 
 ### Patch Changes

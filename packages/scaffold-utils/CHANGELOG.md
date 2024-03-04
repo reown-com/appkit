@@ -1,5 +1,15 @@
 # @web3modal/scaffold-utils
 
+## 4.0.13
+
+### Patch Changes
+
+- Fix secure site url
+
+- Updated dependencies []:
+  - @web3modal/core@4.0.13
+  - @web3modal/polyfills@4.0.13
+
 ## 4.0.12
 
 ### Patch Changes
