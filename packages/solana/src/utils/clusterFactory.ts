@@ -1,10 +1,10 @@
 import { proxy } from 'valtio/vanilla'
 import { Transaction } from '@solana/web3.js'
-import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 
-import { waitForOpenConnection } from '../utils/websocket'
+import { waitForOpenConnection } from './websocket'
+import { SolStoreUtil } from './scaffold'
 
-import type { ClusterSubscribeRequestMethods } from '@web3modal/scaffold-utils/solana'
+import type { ClusterSubscribeRequestMethods } from './scaffold'
 
 type Listeners = Record<
   number,

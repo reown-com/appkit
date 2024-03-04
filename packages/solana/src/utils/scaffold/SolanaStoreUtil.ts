@@ -4,7 +4,7 @@ import { Connection } from '@solana/web3.js'
 
 import UniversalProvider from '@walletconnect/universal-provider'
 
-import type { Chain, CombinedProvider, Provider } from './SolanaTypesUtil.js'
+import type { Chain, CombinedProvider, Provider } from './SolanaTypesUtil'
 
 type StateKey = keyof SolStoreUtilState
 

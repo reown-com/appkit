@@ -10,9 +10,9 @@ import BN from 'bn.js'
 import base58 from 'bs58'
 import borsh from 'borsh'
 import { Buffer } from 'buffer'
-import { SolConstantsUtil, SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 
 import { registerListener, unregisterListener } from '../utils/clusterFactory'
+import { SolConstantsUtil, SolStoreUtil } from '../utils/scaffold'
 import { getHashedName, getNameAccountKey } from '../utils/hash'
 import { NameRegistry } from '../utils/nameService'
 import { FavouriteDomain } from '../utils/favouriteDomain'
@@ -26,7 +26,7 @@ import type {
   RequestMethods,
   TransactionArgs,
   TransactionType
-} from '@web3modal/scaffold-utils/solana'
+} from '../utils/scaffold'
 
 export interface Connector {
   id: string

@@ -1,6 +1,5 @@
 import { Connection } from '@solana/web3.js'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import { SolStoreUtil, SolHelpersUtil, SolConstantsUtil } from '@web3modal/scaffold-utils/solana'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 
 import { WalletConnectConnector } from './connectors/WalletConnectConnector'
@@ -9,6 +8,7 @@ import {
   type AdapterKey,
   syncInjectedWallets
 } from './connectors/walletAdapters'
+import { SolStoreUtil, SolHelpersUtil, SolConstantsUtil } from './utils/scaffold'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { PublicKey } from '@solana/web3.js'
@@ -24,17 +24,11 @@ import type {
   CaipAddress,
   CaipNetwork
 } from '@web3modal/scaffold'
-import type {
-  ProviderType,
-  Chain,
-  Provider,
-  SolStoreUtilState
-} from '@web3modal/scaffold-utils/solana'
-import type { Web3ModalSIWEClient } from '@web3modal/siwe'
+
+import type { ProviderType, Chain, Provider, SolStoreUtilState } from './utils/scaffold'
 
 export interface Web3ModalClientOptions extends Omit<LibraryOptions, 'defaultChain' | 'tokens'> {
   solanaConfig: ProviderType
-  siweConfig?: Web3ModalSIWEClient
   chains: Chain[]
   defaultChain?: Chain
   chainImages?: Record<number | string, string>

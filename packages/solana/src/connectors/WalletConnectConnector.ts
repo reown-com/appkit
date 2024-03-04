@@ -1,8 +1,8 @@
 import base58 from 'bs58'
 import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
 import { BaseConnector } from './BaseConnector'
-import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 
+import { SolStoreUtil } from '../utils/scaffold'
 import { UniversalProviderFactory } from './universalProvider'
 
 import type UniversalProvider from '@walletconnect/universal-provider'

@@ -138,7 +138,7 @@ export const ApiController = {
     }
   },
 
-  getChains() {
+  getChain() {
     const { caipNetwork } = NetworkController.state
     if (CoreHelperUtil.checkCaipNetwork(caipNetwork, 'solana')) {
       // Because solana has same chain ids for devnet and testnet
@@ -156,7 +156,7 @@ export const ApiController = {
       headers: ApiController._getApiHeaders(),
       params: {
         page: '1',
-        chains: this.getChains(),
+        chains: this.getChain(),
         entries: recommendedEntries,
         include: includeWalletIds?.join(','),
         exclude: exclude?.join(',')
@@ -188,7 +188,7 @@ export const ApiController = {
       params: {
         page: String(page),
         entries,
-        chains: this.getChains(),
+        chains: this.getChain(),
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
       }
@@ -213,7 +213,7 @@ export const ApiController = {
         page: '1',
         entries: '100',
         search,
-        chains: this.getChains(),
+        chains: this.getChain(),
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
       }

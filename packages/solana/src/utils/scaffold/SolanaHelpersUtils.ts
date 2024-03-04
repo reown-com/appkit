@@ -1,7 +1,7 @@
-import { PresetsUtil } from './PresetsUtil.js'
+import { PresetsUtil } from '@web3modal/scaffold-utils'
 
 import type { CaipNetwork } from '@web3modal/core'
-import type { Chain, Provider } from './SolanaTypesUtil.js'
+import type { Chain, Provider } from './SolanaTypesUtil'
 
 export const SolHelpersUtil = {
   getChain(chains: Chain[], chainId: string | null) {

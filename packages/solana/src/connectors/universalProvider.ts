@@ -1,5 +1,6 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
+
+import { SolStoreUtil } from '../utils/scaffold'
 
 import type { WalletConnectAppMetadata } from './WalletConnectConnector'
 
