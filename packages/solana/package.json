@@ -51,12 +51,10 @@
     "bs58": "5.0.0"
   },
   "devDependencies": {
-    "@types/bn.js": "5.1.5",
-    "@web3modal/siwe": "*"
+    "@types/bn.js": "5.1.5"
   },
   "peerDependencies": {
     "@solana/web3.js": ">=1.8",
-    "@web3modal/siwe": "*",
     "react": ">=17",
     "react-dom": ">=17",
     "viem": ">=1",
@@ -68,13 +66,9 @@
     },
     "react-dom": {
       "optional": true
-    },
-    "@web3modal/siwe": {
-      "optional": true
     }
   },
   "optionalDependencies": {
-    "@web3modal/siwe": "4.0.4",
     "react": ">=17",
     "react-dom": ">=17",
     "vue": ">=3"
