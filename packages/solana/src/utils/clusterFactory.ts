@@ -2,7 +2,7 @@ import { proxy } from 'valtio/vanilla'
 import { Transaction } from '@solana/web3.js'
 import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
 
-import { waitForOpenConnection } from '../connectors/websocket'
+import { waitForOpenConnection } from '../utils/websocket'
 
 import type { ClusterSubscribeRequestMethods } from '@web3modal/scaffold-utils/solana'
 

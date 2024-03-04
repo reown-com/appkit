@@ -112,10 +112,10 @@ interface TransactionInstruction {
 
 export interface TransactionElement {
   meta: Meta
-  transaction: TransactionTransaction
+  transaction: TransactionData
 }
 
-export interface TransactionTransaction {
+export interface TransactionData {
   message: Message
   signatures: string[]
 }
