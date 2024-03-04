@@ -13,6 +13,7 @@ export interface AccountControllerState {
   profileName?: string | null
   profileImage?: string | null
   addressExplorerUrl?: string
+  smartAccountDeployed?: boolean
 }
 
 type StateKey = keyof AccountControllerState
@@ -63,6 +64,10 @@ export const AccountController = {
     state.addressExplorerUrl = explorerUrl
   },
 
+  setSmartAccountDeployed(isDeployed: boolean) {
+    state.smartAccountDeployed = isDeployed
+  },
+
   resetAccount() {
     state.isConnected = false
     state.caipAddress = undefined
@@ -72,5 +77,6 @@ export const AccountController = {
     state.profileName = undefined
     state.profileImage = undefined
     state.addressExplorerUrl = undefined
+    state.smartAccountDeployed = undefined
   }
 }

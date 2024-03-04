@@ -32,6 +32,7 @@ export interface RouterControllerState {
     | 'UpdateEmailPrimaryOtp'
     | 'UpdateEmailSecondaryOtp'
     | 'UpgradeEmailWallet'
+    | 'UpgradeToSmartAccount'
     | 'WhatIsANetwork'
     | 'WhatIsAWallet'
     | 'WhatIsABuy'

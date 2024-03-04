@@ -7,7 +7,7 @@ import { sepolia } from 'wagmi/chains'
 
 const TEST_TX = {
   to: vitalikEthAddress as Address,
-  value: parseGwei('0.0002')
+  value: parseGwei('0.3')
 }
 
 export function WagmiTransactionTest() {

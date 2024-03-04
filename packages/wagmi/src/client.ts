@@ -393,6 +393,11 @@ export class Web3Modal extends Web3ModalScaffold {
       if (isLoginEmailUsed) {
         this.setIsConnected(false)
       }
+
+      provider.onInitSmartAccount((isDeployed: boolean) => {
+        this.setSmartAccountDeployed(isDeployed)
+      })
+
       provider.onRpcRequest(request => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {

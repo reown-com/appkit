@@ -54,7 +54,9 @@ import {
   AppSyncThemeRequest,
   RpcEthChainId,
   FrameSwitchNetworkResponse,
-  AppSyncDappDataRequest
+  AppSyncDappDataRequest,
+  FrameGetSmartAccountEnabledNetworksResponse,
+  FrameInitSmartAccountResponse
 } from './W3mFrameSchema.js'
 
 export namespace W3mFrameTypes {
@@ -81,6 +83,10 @@ export namespace W3mFrameTypes {
     FrameIsConnectedResponse: z.infer<typeof FrameIsConnectedResponse>
     FrameUpdateEmailSecondaryOtpResolver: z.infer<typeof FrameUpdateEmailSecondaryOtpResolver>
     FrameSwitchNetworkResponse: z.infer<typeof FrameSwitchNetworkResponse>
+    FrameGetSmartAccountEnabledNetworksResponse: z.infer<
+      typeof FrameGetSmartAccountEnabledNetworksResponse
+    >
+    FrameInitSmartAccountResponse: z.infer<typeof FrameInitSmartAccountResponse>
   }
 
   export interface Network {
