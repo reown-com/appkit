@@ -1,5 +1,14 @@
 # @examples/react-wagmi
 
+## 4.0.13
+
+### Patch Changes
+
+- Fix secure site url
+
+- Updated dependencies []:
+  - @web3modal/wagmi@4.0.13
+
 ## 4.0.12
 
 ### Patch Changes
