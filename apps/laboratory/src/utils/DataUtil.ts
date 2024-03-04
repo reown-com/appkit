@@ -22,17 +22,22 @@ export const wagmiSdkOptions = [
   {
     title: 'Default',
     link: '/library/wagmi',
-    description: 'Basic configuration using wagmi as a driving library'
+    description: 'Basic configuration usign wagmi as a driving library'
   },
   {
     title: 'SIWE',
     link: '/library/wagmi-siwe/',
-    description: 'Configuration using wagmi and implementing sign in with ethereum'
+    description: 'Configuration usign wagmi and implementing sign in with ethereum'
   },
   {
     title: 'Email',
     link: '/library/wagmi-email/',
-    description: 'Configuration using wagmi and implementing email login'
+    description: 'Configuration usign wagmi and implementing email login'
+  },
+  {
+    title: 'Wallet',
+    link: '/library/wagmi-wallet/',
+    description: 'Configuration usign wagmi and implementing email wallet'
   }
 ]
 
@@ -40,17 +45,22 @@ export const ethersSdkOptions = [
   {
     title: 'Default',
     link: '/library/ethers',
-    description: 'Basic configuration using ethers as a driving library'
+    description: 'Basic configuration usign ethers as a driving library'
   },
   {
     title: 'SIWE',
     link: '/library/ethers-siwe/',
-    description: 'Configuration using ethers and implementing sign in with ethereum'
+    description: 'Configuration usign ethers and implementing sign in with ethereum'
   },
   {
     title: 'Email',
     link: '/library/ethers-email/',
-    description: 'Configuration using ethers and implementing email login'
+    description: 'Configuration usign ethers and implementing email login'
+  },
+  {
+    title: 'Wallet',
+    link: '/library/ethers-wallet/',
+    description: 'Configuration usign ethers and implementing email wallet'
   }
 ]
 

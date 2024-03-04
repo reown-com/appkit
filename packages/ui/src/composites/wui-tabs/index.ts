@@ -10,7 +10,7 @@ export class WuiTabs extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Array }) public tabs: { icon: IconType; label: string }[] = []
+  @property({ type: Array }) public tabs: { icon?: IconType; label: string }[] = []
 
   @property() public onTabChange: (index: number) => void = () => null
 

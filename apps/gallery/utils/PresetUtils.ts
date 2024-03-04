@@ -133,6 +133,14 @@ export const walletImageSrc =
 export const networkImageSrc =
   'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b'
 
+export const networkImages = [
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b',
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/30c46e53-e989-45fb-4549-be3bd4eb3b00?projectId=c1781fc385454899a2b1385a2b83df3b',
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/93564157-2e8e-4ce7-81df-b264dbee9b00?projectId=c1781fc385454899a2b1385a2b83df3b',
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/ab9c186a-c52f-464b-2906-ca59d760a400?projectId=c1781fc385454899a2b1385a2b83df3b',
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/41d04d42-da3b-4453-8506-668cc0727900?projectId=c1781fc385454899a2b1385a2b83df3b'
+]
+
 export const avatarImageSrc =
   'https://i.seadn.io/gcs/files/007a5af0d93d561f87c8d026ddd5179e.png?auto=format&dpr=1&w=1000'
 
@@ -179,6 +187,7 @@ export const iconOptions: IconType[] = [
   'compass',
   'copy',
   'cursor',
+  'cursorTransparent',
   'desktop',
   'disconnect',
   'discord',

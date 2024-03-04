@@ -12,7 +12,11 @@ export default {
   args: {
     walletImages: walletImagesOptions,
     imageSrc: networkImageSrc,
-    name: 'Ethereum'
+    name: 'Ethereum',
+    transparent: false
+  },
+  transparent: {
+    control: { type: 'boolean' }
   }
 } as Component
 
@@ -23,6 +27,7 @@ export const Default: Component = {
         .imageSrc=${args.imageSrc}
         ?disabled=${args.disabled}
         name=${args.name}
+        ?transparent=${args.transparent}
       ></wui-list-network>
     </gallery-container>`
 }
