@@ -232,7 +232,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
       provider
         .connect({
           pairingTopic: undefined,
-          namespaces: solanaNamespace
+          optionalNamespaces: solanaNamespace
         })
         .then(providerResult => {
           if (!providerResult) {
