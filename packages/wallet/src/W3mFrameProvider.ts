@@ -406,6 +406,10 @@ export class W3mFrameProvider {
     })
   }
 
+  public setSmartAccountEnabled(enabled: boolean) {
+    W3mFrameStorage.set(W3mFrameConstants.SMART_ACCOUNT_ENABLED, String(enabled))
+  }
+
   // -- Promise Handlers ------------------------------------------------
   private onConnectEmailSuccess(
     event: Extract<W3mFrameTypes.FrameEvent, { type: '@w3m-frame/CONNECT_EMAIL_SUCCESS' }>
@@ -594,6 +598,7 @@ export class W3mFrameProvider {
       { type: '@w3m-frame/GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS' }
     >
   ) {
+    this.persistSmartAccountEnabledNetworks(event.payload.smartAccountEnabledNetworks)
     this.smartAccountEnabledNetworksResolver?.resolve(event.payload)
   }
 
@@ -603,6 +608,7 @@ export class W3mFrameProvider {
       { type: '@w3m-frame/GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR' }
     >
   ) {
+    this.persistSmartAccountEnabledNetworks([])
     this.smartAccountEnabledNetworksResolver?.reject(event.payload.message)
   }
 
@@ -656,5 +662,9 @@ export class W3mFrameProvider {
 
   private persistPreferredAccount(type: 'eoa' | 'smartAccount') {
     W3mFrameStorage.set(W3mFrameConstants.PREFERRED_ACCOUNT_TYPE, type)
+  }
+
+  private persistSmartAccountEnabledNetworks(networks: number[]) {
+    W3mFrameStorage.set(W3mFrameConstants.SMART_ACCOUNT_ENABLED_NETWORKS, networks.join(','))
   }
 }

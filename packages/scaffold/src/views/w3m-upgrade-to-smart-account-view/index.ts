@@ -49,7 +49,12 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
 
   private buttonsTemplate() {
     return html`<wui-flex .padding=${['0', '2l', '0', '2l'] as const} gap="s">
-      <wui-button variant="accentBg" @click=${RouterController.goBack} size="lg" borderRadius="xs">
+      <wui-button
+        variant="accentBg"
+        @click=${() => RouterController.push('Account')}
+        size="lg"
+        borderRadius="xs"
+      >
         Do it later
       </wui-button>
       <wui-button size="lg" borderRadius="xs"> Continue </wui-button>

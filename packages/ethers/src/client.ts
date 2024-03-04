@@ -599,6 +599,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const { smartAccountEnabledNetworks } =
       await this.emailProvider.getSmartAccountEnabledNetworks()
 
+    this.emailProvider.setSmartAccountEnabled(true)
     if (!smartAccountEnabledNetworks.includes(chainId)) {
       return { isDeployed: false }
     }
