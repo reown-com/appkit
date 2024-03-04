@@ -2,7 +2,6 @@ import {
   AccountController,
   AssetUtil,
   CoreHelperUtil,
-  ModalController,
   NetworkController,
   RouterController,
   SnackController,
