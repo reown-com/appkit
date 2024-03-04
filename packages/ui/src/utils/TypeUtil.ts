@@ -115,6 +115,7 @@ export type IconType =
   | 'compass'
   | 'copy'
   | 'cursor'
+  | 'cursorTransparent'
   | 'desktop'
   | 'disconnect'
   | 'discord'
