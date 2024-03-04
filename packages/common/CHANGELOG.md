@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 4.0.13
+
+### Patch Changes
+
+- Fix secure site url
+
 ## 4.0.12
 
 ### Patch Changes

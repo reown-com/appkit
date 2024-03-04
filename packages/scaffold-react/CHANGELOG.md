@@ -1,5 +1,14 @@
 # @web3modal/scaffold-react
 
+## 4.0.13
+
+### Patch Changes
+
+- Fix secure site url
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.0.13
+
 ## 4.0.12
 
 ### Patch Changes
