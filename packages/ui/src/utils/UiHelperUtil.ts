@@ -106,5 +106,13 @@ export const UiHelperUtil = {
     }
 
     return 'dark'
+  },
+  splitBalance(input: string): [string, string] {
+    const parts = input.split('.') as [string, string]
+    if (parts.length === 2) {
+      return [parts[0], parts[1]]
+    }
+
+    return ['0', '00']
   }
 }

@@ -49,7 +49,9 @@ function headings() {
     WhatIsABuy: 'What is Buy?',
     BuyInProgress: 'Buy',
     OnRampTokenSelect: 'Select Token',
-    OnRampFiatSelect: 'Select Currency'
+    OnRampFiatSelect: 'Select Currency',
+    WalletReceive: 'Receive',
+    WalletCompatibleNetworks: 'Compatible Networks'
   }
 }
 

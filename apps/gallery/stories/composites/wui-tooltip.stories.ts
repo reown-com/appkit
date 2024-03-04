@@ -11,12 +11,17 @@ export default {
   title: 'Composites/wui-tooltip',
   args: {
     message: 'Tooltip',
-    placement: 'top'
+    placement: 'top',
+    variant: 'fill'
   },
 
   argTypes: {
     placement: {
       options: placementOptions,
+      control: { type: 'select' }
+    },
+    variant: {
+      options: ['fill', 'shade'],
       control: { type: 'select' }
     }
   }
@@ -24,5 +29,9 @@ export default {
 
 export const Default: Component = {
   render: args =>
-    html`<wui-tooltip placement=${args.placement} message=${args.message}></wui-tooltip>`
+    html`<wui-tooltip
+      variant=${args.variant}
+      placement=${args.placement}
+      message=${args.message}
+    ></wui-tooltip>`
 }
