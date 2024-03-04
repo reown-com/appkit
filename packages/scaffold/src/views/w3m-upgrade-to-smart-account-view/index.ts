@@ -31,9 +31,9 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
       .padding=${['0', 'xxl', '0', 'xxl'] as const}
     >
       <wui-flex gap="s" alignItems="center" justifyContent="center">
-        <wui-visual name="onrampCard"></wui-visual>
-        <wui-visual name="onrampCard"></wui-visual>
-        <wui-visual name="onrampCard"></wui-visual>
+        <wui-visual name="google"></wui-visual>
+        <wui-visual name="pencil"></wui-visual>
+        <wui-visual name="lightbulb"></wui-visual>
       </wui-flex>
       <wui-flex flexDirection="column" alignItems="center" gap="s">
         <wui-text align="center" variant="medium-600" color="fg-100">
