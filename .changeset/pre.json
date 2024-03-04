@@ -1,5 +1,5 @@
 {
-  "mode": "pre",
+  "mode": "exit",
   "tag": "0c59f84f",
   "initialVersions": {
     "@apps/gallery": "4.0.11",
