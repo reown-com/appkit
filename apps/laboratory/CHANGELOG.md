@@ -1,5 +1,16 @@
 # @apps/laboratory
 
+## 4.0.12-0c59f84f.0
+
+### Patch Changes
+
+- Smart Account RPC handler canary
+
+- Updated dependencies []:
+  - @web3modal/ethers@4.0.12-0c59f84f.0
+  - @web3modal/wagmi@4.0.12-0c59f84f.0
+  - @web3modal/siwe@4.0.12-0c59f84f.0
+
 ## 4.0.11
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @web3modal/scaffold-vue
 
+## 4.0.12-0c59f84f.0
+
+### Patch Changes
+
+- Smart Account RPC handler canary
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.0.12-0c59f84f.0
+
 ## 4.0.11
 
 ### Patch Changes

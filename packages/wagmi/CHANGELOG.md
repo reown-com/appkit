@@ -1,5 +1,19 @@
 # @web3modal/wagmi
 
+## 4.0.12-0c59f84f.0
+
+### Patch Changes
+
+- Smart Account RPC handler canary
+
+- Updated dependencies []:
+  - @web3modal/scaffold@4.0.12-0c59f84f.0
+  - @web3modal/polyfills@4.0.12-0c59f84f.0
+  - @web3modal/scaffold-react@4.0.12-0c59f84f.0
+  - @web3modal/scaffold-utils@4.0.12-0c59f84f.0
+  - @web3modal/scaffold-vue@4.0.12-0c59f84f.0
+  - @web3modal/siwe@4.0.12-0c59f84f.0
+
 ## 4.0.11
 
 ### Patch Changes

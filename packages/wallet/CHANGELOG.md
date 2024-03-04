@@ -1,5 +1,11 @@
 # @web3modal/wallet
 
+## 4.0.12-0c59f84f.0
+
+### Patch Changes
+
+- Smart Account RPC handler canary
+
 ## 4.0.11
 
 ### Patch Changes

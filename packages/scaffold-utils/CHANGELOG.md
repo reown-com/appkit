@@ -1,5 +1,15 @@
 # @web3modal/scaffold-utils
 
+## 4.0.12-0c59f84f.0
+
+### Patch Changes
+
+- Smart Account RPC handler canary
+
+- Updated dependencies []:
+  - @web3modal/core@4.0.12-0c59f84f.0
+  - @web3modal/polyfills@4.0.12-0c59f84f.0
+
 ## 4.0.11
 
 ### Patch Changes
