@@ -86,11 +86,11 @@
       "dependsOn": ["^build"],
       "cache": false
     },
-		"build:demo": {
+    "build:demo": {
       "outputs": ["out/**", ".next/**", "!.next/cache/**"],
       "dependsOn": ["^build"],
       "cache": false
-		},
+    },
     "typecheck": {
       "cache": false
     },
