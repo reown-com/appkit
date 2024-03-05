@@ -59,7 +59,7 @@ export default function ConfigSection() {
             Modify the configuration to suit your needs. You can copy the config and use it in your
             project.
           </motion.p>
-          <motion.div variants={VARIANTS} className="h-full space-y-4">
+          <motion.div variants={VARIANTS} className="space-y-4">
             <Switch label="Email" checked={enableEmail} onCheckedChange={setEnableEmail} />
             <Switch label="Injected" checked={enableInjected} onCheckedChange={setEnableInjected} />
             <Switch label="EIP-6963" checked={enableEIP6963} onCheckedChange={setEnableEIP6963} />
