@@ -19,9 +19,9 @@ export class WuiTabs extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
-  @state() public activeTab = 0
-
   @property() public localTabWidth = '100px'
+
+  @state() public activeTab = 0
 
   @state() public isDense = false
 
