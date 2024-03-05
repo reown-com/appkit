@@ -9,9 +9,11 @@ import {
   getAccount,
   switchChain,
   watchAccount,
-  watchConnectors
+  watchConnectors,
+  waitForTransactionReceipt
 } from '@wagmi/core'
 import { mainnet } from 'viem/chains'
+import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
 import type { GetAccountReturnType } from '@wagmi/core'
 import type {
@@ -23,8 +25,10 @@ import type {
   LibraryOptions,
   NetworkControllerClient,
   PublicStateControllerState,
+  SendTransactionArgs,
   Token
 } from '@web3modal/scaffold'
+import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
 import type { Web3ModalSIWEClient } from '@web3modal/siwe'
@@ -36,7 +40,7 @@ import {
 } from './utils/helpers.js'
 import { W3mFrameHelpers, W3mFrameRpcConstants } from '@web3modal/wallet'
 import type { W3mFrameProvider } from '@web3modal/wallet'
-import { ConstantsUtil as CoreConstants } from '@web3modal/core'
+import { ConnectionController, ConstantsUtil as CoreConstants } from '@web3modal/core'
 import type { defaultWagmiConfig as coreConfig } from './utils/defaultWagmiCoreConfig.js'
 import type { defaultWagmiConfig as reactConfig } from './utils/defaultWagmiReactConfig.js'
 
@@ -168,7 +172,49 @@ export class Web3Modal extends Web3ModalScaffold {
         }
       },
 
-      signMessage: async message => signMessage(this.wagmiConfig, { message })
+      signMessage: async message => signMessage(this.wagmiConfig, { message }),
+
+      sendTransaction: async ({
+        data,
+        to,
+        value,
+        gas,
+        gasPrice,
+        chainId,
+        address
+      }: SendTransactionArgs) => {
+        try {
+          // Prepare transaction parameters
+          const params = {
+            to,
+            data,
+            value,
+            gas,
+            gasPrice,
+            chainId,
+            account: address,
+            type: 'legacy'
+          }
+
+          // Prepare the transaction with the given parameters
+          await prepareTransactionRequest(this.wagmiConfig, params)
+
+          // Send the transaction
+          const tx = await wagmiSendTransaction(this.wagmiConfig, params)
+
+          // Optionally wait for the transaction to be mined
+          await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
+
+          return tx // Return the transaction object
+        } catch (error) {
+          console.error('Transaction failed:', error)
+          throw error // Rethrow the error to be handled by the caller
+        }
+      },
+
+      parseUnits,
+
+      formatUnits
     }
 
     super({
