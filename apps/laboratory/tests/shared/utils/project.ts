@@ -43,6 +43,14 @@ const customProjectProperties: CustomProjectProperties = {
     testIgnore: 'email.spec.ts',
     useOptions: braveOptions
   },
+  'Desktop Firefox/ethers': {
+    testIgnore: 'email.spec.ts',
+    useOptions: braveOptions
+  },
+  'Desktop Chrome/ethers': {
+    testIgnore: 'email.spec.ts',
+    useOptions: braveOptions
+  },
   'Desktop Chrome/wagmi': {
     testIgnore: 'email.spec.ts'
   },
