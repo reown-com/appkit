@@ -49,6 +49,12 @@ import type { WuiListNetwork } from '../composites/wui-list-network/index.js'
 import type { WuiListWalletTransaction } from '../composites/wui-list-wallet-transaction/index.js'
 import type { WuiOnRampActivityItem } from '../composites/wui-onramp-activity-item/index.js'
 import type { WuiOnRampProviderItem } from '../composites/wui-onramp-provider-item/index.js'
+import type { WuiPromo } from '../composites/wui-promo/index.js'
+import type { WuiBalance } from '../composites/wui-balance/index.js'
+import type { WuiTooltipSelect } from '../composites/wui-tooltip-select/index.js'
+import type { WuiProfileButton } from '../composites/wui-profile-button/index.js'
+import type { WuiBanner } from '../composites/wui-banner/index.js'
+import type { WuiCompatibleNetwork } from '../composites/wui-compatible-network/index.js'
 
 import type { WuiFlex } from '../layout/wui-flex/index.js'
 import type { WuiGrid } from '../layout/wui-grid/index.js'
@@ -113,6 +119,12 @@ declare global {
       'wui-list-wallet-transaction': CustomElement<WuiListWalletTransaction>
       'wui-onramp-activity-item': CustomElement<WuiOnRampActivityItem>
       'wui-onramp-provider-item': CustomElement<WuiOnRampProviderItem>
+      'wui-promo': CustomElement<WuiPromo>
+      'wui-tooltip-select': CustomElement<WuiTooltipSelect>
+      'wui-balance': CustomElement<WuiBalance>
+      'wui-profile-button': CustomElement<WuiProfileButton>
+      'wui-banner': CustomElement<WuiBanner>
+      'wui-compatible-network': CustomElement<WuiCompatibleNetwork>
     }
   }
 }

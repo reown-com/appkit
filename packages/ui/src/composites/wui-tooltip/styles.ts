@@ -5,9 +5,23 @@ export default css`
     display: block;
     padding: 9px var(--wui-spacing-s) 10px var(--wui-spacing-s);
     border-radius: var(--wui-border-radius-xxs);
-    background-color: var(--wui-color-fg-100);
+
     color: var(--wui-color-bg-100);
     position: relative;
+  }
+
+  :host([data-variant='shade']) {
+    background-color: var(--wui-color-bg-150);
+    border: 1px solid var(--wui-gray-glass-005);
+  }
+
+  :host([data-variant='shade']) > wui-text {
+    color: var(--wui-color-fg-150);
+  }
+
+  :host([data-variant='fill']) {
+    background-color: var(--wui-color-fg-100);
+    border: none;
   }
 
   wui-icon {
@@ -17,7 +31,7 @@ export default css`
   }
 
   wui-icon[data-placement='top'] {
-    bottom: 0;
+    bottom: 0px;
     left: 50%;
     transform: translate(-50%, 95%);
   }
