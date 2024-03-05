@@ -322,7 +322,9 @@ export const SwapApiController = {
       return state.tokens
     }
     state.initialLoading = true
+
     const { api, paths } = this._get1inchApi()
+    await this.getMyTokensWithBalance({ forceRefetch: true })
 
     const res = await api.get<TokenList>({ path: paths.tokens })
 
@@ -362,18 +364,13 @@ export const SwapApiController = {
   },
 
   async getMyTokensWithBalance(options?: { forceRefetch?: boolean }) {
-    if (state.initialLoading) {
-      return state.myTokensWithBalance
-    }
-
-    if (state.myTokensWithBalance && !options?.forceRefetch) {
+    if (!options?.forceRefetch) {
       return state.myTokensWithBalance
     }
 
     state.initialLoading = true
 
-    const { fromAddress } = this._getSwapParams()
-    const { balances, tokenAddresses } = await this.getBalances(fromAddress)
+    const { balances, tokenAddresses } = await this.getBalances()
 
     if (!tokenAddresses?.length) {
       state.initialLoading = false

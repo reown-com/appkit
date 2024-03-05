@@ -106,52 +106,6 @@ export class W3mConvertView extends LitElement {
     this.unsubscribe.forEach(unsubscribe => unsubscribe?.())
   }
 
-  private getInputElement(el: HTMLElement) {
-    if (el.shadowRoot?.querySelector('input')) {
-      return el.shadowRoot.querySelector('input')
-    }
-
-    return null
-  }
-
-  private handleChangeAmount(target: Target, value: string) {
-    if (target === 'sourceToken') {
-      SwapApiController.setSourceTokenAmount(value)
-    } else {
-      SwapApiController.setToTokenAmount(value)
-    }
-    SwapApiController.clearError()
-    this.onDebouncedGetSwapCalldata()
-  }
-
-  private onDebouncedGetSwapCalldata = CoreHelperUtil.debounce(async () => {
-    await SwapApiController.getTokenSwapInfo()
-  }, 500)
-
-  private async onSwap() {
-    await SwapApiController.swapTokens()
-  }
-
-  private async onApprove() {
-    await SwapApiController.approveSwapTokens()
-  }
-
-  private onSwitchTokens() {
-    SwapApiController.switchTokens()
-  }
-
-  private get actionButtonLabel(): string {
-    if (!this.toToken || !this.sourceToken) {
-      return 'Pick tokens'
-    }
-
-    if (!this.toTokenAmount || !this.sourceTokenAmount) {
-      return 'Enter Amount'
-    }
-
-    return this.hasAllowance ? 'Swap' : 'Approve'
-  }
-
   // -- Render -------------------------------------------- //
   public override render() {
     console.log('>>> toToken', this.toToken)
@@ -251,12 +205,6 @@ export class W3mConvertView extends LitElement {
     </wui-flex>`
   }
 
-  handleValueChange(e) {
-    // Update your state based on the event
-    // You might need additional logic to know whether it's toTokenAmount or sourceTokenAmount
-    this.toTokenAmount = e.detail // or this.sourceTokenAmount, depending on your logic
-  }
-
   private templateTokenInput(target: Target, token?: TokenInfo) {
     const myToken = SwapApiController.state.myTokensWithBalance?.[token?.address ?? '']
     const price = SwapApiController.state.tokensPriceMap?.[token?.address ?? '']
@@ -350,6 +298,24 @@ export class W3mConvertView extends LitElement {
           : null}
       </wui-flex>
     `
+  }
+
+  private handleChangeAmount(target: Target, value: string) {
+    if (target === 'sourceToken') {
+      SwapApiController.setSourceTokenAmount(value)
+    } else {
+      SwapApiController.setToTokenAmount(value)
+    }
+    SwapApiController.clearError()
+    this.onDebouncedGetSwapCalldata()
+  }
+
+  private onDebouncedGetSwapCalldata = CoreHelperUtil.debounce(async () => {
+    await SwapApiController.getTokenSwapInfo()
+  }, 500)
+
+  private onSwitchTokens() {
+    SwapApiController.switchTokens()
   }
 
   private onConvertPreview() {

@@ -17,7 +17,7 @@ export default css`
   }
 
   .action-button:disabled {
-    border-color: 1px solid var(--wui-gray-glass-002);
+    border-color: 1px solid var(--wui-gray-glass-005);
   }
 
   .convert-inputs-container {

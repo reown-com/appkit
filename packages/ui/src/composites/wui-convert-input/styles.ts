@@ -7,7 +7,7 @@ export default css`
     justify-content: space-between;
     align-items: center;
     background: var(--wui-gray-glass-002);
-    border: 1px solid var(--wui-gray-glass-002);
+    border: 1px solid var(--wui-gray-glass-005);
     border-radius: var(--wui-border-radius-s);
     padding: var(--wui-spacing-xl);
     padding-right: var(--wui-spacing-s);
