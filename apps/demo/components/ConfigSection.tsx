@@ -5,7 +5,7 @@ import Button from './ui/button'
 import { motion } from 'framer-motion'
 import { VARIANTS } from '@/utils/constants'
 import { useConfig } from '@/store/ConfigStore'
-import Switch from './ui/Switch'
+import Switch from './ui/switch'
 
 function CopyIcon() {
   return (
