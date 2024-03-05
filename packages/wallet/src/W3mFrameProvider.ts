@@ -396,12 +396,14 @@ export class W3mFrameProvider {
     })
   }
 
-  public onInitSmartAccount(callback: (isDeployed: boolean) => void) {
+  public onInitSmartAccount(
+    callback: ({ isDeployed, address }: { isDeployed: boolean; address?: string }) => void
+  ) {
     this.w3mFrame.events.onFrameEvent(event => {
       if (event.type === W3mFrameConstants.FRAME_INIT_SMART_ACCOUNT_SUCCESS) {
-        callback(event.payload.isDeployed)
+        callback(event.payload)
       } else if (event.type === W3mFrameConstants.FRAME_INIT_SMART_ACCOUNT_ERROR) {
-        callback(false)
+        callback({ isDeployed: false })
       }
     })
   }

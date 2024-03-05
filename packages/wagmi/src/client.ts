@@ -231,9 +231,12 @@ export class Web3Modal extends Web3ModalScaffold {
     this.setRequestedCaipNetworks(requestedCaipNetworks ?? [])
   }
 
-  private async syncAccount({ address, isConnected, chainId }: GetAccountReturnType) {
+  private async syncAccount({
+    address,
+    isConnected,
+    chainId
+  }: Pick<GetAccountReturnType, 'address' | 'isConnected' | 'chainId'>) {
     this.resetAccount()
-    // TOD0: Check with Sven. Now network is synced when acc is synced.
     this.syncNetwork()
     if (isConnected && address && chainId) {
       const caipAddress: CaipAddress = `${ConstantsUtil.EIP155}:${chainId}:${address}`
@@ -394,8 +397,19 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setIsConnected(false)
       }
 
-      provider.onInitSmartAccount((isDeployed: boolean) => {
-        this.setSmartAccountDeployed(isDeployed)
+      provider.onInitSmartAccount(async ({ isDeployed, address }) => {
+        // Tod0: prefer smart account check
+        if (isDeployed && address) {
+          const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
+          if (chainId) {
+            await this.syncAccount({
+              address: address as `0x${string}`,
+              isConnected: true,
+              chainId
+            })
+            this.setSmartAccountDeployed(isDeployed)
+          }
+        }
       })
 
       provider.onRpcRequest(request => {

@@ -116,6 +116,13 @@ export function emailConnector(parameters: EmailParameters) {
         }
         const provider = await this.getProvider()
         await provider.switchNetwork(chainId)
+        const { smartAccountEnabledNetworks } = await provider.getSmartAccountEnabledNetworks()
+        if (
+          parameters.options.enableSmartAccounts &&
+          smartAccountEnabledNetworks.includes(chainId)
+        ) {
+          await this.initSmartAccount()
+        }
         config.emitter.emit('change', { chainId: normalizeChainId(chainId) })
 
         return chain

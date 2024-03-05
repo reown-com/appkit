@@ -11,6 +11,7 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import { W3mFrameHelpers } from '@web3modal/wallet'
 
 @customElement('w3m-account-wallet-features-widget')
 export class W3mAccountWalletFeaturesWidget extends LitElement {
@@ -26,6 +27,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
+  @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
+
   @state() private network = NetworkController.state.caipNetwork
 
   public constructor() {
@@ -37,6 +40,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
             this.address = val.address
             this.profileImage = val.profileImage
             this.profileName = val.profileName
+            this.smartAccountDeployed = val.smartAccountDeployed
           } else {
             ModalController.close()
           }
@@ -98,12 +102,20 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-
   private activateAccountTemplate() {
-    // eslint-disable-next-line no-warning-comments
-    // Todo: Check if SA is deployed
+    const networkId = NetworkController.state.caipNetwork?.id
+    const smartAccountsEnabled = W3mFrameHelpers.checkIfSmartAccountEnabled(
+      networkId?.split(':')?.[1]
+    )
 
-    return html` <wui-promo text="Activate your account"></wui-promo>`
+    if (!smartAccountsEnabled || this.smartAccountDeployed) {
+      return null
+    }
+
+    return html` <wui-promo
+      text="Activate your account"
+      @click=${() => RouterController.push('UpgradeToSmartAccount')}
+    ></wui-promo>`
   }
 
   private onProfileButtonClick() {
