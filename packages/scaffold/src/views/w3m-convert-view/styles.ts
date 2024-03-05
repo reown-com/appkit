@@ -16,13 +16,11 @@ export default css`
     border-radius: var(--wui-border-radius-xs);
   }
 
-  .action-button button {
-    width: 100%;
-    height: 48px;
-    border-radius: var(--wui-border-radius-xs);
+  .action-button:disabled {
+    border-color: 1px solid var(--wui-gray-glass-002);
   }
 
-  .swap-inputs-container {
+  .convert-inputs-container {
     position: relative;
   }
 

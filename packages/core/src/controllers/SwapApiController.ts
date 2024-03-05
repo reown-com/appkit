@@ -7,6 +7,20 @@ import { AccountController } from './AccountController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { ConnectionController } from './ConnectionController.js'
 
+const ONEINCH_API_BASE_URL = 'https://1inch-swap-proxy.walletconnect-v1-bridge.workers.dev'
+
+const OneInchAPIEndpoints = {
+  approveTransaction: (chainId: number) => `/swap/v5.2/${chainId}/approve/transaction`,
+  approveAllowance: (chainId: number) => `/swap/v5.2/${chainId}/approve/allowance`,
+  swap: (chainId: number) => `/swap/v5.2/${chainId}/swap`,
+  tokens: (chainId: number) => `/swap/v5.2/${chainId}/tokens`,
+  tokensCustom: (chainId: number) => `/token/v1.2/${chainId}/custom`,
+  tokensPrices: (chainId: number) => `/price/v1.1/${chainId}`,
+  search: (chainId: number) => `/token/v1.2/${chainId}/search`,
+  balance: (chainId: number, address: string | undefined) =>
+    `/balance/v1.2/${chainId}/balances/${address}`
+}
+
 // -- Types --------------------------------------------- //
 export interface SwapApiControllerState {
   initialLoading?: boolean
@@ -25,7 +39,9 @@ export interface SwapApiControllerState {
   tokens?: Record<string, TokenInfo>
   foundTokens?: TokenInfo[]
   myTokensWithBalance?: Record<string, TokenInfoWithBalance>
+  tokensPriceMap: Record<string, string>
   swapErrorMessage?: string
+  loadingPrices: boolean
 }
 
 export interface TokenInfo {
@@ -38,6 +54,10 @@ export interface TokenInfo {
   eip2612?: boolean
   isFoT?: boolean
   tags?: string[]
+}
+
+export interface TokenInfoWithPrice extends TokenInfo {
+  price: string
 }
 
 export interface TokenInfoWithBalance extends TokenInfo {
@@ -98,8 +118,10 @@ const state = proxy<SwapApiControllerState>({
   tokens: undefined,
   foundTokens: undefined,
   myTokensWithBalance: undefined,
+  tokensPriceMap: {},
   swapErrorMessage: undefined,
-  isTransactionPending: false
+  isTransactionPending: false,
+  loadingPrices: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -115,9 +137,23 @@ export const SwapApiController = {
   },
 
   _get1inchApi() {
-    const baseUrl = 'https://1inch-swap-proxy.walletconnect-v1-bridge.workers.dev'
+    const api = new FetchUtil({ baseUrl: ONEINCH_API_BASE_URL })
+    const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
+    const { address } = AccountController.state
 
-    return new FetchUtil({ baseUrl })
+    return {
+      api,
+      paths: {
+        approveTransaction: OneInchAPIEndpoints.approveTransaction(chainId),
+        approveAllowance: OneInchAPIEndpoints.approveAllowance(chainId),
+        swap: OneInchAPIEndpoints.swap(chainId),
+        tokens: OneInchAPIEndpoints.tokens(chainId),
+        tokensCustom: OneInchAPIEndpoints.tokensCustom(chainId),
+        tokenPrices: OneInchAPIEndpoints.tokensPrices(chainId),
+        search: OneInchAPIEndpoints.search(chainId),
+        balance: OneInchAPIEndpoints.balance(chainId, address)
+      }
+    }
   },
 
   _getSwapParams() {
@@ -137,14 +173,24 @@ export const SwapApiController = {
 
   setSourceToken(sourceToken?: TokenInfo) {
     state.sourceToken = sourceToken
+    if (sourceToken?.address && !state.tokensPriceMap[sourceToken?.address]) {
+      this.getTokenPriceWithAddresses([sourceToken?.address])
+    }
   },
 
-  setSourceTokenAmount(swapFromAmount: string) {
-    state.sourceTokenAmount = swapFromAmount
+  setSourceTokenAmount(amount: string) {
+    state.sourceTokenAmount = amount
+  },
+
+  setToTokenAmount(amount: string) {
+    state.toTokenAmount = amount
   },
 
   setToToken(toToken?: TokenInfo) {
     state.toToken = toToken
+    if (toToken?.address && !state.tokensPriceMap[toToken?.address]) {
+      this.getTokenPriceWithAddresses([toToken.address])
+    }
   },
 
   setSlippage(slippage: number) {
@@ -186,7 +232,7 @@ export const SwapApiController = {
     const api = this._get1inchApi()
     const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
 
-    const path = `${api.baseUrl}/swap/v5.2/${chainId}/swap`
+    const path = OneInchAPIEndpoints.swap(chainId)
     const { fromAddress, slippage, sourceTokenAddress, sourceTokenAmount, toTokenAddress } =
       this._getSwapParams()
 
@@ -227,16 +273,15 @@ export const SwapApiController = {
   },
 
   async getSwapApprovalCalldata() {
-    const api = this._get1inchApi()
-    const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
-    const path = `${api.baseUrl}/swap/v5.2/${chainId}/approve/transaction`
+    const { api, paths } = this._get1inchApi()
     const { sourceTokenAddress, sourceTokenAmount } = this._getSwapParams()
 
     if (!sourceTokenAmount || !state.sourceToken?.decimals) {
       return
     }
+
     const res = await api.get<SwapApprovalData>({
-      path,
+      path: paths.approveTransaction,
       params: {
         tokenAddress: sourceTokenAddress,
         amount: ConnectionController.parseUnits(
@@ -250,13 +295,11 @@ export const SwapApiController = {
   },
 
   async getTokenAllowance() {
-    const api = this._get1inchApi()
-    const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
-    const path = `${api.baseUrl}/swap/v5.2/${chainId}/approve/allowance`
+    const { api, paths } = this._get1inchApi()
     const { sourceTokenAddress, fromAddress, sourceTokenAmount } = this._getSwapParams()
 
     const res = await api.get<{ allowance: string }>({
-      path,
+      path: paths.approveAllowance,
       params: { tokenAddress: sourceTokenAddress, walletAddress: fromAddress }
     })
 
@@ -279,13 +322,9 @@ export const SwapApiController = {
       return state.tokens
     }
     state.initialLoading = true
-    const api = this._get1inchApi()
-    const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
-    const path = `${api.baseUrl}/swap/v5.2/${chainId}/tokens`
+    const { api, paths } = this._get1inchApi()
 
-    const res = await api.get<TokenList>({
-      path
-    })
+    const res = await api.get<TokenList>({ path: paths.tokens })
 
     state.tokens = Object.entries(res.tokens)
       .sort(([, aTokenInfo], [, bTokenInfo]) => {
@@ -312,15 +351,11 @@ export const SwapApiController = {
   },
 
   async searchTokens(searchTerm: string) {
-    const api = this._get1inchApi()
-    const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
-    const path = `${api.baseUrl}/token/v1.2/${chainId}/search`
+    const { api, paths } = this._get1inchApi()
 
     const res = await api.get<TokenInfo[]>({
-      path,
-      params: {
-        query: searchTerm
-      }
+      path: paths.search,
+      params: { query: searchTerm }
     })
 
     state.foundTokens = res
@@ -337,13 +372,38 @@ export const SwapApiController = {
 
     state.initialLoading = true
 
-    const api = this._get1inchApi()
-    const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
     const { fromAddress } = this._getSwapParams()
-    const balancesPath = `${api.baseUrl}/balance/v1.2/${chainId}/balances/${fromAddress}`
+    const { balances, tokenAddresses } = await this.getBalances(fromAddress)
+
+    if (!tokenAddresses?.length) {
+      state.initialLoading = false
+
+      return undefined
+    }
+
+    const [tokens, tokensPrice] = await Promise.all([
+      this.getTokenInfoWithAddresses(tokenAddresses),
+      this.getTokenPriceWithAddresses(tokenAddresses)
+    ])
+
+    const mergedTokensWithBalances = await this.mergeTokenWithBalances(
+      tokens,
+      balances,
+      tokensPrice
+    )
+
+    state.myTokensWithBalance = mergedTokensWithBalances
+
+    state.initialLoading = false
+
+    return mergedTokensWithBalances
+  },
+
+  async getBalances() {
+    const { api, paths } = this._get1inchApi()
 
     const balances = await api.get<Record<string, string>>({
-      path: balancesPath
+      path: paths.balance
     })
 
     const nonEmptyBalances = Object.entries(balances).reduce<Record<string, string>>(
@@ -357,56 +417,60 @@ export const SwapApiController = {
       {}
     )
 
-    const tokenAddresses = Object.keys(nonEmptyBalances)
+    return { balances: nonEmptyBalances, tokenAddresses: Object.keys(nonEmptyBalances) }
+  },
 
-    if (!tokenAddresses?.length) {
-      state.initialLoading = false
+  async getTokenInfoWithAddresses(addresses: Array<string>) {
+    const { api, paths } = this._get1inchApi()
 
-      return undefined
-    }
+    return api.get<Record<string, TokenInfo>>({
+      path: paths.tokensCustom,
+      params: { addresses: addresses.join(',') }
+    })
+  },
 
-    const tokensPath = `${api.baseUrl}/token/v1.2/${chainId}/custom`
-    const tokensSpotPricePath = `${api.baseUrl}/price/v1.1/${chainId}`
+  async getTokenPriceWithAddresses(addresses: Array<string>) {
+    state.loadingPrices = true
 
-    const [tokens, tokensPrice] = await Promise.all([
-      api.get<Record<string, TokenInfo>>({
-        path: tokensPath,
-        params: {
-          addresses: tokenAddresses.join(',')
-        }
-      }),
-      api.post<Record<string, string>>({
-        path: tokensSpotPricePath,
-        body: {
-          tokens: tokenAddresses,
-          currency: 'USD'
-        },
-        headers: {
-          'content-type': 'application/json'
-        }
-      })
-    ])
+    const { api, paths } = this._get1inchApi()
 
-    const mergedTokensWithBalances = Object.entries(tokens).reduce<
-      Record<string, TokenInfoWithBalance>
-    >((mergedTokens, [tokenAddress, tokenInfo], i) => {
-      mergedTokens[tokenAddress] = {
-        ...tokenInfo,
-        balance: balances[tokenAddress] ?? '0',
-        price: tokensPrice[tokenAddress] ?? '0'
+    const prices = await api.post<Record<string, string>>({
+      path: paths.tokenPrices,
+      body: { tokens: addresses, currency: 'USD' },
+      headers: {
+        'content-type': 'application/json'
       }
-      if (i === 0) {
-        this.setSourceToken(tokenInfo)
-      }
+    })
 
-      return mergedTokens
-    }, {})
+    Object.entries(prices).forEach(([tokenAddress, price]) => {
+      state.tokensPriceMap[tokenAddress] = price
+    })
 
-    state.myTokensWithBalance = mergedTokensWithBalances
+    state.loadingPrices = false
 
-    state.initialLoading = false
+    return prices
+  },
 
-    return mergedTokensWithBalances
+  async mergeTokenWithBalances(
+    tokens: Record<string, TokenInfo>,
+    balances: Record<string, string>,
+    tokensPrice: Record<string, string>
+  ) {
+    return Object.entries(tokens).reduce<Record<string, TokenInfoWithBalance>>(
+      (mergedTokens, [tokenAddress, tokenInfo], i) => {
+        mergedTokens[tokenAddress] = {
+          ...tokenInfo,
+          balance: balances[tokenAddress] ?? '0',
+          price: tokensPrice[tokenAddress] ?? '0'
+        }
+        if (i === 0) {
+          this.setSourceToken(tokenInfo)
+        }
+
+        return mergedTokens
+      },
+      {}
+    )
   },
 
   async getTokenSwapInfo() {

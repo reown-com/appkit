@@ -53,10 +53,10 @@ function headings() {
     OnRampFiatSelect: 'Select Currency',
     WalletReceive: 'Receive',
     WalletCompatibleNetworks: 'Compatible Networks',
-    Swap: 'Swap',
-    SwapSelectToken: 'Select Token',
-    SwapSelectNetwork: 'Select Network',
-    PreviewSwap: 'Preview Swap'
+    Convert: 'Convert',
+    ConvertSelectToken: 'Select Token',
+    ConvertSelectNetwork: 'Select Network',
+    ConvertPreview: 'Preview Convert'
   }
 }
 

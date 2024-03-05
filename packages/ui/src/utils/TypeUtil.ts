@@ -10,6 +10,7 @@ export type ColorType =
   | 'inverse-100'
   | 'success-100'
   | 'glass-005'
+  | 'glass-020'
 
 export type TextType =
   | 'large-500'

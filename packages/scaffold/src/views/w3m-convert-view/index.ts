@@ -6,14 +6,15 @@ import {
   SwapApiController,
   RouterController,
   CoreHelperUtil,
-  NetworkController
+  NetworkController,
+  ConnectionController
 } from '@web3modal/core'
 import type { TokenInfo } from '@web3modal/core/src/controllers/SwapApiController.js'
 
 type Target = 'sourceToken' | 'toToken'
 
-@customElement('w3m-swap-view')
-export class W3mSwapView extends LitElement {
+@customElement('w3m-convert-view')
+export class W3mConvertView extends LitElement {
   public static override styles = styles
 
   private unsubscribe: ((() => void) | undefined)[] = []
@@ -24,6 +25,8 @@ export class W3mSwapView extends LitElement {
   @state() private isTransactionPending = SwapApiController.state.isTransactionPending
 
   @state() private loading = SwapApiController.state.loading
+
+  @state() private loadingPrices = SwapApiController.state.loadingPrices
 
   @state() private sourceToken = SwapApiController.state.sourceToken
 
@@ -65,8 +68,12 @@ export class W3mSwapView extends LitElement {
           this.toToken = newToToken
         }),
         SwapApiController.subscribe(newState => {
+          console.log('>>> newState', newState.tokensPriceMap)
           if (this.loading !== newState.loading) {
             this.loading = newState.loading
+          }
+          if (this.loadingPrices !== newState.loadingPrices) {
+            this.loadingPrices = newState.loadingPrices
           }
           if (this.initialLoading !== newState.initialLoading) {
             this.initialLoading = newState.initialLoading
@@ -107,21 +114,19 @@ export class W3mSwapView extends LitElement {
     return null
   }
 
-  private onInputChange(event: InputEvent) {
-    const inputElement = event.target as HTMLElement
-    const input = this.getInputElement(inputElement)
-
-    SwapApiController.clearError()
-
-    if (input) {
-      SwapApiController.setSourceTokenAmount(input.value)
-      this.onDebouncedGetSwapCalldata()
+  private handleChangeAmount(target: Target, value: string) {
+    if (target === 'sourceToken') {
+      SwapApiController.setSourceTokenAmount(value)
+    } else {
+      SwapApiController.setToTokenAmount(value)
     }
+    SwapApiController.clearError()
+    this.onDebouncedGetSwapCalldata()
   }
 
   private onDebouncedGetSwapCalldata = CoreHelperUtil.debounce(async () => {
     await SwapApiController.getTokenSwapInfo()
-  }, 2000)
+  }, 500)
 
   private async onSwap() {
     await SwapApiController.swapTokens()
@@ -149,6 +154,8 @@ export class W3mSwapView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    console.log('>>> toToken', this.toToken)
+
     return html`
       <wui-flex flexDirection="column" padding="s" gap="s">
         ${this.initialLoading || this.isTransactionPending
@@ -164,7 +171,12 @@ export class W3mSwapView extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="s">
-        <wui-flex flexDirection="column" alignItems="center" gap="xs" class="swap-inputs-container">
+        <wui-flex
+          flexDirection="column"
+          alignItems="center"
+          gap="xs"
+          class="convert-inputs-container"
+        >
           ${this.templateTokenInput('sourceToken', this.sourceToken)}
           ${this.templateTokenInput('toToken', this.toToken)} ${this.templateReplaceTokensButton()}
         </wui-flex>
@@ -172,17 +184,18 @@ export class W3mSwapView extends LitElement {
           ${this.templateDetails()}
         </wui-flex>
         <wui-flex gap="xs">
-          ${haveNoTokenSelected
-            ? html` <wui-button disabled class="action-button" @click=${this.onSwap.bind(this)}>
-                Select token
-              </wui-button>`
-            : html` <wui-button
-                class="action-button"
-                variant="fullWidth"
-                @click=${this.onSwap.bind(this)}
-              >
-                Swap
-              </wui-button>`}
+          <wui-button
+            class="action-button"
+            ?fullWidth=${true}
+            size="lg"
+            borderRadius="xs"
+            variant=${!this.hasAllowance || haveNoTokenSelected ? 'shade' : 'fill'}
+            .loading=${this.loadingPrices}
+            .disabled=${!this.hasAllowance || haveNoTokenSelected}
+            @click=${this.onConvertPreview}
+          >
+            Swap
+          </wui-button>
         </wui-flex>
       </wui-flex>
     `
@@ -238,26 +251,72 @@ export class W3mSwapView extends LitElement {
     </wui-flex>`
   }
 
+  handleValueChange(e) {
+    // Update your state based on the event
+    // You might need additional logic to know whether it's toTokenAmount or sourceTokenAmount
+    this.toTokenAmount = e.detail // or this.sourceTokenAmount, depending on your logic
+  }
+
   private templateTokenInput(target: Target, token?: TokenInfo) {
-    return html`<wui-swap-input
+    const myToken = SwapApiController.state.myTokensWithBalance?.[token?.address ?? '']
+    const price = SwapApiController.state.tokensPriceMap?.[token?.address ?? '']
+
+    const inputValue = target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount
+    const marketValue = price
+      ? (parseFloat(price) * parseFloat(inputValue)).toLocaleString('en-US', {
+          maximumFractionDigits: 2,
+          minimumFractionDigits: 2
+        })
+      : 0
+
+    return html`<wui-convert-input
       .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
       ?disabled=${this.loading && target === 'toToken'}
-      @input=${this.onInputChange.bind(this)}
+      .onSetAmount=${this.handleChangeAmount.bind(this)}
       target=${target}
       .token=${token}
-    ></wui-swap-input>`
+      .balance=${myToken?.balance}
+      .marketValue=${marketValue}
+      amount=${myToken
+        ? parseFloat(
+            ConnectionController.formatUnits(BigInt(myToken.balance), myToken.decimals)
+          ).toFixed(3)
+        : 0}
+    ></wui-convert-input>`
   }
 
   private templateDetails() {
+    const sourceTokenPrice = parseFloat(
+      SwapApiController.state.tokensPriceMap?.[this.sourceToken?.address ?? ''] || '0'
+    )
+    const sourceTokenPriceString = parseFloat(
+      SwapApiController.state.tokensPriceMap?.[this.sourceToken?.address ?? ''] || '0'
+    ).toLocaleString('en-US', {
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2
+    })
+    const toTokenPrice = parseFloat(
+      SwapApiController.state.tokensPriceMap?.[this.toToken?.address ?? ''] || '0'
+    )
+    const sourceTokenEquivalent = (
+      sourceTokenPrice && toTokenPrice ? (1 / toTokenPrice) * sourceTokenPrice : 0
+    ).toLocaleString('en-US', {
+      maximumFractionDigits: 4,
+      minimumFractionDigits: 4
+    })
+
     return html`
       <wui-flex flexDirection="column" class="details-accordion">
         <button @click=${this.toggleDetails.bind(this)}>
           <wui-flex justifyContent="space-between" .padding=${['0', 'xs', '0', 'xs']}>
             <wui-flex justifyContent="flex-start" flexGrow="1" gap="xs">
-              <wui-text variant="small-400" color="fg-100">1 ETH = 5,700.05 1INCH</wui-text>
-              <wui-text variant="small-400" color="fg-200">$2,003.62</wui-text>
+              <wui-text variant="small-400" color="fg-100"
+                >1 ${this.sourceToken?.symbol} = ${sourceTokenEquivalent}
+                ${this.toToken?.symbol}</wui-text
+              >
+              <wui-text variant="small-400" color="fg-200">$${sourceTokenPriceString}</wui-text>
             </wui-flex>
-            <wui-icon name="chevronBottom"> </wui-icon>
+            <wui-icon name="chevronBottom"></wui-icon>
           </wui-flex>
         </button>
         ${this.detailsOpen
@@ -293,8 +352,8 @@ export class W3mSwapView extends LitElement {
     `
   }
 
-  private onPreviewSwap() {
-    RouterController.push('PreviewSwap')
+  private onConvertPreview() {
+    RouterController.push('ConvertPreview')
   }
 
   private toggleDetails() {
@@ -304,6 +363,6 @@ export class W3mSwapView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-swap-view': W3mSwapView
+    'w3m-convert-view': W3mConvertView
   }
 }

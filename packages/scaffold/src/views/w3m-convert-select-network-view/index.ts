@@ -27,16 +27,14 @@ const yourItems = [
   }
 ]
 
-@customElement('w3m-swap-select-network-view')
-export class W3mSwapSelectNetworkView extends LitElement {
+@customElement('w3m-convert-select-network-view')
+export class W3mConvertSelectNetworkView extends LitElement {
   public static override styles = styles
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
   @state() private network = NetworkController.state.caipNetwork
-
-  @state() private connected = AccountController.state.isConnected
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -95,6 +93,6 @@ export class W3mSwapSelectNetworkView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-swap-select-network-view': W3mSwapSelectNetworkView
+    'w3m-convert-select-network-view': W3mConvertSelectNetworkView
   }
 }

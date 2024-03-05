@@ -12,6 +12,7 @@ export default css`
     padding: var(--wui-spacing-xl);
     padding-right: var(--wui-spacing-s);
     width: 100%;
+    height: 100px;
     box-sizing: border-box;
     position: relative;
     transition: background 0.2s linear;
@@ -65,14 +66,7 @@ export default css`
     margin: 0;
   }
 
-  .token-select-button-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .token-select-button-container button {
+  .token-select-button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -88,7 +82,7 @@ export default css`
     transition: background 0.2s linear;
   }
 
-  .token-select-button-container button:hover {
+  .token-select-button:hover {
     background: var(--wui-gray-glass-005);
   }
 
@@ -97,5 +91,12 @@ export default css`
     height: 24px;
     border-radius: var(--wui-border-radius-s);
     box-shadow: inset 0 0 0 1px var(--wui-gray-glass-010);
+  }
+
+  .max-value-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--wui-gray-glass-020);
   }
 `

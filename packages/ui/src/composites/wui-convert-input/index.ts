@@ -7,12 +7,11 @@ import '../wui-transaction-visual/index.js'
 import { EventsController, RouterController } from '@web3modal/core'
 import styles from './styles.js'
 import type { TokenInfo } from '@web3modal/core/dist/types/src/controllers/SwapApiController.js'
-import { createRef } from 'lit/directives/ref.js'
 
 type Target = 'sourceToken' | 'toToken'
 
-@customElement('wui-swap-input')
-export class WuiSwapInput extends LitElement {
+@customElement('wui-convert-input')
+export class WuiConvertInput extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
@@ -20,26 +19,40 @@ export class WuiSwapInput extends LitElement {
 
   @property() public value?: string
 
+  @property() public marketValue?: string = '$1.0345,00'
+
+  @property() public amount?: string
+
   @property() public disabled?: boolean
 
   @property() public target: Target = 'sourceToken'
 
   @property() public token?: TokenInfo
 
-  public inputElementRef = createRef<HTMLInputElement>()
+  @property() public onSetAmount: (target: Target, value: string) => void = () => {}
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
       <wui-flex class="${this.focused ? 'focus' : ''}" justifyContent="space-between">
-        <wui-flex flex="1" class="swap-input">
+        <wui-flex
+          flex="1"
+          flexDirection="column"
+          alignItems="flex-start"
+          justifyContent="center"
+          class="swap-input"
+        >
           <input
             @focusin=${() => this.onFocusChange(true)}
             @focusout=${() => this.onFocusChange(false)}
             .value=${this.value}
             ?disabled=${this.disabled}
             @input=${this.dispatchInputChangeEvent.bind(this)}
+            placeholder="0"
           />
+          ${this.value
+            ? html`<wui-text variant="small-400" color="fg-200">$${this.marketValue}</wui-text>`
+            : null}
         </wui-flex>
         ${this.templateTokenSelectButton()}
       </wui-flex>
@@ -47,6 +60,12 @@ export class WuiSwapInput extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private setMaxValueToInput() {
+    if (this.amount?.toString()) {
+      this.onSetAmount(this.target, this.amount?.toString())
+    }
+  }
+
   private templateTokenSelectButton() {
     if (!this.token) {
       return html` <wui-button size="md" variant="accentBg" @click=${this.onSelectToken.bind(this)}>
@@ -66,12 +85,25 @@ export class WuiSwapInput extends LitElement {
         `
 
     return html`
-      <div class="token-select-button-container" @click=${this.onSelectToken.bind(this)}>
-        <button class="token-select-button">
+      <wui-flex flexDirection="column" alignItems="flex-end" justifyContent="center" gap="xxs">
+        <button
+          size="sm"
+          variant="shade"
+          class="token-select-button"
+          @click=${this.onSelectToken.bind(this)}
+        >
           ${tokenElement}
           <wui-text variant="paragraph-600" color="fg-100">${this.token.symbol}</wui-text>
         </button>
-      </div>
+        ${this.target === 'sourceToken' && this.amount && parseFloat(this.amount)
+          ? html`<wui-flex alignItems="center" gap="xxs">
+              <wui-text variant="small-400" color="fg-200">${this.amount}</wui-text>
+              <button class="max-value-button" @click=${this.setMaxValueToInput.bind(this)}>
+                <wui-text variant="small-600">Max</wui-text>
+              </button>
+            </wui-flex>`
+          : null}
+      </wui-flex>
     `
   }
 
@@ -81,24 +113,19 @@ export class WuiSwapInput extends LitElement {
 
   private onSelectToken() {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_SELECT_TOKEN_TO_SWAP' })
-    RouterController.push('SwapSelectToken', {
+    RouterController.push('ConvertSelectToken', {
       target: this.target
     })
   }
 
-  private dispatchInputChangeEvent() {
-    this.dispatchEvent(
-      new CustomEvent('inputChange', {
-        detail: this.inputElementRef.value?.value,
-        bubbles: true,
-        composed: true
-      })
-    )
+  private dispatchInputChangeEvent(event: Event) {
+    const input = event.target as HTMLInputElement
+    this.onSetAmount(this.target, input.value)
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-swap-input': WuiSwapInput
+    'wui-convert-input': WuiConvertInput
   }
 }

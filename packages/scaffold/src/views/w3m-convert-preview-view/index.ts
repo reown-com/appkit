@@ -2,8 +2,8 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 
-@customElement('w3m-preview-swap-view')
-export class W3mPreviewSwapView extends LitElement {
+@customElement('w3m-convert-preview-view')
+export class W3mConvertPreviewView extends LitElement {
   public static override styles = styles
 
   // -- Lifecycle ----------------------------------------- //
@@ -107,6 +107,6 @@ export class W3mPreviewSwapView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-preview-swap-view': W3mPreviewSwapView
+    'w3m-convert-preview-view': W3mConvertPreviewView
   }
 }

@@ -24,8 +24,16 @@ export default css`
   :host > wui-flex > wui-image {
     width: 40px;
     height: 40px;
-    box-shadow: 0 0 0 2px var(--wui-gray-glass-005);
     border-radius: var(--wui-border-radius-3xl);
+    position: relative;
+  }
+
+  :host > wui-flex > wui-image::after {
+    position: absolute;
+    content: '';
+    inset: 0;
+    box-shadow: inset 0 0 0 1px var(--wui-gray-glass-010);
+    border-radius: var(--wui-border-radius-l);
   }
 
   button > wui-icon-box[data-variant='square-blue'] {

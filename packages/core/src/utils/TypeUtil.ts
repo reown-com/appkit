@@ -326,7 +326,8 @@ export type Event =
       }
     }
   | {
-      event: 'CLICK_SWAP'
+      type: 'track'
+      event: 'CLICK_CONVERT'
     }
   | {
       type: 'track'

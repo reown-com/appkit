@@ -24,13 +24,11 @@ export class WuiInputText extends LitElement {
 
   @property() public placeholder = ''
 
-  @property() public value = ''
-
   @property() public type: InputType = 'text'
 
   @property() public keyHint?: HTMLInputElement['enterKeyHint']
 
-  @property() public value?: string
+  @property() public value?: string = ''
 
   // -- Render -------------------------------------------- //
   public override render() {

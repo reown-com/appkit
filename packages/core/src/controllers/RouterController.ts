@@ -36,10 +36,10 @@ export interface RouterControllerState {
     | 'WhatIsANetwork'
     | 'WhatIsAWallet'
     | 'WhatIsABuy'
-    | 'Swap'
-    | 'SwapSelectToken'
-    | 'SwapSelectNetwork'
-    | 'PreviewSwap'
+    | 'Convert'
+    | 'ConvertSelectToken'
+    | 'ConvertSelectNetwork'
+    | 'ConvertPreview'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
