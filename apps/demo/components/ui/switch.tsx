@@ -1,3 +1,5 @@
+'use client'
+
 import * as SwitchBase from '@radix-ui/react-switch'
 
 interface SwitchProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -8,7 +10,7 @@ interface SwitchProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export default function Switch(props: SwitchProps) {
   return (
-    <div className="mt-4 flex w-full items-center justify-between">
+    <div className="flex w-full items-center justify-between">
       <span className="font-bold text-lg text-[var(--navy-200)]">{props.label}</span>
       <SwitchBase.Root
         checked={props.checked}

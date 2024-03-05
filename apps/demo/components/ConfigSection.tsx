@@ -55,19 +55,24 @@ export default function ConfigSection() {
           <motion.h1 variants={VARIANTS} className="text-xl font-bold">
             Build Your Own Web3Modal
           </motion.h1>
-          <motion.p variants={VARIANTS} className="text-[var(--navy-400)] text-sm mt-2 mb-4">
+          <motion.p variants={VARIANTS} className="text-[var(--navy-400)] text-sm mt-1 mb-6">
             Modify the configuration to suit your needs. You can copy the config and use it in your
             project.
           </motion.p>
-          <motion.div variants={VARIANTS} className="h-full">
+          <motion.div variants={VARIANTS} className="h-full space-y-4">
             <Switch label="Email" checked={enableEmail} onCheckedChange={setEnableEmail} />
             <Switch label="Injected" checked={enableInjected} onCheckedChange={setEnableInjected} />
             <Switch label="EIP-6963" checked={enableEIP6963} onCheckedChange={setEnableEIP6963} />
             <Switch label="Coinbase" checked={enableCoinbase} onCheckedChange={setEnableCoinbase} />
           </motion.div>
         </div>
-        <div className="px-10 py-8 bg-white border-t border-slate-100 w-full">
-          <Button value="Copy Config" icon={<CopyIcon />} className="w-full justify-between" />
+        <div className="px-10 py-8 bg-white border-t border-slate-100 w-full flex items-center justify-between">
+          <Button
+            variant="link"
+            value="Documentation"
+            href="https://docs.walletconnect.com/web3modal/about?utm_source=docs&utm_medium=docs&utm_campaign=demo&utm_content=w3m"
+          />
+          <Button value="Copy Config" icon={<CopyIcon />} className="" />
         </div>
       </motion.div>
     </motion.div>
