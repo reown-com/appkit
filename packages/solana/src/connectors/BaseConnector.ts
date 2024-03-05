@@ -15,7 +15,6 @@ import { registerListener, unregisterListener } from '../utils/clusterFactory'
 import { SolConstantsUtil, SolStoreUtil } from '../utils/scaffold'
 import { getHashedName, getNameAccountKey } from '../utils/hash'
 import { NameRegistry } from '../utils/nameService'
-import { FavouriteDomain } from '../utils/favouriteDomain'
 
 import type {
   BlockResult,
@@ -59,7 +58,6 @@ export interface Connector {
   ) => Promise<() => void>
   getSolDomainsFromPublicKey: (address: string) => Promise<string[]>
   getAddressFromDomain: (address: string) => Promise<string | null>
-  getFavoriteDomain: (address: string) => Promise<{ domain: PublicKey; reverse: string } | null>
   getBlock: (slot: number) => Promise<BlockResult | null>
   getFeeForMessage: <Type extends TransactionType>(
     type: Type,
@@ -345,33 +343,6 @@ export class BaseConnector {
     ) as { owner: any }
 
     return ownerData.owner.toBase58()
-  }
-
-  public async getFavoriteDomain(address: string) {
-    const domainBuffer = Buffer.from('favourite_domain')
-    const pubkeyBuffer = new PublicKey(address).toBuffer()
-    const [favKey] = await PublicKey.findProgramAddress(
-      [domainBuffer, pubkeyBuffer],
-      SolConstantsUtil.NAME_OFFERS_ID
-    )
-
-    const favoriteDomainAccInfo = await this.getAccount(favKey.toBase58(), 'base64')
-
-    if (!favoriteDomainAccInfo) {
-      return null
-    }
-
-    const favoriteDomainData = borsh.deserialize(
-      FavouriteDomain.schema,
-      FavouriteDomain,
-      Buffer.from(String(favoriteDomainAccInfo.data[0]), 'base64')
-    ) as any
-
-    const reverse = await this.performReverseLookup(favoriteDomainData.nameAccount.toBase58())
-
-    const result = { domain: favoriteDomainData.nameAccount, reverse }
-
-    return result
   }
 
   public async request<Method extends keyof RequestMethods>(

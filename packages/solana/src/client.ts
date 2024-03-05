@@ -157,7 +157,7 @@ export class Web3Modal extends Web3ModalScaffold {
       defaultChain: SolHelpersUtil.getChainFromCaip(
         chains,
         typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''
-      ),
+      ) as CaipNetwork,
       tokens: HelpersUtil.getCaipTokens(tokens),
       _sdkVersion: _sdkVersion ?? `html-solana-${ConstantsUtil.VERSION}`,
       ...w3mOptions

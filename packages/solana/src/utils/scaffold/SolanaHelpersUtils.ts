@@ -2,16 +2,19 @@ import { PresetsUtil } from '@web3modal/scaffold-utils'
 
 import type { CaipNetwork } from '@web3modal/core'
 import type { Chain, Provider } from './SolanaTypesUtil'
+import { SolConstantsUtil } from './SolanaConstantsUtil'
 
 export const SolHelpersUtil = {
   getChain(chains: Chain[], chainId: string | null) {
     const chain = chains.find(lChain => lChain.chainId === chainId)
+
     if (chain) {
       return chain
     }
 
-    return chains[0]
+    return SolConstantsUtil.DEFAULT_CHAIN
   },
+
   getChainFromCaip(chains: Chain[], chainCaipId: string | undefined | null = ':') {
     const chainName: string = chainCaipId?.split(':')[0] ?? ''
     const chainId: string = (chainCaipId?.split(':')[1] ?? '').replace(/\s/gu, '')
@@ -21,11 +24,15 @@ export const SolHelpersUtil = {
     )
 
     if (selectedChain) {
-      return selectedChain
+      return {
+        ...selectedChain,
+        id: `${chainName}:${chainId}`
+      }
     }
 
-    return chains[0]
+    return { ...SolConstantsUtil.DEFAULT_CHAIN, id: `${chainName}:${chainId}` }
   },
+
   getCaipDefaultChain(chain?: Chain) {
     if (!chain) {
       return undefined
@@ -37,12 +44,14 @@ export const SolHelpersUtil = {
       imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId]
     } as CaipNetwork
   },
-  hexStringToNumber(value: string) {
-    const string = value.startsWith('0x') ? value.slice(2) : value
-    const number = parseInt(string, 16)
 
-    return number
+  hexStringToNumber(value: string) {
+    const hexString = value.startsWith('0x') ? value.slice(2) : value
+    const decimalValue = parseInt(hexString, 16)
+
+    return decimalValue
   },
+
   async getAddress(provider: Provider) {
     const [address] = await provider.request<string[]>({ method: 'getAccountInfo' })
 

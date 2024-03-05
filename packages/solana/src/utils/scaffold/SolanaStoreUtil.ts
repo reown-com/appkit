@@ -5,13 +5,14 @@ import { Connection } from '@solana/web3.js'
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import type { Chain, CombinedProvider, Provider } from './SolanaTypesUtil'
+import { SolConstantsUtil } from '.'
 
 type StateKey = keyof SolStoreUtilState
 
 export interface SolStoreUtilState {
   projectId: string
   provider?: Provider | CombinedProvider | UniversalProvider
-  providerType?: 'walletConnect' | `injected_${string}` | 'coinbaseWallet' | 'eip6963' | 'w3mEmail'
+  providerType?: 'walletConnect' | `injected_${string}`
   address?: string
   chainId?: string
   caipChainId?: string
@@ -88,14 +89,7 @@ export const SolStoreUtil = {
   },
 
   getCluster() {
-    const chain = state.currentChain ?? {
-      chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ',
-      name: 'Solana',
-      currency: 'SOL',
-      explorerUrl: 'https://solscan.io',
-      rpcUrl:
-        'https://rpc.walletconnect.com/v1?chainId=solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ&projectId=bbcbaddb9e8a1ae8f5f7c60f3e5a666e'
-    }
+    const chain = state.currentChain ?? SolConstantsUtil.DEFAULT_CHAIN
 
     return {
       name: chain.name,
