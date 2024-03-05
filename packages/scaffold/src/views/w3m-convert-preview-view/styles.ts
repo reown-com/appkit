@@ -48,4 +48,8 @@ export default css`
     border-radius: var(--wui-border-radius-xxs);
     background: var(--wui-gray-glass-002);
   }
+
+  .preview-token-details-container {
+    width: 100%;
+  }
 `

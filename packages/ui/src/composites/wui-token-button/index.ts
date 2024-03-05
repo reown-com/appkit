@@ -4,6 +4,7 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import styles from './styles.js'
 import type { TokenInfo } from '@web3modal/core/dist/types/src/controllers/SwapApiController.js'
+import type { FlexDirectionType } from '../../utils/TypeUtil.js'
 
 @customElement('wui-token-button')
 export class WuiTokenButton extends LitElement {
@@ -13,12 +14,18 @@ export class WuiTokenButton extends LitElement {
 
   @property() public logoURI?: string
 
-  @property() public symbol?: string
+  @property() public text?: string
+
+  @property() public flexDirection: FlexDirectionType = 'row'
 
   @property() public onClick: (token: TokenInfo) => void = () => {}
 
   // -- Render -------------------------------------------- //
   public override render() {
+    this.style.cssText = `
+    --local-flex-direction: ${this.flexDirection};
+  `
+
     const tokenElement = this.logoURI
       ? html`<wui-image src=${this.logoURI}></wui-image>`
       : html`
@@ -38,7 +45,7 @@ export class WuiTokenButton extends LitElement {
         @click=${this.onClick.bind(this)}
       >
         ${tokenElement}
-        <wui-text variant="paragraph-600" color="fg-100">${this.symbol}</wui-text>
+        <wui-text variant="paragraph-600" color="fg-100">${this.text}</wui-text>
       </button>
     `
   }

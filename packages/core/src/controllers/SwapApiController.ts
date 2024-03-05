@@ -228,20 +228,37 @@ export const SwapApiController = {
     state.swapErrorMessage = undefined
   },
 
-  async getSwapCalldata() {
-    const api = this._get1inchApi()
-    const chainId = CoreHelperUtil.getEvmChainId(NetworkController.state.caipNetwork?.id)
+  formatNumberToLocalString(number: number) {
+    return number.toLocaleString('en-US', {
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2
+    })
+  },
 
-    const path = OneInchAPIEndpoints.swap(chainId)
+  getPriceOfTokenAmount(amount: string | undefined, tokenAddress: `0x${string}` | undefined) {
+    const tokenPrice = state.tokensPriceMap?.[tokenAddress || ''] || '0'
+    const tokenPriceNumber = parseFloat(tokenPrice)
+    const amountNumber = amount ? parseFloat(amount) : 0
+
+    if (!tokenPriceNumber) {
+      return 0
+    }
+
+    return this.formatNumberToLocalString(tokenPriceNumber * amountNumber)
+  },
+
+  async getSwapCalldata() {
+    const { api, paths } = this._get1inchApi()
     const { fromAddress, slippage, sourceTokenAddress, sourceTokenAmount, toTokenAddress } =
       this._getSwapParams()
 
+    console.log('>>> getSwapCalldata')
     if (!sourceTokenAmount || !state.sourceToken?.address || !state.toToken?.address) {
       return
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const swapTransactionRes = await api.get<any>({
-      path,
+      path: paths.swap,
       params: {
         src: sourceTokenAddress,
         dst: toTokenAddress,
@@ -475,6 +492,7 @@ export const SwapApiController = {
       if (state.sourceToken?.address && state.toToken?.address) {
         state.loading = true
         const hasAllowance = await SwapApiController.getTokenAllowance()
+        console.log('>>> hasAllowance', hasAllowance)
 
         if (hasAllowance) {
           await SwapApiController.getSwapCalldata()

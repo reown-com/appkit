@@ -3,6 +3,7 @@ import { css } from 'lit'
 export default css`
   :host > button {
     display: flex;
+    flex-direction: var(--local-flex-direction);
     align-items: center;
     justify-content: center;
     gap: var(--wui-spacing-xxs);

@@ -23,5 +23,5 @@ export default {
 
 export const Default: Component = {
   render: args =>
-    html`<wui-token-button symbol=${args.symbol} logoURI=${args.logoURI}>Recent</wui-token-button>`
+    html`<wui-token-button text=${args.symbol} logoURI=${args.logoURI}>Recent</wui-token-button>`
 }

@@ -45,9 +45,10 @@ export class WuiConvertInput extends LitElement {
           <input
             @focusin=${() => this.onFocusChange(true)}
             @focusout=${() => this.onFocusChange(false)}
-            .value=${this.value}
             ?disabled=${this.disabled}
-            @input=${this.dispatchInputChangeEvent.bind(this)}
+            .value=${this.value}
+            @input=${this.dispatchInputChangeEvent}
+            @keydown=${this.handleKeydown}
             placeholder="0"
           />
           ${this.value
@@ -60,6 +61,35 @@ export class WuiConvertInput extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private handleKeydown(event: KeyboardEvent) {
+    const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Tab']
+    const isComma = event.key === ','
+    const isDot = event.key === '.'
+    const isNumericKey = event.key >= '0' && event.key <= '9'
+    const currentValue = this.value
+
+    if (!isNumericKey && !allowedKeys.includes(event.key) && !isDot && !isComma) {
+      event.preventDefault()
+    }
+
+    if (isComma || isDot) {
+      if (currentValue?.includes('.') || currentValue?.includes(',')) {
+        event.preventDefault()
+      }
+    }
+  }
+
+  private dispatchInputChangeEvent(event: InputEvent) {
+    const value = (event.target as HTMLInputElement).value
+    if (value === ',' || value === '.') {
+      this.onSetAmount(this.target, '0.')
+    } else if (value.endsWith(',')) {
+      this.onSetAmount(this.target, value.replace(',', '.'))
+    } else {
+      this.onSetAmount(this.target, value)
+    }
+  }
+
   private setMaxValueToInput() {
     if (this.amount?.toString()) {
       this.onSetAmount(this.target, this.amount?.toString())
@@ -116,11 +146,6 @@ export class WuiConvertInput extends LitElement {
     RouterController.push('ConvertSelectToken', {
       target: this.target
     })
-  }
-
-  private dispatchInputChangeEvent(event: Event) {
-    const input = event.target as HTMLInputElement
-    this.onSetAmount(this.target, input.value)
   }
 }
 

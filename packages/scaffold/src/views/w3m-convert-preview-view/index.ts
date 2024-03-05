@@ -1,14 +1,39 @@
 import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
+import { SwapApiController } from '@web3modal/core'
+import { state } from 'lit/decorators.js'
 
 @customElement('w3m-convert-preview-view')
 export class W3mConvertPreviewView extends LitElement {
   public static override styles = styles
 
+  private unsubscribe: ((() => void) | undefined)[] = []
+
+  // -- State & Properties -------------------------------- //
+  @state() private sourceTokenAmount = SwapApiController.state.sourceTokenAmount
+
+  @state() private toTokenAmount = SwapApiController.state.toTokenAmount
+
+  @state() private toToken = SwapApiController.state.toToken
+
+  @state() private sourceToken = SwapApiController.state.sourceToken
+
+  @state() private tokensPriceMap = SwapApiController.state.tokensPriceMap
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
+
+    this.unsubscribe.push(
+      ...[
+        SwapApiController.subscribe(newState => {
+          this.sourceToken = newState.sourceToken
+          this.toToken = newState.toToken
+          this.tokensPriceMap = newState.tokensPriceMap
+        })
+      ]
+    )
   }
 
   // -- Render -------------------------------------------- //
@@ -20,10 +45,47 @@ export class W3mConvertPreviewView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateSwap() {
+    const sourceTokenText = `${
+      this.sourceTokenAmount
+        ? SwapApiController.formatNumberToLocalString(parseFloat(this.sourceTokenAmount))
+        : ''
+    } ${this.sourceToken?.symbol}`
+    const toTokenText = `${
+      this.toTokenAmount
+        ? SwapApiController.formatNumberToLocalString(parseFloat(this.toTokenAmount))
+        : ''
+    } ${this.toToken?.symbol}`
+
+    const sentPrice = SwapApiController.getPriceOfTokenAmount(
+      this.sourceTokenAmount,
+      this.sourceToken?.address
+    )
+    const receivePrice = SwapApiController.getPriceOfTokenAmount(
+      this.toTokenAmount,
+      this.toToken?.address
+    )
+
     return html`
       <wui-flex flexDirection="column" alignItems="center" gap="l">
-        <wui-flex class="preview-container" flexDirection="column" alignItems="center" gap="l">
-          ${this.templateToken('0.867')}
+        <wui-flex class="preview-container" flexDirection="column" alignItems="flex-start" gap="l">
+          <wui-flex
+            class="preview-token-details-container"
+            alignItems="center"
+            justifyContent="space-between"
+            gap="l"
+          >
+            <wui-flex flexDirection="column" alignItems="flex-start" gap="4xs">
+              <wui-text variant="small-400" color="fg-150">Send</wui-text>
+              <wui-text variant="paragraph-400" color="fg-100">$${sentPrice}</wui-text>
+            </wui-flex>
+            <wui-token-button
+              flexDirection="row-reverse"
+              text=${sourceTokenText}
+              logoURI=${this.sourceToken?.logoURI}
+            >
+            </wui-token-button>
+          </wui-flex>
+
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -38,8 +100,24 @@ export class W3mConvertPreviewView extends LitElement {
               fill="#788181"
             />
           </svg>
-          ${this.templateToken('4927.3664')}
-          <wui-text variant="paragraph-500" color="fg-200">$1,718.6</wui-text>
+
+          <wui-flex
+            class="preview-token-details-container"
+            alignItems="center"
+            justifyContent="space-between"
+            gap="l"
+          >
+            <wui-flex flexDirection="column" alignItems="flex-start" gap="4xs">
+              <wui-text variant="small-400" color="fg-150">Receive</wui-text>
+              <wui-text variant="paragraph-400" color="fg-100">$${receivePrice}</wui-text>
+            </wui-flex>
+            <wui-token-button
+              flexDirection="row-reverse"
+              text=${toTokenText}
+              logoURI=${this.toToken?.logoURI}
+            >
+            </wui-token-button>
+          </wui-flex>
         </wui-flex>
 
         <wui-flex class="details-container" flexDirection="column" alignItems="center" gap="xs">
@@ -80,26 +158,6 @@ export class W3mConvertPreviewView extends LitElement {
 
         <wui-flex class="details-container" flexDirection="column" alignItems="center" gap="xs">
         </wui-flex>
-      </wui-flex>
-    `
-  }
-
-  private templateToken(value: string, networkSrc?: string) {
-    const networkElement = networkSrc
-      ? html`<wui-image src=${networkSrc}></wui-image>`
-      : html`
-          <wui-icon-box
-            size="sm"
-            iconColor="fg-200"
-            backgroundColor="fg-300"
-            icon="networkPlaceholder"
-          ></wui-icon-box>
-        `
-
-    return html`
-      <wui-flex class="token-item">
-        <wui-text variant="paragraph-600" color="fg-100">${value}</wui-text>
-        ${networkElement}
       </wui-flex>
     `
   }

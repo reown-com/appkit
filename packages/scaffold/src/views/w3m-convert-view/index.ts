@@ -145,14 +145,33 @@ export class W3mConvertView extends LitElement {
             borderRadius="xs"
             variant=${!this.hasAllowance || haveNoTokenSelected ? 'shade' : 'fill'}
             .loading=${this.loadingPrices}
-            .disabled=${!this.hasAllowance || haveNoTokenSelected}
+            .disabled=${!this.hasAllowance || haveNoTokenSelected || this.swapErrorMessage}
             @click=${this.onConvertPreview}
           >
-            Swap
+            ${this.actionButtonLabel()}
           </wui-button>
         </wui-flex>
       </wui-flex>
     `
+  }
+
+  private actionButtonLabel(): string {
+    if (this.swapErrorMessage) {
+      if (this.swapErrorMessage?.includes('insufficient funds')) {
+        return 'Insufficient funds'
+      }
+      return 'Error'
+    }
+
+    if (!this.toToken || !this.sourceToken) {
+      return 'Select token'
+    }
+
+    if (!this.toTokenAmount || !this.sourceTokenAmount) {
+      return 'Enter amount'
+    }
+
+    return this.hasAllowance ? 'Review convert' : 'Not permitted'
   }
 
   private templateReplaceTokensButton() {
