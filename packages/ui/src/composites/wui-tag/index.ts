@@ -18,7 +18,7 @@ export class WuiTag extends LitElement {
     this.dataset['variant'] = this.variant
 
     return html`
-      <wui-text data-variant=${this.variant} variant="micro-700" color="inherit">
+      <wui-text data-variant=${this.variant} variant="mini-700" color="inherit">
         <slot></slot>
       </wui-text>
     `

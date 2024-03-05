@@ -28,6 +28,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private network = NetworkController.state.caipNetwork
 
+  @state() private currentTab = AccountController.state.currentTab
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -37,6 +39,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
             this.address = val.address
             this.profileImage = val.profileImage
             this.profileName = val.profileName
+            this.currentTab = val.currentTab
           } else {
             ModalController.close()
           }
@@ -66,7 +69,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       flexDirection="column"
       .padding=${['0', 'xl', 'm', 'xl'] as const}
       alignItems="center"
-      gap="l"
+      gap="m"
     >
       ${this.activateAccountTemplate()}
       <wui-profile-button
@@ -93,17 +96,122 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         <wui-tooltip-select text="Send" icon="send"></wui-tooltip-select>
       </wui-flex>
 
-      <wui-tabs localTabWidth="120px" .tabs=${ConstantsUtil.ACCOUNT_TABS}></wui-tabs>
+      <wui-tabs
+        .onTabChange=${this.onTabChange.bind(this)}
+        .activeTab=${this.currentTab}
+        localTabWidth="104px"
+        .tabs=${ConstantsUtil.ACCOUNT_TABS}
+      ></wui-tabs>
+      ${this.listContentTemplate()}
     </wui-flex>`
   }
 
   // -- Private ------------------------------------------- //
+  private listContentTemplate() {
+    if (this.currentTab === 0) {
+      return this.tokenTemplate()
+    } else if (this.currentTab === 1) {
+      return this.nftTemplate()
+    } else if (this.currentTab === 2) {
+      return this.activityTemplate()
+    }
+
+    return this.tokenTemplate()
+  }
+
+  private tokenTemplate() {
+    return html` <wui-flex flexDirection="column" gap="xs"
+      ><wui-list-description
+        @click=${this.onBuyClick.bind(this)}
+        text="Buy Crypto"
+        description="Easy with card or bank account"
+        icon="card"
+        iconColor="success-100"
+        iconBackgroundColor="success-100"
+        tag="popular"
+      ></wui-list-description
+      ><wui-list-description
+        @click=${this.onReceiveClick.bind(this)}
+        text="Receive funds"
+        description="Transfer tokens on your wallet"
+        icon="arrowBottomCircle"
+        iconColor="fg-200"
+        iconBackgroundColor="fg-200"
+      ></wui-list-description
+    ></wui-flex>`
+  }
+
+  private nftTemplate() {
+    return html` <wui-flex
+      class="contentContainer"
+      alignItems="center"
+      justifyContent="center"
+      flexDirection="column"
+      gap="l"
+    >
+      <wui-icon-box
+        icon="wallet"
+        size="inherit"
+        iconColor="fg-200"
+        backgroundColor="fg-200"
+        iconSize="lg"
+      ></wui-icon-box>
+      <wui-flex
+        class="textContent"
+        gap="xs"
+        flexDirection="column"
+        justifyContent="center"
+        flexDirection="column"
+      >
+        <wui-text variant="paragraph-500" align="center" color="fg-100">No NFTs yet</wui-text>
+        <wui-text variant="small-400" align="center" color="fg-200"
+          >Transfer from another wallets to get started</wui-text
+        >
+      </wui-flex>
+      <wui-link @click=${this.onReceiveClick.bind(this)}>Receive NFTs</wui-link>
+    </wui-flex>`
+  }
+
+  private activityTemplate() {
+    return html` <wui-flex
+      class="contentContainer"
+      alignItems="center"
+      justifyContent="center"
+      flexDirection="column"
+      gap="l"
+    >
+      <wui-icon-box
+        icon="swapHorizontal"
+        size="inherit"
+        iconColor="fg-200"
+        backgroundColor="fg-200"
+        iconSize="lg"
+      ></wui-icon-box>
+      <wui-flex
+        class="textContent"
+        gap="xs"
+        flexDirection="column"
+        justifyContent="center"
+        flexDirection="column"
+      >
+        <wui-text variant="paragraph-500" align="center" color="fg-100">No activity yet</wui-text>
+        <wui-text variant="small-400" align="center" color="fg-200"
+          >Your next transactions will appear here</wui-text
+        >
+      </wui-flex>
+      <wui-link @click=${this.onReceiveClick.bind(this)}>Trade</wui-link>
+    </wui-flex>`
+  }
 
   private activateAccountTemplate() {
     // eslint-disable-next-line no-warning-comments
     // Todo: Check if SA is deployed
 
     return html` <wui-promo text="Activate your account"></wui-promo>`
+  }
+
+  private onTabChange(index: number) {
+    AccountController.setCurrentTab(index)
   }
 
   private onProfileButtonClick() {

@@ -122,6 +122,15 @@ export const BlockchainApiController = {
     })
   },
 
+  async getBalance(address: string) {
+    return api.get<BlockchainApiIdentityResponse>({
+      path: `/v1/account/${address}/balance`,
+      params: {
+        currency: 'USD'
+      }
+    })
+  },
+
   async generateOnRampURL({
     destinationWallets,
     partnerUserId,

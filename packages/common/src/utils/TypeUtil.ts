@@ -72,3 +72,18 @@ export interface TransactionDetail {
 export interface TransactionQuantity {
   numeric: string
 }
+
+export interface Balance {
+  name: string
+  symbol: string
+  chainId: string
+  value: string
+  price: number
+  quantity: BalanceQuantity
+  iconUrl: string
+}
+
+type BalanceQuantity = {
+  decimals: number
+  quantity: number
+}

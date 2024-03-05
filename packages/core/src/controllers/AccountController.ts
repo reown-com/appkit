@@ -6,6 +6,7 @@ import type { CaipAddress } from '../utils/TypeUtil.js'
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
   isConnected: boolean
+  currentTab: number
   caipAddress?: CaipAddress
   address?: string
   balance?: string
@@ -20,7 +21,8 @@ type StateKey = keyof AccountControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<AccountControllerState>({
-  isConnected: false
+  isConnected: false,
+  currentTab: 0
 })
 
 // -- Controller ---------------------------------------- //
@@ -68,6 +70,10 @@ export const AccountController = {
     state.smartAccountDeployed = isDeployed
   },
 
+  setCurrentTab(currentTab: AccountControllerState['currentTab']) {
+    state.currentTab = currentTab
+  },
+
   resetAccount() {
     state.isConnected = false
     state.caipAddress = undefined
@@ -78,5 +84,6 @@ export const AccountController = {
     state.profileImage = undefined
     state.addressExplorerUrl = undefined
     state.smartAccountDeployed = undefined
+    state.currentTab = 0
   }
 }
