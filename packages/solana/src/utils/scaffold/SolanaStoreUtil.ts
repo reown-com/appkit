@@ -10,7 +10,6 @@ import { SolConstantsUtil } from '.'
 type StateKey = keyof SolStoreUtilState
 
 export interface SolStoreUtilState {
-  projectId: string
   provider?: Provider | CombinedProvider | UniversalProvider
   providerType?: 'walletConnect' | `injected_${string}`
   address?: string
@@ -24,7 +23,6 @@ export interface SolStoreUtilState {
 }
 
 const state = proxy<SolStoreUtilState>({
-  projectId: '',
   provider: undefined,
   providerType: undefined,
   address: undefined,
@@ -54,14 +52,6 @@ export const SolStoreUtil = {
 
   setProviderType(providerType: SolStoreUtilState['providerType']) {
     state.providerType = providerType
-  },
-
-  getProjectId() {
-    return state.projectId
-  },
-
-  setProjectId(projectId: string) {
-    state.projectId = projectId
   },
 
   setAddress(address: string) {

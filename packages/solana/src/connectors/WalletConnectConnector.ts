@@ -7,6 +7,7 @@ import { UniversalProviderFactory } from './universalProvider'
 
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { Connector } from './BaseConnector'
+import { OptionsController } from '@web3modal/core'
 
 export const solana = {
   chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ',
@@ -61,7 +62,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
     super()
     this.qrcode = Boolean(qrcode)
     UniversalProviderFactory.setSettings({
-      projectId: SolStoreUtil.getProjectId(),
+      projectId: OptionsController.state.projectId,
       relayerRegion,
       metadata,
       qrcode: this.qrcode

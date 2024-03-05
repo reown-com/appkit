@@ -165,7 +165,7 @@ export class Web3Modal extends Web3ModalScaffold {
 
     this.chains = chains
     this.syncRequestedNetworks(chains, chainImages)
-    SolStoreUtil.setProjectId(options.projectId)
+
     const chain = SolHelpersUtil.getChainFromCaip(
       chains,
       typeof window === 'object' ? localStorage.getItem(SolConstantsUtil.CAIP_CHAIN_ID) : ''
