@@ -33,6 +33,11 @@ export const wagmiSdkOptions = [
     title: 'Email',
     link: '/library/wagmi-email/',
     description: 'Configuration usign wagmi and implementing email login'
+  },
+  {
+    title: 'Wallet',
+    link: '/library/wagmi-wallet/',
+    description: 'Configuration usign wagmi and implementing email wallet'
   }
 ]
 
@@ -51,5 +56,10 @@ export const ethersSdkOptions = [
     title: 'Email',
     link: '/library/ethers-email/',
     description: 'Configuration usign ethers and implementing email login'
+  },
+  {
+    title: 'Wallet',
+    link: '/library/ethers-wallet/',
+    description: 'Configuration usign ethers and implementing email wallet'
   }
 ]

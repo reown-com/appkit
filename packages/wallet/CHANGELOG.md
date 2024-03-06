@@ -1,5 +1,31 @@
 # @web3modal/wallet
 
+## 4.0.13
+
+### Patch Changes
+
+- Fix secure site url
+
+## 4.0.12
+
+### Patch Changes
+
+- [#2014](https://github.com/WalletConnect/web3modal/pull/2014) [`95b35e1`](https://github.com/WalletConnect/web3modal/commit/95b35e1ebaf261a56a29cd9254d85b7c1430bfc0) Thanks [@tomiir](https://github.com/tomiir)! - Smart Account RPC handler canary
+
+- Smart Account initialization and feature flag
+
+## 4.0.12-0c59f84f.0
+
+### Patch Changes
+
+- Smart Account RPC handler canary
+
+## 4.0.11
+
+### Patch Changes
+
+- Analytics connection event improvements. Unsupported chain flag. Siwe package refactor. RPC improvements. UI improvements'
+
 ## 4.0.10
 
 ### Patch Changes

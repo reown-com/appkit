@@ -9,7 +9,6 @@ config({ path: './.env.local' })
 
 export default defineConfig<ModalFixture>({
   testDir: './tests',
-  testIgnore: 'email.spec.ts',
   fullyParallel: true,
   retries: getValue(2, 1),
   workers: getValue(8, 4),

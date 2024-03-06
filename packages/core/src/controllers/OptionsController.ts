@@ -22,6 +22,7 @@ export interface OptionsControllerState {
   siweSession?: {
     accounts: string[]
   }
+  enableWalletFeatures?: boolean
 }
 
 type StateKey = keyof OptionsControllerState
@@ -99,5 +100,9 @@ export const OptionsController = {
 
   setOnrampEnabled(enableOnramp: OptionsControllerState['enableOnramp']) {
     state.enableOnramp = enableOnramp
+  },
+
+  setWalletFeaturesEnabled(enableWalletFeatures: OptionsControllerState['enableWalletFeatures']) {
+    state.enableWalletFeatures = enableWalletFeatures
   }
 }
