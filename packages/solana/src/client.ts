@@ -434,7 +434,7 @@ export class Web3Modal extends Web3ModalScaffold {
     )
 
     const chainId = SolStoreUtil.state.currentChain?.chainId
-    const caipChainId = `${SolStoreUtil.state.currentChain?.name}: ${chainId}`
+    const caipChainId = `solana:${chainId}`
 
     if (address && chainId) {
       SolStoreUtil.setIsConnected(true)

@@ -16,12 +16,9 @@ export const SolHelpersUtil = {
   },
 
   getChainFromCaip(chains: Chain[], chainCaipId: string | undefined | null = ':') {
-    const chainName: string = chainCaipId?.split(':')[0] ?? ''
     const chainId: string = (chainCaipId?.split(':')[1] ?? '').replace(/\s/gu, '')
 
-    const selectedChain = chains.find(
-      chain => chain.chainId === chainId && chain.name === chainName
-    )
+    const selectedChain = chains.find(chain => chain.chainId === chainId)
 
     if (selectedChain) {
       return {
