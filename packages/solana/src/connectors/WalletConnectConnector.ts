@@ -10,27 +10,27 @@ import type { Connector } from './BaseConnector'
 import { OptionsController } from '@web3modal/core'
 
 export const solana = {
-  chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ',
+  chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   name: 'Solana',
   currency: 'SOL',
   explorerUrl: 'https://solscan.io',
   rpcUrl:
-    'https://rpc.walletconnect.com/v1?chainId=solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ&projectId=bbcbaddb9e8a1ae8f5f7c60f3e5a666e'
+    'https://rpc.walletconnect.com/v1?chainId=solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp&projectId=bbcbaddb9e8a1ae8f5f7c60f3e5a666e'
 }
 
 export const solanaTestnet = {
-  chainId: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K',
+  chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
   name: 'Solana Testnet',
   currency: 'SOL',
-  explorerUrl: 'https://solscan.io',
+  explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
   rpcUrl: 'https://api.testnet.solana.com'
 }
 
 export const solanaDevnet = {
-  chainId: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K',
+  chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
   name: 'Solana Devnet',
   currency: 'SOL',
-  explorerUrl: 'https://solscan.io',
+  explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
   rpcUrl: 'https://api.devnet.solana.com'
 }
 

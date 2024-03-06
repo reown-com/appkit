@@ -29,11 +29,11 @@ export const SolConstantsUtil = {
   ERROR_CODE_UNRECOGNIZED_CHAIN_ID: 4902,
   ERROR_CODE_DEFAULT: 5000,
   DEFAULT_CHAIN: {
-    chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ',
+    chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
     name: 'Solana',
     currency: 'SOL',
     explorerUrl: 'https://solscan.io',
     rpcUrl:
-      'https://rpc.walletconnect.com/v1?chainId=solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ&projectId=bbcbaddb9e8a1ae8f5f7c60f3e5a666e'
+      'https://rpc.walletconnect.com/v1?chainId=solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp&projectId=bbcbaddb9e8a1ae8f5f7c60f3e5a666e'
   }
 }
