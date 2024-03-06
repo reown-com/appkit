@@ -397,21 +397,6 @@ export class Web3Modal extends Web3ModalScaffold {
         this.setIsConnected(false)
       }
 
-      provider.onInitSmartAccount(async ({ isDeployed, address }) => {
-        // Tod0: prefer smart account check
-        if (isDeployed && address) {
-          const chainId = HelpersUtil.caipNetworkIdToNumber(this.getCaipNetwork()?.id)
-          if (chainId) {
-            await this.syncAccount({
-              address: address as `0x${string}`,
-              isConnected: true,
-              chainId
-            })
-            this.setSmartAccountDeployed(isDeployed)
-          }
-        }
-      })
-
       provider.onRpcRequest(request => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
           if (!W3mFrameHelpers.checkIfRequestIsAllowed(request)) {
@@ -438,8 +423,9 @@ export class Web3Modal extends Web3ModalScaffold {
         super.setLoading(false)
       })
 
-      provider.onIsConnected(() => {
+      provider.onIsConnected(req => {
         this.setIsConnected(true)
+        this.setSmartAccountDeployed(req.smartAccountDeployed)
         super.setLoading(false)
       })
     }

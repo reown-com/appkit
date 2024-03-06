@@ -590,41 +590,19 @@ export class Web3Modal extends Web3ModalScaffold {
     }
   }
 
-  private async initSmartAccount(
-    chainId: number
-  ): Promise<{ isDeployed: boolean; address?: string }> {
-    if (!this.emailProvider || !this.options?.enableSmartAccounts) {
-      return { isDeployed: false }
-    }
-    const { smartAccountEnabledNetworks } =
-      await this.emailProvider.getSmartAccountEnabledNetworks()
-
-    this.emailProvider.setSmartAccountEnabled(true)
-    if (!smartAccountEnabledNetworks.includes(chainId)) {
-      return { isDeployed: false }
-    }
-
-    return await this.emailProvider.initSmartAccount()
-  }
-
   private async setEmailProvider() {
     window?.localStorage.setItem(EthersConstantsUtil.WALLET_ID, ConstantsUtil.EMAIL_CONNECTOR_ID)
 
     if (this.emailProvider) {
-      const { address, chainId } = await this.emailProvider.connect()
+      const { address, chainId, smartAccountDeployed } = await this.emailProvider.connect()
       super.setLoading(false)
       if (address && chainId) {
         EthersStoreUtil.setChainId(chainId)
         EthersStoreUtil.setProviderType(ConstantsUtil.EMAIL_CONNECTOR_ID as 'w3mEmail')
         EthersStoreUtil.setProvider(this.emailProvider as unknown as CombinedProvider)
         EthersStoreUtil.setIsConnected(true)
-        const { isDeployed, address: smartAccountAddress } = await this.initSmartAccount(chainId)
-        this.setSmartAccountDeployed(isDeployed)
-        if (isDeployed && smartAccountAddress) {
-          EthersStoreUtil.setAddress(smartAccountAddress as Address)
-        } else {
-          EthersStoreUtil.setAddress(address as Address)
-        }
+        EthersStoreUtil.setAddress(address as Address)
+        this.setSmartAccountDeployed(smartAccountDeployed)
 
         this.watchEmail()
         this.watchModal()

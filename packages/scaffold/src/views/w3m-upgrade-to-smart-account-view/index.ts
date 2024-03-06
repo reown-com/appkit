@@ -1,11 +1,27 @@
 import { customElement } from '@web3modal/ui'
-import { ConnectorController, RouterController } from '@web3modal/core'
+import { ConnectorController, NetworkController, RouterController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
 
 @customElement('w3m-upgrade-to-smart-account-view')
 export class W3mUpgradeToSmartAccountView extends LitElement {
+  // -- Members ------------------------------------------- //
+  private unsubscribe: (() => void)[] = []
+
   // -- State & Properties -------------------------------- //
   private emailConnector = ConnectorController.getEmailConnector()
+  private caipNetwork = NetworkController.state.caipNetwork
+
+  // -- Lifecycle ----------------------------------------- //
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      NetworkController.subscribeKey('caipNetwork', val => {
+        if (val?.id) {
+          this.caipNetwork = val
+        }
+      })
+    )
+  }
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -70,11 +86,10 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
     if (this.emailConnector) {
       try {
         await this.emailConnector.provider.setPreferredAccount('smartAccount')
-        await this.emailConnector.provider.initSmartAccount()
         RouterController.push('Account')
       } catch (e) {
         // Show error message?
-        console.log('Upgrade Error')
+        console.log('Upgrade Error', e)
       }
     }
   }

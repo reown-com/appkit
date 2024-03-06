@@ -1,5 +1,5 @@
 import { createConnector, normalizeChainId, type CreateConfigParameters } from '@wagmi/core'
-import { W3mFrameProvider } from '@web3modal/wallet'
+import { W3mFrameHelpers, W3mFrameProvider } from '@web3modal/wallet'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
 
@@ -13,6 +13,7 @@ interface W3mFrameProviderOptions {
 
 interface ConnectOptions {
   chainId?: number
+  preferredAccountType?: 'eoa' | 'smartAccount'
 }
 
 export type EmailParameters = {
@@ -24,7 +25,6 @@ export type EmailParameters = {
 export function emailConnector(parameters: EmailParameters) {
   type Properties = {
     provider?: W3mFrameProvider
-    initSmartAccount: () => Promise<{ isDeployed: boolean; address?: Address }>
   }
 
   return createConnector<W3mFrameProvider, Properties>(config => ({
@@ -34,19 +34,11 @@ export function emailConnector(parameters: EmailParameters) {
 
     async connect(options: ConnectOptions = {}) {
       const provider = await this.getProvider()
-      const { address, chainId } = await provider.connect({ chainId: options.chainId })
-      const { isDeployed, address: smartAccountAddress } = await this.initSmartAccount()
-      if (isDeployed && smartAccountAddress) {
-        return {
-          accounts: [smartAccountAddress],
-          account: smartAccountAddress,
-          chainId,
-          chain: {
-            id: chainId,
-            unsuported: false
-          }
-        }
-      }
+      const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
+      const { address, chainId } = await provider.connect({
+        chainId: options.chainId,
+        preferredAccountType
+      })
 
       return {
         accounts: [address as Address],
@@ -59,21 +51,6 @@ export function emailConnector(parameters: EmailParameters) {
       }
     },
 
-    async initSmartAccount() {
-      if (!parameters.options.enableSmartAccounts) {
-        return { isDeployed: false }
-      }
-      const provider = await this.getProvider()
-      const chainId = await this.getChainId()
-      provider.setSmartAccountEnabled(true)
-      const { smartAccountEnabledNetworks } = await provider.getSmartAccountEnabledNetworks()
-      if (smartAccountEnabledNetworks.includes(chainId)) {
-        return (await provider.initSmartAccount()) as { isDeployed: boolean; address?: Address }
-      }
-
-      return { isDeployed: false }
-    },
-
     async disconnect() {
       const provider = await this.getProvider()
       await provider.disconnect()
@@ -81,7 +58,8 @@ export function emailConnector(parameters: EmailParameters) {
 
     async getAccounts() {
       const provider = await this.getProvider()
-      const { address } = await provider.connect()
+      const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
+      const { address } = await provider.connect({ preferredAccountType })
 
       return [address as Address]
     },
@@ -116,13 +94,6 @@ export function emailConnector(parameters: EmailParameters) {
         }
         const provider = await this.getProvider()
         await provider.switchNetwork(chainId)
-        const { smartAccountEnabledNetworks } = await provider.getSmartAccountEnabledNetworks()
-        if (
-          parameters.options.enableSmartAccounts &&
-          smartAccountEnabledNetworks.includes(chainId)
-        ) {
-          await this.initSmartAccount()
-        }
         config.emitter.emit('change', { chainId: normalizeChainId(chainId) })
 
         return chain

@@ -67,14 +67,15 @@ export const W3mFrameHelpers = {
     return (request as { payload: W3mFrameTypes.RPCRequest })?.payload?.method
   },
 
-  getSmartAccountEnabledNetworks() {
-    return W3mFrameStorage.get(W3mFrameConstants.SMART_ACCOUNT_ENABLED_NETWORKS)?.split(',') || []
-  },
-
   checkIfRequestIsAllowed(request: unknown) {
     const method = this.getRequestMethod(request)
 
     return W3mFrameRpcConstants.SAFE_RPC_METHODS.includes(method)
+  },
+
+  // Smart Accounts
+  getSmartAccountEnabledNetworks() {
+    return W3mFrameStorage.get(W3mFrameConstants.SMART_ACCOUNT_ENABLED_NETWORKS)?.split(',') || []
   },
 
   checkIfSmartAccountEnabled(networkId?: string): boolean {
@@ -85,6 +86,10 @@ export const W3mFrameHelpers = {
         smartAccountEnabledNetworks?.includes(networkId) &&
         Boolean(W3mFrameStorage.get(W3mFrameConstants.SMART_ACCOUNT_ENABLED))
     )
+  },
+
+  getPreferredAccountType(): 'eoa' | 'smartAccount' {
+    return W3mFrameStorage.get(W3mFrameConstants.PREFERRED_ACCOUNT_TYPE) as 'eoa' | 'smartAccount'
   },
 
   isClient: typeof window !== 'undefined'
