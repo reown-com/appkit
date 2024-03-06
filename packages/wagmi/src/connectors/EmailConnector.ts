@@ -13,7 +13,6 @@ interface W3mFrameProviderOptions {
 
 interface ConnectOptions {
   chainId?: number
-  preferredAccountType?: 'eoa' | 'smartAccount'
 }
 
 export type EmailParameters = {

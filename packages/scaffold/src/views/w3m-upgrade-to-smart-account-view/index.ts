@@ -1,27 +1,14 @@
 import { customElement } from '@web3modal/ui'
-import { ConnectorController, NetworkController, RouterController } from '@web3modal/core'
+import { ConnectorController, RouterController, SnackController } from '@web3modal/core'
 import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
 
 @customElement('w3m-upgrade-to-smart-account-view')
 export class W3mUpgradeToSmartAccountView extends LitElement {
-  // -- Members ------------------------------------------- //
-  private unsubscribe: (() => void)[] = []
-
   // -- State & Properties -------------------------------- //
-  private emailConnector = ConnectorController.getEmailConnector()
-  private caipNetwork = NetworkController.state.caipNetwork
+  @state() private emailConnector = ConnectorController.getEmailConnector()
 
-  // -- Lifecycle ----------------------------------------- //
-  public constructor() {
-    super()
-    this.unsubscribe.push(
-      NetworkController.subscribeKey('caipNetwork', val => {
-        if (val?.id) {
-          this.caipNetwork = val
-        }
-      })
-    )
-  }
+  @state() private loading = false
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -76,7 +63,11 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
       >
         Do it later
       </wui-button>
-      <wui-button size="lg" borderRadius="xs" @click=${this.setPreferSmartAccount.bind(this)}
+      <wui-button
+        .loading=${this.loading}
+        size="lg"
+        borderRadius="xs"
+        @click=${this.setPreferSmartAccount.bind(this)}
         >Continue
       </wui-button>
     </wui-flex>`
@@ -85,11 +76,13 @@ export class W3mUpgradeToSmartAccountView extends LitElement {
   private setPreferSmartAccount = async () => {
     if (this.emailConnector) {
       try {
+        this.loading = true
         await this.emailConnector.provider.setPreferredAccount('smartAccount')
+        // Refresh user info
+        this.loading = false
         RouterController.push('Account')
       } catch (e) {
-        // Show error message?
-        console.log('Upgrade Error', e)
+        SnackController.showError('Error upgrading to smart account')
       }
     }
   }

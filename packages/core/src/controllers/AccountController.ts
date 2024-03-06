@@ -14,15 +14,13 @@ export interface AccountControllerState {
   profileImage?: string | null
   addressExplorerUrl?: string
   smartAccountDeployed?: boolean
-  preferredAccountType: 'eoa' | 'smartAccount'
 }
 
 type StateKey = keyof AccountControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<AccountControllerState>({
-  isConnected: false,
-  preferredAccountType: 'eoa'
+  isConnected: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -70,10 +68,6 @@ export const AccountController = {
     state.smartAccountDeployed = isDeployed
   },
 
-  setPreferredAccountType(accountType: AccountControllerState['preferredAccountType']) {
-    state.preferredAccountType = accountType
-  },
-
   resetAccount() {
     state.isConnected = false
     state.caipAddress = undefined
@@ -84,6 +78,5 @@ export const AccountController = {
     state.profileImage = undefined
     state.addressExplorerUrl = undefined
     state.smartAccountDeployed = undefined
-    state.preferredAccountType = 'eoa'
   }
 }

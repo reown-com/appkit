@@ -29,8 +29,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
 
-  @state() private preferredAccountType = AccountController.state.preferredAccountType
-
   @state() private network = NetworkController.state.caipNetwork
 
   public constructor() {
@@ -43,7 +41,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
             this.profileImage = val.profileImage
             this.profileName = val.profileName
             this.smartAccountDeployed = val.smartAccountDeployed
-            this.preferredAccountType = val.preferredAccountType
           } else {
             ModalController.close()
           }
@@ -110,11 +107,12 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     const smartAccountsEnabled = W3mFrameHelpers.checkIfSmartAccountEnabled(
       networkId?.split(':')?.[1]
     )
+    const preferredAccountType = W3mFrameHelpers.getPreferredAccountType()
 
     if (
       !smartAccountsEnabled ||
       this.smartAccountDeployed ||
-      this.preferredAccountType === 'smartAccount'
+      preferredAccountType === 'smartAccount'
     ) {
       return null
     }
