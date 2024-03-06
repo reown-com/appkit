@@ -3,8 +3,19 @@ import { property } from 'lit/decorators.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import styles from './styles.js'
-import type { TokenInfo } from '@web3modal/core/dist/types/src/controllers/SwapApiController.js'
 import type { FlexDirectionType } from '../../utils/TypeUtil.js'
+
+interface TokenInfo {
+  address: `0x${string}`
+  symbol: string
+  name: string
+  decimals: number
+  logoURI: string
+  domainVersion?: string
+  eip2612?: boolean
+  isFoT?: boolean
+  tags?: string[]
+}
 
 @customElement('wui-token-button')
 export class WuiTokenButton extends LitElement {

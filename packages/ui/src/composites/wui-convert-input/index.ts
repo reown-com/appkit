@@ -6,9 +6,20 @@ import '../../components/wui-text/index.js'
 import '../wui-transaction-visual/index.js'
 import { EventsController, RouterController } from '@web3modal/core'
 import styles from './styles.js'
-import type { TokenInfo } from '@web3modal/core/dist/types/src/controllers/SwapApiController.js'
 
 type Target = 'sourceToken' | 'toToken'
+
+interface TokenInfo {
+  address: `0x${string}`
+  symbol: string
+  name: string
+  decimals: number
+  logoURI: string
+  domainVersion?: string
+  eip2612?: boolean
+  isFoT?: boolean
+  tags?: string[]
+}
 
 @customElement('wui-convert-input')
 export class WuiConvertInput extends LitElement {

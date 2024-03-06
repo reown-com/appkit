@@ -2,7 +2,7 @@ import { customElement } from '@web3modal/ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
-import { AccountController, NetworkController } from '@web3modal/core'
+import { NetworkController } from '@web3modal/core'
 
 const yourItems = [
   {
@@ -40,10 +40,7 @@ export class W3mConvertSelectNetworkView extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ...[
-        NetworkController.subscribeKey('caipNetwork', val => (this.network = val)),
-        AccountController.subscribeKey('isConnected', val => (this.connected = val))
-      ]
+      ...[NetworkController.subscribeKey('caipNetwork', val => (this.network = val))]
     )
   }
 

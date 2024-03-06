@@ -8,7 +8,6 @@ import type {
   LibraryOptions,
   NetworkControllerClient,
   PublicStateControllerState,
-  SendTransactionArgs,
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
