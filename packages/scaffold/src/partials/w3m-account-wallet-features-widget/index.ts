@@ -122,7 +122,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       return html`<w3m-account-activity-widget></w3m-account-activity-widget>`
     }
 
-    return this.tokenTemplate()
+    return html`<w3m-account-tokens-widget></w3m-account-tokens-widget>`
   }
 
   private tokenBalanceTemplate() {
