@@ -1,11 +1,12 @@
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/utils'
 import { Connection } from '@solana/web3.js'
+import { OptionsController } from '@web3modal/core'
 
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import type { Chain, CombinedProvider, Provider } from './SolanaTypesUtil'
-import { SolConstantsUtil } from '.'
+import { SolConstantsUtil, SolHelpersUtil } from '.'
 
 type StateKey = keyof SolStoreUtilState
 
@@ -84,7 +85,7 @@ export const SolStoreUtil = {
     return {
       name: chain.name,
       id: chain.chainId,
-      endpoint: chain.rpcUrl
+      endpoint: SolHelpersUtil.detectRpcUrl(chain, OptionsController.state.projectId)
     }
   },
 
