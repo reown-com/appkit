@@ -1,4 +1,4 @@
-name: ci_canary
+name: Publish Canary Image
 on:
   workflow_dispatch:
   push:
