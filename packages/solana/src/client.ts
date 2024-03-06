@@ -206,10 +206,8 @@ export class Web3Modal extends Web3ModalScaffold {
     })
 
     if (typeof window === 'object') {
-      setTimeout(() => {
-        this.checkActiveProviders()
-        this.syncConnectors()
-      }, 500)
+      this.checkActiveProviders()
+      this.syncConnectors()
     }
   }
 
