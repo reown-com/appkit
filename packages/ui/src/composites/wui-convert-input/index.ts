@@ -107,7 +107,7 @@ export class WuiConvertInput extends LitElement {
 
   private setMaxValueToInput() {
     if (this.amount?.toString()) {
-      this.onSetAmount(this.target, this.amount?.toString())
+      this.onSetAmount?.(this.target, this.amount?.toString())
     }
   }
 
