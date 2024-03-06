@@ -157,6 +157,7 @@ export class W3mConvertView extends LitElement {
       if (this.swapErrorMessage?.includes('insufficient funds')) {
         return 'Insufficient funds'
       }
+
       return 'Error'
     }
 

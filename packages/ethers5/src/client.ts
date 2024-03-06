@@ -269,27 +269,11 @@ export class Web3Modal extends Web3ModalScaffold {
       formatUnits: (value: bigint, decimals: number) => ethers.utils.formatUnits(value, decimals),
 
       sendTransaction: async () => {
-        // const provider = EthersStoreUtil.state.provider
-        // if (!provider) {
-        //   throw new Error('connectionControllerClient:signMessage - provider is undefined')
-        // }
+        // Mock await expression, will be implemented
+        // eslint-disable-next-line no-promise-executor-return
+        await new Promise(resolve => setTimeout(resolve, 0))
 
-        // const tx = await provider.request({
-        //   method: 'eth_sendTransaction',
-        //   params: {
-        //     chainId,
-        //     data,
-        //     from: address,
-        //     gasPrice,
-        //     value,
-        //     to,
-        //     gasLimit: gas
-        //   }
-        // })
-
-        // await tx?()
-
-        return `0x`
+        return '0x'
       }
     }
 

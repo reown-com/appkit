@@ -175,8 +175,8 @@ export class Web3Modal extends Web3ModalScaffold {
       signMessage: async message => signMessage(this.wagmiConfig, { message }),
 
       sendTransaction: async (data: SendTransactionArgs) => {
+        // eslint-disable-next-line no-useless-catch
         try {
-          // Prepare the transaction with the given parameters
           await prepareTransactionRequest(this.wagmiConfig, {
             account: data.address,
             to: data.to,
@@ -186,7 +186,6 @@ export class Web3Modal extends Web3ModalScaffold {
             type: 'legacy'
           })
 
-          // Send the transaction
           const tx = await wagmiSendTransaction(this.wagmiConfig, {
             account: data.address,
             to: data.to,
@@ -196,13 +195,11 @@ export class Web3Modal extends Web3ModalScaffold {
             type: 'legacy'
           })
 
-          // Optionally wait for the transaction to be mined
           await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
 
-          return tx // Return the transaction object
+          return tx
         } catch (error) {
-          console.error('Transaction failed:', error)
-          throw error // Rethrow the error to be handled by the caller
+          throw error
         }
       },
 

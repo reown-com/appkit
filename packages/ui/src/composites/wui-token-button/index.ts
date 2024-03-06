@@ -29,7 +29,7 @@ export class WuiTokenButton extends LitElement {
 
   @property() public flexDirection: FlexDirectionType = 'row'
 
-  @property() public onClick: (token: TokenInfo) => void = () => {}
+  @property() public onClick: ((token: TokenInfo) => void) | null = null
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -53,7 +53,7 @@ export class WuiTokenButton extends LitElement {
         size="sm"
         variant="shade"
         class="token-select-button"
-        @click=${this.onClick.bind(this)}
+        @click=${this.onClick?.bind(this)}
       >
         ${tokenElement}
         <wui-text variant="paragraph-600" color="fg-100">${this.text}</wui-text>

@@ -41,7 +41,7 @@ export class W3mConvertPreviewView extends LitElement {
         AccountController.subscribeKey('balanceSymbol', newBalanceSymbol => {
           if (this.balanceSymbol !== newBalanceSymbol) {
             RouterController.goBack()
-            // TODO(enes): maybe reset state as well?
+            // Maybe reset state as well?
           }
         }),
         NetworkController.subscribeKey('caipNetwork', newCaipNetwork => {

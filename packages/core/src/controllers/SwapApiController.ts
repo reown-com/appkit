@@ -285,7 +285,6 @@ export const SwapApiController = {
     const { fromAddress, slippage, sourceTokenAddress, sourceTokenAmount, toTokenAddress } =
       this._getSwapParams()
 
-    console.log('>>> getSwapCalldata')
     if (!sourceTokenAmount || !state.sourceToken?.address || !state.toToken?.address) {
       return
     }
@@ -434,11 +433,7 @@ export const SwapApiController = {
       this.getTokenPriceWithAddresses(tokenAddresses)
     ])
 
-    const mergedTokensWithBalances = await this.mergeTokenWithBalances(
-      tokens,
-      balances,
-      tokensPrice
-    )
+    const mergedTokensWithBalances = this.mergeTokenWithBalances(tokens, balances, tokensPrice)
 
     state.myTokensWithBalance = mergedTokensWithBalances
 
@@ -468,7 +463,7 @@ export const SwapApiController = {
     return { balances: nonEmptyBalances, tokenAddresses: Object.keys(nonEmptyBalances) }
   },
 
-  async getTokenInfoWithAddresses(addresses: Array<string>) {
+  async getTokenInfoWithAddresses(addresses: string[]) {
     const { api, paths } = this._get1inchApi()
 
     return api.get<Record<string, TokenInfo>>({
@@ -477,7 +472,7 @@ export const SwapApiController = {
     })
   },
 
-  async getTokenPriceWithAddresses(addresses: Array<string>) {
+  async getTokenPriceWithAddresses(addresses: string[]) {
     state.loadingPrices = true
 
     const { api, paths } = this._get1inchApi()
@@ -499,7 +494,7 @@ export const SwapApiController = {
     return prices
   },
 
-  async mergeTokenWithBalances(
+  mergeTokenWithBalances(
     tokens: Record<string, TokenInfo>,
     balances: Record<string, string>,
     tokensPrice: Record<string, string>
@@ -526,7 +521,6 @@ export const SwapApiController = {
       if (state.sourceToken?.address && state.toToken?.address) {
         state.loading = true
         const hasAllowance = await SwapApiController.getTokenAllowance()
-        console.log('>>> hasAllowance', hasAllowance)
 
         if (hasAllowance) {
           await SwapApiController.getSwapCalldata()

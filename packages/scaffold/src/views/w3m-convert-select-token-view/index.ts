@@ -136,7 +136,13 @@ export class W3mConvertSelectTokenView extends LitElement {
   }
 
   private handleSuggestedTokensScroll() {
-    const container = this.renderRoot?.querySelector('.suggested-tokens-container') as HTMLElement
+    const container = this.renderRoot?.querySelector('.suggested-tokens-container') as
+      | HTMLElement
+      | undefined
+
+    if (!container) {
+      return
+    }
 
     const scrollStart = container.scrollLeft === 0
     const scrollEnd =
@@ -155,7 +161,11 @@ export class W3mConvertSelectTokenView extends LitElement {
   }
 
   private handleTokenListScroll() {
-    const container = this.renderRoot?.querySelector('.tokens') as HTMLElement
+    const container = this.renderRoot?.querySelector('.tokens') as HTMLElement | undefined
+
+    if (!container) {
+      return
+    }
 
     const scrollStart = container.scrollTop === 0
     const scrollEnd =

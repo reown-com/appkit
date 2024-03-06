@@ -40,7 +40,7 @@ export class WuiConvertInput extends LitElement {
 
   @property() public token?: TokenInfo
 
-  @property() public onSetAmount: (target: Target, value: string) => void = () => {}
+  @property() public onSetAmount: ((target: Target, value: string) => void) | null = null
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -91,6 +91,10 @@ export class WuiConvertInput extends LitElement {
   }
 
   private dispatchInputChangeEvent(event: InputEvent) {
+    if (!this.onSetAmount) {
+      return
+    }
+
     const value = (event.target as HTMLInputElement).value
     if (value === ',' || value === '.') {
       this.onSetAmount(this.target, '0.')

@@ -50,7 +50,6 @@ export class W3mConvertSelectNetworkView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    console.log('network', this.network)
     return html`
       <wui-flex flexDirection="column" padding="s"> ${this.templateListNetworks()} </wui-flex>
     `
@@ -70,13 +69,7 @@ export class W3mConvertSelectNetworkView extends LitElement {
   }
 
   private templateNetworkListItem(item: { name: string; symbol: string }, active?: boolean) {
-    return html`<button
-      @click=${() => {
-        // NetworkController.setCaipNetwork(item.name)
-        console.log('select network')
-      }}
-      class="network-list-item ${active ? 'active' : ''}"
-    >
+    return html`<button class="network-list-item ${active ? 'active' : ''}">
       <wui-image
         src="https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b"
       ></wui-image>
