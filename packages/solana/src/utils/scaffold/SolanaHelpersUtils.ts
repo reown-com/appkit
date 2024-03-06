@@ -26,11 +26,11 @@ export const SolHelpersUtil = {
     if (selectedChain) {
       return {
         ...selectedChain,
-        id: `${chainName}:${chainId}`
+        id: `solana:${chainId}`
       }
     }
 
-    return { ...SolConstantsUtil.DEFAULT_CHAIN, id: `${chainName}:${chainId}` }
+    return { ...SolConstantsUtil.DEFAULT_CHAIN, id: `solana:${chainId}` }
   },
 
   getCaipDefaultChain(chain?: Chain) {
@@ -39,7 +39,7 @@ export const SolHelpersUtil = {
     }
 
     return {
-      id: `${chain.name}:${chain.chainId}`,
+      id: `solana:${chain.chainId}`,
       name: chain.name,
       imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId]
     } as CaipNetwork

@@ -172,7 +172,7 @@ export class Web3Modal extends Web3ModalScaffold {
     )
     if (chain) {
       SolStoreUtil.setCurrentChain(chain)
-      SolStoreUtil.setCaipChainId(`${chain.name}:${chain.chainId}`)
+      SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
     }
     this.syncNetwork(chainImages)
 
@@ -306,7 +306,7 @@ export class Web3Modal extends Web3ModalScaffold {
     if (this.chains) {
       const chain = SolHelpersUtil.getChainFromCaip(this.chains, storeChainId)
       if (chain) {
-        const caipChainId: CaipNetworkId = `${chain.name}:${chain.chainId}`
+        const caipChainId: CaipNetworkId = `solana:${chain.chainId}`
 
         this.setCaipNetwork({
           id: caipChainId,
@@ -348,7 +348,7 @@ export class Web3Modal extends Web3ModalScaffold {
     const requestedCaipNetworks = chains?.map(
       chain =>
         ({
-          id: `${chain.name}:${chain.chainId}`,
+          id: `solana:${chain.chainId}`,
           name: chain.name,
           imageId: PresetsUtil.EIP155NetworkImageIds[chain.chainId],
           imageUrl: chainImages?.[chain.chainId]
@@ -366,9 +366,9 @@ export class Web3Modal extends Web3ModalScaffold {
 
     if (this.chains) {
       if (chain) {
-        SolStoreUtil.setCaipChainId(`${chain.name}:${chain.chainId}`)
+        SolStoreUtil.setCaipChainId(`solana:${chain.chainId}`)
         SolStoreUtil.setCurrentChain(chain)
-        localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `${chain.name}:${chain.chainId}`)
+        localStorage.setItem(SolConstantsUtil.CAIP_CHAIN_ID, `solana:${chain.chainId}`)
         if (providerType?.includes(ConstantsUtil.INJECTED_CONNECTOR_ID)) {
           const wallet =
             providerType.split('_')[1] === 'Trust'
