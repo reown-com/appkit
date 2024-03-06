@@ -19,6 +19,9 @@ export interface OptionsControllerState {
   enableAnalytics?: boolean
   metadata?: Metadata
   enableOnramp?: boolean
+  siweSession?: {
+    accounts: string[]
+  }
 }
 
 type StateKey = keyof OptionsControllerState
@@ -76,6 +79,10 @@ export const OptionsController = {
 
   setIsSiweEnabled(isSiweEnabled: OptionsControllerState['isSiweEnabled']) {
     state.isSiweEnabled = isSiweEnabled
+  },
+
+  setSiweSession(siweSession: OptionsControllerState['siweSession']) {
+    state.siweSession = siweSession
   },
 
   setEnableAnalytics(enableAnalytics: OptionsControllerState['enableAnalytics']) {

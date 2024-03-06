@@ -4,7 +4,8 @@ import type {
   SIWEClientMethods,
   SIWESession,
   SIWECreateMessageArgs,
-  SIWEVerifyMessageArgs
+  SIWEVerifyMessageArgs,
+  SIWEMessageArgs
 } from '../utils/TypeUtils.js'
 import { OptionsController } from '@web3modal/core'
 
@@ -18,6 +19,7 @@ export interface SIWEControllerClient extends SIWEClientMethods {
     signOutOnDisconnect: boolean
     signOutOnAccountChange: boolean
     signOutOnNetworkChange: boolean
+    messageParams: SIWEMessageArgs
   }
 }
 
@@ -104,6 +106,7 @@ export const SIWEController = {
     const client = this._getClient()
     await client.signOut()
     this.setStatus('ready')
+    this.setSession(undefined)
     client.onSignOut?.()
   },
 
@@ -137,5 +140,8 @@ export const SIWEController = {
 
   setSession(session: SIWEControllerClientState['session']) {
     state.session = session
+    OptionsController.setSiweSession({
+      accounts: session?.address ? [session.address] : []
+    })
   }
 }

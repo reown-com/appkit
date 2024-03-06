@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable max-depth */
 import type {
   CaipAddress,
@@ -11,9 +12,9 @@ import type {
   Token
 } from '@web3modal/scaffold'
 import { Web3ModalScaffold } from '@web3modal/scaffold'
-import type { Web3ModalSIWEClient } from '@web3modal/siwe'
+import { SIWEController, type Web3ModalSIWEClient } from '@web3modal/siwe'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@web3modal/scaffold-utils'
-import EthereumProvider from '@walletconnect/ethereum-provider'
+import EthereumProvider, { OPTIONAL_METHODS } from '@walletconnect/ethereum-provider'
 import type {
   Address,
   Metadata,
@@ -138,6 +139,7 @@ export class Web3Modal extends Web3ModalScaffold {
               )
             }
             const ns = provider.signer?.session?.namespaces
+            console.log('WalletConnectProvider ns', ns)
             const nsMethods = ns?.[ConstantsUtil.EIP155]?.methods
             const nsChains = ns?.[ConstantsUtil.EIP155]?.chains
 
@@ -168,8 +170,36 @@ export class Web3Modal extends Web3ModalScaffold {
         WalletConnectProvider.on('display_uri', (uri: string) => {
           onUri(uri)
         })
+        console.log('SIWEController', SIWEController, siweConfig)
+        console.log('WalletConnectProvider init opts', options)
 
-        await WalletConnectProvider.connect()
+        if (siweConfig?.options?.enabled) {
+          const result = await WalletConnectProvider.authenticate({
+            nonce: await siweConfig.getNonce(),
+            methods: OPTIONAL_METHODS,
+            ...siweConfig.options.messageParams
+          })
+          if (result?.auths?.[0]) {
+            const chainId = parseInt(result.auths[0].p.chainId?.split(':')?.[1] || '', 10)
+            const address = result.auths[0]?.p.iss.split(':')[2] || ''
+            SIWEController.setSession({
+              address,
+              chainId
+            })
+
+            // Kicks off verifyMessage and populates external states
+            const message = WalletConnectProvider.signer.client.formatAuthMessage({
+              request: result.auths[0].p,
+              iss: result.auths[0].p.iss
+            })
+            SIWEController.verifyMessage({
+              message,
+              signature: result.auths[0].s.s
+            })
+          }
+        } else {
+          await WalletConnectProvider.connect()
+        }
         await this.setWalletConnectProvider()
       },
 

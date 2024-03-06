@@ -3,11 +3,29 @@ export interface SIWESession {
   chainId: number
 }
 
-export interface SIWECreateMessageArgs {
-  nonce: string
-  address: string
-  chainId: number
+interface CacaoHeader {
+  t: 'caip122'
 }
+
+export interface SIWECreateMessageArgs {
+  chainId: number
+  domain: string
+  nonce: string
+  uri: string
+  address: string
+  version: '1'
+  type?: CacaoHeader['t']
+  nbf?: string
+  exp?: string
+  statement?: string
+  requestId?: string
+  resources?: string[]
+  expiry?: number
+}
+export type SIWEMessageArgs = {
+  chains: number[]
+  methods?: string[]
+} & Omit<SIWECreateMessageArgs, 'address' | 'chainId' | 'nonce' | 'version'>
 
 export interface SIWEVerifyMessageArgs {
   message: string
@@ -37,4 +55,5 @@ export interface SIWEConfig extends SIWEClientMethods {
   signOutOnAccountChange?: boolean
   // Defaults to true
   signOutOnNetworkChange?: boolean
+  messageParams: SIWEMessageArgs
 }

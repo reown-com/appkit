@@ -1,8 +1,10 @@
+/* eslint-disable no-console */
 import type {
   SIWECreateMessageArgs,
   SIWEVerifyMessageArgs,
   SIWEConfig,
-  SIWEClientMethods
+  SIWEClientMethods,
+  SIWESession
 } from '../core/utils/TypeUtils.js'
 import type { SIWEControllerClient } from '../core/controller/SIWEController.js'
 
@@ -40,7 +42,8 @@ export class Web3ModalSIWEClient {
       sessionRefetchIntervalMs,
       signOutOnDisconnect,
       signOutOnAccountChange,
-      signOutOnNetworkChange
+      signOutOnNetworkChange,
+      messageParams: siweConfig.messageParams
     }
 
     this.methods = siweConfigMethods
@@ -80,7 +83,7 @@ export class Web3ModalSIWEClient {
     return session
   }
 
-  async signIn() {
+  async signIn(): Promise<SIWESession> {
     const nonce = await this.methods.getNonce()
     const { address } = AccountController.state
     if (!address) {
@@ -90,7 +93,13 @@ export class Web3ModalSIWEClient {
     if (!chainId) {
       throw new Error('A chainId is required to create a SIWE message.')
     }
-    const message = this.methods.createMessage({ address, nonce, chainId })
+    const message = this.methods.createMessage({
+      address,
+      chainId,
+      nonce,
+      version: '1',
+      ...this.options.messageParams
+    })
     const signature = await ConnectionController.signMessage(message)
     const isValid = await this.methods.verifyMessage({ message, signature })
     if (!isValid) {

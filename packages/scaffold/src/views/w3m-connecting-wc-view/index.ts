@@ -76,7 +76,11 @@ export class W3mConnectingWcView extends LitElement {
 
         await ConnectionController.state.wcPromise
         this.finalizeConnection()
-        if (OptionsController.state.isSiweEnabled) {
+        // After SIWE connection, authenticated accounts could be empty if fallback was used i.e. connection via session proposal
+        if (
+          OptionsController.state.isSiweEnabled &&
+          !OptionsController.state.siweSession?.accounts.length
+        ) {
           RouterController.push('ConnectingSiwe')
         } else {
           ModalController.close()
