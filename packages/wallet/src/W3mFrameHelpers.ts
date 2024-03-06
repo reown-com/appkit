@@ -89,7 +89,10 @@ export const W3mFrameHelpers = {
   },
 
   getPreferredAccountType(): 'eoa' | 'smartAccount' {
-    return W3mFrameStorage.get(W3mFrameConstants.PREFERRED_ACCOUNT_TYPE) as 'eoa' | 'smartAccount'
+    return (
+      (W3mFrameStorage.get(W3mFrameConstants.PREFERRED_ACCOUNT_TYPE) as 'eoa' | 'smartAccount') ||
+      'eoa'
+    )
   },
 
   isClient: typeof window !== 'undefined'
