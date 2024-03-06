@@ -16,6 +16,7 @@ export interface SolStoreUtilState {
   providerType?: 'walletConnect' | `injected_${string}`
   address?: string
   chainId?: string
+  chains: Chain[]
   caipChainId?: string
   currentChain?: Chain
   requestId?: number
@@ -25,6 +26,7 @@ export interface SolStoreUtilState {
 }
 
 const state = proxy<SolStoreUtilState>({
+  chains: [],
   provider: undefined,
   providerType: undefined,
   address: undefined,

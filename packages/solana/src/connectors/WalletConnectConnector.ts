@@ -9,30 +9,6 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import type { Connector } from './BaseConnector'
 import { OptionsController } from '@web3modal/core'
 
-export const solana = {
-  chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-  name: 'Solana',
-  currency: 'SOL',
-  explorerUrl: 'https://solscan.io',
-  rpcUrl: 'https://rpc.walletconnect.com/v1'
-}
-
-export const solanaTestnet = {
-  chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
-  name: 'Solana Testnet',
-  currency: 'SOL',
-  explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
-  rpcUrl: 'https://api.testnet.solana.com'
-}
-
-export const solanaDevnet = {
-  chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
-  name: 'Solana Devnet',
-  currency: 'SOL',
-  explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
-  rpcUrl: 'https://api.devnet.solana.com'
-}
-
 export interface WalletConnectAppMetadata {
   name: string
   description: string
@@ -198,14 +174,14 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
    * QRCode.
    */
   public generateNamespaces(chainId: string) {
-    const rpcMap = {
-      [`solana:${solana.chainId}`]: solana.rpcUrl,
-      [`solana:${solanaTestnet.chainId}`]: solanaTestnet.rpcUrl,
-      [`solana:${solanaDevnet.chainId}`]: solanaDevnet.rpcUrl
-    }
+    const rpcs = SolStoreUtil.state.chains.reduce<Record<string, string>>((acc, chain) => {
+      acc[chain.chainId] = chain.rpcUrl
+
+      return acc
+    }, {})
     const chainsNamespaces = [`solana:${chainId}`]
-    const rpc = {
-      [chainId]: rpcMap[`solana:${chainId}`] ?? ''
+    const rpcMap = {
+      [chainId]: rpcs[chainId] ?? ''
     }
 
     return {
@@ -213,7 +189,7 @@ export class WalletConnectConnector extends BaseConnector implements Connector {
         chains: [...chainsNamespaces],
         methods: ['solana_signMessage', 'solana_signTransaction'],
         events: [],
-        rpcMap: rpc
+        rpcMap
       }
     }
   }
